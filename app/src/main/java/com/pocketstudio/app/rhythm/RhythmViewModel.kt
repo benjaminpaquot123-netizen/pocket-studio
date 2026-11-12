@@ -191,6 +191,8 @@ import com.pocketstudio.model.pieceAt
 import com.pocketstudio.model.remixTimeAtStep
 import com.pocketstudio.model.remixSecondsPerStep
 import com.pocketstudio.model.stemClipFrames
+import com.pocketstudio.model.withRemixCutAtSongEnd
+import com.pocketstudio.model.withSongLengthenedForRemix
 import com.pocketstudio.model.withRemixPlaced
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
@@ -969,6 +971,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(-1)
         livePadTapped(-1)
         liveStoppedForTest?.invoke()
+    }
+
+    /**
+     * « Tout couper » of Pad Live and of the live pads (plan of the audits, step 4, n° 7; Benjamin's 4A, recette tel-08):
+     * everything stops, the pads AND the music with its bars and time (the transport's ■ also cuts the pads). The next pad
+     * starts its clock again from zero, so a rhythm can be played again at once.
+     */
+    fun cutEverything() {
+        // A « Enregistrer ce que je joue » take in progress ends like its own button (kept on its bar line, or let go if armed).
+        padLive.played.endForCut()
+        if (_transport.value.playing) togglePlay()
+        stopLive()
     }
 
     fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
@@ -4182,6 +4196,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Already launched (the line passed meanwhile): it stays, as heard.
         val waiting = (0 until LiveSlots.COUNT).filter { mask and (1 shl it) != 0 && liveNow().slot(it).pending != null }
         if (waiting.isEmpty()) return
+        stopAllArmed = false  // « ■ Tout » taken back: the transport goes on
         val m = waiting.fold(0) { acc, k -> acc or (1 shl k) }
         if (NativeEngine.isAvailable) NativeEngine.cancelLaunch(m)
         waiting.forEach { stagedFrom[it] = null }
@@ -4200,12 +4215,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         armSlots(LiveSlots.mask(slot), -1)
     }
 
-    /** « ■ Tout »: every track stops on the next launch line (the transport goes on). */
+    /**
+     * « ■ Tout »: every track stops on the next launch line, and the transport with them there (4A, T4-01, recette tel-12:
+     * « ■ Tout coupe le son mais mesures et temps continuent »): [onLaunched] stops it once no block plays nor waits.
+     */
     fun stopLiveAll() {
         if (!_transport.value.playing) return
         leaveSongForLive()
         armSlots(LiveSlots.ALL, -1)
+        stopAllArmed = true
     }
+
+    /** « ■ Tout » armed: the transport stops when the engine has stopped every block (a block launched since: not any more). */
+    private var stopAllArmed = false
 
     /**
      * Audit ultra round 3, zone 1, n° 3 (seat E d): the Live columns cut outside the Live page: their strip muted in Mix,
@@ -4800,6 +4822,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** [mask]'s slots take [scene]'s part (staged now) or stop (-1) on the next launch line. */
     private fun armSlots(mask: Int, scene: Int) {
+        stopAllArmed = false
         val p = project.value
         if (NativeEngine.isAvailable) {
             if (scene >= 0) {
@@ -4904,6 +4927,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             heardScene = g.row
             if (g.row != project.value.scene && g.row in project.value.allScenes.indices) session.editQuietly { it.switchScene(g.row) }
             if (NativeEngine.isAvailable) swapsSeen = NativeEngine.sceneSwaps()
+        }
+        // « ■ Tout » (4A): its last block stopped on the line, the transport stops there too.
+        if (stopAllArmed && !g.hasPending) {
+            stopAllArmed = false
+            AppLog.add("■ Tout : tout est arrêté, la lecture aussi")
+            toggleTransport(songStep = aloneSongStep())
         }
     }
 
@@ -6305,6 +6334,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Stem [stem] as separated again. */
     fun resetStem(stem: Int) = editRemix(null) { it.resetStem(stem) }
+
+    /** Chantier 10 (« Prêt à partager ? »): « Allonger le morceau » until the remix's song ends in it; one undo step. */
+    fun lengthenSongForRemix() {
+        val following = songPlaying()
+        val before = project.value.song
+        session.edit { it.withSongLengthenedForRemix() }
+        // Fresh review (grave): the engine may already hold the song's end for the part playing; the parts added
+        // after it are staged as « + » does ([insertSongPart]); the part on now keeps playing.
+        if (following && project.value.song != before) followSongEdit { i, _ -> i }
+    }
+
+    /** Chantier 10: « Couper la chanson à la fin »: the remix's stems end with the song (a short fade); one undo step. */
+    fun cutRemixAtSongEnd() {
+        session.edit { it.withRemixCutAtSongEnd() }
+        pushRemix()
+    }
 
     private fun editRemix(key: String?, transform: (Remix) -> Remix) {
         session.edit(key) { p -> p.copy(remix = transform(p.remix)) }
@@ -9524,7 +9569,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun togglePart() {
         if (_transport.value.playing) {
-            if (_loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
+            // Tour 5, moyens M2: during a take (notes or microphone) it stops, as « ▶ le morceau » does (both show ■).
+            val takeOn = _recording.value || _audioRecording.value != null
+            if (takeOn || _loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
             return
         }
         setLoopPart(true)
@@ -9578,6 +9625,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun toggleTransport(countInBars: Int? = null, songStep: Int = NativeEngine.OUTSIDE_SONG) {
         val t = _transport.value
         val playing = !t.playing
+        stopAllArmed = false
         if (!playing) {
             _loopArmedBySelf.value = false
             // ■ ends « Écouter seul » too: the sync below gives the engine the project's mixer back.

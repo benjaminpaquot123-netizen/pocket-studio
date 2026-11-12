@@ -1178,3 +1178,10 @@ Détail : `docs/audits/ultra/tour-5-textes-relecture.md`. Dette gardée :
 - **Recensement du menu ⋮** (corrigé dans le même lot) : `LayoutScan` lisait le contraste des entrées du menu ⋮ sur l'écran sous le menu (« Aide » 1,2:1 sur un menu lisible) ; une fenêtre pop-up est maintenant redessinée depuis sa vue, et le plafond de `NavScreenshotTest.simpleMore` reste à 2.
 - **dB encore visibles en Mode simple** (non parcourus par `SimpleNoDecibelTest`) : la boîte d'effets ouverte depuis Pad Live (« Seuil … dB », « Gain », « Réduction »), la fiche de piste du Guide (`TrackSheet.formatDb`), l'écoute de référence du Guide (`GuideListen`).
 - Mineurs : « Tout à zéro » (Mix simple) devrait dire « Tout remettre à normal » ; « Autres fichiers » sur la carte d'export du Mix Pro ; « Le nombre sous le curseur » dans les tutos Facile alors que « Normal » est un mot ; « exporte ton morceau » dans quelques tutos et « Puis envoie-le » dans l'aide « Un bout » ; « Voir le réglage » (GuidePanel, AutomationCard) ; kits des tutos Pro lourds (« Fais-moi un morceau » cité en entier).
+
+## Audit ultra, tour 5, lot « banc6d » (2026-11-11)
+Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
+- **« Niveau : à la cible (Auto (style)) »** : parenthèses doublées (T5-Aa-43) ; il faut une clé de texte sans parenthèses dans les 14 langues.
+- **Idée** : prévenir quand une prise gardée allonge le morceau (T5-Bb-58 : une mélodie de 4 mesures dans une scène d'une mesure fait passer 176 mesures à 572, voulu mais muet).
+- **Défi niveau 2** (T5-Ca-14, `@KnownDefect T5-DEFI-COULEURS`) : les ronds ont la couleur de la famille du son, partagée par d'autres pads ; écran Pad Live d'un autre auteur, non corrigé.
+- **Banc** : `HumanTester.remixHeard` ignore la coupure de la colonne de la chanson dans le Live (T5-Cb-67) : garde Bench* à écrire. Non tranchés : T5-Ad-13, T5-Ca-1, T5-DEMO-VIDE ; taille vraie d'un export (T5-Cc-41b) non mesurée.

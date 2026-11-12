@@ -236,7 +236,7 @@ fun LivePadsFullScreen(
 private fun PadChooser(pad: Int, ui: LivePadsUi, actions: LivePadsActions, close: () -> Unit, leave: () -> Unit) {
     val clip = ui.pads.clips.getOrNull(pad)
     val state = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    com.pocketstudio.ui.ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("live_pad_chooser")) {
+    com.pocketstudio.ui.ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("live_pad_chooser"), scrolls = true) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             WholeWordsText(
                 tr("Pad %d : qu'est-ce que tu mets dessus ?", pad + 1),

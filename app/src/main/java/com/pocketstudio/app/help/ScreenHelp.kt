@@ -26,7 +26,7 @@ object ScreenHelp {
     )
     val PADLIVE_MORE: Help get() = Help(
         tr("Plus"),
-        tr("Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager fait un fichier de ta perf."),
+        tr("Tout couper (le carré rouge, en bas) arrête tout : les pads, la musique et le temps. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager fait un fichier de ta perf."),
     )
     val PADLIVE_CHALLENGE: Help get() = Help(
         tr("Défi"),
@@ -135,10 +135,25 @@ object ScreenHelp {
         tr("D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante."),
     )
 
+    // --- Where a beginner gets stuck (hands-on audit M5; Benjamin, tel-10: « le compteur « 1 » n'est pas expliqué ») ---
+    val RECORD_KEYS: Help get() = Help(
+        tr("Enregistrer au clavier"),
+        tr("Touche le bouton rouge, puis joue : l'appli écrit tes notes dans la partie, tu les retrouves dans « Notes ». Le chiffre à côté est le décompte : les mesures entendues avant de jouer. « Garder ce que je viens de jouer » reprend ce que tu viens de jouer, sans le refaire."),
+    )
+    val SIMPLE_MIX: Help get() = Help(
+        tr("Le Mix simple"),
+        tr("Monte le curseur de ce qui doit s'entendre, baisse ce qui gêne. Sous « Sortie », un mot juge le volume final : « Bien » ou « Fort et propre », c'est prêt à partager ; « Ça sature », baisse la sortie. « Tout à zéro » remet les volumes du départ."),
+    )
+    val MIX_LOOP: Help get() = Help(
+        tr("Partie en boucle"),
+        tr("La partie en cours tourne en boucle pendant que tu règles : tu entends tout de suite ce que tu changes. « ■ Arrêter » coupe la boucle."),
+    )
+
     /** Every one (the test checks their length and that each is shown somewhere). */
     val ALL: List<Help> get() = listOf(
         PADLIVE_PAGES, PADLIVE_EFFECTS, PADLIVE_PLAYED, PADLIVE_MORE, PADLIVE_CHALLENGE, PADLIVE_MODES, PADLIVE_GROUPS, PADLIVE_SHAPE, TEMPO_SET,
         LIVE_GRID, LIVE_LAUNCH, REMIX_CELL, CUT_AUTO, CUT_TOOLS, CUT_BOUT, CUT_SEND,
         MASTER_TARGET, MASTER_CEILING, MASTER_CHAIN, MASTER_AB, PRO_READINGS, FINAL_FILE, STEMS_SENDS, LAYERS,
+        RECORD_KEYS, SIMPLE_MIX, MIX_LOOP,
     )
 }

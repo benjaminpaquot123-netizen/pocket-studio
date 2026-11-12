@@ -1,0 +1,7 @@
+fusion: f8018ff21e5e8a4774a2bba92b9d57b4403d0661
+branche: eq/tour-5-moyens
+tete: f17c48be9e1b0a6311eb2032586656f7c6796771
+relecture: docs/audits/ultra/tour-5-moyens-relecture.md
+relu: bbc59a9369df56751a9a4c26a084307867895359
+rejeux :
+  t4-26-prise-clavier : oracle tenu

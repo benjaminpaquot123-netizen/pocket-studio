@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +31,7 @@ import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Tune
@@ -66,18 +66,21 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.SectionLabel
+import com.pocketstudio.ui.scrollHintItem
 import kotlin.math.roundToInt
 
 /**
  * « Nouveau projet »: three big choices, one sentence each (Benjamin, 2026-10-27): « J'apprends »
  * (the tutorial, Facile or Pro, then the style), « Fais-moi un morceau » (the assistant, then the
- * Guide), « Je pars de zéro » (an empty project). Everything else (a style's song in one touch,
- * the starting beat, the demos, the Remix, an import) waits folded under « Autres façons de
- * commencer » (open while a song is being prepared).
+ * Guide), « Je pars de zéro » (an empty project), and (hands-on audit G11) « Un style en une touche »: five styles, a
+ * touch on one makes its song. Everything else (every style, the starting beat, the demos, the Remix, an import) waits
+ * folded under « Autres façons de commencer » (open while a song is being prepared, its summary says what it holds).
  *
  * Owner (2026-10-29): no new project without « Simple ou Pro ? ». Each way to start goes through
  * [com.pocketstudio.app.ui.ModeStep] first (Retour comes back here); for « J'apprends » the mode
  * is also the tutorial's level (Simple: Facile), asked once. The demos only play: no step.
+ * Benjamin's answer 3A (tour 5, chantier 5): only until a mode was chosen once; then a new song
+ * takes the last choice (« J'apprends » still asks, for its level).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -118,40 +121,60 @@ internal fun NewProjectPage(
             }
             Text(tr("Nouveau projet"), style = MaterialTheme.typography.headlineSmall, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
         }
+        // Rule 17 (hands-on audit G9): the page says when more waits below (a fade, « ↓ 2 autres »).
+        val hint = com.pocketstudio.ui.rememberScrollHint()
+        com.pocketstudio.ui.ScrollHintBox(hint, Modifier.weight(1f)) {
         Column(
-            Modifier.weight(1f).verticalScroll(rememberScrollState()).testTag("new_project_list"),
+            Modifier.fillMaxSize().verticalScroll(hint.scroll).testTag("new_project_list"),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             BigChoice(Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
-                Neon.Acid, !busy, "start_learn") { pending = START_LEARN }
+                Neon.Acid, !busy, "start_learn", Modifier.scrollHintItem(hint)) { pending = START_LEARN }
             BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'appli fait le morceau, le Guide t'aide à le finir."),
-                Neon.Cyan, !busy, "starter_wizard") { pending = START_WIZARD }
+                Neon.Cyan, !busy, "starter_wizard", Modifier.scrollHintItem(hint)) { pending = START_WIZARD }
+            // Hands-on audit G11: the home screen's promise « Un style en une touche » kept here, one touch on a style.
+            OneTouchStyles(quick, busy, Modifier.scrollHintItem(hint)) { pending = START_QUICK + it }
             BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."),
-                Neon.Amber, !busy, "start_empty") {
+                Neon.Amber, !busy, "start_empty", Modifier.scrollHintItem(hint)) {
                 starters.indexOfFirst { it.group == StarterGroup.Empty }.takeIf { it >= 0 }?.let { pending = START_STARTER + it }
             }
             val open = others || busy || quick.error != null
-            TextButton(onClick = { others = !others }, enabled = !busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("start_others")) {
-                Text((if (open) "▾ " else "▸ ") + tr("Autres façons de commencer"), color = Neon.TextSecondary, style = MaterialTheme.typography.titleSmall)
-            }
+            // Rule 13: a fold says what it hides.
+            com.pocketstudio.ui.Disclosure(
+                tr("Autres façons de commencer"),
+                listOfNotNull(
+                    com.pocketstudio.ui.Hidden(tr("Tous les styles")),
+                    com.pocketstudio.ui.Hidden(tr("Rythme de départ")),
+                    com.pocketstudio.ui.Hidden(tr("Démos")),
+                    actions.remix?.let { com.pocketstudio.ui.Hidden(tr("Remix")) },
+                    com.pocketstudio.ui.Hidden(tr("Importer un projet")),
+                ),
+                open = open, onToggle = { if (!busy) others = !others },
+                modifier = Modifier.scrollHintItem(hint).testTag("start_others"),
+            )
             if (open) OtherStarts(starters, quick, actions, busy, leave) { pending = it }
+        }
         }
     }
     if (asking != null) {
-        androidx.activity.compose.BackHandler { pending = null }
-        androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-            com.pocketstudio.app.ui.ModeStep(
-                choose = { simple ->
-                    com.pocketstudio.app.settings.ProjectModes.choose(context, simple)
-                    if (asking == START_LEARN) learning = true
-                    else {
-                        pending = null
-                        startOf(asking, starters, actions, leave)
-                    }
-                },
-                back = { pending = null },
-                tuto = asking == START_LEARN,
-            )
+        val choose: (Boolean) -> Unit = { simple ->
+            com.pocketstudio.app.settings.ProjectModes.choose(context, simple)
+            if (asking == START_LEARN) learning = true
+            else {
+                pending = null
+                startOf(asking, starters, actions, leave)
+            }
+        }
+        // Benjamin's answer 3A (tour 5, chantier 5): a mode already chosen on this phone, the song takes it without
+        // asking (the assistant says it, with « Changer »). « J'apprends » still asks: the mode is the tutorial's level.
+        val known = androidx.compose.runtime.remember(asking) { if (asking == START_LEARN) null else com.pocketstudio.app.settings.ProjectModes.last(context) }
+        if (known != null) {
+            androidx.compose.runtime.LaunchedEffect(asking) { choose(known) }
+        } else {
+            androidx.activity.compose.BackHandler { pending = null }
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.ui.ModeStep(choose = choose, back = { pending = null }, tuto = asking == START_LEARN)
+            }
         }
     }
     }
@@ -175,10 +198,10 @@ private fun startOf(key: String, starters: List<ProjectStarter>, actions: Projec
 
 /** A big choice of the page: a round icon, a title and one sentence. */
 @Composable
-private fun BigChoice(icon: ImageVector, title: String, line: String, accent: androidx.compose.ui.graphics.Color, enabled: Boolean, tag: String, onClick: () -> Unit) {
+private fun BigChoice(icon: ImageVector, title: String, line: String, accent: androidx.compose.ui.graphics.Color, enabled: Boolean, tag: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 96.dp)
+        modifier.fillMaxWidth().heightIn(min = 96.dp)
             .showcasePanel(shape, accent = accent.copy(alpha = 0.8f), edge = 1.5.dp, wash = 0.17f)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp).testTag(tag),
@@ -190,6 +213,72 @@ private fun BigChoice(icon: ImageVector, title: String, line: String, accent: an
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary.copy(alpha = 0.8f))
         }
         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = accent)
+    }
+}
+
+/** The five styles of [OneTouchStyles], one per family a beginner knows by name. */
+internal val ONE_TOUCH_STYLES = listOf("techno", "house", "trap", "pop", "lofi")
+
+/**
+ * Hands-on audit G11 (« Un style en une touche » promised on the home screen took 5 touches): a card of its own, the
+ * three others' look, with five styles under its words. One touch on a style makes its whole song (the assistant's
+ * advised choices), which opens on « Mon morceau » and plays; « Simple ou Pro ? » comes first only until a mode was
+ * chosen once on this phone (Benjamin's answer 3A). Every other style is under « Autres façons de commencer ».
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun OneTouchStyles(quick: QuickUi, busy: Boolean, modifier: Modifier, pick: (String) -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    val accent = ONE_TOUCH_COLOR
+    Column(
+        modifier.fillMaxWidth()
+            .showcasePanel(shape, accent = accent.copy(alpha = 0.8f), edge = 1.5.dp, wash = 0.17f)
+            .padding(16.dp).testTag("one_touch_styles"),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            com.pocketstudio.app.ui.IconMedallion(Icons.Filled.MusicNote, accent, 52.dp, 30.dp, filled = true)
+            Column(Modifier.weight(1f).padding(start = 14.dp)) {
+                Text(tr("Un style en une touche"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+                Text(tr("Touche un style : un morceau complet, prêt à écouter."), style = MaterialTheme.typography.bodyMedium,
+                    color = Neon.TextPrimary.copy(alpha = 0.8f))
+            }
+        }
+        androidx.compose.foundation.layout.FlowRow(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ONE_TOUCH_STYLES.mapNotNull { id -> StarterWizard.STYLES.find { it.id == id } }.forEach { s ->
+                OneTouchChip(s, preparing = quick.creating == s.id, enabled = !busy) { pick(s.id) }
+            }
+        }
+    }
+}
+
+/** The card's colour: the Bass music family's violet (no new accent, rule 15). */
+private val ONE_TOUCH_COLOR = androidx.compose.ui.graphics.Color(0xFFB388FF)
+
+/** One style of [OneTouchStyles]: its name in a pill of its family's colour; a wheel in it while its song is prepared. */
+@Composable
+private fun OneTouchChip(s: StarterWizard.Style, preparing: Boolean, enabled: Boolean, onClick: () -> Unit) {
+    val color = familyLook(s.family).second
+    val pill = RoundedCornerShape(50)
+    Row(
+        Modifier.heightIn(min = 48.dp).clip(pill).background(color.copy(alpha = if (preparing) 0.32f else 0.16f))
+            .border(1.5.dp, color.copy(alpha = if (enabled || preparing) 0.9f else 0.35f), pill)
+            .clickable(enabled = enabled, role = androidx.compose.ui.semantics.Role.Button, onClickLabel = tr("Créer le morceau"), onClick = onClick)
+            .padding(horizontal = 16.dp).testTag("one_touch_${s.id}"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (preparing) {
+            CircularProgressIndicator(
+                Modifier.padding(end = 8.dp).size(16.dp).semantics { contentDescription = tr("Préparation du morceau…") },
+                strokeWidth = 2.dp, color = Neon.TextPrimary,
+            )
+        }
+        Text(tr(s.name), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+            color = if (enabled || preparing) Neon.TextPrimary else Neon.TextSecondary)
     }
 }
 

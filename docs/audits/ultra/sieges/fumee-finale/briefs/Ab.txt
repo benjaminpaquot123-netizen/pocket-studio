@@ -1,0 +1,9 @@
+First read and follow docs/audits/ultra/sieges/fumee-finale/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=docs/audits/ultra/sieges/fumee-finale/lotA/b (seat b, lot A; lang fr, device phone, font 100, mode simple, options -, mission voix, budget 40 gestures).
+Profile (id t6-Ab): Chanteuse amateur, veut sa voix sur un morceau, peu patiente. Act as this person (habits, patience, vocabulary).
+Mission voix; its 3 goals (ids, the bench checks them): prise (une prise de voix existe), ecoute (elle s'entend dans le morceau), garde (elle est encore là après Retour).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=P052 | « Ta voix : enregistre-la par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique). »
+  - id=P112 | « Rien n'a été joué pendant la prise. » → « Garder ce que je viens de jouer »
+  - id=P019 | « Tout est sauvegardé tout seul, à chaque geste. » / « Pas besoin de sauvegarder : tout est gardé tout seul. »
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

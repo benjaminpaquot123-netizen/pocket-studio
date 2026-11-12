@@ -43,11 +43,22 @@ object LayoutScan {
         rule.waitForIdle()
         val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
         val out = mutableListOf<Finding>()
-        val texts = all.mapNotNull { n -> textOf(n)?.let { Txt(n, it, layout(n)) } }
-        if (Kind.CUT in checks) texts.forEach { cut(it, density)?.let(out::add) }
+        val allTexts = all.mapNotNull { n -> textOf(n)?.let { Txt(n, it, layout(n)) } }
+        // Rule 17 (round 5, chantier 6): the scroll hint « ↓ n autres » floats over the bottom of a list that goes on, in a
+        // fade; what lies under the chip or the fade is meant to be covered and faded, and the chip's words lie over the
+        // cards by design. Neither is read as an overlap nor as a contrast; the chip's own words keep their contrast check.
+        val covers = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        val chips = covers.filter { it.config.getOrNull(SemanticsProperties.TestTag) == "scroll_hint" }
+        fun inChip(t: Txt) = chips.any { ancestorOf(it, t.node) }
+        fun underHint(t: Txt) = !inChip(t) && covers.any { c -> !ancestorOf(c, t.node) && ink(t).overlaps(c.boundsInRoot) }
+        val texts = allTexts.filterNot { underHint(it) }
+        if (Kind.CUT in checks) allTexts.forEach { cut(it, density)?.let(out::add) }
         if (Kind.OVERLAP in checks) {
-            out += overlaps(texts, density)
-            out += overButtons(texts, all, density)
+            val laid = texts.filterNot { inChip(it) }
+            out += overlaps(laid, density)
+            out += overButtons(laid, all.filterNot { n -> chips.any { it.id == n.id } }, density)
+            // The chip itself (and anything else that floats) is a control like any other here: over a control.
+            out += floatingOverControls(rule, density)
         }
         if (Kind.CONTRAST in checks) {
             // Each window (the screen, a dialog, a menu) on its own pixels.
@@ -100,6 +111,25 @@ object LayoutScan {
         }
         return out.distinctBy { it.toString() }
     }
+
+    /**
+     * Rule 17 of docs/DESIGN.md, « Tout défilement se voit » (round 5, chantier 6; hands-on audit G9): the lists that go on
+     * below their frame without the hint over their frame (tags `scroll_hint`, the chip « ↓ n autres » at the top of the list,
+     * and `scroll_hint_fade`, the fade at its bottom edge, drawn by `ScrollHintBox`).
+     * Read on the home screens for now ([com.pocketstudio.app.onboarding.HomeScreensSayTheyScrollTest]).
+     */
+    fun unhintedScrolls(rule: ComposeTestRule): List<String> {
+        rule.waitForIdle()
+        val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        // The chip at the top of the list, the fade's band once it is scrolled.
+        val hints = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        return all.filter { n ->
+            val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: return@filter false
+            !hidden(n) && range.value() < range.maxValue() - 0.5f && hints.none { n.boundsInRoot.contains(it.boundsInRoot.center) }
+        }.map { "${tagOf(it)} (${"%.0f".format(it.config[SemanticsProperties.VerticalScrollAxisRange].maxValue() - it.config[SemanticsProperties.VerticalScrollAxisRange].value())} px below)" }
+    }
+
+    private val HINT_TAGS = setOf("scroll_hint", "scroll_hint_fade")
 
     /** Something TalkBack can act on: a touch, a long press, a slider, a switch or a box to tick. */
     val CONTROL = SemanticsMatcher("a control") { n ->
@@ -327,6 +357,55 @@ object LayoutScan {
             }
         }
         return out
+    }
+
+    /**
+     * Tour 5, lot « moyens » C (review of the home lot, M-b): something touchable drawn over a control wholly on screen
+     * (the scroll hint « ↓ n autres » over a card, any floating button over a list) takes the touches meant for that control. The one
+     * on top is the later in the drawing order; the one under it is judged only when wholly on screen (a card cut by a
+     * list's edge is read by the home screens' own test, HomeScreensSayTheyScrollTest).
+     */
+    private fun floatingOverControls(rule: ComposeTestRule, density: Float): List<Finding> {
+        val controls = rule.onAllNodes(CONTROL, useUnmergedTree = false).fetchSemanticsNodes(atLeastOneRootRequired = false)
+            .filter { it.config.contains(SemanticsActions.OnClick) && !hidden(it) }
+        val min = 3f * density
+        val out = mutableListOf<Finding>()
+        for (i in controls.indices) for (j in i + 1 until controls.size) {
+            val a = controls[i]
+            val b = controls[j]
+            if (a.root != b.root || ancestorOf(a, b) || ancestorOf(b, a)) continue
+            val x = a.boundsInRoot.intersect(b.boundsInRoot)
+            if (x.width < min || x.height < min) continue
+            val (under, over) = if (drawnAfter(b, a)) a to b else b to a
+            if (!wholly(under)) continue
+            // Floating: over a list's control without being part of that list (a piano's black key over its white
+            // neighbours is the instrument itself, in the same layout).
+            val list = generateSequence(under.parent) { it.parent }.firstOrNull {
+                it.config.contains(SemanticsProperties.VerticalScrollAxisRange) || it.config.contains(SemanticsProperties.HorizontalScrollAxisRange)
+            } ?: continue
+            if (ancestorOf(list, over)) continue
+            out += Finding(Kind.OVERLAP, nameOf(over).ifBlank { tagOf(over) },
+                "floats over the touchable « ${nameOf(under).ifBlank { tagOf(under) }.take(40)} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
+        }
+        return out
+    }
+
+    /** Whether [n] is drawn after [m] (over it): the later child where their ancestries part. */
+    private fun drawnAfter(n: SemanticsNode, m: SemanticsNode): Boolean {
+        fun path(x: SemanticsNode): List<SemanticsNode> = generateSequence(x) { it.parent }.toList().asReversed()
+        val pn = path(n)
+        val pm = path(m)
+        var k = 0
+        while (k < pn.size && k < pm.size && pn[k].id == pm[k].id) k++
+        if (k == 0 || k >= pn.size || k >= pm.size) return pn.size > pm.size
+        val siblings = pn[k - 1].children.map { it.id }
+        return siblings.indexOf(pn[k].id) > siblings.indexOf(pm[k].id)
+    }
+
+    /** [n] wholly drawn: nothing of it cut by a parent, a list's edge or the screen's. */
+    private fun wholly(n: SemanticsNode): Boolean {
+        val shown = n.boundsInRoot
+        return shown.width >= n.size.width - 1f && shown.height >= n.size.height - 1f
     }
 
     private fun samePixels(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap?): Boolean {

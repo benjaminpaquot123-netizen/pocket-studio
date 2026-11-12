@@ -235,11 +235,12 @@ class BenchTour4Test : HumanTester("tour4") {
         val all = com.pocketstudio.model.LiveSlots.ALL and com.pocketstudio.engine.NativeEngine.ALL_SLOTS
         assertTrue("« ■ Tout » went to the engine", benchEngine.padCommandsHeard().any { it.startsWith("armLaunch $all ") && it.endsWith(" -1") })
         val said = act("attends 4")
-        val g = vm.liveGrid.value!!
-        assertFalse("nothing waits any more: $g", g.hasPending)
-        assertTrue("every block stopped: $g", (0 until com.pocketstudio.model.LiveSlots.COUNT).all { g.slot(it).playing == -1 })
-        // PLAN-RESTE 5.4 (control 5): the sound line the tester reads says it (the guard T4-01 waits for).
-        assertTrue("the sound line says every block stopped: $said", "tous les blocs Live sont arrêtés" in said)
+        // Step 4, n° 7 (4A, T4-01): the blocks stopped on their line, and the transport with them: the bars and time stop too.
+        assertFalse("« ■ Tout » stops the transport once every block stopped", vm.transport.value.playing)
+        val g = vm.liveGrid.value
+        assertTrue("nothing waits nor plays: $g", g == null || !g.hasPending && (0 until com.pocketstudio.model.LiveSlots.COUNT).all { g.slot(it).playing == -1 })
+        // PLAN-RESTE 5.4 (control 5): the sound line the tester reads says it: nothing of the project plays any more.
+        assertTrue("the sound line says the music stopped: $said", "musique du projet" !in said && "morceau joue" !in said && "le tempo tourne" !in said)
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 

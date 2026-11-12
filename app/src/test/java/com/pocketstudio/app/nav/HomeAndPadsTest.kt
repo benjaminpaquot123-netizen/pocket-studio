@@ -144,7 +144,7 @@ class HomeAndPadsTest {
         h.start(simple = true)
         // A page of the project first (« Ma voix »): Retour closes it.
         tap("top_more")
-        tap("more_voice")
+        tap("plus_voice")
         back()
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
         assertFalse(exists("launch"))
@@ -166,8 +166,8 @@ class HomeAndPadsTest {
     fun theSimpleMenuLeadsHome() {
         h.start(simple = true)
         tap("top_more")
-        compose.onNodeWithTag("more_remix").assertTextContains("Remix")
-        tap("more_home")
+        compose.onNodeWithTag("plus_remix").assertTextContains("Remix")
+        tap("plus_home")
         compose.onNodeWithTag("launch").assertIsDisplayed()
         tap("launch_continue")
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()

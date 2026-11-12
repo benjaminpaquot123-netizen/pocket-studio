@@ -140,7 +140,7 @@ fun PadLiveRoute(
                 setBeats = vm::setLiveBeats,
                 setGain = vm::setLiveGain,
                 clear = vm::clearLive,
-                stopAll = vm::stopLive,
+                stopAll = vm::cutEverything,
                 filter = { x -> vm.livePerformance(AutoTarget.LIVE_FILTER, x ?: AutoTarget.liveRest(AutoTarget.LIVE_FILTER)) },
                 echo = { on -> vm.liveHold(AutoTarget.LIVE_ECHO_OUT, on) },
                 resonance = { r -> vm.livePerformance(AutoTarget.LIVE_RESONANCE, r ?: AutoTarget.liveRest(AutoTarget.LIVE_RESONANCE)) },

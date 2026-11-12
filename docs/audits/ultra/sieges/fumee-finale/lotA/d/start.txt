@@ -1,0 +1,7 @@
+lang=de
+device=phone
+font=200
+mode=simple
+gestes.max=40
+mission=libre
+timeout.minutes=30

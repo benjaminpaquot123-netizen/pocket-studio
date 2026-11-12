@@ -3,6 +3,7 @@ package com.pocketstudio.app.nav
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -127,10 +128,15 @@ open class NavScreenshotTest {
         h.vm.session.edit { com.pocketstudio.model.guide.GuideStart.begin(houseSong(), com.pocketstudio.model.guide.GuideStart.SONG) }
         awaitGuide("guide_card_start.ready")
     }
-    /** Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? » (the last choice marked). */
+    /**
+     * Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? ». Since 3A (tour 5, chantier 5)
+     * only before a first choice: no mark then.
+     */
     @Test fun modeStep() = shot("mode_step") {
-        com.pocketstudio.app.settings.ProjectModes.choose(h.app, false)
         tap("top_projects"); tap("project_new"); tap("start_empty")
+        // Review of tour 5, chantier 5: the 130 % and tablet baselines had been recorded while the step was skipped
+        // (a blank screen, « Mes projets »); the capture is of the step or the test fails.
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
     }
     /** « J'apprends »: the same step, each card saying the tutorial's level it gives. */
     @Test fun modeStepLearn() = shot("mode_step_learn", simple = true) {
@@ -183,7 +189,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
             "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "help_labels_simple", "launch", "launch_simple",
-            "sheet_pad", "sheet_share", "mode_step", "mode_switch",
+            "sheet_pad", "sheet_share", "mode_step", "mode_switch", "simple_more",
         )
     }
 }

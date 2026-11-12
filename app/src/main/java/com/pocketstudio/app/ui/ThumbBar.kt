@@ -21,15 +21,10 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -48,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
-import com.pocketstudio.ui.ScaledDropdownMenu
 
 /** What the thumb's bar shows: the same state as the top bar's ▶, ↶ and ↷, and the tempo. */
 class ThumbBarUi(
@@ -67,8 +61,8 @@ class ThumbBarActions(
     val redo: () -> Unit,
     val togglePlay: () -> Unit,
     val tempo: () -> Unit,
-    /** The Mode simple: the top bar's « ⋯ » (Remix, Mes projets, Réglages, the Pro…) at the thumb too; null: ⤴ Partager. */
-    val more: List<TopMenuItem>?,
+    /** The Mode simple: the top bar's « ⋮ » at the thumb too, the Plus page (tour 5, chantier 5); null: ⤴ Partager. */
+    val more: (() -> Unit)?,
     val share: () -> Unit,
 )
 
@@ -131,15 +125,7 @@ fun ThumbBar(
         }
         val more = actions.more
         if (more != null) {
-            Box(share) {
-                var open by remember { mutableStateOf(false) }
-                ThumbButton(Icons.Filled.MoreVert, tr("Plus"), tr("Plus de choix"), true, "thumb_more") { open = true }
-                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("thumb_more_menu")) {
-                    more.forEach { item ->
-                        DropdownMenuItem(text = { Text(item.label) }, onClick = { open = false; item.onClick() }, modifier = Modifier.testTag("thumb_${item.tag}"))
-                    }
-                }
-            }
+            ThumbButton(Icons.Filled.MoreVert, tr("Plus"), tr("Plus de choix"), true, "thumb_more", share, more)
         } else {
             ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", share, actions.share)
         }

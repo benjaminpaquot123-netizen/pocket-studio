@@ -74,6 +74,12 @@ LiveRemixCellScreenshotTest.remixCells	HELP	12	premier passage 2026-11-04 : pas 
 LiveRemixCellScreenshotTest.remixCells	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
 LiveRemixCellScreenshotTest.remixMenu	HELP	14	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 LiveRemixCellScreenshotTest.remixMenu	CONTRAST	7	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
+LyingSheetsScreenshotTest.keyAt130	HELP	20	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que TutoKeySheet debout sur un téléphone couché ; les 12 notes et les gammes par leur nom, « Fermer », pas encore triés « évident / à expliquer »
+LyingSheetsScreenshotTest.takeAt130	HELP	3	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que la prise de Pad Live sur un téléphone couché ; trois boutons qui disent ce qu'ils font (Sur le pad vide, Dans une brique du Live, Jeter la prise)
+LyingSheetsScreenshotTest.tempo	HELP	19	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que ScreenshotTest.tempoSheet (19) sur un téléphone couché ; les mêmes 19 contrôles (chiffres, OK, tempos prêts, − +, Fermer), pas encore triés « évident / à expliquer »
+LyingSheetsScreenshotTest.tempoAt130	HELP	19	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que ScreenshotTest.tempoSheet (19) sur un téléphone couché ; les mêmes 19 contrôles (chiffres, OK, tempos prêts, − +, Fermer), pas encore triés « évident / à expliquer »
+LyingSheetsScreenshotTest.tempoAt130Scrolled	HELP	19	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que ScreenshotTest.tempoSheet (19) sur un téléphone couché ; les mêmes 19 contrôles (chiffres, OK, tempos prêts, − +, Fermer), pas encore triés « évident / à expliquer »
+LyingSheetsScreenshotTest.tempoBigText	HELP	19	lot « access » (2026-11-11) : nouvelle capture du chantier 9, la même feuille que ScreenshotTest.tempoSheet (19) sur un téléphone couché ; les mêmes 19 contrôles (chiffres, OK, tempos prêts, − +, Fermer), pas encore triés « évident / à expliquer »
 MasterProScreenshotTest.masterDe	HELP	1	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 MasterProScreenshotTest.masterDe	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
 MasterProScreenshotTest.masterFr	HELP	1	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
@@ -347,7 +353,7 @@ ScreenshotTest.playPanel	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG
 ScreenshotTest.playStrip	HELP	13	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projects	HELP	21	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projects	CONTRAST	2	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
-ScreenshotTest.projectsNew	HELP	4	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
+ScreenshotTest.projectsNew	HELP	9	premier passage 2026-11-04 : pas encore trié ; tour 5 chantier 6 : + les cinq styles en une touche (one_touch_*), leur nom dit ce qu'ils font
 ScreenshotTest.projectsNewPreparing	HELP	10	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projectsTrash	HELP	12	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.quickFx	HELP	24	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
@@ -474,7 +480,7 @@ TutoScreenshotTest.kitOffer	HELP	10	premier passage 2026-11-04 : pas encore tri�
 TutoScreenshotTest.kitOffer	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
 TutoScreenshotTest.listenedNext	HELP	8	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 TutoScreenshotTest.listenedNext	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
-TutoScreenshotTest.newProject	HELP	4	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
+TutoScreenshotTest.newProject	HELP	9	premier passage 2026-11-04 : pas encore trié ; tour 5 chantier 6 : + les cinq styles en une touche (one_touch_*), leur nom dit ce qu'ils font
 TutoScreenshotTest.stepFacile	HELP	9	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 TutoScreenshotTest.stepFacile	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
 TutoScreenshotTest.stepNeedsBars	HELP	9	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
@@ -499,3 +505,6 @@ WriteScreenshotTest.trackFrozen	TARGET	19	premier passage 2026-11-04 : cible sou
 TutoAppScreenshotTest.snareOnTheGrid	CONTRAST	3	tour 1 (2026-11-04, intégration) : n° 34, le fondu voulu sous « Partie : A » couvre le haut de la carte défilée (« PAS : CAISSE », « ? », « Tous les pads »)
 SimpleMixScreenshotTest.mixMuet	HELP	30	tour 5 restes (2026-11-11) : le même écran que SimpleMixScreenshotTest.mix (un curseur au plus bas pour « Muet ») : mêmes contrôles sans « ? », barres du haut et du pouce, onglets
 SimpleMixScreenshotTest.mixMuet	CONTRAST	1	tour 5 restes (2026-11-11) : « Sortie » 4,33:1, le même texte que sur le Mix (reste de AUDIT-1)
+ScreenshotTest.automationNewCurve	HELP	16	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automation (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
+ScreenshotTest.automationPickerHasCurve	HELP	10	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automationPicker (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
+ScreenshotTest.effectsSpotSend	HELP	2	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.effectsFull (les deux envois) (aucun contrôle nouveau), pas encore triés « évident / à expliquer »

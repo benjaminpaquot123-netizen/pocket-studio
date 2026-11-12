@@ -110,12 +110,23 @@ void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
     if (slot < 0 || slot >= kSlots) return;
     Slot& s = slots_[static_cast<size_t>(slot)];
     if (!s.sample) return;
-    if (s.state == Playing && !s.oneShot) {
+    // R.7 (T5-PADRETRIG, recette tel-17): the transport stopped and no other pad on, a hit sounds at once, each touch (a
+    // rhythm kept by ear): never on the next beat line of the clock it started, never cancelled by the next touch. Still
+    // sounding, it starts over (render() fades the old pass under it). Other pads on: on their beat, as before.
+    const bool alone = idleClock && std::none_of(slots_.begin(), slots_.end(), [&s](const Slot& o) { return &o != &s && o.state != Off; });
+    if (s.oneShot && alone) {
+        if (s.state == Off) beat_ = 0.0;  // nothing on: the clock starts over with it
+        s.startBeat = beat_;
+        s.velocity = std::isfinite(velocity) && velocity > 0.0f ? std::min(velocity, 1.0f) : 1.0f;
+        s.state = Waiting;  // render() starts it on its next frame
+    } else if (s.state == Playing && !s.oneShot) {
         stopSlot(s);
+    } else if (s.state == Waiting && s.oneShot && idleClock) {
+        // R.7: a hit waiting for the other pads' beat is not cancelled by a touch again: it still comes on that beat.
     } else if (s.state == Waiting) {
         s.state = Off;
     } else {
-        // A one-shot that is still sounding is simply hit again on the grid.
+        // A one-shot (still sounding or not) with other pads on or the transport playing: hit again on the grid.
         if (idleClock && std::none_of(slots_.begin(), slots_.end(), [](const Slot& o) { return o.state != Off; })) beat_ = 0.0;
         const double grid = gridOf(s);
         s.startBeat = std::ceil(beat_ / grid - 1e-9) * grid;

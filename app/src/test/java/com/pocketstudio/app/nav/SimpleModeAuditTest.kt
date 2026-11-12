@@ -47,7 +47,7 @@ class SimpleModeAuditTest {
     fun theVoiceHasItsWayIn() {
         h.start(simple = true)
         tap("top_more")
-        tap("more_voice")
+        tap("plus_voice")
         compose.onNodeWithTag("simple_audio_title").assertTextContains("Ma voix")
         compose.onNodeWithTag("audio_tracks").assertExists()
         assertFalse(exists("remix_start"))
@@ -58,7 +58,7 @@ class SimpleModeAuditTest {
         compose.onNodeWithTag("tab_simple_Morceau").assertIsSelected()
         // And the Remix still opens alone.
         tap("top_more")
-        tap("more_remix")
+        tap("plus_remix")
         compose.onNodeWithTag("remix_start").assertExists()
         compose.onNodeWithTag("simple_audio_title").assertTextContains("Remix")
     }
@@ -165,7 +165,7 @@ class SimpleModeAuditTest {
         }
         org.robolectric.Shadows.shadowOf(h.app).denyPermissions(android.Manifest.permission.RECORD_AUDIO)
         tap("top_more")
-        tap("more_voice")
+        tap("plus_voice")
         val id = h.vm.project.value.audioTracks.first().id
         compose.onNodeWithTag("audio_punch_$id").performScrollTo().performClick()
         compose.waitForIdle()
@@ -180,7 +180,7 @@ class SimpleModeAuditTest {
         val am = h.app.getSystemService(android.app.ActivityManager::class.java)
         org.robolectric.Shadows.shadowOf(am).setMemoryInfo(android.app.ActivityManager.MemoryInfo().apply { totalMem = 8L shl 30; availMem = 4L shl 30 })
         tap("top_more")
-        tap("more_remix")
+        tap("plus_remix")
         compose.onNodeWithTag("remix_download").performScrollTo().performClick()
         compose.waitForIdle()
         // Audit ultra round 2, n° 31: on mobile data (Robolectric's network) the 174 MB are asked first; nothing yet.

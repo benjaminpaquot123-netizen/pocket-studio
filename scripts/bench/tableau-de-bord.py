@@ -55,7 +55,8 @@ def measured(tour_dir, name, root=None, docs=None):
     fichiers_non_commites (git status, submodule type changes aside), relecture_bloquants/graves (the round's
     *-relecture.md tables, rows not « corrigé »), corrections_sans_test (commits of the round's eq/<tour>-* branches
     touching app/src/main without app/src/test), lots_non_joues (sieges.tsv seats without mesures.json),
-    sieges_joues and sieges_coupes_par_le_banc (mesures.json: no end, or an end that is the bench's).
+    sieges_joues and sieges_coupes_par_le_banc (mesures.json: no end, or an end that is the bench's), cases_vides and
+    ecrans_non_analyses (carte-ecrans.tsv × the journals' routes and the round's ecrans-oeil-neuf.txt, PLAN-RESTE 6.5).
     root (the repository) and docs (the folder of the *-relecture.md) default to this repository's (PLAN-RESTE 6.4:
     given by the test)."""
     out = {}
@@ -68,8 +69,11 @@ def measured(tour_dir, name, root=None, docs=None):
     status = git("status", "--porcelain")
     if status is not None:
         # The audit's own outputs (this round's folder, the base) are written by the fusion just before: not « work left ».
+        # Dry run 7.6: nor what the portal is about to commit with them (PS_PORTAIL_ECRIT: its trace folder, docs/DECISIONS.md).
+        portal = tuple(p.rstrip("/") for p in os.environ.get("PS_PORTAIL_ECRIT", "").split() if p)
         out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T")
-                                           and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv"))
+                                           and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv")
+                                           and not any(l[3:].rstrip("/") == p or l[3:].startswith(p + "/") for p in portal))
     # The bench's own reviews (*-banc*-relecture.md) are not the app's.
     reviews = [os.path.join(docs, f) for f in sorted(os.listdir(docs)) if f.startswith(name + "-") and f.endswith("-relecture.md")
                and "-banc" not in f] if os.path.isdir(docs) else []
@@ -91,6 +95,22 @@ def measured(tour_dir, name, root=None, docs=None):
                     untested += 1
         if untested is not None:
             out["corrections_sans_test"] = untested
+    # PLAN-RESTE 6.5: the code map's screens (carte-ecrans.tsv, from docs/CARTE-CODE.md) no route of the round's journals
+    # reaches (a route's page, tab or dialogue tag), and those the « œil neuf » pass (AUDIT-ULTRA §12.11, the round's
+    # ecrans-oeil-neuf.txt) did not analyse. No map: no number.
+    screens = [l.split("\t")[0].strip() for l in read(os.path.join(docs, "carte-ecrans.tsv")).splitlines()
+               if l.strip() and not l.startswith(("#", "ecran\t"))]
+    if screens:
+        reached = set()
+        for jroot, _, files in os.walk(tour_dir):
+            if "journal.txt" in files:
+                for route in re.findall(r"^#\d+ ROUTE ([^|\n]+)", read(os.path.join(jroot, "journal.txt")), re.M):
+                    reached |= {seg.strip() for seg in re.split(r"[/:]", route)}
+        empty = [sc for sc in screens if sc not in reached]
+        out["cases_vides"] = len(empty)
+        analysed = {l.strip() for l in read(os.path.join(tour_dir, "ecrans-oeil-neuf.txt")).splitlines() if l.strip() and not l.startswith("#")}
+        out["ecrans_non_analyses"] = sum(1 for sc in screens if sc not in analysed)
+        out["ecrans_vides_noms"] = ", ".join(empty)
     planned = [l.split("\t")[:2] for l in read(os.path.join(tour_dir, "sieges.tsv")).splitlines()
                if l.strip() and not l.startswith(("lot\t", "#"))]
     played, cut = 0, 0
@@ -215,11 +235,12 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
          "0, 0, 0, 0", yes(all_zero("relecture_bloquants", "relecture_graves", "corrections_sans_test", "fichiers_non_commites"))),
         ("H", "Hors banc : CI build + émulateur, points rouges de la recette téléphone", f"{hb.get('ci_build', '?')}/{hb.get('ci_emulateur', '?')}, {hb.get('recette_points_rouges', '?')}",
          "vert/vert, 0", yes(None if ci_ok is None or num(hb, "recette_points_rouges") is None else ci_ok and num(hb, "recette_points_rouges") == 0)),
-        ("I", "Couverture : cases vides, lots non joués, sièges joués / coupés par le banc",
-         f"{hb.get('cases_vides', '?')}, {hb.get('lots_non_joues', '?')}, {hb.get('sieges_joues', '?')} / {hb.get('sieges_coupes_par_le_banc', '?')}",
-         "0, 0, ≥ 16 / ≤ 3", yes(None if any(num(hb, k) is None for k in ("cases_vides", "lots_non_joues", "sieges_joues", "sieges_coupes_par_le_banc"))
-                          else num(hb, "cases_vides") == 0 and num(hb, "lots_non_joues") == 0 and num(hb, "sieges_joues") >= 16
-                          and num(hb, "sieges_coupes_par_le_banc") <= 3)),
+        ("I", "Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc",
+         f"{hb.get('cases_vides', '?')}{' (' + hb['ecrans_vides_noms'] + ')' if hb.get('ecrans_vides_noms') else ''}, {hb.get('ecrans_non_analyses', '?')}, "
+         f"{hb.get('lots_non_joues', '?')}, {hb.get('sieges_joues', '?')} / {hb.get('sieges_coupes_par_le_banc', '?')}",
+         "0, 0, 0, ≥ 16 / ≤ 3", yes(None if any(num(hb, k) is None for k in ("cases_vides", "ecrans_non_analyses", "lots_non_joues", "sieges_joues", "sieges_coupes_par_le_banc"))
+                          else num(hb, "cases_vides") == 0 and num(hb, "ecrans_non_analyses") == 0 and num(hb, "lots_non_joues") == 0
+                          and num(hb, "sieges_joues") >= 16 and num(hb, "sieges_coupes_par_le_banc") <= 3)),
         hidden_row(caches or os.path.join(DOCS, "defauts-caches.tsv")),
     ]
     curve = {"tour": name, "sieges": len(seats), "fiches": defects, "fiches_par_siege": round(defects / max(1, len(seats)), 1),

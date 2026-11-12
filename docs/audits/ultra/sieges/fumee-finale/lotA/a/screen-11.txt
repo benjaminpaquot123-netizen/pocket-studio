@@ -1,0 +1,42 @@
+Écran 11 (540x1170)
+icône (dossier ouvert) ✓ « Lo-fi hip-hop सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 84  टेम्पो » @ 67,123
+icône (flèches en boucle) « इंट्रो बार 3/4 » ▾ @ 206,123
+bouton « ? » @ 495,123
+titre « मेरे ट्रैक्स » [état « खुला हुआ »] @ 104,222
+texte « किसी ट्रैक की आवाज़ बदलने के लिए उसके नाम पर टैप करो; अकेले सुनने के लिए ▶। » @ 270,288
+bouton « ड्रम्स साउंड बदलो » › @ 195,378
+bouton ▶ @ 387,378
+icône (curseurs) @ 462,378
+bouton « बेस साउंड बदलो » › @ 195,488
+bouton ▶ @ 387,488
+icône (curseurs) @ 462,488
+bouton « पियानो साउंड बदलो » › @ 195,598
+bouton ▶ @ 387,598
+icône (curseurs) @ 462,598
+bouton « मेलोडी साउंड बदलो » › @ 195,708
+bouton ■ [sélectionné] @ 387,708
+icône (curseurs) @ 462,708
+titre « गाना » [coupé, état « खुला हुआ »] @ 108,828
+bouton « ? » [coupé] @ 153,828
+image ✓ @ 54,786
+texte « कैंसल » @ 465,786
+texte « नई आवाज़: FM Rhodes » @ 241,786
+bouton (boussole) « गाइड  · एक मेलोडी रिकॉर्ड करो 26 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » @ 88,951
+bouton ■ « गाना » @ 211,951
+texte « 84 टेम्पो » @ 335,951
+icône ⋮ « और » @ 458,951
+onglet (lignes et note) « मेरा गाना » [sélectionné] @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

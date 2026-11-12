@@ -101,6 +101,28 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
     }
 
     /**
+     * Socle du banc, point 1: the Guide's bar says where the song is once its analysis (a worker thread, real time) is
+     * done; before, it says « Guide » alone. A capture taken under a loaded full suite caught it still loading (the
+     * « unstable » rhythm_scrolled_under_part and remix_stem_edit_menu): wait for its line before an image.
+     * Nothing to wait for when no Guide bar shows.
+     */
+    fun awaitGuide(timeoutMs: Long = 20_000) {
+        val end = System.currentTimeMillis() + timeoutMs
+        fun loaded(): Boolean {
+            if (compose.onAllNodesWithTag("guide_bar", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) return true
+            return compose.onAllNodesWithTag("guide_bar_step", useUnmergedTree = true).fetchSemanticsNodes().any { n ->
+                n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }.any { it.text.isNotBlank() }
+            }
+        }
+        while (!loaded()) {
+            check(System.currentTimeMillis() < end) { "the Guide still loading after $timeoutMs ms" }
+            Thread.sleep(50)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            compose.waitForIdle()
+        }
+    }
+
+    /**
      * Step 5c: « Mettre dans mon projet » on the song's import screen, once it shows and its parts
      * are read (the button waits for them): the song goes in with the screen's own choices.
      */

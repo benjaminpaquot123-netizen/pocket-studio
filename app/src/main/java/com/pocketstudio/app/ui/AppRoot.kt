@@ -620,6 +620,8 @@ fun AppRoot() {
     }
     // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
     var fxChannel by rememberSaveable { mutableStateOf(-1) }
+    // Chantier 8: the control « Voir le réglage » leads to in that sheet (opened on it, framed), null: none.
+    var fxSpot by remember { mutableStateOf<com.pocketstudio.model.AutoTarget?>(null) }
     if (fxChannel >= 0) {
         val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
         val channel = fxProject.mixer.channels.getOrNull(fxChannel)
@@ -631,7 +633,7 @@ fun AppRoot() {
                 com.pocketstudio.model.DefaultNames.shown(mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste")
             }
             ScaledAlertDialog(
-                onDismissRequest = { fxChannel = -1 },
+                onDismissRequest = { fxChannel = -1; fxSpot = null },
                 // The whole width of the phone: everything seen at once, nothing to scroll for.
                 properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
                 modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp),
@@ -639,10 +641,12 @@ fun AppRoot() {
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                         // The same box as under every sound (Synthé, Acide), here whole: pad XY, macros and sends too.
-                        com.pocketstudio.app.mixer.EffectsBox(fxChannel, channel, effectsActions(rhythmVm))
+                        androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.mixer.LocalControlSpot provides fxSpot?.takeIf { it.ch == fxChannel }) {
+                            com.pocketstudio.app.mixer.EffectsBox(fxChannel, channel, effectsActions(rhythmVm))
+                        }
                     }
                 },
-                confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
+                confirmButton = { TextButton(onClick = { fxChannel = -1; fxSpot = null }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
             )
         }
     }
@@ -715,6 +719,9 @@ fun AppRoot() {
             }
         }
     }
+    // Tour 5, chantier 5 (3A): the assistant's « Changer » of the song's mode.
+    var wizardModeAsk by rememberSaveable(key = "wizard_mode_ask") { mutableStateOf(false) }
+    LaunchedEffect(wizardUi.open) { if (!wizardUi.open) wizardModeAsk = false }
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -761,9 +768,18 @@ fun AppRoot() {
                         create = { wizardCreate(false) },
                         // Audit ultra round 2 (n° 12): the style's song with the advised choices, playing as it opens.
                         playNow = { id -> libraryVm.chooseStyle(id); wizardCreate(true) },
+                        // Tour 5, chantier 5 (3A): the song's mode said, « Changer » asks « Simple ou Pro ? » for it.
+                        mode = simple,
+                        changeMode = { wizardModeAsk = true },
                     ),
                     preparing = preparing,
                 )
+                if (wizardModeAsk) {
+                    com.pocketstudio.app.ui.ModeStepDialog(
+                        choose = { v -> wizardModeAsk = false; com.pocketstudio.app.settings.ProjectModes.choose(context, v) },
+                        back = { wizardModeAsk = false },
+                    )
+                }
               }
             }
         }
@@ -874,12 +890,14 @@ fun AppRoot() {
                             launch.settled()
                             com.pocketstudio.app.remix.SeparationJob.requestOpen()
                         }),
-                        // A style's whole song in one touch: the assistant's own song, its guide after.
+                        // A style's whole song in one touch: the assistant's own song, its guide after. Hands-on audit G11
+                        // (« un morceau complet, prêt à écouter »): it plays as it opens, as « Créer et écouter » does.
                         quickStyle = { id ->
                             rhythmVm.stop()
                             libraryVm.quickCreate(id) { project, sounds, guide ->
                                 projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::quickFailed) { newId ->
                                     com.pocketstudio.app.rhythm.PendingNotice.put(newId, libraryVm.takeCreatedNotice())
+                                    com.pocketstudio.app.rhythm.PendingNotice.playOnOpen(newId)
                                     guideOpen = true
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
@@ -1272,6 +1290,8 @@ fun AppRoot() {
         tab = t
     }
     var toolPage by rememberSaveable { mutableStateOf<ToolPage?>(null) }
+    // Tour 5, chantier 5: the screen the Mode simple's Plus page was opened from, its « ← Retour » goes back there.
+    var plusFrom by rememberSaveable { mutableStateOf(AppTab.Morceau) }
     // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
     // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
     // Owner (2026-10-29): the space the Remix was opened from (a menu, the Guide, a card), for its « ← » in Pro.
@@ -1623,8 +1643,7 @@ fun AppRoot() {
         }
     }
     modeAsk?.let { way ->
-        com.pocketstudio.app.ui.ModeStepDialog(
-            choose = { v ->
+        val startIn: (Boolean) -> Unit = { v ->
                 modeAsk = null
                 com.pocketstudio.app.settings.ProjectModes.choose(context, v)
                 when (way) {
@@ -1662,10 +1681,16 @@ fun AppRoot() {
                     }
                     START_TUTO -> { toolPage = null; tutoChooserOpen = true }
                 }
-            },
-            back = { modeAsk = null },
-            tuto = way == START_TUTO,
-        )
+        }
+        // Benjamin's answer 3A (tour 5, chantier 5): once a mode was chosen, a new song takes it without asking (the top
+        // bar's chip and the assistant's « Changer » change it). « J'apprends » still asks: there the mode is the
+        // tutorial's level.
+        val known = remember(way) { if (way == START_TUTO) null else com.pocketstudio.app.settings.ProjectModes.last(context) }
+        if (known != null) {
+            LaunchedEffect(way) { startIn(known) }
+        } else {
+            com.pocketstudio.app.ui.ModeStepDialog(choose = startIn, back = { modeAsk = null }, tuto = way == START_TUTO)
+        }
     }
     // Owner (2026-10-29): each project keeps its mode. On its own screens (no start under way) the
     // open project's mode is shown, and a change of mode made there is kept with it; a mode chosen
@@ -2219,31 +2244,13 @@ fun AppRoot() {
         step = { if (com.pocketstudio.engine.NativeEngine.isAvailable) com.pocketstudio.engine.NativeEngine.absoluteStep() else -1 },
         bpm = { breathProject.value.tempoBpm.toFloat() },
     )
-    // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ » (the top bar's, and the thumb's bar's, n° 21).
-    val simpleMore: List<TopMenuItem>? = if (!simple) null else listOf(
-        TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
-        // Audit final (03 G4): the voice has its own way in the Mode simple.
-        TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
-        // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
-        // (Rythme's button is below the fold there: a scroll made it 4).
-        TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
-            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
-        },
-        // Audit ultra round 2, zone 1, n° 7 (seat A b looked for « Ma bibliothèque » by its name): the sounds kept, one touch away.
-        TopMenuItem(tr("Ma bibliothèque"), "more_mine") {
-            libraryLive = -1; libraryMine = true; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
-        },
-        // Owner (2026-10-29): « Remix », its name everywhere else.
-        TopMenuItem(tr("Remix"), "more_remix", openRemix),
-        // Audit final (05): the long press on the name was the only way to rename the song.
-        TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
-        TopMenuItem(tr("Accueil"), "more_home", goHome),
-        TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
-        TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
-        TopMenuItem(tr("Aide"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
-        TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
-        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
-    )
+    // Mode simple: « Partager » is a tab; the rest of the app on the Plus page, the same as Pro's (tour 5, chantier 5, G15:
+    // a menu of twelve bare lines without the Recette before), from the top bar's ⋮ and the thumb's « Plus » (n° 21).
+    val simpleMore: (() -> Unit)? = if (!simple) null else ({
+        if (tab != AppTab.Outils) plusFrom = tab
+        toolPage = null
+        go(AppTab.Outils)
+    })
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots, com.pocketstudio.ui.LocalBreath provides breath) {
     // A new mode draws every screen again (their names and words change; the project does not).
     androidx.compose.runtime.key(simple) {
@@ -2571,7 +2578,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         edit = { liveEditing = it },
                         setSize = rhythmVm::setLiveSize,
                         library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
@@ -2606,7 +2613,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         setSize = rhythmVm::setLiveSize,
                         edit = { liveEditing = it },
                         import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
@@ -2778,7 +2785,7 @@ fun AppRoot() {
                                 liveActions = LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                                     tap = rhythmVm::toggleLive,
-                                    stopAll = rhythmVm::stopLive,
+                                    stopAll = rhythmVm::cutEverything,
                                     setSize = rhythmVm::setLiveSize,
                                     edit = { liveEditing = it },
                                     import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
@@ -3238,7 +3245,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                             t.kind == com.pocketstudio.model.AutoTarget.ACID -> { acidFocus = t.param; tab = AppTab.Acide }
                                             t.kind == com.pocketstudio.model.AutoTarget.BUS_PARAM -> mixerFocus = com.pocketstudio.app.mixer.Where.Buses
                                             t.ch == com.pocketstudio.model.Mixer.MASTER -> mixerFocus = com.pocketstudio.app.mixer.Where.Master
-                                            else -> fxChannel = t.ch
+                                            else -> { fxSpot = t; fxChannel = t.ch }
                                         }
                                     },
                                 ),
@@ -3635,12 +3642,24 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 bugReport = { reportBug("Plus") },
                                 simple = simple,
                                 setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+                                // Tour 5, chantier 5 (G15): what the Mode simple's old ⋮ menu held, as cards.
+                                simpleWays = SimplePlusWays(
+                                    live = openLive,
+                                    remix = openRemix,
+                                    voice = openVoice,
+                                    // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone.
+                                    library = { libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true },
+                                    // Audit ultra round 2, zone 1, n° 7 (seat A b looked for « Ma bibliothèque » by its name).
+                                    mine = { libraryLive = -1; libraryMine = true; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true },
+                                ),
                             ),
                             page = toolPage,
                             open = { page -> toolPage = page; ToolPage.save(context, page) },
-                            // Lot 2: the Mode simple has no Plus: « ← Retour » goes back to the song.
-                            back = { toolPage = null; if (simple) go(AppTab.Morceau) },
-                            backLabel = if (simple) tr("Retour") else null,
+                            // « ← Plus » of a page: back on the list, in both modes (tour 5, chantier 5).
+                            back = { toolPage = null },
+                            // The Mode simple has no Plus space: the list's « ← Retour » goes back where its ⋮ was touched.
+                            leave = if (simple) ({ toolPage = null; go(plusFrom.takeIf { it != AppTab.Outils } ?: AppTab.Morceau) }) else null,
+                            tiles = simple,
                             widePage = ToolPage.load(context),
                         ) { shownPage ->
                             when (shownPage) {

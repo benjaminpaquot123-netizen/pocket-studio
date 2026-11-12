@@ -2,6 +2,8 @@ package com.pocketstudio.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -95,7 +97,13 @@ fun scaledConfiguration(base: Configuration, scale: Float): Configuration = Conf
     densityDpi = (base.densityDpi * scale).toInt()
 }
 
-/** Material's ModalBottomSheet at the interface size (its handle and its content). */
+/**
+ * Material's ModalBottomSheet at the interface size (its handle and its content).
+ *
+ * [scrolls]: the content scrolls when the sheet is taller than the screen (a phone lying down, the interface at
+ * 130 %; hands-on audit G10, rule 22 of docs/DESIGN.md), under [header], which stays (title, value, « Fermer »).
+ * Off for a content that scrolls itself (a LazyColumn cannot sit in a vertical scroll).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaledBottomSheet(
@@ -103,6 +111,8 @@ fun ScaledBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     containerColor: Color = BottomSheetDefaults.ContainerColor,
+    scrolls: Boolean = false,
+    header: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
@@ -117,7 +127,12 @@ fun ScaledBottomSheet(
         RescaledWindow {
             Column(Modifier.fillMaxWidth()) {
                 SheetHandle(Modifier.align(Alignment.CenterHorizontally))
-                content()
+                header?.invoke(this)
+                if (scrolls) {
+                    Column(Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState()), content = content)
+                } else {
+                    content()
+                }
             }
         }
     }

@@ -230,8 +230,12 @@ def main():
         proof_must_run(d)
         portal(d)
         review_rows(d)
+        replays_keep_their_selftest(d)
         fusion_forged(d)
+        toy_batch_is_its_own(d)
         portal_traces(d)
+        zone_report(d)
+        portal_recomputes(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
@@ -253,7 +257,11 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         same_button(d)
     with tempfile.TemporaryDirectory() as d:
+        fixed_button_comeback(d)
+    with tempfile.TemporaryDirectory() as d:
         measured_numbers(d)
+    with tempfile.TemporaryDirectory() as d:
+        empty_cases(d)
     print("ultra bench scripts: OK")
 
 
@@ -301,6 +309,29 @@ def same_button(d):
     check(", 0 même bouton, " in text, "none counted:\n" + text)
 
 
+def fixed_button_comeback(d):
+    """PLAN-RESTE 6.2: A d #21 of round 5 (T1-22, Mes projets) was lost by rule v1: its key changed (another route,
+    another symptom), so it was only a « même bouton ». A « même bouton » whose button was « corrigé » at an earlier
+    round is a « revient ? » candidate; a reader confirms it (« revient ») or refuses it (back to « même bouton »);
+    a button fixed at this round or later, or never fixed, stays « même bouton »."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_BUTTONS)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\tcorrige_au\n"
+                "mixer|padlive_pad_4|perdu\tcorrigé\ttour-2\tT2-01\ttour-2\n"      # fixed at round 2: a candidate at round 5
+                "settings|help_padlive|perdu\tcorrigé\ttour-3\tT5-01\ttour-5\n")   # fixed at round 5 itself: not one
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient ?] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the same button, fixed before: a candidate:\n" + text)
+    check("[même bouton (tour-3)] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "fixed at this round: no candidate:\n" + text)
+    check(", 1 candidat(s) « revient ? » " in text, "counted as a candidate:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\toui\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient] mineur ×1 (A/a#2)" in text, "confirmed by a reader:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\tnon\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[même bouton (tour-2)] mineur ×1 (A/a#2)" in text, "refused by a reader: the same button, another defect:\n" + text)
+
+
 def measured_numbers(d):
     """PLAN-RESTE 6.4: tableau-de-bord.py's measured(), on a repository, a docs folder and a round made here: the
     uncommitted files, the round's reviews (the bench's own aside, « corrigé » rows aside), the fix commits of the
@@ -337,12 +368,62 @@ def measured_numbers(d):
     write(os.path.join(tour, "lotA", "c", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 2}}))
     m = tb.measured(tour, "tour-9", root=repo, docs=docs)
     check(m.get("fichiers_non_commites") == 1, f"one file left behind: {m}")
+    # Dry run 7.6 (casse 3): what the portal writes just before its traces' commit (its trace folder, the index line of
+    # docs/DECISIONS.md, named in PS_PORTAIL_ECRIT) is not « work left »: its dashboard said 2 files uncommitted.
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-10-tour-9-zone0", "fusion.txt"), "fusion: y\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n")
+    git("add", "docs")
+    git("commit", "-q", "-m", "an earlier merge's traces")
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-11-tour-9-zone1", "fusion.txt"), "fusion: x\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n- lot zone1\n")
+    os.environ["PS_PORTAIL_ECRIT"] = "docs/audits/ultra/portail/2026-11-11-tour-9-zone1 docs/DECISIONS.md"
+    try:
+        m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    finally:
+        del os.environ["PS_PORTAIL_ECRIT"]
+    check(m.get("fichiers_non_commites") == 1, f"the portal's own files being committed are not left behind: {m}")
+    m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    check(m.get("fichiers_non_commites") == 3, f"outside the portal they are: {m}")
     check(m.get("relecture_graves") == 1 and m.get("relecture_bloquants") == 1, f"the review's open rows, the bench's review aside: {m}")
     check(m.get("corrections_sans_test") == 1, f"one fix commit without a test on eq/tour-9-*: {m}")
     check(m.get("lots_non_joues") == 1 and m.get("sieges_joues") == 3 and m.get("sieges_coupes_par_le_banc") == 2,
           f"lot B not played; 3 seats played, 2 cut (the bench's end, a freeze): {m}")
     m = tb.measured(tour, "tour-9", root=repo, docs=os.path.join(d, "nowhere"))
     check("relecture_graves" not in m and "relecture_bloquants" not in m, f"no reviews folder: unknown, not 0: {m}")
+
+
+def empty_cases(d):
+    """PLAN-RESTE 6.5: condition I's « cases vides » by program: the screens of docs/CARTE-CODE.md (their page tags in
+    carte-ecrans.tsv) that no journal of the round reaches (a route's page, tab or dialogue), and the screens the « œil
+    neuf » pass (§12.11, the round's ecrans-oeil-neuf.txt) did not analyse; no map: no number (never a 0). Every screen
+    of the real map is a tag of the app (a renamed screen fails here, not silently in the dashboard)."""
+    sys.path.insert(0, HERE)
+    tb = __import__("tableau-de-bord")
+    docs = os.path.join(d, "docs")
+    write(os.path.join(docs, "carte-ecrans.tsv"), "# carte\necran\tfichier\nlaunch\tA/onboarding/LaunchChoice.kt\n"
+          "mixer\tA/mixer/MixerScreen.kt\nprojects\tA/projects/ProjectsScreen.kt\nwizard\tA/library/WizardScreen.kt\n"
+          "recette\tA/recette/RecetteScreen.kt\n")
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "journal.txt"), "#1 ROUTE launch | MODE simple | EMPREINTE a\n#2 ROUTE mixer/tab_Mix | MODE pro\n")
+    write(os.path.join(tour, "lotA", "b", "journal.txt"), "#1 ROUTE dialogue:wizard | MODE simple\n#2 ROUTE dialogue:« Mes projets » | MODE simple\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("cases_vides") == 2, f"projects and recette reached by no journal (« Mes projets » in words is no tag): {m}")
+    check(m.get("ecrans_non_analyses") == 5, f"no « œil neuf » list: 5 screens not analysed: {m}")
+    write(os.path.join(tour, "ecrans-oeil-neuf.txt"), "# analysés\nlaunch\nmixer\nwizard\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("ecrans_non_analyses") == 2 and m.get("ecrans_vides_noms") == "projects, recette",
+          f"two screens left by the pass, named: {m}")
+    m = tb.measured(tour, "tour-9", root=d, docs=os.path.join(d, "nowhere"))
+    check("cases_vides" not in m and "ecrans_non_analyses" not in m, f"no map: unknown, not 0: {m}")
+    real = os.path.join(HERE, "..", "..", "docs", "audits", "ultra", "carte-ecrans.tsv")
+    screens = [l.split("\t")[0] for l in open(real, encoding="utf-8").read().splitlines() if l.strip() and not l.startswith(("#", "ecran\t"))]
+    app = ""
+    for root_dir, _, files in os.walk(os.path.join(HERE, "..", "..", "app", "src", "main", "java")):
+        for f in files:
+            if f.endswith(".kt"):
+                app += open(os.path.join(root_dir, f), encoding="utf-8").read()
+    missing = [s for s in screens if f'"{s}"' not in app]
+    check(len(screens) >= 30 and not missing, f"every screen of the map is a tag of the app ({len(screens)}): missing {missing}")
 
 
 REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
@@ -1547,10 +1628,11 @@ def engine_proof(d):
     check("@KnownDefect K9 (AppProofTest#provesIt) : aucune ligne qui le cite ne porte garde_id K9" in out, "an unknown id in @KnownDefect is a gap:\n" + out)
     check("A : garde_id K1 porté par aucune de ses preuves" in out and "chantier : 2 écarts" in out, "a line's id that no proof carries is a gap:\n" + out)
 
-    # The real cell of T5-PADRETRIG reads as one proof, and the C++ runner says a known defect is one.
+    # The real cell of T5-PADRETRIG reads as one engine proof (the Pad Live lot fixed the defect: the known-defect
+    # test turned into the green padlive_hit_retouched_sounds_at_once), and the C++ runner says a known defect is one.
     repo = os.path.dirname(os.path.dirname(HERE))
     out = run(script, "--root", repo, "--preuves", "T5-PADRETRIG")
-    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#knownDefectPadRetriggerWaitsForTheGrid (known_defect_t5_padretrig)",
+    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#hitRetouchedSoundsAtOnce (padlive_hit_retouched_sounds_at_once)",
           "the engine proof of T5-PADRETRIG is read:\n" + out)
     with open(os.path.join(repo, "engine", "host-tests", "engine_tests.cpp"), encoding="utf-8") as f:
         runner = f.read()
@@ -1803,6 +1885,11 @@ echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
 FUSION_REJEUX = """#!/usr/bin/env bash
 # The fusion's replays on the toy: says which folder it would play.
 echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
+# Like the real one (PLAN-RESTE 7.7): its batch is a lot gated by its own self-test, whose summary, stamp and judge it
+# leaves in $PS_REJEUX_SELFTEST when asked.
+lot="$(mktemp -d)"
+scripts/bench/selftest.sh "$lot" || { echo "selftest rouge : rejeux non joués"; exit 1; }
+[ -z "${PS_REJEUX_SELFTEST:-}" ] || cp "$lot"/selftest* "$PS_REJEUX_SELFTEST"/
 """
 
 
@@ -1865,18 +1952,25 @@ def fusion_toy(d, name):
     bench = os.path.join(root, "scripts", "bench")
     with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
         write(os.path.join(bench, "fusion-equipes.sh"), f.read())
-    for extra in ("relecture-verdict.py",):
+    # Dry run 7.6 (casse 1): the toy's batch is its own (batch 1; a test of batch 2 writes it), never the repository's.
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 1\n")
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "rapport-zone.py"):
         if os.path.isfile(os.path.join(HERE, extra)):
             with open(os.path.join(HERE, extra), encoding="utf-8") as f:
                 write(os.path.join(bench, extra), f.read())
+            if extra.endswith(".sh"):
+                os.chmod(os.path.join(bench, extra), 0o755)
     write(os.path.join(bench, "selftest.sh"), FUSION_SELFTEST)
     write(os.path.join(bench, "rejeu-defauts.sh"), FUSION_REJEUX)
     write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')
     write(os.path.join(bench, "tampon.sh"), "#!/usr/bin/env bash\ncase \"$1\" in verifie) exit 1 ;; esac\n")
     # The judge on the toy: says whether it saw a merge's traces (fusion.txt) in the working tree.
-    write(os.path.join(bench, "verifie-chantier.py"), "import glob, sys\n"
-          "print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
-          "print('chantier : 0 écarts')\n")
+    # (Its functions are the real judge's: rapport-zone.py reads « Classe#méthode » with them.)
+    with open(os.path.join(HERE, "verifie-chantier.py"), encoding="utf-8") as f:
+        judge = f.read().split('\nif __name__ == "__main__":', 1)[0]
+    write(os.path.join(bench, "verifie-chantier.py"), judge + "\n\nif __name__ == \"__main__\":\n    import glob\n"
+          "    print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
+          "    print('chantier : 0 écarts')\n")
     for n in ("fusion-equipes.sh", "selftest.sh", "rejeu-defauts.sh", "gradle-file.sh", "tampon.sh"):
         os.chmod(os.path.join(bench, n), 0o755)
     write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
@@ -1885,6 +1979,69 @@ def fusion_toy(d, name):
     git_toy(root, "add", "scripts", "docs")
     git_toy(root, "commit", "-q", "-m", "toy")
     return root
+
+
+def toy_batch_is_its_own(d):
+    """Dry run 7.6 (casse 1): the toy integration workshop holds its own batch file (« paquet: 1 »), never a copy of
+    the repository's: when the main discussion opened batch 2 (scripts/bench/portail-paquet.txt), the toys' batch-1
+    expectations failed and the self-test went red (« scripts du banc »), so no lot could be played."""
+    root = fusion_toy(d, "fusion-paquet")
+    with open(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), encoding="utf-8") as f:
+        batch = f.read()
+    check(batch == "paquet: 1\n", "the toy's batch file is its own « paquet: 1 », not the repository's:\n" + batch)
+
+
+REPLAY_SELFTEST = """#!/usr/bin/env bash
+# The replays' self-test on the toy: a green summary, its stamp, its judge and one JUnit result in the lot (red on
+# demand, as the real one on the bench's scripts: its log in the lot).
+echo "selftest $1" >> "$PS_TOY_CALLS"
+if [ -n "${PS_TOY_SCRIPTS_RED:-}" ]; then
+  echo "FAIL: the toy's bench script" > "$1/selftest-scripts.log"
+  echo "SELFTEST ROUGE : scripts du banc (voir $1/selftest-scripts.log)" >&2
+  exit 1
+fi
+mkdir -p "$1/junit/banc"
+echo '<testsuite name="BenchFooTest"/>' > "$1/junit/banc/TEST-BenchFooTest.xml"
+printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\n' > "$1/selftest-resume.txt"
+echo "a stamp" > "$1/selftest.ok"
+echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
+"""
+
+REPLAY_SEATS = """#!/usr/bin/env bash
+# The bench on the toy: every seat of the lot holds its oracle.
+for s in "$1"/*/; do [ -f "$s/id.txt" ] && echo "oracle tenu" > "$s/rejeu.txt"; done
+exit 0
+"""
+
+
+def replays_keep_their_selftest(d):
+    """PLAN-RESTE 7.7: rejeu-defauts.sh leaves its first batch's self-test (summary, stamp, judge and JUnit results, all
+    a sealed summary needs) in $PS_REJEUX_SELFTEST, so the portal reads it instead of running the Bench* tests again."""
+    root = os.path.join(d, "rejeux-selftest")
+    with open(os.path.join(HERE, "rejeu-defauts.sh"), encoding="utf-8") as f:
+        write(os.path.join(root, "scripts", "bench", "rejeu-defauts.sh"), f.read())
+    write(os.path.join(root, "scripts", "bench", "selftest.sh"), REPLAY_SELFTEST)
+    write(os.path.join(root, "scripts", "human-tester.sh"), REPLAY_SEATS)
+    for n in ("scripts/bench/rejeu-defauts.sh", "scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+        os.chmod(os.path.join(root, n), 0o755)
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "oracle.txt"), "rejeu.n=0\nrejeu.attendu=x\n")
+    keep = os.path.join(d, "rejeux-selftest-lot")
+    os.makedirs(keep)
+    calls = os.path.join(d, "rejeux-selftest-appels.txt")
+    write(calls, "")
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_REJEUX_SELFTEST=keep))
+    check(r.returncode == 0 and "t1-clavier : oracle tenu" in r.stdout, "the replay is held:\n" + r.stdout + r.stderr)
+    kept = sorted(os.listdir(keep))
+    check(all(f in kept for f in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt", "junit"))
+          and os.path.isfile(os.path.join(keep, "junit", "banc", "TEST-BenchFooTest.xml")),
+          "the replays' self-test is kept for the portal (summary, stamp, judge, JUnit results): " + " ".join(kept))
+    # Dry run 7.6 (casse 4): a red self-test of the bench's scripts says why there, its log being removed with the lot.
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_TOY_SCRIPTS_RED="1"))
+    check(r.returncode != 0 and "FAIL: the toy's bench script" in r.stdout,
+          "the scripts' failure is shown, not only a log removed with the lot:\n" + r.stdout + r.stderr)
 
 
 def fusion_forged(d):
@@ -2003,6 +2160,38 @@ def fusion_forged(d):
     code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
     check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
     check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+    # PLAN-RESTE 7.7: the Bench* self-test runs once per zone: the replays' own (their batch is a lot gated by it), kept
+    # for the portal's traces, not a second one of the portal before them.
+    check(asked.count("selftest ") == 1, "one self-test per merged zone, the replays':\n" + asked)
+    # Socle du banc (review, grave 1 and moyen 2): the lot's decisions file is listed at the end of docs/DECISIONS.md in
+    # the traces' commit; a traces' commit that fails leaves DECISIONS.md as it was (not the index's version).
+    decisions = os.path.join(root, "docs", "DECISIONS.md")
+    write(decisions, "# Décisions\n- 2026-11-11 · une décision\n")
+    git_toy(root, "add", decisions)
+    git_toy(root, "commit", "-q", "-m", "DECISIONS.md")
+    with open(decisions, encoding="utf-8") as f:
+        before_index = f.read()
+
+    def own_decisions(zone):
+        return lambda r: write(os.path.join(r, "docs", "decisions", f"tour-9-{zone}.md"), "- 2026-11-11 · un choix\n- 2026-11-11 · un autre\n")
+    hook = os.path.join(root, ".git", "hooks", "commit-msg")
+    write(hook, '#!/usr/bin/env bash\ngrep -q "^Portal traces" "$1" && exit 1\nexit 0\n')
+    os.chmod(hook, 0o755)
+    branch("decko", own_decisions("decko"), good)
+    code, out, asked, moved = merge("decko")
+    os.remove(hook)
+    dirty = git_toy(root, "status", "--porcelain", "--untracked-files=no").strip()
+    with open(decisions, encoding="utf-8") as f:
+        after = f.read()
+    check(code != 0 and not moved and dirty == "" and after == before_index,
+          "a failed traces' commit leaves DECISIONS.md as it was:\n" + out + "\nstatus: " + dirty + "\n" + after)
+    branch("decok", own_decisions("decok"), good)
+    code, out, asked, moved = merge("decok")
+    last = git_toy(root, "show", "--stat", "--format=%s", "HEAD")
+    head_decisions = git_toy(root, "show", "HEAD:docs/DECISIONS.md")
+    check(code == 0 and moved and "docs/decisions/tour-9-decok.md" in head_decisions and "2 décision(s)" in head_decisions
+          and last.startswith("Portal traces") and "docs/DECISIONS.md" in last,
+          "the lot's decisions file is listed in the traces' commit:\n" + out + "\n" + last + "\n" + head_decisions)
 
 
 def portal_traces(d):
@@ -2088,6 +2277,189 @@ def portal_traces(d):
           "a lot of round 6 without its traces (round 5 is older than the rule):\n" + out)
 
 
+ZONE_TEST = """package t
+
+import org.junit.Test
+
+class FooTest {
+    @Test
+    fun works() {}
+
+    fun helper() {}
+}
+"""
+
+
+def zone_report(d):
+    """PLAN-RESTE 7.1 (from batch 2): fusion-equipes.sh reads the zone's report in the branch
+    (docs/audits/ultra/<tour-N>-<zone>-rapport.md): its « tests: » line gives the team's targeted tests (added to the
+    Gradle filters); without it, refused (exit 7)."""
+    root = fusion_toy(d, "fusion-rapport")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "rapport-appels.txt")
+    write(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), "paquet: 2\n")
+    write(os.path.join(root, "app", "src", "test", "java", "t", "FooTest.kt"), ZONE_TEST)
+    git_toy(root, "add", "scripts", "app")
+    git_toy(root, "commit", "-q", "-m", "batch 2, a test")
+
+    def branch(zone, report=None, change=None):
+        git_toy(root, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "fx-int")
+        write(os.path.join(root, "scripts", "bench", f"{zone}.txt"), "x\n")
+        if change:
+            change(root)
+        if report is not None:
+            write(os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-rapport.md"), report)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"team {zone}")
+        sha = git_toy(root, "rev-parse", "HEAD").strip()
+        write(os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-relecture.md"),
+              f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave\n")
+        git_toy(root, "add", "docs")
+        git_toy(root, "commit", "-q", "-m", "review")
+        git_toy(root, "checkout", "-q", "fx-int")
+
+    def merge(zone):
+        write(calls, "")
+        before = git_toy(root, "rev-parse", "HEAD").strip()
+        r = subprocess.run(["bash", script, "tour-9", zone], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+        with open(calls, encoding="utf-8") as f:
+            asked = f.read()
+        return r.returncode, r.stdout + r.stderr, asked, before != git_toy(root, "rev-parse", "HEAD").strip()
+
+    good = "# Rapport\n\ntests: FooTest\n\n- chemin: Accueil | test: FooTest#works\n"
+    branch("sansrapport")
+    code, out, asked, moved = merge("sansrapport")
+    check(code == 7 and not moved and "no zone report" in out, "a branch without its zone report is refused (7):\n" + out)
+    branch("sanstests", good.replace("tests: FooTest\n", ""))
+    code, out, asked, moved = merge("sanstests")
+    check(code == 7 and not moved and "no line « tests: »" in out, "a zone report without « tests: » is refused (7):\n" + out)
+    # The list of paths: « chemin: <écran> | test: Classe#méthode », each one a @Test of app/src/test in the branch.
+    branch("sanschemin", "# Rapport\n\ntests: FooTest\n")
+    code, out, asked, moved = merge("sanschemin")
+    check(code == 7 and not moved and "no list of paths" in out, "a zone report without its list of paths is refused:\n" + out)
+    branch("malforme", good + "- chemin: Guide — FooTest#works\n")
+    code, out, asked, moved = merge("malforme")
+    check(code == 7 and not moved and "not « chemin: <écran> | test: Classe#méthode »" in out, "a path line in another format is refused:\n" + out)
+    for zone, test, change in (
+            ("sansclasse", "BarTest#works", None), ("sansmethode", "FooTest#gone", None), ("aide", "FooTest#helper", None),
+            ("appareil", "DeviceTest#runs", lambda r: write(os.path.join(r, "app", "src", "androidTest", "java", "t", "DeviceTest.kt"),
+                                                             "class DeviceTest {\n    @Test\n    fun runs() {}\n}\n"))):
+        branch(zone, good + f"- chemin: Guide | test: {test}\n", change)
+        code, out, asked, moved = merge(zone)
+        check(code == 7 and not moved and f"{test} is not a @Test of app/src/test" in out, f"a path whose test {test} is not a test of app/src/test is refused:\n" + out)
+    # A replay the branch adds to rejeux/ comes with its last verdict, the line of rejeu-defauts.sh, in the report:
+    # « non tenu » (the defect not fixed), or none at all, is refused.
+    def new_replay(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t9-nouveau", "start.txt"), "lang=fr\n")
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t9-nouveau", "oracle.txt"), "rejeu.attendu=x\n")
+    branch("nontenu", good + "\nt9-nouveau : oracle tenu\nt9-nouveau : oracle non tenu (écran 4)\n", new_replay)
+    code, out, asked, moved = merge("nontenu")
+    check(code == 7 and not moved and "t9-nouveau" in out and "« oracle non tenu (écran 4) »" in out,
+          "a replay added with its last verdict « non tenu » is refused:\n" + out)
+    branch("sansverdict", good, new_replay)
+    code, out, asked, moved = merge("sansverdict")
+    check(code == 7 and not moved and "t9-nouveau added to rejeux/ without its verdict" in out,
+          "a replay added without its verdict is refused:\n" + out)
+    branch("tenu", good + "\n- t9-nouveau : oracle non tenu (avant la correction)\n- t9-nouveau : oracle tenu\n", new_replay)
+    code, out, asked, moved = merge("tenu")
+    check(code == 0 and moved, "a replay added with its last verdict « oracle tenu » is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Review of banc7 (grave 1): « tests: Classe#méthode », as the teams' sheet writes a test, reaches Gradle as
+    # « Classe.méthode » (Gradle's --tests knows no « # »: no test found, the merge undone after the self-test).
+    branch("diese", "# Rapport\n\ntests: FooTest#works\n\n- chemin: Accueil | test: FooTest#works\n")
+    code, out, asked, moved = merge("diese")
+    check(code == 0 and moved and "--tests FooTest.works" in asked and "FooTest#works" not in asked,
+          "« Classe#méthode » in « tests: » reaches Gradle as « Classe.méthode »:\n" + out + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    branch("rapportok", good)
+    code, out, asked, moved = merge("rapportok")
+    check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)
+
+
+TOY_FUSE = """import os, sys
+with open(os.environ["PS_TOY_CALLS"], "a", encoding="utf-8") as f:
+    f.write("fuse-reports " + " ".join(sys.argv[1:]) + "\\n")
+for n in ("clusters.md", "clusters-complet.md", "promesses.tsv", "incidents-banc.tsv"):
+    with open(os.path.join(sys.argv[1], n), "w", encoding="utf-8") as f:
+        f.write("fused\\n")
+if "--maj-base" in sys.argv:
+    with open("docs/audits/ultra/base.tsv", "a", encoding="utf-8") as f:
+        f.write("cle\\tnouveau\\ttour-9\\n")
+"""
+
+TOY_DASHBOARD = """import os, sys
+with open(os.environ["PS_TOY_CALLS"], "a", encoding="utf-8") as f:
+    f.write("tableau " + " ".join(sys.argv[1:]) + "\\n")
+with open(os.path.join(sys.argv[-1], "tableau-de-bord.md"), "w", encoding="utf-8") as f:
+    f.write("# Tableau\\n")
+"""
+
+
+def portal_recomputes(d):
+    """PLAN-RESTE 7.1: after each merge, fusion-equipes.sh fuses the round's reports again with the new keys into the
+    base (fuse-reports.py <round> --tour <tour> --maj-base) and recomputes the dashboard (tableau-de-bord.py <rounds>),
+    and commits what they write with the merge's traces (nothing left uncommitted)."""
+    root = fusion_toy(d, "fusion-recalcul")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "recalcul-appels.txt")
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), TOY_FUSE)
+    write(os.path.join(root, "scripts", "bench", "tableau-de-bord.py"), TOY_DASHBOARD)
+    write(os.path.join(root, "docs", "audits", "ultra", "base.tsv"), "cle\tetat\ttour\n")
+    for t in ("tour-8", "tour-9"):
+        write(os.path.join(root, "docs", "audits", "ultra", "sieges", t, "lotA", "a", "rapport.md"), "x\n")
+    git_toy(root, "add", "scripts", "docs")
+    git_toy(root, "commit", "-q", "-m", "the round's seats")
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-recalcul", "fx-int")
+    write(os.path.join(root, "scripts", "bench", "y.txt"), "y\n")
+    # Its zone report (required from batch 2, where the recomputation runs too).
+    write(os.path.join(root, "app", "src", "test", "java", "t", "FooTest.kt"), "class FooTest {\n    @Test\n    fun works() {}\n}\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-recalcul-rapport.md"),
+          "# Rapport\n\ntests: aucun : maquette du portail\n\n- chemin: Accueil | test: FooTest#works\n")
+    git_toy(root, "add", "scripts", "app", "docs")
+    git_toy(root, "commit", "-q", "-m", "team")
+    sha = git_toy(root, "rev-parse", "HEAD").strip()
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-recalcul-relecture.md"), f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave\n")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "review")
+    git_toy(root, "checkout", "-q", "fx-int")
+    # Review of banc7 (moyen 1): a step whose failure undoes a merge is a rule of the portal: frozen until batch 2.
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check(r.returncode == 0 and "fuse-reports" not in asked and "tableau" not in asked,
+          "batch 1: merged, nothing recomputed yet:\n" + r.stdout + r.stderr + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    write(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), "paquet: 2\n")
+    git_toy(root, "add", "scripts")
+    git_toy(root, "commit", "-q", "-m", "batch 2")
+    # A recomputation that fails undoes the merge and leaves nothing behind.
+    good_fuse = TOY_FUSE
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), "import sys\nsys.exit(3)\n")
+    git_toy(root, "commit", "-q", "-am", "a fuse-reports that fails")
+    before = git_toy(root, "rev-parse", "HEAD").strip()
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    left = git_toy(root, "status", "--porcelain", "--untracked-files=all").strip()
+    check(r.returncode != 0 and git_toy(root, "rev-parse", "HEAD").strip() == before and left == "",
+          "a failed recomputation undoes the merge, nothing left:\n" + r.stdout + r.stderr + left)
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), good_fuse)
+    git_toy(root, "commit", "-q", "-am", "fuse-reports back")
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check(r.returncode == 0, "the branch is merged:\n" + r.stdout + r.stderr)
+    check("fuse-reports docs/audits/ultra/sieges/tour-9 --tour tour-9 --maj-base" in asked, "the round's reports fused again, base updated:\n" + asked)
+    check("tableau docs/audits/ultra/sieges/tour-8 docs/audits/ultra/sieges/tour-9" in asked, "the dashboard recomputed on the rounds:\n" + asked)
+    last = git_toy(root, "show", "--stat=200", "--format=%s", "HEAD")
+    for f in ("docs/audits/ultra/base.tsv", "sieges/tour-9/clusters.md", "sieges/tour-9/clusters-complet.md",
+              "sieges/tour-9/promesses.tsv", "sieges/tour-9/incidents-banc.tsv", "sieges/tour-9/tableau-de-bord.md"):
+        check(f in last, f"{f} is in the traces' commit:\n" + last)
+    check(last.startswith("Portal traces"), "the traces' commit:\n" + last)
+    check(git_toy(root, "status", "--porcelain", "--untracked-files=all").strip() == "", "nothing left uncommitted:\n"
+          + git_toy(root, "status", "--porcelain", "--untracked-files=all"))
+
+
 def mark_fixed(d):
     """Review of lot 1 « Le juge » (finding « moyen » 2): marque-corrige.sh runs the judge WITH the summary it was
     given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
@@ -2135,6 +2507,19 @@ def mark_fixed(d):
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
     out = mark()
     check("résumé absent" in out, "without a summary the judge says so:\n" + out)
+    # Dry run 7.6 (casse 2): the dashboard is recomputed by marque-corrige.sh itself, on every round as the portal does
+    # (the teams' sheet said « tableau-de-bord.py sieges/tour-5 » alone: it wrote a dashboard without the earlier
+    # rounds, 94 lines fewer than the portal's, left uncommitted).
+    calls = os.path.join(d, "marque-appels.txt")
+    write(calls, "")
+    write(os.path.join(bench, "tableau-de-bord.py"), TOY_DASHBOARD)
+    for t in ("tour-10", "tour-9"):
+        write(os.path.join(ultra, "sieges", t, "lotA", "a", "rapport.md"), "x\n")
+    mark(green, PS_TOY_CALLS=calls)
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check("tableau docs/audits/ultra/sieges/tour-9 docs/audits/ultra/sieges/tour-10\n" in asked,
+          "marque-corrige.sh recomputes the dashboard on every round, in order, as the portal does:\n" + asked)
 
 
 def known_skips_bounded(d):
@@ -2369,6 +2754,9 @@ def proof_must_run(d):
     check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nor through a base class:\n" + out)
     out = judge('class AppProofTest : Object() {\n  ' + seated + other)
     check("chantier : 0 écarts" in out, "another base class is no bench:\n" + out)
+    # Review of « verdicts » (medium): a constructor whose defaults call functions (nested parentheses) hid the seat.
+    out = judge('class AppProofTest(n: Int = f(g(1)), s: String = h()) : HumanTester(name(n)) {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nested parentheses in the constructor (seat_nested):\n" + out)
 
 
 def native_missing(d):

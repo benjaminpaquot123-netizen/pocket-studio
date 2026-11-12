@@ -1,0 +1,7 @@
+{
+  "Enregistrer au clavier": "用琴键录音",
+  "Touche le bouton rouge, puis joue : l'appli écrit tes notes dans la partie, tu les retrouves dans « Notes ». Le chiffre à côté est le décompte : les mesures entendues avant de jouer. « Garder ce que je viens de jouer » reprend ce que tu viens de jouer, sans le refaire.": "点红色按钮，然后弹：应用会把你的音符写进这一段，在“音符”里可以看到。旁边的数字是预备拍：开始弹之前听到的小节数。“保留我刚弹的”能找回你刚才弹的内容，不用重弹。",
+  "Le Mix simple": "简单混音",
+  "Monte le curseur de ce qui doit s'entendre, baisse ce qui gêne. Sous « Sortie », un mot juge le volume final : « Bien » ou « Fort et propre », c'est prêt à partager ; « Ça sature », baisse la sortie. « Tout à zéro » remet les volumes du départ.": "把需要听清的推子推高，把碍事的拉低。“输出”下方的一个词评判最终音量：“不错”或“响亮又干净”表示可以分享了；“爆音了”就把输出调低。“全部复原”恢复最初的音量。",
+  "La partie en cours tourne en boucle pendant que tu règles : tu entends tout de suite ce que tu changes. « ■ Arrêter » coupe la boucle.": "调整时当前段落会循环播放：你改动的效果马上就能听到。“■ 停止”结束循环。"
+}

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +33,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
@@ -71,6 +78,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.app.synth.TrackBar
 import com.pocketstudio.app.synth.TracksUi
@@ -175,14 +183,26 @@ internal fun StructureSwitch(parts: Boolean, timelineEnabled: Boolean = true, se
 /** One entry of the Plus page: a page of its own ([page]) or something that opens elsewhere ([open]). */
 internal class PlusEntry(val key: String, val icon: ImageVector, val title: String, val line: String, val page: ToolPage? = null, val open: (() -> Unit)? = null)
 
-/** The Plus page's entries, in the order a lost beginner looks for them. */
+/**
+ * What the Mode simple's tabs do not hold, on its Plus page (tour 5, chantier 5, G15): Live, the Remix, the voice, the
+ * sounds' library and the sounds kept. Pro has them in its spaces.
+ */
+internal class SimplePlusWays(val live: () -> Unit, val remix: () -> Unit, val voice: () -> Unit, val library: () -> Unit, val mine: () -> Unit)
+
+/**
+ * The Plus page's entries, in the order a lost beginner looks for them. Tour 5, chantier 5 (G15): the same page in both
+ * modes; the Mode simple's ([simpleWays] given) has its own short list, the Recette included (« Mon premier morceau »
+ * and « Les mots de la musique » are in Aide there).
+ */
 internal fun plusEntries(
     /** « Accueil »: « Que veux-tu faire ? » (null: not offered). */
     home: (() -> Unit)? = null,
     projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
     /** « Signaler un bug » (null: not offered). */
     bugReport: (() -> Unit)? = null,
-): List<PlusEntry> = listOfNotNull(
+    /** The Mode simple's own ways (null: Pro's list). */
+    simpleWays: SimplePlusWays? = null,
+): List<PlusEntry> = if (simple && simpleWays != null) simplePlusEntries(home, projects, setSimple, bugReport, simpleWays) else listOfNotNull(
     // Owner (2026-10-29): the home screen, its Remix card, one touch away from a project.
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
@@ -203,6 +223,24 @@ internal fun plusEntries(
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )
 
+/** The Mode simple's Plus page: [plusEntries]'s cards, what its five tabs do not hold. */
+private fun simplePlusEntries(
+    home: (() -> Unit)?, projects: () -> Unit, setSimple: (Boolean) -> Unit, bugReport: (() -> Unit)?, ways: SimplePlusWays,
+): List<PlusEntry> = listOfNotNull(
+    home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
+    PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
+    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
+    PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
+    PlusEntry("voice", Icons.Filled.Mic, tr("Enregistrer ma voix"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."), open = ways.voice),
+    PlusEntry("library", Icons.Filled.LibraryMusic, tr("Bibliothèque de sons"), tr("Écouter et choisir des sons"), open = ways.library),
+    PlusEntry("mine", Icons.Filled.Star, tr("Ma bibliothèque"), tr("Les sons que tu as gardés"), open = ways.mine),
+    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le Guide, Mon premier morceau, les mots de la musique"), page = ToolPage.Aide),
+    PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
+    PlusEntry("mode", Icons.Filled.ToggleOn, tr("Passer en mode Pro"), tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus"), open = { setSimple(false) }),
+    bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
+    PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
+)
+
 /**
  * The Plus space: its entries in a list; a page opens in place with « ‹ Plus » to come back (on
  * a tablet, the list on the left and the page on the right, the last one chosen at first).
@@ -212,21 +250,48 @@ internal fun PlusSpace(
     entries: List<PlusEntry>, page: ToolPage?, open: (ToolPage) -> Unit, back: () -> Unit, widePage: ToolPage,
     /** Lot 2: the way back's word (the Mode simple has no Plus: « Retour »). */
     backLabel: String? = null,
+    /**
+     * Tour 5, chantier 5 (G15): the Mode simple has no Plus space; its ⋮ opens this page over the song. « ← Retour » on
+     * the list (and the system's Retour) goes back where it was opened from. Null: Pro's space, a tab of its own.
+     */
+    leave: (() -> Unit)? = null,
+    /**
+     * Tour 5, chantier 5: the entries as tiles, three a row, on a phone (the Mode simple: under its thumb's bar and tabs,
+     * twelve rows of cards left the Recette, Aide and Réglages below the fold, one scroll more than its old menu).
+     */
+    tiles: Boolean = false,
     content: @Composable (ToolPage) -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().testTag("plus")) {
         if (maxWidth >= TWO_PANES_FROM) {
-            val shown = page ?: widePage
+            // Tour 5, lot « moyens »: a page of the list shown (the Mode simple's holds no MIDI, no Latence…), the one
+            // chosen or last seen if the list holds it, else its first.
+            val listed = entries.mapNotNull { it.page }
+            val shown = listOf(page, widePage).firstOrNull { it != null && it in listed } ?: listed.firstOrNull() ?: page ?: widePage
+            if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.width(340.dp).fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    if (leave != null) PlusLeaveRow(leave)
                     entries.forEach { e -> PlusRow(e, selected = e.page != null && e.page == shown) { e.page?.let(open) ?: e.open?.invoke() } }
                 }
                 Box(Modifier.weight(1f).fillMaxHeight()) { content(shown) }
             }
         } else if (page == null) {
+            if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             com.pocketstudio.ui.ReadingWidth(maxWidth = 640.dp) {
                 Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
+                    if (leave != null) PlusLeaveRow(leave)
+                    // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a row cut
+                    // their titles (« Bibliothèque de sons »): two a row, then the list, as the room per title allows.
+                    val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
+                    if (perRow > 1) {
+                        entries.chunked(perRow).forEach { row ->
+                            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { e.page?.let(open) ?: e.open?.invoke() } }
+                                repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
+                            }
+                        }
+                    } else entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
                 }
             }
         } else {
@@ -247,6 +312,58 @@ internal fun PlusSpace(
     }
 }
 
+private const val PLUS_TILES_PER_ROW = 3
+
+/** The room a tile's title needs at the least, in dp at the font's own size (« Bibliothèque » on two lines at most). */
+private const val PLUS_TILE_TITLE_MIN_DP = 100f
+
+/**
+ * How many Plus tiles a row of [width] holds with [fontScale] (the phone's font size): three, fewer as the text grows,
+ * 1 meaning the list of cards (an icon over a title, one a row, would only waste the room).
+ */
+internal fun plusTilesPerRow(width: androidx.compose.ui.unit.Dp, fontScale: Float): Int =
+    (PLUS_TILES_PER_ROW downTo 2).firstOrNull { n ->
+        // The list's padding (12 dp each side), 6 dp between tiles, 4 dp inside each tile's sides.
+        ((width.value - 24f - 6f * (n - 1)) / n - 8f) / fontScale >= PLUS_TILE_TITLE_MIN_DP
+    } ?: 1
+
+/** An entry of the Plus page as a tile: its icon over its title (its line said to TalkBack as what a touch does). */
+@Composable
+private fun PlusTile(e: PlusEntry, modifier: Modifier, onClick: () -> Unit) {
+    Column(
+        modifier.heightIn(min = 88.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
+            .border(1.dp, Neon.Outline, RoundedCornerShape(14.dp))
+            .clickable(role = Role.Button, onClickLabel = e.line, onClick = onClick)
+            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .testTag(if (e.page != null) "tool_${e.page.name}" else "plus_${e.key}"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+    ) {
+        Box(Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
+            Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
+        }
+        // Its words whole, a little smaller before anything is cut (« Geluidenbibliotheek »).
+        com.pocketstudio.ui.FitText(
+            e.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+    }
+}
+
+/** « ← Retour » over the Mode simple's Plus list: back where its ⋮ was touched. */
+@Composable
+private fun PlusLeaveRow(leave: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button, onClick = leave)
+            .padding(horizontal = 4.dp).testTag("plus_leave"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Neon.Cyan)
+        Text(tr("Retour"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
+        Text(" · " + tr("Plus"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+    }
+}
+
 @Composable
 private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
     Row(
@@ -263,7 +380,8 @@ private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
             Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
         }
         Column(Modifier.weight(1f)) {
-            Text(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            // Its words whole (« Geluidenbibliotheek » with the phone's font at 200 %), smaller before anything is cut.
+            com.pocketstudio.ui.FitText(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp)
             Text(e.line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.TextSecondary)

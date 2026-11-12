@@ -65,7 +65,7 @@ padlive|boucle de kick boucle pret pad a1|mauvais-ecran	corrigé	tour-1	tour-1 T
 padlive|challenge reopened after challenge 2|perdu	corrigé	tour-1	tour-1 T1-09 ae3ea45	tour-1
 padlive|padlive_party_open|mauvais-ecran	corrigé	tour-1	tour-1 T1-07 ae3ea45	tour-1
 padlive|padlive_perf_listen|rien	banc	tour-1	tour-1 T1-10 5b2b940	tour-1
-padlive|padlive_stop_all|rien	banc	tour-1,tour-5	tour-1 T1-06 60c7a2f	tour-1
+padlive|padlive_stop_all|rien	corrigé	tour-1,tour-5	tour-1 T1-06 60c7a2f	tour-5
 padlive|stars 0 of 3 after play again|perdu	corrigé	tour-1	tour-1 T1-09 ae3ea45	tour-1
 remix_project|→ pad|affichage	nouveau	tour-1	
 rhythm/tab_Sons|retours_note|mauvais-ecran	corrigé	tour-1	tour-1 T1-20 14e0b60	tour-1
@@ -836,14 +836,14 @@ dialogue:track_name_field|champ nom 0/24 contenu|rien	nouveau	tour-5
 mixer/tab_Mix|export_my_exports|perdu	corrigé	tour-5		tour-5
 padlive_pads_side|padlive_challenge_next|sans-aide	nouveau	tour-5	
 padlive|#1755|perdu	nouveau	tour-5	
-tab_Sons|top_share|perdu	nouveau	tour-5	
+tab_Sons|top_share|perdu	corrigé	tour-5		tour-5
 dialogue:new_project|starter_starter|rien	nouveau	tour-5	
 dialogue:share_bilan|share_bilan_ok|texte-faux	corrigé	tour-5		tour-5
 dialogue:synth_sounds_name_dialog|name_clear|perdu	nouveau	tour-5	
 dialogue:welcome|launch_challenges|lent	nouveau	tour-5	
 dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5	
-dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	nouveau	tour-5	
-dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	nouveau	tour-5	
+dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	corrigé	tour-5		tour-5
+dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	corrigé	tour-5		tour-5
 guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	corrigé	tour-5	banc fiable 3.2 (verdicts.tsv)	tour-5
 live_grid/tab_Live|live_mute_remix|texte-faux	nouveau	tour-5	
 live_grid|live_take_undo|incompris	nouveau	tour-5	
@@ -853,7 +853,10 @@ mixer/tab_Mix|export_my_exports|sans-aide	nouveau	tour-5
 mixer/tab_Mix|export_my_exports|texte-faux	nouveau	tour-5	
 mixer/tab_Mix|export_target_STREAMING|texte-faux	nouveau	tour-5	
 padlive_pads_side|padlive_challenge_go|rien	corrigé	tour-5		tour-5
-padlive|padlive_fx_brake|incompris	nouveau	tour-5	
+padlive|padlive_fx_brake|incompris	corrigé	tour-5		tour-5
 session/tab_simple_Morceau|thumb_play|rien	nouveau	tour-5	
 topbar:mesure|play|compteur-fige	corrigé	tour-4,tour-5	banc : compteur figé au banc (T4-17), garde BenchPlayThenTabsTest	tour-5
 tab_simple_Clavier|record_start|rien	nouveau	tour-4	T4-26 non tranché : pas reproduit sans émulateur (Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes, vert) ; échec sur émulateur (CI 243) inexpliqué	
+mixer_automation|automation_add|option-disparue	corrigé	tour-5	T5-AUTO-OPTION (a53e385e)	tour-5
+live_grid/tab_Live|live_stop_all|rien	corrigé	tour-4	T4-01 (c423455d)	tour-4
+padlive_pads|padlive_pad_N|rien	corrigé	tour-5	T5-PADRETRIG (16f520d7)	tour-5

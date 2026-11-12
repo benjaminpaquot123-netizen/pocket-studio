@@ -7,7 +7,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -19,8 +23,12 @@ import com.pocketstudio.model.AutoCut
 import com.pocketstudio.model.CutPiece
 import com.pocketstudio.model.SongCuts
 import com.pocketstudio.model.StemCuts
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.ui.PocketStudioTheme
+import com.pocketstudio.ui.WholeWordsAutoSize
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -37,6 +45,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * screen under the app's bars, the Guide and the thumb bar (E c screen 18: about 430 dp at 200 %).
  */
 @RunWith(RobolectricTestRunner::class)
+@org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w411dp-h914dp-xxhdpi")
 class CutBoutBigTextTest {
     @get:Rule
@@ -92,4 +101,35 @@ class CutBoutBigTextTest {
 
     @Test
     fun aPieceAtTheUsualTextOnAPhone() = curveAndControls(480.dp, 1f)
+
+    @After
+    fun french() {
+        I18n.lang = Lang.FR
+    }
+
+    /** Every node showing exactly [text] is laid out whole (no « … », no word split over two lines). */
+    private fun whole(text: String): Boolean = compose.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().all { n ->
+        val results = ArrayList<TextLayoutResult>()
+        n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.invoke(results)
+        results.isEmpty() || WholeWordsAutoSize.fits(results.first(), text)
+    }
+
+    /**
+     * Tour 6, R1 (seat E c #17, pt-BR at 200 %): « Cortar a mú… » and « Guard / ar » on the cut screen. The title reads
+     * whole and no send button splits its word.
+     */
+    @Test
+    fun theTitleAndTheSendButtonsReadWholeInPortugueseAtTwiceTheText() {
+        I18n.lang = Lang.PT_BR
+        show(430.dp, 2f)
+        for (word in listOf("Cortar a música", "Guardar", "Nos pads", "No Live", "Numa faixa")) {
+            bringIntoViewText(word)
+            assertTrue("« $word » cut or split at 200 %", whole(word))
+        }
+    }
+
+    private fun bringIntoViewText(text: String) {
+        runCatching { compose.onAllNodesWithText(text, useUnmergedTree = true)[0].performScrollTo() }
+        compose.waitForIdle()
+    }
 }

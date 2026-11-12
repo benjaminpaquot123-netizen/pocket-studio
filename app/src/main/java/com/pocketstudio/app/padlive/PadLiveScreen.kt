@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Stop
@@ -360,7 +361,9 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_dots"))
+            // Audit lot 6, U18: open, it folds (« Moins », « Tutup », « 閉じる »), no more the ⋯ of a menu still to open.
+            if (more) Icon(Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_fold"))
+            else Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_dots"))
             Text(if (more) tr("Moins") else tr("Plus"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
         }
     }

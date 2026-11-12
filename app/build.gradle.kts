@@ -123,7 +123,8 @@ android {
                 // (bench.guide=accept: each song followed to the end of its Guide's parcours first, G6.)
                 // RealProjectsTest (docs/TESTS-REELS.md): -Preal.projects, -Preal.out, -Preal.live, -Preal.render.
                 // The « testeur humain » bench (scripts/human-tester.sh): -Phuman.dir, its seats side by side.
-                for (key in listOf("bench.out", "bench.profiles", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.listen", "bench.packs", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render", "human.dir", "human.moteur", "persona.dir", "tuto.langs", "audit", "strict")) {
+                // Tour 5 « sons-essai »: -Psons.essai=1 turns the hidden sound trial on (SoundTrial, ps.sons.essai).
+                for (key in listOf("bench.out", "bench.profiles", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.listen", "bench.packs", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render", "human.dir", "human.moteur", "persona.dir", "tuto.langs", "audit", "strict", "sons.essai")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
                 if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4

@@ -45,7 +45,68 @@ internal class BenchFlac(private val context: Context, private val dir: File) {
             }
             ShadowMediaExtractor.addTrack(DataSource.toDataSource(context, Uri.fromFile(f), null), format, data)
         }
+        registerWavs()
     }
+
+    /**
+     * Tour 5 « sons-essai »: a pack's 16-bit PCM WAVs (the trial packs, scripts/packs/trial_drums.py) are given with their
+     * own samples, not a tone: the live bench must hear the sounds it compares. Other WAVs (another depth, a broken
+     * header) stay unreadable, as a FLAC that is no FLAC.
+     */
+    private fun registerWavs() {
+        val files = dir.listFiles()?.filter { it.isDirectory }?.flatMap { d -> d.listFiles()?.filter { it.name.endsWith(".wav") }.orEmpty() }.orEmpty()
+        for (f in files) {
+            val key = f.path + ":" + f.length() + ":" + f.lastModified()
+            if (!known.add(key)) continue
+            val wav = pcm16(f) ?: continue
+            if (!rawDecoder) {
+                ShadowMediaCodec.addDecoder(MediaFormat.MIMETYPE_AUDIO_RAW, ShadowMediaCodec.CodecConfig(64 * 1024, 64 * 1024, passThrough))
+                rawDecoder = true
+            }
+            val frames = wav.data.size / (2 * wav.channels)
+            val format = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_RAW, wav.rate, wav.channels).apply {
+                setLong(MediaFormat.KEY_DURATION, frames * 1_000_000L / wav.rate)
+                setInteger(MediaFormat.KEY_PCM_ENCODING, AudioFormat.ENCODING_PCM_16BIT)
+            }
+            ShadowMediaExtractor.addTrack(DataSource.toDataSource(context, Uri.fromFile(f), null), format, wav.data)
+        }
+    }
+
+    private var rawDecoder = false
+
+    private class Wav(val rate: Int, val channels: Int, val data: ByteArray)
+
+    /** A RIFF WAVE of 16-bit PCM: its rate, channels and sample bytes (little-endian), at most [MAX_SECONDS]. */
+    private fun pcm16(f: File): Wav? = runCatching {
+        val b = f.readBytes()
+        if (b.size < 44 || String(b, 0, 4, Charsets.US_ASCII) != "RIFF" || String(b, 8, 4, Charsets.US_ASCII) != "WAVE") return null
+        val le = java.nio.ByteBuffer.wrap(b).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+        var at = 12
+        var rate = 0
+        var channels = 0
+        var bits = 0
+        var tag = 0
+        while (at + 8 <= b.size) {
+            val id = String(b, at, 4, Charsets.US_ASCII)
+            val size = le.getInt(at + 4)
+            if (size < 0 || at + 8 + size > b.size) return null
+            when (id) {
+                "fmt " -> {
+                    tag = le.getShort(at + 8).toInt()
+                    channels = le.getShort(at + 10).toInt()
+                    rate = le.getInt(at + 12)
+                    bits = le.getShort(at + 22).toInt()
+                }
+                "data" -> {
+                    if (tag != 1 || bits != 16 || channels !in 1..2 || rate !in 4_000..768_000) return null
+                    val keep = minOf(size, (rate.toLong() * MAX_SECONDS * channels * 2).toInt()) / (2 * channels) * (2 * channels)
+                    return Wav(rate, channels, b.copyOfRange(at + 8, at + 8 + keep))
+                }
+            }
+            at += 8 + size + (size and 1)
+        }
+        null
+    }.getOrNull()
 
     private class Info(val rate: Long, val channels: Int, val frames: Long)
 

@@ -1,3 +1,5 @@
 # Tour 6 · consignes du tuto (équipe A) : décisions
 
 - T5 swing : la règle compare le nombre affiché par le curseur (swing / MAX_SWING en %), à ±3 points ; les consignes écrivent ce nombre (house 33 %, deep 40 %…). Raison : « 25 » à l'écran n'était jamais validé. Retour arrière : revenir à `SWING_TOLERANCE = 0.05` en valeur brute et aux anciens nombres.
+- T3 force des coups : une étape de batterie dont toutes les consignes nomment le bouton « Doux » exige ses cases douces jouées douces (≤ 0,5 : « Doux » ou « Moyen ») ; les autres étapes restent à n'importe quelle force. Raison : `done()` ne connaît pas le niveau, et exiger 8 appuis longs sur les charleys bloquerait un débutant. Seul le clap techno le demande pour l'instant (les autres « doux » restent indulgents, à reprendre style par style). Retour arrière : enlever `asksSoft`.
+- T3 clap techno : la consigne ne parle plus de « 2 mesures » (la boucle n'en a qu'une à ce moment) et dit le geste du coup doux. Retour arrière : texte précédent.

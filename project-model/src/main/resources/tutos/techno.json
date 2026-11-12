@@ -108,8 +108,8 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : sur les temps 2 et 4, plus un petit coup doux juste avant la mesure suivante. Touche d'abord « Passer à 2 mesures » si on te le propose.",
-          "textPro": "À toi : le clap sur 2 et 4, avec son fantôme juste avant la mesure suivante (en « Doux »).",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long dessus, puis « Doux ».",
+          "textPro": "À toi : pose le clap sur 2 et 4, et son fantôme juste avant la mesure suivante : appui long dessus, puis « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",

@@ -1,0 +1,30 @@
+Écran 22 (588x1278)
+texte « Effects · Remix » @ 190,62
+texte « Effects in place: 0 of 8 » @ 204,133
+texte « None yet: add an effect, or tap a ready-made vibe. » @ 294,196
+bouton + «   Add an effect » @ 294,274
+texte « Ready-made vibes » @ 178,346
+bouton « ? » @ 326,346
+bouton « For: Audio » @ 145,416
+bouton ★ « Favourites » @ 356,416
+bouton « Ambience » [coupé] @ 505,416
+bouton « Techno » [coupé] @ 86,500
+bouton « DnB » @ 183,500
+bouton « Dubstep » [sélectionné] @ 326,500
+bouton « House » [coupé] @ 477,500
+bouton « Underwater » @ 157,584
+bouton « Dub echo » @ 361,584
+bouton « Distortion » @ 142,656
+bouton « Robot » @ 306,656
+bouton « Wobble » @ 456,656
+bouton « Screaming lead » @ 181,728
+bouton « EDM pump » @ 419,728
+bouton « Deep dub » @ 141,800
+bouton « Fat bass » @ 321,800
+bouton « Dubstep wob » @ 165,872
+bouton « No effect » [sélectionné] @ 377,872
+texte « The sound as it is: no more effects, macros at rest. » @ 294,956
+texte « Keep your finger on a vibe to hear it; let go and your sound comes back. » @ 294,1040
+texte « XY pad, up-down: » @ 159,1110
+bouton « ? » @ 298,1109
+texte « Close » @ 479,1206

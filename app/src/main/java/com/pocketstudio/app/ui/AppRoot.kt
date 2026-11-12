@@ -4682,21 +4682,31 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
     val meters = vm.meters.collectAsStateWithLifecycle()
     val loudness = vm.loudness.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollMeters() } }
-    val clipping by remember { androidx.compose.runtime.derivedStateOf { com.pocketstudio.app.mixer.outputWords(loudness.value, meters.value) == com.pocketstudio.app.mixer.OutputWords.CLIP } }
-    val tip by androidx.compose.runtime.produceState<com.pocketstudio.model.guide.MixTip?>(null, project.mixer, project.guide.measures, clipping) {
-        kotlinx.coroutines.delay(150)
-        value = com.pocketstudio.model.guide.MixTips.of(vm.project.value, clipping).firstOrNull()
+    // The words as « Sortie » shows them (held, 4 a second at most): the tip follows this very value, never the raw reading.
+    val outWords = com.pocketstudio.app.mixer.rememberOutputWords({ meters.value }, { loudness.value })
+    // « Ça sature » followed here, not in this tab's composition (tour 5 « mixwake »): it comes and goes with the music.
+    val tip by androidx.compose.runtime.produceState<com.pocketstudio.model.guide.MixTip?>(null, project.mixer, project.guide.measures) {
+        androidx.compose.runtime.snapshotFlow { outWords.value == com.pocketstudio.app.mixer.OutputWords.CLIP }
+            .collectLatest { clipping ->
+                kotlinx.coroutines.delay(150)
+                value = com.pocketstudio.model.guide.MixTips.of(vm.project.value, clipping).firstOrNull()
+            }
     }
-    val tracks = simpleTracks(project)
-    val ui = com.pocketstudio.app.mixer.SimpleMixUi(
-        projectName = com.pocketstudio.model.DefaultNames.shown(project.name),
-        tracks = tracks,
-        padVolumes = tracks.flatMap { it.pads }.associate { it.lane to (project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(it.lane))?.volume ?: com.pocketstudio.model.Mixer.DEFAULT_VOLUME) },
-        masterDb = project.mixer.masterDb,
-        looping = transport.playing && loopPart && alone == null,
-        listening = alone,
-        tip = tip,
-    )
+    val looping = transport.playing && loopPart && alone == null
+    // Tour 5 « mixwake »: built again only when what it shows changes. « Ça sature » coming and going with the music
+    // (read above for the tip) composed this tab again, and a new SimpleMixUi composed every strip again with it.
+    val ui = remember(project, looping, alone, tip) {
+        val tracks = simpleTracks(project)
+        com.pocketstudio.app.mixer.SimpleMixUi(
+            projectName = com.pocketstudio.model.DefaultNames.shown(project.name),
+            tracks = tracks,
+            padVolumes = tracks.flatMap { it.pads }.associate { it.lane to (project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(it.lane))?.volume ?: com.pocketstudio.model.Mixer.DEFAULT_VOLUME) },
+            masterDb = project.mixer.masterDb,
+            looping = looping,
+            listening = alone,
+            tip = tip,
+        )
+    }
     val from = com.pocketstudio.app.mixer.SimpleMixActions.FROM
     val actions = remember(vm) {
         com.pocketstudio.app.mixer.SimpleMixActions(
@@ -4715,7 +4725,7 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
             resetAll = vm::resetMixLevels, applyTip = vm::applyMixTip, meterPads = vm::meterPads,
         )
     }
-    com.pocketstudio.app.mixer.SimpleMixScreen(ui, { meters.value }, { loudness.value }, actions)
+    com.pocketstudio.app.mixer.SimpleMixScreen(ui, { meters.value }, { loudness.value }, actions, words = { outWords.value })
 }
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */

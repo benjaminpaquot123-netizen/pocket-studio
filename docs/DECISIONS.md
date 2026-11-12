@@ -1470,3 +1470,5 @@
 - 2026-11-12 · lot « hardtechno » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-hardtechno.md`
 - 2026-11-12 · lot « testapk » (tour-5) : 28 décision(s) dans `docs/decisions/tour-5-testapk.md`
 - 2026-11-12 · lot « oreille » (tour-5) : 10 décision(s) dans `docs/decisions/tour-5-oreille.md`
+- 2026-11-12 · lot « mixwake » (tour-5) : 7 décision(s) dans `docs/decisions/tour-5-mixwake.md`
+- 2026-11-12 · lot « retest » (tour-5) : 5 décision(s) dans `docs/decisions/tour-5-retest.md`

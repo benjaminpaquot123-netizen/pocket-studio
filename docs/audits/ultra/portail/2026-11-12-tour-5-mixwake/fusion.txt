@@ -1,0 +1,8 @@
+fusion: f2051def085369d993feac7f1cfb4a1ab02d9526
+branche: eq/tour-5-mixwake
+tete: bf735d480fce1a2cc8c3620cc5bd8be0c88d11e1
+relecture: docs/audits/ultra/tour-5-mixwake-relecture.md
+relu: cd54a4aa40330908b738b20828950e8618559bd7
+filtres: *PlayingRecomposeTest *SimpleMixTest *Lot2TextsTest *ClipHoldTest com.pocketstudio.app.mixer.* *PlayingRecomposeTest *SimpleMixTest *Lot2TextsTest com.pocketstudio.app.mixer.*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

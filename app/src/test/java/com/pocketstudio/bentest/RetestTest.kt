@@ -24,21 +24,22 @@ class RetestTest {
     }
 
     @Test
-    fun `vert - the subset keeps the order and the screen off step stays last`() {
+    fun `rouge - the subset keeps the order, the opening first and the screen off step last`() {
         val picked = Retest.choisir(all, setOf("ecran_eteint", "latence", "style_liquid_dnb"))
-        assertEquals(listOf("style_liquid_dnb", "latence", "ecran_eteint"), picked.map { it.name })
+        assertEquals(listOf("ouverture", "style_liquid_dnb", "latence", "ecran_eteint"), picked.map { it.name })
         // Even when the full list had it in the middle.
         val odd = listOf(etape("ecran_eteint"), etape("latence"))
         assertEquals(listOf("latence", "ecran_eteint"), Retest.choisir(odd, setOf("ecran_eteint", "latence")).map { it.name })
     }
 
+    /** The opening (the studio brought in front) always runs first, unticked: v6 run, 2026-11-12, five steps failed without it. */
     @Test
-    fun `vert - the runner runs only the chosen steps`() {
+    fun theRunnerRunsTheOpeningThenOnlyTheChosenSteps() {
         val carnet = Carnet(File(tmp.root, "c.tsv"))
         val steps = Robot.subset(all, Robot.TOUT, setOf("style_liquid_dnb", "ecran_eteint"))
         Passage(carnet, steps).run()
-        assertEquals(listOf("style_liquid_dnb", "ecran_eteint"), ran)
-        assertEquals(listOf("style_liquid_dnb", "ecran_eteint"), carnet.lines().filter { it.kind == Carnet.DEBUT }.map { it.step })
+        assertEquals(listOf("ouverture", "style_liquid_dnb", "ecran_eteint"), ran)
+        assertEquals(listOf("ouverture", "style_liquid_dnb", "ecran_eteint"), carnet.lines().filter { it.kind == Carnet.DEBUT }.map { it.step })
         // No retest chosen, or the essai éclair: nothing is cut.
         assertEquals(all.size, Robot.subset(all, Robot.TOUT, null).size)
         assertEquals(all.size, Robot.subset(all, Robot.ECLAIR, setOf("latence")).size)

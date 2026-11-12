@@ -189,7 +189,8 @@ class SimpleMixTest {
         h.vm.showMetersForTest(m, l)
         idle()
         compose.onNodeWithTag("mix_out_words").assertTextEquals("Ça sature")
-        // Clipping: its tip first, the master 3 dB lower.
+        // Clipping: its tip first (it follows the shown words, a moment after them), the master 3 dB lower.
+        idle()
         val db = h.vm.project.value.mixer.masterDb
         tap("mix_tip_fix")
         assertEquals(db - 3f, h.vm.project.value.mixer.masterDb, 0.001f)

@@ -1,0 +1,4 @@
+rouge: 038294f5380772bd66277b22307e4f1e7f1c378a
+test: InAppDriverTest#aTouchUnderAnotherWindowFails
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *EclairDeuxTest *InAppDriverTest (rc=1 650s ; rc=0 766s)
+aussi : EclairDeuxTest#plusTardBelowTheFoldClosesTheWelcome, #aStyleIsChosenFromItsCard, #theStepsAfterAFailedStyleCloseTheAssistantFirst, rouges sur le rouge et verts sur le vert (rouge-EclairDeuxTest.xml, vert-EclairDeuxTest.xml)

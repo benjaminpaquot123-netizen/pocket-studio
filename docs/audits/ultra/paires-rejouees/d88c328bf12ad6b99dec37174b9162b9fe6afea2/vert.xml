@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.ChoixDeStyleTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-12T13:42:39.062Z" hostname="vm" time="4.041">
+  <properties/>
+  <testcase name="vert - a swallowed Choisir ce style is touched again" classname="com.pocketstudio.bentest.ChoixDeStyleTest" time="4.038"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

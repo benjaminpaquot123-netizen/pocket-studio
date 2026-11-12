@@ -12,10 +12,10 @@ Aucun fichier de l'appli, du moteur, du banc (`scripts/bench/`), des tests Kotli
 
 ## Preuves
 
-- Mesures : `scripts/song-bench.sh` sur jump up, house, techno, hard techno, puis tech house. Chaque voix est rendue seule (`ps_render --no-limiter --solo`) et mesurée par `voix.py`. Le mix tient ses cibles ; plusieurs voix sont 15 à 35 dB plus sombres qu'une dent de scie brute au-dessus de 10 kHz.
+- Mesures : `scripts/song-bench.sh` sur jump up, house, techno, hard techno, puis tech house. Chaque voix est rendue seule (`ps_render --no-limiter --solo`) et mesurée par `voix.py`. Le mix tient ses cibles ; plusieurs nappes et leads sont de 15 à près de 40 dB plus sombres qu’une dent de scie brute au-dessus de 10 kHz (scie brute : −18 à −24 dB ; nos voix les plus sombres : −39 à −57 dB).
 - Licences : lues sur les pages des sources le 2026-11-12. Les clés ont été relues par la relecture neuve : Stability, 99Sounds, Splice, free-midi-chords, Groove MIDI, Vital, FAQ Surge XT, `co.xfer_ott`, AKWF, WaivOps, Freesound.
 - Outil : `PYTHONDONTWRITEBYTECODE=1 python3 docs/sons/outils/test_voix.py` → « voix.py: OK ».
-- Relecture neuve : `docs/audits/ultra/tour-5-sons-modernes-relecture.md`, en trois passes. Toutes les remarques ont été corrigées, dont 3 graves au premier passage (l'OTT existe déjà, le rétro vient des recettes et pas des mots des packs, le branchement de l'essai).
+- Relecture neuve : `docs/audits/ultra/tour-5-sons-modernes-relecture.md`, en trois passes. Tous les constats ont été corrigés, dont 3 graves au premier passage (l'OTT existe déjà, le rétro vient des recettes et pas des mots des packs, le branchement de l'essai).
 
 ## Tests ciblés et chemins
 
@@ -25,8 +25,8 @@ Les chemins ci-dessous sont ceux par où passera l'essai : le choix d'un son par
 
 - chemin: Assistant › une ligne de batterie prend le son du pack avant le kit | test: SoundCategoriesTest#aLineWithoutAKitVoiceStillTakesThePackFirst
 - chemin: Assistant › une ligne qui impose sa voix du kit la garde, pack téléchargé | test: SoundCategoriesTest#aLineThatAsksForAKitVoiceKeepsItWithThePackDownloaded
-- chemin: Assistant › la machine nommée par la ligne passe en premier | test: WizardLineFxTest#theStylesPacksAreOfferedAtTheLineTheMachineOfThatLineFirst
-- chemin: Bibliothèque › les packs du style proposés d'abord | test: LibraryChoicesTest#theStylesPacksAreOfferedFirstAndDownloadedInOneTouch
+- chemin: Assistant › la machine nommée par la recette passe avant le kit, une voix imposée reste devant | test: ShelfBrowserTest#theAssistantKeepsTheStylesMachineAndItsKitVoiceFirst
+- chemin: Bibliothèque › les packs du style proposés et téléchargés d'un geste | test: LibraryChoicesTest#theStylesPacksAreOfferedFirstAndDownloadedInOneTouch
 
 ## Ce dont je ne suis pas sûr
 

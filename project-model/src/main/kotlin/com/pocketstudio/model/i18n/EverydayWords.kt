@@ -13,7 +13,8 @@ import java.util.concurrent.ConcurrentHashMap
 internal object EverydayWords {
     private val json = Json { ignoreUnknownKeys = true }
     private val rules = ConcurrentHashMap<Lang, Rules>()
-    private val PROTECTED = listOf("Pad Live", "→ Pad", "drum loop", "warm pad", "Think break")
+    // Feature and button names, and what one types in the sound search (« dark techno kick », «kick»): kept as written.
+    private val PROTECTED = listOf("Drum & bass", "Pad Live", "Pad المباشر", "→ Pad", "drum loop", "warm pad", "Think break", "dark techno kick", "«kick»", "«echo»", "«reverb»")
 
     private class Rules(val regex: Regex?, val words: Map<String, String>)
 

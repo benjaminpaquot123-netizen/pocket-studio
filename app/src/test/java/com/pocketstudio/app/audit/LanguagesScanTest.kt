@@ -112,7 +112,7 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             Regex("simple_rhythm_2\\.0") to Regex("CUT « (PAS : |Händeklatschen)[^»]* » a word split"),
             Regex("launch_simple_2\\.0") to Regex("CUT « Simple » a word split"),
             Regex("(plus|sons|structure)_2\\.0") to Regex("CUT « (Loop|Boucler|लूप|循环) » drawn past"),
-            Regex("structure_2\\.0") to Regex("CUT « [^»]+ » (drawn past|lines cut)"),
+            Regex("structure_2\\.0") to Regex("CUT « (Mesures|Takte|الأجزاء|المازورات|पार्ट्स|bar|段落|小节) » (drawn past|lines cut)"),
             Regex("sons_2\\.0") to Regex("CUT « ([^»]*ثرات|इफ़ेक्ट्स|स्टेप: [^»]*) » (lines dropped|wider)"),
             Regex("live_2\\.0") to Regex("CUT "),
         )
@@ -149,8 +149,8 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
         val LATIN_OK = setOf(
             "BPM", "dB", "Hz", "kHz", "ms", "MIDI", "M4A", "WAV", "FLAC", "MP3", "ZIP", "zip", "OK", "LUFS",
             "Pocket", "Studio", "BenStudio", "YouTube", "TikTok", "Instagram", "Spotify", "Apple", "Music", "SoundCloud", "Bluetooth",
-            // The harness's song (AppHarness.songWithTracks): its project and track names, typed by the « user ».
-            "Lead", "Bass", "Pad", "Chords", "Drums", "Audio", "Synth",
+            // The harness's song (AppHarness.songWithTracks): the one track name typed by the « user » (« Lead »).
+            "Lead",
             // The app's features, one name in every language: the 303 (« Acid 303 »), « Remix », « Live », « Pad Live ».
             "Acid", "Remix", "Live",
         )
@@ -162,7 +162,7 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             val nodes = rule.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
             return nodes.filterNot { LayoutScan.hidden(it) }.flatMap { n ->
                 n.config.getOrNull(SemanticsProperties.Text).orEmpty().map { it.text }
-            }.flatMap { text -> WORD.findAll(text).map { it.value }.filter { it !in LATIN_OK }.map { "LATIN « $it » in « ${text.take(60)} »" } }
+            }.flatMap { text -> WORD.findAll(text.replace("Pad Live", "")).map { it.value }.filter { it !in LATIN_OK }.map { "LATIN « $it » in « ${text.take(60)} »" } }
                 .distinct()
         }
     }

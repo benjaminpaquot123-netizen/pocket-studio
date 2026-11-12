@@ -50,4 +50,14 @@ class PartNameFieldLanguageTest {
         assertEquals("Ritornello", field())
         compose.onNodeWithTag("section_Refrain").assertIsSelected()
     }
+
+    /** What is saved: the section, whatever language it was shown in; a name typed stays as typed. */
+    @Test
+    fun thePartKeepsItsSection() {
+        I18n.lang = Lang.IT
+        assertEquals("Ritornello", shownSection("Refrain"))
+        assertEquals("Refrain", sectionKeyOf("Ritornello"))
+        assertEquals("Il mio pezzo", sectionKeyOf("Il mio pezzo"))
+        assertEquals("Il mio pezzo", shownSection("Il mio pezzo"))
+    }
 }

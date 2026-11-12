@@ -81,5 +81,12 @@ class SoundTileNameOnceTest {
             }
         }
         assertTrue(twice.joinToString("\n"), twice.isEmpty())
+        // The line is not hidden everywhere: in French, a sound whose line says something new keeps it (« Nappe » · « Scie… »).
+        lang = Lang.FR
+        compose.waitForIdle()
+        val kept = sounds.indices.count { i ->
+            compose.onNodeWithTag("tile_$i").fetchSemanticsNode().config.getOrNull(SemanticsProperties.Text).orEmpty().size >= 2
+        }
+        assertTrue("$kept of ${sounds.size} tiles keep their line", kept * 2 >= sounds.size)
     }
 }

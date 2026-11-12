@@ -21,11 +21,11 @@ class SimpleWordsNonLatinTest {
 
     private val trade = Regex(
         "(?i)(?<![A-Za-z])(Kicks?|Snares?|Bridge|Loops?|Groove|Swing|Intro|Outro|Drops?|Break|Build-up|Pads?|Solo|Crash|Fills?|" +
-            "Hi-hats?|Sub bass|Claps?|Ride|Hook|Bass music|Mix)(?![A-Za-z])",
+            "Hi-hats?|Sub bass|Claps?|Ride|Hook|Bass music|Mix|Bass|Synths?|Echo|Reverb|Shaker|Sub|Drums?|Samples?|Filter|Lead)(?![A-Za-z])",
     )
 
     /** Names of the app and its features, the same in every language (« Pad Live », the 303's « Acid 303 »). */
-    private val names = Regex("Pad Live|Pocket Studio|→ Pad|drum loop|warm pad|Think break")
+    private val names = Regex("Drum & bass|Pad Live|Pad المباشر|Pocket Studio|→ Pad|drum loop|warm pad|Think break|dark techno kick|«kick»|«echo»|«reverb»")
 
     @Test
     fun theModeSimpleShowsNoTradeWordInLatinLettersInANonLatinScript() {
@@ -56,5 +56,15 @@ class SimpleWordsNonLatinTest {
         I18n.everyday = false
         I18n.lang = Lang.HI
         assertEquals("Snare", tr("Caisse claire"))
+    }
+
+    /** A style's name and what one types in the sound search are kept as written. */
+    @Test
+    fun namesAndSearchExamplesAreKept() {
+        I18n.everyday = true
+        I18n.lang = Lang.AR
+        assertEquals("Drum & bass", EverydayWords.apply(Lang.AR, "Drum & bass"))
+        assertTrue(EverydayWords.apply(Lang.AR, "جرّب «kick» أو «echo»").contains("«kick»"))
+        assertTrue(EverydayWords.apply(Lang.AR, "Pad المباشر").startsWith("Pad"))
     }
 }

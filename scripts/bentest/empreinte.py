@@ -58,10 +58,16 @@ def third_octave_energies(x, rate=48000):
 
 def octaves(energies, frames, noise=None):
     """dB per octave, 0 dB = mean of 500 Hz … 4 kHz; None under the noise ([noise]: mean power per frame per band)."""
-    top = max(energies) if energies else 0.0
+    known = [e for e in energies if e is not None]
+    top = max(known) if known else 0.0
     lin = []
     for m in MIDDLES:
-        e = sum(energies[m - 1:m + 2])
+        thirds = energies[m - 1:m + 2]
+        if any(e is None for e in thirds):
+            # A third the phone's curve could not say (under its room): this octave cannot be compared.
+            lin.append(None)
+            continue
+        e = sum(thirds)
         n = sum(noise[m - 1:m + 2]) * frames if noise else 0.0
         heard = e >= 4 * n if n > 0 else e - n > top * 1e-9
         lin.append(e - n if heard and e - n > 0 else None)
@@ -74,11 +80,8 @@ def octaves(energies, frames, noise=None):
 
 def apply_curve(energies, curve_db):
     """The energies as the phone's speaker gives them: each band weighted by the curve; a band the phone did not hear
-    over its room (None) gives nothing."""
-    out = []
-    for e, c in zip(energies, curve_db):
-        out.append(0.0 if c is None else e * 10 ** (c / 10))
-    return out
+    over its room (None) is unknown (None), not silent: the octave holding it is left out of the comparison."""
+    return [None if c is None else e * 10 ** (c / 10) for e, c in zip(energies, curve_db)]
 
 
 def compare(phone, bench):
@@ -160,6 +163,8 @@ def micro_of(path):
         m = json.load(f).get("micro")
     if not m or not m.get("courbe_db"):
         raise SystemExit(f"{path}: no speaker's curve (« micro » › « courbe_db ») in it: was « Écoute au micro » run?")
+    if all(v is None for v in m["courbe_db"]):
+        raise SystemExit(f"{path}: courbe du haut-parleur vide : aucune bande entendue au-dessus du bruit de la pièce (son coupé, pièce trop bruyante ?)")
     return m
 
 

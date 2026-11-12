@@ -15,8 +15,8 @@ import kotlin.math.abs
  * imposed here), with a delay and the room's noise; the analysis must find the curve imposed, band by band.
  */
 class CourbeTest {
-    private fun bandes(x: FloatArray, bloc: Int = 960): Bandes {
-        val b = Bandes(RATE)
+    private fun bandes(x: FloatArray, bloc: Int = 960, frames: Boolean = false): Bandes {
+        val b = Bandes(RATE, garderTrames = frames)
         var i = 0
         while (i < x.size) {
             val n = minOf(bloc, x.size - i)
@@ -37,8 +37,8 @@ class CourbeTest {
         val room = bandes(SonsFabriques.blanc(4 * RATE, noiseRms, seed = 8))
         // The reference padded as the robot pads it: every sample of the sweep under two half windows.
         val ref = bandes(SonsFabriques.silence(Tiers.TAILLE / 2) + sweep + SonsFabriques.silence(Tiers.TAILLE))
-        val mic = bandes(heard)
-        return Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, room.puissances(), Courbe.tramesBalayees(RATE, sweepS))
+        val mic = bandes(heard, frames = true)
+        return Courbe.mesurer(ref.energies(), mic, room.puissances(), Courbe.tramesBalayees(RATE, sweepS))
     }
 
     /**

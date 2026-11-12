@@ -86,7 +86,7 @@ class EcouteMicro(
         ref.ajouter(FloatArray(Tiers.TAILLE / 2))
         ref.ajouter(sweep)
         ref.ajouter(FloatArray(Tiers.TAILLE))
-        val mic = Bandes(micro.rate)
+        val mic = Bandes(micro.rate, garderTrames = true)
         hp.reglerVolume()
         try {
             // The microphone first, the sweep once it records: its lowest notes come first and must not be lost.
@@ -95,7 +95,7 @@ class EcouteMicro(
             hp.arreter()
             hp.remettreVolume()
         }
-        val r = Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, bruitLu(), Courbe.tramesBalayees(micro.rate, balayageS))
+        val r = Courbe.mesurer(ref.energies(), mic, bruitLu(), Courbe.tramesBalayees(micro.rate, balayageS))
         carnet.add(Carnet.MICRO, "micro_courbe", "courbe;" + Tiers.csv(r.db))
         carnet.add(Carnet.MICRO, "micro_courbe", "rsb;" + Tiers.csv(r.rsb))
         val f = Courbe.feu(r)

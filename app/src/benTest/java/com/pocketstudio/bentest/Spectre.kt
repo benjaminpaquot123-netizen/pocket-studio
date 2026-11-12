@@ -41,7 +41,10 @@ object Tiers {
 }
 
 /** Third-octave band powers of a stream of samples, frame by frame (on the robot's thread, never the audio one). */
-class Bandes(val rate: Int = 48_000) {
+class Bandes(val rate: Int = 48_000, private val garderTrames: Boolean = false) {
+    /** Each frame's band powers, when [garderTrames] (the sweep: about 2 MB for 13 s, numbers only, never sound). */
+    private val parTrame = ArrayList<DoubleArray>()
+
     private val n = Tiers.TAILLE
     private val hop = n / 2
     private val buf = FloatArray(n)
@@ -72,12 +75,28 @@ class Bandes(val rate: Int = 48_000) {
     private fun analyser() {
         for (i in 0 until n) { re[i] = buf[i] * win[i]; im[i] = 0.0 }
         fft.run(re, im)
+        val frame = if (garderTrames) DoubleArray(sum.size) else null
         for (b in sum.indices) {
             var s = 0.0
             for (k in lo[b] until hi[b]) s += re[k] * re[k] + im[k] * im[k]
             sum[b] += s
+            frame?.set(b, s)
         }
+        frame?.let { parTrame += it }
         trames++
+    }
+
+    /** The most energy band [b] holds in [k] frames in a row (where the sweep went through it); all of it when fewer frames. */
+    fun fenetre(b: Int, k: Int): Double {
+        check(garderTrames) { "frames not kept" }
+        if (parTrame.size <= k) return parTrame.sumOf { it[b] }
+        var s = (0 until k).sumOf { parTrame[it][b] }
+        var best = s
+        for (i in k until parTrame.size) {
+            s += parTrame[i][b] - parTrame[i - k][b]
+            if (s > best) best = s
+        }
+        return best
     }
 
     /** Each band's energy summed over the frames. */
@@ -174,20 +193,36 @@ object Courbe {
             if (hi <= lo) 0.0 else secondes * ln(hi / lo) / ln(f2 / f1) * rate / (Tiers.TAILLE / 2)
         }
 
-    fun mesurer(reference: DoubleArray, micro: DoubleArray, tramesMicro: Int, bruit: DoubleArray?, tramesUtiles: DoubleArray? = null): Resultat {
+    fun mesurer(reference: DoubleArray, micro: DoubleArray, tramesMicro: Int, bruit: DoubleArray?, tramesUtiles: DoubleArray? = null): Resultat =
+        mesurerPar(reference, micro, DoubleArray(micro.size) { tramesMicro.toDouble() }, bruit, tramesUtiles)
+
+    /**
+     * The sweep as the robot measures it: each band's energy taken in the frames the sweep went through it ([micro]
+     * keeps its frames), the room taken out of those frames only. Over the whole listening, the error on the room's
+     * noise (measured 4 s) would outweigh a band swept in under half a second.
+     */
+    fun mesurer(reference: DoubleArray, micro: Bandes, bruit: DoubleArray?, tramesUtiles: DoubleArray): Resultat {
+        val k = IntArray(reference.size) { ceil(tramesUtiles[it]).toInt() + 2 }
+        val e = DoubleArray(reference.size) { micro.fenetre(it, k[it]) }
+        return mesurerPar(reference, e, DoubleArray(reference.size) { minOf(k[it], micro.trames).toDouble() }, bruit, tramesUtiles)
+    }
+
+    /** [compte]: the frames each band's energy in [micro] was taken over. */
+    private fun mesurerPar(reference: DoubleArray, micro: DoubleArray, compte: DoubleArray, bruit: DoubleArray?, tramesUtiles: DoubleArray?): Resultat {
         val refMax = reference.maxOrNull() ?: 0.0
         val micMax = micro.maxOrNull() ?: 0.0
         val lin = ArrayList<Double?>()
         val rsb = ArrayList<Double?>()
         for (b in Tiers.CENTRES.indices) {
             val perFrame = bruit?.getOrNull(b) ?: 0.0
-            // The room heard over the whole listening (taken out), and during the band's own frames (what competes with it).
-            val noise = perFrame * tramesMicro
-            val rival = perFrame * (tramesUtiles?.getOrNull(b)?.coerceAtLeast(1e-3) ?: tramesMicro.toDouble())
+            // The room in the frames the energy was taken over (taken out, and what the band must stand over), and
+            // during the band's own time in the sweep (its signal-to-noise ratio).
+            val noise = perFrame * compte[b]
+            val own = perFrame * (tramesUtiles?.getOrNull(b)?.coerceAtLeast(1e-3) ?: compte[b])
             val sig = micro[b] - noise
-            rsb += if (bruit != null && rival > 0) Tiers.db(maxOf(sig, 0.0) / rival) else null
+            rsb += if (bruit != null && own > 0) Tiers.db(maxOf(sig, 0.0) / own) else null
             val swept = reference[b] > refMax * 1e-6
-            val heard = if (bruit != null && rival > 0) sig >= (AU_DESSUS - 1) * rival else sig > micMax * 1e-9
+            val heard = if (bruit != null && noise > 0) sig >= (AU_DESSUS - 1) * noise else sig > micMax * 1e-9
             lin += if (swept && heard && sig > 0) sig / reference[b] else null
         }
         val mid = Tiers.CENTRES.indices.filter { Tiers.CENTRES[it] in MILIEU }.mapNotNull { lin[it] }

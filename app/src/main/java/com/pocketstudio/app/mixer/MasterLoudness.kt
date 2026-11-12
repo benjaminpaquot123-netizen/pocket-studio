@@ -186,24 +186,26 @@ internal fun MasterLoudnessPanel(
         TargetChoice.CLUB -> LoudnessTarget.CLUB
         else -> LoudnessTarget.STREAMING
     }
-    val readings by remember(values) {
+    // Tour 5 « jank »: the line of readings changes at each reading (20 a second while playing); it is read only
+    // by its Text, under « Détails ». The panel (its chips, its hint) is composed again only when the gain added
+    // or the loss shown change (to the tenth of a dB).
+    val line by remember(values) {
         derivedStateOf {
             val v = values()
-            val drive = v.getOrElse(NativeEngine.LOUDNESS_DRIVE) { 0f }
-            val loss = v.getOrElse(NativeEngine.LOUDNESS_LOSS) { 0f }.takeIf { it.isFinite() } ?: 0f
-            Triple(
-                tr(
-                    "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS",
-                    loudnessText(v.getOrElse(NativeEngine.LOUDNESS_MOMENTARY) { -100f }),
-                    loudnessText(v.getOrElse(NativeEngine.LOUDNESS_SHORT_TERM) { -100f }),
-                    loudnessText(v.getOrElse(NativeEngine.LOUDNESS_INTEGRATED) { -100f }),
-                ),
-                (drive * 10f).roundToInt() / 10f,
-                (loss * 10f).roundToInt() / 10f,
+            tr(
+                "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS",
+                loudnessText(v.getOrElse(NativeEngine.LOUDNESS_MOMENTARY) { -100f }),
+                loudnessText(v.getOrElse(NativeEngine.LOUDNESS_SHORT_TERM) { -100f }),
+                loudnessText(v.getOrElse(NativeEngine.LOUDNESS_INTEGRATED) { -100f }),
             )
         }
     }
-    val (line, drive, loss) = readings
+    val drive by remember(values) {
+        derivedStateOf { (values().getOrElse(NativeEngine.LOUDNESS_DRIVE) { 0f } * 10f).roundToInt() / 10f }
+    }
+    val loss by remember(values) {
+        derivedStateOf { ((values().getOrElse(NativeEngine.LOUDNESS_LOSS) { 0f }.takeIf { it.isFinite() } ?: 0f) * 10f).roundToInt() / 10f }
+    }
     // The units (LUFS, dBTP) and the three readings under « Détails »: a beginner reads the words above.
     var details by rememberSaveable { mutableStateOf(false) }
     TextButton(onClick = { details = !details }, modifier = Modifier.testTag("loudness_details")) {

@@ -356,6 +356,20 @@ class StemBoardRouterTest {
         assertEquals("[6000, 1, 180000, 3000, 8, 500]", edits.asked.toString())
     }
 
+    /**
+     * Tour 6, seat G a #14 (grave, contourne-en-6): « 9 ile 14 arası pad'lerinde 6 cümle. » never said those pads were the
+     * drums' 16 pads; the seat looked for them in Live › Pads. Pieces put on pads name where they are, with the words the
+     * drums' tab shows (« Batterie · 16 pads »).
+     */
+    @Test
+    fun piecesOnPadsSayTheyAreOnTheDrumsSixteenPads() {
+        val edits = Edits(listOf(6_000L until 12_000L, 30_000L until 42_000L))
+        val host = Host(beat(), Source(firstBeatFrame = 4_000))
+        val r = router(host, edits)
+        r.chop("song", 3, max = 8)
+        assertTrue("where the phrases are: ${r.state.value.message}", r.state.value.message!!.endsWith("(Batterie · 16 pads)"))
+    }
+
     @Test
     fun morePhrasesThanFreePadsTheLongestGo() {
         val edits = Edits(listOf(0L until 1_000L, 2_000L until 9_000L, 10_000L until 14_000L))

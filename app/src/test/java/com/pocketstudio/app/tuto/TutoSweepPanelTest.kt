@@ -17,6 +17,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onRoot
+import com.github.takahirom.roborazzi.captureRoboImage
 import androidx.compose.ui.unit.Density
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.audit.CaptureMatrixTest
@@ -158,6 +160,7 @@ class TutoSweepPanelTest(private val lang: String, private val font: String) {
             }
         }
         val found = ArrayList<String>()
+        val pictured = HashSet<String>()
         for (p in todo) {
             setLevel(p.level)
             shown = p
@@ -169,7 +172,12 @@ class TutoSweepPanelTest(private val lang: String, private val font: String) {
                     val hidden = range.maxValue() / density
                     if (hidden > 2f && !more()) here += LayoutScan.Finding(LayoutScan.Kind.CUT, "(scroll)", "the panel's words scroll (%.0f dp unseen) with no « Lire la suite »".format(hidden))
                 }
-            here.filterNot(::allowed).forEach { f -> found += line(lang, font, p, f) + "\t" + f.detail.replace('\t', ' ').take(160) }
+            val kept = here.filterNot(::allowed)
+            kept.forEach { f -> found += line(lang, font, p, f) + "\t" + f.detail.replace('\t', ' ').take(160) }
+            // `-Proborazzi.test.record=true`: the first panel of each kind of finding, to look at (app/build/tuto-sweep/images/).
+            if (CaptureMatrixTest.RECORDING) kept.map { it.kind.name + " " + it.detail.substringBefore('(').trim() }.distinct().filter { pictured.add(it) }.forEach { k ->
+                compose.onRoot().captureRoboImage("build/tuto-sweep/images/$lang-$font-${p.level}-${p.style}-${p.id}-${k.replace(Regex("[^A-Za-z]+"), "_")}.png")
+            }
         }
         val out = File("build/tuto-sweep").apply { mkdirs() }
         File(out, "panel-$lang-$font.tsv").writeText(found.joinToString("\n", postfix = if (found.isEmpty()) "" else "\n"))

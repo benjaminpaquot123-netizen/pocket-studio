@@ -44,6 +44,29 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
     [ -f "$run/$s/id.txt" ] || continue
     id="$(cat "$run/$s/id.txt")"
     verdict="$(cat "$run/$s/rejeu.txt" 2>/dev/null || echo "pas de verdict (banc)")"
+    # Tour 5 (rejeux6): the journal of every run is kept, « tenu » or not (the zone report and the next tour read it), and a « tenu »
+    # needs its proof: the last control the replay aims at by a tag was really touched (« #n ETIQUETTE <tag> » in the journal, and not
+    # refused: « #n REFUS »). A touch that landed nowhere cannot pass as « tenu ».
+    keepj="$dir/_journaux/$id"
+    rm -rf "${keepj:?}"; mkdir -p "$keepj"
+    cp "$run/$s/journal.txt" "$run/$s/rejeu.txt" "$run/$s/start.txt" "$keepj/" 2>/dev/null || true
+    if [ "$verdict" = "oracle tenu" ]; then
+      last=""; lasttag=""
+      for f in $(ls "$dir/$id"/cmd-*.txt 2>/dev/null | sed 's/.*cmd-\([0-9]*\)\.txt/\1 &/' | sort -n | cut -d' ' -f2); do
+        read -r verb arg rest < "$f" || true
+        case "$verb" in touche|appui-long|double-touche) ;; *) continue ;; esac
+        case "$arg" in ''|[0-9]*) continue ;; esac
+        last="$(basename "$f" .txt)"; last="${last#cmd-}"; lasttag="$arg"
+      done
+      if [ -n "$lasttag" ]; then
+        if ! grep -qF "#$last ETIQUETTE $lasttag :" "$run/$s/journal.txt" 2>/dev/null; then
+          verdict="oracle non tenu : l'étiquette « $lasttag » (pas $last) n'a pas été touchée (journal sans « ETIQUETTE »)"
+        elif grep -q "^#$last REFUS" "$run/$s/journal.txt"; then
+          verdict="oracle non tenu : l'étiquette « $lasttag » (pas $last) a été refusée (hors de portée du pouce)"
+        fi
+      fi
+    fi
+    echo "$verdict" > "$keepj/verdict.txt"
     echo "$id : $verdict"
     if [ "$verdict" != "oracle tenu" ]; then
       failed=1

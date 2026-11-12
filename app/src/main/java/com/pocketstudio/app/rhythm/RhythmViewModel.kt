@@ -606,7 +606,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun tutoEdit(transform: Project.() -> Project) {
         val before = project.value
         session.edit(tag = "tuto") { it.transform() }
+        val wanted = project.value.scene
         afterGuideEdit(before)
+        // Lot 6, N25 (seat B b-suite #178): « Aller dans la partie « Build-up » » while the song plays: the screens
+        // following the song took the part back at the next swap. It is picked as a touch on it does: it loops from the
+        // next bar (the editors say « … arrive à la prochaine mesure »), shown from then on.
+        val heard = heardScene
+        if (wanted != before.scene && _transport.value.playing && NativeEngine.isAvailable && _followSong.value && heard != null && heard != wanted) {
+            if (project.value.scene != heard) session.showQuietly { it.switchScene(heard) }
+            selectScene(wanted)
+        }
     }
 
     /** Engine updates the Guide's edits asked for (tests). */

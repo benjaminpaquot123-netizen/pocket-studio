@@ -39,9 +39,25 @@ void SpeakerKick::setOn(bool on) {
 }
 
 void SpeakerKick::process(float* l, float* r, int n) {
-    (void)l;
-    (void)r;
-    (void)n;
+    if (!on_ && level_ == 0.0f) return;  // off and at rest: untouched
+    const float target = on_ ? 1.0f : 0.0f;
+    for (int i = 0; i < n; ++i) {
+        level_ += (target - level_) * glide_;
+        const float mid = 0.5f * (l[i] + r[i]);
+        const float low = lowB_.process(lowA_.process(mid));
+        const float mag = std::fabs(low);
+        env_ += (mag - env_) * (mag > env_ ? envUp_ : envDown_);
+        // The low band as a wave of steady size (silence stays silence).
+        const float w = env_ > 1e-5f ? low / env_ : 0.0f;
+        const float odd = std::tanh(kDrive * w);
+        const float shaped = 0.7f * odd + 0.3f * odd * odd;
+        const float harm = top_.process(hpB_.process(hpA_.process(shaped))) * env_;
+        const float click = clickLp_.process(clickHp_.process(mid));
+        const float add = level_ * (kHarmonics * harm + kClick * click);
+        l[i] += add;
+        r[i] += add;
+    }
+    if (!on_ && level_ < 1e-4f) level_ = 0.0f;
 }
 
 }  // namespace ps

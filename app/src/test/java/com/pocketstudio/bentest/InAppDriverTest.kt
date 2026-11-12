@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -65,6 +66,8 @@ class InAppDriverTest {
         var plain = 0
         var inDialog = 0
         var far = 0
+        // The dialog comes after the touch on « plain »: a modal window over it would take the finger.
+        var dialog by mutableStateOf(false)
         compose.setContent {
             Column {
                 Box(Modifier.size(100.dp).testTag("plain").pointerInput(Unit) { detectTapGestures { plain++ } })
@@ -72,19 +75,46 @@ class InAppDriverTest {
                     repeat(30) { i -> Box(Modifier.fillMaxWidth().height(48.dp).testTag("item_$i").pointerInput(Unit) { detectTapGestures { if (i == 29) far++ } }) }
                 }
             }
-            Dialog(onDismissRequest = {}) { Box(Modifier.size(120.dp).testTag("in_dialog").pointerInput(Unit) { detectTapGestures { inDialog++ } }) }
+            if (dialog) Dialog(onDismissRequest = {}) { Box(Modifier.size(120.dp).testTag("in_dialog").pointerInput(Unit) { detectTapGestures { inDialog++ } }) }
         }
         compose.waitForIdle()
-        assertTrue("two windows seen: ${WindowInspector.getGlobalWindowViews().size}", WindowInspector.getGlobalWindowViews().size >= 2)
-        assertEquals(1, driver.count("in_dialog", merged = false))
-        assertEquals(30, driver.tags(Regex("item_\\d+")).size)
         driver.click("plain")
-        driver.click("in_dialog")
-        assertEquals("a real touch on the activity's window", 1, plain)
-        assertEquals("a real touch on the dialog's window", 1, inDialog)
+        assertEquals(30, driver.tags(Regex("item_\\d+")).size)
         val before = driver.bounds("item_29")
         Journey(driver).tap("item_29")
         assertEquals("the list scrolled to its last row (from $before to ${driver.bounds("item_29")}), then touched", 1, far)
+        dialog = true
+        compose.waitForIdle()
+        assertTrue("two windows seen: ${WindowInspector.getGlobalWindowViews().size}", WindowInspector.getGlobalWindowViews().size >= 2)
+        assertEquals(1, driver.count("in_dialog", merged = false))
+        driver.click("in_dialog")
+        assertEquals("a real touch on the activity's window", 1, plain)
+        assertEquals("a real touch on the dialog's window", 1, inDialog)
+    }
+
+    /**
+     * A touch on what another window covers fails at once, as a finger could not reach it (the phone's
+     * assistant over the studio, 2026-11-12: five touches « under another window » taken as done);
+     * what the top window holds is touched.
+     */
+    @Test
+    fun aTouchUnderAnotherWindowFails() {
+        var under = 0
+        var onTop = 0
+        compose.setContent {
+            Box(Modifier.size(100.dp).testTag("under").pointerInput(Unit) { detectTapGestures { under++ } })
+            Dialog(onDismissRequest = {}, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
+                Box(Modifier.fillMaxSize().testTag("cover")) {
+                    Box(Modifier.size(80.dp).testTag("on_top").pointerInput(Unit) { detectTapGestures { onTop++ } })
+                }
+            }
+        }
+        compose.waitForIdle()
+        val failed = runCatching { driver.click("under") }
+        assertEquals("no touch sent", 0, under)
+        assertTrue("$failed", failed.exceptionOrNull()?.message?.contains("sous une autre fenêtre") == true)
+        driver.click("on_top")
+        assertEquals(1, onTop)
     }
 
     /** « Que veux-tu faire ? » › Nouveau morceau › the assistant › jump up, as JourneyPathsTest, through the in-app driver. */

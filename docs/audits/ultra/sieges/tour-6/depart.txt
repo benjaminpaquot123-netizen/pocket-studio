@@ -1,0 +1,12 @@
+# Départ du tour 6 (PLAN-TOUR-6.md § 2) : une ligne « clé<TAB>valeur », recopiée des contrôles de la « Liste de lancement » (fin du plan). Un « ? » restant = on ne lance pas.
+# chantier_ecarts : le N, puis les écarts nommés (7 acceptés au plus : docs/decisions/tour-5-plan6.md) ; prevol : sa dernière ligne, puis chaque « À VOIR » ; rejeux6 : sha de la fusion ; retest_v6 : dossier de docs/tests-telephone/ ; mixwake : fusionné (sha) ou abandonné.
+sha	?
+date	?
+branche	fx-int
+ci_build	?
+ci_emulateur	?
+chantier_ecarts	?
+prevol	?
+rejeux6	?
+retest_v6	?
+mixwake	fusionné (f2051def, traces db66a3ce)

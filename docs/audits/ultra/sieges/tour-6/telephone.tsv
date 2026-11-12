@@ -1,0 +1,12 @@
+# Liste du téléphone du tour 6 (PLAN-TOUR-6.md § 3) : ce qui reste rouge ou orange sur le HONOR de Benjamin, avec ses chiffres. Jamais donné aux testeurs comme défaut à chercher.
+# source : retest-v6, T3, recette-08-11, ou tout-tester-v4-v5 (BenStudio Test « Tout tester » v4 et v5 du 2026-11-12, avant le retest v6 : chaque ligne de cette source est à remesurer par le retest v6, qui la remplace).
+# etat : rouge (décrochage, bloc > 100 %, écart > 2 blocs, images lentes > 15 %, essai ❌ encore ouvert) ou orange (70-100 %, 5-15 %, ou corrigé et pas encore remesuré). cause : connue, ou « non expliqué ».
+# cache_id : sa ligne dans defauts-caches.tsv (chaque défaut de l'appli en a une) ; « - » si ce n'est pas un défaut de l'appli (robot de BenStudio Test). banc : oui, partiel ou non (le banc le voit-il ?).
+# Le nombre de lignes rouges est recopié dans hors-banc.tsv (recette_points_rouges). Les 6 autres ❌ de la recette du 8 novembre (tel-03, 06, 08, 11, 12, 17) sont corrigés dans le code (verdicts.tsv « corrigé ») et pas encore revus sur le téléphone : la Recette de la fin du tour les tranche.
+id	source	ecran	chiffres	etat	cause	cache_id	banc
+T6-T01	tout-tester-v4-v5	assistant › style Hard techno › Écouter (Drop)	v4 : 25 décrochages (2 paquets, +13 puis +12) ; v5 : 0 ; moteur inchangé, seule la mesure a changé	orange	non expliqué (peut-être le robot sorti de l'appli en v4, non prouvé)	B24	non
+T6-T02	tout-tester-v4-v5	Mix pendant la lecture	images lentes v4 48 %, v5 42 % (seuil : vert < 5 %, acceptable ≤ 15 %) ; correction mixwake fusionnée (f2051def), à remesurer	rouge	Mix recomposé à chaque lecture du moteur (corrigé par mixwake, gain réel non mesuré)	B25	non
+T6-T03	tout-tester-v4-v5	Écran éteint › rallumage	v5 : 4 décrochages, pire bloc 525 %, plus long écart 5,3 blocs, 3 s après « Premier plan : son ouvert »	rouge	non expliqué (téléphone)	B26	non
+T6-T04	tout-tester-v4-v5	assistant › style Liquid DnB (robot de BenStudio Test)	v5 : échec du robot (« nothing tagged wizard_create_now after 15000 ms ») ; robot corrigé (d88c328b), pas encore rejoué sur le téléphone	orange	robot : toucher « Choisir ce style » avalé pendant que la liste bouge, pas un défaut de l'appli	-	non
+T6-T05	recette-08-11	Pad Live (ouverture)	tel-05 ❌ : un pad se joue à chaque ouverture de Pad Live ; T5-Ad-43 « ouvert » dans verdicts.tsv	rouge	non tranché (T5-Ad-43)	B02	oui
+T6-T06	recette-08-11	Mix › courbe d'automatisation en lecture	tel-14 ❌ : le curseur du réglage automatisé reste figé ; T5-Fb-13 « ouvert » dans verdicts.tsv	rouge	non tranché (T5-Fb-13)	B07	oui

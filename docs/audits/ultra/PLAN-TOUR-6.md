@@ -31,11 +31,11 @@ Le tableau de bord de l'audit ultra reste une information. L'ancienne règle (16
 
 ## 2. Condition d'entrée (toutes, sinon on ne lance pas)
 Chaque ligne a un contrôle qui existe ; son résultat est recopié dans `sieges/tour-6/depart.txt`.
-1. **Lot `mixwake`** relu et fusionné par le portail, ou abandonné et noté dans la liste du téléphone.
+1. **Lot `mixwake`** relu et fusionné par le portail, ou abandonné et noté dans la liste du téléphone. **Fait** : fusionné (`f2051def`, traces `db66a3ce`).
 2. **Retest v6 fait** : tu as lancé « Retester les corrections » ; le rapport est rangé dans `docs/tests-telephone/<date>-retest-v6/` (des chiffres seulement). Aujourd'hui : pas encore dans le dépôt.
 3. **Les 8 rejeux du tour 5 visent par étiquette.** Un autre agent les convertit en ce moment (atelier `eq-tour-5-rejeux6`). Contrôle : son lot est fusionné, et aucun `cmd-N.txt` de `rejeux-attente/` ne touche par pixels (`test_socle.py` ne lit que `rejeux/` : on étend ce contrôle à `rejeux-attente/`, ou on le fait à la main et on le note).
 4. **Les rejeux gardent leur journal, tenus compris.** Aujourd'hui `rejeu-defauts.sh` efface tout à la fin et ne garde que les échecs de `rejeux/`. Sans journal, pas de preuve d'un « tenu ». À ajouter au lot rejeux6, sinon un petit lot banc avant le tour.
-5. **Le juge du chantier** : `verifie-chantier.py --resume <selftest-resume.txt>` écrit « chantier : N écarts ». **Il faut N ≤ 6**, chaque écart restant nommé dans `depart.txt` avec sa raison. Où on en est : 6 avant le lot testapk, **18 sur le commit testapk** (`portail/2026-11-12-tour-5-testapk/selftest-chantier.txt`), 23 aujourd'hui sur la tête de fx-int (`9be3e12d`, sans résumé de selftest, donc pas tout à fait le même compte). **Il faut le faire redescendre avant de lancer** ; la cible du plan d'action reste 0.
+5. **Le juge du chantier** : `verifie-chantier.py --resume <selftest-resume.txt>` écrit « chantier : N écarts ». **Il faut N ≤ 7, et ce sont exactement les 7 écarts acceptés** (liste de lancement, ci-dessous ; décision dans `docs/decisions/tour-5-plan6.md`), chaque écart nommé dans `depart.txt` avec sa raison. Où on en est : 6 avant le lot testapk, **18 sur le commit testapk** (`portail/2026-11-12-tour-5-testapk/selftest-chantier.txt`), 23 aujourd'hui sur la tête de fx-int (`9be3e12d`, sans résumé de selftest, donc pas tout à fait le même compte). **Il faut le faire redescendre avant de lancer** ; la cible du plan d'action reste 0.
 6. **Pré-vol** : `pre-vol.sh --ci` doit finir par « **PRÉ-VOL : PRÊT** ». Il parle toujours : les lignes « À VOIR » sont lues et recopiées dans `depart.txt`.
 7. **CI sur le commit exact.** Sur cette branche, la CI ne part pas seule (elle part sur une PR, sur `main` ou à la main, `ci.yml` l. 3-7). **L'agent principal la lance.** Il faut **les deux verts** : la construction **et** la fumée sur émulateur (rouge sur `c55ffc1` au tour 5). `ci-etat.sh <sha>` en donne le résultat, recopié dans `sieges/tour-6/hors-banc.tsv` (lignes `ci_build`, `ci_emulateur`).
 8. **Commit de départ** choisi et écrit. Aujourd'hui aucun candidat n'est final (mixwake et rejeux6 pas fusionnés, retest absent).
@@ -139,7 +139,7 @@ Chaque ligne a un contrôle qui existe ; son résultat est recopié dans `sieges
 - **2A** : la règle de sortie légère, écrite au § 1.
 - **3A** : les notes refaites après le tour par un agent neuf, ailleurs (§ 6).
 - **4B** : un siège Pro de plus pour Mix, piano roll, réglages et premier lancement (B c).
-Plus de question ouverte dans ce plan. Les choix faits en le corrigeant sont dans `docs/decisions/tour-6-plan.md`.
+Plus de question ouverte dans ce plan. Les choix faits en le corrigeant sont dans `docs/decisions/tour-5-plan6.md`.
 
 ## 12. Points de l'audit non retenus ou nuancés
 Tout a été revérifié dans les fichiers cités. Trois nuances :
@@ -147,3 +147,22 @@ Tout a été revérifié dans les fichiers cités. Trois nuances :
 - « Une image pour 5 gestes » : **incomplet**. Le premier écran d'une route neuve a toujours droit à son image (`human-act.py` l. 107 et 113). Le plafond gêne moins l'œil neuf que ne le dit l'audit ; mais chaque image coûte un demi-geste, donc le budget en images reste.
 - « La CI ne part pas seule » : **vrai, sauf si une PR est ouverte** sur la branche (`ci.yml` l. 4). D'où « l'agent principal la lance » au § 2.
 - Repris sans recompter : « 14 écrans sur 36 vus par les sièges à mission » et « 11 écrans en 95 gestes ».
+
+## Liste de lancement (à cocher dans l'ordre, depuis `/home/user/fx-int`, sur le commit de départ)
+Chaque résultat est recopié dans `sieges/tour-6/depart.txt` (gabarit prêt). Un contrôle qui ne donne pas la sortie attendue : on ne lance pas.
+Prêt depuis le lot `plan6` : `sieges/tour-6/sieges-proposes.tsv` (8 sièges du § 4), `consignes-testeur.md` (v2 + partie « Round 6 » : promesses oui/non, les 10 questions œil neuf, leur règle de grave), `promesses-numerotees.tsv` (24 promesses), `oeil-neuf-gabarit.tsv`, `ecrans-oeil-neuf-carte.tsv` (36 écrans), `telephone.tsv` (6 lignes, B24 à B26 ajoutées à `defauts-caches.tsv`), `hors-banc.tsv`, `depart.txt`.
+
+1. **mixwake** : `git log --oneline -1 --grep "Merge team mixwake of tour-5"` → `f2051def …`. Fait.
+2. **rejeux6 fusionné** : `git log --oneline -1 --grep "Merge team rejeux6"` → une ligne (son sha dans `depart.txt`, clé `rejeux6`). Aujourd'hui : rien.
+3. **Rejeux par étiquette** : `grep -lE "^(touche|appui-long|double-touche) [0-9]" docs/audits/ultra/rejeux-attente/*/cmd-*.txt docs/audits/ultra/rejeux/*/cmd-*.txt` → aucune ligne. Aujourd'hui : 279 fichiers par pixels dans les 8 dossiers `t5-0*`.
+4. **Journal des rejeux tenus** : `PS_REJEUX_DIR=docs/audits/ultra/rejeux-attente scripts/bench/rejeu-defauts.sh t5-01-partie-simple` puis le journal du rejeu tenu est encore là, avec ses lignes `DOIGT`. Aujourd'hui : non (seuls les échecs de `rejeux/` sont gardés).
+5. **Retest v6** : `ls -d docs/tests-telephone/*retest-v6*` → un dossier (clé `retest_v6`) ; ses chiffres remplacent les lignes `tout-tester-v4-v5` de `telephone.tsv`, et `recette_points_rouges` de `hors-banc.tsv` est recompté (4 aujourd'hui).
+6. **Pré-vol** : `bash scripts/bench/pre-vol.sh --ci` → dernière ligne `PRÉ-VOL : PRÊT (N à voir).` ; chaque « À VOIR » recopié (clé `prevol`).
+7. **CI à la main** : `gh workflow run ci.yml --ref fx-int`, puis `scripts/bench/ci-etat.sh <sha> --ecris docs/audits/ultra/sieges/tour-6/hors-banc.tsv` → `ci_build vert` **et** `ci_emulateur vert`.
+8. **Fiches du lot 1** : `python3 -I scripts/bench/fabrique-sieges.py /home/user/fx-int/docs/audits/ultra/sieges/tour-6 --tour tour-6` → `8 sièges` (chemin absolu : les consignes donnent `SEAT=` aux testeurs). Puis `rm -r docs/audits/ultra/sieges/tour-6/lotB docs/audits/ultra/sieges/tour-6/lotC` : un lot sans ses traces est un écart du juge (D1) ; la même commande les refait à l'identique avant leur lot.
+9. **Selftest du lot 1** : `scripts/bench/selftest.sh docs/audits/ultra/sieges/tour-6/lotA` (sans `PS_SKIP_SELFTEST`) → vert ; seuls les sauts de `selftest-sauts-connus.txt`.
+10. **Juge** : `python3 -I scripts/bench/verifie-chantier.py --resume docs/audits/ultra/sieges/tour-6/lotA/selftest-resume.txt > docs/audits/ultra/sieges/tour-6/lotA/selftest-chantier.txt; tail -1 docs/audits/ultra/sieges/tour-6/lotA/selftest-chantier.txt` → `chantier : 7 écarts` (ou moins), et `grep -cE "^(2b34c216|a2a6ec58|11c48708|96a7a702|ade1a174|9b8fc4fd|411b2d51) " docs/audits/ultra/sieges/tour-6/lotA/selftest-chantier.txt` → le même nombre : aucun autre écart. Les 7 acceptés : anciens `2b34c216`, `a2a6ec58`, `11c48708`, `96a7a702`, `ade1a174` ; nouveaux `9b8fc4fd`, `411b2d51`. Aujourd'hui (2026-11-12) : 24 sur la trace mixwake, 45 sur la tête de fx-int avec ce résumé (résumé d'un autre code, gardes non vertes, fusion retest sans traces).
+11. **Commit de départ** : `git rev-parse --short HEAD` (clé `sha`), `git status --short docs/audits/ultra/sieges/tour-6/` → vide après le commit de `depart.txt`, `hors-banc.tsv` et du lot A.
+12. **Aucun `?` dans `depart.txt`** : `grep -cP "\t\?$" docs/audits/ultra/sieges/tour-6/depart.txt` → `0`. Alors seulement : lot 1.
+
+À savoir : dès que `sieges/tour-6/` existe sur fx-int, le portail calcule aussi le tableau de bord du tour 6 et l'écrit dans `sieges/tour-6/tableau-de-bord.md` (le dernier tour, qui porte aussi les lignes du tour 5) ; `sieges/tour-5/tableau-de-bord.md` n'est plus mis à jour (le chiffre de 85 % du § 1 se lit alors là). Les défauts cachés « vus par de vrais sièges » passent de 9 sur 23 à 9 sur 26 (B24 à B26 sont hors banc : le taux de 85 % ne bouge pas).

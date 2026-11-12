@@ -1,0 +1,17 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+simple_tracks/tab_simple_Morceau
+share_sheet/tab_simple_Envoyer
+dialogue:share_progress
+dialogue:« Partager mon morceau · Trap-mo »
+dialogue:share_bilan
+dialogue:my_exports
+mixer/tab_Mix
+dialogue:mode_switch
+simple_mix/tab_simple_Mix
+plus
+dialogue:projects
+dialogue:project_opening_p-646ea29f
+dialogue:« Sauvegarder le morceau en .zip »
+launch

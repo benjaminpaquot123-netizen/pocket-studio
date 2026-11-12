@@ -354,7 +354,7 @@
         {
           "id": "fill",
           "levels": "p",
-          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup avant la fin, puis « Roulement » ×4 « ↗ Montant » : une rafale qui monte jusqu'au Refrain.",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup avant la fin, puis « Roulement » ×4 « ↗ Montant » : une rafale qui monte jusqu'au Refrain.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "hat",

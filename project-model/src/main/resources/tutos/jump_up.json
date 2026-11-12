@@ -432,8 +432,8 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », touche « Mesure 4 », pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
-          "textPro": "À toi : dans la partie « Montée », « Mesure 4 », pad « Caisse » (elle y roule déjà en ×2) : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » (elle y roule déjà en ×2) : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -441,7 +441,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "listen": "vs:Montée:Drop",

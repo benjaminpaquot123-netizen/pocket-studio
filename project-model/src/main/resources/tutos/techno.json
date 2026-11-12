@@ -460,7 +460,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
           "levels": "p",
           "check": "fill",
           "spot": "rhythm.pattern",
@@ -470,7 +470,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le Drop 2 paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

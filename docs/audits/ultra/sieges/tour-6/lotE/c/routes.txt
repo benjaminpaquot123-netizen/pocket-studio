@@ -1,0 +1,7 @@
+dialogue:welcome
+dialogue:mode_step
+?
+dialogue:remix_model_ask
+dialogue:« Um trecho »
+session/tab_simple_Morceau
+tab_simple_Rythme

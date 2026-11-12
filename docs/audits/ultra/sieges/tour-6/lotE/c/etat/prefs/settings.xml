@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="bufferBursts" value="2" />
+    <boolean name="keepScreenOn" value="true" />
+    <boolean name="introSound" value="true" />
+    <string name="language">pt-BR</string>
+    <float name="metronomeLevel" value="0.5" />
+    <string name="keyLayout">TwoOctaves</string>
+    <boolean name="liveBeatHaptics" value="false" />
+    <boolean name="guideSeen" value="true" />
+    <float name="uiScale" value="1.0" />
+    <boolean name="haptics" value="true" />
+    <boolean name="englishNotes" value="false" />
+    <int name="recordCountIn" value="1" />
+    <boolean name="monitorVoice" value="false" />
+    <string name="theme">Studio</string>
+    <set name="favouriteFx" />
+    <boolean name="retoursMode" value="true" />
+    <boolean name="simpleMode" value="true" />
+    <boolean name="metronomeInTakes" value="true" />
+</map>

@@ -1003,7 +1003,8 @@ fun TutoChapterList(ui: TutoUi, goTo: (Int) -> Unit, setLevel: (TutoLevel) -> Un
         }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.chapters.forEachIndexed { i, c ->
-                val count = c.steps.count { it.id in ui.progress.done }
+                // Tour 6 (T9): counted as the panel counts them (in Pro an example not heard holds nothing back).
+                val count = c.steps.count(ui::settled)
                 val whole = count == c.steps.size
                 Row(
                     Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(if (i == ui.chapter) Neon.Cyan.copy(alpha = 0.16f) else Neon.SurfaceHigh)

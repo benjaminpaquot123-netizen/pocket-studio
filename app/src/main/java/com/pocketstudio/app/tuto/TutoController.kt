@@ -133,7 +133,10 @@ data class TutoUi(
     val doneCount: Int get() = chapters.sumOf { c -> c.steps.count { it.id in progress.done } }
 
     /** The steps still to do for the end, in order (in Pro, an example not listened to does not hold it back). */
-    val left: List<TutoStep> get() = chapters.flatMap { it.steps }.filter { it.id !in progress.done && !(progress.level == TutoLevel.Pro && it.listening) }
+    val left: List<TutoStep> get() = chapters.flatMap { it.steps }.filterNot(::settled)
+
+    /** Tour 6 (T9): step [s] holds nothing back (done, or in Pro an example): one rule for the end, the « Bravo » and the chapters' list. */
+    fun settled(s: TutoStep): Boolean = s.id in progress.done || (progress.level == TutoLevel.Pro && s.listening)
     val finished: Boolean get() = left.isEmpty()
 
     /** Where step [s] is: (chapter, step) indices. */

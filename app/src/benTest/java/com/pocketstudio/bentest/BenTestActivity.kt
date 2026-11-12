@@ -28,6 +28,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -59,13 +61,16 @@ class BenTestActivity : ComponentActivity() {
                 val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { refresh++ }
                 val granted = remember(refresh) { PERMISSIONS.associate { (p, _) -> p to (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED) } }
                 LaunchedEffect(Unit) { Robot.look(this@BenTestActivity) }
+                val candidats = remember(etat.running, etat.verdict) { Robot.candidats(this@BenTestActivity) }
                 BenTestScreen(
                     etat = etat,
+                    candidats = candidats,
                     granted = PERMISSIONS.map { (p, label) -> Triple(p, label, granted[p] == true) },
                     actions = BenTestActions(
                         allow = { p -> ask.launch(p) },
                         start = { Robot.start(application, Robot.ECLAIR) },
                         startTout = { Robot.start(application, Robot.TOUT) },
+                        startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         resume = { Robot.start(application) },
                         answer = Robot::answer,
                         reset = { Robot.reset(this) },
@@ -94,6 +99,8 @@ class BenTestActions(
     val start: () -> Unit = {},
     /** « Tout tester » (T1). */
     val startTout: () -> Unit = {},
+    /** « Retester les corrections »: the chosen steps' ids. */
+    val startRetest: (Set<String>) -> Unit = {},
     /** « Reprendre »: the run the logbook holds. */
     val resume: () -> Unit = {},
     val answer: (Boolean) -> Unit = {},
@@ -103,7 +110,9 @@ class BenTestActions(
 
 /** The screen, from [etat] alone ([granted]: each permission, its button's words, given or not). */
 @Composable
-fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean>>, actions: BenTestActions) {
+fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean>>, actions: BenTestActions, candidats: List<Robot.Candidat> = emptyList()) {
+    var liste by remember { mutableStateOf(false) }
+    val coches = remember(candidats) { mutableStateMapOf<String, Boolean>().apply { candidats.forEach { put(it.id, it.coche) } } }
     Column(
         Modifier.fillMaxSize().background(Neon.Background).safeDrawingPadding().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -137,7 +146,22 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Text((if (etat.passage == Robot.TOUT) "Tout tester terminé : " else "Essai éclair terminé : ") + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
                     Button(onClick = actions.send, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_envoyer")) { Text("Envoyer le rapport") }
                 }
-                if (etat.interrompu == null && etat.verdict == null) {
+                if (etat.interrompu == null && etat.verdict == null && liste) {
+                    Text("Retester les corrections : coche les étapes à refaire", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
+                    if (candidats.none { it.feu != null }) Text("Aucun passage enregistré sur ce téléphone : rien n'est coché d'avance.", color = Neon.TextSecondary)
+                    candidats.forEach { c ->
+                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_retest_${c.id}")) {
+                            androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = { coches[c.id] = it })
+                            Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: ""), color = Neon.TextPrimary)
+                        }
+                    }
+                    val n = coches.count { it.value }
+                    Button(
+                        onClick = { actions.startRetest(coches.filterValues { it }.keys.toSet()); liste = false },
+                        enabled = n > 0, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest_go"),
+                    ) { Text(if (n > 0) "Retester $n étape" + (if (n > 1) "s" else "") else "Coche au moins une étape") }
+                    OutlinedButton(onClick = { liste = false }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_retest_retour")) { Text("Retour") }
+                } else if (etat.interrompu == null && etat.verdict == null) {
                     Text(
                         "Tout tester : environ 1 heure, sans rien toucher. Avant : chargeur branché, pièce calme, « Ne pas déranger » activé, volume à moitié. " +
                             "Le robot joue les 37 styles, fait 4 exports, mesure la latence, suit le Guide, tourne l'écran, puis laisse l'écran s'éteindre.",
@@ -146,6 +170,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
+                    OutlinedButton(onClick = { liste = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest")) { Text("Retester les corrections") }
                 }
                 if (etat.interrompu != null || etat.verdict != null) {
                     OutlinedButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_recommencer")) { Text("Tout recommencer") }

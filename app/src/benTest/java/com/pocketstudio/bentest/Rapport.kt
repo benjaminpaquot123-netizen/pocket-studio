@@ -68,9 +68,10 @@ object Rapport {
 
     /** [about]: the app's version and commit, the device, Android. */
     /** [tout]: « Tout tester » (each step's light, the verdict in lights). */
-    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false): String = buildString {
+    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false, retest: Int? = null): String = buildString {
         appendLine(if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
         appendLine()
+        if (retest != null) { appendLine("**${Retest.entete(retest)}**"); appendLine() }
         about.forEach { (k, v) -> appendLine("- $k : $v") }
         appendLine()
         appendLine("**Verdict : ${bilan(lines, etapes).verdict()}**")

@@ -70,12 +70,32 @@ object Robot {
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
     fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR } ?: ECLAIR
 
-    /** The steps' names and labels (the work is only done by a run). */
-    private fun etapes(context: Context, passage: String = passage(context)): List<Etape> {
-        val j = Journey(InAppDriver(LooperMainThread()))
-        return if (passage == TOUT) ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
-        else EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+    /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
+    private fun retestFile(context: Context) = File(dir(context), "retest.txt")
+    private fun derniereFile(context: Context) = File(dir(context), "derniere.tsv")
+    fun retest(context: Context): Set<String>? = Retest.lireChoix(retestFile(context))
+
+    /** The checklist: every « Tout tester » step (id, label), its last light, ticked by default when red or not conclusive. */
+    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean)
+
+    fun candidats(context: Context): List<Candidat> {
+        val all = etapes(context, TOUT, retest = false)
+        val last = Retest.lire(derniereFile(context))
+        val ticked = Retest.parDefaut(last, all)
+        return all.map { Candidat(it.name, it.label, last[it.name], it.name in ticked) }
     }
+
+    /** The steps' names and labels (the work is only done by a run). */
+    private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
+        val j = Journey(InAppDriver(LooperMainThread()))
+        val all = if (passage == TOUT) ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+        else EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+        return subset(all, passage, if (retest) retest(context) else null)
+    }
+
+    /** [all] reduced to the retest's [chosen] steps (only for « Tout tester »). */
+    internal fun subset(all: List<Etape>, passage: String, chosen: Set<String>?): List<Etape> =
+        if (passage == TOUT && chosen != null) Retest.choisir(all, chosen) else all
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
         if (passage == TOUT) Rapport.bilanFeux(lines, steps).verdict() else Rapport.bilan(lines, steps).verdict()
@@ -98,9 +118,12 @@ object Robot {
     }
 
     /** Starts (or picks up, [passage] null) the essai éclair or « Tout tester ». */
-    fun start(app: Application, passage: String? = null) {
+    fun start(app: Application, passage: String? = null, retest: Set<String>? = null) {
         if (_etat.value.running) return
-        if (passage != null) runCatching { dir(app).mkdirs(); passageFile(app).writeText(passage) }
+        if (passage != null) runCatching {
+            dir(app).mkdirs(); passageFile(app).writeText(passage)
+            if (retest != null) Retest.ecrireChoix(retestFile(app), retest) else retestFile(app).delete()
+        }
         val which = passage(app)
         _etat.value = Etat(running = true, passage = which)
         val tracker = Tracker.install(app)
@@ -114,8 +137,9 @@ object Robot {
             val c = carnet(app)
             driver.note = { c.add(Carnet.NOTE, "robot", it) }
             val appli = AppliReelle(app, main, tracker)
-            val steps = if (which == TOUT) ToutTester(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
+            val all = if (which == TOUT) ToutTester(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
             else EssaiEclair(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
+            val steps = subset(all, which, retest(app))
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() })
             runCatching {
                 passage.run { e ->
@@ -128,6 +152,11 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
+            if (which == TOUT) runCatching {
+                // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.
+                val f = derniereFile(app)
+                Retest.ecrire(f, Retest.fusion(Retest.lire(f), Rapport.feux(c.lines(), passage.etapes)))
+            }
             _etat.value = Etat(verdict = verdict(c.lines(), passage.etapes, which), passage = which)
             bringBack(app)
         }
@@ -144,6 +173,7 @@ object Robot {
         if (_etat.value.running) return
         carnet(context).clear()
         passageFile(context).delete()
+        retestFile(context).delete()
         captures(context).deleteRecursively()
         _etat.value = Etat()
     }
@@ -202,7 +232,7 @@ object Robot {
         val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null))
             add("mesures.json" to Rapport.json(lines, about))
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
@@ -217,6 +247,9 @@ object Robot {
 
 /** The engine's numbers (read only, from any thread: the app's own screens read them the same way). */
 object NativeSonde : Sonde {
+    /** The app's own health readings already taken (every 250 ms, they hold the true worst block and gap): read from there, never from the engine's meters again (a second reader would steal their window). */
+    private var lastAt = 0L
+
     override fun lire(): Sonde.Lecture {
         if (!NativeEngine.isAvailable) return Sonde.Lecture(0, 0f, 0f, false, false, false)
         val s = NativeEngine.streamInfo()
@@ -230,7 +263,12 @@ object NativeSonde : Sonde {
         val lufs = if (ok) loud[NativeEngine.LOUDNESS_SHORT_TERM].takeIf { it > NativeEngine.LOUDNESS_NONE + 1f } ?: Float.NaN else Float.NaN
         val drive = if (ok) loud[NativeEngine.LOUDNESS_DRIVE] else Float.NaN
         val lane = runCatching { com.pocketstudio.app.report.HealthMonitor.probe?.invoke()?.masterLane }.getOrNull()
-        return Sonde.Lecture(s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0, lufs = lufs, drive = drive, lane = lane)
+        val fresh = com.pocketstudio.app.report.HealthMonitor.samples.snapshot().filter { it.atMs > lastAt }
+        fresh.maxOfOrNull { it.atMs }?.let { lastAt = it }
+        return Sonde.Lecture(
+            s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0, lufs = lufs, drive = drive, lane = lane,
+            cpuWorst = fresh.maxOfOrNull { it.cpuWorst } ?: 0f, gapWorst = fresh.maxOfOrNull { it.gapWorst } ?: 0f,
+        )
     }
 }
 

@@ -9,21 +9,32 @@ app's PackManifest format (the best sound of each kind first: the assistant take
 LICENSE.txt. Every sound is computed here from oscillators, noise and filters with fixed seeds: no
 recording and no sample of anyone else, so the sounds are ours, and two runs write the same bytes.
 
-The techniques are today's rather than a drum machine's:
-- kicks in layers: a sine body whose pitch falls from 170-250 Hz onto its fundamental (reached
-  exactly, so the tech house and techno kicks are tuned to the key), a filtered click, a short
-  pitched knock, a soft saturation at 4x the rate (harmonics a phone's speaker can play);
-- snares and claps in layers (shell modes, wires, clap bursts, crack), saturated, with a short
-  room whose left and right tails are partly independent: wide, yet summing to mono cleanly;
+The techniques are today's rather than a drum machine's. Trial n° 2 (Benjamin on n° 1: « tu
+rajoutes juste des cymbales on dirait »): the difference goes where it is heard, the kick and the
+snare or clap, and the metal steps back.
+- kicks in four layers: a tuned sub (a sine falling from 170-250 Hz onto its fundamental, reached
+  exactly: the tech house and techno kicks sit on the key), a short punch on a harmonic between 90
+  and 200 Hz, the body's harmonics between 180 Hz and 1.5 kHz (tanh and tanh² at 4x the rate, so
+  nothing folds back: what a phone's speaker plays, the ear rebuilding the fundamental from them)
+  and a click of its own in 1.2-4.5 kHz over 2-6 ms;
+- snares and claps in layers: a tonal body at 180-250 Hz, a noise band at 1-3 kHz (the wires, the
+  hands), a little top, saturated, then a plate (t60 0.3-0.5 s) whose left and right tails are
+  partly independent (claps: wide, yet summing to mono cleanly) and a soft clipper (denser at the
+  same peak): each stays within 40 dB of its peak for 0.3-0.55 s;
 - hats and rides from six detuned square oscillators and their ring products plus noise, each
-  side mixing the shared bank with its own slightly detuned one;
+  side mixing the shared bank with its own slightly detuned one, a shelf taking 3 dB off above
+  10 kHz;
 - percussion by modal synthesis (wood, rim, membrane), grain shakers, a two-operator FM clank.
-Each sound peaks at -1 dBFS, with no DC and a short fade at the end.
+Peaks by kind (PEAKS): kicks, snares and claps at -1 dBFS, percussion at -4, hats, open hats and
+rides at -8 (the metal discreet). No DC, a short fade at the end.
 
 --report prints, and writes to OUT_DIR/mesures.json, each sound's duration, peak, RMS, crest
-factor, energy above 10 kHz, spectral centroid, side against centre, DC, and each kick's
-fundamental measured over 60-200 ms (tech house in G: 49.0 Hz, techno in F: 43.65 Hz).
-Checked by test_trial_drums.py.
+factor, energy above 10 kHz, spectral centroid, side against centre, DC, its energy in the four
+bands (sub 20-60 Hz, low 60-250 Hz, mid 250 Hz-4 kHz, high 4-20 kHz), in 250 Hz-1.5 kHz (a kick's
+harmonics), 1.2-4.5 kHz (its click) and 250 Hz-2 kHz (a snare's or clap's body), each against
+20 Hz-20 kHz, the energy above 10 kHz against 4-10 kHz, the tail (the last sample within 40 dB of
+the peak), and each kick's fundamental measured over 60-200 ms (tech house in G: 49.0 Hz, techno in
+F: 43.65 Hz). Checked by test_trial_drums.py.
 """
 import json
 import sys
@@ -36,7 +47,8 @@ from scipy import signal
 
 RATE = 48000
 OS = 4  # oversampling of the saturation stages and of the square banks
-PEAK_DB = -1.0
+# Peak of each kind (dBFS): the metal far under the kick and the snare (trial n° 2).
+PEAKS = {'kick': -1.0, 'snare': -1.0, 'clap': -1.0, 'perc': -4.0, 'hat': -8.0, 'open_hat': -8.0, 'ride': -8.0}
 LICENSE = ('Sons originaux de Pocket Studio, fabriqués par synthèse maison (scripts/packs/trial_drums.py) : '
            'aucun enregistrement ni échantillon tiers.\n')
 
@@ -72,6 +84,24 @@ def peak_eq(x, freq, gain_db, q=0.8):
     return signal.lfilter(b / a[0], a / a[0], x, axis=0)
 
 
+def high_shelf(x, freq, gain_db):
+    """RBJ high shelf (slope 1), half its gain at `freq`: at 8 kHz and -3 dB, -2.3 dB at 10 kHz and
+    -2.7 dB at 12 kHz."""
+    a_ = 10 ** (gain_db / 40)
+    w = 2 * np.pi * freq / RATE
+    cw, alpha = np.cos(w), np.sin(w) / np.sqrt(2)
+    r = 2 * np.sqrt(a_) * alpha
+    b = np.array([a_ * ((a_ + 1) + (a_ - 1) * cw + r), -2 * a_ * ((a_ - 1) + (a_ + 1) * cw),
+                  a_ * ((a_ + 1) + (a_ - 1) * cw - r)])
+    a = np.array([(a_ + 1) - (a_ - 1) * cw + r, 2 * ((a_ - 1) - (a_ + 1) * cw), (a_ + 1) - (a_ - 1) * cw - r])
+    return signal.lfilter(b / a[0], a / a[0], x, axis=0)
+
+
+def tame_top(x):
+    """The metal's top: 3 dB off above 10 kHz (trial n° 2: less fizz, the « cymbals » step back)."""
+    return high_shelf(x, 8000.0, -3.0)
+
+
 def norm(x):
     return x / (np.max(np.abs(x)) or 1.0)
 
@@ -83,6 +113,16 @@ def saturate(x, drive, bias=0.0):
     up = signal.resample_poly(x, OS, 1, axis=0)
     y = (np.tanh(drive * up + bias) - np.tanh(bias)) / np.tanh(drive)
     return signal.resample_poly(y, 1, OS, axis=0)
+
+
+def harmonics(x, drive, even, band=(180.0, 1500.0)):
+    """A low sound's harmonics, as a phone's speaker plays them (« virtual bass », the ear rebuilding
+    the fundamental from them): x through tanh (odd harmonics) plus `even` of tanh² (even ones) at 4x
+    the rate, so nothing folds back; only the band kept (4th-order Butterworth each side). x peaks
+    near 1: the harmonics follow its level, strong while it is loud, thinning as it fades."""
+    up = drive * signal.resample_poly(x, OS, 1, axis=0)
+    y = signal.resample_poly(np.tanh(up) + even * np.tanh(up) ** 2, 1, OS, axis=0)
+    return filt(y, 'bandpass', band, 4)
 
 
 def exp_env(t, tau, start=0.0, attack=0.0002):
@@ -138,7 +178,8 @@ def room(x, rng, t60, mix, predelay=0.006, damp=6000.0, channels=2, spread=0.6):
 
 
 def finish(x, fade=0.006):
-    """Columns (samples, channels), no DC, a 0.2 ms fade in, a raised-cosine fade out, -1 dBFS peak."""
+    """Columns (samples, channels), no DC, a 0.2 ms fade in, a raised-cosine fade out, a peak of 1
+    (build() sets each kind's peak, PEAKS)."""
     x = np.array(x, dtype=float)
     if x.ndim == 1:
         x = x[:, None]
@@ -151,69 +192,88 @@ def finish(x, fade=0.006):
     # The fades moved the mean a little: take it out along a slow bump, ends kept at zero.
     bump = np.hanning(len(x))[:, None]
     x -= x.sum(axis=0) / bump.sum() * bump
-    return x / np.max(np.abs(x)) * 10 ** (PEAK_DB / 20)
+    return x / np.max(np.abs(x))
 
 
 # --- Kicks ---------------------------------------------------------------------------------------
 
-def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, click=0.5, band=(2500, 6000), click_ms=5.0,
-         knock=0.3, knock_hz=1200.0, lp=6000.0, grit=0.0):
-    """Layered kick. The sine body falls from `top` onto f0, reached exactly at `glide` seconds and
-    held (the kick is tuned). A noise-and-impulse click (band-passed, click_ms long) and a short
-    knock (a sine diving onto knock_hz) give the attack; `grit` boosts the low mids before the
-    saturation (a dirtier kick). Body, knock and some click are saturated together at 4x, the body
-    kept hot by a gentler envelope before the saturation than after it; the click is laid again
-    on top, then the sub-sonic rumble and the DC go."""
+def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, h=3, punch=0.5, punch_ms=22.0, harm=1.5,
+         hdrive=10.0, even=0.4, click=1.5, click_ms=5.0, knock=1.0, knock_hz=2200.0, clip=2.5, lp=7000.0, grit=0.0):
+    """Layered kick, made to be heard on a phone's speaker as well as on a big one:
+    - sub: a sine falling from `top` onto f0, reached exactly at `glide` seconds and held (tuned);
+    - punch: a sine on the h-th harmonic of f0 (90-200 Hz, so in tune too), dropping onto it from
+      half an octave above in a few ms, gone in about 3 x punch_ms (30-80 ms);
+    - glue: sub and punch through a soft tanh at 4x (`drive`, `bias` for a little warmth);
+    - harmonics: `harm` of sub and punch through tanh and tanh² (`hdrive`, `even`), kept at
+      180 Hz-1.5 kHz (harmonics());
+    - click: a layer of its own: noise and an impulse band-passed to 1.2-4.5 kHz and a knock, a
+      sine diving onto knock_hz, held for 40 % of click_ms then gone at click_ms (2-6 ms).
+    The body (all but the click) is kept hot by a gentler envelope before the saturation than after
+    it; `grit` boosts the low mids before the saturation (dirtier). Click and body then go through a
+    soft clipper (`clip`, tanh at 4x): the click's spike no longer sets the peak alone, so the body
+    keeps its weight at the same peak. The sub-sonic rumble and the DC go last."""
     rng = rng_for(name)
     t = t_of(length)
     sweep = np.clip(1.0 - t / glide, 0.0, 1.0) ** 3
-    body = osc(t, f0 + (top - f0) * sweep)
-    burst = rng.standard_normal(len(t)) * exp_env(t, click_ms / 3000, attack=0.0001)
-    burst[0] += 4.0
-    tick = norm(filt(burst, 'bandpass', band, 2))
-    knk = osc(t, knock_hz * (1 + 1.5 * np.exp(-t / 0.002))) * exp_env(t, 0.005, attack=0.0003)
-    x = body * hold_decay(t, hold, length, 0.5 * curve) + 0.3 * click * tick + knock * knk
+    pre = hold_decay(t, hold, length, 0.5 * curve)
+    pun = osc(t, h * f0 * (1 + 0.41 * np.exp(-t / 0.004))) * exp_env(t, punch_ms / 1000, attack=0.0005)
+    low = osc(t, f0 + (top - f0) * sweep) * pre + punch * pun
     if grit:
-        x = peak_eq(x, 400.0, grit, 0.7)
-    x = filt(saturate(norm(x), drive, bias), 'lowpass', lp, 2) * hold_decay(t, hold, length, 0.5 * curve)
-    x = filt(x + click * tick, 'highpass', 0.45 * f0, 2)
-    return finish(x)
+        low = peak_eq(low, 400.0, grit, 0.7)
+    low = norm(low)
+    body = filt(saturate(low, drive, bias) + harm * harmonics(low, hdrive, even), 'lowpass', lp, 2) * pre
+    click_env = hold_decay(t, 0.4 * click_ms / 1000, click_ms / 1000, 2.0) * np.clip(t / 0.0001, 0.0, 1.0)
+    burst = rng.standard_normal(len(t)) * click_env
+    burst[0] += 4.0
+    knk = osc(t, knock_hz * (1 + np.exp(-t / 0.0015))) * click_env
+    tick = norm(filt(norm(filt(burst, 'bandpass', (1200, 4500), 2)) + knock * knk, 'lowpass', 6000.0, 2))
+    return finish(filt(saturate(norm(body + click * tick), clip), 'highpass', 0.45 * f0, 2))
 
 
 # --- Snares and claps ----------------------------------------------------------------------------
 
-def snare(name, f, length, body=1.0, wires=1.0, wire_tau=0.07, clap=0.7, crack=0.8, drive=2.2, room_mix=0.2,
-          t60=0.35, bright=4500.0, hp=120.0):
-    """Layered snare: a tuned shell (three membrane modes, pitch dropping 40 % into f), bright
-    band-passed wires with a longer second decay, a three-burst clap, a stick crack; saturated at
-    4x for weight, a presence boost, then a short room (mono, like the file)."""
+def snare(name, f, length, body=0.9, body_tau=0.08, noise=1.3, noise_tau=0.05, clap=0.6, top=0.3, crack=0.5,
+          drive=2.2, plate=0.5, t60=0.4, damp=4500.0, clip=3.0, hp=100.0):
+    """Layered snare: a tuned shell (three membrane modes, pitch dropping 30 % onto f, 180-250 Hz,
+    the first ringing body_tau), the wires' noise in 1-3 kHz (a fast and a slower decay), a
+    three-burst clap in the same band, `top` of the wires' brighter 3-9 kHz rattle, a stick crack;
+    saturated at 4x for weight (`drive`), then a plate: a darkened tail of t60 s, `plate` of it
+    (mono, like the file); last a soft clipper on the whole (`clip`, tanh at 4x: denser at the same
+    peak)."""
     rng = rng_for(name)
     t = t_of(length)
-    fall = 1 + 0.4 * np.exp(-t / 0.008)
-    shell = (osc(t, f * fall) * exp_env(t, 0.05, attack=0.0005)
-             + 0.5 * osc(t, 1.59 * f * fall, 1.0) * exp_env(t, 0.028, attack=0.0005)
-             + 0.25 * osc(t, 2.14 * f * fall, 2.0) * exp_env(t, 0.016, attack=0.0005))
-    wire = peak_eq(filt(rng.standard_normal(len(t)), 'bandpass', (1200, 12000), 2), bright, 6.0, 0.9)
-    wire_env = 0.65 * exp_env(t, wire_tau, attack=0.0005) + 0.35 * exp_env(t, 2.5 * wire_tau, attack=0.0005)
+    fall = 1 + 0.3 * np.exp(-t / 0.008)
+    shell = (osc(t, f * fall) * exp_env(t, body_tau, attack=0.0005)
+             + 0.7 * osc(t, 1.59 * f * fall, 1.0) * exp_env(t, 0.6 * body_tau, attack=0.0005)
+             + 0.45 * osc(t, 2.14 * f * fall, 2.0) * exp_env(t, 0.4 * body_tau, attack=0.0005))
+    wire_env = 0.6 * exp_env(t, noise_tau, attack=0.0005) + 0.4 * exp_env(t, 2.5 * noise_tau, attack=0.0005)
+    wire = filt(rng.standard_normal(len(t)), 'bandpass', (1000, 3000), 2) * wire_env
     hand = filt(rng.standard_normal(len(t)), 'bandpass', (1000, 2600), 2)
     hand_env = sum(exp_env(t, 0.004, s, attack=0.0004) for s in (0.0, 0.006)) + exp_env(t, 0.035, 0.012, attack=0.0004)
-    tip = filt(rng.standard_normal(len(t)), 'bandpass', (3000, 9000), 2) * exp_env(t, 0.0015, attack=0.0001)
-    x = body * norm(shell) + wires * norm(wire) * wire_env + clap * norm(hand) * hand_env + crack * norm(tip)
-    x = filt(saturate(norm(x), drive), 'highpass', hp, 2)
-    x = peak_eq(x, 3000.0, 4.0, 0.8)
-    return finish(room(x[:, None], rng, t60, room_mix, channels=1), fade=0.3 * length)
+    rattle = filt(rng.standard_normal(len(t)), 'bandpass', (3000, 9000), 2) * exp_env(t, 0.6 * noise_tau, attack=0.0005)
+    tip = filt(rng.standard_normal(len(t)), 'bandpass', (2000, 6000), 2) * exp_env(t, 0.0015, attack=0.0001)
+    x = (body * norm(shell) + noise * norm(wire) + clap * norm(hand) * hand_env + top * norm(rattle)
+         + crack * norm(tip))
+    x = room(saturate(norm(x), drive)[:, None], rng, t60, plate, damp=damp, channels=1)
+    return finish(filt(saturate(norm(x), clip), 'highpass', hp, 2), fade=0.25 * length)
 
 
-def clap(name, length, offsets=(0.0, 0.010, 0.020, 0.030), band=(1000, 2500), burst=0.005, tail=0.08, high=0.4,
-         width=0.35, drive=1.6, room_mix=0.25, t60=0.45, damp=6000.0, predelay=0.008, hp=400.0):
-    """Hand clap: 3-4 noise bursts 8-15 ms apart, each its own hand (its own noise, a band shifted a
-    little), the last one ringing for `tail`; a brighter layer on top that dies sooner; a soft
-    saturation; a short room. Each side mixes shared noise with its own (`width`), and the room's
-    tail is partly its own: a real stereo clap that sums to mono without comb filtering."""
+def clap(name, length, offsets=(0.0, 0.010, 0.020, 0.030), band=(1000, 2500), burst=0.005, tail=0.08, high=0.2,
+         body=0.35, body_hz=210.0, width=0.35, drive=3.0, plate=0.6, t60=0.4, damp=5000.0, predelay=0.008, clip=3.0,
+         lp=9000.0, hp=120.0):
+    """Hand clap in layers: 3-4 noise bursts 8-15 ms apart in the hands' band (1-3 kHz), each its own
+    hand (its own noise, the band shifted a little), the last one ringing for `tail`; `high` of a
+    brighter layer that dies sooner; the palms' body, two modes from body_hz (180-250 Hz) rung by
+    every burst, in the centre; a soft saturation (`drive`); a plate tail of t60 s, `plate` of it;
+    then a soft clipper on the whole (`clip`, tanh at 4x: denser at the same peak) and a low-pass
+    at `lp` (the clipper's fizz). Each side mixes shared noise with its own (`width`), and the
+    plate's tails are partly their own: a real stereo clap that sums to mono without comb
+    filtering."""
     rng = rng_for(name)
     t = t_of(length)
     n = len(t)
     x = np.zeros((n, 2))
+    hits = np.zeros(n)
     for k, start in enumerate(offsets):
         last = k == len(offsets) - 1
         env = exp_env(t, tail if last else burst, start, attack=0.0005)
@@ -222,8 +282,10 @@ def clap(name, length, offsets=(0.0, 0.010, 0.020, 0.030), band=(1000, 2500), bu
         shift = rng.uniform(0.9, 1.1)
         x += ((0.8 + 0.2 * last) * filt(noise, 'bandpass', (band[0] * shift, band[1] * shift), 2) * env[:, None]
               + high * filt(noise, 'bandpass', (3500, 9000), 2) * env_top[:, None])
-    x = filt(saturate(norm(x), drive), 'highpass', hp, 2)
-    return finish(room(x, rng, t60, room_mix, predelay, damp), fade=0.3 * length)
+        hits += exp_env(t, burst, start, attack=0.0005)
+    thump = resonate(rng.standard_normal(n) * hits, [body_hz, 1.48 * body_hz], [0.045, 0.025], [1.0, 0.5])
+    x = room(saturate(norm(norm(x) + body * norm(thump)[:, None]), drive), rng, t60, plate, predelay, damp)
+    return finish(filt(filt(saturate(norm(x), clip), 'highpass', hp, 2), 'lowpass', lp, 2), fade=0.25 * length)
 
 
 # --- Hats and rides ------------------------------------------------------------------------------
@@ -242,12 +304,13 @@ def metal(n, scale, rng, detune, ring):
     return x / np.std(x)
 
 
-def cymbal(name, length, tau, scale=1.6, hp=6500.0, ring=0.5, noise=0.5, width=0.3, air=10500.0, air_db=3.0,
-           detune=0.01, attack=0.0003, snap=0.0, grit=0.0):
+def cymbal(name, length, tau, scale=1.6, hp=5200.0, ring=0.5, noise=0.5, width=0.3, detune=0.01, attack=0.0003,
+           snap=0.0, grit=0.0):
     """Closed or open hat: the six-square bank plus white noise, enveloped (a sharp attack, an
     exponential decay `tau`, `snap` of it a fast first drop, closed by a fade over its last third),
-    high-passed steeply, the fizz above 16 kHz tamed (a phone does not play it), an air boost.
-    `grit` drives it into a tanh first (dirtier). Each side mixes the shared bank and noise with
+    high-passed steeply (lower than in trial n° 1: more of the 5-10 kHz « tss », less fizz), the
+    fizz above 14 kHz tamed (a phone does not play it), 3 dB off above 10 kHz (tame_top: the
+    « cymbals » of trial n° 1 step back). `grit` drives it into a tanh first (dirtier). Each side mixes the shared bank and noise with
     its own (`width`), detuned a little more: a slight width that sums to mono."""
     rng = rng_for(name)
     t = t_of(length)
@@ -258,19 +321,19 @@ def cymbal(name, length, tau, scale=1.6, hp=6500.0, ring=0.5, noise=0.5, width=0
     if grit:
         x = np.tanh(grit * x / np.std(x))
     env = (1 - snap) * exp_env(t, tau, attack=attack) + snap * exp_env(t, 0.01, attack=attack)
-    x = filt(filt(x * env[:, None], 'highpass', hp, 4), 'lowpass', 16000.0, 2)
-    return finish(peak_eq(x, air, air_db, 0.9), fade=0.35 * length)
+    x = filt(filt(x * env[:, None], 'highpass', hp, 4), 'lowpass', 14000.0, 2)
+    return finish(tame_top(x), fade=0.35 * length)
 
 
 BELL = np.array([1.0, 1.183, 1.506, 1.741, 2.065, 2.412, 2.873, 3.367])  # inharmonic ride partials
 
 
 def ride(name, length, ping=2900.0, bell=0.35, ping_tau=0.35, wash_tau=0.28, scale=2.4, width=0.4, wash_hp=3500.0,
-         air=11000.0, air_db=3.0, damp=0.0):
+         damp=0.0):
     """Ride: a stick tick, a bell of eight inharmonic partials from `ping` up, each doubled a hair
     higher (they beat: the shimmer; the double is tuned a little differently on each side), a long
-    wash of two square banks and noise above wash_hp; high-passed, the fizz above 16 kHz tamed, a
-    long fade. `damp` darkens it (a low-pass, in kHz)."""
+    wash of two square banks and noise above wash_hp; high-passed, the fizz above 16 kHz tamed, 3 dB
+    off above 10 kHz (tame_top), a long fade. `damp` darkens it (a low-pass, in kHz)."""
     rng = rng_for(name)
     t = t_of(length)
     n = len(t)
@@ -292,7 +355,7 @@ def ride(name, length, ping=2900.0, bell=0.35, ping_tau=0.35, wash_tau=0.28, sca
     x = np.stack(chans, axis=1)
     tick = filt(rng.standard_normal(n), 'bandpass', (3000, 9000), 2) * exp_env(t, 0.002, attack=0.0001)
     x = filt(filt(x + 1.5 * tick[:, None], 'highpass', 500.0, 2), 'lowpass', damp * 1000 if damp else 16000.0, 2)
-    return finish(peak_eq(x, air, air_db, 0.9), fade=0.3 * length)
+    return finish(tame_top(x), fade=0.3 * length)
 
 
 # --- Percussion ----------------------------------------------------------------------------------
@@ -404,28 +467,31 @@ def clank(name, f, length, pan=-0.25, index=3.0, room_mix=0.2):
 
 PACKS = [
     {'id': 'essai_jump_up', 'name': 'Essai jump up', 'family': 'Bass music', 'bpm': 174.0, 'sounds': [
-        ('kick', 'percutant', lambda n: kick(n, 57.0, 250, 0.035, 0.25, 0.015, 2.2, 2.8, 0.12, click=0.75,
-                                             band=(2500, 6500), knock=0.5, knock_hz=1400)),
-        ('kick', 'rond', lambda n: kick(n, 55.0, 220, 0.045, 0.28, 0.03, 1.8, 2.0, click=0.45, knock=0.3, knock_hz=1100)),
-        ('kick', 'sec', lambda n: kick(n, 60.0, 250, 0.03, 0.21, 0.01, 2.8, 3.2, click=0.9, band=(3000, 7000),
-                                       click_ms=4.0, knock=0.6, knock_hz=1800)),
-        ('kick', 'distordu', lambda n: kick(n, 58.0, 240, 0.04, 0.26, 0.02, 2.0, 4.5, 0.2, click=0.6, knock=0.4, grit=4.0)),
-        ('snare', 'énorme', lambda n: snare(n, 200.0, 0.4, wires=1.4, clap=0.9)),
-        ('snare', 'claquante', lambda n: snare(n, 215.0, 0.3, wires=1.6, wire_tau=0.05, clap=0.9, crack=1.0, drive=2.6,
-                                               room_mix=0.12, t60=0.28)),
-        ('snare', 'grasse', lambda n: snare(n, 185.0, 0.42, body=1.3, wires=0.8, wire_tau=0.085, clap=0.4, drive=3.2,
-                                            room_mix=0.18)),
-        ('snare', 'brillante', lambda n: snare(n, 220.0, 0.45, wires=1.6, clap=0.9, room_mix=0.28, t60=0.5,
-                                               bright=6000.0)),
-        ('clap', 'clac', lambda n: clap(n, 0.3, (0.0, 0.009, 0.019), band=(1100, 2600), tail=0.07, high=0.55,
-                                        room_mix=0.22, t60=0.35)),
-        ('clap', 'large', lambda n: clap(n, 0.45, (0.0, 0.010, 0.021, 0.033), room_mix=0.3, t60=0.55)),
-        ('clap', 'sec', lambda n: clap(n, 0.22, (0.0, 0.008, 0.016), band=(1300, 3000), tail=0.045, high=0.6,
-                                       room_mix=0.1, t60=0.25)),
-        ('clap', 'épais', lambda n: clap(n, 0.35, (0.0, 0.012, 0.024, 0.038), band=(850, 2000), drive=2.5, room_mix=0.25)),
-        ('hat', 'net', lambda n: cymbal(n, 0.055, 0.012, scale=1.7, hp=7500.0, air=11000.0)),
-        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=9000.0, air=12000.0)),
-        ('hat', 'rond', lambda n: cymbal(n, 0.08, 0.02, scale=1.4, hp=6000.0, air=9000.0, air_db=3.0)),
+        ('kick', 'percutant', lambda n: kick(n, 57.0, 250, 0.035, 0.25, 0.015, 2.2, 2.8, 0.12, h=2, punch=0.6,
+                                             punch_ms=18.0, knock_hz=2400.0)),
+        ('kick', 'rond', lambda n: kick(n, 55.0, 220, 0.045, 0.28, 0.03, 1.8, 2.0, h=2, punch_ms=25.0, harm=1.3,
+                                        click=1.3, click_ms=6.0, knock_hz=1600.0, clip=2.0)),
+        ('kick', 'sec', lambda n: kick(n, 60.0, 250, 0.03, 0.21, 0.01, 2.8, 3.2, h=2, punch=0.6, punch_ms=12.0,
+                                       click=2.6, click_ms=5.5, knock_hz=3000.0)),
+        ('kick', 'distordu', lambda n: kick(n, 58.0, 240, 0.04, 0.26, 0.02, 2.0, 4.5, 0.2, h=2, harm=1.6, hdrive=12.0,
+                                            even=0.6, click=1.9, click_ms=6.0, grit=4.0)),
+        ('snare', 'énorme', lambda n: snare(n, 200.0, 0.45, clap=0.8, t60=0.42)),
+        ('snare', 'claquante', lambda n: snare(n, 215.0, 0.38, body=0.75, body_tau=0.06, noise=1.4, noise_tau=0.04,
+                                               clap=0.9, crack=0.8, drive=2.6, plate=0.4, t60=0.32)),
+        ('snare', 'grasse', lambda n: snare(n, 185.0, 0.45, body=0.75, body_tau=0.09, noise=1.2, noise_tau=0.065,
+                                            clap=0.5, drive=3.2, plate=0.45)),
+        ('snare', 'brillante', lambda n: snare(n, 230.0, 0.5, clap=0.8, top=0.5, plate=0.55, t60=0.45, damp=6000.0)),
+        ('clap', 'clac', lambda n: clap(n, 0.4, (0.0, 0.009, 0.019), band=(1100, 2600), tail=0.09, high=0.3,
+                                        body_hz=230.0, plate=0.5, t60=0.35, clip=4.0)),
+        ('clap', 'large', lambda n: clap(n, 0.55, (0.0, 0.010, 0.021, 0.033), tail=0.12, body=0.25, body_hz=220.0,
+                                         drive=4.0, plate=0.7, t60=0.45, clip=4.0)),
+        ('clap', 'sec', lambda n: clap(n, 0.35, (0.0, 0.008, 0.016), band=(1200, 3000), tail=0.045, high=0.3,
+                                       body_hz=240.0, plate=0.4, t60=0.3)),
+        ('clap', 'épais', lambda n: clap(n, 0.45, (0.0, 0.012, 0.024, 0.038), band=(900, 2000), tail=0.12, body=0.4,
+                                         body_hz=190.0, drive=4.0, clip=4.5)),
+        ('hat', 'net', lambda n: cymbal(n, 0.055, 0.012, scale=1.7, hp=5600.0)),
+        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=6000.0)),
+        ('hat', 'rond', lambda n: cymbal(n, 0.08, 0.02, scale=1.4, hp=4800.0)),
         ('hat', 'granuleux', lambda n: cymbal(n, 0.07, 0.016, ring=0.7, noise=1.0, width=0.4)),
         ('perc', 'rim', lambda n: rim(n, F5, 0.14)),
         ('perc', 'shaker', lambda n: shaker(n, 0.14)),
@@ -433,26 +499,28 @@ PACKS = [
         ('perc', 'laser', lambda n: blip(n, 3500.0, F5, 0.1)),
     ]},
     {'id': 'essai_tech_house', 'name': 'Essai tech house', 'family': 'House', 'bpm': 126.0, 'sounds': [
-        ('kick', 'claquant', lambda n: kick(n, G1, 210, 0.045, 0.34, 0.025, 2.4, 2.0, click=0.65, band=(3000, 7000),
-                                            knock=0.45, knock_hz=1300)),
-        ('kick', 'court', lambda n: kick(n, G1, 220, 0.04, 0.30, 0.015, 2.8, 2.4, click=0.75, band=(3000, 7000),
-                                         knock=0.5, knock_hz=1500)),
-        ('kick', 'rond', lambda n: kick(n, G1, 180, 0.05, 0.38, 0.04, 2.0, 1.6, click=0.4, knock=0.25)),
-        ('kick', 'gras', lambda n: kick(n, G1, 200, 0.045, 0.36, 0.03, 2.2, 3.2, 0.18, click=0.55, knock=0.35, grit=3.0)),
-        ('clap', 'claquant', lambda n: clap(n, 0.3, (0.0, 0.010, 0.020, 0.030), tail=0.06, high=0.5, room_mix=0.18,
-                                            t60=0.35)),
-        ('clap', 'classique', lambda n: clap(n, 0.4, (0.0, 0.011, 0.022, 0.032), band=(950, 2300), tail=0.08,
-                                             room_mix=0.28, t60=0.45)),
-        ('clap', 'large', lambda n: clap(n, 0.5, (0.0, 0.012, 0.025, 0.037), width=0.4, room_mix=0.3, t60=0.6)),
-        ('clap', 'claquement de doigts', lambda n: clap(n, 0.25, (0.0, 0.008, 0.016), band=(1800, 4200), tail=0.035,
-                                                        high=0.5, room_mix=0.2, t60=0.35, hp=600.0)),
-        ('hat', 'net', lambda n: cymbal(n, 0.05, 0.011, scale=1.8, hp=7500.0, air=11500.0)),
-        ('hat', 'doux', lambda n: cymbal(n, 0.075, 0.018, scale=1.4, hp=6000.0, air=9500.0, air_db=2.0)),
-        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=9000.0, air=12000.0)),
+        ('kick', 'claquant', lambda n: kick(n, G1, 210, 0.045, 0.34, 0.025, 2.4, 2.0, punch=0.6, punch_ms=20.0,
+                                            knock_hz=2600.0)),
+        ('kick', 'court', lambda n: kick(n, G1, 220, 0.04, 0.30, 0.015, 2.8, 2.4, punch=0.6, punch_ms=15.0, click=1.9,
+                                         knock_hz=3000.0)),
+        ('kick', 'rond', lambda n: kick(n, G1, 180, 0.05, 0.38, 0.04, 2.0, 1.6, punch=0.45, punch_ms=26.0, harm=1.3,
+                                        click=1.3, click_ms=6.0, knock_hz=1600.0, clip=2.0)),
+        ('kick', 'gras', lambda n: kick(n, G1, 200, 0.045, 0.36, 0.03, 2.2, 3.2, 0.18, harm=1.6, hdrive=12.0, even=0.6,
+                                        grit=3.0)),
+        ('clap', 'claquant', lambda n: clap(n, 0.4, (0.0, 0.010, 0.020, 0.030), tail=0.06, high=0.3, body_hz=220.0,
+                                            plate=0.5, t60=0.35)),
+        ('clap', 'classique', lambda n: clap(n, 0.45, (0.0, 0.011, 0.022, 0.032), band=(950, 2300), tail=0.1,
+                                             body_hz=205.0, clip=4.0)),
+        ('clap', 'large', lambda n: clap(n, 0.55, (0.0, 0.012, 0.025, 0.037), width=0.4, body_hz=200.0, t60=0.45)),
+        ('clap', 'claquement de doigts', lambda n: clap(n, 0.35, (0.0, 0.008, 0.016), band=(1300, 3000), tail=0.035,
+                                                        high=0.3, body=0.25, body_hz=250.0, t60=0.35, hp=180.0)),
+        ('hat', 'net', lambda n: cymbal(n, 0.05, 0.011, scale=1.8, hp=5600.0)),
+        ('hat', 'doux', lambda n: cymbal(n, 0.075, 0.018, scale=1.4, hp=4800.0)),
+        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=6000.0)),
         ('hat', 'shuffle', lambda n: cymbal(n, 0.065, 0.015, ring=0.6, noise=1.0, width=0.4)),
-        ('open_hat', 'court', lambda n: cymbal(n, 0.24, 0.06, scale=1.6, hp=6500.0, snap=0.3, width=0.4)),
-        ('open_hat', 'moyen', lambda n: cymbal(n, 0.32, 0.09, scale=1.6, hp=6500.0, snap=0.25, width=0.4)),
-        ('open_hat', 'long', lambda n: cymbal(n, 0.4, 0.12, scale=1.5, hp=6000.0, snap=0.2, width=0.45)),
+        ('open_hat', 'court', lambda n: cymbal(n, 0.24, 0.06, scale=1.6, snap=0.3, width=0.4)),
+        ('open_hat', 'moyen', lambda n: cymbal(n, 0.32, 0.09, scale=1.6, snap=0.25, width=0.4)),
+        ('open_hat', 'long', lambda n: cymbal(n, 0.4, 0.12, scale=1.5, hp=4800.0, snap=0.2, width=0.45)),
         ('perc', 'toc', lambda n: wood(n, G5, 0.2)),
         ('perc', 'shaker', lambda n: shaker(n, 0.15)),
         ('perc', 'conga', lambda n: conga(n, D4, 0.3)),
@@ -463,27 +531,29 @@ PACKS = [
         ('ride', 'douce', lambda n: ride(n, 1.4, ping=3200.0, bell=0.25, wash_tau=0.38, damp=12.0)),
     ]},
     {'id': 'essai_techno', 'name': 'Essai techno', 'family': 'Techno', 'bpm': 132.0, 'sounds': [
-        ('kick', 'profond', lambda n: kick(n, F1, 190, 0.055, 0.56, 0.07, 3.0, 3.0, 0.12, click=0.45,
-                                           band=(2000, 5500), knock=0.3, knock_hz=900, lp=5000.0)),
-        ('kick', 'saturé', lambda n: kick(n, F1, 220, 0.045, 0.52, 0.06, 2.8, 5.0, 0.2, click=0.5, knock=0.3,
-                                          knock_hz=1000, lp=5000.0, grit=4.0)),
-        ('kick', 'long', lambda n: kick(n, F1, 170, 0.06, 0.6, 0.09, 2.6, 1.8, click=0.35, knock=0.2, knock_hz=800,
-                                        lp=5000.0)),
-        ('kick', 'dur', lambda n: kick(n, F1, 240, 0.04, 0.46, 0.04, 3.2, 3.8, 0.15, click=0.65, knock=0.45,
-                                       knock_hz=1200)),
-        ('clap', 'sombre', lambda n: clap(n, 0.35, (0.0, 0.010, 0.021, 0.031), band=(850, 2100), tail=0.07, high=0.35,
-                                          room_mix=0.22, t60=0.45, damp=5000.0)),
-        ('clap', 'industriel', lambda n: clap(n, 0.35, (0.0, 0.010, 0.020), band=(1000, 2600), drive=3.5, room_mix=0.25)),
-        ('clap', 'large', lambda n: clap(n, 0.6, (0.0, 0.011, 0.023, 0.034), band=(800, 2000), tail=0.09, high=0.3,
-                                         width=0.4, room_mix=0.35, t60=0.7, damp=4500.0)),
-        ('clap', 'hall', lambda n: clap(n, 0.8, (0.0, 0.012, 0.024, 0.036), room_mix=0.5, t60=0.9, damp=5000.0)),
-        ('hat', 'métallique', lambda n: cymbal(n, 0.06, 0.013, scale=1.5, ring=0.75, air=10000.0)),
-        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=9000.0, air=12000.0)),
-        ('hat', 'sale', lambda n: cymbal(n, 0.07, 0.015, ring=0.7, grit=2.5, hp=6500.0)),
-        ('hat', 'doux', lambda n: cymbal(n, 0.085, 0.02, scale=1.4, hp=6000.0, air=9000.0, air_db=2.0)),
-        ('open_hat', 'moderne', lambda n: cymbal(n, 0.32, 0.09, scale=1.5, ring=0.6, hp=6500.0, snap=0.25, width=0.4)),
-        ('open_hat', 'court', lambda n: cymbal(n, 0.22, 0.055, scale=1.5, ring=0.6, hp=6500.0, snap=0.3)),
-        ('open_hat', 'long', lambda n: cymbal(n, 0.4, 0.13, scale=1.4, ring=0.6, hp=6000.0, snap=0.2, width=0.45)),
+        ('kick', 'profond', lambda n: kick(n, F1, 190, 0.055, 0.56, 0.07, 3.0, 3.0, 0.12, punch_ms=25.0, click=1.6,
+                                           click_ms=6.0, knock_hz=1800.0, lp=6000.0)),
+        ('kick', 'saturé', lambda n: kick(n, F1, 220, 0.045, 0.52, 0.06, 2.8, 5.0, 0.2, harm=1.6, hdrive=12.0,
+                                          even=0.6, click=1.6, click_ms=6.0, knock_hz=2000.0, lp=6000.0, grit=4.0)),
+        ('kick', 'long', lambda n: kick(n, F1, 170, 0.06, 0.6, 0.09, 2.6, 1.8, punch=0.45, punch_ms=26.0, click=1.6,
+                                        click_ms=6.0, knock_hz=1500.0, lp=6000.0)),
+        ('kick', 'dur', lambda n: kick(n, F1, 240, 0.04, 0.46, 0.04, 3.2, 3.8, 0.15, punch=0.6, punch_ms=18.0,
+                                       knock_hz=2600.0)),
+        ('clap', 'sombre', lambda n: clap(n, 0.45, (0.0, 0.010, 0.021, 0.031), band=(850, 2100), tail=0.11, high=0.15,
+                                          body_hz=190.0, t60=0.42, damp=4000.0, clip=4.0)),
+        ('clap', 'industriel', lambda n: clap(n, 0.42, (0.0, 0.010, 0.020), band=(1000, 2600), tail=0.12, body=0.3,
+                                              body_hz=215.0, drive=5.0, plate=0.5, t60=0.38, clip=5.0)),
+        ('clap', 'large', lambda n: clap(n, 0.55, (0.0, 0.011, 0.023, 0.034), band=(800, 2000), tail=0.1, high=0.15,
+                                         body_hz=195.0, width=0.4, t60=0.45, damp=4500.0, clip=3.5)),
+        ('clap', 'hall', lambda n: clap(n, 0.6, (0.0, 0.012, 0.024, 0.036), tail=0.1, body_hz=205.0, plate=0.8,
+                                        t60=0.5, damp=4500.0, clip=3.5)),
+        ('hat', 'métallique', lambda n: cymbal(n, 0.06, 0.013, scale=1.5, ring=0.75)),
+        ('hat', 'tic', lambda n: cymbal(n, 0.04, 0.007, scale=2.0, hp=6000.0)),
+        ('hat', 'sale', lambda n: cymbal(n, 0.07, 0.015, ring=0.7, grit=2.5)),
+        ('hat', 'doux', lambda n: cymbal(n, 0.085, 0.02, scale=1.4, hp=4800.0)),
+        ('open_hat', 'moderne', lambda n: cymbal(n, 0.32, 0.09, scale=1.5, ring=0.6, snap=0.25, width=0.4)),
+        ('open_hat', 'court', lambda n: cymbal(n, 0.22, 0.055, scale=1.5, ring=0.6, snap=0.3)),
+        ('open_hat', 'long', lambda n: cymbal(n, 0.4, 0.13, scale=1.4, ring=0.6, hp=4800.0, snap=0.2, width=0.45)),
         ('perc', 'toc', lambda n: rim(n, F5, 0.14, pan=0.2)),
         ('perc', 'tom', lambda n: tom(n, F3, 0.25)),
         ('perc', 'métal', lambda n: clank(n, C6, 0.24)),
@@ -533,10 +603,22 @@ def fundamental(mono, rate, start=0.06, end=0.2):
     return (i + 0.5 * (a - c) / (a - 2 * b + c)) * rate / n
 
 
+# Energy bands of the report (Hz): name -> (low, high), each read against 20 Hz-20 kHz.
+BANDS = {'sub_db': (20, 60), 'low_db': (60, 250), 'mid_db': (250, 4000), 'high_db': (4000, 20000),
+         'e250_1500_db': (250, 1500), 'e1200_4500_db': (1200, 4500), 'e250_2000_db': (250, 2000)}
+
+
+def tail_time(x, rate, below_db=40.0):
+    """Seconds from the start to the last sample within below_db of the peak (any channel)."""
+    a = np.max(np.abs(x), axis=1)
+    return float(np.flatnonzero(a >= np.max(a) * 10 ** (-below_db / 20))[-1] + 1) / rate
+
+
 def measure(x, rate, kind=''):
     """Duration, peak, RMS, crest factor, energy above 10 kHz (10-20 kHz against 20 Hz-20 kHz, as
     docs/sons/outils/voix.py), power-weighted centroid, side ((L-R)/2) against centre ((L+R)/2),
-    the largest DC of a channel, and a kick's fundamental."""
+    the largest DC of a channel, the energy in each of BANDS against 20 Hz-20 kHz, the energy above
+    10 kHz against 4-10 kHz, the tail (tail_time()), and a kick's fundamental."""
     mono = x.mean(axis=1)
     power = np.abs(np.fft.rfft(mono, 1 << int(np.ceil(np.log2(max(len(mono), 2)))))) ** 2
     freqs = np.linspace(0, rate / 2, len(power))
@@ -561,6 +643,9 @@ def measure(x, rate, kind=''):
                               / (float(np.sum(((x[:, 0] + x[:, 1]) / 2) ** 2)) + 1e-30)) if x.shape[1] == 2 else None),
         'dc': round(float(np.max(np.abs(x.mean(axis=0)))), 6),
     }
+    out.update({key: db(band(lo, hi) / band(20, 20000)) for key, (lo, hi) in BANDS.items()})
+    out['top_10k_vs_4_10k_db'] = db(band(10000, 20000) / band(4000, 10000))
+    out['tail_s'] = round(tail_time(x, rate), 3)
     if kind == 'kick':
         f0 = fundamental(mono, rate)
         out['f0_hz'] = round(f0, 2) if f0 else None
@@ -569,17 +654,18 @@ def measure(x, rate, kind=''):
 
 def print_report(report):
     cols = ('duration_s', 'peak_dbfs', 'rms_dbfs', 'crest_db', 'air_10k_plus_db', 'centroid_hz', 'side_centre_db',
-            'dc', 'f0_hz')
-    heads = ('s', 'peak', 'rms', 'crest', '>10k', 'centroid', 'side', 'dc', 'f0')
+            'dc', 'e250_1500_db', 'e1200_4500_db', 'e250_2000_db', 'top_10k_vs_4_10k_db', 'tail_s', 'f0_hz')
+    heads = ('s', 'peak', 'rms', 'crest', '>10k', 'centroid', 'side', 'dc', '.25-1.5k', '1.2-4.5k', '.25-2k',
+             '>10k/4-10', 'tail', 'f0')
     for pack, sounds in report.items():
         print(f'\n{pack}')
-        print(f"{'file':<14}" + ''.join(f'{h:>10}' for h in heads))
+        print(f"{'file':<16}" + ''.join(f'{h:>10}' for h in heads))
         for file, m in sounds.items():
             cells = []
             for c in cols:
                 v = m.get(c)
                 cells.append('-' if v is None else f'{v:.4f}' if c == 'dc' else f'{v}')
-            print(f'{file:<14}' + ''.join(f'{c:>10}' for c in cells))
+            print(f'{file:<16}' + ''.join(f'{c:>10}' for c in cells))
 
 
 # --- Main ----------------------------------------------------------------------------------------
@@ -595,13 +681,14 @@ def build(out):
             count[kind] = count.get(kind, 0) + 1
             file = f'{kind}_{count[kind]:02d}.wav'
             x = make(f"{pack['id']}/{file}")
+            x = x / np.max(np.abs(x)) * 10 ** (PEAKS[kind] / 20)
             if not np.all(np.isfinite(x)) or x.shape[1] != (1 if kind in MONO else 2):
                 raise RuntimeError(f"{pack['id']}/{file}: not finite or wrong channel count")
             write_wav(d / file, x)
             sounds.append({'file': file, 'kind': kind, 'name': f'{LABELS[kind]} essai {count[kind]}',
                            'tags': ['essai', word]})
         manifest = {'id': pack['id'], 'name': pack['name'], 'family': pack['family'], 'bpm': pack['bpm'],
-                    'version': 1, 'sounds': sounds}
+                    'version': 2, 'sounds': sounds}
         (d / 'pack.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
         (d / 'LICENSE.txt').write_text(LICENSE, encoding='utf-8')
         print(f"{pack['id']}: {len(sounds)} sounds", flush=True)

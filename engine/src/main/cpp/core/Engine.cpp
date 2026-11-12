@@ -531,6 +531,9 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 9) mixer_.masterChain().setDriveCeilingDb(command.value);  // dBTP, offline (S6); NaN: none
             else if (command.a == 10) mixer_.masterChain().setKnownLevel(command.value);  // LUFS, the known drive's loud part (S7)
             break;
+        case CommandType::SetSpeakerOutput:
+            mixer_.setSpeakerOutput(std::isfinite(command.value) && command.value > 0.5f);
+            break;
         case CommandType::SetMasterPro:
             if (!std::isfinite(command.value)) break;
             switch (command.a) {

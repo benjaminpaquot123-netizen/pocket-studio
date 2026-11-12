@@ -13,6 +13,7 @@ void Mixer::prepare(int sampleRate) {
         for (auto& g : s.sendGain) g.configure(rate, 15.0f);
     }
     pool_->prepare(rate);
+    speakerKick_.prepare(rate);
     for (auto& strip : inserts_) {
         for (auto& slot : strip) {
             slot.prepare(rate);
@@ -678,6 +679,9 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             iso.reset();
             blewUp_.store(true, std::memory_order_relaxed);
         }
+        // Tour 5 (kick): on the phone's speaker only, the kick's harmonics and click, before its
+        // fader: on pad 1's strip, or on the drums' when that pad has none.
+        if (ch == kFirstPad || (ch == kDrums && !channels[kFirstPad])) speakerKick_.process(chL_.data(), chR_.data(), n);
         float peak = 0.0f;
         const bool toGroup = grouped && group_[static_cast<size_t>(ch)];
         float* toL = pad ? padsL_.data() : toGroup ? grpL_.data() : mL_.data();

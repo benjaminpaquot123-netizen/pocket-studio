@@ -13,6 +13,13 @@ tests: aucun : lot de documents seulement, aucun code, aucun script du banc, auc
 | `CLAUDE.md` | une ligne « Audits, règle des niveaux » |
 | `docs/audits/ultra/PLAN-RESTE.md` | § 6 : le lot du banc « niveaux », après le tour 6 |
 
+## Liste des chemins
+Le lot n'a ni écran ni donnée de l'appli. Les seuls endroits qui liront ce que la règle demande d'écrire sont les fiches de sièges du banc (comme le lot `plan6`) :
+- chemin: Banc › start.txt d'un siège (lang, device, font, mode, options : les colonnes que la règle fera remplir par niveau) | test: SeatOptionsParseTest#everyOption
+- chemin: Banc › start.txt avec fresh=reel (sièges N0 b et X : le siège choisit son mode) | test: SeatOptionsParseTest#freshLeavesTheSettingsToThePerson
+
+Ces deux tests existaient avant le lot et ne prouvent pas la règle : la colonne `niveau` et les missions neuves n'ont pas encore de test (lot du banc à venir).
+
 ## Ce que le lot ne change pas
 - Le tour 6 : plan, sièges, consignes, règle de sortie.
 - Le banc : `fabrique-sieges.py`, `human-act.py`, consignes v2, selftest. Les missions neuves n'existent pas encore.

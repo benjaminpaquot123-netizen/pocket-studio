@@ -55,6 +55,19 @@ class RhythmGrilleTest {
         assertTrue("the page went on to bar 2 under the hit just put", has("step_5") && !has("step_21"))
     }
 
+    /** R21 (seats C a #11, H a): a pad's corner badge « G 30 » says what it is (TalkBack, and the words of the pad's sheet). */
+    @Test
+    fun aPadsPanBadgeSaysWhatItIs() {
+        val p = twoBars().let { q -> q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == 1) l.copy(pan = -0.3f) else l })) }
+        compose.setContent {
+            PocketStudioTheme { RhythmScreen(p, TransportUi(), { LiveUi() }, canUndo = false, canRedo = false, actions = RhythmActions()) }
+        }
+        compose.waitForIdle()
+        val badge = compose.onNodeWithTag("pad_pan_badge", useUnmergedTree = true).fetchSemanticsNode()
+        val said = badge.config.getOrNull(SemanticsProperties.ContentDescription).orEmpty().joinToString()
+        assertTrue("the badge « ${badge.config.getOrNull(SemanticsProperties.Text)} » says « $said »", said.contains("Gauche 30"))
+    }
+
     /**
      * T11 (seat B b screen 35, « Takt 2/2 » at the clap): a tutorial step that begins shows the bar of its first dotted
      * cell, even when the step before left the page on a bar that has some of the new step's cells.

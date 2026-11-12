@@ -47,7 +47,11 @@ if [ -n "$APK" ]; then
         /Static fields|Instance fields/ { inif = 0 }
         /name *:/ { if ((cls in impl) && $3 == "'"'"'onProgress'"'"'") ok[cls] = 1 }
         END { n = 0; bad = 0; for (c in impl) { n++; if (!(c in ok)) { bad++; print "missing onProgress in " c } } print "implementers " n " broken " bad }')"
+    # BenStudio Test (docs/PLAN-TEST-APK.md): the real app holds no line of the robot (-PbenTest builds only).
+    robot="$(for f in "$DEX_DIR"/classes*.dex; do "$DEXDUMP" "$f" 2>/dev/null; done | grep -E "Class descriptor *: 'Lcom/pocketstudio/(bentest|app/journey)/" || true)"
     rm -rf "$DEX_DIR"
+    [ -z "$robot" ] || { echo "FAIL: the release APK holds BenStudio Test's robot (built with -PbenTest?): $(echo "$robot" | head -3)" >&2; exit 1; }
+    echo "No robot in the release APK"
     echo "$report" | grep -q "broken 0" && ! echo "$report" | grep -q "implementers 0" || {
         echo "FAIL: release APK lost Demucs.Progress.onProgress: $report" >&2
         exit 1

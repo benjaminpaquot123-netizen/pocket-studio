@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The commit's name is read by name (Robot.about): kept by the resource shrinker. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/bentest_commit" />

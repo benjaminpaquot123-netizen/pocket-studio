@@ -317,6 +317,11 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 beforeOperationForTest(what)
                 block()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                // Not a failure: the screens were rebuilt (a new song opened from its own « then », which clears
+                // this model) while the work ended. BenStudio Test, essai éclair n° 3: « Nouveau morceau impossible :
+                // Job was cancelled » logged as an error for each song made and opened.
+                throw e
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
                 val message = tr("%s impossible (%s).", what, e.message ?: tr("erreur"))

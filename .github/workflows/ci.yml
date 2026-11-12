@@ -116,8 +116,9 @@ jobs:
     name: Build, unit tests, screenshots
     runs-on: ubuntu-latest
     needs: engine
-    # Unit tests, the song and live benches, the real projects, a 10-minute soak, the release APK.
-    timeout-minutes: 75
+    # Unit tests (~35 min), the song (~25 min) and live (~12 min) benches, the real projects, a 10-minute soak, the release APK:
+    # 75 minutes cut the real projects twice (runs 42968491490 and 43154808420, every test before them green).
+    timeout-minutes: 110
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}

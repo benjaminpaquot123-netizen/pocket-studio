@@ -1465,3 +1465,4 @@
 - 2026-11-12 · lot « courbes » (tour-5) : 9 décision(s) dans `docs/decisions/tour-5-courbes.md`
 - 2026-11-12 · lot « moyens » (tour-5) : 15 décision(s) dans `docs/decisions/tour-5-moyens.md`
 - 2026-11-12 · lot « ci1 » (tour-5) : 3 décision(s) dans `docs/decisions/tour-5-ci1.md`
+- 2026-11-12 : CI, temps maximal du travail « Build, unit tests, screenshots » passé de 75 à 110 min. Raison : la suite a grossi (≈ 35 min de tests, 25 min de banc des morceaux, 12 min de banc en direct) et deux CI ont été coupées net dans les « vrais projets » alors que tout le reste était vert (42968491490, 43154808420). Aucun seuil de test n'est touché. Retour arrière : remettre 75.

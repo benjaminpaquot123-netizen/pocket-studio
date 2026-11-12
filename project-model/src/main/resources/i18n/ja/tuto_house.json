@@ -363,8 +363,6 @@
   "Les stabs de piano": "ピアノのスタブ",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "短いヒットで鳴らすピアノのコード（「スタブ」）：ハウスで覚えてもらえるサビ。",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "お手本のピアノだけを聴こう：1拍目には絶対に鳴らず、キックの間に入って弾む。",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "あなたの番：「次の小節にコピー」をタップして、3、4小節目を置こう：別のコード、D のコード。",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "あなたの番：「コードトラックを作る」をタップして、グリッドの上の「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒットを置こう。",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "あなたの番：コードトラックを作り、ルートなしでスタブを書こう（ルートはベースが持っている）：Am9 = C E G B（1〜2小節目）、D9 = C E F♯ A（3〜4小節目）。2音は残り、2音が動く：ピアニストの「ボイスリーディング」。リズムは1拍目を避け、4小節目は変化をつけてフレーズを閉じる。",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "低い音がないから、ピアノは軽いままでベースににじまない。",
   "Sans piano, ta house n'aura pas son refrain.": "ピアノがないと、ハウスのサビがない。",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "リバーブはコードにスペースを与え、リムに少し空気を残す。",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "リバーブを聴こう：リムとコード、最初はなしで、次にありで。",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "あなたの番：ミックスで「コード」トラック、次に「リム」パッドの「リバーブ・センド」を上げよう。",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "キックとベースはいっしょに前、声はしっかり、コードは後ろ。"
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "キックとベースはいっしょに前、声はしっかり、コードは後ろ。",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "あなたの番：「コードトラックを作る」をタップして、グリッドの上の「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒットを置いて「次の小節にコピー」、次に3、4小節目（別のコード、D のコード）。"
 }

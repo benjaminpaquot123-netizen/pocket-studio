@@ -363,8 +363,6 @@
   "Les stabs de piano": "钢琴短促和弦",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "短促弹奏的钢琴和弦（“Stab”）：这就是 house 里让人记住的副歌。",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "单独听示例里的钢琴：它从不弹在第 1 拍，落在底鼓之间，蹦蹦跳跳。",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "轮到你：点“复制到后面的小节”，然后做第 3 和第 4 小节：另一个和弦，D 和弦。",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "轮到你：点“创建和弦音轨”，然后打开网格上方的“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下。",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "轮到你：创建和弦音轨，写 Stab，不带根音（贝斯有了）：Am9 = C E G B（第 1-2 小节），D9 = C E F♯ A（第 3-4 小节）。两个音不动，两个音移动：钢琴手的“声部进行”。节奏避开第 1 拍；第 4 小节有变化，来结束乐句。",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "没有低音，钢琴保持轻盈，不会糊到贝斯上。",
   "Sans piano, ta house n'aura pas son refrain.": "没有钢琴，你的 house 就没有副歌。",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "混响给和弦空间；鼓边保留一点空气感。",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "听混响：鼓边和和弦，先是没有，然后加上。",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "轮到你：在混音里，先把“和弦”音轨、再把“鼓边”打击垫的“混响发送”调高。",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "底鼓和贝斯一起在前，人声清晰，和弦在后。"
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "底鼓和贝斯一起在前，人声清晰，和弦在后。",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "轮到你：点“创建和弦音轨”，然后打开网格上方的“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下，“复制到后面的小节”，然后是第 3 和第 4 小节（另一个和弦，D 和弦）。"
 }

@@ -363,8 +363,6 @@
   "Les stabs de piano": "Os stabs de piano",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "Acordes de piano tocados em batidinhas (os “stabs”): é o refrão que fica na cabeça no house.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "Ouça o piano do exemplo sozinho: ele nunca toca no 1º tempo, cai entre as batidas do kick e saltita.",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "Sua vez: toque em “Copiar nos próximos compassos”, depois faça os compassos 3 e 4: outro acorde, o de Ré.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "Sua vez: toque em “Criar a faixa Acordes”, depois ligue “Acordes” acima da grade: tocar na nota de baixo pontilhada coloca o acorde inteiro. Faça as 4 batidas do compasso 1.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "Sua vez: crie a faixa Acordes e escreva os stabs, sem fundamental (o baixo já tem): Am9 = Dó Mi Sol Si (compassos 1-2), D9 = Dó Mi Fá♯ Lá (compassos 3-4). Duas notas ficam, duas se mexem: a “condução de vozes” dos pianistas. O ritmo evita o 1º tempo; o compasso 4 varia para fechar a frase.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "Sem a nota grave, o piano fica leve e não embola com o baixo.",
   "Sans piano, ta house n'aura pas son refrain.": "Sem piano, seu house não vai ter refrão.",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "O reverb dá espaço aos acordes; o rim mantém um pouco de ar.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "Ouça o reverb: o rim e os acordes, primeiro sem, depois com.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "Sua vez: no Mix, aumente o “Envio de reverb” na faixa “Acordes”, depois no pad “Rim”.",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "O kick e o baixo juntos na frente, as vozes bem presentes, os acordes atrás."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "O kick e o baixo juntos na frente, as vozes bem presentes, os acordes atrás.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "Sua vez: toque em “Criar a faixa Acordes”, depois ligue “Acordes” acima da grade: tocar na nota de baixo pontilhada coloca o acorde inteiro. Faça as 4 batidas do compasso 1, “Copiar nos próximos compassos”, depois os compassos 3 e 4 (outro acorde, o de Ré)."
 }

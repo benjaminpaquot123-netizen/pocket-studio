@@ -363,8 +363,6 @@
   "Les stabs de piano": "Staby pianina",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "Akordy pianina grane drobnymi uderzeniami („staby”): to refren, który się pamięta w house.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "Posłuchaj samego pianina z przykładu: nigdy nie gra na pierwszą ćwierćnutę, wypada między uderzeniami kicka i podskakuje.",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "Twoja kolej: dotknij „Kopiuj na kolejne takty”, potem zrób takty 3 i 4: inny akord, D.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "Twoja kolej: dotknij „Utwórz ścieżkę Akordy”, potem włącz „Akordy” nad siatką: dotknięcie dolnej kropkowanej nuty kładzie cały akord. Zrób 4 uderzenia w takcie 1.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "Twoja kolej: utwórz ścieżkę Akordy i zapisz staby, bez prymy (ma ją bas): Am9 = C E G B (takty 1-2), D9 = C E F♯ A (takty 3-4). Dwie nuty zostają, dwie się ruszają: „voice leading” pianistów. Rytm omija pierwszą ćwierćnutę; takt 4 się zmienia, żeby zamknąć frazę.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "Bez niskiej nuty pianino zostaje lekkie i nie zalewa basu.",
   "Sans piano, ta house n'aura pas son refrain.": "Bez pianina twój house nie będzie miał refrenu.",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "Pogłos daje akordom miejsce; rim zachowuje trochę powietrza.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "Posłuchaj pogłosu: rim i akordy, najpierw bez, potem z.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "Twoja kolej: w Miksie podkręć „Wysyłka na pogłos” na ścieżce „Akordy”, potem na padzie „Rim”.",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "Kick i bas razem z przodu, wokale wyraźne, akordy z tyłu."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "Kick i bas razem z przodu, wokale wyraźne, akordy z tyłu.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "Twoja kolej: dotknij „Utwórz ścieżkę Akordy”, potem włącz „Akordy” nad siatką: dotknięcie dolnej kropkowanej nuty kładzie cały akord. Zrób 4 uderzenia w takcie 1, „Kopiuj na kolejne takty”, potem takty 3 i 4 (inny akord, D)."
 }

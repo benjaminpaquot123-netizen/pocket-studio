@@ -363,8 +363,6 @@
   "Les stabs de piano": "Gli stab di piano",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "Accordi di piano suonati a piccoli colpi (gli “stab”): è il ritornello che resta in testa nella house.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "Ascolta il piano dell'esempio da solo: non suona mai sul 1° battito, cade tra i colpi di kick e saltella.",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "Tocca a te: tocca “Copia sulle battute successive”, poi fai le battute 3 e 4: un altro accordo, quello di Re.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "Tocca a te: tocca “Crea la traccia Accordi”, poi accendi “Accordi” sopra la griglia: toccando la nota bassa tratteggiata metti tutto l'accordo. Fai i 4 colpi della battuta 1.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "Tocca a te: crea la traccia Accordi e scrivi gli stab, senza fondamentale (ce l'ha il basso): Am9 = Do Mi Sol Si (battute 1-2), D9 = Do Mi Fa♯ La (battute 3-4). Due note restano, due si muovono: il “voice leading” dei pianisti. Il ritmo evita il 1° battito; la battuta 4 varia per chiudere la frase.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "Senza la nota grave, il piano resta leggero e non si impasta col basso.",
   "Sans piano, ta house n'aura pas son refrain.": "Senza piano, la tua house non avrà il suo ritornello.",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "Il reverb dà spazio agli accordi; il rim tiene un po' d'aria.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "Ascolta il reverb: il rim e gli accordi, prima senza, poi con.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "Tocca a te: in Mix, alza “Mandata reverb” sulla traccia “Accordi”, poi sul pad “Rim”.",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "Il kick e il basso insieme davanti, le voci ben presenti, gli accordi dietro."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "Il kick e il basso insieme davanti, le voci ben presenti, gli accordi dietro.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "Tocca a te: tocca “Crea la traccia Accordi”, poi accendi “Accordi” sopra la griglia: toccando la nota bassa tratteggiata metti tutto l'accordo. Fai i 4 colpi della battuta 1, “Copia sulle battute successive”, poi le battute 3 e 4 (un altro accordo, quello di Re)."
 }

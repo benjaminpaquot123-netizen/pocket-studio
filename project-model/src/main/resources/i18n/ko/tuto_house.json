@@ -363,8 +363,6 @@
   "Les stabs de piano": "피아노 스탭",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "짧게 치는 피아노 코드(“스탭”): 하우스에서 기억에 남는 후렴이에요.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "예시의 피아노만 들어 보세요: 첫 박에는 절대 치지 않고, 킥 사이에 떨어지며 통통 튀어요.",
-  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "직접 해 보세요: “다음 마디에 복사”를 탭하고, 3마디와 4마디를 만드세요. 다른 코드, D 코드예요.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고, 그리드 위의 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개를 만드세요.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "직접 해 보세요: 코드 트랙을 만들고 근음 없이(베이스가 맡아요) 스탭을 쓰세요. Am9 = C E G B (1-2마디), D9 = C E F♯ A (3-4마디). 두 노트는 남고 두 노트는 움직여요: 피아니스트의 “보이스 리딩”이에요. 리듬은 첫 박을 피하고, 4마디는 프레이즈를 닫으려고 바뀌어요.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "낮은 노트가 없으니 피아노가 가볍고, 베이스 위로 번지지 않아요.",
   "Sans piano, ta house n'aura pas son refrain.": "피아노가 없으면 하우스에 후렴이 없어요.",
@@ -597,5 +595,6 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "리버브는 코드에 자리를 주고, 림은 공기를 조금 머금어요.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "리버브를 들어 보세요: 림과 코드를 먼저 리버브 없이, 그다음 리버브와 함께.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "직접 해 보세요: 믹스에서 “코드” 트랙의 “리버브 센드”를 올리고, “림” 패드에서도 올리세요.",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "킥과 베이스는 함께 앞에, 보컬은 또렷하게, 코드는 뒤에."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "킥과 베이스는 함께 앞에, 보컬은 또렷하게, 코드는 뒤에.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "직접 해 보세요: “코드 트랙 만들기”를 탭하고, 그리드 위의 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개, “다음 마디에 복사”, 그다음 3마디와 4마디(다른 코드, D 코드)."
 }

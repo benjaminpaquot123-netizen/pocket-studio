@@ -50,8 +50,8 @@ internal class BenchFlac(private val context: Context, private val dir: File) {
 
     /**
      * Tour 5 « sons-essai »: a pack's 16-bit PCM WAVs (the trial packs, scripts/packs/trial_drums.py) are given with their
-     * own samples, not a tone: the live bench must hear the sounds it compares. Other WAVs (another depth, a broken
-     * header) stay unreadable, as a FLAC that is no FLAC.
+     * own samples, not a tone: the live bench must hear the sounds it compares. Other WAVs (24 bits, float, a broken
+     * header) stay unreadable on the bench (a phone would read the first two): the trial packs are 16 bits.
      */
     private fun registerWavs() {
         val files = dir.listFiles()?.filter { it.isDirectory }?.flatMap { d -> d.listFiles()?.filter { it.name.endsWith(".wav") }.orEmpty() }.orEmpty()

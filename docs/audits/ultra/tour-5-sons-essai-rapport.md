@@ -78,14 +78,16 @@ Premier Drop, écoute en direct, `docs/sons/outils/voix.py`, avant → après :
 Ce qu'on en tire :
 - les batteries s'élargissent nettement (+3,5 à +4,6 dB de côté) ;
 - elles gagnent de l'air en tech house et en techno ;
-- leads et nappes gagnent de l'air avec l'OTT, surtout la nappe du jump up (+7 dB) ;
-- en contrepartie, la part 1-4 kHz recule de 1 à 2 dB sur plusieurs voix (le grave et l'aigu montent plus) ;
+- là où seul l'OTT change (tech house et techno), leads et nappes gagnent de +1,5 à +5,4 dB d'air ;
+- en jump up, la nappe et le lead changent aussi de son : +7,0 et +4,3 dB d'air ;
+- **en contrepartie, la part 1-4 kHz recule sur les 9 voix, de 0,6 à 2,3 dB** : c'est la bande qu'un haut-parleur de téléphone fait entendre (le grave et l'aigu montent plus que le médium) ;
 - le lead de la tech house reste de loin le plus sombre ;
 - la nappe techno avec le « Pluck future » mesurait −40,2 dB d'air (plus sombre) : retirée.
 
 ### Extraits envoyés à Benjamin
 
 - 6 WAV 16 bits, 30 s chacun, du début du premier Drop. La lecture commence au même endroit (« Écouter », `-Pbench.listen=drop`), même passage avant / après.
+- « Avant » = les sons intégrés, sans pack téléchargé (comme un téléphone qui n'a pas les packs des styles). Sur un téléphone qui a ces packs, l'avant sonne autrement.
 - Le plus fort a été baissé au niveau de l'autre : écart de 0,0 LU par style (jump up −9,0, tech house −9,1, techno −8,6 LUFS), crête vraie ≤ −1,2 dBTP.
 - Pas de M4A : l'encodeur AAC de ffmpeg dépassait 0 dBTP sur ces extraits denses, un défaut connu (`docs/son/BANC.md`). Le WAV donne l'audio exact.
 - Les extraits ne sont pas dans le dépôt.
@@ -109,3 +111,5 @@ Les tests du modèle se jouent à part : `:project-model:test --tests '*SoundTri
 - **Niveaux** : les sons d'essai sont calés sur leur crête. Les volumes du mix n'ont pas été recalibrés : le banc ne montre ni alerte ni écart de sonie, mais l'équilibre batterie / reste est à juger à l'oreille.
 - **Le lead de la tech house** (« voix robot ») reste sombre. De vraies voix découpées modernes demanderaient des enregistrements que nous n'avons pas.
 - **Les tables d'ondes** (deuxième temps de l'essai 3) ne sont pas faites : on attend d'abord ton écoute.
+- **Interrupteur mis sans les packs d'essai installés**, le banc jouerait un mélange (sons et OTT de l'essai, batterie du kit) : ni le rendu par défaut, ni l'essai. L'essai se joue donc toujours avec `-Psons.essai=1` et `-Pbench.packs=<packs d'essai>` ensemble.
+- **La présence au téléphone recule** (1-4 kHz, voir plus haut) : à juger à l'oreille sur le haut-parleur.

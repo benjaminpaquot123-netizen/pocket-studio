@@ -236,6 +236,7 @@ abstract class HumanTester(private val seat: String) {
         var gestures = 0
         var same = 0
         var lastPrint: String? = null
+        var lastSong: Int? = null
         var afterWait = false
         val source = o.replayOf
         // PLAN-RESTE 7.5 (rejeu lisible): the seat the replay was made from (its screens, its finger's journal), and what
@@ -271,16 +272,20 @@ abstract class HumanTester(private val seat: String) {
             val heardNow = heard()
             File(dir, "sound-$n.txt").let { if (!it.isFile) it.writeText(heardNow) }
             val print = fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"))
+            val song = songDigest()
             // « Rien ne change » (the screens after « attends » or « regarde » neither count nor reset it). Round 1 (lot banc):
             // nor while a long work shows its progress (a separation, an export, a pack being made): the screen waits
             // for it, the tester is not going round in circles; the count starts again once it is over.
             if (longWorkShown()) {
                 same = 0
             } else if (!afterWait) {
-                same = if (print == lastPrint) same + 1 else 1
+                // Tour 6, E1 (seat D b #70): notes touched into the piano roll are drawn, not written in the screen's text
+                // (lot « réalisme » R1): the song that changed at the gesture is a change too, whatever the screen's text.
+                same = if (print == lastPrint && song == lastSong) same + 1 else 1
                 if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
             }
             lastPrint = print
+            lastSong = song
             val sound = publish(dir, n, notes)
             journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
@@ -480,6 +485,9 @@ abstract class HumanTester(private val seat: String) {
      */
     private fun fingerprint(text: File, sound: File): String =
         ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+
+    /** The open project as it would be saved, digested (null: none open): what a gesture changed of the song. */
+    private fun songDigest(): Int? = runCatching { vm()?.project?.value?.let { com.pocketstudio.model.ProjectJson.encode(it).hashCode() } }.getOrNull()
 
     /** The stalls the watchdog saw since the last turn, into the journal. */
     private fun stalls(journal: File, n: Int) {

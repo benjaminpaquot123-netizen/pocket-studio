@@ -181,6 +181,11 @@ class InAppDriver(
     }
 
     override fun click(tag: String) {
+        // Never a control that opens another app: outside, the robot can neither see nor come back.
+        if (Externe.lance(tag, ::ecran)) {
+            if (noted.add("externe:$tag")) runCatching { note("${Externe.RAISON} : $tag") }
+            throw PasseExterne(tag)
+        }
         val (view, x, y) = main.run {
             val f = one(tag)
             val c = f.node.boundsInWindow.center

@@ -36,13 +36,19 @@ object Rapport {
         e.name to when (end) {
             null -> null
             Carnet.ECHEC, Carnet.PLANTAGE -> Feu.ROUGE
-            else -> Feu.pire(lumieres(lines, e.name).map { it.first })
+            else -> if (faussee(lines, e.name)) Feu.GRIS else Feu.pire(lumieres(lines, e.name).map { it.first })
         }
     }
 
     fun bilanFeux(lines: List<Carnet.Ligne>, etapes: List<Etape>): BilanFeux {
         val f = feux(lines, etapes).values
         return BilanFeux(f.count { it == Feu.VERT }, f.count { it == Feu.ORANGE }, f.count { it == Feu.ROUGE }, f.count { it == Feu.GRIS }, f.count { it == null })
+    }
+
+    /** [step] lost its timing to an exit from the app: its lights do not count. */
+    private fun faussee(lines: List<Carnet.Ligne>, step: String): Boolean {
+        val from = lines.indexOfLast { it.step == step && it.kind == Carnet.DEBUT }.coerceAtLeast(0)
+        return lines.drop(from).any { it.step == step && it.kind == Carnet.FAUSSE }
     }
 
     /** [step]'s lights since it last began, with their reasons. */
@@ -111,6 +117,7 @@ object Rapport {
 
     /** Why a step is not green: its worst light's reason. */
     private fun pourquoi(lines: List<Carnet.Ligne>, step: String): String? {
+        if (faussee(lines, step)) return "chronométrage faussé : sortie de l'appli"
         val l = lumieres(lines, step)
         val worst = Feu.pire(l.map { it.first })
         return l.filter { it.first == worst && it.second.isNotBlank() }.joinToString(", ") { it.second }.ifEmpty { null }

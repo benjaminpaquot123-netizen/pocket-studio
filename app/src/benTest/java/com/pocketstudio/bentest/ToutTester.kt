@@ -269,7 +269,10 @@ class ToutTester(
     /** One card handled: its first option (true), or « Passer » (false). An option that opens another app is not touched. */
     internal fun carteTraitee(step: String, card: String): Boolean {
         val option = j.tagsMatching(Regex("guide_option_.+")).firstOrNull()
-        if (option != null && runCatching { j.tap(option) }.isSuccess && bouge(card)) return true
+        if (option != null) {
+            if (Externe.lance(option, ecran)) carnet.add(Carnet.NOTE, step, "${Externe.RAISON} : $option (carte $card)")
+            else if (runCatching { j.tap(option) }.isSuccess && bouge(card)) return true
+        }
         check(j.exists("guide_skip")) { "carte $card : ni option qui avance ni « Passer »" }
         j.tap("guide_skip")
         check(bouge(card)) { "carte $card : reste après « Passer »" }

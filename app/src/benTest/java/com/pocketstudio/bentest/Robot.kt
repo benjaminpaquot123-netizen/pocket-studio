@@ -105,6 +105,9 @@ object Robot {
         _etat.value = Etat(running = true, passage = which)
         val tracker = Tracker.install(app)
         tracker.keepScreenOn = true
+        val sorties = Sorties(carnet(app), ramener = { bringStudioBack(app, tracker) })
+        tracker.sorties = sorties
+        Robot.sorties = sorties
         thread(name = "BenStudio Test robot") {
             val main = LooperMainThread()
             val driver = InAppDriver(main)
@@ -117,9 +120,12 @@ object Robot {
             runCatching {
                 passage.run { e ->
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
+                    sorties.etape = e.name
                     _etat.update { it.copy(step = e.label) }
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
+            sorties.etape = null
+            tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
             _etat.value = Etat(verdict = verdict(c.lines(), passage.etapes, which), passage = which)
@@ -145,8 +151,26 @@ object Robot {
     internal fun ask(app: Application, question: String, maxMs: Long): Boolean? {
         answers.clear()
         _etat.update { it.copy(question = question) }
+        // Our own screen over the studio: the studio stopping is wanted, not an exit.
+        sorties?.voulue = true
         bringBack(app)
-        return answers.poll(maxMs, TimeUnit.MILLISECONDS).also { _etat.update { s -> s.copy(question = null) } }
+        return answers.poll(maxMs, TimeUnit.MILLISECONDS).also {
+            sorties?.voulue = false
+            _etat.update { s -> s.copy(question = null) }
+        }
+    }
+
+    @Volatile
+    private var sorties: Sorties? = null
+
+    /** The studio back in front after the app left (another app opened): the task to the front, else its launcher activity reordered to front. */
+    private fun bringStudioBack(app: Application, tracker: Tracker) {
+        val moved = runCatching {
+            val am = app.getSystemService(android.app.ActivityManager::class.java)
+            val id = tracker.studio?.taskId ?: error("no studio")
+            am.moveTaskToFront(id, 0)
+        }.isSuccess
+        if (!moved) bringBack(app)
     }
 
     private fun bringBack(app: Application) {
@@ -234,9 +258,14 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
         if (keepScreenOn) a.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) else a.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    /** The run's watch on the app leaving the front. */
+    @Volatile
+    var sorties: Sorties? = null
+
     override fun onActivityResumed(activity: Activity) {
         if (activity is MainActivity) {
             studio = activity
+            sorties?.retour()
             keep(activity)
         }
     }
@@ -248,7 +277,11 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
     override fun onActivityStarted(activity: Activity) = Unit
     override fun onActivityPaused(activity: Activity) = Unit
-    override fun onActivityStopped(activity: Activity) = Unit
+    override fun onActivityStopped(activity: Activity) {
+        if (activity !is MainActivity) return
+        val on = activity.getSystemService(android.os.PowerManager::class.java)?.isInteractive ?: true
+        sorties?.arret(ecranAllume = on, rotation = activity.isChangingConfigurations)
+    }
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
     companion object {

@@ -118,12 +118,15 @@ class Passage(
             val deadline = start + e.maxMs
             val result = runCatching { e.work(deadline) }
             val took = clock() - start
+            val skewed = carnet.lines().let { l -> l.drop(l.indexOfLast { it.step == e.name && it.kind == Carnet.DEBUT }.coerceAtLeast(0)) }.any { it.step == e.name && it.kind == Carnet.FAUSSE }
             result.fold(
                 onSuccess = { text ->
-                    if (took > e.maxMs) carnet.add(Carnet.ECHEC, e.name, "trop longue : ${took / 1000} s (au plus ${e.maxMs / 1000} s). $text")
+                    if (took > e.maxMs && !skewed) carnet.add(Carnet.ECHEC, e.name, "trop longue : ${took / 1000} s (au plus ${e.maxMs / 1000} s). $text")
                     else carnet.add(Carnet.REUSSI, e.name, text)
                 },
-                onFailure = { t -> carnet.add(Carnet.ECHEC, e.name, (if (t is EtapeTropLongue) "trop longue : " else "") + (t.message ?: t.javaClass.simpleName).take(400)) },
+                onFailure = { t ->
+                    if (t is PasseExterne) carnet.add(Carnet.REUSSI, e.name, "${Externe.RAISON} : ${t.tag}")
+                    else carnet.add(Carnet.ECHEC, e.name, (if (t is EtapeTropLongue) "trop longue : " else "") + (t.message ?: t.javaClass.simpleName).take(400)) },
             )
         }
         if (!finished()) carnet.add(Carnet.FINI, "")

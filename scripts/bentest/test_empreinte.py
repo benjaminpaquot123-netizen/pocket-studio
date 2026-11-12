@@ -196,5 +196,41 @@ class Commands(unittest.TestCase):
             self.assertLessEqual(abs(g - w), 1.5, f"{o} Hz: {g} against {w}")
 
 
+class Wrapper(unittest.TestCase):
+    """comparer-telephone.sh on a live bench already run (--live): its ps_live renders each song, the report compares them."""
+
+    def test_the_four_songs_rendered_and_compared_without_gradle(self):
+        d = tempfile.mkdtemp()
+        live = os.path.join(d, "live")
+        os.makedirs(os.path.join(live, "cmds"))
+        os.makedirs(os.path.join(live, "tools"))
+        styles = ["jump_up", "house", "trap", "techno"]
+        for s in styles:
+            with open(os.path.join(live, "cmds", s + ".pslive"), "w") as f:
+                f.write("META test\n")
+        # A stand-in ps_live: « --wav OUT » gets the trap song (16-bit, mono) whatever the commands.
+        src = os.path.join(d, "song.wav")
+        write_wav(src, pink(10, TRAP, seed=3))
+        fake = os.path.join(live, "tools", "ps_live")
+        with open(fake, "w") as f:
+            f.write("#!/bin/sh\nwhile [ $# -gt 0 ]; do [ \"$1\" = --wav ] && cp '" + src + "' \"$2\"; shift; done\nexit 4\n")
+        os.chmod(fake, 0o755)
+        print_ = [round(v, 2) for v in expected_octaves(chain(TRAP, SPEAKER))]
+        micro = {"courbe_db": [round(v, 2) for v in expected_curve(SPEAKER)], "tiers": E.NAMES, "octaves": E.OCTAVES,
+                 "empreintes": {s: {"db": print_, "debut_s": 0.0, "duree_s": 8.0} for s in styles}}
+        mes = os.path.join(d, "mesures.json")
+        with open(mes, "w") as f:
+            json.dump({"micro": micro}, f)
+        out = os.path.join(d, "out")
+        r = subprocess.run(["bash", os.path.join(HERE, "comparer-telephone.sh"), mes, "--live", live, "--out", out, "--seconds", "10"],
+                           capture_output=True, text=True)
+        self.assertEqual(0, r.returncode, r.stdout + r.stderr)
+        with open(os.path.join(out, "rapport.md"), encoding="utf-8") as f:
+            text = f.read()
+        for s in styles:
+            self.assertRegex(text, r"\| " + s + r" \|[^\n]*\| vert \|")
+        self.assertEqual([], [n for n in os.listdir(os.path.join(out, "wav")) if n.endswith(".wav")], "renders deleted")
+
+
 if __name__ == "__main__":
     unittest.main()

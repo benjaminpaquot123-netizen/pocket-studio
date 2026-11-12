@@ -335,14 +335,23 @@ abstract class HumanTester(private val seat: String) {
                 val reached = runCatching { reachTag(tag) }.getOrNull()
                 // A thumb touches a wide control where it can reach it, not necessarily in its middle: when the middle is out of
                 // reach, the nearest reachable point of the node (a tag touch must not be refused where a finger would not be).
-                val at = reached?.let { reachableNear(tag, it, o.hand) }
-                if (at == null) {
+                if (reached == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
                     if (source != null) {
                         originFinger[n]?.let { moved += "pas $n : à l'origine sous le doigt : $it" }
                         replayVerdict("divergé au pas $n (étiquette « $tag » introuvable)"); return
                     }
                     say("Banc : rien ne porte l'étiquette « $tag » sur cet écran : rien n'a été fait.")
+                    n++
+                    continue
+                }
+                // Review of rejeux6 (grave 2): the touch lands on a point of the element a finger can see (on the screen, not cut by
+                // the list that scrolls it), within the thumb's reach, where that element is the one under the finger (not a
+                // popup over it): when there is none, the touch is refused, as a finger could not touch that element there.
+                val at = reachableNear(tag, reached, o.hand)
+                if (at == null) {
+                    journal.appendText("#$n > $cmd\n#$n REFUS « $tag » : aucun point visible, à portée du pouce (${o.hand.word}) et sous le doigt\n")
+                    say("Ce bouton est caché, hors de l'écran ou trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
                     n++
                     continue
                 }
@@ -2013,13 +2022,35 @@ abstract class HumanTester(private val seat: String) {
         return heard()
     }
 
-    /** The middle of the node tagged [tag] on the screen as drawn (the first one), or null when there is none. */
-    private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float> {
+    /**
+     * Where a touch aimed at [tag] lands ([middle]: the middle of its first node): the nearest point of that node's part shown on the
+     * screen (cut by its parents, as boundsInWindow is) that [hand]'s thumb reaches and where the element under the finger is that
+     * node (the journal's « DOIGT » line names it). Null: no such point, the touch is refused (review of rejeux6, grave 2).
+     */
+    private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float>? {
         val m = app.resources.displayMetrics
-        if (SeatOptions.reachable(hand, middle.first, middle.second, m.widthPixels, m.heightPixels, m.density)) return middle
-        val n = runCatching { taggedNodes(tag).fetchSemanticsNodes().firstOrNull() }.getOrNull() ?: return middle
+        val screen = screenText()
+        val hits = { x: Float, y: Float -> fingerOn(tag, screen.under(x, y)) }
+        if (tag.startsWith("vue_")) {
+            return middle.takeIf { (x, y) -> SeatOptions.reachable(hand, x, y, m.widthPixels, m.heightPixels, m.density) && hits(x, y) }
+        }
+        val n = runCatching { taggedNodes(tag).fetchSemanticsNodes().firstOrNull() }.getOrNull() ?: return null
         val p = BenchWindows.drawnPosition(n, m)
-        return SeatOptions.nearestReachable(hand, p.x, p.y, n.size.width.toFloat(), n.size.height.toFloat(), middle, m.widthPixels, m.heightPixels, m.density) ?: middle
+        val shown = BenchWindows.drawnBounds(n, m)
+        return SeatOptions.nearestReachable(
+            hand, SeatOptions.Box(p.x, p.y, p.x + n.size.width, p.y + n.size.height), SeatOptions.Box(shown.left, shown.top, shown.right, shown.bottom),
+            middle, m.widthPixels, m.heightPixels, m.density, hits,
+        )
+    }
+
+    /**
+     * The finger ([under], a « DOIGT » line: « <tag> « words » », « dans:<tag> » for a part of it, « désactivé … ») is on [tag]
+     * (« prefix* »: on one of that family; « vue_X »: the Android view showing X). As scripts/bench/rejeu-defauts.sh reads it.
+     */
+    private fun fingerOn(tag: String, under: String): Boolean {
+        if (tag.startsWith("vue_")) return under.startsWith("vue « ${tag.removePrefix("vue_")} »")
+        val name = under.removePrefix("désactivé ").removePrefix("dans:").substringBefore(' ')
+        return if (tag.endsWith("*")) name.startsWith(tag.dropLast(1)) else name == tag
     }
 
     /**

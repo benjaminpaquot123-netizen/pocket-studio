@@ -26,11 +26,12 @@ tag_proof() {
     verb="${verb,,}"
     case "$verb" in touche|appui-long|double-touche|glisse) ;; *) continue ;; esac
     case "$arg" in ''|[0-9]*|-[0-9]*) continue ;; esac
-    if ! grep -qF "#$i ETIQUETTE $arg :" "$journal" 2>/dev/null; then
-      echo "oracle non tenu (geste $i raté : l'étiquette « $arg » n'a pas été touchée, journal sans « ETIQUETTE »)"; return
-    fi
+    # A refusal first: HumanTester writes no « ETIQUETTE » for a tag with no point a finger could touch.
     if grep -q "^#$i REFUS" "$journal"; then
       echo "oracle non tenu (geste $i raté : « $arg » refusé : $(grep -m1 "^#$i REFUS" "$journal" | sed "s/^#$i REFUS //"))"; return
+    fi
+    if ! grep -qF "#$i ETIQUETTE $arg :" "$journal" 2>/dev/null; then
+      echo "oracle non tenu (geste $i raté : l'étiquette « $arg » n'a pas été touchée, journal sans « ETIQUETTE »)"; return
     fi
     finger="$(grep -m1 "^#$i DOIGT " "$journal" | sed "s/^#$i DOIGT //")"
     if [ -z "$finger" ]; then

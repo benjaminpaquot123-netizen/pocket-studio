@@ -29,7 +29,9 @@ class BenchSeatOptionsTest : HumanTester("seat-options") {
      * [visible] (its parents' clipping), with [covered] another element drawn over it (null: nothing over it).
      */
     private fun pick(hand: SeatOptions.Hand, node: FloatArray, visible: FloatArray, covered: FloatArray?, middle: Pair<Float, Float>, w: Int, h: Int, d: Float) =
-        SeatOptions.nearestReachable(hand, node[0], node[1], node[2] - node[0], node[3] - node[1], middle, w, h, d)
+        SeatOptions.nearestReachable(
+            hand, SeatOptions.Box(node[0], node[1], node[2], node[3]), SeatOptions.Box(visible[0], visible[1], visible[2], visible[3]), middle, w, h, d,
+        ) { x, y -> covered == null || !inside(covered, x to y) }
 
     private fun inside(box: FloatArray, at: Pair<Float, Float>) = at.first >= box[0] && at.first <= box[2] && at.second >= box[1] && at.second <= box[3]
 

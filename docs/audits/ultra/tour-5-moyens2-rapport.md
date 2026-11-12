@@ -32,11 +32,11 @@ mises en page. Rouge 938c3c6c (17 et 15 mises en page), vert 5872e2ed.
 
 ## Captures
 
-Seules `NavScale130ScreenshotTest` et `UiScaleTest` rejouées (vérification). Six captures changées, regardées une à une, réenregistrées
+Seules `NavScale130ScreenshotTest` et `UiScaleTest` rejouées (vérification). Six captures changées, réenregistrées
 (`scale130/fr_nav_simple_{rhythm,keys,song,send,more}.png`, `fr_nav_help_labels_simple.png`) : Mode simple à 130 %, dossier seul ;
-la seule différence est la coche verte sur le coin du dossier (la pastille du point 1). Aucune autre différence : les libellés
-(pads, onglets) gardent leur taille, ce qui confirme que la recherche par moitiés trouve la même taille. Les 23 autres captures
-de la classe (dont Pro) inchangées. Recette, cut_screen, cut_screen_magnifier, remix_stem_edit_menu, rhythm_scrolled_under_part :
+regardées en entier : `fr_nav_simple_rhythm` (comparaison avant/après : seule la coche verte sur le coin du dossier, pads et
+onglets au pixel près) et `fr_nav_simple_send` (nouvelle) ; les quatre autres non regardées une par une (même écran, même barre).
+Les 17 autres captures jouées de la classe (dont Pro) inchangées, 7 sautées par la classe elle-même. Recette, cut_screen, cut_screen_magnifier, remix_stem_edit_menu, rhythm_scrolled_under_part :
 pas touchées.
 
 ## Non fait

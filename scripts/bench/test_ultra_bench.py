@@ -210,6 +210,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
     with tempfile.TemporaryDirectory() as d:
+        banc7_launcher_messages(d)
+    with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
         fingerprint_stable(d)
@@ -605,6 +607,35 @@ def seats_from_ids(d):
     write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
+
+
+def banc7_launcher_messages(d):
+    """Round 6, lot banc7 (point 8): a seat never waits 15 min for a bench that was not started (E9: « L'appli ne s'est
+    pas ouverte (15 min) » at the first « regarde » of four seats)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    seat = os.path.join(lot, "c")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    act = os.path.join(HERE, "..", "human-act.py")
+    # Point 8: no bench running for this lot, nothing on screen yet: told at once what to start.
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+        said, code = r.stdout + r.stderr, r.returncode
+    except subprocess.TimeoutExpired:
+        said, code = "(no answer after 30 s)", None
+    check(code == 1 and "scripts/human-tester.sh" in said and lot in said,
+          "a seat with no bench running is told at once to start scripts/human-tester.sh <lot>:\n" + said)
+    # The bench running (its marker names a live process): the seat waits for its first screen as before (no early refusal).
+    write(os.path.join(lot, ".banc-en-cours"), f"{os.getpid()}\n")
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=3)
+        waited = False
+    except subprocess.TimeoutExpired:
+        waited = True
+    check(waited, "with the bench running, « regarde » waits for the first screen instead of refusing")
+    # A marker left by a bench that died (no such process) is no bench running.
+    write(os.path.join(lot, ".banc-en-cours"), "999999999\n")
+    r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+    check(r.returncode == 1 and "scripts/human-tester.sh" in r.stdout, "a dead bench's marker is not a bench running:\n" + r.stdout)
 
 
 def bench_guards(d):

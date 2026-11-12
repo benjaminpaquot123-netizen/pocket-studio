@@ -1,0 +1,62 @@
+#0 SIEGE lang=de device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=- rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux-attente/t5-03-swing-tuto-pro rejeu.n=40
+#0 PREMIER ECRAN reel_s=7.1 simule_s=2.4 jvm_s=17.5 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE f909e9114e | project=projet-1 no tuto
+#1 > touche 450 1408
+#1 DOIGT rien
+#1 REJEU bouton « Ich lerne » (launch_learn) déplacé (maintenant en 450,1408), sous le doigt : rien
+#2 ROUTE launch | MODE pro | EMPREINTE f909e9114e | project=projet-1 no tuto
+#2 > touche 670 315
+#2 DOIGT launch_continue « Weiter »
+#2 REJEU bouton « Pro » (mode_card_pro) absent, sous le doigt : launch_continue « Weiter »
+#3 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8d9d2de007 | project=projet-1 no tuto
+#3 > touche 450 289
+#3 DOIGT rien
+#3 REJEU bouton « Techno » (tuto_style_techno) absent, sous le doigt : rien
+#4 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8d9d2de007 | project=projet-1 no tuto
+#4 > touche 450 1119
+#4 DOIGT rien
+#4 REJEU bouton «  Beispiel anhören » (tuto_listen) absent, sous le doigt : rien
+#5 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8d9d2de007 | project=projet-1 no tuto
+#5 RIEN NE CHANGE (3 écrans identiques)
+#5 > touche 811 1203
+#5 DOIGT guide_bar « Guide »
+#5 REJEU bouton « Weiter  » (tuto_next) absent, sous le doigt : guide_bar « Guide »
+#6 ROUTE guide_panel/tab_Sons | MODE pro | EMPREINTE 0b4c5b6379 | project=projet-1 no tuto
+#6 > touche 667 1122
+#6 DOIGT guide_refuse « Nicht mehr vorschlagen »
+#6 REJEU bouton «  Zeig's mir » (tuto_show) absent, sous le doigt : guide_refuse « Nicht mehr vorschlagen »
+#7 ROUTE guide_panel/tab_Sons | MODE pro | EMPREINTE 46a9afbacb | project=projet-1 no tuto
+#7 > attends 3
+#8 ROUTE guide_panel/tab_Sons | MODE pro | EMPREINTE 46a9afbacb | project=projet-1 no tuto
+#8 > touche 805 802
+#8 DOIGT rien
+#8 REJEU bouton « Schließen » (tempo_close) absent, sous le doigt : rien
+#9 ROUTE guide_panel/tab_Sons | MODE pro | EMPREINTE 46a9afbacb | project=projet-1 no tuto
+#9 > touche 843 1104
+#9 DOIGT dans:guide_word « Das Wort: Teil »
+#9 REJEU bouton (tuto_fold) absent, sous le doigt : dans:guide_word « Das Wort: Teil »
+#9 DIALOGUE 0.6 s
+#10 ROUTE dialogue:glossary | MODE pro | EMPREINTE f17a1e6662 | project=projet-1 no tuto
+#10 > touche 450 1038
+#10 DOIGT rien
+#10 REJEU bouton «   Ich mach's » (tuto_do) absent, sous le doigt : rien
+#10 DIALOGUE 0.2 s
+#11 ROUTE dialogue:glossary | MODE pro | EMPREINTE f17a1e6662 | project=projet-1 no tuto
+#11 > touche 163 1083
+#11 DOIGT rien
+#11 REJEU bouton « 1 » (tempo_key_1) absent, sous le doigt : rien
+#11 DIALOGUE 0.2 s
+#12 ROUTE dialogue:glossary | MODE pro | EMPREINTE f17a1e6662 | project=projet-1 no tuto
+#12 RIEN NE CHANGE (3 écrans identiques)
+#12 > touche 737 1083
+#12 DOIGT rien
+#12 REJEU bouton « 3 » (tempo_key_3) absent, sous le doigt : rien
+#12 DIALOGUE 0.2 s
+#13 ROUTE dialogue:glossary | MODE pro | EMPREINTE f17a1e6662 | project=projet-1 no tuto
+#13 > touche 450 1083
+#13 DOIGT rien
+#13 REJEU bouton « 2 » (tempo_key_2) absent, sous le doigt : rien
+#13 DIALOGUE 0.2 s
+#14 ROUTE dialogue:glossary | MODE pro | EMPREINTE f17a1e6662 | project=projet-1 no tuto
+#14 RIEN NE CHANGE (5 écrans identiques)
+#14 FIN : rien ne change (5 écrans identiques)

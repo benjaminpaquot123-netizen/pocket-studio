@@ -34,6 +34,31 @@ Encore attendus (pas dans cette lecture) : C b, D c, la suite de H a, le balayag
 
 Sièges du tuto : D a, D b, H a (tuto Facile), B b (tuto Pro). La « Guide » (boussole, carte de guidage en bas d'écran) est mise ici aussi (1.B).
 
+### Chapitre par chapitre : les trois passages complets (ajouté au complément 2)
+
+Sources : H a-suite (fr, tuto Facile, Bravo écran 247, 246 gestes), D a-suite (ja, tuto Facile, Bravo écran 223), B b-suite (de, tuto Pro, 16 chapitres, Bravo écran 226). « C » = compris du premier coup, « H » = hésitation, « B » = bloqué, mots des rapports.
+
+| ch. Facile | sujet (Facile / Pro) | H a-suite fr | D a-suite ja | B b-suite de (ch. Pro) | hésite dans |
+|---|---|---|---|---|---|
+| 1 | vitesse et couleur / Tempo und Tonart | H (Tonalité, Dorienne) | H (フリジアン, キー ; écoute coupée par « 次へ ») | H (1 : Swing, seul 5 % pile valide) | **3/3** |
+| 2 | le kick (et le grondement) | H (kick, 909, 707, pad) | H (pad « バスドラム類 », cases sous le panneau) | H (2 : nom du pad Rumble caché) | **3/3** |
+| 3 | le clap | H (mesure 2 ouverte, titre caché) | H (pas de « 2 小節にする ») | C (3) | 2/3 |
+| 4 | charleys / hi-hats et percussion | H (« pad du tambourin », 4 cases au lieu de 8) | H (pad « Perc ») | C (4) | 2/3 |
+| 5 | la basse | H (consigne longue, notes sous le panneau) | H (consigne longue, note sous le panneau) | H (5 : « Bass Plaits », note hors cadre) | **3/3** |
+| 6 | le piano / le stab | H (« accord », « Encore 36 notes ») | H (スタブ, コード) | C (6 ; ouvert sur Takt 4) | 2/3 |
+| 7 | la petite boucle / le riff | **B** (« Encore 12 notes » sans note visible) | H (« コード » resté allumé, note sous le panneau) | H (7 : « Noch 5 … » sans flèche) | **3/3** |
+| 8 | la première partie : le Groove | C | H (« チャプター » introuvable) | C (8) | 1/3 |
+| 9 | comprendre les parties | H (« le Break et la sienne 16 + 8 », pas de Bravo) | C | C (9) | 1/3 |
+| 10 | construis tes parties | H (« relances de fin de phrase ») | C | H (10 : « der ganze Groove spielt darin ») | 2/3 |
+| 11 | range tes parties | H (« Le morceau » / « Mon morceau ») | C | C (11) | 1/3 |
+| 12 | les transitions | H (pad Cymbale au lieu de Conga) | H (étape déjà réussie ; bandeau « → スタジオのバスドラム » sur la シンバル) | H (12 : reste sur A · Groove ; « Takt 4 » introuvable) | **3/3** |
+| 13 | les effets | C | C | C (13) | 0/3 |
+| 14 | le mix | C | H (« フェーダーの下の数字 », « 少し下げる » caché) | C (14) | 1/3 |
+| — | (Pro seul) Das Mastering | — | — | C (15) | — |
+| 15 | exporte ton morceau | C | C | C (16) | 0/3 |
+
+Chapitres qui font hésiter dans les trois langues : **1, 2, 5, 7, 12**.
+
 ### 1.A Le tuto lui-même
 
 | # | défaut (cité) | sièges (gestes) | gravité max | langue / appareil / police |
@@ -306,3 +331,70 @@ Incident du banc neuf :
 | E12 | « « tape » de 4 coups compté comme 1 seul (« 0 sur 4 ») : banc?: rythme » | C b #58 |
 
 Totaux après C b : **86 défauts uniques** (81 + 5), dont **36 récurrents** (34 + N14 + U14), **32 sur le tuto et la Guide** (inchangé ; G1 confirmée) ; 1 bloquant, 6 graves (inchangé). Confirmations du complément 1 : 17 + 8 = **25**.
+
+---
+
+## Complément 2 (2026-11-12) : D a-suite et B b-suite (tutos complets)
+
+Ajoutés dans un commit à part : `lotD/a-suite` ← claude/benstudio-tour6-Da (e9097327), `lotB/b-suite` ← ccr-aad91c20-t6-e (62204693). Rien n'est renuméroté plus haut ; le tableau « chapitre par chapitre » est en tête de la section 1.
+
+| siège | langue | appareil | police | mode | mission |
+|---|---|---|---|---|---|
+| D a-suite | ja | phone | 100 | simple | tuto-facile, **« おめでとう、曲が完成！ » atteint (écran 223)** ; 8 coupes vérifiées sur image : « vraiment coupé » |
+| B b-suite | de | tablet8 | 130 | pro | tuto-pro, 16 chapitres, **« Tutorial geschafft: Bravo! » (écran 226)** |
+
+### C2.A Défauts déjà connus, confirmés
+
+| ligne | confirmé par (cité) |
+|---|---|
+| T2 | D a-suite #49 « Perc » (le pad s'appelle « 太鼓のふち ») ; #19 « バスドラム類 » n'existe pas, « même cas chap. 3 « 手拍子たち » pour le pad « 手拍子 » » |
+| T3 | D a-suite #33 : « aucun bouton, grille à « 1小節 », chapitre réussi avec 3 frappes à 100 % » |
+| T4 | D a-suite #78 (note « sous le panneau du tuto », touchée à l'aveugle), #19 (« grille presque entièrement sous le panneau »), promesse t6-Da-2 (écrans 21, 78, 114) ; B b-suite chapitre 5 « note du Takt 4 à moitié hors cadre » |
+| T6 | D a-suite #81 : « スタブ », « コード », « リフ », « ライド », « フェーダー » sans explication ; chapitre 15 « −14 », « ソロ », « ミュート » non expliqués |
+| T7 | D a-suite #17 : « キット：スタジオ » et « キット テクノ をダウンロード » sous le fondu « 続きを読む » ; B b-suite #8 « Kit Techno laden (4 MB) » « coupé et recouvert par « Weiterlesen ⌄ » » |
+| T8 | D a-suite chapitre 5 « consigne très longue » |
+| T9 | D a-suite #199 (voir N19) : 5 écoutes (ch. 1, 2, 4, 5, 7) non validées |
+| T11 | D a-suite (h) écran 69 : « deviné que le bandeau « この先に → » se touche » ; B b-suite chapitre 6 « s'ouvre sur Takt 4 au lieu de 1, le bandeau ramène » |
+| T14 | B b-suite #35 : « le nom du pad est caché par le bandeau, on tape à l'aveugle » (T14 passe à 2 sièges : H a, B b-suite) |
+| T16 | D a-suite mots-faux « Rim », « Groove » ; promesse t6-Da-5 ; B b-suite #78 « Bass Plaits » au lieu de « Analoger Bass » |
+| T17 | B b-suite chapitre 1 : « 2 %, 9 %, 6 % avant d'avoir 5 % pile » (voir aussi N27) |
+| T19 | D a-suite chapitre 7 : « « コード » resté allumé pour la mélodie » (T19 passe à 2 sièges : H a, D a-suite) |
+| R1 | B b-suite #209 « Akkord / e », #201 « 18,0 kI », « 849 H: », « Schla », #231 « Kick / 3 / Te… » ; D a-suite coupes vérifiées (écrans 4, 11, 38, 60, 95, 188) |
+| R16 | D a-suite mots-faux : virgules « , » au lieu de « 、 » (écran 150), « AからZまでのチュートリアル » (204), « 「Rim」が他を覆っています » (188) |
+| R19 | B b-suite œil neuf q9 : puce « Geschlossene Hi-Hats » « coupée au bord droit sans signe de défilement » |
+| N4 | B b-suite (h) écran 128 et chapitre 7 : « « Noch 5 gestrichelte Noten zu tippen » sans flèche, la note est au-dessus de l'écran » (N4 passe à 2 sièges) |
+| N6 | D a-suite chapitre 12 : « bandeau « → スタジオのバスドラム » alors que la grille est la シンバル » (N6 passe à 2 sièges) |
+| N7 | D a-suite œil neuf q9 : « le champ « マイソング » est coupé à mi-hauteur par les boutons M4A/WAV » (coupe vérifiée écran 223) |
+| N13 | D a-suite œil neuf q1 : « « チュートリアルを閉じる » est un texte nu touchable » (N13 passe à 2 sièges) |
+| E3 | D a-suite écrans 22, 27, 34, 43, 50, 109, 164, 187, 193 ; B b-suite écrans 29, 35, 51, 100, 167, 209, 215, 216 |
+| E6 | D a-suite #125 : le texte ne montre pas « あなたの番：このパートに「グルーヴ」… », présent sur l'image 126 |
+| E8 | D a-suite #104 : « 5 touches « à vide » sur le bandeau (gestes 111-120) pour pouvoir voir l'image » |
+| E11 | D a-suite #8 (head/grep/sed ; « sortie redirigée vers lotDsuite/a-tmp.txt (hors siège) puis effacé ») ; B b-suite #27 (deux gestes dans un même appel, 27-28, 31-32, 71-72) |
+
+### C2.B Défauts neufs
+
+| # | défaut (cité) | sièges (gestes) | gravité max | langue / appareil / police |
+|---|---|---|---|---|
+| N19 | **Fin du tuto : « もう少しで完成！ », 5 écoutes (ch. 1, 2, 4, 5, 7) non validées sans rien dire ; 24 gestes pour les refaire** (étapes d'écoute passées avec « 次へ ») ; voisin de T5 (D b #55) et T9 | D a-suite #199 | **grave** (contourne-en-24) | ja phone 100 |
+| N20 | **Étape déjà cochée sans avoir fait le geste** : « étape déjà cochée « 次のステップ » sans rien avoir fait » (D a-suite #175, chapitre 12) ; « pas déjà coché avec « Nächstes Kapitel » sans que je touche le Becken » (B b-suite #189) | D a-suite, B b-suite | mineur | ja phone 100 ; de tablet8 130 |
+| N21 | **La même chose nommée de deux façons dans les consignes** : « 点線の音 » au lieu de « 点線のノート » (D a-suite écran 103) ; « gepunktete Note » au lieu de « gestrichelte Note » (B b-suite écran 95) | D a-suite, B b-suite | mineur | ja ; de |
+| N22 | Aucun bouton « チャプター » pour revenir à l'étape 1, « j'ai pris la flèche ← » ((h) écran 127, chapitre 8) | D a-suite | (h) tuto | ja phone 100 |
+| N23 | Après le Bravo, « l'en-tête dit encore « リフ チャプター 7/15 · ステップ 1/2 », contradictoire » (œil neuf q6, écran 223) | D a-suite | (q6) tuto | ja phone 100 |
+| N24 | Chapitre 14 : « « フェーダーの下の数字 » mais il y a écrit « ふつう » ; « 少し下げる » caché » | D a-suite | (h) tuto | ja phone 100 |
+| N25 | « Zum Teil „Build-up“ gehen » « reste sur « Teil: A · Groove » tant que « der Song » joue ; il faut arrêter le Song puis retoucher » | B b-suite #178 | moyen (contourne-en-2) | de tablet8 130 |
+| N26 | « Teil „Intro 2“ erstellt: der ganze Groove spielt darin. » alors que la consigne retire « den Ride und das Riff » (même message pour Intro, Break, Ende) | B b-suite #155 | mineur | de tablet8 130 |
+| N27 | Swing : « 6 % non validé, il faut 5 % pile sur un curseur où 1 % ≈ 8 px » | B b-suite #22 | moyen (contourne-en-3) | de tablet8 130 |
+| N28 | Chapitre 12 : « « Takt 4 » du Build-up » introuvable, « le pad n'a que « 1 Takt », j'ai deviné le 12e pas » ((h) écran 181) | B b-suite | (h) tuto | de tablet8 130 |
+
+### C2.C Promesses
+
+- **t6-Da-1 « Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse » : « tenue : oui » dans D a-suite (écran 223)**, « mais 5 étapes d'écoute non validées en silence ont coûté un détour » ; elle était « pas vue » au siège D a.
+- Non tenues dans D a-suite : t6-Da-2 (écran 78), t6-Da-4 (81), t6-Da-5 (49). Tenue : t6-Da-3 (42).
+- B b-suite : t6-Bb-1 « Gib ein ganz kleines bisschen Swing dazu (5 %) » **tenue (écran 23)**, alors qu'elle était « non » au siège B b (« Stell den Swing auf 25 », texte différent) ; t6-Bb-2 (232), t6-Bb-3 (203), t6-Bb-4 (205) tenues.
+
+### C2.D Comptes du complément 2
+
+- 10 défauts neufs (N19 à N28), tous dans le tuto ; 1 grave (D a-suite #199) ; N20 et N21 vues par 2 sièges.
+- 23 confirmations (lignes C2.A) ; passent à 2 sièges ou plus : T14, T19, N4, N6, N13.
+- Totaux mis à jour : **96 défauts uniques** (86 + 10), dont **43 récurrents** (36 + N20, N21, T14, T19, N4, N6, N13), **42 sur le tuto et la Guide** (32 + 10) ; gravité : 1 bloquant, **7 graves** (+ D a-suite #199).
+- Le Bravo est atteint dans les trois passages complets : 246 gestes (H a-suite), écran 223 (D a-suite), écran 226 (B b-suite). Chapitres qui font hésiter dans les trois langues : 1, 2, 5, 7, 12.

@@ -1,0 +1,59 @@
+Écran 141 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A Takt 4/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Plaits » ⋮ @ 705,204
+icône ♪ @ 848,205
+texte « Teil: A » @ 62,273
+dessin @ 450,344
+texte « Cutoff » @ 432,344
+texte « 80 » @ 831,345
+curseur [état « 80 », à 79 %] @ 450,401
+dessin @ 450,478
+texte « Morph » @ 432,478
+texte « 70 » @ 840,479
+curseur [état « 70 », à 70 %] @ 450,547
+dessin @ 450,615
+texte « Decay » @ 432,615
+texte « 70 » @ 840,616
+curseur [état « 70 », à 70 %] @ 450,684
+dessin @ 450,752
+texte « Farbe » @ 432,752
+texte « 50 » @ 840,753
+curseur [état « 50 », à 50 %] @ 450,821
+dessin [coupé] @ 450,882
+texte « Release » [coupé] @ 432,882
+texte « 30 » [coupé] @ 840,884
+image (chapeau de diplômé) @ 37,946
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 400,946
+icône (liste) @ 771,947
+icône ⌄ @ 843,947
+image (coupe) @ 57,1081
+texte « Bravo, Kapitel geschafft! » @ 259,1044
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Dein erster Teil: der Groove“. » @ 475,1101
+bouton « Nächstes Kapitel   » → @ 450,1197
+icône ← @ 57,1281
+bouton ■ «  Stoppen » @ 251,1281
+bouton ▶ «  Beispiel anhören » @ 558,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

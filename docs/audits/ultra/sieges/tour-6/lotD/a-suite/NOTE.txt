@@ -1,0 +1,1 @@
+Run « a-suite » (coordinator request, 2026-11-12): seat D a replayed in a separate local lot lotDsuite with gestes.max=300 and timeout.minutes=90 (raised from 30, prudent choice so 300 gestures fit), played by a fresh sub-agent that read only the testers instructions and the screens.

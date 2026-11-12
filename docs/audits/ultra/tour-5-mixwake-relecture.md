@@ -1,5 +1,5 @@
 # Relecture du lot « mixwake » (tour 5)
-Relu : 5893508991c2e5dfe7b550222b529c0b5e9e6ca6
+Relu : 1413239992f9cdd43ce7a0463fcd19ab59e79b66
 
 Lu : a240a4b1 (rouge, tests seulement), b49d8f74 (vert), 0302da8a (docs) ; 58935089 est la fusion de fx-int. Tests ciblés rejoués ici : verts (Gradle « up-to-date », déjà vert sur ce code).
 
@@ -17,5 +17,11 @@ Lu : a240a4b1 (rouge, tests seulement), b49d8f74 (vert), 0302da8a (docs) ; 58935
 - Captures : aucun fichier `.png` dans le diff `a240a4b1~1..0302da8a` (contrôlé : zéro). Les « 513 inchangées » du rapport sont cohérentes avec cela ; non rejouées ici (consigne).
 - Tests : le rouge ne change que des tests ; seuils de 374 à 120 et de 2995 à 160 réellement abaissés, plus la présence d'un calque sur les tags qui bougent. Ils vérifient une conséquence réelle (portées et calques), pas le temps d'image, ce que le rapport dit (« Limites »). Rouge non rejoué par moi sur le parent. Aucun test ne vérifie le constat 1 (valeur affichée après le freinage).
 - Partie B : relue, aucun changement de code, conclusion sobre (« cause non trouvée dans le code »). Rien à reprocher.
+
+
+## Delta (1184b0f5..14132399 : d7abd35b rouge, 14132399 vert)
+
+- **Moyen 1 : corrigé.** `rememberWorstEvery` garde le pire relevé de la période de 250 ms (min du gain pour le limiteur, « Ça sature » prioritaire pour les mots) puis repart du dernier relevé : pas de « sature » collé (au plus une période de plus si le dernier relevé était lui-même le clip). Les mots et le conseil du Mode simple lisent le même état (`rememberOutputWords`, passé à `SimpleMixScreen` et à `SimpleMixTab`). Pas de fuite : un seul `LaunchedEffect`, le `launch` enfant est annulé avec lui ; collecteur et boucle sur le même fil. Aucun `.png` modifié.
+- `SimpleMixTest` : l'ajout de `idle()` laisse le conseil suivre les mots (150 ms après) ; l'assertion réelle (master -3 dB après « Régler ») est intacte. `ClipHoldTest` vérifie un clip d'un seul relevé dans la ligne, les mots et le conseil. Tests non rejoués ici.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

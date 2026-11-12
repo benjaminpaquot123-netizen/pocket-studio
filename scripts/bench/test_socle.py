@@ -269,6 +269,54 @@ class ReplayRunKeepsItsProof(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
 
 
+class NewReplaysAimByTag(unittest.TestCase):
+    """Tour 5 (rejeux6): rejeu-nouveau.sh no longer copies a seat's pixels: its touches become tags read from the seat's journal."""
+
+    JOURNAL = ("#1 > touche 270 560\n#1 DOIGT welcome_guided « Guide »\n#2 > glisse 1 2 3 4\n#2 DOIGT rien\n"
+               "#3 > touche 5 6\n#3 DOIGT project_p-896025b4 « Techno »\n#4 > touche 7 8\n#4 DOIGT vue « Drive »\n"
+               "#5 > touche 9 9\n#5 REFUS hors de portée du pouce (d'une main, la gauche)\n")
+
+    def seat(self, cmds):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        seat = os.path.join(tmp, "seat")
+        os.makedirs(seat)
+        with open(os.path.join(seat, "journal.txt"), "w", encoding="utf-8") as f:
+            f.write(self.JOURNAL)
+        with open(os.path.join(seat, "start.txt"), "w") as f:
+            f.write("lang=fr\n")
+        for i, c in enumerate(cmds, 1):
+            with open(os.path.join(seat, f"cmd-{i}.txt"), "w") as f:
+                f.write(c)
+        return tmp, seat
+
+    def run_new(self, tmp, seat, options=""):
+        rej = os.path.join(tmp, "rejeux")
+        shutil.copytree(os.path.join(ROOT, "scripts"), os.path.join(tmp, "scripts"), ignore=shutil.ignore_patterns("__pycache__"))
+        return subprocess.run([os.path.join(tmp, "scripts", "bench", "rejeu-nouveau.sh"), seat, "5", "t9-x", "attendu=x"],
+                              capture_output=True, text=True, env=dict(os.environ, PS_REJEUX_DIR=rej, PS_REJEU_OPTIONS=options)), rej
+
+    def test_touches_become_tags_and_scrolls_wait(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat, "--cible 4=vue_Drive --cible 5=mode_card_simple")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        got = [open(os.path.join(rej, "t9-x", f"cmd-{i}.txt")).read() for i in range(1, 6)]
+        self.assertEqual(got, ["touche welcome_guided", "attends 1", "touche project_p-*", "touche vue_Drive", "touche mode_card_simple"])
+
+    def test_a_touch_with_no_tag_under_the_finger_stops_the_copy(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat)
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("give --cible 4", r.stderr)
+        self.assertFalse(os.path.exists(os.path.join(rej, "t9-x")), "a half-made replay was left behind")
+
+    def test_the_format_allows_a_swipe_by_tag_and_a_prefix(self):
+        tester = read("app", "src", "test", "java", "com", "pocketstudio", "app", "human", "HumanTester.kt")
+        self.assertIn("swipeByTag", tester)
+        self.assertIn('tag.endsWith("*")', tester)
+        self.assertIn('startsWith("vue_")', tester)
+
+
 class StableScreenshots(unittest.TestCase):
     """Point 1: the five « unstable » images are made stable for good (docs/audits/ultra/tour-5-socle-rapport.md)."""
 

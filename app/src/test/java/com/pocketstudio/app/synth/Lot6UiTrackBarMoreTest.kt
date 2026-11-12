@@ -43,10 +43,10 @@ class Lot6UiTrackBarMoreTest {
     private fun node(tag: String): SemanticsNode? =
         compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false).firstOrNull()
 
-    private fun show(lang: Lang, simple: Boolean, n: Int = 6, selected: Int = 0) {
+    private fun show(lang: Lang, simple: Boolean, n: Int = 6, selected: Int = 0, name: String = "Geschlossene Hi-Hats", sound: Boolean = true) {
         I18n.lang = lang
-        val tracks = List(n) { InstrumentTrack(it, "Geschlossene Hi-Hats $it") }
-        compose.setContent { PocketStudioTheme { TrackBar(TracksUi(tracks, selected, changeSound = {}, effects = {}, simple = simple)) } }
+        val tracks = List(n) { InstrumentTrack(it, "$name $it") }
+        compose.setContent { PocketStudioTheme { TrackBar(TracksUi(tracks, selected, changeSound = if (sound) ({ _: Int -> }) else null, effects = if (sound) ({ _: Int -> }) else null, simple = simple)) } }
         compose.waitForIdle()
     }
 
@@ -96,9 +96,9 @@ class Lot6UiTrackBarMoreTest {
 
     @Test
     fun aRowThatFitsSaysNothing() {
-        show(Lang.FR, simple = true, n = 1)
-        assertTrue(node("track_bar") != null)
-        assertNull(node("track_bar_more"))
+        show(Lang.FR, simple = true, n = 1, name = "Lead", sound = false)
+        val range = node("track_bar")!!.config[androidx.compose.ui.semantics.SemanticsProperties.HorizontalScrollAxisRange]
+        assertNull("the row fits (${range.value()} of ${range.maxValue()}, ${node("track_bar")!!.boundsInRoot})", node("track_bar_more"))
         assertNull(node("track_bar_less"))
     }
 }

@@ -28,7 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -140,8 +141,11 @@ fun TrackBar(
     // Rule 16: the row's buttons grow with the font as the chips do (44 dp × the font scale at most, never less than 44).
     val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
     androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
+    // Lot 6, R19 (seats D b, F b, B b): the fade alone read as a chip cut at the edge. While the row goes on off screen,
+    // a chevron lies over the fade on that side; it takes no touch (the chip under it still answers).
+    Box(modifier) {
     Row(
-        modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
+        Modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -236,6 +240,9 @@ fun TrackBar(
             }
         }
     }
+    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.align(Alignment.CenterStart).testTag("track_bar_less"))
+    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.align(Alignment.CenterEnd).testTag("track_bar_more"))
+    }
     }
     if (choosing) {
         TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple, acid = ui.addAcid?.let { a -> { choosing = false; a() } }) { kind, write ->
@@ -275,6 +282,15 @@ fun TrackBar(
             confirmButton = { TextButton(onClick = { colouringId = null }) { Text(tr("Fermer")) } },
         )
     }
+}
+
+/** Lot 6, R19: the sign that the row goes on past this edge (a chevron, mirrored in a right-to-left language); no touch. */
+@Composable
+private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
+    Icon(
+        if (forward) Icons.AutoMirrored.Filled.KeyboardArrowRight else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+        contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(22.dp),
+    )
 }
 
 /** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */

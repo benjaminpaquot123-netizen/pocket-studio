@@ -206,7 +206,10 @@ fun CutScreen(
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
-                fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = Column(if (tight || scrollsAll) m.verticalScroll(rememberScrollState()) else m, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = androidx.compose.foundation.layout.Box(m) {
+                  val scroll = rememberScrollState()
+                  val scrolls = tight || scrollsAll
+                  Column(if (scrolls) Modifier.fillMaxSize().verticalScroll(scroll) else Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -231,6 +234,9 @@ fun CutScreen(
                         }
                     }
                     tail()
+                  }
+                  // Tour 6, R3 (seat B a, screen 28: « plus aucun outil listé »): something waits below, the bottom fades.
+                  if (scrolls && scroll.canScrollForward) ScrollMore(Modifier.align(Alignment.BottomCenter))
                 }
                 if (wide) {
                     Row(Modifier.weight(1f).padding(start = 12.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -257,6 +263,19 @@ fun CutScreen(
             }
         }
     }
+}
+
+/**
+ * More below a scrolling column: its bottom fades into the page (as the lists of tour 5, ScrollHintBox), over nothing a
+ * finger needs (a touch goes through it).
+ */
+@Composable
+private fun ScrollMore(modifier: Modifier) {
+    Box(
+        modifier.fillMaxWidth().height(28.dp)
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, Neon.Background)))
+            .testTag("cut_more"),
+    )
 }
 
 @Composable

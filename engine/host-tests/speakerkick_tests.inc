@@ -130,9 +130,43 @@ void testBackToHeadphones() {
 
 }  // namespace speakerkick_tests
 
+namespace speakerkick_tests {
+
+// « Enregistrer ce que je joue » (ResampleArm) keeps the output in a take that is saved, played on
+// headphones and exported: while one is armed the speaker's kick is left out (relecture neuve, grave).
+void testNoSpeakerKickInATake() {
+    auto withTake = [](int speaker, bool release) {
+        ps::Engine engine(kRate);
+        engine.post({ps::CommandType::SetTempo, 128.0f});
+        engine.post({ps::CommandType::SetPadVoice, 2.0f, 0});
+        engine.post({ps::CommandType::SetPadStrip, 1.0f, 0});
+        for (int step = 0; step < 16; step += 4) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+        engine.post({ps::CommandType::SetSpeakerOutput, static_cast<float>(speaker)});
+        static ps::ResampleBuffer take(kRate * 20);
+        ps::Command arm{ps::CommandType::ResampleArm, 0.0f, 0, 0};
+        arm.resample = &take;
+        engine.post(arm);
+        engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+        auto out = render(engine, 5625 * 32, 96);
+        if (release) {
+            engine.post({ps::CommandType::ResampleArm, 0.0f, 0, 0});  // the take let go: the speaker's kick again
+            out = render(engine, 5625 * 32, 96);
+        }
+        return out;
+    };
+    const auto off = withTake(0, false), on = withTake(1, false);
+    CHECK(studio_tests::peakOf(off) > 0.1f);
+    CHECK(std::equal(off.begin(), off.end(), on.begin()));
+    const auto offAfter = withTake(0, true), onAfter = withTake(1, true);
+    CHECK(!std::equal(offAfter.begin(), offAfter.end(), onAfter.begin()));
+}
+
+}  // namespace speakerkick_tests
+
 #define PS_SPEAKERKICK_TESTS                                                                      \
     {"sk_off_is_untouched", speakerkick_tests::testOffIsUntouched},                               \
     {"sk_speaker_lifts_the_kick_on_a_phone", speakerkick_tests::testSpeakerLiftsTheKickOnAPhone}, \
     {"sk_kick_in_the_drums_strip", speakerkick_tests::testKickInTheDrumsStrip},                   \
     {"sk_only_the_kick", speakerkick_tests::testOnlyTheKick},                                     \
-    {"sk_back_to_headphones", speakerkick_tests::testBackToHeadphones},
+    {"sk_back_to_headphones", speakerkick_tests::testBackToHeadphones},                           \
+    {"sk_no_speaker_kick_in_a_take", speakerkick_tests::testNoSpeakerKickInATake},

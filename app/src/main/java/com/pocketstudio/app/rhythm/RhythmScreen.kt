@@ -523,13 +523,17 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Bo
         if (badged) {
             val small = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
             Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = 3.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                // Tour 6 lot 1 (R21): the badges say what they are, in the words of the pad's sheet (« Effets du pad »,
+                // « Gauche 30 »): read by TalkBack, and by the « ? » labels.
                 if (hasFx) Text(
                     "FX", style = small, color = Neon.OnAccent,
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 3.dp),
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 3.dp)
+                        .semantics { contentDescription = tr("  Effets du pad").trim() },
                 )
                 if (panned) Text(
                     panLabel(pan), style = small, color = Neon.TextPrimary, maxLines = 1, softWrap = false,
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 4.dp).testTag("pad_pan_badge"),
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 4.dp).testTag("pad_pan_badge")
+                        .semantics { contentDescription = panSaid(pan) },
                 )
             }
         }
@@ -1358,6 +1362,13 @@ private fun PadSampleControls(s: PadSample, seconds: Double, bpm: Double, edit: 
             }
         }
     }
+}
+
+/** Tour 6 lot 1 (R21): a pad's place said in words (« Gauche 30 », « Droite 45 », « Centre »), as its sheet says it. */
+internal fun panSaid(pan: Float): String = when {
+    pan < -0.05f -> tr("Gauche %d", (-pan * 100).roundToInt())
+    pan > 0.05f -> tr("Droite %d", (pan * 100).roundToInt())
+    else -> tr("Centre")
 }
 
 internal fun panLabel(pan: Float): String = when {

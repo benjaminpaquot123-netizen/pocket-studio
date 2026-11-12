@@ -1,0 +1,2 @@
+route=dialogue:« Pad live dari take-mu ada di t »
+nouvelle=1

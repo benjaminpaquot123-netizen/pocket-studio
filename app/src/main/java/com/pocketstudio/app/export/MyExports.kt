@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -123,12 +125,19 @@ fun MyExportsButton(tag: String, modifier: Modifier = Modifier, /** Its name alo
     if (open) MyExportsDialog { open = false }
 }
 
-/** The list of [MyExports], each with « Renvoyer ». [shown]: the files to show (previews and captures); null: read from the device. */
+/**
+ * The list of [MyExports], each with « Renvoyer ». [shown]: the files to show (previews and captures); null: [read] from
+ * the device (off the main thread), a sign of waiting meanwhile.
+ */
 @Composable
-fun MyExportsDialog(shown: List<MyExport>? = null, close: () -> Unit) {
+fun MyExportsDialog(
+    shown: List<MyExport>? = null,
+    read: suspend (Context) -> List<MyExport> = { c -> withContext(Dispatchers.IO) { MyExports.list(c) } },
+    close: () -> Unit,
+) {
     val context = LocalContext.current
-    var items by androidx.compose.runtime.remember { mutableStateOf(shown) }
-    LaunchedEffect(Unit) { if (shown == null) items = withContext(Dispatchers.IO) { MyExports.list(context) } }
+    var items by remember { mutableStateOf(shown) }
+    LaunchedEffect(Unit) { if (shown == null) items = read(context) }
     ScaledAlertDialog(
         onDismissRequest = close,
         title = { Text(tr("Mes fichiers")) },
@@ -136,8 +145,16 @@ fun MyExportsDialog(shown: List<MyExport>? = null, close: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("my_exports")) {
                 val list = items
                 when {
-                    // Being read: where the files are, meanwhile (never an empty window).
-                    list == null -> Text(MyExports.where(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    // Being read: a sign of waiting and where the files are, meanwhile (never an empty window). Tour 6, U22
+                    // (seat A c #27): the place alone read as « nothing, not even "no file" ».
+                    list == null -> {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("my_exports_wait")) {
+                            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+                            Text(tr("Chargement de la liste…"), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
+                                modifier = Modifier.padding(start = 8.dp))
+                        }
+                        Text(MyExports.where(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
                     // G2: never « aucun export… Partager en crée un » to someone who has just shared.
                     list.isEmpty() -> Text(tr("Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil."), modifier = Modifier.testTag("my_exports_empty"))
                     else -> {

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.export
 
+import android.net.Uri
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -8,6 +9,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import com.pocketstudio.ui.PocketStudioTheme
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -41,5 +43,18 @@ class MyFilesWaitTest {
         compose.mainClock.autoAdvance = true
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("my_exports_empty").fetchSemanticsNodes().isNotEmpty() }
         compose.onAllNodes(waiting, useUnmergedTree = true).assertCountEquals(0)
+    }
+
+    @Test
+    fun whileTheFilesAreReadAWaitSignShowsThenTheList() {
+        val files = CompletableDeferred<List<MyExport>>()
+        compose.setContent { PocketStudioTheme { MyExportsDialog(read = { files.await() }) {} } }
+        compose.waitForIdle()
+        assertTrue("no sign of waiting", compose.onAllNodes(waiting, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        compose.onAllNodesWithTag("my_export").assertCountEquals(0)
+        files.complete(listOf(MyExport("Beat-1.m4a", Uri.parse("content://media/1"), 900_000, 1_794_046_502, null)))
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("my_export").fetchSemanticsNodes().isNotEmpty() }
+        compose.onAllNodes(waiting, useUnmergedTree = true).assertCountEquals(0)
+        compose.onAllNodesWithTag("my_exports_empty").assertCountEquals(0)
     }
 }

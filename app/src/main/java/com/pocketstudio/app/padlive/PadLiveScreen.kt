@@ -360,7 +360,7 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary)
+            Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_dots"))
             Text(if (more) tr("Moins") else tr("Plus"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
         }
     }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.DropdownMenu
@@ -235,7 +236,11 @@ data class PadSoundUi(
 fun RhythmScreen(
     project: Project,
     transport: TransportUi,
-    live: LiveUi,
+    /**
+     * Where the song plays and the pads lit: read where it shows (the cell under the playhead, a pad that sounds),
+     * never by the whole screen (tour 5 « jank »: the screen composed at each step, 31 % slow frames on Sons).
+     */
+    live: () -> LiveUi,
     canUndo: Boolean,
     canRedo: Boolean,
     actions: RhythmActions,
@@ -309,7 +314,7 @@ fun RhythmScreen(
     val showGrid: () -> Unit = { scope.launch { gridRequester.bringIntoView() } }
     val steps: @Composable (cellMax: androidx.compose.ui.unit.Dp) -> Unit = { cellMax ->
         Box(Modifier.bringIntoViewRequester(gridRequester)) {
-            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep, simple, cellMax = cellMax)
+            StepGrid(project, transport.selectedPad, live, transport.playing, actions, simple, cellMax = cellMax)
         }
     }
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
@@ -337,7 +342,7 @@ fun RhythmScreen(
         fadeTop = true,
         first = {
             header(showGrid)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
+            PadGrid(project, transport.selectedPad, live, actions.hitPad, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
             record?.invoke()
             GrooveCard(project, transport, actions, simple)
         },
@@ -348,7 +353,7 @@ fun RhythmScreen(
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
             header(showGrid)
-            PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad ?: uprightPad)
+            PadGrid(project, transport.selectedPad, live, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad ?: uprightPad)
             record?.invoke()
             steps(cellMax)
             PadSoundCard(project, transport.selectedPad, padSound, actions, simple, settings = { sheetOf(transport.selectedPad) })
@@ -373,7 +378,7 @@ private val UPRIGHT_CELL = 50.dp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PadGrid(
-    project: Project, selected: Int, lit: Set<Int>, onHit: (Int) -> Unit, compact: Boolean = false, onHold: (Int) -> Unit = {}, kitBar: @Composable () -> Unit = {},
+    project: Project, selected: Int, live: () -> LiveUi, onHit: (Int) -> Unit, compact: Boolean = false, onHold: (Int) -> Unit = {}, kitBar: @Composable () -> Unit = {},
     /** Each pad's height, to fit the screen's height (a tablet lying down); null: from its width. */
     fitHeight: androidx.compose.ui.unit.Dp? = null,
 ) {
@@ -391,7 +396,7 @@ private fun PadGrid(
                     val strip = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))
                     val hasFx = strip?.hasOwnFx() == true
                     DrumPad(
-                        name = padName(project, lane), color = color, selected = lane == selected, lit = lane in lit, hasHits = hasHits, hasFx = hasFx,
+                        name = padName(project, lane), color = color, selected = lane == selected, lit = { lane in live().litPads }, hasHits = hasHits, hasFx = hasFx,
                         muted = strip?.mute == true, pan = project.drums.lanes[lane].pan,
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -449,23 +454,31 @@ internal fun padVoiceName(kind: Int): String = when (kind) {
  * it sounds, the finger's 200 ms ripple. Nothing moves on a pad that does not sound.
  */
 @Composable
-private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}, pan: Float = 0f) {
+private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}, pan: Float = 0f) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
-    // Lights at once, fades in a quarter second.
-    val glow by animateFloatAsState(if (lit || pressed) 1f else 0f, if (lit || pressed) snap<Float>() else tween<Float>(260), label = "pad-glow")
+    // Composed again only when this pad lights or goes out, not at each reading of the engine.
+    val lit by com.pocketstudio.ui.rememberChangesOf(read = lit)
+    // Lights at once, fades in a quarter second: read only where drawn (the pad's colours, its name, its strip), so the
+    // fade draws the pad again at each frame without composing it (tour 5 « jank »).
+    val glowState = animateFloatAsState(if (lit || pressed) 1f else 0f, if (lit || pressed) snap<Float>() else tween<Float>(260), label = "pad-glow")
     val light = com.pocketstudio.ui.rememberPadLight()
     val surface = Neon.Surface
     val rest = if (selected) 0.42f else 0.24f
-    val top = lerp(lerp(surface, color, rest + 0.1f), color, glow)
-    val bottom = lerp(lerp(Neon.Background, color, rest), lerp(color, Color.Black, 0.18f), glow)
+    val topRest = lerp(surface, color, rest + 0.1f)
+    val bottomRest = lerp(Neon.Background, color, rest)
+    val bottomLit = lerp(color, Color.Black, 0.18f)
+    val nameRest = Neon.TextPrimary
     Box(
         modifier
             .then(if (ratio) Modifier.aspectRatioAtMost(1.2f, 150.dp) else Modifier)
             .shadow(if (selected) 8.dp else 3.dp, shape, ambientColor = color, spotColor = color)
             .clip(shape)
-            .background(Brush.verticalGradient(listOf(top, bottom)))
+            .drawBehind {
+                val glow = glowState.value
+                drawRect(Brush.verticalGradient(listOf(lerp(topRest, color, glow), lerp(bottomRest, bottomLit, glow))))
+            }
             .padLight(light, color, playing = lit, corner = 14.dp)
             .border(
                 if (selected) 2.dp else 1.dp,
@@ -489,7 +502,7 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             textAlign = TextAlign.Center,
             // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
             style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
-            color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
+            color = { lerp(nameRest, Color(0xFF1E2023), glowState.value) },
             maxLines = 2,
             // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
             // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
@@ -521,14 +534,15 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             }
         }
         // The pad's colour as a strip along its bottom edge.
-        Box(Modifier.align(Alignment.BottomCenter).padding(bottom = if (ratio) 6.dp else 4.dp).fillMaxWidth(0.4f).height(3.dp).clip(RoundedCornerShape(2.dp)).background(color.copy(alpha = 0.6f + 0.4f * glow)))
+        Box(Modifier.align(Alignment.BottomCenter).padding(bottom = if (ratio) 6.dp else 4.dp).fillMaxWidth(0.4f).height(3.dp).clip(RoundedCornerShape(2.dp))
+            .drawBehind { drawRect(color.copy(alpha = 0.6f + 0.4f * glowState.value)) })
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StepGrid(
-    project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1, simple: Boolean = false,
+    project: Project, lane: Int, live: () -> LiveUi, playing: Boolean, actions: RhythmActions, simple: Boolean = false,
     /** A cell's height at most. */
     cellMax: androidx.compose.ui.unit.Dp = 110.dp,
 ) = com.pocketstudio.ui.LeftToRight {
@@ -537,7 +551,18 @@ private fun StepGrid(
     // Phase 37: the pad's own loop (a polyrhythm); the cells past it are kept but not played.
     val padLoop = project.drums.lanes[lane].loopSteps(project.drums.steps)
     val ownLoop = padLoop != project.drums.steps
-    val padPlayStep = if (!ownLoop) currentStep else if (playing && absoluteStep >= 0) absoluteStep % padLoop else -1
+    // The step under the playhead (on the pad's own loop): read by the cells alone, each one composed again only
+    // when the playhead comes onto it or leaves it (tour 5 « jank »).
+    val liveNow by rememberUpdatedState(live)
+    val playingNow by rememberUpdatedState(playing)
+    val padLoopNow by rememberUpdatedState(padLoop)
+    val ownLoopNow by rememberUpdatedState(ownLoop)
+    val padPlayStep: () -> Int = remember {
+        {
+            val l = liveNow()
+            if (!ownLoopNow) l.currentStep else if (playingNow && l.absoluteStep >= 0) l.absoluteStep % padLoopNow else -1
+        }
+    }
     val color = DrumKitInfo.colors[lane]
     // One page per bar of the time signature (12 steps in 3/4, 16 in 4/4…).
     val per = project.stepsPerBar
@@ -587,8 +612,14 @@ private fun StepGrid(
         }
     }
     LaunchedEffect(tutoLeft) { if (tutoDemo && tutoLeft.isNotEmpty() && tutoLeft.none { it / per == chosenBar }) chosenBar = tutoLeft.first() / per }
-    // Playing and following: the page turns with the playhead.
-    val bar = (if (playing && follow && currentStep >= 0 && tutoLeft.isEmpty()) currentStep / per else chosenBar).coerceIn(0, bars - 1)
+    // Playing and following: the page turns with the playhead (the grid composed again when the page turns, not at each step).
+    val perNow by rememberUpdatedState(per)
+    val tutoFreeNow by rememberUpdatedState(tutoLeft.isEmpty())
+    val followedBar by com.pocketstudio.ui.rememberChangesOf {
+        val currentStep = liveNow().currentStep
+        if (playingNow && follow && currentStep >= 0 && tutoFreeNow) currentStep / perNow else -1
+    }
+    val bar = (if (followedBar >= 0) followedBar else chosenBar).coerceIn(0, bars - 1)
     val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -645,7 +676,8 @@ private fun StepGrid(
             )
         }
         if (allPads) {
-            AllPadsGrid(project, bar, currentStep, actions)
+            // Its own scope: the step read here composes this grid alone again.
+            ReadsAlone { AllPadsGrid(project, bar, liveNow().currentStep, actions) }
             lengths()
             return@NeonCard
         }
@@ -701,9 +733,9 @@ private fun StepGrid(
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until per / 2) {
                     val step = bar * per + row * (per / 2) + col
+                    StepCellPlaying(step, padPlayStep) { playing ->
                     val velocity = hits[step]?.velocity
                     val isBeat = step % 4 == 0
-                    val playing = step == padPlayStep
                     val hit = hits[step]
                     // A step a triplet covers (after its own): the triplet's, drawn and touched as it.
                     val owner = project.drums.lanes[lane].covering(step)
@@ -850,6 +882,7 @@ private fun StepGrid(
                                 spread = { n, m, r -> actions.setSpread(step, n, m, r) }, roomFor = { m -> step + m <= spreadsTo })
                         }
                     }
+                    }
                 }
             }
         }
@@ -916,6 +949,20 @@ private fun StepGrid(
         lengths()
     }
 }
+
+/**
+ * A step cell's own scope: [content] gets whether the playhead is on [step] ([playStep] read here), and is composed
+ * again only when that changes: the playhead moving composes two cells, not the grid (tour 5 « jank »).
+ */
+@Composable
+private fun StepCellPlaying(step: Int, playStep: () -> Int, content: @Composable (Boolean) -> Unit) {
+    val playing by com.pocketstudio.ui.rememberChangesOf(step, playStep) { step == playStep() }
+    content(playing)
+}
+
+/** [content] in a scope of its own: what it reads composes it alone again, not the composable around it. */
+@Composable
+private fun ReadsAlone(content: @Composable () -> Unit) = content()
 
 /**
  * Phase 37: the selected pad's own loop, « − 5 pas + » (a polyrhythm: a pad of 3 steps against the

@@ -2697,7 +2697,10 @@ fun AppRoot() {
                 val coverSeen = remember { intArrayOf(0, 0) }
                 if (covered) coverSeen[0] = 1 else if (coverSeen[0] == 1) { coverSeen[0] = 0; coverSeen[1]++ }
                 androidx.compose.runtime.key(coverSeen[1]) {
-                tabStates.SaveableStateProvider(tab.name) {
+                // Tour 5 « jank »: under « Mes projets » (a window of its own) the tab is not kept (its state saved, as
+                // for another tab): it went on following the song unseen, the studio's window drawing 30 times a
+                // second under the projects (25 % slow frames there on the phone). It is built afresh after anyway.
+                if (!showProjects) tabStates.SaveableStateProvider(tab.name) {
                 // Lot D: the Structure's view of the song (Morceau), also beside the cut screen on a wide screen (Remix).
                 val structureView: @Composable (Boolean, (@Composable () -> Unit)?) -> Unit = { simpleView, top ->
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
@@ -2822,7 +2825,8 @@ fun AppRoot() {
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
 WithPartHeader(rhythmVm, simple) { partModifier ->
-                            WithLive(liveState) { live ->
+                            // The step and the lit pads: read by the cells and pads that show them (tour 5 « jank »).
+                            run {
                                                         RhythmScreen(
                                 modifier = partModifier,
                                 simple = simple,
@@ -2838,7 +2842,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 alonePads = rhythmVm.alone.collectAsStateWithLifecycle().value?.target?.takeIf { it.channels.isEmpty() }?.pads.orEmpty(),
                                 project = project,
                                 transport = transport,
-                                live = live,
+                                live = { liveState.value },
                                 canUndo = canUndo && take == null && !performance.running,
                                 canRedo = canRedo && take == null && !performance.running,
                                 actions = RhythmActions(

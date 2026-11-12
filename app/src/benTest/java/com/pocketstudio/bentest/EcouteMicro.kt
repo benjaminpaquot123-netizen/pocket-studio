@@ -12,8 +12,11 @@ interface Micro {
     /** RECORD_AUDIO granted. */
     fun autorise(): Boolean
 
-    /** Listens [ms], handing each block to [recevoir] (samples, count); the blocks are not kept. */
-    fun ecouter(ms: Long, recevoir: (FloatArray, Int) -> Unit)
+    /**
+     * Listens [ms], handing each block to [recevoir] (samples, count); the blocks are not kept. [avant] is called
+     * once the microphone records, before the first block (what must be heard from its very start plays then).
+     */
+    fun ecouter(ms: Long, avant: () -> Unit = {}, recevoir: (FloatArray, Int) -> Unit)
 }
 
 /** The engine playing a sound of the robot's (the sweep) and the phone's music volume. */
@@ -25,6 +28,9 @@ interface HautParleur {
     /** The music volume set for the measure (kept to be put back). */
     fun reglerVolume()
     fun remettreVolume()
+
+    /** Steps the song has played since ▶ (the engine's own count), -1: unknown. */
+    fun pasJoues(): Int = -1
 }
 
 /**
@@ -59,7 +65,7 @@ class EcouteMicro(
         } else work()
     }
 
-    private fun ecouter(ms: Long, vararg to: (FloatArray, Int) -> Unit) = micro.ecouter(ms) { x, n -> to.forEach { it(x, n) } }
+    private fun ecouter(ms: Long, vararg to: (FloatArray, Int) -> Unit) = micro.ecouter(ms, {}) { x, n -> to.forEach { it(x, n) } }
 
     private fun bruit(): String {
         hp.arreter()
@@ -235,6 +241,12 @@ class EcouteMicro(
         fun demarrer(autorise: Boolean, demander: () -> Unit, lancer: () -> Unit) {
             if (autorise) lancer() else demander()
         }
+
+        /**
+         * The microphone's answer came (granted or not): true once if « Écoute au micro » was waiting for it, then the
+         * run starts. Kept here, out of the screen, so a turn of the phone while the system asks does not lose it.
+         */
+        fun reponseMicro(): Boolean = false
 
         /** What « Écoute au micro » says before the microphone is asked for. */
         const val PHRASE = "Le robot va écouter le haut-parleur avec le micro pendant environ 5 minutes : un balayage de sons, puis 4 morceaux. " +

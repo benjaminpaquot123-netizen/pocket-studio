@@ -54,8 +54,9 @@ class EcouteMicroTest {
     private fun micro(granted: Boolean) = object : Micro {
         override val rate = RATE
         override fun autorise() = granted
-        override fun ecouter(ms: Long, recevoir: (FloatArray, Int) -> Unit) {
+        override fun ecouter(ms: Long, avant: () -> Unit, recevoir: (FloatArray, Int) -> Unit) {
             log += "ecoute:$ms"
+            avant()
             val n = (ms * RATE / 1000).toInt()
             val room = SonsFabriques.blanc(n, 0.0005, seed = ms)
             val music = song?.let { speaker.filtrer(styleFilters.getValue(it).filtrer(SonsFabriques.rose(n, 0.1, seed = it.hashCode().toLong()))) }

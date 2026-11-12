@@ -31,7 +31,7 @@ class MicroReel(private val context: Context) : Micro {
     }
 
     @SuppressLint("MissingPermission")
-    override fun ecouter(ms: Long, recevoir: (FloatArray, Int) -> Unit) {
+    override fun ecouter(ms: Long, avant: () -> Unit, recevoir: (FloatArray, Int) -> Unit) {
         check(autorise()) { "micro refusé" }
         val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT)
         val rec = AudioRecord(source(), rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, maxOf(min, rate * 4 / 5 * 4))
@@ -41,6 +41,7 @@ class MicroReel(private val context: Context) : Micro {
             var left = ms * rate / 1000
             var empty = 0
             rec.startRecording()
+            avant()
             while (left > 0) {
                 val n = rec.read(buf, 0, minOf(buf.size.toLong(), left).toInt(), AudioRecord.READ_BLOCKING)
                 check(n >= 0) { "micro : lecture refusée ($n)" }

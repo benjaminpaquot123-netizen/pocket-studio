@@ -161,7 +161,13 @@ object Courbe {
     data class Resultat(val db: List<Double?>, val rsb: List<Double?>)
 
     /** [reference], [micro]: energies of the sweep and of what the microphone heard over [tramesMicro] frames; [bruit]: the room's mean power per frame (null: none). */
-    fun mesurer(reference: DoubleArray, micro: DoubleArray, tramesMicro: Int, bruit: DoubleArray?): Resultat {
+    /**
+     * The frames each band of the sweep fills ([balayage] with the same arguments): the room's noise that competes with
+     * a band is the noise of those frames only, not of the whole listening.
+     */
+    fun tramesBalayees(rate: Int = 48_000, secondes: Double = 12.0, f1: Double = 40.0, f2: Double = 20_000.0): DoubleArray = DoubleArray(Tiers.CENTRES.size)
+
+    fun mesurer(reference: DoubleArray, micro: DoubleArray, tramesMicro: Int, bruit: DoubleArray?, tramesUtiles: DoubleArray? = null): Resultat {
         val refMax = reference.maxOrNull() ?: 0.0
         val micMax = micro.maxOrNull() ?: 0.0
         val lin = ArrayList<Double?>()

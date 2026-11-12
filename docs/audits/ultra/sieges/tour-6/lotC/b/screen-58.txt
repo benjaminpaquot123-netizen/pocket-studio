@@ -1,0 +1,106 @@
+Écran 58 (588x1278)
+icône ← @ 51,45
+bouton ▶ @ 231,45
+icône − @ 312,45
+texte « 124 Tempo » @ 378,45
+icône + @ 444,45
+texte « REC » @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » [sélectionné] @ 51,135
+onglet « B » @ 108,135
+onglet « C » @ 165,135
+onglet « D » @ 222,135
+bouton « Fête » ▾ @ 330,135
+bouton ★ @ 534,135
+bouton « ? » @ 464,135
+bouton @ 77,240
+texte « boucle » @ 86,207
+dessin @ 100,205
+texte « Boucle de kick » @ 77,261
+bouton @ 205,240
+dessin @ 228,205
+texte « coup » @ 223,207
+texte « Claquement de mains » @ 205,264
+bouton @ 333,240
+texte « boucle » @ 342,207
+dessin @ 356,205
+texte « Boucle Acid 303 » @ 333,261
+bouton @ 461,240
+texte « boucle » @ 470,207
+dessin @ 484,205
+texte « Boucle de basse » @ 461,261
+bouton ▶ @ 550,240
+bouton @ 77,354
+dessin @ 100,319
+texte « coup » @ 95,321
+texte « Klaxon » @ 69,384
+bouton @ 205,354
+dessin @ 228,319
+texte « coup » @ 223,321
+texte « Laser » @ 191,384
+bouton @ 333,354
+dessin @ 356,319
+texte « coup » @ 351,321
+texte « Sirène » @ 324,384
+bouton @ 461,354
+dessin @ 484,319
+texte « coup » @ 479,321
+texte « Cri « Go go go! » » @ 461,375
+bouton ▶ @ 550,354
+bouton @ 77,468
+dessin @ 100,433
+texte « coup » @ 95,435
+texte « Grosse caisse 1 » @ 77,489
+bouton @ 205,468
+dessin @ 228,433
+texte « coup » @ 223,435
+texte « Caisse » @ 197,498
+bouton @ 333,468
+dessin @ 356,433
+texte « coup » @ 351,435
+texte « Charley » @ 331,498
+bouton @ 461,468
+dessin @ 484,433
+texte « coup » @ 479,435
+texte « Charley ouvert » @ 461,489
+bouton ▶ @ 550,468
+bouton @ 77,582
+dessin @ 100,547
+texte « coup » @ 95,549
+texte « Montée » @ 74,612
+bouton @ 205,582
+dessin @ 228,547
+texte « coup » @ 223,549
+texte « Impact » @ 197,612
+bouton @ 333,582
+dessin @ 356,547
+texte « coup » @ 351,549
+texte « Chute » @ 321,612
+bouton @ 461,582
+dessin @ 484,547
+texte « coup » @ 479,549
+texte « « Go! » » @ 455,612
+bouton ▶ @ 550,582
+icône ✕ @ 516,699
+bouton « ? » @ 458,699
+texte « Défi 1 · Boum boum » @ 236,699
+texte « À toi ! Joue-le sur les pads. » @ 294,762
+bouton ☆ « 1 » ☆ ☆ @ 76,825
+bouton ☆ « 2 » ☆ ☆ @ 163,825
+bouton ☆ « 3 » ☆ ☆ @ 250,825
+bouton ☆ « 4 » ☆ ☆ @ 337,825
+bouton ☆ « 5 » ☆ ☆ @ 424,825
+bouton ☆ « 6 » ☆ ☆ @ 511,825
+dessin @ 318,903
+dessin @ 52,903
+image ☆ ☆ ☆ @ 294,972
+bouton (haut-parleur et ondes) « Réécouter » @ 162,1047
+bouton ✓ « J'ai fini » @ 426,1047
+bouton ■ « Tout couper » @ 66,1159
+bouton « Enregistrer ce que je joue » @ 242,1152
+bouton ⋯ « Plus » @ 497,1152
+bouton « ? » @ 391,1159
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

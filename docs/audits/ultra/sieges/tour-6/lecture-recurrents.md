@@ -271,3 +271,38 @@ Ajoutés dans un commit à part : `lotD/c` ← ccr-6a8c6318-dvnp3y (74055f1d), `
 - 13 défauts neufs (N1 à N13), dont 11 sur le tuto ou le guide (N1 à N6, N8 à N13) ; 2 graves (H a-suite #140, #162) ; N7 est vue par 3 sièges.
 - 17 confirmations (lignes C1.A : T1, T2, T3, T4, T6, T7, T8, T9, T10, T11, T12, T16, T17, T18, R1, E3, E11) ; T12 et T17 passent à 2 sièges ou plus.
 - Totaux mis à jour : **81 défauts uniques** (68 + 13), dont **34 récurrents** (31 + T12 + T17 + N7), **32 sur le tuto et la Guide** (21 + 11) ; gravité : 1 bloquant, **6 graves** (+ H a-suite #140 et #162).
+
+### C1.E Ajout au complément 1 : siège C b
+
+`lotC/b` ← claude/tour-6-benstudio-setup-osekye (40a7b38b). fr, phone, police 100, Pro, mission libre ; œil neuf téléphone : « 16 écrans, 4 graves » (feuille : écrans #8, #20, #23, #28). Non vus : « Écouter une démo, J'apprends, Remix (Extraire la voix), Enregistrer ma voix, Bibliothèque de sons, Aide, Réglages en Simple ».
+
+Confirmations :
+
+| ligne | confirmé par (cité) |
+|---|---|
+| R1 | C b #8 « + Pis… » coupé au bord droit ; C b #27 « Garder ce que je viens… » coupé |
+| R19 | C b #22 bouton « Boucle » « coupé au bord droit, rien n'indique la suite » |
+| G1 | C b #19 « + Nouvelle partie vide » « coupé à moitié par la barre du Guide » |
+| R23 | C b #30 : l'onglet Mix en Pro « s'ouvre au milieu de la page (export, puis automation) » (contourne-en-1) ; (h) écran 31 |
+| U14 | C b #36 : « Fait : accords du morceau Do Sol La m Fa » mais la carte reste « A Do » (U14 devient vue par 2 sièges : F a #29, C b #36) |
+| R20 | C b (h) écran 26 : « « 22.3 » : un chiffre dans un cercle, qui avance et ne se touche pas » |
+| E9 | C b geste 0 : « L'appli ne s'est pas ouverte (15 min) » avant le lancement du banc |
+| E11 | C b geste 80 : Read des images, grep du journal, mise en route de la machine |
+
+Défauts neufs :
+
+| # | défaut (cité) | sièges (gestes) | gravité max | langue / appareil / police |
+|---|---|---|---|---|
+| N14 | « Ton morceau est vide » « pendant la lecture en boucle » (C b #19) ; même message « Sua música está vazia » juste après la création de « Voz 1 » (E c #27, déjà cité en R6) | C b, E c | mineur | fr phone 100 ; pt-BR phone 200 |
+| N15 | « Mes fichiers » « caché sous le bandeau « Nouveau son : Basse ronde » » (banc?: temps) | C b #13 | moyen (contourne-en-1) | fr phone 100 |
+| N16 | Retour depuis « Mes projets » (ouvert par Plus) : « l'Accueil, et la musique s'arrête sans le dire » | C b #40 | moyen (contourne-en-1) | fr phone 100 |
+| N17 | « Plus » garde son défilement : « « Passer en mode Simple » s'applique sans confirmation ni message » | C b #38 | moyen (contourne-en-2) | fr phone 100 |
+| N18 | « icône ♪ seule, sans mot, à côté des pistes » pour changer le son de la piste ((h) écran 10) | C b | (h) | fr phone 100 |
+
+Incident du banc neuf :
+
+| # | incident (cité) | siège |
+|---|---|---|
+| E12 | « « tape » de 4 coups compté comme 1 seul (« 0 sur 4 ») : banc?: rythme » | C b #58 |
+
+Totaux après C b : **86 défauts uniques** (81 + 5), dont **36 récurrents** (34 + N14 + U14), **32 sur le tuto et la Guide** (inchangé ; G1 confirmée) ; 1 bloquant, 6 graves (inchangé). Confirmations du complément 1 : 17 + 8 = **25**.

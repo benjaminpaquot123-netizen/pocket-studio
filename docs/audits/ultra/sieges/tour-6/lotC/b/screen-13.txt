@@ -1,0 +1,52 @@
+Écran 13 (588x1278)
+icône (dossier ouvert) ✓ « Mon premier rythme Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ■ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+icône (flèches en boucle) « A mesure 1/1 » [désactivé] @ 239,114
+bouton « ? » @ 543,114
+texte « Mix » @ 48,178
+bouton « ? » @ 321,177
+texte «  · Mon premier rythme » @ 189,178
+bouton « ▶ Partie en boucle » @ 137,244
+bouton « ↺ Tout à zéro » @ 404,244
+bouton « ? » @ 278,244
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,334
+bouton « Batterie ▸ » [état « fermé »] @ 75,427
+curseur [état « Normal », à 80 %] @ 84,604
+texte « Normal » @ 84,761
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 55,821
+bouton ▶ @ 109,811
+texte « Acid 303 » @ 216,415
+curseur [état « Normal », à 80 %] @ 216,581
+texte « Normal » @ 216,738
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 190,798
+bouton ▶ @ 241,788
+texte « Basse ronde » @ 339,426
+curseur [état « Normal », à 80 %] @ 339,602
+texte « Normal » @ 339,759
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 313,819
+bouton ▶ @ 364,809
+texte « Sortie » @ 468,415
+curseur [état « Normal », à 80 %] @ 468,581
+texte « Trop faible » @ 468,758
+texte « Aucun conseil pour l'instant : règle à l'oreille. » @ 254,916
+image ✓ @ 54,900
+texte « Annuler » @ 505,900
+texte « Nouveau son : Basse ronde » @ 257,900
+bouton (boussole) « Guide  · Ajoute une mélodie 33 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 90,1062
+bouton ■ « le morceau » @ 225,1062
+texte « 120 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

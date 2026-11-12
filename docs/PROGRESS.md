@@ -1,11 +1,12 @@
 # Avancement
 
-## Où on en est (2026-10-27)
+## Où on en est (2026-11-12)
+- Plan du grand audit refait à la demande de Benjamin (2026-11-12) : tester comme de vrais utilisateurs, par niveau (`docs/PLAN-AUDIT-FINAL.md`). L'audit lui-même n'est pas lancé.
 - `main` = Guide G4, G5 et G6 + son 8 (leads lots B à D, largeur des 37 styles, restes S6/S7), chacun relu à neuf et corrigé ; fusion sans CI de GitHub (« [skip ci] », en pause sur demande de Benjamin), tests faits ici.
 - Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
 
 ## Prochaine étape exacte
-1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.
+1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`), dans cet ordre : étape 0 = les outils (pilote à l'aveugle par texte affiché au-dessus d'`AppHarness`, banc qui entend via `ps_live` / `ps_render`, casse-tout automatique, fiches de mission dans `docs/audit-final/missions/`, grille de couverture) et un essai à blanc avec la mission 1 ; vague A = les 16 missions (niveaux 0 à 4) et les 14 experts en même temps ; vague B = enquêteurs et sceptique ; synthèse `docs/AUDIT-FINAL.md` (tableau de scores) ; corrections ; match retour par des testeurs neufs ; relecture.
 2. Puis l'APK unique compilé ici, avec les extraits audio, et le résumé pour Benjamin.
 3. Plus tard, sur demande de Benjamin : le chantier Play Store.
 

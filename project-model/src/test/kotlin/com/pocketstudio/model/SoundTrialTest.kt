@@ -118,6 +118,13 @@ class SoundTrialTest {
             assertTrue("$id: a saturation on its bass", saturated.isNotEmpty())
             // Parallel (the dry sub stays under it) and its loudness held.
             assertTrue("$id: one of them parallel, its loudness held", saturated.any { it.params[2] < 1f && it.params[4] >= 0.5f })
+            // Driven hard enough to bite at the bass's level (a drive of 0.55 moved its mid by less than 1 dB on the bench).
+            assertTrue("$id: driven", saturated.any { it.params[0] >= 0.75f && it.params[2] < 1f })
+            // Its harmonics lifted where a phone plays them: a peak of +6 dB or more between 400 Hz and 1.2 kHz.
+            val mids = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter {
+                it.type == EffectType.PARAM_EQ.ordinal && it.params[1] >= 0.5f + 6f / 36f && 20f * Math.pow(1000.0, it.params[0].toDouble()) in 400.0..1200.0
+            }
+            assertTrue("$id: a mid lift on its bass", mids.isNotEmpty())
         }
     }
 

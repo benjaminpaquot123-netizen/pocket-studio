@@ -1,0 +1,8 @@
+fusion: 28c3245baa99b4414069314f7b9077596cc9a40f
+branche: eq/tour-5-oreille
+tete: 08e5b39727b62cdaec56d84ac8eee786bfe9e200
+relecture: docs/audits/ultra/tour-5-oreille-relecture.md
+relu: 2d5e44d07f6717bb5154650581808c1813ee123a
+filtres: com.pocketstudio.bentest.* com.pocketstudio.bentest.*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

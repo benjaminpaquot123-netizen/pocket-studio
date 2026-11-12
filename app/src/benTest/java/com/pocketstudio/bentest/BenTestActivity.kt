@@ -71,6 +71,7 @@ class BenTestActivity : ComponentActivity() {
                         start = { Robot.start(application, Robot.ECLAIR) },
                         startTout = { Robot.start(application, Robot.TOUT) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
+                        startOreille = { Robot.start(application, Robot.OREILLE) },
                         resume = { Robot.start(application) },
                         answer = Robot::answer,
                         reset = { Robot.reset(this) },
@@ -101,6 +102,8 @@ class BenTestActions(
     val startTout: () -> Unit = {},
     /** « Retester les corrections »: the chosen steps' ids. */
     val startRetest: (Set<String>) -> Unit = {},
+    /** « Questions à l'oreille » (T3). */
+    val startOreille: () -> Unit = {},
     /** « Reprendre »: the run the logbook holds. */
     val resume: () -> Unit = {},
     val answer: (Boolean) -> Unit = {},
@@ -143,7 +146,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.resume, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
                 }
                 etat.verdict?.let {
-                    Text((if (etat.passage == Robot.TOUT) "Tout tester terminé : " else "Essai éclair terminé : ") + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
                     Button(onClick = actions.send, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_envoyer")) { Text("Envoyer le rapport") }
                 }
                 if (etat.interrompu == null && etat.verdict == null && liste) {
@@ -170,6 +173,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
+                    Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.startOreille, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_oreille")) { Text("Questions à l'oreille") }
                     OutlinedButton(onClick = { liste = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest")) { Text("Retester les corrections") }
                 }
                 if (etat.interrompu != null || etat.verdict != null) {

@@ -58,6 +58,9 @@ object Robot {
     const val ECLAIR = "eclair"
     const val TOUT = "tout"
 
+    /** « Questions à l'oreille » (T3, niveau 3). */
+    const val OREILLE = "oreille"
+
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
     private val answers = LinkedBlockingQueue<Boolean>()
@@ -68,7 +71,7 @@ object Robot {
 
     /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR } ?: ECLAIR
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -88,8 +91,11 @@ object Robot {
     /** The steps' names and labels (the work is only done by a run). */
     private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
         val j = Journey(InAppDriver(LooperMainThread()))
-        val all = if (passage == TOUT) ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
-        else EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+        val all = when (passage) {
+            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+        }
         return subset(all, passage, if (retest) retest(context) else null)
     }
 
@@ -98,7 +104,11 @@ object Robot {
         if (passage == TOUT && chosen != null) Retest.choisir(all, chosen) else all
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
-        if (passage == TOUT) Rapport.bilanFeux(lines, steps).verdict() else Rapport.bilan(lines, steps).verdict()
+        when (passage) {
+            TOUT -> Rapport.bilanFeux(lines, steps).verdict()
+            OREILLE -> QuestionsOreille.verdict(lines)
+            else -> Rapport.bilan(lines, steps).verdict()
+        }
 
     /** What the screen shows when it opens: a run over, or one the app died in. */
     fun look(context: Context) {
@@ -137,8 +147,15 @@ object Robot {
             val c = carnet(app)
             driver.note = { c.add(Carnet.NOTE, "robot", it) }
             val appli = AppliReelle(app, main, tracker)
-            val all = if (which == TOUT) ToutTester(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
-            else EssaiEclair(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
+            val shots = captures(app).apply { mkdirs() }
+            val all = when (which) {
+                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+                OREILLE -> {
+                    val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
+                    QuestionsOreille(Pose(essai, Journey(driver)), NativeSonde, appli, c, shots).etapes()
+                }
+                else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+            }
             val steps = subset(all, which, retest(app))
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() })
             runCatching {
@@ -232,7 +249,7 @@ object Robot {
         val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null, oreille = passage == OREILLE))
             add("mesures.json" to Rapport.json(lines, about))
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
@@ -303,6 +320,7 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
     override fun onActivityResumed(activity: Activity) {
         if (activity is MainActivity) {
             studio = activity
+            Banniere.attacher(activity)
             sorties?.retour()
             keep(activity)
         }
@@ -350,6 +368,33 @@ private class AppliReelle(private val app: Application, private val main: MainTh
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)
+
+    // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).
+    override fun poser(question: Question, maxMs: Long): Reponse {
+        return Banniere.poser(question, maxMs)
+    }
+
+    override fun materiel(): Materiel = runCatching {
+        val audio = app.getSystemService(android.media.AudioManager::class.java)
+        val wired = setOf(
+            android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES, android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET,
+            android.media.AudioDeviceInfo.TYPE_USB_HEADSET,
+        )
+        val bluetooth = setOf(
+            android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, android.media.AudioDeviceInfo.TYPE_BLE_HEADSET,
+            android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER,
+        )
+        val sorties = audio.getDevices(android.media.AudioManager.GET_DEVICES_OUTPUTS)
+        Materiel(casqueFilaire = sorties.any { it.type in wired }, bluetooth = sorties.any { it.type in bluetooth })
+    }.getOrDefault(Materiel(casqueFilaire = false, bluetooth = false))
+
+    /** Lane 0 of the drums is the kick. */
+    override fun panKick(): Float? = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run null
+        ViewModelProvider(a)[RhythmViewModel::class.java].project.value.drums.lanes.firstOrNull()?.pan
+    }
+
+    override fun journalFin(lignes: Int): String = com.pocketstudio.app.report.AppLog.dump(lignes)
 
     override fun video(): Appli.VideoVu = main.run {
         val a = tracker.studio as? ComponentActivity ?: return@run Appli.VideoVu(true, null, null)
@@ -483,4 +528,46 @@ object Captures {
         bitmap.recycle()
         file.length() > 0
     }.getOrDefault(false)
+}
+
+/** [Preparateur] on the phone: the essai éclair's own moves, the song made by the assistant and played. */
+internal class Pose(private val essai: EssaiEclair, private val j: Journey) : Preparateur {
+    override fun ouverture() { essai.ouverture() }
+
+    override fun morceau(style: String) {
+        essai.versCreer(style)
+        j.createNow()
+        j.await("guide_card_start.ready", 300_000)
+        essai.lancerLecture()
+        closeGuide()
+    }
+
+    override fun rejouer() {
+        essai.auStudioPro()
+        essai.lancerLecture()
+        closeGuide()
+    }
+
+    override fun arreter() = essai.arreter()
+
+    override fun ouvrirPads() {
+        essai.auStudioPro()
+        j.tap("tab_Live")
+        j.await("live_screen")
+    }
+
+    override fun ouvrirBatterie(): String {
+        essai.auStudioPro()
+        j.tap("tab_Sons")
+        runCatching { j.tap("sons_Rythme") }
+        j.await("pad_0")
+        return "pad_0"
+    }
+
+    override fun batterieOuverte(): Boolean = j.exists("pad_0")
+
+    /** The Guide's panel over the song would hide what the question is about. */
+    private fun closeGuide() {
+        if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
+    }
 }

@@ -135,21 +135,40 @@ class BenchAmeneesTest : HumanTester("amenees") {
     /**
      * Plan 4.1, cause (c') on the bench (review: the bench no longer waits for the tester): « tape » right after « Écouter »
      * taps during the example, the sound line saying « exemple en cours »: the app counts none of those touches (by design,
-     * and T5-DEFI-ECOUTE at its edge). Once « À toi ! » shows, the same « tape » gives 3 stars.
+     * and T5-DEFI-ECOUTE at its edge). Once « À toi ! » shows, the same « tape » at the pulse gives 3 stars.
+     * Flaky fix (exit criterion 1): the touches during the example are quick ones (100 ms apart) on a slow challenge (80 BPM,
+     * a 3 s example), so that all of them land in the example wherever it starts; checked before the example ends.
      */
     @Test
     fun aTapDuringTheExampleIsNotCounted() {
-        val c = openChallenge()
+        openChallenge()
+        rhythm()!!.setTempo(80.0)
+        act("attends 1")
+        // The challenge made again at the project's new tempo, as its level's button does.
+        val level = centerOf("padlive_challenge_level_1") ?: error("no level 1\n" + screenLines().joinToString("\n"))
+        act("touche ${level.first} ${level.second}")
+        val p = project()!!
+        val c = com.pocketstudio.model.PadChallenge.make(1, com.pocketstudio.model.PadChallenge.shotsOf(p.live, p.padLive.shownPage), p.tempoBpm)!!
+        assertEquals(80.0, c.bpm, 0.0)
         val listen = centerOf("padlive_challenge_listen") ?: error("no « Écouter »\n" + screenLines().joinToString("\n"))
         val ctl = rhythm()!!.padLive.challenge
         // The example is rendered off the main thread in REAL time while the bench moves its clock: it starts anywhere from the
         // touch on « Écouter » to the end of that touch's settle. Pinned here to its earliest start (a worker that is done at
         // once), the case the self-test met 1 time in 7 (YourTurn(c, 2): the last taps landed after the example).
         ctl.exampleForTest = { ch -> com.pocketstudio.app.audio.Pcm(FloatArray(com.pocketstudio.model.PadChallenge.exampleFrames(ch, 48_000) * 2), 2, 48_000) }
+        val down = android.os.SystemClock.uptimeMillis()
         val sound = act("touche ${listen.first} ${listen.second}")
         assertTrue("the example plays: ${ctl.ui.value}", ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening)
         assertTrue(sound, "exemple en cours" in sound)
-        tapPad(c, "tempo")
+        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
+        // The gesture's own settle comes after its touches: they are all in once the example still plays after them.
+        act("tape ${pad.first} ${pad.second} ${c.hits.size} 100")
+        println("touches during the example: done ${android.os.SystemClock.uptimeMillis() - down} ms after « Écouter » (example ${Math.round(4 * c.beatMs)} ms)")
+        assertTrue(
+            "the touches landed during the example (${android.os.SystemClock.uptimeMillis() - down} ms after « Écouter », " +
+                "example ${Math.round(4 * c.beatMs)} ms): ${ctl.ui.value}",
+            ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening || ctl.ui.value == com.pocketstudio.app.padlive.ChallengeUi.YourTurn(c, 0),
+        )
         val until = System.currentTimeMillis() + 30_000
         while (ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening) {
             assertTrue("the example never ends", System.currentTimeMillis() < until)

@@ -60,12 +60,12 @@ object SoundTrial {
 
     /**
      * The library's sounds no recipe played (docs/sons/PLAN-SONS-MODERNES.md § 5): jump up's hoover (1991) gives way to
-     * the supersaw and its two-saw pad to the future bass chords; techno's square pluck to the future pluck. Null: the
-     * recipe's own sound (with the OTT).
+     * the supersaw and its two-saw pad to the future bass chords. Techno keeps its square pluck: the future pluck measured
+     * darker on its pad (tour-5-sons-essai-rapport.md). Null: the recipe's own sound (with the OTT).
      */
     private val SOUNDS = mapOf(
         "jump_up" to Sounds(pad = "Accords future bass", lead = "Supersaw"),
         "tech_house" to Sounds(),
-        "techno" to Sounds(pad = "Pluck future"),
+        "techno" to Sounds(),
     )
 }

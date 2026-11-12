@@ -38,7 +38,24 @@ class CourbeTest {
         // The reference padded as the robot pads it: every sample of the sweep under two half windows.
         val ref = bandes(SonsFabriques.silence(Tiers.TAILLE / 2) + sweep + SonsFabriques.silence(Tiers.TAILLE))
         val mic = bandes(heard)
-        return Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, room.puissances())
+        return Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, room.puissances(), Courbe.tramesBalayees(RATE, sweepS))
+    }
+
+    /**
+     * The sweep stays a few frames in each band: the room competes with it during those frames only. A sweep at
+     * 0.3 (power 0.045) over white noise of RMS 0.05: in the 1 kHz band (231.6 Hz wide) the room's power is
+     * 0.0025 × 231.6 / 24 000, so the band is heard about 32.7 dB over it, not the 19 dB the whole listening would give.
+     */
+    @Test
+    fun aBandIsJudgedAgainstTheNoiseOfItsOwnFrames() {
+        val r = mesure(Chaine(Biquad.peak(1000.0, 0.0)), noiseRms = 0.05)
+        val k = Tiers.NOMS.indexOf("1000")
+        val bw = Tiers.haut(k) - Tiers.bas(k)
+        val want = 10 * kotlin.math.log10(0.045 / (0.05 * 0.05 * bw / (RATE / 2.0)))
+        assertEquals("1 kHz over the room during its own frames", want, r.rsb[k]!!, 2.0)
+        // A small speaker's bass a little over the room while swept is heard, not dropped.
+        val small = mesure(Chaine(Biquad.highPass(400.0)), noiseRms = 0.05)
+        assertNotNull("63 Hz, 32 dB down, still 12 dB over the room during its frames", small.db[Tiers.NOMS.indexOf("63")])
     }
 
     @Test
@@ -77,8 +94,8 @@ class CourbeTest {
     fun nothingHeardIsRedAndANoisyRoomOrange() {
         val nothing = mesure(Chaine(Biquad.highPass(400.0)), noiseRms = 0.01, level = 0f)
         assertEquals(Feu.ROUGE, Courbe.feu(nothing).first)
-        // The middle of the curve under 20 dB over the room's noise.
-        val noisy = mesure(Chaine(Biquad.highPass(400.0)), noiseRms = 0.05)
+        // The middle of the curve under 20 dB over the room's noise (during its own frames: about 17 dB at 1 kHz).
+        val noisy = mesure(Chaine(Biquad.highPass(400.0)), noiseRms = 0.3)
         val f = Courbe.feu(noisy)
         assertEquals("a room too noisy for part of the curve: ${f.second}", Feu.ORANGE, f.first)
         assertTrue(f.second, f.second.contains("bruit"))

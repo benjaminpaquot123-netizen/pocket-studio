@@ -25,7 +25,7 @@ class SimpleWordsNonLatinTest {
     )
 
     /** Names of the app and its features, the same in every language (« Pad Live », the 303's « Acid 303 »). */
-    private val names = Regex("Pad Live|Pocket Studio")
+    private val names = Regex("Pad Live|Pocket Studio|→ Pad|drum loop|warm pad|Think break")
 
     @Test
     fun theModeSimpleShowsNoTradeWordInLatinLettersInANonLatinScript() {

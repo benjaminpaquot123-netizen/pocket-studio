@@ -857,3 +857,4 @@ padlive|padlive_fx_brake|incompris	nouveau	tour-5
 session/tab_simple_Morceau|thumb_play|rien	nouveau	tour-5	
 topbar:mesure|play|compteur-fige	corrigé	tour-4,tour-5	banc : compteur figé au banc (T4-17), garde BenchPlayThenTabsTest	tour-5
 tab_simple_Clavier|record_start|rien	nouveau	tour-4	T4-26 non tranché : pas reproduit sans émulateur (Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes, vert) ; échec sur émulateur (CI 243) inexpliqué	
+mixer_automation|automation_add|option-disparue	corrigé	tour-5	T5-AUTO-OPTION (a53e385e)	tour-5

@@ -33,6 +33,29 @@ class RhythmGrilleTest {
     private fun twoBars(): Project = RhythmViewModel.starterProject().let { p -> p.copy(drums = p.drums.copy(steps = 32)) }.sanitized()
 
     /**
+     * U6 (seat C a #12): playing with « Suivre » on, a cell touched on the bar in sight: the page stays on that bar
+     * when the playhead goes on to the next one (the hit just put was taken out of sight).
+     */
+    @Test
+    fun aCellTouchedWhilePlayingKeepsItsBar() {
+        var step by mutableStateOf(2)
+        val touched = mutableListOf<Int>()
+        compose.setContent {
+            PocketStudioTheme {
+                RhythmScreen(twoBars(), TransportUi(playing = true), { LiveUi(currentStep = step) }, canUndo = false, canRedo = false,
+                    actions = RhythmActions(toggleStep = { touched += it }))
+            }
+        }
+        compose.waitForIdle()
+        assertTrue("bar 1 in sight", has("step_5"))
+        compose.onNodeWithTag("step_5").performClick()
+        assertTrue(touched == listOf(5))
+        compose.runOnIdle { step = 20 }
+        compose.waitForIdle()
+        assertTrue("the page went on to bar 2 under the hit just put", has("step_5") && !has("step_21"))
+    }
+
+    /**
      * T11 (seat B b screen 35, « Takt 2/2 » at the clap): a tutorial step that begins shows the bar of its first dotted
      * cell, even when the step before left the page on a bar that has some of the new step's cells.
      */

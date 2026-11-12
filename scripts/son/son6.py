@@ -5,7 +5,7 @@ what the measure can say of the timbres. Reads, per style, OUT/wav/<style>.wav (
 (META kick, else pad 16), the basses (META bass), the lead (META lead) and the whole song, measures them and deletes them.
 Writes one TSV row per style; no sound is kept.
 
-  son6.py OUT_DIR out.tsv [--curve courbe.tsv]
+  son6.py OUT_DIR out.tsv [--curve courbe.tsv] [--styles a,b,c]
 
 Phone speaker: the phone's measured curve (scripts/bentest/empreinte.py courbe, third-octave dB) when given, else an
 estimated small speaker: 4th-order high-pass at 220 Hz, 2nd-order low-pass at 12 kHz (no phone curve measured yet).
@@ -75,6 +75,41 @@ def butter_hp4(f, fc):
 def butter_lp2(f, fc):
     r = (f / fc) ** 2
     return 1 / (1 + r ** 2)
+
+
+def phone400_power(f):
+    """A worse phone (most phones: nothing useful under 400-600 Hz): 4th-order high-pass at 400 Hz, 2nd-order low-pass at 8 kHz."""
+    return butter_hp4(f, 400.0) * butter_lp2(f, 8000.0)
+
+
+def kick_lift(mix, kick, power):
+    """How much each kick hit lifts [mix] heard through [power]: its 40 ms against the 100 ms before (dB), the median
+    over the hits. The hits are read on the kick alone (rendered before the master, same timeline)."""
+    km = np.abs(kick).max(axis=1)
+    env = np.convolve(km, np.ones(48) / 48, mode="same")
+    thr = env.max() * 0.3
+    above = env > thr
+    onsets = np.flatnonzero(above[1:] & ~above[:-1]) + 1
+    keep = []
+    last = -RATE
+    for o in onsets:
+        if o - last > RATE // 10:
+            keep.append(o)
+            last = o
+    y = shape(mix, power) if power else mix
+    p = np.sum(y * y, axis=1)
+    c = np.concatenate([[0.0], np.cumsum(p)])
+    a, b = int(0.04 * RATE), int(0.1 * RATE)
+    lifts = []
+    for o in keep:
+        o = max(0, o - int(0.005 * RATE))
+        if o - b < 0 or o + a > len(p):
+            continue
+        after = (c[o + a] - c[o]) / a
+        before = (c[o] - c[o - b]) / b
+        if before > 1e-12:
+            lifts.append(10 * math.log10(after / before))
+    return (float(np.median(lifts)) if lifts else None), len(lifts)
 
 
 def phone_power(f, curve=None):
@@ -179,11 +214,11 @@ def timbre(x):
     flux = np.sqrt(np.sum(np.diff(norm, axis=0) ** 2, axis=1))
     return {
         "brillance_db": 10 * math.log10(P[:, f >= 2000].sum() / P.sum()),
-        "platitude": float(np.median(flat)),
+        "platitude_db": 10 * math.log10(max(float(np.median(flat)), 1e-12)),
         "mouvement": float(np.median(flux)),
         "centroide_hz": float(np.median(cen)),
         "centroide_ecart_oct": float(np.std(np.log2(np.maximum(cen, 20)))),
-        "largeur_db": 10 * math.log10((np.mean(s * s) + 1e-20) / (np.mean(m * m) + 1e-20)),
+        "largeur_db": max(-60.0, 10 * math.log10((np.mean(s * s) + 1e-20) / (np.mean(m * m) + 1e-20))),
     }
 
 
@@ -221,6 +256,9 @@ def main(argv):
             curve = [(float(a), float(b)) for a, b in (l.split("\t") for l in f if "\t" in l and l.split("\t")[1].strip())]
     phone = lambda f: phone_power(f, curve)
     styles = sorted(p[:-5] for p in os.listdir(os.path.join(out_dir, "json")) if p.endswith(".json"))
+    if "--styles" in argv:
+        wanted = argv[argv.index("--styles") + 1].split(",")
+        styles = [s for s in styles if s in wanted]
     rows = []
     for s in styles:
         j = json.load(open(os.path.join(out_dir, "json", s + ".json")))
@@ -232,9 +270,11 @@ def main(argv):
         r["bass_phone_300"] = (j.get("bass") or {}).get("phone_300")
         lf = lufs_of(x)
         lp = lufs_of(x, phone)
+        lp4 = lufs_of(x, phone400_power)
         r["lufs_i_mesure"] = lf
         r["lufs_tel"] = lp
         r["perte_tel"] = lp - lf
+        r["perte_tel400"] = lp4 - lf
         for name, v in band_shares(x).items():
             r["b_" + name] = v
         for name, v in band_shares(x, phone).items():
@@ -261,7 +301,7 @@ def main(argv):
         subprocess.run([tools, "--no-limiter", cmd, pre], check=True, capture_output=True)
         xp = read_wav(pre)
         os.remove(pre)
-        pre_full, pre_tel = lufs_of(xp), lufs_of(xp, phone)
+        pre_full, pre_tel, pre_tel4 = lufs_of(xp), lufs_of(xp, phone), lufs_of(xp, phone400_power)
         del xp
         for stem, solo in (("kick", meta.get("kick", "16")), ("bass", meta.get("bass")), ("lead", meta.get("lead"))):
             if not solo:
@@ -274,9 +314,18 @@ def main(argv):
             tel = lufs_of(y, phone)
             # How much of the stem a phone keeps, and where it sits against the whole song (before the master) at full
             # range and on the phone: the phone's loss of the stem beyond the song's own.
+            tel4 = lufs_of(y, phone400_power)
             r[stem + "_garde_tel"] = tel - full
+            r[stem + "_garde_tel400"] = tel4 - full
             r[stem + "_contre_mix"] = full - pre_full
             r[stem + "_contre_mix_tel"] = tel - pre_tel
+            r[stem + "_contre_mix_tel400"] = tel4 - pre_tel4
+            if stem == "kick":
+                # Each hit in the exported song: at full range, on the phone, on the worse phone.
+                for name, pw in (("plein", None), ("tel", phone), ("tel400", phone400_power)):
+                    v, n = kick_lift(x, y, pw)
+                    r["coup_kick_" + name] = v
+                r["coups_kick"] = n
             if stem in ("bass", "lead"):
                 for k, v in timbre(y).items():
                     r[f"{stem}_{k}"] = v

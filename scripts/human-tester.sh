@@ -20,6 +20,11 @@ if [ ${#seats[@]} -eq 0 ]; then
 fi
 # Audit method v2 (META-AUDIT changes 1 and 8): no lot without a green self-test of the bench on this very code
 # (scripts/bench/selftest.sh <lot folder>), and Gradle only through the one queue (scripts/bench/gradle-file.sh).
+# Round 6, lot banc7 (point 8, E9): the bench says it runs for this lot (its PID), so a seat's first « regarde » without it
+# is told at once (to note an incident and call the lot's coordinator) instead of waiting 15 min. Written before the stamp is
+# checked (no window where a starting bench looks absent); removed whenever this script ends, before the exit check.
+echo "$$" > "$dir/.banc-en-cours"
+trap 'rm -f "$dir/.banc-en-cours"' EXIT
 stamp="$dir/selftest.ok"
 if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
   # Banc fiable 1.2 (and its review): no bypass any more; a red test in quarantine (scripts/bench/selftest-quarantaine.txt)
@@ -32,9 +37,6 @@ elif ! scripts/bench/tampon.sh verifie "$dir"; then
   echo "No green self-test for this code and these seats (start.txt): see the reason above, then run scripts/bench/selftest.sh $dir." >&2
   exit 3
 fi
-# Round 6, lot banc7 (point 8, E9): the bench says it runs for this lot (its PID), so a seat's first « regarde » without it
-# is told at once to start this script instead of waiting 15 min. Removed when the bench ends, before the exit check.
-echo "$$" > "$dir/.banc-en-cours"
 # PLAN-RESTE 4.2: files written outside the seats' folders during the lot are listed after it (incidents-lot.tsv).
 python3 -I scripts/bench/sortie-de-siege.py avant "$dir"
 trap 'rm -f "$dir/.banc-en-cours"; python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT

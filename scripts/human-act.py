@@ -158,8 +158,9 @@ def main():
         sys.exit(2)
     if turn(seat) == 0 and ended(seat) is None and not bench_running(seat):
         lot = os.path.dirname(os.path.abspath(seat.rstrip("/")))
-        print(f"Le banc ne tourne pas pour ce lot : rien ne peut s'afficher. Lance d'abord scripts/human-tester.sh {lot} "
-              "(après un selftest vert), puis refais « regarde ».")
+        print(f"Le banc ne tourne pas pour ce lot : rien ne peut s'afficher. Ce n'est pas un défaut de l'appli : écris une "
+              f"ligne « incidents-banc: » et préviens le coordinateur du lot, qui lance scripts/human-tester.sh {lot} "
+              "(après un selftest vert) ; puis refais « regarde ».")
         sys.exit(1)
     n = wait_beyond(seat, 0, 900, "L'appli ne s'est pas ouverte (15 min).")
     if words[0] == "regarde":

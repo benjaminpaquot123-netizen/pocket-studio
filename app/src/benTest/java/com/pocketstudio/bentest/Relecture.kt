@@ -18,7 +18,7 @@ object Relecture {
     }
 
     /** A WAV's length and true peak. */
-    fun wav(file: File): Relu = Relu(0.0, 0.0)
+    fun wav(file: File): Relu = TruePeakMeter.ofWav(file).let { (peak, seconds) -> Relu(seconds, peak) }
 
     /** Any exported file (wav, m4a, flac, mp4); null: could not be read. [scratch]: a folder for the decoded sound. */
     fun lire(context: Context, file: File, scratch: File): Relu? = runCatching {

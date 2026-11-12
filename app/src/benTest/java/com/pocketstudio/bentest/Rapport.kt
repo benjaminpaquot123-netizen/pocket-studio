@@ -21,13 +21,38 @@ object Rapport {
 
     /** « 34 verts, 2 oranges, 1 rouge » (and the inconclusive, the steps not done). */
     data class BilanFeux(val verts: Int, val oranges: Int, val rouges: Int, val gris: Int, val restantes: Int) {
-        fun verdict(): String = ""
+        fun verdict(): String = buildList {
+            add("$verts vert" + if (verts > 1) "s" else "")
+            add("$oranges orange" + if (oranges > 1) "s" else "")
+            add("$rouges rouge" + if (rouges > 1) "s" else "")
+            if (gris > 0) add("$gris non concluante" + if (gris > 1) "s" else "")
+            if (restantes > 0) add("$restantes pas faite" + if (restantes > 1) "s" else "")
+        }.joinToString(", ")
     }
 
     /** Each step's light: its worst [Carnet.FEU] since it last began, red when it failed or crashed, green when it passed without one; null: not done. */
-    fun feux(lines: List<Carnet.Ligne>, etapes: List<Etape>): Map<String, Feu?> = etapes.associate { it.name to null }
+    fun feux(lines: List<Carnet.Ligne>, etapes: List<Etape>): Map<String, Feu?> = etapes.associate { e ->
+        val end = lines.lastOrNull { it.step == e.name && it.kind in ENDS }?.kind
+        e.name to when (end) {
+            null -> null
+            Carnet.ECHEC, Carnet.PLANTAGE -> Feu.ROUGE
+            else -> Feu.pire(lumieres(lines, e.name).map { it.first })
+        }
+    }
 
-    fun bilanFeux(lines: List<Carnet.Ligne>, etapes: List<Etape>): BilanFeux = BilanFeux(0, 0, 0, 0, 0)
+    fun bilanFeux(lines: List<Carnet.Ligne>, etapes: List<Etape>): BilanFeux {
+        val f = feux(lines, etapes).values
+        return BilanFeux(f.count { it == Feu.VERT }, f.count { it == Feu.ORANGE }, f.count { it == Feu.ROUGE }, f.count { it == Feu.GRIS }, f.count { it == null })
+    }
+
+    /** [step]'s lights since it last began, with their reasons. */
+    private fun lumieres(lines: List<Carnet.Ligne>, step: String): List<Pair<Feu, String>> {
+        val from = lines.indexOfLast { it.step == step && it.kind == Carnet.DEBUT }.coerceAtLeast(0)
+        return lines.drop(from).filter { it.step == step && it.kind == Carnet.FEU }.mapNotNull { l ->
+            val (mot, why) = l.text.split(';', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+            Feu.of(mot)?.let { it to why }
+        }
+    }
 
     fun bilan(lines: List<Carnet.Ligne>, etapes: List<Etape>): Bilan {
         fun last(step: String) = lines.lastOrNull { it.step == step && it.kind in ENDS }?.kind
@@ -85,7 +110,11 @@ object Rapport {
     }
 
     /** Why a step is not green: its worst light's reason. */
-    private fun pourquoi(lines: List<Carnet.Ligne>, step: String): String? = null
+    private fun pourquoi(lines: List<Carnet.Ligne>, step: String): String? {
+        val l = lumieres(lines, step)
+        val worst = Feu.pire(l.map { it.first })
+        return l.filter { it.first == worst && it.second.isNotBlank() }.joinToString(", ") { it.second }.ifEmpty { null }
+    }
 
     private val PASTILLES = mapOf(Feu.VERT to "🟢", Feu.ORANGE to "🟠", Feu.ROUGE to "🔴", Feu.GRIS to "⚪")
 

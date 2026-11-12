@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -88,6 +89,12 @@ fun ThumbBar(
         ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", share, actions.undo)
         if (ui.redoAlways || ui.canRedo) {
             ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), ui.canRedo, "thumb_redo", share, actions.redo)
+        } else {
+            // Tour 5, lot « langues » (t5-Bd-3: « إعادة » came where « تراجع » was, the 2nd touch redid): ↷'s room kept, empty
+            // and silent, so ↶ never moves under the finger when ↷ comes.
+            Box(share.alpha(0f).clearAndSetSemantics {}) {
+                ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), false, "thumb_redo_room", onClick = {})
+            }
         }
         // « ▶ le morceau » in the middle (tour 5, chantier 4, Benjamin's 2B): the whole song; the top bar's is « ▶ cette partie ».
         val playing = ui.songPlaying

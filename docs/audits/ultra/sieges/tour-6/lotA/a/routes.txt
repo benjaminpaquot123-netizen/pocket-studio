@@ -1,0 +1,13 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+session/tab_simple_Morceau
+dialogue:play_from_menu
+tab_simple_Morceau
+?
+plus
+recette
+simple_tracks/tab_simple_Morceau
+dialogue:part_sheet
+launch
+dialogue:new_project

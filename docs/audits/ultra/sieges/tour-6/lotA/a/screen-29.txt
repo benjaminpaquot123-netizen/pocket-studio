@@ -1,0 +1,27 @@
+Écran 29 (540x1170)
+dessin @ 270,36
+texte « पार्ट 1 · A · इंट्रो » @ 131,98
+texte « बंद करो » @ 455,117
+texte « 8 बार  ·  2 बार बजा » @ 135,143
+texte « गाने में 2 बार बजा। एडिट करो: » @ 179,197
+bouton (étincelles) « सिर्फ़ ये वाला » @ 144,275
+bouton (crayon) « सभी 2 » @ 396,275
+bouton (barres de son) « आख़िर में फ़िल » @ 144,374
+bouton ❚❚ « बाद में Break · 4 बार » @ 396,385
+bouton ❚❚ « बाद में Break · 8 बार » @ 144,506
+bouton (courbe qui monte) « पहले बिल्ड-अप · 4 बार » [désactivé] @ 396,505
+bouton (courbe qui monte) « पहले बिल्ड-अप · 8 बार » [désactivé] @ 144,626
+bouton (haut-parleur et ondes) « Fade in » @ 396,616
+bouton (haut-parleur et une onde) « Fade out » @ 144,735
+bouton (drapeau) « Ending जोड़ो » @ 396,735
+texte « एनर्जी: 3 » @ 73,812
+bouton « 1 · Pads » @ 100,884
+bouton « 2 · + बेस » @ 262,884
+bouton « 3 · + ड्रम्स » [sélectionné] @ 432,884
+bouton « 4 · पूरा ज़ोर » @ 113,965
+texte « लंबाई » @ 54,1036
+champ « बार » contenu « 8 » [coupé] @ 268,1121
+icône ✕ @ 315,1135
+icône − [désactivé] @ 60,1127
+icône + @ 141,1127
+texte « OK » [désactivé] @ 403,1127

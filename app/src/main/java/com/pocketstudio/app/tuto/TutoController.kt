@@ -137,6 +137,12 @@ data class TutoUi(
 
     /** Tour 6 (T9): step [s] holds nothing back (done, or in Pro an example): one rule for the end, the « Bravo » and the chapters' list. */
     fun settled(s: TutoStep): Boolean = s.id in progress.done || (progress.level == TutoLevel.Pro && s.listening)
+
+    /** Tour 6 (N23): every step of the chapter shown is settled ([settled]). */
+    val chapterOver: Boolean get() = chapters[chapter].steps.all(::settled)
+
+    /** N23: the chapter's « Bravo » shown before its last step (that one done before): « Chapitre suivant » goes to the next chapter. */
+    val chapterEndEarly: Boolean get() = bravo && chapterOver && step < chapters[chapter].steps.lastIndex && chapter < chapters.lastIndex
     val finished: Boolean get() = left.isEmpty()
 
     /** Where step [s] is: (chapter, step) indices. */
@@ -275,6 +281,11 @@ class TutoController(
         // word. « Suivant » on an example counts it: the user chose to go on (nothing to make, nothing to check).
         if (by > 0 && u.current.listening && u.current.id !in u.progress.done) {
             markDone()
+            return
+        }
+        // N23: the chapter's « Bravo » on a step before its last one (done before): « Chapitre suivant » is the next chapter.
+        if (by > 0 && u.chapterEndEarly) {
+            save(u.progress.copy(current = u.chapters[u.chapter + 1].steps.first().id))
             return
         }
         // Testers (lot « tuto 5 »: the tempo left at 120, the melody skipped, without a word): « Suivant » on a

@@ -433,8 +433,10 @@ fun TutoPanel(
                         tutoText(chapter.title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 3,
                         modifier = Modifier.testTag("tuto_chapter_title"),
                     )
+                    // Tour 6 (N23): the chapter's « Bravo » shown, « Chapitre 7/15 · Fait » (« Étape 1/2 » said a step left).
                     Text(
-                        tr("Chapitre %1\$d/%2\$d · Étape %3\$d/%4\$d", ui.chapter + 1, ui.chapters.size, ui.step + 1, chapter.steps.size) + " · " +
+                        (if (ui.chapterDoneNext() != null) tr("Chapitre %1\$d/%2\$d · %3\$s", ui.chapter + 1, ui.chapters.size, tr("Fait"))
+                        else tr("Chapitre %1\$d/%2\$d · Étape %3\$d/%4\$d", ui.chapter + 1, ui.chapters.size, ui.step + 1, chapter.steps.size)) + " · " +
                             if (ui.progress.level == TutoLevel.Pro) tr("Pro") else tr("Facile"),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
@@ -555,7 +557,9 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
 @Composable
 private fun TutoUi.chapterDoneNext(): String? {
     val c = chapters[chapter]
-    if (step != c.steps.lastIndex || current.id !in progress.done || chapter >= chapters.lastIndex || finished || atEnd) return null
+    if (current.id !in progress.done || chapter >= chapters.lastIndex || finished || atEnd) return null
+    // Tour 6 (N23): its « Bravo » on a step before the last one, the others done: the chapter's end all the same.
+    if (step != c.steps.lastIndex && !chapterEndEarly) return null
     // Audit ultra round 3, n° 30 (seats A c, E b): « Bravo, chapitre fini ! » while the chapters' list said 2/3 (the
     // example left before it was heard): the chapter is finished only when each of its steps is.
     if (chapterLeft() != null) return null

@@ -441,8 +441,16 @@ fun TutoPanel(
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
                 }
-                IconButton(onClick = actions.chapters, modifier = Modifier.testTag("tuto_chapters")) {
-                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = tr("Chapitres"))
+                // Tour 6 (N22): a bare list icon was not read as the chapters (seat ja took the ← arrow): its name under it,
+                // whole on one line (never cut), folded or not.
+                Column(
+                    Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp).clip(RoundedCornerShape(10.dp))
+                        .clickable(onClickLabel = tr("Chapitres"), role = androidx.compose.ui.semantics.Role.Button, onClick = actions.chapters)
+                        .padding(horizontal = 4.dp).testTag("tuto_chapters"),
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, modifier = Modifier.size(22.dp))
+                    Text(tr("Chapitres"), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
                 }
                 IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
                     Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))

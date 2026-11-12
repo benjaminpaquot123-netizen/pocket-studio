@@ -76,7 +76,9 @@ class Tour6TutoPanelChaptersTest {
             if (nodes.isEmpty()) { wrong += "$where: no « $name »"; continue }
             val layouts = ArrayList<TextLayoutResult>()
             nodes.first().config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.invoke(layouts)
-            if (layouts.firstOrNull()?.hasVisualOverflow == true) wrong += "$where: « ${nodes.first().config.getOrNull(SemanticsProperties.Text)?.joinToString()} » cut"
+            // The word on one line as it wants to be, against the room it was given (cut: smaller).
+            val wide = layouts.firstOrNull()?.multiParagraph?.maxIntrinsicWidth ?: 0f
+            if (wide > nodes.first().size.width + 1) wrong += "$where: « ${nodes.first().config.getOrNull(SemanticsProperties.Text)?.joinToString()} » cut"
         }
         assertTrue("the chapters not named: $wrong", wrong.isEmpty())
     }

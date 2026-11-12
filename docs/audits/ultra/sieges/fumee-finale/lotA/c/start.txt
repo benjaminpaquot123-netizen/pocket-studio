@@ -1,0 +1,7 @@
+lang=en
+device=tablet8
+font=100
+mode=pro
+gestes.max=40
+mission=padlive
+timeout.minutes=30

@@ -146,12 +146,29 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
     /** « Que veux-tu faire ? » › « Nouveau morceau » › « Pas à pas avec l'assistant ». */
     fun newSongInAssistant() {
         await("launch", 30_000)
+        // The song in the mode the app is in, read before the start (a mode taken without asking changes it).
+        val simple = currentMode()
         tap("launch_new")
         tap("starter_wizard")
-        // « Simple ou Pro ? » (owner, 2026-10-29): the mode the app is in.
-        tap(modeCard(com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode))
+        // « Simple ou Pro ? » (owner, 2026-10-29) is only asked while no mode was ever chosen on the phone
+        // (answer 3A, tour 5): otherwise the assistant opens in the last one, said with « Changer ».
+        if (awaitAny(modeCard(simple), "wizard") == "wizard") {
+            await("wizard_mode")
+            if (currentMode() != simple) {
+                tap("wizard_mode_change")
+                tap(modeCard(simple))
+                awaitGone("mode_step")
+            }
+        } else {
+            tap(modeCard(simple))
+        }
         await("wizard")
+        check(currentMode() == simple) { "the assistant's song is in mode ${modeName(currentMode())}, not ${modeName(simple)}" }
     }
+
+    private fun currentMode(): Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode
+
+    private fun modeName(simple: Boolean) = if (simple) "Simple" else "Pro"
 
     /**
      * The assistant's first step: [style] (its family opened when folded), « Choisir ce style »;

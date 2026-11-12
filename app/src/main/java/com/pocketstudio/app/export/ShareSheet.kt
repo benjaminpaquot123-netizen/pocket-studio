@@ -310,7 +310,12 @@ data class ShareSheetUi(
     val target: com.pocketstudio.app.mixer.TargetPick? = null,
     /** The loop's length to pick (no song yet: a part goes out looped); null: the whole song goes out. */
     val loop: LoopPick? = null,
+    /** Lot 6, U2: the loudness the file aims at (the project's target, LUFS); null: no target. */
+    val exportLufs: Double? = null,
 )
+
+/** Lot 6, U2: what the file of [p] aims at (its one loudness target), in LUFS; null without a target. */
+fun shareExportLufs(p: Project): Double? = null
 
 class ShareSheetActions(
     val setName: (String) -> Unit = {},

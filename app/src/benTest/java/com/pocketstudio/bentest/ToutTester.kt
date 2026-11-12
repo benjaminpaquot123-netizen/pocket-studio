@@ -255,15 +255,7 @@ class ToutTester(
                 carte() ?: error("aucune carte ni « Tout est fait » (${seen.size} cartes vues)")
             }
             seen += card
-            val option = j.tagsMatching(Regex("guide_option_.+")).firstOrNull()
-            if (option != null && runCatching { j.tap(option) }.isSuccess && bouge(card)) {
-                applied++
-                continue
-            }
-            check(j.exists("guide_skip")) { "carte $card : ni option qui avance ni « Passer »" }
-            j.tap("guide_skip")
-            check(bouge(card)) { "carte $card : reste après « Passer »" }
-            skipped++
+            if (carteTraitee(step, card)) applied++ else skipped++
         }
         e.arreter()
         if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
@@ -272,6 +264,16 @@ class ToutTester(
         val text = "${seen.size} cartes ($applied appliquées, $skipped passées), mesures du Guide ${measuringMs / 1000} s, en $took s"
         feu(step, if (done) Feu.VERT to "" else Feu.ORANGE to "pas allé au bout")
         return (if (done) "jusqu'au bout : " else "arrêté après $GUIDE_MAX_CARTES cartes : ") + text
+    }
+
+    /** One card handled: its first option (true), or « Passer » (false). An option that opens another app is not touched. */
+    internal fun carteTraitee(step: String, card: String): Boolean {
+        val option = j.tagsMatching(Regex("guide_option_.+")).firstOrNull()
+        if (option != null && runCatching { j.tap(option) }.isSuccess && bouge(card)) return true
+        check(j.exists("guide_skip")) { "carte $card : ni option qui avance ni « Passer »" }
+        j.tap("guide_skip")
+        check(bouge(card)) { "carte $card : reste après « Passer »" }
+        return false
     }
 
     /** The Guide's card on screen (its tag's id). */

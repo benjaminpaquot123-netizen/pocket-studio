@@ -92,6 +92,19 @@ class InAppDriverTest {
         assertEquals("a real touch on the dialog's window", 1, inDialog)
     }
 
+    /** A control that opens another app is never touched (the file manager of the v4 run): no touch, the step is passed. */
+    @Test
+    fun aControlThatOpensAnotherAppIsNotTouched() {
+        var touched = 0
+        compose.setContent {
+            Box(Modifier.size(100.dp).testTag("export_my_exports").pointerInput(Unit) { detectTapGestures { touched++ } })
+        }
+        compose.waitForIdle()
+        val failure = runCatching { driver.click("export_my_exports") }.exceptionOrNull()
+        assertTrue("refused as « ouvre une autre appli »: $failure", failure is PasseExterne)
+        assertEquals("no touch sent", 0, touched)
+    }
+
     /**
      * A touch on what another window covers fails at once, as a finger could not reach it (the phone's
      * assistant over the studio, 2026-11-12: five touches « under another window » taken as done);

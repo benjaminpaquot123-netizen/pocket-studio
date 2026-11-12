@@ -43,6 +43,9 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         const val PLANTAGE = "plantage"
         const val MESURE = "mesure"
         const val NOTE = "note"
+
+        /** A step whose timing is skewed (the app left the front): its lights are not counted. */
+        const val FAUSSE = "fausse"
         const val FINI = "fini"
         /** A step's light: « vert;why », « orange;why »… (Feu.mot first). */
         const val FEU = "feu"

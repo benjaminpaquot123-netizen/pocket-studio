@@ -16,8 +16,8 @@ Then builds the three packs twice in a temporary folder and checks, with this fi
 - kicks: the fundamental over 60-200 ms, techno 43.65 Hz and tech house 49.0 Hz within 1.5 %,
   jump up 52-63 Hz; at least -12 dB of their energy in 250 Hz-1.5 kHz (the harmonics a phone's
   speaker plays) and at least -22 dB in 1.2-4.5 kHz (the click); at least -18.5 dB of full scale²
-  x seconds in 60-250 Hz (the body, trial n° 3: the kicks of trials n° 1 and n° 2 have -23.9 to
-  -18.9, n° 3 -16.4 to -13.5; a 0 dBFS sine lasting 1 s has -3);
+  x seconds in 60-250 Hz (the body, trial n° 2 kick v3: the kicks of trial n° 1 and of the first v2 have -23.9 to
+  -18.9, v3 -16.4 to -13.5; a 0 dBFS sine lasting 1 s has -3);
 - snares and claps: at least -6 dB of their energy in 250 Hz-2 kHz (the body), a tail (start to
   the last sample within 40 dB of the peak) of 0.25 to 0.6 s;
 - hats, open hats and rides: no more energy above 10 kHz than in 4-10 kHz; hats with more than

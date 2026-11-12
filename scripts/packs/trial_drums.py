@@ -17,7 +17,7 @@ snare or clap, and the metal steps back.
   200 Hz (60-100 ms), the body's harmonics between 180 Hz and 1.5 kHz (tanh and tanh² at 4x the
   rate, so nothing folds back: what a phone's speaker plays, the ear rebuilding the fundamental
   from them) and a click of its own in 1.2-4.5 kHz over 2-6 ms; then the body (2-3 times the
-  fundamental) raised and a clipper on the whole (trial n° 3: the drums lacked 60-250 Hz);
+  fundamental) raised and a clipper on the whole (trial n° 2, kick v3: the drums lacked 60-250 Hz);
 - snares and claps in layers: a tonal body at 180-250 Hz, a noise band at 1-3 kHz (the wires, the
   hands), a little top, saturated, then a plate (t60 0.3-0.5 s) whose left and right tails are
   partly independent (claps: wide, yet summing to mono cleanly) and a soft clipper (denser at the
@@ -216,7 +216,7 @@ def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, h=3, punch=
     The body (all but the click) is kept hot by a gentler envelope before the saturation than after
     it; `grit` boosts the low mids before the saturation (dirtier). Last, everything goes through a
     clipper (`clip`, tanh at 4x): dense, the body and the sub near the peak for the kick's first
-    tenths of a second (trial n° 3: 60-250 Hz at least 4 dB over trial n° 1 at the same peak). The
+    tenths of a second (trial n° 2, kick v3: 60-250 Hz at least 4 dB over trial n° 1 at the same peak). The
     rumble goes before the clipper, not after: a high-pass after it would shift the phases and
     overshoot the peak (2 dB of everything lost at the same peak)."""
     rng = rng_for(name)

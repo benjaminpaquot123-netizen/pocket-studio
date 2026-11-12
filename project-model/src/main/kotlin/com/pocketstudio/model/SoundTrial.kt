@@ -52,12 +52,15 @@ object SoundTrial {
 
     /**
      * Trial n° 2 (Benjamin on n° 1: « tu rajoutes juste des cymbales » ; measured: only the drums' highs moved). What a
-     * listener notices, with the engine's own effects: the bass's harmonics (a parallel saturation, its loudness held,
-     * the dry sub under it: the kick already ducks the music through the mix's bus), the leads and pads wider and in a
+     * listener notices, with the engine's own effects: the bass's harmonics (a parallel saturation, its loudness held, a
+     * lift around 700 Hz, the dry sub under it: the kick already ducks the music through the mix's bus), the leads and pads wider and in a
      * modern space (the widener's spread, the plate reverb, the ping-pong delay).
      */
     private val SECOND = listOf(
-        StyleFx("bass", insert = "SATURATION", params = listOf(0.55f, 1f, 0.6f, 0.7f, 1f)),
+        // Driven hard (0.55 moved the bass's mid by less than 1 dB on the bench), then its harmonics lifted by 8 dB
+        // around 700 Hz (PARAM_EQ: 20 x 1000^0.515 Hz, +8 dB, Q 0.8).
+        StyleFx("bass", insert = "SATURATION", params = listOf(0.85f, 1f, 0.6f, 0.7f, 1f)),
+        StyleFx("bass", insert = "PARAM_EQ", params = listOf(0.515f, 0.5f + 8f / 36f, 0.28f, 0f)),
         StyleFx("lead", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.6f), reverb = 0.25f, delay = 0.3f),
         StyleFx("pad", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.8f), reverb = 0.4f),
     )

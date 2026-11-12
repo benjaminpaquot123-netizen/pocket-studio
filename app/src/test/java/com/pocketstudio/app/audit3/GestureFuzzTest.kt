@@ -1,6 +1,9 @@
 package com.pocketstudio.app.audit3
 
 import android.app.Application
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -223,6 +226,33 @@ class GestureFuzzTest {
         val steps = System.getenv("PS_GESTURE_STEPS")?.toIntOrNull() ?: 300
         run(seed, steps)
         if (standInLimits.isNotEmpty()) System.err.println("GestureFuzzTest: native readings without a stand-in: $standInLimits")
+    }
+
+    /**
+     * Tour 5 « fuzz » (CI 43229551237, seed 11 after « acid_sounds_save »): a window holding a text field, with a small
+     * window over it (a popup: the field's own handles, a menu). Retour went to the top window, the popup, never to the
+     * window with the field: it stayed open and Compose never rested (AppNotIdleException after 60 s). Retour must go
+     * to the window that holds the field, and the wait must come back.
+     */
+    @Test
+    fun aTextWindowUnderAPopupIsClosedWithRetour() {
+        val controller = Robolectric.buildActivity(androidx.activity.ComponentActivity::class.java).setup()
+        controller.get().setContent {
+            var name by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("Mon son 1") }
+            var open by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(true) }
+            if (open) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = { open = false },
+                    confirmButton = { androidx.compose.material3.Text("OK") },
+                    text = { androidx.compose.material3.OutlinedTextField(name, { name = it }) },
+                )
+            }
+            androidx.compose.ui.window.Popup { androidx.compose.material3.Text("bulle") }
+        }
+        val waited = runCatching { idle() }.exceptionOrNull()
+        assertTrue("the wait never came back with a text window under a popup: $waited", waited == null)
+        assertFalse("the window with the text field is still open", com.pocketstudio.app.human.BenchWindows.textFieldInADialog())
+        controller.pause().stop().destroy()
     }
 
     @Test

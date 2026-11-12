@@ -127,6 +127,12 @@ class SoundTrialTest {
                 it.type == EffectType.PARAM_EQ.ordinal && it.params[1] >= 0.5f + 10f / 36f && 20f * Math.pow(1000.0, it.params[0].toDouble()) in 400.0..1200.0
             }
             assertTrue("$id: a mid lift on its bass", mids.isNotEmpty())
+            // Its sub given back (the saturation took 4 to 5.5 dB of it on the bench) and the fizz over 8 kHz taken off
+            // (+25 dB on tech house's sine bass): the 3-band EQ, lows +4 dB or more (100 Hz shelf), highs -6 dB or less (8 kHz).
+            val shelves = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter {
+                it.type == EffectType.EQ.ordinal && it.params[0] >= 0.5f + 4f / 24f && it.params[2] <= 0.5f - 6f / 24f
+            }
+            assertTrue("$id: its sub back, its fizz off", shelves.isNotEmpty())
         }
     }
 

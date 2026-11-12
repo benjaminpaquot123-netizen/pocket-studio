@@ -1,5 +1,5 @@
 # Tour 5, lot « sons-modernes » : relecture neuve de l'étude des sons (2026-11-12)
-Relu : 9d3eab9432913eb49ad29fd7f3bfa095d13b0502
+Relu : a0713bae5220d7f76c363fcafa9a7e822ce3baf6
 
 ## Ce qui a été relu
 - **Premier passage** sur cacaea09, l'étude seule : `docs/sons/PLAN-SONS-MODERNES.md` et `docs/decisions/tour-5-sons-modernes.md`. Ce relevé avait été commité en 034561af.
@@ -150,5 +150,35 @@ Aucun.
   - Correction : « des voix découpées modernes (pack d'essai) à la place de la « Voix robot » ».
 - **n6. « la production d'aujourd'hui la met sur presque tout »** (§ 2.1, point 4), sans source — **corrigé** (« très courante sur ces sons dans la production d'aujourd'hui »).
   - Correction : « très courante sur les basses, leads et nappes ».
+
+## Rapport de zone (quatrième passage, sur a0713bae)
+
+**Ce qui a été relu.** Seulement `docs/audits/ultra/tour-5-sons-modernes-rapport.md`. Le reste de l'écart `31dad71c..a0713bae` est la fusion de la base (aa005116, trois commits « Tour 6 »).
+- Dans la zone (`docs/sons/`, les décisions du lot, cette relecture), seul le rapport bouge. Rien ne bouge dans `app/`, `engine/`, `project-model/` ni `scripts/`, et l'écart n'ajoute aucun lien symbolique.
+- `scripts/bench/rapport-zone.py HEAD docs/audits/ultra/tour-5-sons-modernes-rapport.md` accepte le rapport : code 0, aucun message.
+
+**La ligne « tests: aucun : … » est honnête.** Le lot ne touche ni l'appli, ni le moteur, ni le banc, et l'outil Python a son propre test.
+
+**Les quatre chemins.** Chacun nomme un `@Test` sans `@Ignore`, présent dans `app/src/test` :
+- `SoundCategoriesTest#aLineWithoutAKitVoiceStillTakesThePackFirst` : le chemin est fidèle au test (le kick de l'afro house prend le pack du style avant le kit) ;
+- `SoundCategoriesTest#aLineThatAsksForAKitVoiceKeepsItWithThePackDownloaded` : fidèle aussi ;
+- les deux autres sont dans les constats ci-dessous.
+
+### Moyen
+
+- **R1. Le chemin 3 ne décrit pas ce que fait son test.**
+  - Passage : « chemin: Assistant › la machine nommée par la ligne passe en premier | test: WizardLineFxTest#theStylesPacksAreOfferedAtTheLineTheMachineOfThatLineFirst ». Le rapport le range sous « le choix d'un son par rôle, que l'interrupteur d'essai changera ».
+  - Ce test ne vérifie que l'ordre des packs **à télécharger** proposés sur une ligne (`missingStylePacks`, `WizardScreen.kt:502-507`). Il ne vérifie pas que, packs installés, le son de la machine passe avant le pack du style et le kit. C'est pourtant l'ordre de `soundCategories` sur lequel l'essai compte (G3).
+  - Le test qui couvre cet ordre existe : `ShelfBrowserTest#theAssistantKeepsTheStylesMachineAndItsKitVoiceFirst` (`@Test` sans `@Ignore`). Il installe le pack de la machine et vérifie qu'il sort en premier dans « Pour ce style », devant le kit.
+  - Correction proposée : nommer ce test-là pour ce chemin, ou renommer le chemin en « Assistant › packs à télécharger d'une ligne : sa machine d'abord ».
+
+### Mineur
+
+- **r1. Chemin 4 : « Bibliothèque › les packs du style proposés d'abord » (`LibraryChoicesTest#theStylesPacksAreOfferedFirstAndDownloadedInOneTouch`).**
+  - Le test vérifie que l'offre existe et qu'une seule touche télécharge tous les packs du style. Il ne vérifie pas qu'elle vient « d'abord » : il ne contrôle aucune position.
+  - Correction : « les packs du style proposés et téléchargés d'une touche ».
+- **r2. Rapport, « Preuves » : « Toutes les remarques ont été corrigées ».**
+  - Tous les constats l'ont été. Mais la remarque du troisième passage, non comptée comme constat (la présence comptée jusqu'à 5 kHz passe encore le test), est toujours vraie.
+  - Correction : « Tous les constats ont été corrigés ».
 
 Verdict : 0 bloquant, 0 grave — fusion possible

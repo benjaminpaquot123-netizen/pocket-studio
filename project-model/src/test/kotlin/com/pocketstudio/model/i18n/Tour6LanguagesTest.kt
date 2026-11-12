@@ -1,5 +1,6 @@
 package com.pocketstudio.model.i18n
 
+import com.pocketstudio.model.Scene
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -59,5 +60,26 @@ class Tour6LanguagesTest {
         val sentence = tr("Il faut d'abord le modèle de séparation (%s, une seule fois, Wi-Fi conseillé).", "200 MB").substringBefore(" (")
         if (title != sentence) wrong += "tr: title « $title », sentence « $sentence »"
         report("catalog mistakes", wrong)
+    }
+
+    /**
+     * Tutorials' sweep n° 6: in Arabic, the song's plan named its parts « Intro », « Drop », « Break », « Build-up » in Latin
+     * letters, while Japanese and Korean write them in their script (« ドロップ », « 드롭 »). In the five languages whose script
+     * is not Latin, every part's name (and its copy's, « Drop 2 ») and every text naming a part say it in that script.
+     */
+    @Test
+    fun thePartsOfTheSongAreNamedInTheLanguagesOwnScript() {
+        val part = Regex("^(Intro|Outro|Drops?|drop|Break|Build-ups?|Bridge|Pre-chorus|Post-chorus|Groove|groove|Fake drop|Mini-break|Fills?)$")
+        // A Latin word, not a letter: the Japanese verse is « Aメロ » (the A melody), its own word.
+        val latin = Regex("[A-Za-z]{2,}")
+        val wrong = ArrayList<String>()
+        for (lang in listOf(Lang.AR, Lang.HI, Lang.ZH_CN, Lang.JA, Lang.KO)) {
+            I18n.lang = lang
+            Scene.SECTIONS.flatMap { listOf(it, "$it 2") }.forEach { label ->
+                Scene.shownLabel(label).let { if (latin.containsMatchIn(it)) wrong += "${lang.code}: part « $label » shows « $it »" }
+            }
+            texts(lang).forEach { (area, _, v) -> runs(v).filter { part.matches(it) }.forEach { wrong += "${lang.code}/$area: « $it » in « ${v.take(70)} »" } }
+        }
+        report("parts named in Latin letters", wrong)
     }
 }

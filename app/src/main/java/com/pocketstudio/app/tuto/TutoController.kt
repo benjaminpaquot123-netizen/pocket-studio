@@ -268,6 +268,12 @@ class TutoController(
         val u = _ui.value ?: return
         val flat = u.chapters.flatMap { it.steps }
         val at = flat.indexOf(u.current)
+        // Tour 6 (N19, grave): an example left by « Suivant » was never counted, and the end held five of them without a
+        // word. « Suivant » on an example counts it: the user chose to go on (nothing to make, nothing to check).
+        if (by > 0 && u.current.listening && u.current.id !in u.progress.done) {
+            markDone()
+            return
+        }
         // Testers (lot « tuto 5 »: the tempo left at 120, the melody skipped, without a word): « Suivant » on a
         // step to do, not done, says what the song will miss first; a second touch lets it go (the last one: the end says what is left).
         if (by > 0 && at < flat.lastIndex && skipSaid != u.current.id && !u.current.manual && !u.current.listening && u.current.id !in u.progress.done) {

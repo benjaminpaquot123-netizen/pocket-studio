@@ -44,8 +44,8 @@ class GuetTest {
     fun aHoleIsFoundAndOnlyTheTwoSecondsAroundItAreKept() {
         val dir = tmp.newFolder("sons")
         val song = SonsFabriques.rose(8 * RATE, rms = 0.1)
-        // A dropout heard in the room: 150 ms of nothing at 4 s.
-        for (i in (4.0 * RATE).toInt() until (4.15 * RATE).toInt()) song[i] = 0f
+        // A dropout heard in the room: 250 ms of nothing at 4 s.
+        for (i in (4.0 * RATE).toInt() until (4.25 * RATE).toInt()) song[i] = 0f
         val g = Guet(RATE, dir, "micro_trap")
         ecouter(g, song)
         assertEquals(g.anomalies.toString(), 1, g.anomalies.size)
@@ -55,9 +55,22 @@ class GuetTest {
         val x = wav(g.extraits.single())
         assertEquals("2 s kept", 2.0, x.size.toDouble() / RATE, 0.05)
         // The hole in the middle of the extract, the song around it.
-        assertTrue("the hole at the middle", rms(x, 1.0, 1.12) < 0.001)
+        assertTrue("the hole at the middle", rms(x, 1.0, 1.2) < 0.001)
         assertTrue("the song before it", rms(x, 0.2, 0.8) > 0.03)
         assertTrue("the song after it", rms(x, 1.3, 1.8) > 0.03)
+    }
+
+    /** Trap and techno cut their sounds: 125 ms of silence on every beat is the music, not a dropout. */
+    @Test
+    fun theSilencesOfARhythmAreNotHoles() {
+        val dir = tmp.newFolder("sons")
+        val song = SonsFabriques.rose(8 * RATE, rms = 0.1)
+        val beat = RATE / 2
+        for (i in song.indices) if (i % beat >= beat * 3 / 4) song[i] = 0f
+        val g = Guet(RATE, dir, "micro_techno")
+        ecouter(g, song)
+        assertTrue(g.anomalies.toString(), g.anomalies.isEmpty())
+        assertTrue("nothing written", dir.list()!!.isEmpty())
     }
 
     @Test
@@ -74,7 +87,7 @@ class GuetTest {
         val dir = tmp.newFolder("sons")
         val song = SonsFabriques.rose(10 * RATE, rms = 0.1)
         for (i in (3 * RATE) until (3 * RATE + 40)) song[i] = if (i % 2 == 0) 1f else -1f
-        for (i in (7.0 * RATE).toInt() until (7.2 * RATE).toInt()) song[i] = 0f
+        for (i in (7.0 * RATE).toInt() until (7.3 * RATE).toInt()) song[i] = 0f
         val g = Guet(RATE, dir, "micro_jump_up", maxExtraits = 1)
         ecouter(g, song)
         assertEquals(listOf("saturation", "trou"), g.anomalies.map { it.kind })

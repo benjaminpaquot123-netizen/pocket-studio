@@ -1,0 +1,14 @@
+launch
+dialogue:remix_home
+dialogue:remix_model_ask
+dialogue:remix_dest
+dialogue:song_import
+tab_Sons
+live_grid/tab_Live
+live_pads_grid
+live_pads_full
+dialogue:projects
+dialogue:new_project
+dialogue:mode_step
+timeline_screen/tab_Structure
+tab_Structure

@@ -1,0 +1,11 @@
+Écran 5 (588x1278)
+icône ← «  Geri » @ 70,36
+texte « Remix » @ 179,36
+titre « BİR ŞARKIYI AYRIŞTIR » [état « Genişletildi »] @ 228,135
+bouton « ? » @ 393,135
+texte « Cihazından bir şarkı seç: uygulama onu davul, bas, vokal ve geri kalan olarak ayırır. Birkaç dakika sürer; ekranı kapatabilirsin. » @ 294,251
+image ✓ @ 60,386
+texte « Hazır: model telefonunda. Bir şarkı seç. » @ 316,386
+bouton « Bir şarkı seç » @ 294,475
+texte « En fazla 7 dakika. Ayrıştırılan son 3 şarkı ve bir projenin kullandıkları saklanır. » @ 294,559
+bouton + «  Bir şarkı seç » @ 294,1227

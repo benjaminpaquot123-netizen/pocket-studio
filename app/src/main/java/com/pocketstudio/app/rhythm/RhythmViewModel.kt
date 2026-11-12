@@ -441,9 +441,11 @@ data class ExportUi(
          * no export plays (a challenge's stars, the Pad Live page shown, the MIDI map, the song's versions kept aside):
          * a star won in Pad Live called the song « changé depuis cet export » and took its « Partager » away.
          * T5-ALERTE: nor the Guide's cards (sharing ticks « Prêt à partager ? »: the song just shared was called changed).
+         * Lot 6, U3 (seat A c, screens 14, 20, 24): nor, once there is a song, the part shown (the screens follow the part
+         * playing): the same project seen on another part. Without a song the loop shared is the part shown: it counts.
          */
         fun madeHash(p: Project): Int =
-            p.copy(
+            (if (p.song.isNotEmpty()) p.switchScene(0) else p).copy(
                 name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
                 guide = com.pocketstudio.model.guide.GuideState.EMPTY,
             ).hashCode()

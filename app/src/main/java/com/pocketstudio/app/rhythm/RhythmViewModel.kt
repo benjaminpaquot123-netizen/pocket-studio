@@ -7247,14 +7247,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val app = getApplication<Application>()
                 val pads = ArrayList<Pair<Int, PadSample>>()
+                // Lot 6, T2 (seat D b #31): a pad the course names by its studio voice (« Rumble », « 808 ») keeps that
+                // name with the pack's sound (it was « Techno · Caisse 2 », a name no step says).
+                val voices = project.value.padVoices
                 for ((lane, s) in sounds) {
                     val (id, name, sound) = s
+                    val kept = voices[lane]?.kind?.takeIf { it == PadVoice.RUMBLE || it == PadVoice.BASS_808 }?.let { PadVoice.NAMES[it] }
                     val file = com.pocketstudio.app.library.PackStore.file(app, id, sound)
                     val pcm = withContext(Dispatchers.IO) {
                         runCatching { tutoKitDecodeForTest?.invoke(file) ?: com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(file)) }
                             .onFailure { AppLog.add("Tuto : son du kit illisible, ${sound.file} (${it.message})") }.getOrNull()
                     } ?: continue
-                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
+                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), kept ?: com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
                         .onFailure { AppLog.add("Tuto : son du kit non préparé, ${sound.file} (${it.message})") }.getOrNull() ?: continue
                     padSamples.register(prepared.second)
                     pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)

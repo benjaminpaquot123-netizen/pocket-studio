@@ -398,6 +398,7 @@
           "text": "À toi : dans la partie « Drop B », ajoute le charley ouvert entre les kicks : la 2e moitié du Drop brille plus.",
           "textPro": "À toi : dans « Drop B », ajoute le charley ouvert sur les contretemps (les blocs C-D d'EDMProd ajoutent une couche).",
           "check": "changed:drums:Drop B",
+          "target": "open_hat",
           "spot": "rhythm.pattern",
           "listen": "part:Drop"
         }

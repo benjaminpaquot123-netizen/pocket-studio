@@ -438,6 +438,7 @@
           "text": "À toi : dans la partie « Drop 2 », ajoute un coup sur le pad de percussion : le Drop 2 ne sonne plus tout à fait comme le Drop.",
           "levels": "p",
           "check": "changed:drums:Drop 2",
+          "target": "perc",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }

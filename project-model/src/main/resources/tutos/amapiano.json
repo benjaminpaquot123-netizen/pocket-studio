@@ -270,6 +270,7 @@
           "id": "variation",
           "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de conga ou de « toc » : une réponse de plus au log drum.",
           "check": "changed:drums:Drop 2",
+          "target": "perc",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2",
           "why": "Une percussion de plus garde l'oreille en éveil."

@@ -451,6 +451,7 @@
           "levels": "p",
           "text": "À toi : dans la partie « Drop 2 », ajoute un coup sur le pad « Charley ouvert » ou sur un pad de percussion : le Drop 2 ne sonne plus tout à fait comme le Drop, l'oreille reste en éveil.",
           "check": "changed:drums:Drop 2",
+          "target": "open_hat",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }

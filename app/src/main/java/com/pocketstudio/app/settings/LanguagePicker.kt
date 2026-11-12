@@ -107,21 +107,24 @@ fun LanguageList(current: Lang, pick: (Lang) -> Unit, close: () -> Unit, phone: 
         onDismissRequest = close,
         title = { Text(tr("Choisis ta langue")) },
         text = {
-            // Opened on the language in use (15 do not fit at once); the phone's block is 3 items.
-            val top = if (phone != null) 3 else 1
-            val first = if (current == phone) 0 else (top + Lang.PICKER.indexOf(current) - 2).coerceAtLeast(0)
+            // Tour 6, R18 (seats B c #29, F b screen 23): the phone's language stays on top, out of the scroll, one touch
+            // away whatever language is in use (opened on the language in use, the list had scrolled it out of sight).
+            // The list of all of them, under it, still opens on the language in use (15 do not fit at once).
+            val first = if (current == phone) 0 else (Lang.PICKER.indexOf(current) - 1).coerceAtLeast(0)
             val list = rememberLazyListState(initialFirstVisibleItemIndex = first)
-            LazyColumn(
-                Modifier.fillMaxWidth().heightIn(max = 460.dp).testTag("lang_list"),
-                state = list,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (phone != null) {
-                    item(key = "h_phone") { SectionLabel(tr("Langue du téléphone")) }
-                    item(key = "phone") { LanguageRow(phone, phone == current, "lang_suggested") { pick(phone) } }
+                    SectionLabel(tr("Langue du téléphone"))
+                    LanguageRow(phone, phone == current, "lang_suggested") { pick(phone) }
                 }
-                item(key = "h_all") { SectionLabel(tr("Toutes les langues")) }
-                items(Lang.PICKER, key = { it.code }) { lang -> LanguageRow(lang, lang == current, "lang_${lang.code}") { pick(lang) } }
+                SectionLabel(tr("Toutes les langues"))
+                LazyColumn(
+                    Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 380.dp).testTag("lang_list"),
+                    state = list,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    items(Lang.PICKER, key = { it.code }) { lang -> LanguageRow(lang, lang == current, "lang_${lang.code}") { pick(lang) } }
+                }
             }
         },
         confirmButton = { TextButton(onClick = close, modifier = Modifier.testTag("lang_close")) { Text(tr("Fermer")) } },

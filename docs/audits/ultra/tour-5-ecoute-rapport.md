@@ -38,6 +38,7 @@ Les 7 points moyens et les mineurs de la première relecture sont corrigés (dé
 - chemin: Écoute au micro › silences d'un rythme | test: GuetTest#theSilencesOfARhythmAreNotHoles
 - chemin: Écoute au micro › micro avant le balayage | test: EcouteMicroTest#theMicrophoneListensBeforeTheSweepStarts
 - chemin: Rapport › début de la fenêtre comparée | test: EcouteMicroTest#theWindowComparedStartsWhereTheSongIs
+- chemin: Téléphone › pas joués par le moteur pour la fenêtre du banc | test: HautParleurReelTest#theStepsPlayedAreTheEngines
 - chemin: Écoute au micro › réponse du micro après une rotation | test: EcouteMicroTest#theMicrophonesAnswerStartsTheRunOnce
 - chemin: Banc Linux › même analyse que le téléphone | test: MemeAnalyseTest#theFixedSignalReadsTheSameNumbersAsOnLinux
 - chemin: Écran de BenStudio Test › bouton et phrase | test: BoutonMicroTest#theButtonSaysWhatWillHappenBeforeTheMicrophoneIsAskedFor

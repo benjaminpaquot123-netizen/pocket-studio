@@ -14,7 +14,7 @@ Plan : `docs/PLAN-TEST-APK.md`, « Niveau 3 » et étape T3. Branche : `eq/tour-
 ## Chemins (endroits qui lisent ou montrent les mêmes données)
 - chemin: BenStudio Test › questions à l'oreille, enchaînement | test: OreilleTest#theEightQuestionsAreAskedInOnePass
 - chemin: BenStudio Test › question 5 sans casque | test: OreilleTest#withoutAWiredHeadsetQuestionFiveIsSkippedNotAsked
-- chemin: BenStudio Test › question 6 sans Bluetooth | test: OreilleTest#withoutBluetoothQuestionSixIsSkippedNotAsked
+- chemin: BenStudio Test › question 6 sans Bluetooth connecté, bandeau « Prêt » | test: OreilleTest#withoutAConnectedBluetoothDeviceTheBannerAsksToConnectOneThenSkipsIfStillNone
 - chemin: BenStudio Test › bandeau, un ❌ | test: OreilleTest#aNoKeepsItsPictureItsJournalAndItsMeasuresAndTheRunGoesOn
 - chemin: BenStudio Test › bandeau, délai | test: OreilleTest#theBannerGivesUpAtItsTimeout
 - chemin: BenStudio Test › question 8, gestes retour faits par Benjamin, pan avant/après | test: OreilleTest#aKickThatMovedIsARedWithItsPictureAndBothValues

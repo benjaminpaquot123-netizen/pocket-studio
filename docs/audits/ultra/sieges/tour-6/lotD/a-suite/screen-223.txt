@@ -1,0 +1,40 @@
+Écran 223 (588x1278)
+icône (dossier ouvert) ✓ « マイソング 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône « イントロ 小節 1/128 » ▾ @ 237,114
+bouton « ? » @ 543,114
+image (rond coché) @ 0,0
+texte « できた？ 曲をシェアしよう » @ 294,180
+champ « 曲名（プロジェクト名にもなります） » contenu « マイソング » [coupé] @ 294,246
+icône ✕ [coupé] @ 522,259
+bouton « M4A · シェア向け » [sélectionné] @ 140,330
+bouton « WAV · 最高品質 » @ 363,330
+bouton (trois points reliés) «   シェア » @ 294,426
+bouton (dossier) « マイファイル » › @ 272,528
+bouton « ? » @ 536,528
+image (chapeau de diplômé) @ 37,636
+texte « リフ チャプター 7/15 · ステップ 1/2 · かんたん » @ 244,636
+icône (liste) @ 459,636
+icône ⌄ @ 531,636
+image (coupe) @ 42,735
+texte « おめでとう、曲が完成！ 全部聴き直して、まだ変えていけるよ。 » @ 321,735
+bouton ▶ «  自分の曲を聴く » @ 294,816
+bouton ↺ «  チュートリアルをやり直す » @ 294,897
+texte « チュートリアルを閉じる » @ 294,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

@@ -8,7 +8,7 @@ Demande de Benjamin : « les sons sonnent années 90-2000, même dans les styles
 
 1. **Les causes du côté rétro.**
    - La batterie est entièrement synthétisée, à la manière des boîtes à rythmes des années 80.
-   - Certaines recettes visent exprès l'ancien. La « House » de l'appli est la house classique de Chicago de 1986 à 1992, avec les packs TR-909 et Juno. Le jump up joue un lead « Hoover » de 1991.
+   - Certaines recettes visent exprès l'ancien. La « House » de l'appli est la house classique de Chicago de 1984 à 1992, avec les packs TR-909 et Juno. Le jump up joue un lead « Hoover » de 1991.
    - Les synthés sont les sons stars de 1983 à 2000, sans tables d'ondes.
    - La compression « OTT » qui fait le son d'aujourd'hui existe dans l'appli, mais elle ne sert que sur le master de quelques styles et sur les basses grasses, jamais sur les nappes et les leads.
 2. **On peut changer les sons sans toucher aux notes.** L'appli choisit ses sons par rôle (kick, basse, lead…). Il suffit de donner d'autres sons aux mêmes rôles, derrière un interrupteur d'essai.
@@ -32,7 +32,7 @@ Un morceau fait par l'assistant (« Partir d'un style »), sans pack télécharg
 
 | Famille | Sans pack (par défaut) | Avec les packs téléchargés |
 |---|---|---|
-| Kick | synthétisé : « kick studio » (accordé à la tonalité en house et en techno), kick dur écrêté en hard techno | échantillon, qui remplace le kick studio |
+| Kick | synthétisé : « kick studio » (accordé à la tonalité dans les familles House et Techno, donc aussi en tech house), kick dur écrêté en hard techno | échantillon, qui remplace le kick studio |
 | Caisse claire, clap | synthétisés (DaisySP, clap maison) | échantillon |
 | Charleys, cymbales | synthétisés (DaisySP) ; la ride est la cymbale du kit raccourcie, le crash est cette cymbale telle quelle | échantillon (aucune ride en pack) |
 | Percussions | synthétisées (rim, cloche, shaker, conga) | échantillon |
@@ -53,14 +53,14 @@ Pour la basse, le pack nommé par la recette passe aussi en premier (par exemple
 Sources : `engine/src/main/cpp/core/DrumKit.h` (« 16 synthesized drum voices (808/909 flavour), no samples ») ; `project-model/…/StarterWizard.kt` (`soundsFor`, `withStudioVoices`) ; `project-model/…/StyleRecipes.kt` (37 styles, leurs `kit` et `packSounds`) ; `scripts/packs/` (les packs).
 
 **Les styles de l'essai, piste par piste, aujourd'hui** :
-- **Jump up** (174 BPM, références de 2017 à 2023)
+- **Jump up** (174 BPM, références de 2007 à 2023, surtout après 2017)
   - Batterie synthétisée : kick non accordé, caisse DaisySP, clap maison. Avec les packs, elle vient du pack « dnb ».
   - Basse « growl » : scie et carré désaccordés, balayage de filtre calé sur la double croche, couche médium saturée, effet « growl » avec distorsion et OTT. Il y a aussi un sub.
   - Lead « Hoover » à 7 voix, nappe à 2 scies, voix Plaits, OTT sur le master.
-- **Tech house** (126 BPM, références de 2014 à 2022) : batterie du kit synthétisé, « Basse roulante », orgue, « Voix robot » Plaits. Avec les packs, la basse vient de `tech_house` et les voix découpées de `vocal_chops`.
+- **Tech house** (126 BPM, références de 2001 à 2022, surtout après 2014) : batterie du kit synthétisé, « Basse roulante », orgue, « Voix robot » Plaits. Avec les packs, la basse vient de `tech_house` et les voix découpées de `vocal_chops`.
 - **Techno** (132 BPM, références de 1997 à 2019) : kick studio accordé (~44 Hz) et rumble, basse Plaits « analogique », accords « Pluck » en carré, lead Plaits « filtré ».
 - **À part, la House** (122 BPM) : c'est **exprès la house classique de Chicago**.
-  - Ses références vont de 1986 à 1992.
+  - Ses références vont de 1984 à 1992.
   - Sa batterie prend les packs « TR-909 » et « TR-707 », sa basse le pack « Juno ».
   - Ses accords sont le piano FM du DX7 (1983).
   - Son côté rétro est voulu par la recette (voir la question 3).
@@ -89,7 +89,7 @@ Sources : `engine/src/main/cpp/core/DrumKit.h` (« 16 synthesized drum voices (8
 4. **La compression « OTT » est là, mais pas où il faut.**
    - L'OTT est une compression en trois bandes qui remonte les détails faibles et les aigus : le son paraît « devant, brillant ».
    - L'appli l'a (effet « OTT multibande », `Ott` dans `engine/src/main/cpp/core/Effects.h`). L'assistant la pose sur le master de la bass music, de la trance et des styles durs (hard techno, gabber, acidcore), et dans les réglages de basse « Growl » et « Basse grasse ».
-   - Elle n'est **jamais** posée sur les nappes et les leads, ni en house, ni en tech house, ni en techno, alors que la production d'aujourd'hui la met sur presque tout.
+   - Elle n'est **jamais** posée sur les nappes et les leads, ni en house, ni en tech house, ni en techno, alors qu'elle est très courante sur ces sons dans la production d'aujourd'hui.
 5. **Plusieurs voix de house, tech house et techno sont filtrées sombres.** C'est ce que montrent les mesures ci-dessous.
 
 ### 2.2 Les mesures (2026-11-12, chaque voix rendue seule)
@@ -97,7 +97,7 @@ Sources : `engine/src/main/cpp/core/DrumKit.h` (« 16 synthesized drum voices (8
 **Méthode** :
 - Les morceaux de l'assistant sont rendus par le banc (`scripts/song-bench.sh`).
 - Chaque voix est rendue seule avant le master (`ps_render --no-limiter --solo`), puis mesurée par `docs/sons/outils/voix.py`.
-- Cet outil est vérifié par `test_voix.py`, sur une dent de scie dont on connaît les chiffres exacts. Une version cassée de l'outil est refusée.
+- Cet outil est vérifié par `test_voix.py`, sur des dents de scie dont on connaît les chiffres exacts, colonne par colonne. Sept versions cassées de l'outil (bandes décalées, fenêtre retirée, côté mal calculé, seuil de silence retiré) sont toutes refusées.
 - Les commandes et les chiffres complets sont dans `docs/sons/outils/mesures-2026-11-12.md`. Les rendus ont été effacés, rien de sonore n'est commité.
 
 **Ce que veulent dire les chiffres** :
@@ -107,7 +107,7 @@ Sources : `engine/src/main/cpp/core/DrumKit.h` (« 16 synthesized drum voices (8
 
 | Voix | Air au-dessus de 10 kHz | Grave-médium 150–500 Hz face à 1–4 kHz | Lecture |
 |---|---|---|---|
-| Tech house, lead (« Voix robot ») | **−57 dB** | +8,7 dB | la voix la plus sombre ; sur un téléphone, il en reste peu (présence 1–4 kHz à −13,7 dB) |
+| Tech house, lead (« Voix robot ») | **−57 dB** | +8,7 dB | le lead le plus sombre ; sur un téléphone, il en reste peu (présence 1–4 kHz à −13,7 dB) |
 | Tech house, basse (« Basse roulante ») | −60 dB | +26,3 dB | un sub très rond, peu audible sur un téléphone (présence −18 dB) |
 | Tech house, nappe (orgue) | −34 dB | −2,8 dB | assez sombre |
 | Techno, nappe (Pluck) | **−39 dB** | **+10,5 dB** | sombre et boueuse : 15 à 20 dB plus sombre qu'une scie brute |
@@ -240,7 +240,12 @@ Surge XT et Vital servent **hors de l'appli**, comme des instruments, pour fabri
 
 **But** : mêmes morceaux, mêmes notes, même structure, mais des sons remplacés. On compare l'avant et l'après à l'oreille et à la mesure, sur **jump up, tech house et techno**. **Jump up** (le plus lourd) et **hard techno** (des décrochages sur téléphone) servent de témoins pour le processeur.
 
-**Comment on branche, sans risque.** Tout passe par un interrupteur d'essai. Il fait nommer aux recettes de l'essai des packs d'essai à la place de leurs packs de machines (TR-909, Juno…) et de leurs sons de bibliothèque. Au banc, seuls les packs d'essai sont installés. Les notes et la structure ne changent pas, et l'appli de ton téléphone ne change pas tant que tu n'as pas dit « mieux ».
+**Comment on branche, sans risque.** Tout passe par un interrupteur d'essai. Il fait nommer aux recettes de l'essai des packs d'essai à la place des packs qu'elles nomment aujourd'hui, et de leurs sons de bibliothèque. Au banc, seuls les packs d'essai sont installés. Style par style :
+- **jump up** : le pack d'essai remplace le pack « dnb », d'où vient sa batterie ;
+- **tech house** : la recette ne nomme aucun pack de batterie. On lui en donne un (le pack d'essai), sinon c'est le pack du style, « tech_house », qui est pris ;
+- **techno** : le pack d'essai remplace le « TR-909 » du charley ouvert, le pack « techno » et sa basse « techno:bass ».
+
+Les notes et la structure ne changent pas, et l'appli de ton téléphone ne change pas tant que tu n'as pas dit « mieux ».
 
 ### Essai 1 : une batterie moderne en échantillons
 
@@ -256,7 +261,7 @@ Surge XT et Vital servent **hors de l'appli**, comme des instruments, pour fabri
 - la licence de chaque son est notée dans le `pack.json` du pack, avec une capture datée de la page ;
 - les crédits sont affichés dans l'appli.
 
-**Attention aux kicks** : le kick studio de la techno est accordé à la tonalité. Un kick échantillonné doit l'être aussi (transposé hors du fil audio), sinon on perd ce gain.
+**Attention aux kicks** : le kick studio de la tech house et de la techno est accordé à la tonalité. Un kick échantillonné doit l'être aussi (transposé hors du fil audio), sinon on perd ce gain.
 
 ### Essai 2 : de meilleurs packs générés
 
@@ -275,7 +280,7 @@ Surge XT et Vital servent **hors de l'appli**, comme des instruments, pour fabri
 - des filtres plus ouverts sur les voix sombres du § 2.2 ;
 - les sons modernes déjà dans la bibliothèque (« Reese moderne », « Accords future bass », « Pluck future ») ;
 - le modèle table d'ondes de Plaits ;
-- pour la tech house, un vrai lead à la place de la « Voix robot » à −57 dB d'air.
+- pour la tech house, des voix découpées modernes (ou une voix robot plus claire) à la place de la « Voix robot » à −57 dB d'air : la partie garde son rôle de voix.
 
 **B. Dans le moteur** :
 - un oscillateur à tables d'ondes (tables préparées hors du fil audio) ;
@@ -343,7 +348,7 @@ Toutes les tailles ci-dessous sont des estimations, sauf l'actuelle.
 2. **Taille de l'appli**
    - A) Les sons modernes téléchargés à part, comme les packs actuels. *(conseillé)* Conséquence : l'appli ne grossit pas, mais il faut du réseau une fois pour avoir les nouveaux sons.
    - B) Une batterie moderne de base intégrée à l'appli. Conséquence : +5 à 10 Mo (estimation), mais un bon son dès l'installation, même sans réseau.
-3. **La « House » de l'appli** (c'est une affaire de goût : la recette vise exprès la house de Chicago de 1986 à 1992)
+3. **La « House » de l'appli** (c'est une affaire de goût : la recette vise exprès la house de Chicago de 1984 à 1992)
    - A) La garder classique : l'essai se fait sur la tech house, qui est la house d'aujourd'hui. *(conseillé)* Conséquence : rien ne change pour qui aime le son d'origine.
    - B) La moderniser aussi : nouveaux sons et nouvelles références. Conséquence : on perd la house « à l'ancienne » de l'appli.
    - C) Faire les deux : une « House classique » et une « House moderne ». Conséquence : un style de plus dans la liste, déjà longue (37).

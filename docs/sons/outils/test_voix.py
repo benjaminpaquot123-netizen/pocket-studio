@@ -5,7 +5,8 @@
 
 A band-limited sawtooth (harmonics 1/n up to 20 kHz) has known figures: at 261.6 Hz its energy over 10 kHz is
 -21.0 dB of the whole, its centroid 788 Hz, its 4-10 kHz band -7.6 dB under its 1-4 kHz band (sum of 1/n² over
-the harmonics in each band). The same sawtooth written as 16-bit and as float 32, a wide copy (side measured),
+the harmonics in each band); every published column (air, centroid, brillance, boue, présence) is checked so on
+sawtooths at 65.4, 261.6 and 523.3 Hz. The same sawtooth written as 16-bit and as float 32, a wide copy (side measured),
 a panned copy (side / centre known exactly) and a silent file (nothing measured) are checked too.
 """
 import os
@@ -36,11 +37,13 @@ def expected(f0):
     if n[-1] * f0 >= 20000:
         n = n[:-1]
     e, fr = 1.0 / n ** 2, n * f0
-    db = lambda v: 10 * np.log10(v)
+    db = lambda v: 10 * np.log10(v) if v > 0 else -np.inf
     return {
         'air_10k_plus_db': db(e[fr >= 10000].sum() / e.sum()),
         'centroid_hz': (e * fr).sum() / e.sum(),
         'brillance_4_10k_vs_1_4k_db': db(e[(fr >= 4000) & (fr < 10000)].sum() / e[(fr >= 1000) & (fr < 4000)].sum()),
+        'boue_150_500_vs_1_4k_db': db(e[(fr >= 150) & (fr < 500)].sum() / e[(fr >= 1000) & (fr < 4000)].sum()),
+        'presence_tel_1_4k_db': db(e[(fr >= 1000) & (fr < 4000)].sum() / e[fr >= 300].sum()),
     }
 
 
@@ -65,7 +68,7 @@ def check(cond, what):
 
 def main():
     with tempfile.TemporaryDirectory() as d:
-        for f0 in (261.6, 523.3):
+        for f0 in (65.4, 261.6, 523.3):
             want = expected(f0)
             mono = saw(f0)
             for bits in (32, 16):
@@ -79,6 +82,11 @@ def main():
                       f"{f0} Hz {bits}-bit centroid {got['centroid_hz']} vs {want['centroid_hz']:.0f}")
                 check(abs(got['brillance_4_10k_vs_1_4k_db'] - want['brillance_4_10k_vs_1_4k_db']) <= 0.3,
                       f"{f0} Hz {bits}-bit brillance {got['brillance_4_10k_vs_1_4k_db']} vs {want['brillance_4_10k_vs_1_4k_db']:.1f}")
+                for key in ('boue_150_500_vs_1_4k_db', 'presence_tel_1_4k_db'):
+                    if np.isfinite(want[key]):
+                        check(abs(got[key] - want[key]) <= 0.3, f"{f0} Hz {bits}-bit {key} {got[key]} vs {want[key]:.1f}")
+                    else:  # no harmonic in the band (523.3 Hz: none from 150 to 500 Hz): only the window's leak
+                        check(got[key] < -40, f"{f0} Hz {bits}-bit {key} {got[key]}: an empty band read")
                 check(got['cote_centre_db'] < -100, f'{f0} Hz {bits}-bit: a mono file has no side')
         # Panned: right = half the left, so side / centre = (0.25 / 0.75)^2 = -9.5 dB exactly.
         mono = saw(261.6)
@@ -90,7 +98,7 @@ def main():
         p = os.path.join(d, 'silence.wav')
         write_wav(p, np.full((RATE * 2, 2), 1e-4), 32)
         check(voix.measure(*voix.read_wav(p)) == {'frames': 0}, 'silence measured')
-    print('voix.py: OK (sawtooth 261.6 and 523.3 Hz, 16-bit and float, panned copy, silence)')
+    print('voix.py: OK (sawtooth 65.4, 261.6 and 523.3 Hz, every column, 16-bit and float, panned copy, silence)')
     return 0
 
 

@@ -101,14 +101,14 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
          * Left open, looked at and written in docs/REVIEW.md (tour 5, lot « langues »), each a screen (« <screen>_<font> ») and
          * what it shows; a new finding on these screens still fails.
          * - the Mode simple at 200 % on a small phone: the Guide bar's one line (its whole step one touch away), the position's
-         *   counter in the play strip, the keyboard's « Vider » and « Octave », the step's header, one pad name in German;
+         *   counter in the play strip, the keyboard's « Octave » (and « مسح », « … » in Arabic), the step's header, one pad name in German;
          * - the Pro at 200 % (tablet upright): the play strip's loop chip, the Structure's column heads, the Sons effects tab,
          *   the whole Live grid (a chantier of its own).
          */
         val OPEN: List<Pair<Regex, Regex>> = listOf(
             Regex("(simple_\\w+|welcome_mode)_2\\.0") to Regex("CUT « +· [^»]+ » ellipsized"),
             Regex("(simple_\\w+|welcome_mode)_2\\.0") to Regex("CUT « (mesure|Takt|المازورة|बार|第) ?1/3[^»]* » lines dropped"),
-            Regex("simple_keys_2\\.0") to Regex("CUT « (\\s*(Vider|Leeren|مسح|खाली करो|清空)|Octave \\d|Oktave \\d)[^»]* »"),
+            Regex("simple_keys_2\\.0") to Regex("CUT « ((Octave|Oktave|الأوكتاف) \\d[^»]*|\\s*مسح) »"),
             Regex("simple_rhythm_2\\.0") to Regex("CUT « (PAS : |Händeklatschen)[^»]* » a word split"),
             Regex("launch_simple_2\\.0") to Regex("CUT « Simple » a word split"),
             Regex("(plus|sons|structure)_2\\.0") to Regex("CUT « (Loop|Boucler|लूप|循环) » drawn past"),

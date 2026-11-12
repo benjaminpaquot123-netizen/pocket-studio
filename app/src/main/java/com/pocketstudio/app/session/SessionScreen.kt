@@ -899,21 +899,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(tr("Quel moment du morceau est-ce ?"), style = MaterialTheme.typography.bodyMedium)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Scene.SECTIONS.forEach { s ->
-                        FilterChip(
-                            selected = name == s, onClick = { name = s }, label = { Text(Scene.sectionName(s)) },
-                            colors = pillColors(), modifier = Modifier.testTag("section_$s"),
-                        )
-                    }
-                }
-                // n° 26: the name selected to be typed over, its limit said before it cuts.
-                com.pocketstudio.app.ui.NameField(name, { name = it }, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
-            }
-        },
+        text = { RenameSceneFields(name) { name = it } },
         confirmButton = { TextButton(onClick = { onDone(name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
         dismissButton = {
             Row {
@@ -922,6 +908,27 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
             }
         },
     )
+}
+
+/**
+ * The naming dialog's question, its sections in one touch and its field (apart from the dialog: under Robolectric a
+ * dialog holding a text field never goes idle, so its test draws these alone).
+ */
+@Composable
+internal fun RenameSceneFields(name: String, setName: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(tr("Quel moment du morceau est-ce ?"), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Scene.SECTIONS.forEach { s ->
+                FilterChip(
+                    selected = name == s, onClick = { setName(s) }, label = { Text(Scene.sectionName(s)) },
+                    colors = pillColors(), modifier = Modifier.testTag("section_$s"),
+                )
+            }
+        }
+        // n° 26: the name selected to be typed over, its limit said before it cuts.
+        com.pocketstudio.app.ui.NameField(name, setName, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
+    }
 }
 
 /** Picks one of the scenes in use (to insert it in the song). */

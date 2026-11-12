@@ -162,7 +162,7 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             val nodes = rule.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
             return nodes.filterNot { LayoutScan.hidden(it) }.flatMap { n ->
                 n.config.getOrNull(SemanticsProperties.Text).orEmpty().map { it.text }
-            }.flatMap { text -> WORD.findAll(text.replace("Pad Live", "")).map { it.value }.filter { it !in LATIN_OK }.map { "LATIN « $it » in « ${text.take(60)} »" } }
+            }.flatMap { text -> WORD.findAll(text.replace("Pad Live", "").replace("Pad المباشر", "")).map { it.value }.filter { it !in LATIN_OK }.map { "LATIN « $it » in « ${text.take(60)} »" } }
                 .distinct()
         }
     }

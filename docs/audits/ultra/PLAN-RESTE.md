@@ -141,6 +141,7 @@ Fin de séance 5 : `selftest-resume.txt` liste « 13 contrôles + 1 mesure », c
 - P2 (horloge « 3 jours plus tard ») et P4 (TalkBack texte) : tour 7 (`PLAN-BANC-FIABLE.md` 3.3).
 - Contrôles 15/16 du 1er méta-audit (règle « ? » sur un bloquant `rien`) : couverts par `[banc?]` et les consignes v2 ; à vérifier au tour 6.
 - Entendre, un vrai doigt, le téléphone de Benjamin : jamais ; c'est la recette (H2).
+- **Règle des niveaux** (Benjamin, 2026-11-12, `PLAN-NIVEAUX.md`) : après le tour 6, un lot du banc « niveaux » avant le prochain tour de testeurs : huit missions neuves avec leur oracle (`mon-morceau`, `boucle-imposee`, `beat-sample`, `courbe`, `projet-vide`, `midi`, `pistes-separees`, `monstre`), deux fichiers de plus dans le sélecteur, la colonne `niveau`, le tableau de bord par niveau, les trois règles de consignes (v3) et le rapport d'écoute d'un siège fini ; chaque point avec son test rouge puis vert. Version courte : quatre missions.
 - Les corrections de l'appli du tour 5 (3 bloquants, graves, `@KnownDefect`) et le remplacement de `I18n.AREAS` : les équipes, après ce plan.
 
 ## 7. Estimation (relue par les auditeurs)

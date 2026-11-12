@@ -1,9 +1,15 @@
-# Proposition : des sièges par niveau, pour tester comme de vrais utilisateurs
+# Règle des niveaux : des sièges par niveau, pour tester comme de vrais utilisateurs
 
 Écrit le 2026-11-12, dans la discussion « Plan d'audit utilisateur », à la demande de Benjamin :
 > « Fais un plan d'audit, car actuellement il n'est pas optimisé pour tester le programme comme de vrais utilisateurs. Débutant, moyen, pro, etc. »
 
-**Rien n'est lancé. Le tour 6 en cours ne change pas** (son plan, ses huit sièges et sa règle de sortie restent ceux de `PLAN-TOUR-6.md`). Ce fichier propose la suite : un tour « niveaux », ou les sièges du tour 7. Il remplace la première version de ce plan (commit `47fe20d`, écrite sur une copie périmée du dépôt, qui ignorait le banc « testeur humain » et les tours 0 à 6).
+> « J'aimerais que la règle générale de l'audit soit intégrée une fois que tu l'as terminée. Sois autonome. »
+
+**Statut : règle générale de l'Audit** (principe 9 de `docs/audits/AUDIT.md`, rappelée dans `CLAUDE.md`), à partir du premier tour de testeurs lancé après le tour 6. **Le tour 6 en cours ne change pas** : son plan, ses huit sièges et sa règle de sortie restent ceux de `PLAN-TOUR-6.md`. Rien n'est lancé par ce fichier ; le lot du banc du § 3 est inscrit dans `PLAN-RESTE.md` § 6.
+
+**La règle en une phrase** : tout tour de testeurs a au moins un siège par niveau (0 curieux, 1 débutant motivé, 2 moyen, 3 confirmé, 4 pro), chacun avec une mission de son niveau dont l'oracle lit un résultat précis ; `libre` ne compte pour aucun niveau ; le tableau de bord se lit par niveau. Un tour de contrôle ciblé (comme le tour 6) peut y déroger s'il l'écrit dans son plan.
+
+Ce fichier remplace une première version (commit `47fe20d`), écrite sur une copie périmée du dépôt, qui ignorait le banc « testeur humain » et les tours 0 à 6.
 
 ## En trois lignes
 1. Le banc teste déjà à l'aveugle, et les modes Simple et Pro sont couverts. Ce qui manque, c'est le **niveau de la mission** : un siège « Pro » réussit aujourd'hui avec un son et un changement gardé, comme un débutant.
@@ -26,6 +32,7 @@ Source : `sieges/tour-3` à `tour-6` (`sieges.tsv`, colonnes `mode` et `mission`
 - **Il manque trois profils entiers** : le « moyen » qui arrive d'une autre appli avec ses mots, le « confirmé » qui refuse l'assistant et part d'un projet vide, le « pro » qui cherche les limites (gros projet, pistes séparées, set long).
 
 ## 2. L'échelle : cinq niveaux, seize sièges
+Le tour complet ; le minimum de la règle est la version courte du § 7 (un siège par niveau et le casse-tout).
 Colonnes comme `sieges-proposes.tsv`. « Mission du banc » : une mission qui existe, ou **une mission neuve** (§ 3). Le profil dit le niveau, le but dans les mots de la personne, et les maladresses à commettre (§ 4).
 
 | Niveau | Siège | Profil et but | Mode | Mission du banc | Réussi si |

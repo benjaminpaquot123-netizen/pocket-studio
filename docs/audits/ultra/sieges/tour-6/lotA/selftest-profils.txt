@@ -1,0 +1,2 @@
+lang=fr device=phone font=100 mode=simple
+lang=hi device=phone360 font=130

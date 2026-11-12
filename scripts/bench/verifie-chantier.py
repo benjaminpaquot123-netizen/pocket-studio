@@ -886,11 +886,11 @@ REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
 # Review of the « verdicts » lot (grave): the replays' XML is the team's own word (the portal's fresh review never
 # replays it, unlike rouges-constates/), so the rule closes only greens of the history written before it: ancestors of
 # this commit (the lot's base). A green made later pairs by its words, or by red evidence the review replays.
-# Lot « juge6 »: moved to that lot's base (9be3e12d, fx-int after the merges of testapk and oreille): the testapk and
-# oreille lots wrote their reds and greens in other words (no test named in a green), history that is fixed now; their
+# Lot « juge6 »: moved to that lot's base (db66a3ce, fx-int after the merges of testapk, oreille and mixwake): those
+# lots wrote some reds and greens in other words (no test named in a green), history that is fixed now; their
 # pairs are replayed (paires-rejouees/) or their greens' reds made by a mutation (rouges-mutes/) by the lot « juge6 »,
 # which wrote none of that code. The first end was 92258b19 (lot « verdicts »).
-REPLAYS_UNTIL = "9be3e12da4b09ae1db1114379bd15a342d05dd18"
+REPLAYS_UNTIL = "db66a3ce8844a157a81f8cf63e18a05b47343493"
 
 
 def _case_result(path, cls, method):

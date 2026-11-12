@@ -1,0 +1,50 @@
+Écran 218 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,207
+bouton « ? » @ 362,207
+texte « Lautstärke: — » @ 136,258
+texte « Master-Lautstärke » @ 397,340
+texte « −6,0 dB » @ 805,340
+curseur [état « −6,0 dB », à 60 %] @ 450,411
+texte « Keine Übersteuerung: alles gut. » @ 231,477
+texte « Details » @ 104,543
+texte « Ziel-Lautheit » @ 126,612
+bouton « ? » @ 231,612
+bouton « Auto (Stil) · −9 LUFS » @ 204,682
+bouton « Club · −8 LUFS » [sélectionné] @ 501,682
+bouton « Streaming · −14 LUFS » @ 213,763
+bouton « Apple Music · −16 LUFS » @ 579,763
+image (chapeau de diplômé) @ 37,867
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 1/2 · Pro » @ 400,867
+icône (liste) @ 771,868
+icône ⌄ @ 843,868
+texte « WAV für einen DJ (Studioqualität), M4A für deine Freunde (eine leichte Datei), getrennte Spuren für einen Remix. » @ 450,979
+texte « ▸ Warum? » @ 450,1054
+bouton ✓ «   Verstanden » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

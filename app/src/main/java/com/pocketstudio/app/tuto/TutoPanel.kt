@@ -1009,6 +1009,7 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier, focus: St
     val total = blocks.sumOf { it.bars }.coerceAtLeast(1)
     val curve = Neon.Acid
     fun lit(b: TutoMapBlock) = focus == null || b.label == focus
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
     Column(modifier.fillMaxWidth().testTag("tuto_map"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(tr("Énergie"), style = MaterialTheme.typography.labelSmall, color = curve)
         Canvas(Modifier.fillMaxWidth().height(36.dp)) {
@@ -1036,13 +1037,22 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier, focus: St
                         .then(if (focus != null && on) Modifier.testTag("tuto_map_lit_$i") else Modifier),
                     contentAlignment = Alignment.Center,
                 ) {
-                    // A name only where it fits whole (the names are written under the map anyway).
+                    // A name only where it fits whole (the names are written under the map anyway). Tour 6 (N29, N30): measured
+                    // as drawn, in its language and font size (« Breal », « ブレイク » cut, « 16 » out of its block in Arabic
+                    // at 130 %): the name and its bars when both fit, else the bars alone, else nothing.
                     val name = Scene.shownLabel(b.label)
-                    if (maxWidth >= (name.length * 6 + 6).dp) Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(name, style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false, color = if (on) Neon.TextPrimary else Neon.TextSecondary)
-                        Text("${b.bars}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
-                    } else if (maxWidth >= 12.dp) {
-                        Text("${b.bars}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+                    val bars = "${b.bars}"
+                    val style = MaterialTheme.typography.labelSmall
+                    val n = measurer.measure(name, style, softWrap = false, maxLines = 1).size
+                    val k = measurer.measure(bars, style, softWrap = false, maxLines = 1).size
+                    val w = with(LocalDensity.current) { (maxWidth - 2.dp).toPx() }
+                    val h = with(LocalDensity.current) { (maxHeight - 2.dp).toPx() }
+                    when {
+                        n.width <= w && k.width <= w && n.height + k.height <= h -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(name, style = style, maxLines = 1, softWrap = false, color = if (on) Neon.TextPrimary else Neon.TextSecondary)
+                            Text(bars, style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+                        }
+                        k.width <= w && k.height <= h -> Text(bars, style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
                     }
                 }
             }

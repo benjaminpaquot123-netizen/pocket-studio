@@ -227,6 +227,7 @@ def main():
         replay_window(d)
         replay_python(d)
         mutated_bench_helper(d)
+        red_seen_bench_test(d)
         red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
@@ -1563,6 +1564,41 @@ def replay_python(d):
         check(f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
     check(f"chantier : {2 * (len(keys) - 1)} écarts" in out, "a red and a green per failed replay, nothing else:\n" + out)
 
+
+def red_seen_bench_test(d):
+    """Lot « juge7 », after replay_python: a red seen in a run (rouges-constates/) may be a bench script's test, but
+    the green leaves that test file alone, as it leaves app/src/test alone: a green that edits scripts/bench/test_*.py
+    and calls its own red « seen » pairs nothing."""
+    root = judge_root(d, "juge-constate-banc")
+    resume = os.path.join(root, "selftest-resume.txt")
+    bench = os.path.join(root, "scripts", "bench")
+    test_file = os.path.join(bench, "test_seen.py")
+    tool = os.path.join(bench, "seen_tool.py")
+    test_text = "import unittest\n\n\nclass SeenRun(unittest.TestCase):\n    def test_the_seen_case_holds(self):\n        pass\n"
+    write(test_file, test_text)
+    write(tool, "def seen():\n    return 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in ("honest", "touchestest"):
+        write(tool, f"def seen():\n    return \"{key}\"\n")
+        if key == "touchestest":
+            write(test_file, test_text + "        # touched\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeenRun#test_the_seen_case_holds {key}")
+        full, parent = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {parent}\ntest: SeenRun#test_the_seen_case_holds\n")
+        write(os.path.join(folder, "TEST-seen.xml"), '<testsuite><testcase classname="test_seen.SeenRun" '
+              'name="test_the_seen_case_holds"><failure message="0 != 1"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    check(shas["honest"] not in out, "a bench script's test seen red in a run, its green leaving it alone, is a pair:\n" + out)
+    check(f"{shas['touchestest']} « vert:" in out, "a green that edits the bench test it calls its red pairs nothing:\n" + out)
+    check("chantier : 1 écarts" in out, "one green without red, nothing else:\n" + out)
 
 def mutated_bench_helper(d):
     """Lot « juge7 » (the rejeux6 lot's greens a95d9667 and 2e2c5f3d): the bench's own code is under the tests (a Kotlin

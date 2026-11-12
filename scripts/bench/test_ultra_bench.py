@@ -1420,13 +1420,13 @@ def mutated_red(d):
 
 def replay_window(d):
     """Lot « juge6 »: the replays (paires-rejouees/) and the mutations (rouges-mutes/) close greens of the history
-    up to the base of the lot « juge6 » (9be3e12d, fx-int after the merges of testapk and oreille), never a green
-    written after it: that history is fixed, a later green pairs by its words."""
+    up to the base of the lot « juge6 » (db66a3ce, fx-int after the merges of testapk, oreille and mixwake), never a
+    green written after it: that history is fixed, a later green pairs by its words."""
     import importlib.util
     spec = importlib.util.spec_from_file_location("verifie_chantier", os.path.join(HERE, "verifie-chantier.py"))
     judge = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(judge)
-    check(judge.REPLAYS_UNTIL == "9be3e12da4b09ae1db1114379bd15a342d05dd18",
+    check(judge.REPLAYS_UNTIL == "db66a3ce8844a157a81f8cf63e18a05b47343493",
           f"the replays' window ends at the base of the lot juge6, not {judge.REPLAYS_UNTIL}")
 
 

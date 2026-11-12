@@ -7,8 +7,9 @@ Writes one TSV row per style; no sound is kept.
 
   son6.py OUT_DIR out.tsv [--curve courbe.tsv] [--styles a,b,c]
 
-Phone speaker: the phone's measured curve (scripts/bentest/empreinte.py courbe, third-octave dB) when given, else an
-estimated small speaker: 4th-order high-pass at 220 Hz, 2nd-order low-pass at 12 kHz (no phone curve measured yet).
+Phone speaker: the phone's measured curve (scripts/bentest/empreinte.py courbe, third-octave dB) when given, else the
+model the sources propose (cibles-genres.md § 7): a recent phone, 4th-order high-pass at 300 Hz and 2nd-order low-pass
+at 10 kHz; the worse case (« tel400 » columns, named for history) 4th-order high-pass at 500 Hz, low-pass at 8 kHz.
 Loudness: BS.1770 K-weighting on 400 ms blocks (absolute and relative gates for the integrated value), applied as a
 magnitude in the frequency domain (phase does not change a block's energy). Numbers only, standard library + numpy.
 """
@@ -78,38 +79,8 @@ def butter_lp2(f, fc):
 
 
 def phone400_power(f):
-    """A worse phone (most phones: nothing useful under 400-600 Hz): 4th-order high-pass at 400 Hz, 2nd-order low-pass at 8 kHz."""
-    return butter_hp4(f, 400.0) * butter_lp2(f, 8000.0)
-
-
-def kick_lift(mix, kick, power):
-    """How much each kick hit lifts [mix] heard through [power]: its 40 ms against the 100 ms before (dB), the median
-    over the hits. The hits are read on the kick alone (rendered before the master, same timeline)."""
-    km = np.abs(kick).max(axis=1)
-    env = np.convolve(km, np.ones(48) / 48, mode="same")
-    thr = env.max() * 0.3
-    above = env > thr
-    onsets = np.flatnonzero(above[1:] & ~above[:-1]) + 1
-    keep = []
-    last = -RATE
-    for o in onsets:
-        if o - last > RATE // 10:
-            keep.append(o)
-            last = o
-    y = shape(mix, power) if power else mix
-    p = np.sum(y * y, axis=1)
-    c = np.concatenate([[0.0], np.cumsum(p)])
-    a, b = int(0.04 * RATE), int(0.1 * RATE)
-    lifts = []
-    for o in keep:
-        o = max(0, o - int(0.005 * RATE))
-        if o - b < 0 or o + a > len(p):
-            continue
-        after = (c[o + a] - c[o]) / a
-        before = (c[o] - c[o - b]) / b
-        if before > 1e-12:
-            lifts.append(10 * math.log10(after / before))
-    return (float(np.median(lifts)) if lifts else None), len(lifts)
+    """The worse phone (nothing useful under 400-600 Hz): 4th-order high-pass at 500 Hz, 2nd-order low-pass at 8 kHz."""
+    return butter_hp4(f, 500.0) * butter_lp2(f, 8000.0)
 
 
 def phone_power(f, curve=None):
@@ -118,7 +89,7 @@ def phone_power(f, curve=None):
         db = np.array([d for _, d in curve])
         g = np.interp(np.log2(np.maximum(f, 1.0)), np.log2(fc), db, left=db[0] - 24, right=db[-1] - 12)
         return 10 ** (g / 10)
-    return butter_hp4(f, 220.0) * butter_lp2(f, 12000.0)
+    return butter_hp4(f, 300.0) * butter_lp2(f, 10000.0)
 
 
 def shape(x, power):
@@ -320,12 +291,6 @@ def main(argv):
             r[stem + "_contre_mix"] = full - pre_full
             r[stem + "_contre_mix_tel"] = tel - pre_tel
             r[stem + "_contre_mix_tel400"] = tel4 - pre_tel4
-            if stem == "kick":
-                # Each hit in the exported song: at full range, on the phone, on the worse phone.
-                for name, pw in (("plein", None), ("tel", phone), ("tel400", phone400_power)):
-                    v, n = kick_lift(x, y, pw)
-                    r["coup_kick_" + name] = v
-                r["coups_kick"] = n
             if stem in ("bass", "lead"):
                 for k, v in timbre(y).items():
                     r[f"{stem}_{k}"] = v

@@ -1,1 +1,1 @@
-touche 857 727
+touche synth_sounds_name_ok

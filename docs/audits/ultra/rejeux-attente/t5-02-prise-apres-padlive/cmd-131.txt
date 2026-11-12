@@ -1,1 +1,1 @@
-touche 78 354
+touche chord_mode

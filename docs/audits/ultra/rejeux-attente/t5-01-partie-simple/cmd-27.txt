@@ -1,1 +1,1 @@
-touche 200 314
+touche part_pick_2

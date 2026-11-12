@@ -1,1 +1,1 @@
-touche 80 620
+attends 1

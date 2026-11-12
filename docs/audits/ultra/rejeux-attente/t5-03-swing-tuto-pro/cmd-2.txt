@@ -1,1 +1,1 @@
-touche 670 315
+touche mode_card_pro

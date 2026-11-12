@@ -263,6 +263,11 @@ class ReplayRunKeepsItsProof(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")))
 
+    def test_a_swipe_by_tag_needs_its_proof_too(self):
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n", last_cmd="glisse share_go 0 -500")
+        self.assertIn("oracle non tenu", r.stdout)
+        self.assertEqual(r.returncode, 1)
+
     def test_tenu_with_the_touch_refused_is_not_tenu(self):
         r, _ = self.run_replay("#2 ETIQUETTE record_stop : 3 4\n#2 REFUS hors de portée du pouce (d'une main, la gauche)\n")
         self.assertIn("refusée", r.stdout)
@@ -302,6 +307,13 @@ class NewReplaysAimByTag(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         got = [open(os.path.join(rej, "t9-x", f"cmd-{i}.txt")).read() for i in range(1, 6)]
         self.assertEqual(got, ["touche welcome_guided", "attends 1", "touche project_p-*", "touche vue_Drive", "touche mode_card_simple"])
+
+    def test_a_command_can_stand_for_an_untagged_button(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat, "--cible 4=vue_Drive --commande 5=retour --glisse 2=share_go:0:-500")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        got = [open(os.path.join(rej, "t9-x", f"cmd-{i}.txt")).read() for i in (2, 5)]
+        self.assertEqual(got, ["glisse share_go 0 -500", "retour"])
 
     def test_a_touch_with_no_tag_under_the_finger_stops_the_copy(self):
         tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])

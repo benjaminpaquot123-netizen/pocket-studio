@@ -54,8 +54,8 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
       last=""; lasttag=""
       for f in $(ls "$dir/$id"/cmd-*.txt 2>/dev/null | sed 's/.*cmd-\([0-9]*\)\.txt/\1 &/' | sort -n | cut -d' ' -f2); do
         read -r verb arg rest < "$f" || true
-        case "$verb" in touche|appui-long|double-touche) ;; *) continue ;; esac
-        case "$arg" in ''|[0-9]*) continue ;; esac
+        case "$verb" in touche|appui-long|double-touche|glisse) ;; *) continue ;; esac
+        case "$arg" in ''|[0-9]*|-[0-9]*) continue ;; esac
         last="$(basename "$f" .txt)"; last="${last#cmd-}"; lasttag="$arg"
       done
       if [ -n "$lasttag" ]; then

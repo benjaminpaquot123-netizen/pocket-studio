@@ -195,7 +195,7 @@ open class ScreenshotTest {
                     RhythmScreen(
                         project = project,
                         transport = TransportUi(selectedPad = 0),
-                        live = LiveUi(),
+                        live = { LiveUi() },
                         canUndo = true,
                         canRedo = false,
                         actions = RhythmActions(setHitVelocity = { step, v -> project = project.copy(drums = project.drums.withHitVelocity(0, step, v)) }),
@@ -233,7 +233,7 @@ open class ScreenshotTest {
                     RhythmScreen(
                         project = project,
                         transport = TransportUi(selectedPad = hat),
-                        live = LiveUi(),
+                        live = { LiveUi() },
                         canUndo = true,
                         canRedo = false,
                         actions = RhythmActions(
@@ -276,7 +276,7 @@ open class ScreenshotTest {
         RhythmScreen(
             project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
             transport = TransportUi(playing = true, metronome = true, selectedPad = 0),
-            live = LiveUi(currentStep = 5, litPads = setOf(5)),
+            live = { LiveUi(currentStep = 5, litPads = setOf(5)) },
             canUndo = true,
             canRedo = false,
             actions = RhythmActions(),
@@ -554,7 +554,7 @@ open class ScreenshotTest {
             RhythmScreen(
                 project = project,
                 transport = TransportUi(playing = true, selectedPad = 0),
-                live = LiveUi(currentStep = 5, litPads = setOf(5)),
+                live = { LiveUi(currentStep = 5, litPads = setOf(5)) },
                 canUndo = true, canRedo = true,
                 actions = RhythmActions(),
             )
@@ -1802,7 +1802,7 @@ open class ScreenshotTest {
                 RhythmScreen(
                     project = project,
                     transport = TransportUi(selectedPad = 0),
-                    live = LiveUi(),
+                    live = { LiveUi() },
                     canUndo = false,
                     canRedo = false,
                     actions = RhythmActions(),

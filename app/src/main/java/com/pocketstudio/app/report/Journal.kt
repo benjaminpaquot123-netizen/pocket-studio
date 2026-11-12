@@ -134,6 +134,8 @@ object JournalJson {
         "momentaryLufs" to JsonText.number(s.momentaryLufs),
         "limiterDb" to JsonText.number(HealthSummary.db(s.limiterGain)),
         "cpu" to JsonText.number(s.cpu),
+        "cpuWorst" to JsonText.number(s.cpuWorst),
+        "gapWorst" to JsonText.number(s.gapWorst),
         "xruns" to s.xruns.toString(),
         "restarts" to s.restarts.toString(),
         "running" to s.running.toString(),

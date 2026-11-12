@@ -1475,3 +1475,5 @@
 - 2026-11-12 · lot « ci1 » (tour-5) : 3 décision(s) dans `docs/decisions/tour-5-ci1.md`
 - 2026-11-12 : CI, temps maximal du travail « Build, unit tests, screenshots » passé de 75 à 110 min. Raison : la suite a grossi (≈ 35 min de tests, 25 min de banc des morceaux, 12 min de banc en direct) et deux CI ont été coupées net dans les « vrais projets » alors que tout le reste était vert (42968491490, 43154808420). Aucun seuil de test n'est touché. Retour arrière : remettre 75.
 - 2026-11-12 · plan test APK, essai éclair n° 2 : 4 décision(s) dans `docs/decisions/tour-5-testapk.md`
+- 2026-11-12 · lot « jank » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-jank.md`
+- 2026-11-12 · lot « hardtechno » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-hardtechno.md`

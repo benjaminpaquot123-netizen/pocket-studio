@@ -7,6 +7,7 @@ Commande du juge, comme le portail (`fusion-equipes.sh`, `selftest.sh`) :
 ## Les écarts, avant et après
 - Avant (9be3e12d, résumé de la trace du portail « oreille ») : 22 écarts (23 sans résumé).
   6 anciens (déjà là avant testapk) + 16 nouveaux (lots testapk et oreille : leurs verts ne nomment pas le test du rouge).
+- Puis fx-int db66a3ce (fusion de mixwake, fusionnée dans cette branche) : 24 écarts (trace du portail « mixwake ») : 2 de plus, la paire d7abd35b / 14132399, de la même sorte.
 - Après (ce lot) : 7 écarts, tous nommés ci-dessous (cible du plan : 6 ; le 7ᵉ, 411b2d51, est un commit qui ne compile pas seul).
 
 | Écart | Classe | Ce qui le ferme |
@@ -18,6 +19,7 @@ Commande du juge, comme le portail (`fusion-equipes.sh`, `selftest.sh`) :
 | 5c6322e8 / d88c328b | nouveau (testapk, test renommé « rouge - » → « vert - ») | rejeu avec « test au vert: » (nouvelle règle étroite) |
 | b3838180 / 35187750 | nouveau (oreille, rouge avec stubs) | rejeu `paires-rejouees/35187750…` (OreilleTest, 10 cas) |
 | 0847b283 / a9f1c699 | nouveau (oreille) | rejeu `paires-rejouees/a9f1c699…` (OreilleTest, 4 cas) |
+| d7abd35b / 14132399 | nouveau (mixwake) | rejeu `paires-rejouees/14132399…` (ClipHoldTest, 2 cas) |
 | 662c80ab (vert sans rouge) | nouveau (testapk) | mutation `rouges-mutes/662c80ab…` (ToutTesterTest) |
 | c391ca38 (vert sans rouge) | nouveau (testapk) | mutation `rouges-mutes/c391ca38…` (PremiereInstallationTest) |
 
@@ -34,7 +36,7 @@ Commande du juge, comme le portail (`fusion-equipes.sh`, `selftest.sh`) :
 - Un test Kotlin entre accents graves est un seul test, son nom entier.
 - Un rejeu peut nommer le test que le vert a seulement renommé (« test au vert: Classe#nom » ; le fichier, ancien nom remis, doit être celui du parent).
 - `rouges-mutes/<vert>/` : le rouge d'un vert arrivé avec son test, par une mutation qui retire une partie de sa propre correction (lignes ôtées = lignes que le vert a ajoutées, pas plus de lignes ajoutées qu'ôtées, aucun « throw », code seulement, le patch s'applique au vert ; le test, ajouté par le vert, rougit muté et verdit sans).
-- La fenêtre des rejeux et des mutations finit à 9be3e12d (avant : 92258b19).
+- La fenêtre des rejeux et des mutations finit à db66a3ce, fx-int après mixwake (avant : 92258b19).
 - Tests : `replay_backticks`, `mutated_red`, `replay_window` dans `scripts/bench/test_ultra_bench.py` (rouge 93a4f229, vert 83cfab09) ; chaque garde retirée du juge fait rougir un témoin (mutations du juge vérifiées à la main).
 
 ## Pour la relecture

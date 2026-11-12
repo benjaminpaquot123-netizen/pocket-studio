@@ -1,0 +1,67 @@
+# Round 6, tuto sweep: findings of TutoSweepTextTest (lang	kind	where	French	translation). Take a line out once fixed.
+en	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+nl	ANGLAIS	panneau TutoPanel.kt	Plus tard	Later
+nl	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+es	FRANCAIS	acid_techno Facile drums titre	La 909	La 909
+es	FRANCAIS	acid_techno Pro acid titre	La 303	La 303
+es	FRANCAIS	acid_house Pro drums titre	La TR-707	La TR-707
+es	FRANCAIS	trap Facile bass titre	La 808	La 808
+es	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+pt-BR	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+de	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+it	FRANCAIS	acid_techno Facile drums titre	La 909	La 909
+it	FRANCAIS	acid_techno Pro acid titre	La 303	La 303
+it	FRANCAIS	acid_house Pro drums titre	La TR-707	La TR-707
+it	FRANCAIS	trap Facile bass titre	La 808	La 808
+it	FRANCAIS	phonk Facile lead titre	La cowbell	La cowbell
+it	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+it	FRANCAIS	panneau TutoPanel.kt	Facile	Facile
+pl	ANGLAIS	techno Pro master titre	Le mastering	Mastering
+pl	ANGLAIS	panneau TutoPanel.kt	Arrêter	Stop
+pl	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+tr	ANGLAIS	techno Pro master titre	Le mastering	Mastering
+tr	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+id	ANGLAIS	techno Pro master titre	Le mastering	Mastering
+id	ANGLAIS	panneau TutoPanel.kt	Mesure %d →	Bar %d →
+id	ANGLAIS	panneau TutoPanel.kt	← Mesure %d	← Bar %d
+id	ANGLAIS	panneau TutoPanel.kt	Mesure %1$d/%2$d	Bar %1$d/%2$d
+id	ANGLAIS	panneau TutoPanel.kt	mesure %1$d/%2$d	bar %1$d/%2$d
+id	ANGLAIS	panneau TutoPanel.kt	Arrêter	Stop
+id	FRANCAIS	panneau TutoPanel.kt	Pro	Pro
+hi	ECRITURE	techno Facile clap titre	Le clap	Clap
+hi	ECRITURE	techno Facile hats titre	Les charleys	Hi-hats
+hi	ECRITURE	techno Facile chords titre	Le stab	Stab
+hi	ECRITURE	techno Facile lead titre	Le riff	Riff
+hi	ECRITURE	detroit Facile lead titre	La cloche	Bell
+hi	ECRITURE	hard_techno Facile chords titre	Le hoover	Hoover
+hi	ECRITURE	hard_techno Facile lead titre	Le lead	Lead
+hi	ECRITURE	industrial_techno Facile chords titre	Le bourdon	Drone
+hi	ECRITURE	retro_techno Pro lead titre	Le riff de hoover	Hoover riff
+hi	ECRITURE	house Pro lead titre	L'arpège	Arpeggio
+hi	ECRITURE	uk_garage Facile drums titre	Le 2-step	2-step
+hi	ECRITURE	dnb Facile snare titre	La caisse claire	Snare
+hi	ECRITURE	dubstep Facile chords titre	La nappe	Pad
+hi	ECRITURE	minimal Pro chords titre	Le stab dub	Dub stab
+hi	ECRITURE	gabber Facile kick titre	Le kick gabber	Gabber kick
+hi	ECRITURE	afro_house Facile lead titre	Le marimba	Marimba
+hi	ECRITURE	amapiano Facile bass titre	Le log drum	Log drum
+hi	ECRITURE	jungle Facile hats titre	Les cymbales	Cymbals
+hi	ECRITURE	phonk Facile lead titre	La cowbell	Cowbell
+hi	ECRITURE	grime Facile lead titre	Le lead chiptune	Chiptune lead
+hi	ECRITURE	reggaeton Facile dembow titre	Le dembow	Dembow
+hi	ECRITURE	afrobeats Facile percs titre	Les congas	Congas
+hi	ECRITURE	synthwave Pro lead titre	Le hook	Hook
+hi	ECRITURE	panneau TutoPanel.kt	Tonique	Key
+ko	ECRITURE	uk_garage Facile drums titre	Le 2-step	2-step
+zh-CN	ECRITURE	techno Facile chords titre	Le stab	Stab
+zh-CN	ECRITURE	techno Facile lead titre	Le riff	Riff
+zh-CN	ECRITURE	hard_techno Facile chords titre	Le hoover	Hoover
+zh-CN	ECRITURE	hard_techno Facile lead titre	Le lead	Lead
+zh-CN	ECRITURE	retro_techno Pro lead titre	Le riff de hoover	Hoover Riff
+zh-CN	ECRITURE	uk_garage Facile drums titre	Le 2-step	2-step
+zh-CN	ECRITURE	dubstep Facile chords titre	La nappe	Pad
+zh-CN	ECRITURE	minimal Pro chords titre	Le stab dub	Dub Stab
+zh-CN	ECRITURE	amapiano Facile bass titre	Le log drum	Log Drum
+zh-CN	ECRITURE	grime Facile lead titre	Le lead chiptune	Chiptune Lead
+zh-CN	ECRITURE	reggaeton Facile dembow titre	Le dembow	Dembow
+zh-CN	ECRITURE	synthwave Pro lead titre	Le hook	Hook

@@ -118,6 +118,11 @@ class TutoSweepPanelTest(private val lang: String, private val font: String) {
 
     /** « Lire la suite » lies over the last line on purpose, on a fade (TutoPanelFitsTest's accepted finding). */
     private fun allowed(f: LayoutScan.Finding): Boolean {
+        // Scanner artefacts, looked at on images (round 6, tuto sweep): Japanese lines whose font's line box runs past
+        // the text's own box by more than a quarter of a line (« lines cut »), every letter shown whole; and a line
+        // wider than its box by less than 1 dp (a full-width mark hanging at the end of a Japanese line).
+        if (f.kind == LayoutScan.Kind.CUT && lang == "ja" && f.detail.startsWith("lines cut")) return true
+        if (f.kind == LayoutScan.Kind.CUT && Regex("""wider than its box \(by 0\.\d dp\)""").matches(f.detail)) return true
         val cue = com.pocketstudio.model.i18n.tr("Lire la suite")
         val t = f.toString()
         return f.kind == LayoutScan.Kind.OVERLAP && (Regex("over (the touchable )?« ${Regex.escape(cue)}").containsMatchIn(t) || t.startsWith("OVERLAP « $cue »"))

@@ -1,1 +1,1 @@
-touche 425 1147
+touche import_go

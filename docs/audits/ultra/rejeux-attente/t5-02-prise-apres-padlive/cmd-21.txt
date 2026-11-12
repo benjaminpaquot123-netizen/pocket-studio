@@ -1,1 +1,1 @@
-touche 108 576
+touche take_keep

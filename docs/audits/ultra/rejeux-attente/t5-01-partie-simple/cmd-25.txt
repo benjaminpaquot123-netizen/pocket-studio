@@ -1,1 +1,1 @@
-touche 271 1050
+touche tab_simple_Clavier

@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotB/a (seat a, lot B; lang es, device phone, font 100, mode simple, options main=gauche, mission remix-voix, budget 110 gestures).
+Profile (id t6-Ba): Gaucher espagnol qui tient le téléphone d'une main (main gauche), police 100 %, Mode simple. Promesses : pour chacune, oui ou non avec le numéro d'écran. Note si la séparation du Remix est lente (en gestes d'attente). À la fin, sur ton dernier écran, réponds aux questions 1, 6 et 9 de l'œil neuf (une image). Act as this person (habits, patience, vocabulary).
+Mission remix-voix; its 3 goals (ids, the bench checks them): separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Ba-1 | 1. Tout le Remix et la découpe se font à la main gauche, sans bouton hors du pouce (grave F d du tour 5)
+  - id=t6-Ba-2 | 2. Une seule carte est conseillée après la séparation
+  - id=t6-Ba-3 | 3. L'appli prévient « la fin sera coupée » quand la chanson dépasse la fin du morceau
+  - id=t6-Ba-4 | 4. Les outils de découpe ne sont pas cachés sous la forme d'onde
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

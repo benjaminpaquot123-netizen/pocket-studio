@@ -24,6 +24,78 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class BenchSeatOptionsTest : HumanTester("seat-options") {
+    /**
+     * The point a tag touch lands on, for a node ([node]: left, top, right, bottom on the screen) whose part a finger can see is
+     * [visible] (its parents' clipping), with [covered] another element drawn over it (null: nothing over it).
+     */
+    private fun pick(hand: SeatOptions.Hand, node: FloatArray, visible: FloatArray, covered: FloatArray?, middle: Pair<Float, Float>, w: Int, h: Int, d: Float) =
+        SeatOptions.nearestReachable(
+            hand, SeatOptions.Box(node[0], node[1], node[2], node[3]), SeatOptions.Box(visible[0], visible[1], visible[2], visible[3]), middle, w, h, d,
+        ) { x, y -> covered == null || !inside(covered, x to y) }
+
+    private fun inside(box: FloatArray, at: Pair<Float, Float>) = at.first >= box[0] && at.first <= box[2] && at.second >= box[1] && at.second <= box[3]
+
+    @Test
+    fun aTagOutOfTheThumbsReachIsTouchedInsideTheReach() {
+        // 1080 x 2400 px at density 3: the left thumb reaches THUMB_REACH_DP from the bottom left corner.
+        val d = 3f
+        val reach = SeatOptions.THUMB_REACH_DP * d
+        // A wide card whose middle is far up and right (out of reach) but whose bottom left corner is near the thumb.
+        val middle = 540f to (2400f - reach - 200f)
+        assertFalse(SeatOptions.reachable(SeatOptions.Hand.LEFT, middle.first, middle.second, 1080, 2400, d))
+        val card = floatArrayOf(0f, 2400f - reach - 400f, 1080f, 2400f - reach + 200f)
+        val at = pick(SeatOptions.Hand.LEFT, card, card, null, middle, 1080, 2400, d)
+        assertTrue("a point of the card is within reach", at != null)
+        assertTrue(SeatOptions.reachable(SeatOptions.Hand.LEFT, at!!.first, at.second, 1080, 2400, d))
+        // A card wholly out of reach has no such point.
+        val far = floatArrayOf(800f, 100f, 1000f, 300f)
+        assertEquals(null, pick(SeatOptions.Hand.LEFT, far, far, null, 900f to 200f, 1080, 2400, d))
+    }
+
+    /** Review of rejeux6 (grave 2): a node partly below the screen's bottom is touched on its part on the screen, never below it. */
+    @Test
+    fun aTagPartlyOffTheScreenIsTouchedOnTheScreen() {
+        val d = 3f
+        assertFalse("below the screen's bottom, near the left thumb", SeatOptions.reachable(SeatOptions.Hand.LEFT, 10f, 2450f, 1080, 2400, d))
+        assertFalse("below the screen's bottom, with both hands", SeatOptions.reachable(SeatOptions.Hand.BOTH, 300f, 2500f, 1080, 2400, d))
+        val node = floatArrayOf(100f, 2200f, 500f, 2800f)
+        for (hand in listOf(SeatOptions.Hand.BOTH, SeatOptions.Hand.LEFT)) {
+            val at = pick(hand, node, node, null, 300f to 2500f, 1080, 2400, d)
+            assertTrue("$hand: no point for a node half on the screen", at != null)
+            assertTrue("$hand: $at is below the screen", at!!.second < 2400f && inside(node, at))
+        }
+        // Wholly below the screen: nothing to touch.
+        val gone = floatArrayOf(100f, 2500f, 500f, 2700f)
+        assertEquals(null, pick(SeatOptions.Hand.BOTH, gone, gone, null, 300f to 2600f, 1080, 2400, d))
+    }
+
+    /** Review of rejeux6 (grave 2): another element over the node (a popup) is not touched for it. */
+    @Test
+    fun aTagCoveredByAnotherElementIsTouchedWhereItShows() {
+        val d = 3f
+        val node = floatArrayOf(100f, 1000f, 500f, 1400f)
+        val popup = floatArrayOf(0f, 900f, 1080f, 1300f)
+        val at = pick(SeatOptions.Hand.BOTH, node, node, popup, 300f to 1200f, 1080, 2400, d)
+        assertTrue("no point of the node shows", at != null)
+        assertTrue("$at is on the popup, not on the node", inside(node, at!!) && !inside(popup, at))
+        // Wholly covered: the touch is refused (no point), not played on the popup.
+        assertEquals(null, pick(SeatOptions.Hand.BOTH, node, node, floatArrayOf(0f, 900f, 1080f, 1500f), 300f to 1200f, 1080, 2400, d))
+    }
+
+    /** Review of rejeux6 (grave 2): a node cut by the list that scrolls it is touched on its part the list shows. */
+    @Test
+    fun aTagClippedByItsScrollingParentIsTouchedOnItsShownPart() {
+        val d = 3f
+        val node = floatArrayOf(100f, 800f, 500f, 1600f)
+        // The list shows from y = 1300 (a header over its top): the node's top half is scrolled away under it.
+        val shown = floatArrayOf(100f, 1300f, 500f, 1600f)
+        val at = pick(SeatOptions.Hand.BOTH, node, shown, null, 300f to 1200f, 1080, 2400, d)
+        assertTrue("no point of the shown part", at != null)
+        assertTrue("$at is outside the shown part", inside(shown, at!!))
+        // Scrolled away whole (nothing shown): no point.
+        assertEquals(null, pick(SeatOptions.Hand.BOTH, node, floatArrayOf(100f, 1300f, 500f, 1300f), null, 300f to 1200f, 1080, 2400, d))
+    }
+
     @Test
     fun anArabicSeatOnATabletAt130() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())

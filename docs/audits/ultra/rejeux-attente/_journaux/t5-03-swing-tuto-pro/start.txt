@@ -1,0 +1,10 @@
+lang=de
+device=tablet8
+font=100
+mode=pro
+gestes.max=90
+mission=tuto-pro
+rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-03-swing-tuto-pro
+rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotB/c
+rejeu.n=40
+rejeu.attendu=curseur « Swing »

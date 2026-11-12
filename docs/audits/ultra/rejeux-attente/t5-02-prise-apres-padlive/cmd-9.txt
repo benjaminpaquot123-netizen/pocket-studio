@@ -1,1 +1,1 @@
-touche 223 1059
+touche thumb_play

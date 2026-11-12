@@ -1472,3 +1472,9 @@
 - 2026-11-12 · lot « oreille » (tour-5) : 10 décision(s) dans `docs/decisions/tour-5-oreille.md`
 - 2026-11-12 · lot « mixwake » (tour-5) : 7 décision(s) dans `docs/decisions/tour-5-mixwake.md`
 - 2026-11-12 · lot « retest » (tour-5) : 5 décision(s) dans `docs/decisions/tour-5-retest.md`
+- 2026-11-12 · lot « fuzz » (tour-5) : 3 décision(s) dans `docs/decisions/tour-5-fuzz.md`
+- 2026-11-12 · lot « juge6 » (tour-5) : 10 décision(s) dans `docs/decisions/tour-5-juge6.md`
+- 2026-11-12 · lot « rejeux6 » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-rejeux6.md`
+- 2026-11-12 · lot « plan6 » (tour-5) : 19 décision(s) dans `docs/decisions/tour-5-plan6.md`
+- 2026-11-12 · lot « juge7 » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-juge7.md`
+- 2026-11-12 · lot « ci2 » (tour-5) : 4 décision(s) dans `docs/decisions/tour-5-ci2.md`

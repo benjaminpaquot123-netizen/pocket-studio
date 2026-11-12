@@ -1,3 +1,4 @@
 source=docs/audits/ultra/sieges/tour-5/lotF/d
 rejeu.n=51
-rejeu.absent=« Fin du bout » [état « 0:07.00 »] @ 471,625
+rejeu.attendu=« Fin du bout » [état
+rejeu.absent=« Fin du bout » [état « 0:07.00 »]

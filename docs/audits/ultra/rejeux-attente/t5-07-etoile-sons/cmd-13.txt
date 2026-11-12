@@ -1,1 +1,1 @@
-glisse 500 580 500 260
+attends 1

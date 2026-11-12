@@ -1,1 +1,1 @@
-touche 200 1320
+touche remix_pick_thumb

@@ -1,1 +1,1 @@
-touche 546 48
+touche wizard_close

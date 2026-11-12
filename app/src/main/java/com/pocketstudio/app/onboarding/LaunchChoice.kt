@@ -440,7 +440,8 @@ internal fun ChallengeCard(onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        StarsMedallion(56.dp)
+        // Lot 6, U10 (seat E a #47): the same round 48 dp medallion as its neighbours (it was a 56 dp square: its text 8 dp off).
+        StarsMedallion(48.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(tr("Défis"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(
@@ -452,19 +453,20 @@ internal fun ChallengeCard(onClick: () -> Unit) {
     }
 }
 
-/** Three gold stars, the middle one big, on a dark rounded square: the challenges' picture. */
+/** Three gold stars, the middle one big, on a dark round medallion (as [IconMedallion]): the challenges' picture. */
 @Composable
 internal fun StarsMedallion(size: androidx.compose.ui.unit.Dp) {
     Box(
-        Modifier.size(size).clip(RoundedCornerShape(16.dp))
+        Modifier.size(size).clip(androidx.compose.foundation.shape.CircleShape)
             .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF3A2A06), Color(0xFF241A04)))),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD, modifier = Modifier.size(size * 0.62f))
+        // The small stars inside the circle (at its square's corners they were cut).
+        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD, modifier = Modifier.size(size * 0.56f))
         Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD,
-            modifier = Modifier.align(Alignment.TopStart).padding(start = size * 0.06f, top = size * 0.06f).size(size * 0.26f))
+            modifier = Modifier.align(Alignment.TopStart).padding(start = size * 0.14f, top = size * 0.14f).size(size * 0.24f))
         Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(end = size * 0.06f, bottom = size * 0.06f).size(size * 0.26f))
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = size * 0.14f, bottom = size * 0.14f).size(size * 0.24f))
     }
 }
 
@@ -488,7 +490,8 @@ internal fun PadLiveCard(onClick: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Box(
-            Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+            // Lot 6, U10: round, as every medallion of the screen.
+            Modifier.size(48.dp).clip(androidx.compose.foundation.shape.CircleShape)
                 .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFFFFA24A), Color(0xFFFF6A3D)))),
             contentAlignment = Alignment.Center,
         ) {

@@ -149,4 +149,20 @@ class TutoGrilleTest {
     @Test
     fun simpleTheLastLeadNoteIsShownWithItsBar() = theLastNoteAndItsBar(TutoLevel.Facile, simple = true)
 
+    /** N8: in chord mode one touch writes a whole chord: « Encore N » counts the touches (the chords' starts), not their notes. */
+    private fun chordsCountTouches(level: TutoLevel, simple: Boolean) {
+        openNotesStep("pad_do", level, simple)
+        val left = leftNotes()
+        val touches = left.map { it.start }.distinct().size
+        assertTrue("chords on the step: ${left.size} notes for $touches starts", touches < left.size)
+        val said = text("tuto_notes_left_text")
+        assertTrue("« $said » for $touches touches (${left.size} notes)", Regex("\\b$touches\\b").containsMatchIn(said) && !Regex("\\b${left.size}\\b").containsMatchIn(said))
+    }
+
+    @Test
+    fun proChordsLeftCountTheTouches() = chordsCountTouches(TutoLevel.Pro, simple = false)
+
+    @Test
+    fun simpleChordsLeftCountTheTouches() = chordsCountTouches(TutoLevel.Facile, simple = true)
+
 }

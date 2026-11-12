@@ -365,7 +365,7 @@ fun PianoRoll(
                         hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth, barSteps,
                         bars = ((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1), trackName = trackName, copy = copyMotif,
                         vScroll = rollV, rowHeight = rowHeight, high = maxOf(HIGH, clip.notes.maxOfOrNull { it.pitch } ?: HIGH),
-                        sight = rollSight.value,
+                        sight = rollSight.value, chords = chordMode,
                     )
                 }
                 BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
@@ -1302,6 +1302,8 @@ private fun TutoNotesLeft(
     vScroll: androidx.compose.foundation.ScrollState? = null, rowHeight: androidx.compose.ui.unit.Dp = 0.dp, high: Int = HIGH,
     /** Tour 6 lot 1: the rows in sight from the roll's top (pixels; null: all of its height). */
     sight: ClosedFloatingPointRange<Float>? = null,
+    /** « Accords » on: one touch writes a dotted chord (N8: the line counts touches, not notes). */
+    chords: Boolean = false,
 ) {
     val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
     val rowPx = with(LocalDensity.current) { rowHeight.toPx() }
@@ -1359,7 +1361,8 @@ private fun TutoNotesLeft(
             Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
-                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone() else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead, above),
+                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
+                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, ahead, above),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),

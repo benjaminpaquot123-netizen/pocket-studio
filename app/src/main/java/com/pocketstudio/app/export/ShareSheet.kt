@@ -315,7 +315,7 @@ data class ShareSheetUi(
 )
 
 /** Lot 6, U2: what the file of [p] aims at (its one loudness target), in LUFS; null without a target. */
-fun shareExportLufs(p: Project): Double? = null
+fun shareExportLufs(p: Project): Double? = LoudnessTargets.of(p)?.toDouble()
 
 class ShareSheetActions(
     val setName: (String) -> Unit = {},
@@ -425,7 +425,9 @@ fun ShareSheetContent(
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.padding(start = 10.dp).weight(1f, fill = false),
                     )
                 }
-                ui.lufs?.let { lufs ->
+                // Lot 6, U2 (seat A c): the Mode simple says the level the file will have (its target), not the one
+                // heard while it played (« streaming (−14) » said of a file aiming at −8,5).
+                (if (simple) ui.exportLufs ?: ui.lufs else ui.lufs)?.let { lufs ->
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -675,7 +677,7 @@ fun ShareSheetRoute(
         ShareSheetUi(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
-            truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
+            truePeakDb = levels.truePeakDb, lossDb = levels.lossDb, exportLufs = shareExportLufs(project),
             target = if (simple) null else com.pocketstudio.app.mixer.TargetPick.of(project),
             loop = if (project.song.isEmpty()) LoopPick.of(export.bars, export.sceneBars, export.audioBars) else null,
         )

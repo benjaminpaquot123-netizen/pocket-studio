@@ -22,7 +22,6 @@
   "Pages et packs": "ページとパック",
   "Garde le doigt sur un effet : il joue tant que tu appuies, puis tout revient. Filtre et Roulement : monte le doigt pour régler le son ou la vitesse des coups. Avec « Plus » : Montée (un souffle qui monte), Chute (la musique freine), Bégaie (le son se hache).": "エフェクトに指を置いたままにすると、押している間だけかかり、離すと元に戻ります。フィルターとロール：指を上にずらすと音や連打の速さを調整できます。「その他」では：ビルドアップ（上がっていくノイズ）、ドロップ（音楽が減速）、スタッター（音が細かく刻まれる）。",
   "Enregistre ce que tu joues sur les pads, en mesures entières, puis pose-le sur un pad libre ou dans une brique du Live. REC, en haut, enregistre toute ta perf pour en faire un morceau.": "パッドで弾いたものを小節単位で録音し、空いているパッドか Live のブロックに置けます。上の REC は演奏全体を録音して曲にします。",
-  "Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager fait un fichier de ta perf.": "「全部止める」で全パッドが止まります。「ブロック」は Live 全体（トラック、ノート、Acid 303）を開きます。「エフェクト」はパッドのエフェクトを設定。「大きいパッド」はパッドを大きく表示してみんなで演奏。「シェア」で演奏をファイルにできます。",
   "L'appli joue un petit rythme sur les pads « coup » de la page : écoute, puis refais-le. Tu gagnes jusqu'à 3 étoiles selon ta précision.": "アプリがページの「ショット」パッドで短いリズムを鳴らします。聴いてから同じように叩きましょう。正確さに応じて最大 3 つ星がもらえます。",
   "Coup, boucle, tenir": "ショット、ループ、ホールド",
   "Coup : le son joue une fois à chaque toucher. Boucle : un toucher le lance en rythme, un autre l'arrête. Tenir : il joue tant que ton doigt reste sur le pad.": "ショット：タッチするたびに 1 回鳴ります。ループ：1 回タッチでリズムに合わせて始まり、もう 1 回で止まります。ホールド：指がパッドに触れている間だけ鳴ります。",

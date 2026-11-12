@@ -101,6 +101,11 @@ class PlayedTake(private val vm: RhythmViewModel) {
         }
     }
 
+    /** « Tout couper »: the same as the button when a take is armed or recording; nothing otherwise (never arms one). */
+    fun endForCut() {
+        if (_ui.value == PlayedTakeUi.Armed || _ui.value is PlayedTakeUi.Recording) press()
+    }
+
     private fun framesPerBar(bpm: Double = vm.project.value.tempoBpm): Double =
         60.0 / bpm.coerceAtLeast(1.0) * vm.project.value.beatsPerBar * ResampleSource.RATE
 

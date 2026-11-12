@@ -1175,7 +1175,7 @@ fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.poc
 @Composable
 fun TutoKeySheet(harmony: com.pocketstudio.model.Harmony, wanted: com.pocketstudio.model.Harmony, set: (com.pocketstudio.model.Harmony) -> Unit, close: () -> Unit) {
     com.pocketstudio.ui.ScaledBottomSheet(
-        onDismissRequest = close, sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Neon.Surface,
+        onDismissRequest = close, sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Neon.Surface, scrolls = true,
     ) { TutoKeySheetContent(harmony, wanted, set, close) }
 }
 

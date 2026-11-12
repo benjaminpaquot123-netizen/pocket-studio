@@ -158,8 +158,18 @@ object I18n {
         "lectures",
         // Round 5, chantier 5 (2026-11-11): the same Plus page in both modes, the assistant's mode with « Changer » (3A).
         "plus",
+        // Round 5, chantier 7 (2026-11-11): Pad Live's « Tout couper » in sight, it stops everything (4A).
+        "padlivestop",
         // Round 5, chantier 6 (2026-11-11): the home screens say they scroll (« ↓ 4 autres »), « Un style en une touche ».
         "accueil",
+        // Hands-on audit, chantier 10 (2026-11-11): the Remix's one recommended way, « Faire un morceau avec cette chanson », the song's end cut.
+        "remix10",
+        // Round 5's « moyens » lot (2026-11-11), one file per team: top bar and play (a), Plus page (b), home and sharing (c).
+        "moyensa", "moyensb", "moyensc",
+        // Round 5, chantier 8 (2026-11-11): a new curve shown and lit, « déjà une courbe » in the picker, « Voir le réglage » on it.
+        "courbes",
+        // Round 5, chantier 9 (2026-11-11): three « ? » where a beginner gets stuck (recording on the keys, the Mix simple, its loop).
+        "access",
     )
 
     @Volatile

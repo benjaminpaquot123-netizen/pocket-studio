@@ -74,7 +74,6 @@ class HiddenDefectsGuardTest {
      * neither « Filtre (balayage) » nor the setting its curve moves (« Filtre (déjà une courbe) » is what Benjamin asked).
      */
     @Test
-    @KnownDefect("CACHE-B19", "the filter's sweep just added is gone from « Automatiser un réglage »")
     fun theFilterSweepJustAddedIsStillNamedInThePicker() {
         h.start()
         openPickerOnTheDrums()

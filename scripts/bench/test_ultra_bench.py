@@ -1628,10 +1628,11 @@ def engine_proof(d):
     check("@KnownDefect K9 (AppProofTest#provesIt) : aucune ligne qui le cite ne porte garde_id K9" in out, "an unknown id in @KnownDefect is a gap:\n" + out)
     check("A : garde_id K1 porté par aucune de ses preuves" in out and "chantier : 2 écarts" in out, "a line's id that no proof carries is a gap:\n" + out)
 
-    # The real cell of T5-PADRETRIG reads as one proof, and the C++ runner says a known defect is one.
+    # The real cell of T5-PADRETRIG reads as one engine proof (the Pad Live lot fixed the defect: the known-defect
+    # test turned into the green padlive_hit_retouched_sounds_at_once), and the C++ runner says a known defect is one.
     repo = os.path.dirname(os.path.dirname(HERE))
     out = run(script, "--root", repo, "--preuves", "T5-PADRETRIG")
-    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#knownDefectPadRetriggerWaitsForTheGrid (known_defect_t5_padretrig)",
+    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#hitRetouchedSoundsAtOnce (padlive_hit_retouched_sounds_at_once)",
           "the engine proof of T5-PADRETRIG is read:\n" + out)
     with open(os.path.join(repo, "engine", "host-tests", "engine_tests.cpp"), encoding="utf-8") as f:
         runner = f.read()

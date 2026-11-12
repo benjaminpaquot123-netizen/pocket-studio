@@ -453,10 +453,11 @@ class Tour4AppProofTest {
         assertEquals(LiveSlots.ALL, arm2[2].toInt())
         synchronized(engine) { for (k in 0 until LiveSlots.COUNT) engine.launches += intArrayOf(k, -1, 32) }
         idle(200)
-        assertTrue("every block stopped: ${vm.liveGrid.value}", (0 until LiveSlots.COUNT).all { vm.liveGrid.value!!.slot(it).playing == -1 })
-        assertFalse(vm.liveGrid.value!!.hasPending)
-        // « the transport goes on » (stopLiveAll's own rule): ▶ is still on, nothing sounds.
-        assertTrue(vm.transport.value.playing)
+        // 4A (T4-01, recette tel-12): the blocks stopped on their line, the transport stops with them (the grid goes).
+        assertFalse("« ■ Tout » stops the transport once every block stopped", vm.transport.value.playing)
+        val after = vm.liveGrid.value
+        assertTrue("every block stopped: $after", after == null || (0 until LiveSlots.COUNT).all { after.slot(it).playing == -1 } && !after.hasPending)
+        assertEquals("the engine's transport stopped", 0f, engine.of(CMD_SET_TRANSPORT).last()[1].toFloat())
     }
 
     private companion object {

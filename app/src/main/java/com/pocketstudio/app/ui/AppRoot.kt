@@ -620,6 +620,8 @@ fun AppRoot() {
     }
     // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
     var fxChannel by rememberSaveable { mutableStateOf(-1) }
+    // Chantier 8: the control « Voir le réglage » leads to in that sheet (opened on it, framed), null: none.
+    var fxSpot by remember { mutableStateOf<com.pocketstudio.model.AutoTarget?>(null) }
     if (fxChannel >= 0) {
         val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
         val channel = fxProject.mixer.channels.getOrNull(fxChannel)
@@ -631,7 +633,7 @@ fun AppRoot() {
                 com.pocketstudio.model.DefaultNames.shown(mixerStrips(fxProject).firstOrNull { it.ch == fxChannel }?.name ?: "Piste")
             }
             ScaledAlertDialog(
-                onDismissRequest = { fxChannel = -1 },
+                onDismissRequest = { fxChannel = -1; fxSpot = null },
                 // The whole width of the phone: everything seen at once, nothing to scroll for.
                 properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
                 modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp),
@@ -639,10 +641,12 @@ fun AppRoot() {
                 text = {
                     Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                         // The same box as under every sound (Synthé, Acide), here whole: pad XY, macros and sends too.
-                        com.pocketstudio.app.mixer.EffectsBox(fxChannel, channel, effectsActions(rhythmVm))
+                        androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.mixer.LocalControlSpot provides fxSpot?.takeIf { it.ch == fxChannel }) {
+                            com.pocketstudio.app.mixer.EffectsBox(fxChannel, channel, effectsActions(rhythmVm))
+                        }
                     }
                 },
-                confirmButton = { TextButton(onClick = { fxChannel = -1 }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
+                confirmButton = { TextButton(onClick = { fxChannel = -1; fxSpot = null }, modifier = Modifier.testTag("fx_close")) { Text(tr("Fermer")) } },
             )
         }
     }
@@ -2574,7 +2578,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         edit = { liveEditing = it },
                         setSize = rhythmVm::setLiveSize,
                         library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
@@ -2609,7 +2613,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         setSize = rhythmVm::setLiveSize,
                         edit = { liveEditing = it },
                         import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
@@ -2781,7 +2785,7 @@ fun AppRoot() {
                                 liveActions = LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                                     tap = rhythmVm::toggleLive,
-                                    stopAll = rhythmVm::stopLive,
+                                    stopAll = rhythmVm::cutEverything,
                                     setSize = rhythmVm::setLiveSize,
                                     edit = { liveEditing = it },
                                     import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
@@ -3241,7 +3245,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                             t.kind == com.pocketstudio.model.AutoTarget.ACID -> { acidFocus = t.param; tab = AppTab.Acide }
                                             t.kind == com.pocketstudio.model.AutoTarget.BUS_PARAM -> mixerFocus = com.pocketstudio.app.mixer.Where.Buses
                                             t.ch == com.pocketstudio.model.Mixer.MASTER -> mixerFocus = com.pocketstudio.app.mixer.Where.Master
-                                            else -> fxChannel = t.ch
+                                            else -> { fxSpot = t; fxChannel = t.ch }
                                         }
                                     },
                                 ),

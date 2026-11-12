@@ -1941,6 +1941,74 @@ open class ScreenshotTest {
     }
 
     @Test
+    @Config(qualifiers = "w400dp-h1200dp-xxhdpi")
+    fun automationPickerHasCurve() = shoot("automation_picker_has_curve") {
+        // Chantier 8 (Benjamin, tel-14): the drums' filter has its curve and stays offered, « déjà une courbe », outlined.
+        val p = com.pocketstudio.model.Project().let { p ->
+            val ch = p.mixer.channels.toMutableList()
+            ch[0] = ch[0].copy(inserts = listOf(com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.FILTER)) + ch[0].inserts.drop(1))
+            p.copy(mixer = p.mixer.copy(channels = ch))
+        }
+        val used = setOf(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.INSERT_PARAM, 0, 0, 0))
+        androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+            com.pocketstudio.ui.NeonCard {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Que veux-tu faire bouger ?"), style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+                com.pocketstudio.app.mixer.TargetPickerContent(used, p.mixer.channels, p.mixer.master, com.pocketstudio.app.ui.mixerStrips(p), {}, {}, preferred = 0)
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1100dp-xxhdpi")
+    fun automationNewCurve() {
+        // Chantier 8 (Benjamin, tel-14: « la fenêtre se ferme sans rien dire »): the curve just made, lit, with its line.
+        val lanes = androidx.compose.runtime.mutableStateOf(listOf(com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 1))))
+        val send = com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0)
+        shoot("automation_new_curve", prepare = {
+            compose.onNodeWithTag("automation_add").performClick()
+            compose.onNodeWithTag("pick_track_0").performClick()
+            compose.onNodeWithTag("pick_${send.pack()}").performClick()
+            compose.waitForIdle()
+        }) {
+            androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+                com.pocketstudio.app.mixer.AutomationCard(
+                    com.pocketstudio.app.mixer.AutomationUi(lanes.value, 16), List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
+                    com.pocketstudio.app.mixer.AutomationActions(add = { t -> lanes.value = lanes.value + com.pocketstudio.model.AutomationLane(t) }),
+                )
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h400dp-xxhdpi")
+    fun effectsSpotMacro() = shoot("effects_spot_macro") {
+        // Chantier 8: « Voir le réglage » on a macro's curve: the four knobs framed, the one that moves named.
+        androidx.compose.runtime.CompositionLocalProvider(
+            com.pocketstudio.app.mixer.LocalControlSpot provides com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.MACRO, 0, 0, 2),
+        ) {
+            androidx.compose.foundation.layout.Column(Modifier.padding(12.dp)) {
+                com.pocketstudio.app.mixer.MacroKnobs(0, listOf(0.5f, 0.2f, 0.7f, 0f), com.pocketstudio.app.mixer.QuickFxActions())
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h400dp-xxhdpi")
+    fun effectsSpotSend() = shoot("effects_spot_send") {
+        // Chantier 8 (tel-14): « Voir le réglage » on « Envoi réverbe · Batterie »: the sheet scrolled to the send, framed.
+        val c = com.pocketstudio.model.Channel(sends = listOf(0.35f, 0f))
+        androidx.compose.runtime.CompositionLocalProvider(
+            com.pocketstudio.app.mixer.LocalControlSpot provides com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0),
+        ) {
+            // The sheet's foot, where it lands (the whole sheet is longer than a screen).
+            androidx.compose.foundation.layout.Column(Modifier.padding(12.dp)) {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Réverbe et écho communs"), style = androidx.compose.material3.MaterialTheme.typography.labelLarge, color = Neon.Magenta)
+                com.pocketstudio.app.mixer.SendSliders(0, c.sends, com.pocketstudio.app.mixer.MixerActions())
+            }
+        }
+    }
+
+    @Test
     @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
     open fun mixerMoves() = shoot("mixer_moves") {
         // The assistant's Rétro techno in the mixer: « Automation et effets » on top, a badge on each track that moves.

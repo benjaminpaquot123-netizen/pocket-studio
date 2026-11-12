@@ -78,6 +78,21 @@ class HomeScreensSayTheyScrollTest {
         }
     }
 
+    /**
+     * Tour 5, lot « moyens » C (review of the home lot, M-a): the controls the chip lies over. On « Nouveau projet » with
+     * « Autres façons de commencer » open, it covered the right of the cut « Techno » card: a touch there scrolled instead
+     * of making the song. The chip lies over no control, cut or not.
+     */
+    private fun underTheChip(): List<String> {
+        val chip = node("scroll_hint") ?: return emptyList()
+        val all = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes(atLeastOneRootRequired = false)
+        return all.filter { n ->
+            n.id != chip.id && n.config.contains(androidx.compose.ui.semantics.SemanticsActions.OnClick) && !LayoutScan.hidden(n) &&
+                n.boundsInRoot.intersect(chip.boundsInRoot).let { it.width > 1f && it.height > 1f }
+        }.map { LayoutScan.nameOf(it).ifBlank { LayoutScan.tagOf(it) } }
+    }
+
     private fun expected(n: Int) = if (n == 1) "↓ 1 autre" else "↓ $n autres"
 
     /** The rule on one screen, from its top to its end. */
@@ -87,6 +102,7 @@ class HomeScreensSayTheyScrollTest {
         val n = below(list, cards)
         assertTrue("$list: cards below the fold", n > 0)
         assertEquals("$list: the hint counts the cards below", expected(n), hintWords())
+        assertEquals("$list: the chip covers no card", emptyList<String>(), underTheChip())
         // A touch on it brings the next one up.
         val before = scrolled(list)
         compose.onNodeWithTag("scroll_hint").performClick()
@@ -132,6 +148,8 @@ class HomeScreensSayTheyScrollTest {
         assertTrue("« Autres façons de commencer » open: the list goes on", more("new_project_list"))
         assertEquals(emptyList<String>(), LayoutScan.unhintedScrolls(compose))
         assertTrue("the fade says it", node("scroll_hint_fade") != null)
+        assertTrue("at the top of the list, the chip says it", node("scroll_hint") != null)
+        assertEquals("the chip covers no card (the cut « Techno » was under it)", emptyList<String>(), underTheChip())
     }
 
     /** A tablet lying down: the two columns hold every card, nothing is said. */

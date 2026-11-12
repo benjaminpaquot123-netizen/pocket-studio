@@ -14,8 +14,10 @@ import kotlin.math.pow
  * clock runs on its own from the engine's start (transport stopped too), at the tempo; it restarts at 0 when the first pad
  * starts with nothing else on and the transport stopped (`idleClock`); it snaps to the sequencer's beat when the transport
  * reaches its step 0 (ClipLauncher::align: the nearest value with the sequencer's place in a 64-beat cycle; waiting pads
- * take its grid again, loops start over). A touch on a pad off (or a hit still sounding: T5-PADRETRIG) waits for its grid
- * line: its loop length, at most a bar (gridOf); a touch while it waits cancels it; a loop playing stops. A row waits for
+ * take its grid again, loops start over). A touch on a pad off waits for its grid line: its loop length, at most a bar
+ * (gridOf); a touch while it waits cancels it; a loop playing stops. R.7 (T5-PADRETRIG): the transport stopped and no other
+ * pad on, a hit sounds at once, each touch (still sounding: it starts over); a hit waiting (transport stopped) is never
+ * cancelled by a touch again. A row waits for
  * the next bar line all together; a row whose loops all play stops them. A hit plays its sound once (its frames, read
  * faster or slower with its pitch) and goes off. Not played: the sound itself, levels, attack and release (a pad's state
  * only changes on lines and at a hit's end, which is all the app reads: NativeEngine.clipStatesNow).
@@ -157,11 +159,19 @@ internal class BenchClips(
         advance()
         val s = slots.getOrNull(slot) ?: return
         if (s.sample == 0L) return
+        val alone = idleClock && slots.none { it !== s && it.state != OFF }
         when {
+            s.oneShot && alone -> {
+                // R.7: at once (render starts it on its next frame); nothing on: the clock starts over with it.
+                if (s.state == OFF) beat = 0.0
+                s.startBeat = beat
+                s.state = WAITING
+            }
             s.state == PLAYING && !s.oneShot -> stop(s)
+            s.state == WAITING && s.oneShot && idleClock -> Unit  // R.7: never cancelled by a touch again
             s.state == WAITING -> s.state = OFF
             else -> {
-                // A one-shot that is still sounding is simply hit again on the grid (T5-PADRETRIG).
+                // A one-shot with other pads on or the transport playing: hit again on the grid.
                 if (idleClock && slots.none { it.state != OFF }) beat = 0.0
                 val grid = gridOf(s)
                 s.startBeat = ceil(beat / grid - 1e-9) * grid

@@ -159,6 +159,12 @@ abstract class HumanTester(private val seat: String) {
         }
         backgroundQuiet(2_000)
         runCatching { service?.destroy() }
+        // Round 6, lot ci2 (CI 43279184052, Zone3JourneysTest#redoAfterUndoInTheModeSimple red): the rest above ignores a worker
+        // waiting on a socket (as « attends » must), so the app's own network work (the assistant's packs' catalogue from GitHub)
+        // ran on past a short test and was the next one's inherited state, or not, by the CI's network speed. Waited for here,
+        // the main looper running, only while every busy app worker is on the network, [NETWORK_END_CAP_MS] at most; other work
+        // and what is left past the cap stay the detector's to name (BenchNetworkEndTest).
+        appNetworkWorkEnded(NETWORK_END_CAP_MS)
         SeparationJob.set(SeparationState.Idle)
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         TutoTestHooks.player = null
@@ -1479,6 +1485,38 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /**
+     * The app's network work at the end of a test (lot ci2): waited for, the main looper running, while at least one app worker
+     * is busy and every busy one waits on a socket ([onTheNetwork]), [capMs] at most. Work of the app off the network is not
+     * waited for: the detector (BenchPristine) still names it, as before.
+     */
+    private fun appNetworkWorkEnded(capMs: Long) {
+        val until = System.currentTimeMillis() + capMs
+        while (System.currentTimeMillis() < until) {
+            val busy = appWorkers()
+            if (busy.isEmpty() || !busy.all(::onTheNetwork)) return
+            Thread.sleep(20)
+            runCatching { shadowOf(Looper.getMainLooper()).idle() }
+        }
+    }
+
+    /** The coroutine workers running the app's code (a frame of com.pocketstudio), as BenchPristine.appThreads names them. */
+    private fun appWorkers(): List<Thread> {
+        var root = Thread.currentThread().threadGroup
+        while (root.parent != null) root = root.parent
+        val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
+        val n = root.enumerate(threads, true)
+        return (0 until n).mapNotNull { threads[it] }.filter { t ->
+            t.name.startsWith("DefaultDispatcher-worker") && t !== Thread.currentThread() && t.stackTrace.any { "pocketstudio" in it.className }
+        }
+    }
+
+    /** [t] is in a network call (socket, HTTP or TLS frames anywhere in its stack: an HTTPS read is deep below the app's frame). */
+    private fun onTheNetwork(t: Thread): Boolean = t.stackTrace.any { f ->
+        f.className.startsWith("sun.nio.ch.") || f.className.startsWith("java.net.") || f.className.startsWith("sun.net.") ||
+            f.className.startsWith("sun.security.ssl.") || f.className.startsWith("javax.net.ssl.")
+    }
+
+    /**
      * Flaky fix (audit stage 1): « attends 2 » passes 2 s of the main thread's clock at once, but the work the
      * app runs off the main thread (a project created, a pack read, on Dispatchers.IO / Default) needs real
      * time, and a loaded machine (the whole suite) gave it less than the 160 ms below: the screen was read
@@ -2113,6 +2151,8 @@ abstract class HumanTester(private val seat: String) {
 
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
+        /** The bench's end waits this long at most for the app's network work (PackStore's catalogue: 10 s to connect, 15 s a read); past it, the detector names what is left. */
+        const val NETWORK_END_CAP_MS = 30_000L
 
         /**
          * PLAN-RESTE 4.7 (T5-Cc-41b, round 5 seat C c: « 1 KB »; the phone: 42 Mo for 2 min 26): the bench's encoder is a shadow

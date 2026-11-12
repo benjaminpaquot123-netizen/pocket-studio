@@ -1,0 +1,2 @@
+lang=id device=tablet8 font=100 mode=simple
+lang=tr device=phone font=130 mode=pro

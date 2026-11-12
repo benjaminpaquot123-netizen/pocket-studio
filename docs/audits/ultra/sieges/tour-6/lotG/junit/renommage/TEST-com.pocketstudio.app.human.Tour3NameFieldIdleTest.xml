@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour3NameFieldIdleTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-12T20:48:29.400Z" hostname="vm" time="8.041">
+  <properties/>
+  <testcase name="aNameFieldInTheRenameWindowTakesTheNameTyped" classname="com.pocketstudio.app.human.Tour3NameFieldIdleTest" time="6.772"/>
+  <testcase name="aSelectAllFieldTouchedThenTypedInRests" classname="com.pocketstudio.app.human.Tour3NameFieldIdleTest" time="0.412"/>
+  <testcase name="aNameFieldTouchedThenTypedInRests" classname="com.pocketstudio.app.human.Tour3NameFieldIdleTest" time="0.256"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotE/b (seat b, lot E; lang nl, device phone360, font 100, mode pro, options -, mission exports, budget 110 gestures).
+Profile (id t6-Eb): Producteur néerlandais, petit téléphone, police 100 %, Mode Pro, veut exporter son morceau en deux formats. Promesses : pour chacune, oui ou non avec le numéro d'écran. Act as this person (habits, patience, vocabulary).
+Mission exports; its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Eb-1 | 1. Un fichier « streaming » s'exporte et se retrouve dans Mes exports
+  - id=t6-Eb-2 | 2. Un fichier « club » s'exporte et se retrouve dans Mes exports
+  - id=t6-Eb-3 | 3. La longueur annoncée avant l'export est celle du fichier exporté
+  - id=t6-Eb-4 | 4. tous les textes vus sont dans ma langue, aucun en français ni coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

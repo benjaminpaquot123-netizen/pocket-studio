@@ -77,7 +77,7 @@
         },
         {
           "id": "rumble_do",
-          "text": "À toi : sur le pad « Rumble », touche les mêmes cases que le kick : il gronde après chaque coup.",
+          "text": "À toi : sur le pad « Rumble », touche les mêmes cases que le kick : son grondement remplit le vide entre les coups.",
           "textPro": "À toi : le rumble, calé sur le kick : c'est la basse du morceau.",
           "why": "Le rumble est la seule basse : un grave sale qui roule entre les coups.",
           "check": "lane:rumble",

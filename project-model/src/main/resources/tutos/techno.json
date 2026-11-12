@@ -91,7 +91,7 @@
         },
         {
           "id": "rumble_do",
-          "text": "À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick : il gronde juste après chaque coup, comme un écho sale et grave.",
+          "text": "À toi : sur le pad « Rumble » (le grondement), touche les cases en pointillé : les mêmes que le kick, une sur chaque temps. Son long grondement sale et grave remplit le vide entre les coups.",
           "textPro": "À toi : le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
           "why": "Le rumble remplit le grave entre les kicks : c'est le son des clubs de Berlin.",
           "check": "lane:rumble",

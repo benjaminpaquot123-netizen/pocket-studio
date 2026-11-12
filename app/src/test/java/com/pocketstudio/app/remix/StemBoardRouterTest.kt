@@ -214,7 +214,7 @@ class StemBoardRouterTest {
         assertEquals(2, r.state.value.pick!!.sels.size)
         r.pickPad(0)
         assertEquals(listOf(0), host.pads.last().map { it.lane })
-        assertEquals("1 bout sur le pad 1. Plus de pad libre pour le dernier bout.", r.state.value.message)
+        assertEquals("1 bout sur le pad 1. (Batterie · 16 pads) Plus de pad libre pour le dernier bout.", r.state.value.message)
     }
 
     @Test
@@ -351,7 +351,7 @@ class StemBoardRouterTest {
         assertEquals(listOf(48_000, 96_000, 24_000), cuts.map { it.pcm.frames })
         // The second phrase starts 5 s into the song (30 000 × 8 frames).
         assertEquals(((3 * 1_000_000 + 240_000) * 1e-7).toFloat(), cuts[1].pcm.data[0], 1e-6f)
-        assertEquals("3 phrases sur les pads 10, 12 et 13.", r.state.value.message)
+        assertEquals("3 phrases sur les pads 10, 12 et 13. (Batterie · 16 pads)", r.state.value.message)
         // The energy: mono at 6 kHz, the whole song; the beat grid in its frames (120 BPM, first beat at frame 4000).
         assertEquals("[6000, 1, 180000, 3000, 8, 500]", edits.asked.toString())
     }
@@ -380,7 +380,7 @@ class StemBoardRouterTest {
         // The two longest, in song order, on pads 12 and 14.
         assertEquals(listOf(11, 13), host.pads.single().map { it.lane })
         assertEquals(listOf(56_000, 32_000), host.pads.single().map { it.pcm.frames })
-        assertEquals("2 phrases sur les pads 12 et 14. Plus de pad libre pour la dernière.", r.state.value.message)
+        assertEquals("2 phrases sur les pads 12 et 14. (Batterie · 16 pads) Plus de pad libre pour la dernière.", r.state.value.message)
         // None found: said.
         val none = Host(beat())
         router(none, Edits()).let {

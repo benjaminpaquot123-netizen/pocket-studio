@@ -145,6 +145,18 @@ class Empreinte(unittest.TestCase):
         self.assertIsNone(gaps[0])
         self.assertEqual("vert", E.light(gaps)[0])
 
+    def test_a_band_the_phone_did_not_hear_is_not_a_missing_bass(self):
+        # The phone's curve lost 50 and 63 Hz under its room, its microphone still heard the song's bass:
+        # the 63 Hz octave cannot be compared (unknown), it is not « the bench has no bass ».
+        curve = expected_curve(SPEAKER)
+        curve[0] = curve[1] = None
+        phone = expected_octaves(chain(TRAP, SPEAKER))
+        energies, frames = E.third_octave_energies(pink(20, TRAP, seed=3), RATE)
+        gaps = E.compare(phone, E.octaves(E.apply_curve(energies, curve), frames))
+        self.assertEqual(8, len(gaps))
+        self.assertIsNone(gaps[0], gaps)
+        self.assertEqual("vert", E.light(gaps)[0])
+
 
 class Commands(unittest.TestCase):
     def setUp(self):
@@ -173,6 +185,17 @@ class Commands(unittest.TestCase):
         self.assertIn("| trap |", text)
         self.assertIn("vert", text)
         self.assertIn("125 Hz", text)
+
+    def test_a_curve_never_heard_is_said_not_a_crash(self):
+        with open(self.mesures) as f:
+            m = json.load(f)
+        m["micro"]["courbe_db"] = [None] * 26
+        with open(self.mesures, "w") as f:
+            json.dump(m, f)
+        r = self.run_tool("filtrer", self.mesures, self.bench, os.path.join(self.dir, "x.wav"))
+        self.assertNotEqual(0, r.returncode)
+        self.assertNotIn("Traceback", r.stderr)
+        self.assertIn("aucune bande", r.stderr)
 
     def test_courbe_prints_the_phones_curve(self):
         r = self.run_tool("courbe", self.mesures)

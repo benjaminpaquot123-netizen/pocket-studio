@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.ToutTesterTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-12T13:34:32.359Z" hostname="vm" time="0.125">
+  <properties/>
+  <testcase name="theRunPlaysEveryStyleWithTheHeavyOnesColdAndHotAndEndsWithTheScreenOff" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.013"/>
+  <testcase name="aFadeIsTheLevelFallingWithTheLiveGain" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.006"/>
+  <testcase name="theLightsFollowThePlansThresholds" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.01"/>
+  <testcase name="theLatencyIsThreeRoundTripsAndTheirMedian" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.027"/>
+  <testcase name="anIsolatedPopIsAJump" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.001"/>
+  <testcase name="twoSilentSecondsWhilePlayingAreASilenceUnlessTheSongPlansThem" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.003"/>
+  <testcase name="aSteadySongIsHeardSecondBySecondWithoutAlert" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.006"/>
+  <testcase name="aWavIsReadBackForItsLengthAndTruePeak" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.04"/>
+  <testcase name="theEndScreenSaysTheLights" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.014"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

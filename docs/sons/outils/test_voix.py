@@ -88,6 +88,27 @@ def main():
                     else:  # no harmonic in the band (523.3 Hz: none from 150 to 500 Hz): only the window's leak
                         check(got[key] < -40, f"{f0} Hz {bits}-bit {key} {got[key]}: an empty band read")
                 check(got['cote_centre_db'] < -100, f'{f0} Hz {bits}-bit: a mono file has no side')
+        # The four bands of the trial n° 2 (sub, bas, médium, aigu), in dBFS: the RMS of the file plus each band's share
+        # of the harmonics' energy; a band without harmonics reads far under the RMS. 41.2 Hz puts its fundamental in sub, 73.4 Hz keeps its own (and the analysis window) clear of the 60 Hz edge.
+        for f0 in (41.2, 73.4, 261.6, 523.3):
+            mono = saw(f0)
+            p = os.path.join(d, f'bands{f0}.wav')
+            write_wav(p, np.stack([mono, mono], axis=1), 32)
+            got = voix.measure(*voix.read_wav(p))
+            rms = 20 * np.log10(np.sqrt(np.mean(mono ** 2)))
+            check(got.get('rms_dbfs') is not None and abs(got['rms_dbfs'] - rms) <= 0.2, f"{f0} Hz rms {got.get('rms_dbfs')} vs {rms:.1f}")
+            n = np.arange(1, int(20000 / f0) + 1)
+            n = n[n * f0 < 20000]
+            e, fr = 1.0 / n ** 2, n * f0
+            for key, (lo, hi) in {'sub_db': (20, 60), 'bas_db': (60, 250), 'medium_db': (250, 4000), 'aigu_db': (4000, 20000)}.items():
+                share = e[(fr >= lo) & (fr < hi)].sum() / e.sum()
+                if share > 0:
+                    want = rms + 10 * np.log10(share)
+                    check(got.get(key) is not None and abs(got[key] - want) <= 0.3, f"{f0} Hz {key} {got.get(key)} vs {want:.1f}")
+                else:
+                    # A band without harmonics still gets the window's leak of a partial near its edge (5.9 Hz bins:
+                    # 73.4 Hz leaks about -36 dB into sub): far under the RMS, which is all the trial's 3 dB needs.
+                    check(got.get(key) is not None and got[key] < rms - 30, f"{f0} Hz {key} {got.get(key)}: an empty band read")
         # Panned: right = half the left, so side / centre = (0.25 / 0.75)^2 = -9.5 dB exactly.
         mono = saw(261.6)
         p = os.path.join(d, 'panned.wav')
@@ -98,7 +119,7 @@ def main():
         p = os.path.join(d, 'silence.wav')
         write_wav(p, np.full((RATE * 2, 2), 1e-4), 32)
         check(voix.measure(*voix.read_wav(p)) == {'frames': 0}, 'silence measured')
-    print('voix.py: OK (sawtooth 65.4, 261.6 and 523.3 Hz, every column, 16-bit and float, panned copy, silence)')
+    print('voix.py: OK (sawtooth 65.4, 261.6 and 523.3 Hz, every column, the four bands (41.2 to 523.3 Hz), 16-bit and float, panned copy, silence)')
     return 0
 
 

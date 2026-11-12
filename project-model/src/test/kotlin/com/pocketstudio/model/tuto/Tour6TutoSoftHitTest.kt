@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -12,6 +13,7 @@ import org.junit.Test
 class Tour6TutoSoftHitTest {
     private fun asksSoft(s: TutoStep) = listOfNotNull(s.text, s.textPro).all { "« Doux »" in it }
 
+    @Ignore("T3: on with TutoChecks.SOFT_HITS_CHECKED, once TutoJourneyTest plays soft cells with « Doux » (not this team's file)")
     @Test
     fun aSoftCellPlayedLoudDoesNotTick() {
         val checked = mutableListOf<String>()

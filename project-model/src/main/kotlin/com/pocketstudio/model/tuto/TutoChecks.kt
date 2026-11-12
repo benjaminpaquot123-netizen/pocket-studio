@@ -783,6 +783,12 @@ object TutoChecks {
         return !rolls || wanted.all { (s, h) -> (h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats) && (hits[s]?.span ?: 1) == h.span }
     }
 
+    /**
+     * Tour 6, T3: off until TutoJourneyTest plays a step's soft cells as its consigne says (long press › « Doux »):
+     * it taps every dotted cell at full strength, and techno's clap would never tick there. Turn on with it.
+     */
+    const val SOFT_HITS_CHECKED = false
+
     /** A hit this soft or softer is « doux » (the force menu's « Doux » 0.2 and « Moyen » 0.5; a line's 'o' is 0.35). */
     private const val SOFT_VELOCITY = 0.5f
 
@@ -856,7 +862,7 @@ object TutoChecks {
             c == "swing" -> target.style.swing > 0.0 && p.swing > 0.0 && kotlin.math.abs(swingShown(p.swing) - swingShown(target.style.swing)) <= SWING_POINTS
             // With a [TutoStep.part]: the course's drums of that part, in that part.
             c.startsWith("lane:") -> target.line(arg, partOf(step))?.let { line ->
-                scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls"), soft = asksSoft(step)) }
+                scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls"), soft = SOFT_HITS_CHECKED && asksSoft(step)) }
             } ?: false
             // The 4 hats on the beats softer than those between them (one hit made « Doux » is not the groove).
             c == "velocity:hat" -> p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }

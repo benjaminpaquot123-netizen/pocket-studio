@@ -10,8 +10,9 @@ dans sa copie du dépôt ; branches fusionnées ici. Aucun texte neuf à traduir
   U3 (la scène affichée seule ne rend pas l'export « changé »), U5 (le format choisi en Simple est gardé en Pro),
   U14 (« Fait : accords… » nomme les accords posés), N25 (« Aller dans la partie… » pendant la lecture montre la
   partie, qui arrive à la mesure suivante, sans arrêter), T2 part `loadTutoKit` (le pad du grondement garde « Rumble »).
-- **ShareSheet.kt** : U2 (en Simple, le niveau dit est celui visé par l'export), U4 / U15 / N7 (la rangée M4A/WAV ne
-  recouvre plus rien : la partie qui défile s'estompe au bord où il y a la suite), U16 (le champ dit « Nom » quand le
+- **ShareSheet.kt** : U2 (en Simple, le niveau dit est celui visé par l'export), U4 / U15 / N7 (la ligne passée sous
+  la rangée M4A/WAV reste coupée, mais estompée : la partie qui défile a un fondu au bord où il y a la suite ; le test
+  vérifie la présence de ce repère, pas le fondu lui-même), U16 (le champ dit « Nom » quand le
   partage ne renomme pas le projet).
 - **MixerScreen.kt** : R23 (le Mix Pro s'ouvre sur ses tranches ; il ne descend à l'export que pour un fichier fait
   pendant qu'il est ouvert).
@@ -19,9 +20,10 @@ dans sa copie du dépôt ; branches fusionnées ici. Aucun texte neuf à traduir
 - **LaunchChoice.kt** : U10 (médaillons ronds de même taille, « Défis » aligné).
 - **TrackBar.kt** : N18 (« ♪ Son » écrit), R19 part pistes (un chevron sur le fondu où la rangée continue).
 - **PadLiveScreen.kt** : R10 (un seul Partager par écran), U18 (« Moins » montre une flèche de pli, pas ⋯), U21 (les
-  pads gardent taille et place quand le bandeau « Set gardé » apparaît : les messages passent sous les pads).
+  pads gardent taille et place quand le bandeau « Set gardé » apparaît, debout sur 360×780 à 130 % (testé) ; couché ou
+  sur un écran plus petit, les pads rétrécissent encore un peu : non corrigé, non testé).
 
-## Laissé de côté (3)
+## Laissé de côté (3 défauts du lot, plus 2 notes)
 - **U1** (« Joue d'ici » annonce le saut) : la file d'attente de la partie est voulue ; le dire demande `PlayStrip.kt`
   (et `AppRoot.kt`), hors du lot (ex. « %s : ensuite », déjà traduit).
 - **U9** (effets ouverts depuis Pad Live titrés « Remix ») : le titre est construit dans `ui/AppRoot.kt` (dialogue des

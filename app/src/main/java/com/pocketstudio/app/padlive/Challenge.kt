@@ -373,6 +373,17 @@ internal fun ChallengePanel(
             line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite }.testTag("padlive_challenge_line"),
         )
+        // Tour 6 lot 7 (« Boum boum »): the pads to tap, by their place and their sound (« A9 · Klaxon »), before and
+        // during the try (only the colour of the rhythm's dots hinted at them).
+        if (c != null && (ui is ChallengeUi.Ready || ui is ChallengeUi.Listening || ui is ChallengeUi.YourTurn)) {
+            val names = c.hits.map { it.pad }.distinct().joinToString(", ") { pad ->
+                padName(pad) + (pads.all.getOrNull(pad)?.name?.takeIf { it.isNotBlank() }?.let { " · $it" } ?: "")
+            }
+            Text(
+                tr("À taper : %s", names), style = MaterialTheme.typography.labelLarge, color = Neon.Amber, maxLines = 2,
+                overflow = TextOverflow.Ellipsis, modifier = Modifier.fillMaxWidth().testTag("padlive_challenge_pads"),
+            )
+        }
         // Audit ultra round 1, n° 9: every challenge with its best stars, one touch to play it (it went back
         // to challenge 1 with no list, and a try worse than the best seemed to wipe it).
         // Round 3, zone 1, n° 5: shown in every state, so that nothing moves under the finger as the try is scored.

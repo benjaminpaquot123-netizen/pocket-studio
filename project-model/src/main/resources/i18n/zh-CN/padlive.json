@@ -109,5 +109,6 @@
   "Pad %1$d sur %2$d…": "打击垫 %1$d / %2$d…",
   "C'est prêt (fichiers : %d). Une copie est aussi dans Musique › BenStudio.": "完成（文件：%d）。“音乐 › BenStudio”里也有一份副本。",
   "C'est prêt (fichiers : %d). Choisis l'appli pour les envoyer.": "完成（文件：%d）。选择用来发送的应用。",
-  "Partager les pistes": "分享分轨"
+  "Partager les pistes": "分享分轨",
+  "À taper : %s": "要敲的打击垫：%s"
 }

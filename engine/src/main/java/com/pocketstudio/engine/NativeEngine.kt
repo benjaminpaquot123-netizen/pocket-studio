@@ -203,7 +203,7 @@ object NativeEngine {
     /** Size of the array [loudnessMeters] fills. */
     const val LOUDNESS = 7
     /** Size of [healthMeters]' output. */
-    const val HEALTH = 4
+    const val HEALTH = 6
     /** No value yet (silence, or under 400 ms of sound). */
     const val LOUDNESS_NONE = -100f
 
@@ -530,7 +530,10 @@ object NativeEngine {
     /**
      * Writes into [out] (size [HEALTH]) what the bug report's health journal samples, taking nothing
      * from the other meters: momentary and short-term loudness (LUFS, [LOUDNESS_NONE] none yet), the
-     * limiter's gain now (linear, 1 = untouched) and the audio thread's load ([cpuLoad]).
+     * limiter's gain now (linear, 1 = untouched), the audio thread's load ([cpuLoad]), then, since the
+     * last call (the health poll is their one reader), its slowest callback over its sound's duration
+     * (not smoothed: a stall inside the callback) and its longest wait between two callbacks' starts
+     * over the first one's duration (1 on time: a callback started late).
      */
     external fun healthMeters(out: FloatArray)
 

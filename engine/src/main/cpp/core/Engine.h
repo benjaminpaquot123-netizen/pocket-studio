@@ -9,6 +9,7 @@
 
 #include "AcidTrack.h"
 #include "AudioTracks.h"
+#include "CallbackLoad.h"
 #include "ClipLauncher.h"
 #include "DrumKit.h"
 #include "InstrumentTrack.h"
@@ -448,7 +449,12 @@ public:
     uint64_t callbackCount() const { return callbacks_.load(std::memory_order_relaxed); }
     // How busy the audio thread is: the time process() takes over the time its frames last,
     // smoothed over about half a second (1 = no time to spare: the sound starts to crackle).
-    float cpuLoad() const { return cpuLoad_.load(std::memory_order_relaxed); }
+    float cpuLoad() const { return load_.smoothed(); }
+    // Since the last call (any thread, one reader): the slowest process() over its frames' duration,
+    // not smoothed (a stall inside the callback), and the longest wait between two callbacks'
+    // starts over the first one's frames (a callback started late). See CallbackLoad.
+    float takeWorstBlock() { return load_.takeWorstBlock(); }
+    float takeWorstGap() { return load_.takeWorstGap(); }
     // The audio track whose microphone is sent back (SetMonitor), -1 none: cut again by prepare()
     // when the output reopens. Any thread.
     int monitorTrack() const { return monitorHeard_.load(std::memory_order_relaxed); }
@@ -907,8 +913,7 @@ private:
     std::atomic<bool> playing_{false};
     std::atomic<bool> nonFinite_{false};
     std::atomic<uint64_t> callbacks_{0};
-    float load_ = 0.0f;  // audio thread: the smoothed load, published in cpuLoad_
-    std::atomic<float> cpuLoad_{0.0f};
+    CallbackLoad load_;  // written by the audio thread at the end of each callback
     std::atomic<uint64_t> frames_{0};
     std::atomic<float> peak_{0.0f};
 };

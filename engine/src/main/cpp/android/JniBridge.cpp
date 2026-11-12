@@ -1012,12 +1012,15 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_loudnessMeters(
 
 // Fills `out` (NativeEngine.HEALTH floats) for the bug report's health journal, without taking
 // anything another meter reads: the master's momentary and short-term loudness (LUFS), the
-// limiter's gain now (linear) and the audio thread's load. Atomics only, from the UI thread.
+// limiter's gain now (linear), the audio thread's load, then (taken: the health poll is their one
+// reader) its worst block and its longest wait between two callbacks since the last call. Atomics
+// only, from the UI thread.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_healthMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& e = host().engine();
     auto& m = e.mixer();
-    jfloat values[4] = {m.loudness().momentary(), m.loudness().shortTerm(), m.limiterGain(), e.cpuLoad()};
-    const int n = std::min(4, static_cast<int>(env->GetArrayLength(out)));
+    const int n = std::min(6, static_cast<int>(env->GetArrayLength(out)));
+    jfloat values[6] = {m.loudness().momentary(), m.loudness().shortTerm(), m.limiterGain(), e.cpuLoad(),
+                        n > 4 ? e.takeWorstBlock() : 0.0f, n > 5 ? e.takeWorstGap() : 0.0f};
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 

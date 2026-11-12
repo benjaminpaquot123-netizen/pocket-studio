@@ -1337,10 +1337,14 @@ private fun TutoNotesLeft(
             }
         }
     }
-    // The bar at the middle of the screen (the one the eye is on).
-    val bar by remember(stepPx, barSteps, bars) {
+    // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
+    // is in sight (« Je le fais » put the last note of bar 2 near the left edge, the line said « mesure 3/8 »).
+    val bar by remember(stepPx, barSteps, bars, left) {
         androidx.compose.runtime.derivedStateOf {
-            ((hScroll.value + hScroll.viewportSize / 2f) / (stepPx * barSteps)).toInt().coerceIn(0, bars - 1) + 1
+            fun x(n: Note) = n.start / TICK.toFloat() * stepPx
+            val next = left.firstOrNull { x(it) >= hScroll.value && x(it) < hScroll.value + hScroll.viewportSize }
+            if (next != null && barSteps > 0) (next.start / TICK / barSteps).coerceIn(0, bars - 1) + 1
+            else ((hScroll.value + hScroll.viewportSize / 2f) / (stepPx * barSteps)).toInt().coerceIn(0, bars - 1) + 1
         }
     }
     val where = com.pocketstudio.app.tuto.tutoRollWhere(trackName, bar, bars)

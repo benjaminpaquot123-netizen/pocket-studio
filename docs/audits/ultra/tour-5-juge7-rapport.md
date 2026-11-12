@@ -21,7 +21,7 @@ bc0e6f27 « vert: the bench's script tests ignore PS_REJEUX_DIR » : le vert ne 
 
 ## Ce qui a changé dans le juge (`scripts/bench/verifie-chantier.py`)
 - `test_in` lit aussi les tests du banc (`py_test_in`) : une méthode `test…` écrite dans `class <Classe>(…)` d'un `scripts/bench/test_*.py`, sans `@unittest.skip` ni `expectedFailure` ; une aide, un test d'une autre classe ou hors de `scripts/bench/` ne compte pas. `git grep` sans résultat ne fait plus abandonner la recherche.
-- `mutated_red` : un fichier Kotlin des tests sans aucun `@Test` (le code du banc) compte comme du code ; un fichier qui contient un test, Kotlin ou Python, n'est jamais muté.
+- `mutated_red` : un fichier Kotlin du dossier du banc (`…/app/human/`) sans aucun test (ni `@Test` ni `@org.junit.Test`) compte comme du code ; un fichier qui contient un test, Kotlin ou Python, ou une aide des tests de l'appli hors de ce dossier, n'est jamais muté (relecture G1, M1 : rouge et vert de `mutated_bench_helper`).
 - `red_seen` refuse aussi un vert qui touche `scripts/bench/test_*.py`.
 - `REPLAYS_UNTIL` : 1585bb46 (base de ce lot).
 - Tests (`scripts/bench/test_ultra_bench.py`) : `replay_python`, `mutated_bench_helper`, `replay_window` (rouge d36c60ff, vert 00283ac0) ; `red_seen_bench_test` (rouge 81d5fbc4, vert f8b513fd).

@@ -37,12 +37,14 @@ class OreilleTest {
         materiel: Materiel = Materiel(casqueFilaire = true, bluetooth = true),
         answer: (Question) -> Reponse = { Reponse(Verdict.OUI) },
         kickMoves: Boolean = false,
+        bluetoothAfterReady: Boolean = false,
     ) = object : Appli {
         override fun ouvrirStudio() = Unit
         override fun export() = Appli.ExportVu(false, emptyList(), null)
         override fun capture(file: File): Boolean { file.parentFile?.mkdirs(); file.writeText("jpg"); return true }
         override fun demander(question: String, maxMs: Long): Boolean? = null
-        override fun materiel() = materiel
+        // « Prêt » (the plug-in question of Q6) was asked: the phone has what Benjamin connected, if he did.
+        override fun materiel() = materiel.copy(bluetooth = materiel.bluetooth || (bluetoothAfterReady && asked.any { it.id == "oreille_6_bluetooth" && it.texte.startsWith("Connecte") }))
         override fun poser(question: Question, maxMs: Long): Reponse { asked += question.copy(maxMs = maxMs); return answer(question) }
         override fun glisserDuBordGauche(tag: String) { swipes += tag }
         override fun kickAuCentre(): Boolean? = !(kickMoves && swipes.size >= 3)
@@ -65,8 +67,8 @@ class OreilleTest {
             listOf("oreille_ouverture", "oreille_1_jump_up", "oreille_2_house", "oreille_3_trap", "oreille_4_techno", "oreille_5_casque", "oreille_6_bluetooth", "oreille_7_doigts", "oreille_8_retour"),
             steps.map { it.name },
         )
-        // Seven in the banner; the eighth is read by the robot itself.
-        assertEquals(steps.drop(1).take(7).map { it.name }, asked.map { it.id })
+        // All eight in the banner (the eighth asks for the back gestures, the robot reads the pan around them).
+        assertEquals(steps.drop(1).map { it.name }, asked.map { it.id })
         assertTrue(asked.all { it.maxMs in 1..300_000 })
         assertEquals(listOf("jump_up", "house", "trap", "techno"), log.filter { it.startsWith("morceau:") }.map { it.removePrefix("morceau:") })
         assertTrue(steps.all { carnet.end(it.name).kind == Carnet.REUSSI })
@@ -85,11 +87,31 @@ class OreilleTest {
     }
 
     @Test
-    fun withoutBluetoothQuestionSixIsSkippedNotAsked() {
+    fun withoutAConnectedBluetoothDeviceTheBannerAsksToConnectOneThenSkipsIfStillNone() {
         val (carnet, _) = run(appli(Materiel(casqueFilaire = true, bluetooth = false)))
-        assertFalse(asked.any { it.id == "oreille_6_bluetooth" })
-        assertEquals("passée : pas de Bluetooth", carnet.end("oreille_6_bluetooth").text)
+        val q6 = asked.filter { it.id == "oreille_6_bluetooth" }
+        assertEquals(listOf("Connecte ton casque ou ton enceinte Bluetooth, puis appuie sur Prêt"), q6.map { it.texte })
+        assertEquals("passée : pas de Bluetooth connecté", carnet.end("oreille_6_bluetooth").text)
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_6_bluetooth").kind)
+        assertEquals(Verdict.PASSEE, QuestionsOreille.reponses(carnet.lines()).first { it.id == "oreille_6_bluetooth" }.verdict)
         assertTrue(asked.any { it.id == "oreille_5_casque" })
+    }
+
+    @Test
+    fun onceBluetoothIsConnectedAfterReadyQuestionSixIsAsked() {
+        val (carnet, _) = run(appli(Materiel(casqueFilaire = true, bluetooth = false), bluetoothAfterReady = true))
+        val q6 = asked.filter { it.id == "oreille_6_bluetooth" }
+        assertEquals(2, q6.size)
+        assertTrue(q6[0].texte.startsWith("Connecte ton casque"))
+        assertTrue(q6[1].texte, q6[1].texte.startsWith("Bluetooth :"))
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_6_bluetooth").kind)
+    }
+
+    @Test
+    fun skippingTheBluetoothPlugInQuestionSkipsQuestionSix() {
+        val (carnet, _) = run(appli(Materiel(casqueFilaire = true, bluetooth = false), bluetoothAfterReady = true, answer = { q -> if (q.texte.startsWith("Connecte")) Reponse(Verdict.PASSEE) else Reponse(Verdict.OUI) }))
+        assertEquals(1, asked.count { it.id == "oreille_6_bluetooth" })
+        assertEquals("passée : pas de Bluetooth connecté", carnet.end("oreille_6_bluetooth").text)
     }
 
     @Test
@@ -128,11 +150,12 @@ class OreilleTest {
     }
 
     @Test
-    fun threeBackSwipesAreReadByTheRobotWithoutAnAnswer() {
+    fun questionEightAsksBenjaminForTheBackGesturesInsteadOfSwipingForHim() {
         val (carnet, _) = run(appli())
-        assertEquals(listOf("pad_0", "pad_0", "pad_0"), swipes)
-        assertFalse(asked.any { it.id == "oreille_8_retour" })
-        assertTrue(carnet.end("oreille_8_retour").text.contains("kick resté au centre"))
+        assertTrue("no synthetic swipe", swipes.isEmpty())
+        val q8 = asked.single { it.id == "oreille_8_retour" }
+        assertEquals("Fais 3 gestes retour depuis le bord gauche de l'écran, puis appuie sur Fait", q8.texte)
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_8_retour").kind)
     }
 
     @Test

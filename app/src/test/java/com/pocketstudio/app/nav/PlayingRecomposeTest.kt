@@ -11,6 +11,9 @@ import androidx.compose.runtime.tooling.CompositionRegistrationObserver
 import androidx.compose.runtime.tooling.ObservableComposition
 import androidx.compose.runtime.tooling.observe
 import androidx.compose.ui.platform.findViewTreeCompositionContext
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -165,6 +168,47 @@ class PlayingRecomposeTest {
         tap("tab_Mix")
         compose.onNodeWithTag("mixer").assertExists()
         check("Mix", playing(), max = MIX_MAX)
+        // Tour 5 « mixwake »: what moves with every reading draws in a layer of its own. Without one, a meter (its
+        // peak falling back at each frame) has the whole scrolled Mix recorded again to redraw a few pixels.
+        assertOwnLayers("master_meter", "loudness_chip", "limiter_line")
+        assertOwnLayers(prefix = "volume_")
+    }
+
+    @Test
+    fun simpleMixComposesLittleWhilePlaying() {
+        h.start(simple = true)
+        tap("tab_simple_Mix")
+        compose.onNodeWithTag("mix_out").assertExists()
+        check("Mix (simple)", playing(), max = SIMPLE_MIX_MAX)
+        assertOwnLayers("mix_out_fader")
+        assertOwnLayers(prefix = "mix_fader_")
+    }
+
+    /**
+     * The node tagged so draws in a layer of its own (a RenderNode on the phone): a change read when it draws records
+     * that layer again, not the scrolled screen around it. Read through the LayoutNode the semantics node sits on.
+     */
+    private fun hasOwnLayer(node: androidx.compose.ui.semantics.SemanticsNode): Boolean {
+        val layout = node.layoutInfo
+        val inner = layout.javaClass.methods.first { it.name.startsWith("getInnerLayerCoordinator") }
+        return inner.invoke(layout) != null
+    }
+
+    private fun assertOwnLayers(vararg tags: String) {
+        for (tag in tags) {
+            val node = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
+            assertTrue("« $tag » draws in the layer of what holds it", hasOwnLayer(node))
+        }
+    }
+
+    private fun assertOwnLayers(prefix: String) {
+        val nodes = compose.onAllNodes(
+            SemanticsMatcher("tag $prefix…") { it.config.getOrNull(SemanticsProperties.TestTag)?.startsWith(prefix) == true },
+            useUnmergedTree = true,
+        ).fetchSemanticsNodes()
+        assertTrue("no « $prefix… » shown", nodes.isNotEmpty())
+        val shared = nodes.filterNot(::hasOwnLayer).map { it.config.getOrNull(SemanticsProperties.TestTag) }
+        assertTrue("draw in the layer of what holds them: $shared", shared.isEmpty())
     }
 
     @Test
@@ -187,9 +231,18 @@ class PlayingRecomposeTest {
     }
 
     companion object {
-        /** Before (2026-11-12): 2296 on Sons, 1934 on Mix (the whole drum screen at each step, the loudness panel at each reading). */
+        /**
+         * Before (2026-11-12): 2296 on Sons, 1934 on Mix (the whole drum screen at each step, the loudness panel at each
+         * reading). Mix then 374 (tour 5 « mixwake »): the loudness chip and the limiter's line, a new text at each
+         * reading; a number shown 20 times a second cannot be read, 4 times is enough.
+         */
         const val SONS_MAX = 400
-        const val MIX_MAX = 450
+        const val MIX_MAX = 120
+        /**
+         * The Mode simple's Mix (tour 5 « mixwake »): 2995 before, every strip composed again whenever « Ça sature »
+         * came or went (the test's limiter readings make it come and go, as a loud drop does).
+         */
+        const val SIMPLE_MIX_MAX = 160
         const val PROJECTS_MAX = 0
     }
 }

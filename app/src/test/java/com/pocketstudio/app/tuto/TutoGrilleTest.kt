@@ -119,4 +119,34 @@ class TutoGrilleTest {
 
     @Test
     fun simpleBassNotesAreAboveThePanelOrPointedAt() = dottedNotesInSightOrPointedAt("bass_do", TutoLevel.Facile, simple = true)
+
+    /** The dotted notes left of the open step, in the order the line brings them. */
+    private fun leftNotes(): List<Note> {
+        val (track, dotted) = TutoHints.notes!!
+        val written = h.vm.project.value.track(track).notes.notes
+        return dotted.filter { d -> written.none { it.pitch == d.pitch && it.start == d.start } }.sortedWith(compareBy({ it.start }, { -it.pitch }))
+    }
+
+    /** N5: the lead's last note (bar 2): « Je le fais » shows it whole above the panel and the line says its bar. */
+    private fun theLastNoteAndItsBar(level: TutoLevel, simple: Boolean) {
+        openNotesStep("lead_do", level, simple)
+        val all = leftNotes()
+        all.dropLast(1).forEach { h.vm.addNote(it) }
+        settle()
+        val last = leftNotes().single()
+        compose.onNodeWithTag("tuto_notes_left").performClick()
+        settle()
+        val s = seen()
+        assertTrue("the last note ${last.pitch} at ${s.rows[last]}, roll ${s.rollTop}..${s.rollBottom}, panel at ${s.panelTop}", last in s.inTime && s.whole(last))
+        val bar = last.start / NoteClip.TICKS_PER_STEP / 16 + 1
+        val where = text("tuto_roll_where")
+        assertTrue("the line says « $where », the note is in bar $bar", where.contains("mesure $bar/"))
+    }
+
+    @Test
+    fun proTheLastLeadNoteIsShownWithItsBar() = theLastNoteAndItsBar(TutoLevel.Pro, simple = false)
+
+    @Test
+    fun simpleTheLastLeadNoteIsShownWithItsBar() = theLastNoteAndItsBar(TutoLevel.Facile, simple = true)
+
 }

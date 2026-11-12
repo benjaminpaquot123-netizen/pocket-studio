@@ -42,7 +42,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul.",
+          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",

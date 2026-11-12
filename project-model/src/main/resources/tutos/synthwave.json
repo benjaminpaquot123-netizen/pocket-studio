@@ -45,7 +45,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre et rêveuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » (la gamme triste) puis « La » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur La mineur, celle de Nightcall (Kavinsky).",
+          "textPro": "À toi : règle la tonalité sur La mineur, celle de Nightcall (Kavinsky). « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

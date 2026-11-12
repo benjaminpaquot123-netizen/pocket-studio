@@ -45,7 +45,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Ré ».",
-          "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII).",
+          "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII). « Je le fais » ouvre la fiche Tonalité.",
           "why": "Trois accords qui montent vers le retour au Ré : la grille de toutes les raves.",
           "check": "key",
           "spot": "tuto.key",

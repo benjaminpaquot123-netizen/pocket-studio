@@ -39,7 +39,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre et agressive. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Fa♯ ».",
-          "textPro": "À toi : règle la tonalité sur Fa♯ mineur. Ton kick est accordé sur Fa♯ : sa queue grave joue la basse.",
+          "textPro": "À toi : règle la tonalité sur Fa♯ mineur. Ton kick est accordé sur Fa♯ : sa queue grave joue la basse. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Le kick est accordé sur la note du morceau : il fait la batterie et la basse à la fois.",
           "check": "key",
           "spot": "tuto.key",

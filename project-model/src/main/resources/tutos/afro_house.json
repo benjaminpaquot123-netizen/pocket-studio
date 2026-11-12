@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi ».",
-          "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee.",
+          "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",

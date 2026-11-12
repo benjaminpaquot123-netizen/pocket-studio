@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure harmonique » (une gamme sombre, un peu orientale) puis « Sol » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill.",
+          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau : mélancolique et lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur, grille i–VI–III–VII (La m, Fa, Do, Sol), un accord par mesure : la grille des hymnes trance.",
+          "textPro": "À toi : règle la tonalité sur La mineur, grille i–VI–III–VII (La m, Fa, Do, Sol), un accord par mesure : la grille des hymnes trance. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Quatre accords, un par mesure, font tout le voyage : de la mélancolie à l'euphorie.",
           "check": "key",
           "spot": "tuto.key",

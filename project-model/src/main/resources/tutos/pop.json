@@ -53,7 +53,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (la gamme joyeuse) puis « Mi » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Mi majeur, celle d'Anti-Hero (Taylor Swift) : une tonalité confortable pour chanter.",
+          "textPro": "À toi : règle la tonalité sur Mi majeur, celle d'Anti-Hero (Taylor Swift) : une tonalité confortable pour chanter. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

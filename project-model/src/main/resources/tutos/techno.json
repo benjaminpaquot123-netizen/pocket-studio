@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre comme la techno. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots.",
-          "textPro": "À toi : règle la tonalité sur Fa phrygien : un seul accord mineur qui monte parfois d'un demi-ton (Sol♭), la couleur de la techno de Berlin. Ton kick est accordé sur Fa.",
+          "textPro": "À toi : règle la tonalité sur Fa phrygien : un seul accord mineur qui monte parfois d'un demi-ton (Sol♭), la couleur de la techno de Berlin. Ton kick est accordé sur Fa. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

@@ -33,7 +33,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur. Pas d'accords ici : la 303 joue la fondamentale, la tierce, la quinte et la 7e, c'est elle qui fait la couleur.",
+          "textPro": "À toi : règle la tonalité sur La mineur. Pas d'accords ici : la 303 joue la fondamentale, la tierce, la quinte et la 7e, c'est elle qui fait la couleur. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:acid",

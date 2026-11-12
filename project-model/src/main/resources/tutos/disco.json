@@ -38,7 +38,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé.",
+          "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",

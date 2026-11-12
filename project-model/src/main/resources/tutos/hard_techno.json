@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
-          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument.",
+          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Le kick est accordé sur la note du morceau : grave et notes ne se battent pas.",
           "check": "key",
           "spot": "tuto.key",

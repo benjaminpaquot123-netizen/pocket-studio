@@ -38,7 +38,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz.",
+          "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",

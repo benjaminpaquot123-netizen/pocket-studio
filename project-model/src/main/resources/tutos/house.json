@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house.",
+          "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

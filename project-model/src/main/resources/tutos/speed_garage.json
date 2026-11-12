@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol mineur (i–i–VI–v : Sol m, Sol m, Mi♭, Ré m).",
+          "textPro": "À toi : règle la tonalité sur Sol mineur (i–i–VI–v : Sol m, Sol m, Mi♭, Ré m). « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",

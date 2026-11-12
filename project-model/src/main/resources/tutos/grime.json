@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, froide. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Mi ».",
-          "textPro": "À toi : règle la tonalité sur Mi mineur, gamme « Mineure », tonique « Mi » : la basse carrée grogne sur Mi2, son sub tient Mi1.",
+          "textPro": "À toi : règle la tonalité sur Mi mineur, gamme « Mineure », tonique « Mi » : la basse carrée grogne sur Mi2, son sub tient Mi1. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",

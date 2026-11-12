@@ -36,7 +36,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, la plus noire. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol.",
+          "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Ici, les notes comptent peu : la gamme sert surtout à accorder le grave.",
           "check": "key",
           "spot": "tuto.key",

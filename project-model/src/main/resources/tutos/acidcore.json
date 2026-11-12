@@ -33,7 +33,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
-          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien : la 303 tourne sur Fa♯ et son octave, la seconde mineure Sol la fait grincer. Le kick est accordé sur Fa♯.",
+          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien : la 303 tourne sur Fa♯ et son octave, la seconde mineure Sol la fait grincer. Le kick est accordé sur Fa♯. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Le kick et la 303 partagent la même note : ils sonnent comme un seul monstre.",
           "check": "key",
           "spot": "tuto.key",

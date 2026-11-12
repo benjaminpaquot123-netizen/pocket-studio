@@ -33,7 +33,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭.",
+          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.",
           "why": "La 303 reste presque toujours sur la même note : la gamme lui donne ses quelques couleurs.",
           "check": "key",
           "spot": "tuto.key",

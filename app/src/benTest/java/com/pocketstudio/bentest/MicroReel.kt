@@ -106,6 +106,9 @@ class HautParleurReel(private val context: Context) : HautParleur {
         s.close()
     }
 
+    /** The engine's own count of sixteenths since ▶ (-1 stopped): where the song is when the microphone starts. */
+    override fun pasJoues(): Int = if (NativeEngine.isAvailable) NativeEngine.absoluteStep() else -1
+
     override fun reglerVolume() {
         val audio = context.getSystemService(AudioManager::class.java) ?: return
         if (!volumeFile.isFile) runCatching { volumeFile.parentFile?.mkdirs(); volumeFile.writeText(audio.getStreamVolume(AudioManager.STREAM_MUSIC).toString()) }

@@ -867,8 +867,9 @@ object TutoChecks {
             // The 303's line: every step of it, its note, its accent and its slide.
             c == "notes:acid" -> target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
             // Every dotted note written (not 3 of 12: the testers' bass and chords ticked with the screen's first notes).
+            // Tour 6, T8: a step split in two (« la mesure 1 », then « Copier » and the rest): its [TutoStep.length] the cells it asks for.
             c.startsWith("notes:") -> target.roleNotes(arg)?.let { wanted ->
-                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), wanted.notes) }
+                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), wanted.notes.filter { step.length <= 0 || it.start < step.length * NoteClip.TICKS_PER_STEP }) }
             } ?: false
             c == "track:sub" -> trackFor(p, "bass")?.let { bass ->
                 val wanted = subOf(notesOf(p, bass))

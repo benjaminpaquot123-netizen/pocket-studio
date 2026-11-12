@@ -45,9 +45,27 @@ object SoundTrial {
                 pad = sounds.pad ?: style.melody.pad,
                 lead = sounds.lead ?: style.melody.lead,
             ),
-            effects = style.effects + listOf(StyleFx("pad", insert = "OTT", params = VOICE_OTT), StyleFx("lead", insert = "OTT", params = VOICE_OTT)),
+            effects = style.effects + listOf(StyleFx("pad", insert = "OTT", params = VOICE_OTT), StyleFx("lead", insert = "OTT", params = VOICE_OTT)) +
+                SECOND + SECOND_OWN[style.id].orEmpty(),
         )
     }
+
+    /**
+     * Trial n° 2 (Benjamin on n° 1: « tu rajoutes juste des cymbales » ; measured: only the drums' highs moved). What a
+     * listener notices, with the engine's own effects: the bass's harmonics (a parallel saturation, its loudness held,
+     * the dry sub under it: the kick already ducks the music through the mix's bus), the leads and pads wider and in a
+     * modern space (the widener's spread, the plate reverb, the ping-pong delay).
+     */
+    private val SECOND = listOf(
+        StyleFx("bass", insert = "SATURATION", params = listOf(0.55f, 1f, 0.6f, 0.7f, 1f)),
+        StyleFx("lead", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.6f), reverb = 0.25f, delay = 0.3f),
+        StyleFx("pad", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.8f), reverb = 0.4f),
+    )
+
+    /** Tech house's voice (the darkest of all: -57 dB over 10 kHz) lifted by 9 dB around 2.5 kHz, where a phone plays. */
+    private val SECOND_OWN = mapOf(
+        "tech_house" to listOf(StyleFx("lead", insert = "PARAM_EQ", params = listOf(0.70f, 0.75f, 0.34f, 0f))),
+    )
 
     /** The lines the trial pack plays, per style (techno keeps its tuned studio rumble). */
     private val DRUMS = mapOf(

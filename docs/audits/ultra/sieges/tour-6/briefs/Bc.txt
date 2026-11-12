@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotB/c (seat c, lot B; lang ar, device phone, font 100, mode -, options fresh=reel, mission libre, budget 120 gestures).
+Profile (id t6-Bc): Utilisatrice arabophone (écriture de droite à gauche) qui connaît d'autres applis de musique, téléphone, police 100 %, premier lancement réel. Choisis toi-même le Mode Pro quand l'appli le demande. Visite Mix, piano roll et Réglages. Promesses : pour chacune, oui ou non avec le numéro d'écran. À la fin, sur ton dernier écran, réponds aux questions 1, 6 et 9 de l'œil neuf (une image). Act as this person (habits, patience, vocabulary).
+Mission libre; its 3 goals (ids, the bench checks them): son (un son a joué), trace (un changement gardé sur le téléphone : partie, piste, prise, étoile, son retouché, remix) ou partage (un fichier partagé).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Bc-1 | 1. Le premier lancement mène jusqu'au Mode Pro sans impasse
+  - id=t6-Bc-2 | 2. Dans le Mix, je règle le niveau d'une piste et un effet, et le changement reste affiché
+  - id=t6-Bc-3 | 3. Dans le piano roll, je pose une note puis je la déplace
+  - id=t6-Bc-4 | 4. Dans les Réglages, je change la langue puis je reviens à la mienne
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

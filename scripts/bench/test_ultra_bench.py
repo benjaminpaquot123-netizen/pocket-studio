@@ -278,6 +278,10 @@ def main():
         measured_numbers(d)
     with tempfile.TemporaryDirectory() as d:
         empty_cases(d)
+    with tempfile.TemporaryDirectory() as d:
+        verdict_without_state(d)
+    with tempfile.TemporaryDirectory() as d:
+        promises_of_one_seat(d)
     print("ultra bench scripts: OK")
 
 
@@ -3540,6 +3544,82 @@ def missions_of_round_1(d):
     write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "Live", "stars": []}], "shared": []}))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "defi")
     check("mission=partielle" in out and "défi ouvert" in out, "a challenge opened:\n" + out)
+
+
+def verdict_without_state(d):
+    """Round 6 (lecture-recurrents § 7): the seats' etat/ is not committed; seat-metrics re-run on them turned B a, E b and
+    F a « reussie » into « non » (the oracles read an empty state). Without etat/, a re-run keeps the verdict of the seat's
+    own mesures.json and says why; with no verdict to keep, it says « inconnu », never a « non » that looks measured."""
+    for mission, kept in (("simple", "reussie"), ("exports", "reussie"), ("remix-voix", "reussie"), ("tuto-pro", "partielle"),
+                          ("libre", "reussie")):
+        seat = os.path.join(d, mission)
+        write(os.path.join(seat, "start.txt"), f"mission={mission}\n")
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("MODE pro", "MODE simple"))
+        write(os.path.join(seat, "mesures.json"), json.dumps({"siege": mission, "mission": mission, "resultat": kept,
+                                                               "pourquoi": "lu dans l'état du siège", "mesures": {}}))
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and "état du siège absent" in out and "lu dans l'état du siège" in out,
+              f"{mission}: no etat/, the committed verdict « {kept} » is kept and said so:\n" + out)
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and out.count("état du siège absent") == 1, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
+    # Another mission asked by hand: the committed verdict is not that mission's, nothing to keep.
+    out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "simple"), "--mission", "voix")
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state and no verdict of that mission: unknown:\n" + out)
+    # No mesures.json and no etat/: unknown, never « non ».
+    seat = os.path.join(d, "neuf")
+    write(os.path.join(seat, "start.txt"), "mission=exports\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B)
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state, nothing committed: unknown:\n" + out)
+    # libre proven by the journal alone (a sound heard, a file shared, 3 screens, ended by the tester): it stands.
+    write(os.path.join(seat, "start.txt"), "mission=libre\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#2 PARTAGE boucle.m4a\n"
+                                                               "#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 > touche 3 3\n"
+                                                               "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 FIN : fin"))
+    write(os.path.join(seat, "sound-2.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=reussie" in out and "partagé : boucle.m4a" in out and "prouvé sans l'état" in out, "a success the journal proves stands:\n" + out)
+    # padlive reads the journal only: computed as before, state or not.
+    os.remove(os.path.join(seat, "sound-2.txt"))
+    write(os.path.join(seat, "start.txt"), "mission=padlive\n")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "aucun son" in out, "padlive needs no state:\n" + out)
+    # With etat/ there, the oracle reads it (a downgrade read in the state is the state's, not silent).
+    seat = os.path.join(d, "simple")
+    write(os.path.join(seat, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "état du siège absent" not in out, "the state there is read:\n" + out)
+
+
+def promises_of_one_seat(d):
+    """Round 6 (lecture-recurrents § 7): each seat had its own promise ids (t6-Aa-1…), each checked by one seat, and the
+    dashboard said « promesses tenues 0/0 ». The template v2 lines (« promesse: id=… | tenue: oui|non|pas vue ») are
+    counted: kept / decided, and the ones not seen; an older line without id still counts; a seat's later report (its
+    « -suite ») that decides a promise first « pas vue » replaces the « pas vue »."""
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "mission: libre | buts: -\n"
+          "promesse: id=t9-Aa-1 | texte: Le pad joue | ecran: 3 | tenue: oui | pourquoi: il joue\n"
+          "promesse: id=t9-Aa-2 | texte: La partie s'affiche | ecran: 4 | tenue: non | pourquoi: écran vide\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 9 | tenue: pas vue | pourquoi: budget épuisé\n")
+    write(os.path.join(tour, "lotA", "a-suite", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 200 | tenue: oui | pourquoi: Bravo atteint\n")
+    write(os.path.join(tour, "lotA", "b", "rapport.md"),
+          "siege: b | profil: p | lang: de | device: phone | font: 100 | mode: pro\n"
+          "promesse: id=t9-Ab-1 | texte: Export | ecran: 5 | tenue: oui | pourquoi: fichier là\n"
+          "promesse: id=t9-Ab-2 | texte: Swing | ecran: 6 | tenue: pas vue | pourquoi: pas atteint\n"
+          "promesse: Le son part au premier toucher | ecran: 2 | tenue: oui\n")
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), tour, "--base", base, "--verdicts", verdicts)
+    row = next((l for l in board.splitlines() if l.startswith("| D |")), "")
+    check("4 oui, 1 non, 1 pas vue" in row, "D counts every promise line, one seat each (oui / non / pas vue):\n" + board)
+    curve = next((l for l in board.splitlines() if l.startswith("| tour-9 |")), "")
+    check("| 4/5 |" in curve and "0/0" not in curve, "the curve's promises kept: 4 of the 5 decided, never « 0/0 »:\n" + board)
 
 
 if __name__ == "__main__":

@@ -3482,11 +3482,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Les %d parties sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
             return
         }
-        val place = (at ?: p.song.size).coerceIn(0, p.song.size)
+        // Lot 6, U28 (seat F a #8): no song yet, the part shown loops alone: it becomes the song's first part, the new
+        // one comes after it (B alone, then « + A » after it, was the song the other way round). An empty part stays out.
+        val first = p.scene.takeIf { p.song.isEmpty() && p.allScenes.getOrNull(it)?.isEmpty == false }
+        val place = if (first != null) 1 else (at ?: p.song.size).coerceIn(0, p.song.size)
         val following = songPlaying()
         // The new scene made (a copy, or an empty one) and placed in the song while it is the one shown (an empty scene
         // at the end that nothing uses yet is dropped by any other step), then the scene shown before.
-        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q).switchScene(target).insertSongPart(place, target).switchScene(q.scene)
+        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q)
+            .let { r -> if (first != null) r.insertSongPart(0, first) else r }
+            .switchScene(target).insertSongPart(place, target).switchScene(q.scene)
         if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
             if (!_transport.value.playing || !NativeEngine.isAvailable) _sessionUi.value = SessionUi()
             session.edit { made(it).switchScene(target) }

@@ -57,8 +57,11 @@ from functools import lru_cache
 TEST_ROOT = os.path.join("app", "src", "test", "java")
 PROOF = re.compile(r"([A-Z][A-Za-z0-9_]*)[#.]([a-z][A-Za-z0-9_]*)")
 ENGINE_PROOF = re.compile(r"(engine/host-tests/[A-Za-z0-9_./-]+)#([A-Za-z_][A-Za-z0-9_]*)")
+# A function's name: an identifier, or (lot « juge6 ») the whole name of a Kotlin test in backticks,
+# « fun `vert - a swallowed touch is touched again`() » being that one test, never its first word.
+NAME = r"`?((?<=`)[^`\n]+(?=`)|[A-Za-z0-9_]+)"
 # Positional or named id (« @KnownDefect("X", …) », « @KnownDefect(id = "X", …) »: review of « banc-fin », case E).
-KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*(?:id\s*=\s*)?"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+`?([A-Za-z0-9_]+)')
+KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*(?:id\s*=\s*)?"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+' + NAME)
 
 
 def read_tsv(path):
@@ -126,7 +129,7 @@ def seat_class(sources, cls, depth=0):
 
 def method_exists(sources, cls, method):
     text = sources.get(cls)
-    return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"\b", text) is not None
+    return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"(?![A-Za-z0-9_])", text) is not None
 
 
 def without_comments(text):
@@ -578,7 +581,7 @@ def check(root, resume_path=None, with_git=True):
 
 
 TEST_TOKEN = re.compile(r"[A-Za-z0-9_./]+(?:#|::)([A-Za-z0-9_]+)")
-ADDED_TEST = re.compile(r"^\+\s*(?:fun|def|static void)\s+`?([A-Za-z0-9_]{12,})", re.M)
+ADDED_TEST = re.compile(r"^\+\s*(?:fun|def|static void)\s+`?((?<=`)[^`\n]{12,}(?=`)|[A-Za-z0-9_]{12,})", re.M)
 CHECKED = re.compile(r"^- \[x\] ((?:[4-7]\.\d+|[RA]\.\d+))\b(.*)$", re.M)
 PAIR = re.compile(r"preuve\s*:\s*rouge\s+([0-9a-f]{7,40})\s*/\s*vert\s+([0-9a-f]{7,40})")
 SCRIPT = re.compile(r"preuve\s*:\s*script\s+`?([A-Za-z0-9_./-]+)")
@@ -659,7 +662,7 @@ DISCIPLINE_START = "8f36fa3"
 CLASS = re.compile(r"^\s*(?:(?:private|internal|public|abstract|open|data|inner|sealed|enum|final|annotation|value)\s+)*"
                    r"(?:class|object)\s+([A-Za-z0-9_]+)", re.M)
 TEST_DIRS = ("app/src/test/java", "app/src/androidTest/java")
-FUN = re.compile(r"\bfun\s+`?([A-Za-z0-9_]+)")
+FUN = re.compile(r"\bfun\s+" + NAME)
 
 
 def _open_braces(text):
@@ -785,7 +788,7 @@ def guard_from_red(root, sha, test):
 def still_runs(text, method):
     """The function keeps @Test and no @Ignore/@Disabled (review of « banc-fin », case F)."""
     m = re.search(r"((?:@[A-Za-z.]+(?:\([^)]*\))?\s*)*)(?:(?:public|internal|suspend|open|override)\s+)*fun\s+`?"
-                  + re.escape(method) + r"\b", text)
+                  + re.escape(method) + r"(?![A-Za-z0-9_])", text)
     return m is not None and re.search(r"@(?:org\.junit\.)?Test\b", m.group(1)) is not None \
         and re.search(r"@(?:org\.junit\.)?(?:Ignore|Disabled)\b", m.group(1)) is None
 
@@ -883,7 +886,11 @@ REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
 # Review of the « verdicts » lot (grave): the replays' XML is the team's own word (the portal's fresh review never
 # replays it, unlike rouges-constates/), so the rule closes only greens of the history written before it: ancestors of
 # this commit (the lot's base). A green made later pairs by its words, or by red evidence the review replays.
-REPLAYS_UNTIL = "92258b19b97a808e7f5823848fcd383593abaa07"
+# Lot « juge6 »: moved to that lot's base (9be3e12d, fx-int after the merges of testapk and oreille): the testapk and
+# oreille lots wrote their reds and greens in other words (no test named in a green), history that is fixed now; their
+# pairs are replayed (paires-rejouees/) or their greens' reds made by a mutation (rouges-mutes/) by the lot « juge6 »,
+# which wrote none of that code. The first end was 92258b19 (lot « verdicts »).
+REPLAYS_UNTIL = "9be3e12da4b09ae1db1114379bd15a342d05dd18"
 
 
 def _case_result(path, cls, method):
@@ -919,10 +926,17 @@ def replayed_red(root, sha, open_reds):
     except OSError:
         return None
     red = re.search(r"^rouge:\s*([0-9a-f]{40})\s*$", facts, re.M)
-    test = re.search(r"^test:\s*([A-Za-z0-9_]+)#([A-Za-z0-9_]+)\s*$", facts, re.M)
+    test = re.search(r"^test:\s*" + TEST_NAME + r"\s*$", facts, re.M)
     if not red or not test:
         return None
     cls, method = test.group(1), test.group(2)
+    # Lot « juge6 »: « test au vert: Classe#nom », the test under the name the green gave it, by a rename alone.
+    renamed = re.search(r"^test au vert:\s*" + TEST_NAME + r"\s*$", facts, re.M)
+    green_method = method
+    if renamed:
+        if renamed.group(1) != cls or not renamed_only(root, full, cls, method, renamed.group(2)):
+            return None
+        green_method = renamed.group(2)
     match = None
     for r in open_reds:
         try:
@@ -934,13 +948,117 @@ def replayed_red(root, sha, open_reds):
         return None
     if f"{cls}#{method}" not in match[3] and method not in match[3]:
         return None
-    if not (test_in(root, red.group(1), cls, method) and test_in(root, full, cls, method)):
+    if not (test_in(root, red.group(1), cls, method) and test_in(root, full, cls, green_method)):
         return None
     if _case_result(os.path.join(folder, "rouge.xml"), cls, method) != "fails":
         return None
-    if _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
+    if _case_result(os.path.join(folder, "vert.xml"), cls, green_method) != "passes":
         return None
     return match
+
+
+# « Classe#méthode » in an evidence file: the method an identifier or a test's whole name in backticks (lot « juge6 »).
+TEST_NAME = r"([A-Za-z0-9_]+)#([^#\s`](?:[^#\n`]*[^#\s`])?)"
+
+
+def renamed_only(root, sha, cls, old, new):
+    """Lot « juge6 »: commit sha renames the test cls#old to cls#new and changes nothing else of its file: a test file
+    of its diff, old put back in place of new, is that file in its parent (the green's « rouge - » to « vert - »)."""
+    if old == new:
+        return False
+    try:
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split("\n")
+    except (subprocess.SubprocessError, OSError):
+        return False
+    for f in files:
+        if not f.startswith(TEST_DIRS):
+            continue
+        before, after = _show(root, sha + "^", f), _show(root, sha, f)
+        if before is None or after is None or f"{cls}#{new}" not in class_methods(after, False):
+            continue
+        back = re.sub(r"(\bfun\s+`?)" + re.escape(new) + r"(?![A-Za-z0-9_])", lambda m: m.group(1) + old, after)
+        if back == before:
+            return True
+    return False
+
+
+MUTATED = os.path.join("docs", "audits", "ultra", "rouges-mutes")
+# A mutation takes the fix back, it never makes the code crash: a throw or an error() fails any test.
+CRASH = re.compile(r"\bthrow\b|\berror\s*\(|\bTODO\s*\(|\bexitProcess\b|\bSystem\.exit\b")
+
+
+def _added_lines(root, sha, path):
+    """The lines (stripped) commit sha adds to path."""
+    try:
+        diff = _git(root, "show", "--format=", "-U0", sha, "--", path)
+    except (subprocess.SubprocessError, OSError):
+        return set()
+    return {l[1:].strip() for l in diff.splitlines() if l.startswith("+") and not l.startswith("+++")}
+
+
+def _patch_applies(root, sha, patch):
+    """The patch applies to commit sha's tree (checked in a scratch index, nothing written)."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        env = dict(os.environ, GIT_INDEX_FILE=os.path.join(tmp, "index"))
+        for args in (["read-tree", sha], ["apply", "--cached", "--check", patch]):
+            if subprocess.run(["git", "-C", root, *args], env=env, capture_output=True, timeout=120).returncode != 0:
+                return False
+    return True
+
+
+def mutated_red(root, sha):
+    """Lot « juge6 » (the testapk lot's greens without a red): a green that brought its test with its fix has the red
+    it lacks when its own fix, partly taken back, makes that test fail (the fiche's « retire la ligne corrigée, le test
+    doit rougir »). Evidence in docs/audits/ultra/rouges-mutes/<the green's full sha>/: rejeu.txt (« test:
+    Classe#méthode », a test the green adds: in it, not in its parent), mutation.patch (applies to the green; touches
+    only code files the green changed, never a test; each line it takes off is a line the green added; it adds no more
+    lines than it takes off, none that throws), rouge.xml (the test run on the green with the patch: it fails) and
+    vert.xml (on the green: it passes). Only greens of the history before [REPLAYS_UNTIL], as the replays: the XML is
+    the team's word, the patch is there for the review to replay."""
+    try:
+        full = _git(root, "rev-parse", sha + "^{commit}").strip()
+        parents = _git(root, "rev-list", "--parents", "-n", "1", full).split()[1:]
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split("\n")
+    except (subprocess.SubprocessError, OSError):
+        return False
+    if len(parents) != 1 or not commit_exists(root, REPLAYS_UNTIL) or not _ancestor(root, full, REPLAYS_UNTIL):
+        return False
+    folder = os.path.join(root, MUTATED, full)
+    try:
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
+        patch_text = open(os.path.join(folder, "mutation.patch"), encoding="utf-8").read()
+    except OSError:
+        return False
+    test = re.search(r"^test:\s*" + TEST_NAME + r"\s*$", facts, re.M)
+    if not test:
+        return False
+    cls, method = test.group(1), test.group(2)
+    if not test_in(root, full, cls, method) or test_in(root, parents[0], cls, method):
+        return False
+    code = {f for f in files if f and not TEST_FILE.search(f) and not f.startswith("docs/")}
+    touched, removed, added, current = set(), 0, 0, None
+    for line in patch_text.splitlines():
+        if line.startswith("+++ "):
+            current = line[4:].strip()
+            current = current[2:] if current.startswith("b/") else current
+            touched.add(current)
+        elif line.startswith("--- ") or line.startswith("diff ") or line.startswith("index "):
+            continue
+        elif line.startswith("-"):
+            removed += 1
+            if current not in code or line[1:].strip() not in _added_lines(root, full, current):
+                return False
+        elif line.startswith("+"):
+            added += 1
+            if CRASH.search(line):
+                return False
+    if not removed or added > removed or not touched or not touched <= code:
+        return False
+    if not _patch_applies(root, full, os.path.join(folder, "mutation.patch")):
+        return False
+    return (_case_result(os.path.join(folder, "rouge.xml"), cls, method) == "fails"
+            and _case_result(os.path.join(folder, "vert.xml"), cls, method) == "passes")
 
 
 def names(message, test):
@@ -985,7 +1103,8 @@ def red_green_pairs(root):
                     closed.append(replayed)
             for r in closed:
                 open_reds.remove(r)
-            if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):
+            if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message) \
+                    and not mutated_red(root, sha):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
     gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
     return gaps

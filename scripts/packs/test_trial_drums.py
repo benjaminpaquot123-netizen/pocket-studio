@@ -15,7 +15,9 @@ Then builds the three packs twice in a temporary folder and checks, with this fi
   cymbales on dirait »): kicks, snares and claps -1 dBFS, percussion -4, hats, open hats, rides -8;
 - kicks: the fundamental over 60-200 ms, techno 43.65 Hz and tech house 49.0 Hz within 1.5 %,
   jump up 52-63 Hz; at least -12 dB of their energy in 250 Hz-1.5 kHz (the harmonics a phone's
-  speaker plays) and at least -22 dB in 1.2-4.5 kHz (the click);
+  speaker plays) and at least -22 dB in 1.2-4.5 kHz (the click); at least -18.5 dB of full scale²
+  x seconds in 60-250 Hz (the body, trial n° 3: the kicks of trials n° 1 and n° 2 have -23.9 to
+  -18.9, n° 3 -16.4 to -13.5; a 0 dBFS sine lasting 1 s has -3);
 - snares and claps: at least -6 dB of their energy in 250 Hz-2 kHz (the body), a tail (start to
   the last sample within 40 dB of the peak) of 0.25 to 0.6 s;
 - hats, open hats and rides: no more energy above 10 kHz than in 4-10 kHz; hats with more than
@@ -55,6 +57,7 @@ PEAKS = {'kick': -1.0, 'snare': -1.0, 'clap': -1.0, 'perc': -4.0, 'hat': -8.0, '
 PEAK_TOLERANCE = 0.3
 KICK_HARMONICS = (250, 1500, -12.0)  # band (Hz) and the least share of a kick's energy in it (dB)
 KICK_CLICK = (1200, 4500, -22.0)
+KICK_BODY = (60, 250, -18.5)  # band (Hz) and the least energy in it, dB of full scale² x seconds
 BODY = (250, 2000, -6.0)  # snares and claps
 TAIL_BELOW_DB, TAIL_S = 40.0, (0.25, 0.6)
 METAL = {'hat', 'open_hat', 'ride'}
@@ -101,6 +104,12 @@ def energy(x, lo, hi=math.inf):
 def share(x, lo, hi=math.inf):
     """dB of the energy between lo and hi against everything from 20 Hz up."""
     return 10 * np.log10(energy(x, lo, hi) / energy(x, 20))
+
+
+def band_energy_db(x, lo, hi):
+    """Energy of the channels' sum between lo and hi (Hz), in dB of full scale² x seconds: a 0 dBFS
+    sine lasting 1 s has -3.01 dB (Parseval on the one-sided spectrum)."""
+    return 10 * np.log10(2 * energy(x, lo, hi) / (len(x) * RATE))
 
 
 def tail_of(x):
@@ -237,6 +246,9 @@ def check_pack(root, pack, kinds_ok, report):
             for lo, hi, least in (KICK_HARMONICS, KICK_CLICK):
                 got = share(x, lo, hi)
                 check(got >= least, f'{where}: {got:.1f} dB of its energy in {lo}-{hi} Hz (at least {least} wanted)')
+            lo, hi, least = KICK_BODY
+            got = band_energy_db(x, lo, hi)
+            check(got >= least, f'{where}: {got:.1f} dB FS²·s in {lo}-{hi} Hz, the body (at least {least} wanted)')
         if kind in ('snare', 'clap'):
             got = share(x, BODY[0], BODY[1])
             check(got >= BODY[2], f'{where}: {got:.1f} dB of its energy in {BODY[0]}-{BODY[1]} Hz (at least {BODY[2]} wanted)')
@@ -290,6 +302,9 @@ def build(script, out):
 
 def main(argv):
     script = Path(argv[argv.index('--script') + 1]) if '--script' in argv else Path(__file__).resolve().parent / 'trial_drums.py'
+    sine = np.sin(2 * np.pi * 100 * np.arange(RATE) / RATE)[:, None]
+    got = band_energy_db(sine, 60, 250)
+    check(abs(got + 3.01) < 0.01, f'this test: a 0 dBFS 100 Hz sine of 1 s reads {got:.2f} dB FS²·s, not -3.01')
     kinds_ok = app_kinds()
     check({'kick', 'snare', 'clap', 'hat', 'open_hat', 'perc', 'ride'} <= kinds_ok, f'KIND_LABELS read as {sorted(kinds_ok)}')
     try:

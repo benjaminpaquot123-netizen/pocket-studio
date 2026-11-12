@@ -1,0 +1,30 @@
+Écran 233 (900x1509)
+texte « Sound ändern » @ 149,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Für das Pad 2 (Kick 2) » @ 156,78
+onglet ◎ « Kicks » [sélectionné] @ 91,143
+onglet ○ « Snares » @ 255,143
+onglet (main) « Claps » @ 420,143
+onglet (points en rond) « Geschlossene Hi-Hats » @ 690,143
+titre « SOUNDS » [état « Aufgeklappt »] @ 121,233
+champ (loupe) « Sound suchen (Snare, Conga, Sirene…) » contenu «  » @ 450,310
+bouton ★ « Favoriten 1 Sound » › @ 450,411
+bouton (neuf points) « Eingebaute Sounds 2 Sounds » › @ 450,507
+bouton (neuf points) « Weitere Kit-Sounds 14 Sounds » › @ 450,603
+bouton (cotillons) « Party 22 Sounds » › @ 450,699
+bouton (puce) « Maschinen 32 Sounds » › @ 450,795
+bouton (éclair) « Techno 32 Sounds » › @ 450,891
+texte « Tippe auf einen Sound, um ihn zu hören, „Setzen“, um ihn auf das Pad 2 (Kick 2) zu legen. » @ 450,981
+titre « SOUND-PACKS » [état « Aufgeklappt »] @ 184,1104
+bouton « ? » @ 305,1104
+texte « Nur herunterladen, wenn du willst; jedes Pack lässt sich mit einer Geste löschen, um Platz zu schaffen. » @ 450,1174
+bouton (nuage et flèche) «  Alles laden (66 Packs, 284,5 MB) » @ 450,1258
+texte « Moderne 808 » @ 138,1329
+bouton « Laden » @ 779,1347
+texte « 72 Sounds · 2 MB » @ 147,1370
+texte « Acid House » @ 123,1423
+bouton « Laden » @ 779,1441
+texte « 116 Sounds · 2 MB » @ 151,1464
+texte « Acid Techno » [coupé] @ 130,1501
+bouton « Laden » [coupé] @ 779,1506

@@ -220,7 +220,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop:16,Fin:16",

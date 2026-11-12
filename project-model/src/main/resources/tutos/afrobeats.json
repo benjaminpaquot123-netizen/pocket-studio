@@ -345,7 +345,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:4,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",

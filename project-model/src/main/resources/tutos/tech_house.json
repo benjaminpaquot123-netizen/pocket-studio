@@ -346,7 +346,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:16,Drop B:16,Break:8,Montée:8,Drop B:16,Fin:8",

@@ -228,7 +228,7 @@ private val CHIP_HEIGHT = 32.dp
 
 /** The scripts whose lines stand taller than their font size says (tour 5, lot « langues »). */
 private val TALL_SCRIPTS = setOf(com.pocketstudio.model.i18n.Lang.AR, com.pocketstudio.model.i18n.Lang.HI)
-private const val TALL_SCRIPT_ROOM = 1.2f
+private const val TALL_SCRIPT_ROOM = 1.4f
 
 /** The least width of the position: its part's name and « mes. 9/60 » stay readable whatever the chips. */
 private val POSITION_MIN = 96.dp

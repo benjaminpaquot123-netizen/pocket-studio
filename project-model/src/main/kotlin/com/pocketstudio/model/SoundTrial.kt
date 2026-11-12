@@ -52,25 +52,25 @@ object SoundTrial {
 
     /**
      * Trial n° 2 (Benjamin on n° 1: « tu rajoutes juste des cymbales » ; measured: only the drums' highs moved). What a
-     * listener notices, with the engine's own effects: the bass's harmonics (a parallel saturation, its loudness held, a
-     * lift around 700 Hz, the dry sub under it: the kick already ducks the music through the mix's bus), the leads and pads wider and in a
-     * modern space (the widener's spread, the plate reverb, the ping-pong delay).
+     * listener notices, with the engine's own effects and nothing the mix does taken away:
+     * - the bass: a parallel saturation (driven hard, mostly wet, its loudness held), then the 3-band EQ after it: lows
+     *   +5 dB (100 Hz shelf: its sub back), mids +12 dB (1 kHz: its harmonics where a phone plays them), highs -9 dB
+     *   (8 kHz shelf: the fizz). The 3-band EQ and not a parametric one: the mix takes a parametric EQ without a low cut
+     *   for the bass's own and moves it in front of the exciter (review G1). Two inserts only: a full strip drops the
+     *   mix's own (jump up's 120 Hz body). The kick already ducks the music through the mix's bus: no pump added;
+     * - leads and pads: more plate reverb and the ping-pong delay sent; no widener of the trial's (the mix widens them
+     *   already, and a widener there cost the leads their chorus: review G2).
      */
     private val SECOND = listOf(
-        // Driven hard and mostly wet (0.55 at 60 % moved the bass's mid by less than 1 dB on the bench, 0.85 at 60 % by
-        // 0.4 to 2.9 dB), then its harmonics lifted by 12 dB around 800 Hz (PARAM_EQ: 20 x 1000^0.535 Hz, Q 0.8).
         StyleFx("bass", insert = "SATURATION", params = listOf(0.95f, 1f, 0.85f, 0.7f, 1f)),
-        StyleFx("bass", insert = "PARAM_EQ", params = listOf(0.535f, 0.5f + 12f / 36f, 0.28f, 0f)),
-        // Its sub given back (the saturation took 4 to 5.5 dB of it) and its fizz taken off (+25 dB over 8 kHz on tech
-        // house's sine bass): the 3-band EQ, lows +5 dB (100 Hz shelf), highs -9 dB (8 kHz shelf).
-        StyleFx("bass", insert = "EQ", params = listOf(0.5f + 5f / 24f, 0.5f, 0.5f - 9f / 24f)),
-        StyleFx("lead", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.6f), reverb = 0.25f, delay = 0.3f),
-        StyleFx("pad", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.8f), reverb = 0.4f),
+        StyleFx("bass", insert = "EQ", params = listOf(0.5f + 5f / 24f, 0.5f + 12f / 24f, 0.5f - 9f / 24f)),
+        StyleFx("lead", reverb = 0.3f, delay = 0.4f),
+        StyleFx("pad", reverb = 0.45f),
     )
 
-    /** Tech house's voice (the darkest of all: -57 dB over 10 kHz) lifted by 9 dB around 2.5 kHz, where a phone plays. */
+    /** Tech house's voice (the darkest of all: -57 dB over 10 kHz) lifted: mids +9 dB (1 kHz), highs +6 dB (8 kHz shelf). */
     private val SECOND_OWN = mapOf(
-        "tech_house" to listOf(StyleFx("lead", insert = "PARAM_EQ", params = listOf(0.70f, 0.75f, 0.34f, 0f))),
+        "tech_house" to listOf(StyleFx("lead", insert = "EQ", params = listOf(0.5f, 0.5f + 9f / 24f, 0.5f + 6f / 24f))),
     )
 
     /** The lines the trial pack plays, per style (techno keeps its tuned studio rumble). */

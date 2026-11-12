@@ -1,5 +1,5 @@
 # Relecture du lot « moyens2 » (tour 5), par un relecteur neuf
-Relu : fc56b596bae766f72853ffef18bae494770ea273
+Relu : 57e6a67da810cbdcc6a8780de398901a46478c49
 
 Cible : `git diff fx-int..fc56b596` après fusion de l'intégration (3b4235db) dans la branche : `TopBar.kt` (pastille `FolderStatus`), `RhythmViewModel.kt` (une ligne dans `startExport`), `ui-components` (`WholeWords.kt`, `FitText.kt`, `largestFitting`), trois classes de test, six captures `scale130/`, le rapport et les décisions. La fusion de l'intégration n'a touché aucun fichier du lot (banc et docs seulement), aucun conflit.
 
@@ -45,5 +45,10 @@ Le temps du gel après correctif (seul le nombre de mises en page est prouvé : 
 - Le rapport ne dit rien de plus fort que ses preuves ; les trois rouges annoncés sont ceux que la mutation redonne.
 - La pastille ne prend ni largeur ni ligne : `aRowThatHeldTheNameStaysOneRow` et `theModeSimpleBarKeepsAFewWordsOfTheName` restent verts avec elle.
 - Les tailles essayées sont faites par soustractions répétées, comme l'ancienne boucle : les mêmes flottants, donc les mêmes tailles au demi-point près (égalité vérifiée par le test contre l'ancienne boucle, mot par mot).
+
+## Delta (relu 57e6a67d : l'intégration a bougé pendant la relecture)
+- L'intégration a reçu le lot « gaucher » (c54debc0 : `AppRoot.kt`, `ModeChoice.kt`, six captures `mode_step`, deux classes de test). Fusionnée dans la branche (57e6a67d), sans conflit ; aucun fichier du lot moyens2 n'a changé (`git diff fc56b596 57e6a67d` sur les fichiers du lot : vide, hors cette relecture).
+- `ModeChoice.kt` se sert de `WholeWordsAutoSize` (donc de `largestFitting`) : rejoué pour cela, sur 57e6a67d, `:app:verifyRoborazziDebug` avec les filtres de la ligne « tests: » plus `*ModeStepThumbTest` : vert, 59 tests, 0 échec, 7 sautés ; les captures `scale130/` (dont `fr_nav_mode_step` et `nl_nav_mode_step` de gaucher) sont celles que le code fusionné dessine.
+- Les constats ne changent pas.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

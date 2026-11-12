@@ -13,6 +13,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -74,10 +75,17 @@ class PeakHold(private val readings: Int = 20) {
  */
 @Composable
 internal fun LoudnessChip(values: () -> FloatArray, modifier: Modifier = Modifier) {
-    val text by remember(values) { derivedStateOf { loudnessChipText(values()) } }
-    val hot by remember(values) { derivedStateOf { values().getOrElse(NativeEngine.LOUDNESS_RECENT_PEAK) { -100f } > -1f } }
-    Text(text, style = MonoStyle, color = if (hot) Neon.Amber else Neon.Cyan, modifier = modifier.testTag("loudness_chip"))
+    // Tour 5 « mixwake »: a new text 4 times a second at most (not at each reading), drawn in a layer of its own.
+    val text by com.pocketstudio.ui.rememberChangesEvery(NUMBER_EVERY_MS, values) { loudnessChipText(values()) }
+    val hot by com.pocketstudio.ui.rememberChangesOf(values) { values().getOrElse(NativeEngine.LOUDNESS_RECENT_PEAK) { -100f } > -1f }
+    Text(
+        text, style = MonoStyle, color = if (hot) Neon.Amber else Neon.Cyan,
+        modifier = modifier.graphicsLayer().testTag("loudness_chip"),
+    )
 }
+
+/** How often a number read from the engine (loudness, limiter) may change on the Mix: a number must stay to be read. */
+internal const val NUMBER_EVERY_MS = 250L
 
 /** What [target] aims at in a project whose « Auto » is [styleLufs] (« Club »: never under it). */
 internal fun shownLufs(target: LoudnessTarget, styleLufs: Float): Float? = when (target) {

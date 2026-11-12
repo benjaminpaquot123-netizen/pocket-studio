@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
@@ -316,16 +317,16 @@ internal fun limiterShown(raw: Float): Pair<Int, Boolean> {
 /** What the limiter does: composed again only when its words change, not at each meter reading. */
 @Composable
 private fun LimiterLine(gain: () -> Float) {
-    val shown by androidx.compose.runtime.remember(gain) {
-        androidx.compose.runtime.derivedStateOf { limiterShown(gain()) }
-    }
-    val (tenths, hard) = shown
+    // Tour 5 « mixwake »: a new text 4 times a second at most, drawn in a layer of its own.
+    // The deepest hold of the period is shown (the smallest gain): a clip of one reading is not lost between samples.
+    val worst by com.pocketstudio.ui.rememberWorstEvery(NUMBER_EVERY_MS, worse = { a: Float, b: Float -> minOf(a, b) }) { limiterGainRead(gain()) }
+    val (tenths, hard) = limiterShown(worst)
     Text(
         if (tenths > 0) tr("La sortie est protégée : le son est retenu de %.1f dB.", tenths / 10f)
         else tr("Pas de saturation : tout va bien."),
         style = MaterialTheme.typography.bodySmall,
         color = if (hard) Neon.Amber else Neon.TextSecondary,
-        modifier = Modifier.testTag("limiter_line"),
+        modifier = Modifier.graphicsLayer().testTag("limiter_line"),
     )
 }
 

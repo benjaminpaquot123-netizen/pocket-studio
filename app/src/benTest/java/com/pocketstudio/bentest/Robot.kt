@@ -82,11 +82,16 @@ object Robot {
     data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean)
 
     fun candidats(context: Context): List<Candidat> {
-        val all = etapes(context, TOUT, retest = false)
-        val last = Retest.lire(derniereFile(context))
+        val all = Retest.proposees(etapes(context, TOUT, retest = false))
+        // No run kept by this version: the last saved logbook (any run, any version), else the last report's.
+        val last = Retest.lire(derniereFile(context)).ifEmpty { Retest.repli(carnet(context).lines(), rapports(context), all) }
         val ticked = Retest.parDefaut(last, all)
         return all.map { Candidat(it.name, it.label, last[it.name], it.name in ticked) }
     }
+
+    /** The report zips written by [writeReport] (one kept at a time). */
+    private fun rapports(context: Context): List<File> =
+        File(context.cacheDir, "exports").listFiles { f -> f.name.startsWith("rapport-benstudio-test-") && f.name.endsWith(".zip") }?.toList().orEmpty()
 
     /** The steps' names and labels (the work is only done by a run). */
     private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
@@ -249,7 +254,7 @@ object Robot {
         val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null, oreille = passage == OREILLE))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE))
             add("mesures.json" to Rapport.json(lines, about))
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))

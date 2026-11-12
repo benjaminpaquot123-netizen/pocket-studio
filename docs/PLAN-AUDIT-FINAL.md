@@ -117,9 +117,10 @@ Ils lisent le code et font tourner les bancs, en même temps que les utilisateur
 5. **Corrections** : tout le bloquant, le grave et le moyen, par lots ; le mineur dans `docs/REVIEW.md`.
 6. **Le match retour** : les missions ratées ou aidées sont **rejouées par un testeur neuf** sur la version corrigée. But : 16 réussites sur 16, sans indice pour les niveaux 0 et 1.
 7. **Relecture neuve** des corrections, tests complets, captures regardées.
-8. **Fin** : un seul APK, un résumé de trois lignes, les extraits audio, et la **recette de Benjamin** (`recette.json`, 15 minutes) : ce que seul un vrai téléphone dit (toucher, latence, haut-parleur, micro, geste retour, écran éteint).
+8. **Un passage sur émulateur chez GitHub** (« Nightly real use », lancé à la main, une seule fois) : l'appli sur un vrai Android.
+9. **Fin** : un seul APK, un résumé de trois lignes, les extraits audio, et la **recette de Benjamin** (`recette.json`, 15 minutes) : ce que seul un vrai téléphone dit (toucher, latence, haut-parleur, micro, geste retour, écran éteint).
 
 ## 8. Contraintes
-- La CI de GitHub reste en pause (consigne de Benjamin) : tout tourne sur la machine de l'agent, fusion avec « [skip ci] ». Option à sa main : un seul passage « Nightly real use » sur émulateur à la fin de l'audit.
+- La CI de GitHub reste en pause (consigne de Benjamin) : tout tourne sur la machine de l'agent, fusion avec « [skip ci] ». Exception décidée par Benjamin (2026-11-12, réponse « 1A ») : **un seul** passage « Nightly real use » sur émulateur, lancé à la main à la fin de l'audit, après le match retour (`JourneyTest`, `EnduranceTest`) ; un échec se corrige avant l'APK.
 - La vague A tourne en parallèle (consigne « pas de limite » du 27/10, pour cet audit seulement) ; tout le reste en mode économie.
 - Le chantier Play Store n'est pas dans cet audit.

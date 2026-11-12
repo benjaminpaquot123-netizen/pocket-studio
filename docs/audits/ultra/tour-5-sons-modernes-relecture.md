@@ -1,10 +1,21 @@
 # Tour 5, lot « sons-modernes » : relecture neuve de l'étude des sons (2026-11-12)
-Relu : 6776fa68b663c1f4439c7eae037470594c31c41f
+Relu : 9d3eab9432913eb49ad29fd7f3bfa095d13b0502
 
 ## Ce qui a été relu
 - **Premier passage** sur cacaea09, l'étude seule : `docs/sons/PLAN-SONS-MODERNES.md` et `docs/decisions/tour-5-sons-modernes.md`. Ce relevé avait été commité en 034561af.
 - **Second passage** sur 6776fa68, seulement l'écart `034561af..6776fa68` : l'étude, les décisions, et le nouveau dossier `docs/sons/outils/` (`voix.py`, `test_voix.py`, `mesures-2026-11-12.md`).
+- **Troisième passage** sur 9d3eab94, seulement l'écart `efe68ad1..9d3eab94` : l'étude, les décisions et `test_voix.py`.
 - Je suis un relecteur neuf : je n'ai écrit ni l'étude ni les corrections, et je n'ai modifié aucun de leurs fichiers.
+
+**Contrôles faits au troisième passage :**
+- `PYTHONDONTWRITEBYTECODE=1 python3 -I docs/sons/outils/test_voix.py` : OK, avec des scies à 65,4, 261,6 et 523,3 Hz, chaque colonne publiée vérifiée.
+- J'ai rejoué les sept versions cassées du deuxième passage, dans une copie hors du dépôt : toutes sont refusées, y compris les quatre qui passaient. J'en ai essayé une huitième, « grave-médium » calculé sur 150-600 Hz : refusée aussi.
+- Remarque, non comptée comme constat : une version qui compte la présence jusqu'à 5 kHz au lieu de 4 kHz passe encore. L'écart sur la scie grave est de 0,28 dB, juste sous la tolérance de 0,3 dB. La phrase du § 2.2 reste vraie : elle ne parle que des sept versions cassées qu'elle énumère.
+- Dates des références relues dans `StyleRecipes.kt` :
+  - House : l. 251, de 1984 à 1992 ;
+  - Tech house : l. 320, de 2001 à 2022, dont trois après 2014 ;
+  - Jump up : l. 984, de 2007 à 2023, dont six à partir de 2017.
+- L'écart ne touche que trois fichiers de documentation (`docs/sons/` et `docs/decisions/`), sans lien symbolique.
 
 **Contrôles faits au second passage :**
 - `PYTHONDONTWRITEBYTECODE=1 python3 -I docs/sons/outils/test_voix.py` : OK.
@@ -91,21 +102,23 @@ Aucun.
 - **m10.** La bonne clause de Splice — **corrigé** : 2.3.1.4 d, avec l'exception « fondu dans une œuvre ».
   - La liste des œuvres de 2.3.1.3 est ouverte (« such as but not limited to »), donc « un jeu ou une appli » se défend.
 
-## Nouveaux constats (second passage, sur 6776fa68)
+## Constats du second passage (sur 6776fa68), revus sur 9d3eab94
 
 ### Moyen
 
-- **N1. Le test de l'outil ne couvre pas deux des colonnes publiées.**
-  - Passages :
+- **N1. Le test de l'outil ne couvrait pas deux des colonnes publiées** — **corrigé**.
+  - Sur 9d3eab94, le test vérifie « boue » et « présence » sur trois scies. Une bande vide, comme 150-500 Hz pour la scie à 523,3 Hz, doit lire moins de −40 dB.
+  - Les sept versions cassées sont refusées, et le § 2.2 le dit. La ligne 4 des décisions est alignée.
+  - Passages relevés sur 6776fa68 :
     - § 2.2 : « Cet outil est vérifié par `test_voix.py` […]. Une version cassée de l'outil est refusée. » ;
     - colonnes « Grave-médium 150–500 Hz face à 1–4 kHz » et « présence 1–4 kHz » ;
     - essai, « Voix seules » : « grave-médium face au médium-aigu ; présence au téléphone ».
-  - Le test ne vérifie que l'air, le centroïde, la brillance, le côté et le silence. Ces quatre versions cassées passent quand même :
+  - Sur 6776fa68, le test ne vérifiait que l'air, le centroïde, la brillance, le côté et le silence. Ces quatre versions cassées passaient quand même :
     - `boue` calculée sur 100-500 Hz au lieu de 150-500 Hz ;
     - `presence` rapportée à 20 Hz-20 kHz au lieu de 300 Hz-20 kHz ;
     - la bande totale commencée à 200 Hz au lieu de 20 Hz (la scie de 261,6 Hz n'a rien en dessous) ;
     - la fenêtre de Hann retirée.
-  - La phrase est donc plus forte que la preuve pour les colonnes « grave-médium » et « présence », qui portent la lecture « boueuse » de la nappe techno et la basse « peu audible » de la tech house.
+  - La phrase était donc plus forte que la preuve pour les colonnes « grave-médium » et « présence », qui portent la lecture « boueuse » de la nappe techno et la basse « peu audible » de la tech house.
   - Correction proposée :
     - ajouter au test les valeurs exactes de `boue_150_500_vs_1_4k_db` et `presence_tel_1_4k_db` pour la scie (somme des 1/n² dans chaque bande) ;
     - ajouter une scie grave, par exemple à 65,4 Hz, pour tenir le bas de la bande totale ;
@@ -113,28 +126,29 @@ Aucun.
 
 ### Mineur
 
-- **n1. Les dates des références sont inexactes**, vu dans `StyleRecipes.kt` :
+- **n1. Les dates des références étaient inexactes** — **corrigé** : House 1984-1992 (En bref, § 1, question 3, décisions), jump up 2007-2023, tech house 2001-2022. Ce que j'avais relevé dans `StyleRecipes.kt` :
   - House « de 1986 à 1992 » (En bref 1, § 1, question 3, décisions lignes 5 et 6) : la liste va de 1984 (Jesse Saunders, « On and On ») à 1992 ;
   - Jump up « références de 2017 à 2023 » : la liste commence en 2007 (DJ Hazard & Distorted Minds, « Mr Happy ») ;
   - Tech house « de 2014 à 2022 » : la liste commence en 2001 (Green Velvet, « La La Land »).
   - Correction : 1984-1992, 2007-2023 et 2001-2022, ou « références surtout de … ».
-- **n2. Le kick de la tech house est accordé lui aussi.**
+- **n2. Le kick de la tech house est accordé lui aussi** — **corrigé** : tableau du § 1 (« familles House et Techno ») et essai 1.
   - Passage : « Attention aux kicks : le kick studio de la techno est accordé à la tonalité ».
   - La tech house est de la famille « House », donc dans `TUNED_FAMILIES` (`StudioDrums.kt:27`, `:96`).
   - Correction : « de la techno et de la tech house ».
-- **n3. L'interrupteur d'essai, style par style.**
+- **n3. L'interrupteur d'essai, style par style** — **corrigé** : § 6, une ligne par style (jump up : « dnb » ; tech house : un pack donné, sinon « tech_house » ; techno : le TR-909 du charley ouvert, « techno » et « techno:bass »).
   - Passage : « des packs d'essai à la place de leurs packs de machines (TR-909, Juno…) ».
   - Jump up : le pack à remplacer est « dnb », un pack de style partagé avec la drum & bass, pas un pack de machine.
   - Tech house : la recette n'a pas de `kit` ; il faut en ajouter un, ou donner au pack d'essai l'identifiant « tech_house ».
   - Techno : le TR-909 pour le charley ouvert, et le pack « techno ».
   - Correction : le dire en une ligne par style.
-- **n4. « la voix la plus sombre » (tableau du § 2.2, lead de la tech house à −57 dB)** est contredit par la ligne suivante : la basse de la tech house est à −60 dB.
+- **n4. « la voix la plus sombre » (tableau du § 2.2, lead de la tech house à −57 dB)** — **corrigé** (« le lead le plus sombre »).
+  - La phrase était contredite par la ligne suivante : la basse de la tech house est à −60 dB.
   - Correction : « le lead le plus sombre ».
-- **n5. L'essai 3 A change le rôle d'une partie.**
+- **n5. L'essai 3 A changeait le rôle d'une partie** — **corrigé** : « des voix découpées modernes (ou une voix robot plus claire) […] : la partie garde son rôle de voix ».
   - Passage : « pour la tech house, un vrai lead à la place de la « Voix robot » ».
   - La recette joue des voix découpées (`LeadKind.Chops`, `vocal_chops:vocal`). Mettre un lead change le rôle de la partie, pas seulement son son, ce qui contredit « mêmes notes, sons remplacés ».
   - Correction : « des voix découpées modernes (pack d'essai) à la place de la « Voix robot » ».
-- **n6. « la production d'aujourd'hui la met sur presque tout »** (§ 2.1, point 4) : sans source.
+- **n6. « la production d'aujourd'hui la met sur presque tout »** (§ 2.1, point 4), sans source — **corrigé** (« très courante sur ces sons dans la production d'aujourd'hui »).
   - Correction : « très courante sur les basses, leads et nappes ».
 
 Verdict : 0 bloquant, 0 grave — fusion possible

@@ -299,7 +299,13 @@ class TutoController(
     /** « C'est fait » / « J'ai compris »: a step only the user can tick. */
     fun markDone() {
         val u = _ui.value ?: return
-        tick(setOf(u.current.id), advance = true, bravo = false)
+        val c = u.chapters[u.chapter]
+        // Tour 6 (N10): the chapter's last step (or the one that finishes it) stays with its « Bravo » (chapter 9 of the
+        // Facile course ends on « C'est fait »: it went straight on, never a « Bravo, chapitre fini ! »); the course's last
+        // chapter goes to the end as before.
+        val ends = u.chapter < u.chapters.lastIndex && u.current.id !in u.progress.done &&
+            (u.step == c.steps.lastIndex || c.steps.all { it.id == u.current.id || u.settled(it) })
+        tick(setOf(u.current.id), advance = !ends, bravo = ends)
     }
 
     /** Where « Je le fais » goes for [s] (null: nowhere): the very control the step asks for, on the track it is about. */

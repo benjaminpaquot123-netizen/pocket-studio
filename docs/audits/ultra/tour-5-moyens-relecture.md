@@ -1,5 +1,5 @@
 # Relecture neuve du lot moyens (tour 5)
-Relu : 01367b9eb249913ca32f42a83bcadb4c42dfab40
+Relu : bbc59a9369df56751a9a4c26a084307867895359
 delta : après la 2e passe (020026a2), seul le rapport de zone docs/audits/ultra/tour-5-moyens-rapport.md a été ajouté (aucun code) ; relu, conforme.
 delta : fusion de l'intégration 9b3eeb28 (lots padlive et access) : conflits sur I18n.kt (les deux lignes de catalogues gardées) et sur scale130/fr|nl_nav_simple_keys.png (réenregistrées sur la base fusionnée et regardées : barre sur une ligne, dossier seul, clavier entier, nouveau « ? » du chantier 9) ; tests ciblés du lot verts (2 277, 0 échec) ; rejeu t4-26-prise-clavier : oracle tenu. Aucun autre changement.
 
@@ -35,5 +35,10 @@ delta : fusion de l'intégration 9b3eeb28 (lots padlive et access) : conflits su
 - M2 : « ▶ cette partie » arrête pendant une prise (notes ou micro) par le même `togglePlay` que « ▶ le morceau », donc la prise est gardée. Son ■ suit aussi la prise au micro. Les tests seraient rouges sans la correction.
 - ModeChoiceTest à 398 dp : c'est la largeur réelle de la barre du Mode simple sur un 360 dp, le test n'est pas affaibli.
 - Tuiles Plus, volet tablette, « Voir mes fichiers », en-tête de famille opaque : les tests seraient rouges sans les corrections. Aucune capture interdite ni zone de code interdite touchée par ce lot ; les sujets des paires rouge/vert correspondent.
+
+
+## Delta après fusion de fx-int (courbes)
+`git show --cc bbc59a93` ne résout que la liste de I18n.kt : elle garde « moyensa », « moyensb », « moyensc » ET « courbes », chacune avec son commentaire.
+Aucun fichier du lot moyens n'a changé depuis la relecture (le reste vient de fx-int, déjà relu de son côté) ; tests ciblés verts après la fusion.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

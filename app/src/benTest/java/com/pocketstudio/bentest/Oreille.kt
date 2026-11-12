@@ -56,7 +56,43 @@ class QuestionsOreille(
     private val carnet: Carnet,
     private val captures: File,
 ) {
-    fun etapes(): List<Etape> = emptyList()
+    fun etapes(): List<Etape> = listOf(
+        Etape("oreille_ouverture", "Ouverture du studio", 120_000) { prep.ouverture(); "studio ouvert" },
+    ) + STYLES.mapIndexed { i, s ->
+        val nom = StarterWizard.style(s)?.name ?: s
+        etape("oreille_${i + 1}_$s", "Question ${i + 1} : ça tape ? ($nom)", 600_000) {
+            val id = "oreille_${i + 1}_$s"
+            prep.morceau(s)
+            val r = poser(Question(id, "Ça tape ? ($nom, haut-parleur du téléphone)"))
+            prep.arreter()
+            conclure(id, r)
+        }
+    } + listOf(
+        etape("oreille_5_casque", "Question 5 : casque filaire", 600_000) {
+            saut(Cas.CASQUE)?.let { return@etape passer("oreille_5_casque", it) }
+            prep.rejouer()
+            val r = poser(Question("oreille_5_casque", "Casque filaire : la basse est là et le son est large ?"))
+            prep.arreter()
+            conclure("oreille_5_casque", r)
+        },
+        etape("oreille_6_bluetooth", "Question 6 : Bluetooth", 900_000) {
+            saut(Cas.BLUETOOTH)?.let { return@etape passer("oreille_6_bluetooth", it) }
+            prep.rejouer()
+            val r = poser(Question("oreille_6_bluetooth", "Bluetooth : branche ton casque ou ton enceinte, puis coupe-le en pleine musique. Le son a suivi, sans plantage ?", BLUETOOTH_MS))
+            // The robot's own half: the engine did not choke on the cut.
+            val after = sonde.lire()
+            check(!after.nonFinite) { "valeur invalide (NaN) après la coupure" }
+            prep.arreter()
+            conclure("oreille_6_bluetooth", r)
+        },
+        etape("oreille_7_doigts", "Question 7 : jouer avec les doigts", 600_000) {
+            prep.arreter()
+            prep.ouvrirPads()
+            val r = poser(Question("oreille_7_doigts", "Joue avec les doigts : les pads à trois doigts, puis le clavier. Pas de retard gênant ?"))
+            conclure("oreille_7_doigts", r)
+        },
+        etape("oreille_8_retour", "Question 8 : trois gestes retour (le robot lit seul)", 120_000) { retour() },
+    )
 
     /** Which skip rule a question has. */
     enum class Cas { CASQUE, BLUETOOTH }
@@ -65,8 +101,8 @@ class QuestionsOreille(
     fun saut(cas: Cas): String? {
         val m = appli.materiel()
         return when (cas) {
-            Cas.CASQUE -> null
-            Cas.BLUETOOTH -> null
+            Cas.CASQUE -> if (m.casqueFilaire) null else SANS_CASQUE
+            Cas.BLUETOOTH -> if (m.bluetooth) null else SANS_BLUETOOTH
         }
     }
 
@@ -155,11 +191,38 @@ class QuestionsOreille(
         /** The answers of the logbook, the last one of each question, in the order they were given. */
         data class Ligne(val id: String, val verdict: Verdict, val capture: String, val commentaire: String)
 
-        fun reponses(lines: List<Carnet.Ligne>): List<Ligne> = emptyList()
+        fun reponses(lines: List<Carnet.Ligne>): List<Ligne> =
+            lines.filter { it.kind == Carnet.REPONSE }.mapNotNull { l ->
+                val f = l.text.split(';', limit = 3)
+                Verdict.of(f[0])?.let { Ligne(l.step, it, f.getOrElse(1) { "" }, f.getOrElse(2) { "" }) }
+            }.associateBy { it.id }.values.toList()
 
-        fun verdict(lines: List<Carnet.Ligne>): String = ""
+        /** « 5 oui, 1 non, 2 passées ». */
+        fun verdict(lines: List<Carnet.Ligne>): String {
+            val r = reponses(lines)
+            fun n(v: Verdict) = r.count { it.verdict == v }
+            return buildList {
+                add("${n(Verdict.OUI)} oui")
+                add("${n(Verdict.NON)} non")
+                if (n(Verdict.PASSEE) > 0) add("${n(Verdict.PASSEE)} passée" + if (n(Verdict.PASSEE) > 1) "s" else "")
+                if (n(Verdict.SANS_REPONSE) > 0) add("${n(Verdict.SANS_REPONSE)} sans réponse")
+            }.joinToString(", ")
+        }
 
-        fun section(lines: List<Carnet.Ligne>, etapes: List<Etape>): String = ""
+        /** rapport.md's section. */
+        fun section(lines: List<Carnet.Ligne>, etapes: List<Etape>): String = buildString {
+            val r = reponses(lines).associateBy { it.id }
+            if (r.isEmpty()) return ""
+            appendLine("## Questions à l'oreille")
+            appendLine()
+            appendLine("| Question | Réponse | Un mot | Capture |")
+            appendLine("|---|---|---|---|")
+            for (e in etapes) {
+                val a = r[e.name] ?: continue
+                val icone = when (a.verdict) { Verdict.OUI -> "✅"; Verdict.NON -> "❌"; else -> "⏭" }
+                appendLine("| ${e.label} | $icone ${a.verdict.mot} | ${a.commentaire.replace("|", "/")} | ${if (a.capture.isEmpty()) "" else "captures/${a.capture}"} |")
+            }
+        }
 
         fun nombre(v: Double) = String.format(Locale.ROOT, "%.2f", v)
     }

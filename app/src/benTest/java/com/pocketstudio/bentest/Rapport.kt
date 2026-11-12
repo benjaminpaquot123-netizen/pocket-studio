@@ -69,12 +69,12 @@ object Rapport {
     /** [about]: the app's version and commit, the device, Android. */
     /** [tout]: « Tout tester » (each step's light, the verdict in lights). */
     fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false, retest: Int? = null, oreille: Boolean = false): String = buildString {
-        appendLine(if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
+        appendLine(if (oreille) "# BenStudio Test : questions à l'oreille" else if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
         appendLine()
         if (retest != null) { appendLine("**${Retest.entete(retest)}**"); appendLine() }
         about.forEach { (k, v) -> appendLine("- $k : $v") }
         appendLine()
-        appendLine("**Verdict : ${bilan(lines, etapes).verdict()}**")
+        appendLine("**Verdict : ${if (oreille) QuestionsOreille.verdict(lines) else bilan(lines, etapes).verdict()}**")
         val feux = if (tout) feux(lines, etapes) else emptyMap()
         if (tout) appendLine("\n**Feux : ${bilanFeux(lines, etapes).verdict()}**")
         appendLine()
@@ -93,6 +93,7 @@ object Rapport {
             val light = if (tout) " ${feux[e.name]?.let { f -> PASTILLES.getValue(f) + " " + f.mot + (pourquoi(lines, e.name)?.let { " ($it)" } ?: "") } ?: ""} |" else ""
             appendLine("| ${e.label} |$light $result | $took | ${end?.text.orEmpty().replace("|", "/").replace("\n", " ")} |")
         }
+        QuestionsOreille.section(lines, etapes).takeIf { it.isNotEmpty() }?.let { appendLine(); append(it) }
         val notes = lines.filter { it.kind == Carnet.NOTE }
         if (notes.isNotEmpty()) {
             appendLine()
@@ -113,7 +114,12 @@ object Rapport {
             JsonText.obj("ms" to l.atMs.toString(), "step" to JsonText.string(l.step), *fields.toTypedArray())
         }
         val head = about.map { (k, v) -> k to JsonText.string(v) }
-        return JsonText.obj(*head.toTypedArray(), "steps" to JsonText.array(steps), "reads" to JsonText.array(reads))
+        // The answers of « Questions à l'oreille » (only when the run asked some).
+        val answers = QuestionsOreille.reponses(lines).map { a ->
+            JsonText.obj("question" to JsonText.string(a.id), "reponse" to JsonText.string(a.verdict.mot), "commentaire" to JsonText.string(a.commentaire), "capture" to JsonText.string(a.capture))
+        }
+        val questions = if (answers.isEmpty()) emptyArray() else arrayOf("questions" to JsonText.array(answers))
+        return JsonText.obj(*head.toTypedArray(), "steps" to JsonText.array(steps), "reads" to JsonText.array(reads), *questions)
     }
 
     /** Why a step is not green: its worst light's reason. */

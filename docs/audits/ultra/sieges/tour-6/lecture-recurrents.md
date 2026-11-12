@@ -398,3 +398,45 @@ Ajoutés dans un commit à part : `lotD/a-suite` ← claude/benstudio-tour6-Da (
 - 23 confirmations (lignes C2.A) ; passent à 2 sièges ou plus : T14, T19, N4, N6, N13.
 - Totaux mis à jour : **96 défauts uniques** (86 + 10), dont **43 récurrents** (36 + N20, N21, T14, T19, N4, N6, N13), **42 sur le tuto et la Guide** (32 + 10) ; gravité : 1 bloquant, **7 graves** (+ D a-suite #199).
 - Le Bravo est atteint dans les trois passages complets : 246 gestes (H a-suite), écran 223 (D a-suite), écran 226 (B b-suite). Chapitres qui font hésiter dans les trois langues : 1, 2, 5, 7, 12.
+
+---
+
+## Complément 3 (2026-11-12) : balayage des tutos
+
+Ajouté dans un commit à part : `tuto/` ← ccr-39df57ee-tuto (39076306) : `rapport-tuto.md`, `tableau-tuto.tsv`, `connus-panneau.tsv`, `connus-textes.tsv` (les deux tests neufs de cette branche, `TutoSweepPanelTest.kt` et `TutoSweepTextTest.kt`, ne sont pas copiés ici : seul le dossier du balayage l'est).
+Ce que dit le balayage : « 1 110 parcours, tous réussis » (37 styles × Facile/Pro × 15 langues, joués par les gestes) ; « Aucune traduction de tuto ne manque, aucune phrase n'est restée en français » ; « 6 défauts, tous moyens, aucun bloquant ni grave » ; « Fausse alerte écartée : … 54 consignes coupées en japonais » (boîte de ligne de la police, pas les lettres).
+
+### C3.A Pré-tri des 6 défauts du balayage (lecture seule du code ; lots d'après `lots-correction.md`, eq/tour-6-tri-gaucher 974986c4)
+
+| balayage | défaut (cité) | pré-tri | fichier en cause (lu) | lot |
+|---|---|---|---|---|
+| 1 | « Plan du morceau : nom de partie coupé dans sa case (« Breal », « Intro » collé au bord) » ; toutes les langues à 130 %, dès 100 % en ja, ko, zh-CN, pl, tr | **réel**, neuf → **N29** | `app/…/tuto/TutoPanel.kt`, `SongMap` : le nom n'est écrit que si `maxWidth >= (name.length * 6 + 6).dp`, une largeur par lettre fixe qui ne suit ni la police (130 %) ni les lettres larges (ja, ko, zh) | **Lot 2** « tuto-consignes » (`TutoPanel.kt`) |
+| 2 | « chiffre de mesures qui dépasse sa case en arabe (« 16 »), et « 끝 » en coréen » ; ar et ko à 130 % | **réel**, neuf → **N30** (même fonction que N29) | `TutoPanel.kt`, `SongMap` : le nombre seul est écrit dès `maxWidth >= 12.dp`, sans tenir compte de sa largeur à 130 % | **Lot 2** |
+| 3 | « « Lire la suite » posé sur « ▸ Pourquoi ? » : on voit la moitié du bouton, le toucher lit la suite au lieu d'ouvrir l'explication » ; 25 étapes avec le plan, 130 %, 11 langues | **réel**, neuf → **N31** (même mécanisme que T7 : un bouton sous le fondu « Lire la suite ») | `TutoPanel.kt` : `MoreWords` est posé en bas de la boîte défilante (`Alignment.BottomCenter`, min 32 dp) par-dessus le dernier élément visible, ici `Why` (« ▸ Pourquoi ? ») suivi de `SongMap` | **Lot 2** |
+| 4 | « Hindi : 22 titres de chapitre restés en anglais (« Snare », « Hi-hats », « Cymbals », « Key »…) » | **réel**, rejoint **T16** (mots anglais dans les textes du tuto) | `project-model/src/main/resources/i18n/hi/tuto_bass.json` (ex. `"Les charleys": "Hi-hats"`, `"Le stab": "Stab"`) et les autres `hi/tuto*.json` | **Lot 2** (textes `i18n/*/tuto*.json`) |
+| 5 | « Chinois : 11 titres restés en anglais (« Lead », « Hoover Riff », « Chiptune Lead »…) » | **réel**, rejoint **T16** | `project-model/src/main/resources/i18n/zh-CN/tuto_techno.json` (ex. `"Le lead": "Lead"`, `"Le riff de hoover": "Hoover Riff"`), aussi `zh-CN/tuto_hiphop.json` | **Lot 2** |
+| 6 | « Arabe : dans le plan du morceau, les noms des parties restent en lettres latines (« Intro », « Drop », « Break », « Build-up »), alors qu'ils sont traduits en japonais » | **réel**, rejoint **R15** (mots anglais dans une interface traduite) ; à confirmer « pas un défaut » si le lot langues décide que ces mots sont ceux employés en arabe | `SongMap` affiche `Scene.shownLabel` → `tr(section)` ; les traductions arabes gardent le latin : `i18n/ar/model.json`, `ar/song.json`, `ar/synth.json` (`"Intro": "Intro"`, `"Montée": "Build-up"`) ; le japonais traduit (`"Intro": "イントロ"`) | **Lot 5** « langues » (`i18n/*/*.json` hors `tuto*.json`) |
+
+Aucun n'est un artefact : les six sont lus dans le code ou dans les fichiers de traduction, aux lignes citées.
+
+### C3.B Défauts neufs
+
+| # | défaut (cité) | source | gravité | langue / appareil / police |
+|---|---|---|---|---|
+| N29 | Plan du morceau : nom de partie coupé dans sa case (« Breal ») | balayage n° 1 (5 786 étapes × langues) | moyen (gravité du balayage) | toutes à 130 % ; ja, ko, zh-CN, pl, tr dès 100 % ; phone360 |
+| N30 | Plan du morceau : chiffre de mesures qui dépasse sa case (« 16 » en arabe, « 끝 » en coréen) | balayage n° 2 (193) | moyen | ar, ko à 130 % ; phone360 |
+| N31 | « Lire la suite » posé sur « ▸ Pourquoi ? » ; le toucher lit la suite au lieu d'ouvrir l'explication | balayage n° 3 (25 étapes) | moyen | 11 langues à 130 % ; phone360 |
+
+### C3.C Confirmations
+
+| ligne | confirmé par |
+|---|---|
+| T16 | balayage n° 4 (hi, 22 titres en anglais) et n° 5 (zh-CN, 11 titres en anglais) |
+| R15 | balayage n° 6 (ar, noms des parties en lettres latines) |
+| T7 | balayage n° 3 : même mécanisme, un bouton du panneau sous le fondu « Lire la suite » (N31 reste compté à part) |
+
+### C3.D Comptes du complément 3
+
+- 3 défauts neufs (N29 à N31), tous dans le tuto, tous moyens ; 3 confirmations (T16, R15, T7).
+- Totaux mis à jour : **99 défauts uniques** (96 + 3), dont **43 récurrents** (inchangé : le balayage n'est pas un siège), **45 sur le tuto et la Guide** (42 + 3) ; gravité : 1 bloquant, 7 graves (inchangé).
+- Lots : n° 1, 2, 3, 4, 5 → lot 2 « tuto-consignes » ; n° 6 → lot 5 « langues ».

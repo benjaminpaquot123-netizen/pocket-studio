@@ -33,19 +33,21 @@ class MicroReel(private val context: Context) : Micro {
     @SuppressLint("MissingPermission")
     override fun ecouter(ms: Long, avant: () -> Unit, recevoir: (FloatArray, Int) -> Unit) {
         check(autorise()) { "micro refusé" }
-        val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT)
-        val rec = AudioRecord(source(), rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, maxOf(min, rate * 4 / 5 * 4))
+        // 2 s of room: [avant] (the engine starting the sweep) may take a moment before the first read.
+        val rec = ouvrir(source()) ?: ouvrir(MediaRecorder.AudioSource.MIC) ?: error("micro indisponible")
         try {
-            check(rec.state == AudioRecord.STATE_INITIALIZED) { "micro indisponible" }
             val buf = FloatArray(BLOC)
             var left = ms * rate / 1000
             var empty = 0
+            val until = System.currentTimeMillis() + ms + MARGE_MS
             rec.startRecording()
             avant()
             while (left > 0) {
+                check(System.currentTimeMillis() < until) { "micro : l'écoute ne finit pas" }
                 val n = rec.read(buf, 0, minOf(buf.size.toLong(), left).toInt(), AudioRecord.READ_BLOCKING)
                 check(n >= 0) { "micro : lecture refusée ($n)" }
                 if (n == 0) { check(++empty < 200) { "micro muet" }; continue }
+                empty = 0
                 recevoir(buf, n)
                 left -= n
             }
@@ -55,15 +57,29 @@ class MicroReel(private val context: Context) : Micro {
         }
     }
 
+    /** A recorder on [source], null when the phone refuses it (the « unprocessed » one announced but not given). */
+    @SuppressLint("MissingPermission")
+    private fun ouvrir(source: Int): AudioRecord? {
+        val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT)
+        val rec = runCatching { AudioRecord(source, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, maxOf(min, rate * 4 * 2)) }.getOrNull() ?: return null
+        if (rec.state == AudioRecord.STATE_INITIALIZED) return rec
+        rec.release()
+        return null
+    }
+
     private companion object {
         const val BLOC = 960
+        /** The listening may last this much longer than asked (the system's own start) before it is called stuck. */
+        const val MARGE_MS = 5_000L
     }
 }
 
 /** The engine's preview player for the sweep (the Guide's « Écouter » plays its sounds the same way), and the music volume. */
 class HautParleurReel(private val context: Context) : HautParleur {
     private var stems: NativeStems? = null
-    private var volumeAvant: Int? = null
+
+    /** Benjamin's own volume, kept on disk until put back: BenStudio Test killed in a sound, the next run puts back his, not its 60 %. */
+    private val volumeFile = java.io.File(java.io.File(context.filesDir, "bentest"), "volume.txt")
 
     override fun jouer(pcm: FloatArray) {
         arreter()
@@ -92,15 +108,15 @@ class HautParleurReel(private val context: Context) : HautParleur {
 
     override fun reglerVolume() {
         val audio = context.getSystemService(AudioManager::class.java) ?: return
-        if (volumeAvant == null) volumeAvant = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+        if (!volumeFile.isFile) runCatching { volumeFile.parentFile?.mkdirs(); volumeFile.writeText(audio.getStreamVolume(AudioManager.STREAM_MUSIC).toString()) }
         val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
         audio.setStreamVolume(AudioManager.STREAM_MUSIC, (max * VOLUME).roundToInt(), 0)
     }
 
     override fun remettreVolume() {
         val audio = context.getSystemService(AudioManager::class.java) ?: return
-        volumeAvant?.let { audio.setStreamVolume(AudioManager.STREAM_MUSIC, it, 0) }
-        volumeAvant = null
+        runCatching { volumeFile.readText().trim().toInt() }.getOrNull()?.let { audio.setStreamVolume(AudioManager.STREAM_MUSIC, it, 0) }
+        volumeFile.delete()
     }
 
     private companion object {

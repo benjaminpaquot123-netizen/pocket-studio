@@ -59,14 +59,11 @@ class BenTestActivity : ComponentActivity() {
             PocketStudioTheme {
                 val etat by Robot.etat.collectAsStateWithLifecycle()
                 var refresh by remember { mutableIntStateOf(0) }
-                // « Écoute au micro » waits for the microphone's answer; refused, its steps are « passées ».
-                var microEnAttente by remember { mutableStateOf(false) }
+                // « Écoute au micro » waits for the microphone's answer (kept out of the screen: a turn does not lose it);
+                // refused, its steps are « passées ».
                 val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
                     refresh++
-                    if (microEnAttente) {
-                        microEnAttente = false
-                        Robot.start(application, Robot.MICRO)
-                    }
+                    if (EcouteMicro.reponseMicro()) Robot.start(application, Robot.MICRO)
                 }
                 val granted = remember(refresh) { PERMISSIONS.associate { (p, _) -> p to (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED) } }
                 LaunchedEffect(Unit) { Robot.look(this@BenTestActivity) }
@@ -84,7 +81,7 @@ class BenTestActivity : ComponentActivity() {
                         startMicro = {
                             EcouteMicro.demarrer(
                                 autorise = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
-                                demander = { microEnAttente = true; ask.launch(Manifest.permission.RECORD_AUDIO) },
+                                demander = { ask.launch(Manifest.permission.RECORD_AUDIO) },
                                 lancer = { Robot.start(application, Robot.MICRO) },
                             )
                         },

@@ -65,7 +65,7 @@ class EcouteMicro(
         } else work()
     }
 
-    private fun ecouter(ms: Long, vararg to: (FloatArray, Int) -> Unit) = micro.ecouter(ms, {}) { x, n -> to.forEach { it(x, n) } }
+    private fun ecouter(ms: Long, vararg to: (FloatArray, Int) -> Unit, avant: () -> Unit = {}) = micro.ecouter(ms, avant) { x, n -> to.forEach { it(x, n) } }
 
     private fun bruit(): String {
         hp.arreter()
@@ -89,13 +89,13 @@ class EcouteMicro(
         val mic = Bandes(micro.rate)
         hp.reglerVolume()
         try {
-            hp.jouer(sweep)
-            ecouter((balayageS * 1000).toLong() + QUEUE_MS, mic::ajouter)
+            // The microphone first, the sweep once it records: its lowest notes come first and must not be lost.
+            ecouter((balayageS * 1000).toLong() + QUEUE_MS, mic::ajouter, avant = { hp.jouer(sweep) })
         } finally {
             hp.arreter()
             hp.remettreVolume()
         }
-        val r = Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, bruitLu())
+        val r = Courbe.mesurer(ref.energies(), mic.energies(), mic.trames, bruitLu(), Courbe.tramesBalayees(micro.rate, balayageS))
         carnet.add(Carnet.MICRO, "micro_courbe", "courbe;" + Tiers.csv(r.db))
         carnet.add(Carnet.MICRO, "micro_courbe", "rsb;" + Tiers.csv(r.rsb))
         val f = Courbe.feu(r)
@@ -106,16 +106,18 @@ class EcouteMicro(
     private fun style(s: String): String {
         val name = "micro_$s"
         prep.morceau(s)
-        val t0 = horloge()
         val mic = Bandes(micro.rate)
         val guet = Guet(micro.rate, sons, name)
         hp.reglerVolume()
-        // From the song heard playing to the microphone listening (the Linux side takes its render from there, about a second).
-        val debut = (horloge() - t0).coerceAtLeast(0) / 1000.0
+        // Where the song is when the microphone starts (the engine's steps since ▶, a sixteenth each at the style's
+        // tempo): the Linux side reads its render from there.
+        val pas = hp.pasJoues()
+        val bpm = StarterWizard.style(s)?.bpm ?: 0.0
+        val debut = if (pas >= 0 && bpm > 0) pas * 15.0 / bpm else 0.0
         try {
             ecouter(ecouteMs, mic::ajouter, guet::ajouter)
         } finally {
-            guet.finir()
+            runCatching { guet.finir() }
             prep.arreter()
             hp.remettreVolume()
         }
@@ -139,7 +141,7 @@ class EcouteMicro(
         const val REFUSE = "passée : micro refusé"
 
         /** After the sweep, what the room still gives back (and the speaker's delay). */
-        const val QUEUE_MS = 1_000L
+        const val QUEUE_MS = 1_500L
 
         private fun fmt3(v: Double) = String.format(Locale.ROOT, "%.3f", v)
 
@@ -239,6 +241,7 @@ class EcouteMicro(
          * granted ([demander], whose answer then calls [lancer]), else the run started at once.
          */
         fun demarrer(autorise: Boolean, demander: () -> Unit, lancer: () -> Unit) {
+            synchronized(this) { enAttente = !autorise }
             if (autorise) lancer() else demander()
         }
 
@@ -246,11 +249,14 @@ class EcouteMicro(
          * The microphone's answer came (granted or not): true once if « Écoute au micro » was waiting for it, then the
          * run starts. Kept here, out of the screen, so a turn of the phone while the system asks does not lose it.
          */
-        fun reponseMicro(): Boolean = false
+        fun reponseMicro(): Boolean = synchronized(this) { enAttente.also { enAttente = false } }
+
+        @Volatile
+        private var enAttente = false
 
         /** What « Écoute au micro » says before the microphone is asked for. */
         const val PHRASE = "Le robot va écouter le haut-parleur avec le micro pendant environ 5 minutes : un balayage de sons, puis 4 morceaux. " +
             "Pose le téléphone sur une table, dans une pièce calme, et ne parle pas. Rien n'est enregistré : seuls des chiffres sortent, " +
-            "plus 2 secondes de son autour d'un problème s'il y en a un (le rapport le dira avant l'envoi)."
+            "plus 2 secondes de son autour de chaque problème entendu, au plus 4 extraits (le rapport le dira avant l'envoi)."
     }
 }

@@ -1,0 +1,50 @@
+Écran 81 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 132  Tempo » @ 83,114
+bouton « ? » @ 543,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Plaits » ⋮ @ 295,186
+icône ♪ @ 413,186
+bouton + «  Piste » [coupé] @ 517,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » @ 280,351
+texte « 100 % » @ 433,351
+bouton « Accords » @ 109,351
+bouton « Basse en fantôme » [coupé, sélectionné] @ 516,351
+bouton « Basse · mesure 4/8 Encore 6 notes en pointillé à toucher » @ 294,432
+texte « mes. » @ 69,489
+bouton « 3 » [coupé] @ 109,501
+bouton « 4 » @ 336,501
+texte « Do2 » @ 69,549
+dessin @ 69,579
+dessin @ 69,609
+dessin @ 69,639
+dessin @ 69,669
+dessin @ 69,699
+dessin @ 69,729
+dessin @ 69,759
+dessin @ 69,789
+dessin @ 69,817
+dessin [coupé] @ 321,682
+image (chapeau de diplômé) @ 37,879
+texte « La basse Chapitre 5/15 · Étape 2/2 · Facile » @ 244,879
+icône (liste) @ 459,879
+icône ⌃ @ 531,879
+icône « À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : deux petites notes après chaque kick. « Copier sur les mesures suivantes » la répète sur les mesures 2 et 3. Touche ensuite les notes de la mesure 4 (la fin monte d'un cran, puis saute en haut), puis « Copier » encore. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 132 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

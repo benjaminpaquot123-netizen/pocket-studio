@@ -1,0 +1,10 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tab_simple_Rythme
+tuto_panel/tab_simple_Rythme
+dialogue:tempo_sheet
+dialogue:tuto_key_sheet
+tuto_spot_ring
+tab_simple_Clavier
+tuto_panel/tab_simple_Clavier

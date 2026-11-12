@@ -1,10 +1,21 @@
 # Tour 5, lot « sons-essai » : relecture neuve (2026-11-12)
-Relu : 4a3bc0252a3b9965dccfe85b1514794b78f4eb7f
+Relu : 262236b21e3de6d3136de4100432413469ad7a81
 
 ## Ce qui a été relu
 - Les dix commits du lot, de 2ee8f348 à bbfed992 : quatre paires rouge / vert, `THIRD_PARTY.md`, le rapport et les décisions. La fusion 4a3bc025 n'apporte que des documents : `git diff 4a3bc025^1 4a3bc025` est vide hors de `docs/`.
 - Le code : `SoundTrial.kt`, `StarterWizard.style`, `SoundTrialTest.kt`, `BenchFlac.kt` (`registerWavs`, `pcm16`), `BenchWavPackTest.kt`, `SoundTrialPacksTest.kt`, la clé `sons.essai` de `app/build.gradle.kts`, `trial_drums.py` et `test_trial_drums.py`.
 - Je suis un relecteur neuf : je n'ai rien écrit de ce lot, et je ne modifie que ce fichier.
+- **Premier passage** sur 4a3bc025, relevé commité en 08f67747. **Second passage** sur 262236b2, seulement l'écart `08f67747..262236b2` : un commit, trois fichiers en mode 100644 (`THIRD_PARTY.md`, `BenchFlac.kt`, le rapport).
+
+## Contrôles du second passage
+- **Chiffres recalculés** à partir du tableau « Timbre » du rapport, colonne par colonne :
+  - air, là où seul l'OTT change : lead tech house +5,4, nappe tech house +2,0, lead techno +2,9, nappe techno +1,5 dB, soit +1,5 à +5,4 ;
+  - air en jump up : nappe +7,0, lead +4,3 dB ;
+  - 1-4 kHz : les 9 voix reculent, de −0,6 (lead et nappe du jump up) à −2,3 dB (batterie et lead de la tech house).
+  Les phrases nouvelles du rapport collent à ces chiffres.
+- `python3 scripts/bench/rapport-zone.py HEAD docs/audits/ultra/tour-5-sons-essai-rapport.md` : code 0, les mêmes 4 filtres.
+- `BenchFlac.kt` : seul le commentaire change, pas une ligne de code, donc aucun test à rejouer. Le nouveau commentaire est exact : `AudioDecoder` lit sur un téléphone le 24 bits et le flottant (`ENCODING_PCM_24BIT_PACKED`, `ENCODING_PCM_FLOAT`, l. 247-249).
+- La ligne NumPy de `THIRD_PARTY.md` est juste : `library_pack.py`, `instrument_pack.py`, `trial_drums.py` et `docs/sons/outils/voix.py` importent bien NumPy, et `requirements.txt` donne 2.5.4.
 
 ## Contrôles faits
 - **Moteur** : `git diff 2d931c22..HEAD -- engine` est vide. Rien n'est ajouté dans le rappel audio : ni allocation, ni verrou, ni log, ni appel JNI.
@@ -60,7 +71,8 @@ Aucun.
 
 ## Moyen
 
-### M1. L'air gagné par la nappe et le lead du jump up est mis sur le compte de l'OTT seul
+### M1. L'air gagné par la nappe et le lead du jump up est mis sur le compte de l'OTT seul — **corrigé**
+- **Corrigé en 262236b2** : le rapport sépare l'OTT seul (« là où seul l'OTT change (tech house et techno), leads et nappes gagnent de +1,5 à +5,4 dB d'air ») du jump up (« la nappe et le lead changent aussi de son : +7,0 et +4,3 dB d'air »). Chiffres recalculés : exacts.
 - **Passage** : rapport, « Ce qu'on en tire » : « leads et nappes gagnent de l'air avec l'OTT, surtout la nappe du jump up (+7 dB) ».
 - **Scénario** :
   - en jump up, la nappe et le lead changent de son (« Nappe » devient « Accords future bass », « Hoover » devient « Supersaw ») **et** reçoivent l'OTT : leurs +7,0 et +4,3 dB ne sont pas ceux de l'OTT ;
@@ -68,14 +80,16 @@ Aucun.
   - Benjamin peut en conclure que l'OTT seul éclaircit une nappe de 7 dB, et le vouloir partout.
 - **Correction** : « leads et nappes gagnent de l'air : +1,5 à +5,4 dB là où seul l'OTT change (tech house, techno) ; en jump up, +7 dB sur la nappe et +4,3 dB sur le lead, avec les nouveaux sons et l'OTT ensemble ».
 
-### M2. Le recul dans la bande du téléphone est adouci
+### M2. Le recul dans la bande du téléphone est adouci — **corrigé**
+- **Corrigé en 262236b2** : « **en contrepartie, la part 1-4 kHz recule sur les 9 voix, de 0,6 à 2,3 dB** », en gras, avec la raison (la bande du haut-parleur), et repris dans « Ce dont je ne suis pas sûr ». Chiffres recalculés : exacts.
 - **Passage** : rapport, « Ce qu'on en tire » : « la part 1-4 kHz recule de 1 à 2 dB sur plusieurs voix ».
 - **Scénario** :
   - le tableau montre un recul sur les 9 voix sans exception, de 0,6 dB (lead et nappe du jump up) à 2,3 dB (batterie et lead de la tech house) ;
   - c'est la bande que joue un haut-parleur de téléphone : c'est la principale contrepartie pour l'écoute de Benjamin, et la phrase la présente comme partielle.
 - **Correction** : « la part 1-4 kHz recule sur les 9 voix, de 0,6 à 2,3 dB ».
 
-### M3. Les extraits ne disent pas quel « avant » ils font entendre
+### M3. Les extraits ne disent pas quel « avant » ils font entendre — **corrigé**
+- **Corrigé en 262236b2** : « « Avant » = les sons intégrés, sans pack téléchargé (comme un téléphone qui n'a pas les packs des styles). Sur un téléphone qui a ces packs, l'avant sonne autrement. » La ligne « Extraits » des décisions n'a pas bougé, mais le rapport suffit.
 - **Passages** :
   - rapport, « Extraits envoyés à Benjamin » : « même passage avant / après » ;
   - décisions, ligne « Extraits ».
@@ -86,28 +100,28 @@ Aucun.
 - **Correction** : dans « Extraits » et dans « Ce dont je ne suis pas sûr », écrire : « avant = les sons intégrés à l'appli, sans pack (au banc, les FLAC des packs ne sont qu'une tonalité) ; sur un téléphone qui a téléchargé les packs des styles, l'avant sonne autrement ».
 
 ## Mineur
-- **m1. Un test placé dans un commit rouge y est vert.**
+- **m1. Un test placé dans un commit rouge y est vert.** Ouvert au second passage (le rapport n'a pas changé sur ce point) : il reste mineur.
   - Passage : rapport, « Rouge puis vert, à chaque changement : […] WAV de pack lus au banc : 599779ab / 94c546f5 ».
   - Scénario : `SoundTrialPacksTest` est arrivé dans le rouge 599779ab, mais il ne dépend que de `SoundTrial` (06efec42) et de `soundCategories`, que 94c546f5 ne touche pas. Il est donc vert sur son « rouge », et son rouge n'a jamais été montré : sur 2ee8f348, il ne compile pas. Il vérifie pourtant quelque chose : sans le kit de l'essai, le charley ouvert de la techno donnerait `pack:tr909`. La clé `sons.essai` de Gradle est entrée dans le même vert, sans test.
   - Correction : dire dans le rapport que `SoundTrialPacksTest` est un test de garde de 06efec42, vert dès son commit. Aucun code à changer.
-- **m2. Un test suppose l'interrupteur coupé sans le couper.**
+- **m2. Un test suppose l'interrupteur coupé sans le couper.** Ouvert au second passage : il reste mineur.
   - Passage : `SoundTrialPacksTest#withoutTheSwitchTheRecipesPacksStayFirst`, qui ne coupe pas la propriété, alors que `@After` l'efface toujours.
   - Scénario : `-Psons.essai=1` vaut pour tous les tests de l'appli lancés ensemble. JUnit 4 joue `without…` en premier (ordre des hachages : −1612075058 avant −1057770999), donc le test échoue. Ensuite, le `@After` éteint l'essai pour le reste de cette JVM. Les scripts du banc filtrent leurs tests (`live-bench.sh` : `LiveSongRecorder` et `PreviewLevelBench`), donc ce cas n'arrive pas aujourd'hui.
   - Correction : garder la valeur d'avant en `@Before`, la remettre en `@After`, et couper la propriété au début de `without…`. Même schéma dans `SoundTrialTest`, que la clé Gradle n'atteint pas.
-- **m3. Interrupteur mis sans packs d'essai, le banc joue un mélange.**
+- **m3. Interrupteur mis sans packs d'essai, le banc joue un mélange.** **corrigé** en 262236b2, par écrit : « Ce dont je ne suis pas sûr » dit que le banc jouerait alors un mélange, et que l'essai se joue toujours avec `-Psons.essai=1` et `-Pbench.packs=<packs d'essai>` ensemble. Le banc ne le refuse pas encore : c'est accepté pour un essai.
   - Passage : `SoundTrial.variant`, `kit = drums.associateWith { pack }`, et les voix de kit retirées.
   - Scénario : si les packs `essai_*` ne sont pas installés, `soundCategories` met devant le pack du style. Le charley ouvert de la techno quitte alors le TR-909 pour le pack « techno », et la percussion de la tech house perd sa voix 10 : le banc n'entend ni le défaut, ni l'essai. Ce cas ne concerne que le banc.
   - Correction : que `LiveSongRecorder` refuse `ps.sons.essai=1` quand un pack `essai_<style>` manque, ou au moins l'écrire dans la doc de `SoundTrial`.
-- **m4. `BenchFlac.registerWavs` lit tout le fichier et promet un refus non testé.**
+- **m4. `BenchFlac.registerWavs` lit tout le fichier et promet un refus non testé.** Commentaire **corrigé** en 262236b2 : « Other WAVs (24 bits, float, a broken header) stay unreadable on the bench (a phone would read the first two) ». Restent ouverts, et toujours mineurs : la lecture du fichier entier (`readBytes`) et l'absence de test du refus.
   - Passage : `pcm16` : `val b = f.readBytes()`.
   - Scénario : un WAV entier est chargé en mémoire avant le contrôle du format et avant la coupe à `MAX_SECONDS`. Un WAV d'une heure (690 Mo) déposé dans un dossier de pack irait tout entier dans la mémoire de la JVM de test. Aucun vrai pack n'a de WAV aujourd'hui.
   - Le commentaire « Other WAVs (another depth, a broken header) stay unreadable, as a FLAC that is no FLAC » n'est pas comme sur un téléphone : l'appli y lit un WAV 24 bits (« Raw WAVs can pass straight through at 8, 24 or 32 bits », `AudioDecoder`). Et aucun test ne couvre ce refus.
   - Correction : lire l'en-tête avec `RandomAccessFile`, puis seulement les `MAX_SECONDS` de données. Corriger le commentaire (« refusés au banc, lisibles sur un téléphone »), ou ajouter un test du refus.
-- **m5. Les empreintes rougiront au prochain changement voulu.**
+- **m5. Les empreintes rougiront au prochain changement voulu.** Ouvert au second passage : il reste mineur.
   - Passage : `SoundTrialTest.BASE_HASHES` et le commentaire « hashes taken on 2cfb8a3a, before the trial ».
   - Scénario : après la fusion, tout changement voulu de l'une des 37 recettes, ou de `build`, rougit `offEverySongIsTheSameToTheByte`. Une fois les empreintes refaites, le commentaire devient faux.
   - Correction : dire dans le test comment refaire les empreintes, et que la garde durable est `offEveryStyleIsItsVeryRecipe` ; ou retirer les empreintes quand l'essai est tranché.
-- **m6. NumPy manque à `THIRD_PARTY.md`.**
+- **m6. NumPy manque à `THIRD_PARTY.md`.** **corrigé** en 262236b2 : une ligne NumPy (BSD-3-Clause, scripts et outils de mesure, pas dans l'appli).
   - Passage : la ligne SciPy, qui cite `trial_drums.py`.
   - Scénario : le script utilise aussi NumPy (BSD-3-Clause), absent du tableau. C'était déjà le cas pour `instrument_pack.py`.
   - Correction : ajouter une ligne NumPy (scripts seulement, pas dans l'appli).

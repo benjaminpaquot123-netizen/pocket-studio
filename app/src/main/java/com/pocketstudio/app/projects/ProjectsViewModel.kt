@@ -18,8 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -49,9 +48,13 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     /**
      * The catalog's operations run one at a time, in the order asked: a restore tapped while the
      * trash is being emptied waits for it (and finds nothing left), never renames a folder that is
-     * half deleted.
+     * half deleted. One queue read by one worker: a lock taken by each operation's own coroutine
+     * kept the one-at-a-time but not the order (CI 43137620831: the list asked right after the
+     * first work took the catalog first, said « loaded », and the unused first project was still there).
      */
-    private val operations = Mutex()
+    private val operations = Channel<suspend () -> Unit>(Channel.UNLIMITED).also { queue ->
+        viewModelScope.launch(Dispatchers.IO) { for (operation in queue) operation() }
+    }
     private val running = AtomicInteger(0)
 
     /** Tests: runs inside each operation, before it touches the catalog. */
@@ -310,12 +313,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             running.incrementAndGet()
             _state.update { it.copy(busy = true) }
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        operations.trySend {
             try {
-                operations.withLock {
-                    beforeOperationForTest(what)
-                    block()
-                }
+                beforeOperationForTest(what)
+                block()
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
                 val message = tr("%s impossible (%s).", what, e.message ?: tr("erreur"))

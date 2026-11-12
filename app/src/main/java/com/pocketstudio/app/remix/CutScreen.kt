@@ -72,6 +72,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.AutoCut
 import com.pocketstudio.model.CutMagnet
 import com.pocketstudio.model.i18n.tr
@@ -270,7 +271,9 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
         }
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                // Tour 6, R1 (E c, pt-BR at 200 %: « Cortar a mú… »): two lines, smaller before ever cut.
+                Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(14.sp, MaterialTheme.typography.titleLarge.fontSize),
                     modifier = Modifier.weight(1f, fill = false))
                 // Lot « Aide à jour »: how to cut, by the title (the rows under it keep their height).
                 // « Un bout »: one « ? » for the whole screen (its bars, its two listens, where it goes).
@@ -636,6 +639,8 @@ private fun androidx.compose.foundation.layout.RowScope.Send(icon: ImageVector, 
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(22.dp))
-        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = TextAlign.Center)
+        // Tour 6, R1 (E c, pt-BR at 200 %: « Guard / ar »): a word never split over two lines.
+        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = TextAlign.Center,
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(8.sp, MaterialTheme.typography.labelMedium.fontSize))
     }
 }

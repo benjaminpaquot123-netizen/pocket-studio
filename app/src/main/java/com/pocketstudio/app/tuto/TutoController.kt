@@ -142,7 +142,9 @@ data class TutoUi(
     val chapterOver: Boolean get() = chapters[chapter].steps.all(::settled)
 
     /** N23: the chapter's « Bravo » shown before its last step (that one done before): « Chapitre suivant » goes to the next chapter. */
-    val chapterEndEarly: Boolean get() = bravo && chapterOver && step < chapters[chapter].steps.lastIndex && chapter < chapters.lastIndex
+    // Every step after it done (a Pro example still to hear after it is not skipped: it stays the next step).
+    val chapterEndEarly: Boolean get() = bravo && chapterOver && step < chapters[chapter].steps.lastIndex && chapter < chapters.lastIndex &&
+        chapters[chapter].steps.drop(step + 1).all { it.id in progress.done }
     val finished: Boolean get() = left.isEmpty()
 
     /** Where step [s] is: (chapter, step) indices. */

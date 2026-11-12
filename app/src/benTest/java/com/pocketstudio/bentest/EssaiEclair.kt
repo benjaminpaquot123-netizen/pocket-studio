@@ -72,6 +72,27 @@ interface Appli {
     /** Stops what plays, without a touch (the screen may be off). */
     fun arreterLecture() = Unit
 
+    // Niveau 3 (« Questions à l'oreille »).
+
+    /** The wired headset and Bluetooth, as far as the phone says. Default: neither (the questions that need one are skipped). */
+    fun materiel(): Materiel = Materiel(casqueFilaire = false, bluetooth = false)
+
+    /** [question] in the floating banner over the studio, waiting at most [maxMs]. Default: BenStudio Test's own screen, yes or no. */
+    fun poser(question: Question, maxMs: Long): Reponse = when (demander(question.texte, maxMs)) {
+        true -> Reponse(Verdict.OUI)
+        false -> Reponse(Verdict.NON)
+        null -> Reponse(Verdict.SANS_REPONSE)
+    }
+
+    /** A swipe from the screen's left edge, along the middle of the node tagged [tag]. */
+    fun glisserDuBordGauche(tag: String) = Unit
+
+    /** The kick's place in the stereo field is the centre (null: unreadable). */
+    fun kickAuCentre(): Boolean? = null
+
+    /** The last [lignes] lines of the app's journal. */
+    fun journalFin(lignes: Int): String = ""
+
     data class VideoVu(val running: Boolean, val file: File?, val error: String?, val seconds: Int? = null)
 
     /** [batterieC]: °C; [statut]: PowerManager's thermal status (0 none … 6 shutdown); [marge]: thermal headroom (1 = throttling). */

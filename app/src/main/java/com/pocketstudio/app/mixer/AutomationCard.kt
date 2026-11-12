@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -397,6 +398,19 @@ fun AutomationCard(
     strips: List<StripInfo> = BASIC_STRIPS, modifier: Modifier = Modifier,
 ) {
     var picking by rememberSaveable { mutableStateOf(false) }
+    // Chantier 8 (Benjamin, tel-14: « la fenêtre se ferme sans rien dire », the curve made further
+    // down, out of sight): the settings with a curve when one was asked for, until it comes; then
+    // the curve picked (new, or already there), lit and brought into view until it is touched.
+    var awaiting by remember { mutableStateOf<Set<AutoTarget>?>(null) }
+    var spot by remember { mutableStateOf<Spot?>(null) }
+    LaunchedEffect(ui.lanes) {
+        val before = awaiting ?: return@LaunchedEffect
+        ui.lanes.firstOrNull { it.target !in before }?.let { spot = Spot(it, fresh = true); awaiting = null }
+    }
+    // A curve asked for from elsewhere (« Ce qui joue », the timeline) takes the light: this one is forgotten.
+    LaunchedEffect(ui.focusLane) { if (ui.focusLane >= 0) { spot = null; awaiting = null } }
+    val spotIndex = if (ui.focusLane >= 0) -1 else spot?.let { s -> ui.lanes.indexOf(s.lane) } ?: -1
+    val shown = if (spotIndex >= 0) ui.copy(focusLane = spotIndex) else ui
     NeonCard(accent = Neon.Amber, modifier = modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(tr("Courbes"), Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
@@ -431,18 +445,33 @@ fun AutomationCard(
         if (ui.lanes.isEmpty()) {
             Text(tr("Rien ne bouge encore. Idée : le filtre d'une nappe qui s'ouvre sur 8 mesures."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-        ui.lanes.forEachIndexed { i, lane -> LaneBlock(i, lane, ui, channels, master, strips, actions) }
+        ui.lanes.forEachIndexed { i, lane ->
+            val note = when {
+                i != spotIndex -> null
+                spot?.fresh == true -> tr("Nouvelle courbe : dessine-la ci-dessous.")
+                else -> tr("Cette courbe existe déjà : la voici.")
+            }
+            LaneBlock(i, lane, shown, channels, master, strips, actions, note, asked = spot.takeIf { i == spotIndex })
+        }
     }
     if (picking) {
+        val used = ui.lanes.map { it.target }.toSet()
         TargetPicker(
-            used = ui.lanes.map { it.target }.toSet(), channels = channels, master = master, strips = strips,
-            pick = { picking = false; actions.add(it) },
-            addFilter = { picking = false; actions.addFilter(it) },
+            used = used, channels = channels, master = master, strips = strips,
+            pick = { t ->
+                picking = false
+                val there = ui.lanes.firstOrNull { it.target == t }
+                if (there != null) { spot = Spot(there, fresh = false); awaiting = null } else { spot = null; awaiting = used; actions.add(t) }
+            },
+            addFilter = { picking = false; spot = null; awaiting = used; actions.addFilter(it) },
             dismiss = { picking = false },
             preferred = ui.preferredCh,
         )
     }
 }
+
+/** The curve « Automatiser un réglage » ended on: [lane] as it was then, [fresh] when just made. */
+private class Spot(val lane: AutomationLane, val fresh: Boolean)
 
 /**
  * One lane: whose it is (the track's coloured chip first, then the setting), its value now (a small
@@ -453,9 +482,13 @@ fun AutomationCard(
 internal fun LaneBlock(
     i: Int, lane: AutomationLane, ui: AutomationUi, channels: List<Channel>, master: List<Insert>,
     strips: List<StripInfo>, actions: AutomationActions,
+    /** Said over a lit lane (« Nouvelle courbe… »), null: nothing. */
+    note: String? = null,
+    /** What asked for this lit lane: a new asking (the same curve picked again) brings it into view again. */
+    asked: Any? = null,
 ) = com.pocketstudio.ui.LeftToRight {
     val focus = remember { BringIntoViewRequester() }
-    LaunchedEffect(ui.focusLane) { if (ui.focusLane == i) focus.bringIntoView() }
+    LaunchedEffect(ui.focusLane, asked) { if (ui.focusLane == i) focus.bringIntoView() }
     val lit = ui.focusLane == i
     val shape = RoundedCornerShape(12.dp)
     val song = lane.mode == AutomationLane.SONG
@@ -485,10 +518,17 @@ internal fun LaneBlock(
     val tint = ownerColor ?: if (lane.target.kind == AutoTarget.BUS_PARAM) Neon.Magenta else Neon.Cyan
     Column(
         Modifier.fillMaxWidth().bringIntoViewRequester(focus)
-            .then(if (lit) Modifier.border(2.dp, Neon.Amber, shape).background(Neon.Amber.copy(alpha = 0.06f), shape).padding(8.dp) else Modifier.padding(top = 4.dp))
+            // The frame alone, no tint: on an amber wash « Vider » fell under WCAG AA (4.37:1, the census of the lit new curve).
+            .then(if (lit) Modifier.border(2.dp, Neon.Amber, shape).padding(8.dp) else Modifier.padding(top = 4.dp))
             .testTag("auto_lane_$i"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
+        if (lit && note != null) {
+            Text(
+                note, style = MaterialTheme.typography.labelLarge, color = Neon.Amber,
+                modifier = Modifier.semantics { liveRegion = androidx.compose.ui.semantics.LiveRegionMode.Polite }.testTag("auto_fresh_$i"),
+            )
+        }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 // The track first, in its colour: which track this curve moves is never a guess.
@@ -1002,7 +1042,8 @@ fun TargetPickerContent(
     used: Set<AutoTarget>, channels: List<Channel>, master: List<Insert>, strips: List<StripInfo>,
     pick: (AutoTarget) -> Unit, addFilter: (Int) -> Unit, preferred: Int = -1,
 ) {
-    val all = remember(channels, master, strips, used) { automationTargets(channels, master, strips).filter { it !in used } }
+    // Chantier 8: a setting with a curve stays offered (« déjà une courbe »): picked, it leads to its curve.
+    val all = remember(channels, master, strips) { automationTargets(channels, master, strips) }
     val groups = buildList<PickGroup> {
         strips.forEach { st ->
             val targets = all.filter { it.kind != AutoTarget.BUS_PARAM && it.kind != AutoTarget.LIVE && it.ch == st.ch }
@@ -1033,7 +1074,7 @@ fun TargetPickerContent(
             else -> "pick_group_${group.key}"
         }
         PickerGroup(
-            group.name, group.color, tag, group.targets, channels, master, strips, pick,
+            group.name, group.color, tag, group.targets, channels, master, strips, pick, used,
             filterOffer = if (group.filterOffer) ({ addFilter(group.key) }) else null, filterTag = "pick_filter_${group.key}",
         )
     }
@@ -1060,7 +1101,7 @@ private fun TrackChoice(name: String, color: Color, selected: Boolean, tag: Stri
 @Composable
 private fun PickerGroup(
     name: String, color: Color, tag: String, targets: List<AutoTarget>, channels: List<Channel>, master: List<Insert>,
-    strips: List<StripInfo>, pick: (AutoTarget) -> Unit, filterOffer: (() -> Unit)? = null, filterTag: String = "",
+    strips: List<StripInfo>, pick: (AutoTarget) -> Unit, used: Set<AutoTarget>, filterOffer: (() -> Unit)? = null, filterTag: String = "",
 ) {
     if (targets.isEmpty() && filterOffer == null) return
     var more by rememberSaveable(tag) { mutableStateOf(false) }
@@ -1072,10 +1113,15 @@ private fun PickerGroup(
             Text(name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(start = 8.dp))
         }
         if (filterOffer != null) {
-            PickerItem(tr("Filtre (balayage)"), tr("Ajoute un filtre à cette piste et fais-le s'ouvrir ou se fermer : l'effet qu'on entend le plus."), filterTag, filterOffer)
+            PickerItem(tr("Filtre (balayage)"), tr("Ajoute un filtre à cette piste et fais-le s'ouvrir ou se fermer : l'effet qu'on entend le plus."), filterTag, onClick = filterOffer)
         }
         (if (more) sorted else sorted.take(top)).forEach { t ->
-            PickerItem(targetShortName(t, channels, master, strips), targetHint(t, channels, master), "pick_${t.pack()}") { pick(t) }
+            val has = t in used
+            PickerItem(
+                if (has) tr("%s (déjà une courbe)", targetShortName(t, channels, master, strips)) else targetShortName(t, channels, master, strips),
+                if (has) tr("Touche pour la retrouver dans les courbes.") else targetHint(t, channels, master), "pick_${t.pack()}",
+                marked = has,
+            ) { pick(t) }
         }
         if (sorted.size > top) {
             TextButton(onClick = { more = !more }, modifier = Modifier.heightIn(min = 48.dp).testTag("${tag}_more")) {
@@ -1092,16 +1138,20 @@ private fun PickerGroup(
 }
 
 @Composable
-private fun PickerItem(title: String, hint: String, tag: String, onClick: () -> Unit) {
+private fun PickerItem(title: String, hint: String, tag: String, marked: Boolean = false, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(10.dp)
     Column(
         Modifier.fillMaxWidth().heightIn(min = 56.dp)
-            .background(Neon.SurfaceHigh.copy(alpha = 0.6f), RoundedCornerShape(10.dp))
+            .background(Neon.SurfaceHigh.copy(alpha = 0.6f), shape)
+            // A setting that already has its curve: outlined in the curves' amber.
+            .then(if (marked) Modifier.border(1.dp, Neon.Amber, shape) else Modifier)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .testTag(tag),
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(title, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary)
-        if (hint.isNotBlank()) Text(hint, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(title, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary,
+            modifier = if (marked) Modifier.testTag("${tag}_has_curve") else Modifier)
+        if (hint.isNotBlank()) Text(hint, style = MaterialTheme.typography.bodySmall, color = if (marked) Neon.Amber else Neon.TextSecondary)
     }
 }

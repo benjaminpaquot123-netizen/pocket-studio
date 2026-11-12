@@ -1,0 +1,16 @@
+Écran 1 (900x1509)
+texte « BenStudio » @ 156,72
+texte « What do you want to do? » @ 276,132
+bouton ✓ « Keep going Pro My first beat Loop of 1 bar Saved just now » → @ 450,294
+bouton (étincelles) « New song A style in one tap, or “Make me a song”. » → @ 450,489
+bouton (dossier ouvert) « My projects Open another song, copy or rename it. » → @ 450,633
+bouton (quatre vagues) « Remix Track separation: drums, bass, vocals and the rest. » → @ 450,783
+bouton (grille de pads) « Pad Live NEW Pads ready to play, your sounds, live effects. It sounds right away. » → @ 450,943
+bouton ★ ★ ★ « Challenges Listen to a rhythm, play it back on the pads: win stars. » → @ 450,1104
+bouton (micro) « Record my voice or guitar The mic records over your music, right on the beat. » → @ 450,1254
+bouton « I'm learning You make the whole song yourself, step by step: I explain and I check. » (chapeau de diplômé) → [coupé] @ 450,1345
+bouton « ↓ 2 more » @ 804,1395
+texte « ●  REC » @ 672,1479
+texte « ✎  Note » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 318,1479

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour5AppProofTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-12T04:30:41.937Z" hostname="vm" time="1.235">
+  <properties/>
+  <testcase name="myFilesListsAProjectZipSavedFromMyProjects" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.284"/>
+  <testcase name="shareFollowsTheLengthChosenInMix" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.126"/>
+  <testcase name="aScreenComposedAndClosedLeavesComposesDispatcherFree" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.121"/>
+  <testcase name="noChangedWarningRightAfterAMixExport" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.166"/>
+  <testcase name="noChangedWarningRightAfterSharing" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.293"/>
+  <testcase name="myExportsListsTheProjectZipJustSent" classname="com.pocketstudio.app.human.Tour5AppProofTest" time="0.236"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

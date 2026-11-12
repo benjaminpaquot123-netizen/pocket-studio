@@ -1,0 +1,27 @@
+Écran 16 (900x1509)
+bouton ✕ @ 54,54
+bouton ▶ @ 846,54
+onglet « A » [sélectionné] @ 333,54
+onglet « B » @ 411,54
+onglet « C » @ 489,54
+onglet « D » @ 567,54
+bouton « Kick loop » [allumé] @ 118,268
+bouton « Clap » @ 339,268
+bouton « Acid 303 loop » @ 560,268
+bouton « Bass loop » @ 781,268
+bouton « Air horn » @ 118,603
+bouton « Laser » @ 339,603
+bouton « Siren » @ 560,603
+bouton « Shout “Go go go!” » @ 781,603
+bouton « Kick » @ 118,938
+bouton « Snare » @ 339,938
+bouton « Hi-hat » @ 560,938
+bouton « Open hi-hat » @ 781,938
+bouton « Build-up » @ 118,1273
+bouton « Impact » @ 339,1273
+bouton « Drop » @ 560,1273
+bouton « “Go!” » @ 781,1273
+texte « ●  REC » @ 672,1479
+texte « ✎  Note » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 318,1479

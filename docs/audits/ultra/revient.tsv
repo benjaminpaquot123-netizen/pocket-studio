@@ -21,3 +21,4 @@ fumee-banc-fiable	tab_simple_Clavier|record_start|incompris	non	A/a#11	prise sur
 fumee-banc-fiable	padlive_pads_side|padlive_stop_all|rien	non	A/b#5	le son s'arrête, la prise continue (transport, T4-LIVESTOP) ≠ pads qui jouent encore (T3-02, banc) (lot banc6d, 6.2)
 fumee-banc-fiable	mixer/tab_Mix|export_what_Stems|incompris	non	A/d#37	le bouton d'export saute quand on coche « par piste » ≠ traductions (T1-40) (lot banc6d, 6.2)
 fumee-banc-fiable	dialogue:share_sheet|share_my_exports|sans-aide	non	A/d#45	4 lignes de pistes non regroupées ≠ zip absent de « Mes exports » (T5-Cd-68/83) (lot banc6d, 6.2)
+fumee-finale	padlive|padlive_more|incompris	non	A/c#13	tiroir « More » refermé après une prise, toucher suivant perdu ≠ traductions (T1-40) (lot banc7, critère 8)

@@ -47,7 +47,7 @@ class RtlPunctuationTest {
     @Test
     fun theArabicCatalogsFromToTextsPointBack() {
         val table = I18n.table(Lang.AR)
-        val wrong = table.filterKeys { Regex("""%\d\$s → %\d\$s""").containsMatchIn(it) }.filterValues { "→" in it }
+        val wrong = table.filterKeys { Regex("%\\d\\\$s → %\\d\\\$s").containsMatchIn(it) }.filterValues { "→" in it }
         assertTrue(wrong.entries.joinToString("\n"), wrong.isEmpty())
     }
 

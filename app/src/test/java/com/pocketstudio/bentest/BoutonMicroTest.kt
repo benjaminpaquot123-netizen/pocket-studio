@@ -38,6 +38,7 @@ class BoutonMicroTest {
         assertEquals("nothing started before « Commencer »", 0, started)
         compose.onNodeWithTag("bentest_micro_phrase").assertTextContains("micro", substring = true)
         compose.onNodeWithTag("bentest_micro_phrase").assertTextContains("Rien n'est enregistré", substring = true)
+        compose.onNodeWithTag("bentest_micro_phrase").assertTextContains("au plus 4", substring = true)
         j.tap("bentest_micro_go")
         assertEquals(1, started)
 

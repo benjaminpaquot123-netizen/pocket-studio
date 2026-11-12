@@ -50,6 +50,9 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         /** A step's light: « vert;why », « orange;why »… (Feu.mot first). */
         const val FEU = "feu"
 
+        /** An answer to a question of the banner: « verdict;capture;comment » (Oreille.kt). */
+        const val REPONSE = "reponse"
+
         private fun escape(s: String) = s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "")
 
         private fun unescape(s: String): String = buildString(s.length) {

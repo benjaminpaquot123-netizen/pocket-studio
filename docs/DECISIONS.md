@@ -1469,3 +1469,4 @@
 - 2026-11-12 · lot « jank » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-jank.md`
 - 2026-11-12 · lot « hardtechno » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-hardtechno.md`
 - 2026-11-12 · lot « testapk » (tour-5) : 28 décision(s) dans `docs/decisions/tour-5-testapk.md`
+- 2026-11-12 · lot « oreille » (tour-5) : 10 décision(s) dans `docs/decisions/tour-5-oreille.md`

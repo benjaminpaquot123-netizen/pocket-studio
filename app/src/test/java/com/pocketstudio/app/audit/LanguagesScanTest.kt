@@ -77,6 +77,10 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
                 OPEN.any { (where, what) -> where.matches("${screen}_$font") && what.containsMatchIn(f.toString()) } }
             .map { it.toString() }.toMutableList()
         if (s.simple && lang in NON_LATIN) found += latinWords(compose)
+        // Images to look at (never committed): under -Proborazzi.test.record=true, build/langues-captures/<screen>_<lang>_<font>.png.
+        if (System.getProperty("roborazzi.test.record") == "true") {
+            com.github.takahirom.roborazzi.captureScreenRoboImage("build/langues-captures/${screen}_${code}_$font.png")
+        }
         assertTrue("$screen $code font $font:\n" + found.joinToString("\n"), found.isEmpty())
     }
 

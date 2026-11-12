@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -151,10 +152,21 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                 }
                 if (etat.interrompu == null && etat.verdict == null && liste) {
                     Text("Retester les corrections : coche les étapes à refaire", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
-                    if (candidats.none { it.feu != null }) Text("Aucun passage enregistré sur ce téléphone : rien n'est coché d'avance.", color = Neon.TextSecondary)
+                    if (candidats.none { it.coche }) {
+                        Text(
+                            (if (candidats.none { it.feu != null }) "Aucun passage enregistré sur ce téléphone. " else "") + "Coche les étapes à revoir.",
+                            color = Neon.TextSecondary, modifier = Modifier.testTag("bentest_retest_aide"),
+                        )
+                    }
                     candidats.forEach { c ->
-                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_retest_${c.id}")) {
-                            androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = { coches[c.id] = it })
+                        // The whole row ticks (a finger on the step's name, not only on the small box).
+                        Row(
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                .toggleable(value = coches[c.id] == true, role = androidx.compose.ui.semantics.Role.Checkbox, onValueChange = { coches[c.id] = it })
+                                .testTag("bentest_retest_${c.id}"),
+                        ) {
+                            androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = null)
                             Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: ""), color = Neon.TextPrimary)
                         }
                     }

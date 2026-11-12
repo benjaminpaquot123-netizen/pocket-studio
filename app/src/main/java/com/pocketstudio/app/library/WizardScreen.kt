@@ -776,7 +776,7 @@ private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style
                 SceneLetter(index)
                 Column(Modifier.weight(1f)) {
                     Text("${plan.title(index)} · ${plan.role(index)}", style = MaterialTheme.typography.titleSmall)
-                    val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
+                    val what = plan.contents(index).joinToString(com.pocketstudio.model.i18n.listComma()) { it.substringBefore(" (").substringBefore(" / ") }
                     Text(what.ifEmpty { tr("rien pour l'instant") }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }

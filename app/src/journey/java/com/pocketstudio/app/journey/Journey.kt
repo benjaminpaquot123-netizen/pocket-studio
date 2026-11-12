@@ -163,6 +163,14 @@ class Journey(private val driver: JourneyDriver, private val log: (String) -> Un
         tap("wizard_style_$style")
         if (runCatching { await("wizard_style_choose_$style", 5_000) }.isFailure) tap("wizard_style_$style")
         tap("wizard_style_choose_$style")
+        // The touch can be swallowed (v5, phone, Liquid DnB: « nothing tagged wizard_create_now after 15000 ms », the
+        // style step still on screen): « Créer maintenant » is waited for a few seconds, and when it is not there the
+        // card is opened again if it closed and « Choisir ce style » touched once more, up to three times.
+        repeat(3) {
+            if (runCatching { await("wizard_create_now", 4_000) }.isSuccess) return
+            if (!exists("wizard_style_choose_$style")) tap("wizard_style_$style")
+            if (runCatching { await("wizard_style_choose_$style", 5_000) }.isSuccess) tap("wizard_style_choose_$style")
+        }
         await("wizard_create_now")
     }
 

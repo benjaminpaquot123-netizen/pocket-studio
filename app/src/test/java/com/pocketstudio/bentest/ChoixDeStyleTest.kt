@@ -27,7 +27,7 @@ class ChoixDeStyleTest {
     }
 
     @Test
-    fun `rouge - a swallowed Choisir ce style is touched again`() {
+    fun `vert - a swallowed Choisir ce style is touched again`() {
         val a = Assistant(swallow = 1)
         Journey(a).chooseStyle("liquid_dnb", "Bass music")
         assertEquals(2, a.touched.count { it == "wizard_style_choose_liquid_dnb" })

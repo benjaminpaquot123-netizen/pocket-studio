@@ -166,7 +166,10 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
 ) {
     // Taller with a big text size (the position is two lines), never shorter than STRIP_HEIGHT.
-    val height = STRIP_HEIGHT * maxOf(1f, LocalDensity.current.fontScale)
+    // Tour 5, lot « langues »: a tall script (Arabic, Hindi) makes the position's two lines taller than the font says
+    // (« المازورة 1/3 » was cut at its foot, even at 100 %): a little more room for them.
+    val tall = com.pocketstudio.model.i18n.I18n.lang in TALL_SCRIPTS
+    val height = STRIP_HEIGHT * maxOf(1f, LocalDensity.current.fontScale) * (if (tall) TALL_SCRIPT_ROOM else 1f)
     // A narrow strip (a small phone, a big text size): the chips keep their icon alone, so the
     // position keeps its words (never « … / me »). The Solo chip gives way first.
     // The « ? » (phase 36) takes a chip's room too.
@@ -180,9 +183,7 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         else maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp)
         )
     Row(
-        // Tour 5, lot « langues »: a tall script (Arabic, Hindi) makes the position's two lines taller than the font says: the
-        // strip grows to hold them (« المازورة 1/3 » was cut at its foot, even at 100 %).
-        Modifier.fillMaxWidth().heightIn(min = height).padding(horizontal = 6.dp).testTag("play_strip"),
+        Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -224,6 +225,10 @@ private val LOOP_WORD_BELOW = 340.dp
 
 /** The height of a chip's drawn pill, inside its 48 dp touch target. */
 private val CHIP_HEIGHT = 32.dp
+
+/** The scripts whose lines stand taller than their font size says (tour 5, lot « langues »). */
+private val TALL_SCRIPTS = setOf(com.pocketstudio.model.i18n.Lang.AR, com.pocketstudio.model.i18n.Lang.HI)
+private const val TALL_SCRIPT_ROOM = 1.2f
 
 /** The least width of the position: its part's name and « mes. 9/60 » stay readable whatever the chips. */
 private val POSITION_MIN = 96.dp

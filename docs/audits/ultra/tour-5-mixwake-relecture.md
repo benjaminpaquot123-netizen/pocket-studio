@@ -1,5 +1,5 @@
 # Relecture du lot « mixwake » (tour 5)
-Relu : 1413239992f9cdd43ce7a0463fcd19ab59e79b66
+Relu : cd54a4aa40330908b738b20828950e8618559bd7
 
 Lu : a240a4b1 (rouge, tests seulement), b49d8f74 (vert), 0302da8a (docs) ; 58935089 est la fusion de fx-int. Tests ciblés rejoués ici : verts (Gradle « up-to-date », déjà vert sur ce code).
 
@@ -23,5 +23,6 @@ Lu : a240a4b1 (rouge, tests seulement), b49d8f74 (vert), 0302da8a (docs) ; 58935
 
 - **Moyen 1 : corrigé.** `rememberWorstEvery` garde le pire relevé de la période de 250 ms (min du gain pour le limiteur, « Ça sature » prioritaire pour les mots) puis repart du dernier relevé : pas de « sature » collé (au plus une période de plus si le dernier relevé était lui-même le clip). Les mots et le conseil du Mode simple lisent le même état (`rememberOutputWords`, passé à `SimpleMixScreen` et à `SimpleMixTab`). Pas de fuite : un seul `LaunchedEffect`, le `launch` enfant est annulé avec lui ; collecteur et boucle sur le même fil. Aucun `.png` modifié.
 - `SimpleMixTest` : l'ajout de `idle()` laisse le conseil suivre les mots (150 ms après) ; l'assertion réelle (master -3 dB après « Régler ») est intacte. `ClipHoldTest` vérifie un clip d'un seul relevé dans la ligne, les mots et le conseil. Tests non rejoués ici.
+- Delta 14132399..cd54a4aa : docs (une ligne « chemin: » du rapport scindée en deux, une par test de `ClipHoldTest`) et fusion de fx-int ; `git diff` hors portail : aucun fichier du lot touché (Mix/SimpleMix/ui-components Changes.kt, `ClipHoldTest`, `PlayingRecomposeTest`), seulement bentest et docs, donc aucune résolution de conflit dans le lot ; tests ciblés rejoués verts après la fusion (non rejoués ici).
 
 Verdict : 0 bloquant, 0 grave — fusion possible

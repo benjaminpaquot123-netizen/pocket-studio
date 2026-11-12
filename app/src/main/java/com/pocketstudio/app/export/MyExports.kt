@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,8 +30,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
@@ -168,20 +177,111 @@ fun MyExportsDialog(
     )
 }
 
-/** The files, newest first: the name whole (two lines at most), its date and size, what it is when not a sound, « Renvoyer ». */
+/** The files, newest first: the name (two lines at most, its extension in sight), its date and size, what it is when not a sound, « Renvoyer ». */
 @Composable
 internal fun MyExportsList(list: List<MyExport>, send: (MyExport) -> Unit) {
+    // Tour 6, R14: the name's room beside « Renvoyer »: 16 figures of its font (a name's word or two a line); less (a long
+    // word for « Renvoyer », the phone's font at 200 %), « Renvoyer » goes under the name and the name gets the whole width.
+    val measurer = rememberTextMeasurer()
+    val style = MaterialTheme.typography.bodyMedium
+    val nameRoom = remember(measurer, style) { measurer.measure("0".repeat(16), style, softWrap = false, maxLines = 1).size.width }
     LazyColumn(Modifier.heightIn(max = 360.dp)) {
         items(list, key = { it.uri.toString() }) { e ->
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).testTag("my_export")) {
-                Column(Modifier.weight(1f)) {
-                    Text(e.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                    val kind = when (e.kind) { MyExport.Kind.Sound -> null; MyExport.Kind.Video -> tr("vidéo"); MyExport.Kind.Project -> tr("projet") }
-                    Text(listOfNotNull(kind, MyExports.detail(e)).joinToString(" · "), style = MaterialTheme.typography.bodySmall,
-                        color = Neon.TextSecondary, modifier = Modifier.testTag("my_export_detail"))
-                }
-                TextButton(onClick = { send(e) }, modifier = Modifier.heightIn(min = 48.dp).testTag("my_export_send")) { Text(tr("Renvoyer")) }
+            FileRow(
+                nameRoom,
+                name = {
+                    Column {
+                        FileName(e.name, style = style)
+                        val kind = when (e.kind) { MyExport.Kind.Sound -> null; MyExport.Kind.Video -> tr("vidéo"); MyExport.Kind.Project -> tr("projet") }
+                        Text(listOfNotNull(kind, MyExports.detail(e)).joinToString(" · "), style = MaterialTheme.typography.bodySmall,
+                            color = Neon.TextSecondary, modifier = Modifier.testTag("my_export_detail"))
+                    }
+                },
+                send = { TextButton(onClick = { send(e) }, modifier = Modifier.heightIn(min = 48.dp).testTag("my_export_send")) { Text(tr("Renvoyer")) } },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).testTag("my_export"),
+            )
+        }
+    }
+}
+
+/** [name] beside [send] (centred) when [nameRoom] pixels are left to it, else above it, [send] at the end. */
+@Composable
+private fun FileRow(nameRoom: Int, name: @Composable () -> Unit, send: @Composable () -> Unit, modifier: Modifier = Modifier) {
+    Layout(contents = listOf(name, send), modifier = modifier) { (names, sends), constraints ->
+        val width = constraints.maxWidth
+        val button = sends.first().measure(constraints.copy(minWidth = 0, minHeight = 0))
+        if (width - button.width >= nameRoom) {
+            val text = names.first().measure(Constraints.fixedWidth(width - button.width))
+            val height = maxOf(text.height, button.height)
+            layout(width, height) {
+                text.placeRelative(0, (height - text.height) / 2)
+                button.placeRelative(width - button.width, (height - button.height) / 2)
+            }
+        } else {
+            val text = names.first().measure(Constraints.fixedWidth(width))
+            layout(width, text.height + button.height) {
+                text.placeRelative(0, 0)
+                button.placeRelative(width - button.width, text.height)
             }
         }
     }
 }
+
+/**
+ * Tour 6, R14 (seats A c #43, E b #16): a file's name on two lines at most, its words whole and its end in sight (.wav,
+ * .m4a, .zip, .mp4 say which file it is). Compose broke a name with no spaces anywhere (« pocketstudio.z / ip ») and its
+ * closing « … » hid the extension (« …21361… »): the lines are cut here instead, between the name's words (after « - »,
+ * « _ » or a space, before a « . »), and when two lines are not enough, the second ends with « … » and the extension
+ * (« Jump-up-DnB-bootleg- / Mehdi-morceau-club….wav »). TalkBack reads the whole name.
+ */
+@Composable
+internal fun FileName(name: String, modifier: Modifier = Modifier, style: TextStyle = MaterialTheme.typography.bodyMedium) {
+    val measurer = rememberTextMeasurer()
+    // Each line in the name's own direction (its first letter's), whatever the interface's: a Latin name's second line
+    // in Arabic read « zip….20261108 », its first « -Nuit-sur-la-ville ».
+    val own = remember(name, style) { style.copy(textDirection = if (startsRightToLeft(name)) TextDirection.Rtl else TextDirection.Ltr) }
+    BoxWithConstraints(modifier) {
+        val room = constraints.maxWidth
+        val shown = remember(name, room, own, measurer) {
+            if (!constraints.hasBoundedWidth) name
+            else fileNameLines(name) { measurer.measure(it, own, softWrap = false, maxLines = 1).size.width <= room }
+        }
+        Text(shown, style = own, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.semantics { contentDescription = name })
+    }
+}
+
+/** [text]'s first letter that has a direction is written right to left (Arabic, Hebrew). */
+private fun startsRightToLeft(text: String): Boolean = text.firstNotNullOfOrNull { c ->
+    when (Character.getDirectionality(c)) {
+        Character.DIRECTIONALITY_LEFT_TO_RIGHT -> false
+        Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC -> true
+        else -> null
+    }
+} ?: false
+
+/**
+ * [name] on two lines at most, each one [fits]: whole on one line, else broken at its last break that fits (after « - »,
+ * « _ » or a space, before a « . »; between letters only when no break fits), else its second line shortened: its start,
+ * « … » and the extension.
+ */
+internal fun fileNameLines(name: String, fits: (String) -> Boolean): String {
+    if (name.isEmpty() || fits(name)) return name
+    // The longest start of [s] that fits once [then] is added: up to one of its breaks, else as many letters as fit.
+    fun start(s: String, then: String): String {
+        val breaks = (1 until s.length).filter { s[it - 1] in BREAK_AFTER || s[it] == '.' }
+        breaks.lastOrNull { fits(s.substring(0, it).trimEnd() + then) }?.let { return s.substring(0, it).trimEnd() }
+        var lo = 0
+        var hi = s.length
+        while (lo < hi) { val mid = (lo + hi + 1) / 2; if (fits(s.substring(0, mid) + then)) lo = mid else hi = mid - 1 }
+        return s.substring(0, lo)
+    }
+    val first = start(name, "").ifEmpty { name.take(1) }
+    val rest = name.substring(first.length).trimStart()
+    if (fits(rest)) return "$first\n$rest"
+    val dot = rest.lastIndexOf('.')
+    val extension = if (dot > 0 && rest.length - dot in 2..6) rest.substring(dot) else ""
+    val tail = "…$extension"
+    return "$first\n" + start(rest.dropLast(extension.length), tail).trimEnd(*BREAK_AFTER.toCharArray()) + tail
+}
+
+private const val BREAK_AFTER = "-_ "

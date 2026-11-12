@@ -98,7 +98,7 @@ class MyFilesNamesTest(private val code: String, private val scale: String, priv
             return flat.commonPrefixWith(name).length + flat.commonSuffixWith(name).length
         }
         val node = compose.onAllNodes(hasAnyAncestor(hasTestTag("my_export")), useUnmergedTree = true).fetchSemanticsNodes()
-            .filter { textOf(it).startsWith(name.take(6)) }.maxByOrNull { near(textOf(it)) } ?: return listOf("« $name »: not shown")
+            .filter { textOf(it).replace("\n", "").startsWith(name.take(4)) }.maxByOrNull { near(textOf(it)) } ?: return listOf("« $name »: not shown")
         val shown = textOf(node)
         val layout = mutableListOf<TextLayoutResult>().also { node.config[SemanticsActions.GetTextLayoutResult].action!!(it) }.first()
         val out = mutableListOf<String>()
@@ -119,6 +119,12 @@ class MyFilesNamesTest(private val code: String, private val scale: String, priv
             val at = layout.getLineStart(line)
             val before = shown.substring(0, at.coerceIn(0, shown.length)).trimEnd('\n').lastOrNull()
             if (at < shown.length && before != null && before !in "-_ " && shown[at] != '.') out += "« $shown »: a word split at line ${line + 1}"
+        }
+        // Each line in the name's own direction, whatever the interface's (here Latin names, left to right): a line's
+        // last letter at its right end (in Arabic, « -Nuit-sur-la-ville » and « zip….20261108 » were not).
+        for (line in 0..last) {
+            val end = (layout.getLineEnd(line, visibleEnd = true) - 1 downTo layout.getLineStart(line)).firstOrNull { !shown[it].isWhitespace() } ?: continue
+            if (layout.getBoundingBox(end).right < layout.getLineRight(line) - 1f) out += "« $shown »: line ${line + 1} not written left to right"
         }
         return out
     }

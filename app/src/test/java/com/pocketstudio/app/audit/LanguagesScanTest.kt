@@ -1,0 +1,126 @@
+package com.pocketstudio.app.audit
+
+import androidx.activity.ComponentActivity
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.test.core.app.ApplicationProvider
+import com.pocketstudio.app.nav.AppHarness
+import com.pocketstudio.model.i18n.Lang
+import org.junit.After
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.ParameterizedRobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
+
+/**
+ * Tour 5, lot « langues » (zone « langues et lisibilité », 0 promise kept out of 8): the whole app as a newcomer
+ * meets it, in the five languages of tour 6 (French, German's long words, Arabic right to left, Hindi's tall marks,
+ * Chinese), with the phone's font at 100 % and at 200 %, on a small phone (360 dp): one case per screen, language
+ * and font. Each case reads what the screen draws, never an image:
+ * - **CUT / OVERLAP** ([LayoutScan]): a word cut, lines lost, « … » where a word should be whole, a text over another;
+ * - **LATIN** (Arabic, Hindi, Chinese, in the Mode simple): an English word (« Snare », « Loop », « Bridge »…) on a
+ *   screen promised « everyday words » (promises t5-Aa-4, t5-Bd-1, t5-Fc-ecran-1).
+ * What is accepted is in [Allowed] and [LATIN_OK], each with its reason. Not here: the Mix (another team's) and the
+ * export screen (another team's).
+ */
+@RunWith(ParameterizedRobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h780dp-xxhdpi")
+class LanguagesScanTest(private val screen: String, private val code: String, private val font: String) {
+    @get:Rule
+    val compose = createAndroidComposeRule<ComponentActivity>()
+
+    private val h = AppHarness(compose)
+
+    @After
+    fun back() {
+        h.finish()
+        RuntimeEnvironment.setFontScale(1f)
+    }
+
+    private fun tap(tag: String) {
+        val node = compose.onNodeWithTag(tag)
+        if (!node.isDisplayed()) node.performScrollTo()
+        node.performClick()
+        compose.waitForIdle()
+    }
+
+    /** A screen: how the app opens and the gestures that lead to it. */
+    private class Screen(val simple: Boolean = false, val firstLaunch: Boolean = false, val launchChoice: Boolean = false, val go: LanguagesScanTest.() -> Unit = {})
+
+    @Test
+    fun screenReadsWhole() {
+        val lang = Lang.entries.first { it.code == code }
+        val s = SCREENS.getValue(screen)
+        if (font != "1.0") RuntimeEnvironment.setFontScale(font.toFloat())
+        h.start(simple = s.simple, firstLaunch = s.firstLaunch, lang = lang, launchChoice = s.launchChoice)
+        if (s.launchChoice) h.awaitTag("launch_edited")
+        s.go(this)
+        h.awaitGuide()
+        compose.mainClock.advanceTimeBy(800)
+        compose.waitForIdle()
+        val density = ApplicationProvider.getApplicationContext<android.content.Context>().resources.displayMetrics.density
+        val found = LayoutScan.scan(compose, density, CaptureMatrixTest.LAYOUT).filterNot { Allowed.matches("lang_$screen", it) }.map { it.toString() }.toMutableList()
+        if (s.simple && lang in NON_LATIN) found += latinWords(compose)
+        assertTrue("$screen $code font $font:\n" + found.joinToString("\n"), found.isEmpty())
+    }
+
+    companion object {
+        /** The five languages of tour 6 (docs/decisions/tour-5-langues.md). */
+        val LANGS = listOf("fr", "de", "ar", "hi", "zh-CN")
+        val FONTS = listOf("1.0", "2.0")
+
+        /** The languages whose script is not Latin: an English word there is a word the person cannot read. */
+        val NON_LATIN = setOf(Lang.AR, Lang.HI, Lang.ZH_CN, Lang.JA, Lang.KO)
+
+        private val SCREENS: Map<String, Screen> = linkedMapOf(
+            "welcome_mode" to Screen(firstLaunch = true),
+            "launch_simple" to Screen(simple = true, launchChoice = true),
+            "simple_song" to Screen(simple = true),
+            "simple_rhythm" to Screen(simple = true) { tap("tab_simple_Rythme") },
+            "simple_keys" to Screen(simple = true) { tap("tab_simple_Clavier") },
+            "simple_more" to Screen(simple = true) { tap("top_more") },
+            "launch" to Screen(launchChoice = true),
+            "structure" to Screen(),
+            "sons" to Screen { tap("tab_Sons") },
+            "live" to Screen { tap("tab_Live") },
+            "plus" to Screen { tap("tab_Plus") },
+        )
+
+        @JvmStatic @ParameterizedRobolectricTestRunner.Parameters(name = "{0}_{1}_{2}")
+        fun cases(): List<Array<Any>> = SCREENS.keys.flatMap { s -> LANGS.flatMap { l -> FONTS.map { f -> arrayOf<Any>(s, l, f) } } }
+
+        /**
+         * Latin words a non-Latin interface may show, each for its reason: units and file kinds written so on every
+         * phone (BPM, dB, Hz, MIDI, M4A…), the part letters (A, B, C), the app's and the brands' names, and the test
+         * project's own names (a user's name is shown as typed).
+         */
+        val LATIN_OK = setOf(
+            "BPM", "dB", "Hz", "kHz", "ms", "MIDI", "M4A", "WAV", "FLAC", "MP3", "ZIP", "zip", "OK", "LUFS",
+            "Pocket", "Studio", "BenStudio", "YouTube", "TikTok", "Instagram", "Spotify", "Apple", "Music", "SoundCloud", "Bluetooth",
+            // The harness's song (AppHarness.songWithTracks): its project and track names, typed by the « user ».
+            "Lead", "Bass", "Pad", "Chords", "Drums", "Audio",
+        )
+
+        private val WORD = Regex("[A-Za-z][A-Za-z'’-]+")
+
+        /** The English words the screen shows, outside [LATIN_OK]. */
+        fun latinWords(rule: androidx.compose.ui.test.junit4.ComposeTestRule): List<String> {
+            val nodes = rule.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+            return nodes.filterNot { LayoutScan.hidden(it) }.flatMap { n ->
+                n.config.getOrNull(SemanticsProperties.Text).orEmpty().map { it.text }
+            }.flatMap { text -> WORD.findAll(text).map { it.value }.filter { it !in LATIN_OK }.map { "LATIN « $it » in « ${text.take(60)} »" } }
+                .distinct()
+        }
+    }
+}

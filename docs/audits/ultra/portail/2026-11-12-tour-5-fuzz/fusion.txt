@@ -1,0 +1,8 @@
+fusion: 62233649bd986332f4a51a540a41bfd8f13de5ea
+branche: eq/tour-5-fuzz
+tete: 774f5d3c9ce8b4e0e40b4db80b982a0cb80b462b
+relecture: docs/audits/ultra/tour-5-fuzz-relecture.md
+relu: a3621ddc23443158bb6d56611441f30ef2286cb4
+filtres: *GestureFuzzTest *PlayingRecomposeTest *ClipHoldTest *Zone3DialogDiagTest *GestureFuzzTest *PlayingRecomposeTest *ClipHoldTest *Zone3DialogDiagTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

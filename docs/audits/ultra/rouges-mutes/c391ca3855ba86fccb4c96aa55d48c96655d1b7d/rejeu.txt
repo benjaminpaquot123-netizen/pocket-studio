@@ -1,0 +1,3 @@
+test: PremiereInstallationTest#aFirstInstallReachesTheFirstSongsCreation
+muté : 2026-11-12, lot « juge6 », worktree jetable détaché au vert, mutation.patch appliqué puis retiré, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *PremiereInstallationTest (muté rc=1 455s ; vert rc=0 856s)
+aussi : aFirstInstallExportsAndShowsItsFiveScreens rouge muté, vert sans la mutation ; aFailedStepSaysWhatWasOnScreen vert dans les deux. Mutation : plusTard() ne touche plus « Plus tard ».

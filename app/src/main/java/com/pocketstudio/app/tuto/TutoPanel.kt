@@ -110,6 +110,15 @@ fun tutoPadNames(text: String, project: com.pocketstudio.model.Project): String 
 }
 
 /**
+ * Tour 6 (T2): [shown], the translation of the course's French [fr], with each pad [fr] names between quotes said
+ * by the kit's own name in this language, so that [tutoPadNames] finds it.
+ */
+internal fun tutoKitQuotes(fr: String, shown: String): String = shown
+
+/** A step's words ([fr], the course's French) as the panel shows them: translated, each pad by its name on the screen ([names]). */
+private fun tutoWords(fr: String, names: (String) -> String): String = names(tutoKitQuotes(fr, tutoText(fr)))
+
+/**
  * What the tutorial draws on the screens: dotted cells of a drum step (pad, steps), dotted notes of
  * a melodic step (track, notes), the cells « Montre-moi » lit fading away (pad, steps, how much they
  * show), the send it asks for in an effects box (channel, bus); [focus] goes up when « Je le fais »
@@ -447,7 +456,7 @@ fun TutoPanel(
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         Row(verticalAlignment = Alignment.Top) {
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                            Text(names(tutoText(step.textFor(ui.progress.level))), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                            Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
                         }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
@@ -631,7 +640,7 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
             line.clickable(onClickLabel = tr("Lire la suite"), onClick = actions.toggle).testTag("tuto_folded_text"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(names(tutoText(ui.current.textFor(ui.progress.level))), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
+            Text(tutoWords(ui.current.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f))
             Row(Modifier.padding(start = 6.dp).testTag("tuto_folded_more"), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Lire"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold, maxLines = 1)
@@ -840,7 +849,7 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
             ) {
                 Column(Modifier.weight(1f)) {
                     Text(tr("Chapitre %1\$d/%2\$d · %3\$s", c + 1, ui.chapters.size, tutoText(ui.chapters[c].title)), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(names(tutoText(s.textFor(ui.progress.level))), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(tutoWords(s.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
             }

@@ -122,6 +122,11 @@ data class TutoUi(
     val atEnd: Boolean = false,
     /** What the step's main button just made, in words (« Créer la partie Intro »: what it took out). */
     val made: String? = null,
+    /**
+     * Tour 6 (N20): the step shown was ticked with no gesture since it was reached (the project already held what it
+     * asks): the panel says « Déjà fait » rather than « Bravo » for a touch never made.
+     */
+    val already: Boolean = false,
 ) {
     val current: TutoStep get() = chapters[chapter].steps[step]
     val total: Int get() = chapters.sumOf { it.steps.size }

@@ -896,12 +896,12 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
 @Composable
 internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> Unit, onDismiss: () -> Unit) {
     // Tour 5, lot « langues » (D c #38): the field says the section in the app's language; the part keeps its section.
-    var name by remember(index) { mutableStateOf(if (current in Scene.SECTIONS) Scene.sectionName(current) else current) }
+    var name by remember(index) { mutableStateOf(shownSection(current)) }
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
         text = { RenameSceneFields(name) { name = it } },
-        confirmButton = { TextButton(onClick = { onDone(Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == name } ?: name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
+        confirmButton = { TextButton(onClick = { onDone(sectionKeyOf(name)) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
         dismissButton = {
             Row {
                 if (current.isNotBlank()) TextButton(onClick = { onDone("") }) { Text(tr("Sans nom")) }
@@ -910,6 +910,12 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
         },
     )
 }
+
+/** A part's stored name as the naming field shows it: a section in the app's language (« Ritornello »), any other name as typed. */
+internal fun shownSection(stored: String): String = if (stored in Scene.SECTIONS) Scene.sectionName(stored) else stored
+
+/** What the naming field holds, as the part keeps it: a section said in the app's language back to its section (« Refrain »). */
+internal fun sectionKeyOf(shown: String): String = Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == shown } ?: shown
 
 /**
  * The naming dialog's question, its sections in one touch and its field (apart from the dialog: under Robolectric a

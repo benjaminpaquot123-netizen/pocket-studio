@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -222,6 +223,20 @@ class TopBarTest {
         show(360, scene = SceneChipUi(2, listOf("A · Intro", "B · Couplet", "C · Refrain")))
         compose.onNodeWithTag("top_project_line").assertDoesNotExist()
         compose.onNodeWithText("Mon morceau de dubstep").assertIsDisplayed()
+    }
+
+    /** Tour 5, moyens M2: during a take on the song both ▶ show ■ and say « Arrêter » (a touch on either stops). */
+    @Test
+    fun duringATakeOnTheSongBothPlaysSayStop() {
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(480.dp)) {
+                    TopBar(TopBarUi("Mon morceau", playing = true, canUndo = false, canRedo = false, recording = true, partPlaying = false, songPlaying = true, songButton = true), TopBarActions())
+                }
+            }
+        }
+        compose.onNodeWithTag("top_song").assertContentDescriptionEquals("Arrêter")
+        compose.onNodeWithTag("top_play").assertContentDescriptionEquals("Arrêter")
     }
 
     @Test

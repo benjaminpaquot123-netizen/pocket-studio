@@ -189,7 +189,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
             "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "help_labels_simple", "launch", "launch_simple",
-            "sheet_pad", "sheet_share", "mode_step", "mode_switch",
+            "sheet_pad", "sheet_share", "mode_step", "mode_switch", "simple_more",
         )
     }
 }

@@ -78,6 +78,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.app.synth.TrackBar
 import com.pocketstudio.app.synth.TracksUi
@@ -263,7 +264,10 @@ internal fun PlusSpace(
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().testTag("plus")) {
         if (maxWidth >= TWO_PANES_FROM) {
-            val shown = page ?: widePage
+            // Tour 5, lot « moyens »: a page of the list shown (the Mode simple's holds no MIDI, no Latence…), the one
+            // chosen or last seen if the list holds it, else its first.
+            val listed = entries.mapNotNull { it.page }
+            val shown = listOf(page, widePage).firstOrNull { it != null && it in listed } ?: listed.firstOrNull() ?: page ?: widePage
             if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.width(340.dp).fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -277,11 +281,14 @@ internal fun PlusSpace(
             com.pocketstudio.ui.ReadingWidth(maxWidth = 640.dp) {
                 Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (leave != null) PlusLeaveRow(leave)
-                    if (tiles) {
-                        entries.chunked(PLUS_TILES_PER_ROW).forEach { row ->
+                    // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a row cut
+                    // their titles (« Bibliothèque de sons »): two a row, then the list, as the room per title allows.
+                    val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
+                    if (perRow > 1) {
+                        entries.chunked(perRow).forEach { row ->
                             Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { e.page?.let(open) ?: e.open?.invoke() } }
-                                repeat(PLUS_TILES_PER_ROW - row.size) { Spacer(Modifier.weight(1f)) }
+                                repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
                             }
                         }
                     } else entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
@@ -307,6 +314,19 @@ internal fun PlusSpace(
 
 private const val PLUS_TILES_PER_ROW = 3
 
+/** The room a tile's title needs at the least, in dp at the font's own size (« Bibliothèque » on two lines at most). */
+private const val PLUS_TILE_TITLE_MIN_DP = 100f
+
+/**
+ * How many Plus tiles a row of [width] holds with [fontScale] (the phone's font size): three, fewer as the text grows,
+ * 1 meaning the list of cards (an icon over a title, one a row, would only waste the room).
+ */
+internal fun plusTilesPerRow(width: androidx.compose.ui.unit.Dp, fontScale: Float): Int =
+    (PLUS_TILES_PER_ROW downTo 2).firstOrNull { n ->
+        // The list's padding (12 dp each side), 6 dp between tiles, 4 dp inside each tile's sides.
+        ((width.value - 24f - 6f * (n - 1)) / n - 8f) / fontScale >= PLUS_TILE_TITLE_MIN_DP
+    } ?: 1
+
 /** An entry of the Plus page as a tile: its icon over its title (its line said to TalkBack as what a touch does). */
 @Composable
 private fun PlusTile(e: PlusEntry, modifier: Modifier, onClick: () -> Unit) {
@@ -322,8 +342,9 @@ private fun PlusTile(e: PlusEntry, modifier: Modifier, onClick: () -> Unit) {
         Box(Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
             Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
         }
-        Text(
-            e.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
+        // Its words whole, a little smaller before anything is cut (« Geluidenbibliotheek »).
+        com.pocketstudio.ui.FitText(
+            e.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         )
     }
@@ -359,7 +380,8 @@ private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
             Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
         }
         Column(Modifier.weight(1f)) {
-            Text(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            // Its words whole (« Geluidenbibliotheek » with the phone's font at 200 %), smaller before anything is cut.
+            com.pocketstudio.ui.FitText(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp)
             Text(e.line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.TextSecondary)

@@ -160,25 +160,34 @@ enum class SceneChipMode { Hidden, Letter, Full }
  * with a scene, where the folder alone leaves room for the scene's letter: the name then gets a
  * line of its own above the buttons). (The tempo lives in the play strip under the bar, see PlayStrip.)
  */
-data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true, val modeInRow: Boolean = false)
+data class TopBarLayout(
+    val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true, val modeInRow: Boolean = false,
+    /** False: the folder alone in the row, no name anywhere in the bar (too little room for a few words, no line given up). */
+    val nameShown: Boolean = true,
+)
 
 /**
  * Fits the top bar into [width]. Never removed: the projects button (with room for a bit of the
  * name), undo, record, play and share. Then, while there is room, by priority: the scene's letter, the
  * scene's section name, redo.
  */
-fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null, redoFirst: Boolean = false): TopBarLayout {
+fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null, redoFirst: Boolean = false, fontScale: Float = 1f): TopBarLayout {
     // Redo nowhere else ([TopBarUi.redoFirst]): its 48 dp taken first, the rest laid out as usual.
     if (redoFirst) {
-        val plain = topBarLayout(width, hasScene, modeChip)
-        return if (plain.showRedo) plain else topBarLayout(width - BUTTON, hasScene, modeChip).copy(showRedo = true)
+        val plain = topBarLayout(width, hasScene, modeChip, fontScale = fontScale)
+        return if (plain.showRedo) plain else topBarLayout(width - BUTTON, hasScene, modeChip, fontScale = fontScale).copy(showRedo = true)
     }
-    // The mode chip (owner, 2026-10-29): in the row when it leaves the project's name a few letters
-    // and the scene its letter; else on the name's own line above the buttons (a narrow phone).
+    // The mode chip (owner, 2026-10-29): in the row when it leaves the project's name a few words
+    // (tour 5, moyens M1: « M… » at Taille 130 % on a 411 dp phone) and the scene its letter; else on
+    // the name's own line above the buttons (a narrow phone, a big text), the name whole there.
     if (modeChip != null) {
         val inRow = topBarLayout(width - modeChip, hasScene)
-        val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
-        return if (fits) inRow.copy(modeInRow = true) else topBarLayout(width, hasScene).copy(projectName = false)
+        val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_FOLDER_ROOM + PROJECT_NAME_TEXT * fontScale && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
+        if (fits) return inRow.copy(modeInRow = true)
+        // Fresh review of the moyens lot: where the row used to hold « M… », it stays one row with the folder alone
+        // (the name's own line took 48 dp from the keys at Taille 130 %); the name's line only where it always was.
+        val folderOnly = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
+        return if (folderOnly) inRow.copy(modeInRow = true, nameShown = false) else topBarLayout(width, hasScene).copy(projectName = false)
     }
     // No scene shown (Morceau, Outils…): redo gives way below this width (48 dp more since ⤴ joined the bar).
     if (!hasScene) return TopBarLayout(showRedo = width >= 388.dp, scene = SceneChipMode.Hidden)
@@ -222,8 +231,12 @@ private val SCENE_NAME_MIN = 60.dp
 private val SCENE_FULL_MAX = 140.dp
 /** The mode chip's room in the row: its text capped at [modeChipMax], with a little margin. */
 fun modeChipRoom(simple: Boolean): Dp = modeChipMax(simple) + 4.dp
-/** Next to the mode chip, the projects button keeps its folder and a few letters of the name. */
+/** Next to the mode chip, the projects button kept its folder and a few letters of the name before moyens M1: the row stays one. */
 private val PROJECT_ROOM = 72.dp
+/** The projects button's folder (34 dp), the gap to its name (10 dp) and its padding (8 dp). */
+private val PROJECT_FOLDER_ROOM = 52.dp
+/** Next to the mode chip, the name keeps this much text at the usual size (« Mon prem… »), more as the text grows. */
+private val PROJECT_NAME_TEXT = 56.dp
 
 private val TOP_SHEEN = Color.White.copy(alpha = 0.06f)
 private val FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
@@ -259,13 +272,13 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     val rowWidth = (if (ui.undo) maxWidth else maxWidth + BUTTON) - (partRoom - BUTTON)
     // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
     val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
-    val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
+    val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst, fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale)
     val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
     // above the buttons (never gone), the folder alone stays in the row.
-    if (!layout.projectName) {
+    if (!layout.projectName && layout.nameShown) {
         Row(
             // With the mode chip (no room for it in the row) the line is as high as its touch target.
             // At least that high: a big text (the phone's font at 200 %) makes the name taller than 24 dp, never cut.
@@ -310,7 +323,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
-            if (layout.projectName) androidx.compose.foundation.layout.Column {
+            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.Column {
                 // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first.
                 var smaller by remember(ui.projectName) { mutableStateOf(false) }
                 Text(
@@ -375,7 +388,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             }
         }
         // « ▶ cette partie » (tour 5, chantier 4): the part open, looped. Round 3, n° 34: the label says what a touch does now.
-        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying, "top_play", partRoom, actions.togglePlay)
+        // Tour 5, moyens M2: during a take on the song it stops too (RhythmViewModel.togglePart), so it shows ■ « Arrêter ».
+        val stopsTake = ui.recording && ui.songPlaying
+        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying || stopsTake, "top_play", partRoom, actions.togglePlay)
         // Apart, the two words never read as one (« cette partie le morceau »).
         if (ui.songButton && !songOnTop) Spacer(Modifier.width(PLAY_GAP))
         if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)

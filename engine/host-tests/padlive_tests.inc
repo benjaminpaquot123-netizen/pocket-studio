@@ -385,76 +385,109 @@ static void resampleStopTargetsItsTake() {
 }
 
 
-// KNOWN DEFECT T5-PADRETRIG (plan 4.1, recette tel-17, Benjamin's phone 2026-11-08: « tant que le clap n'était pas fini il
-// n'acceptait pas mon appui suivant »). Transport stopped, a « coup » pad (one-shot, 1 beat) touched again while its sound
-// still plays: ClipLauncher::toggle puts it Waiting for the next beat line of the PROJECT's grid (the clock started at the
-// first touch; the challenge's pulse is the tempo kept in 80-120 BPM, the grid is not), and a touch during that wait cancels
-// it (Waiting -> Off). Once Off, the next touch restarts the clock and sounds at once. This test asserts TODAY's behaviour:
-// when the engine is fixed (a « coup » hit again plays at once, transport stopped), INVERT this test (and set T5-PADRETRIG
-// to « corrigé » in docs/audits/ultra/verdicts.tsv). Registered as « known_defect_t5_padretrig »: the runner prints
-// « KNOWN DEFECT still there » and verifie-chantier.py ties that name to the line's garde_id.
-static void knownDefectPadRetriggerWaitsForTheGrid() {
+// T5-PADRETRIG (plan 4.1, recette tel-17, Benjamin's phone 2026-11-08: « tant que le clap n'était pas fini il n'acceptait
+// pas mon appui suivant »; R.7). Transport stopped, a « coup » pad (one-shot, 1 beat) touched again while its sound still
+// plays started over on the next beat line of the PROJECT's grid, and a touch during that wait cancelled it: a rhythm kept
+// by ear could not be played. Now a « coup » touched with the transport stopped sounds at once, each touch, never waits
+// nor is cancelled by the next one (was « known_defect_t5_padretrig », inverted). Transport playing: on its grid, as before.
+static void hitRetouchedSoundsAtOnce() {
     struct Pad {
         ps::ClipLauncher clips;
         std::vector<float> l = std::vector<float>(48), r = std::vector<float>(48);
         int64_t frame = 0;
+        int64_t restarts = 0;  // passes started over (the level jumping back up from the clap's tail)
         Pad(double bpm, int clapFrames) {
             clips.prepare(kRate);
             clips.setBeatFrames(kRate * 60.0 / bpm);
-            std::vector<float> clap(static_cast<size_t>(clapFrames), 0.5f);
+            // A clap that fades out: each pass starts loud, so a restart is heard as a jump up.
+            std::vector<float> clap(static_cast<size_t>(clapFrames));
+            for (size_t i = 0; i < clap.size(); ++i) clap[i] = 0.5f * (1.0f - static_cast<float>(i) / static_cast<float>(clap.size()));
             clips.install(0, ps::Sample::create(clap.data(), int64_t(clap.size()), 1, kRate, kRate));
             clips.setParam(0, ps::ClipLauncher::Beats, 1.0f);
             clips.setParam(0, ps::ClipLauncher::OneShot, 1.0f);
         }
-        // Renders up to [to] frames from the first touch, in 1 ms blocks.
-        void until(int64_t to) {
-            while (frame + 48 <= to) { clips.render(l.data(), r.data(), 48); frame += 48; }
+        // Renders up to [to] frames from the first touch, in 1 ms blocks; the loudest frame of the last block.
+        float until(int64_t to) {
+            float peak = 0.0f;
+            while (frame + 48 <= to) {
+                std::fill(l.begin(), l.end(), 0.0f);
+                std::fill(r.begin(), r.end(), 0.0f);
+                clips.render(l.data(), r.data(), 48);
+                peak = 0.0f;
+                for (float v : l) peak = std::max(peak, std::fabs(v));
+                frame += 48;
+            }
+            return peak;
         }
         int state() const { return clips.state(0); }
         ~Pad() { clips.collectGarbage(); }
     };
     const int ms = kRate / 1000;
     {
-        // 90 BPM (a beat: 32000 frames), a clap of 800 ms: the second touch a hair after beat 1 (667 ms).
+        // 90 BPM (a beat: 32000 frames), a clap of 800 ms: touched again a hair after beat 1 (667 ms): heard at once.
         Pad pad(90.0, 800 * ms);
         pad.clips.toggle(0, true);
         pad.until(48);
         CHECK(pad.state() == ps::ClipLauncher::Playing);  // the first touch sounds at once
-        pad.until(667 * ms);
+        const float tail = pad.until(667 * ms);
         pad.clips.toggle(0, true);
-        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: should sound now
-        pad.until(64000 - 96);
-        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: still silent ~0.67 s later
-        pad.until(64000 + 96);
-        CHECK(pad.state() == ps::ClipLauncher::Playing);  // heard a whole beat late, on beat 2 (1333 ms)
+        CHECK(pad.state() != ps::ClipLauncher::Off);
+        // Within 2 ms (the click-free fade of the old pass under it), the clap starts over: loud again.
+        pad.until(667 * ms + 96);
+        const float again = pad.until(667 * ms + 144);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);
+        CHECK(again > tail + 0.2f);  // not waiting for beat 2 (1333 ms)
     }
     {
-        // 90 BPM, eighth notes (333 ms) with a 400 ms clap: the 2nd touch waits, the 3rd cancels it, the 4th sounds at once.
+        // 90 BPM, eighth notes (333 ms) with a 400 ms clap: every touch sounds, none waits, none is cancelled.
         Pad pad(90.0, 400 * ms);
         pad.clips.toggle(0, true);
-        pad.until(333 * ms);
-        pad.clips.toggle(0, true);
-        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: waits for beat 1 (667 ms)
-        pad.until(666 * ms);
-        pad.clips.toggle(0, true);
-        CHECK(pad.state() == ps::ClipLauncher::Off);  // KNOWN DEFECT: the waiting hit is cancelled, never heard
-        pad.until(999 * ms);
-        pad.clips.toggle(0, true);
-        pad.until(999 * ms + 48);
-        CHECK(pad.state() == ps::ClipLauncher::Playing);  // everything Off: the clock restarts, this one sounds at once
+        for (int k = 1; k <= 3; ++k) {
+            const float tail = pad.until(int64_t(k) * 333 * ms);
+            pad.clips.toggle(0, true);
+            CHECK(pad.state() != ps::ClipLauncher::Off);  // the 3rd touch used to cancel the 2nd
+            pad.until(int64_t(k) * 333 * ms + 96);
+            const float again = pad.until(int64_t(k) * 333 * ms + 144);
+            CHECK(pad.state() == ps::ClipLauncher::Playing);
+            CHECK(again > tail + 0.2f);
+        }
     }
     {
-        // 140 BPM project (a beat: 20571 frames, 429 ms): the wait follows the project's grid, not the challenge's pulse
-        // (140 kept to 120 BPM: 500 ms). Retouched at 100 ms, the hit comes at 429 ms.
+        // 140 BPM project: touched again at 100 ms, heard at 100 ms (not on the project's beat 1, 429 ms).
         Pad pad(140.0, 800 * ms);
         pad.clips.toggle(0, true);
+        const float tail = pad.until(100 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(100 * ms + 96);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);
+        CHECK(pad.until(100 * ms + 144) > tail + 0.04f);
+    }
+    {
+        // Transport stopped, a loop on (pad 1): a hit comes on the loop's beat, as before; touched again while it waits,
+        // it is not cancelled (it was): it still comes on that beat.
+        Pad pad(120.0, 800 * ms);
+        std::vector<float> loop(static_cast<size_t>(100 * ms), 0.1f);
+        pad.clips.install(1, ps::Sample::create(loop.data(), int64_t(loop.size()), 1, kRate, kRate));
+        pad.clips.setParam(1, ps::ClipLauncher::Beats, 1.0f);
+        pad.clips.toggle(1, true);
         pad.until(100 * ms);
         pad.clips.toggle(0, true);
-        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT
-        pad.until(20571 - 96);
         CHECK(pad.state() == ps::ClipLauncher::Waiting);
-        pad.until(20571 + 96);
-        CHECK(pad.state() == ps::ClipLauncher::Playing);  // on the project's beat 1 (429 ms), before 500 ms
+        pad.until(200 * ms);
+        pad.clips.toggle(0, true);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // not cancelled
+        pad.until(500 * ms + 48);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);  // on beat 1 (500 ms)
+    }
+    {
+        // Transport playing (idleClock false): a « coup » still waits for its beat line, as before.
+        Pad pad(120.0, 800 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(100 * ms);
+        pad.clips.toggle(0, false);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);
+        pad.until(500 * ms + 48);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);
     }
 }
 
@@ -462,7 +495,7 @@ static void knownDefectPadRetriggerWaitsForTheGrid() {
 
 #define PS_PADLIVE_TESTS \
     {"padlive_page_d_plays_with_page_a", padlive::pageDPlaysWithPageA}, \
-    {"known_defect_t5_padretrig", padlive::knownDefectPadRetriggerWaitsForTheGrid}, \
+    {"padlive_hit_retouched_sounds_at_once", padlive::hitRetouchedSoundsAtOnce}, \
     {"padlive_64_pads_without_allocating", padlive::sixtyFourPadsWithoutAllocating}, \
     {"padlive_row_starts_on_the_bar", padlive::rowStartsOnTheBar}, \
     {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \

@@ -48,7 +48,9 @@ public:
     void install(int slot, Sample* sample, bool refit = false);
     void setParam(int slot, int param, float value);
     // Off -> waits for the grid; waiting or playing -> off. `idleClock`: nothing else keeps
-    // time (transport stopped), so the first pad to start restarts the clock and plays at once.
+    // time (transport stopped), so the first pad to start restarts the clock and plays at once;
+    // a one-shot with no other pad on then sounds at once, each touch, and a waiting one is never
+    // cancelled by a touch again (R.7).
     // `velocity` (0, 1]: how loud the loop or hit it starts plays (a controller's pad); <= 0: full.
     void toggle(int slot, bool idleClock, float velocity = 1.0f);
     // A row of pads [first, first + count): its loops all playing (or waiting): they stop; else every

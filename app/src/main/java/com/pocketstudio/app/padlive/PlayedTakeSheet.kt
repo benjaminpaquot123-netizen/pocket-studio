@@ -59,10 +59,10 @@ internal fun PlayedButton(state: PlayedTakeUi, press: () -> Unit, modifier: Modi
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Box(Modifier.size(14.dp).clip(CircleShape).background(if (state == PlayedTakeUi.Armed) Neon.Red.copy(alpha = 0.5f) else Neon.Red))
-        // Next to « Moins » on a small phone: smaller before it is cut.
+        // Next to « Moins » and « Tout couper » (G8) on a small phone: two lines, smaller before it is cut.
         val style = MaterialTheme.typography.titleMedium
         Text(
-            words, style = style, color = Neon.TextPrimary, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+            words, style = style.copy(lineHeight = style.fontSize * 1.15f), color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
             autoSize = com.pocketstudio.ui.WholeWordsAutoSize(10.sp, style.fontSize),
             modifier = Modifier.weight(1f).testTag("padlive_played_words"),
         )
@@ -74,7 +74,7 @@ internal fun PlayedButton(state: PlayedTakeUi, press: () -> Unit, modifier: Modi
 @Composable
 internal fun PlayedTakeSheet(bars: Int, emptyPad: String?, actions: PadLiveActions) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ScaledBottomSheet(onDismissRequest = actions.dropTake, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("padlive_take_sheet")) {
+    ScaledBottomSheet(onDismissRequest = actions.dropTake, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("padlive_take_sheet"), scrolls = true) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
                 com.pocketstudio.model.i18n.trCount(bars, "Ta prise : 1 mesure", "Ta prise : %d mesures"),

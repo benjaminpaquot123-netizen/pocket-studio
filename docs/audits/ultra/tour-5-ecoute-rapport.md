@@ -10,8 +10,11 @@ Plan : `docs/PLAN-TEST-APK.md` (étape T1b, remise à plus tard en T1). Décisio
 - Rien dans la vraie appli : aucun fichier de `app/src/main` touché ; `check-apk.sh` exige les nouvelles classes dans BenStudio Test ; `HorsVraieAppliTest` le vérifie.
 
 ## Preuves
-- Sons fabriqués, valeurs attendues calculées depuis le filtre imposé : courbe retrouvée à 1 dB près de 100 Hz à 12 kHz (`CourbeTest`), empreinte à 1 dB près (`EmpreinteTest`), passage complet avec un faux téléphone (`EcouteMicroTest`), 2 s gardées autour d'un trou (`GuetTest`), bouton et phrase (`BoutonMicroTest`), côté Linux 9 tests (`python3 -I scripts/bentest/test_empreinte.py`).
+- Sons fabriqués, valeurs attendues calculées depuis le filtre imposé : courbe retrouvée à 1 dB près de 100 Hz à 12 kHz (`CourbeTest`), empreinte à 1 dB près (`EmpreinteTest`), passage complet avec un faux téléphone (`EcouteMicroTest`), 2 s gardées autour d'un trou (`GuetTest`), bouton et phrase (`BoutonMicroTest`), côté Linux 12 tests (`python3 -I scripts/bentest/test_empreinte.py`).
 - Chaque fonction : un commit « rouge: » (test seul, échec sur assertion, après un commit « squelette » de signatures) puis « vert: ».
+
+## Corrections de la relecture
+Les 7 points moyens et les mineurs de la première relecture sont corrigés (détail dans les décisions) : chaque bande du balayage jugée sur ses propres trames, octave non comparable plutôt que basse absente côté Linux, trou de 160 ms (les silences d'un rythme ne comptent plus), micro avant le balayage, fenêtre du banc placée par les pas du moteur, réponse du micro gardée hors de l'écran, phrase « au plus 4 extraits », test croisé Kotlin et Python.
 
 ## Restes (non prouvé ici)
 - Rien n'a tourné sur un vrai téléphone : AudioRecord, la source « non traitée », le lecteur d'aperçu pour le balayage, le volume à 60 %. À l'essai.
@@ -31,6 +34,12 @@ Plan : `docs/PLAN-TEST-APK.md` (étape T1b, remise à plus tard en T1). Décisio
 - chemin: Rapport › mesures.json et rapport.md du micro | test: EcouteMicroTest#theRunFindsTheSpeakersCurveAndEachSongsFingerprint
 - chemin: Écoute au micro › micro refusé | test: EcouteMicroTest#aRefusedMicrophoneSkipsEveryStep
 - chemin: Écoute au micro › permission au moment voulu | test: EcouteMicroTest#theMicrophoneIsAskedForWhenItIsNeeded
+- chemin: Écoute au micro › bande jugée sur ses propres trames | test: CourbeTest#aBandIsJudgedAgainstTheNoiseOfItsOwnFrames
+- chemin: Écoute au micro › silences d'un rythme | test: GuetTest#theSilencesOfARhythmAreNotHoles
+- chemin: Écoute au micro › micro avant le balayage | test: EcouteMicroTest#theMicrophoneListensBeforeTheSweepStarts
+- chemin: Rapport › début de la fenêtre comparée | test: EcouteMicroTest#theWindowComparedStartsWhereTheSongIs
+- chemin: Écoute au micro › réponse du micro après une rotation | test: EcouteMicroTest#theMicrophonesAnswerStartsTheRunOnce
+- chemin: Banc Linux › même analyse que le téléphone | test: MemeAnalyseTest#theFixedSignalReadsTheSameNumbersAsOnLinux
 - chemin: Écran de BenStudio Test › bouton et phrase | test: BoutonMicroTest#theButtonSaysWhatWillHappenBeforeTheMicrophoneIsAskedFor
 - chemin: Vraie appli › sans le micro du robot | test: HorsVraieAppliTest#theMicrophonesCodeIsInBenStudioTestOnly
 - chemin: Compilation › sources du robot pour -PbenTest seulement | test: HorsVraieAppliTest#theBuildTakesItForBenStudioTestOnly

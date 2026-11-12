@@ -179,7 +179,8 @@ private fun LanguageRow(lang: Lang, chosen: Boolean, tag: String, onPick: () -> 
                 ),
                 fontWeight = FontWeight.Bold,
                 color = if (chosen) Neon.Cyan else Neon.TextPrimary,
-                maxLines = 1,
+                // Tour 6, R1: whole at 200 % on a small phone (« Bahasa Indone… »), on two lines if it must.
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             if (!translated.equals(lang.nativeName, ignoreCase = true)) {

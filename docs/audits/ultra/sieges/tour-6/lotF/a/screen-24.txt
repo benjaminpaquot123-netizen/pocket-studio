@@ -1,0 +1,44 @@
+Écran 24 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 98,123
+icône « B battuta 1/2 » ▾ @ 294,123
+bouton « ? » @ 855,123
+image (rond coché) @ 0,0
+texte « Finito? Condividi il tuo brano » [coupé] @ 450,184
+bouton « M4A · per condividere » [sélectionné] @ 206,242
+bouton « WAV · qualità massima » @ 573,242
+bouton (trois points reliés) «   Condividi » @ 450,338
+bouton (dossier) « I miei file » › @ 428,440
+bouton « ? » @ 848,440
+bouton (boussole) « Guida  · Aggiungi un basso 25 % » ⌄ [état « aperto »] @ 450,536
+texte « PER INIZIARE » @ 450,618
+texte « Aggiungi un basso » @ 207,670
+texte « Una linea grave: genera una linea Acid 303, o suona note gravi sulla tastiera di una traccia. » @ 450,747
+texte « → » @ 61,827
+texte « Tocca a te: tocca “Genera una linea Acid 303”. » @ 418,826
+texte « VEDI IL PARAMETRO » @ 169,885
+texte « ↗ Genera una linea Acid 303 » @ 450,949
+texte « ↗ Suona il basso con la tastiera » @ 450,1033
+texte « La parola: Basso Lo strumento più grave dopo il kick: suona le note base degli accordi e fa muovere il corpo. » @ 486,1146
+icône ▶ @ 78,1147
+bouton « Più tardi » [coupé] @ 116,1242
+texte « Salta » [coupé] @ 253,1242
+bouton « Scopri di più » [coupé] @ 417,1242
+bouton « Non proporre più » [coupé] @ 662,1242
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 120 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » [sélectionné] @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

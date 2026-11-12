@@ -1,0 +1,4 @@
+Écran 42 (900x1509)
+texte « Brano » @ 122,626
+texte « Le parti messe una dopo l'altra, ognuna ripetuta quante volte vuoi. Nella timeline, ogni quadrato accende o spegne una traccia in una parte. » @ 450,738
+texte « Capito » @ 771,872

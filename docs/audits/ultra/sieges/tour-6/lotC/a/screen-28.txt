@@ -1,0 +1,77 @@
+Écran 28 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 122,42
+bouton « Pro » @ 274,42
+bouton « F · Montée » ▾ @ 414,42
+icône ↶ @ 552,42
+icône ↷ [désactivé] @ 624,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+icône (flèches en boucle) « Montée mes. 3/4 » ▾ @ 255,123
+bouton (flèches en boucle) « Boucler » [état « désactivé »] @ 724,123
+bouton « ? » @ 855,123
+onglet « Batterie 16 pads » [sélectionné] @ 94,204
+onglet « Acid 303 Ligne de basse » @ 307,204
+onglet « Voix Micro » @ 501,204
+onglet « Remix Séparer » @ 649,204
+bouton « Basse Basse ronde » [coupé] @ 811,204
+texte « Partie : F · Montée » @ 143,273
+bouton « Kick studio FX » @ 123,369
+bouton « Kick 2 » @ 341,369
+bouton « Caisse » @ 559,369
+bouton « Caisse 2 » @ 777,369
+bouton « Clap FX » @ 123,477
+bouton « Charley G 30 » @ 341,477
+bouton « Charley ouvert D 30 » @ 559,477
+bouton « Tom grave » @ 777,477
+bouton « Tom médium D 45 » @ 123,585
+bouton « Tom aigu » @ 341,585
+bouton « Maracas D 50 » @ 559,585
+bouton « Cowbell » @ 777,585
+bouton « Ride D 40 » @ 123,693
+bouton « Conga G 50 » @ 341,693
+bouton « Conga » @ 559,693
+bouton « Zap » @ 777,693
+bouton « Kit : Perso » ▾ @ 126,786
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 564,786
+titre « PAS : KICK STUDIO · MONTÉE » [état « Déplié »] @ 332,894
+bouton « ? » @ 495,894
+bouton « Tous les pads » @ 740,894
+texte « Mesure » @ 92,978
+bouton « 1 » @ 187,978
+bouton « 2 » @ 268,978
+bouton « 3 » [sélectionné] @ 349,978
+bouton « 4 » @ 430,978
+bouton « Suivre » [sélectionné] @ 543,978
+bouton « 1 » [état « coup, force 100 % »] @ 90,1063
+bouton [état « vide »] @ 192,1063
+bouton [état « vide »] @ 294,1063
+bouton [état « vide »] @ 397,1063
+bouton « 2 » [allumé, état « coup, force 100 % »] @ 500,1063
+bouton [état « vide »] @ 603,1063
+bouton [état « vide »] @ 706,1063
+bouton [état « vide »] @ 809,1063
+bouton « 3 » [état « coup, force 98 % »] @ 90,1144
+bouton [état « vide »] @ 192,1144
+bouton [état « vide »] @ 294,1144
+bouton [état « vide »] @ 397,1144
+bouton « 4 » [état « coup, force 99 % »] @ 500,1144
+bouton [état « vide »] @ 603,1144
+bouton [état « vide »] @ 706,1144
+bouton [état « vide »] @ 809,1144
+bouton (boussole) « Guide  · Change un son 26 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 114,1292
+icône ↷ « Rétablir » [désactivé] @ 268,1292
+bouton ■ « le morceau » @ 440,1292
+texte « 122 Tempo » @ 617,1292
+icône (trois points reliés) « Partager » @ 780,1292
+onglet (ligne brisée et points) « Structure » @ 85,1389
+onglet (touches de piano) « Sons » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Plus » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

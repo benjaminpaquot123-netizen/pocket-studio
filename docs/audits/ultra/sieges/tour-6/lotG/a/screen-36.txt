@@ -1,0 +1,20 @@
+Écran 36 (588x1278)
+icône ← «  Geri » @ 70,36
+texte « Remix » @ 179,36
+titre « BİR ŞARKIYI AYRIŞTIR » [état « Genişletildi »] @ 228,135
+bouton « ? » @ 393,135
+texte « Cihazından bir şarkı seç: uygulama onu davul, bas, vokal ve geri kalan olarak ayırır. Birkaç dakika sürer; ekranı kapatabilirsin. » @ 294,251
+bouton « Bir şarkı seç » @ 294,381
+texte « En fazla 7 dakika. Ayrıştırılan son 3 şarkı ve bir projenin kullandıkları saklanır. » @ 294,465
+titre « Ma chanson préférée » [état « Genişletildi »] @ 203,585
+icône (poubelle) @ 510,603
+texte « 0:40 · 120 BPM · La minör » @ 196,621
+bouton (étincelles) « Bu şarkıyla bir parça yap » @ 294,690
+texte « Diğer seçenekler… » @ 294,777
+bouton ■ «  Durdur » @ 147,861
+texte « 0:01 / 0:40 » @ 405,861
+bouton « Davul » @ 102,969
+bouton « Bas » @ 230,969
+bouton « Kalan » @ 358,969
+bouton « Vokal » @ 486,969
+bouton + «  Bir şarkı seç » @ 294,1227

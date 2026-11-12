@@ -1,0 +1,4 @@
+Écran 8 (900x1509)
+texte « Parte da modificare » @ 165,265
+texte « A » @ 213,326
+texte « + Nuova parte (copia di A) » @ 213,400

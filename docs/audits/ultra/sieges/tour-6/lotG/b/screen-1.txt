@@ -1,0 +1,13 @@
+Écran 1 (900x1509)
+bouton « 🇮🇩   Bahasa Indonesia » ⌄ @ 723,78
+texte « BenStudio » @ 242,168
+texte « Studio musikmu, di dalam saku. » @ 294,213
+texte « Selamat datang! Bikin musikmu di perangkatmu. Mulai dari mana? » @ 401,270
+bouton (étincelles) « Buatkan aku lagu Aplikasi menggubah, kamu mendengar dan mengubah. » @ 450,390
+bouton (chapeau de diplômé) « Aku belajar Kamu membuat seluruh lagu sendiri, langkah demi langkah: aku menjelaskan dan memeriksa. » @ 450,570
+bouton (casque) « Dengar demo Lagu siap jadi, untuk lihat apa saja yang bisa dibuat. » @ 450,735
+bouton + « Mulai dari nol Belum ada not: drum, Acid 303, dan synth menunggu not darimu. » @ 450,885
+bouton (tête qui parle) « Ambil vokal dari lagu Pilih lagu di ponselmu: aplikasi memisahkan vokal, drum, bass, dan sisanya. » @ 450,1050
+bouton (grille de pads) « Pad Live BARU Pad siap dimainkan, suaramu, efek live. Langsung berbunyi. » → @ 450,1218
+bouton (micro) « Rekam suara atau gitarku Mikrofon merekam di atas musikmu, pas dengan ketukan. » [coupé] @ 450,1360
+bouton « ↓ 2 lagi » @ 811,1455

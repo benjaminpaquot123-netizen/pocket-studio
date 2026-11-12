@@ -1,0 +1,19 @@
+Écran 85 (900x1509)
+texte « Tutorial von A bis Z » @ 414,60
+icône ✕ @ 840,60
+bouton « 1 Tempo und Tonart 2/3 » @ 450,149
+bouton « 2 Die Kick » (rond coché) @ 450,240
+bouton « 3 Der Clap » (rond coché) @ 450,331
+bouton « 4 Hi-Hats, Tamburin und Swing 0/5 » @ 450,422
+bouton « 5 Der Bass 0/2 » @ 450,513
+bouton « 6 Der Tiefbass und das Pumpen 0/2 » @ 450,604
+bouton « 7 Die Piano-Stabs 0/2 » @ 450,695
+bouton « 8 Das Arpeggio 0/2 » @ 450,786
+bouton « 9 Dein erster Teil: der Groove 0/2 » @ 450,877
+bouton « 10 Die Teile verstehen 0/5 » @ 450,968
+bouton « 11 Bau deine Teile 0/6 » @ 450,1059
+bouton « 12 Ordne deine Teile 0/2 » @ 450,1150
+bouton « 13 Die Übergänge 0/4 » [coupé] @ 450,1216
+bouton « Zurück zu Einfach » @ 450,1281
+bouton ↺ «  Tutorial neu starten (neues leeres Projekt) » @ 450,1365
+texte « Tutorial beenden (du kannst es fortsetzen) » @ 450,1449

@@ -1,0 +1,7 @@
+Écran 19 (540x1170)
+texte « Nummer delen · 1 » @ 270,406
+bouton « WhatsApp » @ 270,475
+bouton « Messages » @ 270,547
+bouton « Gmail » @ 270,619
+bouton « Drive » @ 270,691
+bouton « Files » @ 270,763

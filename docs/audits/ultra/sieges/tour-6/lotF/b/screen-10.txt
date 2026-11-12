@@ -1,0 +1,71 @@
+Écran 10 (540x1170)
+icône « Mój pierwszy bit » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « A » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ▶ « ta część » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 120  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « Wokal Mikrofon » @ 78,258
+onglet « Remix Rozdziel » @ 223,258
+bouton « Synth Synth » ⋮ @ 373,258
+icône ♪ @ 490,258
+texte « Część: A » @ 65,321
+bouton « Klawiatura » [sélectionné] @ 98,396
+bouton « Nuty » @ 236,396
+icône (poubelle et traits) «  Wyczyść » [désactivé] @ 440,396
+bouton ● «  Nagraj moją melodię » @ 102,489
+icône (chronomètre) «  1 » @ 242,489
+bouton (horloge et flèche) «  Zachowaj to, co właśnie zagrane » @ 382,489
+bouton « ? » @ 500,489
+icône − @ 292,606
+icône + @ 462,606
+texte « Oktawa 4 » @ 377,606
+titre « KLAWIATURA » [état « Rozwinięte »] @ 133,606
+bouton « Akordy » @ 103,690
+bouton « Pady » @ 223,690
+bouton « 2 oktawy » [sélectionné] @ 113,774
+bouton « 1 oktawa » @ 263,774
+bouton « Skala » @ 395,774
+bouton « C » [coupé] @ 58,834
+bouton [coupé] @ 74,834
+bouton [coupé] @ 91,834
+bouton [coupé] @ 107,834
+bouton [coupé] @ 124,834
+bouton [coupé] @ 157,834
+bouton [coupé] @ 172,834
+bouton [coupé] @ 190,834
+bouton [coupé] @ 204,834
+bouton [coupé] @ 223,834
+bouton [coupé] @ 237,834
+bouton [coupé] @ 256,834
+bouton « C » [coupé] @ 289,834
+bouton [coupé] @ 302,834
+bouton [coupé] @ 322,834
+bouton [coupé] @ 335,834
+bouton [coupé] @ 355,834
+bouton [coupé] @ 388,834
+bouton [coupé] @ 400,834
+bouton [coupé] @ 421,834
+bouton [coupé] @ 432,834
+bouton [coupé] @ 454,834
+bouton [coupé] @ 465,834
+bouton [coupé] @ 484,834
+bouton (boussole) « Przewodnik  · Dodaj melodię 23 % » ⌃ [état « zwinięte »] @ 270,882
+icône ↶ « Cofnij » @ 63,954
+icône ↷ « Ponów » [désactivé] @ 161,954
+bouton ▶ « utwór » @ 260,954
+texte « 120 Tempo » @ 364,954
+icône (trois points reliés) « Udostępnij » @ 473,954
+onglet (ligne brisée et points) « Struktura » @ 49,1050
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 160,1050
+onglet (curseurs) « Miks » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Więcej » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Zanotuj » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Tryb uwag » @ 138,1140

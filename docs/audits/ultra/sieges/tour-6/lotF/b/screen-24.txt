@@ -1,0 +1,11 @@
+Écran 24 (540x1170)
+texte « Choose your language » @ 230,174
+bouton « 🇫🇷 Français French » [coupé] @ 270,252
+bouton « 🇮🇹 Italiano Italian » @ 270,336
+bouton « 🇳🇱 Nederlands Dutch » @ 270,435
+bouton « 🇵🇱 Polski Polish » @ 270,534
+bouton « 🇧🇷 Português (Brasil) Portuguese » @ 270,633
+bouton « 🇹🇷 Türkçe Turkish » @ 270,732
+bouton « 🇸🇦 العربية Arabic » @ 270,832
+bouton « 🇮🇳 हिन्दी Hindi » [coupé] @ 270,900
+texte « Close » @ 456,984

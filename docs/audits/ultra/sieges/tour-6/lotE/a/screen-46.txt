@@ -1,0 +1,13 @@
+Écran 46 (588x1278)
+texte « BenStudio » @ 169,78
+texte « What do you want to do? » @ 281,146
+bouton ✓ « Keep going Pro Live 5 bars · 0:10 · 1 part Saved just now » → @ 294,327
+bouton (étincelles) « New song A style in one tap, or “Make me a song”. » → @ 294,564
+bouton (dossier ouvert) « My projects Open another song, copy or rename it. » → @ 294,757
+bouton (quatre vagues) « Remix Track separation: drums, bass, vocals and the rest. » → @ 294,950
+bouton (quatre vagues) → « Pad Live NEW Pads ready to play, your sounds, live effects. It sounds right away. » [coupé] @ 294,1090
+bouton « ↓ 5 more » @ 476,1164
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

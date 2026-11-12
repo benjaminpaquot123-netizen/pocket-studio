@@ -1,0 +1,2 @@
+route=dialogue:part_sheet
+nouvelle=1

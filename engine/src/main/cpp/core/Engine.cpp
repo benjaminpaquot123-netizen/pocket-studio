@@ -1776,10 +1776,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     if (numFrames > 0 && sampleRate_ > 0) {
         const float lasted = static_cast<float>(numFrames) / static_cast<float>(sampleRate_);
         const float took = std::chrono::duration<float>(std::chrono::steady_clock::now() - started).count();
-        // About half a second of smoothing whatever the callback's size.
-        const float k = std::min(1.0f, lasted / 0.5f);
-        load_ += k * (std::min(took / lasted, 4.0f) - load_);
-        cpuLoad_.store(load_, std::memory_order_relaxed);
+        load_.add(took, lasted, std::chrono::duration<double>(started.time_since_epoch()).count());
     }
 }
 

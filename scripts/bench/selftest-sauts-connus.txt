@@ -10,6 +10,7 @@ BenchAmeneesProfilesTest#drive | seat entry point, only with -Phuman.dir | 2026-
 BenchAmeneesTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchAssistantTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchPadLiveStopTest#drive | seat entry point, only with -Phuman.dir | 2026-11-11 | lot « padlive » (new bench class)
+BenchNetworkEndTest#drive | seat entry point, only with -Phuman.dir | 2026-11-12 | lot « ci2 » (new bench class, tour 5)
 BenchPlaceAndPadLiveTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchPlayThenTabsTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchRecetteTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »

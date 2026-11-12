@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -88,6 +89,12 @@ fun ThumbBar(
         ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", share, actions.undo)
         if (ui.redoAlways || ui.canRedo) {
             ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), ui.canRedo, "thumb_redo", share, actions.redo)
+        } else {
+            // Tour 5, lot « langues » (t5-Bd-3: « إعادة » came where « تراجع » was, the 2nd touch redid): ↷'s room kept, empty
+            // and silent, so ↶ never moves under the finger when ↷ comes.
+            Box(share.alpha(0f).clearAndSetSemantics {}) {
+                ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), false, "thumb_redo_room", onClick = {})
+            }
         }
         // « ▶ le morceau » in the middle (tour 5, chantier 4, Benjamin's 2B): the whole song; the top bar's is « ▶ cette partie ».
         val playing = ui.songPlaying
@@ -121,7 +128,10 @@ fun ThumbBar(
             verticalArrangement = Arrangement.Center,
         ) {
             Text("${ui.tempoBpm}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
-            Text(tr("Tempo"), fontSize = 11.sp, lineHeight = 12.sp, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            com.pocketstudio.ui.WholeWordsText(
+                tr("Tempo"), style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, lineHeight = 12.sp), color = Neon.TextSecondary,
+                maxLines = 1, minScale = 0.5f,
+            )
         }
         val more = actions.more
         if (more != null) {
@@ -154,6 +164,10 @@ private fun ThumbButton(icon: ImageVector, label: String, description: String, e
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.size(22.dp))
-        Text(label, fontSize = 11.sp, lineHeight = 12.sp, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+        // Tour 5, lot « langues » (200 %: « Annul… », « Rückg… »): the word set smaller, whole, before any « … ».
+        com.pocketstudio.ui.WholeWordsText(
+            label, style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, lineHeight = 12.sp), color = Neon.TextSecondary,
+            maxLines = 1, minScale = 0.5f, textAlign = TextAlign.Center,
+        )
     }
 }

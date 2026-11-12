@@ -272,6 +272,8 @@ def main():
         measured_numbers(d)
     with tempfile.TemporaryDirectory() as d:
         empty_cases(d)
+    with tempfile.TemporaryDirectory() as d:
+        verdict_without_state(d)
     print("ultra bench scripts: OK")
 
 
@@ -3451,6 +3453,42 @@ def missions_of_round_1(d):
     write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "Live", "stars": []}], "shared": []}))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "defi")
     check("mission=partielle" in out and "défi ouvert" in out, "a challenge opened:\n" + out)
+
+
+def verdict_without_state(d):
+    """Round 6 (lecture-recurrents § 7): the seats' etat/ is not committed; seat-metrics re-run on them turned B a, E b and
+    F a « reussie » into « non » (the oracles read an empty state). Without etat/, a re-run keeps the verdict of the seat's
+    own mesures.json and says why; with no verdict to keep, it says « inconnu », never a « non » that looks measured."""
+    for mission, kept in (("simple", "reussie"), ("exports", "reussie"), ("remix-voix", "reussie"), ("tuto-pro", "partielle"),
+                          ("libre", "reussie")):
+        seat = os.path.join(d, mission)
+        write(os.path.join(seat, "start.txt"), f"mission={mission}\n")
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("MODE pro", "MODE simple"))
+        write(os.path.join(seat, "mesures.json"), json.dumps({"siege": mission, "mission": mission, "resultat": kept,
+                                                               "pourquoi": "lu dans l'état du siège", "mesures": {}}))
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and "état du siège absent" in out and "lu dans l'état du siège" in out,
+              f"{mission}: no etat/, the committed verdict « {kept} » is kept and said so:\n" + out)
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and out.count("état du siège absent") == 2, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
+    # Another mission asked by hand: the committed verdict is not that mission's, nothing to keep.
+    out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "simple"), "--mission", "voix")
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state and no verdict of that mission: unknown:\n" + out)
+    # No mesures.json and no etat/: unknown, never « non ».
+    seat = os.path.join(d, "neuf")
+    write(os.path.join(seat, "start.txt"), "mission=exports\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B)
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state, nothing committed: unknown:\n" + out)
+    # padlive reads the journal only: computed as before, state or not.
+    write(os.path.join(seat, "start.txt"), "mission=padlive\n")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "aucun son" in out, "padlive needs no state:\n" + out)
+    # With etat/ there, the oracle reads it (a downgrade read in the state is the state's, not silent).
+    seat = os.path.join(d, "simple")
+    write(os.path.join(seat, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "état du siège absent" not in out, "the state there is read:\n" + out)
 
 
 if __name__ == "__main__":

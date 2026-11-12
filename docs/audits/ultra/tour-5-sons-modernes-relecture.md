@@ -1,7 +1,18 @@
 # Tour 5, lot « sons-modernes » : relecture neuve de l'étude des sons (2026-11-12)
-Relu : cacaea09a8fcd16cfc874f579a692534818f8cc8
+Relu : 6776fa68b663c1f4439c7eae037470594c31c41f
 
-Objet : `docs/sons/PLAN-SONS-MODERNES.md` et `docs/decisions/tour-5-sons-modernes.md` (commit cacaea09). Relecteur neuf, qui n'a pas écrit l'étude. Rien n'a été modifié dans ces deux fichiers.
+## Ce qui a été relu
+- **Premier passage** sur cacaea09, l'étude seule : `docs/sons/PLAN-SONS-MODERNES.md` et `docs/decisions/tour-5-sons-modernes.md`. Ce relevé avait été commité en 034561af.
+- **Second passage** sur 6776fa68, seulement l'écart `034561af..6776fa68` : l'étude, les décisions, et le nouveau dossier `docs/sons/outils/` (`voix.py`, `test_voix.py`, `mesures-2026-11-12.md`).
+- Je suis un relecteur neuf : je n'ai écrit ni l'étude ni les corrections, et je n'ai modifié aucun de leurs fichiers.
+
+**Contrôles faits au second passage :**
+- `PYTHONDONTWRITEBYTECODE=1 python3 -I docs/sons/outils/test_voix.py` : OK.
+- Sept versions cassées de `voix.py`, essayées dans une copie hors du dépôt :
+  - trois sont refusées : l'air pris à partir de 6 kHz, le seuil de silence retiré, le côté mal calculé ;
+  - quatre passent le test : voir N1.
+- Les chiffres du tableau du § 2.2 correspondent à `mesures-2026-11-12.md`.
+- Le commit 6776fa68 ne touche que `docs/sons/` et `docs/decisions/tour-5-sons-modernes.md`. Tous les fichiers sont en mode 100644 : aucun lien symbolique, aucun son, aucun fichier de l'appli, du moteur, du banc ni des tests.
 
 ## Bloquant
 
@@ -9,139 +20,121 @@ Aucun.
 
 ## Grave
 
-### G1. L'appli a déjà un OTT : l'étude dit le contraire et en fait sa première brique moteur
-- Passages :
-  - En bref, point 1 : « sans tables d'ondes ni compression multibande, qui font le son d'aujourd'hui » ;
-  - § 2.1, point 3 : « **la compression multibande « OTT »**, utilisée sur presque toutes les basses, leads et nappes d'aujourd'hui. […] On ne l'a pas ; » et « le travail du son en couches : distorsion, puis OTT, puis réenregistrement » ;
-  - § 5, tableau : « **un OTT mesuré à 1 dB près de l'original** : le gain « son 2020 » le plus fort pour le moins de travail » ; § 5, Avis : « 1. un **OTT** (code Faust MIT, sans allocation dans le fil audio, testé sur Linux) ; » ;
-  - Essai 3 : « l'OTT en effet (sur la basse, le lead et le bus musique) ; » ;
-  - Décisions, ligne 4 : « synthés archétypes 1983-2000 sans tables d'ondes ni OTT » ; ligne 6 : « Briques retenues pour le moteur : Faust `co.xfer_ott` (MIT) ».
-- Ce que dit le code :
-  - le moteur a une classe `Ott` (`engine/src/main/cpp/core/Effects.h:608-612` : trois bandes coupées à 120 Hz et 2,5 kHz, compression vers le haut et vers le bas ; `OttFx = 24`, l. 757) ;
-  - l'appli l'offre sous le nom « OTT multibande » (`project-model/…/Effects.kt:302`) et le glossaire l'explique (`SoundGlossary.kt:128`) ;
-  - l'assistant le pose déjà : sur le master du jump up et de la hard techno (`StyleRecipes.kt:987`, `:669`), sur le master de toute la famille Bass music (`WizardMix.kt:195-196`) ;
-  - il est dans les réglages d'effets « Growl », « Basse grasse », « Wob dubstep », « Pompe EDM » (`FxPresets.kt:92-116`). La basse growl du jump up passe déjà par « distorsion, puis OTT ».
-  - Ce qui manque vraiment : l'OTT n'est jamais posé sur les nappes et les leads de house et de techno.
-- Correction proposée :
-  - cause 3 : « l'appli a déjà un OTT, mais il ne sert qu'au master de la bass music et de la hard techno et aux basses « growl » et « grasse », jamais aux nappes et leads de house et de techno » ;
-  - essai 3, première étape : poser l'OTT existant sur les nappes, les leads et le bus de house et de techno (recette seulement, sans code moteur), puis mesurer ;
-  - `co.xfer_ott` devient une comparaison facultative avec notre `Ott`, seulement si une mesure le montre meilleur. Ce n'est plus « le gain le plus fort pour le moins de travail » ;
-  - effort de l'essai 3 à revoir à la baisse ; lignes 4 et 6 des décisions à aligner ;
-  - « utilisée sur presque toutes les basses, leads et nappes » : sans source, à adoucir (« très courante »).
+### G1. L'appli a déjà un OTT : l'étude disait le contraire et en faisait sa première brique moteur — **corrigé**
+- **Passages relevés sur cacaea09** :
+  - En bref, point 1 : « sans tables d'ondes ni compression multibande » ;
+  - § 2.1, point 3 : « On ne l'a pas » ;
+  - § 5 : « un OTT mesuré à 1 dB près de l'original : le gain « son 2020 » le plus fort pour le moins de travail » et l'Avis « 1. un OTT (code Faust MIT…) » ;
+  - essai 3 : « l'OTT en effet » ;
+  - décisions, lignes 4 et 6.
+- **Ce que dit le code** : il y a un `Ott` à trois bandes (`Effects.h:608-612`), l'effet « OTT multibande », le master de la Bass music (`WizardMix.kt:195`) et les réglages « Growl » et « Basse grasse ».
+- **Ce que j'ai vérifié sur 6776fa68** :
+  - En bref 1, § 2.1 point 4, § 5 et les décisions (lignes 5 et 8) décrivent l'OTT existant ;
+  - ses masters sont bien ceux qu'écrit l'étude, vérifié au grep de `StyleRecipes.kt` : hard techno l. 669, gabber 728, acidcore 757, trance 818, jump up 987, riddim 1051, plus la Bass music par `WizardMix` ;
+  - l'assistant ne le pose sur aucune nappe ni aucun lead : aucun `StyleFx("pad" | "lead")` n'a d'OTT ni de réglage qui en contienne ;
+  - `co.xfer_ott` est devenu « facultatif » ;
+  - l'essai 3 A commence par les recettes seules, et l'effort est revu à la baisse.
 
-### G2. « Les packs ont été demandés rétro » : phrase plus forte que la preuve, et mauvaise cible pour l'essai 2
-- Passages :
-  - En bref, point 1 : « Les packs téléchargeables ont été générés en demandant littéralement « rave des années 90, TR-909, Juno-106 ». » ;
-  - § 2.1, point 2 : « **Les packs ont été demandés « rétro ».** Les mots donnés au générateur Stable Audio contiennent « early 90s Belgian and Dutch rave », « Roland TR-909 », « Juno-106 », « DX7 » » ;
-  - Essai 2 : « on retire « 90s », « TR-909 », « Juno-106 » des demandes » ;
-  - Décisions, ligne 4.
-- Ce que dit `scripts/packs/styles.json` (54 packs) :
-  - « early 90s » n'apparaît que dans le pack « Rétro techno » ;
-  - « Roland TR-909 », « Juno-106 » et « DX7 » sont les mots des packs **qui portent ces noms** (famille « Machines »). Ces packs sont faits exprès pour imiter ces machines ;
-  - les packs des styles de l'essai n'ont aucun de ces mots : house « classic Chicago house », techno « techno Berlin », hard techno « hard techno industrial distorted », drum & bass « drum and bass ». Le jump up n'a pas de pack à lui.
-- Le vrai chemin du « rétro » par les packs, ce sont les recettes :
-  - la house prend son kick, son clap et ses charleys dans le pack TR-909, sa percussion dans le TR-707 et sa basse dans le Juno-106 (`StyleRecipes.kt:246`, `:252`) ;
-  - la techno prend son charley ouvert dans le TR-909 (`:542`) ;
-  - surtout, la recette House vise exprès « La house classique, née à Chicago », avec des références de 1984 à 1992 (`StyleRecipes.kt:229-249`).
-- Correction proposée :
-  - réécrire En bref 1 et § 2.1 point 2 : « certains styles prennent leurs sons dans les packs de machines anciennes (la house : batterie TR-909, percussion TR-707, basse Juno-106) ; seul le pack Rétro techno est demandé « années 90 » ; les packs Techno, Hard techno et Drum & bass n'ont pas ces mots. La recette House vise exprès la house de Chicago des années 80-90 » ;
-  - essai 2 : régénérer le pack House avec des mots d'aujourd'hui et changer ce que la recette House va chercher. Il ne faut pas retirer « TR-909 » des demandes : le pack TR-909 perdrait sa raison d'être. Pour techno, hard techno et drum & bass, dire que seule la qualité du modèle est en cause, pas les mots ;
-  - question 3 : signaler que la House de l'appli est classique par choix, et proposer la tech house, ou une recette House moderne, comme style d'essai.
+### G2. « Les packs ont été demandés rétro » : phrase plus forte que la preuve — **corrigé**
+- **Passages relevés sur cacaea09** : En bref 1, § 2.1 point 2, essai 2 (« on retire « 90s », « TR-909 », « Juno-106 » des demandes »), décisions ligne 4.
+- **Ce que j'ai vérifié sur 6776fa68** :
+  - le rétro est maintenant attribué à la recette House, qui prend les packs TR-909, TR-707 et Juno (`StyleRecipes.kt:246`, `:252`), et au Hoover du jump up ;
+  - « early 90s » est limité au pack Rétro techno ;
+  - les packs de l'essai sont cités avec leurs vrais mots, conformes à `styles.json` : « drum and bass », « tech house tight », « techno Berlin » ;
+  - l'essai 2 ne prétend plus retirer des mots d'époque ;
+  - la tech house remplace la house dans l'essai, et la question 3 devient une question de goût sur la House.
+- Il reste une petite erreur de dates : voir n1.
 
-### G3. Le branchement de l'essai 1 est faux pour la house et le jump up
-- Passages :
-  - Essai 1 : « **Branchement** : par le mécanisme qui existe déjà. Le « pack du style » passe avant le kit synthétisé, et chaque rôle (kick, clap, charley…) prend le meilleur son du pack. » ;
-  - § 6 : « Les recettes ne changent pas tant que tu n'as pas dit « mieux ». »
-- Ce que dit le code :
-  - `soundCategories` (`app/…/library/SoundLibraryViewModel.kt:217-235`) range d'abord le pack de machine nommé par la recette (`style.kit[role]`), puis le pack du style, puis le kit (`first + own + kit + …`) ;
-  - le son par défaut est le premier de la première catégorie (`defaultRow`, l. 1173-1180) ;
-  - pour les parties, le pack de `packSounds` passe en premier (`StarterWizard.soundsFor`, l. 502-546) : la basse de la house vient de `juno:bass` ;
-  - conséquence : un pack d'essai « house » ne serait **pas** choisi pour le kick, le clap, les charleys, la percussion ni la basse tant que les packs TR-909, TR-707 et Juno-106 sont sur le téléphone ou installés au banc ;
-  - le jump up n'a pas de pack à lui : sa recette envoie le kick, la caisse, les charleys et les percussions vers le pack « dnb » (`kit = mapOf(Role.Kick to "dnb", …)`).
-- Correction proposée :
-  - dire que l'essai change, derrière un interrupteur d'essai, le choix des packs dans les recettes (House : `kit` et `packSounds` ; Jump up : `kit`). Autre voie : le banc n'installe que les packs d'essai, en nommant leurs identifiants ;
-  - remplacer « Les recettes ne changent pas » par « les notes et la structure ne changent pas ; pour l'essai, seul change le pack où la recette prend ses sons ».
+### G3. Le branchement de l'essai 1 était faux pour la house et le jump up — **corrigé**
+- **Passages relevés sur cacaea09** : « Le « pack du style » passe avant le kit synthétisé » et « Les recettes ne changent pas tant que tu n'as pas dit « mieux » ».
+- **Ce que j'ai vérifié sur 6776fa68** :
+  - le § 1, « Quel échantillon gagne », décrit l'ordre réel de `soundCategories` : pack de machine nommé par la recette, puis pack du style, puis kit, et le pack de `packSounds` en premier pour la basse ;
+  - le § 6 branche l'essai par un interrupteur qui fait nommer aux recettes les packs d'essai ; au banc, seuls les packs d'essai sont installés ;
+  - « Les notes et la structure ne changent pas » remplace la phrase fausse ;
+  - le jump up est dit prendre le pack « dnb ».
+- Une précision manque, style par style : voir n3.
 
 ## Moyen
 
-- **M1. Mauvais témoin pour le processeur.**
-  - Passages : « **Hard techno** (témoin pour le processeur) » et « rien de plus en hard techno. Sur le téléphone Honor, elle fait déjà 44 % en moyenne et 67 % au pire moment ».
-  - Le même rapport (`tour-5-hardtechno-rapport.md`, l. 5) donne le jump up plus lourd : 60 % en moyenne et 74 % au pire. Le jump up est un style de l'essai, et l'essai 3 y ajoute de l'OTT et des tables d'ondes. Le rapport dit aussi que ce « pire bloc » est lissé sur 0,5 s et plafonné.
-  - Correction : prendre le jump up comme témoin de charge (la hard techno reste le témoin des décrochages), avec une règle chiffrée pour lui, et préciser ce que mesure le « pire bloc ».
-- **M2. Les mesures « avant » ne se refont pas avec l'outil nommé.**
-  - Passages : § 2.2, « Air = la part du son au-dessus de 10 kHz » et « Rendus effacés après mesure » ; « Ce qu'on mesure », « Banc d'export (`scripts/song-bench.sh`) : […] air au-dessus de 10 kHz ; grave-médium face au médium-aigu ; […] chaque voix rendue seule ».
-  - Dans le banc, « air » couvre 6 à 20 kHz (`engine/bench/ps_measure.cpp:297`), aucune bande ne va de 150 à 500 Hz ni de 1 à 4 kHz, et `song-bench.sh` ne rend seuls que le lead, la basse, le kick et la batterie, jamais la nappe. Le calcul utilisé n'est pas commité.
-  - Correction : commiter le petit outil de mesure avec un test, ou ajouter ces bandes à `ps_measure` avec un test, et garder le JSON « avant ». Sinon, refaire les chiffres avec les bandes du banc. Règle de CLAUDE.md : l'outil de mesure se vérifie avant de mesurer.
-- **M3. « Trop sombre » n'est jugé que face à une scie brute.**
-  - Passages : § 2.1 point 4, « Les nappes et les leads de house et de techno sont filtrés sombres » ; tableau, « sombre et boueuse : 15 à 20 dB plus sombre qu'une scie brute » ; essai 3, « ouvrir les nappes et leads trop sombres ».
-  - Une scie sans filtre n'est pas une cible : une nappe de techno d'aujourd'hui peut être sombre elle aussi.
-  - Correction : présenter cette cause comme une piste à confirmer à l'oreille, ou la mesurer sur des morceaux de référence récents (`docs/hits/`).
-- **M4. Les questions ne suivent pas CLAUDE.md.**
-  - Règle du 2026-10-24 : ne demander à Benjamin que ce qu'il est seul à pouvoir faire.
-  - Les questions 2 (taille de l'appli) et 3 (styles de l'essai) sont des choix à prendre soi-même, avec l'option conseillée notée dans les décisions. La 1 (de l'argent) et la 4 (son écoute, l'APK) peuvent rester.
-  - Format : la question 3 n'a de conséquence pour aucune option, et 1A n'en a pas d'écrite.
-  - Correction : décider 2A et 3A dans `docs/decisions/tour-5-sons-modernes.md`, garder 1 et 4, et donner à chaque option une conséquence en une ligne.
-- **M5. La raison donnée pour écarter la table d'ondes de Plaits est fausse.**
-  - Passage : « Il imite volontairement un convertisseur 5 bits : c'est un son lo-fi, pas un Serum. »
-  - Le 5 bits ne touche que la sortie AUX (`wavetable_engine.cc` : `*aux++ = …(int)(mix * 32.0f) / 32.0f`). L'appli joue la sortie principale `frames[i].out` (`PlaitsSynth.cpp:158-160`), qui lit les tables avec interpolation. Le côté lo-fi ne vient que de la moitié non interpolée du bouton HARMONICS.
-  - Correction : corriger la phrase, et essayer à 0 € la table d'ondes de Plaits (modèle 13) et le « Terrain d'onde » (modèle 5) avant d'écrire un oscillateur.
+- **M1. Mauvais témoin pour le processeur** — **corrigé**.
+  - Les témoins sont maintenant le jump up (60 %, pire 74 %) et la hard techno (décrochages), au § 1, au § 6 et dans les décisions (ligne 12).
+  - La règle est devenue « rien de plus en jump up ni en hard techno ».
+- **M2. Les mesures « avant » ne se refaisaient pas avec l'outil nommé** — **corrigé**.
+  - L'outil `voix.py` est commité avec son test.
+  - Les commandes exactes et les chiffres « avant » sont dans `mesures-2026-11-12.md` ; leurs options `--no-bass` et `--no-kick` existent bien dans `song-bench.sh`.
+  - L'« air » à 10 kHz est distingué de celui du banc (6 kHz).
+  - Le test ne couvre pas encore toutes les colonnes publiées : nouveau constat N1.
+- **M3. « Trop sombre » n'était jugé que face à une scie brute** — **corrigé**.
+  - La limite est écrite au § 2.2.
+  - La parade est dans l'essai : des sons modernes faits avec Surge XT, mesurés avec le même outil.
+- **M4. Les questions ne suivaient pas CLAUDE.md** — **corrigé**.
+  - Chaque option a sa conséquence en une ligne.
+  - La question 2 reste posée à Benjamin, selon la consigne du lot, que je ne peux pas lire ici. La question 3 relève maintenant du goût, et la 4 touche à l'APK, qui ne se fait que sur sa demande.
+- **M5. Le « 5 bits » de la table d'ondes de Plaits** — **corrigé**.
+  - Le § 5 le limite à la sortie secondaire, conforme à `wavetable_engine.cc` et `PlaitsSynth.cpp:158-160`.
+  - Le modèle table d'ondes de Plaits entre dans l'essai 3 A, à 0 €.
 
-## Mineur
+## Mineur (premier passage)
 
-- **m1.** § 1, tableau, ligne Basse : « seulement en house (Juno) et en techno ».
-  - Avec les packs, la basse en échantillon passe aussi en premier en boom bap, lo-fi, tech house, UK garage et neurofunk (`packSounds`, `StyleRecipes.kt`).
-  - Correction : « dans 7 styles, dont house et techno ».
-- **m2.** § 1, tableau : « la ride et le crash sont la cymbale du kit raccourcie ».
-  - Seule la ride est raccourcie (`kitShaped`, `Role.Ride`). Le crash est la cymbale du kit telle quelle.
-- **m3.** Essai 3 : « nouveaux sons de bibliothèque : basse « reese » moderne ».
-  - Une « Reese moderne » existe déjà (`SoundLibrary.kt:73`).
-  - Correction : « retoucher la Reese moderne existante ».
-- **m4.** § 3.1, Signature Sounds : « « License: CC0 (Free to use, no restrictions) » sur 34 des 36 packs visibles ».
-  - À ma lecture (2026-11-12), la ligne « License: » ne figure que sur 18 packs. Sur 16 autres, « CC0 » n'est que dans la description. L'un des packs est payant (Signature Soundbank, 9,99 £). La plupart des packs visibles sont des bruitages et des prises de son en extérieur.
-  - Correction : « 34 packs annoncent du CC0, dont 18 avec une ligne de licence » ; liste des styles couverts à vérifier.
-- **m5.** Estimations pas toujours présentées comme telles :
-  - efforts « environ 2 à 3 jours d'agent », « environ 1 jour », « environ 1 à 2 semaines » ;
-  - tailles « environ 2 à 5 Mo par style », « environ +5 à 10 Mo », « moins de 1 Mo » ;
-  - En bref : « environ 500 à 1 500 $ » ; question 1B : « Jusqu'à environ 1 500 $ » ; question 2B : « +5 à 10 Mo ».
-  - Correction : ajouter « (estimation) » partout, comme dans le tableau du § 4.
-- **m6.** Décisions, ligne 5 : « les échantillons allègent le processeur au lieu de le charger ».
-  - Rien ne le mesure, et le plan lui-même dit « allège plutôt ».
-  - Correction : « devraient alléger (à mesurer) ».
-- **m7.** Un dossier neuf `docs/sons/` à côté de l'existant `docs/son/` (MELODIE.md, banc/).
-  - Correction : ranger l'étude dans `docs/son/`.
-- **m8.** WaivOps EDM-TECH (zenodo 17584890) : les boucles viennent « mainly from drum machines », avec un sous-style « 90s ».
-  - Correction : préciser qu'il faut filtrer sur le sous-style « modern ». La citation « may contain minor … audio defects » vient de la page EDM-HSE, pas des quatre.
-- **m9.** Fil audio : les tables d'ondes (AKWF) se préparent hors du rappel audio, comme `AcidTrack::prepare` construit les siennes.
-  - Correction : l'écrire à côté de l'essai 3, comme c'est fait pour le kick transposé.
-- **m10.** § 3.2, Splice « interdit pour une appli ».
-  - La conclusion tient : 2.3.1.4 (d), « redistribute Sounds in new sample packs », et (a), les sons isolés comme matière pour d'autres échantillons. Mais 2.3.1.3 autorise les sons dans un jeu vidéo, s'ils sont fondus dans une œuvre.
-  - Correction : citer la bonne clause pour éviter un contresens.
+- **m1.** Basse en échantillon : « seulement en house et en techno » — **corrigé** (« en premier dans 7 styles »).
+- **m2.** « la ride et le crash raccourcis » — **corrigé** : seule la ride est raccourcie.
+- **m3.** « Reese moderne » déjà dans la bibliothèque — **corrigé**.
+  - Le § 5 cite aussi « Accords future bass » et « Pluck future ».
+  - Aucune recette ne s'en sert, vérifié au grep.
+- **m4.** Signature Sounds : 34 packs sur 36 — **corrigé** (« 34 packs annoncent du CC0, dont 18 avec la ligne »).
+- **m5.** Estimations pas présentées comme telles — **corrigé** : efforts, tailles et prix sont étiquetés.
+- **m6.** « les échantillons allègent le processeur » — **corrigé** : « devrait alléger (estimation, à mesurer) ».
+- **m7.** Dossier `docs/sons/` à côté de `docs/son/` — **corrigé**.
+  - Le dossier reste en place, mais la raison est notée dans les décisions (ligne 3) : nom imposé par la consigne du lot.
+- **m8.** Le sous-style « 90s » de WaivOps — **corrigé** (« à éviter »).
+- **m9.** Tables d'ondes préparées hors du fil audio — **corrigé** (§ 5, point 2, et essai 3 B).
+- **m10.** La bonne clause de Splice — **corrigé** : 2.3.1.4 d, avec l'exception « fondu dans une œuvre ».
+  - La liste des œuvres de 2.3.1.3 est ouverte (« such as but not limited to »), donc « un jeu ou une appli » se défend.
 
-## Vérifié sans constat
+## Nouveaux constats (second passage, sur 6776fa68)
 
-- **Code :**
-  - `DrumKit.h` : « 16 synthesized drum voices (808/909 flavour), no samples » ;
-  - `soundsFor` : le pack du style passe avant le son du synthé ;
-  - le kick d'un pack garde son pad, et le kick studio n'est posé que sur la voix du kit (`withStudioVoices`, l. 822-825) ;
-  - l'assistant ne prend jamais de SoundFont GM : `InstrumentChoice` n'est créé que dans `InstrumentPanel` ;
-  - synthé : scie, carré et triangle sur les oscillateurs, sinus seulement sur le sub et la FM, pas de table d'ondes ;
-  - `MidiFile.importInto` : canal 10 sur les pads, le reste dans le piano roll ;
-  - le modèle Plaits 13 « Table d'ondes » n'est utilisé par aucun son de la bibliothèque ;
-  - 37 styles ; kick de la techno vers 44 Hz ; « Piano FM » = E.PIANO 1.
-- **Chiffres :**
-  - APK 47,8 Mo : c'est bien la dernière Release (v0.22.219, 47 844 446 octets) ;
-  - hard techno 44 % et 67 % ;
-  - mélodies à 91-100 % de notes de l'accord (`MELODIE.md`).
-- **Licences lues sur le web le 2026-11-12 :**
-  - Stability AI : seuil de 1 M$, inscription obligatoire pour un usage commercial, « You own any outputs », « Powered by Stability AI », mise à jour du 5 juillet 2024 ;
-  - 99Sounds : citation exacte ; Splice 2.3.1.4 (d) : citation exacte ;
-  - free-midi-chords : MIT, plus de 13 000 fichiers, 195 suites par tonalité ;
-  - Groove MIDI Dataset : CC BY 4.0, 13,6 h ;
-  - Vital EULA : les deux citations sont exactes ;
-  - FAQ Surge XT : citation exacte ;
-  - `co.xfer_ott` : `declare xfer_ott license "MIT"` (auteur David Braun, `compressors.lib`, l. 1898-1899), « 1 dB at most » ;
-  - AKWF : CC0 ; WaivOps : CC BY 4.0 ; Freesound : « You could even sell the sound ».
-- **Commit cacaea09 :** deux fichiers ajoutés, tous deux de la documentation, en mode 100644. Aucun lien symbolique, aucun son, aucun fichier de l'appli, du moteur, du banc ni des tests.
-- **CLAUDE.md :** pas d'APK sans demande, « sans allocation dans le fil audio » écrit pour l'OTT, « En bref » en 5 points.
+### Moyen
 
-Verdict : 0 bloquant, 3 grave
+- **N1. Le test de l'outil ne couvre pas deux des colonnes publiées.**
+  - Passages :
+    - § 2.2 : « Cet outil est vérifié par `test_voix.py` […]. Une version cassée de l'outil est refusée. » ;
+    - colonnes « Grave-médium 150–500 Hz face à 1–4 kHz » et « présence 1–4 kHz » ;
+    - essai, « Voix seules » : « grave-médium face au médium-aigu ; présence au téléphone ».
+  - Le test ne vérifie que l'air, le centroïde, la brillance, le côté et le silence. Ces quatre versions cassées passent quand même :
+    - `boue` calculée sur 100-500 Hz au lieu de 150-500 Hz ;
+    - `presence` rapportée à 20 Hz-20 kHz au lieu de 300 Hz-20 kHz ;
+    - la bande totale commencée à 200 Hz au lieu de 20 Hz (la scie de 261,6 Hz n'a rien en dessous) ;
+    - la fenêtre de Hann retirée.
+  - La phrase est donc plus forte que la preuve pour les colonnes « grave-médium » et « présence », qui portent la lecture « boueuse » de la nappe techno et la basse « peu audible » de la tech house.
+  - Correction proposée :
+    - ajouter au test les valeurs exactes de `boue_150_500_vs_1_4k_db` et `presence_tel_1_4k_db` pour la scie (somme des 1/n² dans chaque bande) ;
+    - ajouter une scie grave, par exemple à 65,4 Hz, pour tenir le bas de la bande totale ;
+    - ou bien limiter la phrase du § 2.2 aux colonnes vérifiées.
+
+### Mineur
+
+- **n1. Les dates des références sont inexactes**, vu dans `StyleRecipes.kt` :
+  - House « de 1986 à 1992 » (En bref 1, § 1, question 3, décisions lignes 5 et 6) : la liste va de 1984 (Jesse Saunders, « On and On ») à 1992 ;
+  - Jump up « références de 2017 à 2023 » : la liste commence en 2007 (DJ Hazard & Distorted Minds, « Mr Happy ») ;
+  - Tech house « de 2014 à 2022 » : la liste commence en 2001 (Green Velvet, « La La Land »).
+  - Correction : 1984-1992, 2007-2023 et 2001-2022, ou « références surtout de … ».
+- **n2. Le kick de la tech house est accordé lui aussi.**
+  - Passage : « Attention aux kicks : le kick studio de la techno est accordé à la tonalité ».
+  - La tech house est de la famille « House », donc dans `TUNED_FAMILIES` (`StudioDrums.kt:27`, `:96`).
+  - Correction : « de la techno et de la tech house ».
+- **n3. L'interrupteur d'essai, style par style.**
+  - Passage : « des packs d'essai à la place de leurs packs de machines (TR-909, Juno…) ».
+  - Jump up : le pack à remplacer est « dnb », un pack de style partagé avec la drum & bass, pas un pack de machine.
+  - Tech house : la recette n'a pas de `kit` ; il faut en ajouter un, ou donner au pack d'essai l'identifiant « tech_house ».
+  - Techno : le TR-909 pour le charley ouvert, et le pack « techno ».
+  - Correction : le dire en une ligne par style.
+- **n4. « la voix la plus sombre » (tableau du § 2.2, lead de la tech house à −57 dB)** est contredit par la ligne suivante : la basse de la tech house est à −60 dB.
+  - Correction : « le lead le plus sombre ».
+- **n5. L'essai 3 A change le rôle d'une partie.**
+  - Passage : « pour la tech house, un vrai lead à la place de la « Voix robot » ».
+  - La recette joue des voix découpées (`LeadKind.Chops`, `vocal_chops:vocal`). Mettre un lead change le rôle de la partie, pas seulement son son, ce qui contredit « mêmes notes, sons remplacés ».
+  - Correction : « des voix découpées modernes (pack d'essai) à la place de la « Voix robot » ».
+- **n6. « la production d'aujourd'hui la met sur presque tout »** (§ 2.1, point 4) : sans source.
+  - Correction : « très courante sur les basses, leads et nappes ».
+
+Verdict : 0 bloquant, 0 grave — fusion possible

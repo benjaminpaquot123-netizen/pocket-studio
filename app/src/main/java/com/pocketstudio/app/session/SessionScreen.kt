@@ -895,12 +895,13 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
 /** Names scene [index]: a song section in one touch, or any name typed. */
 @Composable
 internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> Unit, onDismiss: () -> Unit) {
-    var name by remember(index) { mutableStateOf(current) }
+    // Tour 5, lot « langues » (D c #38): the field says the section in the app's language; the part keeps its section.
+    var name by remember(index) { mutableStateOf(if (current in Scene.SECTIONS) Scene.sectionName(current) else current) }
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
         text = { RenameSceneFields(name) { name = it } },
-        confirmButton = { TextButton(onClick = { onDone(name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
+        confirmButton = { TextButton(onClick = { onDone(Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == name } ?: name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
         dismissButton = {
             Row {
                 if (current.isNotBlank()) TextButton(onClick = { onDone("") }) { Text(tr("Sans nom")) }
@@ -921,7 +922,7 @@ internal fun RenameSceneFields(name: String, setName: (String) -> Unit) {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Scene.SECTIONS.forEach { s ->
                 FilterChip(
-                    selected = name == s, onClick = { setName(s) }, label = { Text(Scene.sectionName(s)) },
+                    selected = name == s || name == Scene.sectionName(s), onClick = { setName(Scene.sectionName(s)) }, label = { Text(Scene.sectionName(s)) },
                     colors = pillColors(), modifier = Modifier.testTag("section_$s"),
                 )
             }

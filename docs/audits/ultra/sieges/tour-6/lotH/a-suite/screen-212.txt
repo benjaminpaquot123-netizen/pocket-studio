@@ -1,0 +1,60 @@
+Écran 212 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : C · Montée » ▾ @ 131,180
+bouton « Suivre » [coupé] @ 99,226
+texte « Mesure 4/4 · Charley » @ 158,282
+texte « 2 coups en trop ici (barrés) » @ 198,311
+bouton « 1 » [état « coup, force 62 % »] @ 70,380
+bouton [état « coup, force 30 % »] @ 133,380
+bouton [état « vide »] @ 197,381
+bouton [état « coup, force 32 % »] @ 261,381
+bouton « 2 » [état « coup, force 47 % »] @ 325,381
+bouton [état « coup, force 34 % »] @ 389,381
+bouton [état « vide »] @ 453,381
+bouton [état « coup, force 30 % »] @ 517,381
+bouton « 3 » [état « coup, force 53 % »] @ 70,459
+bouton [état « coup, force 27 % »] @ 133,459
+bouton [état « vide »] @ 197,460
+bouton [état « coup, force 36 % »] @ 261,460
+bouton « 4 » [état « vide »] @ 325,460
+bouton [état « coup, force 33 %, barré : à enlever »] @ 389,460
+bouton [état « vide »] @ 453,460
+bouton [état « coup, force 26 %, barré : à enlever »] @ 517,460
+texte « tout » @ 152,545
+texte « 1/2 » @ 227,545
+texte « 1/4 » @ 302,545
+texte « ◀ » @ 377,545
+texte « ▶ » @ 452,545
+texte « Remplir » @ 77,545
+texte « Effacer » @ 91,617
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,705
+bouton « 1 mesure » @ 215,794
+bouton « 2 » @ 330,794
+bouton « 3 » @ 411,794
+bouton « 4 » [sélectionné] @ 492,794
+texte « Longueur » @ 89,794
+image (chapeau de diplômé) @ 37,879
+texte « Les transitions Chapitre 12/15 · Étape 1/3 · Facile » @ 244,879
+icône (liste) @ 459,879
+icône ⌃ @ 531,879
+icône « À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 122 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

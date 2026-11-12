@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="p-3391b76b">{&quot;style&quot;:&quot;house&quot;,&quot;done&quot;:[&quot;ref&quot;,&quot;tempo&quot;,&quot;key&quot;,&quot;ready&quot;,&quot;kick_do&quot;,&quot;clap_do&quot;,&quot;ohat_do&quot;,&quot;hat_do&quot;,&quot;perc_do&quot;,&quot;drums_hear&quot;,&quot;bass_hear&quot;,&quot;bass_do&quot;,&quot;pad_hear&quot;,&quot;pad_do&quot;,&quot;lead_do&quot;,&quot;groove_hear&quot;,&quot;groove_name&quot;,&quot;map_intro&quot;,&quot;map_montee&quot;,&quot;map_drop&quot;,&quot;map_break&quot;,&quot;map_phrases&quot;,&quot;make_intro&quot;,&quot;make_montee&quot;,&quot;make_drop&quot;,&quot;make_break&quot;,&quot;make_drop2&quot;,&quot;make_fin&quot;,&quot;song_order&quot;,&quot;song_phrases&quot;,&quot;gap&quot;,&quot;crash&quot;,&quot;variation&quot;,&quot;reverb_hear&quot;,&quot;riser_hear&quot;,&quot;levels&quot;,&quot;share&quot;],&quot;current&quot;:&quot;share&quot;}</string>
+</map>

@@ -269,6 +269,7 @@ private fun Modifier.drawStartBar(color: Color): Modifier = this.drawBehind {
 }
 
 private val STRIP_W = 76.dp
+
 private val FADER_H = 184.dp
 private val MINI_W = 60.dp
 private val MINI_FADER_H = 120.dp
@@ -282,7 +283,12 @@ private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier)
             .drawBehind { drawRect(color, Offset.Zero, Size(size.width, 3.dp.toPx())) }.padding(horizontal = 2.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(name, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, lineHeight = 14.sp)
+        // Tour 6, lot 5 (R1: « Batteri / e ▸ », « Batteri / a » at 130 %, « आउटपुट » at 200 %): smaller before a word is cut
+        // in two (FitText: WholeWordsText lets a Hindi word break before its vowel sign), as small as a 64 dp strip needs.
+        com.pocketstudio.ui.FitText(
+            name, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp), fontWeight = FontWeight.Bold, maxLines = 2, textAlign = TextAlign.Center,
+            min = 7.sp,
+        )
     }
 }
 
@@ -305,7 +311,8 @@ private fun StripBody(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, 
         t.volume, { actions.setVolume(t.ch, it) }, { actions.resetVolume(t.ch) }, { meters().getOrElse(t.ch) { 0f } },
         tr("Volume de %s", t.name), faderWords(t.volume), "mix_fader_${t.ch}", top = "+4", bottom = "−∞", height = FADER_H,
     )
-    Text(faderWords(t.volume), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextPrimary, maxLines = 1, modifier = Modifier.testTag("mix_db_${t.ch}"))
+    // R1 (« Normalnie » in Polish at 130 %): smaller before it is cut.
+    com.pocketstudio.ui.FitText(faderWords(t.volume), Modifier.testTag("mix_db_${t.ch}"), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextPrimary, min = 7.sp)
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         com.pocketstudio.app.ui.MuteToggle(t.mute, t.name, "mix_mute_${t.ch}", size = androidx.compose.ui.unit.DpSize(30.dp, 40.dp)) { actions.toggleMute(t.ch) }
         PlayAlone(alone, t.name, "mix_alone_${t.key}") { actions.listenAlone(t.key) }
@@ -344,12 +351,16 @@ private fun DrumsGroup(
                         .spot("mix_strip_$ch").testTag("mix_pad_${pad.lane}"),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    Text(pad.name, style = MaterialTheme.typography.labelSmall, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, lineHeight = 12.sp, modifier = Modifier.heightIn(min = 26.dp))
+                    // R1 (« Snar / e », « Claquem / ent de … »): the sound's name whole, smaller if it must be.
+                    com.pocketstudio.ui.FitText(
+                        pad.name, Modifier.heightIn(min = 26.dp), style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp), maxLines = 2, textAlign = TextAlign.Center,
+                        min = 6.5.sp,
+                    )
                     MixFader(
                         v, { actions.setVolume(ch, it) }, { actions.resetVolume(ch) }, { meters().getOrElse(ch) { 0f } },
                         tr("Volume de %s", pad.name), faderWords(v), "mix_pad_fader_${pad.lane}", top = null, bottom = null, height = MINI_FADER_H, mini = true,
                     )
-                    Text(faderWords(v), style = MonoStyle.copy(fontSize = 11.sp), color = Neon.TextSecondary, maxLines = 1)
+                    com.pocketstudio.ui.FitText(faderWords(v), style = MonoStyle.copy(fontSize = 11.sp), color = Neon.TextSecondary, min = 7.sp)
                     PlayAlone(on, pad.name, "mix_pad_alone_${pad.lane}") { actions.listenPadAlone(pad.lane) }
                 }
             }
@@ -361,7 +372,8 @@ private fun DrumsGroup(
 @Composable
 private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, words: () -> OutputWords, setDb: (Float) -> Unit) {
     Column(
-        Modifier.width(STRIP_W + 8.dp).consoleStrip(RoundedCornerShape(12.dp), 0.7f, outline = true).padding(6.dp).testTag("mix_out"),
+        // A little wider than a track's strip: « Przesterowuje », « Es übersteuert » whole at a big font size (R1).
+        Modifier.width(STRIP_W + 16.dp).consoleStrip(RoundedCornerShape(12.dp), 0.7f, outline = true).padding(6.dp).testTag("mix_out"),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         StripHead(tr("Sortie"), Neon.TextSecondary)
@@ -398,9 +410,9 @@ private fun OutputWordsText(wordsNow: () -> OutputWords) {
         OutputWords.NONE -> Neon.TextSecondary
         else -> Neon.Acid
     }
-    Text(
-        words.text(), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = color, textAlign = TextAlign.Center,
-        maxLines = 2, lineHeight = 16.sp, modifier = Modifier.heightIn(min = 40.dp).testTag("mix_out_words"),
+    com.pocketstudio.ui.FitText(
+        words.text(), Modifier.heightIn(min = 40.dp).testTag("mix_out_words"), style = MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
+        color = color, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2, min = 7.5.sp,
     )
 }
 

@@ -751,7 +751,8 @@ internal fun RecordButton(take: TakeUi, record: () -> Unit) {
                 else -> Box(Modifier.size(22.dp).clip(CircleShape).background(Neon.Red))
             }
         }
-        Text(label, style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1)
+        // Tour 6, lot 5 (R1: « REC » cut at the phone's font 200 %): smaller before it is cut.
+        com.pocketstudio.ui.FitText(label, style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 7.sp)
     }
 }
 
@@ -842,12 +843,15 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
 @Composable
 private fun TakeChoice(label: String, selected: Boolean, tag: String, choose: () -> Unit) {
     Box(
-        Modifier.height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Red.copy(alpha = 0.85f) else Neon.Surface)
-            .clickable(onClick = choose).padding(horizontal = 12.dp).testTag(tag)
+        Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Red.copy(alpha = 0.85f) else Neon.Surface)
+            .clickable(onClick = choose).padding(horizontal = 12.dp, vertical = 4.dp).testTag(tag)
             .semantics { if (selected) contentDescription = "$label ✓" },
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = if (selected) Color.White else Neon.TextPrimary, maxLines = 1)
+        // R1 (« Ajouter à la suite » cut at the phone's font 200 %): on two lines, words whole, rather than cut.
+        com.pocketstudio.ui.FitText(
+            label, style = MaterialTheme.typography.labelMedium, color = if (selected) Color.White else Neon.TextPrimary, maxLines = 2, textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -1126,12 +1130,12 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
         Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp)).background(GridLook.Panel),
     ) {
         Box(Modifier.fillMaxWidth().height(3.dp).background(c.color.copy(alpha = 0.9f)))
-        // A narrow column (six tracks on a phone): the name gets smaller before it is cut.
-        val style = MaterialTheme.typography.labelMedium
-        Text(
-            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 2.dp), style = style,
-            maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, softWrap = false,
-            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
+        // A narrow column (six tracks on a phone): the name gets smaller before it is cut; R1 (« Souffle mo… » at 130 %):
+        // a name of two words that no size fits on one line goes on two.
+        com.pocketstudio.ui.FitText(
+            // Lines a little closer than the style's: two of them fit over a short M (a header 56 dp high).
+            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 1.dp), style = MaterialTheme.typography.labelMedium.copy(lineHeight = 15.sp),
+            maxLines = 2, min = 8.sp, textAlign = TextAlign.Center,
         )
         // Under the name: a finger that misses it does not land on a pad (which would launch a
         // scene, into the take). Lying down it is shorter, as wide as the column.
@@ -1168,7 +1172,8 @@ private fun SceneButton(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+        // R1 (the letter cut at the phone's font 200 % in a short row): smaller before it is cut.
+        com.pocketstudio.ui.FitText(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, min = 9.sp)
         if (label != null && height >= 52.dp) {
             Text(
                 label, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
@@ -1351,7 +1356,7 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
         val style = MaterialTheme.typography.titleSmall
         // Audit stage 1: two lines before a cut word (« ■ Wszys » in Polish on a phone): « ■ » then the word.
         com.pocketstudio.ui.FitText(
-            label, Modifier.padding(horizontal = 2.dp), style, color = Neon.TextPrimary, maxLines = 2, min = 8.sp,
+            label, Modifier.padding(horizontal = 2.dp), style, color = Neon.TextPrimary, maxLines = 2, min = 7.sp,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         )
     }
@@ -1388,8 +1393,19 @@ private fun liveTabs(sideBySide: Boolean): List<LivePanelTab> =
 private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, unfold: () -> Unit, immersive: Boolean, toggleFull: () -> Unit) {
     val shape = RoundedCornerShape(20.dp)
     BoxWithConstraints(Modifier.fillMaxWidth().background(GridLook.Ground).padding(horizontal = 10.dp, vertical = 6.dp)) {
-        // A narrow dock (a small phone, a big text size): the icons alone, their names said.
-        val words = maxWidth >= 300.dp
+        // A narrow dock (a small phone, a big text size): the icons alone, their names said. Tour 6, lot 5 (R1: « Bauste… »,
+        // « Acid 3… » at 130 %): the words only when each fits whole at the smallest size its label may take.
+        val tabs = liveTabs(sideBySide)
+        val labelStyle = MaterialTheme.typography.labelMedium
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val labels = tabs.map { tabLabel(it, sideBySide) }
+        val words = remember(labels, maxWidth, density, labelStyle) {
+            // Each tab's share of the dock (its padding, ⛶ and ︿ aside); the floor of WholeWordsAutoSize at this font size.
+            val tabW = with(density) { ((maxWidth - 8.dp - 96.dp) / tabs.size).toPx() }
+            val smallest = DOCK_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
+            maxWidth >= 300.dp && labels.all { measurer.measure(it, labelStyle.copy(fontSize = smallest.sp), maxLines = 1, softWrap = false).size.width <= tabW }
+        }
         Row(
             Modifier.fillMaxWidth().height(DOCK_HEIGHT).shadow(10.dp, shape).clip(shape).background(Neon.Surface)
                 .border(1.dp, Color.White.copy(alpha = 0.06f), shape).padding(horizontal = 4.dp).testTag("live_dock"),
@@ -1417,7 +1433,7 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
                         val style = MaterialTheme.typography.labelMedium
                         Text(
                             label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(DOCK_WORDS_MIN, style.fontSize),
                         )
                     }
                 }
@@ -1432,6 +1448,9 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
 
 /** The dock's height (its floating margins aside). */
 private val DOCK_HEIGHT = 60.dp
+
+/** The smallest a dock tab's word gets (past 130 % of the phone's font, smaller still: see WholeWordsAutoSize). */
+private val DOCK_WORDS_MIN = 9.sp
 
 /**
  * Lot 4d, the tools open: a panel from the bottom (lying down, [sideways]: on the right). On top

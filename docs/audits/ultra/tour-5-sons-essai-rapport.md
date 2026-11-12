@@ -118,59 +118,78 @@ Le solo d'un pad de batterie n'est pas fiable quand ce pad joue un échantillon,
   - harmoniques par tanh suréchantillonné ×4 ;
   - clic à part.
   - Le passe-haut anti-grondement est déplacé avant l'écrêteur : placé après, il faisait perdre environ 2 dB à crête égale.
-  - À crête égale, face au kick de l'essai n° 1 : 60-250 Hz +4,6 à +6,5 dB, 250 Hz-1,5 kHz +10,8 à +19,1 dB, clic +6,8 à +20,9 dB. Le facteur de crête tombe à 4,7-7,3 dB : le kick est nettement plus saturé.
-- **Caisse claire et claps** : un corps à 185-250 Hz, du bruit à 1-3 kHz, une plaque de 0,3 à 0,5 s, décorrélée gauche/droite pour les claps. +4 à +12 dB entre 250 Hz et 2 kHz à crête égale.
+  - À crête égale, face au kick de l'essai n° 1 :
+    - 60-250 Hz : +4,6 à +6,5 dB ;
+    - 250 Hz-1,5 kHz : environ +11 à +19 dB ;
+    - clic : +6,8 à +20,9 dB.
+  - Le facteur de crête tombe à 4,7-7,3 dB : le kick est nettement plus saturé.
+- **Caisse claire et claps** : un corps à 185-250 Hz, du bruit à 1-3 kHz, une plaque de 0,3 à 0,5 s, décorrélée gauche/droite pour les claps. Environ +3 à +13 dB entre 250 Hz et 2 kHz à crête égale.
 - **Charleys, rides** : crête à −8 dBFS au lieu de −1, avec 3 dB de moins au-dessus de 10 kHz. **Percussions** : crête à −4 dBFS.
-- **Basse** (sous l'interrupteur), dans cet ordre :
-  - saturation en parallèle (force 0,95, mélange 85 %, volume constant) ;
-  - +12 dB vers 800 Hz ;
-  - égaliseur : graves +5 dB, aigus −9 dB au-dessus de 8 kHz.
+- **Basse** (sous l'interrupteur), deux effets seulement, dans cet ordre :
+  - une saturation en parallèle (force 0,95, mélange 85 %, volume constant) ;
+  - puis l'égaliseur trois bandes : graves +5 dB (étagère à 100 Hz), médium +12 dB (1 kHz), aigus −9 dB (étagère à 8 kHz).
   - Le pompage sur le kick existe déjà : le mixage de l'assistant fait baisser la musique sous le son du kick, par un bus. Il n'est pas doublé.
-- **Leads et nappes** : élargisseur avec étalement, plaque et délai en ping-pong (lead : réverbe 0,25, délai 0,3 ; nappe : réverbe 0,4).
-- **Voix de la tech house** : +9 dB vers 2,5 kHz.
-- Pas de nouveau mouvement de filtre : les leads gardent les cycles de filtre de 8 mesures qu'ils avaient déjà.
+- **Leads et nappes** :
+  - plus de plaque et de délai : lead réverbe 0,3 et délai 0,4, nappe réverbe 0,45 ; la plaque et le ping-pong existaient déjà, seul le dosage monte ;
+  - aucun élargisseur de l'essai : le mixage les élargit déjà ;
+  - pas de nouveau mouvement de filtre : les leads gardent leurs cycles de filtre de 8 mesures.
+- **Voix de la tech house** : égaliseur trois bandes, médium +9 dB et aigus +6 dB.
 
-### Mesures de l'essai n° 2
+### Corrigé après la relecture neuve (graves G1 et G2)
 
-Après − avant, à niveau égalisé, premier Drop, écoute en direct.
+- **G1, la chaîne de la basse.** La première version mettait un égaliseur paramétrique (+12 dB) :
+  - en techno, le mixage l'a pris pour l'égaliseur neutre de la basse, y a écrit sa coupe-bas et l'a placé avant la saturation ;
+  - en jump up, la voie de la basse était pleine (8 effets sur 8) : le relèvement de 120 Hz posé par l'assistant disparaissait sans prévenir.
+  - Maintenant : l'égaliseur trois bandes, que ces réglages ne touchent pas, et un effet de moins.
+  - Les tests le vérifient sur le morceau construit : `onTheBassGetsParallelSaturationThenItsEq` (ordre) et `onTheBassKeepsEveryInsertTheMixGaveIt` (rien de perdu).
+- **G2, la largeur.** Mes élargisseurs ne faisaient rien (le mixage en pose déjà un et réécrit son étalement). Pire, ils faisaient perdre son chorus au lead en tech house et en techno. Ils sont retirés.
+  - Le test vérifie désormais que la réverbe et le délai montent par rapport à la recette, et que chaque effet du mixage reste sur les pistes dont le son ne change pas : `onLeadsAndPadsGetMoreSpaceAndKeepTheirEffects`.
 
-| Style | Mix : sub / bas / médium / aigu | Bus batterie : sub / bas / médium / aigu | Basse : sub / bas / médium / aigu |
+### Mesures de l'essai n° 2 (version relue)
+
+Commit 862f5cd5, batterie de `trial_drums.py` au commit 7764266a (packs fabriqués hors dépôt). Premier Drop, écoute en direct. Après − avant, à niveau égalisé (l'« après » ramené au niveau du mix d'avant).
+
+| Style | Mix : sub / bas / médium / aigu (dB) | Bus batterie : sub / bas / médium / aigu (dB) | Basse : sub / bas / médium / aigu (dB) |
 |---|---|---|---|
-| jump up | −4,9 / +1,0 / +1,6 / −4,4 | −3,9 / **+3,1** / **+3,6** / −4,7 | −5,2 / −4,5 / **+3,5** / +2,1 |
-| tech house | −1,8 / −0,5 / +1,9 / −1,1 | −3,0 / +0,8 / **+4,4** / −2,6 | −2,4 / −2,8 / **+3,8** / +24,1 |
-| techno | +0,3 / −0,6 / +0,3 / −1,8 | +1,0 / **+3,0** / **+5,4** / −2,3 | −1,7 / −3,0 / −0,1 / +2,8 |
+| jump up | −4,7 / +1,3 / +1,5 / −4,2 | −3,9 / **+3,0** / **+3,5** / −4,8 | −5,0 / −3,2 / **+3,2** / +2,4 |
+| tech house | −1,9 / −0,6 / +2,1 / −1,2 | −3,2 / +0,5 / **+4,1** / −2,8 | −2,5 / −3,1 / +2,4 / +23,8 |
+| techno | −0,2 / −0,7 / +0,9 / −2,5 | +0,5 / +2,5 / **+4,9** / −2,8 | −2,9 / −3,3 / +2,1 / −0,6 |
 
-**Critère** (au moins 3 dB sur au moins deux bandes hors aigus, sur les pistes qu'on remarque) :
-- **jump up** : batterie bas et médium, basse médium ;
-- **tech house** : batterie médium, basse médium ;
-- **techno** : batterie bas et médium. Sa basse ne bouge pas dans le médium (−0,1).
+**Le critère, dit exactement** (au moins 3 dB d'écart sur au moins deux bandes hors aigus) :
+- **jump up : tenu par des hausses.** Batterie : bas +3,0 et médium +3,5. Basse : médium +3,2.
+- **tech house : tenu seulement si l'on compte une baisse.** La seule hausse d'au moins 3 dB est le médium de la batterie (+4,1). La deuxième bande est le bas de la basse, qui **baisse** de 3,1 dB. Le médium de la basse monte de 2,4 dB, sous le seuil.
+- **techno : même chose.** Une hausse, le médium de la batterie (+4,9 ; son bas +2,5). La deuxième bande est le bas de la basse, qui **baisse** de 3,3 dB.
+- **Au mix entier, aucune bande hors aigus ne monte de 3 dB** : jump up +1,5 au plus, tech house +2,1, techno +0,9.
+- Changements de timbre nets, mesurés son par son : le kick (médium +11 à +19 dB, facteur de crête presque divisé par deux), les caisses et les claps, et la basse de la tech house, un sinus presque pur qui devient saturé (+24 dB au-dessus de 4 kHz).
 
-**Les aigus redescendent** : mix −1,1 à −4,4 dB, batterie −2,3 à −4,7 dB. Il n'y a plus « que des cymbales ».
+**Les aigus redescendent** : mix −1,2 à −4,2 dB, batterie −2,8 à −4,8 dB. Il n'y a plus « que des cymbales ».
 
-**Basse au haut-parleur de téléphone** (écoute en direct, 300 / 200 Hz) :
-- tech house −11,4 / −7,0 → **−4,8 / −3,6 dB** ;
-- techno −6,3 / −4,4 → **−3,4 / −2,7 dB** ;
-- jump up −1,5 / −0,9 → −0,3 / −0,1 dB.
+**Basse au haut-parleur de téléphone** : écoute en direct, basses seules, passe-haut à 300 Hz (un téléphone moyen) et à 200 Hz (un bon), pondération K, rapporté à leur propre niveau :
+- tech house −11,4 / −7,0 → **−5,5 / −4,1 dB** ;
+- techno −6,3 / −4,4 → **−2,6 / −1,8 dB** ;
+- jump up −1,5 / −0,9 → −0,3 / −0,2 dB.
 
 **Contreparties mesurées** :
-- **jump up** : le sub du mix baisse de 4,9 dB. Le médium monte, donc, à volume égal, le grave profond recule.
-- **la basse** perd 1,7 à 5,2 dB de sub dans les trois styles.
-- **tech house** : sa basse, un sinus presque pur, prend du grain au-dessus de 4 kHz (+24 dB, partis d'un niveau presque nul). Un écrêteur doux de l'appli placé après l'égaliseur en recrée une partie.
+- **la basse** perd du grave dans les trois styles : sub −2,5 à −5,0 dB, bas −3,1 à −3,3 dB ;
+- **le sub du bus batterie** baisse de 3,2 à 3,9 dB (jump up, tech house) ;
+- **le sub du mix** baisse de 4,7 dB en jump up : à niveau égal, le médium qui monte fait reculer le grave ;
+- **le kick** est très écrêté ;
+- **la basse de la tech house** prend du grain au-dessus de 4 kHz. Un écrêteur doux de l'appli, placé après l'égaliseur, en recrée une partie.
 
-**Écoute en direct** : 0 alerte sur les 4 styles. Aucune saturation ni NaN dans les extraits.
+**Écoute en direct** : 0 alerte sur les 3 styles. Aucune saturation ni NaN dans les extraits.
 
-**Processeur** (3 passages, 96 trames) :
+**Processeur** (`scripts/cpu-bench.sh`, 3 passages, rappels de 96 trames, même machine ; commit 862f5cd5) :
 
-| Style | Avant (moy. / p99) | Après l'essai n° 2 (moy. / p99) |
+| Style | Avant (moy. / p99 / pire) | Après l'essai n° 2 (moy. / p99 / pire) |
 |---|---|---|
-| jump up | 12,8 % / 19,4 % | 12,5 % / 18,0 % |
-| tech house | 7,9 % / 11,7 % | 7,2 % / 10,5 % |
-| techno | 6,9 % / 10,0 % | 6,4 % / 9,2 % |
-| hard techno (témoin) | 6,6 % / 10,7 % | 6,6 % / 10,8 % |
+| jump up | 12,8 % / 19,4 % / 28,7 % | 12,0 % / 17,6 % / 23,7 % |
+| tech house | 7,9 % / 11,7 % / 18,2 % | 7,0 % / 9,8 % / 15,4 % |
+| techno | 6,9 % / 10,0 % / 19,0 % | 6,5 % / 9,2 % / 17,5 % |
+| hard techno (témoin, hors essai) | 6,6 % / 10,7 % / 19,1 % | 6,3 % / 10,4 % / 19,8 % |
 
-Aucune hausse.
+Aucune hausse. L'écoute en direct depuis le début (150 s) reste sans alerte sur les 4 styles.
 
-**Extraits envoyés à Benjamin** : 6 WAV 16 bits de 25 s, depuis le premier Drop, même passage avant / après. Écart de niveau perçu de 0,1 LU au plus, crête vraie ≤ −1,2 dBTP.
+**Extraits envoyés à Benjamin** : 6 WAV 16 bits de 25 s, depuis le premier Drop, même passage avant / après. Écart de niveau perçu de 0,1 LU au plus, crête vraie ≤ −1,2 dBTP. Ils remplacent les six envoyés avant la relecture, faits sur 2f4cefdb.
 
 ### Rouge puis vert (essai n° 2)
 
@@ -183,8 +202,9 @@ Aucune hausse.
 | Sub rendu, grésillement coupé | 77d58dde | 2f4cefdb |
 | Batterie n° 2 | 3888b0e6 | b1d2245d |
 | Kick avec son corps | db7b3ea8 | 7764266a |
+| Après la relecture : basse par l'égaliseur trois bandes, rien du mixage perdu, leads qui gardent leurs effets | fbf6f260 | 862f5cd5 |
 
-Le rouge de chaque paire est un test seul, qui échoue sur ses vérifications (Kotlin : sur ses assertions ; Python : 805 puis 12 vérifications de la batterie échouent sur la version d'avant).
+Le rouge de chaque paire est un test seul, qui échoue sur ses vérifications : Kotlin sur ses assertions ; Python, 805 puis 12 vérifications de la batterie qui échouent sur la version d'avant.
 
 ## Tests ciblés et chemins
 

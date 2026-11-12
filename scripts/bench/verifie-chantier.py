@@ -903,7 +903,8 @@ def red_seen(root, sha, message):
     test = re.search(r"^test:\s*(\S.*?)\s*$", facts, re.M)
     if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or not names(message, test.group(1)):
         return False
-    if any(f.startswith(TEST_DIRS) for f in files):
+    # Lot « juge7 »: a bench script's tests are tests too ([py_test_in]).
+    if any(f.startswith(TEST_DIRS) or PY_TEST_FILE.match(f) for f in files):
         return False
     cls, _, method = test.group(1).partition("#")
     # Second review of the « portail » lot (G2): the test exists, in the green's parent and in the green.

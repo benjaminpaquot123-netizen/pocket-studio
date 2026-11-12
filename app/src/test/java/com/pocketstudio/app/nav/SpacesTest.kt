@@ -4,11 +4,15 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.ui.withinGestures
 import com.pocketstudio.model.SongPart
@@ -39,7 +43,10 @@ class SpacesTest {
     fun everydayWordsOff() = h.finish()
 
     private fun tap(tag: String) {
-        compose.onNodeWithTag(tag).performClick()
+        val node = compose.onNodeWithTag(tag)
+        // Below the fold (the welcome's last choices): scrolled to first, as a finger would.
+        if (!node.isDisplayed()) node.performScrollTo()
+        node.performClick()
         compose.waitForIdle()
     }
 
@@ -111,9 +118,9 @@ class SpacesTest {
     }
 
     @Test
-    fun theSimpleModeHasFourTabsInEverydayWords() {
+    fun theSimpleModeHasFiveTabsInEverydayWords() {
         h.start(simple = true)
-        listOf("Morceau", "Rythme", "Clavier", "Envoyer").forEach { compose.onNodeWithTag("tab_simple_$it").assertIsDisplayed() }
+        listOf("Morceau", "Rythme", "Clavier", "Mix", "Envoyer").forEach { compose.onNodeWithTag("tab_simple_$it").assertIsDisplayed() }
         compose.onNodeWithTag("tab_Structure").assertDoesNotExist()
         // Mon morceau: the parts and « Mes pistes », the « Lead » named « Mélodie ».
         compose.onNodeWithTag("simple_tracks").assertExists()
@@ -121,10 +128,12 @@ class SpacesTest {
         // No ⤴ twice: « Envoyer » is a tab, the rest is in « ⋯ ».
         compose.onNodeWithTag("top_share").assertDoesNotExist()
         compose.onNodeWithTag("top_more").assertIsDisplayed()
-        for (t in listOf("Morceau", "Rythme", "Clavier", "Envoyer")) {
+        for (t in listOf("Morceau", "Rythme", "Clavier", "Mix", "Envoyer")) {
             tap("tab_simple_$t")
             for (jargon in listOf("Lead", "303", "Quantifier")) {
+                // « Acid 303 » is the 303's name (Benjamin, 2026-10-29), shown in the Mode simple too: a bare « 303 » is the jargon.
                 val found = compose.onAllNodes(hasText(jargon, substring = true), useUnmergedTree = true).fetchSemanticsNodes()
+                    .filter { n -> (n.config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.Text) { null } ?: emptyList()).any { it.text.replace("Acid 303", "").contains(jargon) } }
                 assertTrue("« $jargon » on $t: ${found.map { it.config }}", found.isEmpty())
             }
         }
@@ -154,6 +163,9 @@ class SpacesTest {
         assertTrue(h.vm.recording.value)
         h.vm.recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
         compose.waitForIdle()
+        // Audit ultra round 2 (n° 17): « ✓ Nouveau son : … · Annuler » said over the bottom of the page goes after 6 s.
+        h.vm.dismissDone()
+        compose.waitForIdle()
         compose.withinGestures("Partager (Mode simple)", 2) {
             tap("tab_simple_Envoyer")
             tap("share_go")
@@ -172,7 +184,7 @@ class SpacesTest {
         assertEquals(before, h.vm.project.value)
         // Back with « ⋯ › Mode complet »: the same project, nothing to undo.
         tap("top_more")
-        tap("more_full")
+        tap("plus_mode")
         assertFalse(SettingsStore.state.value.simpleMode)
         compose.onNodeWithTag("tab_Structure").assertIsDisplayed()
         assertEquals(before, h.vm.project.value)
@@ -183,20 +195,56 @@ class SpacesTest {
         tap("mode_simple")
         assertTrue(SettingsStore.state.value.simpleMode)
         assertEquals(before, h.vm.project.value)
+        // Owner (2026-10-29): the change is the project's own, kept with it.
+        assertEquals(true, com.pocketstudio.app.settings.ProjectModes.of(h.app, h.vm.projectId))
+        // And from the top bar's chip: its window says what changes, the other card switches.
+        compose.onNodeWithTag("top_mode_text", useUnmergedTree = true).assertTextEquals("Simple")
+        tap("top_mode")
+        compose.onNodeWithText("Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.").assertExists()
+        tap("mode_card_pro")
+        assertFalse(SettingsStore.state.value.simpleMode)
+        compose.onNodeWithTag("mode_switch").assertDoesNotExist()
+        compose.onNodeWithTag("top_mode_text", useUnmergedTree = true).assertTextEquals("Pro")
+        assertEquals(false, com.pocketstudio.app.settings.ProjectModes.of(h.app, h.vm.projectId))
+        assertEquals(before, h.vm.project.value)
+    }
+
+    /**
+     * Owner (2026-10-29): the welcome no longer lights a mode beforehand; each way to start asks
+     * « Simple ou Pro ? », its Retour back on the welcome. « J'apprends »: the mode is the
+     * tutorial's level, not asked twice. « Plus tard » keeps the Mode simple of a first launch.
+     */
+    @Test
+    fun theFirstLaunchAsksSimpleOrProForEachWayToStart() {
+        h.start(firstLaunch = true)
+        compose.onNodeWithTag("welcome").assertExists()
+        compose.onNodeWithTag("welcome_mode").assertDoesNotExist()
+        assertTrue(SettingsStore.state.value.simpleMode)
+        tap("welcome_empty")
+        compose.onNodeWithTag("mode_step").assertExists()
+        // Nothing marked: no choice was made yet on this phone.
+        compose.onNodeWithTag("mode_mark", useUnmergedTree = true).assertDoesNotExist()
+        tap("mode_step_back")
+        compose.onNodeWithTag("welcome").assertExists()
+        assertFalse(SettingsStore.state.value.guideSeen)
+        tap("welcome_learn")
+        compose.onNodeWithText("Avec le tuto Facile").assertExists()
+        tap("mode_card_pro")
+        assertFalse(SettingsStore.state.value.simpleMode)
+        compose.onNodeWithTag("tuto_chooser").assertExists()
+        compose.onNodeWithTag("tuto_level_easy").assertDoesNotExist()
+        compose.onNodeWithTag("tuto_level_pro").assertDoesNotExist()
+        assertEquals(false, com.pocketstudio.app.settings.ProjectModes.last(h.app))
+        assertTrue(SettingsStore.state.value.guideSeen)
     }
 
     @Test
-    fun theFirstLaunchAsksHowToWorkSimpleFirst() {
+    fun theFirstLaunchLaterStaysInTheModeSimple() {
         h.start(firstLaunch = true)
-        compose.onNodeWithTag("welcome").assertExists()
-        compose.onNodeWithTag("welcome_mode_simple").assertIsSelected()
-        assertTrue(SettingsStore.state.value.simpleMode)
-        tap("welcome_mode_full")
-        compose.onNodeWithTag("welcome_mode_full").assertIsSelected()
-        assertFalse(SettingsStore.state.value.simpleMode)
-        compose.onNodeWithTag("welcome_later").performClick()
+        compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("tab_Sons").assertIsDisplayed()
+        compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
+        compose.onNodeWithTag("top_mode_text", useUnmergedTree = true).assertTextEquals("Simple")
         assertTrue(SettingsStore.state.value.guideSeen)
     }
 

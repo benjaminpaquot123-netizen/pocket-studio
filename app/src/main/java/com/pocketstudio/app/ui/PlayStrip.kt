@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -28,8 +29,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -70,6 +74,7 @@ import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.songStepOf
 import com.pocketstudio.ui.MonoStyle
+import com.pocketstudio.ui.RollingText
 import com.pocketstudio.ui.Neon
 
 /**
@@ -123,14 +128,22 @@ class PlayStripUi(
     val soloed: List<String> = emptyList(),
     /** Phase 36: the « ? » that labels the screen, lit while the labels show (null: no « ? » here). */
     val helpOn: Boolean? = null,
+    /** « ⟳ Partie » shown (with a song); false: the Mode simple's lighter strip. */
+    val loopChip: Boolean = true,
+    /** Lot 4d: false where the page shows the tempo itself (the Live page's bar). */
+    val showTempo: Boolean = true,
 )
 
 class PlayStripActions(
     /** A touch on the tempo: the tempo sheet (keypad, ready-made tempos, tap). */
     val openTempo: () -> Unit = {},
+    /** − and + a BPM beside the tempo (the Live page; null: the tempo alone). */
+    val nudgeTempo: ((Int) -> Unit)? = null,
     val setLoopPart: (Boolean) -> Unit = {},
     /** « Jouer depuis… »: the song from that part. */
     val playFrom: (Int) -> Unit = {},
+    /** « Jouer depuis… › Tout le morceau, du début »: the whole song from its first bar, « ⟳ Boucler » off. */
+    val playWholeSong: () -> Unit = {},
     /** The « Solo » chip: every solo off. */
     val clearSolos: () -> Unit = {},
     /** « ? »: the screen's labels shown, or hidden again. */
@@ -157,18 +170,36 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
     // A narrow strip (a small phone, a big text size): the chips keep their icon alone, so the
     // position keeps its words (never « … / me »). The Solo chip gives way first.
     // The « ? » (phase 36) takes a chip's room too.
-    val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (ui.hasSong) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
+    val loop = ui.hasSong && ui.loopChip
+    val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (loop) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
     val soloIconOnly = ui.soloed.isNotEmpty() && maxWidth < COMPACT_BELOW
-    val loopIconOnly = ui.hasSong && (maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp))
+    // On, « ⟳ Boucler » keeps its word where it fits beside the « ? » (remix lot 1: an orange ⟳ alone did
+    // not say that ▶ loops one part instead of playing the song); off, its icon is enough.
+    val loopIconOnly = ui.hasSong && (
+        if (ui.loopPart) maxWidth < (if (chips >= 3) COMPACT_BELOW else LOOP_WORD_BELOW)
+        else maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp)
+        )
     Row(
         Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        TempoButton(ui.tempoBpm, actions.openTempo)
+        val nudge = actions.nudgeTempo
+        if (nudge != null) {
+            // « − 113 + »: always at hand on the Live page (held, they repeat); the figure opens the sheet.
+            RepeatingIconButton({ nudge(-1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_minus")) {
+                Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"), modifier = Modifier.size(18.dp))
+            }
+            TempoButton(ui.tempoBpm, actions.openTempo)
+            RepeatingIconButton({ nudge(+1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_plus")) {
+                Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(18.dp))
+            }
+        } else if (ui.showTempo) {
+            TempoButton(ui.tempoBpm, actions.openTempo)
+        }
         PositionLabel(ui, actions, Modifier.weight(1f))
         if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
-        if (ui.hasSong) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
+        if (loop) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
         ui.helpOn?.let { on -> HelpLabelsButton(on, actions.toggleHelp, actions.reportBug) }
     }
 }
@@ -185,6 +216,9 @@ val TOUCH_HEIGHT = 48.dp
 
 /** Under this width, the strip's chips show their icon alone. */
 private val COMPACT_BELOW = 400.dp
+
+/** Under this width « ⟳ Boucler », on, shows its icon alone (with the « ? » beside it: the position keeps its 96 dp). */
+private val LOOP_WORD_BELOW = 340.dp
 
 /** The height of a chip's drawn pill, inside its 48 dp touch target. */
 private val CHIP_HEIGHT = 32.dp
@@ -214,8 +248,8 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
                 .padding(horizontal = 10.dp, vertical = 5.dp),
             verticalAlignment = Alignment.Bottom,
         ) {
-            Text("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
-            Text(" BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+            RollingText("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
+            Text(" " + tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
     }
 }
@@ -237,7 +271,9 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
             }
             // The part's name over the bar: both stay readable on a narrow phone or a big text size.
             Row(
-                Modifier.control().widthIn(min = POSITION_MIN).clip(RoundedCornerShape(8.dp))
+                // Audit ultra round 1, n° 38 (seat F a, 200 %): its second line « mes. 1/8 » was cut at a 48 dp height; the strip
+                // grows with the font, the position with it (48 dp of touch at least).
+                Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeightIn(min = TOUCH_HEIGHT).widthIn(min = POSITION_MIN).clip(RoundedCornerShape(8.dp))
                     .clickable(enabled = pickable, role = Role.Button, onClickLabel = tr("Jouer depuis une partie")) { open = true }
                     .padding(horizontal = 6.dp, vertical = 2.dp)
                     .spot("top_position", tr("Jouer d'une partie"))
@@ -257,8 +293,10 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                             maxLines = 1, overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Text(
-                        tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
+                    // The bar rolls to the next one, as on a studio display. Audit ultra round 2, n° 24 (seat A a): « mes. » said
+                    // in a whole word in the Mode simple.
+                    RollingText(
+                        if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", pos.bar, pos.bars) else tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
                         maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"),
                     )
                 }
@@ -269,6 +307,16 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
             Text(
                 tr("Jouer depuis…"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            )
+            // Remix lot 1: the plain way to hear the whole song, first, whatever ▶ was set to loop.
+            DropdownMenuItem(
+                text = { Text(tr("Tout le morceau, du début"), fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                leadingIcon = { Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.Acid) },
+                onClick = {
+                    open = false
+                    actions.playWholeSong()
+                },
+                modifier = Modifier.testTag("play_from_whole"),
             )
             ui.parts.forEachIndexed { i, name ->
                 DropdownMenuItem(
@@ -292,7 +340,8 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit, iconOnly: Boolean 
     val content = if (on) Neon.OnAccent else Neon.TextSecondary
     // A plain Row, not a Material component: its touch target is made 48 dp here.
     Box(
-        Modifier.control().clip(shape)
+        Modifier.control()
+            .clip(shape)
             .toggleable(value = on, role = Role.Switch, onValueChange = set)
             .semantics {
                 contentDescription = tr("Boucler la partie au lieu de jouer le morceau")
@@ -311,7 +360,7 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit, iconOnly: Boolean 
         ) {
             Icon(Icons.Filled.Repeat, contentDescription = null, tint = content, modifier = Modifier.size(18.dp))
             if (!iconOnly) {
-                Text(tr("Partie"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+                Text(tr("Boucler"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
             }
         }
     }

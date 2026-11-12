@@ -1,5 +1,6 @@
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledDialog
 
 import com.pocketstudio.model.i18n.tr
@@ -39,20 +40,20 @@ class GuidePage(val title: String, val lines: List<String>)
 /** The first-steps guide, in the interface's language. */
 val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
-        tr("Bienvenue dans Pocket Studio"),
+        tr("Bienvenue dans BenStudio"),
         listOf(
-            tr("Fais de la musique avec ton appareil : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
+            tr("Fais de la musique avec ton appareil : des rythmes, une basse Acid 303, un synthé, et même le remix de tes morceaux préférés."),
             tr("Tout est sauvegardé tout seul, à chaque geste."),
         ),
     ),
     GuidePage(
         tr("La barre du haut"),
         listOf(
-            tr("📁 Le nom du projet : touche-le pour ouvrir, créer ou envoyer tes projets."),
+            tr("📁 Le nom du projet : touche-le pour ouvrir, créer ou partager tes projets."),
             tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
             tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
             tr("▶ Jouer et arrêter, sur tous les écrans."),
-            tr("▶ joue tout le morceau ; « ⟳ Partie », juste dessous, boucle la partie affichée. Touche le tempo pour le changer, garde le doigt sur le nom pour le renommer."),
+            tr("▶ joue tout le morceau ; « ⟳ Boucler », juste dessous, boucle la partie affichée. Touche le tempo pour le changer, garde le doigt sur le nom pour le renommer."),
         ),
     ),
     GuidePage(
@@ -60,11 +61,11 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         listOf(
             tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
             tr("Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent."),
-            tr("Sons : la batterie, la basse acide, la voix et chaque piste d'instrument, en puces en haut."),
-            tr("Mix : la console (les volumes côte à côte), les effets, l'automation et l'export."),
+            tr("Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut."),
+            tr("Mix : les volumes côte à côte, les effets, les courbes et le partage."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
             tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),
-            tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer."),
+            tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager."),
         ),
     ),
     GuidePage(
@@ -80,10 +81,43 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         listOf(
             tr("Pour commencer : touche ▶, puis les pads dans Sons › Batterie."),
             tr("Pour partager : ⤴ tout en haut à droite, sur chaque écran."),
-            tr("Ce guide se retrouve dans Plus › Aide."),
+            tr("Cette visite se retrouve dans Plus › Aide."),
         ),
     ),
 )
+
+/**
+ * Audit (textes): the first steps of the Mode simple, which has neither Structure, Sons, Mix nor
+ * Plus: the same pages with its four tabs and its ⋮ menu.
+ */
+val GUIDE_PAGES_SIMPLE: List<GuidePage> get() = GUIDE_PAGES.let { full ->
+    listOf(
+        full[0], full[1],
+        GuidePage(
+            tr("Les espaces"),
+            listOf(
+                tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
+                tr("Mon morceau : les parties du morceau, dans l'ordre ; touche-en une pour l'ouvrir."),
+                tr("Rythme : la batterie, case par case."),
+                tr("Clavier : joue et enregistre ta mélodie, toujours dans la gamme."),
+                tr("Partager : vérifier le morceau, puis le partager en fichier ou en vidéo."),
+                tr("⋮ en haut : tes projets, le Live, le Remix, les réglages et l'aide."),
+            ),
+        ),
+        full[3],
+        GuidePage(
+            tr("Et ensuite ?"),
+            listOf(
+                tr("Pour commencer : touche ▶, puis les cases dans Rythme."),
+                tr("Pour partager : l'onglet Partager."),
+                tr("Cette visite se retrouve dans ⋮ › Aide."),
+            ),
+        ),
+    )
+}
+
+/** The first steps of the Mode simple ([simple]) or of the full app. */
+fun guidePages(simple: Boolean): List<GuidePage> = if (simple) GUIDE_PAGES_SIMPLE else GUIDE_PAGES
 
 /** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page ([onDone], closing by default). */
 @Composable
@@ -112,7 +146,7 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
                     if (!last) TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(tr("Passer")) }
                     Box(Modifier.weight(1f))
                     if (page > 0) TextButton(onClick = { page-- }) { Text(tr("Retour")) }
-                    Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.testTag("guide_next")) {
+                    Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.pressScale().testTag("guide_next")) {
                         Text(if (last) done else tr("Suivant"))
                     }
                 }

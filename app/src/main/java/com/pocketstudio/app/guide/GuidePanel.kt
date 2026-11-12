@@ -1,5 +1,7 @@
 package com.pocketstudio.app.guide
 
+import androidx.compose.ui.unit.sp
+import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,7 +53,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -64,6 +68,7 @@ import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.guide.GuideStages
 import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.learn.SoundGlossary
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
@@ -95,6 +100,10 @@ class GuidePanelActions(
     val pickReference: () -> Unit = {},
     /** G5 review: the « Sans / Avec » stops (a word's example starts: one sound at a time). */
     val stopListen: () -> Unit = {},
+    /** « ▶ Écouter seul » of card [card]: its sound alone, in a loop (again: it stops). */
+    val listenAlone: (card: String) -> Unit = {},
+    /** The card heard alone keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
 )
 
 /** The symbol of a card's status in the plan (« faite ✓, sautée ⟶, à revoir ↺ »). */
@@ -105,14 +114,19 @@ fun guideMark(status: GuideStatus): String = when (status) {
     GuideStatus.TODO -> "○"
 }
 
-/** Where the Guide is, in a few words: « Étape 12/34 : la basse au Drop 2 », an alert, or all done. */
+/**
+ * Where the Guide is, in a few words: the card to do (« la basse au Drop 2 »), an alert, or all done.
+ * Remix testers (Sarah, Mehdi): « Étape 6/26 » became « Étape 7/26 » on the same card when another one
+ * got done elsewhere (a share, a sound changed): it read as the Guide moving by itself, and 26 steps
+ * scared a beginner. The bar shows the card; the % next to it is the one progress count.
+ */
 fun guideStepLine(ui: GuideUi): String {
     val next = ui.next
     return when {
         ui.loading -> ""
         next == null -> tr("Tout est fait")
         next.alert || ui.step == 0 -> tr("À corriger : %s", next.title)
-        else -> tr("Étape %1\$d/%2\$d : %3\$s", ui.step, ui.total, next.title)
+        else -> next.title
     }
 }
 
@@ -158,6 +172,36 @@ fun GuideBar(ui: GuideUi, open: Boolean, toggle: () -> Unit, modifier: Modifier 
 }
 
 /**
+ * Tour 5, chantier 4 (audit G6: « la ligne du Guide repliée en pastille quand barre + Guide ne tiennent pas »): the folded
+ * Guide as a pill in the thumb's bar, on a wide but short screen (the Tab A11 upright at 130 %), its line's 48 dp to the
+ * page. A touch opens the panel, as the bar's does; what it says is the bar's, for TalkBack too.
+ */
+@Composable
+fun GuidePill(ui: GuideUi, toggle: () -> Unit, modifier: Modifier = Modifier) {
+    val line = guideStepLine(ui)
+    // As the thumb's bar's other buttons: its icon over its words, whole (« Guide 34 % »).
+    androidx.compose.foundation.layout.Column(
+        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+            .clickable(role = Role.Button, onClickLabel = tr("Ouvrir le Guide"), onClick = toggle)
+            .semantics {
+                stateDescription = tr("replié")
+                contentDescription = tr("Guide") + (if (line.isEmpty()) "" else " · $line")
+            }
+            .padding(horizontal = 4.dp)
+            .spot("guide_bar", tr("Le Guide : où en est ton morceau"))
+            .testTag("guide_bar"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+    ) {
+        Icon(Icons.Filled.Explore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
+        Text(
+            tr("Guide") + (if (!ui.loading && ui.total > 0) " ${ui.percent} %" else ""),
+            fontSize = 11.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1, softWrap = false,
+        )
+    }
+}
+
+/**
  * The Guide's panel (§3.1): its bar on top, then « Où on en est » (the song, its progress, and the
  * three lines that welcome a return), the card (the next decision, or the one picked in the plan)
  * and the plan, folded by stage; in the Mode simple, the other stages under « Aller plus loin ».
@@ -171,12 +215,20 @@ fun GuidePanel(
     listen: GuideListenUi?,
     notice: String?,
     actions: GuidePanelActions,
-    height: Dp,
+    /** Null: as high as [modifier] lets it (lying down, on the side of the screen). */
+    height: Dp?,
     modifier: Modifier = Modifier,
     /** G4: the reference's file name, when one is picked. */
     reference: String? = null,
+    /** The card whose sound is heard alone (« Écouter seul »), if any. */
+    aloneCard: String? = null,
+    /** The phone's « Supprimer les animations »: the window's edge stays still. */
+    reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
 ) {
-    Column(modifier.fillMaxWidth().height(height).background(Neon.Background).testTag("guide_panel")) {
+    val sized = if (height != null) modifier.fillMaxWidth().height(height) else modifier
+    // The window's edge beats softly (a double heartbeat), drawn only: the panel is not recomposed for it.
+    val beat = rememberGuideBeat(animated = !reducedMotion)
+    Column(sized.background(Neon.Background).guideEdge(beat, Neon.Cyan).testTag("guide_panel")) {
         GuideBar(ui, open = true, toggle = actions.toggle)
         val scroll = rememberScrollState()
         // Another card shown (decided, picked in the plan): back to the top, where the card is.
@@ -191,9 +243,9 @@ fun GuidePanel(
             ) {
                 if (notice != null) NoticeLine(notice, actions.dismissNotice)
                 if (ui.loading) {
-                    Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading"))
+                    Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading").semantics { liveRegion = LiveRegionMode.Polite })
                 } else {
-                    PanelBody(ui, selected, listen, actions, reference)
+                    PanelBody(ui, selected, listen, actions, reference, aloneCard)
                 }
                 Spacer(Modifier.height(8.dp))
             }
@@ -202,7 +254,7 @@ fun GuidePanel(
 }
 
 @Composable
-private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions, reference: String?) {
+private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions, reference: String?, aloneCard: String?) {
                 // The bar says the step and how far; « Où on en est » in full comes first only to welcome a
                 // return after days, else under the card (the decision stays in sight on a phone).
                 if (ui.back) WhereWeAre(ui)
@@ -211,7 +263,7 @@ private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, ac
                     val picked = selected != null && shown.id != (ui.alerts.firstOrNull() ?: ui.next)?.id
                     // G4: a card of the levels needs the song's measures (each track alone, mono, phone).
                     androidx.compose.runtime.LaunchedEffect(shown.id, ui.measured) { if (shown.stage == 6 && !ui.measured) actions.measure() }
-                    GuideCard(shown, listen, actions, picked = picked, measuring = ui.measuring, reference = reference)
+                    GuideCard(shown, listen, actions, picked = picked, measuring = ui.measuring, reference = reference, alone = aloneCard == shown.id)
                 } else {
                     Text(ui.summary.firstOrNull() ?: tr("Tout est fait"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("guide_all_done"))
                 }
@@ -225,10 +277,12 @@ private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, ac
 private fun NoticeLine(text: String, dismiss: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.18f)).border(1.dp, Neon.Amber, RoundedCornerShape(10.dp))
-            .padding(start = 10.dp).testTag("guide_notice"),
+            .padding(start = 10.dp).testTag("guide_notice")
+            // Audit final (22): TalkBack reads what the Guide could not do when it shows.
+            .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
+        Text(text, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
         Box(
             Modifier.size(48.dp).clickable(role = Role.Button, onClickLabel = tr("Fermer"), onClick = dismiss).testTag("guide_notice_close"),
             contentAlignment = Alignment.Center,
@@ -292,13 +346,20 @@ private fun Progress(percent: Int) {
 fun GuideCard(
     card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActions, modifier: Modifier = Modifier, picked: Boolean = false,
     measuring: Boolean = false, reference: String? = null,
+    /** Its sound is heard alone in a loop now (« Écouter seul »). */
+    alone: Boolean = false,
 ) {
     val learn = LocalLearn.current
+    // A card about one sound (chapter 1: the kick, the bass…): « Écouter seul » first, the loop kept while it shows.
+    // The effects' cards have their own « Sans / Avec ».
+    val canAlone = card.sheet != null && (card.stage == 1 || card.id.startsWith("sound."))
+    com.pocketstudio.app.rhythm.HoldAlone(alone, actions.holdAlone)
     NeonCard(modifier.testTag("guide_card_${card.id}"), accent = if (card.alert) Neon.Amber else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) GuideStages.title(card.stage)
-                else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
+                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) card.stageTitle
+                // Audit final: a stage of the plan is a « chapitre » (« Étape n/N » counts the cards).
+                else tr("Chapitre %1\$d · %2\$s", card.stage, card.stageTitle)).upperShown(),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (card.alert) Neon.Amber else Neon.Cyan,
                 modifier = Modifier.weight(1f),
             )
@@ -309,7 +370,9 @@ fun GuideCard(
                 )
             }
         }
-        Text(card.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+        // Audit ultra round 1, n° 25 (seats B b, C c: « tout en petit texte »): the card's title a size larger (its
+        // choices stay in the panel's height without a scroll: GuideJourneyTest's budget).
+        Text(card.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
         if (card.why.isNotBlank()) Text(card.why, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         // G4: what the Guide hears in the song about this card (its measures, its analysis).
         if (measuring && card.stage == 6) {
@@ -326,6 +389,33 @@ fun GuideCard(
         }
         val choices = card.options.filter { it.opens == null }
         val opens = (card.options + card.elsewhere).filter { it.opens != null }
+        // Owner's request: one sentence, the one thing to do now.
+        // Owner's request: one sentence, the one thing to do now; « Écouter seul » on its line.
+        val step = nextStep(card, choices, opens, canAlone, alone)
+        if (step != null || canAlone) {
+            Row(
+                Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (step != null) {
+                    Row(Modifier.weight(1f).testTag("guide_next_step"), verticalAlignment = Alignment.Top) {
+                        Text("→", color = Neon.Acid, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp))
+                        Text(step, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
+                    }
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
+                if (canAlone) com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seul"), card.sheetName, "guide_alone") { actions.listenAlone(card.id) }
+            }
+        }
+        if (canAlone) {
+            if (alone) {
+                Text(
+                    tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid,
+                    modifier = Modifier.testTag("guide_alone_hint"),
+                )
+            }
+        }
         choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0, listen, actions) }
         // Under the decision (it stays two gestures away), effect by effect.
         if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)
@@ -337,11 +427,11 @@ fun GuideCard(
         }
         val elsewhere = card.elsewhere.filter { it.opens == null && !it.refused }
         if (elsewhere.isNotEmpty()) {
-            Text(tr("Ailleurs ?").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+            Text(tr("Ailleurs ?").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             elsewhere.forEach { o -> OptionRow(card.id, o, primary = false, listen, actions) }
         }
         if (opens.isNotEmpty() || card.sheet != null) {
-            Text(tr("Voir le réglage").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+            Text(tr("Voir le réglage").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             // G3: the track's whole sheet (its sound and layers, when, effects, history), one touch away.
             card.sheet?.let { key ->
                 Row(
@@ -351,8 +441,8 @@ fun GuideCard(
                         .testTag("guide_sheet"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("↗", color = Neon.Cyan, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(24.dp))
-                    Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyLarge, color = Neon.Cyan, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("↗", color = Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
+                    Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
                 }
             }
             opens.forEach { o ->
@@ -364,8 +454,8 @@ fun GuideCard(
                         .testTag("guide_open_${o.id}"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("↗", color = Neon.Cyan, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(24.dp))
-                    Text(o.label, style = MaterialTheme.typography.bodyLarge, color = Neon.Cyan, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("↗", color = Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
+                    Text(o.label, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -419,9 +509,25 @@ private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.po
     }
 }
 
+/**
+ * « À toi : … »: the one thing to do now on [card]: hear its sound alone first (a card about one
+ * sound), then its first choice; a card that only opens a screen: that screen. Null once settled.
+ */
+internal fun nextStep(card: GuideCardUi, choices: List<GuideOptionUi>, opens: List<GuideOptionUi>, canAlone: Boolean, alone: Boolean): String? {
+    if (card.status.settled) return null
+    val first = choices.firstOrNull()
+    return when {
+        canAlone && !alone -> tr("À toi : écoute ce son tout seul, puis décide.")
+        canAlone && first != null -> tr("À toi : il te plaît ? Touche « %s ».", first.label)
+        first != null -> tr("À toi : touche « %s ».", first.label)
+        opens.isNotEmpty() -> tr("À toi : touche « %s ».", opens.first().label)
+        else -> null
+    }
+}
+
 private fun statusWord(status: GuideStatus): String = when (status) {
     GuideStatus.DONE -> tr("fait")
-    GuideStatus.DONE_ELSEWHERE -> tr("fait ailleurs")
+    GuideStatus.DONE_ELSEWHERE -> tr("déjà en place")
     GuideStatus.SKIPPED -> tr("sauté")
     GuideStatus.LATER -> tr("à revoir")
     GuideStatus.TODO -> ""
@@ -456,9 +562,9 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
             }
             val shape = RoundedCornerShape(12.dp)
             Box(
-                Modifier.weight(1f).heightIn(min = 48.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = if (primary) 52.dp else 48.dp).clip(shape)
                     .background(if (primary) Neon.Cyan else Color.Transparent)
-                    .border(1.dp, if (primary) Neon.Cyan else Neon.Outline, shape)
+                    .border(1.dp, if (primary) Neon.Cyan else Neon.Outline.copy(alpha = 0.6f), shape)
                     // A check is heard, not applied: the option itself plays it.
                     .clickable(role = Role.Button) { if (o.listen != null) actions.listen(card, o.id) else actions.apply(card, o.id) }
                     .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -466,7 +572,9 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
                 contentAlignment = Alignment.CenterStart,
             ) {
                 Text(
-                    o.label + (o.value?.let { " · $it" } ?: ""), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold,
+                    o.label + (o.value?.let { " · $it" } ?: ""),
+                    style = if (primary) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (primary) FontWeight.Bold else FontWeight.Normal,
                     color = if (primary) Neon.OnAccent else Neon.TextPrimary,
                 )
             }
@@ -504,9 +612,34 @@ private fun Takes(mine: GuideListenUi) {
  */
 @Composable
 private fun EffectsList(card: String, effects: List<GuideFxUi>, listen: GuideListenUi?, actions: GuidePanelActions) {
+    val groups = effects.groupBy { it.track }
+    // Audit final: several tracks (« Voilà ce que j'ai mis »): each one folded on a line, so the card's choice
+    // (« Tout garder ») stays in sight; one track (its own card): its effects shown.
+    val folds = groups.size > 1
+    var openTrack by rememberSaveable(card) { mutableStateOf<String?>(null) }
     Column(Modifier.fillMaxWidth().padding(top = 2.dp).testTag("guide_effects"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        effects.groupBy { it.track }.forEach { (_, list) ->
-            Text(list.first().trackName.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp))
+        groups.forEach { (track, list) ->
+            if (folds) {
+                val open = openTrack == track
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
+                        .clickable(role = Role.Button, onClickLabel = if (open) tr("Replier") else tr("Déplier")) { openTrack = if (open) null else track }
+                        .heightIn(min = 48.dp).padding(horizontal = 4.dp).testTag("guide_fx_track_$track"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(list.first().trackName.upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+                        Text(
+                            list.joinToString(", ") { it.name }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+                }
+                if (!open) return@forEach
+            } else {
+                Text(list.first().trackName.upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp))
+            }
             list.forEach { fx ->
                 val mine = listen?.takeIf { it.card == card && it.option == fx.option }
                 Row(Modifier.fillMaxWidth().testTag("guide_fx_${fx.option}"), verticalAlignment = Alignment.CenterVertically) {
@@ -563,7 +696,7 @@ private fun GuidePlan(stages: List<GuideStageUi>, current: String?, select: (Str
     val currentStage = stages.firstOrNull { s -> s.items.any { it.id == current } }?.stage
     Column(Modifier.fillMaxWidth().testTag(tag), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         if (tag == "guide_plan") {
-            Text(tr("Le plan").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp, bottom = 2.dp))
+            Text(tr("Le plan").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp, bottom = 2.dp))
         }
         stages.forEach { s ->
             val open = openStage == s.stage
@@ -597,7 +730,7 @@ private fun GuidePlan(stages: List<GuideStageUi>, current: String?, select: (Str
                         modifier = Modifier.width(24.dp),
                     )
                     Text(
-                        item.title + if (item.auto) " · " + tr("fait ailleurs") else "", style = MaterialTheme.typography.bodyMedium,
+                        item.title + if (item.auto) " · " + tr("déjà en place") else "", style = MaterialTheme.typography.bodyMedium,
                         color = if (here) Neon.Cyan else if (item.status.settled) Neon.TextSecondary else Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -618,7 +751,7 @@ private fun FurtherPlan(stages: List<GuideStageUi>, current: String?, select: (S
         ) {
             Text(tr("Aller plus loin"), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
             Text(
-                tr("%d étapes de plus", stages.sumOf { it.items.size }), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
+                stages.sumOf { it.items.size }.let { n -> trCount(n, "1 étape de plus", "%d étapes de plus") }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 6.dp),
             )
             Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))

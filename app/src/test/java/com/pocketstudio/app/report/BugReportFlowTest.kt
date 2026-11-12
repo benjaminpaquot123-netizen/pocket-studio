@@ -75,7 +75,8 @@ class BugReportFlowTest {
 
     private fun exists(tag: String) = compose.onAllNodes(SemanticsMatcher.expectValue(SemanticsProperties.TestTag, tag)).fetchSemanticsNodes().isNotEmpty()
 
-    private fun waitFor(what: String, timeout: Long = 10_000, ok: () -> Boolean) {
+    // On the real condition: a loaded machine only makes it slower (the zip is written off the main thread). The cap only stops a hang.
+    private fun waitFor(what: String, timeout: Long = 60_000, ok: () -> Boolean) {
         val until = System.currentTimeMillis() + timeout
         while (!ok()) {
             check(System.currentTimeMillis() < until) { "timed out waiting for $what: ${if (::bug.isInitialized) bug.state.value else null}, errors ${Journal.errors.snapshot()}" }
@@ -147,7 +148,7 @@ class BugReportFlowTest {
         assertFalse(exists("bug_preview_text"))
         tap("bug_preview_toggle")
         val shown = compose.onNodeWithTag("bug_preview_text").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString { it.text }
-        listOf("# Rapport de bug : Pocket Studio", "Pas de son au casque", "- Sortie du son :", "## Journal", "screenshot-1.png").forEach {
+        listOf("# Rapport de bug : BenStudio", "Pas de son au casque", "- Sortie du son :", "## Journal", "screenshot-1.png").forEach {
             assertTrue("missing « $it »:\n$shown", shown.contains(it))
         }
         tap("bug_preview_toggle")
@@ -158,7 +159,7 @@ class BugReportFlowTest {
     fun theSimpleModesMenuHasIt() {
         start(simple = true)
         tap("top_more")
-        tap("more_bug")
+        tap("plus_bug")
         waitFor("the sheet") { exists("bug_sheet") }
     }
 
@@ -181,10 +182,20 @@ class BugReportFlowTest {
 
     @Test
     fun shareWritesTheZipAndOpensAndroidsShareMenu() {
+        // FileProvider keeps the folders of the first application it saw (a static cache; Robolectric gives each test its
+        // own): without this the share menu opened only when no test before this one in its JVM had shared a file (seen
+        // 2026-11-10 in a full run: « timed out waiting for the share menu »). As BugReportViewModelTest.
+        androidx.core.content.FileProvider::class.java.declaredFields
+            .filter { java.lang.reflect.Modifier.isStatic(it.modifiers) && Map::class.java.isAssignableFrom(it.type) }
+            .forEach { f -> f.isAccessible = true; (f.get(null) as MutableMap<*, *>).clear() }
         start()
         openFromPlus()
         compose.onNodeWithTag("bug_text").performTextInput("Le son coupe au refrain")
+        // Fix 2, n° 7 (« règle partout »): the row is a switch that says whether it is on.
+        val before = compose.onNodeWithTag("bug_attach_project").fetchSemanticsNode().config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.ToggleableState) { null }
+        org.junit.Assert.assertNotNull(before)
         tap("bug_attach_project")
+        org.junit.Assert.assertNotEquals(before, compose.onNodeWithTag("bug_attach_project").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.ToggleableState])
         tap("bug_share")
         val shadow = shadowOf(h.app)
         waitFor("the share menu") { shadow.peekNextStartedActivity() != null }
@@ -232,9 +243,9 @@ class BugReportFlowTest {
     fun aCrashBannerHoldsNothingBackAndNothingPopsUpLater() {
         File(h.app.filesDir, "last_crash.txt").writeText("Version 0.22 · 2026-10-24 · thread main\njava.lang.IllegalStateException: boum")
         start(launchChoice = true)
-        // The choice shows at once, the banner waits under the bar.
+        // The choice shows at once (the studio under it, its banner too, hidden and not read out), the banner waits under the bar.
         compose.onNodeWithTag("launch").assertIsDisplayed()
-        assertTrue(exists("crash_banner"))
+        assertFalse(exists("crash_banner"))
         tap("launch_continue")
         assertFalse(exists("launch"))
         compose.onNodeWithTag("crash_banner").assertIsDisplayed()

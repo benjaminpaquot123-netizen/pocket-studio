@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- The opening's heartbeat is felt (two taps of the vibrator). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -14,6 +16,8 @@
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- « Mode retours »: the owner films the screen while testing (consent asked each time). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Bluetooth MIDI keyboards: found by a scan, never used for location. -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
@@ -37,11 +41,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketStudio">
 
+        <!-- Lot D: a window that changes size (split screen, a foldable opened, rotated, a keyboard
+             plugged in) is drawn again in place, never rebuilt: the sound and every screen's state
+             go on as they were (Compose follows the new size by itself). -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:theme="@style/Theme.BenStudio.Starting"
             android:launchMode="singleTask"
             android:screenOrientation="unspecified"
+            android:resizeableActivity="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density|keyboard|keyboardHidden|navigation"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,6 +74,12 @@
             android:name=".export.ExportService"
             android:exported="false"
             android:foregroundServiceType="dataSync|mediaProcessing" />
+
+        <!-- « Mode retours »: the screen recording goes on while the app is in the background. -->
+        <service
+            android:name=".retours.RetoursService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

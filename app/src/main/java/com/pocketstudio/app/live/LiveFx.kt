@@ -1,12 +1,16 @@
 package com.pocketstudio.app.live
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.systemGestureExclusion
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,6 +62,7 @@ import com.pocketstudio.model.Macros
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.i18n.percent
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.ProSlider
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -69,33 +74,59 @@ import kotlin.math.roundToInt
 private val PAD_HEIGHT = 132.dp
 
 /**
- * Effects under the fingers. Always on top: « Tout remettre », the lock and the settings (⚙).
- * Then one row of pages: the whole mix's (Pad, Tenus, Répéter, Dub, Montée), then each track's.
- * Each whole-mix page fits a phone's panel without scrolling; a track's page scrolls under its pad.
+ * Effects under the fingers (lot 4d, in sections). With [tools] on top: « Tout remettre », the lock
+ * and the settings (⚙) (the Live page's open panel has them as icons in its header instead).
+ * « L'effet »: what the pad does (Filtre DJ, Acide, Espace…) for the whole mix, then « Pistes : »
+ * and a chip per track (its own pad and buttons). « Comment il joue »: Appui (the pad), Tenu,
+ * Répéter, Dub, Montée. Then the page. Each whole-mix page fits a phone's panel without scrolling;
+ * a track's page scrolls under its pad.
  */
 @Composable
-fun LiveFx(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, modifier: Modifier, state: LiveFxState = remember { LiveFxState() }) {
+fun LiveFx(
+    ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, modifier: Modifier,
+    state: LiveFxState = remember { LiveFxState() }, tools: Boolean = true,
+) {
     val column = columns.firstOrNull { it.channel == state.target }
     if (column == null && state.target >= 0) state.target = -1
     // The clock, read only when the waiting rings are drawn.
     val clockNow by rememberUpdatedState(ui.clockOf)
     val clock: () -> Int = remember { { clockNow() } }
-    Column(modifier.testTag("live_fx"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        LiveFxSafety(ui, actions, state)
-        PageRow(columns, state)
-        Box(Modifier.fillMaxWidth().weight(1f)) {
+    BoxWithConstraints(modifier) {
+        // A short panel (a big text size, a small phone): no titles, the tools share the effects'
+        // line, icons only, so that the pad keeps its room.
+        val short = maxHeight < SHORT_PANEL
+        Column(Modifier.fillMaxSize().testTag("live_fx"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             when {
-                column != null -> Scrolled { TrackFx(ui, column, actions, state, clock) }
-                state.page == LivePage.HOLDS -> HoldsPage(ui, actions, state, clock)
-                state.page == LivePage.ROLLS -> RollsPage(ui, actions, state)
-                state.page == LivePage.DUB -> DubPage(ui, actions, state, clock)
-                state.page == LivePage.BUILD -> BuildPage(ui, actions, clock)
-                state.page == LivePage.SETTINGS -> Scrolled { SettingsPage(ui.project.liveFx, actions.setFxSettings) }
-                else -> Scrolled { PadPage(ui, actions, state) }
+                tools && short -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    LiveFxSafety(ui, actions, state, Modifier, iconsOnly = true)
+                    EffectRow(ui, columns, column, state, Modifier.weight(1f))
+                }
+                tools -> {
+                    LiveFxSafety(ui, actions, state)
+                    SectionTitle(tr("L'effet"))
+                    EffectRow(ui, columns, column, state)
+                }
+                else -> EffectRow(ui, columns, column, state)
+            }
+            if (!short) SectionTitle(tr("Comment il joue"))
+            PlayRow(state)
+            Box(Modifier.fillMaxWidth().weight(1f)) {
+                when {
+                    column != null -> Scrolled { TrackFx(ui, column, actions, state, clock) }
+                    state.page == LivePage.HOLDS -> HoldsPage(ui, actions, state, clock)
+                    state.page == LivePage.ROLLS -> RollsPage(ui, actions, state)
+                    state.page == LivePage.DUB -> DubPage(ui, actions, state, clock)
+                    state.page == LivePage.BUILD -> BuildPage(ui, actions, clock)
+                    state.page == LivePage.SETTINGS -> Scrolled { SettingsPage(ui.project.liveFx, actions.setFxSettings) }
+                    else -> Scrolled { PadPage(ui, actions, state) }
+                }
             }
         }
     }
 }
+
+/** Below this height the effects lose their titles and the tools share a line. */
+private val SHORT_PANEL = 300.dp
 
 @Composable
 private fun Scrolled(content: @Composable () -> Unit) {
@@ -103,22 +134,81 @@ private fun Scrolled(content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize().fadingVerticalEdges(scroll).verticalScroll(scroll), verticalArrangement = Arrangement.spacedBy(8.dp)) { content() }
 }
 
-/** The whole mix's pages, then « Pistes : » and a chip per track (its own page). */
+/** A section's title (« L'EFFET », « COMMENT IL JOUE »): a small accent bar, the words in capitals. */
 @Composable
-private fun PageRow(columns: List<LiveColumn>, state: LiveFxState) {
-    Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-        listOf(
-            LivePage.PAD to tr("Pad"), LivePage.HOLDS to tr("Tenus"), LivePage.ROLLS to tr("Répéter"),
-            LivePage.DUB to tr("Dub"), LivePage.BUILD to tr("Montée"),
-        ).forEach { (page, label) ->
-            Chip(label, state.target < 0 && state.page == page, Neon.Cyan, "live_page_${page.name}") {
-                state.target = -1
-                state.page = page
+internal fun SectionTitle(text: String, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(3.dp, 14.dp).clip(RoundedCornerShape(2.dp)).background(Neon.Cyan))
+        // Audit stage 1: smaller before a word is lost (« THE » for « THE EFFECT » at a big font size).
+        com.pocketstudio.ui.FitText(
+            text.uppercase(), Modifier.padding(start = 8.dp), MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+            color = Neon.TextSecondary, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+        )
+    }
+}
+
+/** A track's pad modes (its Wobble once that effect is on the track). */
+private fun trackModes(ui: LiveScreenUi, c: LiveColumn): List<XyMode> {
+    val channel = ui.project.mixer.channels.getOrNull(c.channel)
+    val wobble = channel?.inserts?.any { it.effect == EffectType.WOBBLE && !it.bypass } == true
+    return xyModesFor(c, ui.hasAcid, ui.extraModes + if (wobble) setOf(XyMode.WOBBLE) else emptySet())
+}
+
+/**
+ * « L'effet »: the pad's modes (the whole mix's, or the chosen track's), then « Pistes : » and a
+ * chip per track. A mode of the whole mix brings the pad back (« Appui »).
+ */
+@Composable
+private fun EffectRow(ui: LiveScreenUi, columns: List<LiveColumn>, column: LiveColumn?, state: LiveFxState, modifier: Modifier = Modifier.fillMaxWidth()) {
+    Row(modifier.systemGestureExclusion().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (column != null) {
+            val modes = trackModes(ui, column)
+            val mode = state.trackMode.takeIf { it in modes } ?: XyMode.COLOUR
+            modes.forEach { m -> Chip(xyModeLabel(m), m == mode, Neon.Cyan, "live_xy_mode_${m.name}") { state.trackMode = m } }
+        } else {
+            val modes = xyModesFor(null, ui.hasAcid, ui.extraModes)
+            val mode = state.mixMode.takeIf { it in modes } ?: XyMode.DJ_FILTER
+            modes.forEach { m ->
+                Chip(xyModeLabel(m), state.page == LivePage.PAD && m == mode, Neon.Cyan, "live_xy_mode_${m.name}") {
+                    state.page = LivePage.PAD
+                    state.mixMode = m
+                }
             }
         }
         Text(tr("Pistes :"), Modifier.padding(start = 6.dp), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
         columns.forEach { c ->
             Chip(c.name, state.target == c.channel, Neon.Magenta, "live_fx_${c.key}", dot = c.color) { state.target = c.channel }
+        }
+    }
+}
+
+/** « Comment il joue », one segmented control: Appui (the pad), Tenu, Répéter, Dub, Montée (the whole mix). */
+@Composable
+private fun PlayRow(state: LiveFxState) {
+    Row(
+        Modifier.fillMaxWidth().height(44.dp).clip(RoundedCornerShape(22.dp)).background(Color.Black.copy(alpha = 0.25f)).padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        listOf(
+            LivePage.PAD to tr("Appui"), LivePage.HOLDS to tr("Tenu"), LivePage.ROLLS to tr("Répéter"),
+            LivePage.DUB to tr("Dub"), LivePage.BUILD to tr("Montée"),
+        ).forEach { (page, label) ->
+            val selected = state.target < 0 && state.page == page
+            Box(
+                Modifier.weight(label.length + 3f).fillMaxHeight().clip(RoundedCornerShape(19.dp))
+                    .background(if (selected) Neon.SurfaceHigh else Color.Transparent)
+                    .clickable {
+                        state.target = -1
+                        state.page = page
+                    }.testTag("live_page_${page.name}").semantics { this.selected = selected },
+                contentAlignment = Alignment.Center,
+            ) {
+                val style = MaterialTheme.typography.labelLarge
+                Text(
+                    label, color = if (selected) Neon.TextPrimary else Neon.TextSecondary, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
+                )
+            }
         }
     }
 }
@@ -139,9 +229,9 @@ private fun Chip(label: String, selected: Boolean, accent: Color, tag: String, d
 
 @Composable
 private fun PadPage(ui: LiveScreenUi, actions: LiveActions, state: LiveFxState) {
+    // Its mode is chosen in « L'effet », above.
     val modes = xyModesFor(null, ui.hasAcid, ui.extraModes)
     val mode = state.mixMode.takeIf { it in modes } ?: XyMode.DJ_FILTER
-    XyModeRow(modes, mode) { state.mixMode = it }
     when (mode) {
         XyMode.ACID -> AcidXy(ui, actions, PAD_HEIGHT)
         XyMode.SPACE -> ReturnsXy(ui, actions)
@@ -412,7 +502,7 @@ private fun DubPage(ui: LiveScreenUi, actions: LiveActions, state: LiveFxState, 
 private fun ReturnSlider(label: String, value: Float, modifier: Modifier, tag: String, change: (Float) -> Unit) {
     Column(modifier) {
         Text(tr("%1\$s : %2\$s", label, percent((value * 200).roundToInt())), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
-        ProSlider(value, change, Modifier.fillMaxWidth().height(48.dp).testTag(tag), accent = Neon.Magenta)
+        ProSlider(value, change, Modifier.fillMaxWidth().height(48.dp).testTag(tag), accent = Neon.Magenta, label = label, valueText = percent((value * 200).roundToInt()))
     }
 }
 
@@ -504,10 +594,9 @@ internal fun Modifier.countdownBar(left: () -> Float?, color: Color): Modifier =
 
 /** A length in beats: « 1/4 temps », « 1 temps », « 2 temps ». */
 internal fun beatsLabel(beats: Double): String = when {
-    beats == 1.0 -> tr("1 temps")
     beats == 0.25 -> tr("%s temps", "1/4")
     beats == 0.5 -> tr("%s temps", "1/2")
-    else -> tr("%d temps", beats.roundToInt())
+    else -> trCount(beats.roundToInt(), "1 temps", "%d temps")
 }
 
 /** The effects' settings (⚙): when held effects start, how they end, their lengths. */
@@ -530,7 +619,7 @@ private fun SettingsPage(s: LiveFxSettings, set: (LiveFxSettings) -> Unit) {
         Choices(tr("Demi-tempo"), "half", if (s.halfTimeBar) 1 else 0, listOf(tr("Par temps"), tr("Par mesure"))) { set(s.copy(halfTimeBar = it == 1)) }
         Choices(
             tr("Bruit qui monte ou descend"), "riser", LiveFxSettings.RISER_BARS.indexOf(s.riserBars),
-            LiveFxSettings.RISER_BARS.map { if (it == 1) tr("1 mesure") else tr("%d mesures", it) },
+            LiveFxSettings.RISER_BARS.map { trCount(it, "1 mesure", "%d mesures") },
         ) { set(s.copy(riserBars = LiveFxSettings.RISER_BARS[it])) }
     }
 }
@@ -554,9 +643,9 @@ private fun Choices(title: String, key: String, chosen: Int, labels: List<String
 private fun TrackFx(ui: LiveScreenUi, c: LiveColumn, actions: LiveActions, state: LiveFxState, clock: () -> Int) {
     val channel = ui.project.mixer.channels.getOrNull(c.channel) ?: return
     val wobble = channel.inserts.indexOfFirst { it.effect == EffectType.WOBBLE && !it.bypass }
-    val modes = xyModesFor(c, ui.hasAcid, ui.extraModes + if (wobble >= 0) setOf(XyMode.WOBBLE) else emptySet())
+    // Its mode is chosen in « L'effet », above.
+    val modes = trackModes(ui, c)
     val mode = state.trackMode.takeIf { it in modes } ?: XyMode.COLOUR
-    XyModeRow(modes, mode) { state.trackMode = it }
     when (mode) {
         XyMode.CRUSH -> {
             val dirt = channel.macros[Macros.DIRT]
@@ -639,7 +728,7 @@ private fun TrackFx(ui: LiveScreenUi, c: LiveColumn, actions: LiveActions, state
             val v = channel.sends.getOrElse(bus) { 0f }
             Column(Modifier.weight(1f)) {
                 Text(tr("%1\$s : %2\$s", label, percent((v * 100).roundToInt())), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
-                ProSlider(v, { actions.setSend(c.channel, bus, it) }, Modifier.fillMaxWidth().height(48.dp).testTag("live_send_${c.key}_$bus"), accent = Neon.Magenta)
+                ProSlider(v, { actions.setSend(c.channel, bus, it) }, Modifier.fillMaxWidth().height(48.dp).testTag("live_send_${c.key}_$bus"), accent = Neon.Magenta, label = label, valueText = percent((v * 100).roundToInt()))
             }
         }
     }

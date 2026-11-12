@@ -15,7 +15,8 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     roles: tom (lane 8, kit toms), ride (lane 12, the kit cymbal: no pack has a ride), perc2 (lane 13, a second
     percussion: shaker by default), rumble (lane 3: the kick again, played wherever the kick plays, meant for the
     "rumble" fx preset: reverb, distortion, low-pass, pump).
-    pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step.
+    pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step,
+      'T' strong / 't' medium: a triplet, 3 hits over this step and the next one, which must be '.' (not the last step).
   bass/lead "pattern" (and acid "pattern"): one token per step on the bar's chord: 'R' root, '2'..'7' scale
     steps, 'O' octave up (lower case 'r' 'o' softer), '=' the previous pitch again (a common tone held across
     the chord change), '-' holds the note, '.' silence, '/' holds the note and slides into the next one (808
@@ -50,6 +51,9 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
   "fake_drop": true (club music): a fake drop before the first Drop (riddim): the Drop's beat without its bass,
     a beat of silence, then the real one.
   "rewind": true (club music): the record pulled back (a tape stop on the master) before the second Drop (jungle).
+  "transition": "light" (club music, no riser): the Montée of house and techno that do not build like EDM (deep house,
+    minimal, Detroit, disco): no noise, no sub drop, no silent beat, the kick out of its last bar only, a one-bar drum
+    fill, the whole mix's low-pass closing over it and open again on the Drop.
   "vocal": answer|stab|shout|crush: a « Voix » track sung by the built-in voice (« Voix robot »): chops that
     answer the hook in its rests (house, garage, jersey), a stab every 4 bars (trap), an MC's shout in each
     Drop's second half (drum & bass), a crushed hit every 2 bars (phonk).
@@ -68,7 +72,7 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     runs the intro backwards).
   "bass_tip" / "pad_tip" / "lead_tip": what that part does in this style (French), shown on its step.
   "fx": [{"on": bass|chords|lead|<drum role>|acid|drums|master, "preset": <FX_PRESETS id>, "insert": <EFFECTS name>,
-          "params": [up to 4 values 0..1 of the insert, the others its defaults], "reverb": 0..1, "delay": 0..1}]:
+          "params": [up to 5 values 0..1 of the insert (a SATURATION's 5th: « Volume constant »), the others its defaults], "reverb": 0..1, "delay": 0..1}]:
           effects put on that layer when the song is made (e.g. {"on": "chords", "insert": "VINYL"},
           {"on": "bass", "preset": "pump"}, {"on": "snare", "reverb": 0.4}); on the master: inserts only (a preset's
           inserts, or one), in its free slots.
@@ -161,7 +165,7 @@ GM_FALLBACK = {
 }
 DEFAULT_PRESET = {"bass": "Basse ronde", "chords": "Nappe chaude", "lead": "Lead"}
 PART = {"bass": "Bass", "chords": "Pad", "lead": "Lead"}
-DRUM_CHARS = set("Xxo.234")
+DRUM_CHARS = set("Xxo.234Tt")
 LINE_CHARS = set("R23457Oro.-6/=")
 CHORD_CHARS = set("Xxo-.")
 # Built-in kit voices (DrumKit order), for a line's "voice" and a "kit:" sound.
@@ -231,6 +235,13 @@ def sound_of(gid, part, spec):
     return DEFAULT_PRESET[part], None
 
 
+def triplets(pattern, gid, what):
+    # A triplet ('T', 't') covers its step and the next: that one is '.', inside the bar.
+    for i, c in enumerate(pattern):
+        if c in "Tt":
+            check(i + 1 < len(pattern) and pattern[i + 1] == "." and (i + 1) % 16 != 0, f"{gid} {what}: the triplet at {i} needs a '.' after it, in its bar")
+
+
 def line(pattern, chars, gid, what, lengths=(16, 32, 64)):
     check(len(pattern) in lengths, f"{gid} {what}: {len(pattern)} steps")
     check(set(pattern) <= chars, f"{gid} {what}: bad characters in {pattern}")
@@ -261,12 +272,13 @@ def style(r):
         role = ROLES.get(d["role"])
         check(role is not None, f"{gid}: role {d['role']}")
         pat = line(d["pattern"], DRUM_CHARS, gid, d["role"], lengths=(16, 32))
+        triplets(pat, gid, d["role"])
         check(any(c not in "." for c in pat), f"{gid} {d['role']}: no hit")
         voice = d.get("voice")
         check(voice is None or voice in VOICES, f"{gid} {d['role']}: unknown voice {voice} ({sorted(VOICES)})")
         extra = f", voice = {VOICES[voice]}" if voice is not None else ""
         if d.get("build"):
-            line(d["build"], DRUM_CHARS, gid, d["role"] + " build", lengths=(16, 32))
+            triplets(line(d["build"], DRUM_CHARS, gid, d["role"] + " build", lengths=(16, 32)), gid, d["role"] + " build")
             extra += f", build = {kstr(d['build'])}"
         if d.get("off"):
             extra += ", off = true"
@@ -382,6 +394,10 @@ def style(r):
     check(drop is None or form != "build", f"{gid}: the Montée already holds the kick and the bass back for the Drop")
     fake_drop = bool(r.get("fake_drop", False))
     rewind = bool(r.get("rewind", False))
+    light = r.get("transition", "full")
+    check(light in ("full", "light"), f"{gid}: transition full or light, got {light}")
+    light = light == "light"
+    check(not light or (club and form != "build" and not riser), f"{gid}: a light transition needs the club form without a riser")
     check(not (fake_drop or rewind) or club or form == "build", f"{gid}: a fake drop or a rewind needs the club form")
     vocal = r.get("vocal")
     check(vocal is None or vocal in VOCALS, f"{gid}: vocal {vocal} ({sorted(VOCALS)})")
@@ -395,7 +411,7 @@ def style(r):
         check(not preset or preset in FX_PRESETS, f"{gid} fx: unknown preset {preset} ({sorted(FX_PRESETS)})")
         check(not insert or insert in EFFECTS, f"{gid} fx: unknown insert {insert} ({sorted(EFFECTS)})")
         params = fx.get("params", [])
-        check(not params or (insert and len(params) <= 4 and all(num(v) is not None and 0 <= num(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
+        check(not params or (insert and len(params) <= 5 and all(num(v) is not None and 0 <= num(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
         check(on != "master" or not (fx.get("reverb") or fx.get("delay")), f"{gid} fx: no sends on the master")
         rev, dly = float(fx.get("reverb", 0)), float(fx.get("delay", 0))
         check(0 <= rev <= 1 and 0 <= dly <= 1, f"{gid} fx: sends 0..1")
@@ -502,6 +518,8 @@ def style(r):
         out.append("            fakeDrop = true,")
     if rewind:
         out.append("            rewind = true,")
+    if light:
+        out.append("            lightBuild = true,")
     if vocal:
         out.append(f"            vocal = Vocal.{VOCALS[vocal]},")
     out.append("        ),")

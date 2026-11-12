@@ -1,91 +1,61 @@
 {
-  "id": "lot2-retours-audit35",
-  "milestone": "Lot 2 : Remix en vitrine, tablette à 130 %, pan du kick protégé",
+  "id": "banc-fiable",
+  "milestone": "Banc fiable : les 10 essais restants (8 faits sur le téléphone, merci). Chaque point dit le mode, les gestes un par un, et la réponse à recopier.",
   "items": [
     {
-      "id": "launch_choice",
-      "title": "« Que veux-tu faire ? »",
-      "hint": "Ferme l'appli, attends 30 min (ou redémarre le téléphone), rouvre-la : « Continuer » en grand, « Nouveau morceau », « Mes projets », « Remixer une chanson ». Rien ne joue avant ton choix ; le geste retour vaut « Continuer »."
+      "id": "tel-10",
+      "title": "Mélodie après un passage par Pad Live",
+      "hint": "Mode : Pro.\n1. Onglet Sons › Synthé (le clavier).\n2. Lance l'enregistrement (rond rouge) et joue 3 ou 4 notes.\n3. Pendant que ça enregistre encore, touche la flèche Retour du téléphone.\n4. ⋮ › Accueil › Pad Live, puis reviens à ton projet (Continuer ou Mes projets).\n5. Retourne dans Synthé et compte les notes.\nRéponse : le nombre de notes encore là (0 à 4)."
     },
     {
-      "id": "zero_projects",
-      "title": "Zéro projet",
-      "hint": "Mes projets : supprime tous les projets, vide la corbeille. L'écran dit « Aucun projet pour l'instant » ; « Que veux-tu faire ? » n'a plus de « Continuer »."
+      "id": "tel-11",
+      "title": "Glisser sur les effets de Pad Live",
+      "hint": "Mode : peu importe.\n1. Accueil › Pad Live.\n2. Trouve la colonne des effets (les grosses cases d'effets sur le côté).\n3. Pose le doigt en haut de la colonne et glisse vers le bas, sans lever le doigt.\nRéponse : « la colonne défile » ou « un effet s'est déclenché »."
     },
     {
-      "id": "bug_report",
-      "title": "Signaler un bug",
-      "hint": "Appui long sur « ? » (ou ⋯ › Signaler un bug en Mode simple) : écris une phrase, regarde « Ce qui sera envoyé » (« 1 erreur » au singulier), puis Partager. Rien ne part tout seul."
+      "id": "tel-12",
+      "title": "« ■ Tout » de la vue Live",
+      "hint": "Mode : Pro.\n1. Ouvre un projet avec plusieurs pistes remplies.\n2. Onglet « Live » en bas (la grille de cases).\n3. Touche deux cases pour lancer deux briques ; attends qu'elles jouent.\n4. Touche « ■ Tout » (en bas de la grille).\nRéponse : « tout s'arrête » ou « quelque chose joue encore »."
     },
     {
-      "id": "export_steps",
-      "title": "Les étapes de l'export",
-      "hint": "⤴ › M4A › Partager sur un long morceau (Jump up) : la boîte dit chaque étape (« Compression M4A », « Vérification », parfois « Réglage du volume final 2/3 ») avec une barre, « Annuler » marche, et ça ne reste jamais bloqué."
+      "id": "tel-13",
+      "title": "Changer de partie pendant la lecture",
+      "hint": "Mode : Pro.\n1. Ouvre un projet qui a au moins deux parties, A et B, différentes.\n2. Lance la musique sur la partie A (gros ▶).\n3. Pendant que ça joue, ouvre le menu des parties (en haut, le nom de la partie) et choisis B.\nRéponse : « on passe sur B » (le son change) ou « on reste sur A »."
     },
     {
-      "id": "remix_two",
-      "title": "Le Remix en deux gestes",
-      "hint": "Depuis « Que veux-tu faire ? » : « Remixer une chanson » (1 toucher). Depuis n'importe quel espace : Sons › « Remix » (2). Mode simple : ⋯ › « Remixer une chanson » (2), « ← Mon morceau » pour revenir. Sépare une chanson de ton téléphone."
+      "id": "tel-14",
+      "title": "Le curseur d'une courbe pendant la lecture",
+      "hint": "Mode : Pro.\n1. Mix › carte « Courbes » : crée une courbe (ex. Filtre) avec « Automatiser » si tu n'en as pas, et dessine-la qui monte et descend.\n2. Lance la musique (gros ▶).\n3. Sur la courbe, touche « Voir le réglage ».\nRéponse : « le curseur bouge avec la courbe » ou « il reste figé »."
     },
     {
-      "id": "kick_pan",
-      "title": "Le kick reste au centre",
-      "hint": "Sons › Batterie : fais plusieurs gestes retour depuis le bord gauche, à la hauteur de « Pan du pad ». Le kick reste au centre (aucun « G 100 » sur le pad). Puis glisse le rond du pan : « G 30 » s'affiche sur le pad ; deux touches sur le curseur le remettent au centre."
+      "id": "tel-15",
+      "title": "Fin du Remix annoncée coupée ?",
+      "hint": "Mode : Pro.\n1. Accueil › Remix : sépare une chanson courte (moins d'une minute si possible).\n2. Mets-la dans un projet plus long qu'elle (le morceau dure plus que la chanson).\n3. Partager (en haut à droite) › « Prêt à partager ? » : lis ce qui est annoncé.\n4. Exporte et écoute la fin.\nRéponse : « fin coupée » est-il annoncé (oui/non), et à l'écoute, est-ce vraiment coupé (oui/non)."
     },
     {
-      "id": "tablet_130",
-      "title": "Tablette à 130 %",
-      "hint": "Galaxy Tab, Réglages › Taille de l'interface 130 %, debout puis couchée : « Que veux-tu faire ? », la feuille d'un pad, « Prêt à partager ? », la boîte d'export et Signaler un bug sont à la même taille que l'écran derrière."
+      "id": "tel-16",
+      "title": "La démo s'arrête quand on la quitte ?",
+      "hint": "Mode : peu importe.\n1. Accueil › « Nouveau morceau ».\n2. Dans la liste des styles, touche le bouton d'écoute (▶) d'un style : la démo joue.\n3. Quitte la liste SANS choisir de style (flèche Retour ou croix).\nRéponse : « le son s'arrête » ou « il continue »."
     },
     {
-      "id": "tablet_keys",
-      "title": "Clavier sur la tablette couchée",
-      "hint": "Tablette couchée, 100 % puis 130 %, Mode simple › Clavier : ● Enregistrer ma mélodie, joue, ■. Le clavier reste entier, la carte de la prise (Garder, Remettre en rythme, Refaire) est à côté."
+      "id": "tel-17",
+      "title": "Défi 1 en rythme",
+      "hint": "Mode : peu importe.\n1. Accueil › carte « Défis » › Défi 1 « Boum boum ».\n2. Touche « Écouter » pour entendre le rythme.\n3. Tape 4 fois en rythme sur le pad montré, en suivant la musique.\nRéponse : le nombre d'étoiles obtenues (0 à 3). Si tu as bien tapé en rythme et que tu as 1 étoile, dis-le."
     },
     {
-      "id": "tablet_pads",
-      "title": "Pads sur la tablette couchée",
-      "hint": "Tablette couchée, Sons › Batterie : les 4 rangées de pads et « Kit ▾ » tiennent sans défiler."
+      "id": "tel-18",
+      "title": "Prise micro à la fin du morceau",
+      "hint": "Mode : peu importe. Il faut des écouteurs ou le haut-parleur, et autoriser le micro.\n1. Accueil › « Enregistrer ma voix ou ma guitare » (ou Pro › Sons › Audio).\n2. Lance la prise et parle ou chante jusqu'APRÈS la fin du morceau.\nRéponse : « la prise s'arrête à la fin du morceau » ou « elle continue »."
     },
     {
-      "id": "simple_melody",
-      "title": "Ma mélodie dans « Mélodie »",
-      "hint": "Mode simple › Clavier : la puce « Mélodie » est choisie d'office ; la prise y va (pas dans « Synthé »). La ligne dit « Tu as 4 mesures pour jouer ta mélodie »."
+      "id": "tel-19",
+      "title": "Annuler une prise du Live",
+      "hint": "Mode : Pro.\n1. Note la durée du morceau (dans Structure, en mesures ou minutes).\n2. Onglet « Live » : touche le rond rouge pour enregistrer la performance, lance quelques cases pendant 10-20 s, puis arrête.\n3. Touche « Annuler » (en bas, à gauche du ▶).\n4. Regarde de nouveau la durée du morceau.\nRéponse : la durée avant et après (elle doit redevenir comme avant)."
     },
     {
-      "id": "help_labels",
-      "title": "Les « ? » lisibles",
-      "hint": "Touche « ? » sur Mon morceau, Mix et Live : aucune étiquette ne se pose sur un autre bouton ; « Masquer les étiquettes » et « Signaler un bug » sont en bas."
-    },
-    {
-      "id": "kits_808",
-      "title": "Kits Trap et Drill",
-      "hint": "Sons › Batterie › « Kit ▾ » : « Trap (808) » et « Drill (808) » sans téléchargement ; la 808 joue sur le pad « Kick 2 » et glisse. Annuler remet l'ancien kit."
-    },
-    {
-      "id": "briques",
-      "title": "Briques et parties",
-      "hint": "Structure › Parties : la liste du morceau s'appelle « Parties », la grille A à H « Briques » (aussi dans le Lexique)."
-    },
-    {
-      "id": "wizard_words",
-      "title": "L'assistant en mots simples",
-      "hint": "Nouveau morceau guidé : « Étape 1 : choisis un style » (sans « sur 13 »), puis plus de « Gamme Fa phrygienne » sous les ambiances (« Pour les curieux » les montre) et un vrai bouton « Créer tout de suite avec les choix conseillés »."
-    },
-    {
-      "id": "live_full",
-      "title": "Pads live plein écran",
-      "hint": "Live › Pads › Plein écran, tablette debout et téléphone : « Tout couper » a son mot à côté de REC."
-    },
-    {
-      "id": "song_sound",
-      "title": "Le son (à l'oreille)",
-      "hint": "Crée un morceau Techno puis Trap et écoute du début à la fin : rien ne baisse tout seul, la Montée monte, le Drop frappe, la 808 glisse."
-    },
-    {
-      "id": "headphones",
-      "title": "Casque et Bluetooth",
-      "hint": "Branche puis débranche un casque pendant la lecture : le son passe de l'un à l'autre sans planter ; le rapport de bug dit la sortie."
+      "id": "tel-20",
+      "title": "Premier écran après Pro",
+      "hint": "Mode : Pro.\n1. Ferme complètement BenStudio (balaye-le hors des applis récentes).\n2. Rouvre-le et regarde l'écran juste après le logo.\n3. Compte à voix basse jusqu'à ce que des boutons apparaissent (« Que veux-tu faire ? » ou ton projet).\nRéponse : combien de secondes tu as vu un écran presque vide (« Ouverture du projet… » ou rien), et ce qui est venu ensuite."
     }
   ]
 }

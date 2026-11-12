@@ -1,0 +1,630 @@
+#0 SIEGE lang=fr device=phone411 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=left amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 93c71c3021 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#1 > touche 150 787
+#1 DOIGT launch_remix « Remix »
+#2 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 39f39e931c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « ? » 2.55:1 (needs 4.5:1, 12 sp)
+#2 > touche 150 373
+#2 REFUS hors de portée du pouce (d'une main, la gauche)
+#3 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 8086536cce | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 55 373
+#3 REFUS hors de portée du pouce (d'une main, la gauche)
+#4 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 8086536cce | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 60 457
+#4 REFUS hors de portée du pouce (d'une main, la gauche)
+#5 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 8086536cce | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 RIEN NE CHANGE (3 écrans identiques)
+#5 > glisse 150 800 150 1250
+#5 DOIGT rien
+#6 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 39f39e931c | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > retour
+#6 RETOUR
+#7 ROUTE launch | MODE pro | EMPREINTE 93c71c3021 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#7 > touche 100 622
+#7 REFUS hors de portée du pouce (d'une main, la gauche)
+#8 ROUTE launch | MODE pro | EMPREINTE 32171b3a61 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#8 > touche 150 967
+#8 DOIGT launch_padlive « Pad Live »
+#9 ROUTE padlive | MODE pro | EMPREINTE ecde51c919 | project=p-fafb4994 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « Pack… » ellipsized (« … »)
+#9 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#9 LAYOUT OVERLAP « Plus » over « Plus » (24 x 10 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « vide, pad A14 » (7 x 5 dp)
+#9 LAYOUT OVERLAP « A » over the touchable « Jouer » (11 x 20 dp)
+#9 LAYOUT OVERLAP « 124 » over the touchable « Page A · vide » (32 x 18 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#9 LAYOUT OVERLAP « Pad Live » over the touchable « Mode Pro. Toucher pour changer de mode.  » (10 x 24 dp)
+#9 LAYOUT OVERLAP « A » over the touchable « Tempo : 124 BPM Changer le tempo » (12 x 22 dp)
+#9 LAYOUT OVERLAP « B » over the touchable « Tempo : 124 BPM Changer le tempo » (11 x 22 dp)
+#9 LAYOUT OVERLAP « Filtre » over the touchable « Ouvrir le Guide replié » (36 x 20 dp)
+#9 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Ouvrir le Guide replié » (88 x 16 dp)
+#9 LAYOUT OVERLAP « Écho » over the touchable « Ouvrir le Guide replié » (34 x 20 dp)
+#9 LAYOUT OVERLAP « en sortie » over the touchable « Ouvrir le Guide replié » (58 x 16 dp)
+#9 LAYOUT OVERLAP « Roulement » over the touchable « Ouvrir le Guide replié » (74 x 20 dp)
+#9 LAYOUT OVERLAP « 1/16 » over the touchable « Ouvrir le Guide replié » (26 x 16 dp)
+#9 LAYOUT OVERLAP « ● » over the touchable « vide, pad A3 » (11 x 17 dp)
+#9 LAYOUT OVERLAP «  REC » over the touchable « vide, pad A3 » (23 x 13 dp)
+#9 LAYOUT OVERLAP « ✎ » over the touchable « vide, pad A4 » (8 x 18 dp)
+#9 LAYOUT OVERLAP «  Noter » over the touchable « vide, pad A4 » (29 x 13 dp)
+#9 LAYOUT OVERLAP « ⋯ » over the touchable « vide, pad A4 » (13 x 22 dp)
+#9 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « ● » 2.71:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « ✎ » 3.60:1 (needs 4.5:1, 13 sp)
+#9 > touche 80 722
+#9 DOIGT padlive_pad_12 « vide, pad A13 »
+#10 ROUTE dialogue:library | MODE pro | EMPREINTE 06b83b9991 | project=p-fafb4994 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Claps » 3.00:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Charleys fermés » 1.68:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Fête » 1.24:1 (needs 4.5:1, 16 sp)
+#10 LAYOUT CONTRAST « 22 sons » 4.17:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « Touche ☆ sur un son pour le retrouver dans « Favoris ». » 1.31:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad live 13. » 1.20:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « PACKS DE SONS » 1.31:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Chargement de la liste… » 1.22:1 (needs 4.5:1, 16 sp)
+#10 > attends 3
+#11 ROUTE dialogue:library | MODE pro | EMPREINTE c4a7d28648 | project=p-fafb4994 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. » 1.89:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « Akai MPC60 » 2.27:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « Télécharger » 2.05:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Amapiano » 2.61:1 (needs 4.5:1, 16 sp)
+#11 > retour
+#11 RETOUR
+#12 ROUTE padlive | MODE pro | EMPREINTE ecde51c919 | project=p-fafb4994 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 500 1320
+#12 DOIGT padlive_more « Plus »
+#13 ROUTE padlive | MODE pro | EMPREINTE 26cf24ec5a | project=p-fafb4994 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Pas 1 Poser ou retirer vide » (41 x 18 dp)
+#13 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Pas 2 Poser ou retirer vide » (41 x 18 dp)
+#13 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Pas 3 Poser ou retirer vide » (10 x 18 dp)
+#13 LAYOUT OVERLAP « ? » over the touchable « Pas 3 Poser ou retirer vide » (7 x 15 dp)
+#13 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Pas 6 Poser ou retirer vide » (22 x 18 dp)
+#13 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Pas 7 Poser ou retirer vide » (41 x 18 dp)
+#13 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Pas 8 Poser ou retirer vide » (41 x 18 dp)
+#13 LAYOUT OVERLAP « Filtre » over the touchable « Pas 9 Poser ou retirer vide » (30 x 18 dp)
+#13 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 9 Poser ou retirer vide » (41 x 16 dp)
+#13 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 10 Poser ou retirer vide » (36 x 16 dp)
+#13 LAYOUT OVERLAP « Écho » over the touchable « Pas 11 Poser ou retirer vide » (5 x 18 dp)
+#13 LAYOUT OVERLAP « Écho » over the touchable « Pas 12 Poser ou retirer vide » (25 x 18 dp)
+#13 LAYOUT OVERLAP « en sortie » over the touchable « Pas 11 Poser ou retirer vide » (5 x 16 dp)
+#13 LAYOUT OVERLAP « en sortie » over the touchable « Pas 12 Poser ou retirer vide » (41 x 16 dp)
+#13 LAYOUT OVERLAP « en sortie » over the touchable « Pas 13 Poser ou retirer vide » (4 x 16 dp)
+#13 LAYOUT OVERLAP « Roulement » over the touchable « Pas 14 Poser ou retirer vide » (8 x 18 dp)
+#13 LAYOUT OVERLAP « Roulement » over the touchable « Pas 15 Poser ou retirer vide » (41 x 18 dp)
+#13 LAYOUT OVERLAP « Roulement » over the touchable « Pas 16 Poser ou retirer vide » (18 x 18 dp)
+#13 LAYOUT OVERLAP « 1/16 » over the touchable « Pas 14 Poser ou retirer vide » (8 x 16 dp)
+#13 LAYOUT OVERLAP « 1/16 » over the touchable « Pas 15 Poser ou retirer vide » (14 x 16 dp)
+#13 LAYOUT OVERLAP « Effets » over the touchable « Ouvrir le Guide replié » (36 x 18 dp)
+#13 LAYOUT OVERLAP « Gros pads » over the touchable « Ouvrir le Guide replié » (64 x 18 dp)
+#13 LAYOUT OVERLAP « Partager » over the touchable « Ouvrir le Guide replié » (55 x 18 dp)
+#13 LAYOUT OVERLAP « ? » over the touchable « Ouvrir le Guide replié » (7 x 15 dp)
+#13 > touche 282 1230
+#13 DOIGT padlive_party_open « Gros pads »
+#14 ROUTE padlive_party | MODE pro | EMPREINTE 413ecc61ff | project=p-fafb4994 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « A » over « B » (9 x 14 dp)
+#14 LAYOUT OVERLAP « A » over the touchable « Page B » (11 x 20 dp)
+#14 LAYOUT OVERLAP « A » over the touchable « Mode Pro. Toucher pour changer de mode.  » (12 x 24 dp)
+#14 LAYOUT OVERLAP « B » over the touchable « Partie en cours : A. Toucher pour change » (11 x 22 dp)
+#14 LAYOUT CONTRAST « ● » 2.75:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « ✎ » 3.58:1 (needs 4.5:1, 13 sp)
+#14 > retour
+#14 RETOUR
+#15 ROUTE padlive | MODE pro | EMPREINTE ecde51c919 | project=p-fafb4994 no tuto
+#15 SON Son : rien ne joue.
+#15 > appui-long 80 722
+#15 DOIGT padlive_pad_12 « vide, pad A13 »
+#16 ROUTE dialogue:library | MODE pro | EMPREINTE c4a7d28648 | project=p-fafb4994 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 440 874
+#16 DOIGT library_download_modern_808 « Télécharger »
+#17 ROUTE dialogue:library | MODE pro | EMPREINTE 446025525c | project=p-fafb4994 no tuto
+#17 SON Son : rien ne joue.
+#17 > attends 5
+#18 ROUTE dialogue:library | MODE pro | EMPREINTE 9094ecbff9 | project=p-fafb4994 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Caisses claires » 2.68:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Fête » 1.30:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « 22 sons » 1.31:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Touche ☆ sur un son pour le retrouver dans « Favoris ». » 4.11:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « PACKS DE SONS » 4.21:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « ? » 1.23:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Afrobeats » 2.05:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « Akai MPC60 » 2.58:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « Télécharger » 2.06:1 (needs 4.5:1, 14 sp)
+#18 > touche 125 939
+#18 DOIGT rien (texte « 808 modernes »)
+#19 ROUTE dialogue:library | MODE pro | EMPREINTE 9094ecbff9 | project=p-fafb4994 no tuto
+#19 SON Son : rien ne joue.
+#19 > retour
+#19 RETOUR
+#20 ROUTE padlive | MODE pro | EMPREINTE ecde51c919 | project=p-fafb4994 no tuto
+#20 SON Son : rien ne joue.
+#20 > retour
+#20 RETOUR
+#21 ROUTE launch | MODE pro | EMPREINTE 55c720e8e5 | project=p-fafb4994 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT OVERLAP « Live » over « BenStudio » (26 x 4 dp)
+#21 LAYOUT OVERLAP « Pro » over « BenStudio » (24 x 10 dp)
+#21 LAYOUT OVERLAP « Que veux-tu faire ? » over « ● » (11 x 17 dp)
+#21 LAYOUT OVERLAP « Que veux-tu faire ? » over «  REC » (23 x 13 dp)
+#21 LAYOUT OVERLAP « BenStudio » over the touchable « Mode Pro. Toucher pour changer de mode.  » (36 x 24 dp)
+#21 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo : 124 BPM Changer le tempo » (31 x 16 dp)
+#21 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Tempo : 124 BPM Changer le tempo » (71 x 30 dp)
+#21 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Filmer l'écran avec le son » (40 x 26 dp)
+#21 LAYOUT OVERLAP « Remix » over the touchable « Replier Déplié » (66 x 27 dp)
+#21 LAYOUT OVERLAP « Remix » over the touchable « Qu'est-ce que « Pas » ? » (29 x 27 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 2 Poser ou retirer vide » (15 x 26 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 3 Poser ou retirer vide » (41 x 26 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 4 Poser ou retirer vide » (41 x 26 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 5 Poser ou retirer vide » (41 x 26 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 6 Poser ou retirer vide » (41 x 26 dp)
+#21 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Pas 7 Poser ou retirer vide » (12 x 26 dp)
+#21 LAYOUT OVERLAP « Pad Live » over the touchable « Pas 10 Poser ou retirer vide » (15 x 28 dp)
+#21 LAYOUT OVERLAP « Pad Live » over the touchable « Pas 11 Poser ou retirer vide » (41 x 28 dp)
+#21 LAYOUT OVERLAP « Pad Live » over the touchable « Pas 12 Poser ou retirer vide » (26 x 28 dp)
+#21 LAYOUT OVERLAP « NOUVEAU » over the touchable « Pas 13 Poser ou retirer vide » (41 x 16 dp)
+#21 LAYOUT OVERLAP « NOUVEAU » over the touchable « Pas 14 Poser ou retirer vide » (17 x 16 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 10 Poser ou retirer vide » (15 x 12 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 11 Poser ou retirer vide » (41 x 11 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 12 Poser ou retirer vide » (41 x 11 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 13 Poser ou retirer vide » (41 x 11 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 14 Poser ou retirer vide » (41 x 11 dp)
+#21 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Pas 15 Poser ou retirer vide » (32 x 11 dp)
+#21 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#21 > touche 60 690
+#21 DOIGT launch_projects « Mes projets »
+#22 ROUTE dialogue:projects | MODE pro | EMPREINTE 0782b84e92 | project=p-fafb4994 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST «   Nouveau morceau guidé » 3.24:1 (needs 4.5:1, 16 sp)
+#22 > retour
+#22 RETOUR
+#23 ROUTE launch | MODE pro | EMPREINTE 55c720e8e5 | project=p-fafb4994 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 150 1155
+#23 DOIGT launch_missions « Mon premier morceau, avec le Guide »
+#24 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 03ac4f9528 | project=p-fafb4994 no tuto
+#24 SON Son : rien ne joue.
+#24 > retour
+#24 RETOUR
+#25 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8e439231c2 | project=p-fafb4994 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « Sauvegardé » wider than its box (by 28.8 dp)
+#25 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#25 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#25 > touche 540 1311
+#25 DOIGT tab_Plus « Plus »
+#26 ROUTE plus/tab_Plus | MODE pro | EMPREINTE f909be7ebe | project=p-fafb4994 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 80 750
+#26 DOIGT tool_Reglages « Réglages »
+#27 ROUTE settings/tab_Plus | MODE pro | EMPREINTE e91a5dd144 | project=p-fafb4994 no tuto
+#27 SON Son : rien ne joue.
+#27 > glisse 150 1150 150 720
+#27 DOIGT rien
+#28 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 53c920f558 | project=p-fafb4994 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT LABEL « haptics » toggle without text nor description
+#28 LAYOUT LABEL « live_beat_haptics » toggle without text nor description
+#28 LAYOUT LABEL « keep_screen » toggle without text nor description
+#28 > glisse 150 1150 150 720
+#28 DOIGT rien (texte « L'écran ne s'éteint pas tant que la musi »)
+#29 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 5d546ecb39 | project=p-fafb4994 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT LABEL « intro_sound » toggle without text nor description
+#29 > touche 181 1311
+#29 DOIGT tab_Sons « Sons »
+#30 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8e439231c2 | project=p-fafb4994 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 73 882
+#30 DOIGT step_0 « Pas 1 »
+#31 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 6f2d6071ea | project=p-fafb4994 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 208 965
+#31 DOIGT step_10 « Pas 11 »
+#32 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8f943a6719 | project=p-fafb4994 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 120 795
+#32 DOIGT fold_Pas « PAS : KICK »
+#33 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 6410b5ddd0 | project=p-fafb4994 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « PAS : KICK » 4.34:1 (needs 4.5:1, 12 sp)
+#33 > touche 150 1010
+#33 DOIGT open_library «  Changer le son »
+#34 ROUTE dialogue:library | MODE pro | EMPREINTE 1980eb90a4 | project=p-fafb4994 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Pour le pad 1 (Kick) » 4.31:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Caisses claires » 2.25:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « SONS » 3.10:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « Fête » 2.04:1 (needs 4.5:1, 16 sp)
+#34 LAYOUT CONTRAST « 32 sons » 1.69:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad 1 (Kick). » 1.94:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « PACKS DE SONS » 2.14:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « ? » 3.74:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. » 4.32:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Supprimer » 1.71:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Acid house » 1.71:1 (needs 4.5:1, 16 sp)
+#34 LAYOUT CONTRAST « Télécharger » 1.71:1 (needs 4.5:1, 14 sp)
+#34 > retour
+#34 RETOUR
+#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 6410b5ddd0 | project=p-fafb4994 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 433 1311
+#35 DOIGT tab_Live « Live »
+#36 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE f9f07aa9a5 | project=p-fafb4994 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 13 sp)
+#36 > touche 56 1311
+#36 DOIGT tab_Structure « Structure »
+#37 ROUTE session/tab_Structure | MODE pro | EMPREINTE 042aed4efa | project=p-fafb4994 no tuto
+#37 SON Son : rien ne joue.
+#37 > glisse 150 1150 150 720
+#37 DOIGT rien (texte « 4/4 pour la plupart des morceaux, 3/4 po »)
+#38 ROUTE session/tab_Structure | MODE pro | EMPREINTE 7bfe3df170 | project=p-fafb4994 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 150 1215
+#38 DOIGT guide_bar « Guide »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE fc6f3a2ac0 | project=p-fafb4994 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « POUR COMMENCER » 4.30:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « Générer une ligne Acid 303 » 3.89:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « Jouer la basse au clavier » 3.97:1 (needs 4.5:1, 14 sp)
+#39 > touche 540 1311
+#39 DOIGT tab_Plus « Plus »
+#40 ROUTE tab_Plus | MODE pro | EMPREINTE dc51cfb1e6 | project=p-fafb4994 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 150 739
+#40 DOIGT guide_bar « Guide »
+#41 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 88de46ddf5 | project=p-fafb4994 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 181 1311
+#41 DOIGT tab_Sons « Sons »
+#42 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9eb3ffc9dc | project=p-fafb4994 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 430 805
+#42 DOIGT all_pads « Tous les pads »
+#43 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ed458d7cae | project=p-fafb4994 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « Charley ouvert » ellipsized (« … »)
+#43 LAYOUT CUT « Tom médium » ellipsized (« … »)
+#43 LAYOUT LABEL « cell_0_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_0_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_0_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_1_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_1_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_2_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_2_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_3_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_3_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_4_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_4_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_5_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_5_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_6_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_6_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_7_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_7_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_0 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_0 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_1 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_1 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_2 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_2 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_3 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_3 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_4 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_4 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_5 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_5 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_6 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_6 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_7 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_7 » 15 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_8 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_8 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_9 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_9 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_10 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_10 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_11 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_11 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_12 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_12 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_13 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_13 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_14 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_14 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_8_15 » touchable without text nor description
+#43 LAYOUT TARGET « cell_8_15 » 16 x 22 dp (touch 48 x 48)
+#43 LAYOUT LABEL « cell_9_0 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_1 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_2 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_3 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_4 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_5 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_6 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_7 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_8 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_9 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_10 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_11 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_12 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_13 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_14 » touchable without text nor description
+#43 LAYOUT LABEL « cell_9_15 » touchable without text nor description
+#43 > glisse 164 1039 562 1039
+#43 DOIGT cell_5_0
+#44 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ed458d7cae | project=p-fafb4994 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 373 1003
+#44 DOIGT cell_4_8
+#45 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ed458d7cae | project=p-fafb4994 no tuto
+#45 SON Son : rien ne joue.
+#45 RIEN NE CHANGE (3 écrans identiques)
+#45 > touche 216 1039
+#45 DOIGT cell_5_2
+#46 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ed458d7cae | project=p-fafb4994 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 320 1039
+#46 DOIGT cell_5_6
+#47 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ed458d7cae | project=p-fafb4994 no tuto
+#47 SON Son : rien ne joue.
+#47 RIEN NE CHANGE (5 écrans identiques)
+#47 FIN : rien ne change (5 écrans identiques)

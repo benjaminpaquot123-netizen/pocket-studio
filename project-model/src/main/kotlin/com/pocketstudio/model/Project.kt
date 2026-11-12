@@ -102,7 +102,7 @@ data class Project(
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val soundVersion: Int = SOUND_V1,
     /**
-     * The mix ([MIX_V1] to [MIX_V4], the engine's SetMixVersion): since phase 34 (S5) the
+     * The mix ([MIX_V1] to [MIX_V5], the engine's SetMixVersion): since phase 34 (S5) the
      * assistant's songs aim their loudness target at their loudest part (the Drop), the master
      * chain taking 3 LU at most there, with a real sidechain and a « Musique » bus; the projects
      * saved before keep theirs (the target on the whole song). Left out of the file at v1.
@@ -125,6 +125,13 @@ data class Project(
      * [LiveSlots.QUANTUM_HALF_BAR]; 0 (left out of the file): [liveQuantum] bars.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val liveQuantumFine: Int = 0,
+    /** « Cases − 8 + »: bricks the Live grid shows at once (one of [LiveCells.ROWS]); 0 (left out of the file): 8. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val liveRows: Int = 0,
+    /**
+     * Step 4e: the sound the tempo was set on ([AutoTempo]): « Revenir au tempo de … » and no
+     * second sound sets it again. Left out of the file when null.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val tempoLead: TempoLead? = null,
     /**
      * Phase 37: the seed the drums' chances are drawn from ([Hit.chance], [DrumChance]): the same
      * seed, the same passes (an export is the song heard); « Autre tirage » picks another. Left out
@@ -150,6 +157,15 @@ data class Project(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val guide: com.pocketstudio.model.guide.GuideState = com.pocketstudio.model.guide.GuideState.EMPTY,
     /** G1b: the first instrument track's [InstrumentTrack.layers]; left out of the file when it has none. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val synthLayers: List<TrackLayer> = emptyList(),
+    /** Lot C (n° 24): « Découper la chanson », the pieces of each stem of the remix ([SongCuts]); left out of the file when none. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val songCuts: SongCuts = SongCuts(),
+    /** Pad Live (n° 25, lot B): the home's « Live » project, its page and its pack ([PadLiveSet]); left out of the file at its defaults. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val padLive: PadLiveSet = PadLiveSet(),
+    /**
+     * Owner (2026-11-04): the first instrument track « deleted » from « Mes pistes » ([removeFirstTrack]);
+     * it stays hidden while it is still blank ([firstTrackDeleted]). Left out of the file when false.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val firstTrackHidden: Boolean = false,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4
@@ -187,10 +203,12 @@ data class Project(
         kitVersion = kitVersion.coerceIn(KIT_V1, KIT_V3),
         padVoices = PadVoice.sanitize(padVoices),
         soundVersion = soundVersion.coerceIn(SOUND_V1, SOUND_V3),
-        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V4),
+        mixVersion = mixVersion.coerceIn(MIX_V1, MIX_V5),
         style = style?.take(64)?.ifBlank { null },
         songVersions = songVersions.take(SongVersion.MAX).map { it.sanitized(this) },
         liveQuantumFine = liveQuantumFine.takeIf { it in LiveSlots.FINE_QUANTA } ?: 0,
+        liveRows = liveRows.takeIf { it in LiveCells.ROWS } ?: 0,
+        tempoLead = tempoLead?.sanitized(),
         drumSeed = drumSeed.coerceIn(0, DrumChance.MAX_SEED),
         multi = multi.sanitized(),
         voice808 = voice808.copy(kind = PadVoice.BASS_808).sanitized(),
@@ -224,6 +242,13 @@ data class Project(
          * sounds different is in the songs' own inserts; the number tells a song made since.
          */
         const val MIX_V4 = 4
+        /**
+         * [MIX_V4] as the engine plays it, the assistant's songs since Benjamin's Acidcore (APK 233: « le gros kick
+         * disparaît » with every track on): the 303's saturation at a constant level (« Volume constant »). Without it
+         * (drive 0.45) it made the 303 10.7 LU louder, 10 LU over the drums in the Drop and 4 dB over the kick under
+         * 120 Hz. An Acidcore song saved at [MIX_V4] gets it when it is read ([ProjectJson.decode]), then is [MIX_V5].
+         */
+        const val MIX_V5 = 5
         const val MIN_TEMPO = 40.0
         const val MAX_TEMPO = 300.0
         const val MAX_SWING = 0.75
@@ -247,7 +272,7 @@ data class DrumPattern(
             lanes = fixedLanes.map { lane ->
                 lane.copy(
                     // Hits past the loop's end stay, unheard: a time signature tried and undone gives them back.
-                    hits = lane.hits.filterKeys { it in 0 until MAX_STEPS }.mapValues { (_, h) -> h.sanitized() },
+                    hits = DrumLane.uncovered(lane.hits.filterKeys { it in 0 until MAX_STEPS }.mapValues { (_, h) -> h.sanitized() }),
                     sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
                     pan = lane.pan.finite(0f).coerceIn(-1f, 1f),
                     length = lane.length.coerceIn(0, MAX_STEPS),
@@ -257,18 +282,23 @@ data class DrumPattern(
     }
 
     /**
-     * The loop at [newSteps] (whole bars, 16 to 64): a longer loop repeats the current bars so the
-     * groove keeps going; a shorter one drops the hits past its end (undo brings them back).
+     * The loop at [newSteps] (whole beats, [MIN_STEPS] to [MAX_STEPS]: 16 bars since step 7a). A shorter one keeps the hits past its end, unheard
+     * (as [sanitized] does): grown again, they are back. A longer one repeats the current loop, so the
+     * groove keeps going, only over stretches of it (each the old loop's length) that hold no hit yet
+     * on any pad: what was kept there comes back as it was, never overwritten nor doubled.
      */
     fun withSteps(newSteps: Int): DrumPattern {
         val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 4) * 4
         if (n == steps) return this
+        if (n < steps) return copy(steps = n)
+        val old = steps.coerceAtLeast(1)
+        // The stretches past the old end with a hit kept there: left as they are.
+        val kept = lanes.flatMapTo(HashSet()) { lane -> lane.hits.keys.filter { it in old until n }.map { it / old } }
         return copy(
             steps = n,
             lanes = lanes.map { lane ->
-                val hits = if (n > steps) (0 until n).mapNotNull { st -> lane.hits[st % steps]?.let { st to it } }.toMap()
-                else lane.hits.filterKeys { it < n }
-                lane.copy(hits = hits)
+                val repeated = (old until n).filter { it / old !in kept }.mapNotNull { st -> lane.hits[st % old]?.let { st to it } }
+                lane.copy(hits = lane.hits + repeated)
             },
         )
     }
@@ -284,19 +314,45 @@ data class DrumPattern(
     fun rotate(lane: Int, by: Int): DrumPattern =
         withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> if (step < steps) Math.floorMod(step + by, steps) else step })
 
-    /** Next roll for a hit (the « Roulements » tool): 1 → 2 → 3 → 4 → 1. No hit: nothing changes. */
+    /**
+     * Next roll for a hit (the « Roulements » tool): 1 → 2 → 3 → 4 → 1; a triplet goes back to one hit.
+     * No hit: nothing changes.
+     */
     fun cycleRepeats(lane: Int, step: Int): DrumPattern {
         val hit = lanes[lane].hits[step] ?: return this
-        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = hit.repeats % CYCLE_REPEATS + 1)))
+        val next = if (hit.isSpread) hit.copy(repeats = 1, span = 1) else hit.copy(repeats = hit.repeats % CYCLE_REPEATS + 1)
+        return withHits(lane, lanes[lane].hits + (step to next))
     }
 
     /**
      * One hit's roll: [repeats] hits in its step (1..[MAX_REPEATS]) and the way its strength goes
      * along them ([Hit.ramp]: 0 even, 1 rising, -1 falling). No hit there: unchanged.
      */
-    fun withRoll(lane: Int, step: Int, repeats: Int, ramp: Int = 0): DrumPattern {
+    fun withRoll(lane: Int, step: Int, repeats: Int, ramp: Int = 0, span: Int = 1): DrumPattern {
+        if (span > 1) return withSpread(lane, step, repeats, span, ramp)
         val hit = lanes[lane].hits[step] ?: return this
-        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = repeats.coerceIn(1, MAX_REPEATS), ramp = ramp.coerceIn(-1, 1))))
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = repeats.coerceIn(1, MAX_REPEATS), ramp = ramp.coerceIn(-1, 1), span = 1)))
+    }
+
+    /**
+     * A roll spread over several steps: [hits] evenly over [span] steps from [step]'s hit (the
+     * « Triolet »: 3 over 2). The steps it covers lose their own hit on this pad (one change, one
+     * undo step: they are the triplet's now). Not past the pad's loop (it would ring into the next
+     * one's first step): unchanged then, as without a hit at [step].
+     */
+    fun withSpread(lane: Int, step: Int, hits: Int, span: Int, ramp: Int? = null): DrumPattern {
+        val l = lanes.getOrNull(lane) ?: return this
+        val hit = l.hits[step] ?: return this
+        val m = span.coerceIn(1, Hit.MAX_SPAN)
+        if (!canSpread(lane, step, m)) return this
+        val spread = hit.copy(repeats = hits.coerceIn(1, MAX_REPEATS), span = m, ramp = (ramp ?: hit.ramp).coerceIn(-1, 1))
+        return withHits(lane, l.hits - (step + 1 until step + m) + (step to spread))
+    }
+
+    /** Whether a roll from [step] over [span] steps stays inside pad [lane]'s loop. */
+    fun canSpread(lane: Int, step: Int, span: Int): Boolean {
+        val l = lanes.getOrNull(lane) ?: return false
+        return step >= 0 && step + span <= minOf(l.loopSteps(steps), steps)
     }
 
     /**
@@ -308,7 +364,7 @@ data class DrumPattern(
         val first = step / 4 * 4
         val velocity = lanes[lane].hits[step]?.velocity ?: 1f
         val added = (first until minOf(first + 4, steps)).associateWith { st ->
-            (lanes[lane].hits[st] ?: Hit(velocity)).copy(repeats = 2, ramp = ramp.coerceIn(-1, 1))
+            (lanes[lane].hits[st] ?: Hit(velocity)).copy(repeats = 2, ramp = ramp.coerceIn(-1, 1), span = 1)
         }
         return withHits(lane, lanes[lane].hits + added)
     }
@@ -317,6 +373,8 @@ data class DrumPattern(
     fun setHit(lane: Int, step: Int, on: Boolean, velocity: Float = 1f): DrumPattern {
         if (step !in 0 until steps) return this
         val current = lanes[lane]
+        // A step a triplet covers is the triplet's: painted over, it stays; erased, the triplet goes.
+        current.covering(step)?.let { head -> return if (on) this else withHits(lane, current.hits - head) }
         val has = step in current.hits
         if (has == on) return this
         return withHits(lane, if (on) current.hits + (step to Hit(velocity)) else current.hits - step)
@@ -326,6 +384,14 @@ data class DrumPattern(
      * Phase 37: pad [lane]'s own loop of [length] steps (a polyrhythm: 3 against 4…), 0 or the
      * pattern's length = the pattern's loop. Its hits past that length stay, unheard.
      */
+    /**
+     * The steps a sync sends to the engine: every step it can read with this pattern (its loop, the
+     * longest pad loop), at least [SYNC_STEPS]. Steps past it are never played, so whatever an
+     * earlier, longer pattern left there is never heard, and a short pattern costs no more commands
+     * than before the 16-bar drums.
+     */
+    val engineReach: Int get() = maxOf(SYNC_STEPS, steps, lanes.maxOfOrNull { it.length } ?: 0).coerceAtMost(MAX_STEPS)
+
     fun withLaneLength(lane: Int, length: Int): DrumPattern {
         if (lane !in lanes.indices) return this
         val n = length.coerceIn(0, MAX_STEPS).let { if (it == steps) 0 else it }
@@ -366,6 +432,8 @@ data class DrumPattern(
 
     fun toggle(lane: Int, step: Int, velocity: Float = 1f): DrumPattern {
         val current = lanes[lane]
+        // A touch on a step a triplet covers takes the triplet away (as a touch on its first step).
+        current.covering(step)?.let { head -> return withHits(lane, current.hits - head) }
         val hits = if (step in current.hits) current.hits - step else current.hits + (step to Hit(velocity))
         return copy(lanes = lanes.toMutableList().also { it[lane] = current.copy(hits = hits) })
     }
@@ -385,7 +453,10 @@ data class DrumPattern(
         /** The softest hit « Force » sets (velocity 0 would remove it in the engine). */
         const val MIN_VELOCITY = 0.05f
         const val MIN_STEPS = 8
-        const val MAX_STEPS = 64
+        /** 16 bars, as long as a [NoteClip]: a Live cell records that much of drums too (step 7a). */
+        const val MAX_STEPS = 256
+        /** The steps every sync used to send (the old [MAX_STEPS]): a short pattern is still sent that far. */
+        const val SYNC_STEPS = 64
     }
 }
 
@@ -407,11 +478,41 @@ data class DrumLane(
     /** The steps this lane plays before it starts over in a pattern of [patternSteps]. */
     fun loopSteps(patternSteps: Int): Int = if (length > 0) length else patternSteps
 
+    /** The step whose spread roll (a triplet) covers [step] (after its own), null when none does. */
+    fun covering(step: Int): Int? = coveringIn(hits, step)
+
     /** What [DrumPattern.sanitized] would leave as it is. */
     internal fun isClean(): Boolean =
         pan.isFinite() && pan in -1f..1f && length in 0..DrumPattern.MAX_STEPS &&
             (sample == null || (sample.isSafe && sample.sanitized() == sample)) &&
-            hits.all { (step, h) -> step in 0 until DrumPattern.MAX_STEPS && h.isClean() }
+            hits.all { (step, h) -> step in 0 until DrumPattern.MAX_STEPS && h.isClean() && coveringIn(hits, step) == null }
+
+    companion object {
+        private fun coveringIn(hits: Map<Int, Hit>, step: Int): Int? {
+            for (d in 1 until Hit.MAX_SPAN) {
+                val h = hits[step - d] ?: continue
+                if (h.span > d) return step - d
+            }
+            return null
+        }
+
+        /**
+         * [hits] without those on a step a spread roll covers (a file of another version, a pattern
+         * shifted under a triplet): the earlier hit, the triplet, keeps its steps.
+         */
+        fun uncovered(hits: Map<Int, Hit>): Map<Int, Hit> {
+            if (hits.values.none { it.span > 1 }) return hits
+            val out = LinkedHashMap<Int, Hit>()
+            var coveredTo = -1
+            for (step in hits.keys.sorted()) {
+                if (step <= coveredTo) continue
+                val h = hits.getValue(step)
+                out[step] = h
+                if (h.span > 1) coveredTo = step + h.span - 1
+            }
+            return out
+        }
+    }
 }
 
 /**
@@ -435,9 +536,32 @@ data class PadSample(
     val gain: Float = 1f,
     /** 0 = plays at its own speed; otherwise lasts this many beats at the project tempo (pitch kept). */
     val fitBeats: Int = 0,
+    /**
+     * Audit stage 3 (« Couches », Pro): other sounds for harder hits, sorted by [PadLayer.from]. The
+     * pad's own sound plays below the first layer's velocity, each layer from its own up to the next
+     * one's. Left out of the file when empty: pads saved before play as they did. A pad fitted to the
+     * tempo ([fitBeats] > 0) plays its fitted copy only (its layers wait).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val layers: List<PadLayer> = emptyList(),
 ) {
     /** Only a plain file name may come from disk: never a path. */
     val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(SAFE_NAME) && !file.startsWith(".")
+
+    /** Every sound file this pad plays: its own, then its layers'. */
+    val files: List<String> get() = listOf(file) + layers.map { it.file }
+
+    /**
+     * The velocity ranges (0..127) the engine gets: the pad's own sound first, then each layer
+     * ([com.pocketstudio.engine] Sampler layers). Empty without layers.
+     */
+    fun layerRanges(): List<IntRange> {
+        if (layers.isEmpty()) return emptyList()
+        val starts = listOf(0) + layers.map { it.from }
+        return starts.mapIndexed { i, from -> from..((starts.getOrNull(i + 1) ?: 128) - 1) }
+    }
+
+    /** With [layer] added (its velocity kept apart from the others'), at most [PadLayer.MAX] layers. */
+    fun withLayer(layer: PadLayer): PadSample = copy(layers = (layers + layer)).sanitized()
 
     fun sanitized(): PadSample {
         val s = start.finite(0f).coerceIn(0f, 0.999f)
@@ -454,6 +578,7 @@ data class PadSample(
             choke = choke.coerceIn(0, CHOKE_GROUPS),
             gain = gain.finite(1f).coerceIn(0f, 2f),
             fitBeats = fitBeats.takeIf { it in FIT_BEATS } ?: 0,
+            layers = PadLayer.cleaned(layers),
         )
     }
 
@@ -484,6 +609,42 @@ data class PadSample(
 }
 
 internal fun Float.finite(default: Float) = if (isFinite()) this else default
+
+/**
+ * One of a drum pad's velocity layers ([PadSample.layers]): [file] (under `samples/`, as the pad's
+ * own) plays for hits from velocity [from] (1..127, as MIDI) up to the next layer's.
+ */
+@Serializable
+data class PadLayer(
+    val file: String,
+    val name: String,
+    val from: Int = DEFAULT_FROM,
+) {
+    val isSafe: Boolean get() = PadSample(file, name).isSafe
+
+    companion object {
+        /** Layers a pad holds besides its own sound (the engine's Sampler takes 8 with the base). */
+        const val MAX = 3
+        /** A new layer's start: the hard hits (the grid's full-strength cells, a MiniLab struck). */
+        const val DEFAULT_FROM = 100
+        /** Velocities a layer can start from: the pad's own sound always keeps the softest hits. */
+        val FROM_RANGE = 2..127
+
+        /**
+         * Safe files only, starts in [FROM_RANGE], sorted, each start apart (a layer landing on a
+         * taken start moves up, or is dropped at the top), [MAX] at most.
+         */
+        fun cleaned(layers: List<PadLayer>): List<PadLayer> {
+            val out = ArrayList<PadLayer>()
+            for (l in layers.filter { it.isSafe }.map { it.copy(name = it.name.take(40), from = it.from.coerceIn(FROM_RANGE)) }.sortedBy { it.from }) {
+                if (out.size >= MAX) break
+                val from = maxOf(l.from, (out.lastOrNull()?.from ?: FROM_RANGE.first - 1) + 1)
+                if (from <= FROM_RANGE.last) out += l.copy(from = from)
+            }
+            return out
+        }
+    }
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -518,15 +679,43 @@ data class Hit(
      * ([DrumChance], [Project.drumSeed]). Left out of the file at 100: hits saved before always play.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val chance: Int = 100,
+    /**
+     * The steps its roll spreads over, 1..[MAX_SPAN]: [repeats] hits evenly over [span] steps (the
+     * « Triolet »: 3 over 2 steps, the trap hats' 16th triplets; 6 over a beat). The steps it covers
+     * after its own hold nothing on this pad ([DrumLane.covering]). Left out of the file at 1: an
+     * older version reads [repeats] hits in the one step (a roll ×3), the covered step empty.
+     * The engine's SetDrumStepRoll, after the hit.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val span: Int = 1,
 ) {
     /** No pan nor pitch of its own (the engine's step detail command is not needed). */
     val isPlain: Boolean get() = pan == 0f && pitch == 0
+
+    /** Hits spread over more than its own step (a triplet, or any N over M steps). */
+    val isSpread: Boolean get() = span > 1
+
+    /** A triplet: hits spread over several steps, not one a step ([TRIPLET]: 3 over 2; 6 over 4). */
+    val isTriplet: Boolean get() = span > 1 && repeats % span != 0
+
+    /**
+     * This hit as a loop of [loop] steps plays it at [step] (review « Tuto tous styles », MINEUR 5): a
+     * roll spread past the loop's end (the pad's loop shortened under a triplet) keeps only its hits
+     * before the end, over the steps left, instead of spilling into the next turn's first step. The
+     * hit itself is kept as written: grown again, the loop plays it whole.
+     */
+    fun within(step: Int, loop: Int): Hit {
+        val left = loop - step
+        if (span <= 1 || left >= span || left <= 0) return this
+        // Hit k sits at k * span / repeats steps: those before `left`.
+        val kept = (left * repeats + span - 1) / span
+        return copy(span = left, repeats = kept.coerceIn(1, repeats))
+    }
 
     /** What [sanitized] would leave as it is. */
     internal fun isClean(): Boolean = velocity.isFinite() && repeats in 1..DrumPattern.MAX_REPEATS &&
         pan.isFinite() && pan in -1f..1f && pitch in -MAX_PITCH..MAX_PITCH && ramp in -1..1 &&
         offset.isFinite() && offset in -MAX_OFFSET_MS..MAX_OFFSET_MS && glide in 0..MAX_GLIDE_MS &&
-        chance in MIN_CHANCE..100
+        chance in MIN_CHANCE..100 && span in 1..MAX_SPAN
 
     fun sanitized() = copy(
         // Not clamped (any strength already saved stays); only a NaN, which no save could write, goes.
@@ -538,10 +727,16 @@ data class Hit(
         offset = offset.finite(0f).coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS),
         glide = glide.coerceIn(0, MAX_GLIDE_MS),
         chance = chance.coerceIn(MIN_CHANCE, 100),
+        span = span.coerceIn(1, MAX_SPAN),
     )
 
     companion object {
         const val MAX_PITCH = 24
+        /** The most steps a roll spreads over (the engine's kMaxRollSpan: a beat). */
+        const val MAX_SPAN = 4
+        /** « Triolet »: 3 hits over 2 steps (16th triplets), and « 6 sur le temps »: 6 over 4. (hits, span). */
+        val TRIPLET = 3 to 2
+        val TRIPLET_BEAT = 6 to 4
         /** The engine's micro-timing range (SetDrumStepOffset), each way. */
         const val MAX_OFFSET_MS = 50f
         /** The engine's longest 808 slide (SetDrumStepGlide). */
@@ -579,9 +774,36 @@ data class Mixer(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val sidechainKey: Int = -1,
     /** Phase 34 (S5): the « Musique » bus (null: none, every strip straight into the mix, as before). */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val musicBus: MusicBus? = null,
+    /**
+     * Mode simple « ↺ Tout à zéro »: each strip's volume as the assistant left the song (empty: a
+     * song made by hand, every strip at 0 dB). Left out of the file when empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val startVolumes: List<Float> = emptyList(),
+    /** Lot E (« Master pro »): the pro master's settings (null: none touched, the master as before). Left out of the file when null. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val pro: MasterPro? = null,
 ) {
+    /** Strip [ch]'s volume as the assistant left it (0 dB without one). */
+    fun startVolume(ch: Int): Float = startVolumes.getOrNull(ch) ?: DEFAULT_VOLUME
+
+    /** The volumes as they are now kept as the assistant's ([startVolume]). */
+    fun withStartVolumes(): Mixer = copy(startVolumes = channels.map { it.volume })
+
+    /** Every strip's volume back to the assistant's (the master's index left alone). */
+    fun atStartVolumes(): Mixer = copy(channels = channels.mapIndexed { i, c -> if (i == MASTER) c else c.copy(volume = startVolume(i)) })
+
     /** [masterDb] as a linear gain, for the engine. */
     val masterGain: Float get() = Math.pow(10.0, masterDb / 20.0).toFloat()
+
+    /**
+     * The sidechain's key the engine hears: [sidechainKey], or, when there is none and a Pompe
+     * reacts to « Le son du kick », the first pad's (the kick's, as the pump's « Grosse caisse »
+     * grid mode): a pump made by hand was silent (audit 06). Nothing saved changes.
+     */
+    val heardSidechainKey: Int get() = when {
+        sidechainKey >= 0 -> sidechainKey
+        (channels.flatMap { it.inserts } + master).any { it.reactsToTheKick } -> padChannel(KICK_LANE)
+        else -> -1
+    }
 
     fun sanitized(): Mixer = copy(
         masterDb = masterDb.takeIf { it.isFinite() }?.coerceIn(MASTER_MIN_DB, MASTER_MAX_DB) ?: 0f,
@@ -593,6 +815,8 @@ data class Mixer(
         monoBassHz = monoBassHz.takeIf { it.isFinite() && it >= 20f }?.coerceAtMost(400f) ?: 0f,
         sidechainKey = sidechainKey.takeIf { it in 0 until CHANNELS && it != MASTER } ?: -1,
         musicBus = musicBus?.sanitized(),
+        startVolumes = startVolumes.take(CHANNELS).map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: DEFAULT_VOLUME },
+        pro = pro?.sanitized()?.takeUnless { it.isDefault },
     )
 
     companion object {
@@ -601,6 +825,8 @@ data class Mixer(
          * audio tracks 5..8 (after the pads: the numbers saved before stay).
          */
         const val CHANNELS = 36
+        /** A strip's fader at 0 dB (the engine's (v / 0.8)² law). */
+        const val DEFAULT_VOLUME = 0.8f
         const val FIRST_PAD = 16
         const val PADS = 16
         /** The strip of audio track 5 (the 5th to 8th come after the pads'). */
@@ -626,6 +852,9 @@ data class Mixer(
 
         /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
         fun padChannel(lane: Int) = FIRST_PAD + lane
+
+        /** The kick's pad (the starter's Kick role, the pump's « Grosse caisse »). */
+        const val KICK_LANE = 0
 
         fun sanitizeInserts(inserts: List<Insert>): List<Insert> =
             (inserts + List((INSERTS - inserts.size).coerceAtLeast(0)) { Insert() }).take(INSERTS).map { it.sanitized() }

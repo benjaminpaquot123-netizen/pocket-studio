@@ -1,0 +1,7 @@
+Écran 39 (1200x540)
+texte « Poignée : glisse vers le bas pour fermer » @ 600,114
+texte « Ta prise : 5 mesures » @ 303,171
+texte « Où la mettre ? Elle tourne en boucle au tempo du projet. » @ 420,225
+bouton « Sur le pad vide B1 » @ 600,294
+bouton « Dans une brique du Live » @ 600,384
+bouton « Jeter la prise » @ 600,474

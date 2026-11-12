@@ -1,0 +1,39 @@
+Écran 7 (1035x1243)
+touchable « House Sauvegardé » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 122  Tempo » (nom « Tempo : 122 battements par minute ») @ 98,123
+bouton « Montée mesure 25/96 » @ 315,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+bouton « Accords du morceau E · Intro 2 La  La  La  La  La  La  La  La A · Intro La  La  La  La  La  La  La  La B · Groove La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi F · Montée La  Ré  Fa♯ m  Mi G · Montée 2 Do♯ m  Fa♯ m  La  Mi C · Drop La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi … et 3 autres parties Touche pour changer les accords de tout le morceau. » @ 263,302
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « MES PISTES » [état « Déplié »] @ 651,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 771,306
+bouton « Batterie Changer le son » @ 708,409
+bouton « Écouter « Batterie » seul, en boucle » @ 882,410
+bouton « Réglages de Batterie : volume, couper » @ 957,413
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Change un son 15 % » [état « ouvert »] @ 517,478
+texte « POUR COMMENCER » @ 517,560
+texte « Change un son » @ 175,612
+texte « Fais-le tien : un autre son pour la mélodie ou pour la batterie. » @ 449,668
+texte « → » @ 61,728
+texte « À toi : touche « Le son de la mélodie ». » @ 362,727
+texte « VOIR LE RÉGLAGE » @ 152,786
+bouton « ↗ Le son de la mélodie » (nom « Voir le réglage : Le son de la mélodie ») @ 517,850
+bouton « ↗ Une autre batterie » (nom « Voir le réglage : Une autre batterie ») @ 517,934
+bouton « Le mot : Mélodie La mélodie principale, celle qu'on retient et qu'on chante. Elle passe devant tout le reste. » @ 553,1022
+bouton « Écouter un exemple : Mélodie » @ 78,1037
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+onglet « Mon morceau » [sélectionné] @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

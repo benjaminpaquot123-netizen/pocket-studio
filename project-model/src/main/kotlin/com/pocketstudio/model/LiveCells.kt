@@ -1,0 +1,296 @@
+package com.pocketstudio.model
+
+import kotlin.math.abs
+import kotlin.math.ln
+import kotlin.math.roundToInt
+
+/**
+ * An empty cell of the Live grid filled from the Live page (Benjamin's list n° 9, choice 1A):
+ * played and recorded there, a sound of the library, or a copy of another cell. Only sounds go
+ * into a cell: the live effects stay a stage tool (choice 3B), the performance take keeps them.
+ */
+object LiveCells {
+    /** The kinds of track a cell belongs to: a cell copies only onto one of the same kind. */
+    enum class Kind { DRUMS, ACID, NOTES, AUDIO, REMIX }
+
+    fun kindOf(key: String): Kind? = when {
+        key == SongPart.DRUMS -> Kind.DRUMS
+        key == SongPart.ACID -> Kind.ACID
+        key == SongPart.REMIX -> Kind.REMIX
+        key.startsWith("inst:") -> Kind.NOTES
+        key.startsWith("audio:") -> Kind.AUDIO
+        else -> null
+    }
+
+    /**
+     * A cell of track [key] can be played into: the drums (their pads), instrument tracks and, since
+     * step 7b, the Acid 303 (Live › Notes, heard on the 303) and audio tracks (the microphone). The
+     * remix has no cells of its own.
+     */
+    fun canRecord(key: String): Boolean = kindOf(key).let { it != null && it != Kind.REMIX }
+
+    /** The track of a 303 note among the notes played ([PlayedMemory.KeptNote.track]): no instrument track has it. */
+    const val ACID_TRACK = -1
+
+    /** Cell of [from] can be copied onto a cell of [to]: the same kind of track (the remix has no cells of its own). */
+    fun canCopy(from: String, to: String): Boolean = kindOf(from) != null && kindOf(from) == kindOf(to) && kindOf(to) != Kind.REMIX
+
+    /**
+     * The whole bars a recording from [origin] to [end] (in sixteenths of the transport) keeps: the
+     * nearest number, so the loop stays in time whether the cell was touched a hair early or late;
+     * one at least. There is no maximum (choice « pas de limite »): see [keptBars].
+     */
+    fun bars(origin: Double, end: Double, stepsPerBar: Int): Int {
+        val bar = stepsPerBar.coerceAtLeast(1).toDouble()
+        val n = (end - origin) / bar
+        if (!n.isFinite() || n < 1.0) return 1
+        return n.roundToInt().coerceAtLeast(1)
+    }
+
+    /** The bars a cell of [key] can loop over at most (its track's longest loop), whole bars. */
+    fun maxBars(key: String, stepsPerBar: Int): Int {
+        val bar = stepsPerBar.coerceAtLeast(1)
+        val longest = when (kindOf(key)) {
+            Kind.DRUMS -> DrumPattern.MAX_STEPS
+            Kind.ACID -> AcidPattern.MAX_STEPS
+            else -> NoteClip.MAX_STEPS
+        }
+        return (longest / bar).coerceAtLeast(1)
+    }
+
+    /** Of a recording [bars] long, the bars the cell keeps: all of them, or the last ones its loop holds. */
+    fun keptBars(key: String, bars: Int, stepsPerBar: Int): Int = bars.coerceIn(1, maxBars(key, stepsPerBar))
+
+    /**
+     * A sound of the library on a cell: a loop (half a bar or more at [bpm]) is fitted to the
+     * nearest power-of-two count of whole bars (1, 2, 4, 8 ... up to 64) so it follows the tempo;
+     * a short sound (a hit) gets null: it plays once per bar, as it is.
+     */
+    fun loopBars(seconds: Double, bpm: Double, beatsPerBar: Int): Int? {
+        val bars = seconds * bpm / 60.0 / beatsPerBar.coerceAtLeast(1)
+        if (!bars.isFinite() || bars < 0.5) return null
+        return LOOP_BARS.minBy { abs(ln(it / bars)) }
+    }
+
+    private val LOOP_BARS = listOf(1, 2, 4, 8, 16, 32, 64)
+
+    /** What of a microphone take an audio cell keeps: [frames] from [fromFrame] (before 0: silence first), [bars] whole bars. */
+    data class MicCut(val fromFrame: Int, val frames: Int, val bars: Int)
+
+    /**
+     * Step 7b: a take of the microphone for audio cell [key], its first frame heard at transport
+     * step [startStep], [frames] long, [framesPerStep] frames a sixteenth, its first sound at
+     * [onsetFrame] (-1: nothing heard, null). As for notes: from the bar line of the first sound,
+     * the nearest whole bars (the last ones the loop holds), silence after when it ended early.
+     */
+    fun micCut(key: String, startStep: Double, frames: Int, onsetFrame: Int, framesPerStep: Double, stepsPerBar: Int): MicCut? {
+        if (onsetFrame !in 0 until frames || framesPerStep <= 0.0 || !startStep.isFinite()) return null
+        val bar = stepsPerBar.coerceAtLeast(1)
+        val onset = startStep + onsetFrame / framesPerStep
+        val origin = kotlin.math.floor((onset + PlayedMemory.EARLY_STEPS) / bar) * bar
+        val end = startStep + frames / framesPerStep
+        val all = bars(origin, end, bar)
+        val kept = keptBars(key, all, bar)
+        val from = origin + (all - kept) * bar
+        return MicCut(((from - startStep) * framesPerStep).roundToInt(), (kept * bar * framesPerStep).roundToInt(), kept)
+    }
+
+    /** [data] (mono) cut as [cut] says: silence where the take has nothing. */
+    fun cutMic(data: FloatArray, cut: MicCut): FloatArray {
+        val out = FloatArray(cut.frames.coerceAtLeast(0))
+        for (i in out.indices) {
+            val j = cut.fromFrame + i
+            if (j in data.indices) out[i] = data[j]
+        }
+        return out
+    }
+
+    /**
+     * Step 7b: the 303 notes played into a cell as its steps, [steps] long from [start]: one note a
+     * sixteenth (the first played there), its pitch brought into the 303's range around [root], an
+     * accent when played hard, a slide into the next when held up to it (legato, as the machine).
+     */
+    fun acidSteps(notes: List<PlayedMemory.KeptNote>, start: Double, steps: Int, root: Int): List<AcidStep> {
+        val n = steps.coerceIn(1, AcidPattern.MAX_STEPS)
+        val out = MutableList(AcidPattern.MAX_STEPS) { AcidStep() }
+        val sorted = notes.sortedBy { it.start }
+        val at = sorted.map { Math.floorMod(((it.start - start).coerceAtLeast(0.0)).roundToInt(), n) }
+        sorted.forEachIndexed { i, note ->
+            val step = at[i]
+            if (out[step].gate) return@forEachIndexed
+            var d = note.pitch - root
+            while (d < -12) d += 12
+            while (d > 36) d -= 12
+            val octave = Math.floorDiv(d, 12).coerceIn(-1, 2)
+            val next = sorted.getOrNull(i + 1)
+            val slide = next != null && at[i + 1] != step && note.start + note.length >= next.start - 0.25
+            out[step] = AcidStep(note = (d - 12 * octave).coerceIn(0, 12), octave = octave, accent = note.velocity > 0.8f, slide = slide, gate = true)
+        }
+        return out
+    }
+
+    /** « Cases − 8 + »: how many bricks (rows) the Live grid shows at once. */
+    val ROWS = listOf(4, 6, 8, 12, 16)
+    const val DEFAULT_ROWS = 8
+
+    /** The next (or previous, [up] false) choice of [ROWS] from [rows]; the ends stay. */
+    fun stepRows(rows: Int, up: Boolean): Int {
+        val i = ROWS.indexOf(rows).takeIf { it >= 0 } ?: ROWS.indexOf(DEFAULT_ROWS)
+        return ROWS[(i + if (up) 1 else -1).coerceIn(0, ROWS.lastIndex)]
+    }
+}
+
+/** How many bricks the Live grid shows ([Project.liveRows], [LiveCells.DEFAULT_ROWS] when unset). */
+val Project.liveRowsShown: Int get() = liveRows.takeIf { it in LiveCells.ROWS } ?: LiveCells.DEFAULT_ROWS
+
+/**
+ * Empty bricks added up to [scene]: the rows of the Live grid past the song's last brick are new
+ * bricks to fill. Not synced yet: [syncScenes] drops them again unless something fills or uses them.
+ */
+private fun Project.grownTo(scene: Int): Project {
+    if (scene < allScenes.size) return this
+    val synced = syncScenes()
+    val all = synced.allScenes
+    return synced.copy(scenes = all + List(scene + 1 - all.size) { Scene() })
+}
+
+/** [editScene] that also reaches a new brick past the last one ([grownTo]). */
+private fun Project.editBrick(index: Int, transform: (Scene) -> Scene): Project {
+    if (index < allScenes.size) return editScene(index, transform)
+    val grown = grownTo(index)
+    return grown.copy(scenes = grown.scenes.mapIndexed { i, s -> if (i == index) transform(s) else s }).syncScenes()
+}
+
+/**
+ * The notes and pad hits played while cell ([key], [scene]) recorded, written into it as its whole
+ * content: they start on the bar line [origin] (sixteenths of the transport, the bar of the first
+ * thing played) and the recording ended at [end]. Its loop is [LiveCells.bars] whole bars (only
+ * the last ones its track can loop over when longer); what was played past its last bar line comes
+ * round to its start, as it is heard when the loop goes round. Notes of other tracks are left out.
+ * Null: nothing of that track was played, or the cell cannot be recorded into.
+ */
+fun Project.withRecordedCell(
+    key: String,
+    scene: Int,
+    notes: List<PlayedMemory.KeptNote>,
+    hits: List<PlayedMemory.KeptHit>,
+    origin: Double,
+    end: Double,
+): Project? {
+    if (scene !in 0 until Scene.MAX || !LiveCells.canRecord(key)) return null
+    val bar = stepsPerBar.coerceAtLeast(1)
+    val all = LiveCells.bars(origin, end, bar)
+    val kept = LiveCells.keptBars(key, all, bar)
+    // Longer than the loop can hold: the last bars played.
+    val from = origin + (all - kept) * bar - PlayedMemory.EARLY_STEPS
+    val steps = kept * bar
+    val start = origin + (all - kept) * bar
+    return when (LiveCells.kindOf(key)) {
+        LiveCells.Kind.NOTES -> {
+            val id = key.removePrefix("inst:").toIntOrNull() ?: return null
+            if (instrumentTracks.none { it.id == id }) return null
+            val mine = notes.filter { it.track == id && it.start >= from }
+            if (mine.isEmpty()) return null
+            val ticks = steps * NoteClip.TICKS_PER_STEP
+            val written = mine.take(NoteClip.MAX_NOTES).map { n ->
+                // Played a hair before the first bar line: on it.
+                val at = Math.floorMod(((n.start - start).coerceAtLeast(0.0) * NoteClip.TICKS_PER_STEP).roundToInt(), ticks)
+                Note(at, (n.length * NoteClip.TICKS_PER_STEP).roundToInt().coerceIn(1, NoteClip.MAX_TICKS), n.pitch, n.velocity.coerceIn(0f, 1f))
+            }
+            editBrick(scene) { s ->
+                val old = if (id == 0) s.synthNotes else s.trackNotes[id] ?: NoteClip()
+                val clip = old.cleared().withSteps(steps).let { it.copy(notes = written) }.sanitized()
+                if (id == 0) s.copy(synthNotes = clip) else s.copy(trackNotes = s.trackNotes + (id to clip))
+            }
+        }
+        LiveCells.Kind.ACID -> {
+            val mine = notes.filter { it.track == LiveCells.ACID_TRACK && it.start >= from }
+            if (mine.isEmpty()) return null
+            editBrick(scene) { s ->
+                s.copy(acid = s.acid.copy(steps = LiveCells.acidSteps(mine, start, steps, s.acid.root), length = steps).sanitized())
+            }
+        }
+        LiveCells.Kind.DRUMS -> {
+            val mine = hits.filter { it.at >= from && it.lane in 0 until DrumPattern.PAD_COUNT }
+            if (mine.isEmpty()) return null
+            editBrick(scene) { s ->
+                val lanes = s.drums.lanes.map { it.copy(hits = emptyMap()) }.toMutableList()
+                mine.forEach { h ->
+                    val step = Math.floorMod((h.at - start).coerceAtLeast(0.0).roundToInt(), steps)
+                    val lane = lanes[h.lane]
+                    if (lane.hits[step] == null) lanes[h.lane] = lane.copy(hits = lane.hits + (step to Hit(h.velocity.coerceIn(0f, 1f))))
+                }
+                s.copy(drums = s.drums.copy(steps = steps, lanes = lanes).sanitized())
+            }
+        }
+        else -> null
+    }
+}
+
+/**
+ * Cell ([fromKey], [fromScene]) copied onto cell ([toKey], [toScene]): the same kind of track
+ * ([LiveCells.canCopy]); a drum or note cell gets the other's loop and its hits or notes (the
+ * sounds stay the target track's), a 303 cell its pattern, an audio cell a copy of the other's
+ * clip that belongs to [toScene] (on an audio track with no clip yet). Null when it cannot be done.
+ */
+fun Project.withCopiedCell(fromKey: String, fromScene: Int, toKey: String, toScene: Int): Project? {
+    val scenes = allScenes
+    val from = scenes.getOrNull(fromScene) ?: return null
+    if (toScene !in 0 until Scene.MAX || (fromKey == toKey && fromScene == toScene)) return null
+    if (!LiveCells.canCopy(fromKey, toKey) || !cellHasContent(fromKey, fromScene)) return null
+    return when (LiveCells.kindOf(toKey)) {
+        LiveCells.Kind.DRUMS -> editBrick(toScene) { s ->
+            s.copy(drums = s.drums.copy(steps = from.drums.steps, lanes = s.drums.lanes.mapIndexed { i, l -> l.copy(hits = from.drums.lanes.getOrNull(i)?.hits ?: emptyMap()) }))
+        }
+        LiveCells.Kind.ACID -> editBrick(toScene) { s -> s.copy(acid = from.acid) }
+        LiveCells.Kind.NOTES -> {
+            val src = fromKey.removePrefix("inst:").toIntOrNull() ?: return null
+            val dst = toKey.removePrefix("inst:").toIntOrNull() ?: return null
+            if (instrumentTracks.none { it.id == dst }) return null
+            val notes = (if (src == 0) from.synthNotes else from.trackNotes[src]) ?: return null
+            editBrick(toScene) { s -> if (dst == 0) s.copy(synthNotes = notes) else s.copy(trackNotes = s.trackNotes + (dst to notes)) }
+        }
+        LiveCells.Kind.AUDIO -> {
+            val clip = audioTracks.firstOrNull { SongPart.audio(it.id) == fromKey }?.clip ?: return null
+            withAudioInCell(toKey, toScene, clip)
+        }
+        else -> null
+    }
+}
+
+/**
+ * Owner (2026-11-04): cell ([key], [scene]) emptied: the drums' hits, the acid's line, the track's
+ * notes in that brick, or the audio track's clip when it belongs to that brick (the remix cell has its
+ * own « Toute la chanson »). Null when there is nothing to empty.
+ */
+fun Project.withClearedCell(key: String, scene: Int): Project? {
+    if (!cellHasContent(key, scene) || key == SongPart.REMIX) return null
+    return when (LiveCells.kindOf(key)) {
+        LiveCells.Kind.DRUMS -> editBrick(scene) { s -> s.copy(drums = s.drums.copy(lanes = s.drums.lanes.map { it.copy(hits = emptyMap()) })) }
+        LiveCells.Kind.ACID -> editBrick(scene) { s -> s.copy(acid = s.acid.copy(steps = s.acid.steps.map { it.copy(gate = false) })) }
+        LiveCells.Kind.NOTES -> {
+            val id = key.removePrefix("inst:").toIntOrNull() ?: return null
+            editBrick(scene) { s -> if (id == 0) s.copy(synthNotes = s.synthNotes.cleared()) else s.copy(trackNotes = s.trackNotes + (id to (s.trackNotes[id] ?: NoteClip()).cleared())) }
+        }
+        LiveCells.Kind.AUDIO -> copy(audioTracks = audioTracks.map { if (SongPart.audio(it.id) == key) it.copy(clip = null) else it })
+        else -> null
+    }
+}
+
+/**
+ * [clip] (its sound file already in the project) as the content of cell ([key], [scene]): on that
+ * audio track when it has no clip yet, else on the first audio track without one, else on a new
+ * audio track (the cell of another kind of track gets its sound on an audio track of its own, in
+ * the same brick). The clip belongs to [scene] and loops there. Null: eight audio tracks all taken.
+ */
+fun Project.withAudioInCell(key: String, scene: Int, clip: AudioClip): Project? {
+    if (scene in allScenes.size until Scene.MAX) return grownTo(scene).withAudioInCell(key, scene, clip)?.syncScenes()
+    if (scene !in allScenes.indices) return null
+    val placed = clip.copy(scene = scene, song = false, once = false, start = 0).sanitized()
+    val own = audioTracks.firstOrNull { SongPart.audio(it.id) == key && it.clip == null }
+        ?: audioTracks.firstOrNull { it.clip == null }
+    if (own != null) return copy(audioTracks = audioTracks.map { if (it.id == own.id) it.copy(clip = placed) else it })
+    val grown = addAudioTrack() ?: return null
+    val id = grown.audioTracks.first { t -> audioTracks.none { it.id == t.id } }.id
+    return grown.copy(audioTracks = grown.audioTracks.map { if (it.id == id) it.copy(clip = placed) else it })
+}

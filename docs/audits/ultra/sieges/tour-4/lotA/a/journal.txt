@@ -1,0 +1,323 @@
+#0 SIEGE lang=fr device=tablet11Land font=100 mode=- theme=- fresh=reel gestes.max=60 lit=non main=both amenee=-
+#0 OPTION ? fresh=reel : mode et thème ne sont pas réglés d'avance (la personne les choisit)
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE a9bf6b31d9 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.34:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 1.83:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Créer mon premier morceau (guidé) » 2.57:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » 2.21:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Écouter une démo » 2.59:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 2.28:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Extraire la voix d'une chanson » 1.60:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » 2.33:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Enregistrer ma voix ou ma guitare » 2.04:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Le micro enregistre par-dessus ta musique, pile en rythme. » 2.92:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Plus tard : voir le rythme de départ » 2.00:1 (needs 4.5:1, 14 sp)
+#1 > touche 1037 922
+#1 DOIGT launch_challenges « Défis : écoute un rythme, refais-le sur  »
+#1 GEL 765 ms
+    at java.base/java.nio.HeapByteBuffer.<init>(HeapByteBuffer.java:71)
+    at java.base/java.nio.ByteBuffer.allocate(ByteBuffer.java:391)
+    at java.base/sun.nio.cs.StreamDecoder.<init>(StreamDecoder.java:319)
+    at java.base/sun.nio.cs.StreamDecoder.<init>(StreamDecoder.java:307)
+    at java.base/sun.nio.cs.StreamDecoder.forInputStreamReader(StreamDecoder.java:87)
+    at java.base/java.io.InputStreamReader.<init>(InputStreamReader.java:126)
+    at com.pocketstudio.model.i18n.I18n.area(I18n.kt:164)
+    at com.pocketstudio.model.i18n.I18n.table(I18n.kt:159)
+    at com.pocketstudio.model.DefaultNames.fromTranslation_delegate$lambda$0(DefaultNames.kt:82)
+    at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:86)
+    at com.pocketstudio.model.DefaultNames.getFromTranslation(DefaultNames.kt:79)
+    at com.pocketstudio.model.DefaultNames.shown(DefaultNames.kt:107)
+    at com.pocketstudio.app.rhythm.RhythmViewModel$3$invokeSuspend$$inlined$map$1$2.emit(Emitters.kt:218)
+    at kotlinx.coroutines.flow.StateFlowImpl.collect(StateFlow.kt:401)
+#2 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Pack : Fête » ellipsized (« … »)
+#2 LAYOUT OVERLAP « Laser » over « Charley ouvert » (31 x 10 dp)
+#2 LAYOUT OVERLAP « ? » over « Défi 1 · Boum boum » (7 x 8 dp)
+#2 LAYOUT OVERLAP « 1 » over « coup » (5 x 13 dp)
+#2 LAYOUT OVERLAP « 2 » over « Enregistrer ce que je joue » (9 x 2 dp)
+#2 LAYOUT OVERLAP « 3 » over « Enregistrer ce que je joue » (9 x 2 dp)
+#2 LAYOUT OVERLAP « 4 » over « Enregistrer ce que je joue » (9 x 2 dp)
+#2 LAYOUT OVERLAP « ? » over «  Défi » (7 x 12 dp)
+#2 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (79 x 17 dp)
+#2 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Claquement de mains, coup, prêt, pad A2 » (20 x 17 dp)
+#2 LAYOUT OVERLAP « Caisse » over the touchable « Boucle Acid 303, boucle, prêt, pad A3 » (47 x 17 dp)
+#2 LAYOUT OVERLAP « Claquement de mains » over the touchable « Klaxon, coup, prêt, pad A5 » (77 x 33 dp)
+#2 LAYOUT OVERLAP « Claquement de mains » over the touchable « Laser, coup, prêt, pad A6 » (18 x 33 dp)
+#2 LAYOUT OVERLAP « Charley » over the touchable « Laser, coup, prêt, pad A6 » (53 x 17 dp)
+#2 LAYOUT OVERLAP « Charley ouvert » over the touchable « Sirène, coup, prêt, pad A7 » (101 x 17 dp)
+#2 LAYOUT OVERLAP « Laser » over the touchable « Charley ouvert, coup, prêt, pad A12 » (39 x 14 dp)
+#2 LAYOUT OVERLAP « 1 » over the touchable « Cri « Go go go! », coup, prêt, pad A8 » (5 x 16 dp)
+#2 LAYOUT OVERLAP « 1 » over the touchable « Réglages du pad, pad A8 Réglages du pad » (5 x 16 dp)
+#2 LAYOUT OVERLAP « 2 » over the touchable « Défi 3 · Le galop · étoiles : 0 sur 3 » (7 x 16 dp)
+#2 LAYOUT OVERLAP « 3 » over the touchable « Cri « Go go go! », coup, prêt, pad A8 » (8 x 16 dp)
+#2 LAYOUT OVERLAP « A » over the touchable « Jouer » (11 x 20 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (32 x 19 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#2 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A1 Réglages du pad » (44 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A2 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A3 Réglages du pad » (44 x 16 dp)
+#2 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A4 Réglages du pad » (44 x 16 dp)
+#2 LAYOUT OVERLAP « Boucle de basse » over the touchable « Pas 1 Poser ou retirer vide » (3 x 20 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A5 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A6 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A7 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Pas 1 Poser ou retirer vide » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A8 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A9 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A10 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A11 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A12 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A13 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « Montée » over the touchable « Ouvrir le Guide replié » (53 x 20 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A14 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « Impact » over the touchable « Ouvrir le Guide replié » (47 x 20 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A15 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « Chute » over the touchable « Ouvrir le Guide replié » (42 x 20 dp)
+#2 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A16 Réglages du pad » (32 x 16 dp)
+#2 LAYOUT OVERLAP « « Go! » » over the touchable « Ouvrir le Guide replié » (49 x 20 dp)
+#2 LAYOUT OVERLAP «  Défi » over the touchable « Étiqueter l'écran » (27 x 24 dp)
+#2 LAYOUT OVERLAP « Défi 1 · Boum boum » over the touchable « Replier Déplié » (130 x 15 dp)
+#2 LAYOUT OVERLAP « Défi 1 · Boum boum » over the touchable « Qu'est-ce que « Pas » ? » (29 x 15 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 20 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 5 Poser ou retirer vide » (65 x 20 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 6 Poser ou retirer vide » (65 x 20 dp)
+#2 LAYOUT OVERLAP « Écoute le rythme, puis refais-le sur les pads. » over the touchable « Pas 7 Poser ou retirer vide » (3 x 20 dp)
+#2 LAYOUT OVERLAP « 1 » over the touchable « Pas 3 Poser ou retirer vide » (6 x 20 dp)
+#2 LAYOUT OVERLAP « 2 » over the touchable « Pas 4 Poser ou retirer vide » (9 x 20 dp)
+#2 LAYOUT OVERLAP « 3 » over the touchable « Pas 5 Poser ou retirer vide » (9 x 20 dp)
+#2 LAYOUT OVERLAP « 4 » over the touchable « Pas 6 Poser ou retirer vide » (9 x 20 dp)
+#2 LAYOUT OVERLAP « 5 » over the touchable « Pas 7 Poser ou retirer vide » (9 x 20 dp)
+#2 LAYOUT OVERLAP « 6 » over the touchable « Pas 8 Poser ou retirer vide » (9 x 20 dp)
+#2 LAYOUT CONTRAST « Grosse caisse 1 » 3.06:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 2 » 4.09:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 4 » 2.74:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 2 » 2.21:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 3 » 2.21:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 4 » 2.21:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#2 > touche 1832 132
+#2 DOIGT padlive_challenge_open « Défi : refais ce rythme »
+#3 ROUTE padlive_pads_side | MODE simple | EMPREINTE 5572aabb8e | project=p-d2abfd22 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « ? » over « EFFETS DE SCÈNE » (7 x 6 dp)
+#3 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Replier Déplié » (117 x 13 dp)
+#3 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Qu'est-ce que « Pas » ? » (29 x 13 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Replier Déplié » (7 x 12 dp)
+#3 LAYOUT OVERLAP « Filtre » over the touchable « Pas 2 Poser ou retirer vide » (14 x 13 dp)
+#3 LAYOUT OVERLAP « Filtre » over the touchable « Pas 3 Poser ou retirer vide » (18 x 13 dp)
+#3 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 2 Poser ou retirer vide » (14 x 16 dp)
+#3 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 3 Poser ou retirer vide » (65 x 16 dp)
+#3 LAYOUT OVERLAP « Écho » over the touchable « Pas 5 Poser ou retirer vide » (32 x 13 dp)
+#3 LAYOUT OVERLAP « en sortie » over the touchable « Pas 5 Poser ou retirer vide » (56 x 16 dp)
+#3 LAYOUT OVERLAP « Roulement » over the touchable « Pas 7 Poser ou retirer vide » (51 x 13 dp)
+#3 LAYOUT OVERLAP « Roulement » over the touchable « Pas 8 Poser ou retirer vide » (20 x 13 dp)
+#3 LAYOUT OVERLAP « 1/16 » over the touchable « Pas 7 Poser ou retirer vide » (26 x 16 dp)
+#3 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 3 Poser ou retirer vide » (55 x 16 dp)
+#3 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 4 Poser ou retirer vide » (65 x 16 dp)
+#3 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 5 Poser ou retirer vide » (65 x 16 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Pas 7 Poser ou retirer vide » (7 x 11 dp)
+#3 LAYOUT OVERLAP « Plus » over the touchable « Pas 8 Poser ou retirer vide » (33 x 16 dp)
+#3 > touche 1333 286
+#3 DOIGT padlive_fx_filter « Filtre · grave ↔ aigu »
+#4 ROUTE padlive_pads_side | MODE simple | EMPREINTE 5572aabb8e | project=p-d2abfd22 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 1563 286
+#4 DOIGT padlive_fx_echo « Écho · en sortie »
+#5 ROUTE padlive_pads_side | MODE simple | EMPREINTE 5572aabb8e | project=p-d2abfd22 no tuto
+#5 SON Son : rien ne joue.
+#5 RIEN NE CHANGE (3 écrans identiques)
+#5 > touche 1793 286
+#5 DOIGT padlive_fx_roll « Roulement · 1/16 »
+#6 ROUTE padlive_pads_side | MODE simple | EMPREINTE 5572aabb8e | project=p-d2abfd22 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 1422 207
+#6 DOIGT help_Effets de scène « Qu'est-ce que « Effets de scène » ? »
+#6 AIDE help_Effets
+#7 ROUTE dialogue:« Effets de scène » | MODE simple | EMPREINTE 6ba4df0f99 | project=p-d2abfd22 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Garde le doigt sur un effet : il joue tant que tu appuies, puis tout revient. Filtre et Roulement : monte le doigt pour régler le son ou la vitesse des coups. Avec « Plus » : Montée (un souffle qui monte), Chute (la musique freine), Bégaie (le son se hache). » 3.83:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Compris » 1.41:1 (needs 4.5:1, 14 sp)
+#7 > touche 1281 713
+#7 DOIGT #1738 « Compris »
+#8 ROUTE padlive_pads_side | MODE simple | EMPREINTE 5572aabb8e | project=p-d2abfd22 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 1832 132
+#8 DOIGT padlive_challenge_open « Défi : refais ce rythme »
+#9 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 1398 585
+#9 DOIGT padlive_challenge_listen « Écouter »
+#10 ROUTE padlive_pads_side | MODE simple | EMPREINTE bdedd74b9e | project=p-d2abfd22 no tuto
+#10 SON Son : l'exemple du tuto joue (encore 2 s).
+#10 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Claquement de mains, coup, joue, pad A2 » (20 x 17 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 20 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 5 Poser ou retirer vide » (65 x 20 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 6 Poser ou retirer vide » (65 x 20 dp)
+#10 LAYOUT OVERLAP « Écoute bien… regarde les pads qui s'allument. » over the touchable « Pas 7 Poser ou retirer vide » (13 x 20 dp)
+#10 LAYOUT CONTRAST « Grosse caisse 1 » 3.07:1 (needs 4.5:1, 14 sp)
+#10 > attends 3
+#11 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « À toi ! Joue-le sur les pads. » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#11 LAYOUT OVERLAP « À toi ! Joue-le sur les pads. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#11 LAYOUT OVERLAP « À toi ! Joue-le sur les pads. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 20 dp)
+#11 LAYOUT OVERLAP « À toi ! Joue-le sur les pads. » over the touchable « Pas 5 Poser ou retirer vide » (27 x 20 dp)
+#11 > touche 1726 585
+#11 DOIGT padlive_challenge_finish « J'ai fini »
+#12 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Encore un essai ! 0 sur 4. » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#12 LAYOUT OVERLAP « Encore un essai ! 0 sur 4. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#12 LAYOUT OVERLAP « Encore un essai ! 0 sur 4. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 20 dp)
+#12 LAYOUT OVERLAP « Encore un essai ! 0 sur 4. » over the touchable « Pas 5 Poser ou retirer vide » (13 x 20 dp)
+#12 > touche 1398 585
+#12 DOIGT padlive_challenge_again « Rejouer »
+#13 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#13 SON Son : rien ne joue.
+#13 RIEN NE CHANGE (3 écrans identiques)
+#13 > touche 1726 585
+#13 DOIGT padlive_challenge_go « À moi ! »
+#14 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 443 218
+#14 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#15 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « À toi ! 1 sur 4 » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#15 LAYOUT OVERLAP « À toi ! 1 sur 4 » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#15 > touche 443 218
+#15 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#16 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « À toi ! 2 sur 4 » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#16 LAYOUT OVERLAP « À toi ! 2 sur 4 » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#16 LAYOUT OVERLAP « À toi ! 2 sur 4 » over the touchable « Pas 4 Poser ou retirer vide » (4 x 20 dp)
+#16 > touche 443 218
+#16 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#17 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « À toi ! 3 sur 4 » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#17 LAYOUT OVERLAP « À toi ! 3 sur 4 » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#17 LAYOUT OVERLAP « À toi ! 3 sur 4 » over the touchable « Pas 4 Poser ou retirer vide » (4 x 20 dp)
+#17 RIEN NE CHANGE (3 écrans identiques)
+#17 > touche 443 218
+#17 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#18 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Encore un essai ! 1 sur 4. » over the touchable « Pas 2 Poser ou retirer vide » (12 x 20 dp)
+#18 LAYOUT OVERLAP « Encore un essai ! 1 sur 4. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 20 dp)
+#18 LAYOUT OVERLAP « Encore un essai ! 1 sur 4. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 20 dp)
+#18 LAYOUT OVERLAP « Encore un essai ! 1 sur 4. » over the touchable « Pas 5 Poser ou retirer vide » (11 x 20 dp)
+#18 > touche 1401 363
+#18 DOIGT padlive_challenge_level_2 « Défi 2 · Ping-pong · étoiles : 0 sur 3 »
+#19 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « ? » over « Défi 2 · Ping-pong » (7 x 8 dp)
+#19 LAYOUT OVERLAP « Défi 2 · Ping-pong » over the touchable « Replier Déplié » (123 x 15 dp)
+#19 LAYOUT OVERLAP « Défi 2 · Ping-pong » over the touchable « Qu'est-ce que « Pas » ? » (29 x 15 dp)
+#19 > touche 1398 585
+#19 DOIGT padlive_challenge_listen « Écouter »
+#20 ROUTE padlive_pads_side | MODE simple | EMPREINTE bdedd74b9e | project=p-d2abfd22 no tuto
+#20 SON Son : l'exemple du tuto joue (encore 2 s).
+#20 LAYOUT OVERLAP « Claquement de mains » over the touchable « Klaxon, coup, joue, pad A5 » (77 x 33 dp)
+#20 > attends 1
+#21 ROUTE padlive_pads_side | MODE simple | EMPREINTE 0cb970bf2f | project=p-d2abfd22 no tuto
+#21 SON Son : l'exemple du tuto joue (encore 1 s).
+#21 > attends 2
+#22 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 1726 585
+#22 DOIGT padlive_challenge_finish « J'ai fini »
+#23 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1e1043b00f | project=p-d2abfd22 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 443 218
+#23 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#24 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 156 480
+#24 DOIGT padlive_pad_4 « Klaxon, coup, prêt, pad A5 »
+#25 ROUTE padlive_pads_side | MODE simple | EMPREINTE 476d5cc97d | project=p-d2abfd22 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 443 218
+#25 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#26 ROUTE padlive_pads_side | MODE simple | EMPREINTE d3ede055b5 | project=p-d2abfd22 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 156 480
+#26 DOIGT padlive_pad_4 « Klaxon, coup, prêt, pad A5 »
+#27 ROUTE padlive_pads_side | MODE simple | EMPREINTE 476d5cc97d | project=p-d2abfd22 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 1644 45
+#27 DOIGT padlive_tempo_less
+#28 ROUTE padlive_pads_side | MODE simple | EMPREINTE 39849b2213 | project=p-d2abfd22 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 123 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (32 x 19 dp)
+#28 > touche 1644 45
+#28 DOIGT padlive_tempo_less
+#29 ROUTE padlive_pads_side | MODE simple | EMPREINTE 2a84556f6c | project=p-d2abfd22 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « 122 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (32 x 19 dp)
+#29 > touche 1293 363
+#29 DOIGT padlive_challenge_level_1 « Défi 1 · Boum boum · étoiles : 0 sur 3 »
+#30 ROUTE padlive_pads_side | MODE simple | EMPREINTE 2a84556f6c | project=p-d2abfd22 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 1726 585
+#30 DOIGT padlive_challenge_go « À moi ! »
+#31 ROUTE padlive_pads_side | MODE simple | EMPREINTE 2a84556f6c | project=p-d2abfd22 no tuto
+#31 SON Son : rien ne joue.
+#31 RIEN NE CHANGE (3 écrans identiques)
+#31 > touche 443 218
+#31 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#32 ROUTE padlive_pads_side | MODE simple | EMPREINTE e6d3b957ce | project=p-d2abfd22 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 443 218
+#32 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#33 ROUTE padlive_pads_side | MODE simple | EMPREINTE e6d3b957ce | project=p-d2abfd22 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 443 218
+#33 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#34 ROUTE padlive_pads_side | MODE simple | EMPREINTE e6d3b957ce | project=p-d2abfd22 no tuto
+#34 SON Son : rien ne joue.
+#34 RIEN NE CHANGE (3 écrans identiques)
+#34 > touche 443 218
+#34 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#35 ROUTE padlive_pads_side | MODE simple | EMPREINTE e6d3b957ce | project=p-d2abfd22 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 1790 237
+#35 DOIGT help_Défi « Qu'est-ce que « Défi » ? »
+#35 AIDE help_D
+#36 ROUTE dialogue:« Défi » | MODE simple | EMPREINTE 934c0d65e1 | project=p-d2abfd22 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « L'appli joue un petit rythme sur les pads « coup » de la page : écoute, puis refais-le. Tu gagnes jusqu'à 3 étoiles selon ta précision. » 3.82:1 (needs 4.5:1, 14 sp)
+#36 > touche 1281 683
+#36 DOIGT #1933 « Compris »
+#37 ROUTE padlive_pads_side | MODE simple | EMPREINTE 2a84556f6c | project=p-d2abfd22 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 51 45
+#37 DOIGT padlive_back
+#38 ROUTE launch | MODE simple | EMPREINTE 66d0cfc4a5 | project=p-d2abfd22 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 1083 865
+#38 DOIGT launch_challenges « Défis : écoute un rythme, refais-le sur  »
+#39 ROUTE padlive_pads_side | MODE simple | EMPREINTE e6d3b957ce | project=p-d2abfd22 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 1509 363
+#39 DOIGT padlive_challenge_level_3 « Défi 3 · Le galop · étoiles : 0 sur 3 »
+#40 ROUTE padlive_pads_side | MODE simple | EMPREINTE 2a84556f6c | project=p-d2abfd22 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « ? » over « Défi 3 · Le galop » (7 x 8 dp)
+#40 LAYOUT OVERLAP « Défi 3 · Le galop » over the touchable « Replier Déplié » (110 x 15 dp)
+#40 LAYOUT OVERLAP « Défi 3 · Le galop » over the touchable « Qu'est-ce que « Pas » ? » (29 x 15 dp)
+#40 LAYOUT CONTRAST « 2 » 2.97:1 (needs 4.5:1, 12 sp)
+#40 > touche 1398 585
+#40 DOIGT padlive_challenge_listen « Écouter »
+#41 ROUTE padlive_pads_side | MODE simple | EMPREINTE c1f565ddf3 | project=p-d2abfd22 no tuto
+#41 SON Son : l'exemple du tuto joue (encore 2 s).
+#41 LAYOUT CONTRAST « 2 » 3.33:1 (needs 4.5:1, 12 sp)
+#41 > fin
+#41 FIN : fin

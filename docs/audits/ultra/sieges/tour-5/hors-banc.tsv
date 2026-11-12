@@ -1,0 +1,11 @@
+ci_build	vert (c55ffc1)
+ci_emulateur	rouge (c55ffc1)
+recette_points_rouges	8 (16 essais sur 18 faits le 2026-11-08 ; tel-15 et tel-19 par preuve d'appli)
+cases_vides	?
+lots_non_joues	0
+sieges_coupes_par_le_banc	0
+relecture_bloquants	?
+relecture_graves	?
+corrections_sans_test	?
+fichiers_non_commites	?
+pads_du_banc	grille (A.16) : les pads Live du banc suivent ClipLauncher depuis les commandes reçues par le moteur (copie Kotlin, chiffres comparés au vrai moteur) ; ce n'est pas le moteur : tout verdict pad-timing garde sa preuve hors banc (test hors Bench*, test moteur ou essai daté sur un appareil)

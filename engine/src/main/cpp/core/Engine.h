@@ -9,6 +9,7 @@
 
 #include "AcidTrack.h"
 #include "AudioTracks.h"
+#include "CallbackLoad.h"
 #include "ClipLauncher.h"
 #include "DrumKit.h"
 #include "InstrumentTrack.h"
@@ -23,6 +24,7 @@
 #include "Synth.h"
 #include "Smoother.h"
 #include "StemPlayer.h"
+#include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
 namespace ps {
@@ -86,7 +88,7 @@ enum class CommandType : uint8_t {
                           // reverb and echo returns, 0.5 = as mixed)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits, 2 = sampled, 3 = multizone, 4 = the 808 (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
-    InstallClip,          // a: live pad, sample: owned reference (nullptr = empty pad)
+    InstallClip,          // a: live pad (| kRefit), sample: owned reference (nullptr = empty pad)
     SetClipParam,         // a: live pad, b: ClipLauncher::Param, value
     ToggleClip,           // a: live pad (switches it on at the next grid line, or off); a < 0: all off
     PlayPreview,          // value 1: the preview stems (InstallStems with a = 1) play from the start; 0: stop
@@ -94,14 +96,15 @@ enum class CommandType : uint8_t {
     SetMetronomeLevel,    // value 0..1 (0.5 = default)
     SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
     SetTrackOn,           // a: instrument track 1..kTracks-1, value 1 = in use (0 = silent, not rendered)
-    InstallAudioClip,     // a: audio track, sample: owned reference (nullptr = empty track)
+    InstallAudioClip,     // a: audio track (| kRefit), sample: owned reference (nullptr = empty track)
     SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value (LoopSteps follows SetStaging: a part's own)
     RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
     SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
     SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song, | 16: a song point per beat, | 32: song points held (no
-                          // slide: on/off controls); value: song points sent
+                          // slide: on/off controls), | steps << 8: a loop or per-scene lane's own loop from the scene's
+                          // start (0: the drum loop's); value: song points sent
     SetAutomationSong,    // a: lane, b: point (a bar 0..255, or a beat 0..4095), value 0..1: the song-long curve
     SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
     SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
@@ -125,11 +128,14 @@ enum class CommandType : uint8_t {
     SetAutomationHold,    // a: Automation::pack(kind, channel, slot, param) of a setting, value 1: a finger holds it (touch
                           // take-over: no lane writes it until let go), 0: let go (lanes drive it again from the next step)
     // Live grid (one slot per track, see Slot below):
-    ArmLaunch,            // a: mask of slots (1 << slot), b: quantum in steps (>= 1 bar), value: scene tag >= 0 (its
+    ArmLaunch,            // a: mask of slots (1 << slot), b: quantum in steps (>= 1 bar) | grace << 17, value: scene tag >= 0 (its
                           // content was staged with SetStaging before) or -1 = stop. On the first transport step that is a
                           // multiple of b, before anything of that step sounds, each slot takes over its staged part (or is
                           // emptied: stop) and counts from there. The whole mask = a row: also master/bus curves and effects,
                           // the scene start and sceneSwaps(). The last command for a slot wins; ArmSceneSwap cancels.
+                          // grace (0..16383, 1/64 of a step): a command that comes less than that after a line (a tap on
+                          // the « one » heard, the output's latency later) launches on that line: from the next step, its
+                          // content counted from the line (as if launched there; its launch event says the line).
     CancelLaunch,         // a: mask of slots whose armed launch is dropped
     SetSlotOffset,        // a: slot, b: steps the slot's content has already played when it takes over. Follows
                           // SetStaging: while staging, used by the next launch or scene swap of that slot (then back to
@@ -197,12 +203,77 @@ enum class CommandType : uint8_t {
                            // note (MIDI), transpose (semitones), fine (-1..1 semitone), gain (linear 0..4, after its
                            // effects), through (1: into the track's inserts, 0: after them)
     SetLayerListen = 141,  // a: track, value: mask of its sounds heard (bit 0 its own, bit 1 + k layer k; 15 = all, as mixed)
+    // Audit final (voice): while a recording is armed or running, the microphone is heard on audio
+    // track a's strip (its volume, effects and sends), value: gain (0..2); a < 0: off.
+    SetMonitor = 142,
+    // Punch-in: audio track a's clip goes silent from step b on (value 1: a song step, 0: the
+    // track's own step), until the recording ends. a < 0: none.
+    RecordMuteAt = 143,
+    // Step 5b: the song's stem edits. SetStemClip: a = stem << 16 | piece << 8 | StemPlayer::ClipField,
+    // b: the value (frames of the song as separated); CommitStemClips: a = stem, b = pieces (-1: none).
+    SetStemClip = 144,
+    CommitStemClips = 145,
+    // Step 7b: a = MIDI key played live on the 303 (< 0: let go), value: velocity (accent above 0.8).
+    AcidLiveNote = 146,
+    // Lot B2 (Pad Live, « la scène »), numbered 150 to 169. Each pad's pitch, reverse, attack and
+    // release go through SetClipParam (ClipLauncher::Param).
+    LaunchClipRow = 150,   // a: first live pad, b: pads in the row: ClipLauncher::launchRow (together, on the next bar line)
+    ResampleArm = 151,     // resample: a buffer the app keeps (nullptr: none): « Enregistrer ce que je joue », the output
+                           // from the next bar line of the live pads' clock on; a = 1: the first such line where a pad
+                           // plays or waits, or the transport runs (armed in silence, it waits for the music)
+    ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2;
+                           // resample: the take it ends (compared only, never touched; nullptr: the current one)
+    SetMidiClockOut = 153, // value 1: MIDI clock events (Start, 24 ticks a beat on the transport's beats, Stop) for
+                           // popClockEvent(), on the output's frames; 0: none (a Stop first when the transport runs)
+    // Lot D2 (« case Remix du Live »), numbered 170 to 189: a passage of the song per cell of the
+    // remix column (RemixCells).
+    InstallRemixCell = 170,// a: cell (a brick, 0..RemixCells::kCells-1) | kRefit, b: its loop in steps (whole bars),
+                           // sample: owned reference (nullptr: the cell emptied); a refit is the same passage
+                           // at another tempo (picked up where it is, cross-faded)
+    SetRemixCell = 171,    // a: the cell the remix slot plays (-1: none, the whole song as before). Follows
+                           // SetStaging (taken at the slot's launch or the scene swap, then back to -1); else
+                           // at once (the same cell playing goes on; another one picks up at its place)
+    // Lot E (« Master pro »), numbered 190 to 209.
+    SetMasterPro = 190,    // a: MasterProParam, value: its setting
+    InstallReference = 191,// sample: the reference song (nullptr: none), value: its integrated loudness (LUFS)
+};
+// SetMasterPro's settings.
+enum MasterProParam : int {
+    ProListen = 0,          // MasterCompare::Listen: 0 the master, 1 without it (same loudness), 2 the reference
+    ProArmed = 1,           // 1: the A/B's loudness is measured (the panel is open)
+    ProForceSong = 2,       // 1: the target is the whole song's integrated loudness (Spotify, Apple Music, a value)
+    ProLimiterAttack = 3,   // 0.2..1, a share of the look-ahead
+    ProLimiterRelease = 4,  // 0.25..4, the release times scaled
+    ProStemMode = 5,        // Mixer::StemMode (an export of separate tracks)
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
 static_assert(static_cast<int>(CommandType::SetDrumLaneSteps) == 120, "NativeEngine.kt numbers the phase 37 commands from 120");
 static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.kt numbers the phase 38 commands from 130");
 static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
+static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt numbers the voice commands from 142");
+static_assert(static_cast<int>(CommandType::LaunchClipRow) == 150, "NativeEngine.kt numbers the lot B2 commands from 150");
+static_assert(static_cast<int>(CommandType::InstallRemixCell) == 170, "NativeEngine.kt numbers the lot D2 commands from 170");
+static_assert(static_cast<int>(CommandType::SetMasterPro) == 190, "NativeEngine.kt numbers the lot E commands from 190");
+
+// « Enregistrer ce que je joue » (lot B2): what the output plays, from a bar line of the live pads'
+// clock to another (stereo, interleaved, after the master). The app owns it (allocated off the audio
+// thread); the engine writes frames [0, written) until state is 2, then never touches it again.
+struct ResampleBuffer {
+    explicit ResampleBuffer(int64_t capacityFrames)
+        : capacity(std::max<int64_t>(capacityFrames, 0)), data(new float[static_cast<size_t>(capacity) * 2]) {}
+    const int64_t capacity;
+    std::unique_ptr<float[]> data;
+    std::atomic<int64_t> written{0};
+    std::atomic<int> state{0};  // 0 armed (waiting for its bar line), 1 recording, 2 finished
+};
+
+// A MIDI clock message (lot B2, clock out): `status` 0xF8 tick, 0xFA Start, 0xFB Continue, 0xFC
+// Stop, due when output frame `frame` (Engine::framesRendered's count) is heard.
+struct MidiClockEvent {
+    int64_t frame = 0;
+    int32_t status = 0;
+};
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {
@@ -291,6 +362,9 @@ struct Automation {
         int songPoints = 0;
         bool perBeat = false;  // a point per beat instead of per bar
         bool held = false;     // each point holds until the next (on/off controls)
+        // Loop and per-scene lanes: steps of their own loop from the scene's start (the part's
+        // length, audit 06), 0: the drum loop's (as ever).
+        int loopSteps = 0;
         std::array<uint8_t, kSongPoints> flat{};  // 1: this point holds (the next one is a jump)
     };
     // On the heap (about 340 kB), allocated once with the engine.
@@ -320,6 +394,10 @@ struct Automation {
     }
 };
 
+// InstallClip and InstallAudioClip: the new sound is the same loop stretched to a new tempo; one
+// playing picks up at its place in the new copy (faded in) instead of waiting for its next pass.
+constexpr int32_t kRefit = 0x100;
+
 struct Command {
     CommandType type = CommandType::SetPlaying;
     float value = 0.0f;
@@ -333,6 +411,8 @@ struct Command {
     StemBundle* stems = nullptr;
     // RecordArm only: the app keeps ownership; the engine writes into it until its state is 2.
     RecordBuffer* record = nullptr;
+    // ResampleArm only: the same.
+    ResampleBuffer* resample = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -369,7 +449,15 @@ public:
     uint64_t callbackCount() const { return callbacks_.load(std::memory_order_relaxed); }
     // How busy the audio thread is: the time process() takes over the time its frames last,
     // smoothed over about half a second (1 = no time to spare: the sound starts to crackle).
-    float cpuLoad() const { return cpuLoad_.load(std::memory_order_relaxed); }
+    float cpuLoad() const { return load_.smoothed(); }
+    // Since the last call (any thread, one reader): the slowest process() over its frames' duration,
+    // not smoothed (a stall inside the callback), and the longest wait between two callbacks'
+    // starts over the first one's frames (a callback started late). See CallbackLoad.
+    float takeWorstBlock() { return load_.takeWorstBlock(); }
+    float takeWorstGap() { return load_.takeWorstGap(); }
+    // The audio track whose microphone is sent back (SetMonitor), -1 none: cut again by prepare()
+    // when the output reopens. Any thread.
+    int monitorTrack() const { return monitorHeard_.load(std::memory_order_relaxed); }
     uint64_t framesRendered() const { return frames_.load(std::memory_order_relaxed); }
     // Highest absolute sample since the last call.
     float takePeak() { return peak_.exchange(0.0f, std::memory_order_acq_rel); }
@@ -388,9 +476,11 @@ public:
             t.multi.collectGarbage();
         }
         stems_.collectGarbage();
+        remixCells_.collectGarbage();
         preview_.collectGarbage();
         clips_.collectGarbage();
         audio_.collectGarbage();
+        mixer_.masterCompare().collectGarbage();
     }
     bool audioClipPlaying(int track) const { return audio_.playing(track); }  // tests
 
@@ -402,11 +492,34 @@ public:
         const uint32_t end = (microphone ? micScopeAt_ : outScopeAt_).load(std::memory_order_acquire);
         for (int i = 0; i < kScopeFrames; ++i) out[i] = ring[(end + static_cast<uint32_t>(i)) % kScopeFrames].load(std::memory_order_relaxed);
     }
+    // « Mode retours » (the app's screen recording): a copy of the output, stereo interleaved, after
+    // the clean-up below, for the video's sound. Off by default: the callback then writes nothing.
+    // tapStart / tapRead / tapStop from one reader thread (the ring's consumer); a full ring drops.
+    static constexpr std::size_t kTapCapacity = std::size_t{1} << 17;  // 1.36 s of stereo at 48 kHz
+    void tapStart() { tap_.discard(); tapOn_.store(true, std::memory_order_release); }
+    void tapStop() { tapOn_.store(false, std::memory_order_release); }
+    // Up to maxSamples floats (whole frames: an even count), oldest first.
+    std::size_t tapRead(float* out, std::size_t maxSamples) { return tap_.read(out, maxSamples & ~std::size_t{1}); }
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
+    int remixCellPlaying() const { return remixCells_.playing(); }  // lot D2, tests
     // Song position of the preview player in frames, -1 when stopped.
     int64_t previewPosition() const { return preview_.position(); }
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
+    // B3: how loud live pad `pad` sounds now (its falling peak, ClipLauncher::level). Any thread.
+    float clipLevel(int pad) const { return clips_.level(pad); }
+    // MIDI clock out (SetMidiClockOut): one reader thread pops the events in order.
+    bool popClockEvent(MidiClockEvent& e) { return clockEvents_.pop(e); }
+    // When the last callback began (steady_clock nanoseconds) and the output frame it began with:
+    // an event's frame becomes a time. Any thread (read again if a callback came meanwhile).
+    void callbackClock(int64_t& frame, int64_t& nanos) const {
+        for (int tries = 0; tries < 4; ++tries) {
+            frame = callbackFrame_.load(std::memory_order_acquire);
+            nanos = callbackNanos_.load(std::memory_order_acquire);
+            if (callbackFrame_.load(std::memory_order_acquire) == frame) return;
+        }
+    }
+    static constexpr int kClockTicksPerBeat = 24;
     double clipBeat() const { return clips_.beat(); }  // tests
     bool instrumentActive(int track = 0) const { return tracks_[static_cast<size_t>(track)].instrument.active(); }  // tests
     // G1b: sound `s` (a track's own, 0..kTracks-1, or a layer's, layerSound()). Tests, and the engine.
@@ -420,7 +533,7 @@ public:
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
     static constexpr int kLanes = 16;
-    static constexpr int kMaxSteps = 64;
+    static constexpr int kMaxSteps = 256;  // 16 bars, as long as a NoteTrack (a Live cell records that much)
 
     // Transport state for the UI: current pattern step (-1 when stopped or counting in).
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
@@ -523,6 +636,16 @@ private:
     void renderLayers(const float** channels, const float** rights, int numFrames);
     Sampler sampler_;
     StemPlayer stems_;
+    // Lot D2: the remix column's passages, the one heard (-1: the whole song) and whether the slot
+    // is heard at all (not stopped nor muted by a song part).
+    RemixCells remixCells_;
+    int remixCell_ = -1;
+    bool remixHeard_ = true;
+    // The remix slot as it is now: the whole song or the passage `remixCell_` (from `local` steps
+    // into it when it starts; the same passage at the same place goes on, whatever asked).
+    void applyRemix(int offset, double local);
+    // The remix slot's steps since its start at the transport's position (0 when stopped).
+    double remixLocalNow() const;
     // The remix screen's own listening of a song's stems, free of the transport.
     StemPlayer preview_;
     ClipLauncher clips_;
@@ -531,13 +654,72 @@ private:
     // Microphone recording (audio tracks).
     RecordBuffer* record_ = nullptr;
     bool recordOnStart_ = false;  // waiting for the transport's first step
-    int recordSkip_ = -1;         // input frames to skip in this callback (recording just started), -1 = none
+    bool recordRunning_ = false;  // the take itself is being written (after its pre-roll)
+    // Output frame where the first step fell (-1: not yet), then the input frame the take starts on.
+    int64_t recordStartOut_ = -1;
+    int64_t recordFrom_ = -1;
+    int64_t prerollWritten_ = 0;  // input frames written into the pre-roll ring so far
+    // Input and output frames since the engine started, and how the two line up: the largest
+    // (input before this callback - output before it) seen lately. The microphone arrives in
+    // bursts unrelated to the output callbacks: the largest gap is the one with no burst still
+    // waiting, so takes start on the same microphone frame whatever the bursts (13 M5).
+    int64_t inTotal_ = 0;
+    int64_t outTotal_ = 0;
+    int64_t blockOut_ = 0;  // output frame of the block being rendered
+    double align_ = 0.0;
+    bool alignKnown_ = false;
+    static constexpr double kAlignDecay = 0.001;  // frames of drift allowed per output frame
     void finishRecording();
+    void writePreroll(float v);
+    // « Enregistrer ce que je joue » (ResampleArm): the bar lines of the live pads' clock as heard
+    // (output frames, the master's delay included), kept until the output reaches them.
+    ResampleBuffer* resample_ = nullptr;
+    bool resampleWait_ = false;
+    int64_t resampleArmed_ = 0;  // output frame it was armed at: earlier bar lines do not start it
+    int64_t resampleStop_ = -1;  // output frame its end was asked at (-1: not asked)
+    struct BarLine {
+        int64_t frame = 0;
+        bool sounding = false;
+    };
+    std::array<BarLine, 8> bars_{};
+    int barCount_ = 0;
+    void captureResample(const float* output, int numFrames, int outputChannels, int64_t outBase);
+    void finishResample();
+    // MIDI clock out: the transport's beats (straight, never swung) cut in 24, as output frames.
+    std::atomic<bool> clockOut_{false};
+    std::atomic<int64_t> callbackFrame_{0}, callbackNanos_{0};
+    SpscQueue<MidiClockEvent, 512> clockEvents_;
+    int clockBeat_ = -1;  // the transport beat the ticks count from (-1: stopped)
+    int64_t clockTick_ = 0;
+    double clockBeatFrame_ = 0.0;
+    double clockBeatFrames_ = 24000.0;
+    bool clockContinue_ = false;  // switched on while playing: a Continue before the next tick
+    void clockEvent(int64_t frame, int32_t status);
+    void clockBeat(int64_t frame, int beat);
+    void flushClock(double limit, bool all = false);
     // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
-    void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames);
+    void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames, int64_t outBase);
+    // Monitoring (SetMonitor): the microphone through a small FIFO into an audio track's strip.
+    static constexpr int kMonitorFifo = 8192;
+    static constexpr int kMonitorBacklog = 2048;  // more waiting than this: the oldest goes (latency)
+    std::array<float, kMonitorFifo> monitorFifo_{};
+    int monitorRead_ = 0, monitorCount_ = 0;
+    int monitorTrack_ = -1;
+    std::atomic<int> monitorHeard_{-1};  // monitorTrack_ for the UI thread
+    float monitorGain_ = 1.0f;
+    bool monitoring() const { return monitorTrack_ >= 0 && record_ != nullptr; }
+    // RecordMuteAt.
+    int muteTrack_ = -1, muteFrom_ = 0;
+    bool muteSong_ = false;
+    // The punch's mute has started (`muteWasOn_`: the track sounded just before), undone at the take's end.
+    bool muteApplied_ = false, muteWasOn_ = false;
+    void restorePunchMute();
     Automation automation_;
-    void applyAutomation(int patternStep, int songStep, int offset);
+    // `local`: the step from the scene's start (loop curves with a length of their own).
+    void applyAutomation(int patternStep, int songStep, int offset, int local);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
+    SpscFloatRing tap_{kTapCapacity};
+    std::atomic<bool> tapOn_{false};
     std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
     static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {
         const uint32_t i = at.load(std::memory_order_relaxed);
@@ -565,7 +747,7 @@ private:
         int8_t pitch[kLanes][kMaxSteps] = {};  // semitones
         DrumStepExtra extra[kLanes][kMaxSteps] = {};
         uint8_t skip[kLanes][kMaxSteps] = {};  // 100 - the hit's chance in %, 0 = always plays
-        uint8_t laneSteps[kLanes] = {};        // 0: the pattern's length
+        uint16_t laneSteps[kLanes] = {};       // 0: the pattern's length
         int drumSteps = 16;
         std::array<bool, AudioTracks::kTracks> audioOn = filled<bool, AudioTracks::kTracks>(true);
         std::array<int, AudioTracks::kTracks> audioLoop = filled<int, AudioTracks::kTracks>(-1);  // -1: unchanged
@@ -574,6 +756,7 @@ private:
         // Per insert slot: 1 plays, 0 passed by in the waiting scene, -1 unchanged.
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> insertOn = unchangedInserts();
         bool remixOn = true;  // SetRemixOn while staging: false when the waiting song part mutes the remix
+        int remixCell = -1;   // SetRemixCell while staging: the waiting part's passage (-1: the whole song)
     };
     template <typename T, size_t N>
     static std::array<T, N> filled(T v) {
@@ -597,7 +780,8 @@ private:
     bool leaveSong_ = false;   // the armed swap leaves the song: its scene plays on its own
     bool inSong_ = true;       // the song plays (else a scene on its own: no song position)
     void leaveSongNow();
-    void stopTransport();
+    // `at`: the output frame it happens on (-1: the callback's start, a command).
+    void stopTransport(int64_t at = -1);
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
     // MarkSong: armed on a quantum (0: none), the song step it starts.
@@ -615,6 +799,7 @@ private:
         int quantum = 16;        // steps: it fires on a multiple of this
         int stagedOffset = 0;    // SetSlotOffset while staging: steps already played when its next launch or swap takes over
         int transportOffset = 0; // SetSlotOffset otherwise: the same for the transport's next start (SetTransport)
+        int late = -1;           // ArmLaunch within its grace: the line just passed it launches on (from the next step)
         int tag = kRowTag;
     };
     std::array<SlotPlay, kSlots> slots_{};
@@ -635,6 +820,9 @@ private:
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};
+    // « Écouter » on the Remix page: apart from the project's strips (no solo or mute mutes it).
+    std::array<float, kMaxBlock> previewL_{};
+    std::array<float, kMaxBlock> previewR_{};
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> drumsRBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};
@@ -652,10 +840,10 @@ private:
     // Phase 37: each hit's chance (stored as 100 - %, so the zeroed arrays mean « always ») and each
     // lane's own loop (0: the pattern's), with the draw's seed.
     uint8_t skip_[kLanes][kMaxSteps] = {};
-    uint8_t laneSteps_[kLanes] = {};
+    uint16_t laneSteps_[kLanes] = {};
     uint32_t chanceSeed_ = 0;
     // The pattern step lane `lane` plays at drums step `local` (its own loop, or the pattern's of `steps`).
-    static int laneStepOf(const uint8_t* laneSteps, int lane, int local, int steps) {
+    static int laneStepOf(const uint16_t* laneSteps, int lane, int local, int steps) {
         const int n = laneSteps[lane] > 0 ? laneSteps[lane] : steps;
         return ((local % n) + n) % n;
     }
@@ -725,8 +913,7 @@ private:
     std::atomic<bool> playing_{false};
     std::atomic<bool> nonFinite_{false};
     std::atomic<uint64_t> callbacks_{0};
-    float load_ = 0.0f;  // audio thread: the smoothed load, published in cpuLoad_
-    std::atomic<float> cpuLoad_{0.0f};
+    CallbackLoad load_;  // written by the audio thread at the end of each callback
     std::atomic<uint64_t> frames_{0};
     std::atomic<float> peak_{0.0f};
 };

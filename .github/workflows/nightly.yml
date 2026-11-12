@@ -2,9 +2,10 @@ name: Nightly real use
 
 # « Tests d'usage réel », the long ones (docs/TESTS-REELS.md): too long for each pull request.
 # Every night on main, or by hand (Actions › Nightly real use › Run workflow) with longer runs.
-# Benjamin (2026-10-25): nothing builds on GitHub until he says so; the schedule is off, by hand only.
-# Back: put « schedule: - cron: "17 2 * * *" » again.
+# (Paused from 2026-10-25 to the final audit, CI back on since.)
 on:
+  schedule:
+    - cron: "17 2 * * *"
   workflow_dispatch:
     inputs:
       endurance_minutes:
@@ -33,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -44,17 +45,17 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
         with:
           packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
-      - uses: hendrikmuhs/ccache-action@v1.2
+      - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
           key: nightly-host
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       # A 6-minute song looped for 30 minutes each night (soak_minutes by hand: whole minutes, at
       # least 20, so that 3 whole loops are compared).
       - name: Soak (a 6-minute song looped)
@@ -82,7 +83,7 @@ jobs:
           GRADLE_ARGS: --console=plain
           GH_TOKEN: ${{ github.token }}
         run: ./scripts/real-projects.sh --fetch
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: nightly-linux
@@ -101,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 100
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
       - name: Fetch submodules with retries (GitLab is sometimes overloaded)
@@ -112,14 +113,14 @@ jobs:
             echo "eigen: attempt $i failed, waiting"; sleep 30
           done
           if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v4
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
         with:
           packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -128,7 +129,7 @@ jobs:
       - name: Build test APKs
         run: ./gradlew -PemulatorAbi :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Cache the emulator and its system image
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ${{ env.ANDROID_HOME }}/emulator
@@ -145,7 +146,7 @@ jobs:
           exit 1
       # 10 minutes on the schedule's nights, 30 (or what was asked, whole minutes) by hand; the users' paths too.
       - name: Endurance and journeys on the emulator
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 35
           arch: x86_64
@@ -153,7 +154,7 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
           script: ./scripts/emulator-tests.sh --endurance ${{ github.event.inputs.endurance_minutes || '10' }} --class com.pocketstudio.app.EnduranceTest,com.pocketstudio.app.JourneyTest
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: nightly-emulator

@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.pressScale
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -94,7 +96,7 @@ fun songChordsUi(p: Project, tried: RhythmViewModel.ChordTry?, english: Boolean)
     fun names(degrees: List<Int>) = degrees.map { ChordTrack.name(base, it, english) }
     val frozen = Freeze.frozenIds(base)
     return SongChordsUi(
-        key = "${base.harmony.keyName(english)} ${tr(base.harmony.chordKey.scale.label).lowercase()}",
+        key = "${base.harmony.keyName(english)} ${tr(base.harmony.chordKey.scale.label).inSentence()}",
         progressions = Progression.entries.map { pr -> pr to "${pr.labelIn(base.harmony)}  ·  ${names(ChordTrack.degreesOf(base, pr)).joinToString(" ")}" },
         chosen = tried?.progression,
         parts = ChordTrack.songScenes(base).map { s ->
@@ -106,7 +108,7 @@ fun songChordsUi(p: Project, tried: RhythmViewModel.ChordTry?, english: Boolean)
             FollowUi(t.id, com.pocketstudio.model.DefaultNames.shown(t.name), ChordTrack.follows(base, t) && t.id !in frozen, t.id in frozen)
         } + listOfNotNull(
             // The 303, when it plays in the song: its steps move by the scale like the notes.
-            FollowUi(ChordTrack.ACID, tr("Ligne acide (TB-303)"), ChordTrack.acidFollows(base)).takeIf { ChordTrack.acidPlays(base) },
+            FollowUi(ChordTrack.ACID, tr("Ligne acide (Acid 303)"), ChordTrack.acidFollows(base)).takeIf { ChordTrack.acidPlays(base) },
         ),
         trying = tried != null,
     )
@@ -153,7 +155,7 @@ fun SongChordsContent(ui: SongChordsUi, actions: SongChordsActions) {
             Button(
                 onClick = actions.apply, enabled = ui.trying,
                 colors = ButtonDefaults.buttonColors(containerColor = Neon.Magenta, contentColor = Neon.OnAccent),
-                modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("song_chords_apply"),
+                modifier = Modifier.pressScale(enabled = ui.trying).weight(1f).heightIn(min = 48.dp).testTag("song_chords_apply"),
             ) { Text(tr("Appliquer à tout le morceau"), maxLines = 2) }
             OutlinedButton(onClick = actions.cancel, modifier = Modifier.heightIn(min = 48.dp).testTag("song_chords_cancel")) {
                 Text(if (ui.trying) tr("Annuler") else tr("Fermer"), maxLines = 1)
@@ -177,7 +179,7 @@ fun SongChordsContent(ui: SongChordsUi, actions: SongChordsActions) {
         Text(tr("Partie par partie (une case = une mesure)"), style = MaterialTheme.typography.titleSmall)
         ui.parts.forEach { part -> PartChords(part, ui.choices, actions) }
         Text(tr("Pistes qui suivent les accords"), style = MaterialTheme.typography.titleSmall)
-        Text(tr("Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici."),
+        Text(tr("Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->
@@ -245,7 +247,7 @@ internal fun SongChordsStrip(parts: List<Pair<String, List<String>>>, open: () -
                 Text(chords.joinToString("  "), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
-        if (parts.size > 6) Text(tr("… et %d autres parties", parts.size - 6), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        if (parts.size > 6) Text(com.pocketstudio.model.i18n.trCount(parts.size - 6, "… et 1 autre partie", "… et %d autres parties"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         Text(tr("Touche pour changer les accords de tout le morceau."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }

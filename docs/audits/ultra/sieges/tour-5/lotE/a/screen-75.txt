@@ -1,0 +1,20 @@
+Écran 75 (588x1278)
+texte « Nouveau morceau, pas à pas » @ 254,35
+bouton « Fermer » @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,138
+bouton « Techno 10 styles » [état « fermé »] @ 294,243
+bouton « House 9 styles » [état « fermé »] @ 294,339
+bouton « Bass music 7 styles » [état « fermé »] @ 294,435
+bouton « Hip-hop 7 styles » [état « ouvert »] @ 294,531
+touchable « Trap Hip-hop · 140 BPM Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. Pour l'idée : Travis Scott – FE!N (2023) » @ 294,660
+bouton « Écouter » @ 57,630
+touchable « Drill Hip-hop · 142 BPM La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. Pour l'idée : Central Cee – Doja (2022) » @ 294,822
+bouton « Écouter » @ 57,792
+touchable « Phonk Hip-hop · 130 BPM Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. Pour l'idée : Kordhell – Murder in My Mind (2022) » @ 294,984
+bouton « Écouter » @ 57,954
+touchable « Boom bap Hip-hop · 92 BPM Le rap à l'ancienne de New York : une boucle de piano jazz, un kick rond, une caisse claire qui claque et un groove qui balance. Pour l'idée : Nekfeu – On verra (2015) » @ 294,1146
+bouton « Écouter » @ 57,1116
+touchable « Grime Hip-hop · 140 BPM Le rap électronique de Londres, rapide et brut : une batterie sèche pleine de trous, une basse carrée qui grogne et de petits accords glacés. Pour l'idée : Stormzy – Shut Up (2015) » @ 294,1255
+bouton « Écouter » @ 57,1263
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

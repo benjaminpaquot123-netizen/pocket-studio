@@ -1,0 +1,179 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE ad63289f8f | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 3.58:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ? » 3.01:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » 4.17:1 (needs 4.5:1, 14 sp)
+#1 > touche 294 447
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE de8a1cf2ab | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 297
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5acec70302 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Étape 1 : choisis un style » 4.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « • BPM : la vitesse du morceau, en battements par minute. » 2.84:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Calme (Chill, Lo-fi) » 2.33:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 6 styles » 2.52:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 10 styles » 3.06:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 9 styles » 2.16:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.94:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Autres » 1.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 styles » 1.38:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 480
+#3 DOIGT wizard_family_House « House »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 2375b0b10d | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. » ellipsized (« … »)
+#4 LAYOUT CUT « La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. » ellipsized (« … »)
+#4 LAYOUT CUT « La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle. » ellipsized (« … »)
+#4 LAYOUT CUT « Le « 2-step » anglais de la fin des années 90 : une grosse caisse qui saute des temps, des charleys qui balancent, un orgue jazzy et des bouts de voix. Son nom vient d'un club de New York. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « House » 3.32:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Pour l'idée : Robin S – Show Me Love (1992) » 1.91:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « House · 126 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Acid house » 1.79:1 (needs 4.5:1, 16 sp)
+#4 > touche 57 579
+#4 DOIGT wizard_style_listen_house
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 31cf27cfc3 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Cette écoute n'a pas pu être préparée : réessaie dans un instant. » 3.37:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Calme (Chill, Lo-fi) » 2.55:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « 6 styles » 2.51:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 10 styles » 2.19:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 9 styles » 3.66:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 122 BPM » 3.12:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Pour l'idée : Robin S – Show Me Love (1992) » 1.79:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « House · 120 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#5 > attends 3
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 31cf27cfc3 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 57 657
+#6 DOIGT wizard_style_listen_house
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 31cf27cfc3 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 320 687
+#7 DOIGT wizard_style_house « House »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3900c45c58 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 322 1068
+#8 DOIGT wizard_style_choose_house « Choisir ce style »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 8b2c945565 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Étape 2 sur 13 · House » 4.25:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.40:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style. » 2.04:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Sombre / épique » 3.33:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Une couleur mineure froide et hypnotique, taillée pour l'électro. » 1.63:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT LABEL « #1059 » touchable without text nor description
+#9 LAYOUT LABEL « #1068 » touchable without text nor description
+#9 LAYOUT LABEL « #1077 » touchable without text nor description
+#9 > touche 78 921
+#9 DOIGT wizard_mood_listen_happy
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 8b2c945565 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 294 468
+#10 DOIGT wizard_style_packs_download « Télécharger les sons du style »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 465aa2440d | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Des accords mineurs : mystérieux, intenses ou un peu tristes. » 1.77:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « Futuriste / électro » 4.41:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « Rêveur / planant » 1.63:1 (needs 4.5:1, 16 sp)
+#11 > attends 15
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE d3590cc708 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « C'est prêt : le pack « Roland Juno-106 » est sur ton téléphone. » 2.81:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Sombre / épique » 2.51:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « Des accords lumineux qui donnent la pêche. » 2.75:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « Rêveur / planant » 1.34:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « Pas de mélodie pour l'instant » 1.48:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT LABEL « #1086 » touchable without text nor description
+#12 LAYOUT LABEL « #1093 » touchable without text nor description
+#12 > touche 78 633
+#12 DOIGT wizard_mood_listen_happy
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 23794976d2 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 294 1146
+#13 DOIGT wizard_create_now « Créer tout de suite avec les choix conse »
+#14 ROUTE dialogue:« Des sons du pack « Roland TR-9 » | MODE simple | EMPREINTE 2adb3b61af | project=p-d6bb59c7 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 489 717
+#14 DOIGT #1664 « Compris »
+#15 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c8555f8996 | project=p-d6bb59c7 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « Sauvegardé » wider than its box (by 16.2 dp)
+#15 LAYOUT CONTRAST « POUR COMMENCER » 4.30:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#15 > touche 294 1037
+#15 DOIGT guide_option_drop « Écouter »
+#16 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE eae9fb2371 | project=p-d6bb59c7 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Le son de la mélodie » 3.89:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Une autre batterie » 3.95:1 (needs 4.5:1, 14 sp)
+#16 > touche 471 42
+#16 DOIGT top_play
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 22e1abf1d0 | project=p-d6bb59c7 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 294 1034
+#17 DOIGT guide_open_melody « Voir le réglage : Le son de la mélodie »
+#18 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 563fe9f8f8 | project=p-d6bb59c7 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT OVERLAP « Son de : Mélodie » over the touchable « Fermer la feuille » (176 x 28 dp)
+#18 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (284 x 36 dp)
+#18 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#18 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (77 x 24 dp)
+#18 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (66 x 17 dp)
+#18 LAYOUT OVERLAP « Creux · court » over the touchable « Fermer la feuille » (78 x 16 dp)
+#18 LAYOUT OVERLAP « Son court futur » over the touchable « Fermer la feuille » (102 x 17 dp)
+#18 LAYOUT OVERLAP « Brillant · 4 voix · court » over the touchable « Fermer la feuille » (132 x 16 dp)
+#18 LAYOUT OVERLAP « Arpège » over the touchable « Fermer la feuille » (49 x 17 dp)
+#18 LAYOUT OVERLAP « Cloche » over the touchable « Fermer la feuille » (47 x 17 dp)
+#18 LAYOUT OVERLAP « Doux · court » over the touchable « Fermer la feuille » (73 x 16 dp)
+#18 LAYOUT OVERLAP « Au hasard » over the touchable « Fermer la feuille » (70 x 20 dp)
+#18 LAYOUT OVERLAP « Garder ce son » over the touchable « Fermer la feuille » (96 x 20 dp)
+#18 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (344 x 36 dp)
+#18 LAYOUT OVERLAP « INSTRUMENTS RÉELS » over the touchable « Fermer la feuille » (147 x 16 dp)
+#18 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (329 x 54 dp)
+#18 LAYOUT OVERLAP « Piano à queue » over the touchable « Fermer la feuille » (95 x 17 dp)
+#18 LAYOUT OVERLAP « Bientôt disponible » over the touchable « Fermer la feuille » (109 x 16 dp)
+#18 LAYOUT OVERLAP « Piano de concert » over the touchable « Fermer la feuille » (114 x 17 dp)
+#18 LAYOUT OVERLAP « Cordes » over the touchable « Fermer la feuille » (48 x 17 dp)
+#18 LAYOUT OVERLAP « Cordes pizzicato » over the touchable « Fermer la feuille » (114 x 11 dp)
+#18 LAYOUT CONTRAST « Son court futur » 1.82:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Arpège » 1.82:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Cloche » 3.78:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Doux · court » 1.87:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « « Garder ce son » le range dans tes favoris, pour tous tes projets. » 4.44:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Bientôt disponible » 1.22:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Bientôt disponible » 3.95:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Bientôt disponible » 3.52:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT LABEL « #1780 » long press without text nor description
+#18 > touche 294 607
+#18 DOIGT synth_sounds_29 « Cloche »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 935b04e425 | project=p-d6bb59c7 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 LAYOUT CONTRAST « Ouvrir le clavier » 3.89:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ↗ » 3.47:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Voir les notes » 4.00:1 (needs 4.5:1, 14 sp)
+#19 > touche 534 1218
+#19 DOIGT tab_simple_Envoyer « Envoyer »
+#20 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 44efbc6775 | project=p-d6bb59c7 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 LAYOUT CONTRAST « Tout est prêt : aucun solo oublié, aucune piste coupée. » 2.38:1 (needs 4.5:1, 14 sp)
+#20 > touche 294 587
+#20 DOIGT share_go «   Partager »
+#21 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 2c4bafb06e | project=p-d6bb59c7 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > attends 20
+#21 PARTAGE House-morceau-20261104-165009.m4a
+#22 ROUTE dialogue:« Partager « House-morceau-20261 » | MODE simple | EMPREINTE 14548e245a | project=p-d6bb59c7 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > touche 294 543
+#22 DOIGT vue « WhatsApp »
+#23 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 922676f671 | project=p-d6bb59c7 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > fin
+#23 FIN : fin

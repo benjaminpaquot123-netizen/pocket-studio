@@ -208,6 +208,8 @@ fun Project.slotLoopSteps(key: String, scene: Int): Int {
         key == SongPart.ACID -> s.acid.length
         key.startsWith("inst:") -> notesOf(s, key.removePrefix("inst:").toIntOrNull() ?: -1)?.steps ?: 0
         key.startsWith("audio:") -> audioTracks.firstOrNull { "audio:${it.id}" == key }?.clip?.loopSteps?.takeIf { it > 0 } ?: 0
+        // Lot D2: a brick's passage of the song loops over its bars.
+        key == SongPart.REMIX -> remix.cell(scene)?.loopSteps(stepsPerBar) ?: 0
         else -> 0
     }
     return steps.takeIf { it > 0 } ?: s.stepsFor(stepsPerBar)

@@ -1,0 +1,6 @@
+lang=ar
+device=foldable
+fresh=reel
+gestes.max=60
+mission=remix-voix
+timeout.minutes=25

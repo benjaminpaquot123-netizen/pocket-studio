@@ -3,6 +3,7 @@ package com.pocketstudio.app.nav
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -115,16 +116,34 @@ open class NavScreenshotTest {
     @Test fun welcomeMode() = shot("welcome_mode", firstLaunch = true)
     @Test fun launch() = shot("launch", launchChoice = true)
     @Test fun launchSimple() = shot("launch_simple", simple = true, launchChoice = true)
-    /** G5: « Mon premier morceau » (Plus): the Guide's first cards, where the Missions were. */
+    /** G5: « Mon premier morceau » (Plus): audit final, a new song from the assistant (the open one stays as it is). */
     @Test fun guideFirst() = shot("guide_first") {
         tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions")
-        awaitGuide("guide_panel")
+        // « Simple ou Pro ? » first (owner, 2026-10-29).
+        tap("mode_card_pro")
+        awaitGuide("wizard")
     }
     /** G5: a song just made: the Guide opens on « Ton morceau est prêt ». */
     @Test fun guideReady() = shot("guide_ready") {
         h.vm.session.edit { com.pocketstudio.model.guide.GuideStart.begin(houseSong(), com.pocketstudio.model.guide.GuideStart.SONG) }
         awaitGuide("guide_card_start.ready")
     }
+    /**
+     * Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? ». Since 3A (tour 5, chantier 5)
+     * only before a first choice: no mark then.
+     */
+    @Test fun modeStep() = shot("mode_step") {
+        tap("top_projects"); tap("project_new"); tap("start_empty")
+        // Review of tour 5, chantier 5: the 130 % and tablet baselines had been recorded while the step was skipped
+        // (a blank screen, « Mes projets »); the capture is of the step or the test fails.
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+    }
+    /** « J'apprends »: the same step, each card saying the tutorial's level it gives. */
+    @Test fun modeStepLearn() = shot("mode_step_learn", simple = true) {
+        tap("top_projects"); tap("project_new"); tap("start_learn")
+    }
+    /** The top bar's mode chip, touched: the change of mode and what it changes. */
+    @Test fun modeSwitch() = shot("mode_switch") { tap("top_mode") }
     @Test fun helpLabels() = shot("help_labels") { tap("help_labels_button") }
     @Test fun helpLabelsSons() = shot("help_labels_sons") { tap("tab_Sons"); tap("help_labels_button") }
     @Test fun helpLabelsMix() = shot("help_labels_mix") { tap("tab_Mix"); tap("help_labels_button") }
@@ -133,7 +152,8 @@ open class NavScreenshotTest {
     /** Lot 2: windows of their own (a sheet, the share sheet) at the interface size. */
     @Test fun sheetPad() = shot("sheet_pad") {
         tap("tab_Sons")
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        // The pad's sheet: its card's « Réglages du pad » (a long press is « Changer le son » since 2026-11-04).
+        compose.onNodeWithTag("pad_settings").performScrollTo().performClick()
         compose.waitForIdle()
     }
     @Test fun sheetShare() = shot("sheet_share") { tap("top_share") }
@@ -169,7 +189,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
             "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "help_labels_simple", "launch", "launch_simple",
-            "sheet_pad", "sheet_share",
+            "sheet_pad", "sheet_share", "mode_step", "mode_switch", "simple_more",
         )
     }
 }
@@ -189,7 +209,7 @@ open class NavTabletScreenshotTest : NavScreenshotTest() {
     companion object {
         val TABLET = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "plus_settings", "simple_song", "simple_keys",
-            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "launch",
+            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "launch", "mode_step",
         )
     }
 }
@@ -238,7 +258,7 @@ class NavTabA11Scale130ScreenshotTest : NavTabA11ScreenshotTest() {
     override fun wanted(name: String) = name in A11_130
 
     companion object {
-        val A11_130 = setOf("structure", "sons", "mix", "live", "plus", "simple_song", "simple_keys", "launch", "sheet_pad", "sheet_share")
+        val A11_130 = setOf("structure", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_keys", "launch", "sheet_pad", "sheet_share")
     }
 }
 

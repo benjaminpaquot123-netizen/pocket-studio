@@ -104,7 +104,7 @@ fun DjFilterPad(set: (param: Int, value: Float) -> Unit, modifier: Modifier) {
     // The gesture outlives a recomposition (pointerInput(Unit)): it always calls the latest [set].
     val setNow by rememberUpdatedState(set)
     val padColor = Neon.Acid
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     Box(
         modifier
             .clip(RoundedCornerShape(12.dp))

@@ -54,6 +54,32 @@ class GuideActionsTest {
         assertEquals(song.strip("Sub"), GuideActions.revert(p, change.id, 2000L).strip("Sub"))
     }
 
+    /** Audit final (04): « la basse » is both basses of a bass music song, the Basse 2 of the later Drops too. */
+    @Test
+    fun theBassOptionsReachTheSecondBassToo() {
+        val bass2 = song.instrumentTracks.firstOrNull { it.name == StarterWizard.BASS_SWITCH_TRACK }
+        org.junit.Assume.assumeTrue("jump up has a Basse 2", bass2 != null)
+        val p = GuideActions.apply(song, "fx.bass", "cleaner", 1000L)
+        assertNotEquals(song.strip(StarterWizard.BASS_SWITCH_TRACK), p.strip(StarterWizard.BASS_SWITCH_TRACK))
+        val phone = GuideActions.apply(song, "mix.phone", "audible", 1000L)
+        assertNotEquals(song.strip(StarterWizard.BASS_SWITCH_TRACK), phone.strip(StarterWizard.BASS_SWITCH_TRACK))
+        // And comes back with « Annuler mon choix ».
+        assertEquals(song.strip(StarterWizard.BASS_SWITCH_TRACK), GuideActions.undoChoice(p, "fx.bass", 2000L).strip(StarterWizard.BASS_SWITCH_TRACK))
+    }
+
+    /** Audit final (04): the lead's echo is in its chain (a ping-pong): « Plus sec » turns that one down, not a silent send. */
+    @Test
+    fun drierTurnsDownTheEchoThatIsHeard() {
+        val echoes = setOf(EffectType.ECHO, EffectType.PING_PONG)
+        fun mix(p: Project) = p.strip("Lead").inserts.first { it.effect in echoes && !it.bypass }.params[3]
+        org.junit.Assume.assumeTrue(song.strip("Lead").inserts.any { it.effect in echoes && !it.bypass })
+        val dry = GuideActions.apply(song, "fx.lead", "dry", 1000L)
+        assertEquals(mix(song) - 0.1f, mix(dry), 1e-4f)
+        assertEquals(song.strip("Lead").sends, dry.strip("Lead").sends)
+        val wet = GuideActions.apply(song, "fx.lead", "echo", 1000L)
+        assertEquals(mix(song) + 0.1f, mix(wet), 1e-4f)
+    }
+
     @Test
     fun keepingAndOpeningChangeNothingButTheCard() {
         val kept = GuideActions.apply(song, "fx.review", "keep", 1000L)
@@ -62,6 +88,15 @@ class GuideActionsTest {
         assertEquals("fx.review", kept.guide.step)
         assertEquals(song, GuideActions.apply(song, "fx.review", "all", 1000L))  // « Voir tout ce qui joue » only opens a screen
         assertEquals(song, GuideActions.apply(song, "nope", "keep", 1000L))
+    }
+
+    /** Revue neuve (MOYEN 1): « Garder » tapped twice is one change, not two (no undo step, no new timestamp). */
+    @Test
+    fun keepingTwiceIsKeepingOnce() {
+        val once = GuideActions.apply(song, "fx.review", "keep", 1000L)
+        assertEquals(GuideStatus.DONE, once.guide.statusOf("fx.review"))
+        assertEquals(once, GuideActions.apply(once, "fx.review", "keep", 5000L))
+        assertEquals(once, GuideActions.apply(once, "fx.review", "keep", 1000L))
     }
 
     @Test

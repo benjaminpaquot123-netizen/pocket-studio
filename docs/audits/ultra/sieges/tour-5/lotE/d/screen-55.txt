@@ -1,0 +1,6 @@
+Écran 55 (1200x540)
+touchable « Fête » @ 1096,120
+touchable « Techno » @ 1096,192
+touchable « Trap » @ 1096,264
+touchable « House » @ 1096,336
+touchable « Drum & bass » @ 1096,408

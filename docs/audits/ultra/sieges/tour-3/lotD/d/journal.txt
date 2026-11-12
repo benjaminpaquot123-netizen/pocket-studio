@@ -1,0 +1,631 @@
+#0 SIEGE lang=pl device=phone font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 7ee496d39f | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 294
+#1 DOIGT launch_continue « Kontynuuj »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 4aac5211a7 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 240 867
+#2 DOIGT help_Krok « Co to jest „Krok”? »
+#2 AIDE help_Krok
+#3 ROUTE dialogue:« Krok » | MODE pro | EMPREINTE c565cd6427 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Jasne » 4.14:1 (needs 4.5:1, 14 sp)
+#3 > touche 502 753
+#3 DOIGT #875 « Jasne »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 4aac5211a7 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > glisse 294 900 294 500
+#4 DOIGT rien
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE 62ecaaf6ae | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 251 739
+#5 DOIGT roll_tool « Rolki »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 37c0ce3005 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 70 574
+#6 DOIGT step_0 « Krok 1 »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 29c46143c0 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « ×2 » over « 1 » (5 x 5 dp)
+#7 > touche 70 574
+#7 DOIGT step_0 « Krok 1 »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 941217d36d | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « ×3 » over « 1 » (5 x 5 dp)
+#8 > touche 70 574
+#8 DOIGT step_0 « Krok 1 »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 9f539e3c90 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « ×4 » over « 1 » (5 x 5 dp)
+#9 > touche 70 574
+#9 DOIGT step_0 « Krok 1 »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 6615e02b05 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 352 739
+#10 DOIGT pan_tool « Pan »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 4601a78a55 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 70 574
+#11 DOIGT step_0 « Krok 1 »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE bdbc977181 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Środek » 4.35:1 (needs 4.5:1, 14 sp)
+#12 > glisse 294 850 294 600
+#12 DOIGT fill_2 « 1/2 »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 6a15339322 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > glisse 70 360 30 360
+#13 DOIGT step_0 « Krok 1 »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 6a15339322 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 294 795 120 795
+#14 DOIGT hit_pan « Pan uderzenia 1 »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 7d31a3ab23 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 474 513
+#15 DOIGT pitch_tool « Wysokość »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE d9246ea680 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 543 186
+#16 DOIGT help_labels_button « Podpisz ekran »
+#16 AIDE help_labels_button
+#17 ROUTE help_labels | MODE pro | EMPREINTE c2ae09ecc2 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT « Przewodnik: na jakim etapie jest twój utwór » ellipsized (« … »)
+#17 LAYOUT OVERLAP « Tempo » over « Przewodnik: na jakim etapie jest twój utwór » (20 x 10 dp)
+#17 LAYOUT OVERLAP « Głośności » over « Projekty, pomoc » (64 x 18 dp)
+#17 LAYOUT OVERLAP « Udostępnij » over the touchable « Tryb Pro. Dotknij, aby zmienić tryb. Zmi » (46 x 18 dp)
+#17 LAYOUT OVERLAP « Przewodnik: na jakim etapie jest twój utwór » over the touchable « Ponów » (17 x 36 dp)
+#17 LAYOUT OVERLAP « Przewodnik: na jakim etapie jest twój utwór » over the touchable « Graj » (52 x 36 dp)
+#17 LAYOUT OVERLAP « Przewodnik: na jakim etapie jest twój utwór » over the touchable « Tempo: 120 BPM Zmień tempo » (35 x 36 dp)
+#17 LAYOUT OVERLAP « Kolejność części » over the touchable « Cofnij » (56 x 18 dp)
+#17 LAYOUT OVERLAP « Kolejność części » over the touchable « Ponów » (23 x 18 dp)
+#17 LAYOUT OVERLAP « Ukryj podpisy » over the touchable « Otwórz Przewodnik zwinięte » (69 x 10 dp)
+#17 LAYOUT OVERLAP « 🐞 Zgłoś błąd » over the touchable « Otwórz Przewodnik zwinięte » (64 x 10 dp)
+#17 LAYOUT CONTRAST « Udostępnij » 4.16:1 (needs 4.5:1, 11 sp)
+#17 > touche 196 968
+#17 DOIGT help_labels_hide « Ukryj podpisy »
+#17 AIDE help_labels_hide
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE d9246ea680 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 294 1158
+#18 DOIGT tab_Mix « Miks »
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a22c70e093 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Mój pierwszy bit » ellipsized (« … »)
+#19 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#19 > touche 530 195
+#19 DOIGT help_Mute i solo « Co to jest „Mute i solo”? »
+#19 AIDE help_Mute
+#20 ROUTE dialogue:« Mute i solo » | MODE pro | EMPREINTE bb5edd3bc3 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 502 738
+#20 DOIGT #1257 « Jasne »
+#21 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a22c70e093 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 111 418
+#21 DOIGT solo_0 « Solo ścieżki Perkusja »
+#22 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 930103853c | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT «  · Do poprawy: Zostało włączone solo » ellipsized (« … »)
+#22 > touche 284 1059
+#22 DOIGT thumb_play
+#23 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 97497d03f9 | project=projet-1 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 284 1059
+#23 DOIGT thumb_play
+#24 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 930103853c | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 111 478
+#24 DOIGT solo_0 « Znów słuchaj wszystkich ścieżek »
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a22c70e093 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 84 343
+#25 DOIGT strip_more_0 « Perkusja »
+#26 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8a1513b0b2 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « Perkusja » over the touchable « Zamknij arkusz » (92 x 28 dp)
+#26 LAYOUT OVERLAP « Zamknij » over the touchable « Zamknij arkusz » (55 x 20 dp)
+#26 LAYOUT OVERLAP « Wycisz » over the touchable « Zamknij arkusz » (50 x 20 dp)
+#26 LAYOUT OVERLAP « Solo » over the touchable « Zamknij arkusz » (31 x 20 dp)
+#26 LAYOUT OVERLAP « Głośność » over the touchable « Zamknij arkusz » (71 x 24 dp)
+#26 LAYOUT OVERLAP « +0,0 dB » over the touchable « Zamknij arkusz » (54 x 17 dp)
+#26 LAYOUT OVERLAP « Pan » over the touchable « Zamknij arkusz » (28 x 24 dp)
+#26 LAYOUT OVERLAP « ? » over the touchable « Zamknij arkusz » (7 x 15 dp)
+#26 LAYOUT OVERLAP « Środek » over the touchable « Zamknij arkusz » (48 x 17 dp)
+#26 LAYOUT OVERLAP «  Co gra » over the touchable « Zamknij arkusz » (48 x 20 dp)
+#26 LAYOUT OVERLAP «  Krzywe » over the touchable « Zamknij arkusz » (55 x 20 dp)
+#26 LAYOUT OVERLAP « Efekty » over the touchable « Zamknij arkusz » (43 x 20 dp)
+#26 LAYOUT OVERLAP « Aktywne efekty: 0 z 8 » over the touchable « Zamknij arkusz » (148 x 20 dp)
+#26 LAYOUT OVERLAP « Jeszcze nic: dodaj efekt albo dotknij gotowego klimatu. » over the touchable « Zamknij arkusz » (336 x 18 dp)
+#26 LAYOUT OVERLAP «   Dodaj efekt » over the touchable « Zamknij arkusz » (84 x 20 dp)
+#26 LAYOUT OVERLAP « Gotowe klimaty » over the touchable « Zamknij arkusz » (106 x 20 dp)
+#26 LAYOUT OVERLAP « Dla: Perkusja » over the touchable « Zamknij arkusz » (91 x 20 dp)
+#26 LAYOUT OVERLAP « Ulubione » over the touchable « Zamknij arkusz » (61 x 20 dp)
+#26 LAYOUT OVERLAP « Atmosfera » over the touchable « Zamknij arkusz » (71 x 20 dp)
+#26 LAYOUT OVERLAP « Styl: » over the touchable « Zamknij arkusz » (27 x 18 dp)
+#26 LAYOUT OVERLAP « Acid » over the touchable « Zamknij arkusz » (31 x 20 dp)
+#26 LAYOUT OVERLAP « Techno » over the touchable « Zamknij arkusz » (51 x 20 dp)
+#26 LAYOUT OVERLAP « DnB » over the touchable « Zamknij arkusz » (28 x 20 dp)
+#26 LAYOUT OVERLAP « Dubstep » over the touchable « Zamknij arkusz » (57 x 20 dp)
+#26 LAYOUT OVERLAP « Punch » over the touchable « Zamknij arkusz » (44 x 20 dp)
+#26 LAYOUT OVERLAP « Pompa EDM » over the touchable « Zamknij arkusz » (83 x 20 dp)
+#26 LAYOUT OVERLAP « Chrupiący » over the touchable « Zamknij arkusz » (70 x 20 dp)
+#26 LAYOUT OVERLAP « Taśma Lo-Fi » over the touchable « Zamknij arkusz » (85 x 20 dp)
+#26 LAYOUT OVERLAP « Mały pokój » over the touchable « Zamknij arkusz » (75 x 20 dp)
+#26 LAYOUT OVERLAP « Bez efektu » over the touchable « Zamknij arkusz » (72 x 20 dp)
+#26 LAYOUT OVERLAP « Dźwięk bez zmian: żadnych efektów, makra w spoczynku. » over the touchable « Zamknij arkusz » (353 x 18 dp)
+#26 LAYOUT OVERLAP « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » over the touchable « Zamknij arkusz » (348 x 11 dp)
+#26 LAYOUT CONTRAST « Wycisz » 3.74:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Środek » 1.39:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST «  Co gra » 2.50:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST «  Krzywe » 2.50:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Efekty » 2.58:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Aktywne efekty: 0 z 8 » 2.62:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Jeszcze nic: dodaj efekt albo dotknij gotowego klimatu. » 2.64:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT CONTRAST «   Dodaj efekt » 3.49:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Atmosfera » 1.69:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « DnB » 2.34:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Dźwięk bez zmian: żadnych efektów, makra w spoczynku. » 3.26:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT CONTRAST « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » 2.04:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT LABEL « #1285 » long press without text nor description
+#26 > touche 87 405
+#26 DOIGT help_Miejsce (panorama) « Co to jest „Miejsce (panorama)”? »
+#26 AIDE help_Miejsce
+#27 ROUTE dialogue:help_listen | MODE pro | EMPREINTE 9a6e7492fb | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 305 723
+#27 DOIGT help_listen « ▶ Posłuchaj przykładu »
+#27 AIDE help_listen
+#28 ROUTE dialogue:glossary | MODE pro | EMPREINTE 629b5e685d | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 507 252
+#28 DOIGT glossary_play_pan « Posłuchaj „Miejsce (panorama)” »
+#29 ROUTE dialogue:glossary | MODE pro | EMPREINTE 629b5e685d | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > attends 2
+#30 ROUTE dialogue:glossary | MODE pro | EMPREINTE 629b5e685d | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 507 252
+#30 DOIGT glossary_play_pan « Posłuchaj „Miejsce (panorama)” »
+#31 ROUTE dialogue:glossary | MODE pro | EMPREINTE 629b5e685d | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 RIEN NE CHANGE (3 écrans identiques)
+#31 > retour
+#31 RETOUR
+#32 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8a1513b0b2 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 206 838
+#32 DOIGT help_Klimat efektów « Co to jest „Klimat efektów”? »
+#32 AIDE help_Klimat
+#33 ROUTE dialogue:« Klimat efektów » | MODE pro | EMPREINTE 2d074df67d | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 502 738
+#33 DOIGT #1563 « Jasne »
+#34 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8a1513b0b2 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 470 908
+#34 DOIGT fx_category_Ambiance « Atmosfera »
+#35 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 92cf84cf5d | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « Pod wodą » over the touchable « Zamknij arkusz » (68 x 20 dp)
+#35 LAYOUT OVERLAP « Wielka katedra » over the touchable « Zamknij arkusz » (101 x 20 dp)
+#35 LAYOUT OVERLAP « Odległy » over the touchable « Zamknij arkusz » (53 x 20 dp)
+#35 LAYOUT OVERLAP « Przestrzeń » over the touchable « Zamknij arkusz » (74 x 20 dp)
+#35 LAYOUT OVERLAP « Echo dub » over the touchable « Zamknij arkusz » (64 x 20 dp)
+#35 LAYOUT OVERLAP « Głęboki dub » over the touchable « Zamknij arkusz » (82 x 20 dp)
+#35 LAYOUT OVERLAP « Pluck ping-pong » over the touchable « Zamknij arkusz » (114 x 20 dp)
+#35 LAYOUT CONTRAST « Głęboki dub » 2.04:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Pluck ping-pong » 2.04:1 (needs 4.5:1, 14 sp)
+#35 > appui-long 99 1076
+#35 DOIGT fx_preset_underwater « Pod wodą »
+#36 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 92cf84cf5d | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 99 1076
+#36 DOIGT fx_preset_underwater « Pod wodą »
+#37 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 9b7381c5a1 | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « „Pod wodą” ustawia też: » over the touchable « Zamknij arkusz » (168 x 20 dp)
+#37 LAYOUT OVERLAP « Kolor » over the touchable « Zamknij arkusz » (35 x 20 dp)
+#37 LAYOUT OVERLAP « Ciemny 68 » over the touchable « Zamknij arkusz » (74 x 17 dp)
+#37 LAYOUT OVERLAP « Ruch » over the touchable « Zamknij arkusz » (33 x 20 dp)
+#37 LAYOUT OVERLAP « 55% » over the touchable « Zamknij arkusz » (33 x 17 dp)
+#37 LAYOUT OVERLAP « Przestrzeń » over the touchable « Zamknij arkusz » (71 x 20 dp)
+#37 LAYOUT OVERLAP « 40% » over the touchable « Zamknij arkusz » (33 x 17 dp)
+#37 LAYOUT CONTRAST « 55% » 1.74:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Ulubione » 3.42:1 (needs 4.5:1, 14 sp)
+#37 > attends 2
+#38 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 9b7381c5a1 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 504 108
+#38 DOIGT strip_sheet_close « Zamknij »
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a22c70e093 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 54 1158
+#39 DOIGT tab_Structure « Struktura »
+#40 ROUTE session/tab_Structure | MODE pro | EMPREINTE f856e581b4 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 187 285
+#40 DOIGT help_Utwór « Co to jest „Utwór”? »
+#40 AIDE help_Utw
+#41 ROUTE dialogue:« Utwór » | MODE pro | EMPREINTE 839ea5be94 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 502 738
+#41 DOIGT #1809 « Jasne »
+#42 ROUTE session/tab_Structure | MODE pro | EMPREINTE f856e581b4 | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 96 463
+#42 DOIGT add_part_0 « + A »
+#43 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 4796c46ef4 | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Podążaj » 4.06:1 (needs 4.5:1, 14 sp)
+#43 > touche 210 800
+#43 DOIGT rien
+#44 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 4796c46ef4 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 207 183
+#44 DOIGT structure_parts « Części »
+#45 ROUTE session/tab_Structure | MODE pro | EMPREINTE 833c84b220 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 438 611
+#45 DOIGT dans:part_0
+#46 ROUTE session/tab_Structure | MODE pro | EMPREINTE 530d1d6987 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 93 192
+#46 DOIGT structure_timeline « Oś czasu »
+#47 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 9ac7ee2ad6 | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 414 1158
+#47 DOIGT tab_Live « Live »
+#48 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE ab44d047f8 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Nowa wersja » 3.34:1 (needs 4.5:1, 13 sp)
+#48 > touche 221 268
+#48 DOIGT help_Odpal na i Pola « Co to jest „Odpal na i Pola”? »
+#48 AIDE help_Odpal
+#49 ROUTE dialogue:« Odpal na i Pola » | MODE pro | EMPREINTE c607f8f289 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 502 753
+#49 DOIGT #2528 « Jasne »
+#50 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE ab44d047f8 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 106 268
+#50 DOIGT live_quantum « Odpal na »
+#51 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE f68cc65236 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 118 268
+#51 DOIGT live_quantum « Odpal na »
+#52 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 3c831b4894 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 118 268
+#52 DOIGT live_quantum « Odpal na »
+#53 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 53886d60d3 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 118 268
+#53 DOIGT live_quantum « Odpal na »
+#54 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE ab909d8fb0 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 118 268
+#54 DOIGT live_quantum « Odpal na »
+#55 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE ab44d047f8 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 540 269
+#55 DOIGT live_cases_more
+#56 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d566cb6107 | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 51 369
+#56 DOIGT help_Klocki i pola « Co to jest „Klocki i pola”? »
+#56 AIDE help_Klocki
+#57 ROUTE dialogue:« Klocki i pola » | MODE pro | EMPREINTE e76d817f44 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 502 768
+#57 DOIGT #2570 « Jasne »
+#58 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d566cb6107 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > glisse 500 600 150 600
+#58 DOIGT live_pad_inst:0_2 « Synth · C · pusty »
+#59 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d566cb6107 | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 51 468
+#59 DOIGT live_row_0 « A »
+#60 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 51 945
+#60 DOIGT live_stop_all « ■ Wszystko »
+#61 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 > attends 3
+#62 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 51 945
+#62 DOIGT live_stop_all « ■ Wszystko »
+#63 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 RIEN NE CHANGE (3 écrans identiques)
+#63 > attends 4
+#64 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#64 SON Son : la musique du projet joue en boucle.
+#64 RIEN NE CHANGE (3 écrans identiques)
+#64 > touche 175 945
+#64 DOIGT live_stop_drums « Zatrzymaj ścieżkę »
+#65 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#65 SON Son : la musique du projet joue en boucle.
+#65 > attends 3
+#66 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE cd9dfc8e9c | project=projet-1 no tuto
+#66 SON Son : la musique du projet joue en boucle.
+#66 > touche 123 42
+#66 DOIGT live_play « Stop »
+#67 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d566cb6107 | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 534 1158
+#67 DOIGT tab_Plus « Więcej »
+#68 ROUTE plus/tab_Plus | MODE pro | EMPREINTE eff4d0f3ba | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 294 645
+#68 DOIGT plus_glossary « Słowa muzyki do posłuchania »
+#69 ROUTE dialogue:glossary | MODE pro | EMPREINTE 8b81b620f8 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « Kick » 3.10:1 (needs 4.5:1, 16 sp)
+#69 LAYOUT CONTRAST « Werbel » 3.10:1 (needs 4.5:1, 16 sp)
+#69 LAYOUT CONTRAST « Hi-hat » 4.18:1 (needs 4.5:1, 16 sp)
+#69 LAYOUT CONTRAST « Clap » 3.10:1 (needs 4.5:1, 16 sp)
+#69 LAYOUT CONTRAST « INSTRUMENTY » 3.52:1 (needs 4.5:1, 12 sp)
+#69 LAYOUT CONTRAST « Bas » 2.04:1 (needs 4.5:1, 16 sp)
+#69 LAYOUT CONTRAST « Najniższy instrument po kicku: gra podstawowe nuty akordów i rusza ciało. » 2.04:1 (needs 4.5:1, 14 sp)
+#69 > touche 507 300
+#69 DOIGT glossary_play_kick « Posłuchaj „Kick” »
+#70 ROUTE dialogue:glossary | MODE pro | EMPREINTE 8b81b620f8 | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « Hi-hat » 3.67:1 (needs 4.5:1, 16 sp)
+#70 > retour
+#70 RETOUR
+#71 ROUTE plus/tab_Plus | MODE pro | EMPREINTE eff4d0f3ba | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 294 420
+#71 DOIGT tool_Aide « Pomoc »
+#72 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE da267fdee6 | project=projet-1 no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 174 1158
+#72 DOIGT tab_Sons « Dźwięki »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 69f9609cf0 | project=projet-1 no tuto
+#73 SON Son : rien ne joue.
+#73 > glisse 294 400 294 900
+#73 DOIGT rien
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 69f9609cf0 | project=projet-1 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 84 396
+#74 DOIGT pad_0 « Kick »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE affd4443e4 | project=projet-1 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST «  Nagraj moje pady » 2.78:1 (needs 4.5:1, 14 sp)
+#75 > touche 245 255
+#75 DOIGT sons_Acide « Acid 303 »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE a53ffaa80e | project=projet-1 no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « Linia basu » 4.17:1 (needs 4.5:1, 12 sp)
+#76 LAYOUT CONTRAST « 8 » 3.92:1 (needs 4.5:1, 14 sp)
+#76 LAYOUT CONTRAST « D » 4.28:1 (needs 4.5:1, 12 sp)
+#76 LAYOUT CONTRAST « ↑ » 2.62:1 (needs 4.5:1, 11 sp)
+#76 LAYOUT CONTRAST « G » 4.28:1 (needs 4.5:1, 12 sp)
+#76 LAYOUT CONTRAST « ↑⌒ » 2.73:1 (needs 4.5:1, 11 sp)
+#76 LAYOUT CONTRAST « D# » 4.24:1 (needs 4.5:1, 12 sp)
+#76 > touche 387 750
+#76 DOIGT help_Acid 303 « Co to jest „Acid 303”? »
+#76 AIDE help_Acid
+#77 ROUTE dialogue:help_listen | MODE pro | EMPREINTE 9033547d73 | project=projet-1 no tuto
+#77 SON Son : rien ne joue.
+#77 > touche 502 738
+#77 DOIGT #3953 « Jasne »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE a53ffaa80e | project=projet-1 no tuto
+#78 SON Son : rien ne joue.
+#78 > glisse 294 900 294 350
+#78 DOIGT rien
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE 2ba1861feb | project=projet-1 no tuto
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « D » 4.24:1 (needs 4.5:1, 12 sp)
+#79 LAYOUT CONTRAST « ↑ » 2.42:1 (needs 4.5:1, 11 sp)
+#79 LAYOUT CONTRAST « G » 4.24:1 (needs 4.5:1, 12 sp)
+#79 LAYOUT CONTRAST « ↑⌒ » 2.49:1 (needs 4.5:1, 11 sp)
+#79 LAYOUT CONTRAST « ↑ » 3.79:1 (needs 4.5:1, 11 sp)
+#79 > touche 185 726
+#79 DOIGT help_Krok basu « Co to jest „Krok basu”? »
+#79 AIDE help_Krok
+#80 ROUTE dialogue:« Krok basu » | MODE pro | EMPREINTE abedd16f28 | project=projet-1 no tuto
+#80 SON Son : rien ne joue.
+#80 > touche 502 738
+#80 DOIGT #3967 « Jasne »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 2ba1861feb | project=projet-1 no tuto
+#81 SON Son : rien ne joue.
+#81 > glisse 294 900 294 500
+#81 DOIGT acid_key_5 « F »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 8d8b442cee | project=projet-1 no tuto
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST «  Nagraj gałki » 2.78:1 (needs 4.5:1, 14 sp)
+#82 > touche 209 642
+#82 DOIGT dans:acid « Akcent »
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE eb0de28508 | project=projet-1 no tuto
+#83 SON Son : rien ne joue.
+#83 > glisse 294 300 294 1000
+#83 DOIGT rien
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE eb0de28508 | project=projet-1 no tuto
+#84 SON Son : rien ne joue.
+#84 > glisse 294 300 294 1000
+#84 DOIGT rien
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE eb0de28508 | project=projet-1 no tuto
+#85 SON Son : rien ne joue.
+#85 RIEN NE CHANGE (3 écrans identiques)
+#85 > touche 400 255
+#85 DOIGT sons_Audio « Wokal »
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE ca461dc85c | project=projet-1 no tuto
+#86 SON Son : rien ne joue.
+#86 > touche 265 471
+#86 DOIGT help_Ścieżka audio « Co to jest „Ścieżka audio”? »
+#86 AIDE help_
+#87 ROUTE dialogue:« Ścieżka audio » | MODE pro | EMPREINTE 8d23af66fc | project=projet-1 no tuto
+#87 SON Son : rien ne joue.
+#87 LAYOUT CONTRAST « Jasne » 3.10:1 (needs 4.5:1, 14 sp)
+#87 > touche 502 753
+#87 DOIGT #4031 « Jasne »
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE ca461dc85c | project=projet-1 no tuto
+#88 SON Son : rien ne joue.
+#88 > touche 294 766
+#88 DOIGT audio_add «   Ścieżka audio »
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE c9d1be34b6 | project=projet-1 no tuto
+#89 SON Son : rien ne joue.
+#89 > touche 529 255
+#89 DOIGT sons_Remix « Remix »
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE 1f0b77bd9b | project=projet-1 no tuto
+#90 SON Son : rien ne joue.
+#90 > touche 324 357
+#90 DOIGT help_Remix « Co to jest „Remix”? »
+#90 AIDE help_Remix
+#91 ROUTE dialogue:« Remix » | MODE pro | EMPREINTE 4f4bb5eb95 | project=projet-1 no tuto
+#91 SON Son : rien ne joue.
+#91 > touche 502 768
+#91 DOIGT #4132 « Jasne »
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE 1f0b77bd9b | project=projet-1 no tuto
+#92 SON Son : rien ne joue.
+#92 > touche 294 679
+#92 DOIGT remix_pick « Wybierz piosenkę »
+#93 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE 19f20f7da1 | project=projet-1 no tuto
+#93 SON Son : rien ne joue.
+#93 LAYOUT CONTRAST « Pobierz, potem wybierz piosenkę » 1.89:1 (needs 4.5:1, 14 sp)
+#93 > touche 495 804
+#93 DOIGT remix_model_ask_later « Później »
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 1f0b77bd9b | project=projet-1 no tuto
+#94 SON Son : rien ne joue.
+#94 > touche 414 1158
+#94 DOIGT tab_Live « Live »
+#95 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 3f2b7f39b0 | project=projet-1 no tuto
+#95 SON Son : rien ne joue.
+#95 > touche 223 1044
+#95 DOIGT live_tab_Effets « Efekty »
+#96 ROUTE live_screen/tab_Live | MODE pro | EMPREINTE aa155b4f1f | project=projet-1 no tuto
+#96 SON Son : rien ne joue.
+#96 > touche 543 114
+#96 DOIGT help_labels_button « Podpisz ekran »
+#96 AIDE help_labels_button
+#97 ROUTE help_labels | MODE pro | EMPREINTE c20b9ad461 | project=projet-1 no tuto
+#97 SON Son : rien ne joue.
+#97 LAYOUT OVERLAP « Nagrywaj » over the touchable « Nagraj występ » (52 x 18 dp)
+#97 LAYOUT OVERLAP « Graj od części » over the touchable « Graj od części » (90 x 18 dp)
+#97 LAYOUT OVERLAP « Kiedy rusza » over the touchable « Co to jest „Klocki i pola”? » (17 x 5 dp)
+#97 LAYOUT OVERLAP « Wycisz » over the touchable « Perkusja · A · gotowe » (47 x 15 dp)
+#97 LAYOUT OVERLAP « Zatrzymaj tę ścieżkę » over the touchable « Perkusja · C · pusty » (77 x 5 dp)
+#97 LAYOUT OVERLAP « Zatrzymaj tę ścieżkę » over the touchable « Acid 303 · C · pusty » (23 x 5 dp)
+#97 LAYOUT OVERLAP « Zatrzymaj tę ścieżkę » over the touchable « Perkusja · D · pusty » (77 x 9 dp)
+#97 LAYOUT OVERLAP « Zatrzymaj tę ścieżkę » over the touchable « Acid 303 · D · pusty » (23 x 9 dp)
+#97 LAYOUT OVERLAP « Graj część » over the touchable « Graj » (8 x 14 dp)
+#97 > touche 196 968
+#97 DOIGT help_labels_hide « Ukryj podpisy »
+#97 AIDE help_labels_hide
+#98 ROUTE live_screen/tab_Live | MODE pro | EMPREINTE aa155b4f1f | project=projet-1 no tuto
+#98 SON Son : rien ne joue.
+#98 > touche 534 1158
+#98 DOIGT tab_Plus « Więcej »
+#99 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE da267fdee6 | project=projet-1 no tuto
+#99 SON Son : rien ne joue.
+#99 > touche 294 873
+#99 DOIGT rien
+#100 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE da267fdee6 | project=projet-1 no tuto
+#100 SON Son : rien ne joue.
+#100 > touche 294 180
+#100 DOIGT plus_back « Więcej »
+#101 ROUTE plus/tab_Plus | MODE pro | EMPREINTE eff4d0f3ba | project=projet-1 no tuto
+#101 SON Son : rien ne joue.
+#101 > touche 294 873
+#101 DOIGT plus_mode « Przełącz na tryb prosty »
+#102 ROUTE plus | MODE simple | EMPREINTE d7cf10b619 | project=projet-1 no tuto
+#102 SON Son : rien ne joue.
+#102 > touche 174 1158
+#102 DOIGT tab_simple_Rythme « Rytm »
+#103 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f3f147d2d4 | project=projet-1 no tuto
+#103 SON Son : rien ne joue.
+#103 > glisse 294 900 294 450
+#103 DOIGT rien
+#104 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7c89e05bfe | project=projet-1 no tuto
+#104 SON Son : rien ne joue.
+#104 LAYOUT CONTRAST « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » 3.52:1 (needs 4.5:1, 13 sp)
+#104 > touche 312 393
+#104 DOIGT fold_Pas « KROKI: BĘBEN BASOWY 1 »
+#105 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE a2faca7c4c | project=projet-1 no tuto
+#105 SON Son : rien ne joue.
+#105 LAYOUT CONTRAST « ? » 4.10:1 (needs 4.5:1, 12 sp)
+#105 > touche 254 522
+#105 DOIGT help_Sampel pada « Co to jest „Sampel pada”? »
+#105 AIDE help_Sampel
+#106 ROUTE dialogue:« Sampel pada » | MODE simple | EMPREINTE 70bb7ddff1 | project=projet-1 no tuto
+#106 SON Son : rien ne joue.
+#106 LAYOUT CONTRAST « Dźwięk, który gra pad, gdy go dotkniesz. „Sampel” to nagrany dźwięk, który się odtwarza: kick, głos, kawałek piosenki. Weź go z biblioteki, zaimportuj albo nagraj mikrofonem; bez sampla pad gra dźwięk automatu perkusyjnego. » 3.86:1 (needs 4.5:1, 14 sp)
+#106 > touche 502 768
+#106 DOIGT #5787 « Jasne »
+#107 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE a2faca7c4c | project=projet-1 no tuto
+#107 SON Son : rien ne joue.
+#107 > touche 294 634
+#107 DOIGT open_library «  Zmień dźwięk »
+#108 ROUTE dialogue:library | MODE simple | EMPREINTE 635f1ea5bd | project=projet-1 no tuto
+#108 SON Son : rien ne joue.
+#108 LAYOUT CONTRAST « Wczytuję listę… » 3.33:1 (needs 4.5:1, 16 sp)
+#108 > touche 308 789
+#108 DOIGT help_Paczka dźwięków « Co to jest „Paczka dźwięków”? »
+#108 AIDE help_Paczka
+#109 ROUTE dialogue:« Paczka dźwięków » | MODE simple | EMPREINTE db1120aa10 | project=projet-1 no tuto
+#109 SON Son : rien ne joue.
+#109 > touche 502 753
+#109 DOIGT #6406 « Jasne »
+#110 ROUTE dialogue:library | MODE simple | EMPREINTE 47f115641d | project=projet-1 no tuto
+#110 SON Son : rien ne joue.
+#110 LAYOUT CONTRAST «  Pobierz wszystko (paczki: 68, 288,4 MB) » 2.13:1 (needs 4.5:1, 14 sp)
+#110 LAYOUT CONTRAST « dźwięki: 128 · 3 MB » 3.26:1 (needs 4.5:1, 13 sp)
+#110 LAYOUT CONTRAST « Pobierz » 4.21:1 (needs 4.5:1, 14 sp)
+#110 LAYOUT CONTRAST « Pobierz » 2.04:1 (needs 4.5:1, 14 sp)
+#110 > glisse 294 1000 294 350
+#110 DOIGT rien
+#111 ROUTE dialogue:library | MODE simple | EMPREINTE 115675d98b | project=projet-1 no tuto
+#111 SON Son : rien ne joue.
+#111 LAYOUT CONTRAST « Pobieraj tylko, jeśli chcesz; każdą paczkę usuniesz jednym dotknięciem, żeby zwolnić miejsce. » 2.43:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « Nowoczesne 808 » 2.68:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « Pobierz » 1.60:1 (needs 4.5:1, 14 sp)
+#111 LAYOUT CONTRAST « Acid house » 2.42:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « Acid techno » 3.33:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « Afrobeats » 1.26:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « dźwięki: 108 · 2 MB » 1.77:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « dźwięki: 104 · 2 MB » 3.31:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « Amapiano » 1.26:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « dźwięki: 104 · 2 MB » 2.19:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « Pobierz » 1.70:1 (needs 4.5:1, 14 sp)
+#111 LAYOUT CONTRAST « Efekty: ciało, głos i kroki » 2.74:1 (needs 4.5:1, 16 sp)
+#111 LAYOUT CONTRAST « dźwięki: 123 · 5 MB » 2.04:1 (needs 4.5:1, 13 sp)
+#111 > touche 470 479
+#111 DOIGT library_download_acid_house « Pobierz »
+#112 ROUTE dialogue:library | MODE simple | EMPREINTE 017cd8c04e | project=projet-1 no tuto
+#112 SON Son : rien ne joue.
+#112 LAYOUT CONTRAST « Anuluj » 2.04:1 (needs 4.5:1, 14 sp)
+#112 > attends 8
+#113 ROUTE dialogue:library | MODE simple | EMPREINTE 48acc91ae9 | project=projet-1 no tuto
+#113 SON Son : rien ne joue.
+#113 LAYOUT CONTRAST « Dotknij ☆ przy dźwięku, aby znaleźć go w „Ulubionych”. » 3.74:1 (needs 4.5:1, 13 sp)
+#113 LAYOUT CONTRAST « Dotknij dźwięku, żeby go usłyszeć, „Użyj”, żeby dać go na pad 1 (Bęben basowy 1). » 2.44:1 (needs 4.5:1, 13 sp)
+#113 LAYOUT CONTRAST «  Pobierz wszystko (paczki: 67, 286,5 MB) » 1.96:1 (needs 4.5:1, 14 sp)
+#113 LAYOUT CONTRAST « Acid techno » 1.75:1 (needs 4.5:1, 16 sp)
+#113 LAYOUT CONTRAST « Pobierz » 1.77:1 (needs 4.5:1, 14 sp)
+#113 LAYOUT CONTRAST « Afro house » 2.95:1 (needs 4.5:1, 16 sp)
+#113 LAYOUT CONTRAST « dźwięki: 100 · 2 MB » 3.28:1 (needs 4.5:1, 13 sp)
+#113 LAYOUT CONTRAST « Afrobeats » 2.43:1 (needs 4.5:1, 16 sp)
+#113 LAYOUT CONTRAST « dźwięki: 108 · 2 MB » 1.76:1 (needs 4.5:1, 13 sp)
+#113 LAYOUT CONTRAST « Pobierz » 2.09:1 (needs 4.5:1, 14 sp)
+#113 LAYOUT CONTRAST « dźwięki: 120 · 3 MB » 2.04:1 (needs 4.5:1, 13 sp)
+#113 > touche 500 662
+#113 DOIGT library_delete_acid_house « Usuń »
+#114 ROUTE dialogue:library_delete_confirm | MODE simple | EMPREINTE b56a1cccf6 | project=projet-1 no tuto
+#114 SON Son : rien ne joue.
+#114 LAYOUT CONTRAST « Anuluj » 1.99:1 (needs 4.5:1, 14 sp)
+#114 LAYOUT CONTRAST « Usuń » 1.99:1 (needs 4.5:1, 14 sp)
+#114 > touche 397 738
+#114 DOIGT #6440 « Anuluj »
+#115 ROUTE dialogue:library | MODE simple | EMPREINTE 48acc91ae9 | project=projet-1 no tuto
+#115 SON Son : rien ne joue.
+#115 > fin
+#115 FIN : fin

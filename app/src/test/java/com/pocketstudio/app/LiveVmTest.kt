@@ -479,7 +479,7 @@ class LiveVmTest {
         File(app.filesDir, "projects").deleteRecursively()
         app.filesDir.listFiles()?.filter { it.name.startsWith("live-take") }?.forEach { it.delete() }
         val owner = androidx.lifecycle.ViewModelStore()
-        val vm = androidx.lifecycle.ViewModelProvider(owner, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(app))[RhythmViewModel::class.java]
+        val vm = androidx.lifecycle.ViewModelProvider(owner, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory(app))[RhythmViewModel::class.java]
         vm.toggleHit(0, 0)
         vm.duplicateScene()
         vm.toggleHit(2, 4)

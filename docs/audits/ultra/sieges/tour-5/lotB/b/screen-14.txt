@@ -1,0 +1,19 @@
+Écran 14 (588x1278)
+texte « Uchwyt: przesuń w dół, aby zamknąć » @ 294,36
+texte « Dźwięk: Synth » @ 140,93
+bouton « Zamknij » @ 504,120
+texte « Dotknij dźwięku: zastąpi dźwięk tej ścieżki w całym utworze. » @ 234,141
+bouton « Poprzedni folder » @ 60,219
+texte « Basy » @ 330,219
+bouton « Okrągły bas Jasny · trzymany » @ 294,310
+bouton « Sub bas Miękki · trzymany » @ 294,409
+bouton « Bas reese Jasny · trzymany » @ 294,508
+bouton « Nowoczesny reese Jasny · 5 głosów · trzymany » @ 294,607
+bouton « Bas wobble Jasny · trzymany » @ 294,706
+bouton « Mówiący bas Jasny · trzymany » @ 294,805
+bouton « Bas growl Jasny · 3 głosy · trzymany » @ 294,904
+bouton « Reese DnB Jasny · 3 głosy · trzymany » @ 294,1003
+bouton « Bas riddim Pusty · trzymany » @ 294,1102
+bouton « Bas neuro Jasny · 3 głosy · trzymany » @ 294,1201
+bouton « Czysty sub Miękki · trzymany » @ 294,1267
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

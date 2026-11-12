@@ -2,10 +2,15 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.shrinkToFit
+import com.pocketstudio.ui.pressScale
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -190,6 +195,8 @@ class SessionActions(
     val addPart: (Int) -> Unit = {},
     /** A part playing scene (second) inserted at place (first). */
     val insertPart: (Int, Int) -> Unit = { _, _ -> },
+    /** n° 24: a new part on a scene of its own (first: a copy of the scene shown, else empty), at place (second; null: the end). */
+    val newPart: (Boolean, Int?) -> Unit = { _, _ -> },
     val duplicatePart: (Int) -> Unit = {},
     /** Part (first) moved to place (second). */
     val movePart: (Int, Int) -> Unit = { _, _ -> },
@@ -280,7 +287,7 @@ fun SessionScreen(
 private fun LiveEntry(open: () -> Unit) {
     Button(
         onClick = open,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("open_live"),
+        modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 56.dp).testTag("open_live"),
         colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent),
     ) {
         Icon(Icons.Filled.PlayArrow, contentDescription = null)
@@ -391,13 +398,28 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         // Phase 37: the song's chords, every part, a touch from changing them all.
         if (ui.song.isNotEmpty() && ui.chords.isNotEmpty()) SongChordsStrip(ui.chords, actions.openChords)
         ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
+        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
+        // after an add they are brought back into view, never left under the bottom of the screen.
+        val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        var added by remember { mutableStateOf(false) }
+        LaunchedEffect(ui.song.size) {
+            if (added) {
+                added = false
+                kotlinx.coroutines.delay(50)
+                runCatching { addRow.bringIntoView() }
+            }
+        }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.bringIntoViewRequester(addRow).spot("song_add").testTag("song_add"),
+        ) {
             ui.scenes.forEachIndexed { i, s ->
-                if (s != null) OutlinedButton(onClick = { actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
+                if (s != null) OutlinedButton(onClick = { added = true; actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
                     Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
                 }
             }
+            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> added = true; actions.newPart(copy, null) }
         }
         // ▶ in the top bar plays the song (a part touched above plays from it): no second button here.
         // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.
@@ -439,6 +461,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
             title = tr("Insérer après la partie %d", after + 1),
             ui = ui,
             onPick = { scene -> actions.insertPart(after + 1, scene); inserting = null },
+            onNew = { copy -> actions.newPart(copy, after + 1); inserting = null },
             onDismiss = { inserting = null },
         )
     }
@@ -446,6 +469,22 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
 
 /** "1:05" from seconds. */
 private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
+
+/**
+ * Audit ultra round 1, n° 24 (seat B b gave up: « je ne trouvais nulle part comment créer une deuxième partie »):
+ * « + Nouvelle partie » beside the parts already there: a copy of the part shown to change (the usual way to
+ * a variation), or an empty one. The screens then show it.
+ */
+@Composable
+private fun NewPartButtons(ui: SessionScreenUi, enabled: Boolean, onNew: (Boolean) -> Unit) {
+    val free = ui.scenes.count { it == null || it.isEmpty } > 0 || ui.scenes.size < Scene.MAX
+    OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
+        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)), maxLines = 1, softWrap = false)
+    }
+    OutlinedButton(onClick = { onNew(false) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_empty")) {
+        Text(tr("+ Nouvelle partie vide"), maxLines = 1, softWrap = false)
+    }
+}
 
 /**
  * Where the song is: the time gone and the whole length, the bar and beat, and a line over the
@@ -457,13 +496,14 @@ private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
     val spb = ui.stepsPerBar
     val totalSteps = ui.partStarts.last().coerceAtLeast(1)
     val beatSeconds = 60.0 / ui.tempoBpm
-    val total = (totalSteps / 4 * beatSeconds).toInt()
+    // n° 23: rounded as the home and « Mes projets » round it (SongLength), not cut (« 0:04 » here, « 0:05 » there).
+    val total = com.pocketstudio.model.SongLength.seconds(totalSteps.toLong(), ui.tempoBpm)
     val beat by remember(ui.songStep) { derivedStateOf { ui.songStep().let { if (it < 0) -1 else it / 4 } } }
     val playing = ui.playing && beat >= 0
     Row(Modifier.fillMaxWidth().testTag("song_clock"), verticalAlignment = Alignment.CenterVertically) {
         Text(
             if (playing) clock((beat * beatSeconds).toInt()) + " / " + clock(total)
-            else (if (totalBars == 1) tr("1 mesure") else tr("%d mesures", totalBars)) + " · " + clock(total),
+            else trCount(totalBars, "1 mesure", "%d mesures") + " · " + clock(total),
             style = MonoStyle, fontSize = if (playing) 18.sp else MonoStyle.fontSize,
             color = if (playing) Neon.TextPrimary else Neon.TextSecondary, modifier = Modifier.weight(1f),
         )
@@ -474,7 +514,7 @@ private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
     }
     val track = Neon.SurfaceHigh
     val done = Neon.Magenta
-    val tick = Neon.Outline
+    val tick = Neon.Outline.copy(alpha = 0.55f)
     val head = Neon.TextPrimary
     val starts = ui.partStarts
     androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(14.dp).testTag("song_progress")) {
@@ -517,6 +557,7 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     val start = ui.partStarts.getOrElse(i) { 0 }
     val length = ui.partLengths.getOrElse(i) { 1 }.coerceAtLeast(1)
     var sheetOpen by rememberSaveable { mutableStateOf(false) }
+    var renamePart by rememberSaveable { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().clip(shape)
@@ -549,14 +590,16 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                     ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     color = if (active) Neon.Magenta else Neon.TextPrimary,
                 )
-                Text(
-                    (if (part.bars == null) "× ${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)) +
+                // Audit stage 1: smaller before its end is lost (« · joue » dropped in 12 languages on a phone).
+                com.pocketstudio.ui.FitText(
+                    // (Non-breaking spaces inside « × 2 » and « 2 mes. »: two lines break between them, never inside.)
+                    (if (part.bars == null) "×\u00A0${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)).replace(' ', '\u00A0') +
                         (if (part.mixed) "  ·  " + tr("mélange") else "") + when {
                         active -> "  ·  " + tr("joue")
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
                     },
-                    style = MonoStyle, maxLines = 1,
+                    style = MonoStyle, maxLines = 2, min = 11.sp,
                     color = when {
                         next -> Neon.Amber
                         active -> Neon.Magenta
@@ -585,10 +628,13 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                     duplicate = if (!full) ({ actions.duplicatePart(i) }) else null,
                     insertAfter = if (!full) ({ insertAfter(i) }) else null,
                     remove = { actions.removePart(i) },
+                    rename = { renamePart = true },
                 ),
             )
         }
     }
+    // Round 3, n° 35: the part's name, from its own sheet (its brick's name: every part of that brick is renamed).
+    if (renamePart) RenameSceneDialog(part.scene, ui.label(part.scene), onDone = { label -> actions.rename(part.scene, label); renamePart = false }, onDismiss = { renamePart = false })
 }
 
 @Composable
@@ -726,7 +772,7 @@ private fun MoveSceneDialog(from: Int, to: Int, ui: SessionScreenUi, onChoose: (
         title = { Text(tr("Déplacer %s sur %s", ui.title(from), ui.title(to))) },
         text = {
             Text(
-                tr("La partie %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi son automation et ses prises audio (Annuler les rend)."),
+                tr("La partie %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi ses courbes et ses prises audio (Annuler les rend)."),
                 style = MaterialTheme.typography.bodyMedium,
             )
         },
@@ -762,8 +808,10 @@ private fun SceneAction(
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(short, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, softWrap = false,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        // A long word (German « Umbenennen ») a little smaller rather than cut.
+        val style = MaterialTheme.typography.labelMedium
+        Text(short, style = style, color = tint, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.padding(horizontal = 2.dp),
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize))
     }
 }
 
@@ -825,7 +873,9 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
             .testTag("scene_$i"),
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Audit stage 1: a short tile (a phone lying down, a big font, a tall script) shows its three lines
+        // a little smaller instead of losing the last one (« 1 batt » cut under « Intro »).
+        Column(Modifier.shrinkToFit(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp)
             if (label.isNotBlank()) {
                 Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp)
@@ -855,15 +905,13 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Scene.SECTIONS.forEach { s ->
                         FilterChip(
-                            selected = name == s, onClick = { name = s }, label = { Text(tr(s)) },
+                            selected = name == s, onClick = { name = s }, label = { Text(Scene.sectionName(s)) },
                             colors = pillColors(), modifier = Modifier.testTag("section_$s"),
                         )
                     }
                 }
-                OutlinedTextField(
-                    value = name, onValueChange = { name = it.take(Scene.MAX_LABEL) }, singleLine = true,
-                    label = { Text(tr("Ou un autre nom")) }, modifier = Modifier.fillMaxWidth().testTag("scene_name_field"),
-                )
+                // n° 26: the name selected to be typed over, its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
             }
         },
         confirmButton = { TextButton(onClick = { onDone(name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
@@ -878,7 +926,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
 
 /** Picks one of the scenes in use (to insert it in the song). */
 @Composable
-private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) -> Unit, onDismiss: () -> Unit) {
+private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) -> Unit, onNew: (Boolean) -> Unit, onDismiss: () -> Unit) {
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
@@ -889,6 +937,8 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
                         Text(ui.title(i), maxLines = 1, softWrap = false)
                     }
                 }
+                // n° 24 (seat B b: « seule la partie A est proposée »): a new part, here too.
+                NewPartButtons(ui, enabled = true, onNew)
             }
         },
         confirmButton = {},

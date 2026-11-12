@@ -1,0 +1,4 @@
+Écran 35 (540x1170)
+texte « Allow BenStudio to send you notifications? » @ 270,514
+bouton « Allow » @ 270,603
+bouton « Don't allow » @ 270,675

@@ -1,0 +1,46 @@
+Écran 19 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+case « No limiter (for mastering) » @ 195,145
+texte « Loop length » @ 101,185
+case « 1 bar » @ 90,248
+case « 2 » @ 184,248
+case « 4 » @ 265,248
+case « 8 » @ 346,248
+case « 16 » [sélectionné] @ 427,248
+bouton « Final file: 48 kHz · 24 bits » @ 191,332
+bouton « ? » (nom « What is “Final file”? ») @ 361,332
+bouton « Export the notes as a MIDI file » @ 294,416
+bouton « Export 16 bars » @ 294,500
+texte « Saved in Music › BenStudio: My-first-beat-loop-club-20261105-211525.wav » @ 294,575
+texte « ✓ Ready to share » @ 131,629
+texte « Length: 33 s » @ 99,660
+texte « Level: on target (Club) » @ 144,690
+texte « Peak: under the limit, no clipping » @ 191,720
+texte « WAV, 48 kHz, 24-bit » @ 134,750
+texte « −8.0 LUFS integrated · peak −4.2 dBTP » @ 219,797
+bouton « ? » (nom « What is “Perceived loudness (LUFS)”? ») @ 418,797
+texte « Target: Club · −8 LUFS » @ 145,844
+bouton « Share » @ 294,906
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 27 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

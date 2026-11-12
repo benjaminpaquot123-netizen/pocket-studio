@@ -9,7 +9,7 @@
    "target": "song",
    "kind": "decide",
    "title": "Des courbes dépassent la fin du morceau",
-   "why": "Le morceau a été raccourci et ses courbes n'ont pas suivi : un changement prévu au Drop tombe ailleurs.",
+   "why": "Le morceau a été raccourci et ses courbes n'ont pas suivi : un changement prévu pour le grand moment tombe ailleurs.",
    "proposals": [
     {
      "id": "curves",

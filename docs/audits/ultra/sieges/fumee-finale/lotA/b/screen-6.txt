@@ -1,0 +1,20 @@
+Écran 6 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 2 sur 10 · Lo-fi hip-hop » @ 157,69
+texte « Changer » @ 400,120
+texte « Ce morceau sera en mode Simple. » @ 181,120
+bouton « Créer tout de suite avec les choix conseillés » @ 294,228
+titre « DURÉE DU MORCEAU » [état « Déplié »] @ 173,324
+texte « Court environ 50 s » @ 165,415
+texte « Complet environ 3 min » [sélectionné] @ 423,415
+texte « Le morceau entier, avec ses parties qui reviennent, comme un vrai titre. » @ 294,516
+texte « Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège. » @ 294,645
+titre « LES VRAIS SONS DU STYLE » [état « Déplié »] @ 206,765
+texte « Pour que ça sonne vraiment Lo-fi hip-hop : Lo-fi hip-hop (3,1 Mo). « Fais-moi un morceau » prendra ses sons dedans. » @ 294,840
+bouton « Télécharger les sons du style » @ 294,933
+texte « Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style. » @ 294,1038
+choix « Sombre / épique Des accords mineurs : mystérieux, intenses ou un peu tristes. » [coupé] @ 294,1132
+icône ▶ @ 78,1152
+bouton « Retour » @ 151,1224
+bouton « Suivant » @ 436,1224

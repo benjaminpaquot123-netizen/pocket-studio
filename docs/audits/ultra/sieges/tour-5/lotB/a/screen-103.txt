@@ -1,0 +1,52 @@
+Écran 103 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+bouton « PAS : BORD DE CAISSE » [état « Déplié »] @ 139,322
+bouton « ? » (nom « Qu'est-ce que « Pas » ? ») @ 214,308
+case « Tous les pads » @ 391,308
+texte « Bord de caisse » @ 193,416
+touchable « 1 » (nom « Pas 1 ») [état « vide »] @ 70,499
+touchable « Pas 2 » [état « vide »] @ 133,499
+touchable « Pas 3 » [état « vide »] @ 197,500
+touchable « Pas 4 » [état « coup, force 100 % »] @ 261,500
+touchable « 2 » (nom « Pas 5 ») [état « vide »] @ 325,500
+touchable « Pas 6 » [état « vide »] @ 389,500
+touchable « Pas 7 » [état « coup, force 100 % »] @ 453,500
+touchable « Pas 8 » [état « vide »] @ 517,500
+touchable « 3 » (nom « Pas 9 ») [état « vide »] @ 70,578
+touchable « Pas 10 » [état « vide »] @ 133,578
+touchable « Pas 11 » [état « coup, force 100 % »] @ 197,579
+touchable « Pas 12 » [état « vide »] @ 261,579
+touchable « 4 » (nom « Pas 13 ») [état « vide »] @ 325,579
+touchable « Pas 14 » [état « coup, force 100 % »] @ 389,579
+touchable « Pas 15 » [état « vide »] @ 453,579
+touchable « Pas 16 » [état « vide »] @ 517,579
+texte « Remplir » @ 110,664
+bouton « tout » @ 232,664
+bouton « 1/2 » @ 326,664
+bouton « 1/4 » @ 411,664
+bouton « ◀ » @ 492,664
+bouton « ▶ » @ 78,722
+bouton « Effacer » @ 198,722
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Le stab Chapitre 6/15 · Étape 1/1 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « Bravo, chapitre fini ! » (nom « Déplier ») @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

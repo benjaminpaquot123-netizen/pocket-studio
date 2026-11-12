@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-5/lotB/c
+rejeu.n=40
+rejeu.attendu=curseur « Swing »

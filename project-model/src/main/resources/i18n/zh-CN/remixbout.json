@@ -1,0 +1,15 @@
+{
+  "Un bout": "单个片段",
+  "Début du bout": "片段开始",
+  "Fin du bout": "片段结束",
+  "Avancer d'un temps": "后移一拍",
+  "Reculer d'un temps": "前移一拍",
+  "Avancer un peu": "稍微后移",
+  "Reculer un peu": "稍微前移",
+  "Écouter le bout": "试听片段",
+  "Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches.": "切分：“单个片段”（默认）给你两条可拖动的竖线，开始和结束；两者之间的部分原样发送。乐句、瞬态或小节会把音轨切成很多片段。磁吸：竖线和切点会吸到拍或小节上；“自由”则留在你点的位置。",
+  "Début ici": "从这里开始",
+  "Fin ici": "到这里结束",
+  "Écouter depuis la ligne orange": "从橙色线开始听",
+  "Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts.": "拖动「开始」和「结束」两条竖条，或点一下曲线再点「从这里开始」或「到这里结束」：磁铁会把它们放在标尺的拍上。大 ▶ 从橙色线播放这条音轨，「听这一段」只播放这一段。然后发送。切法 › 乐句、起音或小节：切成很多段。"
+}

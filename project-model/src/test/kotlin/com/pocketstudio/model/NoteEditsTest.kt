@@ -157,4 +157,48 @@ class NoteEditsTest {
         assertEquals(c, NoteEdits.fitToScale(c, Harmony()))
         assertEquals(0, NoteEdits.outOfScale(c.notes, Harmony()))
     }
+
+    @Test
+    fun aSelectionMovedAgainstAnEdgeKeepsItsShape() {
+        // Audit final (lot notes): 4 notes pushed past the loop's start or end stop there together.
+        val four = (0 until 4).map { Note(48 + it * 24, 12, 60 + it) }
+        val c = NoteClip(steps = 16, notes = four)
+        val early = NoteEdits.shift(c, four.toSet(), -200)
+        assertEquals(listOf(0, 24, 48, 72), early.clip.notes.map { it.start })
+        assertEquals(4, early.selection.size)
+        val late = NoteEdits.shift(c, four.toSet(), 1000)
+        assertEquals(listOf(311, 335, 359, 383), late.clip.notes.map { it.start })
+        // Transposed past the keyboard: nothing moves (a chord never folds onto one note).
+        val chord = NoteClip(notes = listOf(Note(0, 24, 120), Note(0, 24, 124), Note(0, 24, 127)))
+        val up = NoteEdits.transpose(chord, chord.notes.toSet(), 12)
+        assertEquals(listOf(120, 124, 127), up.clip.notes.map { it.pitch })
+        assertEquals(3, up.selection.size)
+        assertEquals(-120..0, NoteEdits.transposeRange(chord.notes.toSet()))
+        assertEquals(listOf(121, 125, 128 - 1), NoteEdits.transpose(chord, setOf(chord.notes[0], chord.notes[1]), 1).clip.notes.map { it.pitch })
+    }
+
+    @Test
+    fun aLoopOfNotesIsWholeBarsOfTheTimeSignature() {
+        // Audit final (lot notes): a one-bar waltz stays 12 steps (it was rounded to 16 and drifted against the drums).
+        assertEquals(12, NoteClip(steps = 12).sanitized().steps)
+        assertEquals(36, NoteClip(steps = 64).withSteps(36).steps)
+        // Files written before (whole 4/4 bars) read the same.
+        for (s in NoteClip.LENGTHS_IN_STEPS) assertEquals(s, NoteClip(steps = s).sanitized().steps)
+        // A paste past the end in 3/4 grows the loop by 3/4 bars.
+        val waltz = NoteClip(steps = 12, notes = listOf(Note(0, 24, 60)))
+        val board = NoteEdits.toClipboard(waltz.notes.toSet(), 12 * NoteClip.TICKS_PER_STEP)!!
+        assertEquals(24, NoteEdits.pasteOnBar(waltz, board, 1, 12 * NoteClip.TICKS_PER_STEP).clip.steps)
+    }
+
+    @Test
+    fun pastedTwiceOnTheSamePlaceTheNotesAreThereOnce() {
+        val board = NoteEdits.copy(setOf(c4, e4))
+        val once = NoteEdits.paste(clip, board, 192)
+        val twice = NoteEdits.paste(once.clip, board, 192)
+        assertEquals(once.clip.notes.size, twice.clip.notes.size)
+        assertEquals(2, twice.selection.size)
+        // The longer and louder one is kept.
+        val two = NoteClip(notes = listOf(Note(0, 24, 60, 0.5f), Note(0, 48, 60, 0.9f))).sanitized()
+        assertEquals(listOf(Note(0, 48, 60, 0.9f)), two.notes)
+    }
 }

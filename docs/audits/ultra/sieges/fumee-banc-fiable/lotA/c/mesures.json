@@ -1,0 +1,34 @@
+{
+  "siege": "c",
+  "options": {
+    "lang": "fr",
+    "device": "phone",
+    "font": "100",
+    "gestes.max": "40",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 37,
+    "images": 2,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": 6,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 3,
+    "retours_immediats": 3,
+    "ecrans": 40,
+    "ecrans_revisites": 13,
+    "defilements_sans_toucher": 3,
+    "appels_aide": 1,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 133,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : Démo-Acid-house-20261108-145134.pocketstudio.zip, Démo-Acid-house-morceau-streaming-20261108-145038.m4a (cibles non mesurées ici : ffprobe à brancher)"
+}

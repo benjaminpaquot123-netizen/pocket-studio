@@ -1,5 +1,6 @@
 package com.pocketstudio.app.latency
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.layout.Arrangement
@@ -100,7 +101,7 @@ fun LatencyScreen(
                 Button(
                     onClick = onMeasure,
                     enabled = engineAvailable && state !is LatencyUiState.Running,
-                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("measure"),
+                    modifier = Modifier.pressScale(enabled = engineAvailable && state !is LatencyUiState.Running).fillMaxWidth().height(52.dp).testTag("measure"),
                 ) {
                     Text(if (shown == null) tr("Mesurer la latence") else tr("Mesurer à nouveau"))
                 }

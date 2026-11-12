@@ -14,6 +14,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -31,10 +32,12 @@ import com.pocketstudio.model.i18n.tr
  * out as a WAV (no compression step to announce).
  */
 @Composable
-fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
+fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: Boolean = false) {
     val context = LocalContext.current
     val export by rhythmVm.export.collectAsStateWithLifecycle()
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    // Audit ultra round 1 (n° 15): what was shared, in numbers, waiting under the share menu (null: nothing to say).
+    var done by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<List<String>?>(null) }
     LaunchedEffect(rhythmVm, lifecycle) {
         shareWhileShown(lifecycle, rhythmVm.shareRequests) { files ->
             // The song is exported and the share sheet is open: the last step of the card is done
@@ -42,10 +45,61 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
             if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
                 // G5: the Guide's « Prêt à partager ? » is decided (« C'est partagé »).
                 rhythmVm.guide.markDone("share.ready", "keep")
+                // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is,
+                // and (audit ultra round 1) its loudness, peak, format, length and target, seen when the share menu closes.
+                val now = rhythmVm.export.value
+                done = listOf(shareReadyText(files, now.savedInMusic)) + shareReportLines(now, simple)
             }
         }
     }
+    // Chantier 1 (G2, recette tel-03: « bloqué » after the share): « C'est prêt » leads to the file's place.
+    var files by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     if (export.sharing) ShareProgressDialog(export, cancel = rhythmVm::cancelExport, dismiss = rhythmVm::dismissShare, wav = wav)
+    else done?.let { lines -> ShareBilanDialog(lines, dismiss = { done = null }, seeFiles = { done = null; files = true }) }
+    if (files) MyExportsDialog { files = false }
+}
+
+/**
+ * « C'est prêt » after « Partager »: the file, then its report in numbers (audit ultra round 1, n° 15). It opens once
+ * Android's share menu is up and waits under it: it is what one finds when coming back. [seeFiles]: « Voir mes fichiers »
+ * beside OK (null: not offered), the way to the file just made.
+ */
+@Composable
+internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles: (() -> Unit)? = null) {
+    ScaledAlertDialog(
+        onDismissRequest = dismiss,
+        title = { Text(tr("C'est prêt")) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.testTag("share_bilan")) {
+                lines.forEachIndexed { i, line ->
+                    Text(line, style = if (i == 0) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                        color = if (i == 0) Neon.TextPrimary else Neon.TextSecondary)
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text("OK") } },
+        dismissButton = seeFiles?.let { see -> { TextButton(onClick = see, modifier = Modifier.testTag("share_bilan_files")) { Text(tr("Voir mes fichiers")) } } },
+    )
+}
+
+/**
+ * What « C'est prêt » says under the file: the report in numbers (audit ultra round 1, n° 15), or in everyday
+ * words in the Mode simple (audit ultra round 3, n° 14: LUFS, dBTP, kHz and kb/s were shown there).
+ */
+internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> {
+    if (!simple) return export.bilan?.lines().orEmpty()
+    // Audit ultra round 5 (F a #11, A a #43): the level once, against the target when there is one (as Mix's card),
+    // never also « très fort » for a file at its loud target.
+    val target = export.bilan?.levelWords() ?: return export.summary?.plainLines().orEmpty()
+    val plain = export.summary?.levelLine()
+    return export.summary?.plainLines().orEmpty().map { if (it == plain) target else it }.let { if (target in it) it else it + target }
+}
+
+/** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */
+internal fun shareReadyText(files: List<java.io.File>, savedInMusic: Boolean): String {
+    val name = files.joinToString(", ") { it.name }
+    return if (savedInMusic) tr("C'est prêt : %s, une copie est aussi dans Musique › BenStudio.", name)
+    else tr("C'est prêt : %s. Choisis l'appli pour l'envoyer.", name)
 }
 
 /**
@@ -62,7 +116,10 @@ internal suspend fun shareWhileShown(lifecycle: androidx.lifecycle.Lifecycle, re
 fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Unit, wav: Boolean = false) {
     val failed = !export.running && export.error != null
     ScaledAlertDialog(
-        onDismissRequest = { if (!export.running) dismiss() },
+        // Testers (lot « tuto 5 »): the back gesture stops it as « Annuler » does; a touch beside it (a second
+        // touch on « Partager ») does nothing.
+        onDismissRequest = { if (export.running) cancel() else dismiss() },
+        properties = androidx.compose.ui.window.DialogProperties(dismissOnClickOutside = !export.running),
         title = { Text(if (failed) tr("Partage impossible") else tr("Je prépare ton morceau…")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_progress")) {
@@ -73,12 +130,29 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
                         export.stage ?: if (wav) tr("Fabrication du son en WAV, qualité studio.") else tr("Fabrication du son, puis compression en M4A."),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                     )
-                    LinearProgressIndicator(
-                        progress = { export.progress },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                        color = Neon.Acid,
-                        trackColor = Neon.SurfaceHigh,
-                    )
+                    // Testers (lot « tuto 5 »): a bar at 0 is a still dot that looks stuck; until the render moves,
+                    // the bar runs (the sounds are being read), then it fills with its percentage beside it.
+                    val shown = export.progress.coerceIn(0f, 1f)
+                    if (shown <= 0f) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).testTag("share_progress_waiting"),
+                            color = Neon.Acid, trackColor = Neon.SurfaceHigh,
+                        )
+                    } else {
+                        androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            LinearProgressIndicator(
+                                progress = { shown },
+                                modifier = Modifier.weight(1f).padding(vertical = 6.dp).testTag("share_progress_bar"),
+                                color = Neon.Acid,
+                                trackColor = Neon.SurfaceHigh,
+                            )
+                            Text(
+                                "  " + com.pocketstudio.model.i18n.percent((shown * 100).toInt()),
+                                style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
+                                modifier = Modifier.testTag("share_progress_percent"),
+                            )
+                        }
+                    }
                     Text(tr("Ensuite, choisis l'appli pour l'envoyer."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }

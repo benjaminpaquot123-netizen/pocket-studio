@@ -81,17 +81,18 @@ class LaunchRuleTest {
         val ui = launchUi(p, info, now, simple = true, missionsActive = false)
         assertEquals("Ma nuit", ui.name)
         assertEquals(style.name, ui.style)
-        assertEquals("0:24 · 3 parties", ui.length)
-        assertEquals("modifié il y a 2 h", ui.edited)
+        // Round 1, n° 23: the same length words as « Mes projets » and the studio (its bars first).
+        assertEquals("12 mes. · 0:24 · 3 parties", ui.length)
+        assertEquals("Sauvegardé il y a 2 h", ui.edited)
         assertTrue(ui.simple)
-        // A loop (no song yet), never saved: its bars, no date.
+        // A loop (no song yet), never saved: its bars (the project's own, n° 23: a new project's one bar), no date.
         val loop = launchUi(Project(name = "Brouillon"), ProjectInfo("x", "Brouillon", 0, 120.0, 2, 1, false), now, simple = false, missionsActive = true)
         assertNull(loop.style)
-        assertEquals("Boucle de 2 mes.", loop.length)
+        assertEquals("Boucle de 1 mes.", loop.length)
         assertNull(loop.edited)
         assertTrue(loop.missionsActive)
         // Translated.
         I18n.lang = Lang.NL
-        assertEquals("bewerkt gisteren", launchUi(p, info.copy(modified = now - 30 * 60 * minute), now, false, false).edited)
+        assertEquals("Opgeslagen gisteren", launchUi(p, info.copy(modified = now - 30 * 60 * minute), now, false, false).edited)
     }
 }

@@ -1,0 +1,34 @@
+Écran 55 (1035x1243)
+bouton « Torna al brano » @ 42,42
+touchable « Suona il brano » @ 114,42
+texte « 0:00 / 3:00 » @ 223,29
+texte « 90 battute » @ 211,56
+bouton « Annulla » @ 849,42
+bouton « Ripristina » [désactivé] @ 921,42
+bouton « Schermo intero » @ 993,42
+touchable « Segui » [sélectionné] @ 69,123
+touchable « Loop » @ 197,123
+bouton « Tracce più alte » @ 299,123
+bouton « Aiuto della timeline » @ 377,123
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,192
+bouton « Intro batt. 1/90 » [désactivé] @ 218,192
+texte « Parti » @ 41,245
+texte « Battute » @ 54,285
+texte « Righello delle battute: tocca per suonare da una parte » @ 658,262
+bouton « Batteria » @ 66,374
+interrupteur « Suono di Batteria » [coché, état « attivo »] @ 56,431
+interrupteur « Ascolta solo la traccia Batteria » [non coché, état « disattivo »] @ 125,431
+bouton « Acid 303 » @ 72,572
+interrupteur « Suono di Acid 303 » [coché, état « attivo »] @ 56,629
+interrupteur « Ascolta solo la traccia Acid 303 » [non coché, état « disattivo »] @ 125,629
+bouton « Synth » @ 56,770
+interrupteur « Suono di Synth » [coché, état « attivo »] @ 56,827
+interrupteur « Ascolta solo la traccia Synth » [non coché, état « disattivo »] @ 125,827
+texte « Timeline: 5 parti, 3 tracce » @ 658,600
+bouton « Ingrandisci » @ 981,982
+bouton « Riduci zoom » @ 981,1054
+bouton « Vedi tutto il brano » @ 981,1126
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

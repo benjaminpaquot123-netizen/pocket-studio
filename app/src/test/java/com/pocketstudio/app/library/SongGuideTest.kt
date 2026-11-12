@@ -80,8 +80,8 @@ class SongGuideTest {
         assertTrue(pages.size >= 3)
         pages.drop(1).forEach { assertTrue(it.title, it.lines.size in 1..3) }
         assertTrue(pages.all { it.lines.isNotEmpty() })
-        assertTrue(all.contains("tout le morceau") && all.contains("« ⟳ Partie », juste sous ▶"))
-        assertTrue(all.contains("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Intro pour finir : environ "))
+        assertTrue(all.contains("tout le morceau") && all.contains("« ⟳ Boucler », juste sous ▶"))
+        assertTrue(all.contains("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Fin : environ "))
         // The Pont is the song's fourth part, and the drop before each Refrain is told.
         assertTrue(first.lines.any { it.startsWith("D · Pont") })
         assertTrue(all.contains("Avant chaque Refrain, le kick et la basse se coupent"))
@@ -91,18 +91,18 @@ class SongGuideTest {
         assertTrue(all.contains("la renommer") && all.contains("Pont ou une Fin"))
         assertTrue(all.contains("aucune fausse note possible"))
         // The next thing to try: a voice on top, with headphones; no 303 here.
-        assertTrue(all.contains("Audio : enregistre ta voix") && all.contains("écouteurs"))
+        assertTrue(all.contains("Ta voix : enregistre-la") && all.contains("écouteurs"))
         assertTrue(!all.contains("ligne 303"))
         // Club music: four sections with the Break, and the 303 when the style has one.
         val club = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
         val clubPages = songGuide("House", club, inKey = true, song = songSummary(house, club), acid = true)
         assertTrue(clubPages.first().lines.any { it.startsWith("D · Break") })
-        assertTrue(clubPages.first().lines.first().contains("quatre parties"))
+        assertTrue(clubPages.first().lines.first().contains("quatre briques"))
         // The 303 is named only when the plan plays it, with the sections it plays in.
         assertTrue(clubPages.flatMap { it.lines }.none { it.contains("ligne 303") })
         val withAcid = StarterWizard.planFor(house, house.lines.map { it.role }.toSet(), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), true)
         assertTrue(songGuide("House", withAcid, inKey = true, acid = true).flatMap { it.lines }.any { it.startsWith("Acide : ta ligne 303 joue dans Groove et Drop.") })
-        assertTrue(songSummary(house, club).startsWith("Intro → Groove → Montée → Drop → Break → Montée → Drop → Intro pour finir"))
+        assertTrue(songSummary(house, club).startsWith("Intro → Groove → Montée → Drop → Break → Montée → Drop → Fin"))
     }
 
     @Test
@@ -127,7 +127,7 @@ class SongGuideTest {
         val w = ui(null, emptySet())
         val all = songGuide("House", w.plan, inKey = w.mood != null).flatMap { it.lines }.joinToString("\n")
         assertTrue(!all.contains("fausse note"))
-        assertTrue(all.contains("Synthé : joue au clavier"))
+        assertTrue(all.contains("Le clavier : joue pour essayer"))
     }
 
     @Test

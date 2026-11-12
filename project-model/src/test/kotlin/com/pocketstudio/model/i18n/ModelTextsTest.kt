@@ -89,6 +89,13 @@ class ModelTextsTest {
         SoundLibrary.ACID.forEach { add(it.name, it.category) }
         addAll(SynthPatch.PRESETS.map { it.first })
         addAll(SoundPacks.KIND_LABELS.values)
+        // The sound browser's folders (Benjamin's list n° 13–14), the party sounds and the ready-to-play live pads (n° 12).
+        addAll(com.pocketstudio.model.SoundShelves.FAMILIES)
+        addAll(com.pocketstudio.model.SoundCharacter.LABELS.values)
+        add(com.pocketstudio.model.PartySounds.FAMILY)
+        com.pocketstudio.model.PartySounds.ALL.forEach { add(it.name, it.group) }
+        add(com.pocketstudio.model.PartySounds.FIREWORKS)
+        com.pocketstudio.model.LiveStarter.PADS.forEach { add(it.name) }
         addAll(PlaitsPatch.MODELS)
         addAll(PlaitsPatch.FAMILIES.map { it.first })
         addAll(PlaitsPatch.PARAMS)
@@ -112,7 +119,7 @@ class ModelTextsTest {
         val texts = modelTexts()
         assertTrue("no model text found", texts.size > 300)
         val problems = mutableListOf<String>()
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        (Lang.entries - Lang.FR).forEach { lang ->
             val table = I18n.table(lang)
             texts.forEach { if (table[it].isNullOrBlank()) problems += "no ${lang.code} for \"$it\"" }
         }

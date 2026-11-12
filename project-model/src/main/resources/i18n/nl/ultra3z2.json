@@ -1,0 +1,23 @@
+{
+  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "Het volume van nummers in deze stijl (%s LUFS), gemeten op het luidste stuk. De uitgang gaat zacht omhoog of omlaag om daar te komen; de export komt zo dichtbij als het kan zonder het geluid te pletten.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "Luid, zoals in een club (%s LUFS), gemeten op het luidste stuk. Je stijl klinkt al zo luid: hier mikken Club en Auto op hetzelfde volume.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "Luid, zoals in een club (%s LUFS), gemeten op het luidste stuk. De uitgang gaat zacht omhoog om daar te komen; de export komt zo dichtbij als het kan zonder het geluid te pletten.",
+  "Le volume visé, en LUFS : plus près de 0, plus fort. Une cible par projet, la même dans Mix et au partage. Auto (%1$s LUFS, ton style) et Club (%2$s LUFS) se mesurent sur le passage le plus fort ; Streaming (−14 LUFS), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et le dit.": "Het doelvolume, in LUFS: dichter bij 0 is luider. Eén doel per project, hetzelfde in Mix en bij het delen. Auto (%1$s LUFS, het volume van je stijl) en Club (%2$s LUFS) worden gemeten op het luidste stuk; Streaming (−14 LUFS, Spotify en YouTube), Apple Music (−16) en Vrij over het hele nummer. Zou het geluid geplet worden, dan stopt de app eerder en zegt het je.",
+  "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Het doel wordt gemeten op het luidste stuk (%1$s LUFS); het hele nummer, met zijn rustige stukken, meet %2$s LUFS.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Om zo luid te klinken worden de pieken %s dB ingedrukt: dat is veel, het geluid verliest zijn punch.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Om zo luid te klinken worden de pieken %s dB ingedrukt (hooguit 3: het geluid houdt zijn punch).",
+  "Le même réglage que dans Mix.": "Dezelfde instelling als in Mix.",
+  "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Om verder te gaan op een ander apparaat: een .zip-bestand met al zijn geluiden, daar te openen in Mijn projecten › Importeren.",
+  "Nom du morceau envoyé": "Naam van het nummer dat je verstuurt",
+  "Le projet garde son nom « %s ».": "Het project houdt zijn naam ‘%s’.",
+  "%s (coupée)": "%s (gedempt)",
+  "Sans fichier : %s.": "Geen bestand: %s.",
+  "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Het nummer is veranderd sinds deze export: exporteer opnieuw om de nieuwe versie te versturen.",
+  "Remix · %s": "Remix · %s",
+  "Trop fort par endroits : ça risque de grésiller.": "Op sommige plekken te luid: het kan kraken.",
+  "Pas de saturation.": "Geen oversturing.",
+  "Fichier M4A : léger, lu par tous les appareils.": "M4A-bestand: licht, speelt op elk apparaat.",
+  "Fichier %s : qualité studio.": "%s-bestand: studiokwaliteit.",
+  "%s Mo": "%s MB",
+  "%d Ko": "%d KB"
+}

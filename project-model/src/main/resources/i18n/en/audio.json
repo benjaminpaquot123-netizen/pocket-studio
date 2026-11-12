@@ -5,7 +5,6 @@
   "Affichée pendant que la musique joue ou s'enregistre": "Shown while music plays or records",
   "Android ne coupe plus le son pour économiser la batterie.": "Android stops cutting the sound to save battery.",
   "Arrêter et garder": "Stop and keep",
-  "Astuce : mesure la latence une fois (Outils › Latence) pour que tes prises tombent pile sur le temps.": "Tip: measure the latency once (Tools › Latency) so your takes land right on the beat.",
   "Autoriser": "Allow",
   "Batterie sans restriction": "Unrestricted battery",
   "Cet appareil n'a pas assez de mémoire pour le Remix : il a %.1f Go en tout, il en faut au moins 6. Fermer des applis n'y changera rien. Le reste de l'appli marche normalement.": "This device doesn't have enough memory for Remix: it has %.1f GB in all and needs at least 6. Closing apps won't change that. The rest of the app works normally.",
@@ -53,11 +52,10 @@
   "Ouverture du micro…": "Opening the mic…",
   "Ouvrir les réglages de l'appli": "Open app settings",
   "Où elle joue": "Where it plays",
-  "Paramètres › Batterie › Lancement d'applications › Pocket Studio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés.": "Settings › Battery › App launch › Pocket Studio: turn off “Manage automatically”, then leave all three switches on.",
+  "Paramètres › Batterie › Lancement d'applications › BenStudio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés.": "Settings › Battery › App launch › BenStudio: turn off “Manage automatically”, then leave all three switches on.",
   "Pas assez de mémoire libre pour le Remix en ce moment (%.1f Go, il en faut au moins %.1f). Ferme les autres applis, puis touche « Vérifier à nouveau ».": "Not enough free memory for Remix right now (%.1f GB, it needs at least %.1f). Close other apps, then tap “Check again”.",
   "Piste audio": "Audio track",
   "Pistes audio": "Audio tracks",
-  "Pour enregistrer sur tout le morceau, crée d'abord un morceau (onglet Morceau).": "To record over the whole song, first make a song (Song tab).",
   "Pour que la musique continue écran éteint ou dans une autre appli :": "To keep the music going with the screen off or in another app:",
   "Prise précédente": "Previous take",
   "Renommer": "Rename",
@@ -90,5 +88,8 @@
   "▶ Depuis ma prise": "▶ From my take",
   "● Enregistrement": "● Recording",
   "● Prise au micro": "● Mic take",
-  "✓ fait": "✓ done"
+  "✓ fait": "✓ done",
+  "M'entendre dans le casque": "Hear myself in the headphones",
+  "En Bluetooth, ta voix reviendrait trop tard dans le casque : elle n'y revient qu'avec des écouteurs filaires.": "Over Bluetooth your voice would come back too late: you only hear yourself with wired headphones.",
+  "Décompte : %d… la prise commence sur le premier temps": "Count-in: %d… the take starts on the first beat"
 }

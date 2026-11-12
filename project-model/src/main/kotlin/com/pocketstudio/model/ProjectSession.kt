@@ -65,13 +65,20 @@ class ProjectSession(
      * its changes are no longer [unsaved] but not on disk yet: a screen closing then still
      * [flush]es, which waits for it).
      */
-    val settled: Boolean get() = !_unsaved.value && !saveLock.isLocked
+    val settled: Boolean get() = !_unsaved.value && !saveLock.isLocked && !viewPending
+
+    /** A change of what is shown alone ([showQuietly]) not on disk yet: the next save or [flush] writes it. */
+    @Volatile private var viewPending = false
+
+    /** The file as it was when the project opened is kept once, before this session's first save. */
+    private var openingKept = false
 
     /**
      * Applies [transform] to the project. Same [coalesceKey] in a quick burst = one undo step.
      * [tag]: what the step was, returned by [undo] and [redo] when they go through it.
      */
     fun edit(coalesceKey: String? = null, tag: Any? = null, transform: (Project) -> Project) {
+        beforeChange?.invoke()
         val next = apply(transform)
         if (history.push(next, coalesceKey, clock(), tag)) publish()
     }
@@ -85,11 +92,44 @@ class ProjectSession(
     }
 
     /**
+     * Like [editQuietly], and in every undo and redo step too (relecture tour 1, M3: Pad Live's
+     * page filled on its own came off with an « Annuler » of an older step). [transform] leaves a
+     * step it does not apply to as it is (the page there already has sounds).
+     */
+    fun editEverywhere(transform: (Project) -> Project) {
+        val before = history.current
+        history.rebase { clean(transform(it)) }
+        if (history.current == before) return
+        publish()
+    }
+
+    /**
+     * Like [editQuietly], for a change of what is shown alone (the part the screens follow while
+     * the song plays): not written on its own (audit 16: a whole save each time a part came
+     * round); the next save, or [flush] (the app in the background), takes it with it.
+     */
+    fun showQuietly(transform: (Project) -> Project) {
+        val next = apply(transform)
+        if (next == history.current) return
+        history.replace(next)
+        _project.value = history.current
+        viewPending = true
+    }
+
+    /**
      * What a save writes in place of the project (null: the project itself): a trial heard but not
      * chosen yet (the chords tried before « Appliquer ») never reaches the disk on its own. Read on
      * the session's scope, like the edits.
      */
     @Volatile var saveAs: ((Project) -> Project)? = null
+
+    /**
+     * Called before each undoable change, undo and redo (not the quiet ones): something only shown
+     * (« Montre-moi »'s frames, through [showQuietly]) is taken away first, so that the change
+     * applies to the project itself (Audit stage 2: an undo or a touch during « Montre-moi » was
+     * made on the demonstration, then overwritten by it, and « Rétablir » brought it back as real).
+     */
+    var beforeChange: (() -> Unit)? = null
 
     /** How many undo steps there are (to note when a live recording starts). */
     val undoDepth: Int get() = history.undoDepth
@@ -125,6 +165,7 @@ class ProjectSession(
 
     /** Goes one step back; returns that step's tag (see [edit]), null when untagged or none. */
     fun undo(): Any? {
+        beforeChange?.invoke()
         if (history.undo() == null) return null
         publish()
         return history.lastTag
@@ -132,6 +173,7 @@ class ProjectSession(
 
     /** Goes one step forward again; returns that step's tag, null when untagged or none. */
     fun redo(): Any? {
+        beforeChange?.invoke()
         if (history.redo() == null) return null
         publish()
         return history.lastTag
@@ -140,6 +182,10 @@ class ProjectSession(
     /** Writes any pending change now; false when the save failed (the change is still waiting). */
     suspend fun flush(): Boolean {
         pendingSave?.cancel()
+        if (viewPending && !dirty) {
+            dirtySince = clock()
+            dirty = true
+        }
         return saveNow()
     }
 
@@ -166,12 +212,20 @@ class ProjectSession(
         if (!dirty) return@withLock true
         if (!persist) {
             dirty = false
+            viewPending = false
             return@withLock true
         }
         val snapshot = history.current.let { p -> saveAs?.invoke(p) ?: p }
         dirty = false
+        viewPending = false
         try {
-            withContext(io) { store.save(id, snapshot) }
+            withContext(io) {
+                if (!openingKept) {
+                    store.keepOpening(id)
+                    openingKept = true
+                }
+                store.save(id, snapshot)
+            }
             _lastSaveError.value = null
             true
         } catch (e: CancellationException) {

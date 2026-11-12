@@ -1,0 +1,35 @@
+Écran 45 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+bouton « More  · Help » (nom « Back to More ») @ 294,180
+bouton « HELP » [état « Expanded »] @ 91,276
+bouton « I'm learning You make the whole song yourself, step by step: I explain and I check. » @ 294,360
+bouton « My first song, with the Guide » @ 294,462
+bouton « See the first-steps guide again » @ 294,546
+bouton « Open my song's Guide » @ 294,630
+bouton «   Music words, to listen to » @ 294,714
+texte « The “?” at the end of the strip under the top bar labels the screen: one tap to show, another to hide. » @ 294,789
+texte « Everywhere in the app, the little “?” next to a word explains it too. » @ 294,855
+texte « To pick up your song on another device: “Share” › “Send the project” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”. » @ 294,921
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 31 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

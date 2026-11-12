@@ -1,0 +1,9 @@
+lang=fr
+device=tablet11Land
+font=100
+mode=simple
+lit=non
+amenee=padlive
+gestes.max=60
+mission=defi
+timeout.minutes=25

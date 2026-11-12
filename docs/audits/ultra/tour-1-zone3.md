@@ -1,0 +1,31 @@
+# Audit ultra, tour 1 : zone 3 (navigation, prise en main, sécurité)
+
+Équipe 3, n° 20 à 28 de `tour-1-synthese.md`. Règle §4 : corrigé = un test rouge avant, vert après (ou la preuve du siège quand l'avant n'a pas pu tourner).
+
+| N° | Verdict | Gravité | Test | Commit |
+|---|---|---|---|---|
+| 20 bulle REC/Noter/⋯ sur ▶, ■, tempo, « ? », Partager, onglets (×6) | appli : bulle flottante posée sur l'écran. Devient une **bande à elle sous l'appli** (au-dessus de la barre système), l'appli est mise en page au-dessus : rien de touchable dessous, par construction | grave | `RetoursClearOfControlsTest` (5 cas : téléphone Simple/Pro, 360 dp à 200 %, couché, tablette couchée 130 %) : rouge avant sur Pro, 200 % et tablette (bulle sur `structure_parts`, `help_labels_button`, `guide_bar`) | 14e0b60 |
+| 21 une main : tout en haut (×4) | appli : **barre du pouce** au-dessus des onglets (↶, ↷, ▶/■, tempo, ⋯ en Simple, ⤴ en Pro), debout, écran ≥ 600 dp ; la barre du haut garde tout | grave | `Zone3JourneysTest.redoAfterUndoInTheModeSimple` (`thumb_redo`), garde n° 20 | b09096f |
+| 22 « Mes projets » : « Aucun projet » avec un projet ouvert (×3) | appli : le projet de « Continuer » n'existait qu'en mémoire jusqu'à la 1re modif ; écrit dès sa 1re ouverture | grave | `Zone3JourneysTest.myProjectsListsTheProjectOfContinue` (rouge avant : « Aucun projet pour l'instant ») | 7f79b39 |
+| 23 durée / parties différentes accueil, Mes projets, studio (×2) | appli : trois calculs (boucle seule, `song.size`, secondes tronquées). Une seule source `SongLength` | moyen | `Zone3ModelTest.theSongsLengthIsCountedOnceForEveryScreen` (6 mes., 0:05, 1 partie partout) | b09096f |
+| 24 pas de partie B en Simple | appli : « Ajouter » et « Insérer après » ne proposaient que les briques existantes. « + Nouvelle partie (copie de A) » / « vide » là, et dans « Partie : A ▾ » des éditeurs | grave (bloquant pour B b) | `Zone3JourneysTest.theModeSimpleMakesASecondPart` (rouge avant : pas de bouton) | b09096f |
+| 25 Guide : petit texte, gros bouton sans effet, couvre le bas (×3) | appli : titre et « À toi » un cran plus gros (le reste garde sa taille : avec tout en grand, le choix sortait du panneau, `GuideJourneyTest` rouge), le panneau se replie quand on touche un onglet, chaque choix se dit dans la barre « Fait : … » avec Annuler | moyen | `GuideViewModelTest.aRefusedUndoIsSaid` (« C'est fait »), `GuideJourneyTest` vert ; pas de rouge propre (siège lit=non, texte < 18 sp illisible pour lui quoi qu'on fasse) | b09096f |
+| 26a « Sauvegardé » minuscule | appli : coche 16 dp + mot en gras, couleur accent | mineur | capture `top_bar` | b09096f |
+| 26b pas de Rétablir après Annuler (Simple) | appli : ↷ caché en Simple ; montré dès qu'il y a quelque chose à rétablir (barre du haut et barre du pouce) | moyen | `redoAfterUndoInTheModeSimple` (avant : preuve du siège F d, le test n'a pu tourner qu'après) | b09096f |
+| 26c Retour sur « Noter » ferme le studio | appli : la feuille n'avait pas de Retour à elle | moyen | `backOnTheNoteClosesTheNoteOnly` (rouge avant) | 14e0b60 |
+| 26d nom coupé sans prévenir, « (copie) (copie) » coupé | appli : `NameField` dit « 12/40 » puis « 40 caractères au plus » ; copies « (copie 2) » dans la limite | moyen | `Zone3ModelTest.aCopysNameKeepsItsWordWithinTheLimit` | b09096f |
+| 26e renommer une piste ajoute (« Audio 1Chitarra ») | appli : champ non sélectionné ; `NameField` sélectionne tout au toucher, partout où on renomme (projet, piste, piste audio, brique) | moyen | `NameFieldTest` (l'avant sur TrackBar seul ne s'est jamais mis au repos sous Robolectric : preuve = siège E b) | b09096f |
+| 27 changer le son → boucle sur l'Intro (×2) | **banc** : trace (pile de `_sessionUi`) : sur un geste sans moteur, `HumanTester.letTheEngineGo` arrête le morceau, lâche le moteur et relance `togglePlay()`, qui joue la partie en boucle (C a : onglet Envoyer, même cause). Un téléphone garde son moteur | — | trace dans `Zone3JourneysTest` (retirée) ; à l'équipe banc : relancer `toggleSong()` | — |
+| 28a 12 écrans avant de jouer | non fait : chemin de l'assistant (WizardScreen, StarterWizard) en cours chez l'équipe 5 ; « Créer tout de suite » placé en haut par Benjamin | moyen | — | — |
+| 28b « Partir de zéro » ouvre 5 pistes | appli : le projet est vide de notes, ce sont les éditeurs. Le texte le dit : « Aucune note : une batterie, une basse acide et un synthé attendent les tiennes. » | mineur | capture `welcome` | b09096f |
+
+## Règle du pouce du banc (`SeatOptions.reachable`)
+Rayon 500 dp (≈ 79 mm) depuis le coin bas de la main. Réaliste pour le haut (≈ 59 % de la hauteur côté main, 36 % côté opposé sur 392 × 852 dp, proche des zones de Hoober) ; un peu généreuse pour le coin bas opposé (accessible pour la règle, pénible en vrai : le pouce se replie mal) et pour la prise, qui pivote plus haut que le coin. Sur tablette elle refuse presque tout, ce qui est juste. À garder ; option : un pivot à 1/4 de la hauteur et un rayon de 70 mm (équipe banc).
+
+## Reste
+- Remix « Choisir une chanson » en bas (n° 21) : RemixScreen en cours chez l'équipe 1 ; la barre du pouce y donne ↶ ▶ ⋯, pas le choix de chanson.
+- 28a : proposer à l'équipe 5 « Créer tout de suite » en bouton principal après le choix du style en Mode simple.
+- `Retours.keepClear` n'a plus de lecteur (Pad Live l'écrit encore, fichier de l'équipe 1).
+- Captures : 162 ré-enregistrées (7d14ef1 : écrans de l'appli, barre du haut, accueil, Mes projets, le morceau, le Guide, Mode retours), regardées : bande en bas, barre du pouce, « ✓ Sauvegardé » vert. Elles peuvent porter des changements non commités d'autres équipes ; les ~280 autres captures modifiées par l'enregistrement (mix, réglages, Pad Live, bibliothèque…) sont laissées à leurs équipes.
+- Laissé non commité : 2 imports ajoutés dans `HumanTester.kt` (banc, compilation cassée en cours d'édition) ; « Annuler (défaire) » mis par l'équipe 6 dans `ThumbBar.kt` (commité avec « Annuler », leur clé n'étant pas encore commitée).
+- Tests lancés : `RetoursClearOfControlsTest` 5/5, `Zone3JourneysTest` 4/4, `NameFieldTest` 2/2, `GuideViewModelTest`, `GuidePanelTest`, `GuideJourneyTest`, `RetoursTest`, `ProjectRecoveryTest` verts ; `Zone3ModelTest` 2/2, `I18nCatalogTest` 14/14.

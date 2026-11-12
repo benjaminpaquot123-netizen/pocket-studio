@@ -24,10 +24,12 @@ class StemExportsTest {
         val live = beat.copy(live = LivePads(clips = listOf(LiveClip("a.wav", "Boucle")) + List(LivePads.MAX - 1) { null }))
         assertEquals(listOf("batterie"), stemExports(live, song = false).map { it.first })
         val full = beat.copy(synthNotes = NoteClip(notes = listOf(Note(0, 4, 60))), remix = Remix(setId = "s"))
-        assertEquals(listOf("batterie" to 0, "synthe" to 2, "remix" to 3), stemExports(full, song = false))
+        // Audit ultra round 3 (n° 12): the remix's four parts, one file each (Voix, Batterie, Basse, Reste).
+        assertEquals(listOf("batterie" to 0, "synthe" to 2, "remix-voix" to REMIX_STEM_BASE - 3, "remix-batterie" to REMIX_STEM_BASE,
+            "remix-basse" to REMIX_STEM_BASE - 1, "remix-reste" to REMIX_STEM_BASE - 2), stemExports(full, song = false))
         // Muted in the mixer: left out.
         val muted = full.copy(mixer = full.mixer.copy(channels = full.mixer.channels.mapIndexed { i, c -> if (i == 2) c.copy(mute = true) else c }))
-        assertEquals(listOf("batterie", "remix"), stemExports(muted, song = false).map { it.first })
+        assertEquals(listOf("batterie", "remix-voix", "remix-batterie", "remix-basse", "remix-reste"), stemExports(muted, song = false).map { it.first })
         // An added track with no note in the scene: no file.
         val track = beat.addTrack("Basse")!!
         assertEquals(listOf("batterie"), stemExports(track, song = false).map { it.first })

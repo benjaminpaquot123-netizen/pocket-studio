@@ -1,0 +1,468 @@
+package com.pocketstudio.app.audit
+
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.findRootCoordinates
+import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toPixelMap
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.text.TextLayoutResult
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
+
+/**
+ * Audit stage 1 (docs/audits/AUDIT.md §4): what a screen shows wrong, read from Compose's own layout
+ * instead of by eye, so that only the flagged captures need a look.
+ *
+ * - [Kind.CUT]: a text ellipsized or overflowing its own box (the words did not fit), or drawn past a
+ *   clipping parent (a button, a card, the screen): across, along an axis that does not scroll; down, unless only
+ *   a scroller's own window hides it (scrolled away);
+ * - [Kind.OVERLAP]: two texts whose letters are drawn over each other;
+ * - [Kind.TARGET]: something to touch smaller than 48 x 48 dp (its touch area, as TalkBack is given it);
+ * - [Kind.LABEL]: something to touch that TalkBack would read as nothing (an icon without a description);
+ * - [Kind.CONTRAST]: a text under WCAG AA against what is behind it (4.5:1, 3:1 from 18 sp or 14 sp bold),
+ *   read on the rendered pixels.
+ */
+object LayoutScan {
+    enum class Kind { CUT, OVERLAP, TARGET, LABEL, CONTRAST }
+
+    data class Finding(val kind: Kind, val what: String, val detail: String) {
+        override fun toString() = "$kind « $what » $detail"
+    }
+
+    private val ANY = SemanticsMatcher("any node") { true }
+
+    /** Everything wrong on the screen [rule] shows now ([image]: the root's pixels, for the contrast). */
+    fun scan(rule: ComposeTestRule, density: Float, checks: Set<Kind> = Kind.entries.toSet()): List<Finding> {
+        rule.waitForIdle()
+        val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        val out = mutableListOf<Finding>()
+        val allTexts = all.mapNotNull { n -> textOf(n)?.let { Txt(n, it, layout(n)) } }
+        // Rule 17 (round 5, chantier 6): the scroll hint « ↓ n autres » floats over the bottom of a list that goes on, in a
+        // fade; what lies under the chip or the fade is meant to be covered and faded, and the chip's words lie over the
+        // cards by design. Neither is read as an overlap nor as a contrast; the chip's own words keep their contrast check.
+        val covers = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        val chips = covers.filter { it.config.getOrNull(SemanticsProperties.TestTag) == "scroll_hint" }
+        fun inChip(t: Txt) = chips.any { ancestorOf(it, t.node) }
+        fun underHint(t: Txt) = !inChip(t) && covers.any { c -> !ancestorOf(c, t.node) && ink(t).overlaps(c.boundsInRoot) }
+        val texts = allTexts.filterNot { underHint(it) }
+        if (Kind.CUT in checks) allTexts.forEach { cut(it, density)?.let(out::add) }
+        if (Kind.OVERLAP in checks) {
+            val laid = texts.filterNot { inChip(it) }
+            out += overlaps(laid, density)
+            out += overButtons(laid, all.filterNot { n -> chips.any { it.id == n.id } }, density)
+            // The chip itself (and anything else that floats) is a control like any other here: over a control.
+            out += floatingOverControls(rule, density)
+        }
+        if (Kind.CONTRAST in checks) {
+            // Each window (the screen, a dialog, a menu) on its own pixels.
+            val roots = rule.onAllNodes(androidx.compose.ui.test.isRoot(), useUnmergedTree = true)
+            val rootNodes = roots.fetchSemanticsNodes(atLeastOneRootRequired = false)
+            val pixels = HashMap<Int, androidx.compose.ui.graphics.PixelMap>()
+            val first = rootNodes.firstOrNull { it.size.width > 0 && it.size.height > 0 }
+            rootNodes.forEachIndexed { i, r ->
+                if (r.size.width <= 0 || r.size.height <= 0) return@forEachIndexed
+                val shot = roots[i].captureToImage().toPixelMap()
+                // Lot « composants » (2026-11-10): under Robolectric, a full-screen dialog's capture can come back as the screen
+                // under it (the welcome read against « Mes pistes »): such a window is drawn from its own view instead.
+                // Tour 5, lot « textes »: a pop-up menu (the Mode simple's ⋮) is smaller than the screen, so its capture was
+                // never « the same pixels » as the screen yet read the page under it (« Aide » 1,2:1 on a legible menu):
+                // a pop-up window is drawn from its own view when it has one.
+                val popup = (r.root as? androidx.compose.ui.platform.ViewRootForTest)?.view?.rootView?.javaClass?.simpleName?.contains("Popup") == true
+                pixels[r.id] = if (first != null && r.id != first.id && (popup || samePixels(shot, pixels[first.id]))) ownPixels(r) ?: shot else shot
+            }
+            texts.forEach { t -> pixels[top(t.node).id]?.let { px -> contrast(t, px, density)?.let(out::add) } }
+        }
+        if (Kind.TARGET in checks || Kind.LABEL in checks) {
+            // Audit ultra §1: LABEL reads every control TalkBack can act on (a touch, a long press, a slider, a switch);
+            // TARGET stays on what is touched.
+            val merged = rule.onAllNodes(CONTROL, useUnmergedTree = false).fetchSemanticsNodes(atLeastOneRootRequired = false)
+            for (n in merged) {
+                if (hidden(n)) continue
+                val name = nameOf(n)
+                // A slider's or a switch's value (« 0.0 », « on ») is not its name: TalkBack reads « 0.0, slider » (round 1, item 30b).
+                // Nor is an action's label (« Réglages du pad ») or a state: TalkBack says « bouton » and the label only later,
+                // as a hint (round 3, n° 7 and 37: 16 pad corners a page and the drag handles read « bouton » on the bench).
+                val unnamed = controlName(n).isBlank()
+                if (Kind.LABEL in checks && unnamed) out += Finding(Kind.LABEL, tagOf(n), "${controlKind(n)} without text nor description")
+                if (Kind.TARGET in checks && n.config.contains(SemanticsActions.OnClick)) {
+                    // Its touch area, as TalkBack is given it (Material's minimumInteractiveComponentSize
+                    // widens a 32 dp chip's to 48 dp; a size forced on the button itself does not).
+                    // Two rules: the touch area 48 dp (Android), and what is seen at least 24 x 24 dp (WCAG 2.2
+                    // AA 2.5.8): Compose widens a small target's touch to 48 dp where no neighbour is, so a tiny
+                    // one in a row of others is still missed.
+                    val touch = n.touchBoundsInRoot
+                    val w = n.size.width / density
+                    val h = n.size.height / density
+                    val tw = maxOf(n.size.width.toFloat(), touch.width) / density
+                    val th = maxOf(n.size.height.toFloat(), touch.height) / density
+                    // A target cut by the edge of a scrolled list is only partly on screen: not judged.
+                    if (w > 0f && h > 0f && (w < 23.5f || h < 23.5f || tw < 47.5f || th < 47.5f) && !clippedByScroll(n)) {
+                        out += Finding(Kind.TARGET, name.ifBlank { tagOf(n) }, "%.0f x %.0f dp (touch %.0f x %.0f)".format(w, h, tw, th))
+                    }
+                }
+            }
+        }
+        return out.distinctBy { it.toString() }
+    }
+
+    /**
+     * Rule 17 of docs/DESIGN.md, « Tout défilement se voit » (round 5, chantier 6; hands-on audit G9): the lists that go on
+     * below their frame without the hint over their frame (tags `scroll_hint`, the chip « ↓ n autres » at the top of the list,
+     * and `scroll_hint_fade`, the fade at its bottom edge, drawn by `ScrollHintBox`).
+     * Read on the home screens for now ([com.pocketstudio.app.onboarding.HomeScreensSayTheyScrollTest]).
+     */
+    fun unhintedScrolls(rule: ComposeTestRule): List<String> {
+        rule.waitForIdle()
+        val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        // The chip at the top of the list, the fade's band once it is scrolled.
+        val hints = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        return all.filter { n ->
+            val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: return@filter false
+            !hidden(n) && range.value() < range.maxValue() - 0.5f && hints.none { n.boundsInRoot.contains(it.boundsInRoot.center) }
+        }.map { "${tagOf(it)} (${"%.0f".format(it.config[SemanticsProperties.VerticalScrollAxisRange].maxValue() - it.config[SemanticsProperties.VerticalScrollAxisRange].value())} px below)" }
+    }
+
+    private val HINT_TAGS = setOf("scroll_hint", "scroll_hint_fade")
+
+    /** Something TalkBack can act on: a touch, a long press, a slider, a switch or a box to tick. */
+    val CONTROL = SemanticsMatcher("a control") { n ->
+        n.config.contains(SemanticsActions.OnClick) || n.config.contains(SemanticsActions.OnLongClick) ||
+            n.config.contains(SemanticsActions.SetProgress) || n.config.contains(SemanticsProperties.ToggleableState)
+    }
+
+    /** What kind of control [n] is, in the findings' words. */
+    fun controlKind(n: SemanticsNode): String = when {
+        n.config.contains(SemanticsActions.SetProgress) -> "slider"
+        n.config.contains(SemanticsProperties.ToggleableState) -> "toggle"
+        n.config.contains(SemanticsActions.OnClick) -> "touchable"
+        else -> "long press"
+    }
+
+    private fun top(n: SemanticsNode): SemanticsNode {
+        var p = n
+        while (true) p = p.parent ?: return p
+    }
+
+    private class Txt(val node: SemanticsNode, val text: String, val layout: TextLayoutResult?)
+
+    private fun textOf(n: SemanticsNode): String? =
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }?.takeIf { it.isNotBlank() }
+
+    private fun layout(n: SemanticsNode): TextLayoutResult? {
+        val get = n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action ?: return null
+        val list = mutableListOf<TextLayoutResult>()
+        return if (get(list)) list.firstOrNull() else null
+    }
+
+    fun tagOf(n: SemanticsNode): String =
+        n.config.getOrNull(SemanticsProperties.TestTag) ?: "#${n.id}"
+
+    fun nameOf(n: SemanticsNode): String = listOfNotNull(
+        n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" "),
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text },
+        n.config.getOrNull(SemanticsProperties.EditableText)?.text,
+        n.config.getOrNull(SemanticsActions.OnClick)?.label,
+        n.config.getOrNull(SemanticsProperties.StateDescription),
+    ).joinToString(" ").trim()
+
+    /** A control whose state TalkBack reads as a value (a slider, a switch, a box to tick): it needs a name besides. */
+    fun valued(n: SemanticsNode): Boolean =
+        n.config.contains(SemanticsActions.SetProgress) || n.config.contains(SemanticsProperties.ToggleableState)
+
+    /** What TalkBack reads as a control's name: its words and its description, not its value nor its action's label. */
+    fun controlName(n: SemanticsNode): String = listOfNotNull(
+        n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" "),
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text },
+        n.config.getOrNull(SemanticsProperties.EditableText)?.text,
+    ).joinToString(" ").trim()
+
+    fun hidden(n: SemanticsNode): Boolean {
+        var p: SemanticsNode? = n
+        while (p != null) {
+            if (p.config.contains(SemanticsProperties.HideFromAccessibility) || p.config.contains(SemanticsProperties.InvisibleToUser)) return true
+            // Cleared to nothing (`clearAndSetSemantics {}`): what a screen drawn over it covers (the studio under « Que veux-tu
+            // faire ? », round 2 integration): neither seen nor read; its texts under the cover's pixels read as false contrasts.
+            if (p.config.isClearingSemantics && p.config.none()) return true
+            p = p.parent
+        }
+        return n.boundsInRoot.width <= 0f || n.boundsInRoot.height <= 0f
+    }
+
+    /** Axes along which an ancestor scrolls (0: none, 1: horizontal, 2: vertical, 3: both). */
+    private fun scrollAxes(n: SemanticsNode): Int {
+        var axes = 0
+        var p = n.parent
+        while (p != null) {
+            if (p.config.contains(SemanticsProperties.HorizontalScrollAxisRange)) axes = axes or 1
+            if (p.config.contains(SemanticsProperties.VerticalScrollAxisRange)) axes = axes or 2
+            p = p.parent
+        }
+        return axes
+    }
+
+    /**
+     * The windows of the ancestors that scroll along [axis] (1: horizontal, 2: vertical) and have something to
+     * scroll (a scroller whose content fits hides nothing scrolled away), in root pixels.
+     */
+    private fun scrollWindows(n: SemanticsNode, axis: Int): List<Rect> {
+        val key = if (axis == 1) SemanticsProperties.HorizontalScrollAxisRange else SemanticsProperties.VerticalScrollAxisRange
+        val out = mutableListOf<Rect>()
+        var p = n.parent
+        while (p != null) {
+            val range = p.config.getOrNull(key)
+            if (range != null && range.maxValue() > 0f) out += p.boundsInRoot
+            p = p.parent
+        }
+        return out
+    }
+
+    private fun clippedByScroll(n: SemanticsNode): Boolean {
+        val full = Rect(n.positionInRoot, androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
+        val shown = n.boundsInRoot
+        return scrollAxes(n) != 0 && (shown.width < full.width - 1f || shown.height < full.height - 1f)
+    }
+
+    /** Where the letters are drawn (the text box can be wider than its words), in root pixels. */
+    private fun ink(t: Txt): Rect {
+        val l = t.layout ?: return toRoot(t.node, Rect(0f, 0f, t.node.size.width.toFloat(), t.node.size.height.toFloat()))
+        if (l.lineCount == 0) return Rect.Zero
+        var left = Float.MAX_VALUE
+        var right = -Float.MAX_VALUE
+        for (i in 0 until l.lineCount) {
+            if (l.getLineEnd(i, visibleEnd = true) <= l.getLineStart(i)) continue
+            left = min(left, l.getLineLeft(i))
+            right = max(right, l.getLineRight(i))
+        }
+        if (left > right) return Rect.Zero
+        // A right-to-left or centred line is placed in the width the paragraph was laid out in, which
+        // can be wider than the box the text was given in the end: brought back into its box.
+        val box = t.node.size.width.toFloat()
+        if (right - left <= box + 1f) {
+            // The words fit their box: where the paragraph placed them inside it (centred, end-aligned,
+            // laid out wider first) is not read; the box itself is where they are.
+            left = maxOf(left, 0f).coerceAtMost(box)
+            right = minOf(right, box)
+            if (right - left < 1f) { left = 0f; right = box }
+        }
+        val bottom = min(l.getLineBottom(l.lineCount - 1), l.size.height.toFloat().coerceAtLeast(l.getLineBottom(0)))
+        return toRoot(t.node, Rect(left, l.getLineTop(0), right, bottom))
+    }
+
+    /**
+     * [local] (in the node's own pixels) where it lands in the root, through every scale and move of the
+     * layers above it (a tile shrunk to fit), without their clipping (that is what is compared).
+     */
+    private fun toRoot(n: SemanticsNode, local: Rect): Rect {
+        val c = n.layoutInfo.coordinates
+        val whole = c.findRootCoordinates().localBoundingBoxOf(c, clipBounds = false)
+        val sx = if (n.size.width > 0) whole.width / n.size.width else 1f
+        val sy = if (n.size.height > 0) whole.height / n.size.height else 1f
+        return Rect(whole.left + local.left * sx, whole.top + local.top * sy, whole.left + local.right * sx, whole.top + local.bottom * sy)
+    }
+
+    private fun cut(t: Txt, density: Float): Finding? {
+        if (hidden(t.node)) return null
+        val l = t.layout
+        if (l != null) {
+            val ellipsized = (0 until l.lineCount).any { l.isLineEllipsized(it) }
+            if (ellipsized) return Finding(Kind.CUT, t.text, "ellipsized (« … »)")
+            // A word split over two lines (« Monté/e »), as FitText's own rule reads it.
+            val full = l.layoutInput.text.text
+            if (l.lineCount > 1 && !com.pocketstudio.ui.WholeWordsAutoSize.fits(l, full) && !l.didOverflowHeight) {
+                return Finding(Kind.CUT, t.text, "a word split over two lines")
+            }
+            // (didOverflowWidth compares with the width the paragraph was laid out in, not the words: the lines themselves.)
+            val widest = (0 until l.lineCount).maxOfOrNull { l.getLineRight(it) - l.getLineLeft(it) } ?: 0f
+            // (In a row that scrolls sideways a text has all the width it wants: not judged there.)
+            if (widest > l.size.width + 1f && scrollAxes(t.node) and 1 == 0) return Finding(Kind.CUT, t.text, "wider than its box (by %.1f dp)".format((widest - l.size.width) / density))
+            // Lines taller than the box by more than a quarter of a line: letters cut (less is the font's
+            // own room above and below the letters, which a tight box may clip unseen).
+            val last = l.lineCount - 1
+            if (l.lineCount > 0 && l.getLineBottom(last) - l.size.height > 0.25f * (l.getLineBottom(last) - l.getLineTop(last))) {
+                return Finding(Kind.CUT, t.text, "lines cut (taller than its box)")
+            }
+            if (l.didOverflowHeight && l.lineCount > 0 && l.getLineEnd(l.lineCount - 1, visibleEnd = true) < l.layoutInput.text.length) {
+                return Finding(Kind.CUT, t.text, "lines dropped (more lines than room)")
+            }
+        }
+        // Drawn past a clipping parent: the shown part of the letters is smaller than the letters.
+        val ink = ink(t)
+        if (ink.isEmpty) return null
+        val shown = t.node.boundsInRoot
+        val axes = scrollAxes(t.node)
+        val tol = 2f * density
+        // Down: past a scroller's window, letters are only scrolled away, not cut; letters hidden inside every
+        // window are cut by something else (round 5, scan r3: a chip's second line cut by its own 44 dp, in a row
+        // that scrolls sideways inside a page that scrolls down, was never judged). Across, a row that scrolls
+        // sideways is still not judged (a text there has all the width it wants; a right-to-left chip's line
+        // misread as wider than its box, tablet8 ar rhythm).
+        fun scrolledAway(past: (Rect) -> Boolean) = scrollWindows(t.node, 2).any(past)
+        val cutX = axes and 1 == 0 && (ink.left < shown.left - tol || ink.right > shown.right + tol)
+        val cutY = (ink.top < shown.top - tol && !scrolledAway { ink.top < it.top - tol }) ||
+            (ink.bottom > shown.bottom + tol && !scrolledAway { ink.bottom > it.bottom + tol })
+        if (shown.isEmpty && axes != 0) return null
+        if (cutX || cutY) {
+            return Finding(Kind.CUT, t.text, "drawn past its parent's edge (%s, %.0f dp shown of %.0f)".format(
+                if (cutX) "across" else if (ink.bottom > shown.bottom + tol) "down" else "up", (if (cutX) shown.width else shown.height) / density, (if (cutX) ink.width else ink.height) / density))
+        }
+        return null
+    }
+
+    private fun ancestorOf(a: SemanticsNode, b: SemanticsNode): Boolean {
+        var p = b.parent
+        while (p != null) { if (p.id == a.id) return true; p = p.parent }
+        return false
+    }
+
+    private fun overlaps(texts: List<Txt>, density: Float): List<Finding> {
+        val shown = texts.filter { !hidden(it.node) }.map { it to ink(it).intersect(it.node.boundsInRoot) }.filter { !it.second.isEmpty }
+        val out = mutableListOf<Finding>()
+        val min = 2f * density
+        for (i in shown.indices) for (j in i + 1 until shown.size) {
+            val (a, ra) = shown[i]
+            val (b, rb) = shown[j]
+            if (a.node.root != b.node.root) continue
+            val x = ra.intersect(rb)
+            if (x.width < min || x.height < min) continue
+            if (ancestorOf(a.node, b.node) || ancestorOf(b.node, a.node)) continue
+            // The same words twice in one place (a text and its own label for TalkBack) are not two texts.
+            if (a.text == b.text && ra == rb) continue
+            out += Finding(Kind.OVERLAP, a.text, "over « ${b.text} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
+        }
+        return out
+    }
+
+    /** A text drawn into something to touch that is not its own (a title running under the button beside it). */
+    private fun overButtons(texts: List<Txt>, all: List<SemanticsNode>, density: Float): List<Finding> {
+        val buttons = all.filter { it.config.contains(SemanticsActions.OnClick) && !hidden(it) }
+        val out = mutableListOf<Finding>()
+        val min = 3f * density
+        for (t in texts) {
+            if (hidden(t.node)) continue
+            val ink = ink(t).intersect(t.node.boundsInRoot)
+            if (ink.isEmpty) continue
+            for (b in buttons) {
+                if (b.root != t.node.root || b.id == t.node.id || ancestorOf(b, t.node) || ancestorOf(t.node, b)) continue
+                val x = ink.intersect(b.boundsInRoot)
+                if (x.width >= min && x.height >= min) {
+                    out += Finding(Kind.OVERLAP, t.text, "over the touchable « ${nameOf(b).take(40)} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
+                }
+            }
+        }
+        return out
+    }
+
+    /**
+     * Tour 5, lot « moyens » C (review of the home lot, M-b): something touchable drawn over a control wholly on screen
+     * (the scroll hint « ↓ n autres » over a card, any floating button over a list) takes the touches meant for that control. The one
+     * on top is the later in the drawing order; the one under it is judged only when wholly on screen (a card cut by a
+     * list's edge is read by the home screens' own test, HomeScreensSayTheyScrollTest).
+     */
+    private fun floatingOverControls(rule: ComposeTestRule, density: Float): List<Finding> {
+        val controls = rule.onAllNodes(CONTROL, useUnmergedTree = false).fetchSemanticsNodes(atLeastOneRootRequired = false)
+            .filter { it.config.contains(SemanticsActions.OnClick) && !hidden(it) }
+        val min = 3f * density
+        val out = mutableListOf<Finding>()
+        for (i in controls.indices) for (j in i + 1 until controls.size) {
+            val a = controls[i]
+            val b = controls[j]
+            if (a.root != b.root || ancestorOf(a, b) || ancestorOf(b, a)) continue
+            val x = a.boundsInRoot.intersect(b.boundsInRoot)
+            if (x.width < min || x.height < min) continue
+            val (under, over) = if (drawnAfter(b, a)) a to b else b to a
+            if (!wholly(under)) continue
+            // Floating: over a list's control without being part of that list (a piano's black key over its white
+            // neighbours is the instrument itself, in the same layout).
+            val list = generateSequence(under.parent) { it.parent }.firstOrNull {
+                it.config.contains(SemanticsProperties.VerticalScrollAxisRange) || it.config.contains(SemanticsProperties.HorizontalScrollAxisRange)
+            } ?: continue
+            if (ancestorOf(list, over)) continue
+            out += Finding(Kind.OVERLAP, nameOf(over).ifBlank { tagOf(over) },
+                "floats over the touchable « ${nameOf(under).ifBlank { tagOf(under) }.take(40)} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
+        }
+        return out
+    }
+
+    /** Whether [n] is drawn after [m] (over it): the later child where their ancestries part. */
+    private fun drawnAfter(n: SemanticsNode, m: SemanticsNode): Boolean {
+        fun path(x: SemanticsNode): List<SemanticsNode> = generateSequence(x) { it.parent }.toList().asReversed()
+        val pn = path(n)
+        val pm = path(m)
+        var k = 0
+        while (k < pn.size && k < pm.size && pn[k].id == pm[k].id) k++
+        if (k == 0 || k >= pn.size || k >= pm.size) return pn.size > pm.size
+        val siblings = pn[k - 1].children.map { it.id }
+        return siblings.indexOf(pn[k].id) > siblings.indexOf(pm[k].id)
+    }
+
+    /** [n] wholly drawn: nothing of it cut by a parent, a list's edge or the screen's. */
+    private fun wholly(n: SemanticsNode): Boolean {
+        val shown = n.boundsInRoot
+        return shown.width >= n.size.width - 1f && shown.height >= n.size.height - 1f
+    }
+
+    private fun samePixels(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap?): Boolean {
+        if (b == null || a.width != b.width || a.height != b.height) return false
+        for (y in 0 until a.height step 7) for (x in 0 until a.width step 7) if (a[x, y] != b[x, y]) return false
+        return true
+    }
+
+    /** The window of root [r] drawn from its own view (its decor), or null when it has none. */
+    private fun ownPixels(r: SemanticsNode): androidx.compose.ui.graphics.PixelMap? {
+        val view = (r.root as? androidx.compose.ui.platform.ViewRootForTest)?.view?.rootView ?: return null
+        if (view.width <= 0 || view.height <= 0) return null
+        val bitmap = android.graphics.Bitmap.createBitmap(view.width, view.height, android.graphics.Bitmap.Config.ARGB_8888)
+        view.draw(android.graphics.Canvas(bitmap))
+        return bitmap.asImageBitmap().toPixelMap()
+    }
+
+    /** A text in something switched off (WCAG asks no contrast of inactive controls). */
+    private fun disabled(n: SemanticsNode): Boolean {
+        var p: SemanticsNode? = n
+        while (p != null) { if (p.config.contains(SemanticsProperties.Disabled)) return true; p = p.parent }
+        return false
+    }
+
+    private fun lum(argb: androidx.compose.ui.graphics.Color): Double {
+        fun ch(c: Float): Double = if (c <= 0.03928f) c / 12.92 else ((c + 0.055) / 1.055).pow(2.4)
+        return 0.2126 * ch(argb.red) + 0.7152 * ch(argb.green) + 0.0722 * ch(argb.blue)
+    }
+
+    private fun ratio(a: Double, b: Double) = (max(a, b) + 0.05) / (min(a, b) + 0.05)
+
+    /**
+     * The text's contrast on the pixels: the background is the most common colour in the box of its
+     * letters, the ink the 98th percentile of the pixels' contrast with it (anti-aliased edges below).
+     */
+    private fun contrast(t: Txt, px: androidx.compose.ui.graphics.PixelMap, density: Float): Finding? {
+        if (hidden(t.node) || disabled(t.node)) return null
+        val r = ink(t).intersect(t.node.boundsInRoot).intersect(Rect(0f, 0f, px.width.toFloat(), px.height.toFloat()))
+        if (r.width < 2 || r.height < 2) return null
+        val counts = HashMap<Int, Int>()
+        val lums = ArrayList<Pair<Int, Double>>()
+        for (y in r.top.toInt() until r.bottom.toInt()) for (x in r.left.toInt() until r.right.toInt()) {
+            val c = px[x, y]
+            val key = (c.red * 255).toInt() shl 16 or ((c.green * 255).toInt() shl 8) or (c.blue * 255).toInt()
+            counts[key] = (counts[key] ?: 0) + 1
+            lums += key to lum(c)
+        }
+        val bgKey = counts.maxBy { it.value }.key
+        val bg = lums.first { it.first == bgKey }.second
+        val far = lums.map { ratio(it.second, bg) }.sortedDescending()
+        // The letters cover several percent of their box; the strongest 2 % of its pixels are the ink's core.
+        val inkRatio = far[(far.size * 0.02).toInt().coerceAtMost(far.size - 1)]
+        if (inkRatio < 1.2) return null // nothing drawn there (a text under something opaque)
+        val sp = (t.layout?.layoutInput?.style?.fontSize?.takeIf { it.isSp }?.value ?: 14f)
+        val bold = (t.layout?.layoutInput?.style?.fontWeight?.weight ?: 400) >= 700
+        val large = sp >= 18f || (bold && sp >= 14f)
+        val need = if (large) 3.0 else 4.5
+        return if (inkRatio < need - 0.05) Finding(Kind.CONTRAST, t.text, "%.2f:1 (needs %.1f:1, %.0f sp)".format(inkRatio, need, sp)) else null
+    }
+}

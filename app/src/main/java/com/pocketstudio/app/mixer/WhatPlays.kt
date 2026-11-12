@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.whatActs
 import com.pocketstudio.ui.Neon
 import kotlin.math.abs
@@ -88,7 +90,7 @@ fun shapeText(s: CurveShape): String {
         CurveShape.Kind.DOWN_UP -> tr("Descend jusqu'à %d %% puis remonte.", pct(s.min))
         CurveShape.Kind.MOVES -> tr("Bouge entre %1\$d %% et %2\$d %%.", pct(s.min), pct(s.max))
     }
-    return if (s.bars > 0) what + " " + tr("Sur %d mesures.", s.bars) else what
+    return if (s.bars > 0) what + " " + trCount(s.bars, "Sur 1 mesure.", "Sur %d mesures.") else what
 }
 
 /** How a lane plays: each loop, each scene its own, or over the whole song (and who wrote it). */
@@ -159,7 +161,7 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
         val centred = Macros.DEFAULTS[a.macro] > 0f
         val amount = if (centred) pct(abs(a.value - 0.5f) * 2f) else pct(a.value)
         val side = if (centred && a.value < 0.5f) low else high
-        ActRow(tr(Macros.NAMES[a.macro]), tr("Réglage rapide : %1\$s à %2\$d %%.", tr(side).lowercase(), amount), Where.Effects(a.ch), false, "act_macro_${a.ch}_${a.macro}", short = tr(Macros.NAMES[a.macro]).lowercase() + " " + amount + " %")
+        ActRow(tr(Macros.NAMES[a.macro]), tr("Réglage rapide : %1\$s à %2\$d %%.", tr(side).inSentence(), amount), Where.Effects(a.ch), false, "act_macro_${a.ch}_${a.macro}", short = tr(Macros.NAMES[a.macro]).inSentence() + " " + amount + " %")
     }
     is Acting.Layered -> {
         val l = a.layer
@@ -173,9 +175,9 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
     }
     is Acting.MasterTrim -> ActRow(
         tr("Volume général"),
-        tr("%s dB sur la sortie générale.", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
+        tr("%s dB sur la sortie générale.", com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db))),
         Where.Master, false, "act_trim",
-        short = tr("volume %s dB", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
+        short = tr("volume %s dB", com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db))),
     )
     is Acting.Moves -> ActRow(
         tr("Bouge : %s", targetShortName(a.automation.target, channels, master, strips)),
@@ -196,6 +198,8 @@ fun movesOn(p: Project, ch: Int): Int = p.automation.count { it.target.ch == ch 
 fun WhatPlaysDialog(
     p: Project, strips: List<StripInfo>, scene: Int?, onlyCh: Int?, scenes: List<Pair<Int, String>>,
     setScene: (Int?) -> Unit, showAll: () -> Unit, go: (Where) -> Unit, dismiss: () -> Unit,
+    /** Where « Modifier » is offered (the Mode simple: a track's effects and the master's level only). */
+    canGo: (Where) -> Boolean = { true },
 ) {
     val groups = androidx.compose.runtime.remember(p, strips, scene, onlyCh) { whatPlaysGroups(p, scene, strips, onlyCh) }
     val trackName = onlyCh?.let { ch -> strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } }
@@ -205,20 +209,20 @@ fun WhatPlaysDialog(
         modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("what_plays"),
         title = { Text(if (trackName != null) tr("Ce qui bouge sur %s", trackName) else tr("Ce qui joue")) },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) { WhatPlaysContent(groups, scene, onlyCh, scenes, setScene, showAll, go) }
+            Column(Modifier.verticalScroll(rememberScrollState())) { WhatPlaysContent(groups, scene, onlyCh, scenes, setScene, showAll, go, canGo) }
         },
         confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("what_plays_close")) { Text(tr("Fermer")) } },
     )
 }
 
 @Composable
-private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
+private fun GroupBlock(g: ActGroup, go: (Where) -> Unit, canGo: (Where) -> Boolean = { true }) {
     Column(Modifier.fillMaxWidth().testTag("what_plays_group_${g.ch}"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(width = 4.dp, height = 20.dp).background(g.color ?: Neon.Cyan, RoundedCornerShape(2.dp)))
             Text(g.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(start = 8.dp).weight(1f))
             val moving = g.rows.count { it.moves }
-            if (moving > 0) Text(if (moving == 1) tr("1 courbe") else tr("%d courbes", moving), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
+            if (moving > 0) Text(trCount(moving, "1 courbe", "%d courbes"), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
         }
         g.rows.forEach { r ->
             Row(
@@ -233,7 +237,9 @@ private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
                     Text(r.title, style = MaterialTheme.typography.bodyLarge)
                     if (r.detail.isNotBlank()) Text(r.detail, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
-                if (r.moves) {
+                if (!canGo(r.where)) {
+                    // Nothing to open from here (the Mode simple has no Mix): said, not offered.
+                } else if (r.moves) {
                     FilledTonalButton(
                         onClick = { go(r.where) }, modifier = Modifier.heightIn(min = 48.dp).testTag("${r.tag}_go"),
                         colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Amber, contentColor = Neon.OnAccent),
@@ -251,6 +257,7 @@ private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
 fun WhatPlaysContent(
     groups: List<ActGroup>, scene: Int?, onlyCh: Int?, scenes: List<Pair<Int, String>>,
     setScene: (Int?) -> Unit, showAll: () -> Unit, go: (Where) -> Unit,
+    canGo: (Where) -> Boolean = { true },
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
@@ -269,6 +276,6 @@ fun WhatPlaysContent(
         if (groups.isEmpty()) {
             Text(tr("Rien n'agit sur le son ici : pas d'effet, pas d'envoi, rien qui bouge."), style = MaterialTheme.typography.bodyMedium)
         }
-        groups.forEach { g -> GroupBlock(g, go) }
+        groups.forEach { g -> GroupBlock(g, go, canGo) }
     }
 }

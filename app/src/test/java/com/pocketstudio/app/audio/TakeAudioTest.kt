@@ -51,6 +51,15 @@ class TakeAudioTest {
     }
 
     @Test
+    fun aPadStartedSoftlyOnAControllerIsBouncedAsSoftAsItPlayed() {
+        val clips = listOf(LiveClip("a.wav", "Batterie", beats = 1))
+        val loop = Pcm(FloatArray(800) { if (it < 10) 1f else 0f }, 1, 1000)
+        val out = PadBounce.render(listOf(LivePadTake.Span(0, 0.0, 8.0, velocity = 0.25f)), clips, mapOf(0 to loop), start = 0, end = 16, bpm = 120.0, rate = 1000)!!
+        assertEquals(0.25f, out.data[0], 1e-6f)
+        assertEquals(0.25f, out.data[500], 1e-6f)
+    }
+
+    @Test
     fun barLinesFallWhereTheBarsAreInTheTake() {
         // A song clip from step 24 (bar 2, half way), 8 s at 120 BPM: 64 sixteenths, 4 bars.
         val marks = clipBarMarks(AudioClip("v.wav", "Prise", seconds = 8.0, start = 24, song = true), 120.0, 16)

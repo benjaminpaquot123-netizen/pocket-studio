@@ -1,0 +1,47 @@
+Écran 66 (616x1371)
+touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 339,42
+bouton « Enregistrer : micro, clavier ou pads » @ 427,42
+bouton « Jouer » @ 499,42
+bouton « Plus de choix » @ 571,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+bouton « Refrain mesure 1/20 » @ 255,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 571,114
+bouton «  Mon morceau » @ 111,180
+texte « Remix » @ 252,180
+texte « Découper la chanson » @ 246,253
+bouton « ? » (nom « Qu'est-ce que « Un bout » ? ») @ 436,252
+bouton « Écouter depuis la ligne orange » @ 556,267
+bouton « Retour » @ 42,267
+texte « Ma chanson préférée · 0:40 » @ 215,289
+case « Voix » [sélectionné] @ 72,366
+case « Batterie » @ 208,366
+case « Basse » @ 353,366
+case « Reste » @ 488,366
+texte « Pince pour zoomer » @ 500,501
+texte « Fin du bout » [état « 0:05.50 »] @ 173,589
+bouton « Un bout » (nom « Coupes : Un bout ») @ 138,699
+bouton « Au temps » (nom « Aimant : Au temps ») @ 386,699
+bouton « Annuler » @ 562,699
+bouton « Début ici » @ 88,795
+bouton « Fin ici » @ 237,795
+bouton « Écouter le bout 9 temps · 0:04.5 » @ 457,795
+texte « Place Début et Fin, puis envoie ce bout. » @ 234,891
+bouton « Sur les pads » @ 99,963
+bouton « Dans le Live » @ 238,963
+bouton « Garder » @ 377,963
+bouton « Sur une piste » @ 516,963
+bouton « Guide  · Pose un rythme 7 % » [état « replié »] @ 308,1077
+bouton « Jouer » @ 234,1152
+bouton « Annuler » (nom « Annuler la dernière action ») @ 100,1152
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 373,1152
+bouton « Plus » (nom « Plus de choix ») @ 516,1152
+onglet « Mon morceau » @ 56,1251
+onglet « Rythme » @ 181,1251
+onglet « Clavier » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Envoyer » @ 559,1251
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

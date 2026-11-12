@@ -1,0 +1,49 @@
+Écran 78 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+onglet « Acid 303 Ligne de basse » @ 132,246
+touchable « Basse Plaits » (nom « Options de Basse ») @ 361,246
+bouton «  Piste » @ 563,246
+bouton « Changer le son de Basse » @ 506,246
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : A » @ 121,324
+texte « Motif posé ! La suite se copie : » @ 212,382
+bouton « Copier » @ 449,371
+texte « mes. » @ 69,437
+touchable « 3 » @ 109,437
+touchable « 4 » @ 336,437
+  → la suite sur le côté (glisse pour la voir)
+bouton « Si2 » @ 69,475
+bouton « Si♭2 » @ 69,495
+bouton « La2 » @ 69,525
+bouton « La♭2 » @ 69,555
+bouton « Sol2 » @ 69,585
+bouton « Sol♭2 » @ 69,615
+bouton « Fa2 » @ 69,645
+bouton « Mi2 » @ 69,675
+bouton « Mi♭2 » @ 69,705
+bouton « Ré2 » @ 69,729
+texte « Grille des notes : 32 notes » @ 321,604
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « La basse Chapitre 5/15 · Étape 2/2 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « Copier sur les mesures suivantes » @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » @ 174,1146
+onglet « Clavier » [sélectionné] @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

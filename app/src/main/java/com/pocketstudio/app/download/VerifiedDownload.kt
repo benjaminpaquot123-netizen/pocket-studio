@@ -72,6 +72,8 @@ object VerifiedDownload {
                     out.fd.sync()
                 }
             }
+            // The connection ended early without an error: what came is kept for the next try.
+            if (done < spec.sizeBytes) throw IOException(tr("connexion coupée"))
             keep = false
             if (hex(digest.digest()) != spec.sha256) throw IOException(tr("fichier abîmé (empreinte différente)"))
             if (!part.renameTo(target)) throw IOException(tr("écriture impossible"))

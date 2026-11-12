@@ -13,7 +13,7 @@ import org.junit.Test
 class TimelineHitTest {
     private val rows = listOf(
         TimelineRow(SongPart.DRUMS, "Batterie", Color.Red),
-        TimelineRow(SongPart.ACID, "Basse acide", Color.Green),
+        TimelineRow(SongPart.ACID, "Acid 303", Color.Green),
     )
     private val lanes = listOf(TimelineLane(0, SongPart.DRUMS, "Volume · Batterie"), TimelineLane(3, null, "Volume · Sortie générale"))
 

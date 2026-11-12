@@ -1,0 +1,350 @@
+#0 SIEGE lang=es device=phone411 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=remix
+#0 AMENEE remix
+#0 AMENEE > touche 308 829 (launch_remix)
+#0 AMENEE prête (dialogue:remix_home)
+#1 ROUTE dialogue:remix_home | MODE pro | EMPREINTE bf45d8662c | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Descargar el modelo (174 MB) » 2.51:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Descargar el modelo (174 MB) » 2.04:1 (needs 4.5:1, 14 sp)
+#1 > touche 308 457
+#1 DOIGT remix_pick « Elegir una canción »
+#2 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE ef5c940931 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Descargar y luego elegir la canción » 2.81:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Más tarde » 2.67:1 (needs 4.5:1, 14 sp)
+#2 > touche 363 784
+#2 DOIGT remix_model_ask_ok « Descargar y luego elegir la canción »
+#3 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 8e718812dc | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Cancelar » 3.52:1 (needs 4.5:1, 14 sp)
+#3 > attends 30
+#4 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 3f5734f73d | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > attends 60
+#5 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 5459be5f51 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 60
+#6 ROUTE dialogue:remix_home | MODE pro | EMPREINTE c65f903b09 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 120
+#7 ROUTE dialogue:remix_home | MODE pro | EMPREINTE eff0299562 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 300
+#8 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 3c61334fc5 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 500
+#9 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 3c61334fc5 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > attends 60
+#10 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 3c61334fc5 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > attends 60
+#11 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 6b6ace956a | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 60
+#12 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 6b6ace956a | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > attends 90
+#13 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 3c61334fc5 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > attends 90
+#14 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 572f207ed8 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > attends 60
+#15 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 0aa1f4a59c | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Un proyecto nuevo a su tempo y en su tonalidad (120 BPM, La menor), con sus pistas listas. » 4.14:1 (needs 4.5:1, 13 sp)
+#15 > touche 515 970
+#15 DOIGT remix_dest_back « Cancelar »
+#16 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 81a67ab3b9 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » 3.52:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Resto » 1.60:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Voz » 1.60:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST «  Elegir una canción » 2.04:1 (needs 4.5:1, 14 sp)
+#16 > touche 308 595
+#16 DOIGT use_3a02635f77d71cd9a979f25b « Usar esta canción »
+#17 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 0aa1f4a59c | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 308 698
+#17 DOIGT remix_dest_new « En un proyecto nuevo »
+#18 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 7de2da5063 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Pro » 2.07:1 (needs 3.0:1, 24 sp)
+#18 > touche 308 561
+#18 DOIGT mode_card_pro « Pro »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 2873922003 | project=p-a1d73d66 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#19 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Efectos » 4.44:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#19 > glisse 300 880 300 400
+#19 DOIGT rien
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE cfbfe8dd19 | project=p-a1d73d66 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 308 990
+#20 DOIGT remix_cut_thumb «  Cortar la canción »
+#21 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE fdc009c1e0 | project=p-a1d73d66 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 138 699
+#21 DOIGT cut_auto « Cortes: Un trozo »
+#22 ROUTE dialogue:cut_auto_0 | MODE pro | EMPREINTE 4310abb596 | project=p-a1d73d66 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 102 855
+#22 DOIGT cut_auto_1 « Frases »
+#23 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 02bc9aee0a | project=p-a1d73d66 no tuto
+#23 SON Son : rien ne joue.
+#23 > glisse 300 800 300 600
+#23 DOIGT rien
+#24 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 02bc9aee0a | project=p-a1d73d66 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 300 680
+#24 DOIGT rien
+#25 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 02bc9aee0a | project=p-a1d73d66 no tuto
+#25 SON Son : rien ne joue.
+#25 RIEN NE CHANGE (3 écrans identiques)
+#25 > touche 370 330
+#25 DOIGT help_Herramientas de corte « ¿Qué es “Herramientas de corte”? »
+#25 AIDE help_Herramientas
+#26 ROUTE dialogue:« Herramientas de corte » | MODE pro | EMPREINTE d3737b501f | project=p-a1d73d66 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 509 814
+#26 DOIGT #1768 « Entendido »
+#27 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 02bc9aee0a | project=p-a1d73d66 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 150 615
+#27 DOIGT rien
+#28 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 02bc9aee0a | project=p-a1d73d66 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 307 627
+#28 DOIGT rien
+#29 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 8b39c2a713 | project=p-a1d73d66 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 238 963
+#29 DOIGT cut_to_live « En el Live »
+#30 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE ba66d92ec3 | project=p-a1d73d66 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 238 963
+#30 DOIGT cut_to_live « En el Live »
+#31 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE be2a45df38 | project=p-a1d73d66 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 433 1251
+#31 DOIGT tab_Live « Live »
+#32 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 4c32f19468 | project=p-a1d73d66 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « Nueva versión » 3.34:1 (needs 4.5:1, 13 sp)
+#32 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 13 sp)
+#32 > touche 542 468
+#32 DOIGT live_pad_remix_0 « Ma chanson préférée · A · listo »
+#33 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 41a8f354ad | project=p-a1d73d66 no tuto
+#33 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Batería · D · vacío » (43 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Acid 303 · D · vacío » (79 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Sinte · D · vacío » (79 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Ma chanson préférée · D · vacío » (39 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Batería · E · vacío » (43 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Acid 303 · E · vacío » (79 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Sinte · E · vacío » (79 x 17 dp)
+#33 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Ma chanson préférée · E · vacío » (39 x 17 dp)
+#33 > touche 542 390
+#33 DOIGT live_mute_remix « Sonido de Ma chanson préférée »
+#34 ROUTE dialogue:« “Ma chanson préférée” estaba s » | MODE pro | EMPREINTE ea11ef063e | project=p-a1d73d66 no tuto
+#34 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#34 > touche 509 733
+#34 DOIGT #2020 « Entendido »
+#35 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE e01d2101d7 | project=p-a1d73d66 no tuto
+#35 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#35 > touche 181 1251
+#35 DOIGT tab_Sons « Sonidos »
+#36 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 28f31d23f4 | project=p-a1d73d66 no tuto
+#36 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#36 LAYOUT CUT « Inicio aquí » lines cut (taller than its box)
+#36 LAYOUT CUT « Fin aquí » lines cut (taller than its box)
+#36 LAYOUT CUT « 6 tiempos · 0:03.0 » lines cut (taller than its box)
+#36 > touche 138 654
+#36 DOIGT cut_auto « Cortes: Un trozo »
+#37 ROUTE dialogue:cut_auto_0 | MODE pro | EMPREINTE cf0758c835 | project=p-a1d73d66 no tuto
+#37 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#37 > touche 102 882
+#37 DOIGT cut_auto_2 « Transitorios »
+#38 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE bd11415d25 | project=p-a1d73d66 no tuto
+#38 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#38 > touche 536 828
+#38 DOIGT cut_message_ok « OK »
+#39 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE e36f790a18 | project=p-a1d73d66 no tuto
+#39 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#39 > touche 42 345
+#39 DOIGT cut_close
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE cb384f510b | project=p-a1d73d66 no tuto
+#40 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#40 > touche 308 504
+#40 DOIGT remix_open_cut «  Cortar la canción »
+#41 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 4c180c2a5c | project=p-a1d73d66 no tuto
+#41 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#41 > touche 99 963
+#41 DOIGT cut_to_pads « En los pads »
+#42 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 16dd12642d | project=p-a1d73d66 no tuto
+#42 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#42 > touche 99 963
+#42 DOIGT cut_to_pads « En los pads »
+#43 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 873bb3a7ed | project=p-a1d73d66 no tuto
+#43 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#43 > touche 99 963
+#43 DOIGT cut_to_pads « En los pads »
+#44 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE aa98292b0d | project=p-a1d73d66 no tuto
+#44 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#44 > touche 516 963
+#44 DOIGT cut_to_track « En una pista »
+#45 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE b2f4027931 | project=p-a1d73d66 no tuto
+#45 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#45 > touche 377 963
+#45 DOIGT cut_to_library « Guardar »
+#46 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 819366c31b | project=p-a1d73d66 no tuto
+#46 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#46 > touche 433 1251
+#46 DOIGT tab_Live « Live »
+#47 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE c298abf416 | project=p-a1d73d66 no tuto
+#47 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Batería · D · vacío » (24 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Acid 303 · D · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Sinte · D · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Voz 1 · D · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Ma chanson préférée · D · vacío » (21 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Batería · E · vacío » (24 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Acid 303 · E · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Sinte · E · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Voz 1 · E · vacío » (66 x 18 dp)
+#47 LAYOUT OVERLAP « Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí. » over the touchable « Ma chanson préférée · E · vacío » (21 x 18 dp)
+#47 > touche 150 1137
+#47 DOIGT live_tab_Pads « Pads »
+#48 ROUTE live_pads_grid | MODE pro | EMPREINTE f7cea91e0a | project=p-a1d73d66 no tuto
+#48 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix chante en ce moment.
+#48 LAYOUT OVERLAP « REC » over « Detener todo » (25 x 16 dp)
+#48 LAYOUT OVERLAP « Voz 1 » over « Voz 2 » (34 x 16 dp)
+#48 LAYOUT OVERLAP « Voz 1 » over « 2 comp. » (34 x 2 dp)
+#48 LAYOUT OVERLAP « REC » over the touchable « Detener todo Detener todo » (26 x 16 dp)
+#48 LAYOUT OVERLAP « 8 » over the touchable « Voz 2 · listo » (11 x 19 dp)
+#48 LAYOUT OVERLAP « Voz 1 » over the touchable « Voz 2 · listo » (34 x 18 dp)
+#48 LAYOUT OVERLAP « Detener todo » over the touchable « Grabar la actuación » (40 x 23 dp)
+#48 LAYOUT OVERLAP « Detener todo » over the touchable « Etiquetar la pantalla » (34 x 9 dp)
+#48 LAYOUT OVERLAP « Toca: tocar · mantén pulsado: cambiar » over the touchable « Tocar desde una parte » (86 x 30 dp)
+#48 LAYOUT OVERLAP « Toca: tocar · mantén pulsado: cambiar » over the touchable « Nueva versión ✓ » (115 x 10 dp)
+#48 LAYOUT OVERLAP « 2 comp. » over the touchable « Sonido de Batería Silenciar Batería acti » (38 x 7 dp)
+#48 LAYOUT OVERLAP « 2 comp. » over the touchable « Sonido de Voz 1 Silenciar Voz 1 activado » (49 x 7 dp)
+#48 LAYOUT OVERLAP « Voz 3 » over the touchable « Batería · B · vacío » (47 x 27 dp)
+#48 LAYOUT OVERLAP « Voz 3 » over the touchable « Acid 303 · B · vacío » (10 x 27 dp)
+#48 LAYOUT OVERLAP « 2 comp. » over the touchable « Batería · C · vacío » (42 x 14 dp)
+#48 LAYOUT OVERLAP « 2 comp. » over the touchable « Acid 303 · C · vacío » (5 x 14 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Voz 1 · B · vacío » (24 x 43 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Batería · E · vacío » (24 x 41 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Voz 1 · E · vacío » (24 x 41 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Batería · H · vacío » (24 x 39 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Voz 1 · H · vacío » (24 x 39 dp)
+#48 LAYOUT CONTRAST « 120 » 1.80:1 (needs 3.0:1, 18 sp)
+#48 LAYOUT CONTRAST « BPM » 1.80:1 (needs 4.5:1, 12 sp)
+#48 LAYOUT CONTRAST « 2 comp. » 4.02:1 (needs 4.5:1, 13 sp)
+#48 LAYOUT CONTRAST « 2 comp. » 3.74:1 (needs 4.5:1, 13 sp)
+#48 > touche 158 309
+#48 DOIGT live_full_pad_0 « Voz 1 · listo »
+#49 ROUTE live_pads_grid | MODE pro | EMPREINTE 6ee4b66fb2 | project=p-a1d73d66 no tuto
+#49 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant ; le pad live 1 joue en boucle.
+#49 LAYOUT CONTRAST « Voz 1 » 2.28:1 (needs 3.0:1, 22 sp)
+#49 LAYOUT CONTRAST « 2 comp. » 1.82:1 (needs 4.5:1, 13 sp)
+#49 > touche 45 48
+#49 DOIGT live_pads_full_close
+#50 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 3b7797978b | project=p-a1d73d66 no tuto
+#50 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant ; le pad live 1 joue en boucle.
+#50 > touche 181 1251
+#50 DOIGT tab_Sons « Sonidos »
+#51 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE d104fe0f90 | project=p-a1d73d66 no tuto
+#51 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant ; le pad live 1 joue en boucle.
+#51 > touche 42 345
+#51 DOIGT cut_close
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 69dacd5132 | project=p-a1d73d66 no tuto
+#52 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#52 > touche 249 354
+#52 DOIGT fold_Dans le projet « CANCIÓN: MA CHANSON PRÉFÉRÉE »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE cb1af37628 | project=p-a1d73d66 no tuto
+#53 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#53 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.74:1 (needs 4.5:1, 12 sp)
+#53 > touche 308 631
+#53 DOIGT remix_pick « Elegir una canción »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 38f4cbfad3 | project=p-a1d73d66 no tuto
+#54 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#54 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.57:1 (needs 4.5:1, 12 sp)
+#54 > attends 30
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE cb1af37628 | project=p-a1d73d66 no tuto
+#55 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#55 > touche 128 42
+#55 DOIGT top_projects « Remix »
+#56 ROUTE dialogue:projects | MODE pro | EMPREINTE 9449eb066b | project=p-a1d73d66 no tuto
+#56 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#56 > touche 562 480
+#56 DOIGT project_menu_p-a1d73d66
+#57 ROUTE dialogue:project_opening_p-a1d73d66 | MODE pro | EMPREINTE 3ae10b282f | project=p-a1d73d66 no tuto
+#57 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#57 > retour
+#57 RETOUR
+#58 ROUTE dialogue:projects | MODE pro | EMPREINTE 9449eb066b | project=p-a1d73d66 no tuto
+#58 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière ; le pad live 1 joue en boucle.
+#58 > touche 54 54
+#58 DOIGT projects_back
+#59 ROUTE launch | MODE pro | EMPREINTE 7579b6d751 | project=p-a1d73d66 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 308 829
+#59 DOIGT launch_remix « Remix »
+#60 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 81a67ab3b9 | project=p-a1d73d66 no tuto
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « Elegir una canción » 4.04:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » 4.24:1 (needs 4.5:1, 13 sp)
+#60 LAYOUT CONTRAST « Batería » 1.79:1 (needs 4.5:1, 13 sp)
+#60 LAYOUT CONTRAST « Bajo » 1.26:1 (needs 4.5:1, 13 sp)
+#60 LAYOUT CONTRAST « Resto » 2.91:1 (needs 4.5:1, 13 sp)
+#60 LAYOUT CONTRAST « Voz » 1.62:1 (needs 4.5:1, 13 sp)
+#60 > touche 308 595
+#60 DOIGT use_3a02635f77d71cd9a979f25b « Usar esta canción »
+#61 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 0aa1f4a59c | project=p-a1d73d66 no tuto
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « Un proyecto vacío; la canción te espera en el Remix para que tomes trozos. » 4.24:1 (needs 4.5:1, 13 sp)
+#61 > touche 308 838
+#61 DOIGT remix_dest_existing « En un proyecto existente »
+#62 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE f2a646241f | project=p-a1d73d66 no tuto
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST «  Atrás » 1.91:1 (needs 4.5:1, 14 sp)
+#62 > touche 518 807
+#62 DOIGT remix_dest_back «  Atrás »
+#63 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 0aa1f4a59c | project=p-a1d73d66 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 515 970
+#63 DOIGT remix_dest_back « Cancelar »
+#64 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 81a67ab3b9 | project=p-a1d73d66 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 68 36
+#64 DOIGT remix_home_back «  Atrás »
+#65 ROUTE launch | MODE pro | EMPREINTE 7579b6d751 | project=p-a1d73d66 no tuto
+#65 SON Son : rien ne joue.
+#65 > touche 308 294
+#65 DOIGT launch_continue « Continuar »
+#66 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1c81c45410 | project=p-a1d73d66 no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « ▾ Ma chanson préférée » ellipsized (« … »)
+#66 LAYOUT CUT « canción · 4 pistas » ellipsized (« … »)
+#66 LAYOUT CONTRAST « Seguir » 4.06:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Bucle » 1.67:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT TARGET « Sonido de Ma chanson préférée Silenciar Ma chanson préférée activado » 40 x 23 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Escuchar solo la pista Ma chanson préférée desactivado » 40 x 23 dp (touch 48 x 48)
+#66 > touche 433 1251
+#66 DOIGT tab_Live « Live »
+#67 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 5751d347b6 | project=p-a1d73d66 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 553 390
+#67 DOIGT live_mute_remix « Sonido de Ma chanson préférée »
+#68 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 0f721f9ef6 | project=p-a1d73d66 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 553 467
+#68 DOIGT live_pad_remix_0 « Ma chanson préférée · A · listo »
+#69 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE b7f0259448 | project=p-a1d73d66 no tuto
+#69 SON Son : la musique du projet joue en boucle ; avec la chanson « Ma chanson préférée » entière — la voix ne chante pas à cet instant.
+#69 > fin
+#69 FIN : fin

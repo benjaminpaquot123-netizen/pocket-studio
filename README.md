@@ -1,4 +1,4 @@
-# Pocket Studio
+# BenStudio
 
 Appli Android de création de musique électronique : boîte à rythmes, sampler, synthés, remix par séparation de pistes.
 Usage personnel, installation directe par APK (pas de Play Store).
@@ -20,7 +20,7 @@ Elle s'installe par-dessus la version stable, sans rien perdre.
 - Si l'appli plante, elle propose d'envoyer le rapport au lancement suivant.
 
 ## Réglages conseillés (MagicOS / HyperOS)
-- **Batterie** : Réglages → Batterie → Lancement des applis → Pocket Studio → gestion manuelle, tout autoriser (sinon le système peut couper le son ou une séparation longue).
+- **Batterie** : Réglages → Batterie → Lancement des applis → BenStudio → gestion manuelle, tout autoriser (sinon le système peut couper le son ou une séparation longue).
 - **Casque** : pour jouer en direct, préfère un casque filaire USB-C ; le Bluetooth ajoute un retard audible.
 
 ## Pour les curieux

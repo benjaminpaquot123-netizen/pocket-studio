@@ -15,6 +15,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performClick
@@ -90,20 +91,47 @@ open class ScreenshotTest {
     /** Réglages › Taille de l'interface, applied as the app does (density and the width screens see). */
     protected open val uiScale = 1f
 
+    /** The interface's direction (right to left for an Arabic subclass, as MainActivity does). */
+    protected open val rtl = false
+
+    /** The phone's font size (Android's « Taille de police »; 1.3 = « Grand »), over the density's. */
+    protected open val fontScale = 1f
+
+    /** Called once the screen is drawn and touched as [shoot]'s `prepare` asked, before the image (audit: [com.pocketstudio.app.audit.LayoutScan]). */
+    protected open fun inspect(name: String) {}
+
+    /**
+     * False: the screen is drawn and inspected but no image is kept (the audit's capture matrix keeps
+     * its images only when recording: nothing committed to compare them with under verify).
+     */
+    protected open val keepImage: Boolean get() = true
+
+    private fun snap(name: String) {
+        if (keepImage) compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
+    }
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(
         name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
     ) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
-            com.pocketstudio.app.ui.UiScaled(uiScale) {
-                PocketStudioTheme(palette) {
-                    Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+            androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(rtl)) {
+                val density = androidx.compose.ui.platform.LocalDensity.current
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.ui.platform.LocalDensity provides if (fontScale == 1f) density else androidx.compose.ui.unit.Density(density.density, density.fontScale * fontScale),
+                ) {
+                com.pocketstudio.app.ui.UiScaled(uiScale) {
+                    PocketStudioTheme(palette) {
+                        Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+                    }
+                }
                 }
             }
         }
         prepare()
-        compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
+        inspect(name)
+        snap(name)
     }
 
     @Test
@@ -139,12 +167,14 @@ open class ScreenshotTest {
 
     @Test
     fun recette() {
-        val checklist = ChecklistParser.parse(File("src/main/assets/recette.json").readText())
+        // Socle du banc, point 1: a frozen copy (src/test/resources/capture/), not the milestone's list, rewritten at every
+        // milestone: the image showed « 18 essais » long after recette.json said 10, red in every full run.
+        val checklist = ChecklistParser.parse(File("src/test/resources/capture/recette.json").readText())
         val results = mapOf(
             checklist.items[0].id to CheckResult(CheckStatus.Pass),
             checklist.items[1].id to CheckResult(CheckStatus.Fail, "Petit clic au démarrage"),
         )
-        val changelog = File("src/main/assets/changelog.txt").readText().trim()
+        val changelog = File("src/test/resources/capture/changelog.txt").readText().trim()
         shoot("recette") {
             RecetteScreen(RecetteUiState(checklist, results, changelog), stream, 17.3, { _, _ -> }, {}, {})
         }
@@ -165,7 +195,7 @@ open class ScreenshotTest {
                     RhythmScreen(
                         project = project,
                         transport = TransportUi(selectedPad = 0),
-                        live = LiveUi(),
+                        live = { LiveUi() },
                         canUndo = true,
                         canRedo = false,
                         actions = RhythmActions(setHitVelocity = { step, v -> project = project.copy(drums = project.drums.withHitVelocity(0, step, v)) }),
@@ -181,7 +211,56 @@ open class ScreenshotTest {
         // An empty cell gets no hit from this tool.
         compose.onNodeWithTag("step_1").performTouchInput { click(center) }
         org.junit.Assert.assertNull(project.drums.lanes[0].hits[1])
-        compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_velocity.png")
+        snap("rhythm_velocity")
+    }
+
+    /**
+     * « Triolet »: the hats with triplets (3 small marks over 2 cells), then a hit held and made a
+     * triplet from its menu (its next cell taken), and a touch on a covered cell that takes it away.
+     */
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun rhythmTriplets() {
+        org.junit.Assume.assumeTrue(wanted("rhythm_triplets"))
+        val hat = com.pocketstudio.model.StarterWizard.Role.Hat.lane
+        var drums = DrumPattern()
+        DrumKitInfo.starterHits.forEach { (lane, steps) -> if (lane != hat) steps.forEach { drums = drums.toggle(lane, it) } }
+        drums = drums.copy(lanes = drums.lanes.mapIndexed { i, l -> if (i == hat) l.copy(hits = com.pocketstudio.model.StarterWizard.hits("X.x.T.x.X.x.t.t.")) else l })
+        var project by androidx.compose.runtime.mutableStateOf(Project(tempoBpm = 140.0, drums = drums))
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.fillMaxSize().background(Neon.Background)) {
+                    RhythmScreen(
+                        project = project,
+                        transport = TransportUi(selectedPad = hat),
+                        live = { LiveUi() },
+                        canUndo = true,
+                        canRedo = false,
+                        actions = RhythmActions(
+                            toggleStep = { step -> project = project.copy(drums = project.drums.toggle(hat, step)).sanitized() },
+                            setSpread = { step, n, m, r -> project = project.copy(drums = project.drums.withRoll(hat, step, n, r, m)).sanitized() },
+                        ),
+                    )
+                }
+            }
+        }
+        compose.onNodeWithTag("step_cells").performScrollTo()
+        compose.waitForIdle()
+        snap("rhythm_triplets")
+        // The hit on cell 9 held: « 3 sur 2 cases » makes it a triplet, cell 10's hit goes.
+        compose.onNodeWithTag("step_8").performTouchInput { longClick() }
+        compose.onNodeWithTag("roll_triplet").performClick()
+        compose.waitForIdle()
+        org.junit.Assert.assertEquals(com.pocketstudio.model.Hit(1f, repeats = 3, span = 2), project.drums.lanes[hat].hits[8])
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[9])
+        com.github.takahirom.roborazzi.captureScreenRoboImage("screenshots/${prefix}rhythm_triplet_menu.png")
+        compose.onNodeWithTag("roll_close").performClick()
+        compose.waitForIdle()
+        // A touch on the cell a triplet covers takes the triplet away.
+        compose.onNodeWithTag("step_5").performClick()
+        compose.waitForIdle()
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[4])
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[5])
     }
 
     @Test
@@ -197,7 +276,7 @@ open class ScreenshotTest {
         RhythmScreen(
             project = Project(tempoBpm = 124.0, swing = 0.2, drums = drums),
             transport = TransportUi(playing = true, metronome = true, selectedPad = 0),
-            live = LiveUi(currentStep = 5, litPads = setOf(5)),
+            live = { LiveUi(currentStep = 5, litPads = setOf(5)) },
             canUndo = true,
             canRedo = false,
             actions = RhythmActions(),
@@ -264,10 +343,12 @@ open class ScreenshotTest {
         )
         com.pocketstudio.app.audiotracks.AudioTracksScreen(
             com.pocketstudio.app.audiotracks.AudioTracksUi(
-                tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = false, seconds = 3.4f, level = 0.6f),
+                // Counting in with wired headphones: the beats left and « M'entendre dans le casque ».
+                tracks, recording = com.pocketstudio.app.rhythm.AudioRecordingUi(1, waiting = true, level = 0.2f, beatsLeft = 3),
                 info = mapOf("v.wav" to com.pocketstudio.app.rhythm.SampleInfo(7.6, peaks)),
                 sceneTitle = "B · Couplet",
-                listening = com.pocketstudio.app.audio.Listening.Speaker,
+                listening = com.pocketstudio.app.audio.Listening.Wired,
+                monitor = true,
             ),
             com.pocketstudio.app.audiotracks.AudioTracksActions(),
         )
@@ -330,7 +411,7 @@ open class ScreenshotTest {
             hasSong = true,
             // The master's loudness while it plays, its target following the style (house: −8 LUFS).
             loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
-            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            target = com.pocketstudio.model.TargetChoice.AUTO,
             styleLufs = -8f,
         )
     }
@@ -349,8 +430,10 @@ open class ScreenshotTest {
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4).forProject(sceneBars = 4, hasSong = true),
             hasSong = true,
             loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
-            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            target = com.pocketstudio.model.TargetChoice.AUTO,
             styleLufs = -8f,
+            // Audit ultra round 2 (n° 9): « Auto (House) », told apart from « Club ».
+            styleName = "House",
         )
     }
 
@@ -428,8 +511,8 @@ open class ScreenshotTest {
             }
             // Lying down, the solo banner folds into a chip of the strip.
             StripShot(124.0, song = true, loop = false, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 14, 60), soloed = listOf("Batterie"))
-            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide"), {})
-            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide", "Lead", "Voix"), {})
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Acid 303"), {})
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Acid 303", "Lead", "Voix"), {})
             com.pocketstudio.app.ui.RenameProjectBar("Da Funk (remix)", {}, {})
             // The editors' header: stopped, the song playing and followed, « ⟳ Partie » gone on by
             // itself after a touch on the grid.
@@ -471,7 +554,7 @@ open class ScreenshotTest {
             RhythmScreen(
                 project = project,
                 transport = TransportUi(playing = true, selectedPad = 0),
-                live = LiveUi(currentStep = 5, litPads = setOf(5)),
+                live = { LiveUi(currentStep = 5, litPads = setOf(5)) },
                 canUndo = true, canRedo = true,
                 actions = RhythmActions(),
             )
@@ -517,9 +600,24 @@ open class ScreenshotTest {
     fun padSheet() = shoot("pad_sheet") {
         Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
             com.pocketstudio.app.rhythm.PadSheetContent(
+                // Audit ultra round 2, zone 1, n° 6: the pad's sound now marked (« Kick 2 »), its volume where its slider is.
+                com.pocketstudio.app.rhythm.PadSheetUi(
+                    0, "Kick 2", volume = 0.7f, pan = -0.2f, muted = false, hasSample = false,
+                    sounds = listOf("Kick", "Kick 2", "Kick rond", "Kick sec", "Kick 808"),
+                ),
+                com.pocketstudio.app.rhythm.PadSheetActions(), close = {},
+            )
+        }
+    }
+
+    /** Audit stage 3: the same sheet in Pro, « Couches » (another sound for the hard hits), one layer and the sounds to add another. */
+    @Test
+    fun padSheetLayers() = shoot("pad_sheet_layers") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.rhythm.PadSheetContent(
                 com.pocketstudio.app.rhythm.PadSheetUi(
                     0, "Kick de ma voix", volume = 0.7f, pan = -0.2f, muted = false, hasSample = true,
-                    sounds = listOf("Kick", "Kick 2", "Kick rond", "Kick sec", "Kick 808"),
+                    sounds = listOf("Kick", "Kick 2", "Kick rond"), pro = true, layers = listOf("Kick dur" to 100),
                 ),
                 com.pocketstudio.app.rhythm.PadSheetActions(), close = {},
             )
@@ -530,6 +628,25 @@ open class ScreenshotTest {
     fun tempoSheet() = shoot("tempo_sheet") {
         Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
             com.pocketstudio.app.ui.TempoPad(124.0, com.pocketstudio.app.ui.TempoActions(), {})
+        }
+    }
+
+    /** Step 4e: the tempo away from the song's, « Revenir au tempo de Boys (113) » under ½ and ×2. */
+    @Test
+    fun tempoSheetLead() = shoot("tempo_sheet_lead") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.ui.TempoPad(124.0, com.pocketstudio.app.ui.TempoActions(lead = com.pocketstudio.model.TempoLead("Boys", 113.0)), {})
+        }
+    }
+
+    /** Step 4e: a loop just set the tempo: « Tempo calé sur Boys : 113 · Annuler » over the Live page. */
+    @Test
+    fun liveTempoBanner() = shoot("live_tempo_banner", fullScreen = true) {
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TempoBanner(com.pocketstudio.app.rhythm.RhythmViewModel.TempoSet("Boys", 113.0, 120.0), undo = {}, dismiss = {})
+            Box(Modifier.weight(1f)) {
+                com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+            }
         }
     }
 
@@ -558,7 +675,10 @@ open class ScreenshotTest {
 
 
     /** The Live page's example: four named scenes, drums, acid, two instrument tracks, a voice and a remix. */
-    protected fun liveUi(acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi()): com.pocketstudio.app.live.LiveScreenUi {
+    protected fun liveUi(
+        acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi(),
+        cellRecording: com.pocketstudio.app.live.CellRecording? = null,
+    ): com.pocketstudio.app.live.LiveScreenUi {
         val drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)
         val acid = com.pocketstudio.model.AcidPattern(steps = List(com.pocketstudio.model.AcidPattern.MAX_STEPS) { i -> com.pocketstudio.model.AcidStep(gate = i % 3 == 0) })
         val notes = com.pocketstudio.model.NoteClip(16, listOf(com.pocketstudio.model.Note(0, 48, 60), com.pocketstudio.model.Note(96, 48, 63)))
@@ -586,12 +706,57 @@ open class ScreenshotTest {
             acid = mapOf(0 to 0.62f, 1 to 0.8f, 7 to 0.55f),
             // A kick and a bass under some hats: what the pads show faintly behind them.
             spectrum = if (!spectrum) ({ null }) else ({ FloatArray(40) { b -> -14f - b * 1.1f - if (b in 18..24) 10f else 0f } }),
-            fx = fx,
+            fx = fx, cellRecording = cellRecording,
         )
     }
 
     @Test
     fun liveGrid() = shoot("live_grid", fullScreen = true) {
+        // Lot 4d: the tools open on the effects, the grid above in lower rows.
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
+    }
+
+    /** Lot 4c: the Briques grid in style B, its tools folded in their dock (lot 4d): the cells lit, queued, the dots of the new bricks. */
+    @Test
+    fun liveGridB() = shoot("live_grid_b", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** Lot 4c: a project with one loop playing: « Ta première boucle tourne… », a « + » beside it. */
+    @Test
+    fun liveFirstLoop() = shoot("live_first_loop", fullScreen = true) {
+        val one = Project(scenes = emptyList(), drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)).addTrack("Basse")!!.sanitized()
+        com.pocketstudio.app.live.LiveScreen(
+            com.pocketstudio.app.live.LiveScreenUi(one, com.pocketstudio.model.LiveState.on(0, 0), clock = 6, playing = true),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** Lot 4b: an empty cell touched (the 303 in Intro): « Qu'est-ce que tu y mets ? ». */
+    @Test
+    fun liveCellMenu() = shoot("live_cell_menu", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pad_acid_0").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** Lot 4b: « Jouer et enregistrer ici » on the synth in Couplet: the cell records, the keys to play on below. */
+    @Test
+    fun liveCellRecording() = shoot("live_cell_recording", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(
+            liveUi(cellRecording = com.pocketstudio.app.live.CellRecording(com.pocketstudio.model.SongPart.inst(0), 1)),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** Lot 4b: « Copier une autre case »: the cell marked « ici », the bar asking for the one to copy. */
+    @Test
+    fun liveCellCopy() = shoot("live_cell_copy", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pad_acid_0").performClick()
+        compose.onNodeWithTag("live_cell_copy").performClick()
+        compose.waitForIdle()
+    }) {
         com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
     }
 
@@ -599,7 +764,7 @@ open class ScreenshotTest {
     fun liveFx() = shoot("live_fx", fullScreen = true, prepare = {
         compose.onNodeWithTag("live_fx_inst:0").performScrollTo().performClick()
     }) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     /** « Tenus » with the lock on: « Freinage » kept (its padlock), the bass cut while held. */
@@ -617,7 +782,7 @@ open class ScreenshotTest {
                     locks = setOf(com.pocketstudio.model.AutoTarget.LIVE_TAPE_STOP),
                 ),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -629,7 +794,7 @@ open class ScreenshotTest {
     }) {
         com.pocketstudio.app.live.LiveScreen(
             liveUi(fx = com.pocketstudio.app.live.LiveFxUi(values = mapOf(com.pocketstudio.model.AutoTarget.LIVE_BUILD_UP to 0.6f), dropArmed = true)),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -648,7 +813,7 @@ open class ScreenshotTest {
                     ),
                 ),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -658,7 +823,7 @@ open class ScreenshotTest {
         compose.onNodeWithTag("live_fx_settings").performClick()
         compose.waitForIdle()
     }) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     @Test
@@ -678,7 +843,7 @@ open class ScreenshotTest {
                 song, ui.grid, 45, ui.playing, ui.muted, ui.acid, listOf(0.7f, 0.5f),
                 take = com.pocketstudio.app.live.TakeUi.Recording(32, 42, 21), takeAppend = true, chops = setOf(1),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -699,7 +864,7 @@ open class ScreenshotTest {
     @Test
     @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
     fun liveLandscape() = shoot("live_landscape", fullScreen = true) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     @Test
@@ -908,9 +1073,9 @@ open class ScreenshotTest {
 
     @Test
     fun wizardStyleOpen() = shoot("wizard_style_open") {
-        // A card touched: its whole description, every reference, ▶ and "Choisir ce style".
+        // A card touched: its whole description, « Créer et écouter », « Choisir ce style, pas à pas », every reference.
         com.pocketstudio.app.library.WizardScreen(com.pocketstudio.app.library.WizardUi(open = true, styleId = "trap"),
-            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions(playNow = {}))
     }
 
     @Test
@@ -953,7 +1118,7 @@ open class ScreenshotTest {
         androidx.compose.foundation.layout.Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
             androidx.compose.material3.Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp), color = Neon.Surface,
                 modifier = Modifier.padding(16.dp).widthIn(max = 520.dp)) {
-                com.pocketstudio.app.synth.TrackAddChoices(onPick = { _, _ -> }, onDismiss = {})
+                com.pocketstudio.app.synth.TrackAddChoices(onPick = { _, _ -> }, onDismiss = {}, acid = {})
             }
         }
     }
@@ -964,6 +1129,27 @@ open class ScreenshotTest {
         val ui = wizardUi(2 + com.pocketstudio.model.StarterWizard.style("house")!!.lines.size + 2)
         com.pocketstudio.app.library.WizardScreen(ui.copy(parts = ui.parts + (com.pocketstudio.model.StarterWizard.Part.Lead to ui.parts.getValue(com.pocketstudio.model.StarterWizard.Part.Lead).copy(enabled = false))),
             com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+    }
+
+    /** Benjamin's list n° 7: Acidcore's kick step, its packs (Gabber, TR-909) offered right above its sounds. */
+    @Test
+    fun wizardKickPacks() = shoot("wizard_kick_packs") {
+        val style = com.pocketstudio.model.StarterWizard.style("acidcore")!!
+        val rows = style.lines.associate { l ->
+            val cats = com.pocketstudio.app.library.soundCategories(l.role, style.id, emptyList())
+            l.role to com.pocketstudio.app.library.WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val ui = com.pocketstudio.app.library.WizardUi(true, 0, style.id, rows, com.pocketstudio.model.StarterWizard.Mood.Dark, emptyMap())
+        val kick = ui.steps.indexOfFirst { it is com.pocketstudio.model.StarterWizard.Step.Drum && it.line.role == com.pocketstudio.model.StarterWizard.Role.Kick }
+        val catalogue = com.pocketstudio.model.PackIndex(listOf(
+            com.pocketstudio.model.PackEntry("gabber", "Gabber", "gabber.zip", "0".repeat(64), 4_200_000, sounds = 40),
+            com.pocketstudio.model.PackEntry("tr909", "TR-909", "tr909.zip", "0".repeat(64), 6_800_000, sounds = 60),
+            com.pocketstudio.model.PackEntry("tech_house", "Tech house", "tech_house.zip", "0".repeat(64), 5_000_000, sounds = 50),
+        ))
+        com.pocketstudio.app.library.WizardScreen(ui.copy(step = kick),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(catalogue),
+                installed = listOf(com.pocketstudio.model.PackManifest("tech_house", "Tech house"))),
+            null, com.pocketstudio.app.library.WizardActions())
     }
 
     @Test
@@ -1022,6 +1208,8 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.LibraryUi(
                 com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index), installed, mapOf("uk_garage" to 0.4f)),
                 target = "le pad 1 (Kick)", sizes = mapOf("retro_techno" to 1_380_000L),
+                // Audit ultra round 2, zone 1, n° 6: a pad held opens it as « Changer le son ».
+                title = "Changer le son", current = "Kick",
             ),
             com.pocketstudio.app.library.LibraryActions(),
         )
@@ -1179,6 +1367,36 @@ open class ScreenshotTest {
                 position = 48_000L * 80,
             ),
             com.pocketstudio.app.remix.RemixActions(),
+        )
+    }
+
+    /** R2 (remix lot 1): the voice placed on the drop, cut into phrases, the last one trimmed. */
+    @Test
+    @Config(qualifiers = "w400dp-h1900dp-xxhdpi")
+    fun remixVoiceOnTheDrop() = shoot("remix_voice_drop") {
+        val remix = com.pocketstudio.model.Remix("abc", "Ma chanson", 120.0, 0.0, seconds = 40.0, followTempo = true, atStep = 192)
+            .withStem(0) { it.copy(mute = true) }.withStem(1) { it.copy(mute = true) }.withStem(2) { it.copy(mute = true) }
+        val plan = com.pocketstudio.app.remix.SongPlan(
+            listOf("Intro" to 128, "Montée" to 64, "Drop" to 128, "Pause" to 64, "Drop 2" to 128), 16,
+            listOf(
+                com.pocketstudio.model.RemixVoice.Place(0, "Intro", 0), com.pocketstudio.model.RemixVoice.Place(1, "Montée", 128),
+                com.pocketstudio.model.RemixVoice.Place(2, "Drop", 192), com.pocketstudio.model.RemixVoice.Place(3, "Pause", 320),
+                com.pocketstudio.model.RemixVoice.Place(4, "Drop 2", 384),
+            ),
+        )
+        val peaks = FloatArray(160) { i -> if (i % 40 in 6..30) 0.3f + 0.5f * kotlin.math.abs(kotlin.math.sin(i * 0.4f)) else 0.01f }
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(
+                true, com.pocketstudio.app.remix.SeparationState.Idle, emptyList(),
+                remix = remix, projectBpm = 174.0, plan = plan, songSteps = 464, padBars = 2,
+                overview = com.pocketstudio.app.rhythm.StemOverview(List(4) { st -> FloatArray(400) { i -> if (st == 3) peaks[i * 160 / 400] else 0.3f + 0.4f * kotlin.math.abs(kotlin.math.sin(i * 0.13f)) } }, 48_000L * 40),
+                cut = com.pocketstudio.app.remix.RemixCutUi(
+                    12, "6 phrases sur les pads 9, 10, 11, 12, 13, 14. Pose-les dans Batterie, sur la partie de ton choix.",
+                    com.pocketstudio.model.PadSample("a.wav", "Voix 6", start = 0.04f, end = 0.92f, attack = com.pocketstudio.model.RemixVoice.CUT_ATTACK, release = com.pocketstudio.model.RemixVoice.CUT_RELEASE),
+                    2.6, FloatArray(120) { i -> if (i in 8..110) 0.2f + 0.6f * kotlin.math.abs(kotlin.math.sin(i * 0.21f)) else 0.02f },
+                ),
+            ),
+            com.pocketstudio.app.remix.RemixActions(effects = {}),
         )
     }
 
@@ -1556,6 +1774,12 @@ open class ScreenshotTest {
         )
     }
 
+    /** Réglages › Langue: every language named in itself, the one in use ticked and in view. */
+    @Test
+    fun languageList() = shoot("language_list") {
+        com.pocketstudio.app.settings.LanguageList(com.pocketstudio.model.i18n.I18n.lang, {}, {})
+    }
+
     @Test
     fun welcome() = shoot("welcome") {
         com.pocketstudio.app.onboarding.WelcomeScreen(com.pocketstudio.app.onboarding.WelcomeActions())
@@ -1578,7 +1802,7 @@ open class ScreenshotTest {
                 RhythmScreen(
                     project = project,
                     transport = TransportUi(selectedPad = 0),
-                    live = LiveUi(),
+                    live = { LiveUi() },
                     canUndo = false,
                     canRedo = false,
                     actions = RhythmActions(),
@@ -1594,11 +1818,13 @@ open class ScreenshotTest {
             com.pocketstudio.app.export.ShareSheetUi(
                 "Nuit sur la ville", seconds = 178, parts = 6,
                 checks = listOf(
-                    com.pocketstudio.app.export.ShareCheck.Solo(listOf("Basse acide")),
+                    com.pocketstudio.app.export.ShareCheck.Solo(listOf("Acid 303")),
                     com.pocketstudio.app.export.ShareCheck.Muted(listOf("Voix 1")),
                     com.pocketstudio.app.export.ShareCheck.Saturation,
                 ),
                 playing = true,
+                // Audit ultra round 3 (n° 10): the target chosen where the song leaves (Pro).
+                target = com.pocketstudio.app.mixer.TargetPick(com.pocketstudio.model.TargetChoice.CLUB, styleLufs = -8f),
             ),
             com.pocketstudio.app.export.ShareSheetActions(),
             Modifier.background(Neon.Surface).padding(top = 16.dp),
@@ -1710,6 +1936,74 @@ open class ScreenshotTest {
             com.pocketstudio.ui.NeonCard {
                 androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Que veux-tu faire bouger ?"), style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
                 com.pocketstudio.app.mixer.TargetPickerContent(emptySet(), p.mixer.channels, p.mixer.master, com.pocketstudio.app.ui.mixerStrips(p), {}, {})
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1200dp-xxhdpi")
+    fun automationPickerHasCurve() = shoot("automation_picker_has_curve") {
+        // Chantier 8 (Benjamin, tel-14): the drums' filter has its curve and stays offered, « déjà une courbe », outlined.
+        val p = com.pocketstudio.model.Project().let { p ->
+            val ch = p.mixer.channels.toMutableList()
+            ch[0] = ch[0].copy(inserts = listOf(com.pocketstudio.model.Insert.of(com.pocketstudio.model.EffectType.FILTER)) + ch[0].inserts.drop(1))
+            p.copy(mixer = p.mixer.copy(channels = ch))
+        }
+        val used = setOf(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.INSERT_PARAM, 0, 0, 0))
+        androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+            com.pocketstudio.ui.NeonCard {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Que veux-tu faire bouger ?"), style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+                com.pocketstudio.app.mixer.TargetPickerContent(used, p.mixer.channels, p.mixer.master, com.pocketstudio.app.ui.mixerStrips(p), {}, {}, preferred = 0)
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h1100dp-xxhdpi")
+    fun automationNewCurve() {
+        // Chantier 8 (Benjamin, tel-14: « la fenêtre se ferme sans rien dire »): the curve just made, lit, with its line.
+        val lanes = androidx.compose.runtime.mutableStateOf(listOf(com.pocketstudio.model.AutomationLane(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 1))))
+        val send = com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0)
+        shoot("automation_new_curve", prepare = {
+            compose.onNodeWithTag("automation_add").performClick()
+            compose.onNodeWithTag("pick_track_0").performClick()
+            compose.onNodeWithTag("pick_${send.pack()}").performClick()
+            compose.waitForIdle()
+        }) {
+            androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()).padding(12.dp)) {
+                com.pocketstudio.app.mixer.AutomationCard(
+                    com.pocketstudio.app.mixer.AutomationUi(lanes.value, 16), List(16) { com.pocketstudio.model.Channel() }, List(4) { com.pocketstudio.model.Insert() },
+                    com.pocketstudio.app.mixer.AutomationActions(add = { t -> lanes.value = lanes.value + com.pocketstudio.model.AutomationLane(t) }),
+                )
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h400dp-xxhdpi")
+    fun effectsSpotMacro() = shoot("effects_spot_macro") {
+        // Chantier 8: « Voir le réglage » on a macro's curve: the four knobs framed, the one that moves named.
+        androidx.compose.runtime.CompositionLocalProvider(
+            com.pocketstudio.app.mixer.LocalControlSpot provides com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.MACRO, 0, 0, 2),
+        ) {
+            androidx.compose.foundation.layout.Column(Modifier.padding(12.dp)) {
+                com.pocketstudio.app.mixer.MacroKnobs(0, listOf(0.5f, 0.2f, 0.7f, 0f), com.pocketstudio.app.mixer.QuickFxActions())
+            }
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w400dp-h400dp-xxhdpi")
+    fun effectsSpotSend() = shoot("effects_spot_send") {
+        // Chantier 8 (tel-14): « Voir le réglage » on « Envoi réverbe · Batterie »: the sheet scrolled to the send, framed.
+        val c = com.pocketstudio.model.Channel(sends = listOf(0.35f, 0f))
+        androidx.compose.runtime.CompositionLocalProvider(
+            com.pocketstudio.app.mixer.LocalControlSpot provides com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.SEND, 0, 0),
+        ) {
+            // The sheet's foot, where it lands (the whole sheet is longer than a screen).
+            androidx.compose.foundation.layout.Column(Modifier.padding(12.dp)) {
+                androidx.compose.material3.Text(com.pocketstudio.model.i18n.tr("Réverbe et écho communs"), style = androidx.compose.material3.MaterialTheme.typography.labelLarge, color = Neon.Magenta)
+                com.pocketstudio.app.mixer.SendSliders(0, c.sends, com.pocketstudio.app.mixer.MixerActions())
             }
         }
     }
@@ -1888,7 +2182,7 @@ open class ScreenshotTest {
         p = p.withAudioTrack(p.audioTracks[0].copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Prise", 9.0, start = 64, song = true)))
         val rows = com.pocketstudio.app.ui.timelineRows(p)
         return com.pocketstudio.app.session.TimelineUi(
-            p, rows, listOf(com.pocketstudio.app.session.TimelineLane(0, "acid", "303 Coupure · Basse acide")),
+            p, rows, listOf(com.pocketstudio.app.session.TimelineLane(0, "acid", "303 Coupure · Acid 303")),
             playing = true, songIndex = 2, upcoming = 3, songStep = { 100 }, loop = 2..3, canUndo = true,
         )
     }
@@ -1925,19 +2219,32 @@ open class ScreenshotTest {
 
     /** The live pads on the whole screen, as the assistant fills them (Jump up DnB): two playing, one queued. */
     @Composable
-    private fun LivePadsStage() {
+    private fun LivePadsStage(size: Int = 8) {
         val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }
-        val pads = com.pocketstudio.model.LivePads(8).with(0, clip("Batterie", 8)).with(1, clip("Basse", 16)).with(2, clip("Nappe", 16))
+        var pads = com.pocketstudio.model.LivePads(size).with(0, clip("Batterie", 8)).with(1, clip("Basse", 16)).with(2, clip("Nappe", 16))
             .with(3, clip("Sub", 8)).with(4, clip("Impact", 4).copy(oneShot = true)).with(5, clip("Morceau 4", 32))
+        if (size > 8) pads = pads.with(6, clip("Voix refrain", 8)).with(7, clip("Klaxon", 1).copy(oneShot = true)).with(8, clip("Charley", 2))
         val ui = liveUi()
         val columns = com.pocketstudio.app.live.liveColumnsOf(ui.project)
         com.pocketstudio.app.session.LivePadsFullScreen(
-            com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1, 0, 0, 0, 0, 0), editing = null),
-            com.pocketstudio.app.session.LivePadsActions(), close = {},
+            com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1) + List(13) { 0 }, editing = null),
+            com.pocketstudio.app.session.LivePadsActions(record = {}), close = {},
             tempoBpm = 174.0, beatsPerBar = 4, playing = true, clockOf = { 45 }, togglePlay = {},
             effects = { m -> com.pocketstudio.app.live.LiveFx(ui, columns, com.pocketstudio.app.live.LiveActions(), m) },
+            tempo = com.pocketstudio.app.session.StageTempo(nudge = {}, open = {}),
         )
     }
+
+    /** Lot 4a: 12 pads in 3 columns of square pads, the room left over above them. */
+    @Test
+    fun livePadsFull12() = shoot("live_pads_full_12", fullScreen = true) { LivePadsStage(12) }
+
+    /** Lot 4a: an empty pad touched: « Pad 7 : qu'est-ce que tu mets dessus ? ». */
+    @Test
+    fun livePadsChooser() = shoot("live_pads_chooser", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_full_pad_6").performClick()
+        compose.waitForIdle()
+    }) { LivePadsStage() }
 
     @Test
     fun livePadsFull() = shoot("live_pads_full", fullScreen = true, prepare = {

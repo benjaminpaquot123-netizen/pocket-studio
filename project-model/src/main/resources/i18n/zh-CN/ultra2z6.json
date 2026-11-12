@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "大鼓 1",
+  "Grosse caisse 2": "大鼓 2",
+  "Grosse caisse studio": "录音棚大鼓",
+  "Grosse caisse sèche": "干脆的大鼓",
+  "Grondement grave": "低沉轰鸣",
+  "Claquement de mains": "拍手",
+  "Claquements de mains": "拍手声",
+  "Bord de caisse": "鼓边",
+  "Grosses caisses": "大鼓",
+  "Volume au max": "音量最大",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "速度：每分钟 %d 拍",
+  "D'abord le modèle de séparation": "先要分离模型",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "要分离一首歌，应用要先下载模型：%s，只需一次。",
+  "Tu es en Wi-Fi.": "你正在用 Wi-Fi。",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "你没有连 Wi-Fi：这 %s 会用你的移动数据。",
+  "Télécharger, puis choisir la chanson": "下载后选择歌曲"
+}

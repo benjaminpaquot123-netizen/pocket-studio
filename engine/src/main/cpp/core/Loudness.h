@@ -53,8 +53,40 @@ public:
     }
 
 private:
+    friend class KWeighting2;
     std::array<double, 5> s_{1, 0, 0, 0, 0}, h_{1, 0, 0, 0, 0};  // b0 b1 b2 a1 a2
     double s1_ = 0, s2_ = 0, h1_ = 0, h2_ = 0;
+};
+
+// Audit stage 4: the K-weighting of a stereo pair in one register (lane 0 left, lane 1 right): lane
+// by lane the double operations of KWeighting::process.
+class KWeighting2 {
+public:
+    typedef double Lanes __attribute__((vector_size(16)));
+    void prepare(int rate) {
+        KWeighting k;
+        k.prepare(rate);
+        for (size_t i = 0; i < 5; ++i) {
+            s_[i] = Lanes{k.s_[i], k.s_[i]};
+            h_[i] = Lanes{k.h_[i], k.h_[i]};
+        }
+        reset();
+    }
+    void reset() { s1_ = s2_ = h1_ = h2_ = Lanes{0.0, 0.0}; }
+    Lanes process(float l, float r) {
+        const Lanes in = {static_cast<double>(l), static_cast<double>(r)};
+        const Lanes y = s_[0] * in + s1_;
+        s1_ = s_[1] * in - s_[3] * y + s2_;
+        s2_ = s_[2] * in - s_[4] * y;
+        const Lanes z = h_[0] * y + h1_;
+        h1_ = h_[1] * y - h_[3] * z + h2_;
+        h2_ = h_[2] * y - h_[4] * z;
+        return z;
+    }
+
+private:
+    std::array<Lanes, 5> s_{}, h_{};
+    Lanes s1_{0.0, 0.0}, s2_{0.0, 0.0}, h1_{0.0, 0.0}, h2_{0.0, 0.0};
 };
 
 // The loudness of a mean square (K-weighted, the channels summed).
@@ -66,13 +98,11 @@ public:
     static constexpr int kRing = 30;
     void prepare(int rate) {
         piece_ = std::max(1, rate / 10);
-        kl_.prepare(rate);
-        kr_.prepare(rate);
+        k_.prepare(rate);
         reset();
     }
     void reset() {
-        kl_.reset();
-        kr_.reset();
+        k_.reset();
         ring_.fill(0.0);
         head_ = 0;
         pieces_ = 0;
@@ -81,7 +111,8 @@ public:
     }
     // One frame; true when it completed a 100 ms piece.
     bool add(float l, float r) {
-        const double yl = kl_.process(l), yr = kr_.process(r);
+        const KWeighting2::Lanes y = k_.process(l, r);
+        const double yl = y[0], yr = y[1];
         sum_ += yl * yl + yr * yr;
         if (++inPiece_ < piece_) return false;
         ring_[static_cast<size_t>(head_)] = sum_ / piece_;
@@ -103,7 +134,7 @@ public:
     }
 
 private:
-    KWeighting kl_, kr_;
+    KWeighting2 k_;  // both channels at once (audit stage 4)
     std::array<double, kRing> ring_{};
     int head_ = 0;
     long pieces_ = 0;

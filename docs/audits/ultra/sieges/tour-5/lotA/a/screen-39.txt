@@ -1,0 +1,50 @@
+Écran 39 (540x1170)
+touchable « Lo-fi hip-hop सेव हो गया » (nom « मेरे प्रोजेक्ट ») @ 77,42
+bouton « सिंपल » (nom « सिंपल मोड। मोड बदलने के लिए छुओ। ») @ 194,42
+bouton « अनडू » @ 279,42
+bouton « रिकॉर्ड: माइक, कीबोर्ड या पैड » @ 351,42
+bouton « रोको » @ 423,42
+bouton « और ऑप्शन » @ 495,42
+bouton « 84  टेम्पो » (nom « टेम्पो: 84 थाप प्रति मिनट ») @ 67,123
+bouton « इंट्रो बार 1/4 » (nom « लूप में ») @ 206,123
+interrupteur « लूप » (nom « पूरा गाना नहीं, सिर्फ़ ये पार्ट लूप करो ») [coché, état « ऑन »] @ 399,123
+interrupteur « ? » (nom « स्क्रीन पर लेबल लगाओ ») [non coché] @ 495,123
+touchable « पियानो FM Rhodes » @ 83,204
+touchable « मेलोडी Marimba » @ 240,204
+touchable « मेरी मेलोडी FM पियानो » (nom « मेरी मेलोडी के ऑप्शन ») @ 427,204
+  → la suite sur le côté (glisse pour la voir)
+bouton « पार्ट: A · इंट्रो » (nom « लूप में ») @ 117,282
+texte « जब तक तुम इसे एडिट करते हो, ये लूप में चलता है। गाना वापस पाने के लिए ऊपर ⟳ लूप दबाओ। » @ 270,348
+bouton «  खाली करो » (nom « पार्ट A · इंट्रो में ये ट्रैक खाली करो ») @ 430,444
+case « कीबोर्ड » @ 80,444
+case « नोट्स » [sélectionné] @ 206,444
+bouton « ट्रैक का साउंड सेट करो ↓ » @ 173,531
+bouton «  मेरी मेलोडी रिकॉर्ड करो » @ 220,624
+bouton «  1 » (nom « काउंट-इन: 1 बार ») @ 478,624
+case « ✏ ड्रॉ करो » [sélectionné] @ 123,741
+case « ⬚ चुनो » @ 275,741
+case « सब देखो » @ 417,741
+  → la suite sur le côté (glisse pour la voir)
+bouton « − » @ 126,822
+bouton « + » @ 278,822
+texte « लूप » @ 58,822
+texte « 4 बार » @ 202,822
+texte «   नोट » @ 355,822
+case « 1/16 » @ 440,822
+  → la suite sur le côté (glisse pour la voir)
+case « कॉर्ड्स » @ 102,898
+bouton « रिदम में 50% » @ 258,894
+bouton « 100% » @ 412,894
+case « घोस्ट बेस » [sélectionné] @ 485,898
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « गाइड  · Kick (“बूम”) 35 % » [état « समेटा हुआ »] @ 270,954
+onglet « मेरा गाना » @ 49,1050
+onglet « रिदम » @ 160,1050
+onglet « कीबोर्ड » [sélectionné] @ 271,1050
+onglet « मिक्स » @ 381,1050
+onglet « भेजो » @ 491,1050
+touchable « ●  REC » (nom « स्क्रीन को आवाज़ के साथ रिकॉर्ड करो ») @ 310,1140
+touchable « ✎  नोट करो » (nom « नोट लिखो ») @ 407,1140
+touchable « ⋯ » (nom « प्रतिक्रिया मोड ») @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

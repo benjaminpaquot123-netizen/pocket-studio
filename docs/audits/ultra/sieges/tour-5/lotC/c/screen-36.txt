@@ -1,0 +1,4 @@
+Écran 36 (588x1278)
+texte « Send the project » @ 177,543
+texte « To pick it up on another device: a .zip file with all its sounds, to open there in My projects › Import. » @ 294,621
+bouton « Got it » @ 506,723

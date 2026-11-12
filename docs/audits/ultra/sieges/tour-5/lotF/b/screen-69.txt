@@ -1,0 +1,5 @@
+Écran 69 (1920x1200)
+texte « Spielen ab… » @ 374,239
+touchable « Der ganze Song, von Anfang an » @ 438,308
+touchable « 1 · A » @ 438,380
+touchable « 2 · B » @ 438,452

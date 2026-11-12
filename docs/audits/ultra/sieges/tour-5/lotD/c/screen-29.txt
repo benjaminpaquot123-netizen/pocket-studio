@@ -1,0 +1,33 @@
+Écran 29 (1035x1243)
+texte « Maniglia: scorri verso il basso per chiudere » @ 518,89
+texte « Parte 2 · B · Strofa » @ 203,149
+bouton « Chiudi » @ 922,161
+texte « 1 batt. » @ 95,182
+bouton « Variazione » @ 287,254
+bouton « Fill alla fine » @ 749,254
+bouton « Break dopo · 4 batt. » @ 287,353
+bouton « Break dopo · 8 batt. » @ 749,353
+bouton « Build-up prima · 4 batt. » @ 287,452
+bouton « Build-up prima · 8 batt. » @ 749,452
+bouton « Fade in » @ 287,551
+bouton « Fade out » @ 749,551
+bouton « Aggiungi un finale » @ 287,650
+texte « Energia: 3 » @ 113,722
+case « 1 · pad » @ 119,788
+case « 2 · + basso » @ 267,788
+case « 3 · + batteria » [sélectionné] @ 445,788
+case « 4 · a tutta » @ 615,788
+texte « Lunghezza » @ 118,854
+champ « battute » contenu « 1 » @ 306,933
+bouton « Cancella » @ 353,940
+bouton « Accorcia » [désactivé] @ 98,933
+bouton « Allunga » @ 179,933
+bouton « OK » [désactivé] @ 441,933
+texte « Parte » @ 88,1012
+bouton « Rinomina » @ 146,1078
+bouton « Cosa suona » @ 332,1078
+bouton « Sposta su » @ 520,1078
+bouton « Sposta giù » [désactivé] @ 703,1078
+bouton « Duplica » @ 873,1078
+bouton « Inserisci dopo » @ 170,1150
+bouton « Togli » @ 345,1150

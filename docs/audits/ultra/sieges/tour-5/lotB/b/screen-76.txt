@@ -1,0 +1,54 @@
+Écran 76 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 114,42
+bouton « Pro » (nom « Tryb Pro. Dotknij, aby zmienić tryb. ») @ 255,42
+bouton « Cofnij » @ 327,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Udostępnij mój utwór » @ 543,42
+bouton « 138  BPM » (nom « Tempo: 138 BPM ») @ 73,114
+bouton « Groove takt 1/4 » (nom « w pętli ») @ 220,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+onglet « Oś czasu » [sélectionné] @ 81,183
+onglet « Części » @ 207,183
+touchable « Podążaj » [sélectionné] @ 352,183
+touchable « Pętla » @ 474,183
+  → la suite sur le côté (glisse pour la voir)
+bouton « Pełny ekran » @ 552,183
+texte « Części » @ 51,245
+texte « Takty » @ 45,285
+texte « Linijka taktów: dotknij, żeby grać od części » @ 381,262
+bouton « Przybliż » @ 534,309
+bouton « Oddal » @ 534,381
+bouton « Pokaż cały utwór » @ 534,453
+bouton « Perkusja » @ 72,327
+interrupteur « Dźwięk: Perkusja » [coché, état « wł. »] @ 56,370
+interrupteur « Solo ścieżki Perkusja » [non coché, état « wył. »] @ 125,370
+touchable « Głośność · Perkusja » @ 87,432
+bouton « Acid 303 » @ 72,493
+texte « Oś czasu: 33 części, 4 ścieżki » @ 381,406
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Długość i siatka 8 taktów 29 % » [état « otwarte »] @ 294,546
+texte « ROZDZIAŁ 0 · RAMA » @ 294,624
+texte « Długość i siatka 8 taktów » @ 239,669
+texte « Wszystko zmienia się co 8 taktów (4, 8, 16, 32): ucho czuje, że nadchodzi nowa część. Wyjście poza siatkę musi być celowe. » @ 294,747
+texte « → » @ 61,828
+texte « Twoja kolej: dotknij „Zachowaj”. » @ 267,825
+bouton « Zachowaj » @ 294,900
+texte « To, co już jest, brzmi dobrze: zostaw to. » @ 229,955
+texte « POKAŻ USTAWIENIE » @ 141,999
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Cofnij » @ 72,1059
+bouton « Ponów » @ 179,1059
+bouton « Stop » @ 284,1059
+bouton « 138 Tempo » (nom « Tempo: 138 BPM ») @ 394,1059
+bouton « Udostępnij » (nom « Udostępnij mój utwór ») @ 512,1059
+onglet « Struktura » [sélectionné] @ 54,1158
+onglet « Dźwięki » @ 174,1158
+onglet « Miks » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Więcej » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

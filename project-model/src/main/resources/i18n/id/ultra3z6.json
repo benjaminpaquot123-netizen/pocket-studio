@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Timeline: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Lagu ditulis: %1$s, %2$s",
+  "Grille des notes : %s": "Grid not: %s",
+  "1 pas": "1 step",
+  "1 piste": "1 trek",
+  "1 réglage": "1 pengaturan",
+  "%d réglages": "%d pengaturan",
+  "Fait : break de 1 mesure après %2$s": "Selesai: break 1 bar setelah %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Selesai: build-up 1 bar sebelum %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Belum ada lagu: bagianmu dikirim sebagai loop (1 bar).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Take Live-mu disimpan: sudah ada di lagu (1 bagian).",
+  "Ton texte (1 caractère)": "Teksmu (1 karakter)",
+  "trop bas de 1 cent": "terlalu rendah 1 sen",
+  "trop haut de 1 cent": "terlalu tinggi 1 sen",
+  "−%d demi-ton": "−%d semitone",
+  "%d min": "%d menit",
+  "%1$d min %2$d": "%1$d menit %2$d detik",
+  "Hors de la gamme du morceau": "Di luar tangga nada lagu",
+  "Poignée : glisse vers le bas pour fermer": "Pegangan: geser ke bawah untuk menutup"
+}

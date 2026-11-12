@@ -73,7 +73,7 @@ object LivePadPlan {
 
     private fun nameOf(p: Project, key: String): String = when {
         key == SongPart.DRUMS -> "Batterie"
-        key == SongPart.ACID -> "Basse acide"
+        key == SongPart.ACID -> DefaultNames.ACID
         else -> p.instrumentTracks.firstOrNull { SongPart.inst(it.id) == key }?.name ?: "Piste"
     }
 

@@ -1,0 +1,10 @@
+Écran 49 (588x1278)
+touchable « Fiche de la piste (couches, historique) » @ 241,339
+touchable « Changer le son » @ 241,411
+touchable « Régler le son (filtre, enveloppe…) » @ 241,483
+touchable « Renommer » @ 241,555
+touchable « Couleur » @ 241,627
+touchable « Dupliquer » @ 241,699
+touchable « Vider dans la partie A » [désactivé] @ 241,771
+touchable « Geler la piste (rendu audio, moins de calcul) » @ 241,843
+touchable « Supprimer (Annuler possible) » @ 241,915

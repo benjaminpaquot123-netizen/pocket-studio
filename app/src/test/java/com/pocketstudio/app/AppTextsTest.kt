@@ -24,7 +24,7 @@ class AppTextsTest {
     fun everyDataTextHasItsTranslations() {
         val texts = texts()
         assertTrue(texts.size > 20)
-        val problems = listOf(Lang.EN, Lang.NL).flatMap { lang ->
+        val problems = (Lang.entries - Lang.FR).flatMap { lang ->
             val table = I18n.table(lang)
             texts.filter { table[it].isNullOrBlank() }.map { "no ${lang.code} for \"$it\"" }
         }

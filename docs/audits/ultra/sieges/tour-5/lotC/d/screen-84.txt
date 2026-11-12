@@ -1,0 +1,4 @@
+Écran 84 (588x1278)
+texte « Mes exports » @ 144,546
+texte « Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord. » @ 294,621
+bouton « Fermer » @ 497,720

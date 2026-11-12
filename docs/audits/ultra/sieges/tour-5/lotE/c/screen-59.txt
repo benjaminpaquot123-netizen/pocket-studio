@@ -1,0 +1,61 @@
+Écran 59 (900x1509)
+touchable « Ma chanson préférée 저장됨 » (nom « 내 프로젝트 ») @ 234,42
+bouton « 프로 » (nom « 프로 모드. 눌러서 모드를 바꾸세요. ») @ 495,42
+bouton « 실행 취소 » @ 567,42
+bouton « 다시 실행 » [désactivé] @ 639,42
+bouton « 녹음: 마이크, 건반 또는 패드 » @ 711,42
+bouton « 재생 » @ 783,42
+bouton « 내 곡 공유 » @ 855,42
+bouton « 120  BPM » (nom « 템포: 120 BPM ») @ 73,114
+bouton « A 마디 1/20 » @ 218,114
+interrupteur « 루프 » (nom « 곡 대신 파트를 루프 ») [non coché, état « 꺼짐 »] @ 758,114
+interrupteur « ? » (nom « 화면 이름표 ») [non coché] @ 855,114
+onglet « 드럼 16패드 » @ 68,183
+onglet « Acid 303 베이스 라인 » @ 209,183
+onglet « 보컬 마이크 » @ 348,183
+onglet « Ma chanson préférée 노래 » [sélectionné] @ 532,183
+touchable « 신스 신스 » @ 703,183
+bouton «  트랙 » @ 821,183
+  → la suite sur le côté (glisse pour la voir)
+onglet « 오디오 트랙 » @ 86,258
+onglet « 리믹스 » [sélectionné] @ 227,258
+onglet « 튜너 » @ 362,258
+onglet « 생성 » @ 497,258
+texte « 곡 자르기 » @ 142,330
+bouton « 주황색 선부터 듣기 » @ 840,345
+bouton « 뒤로 » @ 42,345
+bouton « ? » (nom « “한 조각”이란 뭘까요? ») @ 227,330
+texte « Ma chanson préférée · 0:40 » @ 215,370
+case « 보컬 » [sélectionné] @ 68,444
+case « 드럼 » @ 181,444
+case « 베이스 » @ 304,444
+case « 나머지 » @ 436,444
+texte « 핀치해서 확대 » @ 821,579
+texte « 조각의 시작 » [état « 0:04.00 »] @ 216,697
+texte « 조각의 끝 » [état « 0:07.00 »] @ 684,697
+bouton « 한 조각 » (nom « 자르기: 한 조각 ») @ 208,836
+bouton « 박마다 » (nom « 자석: 박마다 ») @ 597,836
+bouton « 실행 취소 » [désactivé] @ 846,836
+bouton « 여기서 시작 » @ 123,932
+bouton « 여기서 끝 » @ 344,932
+bouton « 조각 듣기 6박 · 0:03.0 » @ 670,932
+texte « 시작과 끝을 놓고, 이 조각을 보내요. » @ 187,1028
+bouton « 패드에 » @ 135,1101
+bouton « Live로 » @ 345,1101
+bouton « 저장 » @ 555,1101
+bouton « 트랙으로 » @ 765,1101
+bouton « 가이드  · 비트 넣기 14 % » [état « 접힘 »] @ 450,1215
+bouton « 실행 취소 » @ 125,1290
+bouton « 다시 실행 » [désactivé] @ 286,1290
+bouton « 재생 » @ 444,1290
+bouton « 120 템포 » (nom « 템포: 120 BPM ») @ 608,1290
+bouton « 공유 » (nom « 내 곡 공유 ») @ 775,1290
+onglet « 구성 » @ 85,1389
+onglet « 사운드 » [sélectionné] @ 268,1389
+onglet « 믹스 » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « 더보기 » @ 815,1389
+touchable « ●  REC » (nom « 소리와 함께 화면 녹화 ») @ 672,1479
+touchable « ✎  메모 » (nom « 메모 쓰기 ») @ 768,1479
+touchable « ⋯ » (nom « 피드백 모드 ») @ 852,1479
+texte « 피드백 모드 » @ 318,1479

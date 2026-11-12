@@ -87,7 +87,7 @@ void Distortion::process(float* l, float* r, int n) {
     const float dc = 1.0f - static_cast<float>(kTwoPi) * 10.0f / rate_;  // 10 Hz DC blocker
     // The drive glides to a turned knob over about 10 ms, block by block (one step per block).
     if (drive_ < 0.0f) drive_ = target;
-    const float from = drive_;
+    const float startDrive = drive_;
     drive_ += (target - drive_) * (1.0f - std::exp(-static_cast<float>(n) / (0.010f * rate_)));
     struct Curve {
         int type;
@@ -97,31 +97,50 @@ void Distortion::process(float* l, float* r, int n) {
     // Levelled: a half-scale input comes out about half scale whatever the drive. The fuzz is
     // biased: its wave spends longer on one side (even harmonics, the "fuzz" grit); silence still
     // gives silence.
-    const bool gliding = from != drive_;
+    const bool gliding = startDrive != drive_;
     float drive = drive_, level = 0.5f / std::tanh(0.5f * drive), bias = type == 1 ? 0.15f * drive : 0.0f;
     float rest = type == 1 ? shape(type, bias) : 0.0f;
-    for (int i = 0; i < n; ++i) {
-        if (gliding) {
-            drive = from + (drive_ - from) * static_cast<float>(i + 1) / static_cast<float>(n);
-            level = 0.5f / std::tanh(0.5f * drive);
-            bias = type == 1 ? 0.15f * drive : 0.0f;
-            rest = type == 1 ? shape(type, bias) : 0.0f;
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
+    float inL[kChunk], inR[kChunk], gain[kChunk], offset[kChunk], levels[kChunk], rests[kChunk];
+    float wl[kChunk], wr[kChunk], dryL[kChunk], dryR[kChunk];
+    for (int from = 0; from < n; from += kChunk) {
+        const int m = std::min(kChunk, n - from);
+        float* bl = l + from;
+        float* br = r + from;
+        for (int j = 0; j < m; ++j) {
+            const int i = from + j;
+            if (gliding) {
+                drive = startDrive + (drive_ - startDrive) * static_cast<float>(i + 1) / static_cast<float>(n);
+                level = 0.5f / std::tanh(0.5f * drive);
+                bias = type == 1 ? 0.15f * drive : 0.0f;
+                rest = type == 1 ? shape(type, bias) : 0.0f;
+            }
+            inL[j] = finiteOr0(bl[j]);
+            inR[j] = finiteOr0(br[j]);
+            gain[j] = drive;
+            offset[j] = bias;
+            levels[j] = level;
+            rests[j] = rest;
         }
-        const float yl = (shL_.process(finiteOr0(l[i]), drive, bias, curve) - rest) * level;
-        const float yr = (shR_.process(finiteOr0(r[i]), drive, bias, curve) - rest) * level;
-        const float xl = shL_.dry(), xr = shR_.dry();
-        const float bl = yl - dcInL_ + dc * dcOutL_;
-        dcInL_ = yl;
-        dcOutL_ = bl;
-        const float br = yr - dcInR_ + dc * dcOutR_;
-        dcInR_ = yr;
-        dcOutR_ = br;
-        lp1L_ += (bl - lp1L_) * tone;
-        lp2L_ += (lp1L_ - lp2L_) * tone;
-        lp1R_ += (br - lp1R_) * tone;
-        lp2R_ += (lp1R_ - lp2R_) * tone;
-        l[i] = xl + mix * (lp2L_ - xl);
-        r[i] = xr + mix * (lp2R_ - xr);
+        // Both channels' curves in one go (audit stage 4: the same output, in less time).
+        sh_.process(inL, inR, wl, wr, dryL, dryR, m, gain, offset, curve);
+        for (int j = 0; j < m; ++j) {
+            const float yl = (wl[j] - rests[j]) * levels[j];
+            const float yr = (wr[j] - rests[j]) * levels[j];
+            const float xl = dryL[j], xr = dryR[j];
+            const float bl0 = yl - dcInL_ + dc * dcOutL_;
+            dcInL_ = yl;
+            dcOutL_ = bl0;
+            const float br0 = yr - dcInR_ + dc * dcOutR_;
+            dcInR_ = yr;
+            dcOutR_ = br0;
+            lp1L_ += (bl0 - lp1L_) * tone;
+            lp2L_ += (lp1L_ - lp2L_) * tone;
+            lp1R_ += (br0 - lp1R_) * tone;
+            lp2R_ += (lp1R_ - lp2R_) * tone;
+            bl[j] = xl + mix * (lp2L_ - xl);
+            br[j] = xr + mix * (lp2R_ - xr);
+        }
     }
 }
 
@@ -172,16 +191,19 @@ constexpr float kDownThreshold = -18.0f, kUpThreshold = -24.0f;
 
 void Ott::prepare(float rate) {
     rate_ = rate;
-    for (Split* s : {&left_, &right_}) {
-        s->lp1a.lowPass(rate, kLowSplit);
-        s->lp1b.lowPass(rate, kLowSplit);
-        s->hp1a.highPass(rate, kLowSplit);
-        s->hp1b.highPass(rate, kLowSplit);
-        s->lp2a.lowPass(rate, kHighSplit);
-        s->lp2b.lowPass(rate, kHighSplit);
-        s->hp2a.highPass(rate, kHighSplit);
-        s->hp2b.highPass(rate, kHighSplit);
-    }
+    Biquad lp1, hp1, lp2, hp2;
+    lp1.lowPass(rate, kLowSplit);
+    hp1.highPass(rate, kLowSplit);
+    lp2.lowPass(rate, kHighSplit);
+    hp2.highPass(rate, kHighSplit);
+    split_.lp1a.set(lp1);
+    split_.lp1b.set(lp1);
+    split_.hp1a.set(hp1);
+    split_.hp1b.set(hp1);
+    split_.lp2a.set(lp2);
+    split_.lp2b.set(lp2);
+    split_.hp2a.set(hp2);
+    split_.hp2b.set(hp2);
     update();
     reset();
 }
@@ -203,9 +225,7 @@ void Ott::update() {
 }
 
 void Ott::reset() {
-    for (Split* s : {&left_, &right_}) {
-        for (Biquad* q : {&s->lp1a, &s->lp1b, &s->hp1a, &s->hp1b, &s->lp2a, &s->lp2b, &s->hp2a, &s->hp2b}) q->reset();
-    }
+    for (Biquad2* q : {&split_.lp1a, &split_.lp1b, &split_.hp1a, &split_.hp1b, &split_.lp2a, &split_.lp2b, &split_.hp2a, &split_.hp2b}) q->reset();
     env_.fill(0.0f);
     gainDb_.fill(0.0f);
     gain_.fill(1.0f);
@@ -219,15 +239,14 @@ void Ott::process(float* l, float* r, int n) {
     const float makeup = 4.0f * down;
     for (int i = 0; i < n; ++i) {
         const float xl = finiteOr0(l[i]), xr = finiteOr0(r[i]);
-        float bl[3], br[3];
-        auto split = [](Split& s, float x, float* band) {
-            band[0] = s.lp1b.process(s.lp1a.process(x));
-            const float rest = s.hp1b.process(s.hp1a.process(x));
-            band[1] = s.lp2b.process(s.lp2a.process(rest));
-            band[2] = s.hp2b.process(s.hp2a.process(rest));
-        };
-        split(left_, xl, bl);
-        split(right_, xr, br);
+        // Both sides' band split at once (audit stage 4: the same sums, lane by lane).
+        Split& s = split_;
+        const Float2 x(xl, xr);
+        const Float2 low = s.lp1b.process(s.lp1a.process(x));
+        const Float2 rest = s.hp1b.process(s.hp1a.process(x));
+        const Float2 mid = s.lp2b.process(s.lp2a.process(rest));
+        const Float2 high = s.hp2b.process(s.hp2a.process(rest));
+        const float bl[3] = {low.v[0], mid.v[0], high.v[0]}, br[3] = {low.v[1], mid.v[1], high.v[1]};
         for (size_t b = 0; b < 3; ++b) {
             const float e = std::max(std::fabs(bl[b]), std::fabs(br[b]));
             env_[b] += (e - env_[b]) * (e > env_[b] ? attack_[b] : release_[b]);

@@ -1,0 +1,387 @@
+#0 SIEGE lang=pl device=foldable font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 875c33a1a3 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « Mój pierwszy bit » over « BenStudio » (78 x 4 dp)
+#1 LAYOUT OVERLAP « Co chcesz zrobić? » over the touchable « Tempo: 120 BPM Zmień tempo » (26 x 30 dp)
+#1 LAYOUT OVERLAP « Styl jednym dotknięciem albo krok po kroku z asystentem. » over the touchable « Krok 9 Dodaj lub usuń uderzenie, siła 10 » (34 x 17 dp)
+#1 LAYOUT OVERLAP « Styl jednym dotknięciem albo krok po kroku z asystentem. » over the touchable « Krok 10 Dodaj lub usuń pusty » (33 x 17 dp)
+#1 LAYOUT OVERLAP « Styl jednym dotknięciem albo krok po kroku z asystentem. » over the touchable « Krok 11 Dodaj lub usuń pusty » (33 x 17 dp)
+#1 LAYOUT OVERLAP « Styl jednym dotknięciem albo krok po kroku z asystentem. » over the touchable « Krok 12 Dodaj lub usuń pusty » (33 x 17 dp)
+#1 LAYOUT OVERLAP « Styl jednym dotknięciem albo krok po kroku z asystentem. » over the touchable « Krok 13 Dodaj lub usuń uderzenie, siła 1 » (15 x 17 dp)
+#1 LAYOUT OVERLAP « NOWOŚĆ » over the touchable « Co to jest „Metronom i odliczanie”? » (29 x 15 dp)
+#1 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#1 > touche 518 273
+#1 DOIGT launch_continue « Kontynuuj »
+#2 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 36005f910c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » ellipsized (« … »)
+#2 LAYOUT CUT « Efekty » wider than its box (by 2.7 dp)
+#2 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#2 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#2 > touche 518 1183
+#2 DOIGT tab_Mix « Miks »
+#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6133cd8bdb | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#3 > glisse 771 1000 771 350
+#3 DOIGT rien
+#4 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d99e8eda0a | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 617 348
+#4 DOIGT loudness_details « Szczegóły »
+#5 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d37330ff02 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Ukryj szczegóły » 3.90:1 (needs 4.5:1, 13 sp)
+#5 > touche 918 42
+#5 DOIGT top_play
+#6 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d8022c7afb | project=projet-1 no tuto
+#6 SON Son : la musique du projet joue en boucle.
+#6 > attends 4
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d8022c7afb | project=projet-1 no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 > touche 911 442
+#7 DOIGT help_Odczuwana głośność (LUFS) « Co to jest „Odczuwana głośność (LUFS)”? »
+#7 AIDE help_Odczuwana
+#8 ROUTE dialogue:« Odczuwana głośność (LUFS) » | MODE pro | EMPREINTE 5a10889ea5 | project=projet-1 no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT CONTRAST « Jasne » 3.64:1 (needs 4.5:1, 14 sp)
+#8 > touche 851 705
+#8 DOIGT #1170 « Jasne »
+#9 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d8022c7afb | project=projet-1 no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 > touche 771 785
+#9 DOIGT master_pro « Zaawansowane: master pro »
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0d1a2802b4 | project=projet-1 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 LAYOUT CONTRAST « Zaawansowane: master pro » 3.90:1 (needs 4.5:1, 14 sp)
+#10 > glisse 771 1000 771 300
+#10 DOIGT pro_target_APPLE « Apple Music · −16 »
+#11 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9370f352d4 | project=projet-1 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 LAYOUT CONTRAST « 5. Limiter: look-ahead 1 ms » 3.74:1 (needs 4.5:1, 13 sp)
+#11 > glisse 771 1000 771 400
+#11 DOIGT rien
+#12 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a4876e2a38 | project=projet-1 no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 LAYOUT CONTRAST « Bez „Ta sama głośność” głośniejsze często wydaje się lepsze. » 3.55:1 (needs 4.5:1, 13 sp)
+#12 > glisse 771 1000 771 400
+#12 DOIGT pro_compare « Ta sama głośność »
+#13 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 15bc0c9e53 | project=projet-1 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 771 202
+#13 DOIGT pro_chain « Wstaw łańcuch pro (ustawienia w „Efekty” »
+#14 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ece34f01ac | project=projet-1 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 > glisse 771 300 771 800
+#14 DOIGT rien
+#15 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 16fcf530ca | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > glisse 771 300 771 700
+#15 DOIGT rien
+#16 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24a40398a1 | project=projet-1 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 > touche 958 173
+#16 DOIGT help_Pułap szczytu « Co to jest „Pułap szczytu”? »
+#16 AIDE help_Pu
+#17 ROUTE dialogue:« Pułap szczytu » | MODE pro | EMPREINTE e3d821c56e | project=projet-1 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 851 705
+#17 DOIGT #1305 « Jasne »
+#18 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24a40398a1 | project=projet-1 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 > glisse 771 300 771 600
+#18 DOIGT rien
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5853d76648 | project=projet-1 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 > touche 689 221
+#19 DOIGT pro_target_SPOTIFY « Spotify, YouTube · −14 »
+#20 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 731aa7c6e9 | project=projet-1 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > glisse 771 250 771 800
+#20 DOIGT rien
+#21 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3ff2639352 | project=projet-1 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > touche 990 42
+#21 DOIGT top_share
+#22 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 5b4670e5df | project=projet-1 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT OVERLAP « Gotowe do udostępnienia? » over the touchable « Zamknij arkusz » (282 x 28 dp)
+#22 LAYOUT OVERLAP « Nazwa utworu (i projektu) » over the touchable « Zamknij arkusz » (157 x 18 dp)
+#22 LAYOUT OVERLAP « 0:16 » over the touchable « Zamknij arkusz » (48 x 27 dp)
+#22 LAYOUT OVERLAP «   część w pętli » over the touchable « Zamknij arkusz » (94 x 20 dp)
+#22 LAYOUT OVERLAP «  Stop » over the touchable « Zamknij arkusz » (35 x 20 dp)
+#22 LAYOUT OVERLAP « Nie ma jeszcze utworu: twoja część wyjdzie jako pętla (takty: 8). » over the touchable « Zamknij arkusz » (429 x 20 dp)
+#22 LAYOUT OVERLAP « Edytuj utwór » over the touchable « Zamknij arkusz » (87 x 20 dp)
+#22 LAYOUT OVERLAP «   Wideo do social mediów · 30 s » over the touchable « Zamknij arkusz » (58 x 20 dp)
+#22 LAYOUT OVERLAP « Więcej eksportów » over the touchable « Zamknij arkusz » (123 x 20 dp)
+#22 LAYOUT OVERLAP « Ścieżka po ścieżce, MIDI, FLAC… w Miksie » over the touchable « Zamknij arkusz » (259 x 18 dp)
+#22 LAYOUT OVERLAP « ? » over the touchable « Zamknij arkusz » (7 x 15 dp)
+#22 LAYOUT OVERLAP « M4A · do udostępniania » over the touchable « Zamknij arkusz » (163 x 20 dp)
+#22 LAYOUT OVERLAP « WAV · maks. jakość » over the touchable « Zamknij arkusz » (134 x 20 dp)
+#22 LAYOUT OVERLAP «   Udostępnij » over the touchable « Zamknij arkusz » (93 x 24 dp)
+#22 LAYOUT CONTRAST « 0:16 » 2.55:1 (needs 3.0:1, 22 sp)
+#22 LAYOUT CONTRAST «   część w pętli » 2.62:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Edytuj utwór » 3.49:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT LABEL « #1319 » long press without text nor description
+#22 > touche 496 992
+#22 DOIGT share_other « Więcej eksportów »
+#23 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c73a2b63e3 | project=projet-1 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 771 937
+#23 DOIGT export_advanced « Zaawansowane »
+#24 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d099d9da18 | project=projet-1 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CONTRAST « Zaawansowane » 4.01:1 (needs 4.5:1, 14 sp)
+#24 > glisse 771 1000 771 350
+#24 DOIGT export_what_Stems « Ścieżka po ścieżce »
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4b37f35a13 | project=projet-1 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 859 721
+#25 DOIGT dans:mixer « 8 »
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8d835ee775 | project=projet-1 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 733 805
+#26 DOIGT export_final « Plik końcowy: 48 kHz · 24 bitów »
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE df38181874 | project=projet-1 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 LAYOUT CONTRAST « Plik końcowy: 48 kHz · 24 bitów » 4.03:1 (needs 4.5:1, 14 sp)
+#27 > glisse 771 1000 771 500
+#27 DOIGT rien
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e746c41342 | project=projet-1 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > glisse 771 1000 771 500
+#28 DOIGT rien
+#29 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6aedf6d107 | project=projet-1 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > glisse 771 1000 771 500
+#29 DOIGT rien
+#30 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0f0592baa6 | project=projet-1 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 771 973
+#30 DOIGT export « Eksportuj takty: 8 »
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0f0592baa6 | project=projet-1 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > attends 10
+#32 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0f0592baa6 | project=projet-1 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 918 42
+#32 DOIGT top_play
+#33 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1c4e9f2d34 | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 771 973
+#33 DOIGT export « Eksportuj takty: 8 »
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1c4e9f2d34 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > attends 15
+#35 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1c4e9f2d34 | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 > glisse 771 200 771 1000
+#35 DOIGT export_trim « Utnij ciszę »
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7f911112b2 | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 771 200 771 1000
+#36 DOIGT export_no_limiter « Bez limitera (do masteringu) »
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 87a557c0ae | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Długość pętli » 1.88:1 (needs 4.5:1, 14 sp)
+#37 > glisse 771 200 771 600
+#37 DOIGT rien (texte « Bieżąca część, grana przez takty: 8 (dłu »)
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4bbf9530cd | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 990 42
+#38 DOIGT top_share
+#39 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE fa86864c31 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP «  Słuchaj » over the touchable « Zamknij arkusz » (55 x 20 dp)
+#39 LAYOUT LABEL « #1524 » long press without text nor description
+#39 > touche 498 1087
+#39 DOIGT share_format_Wav « WAV · maks. jakość »
+#40 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE dc53200ecc | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 518 1183
+#40 DOIGT share_go «   Udostępnij »
+#41 ROUTE dialogue:share_progress | MODE pro | EMPREINTE a696d61569 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Potem wybierz aplikację, żeby to wysłać. » 3.74:1 (needs 4.5:1, 13 sp)
+#41 > attends 10
+#41 PARTAGE M?j-pierwszy-bit-p?tla-20261104-202801.wav
+#42 ROUTE dialogue:« Partager « M?j-pierwszy-bit-p? » | MODE pro | EMPREINTE d8a3fb5477 | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 517 797
+#42 DOIGT vue « Enregistrer dans Fichiers »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 22d37a3b95 | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 936 1183
+#43 DOIGT tab_Plus « Więcej »
+#44 ROUTE plus/tab_Plus | MODE pro | EMPREINTE a3913728f3 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 518 1183
+#44 DOIGT tab_Mix « Miks »
+#45 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b4df77ffa0 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > glisse 771 1000 771 400
+#45 DOIGT rien
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 012a95892d | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Głośność: — » 1.23:1 (needs 4.5:1, 14 sp)
+#46 > touche 832 524
+#46 DOIGT loudness_target_CLUB « Klub · −8 »
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3bc4e3a615 | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 771 782
+#47 DOIGT master_pro « Zaawansowane: master pro »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8c6374f199 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Głośność: — » 1.22:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Zaawansowane: master pro » 3.89:1 (needs 4.5:1, 14 sp)
+#48 > touche 861 999
+#48 DOIGT pro_target_CLUB « Klub · −9 »
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3e7fa46362 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > glisse 771 1000 771 600
+#49 DOIGT pro_target_APPLE « Apple Music · −16 »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d2f045db20 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « 2. Kompresor szyny (glue) · na miejscu » 2.44:1 (needs 4.5:1, 13 sp)
+#50 > touche 628 909
+#50 DOIGT pro_ceiling_-0.3 « −0,3 dBTP »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8e940f4a75 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 771 300 771 650
+#51 DOIGT rien (texte « Głośno, jak w klubie (−8). Wyjście powol »)
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8e7b81ac52 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > glisse 891 225 860 225
+#52 DOIGT master_gain
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 75207cf923 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 990 42
+#53 DOIGT top_share
+#54 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE dc53200ecc | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST «  Słuchaj » 3.07:1 (needs 4.5:1, 14 sp)
+#54 LAYOUT CONTRAST «   Wideo do social mediów · 30 s » 1.85:1 (needs 4.5:1, 14 sp)
+#54 LAYOUT LABEL « #2207 » long press without text nor description
+#54 > touche 518 1183
+#54 DOIGT share_go «   Udostępnij »
+#55 ROUTE dialogue:share_progress | MODE pro | EMPREINTE a696d61569 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > attends 10
+#55 PARTAGE M?j-pierwszy-bit-p?tla-20261104-202927.wav
+#56 ROUTE dialogue:« Partager « M?j-pierwszy-bit-p? » | MODE pro | EMPREINTE 7b3b86ffae | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 517 797
+#56 DOIGT vue « Enregistrer dans Fichiers »
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aade00c2e8 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > glisse 771 1050 771 150
+#57 DOIGT pro_target_free « Wolny »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 45997e46d4 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > glisse 651 1014 771 1014
+#58 DOIGT pro_release
+#59 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 62dba36fcc | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > glisse 771 1050 771 150
+#59 DOIGT rien
+#60 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0651eafead | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > glisse 771 1050 771 150
+#60 DOIGT rien (texte « Rozmiar »)
+#61 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 46123164fd | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > glisse 771 1050 771 150
+#61 DOIGT bus_1_2 « Ping-pong »
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 553f2f811e | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > glisse 771 1050 771 250
+#62 DOIGT rien
+#63 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3d9aac957f | project=projet-1 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 771 666
+#63 DOIGT export « Eksportuj takty: 8 »
+#64 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3d9aac957f | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > attends 15
+#65 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3d9aac957f | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 > touche 518 1183
+#65 DOIGT tab_Mix « Miks »
+#66 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3d9aac957f | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 RIEN NE CHANGE (3 écrans identiques)
+#66 > glisse 771 150 771 1050
+#66 DOIGT export_format_M4a « M4A · do udostępniania »
+#67 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b5e8f32f0c | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 LAYOUT OVERLAP « 1/8 » over the touchable « Podpisz ekran » (24 x 4 dp)
+#67 > glisse 771 150 771 1050
+#67 DOIGT rien (texte « Czas »)
+#68 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1a4197f5f1 | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > glisse 771 150 771 1050
+#68 DOIGT rien
+#69 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ccb3c6c4d6 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 > glisse 771 150 771 1050
+#69 DOIGT rien
+#70 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 59ed441ef9 | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 689 286
+#70 DOIGT pro_target_SPOTIFY « Spotify, YouTube · −14 »
+#71 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 99929e5c3c | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 626 581
+#71 DOIGT pro_ceiling_-1.0 « −1,0 dBTP »
+#72 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aab97a7fe7 | project=projet-1 no tuto
+#72 SON Son : rien ne joue.
+#72 > glisse 771 200 771 600
+#72 DOIGT rien
+#73 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 92a00ed993 | project=projet-1 no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 654 349
+#73 DOIGT loudness_target_STREAMING « Streaming · −14 »
+#74 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 14d4e30613 | project=projet-1 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 990 42
+#74 DOIGT top_share
+#75 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE dc53200ecc | project=projet-1 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « Nie ma jeszcze utworu: twoja część wyjdzie jako pętla (takty: 8). » 2.67:1 (needs 4.5:1, 14 sp)
+#75 LAYOUT LABEL « #2335 » long press without text nor description
+#75 > touche 518 1183
+#75 DOIGT share_go «   Udostępnij »
+#76 ROUTE dialogue:share_progress | MODE pro | EMPREINTE a696d61569 | project=projet-1 no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « Anuluj » 1.84:1 (needs 4.5:1, 14 sp)
+#76 > attends 10
+#76 PARTAGE M?j-pierwszy-bit-p?tla-20261104-203133.wav
+#77 ROUTE dialogue:« Partager « M?j-pierwszy-bit-p? » | MODE pro | EMPREINTE 0ca57798d7 | project=projet-1 no tuto
+#77 SON Son : rien ne joue.
+#77 > touche 517 797
+#77 DOIGT vue « Enregistrer dans Fichiers »
+#78 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5bdf84844c | project=projet-1 no tuto
+#78 SON Son : rien ne joue.
+#78 > glisse 771 1050 771 150
+#78 DOIGT rien
+#79 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e59b684061 | project=projet-1 no tuto
+#79 SON Son : rien ne joue.
+#79 > glisse 771 1050 771 150
+#79 DOIGT rien
+#80 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b8fd09d84d | project=projet-1 no tuto
+#80 SON Son : rien ne joue.
+#80 > glisse 771 1050 771 150
+#80 DOIGT rien
+#81 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c6e48dee71 | project=projet-1 no tuto
+#81 SON Son : rien ne joue.
+#81 > glisse 771 1050 771 150
+#81 DOIGT rien
+#82 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 357dd16887 | project=projet-1 no tuto
+#82 SON Son : rien ne joue.
+#82 > glisse 771 1050 771 450
+#82 DOIGT rien
+#83 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e8f12f2056 | project=projet-1 no tuto
+#83 SON Son : rien ne joue.
+#83 > fin
+#83 FIN : fin

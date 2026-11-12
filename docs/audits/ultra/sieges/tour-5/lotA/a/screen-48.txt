@@ -1,0 +1,55 @@
+Écran 48 (540x1170)
+touchable « Lo-fi hip-hop सेव हो गया » (nom « मेरे प्रोजेक्ट ») @ 77,42
+bouton « सिंपल » (nom « सिंपल मोड। मोड बदलने के लिए छुओ। ») @ 194,42
+bouton « अनडू » @ 279,42
+bouton « रिकॉर्ड: माइक, कीबोर्ड या पैड » @ 351,42
+bouton « रोको » @ 423,42
+bouton « और ऑप्शन » @ 495,42
+bouton « 84  टेम्पो » (nom « टेम्पो: 84 थाप प्रति मिनट ») @ 67,123
+bouton « इंट्रो बार 1/4 » (nom « लूप में ») @ 206,123
+interrupteur « ? » (nom « स्क्रीन पर लेबल लगाओ ») [non coché] @ 495,123
+touchable « पियानो FM Rhodes » @ 83,204
+touchable « मेलोडी Marimba » @ 240,204
+touchable « मेरी मेलोडी FM पियानो » (nom « मेरी मेलोडी के ऑप्शन ») @ 427,204
+  → la suite sur le côté (glisse pour la voir)
+bouton « पार्ट: A · इंट्रो » @ 102,282
+case « कॉर्ड्स » @ 102,318
+bouton « रिदम में 50% » @ 258,323
+bouton « 100% » @ 412,323
+case « घोस्ट बेस » [sélectionné] @ 485,318
+  → la suite sur le côté (glisse pour la voir)
+texte « बार » @ 69,356
+touchable « 1 » @ 298,364
+  → la suite sur le côté (glisse pour la voir)
+bouton « E5 » @ 69,412
+bouton « E♭5 » @ 69,442
+bouton « D5 » @ 69,472
+bouton « D♭5 » @ 69,502
+bouton « C5 » @ 69,532
+bouton « B4 » @ 69,562
+bouton « B♭4 » @ 69,592
+bouton « A4 » @ 69,622
+bouton « A♭4 » @ 69,652
+bouton « G4 » @ 69,682
+bouton « G♭4 » @ 69,712
+bouton « F4 » @ 69,742
+bouton « E4 » @ 69,772
+bouton « E♭4 » @ 69,802
+bouton « D4 » @ 69,832
+bouton « D♭4 » @ 69,862
+bouton « C4 » @ 69,892
+bouton « B3 » @ 69,912
+texte « नोट ग्रिड: 3 नोट्स » @ 297,657
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « गाइड  · Kick (“बूम”) 39 % » [état « समेटा हुआ »] @ 270,954
+onglet « मेरा गाना » @ 49,1050
+onglet « रिदम » @ 160,1050
+onglet « कीबोर्ड » [sélectionné] @ 271,1050
+onglet « मिक्स » @ 381,1050
+onglet « भेजो » @ 491,1050
+touchable « ●  REC » (nom « स्क्रीन को आवाज़ के साथ रिकॉर्ड करो ») @ 310,1140
+touchable « ✎  नोट करो » (nom « नोट लिखो ») @ 407,1140
+touchable « ⋯ » (nom « प्रतिक्रिया मोड ») @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

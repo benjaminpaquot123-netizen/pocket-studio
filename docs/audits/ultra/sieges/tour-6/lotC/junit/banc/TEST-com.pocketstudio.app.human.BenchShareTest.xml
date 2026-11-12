@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchShareTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-12T19:54:33.001Z" hostname="vm" time="35.079">
+  <properties/>
+  <testcase name="twoStemsLeaveAsTwoFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="7.02"/>
+  <testcase name="theBackGestureStopsItToo" classname="com.pocketstudio.app.human.BenchShareTest" time="1.809"/>
+  <testcase name="theTutoSongGoesOutAsAWavFromTheSheet" classname="com.pocketstudio.app.human.BenchShareTest" time="4.568"/>
+  <testcase name="fourStemsLeaveAsFourFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="6.534"/>
+  <testcase name="aDoubleTouchInFacileMakesOneSongAndOneMenu" classname="com.pocketstudio.app.human.BenchShareTest" time="4.667"/>
+  <testcase name="theShareMenuSpeaksTheSeatsLanguage" classname="com.pocketstudio.app.human.BenchShareTest" time="4.322"/>
+  <testcase name="annulerStopsAndClosesAtOnce" classname="com.pocketstudio.app.human.BenchShareTest" time="6.152"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

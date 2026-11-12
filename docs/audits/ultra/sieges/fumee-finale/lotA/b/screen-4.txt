@@ -1,0 +1,21 @@
+Écran 4 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Changer » @ 400,120
+texte « Ce morceau sera en mode Simple. » @ 181,120
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,286
+bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌃ [état « ouvert »] @ 294,360
+bouton « Lo-fi hip-hop Hip-hop · 84 BPM Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle. Pour l'idée : Nujabes – Aruarian Dance (2004) » @ 294,489
+icône ▶ @ 57,459
+bouton « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 294,651
+icône ▶ @ 57,621
+bouton « Amapiano House · 112 BPM La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy. Pour l'idée : Tyla – Water (2023) » @ 294,813
+icône ▶ @ 57,783
+bouton « Synthwave 105 BPM Le son des années 80 remis à la mode (Stranger Things, Blinding Lights) : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des notes de synthé qui tournent en boucle. Pour l'idée : The Weeknd – Blinding Lights (2019) » @ 294,975
+icône ▶ @ 57,945
+bouton « Boom bap Hip-hop · 92 BPM Le rap à l'ancienne de New York : une boucle de piano jazz, un kick rond, une caisse claire qui claque et un groove qui balance. Pour l'idée : Nekfeu – On verra (2015) » @ 294,1137
+icône ▶ @ 57,1107
+bouton « Liquid DnB Bass music · 174 BPM La drum & bass douce et chaleureuse : le même rythme rapide, mais avec des accords jazzy au piano électrique et une basse ronde. Pour l'idée : Netsky – Memory Lane (2010) » [coupé] @ 294,1251
+icône ▶ [coupé] @ 57,1258

@@ -33,12 +33,17 @@ public:
         nextStep_ = -countInBars * stepsPerBar_;
         frame_ = 0;
         gridFrame_ = 0.0;
+        stepLength_ = samplesPerStep();
     }
     void stop() { running_ = false; }
     bool running() const { return running_; }
 
     double swing() const { return swing_; }
     double samplesPerStep() const { return sampleRate_ * 60.0 / (bpm_ * kStepsPerBeat); }
+    // Where the transport is at the next block's first frame, in steps of the unswung grid (counted
+    // from step 0; negative in the count-in), with a fraction: the step in progress keeps the length
+    // it started with when the tempo changes, as advance() counts it. Running only.
+    double position() const { return nextStep_ - (gridFrame_ - static_cast<double>(frame_)) / stepLength_; }
 
     // Calls onStep(frameOffsetInBlock, step) for every step that starts inside the next
     // `numFrames` frames, in order (until one of them stops the clock), then moves the clock forward.
@@ -52,7 +57,8 @@ public:
             if (eventSample >= blockEnd) break;
             const int offset = static_cast<int>(std::max<int64_t>(0, eventSample - frame_));
             onStep(offset, nextStep_);
-            gridFrame_ += samplesPerStep();
+            stepLength_ = samplesPerStep();
+            gridFrame_ += stepLength_;
             ++nextStep_;
         }
         frame_ = blockEnd;
@@ -69,6 +75,7 @@ private:
     int nextStep_ = 0;
     int64_t frame_ = 0;
     double gridFrame_ = 0.0;
+    double stepLength_ = 6000.0;  // frames of the step in progress (ending on gridFrame_)
 };
 
 }  // namespace ps

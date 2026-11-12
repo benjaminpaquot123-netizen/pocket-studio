@@ -77,6 +77,22 @@ object FloatWav {
 
     /** Reads files written by [write] (and other plain 32-bit float WAVs), a piece at a time. */
     fun read(file: File): Pcm {
+        var out = FloatArray(0)
+        var format = Pair(0, 0)
+        var at = 0
+        forEachChunk(file, start = { size, channels, rate -> out = FloatArray(size); format = channels to rate }) { data, n ->
+            System.arraycopy(data, 0, out, at, n)
+            at += n
+        }
+        return Pcm(out, format.first, format.second)
+    }
+
+    /**
+     * Reads a float WAV a piece at a time ([CHUNK] floats, interleaved): [start] gets the floats in
+     * all, the channels and the rate, then [block] each piece (its first `n` floats). Streams: a
+     * song's stem (60 MB) is never all in memory (step 5c: its loudness bar by bar).
+     */
+    fun forEachChunk(file: File, start: (floats: Int, channels: Int, rate: Int) -> Unit = { _, _, _ -> }, block: (FloatArray, Int) -> Unit) {
         val length = file.length()
         DataInputStream(file.inputStream().buffered(1 shl 16)).use { input ->
             val head = ByteArray(12)
@@ -104,19 +120,23 @@ object FloatWav {
                         if (size and 1 == 1) input.skipBytes(1)
                     }
                     "data" -> {
-                        if (format != 3 || bits != 32 || channels !in 1..2 || rate <= 0) throw IOException("unsupported WAV")
-                        val out = FloatArray(size / 4)
+                        // A rate no sound has (a lying header) would ask the engine gigabytes to resample.
+                        if (format != 3 || bits != 32 || channels !in 1..2 || rate !in AudioDecoder.RATES) throw IOException("unsupported WAV")
+                        val total = size / 4
+                        start(total, channels, rate)
                         val bytes = ByteArray(CHUNK * 4)
+                        val floats = FloatArray(CHUNK)
                         val view = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asFloatBuffer()
                         var at = 0
-                        while (at < out.size) {
-                            val n = minOf(CHUNK, out.size - at)
+                        while (at < total) {
+                            val n = minOf(CHUNK, total - at)
                             input.readFully(bytes, 0, n * 4)
                             view.clear()
-                            view.get(out, at, n)
+                            view.get(floats, 0, n)
+                            block(floats, n)
                             at += n
                         }
-                        return Pcm(out, channels, rate)
+                        return
                     }
                     else -> {
                         var left = size + (size and 1)

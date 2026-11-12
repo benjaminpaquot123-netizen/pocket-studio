@@ -1,0 +1,13 @@
+Écran 69 (588x1278)
+touchable « Live: graj na żywo » @ 419,183
+touchable « Nagraj mój głos » @ 419,255
+touchable « Biblioteka dźwięków » @ 419,327
+touchable « Moja biblioteka » @ 419,399
+touchable « Remix » @ 419,471
+touchable « Zmień nazwę utworu » @ 419,543
+touchable « Start » @ 419,615
+touchable « Moje projekty » @ 419,687
+touchable « Ustawienia » @ 419,759
+touchable « Pomoc i pierwsze kroki » @ 419,831
+touchable « Przełącz na tryb Pro » @ 419,903
+touchable « Zgłoś błąd » @ 419,975

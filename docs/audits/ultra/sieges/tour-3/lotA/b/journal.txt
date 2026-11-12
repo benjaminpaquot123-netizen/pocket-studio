@@ -1,0 +1,317 @@
+#0 SIEGE lang=fr device=phone360 font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=right amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 0431aa119a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 3.50:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » 3.42:1 (needs 4.5:1, 14 sp)
+#1 > touche 380 492
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3a073e3179 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pro » 2.22:1 (needs 3.0:1, 24 sp)
+#2 > touche 380 333
+#2 REFUS hors de portée du pouce (d'une main, la droite)
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE fcafc3ce20 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 470 415
+#3 REFUS hors de portée du pouce (d'une main, la droite)
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE fcafc3ce20 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 490 438
+#4 DOIGT rien
+#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3a073e3179 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 495 425
+#5 DOIGT mode_card_simple « Simple »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 491d032fd1 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » 3.58:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « 10 styles » 2.04:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « House » 2.80:1 (needs 3.0:1, 16 sp)
+#6 LAYOUT CONTRAST « 9 styles » 2.23:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « 7 styles » 1.60:1 (needs 4.5:1, 13 sp)
+#6 > touche 450 576
+#6 DOIGT wizard_family_House « House »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6ac667c970 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. » ellipsized (« … »)
+#7 LAYOUT CUT « La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. » ellipsized (« … »)
+#7 LAYOUT CUT « Pour l'idée : Mr. Fingers – Can You Feel It (1986) » ellipsized (« … »)
+#7 LAYOUT CUT « La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. » ellipsized (« … »)
+#7 LAYOUT CUT « Pour l'idée : Mau P – Drugs From Amsterdam (2022) » ellipsized (« … »)
+#7 LAYOUT CONTRAST « House » 3.47:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. » 3.45:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Deep house » 1.36:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « House · 120 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Acid house » 2.04:1 (needs 4.5:1, 16 sp)
+#7 > touche 57 675
+#7 DOIGT wizard_style_listen_house
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE d171ba49e4 | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter un extrait du style « House ».
+#8 > touche 400 720
+#8 DOIGT wizard_style_house « House »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE c98a7af34b | project=projet-1 no tuto
+#9 SON Son : l'assistant fait écouter un extrait du style « House ».
+#9 LAYOUT CONTRAST « • Frankie Knuckles & Jamie Principle – Your Love (1987) » 3.42:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « • Farley "Jackmaster" Funk – Love Can't Turn Around (1986) » 2.04:1 (needs 4.5:1, 13 sp)
+#9 > touche 400 816
+#9 DOIGT wizard_style_play_house «  Créer et écouter »
+#10 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 525e25c5d1 | project=p-564a6698 no tuto
+#10 SON Son : le morceau joue (partie « F »).
+#10 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#10 > touche 203 951
+#10 DOIGT thumb_play
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0d13473f33 | project=p-564a6698 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « Sauvegardé » wider than its box (by 8.1 dp)
+#11 LAYOUT CONTRAST « POUR COMMENCER » 4.30:1 (needs 4.5:1, 12 sp)
+#11 > touche 160 891
+#11 DOIGT rien (texte « VOIR LE RÉGLAGE »)
+#12 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0d13473f33 | project=p-564a6698 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 110 42
+#12 REFUS hors de portée du pouce (d'une main, la droite)
+#13 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 997f7707d1 | project=p-564a6698 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 455 951
+#13 DOIGT thumb_more « Plus de choix »
+#14 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE 235f806830 | project=p-564a6698 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Remix » 3.08:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Réglages » 4.17:1 (needs 4.5:1, 14 sp)
+#14 > touche 400 762
+#14 DOIGT thumb_more_projects « Mes projets »
+#15 ROUTE dialogue:projects | MODE simple | EMPREINTE 087dcc3962 | project=p-564a6698 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 300 470
+#15 DOIGT project_p-564a6698 « House »
+#16 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0d13473f33 | project=p-564a6698 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 203 951
+#16 DOIGT thumb_play
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8f93b1133e | project=p-564a6698 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > attends 15
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0dca222519 | project=p-564a6698 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 > touche 290 114
+#18 REFUS hors de portée du pouce (d'une main, la droite)
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7ea8f827c7 | project=p-564a6698 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 > glisse 420 480 420 250
+#19 REFUS hors de portée du pouce (d'une main, la droite)
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7ea8f827c7 | project=p-564a6698 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 500 558
+#20 DOIGT guide_bar « Guide »
+#21 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE be07c8c0a0 | project=p-564a6698 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > glisse 420 800 420 450
+#21 DOIGT rien
+#22 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 3c3f3c1c7a | project=p-564a6698 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT OVERLAP « Changer le son » over the touchable « Tempo : 122 battements par minute Change » (55 x 4 dp)
+#22 LAYOUT OVERLAP « Changer le son » over the touchable « Jouer depuis une partie » (8 x 4 dp)
+#22 > glisse 420 800 420 450
+#22 DOIGT rien
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 99f44b6a16 | project=p-564a6698 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 LAYOUT CUT « La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi » ellipsized (« … »)
+#23 LAYOUT OVERLAP « Écouter seule » over the touchable « Jouer depuis une partie » (47 x 4 dp)
+#23 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « B · Groove » 2.91:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi » 1.95:1 (needs 4.5:1, 14 sp)
+#23 > glisse 420 820 420 420
+#23 REFUS hors de portée du pouce (d'une main, la droite)
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c8628da284 | project=p-564a6698 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > glisse 515 720 515 430
+#24 DOIGT rien
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2f179ed091 | project=p-564a6698 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 240 832
+#25 DOIGT part_play_0 « E · Intro 2 »
+#26 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ac38e55af5 | project=p-564a6698 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST « E · Intro 2 » 1.22:1 (needs 3.0:1, 18 sp)
+#26 > attends 5
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2f179ed091 | project=p-564a6698 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > glisse 515 820 515 430
+#27 DOIGT rien
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE dba063b4ff | project=p-564a6698 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT OVERLAP « E · Intro 2 » over the touchable « Tempo : 122 battements par minute Change » (64 x 4 dp)
+#28 LAYOUT OVERLAP « La  La  La  La  La  La  La  La » over the touchable « Jouer depuis une partie » (109 x 4 dp)
+#28 > touche 230 500
+#28 DOIGT part_play_0 « E · Intro 2 »
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d30331c326 | project=p-564a6698 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 203 951
+#29 DOIGT thumb_play
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a247344732 | project=p-564a6698 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT OVERLAP « La  La  La  La  La  La  La  La » over the touchable « Jouer depuis une partie » (118 x 4 dp)
+#30 > touche 230 500
+#30 DOIGT part_play_0 « E · Intro 2 »
+#31 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a247344732 | project=p-564a6698 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 203 951
+#31 DOIGT thumb_play
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d30331c326 | project=p-564a6698 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > attends 20
+#33 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d30331c326 | project=p-564a6698 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > appui-long 203 951
+#33 DOIGT thumb_play
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a247344732 | project=p-564a6698 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 491 1050
+#34 DOIGT tab_simple_Envoyer « Envoyer »
+#35 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 10f6ecb991 | project=p-564a6698 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 440 412
+#35 REFUS hors de portée du pouce (d'une main, la droite)
+#36 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE ef943d1eb3 | project=p-564a6698 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 470 430
+#36 DOIGT share_listen «  Écouter »
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 16f397a9e0 | project=p-564a6698 no tuto
+#37 SON Son : le morceau joue (partie « E »).
+#37 > attends 30
+#38 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 16f397a9e0 | project=p-564a6698 no tuto
+#38 SON Son : le morceau joue (partie « E »).
+#38 > touche 203 951
+#38 DOIGT thumb_play
+#39 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 10f6ecb991 | project=p-564a6698 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 300 271
+#39 REFUS hors de portée du pouce (d'une main, la droite)
+#40 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE ef943d1eb3 | project=p-564a6698 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 455 951
+#40 DOIGT thumb_more « Plus de choix »
+#41 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE 235f806830 | project=p-564a6698 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 400 618
+#41 DOIGT thumb_more_rename « Renommer le morceau »
+#42 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 00e5d81153 | project=p-564a6698 no tuto
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST «  Écouter » 1.25:1 (needs 4.5:1, 14 sp)
+#42 > ecris  de Léa
+#43 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 80455e8e1e | project=p-564a6698 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 481 156
+#43 REFUS hors de portée du pouce (d'une main, la droite)
+#44 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE eb80bf385f | project=p-564a6698 no tuto
+#44 SON Son : rien ne joue.
+#44 > retour
+#44 RETOUR
+#45 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 10f6ecb991 | project=p-564a6698 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 455 951
+#45 DOIGT thumb_more « Plus de choix »
+#46 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE 235f806830 | project=p-564a6698 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 400 690
+#46 DOIGT thumb_more_home « Accueil »
+#47 ROUTE launch | MODE simple | EMPREINTE ccbc297764 | project=p-564a6698 no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Séparation des pistes : batterie, basse, voix et le reste. » ellipsized (« … »)
+#47 > touche 400 742
+#47 DOIGT launch_projects « Mes projets »
+#48 ROUTE dialogue:projects | MODE simple | EMPREINTE 087dcc3962 | project=p-564a6698 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 486 480
+#48 DOIGT project_menu_p-564a6698
+#49 ROUTE dialogue:project_opening_p-564a6698 | MODE simple | EMPREINTE 394fc7afde | project=p-564a6698 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 400 564
+#49 DOIGT #2890 « Renommer »
+#50 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 68b0b2d6be | project=p-564a6698 no tuto
+#50 SON Son : rien ne joue.
+#50 > ecris Chanson de Léa
+#51 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 27cfbb698f | project=p-564a6698 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 436 704
+#51 DOIGT project_rename_ok « OK »
+#52 ROUTE dialogue:projects | MODE simple | EMPREINTE 087dcc3962 | project=p-564a6698 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 486 480
+#52 DOIGT project_menu_p-564a6698
+#53 ROUTE dialogue:project_opening_p-564a6698 | MODE simple | EMPREINTE 394fc7afde | project=p-564a6698 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 400 564
+#53 DOIGT #2939 « Renommer »
+#54 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 68b0b2d6be | project=p-564a6698 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 420 566
+#54 DOIGT project_name_field « Nom du projet »
+#55 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 68b0b2d6be | project=p-564a6698 no tuto
+#55 SON Son : rien ne joue.
+#55 > ecris Chanson de Léa
+#55 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 45675 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#55 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 51211 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#55 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 44875 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#55 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 36065 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#56 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 3ae73f89ed | project=p-564a6698 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 436 704
+#56 DOIGT project_rename_ok « OK »
+#57 ROUTE dialogue:projects | MODE simple | EMPREINTE 8283eafcfe | project=p-564a6698 no tuto
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « Chanson de Léa » ellipsized (« … »)
+#57 > fin
+#57 FIN : fin

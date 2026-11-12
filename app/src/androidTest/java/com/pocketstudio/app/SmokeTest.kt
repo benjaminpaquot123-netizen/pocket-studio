@@ -28,30 +28,48 @@ import org.junit.runner.RunWith
 /** Emulator smoke test run by CI: the app starts, plays, and every space opens without crashing. */
 @RunWith(AndroidJUnit4::class)
 class SmokeTest {
+    /** A French phone (the emulator's is American: a first start would take English), before the app starts. */
     @get:Rule(order = 0)
-    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+    val french = org.junit.rules.TestRule { base, _ ->
+        object : org.junit.runners.model.Statement() {
+            override fun evaluate() {
+                val app = InstrumentationRegistry.getInstrumentation().targetContext
+                val prefs = app.getSharedPreferences("settings", 0)
+                if (!prefs.contains("language")) prefs.edit().putString("language", "fr").commit()
+                base.evaluate()
+            }
+        }
+    }
 
     @get:Rule(order = 1)
+    val mic: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO)
+
+    @get:Rule(order = 2)
     val compose = createAndroidComposeRule<MainActivity>()
 
     @Test
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
-        // First launch: the welcome choices open; the five spaces (not the Mode simple, phase 36), then
-        // "later" keeps the starter beat.
+        // The opening (BrandIntro) first: it covers the app for under 5 s.
+        compose.waitUntil(10_000) { compose.onAllNodesWithTag("intro").fetchSemanticsNodes().isEmpty() }
+        // First launch: the welcome choices open; "later" keeps the starter beat (then Pro, below).
         compose.waitForIdle()
         if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithTag("welcome_mode_full").performScrollTo().performClick()
             compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
         }
         compose.waitForIdle()
         // Any later start: « Que veux-tu faire ? », where « Continuer » opens the last project (one touch).
         if (compose.onAllNodesWithTag("launch_continue").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithTag("launch_mode_full").performScrollTo().performClick()
             compose.onNodeWithTag("launch_continue").performScrollTo().performClick()
         }
         compose.waitForIdle()
+        // The project's own mode (owner, 2026-10-29): Pro, through the top bar's chip.
+        if (compose.onAllNodesWithTag("tab_simple_Morceau").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("top_mode").performClick()
+            compose.onNodeWithTag("mode_card_pro").performClick()
+            compose.waitForIdle()
+        }
         assertTrue("no « Que veux-tu faire ? » left over the project", compose.onAllNodesWithTag("launch").fetchSemanticsNodes().isEmpty())
 
         // Rhythm screen: the starter groove plays and makes sound. « Continuer » reopens the last space
@@ -66,7 +84,10 @@ class SmokeTest {
         }
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
         compose.onNodeWithTag("top_play").performClick()
-        compose.waitUntil(5_000) { NativeEngine.currentStep() >= 0 }
+        // RealUse.waitFor: on a timeout, it says what the app went through (the CI emulator).
+        runCatching { RealUse.waitFor("the transport", 5) { NativeEngine.currentStep() >= 0 } }.onFailure {
+            throw IllegalStateException("${it.message}\nscreen:\n${RealUse.screenTree(compose)}")
+        }
         var heard = false
         compose.waitUntil(5_000) {
             heard = heard || Metrics.streamInfo.value.peak > 0.1f
@@ -148,7 +169,8 @@ class SmokeTest {
         compose.onNodeWithTag("export").performScrollTo().performClick()
         compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val wav = File(context.cacheDir, "exports").listFiles()!!.maxBy { it.lastModified() }
+        // The WAV itself: its « -rapport.txt » (Rapport avec le fichier, on by default) is written after it.
+        val wav = File(context.cacheDir, "exports").listFiles()!!.filter { it.extension == "wav" }.maxBy { it.lastModified() }
         val bytes = wav.readBytes()
         assertEquals("RIFF", String(bytes, 0, 4))
         assertEquals(24, bytes[34].toInt())

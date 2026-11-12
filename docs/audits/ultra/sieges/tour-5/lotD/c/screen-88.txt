@@ -1,0 +1,69 @@
+Écran 88 (1035x1243)
+touchable « Notte a Napoli Salvato » (nom « I miei progetti ») @ 301,42
+bouton « Pro » (nom « Modalità Pro. Tocca per cambiare modalità. ») @ 630,42
+bouton « Annulla l'ultima azione » [désactivé] @ 702,42
+bouton « Ripristina » [désactivé] @ 774,42
+bouton « Registra: microfono, tastiera o pad » @ 846,42
+bouton « Suona » @ 918,42
+bouton « Condividi il mio brano » @ 990,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « Intro batt. 1/90 » @ 219,114
+interrupteur « Loop » (nom « Ripeti la parte invece di suonare il brano ») [non coché, état « disattivo »] @ 887,114
+interrupteur « ? » (nom « Etichetta la schermata ») [non coché] @ 990,114
+bouton « ? » (nom « Cos'è “Muto e solo”? ») @ 468,195
+texte « Volumi » @ 241,196
+texte « Fai scorrere un fader per il volume; tocca il nome di una traccia per i suoi effetti e le sue curve. » @ 263,250
+bouton « Batteria » @ 84,343
+interrupteur « Suono di Batteria » [coché, état « attivo »] @ 57,418
+interrupteur « Ascolta solo la traccia Batteria » [non coché, état « disattivo »] @ 111,418
+curseur « Volume di Batteria » [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+bouton « Acid 303 » @ 204,343
+interrupteur « Suono di Acid 303 » [coché, état « attivo »] @ 177,418
+interrupteur « Ascolta solo la traccia Acid 303 » [non coché, état « disattivo »] @ 231,418
+curseur « Volume di Acid 303 » [état « +0,0 dB », à 80 %] @ 204,589
+texte « +0,0 » @ 204,740
+bouton « Synth » @ 324,343
+interrupteur « Suono di Synth » [coché, état « attivo »] @ 297,418
+interrupteur « Ascolta solo la traccia Synth » [non coché, état « disattivo »] @ 351,418
+curseur « Volume di Synth » [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+bouton « Remix » @ 444,343
+interrupteur « Suono di Remix » [coché, état « attivo »] @ 417,418
+interrupteur « Ascolta solo la traccia Remix » [non coché, état « disattivo »] @ 471,418
+curseur « Volume di Remix » [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+  → la suite sur le côté (glisse pour la voir)
+texte « Curve ed effetti » @ 182,838
+texte « Ancora non si muove niente: fai aprire un filtro, salire un volume… » @ 288,883
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « CURVE » [état « Espanso »] @ 686,222
+bouton « ? » (nom « Cos'è “Curve (automazione)”? ») @ 688,222
+case « Registra » @ 908,222
+texte « Fai muovere un parametro da solo: sceglilo, poi disegna la sua curva (col dito, o una linea con due tocchi). » @ 771,310
+bouton «  Automatizza un parametro » @ 742,399
+bouton «  Cosa suona » @ 663,480
+texte « Ancora non si muove niente. Idea: il filtro di un pad che si apre in 8 battute. » @ 771,555
+bouton « USCITA GENERALE » [état « Espanso »] @ 690,666
+bouton « ? » (nom « Cos'è “Uscita generale”? ») @ 809,666
+texte « Volume: — » @ 605,712
+texte « Volume generale » @ 738,785
+texte « 0,0 dB » @ 959,785
+curseur « Volume generale » [état « 0,0 dB », à 80 %] @ 771,851
+texte « Nessuna distorsione: tutto a posto. » @ 707,906
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guida  · Aggiungi una melodia 29 % » [état « chiuso »] @ 517,949
+bouton « Annulla » (nom « Annulla l'ultima azione ») [désactivé] @ 148,1024
+bouton « Ripristina » [désactivé] @ 331,1024
+bouton « Suona » @ 512,1024
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 698,1024
+bouton « Condividi » (nom « Condividi il mio brano ») @ 888,1024
+onglet « Struttura » @ 99,1123
+onglet « Suoni » @ 309,1123
+onglet « Mix » [sélectionné] @ 518,1123
+onglet « Live » @ 727,1123
+onglet « Altro » @ 936,1123
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.ExportUi
@@ -42,8 +43,7 @@ import com.pocketstudio.model.Insert
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -66,6 +66,8 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
 import kotlin.math.roundToInt
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.i18n.tr
 
 /** A strip on screen: its mixer channel, its name and, for an instrument track, its colour. */
@@ -75,7 +77,7 @@ data class StripInfo(val ch: Int, val name: String, val color: androidx.compose.
 const val MASTER_CHANNEL = 4
 
 /** Drums, acid, the first instrument track, the remix: a project with no added track (names shown through tr()). */
-val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
+val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, com.pocketstudio.model.DefaultNames.ACID), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
 
 /** Index of the limiter gain in the meters (after one peak per mixer channel). */
 const val LIMITER_METER = com.pocketstudio.engine.NativeEngine.METER_LIMITER
@@ -104,6 +106,8 @@ data class MixerActions(
     val setMasterDb: (Float) -> Unit = {},
     /** The master's « Cible » (loudness target). */
     val setLoudnessTarget: (com.pocketstudio.model.LoudnessTarget) -> Unit = {},
+    /** « Volume visé », the one loudness target of the app (with a free value for [com.pocketstudio.model.TargetChoice.FREE]). */
+    val chooseTarget: (com.pocketstudio.model.TargetChoice, Float?) -> Unit = { _, _ -> },
     /** Exports at 44.1 kHz (true) or 48 kHz; in 16 bits (true) or 24. */
     val setExportCdRate: (Boolean) -> Unit = {},
     val setExportBits16: (Boolean) -> Unit = {},
@@ -132,6 +136,8 @@ data class MixerActions(
     val watchMeters: (suspend () -> Unit)? = null,
     /** Each insert's compressor gain reduction in dB (channel * 8 + slot, ≤ 0), kept fresh with [meters]. */
     val reductions: kotlinx.coroutines.flow.StateFlow<FloatArray> = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(0)),
+    /** Lot E (« Master pro »): the master's « Avancé » and the file's final form (Pro mode). */
+    val pro: MasterProActions = MasterProActions(),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -141,8 +147,22 @@ fun faderDb(v: Float): String {
     if (v <= 0.001f) return "−∞ dB"
     val gain = (v / 0.8f) * (v / 0.8f)
     val db = 20 * log10(gain)
-    return (if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db)
+    return com.pocketstudio.model.i18n.ltrNumber((if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db))
 }
+
+/**
+ * A level in the Mode simple's words (audit « un mot par chose », § 5 « Volume »): « Normal » where the fader rests,
+ * « Muet » at the bottom (« Silence » is the musical rest's key), else the move as a whole signed number (« +3 », « −6 »); never « dB ».
+ */
+fun levelWords(db: Float): String {
+    if (db.isNaN() || db <= -60f) return tr("Muet")
+    val whole = Math.round(db)
+    if (kotlin.math.abs(db) < 0.5f || whole == 0) return tr("Normal")
+    return com.pocketstudio.model.i18n.ltrNumber((if (whole > 0) "+" else "−") + kotlin.math.abs(whole))
+}
+
+/** [faderDb]'s fader position (0.8 = unity) in [levelWords]. */
+fun faderWords(v: Float): String = if (v <= 0.001f) tr("Muet") else levelWords(20 * log10((v / 0.8f) * (v / 0.8f)))
 
 @Composable
 fun MixerScreen(
@@ -160,6 +180,8 @@ fun MixerScreen(
     automationActions: AutomationActions = AutomationActions(),
     hasSong: Boolean = false,
     strips: List<StripInfo> = BASIC_STRIPS,
+    /** Step 5a: the song's four stems (volume, Solo, Muet) right under the console; null without a song. */
+    songTracks: (@Composable () -> Unit)? = null,
     /** The output spectrum while the analyser is open (null: closed or not yet measured). */
     spectrum: FloatArray? = null,
     analyserOpen: Boolean = false,
@@ -171,11 +193,18 @@ fun MixerScreen(
     onFocused: () -> Unit = {},
     /** The master's loudness and true peak (NativeEngine.LOUDNESS_*): read only when shown. */
     loudness: () -> FloatArray = { FloatArray(0) },
-    /** The master's « Cible », and the loudness « Auto » aims at for this project's style. */
-    target: com.pocketstudio.model.LoudnessTarget = com.pocketstudio.model.LoudnessTarget.OFF,
+    /** The master's one loudness target (« Volume visé »), its free value, and the loudness « Auto » aims at for this project's style. */
+    target: com.pocketstudio.model.TargetChoice = com.pocketstudio.model.TargetChoice.OFF,
+    freeLufs: Float? = null,
     styleLufs: Float = com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS,
+    /** The project's style, shown (« Techno »), for « Auto (Techno) »; null: none. */
+    styleName: String? = null,
     /** Phase 36: a strip's sheet › « Courbes »: that strip first in « Automatiser un réglage ». */
     preferChannel: (Int) -> Unit = {},
+    /** Audit ultra round 3 (n° 12): the last export's files were made before the song changed. */
+    exportStale: Boolean = false,
+    /** Audit ultra round 3 (n° 12): the tracks a « Piste par piste » export gives no file, and why (« Synthé (vide) »). */
+    stemSkips: List<String> = emptyList(),
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val automationCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -198,13 +227,18 @@ fun MixerScreen(
         automation.lanes.groupingBy { it.target.ch.takeIf { _ -> it.target.kind != com.pocketstudio.model.AutoTarget.BUS_PARAM && it.target.kind != com.pocketstudio.model.AutoTarget.LIVE } ?: -1 }.eachCount()
     }
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
-    com.pocketstudio.ui.AdaptivePanes(modifier.testTag("mixer"), first = {
+    val lyingDown = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+    val faderHeight = consoleFaderHeight(maxHeight, lyingDown && maxWidth > maxHeight)
+    com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = {
         // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
         Console(
             strips, channels, meters, actions, lanesOn,
             openMoves = { ch -> overview(ch) },
             openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
+            faderHeight = faderHeight,
         )
+        songTracks?.invoke()
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
     }, second = {
         AutomationCard(
@@ -221,8 +255,9 @@ fun MixerScreen(
             MasterGain(masterDb, actions.setMasterDb)
             LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
             // With a target the limiter works on purpose: lowering the master would only raise its gain.
-            if (target == com.pocketstudio.model.LoudnessTarget.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
-            MasterLoudnessPanel(loudness, target, styleLufs, actions.setLoudnessTarget)
+            if (target == com.pocketstudio.model.TargetChoice.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
+            MasterLoudnessPanel(loudness, target, freeLufs, styleLufs, actions.chooseTarget, styleName)
+            MasterProPanel(actions.pro) { meters().getOrElse(LIMITER_METER) { 1f } }
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -231,8 +266,10 @@ fun MixerScreen(
             if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
         }
         androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(busesCard)) { BusesCard(buses, actions) }
-        ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
+        ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard),
+            target = TargetPick(target, styleLufs, freeLufs, styleName), stale = exportStale, stemSkips = stemSkips)
     })
+    }
 }
 
 /** Automation near the top of the mixer: how many curves move, a touch to them, a touch to « Ce qui joue ». */
@@ -242,12 +279,12 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null, tint = Neon.Amber)
             Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                Text(tr("Automation et effets"), style = MaterialTheme.typography.titleMedium)
+                Text(tr("Courbes et effets"), style = MaterialTheme.typography.titleMedium)
                 Text(
                     when (lanes) {
                         0 -> tr("Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume…")
                         1 -> tr("1 réglage bouge tout seul.")
-                        else -> tr("%d réglages bougent tout seuls.", lanes)
+                        else -> com.pocketstudio.model.i18n.trCount(lanes, "1 réglage bouge tout seul.", "%d réglages bougent tout seuls.")
                     },
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
@@ -257,9 +294,9 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
             androidx.compose.material3.Button(
                 onClick = show, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_open"),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.OnAccent),
-            ) { Text(if (lanes == 0) tr("Automatiser") else tr("Voir les courbes"), maxLines = 1) }
+            ) { com.pocketstudio.ui.FitText(if (lanes == 0) tr("Automatiser") else tr("Voir les courbes"), style = androidx.compose.material3.LocalTextStyle.current) }
             androidx.compose.material3.OutlinedButton(onClick = overview, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_overview")) {
-                Text(tr("Ce qui joue"), maxLines = 1)
+                com.pocketstudio.ui.FitText(tr("Ce qui joue"), style = androidx.compose.material3.LocalTextStyle.current)
             }
         }
     }
@@ -280,16 +317,16 @@ internal fun limiterShown(raw: Float): Pair<Int, Boolean> {
 /** What the limiter does: composed again only when its words change, not at each meter reading. */
 @Composable
 private fun LimiterLine(gain: () -> Float) {
-    val shown by androidx.compose.runtime.remember(gain) {
-        androidx.compose.runtime.derivedStateOf { limiterShown(gain()) }
-    }
-    val (tenths, hard) = shown
+    // Tour 5 « mixwake »: a new text 4 times a second at most, drawn in a layer of its own.
+    // The deepest hold of the period is shown (the smallest gain): a clip of one reading is not lost between samples.
+    val worst by com.pocketstudio.ui.rememberWorstEvery(NUMBER_EVERY_MS, worse = { a: Float, b: Float -> minOf(a, b) }) { limiterGainRead(gain()) }
+    val (tenths, hard) = limiterShown(worst)
     Text(
         if (tenths > 0) tr("La sortie est protégée : le son est retenu de %.1f dB.", tenths / 10f)
         else tr("Pas de saturation : tout va bien."),
         style = MaterialTheme.typography.bodySmall,
         color = if (hard) Neon.Amber else Neon.TextSecondary,
-        modifier = Modifier.testTag("limiter_line"),
+        modifier = Modifier.graphicsLayer().testTag("limiter_line"),
     )
 }
 
@@ -299,33 +336,16 @@ private fun LimiterLine(gain: () -> Float) {
  */
 @Composable
 private fun MasterMeter(peak: () -> Float) {
-    val off = Neon.SurfaceHigh
-    val low = Neon.Acid
-    val mid = Neon.Amber
-    val high = Neon.Red
-    androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(12.dp).testTag("master_meter")) {
-        val segments = 32
-        val gap = 2.dp.toPx()
-        val w = (size.width - gap * (segments - 1)) / segments
-        val lit = masterMeterFraction(peak()) * segments
-        val radius = androidx.compose.ui.geometry.CornerRadius(2.dp.toPx())
-        for (i in 0 until segments) {
-            val x = i * (w + gap)
-            val db = METER_MIN_DB + (METER_MAX_DB - METER_MIN_DB) * i / segments
-            val color = when {
-                db >= METER_RED_DB -> high
-                db >= METER_RED_DB - 9f -> mid
-                else -> low
-            }
-            val on = (lit - i).coerceIn(0f, 1f)
-            // The red zone is always shown dimly: where the level must not stay.
-            drawRoundRect(color = if (db >= METER_RED_DB) high.copy(alpha = 0.18f) else off,
-                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
-            if (on > 0f) drawRoundRect(color = color.copy(alpha = 0.35f + 0.65f * on),
-                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
-        }
-    }
+    // The app's meter (a gradient, fine pixels at its tip, its peak held), amber from −10 dBFS, red
+    // from −1 dBFS; the red part of its track always shown dimly.
+    LevelMeter(
+        { masterMeterFraction(peak()) }, Modifier.testTag("master_meter"), thickness = 12.dp, warnZone = true,
+        zones = com.pocketstudio.ui.MeterZones(amber = meterAt(METER_RED_DB - 9f), red = meterAt(METER_RED_DB)),
+    )
 }
+
+/** Where [db] stands on the master meter, 0..1. */
+private fun meterAt(db: Float): Float = (db - METER_MIN_DB) / (METER_MAX_DB - METER_MIN_DB)
 
 /** The master meter's scale: from silence (−40 dBFS) to +6 dBFS; red from the limiter's ceiling. */
 private const val METER_MIN_DB = -40f
@@ -427,6 +447,7 @@ private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
     }
     ProSlider(
         value = db,
+        label = tr("Volume général"), valueText = masterDbLabel(db),
         // Snaps to 0 dB near the middle, as the pan snaps to the centre.
         onValueChange = { v -> setDb(if (kotlin.math.abs(v) < 0.4f) 0f else (v * 2).roundToInt() / 2f) },
         valueRange = com.pocketstudio.model.Mixer.MASTER_MIN_DB..com.pocketstudio.model.Mixer.MASTER_MAX_DB,
@@ -436,21 +457,43 @@ private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
 
 /** The master's gain as the screen shows it ("+1.5 dB", "0.0 dB", "−6.0 dB"). */
 fun masterDbLabel(db: Float): String =
-    (if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−')
+    com.pocketstudio.model.i18n.ltrNumber((if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−'))
 
 @Composable
 private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
-    TextButton(onClick = toggle, modifier = modifier.fillMaxWidth()) {
-        Text(tr("Effets : %s", summary), Modifier.weight(1f), color = Neon.Cyan)
-        Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
-    }
+    // Chantier 2 (G4): the shared fold, the effects in place said on it.
+    com.pocketstudio.ui.Disclosure(tr("Effets"), listOf(com.pocketstudio.ui.Hidden(summary)), open, toggle, modifier)
+}
+
+/**
+ * What « Avancé » of the export card holds, said on it closed (chantier 2, G4): « Piste par piste · FLAC · sans limiteur ·
+ * MIDI · 48 kHz · 24 bits », a choice made (not the default one) marked to be drawn in orange.
+ */
+internal fun advancedSummary(export: ExportUi): List<com.pocketstudio.ui.Hidden> {
+    val stems = export.what == ExportWhat.Stems
+    return listOfNotNull(
+        com.pocketstudio.ui.Hidden(tr("Piste par piste"), stems),
+        com.pocketstudio.ui.Hidden("FLAC", export.format == ExportFormat.Flac),
+        if (stems) com.pocketstudio.ui.Hidden(tr("avec la sortie générale"), true).takeIf { export.stemsWithMaster }
+        else com.pocketstudio.ui.Hidden(tr("sans limiteur"), true).takeIf { export.noLimiter },
+        com.pocketstudio.ui.Hidden(tr("MIDI")),
+        com.pocketstudio.ui.Hidden(com.pocketstudio.app.export.finalFileSummary(export), com.pocketstudio.app.export.finalFileChanged(export)),
+    )
 }
 
 @Composable
-internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier) {
+internal fun ExportCard(
+    export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier,
+    /** Audit ultra round 3 (n° 10): « Volume visé » chosen where one exports (the master's own target); null: not shown. */
+    target: TargetPick? = null,
+    /** Audit ultra round 3 (n° 12, seat F d 48): the files shown were made before the song changed: not offered to share. */
+    stale: Boolean = false,
+    /** Audit ultra round 3 (n° 12, seat F d 54): the tracks « Piste par piste » gives no file, and why. */
+    stemSkips: List<String> = emptyList(),
+) {
     val chipColors = pillColors(Neon.Acid)
     NeonCard(modifier, accent = Neon.Acid) {
-        SectionLabel(tr("Exporter"), color = Neon.Acid)
+        SectionLabel(tr("Autres fichiers"), color = Neon.Acid)
         // The plain choices first: what, in which format, how it ends. The rest under « Avancé ».
         Text(tr("Quoi"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -461,10 +504,10 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 )
             }
         }
-        val bars = if (export.bars > 1) tr("%d mesures", export.bars) else tr("%d mesure", export.bars)
+        val bars = com.pocketstudio.model.i18n.trCount(export.bars, "%d mesure", "%d mesures")
         Text(
             when (export.what) {
-                ExportWhat.Loop -> tr("La partie en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
+                ExportWhat.Loop -> tr("La partie en cours, jouée sur %s.", bars)
                 ExportWhat.Song -> if (hasSong) tr("Toutes les parties de Structure, dans l'ordre.") else tr("Le morceau est vide : ajoute des parties dans Structure.")
                 ExportWhat.Stems ->
                     if (hasSong) tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur tout le morceau.")
@@ -472,6 +515,29 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             },
             style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
         )
+        if (export.what == ExportWhat.Stems && stemSkips.isNotEmpty()) {
+            Text(tr("Sans fichier : %s.", stemSkips.joinToString(", ")), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                modifier = Modifier.testTag("export_stem_skips"))
+        }
+        // Chantier 1 (G1, recette tel-06: « le repli Avancé cache un réglage dont dépend l'export »): the loop's length right
+        // under the choice that needs it, never under « Avancé ». The same setting as « Prêt à partager ? »'s.
+        if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
+            Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                // Up to where the voice or the remix's song ends, when that is longer than the scene.
+                val toTheEnd = export.audioBars.coerceAtMost(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > export.sceneBars }
+                (EXPORT_BARS + export.sceneBars + export.bars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
+                    FilterChip(
+                        selected = export.bars == bars,
+                        onClick = { actions.setExportBars(bars) },
+                        enabled = !export.running,
+                        label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
+                        colors = chipColors,
+                        modifier = Modifier.testTag("export_bars_$bars"),
+                    )
+                }
+            }
+        }
         WithHelp(Glossary.FORMATS) { Text(tr("Format"), style = MaterialTheme.typography.bodyMedium) }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
@@ -489,24 +555,24 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
+        // Audit ultra round 3 (n° 10, seats A d 4, F b 26): the target chosen here too, not five swipes away in the master's card.
+        if (export.what != ExportWhat.Stems) target?.let { TargetPicker(it, { c -> actions.chooseTarget(c, null) }, "export_target", enabled = !export.running) }
         if (export.what != ExportWhat.Stems) {
             Text(tr("Fondu de fin"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 ExportFade.entries.forEach { fade ->
                     FilterChip(
                         selected = export.fade == fade, onClick = { actions.setExportFade(fade) }, enabled = !export.running,
-                        label = { Text(if (fade == ExportFade.None) fade.label else "${fade.label} (${fade.seconds} s)") },
+                        label = { Text(if (fade == ExportFade.None) fade.label else "${fade.label} (${tr("%d s", fade.seconds)})") },
                         colors = chipColors, modifier = Modifier.testTag("export_fade_${fade.name}"),
                     )
                 }
             }
         }
-        // Advanced: separate tracks, FLAC, the loop's length, the notes as MIDI. Open by itself when one is in use.
+        // Advanced: separate tracks, FLAC, the notes as MIDI. Open by itself when one is in use.
         var advanced by rememberSaveable { mutableStateOf(export.what == ExportWhat.Stems || export.format == ExportFormat.Flac) }
-        TextButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth().testTag("export_advanced")) {
-            Text(tr("Avancé"), Modifier.weight(1f), color = Neon.Cyan)
-            Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
-        }
+        // Chantier 2 (G4, recette tel-06): the shared fold, closed it says what it holds (a changed value in orange).
+        com.pocketstudio.ui.Disclosure(tr("Avancé"), advancedSummary(export), advanced, { advanced = !advanced }, Modifier.testTag("export_advanced"))
         if (advanced) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(
@@ -521,17 +587,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     enabled = !export.running, label = { Text(tr("FLAC (sans perte, léger)")) }, colors = chipColors,
                     modifier = Modifier.testTag("export_format_Flac"),
                 )
-                // For a CD or a distributor that asks for it: 44.1 kHz, 16 bits (dithered).
-                FilterChip(
-                    selected = export.cdRate, onClick = { actions.setExportCdRate(!export.cdRate) }, enabled = !export.running,
-                    label = { Text(tr("44,1 kHz")) }, colors = chipColors, modifier = Modifier.testTag("export_cd_rate"),
-                )
-                if (export.format != ExportFormat.M4a && !(export.limiterOff && export.format == ExportFormat.Wav)) {
-                    FilterChip(
-                        selected = export.bits16, onClick = { actions.setExportBits16(!export.bits16) }, enabled = !export.running,
-                        label = { Text(tr("16 bits")) }, colors = chipColors, modifier = Modifier.testTag("export_bits16"),
-                    )
-                }
+                // Lot E: the rate and the bits are in « Fichier final » below (44,1, 48, 96 kHz; 16, 24, 32 bits).
                 // For a mixing or mastering engineer: no limiter on the mix, stems that add back up to it.
                 if (export.what == ExportWhat.Stems) {
                     FilterChip(
@@ -557,32 +613,26 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 else -> null
             }
             pro?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
-            if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
-                Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
-                        FilterChip(
-                            selected = export.bars == bars,
-                            onClick = { actions.setExportBars(bars) },
-                            enabled = !export.running,
-                            label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
-                            colors = chipColors,
-                        )
-                    }
-                }
-            }
+            // Lot E: the file's final form (rate, bits, dither, range, start and end, stems, tags, report).
+            com.pocketstudio.app.export.ExportOptionsPanel(export, hasSong, actions.pro)
             if (!export.running) {
-                TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
-                    Text(if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"))
-                }
+                // Chantier 2 (G3): a line that makes the file and opens Android's share menu: the shared link row.
+                com.pocketstudio.ui.LinkRow(
+                    if (hasSong) tr("Créer le fichier MIDI des notes (tout le morceau)") else tr("Créer le fichier MIDI des notes"),
+                    onClick = actions.exportMidi, modifier = Modifier.testTag("export_midi"), icon = Icons.Filled.Piano,
+                )
             }
         }
         when {
             export.running -> {
-                export.stage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
+                // Audit ultra round 2 (n° 10, seat A d): a long export says what it does and how far it is, in
+                // words and for TalkBack (a thin bar alone, for one or two minutes, looked stuck).
+                val line = exportProgressText(export)
+                Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("export_progress_text"))
                 LinearProgressIndicator(
                     progress = { export.progress },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).testTag("export_progress")
+                        .semantics { contentDescription = line },
                     color = Neon.Acid,
                     trackColor = Neon.SurfaceHigh,
                 )
@@ -597,30 +647,64 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 ) {
                     Text(
                         when (export.what) {
-                            ExportWhat.Loop -> if (export.bars > 1) tr("Exporter %d mesures", export.bars) else tr("Exporter %d mesure", export.bars)
-                            ExportWhat.Song -> tr("Exporter le morceau")
-                            ExportWhat.Stems -> tr("Exporter les pistes")
+                            ExportWhat.Loop -> com.pocketstudio.model.i18n.trCount(export.bars, "Créer le fichier de %d mesure", "Créer le fichier de %d mesures")
+                            ExportWhat.Song -> tr("Créer le fichier du morceau")
+                            ExportWhat.Stems -> tr("Créer un fichier par piste")
                         },
                     )
                 }
             }
         }
-        if (export.files.isNotEmpty()) {
-            Text(
-                export.files.joinToString(", ") { it.name }.let { names ->
-                    if (export.savedInMusic) tr("Sauvegardé dans Musique › Pocket Studio : %s", names) else tr("Prêt : %s", names)
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary,
-            )
-            ExportReportLine(export)
-            OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
-                Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
-
+        // Audit ultra round 1 (n° 16, seats A c, E d, F c): the file and its report came under the button, off the
+        // screen (« Exporter » seemed to do nothing): once made, they are brought into view.
+        val resultInView = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        androidx.compose.runtime.LaunchedEffect(export.files) {
+            if (export.files.isNotEmpty()) { kotlinx.coroutines.delay(60); resultInView.bringIntoView() }
+        }
+        if (export.files.isNotEmpty()) Column(Modifier.bringIntoViewRequester(resultInView).testTag("export_result"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Audit ultra round 2 (n° 10): where the file is, in every report (a WAV said « Prêt : » alone).
+            exportSavedLines(export).forEach {
+                Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("export_saved"))
+            }
+            // Audit ultra round 3 (n° 12, seat F d 48): made before the song changed, the file is never offered as the song.
+            if (stale) {
+                Text(tr("Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version."),
+                    style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("export_stale"))
+            } else {
+                ExportReportLine(export)
+                OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
+                    Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
+                }
             }
         }
         export.error?.let { Text(it, color = Neon.RedText, style = MaterialTheme.typography.bodySmall) }
+        // Audit ultra round 3 (n° 11, seat A d 45): every file made so far, to find and send again.
+        if (!export.running) com.pocketstudio.app.export.MyExportsButton("export_my_exports")
     }
+}
+
+/** « Fabrication du son · 42 % », « Compression M4A · 80 % »: what a running export does, and how far. */
+internal fun exportProgressText(export: ExportUi): String {
+    val stage = export.stage ?: tr("Fabrication du son")
+    // A step that counts its own (« Conversion FLAC 40 % ») is not given a second percentage.
+    if (stage.any { it == '%' }) return stage
+    return tr("%1\$s · %2\$s", stage, com.pocketstudio.model.i18n.percent((export.progress.coerceIn(0f, 1f) * 100).roundToInt()))
+}
+
+/**
+ * Where the export's files are: the sound in Musique › BenStudio (or, when the copy failed, how to keep it),
+ * the text report in Documents › BenStudio (audit ultra round 2, n° 10).
+ */
+internal fun exportSavedLines(export: ExportUi): List<String> {
+    val (reports, sounds) = export.files.partition { it.extension == "txt" }
+    val names = sounds.joinToString(", ") { it.name }
+    return listOfNotNull(
+        names.takeIf { it.isNotEmpty() }?.let {
+            if (export.savedInMusic) tr("Sauvegardé dans Musique › BenStudio : %s", it)
+            else tr("Pas copié dans Musique › BenStudio : touche « Partager » pour l'envoyer ou l'enregistrer (%s).", it)
+        },
+        reports.takeIf { it.isNotEmpty() && export.reportInDocuments }?.let { r -> tr("Rapport dans Documents › BenStudio : %s", r.joinToString(", ") { it.name }) },
+    )
 }
 
 /** How many times a mixer strip was composed (tests: a meter reading must not compose it again). */

@@ -1,0 +1,7 @@
+Écran 2 (588x1278)
+texte « Simple ou Pro ? » @ 330,48
+bouton « Retour » @ 54,48
+texte « Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut. » @ 294,259
+bouton « Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. Avec le tuto Facile » @ 294,686
+bouton « Pro Pour aller loin : tous les outils, structure, sons, mix et live. Avec le tuto Pro » @ 294,1117
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

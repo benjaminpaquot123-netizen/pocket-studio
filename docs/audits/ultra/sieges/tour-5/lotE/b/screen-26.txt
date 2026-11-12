@@ -1,0 +1,34 @@
+Écran 26 (588x1278)
+texte (icône) @ 294,36
+texte « Part 9 · B · Groove » @ 165,96
+bouton « ▭▭▭ » @ 516,108
+texte « ▭▭▭ » @ 64,129
+bouton « ▭▭▭ » @ 156,201
+bouton « ▭▭▭ » @ 432,201
+bouton « ▭▭▭ » @ 156,300
+bouton « ▭▭▭ » @ 432,300
+bouton « ▭▭▭ » @ 156,399
+bouton « ▭▭▭ » @ 432,399
+bouton « ▭▭▭ » @ 156,498
+bouton « ▭▭▭ » @ 432,498
+bouton « ▭▭▭ » @ 156,597
+texte « ▭▭▭ » @ 72,669
+case « ▭▭▭ » @ 87,735
+case « ▭▭▭ » @ 234,735
+case « ▭▭▭ » [sélectionné] @ 400,735
+case « ▭▭▭ » @ 96,816
+texte « ▭▭▭ » @ 59,882
+champ « ▭▭▭ » contenu « ▭▭▭ » @ 268,961
+bouton (icône) @ 315,968
+bouton (icône) @ 60,961
+bouton (icône) @ 141,961
+bouton « ▭▭▭ » [désactivé] @ 403,961
+texte « ▭▭▭ » @ 45,1040
+bouton « ▭▭▭ » @ 100,1106
+bouton « ▭▭▭ » @ 295,1106
+bouton « ▭▭▭ » @ 103,1178
+bouton « ▭▭▭ » @ 282,1178
+bouton « ▭▭▭ » @ 467,1178
+bouton « ▭▭▭ » @ 115,1246
+bouton « ▭▭▭ » @ 288,1246
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

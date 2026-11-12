@@ -1,0 +1,57 @@
+Écran 23 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+texte « Tu as 4 mesures pour jouer ta mélodie, puis elle recommence. » @ 237,180
+bouton « Compris » @ 519,180
+onglet « Acid 303 Ligne de basse » @ 112,258
+touchable « Synthé Synthé » @ 280,258
+touchable « Ma mélodie Mélodie » (nom « Options de Ma mélodie ») @ 449,258
+bouton « Changer le son de Ma mélodie » @ 571,258
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : A » @ 82,336
+case « Clavier » @ 78,426
+case « Notes » [sélectionné] @ 203,426
+bouton «  Vider » (nom « Vider cette piste dans la partie A ») @ 508,426
+bouton « Régler le son de la piste ↓ » @ 170,513
+bouton «  Enregistrer ma mélodie » @ 244,606
+bouton «  1 » (nom « Décompte : 1 mesure ») @ 526,606
+case « ✏ Dessiner » [sélectionné] @ 126,723
+case « ⬚ Sélectionner » @ 319,723
+case « Tout voir » @ 487,723
+  → la suite sur le côté (glisse pour la voir)
+texte « Boucle » @ 73,804
+bouton « − » @ 157,804
+texte « 4 mes. » @ 236,804
+bouton « + » @ 315,804
+texte «   Note » @ 395,804
+case « 1/16 » @ 475,804
+case « 1/8 » [sélectionné] @ 537,804
+  → la suite sur le côté (glisse pour la voir)
+case « Accords » @ 109,885
+bouton « En rythme 50 % » @ 280,885
+bouton « 100 % » @ 433,885
+case « Basse en fantôme » [sélectionné] @ 516,885
+  → la suite sur le côté (glisse pour la voir)
+texte « mes. » @ 69,939
+touchable « 1 » @ 321,939
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 25 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » [sélectionné] @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

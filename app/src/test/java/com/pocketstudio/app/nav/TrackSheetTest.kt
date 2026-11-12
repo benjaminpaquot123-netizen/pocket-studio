@@ -181,12 +181,20 @@ class TrackSheetTest {
         val part = h.vm.project.value.song.indexOfFirst { it.plays(key) }
         // (Scrolled to: a box half out of its line counts as shown, its middle is not.)
         compose.onNodeWithTag("track_sheet_part_$part").performScrollTo()
+        // Fix 2, n° 7: a checkbox that says whether it is ticked.
+        fun ticked() = compose.onNodeWithTag("track_sheet_part_$part").fetchSemanticsNode().config
+            .getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.ToggleableState) { null }
+        val before = ticked()
+        assertTrue(before != null)
         compose.onNodeWithTag("track_sheet_part_$part").performClick()
         compose.waitForIdle()
         assertFalse(h.vm.project.value.song[part].plays(key))
+        // Audit stage 2: the box shows the change at once (it did not wait for the Guide's analysis).
+        assertEquals(androidx.compose.ui.state.ToggleableState.Off, ticked())
         compose.onNodeWithTag("track_sheet_part_$part").performScrollTo().performClick()
         compose.waitForIdle()
         assertTrue(h.vm.project.value.song[part].plays(key))
+        assertEquals(androidx.compose.ui.state.ToggleableState.On, ticked())
         // « Copier cette chaîne sur… » › the lead: the bass's effects and sends on the lead, one undo step.
         tap("track_sheet_copy")
         tap("track_sheet_copy_inst:$lead")

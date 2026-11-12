@@ -35,7 +35,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.node.currentValueOf
+import androidx.compose.ui.relocation.bringIntoView
+import kotlinx.coroutines.launch
 import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +67,35 @@ class SpotRegistry {
 
     var watching by mutableStateOf(false)
 
+    /**
+     * n° 19: the top (window pixels) of what covers the bottom of the screen during a tuto (its
+     * panel); [Float.MAX_VALUE]: nothing. A control revealed is scrolled above it, never under it.
+     */
+    var coverTop: Float = Float.MAX_VALUE
+
+    /** The window's height in pixels (0: not known yet). */
+    var windowHeight: Float = 0f
+
+    /** The room a revealed control needs under it: what the cover hides of the window, and a margin. */
+    internal fun roomBelow(margin: Float): Float =
+        if (windowHeight <= 0f || coverTop >= windowHeight) margin else windowHeight - coverTop + margin
+
+    /**
+     * n° 19–20: why the first of [ids] that is there cannot be seen (null: it can): not on the screen
+     * (in a folded card, not composed), outside the window, or under the tuto's panel.
+     */
+    fun hidden(ids: List<String>): String? {
+        val rect = ids.firstNotNullOfOrNull { find(it) } ?: return "absent (carte repliée ou pas à l'écran)"
+        if (windowHeight > 0f && (rect.top < 0f || rect.bottom > windowHeight + 1f)) return "hors écran ($rect)"
+        // n° 34: its top scrolled under what stays fixed over the page (« Partie : A »), when it would fit whole between that
+        // and the panel (a mixer's strip or a whole card taller than the room shows a part of itself, as it must).
+        val node = ids.firstNotNullOfOrNull { id -> spots[id]?.takeIf { it.rect.width > 1f && it.rect.height > 1f }?.owner as? SpotNode }
+        val room = minOf(coverTop, if (windowHeight > 0f) windowHeight else Float.MAX_VALUE) - rect.top
+        if (node != null && rect.top > node.windowTop + 2f && node.fullHeight + node.fadePx <= room) return "coupé en haut, sous l'en-tête ($rect, haut à ${node.windowTop})"
+        if (rect.center.y > coverTop) return "sous le panneau du tuto ($rect, panneau à $coverTop)"
+        return null
+    }
+
     internal fun put(id: String, owner: Any, rect: Rect, label: String?) {
         val old = spots[id]
         if (old != null && old.owner === owner && old.rect == rect && old.label == label) return
@@ -76,6 +108,20 @@ class SpotRegistry {
             spots.remove(id)
             if (watching) version.intValue++
         }
+    }
+
+    /**
+     * Audit final: control [id] (a prefix with « * ») scrolled into view when it is on the screen's page but
+     * out of sight; false when no such control is there (yet).
+     */
+    fun reveal(id: String, withHead: Boolean = true): Boolean {
+        val match = if (id.endsWith("*")) spots.entries.firstOrNull { it.key.startsWith(id.dropLast(1)) }?.value else spots[id]
+        val node = match?.owner as? SpotNode ?: return false
+        // What it names to keep in sight with it, above it (the drum grid's bar pages and tuto line over its cells).
+        val above = if (!withHead) 0f else node.revealFrom.mapNotNull { (spots[it]?.owner as? SpotNode)?.windowTop }.minOrNull()
+            ?.let { node.windowTop - it }?.takeIf { it > 0f } ?: 0f
+        node.reveal(roomBelow(REVEAL_MARGIN_PX), above)
+        return true
     }
 
     /** Where control [id] is in the window (null: not on the screen). A [id] ending with « * » matches a prefix. */
@@ -98,30 +144,80 @@ val LocalSpots = staticCompositionLocalOf<SpotRegistry?> { null }
  * This control is [id] for the missions, and [label] (a few words, already translated) in the
  * « ? » labels of the screen. Does nothing outside the app's registry (tests, previews).
  */
-fun Modifier.spot(id: String, label: String? = null): Modifier = this then SpotElement(id, label)
+fun Modifier.spot(id: String, label: String? = null, revealFrom: List<String> = emptyList()): Modifier = this then SpotElement(id, label, revealFrom)
 
 /** [spot] as a modifier node: it reads the registry where it is attached and leaves it when detached. */
-private data class SpotElement(val id: String, val label: String?) : androidx.compose.ui.node.ModifierNodeElement<SpotNode>() {
-    override fun create() = SpotNode(id, label)
+private data class SpotElement(val id: String, val label: String?, val revealFrom: List<String>) : androidx.compose.ui.node.ModifierNodeElement<SpotNode>() {
+    override fun create() = SpotNode(id, label, revealFrom)
     override fun update(node: SpotNode) {
         if (node.id != id) node.leave()
         node.id = id
         node.label = label
+        node.revealFrom = revealFrom
     }
 }
 
-private class SpotNode(var id: String, var label: String?) : Modifier.Node(),
+/**
+ * [revealFrom]: the spots above this one that a reveal keeps in sight with it (from the highest of
+ * those there), when the screen has room for both; else from them down, as far as it goes.
+ */
+internal class SpotNode(var id: String, var label: String?, var revealFrom: List<String> = emptyList()) : Modifier.Node(),
     androidx.compose.ui.node.GlobalPositionAwareModifierNode,
     androidx.compose.ui.node.CompositionLocalConsumerModifierNode {
     private var registry: SpotRegistry? = null
+    private var width = 0f
+    private var height = 0f
+
+    /** Its top in the window, not cut by what scrolls around it (its rect is). */
+    internal var windowTop = 0f
+
+    /** Its whole height (its rect shows only what is not scrolled away). */
+    internal val fullHeight: Float get() = height
+
+    /** [REVEAL_TOP] in pixels: what a reveal keeps free over it. */
+    internal val fadePx: Float get() = if (isAttached) with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() } else 0f
 
     override fun onGloballyPositioned(coordinates: androidx.compose.ui.layout.LayoutCoordinates) {
+        width = coordinates.size.width.toFloat()
+        height = coordinates.size.height.toFloat()
+        windowTop = coordinates.positionInWindow().y
         val r = registry ?: currentValueOf(LocalSpots)?.also { registry = it } ?: return
         r.put(id, this, coordinates.boundsInWindow(), label)
     }
 
     fun leave() {
         registry?.remove(id, this)
+    }
+
+    /**
+     * Scrolled into view by whatever scrolls around it, with [below] pixels free under it (above the
+     * tuto's panel) and [above] pixels over it in sight too. Too tall for the screen, its top goes
+     * first (what is above it, then itself): A1, the tuto's « Mesure 2 · 3 cases → » went off the top.
+     */
+    fun reveal(below: Float = 0f, above: Float = 0f) {
+        if (isAttached) coroutineScope.launch {
+            runCatching {
+                if (width > 0f && height > 0f) {
+                    // Audit ultra round 1, n° 34 (seat A b, 200 %): the room asked for (what is above, the tuto's panel
+                    // below) taller than the page left it where it was, its first row half under « Partie : A » and in the
+                    // page's fading top: then the control itself, whole, under the fade (its top first when it is taller).
+                    val fade = with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() }
+                    bringIntoView { Rect(0f, -above - fade, width, height + below) }
+                    bringIntoView { Rect(0f, -fade, width, height) }
+                    // Tour 5, chantier 4 (TutoBigFontTest): with the phone's font very big there is no room for both; what is
+                    // named above it (the tuto's line, « Rumble · Encore 4 cases ») comes back in sight with the control's
+                    // first row: the line says what to do there. A no-op whenever both fit.
+                    if (above > 0f && currentValueOf(androidx.compose.ui.platform.LocalDensity).fontScale >= BIG_FONT) {
+                        bringIntoView { Rect(0f, -above, width, minOf(height, 1f)) }
+                    }
+                    // Round 5 (lot « bloquants »): coming back up from a control far below (the tutorials' Swing, under the
+                    // drum grid), the grid stayed with its top under « Partie : A »: its top line brought in last.
+                    androidx.compose.runtime.withFrameNanos { }
+                    val shown = registry?.find(id)
+                    if (shown != null && shown.top > windowTop + 2f) bringIntoView { Rect(0f, -fade, width, minOf(height, 1f)) }
+                } else bringIntoView()
+            }
+        }
     }
 
     override fun onDetach() {
@@ -228,7 +324,13 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit, reportBug: (() -
             val others = allSpots.filter { (id, _) -> id !in ownIds }.map { it.second }
             val gap = 2.dp.toPx()
             fun onScreen(c: Rect) = c.left >= 0f && c.top >= 0f && c.right <= width && c.bottom <= height
-            val positions = placeables.mapIndexed { i, pl ->
+            // Audit ultra round 3, n° 34 (seats D d, E c, D c: « Volumes », « Projets, aide » off at the top, Mix without a
+            // label): the bar's tabs have the fewest places (nothing below them), so they are labelled first; the
+            // controls over them then find their places around what is left.
+            val barFirst = barTop?.let { top -> controls.indices.sortedBy { j -> if (controls[j].top >= top - 1f) 0 else 1 } } ?: controls.indices.toList()
+            val positions = arrayOfNulls<Pair<Int, Int>>(placeables.size)
+            for (i in barFirst) positions[i] = run {
+                val pl = placeables[i]
                 val r = controls[i]
                 val w = pl.width.toFloat()
                 val h = pl.height.toFloat()
@@ -282,6 +384,8 @@ fun SpotlightOverlay(registry: SpotRegistry, targets: List<String>, card: @Compo
         onDispose { registry.watching = false }
     }
     var origin by remember { mutableStateOf(Offset.Zero) }
+    // Audit final: the control pointed at may be under the fold (« Le morceau » under the tracks): scrolled to first.
+    androidx.compose.runtime.LaunchedEffect(targets) { revealAndCheck(registry, targets) }
     registry.version.intValue
     val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
     val amber = Neon.Amber
@@ -300,6 +404,56 @@ fun SpotlightOverlay(registry: SpotRegistry, targets: List<String>, card: @Compo
     }
 }
 
+/**
+ * « Tuto de A à Z »'s « Je le fais »: the first of [targets] on the screen ringed a moment
+ * ([com.pocketstudio.app.tuto.TutoSpotRing]): no dimming, no card, the screen's touches go through.
+ */
+@Composable
+fun SpotRingOverlay(registry: SpotRegistry, targets: List<String>) {
+    DisposableEffect(registry) {
+        registry.watching = true
+        onDispose { registry.watching = false }
+    }
+    var origin by remember { mutableStateOf(Offset.Zero) }
+    androidx.compose.runtime.LaunchedEffect(targets) { revealAndCheck(registry, targets) }
+    registry.version.intValue
+    val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
+    Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow().topLeft }) {
+        com.pocketstudio.app.tuto.TutoSpotRing(target)
+    }
+}
+
+/** The screen just opened may take a few frames to put its controls: tried this many times, this far apart. */
+private const val REVEAL_TRIES = 10
+
+/** Room kept under a revealed control besides the cover (px): a finger's worth. */
+private const val REVEAL_MARGIN_PX = 48f
+
+/** Kept free over a control revealed: the fading top of the page that scrolls ([com.pocketstudio.ui.fadingTopEdge]) and a little air. */
+private val REVEAL_TOP = 32.dp
+
+/** From this font size of the phone, a revealed control's head (the tuto's line) comes before its foot. */
+private const val BIG_FONT = 1.5f
+
+/** Tests (n° 19–20): each target a tuto step, the Guide or « Montre-moi » showed, and why it could not be seen (null: it could). */
+object SpotChecks {
+    var log: MutableList<Pair<List<String>, String?>>? = null
+
+    /**
+     * Records whether [ids] can be seen once their screen settled (tests only: nothing kept otherwise).
+     * [found]: false when the place never came on the screen (a folded card); a place gone since
+     * (the screen moved on) is not judged.
+     */
+    fun record(registry: SpotRegistry, ids: List<String>, found: Boolean = true) {
+        val log = log ?: return
+        if (ids.isEmpty()) return
+        if (!found) { log.add(ids to "absent (carte repliée ou pas à l'écran)"); return }
+        if (ids.none { registry.find(it) != null }) return
+        log.add(ids to registry.hidden(ids))
+    }
+}
+private const val REVEAL_WAIT_MS = 100L
+
 @Composable
 private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Rect?, content: @Composable androidx.compose.foundation.layout.BoxScope.(Boolean) -> Unit) {
     var height by remember { mutableStateOf(0f) }
@@ -309,3 +463,41 @@ private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Re
     }
 }
 
+
+/**
+ * The first of [targets] there scrolled into view above the tuto's panel (its screen may take a few
+ * frames to put it), then, once the scroll settled, recorded for the tests ([SpotChecks]).
+ */
+suspend fun revealAndCheck(registry: SpotRegistry, targets: List<String>) {
+    var found = false
+    for (i in 0 until REVEAL_TRIES) {
+        if (targets.any { registry.reveal(it) }) { found = true; break }
+        kotlinx.coroutines.delay(REVEAL_WAIT_MS)
+    }
+    kotlinx.coroutines.delay(REVEAL_SETTLE_MS)
+    // A screen too short for what is over the target too (the cells' line, the tuto's panel unfolded): the target alone, it comes first.
+    if (found && registry.hidden(targets) != null && targets.any { registry.reveal(it, withHead = false) }) kotlinx.coroutines.delay(REVEAL_SETTLE_MS)
+    SpotChecks.record(registry, targets, found)
+}
+
+/** A scroll into view takes this long at most. */
+private const val REVEAL_SETTLE_MS = 400L
+
+/**
+ * n° 20: « Montre-moi »'s finger over the first of [targets] on the screen ([com.pocketstudio.app.tuto.TutoFinger]),
+ * one touch per [gesture]; each gesture's place is checked for the tests ([SpotChecks]): seen, not under the panel.
+ */
+@Composable
+fun SpotFingerOverlay(registry: SpotRegistry, targets: List<String>, gesture: Int, cell: Int?, perBar: Int, drag: com.pocketstudio.app.tuto.TutoDrag? = null) {
+    DisposableEffect(registry) {
+        registry.watching = true
+        onDispose { registry.watching = false }
+    }
+    var origin by remember { mutableStateOf(Offset.Zero) }
+    androidx.compose.runtime.LaunchedEffect(gesture, targets) { if (gesture > 0) SpotChecks.record(registry, targets) }
+    registry.version.intValue
+    val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
+    Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow().topLeft }) {
+        com.pocketstudio.app.tuto.TutoFinger(target, gesture, cell, perBar, drag = drag)
+    }
+}

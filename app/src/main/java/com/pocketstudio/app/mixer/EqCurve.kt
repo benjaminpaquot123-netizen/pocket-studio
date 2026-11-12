@@ -77,7 +77,7 @@ internal object EqMath {
 @Composable
 internal fun EqCurve(insert: Insert) {
     val line = Neon.Cyan
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     Canvas(Modifier.fillMaxWidth().height(96.dp).testTag("eq_curve")) {
         val range = 18.0
         fun y(db: Double) = (size.height / 2 - db.coerceIn(-range, range) / range * size.height / 2).toFloat()

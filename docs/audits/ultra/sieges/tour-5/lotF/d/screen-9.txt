@@ -1,0 +1,9 @@
+Écran 9 (616x1371)
+bouton « Créer mon premier morceau (guidé) Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » @ 308,121
+bouton « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 308,322
+bouton « Écouter une démo Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » @ 308,502
+bouton « Partir de zéro Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » @ 308,682
+bouton « Extraire la voix d'une chanson Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » @ 308,898
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » @ 308,1121
+bouton « Enregistrer ma voix ou ma guitare Le micro enregistre par-dessus ta musique, pile en rythme. » @ 308,1301
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

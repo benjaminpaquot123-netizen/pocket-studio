@@ -1,0 +1,2 @@
+# StrictMode in the tests (MainThreadIo): the main-thread disk and network uses accepted, one per line.
+# site (regex on « Class.method », the nearest app frame)	kind (disk, network)	reason

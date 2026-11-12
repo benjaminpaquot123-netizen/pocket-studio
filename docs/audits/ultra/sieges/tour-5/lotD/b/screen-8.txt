@@ -1,0 +1,5 @@
+Écran 8 (1035x1243)
+touchable « ●  REC » (nom « 录制屏幕和声音 ») @ 807,1213
+touchable « ✎  记一笔 » (nom « 写笔记 ») @ 903,1213
+touchable « ⋯ » (nom « 反馈模式 ») @ 987,1213
+texte « 反馈模式 » @ 385,1213

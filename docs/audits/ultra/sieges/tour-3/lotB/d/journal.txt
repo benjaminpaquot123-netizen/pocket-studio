@@ -1,0 +1,459 @@
+#0 SIEGE lang=de device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE be98258c08 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > glisse 450 1300 450 500
+#1 DOIGT launch_voice « Meine Stimme oder Gitarre aufnehmen »
+#2 ROUTE launch | MODE pro | EMPREINTE 8b3906318f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 450 1240
+#2 DOIGT launch_learn « Ich lerne »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE feb3598ffd | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Mit dem leichten Tutorial » 2.48:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Mit dem Pro-Tutorial » 3.00:1 (needs 4.5:1, 14 sp)
+#3 > touche 670 315
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE 4575b93c1d | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Detroit Techno » 2.62:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « Acid Techno » 2.28:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « Hard Techno » 2.59:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « Industrial Techno » 2.55:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « Retro-Techno » 1.92:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « 185 BPM » 2.52:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Trance » 2.86:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « House » 1.68:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « 126 BPM » 3.26:1 (needs 4.5:1, 13 sp)
+#4 > touche 450 517
+#4 DOIGT tuto_style_acid_techno « Acid Techno »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE 2b99d5ea42 | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT TARGET « ▸ Warum? » 572 x 20 dp (touch 572 x 48)
+#5 > touche 450 1119
+#5 DOIGT tuto_kit_download « Kit Acid Techno laden (4 MB) »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 8761ab004f | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1107
+#6 DOIGT tuto_kit_download « Kit Acid Techno laden (4 MB) »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE c7a7402102 | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#7 SON Son : rien ne joue.
+#7 > attends 10
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 2b99d5ea42 | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 450 1119
+#8 DOIGT tuto_listen «  Beispiel anhören »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE b1d11112d9 | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 7 s).
+#9 > touche 450 1056
+#9 DOIGT tuto_why « ▸ Warum? »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 1e1f29400a | project=p-db60982e tuto=acid_techno/Pro active=true step=ref done=1 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 5 s).
+#10 > touche 450 1119
+#10 DOIGT tuto_next_big « Nächster Schritt   »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 53095bc2eb | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 73 114
+#11 DOIGT top_tempo « Tempo: 120 BPM »
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 3dee1bfb97 | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (73 x 28 dp)
+#12 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (7 x 15 dp)
+#12 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (69 x 20 dp)
+#12 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#12 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (39 x 24 dp)
+#12 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (21 x 19 dp)
+#12 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (21 x 19 dp)
+#12 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#12 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#12 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#12 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (14 x 24 dp)
+#12 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (21 x 24 dp)
+#12 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#12 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (33 x 27 dp)
+#12 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (109 x 24 dp)
+#12 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (277 x 18 dp)
+#12 LAYOUT CONTRAST « ? » 1.60:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Schließen » 1.60:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 4 » 1.90:1 (needs 3.0:1, 22 sp)
+#12 LAYOUT CONTRAST « 6 » 1.90:1 (needs 3.0:1, 22 sp)
+#12 LAYOUT CONTRAST « Tippe hier auf jeden Schlag: Das Tempo folgt. » 2.04:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT LABEL « #1710 » long press without text nor description
+#12 > touche 163 1083
+#12 DOIGT tempo_key_1 « 1 »
+#13 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 20b4d95b29 | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
+#13 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (144 x 20 dp)
+#13 > touche 737 1083
+#13 DOIGT tempo_key_3 « 3 »
+#14 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 4483e34b2b | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 13 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#14 > touche 450 1257
+#14 DOIGT tempo_key_8 « 8 »
+#15 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 1e92796607 | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 138 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#15 > touche 737 1344
+#15 DOIGT tempo_key_ok « OK »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 6cfc9675cf | project=p-db60982e tuto=acid_techno/Pro active=true step=tempo done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1119
+#16 DOIGT tuto_next_big « Nächster Schritt   »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE b575d971f2 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 815 1389
+#17 DOIGT tab_Plus « Mehr »
+#18 ROUTE tab_Plus | MODE pro | EMPREINTE a0bd77d636 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 667 1122
+#18 DOIGT tuto_show «  Zeig's mir »
+#19 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c5d2350700 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (189 x 28 dp)
+#19 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (163 x 20 dp)
+#19 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (59 x 20 dp)
+#19 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (27 x 24 dp)
+#19 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (32 x 24 dp)
+#19 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (58 x 24 dp)
+#19 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (82 x 24 dp)
+#19 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (76 x 24 dp)
+#19 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (42 x 24 dp)
+#19 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (79 x 24 dp)
+#19 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (128 x 24 dp)
+#19 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (64 x 20 dp)
+#19 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (12 x 24 dp)
+#19 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (21 x 24 dp)
+#19 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (11 x 24 dp)
+#19 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (15 x 24 dp)
+#19 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (9 x 24 dp)
+#19 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (9 x 24 dp)
+#19 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (18 x 24 dp)
+#19 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (12 x 24 dp)
+#19 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (17 x 24 dp)
+#19 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (12 x 24 dp)
+#19 LAYOUT OVERLAP « B♭ » over the touchable « Tabelle schließen » (16 x 24 dp)
+#19 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (11 x 24 dp)
+#19 LAYOUT CONTRAST « Moll » 1.60:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « Dorisch » 1.60:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « Moll-Penta » 1.60:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « Dur-Penta » 1.60:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « Blues » 1.60:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « B♭ » 3.26:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « B » 3.26:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT LABEL « #1966 » long press without text nor description
+#19 > touche 101 1224
+#19 DOIGT tuto_scale_Phrygian « Phrygisch »
+#20 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 376797a7c8 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « Tonart des Tracks: C · Phrygisch » over the touchable « Tabelle schließen » (216 x 20 dp)
+#20 > touche 63 1437
+#20 DOIGT tuto_root_9 « A »
+#21 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 376797a7c8 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 63 1430
+#21 DOIGT tuto_root_9 « A »
+#22 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c79bcf4d14 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « Tonart des Tracks: A · Phrygisch » over the touchable « Tabelle schließen » (215 x 20 dp)
+#22 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (341 x 24 dp)
+#22 LAYOUT OVERLAP « Zurück zum Tutorial » over the touchable « Tabelle schließen » (139 x 20 dp)
+#22 LAYOUT CONTRAST « Schließen » 3.10:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Tonleiter » 3.10:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Dur » 3.10:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « Dur-Penta » 3.10:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « Blues » 3.10:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « Harmonisch Moll » 2.92:1 (needs 4.5:1, 16 sp)
+#22 > touche 450 1434
+#22 DOIGT tuto_key_continue « Zurück zum Tutorial »
+#23 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 47d4bd140a | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#23 > attends 5
+#24 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 8c00440715 | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1203
+#24 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#25 ROUTE tab_Plus | MODE pro | EMPREINTE 40d4bebc0f | project=p-db60982e tuto=acid_techno/Pro active=true step=key done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1119
+#25 DOIGT tuto_next_big « Nächstes Kapitel   »
+#26 ROUTE tab_Plus | MODE pro | EMPREINTE f4f4b7af43 | project=p-db60982e tuto=acid_techno/Pro active=true step=ready done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1119
+#26 DOIGT tuto_mark «   Verstanden »
+#27 ROUTE tab_Plus | MODE pro | EMPREINTE 8407bba2f3 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 268 1389
+#27 DOIGT tab_Sons « Sounds »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE f69b3b49b2 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « Studio-Kick » 4.11:1 (needs 4.5:1, 13 sp)
+#28 > touche 843 849
+#28 DOIGT tuto_fold
+#29 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 091a23d562 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 90 939
+#29 DOIGT step_0 « Step 1 »
+#30 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 07285bc95e | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 500 939
+#30 DOIGT step_4 « Step 5 »
+#31 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 949941296c | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 939
+#31 DOIGT step_2 « Step 3 »
+#32 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE f89879a141 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 90 1019
+#32 DOIGT step_8 « Step 9 »
+#33 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE d17fcba215 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 500 1019
+#33 DOIGT step_12 « Step 13 »
+#34 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 4f81c0564e | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 294 939
+#34 DOIGT step_2 « Step 3 »
+#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 57215cb00c | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 771 1104
+#35 DOIGT tuto_chapters
+#36 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 1ed6981002 | project=p-db60982e tuto=acid_techno/Pro active=true step=kick_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Die Drums » 4.14:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Die 303 » 1.89:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Dein erster Teil: der Groove » 2.20:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/2 » 3.42:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Die Teile verstehen » 2.32:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/5 » 1.77:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Bau deine Teile » 2.44:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/7 » 2.01:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 7 » 3.35:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/2 » 2.31:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 8 » 1.99:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Die Übergänge » 1.95:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/2 » 1.89:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 9 » 3.98:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Die Filter-Geste » 4.26:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/2 » 1.79:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/3 » 1.25:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/1 » 1.25:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « 0/2 » 1.23:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « Tutorial beenden (du kannst es fortsetzen) » 3.26:1 (needs 4.5:1, 14 sp)
+#36 > touche 450 792
+#36 DOIGT tuto_chapter_8 « 9 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 99c3ea71c3 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « STEPS: STUDIO-KICK » 1.25:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « ? » 1.62:1 (needs 4.5:1, 12 sp)
+#37 > touche 450 975
+#37 DOIGT tuto_why « ▸ Warum? »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 6c942aa47b | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 450 1038
+#38 DOIGT tuto_do «   Ich mach's »
+#39 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 88b0a0ed14 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 260 456
+#39 DOIGT rien
+#40 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE ef65cafd28 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Synth » 1.27:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Drums » 4.12:1 (needs 4.5:1, 16 sp)
+#40 LAYOUT CONTRAST « Lauter oder leiser: Fades, Einsätze, Pausen. » 4.34:1 (needs 4.5:1, 13 sp)
+#40 LAYOUT CONTRAST « Mehr oder weniger Echo: Wiederholungen im Takt. » 4.26:1 (needs 4.5:1, 13 sp)
+#40 > touche 254 328
+#40 DOIGT pick_track_2 « Synth »
+#41 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE e5215f433f | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Lautstärke » 4.10:1 (needs 4.5:1, 16 sp)
+#41 > touche 211 988
+#41 DOIGT pick_group_2_more « 1 weitere Einstellung zeigen »
+#42 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE eeee457aa1 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « Schließen » 2.62:1 (needs 4.5:1, 14 sp)
+#42 > touche 778 1189
+#42 DOIGT automation_picker_close « Schließen »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0cf6362c51 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « Du bist dran: Automatisiere den „Cutoff“ der 303 im Drop: „Eine Einstellung automatisieren“, „Acid 303“, „Cutoff“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. » ellipsized (« … »)
+#43 > touche 843 1104
+#43 DOIGT tuto_fold
+#44 ROUTE tab_Mix | MODE pro | EMPREINTE 2674bf6722 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 667 1122
+#44 DOIGT tuto_show «  Zeig's mir »
+#45 ROUTE tuto_finger | MODE pro | EMPREINTE 88b0a0ed14 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > attends 6
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0cf6362c51 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 > attends 8
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0cf6362c51 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 268 1389
+#47 DOIGT tab_Sons « Sounds »
+#48 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e42a03855c | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 223 183
+#48 DOIGT sons_Acide « Acid 303 »
+#49 ROUTE acid/tab_Sons | MODE pro | EMPREINTE a9a75439bd | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « Bassline » 4.17:1 (needs 4.5:1, 12 sp)
+#49 > glisse 450 1000 450 300
+#49 DOIGT rien
+#50 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 11529c88f8 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#50 SON Son : rien ne joue.
+#50 > glisse 450 1000 450 300
+#50 DOIGT rien (texte « Grundton »)
+#51 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 68029f7ba8 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST «  Die Regler aufnehmen » 2.78:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « Säge » 3.67:1 (needs 4.5:1, 12 sp)
+#51 > glisse 450 1000 450 300
+#51 DOIGT rien
+#52 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 321b2984f3 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 > appui-long 124 451
+#52 DOIGT dans:acid_knob_0 « Cutoff »
+#53 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 321b2984f3 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 771 1104
+#53 DOIGT tuto_chapters
+#54 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 1ed6981002 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « 1 » 3.10:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 4 » 1.63:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 10 » 1.79:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Der Mix » 1.79:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 11 » 1.79:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Das Mastering » 1.81:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 12 » 1.82:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Exportiere deinen Track » 3.89:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 0/2 » 3.15:1 (needs 4.5:1, 16 sp)
+#54 > touche 450 306
+#54 DOIGT tuto_chapter_2 « 3 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE c08ff2f5b4 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_hear done=5 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 1056
+#55 DOIGT tuto_why « ▸ Warum? »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE 838ac84e67 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_hear done=5 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 811 1203
+#56 DOIGT tuto_next « Weiter  »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 64a5cacfb1 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 667 1122
+#57 DOIGT tuto_show «  Zeig's mir »
+#58 ROUTE tuto_finger | MODE pro | EMPREINTE 88b0a0ed14 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#58 SON Son : rien ne joue.
+#58 > attends 15
+#59 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 25802c586f | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « Du bist dran: Öffne den Tab Acid und schreib die 2-taktige Linie, Kästchen für Kästchen: die gestrichelten Noten (A, seine Oktave, C, G, E), dann die Akzente (!) auf 4 Kästchen und die Slides (⌒) auf 3. Takt 2 ist die Variante: B♭ statt G, das letzte Kästchen leer. » ellipsized (« … »)
+#59 > attends 15
+#60 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 25802c586f | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 262 711
+#60 DOIGT acid_bars_2 « 2 »
+#61 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 6fad9536a3 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 208 795
+#61 DOIGT acid_page_1 « 2 »
+#62 ROUTE acid/tab_Sons | MODE pro | EMPREINTE fbeada5218 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 843 1104
+#62 DOIGT tuto_fold
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 852cc52ec3 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 450 1038
+#63 DOIGT tuto_do «   Ich mach's »
+#64 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 88b0a0ed14 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#64 SON Son : rien ne joue.
+#64 > attends 3
+#65 ROUTE acid/tab_Sons | MODE pro | EMPREINTE fbeada5218 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 771 1104
+#65 DOIGT tuto_chapters
+#66 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 1ed6981002 | project=p-db60982e tuto=acid_techno/Pro active=true step=acid_do done=5 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « 3 » 4.10:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « Die 303 » 4.17:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « 0/2 » 4.10:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « 6 » 1.58:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « Bau deine Teile » 1.58:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « 0/7 » 1.58:1 (needs 4.5:1, 16 sp)
+#66 LAYOUT CONTRAST « 0/2 » 3.10:1 (needs 4.5:1, 16 sp)
+#66 > touche 450 792
+#66 DOIGT tuto_chapter_8 « 9 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 3a4c0b33c4 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 450 1038
+#67 DOIGT tuto_do «   Ich mach's »
+#68 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 88b0a0ed14 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#68 SON Son : rien ne joue.
+#68 > attends 2
+#69 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0cf6362c51 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 261 456
+#69 DOIGT automation_add «  Eine Einstellung automatisieren »
+#70 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE ef65cafd28 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 254 328
+#70 DOIGT pick_track_2 « Synth »
+#71 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE e5215f433f | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 610
+#71 DOIGT pick_filter_2 « Filter (Sweep) »
+#72 ROUTE automation/tab_Mix | MODE pro | EMPREINTE 1e6b969685 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 215 783
+#72 DOIGT auto_mode_0_1 « Pro Teil »
+#73 ROUTE automation/tab_Mix | MODE pro | EMPREINTE d5bd9be317 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 450 1000 450 600
+#73 DOIGT auto_smooth_0 « Glätten »
+#74 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE f8ff83aaad | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#74 LAYOUT OVERLAP « Synth » over the touchable « Tempo: 138 BPM Tempo ändern » (37 x 4 dp)
+#74 > glisse 140 950 500 790
+#74 DOIGT rien
+#75 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE f8ff83aaad | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#75 SON Son : rien ne joue.
+#75 > glisse 500 790 860 950
+#75 DOIGT rien
+#76 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE f8ff83aaad | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#76 SON Son : rien ne joue.
+#76 RIEN NE CHANGE (3 écrans identiques)
+#76 > touche 843 1104
+#76 DOIGT tuto_fold
+#77 ROUTE tab_Mix | MODE pro | EMPREINTE ac4353c814 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 232 1122
+#77 DOIGT tuto_listen «  Beispiel anhören »
+#78 ROUTE tab_Mix | MODE pro | EMPREINTE faaa8f3262 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#78 SON Son : l'exemple du tuto joue (encore 3 s).
+#78 > touche 811 1203
+#78 DOIGT tuto_next « Weiter  »
+#79 ROUTE tab_Mix | MODE pro | EMPREINTE 05c1b54475 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter done=5 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 1 s).
+#79 LAYOUT OVERLAP « Du bist dran: Automatisiere den „Cutoff“ der 303 im Drop: „Eine Einstellung automatisieren“, „Acid 303“, „Cutoff“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. » over « Weiterlesen » (76 x 18 dp)
+#79 LAYOUT OVERLAP « Du bist dran: Automatisiere den „Cutoff“ der 303 im Drop: „Eine Einstellung automatisieren“, „Acid 303“, „Cutoff“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. » over the touchable « Weiterlesen » (568 x 32 dp)
+#79 > touche 811 1203
+#79 DOIGT tuto_next « Weiter  »
+#80 ROUTE tab_Mix | MODE pro | EMPREINTE 78e7ea3926 | project=p-db60982e tuto=acid_techno/Pro active=true step=filter_intro done=5 playing=false
+#80 SON Son : rien ne joue.
+#80 > fin
+#80 FIN : fin

@@ -1,0 +1,6 @@
+lang=hi
+device=phone360
+font=130
+fresh=reel
+gestes.max=60
+mission=premier-morceau

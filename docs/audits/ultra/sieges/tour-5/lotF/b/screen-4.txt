@@ -1,0 +1,14 @@
+Écran 4 (1920x1200)
+texte « Was willst du bewegen? » @ 839,180
+texte « 1. Wähl die Spur: » @ 685,268
+touchable « Drums » [sélectionné] @ 625,350
+touchable « Acid 303 » @ 847,350
+touchable « Synth » @ 1063,350
+touchable « Remix » @ 1250,350
+touchable « Gemeinsames Reverb und Echo » @ 864,431
+texte « 2. Was sich auf „Drums“ bewegt: » @ 840,513
+texte « Drums » @ 616,590
+touchable « Filter (Sweep) Fügt dieser Spur einen Filter hinzu und lässt ihn auf- oder zugehen: der Effekt, den man am meisten hört. » @ 960,749
+touchable « Lautstärke Lauter oder leiser: Fades, Einsätze, Pausen. » @ 960,908
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Schließen » @ 1275,1016

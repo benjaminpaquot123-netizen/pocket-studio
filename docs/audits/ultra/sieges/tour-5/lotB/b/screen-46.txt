@@ -1,0 +1,4 @@
+Écran 46 (588x1278)
+texte « „Start w rytmie” i pola » @ 227,513
+texte « To, co odpalasz, startuje w następnym wybranym miejscu (takt, 2 lub 4 takty, uderzenie, pół taktu): wszystko zostaje w rytmie. „Pola − +” pokazuje w siatce więcej lub mniej klocków. » @ 294,621
+bouton « Jasne » @ 502,753

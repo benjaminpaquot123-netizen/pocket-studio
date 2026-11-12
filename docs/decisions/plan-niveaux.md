@@ -1,0 +1,5 @@
+# Décisions de la discussion « Plan d'audit utilisateur » (2026-11-12)
+
+- 2026-11-12 · plan-niveaux · Demande de Benjamin (« le plan d'audit n'est pas optimisé pour tester comme de vrais utilisateurs : débutant, moyen, pro ») : proposition `docs/audits/ultra/PLAN-NIVEAUX.md` (cinq niveaux, seize sièges, huit missions neuves avec oracle, trois règles de consignes, tableau par niveau). Rien n'est lancé ; le tour 6 ne change pas. Retour arrière : supprimer le fichier.
+- 2026-11-12 · plan-niveaux · Une première version avait été écrite dans `docs/PLAN-AUDIT-FINAL.md` sur une copie périmée du dépôt (`main` du 27 octobre, jusqu'au commit `47fe20d` de la branche `ccr-6d09db19-wvcz09`) : abandonnée. La branche reprend l'arbre de `ccr-80af1a1b-mn0wec` (496dbdc5) sans rien y changer, plus ces deux fichiers. Retour arrière : sans objet.
+- 2026-11-12 · plan-niveaux · Benjamin répond « 1A » : un passage « Nightly real use » sur émulateur à la fin de l'audit. À raccorder par la discussion principale à `PLAN-TOUR-6.md` § 2 point 7. Retour arrière : ne pas le lancer.

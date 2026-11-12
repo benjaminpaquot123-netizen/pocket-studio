@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "تعذّر وضع الصوت على الـPad: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "التحديات: استمع إلى إيقاع، أعده على الـPads، واربح النجوم.",
+  "Défis": "التحديات",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "استمع إلى إيقاع وأعده على الـPads: اربح النجوم.",
+  "%s, sur le pad": "%s، على الـPad",
+  "✓ Sur le pad maintenant": "✓ على الـPad الآن",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "«%1$s» يحل محل «%2$s» على الـPad %3$d (سهم التراجع يعيده). ضعه في الطبول، في الجزء الذي تريده.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "«%s» في مشروعك، صامتة، لتقطيعها (سهم التراجع يزيلها).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "لـ Pad المباشر مشروعه الخاص «المباشر»: «%s» ينتظرك في مشاريعي."
+}

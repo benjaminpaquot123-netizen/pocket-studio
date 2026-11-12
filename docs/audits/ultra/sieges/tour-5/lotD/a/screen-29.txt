@@ -1,0 +1,66 @@
+Écran 29 (1920x1200)
+touchable « My first beat Saved » (nom « My projects ») @ 744,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 1515,42
+bouton « Undo » @ 1587,42
+bouton « Redo » [désactivé] @ 1659,42
+bouton « Record: microphone, keys or pads » @ 1731,42
+bouton « Play » @ 1803,42
+bouton « Share my song » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 1875,114
+onglet « Structure » [sélectionné] @ 60,193
+onglet « Sounds » @ 60,280
+onglet « Mix » @ 60,367
+onglet « Live » @ 60,454
+onglet « More » @ 60,541
+onglet « Timeline » [désactivé] @ 211,192
+onglet « Parts » [sélectionné] @ 328,192
+bouton « THE SONG » [état « Expanded »] @ 260,285
+bouton « ? » (nom « What is “Song”? ») @ 337,285
+texte « Your song is empty: add your parts in the order they play (Intro, Verse, Chorus…). » @ 529,332
+texte « Add: » @ 185,373
+bouton « + A » @ 216,436
+bouton « + New part (copy of A) » @ 430,436
+bouton « + New empty part » @ 718,436
+bouton «   What's playing in the song » @ 574,520
+bouton « SONG SETTINGS » [état « Expanded »] @ 574,586
+case « stop » [sélectionné] @ 328,652
+case « start over » @ 458,652
+texte « At the end: » @ 215,652
+case « follow the song » [sélectionné] @ 417,736
+case « stay on my part » @ 633,736
+texte « While playing: » @ 231,736
+texte « The screens show the part that's playing. » @ 350,797
+bouton « ? » (nom « What is “Beats per bar”? ») @ 324,844
+texte « Beats per bar: » @ 232,845
+case « 2/4 » @ 204,914
+case « 3/4 » @ 298,914
+case « 4/4 » [sélectionné] @ 393,914
+case « 5/4 » @ 487,914
+case « 6/4 » @ 581,914
+case « 7/4 » @ 675,914
+texte « 4/4 for most songs, 3/4 for a waltz, 6/4 or 7/4 for rarer rhythms. » @ 452,975
+bouton « BLOCKS » [état « Expanded »] @ 1139,207
+bouton « ? » (nom « What is “Block”? ») @ 1204,207
+texte « A block = the drums, the acid and the notes of a part. The song's parts are made of them. Tap one to edit it, hold and drag it to move it. » @ 1465,268
+case « 8 » [sélectionné] @ 1159,343
+case « 16 » @ 1240,343
+case « 24 » @ 1323,343
+texte « Show: » @ 1083,343
+bouton « A 6 bars » @ 1152,454
+bouton « B empty » @ 1361,454
+bouton « C empty » @ 1570,454
+bouton « D empty » @ 1779,454
+bouton « E empty » @ 1152,592
+bouton « F empty » @ 1361,592
+bouton « G empty » @ 1570,592
+bouton « H empty » @ 1779,592
+bouton « Name » (nom « Name block A ») @ 1152,706
+bouton « New » (nom « New empty block ») @ 1361,706
+bouton « Duplicate » (nom « Duplicate block A ») @ 1570,706
+bouton « Clear » (nom « Clear block A ») @ 1779,706
+bouton « Guide  · Make a second part 30 % » [état « folded »] @ 960,1104
+touchable « ●  REC » (nom « Record the screen with sound ») @ 1692,1170
+touchable « ✎  Note » (nom « Write a note ») @ 1788,1170
+touchable « ⋯ » (nom « Feedback mode ») @ 1872,1170
+texte « Feedback mode » @ 828,1170

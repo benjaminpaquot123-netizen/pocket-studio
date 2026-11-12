@@ -342,7 +342,7 @@ class SongArrangementTest {
                         p,
                         rows = listOf(
                             com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue),
-                            com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color.Green),
+                            com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Acid 303", androidx.compose.ui.graphics.Color.Green),
                         ),
                     ),
                     com.pocketstudio.app.session.TimelineActions(
@@ -463,6 +463,27 @@ class SongArrangementTest {
         // « Ouvrir dans … », stopped: the scene is shown to be edited.
         vm.showSceneToEdit(2)
         assertEquals(2, vm.project.value.scene)
+    }
+
+    /**
+     * Audit ultra round 3, n° 35 (seat E a, Italian, Pro): no way to name a part « Drop » or « Outro » from its sheet.
+     * (The naming dialog itself holds a text field: under Robolectric a dialog with a field never goes idle, round 3 bench
+     * verdict n° 16; its own test is RenameSceneDialog's elsewhere.)
+     */
+    @Test
+    fun aPartIsNamedFromItsOwnSheet() {
+        var asked = 0
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.session.PartSheetContent(
+                    com.pocketstudio.app.session.PartSheetUi(index = 1, title = "B · Ritornello", bars = 8, played = 1, first = false, energy = 3, repeats = 1, songSize = 3),
+                    onIntent = {}, close = {}, more = com.pocketstudio.app.session.PartMoreActions(rename = { asked++ }),
+                )
+            }
+        }
+        compose.onNodeWithTag("part_rename_1").performScrollTo().performClick()
+        compose.waitForIdle()
+        assertEquals(1, asked)
     }
 
     @Test

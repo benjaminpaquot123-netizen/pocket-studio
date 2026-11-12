@@ -1,0 +1,21 @@
+Écran 6 (588x1278)
+texte « Nowy utwór, krok po kroku » @ 236,35
+bouton « Zamknij » @ 546,48
+texte « Krok 2 z 12 · Acid techno » @ 137,69
+bouton « Utwórz od razu z polecanymi wyborami » @ 294,156
+bouton « DŁUGOŚĆ UTWORU » [état « Rozwinięte »] @ 165,252
+choix « Krótko około 30 s » @ 165,343
+choix « Pełny około 5 min 10 » [sélectionné] @ 423,343
+texte « Cały utwór, z powracającymi częściami, jak prawdziwy kawałek. » @ 294,444
+texte « Jaki klimat ma mieć melodia? Wybieram skalę i pasujące akordy, a klawiaturę blokuję na tej skali: żadnych fałszywych nut, bez teorii muzyki. » @ 294,558
+bouton « PRAWDZIWE DŹWIĘKI STYLU » [état « Rozwinięte »] @ 214,663
+texte « Żeby naprawdę brzmiało jak Acid techno: Roland TR-909, Acid techno (4,5 MB). Asystent weźmie z nich dźwięki. » @ 294,738
+bouton « Pobierz dźwięki stylu » @ 294,831
+texte « Dotknij klimatu, żeby go usłyszeć: jego cztery akordy na bicie stylu. » @ 294,936
+choix « Mrocznie / epicko Molowe akordy: tajemnicze, intensywne albo trochę smutne. » [sélectionné] @ 294,1050
+bouton « Słuchaj » @ 78,1050
+choix « Wesoło / energicznie Jasne akordy, które dodają energii. » @ 294,1159
+bouton « Słuchaj » @ 78,1174
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Wstecz » @ 151,1224
+bouton « Dalej » @ 436,1224

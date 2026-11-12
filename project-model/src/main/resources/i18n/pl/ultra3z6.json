@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Oś czasu: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Utwór zapisany: %1$s, %2$s",
+  "Grille des notes : %s": "Siatka nut: %s",
+  "1 pas": "1 krok",
+  "1 piste": "1 ścieżka",
+  "1 réglage": "1 ustawienie",
+  "%d réglages": "%d ustawień",
+  "Fait : break de 1 mesure après %2$s": "Gotowe: przerwa na 1 takt po %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Gotowe: build-up na 1 takt przed %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Nie ma jeszcze utworu: twoja część wyjdzie jako pętla (1 takt).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Twoje nagranie z Live zostało zachowane: jest w utworze (1 część).",
+  "Ton texte (1 caractère)": "Twój tekst (1 znak)",
+  "trop bas de 1 cent": "za nisko o 1 cent",
+  "trop haut de 1 cent": "za wysoko o 1 cent",
+  "−%d demi-ton": "−%d półton",
+  "%d min": "%d min",
+  "%1$d min %2$d": "%1$d min %2$d",
+  "Hors de la gamme du morceau": "Poza skalą utworu",
+  "Poignée : glisse vers le bas pour fermer": "Uchwyt: przesuń w dół, aby zamknąć"
+}

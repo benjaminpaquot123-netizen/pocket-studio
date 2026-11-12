@@ -1,5 +1,6 @@
 package com.pocketstudio.app
 
+import androidx.compose.ui.semantics.getOrNull
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
@@ -50,21 +51,40 @@ object RealUse {
         instrumentation.runOnMainSync { if (NativeEngine.isAvailable) NativeEngine.stop() }
         // A save still running from the screen just closed would bring a project folder back.
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
-        for (dir in listOf("projects", "projects-trash", "stems")) File(app.filesDir, dir).deleteRecursively()
+        // projects-backup too: the compact copies for Android's cloud backup. Left there, the next
+        // start « restores » them (ProjectOpening.restoreFromBackupOnce: its once-per-install mark is
+        // in the prefs cleared below) and its notice covers the first launch the tests then tap on.
+        for (dir in listOf("projects", "projects-trash", "stems", "projects-backup")) File(app.filesDir, dir).deleteRecursively()
         File(app.cacheDir, "exports").deleteRecursively()
         File(app.filesDir, "../shared_prefs").listFiles()?.forEach { f ->
             val name = f.name.removeSuffix(".xml")
             app.getSharedPreferences(name, 0).edit().clear().commit()
         }
+        // A French phone (the emulator's is American: the first start would take English).
+        app.getSharedPreferences("settings", 0).edit().putString("language", "fr").commit()
         com.pocketstudio.app.settings.SettingsStore.forgetForTests()
         com.pocketstudio.app.settings.SettingsStore.load(app)
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
     }
 
-    fun waitFor(what: String, seconds: Int, condition: () -> Boolean) {
+    /**
+     * Waits for [condition], calling [tick] between two looks. Under a compose test rule the screens
+     * recompose only when the test's clock moves ([ComposeTestRule.mainClock]): a test that holds one
+     * passes a tick that moves it, or a screen waiting on a state (« Ouverture du projet… ») never
+     * gives way to the app, and the sound it opens never starts.
+     */
+    fun waitFor(what: String, seconds: Int, tick: () -> Unit = {}, condition: () -> Boolean) {
         val until = System.currentTimeMillis() + seconds * 1000L
         while (!condition()) {
-            check(System.currentTimeMillis() < until) { "waited too long ($seconds s) for $what" }
+            tick()
+            if (System.currentTimeMillis() >= until) {
+                // What the app went through says why (the sound opened or not, the project opened…):
+                // the CI emulator cannot be watched, only read afterwards.
+                val why = "waited too long ($seconds s) for $what\n${describeStream()}\ncurrent step ${NativeEngine.currentStep()}, commands dropped ${NativeEngine.droppedCommands}\n" +
+                    "app log:\n${com.pocketstudio.app.report.AppLog.dump(40)}\nwarnings and errors of the process:\n${processLogcat()}"
+                log(why)
+                throw IllegalStateException(why)
+            }
             Thread.sleep(50)
         }
     }
@@ -78,6 +98,29 @@ object RealUse {
             "mmap=${it.mmap} exclusive=${it.exclusive} lowLatency=${it.lowLatency} latency=${"%.1f".format(it.outputLatencyMs)} ms " +
             "xruns=${it.xruns} callbacks=${it.callbacks} running=${it.running}"
     }.also { log(it) }
+
+    /** The screen's tree (merged, as TalkBack reads it), cut short: what covered a button, read afterwards. */
+    fun screenTree(compose: androidx.compose.ui.test.junit4.ComposeTestRule): String = runCatching {
+        compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes().joinToString("\n--- window ---\n") { root ->
+            buildString {
+                fun walk(n: androidx.compose.ui.semantics.SemanticsNode, depth: Int) {
+                    if (length > 20000) return
+                    val c = n.config
+                    val tag = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)
+                    val text = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.Text)?.joinToString(" ")
+                    if (tag != null || text != null) append("  ".repeat(depth.coerceAtMost(12))).append(tag ?: "").append(" ").append(text ?: "").append(" ").append(n.boundsInRoot).append('\n')
+                    n.children.forEach { walk(it, depth + 1) }
+                }
+                walk(root, 0)
+            }
+        }
+    }.getOrElse { "(no tree: ${it.message})" }
+
+    /** The last warnings and errors this process wrote to logcat (an exception swallowed, a lifecycle out of order…). */
+    fun processLogcat(lines: Int = 60): String = runCatching {
+        val p = Runtime.getRuntime().exec(arrayOf("logcat", "-d", "-t", "1500", "--pid=${android.os.Process.myPid()}", "*:W"))
+        p.inputStream.bufferedReader().readLines().takeLast(lines).joinToString("\n")
+    }.getOrElse { "(no logcat: ${it.message})" }
 
     fun db(x: Float) = if (x > 1e-9f) 20 * log10(x.toDouble()) else -200.0
 

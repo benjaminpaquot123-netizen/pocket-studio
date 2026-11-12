@@ -1,0 +1,85 @@
+Écran 49 (1035x1243)
+touchable « 我的第一个节奏 已保存 » (nom « 我的项目 ») @ 261,42
+bouton « 专业 » (nom « 专业模式。轻触切换模式。 ») @ 551,42
+bouton « A » (nom « 当前段落：A。点击切换段落。 ») @ 627,42
+bouton « 撤销 » @ 702,42
+bouton « 重做 » [désactivé] @ 774,42
+bouton « 录音：麦克风、键盘或打击垫 » @ 846,42
+bouton « 播放 » @ 918,42
+bouton « 分享我的歌 » @ 990,42
+bouton « 120  BPM » (nom « 速度：120 BPM ») @ 73,114
+interrupteur « ? » (nom « 标注界面 ») [non coché] @ 990,114
+onglet « 鼓 16 个打击垫 » @ 91,186
+onglet « Acid 303 贝斯线 » @ 253,186
+onglet « 人声 麦克风 » @ 391,186
+onglet « Remix 分离 » @ 514,186
+touchable « 明亮Reese 合成器 » (nom « 明亮Reese 的选项 ») @ 676,186
+bouton « 更换 明亮Reese 的音色 » @ 816,186
+bouton « 效果 » @ 919,186
+bouton «  音轨 » @ 1004,186
+  → la suite sur le côté (glisse pour la voir)
+texte « 段落：A » @ 58,249
+bouton « 音色设置 » [état « 已展开 »] @ 104,313
+texte « 波形 » @ 63,358
+case « 锯齿波 » [sélectionné] @ 112,422
+case « 方波 » @ 250,422
+case « 三角波 » @ 389,422
+touchable sans nom @ 273,485
+texte « 截止 » @ 63,485
+texte « 4.3 kHz » @ 465,485
+touchable sans nom @ 761,485
+texte « 共振 » @ 550,485
+texte « 25% » @ 968,485
+curseur « 截止 » [état « 4.3 kHz », à 79 %] @ 273,549
+curseur « 共振 » [état « 25% », à 25 %] @ 761,549
+touchable sans nom @ 273,605
+texte « 滤波器包络 » @ 94,605
+texte « 40% » @ 480,606
+touchable sans nom @ 761,605
+texte « 起音 » @ 550,605
+texte « 2 毫秒 » @ 962,605
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « 降八度 » @ 769,673
+bouton « 升八度 » @ 903,673
+texte « 八度 4 » @ 836,673
+bouton « 收起键盘 » @ 975,673
+texte «   键盘 » @ 392,673
+bouton « C » (nom « C 4 ») @ 59,799
+bouton « C# 4 » @ 94,764
+bouton « D 4 » @ 130,799
+bouton « D# 4 » @ 164,764
+bouton « E 4 » @ 201,799
+bouton « F 4 » @ 272,799
+bouton « F# 4 » @ 305,764
+bouton « G 4 » @ 343,799
+bouton « G# 4 » @ 376,764
+bouton « A 4 » @ 414,799
+bouton « A# 4 » @ 446,764
+bouton « B 4 » @ 485,799
+bouton « C » (nom « C 5 ») @ 556,799
+bouton « C# 5 » @ 587,764
+bouton « D 5 » @ 627,799
+bouton « D# 5 » @ 658,764
+bouton « E 5 » @ 698,799
+bouton « F 5 » @ 769,799
+bouton « F# 5 » @ 799,764
+bouton « G 5 » @ 840,799
+bouton « G# 5 » @ 869,764
+bouton « A 5 » @ 911,799
+bouton « A# 5 » @ 940,764
+bouton « B 5 » @ 979,799
+bouton « 向导  · 加一段旋律 23 % » [état « 已收起 »] @ 517,949
+bouton « 撤销 » @ 148,1024
+bouton « 重做 » [désactivé] @ 331,1024
+bouton « 播放 » @ 512,1024
+bouton « 120 速度 » (nom « 速度：120 BPM ») @ 698,1024
+bouton « 分享 » (nom « 分享我的歌 ») @ 888,1024
+onglet « 结构 » @ 99,1123
+onglet « 音色 » [sélectionné] @ 309,1123
+onglet « 混音 » @ 518,1123
+onglet « Live » @ 727,1123
+onglet « 更多 » @ 936,1123
+touchable « ●  REC » (nom « 录制屏幕和声音 ») @ 807,1213
+touchable « ✎  记一笔 » (nom « 写笔记 ») @ 903,1213
+touchable « ⋯ » (nom « 反馈模式 ») @ 987,1213
+texte « 反馈模式 » @ 385,1213

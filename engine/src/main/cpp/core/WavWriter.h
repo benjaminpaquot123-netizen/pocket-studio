@@ -21,6 +21,9 @@ public:
     // `bits`: 16 or 24 (integer PCM, dithered) or 32 (float).
     bool openBits(const char* path, int sampleRate, int channels, int bits);
     bool write(const float* interleaved, int numFrames);
+    // Lot E: 16 bits only, the TPDF dither's noise shaped (Lipshitz's 5-tap E-weighted filter): most of
+    // it moved above 10 kHz, where the ear hears it least. Before open().
+    void setNoiseShaping(bool on) { shaping_ = on; }
     // Patches the header sizes and closes the file; false on any I/O error.
     bool close();
 
@@ -39,6 +42,8 @@ private:
     int bits_ = 24;
     int bytesPerSample() const { return bits_ / 8; }
     uint32_t seed_ = 0x9E3779B9u;
+    bool shaping_ = false;
+    float err_[2][5] = {};  // each channel's last quantization errors (LSB), newest first
     uint8_t buffer_[4096 * 3];
 };
 

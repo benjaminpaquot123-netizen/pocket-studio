@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.audit.LayoutScanClipTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-11T11:15:09.333Z" hostname="vm" time="6.869">
+  <properties/>
+  <testcase name="aChipsSecondLineCutInARowThatScrollsSidewaysInAPageThatScrollsDownIsFound" classname="com.pocketstudio.app.audit.LayoutScanClipTest" time="6.234"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

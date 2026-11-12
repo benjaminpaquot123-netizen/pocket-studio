@@ -1,0 +1,49 @@
+Écran 41 (616x1371)
+touchable « Demo · Acid house Salvo » (nom « Meus projetos ») @ 146,42
+bouton « Simples » (nom « Modo Simples. Toque para mudar de modo. ») @ 337,42
+bouton « Gravar: microfone, teclado ou pads » @ 427,42
+bouton « Parar » @ 499,42
+bouton « Mais opções » @ 571,42
+bouton « 126  Andamento » (nom « Tempo: 126 batidas por minuto ») @ 106,114
+bouton « A compasso 1/7 » @ 310,114
+interrupteur « ? » (nom « Identificar a tela ») [non coché] @ 571,114
+bouton « Áudio 1 Trocar o som » @ 170,196
+bouton « Ouvir sozinha » (nom « Ouvir “Áudio 1” sozinho, em loop ») @ 388,196
+bouton « Ajustes de Áudio 1: volume, silenciar, excluir » @ 538,196
+bouton « A MÚSICA » [état « Expandido »] @ 139,325
+bouton « ? » (nom « O que é “Música”? ») @ 214,325
+texte « Toque numa parte: ela toca logo depois da atual. » @ 264,372
+texte « 0:08 / 0:13 » @ 223,414
+texte « comp. 5.3 / 7 » @ 489,414
+bouton « Acordes da música A Do B Do Toque para mudar os acordes da música inteira. » @ 308,558
+bouton « A × 2  ·  2 comp.  ·  tocando » @ 200,696
+bouton « Uma repetição a menos » @ 394,696
+bouton « Uma repetição a mais » @ 466,696
+bouton « Mais ações » @ 538,696
+bouton « B × 2  ·  2 comp.  ·  em seguida » @ 200,794
+bouton « Uma repetição a menos » @ 394,794
+bouton « Uma repetição a mais » @ 466,794
+bouton « Mais ações » @ 538,794
+bouton « A × 1  ·  1 comp. » @ 200,891
+bouton « Uma repetição a menos » [désactivé] @ 394,891
+bouton « Uma repetição a mais » @ 466,891
+bouton « Mais ações » @ 538,891
+bouton « B × 2  ·  2 comp. » @ 200,987
+bouton « Uma repetição a menos » @ 394,987
+bouton « Uma repetição a mais » @ 466,987
+bouton « Mais ações » @ 538,987
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guia  · A gente tira para aumentar a vontade 50 % » [état « recolhido »] @ 308,1077
+bouton « Parar » @ 231,1152
+bouton « Desfazer » @ 99,1152
+bouton « 126 Andamento » (nom « Tempo: 126 batidas por minuto ») @ 372,1152
+bouton « Mais » (nom « Mais opções ») @ 517,1152
+onglet « Minha música » [sélectionné] @ 56,1251
+onglet « Ritmo » @ 181,1251
+onglet « Teclado » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Enviar » @ 559,1251
+touchable « ●  REC » (nom « Gravar a tela com som ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escrever uma nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentários ») @ 568,1341
+texte « Modo comentários » @ 176,1341

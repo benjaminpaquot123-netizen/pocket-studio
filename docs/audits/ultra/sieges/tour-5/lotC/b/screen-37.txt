@@ -1,0 +1,5 @@
+Écran 37 (616x1371)
+touchable « Un trozo » @ 102,738
+touchable « Frases » @ 102,810
+touchable « Transitorios » @ 102,882
+touchable « Compases » @ 102,954

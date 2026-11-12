@@ -1,0 +1,511 @@
+#0 SIEGE lang=fr device=tablet11Land font=100 mode=- theme=- fresh=reel gestes.max=60 lit=non main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE f777f6e408 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.34:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 1.83:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Créer mon premier morceau (guidé) » 2.57:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » 2.21:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Écouter une démo » 2.59:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 2.28:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Extraire la voix d'une chanson » 1.60:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » 2.33:1 (needs 4.5:1, 14 sp)
+#1 > touche 1032 742
+#1 DOIGT launch_padlive « Pad Live »
+#2 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1def61b18a | project=p-c928af07 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT OVERLAP « ? » over « EFFETS DE SCÈNE » (7 x 6 dp)
+#2 LAYOUT OVERLAP « ? » over «  Défi » (7 x 12 dp)
+#2 LAYOUT OVERLAP « A » over the touchable « Jouer » (11 x 20 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « vide, pad A1 » (32 x 19 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#2 LAYOUT OVERLAP «  Défi » over the touchable « Étiqueter l'écran » (27 x 24 dp)
+#2 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Replier Déplié » (117 x 13 dp)
+#2 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Qu'est-ce que « Pas » ? » (25 x 13 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Replier Déplié » (7 x 12 dp)
+#2 LAYOUT OVERLAP « Filtre » over the touchable « Pas 2 Poser ou retirer vide » (14 x 13 dp)
+#2 LAYOUT OVERLAP « Filtre » over the touchable « Pas 3 Poser ou retirer vide » (18 x 13 dp)
+#2 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 2 Poser ou retirer vide » (14 x 16 dp)
+#2 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Pas 3 Poser ou retirer vide » (65 x 16 dp)
+#2 LAYOUT OVERLAP « Écho » over the touchable « Pas 5 Poser ou retirer vide » (32 x 13 dp)
+#2 LAYOUT OVERLAP « en sortie » over the touchable « Pas 5 Poser ou retirer vide » (56 x 16 dp)
+#2 LAYOUT OVERLAP « Roulement » over the touchable « Pas 7 Poser ou retirer vide » (51 x 13 dp)
+#2 LAYOUT OVERLAP « Roulement » over the touchable « Pas 8 Poser ou retirer vide » (20 x 13 dp)
+#2 LAYOUT OVERLAP « 1/16 » over the touchable « Pas 7 Poser ou retirer vide » (26 x 16 dp)
+#2 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 3 Poser ou retirer vide » (55 x 16 dp)
+#2 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 4 Poser ou retirer vide » (65 x 16 dp)
+#2 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 5 Poser ou retirer vide » (65 x 16 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Pas 7 Poser ou retirer vide » (7 x 11 dp)
+#2 LAYOUT OVERLAP « Plus » over the touchable « Pas 8 Poser ou retirer vide » (33 x 16 dp)
+#2 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#2 > touche 156 220
+#2 DOIGT padlive_pad_0 « vide, pad A1 »
+#3 ROUTE dialogue:library | MODE simple | EMPREINTE 8ea17cb154 | project=p-c928af07 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Claps » 1.24:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Fête » 1.21:1 (needs 4.5:1, 16 sp)
+#3 LAYOUT CONTRAST « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad live 1. » 1.20:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 116 sons · 2 Mo » 1.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 108 sons · 2 Mo » 2.08:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Akai MPC60 » 2.04:1 (needs 4.5:1, 16 sp)
+#3 LAYOUT CONTRAST « Télécharger » 2.04:1 (needs 4.5:1, 14 sp)
+#3 > touche 507 384
+#3 DOIGT library_folder_Fête « Fête »
+#4 ROUTE dialogue:library | MODE simple | EMPREINTE 7e60be263d | project=p-c928af07 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Fête » 1.21:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « Klaxon de DJ » 1.21:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Poser » 1.21:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Klaxon long » 1.20:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Poser » 1.22:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Poser » 1.20:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « « Go go go! » » 4.21:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Poser » 4.21:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « « Go! » » 4.21:1 (needs 4.5:1, 14 sp)
+#4 > touche 875 378
+#4 DOIGT library_sound_use_0 « Poser »
+#5 ROUTE dialogue:library | MODE simple | EMPREINTE 2a356cbc4b | project=p-c928af07 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Claps » 1.22:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Charleys ouverts » 2.29:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Poser » 2.55:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Sirène dub » 1.21:1 (needs 4.5:1, 14 sp)
+#5 > touche 1458 48
+#5 DOIGT library_close
+#6 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1def61b18a | project=p-c928af07 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 1572 45
+#6 DOIGT padlive_play « Jouer »
+#7 ROUTE padlive_pads_side | MODE simple | EMPREINTE 4fa07120f0 | project=p-c928af07 no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 LAYOUT OVERLAP « A » over the touchable « Arrêter » (11 x 20 dp)
+#7 LAYOUT OVERLAP « A » over the touchable « vide, pad A1 » (11 x 14 dp)
+#7 > touche 1333 286
+#7 DOIGT padlive_fx_filter « Filtre · grave ↔ aigu »
+#8 ROUTE padlive_pads_side | MODE simple | EMPREINTE 4fa07120f0 | project=p-c928af07 no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 > touche 51 45
+#8 DOIGT padlive_back
+#9 ROUTE launch | MODE simple | EMPREINTE 6b5e143339 | project=p-c928af07 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 1 Poser ou retirer vide » (13 x 28 dp)
+#9 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 2 Poser ou retirer vide » (65 x 28 dp)
+#9 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 3 Poser ou retirer vide » (65 x 28 dp)
+#9 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 4 Poser ou retirer vide » (40 x 28 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 1 Poser ou retirer vide » (13 x 31 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 2 Poser ou retirer vide » (65 x 29 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 3 Poser ou retirer vide » (65 x 29 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 4 Poser ou retirer vide » (65 x 29 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 5 Poser ou retirer vide » (57 x 29 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 9 Poser ou retirer vide » (13 x 5 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 10 Poser ou retirer vide » (65 x 5 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 11 Poser ou retirer vide » (65 x 5 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 12 Poser ou retirer vide » (65 x 5 dp)
+#9 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 13 Poser ou retirer vide » (57 x 5 dp)
+#9 LAYOUT OVERLAP « Mes projets » over the touchable « Pas 9 Poser ou retirer vide » (13 x 28 dp)
+#9 LAYOUT OVERLAP « Mes projets » over the touchable « Pas 10 Poser ou retirer vide » (65 x 28 dp)
+#9 LAYOUT OVERLAP « Mes projets » over the touchable « Pas 11 Poser ou retirer vide » (39 x 28 dp)
+#9 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 9 Poser ou retirer vide » (13 x 11 dp)
+#9 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 10 Poser ou retirer vide » (65 x 9 dp)
+#9 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 11 Poser ou retirer vide » (65 x 9 dp)
+#9 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 12 Poser ou retirer vide » (65 x 9 dp)
+#9 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 13 Poser ou retirer vide » (39 x 9 dp)
+#9 LAYOUT OVERLAP « Pad Live » over the touchable « Replier Déplié » (89 x 3 dp)
+#9 LAYOUT OVERLAP « Pad Live » over the touchable « Qu'est-ce que « Sample du pad » ? » (25 x 3 dp)
+#9 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Replier Déplié » (93 x 23 dp)
+#9 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Qu'est-ce que « Sample du pad » ? » (29 x 23 dp)
+#9 > touche 927 593
+#9 DOIGT launch_continue « Continuer »
+#10 ROUTE padlive_pads_side | MODE simple | EMPREINTE 1def61b18a | project=p-c928af07 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 51 45
+#10 DOIGT padlive_back
+#11 ROUTE launch | MODE simple | EMPREINTE 6b5e143339 | project=p-c928af07 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 768 956
+#11 DOIGT launch_missions « Mon premier morceau, avec le Guide »
+#12 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 23f5bba718 | project=p-c928af07 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Simple » 2.39:1 (needs 3.0:1, 24 sp)
+#12 LAYOUT CONTRAST « Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » 2.10:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « Pour aller loin : tous les outils, structure, sons, mix et live. » 1.38:1 (needs 4.5:1, 16 sp)
+#12 > touche 679 261
+#12 DOIGT mode_card_simple « Simple »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3314fd5c38 | project=p-c928af07 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « • BPM : la vitesse du morceau, en battements par minute. » 2.38:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Ce son n'a pas pu être lu. » 1.73:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Calme (Chill, Lo-fi) » 1.74:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « 6 styles » 1.36:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Techno » 2.27:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « 10 styles » 1.36:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « House » 1.91:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « 9 styles » 1.33:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Bass music » 2.12:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « Hip-hop » 1.93:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « 7 styles » 1.96:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Autres » 2.37:1 (needs 3.0:1, 16 sp)
+#13 LAYOUT CONTRAST « 4 styles » 2.43:1 (needs 4.5:1, 13 sp)
+#13 > touche 483 402
+#13 DOIGT wizard_family_Techno « Techno »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0098809a0c | project=p-c928af07 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Techno » 1.90:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques. » 3.51:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « Pour l'idée : Amelie Lens – Hypnotized (2019) » 2.15:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Pour l'idée : Rhythim Is Rhythim – Strings of Life (1987) » 2.24:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Acid techno » 2.42:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « Pour l'idée : Josh Wink – Higher State of Consciousness (1995) » 1.98:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « La techno des soirées d'aujourd'hui, plus rapide et plus dure : un kick saturé suivi d'un grondement, et des sirènes de rave. » 3.53:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « Pour l'idée : Sara Landry & Alt8 – Heaven (2024) » 1.94:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Techno industrielle » 3.21:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « Techno · 136 BPM » 3.21:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « La techno la plus noire : des bruits de métal et de machines, comme une usine, sur un kick saturé qui gronde. » 2.04:1 (needs 4.5:1, 13 sp)
+#14 > touche 477 501
+#14 DOIGT wizard_style_listen_techno
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 88e609f62e | project=p-c928af07 no tuto
+#15 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#15 > touche 960 531
+#15 DOIGT wizard_style_techno « Techno »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE ee4c250505 | project=p-c928af07 no tuto
+#16 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#16 LAYOUT CONTRAST « Pour l'idée : » 2.39:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « • Amelie Lens – Hypnotized (2019) » 1.96:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « • Ben Klock – Subzero (2009) » 1.69:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « • Laurent Garnier – Crispy Bacon (1997) » 1.69:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Choisir ce style » 2.60:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Pour l'idée : Rhythim Is Rhythim – Strings of Life (1987) » 2.77:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne. » 2.13:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Hard techno » 2.04:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « Techno · 150 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#16 > touche 988 771
+#16 DOIGT wizard_style_choose_techno « Choisir ce style »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7eaccc414b | project=p-c928af07 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Créer tout de suite avec les choix conseillés » 2.83:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « environ 50 s » 2.55:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « Complet » 1.82:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « environ 5 min 20 » 2.85:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « Le morceau entier, avec ses parties qui reviennent, comme un vrai titre. » 2.20:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège. » 1.58:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 1.94:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Télécharger les sons du style » 2.75:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Ce son n'a pas pu être lu. » 2.05:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Retour » 2.04:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Suivant » 2.04:1 (needs 4.5:1, 14 sp)
+#17 > touche 1225 1146
+#17 DOIGT wizard_next « Suivant »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE b4fc6d3207 | project=p-c928af07 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « La fondation du morceau : le battement de cœur grave que tout le monde suit en tapant du pied. » 2.89:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « En Techno : le kick tape chaque temps sans jamais s'arrêter : c'est le moteur du morceau. » 2.61:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « • Kick : la grosse caisse, le « boum » grave de la batterie. » 2.12:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « 1 » 2.71:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 2 » 2.74:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 3 » 1.57:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Utiliser cette ligne » 2.33:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.86:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Pour que ça sonne vraiment Techno : Roland TR-909, Techno (3,9 Mo). L'assistant prendra ses sons dedans. » 2.69:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « CHOISIS LE SON » 3.61:1 (needs 4.5:1, 12 sp)
+#18 > touche 1225 1146
+#18 DOIGT wizard_next « Suivant »
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9e40f4a051 | project=p-c928af07 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Un « tsss » plus long : placé entre les temps, il fait respirer le rythme. » 1.79:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « • Kick : la grosse caisse, le « boum » grave de la batterie. » 2.27:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « • Charley : la petite cymbale qui fait « tss », le tic-tac du rythme. » 2.33:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « 1 » 2.66:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « 2 » 2.66:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Pour que ça sonne vraiment Techno : Roland TR-909, Techno (3,9 Mo). L'assistant prendra ses sons dedans. » 1.99:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Télécharger les sons du style » 2.04:1 (needs 4.5:1, 14 sp)
+#19 > touche 1225 1146
+#19 DOIGT wizard_next « Suivant »
+#20 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4e076e2675 | project=p-c928af07 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Un battement de mains : il renforce ou remplace la caisse claire, très courant en house et en trap. » 2.90:1 (needs 4.5:1, 16 sp)
+#20 LAYOUT CONTRAST « En Techno : le clap sur les temps 2 et 4, sec, avec un petit coup fantôme juste avant la mesure suivante pour relancer. » 2.58:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Utiliser cette ligne » 2.35:1 (needs 4.5:1, 16 sp)
+#20 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 3.07:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Pour que ça sonne vraiment Techno : Roland TR-909, Techno (3,9 Mo). L'assistant prendra ses sons dedans. » 1.97:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Télécharger les sons du style » 2.45:1 (needs 4.5:1, 14 sp)
+#20 > touche 1225 1146
+#20 DOIGT wizard_next « Suivant »
+#21 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9bfe904d7f | project=p-c928af07 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Le « tic-tic » régulier et léger : il donne la vitesse et le groove. » 1.79:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « En Techno : les petits charleys fermés remplissent tous les trous entre les coups pour que le rythme roule. » 3.44:1 (needs 4.5:1, 14 sp)
+#21 > touche 1225 1146
+#21 DOIGT wizard_next « Suivant »
+#22 ROUTE dialogue:wizard | MODE simple | EMPREINTE 19ad9ccb40 | project=p-c928af07 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Des petits coups (rim, cloche, conga, shaker) glissés entre les autres : ils donnent du caractère. » 2.90:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « En Techno : un petit « toc » décalé revient en boucle : c'est lui qui rend le groove hypnotique. » 2.61:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Utiliser cette ligne » 2.67:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « Joue dans toutes les parties » 1.81:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 1.58:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « Pour que ça sonne vraiment Techno : Roland TR-909, Techno (3,9 Mo). L'assistant prendra ses sons dedans. » 2.45:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST «   Avec le rythme » 1.74:1 (needs 4.5:1, 14 sp)
+#22 > touche 1225 1146
+#22 DOIGT wizard_next « Suivant »
+#23 ROUTE dialogue:wizard | MODE simple | EMPREINTE cf21e47bc0 | project=p-c928af07 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Une cymbale qui tinte en rythme, plus brillante que le charley : elle fait briller le Drop. » 2.02:1 (needs 4.5:1, 16 sp)
+#23 LAYOUT CONTRAST « En Techno : une cymbale ride sur chaque contretemps, plus douce que le charley ouvert : elle arrive au Drop et le fait briller. » 3.44:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « • Contretemps : entre deux temps, là où on ne tape pas du pied. » 3.94:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « Joue dans Drop » 1.79:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.31:1 (needs 4.5:1, 12 sp)
+#23 > touche 676 541
+#23 DOIGT rien
+#24 ROUTE dialogue:wizard | MODE simple | EMPREINTE cf21e47bc0 | project=p-c928af07 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 1225 1146
+#24 DOIGT wizard_next « Suivant »
+#25 ROUTE dialogue:wizard | MODE simple | EMPREINTE d9bfe13c73 | project=p-c928af07 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Un grondement grave, saturé et accordé au kick, qui roule entre les coups : la basse de la techno dure. » 2.89:1 (needs 4.5:1, 16 sp)
+#25 LAYOUT CONTRAST « En Techno : le grondement de la techno de Berlin : un grave sale et accordé qui roule entre les coups de kick, sous la basse. » 2.58:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « 1 » 2.43:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « 2 » 2.14:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « 3 » 2.14:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « Utiliser cette ligne » 2.24:1 (needs 4.5:1, 16 sp)
+#25 LAYOUT CONTRAST « Joue dans Intro, Groove et Drop » 1.65:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.44:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « CHOISIS LE SON » 1.94:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST «   Avec le rythme » 2.84:1 (needs 4.5:1, 14 sp)
+#25 > touche 1225 1146
+#25 DOIGT wizard_next « Suivant »
+#26 ROUTE dialogue:wizard | MODE simple | EMPREINTE f1dfc9db5b | project=p-c928af07 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « Brillant · épais » ellipsized (« … »)
+#26 LAYOUT CUT « Brillant · court » ellipsized (« … »)
+#26 LAYOUT CONTRAST « Elle joue la note principale de chaque accord, dans le grave : elle fait le lien entre la batterie et l'harmonie. » 2.93:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « En Techno : une basse sourde qui roule entre les coups de kick, jamais en même temps : le grave reste propre et ça tourne. Elle se baisse à chaque kick (la pompe). » 2.58:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Créer cette piste » 1.75:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « Joue dans Groove et Drop » 2.29:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « CHOISIS LE SON » 3.20:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Basse analogique » 2.00:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Conseillé » 2.37:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Basse ronde » 2.21:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Brillant · tenu » 2.42:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Reese moderne » 1.99:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Brillant · épais » 2.07:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Reese DnB » 3.06:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Basse riddim » 4.22:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Basse roulante » 2.00:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Basse pluck » 2.00:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 808 synthé » 1.89:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Donk » 1.89:1 (needs 4.5:1, 14 sp)
+#26 > touche 834 748
+#26 DOIGT wizard_part_sound_1 « Basse ronde »
+#27 ROUTE dialogue:wizard | MODE simple | EMPREINTE cc3fe5b331 | project=p-c928af07 no tuto
+#27 SON Son : un son de la bibliothèque joue (écoute).
+#27 LAYOUT CUT « En écoute… » ellipsized (« … »)
+#27 LAYOUT CONTRAST « En écoute… » 2.42:1 (needs 4.5:1, 12 sp)
+#27 > touche 1225 1146
+#27 DOIGT wizard_next « Suivant »
+#28 ROUTE dialogue:wizard | MODE simple | EMPREINTE 071f1df36b | project=p-c928af07 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Brillant · monte doucement » ellipsized (« … »)
+#28 LAYOUT CUT « Doux · monte doucement » ellipsized (« … »)
+#28 LAYOUT CUT « Machine à cordes » ellipsized (« … »)
+#28 LAYOUT CONTRAST « Des accords qui posent l'ambiance : tenus ou joués en petits coups, selon le style. » 2.02:1 (needs 4.5:1, 16 sp)
+#28 LAYOUT CONTRAST « En Techno : pas de vraie nappe : un petit accord court avec un écho qui se répète, presque toujours le même. C'est ce qui hypnotise. » 3.44:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Joue dans Groove, Drop et Break » 1.63:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « CHOISIS LE SON » 2.37:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Son court » 2.11:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Conseillé » 1.77:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Nappe » 1.86:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Brillant · épais » 3.70:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Cordes » 2.41:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Brillant · monte doucement » 2.56:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Orgue » 3.45:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Piano électrique » 1.67:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Nappe d'accords » 1.64:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Machine à cordes » 2.23:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Machine à cordes » 1.95:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Essaim » 1.92:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Essaim » 1.81:1 (needs 4.5:1, 12 sp)
+#28 > touche 1225 1146
+#28 DOIGT wizard_next « Suivant »
+#29 ROUTE dialogue:wizard | MODE simple | EMPREINTE 911e3e9167 | project=p-c928af07 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « FM 6 op. · banque 2 » ellipsized (« … »)
+#29 LAYOUT CONTRAST « Un son plus aigu qui joue une petite mélodie sur les accords : le bout qu'on retient. » 2.02:1 (needs 4.5:1, 16 sp)
+#29 LAYOUT CONTRAST « En Techno : un petit riff filtré de deux mesures qui respire : une note, son octave, un silence. Il arrive au Drop et tourne en boucle. » 3.44:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « • Octave : la même note, plus grave ou plus aiguë. » 2.12:1 (needs 4.5:1, 13 sp)
+#29 LAYOUT CONTRAST « Créer cette piste » 1.72:1 (needs 4.5:1, 16 sp)
+#29 LAYOUT CONTRAST « Joue dans Drop et Break » 2.29:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Mélodie filtrée » 1.91:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Conseillé » 2.41:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Mélodie » 1.62:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Brillant · tenu » 2.29:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Mélodie acide » 4.30:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Supersaw » 2.29:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Mélodie trance » 2.15:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Brillant · épais » 1.45:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Son court futur » 2.77:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Brillant · épais » 3.06:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Arpège » 1.80:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Creux · court » 2.57:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Piano électrique » 2.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Mélodie chiptune » 2.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Voix robot » 1.31:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Formants » 2.62:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « FM 6 op. · banque 2 » 2.84:1 (needs 4.5:1, 12 sp)
+#29 > touche 1225 1146
+#29 DOIGT wizard_next « Suivant »
+#30 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5f7ea3214e | project=p-c928af07 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « QUATRE BRIQUES » 3.49:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « ? » 2.62:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « Intro · la batterie pour démarrer » 1.94:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Kick, Charley fermé, Percussion, Rumble » 1.76:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « B » 2.47:1 (needs 3.0:1, 14 sp)
+#30 LAYOUT CONTRAST « Groove · le groove, avec la basse » 2.96:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Kick, Clap, Charley fermé, Percussion, Rumble, Basse, Nappe, Montée de souffle » 2.43:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « Drop · tout le monde joue » 1.98:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Break · une pause sans kick ni basse » 1.86:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Charley fermé, Percussion, Nappe, Mélodie, Montée de souffle » 1.79:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « Le morceau : Intro → Groove → Montée → Drop → Break → Montée → Drop → Fin : environ 5 min 20. » 3.53:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « TON MORCEAU TECHNO » 1.69:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « Tempo 132 BPM, avec du swing. » 2.96:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Kick (grosse caisse) » 2.83:1 (needs 4.5:1, 16 sp)
+#30 LAYOUT CONTRAST « Kick » 2.43:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « Charley ouvert » 2.29:1 (needs 4.5:1, 16 sp)
+#30 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « 2 » 1.94:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « 3 » 1.94:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « 4 » 2.84:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « Créer le morceau » 2.04:1 (needs 4.5:1, 14 sp)
+#30 > touche 1225 1146
+#30 DOIGT wizard_create « Créer le morceau »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 565cecb878 | project=p-246bbfb2 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m » ellipsized (« … »)
+#31 LAYOUT CUT « Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ » ellipsized (« … »)
+#31 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#31 > touche 1803 42
+#31 DOIGT top_play
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5a94c4df01 | project=p-246bbfb2 no tuto
+#32 SON Son : le morceau joue (partie « E »).
+#32 LAYOUT CONTRAST « × 1  ·  8 mes.  ·  joue » 4.13:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « POUR COMMENCER » 4.30:1 (needs 4.5:1, 12 sp)
+#32 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Le son de la mélodie » 3.89:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Une autre batterie » 3.95:1 (needs 4.5:1, 14 sp)
+#32 > touche 59 261
+#32 DOIGT tab_simple_Rythme « Rythme »
+#33 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 4416a09dde | project=p-246bbfb2 no tuto
+#33 SON Son : le morceau joue (partie « E »).
+#33 > touche 474 318
+#33 DOIGT pad_1 « Kick 2 »
+#34 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b8d475f09d | project=p-246bbfb2 no tuto
+#34 SON Son : le morceau joue (partie « E ») ; le pad « Kick 2 » sonne.
+#34 > touche 693 502
+#34 DOIGT pad_6 « Charley ouvert »
+#35 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 0a2259181d | project=p-246bbfb2 no tuto
+#35 SON Son : le morceau joue (partie « E ») ; le pad « Charley ouvert » sonne.
+#35 LAYOUT CONTRAST « Charley ouvert » 4.06:1 (needs 4.5:1, 14 sp)
+#35 > touche 912 870
+#35 DOIGT pad_15 « Zap »
+#36 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f4a4e5b447 | project=p-246bbfb2 no tuto
+#36 SON Son : le morceau joue (partie « E ») ; le pad « Zap » sonne.
+#36 > touche 33 1103
+#36 DOIGT guide_bar « Guide »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e9bf33dc0d | project=p-246bbfb2 no tuto
+#37 SON Son : le morceau joue (partie « E »).
+#37 > touche 40 42
+#37 DOIGT top_projects « Techno »
+#38 ROUTE dialogue:projects | MODE simple | EMPREINTE 20b604c5e2 | project=p-246bbfb2 no tuto
+#38 SON Son : le morceau joue (partie « E »).
+#38 > touche 474 54
+#38 DOIGT projects_back
+#39 ROUTE launch | MODE simple | EMPREINTE 8f7b0899bb | project=p-246bbfb2 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « Mes projets » over the touchable « Pas 7 Poser ou retirer vide » (12 x 28 dp)
+#39 LAYOUT OVERLAP « Mes projets » over the touchable « Pas 8 Poser ou retirer vide » (37 x 28 dp)
+#39 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 15 Poser ou retirer vide » (12 x 37 dp)
+#39 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Pas 16 Poser ou retirer vide » (37 x 37 dp)
+#39 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Voir le réglage : Le son de la mélodie V » (152 x 39 dp)
+#39 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Écouter un exemple : Mélodie Écouter un  » (48 x 23 dp)
+#39 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « En savoir plus » (100 x 33 dp)
+#39 > touche 1692 1170
+#39 DOIGT retours_rec « Filmer l'écran avec le son »
+#40 ROUTE launch | MODE simple | EMPREINTE c8bd7cef9d | project=p-246bbfb2 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 1334 831
+#40 DOIGT launch_padlive « Pad Live »
+#41 ROUTE padlive_pads_side | MODE simple | EMPREINTE 52db411b60 | project=p-c928af07 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « ? » over the touchable « vide, pad A4 » (7 x 15 dp)
+#41 LAYOUT OVERLAP « ? » over the touchable « vide, pad A12 » (7 x 15 dp)
+#41 LAYOUT OVERLAP « + » over the touchable « Replier Déplié » (10 x 27 dp)
+#41 LAYOUT OVERLAP « + » over the touchable « Replier Déplié » (14 x 27 dp)
+#41 LAYOUT OVERLAP « A » over the touchable « Replier le Guide ouvert » (8 x 4 dp)
+#41 LAYOUT OVERLAP « B » over the touchable « Replier le Guide ouvert » (11 x 4 dp)
+#41 LAYOUT OVERLAP « C » over the touchable « Replier le Guide ouvert » (12 x 4 dp)
+#41 LAYOUT OVERLAP « D » over the touchable « Replier le Guide ouvert » (11 x 4 dp)
+#41 LAYOUT OVERLAP « Pack… » over the touchable « Replier le Guide ouvert » (53 x 4 dp)
+#41 LAYOUT OVERLAP «  Défi » over the touchable « Replier le Guide ouvert » (35 x 4 dp)
+#41 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Replier le Guide ouvert » (93 x 15 dp)
+#41 LAYOUT OVERLAP « ? » over the touchable « Replier le Guide ouvert » (7 x 13 dp)
+#41 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Replier le Guide ouvert » (126 x 15 dp)
+#41 > touche 1839 132
+#41 DOIGT padlive_challenge_open « Défi : refais ce rythme »
+#42 ROUTE padlive_pads_side | MODE simple | EMPREINTE 7798169aff | project=p-c928af07 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 1829 426
+#42 DOIGT padlive_more « Plus »
+#43 ROUTE padlive_pads_side | MODE simple | EMPREINTE 89cc741c8d | project=p-c928af07 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « Effets » over the touchable « Voir le réglage : Aller à la grille Voir » (36 x 7 dp)
+#43 LAYOUT OVERLAP « Gros pads » over the touchable « Voir le réglage : Aller à la grille Voir » (64 x 7 dp)
+#43 LAYOUT OVERLAP « Partager » over the touchable « Voir le réglage : Aller à la grille Voir » (55 x 7 dp)
+#43 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Voir le réglage : Choisir une batterie V » (183 x 14 dp)
+#43 LAYOUT OVERLAP « Moins » over the touchable « Voir le réglage : Choisir une batterie V » (47 x 14 dp)
+#43 > touche 1792 423
+#43 DOIGT padlive_live « Briques »
+#44 ROUTE live_side_by_side | MODE simple | EMPREINTE c789196259 | project=p-c928af07 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « Acid 303 » 4.27:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST «  Tout couper » 4.37:1 (needs 4.5:1, 14 sp)
+#44 > touche 175 36
+#44 DOIGT live_back
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92004fa1cb | project=p-c928af07 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « La grosse caisse : le « boum » grave qui marque les temps. En house et en techno, il tape sur chaque temps. » ellipsized (« … »)
+#45 LAYOUT CONTRAST « Aller à la grille » 3.89:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Choisir une batterie » 3.95:1 (needs 4.5:1, 14 sp)
+#45 > touche 1875 42
+#45 DOIGT top_more
+#46 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 03bbac7f2f | project=p-c928af07 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Aide et premiers pas » 3.01:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « Signaler un bug » 2.16:1 (needs 4.5:1, 14 sp)
+#46 > retour
+#46 RETOUR
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92004fa1cb | project=p-c928af07 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 40 42
+#47 DOIGT top_projects « Live »
+#48 ROUTE dialogue:projects | MODE simple | EMPREINTE ae00db9439 | project=p-c928af07 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 474 54
+#48 DOIGT projects_back
+#49 ROUTE launch | MODE simple | EMPREINTE 38907cb802 | project=p-c928af07 no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 7 Poser ou retirer vide » (12 x 25 dp)
+#49 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Pas 8 Poser ou retirer vide » (37 x 25 dp)
+#49 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 15 Poser ou retirer vide » (12 x 40 dp)
+#49 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Pas 16 Poser ou retirer vide » (37 x 40 dp)
+#49 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Voir le réglage : Aller à la grille Voir » (152 x 39 dp)
+#49 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Écouter un exemple : Kick Écouter un exe » (48 x 23 dp)
+#49 > touche 1334 672
+#49 DOIGT launch_remix « Remix »
+#50 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 707ac86bb5 | project=p-c928af07 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste. Compte quelques minutes ; tu peux éteindre l'écran. » 4.17:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Télécharger le modèle (174 Mo) » 1.39:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Choisir une chanson » 1.38:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Télécharger le modèle (174 Mo) » 2.04:1 (needs 4.5:1, 14 sp)
+#50 FIN : abandon : budget (60 gestes, 49 faits, 24 images)

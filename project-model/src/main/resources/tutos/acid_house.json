@@ -1,0 +1,302 @@
+{
+  "format": 1,
+  "style": "acid_house",
+  "key": "A minor",
+  "lines": {
+    "acid": "0:A1:1:a 1:A1:1 2:A2:1:as 3:A1:1 5:A1:1 6:G2:1:a 7:A1:1 8:A1:1 10:E2:1:s 11:A2:1:as 12:A1:1 14:C2:1:a 15:A1:1"
+  },
+  "lineBars": {
+    "acid": 1
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "L'acid house de Chicago, 1987 : un tempo de house tranquille, et une petite machine, la TB-303, qui « couine ».",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait d'acid house fini : une ligne de basse qui tourne en boucle et dont le son change sans arrêt, sur une boîte à rythmes toute simple.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo sur 120 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 120 BPM, celui d'« Acid Tracks » de Phuture.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,clap,hat",
+          "skip": "Sans ça, ton morceau reste trop lent pour danser."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
+          "textPro": "À toi : règle la tonalité sur La mineur. Pas d'accords ici : la 303 joue la fondamentale, la tierce, la quinte et la 7e, c'est elle qui fait la couleur.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:acid",
+          "skip": "Sans cette gamme, ta 303 ne restera pas dans ses notes."
+        }
+      ]
+    },
+    {
+      "id": "acid",
+      "title": "La 303 d'abord",
+      "titlePro": "La ligne 303",
+      "why": "En acid house, la ligne de 303 est la vedette : on commence par elle, comme Phuture, et la batterie viendra la servir.",
+      "steps": [
+        {
+          "id": "acid_hear",
+          "text": "Écoute la 303 seule : une boucle d'une mesure qui saute d'octave, avec des notes qui crient (les accents) et des notes qui glissent (les slides).",
+          "check": "listen",
+          "listen": "parts:acid"
+        },
+        {
+          "id": "acid_do",
+          "text": "À toi : la 303 a son propre écran. « Je le fais » l'ouvre, et « Montre-moi » y écrit la ligne pour toi : regarde ses 13 notes se poser, avec leurs accents et leurs glissés.",
+          "textPro": "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.",
+          "why": "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.",
+          "check": "notes:acid",
+          "spot": "acid",
+          "target": "acid",
+          "listen": "parts:acid",
+          "skip": "Sans 303, il n'y a pas d'acid house."
+        },
+        {
+          "id": "acid_tips",
+          "levels": "p",
+          "text": "Les gestes acid : décaler toute la ligne d'un pas (les mêmes notes tombent ailleurs, l'oreille croit à une nouvelle ligne) ; une longueur de 15 pas qui tourne contre la mesure ; et surtout tourner la Coupure et la Résonance pendant que ça joue.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La boîte à rythmes",
+      "titlePro": "La TR-707",
+      "why": "Une batterie toute simple, celle des vieilles boîtes à rythmes : elle laisse toute la place à la 303.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Le kit est celui des premiers disques acid : la boîte à rythmes 707, et le charley ouvert de la 909. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : kick, clap, charley et cowbell de la TR-707, charley ouvert de la TR-909, et le son de la 303 avec sa saturation, son écho et sa pompe.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les 4 cases en pointillé : un coup sur chaque temps.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases (« Remplir » puis « tout ») : le charley de la 707 en continu.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Cowbell » (une cloche), touche les 4 cases en pointillé, entre les temps : typique des premiers disques acid.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,clap,hat,perc"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks : il poussera le Drop.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,clap,hat,perc,open_hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute ta batterie avec la 303, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,clap,hat,perc,open_hat,acid",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Drop",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Drop, le moment le plus plein. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Drop ».",
+          "check": "label:Drop",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,hat,perc,open_hat,acid"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "Pas de couplet ni de refrain en acid : des couches qui entrent et sortent tous les 16 mesures, et le son de la 303 qui change sans arrêt.",
+      "steps": [
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la 303 presque seule, le filtre fermé, puis le charley.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : tout joue, la 303 s'ouvre et crie.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : sans kick, la 303 reste avec les charleys, et son filtre se balade.",
+          "check": "listen",
+          "listen": "part:Break",
+          "why": "Ici, la tension ne vient pas d'un roulement de caisse : c'est le filtre qui fait monter."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Drop : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : la 303 et le charley, rien d'autre.",
+          "check": "part:Intro:less+nokick",
+          "spot": "song.parts",
+          "keep": "acid,hat",
+          "listen": "vs:Intro:Drop"
+        },
+        {
+          "id": "make_groove",
+          "text": "À toi : crée le Groove : tout sauf le charley ouvert.",
+          "check": "part:Groove:less",
+          "spot": "song.parts",
+          "keep": "kick,clap,hat,perc,acid",
+          "listen": "vs:Groove:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : la 303, les charleys et la cowbell, sans kick.",
+          "check": "part:Break:nokick",
+          "spot": "song.parts",
+          "keep": "acid,hat,perc",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick, les charleys et la 303.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,hat,acid",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop:16,Fin:16",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop:16,Fin:16",
+          "why": "96 mesures à 120 BPM, un peu plus de 3 minutes ; les vrais disques acid durent 8 à 12 minutes, sur la même idée."
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les boutons qui tournent",
+      "why": "« Acid Tracks » est né de quelqu'un qui tournait les boutons de la 303 pendant que ça jouait : le son qui change, c'est le morceau.",
+      "steps": [
+        {
+          "id": "filter_hear",
+          "levels": "f",
+          "text": "Écoute le Break : le filtre de la 303 s'ouvre puis se referme, comme une bouche qui s'ouvre.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "filter",
+          "levels": "p",
+          "text": "À toi : automatise la « Coupure » de la 303 dans le Break : une courbe qui monte puis redescend.",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "acid",
+          "part": "Break",
+          "listen": "part:Break"
+        },
+        {
+          "id": "filter_drop",
+          "levels": "p",
+          "text": "À toi : fais de même dans le Drop : une coupure qui monte du début à la fin, la 303 crie de plus en plus.",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "acid",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Club ».",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

@@ -5,13 +5,28 @@ plugins {
 }
 
 // CI passes the workflow run number so every build installs over the previous one.
-val ciVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+val envVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull()
+val ciVersionCode = envVersionCode ?: 1
 val phase = 22
 val releaseChannel = System.getenv("RELEASE_CHANNEL") ?: "dev"
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeIf { it.isNotBlank() }
 val signingStore = rootProject.file("signing/release.p12")
+// A release APK must install over the published one: same key, higher versionCode. Without the
+// secret and VERSION_CODE, a release build fails (checkReleaseSigning) unless it is asked for:
+// -PunsignedRelease (CI: signed by apksigner in the publish job, the only one with the secret) or
+// -PallowDebugSigning (a local check that the release builds; that APK must never reach the phone).
+val unsignedRelease = providers.gradleProperty("unsignedRelease").isPresent
+val allowDebugSigning = providers.gradleProperty("allowDebugSigning").isPresent
 // The phone is arm64-v8a; x86_64 is only added for CI emulator smoke tests (-PemulatorAbi).
 val abis = listOf("arm64-v8a") + if (providers.gradleProperty("emulatorAbi").isPresent) listOf("x86_64") else emptyList()
+// « BenStudio Test » (docs/PLAN-TEST-APK.md, T0): -PbenTest builds the app with its robot inside, beside the real one
+// (another applicationId, name and icon colour). No flavours: without the property, every task and the APK are unchanged,
+// and the robot's sources (src/journey, src/benTest) only reach the unit tests. Signed with the local debug key, never
+// with signing/release.p12, and R8-optimised like the real release (its measures must hold for the real app).
+val benTest = providers.gradleProperty("benTest").isPresent
+val benTestCommit: String = if (!benTest) "" else runCatching {
+    providers.exec { commandLine("git", "rev-parse", "--short", "HEAD") }.standardOutput.asText.get().trim()
+}.getOrDefault("?")
 
 android {
     namespace = "com.pocketstudio.app"
@@ -19,7 +34,7 @@ android {
     ndkVersion = "30.0.16248370"
 
     defaultConfig {
-        applicationId = "com.pocketstudio"
+        applicationId = if (benTest) "com.pocketstudio.test" else "com.pocketstudio"
         minSdk = 31
         targetSdk = 37
         versionCode = ciVersionCode
@@ -30,6 +45,7 @@ android {
         ndk {
             abiFilters += abis
         }
+        if (benTest) resValue("string", "bentest_commit", benTestCommit)
     }
 
     signingConfigs {
@@ -49,13 +65,20 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+            if (benTest) proguardFiles("src/benTest/proguard-bentest.pro")
+            signingConfig = when {
+                benTest -> signingConfigs.getByName("debug")
+                unsignedRelease -> null
+                else -> signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+            }
         }
     }
 
     buildFeatures {
         compose = true
         buildConfig = true
+        // BenStudio Test's commit (bentest_commit); off for the real app, as before.
+        resValues = benTest
     }
 
     compileOptions {
@@ -64,9 +87,20 @@ android {
     }
 
     // The users' paths (docs/TESTS-REELS.md): one copy for the emulator's tests and Robolectric's.
+    // BenStudio Test: the paths' robot (src/journey: Journey and its driver interface) and the in-app robot (src/benTest)
+    // are in the app with -PbenTest only; otherwise the unit tests compile them, so that they are proven at every run.
     sourceSets {
         getByName("test").kotlin.srcDir("src/sharedTest/java")
         getByName("androidTest").kotlin.srcDir("src/sharedTest/java")
+        if (benTest) {
+            getByName("main").kotlin.srcDir("src/journey/java")
+            getByName("main").kotlin.srcDir("src/benTest/java")
+            getByName("main").res.srcDir("src/benTest/res")
+        } else {
+            getByName("test").kotlin.srcDir("src/journey/java")
+            getByName("test").kotlin.srcDir("src/benTest/java")
+            getByName("androidTest").kotlin.srcDir("src/journey/java")
+        }
     }
 
     testOptions {
@@ -74,21 +108,33 @@ android {
             isIncludeAndroidResources = true
             all {
                 it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                // Audit ultra round 1 (n° 17): file names in UTF-8 as on a phone (a POSIX locale made « ó » a « ? » on the bench).
+                it.environment("LC_ALL", "C.UTF-8")
                 // SDK 36 Robolectric needs JDK internals on JDK 21+.
                 it.jvmArgs(
                     "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
                     "--add-opens=java.base/java.io=ALL-UNNAMED",
+                    // StrictMode in the tests (MainThreadIo): stacks deep enough to reach the app's frame under Compose.
+                    "-XX:FlightRecorderOptions:stackdepth=512",
                 )
                 // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out
                 // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live; -Pbench.loop for the soak).
                 // (bench.sublayers=1: the bass music subs as layers of their bass, G1b SubLayers.)
                 // (bench.guide=accept: each song followed to the end of its Guide's parcours first, G6.)
                 // RealProjectsTest (docs/TESTS-REELS.md): -Preal.projects, -Preal.out, -Preal.live, -Preal.render.
-                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render")) {
+                // The « testeur humain » bench (scripts/human-tester.sh): -Phuman.dir, its seats side by side.
+                for (key in listOf("bench.out", "bench.profiles", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.listen", "bench.packs", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render", "human.dir", "human.moteur", "persona.dir", "tuto.langs", "audit", "strict")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
+                if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4
+                // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
+                // passes of one) never read or wipe each other's results in the shared build/test-results.
+                providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
-                if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) it.maxHeapSize = "3g"
+                // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
+                // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests
+                // ran out of heap or out of their wall-clock waits, and the last worker crawled on for half an hour.
+                it.maxHeapSize = if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) "3g" else "2g"
             }
         }
     }
@@ -97,6 +143,33 @@ android {
         jniLibs.useLegacyPackaging = false
     }
 }
+
+// BenStudio Test's own launcher, name and icon (its manifest merged over the app's).
+if (benTest) {
+    androidComponents {
+        onVariants { variant -> variant.sources.manifests.addStaticManifestFile("src/benTest/AndroidManifest.xml") }
+    }
+}
+
+val checkReleaseSigning = tasks.register("checkReleaseSigning") {
+    val signed = signingPassword != null && signingStore.exists()
+    val hasVersionCode = envVersionCode != null
+    val unsigned = unsignedRelease
+    // BenStudio Test installs beside the app, never over it: the local debug key, no published versionCode to beat.
+    val debugAllowed = allowDebugSigning || benTest
+    doLast {
+        val problems = buildList {
+            if (!signed && !unsigned && !debugAllowed) add("no SIGNING_PASSWORD: the APK would be signed with the debug key and refuse to install over the published app")
+            if (!hasVersionCode && !debugAllowed) add("no VERSION_CODE: versionCode would be 1, lower than every published version")
+        }
+        if (problems.isNotEmpty()) throw GradleException(
+            "Release build refused: " + problems.joinToString("; ") +
+                ". Set SIGNING_PASSWORD and VERSION_CODE (scripts/local-release.sh), or pass -PunsignedRelease (CI, signed later)" +
+                " or -PallowDebugSigning (local check only, never install that APK).",
+        )
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach { dependsOn(checkReleaseSigning) }
 
 roborazzi {
     outputDir.set(file("screenshots"))
@@ -108,6 +181,7 @@ dependencies {
     implementation(project(":ui-components"))
     implementation(project(":project-model"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)

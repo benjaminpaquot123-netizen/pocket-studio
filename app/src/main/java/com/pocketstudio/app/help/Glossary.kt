@@ -11,12 +11,12 @@ object Glossary {
     // --- Building a song ---
     val SCENE: Help get() = Help(
         tr("Partie"),
-        tr("Un petit bout de morceau (souvent 4 mesures) : la batterie, la basse et les notes que tu as écrites. Le morceau enchaîne les parties ; on passe de l'une à l'autre en touchant son carré, la suivante démarre à la fin de la mesure en cours."),
+        tr("Un moment du morceau (Intro, Couplet, Drop…) : il joue une brique pendant quelques mesures. Le morceau enchaîne les parties, du début à la fin."),
     )
     /** Lot 2: the grid of A to H, apart from the song's parts. */
     val BRICK: Help get() = Help(
         tr("Brique"),
-        tr("Une des cases A à H de Structure › Parties : une boucle de batterie, de basse et de notes. Chaque partie du morceau joue une brique (le refrain peut rejouer la brique du couplet) ; changer une brique change toutes les parties qui la jouent."),
+        tr("Une des cases A, B, C… de Structure › Parties : une boucle de batterie, de basse et de notes. Chaque partie du morceau joue une brique (le refrain peut rejouer la brique du couplet) ; changer une brique change toutes les parties qui la jouent. Touche son carré : elle prend le relais à la fin de la mesure."),
     )
     val SONG: Help get() = Help(
         tr("Morceau"),
@@ -24,7 +24,7 @@ object Glossary {
     )
     val LIVE_PADS: Help get() = Help(
         tr("Pads live"),
-        tr("Des sons déjà enregistrés (boucles, voix, bouts de morceau) que tu lances et arrêtes d'un toucher, par-dessus ta partie. Ils restent calés sur le tempo, comme chez un DJ."),
+        tr("Des sons (boucles, coups, voix, bouts de morceau) que tu lances d'un toucher par-dessus ta musique : 4 pages de 16 pads dans Pad Live. Chaque pad joue en coup, en boucle ou tant que tu appuies ; les boucles restent calées sur le tempo, comme chez un DJ."),
     )
     val LOOP: Help get() = Help(
         tr("Boucle"),
@@ -40,7 +40,17 @@ object Glossary {
     )
     val STEP: Help get() = Help(
         tr("Pas"),
-        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Pan : à gauche ou à droite. Hauteur : plus aigu ou plus grave."),
+        // Audit ultra round 3, n° 34 (seat D d): « Hauteur » only for a sound of one's own, as its mode says; « Force » too.
+        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux."),
+    )
+
+    /**
+     * « Pas » as the screen has it: the Mode simple's (round 3, n° 34: no rolls, place or pitch modes there), else [STEP].
+     * A variant of one term, not a second entry of the lexicon (which lists « Pas » once).
+     */
+    fun stepFor(simple: Boolean): Help = if (!simple) STEP else Help(
+        tr("Pas"),
+        tr("Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements."),
     )
     val SWING: Help get() = Help(
         tr("Swing"),
@@ -70,10 +80,10 @@ object Glossary {
     )
     val VELOCITY: Help get() = Help(
         tr("Force (vélocité)"),
-        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case."),
+        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case. En mode Pro, les « Couches » du pad donnent un autre son aux coups forts."),
     )
     val PAN: Help get() = Help(
-        tr("Pan"),
+        tr("Place (pan)"),
         tr("Place le son à gauche ou à droite dans le casque. Au centre, il est des deux côtés."),
     )
     val PITCH: Help get() = Help(
@@ -106,7 +116,7 @@ object Glossary {
     )
     val SOUND_LIBRARY: Help get() = Help(
         tr("Bibliothèque de sons"),
-        tr("Tous les sons de l'appli rangés par famille (kick, caisse claire, basse…) : les sons intégrés et ceux des packs téléchargés."),
+        tr("Tous les sons de l'appli au même endroit, rangés en dossiers (batterie, basses, voix…), avec Récents, Favoris (touche ☆) et Ma bibliothèque, les sons que tu as gardés. Les packs téléchargés s'y ajoutent."),
     )
     val SOUND_PACK: Help get() = Help(
         tr("Pack de sons"),
@@ -152,7 +162,7 @@ object Glossary {
     )
     val SOURCE: Help get() = Help(
         tr("Instrument"),
-        tr("Ce qui joue les notes de la piste. Synthé : un synthé classique qui fabrique le son. Plaits : un synthé aux 24 modèles. Sample : un son enregistré joué sur tout le clavier (808, basses, stabs des packs). Instruments : 128 instruments classiques (piano, cordes…)."),
+        tr("Ce qui joue les notes de la piste. Synthé : il fabrique le son. Plaits : un synthé aux 24 modèles. Sample : un son enregistré joué sur tout le clavier (808, basses, stabs). Instruments réels : piano, guitare… enregistrés note par note. Instruments : 128 instruments classiques."),
     )
     val SYNTH: Help get() = Help(
         tr("Synthé"),
@@ -183,7 +193,7 @@ object Glossary {
         tr("La note glisse vers la suivante au lieu de sauter, quand tu tiens une touche et en appuies une autre. Le fameux effet des 808 du trap."),
     )
     val ACID: Help get() = Help(
-        tr("Basse acide"),
+        tr("Acid 303"),
         tr("Le son de la Roland TB-303 qui a fait naître l'acid house : une basse qui couine quand on ouvre le filtre."),
     )
     val FILTER: Help get() = Help(
@@ -218,11 +228,11 @@ object Glossary {
     )
     val MUTE_SOLO: Help get() = Help(
         tr("Muet et solo"),
-        tr("Muet coupe la piste. Solo n'écoute qu'elle (et les autres pistes en solo)."),
+        tr("Le haut-parleur barré coupe la piste (muet). Le casque n'écoute qu'elle (solo), avec les autres pistes en solo."),
     )
     val INSERT: Help get() = Help(
         tr("Effet de piste"),
-        tr("Un effet branché directement sur une piste : saturation, filtre, compresseur… Jusqu'à quatre par piste."),
+        tr("Un effet branché directement sur une piste : saturation, filtre, compresseur… Jusqu'à huit par piste, et chacun peut ne jouer que dans certaines parties."),
     )
     val SEND: Help get() = Help(
         tr("Envoi"),
@@ -254,10 +264,11 @@ object Glossary {
     )
     val FX_PRESET: Help get() = Help(
         tr("Ambiance d'effets"),
-        tr("Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) qui pose plusieurs effets d'un coup."),
+        // Round 3, n° 34 (seat D d): « Sous l'eau » left « 0 effets sur 8 »: what an ambiance really sets.
+        tr("Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) : il règle d'un coup les boutons Couleur, Saleté, Mouvement et Espace, et certaines ajoutent aussi des effets à la liste."),
     )
     val AUTOMATION: Help get() = Help(
-        tr("Automation"),
+        tr("Courbes (automation)"),
         tr("Un réglage qui bouge tout seul pendant la lecture : le volume qui monte, le filtre qui s'ouvre… On le dessine point par point."),
     )
     val PERFORMANCE: Help get() = Help(
@@ -300,7 +311,7 @@ object Glossary {
     )
     val STEMS: Help get() = Help(
         tr("Piste par piste"),
-        tr("Un fichier par piste (batterie, basse, synthé…), pour continuer le morceau dans un autre logiciel."),
+        tr("Un fichier par piste (batterie, basse, synthé…), pour continuer le morceau dans un autre logiciel. Avec ou sans les envois : la réverbe et l'écho restent sur chaque piste, ou à part."),
     )
     val EXPORT_MIDI: Help get() = Help(
         tr("Fichier MIDI"),
@@ -308,7 +319,8 @@ object Glossary {
     )
     val REMIX: Help get() = Help(
         tr("Remix"),
-        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste) pour en jouer des bouts avec ton projet."),
+        // Audit ultra round 1, n° 1: the help says where the cutting is (the song's card), as it is.
+        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live."),
     )
     val AUDIO_TRACK: Help get() = Help(
         tr("Piste audio"),
@@ -327,9 +339,19 @@ object Glossary {
         tr("Le petit retard entre ton toucher et le son. Plus il est bas, mieux on joue en direct."),
     )
 
+    /** Audit stage 2 (carte des fonctions): the Live page and its recording had no word in the Lexique. */
+    val LIVE: Help get() = Help(
+        tr("Live"),
+        tr("La page Live : une case par piste et par brique. Touche une case pour la lancer au prochain départ (« Lancer à » : la mesure, 2 mesures…) ; une case vide te propose d'y mettre un son ou de t'y enregistrer. La colonne Remix joue des passages de ta chanson séparée."),
+    )
+    val LIVE_TAKE: Help get() = Help(
+        tr("Enregistrer ma performance"),
+        tr("Dans le Live, REC enregistre tout ce que tu joues (cases, pads, effets, notes). À l'arrêt, ta prise devient ton morceau : une nouvelle version, ou ajoutée à la suite. « Annuler » la retire d'un coup ; l'ancien morceau reste dans « Versions »."),
+    )
+
     /** Every term, in the order the Lexique shows them. */
     val ALL: List<Help> get() = listOf(
-        SCENE, BRICK, SONG, TIMELINE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
+        SCENE, BRICK, SONG, TIMELINE, LIVE, LIVE_TAKE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
         PAD, KIT, VELOCITY, PAN, PITCH, SAMPLE, ROLL, FIT_TEMPO, SLICE, ENVELOPE, CHOKE, SOUND_LIBRARY, SOUND_PACK,
         TRACK, SOURCE, PIANO_ROLL, SCALE, SCALE_LOCK, CHORD, PROGRESSION, ARPEGGIO, QUANTIZE, SYNTH, PLAITS, GENERAL_MIDI,
         UNISON, SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,

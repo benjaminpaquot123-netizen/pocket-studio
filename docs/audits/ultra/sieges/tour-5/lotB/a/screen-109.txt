@@ -1,0 +1,47 @@
+Écran 109 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+touchable « Basse Plaits » @ 47,246
+touchable « Accords Son court » @ 209,246
+touchable « Mélodie Mélodie filtrée » (nom « Options de Mélodie ») @ 456,246
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : A » @ 121,324
+touchable « Mélodie · mesure 4/8 ← Encore 7 notes en pointillé, plus tôt » @ 294,377
+texte « mes. » @ 69,427
+touchable « 4 » @ 306,427
+touchable « 5 » @ 533,427
+  → la suite sur le côté (glisse pour la voir)
+bouton « Do3 » @ 69,475
+bouton « Si2 » @ 69,505
+bouton « Si♭2 » @ 69,535
+bouton « La2 » @ 69,565
+bouton « La♭2 » @ 69,595
+bouton « Sol2 » @ 69,625
+bouton « Sol♭2 » @ 69,655
+bouton « Fa2 » @ 69,685
+bouton « Mi2 » @ 69,715
+bouton « Mi♭2 » @ 69,734
+texte « Grille des notes : 0 notes » @ 321,599
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Le riff Chapitre 7/15 · Étape 2/2 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Puis « Copier sur les mesures suivantes ». Lire » @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » @ 174,1146
+onglet « Clavier » [sélectionné] @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

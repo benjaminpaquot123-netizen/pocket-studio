@@ -1,0 +1,40 @@
+Écran 39 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+case « FLAC (lossless, light) » @ 176,189
+case « No limiter (for mastering) » @ 195,270
+texte « Loop length » @ 101,333
+case « 1 bar » @ 90,396
+case « 2 » @ 184,396
+case « 4 » [sélectionné] @ 265,396
+case « 8 » @ 346,396
+case « 16 » @ 427,396
+bouton « Final file: 48 kHz · 256 kb/s » @ 201,480
+bouton « ? » (nom « What is “Final file”? ») @ 381,480
+bouton « Export the notes as a MIDI file » @ 294,564
+bouton « Export 4 bars » @ 294,648
+texte « Saved in Music › BenStudio: My-first-beat-loop-streaming-20261105-211622.m4a » @ 294,723
+texte « The song has changed since this export: export again to send the new version. » @ 294,792
+bouton « My exports: find a file and send it again » @ 272,870
+bouton « ? » (nom « What is “My exports”? ») @ 524,870
+bouton « Guide  · Add a melody 31 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

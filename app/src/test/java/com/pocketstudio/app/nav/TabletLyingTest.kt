@@ -149,4 +149,52 @@ class TabletLyingTest {
         }
         assertTrue("« Kit ▾ » ends at ${bottomOf("kit_chip")} (screen ${screen.bottom})", bottomOf("kit_chip") <= screen.bottom + 1f)
     }
+
+    /** Unclipped: where the node really is, not what its scrolled parent lets show. */
+    private fun bottomOf(tag: String) = compose.onNodeWithTag(tag).fetchSemanticsNode().let { it.positionInRoot.y + it.size.height }
+    private fun topOf(tag: String) = compose.onNodeWithTag(tag).fetchSemanticsNode().positionInRoot.y
+
+    /** Audit final (09): at 130 % the drums keep two columns lying down, the steps beside the pads. */
+    @Test
+    fun theStepsStandBesideThePadsAt130() {
+        h.start(scale = 1.3f)
+        tap("tab_Sons")
+        tap("sons_Rythme")
+        val pane = bottomOf("rhythm")
+        assertTrue("the second row of steps ends at ${bottomOf("step_8")} (pane $pane)", bottomOf("step_8") <= pane + 1f)
+        assertTrue("the steps (${compose.onNodeWithTag("step_0").fetchSemanticsNode().positionInRoot.x}) are right of the pads", compose.onNodeWithTag("step_0").fetchSemanticsNode().positionInRoot.x > compose.onNodeWithTag("pad_3").fetchSemanticsNode().positionInRoot.x)
+    }
+
+    /** Audit final (09): « Partager » whole on the screen, the sheet's content scrolling above it. */
+    @Test
+    fun theShareButtonIsOnScreenAt130() {
+        h.start(scale = 1.3f)
+        tap("top_share")
+        // The sheet is a window of its own: the screen's is the first root.
+        val screen = compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes().first().boundsInRoot
+        val go = compose.onNodeWithTag("share_go").fetchSemanticsNode()
+        assertTrue("« Partager » ends at ${go.positionInRoot.y + go.size.height} (screen ${screen.bottom})", go.positionInRoot.y + go.size.height <= screen.bottom + 1f)
+        assertTrue("« Partager » starts at ${go.positionInRoot.y} (screen ${screen.top})", go.positionInRoot.y >= screen.top)
+    }
+
+    /** Audit final (09): Sustain and Arpège in sight over the keys, without scrolling. */
+    @Test
+    fun theKeyboardsSettingsShowLyingDownAt130() {
+        h.start(scale = 1.3f)
+        tap("tab_Sons")
+        tap("track_${h.trackId("Lead")}")
+        val keys = topOf("keyboard")
+        for (tag in listOf("bend", "mod", "sustain", "arp")) {
+            assertTrue("$tag ends at ${bottomOf(tag)}, the keys start at $keys", bottomOf(tag) <= keys + 1f)
+        }
+    }
+
+    /** Audit final (09): the console's faders whole in the pane. */
+    @Test
+    fun theFadersFitLyingDownAt130() {
+        h.start(scale = 1.3f)
+        tap("tab_Mix")
+        val pane = bottomOf("mixer")
+        assertTrue("the first fader ends at ${bottomOf("volume_0")} (pane $pane)", bottomOf("volume_0") <= pane + 1f)
+    }
 }

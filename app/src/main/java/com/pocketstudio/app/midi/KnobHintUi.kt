@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDropdownMenu
 import com.pocketstudio.ui.ScaledPopup
@@ -77,7 +78,7 @@ fun KnobHintBar(hint: KnobHint, open: () -> Unit, modifier: Modifier = Modifier)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Tune, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(16.dp))
             Text(
-                "  " + tr("Potards · %s", hint.screen.label), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
+                "  " + if (hint.faders) tr("Faders · volumes") else tr("Potards · %s", hint.screen.label), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             Text(tr("Tout voir"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan)
@@ -158,10 +159,10 @@ fun KnobPanel(hint: KnobHint, candidates: List<KnobSlot>, enabled: Boolean, acti
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Potards automatiques"), style = MaterialTheme.typography.bodyLarge)
-                Text(tr("Ils suivent l'écran affiché : la 303 sur la basse acide, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
+                Text(tr("Ils suivent l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            Switch(checked = enabled, onCheckedChange = actions.setEnabled, modifier = Modifier.testTag("knob_enabled"))
+            Switch(checked = enabled, onCheckedChange = actions.setEnabled, modifier = Modifier.testTag("knob_enabled").named(tr("Potards automatiques")))
         }
         TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("knob_reset")) { Text(tr("Remettre comme au départ")) }
     }
@@ -232,10 +233,10 @@ fun AutoKnobsCard(enabled: Boolean, setEnabled: (Boolean) -> Unit, open: () -> U
         SectionLabel(tr("Potards automatiques"))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                tr("Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : la 303 sur la basse acide, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
+                tr("Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                 style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f),
             )
-            Switch(checked = enabled, onCheckedChange = setEnabled, modifier = Modifier.testTag("midi_auto_knobs_switch"))
+            Switch(checked = enabled, onCheckedChange = setEnabled, modifier = Modifier.testTag("midi_auto_knobs_switch").named(tr("Potards automatiques")))
         }
         OutlinedButton(onClick = open, enabled = enabled, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("midi_auto_knobs_open")) {
             Text(tr("Voir et changer les potards"))

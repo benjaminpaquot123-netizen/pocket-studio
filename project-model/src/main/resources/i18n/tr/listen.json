@@ -1,0 +1,10 @@
+{
+  "Écouter seul": "Tek başına dinle",
+  "Joue en boucle, tout seul : change le son pour comparer.": "Döngüde, tek başına çalıyor: karşılaştırmak için sesi değiştir.",
+  "Écouter « %s » seul, en boucle": "“%s” sesini tek başına, döngüde dinle",
+  "À toi : écoute ce son tout seul, puis décide.": "Sıra sende: bu sesi tek başına dinle, sonra karar ver.",
+  "À toi : il te plaît ? Touche « %s ».": "Sıra sende: beğendin mi? “%s” düğmesine dokun.",
+  "À toi : touche « %s ».": "Sıra sende: “%s” düğmesine dokun.",
+  "Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule.": "Sesini değiştirmek için bir kanalın adına dokun; tek başına dinlemek için ▶.",
+  "Ses sons, un par un": "Sesleri, tek tek"
+}

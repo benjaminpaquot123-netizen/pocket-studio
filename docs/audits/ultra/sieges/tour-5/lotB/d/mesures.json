@@ -1,0 +1,35 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "ar",
+    "device": "tablet11Land",
+    "font": "100",
+    "mode": "simple",
+    "gestes.max": "80",
+    "mission": "simple",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 39,
+    "images": 9,
+    "gestes_premier_son": 4,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 1,
+    "ecrans": 40,
+    "ecrans_revisites": 1,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 193,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "simple",
+  "resultat": "reussie",
+  "pourquoi": "toujours en Mode simple"
+}

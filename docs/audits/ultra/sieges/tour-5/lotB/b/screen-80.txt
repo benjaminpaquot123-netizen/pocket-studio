@@ -1,0 +1,11 @@
+Écran 80 (588x1278)
+touchable « Zamknij arkusz » @ 294,639
+texte « Uchwyt: przesuń w dół, aby zamknąć » @ 294,867
+texte « Pad 4: co na nim położysz? » @ 239,924
+texte « Teraz: Utwór, 1 takt » @ 121,978
+bouton « Moja biblioteka » @ 110,1084
+bouton « Dźwięki aplikacji » @ 294,1084
+bouton « Nagraj » @ 478,1084
+bouton «  Ustaw » @ 110,1212
+bouton «  Zachowaj » @ 294,1212
+bouton «  Wyczyść » @ 478,1212

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.mixer
 
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -75,10 +78,27 @@ fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): Str
 
 @Composable
 fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
+    // « Tuto de A à Z »: the send its step asks for, dotted and brought into view (« Je le fais » opened this box).
+    val asked = com.pocketstudio.app.tuto.TutoHints.send?.takeIf { it.first == ch }?.second
     sends.forEachIndexed { bus, level ->
-        LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).lowercase()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
-            actions.setSend(ch, bus, it)
+        val wanted = bus == asked
+        val bring = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        if (wanted) androidx.compose.runtime.LaunchedEffect(ch, bus) { kotlinx.coroutines.delay(300); runCatching { bring.bringIntoView() } }
+        val slider: @Composable () -> Unit = {
+            LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).inSentence()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
+                actions.setSend(ch, bus, it)
+            }
         }
+        // Chantier 8: the send a curve moves, reached by « Voir le réglage ».
+        if (isSpot(com.pocketstudio.model.AutoTarget.SEND, ch, bus)) SpotFrame("spot_send_${ch}_$bus") { slider() }
+        // Only the asked one in a frame of its own: the others laid out as everywhere else.
+        else if (wanted) androidx.compose.foundation.layout.Column(
+            Modifier.fillMaxWidth().bringIntoViewRequester(bring).then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_send_$bus"),
+        ) {
+            // Testers (lot « tuto 4 »): which of the step's strips is done, which is this one.
+            com.pocketstudio.app.tuto.TutoHints.sendNote?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Neon.Amber, modifier = Modifier.testTag("tuto_send_note")) }
+            slider()
+        } else slider()
     }
 }
 
@@ -107,5 +127,5 @@ internal fun LabeledSlider(label: String, value: String, v: Float, tag: String, 
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag))
+    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag), label = label, valueText = value)
 }

@@ -1,0 +1,337 @@
+#0 SIEGE lang=fr device=phone360 font=100 mode=simple theme=Night fresh=non gestes.max=60 lit=oui main=right amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 5f644d19a2 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.80:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « J'apprends » 2.24:1 (needs 3.0:1, 22 sp)
+#1 > touche 270 492
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3a073e3179 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Simple » 2.79:1 (needs 3.0:1, 24 sp)
+#2 > touche 270 333
+#2 REFUS hors de portée du pouce (d'une main, la droite)
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE fcafc3ce20 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 460 410
+#3 REFUS hors de portée du pouce (d'une main, la droite)
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE fcafc3ce20 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 495 422
+#4 DOIGT mode_card_simple « Simple »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 491d032fd1 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 6 styles » 2.99:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 10 styles » 3.09:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Bass music » 2.21:1 (needs 3.0:1, 16 sp)
+#5 > touche 470 400
+#5 REFUS hors de portée du pouce (d'une main, la droite)
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE c7007e5553 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 400 768
+#6 DOIGT wizard_family_Hip-hop « Hip-hop »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 23ddff0425 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. » ellipsized (« … »)
+#7 LAYOUT CUT « La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. » ellipsized (« … »)
+#7 > touche 400 900
+#7 DOIGT wizard_style_trap « Trap »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6995dbc864 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Pour l'idée : » 1.25:1 (needs 4.5:1, 13 sp)
+#8 > glisse 400 1000 400 600
+#8 DOIGT wizard_style_trap « Trap »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6887c9de4e | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. » ellipsized (« … »)
+#9 LAYOUT CONTRAST « 9 styles » 3.54:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Bass music » 2.13:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 7 styles » 3.39:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Hip-hop » 2.08:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 7 styles » 2.99:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Trap » 3.41:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Hip-hop · 140 BPM » 1.93:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « • Future – Mask Off (2017) » 2.19:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « • Migos – Bad and Boujee (2016) » 1.63:1 (needs 4.5:1, 13 sp)
+#9 > touche 330 845
+#9 DOIGT wizard_style_choose_trap « Choisir ce style »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4f3fd2ac6b | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Télécharger les sons du style » 3.54:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Sombre / épique » 2.05:1 (needs 4.5:1, 16 sp)
+#10 LAYOUT CONTRAST « Joyeux / énergique » 4.33:1 (needs 4.5:1, 16 sp)
+#10 > touche 400 1116
+#10 DOIGT wizard_next « Suivant »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 48eed0eb1e | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 2 » 2.95:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 1.53:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST «   Avec le rythme » 1.64:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Sons intégrés » 1.21:1 (needs 3.0:1, 16 sp)
+#11 LAYOUT CONTRAST « Kick 2 » 1.25:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#11 > touche 400 1116
+#11 DOIGT wizard_next « Suivant »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5ec5236bdb | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 3 » 3.15:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 4 » 3.11:1 (needs 4.5:1, 12 sp)
+#12 > touche 400 1116
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE b422a24e2a | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « 3 » lines cut (taller than its box)
+#13 LAYOUT CUT « 2 » lines cut (taller than its box)
+#13 LAYOUT CONTRAST « 3 » 1.95:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 3 » 3.45:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 2 » 2.39:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 2 » 3.02:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 1 » 1.53:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 3 » 3.05:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 3.67:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Sons intégrés » 1.20:1 (needs 3.0:1, 16 sp)
+#13 > touche 400 1116
+#13 DOIGT wizard_next « Suivant »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 341aa4f3e2 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.27:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « CHOISIS LE SON » 2.21:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST «   Avec le rythme » 2.19:1 (needs 4.5:1, 14 sp)
+#14 > touche 400 1116
+#14 DOIGT wizard_next « Suivant »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 722f355084 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « CHOISIS LE SON » 4.01:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Conseillé » 3.48:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Brillant · tenu » 4.29:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Brillant · tenu » 2.19:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#15 > touche 400 1116
+#15 DOIGT wizard_next « Suivant »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE a80cf17304 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Nappe » 1.89:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Doux · monte doucement » 2.19:1 (needs 4.5:1, 12 sp)
+#16 > touche 400 1116
+#16 DOIGT wizard_next « Suivant »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE 714f7e2726 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « En Trap : la mélodie de cloche qui tourne en boucle du début à la fin : c'est elle qu'on retient. » 3.60:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Créer cette piste » 2.26:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Joue dans toutes les parties » 4.01:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « CHOISIS LE SON » 3.64:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Cloche FM » 1.83:1 (needs 4.5:1, 14 sp)
+#17 > touche 400 1116
+#17 DOIGT wizard_next « Suivant »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE a5cdcc7137 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Refrain · tout le monde joue » 3.54:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Charley ouvert » 1.25:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « Charley ouvert » 1.25:1 (needs 4.5:1, 13 sp)
+#18 > touche 400 1110
+#18 DOIGT wizard_create « Créer le morceau »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6e51d2f79c | project=p-8795e437 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « ● » over the touchable « Jouer depuis une partie » (11 x 17 dp)
+#19 LAYOUT OVERLAP «  REC » over the touchable « Jouer depuis une partie » (9 x 13 dp)
+#19 > touche 423 42
+#19 REFUS hors de portée du pouce (d'une main, la droite)
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2558c7cd24 | project=p-8795e437 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 360 554
+#20 DOIGT simple_alone_inst:1 « Écouter « Mélodie » seul, en boucle »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6a89acf8a3 | project=p-8795e437 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 LAYOUT CUT « Sauvegardé » wider than its box (by 48.2 dp)
+#21 LAYOUT OVERLAP « ● » over the touchable « Jouer depuis une partie » (7 x 17 dp)
+#21 LAYOUT CONTRAST « ● » 4.02:1 (needs 4.5:1, 13 sp)
+#21 > touche 346 554
+#21 DOIGT simple_alone_inst:1 « Arrêter »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e49786099b | project=p-8795e437 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 160 1110
+#22 DOIGT tab_simple_Rythme « Rythme »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd3ac81436 | project=p-8795e437 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 490 618
+#23 DOIGT guide_bar « Guide »
+#24 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b8c6ebad8e | project=p-8795e437 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » ellipsized (« … »)
+#24 > touche 60 1110
+#24 DOIGT tab_simple_Morceau « Mon morceau »
+#25 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 7c4bf47575 | project=p-8795e437 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « Contre-chant » a word split over two lines
+#25 > appui-long 150 944
+#25 DOIGT simple_track_inst:4 « Voix »
+#26 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE fd745c89e3 | project=p-8795e437 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « Son de : Voix » over the touchable « Fermer la feuille » (138 x 28 dp)
+#26 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (251 x 36 dp)
+#26 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#26 LAYOUT OVERLAP « Mélodies » over the touchable « Fermer la feuille » (71 x 24 dp)
+#26 LAYOUT OVERLAP « Mélodie filtrée » over the touchable « Fermer la feuille » (97 x 17 dp)
+#26 LAYOUT OVERLAP « Analogique + filtre » over the touchable « Fermer la feuille » (111 x 16 dp)
+#26 LAYOUT OVERLAP « Mélodie chiptune » over the touchable « Fermer la feuille » (117 x 17 dp)
+#26 LAYOUT OVERLAP « Chiptune » over the touchable « Fermer la feuille » (55 x 16 dp)
+#26 LAYOUT OVERLAP « Voix robot » over the touchable « Fermer la feuille » (69 x 17 dp)
+#26 LAYOUT OVERLAP « Formants » over the touchable « Fermer la feuille » (56 x 16 dp)
+#26 LAYOUT OVERLAP « Stab métallique » over the touchable « Fermer la feuille » (105 x 17 dp)
+#26 LAYOUT OVERLAP « FM 2 op. » over the touchable « Fermer la feuille » (51 x 16 dp)
+#26 LAYOUT OVERLAP « Au hasard » over the touchable « Fermer la feuille » (70 x 20 dp)
+#26 LAYOUT OVERLAP « Garder ce son » over the touchable « Fermer la feuille » (96 x 20 dp)
+#26 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (323 x 36 dp)
+#26 LAYOUT OVERLAP « INSTRUMENTS RÉELS » over the touchable « Fermer la feuille » (147 x 16 dp)
+#26 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (327 x 54 dp)
+#26 LAYOUT OVERLAP « Piano à queue » over the touchable « Fermer la feuille » (95 x 17 dp)
+#26 LAYOUT OVERLAP « Bientôt disponible » over the touchable « Fermer la feuille » (109 x 16 dp)
+#26 LAYOUT OVERLAP « Piano de concert » over the touchable « Fermer la feuille » (114 x 17 dp)
+#26 LAYOUT OVERLAP « Cordes » over the touchable « Fermer la feuille » (48 x 5 dp)
+#26 LAYOUT CONTRAST « Mélodie chiptune » 1.75:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Voix robot » 1.75:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « FM 2 op. » 1.77:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Piano à queue » 1.64:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT LABEL « #2945 » long press without text nor description
+#26 > retour
+#26 RETOUR
+#27 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 17e42a8584 | project=p-8795e437 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « Chercher un son (doigts, verre, conga…) » over the touchable « Fermer la feuille » (188 x 48 dp)
+#27 LAYOUT OVERLAP « Basses » over the touchable « Fermer la feuille » (55 x 24 dp)
+#27 LAYOUT OVERLAP « 4 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#27 LAYOUT OVERLAP « Mélodies » over the touchable « Fermer la feuille » (70 x 24 dp)
+#27 LAYOUT OVERLAP « Nappes » over the touchable « Fermer la feuille » (59 x 24 dp)
+#27 LAYOUT OVERLAP « 3 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#27 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (76 x 24 dp)
+#27 LAYOUT OVERLAP « 6 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#27 LAYOUT OVERLAP « Batterie » over the touchable « Fermer la feuille » (60 x 24 dp)
+#27 LAYOUT OVERLAP « Effets » over the touchable « Fermer la feuille » (44 x 24 dp)
+#27 LAYOUT OVERLAP « 2 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#27 LAYOUT OVERLAP « Touche ☆ sur un son pour le retrouver dans « Favoris ». » over the touchable « Fermer la feuille » (264 x 36 dp)
+#27 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (327 x 16 dp)
+#27 LAYOUT CONTRAST « 6 sons » 1.37:1 (needs 4.5:1, 13 sp)
+#27 LAYOUT CONTRAST « Batterie » 1.76:1 (needs 4.5:1, 16 sp)
+#27 > retour
+#27 RETOUR
+#28 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 7c4bf47575 | project=p-8795e437 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 462 950
+#28 DOIGT simple_volume_inst:4
+#29 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 00fec46046 | project=p-8795e437 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « Voix » over the touchable « Fermer la feuille » (47 x 28 dp)
+#29 LAYOUT OVERLAP « Volume » over the touchable « Fermer la feuille » (57 x 24 dp)
+#29 LAYOUT OVERLAP « +0,0 dB » over the touchable « Fermer la feuille » (54 x 17 dp)
+#29 LAYOUT OVERLAP « Écouter seule » over the touchable « Fermer la feuille » (96 x 20 dp)
+#29 LAYOUT OVERLAP « Son » over the touchable « Fermer la feuille » (21 x 13 dp)
+#29 LAYOUT OVERLAP «   Changer le son » over the touchable « Fermer la feuille » (110 x 20 dp)
+#29 LAYOUT OVERLAP «   Supprimer la piste (Annuler possible) » over the touchable « Fermer la feuille » (262 x 20 dp)
+#29 LAYOUT CONTRAST « Écouter seule » 1.77:1 (needs 3.0:1, 14 sp)
+#29 LAYOUT CONTRAST «   Changer le son » 1.64:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT LABEL « #3177 » long press without text nor description
+#29 > touche 300 1098
+#29 DOIGT simple_track_delete «   Supprimer la piste (Annuler possible) »
+#30 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 5d821e8bf7 | project=p-8795e437 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 279 42
+#30 REFUS hors de portée du pouce (d'une main, la droite)
+#31 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 9195dd54b7 | project=p-8795e437 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 495 42
+#31 REFUS hors de portée du pouce (d'une main, la droite)
+#32 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 9195dd54b7 | project=p-8795e437 no tuto
+#32 SON Son : rien ne joue.
+#32 > retour
+#32 RETOUR
+#33 ROUTE launch | MODE simple | EMPREINTE e1edd52333 | project=p-8795e437 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CUT « Séparation des pistes : batterie, basse, voix et le reste. » ellipsized (« … »)
+#33 LAYOUT OVERLAP « Trap » over « BenStudio » (25 x 2 dp)
+#33 LAYOUT OVERLAP « Simple » over « BenStudio » (45 x 10 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over « ● » (11 x 17 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over «  REC » (23 x 13 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over « ✎ » (13 x 17 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over «  Noter » (29 x 13 dp)
+#33 LAYOUT OVERLAP « BenStudio » over the touchable « Mode Simple. Toucher pour changer de mod » (55 x 24 dp)
+#33 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo : 140 BPM Changer le tempo » (31 x 16 dp)
+#33 LAYOUT OVERLAP « BenStudio » over the touchable « Jouer depuis une partie » (51 x 16 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Tempo : 140 BPM Changer le tempo » (71 x 30 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Jouer depuis une partie » (109 x 30 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Filmer l'écran avec le son » (42 x 26 dp)
+#33 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Écrire une note » (48 x 26 dp)
+#33 LAYOUT OVERLAP « Continuer » over the touchable « Replier Déplié » (79 x 8 dp)
+#33 LAYOUT OVERLAP « Simple » over the touchable « Replier Déplié » (10 x 5 dp)
+#33 LAYOUT OVERLAP « Trap · 2:58 · 26 parties » over the touchable « Changer le son de Batterie » (89 x 24 dp)
+#33 LAYOUT OVERLAP « Trap · 2:58 · 26 parties » over the touchable « Écouter « Batterie » seul, en boucle Éco » (75 x 24 dp)
+#33 LAYOUT OVERLAP « modifié à l'instant » over the touchable « Changer le son de Batterie » (89 x 20 dp)
+#33 LAYOUT OVERLAP « modifié à l'instant » over the touchable « Écouter « Batterie » seul, en boucle Éco » (18 x 20 dp)
+#33 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Changer le son de Nappe » (33 x 31 dp)
+#33 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Écouter « Nappe » seul, en boucle Écoute » (59 x 27 dp)
+#33 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Changer le son de Mélodie » (33 x 7 dp)
+#33 LAYOUT OVERLAP « Nouveau morceau » over the touchable « Écouter « Mélodie » seul, en boucle Écou » (59 x 3 dp)
+#33 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Changer le son de Mélodie » (33 x 40 dp)
+#33 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Écouter « Mélodie » seul, en boucle Écou » (140 x 40 dp)
+#33 LAYOUT OVERLAP « Mes projets » over the touchable « Changer le son de Contre-chant » (33 x 28 dp)
+#33 LAYOUT OVERLAP « Mes projets » over the touchable « Écouter « Contre-chant » seul, en boucle » (87 x 28 dp)
+#33 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Changer le son de Contre-chant » (33 x 30 dp)
+#33 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Écouter « Contre-chant » seul, en boucle » (143 x 16 dp)
+#33 LAYOUT OVERLAP « Remix » over the touchable « Changer le son de Souffle montant » (33 x 28 dp)
+#33 LAYOUT OVERLAP « Remix » over the touchable « Écouter « Souffle montant » seul, en bou » (29 x 28 dp)
+#33 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Changer le son de Souffle montant » (33 x 13 dp)
+#33 LAYOUT OVERLAP « Pad Live » over the touchable « Ouvrir le Guide replié » (89 x 28 dp)
+#33 LAYOUT OVERLAP « NOUVEAU » over the touchable « Ouvrir le Guide replié » (65 x 16 dp)
+#33 LAYOUT OVERLAP « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » over the touchable « Ouvrir le Guide replié » (176 x 14 dp)
+#33 > touche 490 760
+#33 DOIGT launch_projects « Mes projets »
+#34 ROUTE dialogue:projects | MODE simple | EMPREINTE 76e55dbeff | project=p-8795e437 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST «   Nouveau morceau guidé » 2.64:1 (needs 4.5:1, 16 sp)
+#34 > touche 400 450
+#34 DOIGT project_p-8795e437 « Trap »
+#35 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 5d821e8bf7 | project=p-8795e437 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 491 1110
+#35 DOIGT tab_simple_Envoyer « Envoyer »
+#36 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE f871e2669f | project=p-8795e437 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 480 285
+#36 REFUS hors de portée du pouce (d'une main, la droite)
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 3a278bb337 | project=p-8795e437 no tuto
+#37 SON Son : rien ne joue.
+#37 > retour
+#37 RETOUR
+#38 ROUTE launch | MODE simple | EMPREINTE e1edd52333 | project=p-8795e437 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « Continuer » over the touchable « Trap » (79 x 16 dp)
+#38 LAYOUT OVERLAP « Simple » over the touchable « Trap » (42 x 13 dp)
+#38 LAYOUT OVERLAP « Trap » over the touchable « Trap » (53 x 32 dp)
+#38 LAYOUT OVERLAP « Trap · 2:58 · 26 parties » over the touchable « Trap » (174 x 9 dp)
+#38 > touche 490 760
+#38 DOIGT launch_projects « Mes projets »
+#39 ROUTE dialogue:projects | MODE simple | EMPREINTE 1e344f4e60 | project=p-8795e437 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 486 467
+#39 DOIGT project_menu_p-8795e437
+#40 ROUTE dialogue:project_opening_p-8795e437 | MODE simple | EMPREINTE 44912202a2 | project=p-8795e437 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 400 551
+#40 DOIGT #3954 « Renommer »
+#41 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE ac1f61f120 | project=p-8795e437 no tuto
+#41 SON Son : rien ne joue.
+#41 > ecris Nuit blanche
+#41 CRASH java.lang.AssertionError: Failed to perform text input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Focused = 'true')
+
+    at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+    at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+    at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+    at androidx.compose.ui.test.TextActionsKt.getNodeAndFocus(TextActions.kt:124)
+    at androidx.compose.ui.test.TextActionsKt.getNodeAndFocus$default(TextActions.kt:119)
+    at androidx.compose.ui.test.TextActionsKt.performTextInput(TextActions.kt:39)
+    at com.pocketstudio.app.human.HumanTester.gesture(HumanTester.kt:879)
+    at com.pocketstudio.app.human.HumanTester.play(HumanTester.kt:860)
+    at com.pocketstudio.app.human.HumanTester.seatLoop(HumanTester.kt:261)
+    at com.pocketstudio.app.human.HumanTester.drive(HumanTester.kt:168)
+    at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+    at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+#42 FIN : plantage

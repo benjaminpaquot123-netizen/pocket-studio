@@ -1,12 +1,16 @@
 package com.pocketstudio.ui
 
+import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -66,14 +70,19 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.tr
+import kotlin.math.roundToInt
 
 /**
  * Where folded cards are remembered, by title. The app gives one that lasts (its preferences);
@@ -87,7 +96,7 @@ interface FoldStore {
 /** Folds kept in memory (Compose state, so a change redraws the card). */
 open class MemoryFoldStore(initial: Map<String, Boolean> = emptyMap()) : FoldStore {
     private val folded = mutableStateMapOf<String, Boolean>().apply { putAll(initial) }
-    override fun isFolded(key: String) = folded[key] ?: false
+    override fun isFolded(key: String) = !FoldOverride.openAll && (folded[key] ?: false)
     override fun setFolded(key: String, folded: Boolean) {
         this.folded[key] = folded
     }
@@ -99,6 +108,14 @@ open class MemoryFoldStore(initial: Map<String, Boolean> = emptyMap()) : FoldSto
 }
 
 val LocalFoldStore = staticCompositionLocalOf<FoldStore> { MemoryFoldStore() }
+
+/**
+ * Benjamin's n° 19: while a tuto, the Guide or « Montre-moi » points at something, every card is
+ * open (the place to work is never in a folded card); the user's folds come back after.
+ */
+object FoldOverride {
+    var openAll by androidx.compose.runtime.mutableStateOf(false)
+}
 
 /** False where cards must stay open (a step-by-step assistant, a dialog). */
 val LocalFolding = staticCompositionLocalOf { true }
@@ -147,24 +164,17 @@ fun NeonCard(
     val store = LocalFoldStore.current
     val folded = fold.key?.let(store::isFolded) == true && fold.headerBottom > 0f
     val highlighted = accent != Neon.Outline
-    val edge = if (highlighted) {
-        Brush.verticalGradient(listOf(accent, accent.copy(alpha = 0.55f)))
-    } else {
-        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.16f), Color.White.copy(alpha = 0.04f)))
-    }
     val headerHeight = with(LocalDensity.current) { fold.headerBottom.toDp() } + 16.dp
     Box(
         modifier
             .fillMaxWidth()
-            .shadow(
-                if (highlighted) 10.dp else 6.dp, shape,
-                ambientColor = if (highlighted) accent else Color.Black,
-                spotColor = if (highlighted) accent else Color.Black,
-            )
+            // Two shadows, as under a real panel: a wide soft one, a tight one where it touches.
+            // An important card glows faintly in its colour instead of the wide one.
+            .dropShadow(shape, if (highlighted) Shadow(14.dp, accent, alpha = 0.26f) else PanelShadowWide)
+            .dropShadow(shape, PanelShadowContact)
             .clip(shape)
-            .background(Brush.verticalGradient(listOf(lerp(surface, Color.White, 0.05f), surface, lerp(surface, Color.Black, 0.07f))))
-            .border(if (highlighted) 1.5.dp else 1.dp, edge, shape)
-            .then(if (fold.animate) Modifier.animateContentSize(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)) else Modifier)
+            .then(remember(surface, accent, highlighted) { Modifier.panelFinish(surface, accent.takeIf { highlighted }) })
+            .then(if (fold.animate) Modifier.animateContentSize(StudioMotion.spatial()) else Modifier)
             .then(if (folded) Modifier.height(headerHeight).clipToBounds() else Modifier)
             .onGloballyPositioned {
                 fold.card = it
@@ -185,13 +195,61 @@ fun NeonCard(
     }
 }
 
+/** Under every panel: wide and soft, then tight where it touches (made once). */
+private val PanelShadowWide = Shadow(radius = 14.dp, color = Color.Black, offset = DpOffset(0.dp, 5.dp), alpha = 0.34f)
+private val PanelShadowContact = Shadow(radius = 2.dp, color = Color.Black, offset = DpOffset(0.dp, 1.dp), alpha = 0.30f)
+
+/**
+ * A panel's material, lit from above: a micro-gradient (lighter at the top, a shade darker at
+ * the foot), a grain too fine to see but that keeps it from looking flat, and over the content a
+ * hairline edge, bright along the top and fading down the sides, darker at the foot (a bevel).
+ * [accent]: a coloured edge instead (an important card). Its brushes are made when the size
+ * changes, not on each frame. Put it after the clip.
+ */
+fun Modifier.panelFinish(surface: Color, accent: Color? = null, corner: Dp = 16.dp): Modifier = drawWithCache {
+    val h = size.height.coerceAtLeast(1f)
+    val body = Brush.verticalGradient(
+        0f to lerp(surface, Color.White, 0.055f),
+        (48.dp.toPx() / h).coerceIn(0.05f, 0.5f) to lerp(surface, Color.White, 0.015f),
+        1f to lerp(surface, Color.Black, 0.075f),
+        startY = 0f, endY = h,
+    )
+    val edgeWidth = if (accent != null) 1.5.dp.toPx() else 1.dp.toPx() * 0.75f
+    val edge = if (accent != null) {
+        Brush.verticalGradient(listOf(accent, accent.copy(alpha = 0.55f)), startY = 0f, endY = h)
+    } else {
+        Brush.verticalGradient(
+            0f to Color.White.copy(alpha = 0.24f),
+            (28.dp.toPx() / h).coerceIn(0.02f, 0.4f) to Color.White.copy(alpha = 0.06f),
+            0.7f to Color.White.copy(alpha = 0.03f),
+            1f to Color.Black.copy(alpha = 0.22f),
+            startY = 0f, endY = h,
+        )
+    }
+    val stroke = Stroke(edgeWidth)
+    val r = corner.toPx()
+    val inset = Offset(edgeWidth / 2, edgeWidth / 2)
+    val edgeSize = Size(size.width - edgeWidth, size.height - edgeWidth)
+    val edgeRadius = CornerRadius((r - edgeWidth / 2).coerceAtLeast(0f))
+    onDrawWithContent {
+        drawRect(body)
+        if (PanelGrain.enabled) drawRect(PanelGrain.brush)
+        drawContent()
+        drawRoundRect(edge, inset, edgeSize, edgeRadius, style = stroke)
+    }
+}
+
 /**
  * A card's title in small capitals after a bar of its [color]; with [help], a faded "?" explains
  * the term. The first title of a card folds it: a discreet chevron shows it, a touch folds or
  * opens it, and the app remembers it under [foldKey] (the title by default).
  */
 @Composable
-fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null) {
+fun SectionLabel(
+    text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null, helpAbout: List<String> = emptyList(),
+    /** A name the person gave (a song's title): shown as written, never in capitals (round 3, n° 38). */
+    asWritten: Boolean = false,
+) {
     val fold = LocalCardFold.current.takeIf { LocalFolding.current }
     val me = remember { Any() }
     val isHeader = fold != null && (fold.header == null || fold.header === me)
@@ -215,7 +273,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
         fold.key = key
         if (fold.headerBottom == 0f) fold.headerBottom = headerBottoms[key] ?: 0f
     }
-    val label: @Composable () -> Unit = { SectionTitle(text, color, folded.takeIf { isHeader }) }
+    val label: @Composable () -> Unit = { SectionTitle(text, color, folded.takeIf { isHeader }, asWritten = asWritten) }
     val headerModifier = if (isHeader) {
         modifier
             .onGloballyPositioned { c ->
@@ -225,7 +283,9 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
             .foldToggle(key, folded) { fold!!.animate = true }
     } else modifier
     if (help == null) Box(headerModifier, contentAlignment = Alignment.CenterStart) { label() }
-    else WithHelp(help, headerModifier) { label() }
+    // Audit stage 1: the title takes what is left after its « ? » (a long title pushed the « ? » out of
+    // the row, over the button beside it: Rythme's « PAS : … » under « Tous les pads »).
+    else WithHelp(help, headerModifier, about = helpAbout) { Box(Modifier.weight(1f, fill = false)) { label() } }
 }
 
 /**
@@ -233,13 +293,20 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
  * chevron. [subtle]: a dot and grey text instead, for a group inside a card ([TileSection]'s look).
  */
 @Composable
-private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false) {
-    val turn by animateFloatAsState(if (folded == true) -90f else 0f, label = "fold-chevron")
+private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false, asWritten: Boolean = false) {
+    val turn by animateFloatAsState(if (folded == true) -90f else 0f, StudioMotion.spatial(), label = "fold-chevron")
     val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
-        Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f))
+        // Audit final (22): a title TalkBack can jump to.
+        val titleStyle = if (subtle) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelSmall.merge(SectionCaps)
+        val titleColor = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f)
+        // Audit ultra round 1, n° 38 (200 %: « PAS : KICK DE MA V/OIX » beside « Tous les pads »): past 130 %, a little
+        // smaller rather than a word split.
+        if (androidx.compose.ui.platform.LocalDensity.current.fontScale > BIG_FONT_FROM) {
+            WholeWordsText(if (asWritten) text else text.upperShown(), Modifier.weight(1f, fill = false).semantics { heading() }, style = titleStyle, color = titleColor, maxLines = Int.MAX_VALUE)
+        } else Text(if (asWritten) text else text.upperShown(), style = titleStyle, color = titleColor, modifier = Modifier.weight(1f, fill = false).semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
             Canvas(Modifier.size(12.dp).rotate(turn)) {
@@ -251,6 +318,12 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         }
     }
 }
+
+/**
+ * Section titles in small capitals: semi-bold and spaced a little wider, as engraved on a console
+ * (about the same width as the bold ones before them).
+ */
+private val SectionCaps = androidx.compose.ui.text.TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold, letterSpacing = 1.1.sp)
 
 /** A title that folds: a touch folds or opens what it heads, remembered under [key]. */
 @Composable
@@ -289,59 +362,30 @@ fun FoldSection(
         Box(Modifier.fillMaxWidth().then(if (canFold) Modifier.foldToggle(key, folded) else Modifier), contentAlignment = Alignment.CenterStart) {
             SectionTitle(title, color, folded.takeIf { canFold }, subtle)
         }
-        AnimatedVisibility(!folded, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
+        AnimatedVisibility(
+            !folded,
+            enter = expandVertically(StudioMotion.spatial()) + fadeIn(StudioMotion.effects()),
+            exit = shrinkVertically(StudioMotion.spatial()) + fadeOut(StudioMotion.effects()),
+        ) {
             Column(verticalArrangement = Arrangement.spacedBy(spacing), content = content)
         }
     }
 }
 
-/** Label on the left, value on the right; used for technical readouts. */
+/** Label on the left, value on the right; used for technical readouts. A new value rolls in. */
 @Composable
 fun StatRow(label: String, value: String, valueColor: Color = Neon.TextPrimary) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(label, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-        Text(
+        RollingText(
             value,
             modifier = Modifier.weight(1f),
             style = MonoStyle,
             color = valueColor,
             textAlign = TextAlign.End,
+            maxLines = Int.MAX_VALUE,
+            softWrap = true,
         )
-    }
-}
-
-/** Horizontal level meter as a row of LEDs, green to amber to red. [level] is linear 0..1. */
-@Composable
-fun LevelMeter(level: Float, modifier: Modifier = Modifier) = LevelMeter({ level }, modifier)
-
-/**
- * The same, [level] read only when drawn: a meter fed 20 times a second redraws itself alone,
- * nothing around it is composed again.
- */
-@Composable
-fun LevelMeter(level: () -> Float, modifier: Modifier = Modifier) {
-    val off = Neon.SurfaceHigh
-    val low = Neon.Acid
-    val mid = Neon.Amber
-    val high = Neon.Red
-    Canvas(modifier = modifier.fillMaxWidth().height(10.dp)) {
-        val segments = 32
-        val gap = 2.dp.toPx()
-        val w = (size.width - gap * (segments - 1)) / segments
-        val lit = level().coerceIn(0f, 1f) * segments
-        val radius = CornerRadius(2.dp.toPx())
-        for (i in 0 until segments) {
-            val x = i * (w + gap)
-            val position = i / (segments - 1f)
-            val color = when {
-                position < 0.65f -> low
-                position < 0.85f -> mid
-                else -> high
-            }
-            val on = (lit - i).coerceIn(0f, 1f)
-            drawRoundRect(color = off, topLeft = Offset(x, 0f), size = Size(w, size.height), cornerRadius = radius)
-            if (on > 0f) drawRoundRect(color = color.copy(alpha = 0.35f + 0.65f * on), topLeft = Offset(x, 0f), size = Size(w, size.height), cornerRadius = radius)
-        }
     }
 }
 
@@ -372,18 +416,33 @@ fun ProSlider(
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     accent: Color = Neon.Cyan,
+    /** Audit final (22): what TalkBack calls the slider and says of its value (instead of a bare %). */
+    label: String? = null,
+    valueText: String? = null,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val dragged by interaction.collectIsDraggedAsState()
     val active = pressed || dragged
-    val grow by animateFloatAsState(if (active) 1.25f else 1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy), label = "thumb")
+    val grow by animateFloatAsState(if (active) 1.25f else 1f, StudioMotion.spatial(), label = "thumb")
     val ink = if (enabled) accent else Neon.TextSecondary.copy(alpha = 0.5f)
     val rail = Neon.SurfaceHigh
+    val haptics = LocalHapticFeedback.current
     Slider(
         value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
+        // A few steps (a choice of 2 to 24): a light tick at each one, like a notched control.
+        onValueChange = if (steps in 1..NOTCHED_STEPS_MAX) { v -> if (v != value) haptics.notch(); onValueChange(v) } else onValueChange,
+        modifier = modifier.then(
+            // Audit ultra round 2, n° 25 (seat B c: « Modul. » said « 0.0 »): a 0 to 1 slider without words of its own
+            // says its share, in the language's way (« 35 % »).
+            (valueText ?: if (valueRange == 0f..1f && steps == 0) com.pocketstudio.model.i18n.percent((value * 100).roundToInt()) else null).let { state ->
+                if (label == null && state == null) Modifier
+                else Modifier.semantics {
+                    label?.let { contentDescription = it }
+                    state?.let { stateDescription = it }
+                }
+            },
+        ),
         enabled = enabled,
         valueRange = valueRange,
         steps = steps,

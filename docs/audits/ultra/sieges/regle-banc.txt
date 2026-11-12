@@ -1,0 +1,1 @@
+Avant chaque lot de banc : `cd /home/user/fx-int && ./gradlew --stop` et tuer les JVM de test orphelines (ppid 1, GradleWorkerMain / java -Djava.awt.headless) — deux démons Gradle vivants en même temps (4-5 Go chacun) = manque de mémoire, le système tue le banc (arrivé 2 fois le 5 nov).

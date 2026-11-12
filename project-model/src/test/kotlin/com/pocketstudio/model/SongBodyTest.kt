@@ -86,7 +86,8 @@ class SongBodyTest {
             val bass = p.instrumentTracks.firstOrNull { it.name == "Basse" }
             val bassSound = StarterWizard.soundsFor(Part.Bass, style).first()
             if (bass != null && bass.engine == 0 && bassSound.sampled == null && bassSound.plaits == null) {
-                assertTrue(style.id, SynthPatch.gainDb(bass.synth.get(SynthPatch.GAIN)) > SynthPatch.gainDb(bassSound.synth.get(SynthPatch.GAIN)))
+                // Unless it buried the kick (the kick pass: the liquid's reese, WizardMix.BASS_TRIM_DB).
+                assertTrue(style.id, SynthPatch.gainDb(bass.synth.get(SynthPatch.GAIN)) > SynthPatch.gainDb(bassSound.synth.get(SynthPatch.GAIN)) + (WizardMix.BASS_TRIM_DB[style.id] ?: 0f))
             }
             val pad = p.instrumentTracks.firstOrNull { it.name == "Nappe" }
             val padSound = StarterWizard.soundsFor(Part.Pad, style).first()

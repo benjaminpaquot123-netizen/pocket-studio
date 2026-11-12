@@ -1,0 +1,61 @@
+{
+  "id": "banc-fiable",
+  "milestone": "Banc fiable : les 10 essais restants (8 faits sur le téléphone, merci). Chaque point dit le mode, les gestes un par un, et la réponse à recopier.",
+  "items": [
+    {
+      "id": "tel-10",
+      "title": "Mélodie après un passage par Pad Live",
+      "hint": "Mode : Pro.\n1. Onglet Sons › Synthé (le clavier).\n2. Lance l'enregistrement (rond rouge) et joue 3 ou 4 notes.\n3. Pendant que ça enregistre encore, touche la flèche Retour du téléphone.\n4. ⋮ › Accueil › Pad Live, puis reviens à ton projet (Continuer ou Mes projets).\n5. Retourne dans Synthé et compte les notes.\nRéponse : le nombre de notes encore là (0 à 4)."
+    },
+    {
+      "id": "tel-11",
+      "title": "Glisser sur les effets de Pad Live",
+      "hint": "Mode : peu importe.\n1. Accueil › Pad Live.\n2. Trouve la colonne des effets (les grosses cases d'effets sur le côté).\n3. Pose le doigt en haut de la colonne et glisse vers le bas, sans lever le doigt.\nRéponse : « la colonne défile » ou « un effet s'est déclenché »."
+    },
+    {
+      "id": "tel-12",
+      "title": "« ■ Tout » de la vue Live",
+      "hint": "Mode : Pro.\n1. Ouvre un projet avec plusieurs pistes remplies.\n2. Onglet « Live » en bas (la grille de cases).\n3. Touche deux cases pour lancer deux briques ; attends qu'elles jouent.\n4. Touche « ■ Tout » (en bas de la grille).\nRéponse : « tout s'arrête » ou « quelque chose joue encore »."
+    },
+    {
+      "id": "tel-13",
+      "title": "Changer de partie pendant la lecture",
+      "hint": "Mode : Pro.\n1. Ouvre un projet qui a au moins deux parties, A et B, différentes.\n2. Lance la musique sur la partie A (gros ▶).\n3. Pendant que ça joue, ouvre le menu des parties (en haut, le nom de la partie) et choisis B.\nRéponse : « on passe sur B » (le son change) ou « on reste sur A »."
+    },
+    {
+      "id": "tel-14",
+      "title": "Le curseur d'une courbe pendant la lecture",
+      "hint": "Mode : Pro.\n1. Mix › carte « Courbes » : crée une courbe (ex. Filtre) avec « Automatiser » si tu n'en as pas, et dessine-la qui monte et descend.\n2. Lance la musique (gros ▶).\n3. Sur la courbe, touche « Voir le réglage ».\nRéponse : « le curseur bouge avec la courbe » ou « il reste figé »."
+    },
+    {
+      "id": "tel-15",
+      "title": "Fin du Remix annoncée coupée ?",
+      "hint": "Mode : Pro.\n1. Accueil › Remix : sépare une chanson courte (moins d'une minute si possible).\n2. Mets-la dans un projet plus long qu'elle (le morceau dure plus que la chanson).\n3. Partager (en haut à droite) › « Prêt à partager ? » : lis ce qui est annoncé.\n4. Exporte et écoute la fin.\nRéponse : « fin coupée » est-il annoncé (oui/non), et à l'écoute, est-ce vraiment coupé (oui/non)."
+    },
+    {
+      "id": "tel-16",
+      "title": "La démo s'arrête quand on la quitte ?",
+      "hint": "Mode : peu importe.\n1. Accueil › « Nouveau morceau ».\n2. Dans la liste des styles, touche le bouton d'écoute (▶) d'un style : la démo joue.\n3. Quitte la liste SANS choisir de style (flèche Retour ou croix).\nRéponse : « le son s'arrête » ou « il continue »."
+    },
+    {
+      "id": "tel-17",
+      "title": "Défi 1 en rythme",
+      "hint": "Mode : peu importe.\n1. Accueil › carte « Défis » › Défi 1 « Boum boum ».\n2. Touche « Écouter » pour entendre le rythme.\n3. Tape 4 fois en rythme sur le pad montré, en suivant la musique.\nRéponse : le nombre d'étoiles obtenues (0 à 3). Si tu as bien tapé en rythme et que tu as 1 étoile, dis-le."
+    },
+    {
+      "id": "tel-18",
+      "title": "Prise micro à la fin du morceau",
+      "hint": "Mode : peu importe. Il faut des écouteurs ou le haut-parleur, et autoriser le micro.\n1. Accueil › « Enregistrer ma voix ou ma guitare » (ou Pro › Sons › Audio).\n2. Lance la prise et parle ou chante jusqu'APRÈS la fin du morceau.\nRéponse : « la prise s'arrête à la fin du morceau » ou « elle continue »."
+    },
+    {
+      "id": "tel-19",
+      "title": "Annuler une prise du Live",
+      "hint": "Mode : Pro.\n1. Note la durée du morceau (dans Structure, en mesures ou minutes).\n2. Onglet « Live » : touche le rond rouge pour enregistrer la performance, lance quelques cases pendant 10-20 s, puis arrête.\n3. Touche « Annuler » (en bas, à gauche du ▶).\n4. Regarde de nouveau la durée du morceau.\nRéponse : la durée avant et après (elle doit redevenir comme avant)."
+    },
+    {
+      "id": "tel-20",
+      "title": "Premier écran après Pro",
+      "hint": "Mode : Pro.\n1. Ferme complètement BenStudio (balaye-le hors des applis récentes).\n2. Rouvre-le et regarde l'écran juste après le logo.\n3. Compte à voix basse jusqu'à ce que des boutons apparaissent (« Que veux-tu faire ? » ou ton projet).\nRéponse : combien de secondes tu as vu un écran presque vide (« Ouverture du projet… » ou rien), et ce qui est venu ensuite."
+    }
+  ]
+}

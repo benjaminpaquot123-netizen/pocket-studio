@@ -1,0 +1,21 @@
+Écran 88 (588x1278)
+texte « Nouveau morceau, pas à pas » @ 254,35
+bouton « Fermer » @ 546,48
+texte « Étape 2 sur 13 · Techno » @ 129,69
+bouton « Créer tout de suite avec les choix conseillés » @ 294,156
+bouton « DURÉE DU MORCEAU » [état « Déplié »] @ 173,252
+choix « Court environ 50 s » @ 165,343
+choix « Complet environ 5 min 20 » [sélectionné] @ 423,343
+texte « Le morceau entier, avec ses parties qui reviennent, comme un vrai titre. » @ 294,444
+texte « Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège. » @ 294,573
+bouton « LES VRAIS SONS DU STYLE » [état « Déplié »] @ 206,693
+texte « Pour que ça sonne vraiment Techno : Roland TR-909, Techno (3,9 Mo). L'assistant prendra ses sons dedans. » @ 294,768
+texte « Téléchargement… 0 % » @ 145,838
+texte « Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style. » @ 294,939
+choix « Sombre / épique Des accords mineurs : mystérieux, intenses ou un peu tristes. » [sélectionné] @ 294,1053
+bouton « Écouter » @ 78,1053
+choix « Joyeux / énergique Des accords lumineux qui donnent la pêche. » @ 294,1161
+bouton « Écouter » @ 78,1180
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Retour » @ 151,1224
+bouton « Suivant » @ 436,1224

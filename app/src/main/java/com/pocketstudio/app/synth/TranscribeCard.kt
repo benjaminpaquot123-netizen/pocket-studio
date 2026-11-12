@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 
 import androidx.compose.foundation.layout.Arrangement
@@ -47,7 +48,7 @@ fun TranscribeCard(ui: TranscribeUi) {
                 Text(tr("Enregistrement… %.0f s", t.seconds), color = Neon.Acid)
                 LinearProgressIndicator(progress = { t.level.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = Neon.Acid)
                 Button(
-                    onClick = ui.stop, modifier = Modifier.fillMaxWidth().testTag("transcribe_stop"),
+                    onClick = ui.stop, modifier = Modifier.pressScale().fillMaxWidth().testTag("transcribe_stop"),
                     colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid),
                 ) {
                     Icon(Icons.Filled.Stop, contentDescription = null)

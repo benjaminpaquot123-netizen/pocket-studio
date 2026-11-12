@@ -10,3 +10,5 @@ captures/
 *.keystore
 signing/*.jks
 __pycache__/
+# Passwords never go in the repository (signing, upload): keep them outside it.
+*password*.txt

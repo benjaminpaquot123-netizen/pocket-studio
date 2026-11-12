@@ -44,7 +44,7 @@ object StemStore {
     fun label(stem: String): String = when (stem) {
         "drums" -> tr("Batterie")
         "bass" -> tr("Basse")
-        "other" -> tr("Autres")
+        "other" -> tr("Reste")
         "vocals" -> tr("Voix")
         else -> stem
     }

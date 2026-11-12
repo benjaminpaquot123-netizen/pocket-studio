@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledDialog
 
 import androidx.compose.foundation.layout.Arrangement
@@ -35,10 +36,10 @@ import com.pocketstudio.ui.TileGrid
 
 /** "+ Piste": what the new track is for, in a window over the synth screen. */
 @Composable
-fun TrackAddDialog(onDismiss: () -> Unit, voice: (() -> Unit)? = null, simple: Boolean = false, onPick: (TrackKind?, Boolean) -> Unit) {
+fun TrackAddDialog(onDismiss: () -> Unit, voice: (() -> Unit)? = null, simple: Boolean = false, acid: (() -> Unit)? = null, onPick: (TrackKind?, Boolean) -> Unit) {
     ScaledDialog(onDismissRequest = onDismiss) {
         Surface(shape = RoundedCornerShape(20.dp), color = Neon.Surface, modifier = Modifier.widthIn(max = 520.dp)) {
-            TrackAddChoices(onPick = onPick, onDismiss = onDismiss, modifier = Modifier.verticalScroll(rememberScrollState()), voice = voice, simple = simple)
+            TrackAddChoices(onPick = onPick, onDismiss = onDismiss, modifier = Modifier.verticalScroll(rememberScrollState()), voice = voice, simple = simple, acid = acid)
         }
     }
 }
@@ -55,15 +56,19 @@ fun TrackAddChoices(
     voice: (() -> Unit)? = null,
     /** Phase 36, Mode simple: the everyday kinds alone (no pluck), in everyday words. */
     simple: Boolean = false,
+    /** « Acid 303 »: the 303's editor, in both modes (null: not offered). */
+    acid: (() -> Unit)? = null,
 ) {
     Column(modifier.padding(20.dp).testTag("track_add_sheet"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(tr("Ajouter une piste"), style = MaterialTheme.typography.titleLarge)
-        Button(onClick = { onPick(TrackKind.Melody, true) }, modifier = Modifier.fillMaxWidth().testTag("track_add_write")) {
+        Button(onClick = { onPick(TrackKind.Melody, true) }, modifier = Modifier.pressScale().fillMaxWidth().testTag("track_add_write")) {
             Icon(Icons.Filled.AutoAwesome, contentDescription = null)
             Text("  " + tr("Écrire une mélodie pour moi"), textAlign = TextAlign.Center)
         }
         Text(tr("Une piste Mélodie avec 4 mesures déjà écrites dans la tonalité du morceau. « Annuler » la retire."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        // Benjamin (2026-10-29): the 303 offered here too, before the other kinds (a tile as theirs since 2026-10-30).
+        acid?.let { AcidTrackChoice(it) }
         Text(tr("Ou une piste à remplir toi-même, avec le bon son :"), style = MaterialTheme.typography.bodyMedium)
         val kinds = if (simple) TrackKind.entries - TrackKind.Pluck else TrackKind.entries
         TileGrid(kinds.size, minTileWidth = 260.dp) { i, m ->
@@ -86,4 +91,14 @@ fun TrackAddChoices(
         }
         TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(tr("Annuler")) }
     }
+}
+
+/** « Acid 303 » in « + Piste », a tile as the other kinds (its yellow, no fill of its own): a touch opens its editor. */
+@Composable
+private fun AcidTrackChoice(onClick: () -> Unit) {
+    SoundTile(
+        title = tr("Acid 303"), icon = SoundLooks.of(TrackKind.Bass.family).icon, accent = com.pocketstudio.app.acid.AcidLook.Yellow, selected = false,
+        onClick = onClick, subtitle = tr("La basse qui couine de l'acid house, case par case"),
+        modifier = Modifier.fillMaxWidth().testTag("track_add_acid"),
+    )
 }

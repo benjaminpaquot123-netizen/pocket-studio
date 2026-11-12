@@ -1,0 +1,7 @@
+lang=fr
+device=phone411
+font=100
+mode=simple
+main=gauche
+gestes.max=90
+mission=remix-voix

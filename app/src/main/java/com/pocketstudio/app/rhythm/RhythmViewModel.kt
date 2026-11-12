@@ -1,6 +1,8 @@
 package com.pocketstudio.app.rhythm
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
+import com.pocketstudio.model.RemixVoice
 import com.pocketstudio.app.report.forUser
 import com.pocketstudio.app.report.AppLog
 import android.app.Application
@@ -27,13 +29,20 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.hasMusicOfItsOwn
 import com.pocketstudio.model.LiveSlots
+import com.pocketstudio.model.LiveCells
+import com.pocketstudio.model.withRecordedCell
+import com.pocketstudio.model.withCopiedCell
+import com.pocketstudio.model.withAudioInCell
 import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.app.live.LiveFxUi
 import com.pocketstudio.model.liveColumnsMask
+import com.pocketstudio.model.liveRowsShown
 import com.pocketstudio.model.writeJournal
 import com.pocketstudio.model.keepingVersion
+import com.pocketstudio.model.takeUndoTarget
 import com.pocketstudio.model.restoreVersion
 import com.pocketstudio.model.dropVersion
 import com.pocketstudio.model.liveQuantumSteps
@@ -49,6 +58,8 @@ import com.pocketstudio.model.currentSceneContent
 import com.pocketstudio.model.withFx
 import com.pocketstudio.model.longFxLimitNotice
 import com.pocketstudio.model.longFxOverLimit
+import com.pocketstudio.model.keptFx
+import com.pocketstudio.model.withKeptFx
 import com.pocketstudio.model.withoutStaleInsertLanes
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
@@ -78,6 +89,7 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.ArpMode
+import com.pocketstudio.model.PadLayer
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.app.export.AacEncoder
 import com.pocketstudio.app.export.FlacEncoder
@@ -95,6 +107,7 @@ import com.pocketstudio.model.LiveClip
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.SampledPatch
 import com.pocketstudio.model.RootNote
+import com.pocketstudio.model.remixCellOf
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.hasOwnFx
@@ -158,10 +171,29 @@ import com.pocketstudio.model.automationBefore
 import com.pocketstudio.model.songStepOf
 import com.pocketstudio.model.takeStart
 import com.pocketstudio.model.withTake
+import com.pocketstudio.model.withFirstTakeLevel
 import com.pocketstudio.model.takeForgets
 import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
-import com.pocketstudio.model.audioEndBars
+import com.pocketstudio.model.cellHasContent
+import com.pocketstudio.model.exportEndBars
+import com.pocketstudio.model.remixFromStepAlone
+import com.pocketstudio.model.remixStemStart
+import com.pocketstudio.model.onlyPassage
+import com.pocketstudio.model.withSongSections
+import com.pocketstudio.model.cutStem
+import com.pocketstudio.model.moveStemPiece
+import com.pocketstudio.model.fadeStemPiece
+import com.pocketstudio.model.removeStemPiece
+import com.pocketstudio.model.resetStem
+import com.pocketstudio.model.piecesOf
+import com.pocketstudio.model.pieceAt
+import com.pocketstudio.model.remixTimeAtStep
+import com.pocketstudio.model.remixSecondsPerStep
+import com.pocketstudio.model.stemClipFrames
+import com.pocketstudio.model.withRemixCutAtSongEnd
+import com.pocketstudio.model.withSongLengthenedForRemix
+import com.pocketstudio.model.withRemixPlaced
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
 import com.pocketstudio.model.withAudioTrack
@@ -174,6 +206,11 @@ import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.editedShownScene
 import com.pocketstudio.model.duplicateTrack
 import com.pocketstudio.model.removeTrack
+import com.pocketstudio.model.removeFirstTrack
+import com.pocketstudio.model.withClearedCell
+import com.pocketstudio.model.forgetTake
+import com.pocketstudio.model.firstTrackDeleted
+import com.pocketstudio.model.intoFirstTrack
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.SynthPatch
@@ -209,7 +246,8 @@ sealed interface LibraryState {
 }
 
 /** A microphone take on an audio track: [waiting] during the count-in; [song]: over the whole song. */
-data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f, val song: Boolean = false)
+/** A microphone take in progress; [beatsLeft]: beats of count-in still to come (0 once it records). */
+data class AudioRecordingUi(val track: Int, val waiting: Boolean = true, val seconds: Float = 0f, val level: Float = 0f, val song: Boolean = false, val beatsLeft: Int = 0)
 
 /** Where the next microphone take goes: the scene shown, or the whole song from part [fromPart]. */
 data class RecordTarget(val song: Boolean = false, val fromPart: Int = 0)
@@ -258,7 +296,10 @@ data class ExportUi(
     val barsChosen: Boolean = false,
     /** The current scene's length in bars (offered among the lengths). */
     val sceneBars: Int = 4,
-    /** The bar where the audio clips heard end (« Partager » without a song lasts at least that long). */
+    /**
+     * The bar where the audio clips heard and the remix's song end (« Partager » without a song,
+     * and « La scène » until a length is picked, last at least that long).
+     */
     val audioBars: Int = 0,
     /** The whole song when the project has one, the scene otherwise, until the user picks. */
     val what: ExportWhat = ExportWhat.Loop,
@@ -279,6 +320,8 @@ data class ExportUi(
     val stage: String? = null,
     val files: List<File> = emptyList(),
     val savedInMusic: Boolean = false,
+    /** Audit ultra round 2 (n° 10): the text report (« Rapport avec le fichier ») was copied to Documents › BenStudio. */
+    val reportInDocuments: Boolean = false,
     /** Integrated loudness of the exported mix in LUFS (null for stems or silence). */
     val loudness: Double? = null,
     /** The exported mix's true peak (dBTP) and length (seconds), measured on the file; null for stems. */
@@ -298,7 +341,41 @@ data class ExportUi(
     /** « 16 bits » (dithered) instead of 24 for WAV and FLAC. */
     val bits16: Boolean = false,
     val error: String? = null,
+    /** Lot E (« Master pro »): the file's final form under « Avancé » (its defaults: the export as before). */
+    val pro: com.pocketstudio.app.export.ExportOptions = com.pocketstudio.app.export.ExportOptions(),
+    /** Lot E: the last mix's full report (the pro readings), null for separate tracks. */
+    val proReport: com.pocketstudio.engine.ExportReport? = null,
+    /** Decision 1A: the loudness the last mix aimed at (LUFS; null without a target), to say when it stayed under it. */
+    val targetLufs: Double? = null,
+    /** Audit ultra round 1 (n° 15): which target that was (its name in the report), and whether it aimed at the whole song (else the Drop). */
+    val targetChoice: com.pocketstudio.model.TargetChoice = com.pocketstudio.model.TargetChoice.OFF,
+    val targetWholeSong: Boolean = true,
+    /** Lot E: the song's parts and bars (« Plage exportée »). */
+    val parts: Int = 0,
+    val songBars: Int = 0,
+    /** Audit ultra round 3 (n° 13): the name typed in « Prêt à partager ? » for this file (the project keeps its own); null: the project's. */
+    val fileTitle: String? = null,
+    /** Audit ultra round 3 (n° 12, seat F d 48): the project the files were made from ([madeHash]); null: no files. */
+    val madeFrom: Int? = null,
 ) {
+    /**
+     * Audit ultra round 3 (n° 11): these settings with the result of [earlier] (its files still there, its report):
+     * a cancelled run gives back what the one before it made.
+     */
+    fun withResultOf(earlier: ExportUi): ExportUi {
+        val kept = earlier.files.filter { it.exists() }
+        if (kept.isEmpty()) return this
+        return copy(
+            files = kept, savedInMusic = earlier.savedInMusic, reportInDocuments = earlier.reportInDocuments, loudness = earlier.loudness,
+            truePeakDb = earlier.truePeakDb, seconds = earlier.seconds, lossDb = earlier.lossDb, decodedPeakDb = earlier.decodedPeakDb,
+            writtenRate = earlier.writtenRate, writtenBits = earlier.writtenBits, writtenFormat = earlier.writtenFormat, proReport = earlier.proReport,
+            targetLufs = earlier.targetLufs, targetChoice = earlier.targetChoice, targetWholeSong = earlier.targetWholeSong, madeFrom = earlier.madeFrom,
+        )
+    }
+
+    /** Audit ultra round 3 (n° 12): the files were made from another state of the project than [now]: never offered to share as they are. */
+    fun staleFor(now: Project): Boolean = files.isNotEmpty() && madeFrom != null && madeFrom != madeHash(now)
+
     val file: File? get() = files.firstOrNull()
 
     /** The end-of-export report in plain words (phase 38), for the mix (null for separate tracks). */
@@ -310,18 +387,33 @@ data class ExportUi(
         )
     }
 
-    /** These settings for a scene [sceneBars] long: its length is the default. */
-    fun forScene(sceneBars: Int): ExportUi = copy(sceneBars = sceneBars, bars = if (barsChosen) bars else sceneBars)
+    /** Audit ultra round 1 (n° 15): the short report in numbers (LUFS, dBTP, format, length, target and why), for the mix. */
+    val bilan: com.pocketstudio.app.export.ExportBilan? get() = summary?.let { s ->
+        com.pocketstudio.app.export.ExportBilan(
+            loudness, decodedPeakDb ?: truePeakDb, s.formatLine(), seconds, targetChoice, targetLufs, targetWholeSong, proReport?.loudLufs, lossDb,
+        )
+    }
+
+    /**
+     * These settings for a scene [sceneBars] long whose audio clips and remix end on bar [audioBars]:
+     * the loop « Partager » sends is the default (audit ultra round 3, n° 14, seats A d 3, F d 7: Mix said
+     * « 1 mesure » where « Prêt à partager ? » said 8 bars, 0:16): the scene repeated up to 8 bars, or up to
+     * where the audio clips and the remix end ([com.pocketstudio.app.export.ShareSong.loopBars]).
+     */
+    fun forScene(sceneBars: Int, audioBars: Int = 0): ExportUi = copy(
+        sceneBars = sceneBars, audioBars = audioBars,
+        bars = if (barsChosen) bars else com.pocketstudio.app.export.ShareSong.loopBars(sceneBars, audioBars),
+    )
 
     /** These settings for a project: the scene's length, the song if there is one, the fade that goes with it. */
-    fun forProject(sceneBars: Int, hasSong: Boolean): ExportUi {
+    fun forProject(sceneBars: Int, hasSong: Boolean, audioBars: Int = 0): ExportUi {
         val w = if (whatChosen) what else if (hasSong) ExportWhat.Song else ExportWhat.Loop
         val f = when {
             w == ExportWhat.Stems -> ExportFade.None
             fadeChosen -> fade
             else -> defaultFade(w)
         }
-        return forScene(sceneBars).copy(what = w, fade = f)
+        return forScene(sceneBars, audioBars).copy(what = w, fade = f)
     }
 
     /** No limiter was asked for (« Sans limiteur », or separate tracks without the master). */
@@ -342,6 +434,18 @@ data class ExportUi(
 
     companion object {
         fun defaultFade(what: ExportWhat) = if (what == ExportWhat.Song) ExportFade.Short else ExportFade.None
+
+        /**
+         * What [madeFrom] keeps of a project: all that is heard (its name only names the file). Round 3 review: never what
+         * no export plays (a challenge's stars, the Pad Live page shown, the MIDI map, the song's versions kept aside):
+         * a star won in Pad Live called the song « changé depuis cet export » and took its « Partager » away.
+         * T5-ALERTE: nor the Guide's cards (sharing ticks « Prêt à partager ? »: the song just shared was called changed).
+         */
+        fun madeHash(p: Project): Int =
+            p.copy(
+                name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
+                guide = com.pocketstudio.model.guide.GuideState.EMPTY,
+            ).hashCode()
     }
 }
 
@@ -391,11 +495,31 @@ data class TransportUi(
  * The engine never reads the project directly: it receives small commands.
  */
 class RhythmViewModel(app: Application) : AndroidViewModel(app) {
-    private val store = ProjectStore(File(app.filesDir, "projects"))
+    private val store = ProjectOpening.projectStore(app)
 
     /** A one-off message for the user (e.g. an unreadable project was set aside). Declared before `session`. */
     private val _notice = MutableStateFlow<String?>(null)
     val notice: StateFlow<String?> = _notice.asStateFlow()
+
+    /**
+     * Audit ultra round 2 (n° 17, seat B d: a track's sound changed or a track deleted said nothing): said as « Fait : … »
+     * is, with « Annuler » beside it ([done], [com.pocketstudio.app.ui.DoneBar]).
+     */
+    private fun saidDone(text: String) {
+        _done.value = text
+    }
+
+    /**
+     * Audit ultra round 2 (n° 17, seats B d and B c: « Synthé » after « Basse sub », « Piste 2 » after « Sub House Ben »):
+     * a track still under a name the app gave it (« Synthé », « Piste 2 », a sound's name) takes its new sound's; a name
+     * the user typed stays.
+     */
+    // Round 3 (n° 26, seat C c): a role's name (« Mélodie », « Basse ») stays: the melody is still found as the melody.
+    private fun followingName(current: String, sound: String): String =
+        if (sound.isNotBlank() && !com.pocketstudio.model.DefaultNames.isRole(current) &&
+            (com.pocketstudio.model.DefaultNames.isDefault(current) || current in keptSoundNames())) sound.take(40) else current
+
+    private fun keptSoundNames(): Set<String> = _favorites.value.let { f -> (f.synth.map { it.name } + f.plaits.map { it.name }).toSet() }
     fun dismissNotice() {
         _notice.value = null
         favoritesBeforeDelete = null
@@ -427,15 +551,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile internal var liveDriveLevel: Float = Float.NaN
         private set
 
+    /**
+     * The project as read before the screens were made ([ProjectOpening.prepare], off the main
+     * thread); read here only when nothing was (the tests, a screen made another way), the saves
+     * of a screen just closed waited for 3 s at most in all.
+     */
+    private val opened: OpenedProject = (
+        ProjectOpening.take(projectId) ?: run {
+            val deadline = System.currentTimeMillis() + 3000
+            TakeVault.app.awaitIdleBlocking(3000)
+            ClosingSaves.awaitIdleBlocking((deadline - System.currentTimeMillis()).coerceAtLeast(0))
+            ProjectOpener(projectId, store, journals).open()
+        }
+    ).also { o ->
+        // What opening it found, and what was waiting for it (a pack sound the assistant replaced).
+        val said = listOfNotNull(o.notice, PendingNotice.take(projectId))
+        if (said.isNotEmpty()) _notice.value = said.joinToString("\n\n")
+    }
+
+    /** True when the app opened on no project because the last one crashed it twice as it opened. */
+    val rescued: Boolean get() = opened.rescued
+
     val session: ProjectSession = ProjectSession(
         id = projectId,
-        initial = loadOrCreate(),
+        initial = opened.project,
         store = store,
         scope = viewModelScope,
         io = Dispatchers.IO,
         // Lot 1: no project open (the last one deleted): a blank one in memory, never written.
         persist = !com.pocketstudio.app.projects.CurrentProject.isNone(projectId),
-    )
+    ).apply { beforeChange = { endTutoDemoShown() } }
     val project: StateFlow<Project> = session.project
 
     /**
@@ -449,7 +594,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pauseMusic = { if (transport.value.playing) togglePlay() },
             canMeasure = { !recording.value && audioRecording.value == null },
             playing = { transport.value.playing },
+            // n° 25: what a Guide's choice did, in « Fait : … » with « Annuler ».
+            said = { _done.value = it },
         )
+    }
+
+    /** « Tuto de A à Z »'s « Montre-moi »: [transform] as one undo step, what plays following as after a Guide's edit. */
+    fun tutoEdit(transform: Project.() -> Project) {
+        val before = project.value
+        session.edit(tag = "tuto") { it.transform() }
+        afterGuideEdit(before)
     }
 
     /** Engine updates the Guide's edits asked for (tests). */
@@ -488,7 +642,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Polls the engine about 30 times a second while the screen is visible. */
     suspend fun pollLive() {
-        if (!NativeEngine.isAvailable) return
+        // The lanes' triggers are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         NativeEngine.laneTriggers(lastTriggers)
         while (true) {
             NativeEngine.laneTriggers(triggers)
@@ -500,82 +655,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val lit = (0 until NativeEngine.LANES).filter { litUntil[it] > now }.toSet()
             _live.value = LiveUi(NativeEngine.currentStep(), lit, NativeEngine.absoluteStep(), NativeEngine.songStep())
             kotlinx.coroutines.delay(33)
-        }
-    }
-
-    private fun loadOrCreate(): Project {
-        if (com.pocketstudio.app.projects.CurrentProject.isNone(projectId)) return starterProject()
-        try {
-            // A take of the app closed a moment ago may still be being written, its last edits saved.
-            TakeVault.app.awaitIdleBlocking(3000)
-            ClosingSaves.awaitIdleBlocking(3000)
-            val loaded = runBlocking(Dispatchers.IO) { store.load(projectId) }
-            if (loaded != null) return withWaitingLiveTake(withWaitingTakes(loaded))
-        } catch (e: Exception) {
-            AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
-            // Never let the first autosave overwrite files we could not read: move them aside.
-            val aside = File(store.folder(projectId).parentFile, "$projectId-illisible-${System.currentTimeMillis()}")
-            val moved = store.folder(projectId).renameTo(aside)
-            _notice.value = if (moved) {
-                tr("Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.", aside.name)
-            } else {
-                tr("Le projet n'a pas pu être relu ; un nouveau projet commence.")
-            }
-        }
-        return starterProject()
-    }
-
-    /**
-     * Takes finished while the app was closing ([TakeVault]) put on their tracks, saved with the
-     * project, then forgotten. The project as loaded when that fails (they wait for next time).
-     */
-    private fun withWaitingTakes(loaded: Project): Project {
-        val folder = store.folder(projectId)
-        val takes = runCatching { PendingTakes.read(folder) }.getOrElse { emptyList() }
-        if (takes.isEmpty()) return loaded
-        val p = loaded.withTakes(takes).sanitized()
-        return try {
-            runBlocking(Dispatchers.IO) {
-                if (p != loaded) store.save(projectId, p)
-                PendingTakes.clear(folder, takes)
-            }
-            if (p != loaded) {
-                AppLog.add("Prise récupérée : ${takes.size}")
-                _notice.value = tr("Ta dernière prise a été gardée : elle est sur sa piste audio.")
-            }
-            p
-        } catch (e: Exception) {
-            AppLog.add("Prise en attente : ${e.message}")
-            loaded
-        }
-    }
-
-    /**
-     * A Live take the app could not finish (closed or killed while it recorded, see [keepTakeJournal])
-     * written into the song as it was played up to there, saved, then forgotten; the project as
-     * loaded when it is another project's, already in the song ([Project.liveTake]: a journal
-     * left by a kill after its take was saved) or that fails (an unreadable journal is dropped).
-     */
-    private fun withWaitingLiveTake(loaded: Project): Project {
-        // After the writes of the screen that closed (the writer keeps their order).
-        val journal = journals.read(projectId) ?: return loaded
-        if (journal.projectId != projectId) return loaded  // another project's: when it opens
-        val written = loaded.writeJournal(journal, projectId)
-        return try {
-            if (written.parts > 0) runBlocking(Dispatchers.IO) { store.save(projectId, written.project) }
-            // Only once the song holding it is on disk (a kill before: written at the next opening).
-            journals.drop(projectId, journal.takeId.ifEmpty { null })
-            if (written.parts > 0) {
-                AppLog.add("Prise Live récupérée : ${written.parts} parties")
-                _notice.value = tr("Ta prise Live a été gardée : elle est dans le morceau (%d parties).", written.parts)
-                written.project
-            } else {
-                if (written.already) AppLog.add("Prise Live déjà dans le morceau : journal effacé")
-                loaded
-            }
-        } catch (e: Exception) {
-            AppLog.add("Prise Live en attente : ${e.message}")
-            loaded
         }
     }
 
@@ -690,46 +769,227 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Live pads: sounds switched on and off by a tap, in time ---------------------------------
 
-    private val _liveStates = MutableStateFlow(List(LivePads.MAX) { 0 })
-    /** Per live pad: 0 off, 1 waiting for its beat, 2 playing. */
+    /** Pad Live (n° 25, lot B1): pages, modes, groups and packs, kept apart from this file (`padlive/`). */
+    val padLive = com.pocketstudio.app.padlive.PadLiveController(this)
+
+    private val _liveStates = MutableStateFlow(List(LivePads.ALL) { 0 })
+    /** Per live pad of the four pages ([LivePads.ALL]): 0 off, 1 waiting for its beat, 2 playing. */
     val liveStates: StateFlow<List<Int>> = _liveStates.asStateFlow()
 
     /** Polls the pads' lights about 30 times a second while their screen is visible. */
     suspend fun pollLiveStates() {
-        if (!NativeEngine.isAvailable) return
+        // The pads' states are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
-            NativeEngine.clipStates(buf)
-            val now = buf.take(LivePads.MAX)
+            NativeEngine.clipStatesNow(buf)
+            val now = buf.take(LivePads.ALL)
             if (now != _liveStates.value) _liveStates.value = now
             kotlinx.coroutines.delay(33)
         }
     }
 
-    private fun pushLive(p: Project = project.value) {
+    internal fun pushLive(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        p.live.clips.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
-            if (clip != null) NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
-            NativeEngine.setClip(i, clip?.let { padSamples.native(it.file) })
+        p.live.all.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
+            if (clip != null) {
+                NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
+                NativeEngine.setClipSound(i, clip.pitch.toFloat(), clip.reverse, clip.attack, clip.release)
+            }
+            val stored = clip?.let { padSamples.native(it.file) }
+            val pick = fitPick("l$i", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("l$i", c.file, it.frames, c.bpm, p.tempoBpm) } })
+            NativeEngine.setClip(i, pick.sample ?: stored, refit = pick.refit)
+        }
+        fitLoops(p)
+    }
+
+    // --- Step 4e: loops that follow the tempo, and the tempo set by the first one ---------------
+
+    private val tempoFits = TempoFits()
+    private var fitJob: kotlinx.coroutines.Job? = null
+
+    /** What a slot plays (an export takes the copy if made, without touching what the phone plays). */
+    private fun fitPick(slot: String, want: TempoFits.Want?): TempoFits.Pick =
+        if (NativeEngine.isCapturing) TempoFits.Pick(tempoFits.ready(want), false) else tempoFits.pick(slot, want)
+
+    /** Every loop of [p] that follows the tempo, as it should play now. */
+    private fun fitWants(p: Project): List<TempoFits.Want> {
+        val audio = p.audioTracks.mapNotNull { t ->
+            val c = t.clip?.takeIf { it.follows } ?: return@mapNotNull null
+            padSamples.native(c.file)?.let { TempoFits.want("a${t.id}", c.file, it.frames, c.bpm, p.tempoBpm) }
+        }
+        val live = p.live.all.take(NativeEngine.LIVE_PADS).mapIndexedNotNull { i, c ->
+            c?.takeIf { it.follows }?.let { cl -> padSamples.native(cl.file)?.let { TempoFits.want("l$i", cl.file, it.frames, cl.bpm, p.tempoBpm) } }
+        }
+        return audio + live
+    }
+
+    /**
+     * The copies the loops need at the tempo, made one by one on a worker thread once the tempo
+     * settles (a « + » held, a drag), then handed to the engine as refits.
+     */
+    private fun fitLoops(p: Project) {
+        if (NativeEngine.isCapturing || !NativeEngine.isAvailable) return
+        val wants = fitWants(p)
+        val missing = tempoFits.missing(wants)
+        if (missing.isEmpty()) {
+            if (fitJob?.isActive != true) tempoFits.prune(wants)
+            return
+        }
+        if (fitJob?.isActive == true && fitFor == p.tempoBpm) return
+        fitJob?.cancel()
+        fitFor = p.tempoBpm
+        fitJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(250)  // tempo nudges and drags settle first
+            for (w in missing) {
+                val source = padSamples.native(w.file) ?: continue
+                val copy = finishOrRelease(Dispatchers.Default, NativeSample::close) { tempoFits.compute(source, w.frames) }
+                if (copy == null) AppLog.add("Calage au tempo impossible pour une boucle (${w.slot})")
+                tempoFits.register(w.key, copy)
+                if (!isActive) break
+            }
+            fitFor = Double.NaN
+            pushAudio()
+            pushLive()
         }
     }
 
-    fun toggleLive(pad: Int) {
-        if (project.value.live.clips.getOrNull(pad) == null) return
-        if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad)
-        livePadTapped(pad)
+    private var fitFor = Double.NaN
+
+    /** « Tempo calé sur Boys : 113 · Annuler »: shown once a sound set the tempo. */
+    data class TempoSet(val name: String, val bpm: Double, val previous: Double)
+
+    private val _tempoSet = MutableStateFlow<TempoSet?>(null)
+    val tempoSet: StateFlow<TempoSet?> = _tempoSet.asStateFlow()
+
+    /** A sound just set the tempo ([lead]), it was [previous]: heard at once, the banner shown. */
+    private fun tempoLed(lead: com.pocketstudio.model.TempoLead, previous: Double) {
+        AppLog.add("Tempo calé sur « ${lead.name} » : ${"%.1f".format(lead.bpm)} BPM (avant ${"%.1f".format(previous)})")
+        _tempoSet.value = TempoSet(lead.name, lead.bpm, previous)
+        pushTempo()
+    }
+
+    /** « Annuler » on the banner: the tempo before, in one step; the sound stays (stretched to it). */
+    fun undoTempoSet() {
+        val set = _tempoSet.value ?: return
+        _tempoSet.value = null
+        session.edit { com.pocketstudio.model.AutoTempo.undone(it, set.previous) }
+        pushTempo()
+    }
+
+    fun dismissTempoSet() {
+        _tempoSet.value = null
+    }
+
+    /** « Revenir au tempo de Boys » in the tempo sheet. */
+    fun backToLeadTempo() {
+        val lead = project.value.tempoLead ?: return
+        if (lead.bpm == project.value.tempoBpm) return
+        // Its exact tempo (a song's 113.2), not the sheet's whole BPM: nothing stretched any more.
+        session.edit { it.copy(tempoBpm = lead.bpm) }
+        tempoSheetDepth = session.undoDepth
+        pushTempo()
+    }
+
+    /**
+     * The tempo of a sound about to be placed ([file] stored, [seconds] long): [known] (the
+     * library's), else the engine's beat tracker on it; 0 for a hit, a shout, nothing found.
+     */
+    private suspend fun tempoOfPlaced(file: String, seconds: Double, known: Double, oneShot: Boolean): Double {
+        if (oneShot || seconds < com.pocketstudio.model.AutoTempo.MIN_LOOP_SECONDS) return 0.0
+        if (known > 0.0) return com.pocketstudio.model.AutoTempo.tempoOf(seconds, known = known)
+        if (!NativeEngine.isNative) return 0.0
+        val found = withContext(Dispatchers.Default) { runCatching { NativeEngine.analyzeTempo(padSamples.fileOf(file).path) }.getOrNull() }
+        val bpm = found?.getOrNull(0)?.toDouble() ?: 0.0
+        val confidence = found?.getOrNull(1) ?: 0f
+        return if (confidence >= MIN_TEMPO_CONFIDENCE) com.pocketstudio.model.AutoTempo.tempoOf(seconds, detected = bpm) else 0.0
+    }
+
+    /** A live pad tapped; [velocity]: its strength (a controller's pad), the loop or hit it starts plays that loud. */
+    fun toggleLive(pad: Int, velocity: Float = 1f) {
+        if (project.value.live.at(pad) == null) return
+        // Started with the transport stopped (their clock runs on its own): the music plays all the same.
+        val starts = !_transport.value.playing && pad !in padsSoundingNow()
+        val v = velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f
+        if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad, v)
+        livePadTapped(pad, v)
+        liveToggledForTest?.invoke(pad)
+        if (starts) watchPadsAlone()
+    }
+
+    /**
+     * Pad Live B2: the row of pads from [first] ([count] pads) launched together: [starting] start on
+     * the next bar line, [stopping] stop (its loops were all on), as the engine does it
+     * ([NativeEngine.launchClipRow]); a take writes each of them.
+     */
+    internal fun launchLiveRow(first: Int, count: Int, starting: List<Int>, stopping: List<Int>) {
+        if (starting.isEmpty() && stopping.isEmpty()) return
+        val starts = !_transport.value.playing && starting.isNotEmpty() && padsSoundingNow().isEmpty()
+        if (NativeEngine.isAvailable) NativeEngine.launchClipRow(first, count)
+        stopping.forEach { livePadTapped(it) }
+        starting.forEach { livePadTapped(it, bar = true) }
+        if (starts) watchPadsAlone()
+    }
+
+    private val _padsAlone = MutableStateFlow(false)
+    /**
+     * Live pads sound with the transport stopped: the music plays as with ▶ (in the background,
+     * screen off, the headphones out or a call stopping it, the screen kept on).
+     */
+    val padsAlone: StateFlow<Boolean> = _padsAlone.asStateFlow()
+    private var padsWatch: kotlinx.coroutines.Job? = null
+
+    /** The live pads sounding or waiting now, as the engine says. */
+    internal fun padsSoundingNow(): Set<Int> {
+        livePadsSoundingForTest?.let { return it }
+        if (!NativeEngine.isAvailable) return emptySet()
+        val buf = IntArray(NativeEngine.LIVE_PADS)
+        NativeEngine.clipStatesNow(buf)
+        return buf.indices.filterTo(HashSet()) { buf[it] != 0 }
+    }
+
+    /** A pad started with the transport stopped: [padsAlone] until they are all off (or ▶ takes over). */
+    private fun watchPadsAlone() {
+        setPadsAlone(true)
+        if (padsWatch?.isActive == true) return
+        padsWatch = viewModelScope.launch {
+            do { kotlinx.coroutines.delay(250) } while (!_transport.value.playing && padsSoundingNow().isNotEmpty())
+            setPadsAlone(false)
+        }
+    }
+
+    private fun setPadsAlone(on: Boolean) {
+        if (_padsAlone.value == on) return
+        _padsAlone.value = on
+        AppLog.add(if (on) "Pads live sans lecture : le son reste ouvert" else "Pads live arrêtés")
+        // The service holds the headphones' and the calls' stops (they call stopLive) and the background.
+        val app = getApplication<Application>()
+        if (on) PlaybackService.start(app) else if (!_transport.value.playing) PlaybackService.stopAfterTakes(app)
     }
 
     fun stopLive() {
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(-1)
         livePadTapped(-1)
+        liveStoppedForTest?.invoke()
+    }
+
+    /**
+     * « Tout couper » of Pad Live and of the live pads (plan of the audits, step 4, n° 7; Benjamin's 4A, recette tel-08):
+     * everything stops, the pads AND the music with its bars and time (the transport's ■ also cuts the pads). The next pad
+     * starts its clock again from zero, so a rhythm can be played again at once.
+     */
+    fun cutEverything() {
+        // A « Enregistrer ce que je joue » take in progress ends like its own button (kept on its bar line, or let go if armed).
+        padLive.played.endForCut()
+        if (_transport.value.playing) togglePlay()
+        stopLive()
     }
 
     fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
 
-    private fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {
-        val clip = project.value.live.clips.getOrNull(pad) ?: return
-        session.edit(key) { p -> p.copy(live = p.live.with(pad, transform(clip).sanitized())) }
+    internal fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {
+        val clip = project.value.live.at(pad) ?: return
+        session.edit(key) { p -> p.copy(live = p.live.withAt(pad, transform(clip).sanitized())) }
         pushLive()
     }
 
@@ -738,7 +998,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setLiveGain(pad: Int, gain: Float) = editLive(pad, "live-gain-$pad") { it.copy(gain = gain) }
 
     fun clearLive(pad: Int) {
-        session.edit { p -> p.copy(live = p.live.with(pad, null)) }
+        session.edit { p -> p.copy(live = p.live.withAt(pad, null)) }
         pushLive()
     }
 
@@ -781,11 +1041,48 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * named « Lead » or « Mélodie » (the assistant's lead, « + Piste › Mélodie »), the last such
      * one; null when the song has none (the track shown stays).
      */
-    fun melodyTrackId(): Int? = project.value.tracks.lastOrNull { isMelodyName(it.name) }?.id
+    fun melodyTrackId(): Int? =
+        com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: project.value.instrumentTracks.lastOrNull { isMelodyName(it.name) }?.id
+
+    /**
+     * Audit final (01 M3, 05 #5): the Mode simple's melody goes on « Ma mélodie », made at its first
+     * take with the sound of the song's melody track (a melody sound of the style without one), and
+     * selected. Never the assistant's riff, never the bass. Null when the eight tracks are taken.
+     */
+    fun simpleMelodyTrack(): Int? {
+        val p = project.value
+        com.pocketstudio.model.SimpleMelody.trackOf(p)?.let { selectTrack(it); return it }
+        // Round 3 (n° 26): the first track (« Synthé », the style's melody at times) counts too.
+        val like = p.instrumentTracks.lastOrNull { isMelodyName(it.name) }?.id
+        val style = com.pocketstudio.app.library.styleOfProject(p.name)?.let(com.pocketstudio.model.StarterWizard::style)
+        val next = com.pocketstudio.model.SimpleMelody.add(p, like, style) ?: run {
+            _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
+            return null
+        }
+        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        session.edit { next }
+        pushTracks()
+        pushMixer()
+        selectTrack(id)
+        AppLog.add("Piste ajoutée : ${com.pocketstudio.model.SimpleMelody.NAME}")
+        return id
+    }
+
+    /** The Mode simple's « ● Enregistrer ma mélodie »: a take of the keys on « Ma mélodie » (or the take recording ends). */
+    fun recordMelodyTake() {
+        if (_recording.value) {
+            recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
+            return
+        }
+        if (_audioRecording.value != null || performanceTaking) return
+        simpleMelodyTrack() ?: return
+        recordTake(com.pocketstudio.app.record.TakeSource.KEYS, melody = true)
+    }
 
     fun selectTrack(id: Int) {
         if (id == track) return
         heldNotes.clear()
+        sustained.clear()
         val from = track
         _selectedTrack.value = id
         NativeEngine.liveTrack = id
@@ -814,10 +1111,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
-        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
-        session.edit { userTrack(next, id) }
+        val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        // The first track deleted from « Mes pistes »: the new track takes its place (one undo step).
+        val reuse = p.firstTrackDeleted
+        val id = if (reuse) 0 else added
+        session.edit { userTrack(next, added).let { if (reuse) it.intoFirstTrack(added) else it } }
         pushTracks()
         pushMixer()
+        pushAutomation()
         selectTrack(id)
         AppLog.add("Piste ajoutée : ${project.value.track(id).name}")
     }
@@ -834,10 +1135,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
-        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
-        session.edit { userTrack(next, id) }
+        val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        val reuse = p.firstTrackDeleted
+        val id = if (reuse) 0 else added
+        session.edit { userTrack(next, added).let { if (reuse) it.intoFirstTrack(added) else it } }
         pushTracks()
         pushMixer()
+        pushAutomation()
         selectTrack(id)
         if (write) _notice.value = tr("Mélodie écrite : 4 mesures dans la tonalité du morceau, dans la partie %s. « Annuler » la retire.", project.value.sceneTitle(project.value.scene))
         AppLog.add("Piste ajoutée : ${project.value.track(id).name}${if (write) " (mélodie écrite)" else ""}")
@@ -867,6 +1171,42 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAutomation()
         releaseUnusedFonts()
         AppLog.add("Piste supprimée : $name")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(name)))
+    }
+
+    /**
+     * Owner (2026-11-04): « Supprimer la piste » of the first track, which stays in the project: emptied
+     * (notes of every part, sound, strip) and hidden from « Mes pistes » and the track chips; Annuler
+     * brings it back as it was. « Ajouter une piste » puts the next one in its place.
+     */
+    fun removeFirstTrack() {
+        val name = project.value.track(0).name
+        session.edit { it.removeFirstTrack() }
+        // Another track to show the synth screen with, when there is one.
+        project.value.tracks.firstOrNull()?.let { if (track == 0) selectTrack(it.id) }
+        pushTracks()
+        pushMixer()
+        pushAutomation()
+        releaseUnusedFonts()
+        AppLog.add("Première piste supprimée : $name")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(name)))
+    }
+
+    /** « Supprimer la piste » of any instrument track: the first one emptied and hidden ([removeFirstTrack]). */
+    fun deleteTrack(id: Int) = if (id == 0) removeFirstTrack() else removeTrack(id)
+
+    /**
+     * « Supprimer la piste » of the Acid 303 (Mode simple's « Mes pistes »): its line emptied in every
+     * part (its sound stays), so it is no longer listed; Annuler brings it back.
+     */
+    fun removeAcidLine() {
+        session.edit { p ->
+            fun AcidPattern.silent() = copy(steps = steps.map { it.copy(gate = false) })
+            p.copy(acid = p.acid.silent(), scenes = p.scenes.map { it.copy(acid = it.acid.silent()) })
+        }
+        pushAcid(project.value.acid)
+        AppLog.add("Acid 303 vidée dans tout le morceau")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(com.pocketstudio.model.DefaultNames.ACID)))
     }
 
     fun renameTrack(id: Int, name: String) {
@@ -1053,22 +1393,155 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun saveFavoriteOf(id: Int) {
         if (!hasTrack(id)) return
         val t = project.value.track(id)
-        val f = _favorites.value
         when (t.engine) {
-            InstrumentTrack.ENGINE_SYNTH -> if (t.instrument == null) {
-                val name = Favorites.nextName(f.synth.map { it.name })
-                addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(name, SoundCategories.FAVORITES, t.synth.sanitized())) }
-                if (_favorites.value.synth.size > f.synth.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
-                return
-            }
-            InstrumentTrack.ENGINE_PLAITS -> {
-                val name = Favorites.nextName(f.plaits.map { it.name })
-                addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(name, SoundCategories.FAVORITES, t.plaits)) }
-                if (_favorites.value.plaits.size > f.plaits.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
-                return
-            }
+            InstrumentTrack.ENGINE_SYNTH -> if (t.instrument == null) { keepSynthSound(id); return }
+            InstrumentTrack.ENGINE_PLAITS -> { keepPlaitsSound(id); return }
         }
         _notice.value = tr("Seuls les sons du synthé et de Plaits se gardent en favori.")
+    }
+
+    // --- Audit ultra round 1, n° 35 (seat D c): a kept sound with its effects, a name of its own, never twice ---
+
+    /** Track [id]'s effects, as a kept sound takes them along (null: none). */
+    private fun keptFxOf(id: Int): com.pocketstudio.model.Channel? =
+        project.value.mixer.channels.getOrNull(InstrumentTrack.mixerChannel(id))?.keptFx()
+
+    /** The name of the kept synth sound that is track [id]'s sound with its effects now (null: none is). */
+    fun keptSynthName(id: Int = track): String? {
+        if (!hasTrack(id)) return null
+        val t = project.value.track(id)
+        val fx = keptFxOf(id)
+        return _favorites.value.synth.firstOrNull { k -> k.fx == fx && SoundLibrary.synthNameOf(t.synth, listOf(k)) != null }?.name
+    }
+
+    /** The name of the kept Plaits sound that is track [id]'s sound with its effects now (null: none is). */
+    fun keptPlaitsName(id: Int = track): String? {
+        if (!hasTrack(id)) return null
+        val t = project.value.track(id)
+        val fx = keptFxOf(id)
+        return _favorites.value.plaits.firstOrNull { k -> k.fx == fx && k.sound.sanitized() == t.plaits.sanitized() }?.name
+    }
+
+    /** The name of the kept 303 sound that is the acid's now (null: none is). */
+    fun keptAcidName(): String? = _favorites.value.acid.firstOrNull { it.sound.sanitized() == project.value.acid.sound.sanitized() }?.name
+
+    /** A name typed for a kept sound of [names], or the next « Mon son N »; null (said) when another one has it. */
+    private fun keptNameFrom(typed: String?, names: List<String>): String? {
+        val clean = typed?.let(Favorites::cleanName) ?: return Favorites.nextName(names)
+        if (clean in names) {
+            _notice.value = tr("Un son gardé s'appelle déjà « %s » : choisis un autre nom.", clean)
+            return null
+        }
+        return clean
+    }
+
+    /** « Garder ce son » for track [id]'s synth sound, its effects with it, named [name] (else « Mon son N »); twice: said. */
+    fun keepSynthSound(id: Int = track, name: String? = null) {
+        if (!hasTrack(id)) return
+        keptSynthName(id)?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.synth.map { it.name }) ?: return
+        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(named, SoundCategories.FAVORITES, project.value.track(id).synth.sanitized(), keptFxOf(id))) }
+        if (_favorites.value.synth.size > f.synth.size) _notice.value = keptSaid(named, keptFxOf(id) != null)
+    }
+
+    /** « Garder ce son » for track [id]'s Plaits sound, as [keepSynthSound]. */
+    fun keepPlaitsSound(id: Int = track, name: String? = null) {
+        if (!hasTrack(id)) return
+        keptPlaitsName(id)?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.plaits.map { it.name }) ?: return
+        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(named, SoundCategories.FAVORITES, project.value.track(id).plaits, keptFxOf(id))) }
+        if (_favorites.value.plaits.size > f.plaits.size) _notice.value = keptSaid(named, keptFxOf(id) != null)
+    }
+
+    /** « Garder ce son » for the acid's sound, as [keepSynthSound] (its effects stay on its own strip). */
+    fun keepAcidSound(name: String? = null) {
+        keptAcidName()?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.acid.map { it.name }) ?: return
+        addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(named, SoundCategories.FAVORITES, project.value.acid.sound)) }
+        if (_favorites.value.acid.size > f.acid.size) _notice.value = keptSaid(named, false)
+    }
+
+    private fun keptSaid(name: String, fx: Boolean): String =
+        if (fx) tr("Son gardé dans tes favoris avec ses effets : « %s ».", name) else tr("Son gardé dans tes favoris : « %s ».", name)
+
+    /** « Renommer » kept sound [i] of [list] ([kind]: "synth", "plaits", "acid"): said when the name is taken or blank. */
+    private fun renameKept(kind: String, i: Int, typed: String) {
+        val f = _favorites.value
+        val list = when (kind) { "synth" -> f.synth; "plaits" -> f.plaits; else -> f.acid }
+        val old = list.getOrNull(i) ?: return
+        val clean = Favorites.cleanName(typed) ?: return
+        if (clean == old.name) return
+        if (list.withIndex().any { (k, it) -> k != i && it.name == clean }) {
+            _notice.value = tr("Un son gardé s'appelle déjà « %s » : choisis un autre nom.", clean)
+            return
+        }
+        editFavorites {
+            when (kind) {
+                "synth" -> it.copy(synth = it.synth.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+                "plaits" -> it.copy(plaits = it.plaits.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+                else -> it.copy(acid = it.acid.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+            }
+        }
+        _notice.value = tr("Son renommé : « %s ».", clean)
+    }
+    fun renameSynthFavorite(i: Int, name: String) = renameKept("synth", i, name)
+    fun renamePlaitsFavorite(i: Int, name: String) = renameKept("plaits", i, name)
+    fun renameAcidFavorite(i: Int, name: String) = renameKept("acid", i, name)
+
+    /** Kept sound [fx]'s effects on track [id]'s strip, in the undo step [key] of its sound (said when the engine has no room). */
+    /** Track [id]'s project with kept effects [fx] on its strip; null when nothing changes. */
+    private fun withKeptFx(id: Int, fx: com.pocketstudio.model.Channel?): Project? {
+        fx ?: return null
+        val ch = InstrumentTrack.mixerChannel(id)
+        val before = project.value
+        val c = before.mixer.channels.getOrNull(ch) ?: return null
+        val next = c.withKeptFx(fx)
+        if (next == c) return null
+        return before.copy(mixer = before.mixer.copy(channels = before.mixer.channels.mapIndexed { k, o -> if (k == ch) next else o })).withoutStaleInsertLanes(before)
+    }
+
+    /**
+     * Relecture tour 1 (mineur): kept effects past the long effects' limit refuse the whole kept
+     * sound, said, before its sound goes on (it went on alone: half a kept sound).
+     */
+    private fun keptFxRefused(id: Int, fx: com.pocketstudio.model.Channel?): Boolean {
+        val edited = withKeptFx(id, fx) ?: return false
+        val over = edited.mixer.longFxOverLimit(project.value.mixer) ?: return false
+        _notice.value = longFxLimitNotice(over)
+        return true
+    }
+
+    private fun putKeptFx(id: Int, fx: com.pocketstudio.model.Channel?, key: String) {
+        val before = project.value
+        val edited = withKeptFx(id, fx) ?: return
+        edited.mixer.longFxOverLimit(before.mixer)?.let { _notice.value = longFxLimitNotice(it); return }
+        session.edit(key) { edited }
+        pushMixer()
+        pushAutomation()
+    }
+
+    /** Kept synth sound [i] on the track shown: its sound and its effects, one undo step. */
+    fun applySynthFavorite(i: Int) {
+        val k = _favorites.value.synth.getOrNull(i) ?: return
+        if (keptFxRefused(track, k.fx)) return
+        val key = "kept:" + System.nanoTime()
+        applySynthPreset(k.sound, key, k.name, say = false)
+        putKeptFx(track, k.fx, key)
+        saidDone(tr("Nouveau son : %s", k.name))
+    }
+
+    /** Kept Plaits sound [i] on the track shown: its sound and its effects, one undo step. */
+    fun applyPlaitsFavorite(i: Int) {
+        val k = _favorites.value.plaits.getOrNull(i) ?: return
+        if (keptFxRefused(track, k.fx)) return
+        val key = "kept:" + System.nanoTime()
+        editTrack(key) { it.copy(plaits = k.sound.sanitized(), name = followingName(it.name, k.name)) }
+        pushPlaits()
+        putKeptFx(track, k.fx, key)
+        saidDone(tr("Nouveau son : %s", k.name))
     }
 
     /** A new layer of [sound] on track [id] for [role] ([com.pocketstudio.model.LayerRole]): one undo step. False when it has three. */
@@ -1152,15 +1625,73 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return matchLoudness(a, b)
     }
 
+    /**
+     * « Tuto de A à Z »'s « Écouter l'exemple »: [p] (a sandbox made from the course's target, never
+     * the open project) as the Guide's listenings hear it, up to [maxBars] bars, rendered offline.
+     */
+    suspend fun renderExample(p: Project, maxBars: Int = 8, minBars: Int = EXAMPLE_MIN_BARS): FloatArray? {
+        guideRenderForTest?.let { return it(p, p)?.first }
+        if (!NativeEngine.isAvailable) return null
+        awaitSoundsLoaded()
+        return renderGuidePeak(p, maxBars, minBars)
+    }
+
+    /** « Montre-moi »'s demonstration: the project as it was before its first frame (null: none under way). */
+    private var tutoDemoBefore: Project? = null
+
+    /**
+     * « Montre-moi » of the tutorial: [frame] shown and heard as it is (the screens and the engine
+     * follow), never written to disk nor kept in « Annuler »; null: the project as it was before
+     * the first frame, at once.
+     */
+    /** A change, an undo or a redo during « Montre-moi »: the project itself back first (see ProjectSession.beforeChange). */
+    private fun endTutoDemoShown() {
+        val before = tutoDemoBefore ?: return
+        tutoDemoBefore = null
+        session.showQuietly { before }
+        session.saveAs = null
+    }
+
+    fun tutoDemo(frame: Project?) {
+        if (frame != null) {
+            val before = tutoDemoBefore ?: project.value.also { b ->
+                tutoDemoBefore = b
+                // A save meanwhile writes the project as it was, never the demonstration.
+                session.saveAs = { b }
+            }
+            session.showQuietly { frame }
+            if (before.tracks != frame.tracks || before.synthTrackName != frame.synthTrackName) loadTrackFonts()
+        } else {
+            val before = tutoDemoBefore ?: return
+            tutoDemoBefore = null
+            session.showQuietly { before }
+            session.saveAs = null
+        }
+        syncEngine()
+    }
+
+    /** What a frame of « Montre-moi » sounds: a pad, or notes on a track (as the keys play them, a moment). */
+    fun tutoDemoSound(sound: com.pocketstudio.model.tuto.TutoSound) {
+        if (!NativeEngine.isAvailable || _transport.value.playing) return
+        sound.lane?.let { NativeEngine.triggerPad(it, 0.9f) }
+        val id = sound.track ?: return
+        sound.pitches.forEach { NativeEngine.synthNoteOn(it, 0.8f, id) }
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(180)
+            sound.pitches.forEach { NativeEngine.synthNoteOff(it, id) }
+        }
+    }
+
     /** Tests (G6): the Guide's « Sans / Avec » rendered here in place of the engine (Robolectric has none). */
     @androidx.annotation.VisibleForTesting
     internal var guideRenderForTest: (suspend (with: Project, without: Project) -> Pair<FloatArray, FloatArray>?)? = null
 
     /** The song's first Drop (else Refrain, else its first part, else the scene shown), up to [maxBars] bars, as the Guide's listenings hear it. */
-    private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8): FloatArray? {
+    private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8, minBars: Int = 1): FloatArray? {
         val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
         val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
-        val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
+        // A loop of one bar (the kick alone) goes round [minBars] times: an example heard, not a blip.
+        val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(minBars.coerceAtMost(maxBars), maxBars)
         return renderOffline(p.partHeard(part), OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)) {}
     }
 
@@ -1294,7 +1825,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // On the live grid, a track playing another scene (or stopped) keeps what it plays.
             if (!waitsFor(LiveSlots.audio(id)) || _liveGrid.value?.diverged != true) NativeEngine.setAudioOn(id, audioPlays(p, id, part, alone))
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
-            val native = clip?.let { padSamples.native(it.file) }
+            val stored = clip?.let { padSamples.native(it.file) }
+            // A loop following the tempo (step 4e): its copy at the project's tempo once made.
+            val pick = fitPick("a$id", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("a$id", c.file, it.frames, c.bpm, p.tempoBpm) } })
+            val native = pick.sample ?: stored
             if (clip != null && native != null) {
                 NativeEngine.setAudioClipParams(
                     id, clip.start, clip.engineLoopSteps(sceneSteps, p.tempoBpm), clip.gain,
@@ -1302,8 +1836,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     song = clip.song, offsetFrames = clip.offsetFrames(OfflineExport.SAMPLE_RATE),
                 )
             }
-            NativeEngine.setAudioClip(id, native)
+            NativeEngine.setAudioClip(id, native, refit = pick.refit)
         }
+        fitLoops(p)
     }
 
     /** Audio track [id] sounds in song [part] (null: scene [scene] alone); never the track being retaken (live only). */
@@ -1331,10 +1866,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun removeAudioTrack(id: Int) {
         if (_audioRecording.value?.track == id) cancelAudioRecording()
+        val name = project.value.audioTracks.firstOrNull { it.id == id }?.name
         session.edit { it.removeAudioTrack(id) }
         pushAudio()
         pushMixer()
         pushAutomation()
+        name?.let { saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(it))) }
     }
 
     fun renameAudioTrack(id: Int, name: String) {
@@ -1401,7 +1938,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** « Décaler la prise » in ms (5 ms steps, ±300), sample-accurate in the engine. */
     fun setAudioOffset(id: Int, ms: Float) = editClip(id, "audio-offset-$id") {
-        it.copy(offsetMs = (Math.round(ms / AudioClip.OFFSET_STEP_MS) * AudioClip.OFFSET_STEP_MS).coerceIn(-AudioClip.MAX_OFFSET_MS, AudioClip.MAX_OFFSET_MS))
+        it.withOffset((Math.round(ms / AudioClip.OFFSET_STEP_MS) * AudioClip.OFFSET_STEP_MS).coerceIn(-AudioClip.MAX_OFFSET_MS, AudioClip.MAX_OFFSET_MS))
     }
 
     /**
@@ -1409,6 +1946,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * newer one becomes the previous (a second touch swaps them back).
      */
     fun restorePreviousTake(id: Int) = chooseTake(id, 0)
+
+    /**
+     * Audit ultra round 3 (n° 25, seat C a: a take touched was chosen in silence): take [other] of audio track [id]'s
+     * other takes (null: the one playing) plays on it, and the track is heard alone in a loop, to compare takes.
+     */
+    fun hearTake(id: Int, other: Int?) {
+        if (other != null) chooseTake(id, other)
+        val target = com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(com.pocketstudio.model.SongPart.audio(id))
+        if (_alone.value?.target != target) toggleAlone(target, from = "audio_takes")
+    }
+
+    /** « Écouter seule » of audio track [id]'s takes: alone in a loop, or everything again. */
+    fun listenToTakesAlone(id: Int) =
+        toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(com.pocketstudio.model.SongPart.audio(id)), from = "audio_takes")
 
     /**
      * The take picker: take [index] of the track's other takes ([AudioTrack.otherTakes], newest
@@ -1422,6 +1973,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         reloadMissingSamples()
         pushAudio()
         padSamples.prune(project.value.sampleFiles)
+    }
+
+    /** « Prises »: take [index] of track [id]'s other takes left out (Annuler brings it back). */
+    fun forgetTake(id: Int, index: Int) {
+        val t = project.value.audioTracks.firstOrNull { it.id == id } ?: return
+        if (index !in t.otherTakes.indices || _audioRecording.value != null || _takeSaving.value) return
+        session.edit { it.forgetTake(id, index) }
+        AppLog.add("Prise retirée de la piste audio ${id + 1}")
     }
 
     /**
@@ -1467,7 +2026,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val missing = padSamples.missing(project.value.sampleFiles)
         if (missing.isEmpty()) return
         viewModelScope.launch {
-            val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.reload(missing) } }.getOrElse { emptyList() }
+            // Audit 17: the screen gone meanwhile (another project opened), what was read is freed
+            // and nothing of this project reaches the engine (the cancellation is not swallowed).
+            val prepared = try {
+                finishOrRelease(Dispatchers.IO, { list: List<PadSamples.Prepared> -> list.forEach { it.native.close() } }) { padSamples.reload(missing) }
+                    ?: emptyList()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            }
             // Meanwhile the project may have moved on (« Prise précédente » touched twice): a sound
             // it no longer uses, or one another reload already brought back, is freed at once.
             val used = project.value.sampleFiles
@@ -1477,6 +2045,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pushAudio()
             project.value.instrumentTracks.forEach { pushSampled(id = it.id) }
         }
+    }
+
+    /** [read] on the IO threads; null when it fails, but a cancellation goes on (never taken for a failure). */
+    private suspend fun <T> readOrNull(read: () -> T): T? = try {
+        withContext(Dispatchers.IO) { read() }
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        null
     }
 
     /** An audio file from the phone onto audio track [id]. */
@@ -1531,14 +2108,74 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
     }
 
-    /** On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false when busy. */
-    fun placeOnLivePad(pad: Int, pcm: Pcm, name: String): Boolean {
+    private var liveStarterJob: kotlinx.coroutines.Job? = null
+
+    private val _liveStarting = MutableStateFlow(false)
+    /** The ready-to-play live pads are being prepared (a few seconds). */
+    val liveStarting: StateFlow<Boolean> = _liveStarting.asStateFlow()
+
+    /**
+     * The live pads opened empty (Benjamin's list n° 12): the ready-to-play set
+     * ([com.pocketstudio.model.LiveStarter]) made by [make] at the project's tempo goes on them,
+     * once per project (emptied by hand later, they stay empty). One quiet step: « Annuler » never
+     * meets it. A pad filled meanwhile keeps its sound.
+     */
+    fun fillLiveStarter(make: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
+        if (!NativeEngine.isAvailable || !com.pocketstudio.model.LiveStarter.wanted(project.value) || liveStarterJob?.isActive == true) return
+        liveStarterJob = viewModelScope.launch {
+            _liveStarting.value = true
+            try {
+                awaitSoundsLoaded()
+                val madeAt = project.value.tempoBpm
+                val sounds = make(madeAt)
+                val made = HashMap<Int, com.pocketstudio.model.LiveStarter.Made>()
+                for ((i, sound) in sounds) {
+                    val pad = com.pocketstudio.model.LiveStarter.PADS.getOrNull(i) ?: continue
+                    val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(sound.first, pad.name) }
+                    padSamples.register(prepared)
+                    made[i] = com.pocketstudio.model.LiveStarter.Made(sample.file, sound.second)
+                }
+                // Its loops follow the tempo from then on (step 4e), its hits stay as they are.
+                val files = made.values.map { it.file }.toSet()
+                session.editQuietly { q ->
+                    val live = com.pocketstudio.model.LiveStarter.applied(q.live, made)
+                    q.copy(live = live.copy(clips = live.clips.map { c -> if (c != null && c.file in files && !c.oneShot) c.copy(bpm = madeAt) else c }))
+                }
+                pushLive()
+                AppLog.add("Pads prêts à jouer : ${made.size} sons posés")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Pads prêts à jouer : mémoire insuffisante")
+            } catch (e: Throwable) {
+                // Audit ultra round 2, zone 1: an engine that cannot take a sound ends the set here, never the app.
+                AppLog.add("Pads prêts à jouer : échec (${e.message ?: e.javaClass.simpleName})")
+            } finally {
+                _liveStarting.value = false
+            }
+        }
+    }
+
+    /**
+     * On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false
+     * when busy. Step 4e: a loop with a tempo ([known], else the beat tracker's) follows the
+     * project's tempo, stretched live, and the first one of a project without a tempo sets it.
+     */
+    fun placeOnLivePad(pad: Int, pcm: Pcm, name: String, known: Double = 0.0, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
-        if (pad !in 0 until LivePads.MAX) return true
-        AppLog.add("Pad live ${pad + 1} : « $name » de la bibliothèque")
-        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
+        if (pad !in 0 until LivePads.ALL) return true
+        // Fix 2, n° 3: Pad Live's pages B to D the same way (tempo, busy guard, a full phone said),
+        // their hits as hits (« coup »), their pads named as Pad Live names them (« B1 »).
+        val paged = pad >= LivePads.MAX
+        val shown = if (paged) com.pocketstudio.app.padlive.padName(pad) else (pad + 1).toString()
+        AppLog.add("Pad live $shown : « $name » de la bibliothèque")
+        val busy = if (paged) tr("Pose du son sur le pad %s…", shown) else tr("Pose du son sur le pad live %d…", pad + 1)
+        sampleJob(busy, live = pad, liveTempo = LiveTempo(known, oneShot, shot = paged && oneShot)) { padSamples.add(pcm, name) }
         return true
     }
+
+    /** How a live pad's new sound finds its tempo ([placeOnLivePad]); [shot]: a hit kept as a hit (Pad Live's pages B to D). */
+    private class LiveTempo(val known: Double, val oneShot: Boolean, val shot: Boolean = false)
 
     /** On the first audio track without a clip; one is added when all are taken. */
     fun placeOnAudioTrack(pcm: Pcm, name: String) {
@@ -1574,7 +2211,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
             } catch (e: Exception) {
                 AppLog.add("Piste audio : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+                _sampleTask.value = SampleTask.Failed(failedWords(e))
             }
         }
     }
@@ -1609,8 +2246,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private class TakePlan(val track: Int, val anchor: TakeAnchor, val start: Int, val bpm: Double, val stepsPerBar: Int, val replaces: String? = null, val scene: Int? = null, val punch: Punch? = null)
 
     /**
-     * « Refaire mes. [fromBar]-[toBar] » on audio track [id]: the song (or the clip's part) starts a
-     * bar before, after the count-in, the take records and stops by itself after bar [toBar]; only
+     * « Refaire mes. [fromBar]-[toBar] » on audio track [id]: the song starts from the part holding
+     * the bar before (a clip's part: from its start), after the count-in, the take records and stops by itself after bar [toBar]; only
      * those bars of the take replace the clip's (crossfaded), the whole take before is kept in the
      * take picker. Bars of the song for a song clip, of the part otherwise (from 1).
      */
@@ -1634,7 +2271,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun recordAudio(id: Int) = recordAudio(id, null)
 
     private fun recordAudio(id: Int, punch: Punch?) {
-        if (!NativeEngine.isAvailable || _audioRecording.value != null) return
+        if (_audioRecording.value != null) return
+        // Audit ultra round 1 (n° 29): never a silent « Enregistrer »: why, and what to do.
+        if (!NativeEngine.isAvailable) {
+            _notice.value = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.")
+            return
+        }
         if (_recording.value) stopRecordingTake()
         if (_transport.value.playing) togglePlay()
         val p = project.value
@@ -1660,9 +2302,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val bars = if (songPart >= 0) maxOf(64, p.songBars - p.songStepOf(songPart) / p.stepsPerBar) else 64
             val seconds = minOf(MAX_AUDIO_SECONDS, (bars * p.stepsPerBar * 15.0 / p.tempoBpm).toInt() + 1)
             // A microphone opened while the project closes is closed again, not left armed.
-            val handle = finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
-                NativeEngine.recordStart(onStart = true, seconds = seconds)
-            } ?: 0L
+            // Two beats of the count-in kept in front of the take: a word sung ahead of the « 1 »
+            // (03 M1). A punch keeps only its own bars.
+            val preroll = if (punch == null) prerollFrames(p.tempoBpm) else 0
+            // A microphone that throws (its stream closed under it) is one that did not open: said, never a take stuck « waiting ».
+            val handle = try {
+                finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
+                    NativeEngine.micStart(onStart = true, seconds = seconds, prerollFrames = preroll)
+                } ?: 0L
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Micro : ouverture impossible (${e.javaClass.simpleName}: ${e.message})")
+                0L
+            }
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
                 TakeVault.app.discard(handle)
                 return@launch
@@ -1670,16 +2323,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (handle == 0L) {
                 _audioRecording.value = null
                 takePlan = null
+                AppLog.add("Micro : la prise n'a pas pu commencer")
                 _notice.value = tr("Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise.")
                 return@launch
             }
             TakeVault.app.opened(handle)
             recordHandle = handle
+            takePreroll = preroll
             // The output the take is heard on now (a headset unplugged later must not change it).
             takeLatencyMs = Metrics.recordLatencyMs()
-            // The previous take of this track stays silent (no double voice, nothing in the microphone).
-            takeMuted = id
-            NativeEngine.setAudioOn(id, false)
+            if (punch != null) {
+                // A punch-in: the take is heard up to the first bar sung again, as in a studio (03 M4).
+                NativeEngine.recordMuteAt(id, punch.from, punch.clip.song)
+            } else {
+                // The previous take of this track stays silent (no double voice, nothing in the microphone).
+                takeMuted = id
+                NativeEngine.setAudioOn(id, false)
+            }
+            monitorOn = false
+            updateMonitor(id)
+            // The microphone needs at least a bar to start on time (and to keep what is sung before the « 1 »).
             val countIn = com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
             if (songPart >= 0) {
                 recordingSong = true
@@ -1688,15 +2351,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _transport.value = _transport.value.copy(playing = true)
                 heardScene = project.value.scene
                 // The scene on its own: song curves and song clips wait for the song.
-                NativeEngine.play(countIn, aloneSongStep())
+                enginePlay(countIn, aloneSongStep())
                 PlaybackService.start(getApplication())
             }
             AppLog.add("Prise audio sur la piste ${id + 1}" + if (songPart >= 0) " (morceau, partie ${songPart + 1})" else "")
             recordPoll = launch {
                 while (true) {
-                    val st = NativeEngine.recordStatus(handle)
+                    val st = NativeEngine.micStatus(handle)
                     val ui = _audioRecording.value ?: break
-                    _audioRecording.value = ui.copy(waiting = st[0] < 0.5f, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2])
+                    // Headphones unplugged (or the choice changed): the voice in the headphones follows.
+                    updateMonitor(id)
+                    val waiting = st[0] < 0.5f
+                    // The beats of count-in left, as the editors' takes show them (03 M6).
+                    val pos = if (waiting) NativeEngine.playPosition() else 0.0
+                    val beatsLeft = if (waiting && pos < 0) kotlin.math.ceil(-pos / 4.0).toInt().coerceAtLeast(1) else 0
+                    _audioRecording.value = ui.copy(waiting = waiting, seconds = st[1] / OfflineExport.SAMPLE_RATE.toFloat(), level = st[2], beatsLeft = beatsLeft)
                     // A punch-in ends by itself a beat after its last bar.
                     val punchEnd = punch?.let { (it.until - anchor.from + 4) * 15.0 / p.tempoBpm * OfflineExport.SAMPLE_RATE }
                     if (punchEnd != null && st[0] > 0.5f && st[1] >= punchEnd) {
@@ -1738,7 +2407,43 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             waiting = waiting,
             replaces = plan.replaces,
             scene = plan.scene,
+            prerollFrames = takePreroll,
+            // Sung ahead of the « 1 »: a song take from its anchor may start up to two beats
+            // earlier. A scene clip cannot (before its scene's first step is the previous pass).
+            leadInSteps = if (plan.punch == null && plan.anchor.song && plan.start == plan.anchor.from) minOf(8, plan.start) else 0,
         )
+    }
+
+    /** Frames of count-in kept in front of a take at [bpm]: two beats (at most 4 s). */
+    private fun prerollFrames(bpm: Double): Int =
+        (2 * 60.0 / bpm.coerceAtLeast(30.0) * OfflineExport.SAMPLE_RATE).toInt().coerceAtMost(4 * OfflineExport.SAMPLE_RATE)
+
+    private var takePreroll = 0
+    private var monitorOn = false
+
+    /**
+     * « M'entendre dans le casque » (03 G1): during a take on track [id], the voice comes back in
+     * wired headphones (or USB), through the track's effects. Never on the speaker (it would
+     * howl) nor in Bluetooth (far too late to sing with).
+     */
+    private fun updateMonitor(id: Int) {
+        // Revue neuve (MOYEN 4): the engine cut the voice when its output reopened (the headphones
+        // unplugged, the speaker now): on again only if the outputs, read again, still say headphones.
+        if (monitorOn && NativeEngine.monitorTrack() == -1) {
+            monitorOn = false
+            com.pocketstudio.app.audio.Headphones.refresh()
+        }
+        val wanted = com.pocketstudio.app.settings.SettingsStore.state.value.monitorVoice &&
+            com.pocketstudio.app.audio.Headphones.state.value == com.pocketstudio.app.audio.Listening.Wired
+        if (wanted == monitorOn) return
+        monitorOn = wanted
+        NativeEngine.setMonitor(if (wanted) id else -1)
+    }
+
+    private fun stopMonitor() {
+        if (!monitorOn) return
+        monitorOn = false
+        NativeEngine.setMonitor(-1)
     }
 
     /** Ends the take: the song stops and the recording becomes the track's clip (Annuler possible). */
@@ -1752,8 +2457,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val request = if (handle != 0L) takeRequest(handle, ui.waiting) else null
         val punch = takePlan?.punch
         takePlan = null
+        stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
+        // Revue neuve (MOYEN 3): the clip the punch silenced sounds again whatever becomes of the take
+        // (too short, silent, lost, failed); a punch kept is pushed again once placed.
+        if (punch != null) pushAudio()
         if (request == null) return
         // Written into the project outside this screen: closing the app now keeps the take.
         val written = TakeVault.app.finish(request)
@@ -1777,7 +2486,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // On its track and saved first: whatever fails afterwards (memory for the engine's copy),
         // the take is in the project, and its sound comes back from its file.
         val forgotten = project.value.takeForgets(r.take)
-        session.edit { it.withTake(r.take) }
+        // The track's first take: brought to a usual voice level, « Voix claire » on a bare strip
+        // (03 G2; one undo step with the take). A retake keeps the volume chosen.
+        val first = project.value.audioTracks.firstOrNull { it.id == r.take.track }?.clip == null
+        val gain = if (first) withContext(Dispatchers.Default) { AudioEdits.voiceLevelGain(r.pcm, AudioClip.MAX_GAIN) } else 1f
+        session.edit { p -> p.withTake(r.take).let { if (first) it.withFirstTakeLevel(r.take.track, r.take.file, gain) else it } }
         // The ninth take: the oldest leaves the take picker (its sound waits a week aside; Annuler brings it back).
         if (forgotten != null) {
             AppLog.add("Prise : la plus ancienne (${forgotten.file}) quitte les prises gardées")
@@ -1816,8 +2529,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val before = padSamples.read(old.file)
             AudioEdits.punch(
                 before, r.pcm,
-                oldAt = Math.round(old.start * perStep) + old.offsetFrames(rate),
-                newAt = Math.round(r.take.start * perStep),
+                oldAt = AudioEdits.punchOldAt(old, perStep, rate),
+                newAt = AudioEdits.punchNewAt(old, r.take.start, perStep, rate),
                 from = Math.round(punch.from * perStep), until = Math.round(punch.until * perStep),
             )
         }
@@ -1827,7 +2540,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val t = p.audioTracks.firstOrNull { it.id == id } ?: return@edit p
             if (t.clip?.file != old.file) return@edit p
             val kept = listOf(old) + t.otherTakes
-            p.withAudioTrack(t.copy(clip = old.copy(file = sample.file, seconds = spliced.seconds), previous = kept.first(), older = kept.drop(1)))
+            // Round 2, n° 18: the passage sung again is a take of its own, numbered after the others.
+            p.withAudioTrack(t.copy(clip = old.copy(file = sample.file, seconds = spliced.seconds, take = t.nextTake()), previous = kept.first(), older = kept.drop(1)))
         }
         AppLog.add("Prise audio : mesures ${punch.from / project.value.stepsPerBar + 1} à ${punch.until / project.value.stepsPerBar} refaites")
         if (withContext(NonCancellable) { session.flush() }) {
@@ -1856,10 +2570,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         recordPoll?.cancel()
         _audioRecording.value = null
         recordingSong = false
+        val punched = takePlan?.punch != null
         takePlan = null
+        stopMonitor()
         if (_transport.value.playing) togglePlay()
         endTakeMute()
         TakeVault.app.discard(handle)
+        // Revue neuve (MOYEN 3): the clip the punch silenced sounds again (after the take's end).
+        if (punched) pushAudio()
     }
 
     /** Clip edits: a new sound file each time, so Annuler brings the previous one back. */
@@ -1879,7 +2597,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun realignTake(id: Int) {
         val clip = project.value.audioTracks.firstOrNull { it.id == id }?.clip ?: return
         val bpm = project.value.tempoBpm
-        if (!clip.tempoDiffers(bpm) || !NativeEngine.isAvailable || _audioRecording.value != null) return
+        // The stretch is the native library's (a test's command sink has none).
+        if (!clip.tempoDiffers(bpm) || !NativeEngine.isNative || _audioRecording.value != null) return
         val ratio = clip.bpm / bpm
         audioJob(tr("Recalage sur le tempo…")) {
             val pcm = withContext(Dispatchers.Default) { padSamples.read(clip.file) }
@@ -1970,6 +2689,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun midiControl(channel: Int, controller: Int, value: Int): Boolean {
         if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_MOD_WHEEL || controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN) {
+            // The pedal holds the notes of a take too (the engine already holds the sound).
+            if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN && channel != 9) recordSustain(value >= 64)
             if (_learning.value == null) return true  // played by the engine already
         }
         _learning.value?.let { target ->
@@ -2081,7 +2802,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Another sound is still being prepared for the keyboard: this touch waits for it.
         if (_trackSoundBusy.value == BUSY_TRACK_SOUND) return false
         viewModelScope.launch {
-            val pcm = runCatching { withContext(Dispatchers.IO) { padSamples.read(s.file) } }.getOrNull()
+            val pcm = readOrNull { padSamples.read(s.file) }
             if (pcm == null || pcm.frames == 0) {
                 if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce son n'a pas pu être lu.")
                 return@launch
@@ -2099,12 +2820,90 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
+    /**
+     * « Garder dans ma bibliothèque »: pad [lane]'s own sound (imported, recorded, a piece of the
+     * Remix), cut to its region, kept for every project ([com.pocketstudio.app.library.MySoundLibrary]);
+     * said when it is there (or why not). The project does not change.
+     */
+    fun keepPadInLibrary(lane: Int = _transport.value.selectedPad): Boolean {
+        val s = project.value.drums.lanes.getOrNull(lane)?.sample ?: return false
+        val bpm = if (s.fitBeats > 0) project.value.tempoBpm else 0.0
+        viewModelScope.launch {
+            val pcm = readOrNull { padSamples.read(s.file) }
+            if (pcm == null || pcm.frames == 0) {
+                _notice.value = tr("Ce son n'a pas pu être lu.")
+                return@launch
+            }
+            val ch = pcm.channels
+            val from = (s.start * pcm.frames).toInt().coerceIn(0, pcm.frames - 1)
+            val to = (s.end * pcm.frames).toInt().coerceIn(from + 1, pcm.frames)
+            var data = if (from == 0 && to == pcm.frames) pcm.data else pcm.data.copyOfRange(from * ch, to * ch)
+            if (s.reverse) {
+                val frames = data.size / ch
+                val src = data
+                data = FloatArray(src.size) { i -> src[(frames - 1 - i / ch) * ch + i % ch] }
+            }
+            val cut = Pcm(data, ch, pcm.sampleRate)
+            _notice.value = try {
+                val kept = com.pocketstudio.app.library.MySoundLibrary.keep(
+                    getApplication(), cut, s.name, com.pocketstudio.model.MySounds.kindOfPad(com.pocketstudio.model.MySounds.padKind(lane), cut.seconds, s.name),
+                    bpm = bpm, origin = project.value.name,
+                )
+                com.pocketstudio.app.library.keptNotice(kept)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                tr("Ce son n'a pas pu être gardé (%s).", e.message ?: e.javaClass.simpleName)
+            }
+        }
+        return true
+    }
+
+    /**
+     * Step 7e: « Garder dans ma bibliothèque » from audio track [trackId]'s clip (a take, a sound put
+     * in a Live cell): its sound file as it plays, for every project; the project does not change.
+     */
+    fun keepAudioClipInLibrary(trackId: Int): Boolean {
+        val clip = project.value.audioTracks.firstOrNull { it.id == trackId }?.clip ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, clip.bpm)
+        return true
+    }
+
+    /** Step 7e: the same from live pad [pad] (Live › Pads): a loop keeps its tempo, a hit none. */
+    fun keepLivePadInLibrary(pad: Int): Boolean {
+        val clip = project.value.live.clips.getOrNull(pad) ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, if (clip.follows) clip.bpm else 0.0)
+        return true
+    }
+
+    /** Keeps sound file [file] of the project in « Ma bibliothèque » under [name], said when it is there (or why not). */
+    private fun keepFileInLibrary(file: String, name: String, padKind: String?, bpm: Double) {
+        viewModelScope.launch {
+            val pcm = readOrNull { padSamples.read(file) }
+            if (pcm == null || pcm.frames == 0) {
+                _notice.value = tr("Ce son n'a pas pu être lu.")
+                return@launch
+            }
+            _notice.value = try {
+                val kept = com.pocketstudio.app.library.MySoundLibrary.keep(
+                    getApplication(), pcm, name, com.pocketstudio.model.MySounds.kindOfPad(padKind, pcm.seconds, name),
+                    bpm = bpm, origin = project.value.name,
+                )
+                com.pocketstudio.app.library.keptNotice(kept)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                tr("Ce son n'a pas pu être gardé (%s).", e.message ?: e.javaClass.simpleName)
+            }
+        }
+    }
+
     /** A sound file of the phone on the keyboard of the selected track. */
     fun importTrackSound(uri: Uri) {
         viewModelScope.launch {
             val app = getApplication<Application>()
             val name = PadSamples.nameFrom(displayName(app, uri))
-            val pcm = runCatching { withContext(Dispatchers.IO) { AudioDecoder.decode(app, uri) } }.getOrNull()
+            val pcm = readOrNull { AudioDecoder.decode(app, uri) }
             if (pcm == null || PadSamples.isSilent(pcm)) {
                 if (_trackSoundBusy.value != BUSY_TRACK_SOUND) _trackSoundBusy.value = tr("Ce fichier n'a pas pu être lu.")
                 return@launch
@@ -2286,6 +3085,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!hasTrack(id)) return
         editTrack(id = id) {
             it.copy(
+                name = followingName(it.name, name),
                 engine = InstrumentTrack.ENGINE_MULTI, instrument = null,
                 multi = com.pocketstudio.model.MultiPatch(pack, name),
                 synth = com.pocketstudio.model.MultiInstruments.fallbackSynth(fallback),
@@ -2299,6 +3099,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         releaseUnusedMulti()
         loadMultiBanks()
         AppLog.add("Piste ${id + 1} : instrument « $name »")
+        saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     /** Track [id] plays the 808 (glide on). One undo step. */
@@ -2337,7 +3138,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (waitsFor(LiveSlots.DRUMS)) return  // another scene plays: this one goes to the engine on its turn
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
-            for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, l.hits[step])
+            for (step in 0 until drums.engineReach) pushHit(lane, step, l.hits[step], loopOf(drums, lane))
             NativeEngine.setDrumLaneSteps(lane, l.length)
         }
     }
@@ -2614,9 +3415,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Copies the current scene to the first empty slot and shows it (one undo step): the usual way to make a variation. */
     fun duplicateScene() {
-        val p = project.value
-        val scenes = p.allScenes
-        val target = scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX }
+        // Relecture tour 1, M5: never onto a scene holding an audio take or played by the song.
+        val target = project.value.firstEmptyScene()
         if (target == null) {
             _notice.value = tr("Les %d parties sont déjà prises : plus de place pour une copie.", Scene.MAX)
             return
@@ -2663,6 +3463,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Scene [scene] added at the end of the song. */
     fun addSongPart(scene: Int) = insertSongPart(project.value.song.size, scene)
+
+    /**
+     * Audit ultra round 1, n° 24 (seat B b: « seulement A », no way to a part B in the Mode simple): a new part at
+     * place [at] of the song (null: at its end), on a scene of its own: a copy of the scene shown ([copy], the usual
+     * way to a variation) or an empty one, which the screens then show to change it. One undo step.
+     */
+    fun newSongPart(copy: Boolean, at: Int? = null) {
+        val p = project.value
+        if (p.song.size >= SongPart.MAX_PARTS) {
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
+            return
+        }
+        // Relecture tour 1, M5: a copy too goes on a scene really free (no audio take, not in the song).
+        val target = p.firstEmptyScene()
+        if (target == null) {
+            _notice.value = tr("Les %d parties sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
+            return
+        }
+        val place = (at ?: p.song.size).coerceIn(0, p.song.size)
+        val following = songPlaying()
+        // The new scene made (a copy, or an empty one) and placed in the song while it is the one shown (an empty scene
+        // at the end that nothing uses yet is dropped by any other step), then the scene shown before.
+        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q).switchScene(target).insertSongPart(place, target).switchScene(q.scene)
+        if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
+            if (!_transport.value.playing || !NativeEngine.isAvailable) _sessionUi.value = SessionUi()
+            session.edit { made(it).switchScene(target) }
+            syncEngine()
+            return
+        }
+        // Playing: the song plays on (a part placed before the one on now moves it on); the screens show the new part at the next bar.
+        session.edit { made(it) }
+        if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
+        selectScene(target)
+    }
 
     /** Scene [scene] played once at place [at] of the song (one undo step). */
     fun insertSongPart(at: Int, scene: Int) {
@@ -2938,7 +3772,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (index !in song.indices || !NativeEngine.isAvailable) return
         val part = song[index]
         // Playing is not an edit: no undo step for the screens going to the part's scene.
-        if (_followSong.value) session.editQuietly { it.switchScene(part.scene) }
+        if (_followSong.value) session.showQuietly { it.switchScene(part.scene) }
         syncEngine()
         pushPart(project.value, part.scene, part)  // the part's scene without its muted tracks
         applyAutomationState(project.value, project.value.automationBefore(index))
@@ -2990,7 +3824,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _sessionUi.value
         if (ui.pending != null && NativeEngine.sceneSwaps() != swapsSeen) {
             swapsSeen = NativeEngine.sceneSwaps()
-            ui.pending.let { now -> if (screensFollow(ui)) session.editQuietly { it.switchScene(now) } }
+            ui.pending.let { now -> if (screensFollow(ui)) session.showQuietly { it.switchScene(now) } }
         }
     }
 
@@ -3052,6 +3886,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             for (slot in 0 until LiveSlots.COUNT) NativeEngine.setSlotOffset(slot, (part?.fromBars(LiveSlots.key(slot)) ?: 0) * p.stepsPerBar)
             // The remix: silent in a part that mutes it (it keeps its place), else heard.
             NativeEngine.setRemixOn(part?.plays(SongPart.REMIX) ?: true)
+            // Lot D2: the passage of the brick the remix plays in this part (-1: the whole song).
+            NativeEngine.setRemixCell(p.remixCellOf(part?.sceneFor(SongPart.REMIX) ?: index))
             // The scene a strip's track plays in this part (the master and the buses: the part's).
             fun sceneOf(ch: Int?): Int = ch?.let(::liveSlotOfChannel)?.let { part?.sceneFor(LiveSlots.key(it)) } ?: index
             // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
@@ -3146,7 +3982,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _liveGrid.value = gridOfPart(song.getOrNull(index)?.takeIf { it.scene == now }, now, liveTransportStep(), slotStatesNow())
         stagedFrom.fill(null)
         // The engine already plays it: only the screens follow (no undo step).
-        if (screensFollow(ui)) session.editQuietly { it.switchScene(now) }
+        if (screensFollow(ui)) session.showQuietly { it.switchScene(now) }
         // Edits held for this scene ("rester sur ma scène") that the waiting copy missed: it plays now.
         if (restageJob?.isActive == true && now == project.value.scene) {
             restageJob?.cancel()
@@ -3196,6 +4032,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The grid as it plays now: every column on the scene heard when nothing was launched apart. */
     private fun liveNow(): LiveState = _liveGrid.value ?: LiveState.on(heardScene ?: project.value.scene)
+
+    /**
+     * Lot D2: a remix cell changed (a passage chosen or taken away): the remix slot plays what the
+     * brick it plays now holds, at once, at its place (the song part's, else the grid's).
+     */
+    /** Lot D2: what a remix cell's choice said (« Voix dans la case Remix de la brique C. »), or why not. */
+    internal fun liveRemixSays(text: String) {
+        _notice.value = text
+    }
+
+    internal fun liveRemixPushed() {
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing || pushingPart) return
+        val p = project.value
+        val scene = playingPart()?.sceneFor(SongPart.REMIX) ?: liveNow().slot(LiveSlots.REMIX).playing
+        if (scene >= 0) NativeEngine.setRemixCell(p.remixCellOf(scene))
+    }
 
     /** The grid as song part [part] plays (null: scene [scene] alone), from [start] or the engine's [states]. */
     private fun gridOfPart(part: SongPart?, scene: Int, start: Int, states: IntArray?): LiveState =
@@ -3275,6 +4127,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.editQuietly { it.copy(liveQuantum = next.liveQuantum, liveQuantumFine = next.liveQuantumFine) }
     }
 
+    /** « Cases − 8 + »: bricks the Live grid shows at once (kept with the project, no undo step). */
+    fun setLiveRows(rows: Int) {
+        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRowsShown) return
+        // Step 4f: a step of its own (quiet, an « Annuler » of an earlier edit took it back too).
+        session.edit("live-rows") { it.copy(liveRows = rows) }
+    }
+
     /**
      * A pad: track [key] plays its part of scene [scene] from the next launch line (each track
      * counts from its own launch). Stopped, the transport starts with that track alone. During the
@@ -3337,6 +4196,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Already launched (the line passed meanwhile): it stays, as heard.
         val waiting = (0 until LiveSlots.COUNT).filter { mask and (1 shl it) != 0 && liveNow().slot(it).pending != null }
         if (waiting.isEmpty()) return
+        stopAllArmed = false  // « ■ Tout » taken back: the transport goes on
         val m = waiting.fold(0) { acc, k -> acc or (1 shl k) }
         if (NativeEngine.isAvailable) NativeEngine.cancelLaunch(m)
         waiting.forEach { stagedFrom[it] = null }
@@ -3355,19 +4215,66 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         armSlots(LiveSlots.mask(slot), -1)
     }
 
-    /** « ■ Tout »: every track stops on the next launch line (the transport goes on). */
+    /**
+     * « ■ Tout »: every track stops on the next launch line, and the transport with them there (4A, T4-01, recette tel-12:
+     * « ■ Tout coupe le son mais mesures et temps continuent »): [onLaunched] stops it once no block plays nor waits.
+     */
     fun stopLiveAll() {
         if (!_transport.value.playing) return
         leaveSongForLive()
         armSlots(LiveSlots.ALL, -1)
+        stopAllArmed = true
+    }
+
+    /** « ■ Tout » armed: the transport stops when the engine has stopped every block (a block launched since: not any more). */
+    private var stopAllArmed = false
+
+    /**
+     * Audit ultra round 3, zone 1, n° 3 (seat E d): the Live columns cut outside the Live page: their strip muted in Mix,
+     * or the remix with all its parts muted (a song put in « muette, pour la découper »). Their blocks said « joue » and
+     * the column's speaker « Son », but nothing was heard: the Live page shows them muted.
+     */
+    fun liveCutElsewhere(p: Project = project.value): Set<String> = (0 until LiveSlots.COUNT).mapNotNullTo(HashSet()) { slot ->
+        val key = LiveSlots.key(slot)
+        val strip = liveChannel(key)?.let { p.mixer.channels.getOrNull(it) }?.mute == true
+        val parts = slot == LiveSlots.REMIX && p.remix.setId != null && p.remix.stems.isNotEmpty() && p.remix.stems.all { it.mute }
+        key.takeIf { strip || parts }
     }
 
     /** M: track [key] silent at once, or heard again (not written in the project). */
     fun toggleLiveMute(key: String) {
+        // Round 3, zone 1, n° 3: shown muted because Mix cuts it: the touch gives it back there (one undo step), and says so.
+        if (key !in _liveMuted.value && key in liveCutElsewhere()) return soundBackFromMix(key)
         val ch = liveChannel(key) ?: return
         val muted = _liveMuted.value.let { if (key in it) it - key else it + key }
         _liveMuted.value = muted
         if (NativeEngine.isAvailable) NativeEngine.setChannelMute(ch, key in muted || project.value.mixer.channels.getOrNull(ch)?.mute == true)
+    }
+
+    private fun soundBackFromMix(key: String) {
+        val ch = liveChannel(key) ?: return
+        val before = project.value
+        val strip = before.mixer.channels.getOrNull(ch)?.mute == true
+        val parts = LiveSlots.of(key) == LiveSlots.REMIX && before.remix.stems.all { it.mute }
+        session.edit { p ->
+            var q = p
+            if (strip) q = q.copy(mixer = q.mixer.copy(channels = q.mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(mute = false) else c }))
+            if (parts) q = q.copy(remix = q.remix.copy(stems = q.remix.stems.map { it.copy(mute = false) }))
+            q
+        }
+        if (strip) pushStrip(ch, before.mixer.channels[ch])
+        if (parts) pushRemix()
+        val name = if (LiveSlots.of(key) == LiveSlots.REMIX) before.remix.name.ifBlank { tr("Remix") } else liveColumnName(before, key)
+        _notice.value = tr("« %s » était coupé dans Mix : il joue de nouveau.", name)
+    }
+
+    /** A Live column's name as Mix shows it. */
+    private fun liveColumnName(p: Project, key: String): String = when (val slot = LiveSlots.of(key)) {
+        LiveSlots.DRUMS -> tr("Batterie")
+        LiveSlots.ACID -> "Acid 303"
+        null -> key
+        else -> (LiveSlots.audioOf(slot)?.let { id -> p.audioTracks.firstOrNull { it.id == id }?.name }
+            ?: p.tracks.firstOrNull { it.id == slot - LiveSlots.INST }?.name)?.let(com.pocketstudio.model.DefaultNames::shown) ?: key
     }
 
     /** The mixer channel of a grid column. */
@@ -3395,7 +4302,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (param !in _liveAcid.value) return
         takeGesture(AutoTarget.acid(param), project.value.acid.sound.values()[param], _liveAcid.value[param] ?: 0f)
         _liveAcid.value = _liveAcid.value - param
-        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, project.value.acid.sound.values()[param])
+        val saved = project.value.acid.sound.values()[param]
+        liveCommandsForTest?.add("acid $param $saved")
+        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, saved)
     }
 
     /** The reverb (0) or echo (1) return on the Live page: 0..1, 0.5 = as mixed. */
@@ -3757,6 +4666,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (written into a take as heard, at once); a Drop already waiting still drops on its bar line.
      */
     fun leaveLive() {
+        // Lot 4b: a cell recording keeps what was played (as if touched again).
+        stopCellRecording()
         // M of the Live page: heard again (it was never written in the project, nothing else shows it).
         _liveMuted.value.toList().forEach(::toggleLiveMute)
         _liveFx.value.locks.toList().forEach { setLiveLock(it, false) }
@@ -3768,6 +4679,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (bus in 0..1) if (_liveReturns.value[bus] != 0.5f) setLiveReturn(bus, 0.5f)
         _liveFx.value.trackKills.forEach { (ch, bands) -> bands.forEach { liveKill(it, false, ch) } }
         _liveChops.value.toList().forEach { liveTrackChop(it, false) }
+        // The 303 as the page's sliders left it: back to the sound saved (Sons › Acid 303 shows it).
+        _liveAcid.value.keys.toList().forEach(::resetLiveAcid)
     }
 
     /**
@@ -3909,6 +4822,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** [mask]'s slots take [scene]'s part (staged now) or stop (-1) on the next launch line. */
     private fun armSlots(mask: Int, scene: Int) {
+        stopAllArmed = false
         val p = project.value
         if (NativeEngine.isAvailable) {
             if (scene >= 0) {
@@ -3917,7 +4831,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 else for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) pushSlot(p, k, scene)
                 NativeEngine.setStaging(false)
             }
-            NativeEngine.armLaunch(mask, launchSteps(), scene)
+            NativeEngine.armLaunch(mask, launchSteps(), scene, launchGraceSteps())
         }
         for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) stagedFrom[k] = p.takeIf { scene >= 0 }
         _liveGrid.value = liveNow().armed(mask, scene, launchSteps())
@@ -3940,7 +4854,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.setAcidLength(view.acid.length)
                     view.acid.steps.forEachIndexed { i, st -> NativeEngine.setAcidStep(i, st.pack()) }
                 }
-                LiveSlots.REMIX -> Unit
+                LiveSlots.REMIX -> NativeEngine.setRemixCell(p.remixCellOf(scene))
                 in LiveSlots.AUDIO until LiveSlots.AUDIO + 4, in LiveSlots.AUDIO2 until LiveSlots.AUDIO2 + AudioTrack.MAX - 4 -> {
                     val id = LiveSlots.audioOf(slot)!!
                     NativeEngine.setAudioOn(id, audioPlays(p, id, null, scene))
@@ -4013,6 +4927,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             heardScene = g.row
             if (g.row != project.value.scene && g.row in project.value.allScenes.indices) session.editQuietly { it.switchScene(g.row) }
             if (NativeEngine.isAvailable) swapsSeen = NativeEngine.sceneSwaps()
+        }
+        // « ■ Tout » (4A): its last block stopped on the line, the transport stops there too.
+        if (stopAllArmed && !g.hasPending) {
+            stopAllArmed = false
+            AppLog.add("■ Tout : tout est arrêté, la lecture aussi")
+            toggleTransport(songStep = aloneSongStep())
         }
     }
 
@@ -4113,6 +5033,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** No room after song [p] for a take « à la suite » (its parts all used). */
     private fun songFullForTake(p: Project): Boolean = p.song.isNotEmpty() && p.song.size >= SongPart.MAX_PARTS
 
+    /**
+     * How late after a launch line a tap still launches on it (in steps): what is heard lags what
+     * is rendered by the output latency, and a finger on the « one » lands a little after it.
+     * At most half the quantum (a tap late in the bar always waits for the next line).
+     */
+    private fun launchGraceSteps(): Double {
+        val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
+        return launchGrace(latencyMs, project.value.tempoBpm, launchSteps())
+    }
+
     /** The steps a launch waits for now: « Lancer à », whole bars during a take (it writes whole-bar parts). */
     private fun launchSteps(): Int = project.value.liveLaunchSteps(_take.value.running)
 
@@ -4148,7 +5078,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun togglePerformance() {
         when (_take.value) {
             is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
-            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()))
             is com.pocketstudio.app.live.TakeUi.Writing -> Unit
             else -> armPerformance()
         }
@@ -4206,16 +5136,293 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun liveNoteOn(id: Int, pitch: Int, velocity: Float) {
         if (project.value.instrumentTracks.none { it.id == id }) return
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.ACID) return acidKeyOn(pitch, velocity)
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(pitch, velocity, id)
         playedNoteOn(id, pitch, velocity)
-        if (performance != null && _take.value is com.pocketstudio.app.live.TakeUi.Recording) liveKeysHeld[liveKey(id, pitch)] = LiveHeld(takePosition(), velocity)
+        liveNoteTaken(id, pitch, velocity)
     }
 
     fun liveNoteOff(id: Int, pitch: Int) {
+        if (acidKeyOff(pitch)) return
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(pitch, id)
         playedNoteOff(id, pitch)
+        liveNoteReleased(id, pitch)
+    }
+
+    /**
+     * A key down (on the Live page's keys or a MIDI keyboard, already sounding) into what records
+     * it: the cell recording of its track, the performance take.
+     */
+    private fun liveNoteTaken(id: Int, pitch: Int, velocity: Float) {
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.inst(id)) cellHeld[liveKey(id, pitch)] = LiveHeld(playedClock(), velocity)
+        if (performance != null && _take.value is com.pocketstudio.app.live.TakeUi.Recording) liveKeysHeld[liveKey(id, pitch)] = LiveHeld(takePosition(), velocity)
+    }
+
+    private fun liveNoteReleased(id: Int, pitch: Int) {
+        cellHeld.remove(liveKey(id, pitch))?.let { h -> cellNoteEnded(id, pitch, h, playedClock()) }
         val held = liveKeysHeld.remove(liveKey(id, pitch)) ?: return
         writeLiveNote(id, pitch, held.at, takePosition(), held.velocity)
+    }
+
+    /** Step 7b: the keys held on the 303 while its cell records, the last one sounding. */
+    private val acidKeys = ArrayList<Int>()
+
+    /** Step 7b: a key of Live › Notes while a 303 cell records: it sounds on the 303 and goes into the cell. */
+    private fun acidKeyOn(pitch: Int, velocity: Float) {
+        acidKeys.remove(pitch); acidKeys += pitch
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(pitch, velocity)
+        cellHeld[liveKey(LiveCells.ACID_TRACK, pitch)] = LiveHeld(playedClock(), velocity)
+    }
+
+    /** A key let go on the 303 (false: not one of its keys): the one still held under it sounds again, sliding. */
+    private fun acidKeyOff(pitch: Int): Boolean {
+        if (!acidKeys.remove(pitch)) return false
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(acidKeys.lastOrNull() ?: -1)
+        cellHeld.remove(liveKey(LiveCells.ACID_TRACK, pitch))?.let { h -> cellNoteEnded(LiveCells.ACID_TRACK, pitch, h, playedClock()) }
+        return true
+    }
+
+    private fun acidKeysOff() {
+        if (acidKeys.isEmpty()) return
+        acidKeys.clear()
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(-1)
+    }
+
+    /** MIDI keys down, each with the track it started on (its release goes there, as the engine's). */
+    private val midiKeyTrack = HashMap<Int, Int>()
+
+    // --- Lot 4b: an empty cell of the Live grid filled from the Live page (Benjamin's n° 9) ---
+
+    private val _cellRecording = MutableStateFlow<com.pocketstudio.app.live.CellRecording?>(null)
+    /** The empty cell recording what is played (« Jouer et enregistrer ici »), null: none. */
+    val cellRecording: StateFlow<com.pocketstudio.app.live.CellRecording?> = _cellRecording.asStateFlow()
+    private val cellNotes = ArrayList<com.pocketstudio.model.PlayedMemory.KeptNote>()
+    private val cellHits = ArrayList<com.pocketstudio.model.PlayedMemory.KeptHit>()
+    private val cellHeld = HashMap<Long, LiveHeld>()
+    /** Where the cell was armed, on the clock of [playedClock] (the engine's own while it plays). */
+    private var cellArmedAt = 0.0
+
+    /**
+     * « Jouer et enregistrer ici »: cell ([key], [scene]), empty, records what is played on Live ›
+     * Notes (its instrument track) or on the drum pads until it is touched again ([stopCellRecording]);
+     * no maximum length. Stopped: the brick's row starts, so there is a beat to play on. The times
+     * are the engine's transport position (counted in frames on the audio thread, read here).
+     */
+    fun recordCell(key: String, scene: Int) {
+        val p = project.value
+        if (!com.pocketstudio.model.LiveCells.canRecord(key) || scene !in 0 until Scene.MAX || p.cellHasContent(key, scene)) return
+        if (_cellRecording.value != null) stopCellRecording()
+        // A new brick (a row past the last one) has nothing to play yet: the current brick gives the beat.
+        if (!_transport.value.playing) launchRow(if (scene in p.allScenes.indices) scene else p.scene)
+        cellNotes.clear(); cellHits.clear(); cellHeld.clear()
+        // A MIDI keyboard plays the selected track: the cell's, so its keys go into the cell too.
+        key.removePrefix("inst:").toIntOrNull()?.takeIf { key.startsWith("inst:") }?.let(::selectTrack)
+        cellArmedAt = playedClock()
+        if (LiveCells.kindOf(key) == LiveCells.Kind.AUDIO && !recordAudioCell(key, scene)) return
+        _cellRecording.value = com.pocketstudio.app.live.CellRecording(key, scene)
+        AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} en enregistrement")
+    }
+
+    /** Step 7b: the microphone of an audio cell recording (null: none), and whether « Annuler » let it go. */
+    private var cellMic: MicRecorder? = null
+    private var cellMicDropped = false
+    /** Tests: the take an audio cell « records » instead of the microphone, and the step its first frame is heard at. */
+    internal var cellMicForTest: Pair<Pcm, Double>? = null
+
+    /**
+     * Step 7b: « Jouer et enregistrer ici » on an audio cell: the microphone until the cell is touched
+     * again, as it is (no silence cut: the take stays on the beat), its first frame placed on the
+     * transport as heard (the input's share of the measured round trip taken off). Then, as notes:
+     * from the bar line of the first sound, whole bars, the clip of that cell (one undo step).
+     */
+    private fun recordAudioCell(key: String, scene: Int): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        val p = project.value
+        val perSecond = p.tempoBpm / 15.0  // sixteenths a second
+        val longest = LiveCells.maxBars(key, p.stepsPerBar) * p.stepsPerBar / perSecond
+        val mic = MicRecorder(maxSeconds = (longest + 8).toInt().coerceIn(10, 180), trim = false).also { cellMic = it }
+        cellMicDropped = false
+        if (cellMicForTest != null) return true  // placed when the cell is touched again (stopCellRecording)
+        val inputMs = Metrics.roundTripMs.value?.let { (it - Metrics.streamInfo.value.outputLatencyMs.coerceAtLeast(0.0)).coerceAtLeast(0.0) } ?: 0.0
+        viewModelScope.launch {
+            var startStep = Double.NaN
+            val take = try {
+                withContext(Dispatchers.IO) {
+                    mic.record { sec -> if (startStep.isNaN()) startStep = playedClock() - sec * perSecond - inputMs / 1000.0 * perSecond }
+                }
+            } catch (e: Exception) {
+                AppLog.add("Live : micro de la case indisponible (${e.message})")
+                _cellRecording.value = null
+                _notice.value = tr("Le micro ne répond pas : réessaie.")
+                return@launch
+            }
+            cellMic = null
+            if (!cellMicDropped) placeMicTake(key, scene, take, startStep)
+        }
+        return true
+    }
+
+    /** A microphone take of audio cell ([key], [scene]), its first frame heard at [startStep]: cut on its bars, the cell's clip. */
+    private fun placeMicTake(key: String, scene: Int, take: Pcm, startStep: Double) {
+        val q = project.value
+        val onset = if (PadSamples.isSilent(take)) -1 else take.data.indexOfFirst { kotlin.math.abs(it) > MIC_ONSET }
+        val cut = LiveCells.micCut(key, startStep, take.frames, onset, take.sampleRate * 15.0 / q.tempoBpm, q.stepsPerBar)
+        if (cut == null) {
+            _notice.value = tr("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
+            return
+        }
+        val pcm = Pcm(LiveCells.cutMic(take.data, cut), 1, take.sampleRate)
+        AppLog.add("Live : case $key enregistrée au micro (${cut.bars} mesures)")
+        audioJob(tr("Pose du son…")) {
+            val (kept, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, "Micro ${java.time.LocalTime.now().withNano(0)}") }  // French, shown translated (DefaultNames)
+            padSamples.register(prepared)
+            val clip = AudioClip(kept.file, kept.name, seconds = pcm.seconds, loopSteps = cut.bars * q.stepsPerBar, bpm = q.tempoBpm, fit = true)
+            if (project.value.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
+            session.edit { r -> r.withAudioInCell(key, scene, clip) ?: r }
+            pushMixer(); pushAudio()
+            cellChanged(key, scene)
+            launchPad(key, scene)
+        }
+    }
+
+    /** A drum pad played on the Live page: it sounds, and goes into the drum cell recording. */
+    fun liveDrumHit(lane: Int, velocity: Float = 0.9f) {
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
+        if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, velocity)
+        playedPad(lane, velocity)
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.DRUMS) cellHits += com.pocketstudio.model.PlayedMemory.KeptHit(lane, velocity, playedClock())
+    }
+
+    /**
+     * A pad of a MIDI controller on the Live page: while a drum cell records, it plays that drum pad
+     * into the cell (true); otherwise false and it keeps its Live role (a launch, a mute, a live pad).
+     */
+    fun midiCellPad(lane: Int, velocity: Float): Boolean {
+        if (_cellRecording.value?.key != com.pocketstudio.model.SongPart.DRUMS || lane !in 0 until DrumPattern.PAD_COUNT) return false
+        liveDrumHit(lane, velocity)
+        return true
+    }
+
+    private fun cellNoteEnded(id: Int, pitch: Int, held: LiveHeld, at: Double) {
+        val key = if (id == LiveCells.ACID_TRACK) com.pocketstudio.model.SongPart.ACID else com.pocketstudio.model.SongPart.inst(id)
+        if (_cellRecording.value?.key != key) return
+        cellNotes += com.pocketstudio.model.PlayedMemory.KeptNote(id, pitch, held.velocity, held.at, (at - held.at).coerceAtLeast(com.pocketstudio.model.PlayedMemory.MIN_NOTE_STEPS))
+    }
+
+    /**
+     * The recording cell touched again: what was played becomes its content (one undo step), from
+     * the bar line of the first thing played, whole bars (the nearest: the loop stays in time), and
+     * it loops from the next launch line. Live effects are not written there (choice 3B).
+     */
+    fun stopCellRecording() {
+        val rec = _cellRecording.value ?: return
+        _cellRecording.value = null
+        acidKeysOff()
+        // An audio cell: the microphone stops, its take is placed when it has come in (recordAudioCell).
+        if (LiveCells.kindOf(rec.key) == LiveCells.Kind.AUDIO) {
+            cellMicForTest?.let { (take, at) -> placeMicTake(rec.key, rec.scene, take, at) } ?: cellMic?.stop()
+            return
+        }
+        val now = playedClock()
+        val id = if (rec.key == com.pocketstudio.model.SongPart.ACID) LiveCells.ACID_TRACK else rec.key.removePrefix("inst:").toIntOrNull()
+        cellHeld.toList().forEach { (k, h) -> if (id != null) cellNoteEnded(id, (k and 0xFF).toInt(), h, now) }
+        cellHeld.clear()
+        val first = (cellNotes.map { it.start } + cellHits.map { it.at }).minOrNull()
+        val p = project.value
+        val bar = p.stepsPerBar.coerceAtLeast(1).toDouble()
+        val origin = first?.let { kotlin.math.floor((it + com.pocketstudio.model.PlayedMemory.EARLY_STEPS) / bar) * bar }
+        val notes = cellNotes.toList()
+        val hits = cellHits.toList()
+        cellNotes.clear(); cellHits.clear()
+        if (origin == null || p.withRecordedCell(rec.key, rec.scene, notes, hits, origin, now) == null) {
+            _notice.value = tr("Rien n'a été joué : la case reste vide.")
+            return
+        }
+        session.edit { q -> q.withRecordedCell(rec.key, rec.scene, notes, hits, origin, now) ?: q }
+        AppLog.add("Live : case ${rec.key} enregistrée (${com.pocketstudio.model.LiveCells.bars(origin, now, p.stepsPerBar)} mesures jouées)")
+        cellChanged(rec.key, rec.scene)
+        launchPad(rec.key, rec.scene)
+    }
+
+    /** « Annuler » while a cell records: nothing written. */
+    fun cancelCellRecording() {
+        _cellRecording.value = null
+        acidKeysOff()
+        cellMicDropped = true
+        cellMic?.stop()
+        cellNotes.clear(); cellHits.clear(); cellHeld.clear()
+    }
+
+    /** « Copier une autre case »: cell ([fromKey], [fromScene]) onto the empty ([toKey], [toScene]), one undo step; false: not the same kind. */
+    fun copyCell(fromKey: String, fromScene: Int, toKey: String, toScene: Int): Boolean {
+        val next = project.value.withCopiedCell(fromKey, fromScene, toKey, toScene)
+        if (next == null) {
+            _notice.value = tr("Cette case ne va pas ici : choisis une case de la même piste ou du même genre.")
+            return false
+        }
+        session.edit { q -> q.withCopiedCell(fromKey, fromScene, toKey, toScene) ?: q }
+        AppLog.add("Live : case $fromKey ${Scene.NAMES.getOrElse(fromScene) { "?" }} copiée sur $toKey ${Scene.NAMES.getOrElse(toScene) { "?" }}")
+        if (LiveCells.kindOf(toKey) == LiveCells.Kind.AUDIO) { pushMixer(); pushAudio() }
+        cellChanged(toKey, toScene)
+        return true
+    }
+
+    /** Owner (2026-11-04): « Vider la case » of a full cell of the Live grid (one undo step). */
+    fun clearCell(key: String, scene: Int) {
+        if (project.value.withClearedCell(key, scene) == null) return
+        session.edit { q -> q.withClearedCell(key, scene) ?: q }
+        AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} vidée")
+        if (LiveCells.kindOf(key) == LiveCells.Kind.AUDIO) { pushMixer(); pushAudio() }
+        cellChanged(key, scene)
+    }
+
+    /**
+     * « Un son de ma bibliothèque » on cell ([key], [scene]), on an audio track in that brick (see
+     * [withAudioInCell]); one undo step. False while another sound is still being placed.
+     * Step 4e: a loop with a tempo ([known], else the beat tracker's) is kept as it is and follows
+     * the project's tempo, stretched live; the first one of a project without a tempo sets it
+     * (« Tempo calé sur … · Annuler »). A loop of unknown tempo is fitted to whole bars at the
+     * project's tempo (its pitch kept) and follows it from then on; a short sound plays once a bar.
+     */
+    fun placeInCell(key: String, scene: Int, pcm: Pcm, name: String, known: Double = 0.0, oneShot: Boolean = false): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        audioJob(tr("Pose du son…")) {
+            val (kept, keptPrepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(keptPrepared)
+            val bpm = tempoOfPlaced(kept.file, pcm.seconds, known, oneShot)
+            val p = project.value
+            val lead = com.pocketstudio.model.AutoTempo.leadFor(p, name, bpm)
+            val tempo = lead?.bpm ?: p.tempoBpm
+            val clip = if (bpm > 0.0 && com.pocketstudio.model.AutoTempo.canFit(bpm, tempo)) {
+                val bars = LiveCells.loopBars(pcm.seconds, bpm, p.beatsPerBar) ?: 1
+                AudioClip(kept.file, kept.name, seconds = pcm.seconds, loopSteps = bars * p.stepsPerBar, bpm = bpm, fit = true)
+            } else {
+                val bars = LiveCells.loopBars(pcm.seconds, p.tempoBpm, p.beatsPerBar)
+                val fitted = if (bars != null && !oneShot && NativeEngine.isNative) {
+                    val frames = Math.round(bars * p.beatsPerBar * 60.0 / p.tempoBpm * pcm.sampleRate)
+                    withContext(Dispatchers.Default) { NativeEngine.stretchPcm(pcm.data, pcm.channels, frames, pcm.sampleRate) }
+                        ?.let { Pcm(it, pcm.channels, pcm.sampleRate) }
+                } else null
+                val (sample, prepared) = if (fitted != null) withContext(Dispatchers.IO) { padSamples.add(fitted, name) } else kept to null
+                prepared?.let(padSamples::register)
+                val loops = bars != null && !oneShot
+                AudioClip(sample.file, sample.name, seconds = (fitted ?: pcm).seconds, loopSteps = (if (loops) bars!! else 1) * p.stepsPerBar, bpm = p.tempoBpm, fit = loops)
+            }
+            if (p.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
+            session.edit { q -> (lead?.let { com.pocketstudio.model.AutoTempo.led(q, it) } ?: q).withAudioInCell(key, scene, clip) ?: q }
+            AppLog.add("Live : « $name » dans la brique ${Scene.NAMES.getOrElse(scene) { "?" }} (${clip.loopSteps / p.stepsPerBar.coerceAtLeast(1)} mesures, ${"%.1f".format(clip.bpm)} BPM)")
+            if (lead != null) tempoLed(lead, p.tempoBpm)
+            pushMixer()
+            pushAudio()
+            padSamples.prune(project.value.sampleFiles)
+        }
+        return true
+    }
+
+    /** A cell just filled: heard at once where its track plays that brick now. */
+    private fun cellChanged(key: String, scene: Int) {
+        val slot = LiveSlots.of(key) ?: return
+        if (playsNow(slot, scene)) pushSlot(project.value, slot, scene) else if (scene == project.value.scene) syncEngine()
     }
 
     /**
@@ -4256,9 +5463,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Tests: the pads sounding as the engine says (null: [liveStates]). */
     internal var livePadsSoundingForTest: Set<Int>? = null
 
-    private fun livePadTapped(pad: Int) {
+    /** Tests (the bench's stand-in engine): a live pad toggled, from Pad Live or from Live › Pads ([toggleLive]). */
+    internal var liveToggledForTest: ((Int) -> Unit)? = null
+
+    /** Tests (the bench's stand-in engine): every live pad cut ([stopLive]). */
+    internal var liveStoppedForTest: (() -> Unit)? = null
+
+    private fun livePadTapped(pad: Int, velocity: Float = 1f, bar: Boolean = false) {
         if (performance == null || !_take.value.running) return
-        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition())
+        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition(), velocity, bar)
     }
 
     /**
@@ -4273,12 +5486,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.")
             return
         }
-        val clips = p.live.clips
+        val clips = p.live.all
         val bpm = p.tempoBpm
         audioJob(tr("Écriture des pads live…"), always = true) {
             val sounds = withContext(Dispatchers.IO) {
                 spans.map { it.pad }.distinct().mapNotNull { pad ->
-                    clips.getOrNull(pad)?.let { c -> runCatching { pad to padSamples.read(c.file) }.getOrNull() }
+                    // Pad Live B2: its pitch, reverse and attack as the engine played them.
+                    clips.getOrNull(pad)?.let { c -> runCatching { pad to com.pocketstudio.app.padlive.PadSound.shaped(padSamples.read(c.file), c) }.getOrNull() }
                 }.toMap()
             }
             val pcm = withContext(Dispatchers.Default) { com.pocketstudio.app.audio.PadBounce.render(spans, clips, sounds, start, end, bpm) } ?: return@audioJob
@@ -4291,7 +5505,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (grown == null || id == null) q
                 else grown.withAudioTrack(grown.audioTracks.first { it.id == id }.copy(
                     clip = AudioClip(sample.file, name, pcm.seconds, start = songStart, song = true, bpm = bpm),
-                ))
+                )).let { g ->
+                    // Pad Live B3: how each pad played, for « Pistes séparées » (one file per pad).
+                    g.copy(padLive = g.padLive.copy(take = com.pocketstudio.app.padlive.PerfExport.record(id, spans, clips, start, end, bpm)))
+                }
             }
             if (session.undoDepth == performanceDoneDepth && performanceDoneDepth >= 0) {
                 // Nothing done since the take: the pads join its undo step.
@@ -4324,6 +5541,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return (step.coerceAtLeast(0) / bar + 1) * bar
     }
 
+    /**
+     * The bar line ■ Fin ends the take on, pressed where [heard] is heard: in a bar's first beat,
+     * that bar's line (a ■ on the « one » ends there, it does not add the bar just begun); later
+     * in the bar, the bar being played is kept.
+     */
+    private fun performanceEndHeard(heard: Double): Int {
+        val bar = project.value.stepsPerBar
+        val at = heard.coerceAtLeast(0.0)
+        val line = (at / bar).toInt() * bar
+        // Never before the take's first bar is over (a ■ right after it began keeps that bar). 4: a beat.
+        val first = performance?.start ?: 0
+        return if (line > first && at - line < 4) line else performanceEnd(at.toInt())
+    }
+
     /** The take ends on [end]: written into the song in one undo step. */
     private fun finishPerformance(end: Int) {
         // A Drop's bar line passed before the watch saw it: what it cleared is written first.
@@ -4354,18 +5585,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = if (written.cut) tr("Le morceau est plein : choisis « Nouvelle version » pour enregistrer.") else tr("Prise trop courte : rien n'a été écrit.")
             return
         }
-        session.commitQuietEdits(before, performanceDepth)
+        // Its undo step takes the take back, not the tempo, mixer or effects changed meanwhile.
+        val undoTo = project.value.takeUndoTarget(before, t.gestureTargets)
+        session.commitQuietEdits(undoTo, performanceDepth)
         performanceDoneDepth = session.undoDepth
         dropTakeJournalOnceSaved(t.id)
         // The live pads it played: one more audio track, written in the background.
-        val padSpans = com.pocketstudio.model.LivePadTake.spans(project.value.live.clips, performancePadsAtStart, performancePadTaps, t.start, end, project.value.beatsPerBar)
+        val padSpans = com.pocketstudio.model.LivePadTake.spans(project.value.live.all, performancePadsAtStart, performancePadTaps, t.start, end, project.value.beatsPerBar)
         performancePadTaps = ArrayList()
         padSpansForTest = padSpans
-        bouncePerformancePads(padSpans, t.start, end, if (performanceAppend) before.song.sumOf { before.partSteps(it) } else 0, before)
+        bouncePerformancePads(padSpans, t.start, end, if (performanceAppend) before.song.sumOf { before.partSteps(it) } else 0, undoTo)
         // Never silently: the song full (128 parts) or no lane left for a setting moved.
         val lost = listOfNotNull(
             tr("Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.", SongPart.MAX_PARTS).takeIf { written.cut },
-            tr("Plus de place pour d'autres réglages (16 au plus) : %d n'ont pas été écrits.", written.skipped).takeIf { written.skipped > 0 },
+            (if (written.skipped == 1) tr("Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.")
+            else tr("Plus de place pour d'autres réglages (16 au plus) : %d n'ont pas été écrits.", written.skipped)).takeIf { written.skipped > 0 },
             tr("Les effets joués après la mesure %d n'ont pas été écrits (les lancements, si).", effectsEndBar(project.value)).takeIf { written.late > 0 },
         )
         if (lost.isNotEmpty()) _notice.value = lost.joinToString(" ")
@@ -4442,7 +5676,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val partsLeft = SongPart.MAX_PARTS - performancePartsUsed
         val effectsEnd = effectsEndBar(p)
         return when {
-            partsLeft <= TAKE_PARTS_WARNING -> tr("Plus que %d parties possibles : la prise s'arrêtera ensuite.", partsLeft.coerceAtLeast(0))
+            partsLeft <= 0 -> tr("Plus aucune partie possible : la prise va s'arrêter.")
+            partsLeft == 1 -> tr("Plus qu'une partie possible : la prise s'arrêtera ensuite.")
+            partsLeft <= TAKE_PARTS_WARNING -> tr("Plus que %d parties possibles : la prise s'arrêtera ensuite.", partsLeft)
             bar > effectsEnd -> tr("Après la mesure %d, les effets ne sont plus enregistrés (les lancements, si).", effectsEnd)
             bar > effectsEnd - TAKE_BARS_WARNING -> tr("Les effets sont enregistrés jusqu'à la mesure %d.", effectsEnd)
             else -> null
@@ -4498,6 +5734,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         playSongFrom(done.firstPart.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)))
     }
 
+    /**
+     * Leaving the Live page, or the full-screen live pads opened from Morceau: a take never goes on
+     * unseen behind another page. Armed, it is cancelled; recording, it ends and is written (the
+     * song before it kept as a version), and said, since its « Morceau écrit » line goes with the
+     * page. Nothing the page set stays on ([leaveLive]).
+     */
+    fun leaveLiveEndingTake() {
+        if (performanceTaking) {
+            togglePerformance()
+            if (_take.value is com.pocketstudio.app.live.TakeUi.Done && _notice.value == null) {
+                _notice.value = tr("Prise terminée : le morceau est écrit (↶ pour l'annuler).")
+            }
+        }
+        leaveLive()
+        dismissPerformance()
+    }
+
     /** The « Morceau écrit » line goes. */
     fun dismissPerformance() {
         if (_take.value is com.pocketstudio.app.live.TakeUi.Done) _take.value = com.pocketstudio.app.live.TakeUi.Ready
@@ -4532,7 +5785,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun endPerformanceOnStop() {
         when (_take.value) {
             is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
-            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()))
             else -> Unit
         }
     }
@@ -4567,7 +5820,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushSongCurve(p: Project, i: Int, lane: AutomationLane) {
         val points = maxOf(SONG_LANE_MIN_BARS, p.songBars) * lane.pointsPerBar(p.beatsPerBar)
         val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(points) else emptyList()
-        NativeEngine.setAutomationMode(i, lane.mode, curve.size, lane.songPerBeat, lane.hold)
+        NativeEngine.setAutomationMode(i, lane.mode, curve.size, lane.songPerBeat, lane.hold, if (lane.mode == AutomationLane.SONG) 0 else lane.loopSteps)
         // Runs of equal values and straight slides in one command each: the curves of a whole song
         // fit in the engine's queue (a full queue waits for the audio thread; see sendAgainIfDropped).
         for (c in songCurveCommands(curve)) when (c) {
@@ -4592,6 +5845,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (start >= 0) out += start..last
         return out
+    }
+
+    /**
+     * Audit 06: loop lane [index] over [steps] from the part's start (the whole part), or over the
+     * drum loop (0). Points past the new length stay (a longer one later finds them).
+     */
+    fun setAutomationLoopSteps(index: Int, steps: Int) {
+        val lane = project.value.automation.getOrNull(index) ?: return
+        val want = steps.takeIf { it in 1..AutomationLane.STEPS } ?: 0
+        if (lane.loopSteps == want) return
+        session.edit { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.copy(loopSteps = want) else l }) }
+        pushAutomation()
+        pushMixer()
     }
 
     /** Clip kind of lane [index]: loop, per scene or the whole song. */
@@ -4705,7 +5971,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (_notice.value != refused) _notice.value = refused
             }
         } else {
-            setAutomationPoint(index, step, value)
+            // A curve over the whole part: on its step from the part's start (audit 06).
+            val own = project.value.automation[index].loopSteps
+            setAutomationPoint(index, if (own > 0) Math.floorMod(NativeEngine.absoluteStep(), own) else step, value)
         }
     }
 
@@ -4716,8 +5984,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Remix: a separated song played along with the project ---------------------------------
 
+    /** Lot D2 (« case Remix du Live »): a passage of the song per brick of the Live grid's remix column. */
+    val liveRemix = com.pocketstudio.app.live.LiveRemixCells(this)
+
     private var stems: NativeStems? = null
     private var stemsId: String? = null
+    /** Length in seconds of the stems loaded ([stemsId]): the export's end for a project saved before it kept it. */
+    private val remixSeconds = MutableStateFlow(0.0)
     // The song stretched to the project's tempo (Remix.followTempo), and what it was made for.
     private var stretched: NativeStems? = null
     private var stretchedFor: Pair<String?, Double>? = null
@@ -4805,12 +6078,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val _stemPosition = MutableStateFlow(-1L)
     val stemPosition: StateFlow<Long> = _stemPosition.asStateFlow()
 
+    /**
+     * The stem board's peaks: read from the song loaded for the remix, a few seconds at a time
+     * (worker thread). Frames at 48 kHz, of the song as separated (never the stretched copy).
+     */
+    val boardPeaks: com.pocketstudio.app.remix.StemPeakSource = com.pocketstudio.app.remix.StemPeakSource { stem ->
+        val loaded = stems ?: error("no stems loaded")
+        com.pocketstudio.app.remix.StemPeaks.of(loaded.frames, 2) { start, count -> loaded.extract(stem, start, count.toLong()) }
+    }
+
     /** Polls the playhead about 30 times a second while the Remix screen is visible. */
     suspend fun pollStemPosition() {
         if (!NativeEngine.isAvailable) return
         while (true) {
             // Back to song frames when a stretched copy plays.
-            _stemPosition.value = NativeEngine.stemPosition().let { if (it < 0) it else Math.round(it / playRatio) }
+            _stemPosition.value = NativeEngine.stemPositionNow().let { if (it < 0) it else Math.round(it / playRatio) }
             kotlinx.coroutines.delay(33)
         }
     }
@@ -4835,13 +6117,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val fitted = stretched?.takeIf { loaded != null && stretchedFor == (p.remix.setId to ratio) }
         NativeEngine.setStems(if (playRatioNow != 1.0) stretched else loaded)
         playRatio = playRatioNow
-        NativeEngine.setStemStart(Math.round(p.remix.startFrame(OfflineExport.SAMPLE_RATE) * playRatio))
+        pushRemixStart(p)
         if (loaded != null && ratio != 1.0 && fitted == null) stretchStems(loaded, p.remix.setId!!, ratio)
         if (ratio == 1.0 && (stretched != null || remixStretchJob?.isActive == true)) dropStretched()
         p.remix.stems.forEachIndexed { i, m ->
             NativeEngine.setStemParam(i, 0, m.volume)
             NativeEngine.setStemParam(i, 1, if (m.mute) 1f else 0f)
             NativeEngine.setStemParam(i, 2, if (m.solo) 1f else 0f)
+            // Step 5b: its pieces (cut, moved, faded), in frames of the song as separated.
+            NativeEngine.setStemClips(i, p.remix.stemClipFrames(i, OfflineExport.SAMPLE_RATE))
         }
         val wanted = p.remix.setId
         if (loaded == null && stems != null) {
@@ -4853,7 +6137,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _stemOverview.value = null
         }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
+        liveRemix.push(p)
+        // The passage of the brick heard (an export: the scene it renders; a song's parts stage theirs).
+        if (NativeEngine.isCapturing) NativeEngine.setRemixCell(p.remixCellOf(p.scene)) else liveRemixPushed()
     }
+
+    /** Song step the live playback started on, as the remix places its song ([remixFrom]). */
+    private var remixFromLive = 0
+    /** The song step an export engine starts on ([describe] sets it; else a scene on its own). */
+    private var captureSongStep = NativeEngine.OUTSIDE_SONG
+
+    /**
+     * The song step a playback starting on song step [songStep] stands for, as the remix places its
+     * song: that step in the song; a scene on its own ([NativeEngine.OUTSIDE_SONG]) where [scene]
+     * first plays in the song; without a song, the song comes in right away.
+     */
+    private fun remixFrom(p: Project, songStep: Int, scene: Int): Int = when {
+        p.song.isEmpty() -> p.remix.atStep
+        songStep >= 0 -> songStep
+        else -> p.remixFromStepAlone(scene)
+    }
+
+    /** Where the stems start on the transport's first step: the song comes in on its step ([Remix.atStep]). */
+    private fun pushRemixStart(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        val from = if (NativeEngine.isCapturing) remixFrom(p, captureSongStep, p.scene) else remixFromLive
+        NativeEngine.setStemStart(p.remixStemStart(OfflineExport.SAMPLE_RATE, playRatio, from))
+    }
+
+    /** Starts the transport on song step [songStep], the remix's song placed for it first. */
+    private fun enginePlay(countInBars: Int, songStep: Int) {
+        val p = project.value
+        remixFromLive = remixFrom(p, songStep, heardScene ?: p.scene)
+        pushRemixStart(p)
+        NativeEngine.play(countInBars, songStep)
+    }
+
+    /**
+     * Where the song comes in, in the project's song (a sixteenth from its start): its voice on
+     * the drop. Heard there from the next ▶. One undo step for a drag.
+     */
+    fun setRemixAt(step: Int) = editRemix("remix-at") { it.copy(atStep = step.coerceIn(0, Remix.MAX_AT_STEP)) }
 
     /** Reads the stems into the engine's memory (seconds, worker thread), then plays them along. */
     private fun loadStems(id: String) {
@@ -4889,6 +6213,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val old = stems
             stems = loaded
             stemsId = id
+            remixSeconds.value = loaded.frames.toDouble() / OfflineExport.SAMPLE_RATE
+            // A project saved before the remix kept its length learns it (not an undo step).
+            if (wanted.seconds <= 0) session.editQuietly { p -> if (p.remix.setId == id) p.copy(remix = p.remix.copy(seconds = remixSeconds.value)) else p }
             pushRemix()
             old?.close()  // the engine keeps its own reference until it lets go
             _stemOverview.value = withContext(Dispatchers.Default) {
@@ -4898,21 +6225,58 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** The project plays a separated song along, at the song's tempo and in its key. One undo step. */
-    fun useSong(set: StemSet) {
+    /**
+     * The project plays a separated song along. One undo step. A project with music of its own keeps
+     * its tempo and its key: the song follows the project's tempo (stretched, its pitch kept; remix
+     * lot 1: Sarah's and Mehdi's jump up went from 174 to 120 BPM and changed key without a word).
+     * An empty project takes the song's tempo and key. Returns true when the project took them.
+     * [heard]: the parts the user kept on while listening (« Voix » alone): the others come in muted.
+     */
+    fun useSong(
+        set: StemSet, heard: List<Boolean>? = null,
+        choice: com.pocketstudio.model.SongImport? = null, sections: List<com.pocketstudio.model.SongSection> = emptyList(),
+        /** Audit ultra round 1, n° 1: « Découper ce que je veux »: every part muted (a store of sounds, as « Dans un nouveau projet »). */
+        asSource: Boolean = false,
+    ): Boolean {
         val info = set.info
+        val before = project.value
+        // Step 5c: « Mettre Boys dans mon projet » says it (its defaults follow the same rule).
+        val adopts = choice?.takeTempo ?: !before.hasMusicOfItsOwn()
+        val setKey = choice?.setKey ?: adopts
+        val place = choice?.place ?: com.pocketstudio.model.SongPlace.Whole
+        // Step 4e: the song sets the tempo of a project without one (« Tempo calé sur Boys »).
+        val lead = if (adopts) com.pocketstudio.model.AutoTempo.leadFor(before.copy(remix = Remix()), set.name, info.bpm) else null
+        // Everything in one undo step (« Annuler » takes it all back).
         session.edit("remix") { p ->
-            p.copy(
-                tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
-                harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
-                remix = Remix(set.id, set.name, info.bpm, info.firstBeat),
+            val stems = when {
+                asSource -> List(Remix.STEMS) { com.pocketstudio.model.StemMix(mute = true) }
+                place == com.pocketstudio.model.SongPlace.VoiceOnly -> Remix.stemsHeard(listOf(false, false, false, true))
+                else -> Remix.stemsHeard(heard)
+            }
+            var remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = stems)
+            if (place == com.pocketstudio.model.SongPlace.Passage && choice != null) remix = remix.onlyPassage(choice.fromBar, choice.bars)
+            val keyed = if (setKey) info.root?.let { p.copy(harmony = Harmony(it, if (info.minor) Scale.Minor else Scale.Major)) } ?: p else p
+            val put = if (!adopts) keyed.copy(remix = remix.copy(followTempo = info.bpm > 0 && kotlin.math.abs(info.bpm - p.tempoBpm) > 0.05))
+            else (lead?.let { com.pocketstudio.model.AutoTempo.led(keyed, it) } ?: keyed).copy(
+                // A loop set the tempo already (a live pad): it stays, the song is stretched to it (unless asked).
+                tempoBpm = if (info.bpm > 0 && (before.tempoLead == null || choice?.takeTempo == true)) info.bpm else p.tempoBpm,
+                // It follows the tempo from then on: « − BPM + » on the Live moves it too.
+                remix = remix.copy(followTempo = info.bpm > 0),
             )
+            // Step 5a: in the song's structure too (a part as long as it when the song has none);
+            // step 5c: or its parts as bricks.
+            // Relecture tour 1, M2: « Découper ce que je veux » only keeps the song as a store of sounds,
+            // a project in a loop stays a loop (no 90-bar part made for it).
+            val placed = if (asSource) put.copy(remix = put.remix.copy(placed = true)) else put.withRemixPlaced()
+            if (choice?.bricks == true && place != com.pocketstudio.model.SongPlace.Passage) placed.withSongSections(sections) ?: placed else placed
         }
+        if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         StemStore.pin(getApplication(), set.id)
-        if (!NativeEngine.isAvailable) return
+        if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
         pushRemix()
+        return adopts
     }
 
     fun clearRemix() {
@@ -4927,17 +6291,113 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
-    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute) } }
-    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo) } }
+    // Muted and alone at once means nothing (Benjamin, 2026-11-04): lighting one puts the other out.
+    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute, solo = s.solo && s.mute) } }
+    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo, mute = s.mute && s.solo) } }
     fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
+
+    // Step 5b: the song's stems edited in the Structure, on the bars (song step [step], a bar's
+    // start), each an undo step; the stems' files are never changed.
+    private fun remixSecondsNow(p: Project = project.value): Double =
+        p.remix.seconds.takeIf { it > 0 } ?: _stemOverview.value?.let { it.frames.toDouble() / OfflineExport.SAMPLE_RATE } ?: 0.0
+
+    /** Stem [stem] cut on song step [step]. */
+    fun cutStemAt(stem: Int, step: Int) {
+        val p = project.value
+        editRemix(null) { it.cutStem(stem, p.remixTimeAtStep(step), remixSecondsNow(p)) }
+    }
+
+    /** The piece of stem [stem] under song step [step] moved by [bars] bars (later when positive). */
+    fun moveStemPieceAt(stem: Int, step: Int, bars: Int) {
+        val p = project.value
+        editRemix(null) { it.moveStemPiece(stem, p.remixTimeAtStep(step) + 1e-6, bars * p.stepsPerBar * p.remixSecondsPerStep(), remixSecondsNow(p)) }
+    }
+
+    /** A fade of a bar in ([atStart]) or out on the piece of stem [stem] under song step [step]; again: none. */
+    fun toggleStemFadeAt(stem: Int, step: Int, atStart: Boolean) {
+        val p = project.value
+        val t = p.remixTimeAtStep(step) + 1e-6
+        val seconds = remixSecondsNow(p)
+        val piece = p.remix.piecesOf(stem, seconds).getOrNull(p.remix.pieceAt(stem, t, seconds)) ?: return
+        val bar = p.stepsPerBar * p.remixSecondsPerStep()
+        editRemix(null) {
+            if (atStart) it.fadeStemPiece(stem, t, fadeIn = if (piece.fadeIn > 0) 0.0 else bar, seconds = seconds)
+            else it.fadeStemPiece(stem, t, fadeOut = if (piece.fadeOut > 0) 0.0 else bar, seconds = seconds)
+        }
+    }
+
+    /** The piece of stem [stem] under song step [step] taken away. */
+    fun removeStemPieceAt(stem: Int, step: Int) {
+        val p = project.value
+        editRemix(null) { it.removeStemPiece(stem, p.remixTimeAtStep(step) + 1e-6, remixSecondsNow(p)) }
+    }
+
+    /** Stem [stem] as separated again. */
+    fun resetStem(stem: Int) = editRemix(null) { it.resetStem(stem) }
+
+    /** Chantier 10 (« Prêt à partager ? »): « Allonger le morceau » until the remix's song ends in it; one undo step. */
+    fun lengthenSongForRemix() {
+        val following = songPlaying()
+        val before = project.value.song
+        session.edit { it.withSongLengthenedForRemix() }
+        // Fresh review (grave): the engine may already hold the song's end for the part playing; the parts added
+        // after it are staged as « + » does ([insertSongPart]); the part on now keeps playing.
+        if (following && project.value.song != before) followSongEdit { i, _ -> i }
+    }
+
+    /** Chantier 10: « Couper la chanson à la fin »: the remix's stems end with the song (a short fade); one undo step. */
+    fun cutRemixAtSongEnd() {
+        session.edit { it.withRemixCutAtSongEnd() }
+        pushRemix()
+    }
 
     private fun editRemix(key: String?, transform: (Remix) -> Remix) {
         session.edit(key) { p -> p.copy(remix = transform(p.remix)) }
         pushRemix()
     }
 
-    /** [bars] bars of one stem, from the remix start, onto the selected pad. */
+    /** Bars « → Pad » and « → Live » copy (1, 2 or 4): kept while the user goes to the drums and back. */
+    private val _remixPadBars = MutableStateFlow(1)
+    val remixPadBars: StateFlow<Int> = _remixPadBars.asStateFlow()
+    fun setRemixPadBars(bars: Int) { if (bars in listOf(1, 2, 4)) _remixPadBars.value = bars }
+
+    /** A cut waiting for the user's word: every pad is used, the selected one would be covered. */
+    data class StemPadAsk(val stem: Int, val bars: Int, val lane: Int)
+    private val _stemPadAsk = MutableStateFlow<StemPadAsk?>(null)
+    val stemPadAsk: StateFlow<StemPadAsk?> = _stemPadAsk.asStateFlow()
+
+    /** The last cut of the song put on a pad (its pad), and what the screen says of it. */
+    data class RemixCut(val lane: Int, val message: String)
+    private val _remixCut = MutableStateFlow<RemixCut?>(null)
+    val remixCut: StateFlow<RemixCut?> = _remixCut.asStateFlow()
+
+    /**
+     * [bars] bars of one stem, from the remix start, onto a free pad: the selected one when it is
+     * free, else the first one no beat uses ([RemixVoice.padFor]). Every pad used: the screen asks
+     * before covering the selected one ([stemPadAsk]). Never a kick silently replaced.
+     */
     fun stemToPad(stem: Int, bars: Int) {
+        // Audit ultra round 3, zone 1, n° 4: every drum pad holds a kit sound (a free one is a Tom médium nobody plays):
+        // never covered unasked, the pads' names shown first, the free one proposed.
+        val lane = RemixVoice.padFor(project.value, _transport.value.selectedPad)
+        _stemPadAsk.value = StemPadAsk(stem, bars, lane ?: _transport.value.selectedPad)
+    }
+
+    /**
+     * The pad picked in the question (audit ultra round 1, n° 2: a pad picker, not « replace the
+     * selected pad? »): the cut goes on pad [lane] after all (null: the one first proposed).
+     */
+    fun confirmStemPad(lane: Int? = null) {
+        val ask = _stemPadAsk.value ?: return
+        _stemPadAsk.value = null
+        cutToPad(ask.stem, ask.bars, lane?.takeIf { it in 0 until DrumPattern.PAD_COUNT } ?: ask.lane)
+    }
+
+    fun dismissStemPadAsk() {
+        _stemPadAsk.value = null
+    }
+
+    private fun cutToPad(stem: Int, bars: Int, lane: Int) {
         val source = stems ?: return
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val r = project.value.remix
@@ -4947,12 +6407,282 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _sampleTask.value = SampleTask.Failed(tr("Trop long pour un pad : choisis moins de mesures."))
             return
         }
-        val label = tr(STEM_LABELS.getOrElse(stem) { "Piste" })
-        sampleJob(tr("%s vers le pad…", label)) {
+        val french = STEM_LABELS.getOrElse(stem) { "Piste" }
+        val name = RemixVoice.cutName(project.value, french)
+        _remixCut.value = null
+        // Audit ultra round 2, zone 1, n° 5: the drum sound the cut takes the place of, said with it.
+        val replaced = padName(project.value, lane)
+        sampleJob(tr("%s vers le pad…", tr(STEM_LABELS.getOrElse(stem) { "Piste" })), lane = lane, done = { cutDone(lane, replaced) }) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
-            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), com.pocketstudio.model.DefaultNames.stemPad(STEM_LABELS.getOrElse(stem) { "Piste" }, r.name))  // French, shown translated
+            val (sample, prepared) = padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), name)  // French, shown translated
+            sample.copy(attack = RemixVoice.CUT_ATTACK, release = RemixVoice.CUT_RELEASE) to prepared
         }
+    }
+
+    /** The cut is on pad [lane]: selected (the drums open on it), and said on the Remix page. */
+    private fun cutDone(lane: Int, replaced: String) {
+        selectPad(lane)
+        val name = project.value.drums.lanes.getOrNull(lane)?.sample?.name ?: return
+        _remixCut.value = RemixCut(lane, tr("« %1\$s » remplace « %2\$s » sur le pad %3\$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.",
+            com.pocketstudio.model.DefaultNames.shownSample(name), replaced, lane + 1))
+    }
+
+    /**
+     * « Découper la voix en phrases »: each sung phrase from the remix start (the voice's silences
+     * part them) on a free pad, up to 8, with a short fade on each end. One undo step. The kick
+     * and the pads the beat plays are never covered.
+     */
+    fun splitVoice() {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val free = RemixVoice.freePads(p)
+        if (free.isEmpty()) {
+            _sampleTask.value = SampleTask.Failed(tr("Tous les pads servent déjà : vide un pad dans Batterie, puis recommence."))
+            return
+        }
+        val from = p.remix.startFrame(OfflineExport.SAMPLE_RATE).coerceAtLeast(0L)
+        val left = source.frames - from
+        if (left <= 0) {
+            _sampleTask.value = SampleTask.Failed(tr("Ce passage est après la fin du morceau."))
+            return
+        }
+        _remixCut.value = null
+        _sampleTask.value = SampleTask.Busy(tr("Découpe de la voix en phrases…"))
+        val first = RemixVoice.cutName(p, VOICE_LABEL).substringAfterLast(' ').toIntOrNull() ?: 1
+        viewModelScope.launch {
+            try {
+                val made = withContext(Dispatchers.IO) {
+                    // The voice's loudness every 10 ms, from the remix start.
+                    val slice = OfflineExport.SAMPLE_RATE / 100
+                    val all = source.peaks(VOICE_STEM, (source.frames / slice).toInt().coerceIn(1, 200_000))
+                    val perSlice = source.frames.toDouble() / all.size
+                    val skip = (from / perSlice).toInt().coerceIn(0, all.size)
+                    val peaks = all.copyOfRange(skip, all.size)
+                    val found = RemixVoice.phrases(
+                        peaks, minGapSlices = 35, minSlices = 30, padBefore = 3, padAfter = 12, max = minOf(8, free.size),
+                    )
+                    found.mapIndexed { k, (a, b) ->
+                        val start = Math.round((skip + a) * perSlice)
+                        val count = minOf(Math.round((b - a) * perSlice), AudioDecoder.MAX_SECONDS.toLong() * OfflineExport.SAMPLE_RATE)
+                        val audio = source.extract(VOICE_STEM, start, count)
+                        val (sample, prepared) = padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$VOICE_LABEL ${first + k}")
+                        Triple(free[k], sample.copy(attack = RemixVoice.CUT_ATTACK, release = RemixVoice.CUT_RELEASE), prepared)
+                    }
+                }
+                if (made.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(tr("Aucune phrase chantée trouvée après le trait vert."))
+                    return@launch
+                }
+                made.forEach { padSamples.register(it.third) }
+                session.edit { q -> q.copy(drums = made.fold(q.drums) { d, (lane, sample, _) -> d.withSample(lane, sample) }) }
+                pushPads()
+                _sampleTask.value = SampleTask.Idle
+                selectPad(made.first().first)
+                val pads = made.map { it.first + 1 }
+                AppLog.add("Remix : ${made.size} phrases de la voix sur les pads $pads")
+                _remixCut.value = RemixCut(
+                    made.first().first,
+                    trCount(made.size, "1 phrase sur le pad %2\$s. Pose-la dans Batterie, sur la partie de ton choix.", "%1\$d phrases sur les pads %2\$s. Pose-les dans Batterie, sur la partie de ton choix.", made.size, pads.joinToString(", ")),
+                )
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : découpe en phrases impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    // --- Step 5d: « Piocher dans la chanson » (the song's stems as material of the project) -------
+
+    /** Stereo floats to mono. */
+    private fun monoOf(stereo: FloatArray) = FloatArray(stereo.size / 2) { (stereo[it * 2] + stereo[it * 2 + 1]) * 0.5f }
+
+    /**
+     * « La batterie en kit »: the drums stem's hits (its first minute from the remix start) told
+     * apart, the cleanest kicks, snares and hat made one-shots on the kit's pads (Kick, Kick 2,
+     * Caisse, Caisse 2, Charley): the step grid plays them at once. One undo step.
+     */
+    fun drumsToKit() {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val rate = OfflineExport.SAMPLE_RATE
+        val from = p.remix.startFrame(rate).coerceAtLeast(0L)
+        val count = minOf(source.frames - from, 60L * rate)
+        val song = p.remix.name.ifBlank { "Remix" }
+        if (count <= 0) return
+        _remixCut.value = null
+        _sampleTask.value = SampleTask.Busy(tr("Kit de %s : je cherche les coups…", song))
+        viewModelScope.launch {
+            try {
+                val made = withContext(Dispatchers.IO) {
+                    val hits = com.pocketstudio.model.SongMatter.drumHits(monoOf(source.extract(DRUMS_STEM, from, count)), rate)
+                    val starts = hits.map { it.at }
+                    val lanes = mapOf(
+                        com.pocketstudio.model.SongMatter.Drum.Kick to listOf(0, 1),
+                        com.pocketstudio.model.SongMatter.Drum.Snare to listOf(2, 3),
+                        com.pocketstudio.model.SongMatter.Drum.Hat to listOf(5),
+                    )
+                    val names = mapOf(com.pocketstudio.model.SongMatter.Drum.Kick to "Kick", com.pocketstudio.model.SongMatter.Drum.Snare to "Caisse", com.pocketstudio.model.SongMatter.Drum.Hat to "Charley")
+                    com.pocketstudio.model.SongMatter.bestHits(hits).flatMap { (kind, best) ->
+                        best.zip(lanes.getValue(kind)).map { (hit, lane) ->
+                            // Up to the next hit (a one-shot, not the next one too), at most its kind's length.
+                            val next = starts.firstOrNull { it > hit.at } ?: Int.MAX_VALUE
+                            val length = minOf(com.pocketstudio.model.SongMatter.oneShotFrames(kind, rate), next - hit.at).toLong()
+                            val audio = source.extract(DRUMS_STEM, from + hit.at, length)
+                            val (sample, prepared) = padSamples.add(Pcm(audio, 2, rate), com.pocketstudio.model.DefaultNames.stemPad(names.getValue(kind), song))
+                            Triple(lane, sample.copy(release = RemixVoice.CUT_RELEASE), prepared)
+                        }
+                    }.sortedBy { it.first }
+                }
+                if (made.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(tr("Pas de coups de batterie trouvés dans %s.", song))
+                    return@launch
+                }
+                made.forEach { padSamples.register(it.third) }
+                session.edit { q -> q.copy(drums = made.fold(q.drums) { d, (lane, sample, _) -> d.withSample(lane, sample) }) }
+                pushPads()
+                _sampleTask.value = SampleTask.Idle
+                val pads = made.map { it.first + 1 }
+                AppLog.add("Remix : kit de la batterie sur les pads $pads")
+                _remixCut.value = RemixCut(made.first().first, tr("Kit « %1\$s » sur les pads %2\$s : tes pas le jouent déjà.", song, pads.joinToString(", ")))
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : kit de la batterie impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    /**
+     * « La basse en notes »: the bass stem followed note by note over the bars where the scene shown
+     * plays in the song (as heard there, on the project's sixteenths, at most 16 bars), on a new
+     * bass track (any sound can play it) or, [acid], on the Acid 303. One undo step.
+     */
+    fun bassToNotes(acid: Boolean = false) = stemToNotes(voice = false, acid = acid)
+
+    /**
+     * Step 7f: « La voix en notes »: the sung melody of the « Voix » stem followed note by note, as
+     * [bassToNotes] does the bass, on a new melody track (any sound can sing it). One undo step.
+     */
+    fun voiceToNotes() = stemToNotes(voice = true, acid = false)
+
+    private fun stemToNotes(voice: Boolean, acid: Boolean) {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val rate = OfflineExport.SAMPLE_RATE
+        val part = p.song.indexOfFirst { it.scene == p.scene }
+        val step0 = if (part >= 0) p.songStepOf(part) else p.remix.atStep
+        val maxSteps = if (acid) com.pocketstudio.model.AcidPattern.MAX_STEPS else com.pocketstudio.model.NoteClip.MAX_STEPS
+        val steps = (if (part >= 0) p.partSteps(p.song[part]) else 8 * p.stepsPerBar).coerceIn(p.stepsPerBar, maxSteps)
+        // Frames of the song as separated a sixteenth lasts here (the song stretched or not).
+        val stepFrames = p.remixSecondsPerStep() * rate
+        val partStart = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
+        val song = p.remix.name.ifBlank { "Remix" }
+        if (stepFrames <= 0 || partStart >= source.frames) return
+        _sampleTask.value = SampleTask.Busy(if (voice) tr("La voix de %s en notes…", song) else tr("La basse de %s en notes…", song))
+        viewModelScope.launch {
+            try {
+                val notes = withContext(Dispatchers.Default) {
+                    // n° 23: from where it sings (the part shown may be the song's silent intro: two notes, then
+                    // nothing): the bars of the song with the most singing, from the part's bar on, else from the start.
+                    val stem = if (voice) VOICE_STEM else BASS_STEM
+                    val barFrames = stepFrames * p.stepsPerBar.coerceAtLeast(1)
+                    val levels = stemBarLevels(source, stem, barFrames)
+                    val fromBar = (partStart / barFrames).toInt()
+                    val after = levels.copyOfRange(fromBar.coerceAtMost(levels.size), levels.size)
+                    val bars = steps / p.stepsPerBar.coerceAtLeast(1)
+                    val pick = if (after.any { it >= 0.25 * (levels.maxOrNull() ?: 0.0) && it > 0 }) fromBar + com.pocketstudio.model.SongMatter.singingStart(after, bars)
+                    else com.pocketstudio.model.SongMatter.singingStart(levels, bars)
+                    val start = if (levels.isEmpty()) partStart else Math.round(pick * barFrames).coerceIn(0L, source.frames - 1)
+                    val count = minOf(source.frames - start, Math.round(stepFrames * (steps + 2)))
+                    if (voice) com.pocketstudio.model.SongMatter.voiceNotes(monoOf(source.extract(VOICE_STEM, start, count)), rate, stepFrames, steps)
+                    else com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
+                }
+                if (notes.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(if (voice) tr("Pas de notes de voix trouvées dans %s.", song) else tr("Pas de notes de basse trouvées dans %s.", song))
+                    return@launch
+                }
+                _sampleTask.value = SampleTask.Idle
+                if (acid) {
+                    session.edit { q -> q.copy(acid = q.acid.copy(length = steps, steps = com.pocketstudio.model.SongMatter.acidSteps(notes, steps, q.acid.root))) }
+                    pushAcid(project.value.acid)
+                    _notice.value = tr("La basse de %1\$s sur l'Acid 303 : %2\$d notes.", song, notes.size)
+                } else {
+                    val q = project.value
+                    val style = com.pocketstudio.app.library.styleOfProject(q.name)?.let(com.pocketstudio.model.StarterWizard::style)
+                    val kind = if (voice) com.pocketstudio.model.TrackKind.Melody else com.pocketstudio.model.TrackKind.Bass
+                    val next = com.pocketstudio.model.NewTracks.add(q, kind, style, false) ?: run {
+                        _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
+                        return@launch
+                    }
+                    val added = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
+                    // The first track deleted from « Mes pistes »: this one takes its place (as « Ajouter une piste »).
+                    val reuse = q.firstTrackDeleted
+                    val id = if (reuse) 0 else added
+                    val name = com.pocketstudio.model.DefaultNames.stemPad(if (voice) VOICE_LABEL else "Basse", song)
+                    session.edit {
+                        userTrack(next, added).let { r ->
+                            // n° 23: the voice sings with a soft, voice-like sound at first (not the melody's test-like lead).
+                            r.copy(tracks = r.tracks.map { t ->
+                                if (t.id == added) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes))
+                                    .let { if (voice) it.copy(synth = com.pocketstudio.model.SongMatter.VOICE_SOUND) else it } else t
+                            })
+                        }.let { if (reuse) it.intoFirstTrack(added) else it }
+                    }
+                    pushTracks()
+                    pushMixer()
+                    if (reuse) pushAutomation()
+                    selectTrack(id)
+                    _notice.value = if (voice) tr("La voix de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                    else tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                }
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en notes impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    /**
+     * n° 23: each bar's loudness of stem [stem] (root mean square, mono), read ten seconds at a time
+     * (a whole song never sits in memory). Worker thread.
+     */
+    private fun stemBarLevels(source: NativeStems, stem: Int, barFrames: Double): DoubleArray {
+        if (barFrames <= 0) return DoubleArray(0)
+        val bars = (source.frames / barFrames).toInt()
+        val sums = DoubleArray(bars)
+        val piece = 10L * OfflineExport.SAMPLE_RATE
+        var at = 0L
+        while (at < source.frames) {
+            val mono = monoOf(source.extract(stem, at, minOf(piece, source.frames - at)))
+            for (i in mono.indices) {
+                val b = ((at + i) / barFrames).toInt()
+                if (b < bars) sums[b] += mono[i].toDouble() * mono[i]
+            }
+            at += piece
+        }
+        return DoubleArray(bars) { kotlin.math.sqrt(sums[it] / barFrames) }
+    }
+
+    /** The last cut's start, end and fades ([remixCut]'s pad), one undo step per drag. */
+    fun editCut(key: String?, transform: (PadSample) -> PadSample) {
+        val lane = _remixCut.value?.lane ?: return
+        editPadSampleOf(lane, key, transform)
+    }
+
+    /** Plays the last cut once, as its pad does. */
+    fun playCut() {
+        val lane = _remixCut.value?.lane ?: return
+        if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
     }
 
     /** [bars] bars of one stem onto the first empty live pad: switch the parts on and off in time. */
@@ -4977,6 +6707,187 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
             padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), com.pocketstudio.model.DefaultNames.stemPad(STEM_LABELS.getOrElse(stem) { "Piste" }, r.name))  // French, shown translated
+        }
+    }
+
+    // --- Stem board (Remix « tableau des pistes », B3): where a stretch of a stem goes ------------
+
+    private var stemBoardMade: com.pocketstudio.app.remix.StemBoardRouter? = null
+
+    /**
+     * The stem board's actions: a stretch onto a free pad, a new instrument or audio track, a live
+     * pad; a voice cut into its phrases. The cuts and the phrases are B2's [com.pocketstudio.app.remix.StemEditor].
+     */
+    val stemBoard: com.pocketstudio.app.remix.StemBoardRouter
+        get() = stemBoardMade ?: com.pocketstudio.app.remix.StemBoardRouter(
+            viewModelScope, stemBoardHost, com.pocketstudio.app.remix.StemEditor,
+            com.pocketstudio.app.guide.EnginePcmPlayer(viewModelScope),
+        ).also { stemBoardMade = it }
+
+    /** What the stem board does to the project (tests drive it with their own edits and player). */
+    internal val stemBoardHost: com.pocketstudio.app.remix.StemBoardHost = object : com.pocketstudio.app.remix.StemBoardHost {
+        override fun project(): Project = project.value
+
+        override suspend fun <T> withSong(setId: String, block: (com.pocketstudio.app.remix.StemSource) -> T): T? {
+            val p = project.value
+            val own = stems?.takeIf { stemsId == setId }
+            if (own != null) {
+                // The project's song: its copy fitted to the project's tempo, once ready, gives the fitted stretches.
+                val ratio = p.remix.stretchFor(p.tempoBpm)
+                val fit = stretched?.takeIf { ratio != 1.0 && stretchedFor == (setId to ratio) }
+                val source = StemReading(own, fit, if (fit != null) ratio else 1.0, p.remix.songBpm, p.remix.firstBeat, if (fit != null) p.tempoBpm else p.remix.songBpm)
+                return withContext(Dispatchers.Default) { block(source) }
+            }
+            // Another song of the phone: read for this once, then freed.
+            val app = getApplication<Application>()
+            return withContext(Dispatchers.IO) {
+                val set = StemStore.read(StemStore.dirFor(app, setId)) ?: return@withContext null
+                val loaded = NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
+                    ?: return@withContext null
+                try {
+                    block(StemReading(loaded, null, 1.0, set.info.bpm, set.info.firstBeat, set.info.bpm))
+                } finally {
+                    loaded.close()
+                }
+            }
+        }
+
+        override fun busy(): Boolean =
+            _sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording ||
+                _audioRecording.value != null || _trackSoundBusy.value == BUSY_TRACK_SOUND
+
+        override suspend fun putOnPads(cuts: List<com.pocketstudio.app.remix.PadCut>) {
+            if (cuts.isEmpty()) return
+            val made = withContext(Dispatchers.IO) { cuts.map { c -> c.lane to padSamples.add(c.pcm, c.name) } }
+            made.forEach { (_, s) -> padSamples.register(s.second) }
+            // One undo step for every pad.
+            session.edit { p -> p.copy(drums = made.fold(p.drums) { d, (lane, s) -> d.withSample(lane, s.first) }) }
+            pushPads()
+            selectPad(cuts.first().lane)
+            AppLog.add("Tableau des pistes : ${cuts.size} son(s) sur les pads ${cuts.map { it.lane + 1 }}")
+        }
+
+        override suspend fun putOnNewInstrument(pcm: Pcm, name: String): Int? {
+            if (project.value.addTrack() == null) return null
+            val root = withContext(Dispatchers.Default) {
+                val ch = pcm.channels
+                RootNote.detect(FloatArray(pcm.frames) { i -> (0 until ch).sumOf { c -> pcm.data[i * ch + c].toDouble() }.toFloat() / ch }, pcm.sampleRate)
+            }
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            var id: Int? = null
+            // One undo step: the track and its sound together.
+            session.edit { p ->
+                val next = p.addTrack(name) ?: return@edit p
+                val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }
+                // The first track deleted from « Mes pistes »: this one takes its place (as « Ajouter une piste »).
+                val reuse = p.firstTrackDeleted
+                id = if (reuse) 0 else added.id
+                userTrack(next, added.id).let { q ->
+                    q.withTrack(q.track(added.id).copy(
+                        engine = 2, instrument = null,
+                        sampled = SampledPatch(file = sample.file, name = name, root = SampledPatch.fitRoot(root, emptyList()), release = 0.2f),
+                    ).sanitized())
+                }.let { if (reuse) it.intoFirstTrack(added.id) else it }
+            }
+            val made = id ?: return null
+            pushTracks()
+            pushMixer()
+            pushInstrument()
+            pushSampled(id = made)
+            pushPlaits(id = made)
+            selectTrack(made)
+            AppLog.add("Tableau des pistes : « $name » au clavier sur la piste ${made + 1}, note d'origine ${root?.let { "%.2f".format(it) } ?: "inconnue"}")
+            return made
+        }
+
+        override suspend fun putOnNewAudioTrack(pcm: Pcm, name: String, atStep: Int, bpm: Double): Int? {
+            if (project.value.addAudioTrack(name) == null) return null
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            var id: Int? = null
+            // One undo step: the track and its clip together. With a song, it plays once from that
+            // step of the song; without, once per pass of the scene shown, from that step of it.
+            session.edit { p ->
+                val next = p.addAudioTrack(name) ?: return@edit p
+                val added = next.audioTracks.first { t -> p.audioTracks.none { it.id == t.id } }
+                id = added.id
+                val song = p.song.isNotEmpty()
+                val bars = AudioClip.barsFor(pcm.seconds, p.tempoBpm, p.beatsPerBar)
+                val clip = AudioClip(
+                    sample.file, sample.name, seconds = pcm.seconds, start = atStep, loopSteps = bars * p.stepsPerBar,
+                    song = song, once = !song, bpm = bpm, scene = if (song) null else p.scene,
+                )
+                next.withAudioTrack(added.copy(clip = clip))
+            }
+            val made = id ?: return null
+            pushMixer()
+            pushAudio()
+            AppLog.add("Tableau des pistes : « $name » sur la piste audio ${made + 1}, pas $atStep")
+            return made
+        }
+
+        override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) =
+            liveRemix.place(scene, pcm, name, bpm, stem, fromSeconds, say = false)
+
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            // One undo step: the grid grown to show the pad, and its sound.
+            session.edit { p ->
+                val size = if (p.live.size <= pad) LivePads.SIZES.first { it > pad } else p.live.size
+                val seconds = prepared.info.seconds
+                // Step 4f: a loop of the song (cut at [bpm]) follows the project's tempo, as a library loop.
+                val follows = bpm > 0.0 && seconds >= com.pocketstudio.model.AutoTempo.MIN_LOOP_SECONDS && com.pocketstudio.model.AutoTempo.canFit(bpm, p.tempoBpm)
+                val clip = if (follows) LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                else LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, p.tempoBpm))
+                p.copy(live = p.live.copy(size = size).with(pad, clip))
+            }
+            pushLive()
+            AppLog.add("Tableau des pistes : « $name » sur le pad live ${pad + 1}")
+        }
+
+        override suspend fun keepInLibrary(pcm: Pcm, name: String, kind: String, bpm: Double, setId: String): com.pocketstudio.model.MySound? {
+            val app = getApplication<Application>()
+            val info = withContext(Dispatchers.IO) { com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(app, setId))?.info }
+            return com.pocketstudio.app.library.MySoundLibrary.keep(
+                app, pcm, name, kind, bpm = bpm, root = info?.root, minor = info?.minor == true,
+                origin = project.value.remix.takeIf { it.setId == setId }?.name.orEmpty(),
+            )
+        }
+
+        override fun songStepNow(): Int =
+            if (_transport.value.playing && NativeEngine.isAvailable) NativeEngine.songStep() else -1
+
+        override fun pauseMusic() {
+            if (_transport.value.playing) togglePlay()
+        }
+
+        // Lot C: « Découper la chanson » keeps its pieces in the project (its own « Annuler » undoes them).
+        override fun saveCuts(cuts: com.pocketstudio.model.SongCuts) {
+            session.editQuietly { it.copy(songCuts = cuts) }
+        }
+    }
+
+    /** A song's stems as the stem board reads them: [fit] the copy at the project's tempo ([ratio] times as long), if any. */
+    private class StemReading(
+        private val stems: NativeStems,
+        private val fit: NativeStems?,
+        private val ratio: Double,
+        override val songBpm: Double,
+        firstBeat: Double,
+        override val fittedBpm: Double,
+    ) : com.pocketstudio.app.remix.StemSource {
+        override val frames: Long = stems.frames
+        override val firstBeatFrame: Long = Math.round(firstBeat * OfflineExport.SAMPLE_RATE)
+
+        override fun read(stem: Int, start: Long, count: Long, fitted: Boolean): FloatArray {
+            val copy = fit
+            if (fitted && copy != null) {
+                // The copy went meanwhile (another tempo): the song as it is.
+                runCatching { return copy.extract(stem, Math.round(start * ratio), Math.round(count * ratio)) }
+            }
+            return stems.extract(stem, start, count)
         }
     }
 
@@ -5028,6 +6939,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         wanted.filter { it !in fonts && it !in loadingBanks }.forEach { id ->
             val bank = InstrumentLibrary.bank(id)
             if (!InstrumentLibrary.isInstalled(app, bank)) return@forEach
+            InstrumentLibrary.memoryShortfall(app, bank)?.let { needed ->
+                AppLog.add("Banque ${bank.name} non ouverte : mémoire libre insuffisante")
+                _notice.value = bankMemoryMessage(needed)
+                return@forEach
+            }
             loadingBanks += id
             viewModelScope.launch {
                 val font = withContext(Dispatchers.IO) {
@@ -5042,10 +6958,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private fun bankMemoryMessage(needed: Long) =
+        tr("Pas assez de mémoire libre pour ouvrir cette banque de sons (il faut environ %d Mo). Ferme des applis, ou choisis une banque plus légère.", (needed / 1_000_000).toInt())
+
     /** Closes banks nobody plays or browses any more (the engine keeps its own instances). */
     private fun releaseUnusedFonts() {
         // An export may be copying a font on its worker (TinySoundFont's count is not atomic).
-        if (running != null || exportJob != null) return
+        if (running != null || exportJobLive) return
         val used = project.value.allTrackSounds.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
         fonts.keys.filter { it !in used }.forEach { fonts.remove(it)?.close() }
     }
@@ -5069,6 +6988,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         if (!InstrumentLibrary.isInstalled(app, bank)) {
             _library.value = LibraryState.Missing
+            return
+        }
+        InstrumentLibrary.memoryShortfall(app, bank)?.let { needed ->
+            AppLog.add("Banque ${bank.name} non ouverte : mémoire libre insuffisante")
+            _library.value = LibraryState.Failed(bankMemoryMessage(needed))
             return
         }
         _library.value = LibraryState.Loading
@@ -5201,6 +7125,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Lot 2: trap and drill without a pack, the studio kit with the engine's 808 on its pad.
         add(KitChoice("kit808:trap", tr("Trap (808)"), KitChoice.BUILT_IN))
         add(KitChoice("kit808:drill", tr("Drill (808)"), KitChoice.BUILT_IN))
+        // Tutorial lot 3: drum & bass without a pack (the jump up tutorial starts on it).
+        add(KitChoice("kitdnb:jump_up", tr("Drum & bass"), KitChoice.BUILT_IN))
         (lib as? LibraryState.Ready)?.presets?.filter { it.bank == 128 }?.sortedBy { it.program }?.forEach { kit ->
             add(KitChoice("gm:${kit.program}", tr(kit.name), KitChoice.GM))
         }
@@ -5239,6 +7165,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 loadKit(kit, whole = true)
             }
             "pack" -> _packsOnPhone.value.firstOrNull { it.id == rest }?.let(::loadPackKit)
+            "kitdnb" -> {
+                session.edit { p -> com.pocketstudio.model.StudioDrums.withDnbKit(p) }
+                pushPads()
+                pushMixer()
+                if (NativeEngine.isAvailable) {
+                    NativeEngine.setKitVersion(Project.KIT_V3)
+                    pushPadVoices(project.value)
+                    NativeEngine.triggerPad(0, 0.9f)
+                }
+                _done.value = tr("Fait : kit %s sur les 16 pads", tr("Drum & bass"))
+            }
             "kit808" -> {
                 if (com.pocketstudio.model.StudioDrums.with808Kit(project.value, rest) == null) return
                 session.edit { p -> com.pocketstudio.model.StudioDrums.with808Kit(p, rest) ?: p }
@@ -5265,6 +7202,59 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val byLane = pads.toMap()
         session.edit { p -> p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> l.copy(sample = byLane[i]) })) }
     }
+
+    /**
+     * Socle 2 (owner: every tutorial on its style's box of sounds): the style's pack sounds on their
+     * pads ([com.pocketstudio.model.tuto.TutoKit.sounds]: pad → pack id, pack name, sound), each decoded and
+     * prepared, then all placed in one undo step; the other pads keep theirs, the studio voices on
+     * those pads leave. [done] true once at least one came (a sound that cannot be read keeps the built-in one).
+     */
+    fun loadTutoKit(sounds: Map<Int, Triple<String, String, com.pocketstudio.model.PackSound>>, done: (Boolean) -> Unit) {
+        // Review (MINEUR 1): one load at a time (the offer may be seen again while this one runs).
+        if (tutoKitLoading) return
+        tutoKitLoading = true
+        viewModelScope.launch {
+            try {
+                val app = getApplication<Application>()
+                val pads = ArrayList<Pair<Int, PadSample>>()
+                for ((lane, s) in sounds) {
+                    val (id, name, sound) = s
+                    val file = com.pocketstudio.app.library.PackStore.file(app, id, sound)
+                    val pcm = withContext(Dispatchers.IO) {
+                        runCatching { tutoKitDecodeForTest?.invoke(file) ?: com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(file)) }
+                            .onFailure { AppLog.add("Tuto : son du kit illisible, ${sound.file} (${it.message})") }.getOrNull()
+                    } ?: continue
+                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
+                        .onFailure { AppLog.add("Tuto : son du kit non préparé, ${sound.file} (${it.message})") }.getOrNull() ?: continue
+                    padSamples.register(prepared.second)
+                    pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)
+                }
+                if (pads.isEmpty()) {
+                    done(false)
+                    return@launch
+                }
+                val byLane = pads.toMap()
+                session.edit { p ->
+                    p.copy(
+                        drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> byLane[i]?.let { l.copy(sample = it) } ?: l }),
+                        padVoices = p.padVoices - byLane.keys,
+                    )
+                }
+                pushPads()
+                if (NativeEngine.isAvailable) pushPadVoices(project.value)
+                AppLog.add("Tuto : kit du style, ${pads.size} sons sur les pads")
+                done(true)
+            } finally {
+                tutoKitLoading = false
+            }
+        }
+    }
+
+    private var tutoKitLoading = false
+
+    /** A pack sound's decoding on the bench (Robolectric has no FLAC decoder). */
+    @androidx.annotation.VisibleForTesting
+    internal var tutoKitDecodeForTest: ((java.io.File) -> com.pocketstudio.app.audio.Pcm)? = null
 
     /** A downloaded pack as a kit ([com.pocketstudio.model.PackKits]): each pad's sound decoded, then all placed at once. */
     private fun loadPackKit(m: com.pocketstudio.model.PackManifest) {
@@ -5471,8 +7461,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Piste gelée : « Dégeler » pour modifier ses notes.")
             return
         }
-        editTrack(key, id) { it.copy(notes = transform(it.notes)) }
+        editTrackNotes(key, id, transform)
+    }
+
+    /**
+     * Track [id]'s notes [transform]ed (one undo step); the assistant's Sub and Basse 2 that double it
+     * follow ([com.pocketstudio.model.LinkedNotes]), in the engine too.
+     */
+    private fun editTrackNotes(key: String?, id: Int, transform: (NoteClip) -> NoteClip) {
+        session.edit(key) { p ->
+            if (p.instrumentTracks.none { it.id == id }) p
+            else com.pocketstudio.model.LinkedNotes.sync(p, p.withTrack(p.track(id).let { it.copy(notes = transform(it.notes)) }.sanitized()), id)
+        }
         pushNotes(project.value.track(id).notes, id)
+        com.pocketstudio.model.LinkedNotes.followers(project.value, id).forEach { pushNotes(project.value.track(it.id).notes, it.id) }
+    }
+
+    /**
+     * After a take (quiet edits since [before]): the Sub and Basse 2 doubling a track it wrote in
+     * follow its new notes, in the same undo step; heard at once where their scene plays.
+     */
+    private fun followTakeNotes(before: Project) {
+        val led = project.value.instrumentTracks.map { it.id }.filter { com.pocketstudio.model.LinkedNotes.followers(before, it).isNotEmpty() }
+        if (led.isEmpty()) return
+        val now = project.value
+        session.editQuietly { p -> led.fold(p) { acc, id -> com.pocketstudio.model.LinkedNotes.sync(before, acc, id) } }
+        if (project.value === now) return
+        val scenes = takeNotes.keys.map { it.first }.toSet() + project.value.scene
+        for (id in led) for (f in com.pocketstudio.model.LinkedNotes.followers(before, id)) for (scene in scenes) {
+            if (scene in project.value.allScenes.indices && playsNow(LiveSlots.INST + f.id, scene)) pushNotesNow(project.value.sceneView(scene).track(f.id).notes, f.id)
+        }
     }
 
     /** A whole-clip edit from the piano roll's selection tools. */
@@ -5500,8 +7518,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Empties track [id]'s notes in the scene shown (one undo step), whichever track is open. */
     fun clearTrackNotes(id: Int) {
         if (project.value.instrumentTracks.none { it.id == id }) return
-        editTrack(id = id) { it.copy(notes = it.notes.cleared()) }
-        pushNotes(project.value.track(id).notes, id)
+        editTrackNotes(null, id) { it.cleared() }
     }
 
     /** A short note so the user hears what they placed. */
@@ -5626,7 +7643,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (audio.none { kotlin.math.abs(it) > SILENT }) continue
                     val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), spec.name) }
                     padSamples.register(prepared)
-                    made += LiveClip(sample.file, sample.name, (spec.bars * p.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS), spec.oneShot)
+                    made += LiveClip(sample.file, sample.name, (spec.bars * p.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS), spec.oneShot, bpm = if (spec.oneShot) 0.0 else p.tempoBpm)
                 }
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -5830,6 +7847,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Lot 4a: records the microphone until [stopRecording] (or 30 s) onto live pad [pad], its loop length fitted to the tempo. */
+    fun startLiveRecording(pad: Int) {
+        if (pad !in 0 until LivePads.MAX) return
+        if (_sampleTask.value != SampleTask.Idle && _sampleTask.value !is SampleTask.Failed) return
+        val rec = MicRecorder().also { recorder = it }
+        _sampleTask.value = SampleTask.Recording(0f, 0f)
+        AppLog.add("Pad live ${pad + 1} : enregistrement micro")
+        sampleJob(null, live = pad) {
+            val pcm = rec.record { sec -> _sampleTask.value = SampleTask.Recording(sec, rec.level) }
+            recorder = null
+            if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage(tr("Rien n'a été entendu : rapproche-toi du micro et réessaie."))
+            padSamples.add(pcm.withoutTail(), "Micro ${java.time.LocalTime.now().withNano(0)}")  // French, shown translated (DefaultNames)
+        }
+    }
+
     fun stopRecording() {
         recorder?.stop()
     }
@@ -5842,8 +7874,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Changes the selected pad's sound settings; the same [key] in a quick burst is one undo step. */
-    fun editPadSample(key: String?, transform: (PadSample) -> PadSample) {
-        val lane = _transport.value.selectedPad
+    fun editPadSample(key: String?, transform: (PadSample) -> PadSample) = editPadSampleOf(_transport.value.selectedPad, key, transform)
+
+    /** As [editPadSample], for pad [lane]. */
+    fun editPadSampleOf(lane: Int, key: String?, transform: (PadSample) -> PadSample) {
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
         val current = project.value.drums.lanes[lane].sample ?: return
         session.edit(key?.let { "pad-$lane-$it" }) { p -> p.copy(drums = p.drums.withSample(lane, transform(current))) }
         val updated = project.value.drums.lanes[lane].sample ?: return
@@ -5924,15 +7959,35 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private class UserMessage(message: String) : Exception(message)
 
+    /** What a sound that could not be put in place says (pads and audio tracks alike). */
+    /**
+     * A sound that could not go on its pad: the pad's own line says why (Pad Live, the Live page, the pad's card in
+     * Pro) and, for a drum pad, a word over the screen too (Audit ultra round 2, zone 1, n° 1: the Mode simple's pad
+     * shows no such line, « Poser » looked like it did nothing).
+     */
+    private fun failedPlacing(words: String, live: Int?) {
+        _sampleTask.value = SampleTask.Failed(words)
+        if (live == null) _notice.value = tr("Le son n'a pas pu être posé sur le pad : %s", words)
+    }
+
+    private fun failedWords(e: Throwable): String = when (e) {
+        is UserMessage -> e.message!!
+        // Fix 2, n° 3: the sound could not be written (a full phone, most likely), in plain words.
+        is java.io.IOException -> tr("Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.")
+        else -> tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName)
+    }
+
     /**
      * Runs [work] off the main thread and puts the sound it makes on the selected drum pad,
      * or on live pad [live] (looping every [beats] beats, or as long as the sound lasts).
      */
     private fun sampleJob(
-        busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false,
+        busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false, liveTempo: LiveTempo? = null,
+        lane: Int = _transport.value.selectedPad, done: () -> Unit = {},
+        /** Where the sound goes on the drum pad (null: it becomes the pad's own sound). */
+        place: ((Project, PadSample) -> Project)? = null,
         work: suspend () -> Pair<PadSample, PadSamples.Prepared>,
     ) {
-        val lane = _transport.value.selectedPad
         if (busy != null) _sampleTask.value = SampleTask.Busy(busy, cancellable)
         // The one that can be cancelled is the song recorded onto the pad ([cancelResample]).
         val job = viewModelScope.launch {
@@ -5940,28 +7995,39 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 val (sample, prepared) = withContext(Dispatchers.IO) { work() }
                 padSamples.register(prepared)
                 if (live != null) {
-                    val clip = LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(prepared.info.seconds, project.value.tempoBpm))
-                    session.edit { p -> p.copy(live = p.live.with(live, clip)) }
+                    val seconds = prepared.info.seconds
+                    val bpm = liveTempo?.let { tempoOfPlaced(sample.file, seconds, it.known, it.oneShot) } ?: 0.0
+                    val before = project.value
+                    val lead = com.pocketstudio.model.AutoTempo.leadFor(before, sample.name, bpm)
+                    val follows = bpm > 0.0 && com.pocketstudio.model.AutoTempo.canFit(bpm, lead?.bpm ?: before.tempoBpm)
+                    val clip = when {
+                        follows -> LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                        liveTempo?.shot == true -> LiveClip(sample.file, sample.name, 1, oneShot = true)
+                        else -> LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(seconds, before.tempoBpm))
+                    }.sanitized()
+                    session.edit { p -> (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).let { q -> q.copy(live = q.live.withAt(live, clip)) } }
+                    if (lead != null) tempoLed(lead, before.tempoBpm)
                     pushLive()
                     _sampleTask.value = SampleTask.Idle
                     return@launch
                 }
-                session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
+                session.edit { p -> place?.invoke(p, sample) ?: p.copy(drums = p.drums.withSample(lane, sample)) }
                 pushPads()
                 _sampleTask.value = SampleTask.Idle
-                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, if (place != null) 1f else 0.9f)
+                done()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: OutOfMemoryError) {
                 recorder = null
                 AppLog.add("Son du pad : mémoire insuffisante")
-                _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
-            } catch (e: Exception) {
+                failedPlacing(tr("Pas assez de mémoire pour ce son : essaie plus court."), live)
+            } catch (e: Throwable) {
+                // Audit ultra round 2, zone 1, n° 1: any failure (an engine that cannot take the sound too) is said and
+                // ends here: the coroutine never dies with the pad left « busy » for good and nothing said.
                 recorder = null
-                AppLog.add("Son du pad : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(
-                    if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName),
-                )
+                AppLog.add("Son du pad : échec (${e.message ?: e.javaClass.simpleName})")
+                failedPlacing(failedWords(e), live)
             }
         }
         if (cancellable) resampleJob = job
@@ -5992,7 +8058,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         var busy = false
         while (true) {
-            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoad())
+            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoadNow())
             emit(busy)
             kotlinx.coroutines.delay(500)
         }
@@ -6026,7 +8092,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * take over when it goes (all on the main thread).
      */
     suspend fun pollMeters() {
-        if (!NativeEngine.isAvailable) return
+        // The meters are the native engine's only (a test's command sink has none: « Prêt à partager ? » opened
+        // with the bench's engine plugged in threw here and froze the screen, lot « tuto 5 »).
+        if (!NativeEngine.isNative) return
         val n = NativeEngine.MIXER_CHANNELS
         val me = Any()
         try {
@@ -6064,7 +8132,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Spectrum of the output about 15 times a second while the analyser is shown. */
     suspend fun pollSpectrum() {
-        if (!NativeEngine.isAvailable) return
+        // The scope is the native engine's only (a test's command sink has none, as for the meters).
+        if (!NativeEngine.isNative) return
         val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
         var smooth: FloatArray? = null
         try {
@@ -6090,7 +8159,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Listens to the microphone while the tuner is shown (needs the permission). */
     suspend fun runTuner() {
-        if (!NativeEngine.isAvailable || _audioRecording.value != null) {
+        // The tuner's microphone is the native engine's only (a test's command sink has none).
+        if (!NativeEngine.isNative || _audioRecording.value != null) {
             _tunerMic.value = false
             return
         }
@@ -6127,8 +8197,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         editChannel(ch, "pan") { it.copy(pan = pan) }
         recordAutomation(AutoTarget(AutoTarget.PAN, ch), (pan + 1f) / 2f)
     }
-    fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
-    fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
+    // Muted and alone at once means nothing (Benjamin, 2026-11-04): lighting one puts the other out.
+    fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute, solo = it.solo && it.mute) }
+    fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo, mute = it.mute && it.solo) }
 
     /** « Solo actif : tout désactiver »: every track heard again, in one undo step. */
     fun clearSolos() {
@@ -6139,6 +8210,63 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             mixerPushesForTest?.add("strip $ch")
             if (NativeEngine.isAvailable && ch < NativeEngine.MIXER_CHANNELS) NativeEngine.setChannelSolo(ch, false)
         }
+    }
+
+    /** « Tout réentendre » (Prêt à partager ?): strips [chs] no longer muted, in one undo step. */
+    fun unmuteChannels(chs: List<Int>) {
+        val before = project.value.mixer.channels
+        val muted = chs.filter { before.getOrNull(it)?.mute == true }.toSet()
+        if (muted.isEmpty()) return
+        session.edit { p -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i in muted) c.copy(mute = false) else c })) }
+        muted.forEach { pushStrip(it, before[it]) }
+    }
+
+    // --- Mode simple « Mix » ------------------------------------------------------------------
+
+    /** « ↺ Tout à zéro »: every strip back to the assistant's level (0 dB in a song made by hand), one undo step. */
+    fun resetMixLevels() {
+        val p = project.value
+        if (p.mixer.atStartVolumes().channels == p.mixer.channels) return
+        session.edit { it.copy(mixer = it.mixer.atStartVolumes()) }
+        pushMixer()
+    }
+
+    /** A fader touched twice: back to 0 dB, an undo step of its own. */
+    fun resetChannelVolume(ch: Int) {
+        val now = project.value.mixer.channels.getOrNull(ch)?.volume ?: return
+        if (now == Mixer.DEFAULT_VOLUME) return
+        editChannel(ch, null) { it.copy(volume = Mixer.DEFAULT_VOLUME) }
+    }
+
+    /** A mix tip's one-tap fix ([com.pocketstudio.model.guide.MixTips]), one undo step. */
+    fun applyMixTip(tip: com.pocketstudio.model.guide.MixTip) {
+        val p = project.value
+        val next = com.pocketstudio.model.guide.MixTips.apply(p, tip)
+        if (next == p) return
+        session.edit { com.pocketstudio.model.guide.MixTips.apply(it, tip) }
+        pushMixer()
+    }
+
+    /**
+     * The drum sounds the Mix tab shows with a meter each: while shown they play through their
+     * own strip (left neutral when the project gives it nothing: the sound is the same), whose
+     * meter the engine reads. Empty when the tab goes.
+     */
+    private var meteredPads: Set<Int> = emptySet()
+
+    fun meterPads(lanes: Set<Int>) {
+        if (lanes == meteredPads) return
+        meteredPads = lanes
+        if (NativeEngine.isAvailable) pushMixer()
+    }
+
+    /** Pad [lane] goes through its own strip for its meter alone (never in an export). */
+    private fun metered(lane: Int): Boolean = lane in meteredPads && !NativeEngine.isCapturing
+
+    /** Tests: the meters and the loudness as the engine would give them (Robolectric has no engine). */
+    internal fun showMetersForTest(meters: FloatArray, loudness: FloatArray? = null) {
+        _meters.value = meters.copyOf()
+        loudness?.let { _loudness.value = it.copyOf() }
     }
 
     private fun editChannel(ch: Int, key: String?, transform: (com.pocketstudio.model.Channel) -> com.pocketstudio.model.Channel) {
@@ -6176,6 +8304,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (c.inserts != before.inserts) pushInserts(ch, c.inserts)
         c.sends.forEachIndexed { bus, level -> if (before.sends.getOrNull(bus) != level) NativeEngine.setSend(ch, bus, level) }
         c.macros.forEachIndexed { m, v -> if (before.macros.getOrNull(m) != v) NativeEngine.setMacro(ch, m, v) }
+        if (c.mute != before.mute || c.solo != before.solo) applyAlone()
     }
 
     private fun pushMixer(p: Project = project.value) {
@@ -6212,8 +8341,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setMonoBass(p.mixer.monoBassHz)
         pushSidechain(p)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
+        // The Mix tab's drum sounds with their meter: their strip as the project has it (neutral).
+        pads.let { routed ->
+            for (lane in meteredPads) {
+                val ch = Mixer.padChannel(lane)
+                if (lane in routed || !metered(lane) || ch >= NativeEngine.MIXER_CHANNELS) continue
+                val c = p.mixer.channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
+                NativeEngine.setChannelVolume(ch, c.volume)
+                NativeEngine.setChannelPan(ch, c.pan)
+                NativeEngine.setChannelMute(ch, c.mute)
+                NativeEngine.setChannelSolo(ch, c.solo)
+                c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+                c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+            }
+        }
         // Pads with effects of their own go through their strip, the others straight into the drums.
-        (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
+        (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads || metered(it)) }
+        // « Écouter seul » playing: its solos again over the project's.
+        applyAlone()
     }
 
     /**
@@ -6222,11 +8367,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * none, its depth 0: the engine mixes as before.
      */
     private fun pushSidechain(p: Project) {
-        NativeEngine.setSidechainKey(p.mixer.sidechainKey)
+        // A pump on « Le son du kick » without a key of its own follows the kick's pad (audit 06).
+        val key = p.mixer.heardSidechainKey
+        if (!NativeEngine.isCapturing) liveSidechainKey = key
+        NativeEngine.setSidechainKey(key)
         val bus = p.mixer.musicBus
         NativeEngine.setMusicBusDuck(bus?.depth ?: 0f, bus?.lowDepth ?: 0f, bus?.release ?: 0.35f)
         for (ch in Mixer.TRACK_STRIPS) if (ch != MASTER) NativeEngine.setMusicBusMember(ch, bus != null && ch in bus.members)
         for (b in 0 until com.pocketstudio.model.Buses.COUNT) NativeEngine.setMusicBusReturn(b, bus?.returns == true)
+    }
+
+    /** The sidechain key the live engine was last given (pushSidechain). */
+    private var liveSidechainKey = Int.MIN_VALUE
+
+    /** An effect changed: a pump switched to « Le son du kick » (or away) changes the key at once. */
+    private fun pushSidechainKeyIfChanged() {
+        val key = project.value.mixer.heardSidechainKey
+        if (key == liveSidechainKey || NativeEngine.isCapturing) return
+        liveSidechainKey = key
+        NativeEngine.setSidechainKey(key)
     }
 
     /** After a change to a pad's strip: it plays through it only while something there changes the sound. */
@@ -6242,7 +8401,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
             c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
         }
-        NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.routesPad())
+        NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.routesPad() || metered(ch - Mixer.FIRST_PAD))
+        applyAlone()
     }
 
     private fun pushInserts(ch: Int, inserts: List<Insert>) {
@@ -6434,6 +8594,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (push && NativeEngine.isAvailable) {
             pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
         }
+        if (NativeEngine.isAvailable) pushSidechainKeyIfChanged()
         if (ch != MASTER) routePad(ch)
     }
 
@@ -6504,7 +8665,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _takeLoopSong.value = false
         if (notes) {
             // Its own undo step, before the take's: « Annuler » after the take gives the bar back.
-            com.pocketstudio.app.synth.TakeLoop.grown(currentTrack.notes)?.let { grown ->
+            com.pocketstudio.app.synth.TakeLoop.grown(currentTrack.notes, project.value.stepsPerBar)?.let { grown ->
                 val before = project.value
                 editNotes { grown }
                 _takeLoopGrown.value = true
@@ -6523,7 +8684,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _transport.value = _transport.value.copy(playing = true)
             if (NativeEngine.isAvailable) {
                 applySongCurves(project.value, project.value.scene)
-                NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn, aloneSongStep())
+                enginePlay(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn, aloneSongStep())
             }
             PlaybackService.start(getApplication())
         }
@@ -6542,12 +8703,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun stopRecordingTake() {
         // Keys still down when the take ends keep the length they have so far.
-        heldNotes.keys.toList().forEach { recordNoteOff(it) }
+        sustained.clear()
+        heldNotes.keys.toList().forEach { writeNoteOff(it) }
+        if (takeSpreads) spreadMelody()
         _recording.value = false
         val before = recordBefore
+        before?.let { followTakeNotes(it) }
         before?.let { session.commitQuietEdits(it, recordDepth) }
         recordBefore = null
         takeEnded(before)
+    }
+
+    /** The take is the Mode simple's melody (« Ma mélodie »): it is heard through the song once written. */
+    private var takeSpreads = false
+
+    /** « Ma mélodie »'s take written: every part where it has nothing plays it (with the take, one undo step). */
+    private fun spreadMelody() {
+        val id = com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: return
+        val scenes = takeNotes.filter { (k, v) -> k.second == id && v.isNotEmpty() }.keys.map { it.first }.distinct()
+        if (scenes.isEmpty()) return
+        scenes.forEach { scene -> session.editQuietly { com.pocketstudio.model.SimpleMelody.spread(it, id, scene) } }
+        if (!NativeEngine.isCapturing) playingPart()?.let { pushPart(project.value, it.scene, it) }
     }
 
     /** Tests (no engine): the place a gesture is heard at, in sixteenths of the playing scene (see [recordPosition]). */
@@ -6622,7 +8798,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             takeDropped { "key $pitch: ${whyNotRecorded()}" }
             return
         }
+        // The same key again while the pedal held the one before: that one ends here.
+        if (sustained.remove(pitch)) writeNoteOff(pitch)
         heldNotes[pitch] = HeldNote(at.second, velocity, id, at.first)
+    }
+
+    /** The sustain pedal is down: keys released meanwhile are written when it comes up. */
+    private var sustainDown = false
+    /** Keys released while the pedal is down, still sounding (by pitch). */
+    private val sustained = HashSet<Int>()
+
+    /**
+     * The sustain pedal (MIDI CC 64) down or up: while it is down, a key released keeps its note
+     * going, written in the take with the length heard (up to the pedal's release).
+     */
+    fun recordSustain(down: Boolean) {
+        sustainDown = down
+        if (down) return
+        val released = sustained.toList()
+        sustained.clear()
+        released.forEach { writeNoteOff(it) }
     }
 
     /** Why a gesture is not recorded now (the take's journal line). */
@@ -6639,6 +8834,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun recordNoteOff(pitch: Int) {
+        if (sustainDown && pitch in heldNotes) {
+            sustained += pitch
+            return
+        }
+        writeNoteOff(pitch)
+    }
+
+    private fun writeNoteOff(pitch: Int) {
         // Written on the track and in the scene it started on, even if another one came meanwhile.
         val (start, velocity, id, scene) = heldNotes.remove(pitch) ?: return
         if (project.value.instrumentTracks.none { it.id == id } || scene !in project.value.allScenes.indices) {
@@ -6687,13 +8890,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.editQuietly { p ->
             inScene(p, scene) { q ->
                 val l = q.drums.lanes[lane]
-                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.toMutableList().also { it[lane] = l.copy(hits = l.hits + (step to Hit(velocity))) }))
+                // A hit already there keeps its roll, pitch, glide…: only its strength is played again.
+                val hit = l.hits[step]?.copy(velocity = velocity) ?: Hit(velocity)
+                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.toMutableList().also { it[lane] = l.copy(hits = l.hits + (step to hit)) }))
             }
         }
         if (fresh) hitTaken(scene, lane, step)
         if (playsNow(LiveSlots.DRUMS, scene) && NativeEngine.isAvailable) {
-            val hits = project.value.sceneView(scene).drums.lanes[lane].hits
-            for (s in 0 until DrumPattern.MAX_STEPS) pushHitNow(lane, s, hits[s])
+            val drums = project.value.sceneView(scene).drums
+            val hits = drums.lanes[lane].hits
+            for (s in 0 until drums.engineReach) pushHitNow(lane, s, hits[s], loopOf(drums, lane))
         }
     }
 
@@ -6703,13 +8909,28 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (on && pitch in 36 until 36 + DrumPattern.PAD_COUNT) {
                 playedPad(pitch - 36, velocity)
                 recordPad(pitch - 36, velocity)
+                if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.DRUMS) {
+                    cellHits += com.pocketstudio.model.PlayedMemory.KeptHit(pitch - 36, velocity, playedClock())
+                }
             }
         } else if (on) {
+            // n° 9: an Acid 303 cell recording: the keyboard plays the 303 into it (MidiViewModel.keysToAcid).
+            if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.ACID) {
+                midiKeyTrack.remove(pitch)?.let { liveNoteReleased(it, pitch) }
+                acidKeyOn(pitch, velocity)
+                return
+            }
             playedNoteOn(track, pitch, velocity)
             recordNoteOn(pitch, velocity)
+            // Step 4f: on the Live page, a cell recording and a take keep the keyboard's notes too.
+            midiKeyTrack.remove(pitch)?.let { liveNoteReleased(it, pitch) }
+            midiKeyTrack[pitch] = track
+            liveNoteTaken(track, pitch, velocity)
         } else {
+            if (acidKeyOff(pitch)) return
             playedNoteOff(track, pitch)
             recordNoteOff(pitch)
+            liveNoteReleased(midiKeyTrack.remove(pitch) ?: track, pitch)
         }
     }
 
@@ -6725,9 +8946,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.setSynthParam(index, project.value.track(id).synth.get(index), id)
     }
 
-    fun applySynthPreset(patch: SynthPatch) {
-        editTrack { it.copy(synth = patch) }
+    /**
+     * A sound of the synth's list on the selected track. Audit 01 (G1): a track played by a sound
+     * file, a pack's instrument, the 808 or a General MIDI instrument goes to the synth too (in
+     * the same undo step), or the sound chosen would never be heard.
+     */
+    /** [name]: the sound's (a library preset's in French, or a kept sound's), which a track named by the app takes. */
+    fun applySynthPreset(patch: SynthPatch, key: String? = null, name: String? = null, say: Boolean = name != null) {
+        val other = currentTrack.engine != InstrumentTrack.ENGINE_SYNTH || currentTrack.instrument != null
+        editTrack(key) { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null, name = name?.let { n -> followingName(it.name, n) } ?: it.name) }
         pushSynth(currentTrack.synth)
+        if (other) {
+            pushInstrument()
+            pushSampled()
+            pushMulti()
+            pushPlaits()
+            releaseUnusedFonts()
+            releaseUnusedMulti()
+        }
+        if (say && name != null) saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     // --- Phase 35: « ● Enregistrer » in each editor, what comes after a take, the last bars played --
@@ -6740,8 +8977,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val noteTake: StateFlow<com.pocketstudio.app.record.NoteTakeUi?> = _noteTake.asStateFlow()
 
     private val _takeEmpty = MutableStateFlow(false)
-    /** The last take ended with nothing played: « Rien n'a été joué » under its button, until the next one. */
+    /** The last take ended with nothing played: « Rien n'a été joué » under its button, for [TAKE_EMPTY_MS] or until the next one. */
     val takeEmpty: StateFlow<Boolean> = _takeEmpty.asStateFlow()
+    private var takeEmptyJob: kotlinx.coroutines.Job? = null
 
     /** The notes the last take wrote, by (scene, track), as they are now in the project. */
     private var takeNotes: MutableMap<Pair<Int, Int>, List<Note>> = HashMap()
@@ -6774,13 +9012,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Réglages says) or the one recording ends and says what it wrote. A take done and not yet
      * kept is kept first.
      */
-    fun recordTake(source: com.pocketstudio.app.record.TakeSource) {
+    fun recordTake(source: com.pocketstudio.app.record.TakeSource, melody: Boolean = false) {
         if (_recording.value) {
             stopRecordingTake()
             return
         }
         if (_audioRecording.value != null || performanceTaking) return
         keepNoteTake()
+        takeSpreads = melody
         _takeEmpty.value = false
         takeNotes = HashMap()
         takeHits = ArrayList()
@@ -6846,10 +9085,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // Nothing played: no card to answer, a short line where the take was (not a window).
             _noteTake.value = null
             _takeEmpty.value = true
+            // Audit ultra round 1 (n° 31, seat C c): said a moment, then gone (it stayed on every screen).
+            takeEmptyJob?.cancel()
+            takeEmptyJob = viewModelScope.launch { kotlinx.coroutines.delay(TAKE_EMPTY_MS); _takeEmpty.value = false }
             com.pocketstudio.app.report.Journal.action(if (takeKeys == 0) "Prise vide : rien n'a été joué" else "Prise vide : $takeKeys touches non gardées")
             return
         }
         _noteTake.value = ui.copy(phase = com.pocketstudio.app.record.TakePhase.DONE, beatsLeft = 0, notes = notes, hits = takeHits.size, moves = moves)
+        showTheTakesPart()
+    }
+
+    /**
+     * Audit ultra round 4 (T4-26, CI 243 JourneyTest « the take's notes: [] »): the notes go to the part heard (the song
+     * playing another part than the one shown), and the screen kept showing the part without them: « 4 notes » said,
+     * none seen. The part that got them all is shown (the song plays on; its edits wait for that part's turn as when
+     * staying on a part). Notes spread over several parts (the take crossed a part change): the screen stays.
+     */
+    private fun showTheTakesPart() {
+        val scenes = takeNotes.filterValues { it.isNotEmpty() }.keys.map { it.first }.toSet()
+        val only = scenes.singleOrNull() ?: return
+        if (only != project.value.scene && only in project.value.allScenes.indices) showSceneToEdit(only)
     }
 
     /** « Garder »: the take stays as it is (it already is in the project); the card goes. */
@@ -6911,7 +9166,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _noteTake.value?.takeIf { it.phase == com.pocketstudio.app.record.TakePhase.DONE } ?: return
         removeTake()
         _noteTake.value = null
-        if (ui.source != com.pocketstudio.app.record.TakeSource.CAPTURE) recordTake(ui.source)
+        if (ui.source != com.pocketstudio.app.record.TakeSource.CAPTURE) recordTake(ui.source, takeSpreads)
     }
 
     private fun removeTake() {
@@ -6957,7 +9212,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             (hits.map { it.first } + replacedHits.keys.map { it.first }).distinct().forEach { scene ->
                 if (playsNow(LiveSlots.DRUMS, scene) || scene == project.value.scene) {
                     val drums = project.value.sceneView(scene).drums
-                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until DrumPattern.MAX_STEPS) pushHitNow(lane, s, l.hits[s]) }
+                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until drums.engineReach) pushHitNow(lane, s, l.hits[s], loopOf(drums, lane)) }
                 }
             }
         }
@@ -6979,12 +9234,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_noteTake.value == null) return
         val key = scene to id
         takeNotes[key] = (takeNotes[key] ?: emptyList()) + note
+        takeCounted()
+    }
+
+    /** Round 3, n° 37: the take says what it has written so far (« Ta prise : 3 notes »), seen and heard while it records. */
+    private fun takeCounted() {
+        val ui = _noteTake.value?.takeIf { it.running } ?: return
+        _noteTake.value = ui.copy(notes = takeNotes.values.sumOf { it.size }, hits = takeHits.size)
     }
 
     /** A hit added by the take recording now (see [recordPad]). */
     private fun hitTaken(scene: Int, lane: Int, step: Int) {
         if (_noteTake.value == null) return
         takeHits += Triple(scene, lane, step)
+        takeCounted()
     }
 
     // « Garder ce que je viens de jouer »: the keys and pads played lately, recording or not.
@@ -7032,11 +9295,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * played on the keys and pads (recorded or not) go into the shown part, each note on the track
      * it was played on, as it was played (one undo step); the card then offers « Remettre en rythme ».
      */
-    fun keepPlayed() {
+    fun keepPlayed() = keepPlayed(null)
+
+    /**
+     * Audit ultra round 1 (n° 31, seat F a): from an editor's record bar only what is played there
+     * is kept: the Clavier's keys ([com.pocketstudio.app.record.TakeSource.KEYS]) without a pad hit
+     * touched on Rythme before, Rythme's pads without the keys; null: both.
+     */
+    fun keepPlayed(source: com.pocketstudio.app.record.TakeSource?) {
         if (_recording.value || _audioRecording.value != null || performanceTaking) return
         keepNoteTake()
         val p = project.value
-        val capture = played.capture(playedClock(), com.pocketstudio.model.PlayedMemory.BARS, p.stepsPerBar)
+        val keys = source != com.pocketstudio.app.record.TakeSource.PADS
+        val pads = source != com.pocketstudio.app.record.TakeSource.KEYS && source != com.pocketstudio.app.record.TakeSource.ACID
+        val capture = played.capture(playedClock(), com.pocketstudio.model.PlayedMemory.BARS, p.stepsPerBar, keys = keys, pads = pads)
         if (capture.isEmpty) {
             _canKeepPlayed.value = false
             _notice.value = tr("Rien à garder : joue quelques notes d'abord.")
@@ -7120,15 +9392,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         editFavorites { add() }
     }
 
-    fun saveSynthFavorite() = _favorites.value.let { f ->
-        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, currentTrack.synth.sanitized())) }
-    }
-    fun savePlaitsFavorite() = _favorites.value.let { f ->
-        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, currentTrack.plaits)) }
-    }
-    fun saveAcidFavorite() = _favorites.value.let { f ->
-        addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound)) }
-    }
+    fun saveSynthFavorite(name: String? = null) = keepSynthSound(track, name)
+    fun savePlaitsFavorite(name: String? = null) = keepPlaitsSound(track, name)
+    fun saveAcidFavorite(name: String? = null) = keepAcidSound(name)
 
     private fun deleteFavorite(name: String, transform: (Favorites) -> Favorites) {
         favoritesBeforeDelete = _favorites.value
@@ -7149,8 +9415,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun randomSynth() = applySynthPreset(SoundLibrary.randomSynth())
 
-    fun applyPlaits(patch: PlaitsPatch) {
-        editTrack { it.copy(plaits = patch.sanitized()) }
+    fun applyPlaits(patch: PlaitsPatch, name: String? = null) {
+        editTrack { it.copy(plaits = patch.sanitized(), name = name?.let { n -> followingName(it.name, n) } ?: it.name) }
         pushPlaits()
         if (NativeEngine.isAvailable && !_transport.value.playing) {
             viewModelScope.launch {
@@ -7158,6 +9424,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 previewNote(60)  // hear it right away
             }
         }
+        if (name != null) saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     fun randomPlaits() = applyPlaits(SoundLibrary.randomPlaits().copy(level = currentTrack.plaits.level))
@@ -7274,21 +9541,71 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * « ⟳ Partie » loops the scene shown ([listensToSong]); without a song, the scene shown.
      */
     fun togglePlay() {
-        if (!_transport.value.playing && listensToSong) {
+        // A few lines a minute at most: what ▶ found, for a bug report saying « ▶ does nothing ».
+        AppLog.add(if (_transport.value.playing) "■ (arrêt)" else "▶ (moteur ${if (NativeEngine.isNative) "natif, pas ${NativeEngine.currentStep()}" else if (NativeEngine.isAvailable) "de test" else "absent"})")
+        if (_transport.value.playing) toggleTransport(songStep = aloneSongStep()) else startPlaying(null)
+    }
+
+    /** ▶ from where it starts: the song from its part ([playFromNow]), else the scene on its own; [countInBars] null: the switch. */
+    private fun startPlaying(countInBars: Int?) {
+        if (listensToSong) {
             val from = playFromNow()
             playStartsForTest?.add("song $from")
             if (NativeEngine.isAvailable) {
-                playSongFrom(from)
+                playSongFrom(from, countInBars)
                 return
             }
         }
-        if (!_transport.value.playing) {
-            if (!listensToSong) playStartsForTest?.add("part ${project.value.scene}")
-            heardScene = project.value.scene
-            // The scene on its own: song curves hold the value they have where it first plays.
-            if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        if (!listensToSong) playStartsForTest?.add("part ${project.value.scene}")
+        heardScene = project.value.scene
+        // The scene on its own: song curves hold the value they have where it first plays.
+        if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        toggleTransport(countInBars, songStep = aloneSongStep())
+    }
+
+    /**
+     * « ▶ cette partie » (tour 5, chantier 4, Benjamin's 2B): the part open, looped (« ⟳ Partie » on). Looping it (or no
+     * song: the part is all that plays), a touch stops; the song playing, the part open takes over and loops.
+     */
+    fun togglePart() {
+        if (_transport.value.playing) {
+            // Tour 5, moyens M2: during a take (notes or microphone) it stops, as « ▶ le morceau » does (both show ■).
+            val takeOn = _recording.value || _audioRecording.value != null
+            if (takeOn || _loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
+            return
         }
-        toggleTransport(songStep = aloneSongStep())
+        setLoopPart(true)
+        togglePlay()
+    }
+
+    /**
+     * « ▶ le morceau »: the song, from where ▶ starts it (« Jouer depuis… »; « ⟳ Partie » off). Playing it, a touch
+     * stops; a part looping, the song takes over at the next bar. No song yet: the part open, as ▶ always did.
+     */
+    fun toggleWholeSong() {
+        if (_transport.value.playing) {
+            if (!_loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(false)
+            return
+        }
+        if (project.value.song.isNotEmpty()) loopPartOff()
+        togglePlay()
+    }
+
+    /** Tests: the count-in (bars) the last start played, engine or not. */
+    internal var countInForTest: Int = -1
+
+    /**
+     * A MIDI Start ([fromTop]) or Continue from the machine whose clock is followed: never a count-in
+     * (it is already on its first beat). Start plays from the top, the song's first part (while
+     * playing too: both machines line up again on the 1); Continue carries on from the part it stopped in.
+     */
+    fun midiStart(fromTop: Boolean) {
+        if (_transport.value.playing) {
+            if (!fromTop) return
+            toggleTransport(songStep = aloneSongStep())
+        }
+        if (fromTop) _playFrom.value = 0
+        startPlaying(countInBars = 0)
     }
 
     /**
@@ -7308,8 +9625,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun toggleTransport(countInBars: Int? = null, songStep: Int = NativeEngine.OUTSIDE_SONG) {
         val t = _transport.value
         val playing = !t.playing
+        stopAllArmed = false
         if (!playing) {
             _loopArmedBySelf.value = false
+            // ■ ends « Écouter seul » too: the sync below gives the engine the project's mixer back.
+            _alone.value?.let { a ->
+                _alone.value = null
+                aloneCheck?.cancel()
+                releaseAlone(a)
+            }
             // A take ends before the transport does: its last launches are read while they still count.
             endPerformanceOnStop()
             // Stopped during the song: ▶ goes on from the part it stopped in (the song's end sets the start again).
@@ -7324,14 +9648,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playing) {
             val part = _sessionUi.value.songIndex.takeIf { it >= 0 }?.let { project.value.song.getOrNull(it) }
             _liveGrid.value = gridOfPart(part, heardScene ?: project.value.scene, 0, null)
+            countInForTest = countInBars ?: if (t.countIn) 1 else 0
         } else {
             endLiveGestures()
         }
-        if (!NativeEngine.isAvailable) return
+        // A stop (■, a call taking the sound, the headphones out) ends the take, engine or not (Audit stage 2).
         if (!playing && _recording.value) stopRecordingTake()
+        if (!NativeEngine.isAvailable) return
         if (playing) {
             drainLaunches(apply = false)  // what an earlier run left
-            NativeEngine.play(countInBars ?: if (t.countIn) 1 else 0, songStep)
+            enginePlay(countInBars ?: if (t.countIn) 1 else 0, songStep)
         } else {
             NativeEngine.stopTransport()
             NativeEngine.toggleClip(-1)  // live pads too: Stop means silence
@@ -7346,16 +9672,154 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playing) PlaybackService.start(app) else PlaybackService.stopAfterTakes(app)
     }
 
-    /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
+    /**
+     * Silence: the transport stops if it plays (opening the assistant: its previews must not play over the song), and live
+     * pads looping on their own too (audit ultra round 3, zone 1, n° 1: ← out of Pad Live left its loops playing on the
+     * home screen, Défis, Remix, with no ■ anywhere there).
+     */
     fun stop() {
         if (_transport.value.playing) togglePlay()
+        else if (_padsAlone.value || padsSoundingNow().isNotEmpty()) stopLive()
+    }
+
+    // --- « Écouter seul » (bug report, APK 224): one sound alone, in a loop ------------------------
+
+    private val _alone = MutableStateFlow<AloneListen?>(null)
+    /** What is heard alone in a loop (null: nothing). Never in the project: no undo step, nothing saved. */
+    val alone: StateFlow<AloneListen?> = _alone.asStateFlow()
+
+    /** Screens that keep [alone] going ([holdAlone]); none left: it stops after [ALONE_GRACE_MS]. */
+    private var aloneHolds = 0
+    private var aloneCheck: kotlinx.coroutines.Job? = null
+
+    /**
+     * « ▶ Écouter seul » of [target]: the scene where it plays loops with only it heard (a drum
+     * pad alone inside the kit, a track alone); touched again, it stops and everything is heard as
+     * the project says. Another target while one plays: that one instead. The song playing stops
+     * first. Only the engine changes (temporary solos): the project, its undo and its file never do.
+     */
+    fun toggleAlone(target: AloneTarget, from: String = "") {
+        val now = _alone.value
+        if (now != null && now.target == target) {
+            stopAlone()
+            return
+        }
+        if (target.isEmpty) return
+        if (now != null) {
+            // Another sound: the same loop goes on, heard through the new one.
+            _alone.value = AloneListen(target, from, resume = now.resume)
+            releaseAlone(now)
+            if (NativeEngine.isAvailable) pushMixer()
+            return
+        }
+        // Round 2, n° 19: the music playing now goes on once the sound alone ends.
+        val resume = _transport.value.playing
+        if (resume) toggleTransport()
+        val scene = target.sceneIn(project.value)
+        // The loop is the scene where the sound plays: shown, as a touch on a part would (not an edit).
+        if (scene != project.value.scene) {
+            session.showQuietly { it.switchScene(scene) }
+            if (NativeEngine.isAvailable) syncEngine()
+        }
+        _alone.value = AloneListen(target, from, resume)
+        applyAlone()
+        heardScene = project.value.scene
+        if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        playStartsForTest?.add("alone ${project.value.scene}")
+        toggleTransport(songStep = aloneSongStep())
+    }
+
+    /**
+     * « ■ » of the sound alone (or its screen left): the engine hears the project's own mutes and
+     * solos again, and everything is as it was: the music that was playing when it began goes on,
+     * the whole mix heard (audit ultra round 2, n° 19, seat B b: it stopped everything); begun
+     * from silence, the loop stops. The top bar's ■ stops everything (toggleTransport).
+     */
+    fun stopAlone() {
+        val a = _alone.value ?: return
+        _alone.value = null
+        aloneCheck?.cancel()
+        releaseAlone(a)
+        // Stopping syncs the engine with the project (its mixer included); otherwise the mixer alone.
+        if (_transport.value.playing && !a.resume) toggleTransport() else if (NativeEngine.isAvailable) pushMixer()
+    }
+
+    /**
+     * The solos [a] put on strips the project does not use (a pad without a strip of its own): taken
+     * off before the mixer is pushed again, which only speaks of the strips in use.
+     */
+    private fun releaseAlone(a: AloneListen) {
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing) return
+        a.target.channels.forEach { if (it < NativeEngine.MIXER_CHANNELS) NativeEngine.setChannelSolo(it, false) }
+        a.target.pads.forEach { lane ->
+            NativeEngine.setChannelSolo(Mixer.padChannel(lane), false)
+            NativeEngine.setPadStrip(lane, metered(lane))
+        }
+    }
+
+    /** A screen showing « Écouter seul » (a Guide card, a sheet) keeps it going until the returned release. */
+    fun holdAlone(): () -> Unit {
+        aloneHolds++
+        aloneCheck?.cancel()
+        var released = false
+        return {
+            if (!released) {
+                released = true
+                aloneHolds = (aloneHolds - 1).coerceAtLeast(0)
+                if (aloneHolds == 0 && _alone.value != null) {
+                    aloneCheck?.cancel()
+                    // A moment's grace: the Guide's « Autre idée de son » folds a card and opens a sheet.
+                    aloneCheck = viewModelScope.launch {
+                        kotlinx.coroutines.delay(ALONE_GRACE_MS)
+                        if (aloneHolds == 0) stopAlone()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * The engine's solos for [alone] (after every mixer push while it plays, never in an export):
+     * every other strip unsoloed, the sound's strips unmuted; a pad goes through its own strip (as
+     * neutral as the drums' when the project gives it none: its sound is unchanged) and is soloed
+     * there, so the rest of the kit goes quiet.
+     */
+    private fun applyAlone() {
+        val a = _alone.value ?: return
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing) return
+        val t = a.target
+        val p = project.value
+        for (ch in Mixer.TRACK_STRIPS) {
+            if (ch == MASTER || ch >= NativeEngine.MIXER_CHANNELS) continue
+            val heard = ch in t.channels || (ch == 0 && t.pads.isNotEmpty())
+            // The drums' strip is never soloed for a pad: a soloed drums strip lets every pad through.
+            NativeEngine.setChannelSolo(ch, ch in t.channels)
+            if (heard) NativeEngine.setChannelMute(ch, false)
+        }
+        for (lane in 0 until DrumPattern.PAD_COUNT) {
+            val ch = Mixer.padChannel(lane)
+            if (ch >= NativeEngine.MIXER_CHANNELS) continue
+            if (lane in t.pads) {
+                val c = p.mixer.channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
+                NativeEngine.setChannelVolume(ch, c.volume)
+                NativeEngine.setChannelPan(ch, c.pan)
+                pushInserts(ch, c.inserts)
+                c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+                c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+                NativeEngine.setChannelMute(ch, false)
+                NativeEngine.setPadStrip(lane, true)
+                NativeEngine.setChannelSolo(ch, true)
+            } else {
+                NativeEngine.setChannelSolo(ch, false)
+            }
+        }
     }
 
     /** True while the activity is on screen; set by the UI. */
     var visible = true
 
-    /** The engine must keep running in the background only while the transport plays. */
-    val keepsRunningInBackground: Boolean get() = _transport.value.playing
+    /** The engine must keep running in the background only while the music plays (▶, or live pads on their own). */
+    val keepsRunningInBackground: Boolean get() = _transport.value.playing || _padsAlone.value
 
     init {
         viewModelScope.launch { project.collect { restageIfEditingUpcoming(); loopOnEdit(it) } }
@@ -7403,7 +9867,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (_audioRecording.value != null) stopAudioRecording()
                 else if (_transport.value.playing) togglePlay()
                 stopLive()  // headphones out: no live pad keeps looping full blast on the speaker
-                if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
+                // The phone's engine only (a test's stand-in has no audio stream to stop).
+                if (!visible && NativeEngine.isNative) NativeEngine.stop()
             }
         }
     }
@@ -7420,6 +9885,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Tapping a pad plays it and makes it the pad shown in the step grid. */
     fun hitPad(lane: Int) {
+        // Audit stage 3 (fuzzing): a pad out of range became the selected pad, and the next cell touched crashed.
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
         if (lane != _transport.value.selectedPad) closeSlicer()
         _transport.value = _transport.value.copy(selectedPad = lane)
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
@@ -7504,13 +9971,58 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Pad [lane] silent or heard again (« Couper ce pad »); its hits stay. */
     fun togglePadMute(lane: Int) {
         if (lane !in 0 until DrumPattern.PAD_COUNT) return
-        editChannel(Mixer.padChannel(lane), null) { it.copy(mute = !it.mute) }
+        editChannel(Mixer.padChannel(lane), null) { it.copy(mute = !it.mute, solo = it.solo && it.mute) }
     }
 
     /** Pad [lane] back to the kit's own voice (« Son d'origine »). */
     fun removeSampleOf(lane: Int) {
         if (project.value.drums.lanes.getOrNull(lane)?.sample == null) return
         session.edit { p -> p.copy(drums = p.drums.withSample(lane, null)) }
+        pushPads()
+    }
+
+    /**
+     * « Couches » (Pro): [pcm] becomes a layer of pad [lane] for its hard hits (from
+     * [PadLayer.DEFAULT_FROM], or above the last layer). Only on a pad with its own sound, [PadLayer.MAX]
+     * at most. False when the pad cannot take one now (busy, no sound of its own, full).
+     */
+    fun addPadLayer(lane: Int, pcm: Pcm, name: String): Boolean {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return false
+        if (own.layers.size >= PadLayer.MAX) return false
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        sampleJob(tr("Pose du son sur le pad %d…", lane + 1), lane = lane, place = { p, added ->
+            val base = p.drums.lanes.getOrNull(lane)?.sample
+            if (base == null) p
+            else {
+                val from = maxOf(PadLayer.DEFAULT_FROM, (base.layers.lastOrNull()?.from ?: 0) + 1).coerceAtMost(PadLayer.FROM_RANGE.last)
+                p.copy(drums = p.drums.withSample(lane, base.withLayer(PadLayer(added.file, added.name, from))))
+            }
+        }) { padSamples.add(pcm.withoutTail(), name) }
+        return true
+    }
+
+    /** Pad [lane] without its layer [index] (« Couches »). */
+    fun removePadLayer(lane: Int, index: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        if (index !in own.layers.indices) return
+        session.edit { p -> p.copy(drums = p.drums.withSample(lane, own.copy(layers = own.layers.filterIndexed { i, _ -> i != index }))) }
+        pushPads()
+    }
+
+    /** Layer [index] of pad [lane] plays from velocity [from] (1..127); a slide is one undo step. */
+    fun setPadLayerFrom(lane: Int, index: Int, from: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        val layer = own.layers.getOrNull(index) ?: return
+        // Kept between its neighbours: the slider never reorders the layers under the finger.
+        val low = (own.layers.getOrNull(index - 1)?.from ?: (PadLayer.FROM_RANGE.first - 1)) + 1
+        val high = (own.layers.getOrNull(index + 1)?.from ?: (PadLayer.FROM_RANGE.last + 1)) - 1
+        if (low > high) return
+        val v = from.coerceIn(low, high)
+        if (v == layer.from) return
+        session.edit("pad-layer-$lane-$index") { p ->
+            val base = p.drums.lanes[lane].sample ?: return@edit p
+            p.copy(drums = p.drums.withSample(lane, base.copy(layers = base.layers.mapIndexed { i, l -> if (i == index) l.copy(from = v) else l }).sanitized()))
+        }
         pushPads()
     }
 
@@ -7522,6 +10034,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val lane = _transport.value.selectedPad
         if (project.value.drums.lanes[lane].hits[step] == null) return
         session.edit("hit-vel-$lane-$step") { it.copy(drums = it.drums.withHitVelocity(lane, step, velocity)) }
+        if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+    }
+
+    /**
+     * One hit's micro-timing on the selected pad, in ms: early (< 0) or late (> 0), up to
+     * [com.pocketstudio.model.Hit.MAX_OFFSET_MS] (the lo-fi's lazy snare, a clap pushed ahead); a slide is one undo step.
+     */
+    fun setHitOffset(step: Int, ms: Float) {
+        val lane = _transport.value.selectedPad
+        val hit = project.value.drums.lanes[lane].hits[step] ?: return
+        session.edit("hit-offset-$lane-$step") { p ->
+            p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = l.hits + (step to hit.copy(offset = ms).sanitized())) else l }))
+        }
         if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
     }
 
@@ -7547,13 +10072,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun nudgeTempo(delta: Int) {
-        session.edit("tempo") { it.copy(tempoBpm = Math.round(it.tempoBpm).toDouble() + delta) }
+        session.edit("tempo") { it.copy(tempoBpm = (Math.round(it.tempoBpm).toDouble() + delta).coerceIn(Project.MIN_TEMPO, Project.MAX_TEMPO)) }
         pushTempo()
     }
 
     /** An exact tempo from outside (MIDI clock): one undo step while it keeps moving. */
     fun setTempo(bpm: Double) {
         session.edit("tempo") { it.copy(tempoBpm = bpm) }
+        pushTempo()
+    }
+
+    /**
+     * The tempo of the MIDI clock followed: not an undo step of its own (« Annuler » never steps
+     * through the clock's small moves), saved with the project.
+     */
+    fun followClockTempo(bpm: Double) {
+        if (bpm == project.value.tempoBpm) return
+        session.editQuietly { it.copy(tempoBpm = bpm) }
         pushTempo()
     }
 
@@ -7566,6 +10101,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The project's tempo to the engine, and to what follows it (the remix, pads fitted to beats). */
     private fun pushTempo() {
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        // Loops following the tempo: their copies at the new one, then refitted (step 4e).
+        if (project.value.audioTracks.any { it.clip?.follows == true } || project.value.live.clips.any { it?.follows == true }) {
+            pushAudio()
+            pushLive()
+        }
         if (project.value.remix.followTempo) pushRemix()
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
@@ -7622,6 +10162,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
+        // Audit ultra round 3, zone 1, n° 4 (seat E d 22): « “Voix 2” remplace “Tom aigu”… » stayed on screen once undone.
+        stemBoardMade?.dismissMessage()
+        _remixCut.value = null
     }
 
     fun redo() {
@@ -7668,7 +10211,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val ui = _sessionUi.value
         // Staying on a scene during the song: the screens keep the scene the step brought back.
-        if (screensFollow(ui) && project.value.scene != heard && heard in project.value.allScenes.indices) session.editQuietly { it.switchScene(heard) }
+        if (screensFollow(ui) && project.value.scene != heard && heard in project.value.allScenes.indices) session.showQuietly { it.switchScene(heard) }
         if (ui.songIndex >= 0) {
             val index = followSongIndex(project.value.song, ui.songIndex, heard)
             if (index < 0) {
@@ -7707,14 +10250,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
-    private fun pushHit(lane: Int, step: Int, hit: Hit?) {
+    private fun pushHit(lane: Int, step: Int, written: Hit?, loop: Int = loopOf(project.value.drums, lane)) {
         if (waitsFor(LiveSlots.DRUMS)) return
-        pushHitNow(lane, step, hit)
+        pushHitNow(lane, step, written, loop)
     }
 
-    private fun pushHitNow(lane: Int, step: Int, hit: Hit?) {
+    /** The steps pad [lane] of [drums] loops over (its own loop, else the pattern's). */
+    private fun loopOf(drums: DrumPattern, lane: Int): Int = drums.lanes[lane].loopSteps(drums.steps)
+
+    /** [written] as the pad's loop of [loop] steps plays it ([Hit.within]: a triplet never spills past the loop's end). */
+    private fun pushHitNow(lane: Int, step: Int, written: Hit?, loop: Int = loopOf(project.value.drums, lane)) {
+        val hit = written?.within(step, loop)
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1, hit?.ramp ?: 0)
         if (hit == null) return
+        // A triplet (its hits spread over several steps): the roll command after the hit.
+        DrumHits.sendSpread(lane, step, hit)
         // Only hits with their own pan or pitch, timing, 808 slide or chance need more (the hit command resets them).
         if (!hit.isPlain) NativeEngine.setDrumStepDetail(lane, step, hit.pan, hit.pitch)
         if (hit.offset != 0f) NativeEngine.setDrumStepOffset(lane, step, hit.offset)
@@ -7779,7 +10329,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val before = project.value
         session.editQuietly { it.copy(drums = it.drums.setHit(lane, step, on)) }
-        if (project.value != before && NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+        // Erasing a step a triplet covers takes the triplet away: its own step is sent too.
+        if (project.value != before && NativeEngine.isAvailable) {
+            val was = before.drums.lanes[lane].hits
+            val now = project.value.drums.lanes[lane].hits
+            (was.keys + now.keys).filter { was[it] != now[it] }.forEach { pushHit(lane, it, now[it]) }
+        }
     }
 
     /** The finger lifted: the stroke becomes one undo step. */
@@ -7797,6 +10352,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
     }
 
+    /** The step a triplet on the selected pad covers [step] from (its own step), [step] itself when none. */
+    fun hitStepOf(step: Int): Int = project.value.drums.lanes[_transport.value.selectedPad].covering(step) ?: step
+
+    /**
+     * A triplet on the selected pad: [hits] evenly over [span] steps from [step]'s hit (3 over 2:
+     * « Triolet »; 6 over 4: « 6 sur le temps »), [ramp] as in [setRoll]. The steps it covers lose
+     * their own hit (the same undo step). No room before the pad's loop ends: nothing changes.
+     */
+    fun setSpread(step: Int, hits: Int, span: Int, ramp: Int) {
+        val lane = _transport.value.selectedPad
+        if (project.value.drums.lanes[lane].hits[step] == null) return
+        session.edit { it.copy(drums = it.drums.withRoll(lane, step, hits, ramp, span)) }
+        pushLane(lane)
+    }
+
     /** 32nds over the beat of [step] on the selected pad ([ramp] as in [setRoll]): one undo step. */
     fun burstAt(step: Int, ramp: Int) {
         val lane = _transport.value.selectedPad
@@ -7812,8 +10382,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushLane(lane: Int) {
         if (!NativeEngine.isAvailable) return
-        val hits = project.value.drums.lanes[lane].hits
-        for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, hits[step])
+        val drums = project.value.drums
+        val hits = drums.lanes[lane].hits
+        for (step in 0 until drums.engineReach) pushHit(lane, step, hits[step])
         if (!waitsFor(LiveSlots.DRUMS)) NativeEngine.setDrumLaneSteps(lane, project.value.drums.lanes[lane].length)
     }
 
@@ -8099,14 +10670,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project) { e, p -> e.forProject(sceneBars(p), p.song.isNotEmpty()).copy(audioBars = p.audioEndBars()) }
+    val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ ->
+        e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p))
+            .copy(parts = p.song.size, songBars = (p.song.sumOf { p.partSteps(it).toLong() } / p.stepsPerBar.coerceAtLeast(1)).toInt())
+    }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
     private fun sceneBars(p: Project) = (p.currentSceneContent().stepsFor(p.stepsPerBar) / p.stepsPerBar).coerceIn(1, MAX_EXPORT_BARS)
 
+    /** Where the audio clips and the remix's song end (its length from the stems loaded when the project does not know it). */
+    private fun exportEnd(p: Project): Int =
+        p.exportEndBars(p.remix.seconds.takeIf { it > 0 } ?: remixSeconds.value.takeIf { stemsId == p.remix.setId } ?: 0.0)
+
     fun setExportBars(bars: Int) {
-        _export.value = _export.value.copy(bars = bars.coerceIn(1, MAX_EXPORT_BARS), barsChosen = true)
+        val max = maxOf(MAX_EXPORT_BARS, exportEnd(project.value).coerceAtMost(MAX_LONG_EXPORT_BARS))
+        _export.value = _export.value.copy(bars = bars.coerceIn(1, max), barsChosen = true)
     }
 
     fun setExportWhat(what: ExportWhat) {
@@ -8137,11 +10716,61 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The master's « Cible » (saved with the project): the engine brings the mix to its loudness. */
     fun setLoudnessTarget(target: com.pocketstudio.model.LoudnessTarget) {
-        session.edit("mix-loudness-target") { p -> p.copy(mixer = p.mixer.copy(target = target)) }
+        session.edit("mix-loudness-target") { p -> p.copy(mixer = com.pocketstudio.model.LoudnessTargets.withTarget(p.mixer, target)) }
         if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
     }
 
-    private fun loudnessLufs(p: Project): Float? = com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion)
+    /**
+     * Audit ultra round 1 (n° 13-15): « Volume visé », the one loudness target of the app (Auto, Club,
+     * Streaming, Apple Music, a free value, none): every screen, the engine and the export read it.
+     */
+    fun chooseLoudnessTarget(choice: com.pocketstudio.model.TargetChoice, freeLufs: Float? = null) {
+        session.edit(if (choice == com.pocketstudio.model.TargetChoice.FREE) "pro-target" else "mix-loudness-target") { p ->
+            p.copy(mixer = com.pocketstudio.model.LoudnessTargets.choose(p.mixer, choice, freeLufs))
+        }
+        if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
+    }
+
+    private fun loudnessLufs(p: Project): Float? {
+        // Lot E: syncEngine sends the target from here (live, or into an export being described): the
+        // master pro's settings go with it, to the same engine.
+        pushMasterPro(p)
+        return com.pocketstudio.model.LoudnessTargets.of(p)
+    }
+
+    /** Lot E: the pro target's mode, the ceiling and the limiter's settings (the defaults: the master as before). */
+    private fun pushMasterPro(p: Project) {
+        val pro = p.mixer.pro ?: com.pocketstudio.model.MasterPro()
+        // « Streaming » and the pro values aim at the whole song (as the platforms measure it), « Auto » and « Club » at the Drop.
+        NativeEngine.setTargetWholeSong(com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer))
+        NativeEngine.setMasterCeiling(pro.ceilingDb)
+        NativeEngine.setLimiterAttack(pro.attack)
+        NativeEngine.setLimiterRelease(pro.release)
+    }
+
+    // --- Lot E, « Master pro » ------------------------------------------------------------------
+    /** The pro master's settings, the « A/B » state and the reference song. */
+    private val masterProMade = lazy {
+        com.pocketstudio.app.mixer.MasterProController(
+            viewModelScope, getApplication(), project,
+            edit = { label, f -> session.edit(label) { p -> p.copy(mixer = p.mixer.copy(pro = f(p.mixer.pro ?: com.pocketstudio.model.MasterPro()).takeUnless { it.isDefault })) } },
+            sync = { if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value)) },
+            setInsertType = ::setInsertType,
+            setMonoBass = { hz -> session.edit("mix-mono-bass") { p -> p.copy(mixer = p.mixer.copy(monoBassHz = hz)) }; if (NativeEngine.isAvailable) NativeEngine.setMonoBass(hz) },
+            projectId = { projectId },
+        )
+    }
+    val masterPro: com.pocketstudio.app.mixer.MasterProController by masterProMade
+
+    /** Lot E: what the mixer's « Avancé » panels act through (MixerActions.pro). */
+    val masterProActions: com.pocketstudio.app.mixer.MasterProActions by lazy {
+        com.pocketstudio.app.mixer.MasterProActions(masterPro, masterPro.live, ::setExportOptions)
+    }
+
+    /** Lot E: « Avancé » › the file's final form. */
+    fun setExportOptions(options: com.pocketstudio.app.export.ExportOptions) {
+        _export.value = _export.value.copy(pro = options)
+    }
 
     fun setStemsWithMaster(on: Boolean) {
         _export.value = _export.value.copy(stemsWithMaster = on)
@@ -8162,28 +10791,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (or WAV, as « Prêt à partager ? » chose), with a short fade, then the share sheet. The
      * export card's own choices stay as they were.
      */
-    fun shareSong(format: ExportFormat = ExportFormat.M4a) {
+    fun shareSong(format: ExportFormat = ExportFormat.M4a, title: String? = null) {
         val p = project.value
+        // Testers (lot « tuto 5 »): « Partager » touched twice in a row makes one song, one share menu.
+        if (_export.value.running || exportJobLive || shareWaiting) return
         if (!NativeEngine.isAvailable) {
-            _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
+            _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la."))
             return
         }
         // A take just stopped may still be being written: the song waits for it.
+        shareWaiting = true
         viewModelScope.launch {
-            if (_takeSaving.value) {
-                _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
-                takeJob?.join()
-                _export.value = _export.value.copy(running = false, stage = null)
-                // « Annuler » touched while the take was written (lot 1: it always works).
-                if (exportCancelled) {
-                    exportCancelled = false
-                    _export.value = _export.value.copy(sharing = false)
-                    return@launch
-                }
-            }
-            val now = project.value
-            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), now.audioEndBars(), format), share = true)
+            try { shareAfterTake(format, title) } finally { shareWaiting = false }
         }
+    }
+
+    /** « Partager mon morceau » waiting for a take being written (one at a time, see [shareSong]). */
+    private var shareWaiting = false
+
+    private suspend fun shareAfterTake(format: ExportFormat, title: String? = null) {
+        if (_takeSaving.value) {
+            _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
+            takeJob?.join()
+            _export.value = _export.value.copy(running = false, stage = null)
+            // « Annuler » touched while the take was written (lot 1: it always works).
+            if (exportCancelled) {
+                exportCancelled = false
+                _export.value = _export.value.copy(sharing = false)
+                return
+            }
+        }
+        val now = project.value
+        // T5-8MES (recette tel-06): the loop's length picked in Mix or in « Prêt à partager ? » is the one sent.
+        val chosen = _export.value.takeIf { it.barsChosen }?.bars
+        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format, chosen).copy(fileTitle = title), share = true)
     }
 
     /** Closes the « Partager mon morceau » window after an error. */
@@ -8201,7 +10842,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Describes the project to an export engine. For the song, the first part's scene plays first
      * and each next scene is staged half a step into the part before it, swapping on its last bar line.
      */
-    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true) {
+    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true, dry: Boolean = false) {
+        // The remix's song comes in where the song has it (the song plays from its first step).
+        captureSongStep = if (song) 0 else NativeEngine.OUTSIDE_SONG
+        try {
+            // Audit ultra round 3 (n° 12): a remix stem's file is the remix strip with that stem alone.
+            val stem = remixStemOf(soloChannel)
+            if (stem != null) {
+                val alone = p.copy(remix = p.remix.copy(stems = p.remix.stems.mapIndexed { i, s -> s.copy(mute = i != stem, solo = false) }))
+                describeInto(job, alone, song, Remix.STRIP, limited, masterFx)
+                if (dry) NativeEngine.captureInto(job) { NativeEngine.setStemMode(NativeEngine.STEM_DRY) }
+                return
+            }
+            describeInto(job, p, song, soloChannel, limited, masterFx)
+            // Lot E: separate tracks without their sends (each strip dry), and each send's return alone.
+            val returnBus = returnStemBus(soloChannel)
+            if (returnBus != null || (dry && soloChannel != null)) NativeEngine.captureInto(job) {
+                NativeEngine.setStemMode(if (returnBus != null) NativeEngine.STEM_RETURN_REVERB + returnBus else NativeEngine.STEM_DRY)
+            }
+        } finally {
+            captureSongStep = NativeEngine.OUTSIDE_SONG
+        }
+    }
+
+    private fun describeInto(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean, masterFx: Boolean) {
         NativeEngine.captureInto(job) {
             val first = if (song) p.sceneView(p.song[0].scene) else p
             syncEngine(first)
@@ -8215,7 +10879,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (soloChannel != null) NativeEngine.setLoudnessTarget(null)
             // The Live page's own sounds (riser, build-up noise): only in the « Effets live » file.
             if (soloChannel != null) NativeEngine.setLiveNoises(if (soloChannel == LIVE_FX_STEM) NativeEngine.LIVE_NOISES_ONLY else NativeEngine.LIVE_NOISES_OFF)
-            if (soloChannel != null && soloChannel != LIVE_FX_STEM) {
+            // Lot E: a project's own ceiling and limiter (Master pro), as live.
+            pushMasterPro(p)
+            if (soloChannel != null && soloChannel != LIVE_FX_STEM && returnStemBus(soloChannel) == null) {
                 // A stem is its strip alone, whatever solos and mutes the mix was left with.
                 for (ch in Mixer.TRACK_STRIPS) if (ch != MASTER) NativeEngine.setChannelSolo(ch, false)
                 NativeEngine.setChannelMute(soloChannel, false)
@@ -8248,6 +10914,76 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Lot E: a stem rendered, waiting for the others' length before it is packed. */
+    private class HeldStem(val index: Int, val wav: File)
+
+    /** Lot E: the « sans les envois » files of each send's return (reverb, echo) the project uses. */
+    private fun returnStems(p: Project): List<Pair<String, Int?>> = listOfNotNull(
+        ("reverbe" to RETURN_REVERB_STEM).takeIf { p.mixer.channels.any { c -> (c.sends.getOrNull(0) ?: 0f) > 0f } },
+        ("echo" to RETURN_ECHO_STEM).takeIf { p.mixer.channels.any { c -> (c.sends.getOrNull(1) ?: 0f) > 0f } },
+    )
+
+    /** The bus (0 reverb, 1 echo) whose return a stem holds alone, or null. */
+    private fun returnStemBus(solo: Int?): Int? = when (solo) {
+        RETURN_REVERB_STEM -> 0
+        RETURN_ECHO_STEM -> 1
+        else -> null
+    }
+
+    /** Lot E: a held stem's WAV into FLAC or M4A (an M4A over the ceiling once decoded: encoded lower, never rendered again). */
+    private suspend fun packStem(app: Application, h: HeldStem, settings: ExportUi, count: Int, ceilingDb: Float, m4aCeiling: Float): File {
+        val wav = h.wav
+        val name = if (settings.format == ExportFormat.M4a) tr("Compression M4A") else tr("Conversion FLAC")
+        _export.value = _export.value.copy(stage = "$name (${h.index + 1}/$count)")
+        val packed = File(wav.parentFile, wav.nameWithoutExtension + "." + settings.format.extension)
+        try {
+            if (settings.format == ExportFormat.Flac) {
+                withContext(Dispatchers.IO) { FlacEncoder.encode(wav, packed, { exportCancelled }) }
+            } else {
+                val cancelled = { exportCancelled }
+                com.pocketstudio.app.export.M4aGuard.run(
+                    withContext(Dispatchers.IO) { com.pocketstudio.app.rhythm.WavLength.peakDb(wav) },
+                    render = { null },
+                    encode = { g -> withContext(Dispatchers.IO) { AacEncoder.encode(wav, packed, g, cancelled) } },
+                    decodedPeak = { withContext(Dispatchers.IO) { decodedTruePeak(app, packed, cancelled) } },
+                    mayGoOn = { it.kind != com.pocketstudio.app.export.M4aGuard.Step.Kind.Render },
+                    maxDecodedDb = ceilingDb.toDouble(),
+                    firstCeiling = m4aCeiling,
+                )
+            }
+        } catch (e: Exception) {
+            packed.delete()
+            throw e
+        } finally {
+            wav.delete()
+        }
+        return packed
+    }
+
+    /**
+     * Lot E: [out]'s tags (the song's name, the artist from « Avancé », its BPM and key; never fails the
+     * export), and for the card's mix export the report beside it (returned, null otherwise).
+     */
+    private suspend fun tagAndReport(
+        p: Project, out: File, report: com.pocketstudio.engine.ExportReport?, decodedPeak: Double?, settings: ExportUi,
+        rate: Int, bits: Int, ceilingDb: Float, share: Boolean,
+    ): File? = withContext(Dispatchers.IO) {
+        val tags = com.pocketstudio.app.export.SongTags(
+            title = com.pocketstudio.model.DefaultNames.shown(p.name), artist = settings.pro.artist, bpm = p.tempoBpm,
+            key = com.pocketstudio.app.export.SongTags.keyOf(p.harmony), cover = masterPro.coverBytes(),
+        )
+        runCatching { com.pocketstudio.app.export.Metadata.tag(out, tags) }.onFailure { AppLog.add("Export : étiquettes impossibles (${it.message})") }
+        if (share || report == null || !settings.pro.report) return@withContext null
+        runCatching {
+            val mixBands = if (out.extension == "wav") com.pocketstudio.app.export.Bands.of(out) else null
+            com.pocketstudio.app.export.ProReport.write(
+                out, tags.title, settings.format.name.uppercase(), rate, bits,
+                com.pocketstudio.model.LoudnessTargets.of(p), ceilingDb, report, decodedPeak,
+                mixBands, masterPro.referenceBands(), p.mixer.pro?.referenceName,
+            )
+        }.onFailure { AppLog.add("Export : rapport impossible (${it.message})") }.getOrNull()
+    }
+
     /**
      * The song bench (app test `SongBenchExport`, with a recording [NativeEngine.sink]): the song
      * as « Exporter › Morceau » renders it with the card's first settings, once the sounds are in
@@ -8277,7 +11013,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         loadTrackFonts()
         loadMultiBanks()
         var waited = 0
-        while ((loadingBanks.isNotEmpty() || loadingMulti.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true) &&
+        while ((loadingBanks.isNotEmpty() || loadingMulti.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true || fitJob?.isActive == true) &&
             waited++ < 300
         ) kotlinx.coroutines.delay(50)
     }
@@ -8440,7 +11176,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile internal var videoBusy = false
 
     /** An export is being made (the card's, « Partager », the video): one private render at a time. */
-    val exportBusy: Boolean get() = running != null || exportJob != null || videoBusy
+    val exportBusy: Boolean get() = running != null || exportJobLive || videoBusy
 
     /**
      * The « vidéo 9:16 » (phase 39): the song (or the scene looped when there is none) as
@@ -8465,23 +11201,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Renders the project offline (never the live engine): the loop, the whole song or each track,
-     * into WAV (or M4A), then copies the files to Music › Pocket Studio.
+     * into WAV (or M4A), then copies the files to Music › BenStudio.
      */
     fun exportWav() {
         val p = project.value
-        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty()), share = false)
+        startExport(_export.value.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p)), share = false)
     }
 
     /** Renders with [settings] (the card's, or « Partager mon morceau »'s with [share]). */
     private fun startExport(settings: ExportUi, share: Boolean) {
-        if (!NativeEngine.isAvailable || running != null || exportJob != null) return
+        if (!NativeEngine.isAvailable || running != null || exportJobLive) return
         if (videoBusy) {
             _export.value = _export.value.copy(error = tr("Une vidéo est en cours : attends qu'elle finisse."), files = emptyList())
             return
         }
         exportCancelled = false
         val app = getApplication<Application>()
-        val p = project.value
+        val made = project.value
+        // Audit ultra round 3 (n° 13): a version's own name (typed when sharing) names the file and its tags, not the project.
+        val p = settings.fileTitle?.trim()?.takeIf { it.isNotEmpty() }?.let { made.copy(name = it) } ?: made
         // The card keeps its own choices; only the run's state (progress, files, error) is shown.
         val shown = _export.value.copy(sharing = share)
         val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
@@ -8489,14 +11227,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = shown.copy(error = tr("Le morceau est vide : ajoute des parties dans Structure."), files = emptyList())
             return
         }
-        val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        // Lot E: a part or a selection of the song (its frames before are rendered, not kept).
+        val range = if (song && settings.what != ExportWhat.Loop) settings.pro.songRange(p) else null
+        val frames = range?.let { it.last + 1 } ?: if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        val rangeStart = range?.first ?: 0L
         // A fade-out ends the file on silence: no tail to ring out after it.
-        val fadeFrames = settings.fadeFrames(frames)
+        val fadeFrames = settings.fadeFrames(frames - rangeStart)
         // Otherwise the tail rings out until the sound has died away (at most MAX_TAIL_FRAMES).
         val tailFrames = if (fadeFrames > 0) 0L else MAX_TAIL_FRAMES
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
-            ExportWhat.Stems -> stemExports(p, song)
+            ExportWhat.Stems -> stemExports(p, song).let { s -> if (settings.pro.stemsDry && s.isNotEmpty()) s + returnStems(p) else s }
             ExportWhat.Song -> listOf("morceau" to null)
             ExportWhat.Loop -> listOf("boucle" to null)
         }
@@ -8504,22 +11245,34 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = shown.copy(error = tr("Rien à exporter : chaque piste est vide ou coupée dans le mixeur."), files = emptyList())
             return
         }
+        // Audit ultra round 3 (n° 11, seat A d 57): the last result, given back if this run is cancelled (« Sauvegardé dans… » vanished).
+        val before = _export.value
         _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null,
             truePeakDb = null, seconds = null, lossDb = null, decodedPeakDb = null)
         // A foreground service keeps a long export going while the screen is elsewhere (notification, « Annuler »).
-        com.pocketstudio.app.export.ExportRun.begin(app, tr("Export de « %s »", com.pocketstudio.model.DefaultNames.shown(p.name)), ::cancelExport)
+        com.pocketstudio.app.export.ExportRun.begin(app, tr("Fichier de « %s »", com.pocketstudio.model.DefaultNames.shown(p.name)), ::cancelExport)
         exportJob = viewModelScope.launch {
             // How it ended, for the notification when the app is not on screen (null: cancelled).
             var ending: String? = null
             val done = ArrayList<File>()
             var musicOk = true
+            // Audit ultra round 2 (n° 10): the text report goes to Documents (Musique takes sound only): its copy never
+            // makes the song's own « Sauvegardé dans Musique » line disappear.
+            var reportOk = false
             var loudness: Double? = null
             var truePeak: Double? = null
             var seconds: Double? = null
             var loss: Double? = null
             var decodedPeak: Double? = null
-            val writtenRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE
-            val writtenBits = if (!settings.limited && settings.format == ExportFormat.Wav) 32 else if (settings.bits16 || settings.format == ExportFormat.M4a) 16 else 24
+            val writtenRate = settings.pro.rateFor(settings.format, settings.cdRate)
+            val writtenBits = settings.pro.bitsFor(settings.format, settings.limited, settings.bits16)
+            val stems = settings.what == ExportWhat.Stems
+            // Lot E: the ceiling the file stays under (Master pro), an M4A's limiter 1 dB lower (its codec's headroom).
+            val ceilingDb = p.mixer.pro?.ceilingDb ?: MASTER_CEILING_DBTP
+            val m4aCeiling = ceilingDb + (AacEncoder.CEILING_DBTP - MASTER_CEILING_DBTP)
+            // Stems wait for one length (the longest), then are packed.
+            val held = ArrayList<HeldStem>()
+            var proReport: com.pocketstudio.engine.ExportReport? = null
             try {
                 // Just after the project opened, its sounds, banks and song may still be loading: the
                 // file would have the kit and the synth in their place.
@@ -8528,7 +11281,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // Lot 1: what this render may still spend on its M4A check (a new render of the
                     // song, a further lowering); each stem its own, counted once the sounds are in.
                     val budget = com.pocketstudio.app.export.ExportBudget()
-                    val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
+                    val fileLabel = if (stems) "%02d-%s".format(java.util.Locale.ROOT, index + 1, fileWord(label)) else fileWord(label)
+                    // Audit ultra round 1 (n° 17): the mix's file says its target (« -club », « -streaming »), never a word twice.
+                    val targetWord = if (solo == null && !stems && settings.limited) targetFileWord(p) else null
+                    val wav = runCatching {
+                        WavExporter.newFile(app, WavExporter.nameWith(com.pocketstudio.model.DefaultNames.shown(p.name).take(28), fileLabel, targetWord))
+                    }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     // The mix into [wav], its limiter at [ceiling] dBTP (an M4A's; null: the default −1). Again
                     // for an M4A that went over −1 dBTP once decoded (M4aGuard): the limiter, lower, takes the peaks down.
@@ -8541,12 +11299,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         var stalled = false
                         val result = try {
                             // In the try: a describe that fails (a sound gone) still closes the private engine.
-                            describe(job, p, song, solo, settings.limited, settings.masterFx)
+                            describe(job, p, song, solo, settings.limited && returnStemBus(solo) == null, settings.masterFx && returnStemBus(solo) == null, settings.pro.stemsDry)
                             if (ceiling != null) NativeEngine.captureInto(job) {
                                 NativeEngine.setMasterCeiling(ceiling)
                                 // S6 (G6): a Drop-aimed song's M4A keeps its WAV's drive (searched at −1 dBTP), the
                                 // lower ceiling only limits: as loud as the WAV instead of 3 LU under it.
-                                if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(MASTER_CEILING_DBTP)
+                                if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(ceilingDb)
                             }
                             running = job
                             val watch = com.pocketstudio.app.export.StallWatch()
@@ -8567,12 +11325,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                             }
                             withContext(Dispatchers.IO) {
                                 job.render(
-                                    wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited,
-                                    sampleRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE,
+                                    wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = writtenBits == 32,
+                                    sampleRate = writtenRate,
                                     // M4A is encoded from 16 bits, dithered there: its WAV stays 24-bit.
-                                    bits = if (settings.bits16 && settings.format != ExportFormat.M4a) 16 else 24,
+                                    bits = if (settings.format == ExportFormat.M4a) 24 else writtenBits,
+                                    finish = settings.pro.finish(stems, rangeStart, writtenBits),
                                 ).also { rendered = job.report() }
                             }
+                        } catch (e: Throwable) {
+                            // Audit stage 3: a render that threw (a sound gone, the disk) leaves no half file.
+                            wav.delete()
+                            throw e
                         } finally {
                             poll?.cancel()
                             // Closed on the main thread, after the render returned.
@@ -8592,14 +11355,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // An M4A's limiter holds −2 dBTP: decoded, the AAC stays under −1 dBTP (checked below).
                     var report = budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Render) {
-                        renderMix(if (settings.format == ExportFormat.M4a) AacEncoder.CEILING_DBTP else null)
+                        renderMix(if (settings.format == ExportFormat.M4a) m4aCeiling else null)
                     }
                     // Measured on the full-quality mix, before any compression (the engine's own report,
                     // as written; read again here only if it is missing).
                     if (solo == null) {
                         loudness = report?.lufs ?: withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
-                        truePeak = report?.truePeakDb
-                        seconds = report?.seconds
+                        // Audit ultra round 1 (n° 15): never « crête — »: without the engine's report, read on the file.
+                        val measured = if (report == null) withContext(Dispatchers.IO) { runCatching { com.pocketstudio.app.export.TruePeakMeter.ofWav(wav) }.getOrNull() } else null
+                        truePeak = report?.truePeakDb ?: measured?.first
+                        seconds = report?.seconds ?: measured?.second
+                        proReport = report
                         loss = report?.takeIf { it.driveDb != 0.0 }?.lossDb
                         // S5: the live target settles on the drive the whole song needed.
                         report?.takeIf { p.mixVersion >= Project.MIX_V2 && it.loudLufs != null && settings.what == ExportWhat.Song }
@@ -8614,6 +11380,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) {
                         wav.delete()
                         throw kotlinx.coroutines.CancellationException("annulé")
+                    }
+                    // Lot E: separate tracks are packed once all are rendered, at one length (the longest).
+                    if (stems) {
+                        held += HeldStem(index, wav)
+                        return@forEachIndexed
                     }
                     val out = if (settings.format == ExportFormat.Wav) {
                         wav
@@ -8674,6 +11445,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                         com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, s.label() + part)
                                     },
                                     mayGoOn = budget::allows,
+                                    maxDecodedDb = ceilingDb.toDouble(),
+                                    firstCeiling = m4aCeiling,
                                 )
                                 if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                                 if (checked.encodings > 1) {
@@ -8694,20 +11467,41 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // Listed first: a cancel from here on deletes it with the others.
                     done += out
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
+                    // Lot E: the file's title, artist, BPM, key (and the report beside it, from « Avancé »).
+                    tagAndReport(p, out, if (solo == null) report else null, if (solo == null) decodedPeak else null, settings, writtenRate, writtenBits, ceilingDb, share)
+                        ?.let { done += it; reportOk = withContext(Dispatchers.IO) { WavExporter.copyToDocuments(app, it, "text/plain") } }
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
+                // Lot E: the separate tracks at one length from frame 0, then packed (FLAC, M4A) one by one.
+                if (held.isNotEmpty()) {
+                    val longest = withContext(Dispatchers.IO) { held.maxOf { com.pocketstudio.app.rhythm.WavLength.frames(it.wav) } }
+                    held.forEach { h ->
+                        if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
+                        withContext(Dispatchers.IO) { com.pocketstudio.app.rhythm.WavLength.padTo(h.wav, longest) }
+                        val out = if (settings.format == ExportFormat.Wav) h.wav else packStem(app, h, settings, renders.size, ceilingDb, m4aCeiling)
+                        done += out
+                        tagAndReport(p, out, null, null, settings, writtenRate, writtenBits, ceilingDb, share)
+                        musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
+                    }
+                }
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, reportInDocuments = reportOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
-                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false)
-                ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
+                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport, madeFrom = ExportUi.madeHash(made),
+                    targetLufs = com.pocketstudio.model.LoudnessTargets.of(p)?.toDouble(),
+                    targetChoice = com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer),
+                    targetWholeSong = com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer) || p.mixVersion < Project.MIX_V2)
+                ending = tr("Fichier prêt : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
-                if (share) _shareRequests.trySend(done.toList())
+                // « Annuler » touched at the very end: no share menu opens after the window closed.
+                if (share && !exportCancelled) _shareRequests.trySend(done.toList())
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
-                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
+                held.forEach { it.wav.delete() }
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false).withResultOf(before)
             } catch (e: Exception) {
                 done.forEach { it.delete() }
+                held.forEach { it.wav.delete() }
                 AppLog.add("Export : échec (${e.message})")
                 // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
@@ -8715,15 +11509,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         is UserMessage -> e.message
                         // Lot 1: the phone's codec stopped answering; the WAV needs none.
                         is com.pocketstudio.app.export.CodecStalledException -> tr("La compression ne répond pas sur ce téléphone : réessaie, ou partage en WAV.")
-                        else -> tr("L'export a échoué : %s", e.message ?: e.javaClass.simpleName)
+                        else -> tr("Le fichier n'a pas pu être créé : %s", e.message ?: e.javaClass.simpleName)
                     })
                 ending = _export.value.error
             } finally {
+                // Whatever ended it (even an error that is not an Exception), the window never stays on a run that is over.
+                if (_export.value.running) _export.value = _export.value.copy(running = false, stage = null, sharing = _export.value.sharing && _export.value.error != null)
                 exportCancelled = false
                 exportJob = null
                 com.pocketstudio.app.export.ExportRun.end(ending)
             }
         }
+    }
+
+    /** The word an export's file name gets for [p]'s target: « club », « streaming », « apple-music », « -11lufs »; null for « Auto » or none. */
+    private fun targetFileWord(p: Project): String? = when (com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer)) {
+        // Round 3, n° 38: in the app's language, as the other words of the name (« 클럽 », « 스트리밍 », not « streaming »).
+        com.pocketstudio.model.TargetChoice.CLUB -> fileWordOf("club", tr("Club"))
+        com.pocketstudio.model.TargetChoice.STREAMING -> fileWordOf("streaming", tr("Streaming"))
+        com.pocketstudio.model.TargetChoice.APPLE -> "apple-music"
+        com.pocketstudio.model.TargetChoice.FREE -> com.pocketstudio.model.LoudnessTargets.of(p)?.let { "${Math.round(-it)}lufs" }
+        else -> null
     }
 
     /**
@@ -8751,13 +11557,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val file = withContext(Dispatchers.IO) {
-                    val wav = WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(p.name) + if (p.song.isNotEmpty()) "-morceau" else "")
+                    val wav = WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(p.name) + if (p.song.isNotEmpty()) "-" + fileWord("morceau") else "")
                     val mid = File(wav.parentFile, wav.nameWithoutExtension + ".mid")
                     mid.writeBytes(com.pocketstudio.model.MidiFile.export(p))
                     mid
                 }
                 val music = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, file, "audio/midi") }
-                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null, truePeakDb = null, seconds = null)
+                // T5-ALERTE: the MIDI file is the song as it was when asked for (the WAV made before it kept its own mark: « a changé »).
+                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null, truePeakDb = null, seconds = null,
+                    madeFrom = ExportUi.madeHash(p))
                 AppLog.add("Export MIDI : ${file.length()} octets")
             } catch (e: Exception) {
                 _export.value = _export.value.copy(error = tr("L'export MIDI a échoué : %s", e.message))
@@ -8796,6 +11604,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private var exportJob: kotlinx.coroutines.Job? = null
+
+    /**
+     * An export job not over yet, a cancelled one still unwinding included (its render may still
+     * be running and copying banks on its worker). A completed job left in the field (an export
+     * that ended without suspending, so its `finally` ran before the assignment) counts as free.
+     * Not `isActive`: that is false as soon as « Annuler » is touched, before the render stops.
+     */
+    private val exportJobLive: Boolean get() = exportJob?.isCompleted == false
     @Volatile private var exportCancelled = false
 
     fun cancelExport() {
@@ -8803,12 +11619,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         // Lot 1: whatever step it is in (waiting for the sounds, between two steps), the export stops now.
         exportJob?.cancel()
+        // Testers (lot « tuto 5 »): « Annuler » closes « Je prépare ton morceau… » at once; the run ends behind it
+        // (its files deleted, no share menu). A run with no job left (it died) is let go too.
+        _export.value = if (!exportJobLive && !_takeSaving.value) _export.value.copy(running = false, stage = null, sharing = false)
+        else _export.value.copy(sharing = false)
     }
 
     override fun onCleared() {
+        liveRemix.close()
+        stemBoardMade?.stop()  // the stretch heard alone goes with the screen
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
         resampleCancelled = true
         resampling?.cancel()
+        // « Enregistrer ce que je joue » armed or recording: its native buffer freed (FIX-1).
+        padLive.played.release()
+        // Master pro: this project's reference song leaves the engine with it (FIX-1).
+        if (masterProMade.isInitialized()) masterPro.close()
         // A Live take recording: kept as it was played up to the bar being played, written into
         // the song at the next opening (the screen's scope is gone: nothing can be written here).
         when (_take.value) {
@@ -8818,6 +11644,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             else -> Unit
         }
         performance = null
+        // « Écouter seul »: the engine outlives this project, its temporary solos must not (a pad
+        // strip left soloed would silence the next project's drums).
+        _alone.value?.let { a ->
+            _alone.value = null
+            releaseAlone(a)
+        }
         // The last edits (after the flush of ON_STOP, or never flushed) reach the disk all the same;
         // a save being written is waited for too (the next screen, or a trash, waits for these).
         if (!session.settled) ClosingSaves.launch { session.flush() }
@@ -8837,6 +11669,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         recorder?.stop()
         padSamples.close()
+        tempoFits.close()
         stems?.close()
         stretched?.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
@@ -8844,9 +11677,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** A microphone sample louder than this is the take's first sound (step 7b, an audio cell's bar line). */
+        private const val MIC_ONSET = 0.02f
         /** [beforePress]'s key for a row or « ■ Tout » (a column's key is never empty). */
         private const val ROW_PRESS = ""
         const val PROJECT_ID = "projet-1"
+        /** The tutorial's examples last at least this many bars (a one-bar loop goes round). */
+        const val EXAMPLE_MIN_BARS = 4
         const val BUSY_TRACK_SOUND = "Préparation du son…"
         /** How early (sixteenths) a note played ahead of the first step still lands on it. */
         private const val EARLY_STEPS = 1.0
@@ -8856,6 +11693,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
         /** Below this a rendered pad is silence (about -80 dBFS): no pad for it. */
         private const val SILENT = 1e-4f
+        /** The beat tracker's share of agreeing beats under which a sound is taken as having no tempo. */
+        private const val MIN_TEMPO_CONFIDENCE = 0.3f
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
         fun starterProject(name: String = "Mon premier rythme"): Project {
@@ -8867,6 +11706,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** The REC line warns when this many song parts are left, or bars before the effects' end. */
         const val TAKE_PARTS_WARNING = 8
+        /** A launch tapped this long (ms) after its line, beyond the output latency, still goes on it. */
+        const val LAUNCH_GRACE_MS = 60.0
+
+        /**
+         * [launchGraceSteps] for an output [latencyMs] late, at [bpm], launches every [launchSteps]:
+         * at most half the quantum, and (revue neuve, MINEUR 6) at most a beat, so a late tap with a
+         * Bluetooth output at a fast tempo never starts a scene half a bar in.
+         */
+        internal fun launchGrace(latencyMs: Double, bpm: Double, launchSteps: Int): Double =
+            ((latencyMs + LAUNCH_GRACE_MS) / 1000.0 * bpm / 15.0).coerceAtMost(launchSteps / 2.0).coerceAtMost(4.0)
         const val TAKE_BARS_WARNING = 16
         /** Stems export: one render per mixer channel. */
         /** A song automation lane spans at least this many bars (the song can be shorter or empty). */
@@ -8874,26 +11723,57 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Longest microphone take (34 MB of memory). */
         /** A take lasts 5 minutes at most (a whole song: 57 MB of mono float in memory). */
         const val MAX_AUDIO_SECONDS = 300
+        /** Audit ultra round 1 (n° 31): how long « Rien n'a été joué pendant la prise » stays. */
+        const val TAKE_EMPTY_MS = 6000L
         const val MAX_EXPORT_BARS = 64
+        /** A loop export may run on to the end of an audio clip or of the remix's song, up to this. */
+        const val MAX_LONG_EXPORT_BARS = 1024
         private val AUDIO_EXTENSIONS = setOf("wav", "mp3", "flac", "m4a", "aac", "ogg", "opus", "aif", "aiff")
         /** After the last bar, releases, reverbs and echoes ring out until silent (−90 dBFS), ten seconds at most. */
         const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE
         /** The master limiter's ceiling of a WAV (dBTP, the engine's MasterChain::kDefaultCeilingDb): an M4A searches its drive there (S6). */
         const val MASTER_CEILING_DBTP = -1f
+        /** Lot E: the « Réverbe » and « Écho » files of separate tracks without their sends (no strip: a return alone). */
+        internal const val RETURN_REVERB_STEM = -10
+        internal const val RETURN_ECHO_STEM = -11
 
         /** How long the sound and mix stay unchanged before the live gain is estimated again (watchSoundForLiveDrive). */
         const val LIVE_DRIVE_SETTLE_MS = 1500L
-        internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        /** « Écouter seul »: how long it waits for another screen to hold it (a card folds, a sheet opens). */
+        const val ALONE_GRACE_MS = 700L
+        internal val STEM_LABELS = listOf("Batterie", "Basse", "Reste", "Voix")
+        /** The voice: its stem and its label (French, as names are saved). */
+        private const val VOICE_STEM = 3
+        private const val DRUMS_STEM = 0
+        private const val BASS_STEM = 1
+        private const val VOICE_LABEL = "Voix"
+
+        /** [french] in a file's name, or [shown] (its word in the app's language) in another language, lower case as [fileWord] does. */
+        internal fun fileWordOf(french: String, shown: String): String =
+            if (com.pocketstudio.model.i18n.I18n.lang == com.pocketstudio.model.i18n.Lang.FR) french else shown.lowercase(java.util.Locale.ROOT)
+
+        /**
+         * An export file's label in the file's name, in the app's language (audit ultra tour 0, seat b, English:
+         * « Remix-morceau-….m4a »): the app's own words translated, a track's name as it is.
+         */
+        internal fun fileWord(label: String): String =
+            if (label in FILE_WORDS && com.pocketstudio.model.i18n.I18n.lang != com.pocketstudio.model.i18n.Lang.FR) stageName(label).lowercase(java.util.Locale.ROOT) else label
+
+        private val FILE_WORDS = setOf("morceau", "boucle", "batterie", "acide", "synthe", LIVE_FX_STEM_LABEL, "reverbe", "echo") + REMIX_STEM_LABELS.values
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
         private fun stageName(label: String): String = when (label) {
             "morceau" -> tr("Morceau")
             "boucle" -> tr("Boucle")
             "batterie" -> tr("Batterie")
-            "acide" -> tr("Acide")
+            "acide" -> tr("Acid 303")
             "synthe" -> tr("Synthé")
             LIVE_FX_STEM_LABEL -> tr("Effets live")
-            else -> label.replaceFirstChar { it.uppercase() }
+            "reverbe" -> tr("Réverbe")
+            "echo" -> tr("Écho")
+            // Audit ultra round 3 (n° 12): « Remix · Voix », said and named in the language of the app.
+            else -> REMIX_STEM_LABELS.entries.firstOrNull { it.value == label }?.let { tr("Remix · %s", com.pocketstudio.app.remix.StemRouting.stemLabel(it.key)) }
+                ?: label.replaceFirstChar { it.uppercase() }
         }
         private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */

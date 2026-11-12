@@ -95,6 +95,8 @@ class SongShapeTest {
                 // second half since S5b); the bass's notes too. A fake drop keeps its kicks (without the bass) up to its beat of silence.
                 val cut = when {
                     sc.label == SongShape.FAKE_DROP -> 4
+                    // Final audit (report 11): a light Montée takes the kick out of its last bar only, and keeps its last beat.
+                    s.lightBuild -> 16 * SongShape.LIGHT_CUT_BARS
                     s.form == SongForm.Song -> 16
                     s.form == SongForm.Rap -> 32
                     else -> 16 * sc.drums.lanes.withIndex().none { (i, l) -> l.hits.isNotEmpty() && SongShape.BASS_LINES.none { it.lane == i } }.let { kickOnly -> if (kickOnly) 2 else SongShape.CLUB_CUT_BARS }
@@ -102,6 +104,7 @@ class SongShapeTest {
                 for (r in SongShape.BASS_LINES) assertTrue("${s.id} ${sc.label} $r", sc.drums.lanes[r.lane].hits.keys.none { it >= steps - cut })
                 for (id in bass) assertTrue("${s.id} ${sc.label}", p.notesOf(scene, id).none { it.end > (steps - cut) * NoteClip.TICKS_PER_STEP })
                 // A beat of silence: no hit, no note, no 303 step on the last beat.
+                if (s.lightBuild) continue
                 assertTrue("${s.id} ${sc.label}", sc.drums.lanes.all { l -> l.hits.keys.none { it >= steps - 4 } })
                 assertTrue("${s.id} ${sc.label}", sc.trackNotes.values.all { c -> c.notes.none { it.end > (steps - 4) * NoteClip.TICKS_PER_STEP } })
                 assertTrue("${s.id} ${sc.label}", sc.synthNotes.notes.none { it.end > (steps - 4) * NoteClip.TICKS_PER_STEP })

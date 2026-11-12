@@ -1,0 +1,49 @@
+Écran 22 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+texte « Encore 2 cases en pointillé ici » @ 298,294
+touchable « 1 » (nom « Pas 1 ») [état « coup, force 100 % »] @ 70,359
+touchable « Pas 2 » [état « vide »] @ 133,359
+touchable « Pas 3 » [état « vide »] @ 197,360
+touchable « Pas 4 » [état « vide »] @ 261,360
+touchable « 2 » (nom « Pas 5 ») [état « coup, force 100 % »] @ 325,360
+touchable « Pas 6 » [état « vide »] @ 389,360
+touchable « Pas 7 » [état « vide »] @ 453,360
+touchable « Pas 8 » [état « vide »] @ 517,360
+touchable « 3 » (nom « Pas 9 ») [état « vide, en pointillé : à toucher »] @ 70,438
+touchable « Pas 10 » [état « vide »] @ 133,438
+touchable « Pas 11 » [état « vide »] @ 197,439
+touchable « Pas 12 » [état « vide »] @ 261,439
+touchable « 4 » (nom « Pas 13 ») [état « vide, en pointillé : à toucher »] @ 325,439
+touchable « Pas 14 » [état « vide »] @ 389,439
+touchable « Pas 15 » [état « vide »] @ 453,439
+touchable « Pas 16 » [état « vide »] @ 517,439
+texte « Remplir » @ 110,524
+bouton « tout » @ 232,524
+bouton « 1/2 » @ 326,524
+bouton « 1/4 » @ 411,524
+bouton « ◀ » @ 492,524
+bouton « ▶ » @ 78,596
+bouton « Effacer » @ 198,596
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,663
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Le kick et le grondement Chapitre 2/15 · Étape 3/4 · Facile » @ 244,803
+bouton « Chapitres » @ 459,803
+bouton « Déplier » @ 531,803
+touchable « À toi : sur le pad « Grosse caisse studio » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle. Lire » @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

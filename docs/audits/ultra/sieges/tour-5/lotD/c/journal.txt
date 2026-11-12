@@ -1,0 +1,450 @@
+#0 SIEGE lang=it device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE d3c1654af0 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 518 633
+#1 DOIGT launch_projects « I miei progetti »
+#2 ROUTE dialogue:projects | MODE pro | EMPREINTE aad732a2cf | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 981 467
+#2 DOIGT project_menu_projet-1
+#3 ROUTE dialogue:project_delete_projet-1 | MODE pro | EMPREINTE 06646801b2 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 854 551
+#3 DOIGT #619 « Rinomina »
+#4 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 397d5ccb7d | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 691 594
+#4 DOIGT name_clear
+#5 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 53bc604952 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > ecris Notte a Napoli
+#6 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 06f47fe872 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 517 603
+#6 DOIGT project_name_field « Nome del progetto »
+#7 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 53bc604952 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > ecris Notte a Napoli
+#8 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 0feeb81863 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 683 741
+#8 DOIGT project_rename_ok « OK »
+#9 ROUTE dialogue:projects | MODE pro | EMPREINTE 07d430ee56 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 400 440
+#9 DOIGT project_projet-1 « Notte a Napoli »
+#10 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e96e39e952 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 200 436
+#10 DOIGT pad_5 « Hi-hat »
+#11 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 5e926f4c9e | project=projet-1 no tuto
+#11 SON Son : le pad « Hi-hat » sonne.
+#11 LAYOUT CUT «  Tieni quello che ho appena suonato » ellipsized (« … »)
+#11 LAYOUT CONTRAST « Hi-hat » 4.34:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST «  Registra i miei pad » 2.78:1 (needs 4.5:1, 14 sp)
+#11 > touche 653 656
+#11 DOIGT fill_1 « tutto »
+#12 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 2c9285cc58 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « tutto » 3.92:1 (needs 4.5:1, 14 sp)
+#12 > touche 99 1123
+#12 DOIGT tab_Structure « Struttura »
+#13 ROUTE session/tab_Structure | MODE pro | EMPREINTE ea500871ea | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 600 678
+#13 DOIGT scene_rename « Dai un nome al blocco A »
+#14 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 096c600161 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Intro » 2.73:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Ritornello » 1.65:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Annulla » 1.27:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « OK » 1.27:1 (needs 4.5:1, 14 sp)
+#14 > touche 181 481
+#14 DOIGT section_Intro « Intro »
+#15 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 62108e7a77 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 857 876
+#15 DOIGT scene_name_ok « OK »
+#16 ROUTE session/tab_Structure | MODE pro | EMPREINTE da9fbe705b | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 828 678
+#16 DOIGT scene_duplicate « Duplica il blocco A »
+#17 ROUTE session/tab_Structure | MODE pro | EMPREINTE 0cfc3da9f2 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 600 750
+#17 DOIGT scene_rename « Dai un nome al blocco B »
+#18 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 0ceb2ba100 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 294 481
+#18 DOIGT section_Couplet « Strofa »
+#19 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE e57a2194f5 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 857 876
+#19 DOIGT scene_name_ok « OK »
+#20 ROUTE session/tab_Structure | MODE pro | EMPREINTE 3bab4b83e2 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 128 490
+#20 DOIGT add_part_0 « + A · Intro »
+#21 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE d18111a3af | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Segui » 4.06:1 (needs 4.5:1, 14 sp)
+#21 > touche 193 183
+#21 DOIGT structure_parts « Parti »
+#22 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2c861b7f27 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > appui-long 376 638
+#22 DOIGT dans:part_0
+#23 ROUTE session/tab_Structure | MODE pro | EMPREINTE 02236179b1 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 448 638
+#23 DOIGT part_menu_0
+#24 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 67ec5ea3c1 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « Parte 1 · A · Intro » over the touchable « Chiudi il foglio » (170 x 28 dp)
+#24 LAYOUT OVERLAP « 2 batt. » over the touchable « Chiudi il foglio » (44 x 17 dp)
+#24 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (45 x 20 dp)
+#24 LAYOUT OVERLAP « Variazione » over the touchable « Chiudi il foglio » (73 x 20 dp)
+#24 LAYOUT OVERLAP « Fill alla fine » over the touchable « Chiudi il foglio » (78 x 20 dp)
+#24 LAYOUT OVERLAP « Break dopo · 4 batt. » over the touchable « Chiudi il foglio » (133 x 20 dp)
+#24 LAYOUT OVERLAP « Break dopo · 8 batt. » over the touchable « Chiudi il foglio » (132 x 20 dp)
+#24 LAYOUT OVERLAP « Build-up prima · 4 batt. » over the touchable « Chiudi il foglio » (158 x 20 dp)
+#24 LAYOUT OVERLAP « Build-up prima · 8 batt. » over the touchable « Chiudi il foglio » (157 x 20 dp)
+#24 LAYOUT OVERLAP « Fade in » over the touchable « Chiudi il foglio » (49 x 20 dp)
+#24 LAYOUT OVERLAP « Fade out » over the touchable « Chiudi il foglio » (58 x 20 dp)
+#24 LAYOUT OVERLAP « Aggiungi un finale » over the touchable « Chiudi il foglio » (125 x 20 dp)
+#24 LAYOUT OVERLAP « Energia: 3 » over the touchable « Chiudi il foglio » (68 x 20 dp)
+#24 LAYOUT OVERLAP « 1 · pad » over the touchable « Chiudi il foglio » (43 x 20 dp)
+#24 LAYOUT OVERLAP « 2 · + basso » over the touchable « Chiudi il foglio » (75 x 20 dp)
+#24 LAYOUT OVERLAP « 3 · + batteria » over the touchable « Chiudi il foglio » (85 x 20 dp)
+#24 LAYOUT OVERLAP « 4 · a tutta » over the touchable « Chiudi il foglio » (64 x 20 dp)
+#24 LAYOUT OVERLAP « Lunghezza » over the touchable « Chiudi il foglio » (74 x 20 dp)
+#24 LAYOUT OVERLAP « battute » over the touchable « Chiudi il foglio » (43 x 18 dp)
+#24 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (21 x 20 dp)
+#24 LAYOUT OVERLAP « Parte » over the touchable « Chiudi il foglio » (35 x 20 dp)
+#24 LAYOUT OVERLAP « Rinomina » over the touchable « Chiudi il foglio » (65 x 20 dp)
+#24 LAYOUT OVERLAP « Cosa suona » over the touchable « Chiudi il foglio » (81 x 20 dp)
+#24 LAYOUT OVERLAP « Sposta su » over the touchable « Chiudi il foglio » (68 x 20 dp)
+#24 LAYOUT OVERLAP « Sposta giù » over the touchable « Chiudi il foglio » (73 x 20 dp)
+#24 LAYOUT OVERLAP « Duplica » over the touchable « Chiudi il foglio » (52 x 20 dp)
+#24 LAYOUT OVERLAP « Inserisci dopo » over the touchable « Chiudi il foglio » (97 x 20 dp)
+#24 LAYOUT OVERLAP « Togli » over the touchable « Chiudi il foglio » (34 x 20 dp)
+#24 LAYOUT CONTRAST « Chiudi » 1.89:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 2 · + basso » 2.89:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 3 · + batteria » 1.76:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 4 · a tutta » 2.64:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « battute » 1.75:1 (needs 4.5:1, 13 sp)
+#24 > touche 290 940
+#24 DOIGT part_bars_field « battute »
+#25 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 67ec5ea3c1 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > ecris 8
+#26 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE f8ef9cd2a0 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 441 933
+#26 DOIGT part_bars_ok « OK »
+#27 ROUTE session/tab_Structure | MODE pro | EMPREINTE f130500d06 | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « + Nuova parte (copia di B · Strofa) » over « Fatto: nuova lunghezza per A · Intro » (226 x 15 dp)
+#27 LAYOUT CONTRAST « Annulla » 3.63:1 (needs 4.5:1, 14 sp)
+#27 > touche 317 770
+#27 DOIGT add_part_1 « + B · Strofa »
+#28 ROUTE session/tab_Structure | MODE pro | EMPREINTE d725fbf9f4 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « + Nuova parte vuota » over « Fatto: nuova lunghezza per A · Intro » (134 x 8 dp)
+#28 LAYOUT OVERLAP « Tocca una parte per ascoltare il brano da lì. » over the touchable « Tempo: 120 BPM Cambia il tempo » (63 x 4 dp)
+#28 LAYOUT OVERLAP « Tocca una parte per ascoltare il brano da lì. » over the touchable « Suona da una parte » (96 x 4 dp)
+#28 > touche 448 583
+#28 DOIGT part_menu_1
+#29 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 81f8ed8897 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « Parte 2 · B · Strofa » over the touchable « Chiudi il foglio » (188 x 28 dp)
+#29 LAYOUT OVERLAP « 1 batt. » over the touchable « Chiudi il foglio » (44 x 17 dp)
+#29 LAYOUT CONTRAST « battute » 1.64:1 (needs 4.5:1, 13 sp)
+#29 > touche 290 940
+#29 DOIGT part_bars_field « battute »
+#30 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 81f8ed8897 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > ecris 32
+#31 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE b84e6f165f | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « Lunghezza » 1.76:1 (needs 4.5:1, 14 sp)
+#31 > touche 441 933
+#31 DOIGT part_bars_ok « OK »
+#32 ROUTE session/tab_Structure | MODE pro | EMPREINTE bbea2b1c8e | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « + Nuova parte vuota » over « Fatto: nuova lunghezza per B · Strofa » (134 x 8 dp)
+#32 LAYOUT OVERLAP « Tocca una parte per ascoltare il brano da lì. » over the touchable « Suona da una parte » (98 x 4 dp)
+#32 > touche 251 796
+#32 DOIGT add_part_new_copy « + Nuova parte (copia di B · Strofa) »
+#33 ROUTE session/tab_Structure | MODE pro | EMPREINTE 327bf094c5 | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 448 502
+#33 DOIGT part_menu_2
+#34 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 6299232f85 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « Parte 3 · C » over the touchable « Chiudi il foglio » (108 x 28 dp)
+#34 LAYOUT CONTRAST « Variazione » 2.04:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Fade in » 2.93:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « 3 · + batteria » 1.46:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « battute » 1.66:1 (needs 4.5:1, 13 sp)
+#34 > touche 873 1078
+#34 DOIGT part_duplicate_2 « Duplica »
+#35 ROUTE session/tab_Structure | MODE pro | EMPREINTE 7bffe18a7c | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « + Nuova parte (copia di C) » 1.64:1 (needs 4.5:1, 14 sp)
+#35 > touche 448 502
+#35 DOIGT part_menu_2
+#36 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 44f02ebbbe | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « 1 batt.  ·  suonata 2 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#36 LAYOUT OVERLAP « Suonata 2 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (239 x 20 dp)
+#36 LAYOUT OVERLAP « Solo questa » over the touchable « Chiudi il foglio » (81 x 20 dp)
+#36 LAYOUT OVERLAP « Tutte le 2 » over the touchable « Chiudi il foglio » (62 x 20 dp)
+#36 LAYOUT CONTRAST « Suonata 2 volte nel brano. Modifica: » 3.14:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Solo questa » 2.04:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « 1 · pad » 1.74:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « 3 · + batteria » 1.45:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Lunghezza » 1.75:1 (needs 4.5:1, 14 sp)
+#36 > touche 873 1078
+#36 DOIGT part_duplicate_2 « Duplica »
+#37 ROUTE session/tab_Structure | MODE pro | EMPREINTE 95d655220f | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 600 750
+#37 DOIGT scene_rename « Dai un nome al blocco C »
+#38 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE bb24f69ef6 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Ritornello » 4.36:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « Post-ritornello » 2.38:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « Bridge » 2.38:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « Groove » 2.38:1 (needs 4.5:1, 14 sp)
+#38 > touche 629 481
+#38 DOIGT section_Refrain « Ritornello »
+#39 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 248563ed20 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 857 876
+#39 DOIGT scene_name_ok « OK »
+#40 ROUTE session/tab_Structure | MODE pro | EMPREINTE f7c9949a6e | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 448 502
+#40 DOIGT part_menu_2
+#41 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 5d7e742e01 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « Parte 3 · C · Ritornello » over the touchable « Chiudi il foglio » (227 x 28 dp)
+#41 LAYOUT OVERLAP « 1 batt.  ·  suonata 3 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#41 LAYOUT OVERLAP « Suonata 3 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (239 x 20 dp)
+#41 LAYOUT OVERLAP « Tutte le 3 » over the touchable « Chiudi il foglio » (62 x 20 dp)
+#41 LAYOUT CONTRAST « Solo questa » 2.38:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « 2 · + basso » 1.72:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « 3 · + batteria » 1.72:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « Lunghezza » 1.74:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « battute » 1.69:1 (needs 4.5:1, 13 sp)
+#41 > touche 290 940
+#41 DOIGT part_bars_field « battute »
+#42 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 5d7e742e01 | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > ecris 16
+#43 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE cfb56a183e | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 441 933
+#43 DOIGT part_bars_ok « OK »
+#44 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1f501a01c4 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « + A · Intro » 1.37:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « + B · Strofa » 1.37:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « + C · Ritornello » 4.00:1 (needs 4.5:1, 14 sp)
+#44 > touche 448 694
+#44 DOIGT part_menu_4
+#45 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE b4a1568b85 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT OVERLAP « Parte 5 · C · Ritornello » over the touchable « Chiudi il foglio » (227 x 28 dp)
+#45 > touche 290 940
+#45 DOIGT part_bars_field « battute »
+#46 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE b4a1568b85 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > ecris 32
+#47 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 4c8272c51e | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 441 933
+#47 DOIGT part_bars_ok « OK »
+#48 ROUTE session/tab_Structure | MODE pro | EMPREINTE 97badd3b73 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 376 598
+#48 DOIGT dans:part_3
+#49 ROUTE session/tab_Structure | MODE pro | EMPREINTE a0e7a71bb8 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > glisse 250 300 250 800
+#49 DOIGT part_play_0 « A · Intro »
+#50 ROUTE session/tab_Structure | MODE pro | EMPREINTE 6bedc2ce77 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « ? » 4.38:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « × 16  ·  16 batt. » 1.92:1 (needs 4.5:1, 14 sp)
+#50 > touche 91 192
+#50 DOIGT structure_timeline « Timeline »
+#51 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1092d3db89 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 855 183
+#51 DOIGT timeline_fit
+#52 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1092d3db89 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 783 183
+#52 DOIGT timeline_zoom_out
+#53 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1092d3db89 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 RIEN NE CHANGE (3 écrans identiques)
+#53 > touche 855 183
+#53 DOIGT timeline_fit
+#54 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1092d3db89 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 999 183
+#54 DOIGT timeline_expand
+#55 ROUTE timeline_screen | MODE pro | EMPREINTE 2623a51daf | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 981 1126
+#55 DOIGT timeline_fit
+#56 ROUTE timeline_screen | MODE pro | EMPREINTE 2623a51daf | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > glisse 900 600 400 600
+#56 DOIGT rien
+#57 ROUTE timeline_screen | MODE pro | EMPREINTE d5431ed398 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 114 42
+#57 DOIGT timeline_play « Suona il brano »
+#58 ROUTE timeline_screen | MODE pro | EMPREINTE 15d78d46b2 | project=projet-1 no tuto
+#58 SON Son : le morceau joue (partie « A »).
+#58 > touche 114 42
+#58 DOIGT timeline_play « Ferma »
+#59 ROUTE timeline_screen | MODE pro | EMPREINTE 2623a51daf | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 42 42
+#59 DOIGT timeline_back
+#60 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1092d3db89 | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > retour
+#60 RETOUR
+#61 ROUTE launch | MODE pro | EMPREINTE 8de8a2c836 | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 518 633
+#61 DOIGT launch_projects « I miei progetti »
+#62 ROUTE dialogue:projects | MODE pro | EMPREINTE e96f0ae794 | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 981 467
+#62 DOIGT project_menu_projet-1
+#63 ROUTE dialogue:project_opening_projet-1 | MODE pro | EMPREINTE d7b67cf046 | project=projet-1 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 854 623
+#63 DOIGT #3365 « Duplica »
+#64 ROUTE dialogue:projects | MODE pro | EMPREINTE 14693a84bc | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 400 420
+#64 DOIGT project_p-3e87440f « Notte a Napoli (copia) »
+#65 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE d1753a9d58 | project=p-3e87440f no tuto
+#65 SON Son : rien ne joue.
+#65 > appui-long 500 243
+#65 DOIGT rien
+#66 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 48f8f151a0 | project=p-3e87440f no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT OVERLAP « 8 batt. » over the touchable « Chiudi il foglio » (44 x 17 dp)
+#66 LAYOUT CONTRAST « Break dopo · 4 batt. » 1.28:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Break dopo · 8 batt. » 4.29:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Aggiungi un finale » 1.96:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « 2 · + basso » 1.45:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « 3 · + batteria » 1.51:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Lunghezza » 1.37:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « battute » 2.32:1 (needs 4.5:1, 13 sp)
+#66 > touche 699 1078
+#66 DOIGT part_duplicate_0 « Duplica »
+#67 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE c756e8a2c7 | project=p-3e87440f no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 148 1024
+#67 DOIGT thumb_undo « Annulla l'ultima azione »
+#68 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE b4edd7f4c8 | project=p-3e87440f no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 193 183
+#68 DOIGT structure_parts « Parti »
+#69 ROUTE session/tab_Structure | MODE pro | EMPREINTE 5ca1c1e123 | project=p-3e87440f no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 448 806
+#69 DOIGT part_menu_1
+#70 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 1527e6d8e6 | project=p-3e87440f no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT OVERLAP « 32 batt. » over the touchable « Chiudi il foglio » (53 x 17 dp)
+#70 LAYOUT CONTRAST « Aggiungi un finale » 2.04:1 (needs 4.5:1, 14 sp)
+#70 > touche 146 1078
+#70 DOIGT part_rename_1 « Rinomina »
+#71 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 40fc51acd1 | project=p-3e87440f no tuto
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « Oppure un altro nome » 1.24:1 (needs 4.5:1, 13 sp)
+#71 LAYOUT CONTRAST « Senza nome » 2.01:1 (needs 4.5:1, 14 sp)
+#71 > touche 865 729
+#71 DOIGT name_clear
+#72 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE f5a1aab5c8 | project=p-3e87440f no tuto
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « Oppure un altro nome » 2.04:1 (needs 4.5:1, 16 sp)
+#72 > touche 517 738
+#72 DOIGT scene_name_field « Oppure un altro nome »
+#73 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE f5a1aab5c8 | project=p-3e87440f no tuto
+#73 SON Son : rien ne joue.
+#73 > ecris Strofa napoletana
+#74 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 1bab0faa67 | project=p-3e87440f no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 857 876
+#74 DOIGT scene_name_ok « OK »
+#75 ROUTE session/tab_Structure | MODE pro | EMPREINTE 4ff28d07bf | project=p-3e87440f no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « B · Strofa napoletana » ellipsized (« … »)
+#75 LAYOUT CUT « Strofa napoletana » ellipsized (« … »)
+#75 > glisse 250 300 250 800
+#75 DOIGT rien
+#76 ROUTE session/tab_Structure | MODE pro | EMPREINTE 4ff28d07bf | project=p-3e87440f no tuto
+#76 SON Son : rien ne joue.
+#76 > touche 91 192
+#76 DOIGT structure_timeline « Timeline »
+#77 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 88d44c0487 | project=p-3e87440f no tuto
+#77 SON Son : rien ne joue.
+#77 > touche 855 183
+#77 DOIGT timeline_fit
+#78 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 88d44c0487 | project=p-3e87440f no tuto
+#78 SON Son : rien ne joue.
+#78 > retour
+#78 RETOUR
+#79 ROUTE launch | MODE pro | EMPREINTE 32c7dddbf6 | project=p-3e87440f no tuto
+#79 SON Son : rien ne joue.
+#79 > touche 518 633
+#79 DOIGT launch_projects « I miei progetti »
+#80 ROUTE dialogue:projects | MODE pro | EMPREINTE fc4b0b00d8 | project=p-3e87440f no tuto
+#80 SON Son : rien ne joue.
+#80 > touche 981 467
+#80 DOIGT project_menu_p-3e87440f
+#81 ROUTE dialogue:project_opening_p-3e87440f | MODE pro | EMPREINTE d7b67cf046 | project=p-3e87440f no tuto
+#81 SON Son : rien ne joue.
+#81 > touche 854 551
+#81 DOIGT #4507 « Rinomina »
+#82 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 34ad85c9a4 | project=p-3e87440f no tuto
+#82 SON Son : rien ne joue.
+#82 > touche 517 603
+#82 DOIGT project_name_field « Nome del progetto »
+#83 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 34ad85c9a4 | project=p-3e87440f no tuto
+#83 SON Son : rien ne joue.
+#83 > ecris Napoli Remix
+#84 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 7b4ffd5910 | project=p-3e87440f no tuto
+#84 SON Son : rien ne joue.
+#84 > touche 683 741
+#84 DOIGT project_rename_ok « OK »
+#85 ROUTE dialogue:projects | MODE pro | EMPREINTE 35d58770d1 | project=p-3e87440f no tuto
+#85 SON Son : rien ne joue.
+#85 > touche 400 590
+#85 DOIGT project_projet-1 « Notte a Napoli »
+#86 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 2ca5ae4c49 | project=projet-1 no tuto
+#86 SON Son : rien ne joue.
+#86 > touche 193 183
+#86 DOIGT structure_parts « Parti »
+#87 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2347d29b5d | project=projet-1 no tuto
+#87 SON Son : rien ne joue.
+#87 > touche 518 1123
+#87 DOIGT tab_Mix « Mix »
+#88 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1a3fe5584e | project=projet-1 no tuto
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#88 > fin
+#88 FIN : fin

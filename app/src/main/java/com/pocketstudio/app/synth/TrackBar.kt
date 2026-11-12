@@ -5,7 +5,6 @@ import com.pocketstudio.ui.ScaledDropdownMenu
 
 import com.pocketstudio.model.i18n.tr
 
-import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -39,6 +39,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import com.pocketstudio.ui.fadingEdges
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.composed
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +80,11 @@ class TracksUi(
     val scene: String = "",
     /** « Changer le son » of track (id): its sounds in a sheet (null: not offered). */
     val changeSound: ((Int) -> Unit)? = null,
+    /**
+     * Audit ultra round 2, n° 25 (seat B c): « Réglages du son » of track (id): its filter, envelopes… brought into
+     * view and ringed on the synth screen (null: not offered; the Mode simple changes a sound, it does not set one).
+     */
+    val soundSettings: ((Int) -> Unit)? = null,
     /** G3: « Fiche de la piste » of track (id): its five columns, its layers, its history (null: not offered). */
     val sheet: ((Int) -> Unit)? = null,
     /** Phase 37: « Geler la piste » / « Dégeler » (null: not offered), the frozen tracks and the one being frozen. */
@@ -90,6 +100,8 @@ class TracksUi(
     val simple: Boolean = false,
     /** Phase 36: « + Piste » › « Voix (micro) », an audio track to sing on (null: not offered). */
     val addVoice: (() -> Unit)? = null,
+    /** « + Piste » › « Acid 303 »: opens the 303's editor (Benjamin, 2026-10-29; null: not offered). */
+    val addAcid: (() -> Unit)? = null,
 ) {
     /** Whether track [id] plays notes in the scene shown. */
     fun hasNotes(id: Int) = tracks.firstOrNull { it.id == id }?.notes?.notes?.isNotEmpty() == true
@@ -114,8 +126,20 @@ fun TrackBar(
     val renaming = renamingId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     val colouring = colouringId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     var choosing by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    val scroll = androidx.compose.foundation.rememberScrollState()
+    val reveal = remember { RowReveal() }
+    LaunchedEffect(reveal.target, scroll.viewportSize) {
+        val t = reveal.target ?: return@LaunchedEffect
+        val seen = scroll.viewportSize
+        if (seen <= 0) return@LaunchedEffect
+        if (t.first < scroll.value) scroll.animateScrollTo(t.first)
+        else if (t.last > scroll.value + seen) scroll.animateScrollTo(t.last - seen)
+    }
+    // Rule 16: the row's buttons grow with the font as the chips do (44 dp × the font scale at most, never less than 44).
+    val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
+    androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
     Row(
-        modifier.fadingHorizontalScroll().testTag("track_bar"),
+        modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -123,42 +147,34 @@ fun TrackBar(
         ui.tracks.forEach { t ->
             val selected = t.id == ui.selected
             val color = trackColor(t.color)
-            Box {
-                Row(
-                    Modifier
-                        .height(44.dp)
-                        .widthIn(max = 160.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-                        .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), RoundedCornerShape(10.dp))
-                        .combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t })
-                        .padding(start = 10.dp, end = 4.dp)
-                        .testTag("track_${t.id}"),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Box(Modifier.size(10.dp).background(color, CircleShape))
-                    Column(Modifier.weight(1f, fill = false)) {
-                        Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(
-                            when {
-                                ui.freezing == t.id -> tr("Gel en cours…")
-                                t.id in ui.frozen -> "❄ " + tr("Gelée")
-                                else -> tr(t.soundLabel)
-                            },
-                            style = MaterialTheme.typography.labelSmall, color = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                            modifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,
-                        )
-                    }
-                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
-                }
+            Box(Modifier.shownWhen(selected)) {
+                // Hands-on audit G7: the shared chip, as tall as its two lines need at any font (it was 44 dp fixed).
+                com.pocketstudio.ui.TrackChip(
+                    com.pocketstudio.model.DefaultNames.shown(t.name),
+                    when {
+                        ui.freezing == t.id -> tr("Gel en cours…")
+                        t.id in ui.frozen -> "❄ " + tr("Gelée")
+                        else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
+                    },
+                    color, selected,
+                    touch = Modifier.combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t }),
+                    modifier = Modifier.testTag("track_${t.id}"),
+                    subColor = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary,
+                    subModifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,
+                    endPadding = 4.dp,
+                    trailing = if (selected) {
+                        { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary) }
+                    } else null,
+                )
                 ScaledDropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
                     ui.sheet?.let { open ->
                         DropdownMenuItem(text = { Text(tr("Fiche de la piste (couches, historique)")) }, onClick = { menuFor = null; open(t.id) }, modifier = Modifier.testTag("track_menu_sheet"))
                     }
                     ui.changeSound?.let { change ->
                         DropdownMenuItem(text = { Text(tr("Changer le son")) }, onClick = { menuFor = null; change(t.id) }, modifier = Modifier.testTag("track_menu_sound"))
+                    }
+                    ui.soundSettings?.let { settings ->
+                        DropdownMenuItem(text = { Text(tr("Régler le son (filtre, enveloppe…)")) }, onClick = { menuFor = null; settings(t.id) }, modifier = Modifier.testTag("track_menu_settings"))
                     }
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renamingId = t.id })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouringId = t.id })
@@ -188,10 +204,9 @@ fun TrackBar(
                             )
                         }
                     }
-                    if (t.id != 0) {
-                        DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
-                            modifier = Modifier.testTag("track_delete"))
-                    }
+                    // Owner (2026-11-04): the first track too (emptied and hidden, [RhythmViewModel.removeFirstTrack]).
+                    DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
+                        modifier = Modifier.testTag("track_delete"))
                 }
             }
             // The chosen track's sound, one touch away (« Changer le son »).
@@ -203,17 +218,18 @@ fun TrackBar(
         }
         trailing()
         if (ui.tracks.any { it.id == ui.selected }) ui.effects?.let { open ->
-            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text(tr("Effets")) }
+            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.heightIn(min = 44.dp, max = chipMax).testTag("track_effects")) { Text(tr("Effets")) }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
-            OutlinedButton(onClick = { if (ui.addKind != null) choosing = true else ui.add() }, modifier = Modifier.height(44.dp).testTag("track_add")) {
+            OutlinedButton(onClick = { if (ui.addKind != null) choosing = true else ui.add() }, modifier = Modifier.heightIn(min = 44.dp, max = chipMax).testTag("track_add")) {
                 Icon(Icons.Filled.Add, contentDescription = null, Modifier.size(18.dp))
                 Text(tr(" Piste"))
             }
         }
     }
+    }
     if (choosing) {
-        TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple) { kind, write ->
+        TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple, acid = ui.addAcid?.let { a -> { choosing = false; a() } }) { kind, write ->
             choosing = false
             if (kind == null) ui.add() else ui.addKind?.invoke(kind, write)
         }
@@ -224,8 +240,8 @@ fun TrackBar(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer la piste")) },
             text = {
-                OutlinedTextField(value = name, onValueChange = { name = it.take(InstrumentTrack.MAX_NAME) }, singleLine = true,
-                    label = { Text(tr("Nom")) }, modifier = Modifier.testTag("track_name_field"))
+                // n° 26 (seat E b): the name selected, so what is typed replaces it; its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, InstrumentTrack.MAX_NAME, tr("Nom"), modifier = Modifier.testTag("track_name_field"))
             },
             confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renamingId = null }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
             dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },
@@ -249,5 +265,25 @@ fun TrackBar(
             },
             confirmButton = { TextButton(onClick = { colouringId = null }) { Text(tr("Fermer")) } },
         )
+    }
+}
+
+/** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */
+internal class RowReveal {
+    var target by mutableStateOf<IntRange?>(null)
+}
+
+internal val LocalRowReveal = androidx.compose.runtime.staticCompositionLocalOf<RowReveal?> { null }
+
+/**
+ * APK 228: the chip of the track opened (or of the editor shown) is scrolled into the row's view when
+ * it is lit from elsewhere (a track sheet, « + Piste », Remix): past the screen's edge it was lit unseen.
+ * On a direct child of the [TrackBar]'s row; only that row scrolls (never the page around it).
+ */
+internal fun Modifier.shownWhen(selected: Boolean): Modifier = if (!selected) this else composed {
+    val reveal = LocalRowReveal.current
+    if (reveal == null) this else onPlaced { c ->
+        val x = c.positionInParent().x.toInt()
+        reveal.target = x..(x + c.size.width)
     }
 }

@@ -1,7 +1,19 @@
 package com.pocketstudio.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -85,7 +97,13 @@ fun scaledConfiguration(base: Configuration, scale: Float): Configuration = Conf
     densityDpi = (base.densityDpi * scale).toInt()
 }
 
-/** Material's ModalBottomSheet at the interface size (its handle and its content). */
+/**
+ * Material's ModalBottomSheet at the interface size (its handle and its content).
+ *
+ * [scrolls]: the content scrolls when the sheet is taller than the screen (a phone lying down, the interface at
+ * 130 %; hands-on audit G10, rule 22 of docs/DESIGN.md), under [header], which stays (title, value, « Fermer »).
+ * Off for a content that scrolls itself (a LazyColumn cannot sit in a vertical scroll).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaledBottomSheet(
@@ -93,6 +111,8 @@ fun ScaledBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     containerColor: Color = BottomSheetDefaults.ContainerColor,
+    scrolls: Boolean = false,
+    header: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
@@ -100,9 +120,37 @@ fun ScaledBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         containerColor = containerColor,
-        dragHandle = { RescaledWindow { BottomSheetDefaults.DragHandle() } },
+        // Round 3, n° 37: Material's handle sits in a tooltip and a clickable that TalkBack reads as two nameless
+        // controls; ours is drawn at the top of the sheet, named, and the whole sheet still drags.
+        dragHandle = null,
     ) {
-        RescaledWindow { Column(Modifier.fillMaxWidth(), content = content) }
+        RescaledWindow {
+            Column(Modifier.fillMaxWidth()) {
+                SheetHandle(Modifier.align(Alignment.CenterHorizontally))
+                header?.invoke(this)
+                if (scrolls) {
+                    Column(Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState()), content = content)
+                } else {
+                    content()
+                }
+            }
+        }
+    }
+}
+
+/**
+ * The sheet's handle, drawn as Material's (a 32 × 4 dp bar), read by TalkBack as one named text. Audit ultra
+ * round 3, n° 37: Material 1.4 wraps its own handle in a tooltip and a clickable without a name (« bouton sans
+ * nom » above every sheet); the sheet still closes by a swipe down, by Back and by its scrim (« Fermer la feuille »).
+ */
+@Composable
+internal fun SheetHandle(modifier: Modifier = Modifier) {
+    Box(
+        modifier.padding(vertical = 22.dp).semantics(mergeDescendants = true) {
+            contentDescription = com.pocketstudio.model.i18n.tr("Poignée : glisse vers le bas pour fermer")
+        },
+    ) {
+        Box(Modifier.size(width = 32.dp, height = 4.dp).clip(RoundedCornerShape(2.dp)).background(MaterialTheme.colorScheme.onSurfaceVariant))
     }
 }
 

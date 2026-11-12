@@ -1,0 +1,38 @@
+Écran 62 (588x1278)
+bouton « Tempo w dół » @ 135,48
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 210,48
+bouton « Tempo w górę » @ 285,48
+bouton « Stop » [sélectionné] @ 375,48
+touchable « REC » (nom « Nagraj występ ») @ 462,48
+bouton « Zatrzymaj wszystko » @ 537,48
+bouton « Wyjdź z pełnego ekranu » @ 45,48
+texte « Dotknij: graj · przytrzymaj: zmień » @ 182,135
+bouton « Mniej padów » @ 448,135
+bouton « Więcej padów » @ 537,135
+texte « Pady » @ 385,135
+texte « 8 » @ 492,135
+bouton « Perkusja · gotowe » @ 151,297
+texte « Perkusja » @ 151,310
+texte « 1 takt » @ 152,343
+bouton « Acid 303 · gotowe » @ 436,297
+texte « Acid 303 » @ 437,310
+texte « 1 takt » @ 437,343
+bouton « Impact · gotowe » @ 151,532
+texte « Impact » @ 151,545
+texte « raz » @ 152,578
+bouton « Utwór, 1 takt · gotowe » @ 436,532
+texte « Utwór, 1 takt » @ 436,545
+texte « 1 takt » @ 437,578
+bouton « Pad 5 · pusty » @ 151,767
+texte « + » @ 152,768
+bouton « Pad 6 · pusty » @ 436,767
+texte « + » @ 437,768
+bouton « Pad 7 · pusty » @ 151,1002
+texte « + » @ 152,1002
+bouton « Pad 8 · pusty » @ 436,1002
+texte « + » @ 437,1002
+bouton « Efekty live » @ 294,1167
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

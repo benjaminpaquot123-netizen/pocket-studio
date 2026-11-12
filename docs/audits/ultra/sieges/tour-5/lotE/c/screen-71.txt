@@ -1,0 +1,7 @@
+Écran 71 (900x1509)
+texte « 영상 공유 · Ma-chanson-préférée-video-20261105-213555.mp4 » @ 450,575
+bouton « WhatsApp » @ 450,644
+bouton « Messages » @ 450,716
+bouton « Gmail » @ 450,788
+bouton « Drive » @ 450,860
+bouton « Files » @ 450,932

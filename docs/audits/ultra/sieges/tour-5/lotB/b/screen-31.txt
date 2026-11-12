@@ -1,0 +1,28 @@
+Écran 31 (588x1278)
+texte « Uchwyt: przesuń w dół, aby zamknąć » @ 294,36
+texte « Karta: Bęben basowy 1 » @ 205,93
+bouton « Zamknij » @ 504,120
+texte « Dźwięk, kiedy, jakie efekty, jak często, gdzie indziej: wszystko o tej ścieżce. » @ 234,141
+bouton « DŹWIĘK » [état « Rozwinięte »] @ 112,228
+bouton « Słuchaj solo » (nom « Słuchaj „Bęben basowy 1” osobno, w pętli ») @ 432,294
+texte « Bęben basowy 1 » @ 180,294
+bouton « KIEDY » [état « Rozwinięte »] @ 102,426
+texte « Gra w 33 z 33 części. » @ 156,471
+case « 1 Intro 2 » (nom « Część 1, Intro 2: gra ») [coché, sélectionné] @ 90,540
+case « 2 Intro » (nom « Część 2, Intro: gra ») [coché, sélectionné] @ 180,540
+case « 3 Intro » (nom « Część 3, Intro: gra ») [coché, sélectionné] @ 270,540
+case « 4 Groove 2 » (nom « Część 4, Groove 2: gra ») [coché, sélectionné] @ 360,540
+case « 5 Groove 2 » (nom « Część 5, Groove 2: gra ») [coché, sélectionné] @ 450,540
+case « 6 Groove » (nom « Część 6, Groove: gra ») [coché, sélectionné] @ 519,540
+  → la suite sur le côté (glisse pour la voir)
+texte « Styl poleca: Lekko przesterowany kick 909 na każdą ćwierćnutę, łomoczący bez przerwy. » @ 294,621
+bouton « JAKI EFEKT I ILE » [état « Rozwinięte »] @ 157,732
+texte « Brak efektu: dźwięk przechodzi bez zmian. » @ 262,777
+texte « Wysyłki: pogłos 0 %, echo 0 % » @ 204,819
+bouton « Ustaw efekty » @ 151,882
+bouton « JAK CZĘSTO » [état « Rozwinięte »] @ 136,1002
+texte « To łańcuch „Chrupiący”, jeden na cały utwór. » @ 269,1047
+texte « Żadna krzywa jej nie rusza. » @ 173,1087
+bouton « GDZIE INDZIEJ? » [état « Rozwinięte »] @ 152,1185
+bouton « ↗ Użyj tego wzoru w innej części » @ 294,1246
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

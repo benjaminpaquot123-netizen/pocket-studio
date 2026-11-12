@@ -1,0 +1,8 @@
+lang=fr
+device=tablet11Land
+font=100
+mode=pro
+theme=daltonien
+gestes.max=90
+mission=voix
+timeout.minutes=25

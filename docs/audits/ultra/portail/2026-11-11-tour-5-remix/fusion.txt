@@ -1,0 +1,8 @@
+fusion: 5ffa23b7a57bf6dc0ef8d55d90fb71c501f53990
+branche: eq/tour-5-remix
+tete: 3c2f4d38a700f887c4c9b4fade7541f5f0c592d3
+relecture: docs/audits/ultra/tour-5-remix-relecture.md
+relu: ab0d128b
+filtres: *RemixChantier10Test *RemixLengthenWhilePlayingTest *Tour5AppProof2Test *RemixOverrunTest *ShareSheetTest *MySoundsScreenshotTest *RemixBothWaysTest *I18nCatalogTest *LexiconWordsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -63,7 +63,7 @@ class InstallResultReceiver : BroadcastReceiver() {
             NOTIFICATION_ID,
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Pocket Studio")
+                .setContentTitle("BenStudio")
                 .setContentText(tr("Mise à jour prête : touche pour l'installer."))
                 .setContentIntent(open)
                 .setAutoCancel(true)

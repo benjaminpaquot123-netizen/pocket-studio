@@ -1,0 +1,7 @@
+lang=fr
+device=phone
+fresh=reel
+lit=non
+gestes.max=60
+mission=padlive
+timeout.minutes=1

@@ -1,0 +1,36 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "fr",
+    "device": "phoneLand",
+    "font": "100",
+    "mode": "pro",
+    "amenee": "padlive",
+    "gestes.max": "90",
+    "mission": "padlive",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 55,
+    "images": 7,
+    "gestes_premier_son": 1,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 3,
+    "retours_immediats": 3,
+    "ecrans": 58,
+    "ecrans_revisites": 9,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 349,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "padlive",
+  "resultat": "reussie",
+  "pourquoi": "premier son en 1 geste(s)"
+}

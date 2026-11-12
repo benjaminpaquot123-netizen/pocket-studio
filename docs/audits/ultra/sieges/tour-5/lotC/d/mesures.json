@@ -1,0 +1,34 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "fr",
+    "device": "phone",
+    "font": "100",
+    "gestes.max": "120",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 95,
+    "images": 8,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": 6,
+    "touchers_a_vide": 5,
+    "touchers_desactives": 0,
+    "retours": 6,
+    "retours_immediats": 6,
+    "ecrans": 102,
+    "ecrans_revisites": 48,
+    "defilements_sans_toucher": 6,
+    "appels_aide": 2,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 90,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : 2, 3, Démo-Acid-house-20261105-211542.pocketstudio.zip, Démo-Acid-house-20261105-211740.pocketstudio.zip, Démo-Acid-house-20261105-211921.pocketstudio.zip, Démo-Acid-house-morceau-club-20261105-211523.wav, Démo-Acid-house-morceau-streaming-20261105-211501.m4a (cibles non mesurées ici : ffprobe à brancher)"
+}

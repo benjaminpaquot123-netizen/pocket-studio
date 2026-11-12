@@ -307,6 +307,6 @@ object DrumHumanizer {
     /** Whether two hits sound alike (the same strength within 0.05, the same roll and timing within 1 ms). */
     fun same(a: Hit?, b: Hit?): Boolean = when {
         a == null || b == null -> a == b
-        else -> abs(a.velocity - b.velocity) < 0.05f && a.repeats == b.repeats && abs(a.offset - b.offset) < 1f && a.pitch == b.pitch
+        else -> abs(a.velocity - b.velocity) < 0.05f && a.repeats == b.repeats && a.span == b.span && abs(a.offset - b.offset) < 1f && a.pitch == b.pitch
     }
 }

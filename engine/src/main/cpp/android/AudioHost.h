@@ -3,9 +3,11 @@
 #include <oboe/Oboe.h>
 
 #include <atomic>
+#include <condition_variable>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "Engine.h"
@@ -58,6 +60,9 @@ public:
 
     bool start();
     void stop();
+    // An output device appeared or went (any thread, never blocks): a revival waiting for its
+    // next attempt tries at once.
+    void retryOutput();
     bool post(const Command& command);
     StreamInfo info();
     Engine& engine() { return engine_; }
@@ -106,6 +111,11 @@ private:
     void restoreOutputLocked();
     void describeLocked(const char* status);
     void advanceConfigLocked();
+    // Opens and starts the output (and a take's microphone) after a disconnect; false when it failed.
+    bool reopenOutputLocked();
+    // Asks the revival thread (started on first need) to keep trying to reopen the output.
+    void scheduleReviveLocked();
+    void reviveLoop();
 
     std::mutex lock_;
     std::mutex postLock_;
@@ -140,6 +150,15 @@ private:
     int xrunBase_ = 0;
     int lastXruns_ = 0;
     int restarts_ = 0;  // guarded by lock_; see StreamInfo::restarts
+    // Revival (audit 13 M3): a thread that retries the output with a growing delay once the quick
+    // retries of the error callback failed. reviveWanted_ and quitting_ guarded by lock_.
+    std::thread reviver_;
+    std::condition_variable reviveCv_;
+    bool reviveWanted_ = false;
+    bool quitting_ = false;
+    std::atomic<bool> reviveNow_{false};
+    // lastInfo_ is read by a caller that could not take lock_: it has its own small lock.
+    std::mutex infoLock_;
     StreamInfo lastInfo_;
 };
 

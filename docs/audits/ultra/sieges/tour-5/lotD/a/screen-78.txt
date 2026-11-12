@@ -1,0 +1,16 @@
+Écran 78 (1920x1200)
+texte « Add a track » @ 690,51
+bouton «   Write a melody for me » @ 960,126
+texte « A Melody track with 4 bars already written in the song's key. Undo removes it. » @ 954,193
+bouton « Acid 303 The squelchy bass of acid house, box by box » @ 960,268
+texte « Or a track to fill in yourself, with the right sound: » @ 838,345
+bouton « Melody (lead) A high sound for a little melody » @ 960,421
+bouton « Chords (pad) Held chords for the mood » @ 960,520
+bouton « Bass The low notes under the drums » @ 960,619
+bouton « 808 bass The trap bass that slides from note to note » @ 960,718
+bouton « Arpeggio Hold a chord: its notes one by one » @ 960,817
+bouton « Pluck / percussive A short, snappy sound » @ 960,916
+bouton «   Vocals (microphone): sing or rap over the song » @ 960,1014
+bouton « Empty track (basic sound) » @ 960,1104
+bouton « Cancel » @ 960,1182
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

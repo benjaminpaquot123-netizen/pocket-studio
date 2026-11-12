@@ -1,0 +1,504 @@
+#0 SIEGE lang=it device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE d3c1654af0 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 518 489
+#1 DOIGT launch_new « Nuovo brano »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE 4d7558b113 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 517 327
+#2 DOIGT starter_wizard « Fammi un brano »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE d300273af6 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 771 261
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE dialogue:wizard | MODE pro | EMPREINTE 80385c81a0 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 517 501
+#4 DOIGT wizard_family_Hip-hop « Hip-hop »
+#5 ROUTE dialogue:wizard | MODE pro | EMPREINTE aaf59f358f | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Grime » 2.04:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Hip-hop · 140 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#5 > touche 517 630
+#5 DOIGT wizard_style_trap « Trap »
+#6 ROUTE dialogue:wizard | MODE pro | EMPREINTE cf5b198a37 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Phonk » 2.04:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Hip-hop · 130 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#6 > touche 546 714
+#6 DOIGT wizard_style_play_trap «  Crea e ascolta »
+#7 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 0aa4bd3a42 | project=p-8e59bc3e no tuto
+#7 SON Son : le morceau joue (partie « A »).
+#7 LAYOUT CONTRAST « Segui » 4.06:1 (needs 4.5:1, 14 sp)
+#7 > touche 193 183
+#7 DOIGT structure_parts « Parti »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE bd73fde9a9 | project=p-8e59bc3e no tuto
+#8 SON Son : le morceau joue (partie « A »).
+#8 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « CAPITOLO 1 · I SUONI E I PATTERN » 4.30:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « La scheda della traccia “Kick” » 3.91:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Altra idea di suono » 3.97:1 (needs 4.5:1, 14 sp)
+#8 > touche 517 400
+#8 DOIGT guide_bar « Guida »
+#9 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2d3aa35bf4 | project=p-8e59bc3e no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 LAYOUT CUT « Fa m  Fa m  Re♭  Mi♭  Fa m  Fa m  Re♭  Mi♭ » ellipsized (« … »)
+#9 LAYOUT CUT « La♭  Fa m  Fa m  La♭  Fa m  Do m  Fa m  La♭ » ellipsized (« … »)
+#9 LAYOUT CUT « Ritornello 2 » ellipsized (« … »)
+#9 LAYOUT CUT « Ritornello 3 » ellipsized (« … »)
+#9 LAYOUT CONTRAST « A · Intro » 2.90:1 (needs 3.0:1, 18 sp)
+#9 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 4.13:1 (needs 4.5:1, 14 sp)
+#9 > glisse 263 800 263 300
+#9 DOIGT song_chords « Accordi del brano »
+#10 ROUTE session/tab_Structure | MODE pro | EMPREINTE 9810fc67d9 | project=p-8e59bc3e no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 2.90:1 (needs 4.5:1, 14 sp)
+#10 > touche 448 606
+#10 DOIGT part_menu_2
+#11 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 36a779e8cd | project=p-8e59bc3e no tuto
+#11 SON Son : le morceau joue (partie « A »).
+#11 LAYOUT OVERLAP « Parte 3 · C · Ritornello » over the touchable « Chiudi il foglio » (227 x 28 dp)
+#11 LAYOUT OVERLAP « 6 batt.  ·  suonata 6 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#11 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (45 x 20 dp)
+#11 LAYOUT OVERLAP « Suonata 6 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (239 x 20 dp)
+#11 LAYOUT OVERLAP « Solo questa » over the touchable « Chiudi il foglio » (81 x 20 dp)
+#11 LAYOUT OVERLAP « Tutte le 6 » over the touchable « Chiudi il foglio » (62 x 20 dp)
+#11 LAYOUT OVERLAP « Fill alla fine » over the touchable « Chiudi il foglio » (78 x 20 dp)
+#11 LAYOUT OVERLAP « Break dopo · 4 batt. » over the touchable « Chiudi il foglio » (133 x 20 dp)
+#11 LAYOUT OVERLAP « Break dopo · 8 batt. » over the touchable « Chiudi il foglio » (132 x 20 dp)
+#11 LAYOUT OVERLAP « Build-up prima · 4 batt. » over the touchable « Chiudi il foglio » (158 x 20 dp)
+#11 LAYOUT OVERLAP « Build-up prima · 8 batt. » over the touchable « Chiudi il foglio » (157 x 20 dp)
+#11 LAYOUT OVERLAP « Fade in » over the touchable « Chiudi il foglio » (49 x 20 dp)
+#11 LAYOUT OVERLAP « Fade out » over the touchable « Chiudi il foglio » (58 x 20 dp)
+#11 LAYOUT OVERLAP « Aggiungi un finale » over the touchable « Chiudi il foglio » (125 x 20 dp)
+#11 LAYOUT OVERLAP « Energia: 3 » over the touchable « Chiudi il foglio » (68 x 20 dp)
+#11 LAYOUT OVERLAP « 1 · pad » over the touchable « Chiudi il foglio » (43 x 20 dp)
+#11 LAYOUT OVERLAP « 2 · + basso » over the touchable « Chiudi il foglio » (75 x 20 dp)
+#11 LAYOUT OVERLAP « 3 · + batteria » over the touchable « Chiudi il foglio » (85 x 20 dp)
+#11 LAYOUT OVERLAP « 4 · a tutta » over the touchable « Chiudi il foglio » (64 x 20 dp)
+#11 LAYOUT OVERLAP « Lunghezza » over the touchable « Chiudi il foglio » (74 x 20 dp)
+#11 LAYOUT OVERLAP « battute » over the touchable « Chiudi il foglio » (43 x 18 dp)
+#11 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (21 x 20 dp)
+#11 LAYOUT OVERLAP « Parte » over the touchable « Chiudi il foglio » (35 x 20 dp)
+#11 LAYOUT OVERLAP « Rinomina » over the touchable « Chiudi il foglio » (65 x 20 dp)
+#11 LAYOUT OVERLAP « Cosa suona » over the touchable « Chiudi il foglio » (81 x 20 dp)
+#11 LAYOUT OVERLAP « Sposta su » over the touchable « Chiudi il foglio » (68 x 20 dp)
+#11 LAYOUT OVERLAP « Sposta giù » over the touchable « Chiudi il foglio » (73 x 20 dp)
+#11 LAYOUT OVERLAP « Duplica » over the touchable « Chiudi il foglio » (52 x 20 dp)
+#11 LAYOUT OVERLAP « Inserisci dopo » over the touchable « Chiudi il foglio » (97 x 20 dp)
+#11 LAYOUT OVERLAP « Togli » over the touchable « Chiudi il foglio » (34 x 20 dp)
+#11 LAYOUT CONTRAST « Fill alla fine » 2.02:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Break dopo · 8 batt. » 3.35:1 (needs 4.5:1, 14 sp)
+#11 > touche 146 1078
+#11 DOIGT part_rename_2 « Rinomina »
+#12 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 557933748f | project=p-8e59bc3e no tuto
+#12 SON Son : le morceau joue (partie « A »).
+#12 LAYOUT CONTRAST « Fine » 2.01:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Oppure un altro nome » 2.90:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « Senza nome » 1.80:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Annulla » 1.42:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « OK » 1.88:1 (needs 4.5:1, 14 sp)
+#12 > touche 865 729
+#12 DOIGT name_clear
+#13 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE f8b779e26b | project=p-8e59bc3e no tuto
+#13 SON Son : le morceau joue (partie « A »).
+#13 LAYOUT CONTRAST « Oppure un altro nome » 2.90:1 (needs 4.5:1, 16 sp)
+#13 > touche 517 738
+#13 DOIGT scene_name_field « Oppure un altro nome »
+#14 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE f8b779e26b | project=p-8e59bc3e no tuto
+#14 SON Son : le morceau joue (partie « A »).
+#14 > ecris Hook Milano
+#15 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 24579dc8ea | project=p-8e59bc3e no tuto
+#15 SON Son : le morceau joue (partie « A »).
+#15 > touche 857 876
+#15 DOIGT scene_name_ok « OK »
+#16 ROUTE session/tab_Structure | MODE pro | EMPREINTE 023ac93bb3 | project=p-8e59bc3e no tuto
+#16 SON Son : le morceau joue (partie « A »).
+#16 LAYOUT CUT « Hook Milano » ellipsized (« … »)
+#16 > touche 448 867
+#16 DOIGT part_menu_4
+#17 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE a09e5f5fdd | project=p-8e59bc3e no tuto
+#17 SON Son : le morceau joue (partie « A »).
+#17 LAYOUT OVERLAP « Parte 5 · E · Ritornello 2 » over the touchable « Chiudi il foglio » (243 x 28 dp)
+#17 LAYOUT OVERLAP « 7 batt.  ·  suonata 4 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#17 LAYOUT OVERLAP « Suonata 4 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (240 x 20 dp)
+#17 LAYOUT OVERLAP « Tutte le 4 » over the touchable « Chiudi il foglio » (63 x 20 dp)
+#17 LAYOUT CONTRAST « 2 · + basso » 2.48:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 3 · + batteria » 1.52:1 (needs 4.5:1, 14 sp)
+#17 > touche 873 1078
+#17 DOIGT part_duplicate_4 « Duplica »
+#18 ROUTE session/tab_Structure | MODE pro | EMPREINTE caa39e79ae | project=p-8e59bc3e no tuto
+#18 SON Son : le morceau joue (partie « A »).
+#18 > glisse 155 850 155 450
+#18 DOIGT part_play_4 « E · Ritornello 2 »
+#19 ROUTE session/tab_Structure | MODE pro | EMPREINTE 237add02e0 | project=p-8e59bc3e no tuto
+#19 SON Son : le morceau joue (partie « A »).
+#19 LAYOUT OVERLAP « C · Hook Milano » over the touchable « Tempo: 140 BPM Cambia il tempo » (31 x 4 dp)
+#19 LAYOUT OVERLAP « C · Hook Milano » over the touchable « Suona da una parte » (37 x 4 dp)
+#19 > touche 376 491
+#19 DOIGT désactivé dans:part_4
+#20 ROUTE session/tab_Structure | MODE pro | EMPREINTE 237add02e0 | project=p-8e59bc3e no tuto
+#20 SON Son : le morceau joue (partie « A »).
+#20 > touche 448 600
+#20 DOIGT part_menu_5
+#21 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 3eb3cddb01 | project=p-8e59bc3e no tuto
+#21 SON Son : le morceau joue (partie « A »).
+#21 LAYOUT OVERLAP « Parte 6 · E · Ritornello 2 » over the touchable « Chiudi il foglio » (243 x 28 dp)
+#21 LAYOUT OVERLAP « 7 batt.  ·  suonata 5 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#21 LAYOUT OVERLAP « Suonata 5 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (239 x 20 dp)
+#21 LAYOUT OVERLAP « Tutte le 5 » over the touchable « Chiudi il foglio » (62 x 20 dp)
+#21 LAYOUT CONTRAST « battute » 1.72:1 (needs 4.5:1, 13 sp)
+#21 > touche 146 1078
+#21 DOIGT part_rename_5 « Rinomina »
+#22 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 892e93a6fd | project=p-8e59bc3e no tuto
+#22 SON Son : le morceau joue (partie « A »).
+#22 LAYOUT CONTRAST « Bridge » 1.67:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Groove » 3.39:1 (needs 4.5:1, 14 sp)
+#22 > touche 865 729
+#22 DOIGT name_clear
+#23 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 98c62daa0e | project=p-8e59bc3e no tuto
+#23 SON Son : le morceau joue (partie « A »).
+#23 > touche 517 738
+#23 DOIGT scene_name_field « Oppure un altro nome »
+#24 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 98c62daa0e | project=p-8e59bc3e no tuto
+#24 SON Son : le morceau joue (partie « A »).
+#24 > ecris Drop finale
+#25 ROUTE dialogue:section_Intro | MODE pro | EMPREINTE 70d2966fec | project=p-8e59bc3e no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 > touche 857 876
+#25 DOIGT scene_name_ok « OK »
+#26 ROUTE session/tab_Structure | MODE pro | EMPREINTE a33d64dc0f | project=p-8e59bc3e no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 LAYOUT CUT « Drop finale » ellipsized (« … »)
+#26 > touche 448 600
+#26 DOIGT part_menu_5
+#27 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 53e1f73570 | project=p-8e59bc3e no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 LAYOUT OVERLAP « Parte 6 · E · Drop finale » over the touchable « Chiudi il foglio » (238 x 28 dp)
+#27 > touche 287 254
+#27 DOIGT part_variation « Solo questa »
+#28 ROUTE session/tab_Structure | MODE pro | EMPREINTE e88120f41d | project=p-8e59bc3e no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 LAYOUT CUT « Drop finale 2 » ellipsized (« … »)
+#28 LAYOUT OVERLAP « 1 batt. » over « Fatto: variazione di E · Drop finale, da modificare a parte » (30 x 11 dp)
+#28 LAYOUT OVERLAP « 8 batt. » over « Annulla » (32 x 11 dp)
+#28 LAYOUT OVERLAP « Fatto: variazione di E · Drop finale, da modificare a parte » over the touchable « Suona da questa parte » (123 x 6 dp)
+#28 LAYOUT OVERLAP « Fatto: variazione di E · Drop finale, da modificare a parte » over the touchable « Scegli la parte » (63 x 13 dp)
+#28 LAYOUT OVERLAP « Annulla » over the touchable « Scegli la parte » (53 x 13 dp)
+#28 LAYOUT CONTRAST « 8 batt. » 3.63:1 (needs 4.5:1, 11 sp)
+#28 LAYOUT CONTRAST « Annulla » 3.63:1 (needs 4.5:1, 14 sp)
+#28 > glisse 155 300 155 900
+#28 DOIGT part_play_2 « C · Hook Milano »
+#29 ROUTE session/tab_Structure | MODE pro | EMPREINTE 54f771b7cb | project=p-8e59bc3e no tuto
+#29 SON Son : le morceau joue (partie « A »).
+#29 LAYOUT OVERLAP « C · Hook Milano » over « Fatto: variazione di E · Drop finale, da modificare a parte » (74 x 19 dp)
+#29 LAYOUT OVERLAP « Fatto: variazione di E · Drop finale, da modificare a parte » over the touchable « Suona da questa parte » (123 x 20 dp)
+#29 > glisse 155 300 155 900
+#29 DOIGT song_chords « Accordi del brano »
+#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 8bc4a1b1e6 | project=p-8e59bc3e no tuto
+#30 SON Son : le morceau joue (partie « A »).
+#30 LAYOUT OVERLAP « A · Intro » over « Fatto: variazione di E · Drop finale, da modificare a parte » (69 x 20 dp)
+#30 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 1.49:1 (needs 4.5:1, 14 sp)
+#30 > touche 91 192
+#30 DOIGT structure_timeline « Timeline »
+#31 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 761308d96d | project=p-8e59bc3e no tuto
+#31 SON Son : le morceau joue (partie « A »).
+#31 LAYOUT CUT « Controcanto » ellipsized (« … »)
+#31 > touche 999 183
+#31 DOIGT timeline_expand
+#32 ROUTE timeline_grid | MODE pro | EMPREINTE a67e0eaeee | project=p-8e59bc3e no tuto
+#32 SON Son : le morceau joue (partie « A »).
+#32 > appui-long 620 243
+#32 DOIGT rien
+#33 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE ead31f47b4 | project=p-8e59bc3e no tuto
+#33 SON Son : le morceau joue (partie « A »).
+#33 LAYOUT OVERLAP « Parte 9 · F · Strofa 2 » over the touchable « Chiudi il foglio » (205 x 28 dp)
+#33 LAYOUT OVERLAP « 4 batt. » over the touchable « Chiudi il foglio » (44 x 17 dp)
+#33 LAYOUT OVERLAP « Variazione » over the touchable « Chiudi il foglio » (73 x 20 dp)
+#33 LAYOUT CONTRAST « Parte 9 · F · Strofa 2 » 2.83:1 (needs 3.0:1, 22 sp)
+#33 LAYOUT CONTRAST « Break dopo · 8 batt. » 3.83:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Build-up prima · 8 batt. » 1.86:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Fade out » 1.32:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Aggiungi un finale » 4.44:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Energia: 3 » 1.47:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « battute » 2.23:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « Cosa suona » 1.42:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Sposta su » 1.69:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Sposta giù » 1.55:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Duplica » 1.67:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Togli » 3.97:1 (needs 4.5:1, 14 sp)
+#33 > touche 346 1078
+#33 DOIGT part_up_8 « Sposta su »
+#34 ROUTE timeline_grid | MODE pro | EMPREINTE a061425516 | project=p-8e59bc3e no tuto
+#34 SON Son : le morceau joue (partie « A »).
+#34 > touche 981 1126
+#34 DOIGT timeline_fit
+#35 ROUTE timeline_grid | MODE pro | EMPREINTE c697fa6e42 | project=p-8e59bc3e no tuto
+#35 SON Son : le morceau joue (partie « A »).
+#35 > touche 299 123
+#35 DOIGT timeline_lanes
+#36 ROUTE timeline_grid | MODE pro | EMPREINTE fd95e08644 | project=p-8e59bc3e no tuto
+#36 SON Son : le morceau joue (partie « A »).
+#36 > attends 2
+#37 ROUTE timeline_grid | MODE pro | EMPREINTE 872e59db6b | project=p-8e59bc3e no tuto
+#37 SON Son : le morceau joue (partie « A »).
+#37 > touche 42 42
+#37 DOIGT timeline_back
+#38 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 761308d96d | project=p-8e59bc3e no tuto
+#38 SON Son : le morceau joue (partie « A »).
+#38 > touche 226 114
+#38 DOIGT top_position « Intro »
+#39 ROUTE dialogue:play_from_menu | MODE pro | EMPREINTE 2c36db2ac2 | project=p-8e59bc3e no tuto
+#39 SON Son : le morceau joue (partie « A »).
+#39 LAYOUT CONTRAST « 3 · Hook Milano » 1.45:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « 4 · Hook Milano » 1.43:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « 5 · Drop finale » 1.37:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « 9 · Strofa » 1.47:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « 15 · Drop finale » 3.26:1 (needs 4.5:1, 14 sp)
+#39 > touche 317 738
+#39 DOIGT play_from_8 « 9 · Strofa »
+#40 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 761308d96d | project=p-8e59bc3e no tuto
+#40 SON Son : le morceau joue (partie « A »).
+#40 > attends 3
+#41 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 761308d96d | project=p-8e59bc3e no tuto
+#41 SON Son : le morceau joue (partie « A »).
+#41 > touche 918 42
+#41 DOIGT top_play
+#42 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 3db14bdbb7 | project=p-8e59bc3e no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 226 114
+#42 DOIGT top_position « Intro »
+#43 ROUTE dialogue:play_from_menu | MODE pro | EMPREINTE b75e6f6d91 | project=p-8e59bc3e no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 317 738
+#43 DOIGT play_from_8 « 9 · Strofa »
+#44 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 062f230457 | project=p-8e59bc3e no tuto
+#44 SON Son : le morceau joue (partie « B »).
+#44 > attends 2
+#45 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 062f230457 | project=p-8e59bc3e no tuto
+#45 SON Son : le morceau joue (partie « B »).
+#45 > touche 918 42
+#45 DOIGT top_play
+#46 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 391adfd8e4 | project=p-8e59bc3e no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 205 192
+#46 DOIGT structure_parts « Parti »
+#47 ROUTE session/tab_Structure | MODE pro | EMPREINTE ddf293974c | project=p-8e59bc3e no tuto
+#47 SON Son : rien ne joue.
+#47 > glisse 155 880 155 200
+#47 DOIGT part_play_0 « A · Intro »
+#48 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1dd9dbd8a0 | project=p-8e59bc3e no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 155 880 155 200
+#48 DOIGT part_play_6 « E · Drop finale »
+#49 ROUTE session/tab_Structure | MODE pro | EMPREINTE b2b0a14690 | project=p-8e59bc3e no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « E · Drop finale » over the touchable « Tempo: 140 BPM Cambia il tempo » (31 x 4 dp)
+#49 LAYOUT OVERLAP « E · Drop finale » over the touchable « Suona da una parte » (30 x 4 dp)
+#49 > glisse 155 880 155 200
+#49 DOIGT part_play_13 « E · Drop finale »
+#50 ROUTE session/tab_Structure | MODE pro | EMPREINTE 0a18c1c263 | project=p-8e59bc3e no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « H · Ritornello 3 » over the touchable « Tempo: 140 BPM Cambia il tempo » (31 x 4 dp)
+#50 LAYOUT OVERLAP « H · Ritornello 3 » over the touchable « Suona da una parte » (75 x 4 dp)
+#50 > glisse 155 880 155 200
+#50 DOIGT part_play_19 « D · Bridge »
+#51 ROUTE session/tab_Structure | MODE pro | EMPREINTE 61d0108907 | project=p-8e59bc3e no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 155 880 155 200
+#51 DOIGT rien
+#52 ROUTE session/tab_Structure | MODE pro | EMPREINTE b61fefdc2a | project=p-8e59bc3e no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 169 488
+#52 DOIGT add_part_2 « + C · Hook Milano »
+#53 ROUTE session/tab_Structure | MODE pro | EMPREINTE e6acbc850c | project=p-8e59bc3e no tuto
+#53 SON Son : rien ne joue.
+#53 > glisse 155 200 155 700
+#53 DOIGT add_part_0 « + A · Intro »
+#54 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2f21dc7025 | project=p-8e59bc3e no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 448 518
+#54 DOIGT part_menu_27
+#55 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE f05b5295c7 | project=p-8e59bc3e no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT OVERLAP « Parte 28 · C · Hook Milano » over the touchable « Chiudi il foglio » (271 x 28 dp)
+#55 LAYOUT OVERLAP « 8 batt.  ·  suonata 7 volte » over the touchable « Chiudi il foglio » (169 x 17 dp)
+#55 LAYOUT OVERLAP « Suonata 7 volte nel brano. Modifica: » over the touchable « Chiudi il foglio » (239 x 20 dp)
+#55 LAYOUT OVERLAP « Tutte le 7 » over the touchable « Chiudi il foglio » (62 x 20 dp)
+#55 LAYOUT CONTRAST « Break dopo · 8 batt. » 4.04:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 1 · pad » 1.77:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 2 · + basso » 1.77:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 3 · + batteria » 1.79:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « Lunghezza » 1.77:1 (needs 4.5:1, 14 sp)
+#55 > touche 520 1078
+#55 DOIGT part_up_27 « Sposta su »
+#56 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2164bcd72e | project=p-8e59bc3e no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 148 1024
+#56 DOIGT thumb_undo « Annulla l'ultima azione »
+#57 ROUTE session/tab_Structure | MODE pro | EMPREINTE 4984a64fe6 | project=p-8e59bc3e no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 774 42
+#57 DOIGT top_redo
+#58 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2164bcd72e | project=p-8e59bc3e no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 301 42
+#58 DOIGT top_projects « Trap »
+#59 ROUTE dialogue:projects | MODE pro | EMPREINTE c64a3c55ff | project=p-8e59bc3e no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 981 467
+#59 DOIGT project_menu_p-8e59bc3e
+#60 ROUTE dialogue:project_opening_p-8e59bc3e | MODE pro | EMPREINTE d7b67cf046 | project=p-8e59bc3e no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 825 623
+#60 DOIGT #4820 « Duplica »
+#61 ROUTE dialogue:projects | MODE pro | EMPREINTE 417993f45a | project=p-8e59bc3e no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 981 435
+#61 DOIGT project_menu_p-bbb5bf98
+#62 ROUTE dialogue:project_delete_p-bbb5bf98 | MODE pro | EMPREINTE e259a68cbc | project=p-8e59bc3e no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 825 519
+#62 DOIGT #4849 « Rinomina »
+#63 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE ac9650e985 | project=p-8e59bc3e no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 691 594
+#63 DOIGT name_clear
+#64 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 53bc604952 | project=p-8e59bc3e no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 517 603
+#64 DOIGT project_name_field « Nome del progetto »
+#65 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 53bc604952 | project=p-8e59bc3e no tuto
+#65 SON Son : rien ne joue.
+#65 > ecris Notte a Milano
+#66 ROUTE dialogue:project_name_field | MODE pro | EMPREINTE 107fb1555c | project=p-8e59bc3e no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 683 741
+#66 DOIGT project_rename_ok « OK »
+#67 ROUTE dialogue:projects | MODE pro | EMPREINTE 8c4808885d | project=p-8e59bc3e no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 400 435
+#67 DOIGT project_p-bbb5bf98 « Notte a Milano »
+#68 ROUTE session/tab_Structure | MODE pro | EMPREINTE 950a2eacb9 | project=p-bbb5bf98 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 155 421
+#68 DOIGT part_play_26 « C · Hook Milano »
+#69 ROUTE session/tab_Structure | MODE pro | EMPREINTE c295849a50 | project=p-bbb5bf98 no tuto
+#69 SON Son : le morceau joue (partie « C »).
+#69 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 3.61:1 (needs 4.5:1, 14 sp)
+#69 > touche 887 114
+#69 DOIGT top_loop_part « Ripeti la parte invece di suonare il bra »
+#70 ROUTE session/tab_Structure | MODE pro | EMPREINTE dfbe8fc32d | project=p-bbb5bf98 no tuto
+#70 SON Son : la musique du projet joue en boucle.
+#70 > attends 15
+#71 ROUTE session/tab_Structure | MODE pro | EMPREINTE f66b7a1343 | project=p-bbb5bf98 no tuto
+#71 SON Son : la musique du projet joue en boucle.
+#71 > touche 887 114
+#71 DOIGT top_loop_part « Ripeti la parte invece di suonare il bra »
+#72 ROUTE session/tab_Structure | MODE pro | EMPREINTE adad19295c | project=p-bbb5bf98 no tuto
+#72 SON Son : la musique du projet joue en boucle.
+#72 > appui-long 828 433
+#72 DOIGT scene_2 « C »
+#73 ROUTE session/tab_Structure | MODE pro | EMPREINTE 46c2a2de96 | project=p-bbb5bf98 no tuto
+#73 SON Son : la musique du projet joue en boucle.
+#73 > touche 709 207
+#73 DOIGT help_Blocco « Cos'è “Blocco”? »
+#73 AIDE help_Blocco
+#74 ROUTE dialogue:« Blocco » | MODE pro | EMPREINTE 044efa56f3 | project=p-bbb5bf98 no tuto
+#74 SON Son : la musique du projet joue en boucle.
+#74 > retour
+#74 RETOUR
+#75 ROUTE session/tab_Structure | MODE pro | EMPREINTE ddfddc26b7 | project=p-bbb5bf98 no tuto
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 376 524
+#75 DOIGT dans:part_27
+#76 ROUTE session/tab_Structure | MODE pro | EMPREINTE 9fc873c994 | project=p-bbb5bf98 no tuto
+#76 SON Son : la musique du projet joue en boucle.
+#76 > attends 10
+#77 ROUTE session/tab_Structure | MODE pro | EMPREINTE abcc8c9467 | project=p-bbb5bf98 no tuto
+#77 SON Son : la musique du projet joue en boucle.
+#77 > attends 15
+#78 ROUTE session/tab_Structure | MODE pro | EMPREINTE f2a54ee2a5 | project=p-bbb5bf98 no tuto
+#78 SON Son : la musique du projet joue en boucle.
+#78 > touche 512 1024
+#78 DOIGT thumb_play
+#79 ROUTE session/tab_Structure | MODE pro | EMPREINTE 64abfbf66c | project=p-bbb5bf98 no tuto
+#79 SON Son : rien ne joue.
+#79 > touche 512 1024
+#79 DOIGT thumb_play
+#80 ROUTE session/tab_Structure | MODE pro | EMPREINTE abcc8c9467 | project=p-bbb5bf98 no tuto
+#80 SON Son : la musique du projet joue en boucle.
+#80 > attends 5
+#81 ROUTE session/tab_Structure | MODE pro | EMPREINTE 37121c7b2a | project=p-bbb5bf98 no tuto
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 247 114
+#81 DOIGT top_position « Hook Milano »
+#82 ROUTE dialogue:play_from_menu | MODE pro | EMPREINTE 37ad830158 | project=p-bbb5bf98 no tuto
+#82 SON Son : la musique du projet joue en boucle.
+#82 LAYOUT CONTRAST « 1 · Intro » 4.08:1 (needs 4.5:1, 14 sp)
+#82 > touche 317 90
+#82 DOIGT play_from_whole « Tutto il brano, dall'inizio »
+#83 ROUTE session/tab_Structure | MODE pro | EMPREINTE d32a33162f | project=p-bbb5bf98 no tuto
+#83 SON Son : le morceau joue (partie « A »).
+#83 > attends 5
+#84 ROUTE session/tab_Structure | MODE pro | EMPREINTE 7b36370e21 | project=p-bbb5bf98 no tuto
+#84 SON Son : le morceau joue (partie « A »).
+#84 > touche 630 42
+#84 DOIGT top_mode « Modalità Pro. Tocca per cambiare modalit »
+#85 ROUTE dialogue:mode_switch | MODE pro | EMPREINTE 0101c794f1 | project=p-bbb5bf98 no tuto
+#85 SON Son : le morceau joue (partie « A »).
+#85 LAYOUT CONTRAST « Modalità di questo progetto » 1.70:1 (needs 3.0:1, 24 sp)
+#85 LAYOUT CONTRAST « Semplice » 1.72:1 (needs 3.0:1, 24 sp)
+#85 > touche 517 555
+#85 DOIGT mode_card_simple « Semplice »
+#86 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7ab2d80fb6 | project=p-bbb5bf98 no tuto
+#86 SON Son : le morceau joue (partie « A »).
+#86 > touche 757 42
+#86 DOIGT top_mode « Modalità Semplice. Tocca per cambiare mo »
+#87 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 7de496afad | project=p-bbb5bf98 no tuto
+#87 SON Son : le morceau joue (partie « A »).
+#87 > touche 517 753
+#87 DOIGT mode_card_pro « Pro »
+#88 ROUTE session/tab_Structure | MODE pro | EMPREINTE 355858656d | project=p-bbb5bf98 no tuto
+#88 SON Son : le morceau joue (partie « A »).
+#88 > attends 4
+#89 ROUTE session/tab_Structure | MODE pro | EMPREINTE 355858656d | project=p-bbb5bf98 no tuto
+#89 SON Son : le morceau joue (partie « A »).
+#89 > glisse 155 300 155 900
+#89 DOIGT part_play_24 « H · Ritornello 3 »
+#90 ROUTE session/tab_Structure | MODE pro | EMPREINTE dde89a9fde | project=p-bbb5bf98 no tuto
+#90 SON Son : le morceau joue (partie « A »).
+#90 LAYOUT OVERLAP « 7 batt.  ·  mix » over the touchable « Tempo: 140 BPM Cambia il tempo » (31 x 4 dp)
+#90 LAYOUT OVERLAP « 7 batt.  ·  mix » over the touchable « Suona da una parte » (52 x 4 dp)
+#90 > glisse 155 300 155 900
+#90 DOIGT part_play_19 « D · Bridge »
+#91 ROUTE session/tab_Structure | MODE pro | EMPREINTE 9b67dafa10 | project=p-bbb5bf98 no tuto
+#91 SON Son : le morceau joue (partie « A »).
+#91 > glisse 155 250 155 950
+#91 DOIGT part_play_13 « E · Drop finale »
+#92 ROUTE session/tab_Structure | MODE pro | EMPREINTE bee8e3fcbc | project=p-bbb5bf98 no tuto
+#92 SON Son : le morceau joue (partie « A »).
+#92 LAYOUT OVERLAP « T · Drop finale 2 » over the touchable « Tempo: 140 BPM Cambia il tempo » (31 x 4 dp)
+#92 LAYOUT OVERLAP « T · Drop finale 2 » over the touchable « Suona da una parte » (32 x 4 dp)
+#92 > glisse 155 250 155 950
+#92 DOIGT part_play_6 « E · Drop finale »
+#93 ROUTE session/tab_Structure | MODE pro | EMPREINTE d12f697ed0 | project=p-bbb5bf98 no tuto
+#93 SON Son : le morceau joue (partie « A »).
+#93 LAYOUT OVERLAP « Tocca per cambiare gli accordi di tutto il brano. » over the touchable « Tempo: 140 BPM Cambia il tempo » (53 x 4 dp)
+#93 LAYOUT OVERLAP « Tocca per cambiare gli accordi di tutto il brano. » over the touchable « Suona da una parte » (107 x 4 dp)
+#93 > glisse 155 250 155 950
+#93 DOIGT part_play_0 « A · Intro »
+#94 ROUTE session/tab_Structure | MODE pro | EMPREINTE cb2f9d07e5 | project=p-bbb5bf98 no tuto
+#94 SON Son : le morceau joue (partie « A »).
+#94 > glisse 155 250 155 950
+#94 DOIGT rien
+#95 ROUTE session/tab_Structure | MODE pro | EMPREINTE 082b8bde43 | project=p-bbb5bf98 no tuto
+#95 SON Son : le morceau joue (partie « A »).
+#95 > attends 1
+#96 ROUTE session/tab_Structure | MODE pro | EMPREINTE d41f1d41e4 | project=p-bbb5bf98 no tuto
+#96 SON Son : le morceau joue (partie « A »).
+#96 > fin
+#96 FIN : fin

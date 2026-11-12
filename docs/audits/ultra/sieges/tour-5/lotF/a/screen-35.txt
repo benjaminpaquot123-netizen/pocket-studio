@@ -1,0 +1,7 @@
+Écran 35 (1035x1243)
+texte « Partager mon morceau · Techno-de-Detroit-morceau-20261105-214611.wav » @ 517,442
+bouton « WhatsApp » @ 517,531
+bouton « Messages » @ 517,603
+bouton « Gmail » @ 517,675
+bouton « Drive » @ 517,747
+bouton « Files » @ 517,819

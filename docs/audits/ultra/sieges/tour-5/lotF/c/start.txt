@@ -1,0 +1,7 @@
+lang=ja
+device=tablet8
+font=100
+fresh=reel
+gestes.max=60
+mission=simple
+timeout.minutes=30

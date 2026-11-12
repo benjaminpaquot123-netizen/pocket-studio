@@ -1,0 +1,7 @@
+lang=fr
+device=foldable
+font=130
+mode=simple
+gestes.max=80
+mission=premier-morceau
+timeout.minutes=30

@@ -52,7 +52,7 @@ data class Note(
 }
 
 /**
- * The synth's notes: a loop of [steps] sixteenths (1 to 16 bars). [notes] are the ones in the loop
+ * The synth's notes: a loop of [steps] sixteenths (whole bars of the time signature, up to 16 bars of 4/4). [notes] are the ones in the loop
  * (played, shown, exported); [hidden] the ones past its end after it was shortened: kept unheard
  * and back in [notes] when the loop is long enough again, as the drums keep their hits.
  */
@@ -66,7 +66,7 @@ data class NoteClip(
     val ticks: Int get() = steps * TICKS_PER_STEP
 
     fun sanitized(): NoteClip {
-        val s = steps.coerceIn(MIN_STEPS, MAX_STEPS).let { (it / 16).coerceAtLeast(1) * 16 }
+        val s = loopSteps(steps)
         val total = s * TICKS_PER_STEP
         // Already clean (nearly always: every edit cleans the whole project): the clip itself, not
         // a rebuilt copy, so a gesture on a big project neither sorts nor compares every note again.
@@ -87,6 +87,7 @@ data class NoteClip(
             }
             .sortedWith(compareBy({ it.start }, { it.pitch }))
             .toList()
+            .let(::merged)
         val (inLoop, past) = clean.partition { it.start < total }
         val shown = inLoop.take(MAX_NOTES)
         return copy(steps = s, notes = shown, hidden = past.take(MAX_NOTES - shown.size), performance = performance.sanitized())
@@ -101,12 +102,28 @@ data class NoteClip(
                 if (n.start !in from until until || n.length !in 1..MAX_TICKS || n.pitch !in 0..127) return false
                 if (!n.velocity.isFinite() || n.velocity < 0.05f || n.velocity > 1f) return false
                 if (n.played != null && (n.played !in 0 until MAX_STEPS * TICKS_PER_STEP || n.played == n.start)) return false
-                if (previous != null && (n.start < previous.start || (n.start == previous.start && n.pitch < previous.pitch))) return false
+                // In order, never two notes on the same start and pitch ([merged]).
+                if (previous != null && (n.start < previous.start || (n.start == previous.start && n.pitch <= previous.pitch))) return false
                 previous = n
             }
             return true
         }
         return ordered(notes, 0, total) && ordered(hidden, total, MAX_STEPS * TICKS_PER_STEP)
+    }
+
+    /**
+     * [sorted] (by start, then pitch) with the notes on the same start and pitch made one, the longer
+     * and louder kept: a paste made twice leaves no invisible note under another (the engine plays one).
+     */
+    private fun merged(sorted: List<Note>): List<Note> {
+        val out = ArrayList<Note>(sorted.size)
+        for (n in sorted) {
+            val last = out.lastOrNull()
+            if (last != null && last.start == n.start && last.pitch == n.pitch) {
+                out[out.size - 1] = last.copy(length = maxOf(last.length, n.length), velocity = maxOf(last.velocity, n.velocity))
+            } else out += n
+        }
+        return out
     }
 
     /** No note at all, not even past the loop's end (« Effacer »). */
@@ -118,7 +135,7 @@ data class NoteClip(
      * still puts a note played just before the loop came round at the new loop's end).
      */
     fun withSteps(newSteps: Int): NoteClip {
-        val s = newSteps.coerceIn(MIN_STEPS, MAX_STEPS).let { (it / 16).coerceAtLeast(1) * 16 }
+        val s = loopSteps(newSteps)
         if (s == steps) return sanitized()
         val newTicks = s * TICKS_PER_STEP
         fun moved(n: Note) = n.movedTo(n.start, ticks, newTicks)
@@ -216,13 +233,21 @@ data class NoteClip(
 
     companion object {
         const val TICKS_PER_STEP = 24
-        const val MIN_STEPS = 16
+        /** One bar of 2/4: a loop is whole beats ([loopSteps]), so it can be whole bars of any time signature. */
+        const val MIN_STEPS = 8
         /** 16 bars of 4/4 (the engine's NoteTrack::kMaxSteps). */
         const val MAX_STEPS = 256
         const val MAX_NOTES = 512
         /** A note lasts at most the longest loop (the engine takes up to 15 bits: NoteTrack::packIndex). */
         const val MAX_TICKS = MAX_STEPS * TICKS_PER_STEP
         val LENGTHS_IN_STEPS = listOf(16, 32, 64, 128, 256)
+
+        /**
+         * A loop's length in range and in whole beats (4 sixteenths): whole bars of the time signature
+         * (12 steps a bar in 3/4), so the notes never drift against the drums. Files written before
+         * (whole 4/4 bars, multiples of 16) read unchanged.
+         */
+        fun loopSteps(steps: Int): Int = steps.coerceIn(MIN_STEPS, MAX_STEPS) / 4 * 4
 
         /** The acid bass line as faint "ghost" notes behind the piano roll. */
         fun ghostsOf(acid: AcidPattern, clipSteps: Int): List<Note> {

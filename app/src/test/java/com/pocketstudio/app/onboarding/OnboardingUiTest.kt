@@ -30,6 +30,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
+import androidx.compose.ui.test.onRoot
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -51,7 +52,9 @@ class OnboardingUiTest {
                 WelcomeScreen(WelcomeActions(guided = { chosen += "guided" }, demo = { chosen += "demo" }, empty = { chosen += "empty" }, later = { chosen += "later" }))
             }
         }
-        compose.onNodeWithText("Créer mon premier morceau (guidé)").assertExists()
+        // The mode is no longer chosen beforehand on the welcome: each way to start asks it (FirstLaunch).
+        compose.onNodeWithTag("welcome_mode").assertDoesNotExist()
+        compose.onNodeWithText("Fais-moi un morceau").assertExists()
         compose.onNodeWithTag("welcome_guided").performClick()
         compose.onNodeWithTag("welcome_demo").performClick()
         compose.onNodeWithTag("welcome_empty").performClick()
@@ -90,7 +93,11 @@ class OnboardingUiTest {
         compose.onNodeWithTag("project_wizard").performClick()
         assertEquals(1, wizard)
         compose.onNodeWithTag("project_new").performClick()
-        for (heading in listOf("PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
+        // Three big choices; the rest waits folded under « Autres façons de commencer ».
+        listOf("start_learn", "starter_wizard", "start_empty").forEach { compose.onNodeWithTag(it).assertExists() }
+        compose.onNodeWithText("PARTIR D'UN STYLE").assertDoesNotExist()
+        compose.onNodeWithTag("start_others").performClick()
+        for (heading in listOf("PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO")) compose.onNodeWithText(heading).assertExists()
         // Every family is folded at first (no style on screen); one touch opens one.
         StarterWizard.STYLES.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertDoesNotExist() }
         StarterWizard.FAMILIES.forEach { compose.onNodeWithTag("quick_family_$it").assertExists() }
@@ -100,11 +107,19 @@ class OnboardingUiTest {
         StarterWizard.STYLES.filter { it.family == "Techno" || it.family == "House" }.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
         compose.onNodeWithTag("quick_style_trap").assertDoesNotExist()  // Hip-hop still folded
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        // « Simple ou Pro ? » first (owner, 2026-10-29): nothing made before a mode is touched.
+        compose.onNodeWithTag("mode_step").assertExists()
+        assertTrue(quick.isEmpty())
+        compose.onNodeWithTag("mode_card_pro").performClick()
+        // Benjamin's answer 3A (tour 5, chantier 5): the next song takes that choice without asking.
         compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertEquals(listOf("techno", "house"), quick)
         // A folded family opens with one touch; « Personnaliser pas à pas » opens the assistant on that style.
         compose.onNodeWithTag("quick_family_Hip-hop").performScrollTo().performClick()
         compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
+        compose.waitForIdle()
         assertEquals(listOf("trap"), custom)
         // An open family closes the same way.
         compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
@@ -120,8 +135,9 @@ class OnboardingUiTest {
         compose.onNodeWithTag("demo_play_0").performScrollTo().performClick()
         assertEquals(listOf(0), previewed)
         assertTrue(created.isEmpty())
-        // Empty project and starting beat still create.
-        compose.onNodeWithTag("starter_empty").performScrollTo().performClick()
+        // « Je pars de zéro » makes the empty project, in the mode chosen before (3A).
+        compose.onNodeWithTag("start_empty").performScrollTo().performClick()
+        compose.waitForIdle()
         assertEquals(listOf(2), created)
     }
 
@@ -151,6 +167,7 @@ class OnboardingUiTest {
         compose.onNodeWithTag("quick_error").assertTextEquals("Le morceau n'a pas pu être préparé (son illisible : Kick).").performClick()
         assertEquals(1, dismissed)
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        compose.onNodeWithTag("mode_card_pro").performClick()
         assertEquals(listOf("techno"), quick)
     }
 
@@ -169,7 +186,7 @@ class OnboardingUiTest {
         compose.onNodeWithText("Intro · le début, en douceur").assertExists()
         compose.onNodeWithText("Couplet · le groove, avec la basse").assertExists()
         compose.onNodeWithText("Refrain · tout le monde joue").assertExists()
-        compose.onNodeWithText("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Fin", substring = true).assertExists()
     }
 
     @Test
@@ -184,10 +201,10 @@ class OnboardingUiTest {
         compose.setContent {
             PocketStudioTheme { WizardScreen(ui.copy(step = ui.lastStep), PacksUi(IndexState.Unavailable), null, WizardActions()) }
         }
-        compose.onNodeWithText("Quatre parties", substring = true, ignoreCase = true).assertExists()
+        compose.onNodeWithText("Quatre briques", substring = true, ignoreCase = true).assertExists()
         compose.onNodeWithText("Intro · la batterie pour démarrer").assertExists()
         compose.onNodeWithText("Break · une pause sans kick ni basse").assertExists()
-        compose.onNodeWithText("Intro → Groove → Montée → Drop → Break → Montée → Drop → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Groove → Montée → Drop → Break → Montée → Drop → Fin", substring = true).assertExists()
     }
 
     @Test
@@ -217,6 +234,11 @@ class OnboardingUiTest {
         var created = 0
         var ui by androidx.compose.runtime.mutableStateOf(houseUi(1))
         compose.setContent { PocketStudioTheme { WizardScreen(ui, PacksUi(IndexState.Unavailable), null, WizardActions(create = { created++ })) } }
+        // Benjamin (2026-11-04): never next to « Suivant » (one slip made the whole song): at the step's top.
+        val now = compose.onNodeWithTag("wizard_create_now").fetchSemanticsNode().boundsInRoot
+        val next = compose.onNodeWithTag("wizard_next").fetchSemanticsNode().boundsInRoot
+        val gapDp = (next.top - now.bottom) / compose.onRoot().fetchSemanticsNode().layoutInfo.density.density
+        assertTrue("« Créer tout de suite » only ${gapDp} dp above « Suivant »", gapDp >= 120f)
         compose.onNodeWithTag("wizard_create_now").assertTextEquals("Créer tout de suite avec les choix conseillés").performClick()
         assertEquals(1, created)
         compose.onNodeWithText("Étape 2 sur ${ui.lastStep + 1} · House").assertExists()

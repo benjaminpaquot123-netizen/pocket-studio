@@ -1,0 +1,5 @@
+Écran 3 (616x1371)
+texte « Sua demo está pronta » @ 224,589
+texte « Ouça inteira, depois veja em Minha música como ela é construída: você pode mudar tudo. » @ 308,667
+bouton « Mais tarde » @ 326,769
+bouton «  Ouvir » @ 495,769

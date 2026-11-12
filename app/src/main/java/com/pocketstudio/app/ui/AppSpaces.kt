@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,9 +33,16 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Checklist
@@ -42,6 +51,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -68,6 +78,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.app.synth.TrackBar
 import com.pocketstudio.app.synth.TracksUi
@@ -83,16 +94,20 @@ import com.pocketstudio.ui.pillColors
 // --- Sons: every track as a chip above its editor ---------------------------------------------------
 
 /**
- * The Sons space's chips, above every editor: « Batterie », « Basse acide », each instrument
+ * The Sons space's chips, above every editor: « Batterie », « Acid 303 », each instrument
  * track (its menu, « Changer le son », « + Piste ») and « Voix et audio ». A touch opens that
  * track's editor; the chip of the editor shown is lit. [simple]: the Mode simple's Clavier, the
- * instrument tracks alone.
+ * Acid 303 (always in sight, Benjamin 2026-10-29) and the instrument tracks.
  */
 @Composable
 internal fun SonsHeader(
     tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, audioTracks: Int, simple: Boolean = false,
     /** Lot 2: the Remix page of Sons › Voix is shown (its own chip is lit), and the way to it. */
     remixShown: Boolean = false, openRemix: () -> Unit = {},
+    /** Step 5a: the song in the project (« Boys · Chanson »), null when none (« Remix · Séparer »). */
+    songName: String? = null,
+    /** The audio tracks' own page is shown (Remix testers: the Accordeur lit « Voix · Micro », as if the track had changed). */
+    voiceShown: Boolean = tab == AppTab.Audio && !remixShown,
 ) {
     val lying = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     Box(Modifier.fillMaxWidth().background(lerp(Neon.Background, Color.Black, 0.06f)).padding(horizontal = 8.dp, vertical = if (lying) 2.dp else 4.dp)) {
@@ -100,21 +115,23 @@ internal fun SonsHeader(
             tracks,
             modifier = Modifier.spot("sons_chips", tr("Tes pistes")),
             leading = {
-                if (!simple) {
+                if (simple) {
+                    // Benjamin (2026-10-29): the 303 found at once in the Mode simple too, yellow, first.
+                    com.pocketstudio.app.acid.AcidChip(tab == AppTab.Acide, onClick = { go(AppTab.Acide) })
+                } else {
                     EditorChip(tr("Batterie"), tr("16 pads"), com.pocketstudio.app.live.DRUMS_COLOR, tab == AppTab.Rythme, "sons_Rythme") { go(AppTab.Rythme) }
-                    EditorChip(tr("Basse acide"), "303", Color(0xFF81C784), tab == AppTab.Acide, "sons_Acide") { go(AppTab.Acide) }
+                    com.pocketstudio.app.acid.AcidChip(tab == AppTab.Acide, onClick = { go(AppTab.Acide) })
                     // The voice next to them: always in sight, whatever the number of tracks after.
                     EditorChip(
                         tr("Voix"),
                         when (audioTracks) {
                             0 -> tr("Micro")
-                            1 -> tr("%d piste", 1)
-                            else -> tr("%d pistes", audioTracks)
+                            else -> com.pocketstudio.model.i18n.trCount(audioTracks, "%d piste", "%d pistes")
                         },
-                        Color(0xFFE57373), tab == AppTab.Audio && !remixShown, "sons_Audio",
+                        Color(0xFFE57373), voiceShown, "sons_Audio",
                     ) { go(AppTab.Audio) }
                     // Benjamin (2026-10-24): the Remix « mis en avant », a chip of its own, one touch from Sons.
-                    EditorChip(tr("Remix"), tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
+                    EditorChip(songName ?: tr("Remix"), if (songName != null) tr("Chanson") else tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
                 }
             },
         )
@@ -122,27 +139,14 @@ internal fun SonsHeader(
 }
 
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
-internal val REMIX_COLOR = Color(0xFFBA68C8)
+internal val REMIX_COLOR = com.pocketstudio.app.remix.SONG_COLOR
 
-/** A chip of the Sons space for an editor that is not an instrument track (the drums, the acid, the audio tracks). */
+/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]): the shared [com.pocketstudio.ui.TrackChip]. */
 @Composable
 private fun RowScope.EditorChip(label: String, sub: String, color: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
-    Row(
-        Modifier.height(44.dp).widthIn(max = 160.dp).clip(RoundedCornerShape(10.dp))
-            .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-            .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), RoundedCornerShape(10.dp))
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 10.dp)
-            .testTag(tag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Box(Modifier.size(10.dp).background(color, CircleShape))
-        Column(Modifier.weight(1f, fill = false)) {
-            Text(label, style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(sub, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
+    com.pocketstudio.ui.TrackChip(
+        label, sub, color, selected, touch = Modifier.selectable(selected = selected, role = Role.Tab, onClick = onClick), modifier = Modifier.testTag(tag),
+    )
 }
 
 // --- Structure: the timeline, the parts' list a switch away ------------------------------------------
@@ -179,26 +183,60 @@ internal fun StructureSwitch(parts: Boolean, timelineEnabled: Boolean = true, se
 /** One entry of the Plus page: a page of its own ([page]) or something that opens elsewhere ([open]). */
 internal class PlusEntry(val key: String, val icon: ImageVector, val title: String, val line: String, val page: ToolPage? = null, val open: (() -> Unit)? = null)
 
-/** The Plus page's entries, in the order a lost beginner looks for them. */
+/**
+ * What the Mode simple's tabs do not hold, on its Plus page (tour 5, chantier 5, G15): Live, the Remix, the voice, the
+ * sounds' library and the sounds kept. Pro has them in its spaces.
+ */
+internal class SimplePlusWays(val live: () -> Unit, val remix: () -> Unit, val voice: () -> Unit, val library: () -> Unit, val mine: () -> Unit)
+
+/**
+ * The Plus page's entries, in the order a lost beginner looks for them. Tour 5, chantier 5 (G15): the same page in both
+ * modes; the Mode simple's ([simpleWays] given) has its own short list, the Recette included (« Mon premier morceau »
+ * and « Les mots de la musique » are in Aide there).
+ */
 internal fun plusEntries(
+    /** « Accueil »: « Que veux-tu faire ? » (null: not offered). */
+    home: (() -> Unit)? = null,
     projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
     /** « Signaler un bug » (null: not offered). */
     bugReport: (() -> Unit)? = null,
-): List<PlusEntry> = listOfNotNull(
-    PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, envoyer un projet"), open = projects),
-    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Les premiers pas, le Guide, le lexique"), page = ToolPage.Aide),
+    /** The Mode simple's own ways (null: Pro's list). */
+    simpleWays: SimplePlusWays? = null,
+): List<PlusEntry> = if (simple && simpleWays != null) simplePlusEntries(home, projects, setSimple, bugReport, simpleWays) else listOfNotNull(
+    // Owner (2026-10-29): the home screen, its Remix card, one touch away from a project.
+    home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
+    PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
+    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("La visite rapide, le Guide, le lexique"), page = ToolPage.Aide),
     PlusEntry("missions", Icons.Filled.Flag, tr("Mon premier morceau, avec le Guide"), tr("Ses premières cartes, du style au partage"), open = missions),
     PlusEntry("glossary", Icons.AutoMirrored.Filled.MenuBook, tr("Les mots de la musique, à écouter"), tr("Chaque mot avec un exemple sonore"), open = glossary),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry(
-        "mode", Icons.Filled.ToggleOn, if (simple) tr("Passer en mode complet") else tr("Passer en mode simple"),
-        if (simple) tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus") else tr("Quatre onglets : Mon morceau, Rythme, Clavier, Envoyer"),
+        "mode", Icons.Filled.ToggleOn, if (simple) tr("Passer en mode Pro") else tr("Passer en mode Simple"),
+        if (simple) tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus") else tr("Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager"),
         open = { setSimple(!simple) },
     ),
     PlusEntry("Midi", Icons.Filled.Piano, tr("Clavier MIDI"), tr("Brancher un clavier, apprendre des potards"), page = ToolPage.Midi),
     PlusEntry("Latence", Icons.Filled.Timer, tr("Latence"), tr("Mesurer le retard du micro pour des prises calées"), page = ToolPage.Latence),
     PlusEntry("Fond", Icons.Filled.Headphones, tr("Lecture en arrière-plan"), tr("La musique continue écran éteint"), page = ToolPage.Fond),
     PlusEntry("Son", Icons.Filled.VolumeUp, tr("Son de test"), tr("Un la à 440 Hz pour vérifier la sortie"), page = ToolPage.Son),
+    bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
+    PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
+)
+
+/** The Mode simple's Plus page: [plusEntries]'s cards, what its five tabs do not hold. */
+private fun simplePlusEntries(
+    home: (() -> Unit)?, projects: () -> Unit, setSimple: (Boolean) -> Unit, bugReport: (() -> Unit)?, ways: SimplePlusWays,
+): List<PlusEntry> = listOfNotNull(
+    home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
+    PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
+    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
+    PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
+    PlusEntry("voice", Icons.Filled.Mic, tr("Enregistrer ma voix"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."), open = ways.voice),
+    PlusEntry("library", Icons.Filled.LibraryMusic, tr("Bibliothèque de sons"), tr("Écouter et choisir des sons"), open = ways.library),
+    PlusEntry("mine", Icons.Filled.Star, tr("Ma bibliothèque"), tr("Les sons que tu as gardés"), open = ways.mine),
+    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le Guide, Mon premier morceau, les mots de la musique"), page = ToolPage.Aide),
+    PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
+    PlusEntry("mode", Icons.Filled.ToggleOn, tr("Passer en mode Pro"), tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus"), open = { setSimple(false) }),
     bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )
@@ -212,21 +250,48 @@ internal fun PlusSpace(
     entries: List<PlusEntry>, page: ToolPage?, open: (ToolPage) -> Unit, back: () -> Unit, widePage: ToolPage,
     /** Lot 2: the way back's word (the Mode simple has no Plus: « Retour »). */
     backLabel: String? = null,
+    /**
+     * Tour 5, chantier 5 (G15): the Mode simple has no Plus space; its ⋮ opens this page over the song. « ← Retour » on
+     * the list (and the system's Retour) goes back where it was opened from. Null: Pro's space, a tab of its own.
+     */
+    leave: (() -> Unit)? = null,
+    /**
+     * Tour 5, chantier 5: the entries as tiles, three a row, on a phone (the Mode simple: under its thumb's bar and tabs,
+     * twelve rows of cards left the Recette, Aide and Réglages below the fold, one scroll more than its old menu).
+     */
+    tiles: Boolean = false,
     content: @Composable (ToolPage) -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().testTag("plus")) {
         if (maxWidth >= TWO_PANES_FROM) {
-            val shown = page ?: widePage
+            // Tour 5, lot « moyens »: a page of the list shown (the Mode simple's holds no MIDI, no Latence…), the one
+            // chosen or last seen if the list holds it, else its first.
+            val listed = entries.mapNotNull { it.page }
+            val shown = listOf(page, widePage).firstOrNull { it != null && it in listed } ?: listed.firstOrNull() ?: page ?: widePage
+            if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.width(340.dp).fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    if (leave != null) PlusLeaveRow(leave)
                     entries.forEach { e -> PlusRow(e, selected = e.page != null && e.page == shown) { e.page?.let(open) ?: e.open?.invoke() } }
                 }
                 Box(Modifier.weight(1f).fillMaxHeight()) { content(shown) }
             }
         } else if (page == null) {
+            if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             com.pocketstudio.ui.ReadingWidth(maxWidth = 640.dp) {
                 Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
+                    if (leave != null) PlusLeaveRow(leave)
+                    // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a row cut
+                    // their titles (« Bibliothèque de sons »): two a row, then the list, as the room per title allows.
+                    val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
+                    if (perRow > 1) {
+                        entries.chunked(perRow).forEach { row ->
+                            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { e.page?.let(open) ?: e.open?.invoke() } }
+                                repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
+                            }
+                        }
+                    } else entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
                 }
             }
         } else {
@@ -247,6 +312,58 @@ internal fun PlusSpace(
     }
 }
 
+private const val PLUS_TILES_PER_ROW = 3
+
+/** The room a tile's title needs at the least, in dp at the font's own size (« Bibliothèque » on two lines at most). */
+private const val PLUS_TILE_TITLE_MIN_DP = 100f
+
+/**
+ * How many Plus tiles a row of [width] holds with [fontScale] (the phone's font size): three, fewer as the text grows,
+ * 1 meaning the list of cards (an icon over a title, one a row, would only waste the room).
+ */
+internal fun plusTilesPerRow(width: androidx.compose.ui.unit.Dp, fontScale: Float): Int =
+    (PLUS_TILES_PER_ROW downTo 2).firstOrNull { n ->
+        // The list's padding (12 dp each side), 6 dp between tiles, 4 dp inside each tile's sides.
+        ((width.value - 24f - 6f * (n - 1)) / n - 8f) / fontScale >= PLUS_TILE_TITLE_MIN_DP
+    } ?: 1
+
+/** An entry of the Plus page as a tile: its icon over its title (its line said to TalkBack as what a touch does). */
+@Composable
+private fun PlusTile(e: PlusEntry, modifier: Modifier, onClick: () -> Unit) {
+    Column(
+        modifier.heightIn(min = 88.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
+            .border(1.dp, Neon.Outline, RoundedCornerShape(14.dp))
+            .clickable(role = Role.Button, onClickLabel = e.line, onClick = onClick)
+            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .testTag(if (e.page != null) "tool_${e.page.name}" else "plus_${e.key}"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+    ) {
+        Box(Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
+            Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
+        }
+        // Its words whole, a little smaller before anything is cut (« Geluidenbibliotheek »).
+        com.pocketstudio.ui.FitText(
+            e.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+    }
+}
+
+/** « ← Retour » over the Mode simple's Plus list: back where its ⋮ was touched. */
+@Composable
+private fun PlusLeaveRow(leave: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button, onClick = leave)
+            .padding(horizontal = 4.dp).testTag("plus_leave"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Neon.Cyan)
+        Text(tr("Retour"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, modifier = Modifier.padding(start = 6.dp))
+        Text(" · " + tr("Plus"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+    }
+}
+
 @Composable
 private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
     Row(
@@ -263,7 +380,8 @@ private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
             Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
         }
         Column(Modifier.weight(1f)) {
-            Text(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            // Its words whole (« Geluidenbibliotheek » with the phone's font at 200 %), smaller before anything is cut.
+            com.pocketstudio.ui.FitText(e.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 3, min = 11.sp)
             Text(e.line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.TextSecondary)
@@ -272,8 +390,19 @@ private fun PlusRow(e: PlusEntry, selected: Boolean, onClick: () -> Unit) {
 
 // --- Mode simple: « Mon morceau »'s tracks --------------------------------------------------------------
 
-/** A track of « Mes pistes » (Mode simple): [key] as the song knows it, its mixer channel, its name in everyday words. */
-class SimpleTrack(val key: String, val ch: Int, val name: String, val color: Color, val volume: Float, val mute: Boolean, val solo: Boolean)
+/** A drum sound of « Mes pistes »'s Batterie (Mode simple): its pad and its name. */
+class SimplePad(val lane: Int, val name: String)
+
+/**
+ * A track of « Mes pistes » (Mode simple): [key] as the song knows it, its mixer channel, its name in
+ * everyday words; [pads]: the drums' own sounds (the Batterie only), each heard alone too.
+ */
+class SimpleTrack(
+    val key: String, val ch: Int, val name: String, val color: Color, val volume: Float, val mute: Boolean, val solo: Boolean,
+    val pads: List<SimplePad> = emptyList(),
+    /** Owner (2026-11-04): its sheet offers « Supprimer la piste » (every track but the Batterie). */
+    val deletable: Boolean = false,
+)
 
 class SimpleTracksActions(
     /** « Changer le son » of the track (the kit for the drums). */
@@ -281,69 +410,136 @@ class SimpleTracksActions(
     val setVolume: (Int, Float) -> Unit = { _, _ -> },
     val toggleMute: (Int) -> Unit = {},
     val toggleSolo: (Int) -> Unit = {},
-)
+    /** « ▶ Écouter seule » of a track (its song key): alone in a loop at once, or stopped. */
+    val listenAlone: (String) -> Unit = {},
+    /** « ▶ Écouter seul » of one of the drums' sounds (its pad). */
+    val listenPadAlone: (Int) -> Unit = {},
+    /** « Mes pistes » keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
+    /** « Supprimer la piste » of a track (its song key), undoable. */
+    val delete: (String) -> Unit = {},
+) {
+    companion object {
+        /** [com.pocketstudio.app.rhythm.AloneListen.from] of a sound heard alone from « Mes pistes ». */
+        const val FROM = "tracks"
+    }
+}
 
 /**
  * « Mes pistes » under the song (Mode simple): a touch on a track's name changes its sound (the
- * kit for the drums); 🔊 opens its sheet (volume, « Couper », « Écouter seule »).
+ * kit for the drums); next to it, « ▶ Écouter seule » (the track alone in a loop, at once) and its
+ * fader (its sheet: volume, « Couper »; the Batterie's sheet lists its sounds, each heard alone).
+ * [listening]: what is heard alone now, and from where.
  */
 @Composable
-fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions) {
+fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, listening: com.pocketstudio.app.rhythm.AloneListen? = null) {
     var sheetFor by rememberSaveable { mutableStateOf<String?>(null) }
+    val alone = listening?.target
+    // Started here, it goes on while « Mes pistes » shows (another screen, a Guide card: it stops).
+    com.pocketstudio.app.rhythm.HoldAlone(listening?.from == SimpleTracksActions.FROM, actions.holdAlone)
+    fun trackAlone(t: SimpleTrack) = alone != null && alone == com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(t.key)
+    fun padAlone(lane: Int) = alone != null && alone.channels.isEmpty() && alone.pads == setOf(lane)
     NeonCard(Modifier.testTag("simple_tracks")) {
         SectionLabel(tr("Mes pistes"))
-        Text(tr("Touche le nom d'une piste pour changer son son ; 🔊 pour son volume."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Text(tr("Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        // Audit ultra round 1, n° 41 (seat D b, a tablet lying down: « Tegenmel/odie »): in a narrow card « ▶ Écouter seule »
+        // keeps its icon alone, the name its room, never split mid-word.
+        androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val nameStyle = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+        val labelStyle = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+        // The longest word of the names, and the button's words: both on the row, or the button keeps its icon alone.
+        val word = with(density) { tracks.flatMap { it.name.split(' ') }.maxOfOrNull { measurer.measure(it, nameStyle).size.width }?.toDp() } ?: 0.dp
+        val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
+        // Chantier 2: the link row's « Changer le son » on one line too (it went on two beside the whole button).
+        val change = with(density) { measurer.measure(tr("Changer le son"), MaterialTheme.typography.bodySmall).size.width.toDp() }
+        // Review of the lot (moyen n° 3): « Écouter seule » keeps its words, on two lines when one does not fit; its ▶ alone
+        // only where even its longest word does not.
+        val labelWord = with(density) { tr("Écouter seule").split(' ').maxOf { measurer.measure(it, labelStyle).size.width }.toDp() }
+        val oneLine = maxWidth >= ALONE_ROW_ROOM + maxOf(word, change) + label
+        val narrow = maxWidth < ALONE_ROW_ROOM + maxOf(word, change) + labelWord
+        // The card's own spacing between the rows (NeonCard: 8 dp).
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
-                Box(Modifier.size(12.dp).background(t.color, CircleShape))
-                Row(
-                    Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
-                        .clickable(role = Role.Button, onClickLabel = tr("Changer le son de %s", t.name)) { actions.changeSound(t.key) }
-                        .padding(horizontal = 10.dp)
-                        .spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null)
-                        .testTag("simple_track_${t.key}"),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                    Text("  " + tr("Changer le son"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, maxLines = 1)
-                }
-                if (t.mute) Text(tr("coupée"), style = MaterialTheme.typography.labelSmall, color = Neon.Amber)
-                IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.testTag("simple_volume_${t.key}")) {
-                    Icon(Icons.Filled.VolumeUp, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextSecondary)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+                // Chantier 2 (G3): the track opens its sounds: the shared link row (its colour, its name, « Changer le son », ›).
+                com.pocketstudio.ui.LinkRow(
+                    t.name, onClick = { actions.changeSound(t.key) },
+                    modifier = Modifier.weight(1f).spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null).testTag("simple_track_${t.key}"),
+                    subtitle = if (t.mute) tr("coupée") else tr("Changer le son"), subtitleColor = if (t.mute) Neon.Amber else Neon.TextSecondary,
+                    clickLabel = tr("Changer le son de %s", t.name),
+                    leading = { Box(Modifier.size(12.dp).background(t.color, CircleShape)) },
+                )
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow, twoLines = !oneLine) { actions.listenAlone(t.key) }
+                // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
+                IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
+                    // Audit ultra round 2 (n° 17, seat B d): « Supprimer » was behind a button named « Volume »: named for all it holds.
+                    Icon(Icons.Filled.Tune, contentDescription = if (t.deletable) tr("Réglages de %s : volume, couper, supprimer", t.name) else tr("Réglages de %s : volume, couper", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)
                 }
             }
+        }
+        }
         }
     }
     sheetFor?.let { key ->
         val t = tracks.firstOrNull { it.key == key }
-        if (t == null) sheetFor = null else SimpleTrackSheet(t, actions) { sheetFor = null }
+        if (t == null) sheetFor = null else SimpleTrackSheet(t, trackAlone(t), actions, ::padAlone) { sheetFor = null }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SimpleTrackSheet(t: SimpleTrack, actions: SimpleTracksActions, close: () -> Unit) {
+private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTracksActions, padAlone: (Int) -> Boolean, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("simple_track_sheet")) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(t.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 TextButton(onClick = close) { Text(tr("Fermer")) }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Volume"), Modifier.weight(1f))
-                Text(com.pocketstudio.app.mixer.faderDb(t.volume), style = MonoStyle, color = Neon.Cyan)
+                Text(com.pocketstudio.app.mixer.faderWords(t.volume), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, modifier = Modifier.testTag("simple_track_volume"))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = t.mute, onClick = { actions.toggleMute(t.ch) }, label = { Text(tr("Couper")) }, colors = pillColors(Neon.Amber), modifier = Modifier.testTag("simple_track_mute"))
-                FilterChip(selected = t.solo, onClick = { actions.toggleSolo(t.ch) }, label = { Text(tr("Écouter seule")) }, colors = pillColors(), modifier = Modifier.testTag("simple_track_solo"))
+            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, label = tr("Volume de %s", t.name), valueText = com.pocketstudio.app.mixer.faderWords(t.volume), modifier = Modifier.testTag("simple_track_volume"))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                // « Écouter seule » plays at once (the loop of the part, the track alone): no ▶ to find first.
+                com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), t.name, "simple_track_solo") { actions.listenAlone(t.key) }
+                // n° 21: the app's one mute button (speaker / crossed speaker, its word under it in Mode simple).
+                MuteToggle(t.mute, t.name, "simple_track_mute", size = androidx.compose.ui.unit.DpSize(48.dp, 40.dp), caption = true) { actions.toggleMute(t.ch) }
+                // A solo kept in the song by an older version: one touch takes it off.
+                if (t.solo) FilterChip(selected = true, onClick = { actions.toggleSolo(t.ch) }, label = { Text(tr("Seule ✓")) }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("simple_track_kept_solo"))
+            }
+            // The Batterie: each of its sounds heard alone (the kick, the clap, the hats…).
+            if (t.pads.isNotEmpty()) {
+                Text(tr("Ses sons, un par un"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 4.dp))
+                t.pads.forEach { pad ->
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(pad.name, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                        com.pocketstudio.app.rhythm.AloneButton(padAlone(pad.lane), tr("Écouter seul"), pad.name, "simple_pad_alone_${pad.lane}") { actions.listenPadAlone(pad.lane) }
+                    }
+                }
             }
             TextButton(onClick = { close(); actions.changeSound(t.key) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)
                 Text("  " + tr("Changer le son"))
             }
+            // Owner (2026-11-04, « J'aimerais supprimer le synthé »): last, in red, away from the rest; Annuler brings it back.
+            if (t.deletable) {
+                HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f), modifier = Modifier.padding(top = 8.dp))
+                TextButton(onClick = { close(); actions.delete(t.key) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("simple_track_delete")) {
+                    Icon(Icons.Filled.Delete, contentDescription = null, tint = Neon.RedText)
+                    Text("  " + tr("Supprimer la piste (Annuler possible)"), color = Neon.RedText)
+                }
+            }
         }
     }
 }
+
+/**
+ * « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader),
+ * and the link row's own (its paddings, its two gaps and the chevron: 12 + 4 + 10 + 10 + 20 dp, chantier 2).
+ */
+private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp + 56.dp

@@ -1,0 +1,35 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=Night fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 25b4d7e3c2 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.80:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » 3.64:1 (needs 4.5:1, 14 sp)
+#1 > glisse 294 1100 294 400
+#1 DOIGT welcome_empty « Partir de zéro »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 7c575d60f3 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 2.95:1 (needs 4.5:1, 14 sp)
+#2 > glisse 294 1100 294 300
+#2 DOIGT welcome_voice « Enregistrer ma voix ou ma guitare »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 30e779bb15 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 1122
+#3 DOIGT welcome_later « Plus tard : voir le rythme de départ »
+#4 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE e2b6f5ea28 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Mon premier rythme » ellipsized (« … »)
+#4 > touche 134 42
+#4 DOIGT top_projects « Mon premier rythme »
+#5 ROUTE dialogue:projects | MODE simple | EMPREINTE a534a2faeb | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 534 467
+#5 DOIGT project_menu_projet-1
+#6 ROUTE dialogue:project_delete_projet-1 | MODE simple | EMPREINTE 2954f73f5c | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 407 551
+#6 DOIGT #951 « Renommer »
+#7 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 48f2c5f038 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 468 611
+#7 DOIGT name_clear
+#8 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 10a708e76b | project=projet-1 no tuto
+#8 SON Son : rien ne joue.

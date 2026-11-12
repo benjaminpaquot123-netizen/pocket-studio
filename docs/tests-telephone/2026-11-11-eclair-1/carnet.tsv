@@ -1,0 +1,16 @@
+1794427827295	debut	ouverture	
+1794427827575	reussi	ouverture	studio ouvert
+1794427827578	debut	style_jump_up	
+1794427849529	echec	style_jump_up	nothing tagged launch after 15000 ms
+1794427849532	debut	style_house	
+1794427865014	echec	style_house	nothing tagged launch after 15000 ms
+1794427865018	debut	style_techno	
+1794427880500	echec	style_techno	nothing tagged launch after 15000 ms
+1794427880503	debut	export	
+1794427895507	echec	export	nothing tagged tab_Mix after 15000 ms
+1794427895511	debut	ecrans	
+1794427910514	echec	ecrans	nothing tagged tab_Structure after 15000 ms
+1794427910518	debut	question	
+1794427919339	note	question	Pendant l'essai, as-tu entendu la musique sortir du téléphone ? non
+1794427919342	echec	question	Benjamin n'a pas entendu la musique
+1794427919343	fini		

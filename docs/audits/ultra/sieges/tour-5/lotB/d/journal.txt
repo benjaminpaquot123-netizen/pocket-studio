@@ -1,0 +1,354 @@
+#0 SIEGE lang=ar device=tablet11Land font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1d521a49fb | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST «   العربية » 1.23:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « استوديو الموسيقى الخاص بك، في جيبك. » 1.78:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « أهلًا بك! اصنع موسيقاك على جهازك. من أين نبدأ؟ » 3.04:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « اصنع أغنيتي الأولى (بإرشاد) » 2.37:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « اختر نمطًا، وسأساعدك خطوة خطوة، من بداية الأغنية إلى نهايتها. » 2.06:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « أتعلّم » 1.37:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « استمع إلى عرض تجريبي » 2.67:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « أغنية جاهزة، لتكتشف ما يمكنك فعله. » 2.36:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « استخراج الصوت من أغنية » 1.84:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « اختر أغنية من هاتفك: يفصل التطبيق الصوت والطبول والباص والباقي. » 2.86:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « وسادات جاهزة للعزف، أصواتك، مؤثرات مسرح. يُسمع الصوت فورًا. » 2.10:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « سجّل صوتك أو جيتارك » 1.89:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « يسجّل الميكروفون فوق موسيقاك، على الإيقاع تمامًا. » 2.21:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « لاحقًا: انظر إيقاع البداية » 2.03:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « دليل الخطوات الأولى يبقى في ⋮ › المساعدة والخطوات الأولى. » 3.21:1 (needs 4.5:1, 13 sp)
+#1 > touche 1341 402
+#1 DOIGT welcome_guided « اصنع أغنيتي الأولى (بإرشاد) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 52a41ee22d | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « بسيط » 2.39:1 (needs 3.0:1, 24 sp)
+#2 LAYOUT CONTRAST « للبداية: 5 تبويبات وأزرار كبيرة وكلمات يومية. » 1.99:1 (needs 4.5:1, 16 sp)
+#2 > touche 1240 259
+#2 DOIGT mode_card_simple « بسيط »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9979b43a63 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « الخطوة 1: اختر نمطًا » 1.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « • BPM: سرعة المقطوعة، بعدد النبضات في الدقيقة. » 2.53:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 2.12:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « باص music » 1.79:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.86:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « أخرى » 1.91:1 (needs 3.0:1, 16 sp)
+#3 > touche 960 257
+#3 DOIGT wizard_family_calm « هادئ (Chill، Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 50b0dd6cde | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Lo-fi hip-hop » 2.91:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « للمرجع: Nujabes – Aruarian Dance (2004) » 2.18:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Deep house » 1.87:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « House ناعم ودافئ: بيانو كهربائي رقيق، باص مستدير، أجواء غروب. » 2.59:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « للمرجع: Mr. Fingers – Can You Feel It (1986) » 2.29:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Amapiano » 1.86:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « House جنوب أفريقي أبطأ: باص يرتد كطبلة خشبية (الـ«Log drum») وبيانو جازي. » 1.81:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « للمرجع: Tyla – Water (2023) » 1.64:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Synthwave » 2.63:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « صوت الثمانينيات العائد إلى الموضة (Stranger Things، Blinding Lights): سنير ضخم بصدى، باص ينبض بلا توقف ونوتات Synth تدور في حلقة. » 4.02:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « للمرجع: The Weeknd – Blinding Lights (2019) » 2.07:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Boom bap » 3.02:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Drum & bass ناعم ودافئ: الإيقاع السريع نفسه، لكن مع كوردات بيانو كهربائي جازية وBass مستدير. » 2.04:1 (needs 4.5:1, 13 sp)
+#4 > touche 1443 356
+#4 DOIGT wizard_style_listen_lofi
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7c857f0fce | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#5 > touche 960 378
+#5 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE b8fa8e3872 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#6 LAYOUT CONTRAST «  أنشئ واستمع » 2.52:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « اختر هذا النمط، خطوة بخطوة » 3.52:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « • Nujabes – Aruarian Dance (2004) » 1.90:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • J Dilla – Don't Cry (2006) » 1.71:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Deep house » 2.86:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « House · 120 BPM » 2.45:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « House ناعم ودافئ: بيانو كهربائي رقيق، باص مستدير، أجواء غروب. » 2.50:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « للمرجع: Mr. Fingers – Can You Feel It (1986) » 2.43:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « Amapiano » 2.07:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « House جنوب أفريقي أبطأ: باص يرتد كطبلة خشبية (الـ«Log drum») وبيانو جازي. » 2.79:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Synthwave » 2.00:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 105 BPM » 1.77:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « للمرجع: The Weeknd – Blinding Lights (2019) » 2.04:1 (needs 4.5:1, 12 sp)
+#6 > touche 931 533
+#6 DOIGT wizard_style_choose_lofi « اختر هذا النمط، خطوة بخطوة »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE f3a1d61d84 | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#7 LAYOUT CONTRAST « الخطوة 2 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « أنشئها الآن بالاختيارات المنصوح بها » 2.40:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « قصير » 2.29:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « حوالي 50 ث » 3.42:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « كامل » 2.82:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « حوالي 3 د » 2.38:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « أي مزاج للّحن؟ أختار السلّم والكوردات المناسبة، وأقفل لوحة المفاتيح على ذلك السلّم: لا نوتات خاطئة ممكنة، ولا حاجة لنظرية الموسيقى. » 3.52:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « أصوات النمط الحقيقية » 2.26:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « تنزيل أصوات النمط » 2.21:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « اضغط على مزاج لسماعه: كورداته الأربعة، معزوفة على إيقاع النمط. » 2.39:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « قاتم / ملحمي » 2.07:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « كوردات صغيرة: غامضة، مكثفة أو حزينة قليلًا. » 2.77:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « مرح / نشيط » 2.00:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « كوردات لامعة تشحنك بالطاقة. » 1.94:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « رجوع » 2.04:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « التالي » 2.04:1 (needs 4.5:1, 14 sp)
+#7 > touche 960 1052
+#7 DOIGT wizard_mood_happy « مرح / نشيط »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4b0b5b28df | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter les accords de l'ambiance « Joyeux / énergique » sur le rythme du style.
+#8 > touche 694 1146
+#8 DOIGT wizard_next « التالي »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE b5d915310f | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « الخطوة 3 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « أساس المقطوعة: نبض القلب العميق الذي يتبعه الجميع، ضاربين بأقدامهم. » 1.71:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « في Lo-fi hip-hop: kick ناعم ومتباعد يتغير قليلًا من مازورة إلى أخرى. » 2.58:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « • الكيك: الطبلة الكبيرة، «بوم» العميقة في الإيقاع. » 2.22:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « استخدام هذا الخط » 2.67:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 2.26:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « اختر الصوت » 2.75:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST «   مع الإيقاع » 1.64:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « الأصوات المدمجة » 2.43:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « الطبل الكبير 1 » 1.98:1 (needs 4.5:1, 14 sp)
+#9 > touche 560 747
+#9 DOIGT wizard_line_listen «   مع الإيقاع »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5fd7553437 | project=projet-1 no tuto
+#10 SON Son : un son de la bibliothèque joue (écoute).
+#10 > touche 694 1146
+#10 DOIGT wizard_next « التالي »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE f690781e88 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « الخطوة 4 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « يردّ على الـKick، غالبًا على النبضتين 2 و4: يعطي الـGroove اندفاعه. » 1.73:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « في Lo-fi hip-hop: سنير مكتوم على 2 و4، يُعزف بنعومة شديدة. » 2.47:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « 1 » 2.71:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 2.74:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 3 » 1.57:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « استخدام هذا الخط » 2.36:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 2.64:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Snare » 1.32:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « حافة الطبل » 1.94:1 (needs 4.5:1, 14 sp)
+#11 > touche 694 1146
+#11 DOIGT wizard_next « التالي »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6ac472388c | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « الخطوة 5 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « «التك-تك» المنتظم الخفيف: يعطي السرعة والـGroove. » 1.73:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « في Lo-fi hip-hop: هاي هات خفيف مع نوتات صغيرة بين النبضات: الـSwing يجعلها تتباطأ، وهذا هو الإحساس المسترخي. » 3.47:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « • الهاي هات: الصنج الصغير الذي يقول «تس»، تكتكة الإيقاع. » 2.21:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « يُعزف في كل جزء » 3.67:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « هاي هات » 2.48:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « اضغط على صوت لسماعه واختياره؛ «مع الإيقاع» يعزفه مع الخطوط المختارة مسبقًا. » 2.00:1 (needs 4.5:1, 13 sp)
+#12 > touche 694 1146
+#12 DOIGT wizard_next « التالي »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 40d0f353af | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « الخطوة 6 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « ضربات صغيرة (Rim، جرس، Conga، Shaker) تنسلّ بين الأخرى: تضيف شخصية. » 1.73:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « في Lo-fi hip-hop: shaker (ماراكا صغيرة) بالكاد مسموع قبل كل نبضة مباشرة، للنسيج. » 2.58:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « يُعزف في لازمة وBridge » 1.88:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Maracas » 1.99:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « جرس » 3.57:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Conga » 1.67:1 (needs 4.5:1, 14 sp)
+#13 > touche 694 1146
+#13 DOIGT wizard_next « التالي »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 27a01ad377 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « الخطوة 7 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « يعزف النوتة الأساسية لكل كورد، في الأسفل: يربط الطبول بالهارموني. » 1.46:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « في Lo-fi hip-hop: باص ناعم ودافئ مقفل على الـKick: يبقى في الخلفية. » 2.58:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « إنشاء هذا المسار » 1.86:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 2.76:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « باص مستدير » 1.84:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « منصوح به » 1.71:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Sub bass » 1.73:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Wobble bass » 2.47:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « لامع · ممدود » 2.31:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « باص متكلم » 3.46:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Riddim bass » 2.00:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « أجوف · ممدود » 1.91:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Neuro bass » 1.81:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « لامع · سميك » 1.45:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « لامع · قصير » 3.58:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « ناعم · ممدود » 3.58:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Donk » 1.71:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « ناعم · قصير » 1.75:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « ناعم · ممدود » 1.77:1 (needs 4.5:1, 12 sp)
+#14 > touche 1086 723
+#14 DOIGT wizard_part_sound_1 « Sub bass »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE d37706dded | project=projet-1 no tuto
+#15 SON Son : un son de la bibliothèque joue (écoute).
+#15 LAYOUT CONTRAST « منصوح به » 2.92:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Sub bass » 1.71:1 (needs 4.5:1, 14 sp)
+#15 > touche 694 1146
+#15 DOIGT wizard_next « التالي »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5431efb660 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « الخطوة 8 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « في Lo-fi hip-hop: كوردات جاز على بيانو كهربائي مع طقطقة Vinyl: تتكرر من البداية إلى النهاية. » 2.58:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « هذا هو الصوت الذي يصنع النمط: يُعزف في كل جزء. » 2.22:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « إنشاء هذا المسار » 1.87:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « يُعزف في كل جزء » 2.76:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « FM Rhodes » 1.69:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « منصوح به » 1.55:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Pad » 1.67:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « لامع · صعود بطيء » 2.21:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « ناعم · صعود بطيء » 1.64:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « لامع · سميك » 2.10:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « الوتريات » 2.01:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « أورغ » 2.19:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « آلة وتريات » 1.46:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « سرب » 1.84:1 (needs 4.5:1, 14 sp)
+#16 > touche 694 1146
+#16 DOIGT wizard_next « التالي »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE e5f566d303 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « الخطوة 9 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « صوت أعلى يعزف لحنًا صغيرًا فوق الكوردات: الجزء الذي يتذكره الناس. » 1.46:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « إنشاء هذا المسار » 1.77:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « يُعزف في كل جزء » 2.67:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « بيانو FM » 1.57:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « منصوح به » 2.30:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « اللحن » 1.68:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « لامع · ممدود » 2.40:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « أجوف · ممدود » 2.10:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « لامع · ممدود » 2.10:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Supersaw » 2.09:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « لامع · سميك » 2.31:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « لحن Trance » 2.19:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « صوت قصير مستقبلي » 2.67:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Arpeggio » 1.84:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « أجوف · قصير » 2.55:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « بيانو كهربائي » 1.94:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « لحن مفلتر » 1.94:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « لحن Chiptune » 1.65:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « صوت روبوت » 1.65:1 (needs 4.5:1, 14 sp)
+#17 > touche 694 1146
+#17 DOIGT wizard_next « التالي »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE 47b2884b4e | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « الخطوة 10 من 10 · Lo-fi hip-hop » 1.23:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « مثل أغنية حقيقية: كل جزء يضيف أصواتًا إلى ما قبله، ثم يأخذ الـBridge استراحة بلا Kick ولا باص قبل آخر لازمة. » 2.65:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Intro · البداية، بهدوء » 1.93:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « هاي هات مغلق, Pad, اللحن » 1.76:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « B » 2.47:1 (needs 3.0:1, 14 sp)
+#18 LAYOUT CONTRAST « مقطع · مكان للصوت: Kick، باص ولحن، بلا كوردات » 2.58:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Kick, سنير, هاي هات مغلق, باص, Pad, اللحن » 2.24:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Kick, سنير, هاي هات مغلق, إيقاعيات, باص, Pad, اللحن » 1.86:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Bridge · استراحة بلا Kick ولا باص » 1.70:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « هاي هات مغلق, إيقاعيات, Pad, اللحن » 2.29:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « الأغنية: Intro → لازمة → مقطع → لازمة → مقطع → لازمة → النهاية: نحو 3 د. » 2.04:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « أغنيتك LO-FI HIP-HOP » 1.81:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « السرعة 84 BPM، مع Swing. » 2.86:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Kick (الطبلة الكبيرة) » 2.53:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « سنير » 2.17:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 2 » 1.94:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 3 » 1.94:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 4 » 1.65:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « إنشاء الأغنية » 2.04:1 (needs 4.5:1, 14 sp)
+#18 > touche 694 1146
+#18 DOIGT wizard_create « إنشاء الأغنية »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 90444839e5 | project=p-2e3e87d3 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « صول m  دو  فا  ري m  صول m  دو  فا  ري m » ellipsized (« … »)
+#19 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#19 > touche 117 42
+#19 DOIGT top_play
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b091b2299b | project=p-2e3e87d3 no tuto
+#20 SON Son : le morceau joue (partie « A »).
+#20 LAYOUT CONTRAST « × 1  ·  4 مازورات  ·  يُعزف » 4.19:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « البداية » 4.24:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « صوت اللحن » 3.81:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « ↗ » 3.44:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « طقم طبول آخر » 3.93:1 (needs 4.5:1, 14 sp)
+#20 > glisse 1510 1050 1510 300
+#20 DOIGT part_play_2 « C · لازمة »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 07e40e9d98 | project=p-2e3e87d3 no tuto
+#21 SON Son : le morceau joue (partie « A »).
+#21 LAYOUT OVERLAP « C · لازمة » over the touchable « التشغيل من جزء » (57 x 4 dp)
+#21 > glisse 1510 1050 1510 200
+#21 DOIGT part_play_10 « B · مقطع »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE acb3759214 | project=p-2e3e87d3 no tuto
+#22 SON Son : le morceau joue (partie « A »).
+#22 LAYOUT CONTRAST « C · لازمة » 1.94:1 (needs 3.0:1, 18 sp)
+#22 > touche 1488 1045
+#22 DOIGT add_part_3 « + D · Bridge »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4d1c2383ae | project=p-2e3e87d3 no tuto
+#23 SON Son : le morceau joue (partie « A »).
+#23 LAYOUT OVERLAP « 6 مازورات  ·  Mix » over the touchable « التشغيل من جزء » (57 x 4 dp)
+#23 > touche 261 42
+#23 DOIGT top_undo
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ce9ed0bd42 | project=p-2e3e87d3 no tuto
+#24 SON Son : le morceau joue (partie « A »).
+#24 LAYOUT OVERLAP « G · لازمة 2 » over the touchable « التشغيل من جزء » (7 x 4 dp)
+#24 > touche 261 42
+#24 DOIGT top_redo
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0e705da448 | project=p-2e3e87d3 no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 > touche 261 42
+#25 DOIGT top_undo
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ce9ed0bd42 | project=p-2e3e87d3 no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 > touche 261 42
+#26 DOIGT top_redo
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0e705da448 | project=p-2e3e87d3 no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 > touche 1860 289
+#27 DOIGT tab_simple_Rythme « الإيقاع »
+#28 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bc33351d77 | project=p-2e3e87d3 no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 > touche 90 495
+#28 DOIGT step_48 « الخطوة 1 »
+#29 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f25c4eb21d | project=p-2e3e87d3 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 117 42
+#29 DOIGT top_play
+#30 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 69d1205c20 | project=p-2e3e87d3 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 380 387
+#30 DOIGT drum_page_3 « 4 »
+#31 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 50c461c0c1 | project=p-2e3e87d3 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 117 42
+#31 DOIGT top_play
+#32 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b7b60e402e | project=p-2e3e87d3 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 298 496
+#32 DOIGT step_50 « الخطوة 3 »
+#33 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1bfccb11af | project=p-2e3e87d3 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 1860 382
+#33 DOIGT tab_simple_Clavier « لوحة المفاتيح »
+#34 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7d80a75995 | project=p-2e3e87d3 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CONTRAST «  سجّل لحني » 2.78:1 (needs 4.5:1, 14 sp)
+#34 > touche 1284 1050
+#34 DOIGT key_81 « لا 5 »
+#35 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 1c01d5f692 | project=p-2e3e87d3 no tuto
+#35 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#35 > touche 477 42
+#35 DOIGT top_mode « الوضع بسيط. المس لتغيير الوضع. »
+#36 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 85706492fb | project=p-2e3e87d3 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT CONTRAST « للبداية: 5 تبويبات وأزرار كبيرة وكلمات يومية. » 2.32:1 (needs 4.5:1, 16 sp)
+#36 LAYOUT CONTRAST « محترف » 1.86:1 (needs 3.0:1, 24 sp)
+#36 > touche 607 868
+#36 DOIGT mode_switch_close « إغلاق »
+#37 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 22b57a3140 | project=p-2e3e87d3 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 1860 475
+#37 DOIGT tab_simple_Mix « المكس »
+#38 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 713d6a559a | project=p-2e3e87d3 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CONTRAST « المخرج » 4.40:1 (needs 4.5:1, 13 sp)
+#38 > touche 1860 568
+#38 DOIGT tab_simple_Envoyer « إرسال »
+#39 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE d92f43078b | project=p-2e3e87d3 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > retour
+#39 RETOUR
+#40 ROUTE launch | MODE simple | EMPREINTE 487f740494 | project=p-2e3e87d3 no tuto
+#40 SON Son : rien ne joue.
+#40 > fin
+#40 FIN : fin

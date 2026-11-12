@@ -1,0 +1,9 @@
+First read and follow docs/audits/ultra/sieges/fumee-finale/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=docs/audits/ultra/sieges/fumee-finale/lotA/c (seat c, lot A; lang en, device tablet8, font 100, mode pro, options -, mission padlive, budget 40 gestures).
+Profile (id t6-Ac): DJ habitué des contrôleurs, tablette, va vite. Act as this person (habits, patience, vocabulary).
+Mission padlive; its 3 goals (ids, the bench checks them): son (un pad sonne au 1er toucher), stop (tout s'arrête quand tu le demandes), prise (une performance est enregistrée).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=P067 | « Tout couper arrête tous les pads. Briques ouvre le Live complet. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager envoie ta perf. »
+  - id=P073 | « Préparation des pads prêts à jouer… » (puis les pads pleins)
+  - id=P082 | « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. »
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

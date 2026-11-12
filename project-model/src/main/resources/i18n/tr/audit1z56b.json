@@ -1,0 +1,17 @@
+{
+  "Lire": "Oku",
+  "Bravo, chapitre fini !": "Bravo, bölüm bitti!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “%s”.",
+  "Chapitre suivant : « %s ».": "Sonraki bölüm: “%s”.",
+  "Chapitre suivant": "Sonraki bölüm",
+  "Écouter mon morceau": "Şarkımı dinle",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "“%s” adında kayıtlı bir ses zaten var: başka bir ad seç.",
+  "Ce son est déjà dans tes favoris : « %s ».": "Bu ses zaten favorilerinde: “%s”.",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "Ses, efektleriyle birlikte favorilerine kaydedildi: “%s”.",
+  "Son renommé : « %s ».": "Sesin adı değişti: “%s”.",
+  "Déjà dans tes favoris": "Zaten favorilerinde",
+  "Renommer « %s »": "“%s” adını değiştir",
+  "Renommer le son": "Sesin adını değiştir",
+  "Nom du son": "Ses adı",
+  "%d ms": "%d ms"
+}

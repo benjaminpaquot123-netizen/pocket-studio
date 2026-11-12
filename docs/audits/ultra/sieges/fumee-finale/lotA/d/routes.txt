@@ -1,0 +1,9 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+tab_simple_Morceau
+help_labels
+share_sheet/tab_simple_Envoyer
+dialogue:share_progress
+dialogue:« Meinen Song teilen · Lo-Fi-Hip »
+dialogue:share_bilan

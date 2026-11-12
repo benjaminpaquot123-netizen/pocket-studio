@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "الطبل الكبير 1",
+  "Grosse caisse 2": "الطبل الكبير 2",
+  "Grosse caisse studio": "طبل كبير للاستوديو",
+  "Grosse caisse sèche": "طبل كبير جاف",
+  "Grondement grave": "هدير منخفض",
+  "Claquement de mains": "تصفيق",
+  "Claquements de mains": "تصفيقات",
+  "Bord de caisse": "حافة الطبل",
+  "Grosses caisses": "الطبول الكبيرة",
+  "Volume au max": "أعلى صوت",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "السرعة: %d نبضة في الدقيقة",
+  "D'abord le modèle de séparation": "أولًا نموذج الفصل",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "لفصل أغنية، يحمّل التطبيق نموذجه أولًا: %s، مرة واحدة فقط.",
+  "Tu es en Wi-Fi.": "أنت على Wi-Fi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "لست على Wi-Fi: ستُخصم هذه الـ %s من باقة بياناتك.",
+  "Télécharger, puis choisir la chanson": "حمّل، ثم اختر الأغنية"
+}

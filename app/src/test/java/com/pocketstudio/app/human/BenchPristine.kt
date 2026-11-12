@@ -1,0 +1,246 @@
+package com.pocketstudio.app.human
+
+import android.app.Application
+import androidx.lifecycle.ViewModelProvider
+import androidx.test.core.app.ApplicationProvider
+import com.pocketstudio.app.onboarding.LaunchRule
+import com.pocketstudio.app.projects.CurrentProject
+import com.pocketstudio.app.remix.SeparationJob
+import com.pocketstudio.app.remix.SeparationState
+import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.app.settings.AppSettings
+import com.pocketstudio.app.settings.SettingsStore
+import com.pocketstudio.app.tuto.TutoTestHooks
+import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
+import java.io.File
+
+/**
+ * PLAN-RESTE 4.5: the leak detector, instead of a bisection. Before every test of the bench ([HumanTester]) and of the
+ * `Tour*Test` classes, the process-wide state a test inherits from the one before (the app's objects, the bench's
+ * stand-ins, the files of the install) must be pristine: the app's objects are statics of Robolectric's sandbox, which
+ * the tests of one Gradle fork share, so what a test forgets to put back is what the next one starts on.
+ *
+ * Not pristine: the test fails at once, naming what leaked and the test that ran before ([lastTest], the culprit, or
+ * the last of several; a test without this rule run in between, in a full CI run, is named as the other suspect). The
+ * state is then put back, so one leak is one red test and not the rest of the run.
+ *
+ * Review of banc45 (moyen 1): a real seat of the bench (`-Phuman.dir`, [HumanTester.drive]) is never made red by a leak
+ * of the seat before it in the same fork (its journal would stay empty, the seat lost for the lot): [seatJournal] gives
+ * its journal, the state is put back and the leak is written there as the bench's own incident, before « #0 SIEGE »
+ * (`fuse-reports.py` lists that line in the round's incidents-banc.tsv).
+ */
+class BenchPristineRule(private val seatJournal: (Description) -> File? = { null }) : TestRule {
+    override fun apply(base: Statement, description: Description): Statement = object : Statement() {
+        override fun evaluate() {
+            ran = true
+            val leaks = BenchPristine.leaks()
+            val before = lastTest
+            lastTest = "${description.testClass?.simpleName ?: description.className}#${description.methodName}"
+            if (leaks.isNotEmpty()) {
+                BenchPristine.restore()
+                // Two suspects (review of banc45, moyen 2): [lastTest] only knows the tests that carry this rule.
+                val journal = seatJournal(description)
+                if (journal != null) {
+                    journal.parentFile?.mkdirs()
+                    journal.appendText(
+                        "#0 BANC : état hérité remis (laissé par le test d'avant, ${before ?: "aucun dans cette JVM"}, ou par un test sans la " +
+                            "règle passé entre les deux) : ${leaks.joinToString("; ")}\n",
+                    )
+                } else {
+                    throw AssertionError(
+                        "inherited state not pristine before $lastTest (left by the test before (${before ?: "none in this JVM"}), " +
+                            "or by a test without the rule run in between): " + leaks.joinToString("; "),
+                    )
+                }
+            }
+            base.evaluate()
+        }
+    }
+
+    companion object {
+        /** The last test this rule saw start (the class and method a leak is attributed to). */
+        @Volatile var lastTest: String? = null
+            private set
+
+        /** Set when the rule runs around a test, lowered by [ranSinceLastAsked]. */
+        @Volatile private var ran = false
+
+        /**
+         * Whether a test run since the last call carried this rule (`StrictTestApplication.afterTest` asks once a test is
+         * over): the rule says it ran, whatever type the field holding it is declared with.
+         */
+        fun ranSinceLastAsked(): Boolean = ran.also { ran = false }
+    }
+}
+
+internal object BenchPristine {
+    private val app: Application get() = ApplicationProvider.getApplicationContext()
+
+    /** What is not as a just-started process has it, one line each (empty: pristine). */
+    fun leaks(): List<String> {
+        val out = ArrayList<String>()
+        fun check(what: String, ok: Boolean, value: () -> Any? = { "" }) {
+            if (!ok) out += "$what = ${runCatching { value() }.getOrElse { "?" }}"
+        }
+        check("LaunchRule.askAtStartForTest", LaunchRule.askAtStartForTest) { false }
+        // The Application's onCreate loaded the settings of this test's (fresh) install before this check: loaded is normal,
+        // the state must be the defaults, and Retours follows it (on by default in this build).
+        check("SettingsStore.state", SettingsStore.state.value == AppSettings()) { SettingsStore.state.value }
+        check("SettingsStore.favouriteFx", SettingsStore.favouriteFx.value.isEmpty()) { SettingsStore.favouriteFx.value }
+        check("SeparationJob.state", SeparationJob.state.value is SeparationState.Idle) { SeparationJob.state.value }
+        check("I18n.lang", I18n.lang == Lang.FR) { I18n.lang }
+        check("I18n.everyday", !I18n.everyday) { true }
+        check("I18n.pseudo", I18n.pseudo == null) { I18n.pseudo }
+        check("TutoTestHooks.player", TutoTestHooks.player == null) { TutoTestHooks.player }
+        check("TutoTestHooks.kitOffer", TutoTestHooks.kitOffer) { false }
+        check("TutoTestHooks.packs", TutoTestHooks.packs == null) { TutoTestHooks.packs }
+        check("NativeEngine.sink", NativeEngine.sink == null) { NativeEngine.sink }
+        check("Retours.active", com.pocketstudio.app.retours.Retours.active == SettingsStore.state.value.retoursMode) { com.pocketstudio.app.retours.Retours.active }
+        check("Intro.playing", !com.pocketstudio.app.onboarding.Intro.playing) { true }
+        check("TutoHints.active", !com.pocketstudio.app.tuto.TutoHints.active) { true }
+        check("SpotChecks.log", com.pocketstudio.app.learn.SpotChecks.log == null) { com.pocketstudio.app.learn.SpotChecks.log }
+        check("ProjectOpening.prepared", staticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared") == null) {
+            staticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared")
+        }
+        check("ClosingSaves busy", ((staticField(com.pocketstudio.app.rhythm.ClosingSaves::class.java, "busy") as? java.util.concurrent.atomic.AtomicInteger)?.get() ?: 0) == 0) {
+            staticField(com.pocketstudio.app.rhythm.ClosingSaves::class.java, "busy")
+        }
+        check("AndroidViewModelFactory._instance", staticField(ViewModelProvider.AndroidViewModelFactory::class.java, "_instance") == null) {
+            staticField(ViewModelProvider.AndroidViewModelFactory::class.java, "_instance")
+        }
+        check("BenchMic.opened", BenchMic.opened == 0) { BenchMic.opened }
+        // A touch guard armed by the test before (its uptime): a touch of this one at that place could be dropped as a double.
+        val guard = com.pocketstudio.app.ui.DoubleTouchGuard::class.java
+        check(
+            "DoubleTouchGuard",
+            staticField(guard, "downAt") == Long.MIN_VALUE && staticField(guard, "armedUntil") == Long.MIN_VALUE && staticField(guard, "dropping") == false,
+        ) { "downAt=${staticField(guard, "downAt")} armedUntil=${staticField(guard, "armedUntil")} dropping=${staticField(guard, "dropping")}" }
+        // A take of the test before still being written: the next opening waits for it (ProjectOpening.prepare, 10 s).
+        check("TakeVault.app busy", takeVaultBusy() <= 0) { takeVaultBusy() }
+        // Work of the test before still on the coroutine workers (given 2 s to park), running or blocked in the app's code: the
+        // next test's clock and its waits are not its own any more, and enough of them starve Dispatchers.IO (run A of
+        // banc45: the projects list of Tour3RenameIdleTest never finished loading).
+        check("coroutine workers", workersParked()) { appThreads().joinToString(" | ") + " (${workerCount()} workers live)" }
+        // The install's files (Robolectric gives each test a data folder of its own: a leak here is a bench's shortcut).
+        val projects = File(app.filesDir, "projects")
+        check("projects/", !projects.exists() || projects.listFiles().isNullOrEmpty()) { projects.listFiles()?.map { it.name } }
+        check("CurrentProject", CurrentProject.get(app) == RhythmViewModel.PROJECT_ID) { CurrentProject.get(app) }
+        return out
+    }
+
+    /**
+     * After a test that does not carry [BenchPristineRule] (`StrictTestApplication.afterTest`, every Robolectric test of the
+     * app): its closing saves are waited for (as [HumanTester.end] does) and the state is put back. The first full run of
+     * the suite with the detector (CI, 2026-11-10) had three bench tests red, each the first of the bench after ordinary
+     * tests: 59 classes of the app's tests leave something (the ViewModel factory, a closing save, settings).
+     */
+    fun afterAnOrdinaryTest() {
+        closingSaves()
+        restore()
+    }
+
+    /**
+     * After a test that carries [BenchPristineRule] (`StrictTestApplication.afterTest`, its @After done): what it leaves is
+     * its own red, the state put back (one leak, one red), instead of the next bench test's, which an ordinary test run in
+     * between hid. Its install's files are its own (Robolectric gives the next test another data folder): not leaks. A real
+     * seat (`-Phuman.dir`) is never made red: the next seat's rule puts it back and writes it in its journal.
+     */
+    fun afterATestWithTheRule(test: String) {
+        if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
+        val left = leaks().filterNot { it.startsWith("projects/") || it.startsWith("CurrentProject") }
+        if (left.isEmpty()) return
+        restore()
+        throw AssertionError("$test leaves to the test after it (put back): " + left.joinToString("; "))
+    }
+
+    /**
+     * The closing saves of the test that ends, waited for while the main looper runs (they finish on it): review of the
+     * « CI : fuite d'état » repair, mineur 3 (the wait blocked the main thread, each save gave up after 10 s). Said on the
+     * test's output when they do not end within [capMs].
+     */
+    private fun closingSaves(capMs: Long = 15_000) {
+        val until = System.currentTimeMillis() + capMs
+        while (closingBusy() > 0 && System.currentTimeMillis() < until) {
+            runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(10)) }
+            Thread.sleep(5)
+        }
+        if (closingBusy() > 0) println("BenchPristine: ${closingBusy()} closing save(s) still running after $capMs ms (put back all the same)")
+    }
+
+    private fun closingBusy(): Int =
+        (staticField(com.pocketstudio.app.rhythm.ClosingSaves::class.java, "busy") as? java.util.concurrent.atomic.AtomicInteger)?.get() ?: 0
+
+    /** Back to a just-started process (what [HumanTester.end] does, for the state a test can leak). */
+    fun restore() {
+        LaunchRule.askAtStartForTest = true
+        SettingsStore.forgetForTests()
+        SeparationJob.set(SeparationState.Idle)
+        I18n.lang = Lang.FR
+        I18n.everyday = false
+        I18n.pseudo = null
+        TutoTestHooks.player = null
+        TutoTestHooks.kitOffer = true
+        TutoTestHooks.packs = null
+        NativeEngine.sink = null
+        com.pocketstudio.app.retours.Retours.active = SettingsStore.state.value.retoursMode
+        com.pocketstudio.app.onboarding.Intro.playing = false
+        com.pocketstudio.app.tuto.TutoHints.active = false
+        com.pocketstudio.app.learn.SpotChecks.log = null
+        runCatching { setStaticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared", null) }
+        runCatching { setStaticField(ViewModelProvider.AndroidViewModelFactory::class.java, "_instance", null) }
+        BenchMic.unplug()
+        com.pocketstudio.app.ui.DoubleTouchGuard.reset()
+        com.pocketstudio.app.rhythm.TakeVault.app.awaitIdleBlocking(15_000)
+        File(app.filesDir, "projects").deleteRecursively()
+        CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+    }
+
+    private fun takeVaultBusy(): Int =
+        ((staticFieldOf(com.pocketstudio.app.rhythm.TakeVault.app, "busy") as? kotlinx.coroutines.flow.StateFlow<*>)?.value as? Int) ?: 0
+
+    private fun staticFieldOf(obj: Any, name: String): Any? =
+        runCatching { obj.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(obj) }.getOrNull()
+
+    /** The coroutine workers (Dispatchers.Default and IO) free of the app's work, waited for 2 s at most. */
+    private fun workersParked(): Boolean {
+        val until = System.currentTimeMillis() + 2_000
+        while (System.currentTimeMillis() < until) {
+            if (appThreads().isEmpty()) return true
+            Thread.sleep(50)
+        }
+        return appThreads().isEmpty()
+    }
+
+    private fun liveThreads(): List<Thread> {
+        var root = Thread.currentThread().threadGroup
+        while (root.parent != null) root = root.parent
+        val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
+        val n = root.enumerate(threads, true)
+        return (0 until n).mapNotNull { threads[it] }
+    }
+
+    /** How many coroutine workers live (Dispatchers.IO stalls once 64 of them are held). */
+    fun workerCount(): Int = liveThreads().count { it.name.startsWith("DefaultDispatcher-worker") }
+
+    /**
+     * The coroutine workers the app's code holds, running or blocked (a parked idle worker has none of its frames), each with
+     * its state and the top of its stack: what the test before left on them. Also what a failing test prints to name them.
+     */
+    fun appThreads(): List<String> = liveThreads().mapNotNull { t ->
+        if (!t.name.startsWith("DefaultDispatcher-worker") || t === Thread.currentThread()) return@mapNotNull null
+        val frames = t.stackTrace.filter { "pocketstudio" in it.className }.take(4).joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}:${it.lineNumber}" }
+        if (frames.isEmpty()) null else "${t.name} ${t.state}: $frames"
+    }
+
+    private fun staticField(cls: Class<*>, name: String): Any? =
+        runCatching { cls.getDeclaredField(name).apply { isAccessible = true }.get(null) }.getOrNull()
+
+    private fun setStaticField(cls: Class<*>, name: String, value: Any?) {
+        cls.getDeclaredField(name).apply { isAccessible = true }.set(null, value)
+    }
+}

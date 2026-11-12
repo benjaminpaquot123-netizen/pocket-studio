@@ -73,8 +73,9 @@ class GestureBudgetTest {
         val transport by vm.transport.collectAsState()
         Column {
             TopBar(
-                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project)),
-                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePlay, selectScene = vm::selectScene),
+                // No thumb's bar here: « ▶ le morceau » is in the top bar, beside « ▶ cette partie » (tour 5, chantier 4).
+                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project), songButton = true),
+                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePart, playSong = vm::toggleWholeSong, selectScene = vm::selectScene),
             )
             UnderTopBar(vm, tempoOpen = tempo, setTempoOpen = { tempo = it }, renaming = renaming, closeRename = { renaming = false })
         }
@@ -89,7 +90,7 @@ class GestureBudgetTest {
         vm.playStartsForTest = mutableListOf()
         show(vm)
         compose.onNodeWithTag("top_position").assertTextContains("mes. 2/3", substring = true)
-        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_play") }
+        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_song") }
         assertEquals(listOf("song 1"), vm.playStartsForTest)
         assertTrue(vm.transport.value.playing)
     }
@@ -386,10 +387,10 @@ class GestureBudgetTest {
         val p by vm.project.collectAsState()
         val t by vm.transport.collectAsState()
         com.pocketstudio.app.rhythm.RhythmScreen(
-            p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+            p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
             actions = com.pocketstudio.app.rhythm.RhythmActions(
                 toggleStep = vm::toggleStep, cycleVelocity = vm::cycleVelocity, setHitVelocity = vm::setHitVelocity,
-                selectPad = vm::selectPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
+                selectPad = vm::selectPad, hitPad = vm::hitPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
                 openKits = vm::refreshPacks, chooseKit = vm::chooseKit,
                 paintStep = vm::paintStep, paintEnd = vm::paintEnd, setRoll = vm::setRoll, burst = vm::burstAt,
             ),
@@ -425,16 +426,19 @@ class GestureBudgetTest {
         val vm = vmWithSong()
         withPadSample(vm)
         compose.setContent { PocketStudioTheme { Rhythm(vm) } }
-        compose.withinGestures("Son d'un pad", 2) {
-            longPress("pad_0")
+        // Owner (2026-11-04): a long press is « Changer le son » (the library); the sheet is the card's « Réglages du pad ».
+        compose.withinGestures("Son d'un pad", 3) {
+            tap("pad_settings")
             tap("pad_sound_origin")
         }
         assertEquals(null, vm.project.value.drums.lanes[0].sample)
         vm.undo()
         assertTrue(vm.project.value.drums.lanes[0].sample != null)
         // The same sheet: the pad's volume and « Couper ce pad ».
-        compose.withinGestures("Couper un pad", 2) {
-            longPress("pad_3")
+        // Up to the pads and down to the card again: two scrolls of the five (the sheet is no longer the long press's).
+        compose.withinGestures("Couper un pad", 5) {
+            tap("pad_3")
+            tap("pad_settings")
             tap("pad_mute")
         }
         assertEquals(3, vm.transport.value.selectedPad)
@@ -480,7 +484,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t.copy(playing = true), com.pocketstudio.app.rhythm.LiveUi(currentStep = step), canUndo = true, canRedo = false,
+                    p, t.copy(playing = true), { com.pocketstudio.app.rhythm.LiveUi(currentStep = step) }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(toggleStep = vm::toggleStep, paintStep = vm::paintStep, paintEnd = vm::paintEnd),
                 )
             }
@@ -915,7 +919,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+                    p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(
                         toggleStep = vm::toggleStep, selectPad = vm::selectPad, setHitVelocity = vm::setHitVelocity, setRoll = vm::setRoll,
                         setPadLength = vm::setPadLength, setHitChance = vm::setHitChance, rerollChances = vm::rerollChances,

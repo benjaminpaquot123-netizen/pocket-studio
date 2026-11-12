@@ -1,0 +1,7 @@
+lang=ko
+device=tablet8
+font=100
+mode=simple
+gestes.max=90
+mission=voix
+timeout.minutes=25

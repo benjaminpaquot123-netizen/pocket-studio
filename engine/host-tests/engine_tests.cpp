@@ -70,6 +70,12 @@ void* operator new(std::size_t n) {
 void operator delete(void* p) noexcept { std::free(p); }
 void operator delete(void* p, std::size_t) noexcept { std::free(p); }
 #define PS_COUNT_ALLOCATIONS 1
+#else
+// Under AddressSanitizer nothing is counted: the counters stay at zero, so the benches that read
+// them still build (their no-allocation checks are proven by the normal build).
+static std::atomic<bool> g_countAllocations{false};
+static std::atomic<int> g_allocations{0};
+
 #endif
 
 namespace {
@@ -101,6 +107,14 @@ bool machineOverloaded() {
     return avg[0] > static_cast<double>(std::max(1u, std::thread::hardware_concurrency()));
 }
 
+// Under AddressSanitizer every memory access is checked (several times slower): CPU budgets mean
+// nothing there, they are proven by the normal build.
+#if defined(__SANITIZE_ADDRESS__)
+#define CHECK_TIMING(cond)                                                                        \
+    do {                                                                                          \
+        if (!(cond)) std::printf("  timing missed under AddressSanitizer (not counted): %s\n", #cond); \
+    } while (0)
+#else
 #define CHECK_TIMING(cond)                                                                        \
     do {                                                                                          \
         if (!(cond)) {                                                                            \
@@ -111,9 +125,13 @@ bool machineOverloaded() {
             }                                                                                     \
         }                                                                                         \
     } while (0)
+#endif
 
 constexpr int kRate = 48000;
 constexpr int kChannels = 2;
+// The steps a test clears (the app sends at least that many, DrumPattern.SYNC_STEPS): 16 lanes of the
+// full 256 would fill the whole command queue.
+constexpr int kClearSteps = 64;
 // The limiter's look-ahead: the live output comes this many frames late (an export drops them).
 const int kLate = ps::MasterChain::latencyFor(kRate);  // the master chain's delay
 
@@ -843,6 +861,33 @@ void testAcidNotesStartOnTheStep() {
     }
     CHECK(finite);
     CHECK(peak > 0.1f && peak < 1.0f);
+}
+
+void testAcidLiveNoteHoldsOverRests() {
+    // Step 7b: a key held live on the 303 sounds at once and keeps sounding over the line's rests
+    // (it used to let go on the next rest); a second key slides into it; let go, it dies away.
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setLength(16);  // all rests
+    acid.liveNote(48, false);
+    auto held = renderAcid(acid, 4);
+    CHECK(acid.notesPlayed() == 1);
+    float late = 0.0f;
+    for (int i = 18000; i < 24000; ++i) late = std::max(late, std::fabs(held[static_cast<size_t>(i)]));
+    CHECK(late > 0.02f);  // step 3, still held
+    acid.liveNote(55, true);
+    renderAcid(acid, 1);
+    CHECK(acid.notesPlayed() == 2);
+    acid.liveNote(-1, false);
+    renderAcid(acid, 4);
+    const auto after = renderAcid(acid, 2);
+    float tail = 0.0f;
+    for (float v : after) tail = std::max(tail, std::fabs(v));
+    CHECK(tail < 0.01f);
+    // The line plays again once let go.
+    acid.setStep(0, note(0));
+    renderAcid(acid, 16);
+    CHECK(acid.notesPlayed() == 3);
 }
 
 void testAcidAccentIsLouder() {
@@ -1749,6 +1794,15 @@ void testSampleResamplesCleanly() {
     delete s;
     CHECK(ps::Sample::create(in.data(), 0, 2, 44100, kRate) == nullptr);
     CHECK(ps::Sample::create(in.data(), 10, 3, 44100, kRate) == nullptr);
+    // Audit stage 3: a lying rate is refused before any allocation (libsamplerate's 1/256..256).
+    CHECK(ps::Sample::create(in.data(), 10, 2, 100, kRate) == nullptr);
+    CHECK(ps::Sample::create(in.data(), 10, 2, 48000 * 300, kRate) == nullptr);
+    ps::Sample* low = ps::Sample::create(in.data(), 10, 2, 8000, kRate);  // a real phone rate still passes
+    CHECK(low != nullptr);
+    if (low) {
+        CHECK(low->release());
+        delete low;
+    }
 }
 
 void testPadSampleReplacesTheDrum() {
@@ -2899,6 +2953,30 @@ void testThreeFourAndPartMutes() {
     CHECK(waltz.currentStep() == 0);
 }
 
+void testSixteenBarDrums() {
+    // Step 7a: a drum loop of 16 bars (256 steps), as long as a recorded Live cell keeps; a pad with
+    // its own loop past 255 steps (the old 8-bit length would wrap it to 0).
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 256});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 255});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 1, 0});
+    engine.post({ps::CommandType::SetDrumLaneSteps, 200.0f, 1});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumLaneSteps, 256.0f, 2});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 255 - 1000, 256);  // 120 BPM: a step is 6000 frames
+    CHECK(engine.laneTriggerCount(0) == 1);
+    CHECK(engine.laneTriggerCount(1) == 2);  // steps 0 and 200
+    render(engine, 2000, 256);
+    CHECK(engine.laneTriggerCount(0) == 2);  // step 255
+    render(engine, 6000, 256);
+    CHECK(engine.laneTriggerCount(0) == 3);  // round again at 256
+    CHECK(engine.laneTriggerCount(2) == 2);
+    CHECK(engine.drumLaneSteps(2) == 256);
+    CHECK(engine.currentStep() == 0);
+}
+
 void testPianoRollNotesAreSampleAccurate() {
     // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
     ps::Engine engine(kRate);
@@ -3107,6 +3185,7 @@ void testProcessNeverAllocates() {
         audio.sample = sample;
         engine.post(audio);
         engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 2, ps::AudioTracks::LoopSteps});
+        engine.tapStart();  // « Mode retours »: the output copied too (the ring fills, then drops)
         static ps::RecordBuffer recording(kRate * 4);
         ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
         arm.record = &recording;
@@ -4844,7 +4923,7 @@ void testScenesSwapOnTheBar() {
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
     engine.post({ps::CommandType::SetStaging, 1.0f});
     for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+        for (int st = 0; st < kClearSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 8});
     engine.post({ps::CommandType::SetPatternSteps, 0.0f, 32});
@@ -6026,6 +6105,62 @@ void testStemsKeepTheirPlaceAcrossATempoChange() {
     }
 }
 
+void testStemsComeInLaterInTheSong() {
+    // R2 (remix lot 1): the song placed later in the project (its voice on the drop) comes in on
+    // its own frame: a negative start frame is that much silence after step 0, then the song from
+    // its first frame with the 5 ms fade in starting there (not spent in the silence).
+    constexpr int songFrames = kRate * 2;
+    std::vector<float> ramp(static_cast<size_t>(songFrames) * 2, 0.0f);
+    for (int i = 0; i < songFrames; ++i) {
+        ramp[static_cast<size_t>(i) * 2] = 0.2f;  // left: constant
+        ramp[static_cast<size_t>(i) * 2 + 1] = 0.2f * static_cast<float>(i) / songFrames;  // right: the position
+    }
+    auto* song = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, ramp));
+    ps::StemPlayer player;
+    player.prepare(kRate);
+    song->retain();
+    player.install(song);
+    const int lead = kRate / 2;  // the song comes in 0.5 s after step 0
+    player.setStartFrame(-lead);
+    player.start(100);
+    std::vector<float> l(kRate * 2, 0.0f), r(kRate * 2, 0.0f);
+    int64_t positionInLead = -1;
+    for (int at = 0; at < kRate * 2; at += 256) {
+        player.render(l.data() + at, r.data() + at, std::min(256, kRate * 2 - at));
+        if (at + 256 < 100 + lead && player.position() != -1) positionInLead = player.position();
+    }
+    const int in = 100 + lead;  // the song's first frame
+    float before = 0.0f;
+    for (int i = 0; i < in; ++i) before = std::max(before, std::fabs(l[static_cast<size_t>(i)]));
+    std::printf("  stems placed later: peak before %.6f, at +2.5 ms %.4f, at +10 ms %.4f, position in the lead %lld\n",
+                before, l[static_cast<size_t>(in + 120)], l[static_cast<size_t>(in + 480)], static_cast<long long>(positionInLead));
+    CHECK(before == 0.0f);                 // silence until the song comes in
+    CHECK(positionInLead == -1);           // nothing to show yet
+    CHECK(l[static_cast<size_t>(in)] == 0.0f);  // the fade in starts on its first frame (no click)
+    CHECK(l[static_cast<size_t>(in + 120)] > 0.1f * l[static_cast<size_t>(in + 480)]);
+    CHECK(l[static_cast<size_t>(in + 120)] < 0.9f * l[static_cast<size_t>(in + 480)]);
+    CHECK(largestStep(l, in - 10, in + 2000) < 0.01f);
+    // The right side reads the song's own position: frame 0 at the entry, so ~1 s later 1 s in.
+    const float heard = r[static_cast<size_t>(in + kRate - 1)] / l[static_cast<size_t>(in + kRate - 1)];
+    CHECK(std::fabs(heard - static_cast<float>(kRate - 1) / songFrames) < 2e-3f);
+    CHECK(player.position() == kRate * 2 - in);
+    // A start frame inside the song still starts there (nothing changed for 0 and up).
+    player.stop();
+    player.setStartFrame(kRate / 4);
+    player.start(0);
+    std::fill(l.begin(), l.end(), 0.0f);
+    std::fill(r.begin(), r.end(), 0.0f);
+    player.render(l.data(), r.data(), 256);
+    player.render(l.data() + 256, r.data() + 256, 256);
+    CHECK(player.position() == kRate / 4 + 512);
+    player.install(nullptr);
+    player.render(l.data(), r.data(), 2048);  // its fade out, then it is let go
+    player.collectGarbage();
+    CHECK(song->refCount() == 1);
+    CHECK(song->release());
+    delete song;
+}
+
 void testStemPreviewPlaysWithoutTheTransport() {
     const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
     std::vector<std::vector<float>> stems(4);
@@ -6047,6 +6182,14 @@ void testStemPreviewPlaysWithoutTheTransport() {
     engine.post({ps::CommandType::SetPreviewParam, 0.0f, 3, ps::StemPlayer::Mute});
     out = render(engine, 9600, 256);
     CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    // Audit 02 M7: apart from the project's strips: a track left in solo, or the remix's strip
+    // muted, never silences what is listened to.
+    engine.post({ps::CommandType::SetChannelSolo, 1.0f, 0});
+    engine.post({ps::CommandType::SetChannelMute, 1.0f, 3});
+    out = render(engine, 9600, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    engine.post({ps::CommandType::SetChannelSolo, 0.0f, 0});
+    engine.post({ps::CommandType::SetChannelMute, 0.0f, 3});
     // The transport stopping does not stop it; its own stop does.
     engine.post({ps::CommandType::SetTransport, 0.0f});
     render(engine, 4800, 256);
@@ -6068,7 +6211,7 @@ constexpr int kLiveStep = 6000;  // 120 BPM: frames in a sixteenth
 void stageDrums(ps::Engine& engine, std::initializer_list<std::pair<int, int>> hits, int steps) {
     engine.post({ps::CommandType::SetStaging, 1.0f});
     for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+        for (int st = 0; st < kClearSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
     for (const auto& [lane, st] : hits) engine.post({ps::CommandType::SetDrumHit, 1.0f, lane, st});
     engine.post({ps::CommandType::SetPatternSteps, 0.0f, steps});
     engine.post({ps::CommandType::SetStaging, 0.0f});
@@ -6113,6 +6256,51 @@ void testLiveSlotLaunchesOnTheBar() {
     renderToStep(engine, now, 64, 10);
     CHECK(engine.laneTriggerCount(5) == 1 && engine.slotTag(ps::kSlotDrums) == 2 && engine.slotStart(ps::kSlotDrums) == 64);
     std::printf("  live launch: pad3 %u, pad6 %u, drums from step %d\n", engine.laneTriggerCount(2), engine.laneTriggerCount(5), engine.slotStart(ps::kSlotDrums));
+}
+
+// A launch that comes just after its line (a tap on the « one » heard, the output's latency later)
+// launches on that line: counted from it, from the next step on. Past the grace it waits as before.
+void testLiveLaunchGraceTakesTheLineJustPassed() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});  // the scene: pad 1 on step 0
+    stageDrums(engine, {{2, 0}, {2, 8}}, 16);                // waiting: pad 3 on 0 and 8
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 16, kLiveStep / 2);  // half a step past the bar line (step 16.5)
+    const int grace = 2 * 64;                       // two steps
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16 | grace << 17});
+    renderToStep(engine, now, 17, 10);
+    ps::LaunchEvent e;
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotStart(ps::kSlotDrums) == 16);
+    CHECK(engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch);
+    CHECK(engine.popLaunchEvent(e) && e.slot == ps::kSlotDrums && e.tag == 1 && e.step == 16);
+    CHECK(engine.laneTriggerCount(2) == 0);  // its step 0 already passed: not played late
+    renderToStep(engine, now, 24, 10);
+    CHECK(engine.laneTriggerCount(2) == 1);  // its step 8 on transport step 24: in phase with the line
+    // Past the grace (three steps after the line): the next line, as always.
+    stageDrums(engine, {{5, 0}}, 16);
+    renderToStep(engine, now, 35, 10);
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotDrums, 16 | grace << 17});
+    renderToStep(engine, now, 47, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotPending(ps::kSlotDrums) == 2);
+    renderToStep(engine, now, 48, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2 && engine.slotStart(ps::kSlotDrums) == 48 && engine.laneTriggerCount(5) == 1);
+    CHECK(engine.popLaunchEvent(e) && e.step == 48);
+    // No grace (0): just past the line still waits for the next one.
+    stageDrums(engine, {{6, 0}}, 16);
+    renderToStep(engine, now, 64, kLiveStep / 2);
+    engine.post({ps::CommandType::ArmLaunch, 3.0f, 1 << ps::kSlotDrums, 16});
+    renderToStep(engine, now, 79, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2);
+    renderToStep(engine, now, 80, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 3 && engine.slotStart(ps::kSlotDrums) == 80);
+    // A whole row within its grace: the scene starts on the line too.
+    stageDrums(engine, {{7, 0}}, 16);
+    renderToStep(engine, now, 96, kLiveStep / 4);
+    engine.post({ps::CommandType::ArmLaunch, 4.0f, ps::kAllSlots, 16 | grace << 17});
+    renderToStep(engine, now, 98, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 4 && engine.slotStart(ps::kSlotAcid) == 96 && engine.sceneSwaps() == 1);
+    std::printf("  launch grace: drums from %d, row from %d\n", engine.slotStart(ps::kSlotDrums), engine.slotStart(ps::kSlotAcid));
 }
 
 // Each slot counts from its own launch: patterns of different lengths launched at different bars
@@ -6177,7 +6365,7 @@ void testLiveStopIsEmptiedContent() {
             engine->post({ps::CommandType::SetStaging, 1.0f});
             if (slot == ps::kSlotDrums) {
                 for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-                    for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine->post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+                    for (int st = 0; st < kClearSteps; ++st) engine->post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
                 engine->post({ps::CommandType::SetPatternSteps, 0.0f, 16});
             } else if (slot == ps::kSlotAcid) {
                 for (int i = 0; i < ps::AcidTrack::kMaxSteps; ++i) engine->post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{}.pack()});
@@ -7944,7 +8132,7 @@ void testCommandBudgetPerCallback() {
         // A staged scene of more than the budget, taken whole in one callback.
         CHECK(e.post({CommandType::SetStaging, 1.0f}));
         for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-            for (int st = 0; st < ps::Engine::kMaxSteps; ++st) CHECK(e.post({CommandType::SetDrumHit, st % 4 == 0 ? 1.0f : 0.0f, lane, st}));
+            for (int st = 0; st < kClearSteps; ++st) CHECK(e.post({CommandType::SetDrumHit, st % 4 == 0 ? 1.0f : 0.0f, lane, st}));
         CHECK(e.post({CommandType::SetPlaying, 1.0f}));  // its last command (not a staged one: it shows)
         CHECK(e.post({CommandType::SetStaging, 0.0f}));
         e.process(nullptr, 0, 0, out, 64, 2);
@@ -7969,11 +8157,25 @@ void testCommandBudgetPerCallback() {
 #include "restes_tests.inc"
 #include "review3539_tests.inc"
 #include "leads_tests.inc"
+#include "analysis_tests.inc"
 #include "livefade_tests.inc"
 #include "layers_tests.inc"
 #include "basses_tests.inc"
 #include "s7_tests.inc"
 #include "leads2_tests.inc"
+#include "audit_moteur_tests.inc"
+#include "voice_tests.inc"
+#include "triplets_tests.inc"
+#include "tempo_tests.inc"
+#include "live4f_tests.inc"
+#include "moteur17_tests.inc"
+#include "remix5b_tests.inc"
+#include "padlive_tests.inc"
+#include "masterpro_tests.inc"
+#include "liveremix_tests.inc"
+#include "contract_tests.inc"
+#include "audit4_tests.inc"
+#include "hardtechno_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -7983,6 +8185,10 @@ int main(int argc, char** argv) {
     }
     const TestCase tests[] = {
         PS_MASTER_TESTS
+        PS_MASTERPRO_TESTS
+        PS_CONTRACT_TESTS
+        PS_AUDIT4_TESTS
+        PS_HARDTECHNO_TESTS
         {"spsc_queue", testSpscQueue},
         {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},
@@ -8014,6 +8220,7 @@ int main(int argc, char** argv) {
         {"toms_have_body", testTomsHaveBody},
         {"acid_step_packing", testAcidStepPacking},
         {"acid_notes_on_step", testAcidNotesStartOnTheStep},
+        {"acid_live_note", testAcidLiveNoteHoldsOverRests},
         {"acid_accent", testAcidAccentIsLouder},
         {"acid_drive_leaves_no_dc", testAcidDriveLeavesNoDc},
         {"acid_slide", testAcidSlideHoldsTheNote},
@@ -8054,6 +8261,7 @@ int main(int argc, char** argv) {
         {"sound_swaps_never_allocate", testSoundSwapsNeverAllocate},
         {"onsets", testOnsetsFindTheHits},
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
+        {"sixteen_bar_drums", testSixteenBarDrums},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
         {"insert_effects", testInsertEffects},
@@ -8074,6 +8282,10 @@ int main(int argc, char** argv) {
         {"sound_calibration_gain", testSoundCalibrationGain},
         {"plaits_two_threads", testPlaitsOnTwoThreads},
         {"tempo_and_key", testTempoAndKeyDetection},
+        {"onsets_vs_aubio", testOnsetsMatchAubio},
+        {"tempo_vs_aubio", testTempoMatchesAubio},
+        {"key_vs_aubio", testKeyMatchesAubio},
+        {"analysis_edge_cases", testAnalysisEdgeCases},
         {"stems_follow_transport", testStemsPlayInStepWithTheTransport},
         {"live_pads", testLivePadsLoopOnTheBeat},
         {"instrument_tracks", testInstrumentTracks},
@@ -8129,6 +8341,7 @@ int main(int argc, char** argv) {
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"stems_keep_place_across_tempo", testStemsKeepTheirPlaceAcrossATempoChange},
+        {"stems_come_in_later", testStemsComeInLaterInTheSong},
         {"play_position", testPlayPositionForLiveRecording},
         {"song_export", testSongExportSwapsScenesOnTime},
         {"drum_rolls", testDrumRollsSplitTheStep},
@@ -8147,6 +8360,7 @@ int main(int argc, char** argv) {
         {"nan_settings_are_ignored", testNanSettingsAreIgnored},
         {"render_is_block_size_independent", testRenderIsBlockSizeIndependent},
         {"lfos_restart_with_the_transport", testLfosRestartWithTheTransport},
+        {"live_launch_grace", testLiveLaunchGraceTakesTheLineJustPassed},
         {"synth_note_has_its_pitch_from_its_first_frame", testSynthNoteHasItsPitchFromItsFirstFrame},
         {"command_budget_per_callback", testCommandBudgetPerCallback},
         {"glue_chains_flat_under_threshold", gain_staging::testGlueChainsAreFlatUnderTheThreshold},
@@ -8168,6 +8382,7 @@ int main(int argc, char** argv) {
         PS_PHASE37_TESTS
         PS_MULTIZONE_TESTS
         PS_RESTES_TESTS
+        PS_VOICE_TESTS
         PS_REVIEW3539_TESTS
         PS_LEADS_TESTS
         PS_LIVEFADE_TESTS
@@ -8175,12 +8390,25 @@ int main(int argc, char** argv) {
         PS_BASSES_TESTS
         PS_S7_TESTS
         PS_LEADS2_TESTS
+        PS_AUDIT_MOTEUR_TESTS
+        PS_TRIPLETS_TESTS
+        PS_TEMPO4E_TESTS
+        PS_LIVE4F_TESTS
+        PS_MOTEUR17_TESTS
+        PS_REMIX5B_TESTS
+        PS_PADLIVE_TESTS
+        PS_LIVEREMIX_TESTS
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;
         const int before = g_failures;
         t.fn();
-        std::printf("[%s] %s\n", g_failures == before ? " OK " : "FAIL", t.name);
+        // A test registered as « known_defect_<id> » asserts TODAY's defective behaviour (docs/audits/ultra/verdicts.tsv,
+        // column garde_id; scripts/bench/verifie-chantier.py reads the name). It says so, green or red.
+        const bool known = std::strncmp(t.name, "known_defect_", 13) == 0;
+        std::printf("[%s] %s%s\n", g_failures == before ? " OK " : "FAIL", t.name,
+                    !known ? "" : g_failures == before ? " (KNOWN DEFECT still there)"
+                                                       : " (KNOWN DEFECT gone or changed: engine fixed? invert this test and set its verdicts.tsv line to « corrigé »)");
     }
     std::printf("%s (%d failure%s)\n", g_failures == 0 ? "ALL PASSED" : "FAILURES", g_failures,
                 g_failures == 1 ? "" : "s");

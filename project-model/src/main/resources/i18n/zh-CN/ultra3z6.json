@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "时间线：%1$s，%2$s",
+  "Morceau écrit : %1$s, %2$s": "歌曲已写入：%1$s，%2$s",
+  "Grille des notes : %s": "音符网格：%s",
+  "1 pas": "1 步",
+  "1 piste": "1 条音轨",
+  "1 réglage": "1 个设置",
+  "%d réglages": "%d 个设置",
+  "Fait : break de 1 mesure après %2$s": "完成：在 %2$s 之后加了 1 小节的 Break",
+  "Fait : montée de 1 mesure avant %2$s": "完成：在 %2$s 之前加了 1 小节的 Build-up",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "还没有歌曲：你的段落会以循环形式导出（1 小节）。",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "你的 Live 录音已保留：它在歌曲里（1 个段落）。",
+  "Ton texte (1 caractère)": "你的文字（1 个字符）",
+  "trop bas de 1 cent": "低了 1 音分",
+  "trop haut de 1 cent": "高了 1 音分",
+  "−%d demi-ton": "−%d 个半音",
+  "%d min": "%d 分钟",
+  "%1$d min %2$d": "%1$d 分 %2$d 秒",
+  "Hors de la gamme du morceau": "不在歌曲的音阶内",
+  "Poignée : glisse vers le bas pour fermer": "拖动条：向下滑动即可关闭"
+}

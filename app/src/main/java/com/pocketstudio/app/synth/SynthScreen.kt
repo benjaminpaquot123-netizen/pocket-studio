@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.app.learn.spot
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.ui.semantics.contentDescription
@@ -58,6 +59,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.layout.onSizeChanged
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -79,6 +81,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
@@ -141,7 +144,8 @@ private val ADVANCED: List<Pair<Int, String>> get() = listOf(
     SynthPatch.LFO2_SYNC to tr("Balayage calé sur le tempo"), SynthPatch.GLIDE to tr("Glissé entre les notes"),
 )
 
-private val WAVES: List<Pair<Float, String>> get() = listOf(0f to tr("Scie"), 0.5f to tr("Carré"), 1f to tr("Triangle"))
+/** The oscillator's waves, each with its drawing and its word (an ear word in the Mode simple, the wave's name in the Pro). */
+private val WAVES: List<Pair<Float, String>> get() = listOf(0f, 0.5f, 1f).map { it to com.pocketstudio.app.sounds.SoundLooks.waveWord(com.pocketstudio.ui.WaveShape.ofSynth(it)) }
 private val FILTERS: List<Pair<Float, String>> get() = listOf(0f to "Ladder", 0.3f to tr("Passe-bas"), 0.6f to tr("Passe-haut"), 0.9f to tr("Passe-bande"))
 
 /** The piano roll's data, when the screen shows it (null: keyboard only, e.g. in tests). */
@@ -159,6 +163,14 @@ class NotesUi(
     val songChords: (() -> Unit)? = null,
     /** Sixteenths in a bar of the time signature: the bars a copy, a paste and the ruler count in. */
     val stepsPerBar: Int = 16,
+    /** The play position read where it is drawn (audit 16: not the whole roll redrawn at each step); null: [playStep]. */
+    val playStepOf: (() -> Int)? = null,
+    /** « Tuto de A à Z »: the notes its step asks for on this track, dotted until written. */
+    val hints: List<Note> = emptyList(),
+    /** The track's name (said on the tutorial's line over the grid). */
+    val trackName: String? = null,
+    /** « Copier sur les mesures suivantes » offered over the grid (the motif written), null: not now. */
+    val copyMotif: (() -> Unit)? = null,
 )
 
 @Composable
@@ -184,11 +196,19 @@ fun SynthScreen(
      * its argument is true lying down, where a line counts.
      */
     record: (@Composable (compact: Boolean) -> Unit)? = null,
+    /**
+     * Audit final (08, 01 M10): the Mode simple's Clavier: the keys right under « Enregistrer ma
+     * mélodie », no bend nor modulation, and the sound changed from one button (« Changer le son »)
+     * rather than the synth's, the instrument's and the effects' settings.
+     */
+    simple: Boolean = false,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     // Each request once (coming back to the tab later keeps the view chosen since).
     var notesSeen by rememberSaveable { mutableStateOf(0) }
+    var rollShownFor by rememberSaveable { mutableStateOf(0) }
+    val rollRequester = remember { BringIntoViewRequester() }
     LaunchedEffect(notesRequest) {
         if (notesRequest > notesSeen) {
             showNotes = true
@@ -212,33 +232,60 @@ fun SynthScreen(
     var soundsInView by remember(showNotes) { mutableStateOf(false) }
     var floatFolded by rememberSaveable { mutableStateOf(false) }
     val minSoundsPx = with(LocalDensity.current) { 64.dp.toPx() }
-    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = it.boundsInWindow().height >= it.size.height * 0.5f }
-    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
+    // Audit ultra round 2, n° 25 (seat B c): the floating keyboard has its own room under the page now (it covered the
+    // presets and « Unisson »'s value): what is in view is read against the whole screen's box, not the page's shorter
+    // window with the keyboard (it would hide itself, then come back, at a sound half in view).
+    val box = remember { floatArrayOf(0f, Float.MAX_VALUE) }
+    fun seen(c: androidx.compose.ui.layout.LayoutCoordinates): Float {
+        val top = c.positionInWindow().y
+        return minOf(top + c.size.height, box[1]) - maxOf(top, box[0])
+    }
+    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = seen(it) >= it.size.height * 0.5f }
+    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.size.height > 0 && seen(it) >= minOf(minSoundsPx, it.size.height * 0.5f) }
     // A tablet by the device (its smaller side at least 600 dp), whatever the rounding of the width given.
     val tablet = isTablet()
     // « Gamme et accords » can send the user down to the track's sound (it is not set note by note).
     val soundRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
-    BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
+    val deviceLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    BoxWithConstraints(modifier.fillMaxSize().testTag("synth").onGloballyPositioned { c -> box[0] = c.positionInWindow().y; box[1] = box[0] + c.size.height }) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
-        val landscape = maxWidth > maxHeight
+        // Audit final (09): the device lying down, not only the box wider than high. An A11 upright
+        // at 130 %, or any phone upright with the Guide's panel open, gave a box wider than high and
+        // the lying-down branch squeezed two octaves into ~18 dp keys.
+        val landscape = deviceLandscape && maxWidth > maxHeight
         // A tablet held upright (an 8.7" one is 600 dp wide): taller keys, and in Notes mode a
         // keyboard under the piano roll to hear and record notes while they are seen.
         val tabletUpright = !landscape && (tablet || maxWidth >= TABLET_WIDTH)
         val rollHeight = when {
-            landscape -> (maxHeight - 140.dp).coerceAtLeast(160.dp)
-            // Room left for the keyboard under it (once the tools above are scrolled away).
-            tabletUpright -> (maxHeight - 480.dp).coerceIn(300.dp, 640.dp)
+            // Audit final (09): lying down, the grid takes the height (the tools above scroll away).
+            landscape -> (maxHeight - 64.dp).coerceAtLeast(160.dp)
+            // Room left for the keyboard under it (once the tools above are scrolled away)…
+            // Audit ultra round 2, n° 27 (seat B c, a foldable opened: 300 dp of grid, about 450 px of 1243): … when both
+            // fit; else the grid takes the screen as lying down (the keyboard under it, a scroll away).
+            tabletUpright -> if (maxHeight - 480.dp >= 300.dp) (maxHeight - 480.dp).coerceAtMost(640.dp) else (maxHeight - 64.dp).coerceAtLeast(300.dp)
             else -> 380.dp
         }
         // A wide tablet held upright: a wider keyboard (three octaves, like lying down).
         val wide = maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM
         val uprightOctaves = if (wide) 3 else 2
         val hasSounds = instrument != null || browser != null
-        val follows = hasSounds && ((notes != null && showNotes) || !landscape)
+        // Round 1 integration: not on the Mode simple's Clavier, whose sound is one « Changer le son » (a sheet): the
+        // following keyboard came over that very button once the thumb's bar made the page shorter.
+        val follows = hasSounds && ((notes != null && showNotes) || (!landscape && !simple))
         val floatKeys = if (landscape) 96.dp else 120.dp
-        // Room under the last settings so the floating keyboard never hides them.
-        val floatRoom = if (follows) floatKeys + 72.dp else 0.dp
+        // Round 2, n° 25: the floating keyboard is under the page, never over it: no room to keep for it in the page.
+        val floatRoom = 0.dp
+        // n° 27: the app gives the notes its thumb's bar's room on a big screen ([NotesView]).
+        androidx.compose.runtime.DisposableEffect(notes != null && showNotes) {
+            NotesView.shown = notes != null && showNotes
+            onDispose { NotesView.shown = false }
+        }
+        // The whole box's size, read inside the page's own box below.
+        val screenHigh = maxHeight
+        val screenWide = maxWidth
+        Column(Modifier.fillMaxSize()) {
+        Box(Modifier.weight(1f).fillMaxWidth()) {
         if (notes != null && showNotes) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
@@ -246,7 +293,25 @@ fun SynthScreen(
             ) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 ModeSwitch(showNotes, tracks) { showNotes = it }
+                // Testers (lot « tuto 5 »): the track's sound was four screens under the notes, nothing said it was there.
+                androidx.compose.material3.TextButton(
+                    onClick = { scope.launch { soundRequester.bringIntoView() } },
+                    modifier = Modifier.heightIn(min = 40.dp).testTag("synth_to_sound"),
+                ) { Text(tr("Régler le son de la piste") + " ↓") }
                 record?.invoke(false)
+                // Sent to the notes by the tutorial (« Créer la piste Basse »): the grid itself in view.
+                // Only for the tutorial's dotted notes: « Ouvrir dans Notes » keeps « Enregistrer » in sight.
+                val dotted = notes.hints.isNotEmpty()
+                val toolsRoom = with(androidx.compose.ui.platform.LocalDensity.current) { 64.dp.toPx() }
+                var rollTall by remember { mutableStateOf(0) }
+                LaunchedEffect(notesRequest, dotted) {
+                    if (dotted && notesRequest > rollShownFor) {
+                        rollShownFor = notesRequest
+                        kotlinx.coroutines.delay(120)
+                        // With the tools' row just above the grid (APK 228: it was left half under « Partie : A »).
+                        rollRequester.bringIntoView(androidx.compose.ui.geometry.Rect(0f, -toolsRoom, 1f, rollTall.toFloat()))
+                    }
+                }
                 NeonCard {
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
@@ -255,6 +320,11 @@ fun SynthScreen(
                         keyOn = keyOn, keyOff = keyOff,
                         clipboard = notes.clipboard, frozen = notes.frozen,
                         stepsPerBar = notes.stepsPerBar,
+                        playStepOf = notes.playStepOf,
+                        hints = notes.hints,
+                        gridModifier = Modifier.bringIntoViewRequester(rollRequester).onSizeChanged { rollTall = it.height },
+                        trackName = notes.trackName,
+                        copyMotif = notes.copyMotif,
                     )
                 }
                 if (tabletUpright) {
@@ -282,7 +352,7 @@ fun SynthScreen(
                 }
                 // The same sound sections, in the same order, as in Clavier mode.
                 SoundArea(trackSounds.bringIntoViewRequester(soundRequester)) {
-                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
+                    SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
@@ -290,13 +360,13 @@ fun SynthScreen(
             // Landscape: one compact line (mode, octave), the sound sections scroll (the same ones,
             // in the same order, as upright), and a wide three-octave keyboard stays under the
             // thumbs. A tablet lying down also has the room for the keyboard's layouts.
-            val tall = maxHeight >= TALL_LANDSCAPE
+            val tall = screenHigh >= TALL_LANDSCAPE
             // Lot 2 (audit 35, the Tab A11 lying down): the record bar and the take's card stand
             // beside the keyboard, never above it: after a take they pushed the keys down to 60 dp,
             // off the screen at 130 %. The keyboard keeps its height; two octaves when it is narrower.
             val beside = record != null
-            val recordWidth = (maxWidth * 0.32f).coerceIn(240.dp, 340.dp)
-            val keysWidth = maxWidth - 16.dp - if (beside) recordWidth + 8.dp else 0.dp
+            val recordWidth = (screenWide * 0.32f).coerceIn(240.dp, 340.dp)
+            val keysWidth = screenWide - 16.dp - if (beside) recordWidth + 8.dp else 0.dp
             val landOctaves = if (keysWidth >= LANDSCAPE_THREE_OCTAVES) 3 else 2
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
@@ -312,8 +382,8 @@ fun SynthScreen(
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 8.dp)) {
-                    play?.let { PlayPanel(it, playActions) }
-                    SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
+                    if (!simple) play?.let { PlayPanel(it, playActions, compact = true) }
+                    SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it } }
                 }
                 val keys: @Composable () -> Unit = {
                     if (chordPads) {
@@ -346,15 +416,18 @@ fun SynthScreen(
                 KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
-                    keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
+                    keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english, simple = simple)
                 // The same sound sections, in the same order, as in Notes mode.
                 SoundArea(trackSounds) {
-                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
+                    SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
         }
-        if (follows) {
+        }
+        // Testers (lot « tuto 4 »): it opened by itself over the settings the tutorial rings; while the tutorial
+        // runs, its panel has the bottom of the screen (the keyboard stays in « Clavier »).
+        if (follows && !com.pocketstudio.app.tuto.TutoHints.active) {
             // In Notes mode on an upright tablet the keyboard under the roll is there already.
             val wanted = soundsInView && (showNotes && notes != null && !tabletUpright || !keyboardInView)
             // Folding holds until the real keyboard is back: the next time it is out of reach, the floating one returns.
@@ -362,9 +435,10 @@ fun SynthScreen(
             FloatingKeyboard(
                 visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
                 octave = octave, octaves = if (landscape || wide) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
-                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
+                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff,
                 keyLayout = keyLayout, english = english,
             )
+        }
         }
     }
 }
@@ -375,7 +449,8 @@ fun SynthScreen(
  */
 @Composable
 private fun SoundArea(track: Modifier, content: @Composable () -> Unit) {
-    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    // Round 2, n° 25: « Réglages du son » of the track's menu brings it into view (the synth's settings first when there).
+    Column(track.spot(SOUND_AREA_SPOT), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
             tr("Le son de la piste (le même pour toutes ses notes)"),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
@@ -397,8 +472,14 @@ private fun SoundSections(
     browser: SoundBrowserUi?,
     advanced: Boolean,
     effects: com.pocketstudio.app.mixer.EffectsUi?,
+    /** The Mode simple: the track's sound and « Changer le son » alone (null: every section). */
+    simpleSound: TracksUi? = null,
     setAdvanced: (Boolean) -> Unit,
 ) {
+    if (simpleSound != null) {
+        SimpleSoundCard(simpleSound)
+        return
+    }
     instrument?.let { InstrumentPanel(it) }
     if (instrument?.current == null) {
         PresetsCard(patch, actions, browser)
@@ -427,12 +508,18 @@ private fun KeyboardCard(
     keyLayout: KeyLayout = KeyLayout.TwoOctaves,
     onKeyLayout: (KeyLayout) -> Unit = {},
     english: Boolean = false,
+    /** The Mode simple: the keys first (on a phone at 130 % they sat under the Guide's bar), the ways to play after them, no bend. */
+    simple: Boolean = false,
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
             Box(Modifier.weight(1f))
             OctaveControl(octave, actions)
+        }
+        if (simple) {
+            if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
+            else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
@@ -444,9 +531,27 @@ private fun KeyboardCard(
                 KeyLayoutChips(keyLayout, onKeyLayout, octaves)
             }
         }
+        if (simple) return@NeonCard
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
         else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         play?.let { PlayPanel(it, playActions) }
+    }
+}
+
+/** The Mode simple's sound of the track: its name and one « Changer le son » (the same sheet as « Mes pistes »). */
+@Composable
+private fun SimpleSoundCard(tracks: TracksUi) {
+    val t = tracks.tracks.firstOrNull { it.id == tracks.selected } ?: return
+    NeonCard(modifier = Modifier.testTag("simple_sound")) {
+        SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
+        // Audit ultra round 1, n° 36 (seat F a): the sound's own name (« Orgue »), not its kind (« Synthé ») once it is changed.
+        Text(com.pocketstudio.model.guide.GuideSheets.soundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier.testTag("simple_sound_name"))
+        tracks.changeSound?.let { change ->
+            androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
+                Text(tr("Changer le son"))
+            }
+        }
     }
 }
 
@@ -493,12 +598,27 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
     }
 }
 
+/** The track's sound on the synth screen ([SoundArea]), as a spot. */
+const val SOUND_AREA_SPOT = "sound_area"
+
+/**
+ * Audit ultra round 2, n° 27 (seat B c, a foldable): the piano roll is on the screen. On a big screen the
+ * top bar has every button of the thumb's bar: that one then gives the grid its room.
+ */
+object NotesView {
+    var shown by mutableStateOf(false)
+}
+
 @Composable
 internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
-    NeonCard {
+    // A knob the tutorial names among the advanced ones (« Glissé entre les notes »): they unfold.
+    val asked = com.pocketstudio.app.tuto.TutoHints.knobs
+    androidx.compose.runtime.LaunchedEffect(asked) { if (ADVANCED.any { it.first in asked }) setAdvanced(true) }
+    // The tutorial's « Je le fais » on a sound's settings (« Coupure »…) rings this card.
+    NeonCard(modifier = Modifier.spot(com.pocketstudio.app.ui.SYNTH_SETTINGS_SPOT)) {
         SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
         Text(tr("Forme d'onde"), style = MaterialTheme.typography.bodyMedium)
-        ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
+        ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE), waves = true) { v ->
             actions.setParam(SynthPatch.OSC1_WAVE, v)
             actions.setParam(SynthPatch.OSC2_WAVE, v)
         }
@@ -506,9 +626,9 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
         com.pocketstudio.ui.AdaptiveColumns(EASY.map { (index, label) ->
             @Composable {
                 if (index == SynthPatch.UNISON) {
-                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index)) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index), index) { actions.setParam(index, it) }
                 } else {
-                    ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), shown = synthUnit(index, patch.get(index)), automate = knob(actions, index), index = index) { actions.setParam(index, it) }
                 }
             }
         }, minCellWidth = 260.dp, maxColumns = 3)
@@ -519,14 +639,14 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
         AnimatedVisibility(visible = advanced) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(tr("Oscillateur 2"), style = MaterialTheme.typography.bodyMedium)
-                ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE)) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
+                ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE), waves = true) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
                 ChoiceRow(listOf(0f to tr("Octave −1"), 0.5f to tr("Même octave"), 1f to tr("Octave +1")), patch.get(SynthPatch.OSC2_OCTAVE)) {
                     actions.setParam(SynthPatch.OSC2_OCTAVE, it)
                 }
                 Text(tr("Type de filtre"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
                 com.pocketstudio.ui.AdaptiveColumns(
-                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) } } },
+                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), shown = synthUnit(index, patch.get(index)), automate = knob(actions, index), index = index) { actions.setParam(index, it) } } },
                     minCellWidth = 260.dp, maxColumns = 3, spacing = 4.dp,
                 )
             }
@@ -572,11 +692,11 @@ internal fun OctaveControl(octave: Int, actions: SynthActions) {
         Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.25f)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
+        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(48.dp)) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"), modifier = Modifier.size(18.dp))
         }
         Text(tr("Octave %d", NoteNames.keyboardOctave(octave, english)), style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
-        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
+        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(48.dp)) {
             Icon(Icons.Filled.Add, contentDescription = tr("Octave plus haut"), modifier = Modifier.size(18.dp))
         }
     }
@@ -600,11 +720,15 @@ private fun chipColors() = pillColors()
 
 /** Picks the option whose stored value is closest to [current]. */
 @Composable
-private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, onPick: (Float) -> Unit) {
+private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, waves: Boolean = false, onPick: (Float) -> Unit) {
     val selected = options.minBy { kotlin.math.abs(it.first - current) }
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         options.forEach { option ->
-            FilterChip(selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second, maxLines = 1, softWrap = false) }, colors = chipColors())
+            FilterChip(
+                selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second, maxLines = 1, softWrap = false) }, colors = chipColors(),
+                // The wave's drawing beside its word (decorative: TalkBack reads the word).
+                leadingIcon = if (waves) { { com.pocketstudio.ui.WaveGlyph(com.pocketstudio.ui.WaveShape.ofSynth(option.first), tint = if (option == selected) Neon.OnAccent else Neon.TextSecondary) } } else null,
+            )
         }
     }
 }
@@ -614,17 +738,52 @@ private fun knob(actions: SynthActions, index: Int): Pair<Int, () -> Unit>? =
     actions.automate?.takeIf { index in com.pocketstudio.model.AutoTarget.SYNTH_PARAMS }?.let { a -> index to { a(index) } }
 
 @Composable
-private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: String? = null, automate: Pair<Int, () -> Unit>? = null, onChange: (Float) -> Unit) {
+private fun ParamSlider(
+    label: String, value: Float, help: Help? = null, shown: String? = null, automate: Pair<Int, () -> Unit>? = null,
+    /** The synth parameter (the tutorial's ring); -1: none. */
+    index: Int = -1, onChange: (Float) -> Unit,
+) {
+    // Testers (lot « tuto 4 »): the knob the tutorial's step names, dashed and ringed by « Je le fais ».
+    if (index >= 0 && index in com.pocketstudio.app.tuto.TutoHints.knobs) {
+        Column(Modifier.fillMaxWidth().spot("synth_knob_$index").then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_knob_$index")) {
+            ParamSliderBody(label, value, help, shown, automate, onChange)
+        }
+    } else ParamSliderBody(label, value, help, shown, automate, onChange)
+}
+
+@Composable
+private fun ParamSliderBody(label: String, value: Float, help: Help?, shown: String?, automate: Pair<Int, () -> Unit>?, onChange: (Float) -> Unit) {
     // A long press on the name: « Automatiser » (phase 37).
     AutomatableKnob(automate?.second, "knob_${automate?.first ?: label}", Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(label, style = MaterialTheme.typography.bodyMedium)
             if (help != null) HelpDot(help)
             Box(Modifier.weight(1f))
-            Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+            // Audit ultra round 2, n° 25 (seat B c): « Résonance 35 » beside « Coupure 265 Hz »: a knob without a unit says « 35 % ».
+            Text(shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
         }
     }
-    ProSlider(value = value, onValueChange = onChange)
+    ProSlider(value = value, onValueChange = onChange, label = label, valueText = shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()))
+}
+
+/**
+ * Audit ultra round 1, n° 35 (seat D c: « valeurs 0 à 100 sans unité »): a synth knob's value in the engine's own
+ * units (engine/src/main/cpp/core/Synth.cpp): the cutoff in Hz (20 Hz × 900^v), the envelopes' times in ms or s
+ * (1 ms × 5000^v), the glide in s (0,5 × v²); null for a knob without a unit (shown in %).
+ */
+internal fun synthUnit(index: Int, v: Float): String? {
+    fun seconds(s: Float): String = if (s < 1f) tr("%d ms", (s * 1000f).roundToInt().coerceAtLeast(1))
+        else tr("%s s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", s))
+    return when (index) {
+        SynthPatch.CUTOFF -> {
+            val hz = 20f * Math.pow(900.0, v.toDouble()).toFloat()
+            if (hz >= 1000f) tr("%s kHz", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", hz / 1000f)) else tr("%d Hz", hz.roundToInt())
+        }
+        SynthPatch.A_ATTACK, SynthPatch.A_DECAY, SynthPatch.A_RELEASE, SynthPatch.F_ATTACK, SynthPatch.F_DECAY, SynthPatch.F_RELEASE ->
+            seconds(0.001f * Math.pow(5000.0, v.toDouble()).toFloat())
+        SynthPatch.GLIDE -> if (v <= 0f) tr("Aucun") else seconds(0.5f * v * v)
+        else -> null
+    }
 }
 
 private val BLACK_KEY_AFTER_WHITE = setOf(0, 1, 3, 4, 5)  // C# D# F# G# A# sit after C D F G A
@@ -647,7 +806,7 @@ fun Keyboard(
     topC: Boolean = false,
     /** The name written at the bottom of a white key, if any. */
     label: (Int) -> String? = { null },
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val whiteCount = 7 * octaves + if (topC) 1 else 0
     BoxWithConstraints(Modifier.fillMaxWidth().height(height).testTag(tag)) {
         val whiteWidth = maxWidth / whiteCount
@@ -714,6 +873,7 @@ private fun Key(
             .clip(shape)
             .background(face)
             .border(1.dp, if (isBlack) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.22f), shape)
+            .playable(com.pocketstudio.app.acid.noteName(note, com.pocketstudio.app.settings.observedSettings().englishNotes) + " " + (note / 12 - 1), enabled = !locked, start = { onNoteOn(note, 0.8f) }, stop = { onNoteOff(note) })
             .pointerInput(note, locked) {
                 if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->

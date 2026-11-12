@@ -1,0 +1,7 @@
+lang=ar
+device=phone
+font=100
+mode=simple
+gestes.max=80
+mission=remix-voix
+timeout.minutes=25

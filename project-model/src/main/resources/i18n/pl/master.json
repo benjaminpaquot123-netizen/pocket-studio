@@ -1,0 +1,19 @@
+{
+  "Désactivée": "Wył.",
+  "Auto (style)": "Auto (styl)",
+  "Club": "Klub",
+  "Streaming": "Streaming",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "Teraz %s · przez 3 s %s · od ▶ %s LUFS",
+  "Volume visé": "Głośność docelowa",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "Głośność zostaje taka, jak ją ustawisz; wyjście jest tylko chronione przed przesterem.",
+  "Gain ajouté pour la cible : %s dB": "Wzmocnienie dodane dla celu: %s dB",
+  "%d min %d s": "%d min %d s",
+  "%d s": "%d s",
+  "44,1 kHz": "44,1 kHz",
+  "16 bits": "16 bitów",
+  "Volume : —": "Głośność: —",
+  "Volume %1$s · %2$s": "Głośność %1$s · %2$s",
+  "Détails": "Szczegóły",
+  "Masquer les détails": "Ukryj szczegóły"
+}

@@ -39,7 +39,9 @@ object PackSearch {
         for (m in installed.sortedBy { it.name }) {
             val packText = fold(m.name)
             for (s in m.sounds) {
-                val text = fold(listOf(s.name, s.tags.joinToString(" "), SoundPacks.KIND_LABELS[s.kind].orEmpty(), s.kind).joinToString(" ")) + " " + packText
+                // Round 3, n° 33: the family's name as the app shows it too (« Snare », « Trampet »…).
+                val label = SoundPacks.KIND_LABELS[s.kind].orEmpty()
+                val text = fold(listOf(s.name, com.pocketstudio.model.i18n.tr(s.name), s.tags.joinToString(" "), label, com.pocketstudio.model.i18n.tr(label), s.kind).joinToString(" ")) + " " + packText
                 if (words.all { it in text }) {
                     hits += Hit(m, s)
                     if (hits.size >= limit) return hits
@@ -49,8 +51,9 @@ object PackSearch {
         return hits
     }
 
+    /** Lower case, no accents, words of letters and digits of any script (round 3, n° 33: « 스네어 », « 军鼓 » were nothing). */
     fun fold(s: String): String =
-        Normalizer.normalize(s.lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "").replace(Regex("[^a-z0-9]+"), " ").trim()
+        Normalizer.normalize(s.lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "").replace(Regex("[^\\p{L}\\p{N}]+"), " ").trim()
 }
 
 /**

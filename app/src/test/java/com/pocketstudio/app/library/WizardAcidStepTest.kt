@@ -64,7 +64,7 @@ class WizardAcidStepTest {
         assertEquals(32, w.acidPattern!!.length)
         assertEquals(0.8f, w.acidPattern!!.sound.cutoff)
         assertEquals(WizardAcid.sound("Saturée")!!.drive, w.acidPattern!!.sound.drive)
-        assertEquals("TB-303 · Saturée · 2 mesures · ta ligne", acidSummary(w))
+        assertEquals("Acid 303 · Saturée · 2 mesures · ta ligne", acidSummary(w))
         // The generator: a new line on the scale; "Celle du style" brings the style's back (the sound stays).
         vm.setAcidDensity(1f)
         vm.generateAcid()

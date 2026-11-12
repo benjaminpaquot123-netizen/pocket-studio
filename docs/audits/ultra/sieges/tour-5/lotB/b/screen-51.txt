@@ -1,0 +1,4 @@
+Écran 51 (588x1278)
+texte « Pady live » @ 115,498
+texte « Dźwięki (pętle, uderzenia, wokale, kawałki utworów), które odpalasz jednym dotknięciem na swojej muzyce: 4 strony po 16 padów w Pad Live. Każdy pad gra jako uderzenie, w pętli albo dopóki naciskasz; pętle trzymają tempo, jak u DJ-a. » @ 294,621
+bouton « Jasne » @ 502,768

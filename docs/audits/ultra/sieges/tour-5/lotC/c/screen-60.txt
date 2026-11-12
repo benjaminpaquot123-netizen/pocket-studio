@@ -1,0 +1,7 @@
+Écran 60 (588x1278)
+texte « Share my song · My-first-beat-loop-streaming-20261105-211809.m4a » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

@@ -43,7 +43,7 @@ class PlaybackNotificationTest {
         val n = shadowOf(service).lastForegroundNotification
         assertNotNull(n)
         assertEquals("Rave du samedi", n.extras.getString(Notification.EXTRA_TITLE))
-        assertEquals("Pocket Studio · 132 BPM", n.extras.getCharSequence(Notification.EXTRA_TEXT).toString())
+        assertEquals("BenStudio · 132 BPM", n.extras.getCharSequence(Notification.EXTRA_TEXT).toString())
         // A media session is attached: the phone shows it as a player (control centre, lock screen).
         assertNotNull(n.extras.getParcelable(Notification.EXTRA_MEDIA_SESSION, android.media.session.MediaSession.Token::class.java))
         assertEquals("Arrêter", n.actions.single().title.toString())

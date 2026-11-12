@@ -68,9 +68,31 @@ class MidiFileTest {
         val notes = MidiFile.read(MidiFile.export(p, song = false)).notes
         // Odd sixteenths start half a sixteenth late (12 ticks); even ones stay on the grid.
         assertEquals(listOf(0, 6 * 24, 5 * 24 + 12), notes.filter { it.channel == MidiFile.DRUM_CHANNEL }.map { it.start }.sorted().let { listOf(it[0], it[2], it[1]) })
-        assertEquals(listOf(3 * 24 + 6 + 12), notes.filter { it.channel == 0 }.map { it.start })
+        // A note inside an odd sixteenth: late by the swing, then its place in the squeezed step
+        // (6 ticks of 24 → 3 of the 12 left), as the engine plays it (audit 06).
+        assertEquals(listOf(3 * 24 + 12 + 3), notes.filter { it.channel == 0 }.map { it.start })
         // No swing: the grid as it is.
         assertEquals(5 * 24, MidiFile.read(MidiFile.export(p.copy(swing = 0.0), song = false)).notes.filter { it.channel == MidiFile.DRUM_CHANNEL }.map { it.start }.sorted()[1])
+    }
+
+    /** Audit 06: 1/32 and triplet notes under the swing keep their order, never a flam with the next sixteenth. */
+    @Test
+    fun swungNotesBetweenSixteenthsKeepTheirOrder() {
+        for (swing in listOf(0.375, 0.5, 0.75)) {
+            // 1/32 (12 ticks) and 1/16 triplets (16 ticks) over two beats.
+            for (grid in listOf(12, 16)) {
+                val clip = NoteClip(notes = (0 until 8 * 24 / grid).map { Note(it * grid, grid, 60 + it % 12) })
+                val got = MidiFile.read(MidiFile.export(Project(swing = swing, synthNotes = clip), song = false)).notes
+                    .filter { it.channel == 0 }.sortedBy { it.start }
+                assertEquals(clip.notes.size, got.size)
+                // Same order as written, at least a tick apart, never overlapping the next one.
+                assertEquals(clip.notes.map { it.pitch }, got.map { it.pitch })
+                got.zipWithNext().forEach { (a, b) ->
+                    assertTrue("swing $swing grid $grid: ${a.start} then ${b.start}", b.start >= a.start + 1)
+                    assertTrue("swing $swing grid $grid: ${a.start}+${a.length} past ${b.start}", a.start + a.length <= b.start)
+                }
+            }
+        }
     }
 
     @Test

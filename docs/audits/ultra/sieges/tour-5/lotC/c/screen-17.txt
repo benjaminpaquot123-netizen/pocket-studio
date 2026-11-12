@@ -1,0 +1,43 @@
+Écran 17 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+case « None » [désactivé, sélectionné] @ 94,168
+case « Short (3 s) » [désactivé] @ 233,168
+case « Long (8 s) » [désactivé] @ 397,168
+bouton « Advanced » @ 294,252
+bouton « ? » (nom « What is “Track by track”? ») @ 265,321
+case « Track by track » [désactivé] @ 138,336
+case « FLAC (lossless, light) » [désactivé] @ 176,417
+case « No limiter (for mastering) » [désactivé] @ 195,498
+texte « Loop length » @ 101,561
+case « 1 bar » [désactivé] @ 90,624
+case « 2 » [désactivé] @ 184,624
+case « 4 » [désactivé] @ 265,624
+case « 8 » [désactivé] @ 346,624
+case « 16 » [désactivé, sélectionné] @ 427,624
+bouton « Final file: 48 kHz · 24 bits » @ 191,708
+bouton « ? » (nom « What is “Final file”? ») @ 361,708
+texte « Making the sound · 17% » @ 160,771
+texte « Making the sound · 17% » [à 16 %] @ 294,810
+bouton « Cancel » @ 294,870
+bouton « Guide  · Add a melody 27 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

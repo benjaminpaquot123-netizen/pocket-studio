@@ -1,0 +1,12 @@
+Écran 3 (588x1278)
+texte « New song, step by step » @ 210,35
+bouton (icône) @ 546,48
+texte « ▭▭▭ » @ 123,69
+texte « ▭▭▭ » @ 294,138
+texte « ▭▭▭ » @ 226,214
+bouton « ▭▭▭ ▭▭▭ » @ 294,288
+bouton « ▭▭▭ ▭▭▭ » @ 294,384
+bouton « ▭▭▭ ▭▭▭ » @ 294,480
+bouton « ▭▭▭ ▭▭▭ » @ 294,576
+bouton « ▭▭▭ ▭▭▭ » @ 294,672
+bouton « ▭▭▭ ▭▭▭ » @ 294,768

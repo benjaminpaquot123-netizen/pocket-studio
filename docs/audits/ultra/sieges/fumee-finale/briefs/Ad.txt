@@ -1,0 +1,9 @@
+First read and follow docs/audits/ultra/sieges/fumee-finale/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=docs/audits/ultra/sieges/fumee-finale/lotA/d (seat d, lot A; lang de, device phone, font 200, mode simple, options -, mission libre, budget 40 gestures).
+Profile (id t6-Ad): Senior allemand, gros texte, explore sans but précis. Act as this person (habits, patience, vocabulary).
+Mission libre; its 3 goals (ids, the bench checks them): son (un son a joué), trace (un changement gardé sur le téléphone : partie, piste, prise, étoile, son retouché, remix) ou partage (un fichier partagé).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=P022 | « ▶ Jouer et arrêter, sur tous les écrans. » / « ▶ joue tout le morceau ; « ⟳ Boucler » boucle la partie affichée. » / « ▶ joue tout le morceau, de l'Intro à la fin, sur tous les écrans. »
+  - id=P025 | « Le Mode simple n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer. »
+  - id=P118 | « Le « ? » au bout du bandeau étiquette l'écran : un toucher pour voir, un autre pour cacher. »
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.audiotracks
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -24,7 +25,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
@@ -46,12 +49,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.audio.Listening
@@ -61,7 +66,6 @@ import com.pocketstudio.app.rhythm.SampleInfo
 import com.pocketstudio.app.rhythm.Waveform
 import com.pocketstudio.model.AudioClip
 import com.pocketstudio.model.AudioTrack
-import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
@@ -72,6 +76,7 @@ import com.pocketstudio.ui.trackColor
 import kotlin.math.roundToInt
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.i18n.percent
 
 class AudioTracksUi(
@@ -103,11 +108,17 @@ class AudioTracksUi(
     val sceneTitles: List<String> = emptyList(),
     /** The song step each song part starts on (where a song clip sits). */
     val partStarts: List<Int> = emptyList(),
+    /** « M'entendre dans le casque » is chosen (it works with wired headphones only). */
+    val monitor: Boolean = false,
+    /** The audio track heard alone in a loop (its take picker's « Écouter seule »), or null. */
+    val aloneTrack: Int? = null,
 )
 
 class AudioTracksActions(
     /** Opens a track's quick effects. */
     val effects: (Int) -> Unit = {},
+    /** Step 7e: « Garder dans ma bibliothèque » (a track's clip). */
+    val keepInLibrary: (Int) -> Unit = {},
     val add: () -> Unit = {},
     val remove: (Int) -> Unit = {},
     val rename: (Int, String) -> Unit = { _, _ -> },
@@ -140,10 +151,23 @@ class AudioTracksActions(
     val restorePrevious: (Int) -> Unit = {},
     /** The take picker: take (second) of the track's other takes, newest first, plays. */
     val chooseTake: (Int, Int) -> Unit = { _, _ -> },
+    /** « Prises »: an other take of a track left out (undoable). */
+    val forgetTake: (Int, Int) -> Unit = { _, _ -> },
     /** « Recaler sur le tempo »: a take recorded at another tempo stretched to the song's. */
     val realign: (Int) -> Unit = {},
     /** « Refaire mes. A-B »: track, first bar, last bar (of the song for a song clip, else of the part). */
     val punch: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    /** « M'entendre dans le casque » on or off. */
+    val setMonitor: (Boolean) -> Unit = {},
+    /**
+     * Audit ultra round 3 (n° 25, seat C a: « Take 1 » touched, nothing heard): a take touched (track, its index in
+     * [AudioTrack.otherTakes], null for the one playing) plays on its track, and the track is heard alone to compare.
+     */
+    val hearTake: (Int, Int?) -> Unit = { _, _ -> },
+    /** « ▶ Écouter seule » of a track's takes: the track alone in a loop, or everything again. */
+    val listenAlone: (Int) -> Unit = {},
+    /** Keeps the track heard alone going while this screen shows (see [com.pocketstudio.app.rhythm.HoldAlone]). */
+    val holdAlone: () -> (() -> Unit) = { {} },
 )
 
 private val LOOP_BARS = listOf(1, 2, 4, 8, 16)
@@ -155,7 +179,10 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("audio_tracks"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ui.recording?.let { RecordingCard(it, ui.tracks.firstOrNull { t -> t.id == it.track }, ui, actions) }
+        com.pocketstudio.app.rhythm.HoldAlone(ui.aloneTrack != null, actions.holdAlone)
+        // Audit ultra round 3 (n° 24, seat E c): the take's state is in the card of the track that records (below);
+        // here only for a track not (yet) in the list.
+        ui.recording?.let { rec -> if (ui.tracks.none { it.id == rec.track }) RecordingCard(rec, null, ui, actions) }
         ui.task?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
         if (ui.tracks.isEmpty()) {
             NeonCard {
@@ -208,6 +235,25 @@ private fun ListeningAdvice(listening: Listening) {
     }
 }
 
+/**
+ * « M'entendre dans le casque »: with wired headphones, the voice comes back in them during the
+ * take (with the track's effects). Never on the speaker (it would howl); in Bluetooth, too late.
+ */
+@Composable
+private fun MonitorChoice(ui: AudioTracksUi, actions: AudioTracksActions) {
+    when (ui.listening) {
+        Listening.Wired -> FilterChip(
+            selected = ui.monitor, onClick = { actions.setMonitor(!ui.monitor) },
+            label = { Text(tr("M'entendre dans le casque")) }, colors = pillColors(), modifier = Modifier.testTag("audio_monitor"),
+        )
+        Listening.Bluetooth -> if (ui.monitor) Text(
+            tr("En Bluetooth, ta voix reviendrait trop tard dans le casque : elle n'y revient qu'avec des écouteurs filaires."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        Listening.Speaker -> Unit
+    }
+}
+
 /** « Enregistrer sur »: the scene shown, or the whole song (from a part). */
 @Composable
 private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
@@ -239,24 +285,37 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
             Text(tr("La partie %s tourne en boucle ; ta prise joue une fois à chaque passage de cette partie.", ui.sceneTitle), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
         ListeningAdvice(ui.listening)
+        MonitorChoice(ui, actions)
     }
 }
 
 @Composable
 private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTracksUi, actions: AudioTracksActions) {
     var confirm by rememberSaveable { mutableStateOf(false) }
-    NeonCard(accent = Neon.Red, modifier = Modifier.testTag("audio_recording")) {
+    // n° 24 (seat E c): brought into sight as the take starts (the second track's take was off screen, at the page's top).
+    val inSight = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    androidx.compose.runtime.LaunchedEffect(rec.track) {
+        androidx.compose.runtime.withFrameNanos { }  // placed first (the cards are laid out by a subcomposition)
+        inSight.bringIntoView()
+    }
+    NeonCard(accent = Neon.Red, modifier = Modifier.testTag("audio_recording").bringIntoViewRequester(inSight)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = Neon.Red)
             Text(
-                if (rec.waiting) tr("Décompte… la prise commence sur le premier temps") else tr("Enregistrement : %.1f s", rec.seconds),
+                when {
+                    !rec.waiting -> tr("Enregistrement : %.1f s", rec.seconds)
+                    rec.beatsLeft > 0 -> tr("Décompte : %d… la prise commence sur le premier temps", rec.beatsLeft)
+                    else -> tr("Décompte… la prise commence sur le premier temps")
+                },
                 style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f),
             )
         }
         val where = if (rec.song) tr("tout le morceau") else tr("la partie %s", ui.sceneTitle)
         Text(listOfNotNull(track?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }, tr("sur %s", where)).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        LevelMeter(rec.level)
+        // n° 20 (round 2, seat B b: a thin green line, no word, nothing for TalkBack): named, thick, with a word.
+        com.pocketstudio.app.record.InputLevel(rec.level)
         ListeningAdvice(ui.listening)
+        MonitorChoice(ui, actions)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.stop, colors = ButtonDefaults.buttonColors(containerColor = Neon.Red), modifier = Modifier.weight(1f).testTag("audio_stop")) {
                 Text(tr("Arrêter et garder"))
@@ -285,6 +344,8 @@ private const val CONFIRM_CANCEL_SECONDS = 10f
 @Composable
 private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActions) {
     val color = trackColor(t.color)
+    // n° 20 (round 2): « Audio 1 » in the interface's language, wherever the track is named.
+    val shownName = com.pocketstudio.model.DefaultNames.shown(t.name)
     // Kept when a tablet turns (the activity is recreated).
     var menu by rememberSaveable(t.id) { mutableStateOf(false) }
     var renaming by rememberSaveable(t.id) { mutableStateOf(false) }
@@ -292,9 +353,11 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     NeonCard(modifier = Modifier.testTag("audio_track_${t.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(Modifier.size(12.dp).background(color, CircleShape))
-            Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(shownName, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            // Audit ultra round 3 (integration): the track's « ? » for its controls (takes, count-in, alone, recording), which had none.
+            com.pocketstudio.ui.HelpDot(Glossary.AUDIO_TRACK, about = listOf("audio_*", "record_count_in"))
             Box {
-                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name)) }
+                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", shownName)) }
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; renaming = true })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menu = false; colouring = true })
@@ -304,6 +367,8 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             }
         }
         val busy = ui.recording != null || ui.saving
+        // n° 24 (seat E c): count-in, level and « Arrêter et garder » right in the card of the track that records.
+        ui.recording?.takeIf { it.track == t.id }?.let { RecordingCard(it, t, ui, actions) }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = { actions.record(t.id) }, enabled = !busy,
@@ -316,22 +381,23 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { com.pocketstudio.ui.WholeWordsText(tr("Fichier son"), textAlign = androidx.compose.ui.text.style.TextAlign.Center) }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fadingHorizontalScroll()) {
+            // Audit ultra round 1 (n° 31, seat E b): the count-in beside « Enregistrer » (it was at the bottom of Réglages).
+            com.pocketstudio.app.record.CountInChoice()
             TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text(tr("Effets de cette piste")) }
-            if (t.previous != null) {
-                // One touch brings back the take the last one replaced (a second one swaps back).
-                TextButton(onClick = { actions.restorePrevious(t.id) }, enabled = !busy, modifier = Modifier.testTag("audio_previous_${t.id}")) { Text(tr("Prise précédente")) }
-            }
+            // Audit ultra round 3 (n° 25, seat E c): no « Prise précédente » any more: it swapped two takes back and forth
+            // (« précédente » then the next one); the take picker below numbers them all, one touch each.
         }
-        if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, actions)
+        if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, ui.aloneTrack == t.id, actions)
         val clip = t.clip ?: return@NeonCard
-        ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui)
+        ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui, t.takesInOrder().firstOrNull { it.first.file == clip.file }?.second ?: 1)
     }
     if (renaming) {
-        var name by rememberSaveable(t.id) { mutableStateOf(t.name) }
+        var name by rememberSaveable(t.id) { mutableStateOf(shownName) }
         ScaledAlertDialog(
             onDismissRequest = { renaming = false },
             title = { Text(tr("Renommer la piste")) },
-            text = { OutlinedTextField(value = name, onValueChange = { name = it.take(24) }, singleLine = true, label = { Text(tr("Nom")) }) },
+            // n° 26 (seat E b: « Audio 1Chitarra »): the name selected, so what is typed replaces it; its limit said.
+            text = { com.pocketstudio.app.ui.NameField(name, { name = it }, 24, tr("Nom"), modifier = Modifier.testTag("audio_name_field")) },
             confirmButton = { TextButton(onClick = { actions.rename(t.id, name); renaming = false }, enabled = name.isNotBlank()) { Text("OK") } },
             dismissButton = { TextButton(onClick = { renaming = false }) { Text(tr("Annuler")) } },
         )
@@ -339,7 +405,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     if (colouring) {
         ScaledAlertDialog(
             onDismissRequest = { colouring = false },
-            title = { Text(tr("Couleur de « %s »", t.name)) },
+            title = { Text(tr("Couleur de « %s »", shownName)) },
             text = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TrackColors.forEachIndexed { i, c ->
@@ -357,29 +423,62 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
 }
 
 /**
- * « Prises » : every take the track keeps, the one playing first (lit), the others newest first;
- * a touch plays that one instead (one undo step, the one it replaces stays in the list).
+ * « Prises » : every take the track keeps, numbered (« Prise 1 », « Prise 2 »…) in a fixed order,
+ * the one playing lit; a touch plays that one instead (one undo step) and nothing moves (n° 18,
+ * round 2, seat B b: two « 테이크 03:37 » swapped places at each touch). A take not playing can be
+ * deleted (Annuler brings it back).
  */
 @Composable
-private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions) {
+private fun TakePicker(t: AudioTrack, busy: Boolean, alone: Boolean, actions: AudioTracksActions) {
     val chip = pillColors()
-    Text(tr("Prises (%d)", t.otherTakes.size + 1), style = MaterialTheme.typography.bodyMedium)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll().testTag("audio_takes_${t.id}")) {
-        t.clip?.let { now ->
-            FilterChip(selected = true, onClick = {}, label = { Text(takeLabel(now)) }, colors = chip, modifier = Modifier.testTag("audio_take_now_${t.id}"))
-        }
-        t.otherTakes.forEachIndexed { i, take ->
-            FilterChip(
-                selected = false, enabled = !busy, onClick = { actions.chooseTake(t.id, i) }, label = { Text(takeLabel(take)) }, colors = chip,
-                modifier = Modifier.testTag("audio_take_${t.id}_$i"),
-            )
+    val takes = t.takesInOrder()
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(tr("Prises (%d)", takes.size), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+        // n° 25 (seat C a): the track alone in a loop: each take touched is heard there, one after the other.
+        com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), com.pocketstudio.model.DefaultNames.shown(t.name), "audio_alone_${t.id}", compact = true, toggle = { if (!busy || alone) actions.listenAlone(t.id) })
+    }
+    // On several lines rather than scrolled: every take in sight, the one playing (often the last) too.
+    @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+    androidx.compose.foundation.layout.FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp),
+        itemVerticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().testTag("audio_takes_${t.id}"),
+    ) {
+        takes.forEach { (take, number) ->
+            val playing = take.file == t.clip?.file
+            // Its place among the takes not playing (what « choose » and « delete » are given).
+            val other = t.otherTakes.indexOfFirst { it.file == take.file }
+            // n° 25 (seat E c: « Take 2 · 8 s » here, « Take 2 · 8.5 s » under it): the same length as the editor's.
+            val label = takeLabel(take, number, decimals = 1)
+            // A take and its ✕ together: a line break never parts them.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FilterChip(
+                    selected = playing, enabled = playing || !busy, onClick = { if (!busy) actions.hearTake(t.id, other.takeIf { !playing && it >= 0 }) },
+                    label = { Text(label) }, colors = chip, modifier = Modifier.testTag("audio_take_${t.id}_$number"),
+                )
+                if (!playing && other >= 0) {
+                    // Owner (2026-11-04): an unwanted take can go (Annuler brings it back).
+                    IconButton(onClick = { actions.forgetTake(t.id, other) }, enabled = !busy, modifier = Modifier.testTag("audio_take_forget_${t.id}_$number")) {
+                        Icon(Icons.Filled.Close, contentDescription = tr("Supprimer %s", label), tint = Neon.TextSecondary)
+                    }
+                }
+            }
         }
     }
 }
 
-/** A take as the picker names it: its name (« Prise 21:14 ») and its length. */
-private fun takeLabel(c: AudioClip): String =
-    "${com.pocketstudio.model.DefaultNames.shownSample(c.name)} · ${String.format(I18n.lang.locale, "%.0f", c.seconds)} s"
+/** [seconds] in the interface's language (« 7 s », « 7초 »), with [decimals] decimals. */
+private fun secondsText(seconds: Number, decimals: Int): String =
+    tr("%s s", String.format(I18n.lang.locale, "%.${decimals}f", seconds.toDouble()))
+
+/**
+ * A take as the picker names it: « Prise 2 » (its [number], [AudioTrack.takesInOrder]) and its length;
+ * a sound brought from a file keeps its own name.
+ */
+private fun takeLabel(c: AudioClip, number: Int, decimals: Int = 0): String {
+    val name = if (c.take > 0 || com.pocketstudio.model.DefaultNames.isDefault(c.name)) tr("Prise %d", number)
+    else com.pocketstudio.model.DefaultNames.shownSample(c.name)
+    return "$name · ${secondsText(c.seconds, decimals)}"
+}
 
 /**
  * Where each bar line falls in [clip]'s sound, as (fraction of the sound, bar number from 1): of
@@ -402,14 +501,14 @@ fun clipBarMarks(clip: AudioClip, tempoBpm: Double, stepsPerBar: Int): List<Pair
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, ui: AudioTracksUi) {
+private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, ui: AudioTracksUi, number: Int) {
     val per = ui.stepsPerBar
     val chip = pillColors()
     // The cut's handles, kept when a tablet turns.
     var rangeStart by rememberSaveable(clip.file) { mutableStateOf(0f) }
     var rangeEnd by rememberSaveable(clip.file) { mutableStateOf(1f) }
     val range = rangeStart..rangeEnd
-    Text("${com.pocketstudio.model.DefaultNames.shownSample(clip.name)} · ${String.format(I18n.lang.locale, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Text(takeLabel(clip, number, decimals = 1), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     if (clip.tempoDiffers(ui.tempoBpm)) {
         Text(
             tr("Enregistrée à %1\$d BPM, le morceau est à %2\$d BPM : elle ne tombe plus pile sur le temps.", clip.bpm.roundToInt(), ui.tempoBpm.roundToInt()),
@@ -423,13 +522,18 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     // The bar lines over the sound: where each bar of the song (or the part) falls in the take.
     info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive, bars = clipBarMarks(clip, ui.tempoBpm, per)) }
     // Cut: keep the part between the two handles.
-    RangeSlider(value = range, onValueChange = { rangeStart = it.start; rangeEnd = it.endInclusive }, modifier = Modifier.testTag("audio_trim_$id"))
+    RangeSlider(value = range, onValueChange = { rangeStart = it.start; rangeEnd = it.endInclusive }, modifier = Modifier.testTag("audio_trim_$id").named(tr("Garder la sélection")))
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         OutlinedButton(onClick = { actions.trim(id, range.start, range.endInclusive) }, enabled = range.start > 0.001f || range.endInclusive < 0.999f) {
             Text(tr("Garder la sélection"))
         }
         OutlinedButton(onClick = { actions.normalize(id) }, modifier = Modifier.testTag("audio_normalize_$id")) { Text(tr("Normaliser")) }
         OutlinedButton(onClick = { actions.reverse(id) }) { Text(tr("Inverser")) }
+    }
+    // Step 7e: the take for every project (the project does not change).
+    OutlinedButton(onClick = { actions.keepInLibrary(id) }, modifier = Modifier.fillMaxWidth().testTag("audio_keep_library_$id")) {
+        Icon(Icons.Filled.BookmarkAdd, contentDescription = null)
+        Text(" " + tr("Garder dans ma bibliothèque"))
     }
     // Where it plays: in the parts of its scene, in every part, or once along the whole song.
     val ownScene = clip.scene ?: ui.scene
@@ -484,7 +588,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
             FilterChip(selected = clip.once, onClick = { actions.setOnce(id, true) }, label = { Text(tr("une fois par partie")) }, colors = chip, modifier = Modifier.testTag("audio_once_$id"))
             LOOP_BARS.forEach { bars ->
                 FilterChip(selected = !clip.once && clip.loopSteps == bars * per, onClick = { actions.setLoopBars(id, bars) },
-                    label = { Text(if (bars == 1) tr("à chaque mesure") else tr("toutes les %d mesures", bars)) }, colors = chip)
+                    label = { Text(trCount(bars, "à chaque mesure", "toutes les %d mesures")) }, colors = chip)
             }
         }
     }
@@ -492,9 +596,12 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
         OutlinedButton(onClick = { actions.playFrom(id) }, modifier = Modifier.testTag("audio_play_from_$id")) { Text(tr("▶ Depuis ma prise")) }
     }
     PunchRow(id, clip, ui, actions)
-    LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), clip.gain / 2f) { actions.setGain(id, it * 2f) }
-    LabeledSlider(tr("Fondu au début"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
-    LabeledSlider(tr("Fondu à la fin"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
+    // Up to ×4 (+12 dB) for a quiet voice; 100 % stays in the middle (03 G2).
+    LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), kotlin.math.sqrt(clip.gain / AudioClip.MAX_GAIN)) {
+        actions.setGain(id, AudioClip.MAX_GAIN * it * it)
+    }
+    LabeledSlider(tr("Fondu au début"), secondsText(clip.fadeIn, 2), clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
+    LabeledSlider(tr("Fondu à la fin"), secondsText(clip.fadeOut, 2), clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
     // « Décaler la prise »: a fine nudge (5 ms) or a big one (50 ms, a Bluetooth delay) when
     // the voice is early or late; a touch on the value puts it back to 0.
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -521,7 +628,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
 
 /**
  * « Refaire un passage »: the bars to sing again (of the song for a song clip, of the part
- * otherwise), then « ● Refaire mes. 5-8 »: the take starts a bar before and stops by itself.
+ * otherwise), then « ● Refaire mes. 5-8 »: the music starts from the part holding the bar before (or the part's start), the take stops by itself.
  */
 @Composable
 private fun PunchRow(id: Int, clip: AudioClip, ui: AudioTracksUi, actions: AudioTracksActions) {
@@ -546,7 +653,7 @@ private fun PunchRow(id: Int, clip: AudioClip, ui: AudioTracksUi, actions: Audio
     }
     Text(
         if (clip.tempoDiffers(ui.tempoBpm)) tr("Recale d'abord la prise sur le tempo pour refaire un passage.")
-        else tr("La musique part une mesure avant ; seul ce passage est remplacé, la prise entière reste dans les prises."),
+        else tr("La musique repart du début de la partie ; seul ce passage est remplacé, la prise entière reste dans les prises."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
 }
@@ -568,5 +675,5 @@ private fun LabeledSlider(label: String, value: String, position: Float, onChang
         Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = position.coerceIn(0f, 1f), onValueChange = onChange)
+    ProSlider(value = position.coerceIn(0f, 1f), onValueChange = onChange, label = label, valueText = value)
 }

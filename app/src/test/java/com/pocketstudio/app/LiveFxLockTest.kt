@@ -99,14 +99,14 @@ class LiveFxLockTest {
         val chops by vm.liveChops.collectAsState()
         val acid by vm.liveAcid.collectAsState()
         PocketStudioTheme {
-            LiveScreen(LiveScreenUi(p, LiveState.on(0), clock = 5, playing = true, acid = acid, returns = returns, chops = chops, fx = fx), liveActionsOf(vm))
+            LiveScreen(LiveScreenUi(p, LiveState.on(0), clock = 5, playing = true, acid = acid, returns = returns, chops = chops, fx = fx), liveActionsOf(vm), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
         }
     }
 
     private fun showVm(vm: RhythmViewModel) = compose.setContent { Page(vm) }
 
     private fun show(ui: LiveScreenUi, actions: LiveActions) =
-        compose.setContent { PocketStudioTheme { LiveScreen(ui, actions) } }
+        compose.setContent { PocketStudioTheme { LiveScreen(ui, actions, initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
 
     private fun tap(tag: String) {
         val node = compose.onNodeWithTag(tag)
@@ -386,7 +386,7 @@ class LiveFxLockTest {
         val clock = mutableIntStateOf(0)
         val ui = LiveScreenUi(project, LiveState.on(0), playing = true, beatHaptics = on, clockOf = { clock.intValue })
         compose.setContent {
-            CompositionLocalProvider(LocalHapticFeedback provides haptics) { PocketStudioTheme { LiveScreen(ui, LiveActions()) } }
+            CompositionLocalProvider(LocalHapticFeedback provides haptics) { PocketStudioTheme { LiveScreen(ui, LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
         }
         compose.waitForIdle()
         val start = haptics.count
@@ -499,6 +499,8 @@ class LiveFxLockTest {
                 )
             }
         }
+        // Lot 4d: the page opens on the grid, the effects one touch away in the dock.
+        compose.onNodeWithTag("live_tab_Effets").performClick()
         page("BUILD")
         compose.waitForIdle()
         val pads = livePadCompositions
@@ -549,7 +551,7 @@ class LiveFxLockTest {
         val users = androidx.compose.runtime.mutableIntStateOf(0)
         compose.setContent {
             CompositionLocalProvider(com.pocketstudio.app.live.LocalSpectrumUsers provides users) {
-                PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), playing = true), LiveActions()) }
+                PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) }
             }
         }
         compose.waitForIdle()

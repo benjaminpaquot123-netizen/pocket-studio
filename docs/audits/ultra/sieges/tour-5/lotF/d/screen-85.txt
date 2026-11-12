@@ -1,0 +1,20 @@
+Écran 85 (616x1371)
+texte « Sur quel pad ? » @ 159,400
+texte « Le son du pad touché est remplacé (la flèche retour le remet). » @ 308,475
+bouton « 1 Grosse caisse 1 » (nom « Pad 1 : Grosse caisse 1 ») @ 101,556
+bouton « 2 Grosse caisse 2 » (nom « Pad 2 : Grosse caisse 2 ») @ 239,556
+bouton « 3 Caisse » (nom « Pad 3 : Caisse ») @ 377,550
+bouton « 4 Caisse 2 » (nom « Pad 4 : Caisse 2 ») @ 515,550
+bouton « 5 Claquement de mains » (nom « Pad 5 : Claquement de mains ») @ 101,655
+bouton « 6 Charley » (nom « Pad 6 : Charley ») @ 239,649
+bouton « 7 Charley ouvert » (nom « Pad 7 : Charley ouvert ») @ 377,655
+bouton « 8 Tom grave » (nom « Pad 8 : Tom grave ») @ 515,649
+bouton « 9 Tom médium » (nom « Pad 9 : Tom médium ») @ 101,754
+bouton « 10 Tom aigu » (nom « Pad 10 : Tom aigu ») @ 239,748
+bouton « 11 Bord de caisse » (nom « Pad 11 : Bord de caisse ») @ 377,754
+bouton « 12 Cloche » (nom « Pad 12 : Cloche ») @ 515,748
+bouton « 13 Cymbale » (nom « Pad 13 : Cymbale ») @ 101,847
+bouton « 14 Maracas » (nom « Pad 14 : Maracas ») @ 239,847
+bouton « 15 Conga » (nom « Pad 15 : Conga ») @ 377,847
+bouton « 16 Laser » (nom « Pad 16 : Laser ») @ 515,847
+bouton « Annuler » @ 521,958

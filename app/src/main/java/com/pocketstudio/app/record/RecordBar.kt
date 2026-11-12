@@ -68,6 +68,8 @@ class RecordBarUi(
     val enabled: Boolean = true,
     /** The last take ended with nothing played: said under the button. */
     val empty: Boolean = false,
+    /** The bar's « ? » (on the keys: where the notes go, what the count-in's figure is); null: none. */
+    val help: com.pocketstudio.ui.Help? = null,
 )
 
 class RecordBarActions(
@@ -115,6 +117,8 @@ private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifi
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, Modifier.size(18.dp))
             WholeWordsText(" " + ui.label, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
         }
+        // Audit ultra round 1 (n° 31): the count-in beside « Enregistrer » (it was at the bottom of Réglages), on the same line.
+        CountInChoice(compact = true, modifier = Modifier.heightIn(min = if (compact) 48.dp else 56.dp))
         if (ui.canKeepPlayed) {
             OutlinedButton(
                 onClick = actions.keepPlayed, enabled = ui.enabled,
@@ -125,6 +129,7 @@ private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifi
                 WholeWordsText(" " + tr("Garder ce que je viens de jouer"), textAlign = TextAlign.Center)
             }
         }
+        ui.help?.let { com.pocketstudio.ui.HelpDot(it, about = listOf("record_start", "record_count_in", "keep_played")) }
     }
     }
 }
@@ -152,8 +157,15 @@ private fun RunningBar(ui: RecordBarUi, take: NoteTakeUi, actions: RecordBarActi
         } else {
             RecDot()
             Column(Modifier.weight(1f)) {
-                Text(tr("Enregistrement"), style = MaterialTheme.typography.titleMedium, color = Neon.Red)
+                Text(tr("Enregistrement"), style = MaterialTheme.typography.titleMedium, color = Neon.RedText)
                 Counter(ui.counter)
+                // Round 3, n° 37 (seat B b, TalkBack): each note kept is said and seen as it is played.
+                if (take.notes > 0 || take.hits > 0) {
+                    Text(
+                        take.summary(), style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, maxLines = 2,
+                        modifier = Modifier.testTag("record_kept").semantics { liveRegion = LiveRegionMode.Polite },
+                    )
+                }
             }
         }
         Button(
@@ -250,10 +262,16 @@ fun recordBarUi(vm: com.pocketstudio.app.rhythm.RhythmViewModel, label: String, 
         canKeepPlayed = canKeep && source != TakeSource.ACID,
         enabled = mic == null && !live.running,
         empty = empty,
+        // Hands-on audit M5: recording on the keys, where a beginner looked for the notes.
+        help = if (source == TakeSource.KEYS) com.pocketstudio.app.help.ScreenHelp.RECORD_KEYS else null,
     )
 }
 
-fun recordBarActions(vm: com.pocketstudio.app.rhythm.RhythmViewModel, source: TakeSource) = RecordBarActions(
-    record = { vm.recordTake(source) }, keep = vm::keepNoteTake, inTime = vm::takeInTime, asPlayed = vm::takeAsPlayed,
-    redo = vm::redoTake, keepPlayed = vm::keepPlayed,
+fun recordBarActions(
+    vm: com.pocketstudio.app.rhythm.RhythmViewModel, source: TakeSource,
+    /** The Mode simple's « Enregistrer ma mélodie »: on « Ma mélodie » (see [com.pocketstudio.app.rhythm.RhythmViewModel.recordMelodyTake]). */
+    melody: Boolean = false,
+) = RecordBarActions(
+    record = { if (melody) vm.recordMelodyTake() else vm.recordTake(source) }, keep = vm::keepNoteTake, inTime = vm::takeInTime, asPlayed = vm::takeAsPlayed,
+    redo = vm::redoTake, keepPlayed = { vm.keepPlayed(source) },
 )

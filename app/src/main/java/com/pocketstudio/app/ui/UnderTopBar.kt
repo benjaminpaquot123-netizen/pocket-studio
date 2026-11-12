@@ -36,6 +36,12 @@ fun UnderTopBar(
     toggleHelp: () -> Unit = {},
     /** A long press on the « ? »: « Signaler un bug » (null: no shortcut). */
     reportBug: (() -> Unit)? = null,
+    /** « ⟳ Partie » offered (false: the Mode simple, where it shows only while a part loops, to stop it). */
+    loopChip: Boolean = true,
+    /** « − 113 + »: − and + a BPM beside the tempo (the Live page). */
+    tempoSteps: Boolean = false,
+    /** False: no tempo in the strip (the page shows it itself). */
+    showTempo: Boolean = true,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -71,15 +77,18 @@ fun UnderTopBar(
             PlayStripUi(
                 project.tempoBpm, hasSong = controls && project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
+                loopChip = loopChip || loopPart, showTempo = showTempo,
             ),
-            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
+            PlayStripActions(openTempo = { setTempoOpen(true) }, nudgeTempo = if (tempoSteps) vm::nudgeTempo else null, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
         if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
+        val tempoSet by vm.tempoSet.collectAsStateWithLifecycle()
+        TempoBanner(tempoSet, vm::undoTempoSet, vm::dismissTempoSet)
     }
     if (tempoOpen) {
         // Whatever the sheet changes until it closes is one undo step.
         LaunchedEffect(Unit) { vm.beginTempoSheet() }
-        TempoSheet(project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { setTempoOpen(false) })
+        TempoSheet(project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo, lead = project.tempoLead, backToLead = vm::backToLeadTempo), onClose = { setTempoOpen(false) })
     }
 }
 
@@ -94,4 +103,8 @@ fun PositionStrip(
     vm: RhythmViewModel, tempoOpen: Boolean, setTempoOpen: (Boolean) -> Unit,
     /** Lot 2: the « ? » on the Live page too (null: none). */
     helpOn: Boolean? = null, toggleHelp: () -> Unit = {}, reportBug: (() -> Unit)? = null,
-) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug)
+    /** « − 113 + » (the Live page). */
+    tempoSteps: Boolean = false,
+    /** Lot 4d: false where the page shows the tempo itself (the Live page's bar). */
+    showTempo: Boolean = true,
+) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug, tempoSteps = tempoSteps, showTempo = showTempo)

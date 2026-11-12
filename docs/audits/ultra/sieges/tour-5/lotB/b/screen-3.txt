@@ -1,0 +1,12 @@
+Écran 3 (588x1278)
+texte « Nowy utwór, krok po kroku » @ 236,35
+bouton « Zamknij » @ 546,48
+texte « Krok 1: wybierz styl » @ 113,69
+texte « Wybierz styl: ustawię perkusję, a potem części utworu. Wszystko możesz później zmienić. Dotknij karty, żeby przeczytać opis, ▶, żeby posłuchać. » @ 294,138
+texte « • BPM: szybkość utworu, w uderzeniach na minutę. » @ 252,214
+bouton « Spokojnie (Chill, Lo-fi) style: 6 » [état « zamknięte »] @ 294,288
+bouton « Techno style: 10 » [état « zamknięte »] @ 294,384
+bouton « House style: 9 » [état « zamknięte »] @ 294,480
+bouton « Bass music style: 7 » [état « zamknięte »] @ 294,576
+bouton « Hip-hop style: 7 » [état « zamknięte »] @ 294,672
+bouton « Inne style: 4 » [état « zamknięte »] @ 294,768

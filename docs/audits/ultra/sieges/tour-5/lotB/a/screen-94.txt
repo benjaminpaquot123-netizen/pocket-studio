@@ -1,0 +1,47 @@
+Écran 94 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+onglet « Acid 303 Ligne de basse » @ 84,246
+touchable « Basse Plaits » @ 246,246
+touchable « Accords Son court » (nom « Options de Accords ») @ 456,246
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : A » @ 121,324
+touchable « Accords · mesure 4/8 Toutes les notes en pointillé sont posées » @ 294,377
+texte « mes. » @ 69,427
+touchable « 4 » @ 306,427
+touchable « 5 » @ 533,427
+  → la suite sur le côté (glisse pour la voir)
+bouton « Mi♭3 » @ 69,475
+bouton « Ré3 » @ 69,505
+bouton « Ré♭3 » @ 69,535
+bouton « Do3 » @ 69,565
+bouton « Si2 » @ 69,595
+bouton « Si♭2 » @ 69,625
+bouton « La2 » @ 69,655
+bouton « La♭2 » @ 69,685
+bouton « Sol2 » @ 69,715
+bouton « Sol♭2 » @ 69,734
+texte « Grille des notes : 48 notes » @ 321,599
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Le stab Chapitre 6/15 · Étape 1/1 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « Bravo, chapitre fini ! » (nom « Déplier ») @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » @ 174,1146
+onglet « Clavier » [sélectionné] @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

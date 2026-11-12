@@ -1,0 +1,7 @@
+lang=hi
+device=phone
+font=100
+fresh=reel
+gestes.max=60
+mission=simple
+timeout.minutes=25

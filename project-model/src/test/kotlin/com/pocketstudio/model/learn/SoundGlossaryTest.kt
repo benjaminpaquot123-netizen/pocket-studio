@@ -62,7 +62,7 @@ class SoundGlossaryTest {
     fun everyWordHasItsEnglishAndDutchText() {
         I18n.lang = Lang.FR
         val french = SoundGlossary.ALL.flatMap { w -> listOf(w.term, w.text) + w.example().labels }.toSet()
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        (Lang.entries - Lang.FR).forEach { lang ->
             val table = I18n.table(lang)
             val missing = french.filter { table[it].isNullOrBlank() }
             assertTrue("${lang.code}: $missing", missing.isEmpty())
@@ -82,6 +82,21 @@ class SoundGlossaryTest {
         assertEquals("kick", kick.first().key)
         assertTrue(kick.size > 2)
         assertTrue(SoundGlossary.search("zzzz").isEmpty())
+    }
+
+    /** Audit (textes): Dutch « Grondtoon » translates several French words; the « ? » of « Note d'origine » still plays its word. */
+    @Test
+    fun aHelpShownInAnyLanguageFindsItsWord() {
+        listOf(Lang.FR, Lang.EN, Lang.NL).forEach { lang ->
+            I18n.lang = lang
+            SoundGlossary.ALL.forEach { w ->
+                w.aliases.forEach { alias ->
+                    assertNotNull("${lang.code}: $alias", SoundGlossary.forHelp(com.pocketstudio.model.i18n.tr(alias)))
+                }
+            }
+        }
+        I18n.lang = Lang.NL
+        assertEquals("tonic", SoundGlossary.forHelp(com.pocketstudio.model.i18n.tr("Note d'origine"))?.key)
     }
 
     @Test

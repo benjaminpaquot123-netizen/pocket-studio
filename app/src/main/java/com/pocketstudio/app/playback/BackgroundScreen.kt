@@ -1,5 +1,6 @@
 package com.pocketstudio.app.playback
 
+import com.pocketstudio.ui.pressScale
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -125,7 +126,7 @@ fun BackgroundScreen(
                 NeonCard(accent = Neon.Amber) {
                     SectionLabel(tr("3. Réglage Honor"), color = Neon.Amber)
                     Text(
-                        tr("Paramètres › Batterie › Lancement d'applications › Pocket Studio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés."),
+                        tr("Paramètres › Batterie › Lancement d'applications › BenStudio : désactive « Gérer automatiquement », puis laisse les trois interrupteurs allumés."),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     OutlinedButton(onClick = onAppSettings, modifier = Modifier.fillMaxWidth()) { Text(tr("Ouvrir les réglages de l'appli")) }
@@ -144,7 +145,7 @@ private fun Step(number: Int, title: String, text: String, done: Boolean, action
  = if (done) Neon.Acid else Neon.TextSecondary)
         }
         Text(text, style = MaterialTheme.typography.bodyMedium)
-        if (!done) Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(action) }
+        if (!done) Button(onClick = onClick, modifier = Modifier.pressScale().fillMaxWidth()) { Text(action) }
     }
 }
 

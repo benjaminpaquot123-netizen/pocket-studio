@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "Het geluid van de aangeraakte pad wordt vervangen (de terugpijl zet het terug).",
+  "Découper ce que je veux": "Knippen wat ik wil",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Kies stukjes van elk spoor en zet ze op je pads, in de Live of op een spoor.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "De app splitst een nummer in 4 sporen (drums, bas, zang, de rest). Onder het nummer: ‘Knippen wat ik wil’: kies stukjes en zet ze op je pads, je Live of een spoor. Of speel passages in de Remix-vakjes van de Live.",
+  "Tes chansons séparées": "Je gesplitste nummers",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "Hun sporen (zang, drums, bas, de rest) knip je in stukjes voor je pads; ‘Bewaren’ zet ze hier.",
+  "Découper « %s »": "‘%s’ knippen",
+  "À télécharger pour « %s » :": "Te downloaden voor ‘%s’:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Ritme · slagen: %1$d · goed: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Ritme · slagen: %1$d · gespeeld: %2$d",
+  "Rythme · coups : %d": "Ritme · slagen: %d",
+  "Ton record : %d sur 3": "Je record: %d van 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · sterren: %2$d van 3",
+  "en cours": "bezig"
+}

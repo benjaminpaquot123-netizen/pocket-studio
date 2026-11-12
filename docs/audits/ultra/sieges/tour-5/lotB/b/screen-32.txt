@@ -1,0 +1,44 @@
+Écran 32 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 1/4 » (nom « w pętli ») @ 248,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+onglet « Acid 303 Linia basu » @ 88,186
+touchable « Riser Bas reese » @ 245,186
+touchable « Moja melodia Kwasowa melodia » (nom « Opcje: Moja melodia ») @ 445,186
+  → la suite sur le côté (glisse pour la voir)
+bouton « Część: G · Build-up » (nom « w pętli ») @ 149,264
+texte « Gra w pętli, gdy ją edytujesz. ⟳ Pętla u góry przywraca utwór. » @ 294,321
+case « Klawiatura » [sélectionné] @ 98,408
+case « Nuty » @ 236,408
+bouton «  Wyczyść » (nom « Wyczyść tę ścieżkę w części G · Build-up ») @ 488,408
+bouton «  Nagraj moją melodię » @ 244,484
+bouton «  1 » (nom « Odliczanie: 1 takt ») @ 526,484
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « otwarte »] @ 294,546
+texte « Twoja kolej: posłuchaj tego dźwięku osobno, potem zdecyduj. » @ 183,588
+bouton « Zachowaj ten dźwięk » @ 294,646
+texte « Spełnia swoją rolę: przechodzimy do następnego. » @ 275,701
+texte « POKAŻ USTAWIENIE » @ 141,745
+bouton « ↗ Karta ścieżki „Bęben basowy 1” » @ 294,805
+bouton « ↗ Inny pomysł na dźwięk » (nom « Zobacz ustawienie: Inny pomysł na dźwięk ») @ 294,889
+bouton « ↗ Gdzie gra » (nom « Zobacz ustawienie: Gdzie gra ») @ 294,973
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Cofnij » @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » [sélectionné] @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

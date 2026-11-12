@@ -1,0 +1,16 @@
+Écran 4 (540x1170)
+texte « नया गाना, स्टेप बाय स्टेप » @ 198,38
+bouton « बंद करो » @ 498,56
+texte « स्टेप 1: एक स्टाइल चुनो » @ 130,82
+texte « एक स्टाइल चुनो: मैं ड्रम्स सेट करूँगा, फिर गाने के पार्ट। बाद में सब बदल सकते हो। जानकारी पढ़ने के लिए कार्ड पर टैप करो, सुनने के लिए ▶। » @ 270,170
+texte « • BPM: गाने की रफ़्तार, एक मिनट में कितनी बीट। » @ 248,268
+bouton « शांत (Chill, Lo-fi) 6 स्टाइल » [état « खुला »] @ 270,346
+touchable « Lo-fi hip-hop Hip-hop · 84 BPM “Lofi Girl” वीडियोज़ वाला हल्का hip-hop, पढ़ाई के लिए परफ़ेक्ट: इलेक्ट्रिक पियानो पर jazz कॉर्ड्स, नरम ड्रम्स और पुराने विनाइल की चटचटाहट। आइडिया के लिए: Nujabes – Aruarian Dance (2004) » @ 270,493
+bouton « सुनो » @ 57,445
+touchable « Deep house House · 120 BPM हल्का, गर्म house: नरम इलेक्ट्रिक पियानो, गोल बेस, सनसेट वाला मूड। आइडिया के लिए: Mr. Fingers – Can You Feel It (1986) » @ 270,691
+bouton « सुनो » @ 57,643
+touchable « Amapiano House · 112 BPM धीमा साउथ अफ़्रीकन house: एक बेस जो लकड़ी के ड्रम (“log drum”) की तरह उछलता है और एक jazzy पियानो। आइडिया के लिए: Tyla – Water (2023) » @ 270,889
+bouton « सुनो » @ 57,841
+touchable « Synthwave 105 BPM 80s का साउंड फिर से फ़ैशन में (Stranger Things, Blinding Lights): गूँजता बहुत बड़ा Snare, बिना रुके धड़कता बेस और लूप में घूमते सिंथ नोट्स। आइडिया के लिए: The Weeknd – Blinding Lights (2019) » @ 270,1082
+bouton « सुनो » @ 57,1039
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

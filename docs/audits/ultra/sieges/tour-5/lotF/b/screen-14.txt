@@ -1,0 +1,35 @@
+Écran 14 (1920x1200)
+texte « Effekte · Drums » @ 727,72
+texte « Aktive Effekte: 1 von 8 » @ 743,160
+case « 1. Filter » @ 816,230
+bouton « Effekt ausschalten » @ 1137,230
+bouton « Effekt nach oben » [désactivé] @ 1209,230
+bouton « Effekt nach unten » [désactivé] @ 1281,230
+bouton « Effekt entfernen » @ 1353,230
+bouton «   Effekt hinzufügen » @ 960,312
+texte « Fertige Vibes » @ 657,395
+bouton « ? » (nom « Was ist „Effekt-Vibe“? ») @ 805,395
+case « Für: Drums » [sélectionné] @ 660,471
+case « Favoriten » @ 924,471
+case « Atmosphäre » @ 1199,471
+case « Farbe » @ 1368,471
+  → la suite sur le côté (glisse pour la voir)
+texte « Stil: » @ 565,555
+case « Acid » @ 675,555
+case « Techno » @ 848,555
+case « DnB » @ 1017,555
+case « Dubstep » @ 1194,555
+case « House » @ 1348,555
+  → la suite sur le côté (glisse pour la voir)
+case « Punch » @ 616,639
+case « EDM-Pump » @ 844,639
+case « Knusprig » @ 1096,639
+case « Lo-Fi Tape » @ 656,711
+case « Kleiner Raum » @ 941,711
+case « Ohne Effekt » @ 1238,711
+texte « Tippe auf einen Vibe, um ihn auszuprobieren: Mit Rückgängig kommst du immer zurück. » @ 960,811
+texte « Halte den Finger auf einem Vibe, um ihn zu hören; lass los, dein Sound kommt zurück. » @ 960,927
+texte « XY-Pad, oben-unten: » @ 719,1017
+bouton « ? » (nom « Was ist „XY-Pad“? ») @ 938,1017
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Schließen » @ 1275,1124

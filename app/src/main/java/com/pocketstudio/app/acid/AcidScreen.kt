@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.acid
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 
@@ -134,6 +135,8 @@ fun AcidScreen(
     onFocused: () -> Unit = {},
     /** « ● Enregistrer » the knobs' moves, right above them (the record bar, given by the app). */
     record: (@Composable () -> Unit)? = null,
+    /** The Mode simple: its everyday words (« Écris-moi une ligne », « Case 3 », « Plus fort », « Glisse »), no automation chip. */
+    simple: Boolean = false,
 ) {
     val context = LocalContext.current
     val settings by com.pocketstudio.app.settings.SettingsStore.state.collectAsState()
@@ -141,6 +144,7 @@ fun AcidScreen(
     val setEnglish: (Boolean) -> Unit = { Notation.setEnglish(context, it) }
     // On a tablet the line (generator and steps) on the left; the chosen step and the sound on the right.
     com.pocketstudio.ui.AdaptivePanes(modifier.testTag("acid"), first = {
+        AcidTitle(simple)
         NeonCard {
             // At least 56 dp, taller when the words need two lines (a tablet pane, a big interface
             // size): never « pattern » cut under the button. Both buttons keep the same height.
@@ -148,27 +152,27 @@ fun AcidScreen(
             Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = actions.generate,
-                    modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 56.dp).spot("acid_generate", tr("Nouvelle ligne")).testTag("acid_generate"),
+                    modifier = Modifier.pressScale().weight(1f).fillMaxHeight().heightIn(min = 56.dp).spot("acid_generate", tr("Nouvelle ligne")).testTag("acid_generate"),
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null)
                     com.pocketstudio.ui.WholeWordsText(
-                        tr("Génère-moi un pattern"), Modifier.padding(start = 8.dp),
+                        if (simple) tr("Écris-moi une ligne") else tr("Génère-moi un pattern"), Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.titleSmall, textAlign = androidx.compose.ui.text.style.TextAlign.Center, maxLines = 2,
                     )
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Densité"), Modifier.weight(1f))
+                Text(if (simple) tr("Nombre de notes") else tr("Densité"), Modifier.weight(1f))
                 Text(com.pocketstudio.model.i18n.percent((acid.density * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = acid.density, onValueChange = actions.setDensity)
+            ProSlider(value = acid.density, onValueChange = actions.setDensity, label = if (simple) tr("Nombre de notes") else tr("Densité"), valueText = com.pocketstudio.model.i18n.percent((acid.density * 100).roundToInt()))
         }
-        StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish)
+        StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish, simple)
     }, second = {
-        StepEditor(acid, selected, actions, english)
+        StepEditor(acid, selected, actions, english, simple)
         record?.invoke()
-        SoundCard(acid, actions, browser, recording, automated, focusKnob, onFocused)
+        SoundCard(acid, actions, browser, recording, automated, focusKnob, onFocused, simple)
         effects?.let { com.pocketstudio.app.mixer.EffectsCard(it) }
     })
 }
@@ -182,7 +186,8 @@ private fun StepGrid(
     actions: AcidActions,
     english: Boolean,
     setEnglish: (Boolean) -> Unit,
-) {
+    simple: Boolean = false,
+) = com.pocketstudio.ui.LeftToRight {
     val playStep = if (currentStep >= 0) currentStep % acid.length else -1
     val pages = (acid.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE
     var page by rememberSaveable { mutableIntStateOf(0) }
@@ -196,7 +201,7 @@ private fun StepGrid(
             SectionLabel(tr("Ligne de basse · base %s", noteName(acid.root, english)), Modifier.weight(1f), help = Glossary.ACID, foldKey = "Ligne de basse")
             FilterChip(
                 selected = english, onClick = { setEnglish(!english) },
-                label = { Text(if (english) "C D E" else "Do Ré Mi") },
+                label = { Text(if (english) "C D E" else tr("Do Ré Mi")) },
                 colors = chipColors,
                 modifier = Modifier.testTag("acid_notation"),
             )
@@ -237,13 +242,15 @@ private fun StepGrid(
                     val i = shown * AcidPattern.STEPS_PER_PAGE + row * 8 + col
                     AcidStepCell(
                         acid, i, english, selected = i == selected, playing = i == playStep,
+                        hint = com.pocketstudio.app.tuto.TutoHints.acid?.get(i),
                         modifier = Modifier.weight(1f).clickable { actions.selectStep(i) }.testTag("acid_step_$i"),
                     )
                 }
             }
         }
         Text(
-            tr("Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur."),
+            if (simple) tr("Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.")
+            else tr("Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur."),
             style = MaterialTheme.typography.bodySmall,
             color = Neon.TextSecondary,
         )
@@ -256,8 +263,12 @@ private fun StepGrid(
  * it; a thicker edge when [selected] or [playing]. [modifier] carries its size and its touches.
  */
 @Composable
-fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modifier = Modifier, selected: Boolean = false, playing: Boolean = false) {
+fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modifier = Modifier, selected: Boolean = false, playing: Boolean = false, hint: com.pocketstudio.model.AcidStep? = null) {
     val s = acid.steps[index]
+    // The tutorial's step to write here (its note, accent, slide), while it is not written so: dashed in amber, its note shown.
+    val todo = hint?.takeIf { h ->
+        !s.gate || acid.root + s.note + 12 * s.octave != acid.root + h.note + 12 * h.octave || s.accent != h.accent || s.slide != h.slide
+    }
     val fill = when {
         !s.gate -> Neon.Surface
         s.accent -> Neon.Cyan
@@ -270,10 +281,11 @@ fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modi
             .clip(RoundedCornerShape(6.dp))
             .background(fill)
             .border(
-                width = if (selected || playing) 2.dp else 1.dp,
+                width = if (selected || playing || todo != null) 2.dp else 1.dp,
                 color = when {
                     playing -> Neon.TextPrimary
                     selected -> Neon.Magenta
+                    todo != null -> Neon.Amber
                     else -> Neon.Outline
                 },
                 shape = RoundedCornerShape(6.dp),
@@ -282,7 +294,11 @@ fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modi
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
+            if (todo != null && !s.gate) Text(
+                noteName(acid.root + todo.note, english) + (if (todo.accent) "!" else "") + (if (todo.slide) "⌒" else "") +
+                    (if (todo.octave > 0) "↑".repeat(todo.octave) else if (todo.octave < 0) "↓" else ""),
+                fontSize = 11.sp, color = Neon.Amber, modifier = Modifier.testTag("tuto_acid_hint"),
+            ) else Text(
                 if (s.gate) noteName(acid.root + s.note, english) else "–",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -302,17 +318,17 @@ fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modi
 }
 
 @Composable
-private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, english: Boolean) {
+private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, english: Boolean, simple: Boolean = false) {
     val s = acid.steps[index]
     val chipColors = pillColors()
     NeonCard(accent = Neon.Magenta) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(tr("Pas %d", index + 1), color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
+            SectionLabel(if (simple) tr("Case %d", index + 1) else tr("Pas %d", index + 1), color = Neon.Magenta, help = Glossary.ACID_STEP, foldKey = "Pas de la basse acide")
             Box(Modifier.weight(1f))
             FilterChip(
                 selected = index in acid.locked,
                 onClick = actions.toggleLock,
-                label = { Text(tr("Verrou")) },
+                label = { Text(if (simple) tr("Garder") else tr("Verrou")) },
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                 colors = chipColors,
             )
@@ -330,11 +346,11 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
         )
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = s.gate, onClick = { actions.editStep { it.copy(gate = !it.gate) } }, label = { Text(tr("Note")) }, colors = chipColors)
-            FilterChip(selected = s.accent, onClick = { actions.editStep { it.copy(accent = !it.accent, gate = true) } }, label = { Text(tr("Accent")) }, colors = chipColors)
-            FilterChip(selected = s.slide, onClick = { actions.editStep { it.copy(slide = !it.slide, gate = true) } }, label = { Text(tr("Slide")) }, colors = chipColors)
+            FilterChip(selected = s.accent, onClick = { actions.editStep { it.copy(accent = !it.accent, gate = true) } }, label = { Text(if (simple) tr("Plus fort") else tr("Accent")) }, colors = chipColors)
+            FilterChip(selected = s.slide, onClick = { actions.editStep { it.copy(slide = !it.slide, gate = true) } }, label = { Text(if (simple) tr("Glisse") else tr("Slide")) }, colors = chipColors)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Octave (Down ↓ / Up ↑)"), Modifier.weight(1f))
+            Text(if (simple) tr("Octave") else tr("Octave (Down ↓ / Up ↑)"), Modifier.weight(1f))
             IconButton(onClick = { actions.editStep { it.copy(octave = (it.octave - 1).coerceAtLeast(-1), gate = true) } }) {
                 Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"))
             }
@@ -355,7 +371,7 @@ private fun StepEditor(acid: AcidPattern, index: Int, actions: AcidActions, engl
 @Composable
 private fun SoundCard(
     acid: AcidPattern, actions: AcidActions, browser: SoundBrowserUi?, recording: Boolean = false, automated: Set<Int> = emptySet(),
-    focus: Int? = null, onFocused: () -> Unit = {},
+    focus: Int? = null, onFocused: () -> Unit = {}, simple: Boolean = false,
 ) {
     val values = acid.sound.values()
     val context = LocalContext.current
@@ -387,8 +403,8 @@ private fun SoundCard(
             }
         }
         browser?.let { SoundBrowser(it) }
-        // The knobs' moves recorded into automation lanes (the Mixer's Automation card shows them).
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // The knobs' moves recorded into automation lanes (the Mixer's Automation card shows them): the full mode's.
+        if (!simple) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = recording, onClick = actions.toggleRecord,
                 label = { Text(tr("Enregistrer")) },
@@ -397,7 +413,7 @@ private fun SoundCard(
                 modifier = Modifier.testTag("acid_record"),
             )
             Text(
-                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mix › Automation).")
+                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mix › Courbes).")
                 else tr("Enregistre tes mouvements de bouton pendant la lecture."),
                 Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
@@ -417,6 +433,7 @@ private fun SoundCard(
                 ProSlider(
                     value = values[i],
                     onValueChange = { actions.setSound(i, it) },
+                    label = label, valueText = "${(values[i] * 100).roundToInt()}",
                     modifier = Modifier.holding { actions.holdSound(i, it) }.testTag("acid_sound_$i"),
                 )
             }
@@ -434,7 +451,7 @@ private fun AutomatedHint(automated: Set<Int>) {
     if (automated.isEmpty()) return
     val names = automated.sorted().mapNotNull { SOUND_LABELS.getOrNull(it) }.joinToString(", ")
     Text(
-        tr("Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.", names),
+        tr("Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.", names),
         style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("acid_automated"),
     )
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BenStudio Test (docs/PLAN-TEST-APK.md): merged over the app's manifest with -PbenTest only. Its own launcher
+     (the preparation screen), its name and icon; the studio itself opens from there, no longer from the home screen. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Normal permission (no prompt): brings the robot's task back to the front when another app opened over it. -->
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+
+    <application
+        android:icon="@mipmap/ic_launcher_bentest"
+        android:roundIcon="@mipmap/ic_launcher_bentest"
+        android:label="BenStudio Test"
+        tools:replace="android:icon,android:roundIcon,android:label">
+
+        <activity
+            android:name="com.pocketstudio.app.MainActivity"
+            tools:node="merge">
+            <intent-filter tools:node="removeAll" />
+        </activity>
+
+        <activity
+            android:name="com.pocketstudio.bentest.BenTestActivity"
+            android:exported="true"
+            android:label="BenStudio Test"
+            android:taskAffinity="com.pocketstudio.test.banc"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.PocketStudio">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,19 @@
+{
+  "Désactivée": "オフ",
+  "Auto (style)": "オート（スタイル）",
+  "Club": "クラブ",
+  "Streaming": "ストリーミング",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "現在 %s · 3秒 %s · ▶から %s LUFS",
+  "Volume visé": "目標ラウドネス",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "音量は設定したまま。出力は音割れから守られるだけです。",
+  "Gain ajouté pour la cible : %s dB": "目標に向けて足したゲイン：%s dB",
+  "%d min %d s": "%d分%d秒",
+  "%d s": "%d秒",
+  "44,1 kHz": "44.1 kHz",
+  "16 bits": "16 bit",
+  "Volume : —": "音量：—",
+  "Volume %1$s · %2$s": "音量 %1$s · %2$s",
+  "Détails": "詳細",
+  "Masquer les détails": "詳細を隠す"
+}

@@ -7,8 +7,8 @@ import org.junit.Test
 import java.io.File
 
 /**
- * Every text the code passes to [tr] has an English and a Dutch translation with the same
- * placeholders, and no text is built with a Kotlin template inside [tr] (its key would never match).
+ * Every text the code passes to [tr] (or [trCount]) has a translation in every language with the
+ * same placeholders, and no text is built with a Kotlin template inside [tr] (its key would never match).
  */
 class I18nCatalogTest {
     @After
@@ -17,16 +17,23 @@ class I18nCatalogTest {
     }
 
     private val roots = listOf("src/main", "../app/src/main", "../ui-components/src/main").map(::File).filter { it.isDirectory }
-    private val call = Regex("""(?<![A-Za-z0-9_.])tr\(\s*"((?:[^"\\]|\\.)*)"""")
+    // Audit ultra round 3, n° 32 (seat B d): « Cette étape n'est pas encore faite. Touche encore « Suivant »… » in French in
+    // the German app: written com.pocketstudio.model.i18n.tr("…"), the call escaped this list. Qualified calls count too.
+    private val call = Regex("""(?:(?<![A-Za-z0-9_.])|(?<=i18n\.))tr\(\s*"((?:[^"\\]|\\.)*)"""")
 
-    /** The French keys used by the code, with where they are. */
-    private fun keys(): Map<String, String> {
+    /** trCount(n, "1 mesure", "%d mesures"…): both keys. */
+    private val countCall = Regex("""(?:(?<![A-Za-z0-9_.])|(?<=i18n\.))trCount\([^,"]+,\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"""")
+
+    /** Every language but French (the keys). */
+    private val translated = Lang.entries - Lang.FR
+
+    /** The French keys used by the code (in the files [which] keeps), with where they are. */
+    private fun keys(which: (File) -> Boolean = { true }): Map<String, String> {
         val found = linkedMapOf<String, String>()
         roots.forEach { root ->
-            root.walkTopDown().filter { it.extension == "kt" }.forEach { f ->
+            root.walkTopDown().filter { it.extension == "kt" && which(it) }.forEach { f ->
                 f.readLines().forEachIndexed { i, line ->
-                    call.findAll(line).forEach { m ->
-                        val raw = m.groupValues[1]
+                    (call.findAll(line).map { it.groupValues[1] } + countCall.findAll(line).flatMap { it.groupValues.drop(1) }).forEach { raw ->
                         // An unescaped $ in the source is a Kotlin template (%1\$s is a placeholder, not one).
                         val where = "${f.name}:${i + 1}" + if (Regex("""(?<!\\)\$[A-Za-z{]""").containsMatchIn(raw)) " TEMPLATE" else ""
                         found.putIfAbsent(unescape(raw), where)
@@ -45,6 +52,8 @@ class I18nCatalogTest {
                 when (val n = s[i + 1]) {
                     'n' -> append('\n')
                     't' -> append('\t')
+                    // « Acid\u00A0303 »: a name never cut at the line's end (relecture tour 1).
+                    'u' -> if (i + 6 <= s.length) { append(s.substring(i + 2, i + 6).toInt(16).toChar()); i += 4 } else append(n)
                     else -> append(n)
                 }
                 i += 2
@@ -65,11 +74,15 @@ class I18nCatalogTest {
         keys.forEach { (key, where) ->
             if (where.endsWith(" TEMPLATE")) problems += "$where: template inside tr(\"$key\"): use %s"
         }
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        // TEMPORARY (debug of the tutorial, owner 2026-10-28): the tutorial's and the « Mode retours »' new
+        // texts are French only for now; a missing translation of theirs falls back to French.
+        val waiting = keys { pending(it) }.keys - keys { !pending(it) }.keys
+        translated.forEach { lang ->
             val table = I18n.table(lang)
             keys.forEach { (key, where) ->
                 val t = table[key]
                 when {
+                    t.isNullOrBlank() && key in waiting -> Unit
                     t.isNullOrBlank() -> problems += "$where: no ${lang.code} for \"$key\""
                     placeholders(t) != placeholders(key) -> problems += "$where: ${lang.code} placeholders differ for \"$key\" -> \"$t\""
                 }
@@ -130,7 +143,7 @@ class I18nCatalogTest {
         )
         // A fallback written inside such a call ("Piste", "réglage") is a key too.
         val literal = Regex(""""((?:[^"\\]|\\.)*)"""")
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        translated.forEach { lang ->
             val table = I18n.table(lang)
             calls.values.flatMap { arg -> literal.findAll(arg).map { it.groupValues[1] } }
                 .filter { it.any(Char::isLetter) }
@@ -138,7 +151,82 @@ class I18nCatalogTest {
         }
     }
 
+    /**
+     * Audit (textes): no translation is left that nothing shows. Each French key must be written
+     * somewhere in the app's code or data (Kotlin, the Guide's parcours, the assets, the packs'
+     * scripts), as it is or escaped; an old text (the Missions, a tab renamed) is removed with its
+     * screen. [KEPT_UNUSED]: keys kept on purpose.
+     */
+    @Test
+    fun noTranslationIsLeftUnused() {
+        val sources = (roots + listOf("../engine/src/main/java", "../separation/src/main", "../scripts").map(::File).filter { it.isDirectory })
+            .flatMap { root ->
+                root.walkTopDown().filter { f ->
+                    f.isFile && f.extension in setOf("kt", "json", "java", "py") && !f.invariantSeparatorsPath.contains("/resources/i18n/")
+                }.toList()
+            }.map { it.readText() }
+        assertTrue("no source found", sources.size > 100)
+        // Each word (3 letters or more) → the sources holding it: a key is looked for only where its rarest word is.
+        val word = Regex("""\p{L}{3,}""")
+        val where = HashMap<String, MutableSet<Int>>()
+        sources.forEachIndexed { i, text -> word.findAll(text).forEach { where.getOrPut(it.value) { HashSet() }.add(i) } }
+        fun written(key: String): Boolean {
+            // « Acid\u00A0303 »: a non-breaking space is written escaped in the code.
+            val forms = setOf(key, key.replace("$", "\\$"), key.replace("\"", "\\\"").replace("\n", "\\n"), key.replace("\u00A0", "\\u00A0"))
+            val words = word.findAll(key).map { it.value }.toList()
+            val candidates = if (words.isEmpty()) sources.indices.toSet()
+            else words.map { where[it].orEmpty() }.minByOrNull { it.size }.orEmpty()
+            // The index finds whole words only (« Decay » inside « DecayKnob » is not one): a miss looks everywhere.
+            return candidates.any { i -> forms.any { sources[i].contains(it) } } || sources.any { src -> forms.any { src.contains(it) } }
+        }
+        // A plural form ("%d mesures|few") is its count's key.
+        val unused = translated.flatMap { lang ->
+            I18n.AREAS.flatMap { area -> I18n.area(lang, area).keys.map { "${lang.code}/$area.json: $it" to it.substringBeforeLast('|') } }
+        }.distinctBy { it.second }.filter { (_, key) -> key !in KEPT_UNUSED && !written(key) }.map { it.first }
+        assertTrue("${unused.size} translations nothing shows (remove them):\n" + unused.take(60).joinToString("\n"), unused.isEmpty())
+    }
+
+    /** Audit (textes): no text sends to a tab that no longer exists (Morceau, Acide, Outils, Mixeur, Synthé › became Structure, Sons, Mix, Plus). */
+    @Test
+    fun noTextNamesAnOldTab() {
+        val old = listOf("nglet Morceau", "onglet Acide", "Outils ›", "dans le Mixeur", "Synthé ›", "Mixeur, Automation")
+        val found = keys().filter { (key, _) -> old.any { it in key } }.map { (key, where) -> "$where: $key" }
+        assertTrue("old tabs named:\n" + found.joinToString("\n"), found.isEmpty())
+    }
+
+    /** Audit (textes): Dutch « refrein » is a het-word; the languages use their own quotes, not « » (Arabic's are « »). */
+    @Test
+    fun dutchAndEnglishWording() {
+        val deRefrein = Regex("""\b(de|De|deze|Deze|elke|Elke|die|Die)( \p{L}+)? [Rr]efrein\b""")
+        val nl = I18n.table(Lang.NL).filterValues { deRefrein.containsMatchIn(it) }
+        assertTrue("« het refrein »:\n" + nl.values.joinToString("\n"), nl.isEmpty())
+        (translated - Lang.AR).forEach { lang ->
+            val quoted = I18n.table(lang).filterValues { '«' in it || '»' in it }
+            assertTrue("${lang.code}: « » in\n" + quoted.values.joinToString("\n"), quoted.isEmpty())
+        }
+    }
+
+    /** Audit ultra tour 0 (seat b): a « brique » of the song is a « block » in English, never a « brick » here and a « block » there. */
+    @Test
+    fun englishSaysBlockForABrique() {
+        val brick = I18n.table(Lang.EN).filter { (k, v) -> "brique" in k.lowercase() && Regex("""\b[Bb]ricks?\b""").containsMatchIn(v) }
+        assertTrue("« brick »:\n" + brick.values.joinToString("\n"), brick.isEmpty())
+    }
+
+    /** A file of the areas whose translations wait ([PENDING_TRANSLATION_AREAS]): its folder is named after the area. */
+    private fun pending(f: File): Boolean = f.parentFile?.name in PENDING_TRANSLATION_AREAS
+
     companion object {
+        /**
+         * TEMPORARY (owner, 2026-10-28, tutorial debug): the areas whose new texts are in French only
+         * for now (the app shows French where a translation is missing). Translate them, then empty
+         * this set, before any public release (docs/DECISIONS.md).
+         */
+        val PENDING_TRANSLATION_AREAS = emptySet<String>()
+
+        /** Kept although no code writes them: names an older version may have saved in English or Dutch. */
+        private val KEPT_UNUSED = setOf("Charleston", "Cloche (Plaits)")
+
         /** Calls of tr() with a variable, each one's texts checked elsewhere (see the test above). */
         private val CHECKED_SOURCES = setOf(
             "AppRoot.kt: com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { \"réglage\" }",
@@ -148,12 +236,20 @@ class I18nCatalogTest {
             "AutomationCard.kt: it",
             "ChordPads.kt: key.scale.label",
             "SongChords.kt: base.harmony.chordKey.scale.label",  // a scale name (Scale, checked by ModelTextsTest)
+            "RemixScreen.kt: h.scale.label",  // a scale name (Scale, checked by ModelTextsTest)
             "WhatPlays.kt: it",  // an effect's blurb (EffectType, checked by ModelTextsTest)
             "WhatPlays.kt: e.label",
             "WhatPlays.kt: Macros.NAMES[a.macro]",
             "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
             // The Guide's cards and stages (guides/*.json, GuideStages: checked by GuideParcoursTest).
             "GuideParcours.kt: fr",
+            // « Tuto de A à Z »: the course's texts (tutos/*.json, checked by TutoCourseTest) and the styles' names (ModelTextsTest).
+            "TutoPanel.kt: fr",
+            // The key sheet's scales (Scale, checked by ModelTextsTest).
+            "TutoPanel.kt: sc.label",
+            "TutoPanel.kt: harmony.scale.label",
+            // A word's alias in the « ? » helps (SoundGlossary.forHelp): compared with the shown term, never shown itself.
+            "SoundGlossary.kt: it",
             // G4: « Voilà ce que j'ai mis »: an effect's name and a send's bus (EffectType, Buses: checked by ModelTextsTest).
             "GuideViewModel.kt: t.label",
             "GuideViewModel.kt: Buses.NAMES.getOrElse(bus) { \"Réverbe\" }",
@@ -181,6 +277,20 @@ class I18nCatalogTest {
             "RealInstruments.kt: e.name",
             "Tracks.kt: multi.name.ifBlank { \"Instrument\" }",
             "LibraryScreen.kt: label",
+            // The sound browser (2026-10-30): folder titles (SoundShelves.FAMILIES, SoundCharacter.LABELS,
+            // PartySounds groups: ModelTextsTest; a machine is a pack name, a library group a pack sound's name),
+            // sound and pack names as the library showed them, the party sounds (ModelTextsTest).
+            "SoundShelfBrowser.kt: title",
+            "SoundShelfBrowser.kt: name",
+            "SoundShelfBrowser.kt: pack",
+            "SoundShelfBrowser.kt: option.name.substringBefore(\" · \")",
+            "LibraryScreen.kt: s.name",
+            // Round 3, n° 33: the search reads a sound's name (the kit's, « Fête »'s: both lists checked) and its everyday word (I18n.EVERYDAY's values).
+            "LibraryScreen.kt: name",
+            "LibraryScreen.kt: it",
+            "LibraryScreen.kt: s.group",
+            "LibraryScreen.kt: com.pocketstudio.model.PartySounds.FAMILY",
+            "MySoundLibrary.kt: label",  // a family of sounds (SoundPacks.KIND_LABELS, checked by ModelTextsTest)
             "LibraryScreen.kt: option.name.substringBefore(\" · \")",
             // The style's name, as in the assistant (checked by ModelTextsTest).
             "LibraryScreen.kt: style.name",
@@ -233,6 +343,7 @@ class I18nCatalogTest {
             "StarterWizard.kt: it.title",
             "SynthScreen.kt: name",
             "TrackBar.kt: t.soundLabel",
+            "SynthScreen.kt: t.soundLabel",
             // G3: a layer's name, a library sound's (SoundLibrary, checked by ModelTextsTest); an effect's name (EffectType, same).
             "Layers.kt: name",
             "GuideSheets.kt: libraryName",
@@ -273,8 +384,26 @@ class I18nCatalogTest {
             "WizardScreen.kt: s.name",
             "WizardScreen.kt: sound.name",
             "WizardScreen.kt: style.name",
-            "LaunchChoice.kt: it.name",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
+            // Audit ultra round 2 (n° 9): « Auto (Techno) » in « Volume visé », the style's name (ModelTextsTest).
+            "MasterLoudness.kt: s.name",
+            "LaunchChoice.kt: it.name",
+            // trCount's two keys: literals at each call, checked by everyTextHasItsTranslations (countCall).
+            "I18n.kt: one",
+            "I18n.kt: other",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
         )
+    }
+
+    /** Relecture tour 1 (intégration): the welcome card cut « Acid / 303 » over two lines; in every language it stays whole. */
+    @Test
+    fun theWelcomeLineKeepsAcid303Whole() {
+        val key = "Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."
+        assertTrue(key in keys())
+        for (lang in Lang.entries) {
+            I18n.lang = lang
+            val shown = tr(key)
+            assertTrue("$lang: $shown", "Acid\u00A0303" in shown && "Acid 303" !in shown)
+        }
+        I18n.lang = Lang.FR
     }
 
     @Test
@@ -289,9 +418,25 @@ class I18nCatalogTest {
     }
 
     @Test
+    fun theWordsOfTheTutoPanelAreTheInterfacesWords() {
+        // Step 7h: the Fin part in Japanese is エンディング (as « Ajouter une fin »), not the 終了 of a sound's end.
+        I18n.lang = Lang.JA
+        assertEquals("エンディング", com.pocketstudio.model.Scene.shownLabel("Fin"))
+        assertEquals("エンディング 2", com.pocketstudio.model.Scene.shownLabel("Fin 2"))
+        assertEquals("終了", tr("Fin"))
+        I18n.lang = Lang.FR
+        assertEquals("Fin 2", com.pocketstudio.model.Scene.shownLabel("Fin 2"))
+        // The tutos say what the buttons say: no 終了 for the part, no cegiełka in Polish, no हिस्सा in Hindi.
+        val ja = I18n.AREAS.filter { it.startsWith("tuto") }.flatMap { I18n.area(Lang.JA, it).values }
+        assertTrue(ja.none { "終了" in it })
+        assertTrue(I18n.area(Lang.PL, "tuto").values.none { "cegieł" in it.lowercase() })
+        assertTrue(I18n.area(Lang.HI, "tuto").values.none { "हिस्स" in it })
+    }
+
+    @Test
     fun aFrenchTextHasOneTranslationAcrossAreas() {
         // The areas are merged: the same key with two meanings would show the wrong one somewhere.
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        translated.forEach { lang ->
             val seen = mutableMapOf<String, MutableSet<String>>()
             I18n.AREAS.forEach { area -> I18n.area(lang, area).forEach { (k, v) -> seen.getOrPut(k) { mutableSetOf() } += v } }
             val clashes = seen.filterValues { it.size > 1 }
@@ -310,10 +455,42 @@ class I18nCatalogTest {
 
     @Test
     fun catalogsAreValidAndHaveTheSameKeysInEveryLanguage() {
-        I18n.AREAS.forEach { area ->
+        (I18n.AREAS - "plurals").forEach { area ->
             val en = I18n.area(Lang.EN, area).keys
-            val nl = I18n.area(Lang.NL, area).keys
-            assertEquals("area $area: en and nl differ: ${(en - nl) + (nl - en)}", en, nl)
+            translated.forEach { lang ->
+                val keys = I18n.area(lang, area).keys
+                assertEquals("area $area: en and ${lang.code} differ: ${(en - keys) + (keys - en)}", en, keys)
+                assertTrue("${lang.code}/$area.json: an empty text", I18n.area(lang, area).values.none { it.isBlank() })
+            }
         }
+    }
+
+    /**
+     * A language's extra plural forms ("%d mesures|few") are those of a count the code shows with
+     * [trCount], in a category the language has, with no placeholder the count's key has not (the
+     * Arabic dual may say the number in words).
+     */
+    @Test
+    fun pluralFormsBelongToACountAndALanguagesCategory() {
+        val counts = roots.flatMap { root ->
+            root.walkTopDown().filter { it.extension == "kt" }.flatMap { f -> countCall.findAll(f.readText()).map { unescape(it.groupValues[2]) } }.toList()
+        }.toSet()
+        assertTrue("no trCount() found", counts.size > 10)
+        val problems = mutableListOf<String>()
+        Lang.entries.forEach { lang ->
+            val categories = (0L..300L).map { pluralOf(lang.code, it).key }.toSet() - "one" - "other"
+            I18n.area(lang, "plurals").forEach { (key, form) ->
+                val count = key.substringBeforeLast('|')
+                val category = key.substringAfterLast('|', "")
+                if (count !in counts) problems += "${lang.code}: \"$key\": no trCount shows \"$count\""
+                if (category !in categories) problems += "${lang.code}: \"$key\": ${lang.code} has no « $category » (only $categories)"
+                if (!placeholders(count).containsAll(placeholders(form))) problems += "${lang.code}: \"$key\" -> \"$form\": placeholders"
+                if (form.isBlank()) problems += "${lang.code}: \"$key\" empty"
+            }
+        }
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+        // Polish and Arabic have their forms for the bars (« 2 takty », « 5 taktów »; « مازورتان »).
+        assertTrue(I18n.area(Lang.PL, "plurals").keys.containsAll(listOf("%d mesures|few", "%d mesures|many")))
+        assertTrue(I18n.area(Lang.AR, "plurals").keys.containsAll(listOf("%d mesures|two", "%d mesures|few", "%d mesures|many")))
     }
 }

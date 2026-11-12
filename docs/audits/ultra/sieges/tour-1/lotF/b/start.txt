@@ -1,0 +1,8 @@
+lang=en
+device=phone
+font=100
+mode=simple
+amenee=remix
+gestes.max=90
+mission=remix-voix
+timeout.minutes=25

@@ -1,0 +1,15 @@
+{
+  "Copier la note": "انسخ النوتة",
+  "Copier ces %d notes": "انسخ هذه النوتات (%d)",
+  "Supprimer la note": "احذف النوتة",
+  "Supprimer ces %d notes": "احذف هذه النوتات (%d)",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "اضغط خانة: تضيف نوتة. اضغط نوتة: تحددها. ضغطة مطوّلة: قائمتها (نسخ، حذف…). اسحب: تحرّكها، ومن طرفها: تطيلها. الأرقام في الأعلى: مازورة كاملة. الشريط السفلي: اسحب لضبط القوة (velocity).",
+  "%s demi-ton": "%s نصف تون",
+  "Régler le son (filtre, enveloppe…)": "اضبط الصوت (المرشّح، الغلاف…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "مرشّح تمرير منخفض عند %s: يُبقي الجهير ويليّن الحادّ.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "مرشّح تمرير نطاق حول %s: لا يُبقي إلا هذه المنطقة من الصوت.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "مرشّح تمرير عالٍ عند %s: يزيل الجهير تحته.",
+  "Un égaliseur : %1$s vers %2$s.": "معادل: %1$s عند %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "نجحت! تم اختيار لون المقطوعة.",
+  "Revenir au tuto": "العودة إلى الدرس"
+}

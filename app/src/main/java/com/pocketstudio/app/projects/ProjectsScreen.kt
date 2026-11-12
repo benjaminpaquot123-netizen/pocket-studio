@@ -1,5 +1,6 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.model.i18n.upperShown
 import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -83,6 +85,10 @@ class ProjectsActions(
     val create: (Int) -> Unit = {},
     /** The beginner's step-by-step assistant. */
     val wizard: () -> Unit = {},
+    /** « J'apprends »: an empty project with the tutorial of that style and level. */
+    val learn: (style: String, level: com.pocketstudio.model.tuto.TutoLevel) -> Unit = { _, _ -> },
+    /** « Remixer une chanson » among the other ways to start (null: not offered). */
+    val remix: (() -> Unit)? = null,
     /** A style's whole song in one touch, with the assistant's advised choices (its id). */
     val quickStyle: (String) -> Unit = {},
     /** The assistant opened on that style (« Personnaliser pas à pas »). */
@@ -96,6 +102,10 @@ class ProjectsActions(
     val duplicate: (ProjectInfo) -> Unit = {},
     /** Share the project and its sounds as a .zip. */
     val exportZip: (ProjectInfo) -> Unit = {},
+    /** A project the app cannot read: its files as they are, as a .zip to send. */
+    val exportRaw: (ProjectInfo) -> Unit = {},
+    /** « La version d'avant la séance » as a new project. */
+    val restoreOpening: (ProjectInfo) -> Unit = {},
     val importZip: () -> Unit = {},
     val delete: (ProjectInfo) -> Unit = {},
     val undoDelete: () -> Unit = {},
@@ -131,7 +141,10 @@ fun ProjectsScreen(
     // « Nouveau projet » is open for the project that was open when it was asked: once another one is
     // created or opened (the screens are rebuilt on it) the page is closed, back on the list.
     var startedFor by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(if (newOnly) currentId else null) }
-    val choosingStart = startedFor == currentId
+    // Opened on the page alone ([newOnly]): always the page. Round 5, chantier 6: a song made from it rebuilds the screens on
+    // the new project, and the page's saved state came back the next time it opened, for the old project: « Nouveau
+    // morceau » showed « Mes projets » (a second style in one touch: 4 touches instead of 2).
+    val choosingStart = newOnly || startedFor == currentId
     val setChoosingStart = { open: Boolean -> startedFor = if (open) currentId else null }
     var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     // A deletion for good is asked first: the trash entry (or EMPTY_ALL for the whole trash).
@@ -155,15 +168,14 @@ fun ProjectsScreen(
             // The guided song first: the main action for a beginner.
             Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("project_wizard")) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                Text("  " + tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium)
+                Text("  " + tr("Fais-moi un morceau"), style = MaterialTheme.typography.titleMedium)
             }
             OutlinedButton(onClick = { setChoosingStart(true) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
             }
-            TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
-                Text(tr("Importer un projet (.zip)"))
-            }
+            // Chantier 2 (G3): it opens Android's file picker: the shared link row.
+            com.pocketstudio.ui.LinkRow(tr("Importer un projet (.zip)"), onClick = actions.importZip, modifier = Modifier.testTag("project_import"), icon = Icons.Filled.Unarchive)
             ui.deleted?.let { (_, name) ->
                 Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
                     Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -215,7 +227,8 @@ fun ProjectsScreen(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer")) },
             text = {
-                OutlinedTextField(value = name, onValueChange = { name = it.take(40) }, singleLine = true, label = { Text(tr("Nom du projet")) },
+                // n° 26: the name selected to be typed over, its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, com.pocketstudio.model.ProjectCatalog.MAX_NAME, tr("Nom du projet"),
                     modifier = Modifier.testTag("project_name_field"))
             },
             confirmButton = {
@@ -233,7 +246,8 @@ fun ProjectsScreen(
             title = { Text(if (all) tr("Vider la corbeille ?") else tr("Supprimer définitivement ?")) },
             text = {
                 Text(
-                    if (all) tr("Les %d projets de la corbeille et leurs sons seront effacés pour de bon. Impossible de revenir en arrière.", ui.trash.size)
+                    if (all && ui.trash.size == 1) tr("Le projet de la corbeille et ses sons seront effacés pour de bon. Impossible de revenir en arrière.")
+                    else if (all) tr("Les %d projets de la corbeille et leurs sons seront effacés pour de bon. Impossible de revenir en arrière.", ui.trash.size)
                     else tr("« %s » et ses sons seront effacés pour de bon. Impossible de revenir en arrière.", com.pocketstudio.model.DefaultNames.shown(item!!.name)),
                 )
             },
@@ -259,7 +273,14 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Neon.Surface),
         border = BorderStroke(if (open) 2.dp else 1.dp, if (open) Neon.Acid else Neon.Outline),
-        modifier = Modifier.fillMaxWidth().clickable { if (!open) actions.open(p) else (actions.resume ?: actions.back)() }.testTag("project_${p.id}"),
+        // An unreadable project is never opened (that would set it aside once more): its menu instead.
+        modifier = Modifier.fillMaxWidth().clickable {
+            when {
+                p.unreadable -> menu = true
+                !open -> actions.open(p)
+                else -> (actions.resume ?: actions.back)()
+            }
+        }.testTag("project_${p.id}"),
     ) {
         Row(Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -268,24 +289,30 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     // A plain badge: a section heading's accent bar drew a stray « ▌ » after the name (APK 181).
                     if (open) {
-                        Text(tr("ouvert").uppercase(), style = MaterialTheme.typography.labelSmall, color = Neon.Acid, maxLines = 1,
+                        Text(tr("ouvert").upperShown(), style = MaterialTheme.typography.labelSmall, color = Neon.Acid, maxLines = 1,
                             modifier = Modifier.padding(start = 10.dp).testTag("project_open_badge"))
                     }
                 }
-                Text(
+                if (p.unreadable) {
+                    Text(
+                        tr("Ce fichier ne peut pas être relu. Envoie-le tel quel pour le faire réparer : il n'est jamais effacé tout seul."),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                    )
+                } else Text(
                     listOfNotNull(
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
-                        if (p.bars > 0) com.pocketstudio.app.ui.barsShort(p.bars) else null,
-                        if (p.scenes > 1) tr("%d parties", p.scenes) else null,
-                        if (p.hasRemix) "remix" else null,
+                        // n° 23: the song's length as the home and the studio count it (SongLength).
+                        com.pocketstudio.app.ui.lengthWords(com.pocketstudio.model.SongLength(p.bars, p.seconds, p.parts)),
+                        // Round 3, n° 38: in the app's language (« remix » stayed English in Korean).
+                        if (p.hasRemix) tr("Remix").lowercase(com.pocketstudio.model.i18n.I18n.lang.locale) else null,
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
                 if (open) {
                     TextButton(onClick = actions.shareSong, modifier = Modifier.testTag("project_share_song")) {
-                        Icon(Icons.Filled.Share, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
-                        Text(tr("Partager mon morceau"), color = Neon.Acid)
+                        Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
+                        Text(tr("Partager mon morceau"))
                     }
                 }
             }
@@ -294,9 +321,24 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(p.name)))
                 }
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
-                    DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
-                    DropdownMenuItem(text = { Text(tr("Envoyer / sauvegarder (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
+                    if (p.unreadable) {
+                        DropdownMenuItem(
+                            text = { Text(tr("Sauvegarder le morceau en .zip")) },
+                            onClick = { menu = false; actions.exportRaw(p) },
+                            modifier = Modifier.testTag("project_raw_${p.id}"),
+                        )
+                    } else {
+                        DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
+                        DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
+                        DropdownMenuItem(text = { Text(tr("Sauvegarder le morceau en .zip")) }, onClick = { menu = false; actions.exportZip(p) })
+                        if (p.hasOpening) {
+                            DropdownMenuItem(
+                                text = { Text(if (open) tr("Copie d'avant cette séance") else tr("Copie d'avant la dernière séance")) },
+                                onClick = { menu = false; actions.restoreOpening(p) },
+                                modifier = Modifier.testTag("project_opening_${p.id}"),
+                            )
+                        }
+                    }
                     DropdownMenuItem(
                         text = { Text(tr("Supprimer")) },
                         enabled = !busy,

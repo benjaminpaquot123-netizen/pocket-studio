@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "声音没能放到打击垫上：%s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "挑战：听一段节奏，在打击垫上照着打，赢星星。",
+  "Défis": "挑战",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "听一段节奏，在打击垫上照着打：赢星星。",
+  "%s, sur le pad": "%s，在打击垫上",
+  "✓ Sur le pad maintenant": "✓ 现在在这个打击垫上",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "“%1$s”替换了打击垫 %3$d 上的“%2$s”（撤销箭头可以恢复）。到“鼓”里把它放进你想要的段落。",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "“%s”已静音放进你的项目，用来剪切（撤销箭头可以移除）。",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live 有自己的“Live”项目：“%s”在“我的项目”里等你。"
+}

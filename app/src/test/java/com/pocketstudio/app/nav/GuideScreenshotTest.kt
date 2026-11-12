@@ -42,6 +42,9 @@ open class GuideScreenshotTest {
     protected open val uiScale = 1f
     protected open val lang = Lang.FR
 
+    /** The images a subclass takes (null: all). */
+    protected open val only: Set<String>? = null
+
     @After
     fun done() = h.finish()
 
@@ -70,6 +73,7 @@ open class GuideScreenshotTest {
 
     @OptIn(ExperimentalRoborazziApi::class)
     private fun shot(name: String, simple: Boolean = false, project: Project = jumpUp(), prepare: () -> Unit = {}) {
+        org.junit.Assume.assumeTrue(only?.contains(name) ?: true)
         h.start(simple = simple, scale = uiScale, lang = lang) { session.edit { project } }
         await { !h.vm.guide.ui.value.loading && h.vm.guide.ui.value.next != null && h.vm.guide.ui.value.simple == simple && (!simple || h.vm.guide.ui.value.further.isNotEmpty()) }
         prepare()
@@ -96,7 +100,11 @@ open class GuideScreenshotTest {
         tap("guide_bar"); tap("guide_further_toggle")
     }
     /** G4: « Voilà ce que j'ai mis », effect by effect. */
-    @Test fun review() = shot("review") {
+    @Test fun review() = shot("review", project = jumpUp().let { p ->
+        // Audit final: the style's sound cards (shown first now) already decided, the song on « Voilà ce que j'ai mis ».
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, com.pocketstudio.model.guide.GuideStatus.DONE, System.currentTimeMillis(), "keep") })
+    }) {
         tap("guide_bar"); compose.onNodeWithTag("guide_effects").performScrollTo()
     }
     /** G4: a check of stage 6, the phone's speaker. */
@@ -125,4 +133,23 @@ class GuideTabletScreenshotTest : GuideScreenshotTest() {
 @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
 class GuidePhoneLandscapeScreenshotTest : GuideScreenshotTest() {
     override val prefix = "nav/land_"
+}
+
+/** The Guide's panel in four of the new languages (screenshots/i18n/<code>_guide_panel.png): long German, Arabic right to left, CJK, Devanagari. */
+open class GuideGermanScreenshotTest : GuideScreenshotTest() {
+    override val lang = Lang.DE
+    override val prefix get() = "i18n/${lang.code}_"
+    override val only: Set<String>? = setOf("panel", "card")
+}
+
+class GuideArabicScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.AR
+}
+
+class GuideJapaneseScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.JA
+}
+
+class GuideHindiScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.HI
 }

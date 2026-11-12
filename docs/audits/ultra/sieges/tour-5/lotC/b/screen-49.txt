@@ -1,0 +1,37 @@
+Écran 49 (616x1371)
+bouton « Tempo menos » @ 135,48
+bouton « 120 BPM » (nom « Tempo: 120 BPM ») @ 205,48
+bouton « Tempo más » @ 276,48
+bouton « Detener » [sélectionné] @ 366,48
+touchable « REC » (nom « Grabar la actuación ») @ 453,48
+bouton « Detener todo » @ 546,48
+bouton « Salir de pantalla completa » @ 45,48
+texte « Toca: tocar · mantén pulsado: cambiar » @ 196,135
+bouton « Menos pads » @ 476,135
+bouton « Más pads » @ 565,135
+texte « Pads » @ 413,135
+texte « 8 » @ 520,135
+bouton « Voz 1 · suena » @ 158,309
+texte « Voz 1 » @ 159,321
+texte « 2 comp. » @ 159,354
+bouton « Voz 2 · listo » @ 457,309
+texte « Voz 2 » @ 457,321
+texte « 2 comp. » @ 458,354
+bouton « Voz 3 · listo » @ 158,567
+texte « Voz 3 » @ 158,579
+texte « 2 comp. » @ 159,612
+bouton « Pad 4 · vacío » @ 457,567
+texte « + » @ 458,567
+bouton « Pad 5 · vacío » @ 158,825
+texte « + » @ 159,825
+bouton « Pad 6 · vacío » @ 457,825
+texte « + » @ 458,825
+bouton « Pad 7 · vacío » @ 158,1083
+texte « + » @ 159,1083
+bouton « Pad 8 · vacío » @ 457,1083
+texte « + » @ 458,1083
+bouton « Efectos live » @ 308,1260
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

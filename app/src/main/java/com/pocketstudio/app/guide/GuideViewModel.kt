@@ -16,6 +16,7 @@ import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.guide.guideText
 import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.EffectType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -75,6 +76,8 @@ data class GuideCardUi(
     val effects: List<GuideFxUi> = emptyList(),
     /** G4: what the analysis reads in the song about it (« En mono, le morceau ne perd que 0,8 dB »), in the interface's language. */
     val heard: List<String> = emptyList(),
+    /** Its stage's title, in everyday words in the Mode simple. */
+    val stageTitle: String = GuideStages.title(stage),
 )
 
 /** A line of the plan: a card, its status (faite ✓, sautée ⟶, à revoir ↺), ticked by the analysis or decided. */
@@ -145,6 +148,11 @@ class GuideViewModel(
     private val canMeasure: () -> Boolean = { true },
     /** The song is playing: no measure starts by itself then (G5 review). */
     private val playing: () -> Boolean = { false },
+    /**
+     * Audit ultra round 1, n° 25 (seat B b: the big button seemed to do nothing, the next card looks alike): what a
+     * choice did, said a moment with « Annuler » beside it (the app's « Fait : … »), never a line more in the panel.
+     */
+    private val said: (String) -> Unit = {},
 ) {
     private val _ui = MutableStateFlow(GuideUi())
     val ui: StateFlow<GuideUi> = _ui.asStateFlow()
@@ -242,11 +250,11 @@ class GuideViewModel(
                     if (!measureNow()) return@launch
                 }
                 // The faders moved: the song's loudness, its sections and mono are measured again, as any measure.
-                edit(cardId, "apply:$optionId", after = { measure() }) { GuideActions.tryApply(it, cardId, optionId, clock()) }
+                edit(cardId, "apply:$optionId", after = { measure() }, done = tr("C'est fait : %s.", option.labelFor(report?.simple ?: false))) { GuideActions.tryApply(it, cardId, optionId, clock()) }
             }
             return
         }
-        edit(cardId, "apply:$optionId") { GuideActions.tryApply(it, cardId, optionId, clock()) }
+        edit(cardId, "apply:$optionId", done = tr("C'est fait : %s.", option.labelFor(report?.simple ?: false))) { GuideActions.tryApply(it, cardId, optionId, clock()) }
     }
 
     /** The song's measures are those of the song as it is. */
@@ -304,10 +312,11 @@ class GuideViewModel(
         private set
 
     /** « Sauter »; [forever]: refused, never offered again. */
-    fun skip(cardId: String, forever: Boolean = false) = edit(cardId, if (forever) "refuse" else "skip") { GuideOutcome(GuideActions.skip(it, cardId, clock(), forever)) }
+    fun skip(cardId: String, forever: Boolean = false) = edit(cardId, if (forever) "refuse" else "skip",
+        done = if (forever) tr("Le Guide ne le proposera plus.") else tr("Sauté : le Guide passe à la suite.")) { GuideOutcome(GuideActions.skip(it, cardId, clock(), forever)) }
 
     /** « Plus tard ». */
-    fun later(cardId: String) = edit(cardId, "later") { GuideOutcome(GuideActions.later(it, cardId, clock())) }
+    fun later(cardId: String) = edit(cardId, "later", done = tr("Mis de côté : tu y reviendras plus tard.")) { GuideOutcome(GuideActions.later(it, cardId, clock())) }
 
     /** One option of a card refused (the others stay). */
     fun refuseOption(cardId: String, optionId: String) = edit(cardId, "refuse:$optionId") { GuideOutcome(GuideActions.refuseOption(it, cardId, optionId, clock())) }
@@ -367,7 +376,7 @@ class GuideViewModel(
      * session's thread as one undo step: again on the project as it is when it changed meanwhile. A
      * problem it gives is said ([notices]); [onEdited] gets the project from before the step.
      */
-    private fun edit(cardId: String, what: String, after: (suspend () -> Unit)? = null, transform: (Project) -> GuideOutcome) {
+    private fun edit(cardId: String, what: String, after: (suspend () -> Unit)? = null, done: String? = null, transform: (Project) -> GuideOutcome) {
         scope.launch {
             val before = session.project.value
             val worked = withContext(worker) { transform(before) }
@@ -377,6 +386,7 @@ class GuideViewModel(
             if (out.project == now) return@launch
             session.edit(tag = GuideEdit(cardId, what)) { cur -> if (cur === now) out.project else cur }
             if (session.project.value !== now) onEdited(now)
+            done?.let(said)
             edits++
             after?.invoke()
         }
@@ -389,8 +399,11 @@ class GuideViewModel(
     /** [levels]: the tracks' levels were measured on the song as it is (G4 review: the balance is heard only then). */
     private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L, levels: Boolean = false): GuideUi {
         val undoable = p.guide.history.filter { !it.reverted }.map { it.card }.toSet()
+        // Audit final: the generic parcours says the song's own tempo (« {bpm} » in its texts).
+        val bpm = if (p.tempoBpm % 1.0 == 0.0) p.tempoBpm.toInt().toString() else com.pocketstudio.model.LoudnessTargets.format(p.tempoBpm)
+        fun said(text: String) = if ("{bpm}" in text) text.replace("{bpm}", bpm) else text
         fun option(card: GuideCard, o: GuideProposal) = GuideOptionUi(
-            o.id, guideText(o.label), guideText(o.why), o.value?.let(::guideText),
+            o.id, said(o.labelFor(r.simple)), said(o.whyFor(r.simple)), o.valueFor(r.simple)?.let { said(it) },
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
             edits = o.action.edits, heard = o.action.heard && (o.action.type != com.pocketstudio.model.guide.GuideAction.BALANCE || levels),
             listen = o.action.name.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.LISTEN },
@@ -405,21 +418,23 @@ class GuideViewModel(
         fun cardUi(s: GuideCardStatus): GuideCardUi {
             val track = byRole[s.card.target]?.takeIf { it.channel != com.pocketstudio.model.Mixer.MASTER }
             return GuideCardUi(
-                s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
+                s.card.id, s.card.stage, s.card.target, s.card.kind, said(s.card.titleFor(r.simple)), said(s.card.whyFor(r.simple)),
                 s.card.proposals.map { option(s.card, it) }.filter { !it.refused && shown(s.card, it) }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
                 s.status, s.alert, s.card.id in undoable, track?.key, track?.name?.let(com.pocketstudio.model.DefaultNames::shown).orEmpty(),
                 heard = if (s.card.id == READY) listOf(readyLine(p)) else FACTS[s.card.id].orEmpty().mapNotNull { id -> r.fact(id)?.text },
                 effects = if (s.card.stage == 3 && s.card.id !in NO_EFFECTS) effects.filter { fx -> s.card.target == com.pocketstudio.model.guide.GuideRoles.SONG || fx.role in rolesOf(s.card.target) }.map { it.ui } else emptyList(),
+                stageTitle = GuideStages.title(s.card.stage, r.simple),
             )
         }
         fun planOf(cards: List<GuideCardStatus>, simple: Boolean) = cards.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
-            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
+            GuideStageUi(stage, GuideStages.title(stage, simple), cs.map { GuidePlanItem(it.card.id, said(it.card.titleFor(simple)), it.status, it.auto) })
         }
         val applicable = r.cards.filter { it.applicable }
         val plan = planOf(applicable, r.simple)
         // The Mode simple's « Aller plus loin »: the stages it leaves out, as the full app has them.
         val furtherCards = full?.cards?.filter { it.applicable && it.card.stage !in GuideStages.SIMPLE }.orEmpty()
-        val step = r.next?.let { n -> applicable.indexOfFirst { it.card.id == n.card.id } + 1 } ?: 0
+        // Audit final: « Étape n/N » counts the cards settled (the same count as the % and « à décider »), not the card's place in the plan.
+        val step = r.next?.takeIf { n -> applicable.any { it.card.id == n.card.id } }?.let { applicable.count { it.settled } + 1 } ?: 0
         val back = p.guide.lastUsed > 0 && now - p.guide.lastUsed >= GuideAnalyzer.DAY_MS
         return GuideUi(
             loading = false, header = r.header, summary = r.summary, percent = r.percent, done = r.done, total = r.applicable, toDecide = r.toDecide,
@@ -467,7 +482,7 @@ class GuideViewModel(
     /** « House du soir · 2:40 · 6 parties »: the song just made, in a line (as « Ton morceau est prêt » said it). */
     private fun readyLine(p: Project): String = listOf(
         com.pocketstudio.model.DefaultNames.shown(p.name), GuideAnalyzer.duration(p),
-        if (p.song.size == 1) tr("1 partie") else tr("%d parties", p.song.size),
+        trCount(p.song.size, "1 partie", "%d parties"),
     ).filter { it.isNotBlank() }.joinToString(" · ")
 
     companion object {
@@ -491,6 +506,10 @@ class GuideViewModel(
         /** The facts each card shows (« ce que le Guide entend »). */
         private val FACTS = mapOf(
             "fx.lowcut" to listOf("track.no_lowcut"),
+            // Audit final: the melody rules the analysis checks, shown on the card of the line they are about.
+            "sound.lead" to listOf("melody.lead"),
+            "sound.bass" to listOf("melody.bass"),
+            "sound.counter" to listOf("melody.counter"),
             "arr.differ" to listOf("peaks.identical"),
             "arr.bass" to listOf("bass.repeats"),
             "arr.pad" to listOf("pad.everywhere"),

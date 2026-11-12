@@ -1,0 +1,11 @@
+Écran 105 (588x1278)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 330,54
+bouton «   Nouveau morceau guidé » @ 294,147
+bouton «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton « Importer un projet (.zip) » @ 294,333
+touchable « Mon projet 1 OUVERT il y a 2 min · 120 BPM · Boucle de 4 mes. » @ 294,466
+bouton « Options de Mon projet 1 » @ 534,467
+bouton « Partager mon morceau » @ 196,498
+bouton « ▸ Corbeille (2) gardés 30 jours » @ 166,601
+bouton « Vider la corbeille » @ 442,602

@@ -1,0 +1,12 @@
+code: 0b25ef87e59e25de9acde2eba2cbfdb313dbcd34
+passage 1 : vert (908 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 2 : vert (727 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 3 : vert (695 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 4 : vert (758 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 5 : vert (727 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 6 : vert (727 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 7 : vert (729 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 8 : vert (727 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 9 : vert (730 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+passage 10 : vert (761 s) 196 verts, 0 rouges, 0 en quarantaine, 43 sautés
+FIN

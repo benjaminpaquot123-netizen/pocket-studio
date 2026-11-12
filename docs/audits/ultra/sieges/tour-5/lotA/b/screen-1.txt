@@ -1,0 +1,11 @@
+Écran 1 (616x1371)
+bouton « 🇧🇷   Português (Brasil) » (nom « Escolha seu idioma ») @ 435,78
+texte « BenStudio » @ 242,168
+texte « Seu estúdio de música, no seu bolso. » @ 322,213
+texte « Bem-vindo! Faça sua música no seu aparelho. Por onde vamos começar? » @ 308,288
+bouton « Criar minha primeira música (guiado) Escolha um estilo, eu te ajudo passo a passo, do começo ao fim da música. » @ 308,447
+bouton « Estou aprendendo Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » @ 308,648
+bouton « Ouvir uma demo Uma música já pronta, para descobrir o que dá para fazer. » @ 308,828
+bouton « Começar do zero Ainda sem notas: uma bateria, uma Acid 303 e um sintetizador esperam as suas. » @ 308,1023
+bouton « Extrair a voz de uma música Escolha uma música do celular: o app separa a voz, a bateria, o baixo e o resto. » @ 308,1254
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

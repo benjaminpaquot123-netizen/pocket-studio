@@ -1,0 +1,4 @@
+rouge: 0847b283a4f8b1a14f37f1d553bea5ad89ab7033
+test: OreilleTest#withoutAConnectedBluetoothDeviceTheBannerAsksToConnectOneThenSkipsIfStillNone
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *OreilleTest (rc=1 101s ; rc=0 100s)
+aussi : questionEightAsksBenjaminForTheBackGesturesInsteadOfSwipingForHim, onceBluetoothIsConnectedAfterReadyQuestionSixIsAsked, skippingTheBluetoothPlugInQuestionSkipsQuestionSix rouges sur le rouge, verts sur le vert. Attention : le vert a9f1c699 change aussi OreilleTest (la question 8 lit le pan avant/après) ; le corps du test choisi ici est le même au rouge et au vert (même texte de la fonction).

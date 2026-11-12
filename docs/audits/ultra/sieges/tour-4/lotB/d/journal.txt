@@ -1,0 +1,448 @@
+#0 SIEGE lang=de device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE be98258c08 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1408
+#1 DOIGT launch_learn « Ich lerne »
+#2 ROUTE dialogue:mode_step | MODE pro | EMPREINTE c41b9540e1 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Mit dem leichten Tutorial » 2.48:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Mit dem Pro-Tutorial » 3.00:1 (needs 4.5:1, 14 sp)
+#2 > touche 670 315
+#2 DOIGT mode_card_pro « Pro »
+#3 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE 4575b93c1d | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Detroit Techno » 2.62:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Acid Techno » 2.28:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Hard Techno » 2.59:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Industrial Techno » 2.55:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Retro-Techno » 1.92:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 185 BPM » 2.52:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Trance » 2.86:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « House » 1.68:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 126 BPM » 3.26:1 (needs 4.5:1, 13 sp)
+#3 > touche 450 403
+#3 DOIGT tuto_style_detroit « Detroit Techno »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 42dcc9e4d5 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT TARGET « ▸ Warum? » 572 x 20 dp (touch 572 x 48)
+#4 > touche 450 1056
+#4 DOIGT tuto_why « ▸ Warum? »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE f944ef0188 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over the touchable « Weiterlesen » (532 x 12 dp)
+#5 > touche 450 1119
+#5 DOIGT tuto_listen «  Beispiel anhören »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE a347c99930 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=0 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 7 s).
+#6 > touche 450 1065
+#6 DOIGT tuto_kit_download « Kit Detroit Techno laden (4 MB) »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 47c5b915c7 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=1 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 6 s).
+#7 > touche 450 939
+#7 DOIGT tuto_kit_download « Kit Detroit Techno laden (4 MB) »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 9c59fcc3cd | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=1 playing=false
+#8 SON Son : l'exemple du tuto joue (encore 4 s).
+#8 > attends 15
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 23305a6d27 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 > attends 30
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 23305a6d27 | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1020
+#10 DOIGT tuto_kit_later « Später »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE d7a5e80d2b | project=p-618e3967 tuto=detroit/Pro active=true step=ref done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1119
+#11 DOIGT tuto_next_big « Nächster Schritt   »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 59bd9e9056 | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 73 114
+#12 DOIGT top_tempo « Tempo: 120 BPM »
+#13 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 8f763e8c5e | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (73 x 28 dp)
+#13 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (7 x 15 dp)
+#13 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (69 x 20 dp)
+#13 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#13 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (39 x 24 dp)
+#13 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (21 x 19 dp)
+#13 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (21 x 19 dp)
+#13 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#13 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#13 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (32 x 19 dp)
+#13 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (14 x 24 dp)
+#13 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (21 x 24 dp)
+#13 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (14 x 27 dp)
+#13 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (33 x 27 dp)
+#13 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (109 x 24 dp)
+#13 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (277 x 18 dp)
+#13 LAYOUT CONTRAST « ? » 1.60:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Schließen » 1.60:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « 4 » 1.90:1 (needs 3.0:1, 22 sp)
+#13 LAYOUT CONTRAST « 6 » 1.90:1 (needs 3.0:1, 22 sp)
+#13 LAYOUT CONTRAST « Tippe hier auf jeden Schlag: Das Tempo folgt. » 2.04:1 (needs 4.5:1, 13 sp)
+#13 > touche 163 1083
+#13 DOIGT tempo_key_1 « 1 »
+#14 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 209b3e5493 | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
+#14 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (144 x 20 dp)
+#14 > touche 450 1083
+#14 DOIGT tempo_key_2 « 2 »
+#15 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE bf9012e8ac | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 12 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#15 > touche 737 1170
+#15 DOIGT tempo_key_6 « 6 »
+#16 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 055c2bc55d | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 126 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#16 > touche 737 1344
+#16 DOIGT tempo_key_ok « OK »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 3aa9fad4fc | project=p-618e3967 tuto=detroit/Pro active=true step=tempo done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1119
+#17 DOIGT tuto_next_big « Nächster Schritt   »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 0ff4afcaaa | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 815 1389
+#18 DOIGT tab_Plus « Mehr »
+#19 ROUTE tab_Plus | MODE pro | EMPREINTE 0a61a9798b | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 85 1389
+#19 DOIGT tab_Structure « Struktur »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE fb6b05bba0 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 843 816
+#20 DOIGT tuto_fold
+#21 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1915248730 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#21 SON Son : rien ne joue.
+#21 > glisse 450 950 450 400
+#21 DOIGT meter_6 « 6/4 »
+#22 ROUTE session/tab_Structure | MODE pro | EMPREINTE 3219f42a10 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « Am Ende: » over the touchable « Tempo: 126 BPM Tempo ändern » (63 x 4 dp)
+#22 > touche 843 1104
+#22 DOIGT tuto_fold
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE 19b3ecbac3 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 667 1122
+#23 DOIGT tuto_show «  Zeig's mir »
+#24 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1cd357d489 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (189 x 28 dp)
+#24 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (163 x 20 dp)
+#24 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (59 x 20 dp)
+#24 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (27 x 24 dp)
+#24 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (32 x 24 dp)
+#24 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (61 x 24 dp)
+#24 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (82 x 24 dp)
+#24 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (76 x 24 dp)
+#24 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (42 x 24 dp)
+#24 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (75 x 24 dp)
+#24 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (128 x 24 dp)
+#24 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (64 x 20 dp)
+#24 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (12 x 24 dp)
+#24 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (21 x 24 dp)
+#24 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (11 x 24 dp)
+#24 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (15 x 24 dp)
+#24 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (9 x 24 dp)
+#24 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (9 x 24 dp)
+#24 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (18 x 24 dp)
+#24 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (12 x 24 dp)
+#24 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (17 x 24 dp)
+#24 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (12 x 24 dp)
+#24 LAYOUT OVERLAP « B♭ » over the touchable « Tabelle schließen » (16 x 24 dp)
+#24 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (11 x 24 dp)
+#24 LAYOUT CONTRAST « Tonart des Tracks: keine » 1.52:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Moll » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Dorisch » 1.60:1 (needs 3.0:1, 16 sp)
+#24 LAYOUT CONTRAST « Moll-Penta » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Dur-Penta » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Blues » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « B♭ » 3.26:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « B » 3.26:1 (needs 4.5:1, 16 sp)
+#24 > touche 268 1143
+#24 DOIGT tuto_scale_Dorian « Dorisch »
+#25 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE f7dc8adb09 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « Tonart des Tracks: C · Dorisch » over the touchable « Tabelle schließen » (201 x 20 dp)
+#25 LAYOUT CONTRAST « Tonart des Tracks: C · Dorisch » 1.56:1 (needs 4.5:1, 14 sp)
+#25 > touche 63 1437
+#25 DOIGT tuto_root_9 « A »
+#26 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE f7dc8adb09 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 63 1418
+#26 DOIGT tuto_root_9 « A »
+#27 ROUTE session/tab_Structure | MODE pro | EMPREINTE cebd1bc361 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#27 > attends 5
+#28 ROUTE session/tab_Structure | MODE pro | EMPREINTE 00bf4b132d | project=p-618e3967 tuto=detroit/Pro active=true step=key done=2 playing=false
+#28 SON Son : rien ne joue.
+#28 > attends 5
+#29 ROUTE session/tab_Structure | MODE pro | EMPREINTE abe250951d | project=p-618e3967 tuto=detroit/Pro active=true step=key done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 843 1104
+#29 DOIGT tuto_fold
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE e23dcada77 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=3 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 450 1119
+#30 DOIGT tuto_next_big « Nächster Schritt   »
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 3a257a9194 | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 450 1038
+#31 DOIGT tuto_do «   Ich mach's »
+#32 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 88b0a0ed14 | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#32 SON Son : rien ne joue.
+#32 > attends 3
+#33 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a123411431 | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « STEPS: STUDIO-KICK » 1.38:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « ? » 1.44:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Alle Pads » 1.41:1 (needs 4.5:1, 14 sp)
+#33 > glisse 450 950 450 300
+#33 DOIGT désactivé pad_len_plus « + »
+#34 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 5b252aa87e | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « − » 3.59:1 (needs 4.5:1, 14 sp)
+#34 > glisse 450 950 450 300
+#34 DOIGT pad_sound_pan « Pad-Panorama »
+#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c96e41b34a | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 160 978
+#35 DOIGT dans:rhythm « Swing »
+#36 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 31f3ea39a4 | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 172 978
+#36 DOIGT dans:rhythm « Swing »
+#37 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 5c0f125427 | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=4 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 843 1104
+#37 DOIGT tuto_fold
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE f94b9bce8e | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=4 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 57 1203
+#38 DOIGT tuto_prev
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE fd0eb51027 | project=p-618e3967 tuto=detroit/Pro active=true step=key done=4 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 811 1203
+#39 DOIGT tuto_next « Weiter  »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 5ad02dcb3c | project=p-618e3967 tuto=detroit/Pro active=true step=swing done=4 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Studio-Kick » 1.24:1 (needs 4.5:1, 13 sp)
+#40 > touche 450 1119
+#40 DOIGT tuto_next_big « Nächstes Kapitel   »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 8bc05f0601 | project=p-618e3967 tuto=detroit/Pro active=true step=ready done=4 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Studio-Kick » 1.26:1 (needs 4.5:1, 13 sp)
+#41 > touche 450 1119
+#41 DOIGT tuto_mark «   Verstanden »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 97a3a31f85 | project=p-618e3967 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 289 600
+#42 DOIGT fill_4 « 1/4 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE c5bb37a1ab | project=p-618e3967 tuto=detroit/Pro active=true step=kick_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 1/4 » 4.05:1 (needs 4.5:1, 14 sp)
+#43 > touche 450 1119
+#43 DOIGT tuto_next_big « Nächster Schritt   »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 18eec9ba3c | project=p-618e3967 tuto=detroit/Pro active=true step=snare_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 500 349
+#44 DOIGT step_4 « Step 5 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 6dc56bb1ed | project=p-618e3967 tuto=detroit/Pro active=true step=snare_do done=6 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 500 430
+#45 DOIGT step_12 « Step 13 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 69d21b9080 | project=p-618e3967 tuto=detroit/Pro active=true step=snare_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Snare » 1.26:1 (needs 4.5:1, 13 sp)
+#46 > touche 258 1203
+#46 DOIGT tuto_play_mine «  Dein Ergebnis anhören »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 1c3fffc8f4 | project=p-618e3967 tuto=detroit/Pro active=true step=snare_do done=7 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 450 1119
+#47 DOIGT tuto_next_big « Nächster Schritt   »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 29d2168300 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 667 1122
+#48 DOIGT tuto_show «  Zeig's mir »
+#49 ROUTE tuto_finger | MODE pro | EMPREINTE 88b0a0ed14 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > attends 6
+#50 ROUTE tuto_finger | MODE pro | EMPREINTE 71e66278f3 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#50 SON Son : le pad « Hi-Hat » sonne (9 coups).
+#50 > attends 8
+#51 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE bf1655bba6 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#51 SON Son : le pad « Hi-Hat » sonne (3 coups).
+#51 LAYOUT CONTRAST « STEPS: HI-HAT » 1.29:1 (needs 4.5:1, 12 sp)
+#51 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#51 LAYOUT CONTRAST « Alle Pads » 1.30:1 (needs 4.5:1, 14 sp)
+#51 > glisse 90 432 809 432
+#51 DOIGT step_0 « Step 1 »
+#52 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 40d6f8ffb8 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 294 433
+#52 DOIGT step_2 « Step 3 »
+#53 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE ff79c01040 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 706 433
+#53 DOIGT step_6 « Step 7 »
+#54 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 1a8784fcb5 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 > glisse 90 514 809 514
+#54 DOIGT step_8 « Step 9 »
+#55 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE eb63d379e6 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 514
+#55 DOIGT step_10 « Step 11 »
+#56 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 95bd2ece1c | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 706 514
+#56 DOIGT step_14 « Step 15 »
+#57 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c007021155 | project=p-618e3967 tuto=detroit/Pro active=true step=hat_do done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 450 1203
+#57 DOIGT tuto_next_folded « Geschafft »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 750cf171da | project=p-618e3967 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 289 652
+#58 DOIGT fill_4 « 1/4 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 56cf68d8e8 | project=p-618e3967 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « 1/4 » 4.07:1 (needs 4.5:1, 14 sp)
+#59 > touche 439 652
+#59 DOIGT rotate_right « ▶ »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe4d4a3ff | project=p-618e3967 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « ▶ » 4.05:1 (needs 4.5:1, 14 sp)
+#60 > touche 439 652
+#60 DOIGT rotate_right « ▶ »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 026abe69f8 | project=p-618e3967 tuto=detroit/Pro active=true step=open_hat_do done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « ▶ » 3.88:1 (needs 4.5:1, 14 sp)
+#61 > touche 450 1119
+#61 DOIGT tuto_next_big « Nächster Schritt   »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE ae994f7fcb | project=p-618e3967 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 771 849
+#62 DOIGT tuto_chapters
+#63 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 6308551210 | project=p-618e3967 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « Die Drums » 4.14:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 3 » 1.27:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Die Akkorde » 1.27:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 0/2 » 1.25:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 4 » 1.23:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Der Bass » 1.37:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 5 » 1.23:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Die Glocke » 1.36:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Die Teile verstehen » 1.97:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 0/2 » 3.20:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « 10 » 2.61:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Tutorial beenden (du kannst es fortsetzen) » 3.26:1 (needs 4.5:1, 14 sp)
+#63 > touche 450 306
+#63 DOIGT tuto_chapter_2 « 3 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 5a6b84f2e3 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_hear done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 811 1203
+#64 DOIGT tuto_next « Weiter  »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 7a32a416e4 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 450 1038
+#65 DOIGT tuto_need «   Akkorde-Spur erstellen »
+#66 ROUTE synth/tab_Sons | MODE pro | EMPREINTE abbd199109 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « Du bist dran: Erstell die Akkorde-Spur (Sound „String-Machine“). Takt 1: Am7 eng (A C E G); Takt 2: D7 mit Stimmführung (A C D F♯): Nur zwei Töne bewegen sich. „Auf die nächsten Takte kopieren“. » ellipsized (« … »)
+#66 > touche 300 609
+#66 DOIGT rien
+#67 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7ab7d1b84c | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 300 735
+#67 DOIGT rien
+#68 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1866a97d7f | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 300 903
+#68 DOIGT rien
+#69 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c25c469894 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 300 1029
+#69 DOIGT rien
+#70 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5ffb9e6178 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 853 471
+#70 DOIGT roll_bar_1 « 2 »
+#71 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5ffb9e6178 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 800 471 200 471
+#71 DOIGT roll_bar_0 « 1 »
+#72 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 59d41030f1 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 565 651
+#72 DOIGT rien
+#73 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b7dd6abc20 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 565 819
+#73 DOIGT rien
+#74 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3eb47070e9 | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 565 903
+#74 DOIGT rien
+#75 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d5108a135a | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 565 1029
+#75 DOIGT rien
+#76 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b99b4595bf | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=9 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 450 1281
+#76 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#77 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1ca810b9ec | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=10 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 843 1182
+#77 DOIGT tuto_fold
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE 591f89507e | project=p-618e3967 tuto=detroit/Pro active=true step=pad_do done=10 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 450 1197
+#78 DOIGT tuto_next_big « Nächstes Kapitel   »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE 71ea795f9f | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 223 186
+#79 DOIGT sons_Acide « Acid 303 »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 9fbda75788 | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CONTRAST « Bassline » 4.17:1 (needs 4.5:1, 12 sp)
+#80 LAYOUT CONTRAST «  Spur » 1.28:1 (needs 4.5:1, 14 sp)
+#80 > touche 450 1038
+#80 DOIGT tuto_need «   Bass-Spur erstellen »
+#81 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c1b8613b17 | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT CUT « Du bist dran: Erstell die Bass-Spur (Sound „Runder Bass“): Takt 1 auf A mit seinen Oktavsprüngen, Takt 2 auf D, der wieder zu A hochgeht, dann „Auf die nächsten Takte kopieren“. » ellipsized (« … »)
+#81 > touche 202 819
+#81 DOIGT rien
+#82 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8594dfedc7 | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 787 819
+#82 DOIGT rien
+#83 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5fd0e6d0ac | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 562 1113
+#83 DOIGT rien
+#84 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 379dc62a42 | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#84 SON Son : rien ne joue.
+#84 > retour
+#84 RETOUR
+#85 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 379dc62a42 | project=p-618e3967 tuto=detroit/Pro active=true step=bass_do done=10 playing=false
+#85 SON Son : rien ne joue.
+#85 > fin
+#85 FIN : fin

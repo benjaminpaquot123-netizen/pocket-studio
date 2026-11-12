@@ -1,0 +1,300 @@
+#0 SIEGE lang=en device=phone font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE dcc3525020 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 488 294
+#1 DOIGT launch_continue « Keep going »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 694b5aa57f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 543 114
+#2 DOIGT top_share
+#3 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « Ready to share? » over the touchable « Close sheet » (169 x 28 dp)
+#3 LAYOUT OVERLAP « Song name (and the project's) » over the touchable « Close sheet » (183 x 18 dp)
+#3 LAYOUT OVERLAP « 0:16 » over the touchable « Close sheet » (48 x 27 dp)
+#3 LAYOUT OVERLAP «   a looping part » over the touchable « Close sheet » (100 x 20 dp)
+#3 LAYOUT OVERLAP «  Listen » over the touchable « Close sheet » (45 x 20 dp)
+#3 LAYOUT OVERLAP « No song yet: your part goes out as a loop (8 bars). » over the touchable « Close sheet » (294 x 40 dp)
+#3 LAYOUT OVERLAP « Edit the song » over the touchable « Close sheet » (89 x 20 dp)
+#3 LAYOUT OVERLAP «   Video for social media · 30 s » over the touchable « Close sheet » (159 x 20 dp)
+#3 LAYOUT OVERLAP « More exports » over the touchable « Close sheet » (90 x 20 dp)
+#3 LAYOUT OVERLAP « Track by track, MIDI, FLAC… in Mix » over the touchable « Close sheet » (210 x 18 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (7 x 15 dp)
+#3 LAYOUT OVERLAP « M4A · for sharing » over the touchable « Close sheet » (119 x 20 dp)
+#3 LAYOUT OVERLAP « WAV · max quality » over the touchable « Close sheet » (123 x 20 dp)
+#3 LAYOUT OVERLAP «   Share » over the touchable « Close sheet » (54 x 24 dp)
+#3 LAYOUT CONTRAST « Song name (and the project's) » 2.56:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST «   a looping part » 1.99:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT LABEL « #872 » long press without text nor description
+#3 > touche 272 1027
+#3 DOIGT share_other « More exports »
+#4 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 366aa2b202 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « My first beat » ellipsized (« … »)
+#4 > touche 294 804
+#4 DOIGT export_advanced « Advanced »
+#5 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 105af965c6 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Advanced » 4.04:1 (needs 4.5:1, 14 sp)
+#5 > glisse 294 900 294 450
+#5 DOIGT rien
+#6 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1bd3955ddc | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 191 834
+#6 DOIGT export_final « Final file: 48 kHz · 24 bits »
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 170941cdcd | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Final file: 48 kHz · 24 bits » 3.99:1 (needs 4.5:1, 14 sp)
+#7 > glisse 294 300 294 950
+#7 DOIGT export_fade_Short « Short (3 s) »
+#8 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6d4d078f3d | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Ping-pong » over the touchable « Tempo: 120 BPM Change the tempo » (63 x 4 dp)
+#8 LAYOUT OVERLAP « 100% » over the touchable « Label the screen » (26 x 3 dp)
+#8 > glisse 294 250 294 950
+#8 DOIGT rien (texte « Tone »)
+#9 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 54e1594ba8 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Damping » over the touchable « Tempo: 120 BPM Change the tempo » (59 x 4 dp)
+#9 LAYOUT OVERLAP « 50% » over the touchable « Label the screen » (26 x 4 dp)
+#9 > glisse 294 160 294 960
+#9 DOIGT rien
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3cd6997356 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > glisse 294 200 294 700
+#10 DOIGT loudness_target_APPLE « Apple Music · −16 LUFS »
+#11 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 02bb8f8c60 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 424 509
+#11 DOIGT loudness_target_CLUB « Club · −8 LUFS »
+#12 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 73b46bab67 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 223 439
+#12 DOIGT help_Target loudness « What is “Target loudness”? »
+#12 AIDE help_Target
+#13 ROUTE dialogue:« Target loudness » | MODE pro | EMPREINTE 894aa9c03f | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 506 798
+#13 DOIGT #1418 « Got it »
+#14 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 73b46bab67 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 294 900 294 300
+#14 DOIGT rien
+#15 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24c7a57dcd | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Loud, like in a club (−8 LUFS), measured on the Drop. The output rises gently to get there; the export gets as close as it can without crushing the sound. » over the touchable « Tempo: 120 BPM Change the tempo » (63 x 4 dp)
+#15 LAYOUT OVERLAP « Loud, like in a club (−8 LUFS), measured on the Drop. The output rises gently to get there; the export gets as close as it can without crushing the sound. » over the touchable « Label the screen » (17 x 4 dp)
+#15 > glisse 294 950 294 150
+#15 DOIGT guide_bar « Guide »
+#16 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24c7a57dcd | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > glisse 294 950 294 150
+#16 DOIGT guide_bar « Guide »
+#17 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24c7a57dcd | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 RIEN NE CHANGE (3 écrans identiques)
+#17 > glisse 294 880 294 180
+#17 DOIGT rien
+#18 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 85ebe90765 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > glisse 294 880 294 180
+#18 DOIGT rien
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 67ad704584 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 148 577
+#19 DOIGT export_what_Song « The whole song »
+#20 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ae53d90c0c | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 54 1158
+#20 DOIGT tab_Structure « Structure »
+#21 ROUTE session/tab_Structure | MODE pro | EMPREINTE 4cedb781aa | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 96 463
+#21 DOIGT add_part_0 « + A »
+#22 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1e07e4f127 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Follow » 4.06:1 (needs 4.5:1, 14 sp)
+#22 > touche 196 183
+#22 DOIGT structure_parts « Parts »
+#23 ROUTE session/tab_Structure | MODE pro | EMPREINTE f38ef673d9 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 438 611
+#23 DOIGT dans:part_0
+#24 ROUTE session/tab_Structure | MODE pro | EMPREINTE 892d46fdc8 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 438 611
+#24 DOIGT dans:part_0
+#25 ROUTE session/tab_Structure | MODE pro | EMPREINTE 563f4d5e51 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 438 611
+#25 DOIGT dans:part_0
+#26 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1c88fea276 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 294 1158
+#26 DOIGT tab_Mix « Mix »
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 854a01c7f7 | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#27 > touche 515 1059
+#27 DOIGT thumb_share « Share my song »
+#28 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 45f86a34e5 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 0:08 » over the touchable « Close sheet » (48 x 27 dp)
+#28 LAYOUT OVERLAP «   1 part » over the touchable « Close sheet » (45 x 20 dp)
+#28 LAYOUT OVERLAP « Target loudness: Club · −8 LUFS (set in Mix) » over the touchable « Close sheet » (266 x 18 dp)
+#28 LAYOUT OVERLAP « A single part of 0:08: add a verse, a chorus, an ending… » over the touchable « Close sheet » (310 x 40 dp)
+#28 LAYOUT CONTRAST « 0:08 » 2.58:1 (needs 3.0:1, 22 sp)
+#28 LAYOUT CONTRAST «   1 part » 1.24:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST «  Listen » 1.35:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Target loudness: Club · −8 LUFS (set in Mix) » 2.63:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « A single part of 0:08: add a verse, a chorus, an ending… » 3.19:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « ? » 1.31:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT LABEL « #2245 » long press without text nor description
+#28 > touche 387 1122
+#28 DOIGT share_format_Wav « WAV · max quality »
+#29 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 91c75234b4 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 294 1218
+#29 DOIGT share_go «   Share »
+#30 ROUTE dialogue:share_progress | MODE pro | EMPREINTE c035415468 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Then pick the app to send it with. » 3.74:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « Cancel » 4.04:1 (needs 4.5:1, 14 sp)
+#30 > attends 5
+#30 PARTAGE My-first-beat-song-club-20261105-081822.wav
+#31 ROUTE dialogue:« Share my song · My-first-beat- » | MODE pro | EMPREINTE 56f0dcb1ec | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 294 831
+#31 DOIGT vue « Files »
+#32 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 88d202928c | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « −8.0 LUFS integrated · peak −7.1 dBTP » 2.37:1 (needs 4.5:1, 13 sp)
+#32 > touche 508 787
+#32 DOIGT share_bilan_ok « OK »
+#33 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5d8c810c4d | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 294 180 294 880
+#33 DOIGT export_format_Wav « WAV · max quality »
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 79efe598d0 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > glisse 294 180 294 880
+#34 DOIGT bus_1_1 « Feedback »
+#35 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb9ad706e3 | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « Size » over the touchable « Tempo: 120 BPM Change the tempo » (28 x 4 dp)
+#35 > glisse 294 180 294 880
+#35 DOIGT bus_0_0 « Size »
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c82b7788a7 | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 294 300 294 600
+#36 DOIGT rien (texte « Loud, like in a club (−8 LUFS), measured »)
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a4c4835cad | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 176 384
+#37 DOIGT loudness_target_STREAMING « Streaming · −14 LUFS »
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e662a915ef | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 543 42
+#38 DOIGT top_share
+#39 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ae8f82c06f | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « Target loudness: Streaming · −14 LUFS (set in Mix) » over the touchable « Close sheet » (305 x 18 dp)
+#39 LAYOUT CONTRAST « Ready to share? » 1.91:1 (needs 3.0:1, 22 sp)
+#39 LAYOUT CONTRAST « Song name (and the project's) » 1.92:1 (needs 4.5:1, 13 sp)
+#39 LAYOUT CONTRAST « Edit the song » 2.72:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST «   Video for social media · 30 s » 4.22:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT LABEL « #2394 » long press without text nor description
+#39 > touche 294 1218
+#39 DOIGT share_go «   Share »
+#40 ROUTE dialogue:share_progress | MODE pro | EMPREINTE c035415468 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > attends 5
+#41 ROUTE dialogue:share_progress | MODE pro | EMPREINTE c035415468 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 > attends 5
+#41 PARTAGE My-first-beat-song-streaming-20261105-081904.wav
+#42 ROUTE dialogue:« Share my song · My-first-beat- » | MODE pro | EMPREINTE a1a31a1c5f | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 294 759
+#42 DOIGT vue « Drive »
+#43 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE e5d4ee53bc | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « Ready: My-first-beat-song-streaming-20261105-081904.wav, a copy is also in Music › BenStudio. » a word split over two lines
+#43 LAYOUT CONTRAST « −14.0 LUFS integrated · peak −13.1 dBTP » 2.74:1 (needs 4.5:1, 13 sp)
+#43 > touche 508 787
+#43 DOIGT share_bilan_ok « OK »
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4a45daf338 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 114 42
+#44 DOIGT top_projects « My first beat »
+#45 ROUTE dialogue:projects | MODE pro | EMPREINTE 2f9f7e2796 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 534 467
+#45 DOIGT project_menu_projet-1
+#46 ROUTE dialogue:project_delete_projet-1 | MODE pro | EMPREINTE 92ad2eec61 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > retour
+#46 RETOUR
+#47 ROUTE dialogue:projects | MODE pro | EMPREINTE 2f9f7e2796 | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 294 466
+#47 DOIGT project_projet-1 « My first beat »
+#48 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1c88fea276 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 534 1158
+#48 DOIGT tab_Plus « More »
+#49 ROUTE plus/tab_Plus | MODE pro | EMPREINTE ae56099e4a | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 543 42
+#49 DOIGT top_share
+#50 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ae8f82c06f | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST «   Video for social media · 30 s » 3.10:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT LABEL « #2884 » long press without text nor description
+#50 > touche 272 1027
+#50 DOIGT share_other « More exports »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4a45daf338 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 94 338
+#51 DOIGT export_fade_None « None »
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3821c53374 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 294 506
+#52 DOIGT export « Export the song »
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6735289649 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > attends 8
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3509c19650 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > attends 10
+#55 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b64f60f566 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 294 792
+#55 DOIGT export « Export the song »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6735289649 | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 294 870
+#56 DOIGT dans:mixer « Cancel »
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0fcc1699b1 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 373 359
+#57 DOIGT export_what_Loop « The looping part »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f25baba86e | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 294 870
+#58 DOIGT export « Export 1 bar »
+#59 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 700e22d370 | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > attends 15
+#60 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3be9ffc7c3 | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > attends 15
+#61 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 28d6b5277a | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > glisse 294 880 294 480
+#61 DOIGT export « Export 1 bar »
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8c111dc872 | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > fin
+#62 FIN : fin

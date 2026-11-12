@@ -1,0 +1,33 @@
+Écran 42 (1035x1243)
+texte « 拖动条：向下滑动即可关闭 » @ 518,43
+texte « 音色：合成器 » @ 161,104
+bouton « 关闭 » @ 930,118
+texte « 点一个音色：它会替换整首歌里这条音轨的音色。 » @ 273,143
+bouton « 上一个文件夹 » @ 98,208
+texte « Lead » @ 554,208
+bouton « Lead 锯齿波 · 持续 » @ 287,299
+bouton « 方波 Lead 方波 · 持续 » @ 749,299
+bouton « Acid Lead 锯齿波 · 持续 » @ 287,398
+bouton « Supersaw 锯齿波 · 7 个声部 · 持续 » [sélectionné] @ 749,398
+bouton « Trance Lead 锯齿波 · 4 个声部 · 持续 » @ 287,497
+bouton « Hoover 锯齿波 · 7 个声部 · 持续 » @ 749,497
+bouton « 随机 » @ 287,589
+bouton « 保留这个声音 » @ 749,589
+titre « 真实乐器 » @ 118,654
+texte « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » @ 425,694
+bouton « 三角钢琴 待下载：11 MB » @ 287,768
+bouton « 试听 » @ 464,768
+bouton « 音乐会钢琴 待下载：16 MB » @ 749,768
+bouton « 试听 » @ 926,768
+bouton « 弦乐 待下载：9 MB » @ 287,876
+bouton « 试听 » @ 464,876
+bouton « 拨弦弦乐 待下载：2 MB » @ 749,876
+bouton « 试听 » @ 926,876
+bouton « 铜管 待下载：6 MB » @ 287,984
+bouton « 试听 » @ 464,984
+bouton « 木管 待下载：7 MB » @ 749,984
+bouton « 试听 » @ 926,984
+bouton « 竖琴 待下载：4 MB » @ 287,1092
+bouton « 试听 » @ 464,1092
+bouton « 808 贝斯 音与音之间滑音，无需下载 » @ 749,1087
+texte « 录音来源：Salamander Grand Piano V3（Alexander Holm，CC BY 3.0）、Splendid Grand Piano（Akai，公有领域）、VS Chamber Orchestra（Versilian Studios，CC0）。 » @ 518,1179

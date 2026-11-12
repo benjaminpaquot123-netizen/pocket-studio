@@ -67,7 +67,7 @@ object BugReportText {
     private fun f1(v: Double) = String.format(Locale.FRANCE, "%.1f", v)
 
     fun markdown(r: BugReportInput): String = buildString {
-        appendLine("# Rapport de bug : Pocket Studio")
+        appendLine("# Rapport de bug : BenStudio")
         appendLine()
         appendLine("Créé le ${day.format(Date(r.createdAtMs))}, sur le téléphone, et envoyé par l'utilisateur lui-même.")
         appendLine()

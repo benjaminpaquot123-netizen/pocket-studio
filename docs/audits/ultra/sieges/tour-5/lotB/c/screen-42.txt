@@ -1,0 +1,16 @@
+Écran 42 (900x1509)
+texte « Griff: zum Schließen nach unten wischen » @ 450,687
+bouton « Schließen » @ 805,759
+texte « Pad 1 · Studio-Kick » @ 379,759
+bouton « Allein anhören » (nom « „Studio-Kick“ allein anhören, in Schleife ») @ 144,846
+texte « Sound » @ 57,912
+bouton « Kick » @ 234,984
+bouton « Kick 2 » @ 666,984
+bouton « Alle Sounds… » @ 450,1080
+texte « Pad-Lautstärke » @ 422,1152
+texte « 78 % » @ 848,1152
+curseur « Pad-Lautstärke » [état « 78 % », à 77 %] @ 450,1218
+texte « Pad-Panorama » @ 424,1284
+texte « Mitte » @ 850,1284
+curseur « Pad-Panorama » [état « Mitte », à 50 %] @ 450,1350
+case « Dieses Pad stumm » @ 144,1437

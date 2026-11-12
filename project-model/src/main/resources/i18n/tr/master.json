@@ -1,0 +1,19 @@
+{
+  "Désactivée": "Kapalı",
+  "Auto (style)": "Otomatik (stil)",
+  "Club": "Kulüp",
+  "Streaming": "Streaming",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "Şimdi %s · 3 sn'de %s · ▶'den beri %s LUFS",
+  "Volume visé": "Hedef ses yüksekliği",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "Ses yüksekliği senin ayarladığın gibi kalır; çıkış yalnızca bozulmaya karşı korunur.",
+  "Gain ajouté pour la cible : %s dB": "Hedef için eklenen kazanç: %s dB",
+  "%d min %d s": "%d dk %d sn",
+  "%d s": "%d sn",
+  "44,1 kHz": "44,1 kHz",
+  "16 bits": "16 bit",
+  "Volume : —": "Ses: —",
+  "Volume %1$s · %2$s": "Ses %1$s · %2$s",
+  "Détails": "Ayrıntılar",
+  "Masquer les détails": "Ayrıntıları gizle"
+}

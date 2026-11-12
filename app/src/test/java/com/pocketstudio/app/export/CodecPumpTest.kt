@@ -291,4 +291,27 @@ class CodecPumpTest {
             // expected
         }
     }
+
+    @Test(timeout = 60_000)
+    fun aSongTooLongByItsHeaderIsRefusedBeforeDecodingWithItsTrueLength() {
+        // Audit 02 M1: a 9-minute song (7 at most) said « 9:00 » at once, not « 7 min » after 7 minutes of decoding.
+        val format = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, 48_000, 2)
+        var fed = 0
+        val sink = Counting()
+        try {
+            AudioDecoder.drain(FakeDecoder(ends = true), format, sink, 420.0, cut = false, isCancelled = { false }, progress = {},
+                durationUs = 540L * 1_000_000, read = { fed++; CodecPump.Fed(400, 0, end = fed > 100) })
+            fail("too long")
+        } catch (e: AudioDecoder.TooLongException) {
+            assertEquals(540.0, e.seconds, 0.01)
+        }
+        assertEquals(0, fed)
+        assertEquals(0L, sink.size)
+        assertEquals("Morceau trop long (9:00) : 7 minutes au maximum.", com.pocketstudio.app.remix.SeparationService.tooLong(540.0))
+        // Cut to its first minutes (a pad's sample): the header never refuses it.
+        fed = 0
+        AudioDecoder.drain(FakeDecoder(ends = true), format, Counting(), 420.0, cut = true, isCancelled = { false }, progress = {},
+            durationUs = 540L * 1_000_000, read = { if (fed < 10) { fed++; CodecPump.Fed(400, 0, end = false) } else CodecPump.Fed(0, 0, end = true) })
+        assertEquals(10, fed)
+    }
 }

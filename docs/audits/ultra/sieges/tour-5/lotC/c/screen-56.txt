@@ -1,0 +1,42 @@
+Écran 56 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+case « M4A · for sharing » [désactivé, sélectionné] @ 156,163
+case « WAV · max quality » [désactivé] @ 396,163
+texte « About ten times smaller, plays on every device: for sharing. » @ 294,233
+texte « Target loudness » @ 122,294
+bouton « ? » (nom « What is “Target loudness”? ») @ 223,293
+case « Streaming · −14 LUFS » [désactivé, sélectionné] @ 176,357
+case « Club · −8 LUFS » [désactivé] @ 419,357
+case « Auto (style) · −9 LUFS » [désactivé] @ 178,438
+case « Off » [désactivé] @ 364,438
+texte « −14 LUFS over the whole song: the loudness Spotify and YouTube bring every song to. » @ 294,507
+texte « Fade-out » @ 87,561
+case « None » [désactivé, sélectionné] @ 94,624
+case « Short (3 s) » [désactivé] @ 233,624
+case « Long (8 s) » [désactivé] @ 397,624
+bouton « Advanced » @ 294,708
+texte « Making the sound · 13% » @ 161,771
+texte « Making the sound · 13% » [à 12 %] @ 294,810
+bouton « Cancel » @ 294,870
+bouton « Guide  · Add a melody 31 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

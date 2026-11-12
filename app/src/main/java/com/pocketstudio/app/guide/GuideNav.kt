@@ -39,6 +39,12 @@ sealed class GuideGo {
     /** The drum kit's sheet. */
     data object Kit : GuideGo()
 
+    /** Audit final: the sheet of drum pad [lane] (its sound only: the rest of the kit stays). */
+    data class Pad(val lane: Int) : GuideGo()
+
+    /** Audit final: a 303 line made in the song's key (when it has none), then its sounds (« Générer une ligne Acid 303 »). */
+    data object AcidGenerate : GuideGo()
+
     /** The 303's sounds. */
     data object AcidSound : GuideGo()
 
@@ -72,10 +78,12 @@ sealed class GuideGo {
 object GuideNav {
     /** Every screen the parcours' options can open ([com.pocketstudio.model.guide.GuideAction.spot]). */
     val SPOTS = setOf(
-        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "song.automation",
-        "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid",
+        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "rhythm.swing", "song.automation",
+        "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid", "acid.generate",
         // G5: the common cards (« Pour commencer », the Remix) and « Écouter ».
         "new.style", "song.guide", "sounds.main", "record.melody", "remix", GuideViewModel.PLAY,
+        // The tutorial: the song's « Ajouter : » buttons.
+        "song.add",
     )
 
     /**
@@ -88,22 +96,29 @@ object GuideNav {
         return when (open.spot) {
             "tempo" -> GuideGo.Tempo
             "key" -> GuideGo.Chords
-            "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch"), partsView = !simple)
+            // n° 19: in the Mode simple no switch; an empty song: where parts are added.
+            "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch", "song_add", "timeline_ruler"), partsView = !simple)
+            "song.add" -> GuideGo.Tab(AppTab.Morceau, listOf("song_add"), partsView = !simple)
             "sounds.track", "sounds.favorite" -> soundOf(track) ?: structure
             // G3: an instrument track's layers in their editor; another track's sound as before.
             "sounds.layers" -> track?.key?.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull()?.let { GuideGo.Layers(it) } ?: soundOf(track) ?: structure
-            "rhythm.kit" -> GuideGo.Kit
+            // Audit final: a drum role's card changes that pad's sound, not the whole kit.
+            "rhythm.kit" -> track?.key?.takeIf { it.startsWith("pad:") }?.removePrefix("pad:")?.toIntOrNull()?.let { GuideGo.Pad(it) } ?: GuideGo.Kit
             "rhythm.pattern" -> GuideGo.Tab(AppTab.Rythme, listOf("step_cells"))
+            // Round 5, B c #23: the swing step showed the grid, its setting far below and never found.
+            "rhythm.swing" -> GuideGo.Tab(AppTab.Rythme, listOf(com.pocketstudio.app.rhythm.SWING_SPOT))
             "song.automation" -> if (simple) structure else GuideGo.Tab(AppTab.Mixeur, listOf("mixer_automation"), mixer = Where.Lane(-1))
             "record.voice" -> GuideGo.Tab(AppTab.Audio, listOf("record_start"), audioPage = 0)
             "mixer.master" -> if (simple) GuideGo.Tab(AppTab.Envoyer, listOf("share_go")) else GuideGo.Tab(AppTab.Mixeur, listOf("mixer_master"), mixer = Where.Master)
             "mixer.whatplays" -> GuideGo.WhatPlays
             "notes.track" -> track?.key?.removePrefix("inst:")?.takeIf { track.key.startsWith("inst:") }?.toIntOrNull()?.let { GuideGo.Notes(it) }
                 ?: GuideGo.Tab(AppTab.Synthe)
-            "mixer.strip" -> if (simple) GuideGo.Tab(AppTab.Morceau, listOf("simple_track_*")) else GuideGo.Tab(AppTab.Mixeur, listOf("console_fader"))
+            // Audit final: the volume's button lit (not the line that changes the sound).
+            "mixer.strip" -> if (simple) GuideGo.Tab(AppTab.Morceau, listOf("simple_volume_*")) else GuideGo.Tab(AppTab.Mixeur, listOf("console_fader"))
             "share.check", "share.export" -> if (simple) GuideGo.Tab(AppTab.Envoyer, listOf("share_go")) else GuideGo.Share
             "share.video" -> GuideGo.Video
             "acid" -> if (simple) GuideGo.AcidSound else GuideGo.Tab(AppTab.Acide, listOf("acid_generate"))
+            "acid.generate" -> if (simple) GuideGo.AcidGenerate else GuideGo.Tab(AppTab.Acide, listOf("acid_generate"))
             GuideViewModel.PLAY -> GuideGo.Play(fromDrop = open.target == "drop")
             "song.guide" -> GuideGo.SongGuide
             "new.style" -> GuideGo.NewStyle

@@ -134,6 +134,7 @@ class LiveFxVmTest {
         vm.liveThrow(1)
         vm.takeClockForTest = 66
         vm.tickPerformance()
+        vm.takeClockForTest = 70  // past the bar's first beat: the bar is kept
         vm.togglePerformance()  // ends on step 80
         assertTrue(vm.take.value is TakeUi.Done)
         val spin = laneOf(vm, AutoTarget.live(AutoTarget.LIVE_BACKSPIN)).songCurve(16)
@@ -160,6 +161,7 @@ class LiveFxVmTest {
         assertTrue(vm.liveFx.value.values.isEmpty())
         vm.takeClockForTest = 50
         vm.tickPerformance()
+        vm.takeClockForTest = 53  // past the bar's first beat: the bar of the Drop is kept
         vm.togglePerformance()
         val build = laneOf(vm, AutoTarget.live(AutoTarget.LIVE_BUILD_UP)).songCurve(16)
         assertEquals(0.8f, build[7], 1e-6f)   // up to the bar line

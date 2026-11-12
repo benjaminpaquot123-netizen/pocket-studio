@@ -1,0 +1,9 @@
+lang=fr
+device=phone
+fresh=reel
+lit=non
+gestes.max=60
+mission=padlive
+timeout.minutes=25
+rejeu=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/tour-1/lotA/a
+rejeu.n=23

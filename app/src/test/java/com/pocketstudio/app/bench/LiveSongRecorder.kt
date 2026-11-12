@@ -64,8 +64,18 @@ class LiveSongRecorder {
         val seconds = System.getProperty("ps.bench.seconds")?.toIntOrNull() ?: 150
         // The soak: songs this long at least, looped.
         val loopSeconds = System.getProperty("ps.bench.loop")?.toIntOrNull()
+        // -Pbench.listen=drop: ▶ as « Écouter » plays it (about 8 bars before the first Drop, the phone's
+        // « Tout tester » path) instead of « Depuis le début ».
+        val fromDrop = System.getProperty("ps.bench.listen") == "drop"
         assumeTrue("no style matches ${only.joinToString()}", styles.isNotEmpty())
 
+        // -Pbench.packs=<dir>: the style packs unpacked there (<id>/pack.json and its FLACs) installed first, as on a
+        // phone that downloaded them; their FLACs read as BenchFlac gives them (each sound's length and channels).
+        System.getProperty("ps.bench.packs")?.takeIf { it.isNotBlank() }?.let { from ->
+            val to = com.pocketstudio.app.library.PackStore.dir(app)
+            File(from).listFiles()?.filter { File(it, "pack.json").exists() }?.forEach { it.copyRecursively(File(to, it.name), overwrite = true) }
+            com.pocketstudio.app.human.BenchFlac(app, to).register()
+        }
         val sink = RecordingSink(File(out, "samples"), renderer)
         NativeEngine.sink = sink
         try {
@@ -92,7 +102,7 @@ class LiveSongRecorder {
                 sink.mark("PSCMD 1\nRATE 48000\nMETA style ${style.id}")
                 // In a store of its own: cleared after its song (its coroutines and its sounds let go).
                 val store = ViewModelStore()
-                val vm = ViewModelProvider(store, ViewModelProvider.AndroidViewModelFactory.getInstance(app))[RhythmViewModel::class.java]
+                val vm = ViewModelProvider(store, ViewModelProvider.AndroidViewModelFactory(app))[RhythmViewModel::class.java]
                 var loaded = false
                 CoroutineScope(Dispatchers.Main).launch { vm.awaitSoundsLoadedForTest(); loaded = true }
                 waitFor("the sounds of ${style.id}") { loaded }
@@ -110,7 +120,8 @@ class LiveSongRecorder {
                 // The sheet shows, a moment passes, then ▶ « Depuis le début » (the whole song: the bench
                 // hears the Intro too; « Écouter » itself starts 8 bars before the first Drop).
                 sink.mark("WAIT ms 1000")
-                vm.toggleSong()
+                val first = if (fromDrop) com.pocketstudio.model.FirstListen.startPart(p).coerceAtLeast(0) else 0
+                if (fromDrop) vm.listenFromDrop() else vm.toggleSong()
                 // The app's own pause before it stages the second part.
                 sink.mark("WAIT ms 150")
                 shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(150))
@@ -118,10 +129,10 @@ class LiveSongRecorder {
                 val sixteenth = 15.0 / p.tempoBpm
                 var steps = 0L
                 // Looped: round and round the song (the part after the last is the first).
-                val parts = if (p.songLoops) generateSequence(0) { it + 1 }.map { p.song[it % p.song.size] } else p.song.asSequence()
+                val parts = if (p.songLoops) generateSequence(first) { it + 1 }.map { p.song[it % p.song.size] } else p.song.asSequence().drop(first)
                 for ((i, part) in parts.withIndex()) {
                     steps += p.partSteps(part)
-                    if (steps * sixteenth > seconds + 5 || (!p.songLoops && i == p.song.size - 1)) break
+                    if (steps * sixteenth > seconds + 5 || (!p.songLoops && first + i == p.song.size - 1)) break
                     sink.mark("WAIT swaps ${i + 1}")
                     sink.mark("WAIT ms 40")
                     sink.swaps = i + 1

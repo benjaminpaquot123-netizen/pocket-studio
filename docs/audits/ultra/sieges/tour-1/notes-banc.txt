@@ -1,0 +1,2 @@
+- banc : amenée remix échouée en Pro + main=gauche (siège B c, IllegalStateException HumanTester.kt:491, « welcome_remix » introuvable ou Remix jamais venu) : à corriger ; siège rejoué en lot C e sans amenée.
+- banc : amenée padlive échouée sur tablet11Land + lit=non (siège E c, IllegalStateException HumanTester.kt:498, « Pad Live » ou pads prêts jamais venus) : à corriger ; siège rejoué en lot F e sans amenée.

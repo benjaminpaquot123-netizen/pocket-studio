@@ -1,0 +1,575 @@
+#0 SIEGE lang=tr device=phoneLand font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE e3ea492af8 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST «   Türkçe » 1.23:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « İlk şarkımı yap (rehberli) » 2.57:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Öğreniyorum » 2.04:1 (needs 3.0:1, 22 sp)
+#1 > glisse 600 450 600 150
+#1 DOIGT welcome_guided « İlk şarkımı yap (rehberli) »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE e5a699f776 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « İlk şarkımı yap (rehberli) » 1.23:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Bir stil seç, şarkının başından sonuna kadar adım adım yardım ederim. » 3.38:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Öğreniyorum » 2.81:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Hazır bir şarkı, neler yapabileceğini keşfetmek için. » 2.04:1 (needs 4.5:1, 14 sp)
+#2 > glisse 600 450 600 100
+#2 DOIGT welcome_demo « Bir demo dinle »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 93a075160e | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Bütün parçayı adım adım kendin yaparsın: ben anlatırım ve kontrol ederim. » 1.23:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Hazır bir şarkı, neler yapabileceğini keşfetmek için. » 3.48:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Telefondan bir şarkı seç: uygulama vokali, davulu, bası ve geri kalanı ayırır. » 2.04:1 (needs 4.5:1, 14 sp)
+#3 > glisse 600 450 600 100
+#3 DOIGT welcome_remix « Bir şarkıdan vokali çıkar »
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE a6d13ba91b | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Henüz nota yok: bir davul, bir Acid 303 ve bir synth seninkileri bekliyor. » 1.23:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Telefondan bir şarkı seç: uygulama vokali, davulu, bası ve geri kalanı ayırır. » 3.56:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Pad Live » 2.30:1 (needs 3.0:1, 22 sp)
+#4 LAYOUT CONTRAST « YENİ » 3.72:1 (needs 4.5:1, 12 sp)
+#4 > glisse 600 450 600 100
+#4 DOIGT welcome_voice « Sesimi ya da gitarımı kaydet »
+#5 ROUTE dialogue:welcome | MODE simple | EMPREINTE 7977bd8adc | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Çalmaya hazır padler, senin seslerin, sahne efektleri. Hemen ses verir. » 2.81:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Mikrofon müziğinin üstüne, tam ritminde kaydeder. » 2.25:1 (needs 4.5:1, 14 sp)
+#5 > touche 600 34
+#5 DOIGT launch_padlive « Pad Live »
+#6 ROUTE padlive | MODE simple | EMPREINTE cc958b4ab3 | project=p-2c7eb633 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Çaldığımı kaydet » ellipsized (« … »)
+#6 LAYOUT OVERLAP « Büyük davul 1 » over « vuruş » (31 x 16 dp)
+#6 LAYOUT OVERLAP « Büyük davul 1 » over « Korna » (16 x 3 dp)
+#6 LAYOUT OVERLAP « Trampet » over « vuruş » (30 x 15 dp)
+#6 LAYOUT OVERLAP « El çırpma » over « vuruş » (37 x 5 dp)
+#6 LAYOUT OVERLAP « El çırpma » over « Büyük davul 1 » (39 x 10 dp)
+#6 LAYOUT OVERLAP « Hi-hat » over « vuruş » (26 x 5 dp)
+#6 LAYOUT OVERLAP « Açık hi-hat » over « vuruş » (22 x 15 dp)
+#6 LAYOUT OVERLAP « Açık hi-hat » over « Hi-hat » (9 x 12 dp)
+#6 LAYOUT OVERLAP « ? » over « ? » (5 x 5 dp)
+#6 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « Korna, vuruş, hazır, pad A5 » (41 x 35 dp)
+#6 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « Pad ayarları » (41 x 18 dp)
+#6 LAYOUT OVERLAP « Trampet » over the touchable « Siren, vuruş, hazır, pad A7 » (40 x 20 dp)
+#6 LAYOUT OVERLAP « Trampet » over the touchable « Pad ayarları » (40 x 13 dp)
+#6 LAYOUT OVERLAP « Trampet » over the touchable « Bağırış “Go go go!”, vuruş, hazır, pad A » (9 x 20 dp)
+#6 LAYOUT OVERLAP « El çırpma » over the touchable « Büyük davul 1, vuruş, hazır, pad A9 » (49 x 20 dp)
+#6 LAYOUT OVERLAP « El çırpma » over the touchable « Pad ayarları » (45 x 3 dp)
+#6 LAYOUT OVERLAP « El çırpma » over the touchable « Trampet, vuruş, hazır, pad A10 » (7 x 20 dp)
+#6 LAYOUT OVERLAP « Hi-hat » over the touchable « Trampet, vuruş, hazır, pad A10 » (36 x 20 dp)
+#6 LAYOUT OVERLAP « Hi-hat » over the touchable « Pad ayarları » (36 x 3 dp)
+#6 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Hi-hat, vuruş, hazır, pad A11 » (32 x 40 dp)
+#6 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Pad ayarları » (32 x 13 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « “Sahne efektleri” nedir? » (7 x 11 dp)
+#6 LAYOUT OVERLAP « A » over the touchable « Çal » (11 x 20 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Meydan okuma: bu ritmi tekrar çal » (9 x 24 dp)
+#6 LAYOUT OVERLAP « döngü » over the touchable « Tempo: dakikada 124 vuruş Tempoyu değişt » (6 x 16 dp)
+#6 LAYOUT OVERLAP « döngü » over the touchable « Pad ayarları » (35 x 14 dp)
+#6 LAYOUT OVERLAP « Kick döngüsü » over the touchable « Tempo: dakikada 124 vuruş Tempoyu değişt » (22 x 13 dp)
+#6 LAYOUT OVERLAP « vuruş » over the touchable « Pad ayarları » (35 x 14 dp)
+#6 LAYOUT OVERLAP « vuruş » over the touchable « Rehberi aç daraltıldı » (37 x 4 dp)
+#6 LAYOUT OVERLAP « Yükseliş » over the touchable « Rehberi aç daraltıldı » (55 x 19 dp)
+#6 LAYOUT OVERLAP « Darbe » over the touchable « Rehberi aç daraltıldı » (42 x 20 dp)
+#6 LAYOUT OVERLAP « Düşüş » over the touchable « Rehberi aç daraltıldı » (43 x 20 dp)
+#6 LAYOUT OVERLAP « “Go!” » over the touchable « Rehberi aç daraltıldı » (39 x 20 dp)
+#6 LAYOUT OVERLAP « SAHNE EFEKTLERİ » over the touchable « Daralt Genişletildi » (117 x 15 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Daralt Genişletildi » (7 x 14 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « “Adım” nedir? » (7 x 12 dp)
+#6 LAYOUT OVERLAP « Filtre » over the touchable « Adım 2 Ekle veya kaldır boş » (17 x 13 dp)
+#6 LAYOUT OVERLAP « Filtre » over the touchable « Adım 3 Ekle veya kaldır boş » (15 x 13 dp)
+#6 LAYOUT OVERLAP « pes ↔ tiz » over the touchable « Adım 2 Ekle veya kaldır boş » (17 x 16 dp)
+#6 LAYOUT OVERLAP « pes ↔ tiz » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 16 dp)
+#6 LAYOUT OVERLAP « pes ↔ tiz » over the touchable « Adım 4 Ekle veya kaldır boş » (3 x 16 dp)
+#6 LAYOUT OVERLAP « Eko » over the touchable « Adım 5 Ekle veya kaldır boş » (20 x 13 dp)
+#6 LAYOUT OVERLAP « çıkışta » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 16 dp)
+#6 LAYOUT OVERLAP « Roll » over the touchable « Adım 7 Ekle veya kaldır boş » (23 x 13 dp)
+#6 LAYOUT OVERLAP « 1/16 » over the touchable « Adım 7 Ekle veya kaldır boş » (23 x 16 dp)
+#6 LAYOUT OVERLAP « Çaldığımı kaydet » over the touchable « Adım 11 Ekle veya kaldır boş » (29 x 24 dp)
+#6 LAYOUT OVERLAP « Çaldığımı kaydet » over the touchable « Adım 12 Ekle veya kaldır boş » (35 x 24 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Adım 14 Ekle veya kaldır boş » (6 x 15 dp)
+#6 LAYOUT OVERLAP « Diğer » over the touchable « Adım 16 Ekle veya kaldır boş » (35 x 24 dp)
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT TARGET « Pad ayarları » 45 x 18 dp (touch 48 x 48)
+#6 LAYOUT TARGET « Parti » 21 x 52 dp (touch 48 x 52)
+#6 > touche 167 135
+#6 DOIGT padlive_pad_0 « Kick döngüsü, döngü, hazır, pad A1 »
+#7 ROUTE padlive | MODE simple | EMPREINTE ad8bf0fb94 | project=p-2c7eb633 no tuto
+#7 SON Son : le pad live 1 joue en boucle.
+#7 > touche 419 135
+#7 DOIGT padlive_pad_2 « Acid 303 döngüsü, döngü, hazır, pad A3 »
+#8 ROUTE padlive | MODE simple | EMPREINTE 8cc45a1663 | project=p-2c7eb633 no tuto
+#8 SON Son : les pads live 1, 3 jouent en boucle.
+#8 > touche 545 232
+#8 DOIGT padlive_pad_7 « Bağırış “Go go go!”, vuruş, hazır, pad A »
+#9 ROUTE padlive | MODE simple | EMPREINTE b67884185f | project=p-2c7eb633 no tuto
+#9 SON Son : les pads live 1, 3 jouent en boucle.
+#9 > appui-long 828 286
+#9 DOIGT padlive_fx_filter « Filtre · pes ↔ tiz »
+#10 ROUTE padlive | MODE simple | EMPREINTE 8cc45a1663 | project=p-2c7eb633 no tuto
+#10 SON Son : les pads live 1, 3 jouent en boucle.
+#10 > touche 961 207
+#10 DOIGT help_Sahne efektleri « “Sahne efektleri” nedir? »
+#10 AIDE help_Sahne
+#11 ROUTE dialogue:« Sahne efektleri » | MODE simple | EMPREINTE ce50f2195a | project=p-2c7eb633 no tuto
+#11 SON Son : les pads live 1, 3 jouent en boucle.
+#11 LAYOUT CONTRAST « Anladım » 4.31:1 (needs 4.5:1, 14 sp)
+#11 > touche 923 384
+#11 DOIGT #1168 « Anladım »
+#12 ROUTE padlive | MODE simple | EMPREINTE 8cc45a1663 | project=p-2c7eb633 no tuto
+#12 SON Son : les pads live 1, 3 jouent en boucle.
+#12 > glisse 1116 300 1116 220
+#12 DOIGT padlive_fx_roll « Roll · 1/16 »
+#13 ROUTE padlive | MODE simple | EMPREINTE 2be29dae14 | project=p-2c7eb633 no tuto
+#13 SON Son : les pads live 1, 3 jouent en boucle.
+#13 LAYOUT OVERLAP « 1/32 » over the touchable « Adım 7 Ekle veya kaldır boş » (23 x 16 dp)
+#13 > touche 860 385
+#13 DOIGT padlive_played « Çaldığımı kaydet »
+#14 ROUTE padlive | MODE simple | EMPREINTE 4d9216aa94 | project=p-2c7eb633 no tuto
+#14 SON Son : les pads live 1, 3 jouent en boucle.
+#14 LAYOUT CUT « 1 ölçü · bitirmek için dokun » ellipsized (« … »)
+#14 LAYOUT OVERLAP « 1 ölçü · bitirmek için dokun » over the touchable « Adım 11 Ekle veya kaldır boş » (29 x 24 dp)
+#14 LAYOUT OVERLAP « 1 ölçü · bitirmek için dokun » over the touchable « Adım 12 Ekle veya kaldır boş » (35 x 24 dp)
+#14 > touche 293 329
+#14 DOIGT padlive_pad_9 « Trampet, vuruş, hazır, pad A10 »
+#15 ROUTE padlive | MODE simple | EMPREINTE bcefa7d0e1 | project=p-2c7eb633 no tuto
+#15 SON Son : les pads live 1, 3 jouent en boucle.
+#15 LAYOUT CUT « 2 ölçü · bitirmek için dokun » ellipsized (« … »)
+#15 LAYOUT OVERLAP « 2 ölçü · bitirmek için dokun » over the touchable « Adım 11 Ekle veya kaldır boş » (29 x 24 dp)
+#15 LAYOUT OVERLAP « 2 ölçü · bitirmek için dokun » over the touchable « Adım 12 Ekle veya kaldır boş » (35 x 24 dp)
+#15 LAYOUT OVERLAP « 2 ölçü · bitirmek için dokun » over the touchable « Adım 13 Ekle veya kaldır boş » (3 x 24 dp)
+#15 > touche 419 329
+#15 DOIGT padlive_pad_10 « Hi-hat, vuruş, hazır, pad A11 »
+#16 ROUTE padlive | MODE simple | EMPREINTE 7e5f102164 | project=p-2c7eb633 no tuto
+#16 SON Son : les pads live 1, 3 jouent en boucle.
+#16 LAYOUT CUT « 3 ölçü · bitirmek için dokun » ellipsized (« … »)
+#16 LAYOUT OVERLAP « 3 ölçü · bitirmek için dokun » over the touchable « Adım 11 Ekle veya kaldır boş » (29 x 24 dp)
+#16 LAYOUT OVERLAP « 3 ölçü · bitirmek için dokun » over the touchable « Adım 12 Ekle veya kaldır boş » (35 x 24 dp)
+#16 LAYOUT OVERLAP « 3 ölçü · bitirmek için dokun » over the touchable « Adım 13 Ekle veya kaldır boş » (4 x 24 dp)
+#16 > touche 860 385
+#16 DOIGT padlive_played « 3 ölçü · bitirmek için dokun »
+#17 ROUTE dialogue:padlive_take_sheet | MODE simple | EMPREINTE 960ff05d4c | project=p-2c7eb633 no tuto
+#17 SON Son : les pads live 1, 3 jouent en boucle.
+#17 LAYOUT OVERLAP « Kaydın: 3 ölçü » over the touchable « Sayfayı kapat » (151 x 28 dp)
+#17 LAYOUT OVERLAP « Nereye koyalım? Projenin temposunda döngüde çalar. » over the touchable « Sayfayı kapat » (355 x 20 dp)
+#17 LAYOUT OVERLAP « Boş pad B1 üzerine » over the touchable « Sayfayı kapat » (129 x 20 dp)
+#17 LAYOUT OVERLAP « Bir Live bloğuna » over the touchable « Sayfayı kapat » (110 x 20 dp)
+#17 LAYOUT OVERLAP « Kaydı sil » over the touchable « Sayfayı kapat » (58 x 20 dp)
+#17 LAYOUT CONTRAST « Kaydı sil » 2.06:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT LABEL « #1197 » long press without text nor description
+#17 > touche 600 294
+#17 DOIGT padlive_take_pad « Boş pad B1 üzerine »
+#18 ROUTE padlive | MODE simple | EMPREINTE d1dd471510 | project=p-2c7eb633 no tuto
+#18 SON Son : les pads live 1, 3 jouent en boucle.
+#18 LAYOUT CUT « Kick döngüsü » ellipsized (« … »)
+#18 LAYOUT CUT « Acid 303 döngüsü » ellipsized (« … »)
+#18 LAYOUT CUT « Bas döngüsü » ellipsized (« … »)
+#18 LAYOUT CUT « Bağırış “Go go go!” » ellipsized (« … »)
+#18 LAYOUT CUT « Büyük davul 1 » ellipsized (« … »)
+#18 LAYOUT CUT « Açık hi-hat » ellipsized (« … »)
+#18 LAYOUT OVERLAP « Büyük davul 1 » over « Kick döngüsü » (39 x 13 dp)
+#18 LAYOUT OVERLAP « Büyük davul 1 » over « vuruş » (37 x 11 dp)
+#18 LAYOUT OVERLAP « Trampet » over « Acid 303 döngüsü » (16 x 3 dp)
+#18 LAYOUT OVERLAP « Trampet » over « Bas döngüsü » (9 x 3 dp)
+#18 LAYOUT OVERLAP « El çırpma » over « vuruş » (37 x 16 dp)
+#18 LAYOUT OVERLAP « Hi-hat » over « vuruş » (26 x 16 dp)
+#18 LAYOUT OVERLAP « Açık hi-hat » over « vuruş » (13 x 16 dp)
+#18 LAYOUT OVERLAP « Açık hi-hat » over « Hi-hat » (9 x 6 dp)
+#18 LAYOUT OVERLAP « 124 » over « Kaydın B1 padinde. » (32 x 15 dp)
+#18 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « Kick döngüsü, döngü, çalıyor, pad A1 » (47 x 17 dp)
+#18 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « Korna, vuruş, hazır, pad A5 » (47 x 15 dp)
+#18 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « Pad ayarları » (37 x 15 dp)
+#18 LAYOUT OVERLAP « Trampet » over the touchable « Acid 303 döngüsü, döngü, çalıyor, pad A3 » (31 x 7 dp)
+#18 LAYOUT OVERLAP « Trampet » over the touchable « Bas döngüsü, döngü, hazır, pad A4 » (19 x 7 dp)
+#18 LAYOUT OVERLAP « Trampet » over the touchable « Siren, vuruş, hazır, pad A7 » (31 x 5 dp)
+#18 LAYOUT OVERLAP « Trampet » over the touchable « Pad ayarları » (31 x 5 dp)
+#18 LAYOUT OVERLAP « Trampet » over the touchable « Bağırış “Go go go!”, vuruş, hazır, pad A » (19 x 5 dp)
+#18 LAYOUT OVERLAP « El çırpma » over the touchable « Büyük davul 1, vuruş, hazır, pad A9 » (59 x 20 dp)
+#18 LAYOUT OVERLAP « El çırpma » over the touchable « Pad ayarları » (40 x 15 dp)
+#18 LAYOUT OVERLAP « Hi-hat » over the touchable « Pad ayarları » (36 x 15 dp)
+#18 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Hi-hat, vuruş, hazır, pad A11 » (23 x 31 dp)
+#18 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Pad ayarları » (23 x 16 dp)
+#18 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Açık hi-hat, vuruş, hazır, pad A12 » (11 x 31 dp)
+#18 LAYOUT OVERLAP « Kaydın B1 padinde. » over the touchable « Tempo: dakikada 124 vuruş Tempoyu değişt » (93 x 20 dp)
+#18 LAYOUT OVERLAP « döngü » over the touchable « Pad ayarları » (30 x 12 dp)
+#18 LAYOUT OVERLAP « vuruş » over the touchable « Pad ayarları » (30 x 12 dp)
+#18 LAYOUT OVERLAP « vuruş » over the touchable « Rehberi aç daraltıldı » (37 x 10 dp)
+#18 LAYOUT OVERLAP « Yükseliş » over the touchable « Rehberi aç daraltıldı » (44 x 16 dp)
+#18 LAYOUT TARGET « Pad ayarları » 40 x 16 dp (touch 48 x 48)
+#18 > touche 853 132
+#18 DOIGT padlive_page_B « Sayfa B »
+#19 ROUTE padlive | MODE simple | EMPREINTE 4435da1c71 | project=p-2c7eb633 no tuto
+#19 SON Son : les pads live 1, 3 jouent en boucle.
+#19 LAYOUT OVERLAP « + » over the touchable « Rehberi aç daraltıldı » (17 x 31 dp)
+#19 LAYOUT TARGET « Paket… » 21 x 52 dp (touch 48 x 52)
+#19 > touche 300 172
+#19 DOIGT padlive_pad_17 « boş, pad B2 »
+#20 ROUTE dialogue:library | MODE simple | EMPREINTE 85383ebf4c | project=p-2c7eb633 no tuto
+#20 SON Son : les pads live 1, 3 jouent en boucle.
+#20 LAYOUT CONTRAST « Trampetler » 2.86:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Açık hi-hat'ler » 4.42:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Ses ara (parmak, cam, conga…) » 1.30:1 (needs 4.5:1, 16 sp)
+#20 LAYOUT CONTRAST « Parti » 1.26:1 (needs 4.5:1, 16 sp)
+#20 LAYOUT CONTRAST « Dinlemek için bir sese dokun, B2 pad'i üzerine koymak için “Kullan”. » 2.06:1 (needs 4.5:1, 13 sp)
+#20 > touche 600 288
+#20 DOIGT library_search « Ses ara (parmak, cam, conga…) »
+#21 ROUTE dialogue:library | MODE simple | EMPREINTE 85383ebf4c | project=p-2c7eb633 no tuto
+#21 SON Son : les pads live 1, 3 jouent en boucle.
+#21 > ecris davul
+#22 ROUTE dialogue:library | MODE simple | EMPREINTE 06a4b902d5 | project=p-2c7eb633 no tuto
+#22 SON Son : les pads live 1, 3 jouent en boucle.
+#22 > touche 1062 288
+#22 DOIGT dans:library_search
+#23 ROUTE dialogue:library | MODE simple | EMPREINTE 85383ebf4c | project=p-2c7eb633 no tuto
+#23 SON Son : les pads live 1, 3 jouent en boucle.
+#23 > touche 600 288
+#23 DOIGT library_search « Ses ara (parmak, cam, conga…) »
+#24 ROUTE dialogue:library | MODE simple | EMPREINTE 85383ebf4c | project=p-2c7eb633 no tuto
+#24 SON Son : les pads live 1, 3 jouent en boucle.
+#24 > ecris trampet
+#25 ROUTE dialogue:library | MODE simple | EMPREINTE 87091cb68b | project=p-2c7eb633 no tuto
+#25 SON Son : les pads live 1, 3 jouent en boucle.
+#25 > touche 1062 288
+#25 DOIGT dans:library_search
+#26 ROUTE dialogue:library | MODE simple | EMPREINTE 85383ebf4c | project=p-2c7eb633 no tuto
+#26 SON Son : les pads live 1, 3 jouent en boucle.
+#26 > touche 401 129
+#26 DOIGT library_kind_snare « Trampetler »
+#27 ROUTE dialogue:library | MODE simple | EMPREINTE 6a5ea6d4a4 | project=p-2c7eb633 no tuto
+#27 SON Son : les pads live 1, 3 jouent en boucle.
+#27 LAYOUT CONTRAST « Dahili sesler » 1.27:1 (needs 4.5:1, 16 sp)
+#27 LAYOUT CONTRAST « Parti » 2.08:1 (needs 4.5:1, 16 sp)
+#27 LAYOUT CONTRAST « 22 ses » 2.06:1 (needs 4.5:1, 13 sp)
+#27 LAYOUT CONTRAST « Bir sesi “Favoriler”de bulmak için ☆'a dokun. » 2.04:1 (needs 4.5:1, 13 sp)
+#27 > glisse 600 450 600 120
+#27 DOIGT library_folder_Fête « Parti »
+#28 ROUTE dialogue:library | MODE simple | EMPREINTE 35e9be5958 | project=p-2c7eb633 no tuto
+#28 SON Son : les pads live 1, 3 jouent en boucle.
+#28 LAYOUT CONTRAST « 22 ses » 1.86:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « Bir sesi “Favoriler”de bulmak için ☆'a dokun. » 3.02:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « Dinlemek için bir sese dokun, B2 pad'i üzerine koymak için “Kullan”. » 1.30:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « SES PAKETLERİ » 1.29:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « ? » 1.29:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Yalnızca istersen indir; her paket yer açmak için tek dokunuşla silinebilir. » 2.70:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST «  Her şeyi indir (68 paket, 288,4 MB) » 2.06:1 (needs 4.5:1, 14 sp)
+#28 > touche 600 102
+#28 DOIGT library_folder_Sons intégrés « Dahili sesler »
+#29 ROUTE dialogue:library | MODE simple | EMPREINTE d2519d78ce | project=p-2c7eb633 no tuto
+#29 SON Son : les pads live 1, 3 jouent en boucle.
+#29 LAYOUT OVERLAP « Büyük davul 1 » over the touchable « boş, pad B5 » (41 x 35 dp)
+#29 LAYOUT OVERLAP « Büyük davul 2 » over the touchable « boş, pad B6 » (39 x 35 dp)
+#29 LAYOUT OVERLAP « Trampet » over the touchable « boş, pad B7 » (40 x 20 dp)
+#29 LAYOUT OVERLAP « Trampet » over the touchable « boş, pad B8 » (9 x 20 dp)
+#29 LAYOUT OVERLAP « Trampet 2 » over the touchable « boş, pad B8 » (43 x 20 dp)
+#29 LAYOUT OVERLAP « El çırpma » over the touchable « boş, pad B9 » (49 x 20 dp)
+#29 LAYOUT OVERLAP « El çırpma » over the touchable « boş, pad B10 » (7 x 20 dp)
+#29 LAYOUT OVERLAP « Hi-hat » over the touchable « boş, pad B10 » (36 x 20 dp)
+#29 LAYOUT OVERLAP « Açık hi-hat » over the touchable « boş, pad B11 » (32 x 40 dp)
+#29 LAYOUT OVERLAP « Pes tom » over the touchable « boş, pad B12 » (36 x 20 dp)
+#29 LAYOUT CONTRAST « Büyük davul 1 » 2.23:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Büyük davul 2 » 1.87:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Trampet » 1.21:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « El çırpma » 4.10:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Açık hi-hat » 1.22:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Pes tom » 1.22:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Davul kenarı » 3.44:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 1.31:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Büyük davul 1 » 1.87:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 1.87:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Büyük davul 2 » 1.30:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 1.30:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « El çırpma » 2.28:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 1.96:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Hi-hat » 1.23:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 1.23:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Açık hi-hat » 2.60:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Kullan » 4.35:1 (needs 4.5:1, 14 sp)
+#29 > touche 300 110
+#29 DOIGT library_sound_0 « Trampet »
+#30 ROUTE dialogue:library | MODE simple | EMPREINTE d2519d78ce | project=p-2c7eb633 no tuto
+#30 SON Son : les pads live 1, 3 jouent en boucle.
+#30 > touche 512 93
+#30 DOIGT library_sound_use_0 « Kullan »
+#31 ROUTE padlive | MODE simple | EMPREINTE ce0a3341f7 | project=p-2c7eb633 no tuto
+#31 SON Son : les pads live 1, 3 jouent en boucle.
+#31 LAYOUT OVERLAP « Trampet » over « + » (11 x 13 dp)
+#31 LAYOUT OVERLAP « Kaydım 1 » over the touchable « Tempo: dakikada 124 vuruş Tempoyu değişt » (22 x 4 dp)
+#31 LAYOUT OVERLAP « + » over the touchable « Rehberi aç daraltıldı » (17 x 28 dp)
+#31 > touche 1146 132
+#31 DOIGT padlive_challenge_open « Meydan okuma: bu ritmi tekrar çal »
+#32 ROUTE padlive | MODE simple | EMPREINTE 7ebf81a2a0 | project=p-2c7eb633 no tuto
+#32 SON Son : les pads live 1, 3 jouent en boucle.
+#32 LAYOUT CUT « Meydan okuma 1 · Bum bum » ellipsized (« … »)
+#32 LAYOUT OVERLAP « ? » over « Meydan okuma 1 · Bum bum » (7 x 8 dp)
+#32 LAYOUT OVERLAP « 2 » over « Ritmi dinle, sonra pad’lerde tekrar çal. » (7 x 4 dp)
+#32 LAYOUT OVERLAP « 2 » over the touchable « Meydan okuma 3 · Dörtnala · yıldız: 3 üz » (7 x 4 dp)
+#32 LAYOUT OVERLAP « 4 » over the touchable « Meydan okuma 3 · Dörtnala · yıldız: 3 üz » (8 x 12 dp)
+#32 LAYOUT OVERLAP « Meydan okuma 1 · Bum bum » over the touchable « Daralt Genişletildi » (137 x 16 dp)
+#32 LAYOUT OVERLAP « Meydan okuma 1 · Bum bum » over the touchable « “Adım” nedir? » (29 x 15 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 6 Ekle veya kaldır boş » (35 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 7 Ekle veya kaldır boş » (35 x 20 dp)
+#32 LAYOUT OVERLAP « Ritmi dinle, sonra pad’lerde tekrar çal. » over the touchable « Adım 8 Ekle veya kaldır boş » (34 x 20 dp)
+#32 LAYOUT OVERLAP « 2 » over the touchable « Adım 12 Ekle veya kaldır boş » (8 x 19 dp)
+#32 LAYOUT OVERLAP « 3 » over the touchable « Adım 13 Ekle veya kaldır boş » (9 x 19 dp)
+#32 LAYOUT OVERLAP « 4 » over the touchable « Adım 14 Ekle veya kaldır boş » (9 x 19 dp)
+#32 LAYOUT OVERLAP « 5 » over the touchable « Adım 15 Ekle veya kaldır boş » (9 x 19 dp)
+#32 LAYOUT OVERLAP « 6 » over the touchable « Adım 16 Ekle veya kaldır boş » (9 x 19 dp)
+#32 LAYOUT OVERLAP « Dinle » over the touchable « Rehberi aç daraltıldı » (35 x 10 dp)
+#32 LAYOUT OVERLAP « Sıra bende! » over the touchable « Rehberi aç daraltıldı » (78 x 10 dp)
+#32 LAYOUT CONTRAST « 2 » 1.74:1 (needs 4.5:1, 12 sp)
+#32 LAYOUT CONTRAST « 4 » 3.28:1 (needs 4.5:1, 12 sp)
+#32 > touche 873 462
+#32 DOIGT padlive_challenge_listen « Dinle »
+#33 ROUTE padlive | MODE simple | EMPREINTE 77f0317e5b | project=p-2c7eb633 no tuto
+#33 SON Son : l'exemple du tuto joue (encore 2 s) ; les pads live 1, 3 jouent en boucle.
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 6 Ekle veya kaldır boş » (35 x 20 dp)
+#33 LAYOUT OVERLAP « İyi dinle… yanan pad’lere bak. » over the touchable « Adım 7 Ekle veya kaldır boş » (20 x 20 dp)
+#33 LAYOUT OVERLAP « Sıra bende! » over the touchable « Adım 13 Ekle veya kaldır boş » (33 x 18 dp)
+#33 LAYOUT OVERLAP « Sıra bende! » over the touchable « Adım 14 Ekle veya kaldır boş » (35 x 18 dp)
+#33 > touche 972 396
+#33 DOIGT padlive_challenge_go « Sıra bende! »
+#34 ROUTE padlive | MODE simple | EMPREINTE 5c68e1a799 | project=p-2c7eb633 no tuto
+#34 SON Son : les pads live 1, 3 jouent en boucle.
+#34 LAYOUT CUT « Tekrar dinle » ellipsized (« … »)
+#34 LAYOUT OVERLAP « Sıra sende! Pad’lerde çal. » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#34 LAYOUT OVERLAP « Sıra sende! Pad’lerde çal. » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#34 LAYOUT OVERLAP « Sıra sende! Pad’lerde çal. » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#34 LAYOUT OVERLAP « Sıra sende! Pad’lerde çal. » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#34 LAYOUT OVERLAP « Sıra sende! Pad’lerde çal. » over the touchable « Adım 6 Ekle veya kaldır boş » (29 x 20 dp)
+#34 LAYOUT OVERLAP « Tekrar dinle » over the touchable « Adım 11 Ekle veya kaldır boş » (21 x 18 dp)
+#34 LAYOUT OVERLAP « Tekrar dinle » over the touchable « Adım 12 Ekle veya kaldır boş » (35 x 18 dp)
+#34 LAYOUT OVERLAP « Tekrar dinle » over the touchable « Adım 13 Ekle veya kaldır boş » (11 x 18 dp)
+#34 LAYOUT OVERLAP « Bitirdim » over the touchable « Adım 15 Ekle veya kaldır boş » (33 x 18 dp)
+#34 LAYOUT OVERLAP « Bitirdim » over the touchable « Adım 16 Ekle veya kaldır boş » (16 x 18 dp)
+#34 > touche 293 135
+#34 DOIGT padlive_pad_17 « Trampet, vuruş, hazır, pad B2 »
+#35 ROUTE padlive | MODE simple | EMPREINTE ad6dcf7b88 | project=p-2c7eb633 no tuto
+#35 SON Son : les pads live 1, 3 jouent en boucle.
+#35 LAYOUT OVERLAP « Sıra sende! 4 içinden 1 » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#35 LAYOUT OVERLAP « Sıra sende! 4 içinden 1 » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#35 LAYOUT OVERLAP « Sıra sende! 4 içinden 1 » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#35 LAYOUT OVERLAP « Sıra sende! 4 içinden 1 » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#35 LAYOUT OVERLAP « Sıra sende! 4 içinden 1 » over the touchable « Adım 6 Ekle veya kaldır boş » (11 x 20 dp)
+#35 > touche 293 135
+#35 DOIGT padlive_pad_17 « Trampet, vuruş, hazır, pad B2 »
+#36 ROUTE padlive | MODE simple | EMPREINTE 4b8df74425 | project=p-2c7eb633 no tuto
+#36 SON Son : les pads live 1, 3 jouent en boucle.
+#36 LAYOUT OVERLAP « Sıra sende! 4 içinden 2 » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#36 LAYOUT OVERLAP « Sıra sende! 4 içinden 2 » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#36 LAYOUT OVERLAP « Sıra sende! 4 içinden 2 » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#36 LAYOUT OVERLAP « Sıra sende! 4 içinden 2 » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#36 LAYOUT OVERLAP « Sıra sende! 4 içinden 2 » over the touchable « Adım 6 Ekle veya kaldır boş » (13 x 20 dp)
+#36 > touche 293 135
+#36 DOIGT padlive_pad_17 « Trampet, vuruş, hazır, pad B2 »
+#37 ROUTE padlive | MODE simple | EMPREINTE 1b99b104d2 | project=p-2c7eb633 no tuto
+#37 SON Son : les pads live 1, 3 jouent en boucle.
+#37 LAYOUT OVERLAP « Sıra sende! 4 içinden 3 » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#37 LAYOUT OVERLAP « Sıra sende! 4 içinden 3 » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#37 LAYOUT OVERLAP « Sıra sende! 4 içinden 3 » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#37 LAYOUT OVERLAP « Sıra sende! 4 içinden 3 » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#37 LAYOUT OVERLAP « Sıra sende! 4 içinden 3 » over the touchable « Adım 6 Ekle veya kaldır boş » (13 x 20 dp)
+#37 > touche 293 135
+#37 DOIGT padlive_pad_17 « Trampet, vuruş, hazır, pad B2 »
+#38 ROUTE padlive | MODE simple | EMPREINTE 4f82e1bc89 | project=p-2c7eb633 no tuto
+#38 SON Son : les pads live 1, 3 jouent en boucle.
+#38 LAYOUT CUT « Tekrar oyna » ellipsized (« … »)
+#38 LAYOUT CUT « Sonraki meydan okuma » ellipsized (« … »)
+#38 LAYOUT OVERLAP « 2 » over « Bir deneme daha! 4 içinden 1. » (7 x 4 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 2 Ekle veya kaldır boş » (15 x 20 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 3 Ekle veya kaldır boş » (35 x 20 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 4 Ekle veya kaldır boş » (35 x 20 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 5 Ekle veya kaldır boş » (35 x 20 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 6 Ekle veya kaldır boş » (35 x 20 dp)
+#38 LAYOUT OVERLAP « Bir deneme daha! 4 içinden 1. » over the touchable « Adım 7 Ekle veya kaldır boş » (17 x 20 dp)
+#38 LAYOUT OVERLAP « Tekrar oyna » over the touchable « Rehberi aç daraltıldı » (78 x 4 dp)
+#38 LAYOUT OVERLAP « Sonraki meydan okuma » over the touchable « Rehberi aç daraltıldı » (70 x 4 dp)
+#38 LAYOUT CONTRAST « 2 » 1.28:1 (needs 4.5:1, 12 sp)
+#38 > touche 51 45
+#38 DOIGT padlive_back
+#39 ROUTE launch | MODE simple | EMPREINTE 34346182c7 | project=p-2c7eb633 no tuto
+#39 SON Son : les pads live 1, 3 jouent en boucle.
+#39 > glisse 900 420 900 120
+#39 DOIGT launch_projects « Projelerim »
+#40 ROUTE launch | MODE simple | EMPREINTE f9b9657a2b | project=p-2c7eb633 no tuto
+#40 SON Son : les pads live 1, 3 jouent en boucle.
+#40 > glisse 900 420 900 80
+#40 DOIGT launch_padlive « Pad Live »
+#41 ROUTE launch | MODE simple | EMPREINTE 9c592fc29c | project=p-2c7eb633 no tuto
+#41 SON Son : les pads live 1, 3 jouent en boucle.
+#41 > touche 910 436
+#41 DOIGT launch_voice « Sesimi ya da gitarımı kaydet »
+#42 ROUTE ? | MODE simple | EMPREINTE 27f2cc31a6 | project=p-2c7eb633 no tuto
+#42 SON Son : les pads live 1, 3 jouent en boucle.
+#42 > glisse 650 380 650 160
+#42 DOIGT rien
+#43 ROUTE ? | MODE simple | EMPREINTE 439bc04cf2 | project=p-2c7eb633 no tuto
+#43 SON Son : les pads live 1, 3 jouent en boucle.
+#43 > touche 408 400
+#43 DOIGT rien
+#44 ROUTE ? | MODE simple | EMPREINTE 439bc04cf2 | project=p-2c7eb633 no tuto
+#44 SON Son : les pads live 1, 3 jouent en boucle.
+#44 > touche 408 407
+#44 DOIGT audio_record_0 «  Kaydet »
+#45 ROUTE ? | MODE simple | EMPREINTE 19aa84f277 | project=p-2c7eb633 no tuto
+#45 SON Son : la musique du projet joue en boucle ; les pads live 1, 3 jouent en boucle.
+#45 > attends 4
+#46 ROUTE ? | MODE simple | EMPREINTE 19aa84f277 | project=p-2c7eb633 no tuto
+#46 SON Son : la musique du projet joue en boucle ; les pads live 1, 3 jouent en boucle.
+#46 > touche 408 299
+#46 DOIGT audio_stop « Durdur ve sakla »
+#47 ROUTE ? | MODE simple | EMPREINTE e274d6b20a | project=p-2c7eb633 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 1083 42
+#47 DOIGT top_play
+#48 ROUTE ? | MODE simple | EMPREINTE c683f13751 | project=p-2c7eb633 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 > glisse 650 400 650 150
+#48 DOIGT rien
+#49 ROUTE ? | MODE simple | EMPREINTE b0989724ba | project=p-2c7eb633 no tuto
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 600 444
+#49 DOIGT guide_bar « Rehber »
+#50 ROUTE ? | MODE simple | EMPREINTE 6cd933df8b | project=p-2c7eb633 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « BAŞLARKEN » 4.30:1 (needs 4.5:1, 12 sp)
+#50 > glisse 972 430 972 250
+#50 DOIGT rien (texte « Sıra sende: “Izgaraya git” düğmesine dok »)
+#51 ROUTE ? | MODE simple | EMPREINTE f5acf470f2 | project=p-2c7eb633 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « Izgaraya git » 3.89:1 (needs 4.5:1, 14 sp)
+#51 > touche 972 417
+#51 DOIGT guide_open_grid « Ayarı gör: Izgaraya git »
+#52 ROUTE mission_overlay | MODE simple | EMPREINTE fad172604a | project=p-2c7eb633 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT OVERLAP « Ayar burada. Rehber seni alttaki çubuğunda bekliyor. » over the touchable « Basit modu. Mod değiştirmek için dokun.  » (56 x 20 dp)
+#52 LAYOUT OVERLAP « Ayar burada. Rehber seni alttaki çubuğunda bekliyor. » over the touchable « Geçerli bölüm: A. Bölüm değiştirmek için » (48 x 14 dp)
+#52 LAYOUT OVERLAP « Ayar burada. Rehber seni alttaki çubuğunda bekliyor. » over the touchable « Bir bölümden çal » (3 x 4 dp)
+#52 > touche 865 132
+#52 DOIGT guide_spot_close « Anladım »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c621505fe3 | project=p-2c7eb633 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 718 303
+#53 DOIGT step_0 « Adım 1 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 325f396531 | project=p-2c7eb633 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 953 303
+#54 DOIGT step_4 « Adım 5 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE befd8ac9fc | project=p-2c7eb633 no tuto
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 718 375
+#55 DOIGT step_8 « Adım 9 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e04c339c34 | project=p-2c7eb633 no tuto
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 953 375
+#56 DOIGT step_12 « Adım 13 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 605986fba3 | project=p-2c7eb633 no tuto
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 1155 42
+#57 DOIGT top_more
+#58 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE e65a98231d | project=p-2c7eb633 no tuto
+#58 SON Son : la musique du projet joue en boucle.
+#58 LAYOUT CONTRAST « Ana sayfa » 3.21:1 (needs 4.5:1, 14 sp)
+#58 > glisse 1048 450 1048 100
+#58 DOIGT more_home « Ana sayfa »
+#59 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 4effefad38 | project=p-2c7eb633 no tuto
+#59 SON Son : la musique du projet joue en boucle.
+#59 LAYOUT CONTRAST « Şarkıyı yeniden adlandır » 1.23:1 (needs 4.5:1, 14 sp)
+#59 > touche 1048 82
+#59 DOIGT more_rename « Şarkıyı yeniden adlandır »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b2836da3c9 | project=p-2c7eb633 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 489 155
+#60 DOIGT rename_project_field « Proje adı »
+#61 ROUTE dialogue:? | MODE simple | EMPREINTE 1dd9ea2978 | project=p-2c7eb633 no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 > glisse 489 155 489 155
+#61 DOIGT rename_project_field « Proje adı »
+#62 ROUTE dialogue:? | MODE simple | EMPREINTE 1dd9ea2978 | project=p-2c7eb633 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > ecris Gece Şarkısı İğneada
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fce0598923 | project=p-2c7eb633 no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 1119 156
+#63 DOIGT rename_project_ok « Tamam »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0c97b5f445 | project=p-2c7eb633 no tuto
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 1155 42
+#64 DOIGT top_more
+#65 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 4effefad38 | project=p-2c7eb633 no tuto
+#65 SON Son : la musique du projet joue en boucle.
+#65 > glisse 1048 450 1048 100
+#65 DOIGT more_full « Pro moda geç »
+#66 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE d875b2a53b | project=p-2c7eb633 no tuto
+#66 SON Son : la musique du projet joue en boucle.
+#66 LAYOUT CONTRAST « Pro moda geç » 2.73:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Hata bildir » 2.04:1 (needs 4.5:1, 14 sp)
+#66 > touche 1048 298
+#66 DOIGT more_settings « Ayarlar »
+#67 ROUTE ? | MODE simple | EMPREINTE 09225ba4ee | project=p-2c7eb633 no tuto
+#67 SON Son : la musique du projet joue en boucle.
+#67 > retour
+#67 RETOUR
+#68 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 31e18b90b5 | project=p-2c7eb633 no tuto
+#68 SON Son : la musique du projet joue en boucle.
+#68 > glisse 60 390 60 180
+#68 DOIGT tab_simple_Clavier « Klavye »
+#69 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5c0126b929 | project=p-2c7eb633 no tuto
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 60 358
+#69 DOIGT tab_simple_Envoyer « Gönder »
+#70 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 70b0d92187 | project=p-2c7eb633 no tuto
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 660 348
+#70 DOIGT share_go «   Paylaş »
+#71 ROUTE dialogue:share_progress | MODE simple | EMPREINTE df34810a9e | project=p-2c7eb633 no tuto
+#71 SON Son : la musique du projet joue en boucle.
+#71 LAYOUT CONTRAST « İptal » 2.38:1 (needs 4.5:1, 14 sp)
+#71 > attends 15
+#72 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 3d44797e67 | project=p-2c7eb633 no tuto
+#72 SON Son : la musique du projet joue en boucle.
+#72 > attends 20
+#72 PARTAGE LiveGece-Şarkısı-İğneada-döngü-20261105-092906.m4a
+#73 ROUTE dialogue:« Şarkımı paylaş · LiveGece-Şark » | MODE simple | EMPREINTE 83d86f51b8 | project=p-2c7eb633 no tuto
+#73 SON Son : la musique du projet joue en boucle.
+#73 > retour
+#73 RETOUR
+#74 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 1a9e8e4716 | project=p-2c7eb633 no tuto
+#74 SON Son : la musique du projet joue en boucle.
+#74 > glisse 60 200 60 420
+#74 DOIGT rien
+#75 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 70b0d92187 | project=p-2c7eb633 no tuto
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 60 363
+#75 DOIGT tab_simple_Envoyer « Gönder »
+#76 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 70b0d92187 | project=p-2c7eb633 no tuto
+#76 SON Son : la musique du projet joue en boucle.
+#76 > touche 60 189
+#76 DOIGT tab_simple_Clavier « Klavye »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5ae37d090b | project=p-2c7eb633 no tuto
+#77 SON Son : la musique du projet joue en boucle.
+#77 LAYOUT CONTRAST «  Melodimi kaydet » 2.78:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT TARGET « Do# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Ré# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Fa# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Sol# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « La# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Do# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Ré# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Fa# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « Sol# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#77 LAYOUT TARGET « La# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#77 > touche 255 440
+#77 DOIGT key_64 « Mi 4 »
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6a655c8d45 | project=p-2c7eb633 no tuto
+#78 SON Son : la musique du projet joue en boucle.
+#78 LAYOUT CUT «  Melodimi kaydet » ellipsized (« … »)
+#78 LAYOUT CUT «  Az önce çaldığımı sakla » ellipsized (« … »)
+#78 > fin
+#78 FIN : fin

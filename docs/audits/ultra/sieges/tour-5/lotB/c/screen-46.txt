@@ -1,0 +1,56 @@
+Écran 46 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 417,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 492,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Drums 16 Pads » [sélectionné] @ 76,183
+onglet « Acid 303 Bassline » @ 223,183
+onglet « Vocals Mikrofon » @ 376,183
+onglet « Remix Trennen » @ 523,183
+bouton «  Spur » @ 677,183
+texte « Teil: A » @ 52,243
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,272
+case « 1 Takt » [sélectionné] @ 166,329
+case « 2 » @ 265,329
+case « 3 » @ 346,329
+case « 4 » @ 427,329
+texte « Länge » @ 72,329
+bouton « − » @ 312,413
+bouton « + » [désactivé] @ 491,413
+texte « Dieses Pad loopt über » @ 151,413
+texte « 16 Steps » @ 402,413
+bouton « PAD-SOUND » [état « Aufgeklappt »] @ 149,530
+bouton « ? » (nom « Was ist „Pad-Sample“? ») @ 235,530
+texte « Studio-Kick (synthetisiert) » @ 450,579
+bouton «  Sound ändern » @ 450,642
+bouton «  Pad-Einstellungen » @ 450,726
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Die Kick und das Grollen Kapitel 2/16 · Schritt 2/4 · Pro » @ 400,816
+bouton « Kapitel » @ 771,816
+bouton « Zuklappen » @ 843,816
+texte « Hör dir die Techno-Kick allein an: ein trockener, tiefer Schlag auf jedem Schlag. » @ 450,915
+touchable « ▸ Warum? » @ 450,975
+bouton «   Dein Ergebnis anhören » @ 450,1038
+bouton «  Beispiel anhören » @ 450,1122
+bouton «  Zurück » @ 92,1203
+bouton « Weiter  » @ 811,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » [sélectionné] @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

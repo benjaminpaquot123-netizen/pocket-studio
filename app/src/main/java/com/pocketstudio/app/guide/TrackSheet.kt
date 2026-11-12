@@ -1,5 +1,6 @@
 package com.pocketstudio.app.guide
 
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -73,6 +74,7 @@ import com.pocketstudio.model.guide.GuideTrack
 import com.pocketstudio.model.guide.guideText
 import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.layersOf
 import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.sceneTitle
@@ -108,6 +110,8 @@ class TrackSheetActions(
     /** « Ramener » a line of the history (its group id). */
     val revert: (String) -> Unit = {},
     val dismissNotice: () -> Unit = {},
+    /** « ▶ Écouter seule »: the track alone in a loop (again: it stops); null: not offered. */
+    val listenAlone: (() -> Unit)? = null,
 )
 
 /** A track the chain can be copied to: its key and name. */
@@ -133,6 +137,8 @@ fun TrackSheet(
     now: Long = System.currentTimeMillis(),
     /** The Guide has not read the song yet. */
     loading: Boolean = sheet == null,
+    /** The track is heard alone in a loop now. */
+    alone: Boolean = false,
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Background, modifier = Modifier.testTag("track_sheet")) {
@@ -158,7 +164,7 @@ fun TrackSheet(
                         color = Neon.TextSecondary, modifier = Modifier.testTag("track_sheet_loading"),
                     )
                 } else {
-                    SoundColumn(sheet, actions)
+                    SoundColumn(sheet, actions, name, alone)
                     WhenColumn(sheet, partNames, actions)
                     ChainColumn(sheet, actions)
                     OftenColumn(sheet)
@@ -188,10 +194,13 @@ private fun SheetNotice(text: String, dismiss: () -> Unit) {
 /** « Son »: what plays and its layers; « Changer le son », « Couches ». */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SoundColumn(sheet: GuideSheet, actions: TrackSheetActions) {
+private fun SoundColumn(sheet: GuideSheet, actions: TrackSheetActions, name: String, alone: Boolean) {
     NeonCard(Modifier.testTag("track_sheet_sound")) {
         SectionLabel(tr("Son"), foldKey = "sheet.sound")
-        Text(sheet.sound.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(sheet.sound.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
+            actions.listenAlone?.let { com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), name, "track_sheet_alone", toggle = it) }
+        }
         if (sheet.sound.layers.isNotEmpty()) {
             Text(
                 tr("Avec ses couches : %s", sheet.sound.layers.joinToString(" · ")), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -219,7 +228,7 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
             Text(tr("Pas encore de morceau : la piste joue dans la boucle."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         } else {
             Text(
-                tr("Joue dans %1\$d parties sur %2\$d.", sheet.parts.count { it }, sheet.parts.size), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary,
+                playsIn(sheet.parts.count { it }, sheet.parts.size), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary,
                 modifier = Modifier.testTag("track_sheet_plays"),
             )
             // One box per part, in the song's order, on a line that scrolls (a long song has 40 or 50).
@@ -231,7 +240,8 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
                         Modifier.width(56.dp).heightIn(min = 56.dp).clip(shape)
                             .background(if (on) Neon.Cyan.copy(alpha = 0.85f) else Neon.SurfaceHigh.copy(alpha = 0.5f))
                             .border(1.dp, if (on) Neon.Cyan else Neon.Outline, shape)
-                            .then(actions.togglePart?.let { t -> Modifier.clickable(role = Role.Checkbox) { t(i) } } ?: Modifier)
+                            // Fix 2, n° 7 (« règle partout »): a checkbox says whether it is ticked.
+                            .then(actions.togglePart?.let { t -> Modifier.toggleable(value = on, role = Role.Checkbox, onValueChange = { t(i) }) } ?: Modifier)
                             .semantics {
                                 selected = on
                                 contentDescription = if (on) tr("Partie %1\$d, %2\$s : elle joue", i + 1, label) else tr("Partie %1\$d, %2\$s : elle se tait", i + 1, label)
@@ -255,6 +265,7 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
 /** « Quel effet et combien »: the chain in the order the sound goes through it, each effect's start value and why; the sends. */
 @Composable
 private fun ChainColumn(sheet: GuideSheet, actions: TrackSheetActions) {
+    val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
     NeonCard(Modifier.testTag("track_sheet_chain")) {
         SectionLabel(tr("Quel effet et combien"), foldKey = "sheet.chain")
         if (sheet.chain.isEmpty()) Text(tr("Aucun effet : le son passe tel quel."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
@@ -263,10 +274,10 @@ private fun ChainColumn(sheet: GuideSheet, actions: TrackSheetActions) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("${n + 1}.", style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.width(24.dp))
                     Text(tr(e.type.label), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = if (e.bypassed) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.weight(1f))
-                    if (e.valueLabel.isNotBlank()) Text(tr(e.valueLabel) + " " + e.value, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                    if (e.valueLabel.isNotBlank()) Text(tr(e.valueLabel) + " " + e.value.let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                 }
                 val notes = listOfNotNull(
-                    e.why.takeIf { it.isNotBlank() }?.let(::guideText),
+                    e.why.takeIf { it.isNotBlank() }?.let(::guideText)?.let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it },
                     tr("coupé pour l'instant").takeIf { e.bypassed },
                     tr("seulement dans certaines parties").takeIf { !e.everywhere },
                 )
@@ -379,9 +390,14 @@ internal fun ago(ms: Long): String {
         min < 1 -> tr("à l'instant")
         min < 60 -> tr("il y a %d min", min.toInt())
         min < 24 * 60 -> tr("il y a %d h", (min / 60).toInt())
+        min < 48 * 60 -> tr("il y a 1 jour")
         else -> tr("il y a %d jours", (min / (24 * 60)).toInt())
     }
 }
+
+/** « Joue dans 3 parties sur 8 », singular for one. */
+internal fun playsIn(parts: Int, of: Int): String =
+    trCount(parts, "Joue dans 1 partie sur %d.", "Joue dans %1\$d parties sur %2\$d.", *(if (parts == 1) arrayOf<Any?>(of) else arrayOf<Any?>(parts, of)))
 
 private const val MAX_LINES = 30
 
@@ -420,13 +436,22 @@ internal fun TrackSheetRoute(
     val targets = tracks.filter { it.key != key && it.channel != com.pocketstudio.model.Mixer.MASTER && it.key != GuideTrack.DRUMS && it.key.startsWith("pad:") == pad }
         .map { SheetTarget(it.key, DefaultNames.shown(it.name)) }
     val partKey = GuideTrack.partKey(key)
+    val aloneTarget = remember(key) { com.pocketstudio.app.rhythm.AloneTarget.ofKey(key) }
+    val alone by vm.alone.collectAsStateWithLifecycle()
+    // The sheet keeps « Écouter seule » going (its sound changed from here is heard in the loop).
+    com.pocketstudio.app.rhythm.HoldAlone(true, vm::holdAlone)
     TrackSheet(
         name = DefaultNames.shown(track.name),
-        sheet = guide.sheets.firstOrNull { it.track.key == key },
+        // Audit stage 2: the « Quand » boxes follow the project at once (the Guide's analysis comes 300 ms or more
+        // later, so a touched box looked unchanged); a box is lit where the track is switched on in that part.
+        sheet = guide.sheets.firstOrNull { it.track.key == key }?.let { s ->
+            if (partKey == null || project.song.isEmpty()) s else s.copy(parts = project.song.map { it.plays(partKey) })
+        },
         partNames = partNames,
         targets = targets,
         notice = guideNotice ?: notice,
         loading = guide.loading,
+        alone = alone?.target == aloneTarget,
         actions = TrackSheetActions(
             close = close,
             changeSound = inst?.let { id -> { changeSound(id) } },
@@ -438,6 +463,7 @@ internal fun TrackSheetRoute(
             copyTo = { to -> vm.copyChain(key, to) },
             revert = { id -> vm.guide.revert(id) },
             dismissNotice = { guideNotice = null; vm.dismissNotice() },
+            listenAlone = if (aloneTarget.isEmpty) null else ({ vm.toggleAlone(aloneTarget) }),
         ),
     )
 }
@@ -572,11 +598,12 @@ private fun LayerCard(i: Int, l: TrackLayer, alone: Boolean, actions: LayersEdit
             OutlinedButton(onClick = pickSound, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_sound_$i")) { Text(tr("Changer le son")) }
             OutlinedButton(onClick = { actions.remove(i) }, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_remove_$i")) { Text(tr("Retirer")) }
         }
-        LabeledSlider(tr("Volume"), formatDb(l.gainDb), "layer_gain_$i") {
-            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"))
+        val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
+        LabeledSlider(tr("Volume"), formatDb(l.gainDb, simple), "layer_gain_$i") {
+            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"), label = tr("Volume"), valueText = formatDb(l.gainDb, simple))
         }
         LabeledSlider(tr("Place"), formatPan(l.pan), "layer_pan_$i") {
-            ProSlider(l.pan, { actions.setPan(i, if (kotlin.math.abs(it) < 0.04f) 0f else (it * 100).roundToInt() / 100f) }, valueRange = -1f..1f, modifier = Modifier.fillMaxWidth().testTag("layer_pan_slider_$i"))
+            ProSlider(l.pan, { actions.setPan(i, if (kotlin.math.abs(it) < 0.04f) 0f else (it * 100).roundToInt() / 100f) }, valueRange = -1f..1f, modifier = Modifier.fillMaxWidth().testTag("layer_pan_slider_$i"), label = tr("Place"), valueText = formatPan(l.pan))
         }
         val octave = (l.transpose / 12f).roundToInt()
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -677,7 +704,10 @@ private fun SoundPicker(p: Picking, favorites: Favorites, back: () -> Unit, pick
 private const val GAIN_MIN = -30f
 private const val GAIN_MAX = 6f
 
-private fun formatDb(db: Float): String = if (db <= Layers.MIN_GAIN_DB) tr("muet") else (if (db > 0f) "+" else if (db < 0f) "−" else "") + "%.1f dB".format(kotlin.math.abs(db))
+/** « −6,0 dB » in French whatever the phone's language: the interface's own decimal separator (as the mixer). */
+internal fun formatDb(db: Float, simple: Boolean = false): String = if (db <= Layers.MIN_GAIN_DB) tr("muet")
+    else if (simple) com.pocketstudio.app.mixer.levelWords(db) else
+    com.pocketstudio.model.i18n.ltrNumber((if (db > 0f) "+" else if (db < 0f) "−" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", kotlin.math.abs(db)))
 
 private fun formatPan(pan: Float): String = when {
     kotlin.math.abs(pan) < 0.005f -> tr("au centre")

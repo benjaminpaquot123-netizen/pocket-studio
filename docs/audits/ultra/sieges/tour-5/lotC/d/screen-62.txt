@@ -1,0 +1,11 @@
+Écran 62 (588x1278)
+bouton «  Retour » @ 74,36
+texte « Remix » @ 179,36
+bouton « SÉPARER UNE CHANSON » [état « Déplié »] @ 214,135
+bouton « ? » (nom « Qu'est-ce que « Remix » ? ») @ 364,135
+texte « Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste. Compte quelques minutes ; tu peux éteindre l'écran. » @ 294,229
+texte « Il faut d'abord le modèle de séparation (174 Mo, une seule fois, Wi-Fi conseillé). » @ 294,328
+bouton « Télécharger le modèle (174 Mo) » @ 294,403
+bouton « Choisir une chanson » @ 294,487
+texte « 7 minutes au maximum. Les 3 derniers morceaux séparés sont gardés, et ceux qu'un projet utilise. » @ 294,562
+bouton « Télécharger le modèle (174 Mo) » @ 294,1227

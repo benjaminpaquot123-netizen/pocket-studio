@@ -1,0 +1,23 @@
+{
+  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "Kerasan lagu-lagu gaya ini (%s LUFS), diukur pada bagian paling keras. Keluaran naik atau turun perlahan untuk mencapainya; ekspor mendekatinya sebisa mungkin tanpa menekan suara.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "Keras, seperti di klub (%s LUFS), diukur pada bagian paling keras. Gayamu sudah sekeras ini: di sini Club dan Auto mengincar kerasan yang sama.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "Keras, seperti di klub (%s LUFS), diukur pada bagian paling keras. Keluaran naik perlahan untuk mencapainya; ekspor mendekatinya sebisa mungkin tanpa menekan suara.",
+  "Le volume visé, en LUFS : plus près de 0, plus fort. Une cible par projet, la même dans Mix et au partage. Auto (%1$s LUFS, ton style) et Club (%2$s LUFS) se mesurent sur le passage le plus fort ; Streaming (−14 LUFS), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et le dit.": "Kerasan target, dalam LUFS: makin dekat ke 0, makin keras. Satu target per proyek, sama di Mix dan saat membagikan. Auto (%1$s LUFS, kerasan gayamu) dan Club (%2$s LUFS) diukur pada bagian paling keras; Streaming (−14 LUFS, Spotify dan YouTube), Apple Music (−16) dan Bebas di seluruh lagu. Kalau suaranya akan tertekan, aplikasi berhenti lebih dulu dan memberitahumu.",
+  "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Target diukur pada bagian paling keras (%1$s LUFS); seluruh lagu, dengan bagian tenangnya, terukur %2$s LUFS.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Agar sekeras ini, puncaknya ditekan %s dB: itu banyak, suaranya kehilangan hentakan.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Agar sekeras ini, puncaknya ditekan %s dB (paling banyak 3: suaranya tetap menghentak).",
+  "Le même réglage que dans Mix.": "Pengaturan yang sama dengan di Mix.",
+  "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Untuk melanjutkan di perangkat lain: file .zip berisi semua suaranya, dibuka di sana lewat Proyekku › Impor.",
+  "Nom du morceau envoyé": "Nama lagu yang dikirim",
+  "Le projet garde son nom « %s ».": "Proyek tetap bernama “%s”.",
+  "%s (coupée)": "%s (dibisukan)",
+  "Sans fichier : %s.": "Tanpa file: %s.",
+  "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Lagu sudah berubah sejak ekspor ini: ekspor lagi untuk mengirim versi barunya.",
+  "Remix · %s": "Remix · %s",
+  "Trop fort par endroits : ça risque de grésiller.": "Terlalu keras di beberapa bagian: bisa kresek-kresek.",
+  "Pas de saturation.": "Tidak ada distorsi.",
+  "Fichier M4A : léger, lu par tous les appareils.": "File M4A: ringan, bisa diputar di semua perangkat.",
+  "Fichier %s : qualité studio.": "File %s: kualitas studio.",
+  "%s Mo": "%s MB",
+  "%d Ko": "%d KB"
+}

@@ -1,0 +1,7 @@
+Écran 61 (588x1278)
+texte « It's ready » @ 118,478
+texte « Ready: My-first-beat-loop-streaming-20261105-211809.m4a, a copy is also in Music › BenStudio. » @ 294,571
+texte « −14.0 LUFS integrated · peak −9.6 dBTP » @ 217,635
+texte « M4A, 48 kHz, 256 kb/s · 16 s » @ 166,668
+texte « Target: Streaming · −14 LUFS » @ 169,701
+bouton « OK » @ 508,787

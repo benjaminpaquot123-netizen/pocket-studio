@@ -1,0 +1,33 @@
+Écran 44 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+bouton « Home Keep going, new song, Remix… » @ 294,210
+bouton « My projects Open, create, duplicate, send a project » @ 294,315
+bouton « Help First steps, the Guide, the glossary » @ 294,420
+bouton « My first song, with the Guide Its first cards, from the style to sharing » @ 294,525
+bouton « Music words, to listen to Each word with a sound example » @ 294,630
+bouton « Settings Language, theme, size, sound, simple mode » @ 294,741
+bouton « Switch to Simple mode Five tabs: My song, Rhythm, Keyboard, Mix, Send » @ 294,858
+bouton « MIDI keyboard Connect a keyboard, learn knobs » @ 294,934
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 31 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

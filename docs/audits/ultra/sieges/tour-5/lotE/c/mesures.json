@@ -1,0 +1,36 @@
+{
+  "siege": "c",
+  "options": {
+    "lang": "ko",
+    "device": "tablet8",
+    "font": "100",
+    "mode": "pro",
+    "amenee": "remix",
+    "gestes.max": "90",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 61,
+    "images": 2,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": 17,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 2,
+    "retours_immediats": 0,
+    "ecrans": 80,
+    "ecrans_revisites": 25,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 1,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 104,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : Ma-chanson-préférée-video-20261105-213555.mp4, 봄밤-리믹스-스트리밍-곡-20261105-213323.m4a, 봄밤-리믹스-클럽-곡-20261105-213358.wav (cibles non mesurées ici : ffprobe à brancher)"
+}

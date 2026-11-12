@@ -45,7 +45,7 @@ fun Waveform(
     onTap: ((Float) -> Unit)? = null,
     /** Bar lines over the sound: (fraction of it, bar number), numbered where there is room. */
     bars: List<Pair<Float, Int>> = emptyList(),
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val barText = androidx.compose.ui.text.rememberTextMeasurer()
     val barStyle = androidx.compose.ui.text.TextStyle(color = Color.White.copy(alpha = 0.6f), fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp))
     var start by remember(peaks) { mutableFloatStateOf(0f) }

@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Línea de tiempo: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Canción escrita: %1$s, %2$s",
+  "Grille des notes : %s": "Cuadrícula de notas: %s",
+  "1 pas": "1 paso",
+  "1 piste": "1 pista",
+  "1 réglage": "1 ajuste",
+  "%d réglages": "%d ajustes",
+  "Fait : break de 1 mesure après %2$s": "Hecho: break de 1 compás después de %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Hecho: subida de 1 compás antes de %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Aún no hay canción: tu parte sale en bucle (1 compás).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Tu toma Live se guardó: está en la canción (1 parte).",
+  "Ton texte (1 caractère)": "Tu texto (1 carácter)",
+  "trop bas de 1 cent": "1 cent demasiado bajo",
+  "trop haut de 1 cent": "1 cent demasiado alto",
+  "−%d demi-ton": "−%d semitono",
+  "%d min": "%d min",
+  "%1$d min %2$d": "%1$d min %2$d",
+  "Hors de la gamme du morceau": "Fuera de la escala de la canción",
+  "Poignée : glisse vers le bas pour fermer": "Asa: desliza hacia abajo para cerrar"
+}

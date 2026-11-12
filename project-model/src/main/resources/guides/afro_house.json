@@ -81,7 +81,7 @@
    "target": "song",
    "kind": "decide",
    "title": "Pour où : téléphone, streaming ou club ?",
-   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −9 LUFS au Drop. Le moteur s'en charge.",
+   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −9 LUFS au Drop. Le master s'en approche sans écraser le son.",
    "done": [
     "target"
    ],
@@ -116,7 +116,7 @@
      }
     }
    ],
-   "lexicon": "master"
+   "lexicon": "loudness"
   },
   {
    "id": "sound.kick",
@@ -133,7 +133,8 @@
     "has:kick"
    ],
    "done": [
-    "has:kick"
+    "has:kick",
+    "by_hand|changed:kick"
    ],
    "proposals": [
     {
@@ -194,7 +195,8 @@
     "has:snare"
    ],
    "done": [
-    "has:snare"
+    "has:snare",
+    "by_hand|changed:snare"
    ],
    "proposals": [
     {
@@ -255,7 +257,8 @@
     "has:hats"
    ],
    "done": [
-    "has:hats"
+    "has:hats",
+    "by_hand|changed:hats"
    ],
    "proposals": [
     {
@@ -316,7 +319,8 @@
     "has:bass"
    ],
    "done": [
-    "has:bass"
+    "has:bass",
+    "by_hand|changed:bass"
    ],
    "proposals": [
     {
@@ -377,7 +381,8 @@
     "has:pad"
    ],
    "done": [
-    "has:pad"
+    "has:pad",
+    "by_hand|changed:pad"
    ],
    "proposals": [
     {
@@ -438,7 +443,8 @@
     "has:lead"
    ],
    "done": [
-    "has:lead"
+    "has:lead",
+    "by_hand|changed:lead"
    ],
    "proposals": [
     {
@@ -499,7 +505,8 @@
     "has:riser"
    ],
    "done": [
-    "has:riser"
+    "has:riser",
+    "by_hand|changed:riser"
    ],
    "proposals": [
     {
@@ -544,6 +551,41 @@
     }
    ],
    "lexicon": "buildup"
+  },
+  {
+   "id": "layers.bass",
+   "stage": 2,
+   "target": "bass",
+   "kind": "decide",
+   "title": "La basse en deux couches : le sub et le médium",
+   "why": "Sous 120 Hz une seule source, propre et au centre (le sub) ; au-dessus, la couche qui grogne et bouge.",
+   "applicable": [
+    "has:bass"
+   ],
+   "done": [
+    "layered:bass"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "layers",
+     "label": "Voir les couches",
+     "why": "Chaque couche s'écoute seule, avec les autres, ou sans.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.layers",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "bass"
   },
   {
    "id": "fx.review",
@@ -699,6 +741,52 @@
    "lexicon": "saturation"
   },
   {
+   "id": "fx.sub",
+   "stage": 3,
+   "target": "sub",
+   "kind": "decide",
+   "title": "Le sub : propre, au centre, un peu saturé",
+   "why": "Aucun effet ne colore encore le sub : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Saturation 15 à 25 %, mono strict.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:sub"
+   ],
+   "done": [
+    "colour:sub",
+    "by_hand|changed:sub"
+   ],
+   "proposals": [
+    {
+     "id": "light",
+     "label": "Saturation légère",
+     "why": "Juste assez pour qu'un petit haut-parleur le devine.",
+     "value": "Drive 20 %",
+     "action": {
+      "type": "insert",
+      "effect": "SATURATION",
+      "params": [
+       0.2,
+       1.0,
+       1.0,
+       0.7,
+       1.0
+      ]
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Le laisser tel quel",
+     "why": "Un grave rond, senti plus qu'entendu.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "saturation"
+  },
+  {
    "id": "fx.sidechain",
    "stage": 3,
    "target": "bass",
@@ -713,7 +801,8 @@
     "has:kick"
    ],
    "done": [
-    "sidechain|changed:sidechain"
+    "sidechain",
+    "by_hand|changed:sidechain"
    ],
    "proposals": [
     {
@@ -811,9 +900,9 @@
    "target": "lead",
    "kind": "review",
    "title": "Le lead : écho et réverbe",
-   "why": "Un écho à la croche et une réverbe moyenne : il chante devant sans prendre toute la place.",
+   "why": "Un écho en rythme et une réverbe moyenne : il chante devant sans prendre toute la place.",
    "when": "Une fois le son et le motif posés.",
-   "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
+   "howMuch": "L'écho s'entend entre les notes sans les couvrir ; la réverbe reste en retrait.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
     "has:lead"
@@ -1022,6 +1111,7 @@
      "id": "parts",
      "label": "Je le fais moi-même",
      "why": "Une couche, une variation, un contre-chant au 2e.",
+     "simpleWhy": "Un son en plus, une variation, une petite réponse au 2e.",
      "action": {
       "type": "open",
       "spot": "song.parts"
@@ -1154,6 +1244,14 @@
      "action": {
       "type": "open",
       "spot": "sounds.favorite"
+     }
+    },
+    {
+     "id": "done",
+     "label": "C'est fait",
+     "why": "Tu l'as fait de ton côté : on passe à la suite.",
+     "action": {
+      "type": "keep"
      }
     }
    ],
@@ -1340,11 +1438,11 @@
    "kind": "decide",
    "simple": true,
    "title": "La balance : kick, basse, batterie, lead, le reste",
-   "why": "On règle dans cet ordre, avec les faders seuls : le mix doit déjà marcher avant les effets. Tous les faders sont encore à 0 dB.",
+   "why": "On règle dans cet ordre, avec les faders seuls, effets compris : le kick en référence, chaque piste à sa place autour de lui.",
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
-    "balanced|faders"
+    "balanced"
    ],
    "proposals": [
     {
@@ -1352,6 +1450,7 @@
      "label": "Placer chaque piste pour moi",
      "why": "J'écoute chaque piste seule au Drop, le kick en référence, et je remets à sa place celle qui s'en écarte de plus de 3 dB.",
      "value": "± 3 dB",
+     "simpleWhy": "J'écoute chaque piste au Drop, le kick en référence, et je remets à sa place celle qui est trop forte ou trop faible.",
      "action": {
       "type": "balance"
      }
@@ -1408,7 +1507,7 @@
      }
     }
    ],
-   "lexicon": "mix"
+   "lexicon": "pan"
   },
   {
    "id": "mix.master",
@@ -1437,6 +1536,8 @@
      "id": "master",
      "label": "Voir le master",
      "why": "La cible, la marge et ce que fait la chaîne.",
+     "simpleLabel": "Voir le volume final",
+     "simpleWhy": "Le volume visé et ce qui l'ajuste.",
      "action": {
       "type": "open",
       "spot": "mixer.master"
@@ -1453,6 +1554,8 @@
    "simple": true,
    "title": "Le Drop plus fort que le Break",
    "why": "Au moins 4 dB d'écart entre le Break et le Drop : sinon le Drop ne tombe pas.",
+   "simpleTitle": "Le Drop plus fort que le Break",
+   "simpleWhy": "Le Break un peu plus calme, pour que le Drop frappe quand il revient.",
    "applicable": [
     "measured",
     "break"
@@ -1499,6 +1602,7 @@
      "id": "listen",
      "label": "Écouter en mono",
      "why": "Le Drop en stéréo, puis replié en mono : ce qui s'efface s'entend.",
+     "simpleWhy": "Le Drop normal, puis comme sur une seule enceinte : ce qui s'efface s'entend.",
      "action": {
       "type": "listen",
       "name": "mono"
@@ -1509,6 +1613,8 @@
      "label": "Resserrer la stéréo",
      "why": "Les graves en mono jusqu'à 150 Hz, aucun élargisseur au-delà de 100 %.",
      "value": "150 Hz",
+     "simpleLabel": "Resserrer le son",
+     "simpleWhy": "Les graves au milieu, rien de trop large : tout reste là sur une seule enceinte.",
      "action": {
       "type": "mono"
      }
@@ -1542,6 +1648,7 @@
      "id": "listen",
      "label": "Écouter comme un téléphone",
      "why": "Le Drop tel quel, puis sans rien sous 300 Hz, au même volume.",
+     "simpleWhy": "Le Drop tel quel, puis comme sur un petit haut-parleur, au même volume.",
      "action": {
       "type": "listen",
       "name": "phone"
@@ -1635,8 +1742,9 @@
     },
     {
      "id": "export",
-     "label": "Exporter le M4A",
+     "label": "Partager le M4A",
      "why": "Le morceau entier, au volume du style.",
+     "simpleLabel": "Faire le fichier audio",
      "action": {
       "type": "open",
       "spot": "share.export"
@@ -1705,7 +1813,7 @@
    "FILTER": "Le filtre qui s'ouvre dans la Montée."
   },
   "riser": {
-   "FILTER": "Le souffle s'ouvre jusqu'au Drop."
+   "FILTER": "Le souffle s'ouvre jusqu'au grand moment."
   },
   "drums": {
    "COMPRESSOR": "Colle la batterie : un seul instrument plutôt que des coups séparés."

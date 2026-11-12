@@ -140,7 +140,8 @@ class DrumFeelTest {
             val kick = p.padVoices[Role.Kick.lane]
             when {
                 s.id in StudioDrums.HARD_KICK -> assertEquals(s.id, PadVoice.KICK_HARD, kick?.kind)
-                s.family in setOf("House", "Techno") -> assertEquals(s.id, PadVoice.KICK_STUDIO, kick?.kind)
+                // Final audit (report 12): the 808 styles' kick in the 808's key too.
+                s.family in setOf("House", "Techno") || s.id in StudioDrums.BASS_808 -> assertEquals(s.id, PadVoice.KICK_STUDIO, kick?.kind)
                 else -> assertNull(s.id, kick)
             }
             // Tuned to the key (its root, else its fifth) between 43 and 66 Hz.

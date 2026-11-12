@@ -35,8 +35,11 @@ Engine::~Engine() {
         SoundFontPlayer::close(command.font);
         if (command.stems && command.stems->release()) delete command.stems;
         if (command.record) command.record->state.store(2, std::memory_order_release);
+        // ResampleStop's pointer only names its take (never touched): ResampleArm's is the one handed over.
+        if (command.resample && command.type == CommandType::ResampleArm) command.resample->state.store(2, std::memory_order_release);
     }
     finishRecording();
+    finishResample();
 }
 
 void Engine::prepare(int sampleRate) {
@@ -46,6 +49,11 @@ void Engine::prepare(int sampleRate) {
     while (commands_.pop(command)) {
         if (command.type != CommandType::StartLatencyTest) applyCommand(command);
     }
+    // Revue neuve (MOYEN 4): a reopened output may be the speaker now (headphones unplugged): the
+    // voice is no longer sent back until the app, seeing it off, turns it on again for headphones.
+    monitorTrack_ = -1;
+    monitorRead_ = monitorCount_ = 0;
+    monitorHeard_.store(-1, std::memory_order_relaxed);
     sampleRate_ = sampleRate;
     frequency_.configure(static_cast<float>(sampleRate), 20.0f);
     gain_.configure(static_cast<float>(sampleRate), 10.0f);
@@ -62,6 +70,7 @@ void Engine::prepare(int sampleRate) {
     tracks_[0].on = true;
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
+    remixCells_.prepare(sampleRate);
     preview_.prepare(sampleRate);
     clips_.prepare(sampleRate);
     audio_.prepare(sampleRate);
@@ -87,6 +96,8 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetTransport:
             if (command.value > 0.5f) {
+                // Started again from the top while playing: the MIDI clock sends a new Start.
+                clockBeat_ = -1;
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 rollCount_ = 0;
                 lookaheadStep_ = -1;
@@ -128,7 +139,7 @@ void Engine::applyCommand(const Command& command) {
                     t.multi.resetRoundRobin();
                 }
             } else {
-                stopTransport();
+                stopTransport(outTotal_);
             }
             break;
         case CommandType::SetTempo:
@@ -172,7 +183,7 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetDrumLaneSteps:
             if (command.a >= 0 && command.a < kLanes && std::isfinite(command.value)) {
                 const int n = std::clamp(static_cast<int>(std::lround(command.value)), 0, kMaxSteps);
-                (staging_ ? staged_.laneSteps : laneSteps_)[command.a] = static_cast<uint8_t>(n);
+                (staging_ ? staged_.laneSteps : laneSteps_)[command.a] = static_cast<uint16_t>(n);
             }
             break;
         case CommandType::SetDrumStepChance:
@@ -252,7 +263,9 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < kLanes) padStrip_[static_cast<size_t>(command.a)] = command.value > 0.5f;
             break;
         case CommandType::InstallAudioClip:
-            audio_.install(command.a, command.sample);  // takes the reference
+            // kRefit on the track: the same loop stretched to a new tempo (picked up where it is).
+            audio_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0,
+                           sequencer_.running() ? sequencer_.position() : 0.0, sequencer_.running() ? sequencer_.samplesPerStep() : 0.0);
             break;
         case CommandType::SetAudioClipParam:
             // A part's own loop ("once" clips): it takes over with the waiting scene.
@@ -267,18 +280,37 @@ void Engine::applyCommand(const Command& command) {
             record_ = command.record;
             if (record_) {
                 recordOnStart_ = command.a == 1;
-                record_->written.store(0, std::memory_order_relaxed);
+                // Recording right away: nothing before it to keep.
+                recordRunning_ = !recordOnStart_;
+                record_->written.store(recordRunning_ ? record_->preroll : 0, std::memory_order_relaxed);
                 record_->state.store(recordOnStart_ ? 0 : 1, std::memory_order_release);
-                recordSkip_ = recordOnStart_ ? -1 : 0;
             }
             break;
         case CommandType::RecordStop:
             finishRecording();
             break;
+        case CommandType::SetMonitor:
+            if (command.a < 0 || command.a >= AudioTracks::kTracks) {
+                monitorTrack_ = -1;
+            } else {
+                if (monitorTrack_ != command.a) monitorRead_ = monitorCount_ = 0;
+                monitorTrack_ = command.a;
+            }
+            monitorHeard_.store(monitorTrack_, std::memory_order_relaxed);
+            monitorGain_ = std::isfinite(command.value) ? std::clamp(command.value, 0.0f, 2.0f) : 1.0f;
+            break;
+        case CommandType::RecordMuteAt:
+            restorePunchMute();
+            muteTrack_ = command.a >= 0 && command.a < AudioTracks::kTracks ? command.a : -1;
+            muteFrom_ = command.b;
+            muteSong_ = command.value > 0.5f;
+            break;
         case CommandType::SetAudioOn:
             if (command.a >= 0 && command.a < AudioTracks::kTracks) {
                 if (staging_) staged_.audioOn[static_cast<size_t>(command.a)] = command.value > 0.5f;
                 else audio_.setOn(command.a, command.value > 0.5f);
+                // During a punch the app's word is what the take's end gives back (the next step mutes again).
+                if (command.a == muteTrack_ && muteApplied_ && !staging_) muteWasOn_ = command.value > 0.5f;
             }
             break;
         case CommandType::SetBeatsPerBar:
@@ -298,15 +330,44 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::InstallClip:
-            clips_.install(command.a, command.sample);  // takes the reference
+            clips_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0);  // takes the reference
             break;
         case CommandType::SetClipParam:
             clips_.setParam(command.a, command.b, command.value);
             break;
         case CommandType::ToggleClip:
             if (command.a < 0) clips_.stopAll();
-            else clips_.toggle(command.a, !sequencer_.running());
+            else clips_.toggle(command.a, !sequencer_.running(), command.value);
             break;
+        case CommandType::LaunchClipRow:
+            clips_.launchRow(command.a, command.b, !sequencer_.running());
+            break;
+        case CommandType::ResampleArm:
+            finishResample();
+            resample_ = command.resample;
+            if (resample_) {
+                resampleWait_ = command.a == 1;
+                resampleArmed_ = outTotal_;
+                resample_->written.store(0, std::memory_order_relaxed);
+                resample_->state.store(0, std::memory_order_release);
+            }
+            break;
+        case CommandType::ResampleStop:
+            // Its take named (the app's): a late stop for the take before leaves the new one alone.
+            if (!resample_ || (command.resample && command.resample != resample_)) break;
+            // Still waiting for its first bar line: nothing recorded, it ends here.
+            if (command.a == 1 || resample_->state.load(std::memory_order_relaxed) == 0) finishResample();
+            else if (resampleStop_ < 0) resampleStop_ = outTotal_;
+            break;
+        case CommandType::SetMidiClockOut: {
+            const bool on = command.value > 0.5f;
+            if (on == clockOut_.load(std::memory_order_relaxed)) break;
+            if (!on && clockBeat_ >= 0) clockEvent(outTotal_, 0xFC);
+            clockOut_.store(on, std::memory_order_relaxed);
+            // Switched on while the transport runs: the other machine carries on from the next tick.
+            clockContinue_ = on && clockBeat_ >= 0;
+            break;
+        }
         case CommandType::PlayPreview:
             if (command.value > 0.5f) {
                 preview_.setStartFrame(0);
@@ -343,6 +404,7 @@ void Engine::applyCommand(const Command& command) {
                 staged_.audioLoop.fill(-1);
                 staged_.insertOn.fill(-1);
                 staged_.remixOn = true;
+                staged_.remixCell = -1;
             }
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             songRestartAt_ = command.b == 1 && std::isfinite(command.value)
@@ -355,6 +417,9 @@ void Engine::applyCommand(const Command& command) {
         }
         case CommandType::SetAcidRoot:
             acid_.setRoot(command.a);
+            break;
+        case CommandType::AcidLiveNote:
+            acid_.liveNote(command.a, std::isfinite(command.value) && command.value > 0.8f);
             break;
         case CommandType::SetAcidParam:
             if (command.a >= 0 && command.a < AcidTrack::ParamCount) {
@@ -429,6 +494,7 @@ void Engine::applyCommand(const Command& command) {
         }
         case CommandType::InstallStems:
             if (command.a == 1) preview_.install(command.stems);  // takes the reference
+            else if (sequencer_.running()) stems_.install(command.stems, sequencer_.position(), sequencer_.samplesPerStep());
             else stems_.install(command.stems);
             break;
         case CommandType::SetStemParam:
@@ -464,6 +530,22 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 8) mixer_.masterChain().setKnownDrive(command.value);  // dB, an export's (S5)
             else if (command.a == 9) mixer_.masterChain().setDriveCeilingDb(command.value);  // dBTP, offline (S6); NaN: none
             else if (command.a == 10) mixer_.masterChain().setKnownLevel(command.value);  // LUFS, the known drive's loud part (S7)
+            break;
+        case CommandType::SetMasterPro:
+            if (!std::isfinite(command.value)) break;
+            switch (command.a) {
+                case ProListen: mixer_.masterCompare().setListen(static_cast<int>(std::lround(command.value))); break;
+                case ProArmed: mixer_.masterCompare().setArmed(command.value > 0.5f); break;
+                case ProForceSong: mixer_.masterChain().setForceSong(command.value > 0.5f); break;
+                case ProLimiterAttack: mixer_.masterChain().setLimiterAttack(command.value); break;
+                case ProLimiterRelease: mixer_.masterChain().setLimiterRelease(command.value); break;
+                case ProStemMode: mixer_.setStemMode(static_cast<int>(std::lround(command.value))); break;
+                default: break;
+            }
+            break;
+        case CommandType::InstallReference:
+            mixer_.masterCompare().install(command.sample);
+            mixer_.masterCompare().setReferenceLufs(command.value);
             break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
@@ -509,12 +591,21 @@ void Engine::applyCommand(const Command& command) {
             const int32_t mask = command.a & kAllSlots;
             if (mask == 0) break;
             const int tag = std::isfinite(command.value) && command.value >= 0.0f ? std::min(32767, static_cast<int>(std::lround(command.value))) : -1;
-            const int quantum = std::clamp(command.b, 1, 1 << 16);
+            const int quantum = std::clamp(command.b & 0x1FFFF, 1, 1 << 16);
+            // Just past a line (what is heard lags what is rendered, a finger lags the beat): that line.
+            const double grace = static_cast<double>((command.b >> 17) & 0x3FFF) / 64.0;
+            int late = -1;
+            if (grace > 0.0 && sequencer_.running() && lastTransport_ >= 0) {
+                const int line = lastTransport_ - lastTransport_ % quantum;
+                const double since = transportPosition_.load(std::memory_order_relaxed) - line;
+                if (since >= 0.0 && since < grace) late = line;
+            }
             for (int k = 0; k < kSlots; ++k) {
                 if ((mask & (1 << k)) == 0) continue;
                 auto& sl = slots_[static_cast<size_t>(k)];
                 sl.pending = tag;
                 sl.quantum = quantum;
+                sl.late = late;
                 publishSlot(k);
             }
             anyPending_ = true;
@@ -557,9 +648,26 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SetRemixOn:
-            if (staging_) staged_.remixOn = command.value > 0.5f;
-            else stems_.setLive(command.value > 0.5f);
+            if (staging_) {
+                staged_.remixOn = command.value > 0.5f;
+            } else {
+                remixHeard_ = command.value > 0.5f;
+                applyRemix(0, remixLocalNow());
+            }
             break;
+        case CommandType::InstallRemixCell:
+            remixCells_.install(command.a & ~kRefit, command.sample, command.b, (command.a & kRefit) != 0);  // takes the reference
+            break;
+        case CommandType::SetRemixCell: {
+            const int cell = command.a >= 0 && command.a < RemixCells::kCells ? command.a : -1;
+            if (staging_) {
+                staged_.remixCell = cell;
+            } else {
+                remixCell_ = cell;
+                applyRemix(0, remixLocalNow());
+            }
+            break;
+        }
         case CommandType::SetAutomationSongRamp: {
             const int lane = command.a & 0xFF;
             const int first = command.b & 0xFFFF;
@@ -579,6 +687,7 @@ void Engine::applyCommand(const Command& command) {
                 lane.mode = std::clamp(command.b & 0xF, 0, 2);
                 lane.perBeat = (command.b & Automation::kPerBeat) != 0;
                 lane.held = (command.b & Automation::kHeld) != 0;
+                lane.loopSteps = std::clamp((command.b >> 8) & 0xFF, 0, Automation::kSteps);
                 const int most = lane.perBeat ? Automation::kSongPoints : Automation::kSongBars;
                 lane.songPoints = std::isfinite(command.value) ? static_cast<int>(std::clamp(command.value, 0.0f, static_cast<float>(most))) : 0;
                 lane.flat.fill(0);  // the curve's jumps follow it (SetAutomationSongFlat)
@@ -600,6 +709,12 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
+            break;
+        case CommandType::SetStemClip:
+            stems_.setClipField(command.a >> 16, (command.a >> 8) & 0xff, command.a & 0xff, command.b);
+            break;
+        case CommandType::CommitStemClips:
+            stems_.commitClips(command.a, command.b);
             break;
         case CommandType::SetInstrument: {
             auto& t = sound(soundOf(command.a));
@@ -693,7 +808,11 @@ void Engine::applyCommand(const Command& command) {
 }
 
 // Stop: everything the transport started goes quiet (the stop command, or a song that ends).
-void Engine::stopTransport() {
+void Engine::stopTransport(int64_t at) {
+    if (clockBeat_ >= 0) {
+        clockEvent(at >= 0 ? at : outTotal_, 0xFC);
+        clockBeat_ = -1;
+    }
     swapAt_ = -1;
     stopAtSwap_ = false;
     leaveSong_ = false;
@@ -716,7 +835,10 @@ void Engine::stopTransport() {
         sl.transportOffset = 0;  // a part sent while playing never moves the next start
     }
     staged_.remixOn = true;
+    staged_.remixCell = -1;
     stems_.setLive(true);
+    remixHeard_ = true;
+    remixCells_.stop();
     transportStep_.store(-1, std::memory_order_relaxed);
     transportPosition_.store(-1.0, std::memory_order_relaxed);
     lastTransport_ = -1;
@@ -747,7 +869,7 @@ void Engine::onStep(int offset, int step) {
     if (step >= 0 && swapAt_ >= 0 && stopAtSwap_) {
         const int local = step - sceneStart_;
         if (local > 0 && local % bar == 0 && (swapAt_ == 0 || local >= swapAt_)) {
-            stopTransport();
+            stopTransport(blockOut_ + offset);
             sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
             return;
         }
@@ -765,14 +887,18 @@ void Engine::onStep(int offset, int step) {
         return;
     }
     if (step == 0) {
-        stems_.start(offset);
+        stems_.start(offset, 0.0, sequencer_.samplesPerStep());
+        applyRemix(offset, -static_cast<double>(slots_[kSlotRemix].start));
         if (record_ && recordOnStart_) {
             recordOnStart_ = false;
-            recordSkip_ = offset;
+            recordStartOut_ = blockOut_ + offset;
             record_->state.store(1, std::memory_order_release);
         }
     }
-    if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
+    if (onBeat) {
+        clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
+        clockBeat(blockOut_ + offset, step / Sequencer::kStepsPerBeat);
+    }
     transportStep_.store(step, std::memory_order_relaxed);
     lastTransport_ = step;
     // A recorded performance starts here: the song position is the one it will have in the song.
@@ -793,6 +919,8 @@ void Engine::onStep(int offset, int step) {
     }
     // Live launches due on this step, after the scene swap (armed later, they win).
     if (anyPending_) launchSlots(step, offset);
+    // Lot D2: the remix column's passage keeps to the transport's beats (after the launches).
+    if (onBeat && remixCell_ >= 0 && remixHeard_) remixCells_.sync(offset, static_cast<double>(localOf(kSlotRemix, step)));
     // Patterns count from the start of their slot (the scene's start unless the live grid launched
     // it on its own); the remix stems follow the transport.
     const int local = step - sceneStart_;
@@ -801,7 +929,19 @@ void Engine::onStep(int offset, int step) {
     const int songStep = inSong_ ? step - songStart_ : -1;
     std::array<int, AudioTracks::kTracks> audioLocals{};
     for (int k = 0; k < AudioTracks::kTracks; ++k) audioLocals[static_cast<size_t>(k)] = localOf(audioSlot(k), step);
-    audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
+    // A punch-in: the clip being redone is heard up to the first bar sung again, then silent
+    // (whatever the part playing says) until the recording ends.
+    if (muteTrack_ >= 0 && record_) {
+        const int at = muteSong_ ? songStep : audioLocals[static_cast<size_t>(muteTrack_)];
+        if (at >= muteFrom_) {
+            if (!muteApplied_) {
+                muteApplied_ = true;
+                muteWasOn_ = audio_.on(muteTrack_);
+            }
+            audio_.setOn(muteTrack_, false);
+        }
+    }
+    audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_, step);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (t.on) t.notes.onStep(offset, localOf(kSlotInst + k, step), sequencer_.samplesPerStep(), sequencer_.swing());
@@ -820,7 +960,7 @@ void Engine::onStep(int offset, int step) {
     songStep_.store(songStep, std::memory_order_relaxed);
     // Loop and per-scene curves run with the drum loop (they carry on with it in a song part that
     // carries on, as during the live take it was written from).
-    applyAutomation(patternStep, songStep, offset);
+    applyAutomation(patternStep, songStep, offset, local);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     // (the kick lane on its own loop when it has one, and only a hit that plays this pass).
     const int kickStep = laneStepOf(laneSteps_, 0, drumsLocal, patternSteps_);
@@ -1035,9 +1175,13 @@ void Engine::swapScene(int step, int offset) {
         sl.tag = kRowTag;
         publishSlot(k);
     }
-    // The remix plays unless the part taking over mutes it (then for the next swap: played again).
-    stems_.setLive(staged_.remixOn, offset);
+    // The remix plays unless the part taking over mutes it (then for the next swap: played again):
+    // the whole song, or the passage of the cell the part gives it (lot D2).
+    remixHeard_ = staged_.remixOn;
+    remixCell_ = staged_.remixCell;
     staged_.remixOn = true;
+    staged_.remixCell = -1;
+    applyRemix(offset, static_cast<double>(localOf(kSlotRemix, step)));
     if (songRestart_) {
         // A part that simply follows keeps the song running; a jump (back to the start, or to
         // another part, or into the song from a scene played on its own) moves it, and song
@@ -1122,7 +1266,7 @@ void Engine::launchSlots(int step, int offset) {
     for (int k = 0; k < kSlots; ++k) {
         const auto& sl = slots_[static_cast<size_t>(k)];
         if (sl.pending == kNoLaunch) continue;
-        if (step % sl.quantum == 0) fired |= 1 << k;
+        if (step % sl.quantum == 0 || sl.late >= 0) fired |= 1 << k;
         else waiting = true;
     }
     anyPending_ = waiting;
@@ -1131,16 +1275,21 @@ void Engine::launchSlots(int step, int offset) {
     const int rowTag = slots_[0].pending;
     bool row = fired == kAllSlots && rowTag >= 0;
     for (int k = 1; row && k < kSlots; ++k) row = slots_[static_cast<size_t>(k)].pending == rowTag;
+    int rowAt = step;
     for (int k = 0; k < kSlots; ++k) {
         if ((fired & (1 << k)) == 0) continue;
-        const int tag = slots_[static_cast<size_t>(k)].pending;
-        swapSlot(k, step, offset, tag < 0);
         auto& sl = slots_[static_cast<size_t>(k)];
+        const int tag = sl.pending;
+        // Launched within its grace: counted from the line just passed (its steps since, skipped).
+        const int at = step % sl.quantum == 0 || sl.late < 0 ? step : sl.late;
+        if (k == 0) rowAt = at;
+        swapSlot(k, at, offset, tag < 0);
         sl.tag = tag < 0 ? -1 : tag;
         sl.pending = kNoLaunch;
+        sl.late = -1;
         publishSlot(k);
         // A full queue (the app not reading): the app finds the state in slotTag() anyway.
-        launchEvents_.push(LaunchEvent{static_cast<int16_t>(k), static_cast<int16_t>(sl.tag), step});
+        launchEvents_.push(LaunchEvent{static_cast<int16_t>(k), static_cast<int16_t>(sl.tag), at});
     }
     if (row) {
         for (auto& lane : automation_.lanes) {
@@ -1153,7 +1302,7 @@ void Engine::launchSlots(int step, int offset) {
             if (on >= 0) mixer_.scheduleInsertOn(Mixer::kMaster, i, on == 1, offset);
             on = -1;
         }
-        sceneStart_ = step;
+        sceneStart_ = rowAt;
         sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
     }
 }
@@ -1191,7 +1340,11 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
         if (!empty && loop >= 0) audio_.setParam(a, AudioTracks::LoopSteps, static_cast<float>(loop));
         if (!empty) loop = -1;
     } else if (k == kSlotRemix) {
-        stems_.setLive(!empty, offset);
+        remixHeard_ = !empty;
+        if (!empty) remixCell_ = staged_.remixCell;
+        staged_.remixCell = -1;
+        // Its passage counts from the launch (a part carrying on: from where it was).
+        applyRemix(offset, static_cast<double>(slots_[static_cast<size_t>(k)].stagedOffset));
     }
     auto& sl = slots_[static_cast<size_t>(k)];
     sl.start = step - sl.stagedOffset;
@@ -1213,6 +1366,28 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
     }
 }
 
+// Lot D2: the remix slot plays the whole song, a passage of it, or nothing.
+void Engine::applyRemix(int offset, double local) {
+    if (!remixHeard_) {
+        stems_.setLive(false, offset);
+        remixCells_.stop(offset);
+        return;
+    }
+    if (remixCell_ >= 0) {
+        stems_.setLive(false, offset);
+        if (sequencer_.running()) remixCells_.play(remixCell_, offset, local);
+        else remixCells_.stop(offset);
+        return;
+    }
+    remixCells_.stop(offset);
+    stems_.setLive(true, offset);
+}
+
+double Engine::remixLocalNow() const {
+    if (!sequencer_.running()) return 0.0;
+    return sequencer_.position() - static_cast<double>(slots_[kSlotRemix].start);
+}
+
 // The scene playing goes on by itself, outside the song: song clips fade, song curves hold.
 void Engine::leaveSongNow() {
     if (inSong_) audio_.songJump();
@@ -1223,10 +1398,12 @@ void Engine::leaveSongNow() {
     mixer_.setVolume(Mixer::kMaster, 0.8f);
 }
 
-void Engine::applyAutomation(int patternStep, int songStep, int offset) {
-    if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+void Engine::applyAutomation(int patternStep, int songStep, int offset, int local) {
+    const bool patternOk = patternStep >= 0 && patternStep < Automation::kSteps;
     const int bar = sequencer_.stepsPerBar();
     for (const auto& lane : automation_.lanes) {
+        // Past the curves' 64 steps of a longer drum loop: the lanes on the drum loop wait (as ever).
+        if (!patternOk && lane.loopSteps == 0) continue;
         float v = -1.0f;
         if (lane.mode == Automation::Song) {
             // From the transport start: bar by bar (or beat by beat), sliding from one point's value
@@ -1239,6 +1416,9 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
             const bool flat = lane.held || lane.flat[static_cast<size_t>(b)] != 0 || songStep / unit >= lane.songPoints - 1;
             const float t = flat ? 0.0f : static_cast<float>(songStep % unit) / static_cast<float>(unit);
             v = a + t * (c - a);
+        } else if (lane.loopSteps > 0) {
+            // A loop of its own (the part's length): from the scene's start.
+            v = local >= 0 ? lane.values[static_cast<size_t>(local % lane.loopSteps)] : -1.0f;
         } else {
             v = lane.values[static_cast<size_t>(patternStep)];
         }
@@ -1419,9 +1599,25 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
     renderLayers(channels, rights, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
-    preview_.render(stemsL, stemsR, numFrames);
+    remixCells_.setStepFrames(sequencer_.samplesPerStep());
+    remixCells_.render(stemsL, stemsR, numFrames);
+    // The stems listened to on the Remix page play apart from the project: added after the mixer,
+    // so a strip left in solo (or the remix's strip muted) never silences them.
+    float* previewL = previewL_.data();
+    float* previewR = previewR_.data();
+    std::fill(previewL, previewL + numFrames, 0.0f);
+    std::fill(previewR, previewR + numFrames, 0.0f);
+    const bool previewHeard = preview_.active();
+    preview_.render(previewL, previewR, numFrames);
     clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
     clips_.render(stemsL, stemsR, numFrames);
+    // « Enregistrer ce que je joue »: the bar line as it will be heard (after the master's delay).
+    if (resample_ && clips_.barAt() >= 0 && barCount_ < static_cast<int>(bars_.size())) {
+        bars_[static_cast<size_t>(barCount_++)] = {blockOut_ + clips_.barAt() + mixer_.latency(),
+                                                   clips_.barSounding() || (sequencer_.running() && lastTransport_ >= 0)};
+    }
+    // MIDI clock out: the ticks of the beat under way, up to the end of this block.
+    flushClock(static_cast<double>(blockOut_ + numFrames));
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
@@ -1442,14 +1638,38 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
             rs[k] = audioR_[static_cast<size_t>(k)].data();
             std::fill(lefts[k], lefts[k] + numFrames, 0.0f);
             std::fill(rs[k], rs[k] + numFrames, 0.0f);
-            if (audio_.has(k)) {
+            if (audio_.has(k) || (monitoring() && k == monitorTrack_)) {
                 channels[audioChannel(k)] = lefts[k];
                 rights[audioChannel(k)] = rs[k];
             }
         }
         audio_.render(lefts, rs, numFrames);
+        // The singer hears the microphone on the strip of the track being recorded (its effects).
+        if (monitoring()) {
+            float* l = lefts[monitorTrack_];
+            float* r = rs[monitorTrack_];
+            const int n = std::min(numFrames, monitorCount_);
+            for (int i = 0; i < n; ++i) {
+                const float v = monitorGain_ * monitorFifo_[static_cast<size_t>(monitorRead_)];
+                monitorRead_ = (monitorRead_ + 1) % kMonitorFifo;
+                l[i] += v;
+                r[i] += v;
+            }
+            monitorCount_ -= n;
+        }
     }
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
+    // Only while it plays: an export without the limiter keeps its peaks over full scale.
+    if (previewHeard || preview_.active()) {
+        for (int i = 0; i < numFrames; ++i) {
+            if (outputChannels == 1) {
+                output[i] = std::clamp(output[i] + 0.5f * (previewL[i] + previewR[i]), -1.0f, 1.0f);
+            } else {
+                output[i * outputChannels] = std::clamp(output[i * outputChannels] + previewL[i], -1.0f, 1.0f);
+                output[i * outputChannels + 1] = std::clamp(output[i * outputChannels + 1] + previewR[i], -1.0f, 1.0f);
+            }
+        }
+    }
 }
 
 void Engine::process(const float* input, int numInputFrames, int inputChannels,
@@ -1465,19 +1685,50 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         applyCommand(command);
     }
 
+    // How the microphone lines up with the output (see align_): measured before this callback's input.
+    const int64_t outBase = outTotal_;
+    callbackNanos_.store(std::chrono::duration_cast<std::chrono::nanoseconds>(started.time_since_epoch()).count(), std::memory_order_release);
+    callbackFrame_.store(outBase, std::memory_order_release);
+    if (input && inputChannels > 0) {
+        const double gap = static_cast<double>(inTotal_ - outBase);
+        align_ = alignKnown_ ? std::max(gap, align_ - kAlignDecay * numFrames) : gap;
+        alignKnown_ = true;
+        inTotal_ += std::max(0, numInputFrames);
+    } else {
+        alignKnown_ = false;  // no microphone (being reopened): learnt again when it is back
+    }
+    outTotal_ += numFrames;
     if (meter_.state() == RoundTripMeter::State::Running) {
         meter_.process(input, numInputFrames, inputChannels, output, numFrames, outputChannels);
         gain_.snap(0.0f);
     } else {
+        // The microphone heard on its track (monitoring): queued for the blocks below.
+        if (monitoring() && input && inputChannels > 0) {
+            for (int i = 0; i < numInputFrames; ++i) {
+                if (monitorCount_ == kMonitorFifo) {
+                    monitorRead_ = (monitorRead_ + 1) % kMonitorFifo;
+                    --monitorCount_;
+                }
+                monitorFifo_[static_cast<size_t>((monitorRead_ + monitorCount_) % kMonitorFifo)] = input[i * inputChannels];
+                ++monitorCount_;
+            }
+            // Never let it lag: what waits beyond the backlog (and a callback) goes.
+            const int keep = kMonitorBacklog + numFrames;
+            if (monitorCount_ > keep) {
+                monitorRead_ = (monitorRead_ + monitorCount_ - keep) % kMonitorFifo;
+                monitorCount_ = keep;
+            }
+        } else if (!monitoring()) {
+            monitorRead_ = monitorCount_ = 0;
+        }
         // Fixed-size scratch buffers: render long callbacks in chunks.
         for (int done = 0; done < numFrames;) {
             const int n = std::min(kMaxBlock, numFrames - done);
-            const bool waiting = record_ && recordOnStart_;
+            blockOut_ = outBase + done;
             renderBlock(output + done * outputChannels, n, outputChannels);
-            if (waiting && !recordOnStart_) recordSkip_ += done;  // started in this chunk
             done += n;
         }
-        recordInput(input, numInputFrames, inputChannels, numFrames);
+        recordInput(input, numInputFrames, inputChannels, numFrames, outBase);
         // Microphone (tuner): whatever arrived this callback.
         if (input && inputChannels > 0) {
             for (int i = 0; i < numInputFrames; ++i) scopeWrite(micScope_, micScopeAt_, input[i * inputChannels]);
@@ -1503,6 +1754,18 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         blockPeak = std::max(blockPeak, std::fabs(v));
     }
     if (!finite || mixer_.takeBlewUp()) nonFinite_.store(true, std::memory_order_relaxed);
+    captureResample(output, numFrames, outputChannels, outBase);
+    // « Mode retours »: the cleaned output for the screen recording's sound (stereo; a mono output twice).
+    if (tapOn_.load(std::memory_order_acquire)) {
+        if (outputChannels == 2) {
+            tap_.write(output, static_cast<std::size_t>(numFrames) * 2);
+        } else if (outputChannels > 0) {
+            for (int i = 0; i < numFrames; ++i) {
+                const float frame[2] = {output[i * outputChannels], output[i * outputChannels + (outputChannels > 1 ? 1 : 0)]};
+                tap_.write(frame, 2);
+            }
+        }
+    }
 
     float previous = peak_.load(std::memory_order_relaxed);
     while (blockPeak > previous &&
@@ -1513,10 +1776,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
     if (numFrames > 0 && sampleRate_ > 0) {
         const float lasted = static_cast<float>(numFrames) / static_cast<float>(sampleRate_);
         const float took = std::chrono::duration<float>(std::chrono::steady_clock::now() - started).count();
-        // About half a second of smoothing whatever the callback's size.
-        const float k = std::min(1.0f, lasted / 0.5f);
-        load_ += k * (std::min(took / lasted, 4.0f) - load_);
-        cpuLoad_.store(load_, std::memory_order_relaxed);
+        load_.add(took, lasted, std::chrono::duration<double>(started.time_since_epoch()).count());
     }
 }
 
@@ -1524,32 +1784,170 @@ void Engine::finishRecording() {
     if (record_) record_->state.store(2, std::memory_order_release);
     record_ = nullptr;
     recordOnStart_ = false;
-    recordSkip_ = -1;
+    recordRunning_ = false;
+    recordStartOut_ = -1;
+    recordFrom_ = -1;
+    prerollWritten_ = 0;
+    restorePunchMute();
 }
 
-void Engine::recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames) {
-    if (!record_ || recordOnStart_) return;
+// Revue neuve (MOYEN 3): whatever becomes of the take (too short, silent, lost, failed), the clip
+// the punch silenced sounds again as it did before; a punch kept is then pushed by the app.
+void Engine::restorePunchMute() {
+    if (muteTrack_ >= 0 && muteApplied_ && muteWasOn_) audio_.setOn(muteTrack_, true);
+    muteTrack_ = -1;
+    muteApplied_ = false;
+    muteWasOn_ = false;
+}
+
+void Engine::writePreroll(float v) {
+    const int64_t size = record_->preroll;
+    if (size <= 0) return;
+    record_->data[static_cast<size_t>(prerollWritten_ % size)] = v;
+    ++prerollWritten_;
+}
+
+void Engine::recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames, int64_t outBase) {
+    if (!record_) return;
+    const bool hasInput = input && inputChannels > 0;
+    if (recordOnStart_) {
+        // Counting in: only the pre-roll ring keeps it.
+        if (hasInput) for (int i = 0; i < numInputFrames; ++i) writePreroll(input[i * inputChannels]);
+        return;
+    }
     const int64_t capacity = static_cast<int64_t>(record_->data.size());
     int64_t at = record_->written.load(std::memory_order_relaxed);
     float peak = 0.0f;
-    if (input && inputChannels > 0) {
-        // The microphone frames of this callback, from where the recording started (first channel).
-        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numInputFrames) : 0;
-        for (int i = from; i < numInputFrames && at < capacity; ++i) {
+    auto begin = [&]() {
+        recordRunning_ = true;
+        const int64_t size = record_->preroll;
+        record_->prerollHead.store(size > 0 ? prerollWritten_ % size : 0, std::memory_order_relaxed);
+        at = size;
+    };
+    if (hasInput) {
+        const int64_t inBase = inTotal_ - std::max(0, numInputFrames);
+        // The first step's output frame, on the microphone's clock.
+        if (!recordRunning_ && recordFrom_ < 0 && recordStartOut_ >= 0) recordFrom_ = recordStartOut_ + std::llround(align_);
+        for (int i = 0; i < numInputFrames; ++i) {
             const float v = input[i * inputChannels];
+            if (!recordRunning_) {
+                if (inBase + i < recordFrom_) {
+                    writePreroll(v);
+                    continue;
+                }
+                begin();
+            }
+            if (at >= capacity) break;
             record_->data[static_cast<size_t>(at++)] = v;
             peak = std::max(peak, std::fabs(v));
         }
     } else {
         // No microphone this callback (the audio rerouted mid-take and it is being reopened):
         // silence for as long as the transport ran, so what is sung afterwards stays in time.
-        const int from = recordSkip_ > 0 ? std::min(recordSkip_, numFrames) : 0;
+        int from = 0;
+        if (!recordRunning_) {
+            from = recordStartOut_ >= 0 ? static_cast<int>(std::clamp<int64_t>(recordStartOut_ - outBase, 0, numFrames)) : 0;
+            begin();
+        }
         for (int i = from; i < numFrames && at < capacity; ++i) record_->data[static_cast<size_t>(at++)] = 0.0f;
     }
-    recordSkip_ = 0;
     record_->peak.store(peak, std::memory_order_relaxed);
     record_->written.store(at, std::memory_order_release);
     if (at >= capacity) finishRecording();
+}
+
+
+// --- Lot B2: « Enregistrer ce que je joue » and the MIDI clock out ----------------------------
+
+void Engine::finishResample() {
+    if (resample_) resample_->state.store(2, std::memory_order_release);
+    resample_ = nullptr;
+    resampleStop_ = -1;
+    barCount_ = 0;
+}
+
+void Engine::captureResample(const float* output, int numFrames, int outputChannels, int64_t outBase) {
+    if (!resample_) {
+        barCount_ = 0;
+        return;
+    }
+    const int64_t end = outBase + numFrames;
+    int state = resample_->state.load(std::memory_order_relaxed);
+    int64_t from = outBase, until = end;
+    bool done = false;
+    int used = 0;
+    for (int k = 0; k < barCount_; ++k) {
+        const BarLine& line = bars_[static_cast<size_t>(k)];
+        if (line.frame >= end) break;
+        used = k + 1;
+        if (state == 0) {
+            if (line.frame >= resampleArmed_ && (line.sounding || !resampleWait_)) {
+                state = 1;
+                from = line.frame;
+                resample_->state.store(1, std::memory_order_release);
+            }
+        } else if (resampleStop_ >= 0 && line.frame >= resampleStop_ && line.frame > from) {
+            until = line.frame;
+            done = true;
+            break;
+        }
+    }
+    // The bar lines reached are used up (those still ahead wait for their callback).
+    for (int k = used; k < barCount_; ++k) bars_[static_cast<size_t>(k - used)] = bars_[static_cast<size_t>(k)];
+    barCount_ -= used;
+    if (state != 1) return;
+    int64_t at = resample_->written.load(std::memory_order_relaxed);
+    const int64_t capacity = resample_->capacity;
+    float* data = resample_->data.get();
+    const int right = outputChannels > 1 ? 1 : 0;
+    for (int64_t f = std::max(from, outBase); f < until && at < capacity; ++f, ++at) {
+        const auto i = static_cast<size_t>(f - outBase) * static_cast<size_t>(outputChannels);
+        data[at * 2] = output[i];
+        data[at * 2 + 1] = output[i + static_cast<size_t>(right)];
+    }
+    resample_->written.store(at, std::memory_order_release);
+    if (done || at >= capacity) finishResample();
+}
+
+void Engine::clockEvent(int64_t frame, int32_t status) {
+    if (!clockOut_.load(std::memory_order_relaxed)) return;
+    const int64_t heard = frame + mixer_.latency();
+    if (clockContinue_ && status == 0xF8) {
+        clockContinue_ = false;
+        clockEvents_.push({heard, 0xFB});
+    }
+    // Full (nobody reads): dropped, never waited for.
+    clockEvents_.push({heard, status});
+}
+
+void Engine::clockBeat(int64_t frame, int beat) {
+    const auto at = static_cast<double>(frame);
+    if (clockBeat_ >= 0 && beat == clockBeat_ + 1) {
+        flushClock(at, true);  // the last ticks of the beat before
+    } else {
+        // The transport's first beat (or a jump): a Start with its first tick.
+        if (clockBeat_ < 0) clockEvent(frame, 0xFA);
+        clockTick_ = static_cast<int64_t>(beat) * kClockTicksPerBeat;
+    }
+    clockBeat_ = beat;
+    clockBeatFrame_ = at;
+    clockBeatFrames_ = sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat;
+}
+
+void Engine::flushClock(double limit, bool all) {
+    if (clockBeat_ < 0) return;
+    const int64_t first = static_cast<int64_t>(clockBeat_) * kClockTicksPerBeat;
+    // The next beat's step sends its own ticks: at most one beat's worth here. `all`: that next
+    // beat is here (the tempo rose meanwhile): the beat's last ticks go out just before it, none lost.
+    while (clockTick_ < first + kClockTicksPerBeat) {
+        double f = clockBeatFrame_ + static_cast<double>(clockTick_ - first) * clockBeatFrames_ / kClockTicksPerBeat;
+        if (f >= limit) {
+            if (!all) break;
+            f = limit - 1.0;
+        }
+        clockEvent(std::llround(f), 0xF8);
+        ++clockTick_;
+    }
 }
 
 }  // namespace ps

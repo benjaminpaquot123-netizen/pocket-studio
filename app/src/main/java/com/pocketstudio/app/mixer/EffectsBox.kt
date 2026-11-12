@@ -121,7 +121,9 @@ private fun groupColour(group: EffectGroup): Color = when (group) {
  */
 @Composable
 fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: Boolean = false) {
-    var open by rememberSaveable(ch) { mutableIntStateOf(-1) }
+    // Chantier 8: « Voir le réglage » on an effect's knob opens that effect.
+    val spot = LocalControlSpot.current?.takeIf { it.kind == com.pocketstudio.model.AutoTarget.INSERT_PARAM && it.ch == ch }?.slot ?: -1
+    var open by rememberSaveable(ch) { mutableIntStateOf(spot) }
     var picking by rememberSaveable(ch) { mutableStateOf(false) }
     val used = inserts.indices.filter { inserts[it].effect != EffectType.NONE }
     val busy by actions.cpuBusy.collectAsState()
@@ -295,10 +297,17 @@ internal fun Channel.alsoSet(): Boolean = alsoSetKeys().isNotEmpty()
 @Composable
 private fun AlsoSet(ch: Int, channel: Channel, actions: MixerActions) {
     val vibe = channel.matchingFx()?.takeIf { it.id != FxPresets.NONE.id }
-    // Another ambience chosen: only what it sets.
-    var kept by remember(ch, vibe?.id) { mutableStateOf(emptySet<String>()) }
-    val keys = channel.alsoSetKeys().toSet() + kept
-    androidx.compose.runtime.SideEffect { if (keys != kept) kept = keys }
+    // Testers (lot « tuto 4 »): a send or a knob moved in this box made its line appear here, above, and the
+    // whole box slid down under the finger. The lines are those set when the box opened, or by the ambience
+    // chosen since (only what it sets); a slider moved by hand is already in sight below.
+    val now = channel.alsoSetKeys().toSet()
+    var kept by remember(ch) { mutableStateOf(now) }
+    var vibeSeen by remember(ch) { mutableStateOf(vibe?.id) }
+    androidx.compose.runtime.SideEffect {
+        if (vibe != null && vibe.id != vibeSeen) kept = now
+        vibeSeen = vibe?.id
+    }
+    val keys = kept
     if (keys.isEmpty()) return
     Column(Modifier.fillMaxWidth().testTag("fx_also_$ch"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(
@@ -327,10 +336,15 @@ private fun InsertEditor(ch: Int, slot: Int, ins: Insert, actions: MixerActions)
         }
         if (ins.effect == EffectType.EQ || ins.effect == EffectType.PARAM_EQ) EqCurve(ins)
         if (ins.effect == EffectType.COMPRESSOR && !ins.bypass) ReductionMeter(ch, slot, actions)
+        val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
         ins.effect.params.forEachIndexed { k, param ->
-            LabeledSlider(tr(param.label), tr(param.format(ins.params[k])), ins.params[k], "fxp_${ch}_${slot}_$k") {
-                actions.setInsertParam(ch, slot, k, it)
+            val slider = @Composable {
+                LabeledSlider(tr(param.label), tr(param.format(ins.params[k])).let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, ins.params[k], "fxp_${ch}_${slot}_$k") {
+                    actions.setInsertParam(ch, slot, k, it)
+                }
             }
+            // Chantier 8: the knob a curve moves, reached by « Voir le réglage ».
+            if (isSpot(com.pocketstudio.model.AutoTarget.INSERT_PARAM, ch, slot, k)) SpotFrame("spot_fxp_${ch}_${slot}_$k") { slider() } else slider()
         }
     }
 }
@@ -405,7 +419,9 @@ private fun ReductionMeter(ch: Int, slot: Int, actions: MixerActions) {
 @Composable
 private fun ReductionValue(db: () -> Float) {
     val v = db()
-    Text(if (v > -0.05f) "0 dB" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v),
+    val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
+    val text = if (v > -0.05f) "0 dB" else com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v))
+    Text(if (simple) com.pocketstudio.model.withoutDecibels(text) else text,
         style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
 }
 

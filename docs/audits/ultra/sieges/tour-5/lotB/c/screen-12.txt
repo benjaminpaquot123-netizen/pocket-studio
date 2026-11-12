@@ -1,0 +1,30 @@
+Écran 12 (900x1509)
+texte « Griff: zum Schließen nach unten wischen » @ 450,682
+texte « Tempo » @ 79,754
+bouton « ? » (nom « Was ist „Tempo einstellen“? ») @ 156,754
+bouton « Schließen » @ 805,754
+texte « 1 » @ 420,848
+bouton « Tempo runter » @ 60,848
+bouton « Tempo rauf » @ 840,848
+texte «  BPM » @ 471,858
+texte « Zwischen 40 und 300 » @ 450,921
+case « 70 » @ 64,990
+case « 90 » @ 153,990
+case « 120 » [sélectionné] @ 250,990
+case « 140 » @ 355,990
+case « 174 » @ 460,990
+case « ½ » (nom « Halbes Tempo ») @ 553,990
+case « ×2 » (nom « Doppeltes Tempo ») @ 637,990
+bouton « 1 » @ 163,1083
+bouton « 2 » @ 450,1083
+bouton « 3 » @ 737,1083
+bouton « 4 » @ 163,1170
+bouton « 5 » @ 450,1170
+bouton « 6 » @ 737,1170
+bouton « 7 » @ 163,1257
+bouton « 8 » @ 450,1257
+bouton « 9 » @ 737,1257
+bouton « Ziffer löschen » @ 163,1344
+bouton « 0 » @ 450,1344
+bouton « OK » [désactivé] @ 737,1344
+bouton « Im Takt tippen Tippe hier auf jeden Schlag: Das Tempo folgt. » @ 450,1443

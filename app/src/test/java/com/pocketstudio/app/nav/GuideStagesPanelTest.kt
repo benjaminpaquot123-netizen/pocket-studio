@@ -48,8 +48,11 @@ class GuideStagesPanelTest {
 
     private fun jumpUp(): Project {
         val style = StarterWizard.style("jump_up")!!
-        return StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
+        val p = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() })
+        // Audit final: the style's sound cards (shown first now) already decided: the song goes on to its effects.
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        return p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, GuideStatus.DONE, System.currentTimeMillis(), "keep") })
     }
 
     private fun startOn(p: Project = jumpUp()) {
@@ -97,6 +100,8 @@ class GuideStagesPanelTest {
         val key = "inst:" + h.vm.project.value.instrumentTracks.first { it.name == "Basse" }.id
         val slot = h.vm.project.value.bass().inserts.indexOfFirst { it.effect != EffectType.NONE }
         val option = GuideActions.effectOff(key, slot)
+        // Audit final: each track folded on a line; opened, its effects.
+        tap("guide_fx_track_$key")
         // Its ▶ (heard with it, then without) and its « Retirer ».
         compose.onNodeWithTag("guide_fx_listen_$option").assertExists()
         tap("guide_fx_toggle_$option")

@@ -54,7 +54,7 @@ fun versionRows(p: Project, now: Long = System.currentTimeMillis()): List<Versio
     val time = versionTime(v.at, now)
     VersionRow(
         if (v.kind == SongVersion.RESTORE) tr("Mise de côté à %s", time) else tr("Avant la prise de %s", time),
-        tr("%1\$d parties · %2\$d mes.", v.song.size, v.bars(p)),
+        com.pocketstudio.model.i18n.trCount(v.song.size, "1 partie", "%d parties") + " · " + com.pocketstudio.model.i18n.trCount(v.bars(p), "1 mes.", "%d mes."),
     )
 }
 
@@ -99,7 +99,7 @@ fun SongVersionsContent(p: Project, rows: List<VersionRow>, actions: SongVersion
         ) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Le morceau en cours"), style = MaterialTheme.typography.titleSmall)
-                Text(tr("%1\$d parties · %2\$d mes.", p.song.size, p.songBars), style = MonoStyle, color = Neon.TextSecondary)
+                Text(com.pocketstudio.model.i18n.trCount(p.song.size, "1 partie", "%d parties") + " · " + com.pocketstudio.model.i18n.trCount(p.songBars, "1 mes.", "%d mes."), style = MonoStyle, color = Neon.TextSecondary)
             }
         }
         if (rows.isEmpty()) {

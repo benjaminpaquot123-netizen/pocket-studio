@@ -467,7 +467,8 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
-                kit?.invoke()
+                // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
+                if (step.id != READY_STEP) kit?.invoke()
             }
             if (words.canScrollForward) MoreWords(Modifier.align(Alignment.BottomCenter)) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
             }
@@ -475,6 +476,9 @@ fun TutoPanel(
         }
     }
 }
+
+/** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
+private const val READY_STEP = "ready"
 
 /** The bottom of the step's words when more of them is below: a fade and « Lire la suite », a touch scrolls down. */
 @Composable

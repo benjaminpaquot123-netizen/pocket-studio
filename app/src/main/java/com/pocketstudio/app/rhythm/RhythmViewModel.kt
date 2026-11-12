@@ -11424,6 +11424,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                             report = r
                                             if (solo == null) {
                                                 loudness = r?.lufs ?: loudness
+                                                // Tour 5, moyens2: the pro readings are the file's too (−9,4 under « Mesures pro », −9,2 above).
+                                                r?.let { proReport = it }
                                                 truePeak = r?.truePeakDb
                                                 // S5: the « tassé » line follows the mix kept (its limiter lower).
                                                 loss = r?.takeIf { it.driveDb != 0.0 }?.lossDb ?: loss

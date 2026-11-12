@@ -43,7 +43,7 @@ object Headphones {
      * Tour 5 (kick): whether the engine plays the kick for a small speaker (its harmonics and click):
      * only on the phone's own speaker. Headphones and Bluetooth hear the sound as mixed.
      */
-    fun speakerKick(listening: Listening): Boolean = listening != listening
+    fun speakerKick(listening: Listening): Boolean = listening == Listening.Speaker
 
     /** The outputs of [types] now: the state, and the engine told whether it plays on the speaker. */
     fun route(types: Collection<Int>): Listening {

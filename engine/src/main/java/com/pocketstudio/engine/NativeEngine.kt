@@ -557,8 +557,10 @@ object NativeEngine {
      * adds the kick's harmonics and click a small speaker needs (SpeakerKick.h). Never sent to an
      * export: a file is heard on anything.
      */
-    @Suppress("UNUSED_PARAMETER")
-    fun setSpeakerOutput(on: Boolean): Boolean = CMD_SET_SPEAKER_OUTPUT < 0
+    fun setSpeakerOutput(on: Boolean): Boolean {
+        if (sink == null && !isNative) return false
+        return livePost(CMD_SET_SPEAKER_OUTPUT, if (on) 1f else 0f, 0, 0)
+    }
 
     private fun livePost(type: Int, value: Float, a: Int, b: Int): Boolean {
         sink?.let { it.post(0L, type, value, a, b); return true }

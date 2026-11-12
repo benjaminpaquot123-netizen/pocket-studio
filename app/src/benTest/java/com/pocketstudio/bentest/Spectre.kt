@@ -165,7 +165,14 @@ object Courbe {
      * The frames each band of the sweep fills ([balayage] with the same arguments): the room's noise that competes with
      * a band is the noise of those frames only, not of the whole listening.
      */
-    fun tramesBalayees(rate: Int = 48_000, secondes: Double = 12.0, f1: Double = 40.0, f2: Double = 20_000.0): DoubleArray = DoubleArray(Tiers.CENTRES.size)
+    fun tramesBalayees(rate: Int = 48_000, secondes: Double = 12.0, f1: Double = 40.0, f2: Double = 20_000.0): DoubleArray =
+        DoubleArray(Tiers.CENTRES.size) { b ->
+            // The time the sweep spends in the band, in hops: every sample is under two half-overlapped windows, so
+            // the band's energy reads as that many frames of the room (power per frame).
+            val lo = maxOf(Tiers.bas(b), f1)
+            val hi = minOf(Tiers.haut(b), f2)
+            if (hi <= lo) 0.0 else secondes * ln(hi / lo) / ln(f2 / f1) * rate / (Tiers.TAILLE / 2)
+        }
 
     fun mesurer(reference: DoubleArray, micro: DoubleArray, tramesMicro: Int, bruit: DoubleArray?, tramesUtiles: DoubleArray? = null): Resultat {
         val refMax = reference.maxOrNull() ?: 0.0
@@ -173,11 +180,14 @@ object Courbe {
         val lin = ArrayList<Double?>()
         val rsb = ArrayList<Double?>()
         for (b in Tiers.CENTRES.indices) {
-            val noise = (bruit?.getOrNull(b) ?: 0.0) * tramesMicro
+            val perFrame = bruit?.getOrNull(b) ?: 0.0
+            // The room heard over the whole listening (taken out), and during the band's own frames (what competes with it).
+            val noise = perFrame * tramesMicro
+            val rival = perFrame * (tramesUtiles?.getOrNull(b)?.coerceAtLeast(1e-3) ?: tramesMicro.toDouble())
             val sig = micro[b] - noise
-            rsb += if (bruit != null && noise > 0) Tiers.db(maxOf(sig, 0.0) / noise) else null
+            rsb += if (bruit != null && rival > 0) Tiers.db(maxOf(sig, 0.0) / rival) else null
             val swept = reference[b] > refMax * 1e-6
-            val heard = if (bruit != null && noise > 0) micro[b] >= AU_DESSUS * noise else sig > micMax * 1e-9
+            val heard = if (bruit != null && rival > 0) sig >= (AU_DESSUS - 1) * rival else sig > micMax * 1e-9
             lin += if (swept && heard && sig > 0) sig / reference[b] else null
         }
         val mid = Tiers.CENTRES.indices.filter { Tiers.CENTRES[it] in MILIEU }.mapNotNull { lin[it] }

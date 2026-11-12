@@ -197,6 +197,7 @@ class PortalRulesFrozenPerBatch(unittest.TestCase):
 
 REJEUX = os.path.join(ROOT, "docs", "audits", "ultra", "rejeux")
 TOUCHES = ("touche", "appui-long", "double-touche")
+TAG = r"[A-Za-z_][A-Za-z0-9_:\-]*\*?"
 
 
 class ReplaysAimByTag(unittest.TestCase):
@@ -213,12 +214,162 @@ class ReplaysAimByTag(unittest.TestCase):
                 with open(os.path.join(REJEUX, rid, name), encoding="utf-8") as f:
                     words = f.read().split()
                 if words and words[0].lower() in TOUCHES:
-                    self.assertTrue(len(words) == 2 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", words[1]),
+                    self.assertTrue(len(words) == 2 and re.fullmatch(TAG, words[1]),
                                     f"{rid}/{name}: « {' '.join(words)} » aims by pixels, not by a tag")
+                if words and words[0].lower() == "glisse" and len(words) == 4 and not re.fullmatch(r"-?\d+", words[1]):
+                    self.assertTrue(re.fullmatch(TAG, words[1]) and all(re.fullmatch(r"-?\d+", w) for w in words[2:]),
+                                    f"{rid}/{name}: « {' '.join(words)} » is a swipe by tag written wrong")
 
     def test_the_tester_resolves_a_tag(self):
         tester = read("app", "src", "test", "java", "com", "pocketstudio", "app", "human", "HumanTester.kt")
         self.assertIn("étiquette introuvable", tester, "HumanTester does not resolve « touche <étiquette> »")
+
+
+class ReplayRunKeepsItsProof(unittest.TestCase):
+    """Tour 5 (rejeux6): rejeu-defauts.sh keeps the journal of every run, and a « tenu » needs the last tagged touch to be in it."""
+
+    def run_replay(self, journal, last_cmd="touche record_stop", cmds=None, n=None):
+        cmds = cmds if cmds is not None else ["touche a_b", last_cmd]
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        os.makedirs(os.path.join(tmp, "scripts", "bench"))
+        shutil.copy(os.path.join(ROOT, "scripts", "bench", "rejeu-defauts.sh"), os.path.join(tmp, "scripts", "bench"))
+        with open(os.path.join(tmp, "scripts", "bench", "selftest.sh"), "w") as f:
+            f.write("#!/usr/bin/env bash\nexit 0\n")
+        with open(os.path.join(tmp, "scripts", "human-tester.sh"), "w") as f:
+            f.write("#!/usr/bin/env bash\nfor s in \"$1\"/[a-f]; do cp \"$FAKE_JOURNAL\" \"$s/journal.txt\"; echo 'oracle tenu' > \"$s/rejeu.txt\"; done\n")
+        for name in ("scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+            os.chmod(os.path.join(tmp, name), 0o755)
+        rej = os.path.join(tmp, "rejeux", "t9-x")
+        os.makedirs(rej)
+        files = [("start.txt", "lang=fr\n"), ("oracle.txt", f"rejeu.n={n or len(cmds)}\nrejeu.attendu=x\n")]
+        files += [(f"cmd-{i}.txt", c) for i, c in enumerate(cmds, 1)]
+        for name, text in files:
+            with open(os.path.join(rej, name), "w") as f:
+                f.write(text)
+        jf = os.path.join(tmp, "journal.fake")
+        with open(jf, "w") as f:
+            f.write(journal)
+        r = subprocess.run([os.path.join(tmp, "scripts", "bench", "rejeu-defauts.sh"), "t9-x"], capture_output=True, text=True,
+                           env=dict(os.environ, PS_REJEUX_DIR=os.path.join(tmp, "rejeux"), FAKE_JOURNAL=jf))
+        return r, os.path.join(tmp, "rejeux", "_journaux", "t9-x")
+
+    GOOD = ("#1 ETIQUETTE a_b : 1 2\n#1 > touche 1 2\n#1 DOIGT a_b « A »\n"
+            "#2 ETIQUETTE record_stop : 3 4\n#2 > touche 3 4\n#2 DOIGT record_stop « Stop »\n")
+
+    def assertNotTenu(self, r, step):
+        self.assertIn(f"t9-x : oracle non tenu (geste {step} raté : ", r.stdout)
+        self.assertEqual(r.returncode, 1)
+
+    def test_tenu_with_the_tag_touched_is_kept_with_its_journal(self):
+        r, kept = self.run_replay(self.GOOD)
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
+        self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")), "the journal of a held replay is not kept")
+
+    def test_tenu_without_the_tag_touched_is_not_tenu(self):
+        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n#2 > touche 3 4\n#2 DOIGT record_stop\n")
+        self.assertNotTenu(r, 2)
+        self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")))
+
+    def test_a_swipe_by_tag_needs_its_proof_too(self):
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n", last_cmd="glisse share_go 0 -500")
+        self.assertNotTenu(r, 2)
+
+    def test_tenu_with_the_touch_refused_is_not_tenu(self):
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n#2 ETIQUETTE record_stop : 3 4\n"
+                               "#2 REFUS hors de portée du pouce (d'une main, la gauche)\n")
+        self.assertNotTenu(r, 2)
+        self.assertIn("refus", r.stdout)
+
+    # Review of rejeux6 (grave 1): every tag gesture needs its proof, not only the last one.
+    def test_an_earlier_tag_gesture_refused_is_not_tenu(self):
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 REFUS hors de portée du pouce (d'une main, la gauche)\n"
+                               "#2 ETIQUETTE record_stop : 3 4\n#2 DOIGT record_stop « Stop »\n")
+        self.assertNotTenu(r, 1)
+
+    def test_the_finger_in_another_element_is_not_tenu(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT dans:popup_other « Autre »"))
+        self.assertNotTenu(r, 2)
+        self.assertIn("popup_other", r.stdout)
+
+    def test_the_finger_on_nothing_is_not_tenu(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT rien"))
+        self.assertNotTenu(r, 2)
+
+    def test_the_finger_inside_the_tagged_element_or_a_family_is_tenu(self):
+        r, _ = self.run_replay("#1 ETIQUETTE project_p-* : 1 2\n#1 DOIGT désactivé project_p-53d2 « Techno »\n"
+                               "#2 ETIQUETTE record_stop : 3 4\n#2 DOIGT dans:record_stop « Stop »\n"
+                               "#3 ETIQUETTE vue_Drive : 5 6\n#3 DOIGT vue « Drive »\n",
+                               cmds=["touche project_p-*", "touche record_stop", "Touche vue_Drive"])
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
+
+    def test_a_capitalised_verb_is_a_tag_gesture_too(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT rien"), last_cmd="Touche record_stop")
+        self.assertNotTenu(r, 2)
+
+    def test_gestures_past_rejeu_n_are_not_read(self):
+        r, _ = self.run_replay(self.GOOD, cmds=["touche a_b", "touche record_stop", "touche never_played"], n=2)
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
+
+
+class NewReplaysAimByTag(unittest.TestCase):
+    """Tour 5 (rejeux6): rejeu-nouveau.sh no longer copies a seat's pixels: its touches become tags read from the seat's journal."""
+
+    JOURNAL = ("#1 > touche 270 560\n#1 DOIGT welcome_guided « Guide »\n#2 > glisse 1 2 3 4\n#2 DOIGT rien\n"
+               "#3 > touche 5 6\n#3 DOIGT project_p-896025b4 « Techno »\n#4 > touche 7 8\n#4 DOIGT vue « Drive »\n"
+               "#5 > touche 9 9\n#5 REFUS hors de portée du pouce (d'une main, la gauche)\n")
+
+    def seat(self, cmds):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        seat = os.path.join(tmp, "seat")
+        os.makedirs(seat)
+        with open(os.path.join(seat, "journal.txt"), "w", encoding="utf-8") as f:
+            f.write(self.JOURNAL)
+        with open(os.path.join(seat, "start.txt"), "w") as f:
+            f.write("lang=fr\n")
+        for i, c in enumerate(cmds, 1):
+            with open(os.path.join(seat, f"cmd-{i}.txt"), "w") as f:
+                f.write(c)
+        return tmp, seat
+
+    def run_new(self, tmp, seat, options=""):
+        rej = os.path.join(tmp, "rejeux")
+        shutil.copytree(os.path.join(ROOT, "scripts"), os.path.join(tmp, "scripts"), ignore=shutil.ignore_patterns("__pycache__"))
+        return subprocess.run([os.path.join(tmp, "scripts", "bench", "rejeu-nouveau.sh"), seat, "5", "t9-x", "attendu=x"],
+                              capture_output=True, text=True, env=dict(os.environ, PS_REJEUX_DIR=rej, PS_REJEU_OPTIONS=options)), rej
+
+    def test_touches_become_tags_and_scrolls_wait(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat, "--cible 4=vue_Drive --cible 5=mode_card_simple")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        got = [open(os.path.join(rej, "t9-x", f"cmd-{i}.txt")).read() for i in range(1, 6)]
+        self.assertEqual(got, ["touche welcome_guided", "attends 1", "touche project_p-*", "touche vue_Drive", "touche mode_card_simple"])
+
+    def test_a_command_can_stand_for_an_untagged_button(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat, "--cible 4=vue_Drive --commande 5=retour --glisse 2=share_go:0:-500")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        got = [open(os.path.join(rej, "t9-x", f"cmd-{i}.txt")).read() for i in (2, 5)]
+        self.assertEqual(got, ["glisse share_go 0 -500", "retour"])
+
+    def test_a_touch_with_no_tag_under_the_finger_stops_the_copy(self):
+        tmp, seat = self.seat(["touche 270 560", "glisse 1 2 3 4", "touche 5 6", "touche 7 8", "touche 9 9"])
+        r, rej = self.run_new(tmp, seat)
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("give --cible 4", r.stderr)
+        self.assertFalse(os.path.exists(os.path.join(rej, "t9-x")), "a half-made replay was left behind")
+
+    def test_the_format_allows_a_swipe_by_tag_and_a_prefix(self):
+        tester = read("app", "src", "test", "java", "com", "pocketstudio", "app", "human", "HumanTester.kt")
+        self.assertIn("swipeByTag", tester)
+        self.assertIn('tag.endsWith("*")', tester)
+        self.assertIn('startsWith("vue_")', tester)
+        self.assertIn("reachableNear", tester, "a tag touch is refused where the thumb could reach the control's edge")
+        self.assertIn("nearestReachable", tester)
 
 
 class StableScreenshots(unittest.TestCase):

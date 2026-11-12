@@ -1,0 +1,7 @@
+fusion: 5d580893947b48a1cb31f36691254360774f5aa0
+branche: eq/tour-5-juge6
+tete: 829cb159113a944cb3629cfd6c00deb73b224f18
+relecture: docs/audits/ultra/tour-5-juge6-relecture.md
+relu: 54064c9ac3180e7b487160be8ce9f08e991516a8
+rejeux :
+  t4-26-prise-clavier : oracle tenu

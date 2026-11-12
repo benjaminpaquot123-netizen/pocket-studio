@@ -1,1 +1,1 @@
-touche 517 606
+touche synth_sounds_name_field

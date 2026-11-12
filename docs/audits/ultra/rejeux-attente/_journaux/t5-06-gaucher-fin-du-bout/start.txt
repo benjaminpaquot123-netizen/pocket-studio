@@ -1,0 +1,12 @@
+lang=fr
+device=phone411
+font=100
+mode=simple
+main=gauche
+gestes.max=90
+mission=remix-voix
+rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-06-gaucher-fin-du-bout
+rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotF/d
+rejeu.n=51
+rejeu.attendu=« Fin du bout » [état
+rejeu.absent=« Fin du bout » [état « 0:07.00 »]

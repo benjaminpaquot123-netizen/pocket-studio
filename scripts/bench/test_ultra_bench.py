@@ -4,6 +4,9 @@ seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/
 Standard library only."""
 import json
 import os
+
+# Tour 5 (rejeux6): run from rejeu-defauts.sh with PS_REJEUX_DIR set (the waiting replays), the toys below read it and lose their replay.
+os.environ.pop("PS_REJEUX_DIR", None)
 import re
 import subprocess
 import sys
@@ -218,6 +221,10 @@ def main():
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
         replayed_pairs(d)
+        replay_backticks(d)
+        replay_exact_name(d)
+        mutated_red(d)
+        replay_window(d)
         red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
@@ -1287,6 +1294,229 @@ def replayed_pairs(d):
     for key in ("stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
         check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
     check("chantier : 12 écarts" in out, "twelve gaps, nothing else:\n" + out)
+
+
+def replay_backticks(d):
+    """Lot « juge6 » (the testapk lot's « Choisir ce style » pair, 5c6322e8 / d88c328b): a Kotlin test named in
+    backticks (« fun `rouge - a swallowed … is touched again`() ») is one test, its whole name, in a replay as in the
+    reds' names; a green that only renames it (« rouge - » to « vert - », nothing else of the file changed) is replayed
+    under its new name, said on a line « test au vert: Classe#nom ». A green that renames AND changes the test, or a
+    « test au vert » the green does not rename to, pairs nothing."""
+    root = judge_root(d, "juge-backticks")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in ("honest", "plain", "renamedmore", "notrenamed", "late"):
+        cls = f"{key.capitalize()}ChoiceTest"
+        red_name = f"rouge - a swallowed {key} touch is touched again"
+        green_name = red_name if key == "plain" else red_name.replace("rouge - ", "vert - ")
+        body = "  @Test\n  fun `{}`() {{ check(1 == 1) }}\n"
+        path = os.path.join(tests, f"{cls}.kt")
+        write(path, f"class {cls} {{\n" + body.format(red_name) + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"rouge: the robot gives up when its {key} touch is swallowed")
+        red = git_toy(root, "rev-parse", "HEAD").strip()
+        write(app, f"fun counter() = \"{key}\"\n")
+        if key in ("honest", "late"):
+            write(path, f"class {cls} {{\n" + body.format(green_name) + "}\n")
+        elif key == "renamedmore":
+            write(path, f"class {cls} {{\n" + body.format(green_name).replace("1 == 1", "2 == 2") + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the robot touches again when its {key} touch was swallowed")
+        shas[key] = (red, git_toy(root, "rev-parse", "HEAD").strip(), cls, red_name, green_name)
+    history_end = shas["notrenamed"][1]
+    for key, (red, green, cls, red_name, green_name) in shas.items():
+        folder = os.path.join(root, "docs", "audits", "ultra", "paires-rejouees", green)
+        renamed = key != "plain"
+        write(os.path.join(folder, "rejeu.txt"), f"rouge: {red}\ntest: {cls}#{red_name}\n"
+              + (f"test au vert: {cls}#{green_name}\n" if renamed else "") + "rejoué : clone jetable\n")
+        write(os.path.join(folder, "rouge.xml"), f'<testsuite><testcase classname="x.{cls}" name="{red_name}">'
+              '<failure message="expected 2, was 1"/></testcase></testsuite>')
+        write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{green_name}"/></testsuite>')
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", history_end], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    for key in ("honest", "plain"):
+        check(short[key][0] not in out and short[key][1] not in out, f"a replayed pair of a test in backticks ({key}) is a pair:\n" + out)
+    for key in ("renamedmore", "notrenamed", "late"):
+        check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
+    check("chantier : 6 écarts" in out, "six gaps, nothing else:\n" + out)
+
+
+def replay_exact_name(d):
+    """Review of « juge6 », G1: a test named in backticks is matched by its whole name, never as the start of a longer
+    one. A replay whose exact test is @Ignore'd (or has no @Test) does not close its green because a sibling named
+    « <name> twice », with @Test, stands before or after it in the file; the exact test running, an @Ignore'd longer
+    sibling before it does not hide it either."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("verifie_chantier", os.path.join(HERE, "verifie-chantier.py"))
+    judge = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(judge)
+    name = "vert - a swallowed touch is touched again"
+    longer = "  @Test\n  fun `" + name + " twice`() {}\n"
+    exact = "  @Ignore\n  @Test\n  fun `" + name + "`() {}\n"
+    check(not judge.method_exists({"C": "class C {\n" + longer + "}\n"}, "C", name),
+          "a longer test name is not the test (method_exists)")
+    check(not judge.still_runs(longer + exact, name), "the exact test is @Ignore'd: a longer sibling before it does not run it")
+    check(not judge.still_runs("  fun `" + name + "`() {}\n" + longer, name), "the exact test has no @Test: it does not run")
+    check(judge.still_runs("  @Ignore\n" + longer + "  @Test\n  fun `" + name + "`() {}\n", name),
+          "the exact test runs, an @Ignore'd longer sibling before it does not change that")
+    check(judge.method_exists({"C": "class C {\n" + longer + "  fun `" + name + "`() {}\n}\n"}, "C", name),
+          "the exact test is there after its longer sibling")
+    root = judge_root(d, "juge-nom-exact")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in ("honest", "ignoredbefore", "ignoredafter", "notestbefore"):
+        cls = f"{key.capitalize()}ExactTest"
+        test = f"vert - a swallowed {key} touch is touched again"
+        runs = f"  @Test\n  fun `{test}`() {{ check(1 == 1) }}\n"
+        sibling = f"  @{'Ignore' if key == 'honest' else 'Test'}\n  fun `{test} twice`() {{ check(1 == 1) }}\n"
+        green_exact = {"honest": runs, "notestbefore": f"  fun `{test}`() {{ check(1 == 1) }}\n"}.get(
+            key, f"  @Ignore\n  @Test\n  fun `{test}`() {{ check(1 == 1) }}\n")
+        path = os.path.join(tests, f"{cls}.kt")
+        before = key != "ignoredafter"
+        write(path, f"class {cls} {{\n" + (sibling + runs if before else runs + sibling) + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"rouge: the robot gives up when its {key} touch is swallowed")
+        red = git_toy(root, "rev-parse", "HEAD").strip()
+        write(app, f"fun counter() = \"{key}\"\n")
+        write(path, f"class {cls} {{\n" + (sibling + green_exact if before else green_exact + sibling) + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the robot touches again when its {key} touch was swallowed")
+        green = git_toy(root, "rev-parse", "HEAD").strip()
+        shas[key] = (red, green)
+        folder = os.path.join(root, "docs", "audits", "ultra", "paires-rejouees", green)
+        write(os.path.join(folder, "rejeu.txt"), f"rouge: {red}\ntest: {cls}#{test}\nrejoué : clone jetable\n")
+        write(os.path.join(folder, "rouge.xml"), f'<testsuite><testcase classname="x.{cls}" name="{test}">'
+              '<failure message="expected 2, was 1"/></testcase></testsuite>')
+        write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{test}"/></testsuite>')
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", shas["notestbefore"][1]], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    check(short["honest"][0] not in out and short["honest"][1] not in out,
+          "the exact test runs, an @Ignore'd longer sibling before it: a pair:\n" + out)
+    for key in ("ignoredbefore", "ignoredafter", "notestbefore"):
+        check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out,
+              f"the exact test does not run on the green ({key}), a longer sibling does: no pair:\n" + out)
+    check("chantier : 6 écarts" in out, "six gaps, nothing else:\n" + out)
+
+
+def mutated_red(d):
+    """Lot « juge6 » (the testapk lot's two greens without a red, 411b2d51 and 662c80ab): a green that brought its
+    test with its fix has the red it lacks when its own fix, partly taken back, makes that test fail: the fiche's
+    « retire la ligne corrigée, le test doit rougir ». docs/audits/ultra/rouges-mutes/<the green's full sha>/ holds
+    rejeu.txt (« test: Classe#méthode », a test the green adds), mutation.patch (applies to the green; touches only
+    code files the green changed, never a test; it only takes lines off, each a line of code (not blank, not a
+    comment) the green added at that very place: review of « juge6 », M1), rouge.xml (the test run on the green with
+    the patch: it fails) and vert.xml (on the green: it passes). Only greens of the history before the rule
+    (--fin-rejeux), as the replays. Anything less stays « vert sans rouge »."""
+    root = judge_root(d, "juge-mute")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    main = os.path.join(root, "app", "src", "main")
+    git_toy(root, "init", "-q")
+    keys = ("honest", "testfile", "foreign", "crash", "oldtest", "passing", "greenfails", "noapply", "blank", "comment",
+            "require", "bang", "pretext", "bigger", "late")
+    base = "fun base(): Int {\n    var y = 1\n    y *= 2\n    return y\n}\n"
+    for key in keys:
+        write(os.path.join(main, f"{key.capitalize()}.kt"), base)
+    write(os.path.join(tests, "OldtestLightTest.kt"), "class OldtestLightTest {\n  @Test\n  fun `vert - the light is red over the threshold`() {}\n}\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in keys:
+        cls = f"{key.capitalize()}LightTest"
+        code = os.path.join(main, f"{key.capitalize()}.kt")
+        write(code, base + "\nfun light(x: Int): Int {\n    // doubled over the threshold\n    var y = x + 1\n    y *= 2\n"
+              "    return y\n}\n")
+        if key != "oldtest":
+            write(os.path.join(tests, f"{cls}.kt"), f"class {cls} {{\n  @Test\n  fun `vert - the light is red over the threshold`() {{}}\n}}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the {key} light follows the engine's true worst block")
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), cls, code)
+    history_end = shas[keys[-2]][0]
+
+    def patch(key, old, new, target=None, first=False):
+        """The diff of the green's file with old (its last occurrence: the green's code; first: the code before it)
+        replaced by new (taken by git, then undone)."""
+        path = target or shas[key][2]
+        text = open(path, encoding="utf-8").read()
+        head, sep, tail = text.partition(old) if first else text.rpartition(old)
+        assert sep, (key, old)
+        write(path, head + new + tail)
+        out = git_toy(root, "diff", "--", path)
+        write(path, text)
+        return out
+
+    name = "vert - the light is red over the threshold"
+    fix = "    y *= 2\n"
+    for key, (green, cls, code) in shas.items():
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-mutes", green)
+        if key == "testfile":
+            # One line of the fix taken off, one line added to the test: as many as it takes off, but in a test.
+            p = patch(key, fix, "") + patch(key, "  @Test\n", "  @Test\n  // muted\n", os.path.join(tests, f"{cls}.kt"))
+        elif key == "foreign":
+            p = patch(key, "    var y = 1\n", "    var y = 3\n")
+        elif key == "crash":
+            p = patch(key, fix, "    throw IllegalStateException()\n")
+        elif key == "bigger":
+            p = patch(key, fix, "    y *= 1\n    y += 0\n")
+        elif key == "blank":
+            # A blank line the green added: taking it off changes nothing.
+            p = patch(key, "}\n\nfun light", "}\nfun light")
+        elif key == "comment":
+            p = patch(key, "    // doubled over the threshold\n", "")
+        elif key == "require":
+            # The fixed line replaced by a crash: any test fails.
+            p = patch(key, fix, "    require(false)\n")
+        elif key == "bang":
+            p = patch(key, "    return y\n", "    return (null as Int?)!!\n")
+        elif key == "pretext":
+            # A line that was there before the green, its text equal to a line the green added.
+            p = patch(key, fix, "", first=True)
+        else:
+            p = patch(key, fix, "")
+        if key == "noapply":
+            p = p.replace("    var y = x + 1", "    var y = x + 7")
+        write(os.path.join(folder, "mutation.patch"), p)
+        write(os.path.join(folder, "rejeu.txt"), f"test: {cls}#{name}\nmuté : clone jetable\n")
+        body = "" if key == "passing" else '<failure message="expected ROUGE, was VERT"/>'
+        write(os.path.join(folder, "rouge.xml"), f'<testsuite><testcase classname="x.{cls}" name="{name}">{body}</testcase></testsuite>')
+        green_body = '<failure message="expected VERT"/>' if key == "greenfails" else ""
+        write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{name}">{green_body}</testcase></testsuite>')
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", history_end], capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    check(short["honest"] not in out, "a green whose own fix, partly taken back, makes its new test fail has its red:\n" + out)
+    for key in keys[1:]:
+        check(f"{short[key]} « vert:" in out, f"a mutation that does not hold ({key}) is no red:\n" + out)
+    check(f"chantier : {len(keys) - 1} écarts" in out, f"{len(keys) - 1} greens without red, nothing else:\n" + out)
+
+
+def replay_window(d):
+    """Lot « juge6 »: the replays (paires-rejouees/) and the mutations (rouges-mutes/) close greens of the history
+    up to the base of the lot « juge6 » (db66a3ce, fx-int after the merges of testapk, oreille and mixwake), never a
+    green written after it: that history is fixed, a later green pairs by its words."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("verifie_chantier", os.path.join(HERE, "verifie-chantier.py"))
+    judge = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(judge)
+    check(judge.REPLAYS_UNTIL == "db66a3ce8844a157a81f8cf63e18a05b47343493",
+          f"the replays' window ends at the base of the lot juge6, not {judge.REPLAYS_UNTIL}")
 
 
 def judge_topic_pairs(d):

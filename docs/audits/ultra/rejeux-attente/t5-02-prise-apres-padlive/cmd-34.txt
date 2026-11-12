@@ -1,1 +1,1 @@
-touche 399 42
+touche top_record

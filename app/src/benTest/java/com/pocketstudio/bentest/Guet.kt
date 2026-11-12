@@ -8,8 +8,8 @@ import java.util.Locale
 import kotlin.math.abs
 
 /**
- * What the robot watches for while the microphone listens to a song: a hole (the sound gone for 60 ms, as a dropout
- * sounds in the room) or the microphone saturated. It keeps only the last 2 s in memory; on the first anomaly it
+ * What the robot watches for while the microphone listens to a song: a hole (the sound gone for 160 ms: a trap or techno
+ * cuts its sounds for 125 ms on the beat, that is the music) or the microphone saturated. It keeps only the last 2 s in memory; on the first anomaly it
  * writes the 2 s around it (1 s before, 1 s after) in [dossier], at most [maxExtraits]: nothing else is kept.
  */
 class Guet(val rate: Int = 48_000, private val dossier: File, private val nom: String, private val maxExtraits: Int = 1) {
@@ -57,7 +57,7 @@ class Guet(val rate: Int = 48_000, private val dossier: File, private val nom: S
             if (!inClip) noter(Anomalie("saturation", start.toDouble() / rate, "$clipped échantillons au maximum en 20 ms"), start)
             inClip = true
         } else inClip = false
-        // A hole: 3 blocks in a row 30 dB under the median of the last 2 s, sound having been there.
+        // A hole: 8 blocks (160 ms) in a row 30 dB under the median of the last 2 s, sound having been there.
         if (nLevels >= HISTOIRE / 4) {
             val m = mediane()
             if (m > SON_DB && db < m - TROU_DB) {
@@ -120,7 +120,7 @@ class Guet(val rate: Int = 48_000, private val dossier: File, private val nom: S
         /** 2 s of 20 ms blocks. */
         const val HISTOIRE = 100
         const val TROU_DB = 30.0
-        const val TROU_BLOCS = 3
+        const val TROU_BLOCS = 8
         /** The median level under which there is no song to lose (dBFS of the microphone). */
         const val SON_DB = -50.0
         const val CLIP = 0.99f

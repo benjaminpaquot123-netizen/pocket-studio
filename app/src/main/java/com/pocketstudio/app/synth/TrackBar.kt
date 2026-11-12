@@ -52,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -210,9 +212,16 @@ fun TrackBar(
                 }
             }
             // The chosen track's sound, one touch away (« Changer le son »).
+            // Lot 6, N18 (seat C b, screen 10): a word beside the ♪ (« Son »): the note alone did not say what it does.
             if (selected) ui.changeSound?.let { change ->
-                IconButton(onClick = { change(t.id) }, modifier = Modifier.testTag("track_sound_${t.id}")) {
-                    Icon(Icons.Filled.MusicNote, contentDescription = tr("Changer le son de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), tint = color)
+                val said = tr("Changer le son de %s", com.pocketstudio.model.DefaultNames.shown(t.name))
+                TextButton(
+                    onClick = { change(t.id) },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.heightIn(min = 48.dp).semantics { contentDescription = said }.testTag("track_sound_${t.id}"),
+                ) {
+                    Icon(Icons.Filled.MusicNote, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
+                    Text(tr("Son"), color = color, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
                 }
             }
         }

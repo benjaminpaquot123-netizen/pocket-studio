@@ -97,6 +97,54 @@ class SoundTrialTest {
         }
     }
 
+    /** The song the trial makes of [id] (the switch on), with its built-in sounds and its advised parts. */
+    private fun trialSong(id: String): Project {
+        on()
+        val s = StarterWizard.style(id)!!
+        return StarterWizard.build(
+            s, s.lines.associate { it.role to null }, s.melody.mood,
+            StarterWizard.defaultParts(s).associateWith { StarterWizard.soundsFor(it, s).first() },
+        )
+    }
+
+    private fun Project.strip(channel: Int) = mixer.channels[channel]
+
+    /** Trial n° 2 (Benjamin: « tu rajoutes juste des cymbales »): the bass gets harmonics a phone plays, its sub kept clean. */
+    @Test
+    fun onTheBassGetsParallelSaturation() {
+        for (id in TRIAL_STYLES) {
+            val p = trialSong(id)
+            val saturated = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter { it.type == EffectType.SATURATION.ordinal }
+            assertTrue("$id: a saturation on its bass", saturated.isNotEmpty())
+            // Parallel (the dry sub stays under it) and its loudness held.
+            assertTrue("$id: one of them parallel, its loudness held", saturated.any { it.params[2] < 1f && it.params[4] >= 0.5f })
+        }
+    }
+
+    /** Trial n° 2: leads and pads wider, with a modern space (the plate reverb and the ping-pong delay). */
+    @Test
+    fun onLeadsAndPadsGetWidthAndSpace() {
+        for (id in TRIAL_STYLES) {
+            val p = trialSong(id)
+            val lead = p.strip(InstrumentTrack.mixerChannel(p.leadTrackId()!!))
+            assertTrue("$id lead widened", lead.inserts.any { it.type == EffectType.WIDENER.ordinal })
+            assertTrue("$id lead reverb ${lead.sends}", lead.sends[0] >= 0.2f)
+            assertTrue("$id lead delay ${lead.sends}", lead.sends[1] >= 0.2f)
+            val pad = p.strip(InstrumentTrack.mixerChannel(p.padTrackIds().first()))
+            assertTrue("$id pad widened", pad.inserts.any { it.type == EffectType.WIDENER.ordinal })
+            assertTrue("$id pad reverb ${pad.sends}", pad.sends[0] >= 0.3f)
+        }
+    }
+
+    /** Trial n° 2: tech house's voice (-57 dB over 10 kHz, -14 dB of presence on a phone) lifted around 2.5 kHz. */
+    @Test
+    fun onTheTechHouseVoiceComesForward() {
+        val p = trialSong("tech_house")
+        val lead = p.strip(InstrumentTrack.mixerChannel(p.leadTrackId()!!))
+        val lift = lead.inserts.filter { it.type == EffectType.PARAM_EQ.ordinal && it.params[1] > 0.6f }
+        assertTrue("a presence lift on the voice: ${lead.inserts}", lift.isNotEmpty())
+    }
+
     @Test
     fun onOnlyTheThreeStylesChangeAndTheirNotesStay() {
         on()

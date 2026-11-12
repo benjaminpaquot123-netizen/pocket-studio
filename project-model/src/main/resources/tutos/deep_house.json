@@ -274,7 +274,7 @@
         },
         {
           "id": "map_phrases",
-          "text": "Regarde la carte : l'Intro et la petite Montée font 28 + 4 = 32 mesures, le Break et sa Montée 12 + 4 = 16.",
+          "text": "Regarde la carte : l'Intro (28 mesures) et la petite Montée (4 mesures) font 32 mesures ; le Break (12 mesures) et la Montée qui le suit (4 mesures) en font 16.",
           "check": "manual",
           "why": "Chaque Drop tombe au début d'une phrase de 8, là où le DJ l'attend."
         }

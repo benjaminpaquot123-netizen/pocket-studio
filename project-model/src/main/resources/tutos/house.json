@@ -306,7 +306,7 @@
         },
         {
           "id": "map_phrases",
-          "text": "Regarde la carte : chaque case est une partie avec sa durée en mesures. L'Intro et la Montée font 16 + 8 = 24 mesures, le Break et la sienne 16 + 8.",
+          "text": "Regarde la carte : chaque case est une partie avec sa durée en mesures. L'Intro (16 mesures) et la Montée (8 mesures) font 24 mesures ; le Break (16 mesures) et la Montée qui le suit (8 mesures) aussi.",
           "check": "manual",
           "why": "Les DJ comptent en phrases de 8 : le Drop tombe toujours au début d'une phrase."
         }

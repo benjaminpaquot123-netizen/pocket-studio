@@ -66,6 +66,8 @@ fun SoundTile(
     /** The sound's wave, drawn before the subtitle (a synth's, the 303's), or none. */
     wave: WaveShape? = null,
 ) {
+    // Tour 5, lot « langues » (« باص تناظري تناظري », « Essaim Essaim »): a line that only says the name again is not shown.
+    val line = subtitle?.takeUnless { repeatsName(title, it) }
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
     val border by animateColorAsState(if (selected) accent else Neon.Outline.copy(alpha = 0.45f), label = "tile-border")
@@ -111,11 +113,11 @@ fun SoundTile(
                     )
                 }
             }
-            if (subtitle != null || wave != null) {
+            if (line != null || wave != null) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     if (wave != null) WaveGlyph(wave, tint = accent, size = 16.dp)
-                    if (subtitle != null) Text(
-                        subtitle, style = MaterialTheme.typography.labelSmall, letterSpacing = 0.2.sp,
+                    if (line != null) Text(
+                        line, style = MaterialTheme.typography.labelSmall, letterSpacing = 0.2.sp,
                         color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -124,6 +126,12 @@ fun SoundTile(
         if (trailing != null) trailing()
         else if (selected) Box(Modifier.size(8.dp).clip(CircleShape).background(accent))
     }
+}
+
+/** Whether every word of [line] is already in [name] (« Basse analogique » then « Analogique »). */
+fun repeatsName(name: String, line: String): Boolean {
+    val words = line.split(' ', '·', '\u00A0').filter { it.isNotBlank() }
+    return words.isNotEmpty() && words.all { name.contains(it, ignoreCase = true) }
 }
 
 /** A family to show: its icon and name; the chosen one fills with its colour. */

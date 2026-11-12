@@ -1,0 +1,8 @@
+fusion: 0abac23a139bb4b2bed662d7bdcd1955579ee8f5
+branche: eq/tour-5-kick
+tete: b76f382d44ff17e8d50a7b3b16175e4dcdfd8b84
+relecture: docs/audits/ultra/tour-5-kick-relecture.md
+relu: ddc8cf11ae84623dfb959cb17ecff959058d536d
+filtres: com.pocketstudio.app.audio.SpeakerKickRouteTest com.pocketstudio.app.audio.SpeakerKickRouteTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

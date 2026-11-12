@@ -895,26 +895,13 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
 /** Names scene [index]: a song section in one touch, or any name typed. */
 @Composable
 internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> Unit, onDismiss: () -> Unit) {
-    var name by remember(index) { mutableStateOf(current) }
+    // Tour 5, lot « langues » (D c #38): the field says the section in the app's language; the part keeps its section.
+    var name by remember(index) { mutableStateOf(shownSection(current)) }
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(tr("Nommer la partie %s", Scene.NAMES.getOrElse(index) { "?" })) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(tr("Quel moment du morceau est-ce ?"), style = MaterialTheme.typography.bodyMedium)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Scene.SECTIONS.forEach { s ->
-                        FilterChip(
-                            selected = name == s, onClick = { name = s }, label = { Text(Scene.sectionName(s)) },
-                            colors = pillColors(), modifier = Modifier.testTag("section_$s"),
-                        )
-                    }
-                }
-                // n° 26: the name selected to be typed over, its limit said before it cuts.
-                com.pocketstudio.app.ui.NameField(name, { name = it }, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
-            }
-        },
-        confirmButton = { TextButton(onClick = { onDone(name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
+        text = { RenameSceneFields(name) { name = it } },
+        confirmButton = { TextButton(onClick = { onDone(sectionKeyOf(name)) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
         dismissButton = {
             Row {
                 if (current.isNotBlank()) TextButton(onClick = { onDone("") }) { Text(tr("Sans nom")) }
@@ -922,6 +909,33 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
             }
         },
     )
+}
+
+/** A part's stored name as the naming field shows it: a section in the app's language (« Ritornello »), any other name as typed. */
+internal fun shownSection(stored: String): String = if (stored in Scene.SECTIONS) Scene.sectionName(stored) else stored
+
+/** What the naming field holds, as the part keeps it: a section said in the app's language back to its section (« Refrain »). */
+internal fun sectionKeyOf(shown: String): String = Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == shown } ?: shown
+
+/**
+ * The naming dialog's question, its sections in one touch and its field (apart from the dialog: under Robolectric a
+ * dialog holding a text field never goes idle, so its test draws these alone).
+ */
+@Composable
+internal fun RenameSceneFields(name: String, setName: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(tr("Quel moment du morceau est-ce ?"), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Scene.SECTIONS.forEach { s ->
+                FilterChip(
+                    selected = name == s || name == Scene.sectionName(s), onClick = { setName(Scene.sectionName(s)) }, label = { Text(Scene.sectionName(s)) },
+                    colors = pillColors(), modifier = Modifier.testTag("section_$s"),
+                )
+            }
+        }
+        // n° 26: the name selected to be typed over, its limit said before it cuts.
+        com.pocketstudio.app.ui.NameField(name, setName, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
+    }
 }
 
 /** Picks one of the scenes in use (to insert it in the song). */

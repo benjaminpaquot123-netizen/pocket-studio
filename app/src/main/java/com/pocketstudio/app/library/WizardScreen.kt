@@ -552,7 +552,12 @@ internal fun ReadyLine(text: String, modifier: Modifier = Modifier) {
 
 /** The line's groove, one square per step, filled as strong as the hit; the beats numbered, a gap between bars. */
 @Composable
-private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.Color) {
+private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.Color) =
+    // Tour 5, lot « langues » (t5-Bd-2): music reads left to right in every language, this grid as the Rythme tab's.
+    com.pocketstudio.ui.LeftToRight { PatternGrid(pattern, color) }
+
+@Composable
+private fun PatternGrid(pattern: String, color: androidx.compose.ui.graphics.Color) {
     val hits = StarterWizard.hits(pattern)
     val bars = pattern.indices.chunked(16)
     Column(Modifier.fillMaxWidth().testTag("wizard_pattern"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -776,7 +781,7 @@ private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style
                 SceneLetter(index)
                 Column(Modifier.weight(1f)) {
                     Text("${plan.title(index)} · ${plan.role(index)}", style = MaterialTheme.typography.titleSmall)
-                    val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
+                    val what = plan.contents(index).joinToString(com.pocketstudio.model.i18n.listComma()) { it.substringBefore(" (").substringBefore(" / ") }
                     Text(what.ifEmpty { tr("rien pour l'instant") }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }

@@ -14,6 +14,10 @@ Prints one JSON line:
   boue_150_500_vs_1_4k_db       150-500 Hz against 1-4 kHz (same)
   presence_tel_1_4k_db          1-4 kHz against 300 Hz-20 kHz (what a phone's speaker keeps, roughly)
   cote_centre_db                side energy against centre energy
+  rms_dbfs                      RMS of the mono sum over the measured windows (dBFS, a full-scale sine is -3 dB)
+  sub_db, bas_db, medium_db, aigu_db
+                                the level of each band, in dBFS like rms_dbfs (its share of the energy added to it):
+                                sub 20-60 Hz, bas 60-250 Hz, médium 250 Hz-4 kHz, aigu 4-20 kHz (tour 5 « sons-essai » n° 2)
 Checked by test_voix.py on a band-limited sawtooth whose figures are known exactly.
 """
 import json
@@ -25,6 +29,8 @@ import numpy as np
 N = 8192
 HOP = 4096
 GATE_DBFS = -50.0
+# The four bands the trial n° 2 compares (Hz).
+BANDS = {'sub_db': (20, 60), 'bas_db': (60, 250), 'medium_db': (250, 4000), 'aigu_db': (4000, 20000)}
 
 
 def read_wav(path):
@@ -60,6 +66,7 @@ def measure(x, rate):
     freqs = np.fft.rfftfreq(N, 1.0 / rate)
     power = np.zeros(len(freqs))
     centre_energy = side_energy = 0.0
+    rms_energy, rms_count = 0.0, 0
     frames = 0
     gate = 10.0 ** (GATE_DBFS / 20.0)
     for k in range(0, len(mono) - N + 1, HOP):
@@ -68,6 +75,8 @@ def measure(x, rate):
             continue
         power += np.abs(np.fft.rfft(seg * window)) ** 2
         centre_energy += float(np.sum(seg ** 2))
+        rms_energy += float(np.sum(seg ** 2))
+        rms_count += N
         side_energy += float(np.sum(side[k:k + N] ** 2))
         frames += 1
     if frames == 0:
@@ -80,6 +89,7 @@ def measure(x, rate):
         return round(10.0 * float(np.log10(v)), 1)
 
     total = band(20, 20000)
+    rms = 10.0 * float(np.log10(rms_energy / rms_count + 1e-30))
     return {
         'frames': frames,
         'centroid_hz': round(float((power * freqs).sum() / power.sum())),
@@ -89,6 +99,8 @@ def measure(x, rate):
         'boue_150_500_vs_1_4k_db': db(band(150, 500) / band(1000, 4000)),
         'presence_tel_1_4k_db': db(band(1000, 4000) / band(300, 20000)),
         'cote_centre_db': db((side_energy + 1e-30) / (centre_energy + 1e-30)),
+        'rms_dbfs': round(rms, 1),
+        **{name: round(rms + 10.0 * float(np.log10(band(lo, hi) / total)), 1) for name, (lo, hi) in BANDS.items()},
     }
 
 

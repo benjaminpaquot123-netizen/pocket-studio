@@ -1,0 +1,13 @@
+Écran 3 (588x1278)
+texte « Mach mir einen Track » @ 267,79
+icône ✕ @ 546,105
+texte « Schritt 1: Wähl einen Stil » @ 237,172
+texte « Dieser Song wird im Modus Einfach sein. » @ 214,250
+texte « Ändern » @ 493,250
+texte « Wähl einen Stil: Ich baue die Drums und dann die Teile des Songs. Du kannst alles ändern. Tippe auf eine Karte, um ihre Beschreibung zu lesen, ▶ zum Anhören. » @ 294,479
+texte « • BPM: das Tempo des Songs, in Schlägen pro Minute. » @ 294,717
+bouton (lune) « Ruhig (Chill, Lo-Fi) 6 Stile » ⌄ [état « geschlossen »] @ 294,862
+bouton (éclair) « Techno 10 Stile » ⌄ [état « geschlossen »] @ 294,992
+bouton (disque) « House 9 Stile » ⌄ [état « geschlossen »] @ 294,1091
+bouton (enceinte) « Bass Music 7 Stile » ⌄ [état « geschlossen »] @ 294,1190
+bouton (micro) « Hip-Hop 7 Stile » ⌄ [coupé, état « geschlossen »] @ 294,1262

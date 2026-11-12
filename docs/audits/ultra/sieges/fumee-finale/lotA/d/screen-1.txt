@@ -1,0 +1,8 @@
+Écran 1 (588x1278)
+bouton « 🇩🇪   Deutsch » ⌄ @ 405,78
+texte « BenStudio » @ 277,178
+texte « Dein Musikstudio, in deiner Tasche. » @ 348,275
+texte « Willkommen! Mach deine Musik auf deinem Gerät. Womit fangen wir an? » @ 294,449
+bouton (étincelles) « Mach mir einen Track Die App komponiert, du hörst zu und änderst. » @ 294,746
+bouton (chapeau de diplômé) « Ich lerne Du baust den ganzen Track selbst, Schritt für Schritt: Ich erkläre und prüfe. » [coupé] @ 294,1065
+bouton « ↓ 7 weitere » @ 430,1224

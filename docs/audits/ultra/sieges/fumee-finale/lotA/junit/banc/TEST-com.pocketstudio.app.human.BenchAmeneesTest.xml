@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchAmeneesTest" tests="12" skipped="1" failures="0" errors="0" timestamp="2026-11-12T04:24:08.480Z" hostname="vm" time="39.846">
+  <properties/>
+  <testcase name="remixStartsOnTheRemixPage" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.248"/>
+  <testcase name="aMidImportedPutsItsNotesIn" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="7.709"/>
+  <testcase name="padLiveLightsStopsAndRecordsAsOnAPhone" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="5.747"/>
+  <testcase name="firstSongStartsInAnEmptyProjectInSimpleMode" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="1.287"/>
+  <testcase name="livePadsLightGoOutAndAreHeardAsPadLivesDo" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.773"/>
+  <testcase name="aTappedRhythmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.616"/>
+  <testcase name="aTapDuringTheExampleIsNotCounted" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.88"/>
+  <testcase name="aTappedRhythmAtNinetyBpmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.084"/>
+  <testcase name="padLiveStartsWithItsPadsReady" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.065"/>
+  <testcase name="aPackFillsThePageShown" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.658"/>
+  <testcase name="aZipImportedOutsideRemixAddsAProject" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.713"/>
+  <testcase name="drive" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="0.048">
+    <skipped message="org.junit.AssumptionViolatedException: only with -Phuman.dir" type="org.junit.AssumptionViolatedException">org.junit.AssumptionViolatedException: only with -Phuman.dir
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at com.pocketstudio.app.human.HumanTester.drive(HumanTester.kt:185)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at com.pocketstudio.app.human.BenchPristineRule$apply$1.evaluate(BenchPristine.kt:61)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$testWithDisposal$1.evaluate(AndroidComposeTestRule.android.kt:426)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invokeSuspend(AndroidComposeTestRule.android.kt:448)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invokeSuspend(ComposeUiTest.android.kt:689)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.IdlingStrategy.withStrategy$suspendImpl(IdlingStrategy.android.kt:55)
+	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invokeSuspend(ComposeUiTest.android.kt:686)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$1.invokeSuspend(TestBuilders.kt:317)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.test.TestDispatcher.processEvent$kotlinx_coroutines_test(TestDispatcher.kt:24)
+	at kotlinx.coroutines.test.TestCoroutineScheduler.tryRunNextTaskUnless$kotlinx_coroutines_test(TestCoroutineScheduler.kt:98)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$workRunner$1.invokeSuspend(TestBuilders.kt:326)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:256)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:54)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlockingImpl(Builders.kt:30)
+	at kotlinx.coroutines.BuildersKt.runBlockingImpl(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__Builders_concurrentKt.runBlockingK(Builders.concurrent.kt:172)
+	at kotlinx.coroutines.BuildersKt.runBlockingK(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__Builders_concurrentKt.runBlockingK$default(Builders.concurrent.kt:157)
+	at kotlinx.coroutines.BuildersKt.runBlockingK$default(Unknown Source)
+	at kotlinx.coroutines.test.TestBuildersJvmKt.createTestResult(TestBuildersJvm.kt:10)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:309)
+	at kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:1)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:167)
+	at kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:1)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:665)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:447)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+</skipped>
+  </testcase>
+  <system-out><![CDATA[at the pulse: 3 star(s) (bpm 120.0, every 500 ms)
+04:24:30.389 Défi : aucun pad « coup » sur la page
+04:24:30.390 Défi : aucun pad « coup » sur la page
+04:24:30.928 Défi 1 prêt
+04:24:31.319 Défi 1 : 4/4, 3 étoile(s)
+touches during the example: done 3246 ms after « Écouter » (example 3000 ms)
+during the example: 0 star(s) (bpm 80.0, every 750 ms)
+04:24:33.014 Défi : aucun pad « coup » sur la page
+04:24:33.014 Défi : aucun pad « coup » sur la page
+04:24:33.915 Défi 1 prêt
+04:24:34.313 Défi 1 prêt
+after the example: 3 star(s) (bpm 80.0, every 750 ms)
+04:24:33.014 Défi : aucun pad « coup » sur la page
+04:24:33.014 Défi : aucun pad « coup » sur la page
+04:24:33.915 Défi 1 prêt
+04:24:34.313 Défi 1 prêt
+04:24:35.179 Défi 1 : 4/4, 3 étoile(s)
+at 90 BPM: 3 star(s) (bpm 90.0, every 666 ms)
+04:24:36.805 Défi : aucun pad « coup » sur la page
+04:24:36.805 Défi : aucun pad « coup » sur la page
+04:24:37.520 Défi 1 prêt
+04:24:37.873 Défi 1 prêt
+04:24:38.289 Défi 1 : 4/4, 3 étoile(s)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

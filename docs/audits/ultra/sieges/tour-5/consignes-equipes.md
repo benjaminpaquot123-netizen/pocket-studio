@@ -101,7 +101,7 @@ scripts/bench/marque-corrige.sh <item> <sha du commit « vert: »> tour-5 docs/a
 ```
 
 - `<item>` : l'id de `verdicts.tsv` (par exemple `T5-Cd-68`). Le script passe la ligne à « corrigé » avec ce commit dans `verdicts.tsv`, met la clé à « corrigé » (`corrige_au` = `tour-5`) dans `base.tsv`, puis lance `verifie-chantier.py --resume` avec le résumé du selftest gardé par le portail dans ses traces.
-- Il ne commite rien : commit par chemin de `docs/audits/ultra/verdicts.tsv` et `docs/audits/ultra/base.tsv`, avant la zone suivante.
+- Il ne commite rien : commit par chemin de `docs/audits/ultra/verdicts.tsv`, `docs/audits/ultra/base.tsv` et du tableau de bord qu'il a recalculé (`sieges/<dernier tour>/tableau-de-bord.md`), avant la zone suivante.
 - Un item absent de `verdicts.tsv` arrête le script : l'agent banc écrit d'abord sa ligne.
 - Le juge doit rester sans nouvel écart ; un écart nouveau se corrige avant de fusionner la zone suivante.
-- Ensuite le tableau de bord se relance : `python3 -I scripts/bench/tableau-de-bord.py docs/audits/ultra/sieges/tour-5` (il écrit `sieges/tour-5/tableau-de-bord.md`).
+- Le tableau de bord, il le relance lui-même sur tous les tours, comme le portail (essai 7.6 : relancé sur `tour-5` seul, il perdait les tours d'avant).

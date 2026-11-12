@@ -1,0 +1,2 @@
+route=padlive_party
+nouvelle=1

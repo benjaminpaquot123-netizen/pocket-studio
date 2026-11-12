@@ -3,6 +3,7 @@
 #   scripts/bench/rejeu-defauts.sh [<id> …]      (all of docs/audits/ultra/rejeux/ when none is given)
 # Six at a time (one Gradle run, seats a-f), through the one Gradle queue. Prints one line per test:
 # « <id> : oracle tenu » or « <id> : oracle non tenu … »; exits 1 when one is not held.
+# PS_REJEUX_SELFTEST=<folder>: the first batch's self-test is copied there (fusion-equipes.sh, PLAN-RESTE 7.7).
 set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 dir="${PS_REJEUX_DIR:-$root/docs/audits/ultra/rejeux}"
@@ -29,7 +30,15 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
   # Banc fiable 1.2 and the external audit: each batch of replays is a lot, gated like any lot on ITS seats (a stamp
   # names its lot: one copied from another folder is refused).
   "$root/scripts/bench/selftest.sh" "$run" > "$run/selftest.log" 2>&1 || {
-    echo "selftest rouge : rejeux non joués"; cat "$run/selftest-resume.txt" 2>/dev/null || tail -5 "$run/selftest.log"; exit 1; }
+    echo "selftest rouge : rejeux non joués"; cat "$run/selftest-resume.txt" 2>/dev/null || tail -5 "$run/selftest.log"
+    # Dry run 7.6: the bench's scripts' own log goes with the lot (removed on exit): its failures are shown here.
+    if [ -f "$run/selftest-scripts.log" ]; then grep -E '^(FAIL|Traceback|AssertionError)' "$run/selftest-scripts.log" | head -5 || true; fi
+    exit 1; }
+  # PLAN-RESTE 7.7: the first batch's self-test (summary, stamp, judge, JUnit results: all a sealed summary needs) is
+  # left in $PS_REJEUX_SELFTEST: the portal keeps it as its own instead of running the Bench* tests a second time.
+  if [ "$start" -eq 0 ] && [ -n "${PS_REJEUX_SELFTEST:-}" ]; then
+    cp -r "$run"/selftest* "$run/junit" "${PS_REJEUX_SELFTEST:?}/"
+  fi
   "$root/scripts/human-tester.sh" "$run" > "$run/gradle.log" 2>&1 || true
   for s in "${seats[@]}"; do
     [ -f "$run/$s/id.txt" ] || continue

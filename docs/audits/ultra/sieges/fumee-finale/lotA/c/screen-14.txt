@@ -1,0 +1,117 @@
+Écran 14 (900x1509)
+icône ← @ 51,45
+bouton ▶ @ 552,45
+icône − @ 633,45
+texte « 124 BPM » @ 694,45
+icône + @ 756,45
+texte « REC » @ 840,45
+texte « Pad Live » @ 300,45
+onglet « A » [sélectionné] @ 57,135
+onglet « B » @ 126,135
+onglet « C » @ 195,135
+onglet « D » @ 264,135
+bouton « Pack: Party » ▾ @ 420,135
+bouton ★ «  Challenge » @ 778,135
+bouton « ? » @ 641,135
+bouton @ 116,275
+dessin @ 165,216
+texte « loop » @ 176,207
+texte « Kick loop » @ 82,340
+bouton @ 322,275
+dessin @ 371,216
+texte « hit » @ 390,207
+texte « Clap » @ 263,340
+bouton @ 528,275
+dessin @ 577,216
+texte « loop » @ 588,207
+texte « Acid 303 loop » @ 518,340
+bouton @ 734,275
+dessin @ 783,216
+texte « loop » @ 794,207
+texte « Bass loop » @ 702,340
+bouton ▶ @ 862,275
+bouton @ 116,459
+dessin @ 165,400
+texte « hit » @ 184,391
+texte « Air horn » @ 76,524
+bouton @ 322,459
+dessin @ 371,400
+texte « hit » @ 390,391
+texte « Laser » @ 269,524
+bouton @ 528,459
+dessin @ 577,400
+texte « hit » @ 596,391
+texte « Siren » @ 473,524
+bouton @ 734,459
+dessin @ 783,400
+texte « hit » @ 802,391
+texte « Shout “Go go go!” » @ 734,509
+bouton ▶ @ 862,459
+bouton @ 116,643
+dessin @ 165,584
+texte « hit » @ 184,575
+texte « Kick » @ 57,708
+bouton @ 322,643
+dessin @ 371,584
+texte « hit » @ 390,575
+texte « Snare » @ 270,708
+bouton @ 528,643
+dessin @ 577,584
+texte « hit » @ 596,575
+texte « Hi-hat » @ 478,708
+bouton @ 734,643
+dessin @ 783,584
+texte « hit » @ 802,575
+texte « Open hi-hat » @ 713,708
+bouton ▶ @ 862,643
+bouton @ 116,827
+dessin @ 165,768
+texte « hit » @ 184,759
+texte « Build-up » @ 78,892
+bouton @ 322,827
+dessin @ 371,768
+texte « hit » @ 390,759
+texte « Impact » @ 275,892
+bouton @ 528,827
+dessin @ 577,768
+texte « hit » @ 596,759
+texte « Drop » @ 471,892
+bouton @ 734,827
+dessin @ 783,768
+texte « hit » @ 802,759
+texte « “Go!” » @ 681,892
+bouton ▶ @ 862,827
+bouton « ? » @ 176,950
+texte « LIVE EFFECTS » @ 86,950
+texte « Press and hold » @ 811,950
+bouton @ 158,1029
+texte « Filter » @ 158,1017
+texte « low ↔ high » @ 158,1044
+bouton @ 450,1029
+texte « Echo » @ 450,1017
+texte « on the way out » @ 450,1044
+bouton @ 742,1029
+texte « Roll » @ 742,1017
+texte « 1/16 » @ 742,1044
+bouton @ 158,1131
+texte « Build-up » @ 158,1119
+texte « 4 bars » @ 158,1146
+bouton @ 450,1131
+texte « Drop » @ 450,1119
+texte « braking » @ 450,1146
+bouton @ 742,1131
+texte « Stutter » @ 742,1119
+texte « 1/16 » @ 742,1146
+bouton ↶ « Undo » @ 159,1227
+bouton (quatre carrés) « Blocks » @ 450,1227
+bouton (curseurs) « Effects » @ 741,1227
+bouton (cotillons) « Big pads » @ 218,1308
+bouton (trois points reliés) « Share » @ 629,1308
+bouton « ? » @ 860,1308
+bouton ■ « Stop all » @ 66,1398
+bouton « Record what I play » @ 423,1398
+bouton ⋯ « Less » @ 807,1398
+texte « ●  REC » @ 672,1479
+texte « ✎  Note » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 318,1479

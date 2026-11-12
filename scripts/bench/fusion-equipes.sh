@@ -99,15 +99,14 @@ for zone in "${zones[@]}"; do
   args=(:app:testDebugUnitTest)
   for f in "${zone_filters[@]}"; do args+=(--tests "$f"); done
   # The self-test (every Bench*, Tour*AppProof*, Tour*IdleTest and @KnownDefect class, the bench's scripts, the judge)
-  # always runs on the merged code, on a lot of its own; then the repository's replays (never PS_REJEUX_DIR's), then
-  # the team's filters.
+  # always runs on the merged code: PLAN-RESTE 7.7, once, as the gate of the repository's replays' first lot (never
+  # PS_REJEUX_DIR's), whose summary, stamp, judge and JUnit results rejeu-defauts.sh leaves in $lot for the traces;
+  # then the team's filters.
   lot="$(mktemp -d)"
   green=1
-  scripts/bench/selftest.sh "$lot" > "$lot/selftest.log" 2>&1 || green=0
-  if [ "$green" -eq 1 ]; then
-    env -u PS_REJEUX_DIR scripts/bench/rejeu-defauts.sh > "$lot/rejeux.txt" 2>&1 || green=0
-    cat "$lot/rejeux.txt"
-  fi
+  env -u PS_REJEUX_DIR PS_REJEUX_SELFTEST="$lot" scripts/bench/rejeu-defauts.sh > "$lot/rejeux.txt" 2>&1 || green=0
+  cat "$lot/rejeux.txt"
+  [ -f "$lot/selftest.ok" ] || green=0
   if [ "$green" -eq 1 ] && [ ${#zone_filters[@]} -gt 0 ]; then scripts/bench/gradle-file.sh "${args[@]}" || green=0; fi
   if [ "$green" -eq 0 ]; then
     git reset --keep "$before"
@@ -157,7 +156,8 @@ for zone in "${zones[@]}"; do
     python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
     mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
     computed+=("${rounds[-1]}/tableau-de-bord.md")
-    python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
+    # (Its trace folder and DECISIONS.md, committed with the dashboard just below, are not « fichiers non commités ».)
+    PS_PORTAIL_ECRIT="$trace ${index[*]}" python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
     for f in "${computed[@]}"; do if [ -f "$f" ]; then index+=("$f"); fi; done
   fi
   git add -- "$trace" "${index[@]}"

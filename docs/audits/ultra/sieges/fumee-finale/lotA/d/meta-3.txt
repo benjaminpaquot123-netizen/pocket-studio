@@ -1,0 +1,2 @@
+route=dialogue:wizard
+nouvelle=1

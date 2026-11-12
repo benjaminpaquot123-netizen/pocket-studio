@@ -230,7 +230,9 @@ def main():
         proof_must_run(d)
         portal(d)
         review_rows(d)
+        replays_keep_their_selftest(d)
         fusion_forged(d)
+        toy_batch_is_its_own(d)
         portal_traces(d)
         zone_report(d)
         portal_recomputes(d)
@@ -366,6 +368,22 @@ def measured_numbers(d):
     write(os.path.join(tour, "lotA", "c", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 2}}))
     m = tb.measured(tour, "tour-9", root=repo, docs=docs)
     check(m.get("fichiers_non_commites") == 1, f"one file left behind: {m}")
+    # Dry run 7.6 (casse 3): what the portal writes just before its traces' commit (its trace folder, the index line of
+    # docs/DECISIONS.md, named in PS_PORTAIL_ECRIT) is not « work left »: its dashboard said 2 files uncommitted.
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-10-tour-9-zone0", "fusion.txt"), "fusion: y\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n")
+    git("add", "docs")
+    git("commit", "-q", "-m", "an earlier merge's traces")
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-11-tour-9-zone1", "fusion.txt"), "fusion: x\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n- lot zone1\n")
+    os.environ["PS_PORTAIL_ECRIT"] = "docs/audits/ultra/portail/2026-11-11-tour-9-zone1 docs/DECISIONS.md"
+    try:
+        m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    finally:
+        del os.environ["PS_PORTAIL_ECRIT"]
+    check(m.get("fichiers_non_commites") == 1, f"the portal's own files being committed are not left behind: {m}")
+    m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    check(m.get("fichiers_non_commites") == 3, f"outside the portal they are: {m}")
     check(m.get("relecture_graves") == 1 and m.get("relecture_bloquants") == 1, f"the review's open rows, the bench's review aside: {m}")
     check(m.get("corrections_sans_test") == 1, f"one fix commit without a test on eq/tour-9-*: {m}")
     check(m.get("lots_non_joues") == 1 and m.get("sieges_joues") == 3 and m.get("sieges_coupes_par_le_banc") == 2,
@@ -1867,6 +1885,11 @@ echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
 FUSION_REJEUX = """#!/usr/bin/env bash
 # The fusion's replays on the toy: says which folder it would play.
 echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
+# Like the real one (PLAN-RESTE 7.7): its batch is a lot gated by its own self-test, whose summary, stamp and judge it
+# leaves in $PS_REJEUX_SELFTEST when asked.
+lot="$(mktemp -d)"
+scripts/bench/selftest.sh "$lot" || { echo "selftest rouge : rejeux non joués"; exit 1; }
+[ -z "${PS_REJEUX_SELFTEST:-}" ] || cp "$lot"/selftest* "$PS_REJEUX_SELFTEST"/
 """
 
 
@@ -1929,7 +1952,9 @@ def fusion_toy(d, name):
     bench = os.path.join(root, "scripts", "bench")
     with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
         write(os.path.join(bench, "fusion-equipes.sh"), f.read())
-    for extra in ("relecture-verdict.py", "decisions-index.sh", "portail-paquet.txt", "rapport-zone.py"):
+    # Dry run 7.6 (casse 1): the toy's batch is its own (batch 1; a test of batch 2 writes it), never the repository's.
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 1\n")
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "rapport-zone.py"):
         if os.path.isfile(os.path.join(HERE, extra)):
             with open(os.path.join(HERE, extra), encoding="utf-8") as f:
                 write(os.path.join(bench, extra), f.read())
@@ -1954,6 +1979,69 @@ def fusion_toy(d, name):
     git_toy(root, "add", "scripts", "docs")
     git_toy(root, "commit", "-q", "-m", "toy")
     return root
+
+
+def toy_batch_is_its_own(d):
+    """Dry run 7.6 (casse 1): the toy integration workshop holds its own batch file (« paquet: 1 »), never a copy of
+    the repository's: when the main discussion opened batch 2 (scripts/bench/portail-paquet.txt), the toys' batch-1
+    expectations failed and the self-test went red (« scripts du banc »), so no lot could be played."""
+    root = fusion_toy(d, "fusion-paquet")
+    with open(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), encoding="utf-8") as f:
+        batch = f.read()
+    check(batch == "paquet: 1\n", "the toy's batch file is its own « paquet: 1 », not the repository's:\n" + batch)
+
+
+REPLAY_SELFTEST = """#!/usr/bin/env bash
+# The replays' self-test on the toy: a green summary, its stamp, its judge and one JUnit result in the lot (red on
+# demand, as the real one on the bench's scripts: its log in the lot).
+echo "selftest $1" >> "$PS_TOY_CALLS"
+if [ -n "${PS_TOY_SCRIPTS_RED:-}" ]; then
+  echo "FAIL: the toy's bench script" > "$1/selftest-scripts.log"
+  echo "SELFTEST ROUGE : scripts du banc (voir $1/selftest-scripts.log)" >&2
+  exit 1
+fi
+mkdir -p "$1/junit/banc"
+echo '<testsuite name="BenchFooTest"/>' > "$1/junit/banc/TEST-BenchFooTest.xml"
+printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\n' > "$1/selftest-resume.txt"
+echo "a stamp" > "$1/selftest.ok"
+echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
+"""
+
+REPLAY_SEATS = """#!/usr/bin/env bash
+# The bench on the toy: every seat of the lot holds its oracle.
+for s in "$1"/*/; do [ -f "$s/id.txt" ] && echo "oracle tenu" > "$s/rejeu.txt"; done
+exit 0
+"""
+
+
+def replays_keep_their_selftest(d):
+    """PLAN-RESTE 7.7: rejeu-defauts.sh leaves its first batch's self-test (summary, stamp, judge and JUnit results, all
+    a sealed summary needs) in $PS_REJEUX_SELFTEST, so the portal reads it instead of running the Bench* tests again."""
+    root = os.path.join(d, "rejeux-selftest")
+    with open(os.path.join(HERE, "rejeu-defauts.sh"), encoding="utf-8") as f:
+        write(os.path.join(root, "scripts", "bench", "rejeu-defauts.sh"), f.read())
+    write(os.path.join(root, "scripts", "bench", "selftest.sh"), REPLAY_SELFTEST)
+    write(os.path.join(root, "scripts", "human-tester.sh"), REPLAY_SEATS)
+    for n in ("scripts/bench/rejeu-defauts.sh", "scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+        os.chmod(os.path.join(root, n), 0o755)
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "oracle.txt"), "rejeu.n=0\nrejeu.attendu=x\n")
+    keep = os.path.join(d, "rejeux-selftest-lot")
+    os.makedirs(keep)
+    calls = os.path.join(d, "rejeux-selftest-appels.txt")
+    write(calls, "")
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_REJEUX_SELFTEST=keep))
+    check(r.returncode == 0 and "t1-clavier : oracle tenu" in r.stdout, "the replay is held:\n" + r.stdout + r.stderr)
+    kept = sorted(os.listdir(keep))
+    check(all(f in kept for f in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt", "junit"))
+          and os.path.isfile(os.path.join(keep, "junit", "banc", "TEST-BenchFooTest.xml")),
+          "the replays' self-test is kept for the portal (summary, stamp, judge, JUnit results): " + " ".join(kept))
+    # Dry run 7.6 (casse 4): a red self-test of the bench's scripts says why there, its log being removed with the lot.
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_TOY_SCRIPTS_RED="1"))
+    check(r.returncode != 0 and "FAIL: the toy's bench script" in r.stdout,
+          "the scripts' failure is shown, not only a log removed with the lot:\n" + r.stdout + r.stderr)
 
 
 def fusion_forged(d):
@@ -2072,6 +2160,9 @@ def fusion_forged(d):
     code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
     check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
     check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+    # PLAN-RESTE 7.7: the Bench* self-test runs once per zone: the replays' own (their batch is a lot gated by it), kept
+    # for the portal's traces, not a second one of the portal before them.
+    check(asked.count("selftest ") == 1, "one self-test per merged zone, the replays':\n" + asked)
     # Socle du banc (review, grave 1 and moyen 2): the lot's decisions file is listed at the end of docs/DECISIONS.md in
     # the traces' commit; a traces' commit that fails leaves DECISIONS.md as it was (not the index's version).
     decisions = os.path.join(root, "docs", "DECISIONS.md")
@@ -2416,6 +2507,19 @@ def mark_fixed(d):
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
     out = mark()
     check("résumé absent" in out, "without a summary the judge says so:\n" + out)
+    # Dry run 7.6 (casse 2): the dashboard is recomputed by marque-corrige.sh itself, on every round as the portal does
+    # (the teams' sheet said « tableau-de-bord.py sieges/tour-5 » alone: it wrote a dashboard without the earlier
+    # rounds, 94 lines fewer than the portal's, left uncommitted).
+    calls = os.path.join(d, "marque-appels.txt")
+    write(calls, "")
+    write(os.path.join(bench, "tableau-de-bord.py"), TOY_DASHBOARD)
+    for t in ("tour-10", "tour-9"):
+        write(os.path.join(ultra, "sieges", t, "lotA", "a", "rapport.md"), "x\n")
+    mark(green, PS_TOY_CALLS=calls)
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check("tableau docs/audits/ultra/sieges/tour-9 docs/audits/ultra/sieges/tour-10\n" in asked,
+          "marque-corrige.sh recomputes the dashboard on every round, in order, as the portal does:\n" + asked)
 
 
 def known_skips_bounded(d):

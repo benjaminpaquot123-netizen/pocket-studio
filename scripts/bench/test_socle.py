@@ -228,7 +228,8 @@ class ReplaysAimByTag(unittest.TestCase):
 class ReplayRunKeepsItsProof(unittest.TestCase):
     """Tour 5 (rejeux6): rejeu-defauts.sh keeps the journal of every run, and a « tenu » needs the last tagged touch to be in it."""
 
-    def run_replay(self, journal, last_cmd="touche record_stop"):
+    def run_replay(self, journal, last_cmd="touche record_stop", cmds=None, n=None):
+        cmds = cmds if cmds is not None else ["touche a_b", last_cmd]
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp, True)
         os.makedirs(os.path.join(tmp, "scripts", "bench"))
@@ -237,11 +238,13 @@ class ReplayRunKeepsItsProof(unittest.TestCase):
             f.write("#!/usr/bin/env bash\nexit 0\n")
         with open(os.path.join(tmp, "scripts", "human-tester.sh"), "w") as f:
             f.write("#!/usr/bin/env bash\nfor s in \"$1\"/[a-f]; do cp \"$FAKE_JOURNAL\" \"$s/journal.txt\"; echo 'oracle tenu' > \"$s/rejeu.txt\"; done\n")
-        for n in ("scripts/bench/selftest.sh", "scripts/human-tester.sh"):
-            os.chmod(os.path.join(tmp, n), 0o755)
+        for name in ("scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+            os.chmod(os.path.join(tmp, name), 0o755)
         rej = os.path.join(tmp, "rejeux", "t9-x")
         os.makedirs(rej)
-        for name, text in (("start.txt", "lang=fr\n"), ("oracle.txt", "rejeu.n=2\nrejeu.attendu=x\n"), ("cmd-1.txt", "touche a_b"), ("cmd-2.txt", last_cmd)):
+        files = [("start.txt", "lang=fr\n"), ("oracle.txt", f"rejeu.n={n or len(cmds)}\nrejeu.attendu=x\n")]
+        files += [(f"cmd-{i}.txt", c) for i, c in enumerate(cmds, 1)]
+        for name, text in files:
             with open(os.path.join(rej, name), "w") as f:
                 f.write(text)
         jf = os.path.join(tmp, "journal.fake")
@@ -251,27 +254,65 @@ class ReplayRunKeepsItsProof(unittest.TestCase):
                            env=dict(os.environ, PS_REJEUX_DIR=os.path.join(tmp, "rejeux"), FAKE_JOURNAL=jf))
         return r, os.path.join(tmp, "rejeux", "_journaux", "t9-x")
 
+    GOOD = ("#1 ETIQUETTE a_b : 1 2\n#1 > touche 1 2\n#1 DOIGT a_b « A »\n"
+            "#2 ETIQUETTE record_stop : 3 4\n#2 > touche 3 4\n#2 DOIGT record_stop « Stop »\n")
+
+    def assertNotTenu(self, r, step):
+        self.assertIn(f"t9-x : oracle non tenu (geste {step} raté : ", r.stdout)
+        self.assertEqual(r.returncode, 1)
+
     def test_tenu_with_the_tag_touched_is_kept_with_its_journal(self):
-        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#2 ETIQUETTE record_stop : 3 4\n")
+        r, kept = self.run_replay(self.GOOD)
         self.assertIn("t9-x : oracle tenu", r.stdout)
         self.assertEqual(r.returncode, 0)
         self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")), "the journal of a held replay is not kept")
 
     def test_tenu_without_the_tag_touched_is_not_tenu(self):
-        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#2 > touche 3 4\n")
-        self.assertIn("oracle non tenu", r.stdout)
-        self.assertEqual(r.returncode, 1)
+        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n#2 > touche 3 4\n#2 DOIGT record_stop\n")
+        self.assertNotTenu(r, 2)
         self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")))
 
     def test_a_swipe_by_tag_needs_its_proof_too(self):
-        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n", last_cmd="glisse share_go 0 -500")
-        self.assertIn("oracle non tenu", r.stdout)
-        self.assertEqual(r.returncode, 1)
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n", last_cmd="glisse share_go 0 -500")
+        self.assertNotTenu(r, 2)
 
     def test_tenu_with_the_touch_refused_is_not_tenu(self):
-        r, _ = self.run_replay("#2 ETIQUETTE record_stop : 3 4\n#2 REFUS hors de portée du pouce (d'une main, la gauche)\n")
-        self.assertIn("refusée", r.stdout)
-        self.assertEqual(r.returncode, 1)
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 DOIGT a_b\n#2 ETIQUETTE record_stop : 3 4\n"
+                               "#2 REFUS hors de portée du pouce (d'une main, la gauche)\n")
+        self.assertNotTenu(r, 2)
+        self.assertIn("refus", r.stdout)
+
+    # Review of rejeux6 (grave 1): every tag gesture needs its proof, not only the last one.
+    def test_an_earlier_tag_gesture_refused_is_not_tenu(self):
+        r, _ = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#1 REFUS hors de portée du pouce (d'une main, la gauche)\n"
+                               "#2 ETIQUETTE record_stop : 3 4\n#2 DOIGT record_stop « Stop »\n")
+        self.assertNotTenu(r, 1)
+
+    def test_the_finger_in_another_element_is_not_tenu(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT dans:popup_other « Autre »"))
+        self.assertNotTenu(r, 2)
+        self.assertIn("popup_other", r.stdout)
+
+    def test_the_finger_on_nothing_is_not_tenu(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT rien"))
+        self.assertNotTenu(r, 2)
+
+    def test_the_finger_inside_the_tagged_element_or_a_family_is_tenu(self):
+        r, _ = self.run_replay("#1 ETIQUETTE project_p-* : 1 2\n#1 DOIGT désactivé project_p-53d2 « Techno »\n"
+                               "#2 ETIQUETTE record_stop : 3 4\n#2 DOIGT dans:record_stop « Stop »\n"
+                               "#3 ETIQUETTE vue_Drive : 5 6\n#3 DOIGT vue « Drive »\n",
+                               cmds=["touche project_p-*", "touche record_stop", "Touche vue_Drive"])
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
+
+    def test_a_capitalised_verb_is_a_tag_gesture_too(self):
+        r, _ = self.run_replay(self.GOOD.replace("#2 DOIGT record_stop « Stop »", "#2 DOIGT rien"), last_cmd="Touche record_stop")
+        self.assertNotTenu(r, 2)
+
+    def test_gestures_past_rejeu_n_are_not_read(self):
+        r, _ = self.run_replay(self.GOOD, cmds=["touche a_b", "touche record_stop", "touche never_played"], n=2)
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
 
 
 class NewReplaysAimByTag(unittest.TestCase):

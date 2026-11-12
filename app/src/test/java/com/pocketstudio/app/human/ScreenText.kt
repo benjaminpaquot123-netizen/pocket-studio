@@ -473,6 +473,29 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     private fun textBelow(n: SemanticsNode): String? =
         n.children.firstNotNullOfOrNull { c -> c.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(c) }
 
+    /**
+     * Tour 5 (rejeux6): the middle of the Android view (not Compose) that shows [text], in a window that gets the touch: the bench's
+     * own share menu's apps, which have no test tag (« touche vue_Drive »). Null when no view shows it.
+     */
+    fun viewCenter(text: String): Pair<Float, Float>? = runCatching {
+        var found: Pair<Float, Float>? = null
+        for (w in BenchWindows.windows().filter { it.touchable }) {
+            val origin = w.drawn(screen)
+            fun visit(v: View) {
+                if (found != null || v.visibility != View.VISIBLE) return
+                if (v is TextView && v.text?.toString() == text) {
+                    val loc = IntArray(2).also { v.getLocationInWindow(it) }
+                    found = origin.left + loc[0] + v.width / 2f to origin.top + loc[1] + v.height / 2f
+                    return
+                }
+                if (v is ViewGroup) for (i in 0 until v.childCount) visit(v.getChildAt(i))
+            }
+            visit(w.view)
+            if (found != null) break
+        }
+        found
+    }.getOrNull()
+
     private fun viewUnder(w: BenchWindows.Win, x: Float, y: Float): String? {
         val origin = w.drawn(screen)
         var best: String? = null

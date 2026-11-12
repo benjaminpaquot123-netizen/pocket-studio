@@ -1,5 +1,5 @@
 # Relecture du lot « juge6 » (tour 5), par un relecteur neuf
-Relu : 5c411515b55eca18d3252ca455d653b0b07fe72f
+Relu : 54064c9ac3180e7b487160be8ce9f08e991516a8
 
 Cible : `git diff fx-int...HEAD` (le juge `scripts/bench/verifie-chantier.py`, ses tests, `paires-rejouees/`, `rouges-mutes/`, `verdicts.tsv`). Aucun code de l'appli touché.
 
@@ -31,4 +31,14 @@ Seule c391ca38 l'a été (une mutation, une paire, comme demandé). Le patch de 
 ### I2 (info) : les sept écarts qui restent sont bien nommés et honnêtes
 Le rapport dit pourquoi pour chacun (dont 411b2d51, qui ne compile pas seul). Rien de fermé à tort dans les listes : les verts fermés le sont par rejeu ou mutation dont je n'ai trouvé que la faille G1 (hors données : aucune des sept paires ne dépend d'un @Ignore, `test_in` rend True à raison pour ClipHoldTest, relu à la main).
 
-Verdict : 0 bloquant, 1 grave — fusion impossible
+
+## Delta (relu 54064c9a, après les commits ec8cf2ad rouge et 54064c9a vert)
+Le tour a été refait sur la branche reconstruite (12 commits sur fx-int ; `git merge-base --is-ancestor f88d08bb HEAD` échoue : la fusion avortée n'y est plus, le seul « fusion sans trace » restant est celle de l'intégration 57b16e8b, que le portail du paquet écrira).
+
+- G1 : **corrigé**. `still_runs` et `method_exists` comparent le nom entier (`FUN`/`ANNOTATED_FUN` + `NAME` rendent le nom entre accents graves tel quel). Contre-exemple rejoué : test exact @Ignore (ou sans @Test) avec un frère à nom plus long avant ou après : `still_runs` False dans les deux cas ; frère qui ne diffère que par un texte de fin dans les accents graves (« . », « (2) », « again ») : False ; nom simple `foo` avec frère `foo2` : False ; test sain : True ; `method_exists` False pour un frère seul. Témoin du banc rougit quand on remplace `==` par `startswith` (mutation locale, remise).
+- M1 : **corrigé**. Les cinq contournements (ligne vide, commentaire, `require(false)`, `!!` sur null, ligne antérieure de même texte) sont refusés ; toute ligne ajoutée (`+`) est refusée ; la ligne ôtée doit être, au numéro, une ligne que le vert a ajoutée, non vide et non commentée. Mutations du juge rejouées une à une (position, commentaire, refus des ajouts) : chacune est rattrapée par le banc (écarts en trop), puis le fichier remis (identique à la sauvegarde).
+- Les deux vraies mutations (c391ca38, 662c80ab) restent acceptées : aucune des deux n'apparaît dans les écarts du juge.
+- Juge lancé comme le portail (`--resume`, dernier résumé du dépôt, d'un autre code donc 28 écarts dont des « garde pas verte » propres à ce vieux résumé) : les 7 écarts de paires sont bien 2b34c216, a2a6ec58, 11c48708, 411b2d51, 9b8fc4fd, 96a7a702, ade1a174, plus 57b16e8b (fusion de l'intégration) ; f88d08bb n'apparaît plus.
+- `python3 scripts/bench/test_ultra_bench.py` : vert (« ultra bench scripts: OK »), avant et après mes mutations. Je n'ai pas rejoué les tests Gradle de c391ca38 ici (inchangés depuis le premier tour, XML committés).
+
+Verdict : 0 bloquant, 0 grave — fusion possible

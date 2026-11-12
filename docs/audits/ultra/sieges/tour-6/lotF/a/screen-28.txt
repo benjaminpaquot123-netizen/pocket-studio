@@ -1,0 +1,22 @@
+Écran 28 (900x1509)
+dessin @ 450,259
+texte « Accordi del brano » @ 181,319
+texte « Tonalità: Do maggiore. Le tracce che seguono cambiano con gli accordi, in tutte le parti. » @ 450,399
+bouton « Applica a tutto il brano » [désactivé] @ 364,491
+bouton « Chiudi » @ 796,491
+texte « Tocca una progressione: la senti subito, su tutto il brano, prima di applicarla. » @ 450,578
+texte « Progressione per tutto il brano » @ 228,649
+bouton « I–V–vi–IV  ·  Do Sol La m Fa » @ 228,721
+bouton « vi–IV–I–V  ·  La m Fa Do Sol » @ 645,721
+bouton « ii–V–I–I  ·  Re m Sol Do Do » @ 217,802
+bouton « I–vi–iii–V  ·  Do La m Mi m Sol » @ 637,802
+bouton « I–IV–V–I  ·  Do Fa Sol Do » @ 207,883
+texte « Parte per parte (una casella = una battuta) » @ 307,954
+texte « B  ·  trovati nelle tue note » @ 193,1010
+bouton « Do » @ 66,1073
+texte « A  ·  trovati nelle tue note » @ 194,1144
+bouton « Do » @ 66,1207
+texte « Tracce che seguono gli accordi » @ 234,1278
+texte « Le tracce di “Fammi un brano” seguono; le note che hai scritto restano, a meno che tu non lo chieda qui. » @ 450,1350
+bouton « Synth » @ 88,1437
+bouton « Linea acid (Acid 303) » @ 329,1437

@@ -1,0 +1,45 @@
+{
+  "siege": "a",
+  "options": {
+    "lang": "it",
+    "device": "tablet8",
+    "font": "130",
+    "mode": "simple",
+    "gestes.max": "110",
+    "mission": "simple",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 76,
+    "images": 16,
+    "gestes_premier_son": 4,
+    "gestes_premier_partage": 59,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 2,
+    "retours_immediats": 1,
+    "ecrans": 83,
+    "ecrans_revisites": 23,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 1,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 139,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.8,
+      "simule": 2.4,
+      "jvm": 8.7,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "simple",
+  "resultat": "reussie",
+  "pourquoi": "toujours en Mode simple"
+}

@@ -10689,7 +10689,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Export ----------------------------------------------------------------------------
 
-    private val _export = MutableStateFlow(ExportUi())
+    /**
+     * Lot 6, U5: the Mode simple's « Partager » keeps its format (M4A / WAV) in [com.pocketstudio.app.export.SharePrefs];
+     * once one was chosen there, the Mix (Pro) starts from it and follows each new choice (its own FLAC stays until then).
+     */
+    private val sharePrefs = app.getSharedPreferences(com.pocketstudio.app.export.SharePrefs.PREFS, android.content.Context.MODE_PRIVATE)
+
+    private fun sharedFormat(): ExportFormat? =
+        sharePrefs.getString(SHARE_FORMAT_KEY, null)?.let { com.pocketstudio.app.export.SharePrefs.parse(it) }
+
+    private val sharedFormatListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == SHARE_FORMAT_KEY) sharedFormat()?.let { f -> _export.value = _export.value.copy(format = f) }
+    }
+
+    private val _export = MutableStateFlow(ExportUi().let { e -> sharedFormat()?.let { e.copy(format = it) } ?: e })
+
+    init {
+        sharePrefs.registerOnSharedPreferenceChangeListener(sharedFormatListener)
+    }
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
     val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ ->
         e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p))
@@ -11647,6 +11664,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        sharePrefs.unregisterOnSharedPreferenceChangeListener(sharedFormatListener)
         liveRemix.close()
         stemBoardMade?.stop()  // the stretch heard alone goes with the screen
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
@@ -11698,6 +11716,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** [com.pocketstudio.app.export.SharePrefs]' key for the format chosen in « Partager » (its only one). */
+        private const val SHARE_FORMAT_KEY = "format"
         /** A microphone sample louder than this is the take's first sound (step 7b, an audio cell's bar line). */
         private const val MIC_ONSET = 0.02f
         /** [beforePress]'s key for a row or « ■ Tout » (a column's key is never empty). */

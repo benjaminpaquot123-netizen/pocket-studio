@@ -8,7 +8,7 @@ Branche `claude/benstudio-audit-tour-6-xeiz3b-ci2`, partie de `ccr-80af1a1b-mn0w
 
 Pourquoi pas rejeux6 : entre 1f47d889 (CI verte) et 2cfb8a3a, `git diff` ne touche ni `end()`, ni `backgroundQuiet`, ni `waitsOnTheNetwork`, ni l'appli ; `Zone3JourneysTest` touche par pixels (`centerOf`, inchangé hors des étiquettes `vue_`). La classe seule est verte ici (réseau rapide) ; le même rouge se fabrique à volonté en ralentissant le réseau.
 
-Non rejoué ici : la suite complète de la CI (34 min) ; la suite du banc `com.pocketstudio.app.human.*` est jouée ici (voir la fin du rapport).
+Non rejoué ici : la suite complète de la CI (34 min). Joué ici avec la correction (7182cf37) : la suite du banc `com.pocketstudio.app.human.*` entière, verte (302 tests, 58 sautés, 0 rouges), 9 min 52 s.
 
 tests: com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.Zone3JourneysTest com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchPristineRuleTest
 

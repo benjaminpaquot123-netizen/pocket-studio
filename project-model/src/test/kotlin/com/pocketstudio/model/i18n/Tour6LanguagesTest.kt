@@ -138,4 +138,28 @@ class Tour6LanguagesTest {
         }
         report("English words left", wrong)
     }
+
+    /**
+     * T16 (seats D a, H a, B b: « NEW », « Groove », « Plaits »), outside the tutorial's texts: Pad Live's « NOUVEAU » in
+     * the language's word; « Plaits » (a module's name, kept) says it is a synth where it stands alone (the Lexicon's entry,
+     * a MIDI knob's target); « Groove », the part, in the script of the languages that are not written in Latin letters.
+     */
+    @Test
+    fun newGrooveAndPlaitsAreSaidOrExplainedOutsideTheTutorial() {
+        val wrong = ArrayList<String>()
+        for (lang in Lang.entries - Lang.FR) {
+            val t = I18n.table(lang)
+            if (lang != Lang.EN && t["NOUVEAU"] == "NEW") wrong += "${lang.code}: « NOUVEAU » is « NEW »"
+            val synth = t.getValue("Synthé").lowercase(lang.locale).take(4)
+            listOf("Plaits", "Plaits : %s (piste choisie)").forEach { k ->
+                val v = t.getValue(k)
+                if ("Plaits" !in v || synth !in v.lowercase(lang.locale)) wrong += "${lang.code}: « $v » does not say what Plaits is (« $synth »)"
+            }
+        }
+        val groove = Regex("(?<![A-Za-z])[Gg]roove(?![A-Za-z])")
+        for (lang in listOf(Lang.AR, Lang.HI, Lang.ZH_CN, Lang.JA, Lang.KO)) {
+            texts(lang).filter { (_, _, v) -> groove.containsMatchIn(v) }.forEach { (area, _, v) -> wrong += "${lang.code}/$area: « ${v.take(70)} »" }
+        }
+        report("NEW, Groove, Plaits", wrong)
+    }
 }

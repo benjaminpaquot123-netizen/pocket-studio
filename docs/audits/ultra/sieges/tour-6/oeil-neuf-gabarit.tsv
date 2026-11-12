@@ -1,0 +1,20 @@
+# Feuille « œil neuf » du tour 6 (PLAN-TOUR-6.md § 4, réponse 1A ; questions d'AUDIT-PRISE-EN-MAIN.md § 7). Gabarit : chaque siège œil neuf (C a, C b) la recopie en lotC/<s>/oeil-neuf.tsv.
+# Une ligne par écran vu, SANS plafond (le plafond de 10 défauts du rapport ne s'applique pas ici). Pas d'image, pas de ligne.
+# ecran : le numéro #N et le nom de l'écran tel qu'il s'affiche ; image : le numéro d'image regardée ; q1…q10 : une réponse courte chacune (« rien » si tout va bien, jamais vide) ; ecarts : ce qui ne va pas, une ligne ; gravite : grave, moyen ou mineur, par la règle ci-dessous.
+# Les 10 questions, posées sur l'écran ENTIER, en image :
+#  q1 Qu'est-ce qui se touche ? Tout ce qui a l'air touchable, comparé à ce qui l'est vraiment ; écarts dans les deux sens.
+#  q2 Deux éléments font-ils la même chose (▶, Partager, ⋮) ? Lequel garder ?
+#  q3 Chaque icône seule : la nommer sans lire son mot ; une hésitation = défaut.
+#  q4 Les voisins se ressemblent-ils (forme, taille, flèche, marge, coins) ?
+#  q5 Un repli cache-t-il un réglage dont dépend le résultat ? Son titre doit le dire.
+#  q6 Après chaque action (envoi, création, prise) : où est la preuve à l'écran, et où va-t-on ensuite ?
+#  q7 Un message contredit-il ce que je viens de faire ?
+#  q8 Une suite hors écran (liste, rangée de pastilles) sans signe de défilement ?
+#  q9 Du texte coupé ou à cheval (à 130 %) ?
+#  q10 Dans l'autre mode (Simple/Pro), la même chose est-elle au même endroit, avec le même mot ?
+# Règle de « grave » propre aux œil neuf (pas celle des gestes de détour : ces sièges n'ont pas de mission) :
+#  grave = sur cet écran, quelqu'un de neuf ne sait pas quoi toucher pour avancer (q1, q3), ou croit à tort que son action a raté ou réussi (q6, q7), ou un mot de bouton est coupé (q9).
+#  Le reste est moyen ou mineur. Chaque grave cite son image ; le lecteur la regarde lui-même avant de la compter.
+#  Critère du tour (§ 1) : 0 grave sur les deux sièges œil neuf, compté avec cette règle.
+# Budget : 30 images au plus, gestes.max=100 (une image = un demi-geste) ; la première image de chaque écran neuf d'abord ; viser 10 à 15 écrans.
+ecran	image	q1	q2	q3	q4	q5	q6	q7	q8	q9	q10	ecarts	gravite

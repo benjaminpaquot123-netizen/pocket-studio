@@ -1,3 +1,4 @@
 source=docs/audits/ultra/sieges/tour-5/lotE/a
 rejeu.n=148
+rejeu.attendu=Partie : I · Montée
 rejeu.absent=(nom « Vider cette piste dans la partie I · Montée ») [désactivé]

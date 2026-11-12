@@ -49,6 +49,9 @@ internal data class SeatOptions(
     val replayAbsent: String? = null,
     val replayOrigin: File? = null,
 ) {
+    /** A box on the screen, in pixels. */
+    data class Box(val left: Float, val top: Float, val right: Float, val bottom: Float)
+
     enum class Hand(val word: String) { BOTH("à deux mains"), RIGHT("d'une main, la droite"), LEFT("d'une main, la gauche") }
 
     /** Robolectric's qualifiers for this seat: the phone's locale, then its screen. */
@@ -140,13 +143,38 @@ internal data class SeatOptions(
         const val THUMB_REACH_DP = 500f
 
         /**
-         * The point ([x], [y], the screen's pixels) is within the thumb's reach of [hand] holding the
-         * phone at its bottom corner (right hand: bottom right), on a screen [w] x [h] at [density].
+         * The point ([x], [y], the screen's pixels) is on the screen [w] x [h] and within the thumb's reach of [hand] holding
+         * the phone at its bottom corner (right hand: bottom right), at [density]. A point off the screen (below its bottom
+         * edge: review of rejeux6, grave 2) is never reached, whatever the hand.
          */
         fun reachable(hand: Hand, x: Float, y: Float, w: Int, h: Int, density: Float): Boolean {
+            if (x < 0f || y < 0f || x >= w || y >= h) return false
             if (hand == Hand.BOTH) return true
             val px = if (hand == Hand.RIGHT) w.toFloat() else 0f
             return hypot(x - px, y - h.toFloat()) <= THUMB_REACH_DP * density
+        }
+
+        /**
+         * Where a tag touch lands: the point nearest to [middle] of the [node]'s box cut to its [visible] part (its parents'
+         * clipping: a list that scrolls it, a window) and to the screen [w] x [h], that [hand]'s thumb reaches and where [hits]
+         * says the element under the finger is the target (or a part of it): nothing else is drawn over it there. Null when
+         * no such point (the touch is refused: a finger could not touch that element there). Review of rejeux6, grave 2.
+         */
+        fun nearestReachable(
+            hand: Hand, node: Box, visible: Box, middle: Pair<Float, Float>, w: Int, h: Int, density: Float,
+            hits: (Float, Float) -> Boolean = { _, _ -> true },
+        ): Pair<Float, Float>? {
+            val left = maxOf(node.left, visible.left, 0f)
+            val top = maxOf(node.top, visible.top, 0f)
+            val right = minOf(node.right, visible.right, w.toFloat())
+            val bottom = minOf(node.bottom, visible.bottom, h.toFloat())
+            if (right - left < 1f || bottom - top < 1f) return null
+            val candidates = mutableListOf<Pair<Float, Float>>()
+            if (middle.first in left..right && middle.second in top..bottom) candidates += middle
+            for (i in 1..9) for (j in 1..9) candidates += (left + (right - left) * i / 10f) to (top + (bottom - top) * j / 10f)
+            // Nearest first: the hit test (the screen's nodes under a point) is only asked until one holds.
+            return candidates.sortedBy { hypot(it.first - middle.first, it.second - middle.second) }
+                .firstOrNull { (x, y) -> reachable(hand, x, y, w, h, density) && hits(x, y) }
         }
     }
 }

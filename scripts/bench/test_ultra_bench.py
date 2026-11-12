@@ -4,6 +4,9 @@ seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/
 Standard library only."""
 import json
 import os
+
+# Tour 5 (rejeux6): run from rejeu-defauts.sh with PS_REJEUX_DIR set (the waiting replays), the toys below read it and lose their replay.
+os.environ.pop("PS_REJEUX_DIR", None)
 import re
 import subprocess
 import sys

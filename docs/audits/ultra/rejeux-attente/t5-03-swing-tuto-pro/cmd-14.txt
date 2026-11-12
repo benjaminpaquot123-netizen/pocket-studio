@@ -1,1 +1,1 @@
-touche 737 1344
+touche tempo_key_ok

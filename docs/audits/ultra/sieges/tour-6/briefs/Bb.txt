@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotB/b (seat b, lot B; lang de, device tablet8, font 130, mode pro, options -, mission tuto-pro, budget 120 gestures).
+Profile (id t6-Bb): Producteur allemand sur tablette 8 pouces, police 130 %, Mode Pro, suit le tuto Pro puis le Guide, le synthé et les courbes. Promesses : pour chacune, oui ou non avec le numéro d'écran. À la fin, sur ton dernier écran, réponds aux questions 1, 6 et 9 de l'œil neuf (une image). Act as this person (habits, patience, vocabulary).
+Mission tuto-pro; its 3 goals (ids, the bench checks them): chap1 (1er chapitre fini), chap3 (3e chapitre fini), bravo (« Bravo » du tuto).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Bb-1 | 1. L'étape Swing du tuto Pro se fait et se valide (bloquant B c #23)
+  - id=t6-Bb-2 | 2. L'étoile ☆ se trouve et se touche sur les sons (grave D b #39)
+  - id=t6-Bb-3 | 3. Une courbe d'automatisation créée se montre tout de suite
+  - id=t6-Bb-4 | 4. « Voir le réglage » mène au réglage automatisé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

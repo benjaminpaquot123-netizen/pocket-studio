@@ -1,6 +1,7 @@
 package com.pocketstudio.model.i18n
 
 import com.pocketstudio.model.Scene
+import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -81,5 +82,60 @@ class Tour6LanguagesTest {
             texts(lang).forEach { (area, _, v) -> runs(v).filter { part.matches(it) }.forEach { wrong += "${lang.code}/$area: « $it » in « ${v.take(70)} »" } }
         }
         report("parts named in Latin letters", wrong)
+    }
+
+    /** The trade's words of the Arabic catalogs, as the Mode simple's list writes them (`i18n/ar/mots_simples.json`). */
+    private fun arabicTradeWords(): Set<String> {
+        val stream = I18n::class.java.classLoader.getResourceAsStream("i18n/ar/mots_simples.json")!!
+        val words = stream.bufferedReader(Charsets.UTF_8).use { Json.decodeFromString<Map<String, String>>(it.readText()) }.keys
+        return (words + listOf("Ghost bass", "Pre-chorus", "Post-chorus", "Fake drop")).map { it.lowercase() }.toSet()
+    }
+
+    /**
+     * R15 (seat B c, Arabic, Mode pro: « Ghost bass », « Loop », « كل الـPads », Kick, Snare, Clap): the Arabic catalogs
+     * write the trade's words in Arabic letters, in both modes (the Mode simple did it alone, tour 5). Names stay as written
+     * (« Pad Live », the « → Pad » button, « Drum & bass », an artist's name, what one types in the sound search).
+     */
+    @Test
+    fun theArabicCatalogsWriteTheTradesWordsInArabic() {
+        val trade = arabicTradeWords()
+        val names = listOf("Drum & bass", "Pad Live", "Pad المباشر", "→ Pad", "Master KG", "Think break", "dark techno kick", "«kick»", "«echo»", "«reverb»")
+        val wrong = ArrayList<String>()
+        texts(Lang.AR).forEach { (area, _, v) ->
+            runs(names.fold(v) { acc, n -> acc.replace(n, " ") }).filter { it.lowercase() in trade }.forEach { wrong += "ar/$area: « $it » in « ${v.take(70)} »" }
+        }
+        I18n.lang = Lang.AR
+        listOf("Basse en fantôme", "Boucler", "Boucle", "Tous les pads", "Kick", "Clap", "Caisse claire", "Pré-refrain", "Post-refrain").forEach { k ->
+            tr(k).let { if (Regex("[A-Za-z]").containsMatchIn(it)) wrong += "ar: « $k » shows « $it »" }
+        }
+        report("Arabic texts with the trade's words in Latin letters", wrong)
+    }
+
+    /**
+     * R15 (seats F a in Italian, F b in Polish, G b in Indonesian, A a in Hindi): « kick », « step », « timeline », « 5 tab »,
+     * « Squelchy »; « Synth » under a track; « bar », « take-mu »; « Post-chorus », « Fade in / Fade out / Ending », where the
+     * language has its word (« cassa », « passo », « schede »; « syntezator »; « birama », « rekaman »; Devanagari). Wherever
+     * they occur outside the tutorial. A pad's own name (« Kick », « Kick studio ») and a quoted name stay.
+     */
+    @Test
+    fun theSeatsEnglishWordsAreSaidInTheirLanguage() {
+        val padNames = setOf(
+            "Kick", "Kicks", "Kick 2", "Kick studio", "Kick dur", "Kick analogique", "Kick (grosse caisse)",
+            "Kick : la grosse caisse, le « boum » grave de la batterie.",
+        )
+        val unquoted = Regex("[“”«»„\"‘’][^“”«»„\"‘’]*[“”«»„\"‘’]")
+        val words = mapOf(
+            Lang.IT to Regex("""(?i)(?<![\w-])(kicks?|steps?|timeline|tab|squelchy)(?![\w-])"""),
+            Lang.PL to Regex("""(?i)(?<![\w-])synth(?![\w-])"""),
+            Lang.ID to Regex("""(?i)(?<![\w-])(bar|take)(?![\w])"""),
+            Lang.HI to Regex("""(?i)(?<![\w-])(fades?|fade-in|fade-out|fade in|fade out|ending|post-chorus)(?![\w])"""),
+        )
+        val wrong = ArrayList<String>()
+        words.forEach { (lang, word) ->
+            texts(lang).filter { (_, k, _) -> lang != Lang.IT || k !in padNames }.forEach { (area, _, v) ->
+                word.findAll(unquoted.replace(v, " ")).forEach { wrong += "${lang.code}/$area: « ${it.value} » in « ${v.take(70)} »" }
+            }
+        }
+        report("English words left", wrong)
     }
 }

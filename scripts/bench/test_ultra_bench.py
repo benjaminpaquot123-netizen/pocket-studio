@@ -212,6 +212,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         banc7_launcher_messages(d)
     with tempfile.TemporaryDirectory() as d:
+        banc7_stamp_reason(d)
+    with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
         fingerprint_stable(d)
@@ -636,6 +638,27 @@ def banc7_launcher_messages(d):
     write(os.path.join(lot, ".banc-en-cours"), "999999999\n")
     r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
     check(r.returncode == 1 and "scripts/human-tester.sh" in r.stdout, "a dead bench's marker is not a bench running:\n" + r.stdout)
+
+
+def banc7_stamp_reason(d):
+    """Round 6, lot banc7 (point 7): the stamp refused because the seats' start.txt changed since the self-test says so,
+    and what to do (seat E c and E11: a bare « No green self-test for this code »)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    write(os.path.join(lot, "c", "start.txt"), "lang=fr\n")
+    # Point 7: the stamp refused because the seats' start.txt changed since the self-test says so, and what to do.
+    tampon = os.path.join(HERE, "tampon.sh")
+    fp = os.path.join(d, "banc7", "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    green_lot(lot)
+    subprocess.run([tampon, "ecris", lot, fp], check=True)
+    check(subprocess.run([tampon, "verifie", lot]).returncode == 0, "the lot's fresh stamp fits")
+    write(os.path.join(lot, "a", "start.txt"), "lang=de\n")
+    r = subprocess.run([tampon, "verifie", lot], capture_output=True, text=True)
+    check(r.returncode != 0 and "start.txt" in r.stderr and "selftest.sh" in r.stderr,
+          "a stamp refused for the seats' start.txt says so, and to run the self-test with only the seats to play:\n" + r.stderr)
+    tester = os.path.join(HERE, "..", "human-tester.sh")
+    r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
+    check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
 
 
 def bench_guards(d):

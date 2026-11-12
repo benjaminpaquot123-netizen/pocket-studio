@@ -1,0 +1,8 @@
+fusion: 1ec19eee124010de2ad84f5ad392030f22c84b5c
+branche: eq/tour-5-courbes
+tete: 37199a0c82210fcec5d2c83d1110e96c43b0c29b
+relecture: docs/audits/ultra/tour-5-courbes-relecture.md
+relu: d7d4bec48168c4d3fc0651fb6f9b7eb04a35f1f7
+filtres: *CurvesFindTest *ScreenScanTest *ScreenshotTest *I18nCatalogTest *TutoLot4Test *HiddenDefectsGuardTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

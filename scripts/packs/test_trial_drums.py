@@ -10,12 +10,20 @@ Then builds the three packs twice in a temporary folder and checks, with this fi
   3 to 5 sounds of each kind the trial asks for, safe file names, the tech house « toc » first;
 - each file is a 16-bit 48 kHz PCM WAV, mono for kicks and snares, stereo for the rest; kicks,
   hats, open hats and rides as long as the trial asks (snares, claps, percs within loose bounds);
-  peak between -1.5 and -0.9 dBFS, nothing at full scale, no DC above 0.001;
-- the kicks' fundamental over 60-200 ms: techno 43.65 Hz and tech house 49.0 Hz within 1.5 %,
-  jump up 52-63 Hz; hats with more than -15 dB of their energy above 8 kHz; claps and hats with
-  side against centre between -25 and -3 dB (stereo, yet mono-compatible);
+  nothing at full scale, no DC above 0.001;
+- the peak of each kind, within 0.3 dB (trial n° 2, Benjamin on n° 1: « tu rajoutes juste des
+  cymbales on dirait »): kicks, snares and claps -1 dBFS, percussion -4, hats, open hats, rides -8;
+- kicks: the fundamental over 60-200 ms, techno 43.65 Hz and tech house 49.0 Hz within 1.5 %,
+  jump up 52-63 Hz; at least -12 dB of their energy in 250 Hz-1.5 kHz (the harmonics a phone's
+  speaker plays) and at least -22 dB in 1.2-4.5 kHz (the click);
+- snares and claps: at least -6 dB of their energy in 250 Hz-2 kHz (the body), a tail (start to
+  the last sample within 40 dB of the peak) of 0.25 to 0.6 s;
+- hats, open hats and rides: no more energy above 10 kHz than in 4-10 kHz; hats with more than
+  -15 dB of their energy above 8 kHz; claps and hats with side against centre between -25 and
+  -3 dB (stereo, yet mono-compatible);
 - mesures.json agrees with this file's measures; LICENSE.txt says the sounds are ours;
 - the two builds are identical byte for byte.
+Energies are read on the sum of the channels, each band against everything from 20 Hz up.
 --script checks another copy of the script (to see this test fail on a broken one).
 Exit code 0 when every check passes; each failure is printed.
 """
@@ -43,6 +51,16 @@ KINDS = {
 }
 TUNED = {'essai_techno': 43.654, 'essai_tech_house': 48.999}
 MONO = {'kick', 'snare'}
+PEAKS = {'kick': -1.0, 'snare': -1.0, 'clap': -1.0, 'perc': -4.0, 'hat': -8.0, 'open_hat': -8.0, 'ride': -8.0}
+PEAK_TOLERANCE = 0.3
+KICK_HARMONICS = (250, 1500, -12.0)  # band (Hz) and the least share of a kick's energy in it (dB)
+KICK_CLICK = (1200, 4500, -22.0)
+BODY = (250, 2000, -6.0)  # snares and claps
+TAIL_BELOW_DB, TAIL_S = 40.0, (0.25, 0.6)
+METAL = {'hat', 'open_hat', 'ride'}
+# The report's bands (Hz), each against 20 Hz-20 kHz.
+REPORT_BANDS = {'sub_db': (20, 60), 'low_db': (60, 250), 'mid_db': (250, 4000), 'high_db': (4000, 20000),
+                'e250_1500_db': (250, 1500), 'e1200_4500_db': (1200, 4500), 'e250_2000_db': (250, 2000)}
 # Lengths the trial asks for (s); the kicks' depend on the style.
 LENGTHS = {'hat': (0.04, 0.09), 'open_hat': (0.2, 0.4), 'ride': (0.8, 1.5), 'snare': (0.2, 0.5),
            'clap': (0.15, 0.9), 'perc': (0.05, 0.4)}
@@ -73,10 +91,22 @@ def read(path):
     return info, raw.reshape(-1, info[3])
 
 
-def energy_above(x, hz):
+def energy(x, lo, hi=math.inf):
+    """Power of the channels' sum between lo and hi (Hz), from its unpadded spectrum."""
     p = np.abs(np.fft.rfft(x.sum(axis=1))) ** 2
     f = np.fft.rfftfreq(len(x), 1.0 / RATE)
-    return 10 * np.log10(p[f >= hz].sum() / p[f >= 20].sum())
+    return float(p[(f >= lo) & (f < hi)].sum()) + 1e-30
+
+
+def share(x, lo, hi=math.inf):
+    """dB of the energy between lo and hi against everything from 20 Hz up."""
+    return 10 * np.log10(energy(x, lo, hi) / energy(x, 20))
+
+
+def tail_of(x):
+    """Seconds from the start to the last sample of any channel within TAIL_BELOW_DB of the peak."""
+    a = np.abs(x).max(axis=1)
+    return (np.flatnonzero(a >= a.max() * 10 ** (-TAIL_BELOW_DB / 20))[-1] + 1) / RATE
 
 
 def side_centre(x):
@@ -123,6 +153,21 @@ def check_measures(td):
     tk = t[:int(0.3 * RATE)]
     m = td.measure((0.8 * np.sin(2 * np.pi * 43.654 * tk) * np.exp(-tk / 0.12))[:, None], RATE, 'kick')
     check(m['f0_hz'] is not None and abs(m['f0_hz'] / 43.654 - 1) < 0.002, f'report: a 43.654 Hz decaying sine reads {m["f0_hz"]} Hz')
+    # Seven sines, each band's share known from their amplitudes (no two bands share a figure).
+    tones = {40: 0.6, 100: 0.5, 1000: 0.4, 1800: 0.32, 3000: 0.35, 6000: 0.3, 12000: 0.15}
+    m = td.measure(0.35 * sum(a * np.sin(2 * np.pi * f * t) for f, a in tones.items())[:, None], RATE)
+    total = sum(a * a for a in tones.values())
+    for key, (lo, hi) in REPORT_BANDS.items():
+        want = 10 * np.log10(sum(a * a for f, a in tones.items() if lo <= f < hi) / total)
+        check(isinstance(m.get(key), float) and abs(m[key] - want) < 0.1, f'report: {key} reads {m.get(key)}, not {want:.2f}')
+    want = 20 * np.log10(tones[12000] / tones[6000])
+    got = m.get('top_10k_vs_4_10k_db')
+    check(isinstance(got, float) and abs(got - want) < 0.1, f'report: 12 kHz against 6 kHz reads {got}, not {want:.2f}')
+    # Two decaying sines: the tail is the longer one's, 40 dB down at tau x ln 100.
+    left, right = (np.sin(2 * np.pi * 1000 * t + ph) * np.exp(-t / tau) for ph, tau in ((0.0, 0.04), (1.0, 0.08)))
+    m = td.measure(np.stack([left, right], axis=1), RATE)
+    want = 0.08 * np.log(100)
+    check(abs(m.get('tail_s', 99) - want) < 0.002, f'report: a tail of {want:.3f} s reads {m.get("tail_s")}')
 
 
 def check_pack(root, pack, kinds_ok, report):
@@ -177,7 +222,8 @@ def check_pack(root, pack, kinds_ok, report):
         lo, hi = KICK_LENGTHS[pack] if kind == 'kick' else LENGTHS.get(kind, (0.0, 2.0))
         check(lo - 1e-6 <= seconds <= hi + 1e-6, f'{where}: lasts {seconds:.3f} s, wanted {lo}-{hi}')
         peak = 20 * np.log10(np.max(np.abs(x)) + 1e-12)
-        check(-1.5 <= peak <= -0.9, f'{where}: peak {peak:.2f} dBFS')
+        want = PEAKS.get(kind, -1.0)
+        check(abs(peak - want) <= PEAK_TOLERANCE, f'{where}: peak {peak:.2f} dBFS, wanted {want} within {PEAK_TOLERANCE} dB')
         check(np.max(np.abs(raw.astype(int))) < 32767, f'{where}: samples at full scale (clipped)')
         dc = float(np.max(np.abs(x.mean(axis=0))))
         check(dc <= 0.001, f'{where}: DC {dc:.5f}')
@@ -188,8 +234,19 @@ def check_pack(root, pack, kinds_ok, report):
                 check(abs(f0 / TUNED[pack] - 1) <= 0.015, f'{where}: fundamental {f0:.2f} Hz, not {TUNED[pack]} Hz within 1.5 %')
             else:
                 check(52 <= f0 <= 63, f'{where}: fundamental {f0:.2f} Hz, not 52-63 Hz')
+            for lo, hi, least in (KICK_HARMONICS, KICK_CLICK):
+                got = share(x, lo, hi)
+                check(got >= least, f'{where}: {got:.1f} dB of its energy in {lo}-{hi} Hz (at least {least} wanted)')
+        if kind in ('snare', 'clap'):
+            got = share(x, BODY[0], BODY[1])
+            check(got >= BODY[2], f'{where}: {got:.1f} dB of its energy in {BODY[0]}-{BODY[1]} Hz (at least {BODY[2]} wanted)')
+            got = tail_of(x)
+            check(TAIL_S[0] <= got <= TAIL_S[1], f'{where}: tail {got:.3f} s ({TAIL_S[0]}-{TAIL_S[1]} wanted)')
+        top = 10 * np.log10(energy(x, 10000) / energy(x, 4000, 10000))
+        if kind in METAL:
+            check(top <= 0, f'{where}: {top:.1f} dB more energy above 10 kHz than in 4-10 kHz (at most 0 wanted)')
         if kind in ('hat', 'open_hat'):
-            air = energy_above(x, 8000)
+            air = share(x, 8000)
             check(air > -15, f'{where}: {air:.1f} dB above 8 kHz (more than -15 wanted)')
         sc = side_centre(x) if channels == 2 else None
         if kind in ('clap', 'hat', 'open_hat') and sc is not None:
@@ -212,8 +269,17 @@ def check_pack(root, pack, kinds_ok, report):
         if f0 is not None:
             got = m.get('f0_hz')
             check(got is not None and abs(got / f0 - 1) < 0.005, f'{where}: mesures.json f0 {got} against {f0:.2f}')
-        for key in ('rms_dbfs', 'crest_db', 'air_10k_plus_db', 'centroid_hz'):
+        for key in ('rms_dbfs', 'crest_db', 'air_10k_plus_db', 'centroid_hz', 'top_10k_vs_4_10k_db', 'tail_s',
+                    *REPORT_BANDS):
             check(key in m, f'{where}: mesures.json lacks {key}')
+        got = m.get('tail_s')
+        check(got is not None and abs(got - tail_of(x)) < 0.002, f'{where}: mesures.json tail {got} against {tail_of(x):.3f}')
+        own = {'e250_1500_db': share(x, 250, 1500), 'e1200_4500_db': share(x, 1200, 4500),
+               'e250_2000_db': share(x, 250, 2000), 'top_10k_vs_4_10k_db': top}
+        keys = {'kick': ('e250_1500_db', 'e1200_4500_db'), 'snare': ('e250_2000_db',), 'clap': ('e250_2000_db',)}
+        for key in keys.get(kind, ('top_10k_vs_4_10k_db',) if kind in METAL else ()):
+            got = m.get(key)
+            check(got is not None and abs(got - own[key]) < 0.2, f'{where}: mesures.json {key} {got} against {own[key]:.2f}')
 
 
 def build(script, out):

@@ -1,0 +1,45 @@
+Écran 11 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 280,42
+bouton « Simple » @ 606,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 122  Tempo » @ 98,123
+icône (flèches en boucle) « Montée mesure 4/4 » ▾ @ 297,123
+bouton « ? » @ 855,123
+titre « MES PISTES » [état « Déplié »] @ 143,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 450,288
+bouton « Batterie Changer le son » › @ 278,378
+bouton ▶ « Écouter seule » @ 650,378
+icône (curseurs) @ 822,378
+bouton « Basse Changer le son » › [coupé] @ 278,473
+bouton ▶ « Écouter seule » [coupé] @ 650,476
+icône (curseurs) [coupé] @ 822,479
+bouton (boussole) « Guide  · Change un son 15 % » ⌄ [état « ouvert »] @ 450,536
+texte « POUR COMMENCER » @ 450,618
+texte « Change un son » @ 175,670
+texte « Fais-le tien : un autre son pour la mélodie ou pour la batterie. » @ 449,726
+texte « → » @ 61,786
+texte « À toi : touche « Le son de la mélodie ». » @ 362,785
+texte « VOIR LE RÉGLAGE » @ 152,844
+texte « ↗ Le son de la mélodie » @ 450,908
+texte « ↗ Une autre batterie » @ 450,992
+texte « Le mot : Mélodie La mélodie principale, celle qu'on retient et qu'on chante. Elle passe devant tout le reste. » @ 486,1105
+icône ▶ @ 78,1106
+bouton « Plus tard » @ 120,1222
+bouton « Sauter » @ 271,1222
+bouton « En savoir plus » @ 456,1222
+bouton « Ne plus proposer » @ 713,1222
+icône ↶ « Annuler » @ 148,1292
+bouton ■ « le morceau » @ 354,1292
+texte « 122 Tempo » @ 564,1292
+icône ⋮ « Plus » @ 753,1292
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

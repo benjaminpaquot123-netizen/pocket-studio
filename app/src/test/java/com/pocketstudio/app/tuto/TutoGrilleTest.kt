@@ -194,4 +194,30 @@ class TutoGrilleTest {
     @Test
     fun simpleANotesStepOpensOnTheBarOfItsFirstNote() = theStepOpensOnItsBar(TutoLevel.Facile, simple = true)
 
+    /** T4 (pads) / T15 (seat D b, phone360 at 130 %): the step grid's second row of cells and the pads' help line are above the panel. */
+    private fun theCellsAreAboveThePanel(level: TutoLevel, simple: Boolean) {
+        val target = TutoTarget.of("house")!!
+        h.start(simple = simple, build = {
+            session.edit { target.blank() }
+            PrefsTutoStore(h.app).save(projectId, TutoProgress("house", level, current = "kick_do"))
+        })
+        await("kick: the panel") { has("tuto_need") || has("tuto_do") }
+        compose.onNodeWithTag(if (has("tuto_need")) "tuto_need" else "tuto_do").performClick()
+        await("kick: its dotted cells") { TutoHints.cells != null && has("step_8") }
+        settle()
+        val panel = node("tuto_panel").boundsInRoot.top
+        val second = node("step_8").boundsInRoot
+        assertTrue("second row of cells $second, panel at $panel", second.height > 1f && second.bottom <= panel + 1f)
+        // The pads' help: in sight above the panel, or scrolled away with the pads (never cut by the panel).
+        if (has("pads_hint")) {
+            val help = node("pads_hint").boundsInRoot
+            assertTrue("the pads' help $help, panel at $panel", help.height <= 1f || help.bottom <= panel + 1f)
+        }
+    }
+
+    @Test
+    fun proTheCellsAreAboveThePanel() = theCellsAreAboveThePanel(TutoLevel.Pro, simple = false)
+
+    @Test
+    fun simpleTheCellsAreAboveThePanel() = theCellsAreAboveThePanel(TutoLevel.Facile, simple = true)
 }

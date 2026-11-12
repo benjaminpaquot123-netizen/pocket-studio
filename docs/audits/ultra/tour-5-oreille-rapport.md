@@ -17,7 +17,7 @@ Plan : `docs/PLAN-TEST-APK.md`, « Niveau 3 » et étape T3. Branche : `eq/tour-
 - chemin: BenStudio Test › question 6 sans Bluetooth | test: OreilleTest#withoutBluetoothQuestionSixIsSkippedNotAsked
 - chemin: BenStudio Test › bandeau, un ❌ | test: OreilleTest#aNoKeepsItsPictureItsJournalAndItsMeasuresAndTheRunGoesOn
 - chemin: BenStudio Test › bandeau, délai | test: OreilleTest#theBannerGivesUpAtItsTimeout
-- chemin: BenStudio Test › question 8, kick | test: OreilleTest#aKickThatLeftTheCentreIsARedWithItsPicture
+- chemin: BenStudio Test › question 8, gestes retour faits par Benjamin, pan avant/après | test: OreilleTest#aKickThatMovedIsARedWithItsPictureAndBothValues
 - chemin: Rapport › questions à l'oreille | test: OreilleTest#theReportHasItsSectionAndTheMeasuresHoldTheAnswers
 
 tests: com.pocketstudio.bentest.*

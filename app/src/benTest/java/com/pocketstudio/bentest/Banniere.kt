@@ -84,13 +84,13 @@ object Banniere {
     @Composable
     fun Vue() {
         val etat by Banniere.etat.collectAsStateWithLifecycle()
-        etat?.let { BanniereCarte(it.question.texte, ::repondre) }
+        etat?.let { BanniereCarte(it.question.texte, ::repondre, it.question.action) }
     }
 }
 
-/** The banner's card: the question, a word (optional), ❌ ✅ and « Passer ». */
+/** The banner's card: the question, a word (optional), ❌ ✅ (or one button named [action]) and « Passer ». */
 @Composable
-fun BanniereCarte(texte: String, repondre: (Verdict, String) -> Unit) {
+fun BanniereCarte(texte: String, repondre: (Verdict, String) -> Unit, action: String? = null) {
     var mot by remember(texte) { mutableStateOf("") }
     Column(
         Modifier.fillMaxWidth().statusBarsPadding().padding(8.dp).background(Neon.Surface, RoundedCornerShape(16.dp)).padding(12.dp).testTag("bentest_banniere"),
@@ -102,7 +102,9 @@ fun BanniereCarte(texte: String, repondre: (Verdict, String) -> Unit) {
             placeholder = { Text("Un mot si tu veux (facultatif)") }, modifier = Modifier.fillMaxWidth().testTag("bentest_banniere_mot"),
             keyboardOptions = KeyboardOptions.Default,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+        if (action != null) {
+            Button(onClick = { repondre(Verdict.OUI, mot) }, modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp).testTag("bentest_banniere_action")) { Text(action, style = MaterialTheme.typography.titleLarge) }
+        } else Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             Button(onClick = { repondre(Verdict.NON, mot) }, modifier = Modifier.heightIn(min = 64.dp).weight(1f).testTag("bentest_banniere_non")) { Text("❌", style = MaterialTheme.typography.headlineMedium) }
             Button(onClick = { repondre(Verdict.OUI, mot) }, modifier = Modifier.heightIn(min = 64.dp).weight(1f).testTag("bentest_banniere_oui")) { Text("✅", style = MaterialTheme.typography.headlineMedium) }
         }

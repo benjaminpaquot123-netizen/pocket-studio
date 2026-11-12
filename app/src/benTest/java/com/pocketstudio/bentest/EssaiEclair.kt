@@ -74,7 +74,7 @@ interface Appli {
 
     // Niveau 3 (« Questions à l'oreille »).
 
-    /** The wired headset and Bluetooth, as far as the phone says. Default: neither (the questions that need one are skipped). */
+    /** The wired headset and the Bluetooth headset or speaker connected right now. Default: neither (the questions that need one are skipped). */
     fun materiel(): Materiel = Materiel(casqueFilaire = false, bluetooth = false)
 
     /** [question] in the floating banner over the studio, waiting at most [maxMs]. Default: BenStudio Test's own screen, yes or no. */
@@ -84,11 +84,8 @@ interface Appli {
         null -> Reponse(Verdict.SANS_REPONSE)
     }
 
-    /** A swipe from the screen's left edge, along the middle of the node tagged [tag]. */
-    fun glisserDuBordGauche(tag: String) = Unit
-
-    /** The kick's place in the stereo field is the centre (null: unreadable). */
-    fun kickAuCentre(): Boolean? = null
+    /** The kick's pan in the project (lane 0 of the drums; -1 left … 1 right), null: unreadable. */
+    fun panKick(): Float? = null
 
     /** The last [lignes] lines of the app's journal. */
     fun journalFin(lignes: Int): String = ""

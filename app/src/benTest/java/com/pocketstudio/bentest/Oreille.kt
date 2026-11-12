@@ -16,10 +16,13 @@ enum class Verdict(val mot: String) {
 /** An answer: [commentaire] is the optional one-line word. */
 data class Reponse(val verdict: Verdict, val commentaire: String = "")
 
-/** One question of the banner. [maxMs]: how long it waits for an answer (never forever). */
-data class Question(val id: String, val texte: String, val maxMs: Long = QuestionsOreille.ATTENTE_MS)
+/**
+ * One question of the banner. [maxMs]: how long it waits for an answer (never forever). [action]: when set, the
+ * banner is not a yes/no but one big button of that name (« Fait », « Prêt ») answering [Verdict.OUI], and « Passer ».
+ */
+data class Question(val id: String, val texte: String, val maxMs: Long = QuestionsOreille.ATTENTE_MS, val action: String? = null)
 
-/** What the phone has plugged in or built in, as far as the app can tell without a permission. */
+/** What is plugged in right now, as the phone's audio outputs say (no permission): a wired headset, a Bluetooth headset or speaker. */
 data class Materiel(val casqueFilaire: Boolean, val bluetooth: Boolean)
 
 /** What the robot does to put each question's scene in place (the real one drives the screens; the tests record calls). */
@@ -40,13 +43,16 @@ interface Preparateur {
 
     /** Sons › Batterie open; the tag of the kick's pad. */
     fun ouvrirBatterie(): String
+
+    /** Sons › Batterie is still on screen (a back gesture may have left it). */
+    fun batterieOuverte(): Boolean
 }
 
 /**
  * « Questions à l'oreille » (docs/PLAN-TEST-APK.md, niveau 3): the eight questions of Benjamin in one pass.
  * 1 to 4: « Ça tape ? » on the phone's speaker, the robot having made and started the song; 5 and 6: wired
- * headphones and Bluetooth (skipped when the phone has none, not asked in vain); 7: playing with the fingers;
- * 8: three swipes from the left edge on the kick's pad, read by the robot itself. A ❌ keeps a picture of the
+ * headphones and Bluetooth (skipped when the phone has none plugged in; Bluetooth first asks to connect one); 7: playing with the fingers;
+ * 8: Benjamin does three back gestures (a synthetic touch is not the system gesture), the robot reads the kick's pan before and after. A ❌ keeps a picture of the
  * app's windows, the last lines of the app's journal and the last measurements. Every wait has a timeout.
  */
 class QuestionsOreille(
@@ -69,16 +75,16 @@ class QuestionsOreille(
         }
     } + listOf(
         etape("oreille_5_casque", "Question 5 : casque filaire", 600_000) {
-            saut(Cas.CASQUE)?.let { return@etape passer("oreille_5_casque", it) }
+            sautCasque()?.let { return@etape passer("oreille_5_casque", it) }
             prep.rejouer()
             val r = poser(Question("oreille_5_casque", "Casque filaire : la basse est là et le son est large ?"))
             prep.arreter()
             conclure("oreille_5_casque", r)
         },
         etape("oreille_6_bluetooth", "Question 6 : Bluetooth", 900_000) {
-            saut(Cas.BLUETOOTH)?.let { return@etape passer("oreille_6_bluetooth", it) }
+            sautBluetooth()?.let { return@etape passer("oreille_6_bluetooth", it) }
             prep.rejouer()
-            val r = poser(Question("oreille_6_bluetooth", "Bluetooth : branche ton casque ou ton enceinte, puis coupe-le en pleine musique. Le son a suivi, sans plantage ?", BLUETOOTH_MS))
+            val r = poser(Question("oreille_6_bluetooth", "Bluetooth : coupe ton casque ou ton enceinte en pleine musique. Le son a suivi, sans plantage ?", BLUETOOTH_MS))
             // The robot's own half: the engine did not choke on the cut.
             val after = sonde.lire()
             check(!after.nonFinite) { "valeur invalide (NaN) après la coupure" }
@@ -94,16 +100,18 @@ class QuestionsOreille(
         etape("oreille_8_retour", "Question 8 : trois gestes retour (le robot lit seul)", 120_000) { retour() },
     )
 
-    /** Which skip rule a question has. */
-    enum class Cas { CASQUE, BLUETOOTH }
+    /** Why question 5 is not asked (null: it is): no wired headset plugged in. */
+    fun sautCasque(): String? = if (appli.materiel().casqueFilaire) null else SANS_CASQUE
 
-    /** Why [cas] is not asked (null: it is), from what the phone has. */
-    fun saut(cas: Cas): String? {
-        val m = appli.materiel()
-        return when (cas) {
-            Cas.CASQUE -> if (m.casqueFilaire) null else SANS_CASQUE
-            Cas.BLUETOOTH -> if (m.bluetooth) null else SANS_BLUETOOTH
-        }
+    /**
+     * Why question 6 is not asked (null: it is). Nothing connected: the banner asks Benjamin to connect a headset or
+     * a speaker and press « Prêt »; the phone is read again, still nothing (or « Passer », or no answer): skipped.
+     */
+    fun sautBluetooth(): String? {
+        if (appli.materiel().bluetooth) return null
+        val id = "oreille_6_bluetooth"
+        val r = appli.poser(Question(id, CONNECTER_BLUETOOTH, BLUETOOTH_MS, action = "Prêt"), BLUETOOTH_MS)
+        return if (r.verdict == Verdict.OUI && appli.materiel().bluetooth) null else SANS_BLUETOOTH
     }
 
     private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs, { work() })
@@ -134,22 +142,35 @@ class QuestionsOreille(
         }
     }
 
-    /** Question 8: three swipes from the left edge on the kick's pad; the kick must still be at the centre of the stereo field. */
+    /**
+     * Question 8: the system's back gesture cannot be made by an app, so Benjamin makes three from the left edge.
+     * The robot reads the kick's pan before and after; the app having left Sons › Batterie, it opens it again first.
+     */
     private fun retour(): String {
-        prep.arreter()
-        val pad = prep.ouvrirBatterie()
-        val avant = appli.kickAuCentre()
-        repeat(3) { appli.glisserDuBordGauche(pad) }
-        val apres = appli.kickAuCentre()
         val id = "oreille_8_retour"
-        check(avant != null && apres != null) { "pan du kick illisible" }
-        if (!apres) {
-            val capture = preuve(id)
-            carnet.add(Carnet.REPONSE, id, reponseLigne(Verdict.NON, capture, "le kick a quitté le centre"))
-            error("❌ le kick a quitté le centre après trois gestes depuis le bord gauche")
+        prep.arreter()
+        prep.ouvrirBatterie()
+        val avant = appli.panKick()
+        val r = appli.poser(Question(id, GESTES_RETOUR, ATTENTE_MS, action = "Fait"), ATTENTE_MS)
+        when (r.verdict) {
+            Verdict.PASSEE -> return passer(id, "passée")
+            Verdict.SANS_REPONSE -> error("pas de réponse")
+            else -> Unit
         }
-        carnet.add(Carnet.REPONSE, id, reponseLigne(Verdict.OUI, "", "lu par le robot : kick au centre"))
-        return "✅ kick resté au centre (lu par le robot)"
+        if (!prep.batterieOuverte()) {
+            carnet.add(Carnet.NOTE, id, "l'appli a quitté Sons › Batterie : rouverte avant de lire le pan")
+            prep.ouvrirBatterie()
+        }
+        val apres = appli.panKick()
+        check(avant != null && apres != null) { "pan du kick illisible" }
+        val valeurs = "avant ${nombre(avant.toDouble())}, après ${nombre(apres.toDouble())}"
+        if (!kickResteAuCentre(avant, apres)) {
+            val capture = preuve(id)
+            carnet.add(Carnet.REPONSE, id, reponseLigne(Verdict.NON, capture, "le kick a bougé : $valeurs"))
+            error("❌ le kick a bougé après les gestes retour ($valeurs)")
+        }
+        carnet.add(Carnet.REPONSE, id, reponseLigne(Verdict.OUI, "", "lu par le robot : kick immobile ($valeurs)"))
+        return "✅ kick immobile ($valeurs)"
     }
 
     /** One reading of the engine in the logbook (a ❌ shows what it was). */
@@ -177,7 +198,15 @@ class QuestionsOreille(
         val STYLES = listOf("jump_up", "house", "trap", "techno")
 
         const val SANS_CASQUE = "passée : pas de casque branché"
-        const val SANS_BLUETOOTH = "passée : pas de Bluetooth"
+        const val SANS_BLUETOOTH = "passée : pas de Bluetooth connecté"
+        const val CONNECTER_BLUETOOTH = "Connecte ton casque ou ton enceinte Bluetooth, puis appuie sur Prêt"
+        const val GESTES_RETOUR = "Fais 3 gestes retour depuis le bord gauche de l'écran, puis appuie sur Fait"
+
+        /** The kick's pan may move by less than this between the two readings (pan: -1 left … 1 right). */
+        const val KICK_CENTRE = 0.05f
+
+        /** The back gestures did not move the kick: the pan after is within [KICK_CENTRE] of the pan before. */
+        fun kickResteAuCentre(avant: Float, apres: Float) = kotlin.math.abs(apres - avant) < KICK_CENTRE
 
         /** 30 s of listening and the time to answer. */
         const val ATTENTE_MS = 90_000L

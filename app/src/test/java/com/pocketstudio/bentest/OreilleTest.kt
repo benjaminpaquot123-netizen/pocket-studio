@@ -17,7 +17,8 @@ class OreilleTest {
 
     private val log = ArrayList<String>()
     private val asked = ArrayList<Question>()
-    private var swipes = ArrayList<String>()
+    private var pansLus = 0
+    private var screenLeft = false
 
     private val prep = object : Preparateur {
         override fun ouverture() { log += "ouverture" }
@@ -25,7 +26,8 @@ class OreilleTest {
         override fun rejouer() { log += "rejouer" }
         override fun arreter() { log += "arreter" }
         override fun ouvrirPads() { log += "pads" }
-        override fun ouvrirBatterie(): String { log += "batterie"; return "pad_0" }
+        override fun ouvrirBatterie(): String { log += "batterie"; screenLeft = false; return "pad_0" }
+        override fun batterieOuverte() = !screenLeft
     }
 
     private val sonde = object : Sonde {
@@ -36,7 +38,8 @@ class OreilleTest {
     private fun appli(
         materiel: Materiel = Materiel(casqueFilaire = true, bluetooth = true),
         answer: (Question) -> Reponse = { Reponse(Verdict.OUI) },
-        kickMoves: Boolean = false,
+        pans: List<Float?> = listOf(0f, 0f),
+        leavesTheScreen: Boolean = false,
         bluetoothAfterReady: Boolean = false,
     ) = object : Appli {
         override fun ouvrirStudio() = Unit
@@ -45,9 +48,13 @@ class OreilleTest {
         override fun demander(question: String, maxMs: Long): Boolean? = null
         // « Prêt » (the plug-in question of Q6) was asked: the phone has what Benjamin connected, if he did.
         override fun materiel() = materiel.copy(bluetooth = materiel.bluetooth || (bluetoothAfterReady && asked.any { it.id == "oreille_6_bluetooth" && it.texte.startsWith("Connecte") }))
-        override fun poser(question: Question, maxMs: Long): Reponse { asked += question.copy(maxMs = maxMs); return answer(question) }
-        override fun glisserDuBordGauche(tag: String) { swipes += tag }
-        override fun kickAuCentre(): Boolean? = !(kickMoves && swipes.size >= 3)
+        override fun poser(question: Question, maxMs: Long): Reponse {
+            asked += question.copy(maxMs = maxMs)
+            if (question.id == "oreille_8_retour") screenLeft = leavesTheScreen
+            return answer(question)
+        }
+        override fun panKick(): Float? = pans[pansLus++]
+
         override fun journalFin(lignes: Int) = "ligne une\nligne deux"
     }
 
@@ -146,25 +153,82 @@ class OreilleTest {
         val (carnet, _) = run(appli(answer = { Reponse(Verdict.PASSEE) }))
         assertEquals("passée", carnet.end("oreille_2_house").text)
         assertEquals(Carnet.REUSSI, carnet.end("oreille_2_house").kind)
-        assertEquals("1 oui, 0 non, 7 passées", QuestionsOreille.verdict(carnet.lines()))
+        assertEquals("0 oui, 0 non, 8 passées", QuestionsOreille.verdict(carnet.lines()))
     }
 
     @Test
     fun questionEightAsksBenjaminForTheBackGesturesInsteadOfSwipingForHim() {
         val (carnet, _) = run(appli())
-        assertTrue("no synthetic swipe", swipes.isEmpty())
         val q8 = asked.single { it.id == "oreille_8_retour" }
         assertEquals("Fais 3 gestes retour depuis le bord gauche de l'écran, puis appuie sur Fait", q8.texte)
+        assertEquals("Fait", q8.action)
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_8_retour").kind)
+        assertEquals("✅ kick immobile (avant 0.00, après 0.00)", carnet.end("oreille_8_retour").text)
+        assertEquals(listOf("batterie"), log.filter { it == "batterie" })
+    }
+
+    @Test
+    fun theBluetoothAndTheBackGestureQuestionsHaveTheirOwnButtons() {
+        run(appli(Materiel(casqueFilaire = true, bluetooth = false)))
+        assertEquals("Prêt", asked.first { it.id == "oreille_6_bluetooth" }.action)
+        assertNull(asked.first { it.id == "oreille_7_doigts" }.action)
+    }
+
+    @Test
+    fun skippingTheBackGesturesIsNotAFailureAndReadsNothingAfter() {
+        val (carnet, _) = run(appli(answer = { q -> if (q.id == "oreille_8_retour") Reponse(Verdict.PASSEE) else Reponse(Verdict.OUI) }))
+        assertEquals("passée", carnet.end("oreille_8_retour").text)
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_8_retour").kind)
+        assertEquals(1, pansLus)
+    }
+
+    @Test
+    fun noAnswerToTheBackGesturesFailsTheStep() {
+        val (carnet, _) = run(appli(answer = { q -> if (q.id == "oreille_8_retour") Reponse(Verdict.SANS_REPONSE) else Reponse(Verdict.OUI) }))
+        assertEquals("pas de réponse", carnet.end("oreille_8_retour").text)
+        assertEquals(Carnet.ECHEC, carnet.end("oreille_8_retour").kind)
+    }
+
+    @Test
+    fun theKickIsComparedWithItsPanBeforeNotWithTheCentre() {
+        // Panned from the start, still there after: fine (the old check wanted the centre).
+        val (carnet, _) = run(appli(pans = listOf(0.4f, 0.42f)))
+        assertEquals(Carnet.REUSSI, carnet.end("oreille_8_retour").kind)
+        assertTrue(carnet.end("oreille_8_retour").text, carnet.end("oreille_8_retour").text.contains("avant 0.40, après 0.42"))
+    }
+
+    @Test
+    fun theThresholdIsFiveHundredthsOfPan() {
+        assertTrue(QuestionsOreille.kickResteAuCentre(0f, 0.049f))
+        assertTrue(QuestionsOreille.kickResteAuCentre(0.3f, 0.26f))
+        assertFalse(QuestionsOreille.kickResteAuCentre(0f, 0.05f))
+        assertFalse(QuestionsOreille.kickResteAuCentre(0f, -0.2f))
+        assertFalse(QuestionsOreille.kickResteAuCentre(0.5f, 0f))
+    }
+
+    @Test
+    fun anUnreadablePanIsARedNeverAGreenByDefault() {
+        val (carnet, _) = run(appli(pans = listOf(0f, null)))
+        assertEquals(Carnet.ECHEC, carnet.end("oreille_8_retour").kind)
+        assertEquals("pan du kick illisible", carnet.end("oreille_8_retour").text)
+    }
+
+    @Test
+    fun whenTheAppLeftTheScreenTheRobotReopensItBeforeReadingAndNotesIt() {
+        val (carnet, _) = run(appli(leavesTheScreen = true))
+        assertEquals(2, log.count { it == "batterie" })
+        assertTrue(carnet.lines().any { it.step == "oreille_8_retour" && it.kind == Carnet.NOTE && it.text.contains("rouverte") })
         assertEquals(Carnet.REUSSI, carnet.end("oreille_8_retour").kind)
     }
 
     @Test
-    fun aKickThatLeftTheCentreIsARedWithItsPicture() {
-        val (carnet, _) = run(appli(kickMoves = true))
+    fun aKickThatMovedIsARedWithItsPictureAndBothValues() {
+        val (carnet, _) = run(appli(pans = listOf(0f, -0.3f)))
         val end = carnet.end("oreille_8_retour")
         assertEquals(Carnet.ECHEC, end.kind)
-        assertTrue(end.text, end.text.contains("le kick a quitté le centre"))
+        assertEquals("❌ le kick a bougé après les gestes retour (avant 0.00, après -0.30)", end.text)
         assertTrue(File(tmp.root, "captures/oreille_8_retour.jpg").isFile)
+        assertEquals("le kick a bougé : avant 0.00, après -0.30", QuestionsOreille.reponses(carnet.lines()).first { it.id == "oreille_8_retour" }.commentaire)
     }
 
     @Test

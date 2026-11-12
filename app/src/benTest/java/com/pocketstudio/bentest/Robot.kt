@@ -380,37 +380,18 @@ private class AppliReelle(private val app: Application, private val main: MainTh
             android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES, android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET,
             android.media.AudioDeviceInfo.TYPE_USB_HEADSET,
         )
-        Materiel(
-            casqueFilaire = audio.getDevices(android.media.AudioManager.GET_DEVICES_OUTPUTS).any { it.type in wired },
-            bluetooth = app.packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_BLUETOOTH),
+        val bluetooth = setOf(
+            android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, android.media.AudioDeviceInfo.TYPE_BLE_HEADSET,
+            android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER,
         )
+        val sorties = audio.getDevices(android.media.AudioManager.GET_DEVICES_OUTPUTS)
+        Materiel(casqueFilaire = sorties.any { it.type in wired }, bluetooth = sorties.any { it.type in bluetooth })
     }.getOrDefault(Materiel(casqueFilaire = false, bluetooth = false))
 
-    /** Three real touches' worth: down at the screen's edge, along the node tagged [tag], up. */
-    override fun glisserDuBordGauche(tag: String) {
-        val a = tracker.studio ?: return
-        main.run {
-            val b = InAppDriver(main).bounds(tag)
-            val y = (b.top + b.bottom) / 2f
-            val to = a.window.decorView.width / 2f
-            val view = a.window.decorView
-            val down = android.os.SystemClock.uptimeMillis()
-            fun event(action: Int, at: Long, x: Float) = android.view.MotionEvent.obtain(down, at, action, x, y, 0).also { it.source = android.view.InputDevice.SOURCE_TOUCHSCREEN }
-            val events = buildList {
-                add(event(android.view.MotionEvent.ACTION_DOWN, down, 2f))
-                for (i in 1..8) add(event(android.view.MotionEvent.ACTION_MOVE, down + i * 16L, 2f + (to - 2f) * i / 8f))
-                add(event(android.view.MotionEvent.ACTION_UP, down + 9 * 16L, to))
-            }
-            events.forEach { view.dispatchTouchEvent(it); it.recycle() }
-        }
-        Thread.sleep(300)
-    }
-
-    /** Lane 0 of the drums is the kick: its pan within [KICK_CENTRE] of the middle. */
-    override fun kickAuCentre(): Boolean? = main.run {
+    /** Lane 0 of the drums is the kick. */
+    override fun panKick(): Float? = main.run {
         val a = tracker.studio as? ComponentActivity ?: return@run null
-        val pan = ViewModelProvider(a)[RhythmViewModel::class.java].project.value.drums.lanes.firstOrNull()?.pan ?: return@run null
-        kotlin.math.abs(pan) < KICK_CENTRE
+        ViewModelProvider(a)[RhythmViewModel::class.java].project.value.drums.lanes.firstOrNull()?.pan
     }
 
     override fun journalFin(lignes: Int): String = com.pocketstudio.app.report.AppLog.dump(lignes)
@@ -522,7 +503,6 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     private companion object {
         const val SLOW_FRAME_NS = 16_700_000L
-        const val KICK_CENTRE = 0.05f
     }
 }
 
@@ -583,6 +563,8 @@ internal class Pose(private val essai: EssaiEclair, private val j: Journey) : Pr
         j.await("pad_0")
         return "pad_0"
     }
+
+    override fun batterieOuverte(): Boolean = j.exists("pad_0")
 
     /** The Guide's panel over the song would hide what the question is about. */
     private fun closeGuide() {

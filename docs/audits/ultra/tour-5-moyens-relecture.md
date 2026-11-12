@@ -1,6 +1,7 @@
 # Relecture neuve du lot moyens (tour 5)
-Relu : 1c04107e156e228329476976a8840471b72759eb
+Relu : 01367b9eb249913ca32f42a83bcadb4c42dfab40
 delta : après la 2e passe (020026a2), seul le rapport de zone docs/audits/ultra/tour-5-moyens-rapport.md a été ajouté (aucun code) ; relu, conforme.
+delta : fusion de l'intégration 9b3eeb28 (lots padlive et access) : conflits sur I18n.kt (les deux lignes de catalogues gardées) et sur scale130/fr|nl_nav_simple_keys.png (réenregistrées sur la base fusionnée et regardées : barre sur une ligne, dossier seul, clavier entier, nouveau « ? » du chantier 9) ; tests ciblés du lot verts (2 277, 0 échec) ; rejeu t4-26-prise-clavier : oracle tenu. Aucun autre changement.
 
 ## Constats
 

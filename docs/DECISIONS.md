@@ -1464,3 +1464,4 @@
 - 2026-11-11 : lot « access », captures des vraies feuilles sur téléphone couché dans `app/screenshots/lying/` (Tempo à 100 %, gros texte, 130 % ouvert et défilé ; prise et tonalité à 130 %), par `LyingSheetsScreenshotTest` ; la matrice garde `tempo_sheet` (contenu seul). Retour arrière : supprimer la classe et le dossier.
 - 2026-11-12 · lot « courbes » (tour-5) : 9 décision(s) dans `docs/decisions/tour-5-courbes.md`
 - 2026-11-12 · lot « moyens » (tour-5) : 15 décision(s) dans `docs/decisions/tour-5-moyens.md`
+- 2026-11-12 · lot « ci1 » (tour-5) : 3 décision(s) dans `docs/decisions/tour-5-ci1.md`

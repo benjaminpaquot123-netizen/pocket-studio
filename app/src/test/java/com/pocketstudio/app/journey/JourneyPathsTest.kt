@@ -74,6 +74,37 @@ class JourneyPathsTest {
         j.chooseStyle("jump_up", "Bass music")
     }
 
+    /**
+     * Answer 3A (tour 5): a mode already chosen on the phone (the emulator's JourneyTest chose Pro at its
+     * first launch), « Simple ou Pro ? » is not asked again: the path goes on to the assistant in that mode
+     * (CI 43137620831: it waited for « mode_card_pro » there).
+     */
+    @Test
+    fun aLaterStartWithAModeAlreadyChosenSkipsTheModeStep() {
+        h.start(launchChoice = true)
+        lastModeChosen(simple = false)
+        j.newSongInAssistant()
+        assertFalse("never asked again", j.exists("mode_step"))
+        assertFalse("the mode the app was in, kept", SettingsStore.state.value.simpleMode)
+        j.chooseStyle("jump_up", "Bass music")
+    }
+
+    /** Same, the last choice (Pro) not the mode the app is in (Simple, the open project's own): « Changer » puts it back. */
+    @Test
+    fun aLaterStartWithAnotherLastModeChangesItInTheAssistant() {
+        h.start(simple = true, launchChoice = true)
+        lastModeChosen(simple = false)
+        j.newSongInAssistant()
+        assertFalse("« Simple ou Pro ? » closed", j.exists("mode_step"))
+        assertTrue("the mode the app was in, set back with « Changer »", SettingsStore.state.value.simpleMode)
+        j.chooseStyle("jump_up", "Bass music")
+    }
+
+    /** The last mode chosen on the phone, as [com.pocketstudio.app.settings.ProjectModes] keeps it, the app's mode left alone. */
+    private fun lastModeChosen(simple: Boolean) {
+        h.app.getSharedPreferences("project_modes", 0).edit().putBoolean("last", simple).commit()
+    }
+
     /** Structure › Parties › ⋮ › « Fill à la fin », then « Montée avant · 4 mes. » on another part. */
     @Test
     fun aFillAndABuildUpFromThePartSheet() {

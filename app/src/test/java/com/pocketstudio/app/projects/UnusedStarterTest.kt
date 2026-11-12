@@ -68,6 +68,20 @@ class UnusedStarterTest {
         assertNull("nobody used it: gone", store.load(starterId))
     }
 
+    /**
+     * CI 43137620831 (63 ms, the starter still there): « Mes projets »'s first work and the list asked right after it
+     * each started on a thread of their own, and the list could take the catalog first and say « loaded » before the
+     * first work had run. Asked in that order, they run in that order, every time.
+     */
+    @Test
+    fun anUntouchedFirstProjectGoesBeforeTheListIsShown() {
+        repeat(ROUNDS) { round ->
+            starterLeft()
+            projectsStart()
+            assertNull("round $round: the list loaded before the first project went", store.load(starterId))
+        }
+    }
+
     @Test
     fun aTakeWaitingInItsFolderKeepsIt() {
         starterLeft()
@@ -88,5 +102,9 @@ class UnusedStarterTest {
         journal.writeText(TakeJournal(starterId, start = 0, row = 0, playing = emptyList(), starts = emptyList(), end = 16).encode())
         projectsStart()
         assertNotNull("a Live take cut short waits for it: kept", store.load(starterId))
+    }
+
+    private companion object {
+        const val ROUNDS = 200
     }
 }

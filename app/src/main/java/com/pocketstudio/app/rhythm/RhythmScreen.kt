@@ -1514,4 +1514,5 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
 }
 
 /** How far a pad's name may shrink to keep its words whole ([com.pocketstudio.ui.WholeWordsText]'s floor is 0.72). */
+// Tour 5, lot « langues »: half its size at most (« Händeklatschen » on a 360 dp phone), only when a word would break.
 private const val PAD_NAME_MIN_SCALE = 0.5f

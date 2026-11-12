@@ -1252,7 +1252,7 @@ private fun LivePadCell(
                 }
             }
         } else if (pending) {
-            Text(com.pocketstudio.model.i18n.sequenceArrow(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
+            Text("→", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
         } else if (busy) {
             Text("…", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = GridLook.Ink)
         } else if (label != null && hasContent) {

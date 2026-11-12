@@ -707,6 +707,11 @@ private fun StepGrid(
                             ?: return@awaitEachGesture
                         val first = cellAt(down.position)
                         val on = first == null || first !in latestHits
+                        // Tour 6 lot 1 (U6): painted cells keep their bar in sight too.
+                        if (follow) {
+                            chosenBar = bar
+                            follow = false
+                        }
                         var last = first
                         // The stroke always ends as one undo step, even cut short (the screen left
                         // mid-stroke cancels this gesture: review m9).
@@ -788,6 +793,12 @@ private fun StepGrid(
                                         onClick = {
                                             // A loop shorter than the page (an older length): its end is not editable.
                                             if (step < project.drums.steps) {
+                                                // Tour 6 lot 1 (U6): a cell touched keeps its bar in sight (« Suivre » off): the page
+                                                // turned with the playhead and the hit just put went out of sight.
+                                                if (followedBar >= 0) {
+                                                    chosenBar = bar
+                                                    follow = false
+                                                }
                                                 when (tool) {
                                                     0 -> actions.toggleStep(step)
                                                     1 -> actions.cycleRoll(at)

@@ -28,3 +28,7 @@ Plan : `docs/PLAN-TEST-APK.md` (v2). Fait : T0 seulement, rien de T1 à T5.
 - Corrigé : chaque étape part de ce qui est à l'écran (bienvenue, Simple ou Pro, Mes projets, accueil) ; chaque morceau est créé en Pro par l'accueil ; la lecture est prouvée par le moteur (transport en marche et niveau non nul) avant l'écoute ; la question n'est posée que si un morceau a joué.
 - En cas d'échec, le carnet note ce qui était à l'écran (20 étiquettes au plus, la fenêtre du dessus d'abord) et tout toucher passé sous une autre fenêtre.
 - Reste à prouver au 2e essai : la création des 3 morceaux et le son avec le vrai moteur, l'export M4A réel, les captures.
+
+## Essai éclair n° 3 (2026-11-12, HONOR BKQ-N49, Android 17, commit 72d642ff) : `2026-11-12-eclair-3/`
+- 7 réussies sur 7, 0 plantage : T0 prouvé. Charge moyenne (pire) : jump up 53 % (72 %), house 39 % (54 %), techno 39 % (52 %) ; 0 décrochage ; export M4A de 18 s en 7 s.
+- Le journal de l'appli montrait 3 fois « Nouveau morceau impossible : Job was cancelled » : vrai défaut de l'appli (fausse erreur), reproduit (`NewSongOpenTest`) et corrigé (voir `docs/decisions/tour-5-testapk.md`).

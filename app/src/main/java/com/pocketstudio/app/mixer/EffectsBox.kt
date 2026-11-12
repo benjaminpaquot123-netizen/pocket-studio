@@ -121,7 +121,9 @@ private fun groupColour(group: EffectGroup): Color = when (group) {
  */
 @Composable
 fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: Boolean = false) {
-    var open by rememberSaveable(ch) { mutableIntStateOf(-1) }
+    // Chantier 8: « Voir le réglage » on an effect's knob opens that effect.
+    val spot = LocalControlSpot.current?.takeIf { it.kind == com.pocketstudio.model.AutoTarget.INSERT_PARAM && it.ch == ch }?.slot ?: -1
+    var open by rememberSaveable(ch) { mutableIntStateOf(spot) }
     var picking by rememberSaveable(ch) { mutableStateOf(false) }
     val used = inserts.indices.filter { inserts[it].effect != EffectType.NONE }
     val busy by actions.cpuBusy.collectAsState()
@@ -336,9 +338,13 @@ private fun InsertEditor(ch: Int, slot: Int, ins: Insert, actions: MixerActions)
         if (ins.effect == EffectType.COMPRESSOR && !ins.bypass) ReductionMeter(ch, slot, actions)
         val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
         ins.effect.params.forEachIndexed { k, param ->
-            LabeledSlider(tr(param.label), tr(param.format(ins.params[k])).let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, ins.params[k], "fxp_${ch}_${slot}_$k") {
-                actions.setInsertParam(ch, slot, k, it)
+            val slider = @Composable {
+                LabeledSlider(tr(param.label), tr(param.format(ins.params[k])).let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, ins.params[k], "fxp_${ch}_${slot}_$k") {
+                    actions.setInsertParam(ch, slot, k, it)
+                }
             }
+            // Chantier 8: the knob a curve moves, reached by « Voir le réglage ».
+            if (isSpot(com.pocketstudio.model.AutoTarget.INSERT_PARAM, ch, slot, k)) SpotFrame("spot_fxp_${ch}_${slot}_$k") { slider() } else slider()
         }
     }
 }

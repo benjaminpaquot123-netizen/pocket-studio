@@ -173,6 +173,14 @@ class EssaiEclair(
         j.tap("export_format_M4a")
         j.tap("export")
         var e = appli.export()
+        // The touch is proven by the export starting (or its file there), not waited for until the step's end.
+        val startBy = System.currentTimeMillis() + 15_000
+        while (!e.running && e.files.none { it.extension == "m4a" && it.lastModified() >= started - 2_000 }) {
+            check(e.error == null) { "export : ${e.error}" }
+            check(System.currentTimeMillis() < startBy) { "l'export n'a pas démarré 15 s après « Exporter »" }
+            j.idle(250)
+            e = appli.export()
+        }
         while (e.running || e.files.none { it.extension == "m4a" && it.lastModified() >= started - 2_000 }) {
             check(e.error == null) { "export : ${e.error}" }
             j.idle(250)
@@ -226,8 +234,28 @@ class EssaiEclair(
 
     /** The first launch's welcome: « Plus tard » (the starter beat, the mode it suggests). */
     private fun plusTard() {
+        // Below the fold on the phone (2026-11-12): scrolled to by the touch, which is then proven by the welcome
+        // leaving; one more touch when it stays (a list still moving takes a touch as « stop »).
         j.tap("welcome_later")
-        j.awaitGone("welcome")
+        if (runCatching { j.awaitGone("welcome", 5_000) }.isFailure) {
+            carnet.add(Carnet.NOTE, "robot", "« Plus tard » touché, la bienvenue reste : nouveau toucher")
+            j.tap("welcome_later")
+            j.awaitGone("welcome")
+        }
+    }
+
+    /** The assistant left open (a style that failed) covers the studio: closed first (« ✕ », « Quitter » when asked). */
+    private fun fermerAssistant() {
+        if (j.exists("wizard")) {
+            j.tap("wizard_close")
+            if (runCatching { j.await("wizard_close_confirm", 2_000) }.isSuccess) j.tap("wizard_close_confirm")
+            j.awaitGone("wizard")
+        }
+        // « Nouveau morceau », under the assistant, covers the studio too: « ← ».
+        if (j.exists("new_project")) {
+            j.tap("new_project_back")
+            j.awaitGone("new_project")
+        }
     }
 
     private fun mode() = if (j.exists("tab_simple_Morceau")) "Mode simple" else "Pro"
@@ -235,6 +263,7 @@ class EssaiEclair(
     /** From anywhere (the welcome, the studio in either mode, Mes projets) to « Que veux-tu faire ? » (Mes projets › ←). */
     private fun allerAuChoix() {
         if (j.exists("welcome")) plusTard()
+        fermerAssistant()
         if (j.exists("launch")) return
         if (!j.exists("projects")) {
             if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
@@ -250,6 +279,7 @@ class EssaiEclair(
     /** From anywhere to the open song with the Pro tabs (the top bar's mode chip › Pro when the app is in the Mode simple). */
     private fun auStudioPro() {
         if (j.exists("welcome")) plusTard()
+        fermerAssistant()
         if (j.exists("projects") && !j.exists("launch")) {
             j.tap("projects_back")
             j.await("launch")

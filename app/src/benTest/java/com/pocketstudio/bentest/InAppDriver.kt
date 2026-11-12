@@ -159,13 +159,23 @@ class InAppDriver(
         if (moved) settle(tag)
     }
 
-    /** Waits (a second at most) until [tag] stops moving: a list can glide to its place. */
+    /**
+     * Waits (two seconds at most) until [tag] stops moving: a list scrolled by its semantics glides
+     * there (an animation, on the phone in real time). Still for [STILL_READS] frames in a row, not
+     * two: the glide's first frames move nothing, and a touch while a list still moves only stops it
+     * (the phone's « Plus tard » and style cards, 2026-11-12).
+     */
     private fun settle(tag: String) {
         var last: Rect? = null
-        repeat(20) {
+        var still = 0
+        repeat(120) {
             main.pause(FRAME_MS)
             val now = runCatching { bounds(tag) }.getOrNull()
-            if (now != null && now == last) return
+            if (now != null && now == last) {
+                if (++still >= STILL_READS) return
+            } else {
+                still = 0
+            }
             last = now
         }
     }
@@ -175,7 +185,13 @@ class InAppDriver(
             val f = one(tag)
             val c = f.node.boundsInWindow.center
             val root = f.root.view.rootView
-            if (covered(root, c.x, c.y) && noted.add(tag)) runCatching { note("touché sous une autre fenêtre (un doigt ne l'atteindrait pas) : $tag") }
+            // A finger cannot reach what another window covers: no touch, the step fails (2026-11-12: five such
+            // touches were taken as done while the assistant covered the studio).
+            if (covered(root, c.x, c.y)) {
+                val why = "touché sous une autre fenêtre (un doigt ne l'atteindrait pas) : $tag"
+                if (noted.add(tag)) runCatching { note(why) }
+                throw IllegalStateException(why)
+            }
             Triple(root, c.x, c.y)
         }
         val down = SystemClock.uptimeMillis()
@@ -199,6 +215,9 @@ class InAppDriver(
         /** A finger's press, well under a long press (400 ms and more). */
         const val PRESS_MS = 60L
         const val FRAME_MS = 17L
+
+        /** Frames in a row at the same place before a node counts as still. */
+        const val STILL_READS = 6
 
         /** How far a list must move for [lo]..[hi] to sit inside [viewLo]..[viewHi] (its start first when it is bigger). */
         fun delta(lo: Float, hi: Float, viewLo: Float, viewHi: Float): Float = when {

@@ -158,7 +158,10 @@ class Journey(private val driver: JourneyDriver, private val log: (String) -> Un
     fun chooseStyle(style: String, family: String) {
         await("wizard")
         if (!exists("wizard_style_$style")) tap(familyTag(family))
+        // « Choisir ce style » only shows once the card was touched (its description opened): seen first, the
+        // card touched once more if the first touch did not open it (a list still moving swallows a touch).
         tap("wizard_style_$style")
+        if (runCatching { await("wizard_style_choose_$style", 5_000) }.isFailure) tap("wizard_style_$style")
         tap("wizard_style_choose_$style")
         await("wizard_create_now")
     }

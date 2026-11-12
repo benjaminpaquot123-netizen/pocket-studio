@@ -609,7 +609,7 @@ object StarterWizard {
     /** [family]'s styles, in the order of [STYLES]. */
     fun stylesOf(family: String): List<Style> = STYLES.filter { it.family == family }
 
-    fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }
+    fun style(id: String): Style? = STYLES.firstOrNull { it.id == id }?.let(SoundTrial::styleOf)
 
     /** The drum pattern's length for [style]: its longest line (two bars for breakbeats and rolls). */
     fun drumSteps(style: Style): Int = style.lines.maxOf { it.pattern.length }.coerceIn(DrumPattern.MIN_STEPS, DrumPattern.MAX_STEPS)

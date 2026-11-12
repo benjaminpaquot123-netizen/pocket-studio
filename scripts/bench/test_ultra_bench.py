@@ -1608,20 +1608,27 @@ def mutated_bench_helper(d):
     no red."""
     root = judge_root(d, "juge-mute-banc")
     resume = os.path.join(root, "selftest-resume.txt")
-    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    human = os.path.join(root, "app", "src", "test", "java", "com", "pocketstudio", "app", "human")
+    other = os.path.join(root, "app", "src", "test", "java", "x")
     bench = os.path.join(root, "scripts", "bench")
     git_toy(root, "init", "-q")
-    keys = ("kthelper", "pyscript", "intest", "inpytest", "late")
+    # Review of « juge7 », G1: a test marked « @org.junit.Test » is a test (fqtest); M1: only the bench's helpers
+    # (app/src/test/…/human/), not any helper of the app's tests (otherhelper).
+    keys = ("kthelper", "pyscript", "intest", "inpytest", "fqtest", "otherhelper", "late")
+
+    def tests_of(key):
+        return other if key == "otherhelper" else human
     base_kt = "fun reach(): Int {\n    var y = 1\n    return y\n}\n"
     base_py = "def reach():\n    y = 1\n    return y\n"
     for key in keys:
-        write(os.path.join(tests, f"{key.capitalize()}Seat.kt"), base_kt)
+        write(os.path.join(tests_of(key), f"{key.capitalize()}Seat.kt"), base_kt)
         write(os.path.join(bench, f"{key}_tool.py"), base_py)
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "start")
     shas = {}
     for key in keys:
         cls = f"{key.capitalize()}ReachTest"
+        tests = tests_of(key)
         helper = os.path.join(tests, f"{key.capitalize()}Seat.kt")
         tool = os.path.join(bench, f"{key}_tool.py")
         write(helper, base_kt + "\nfun nearest(x: Int): Int {\n    var y = x\n    y += 1\n    return y\n}\n")
@@ -1633,8 +1640,9 @@ def mutated_bench_helper(d):
             module = f"test_{key}"
         else:
             name = "aTagOutOfTheThumbsReachIsTouchedInsideTheReach"
-            extra = "\n  private fun more(): Int {\n    var z = 1\n    return z\n  }\n" if key == "intest" else ""
-            write(os.path.join(tests, f"{cls}.kt"), f"class {cls} {{\n  @Test\n  fun {name}() {{}}\n{extra}}}\n")
+            extra = "\n  private fun more(): Int {\n    var z = 1\n    return z\n  }\n" if key in ("intest", "fqtest") else ""
+            mark = "@org.junit.Test" if key == "fqtest" else "@Test"
+            write(os.path.join(tests, f"{cls}.kt"), f"class {cls} {{\n  {mark}\n  fun {name}() {{}}\n{extra}}}\n")
             module = "x"
         git_toy(root, "add", "-A")
         git_toy(root, "commit", "-q", "-m", f"vert: the {key} touch lands within the thumb's reach")
@@ -1653,11 +1661,12 @@ def mutated_bench_helper(d):
 
     for key, (green, cls, name, module) in shas.items():
         folder = os.path.join(root, "docs", "audits", "ultra", "rouges-mutes", green)
-        if key in ("kthelper", "late"):
+        tests = tests_of(key)
+        if key in ("kthelper", "otherhelper", "late"):
             p = cut(os.path.join(tests, f"{key.capitalize()}Seat.kt"), "    y += 1\n")
         elif key == "pyscript":
             p = cut(os.path.join(bench, f"{key}_tool.py"), "    y += 1\n")
-        elif key == "intest":
+        elif key in ("intest", "fqtest"):
             p = cut(os.path.join(tests, f"{cls}.kt"), "    var z = 1\n")
         else:
             p = cut(os.path.join(bench, f"test_{key}.py"), "        y = 2\n")
@@ -1671,9 +1680,9 @@ def mutated_bench_helper(d):
     short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
     for key in ("kthelper", "pyscript"):
         check(short[key] not in out, f"a line taken off the bench's own code ({key}) makes the green's new test fail: its red:\n" + out)
-    for key in ("intest", "inpytest", "late"):
+    for key in ("intest", "inpytest", "fqtest", "otherhelper", "late"):
         check(f"{short[key]} « vert:" in out, f"a mutation that does not hold ({key}) is no red:\n" + out)
-    check("chantier : 3 écarts" in out, "three greens without red, nothing else:\n" + out)
+    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
 
 
 def judge_topic_pairs(d):

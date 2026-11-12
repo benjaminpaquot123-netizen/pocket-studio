@@ -1,0 +1,242 @@
+#0 SIEGE lang=id device=tablet8 font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.4 simule_s=2.4 jvm_s=10.4 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 58d16ddf7d | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 450 1218
+#1 DOIGT launch_padlive « Pad Live »
+#2 ROUTE padlive | MODE simple | EMPREINTE 177dae5283 | project=p-3c35d426 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT OVERLAP « Laser » over « pukul » (29 x 11 dp)
+#2 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#2 LAYOUT OVERLAP « ? » over «  Tantangan » (8 x 10 dp)
+#2 LAYOUT OVERLAP « Drum bas 1 » over the touchable « Loop kick, loop, siap, pad A1 » (76 x 17 dp)
+#2 LAYOUT OVERLAP « Snare » over the touchable « Loop Acid 303, loop, siap, pad A3 » (41 x 17 dp)
+#2 LAYOUT OVERLAP « Tepuk tangan » over the touchable « Loop kick, loop, siap, pad A1 » (94 x 5 dp)
+#2 LAYOUT OVERLAP « Tepuk tangan » over the touchable « Klakson, pukul, siap, pad A5 » (94 x 4 dp)
+#2 LAYOUT OVERLAP « Tepuk tangan » over the touchable « Pengaturan pad, pad A5 Pengaturan pad » (51 x 4 dp)
+#2 LAYOUT OVERLAP « Hi-hat » over the touchable « Tepuk tangan, pukul, siap, pad A2 » (44 x 5 dp)
+#2 LAYOUT OVERLAP « Hi-hat » over the touchable « Laser, pukul, siap, pad A6 » (44 x 4 dp)
+#2 LAYOUT OVERLAP « Hi-hat » over the touchable « Pengaturan pad, pad A6 Pengaturan pad » (35 x 4 dp)
+#2 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Loop Acid 303, loop, siap, pad A3 » (93 x 5 dp)
+#2 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Sirene, pukul, siap, pad A7 » (93 x 4 dp)
+#2 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Pengaturan pad, pad A7 Pengaturan pad » (64 x 4 dp)
+#2 LAYOUT OVERLAP « Laser » over the touchable « Hi-hat terbuka, pukul, siap, pad A12 » (39 x 15 dp)
+#2 LAYOUT OVERLAP « Laser » over the touchable « Pengaturan pad, pad A12 Pengaturan pad » (39 x 15 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Snare, pukul, siap, pad A10 » (7 x 7 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Halaman A » (32 x 18 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Tantangan: ulangi ritme ini » (9 x 24 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Echo · saat keluar » (27 x 24 dp)
+#2 LAYOUT OVERLAP « Tempo » over the touchable « Echo · saat keluar » (35 x 13 dp)
+#2 LAYOUT OVERLAP « Lainnya » over the touchable « Roll · 1/16 » (39 x 13 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Mode Simpel. Sentuh untuk ganti mode. Ga » (7 x 24 dp)
+#2 LAYOUT OVERLAP « Tempo » over the touchable « Mode Simpel. Sentuh untuk ganti mode. Ga » (11 x 16 dp)
+#2 LAYOUT OVERLAP « A » over the touchable « Tempo: 124 ketukan per menit Ubah tempo » (12 x 22 dp)
+#2 LAYOUT OVERLAP « B » over the touchable « Tempo: 124 ketukan per menit Ubah tempo » (11 x 22 dp)
+#2 LAYOUT OVERLAP «  Tantangan » over the touchable « Beri label layar » (28 x 22 dp)
+#2 LAYOUT OVERLAP « loop » over the touchable « Pengaturan pad, pad A1 Pengaturan pad » (28 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A2 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « loop » over the touchable « Pengaturan pad, pad A3 Pengaturan pad » (28 x 16 dp)
+#2 LAYOUT OVERLAP « loop » over the touchable « Pengaturan pad, pad A4 Pengaturan pad » (28 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A5 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A6 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A7 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A8 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A9 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Drum bas 1 » over the touchable « Tutup Terbuka » (69 x 10 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A10 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Snare » over the touchable « Tutup Terbuka » (40 x 10 dp)
+#2 LAYOUT OVERLAP « Snare » over the touchable « Apa itu “Step”? » (12 x 10 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A11 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Hi-hat » over the touchable « Tutup Terbuka » (43 x 10 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A12 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Tutup Terbuka » (28 x 10 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A13 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Build-up » over the touchable « Step 9 Tambah atau hapus kosong » (53 x 3 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A14 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Impact » over the touchable « Step 11 Tambah atau hapus kosong » (43 x 3 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A15 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « Turun » over the touchable « Step 13 Tambah atau hapus kosong » (36 x 3 dp)
+#2 LAYOUT OVERLAP « pukul » over the touchable « Pengaturan pad, pad A16 Pengaturan pad » (35 x 16 dp)
+#2 LAYOUT OVERLAP « “Go!” » over the touchable « Step 15 Tambah atau hapus kosong » (35 x 3 dp)
+#2 LAYOUT OVERLAP « EFEK LIVE » over the touchable « Buka Panduan diciutkan » (65 x 18 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Buka Panduan diciutkan » (7 x 15 dp)
+#2 LAYOUT OVERLAP « Tekan dan tahan » over the touchable « Buka Panduan diciutkan » (106 x 18 dp)
+#2 LAYOUT OVERLAP « rendah ↔ tinggi » over the touchable « Urungkan » (52 x 16 dp)
+#2 LAYOUT OVERLAP « Echo » over the touchable « Putar lagu Putar lagu » (34 x 20 dp)
+#2 LAYOUT OVERLAP « saat keluar » over the touchable « Putar lagu Putar lagu » (44 x 16 dp)
+#2 LAYOUT CONTRAST « ? » 3.94:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#2 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#2 > touche 322 300
+#2 DOIGT padlive_pad_1 « Tepuk tangan, pukul, siap, pad A2 »
+#3 ROUTE padlive | MODE simple | EMPREINTE 8586077453 | project=p-3c35d426 no tuto
+#3 SON Son : le pad live 2 (« Clap ») a joué une fois.
+#3 LAYOUT OVERLAP « Hi-hat » over the touchable « Tepuk tangan, pukul, main, pad A2 » (44 x 5 dp)
+#3 > touche 116 300
+#3 DOIGT padlive_pad_0 « Loop kick, loop, siap, pad A1 »
+#4 ROUTE padlive | MODE simple | EMPREINTE 2514d9630a | project=p-3c35d426 no tuto
+#4 SON Son : le pad live 1 joue en boucle.
+#4 LAYOUT OVERLAP « Drum bas 1 » over the touchable « Loop kick, loop, main, pad A1 » (76 x 17 dp)
+#4 LAYOUT OVERLAP « Tepuk tangan » over the touchable « Loop kick, loop, main, pad A1 » (94 x 5 dp)
+#4 LAYOUT CONTRAST « Drum bas 1 » 1.26:1 (needs 4.5:1, 14 sp)
+#4 > touche 734 300
+#4 DOIGT padlive_pad_3 « Loop bass, loop, siap, pad A4 »
+#5 ROUTE padlive | MODE simple | EMPREINTE 264bc3de53 | project=p-3c35d426 no tuto
+#5 SON Son : les pads live 1, 4 jouent en boucle.
+#5 > touche 528 300
+#5 DOIGT padlive_pad_2 « Loop Acid 303, loop, siap, pad A3 »
+#6 ROUTE padlive | MODE simple | EMPREINTE 525ed96a04 | project=p-3c35d426 no tuto
+#6 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#6 LAYOUT OVERLAP « Snare » over the touchable « Loop Acid 303, loop, main, pad A3 » (41 x 17 dp)
+#6 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Loop Acid 303, loop, main, pad A3 » (93 x 5 dp)
+#6 LAYOUT CONTRAST « Snare » 1.21:1 (needs 4.5:1, 14 sp)
+#6 > touche 633 135
+#6 DOIGT help_Halaman dan paket « Apa itu “Halaman dan paket”? »
+#6 AIDE help_Halaman
+#7 ROUTE dialogue:« Halaman dan paket » | MODE simple | EMPREINTE 43ad6c5fc3 | project=p-3c35d426 no tuto
+#7 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#7 LAYOUT CONTRAST « Oke, paham » 1.25:1 (needs 4.5:1, 14 sp)
+#7 > touche 754 853
+#7 DOIGT #1203 « Oke, paham »
+#8 ROUTE padlive | MODE simple | EMPREINTE 525ed96a04 | project=p-3c35d426 no tuto
+#8 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#8 > touche 138 1205
+#8 DOIGT help_Memainkan efek live « Apa itu “Memainkan efek live”? »
+#8 AIDE help_Memainkan
+#9 ROUTE dialogue:« Memainkan efek live » | MODE simple | EMPREINTE fdf5ff6d60 | project=p-3c35d426 no tuto
+#9 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#9 LAYOUT CONTRAST « Oke, paham » 1.29:1 (needs 4.5:1, 14 sp)
+#9 > touche 754 868
+#9 DOIGT #1217 « Oke, paham »
+#10 ROUTE padlive | MODE simple | EMPREINTE 525ed96a04 | project=p-3c35d426 no tuto
+#10 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#10 > touche 660 1390
+#10 DOIGT help_Rekam yang aku mainkan « Apa itu “Rekam yang aku mainkan”? »
+#10 AIDE help_Rekam
+#11 ROUTE dialogue:« Rekam yang aku mainkan » | MODE simple | EMPREINTE 8ab24c80b0 | project=p-3c35d426 no tuto
+#11 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#11 > touche 754 853
+#11 DOIGT #1231 « Oke, paham »
+#12 ROUTE padlive | MODE simple | EMPREINTE 525ed96a04 | project=p-3c35d426 no tuto
+#12 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#12 > touche 734 300
+#12 DOIGT padlive_pad_3 « Loop bass, loop, main, pad A4 »
+#13 ROUTE padlive | MODE simple | EMPREINTE 40e72e070c | project=p-3c35d426 no tuto
+#13 SON Son : les pads live 1, 3 jouent en boucle.
+#13 > tape 734 300 1 50
+#13 DOIGT padlive_pad_3 « Loop bass, loop, siap, pad A4 »
+#14 ROUTE padlive | MODE simple | EMPREINTE 525ed96a04 | project=p-3c35d426 no tuto
+#14 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#14 > touche 543 45
+#14 DOIGT padlive_play « Putar »
+#15 ROUTE padlive | MODE simple | EMPREINTE b9079be04b | project=p-3c35d426 no tuto
+#15 SON Son : la musique du projet joue en boucle ; les pads live 1, 3, 4 jouent en boucle.
+#15 LAYOUT OVERLAP « A » over the touchable « Halaman C · kosong » (11 x 8 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « Putar dari satu bagian » (12 x 22 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « Putar dari satu bagian » (11 x 22 dp)
+#15 LAYOUT OVERLAP « Echo » over the touchable « Stop Stop » (34 x 20 dp)
+#15 LAYOUT OVERLAP « saat keluar » over the touchable « Stop Stop » (44 x 16 dp)
+#15 > touche 734 300
+#15 DOIGT padlive_pad_3 « Loop bass, loop, main, pad A4 »
+#16 ROUTE padlive | MODE simple | EMPREINTE c48ca833d2 | project=p-3c35d426 no tuto
+#16 SON Son : la musique du projet joue en boucle ; les pads live 1, 3 jouent en boucle.
+#16 > touche 734 300
+#16 DOIGT padlive_pad_3 « Loop bass, loop, siap, pad A4 »
+#17 ROUTE padlive | MODE simple | EMPREINTE b9079be04b | project=p-3c35d426 no tuto
+#17 SON Son : la musique du projet joue en boucle ; les pads live 1, 3, 4 jouent en boucle.
+#17 > touche 66 1390
+#17 DOIGT padlive_stop_all « Stop semua »
+#18 ROUTE padlive | MODE simple | EMPREINTE 177dae5283 | project=p-3c35d426 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 376 1383
+#18 DOIGT padlive_played « Rekam yang aku mainkan »
+#19 ROUTE padlive | MODE simple | EMPREINTE d01aff1873 | project=p-3c35d426 no tuto
+#19 SON Son : rien ne joue.
+#19 > tape 116 770 8 250
+#19 DOIGT padlive_pad_8 « Drum bas 1, pukul, siap, pad A9 »
+#20 ROUTE padlive | MODE simple | EMPREINTE 806539e945 | project=p-3c35d426 no tuto
+#20 SON Son : le pad live 9 (« Kick ») a joué une fois.
+#20 > tape 322 770 4 500
+#20 DOIGT padlive_pad_9 « Snare, pukul, siap, pad A10 »
+#21 ROUTE padlive | MODE simple | EMPREINTE 3cb129a3d4 | project=p-3c35d426 no tuto
+#21 SON Son : le pad live 10 (« Caisse ») a joué une fois.
+#21 LAYOUT OVERLAP « ? » over the touchable « Snare, pukul, main, pad A10 » (7 x 7 dp)
+#21 > touche 376 1383
+#21 DOIGT padlive_played « 4 bar · ketuk untuk selesai »
+#22 ROUTE padlive | MODE simple | EMPREINTE 177dae5283 | project=p-3c35d426 no tuto
+#22 SON Son : rien ne joue.
+#22 > attends 3
+#23 ROUTE dialogue:padlive_take_sheet | MODE simple | EMPREINTE 3ac2356d44 | project=p-3c35d426 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « Rekamanmu: 4 bar » over the touchable « Tutup sheet » (199 x 28 dp)
+#23 LAYOUT OVERLAP « Taruh di mana? Diputar berulang di tempo proyek. » over the touchable « Tutup sheet » (331 x 20 dp)
+#23 LAYOUT OVERLAP « Di pad kosong B1 » over the touchable « Tutup sheet » (117 x 20 dp)
+#23 LAYOUT OVERLAP « Di blok Live » over the touchable « Tutup sheet » (79 x 20 dp)
+#23 LAYOUT OVERLAP « Buang » over the touchable « Tutup sheet » (44 x 20 dp)
+#23 > touche 450 1263
+#23 DOIGT padlive_take_pad « Di pad kosong B1 »
+#24 ROUTE padlive | MODE simple | EMPREINTE 8c394b738a | project=p-3c35d426 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « Tepuk tangan » over « Loop kick » (53 x 6 dp)
+#24 LAYOUT OVERLAP « Hi-hat » over « Tepuk tangan » (44 x 6 dp)
+#24 LAYOUT OVERLAP « Hi-hat terbuka » over « Loop Acid 303 » (74 x 6 dp)
+#24 LAYOUT OVERLAP « Laser » over « Teriakan “Go go go!” » (25 x 17 dp)
+#24 LAYOUT OVERLAP « Drum bas 1 » over the touchable « Pengaturan pad, pad A1 Pengaturan pad » (42 x 6 dp)
+#24 LAYOUT OVERLAP « Snare » over the touchable « Pengaturan pad, pad A3 Pengaturan pad » (41 x 6 dp)
+#24 LAYOUT OVERLAP « Tepuk tangan » over the touchable « Loop kick, loop, siap, pad A1 » (94 x 17 dp)
+#24 LAYOUT OVERLAP « Hi-hat » over the touchable « Tepuk tangan, pukul, siap, pad A2 » (44 x 17 dp)
+#24 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Loop Acid 303, loop, siap, pad A3 » (93 x 17 dp)
+#24 LAYOUT OVERLAP « Laser » over the touchable « Teriakan “Go go go!”, pukul, siap, pad A » (39 x 17 dp)
+#24 LAYOUT OVERLAP « ? » over the touchable « Snare, pukul, siap, pad A10 » (7 x 15 dp)
+#24 LAYOUT OVERLAP « Rekamanmu ada di pad B1. » over the touchable « Ganti bagian » (87 x 14 dp)
+#24 LAYOUT OVERLAP « Drum bas 1 » over the touchable « Tutup Terbuka » (69 x 9 dp)
+#24 LAYOUT OVERLAP « Snare » over the touchable « Tutup Terbuka » (40 x 9 dp)
+#24 LAYOUT OVERLAP « Snare » over the touchable « Apa itu “Step”? » (12 x 9 dp)
+#24 LAYOUT OVERLAP « Hi-hat » over the touchable « Tutup Terbuka » (43 x 9 dp)
+#24 LAYOUT OVERLAP « Hi-hat terbuka » over the touchable « Tutup Terbuka » (28 x 9 dp)
+#24 LAYOUT OVERLAP « pukul » over the touchable « Step 2 Tambah atau hapus kosong » (35 x 16 dp)
+#24 LAYOUT OVERLAP « pukul » over the touchable « Step 4 Tambah atau hapus kosong » (35 x 16 dp)
+#24 LAYOUT OVERLAP « pukul » over the touchable « Step 6 Tambah atau hapus kosong » (35 x 16 dp)
+#24 LAYOUT OVERLAP « pukul » over the touchable « Step 8 Tambah atau hapus kosong » (35 x 16 dp)
+#24 LAYOUT CONTRAST « Hi-hat terbuka » 2.92:1 (needs 4.5:1, 14 sp)
+#24 > touche 126 135
+#24 DOIGT padlive_page_B « Halaman B »
+#25 ROUTE padlive | MODE simple | EMPREINTE cc39d5ddb5 | project=p-3c35d426 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « ? » over the touchable « kosong, pad B10 » (7 x 15 dp)
+#25 LAYOUT OVERLAP « loop » over the touchable « Pengaturan pad, pad B1 Pengaturan pad » (28 x 16 dp)
+#25 LAYOUT OVERLAP « + » over the touchable « Step 9 Tambah atau hapus kosong » (17 x 32 dp)
+#25 LAYOUT OVERLAP « + » over the touchable « Step 11 Tambah atau hapus kosong » (17 x 32 dp)
+#25 LAYOUT OVERLAP « + » over the touchable « Step 13 Tambah atau hapus kosong » (17 x 32 dp)
+#25 LAYOUT OVERLAP « + » over the touchable « Step 15 Tambah atau hapus kosong » (17 x 32 dp)
+#25 LAYOUT CONTRAST « 124 » 1.66:1 (needs 3.0:1, 16 sp)
+#25 > touche 116 345
+#25 DOIGT padlive_pad_16 « Rekamanku 1, loop, siap, pad B1 »
+#26 ROUTE padlive | MODE simple | EMPREINTE ff2e9b4140 | project=p-3c35d426 no tuto
+#26 SON Son : le pad live 17 joue en boucle.
+#26 > touche 57 135
+#26 DOIGT padlive_page_A « Halaman A »
+#27 ROUTE padlive | MODE simple | EMPREINTE 2a05f77338 | project=p-3c35d426 no tuto
+#27 SON Son : le pad live 17 joue en boucle.
+#27 LAYOUT CONTRAST « 124 » 2.09:1 (needs 3.0:1, 16 sp)
+#27 > tape 734 345 1 50
+#27 DOIGT padlive_pad_3 « Loop bass, loop, siap, pad A4 »
+#28 ROUTE padlive | MODE simple | EMPREINTE 01e4649f53 | project=p-3c35d426 no tuto
+#28 SON Son : les pads live 4, 17 jouent en boucle.
+#28 > touche 66 1390
+#28 DOIGT padlive_stop_all « Stop semua »
+#29 ROUTE padlive | MODE simple | EMPREINTE 177dae5283 | project=p-3c35d426 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 840 45
+#29 DOIGT live_record « Rekam performa »
+#30 ROUTE padlive | MODE simple | EMPREINTE 6030c59f27 | project=p-3c35d426 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 LAYOUT OVERLAP « Akhir » over the touchable « Stop Stop » (3 x 16 dp)
+#30 > tape 528 300 1 50
+#30 DOIGT padlive_pad_2 « Loop Acid 303, loop, siap, pad A3 »
+#31 ROUTE padlive | MODE simple | EMPREINTE f63b400ee4 | project=p-3c35d426 no tuto
+#31 SON Son : la musique du projet joue en boucle ; le pad live 3 joue en boucle.
+#31 > tape 322 535 4 400
+#31 DOIGT padlive_pad_5 « Laser, pukul, siap, pad A6 »
+#32 ROUTE padlive | MODE simple | EMPREINTE 3c4044c4cd | project=p-3c35d426 no tuto
+#32 SON Son : la musique du projet joue en boucle ; le pad live 6 (« Laser ») a joué une fois ; le pad live 3 joue en boucle.

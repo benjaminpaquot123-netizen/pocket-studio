@@ -1,0 +1,2 @@
+route=dialogue:« Rekam yang aku mainkan »
+nouvelle=1

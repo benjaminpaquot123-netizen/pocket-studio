@@ -1,0 +1,6 @@
+dialogue:welcome
+padlive
+dialogue:« Halaman dan paket »
+dialogue:« Memainkan efek live »
+dialogue:« Rekam yang aku mainkan »
+dialogue:padlive_take_sheet

@@ -30,6 +30,7 @@ import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.hasMusicOfItsOwn
+import com.pocketstudio.model.remixOverrunSeconds
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.withRecordedCell
@@ -6271,6 +6272,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (choice?.bricks == true && place != com.pocketstudio.model.SongPlace.Passage) placed.withSongSections(sections) ?: placed else placed
         }
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
+        // Lot 6, R4 (seats B a #38, G a #12): a song longer than the project is said when it is chosen, not only in
+        // « Prêt à partager ? » (its end is cut in the file; that sheet offers the two fixes).
+        project.value.remixOverrunSeconds().takeIf { it > 0 }?.let {
+            _notice.value = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
+        }
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)

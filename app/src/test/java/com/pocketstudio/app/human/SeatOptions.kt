@@ -148,5 +148,21 @@ internal data class SeatOptions(
             val px = if (hand == Hand.RIGHT) w.toFloat() else 0f
             return hypot(x - px, y - h.toFloat()) <= THUMB_REACH_DP * density
         }
+
+        /**
+         * The point of the box ([left], [top], [bw] x [bh]) nearest to [middle] that [hand]'s thumb reaches, or null when no
+         * point of the box is within reach (a tag touch lands where a finger could, not necessarily in the middle).
+         */
+        fun nearestReachable(hand: Hand, left: Float, top: Float, bw: Float, bh: Float, middle: Pair<Float, Float>, w: Int, h: Int, density: Float): Pair<Float, Float>? {
+            var best: Pair<Float, Float>? = null
+            var bestD = Float.MAX_VALUE
+            for (i in 1..9) for (j in 1..9) {
+                val x = left + bw * i / 10f
+                val y = top + bh * j / 10f
+                val d = hypot(x - middle.first, y - middle.second)
+                if (reachable(hand, x, y, w, h, density) && d < bestD) { best = x to y; bestD = d }
+            }
+            return best
+        }
     }
 }

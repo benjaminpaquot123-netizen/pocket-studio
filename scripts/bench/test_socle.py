@@ -327,6 +327,8 @@ class NewReplaysAimByTag(unittest.TestCase):
         self.assertIn("swipeByTag", tester)
         self.assertIn('tag.endsWith("*")', tester)
         self.assertIn('startsWith("vue_")', tester)
+        self.assertIn("reachableNear", tester, "a tag touch is refused where the thumb could reach the control's edge")
+        self.assertIn("nearestReachable", tester)
 
 
 class StableScreenshots(unittest.TestCase):

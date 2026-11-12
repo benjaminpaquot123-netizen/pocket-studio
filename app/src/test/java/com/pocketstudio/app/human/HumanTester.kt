@@ -332,7 +332,10 @@ abstract class HumanTester(private val seat: String) {
             val swipeByTag = aimed.size == 4 && aimed[0].lowercase() == "glisse" && number(aimed[1]) == null && number(aimed[2]) != null && number(aimed[3]) != null
             if (swipeByTag || (aimed.size == 2 && aimed[0].lowercase() in TAG_GESTURES && number(aimed[1]) == null)) {
                 val tag = aimed[1]
-                val at = runCatching { reachTag(tag) }.getOrNull()
+                val reached = runCatching { reachTag(tag) }.getOrNull()
+                // A thumb touches a wide control where it can reach it, not necessarily in its middle: when the middle is out of
+                // reach, the nearest reachable point of the node (a tag touch must not be refused where a finger would not be).
+                val at = reached?.let { reachableNear(tag, it, o.hand) }
                 if (at == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
                     if (source != null) {
@@ -2011,6 +2014,14 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /** The middle of the node tagged [tag] on the screen as drawn (the first one), or null when there is none. */
+    private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float> {
+        val m = app.resources.displayMetrics
+        if (SeatOptions.reachable(hand, middle.first, middle.second, m.widthPixels, m.heightPixels, m.density)) return middle
+        val n = runCatching { taggedNodes(tag).fetchSemanticsNodes().firstOrNull() }.getOrNull() ?: return middle
+        val p = BenchWindows.drawnPosition(n, m)
+        return SeatOptions.nearestReachable(hand, p.x, p.y, n.size.width.toFloat(), n.size.height.toFloat(), middle, m.widthPixels, m.heightPixels, m.density) ?: middle
+    }
+
     /**
      * The nodes of a replay's [tag]: the tag itself, or « prefix* » for the first of a family whose ids change at every run
      * (« project_p-* »: the projects' ids are random).

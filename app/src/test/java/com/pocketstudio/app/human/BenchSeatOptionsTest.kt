@@ -25,6 +25,21 @@ import org.robolectric.annotation.GraphicsMode
 @Config(qualifiers = HumanTester.PHONE)
 class BenchSeatOptionsTest : HumanTester("seat-options") {
     @Test
+    fun aTagOutOfTheThumbsReachIsTouchedInsideTheReach() {
+        // 1080 x 2400 px at density 3: the left thumb reaches THUMB_REACH_DP from the bottom left corner.
+        val d = 3f
+        val reach = SeatOptions.THUMB_REACH_DP * d
+        // A wide card whose middle is far up and right (out of reach) but whose bottom left corner is near the thumb.
+        val middle = 540f to (2400f - reach - 200f)
+        assertFalse(SeatOptions.reachable(SeatOptions.Hand.LEFT, middle.first, middle.second, 1080, 2400, d))
+        val at = SeatOptions.nearestReachable(SeatOptions.Hand.LEFT, 0f, 2400f - reach - 400f, 1080f, 600f, middle, 1080, 2400, d)
+        assertTrue("a point of the card is within reach", at != null)
+        assertTrue(SeatOptions.reachable(SeatOptions.Hand.LEFT, at!!.first, at.second, 1080, 2400, d))
+        // A card wholly out of reach has no such point.
+        assertEquals(null, SeatOptions.nearestReachable(SeatOptions.Hand.LEFT, 800f, 100f, 200f, 200f, 900f to 200f, 1080, 2400, d))
+    }
+
+    @Test
     fun anArabicSeatOnATabletAt130() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
         val (o, warnings) = SeatOptions.parse(mapOf("lang" to "ar", "device" to "tablet8", "font" to "130", "theme" to "night"))

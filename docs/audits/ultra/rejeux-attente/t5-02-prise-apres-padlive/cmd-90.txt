@@ -1,1 +1,1 @@
-touche mode_card_simple
+attends 1

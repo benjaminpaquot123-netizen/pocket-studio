@@ -104,6 +104,8 @@ class BenTestActions(
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
     val startOreille: () -> Unit = {},
+    /** « Écoute au micro » (T1b), once its sentence is read: the microphone asked for if needed, then the run. */
+    val startMicro: () -> Unit = {},
     /** « Reprendre »: the run the logbook holds. */
     val resume: () -> Unit = {},
     val answer: (Boolean) -> Unit = {},

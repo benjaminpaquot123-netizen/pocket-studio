@@ -52,6 +52,8 @@ object Robot {
         /** The run of the logbook: [ECLAIR] or [TOUT]. */
         val passage: String = ECLAIR,
         val message: String? = null,
+        /** « Écoute au micro »: the 2 s extracts of the microphone the report holds (said before it is sent). */
+        val extraits: Int = 0,
     )
 
     /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
@@ -60,6 +62,9 @@ object Robot {
 
     /** « Questions à l'oreille » (T3, niveau 3). */
     const val OREILLE = "oreille"
+
+    /** « Écoute au micro » (T1b). */
+    const val MICRO = "micro"
 
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat

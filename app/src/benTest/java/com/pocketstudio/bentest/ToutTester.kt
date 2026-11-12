@@ -236,7 +236,9 @@ class ToutTester(
         var measuringMs = 0L
         val seen = LinkedHashSet<String>()
         var done = false
-        while (seen.size < GUIDE_MAX_CARTES) {
+        var turns = 0
+        // Turns, not cards: a card offered again counts each time (never a loop until the step's longest time).
+        while (turns++ < GUIDE_MAX_CARTES) {
             if (!j.exists("guide_panel")) j.tap("guide_bar")
             j.await("guide_panel")
             if (j.exists("guide_measuring")) {
@@ -269,7 +271,7 @@ class ToutTester(
         carnet.add(Carnet.MESURE, step, "cartes=${seen.size};appliquees=$applied;passees=$skipped;mesures_ms=$measuringMs;secondes=$took")
         val text = "${seen.size} cartes ($applied appliquées, $skipped passées), mesures du Guide ${measuringMs / 1000} s, en $took s"
         feu(step, if (done) Feu.VERT to "" else Feu.ORANGE to "pas allé au bout")
-        return (if (done) "jusqu'au bout : " else "arrêté à $GUIDE_MAX_CARTES cartes : ") + text
+        return (if (done) "jusqu'au bout : " else "arrêté après $GUIDE_MAX_CARTES cartes : ") + text
     }
 
     /** The Guide's card on screen (its tag's id). */
@@ -350,7 +352,8 @@ class ToutTester(
 
     /**
      * Last: jump up plays, the screen is left to go off by itself, then [eteintMs] are heard with
-     * it off (the robot's own readings: the app's stop with the screen). Never off within
+     * it off (the robot's own readings: the app's stop with the screen); the app's own « Écran toujours
+     * allumé pendant la lecture » is turned off meanwhile ([Appli.garderEcran]). Never off within
      * [attenteEteintMs] (the phone's sleep set longer): not conclusive, not red.
      */
     fun ecranEteint(): String {

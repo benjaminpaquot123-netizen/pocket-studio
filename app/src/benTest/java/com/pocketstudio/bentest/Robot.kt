@@ -364,7 +364,19 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     override fun ecranAllume(): Boolean = app.getSystemService(android.os.PowerManager::class.java)?.isInteractive ?: true
 
+    /** The app's own « Écran toujours allumé pendant la lecture » (on by default) before the robot turned it off. */
+    @Volatile
+    private var appKeptOn: Boolean? = null
+
     override fun garderEcran(on: Boolean) {
+        // The app keeps the screen on while music plays: its setting off too, and back as it was.
+        if (!on) {
+            if (appKeptOn == null) appKeptOn = com.pocketstudio.app.settings.SettingsStore.state.value.keepScreenOn
+            main.run { com.pocketstudio.app.settings.SettingsStore.update(app) { it.copy(keepScreenOn = false) } }
+        } else {
+            appKeptOn?.let { was -> main.run { com.pocketstudio.app.settings.SettingsStore.update(app) { it.copy(keepScreenOn = was) } } }
+            appKeptOn = null
+        }
         tracker.keepScreenOn = on
     }
 

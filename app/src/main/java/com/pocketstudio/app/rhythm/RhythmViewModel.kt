@@ -5738,10 +5738,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (alone) undo() else _notice.value = tr("D'autres changements ont suivi la prise : utilise ↶ en haut pour revenir en arrière pas à pas.")
     }
 
-    /** « Écouter »: the song from the take's first part. */
+    /**
+     * « Écouter »: the song from the take's first part. Lot 6, U20 (seat G b #38: « plus aucune trace de la prise à
+     * l'écran »): its line (« Perf gardée », « Partager », « Annuler ») stays while it plays; ✕ takes it away.
+     */
     fun listenPerformance() {
         val done = _take.value as? com.pocketstudio.app.live.TakeUi.Done ?: return
-        _take.value = com.pocketstudio.app.live.TakeUi.Ready
         if (_transport.value.playing) toggleTransport()
         playSongFrom(done.firstPart.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)))
     }

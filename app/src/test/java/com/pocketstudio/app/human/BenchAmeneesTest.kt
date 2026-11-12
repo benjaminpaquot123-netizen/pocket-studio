@@ -141,8 +141,12 @@ class BenchAmeneesTest : HumanTester("amenees") {
     fun aTapDuringTheExampleIsNotCounted() {
         val c = openChallenge()
         val listen = centerOf("padlive_challenge_listen") ?: error("no « Écouter »\n" + screenLines().joinToString("\n"))
-        val sound = act("touche ${listen.first} ${listen.second}")
         val ctl = rhythm()!!.padLive.challenge
+        // The example is rendered off the main thread in REAL time while the bench moves its clock: it starts anywhere from the
+        // touch on « Écouter » to the end of that touch's settle. Pinned here to its earliest start (a worker that is done at
+        // once), the case the self-test met 1 time in 7 (YourTurn(c, 2): the last taps landed after the example).
+        ctl.exampleForTest = { ch -> com.pocketstudio.app.audio.Pcm(FloatArray(com.pocketstudio.model.PadChallenge.exampleFrames(ch, 48_000) * 2), 2, 48_000) }
+        val sound = act("touche ${listen.first} ${listen.second}")
         assertTrue("the example plays: ${ctl.ui.value}", ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening)
         assertTrue(sound, "exemple en cours" in sound)
         tapPad(c, "tempo")

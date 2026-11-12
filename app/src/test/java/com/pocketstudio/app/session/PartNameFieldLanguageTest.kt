@@ -41,11 +41,13 @@ class PartNameFieldLanguageTest {
     fun theChosenSectionIsWrittenInItalianAndKeptAsItsSection() {
         I18n.lang = Lang.IT
         var done: String? = null
+        // The field's cursor blinks for ever: the clock moved by hand.
+        compose.mainClock.autoAdvance = false
         compose.setContent { PocketStudioTheme { RenameSceneDialog(2, "Couplet", onDone = { done = it }, onDismiss = {}) } }
-        compose.waitForIdle()
+        compose.mainClock.advanceTimeBy(300)
         assertEquals("Strofa", field())
         compose.onNodeWithTag("section_Refrain").performClick()
-        compose.waitForIdle()
+        compose.mainClock.advanceTimeBy(300)
         assertEquals("Ritornello", field())
         compose.onNodeWithTag("scene_name_ok").performClick()
         assertEquals("Refrain", done)

@@ -109,55 +109,88 @@ class SoundTrialTest {
 
     private fun Project.strip(channel: Int) = mixer.channels[channel]
 
-    /** Trial n° 2 (Benjamin: « tu rajoutes juste des cymbales »): the bass gets harmonics a phone plays, its sub kept clean. */
+    /** The song of [id] as the assistant makes it, the switch off. */
+    private fun defaultSong(id: String): Project {
+        off()
+        val s = StarterWizard.style(id)!!
+        return StarterWizard.build(
+            s, s.lines.associate { it.role to null }, s.melody.mood,
+            StarterWizard.defaultParts(s).associateWith { StarterWizard.soundsFor(it, s).first() },
+        )
+    }
+
+    private val Insert.isEq3: Boolean get() = type == EffectType.EQ.ordinal
+
+    /**
+     * Trial n° 2 (Benjamin: « tu rajoutes juste des cymbales »): the bass gets harmonics a phone plays (a parallel
+     * saturation, its loudness held), then, after it, the 3-band EQ: lows +4 dB or more (its sub back), mids +10 dB or
+     * more (1 kHz: its harmonics where a phone plays them), highs -6 dB or less (the fizz over 8 kHz).
+     */
     @Test
-    fun onTheBassGetsParallelSaturation() {
+    fun onTheBassGetsParallelSaturationThenItsEq() {
         for (id in TRIAL_STYLES) {
             val p = trialSong(id)
-            val saturated = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter { it.type == EffectType.SATURATION.ordinal }
-            assertTrue("$id: a saturation on its bass", saturated.isNotEmpty())
-            // Parallel (the dry sub stays under it) and its loudness held.
-            assertTrue("$id: one of them parallel, its loudness held", saturated.any { it.params[2] < 1f && it.params[4] >= 0.5f })
-            // Driven hard enough to bite at the bass's level (a drive of 0.55 moved its mid by less than 1 dB on the bench).
-            // Driven hard and mostly wet (a drive of 0.55 at 60 % moved its mid by less than 1 dB on the bench, 0.85 at 60 %
-            // by 0.4 to 2.9 dB: the « Basse audible » exciter and the held loudness take part of it back).
-            assertTrue("$id: driven", saturated.any { it.params[0] >= 0.9f && it.params[2] in 0.75f..0.95f })
-            // Its harmonics lifted where a phone plays them: a peak of +10 dB or more between 400 Hz and 1.2 kHz.
-            val mids = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter {
-                it.type == EffectType.PARAM_EQ.ordinal && it.params[1] >= 0.5f + 10f / 36f && 20f * Math.pow(1000.0, it.params[0].toDouble()) in 400.0..1200.0
-            }
-            assertTrue("$id: a mid lift on its bass", mids.isNotEmpty())
-            // Its sub given back (the saturation took 4 to 5.5 dB of it on the bench) and the fizz over 8 kHz taken off
-            // (+25 dB on tech house's sine bass): the 3-band EQ, lows +4 dB or more (100 Hz shelf), highs -6 dB or less (8 kHz).
-            val shelves = p.bassChannels().map { p.strip(it) }.flatMap { it.inserts }.filter {
-                it.type == EffectType.EQ.ordinal && it.params[0] >= 0.5f + 4f / 24f && it.params[2] <= 0.5f - 6f / 24f
-            }
-            assertTrue("$id: its sub back, its fizz off", shelves.isNotEmpty())
+            val bass = p.bassChannels().map { p.strip(it) }.firstOrNull { c -> c.inserts.any { it.type == EffectType.SATURATION.ordinal && it.params[2] < 1f } }
+            assertTrue("$id: a parallel saturation on its bass", bass != null)
+            val inserts = bass!!.inserts
+            val sat = inserts.indexOfFirst { it.type == EffectType.SATURATION.ordinal && it.params[2] in 0.75f..0.95f && it.params[0] >= 0.9f && it.params[4] >= 0.5f }
+            val eq = inserts.indexOfFirst { it.isEq3 && it.params[0] >= 0.5f + 4f / 24f && it.params[1] >= 0.5f + 10f / 24f && it.params[2] <= 0.5f - 6f / 24f }
+            assertTrue("$id: driven, mostly wet, its loudness held: $inserts", sat >= 0)
+            assertTrue("$id: its EQ: $inserts", eq >= 0)
+            assertTrue("$id: the EQ after the saturation: $inserts", eq > sat)
         }
     }
 
-    /** Trial n° 2: leads and pads wider, with a modern space (the plate reverb and the ping-pong delay). */
+    /**
+     * Review of trial n° 2 (G1): the mix's own treatment of the bass is all still there with the trial (the jump up bass's
+     * 120 Hz body was dropped, its strip full; techno's low cut was written into the trial's lift and moved before the
+     * saturation). Every insert the switched-off song has on a bass strip, the trial's has, the same.
+     */
     @Test
-    fun onLeadsAndPadsGetWidthAndSpace() {
+    fun onTheBassKeepsEveryInsertTheMixGaveIt() {
         for (id in TRIAL_STYLES) {
-            val p = trialSong(id)
-            val lead = p.strip(InstrumentTrack.mixerChannel(p.leadTrackId()!!))
-            assertTrue("$id lead widened", lead.inserts.any { it.type == EffectType.WIDENER.ordinal })
-            assertTrue("$id lead reverb ${lead.sends}", lead.sends[0] >= 0.2f)
-            assertTrue("$id lead delay ${lead.sends}", lead.sends[1] >= 0.2f)
-            val pad = p.strip(InstrumentTrack.mixerChannel(p.padTrackIds().first()))
-            assertTrue("$id pad widened", pad.inserts.any { it.type == EffectType.WIDENER.ordinal })
-            assertTrue("$id pad reverb ${pad.sends}", pad.sends[0] >= 0.3f)
+            val before = defaultSong(id)
+            val after = trialSong(id)
+            for (ch in before.bassChannels()) {
+                val had = before.strip(ch).inserts.filter { it.type != 0 }
+                val has = after.strip(ch).inserts
+                for (ins in had) assertTrue("$id strip $ch lost $ins: $has", ins in has)
+            }
         }
     }
 
-    /** Trial n° 2: tech house's voice (-57 dB over 10 kHz, -14 dB of presence on a phone) lifted around 2.5 kHz. */
+    /**
+     * Trial n° 2, after its review (G2): leads and pads in more space than the recipe gives them (more plate reverb,
+     * the ping-pong delay sent), every effect the mix gave them kept (a widener of the trial's cost the leads their
+     * chorus, and the mix widens them already).
+     */
+    @Test
+    fun onLeadsAndPadsGetMoreSpaceAndKeepTheirEffects() {
+        for (id in TRIAL_STYLES) {
+            val before = defaultSong(id)
+            val after = trialSong(id)
+            val lead = InstrumentTrack.mixerChannel(after.leadTrackId()!!)
+            val pad = InstrumentTrack.mixerChannel(after.padTrackIds().first())
+            assertTrue("$id lead reverb ${before.strip(lead).sends} -> ${after.strip(lead).sends}", after.strip(lead).sends[0] > before.strip(lead).sends[0])
+            assertTrue("$id lead delay ${before.strip(lead).sends} -> ${after.strip(lead).sends}", after.strip(lead).sends[1] > before.strip(lead).sends[1])
+            assertTrue("$id pad reverb ${before.strip(pad).sends} -> ${after.strip(pad).sends}", after.strip(pad).sends[0] > before.strip(pad).sends[0])
+            // A part whose sound the trial keeps keeps every effect the mix gave it (a part with another sound, jump up's
+            // supersaw and future bass chords, gets the mix that sound asks for: a wide synth takes no widener).
+            val trial = StarterWizard.style(id)!!.melody
+            val kept = listOfNotNull(lead.takeIf { trial.lead == recipe(id).melody.lead }, pad.takeIf { trial.pad == recipe(id).melody.pad })
+            for (ch in kept) for (ins in before.strip(ch).inserts.filter { it.type != 0 }) {
+                assertTrue("$id strip $ch lost $ins: ${after.strip(ch).inserts}", ins in after.strip(ch).inserts)
+            }
+        }
+    }
+
+    /** Trial n° 2: tech house's voice (-57 dB over 10 kHz, -14 dB of presence on a phone) lifted by the 3-band EQ. */
     @Test
     fun onTheTechHouseVoiceComesForward() {
         val p = trialSong("tech_house")
         val lead = p.strip(InstrumentTrack.mixerChannel(p.leadTrackId()!!))
-        val lift = lead.inserts.filter { it.type == EffectType.PARAM_EQ.ordinal && it.params[1] > 0.6f }
-        assertTrue("a presence lift on the voice: ${lead.inserts}", lift.isNotEmpty())
+        val lift = lead.inserts.filter { it.isEq3 && it.params[1] >= 0.5f + 8f / 24f && it.params[2] >= 0.5f + 5f / 24f }
+        assertTrue("mids and highs lifted on the voice: ${lead.inserts}", lift.isNotEmpty())
     }
 
     @Test

@@ -25,7 +25,7 @@ chemin: Remix › Que faire de… › Dans un nouveau projet (Simple) | test: Re
 chemin: Remix › Que faire de… › Faire un morceau à partir de cette chanson (Pro) | test: RemixBothWaysTest#fromHomeASongBuiltInProOpensInProWithoutAsking
 chemin: Remix › Que faire de… › Faire un morceau (chanson, tempo, tonalité) | test: RemixBothWaysTest#fromHomeASongBecomesANewSongAtItsTempoAndKey
 chemin: Remix › Que faire de… › Dans un nouveau projet (chanson muette) | test: RemixBothWaysTest#fromHomeIntoANewEmptyProjectTheSongWaitsSilent
-chemin: Nouveau projet (les autres départs demandent toujours le mode) | test: ModeChoiceTest#noWayToStartSkipsTheModeAndItsBackMakesNothing
+chemin: Nouveau projet (les autres départs demandent le mode tant qu'aucun n'a été choisi) | test: ModeChoiceTest#noWayToStartSkipsTheModeAndItsBackMakesNothing
 
 ## 3. t5-03 — Swing du tuto Pro — l'appli est correcte, c'est le rejeu qui se trompe
 - Rejeu sur la base : pas de verdict, il s'arrête au geste 14 (« rien ne change »). Au geste 1, « Ich lerne » est manqué ; au geste 2, le doigt tombe sur « Weiter » (continuer le projet) ; il n'entre jamais dans le tuto. Journal : `docs/audits/ultra/preuves-gaucher/t5-03-rejeu-journal.txt`.

@@ -30,8 +30,11 @@ elif ! scripts/bench/tampon.sh verifie "$dir"; then
   echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first." >&2
   exit 3
 fi
+# Round 6, lot banc7 (point 8, E9): the bench says it runs for this lot (its PID), so a seat's first « regarde » without it
+# is told at once to start this script instead of waiting 15 min. Removed when the bench ends, before the exit check.
+echo "$$" > "$dir/.banc-en-cours"
 # PLAN-RESTE 4.2: files written outside the seats' folders during the lot are listed after it (incidents-lot.tsv).
 python3 -I scripts/bench/sortie-de-siege.py avant "$dir"
-trap 'python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT
+trap 'rm -f "$dir/.banc-en-cours"; python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT
 # shellcheck disable=SC2086
 PS_GRADLE_LOG="$dir/bench.log" scripts/bench/gradle-file.sh ${GRADLE_ARGS:-} :app:testDebugUnitTest "${seats[@]}" -Phuman.dir="$dir" --rerun

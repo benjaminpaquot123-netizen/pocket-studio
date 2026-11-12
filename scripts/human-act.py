@@ -42,6 +42,18 @@ def ended(seat):
     return None
 
 
+def bench_running(seat):
+    """Round 6, lot banc7 (point 8): scripts/human-tester.sh runs for this seat's lot (its marker names a live process)."""
+    marker = os.path.join(os.path.dirname(os.path.abspath(seat.rstrip("/"))), ".banc-en-cours")
+    try:
+        with open(marker) as f:
+            pid = int(f.read().strip())
+        os.kill(pid, 0)
+        return True
+    except (OSError, ValueError):
+        return False
+
+
 def wait_beyond(seat, n, seconds, what):
     end = time.time() + seconds
     while turn(seat) <= n:
@@ -144,6 +156,11 @@ def main():
     if label is None:
         print(f"Siège refusé : « {seat} » n'est pas un dossier de siège …/lot<X>/<a-f>/ avec son start.txt.")
         sys.exit(2)
+    if turn(seat) == 0 and ended(seat) is None and not bench_running(seat):
+        lot = os.path.dirname(os.path.abspath(seat.rstrip("/")))
+        print(f"Le banc ne tourne pas pour ce lot : rien ne peut s'afficher. Lance d'abord scripts/human-tester.sh {lot} "
+              "(après un selftest vert), puis refais « regarde ».")
+        sys.exit(1)
     n = wait_beyond(seat, 0, 900, "L'appli ne s'est pas ouverte (15 min).")
     if words[0] == "regarde":
         if len(words) > 1 and words[1] == "image":

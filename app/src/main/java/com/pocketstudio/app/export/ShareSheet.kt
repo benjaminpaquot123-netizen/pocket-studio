@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -85,6 +86,8 @@ import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.SCROLL_FADE
+import com.pocketstudio.ui.fadingVerticalEdges
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
 
@@ -386,8 +389,13 @@ fun ShareSheetContent(
         Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+    // Lot 6, U4 / U15 / N7 (seats A c, F a, H a, D a): the line cut by the bottom edge, right above the pinned M4A / WAV
+    // row, looked covered by it. Rule 17 (« Tout défilement se voit »): the cut edge fades while more waits below (and
+    // the top edge once scrolled), its band tagged for the screen scans (LayoutScan).
+    val scroll = rememberScrollState()
+    androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false)) {
     Column(
-        Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
+        Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -513,6 +521,12 @@ fun ShareSheetContent(
                     about = listOf("share_project"),
                 )
             }
+        }
+    }
+        if (scroll.canScrollForward) {
+            androidx.compose.foundation.layout.Box(
+                Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(SCROLL_FADE).testTag("scroll_hint_fade"),
+            )
         }
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's

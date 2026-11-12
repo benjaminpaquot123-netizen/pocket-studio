@@ -12,14 +12,45 @@ object Retest {
     /** The step that must stay last (it ends the run with the screen off). */
     const val DERNIERE = "ecran_eteint"
 
+    /**
+     * What every subset needs first, run unseen in the checklist: the studio opened in front. Without it a retest
+     * started from BenStudio Test's screen drove the studio stopped under it (v6 run, 2026-11-12: five steps failed
+     * in 15 s, « nothing tagged launch », « top_projects is not there once »).
+     */
+    val PREALABLES = listOf("ouverture")
+
+    /** The steps offered in the checklist: all but the [PREALABLES]. */
+    fun proposees(etapes: List<Etape>): List<Etape> = etapes.filter { it.name !in PREALABLES }
+
     /** The steps to tick by default: red (a failed or crashed step is red), not conclusive. A green, orange or undone step is not. */
     fun parDefaut(derniere: Map<String, Feu?>, etapes: List<Etape>): Set<String> =
         etapes.map { it.name }.filter { derniere[it] == Feu.ROUGE || derniere[it] == Feu.GRIS }.toSet()
 
-    /** [etapes] reduced to [choisies], in their order, [DERNIERE] last whatever the order was. */
+    /** [etapes] reduced to the [PREALABLES] then [choisies], in their order, [DERNIERE] last whatever the order was. */
     fun choisir(etapes: List<Etape>, choisies: Set<String>): List<Etape> {
-        val kept = etapes.filter { it.name in choisies }
-        return kept.filter { it.name != DERNIERE } + kept.filter { it.name == DERNIERE }
+        val kept = etapes.filter { it.name in choisies || it.name in PREALABLES }
+        val first = kept.filter { it.name in PREALABLES }
+        val rest = kept - first.toSet()
+        return first + rest.filter { it.name != DERNIERE } + rest.filter { it.name == DERNIERE }
+    }
+
+    /** How many steps Benjamin chose in [etapes] (the [PREALABLES] are not his). */
+    fun choisies(etapes: List<Etape>): Int = etapes.count { it.name !in PREALABLES }
+
+    /**
+     * The lights to tick from when no run was kept by this version ([Robot]'s derniere.tsv): the last saved
+     * logbook, whatever run or version wrote it ([lignes]), read for [etapes]; else the newest report zip's
+     * logbook ([rapports]); else nothing.
+     */
+    fun repli(lignes: List<Carnet.Ligne>, rapports: List<File>, etapes: List<Etape>): Map<String, Feu?> {
+        val from = lignes.ifEmpty {
+            rapports.filter { it.isFile }.sortedByDescending { it.lastModified() }.firstNotNullOfOrNull { zip ->
+                runCatching {
+                    java.util.zip.ZipFile(zip).use { z -> z.getEntry("carnet.tsv")?.let { e -> z.getInputStream(e).use { Carnet.lire(it.readBytes().toString(Charsets.UTF_8)) } } }
+                }.getOrNull()?.takeIf { it.isNotEmpty() }
+            }.orEmpty()
+        }
+        return Rapport.feux(from, etapes).filterValues { it != null }
     }
 
     /** « Retest : N étapes » for the report's header. */

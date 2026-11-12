@@ -23,13 +23,7 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
     }
 
     @Synchronized
-    fun lines(): List<Ligne> = if (!file.isFile) emptyList() else file.readLines(Charsets.UTF_8).mapNotNull { raw ->
-        // A line cut by the crash itself (half written) is left out.
-        val f = raw.split('\t')
-        if (f.size != 4) return@mapNotNull null
-        val at = f[0].toLongOrNull() ?: return@mapNotNull null
-        Ligne(at, unescape(f[1]), unescape(f[2]), unescape(f[3]))
-    }
+    fun lines(): List<Ligne> = if (!file.isFile) emptyList() else lire(file.readText(Charsets.UTF_8))
 
     @Synchronized
     fun clear() {
@@ -55,6 +49,15 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
 
         /** « Écoute au micro »'s numbers: « bruit;csv », « courbe;csv », « empreinte;style;… », « anomalie;… » (EcouteMicro.kt). */
         const val MICRO = "micro"
+
+        /** A logbook's text read back (a report zip's carnet.tsv too). */
+        fun lire(text: String): List<Ligne> = text.lines().mapNotNull { raw ->
+            // A line cut by the crash itself (half written) is left out.
+            val f = raw.split('\t')
+            if (f.size != 4) return@mapNotNull null
+            val at = f[0].toLongOrNull() ?: return@mapNotNull null
+            Ligne(at, unescape(f[1]), unescape(f[2]), unescape(f[3]))
+        }
 
         private fun escape(s: String) = s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "")
 

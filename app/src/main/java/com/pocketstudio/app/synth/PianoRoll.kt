@@ -336,7 +336,9 @@ fun PianoRoll(
                     select = { selection = it }, copy = { NoteEdits.toClipboard(selection, barTicks)?.let(copyNotes) }, paste = paste, apply = apply)
             } else {
                 if (board != null) PasteRow(board, pasteBar, paste)
-                ToolRow(tablet, spacing = 2.dp) {
+                // Tour 6 lot 1 (T16): the row wraps on a phone too: its last chip (« Basse en fantôme ») was cut by the screen's
+                // edge, « Bas… » under the fading edge of a row scrolled sideways.
+                ToolRow(true, spacing = 2.dp) {
                     // Testers (lot « tuto 5 »): « Accords » first, in sight (it was the last of a row cut at the edge).
                     FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))

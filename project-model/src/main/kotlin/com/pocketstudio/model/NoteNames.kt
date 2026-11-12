@@ -17,6 +17,15 @@ object NoteNames {
         else -> names
     }
 
+    /**
+     * Tour 5, lot « langues » (promise t5-Bc-3): German writes the note between A and C « H », its flat « B »
+     * (« B♭ » would read « B-flat-flat »); the other letters as in English.
+     */
+    private fun letters(names: List<String>): List<String> =
+        if (com.pocketstudio.model.i18n.I18n.lang == com.pocketstudio.model.i18n.Lang.DE) names.map { GERMAN[it] ?: it } else names
+
+    private val GERMAN = mapOf("B" to "H", "B♭" to "B", "B♯" to "H♯")
+
     private val ARABIC = linkedMapOf("Sol" to "صول", "Do" to "دو", "Ré" to "ري", "Mi" to "مي", "Fa" to "فا", "La" to "لا", "Si" to "سي")
 
     private val PLAIN_RE = setOf(com.pocketstudio.model.i18n.Lang.IT, com.pocketstudio.model.i18n.Lang.ES, com.pocketstudio.model.i18n.Lang.TR)
@@ -28,12 +37,12 @@ object NoteNames {
 
     /** The pitch class of [note] (a MIDI note or 0..11) with sharps: "Do#" or "C#" ([sharp] replaces the "#"). */
     fun pitchClass(note: Int, english: Boolean, sharp: String = "#"): String {
-        val name = (if (english) EN else solfege(FR))[Math.floorMod(note, 12)]
+        val name = (if (english) letters(EN) else solfege(FR))[Math.floorMod(note, 12)]
         return if (sharp == "#") name else name.replace("#", sharp)
     }
 
     /** A key or a chord root, spelt the usual way (E♭, A♭, B♭): "Mi♭" or "E♭". */
-    fun key(note: Int, english: Boolean): String = (if (english) EN_KEY else solfege(FR_KEY))[Math.floorMod(note, 12)]
+    fun key(note: Int, english: Boolean): String = (if (english) letters(EN_KEY) else solfege(FR_KEY))[Math.floorMod(note, 12)]
 
     private val FR_LETTERS = listOf("Do", "Ré", "Mi", "Fa", "Sol", "La", "Si")
     private val EN_LETTERS = listOf("C", "D", "E", "F", "G", "A", "B")
@@ -48,11 +57,12 @@ object NoteNames {
     /** Pitch class [pc] written on [letter] (0 = Do … 6 = Si): "Sol♯", "Mi♯", "Do♭", "G♯"; null when it would need a double sharp or flat. */
     fun spelt(pc: Int, letter: Int, english: Boolean): String? {
         val a = accidental(pc, letter) ?: return null
-        return (if (english) EN_LETTERS else solfege(FR_LETTERS))[letter] + when (a) {
+        val name = (if (english) EN_LETTERS else solfege(FR_LETTERS))[letter] + when (a) {
             1 -> "♯"
             -1 -> "♭"
             else -> ""
         }
+        return if (english) letters(listOf(name)).first() else name
     }
 
     /** Pitch class [pc] with sharps ([sharps]: "Ré♯") or flats ("Mi♭"), a natural note plain. */

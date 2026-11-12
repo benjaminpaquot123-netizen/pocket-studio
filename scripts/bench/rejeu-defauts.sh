@@ -12,6 +12,41 @@ if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 
 work="$(mktemp -d)"
 trap 'rm -rf "${work:?}"' EXIT
 failed=0
+# The verdict of a run the bench calls « oracle tenu », checked against its journal (see below): « oracle tenu » or
+# « oracle non tenu (geste n raté : …) » for the first tag gesture without its proof.
+tag_proof() {
+  local rej="$1" journal="$2" n i f verb arg rest finger name
+  n="$(sed -n 's/^rejeu\.n=//p' "$rej/oracle.txt" | head -1)"
+  [ -n "$n" ] || n="$(ls "$rej"/cmd-*.txt 2>/dev/null | sed 's/.*cmd-\([0-9]*\)\.txt/\1/' | sort -n | tail -1)"
+  for ((i = 1; i <= ${n:-0}; i++)); do
+    f="$rej/cmd-$i.txt"
+    [ -f "$f" ] || continue
+    verb=""; arg=""; rest=""
+    read -r verb arg rest < "$f" || true
+    verb="${verb,,}"
+    case "$verb" in touche|appui-long|double-touche|glisse) ;; *) continue ;; esac
+    case "$arg" in ''|[0-9]*|-[0-9]*) continue ;; esac
+    # A refusal first: HumanTester writes no « ETIQUETTE » for a tag with no point a finger could touch.
+    if grep -q "^#$i REFUS" "$journal"; then
+      echo "oracle non tenu (geste $i raté : « $arg » refusé : $(grep -m1 "^#$i REFUS" "$journal" | sed "s/^#$i REFUS //"))"; return
+    fi
+    if ! grep -qF "#$i ETIQUETTE $arg :" "$journal" 2>/dev/null; then
+      echo "oracle non tenu (geste $i raté : l'étiquette « $arg » n'a pas été touchée, journal sans « ETIQUETTE »)"; return
+    fi
+    finger="$(grep -m1 "^#$i DOIGT " "$journal" | sed "s/^#$i DOIGT //")"
+    if [ -z "$finger" ]; then
+      echo "oracle non tenu (geste $i raté : « $arg » sans « DOIGT » au journal)"; return
+    fi
+    name="${finger#désactivé }"; name="${name#dans:}"; name="${name%% *}"
+    case "$arg" in
+      vue_*) [ "${finger#vue « "${arg#vue_}" »}" != "$finger" ] && continue ;;
+      *\*) [ -n "$name" ] && [ "${name#"${arg%\*}"}" != "$name" ] && continue ;;
+      *) [ "$name" = "$arg" ] && continue ;;
+    esac
+    echo "oracle non tenu (geste $i raté : le doigt est tombé sur « $finger », pas sur « $arg »)"; return
+  done
+  echo "oracle tenu"
+}
 seats=(a b c d e f)
 for ((start = 0; start < ${#ids[@]}; start += 6)); do
   run="$work/run-$start"
@@ -44,6 +79,17 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
     [ -f "$run/$s/id.txt" ] || continue
     id="$(cat "$run/$s/id.txt")"
     verdict="$(cat "$run/$s/rejeu.txt" 2>/dev/null || echo "pas de verdict (banc)")"
+    # Tour 5 (rejeux6): the journal of every run is kept, « tenu » or not (the zone report and the next tour read it), and a « tenu »
+    # needs its proof (review of rejeux6, grave 1): EVERY gesture the replay aims at by a tag, up to rejeu.n, was really touched
+    # (« #n ETIQUETTE <tag> : »), not refused (« #n REFUS »), and the finger landed in that very element (« #n DOIGT <tag> »,
+    # « dans:<tag> » for a part of it, a family's member for « prefix* », « vue « X » » for vue_X), never in another one or nowhere.
+    keepj="$dir/_journaux/$id"
+    rm -rf "${keepj:?}"; mkdir -p "$keepj"
+    cp "$run/$s/journal.txt" "$run/$s/rejeu.txt" "$run/$s/start.txt" "$keepj/" 2>/dev/null || true
+    if [ "$verdict" = "oracle tenu" ]; then
+      verdict="$(tag_proof "$dir/$id" "$run/$s/journal.txt")"
+    fi
+    echo "$verdict" > "$keepj/verdict.txt"
     echo "$id : $verdict"
     if [ "$verdict" != "oracle tenu" ]; then
       failed=1

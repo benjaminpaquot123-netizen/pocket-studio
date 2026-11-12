@@ -1,0 +1,2 @@
+oracle non tenu : « touchable « Remix » absent
+  dernier écran différent de l'origine : écran 35, empreinte 3014091b9d (origine 03ac4f9528), première ligne différente : origine « bouton « Retour » @ 54,48 », rejeu « icône ← @ 54,48 »

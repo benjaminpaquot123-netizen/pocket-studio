@@ -1,0 +1,8 @@
+fusion: 5257aad1c9db8a146b3571ed1adb2a5f3e07a200
+branche: eq/tour-5-rejeux6
+tete: b604a36e77f68842524cf62f6601314e38bd5793
+relecture: docs/audits/ultra/tour-5-rejeux6-relecture.md
+relu: 625fef74692c073444123627f51a79a54b8778ce
+filtres: *BenchSeatOptionsTest* *BenchReplayReadableTest* *BenchSeatOptionsTest* *BenchReplayReadableTest*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

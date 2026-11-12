@@ -1,1 +1,1 @@
-touche 244 447
+touche record_start

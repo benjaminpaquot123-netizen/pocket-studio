@@ -1,0 +1,28 @@
+# Promesses numérotées du tour 6 (PLAN-TOUR-6.md § 4) : « a fini » n'est pas « a réussi ». Une ligne par promesse ; l'oracle de mission ne dit pas si le défaut est corrigé.
+# Rempli par le lecteur (§ 6) depuis les lignes « promesse: » des rapports : tenue = oui ou non (« pas vue » si le siège n'a pas atteint l'écran : la promesse n'est alors pas tranchée), ecran = le numéro d'écran cité, preuve = le geste #N ou l'image qui le montre.
+# id = celui que fabrique-sieges.py donne (t6-<lot><siège>-k), recopié dans les consignes du siège. Les deux sièges œil neuf (C a, C b) n'ont pas de promesse : leur feuille oeil-neuf.tsv.
+siege	n	id	promesse	vient_de	tenue	ecran	preuve
+A a	1	t6-Aa-1	Je change de partie et c'est bien la partie touchée qui s'affiche et se joue (bloquant A a #27)	bloquant A a #27 (tour 5)	?	?	?
+A a	2	t6-Aa-2	« ▶ cette partie » joue la partie affichée et « ▶ le morceau » joue tout le morceau	plan § 4	?	?	?
+A a	3	t6-Aa-3	Au 2e morceau, l'appli ne redemande pas « Simple ou Pro ? »	plan § 4	?	?	?
+A a	4	t6-Aa-4	L'onglet « Plus » montre la Recette en Mode simple	remarque B11 (Recette absente en Simple)	?	?	?
+A b	1	t6-Ab-1	Une mélodie enregistrée est encore là après Retour pendant la prise, un passage par Pad Live, puis le retour au projet (bloquant E a #117)	bloquant E a #117 (tour 5)	?	?	?
+A b	2	t6-Ab-2	« Tout couper » de Pad Live arrête tout, tempo et compteur compris	tel-08, B04	?	?	?
+A b	3	t6-Ab-3	Un glissé sur les effets de Pad Live ne lance aucun effet	tel-11, B05	?	?	?
+A b	4	t6-Ab-4	Un pad touché attend la mesure suivante avant de partir	plan § 4	?	?	?
+A c	1	t6-Ac-1	Partager un morceau se fait en 3 gestes au plus depuis le studio	plan § 4	?	?	?
+A c	2	t6-Ac-2	« Mes exports » s'atteint en Mode simple (grave C d #50)	grave C d #50 (tour 5)	?	?	?
+A c	3	t6-Ac-3	Le projet envoyé en .zip est listé dans « Mes exports »	tel-03, B01	?	?	?
+A c	4	t6-Ac-4	La longueur annoncée avant l'export est celle du fichier exporté	tel-06, B03	?	?	?
+B a	1	t6-Ba-1	Tout le Remix et la découpe se font à la main gauche, sans bouton hors du pouce (grave F d du tour 5)	grave F d (tour 5)	?	?	?
+B a	2	t6-Ba-2	Une seule carte est conseillée après la séparation	plan § 4	?	?	?
+B a	3	t6-Ba-3	L'appli prévient « la fin sera coupée » quand la chanson dépasse la fin du morceau	T5-Ec-28 (tel-15)	?	?	?
+B a	4	t6-Ba-4	Les outils de découpe ne sont pas cachés sous la forme d'onde	plan § 4	?	?	?
+B b	1	t6-Bb-1	L'étape Swing du tuto Pro se fait et se valide (bloquant B c #23)	bloquant B c #23 (tour 5)	?	?	?
+B b	2	t6-Bb-2	L'étoile ☆ se trouve et se touche sur les sons (grave D b #39)	grave D b #39 (tour 5)	?	?	?
+B b	3	t6-Bb-3	Une courbe d'automatisation créée se montre tout de suite	remarque B19	?	?	?
+B b	4	t6-Bb-4	« Voir le réglage » mène au réglage automatisé	remarque B20	?	?	?
+B c	1	t6-Bc-1	Le premier lancement mène jusqu'au Mode Pro sans impasse	réponse 4B	?	?	?
+B c	2	t6-Bc-2	Dans le Mix, je règle le niveau d'une piste et un effet, et le changement reste affiché	réponse 4B	?	?	?
+B c	3	t6-Bc-3	Dans le piano roll, je pose une note puis je la déplace	réponse 4B	?	?	?
+B c	4	t6-Bc-4	Dans les Réglages, je change la langue puis je reviens à la mienne	réponse 4B	?	?	?

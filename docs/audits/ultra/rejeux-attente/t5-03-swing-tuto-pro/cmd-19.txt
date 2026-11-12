@@ -1,1 +1,1 @@
-touche 450 1434
+touche tuto_key_continue

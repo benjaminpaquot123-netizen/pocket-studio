@@ -1,1 +1,1 @@
-touche 298 743
+touche wizard_style_choose_lofi

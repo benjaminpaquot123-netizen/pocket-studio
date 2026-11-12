@@ -450,8 +450,11 @@ fun TutoPanel(
                         .padding(horizontal = 4.dp).testTag("tuto_chapters"),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, modifier = Modifier.size(22.dp))
-                    Text(tr("Chapitres"), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
+                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, modifier = Modifier.size(20.dp))
+                    // Its words grow up to 130 % only: at 200 % the panel's head stays a finger high (the cells above it in sight).
+                    val label = MaterialTheme.typography.labelSmall
+                    val cap = minOf(1f, 1.3f / LocalDensity.current.fontScale.coerceAtLeast(0.1f))
+                    Text(tr("Chapitres"), style = label.copy(fontSize = label.fontSize * cap, lineHeight = label.lineHeight * cap), maxLines = 1, softWrap = false)
                 }
                 IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
                     Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))

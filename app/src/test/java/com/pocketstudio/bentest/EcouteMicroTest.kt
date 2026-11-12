@@ -49,6 +49,8 @@ class EcouteMicroTest {
         override fun arreter() { log += "hp_arreter"; sweep = null }
         override fun reglerVolume() { log += "volume" }
         override fun remettreVolume() { log += "volume_remis" }
+        // The song has played 32 steps (2 bars) when the microphone starts.
+        override fun pasJoues() = if (song != null) 32 else -1
     }
 
     private fun micro(granted: Boolean) = object : Micro {
@@ -122,6 +124,35 @@ class EcouteMicroTest {
         assertTrue(md, md.contains("## Écoute au micro"))
         assertTrue(md, md.contains("Courbe du haut-parleur"))
         assertFalse("no sound kept without an anomaly", File(tmp.root, "sons").list()?.isNotEmpty() == true)
+    }
+
+    /** The microphone records before the sweep plays: its first, lowest notes are heard, not lost to the microphone's start. */
+    @Test
+    fun theMicrophoneListensBeforeTheSweepStarts() {
+        run(granted = true)
+        val listen = log.indexOf("ecoute:${6_000 + EcouteMicro.QUEUE_MS}")
+        val play = log.indexOfFirst { it.startsWith("jouer:") }
+        assertTrue("listening ($listen) before playing ($play): $log", listen in 0 until play)
+    }
+
+    /** The Linux bench is read where the phone's song was when the microphone started (2 bars in, at the style's tempo). */
+    @Test
+    fun theWindowComparedStartsWhereTheSongIs() {
+        val (carnet, _) = run(granted = true)
+        val json = EcouteMicro.json(carnet.lines())!!
+        val debut = Regex("\"house\":\\{[^}]*\"debut_s\":([0-9.]+)").find(json)?.groupValues?.get(1)?.toDouble()
+        val bpm = com.pocketstudio.model.StarterWizard.style("house")!!.bpm
+        assertEquals(json, 32 * 15.0 / bpm, debut!!, 0.01)
+    }
+
+    /** The answer to the system's question starts the run once, even if the screen was made again meanwhile (the phone turned). */
+    @Test
+    fun theMicrophonesAnswerStartsTheRunOnce() {
+        EcouteMicro.demarrer(autorise = false, demander = {}, lancer = {})
+        assertTrue("waiting for the answer", EcouteMicro.reponseMicro())
+        assertFalse("once only (the notifications' answer comes the same way)", EcouteMicro.reponseMicro())
+        EcouteMicro.demarrer(autorise = true, demander = {}, lancer = {})
+        assertFalse("granted already: nothing waits", EcouteMicro.reponseMicro())
     }
 
     @Test

@@ -158,6 +158,11 @@ abstract class HumanTester(private val seat: String) {
             shadowOf(Looper.getMainLooper()).idle()
         }
         backgroundQuiet(2_000)
+        // Round 6, lot ci2 (CI 43279184052, Zone3JourneysTest#redoAfterUndoInTheModeSimple red): the rest above ignores a worker
+        // waiting on a socket (as « attends » must), so the app's own network work (the assistant's packs' catalogue from GitHub)
+        // ran on past a short test and was the next one's inherited state, or not, by the CI's network speed. Waited for here,
+        // the main looper running, up to the fetch's own timeouts; past them the detector names it (BenchNetworkEndTest).
+        appNetworkWorkEnded(NETWORK_END_CAP_MS)
         runCatching { service?.destroy() }
         SeparationJob.set(SeparationState.Idle)
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
@@ -1486,6 +1491,15 @@ abstract class HumanTester(private val seat: String) {
      * Waits, in real time, until no coroutine worker is running and the main thread has caught up, as a
      * phone's seconds would have let it. The cap only stops a worker that never rests (it is not a timeout).
      */
+    /** The app's workers ([BenchPristine.appThreads]) free, waited for [capMs] at most while the main looper runs. */
+    private fun appNetworkWorkEnded(capMs: Long) {
+        val until = System.currentTimeMillis() + capMs
+        while (BenchPristine.appThreads().isNotEmpty() && System.currentTimeMillis() < until) {
+            Thread.sleep(20)
+            runCatching { shadowOf(Looper.getMainLooper()).idle() }
+        }
+    }
+
     private fun backgroundQuiet(capMs: Long = 5_000) {
         val until = System.currentTimeMillis() + capMs
         var quiet = 0
@@ -2113,6 +2127,8 @@ abstract class HumanTester(private val seat: String) {
 
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
+        /** The fetch's own timeouts (PackStore: 10 s to connect, 15 s to read) and a margin: the bench's end waits that long for the app's network work. */
+        const val NETWORK_END_CAP_MS = 30_000L
 
         /**
          * PLAN-RESTE 4.7 (T5-Cc-41b, round 5 seat C c: « 1 KB »; the phone: 42 Mo for 2 min 26): the bench's encoder is a shadow

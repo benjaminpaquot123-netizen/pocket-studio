@@ -836,14 +836,48 @@ RED_SEEN = os.path.join("docs", "audits", "ultra", "rouges-constates")
 
 def test_in(root, rev, cls, method):
     """« Class#method » is a test of a test file of rev (the class that owns it, [class_methods]) that runs: @Test, no
-    @Ignore/@Disabled ([still_runs]; third review of the « portail » lot, M9: a helper never fails in a run)."""
+    @Ignore/@Disabled ([still_runs]; third review of the « portail » lot, M9: a helper never fails in a run).
+    Lot « juge7 »: or a test of the bench's own scripts ([py_test_in])."""
     try:
         listed = _git(root, "grep", "-l", "-F", method, rev, "--", *TEST_DIRS).splitlines()
     except (subprocess.SubprocessError, OSError):
-        return False
+        listed = []  # git grep exits 1 when nothing matches
     for l in listed:
         text = without_comments(_show(root, rev, l.split(":", 1)[1]) or "")
         if f"{cls}#{method}" in class_methods(text, False) and still_runs(text, method):
+            return True
+    try:
+        scripts = _git(root, "ls-tree", "-r", "--name-only", rev, "--", "scripts/bench").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(PY_TEST_FILE.match(f) and py_test_in(_show(root, rev, f) or "", cls, method) for f in scripts)
+
+
+# Lot « juge7 »: the bench's own tests, unittest classes of scripts/bench/test_*.py (run with python3 -I).
+PY_TEST_FILE = re.compile(r"^scripts/bench/test_[^/]*\.py$")
+
+
+def py_test_in(text, cls, method):
+    """« def method » is a test written right in « class cls(…) » of a bench script's tests: its name starts with
+    « test » (unittest runs nothing else), no skip decorator above it. A def of another class, a nested def or a
+    module-level def is not it."""
+    in_cls = False
+    lines = text.split("\n")
+    for i, line in enumerate(lines):
+        if re.match(r"class\s+" + re.escape(cls) + r"\s*[(:]", line):
+            in_cls = True
+            continue
+        if line.strip() and not line[0].isspace() and not line.lstrip().startswith("#"):
+            in_cls = False
+        m = re.match(r"    def\s+([A-Za-z0-9_]+)\s*\(", line) if in_cls else None
+        if m and m.group(1) == method:
+            if not method.startswith("test"):
+                return False
+            j = i - 1
+            while j >= 0 and lines[j].startswith("    @"):
+                if re.match(r"    @(?:unittest\.)?(?:skip|expectedFailure)", lines[j]):
+                    return False
+                j -= 1
             return True
     return False
 
@@ -898,7 +932,9 @@ REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
 # lots wrote some reds and greens in other words (no test named in a green), history that is fixed now; their
 # pairs are replayed (paires-rejouees/) or their greens' reds made by a mutation (rouges-mutes/) by the lot « juge6 »,
 # which wrote none of that code. The first end was 92258b19 (lot « verdicts »).
-REPLAYS_UNTIL = "db66a3ce8844a157a81f8cf63e18a05b47343493"
+# Lot « juge7 »: moved to that lot's base (1585bb46, fx-int after the lot rejeux6, whose pair d56efddf / 37e2c8ed and
+# greens a95d9667, 2e2c5f3d are proven by replay or mutation; the first ends were 92258b19, then db66a3ce).
+REPLAYS_UNTIL = "1585bb4672edd5e9f824f890966c1659398d79fc"
 
 
 def _case_result(path, cls, method):
@@ -1073,6 +1109,10 @@ def mutated_red(root, sha):
     if not test_in(root, full, cls, method) or test_in(root, parents[0], cls, method):
         return False
     code = {f for f in files if f and not TEST_FILE.search(f) and not f.startswith("docs/")}
+    # Lot « juge7 »: the bench's code that lives under the tests (HumanTester.kt, SeatOptions.kt): a Kotlin file of the
+    # tests with no @Test in the green is a helper, never run as a test; a line taken off it is a line of code.
+    code |= {f for f in files if f.startswith(TEST_DIRS) and f.endswith(".kt")
+             and "@Test" not in without_comments(_show(root, full, f) or "@Test")}
     # Review of « juge6 », M1: the mutation only takes lines off (nothing put in their place: no require(false),
     # no « !! » on null, no throw), each a line of code (not blank, not a comment) the green added at that very
     # place: matched by its number in the green's file, never by its text alone.

@@ -109,6 +109,30 @@ class BenchAmeneesTest : HumanTester("amenees") {
     }
 
     /**
+     * Tour 6, incident E12 (seat C b #58: « tape 77 465 4 500 » on « Boum boum », « 0 sur 4 », taken for « 4 coups comptés
+     * comme 1 »): the four touches reach the app (the try is scored once its 4th hit comes, « 0 sur 4 » = none on the
+     * challenge's pad: the seat tapped another pad), and the sound line says how many times that pad played (it said
+     * « a joué une fois » for 4 hits of one pad).
+     */
+    @Test
+    fun fourTapsOnAnotherPadAreFourTouchesAndHeardFourTimes() {
+        val c = openChallenge()
+        val p = project()!!
+        val other = com.pocketstudio.model.PadChallenge.shotsOf(p.live, p.padLive.shownPage).firstOrNull { it != c.hits.first().pad }
+        assertNotNull("a second « coup » pad on the page", other)
+        val go = centerOf("padlive_challenge_go")!!
+        act("touche ${go.first} ${go.second}")
+        val ctl = rhythm()!!.padLive.challenge
+        assertEquals(com.pocketstudio.app.padlive.ChallengeUi.YourTurn(c, 0), ctl.ui.value)
+        val pad = centerOf("padlive_pad_$other") ?: error("pad $other not on screen\n" + screenLines().joinToString("\n"))
+        val sound = act("tape ${pad.first} ${pad.second} 4 500")
+        val done = ctl.ui.value as? com.pocketstudio.app.padlive.ChallengeUi.Done
+        assertNotNull("4 touches scored the try (it waits for its 4th hit): ${ctl.ui.value}", done)
+        assertEquals("none on the challenge's pad, 4 touches elsewhere: ${done!!.result}", listOf(0, 4, 4), listOf(done.result.right, done.result.total, done.result.extra))
+        assertTrue("the sound line counts the pad's 4 hits\n$sound", sound.contains("le pad live ${other!! + 1} (« ${p.live.at(other)?.name} ») a joué 4 fois"))
+    }
+
+    /**
      * Plan 4.1, cause (d) on the bench: the project at 90 BPM, the challenge's pulse is 90 (667 ms), not the 500 ms the bench
      * used to tap: read from the sound line, tapped with « tempo » after « À moi ! »: 3 stars.
      */

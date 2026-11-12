@@ -461,10 +461,10 @@ private fun playWord(word: String): Pair<androidx.compose.ui.text.TextStyle, Dp>
     return remember(word, base, density) {
         fun width(style: androidx.compose.ui.text.TextStyle) = with(density) { measurer.measure(word, style, softWrap = false, maxLines = 1).size.width.toDp() }
         val w = width(base)
-        val style = if (w > PLAY_WORD_MAX) {
-            val k = PLAY_WORD_MAX / w
-            base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k)
-        } else base
+        // Tour 5, lot « langues » (200 % in Hindi and Arabic: « यह पार्ट », « هذا الجزء » past the bar's foot): never taller
+        // than at 130 % either (it still grows with the phone's font up to there).
+        val k = minOf(if (w > PLAY_WORD_MAX) PLAY_WORD_MAX / w else 1f, 1.3f / density.fontScale.coerceAtLeast(1.3f))
+        val style = if (k < 1f) base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k) else base
         style to maxOf(BUTTON, (if (style === base) w else width(style)) + PLAY_WORD_MARGIN)
     }
 }

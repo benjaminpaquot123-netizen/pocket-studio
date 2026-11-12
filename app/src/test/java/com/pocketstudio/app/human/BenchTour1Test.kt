@@ -1,7 +1,11 @@
 package com.pocketstudio.app.human
 
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.sceneView
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -178,6 +182,43 @@ class BenchTour1Test : HumanTester("tour-1") {
         assertTrue("still running", longWorkShown())
         assertEquals(File(busy, "journal.txt").readText(), "fin", File(busy, "fin.txt").readText())
         vm.cancelExport()
+    }
+
+    /**
+     * Tour 6, incident E1 (seat D b, gesture 70): notes touched one by one into the piano roll of « Clavier » ended the seat
+     * « rien ne change (5 écrans identiques) »: the screen in text does not write the notes drawn (lot « réalisme » R1), so
+     * its fingerprint stayed while the song changed at each touch. A gesture that changes the project is never « nothing ».
+     */
+    @Test
+    fun notesAddedInThePianoRollAreNotNothingChanges() {
+        begin(SeatOptions(simple = true))
+        val at = centerOfText("Fais-moi un morceau", substring = true)!!
+        act("touche ${at.first} ${at.second}")
+        tap("mode_card_simple")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_choose_techno")
+        tap("wizard_create_now")
+        waitFor("the song's tabs") { screenRoute().endsWith("tab_simple_Morceau") }
+        tap("tab_simple_Clavier")
+        centerOf("mode_notes")?.let { tap("mode_notes") }
+        act("attends 1")
+        fun notes(): Int = project()!!.let { p -> p.allScenes.indices.sumOf { s -> p.sceneView(s).instrumentTracks.sumOf { it.notes.notes.size } } }
+        val grid = compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().firstOrNull()
+            ?.let { BenchWindows.drawnBounds(it, ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics) }
+        assertNotNull("the piano roll on screen\n" + screenLines().joinToString("\n"), grid)
+        // Seven touches along one row of what is drawn of the grid, as the seat did (« touche X 596 », X moving right).
+        val left = maxOf(grid!!.left, 0f) + 20f
+        val right = minOf(grid.right, 560f) - 20f
+        val y = (maxOf(grid.top, 0f) + minOf(grid.bottom, 1000f)) / 2
+        val before = notes()
+        val dir = kotlin.io.path.createTempDirectory("siege").toFile()
+        val touches = (0 until 7).map { i -> "touche ${(left + (right - left) * i / 6).toInt()} ${y.toInt()}" }
+        (touches + "fin").forEachIndexed { i, c -> File(dir, "cmd-${i + 1}.txt").writeText(c) }
+        seatLoop(dir, SeatOptions(simple = true), File(dir, "journal.txt"))
+        val journal = File(dir, "journal.txt").readText()
+        assertTrue("the touches changed the song's notes ($before before, ${notes()} after)\n$journal", notes() != before)
+        assertEquals(journal, "fin", File(dir, "fin.txt").readText())
     }
 
     /**

@@ -596,9 +596,11 @@ private fun StepGrid(
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
     var tutoPlacedFor by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
-        if (tutoLeft.isEmpty() || tutoLeft.any { it / per == chosenBar }) return@LaunchedEffect
+        if (tutoLeft.isEmpty()) return@LaunchedEffect
         if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect
         tutoPlacedFor = tutoStep
+        // Tour 6 lot 1 (T11): the bar of the step's first dotted cell, even when the bar left by the step before has some
+        // of them (the clap opened on « Takt 2/2 », its instruction speaking of bar 1).
         chosenBar = tutoLeft.first() / per
     }
     // « Je le fais » (a touch of the user's): the page it names.

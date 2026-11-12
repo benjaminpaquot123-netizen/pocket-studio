@@ -650,13 +650,17 @@ private fun Grid(
         val key = if (hintTop != null) step ?: "" else null
         if (!placed || (key != null && key != placedFor)) {
             // Tour 6 lot 1 (T4): the dotted notes' middle row in the middle of the rows really in sight (above the
-            // tutorial's panel), once that is known.
+            // tutorial's panel), once that is known; and (T11) a step that begins opens on the bar of its first one.
             val seen = sight?.value
             if (hintTop != null && sight != null && seen == null) return@LaunchedEffect
             if (hintTop != null && seen != null) {
                 val pitches = hints.map { it.pitch }.sorted()
                 val middle = pitches[pitches.size / 2].coerceIn(low, high)
                 vScroll.scrollTo(((high - middle) * rowPx + rowPx / 2 - (seen.start + seen.endInclusive) / 2).roundToInt().coerceAtLeast(0))
+                if (step != null && com.pocketstudio.app.tuto.TutoHints.active) left.firstOrNull()?.let { first ->
+                    val barPx = barSteps * stepPx
+                    hScroll.scrollTo(((first.start / TICK) / barSteps * barPx).roundToInt().coerceAtLeast(0))
+                }
             } else vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt())
         }
         if (key != null) placedFor = key

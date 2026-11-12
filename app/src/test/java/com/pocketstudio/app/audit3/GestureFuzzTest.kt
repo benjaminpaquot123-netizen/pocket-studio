@@ -103,9 +103,9 @@ class GestureFuzzTest {
             org.robolectric.shadows.ShadowLooper.idleMainLooper()
         }
         repeat(3) {
-            val w = com.pocketstudio.app.human.BenchWindows.windows()
-                .firstOrNull { it.params.type != android.view.WindowManager.LayoutParams.TYPE_BASE_APPLICATION } ?: return
-            if (!com.pocketstudio.app.human.BenchWindows.textFieldInADialog()) return
+            // Retour to the window that holds the field, not to the top one (tour 5 « fuzz »: a popup over it took Retour,
+            // the field's window stayed open and Compose never rested).
+            val w = runCatching { com.pocketstudio.app.human.BenchWindows.textFieldDialog() }.getOrNull() ?: return
             for (action in listOf(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.ACTION_UP)) {
                 w.view.dispatchKeyEvent(android.view.KeyEvent(action, android.view.KeyEvent.KEYCODE_BACK))
             }

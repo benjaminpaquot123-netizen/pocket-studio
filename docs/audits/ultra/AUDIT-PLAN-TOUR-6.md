@@ -90,3 +90,13 @@ Plan audité : le fichier `PLAN-TOUR-6.md` envoyé par Benjamin (97 lignes), pas
 3. Deux objectifs étaient gagnés avant de jouer, et quatre vieux rejeux peuvent dire « c'est corrigé » à tort.
 4. La porte d'entrée n'est pas franchie : il manque ton retest v6 et la fin du lot mixwake.
 5. Une heure et demie de réécriture, deux à trois heures sur les rejeux, tes quatre réponses, et on peut lancer.
+
+## 5. Réponses de Benjamin (2026-11-12) : 1A, 2A, 3A, 4B
+À reporter dans le plan par la discussion qui le tient (et dans `docs/DECISIONS.md`, que cet audit ne touche pas).
+- **1A** : deux sièges œil neuf, un sur tablette à 130 %, un sur téléphone à 100 %, mission `libre`, budget écrit en images. Les écrans non atteints sont listés « non vus ».
+- **4B** : un siège de plus en Mode Pro pour Mix, piano roll, réglages et premier lancement (`fresh=reel`).
+- **Ce que ça donne** : 8 sièges (5 à mission, 1 de plus, 2 œil neuf), un lecteur, une synthèse : **10 agents en tout, 3 au plus en même temps**, en trois lots (3, 3, 2). À annoncer ainsi avant le lancement.
+- **Quota, à réécrire au §7** : environ 40 % du tour 5 en gestes et 60 % en images (estimation, non mesurée), avant les lots de correction.
+- **2A** : la règle de sortie s'écrit au §1 avant le tour : aucun bloquant après le tri des « banc? », tous les rejeux tenus avec leur preuve, la recette de Benjamin sans point rouge. Le tableau de bord de l'audit ultra reste une information.
+- **3A** : les deux notes sont refaites après le tour par un agent neuf, dans une autre discussion, point par point (tenu, non tenu, non vérifié). Il ne compte pas dans les 10 agents. La synthèse du tour ne donne pas de note.
+- Les corrections 2 à 9 du § 2 restent à faire telles quelles ; la question 1 du plan (§11) disparaît, remplacée par 1A.

@@ -363,7 +363,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case : le Refrain arrive avec un éclat.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case : le Refrain arrive avec un éclat.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",

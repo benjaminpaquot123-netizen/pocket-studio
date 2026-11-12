@@ -128,7 +128,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
           "textPro": "À toi : la percu tous les 3 pas, à la schranz.",
           "why": "Trois contre quatre : la percussion tourne en rond, c'est le tournis de la schranz (la techno allemande très dure).",
           "check": "lane:perc",
@@ -138,7 +138,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé. Elle arrivera au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé. Elle arrivera au Drop.",
           "textPro": "À toi : la ride sur les contretemps, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",

@@ -110,7 +110,7 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
           "textPro": "À toi : le tom 909 sur les cases 3, 9 et 11 : le motif « rolling » de la deep house.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",
@@ -372,7 +372,7 @@
       "steps": [
         {
           "id": "toms",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom médium » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
           "textPro": "À toi : un fill de toms 909 sur l'avant-dernier temps de la Montée, juste avant le temps de silence.",
           "check": "fill",
           "spot": "rhythm.pattern",

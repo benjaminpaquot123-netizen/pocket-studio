@@ -147,7 +147,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
+          "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
           "textPro": "À toi : pose le rim décalé, la petite accroche rythmique qui tourne en boucle.",
           "why": "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.",
           "check": "lane:perc",
@@ -157,7 +157,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
+          "text": "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
           "textPro": "À toi : pose la ride en croches, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",

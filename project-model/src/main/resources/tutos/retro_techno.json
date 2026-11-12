@@ -116,7 +116,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad du « zap » (un bruit de laser), touche la case en pointillé, une fois toutes les 2 mesures.",
+          "text": "À toi : sur le pad du « Zap » (un bruit de laser), touche la case en pointillé, une fois toutes les 2 mesures.",
           "textPro": "À toi : le zap toutes les 2 mesures.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",

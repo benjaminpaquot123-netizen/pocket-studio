@@ -115,7 +115,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (le bord de la caisse, un « toc » sec), touche les cases en pointillé : il ne tombe jamais avec le kick.",
+          "text": "À toi : sur le pad « Rim » (le bord de la caisse, un « toc » sec), touche les cases en pointillé : il ne tombe jamais avec le kick.",
           "textPro": "À toi : le rim, en réponse au kick : c'est lui qui rend le groove funky.",
           "why": "Il répond au kick au lieu de le doubler : question, réponse, comme dans le funk.",
           "check": "lane:perc",
@@ -125,7 +125,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé : elle suit le kick sur les temps 1 et 3. Elle n'arrivera qu'au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé : elle suit le kick sur les temps 1 et 3. Elle n'arrivera qu'au Drop.",
           "textPro": "À toi : la ride sur 1 et 3, pour le Drop (Strings of Life : « la ride au rythme du kick »).",
           "levels": "p",
           "check": "lane:ride",

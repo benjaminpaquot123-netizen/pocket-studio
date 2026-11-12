@@ -142,7 +142,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
+          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
           "target": "ride",
@@ -463,7 +463,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Ride » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Cymbale » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
           "levels": "p",
           "check": "crash",
           "spot": "rhythm.pattern",

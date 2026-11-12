@@ -304,7 +304,7 @@
       "steps": [
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » dans la toute première case.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",

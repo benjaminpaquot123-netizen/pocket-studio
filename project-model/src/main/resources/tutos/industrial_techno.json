@@ -95,7 +95,7 @@
       "steps": [
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Toms », touche les cases en pointillé : ils cognent entre les kicks.",
+          "text": "À toi : sur le pad « Tom médium », touche les cases en pointillé : ils cognent entre les kicks.",
           "textPro": "À toi : les toms graves entre les kicks, comme un second kick.",
           "why": "Des toms graves sous le kick, comme des machines dans une usine.",
           "check": "lane:tom",
@@ -123,7 +123,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un coup de métal), touche les cases en pointillé : un sur chaque contretemps.",
+          "text": "À toi : sur le pad « Rim » (un coup de métal), touche les cases en pointillé : un sur chaque contretemps.",
           "textPro": "À toi : le métal saturé sur les contretemps.",
           "levels": "p",
           "check": "lane:perc",

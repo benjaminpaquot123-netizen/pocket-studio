@@ -103,7 +103,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé. Elle arrivera au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé. Elle arrivera au Drop.",
           "textPro": "À toi : la ride sur les contretemps, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",

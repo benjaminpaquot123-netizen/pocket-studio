@@ -94,7 +94,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un « toc » de rim), touche les cases en pointillé des 2 mesures : il tombe à côté des temps, et la 2e mesure change un peu. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "text": "À toi : sur le pad « Rim » (un « toc » de rim), touche les cases en pointillé des 2 mesures : il tombe à côté des temps, et la 2e mesure change un peu. Touche d'abord « Passer à 2 mesures » si on te le propose.",
           "textPro": "À toi : le rim décalé sur 2 mesures : la 2e mesure diffère d'un coup.",
           "why": "Une boucle de 2 mesures qui change d'un seul coup : l'oreille croit l'entendre bouger sans cesse.",
           "check": "lane:perc",
@@ -373,7 +373,7 @@
         },
         {
           "id": "delay",
-          "text": "À toi : dans Mix, monte « Envoi écho » sur la tranche du pad « Perc » (le rim) : chaque « toc » se répète en rythme.",
+          "text": "À toi : dans Mix, monte « Envoi écho » sur la tranche du pad « Rim » (le rim) : chaque « toc » se répète en rythme.",
           "why": "Un écho réglé sur le tempo invente des coups que tu n'as pas écrits.",
           "levels": "p",
           "check": "send:1",

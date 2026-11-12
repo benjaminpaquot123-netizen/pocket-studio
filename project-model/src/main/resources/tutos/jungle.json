@@ -140,8 +140,8 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé, à la croche.",
-          "textPro": "À toi : sur le pad « Ride », les croches de la ride de l'Amen ; à la dernière mesure, le coup de crash remplace la ride sur le « et » du 3.",
+          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé, à la croche.",
+          "textPro": "À toi : sur le pad « Cymbale », les croches de la ride de l'Amen ; à la dernière mesure, le coup de crash remplace la ride sur le « et » du 3.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
           "target": "ride",

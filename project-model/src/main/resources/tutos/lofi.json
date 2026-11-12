@@ -109,7 +109,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Maracas » (un shaker), les 4 cases en pointillé, juste avant chaque temps : presque inaudible, c'est de la texture.",
+          "text": "À toi : sur le pad « Shaker » (un shaker), les 4 cases en pointillé, juste avant chaque temps : presque inaudible, c'est de la texture.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",

@@ -117,7 +117,7 @@
         {
           "id": "shaker_do",
           "levels": "p",
-          "text": "À toi : sur le pad « Maracas », les 4 cases en pointillé, entre les temps : un shaker discret qui n'arrivera qu'au Refrain.",
+          "text": "À toi : sur le pad « Shaker », les 4 cases en pointillé, entre les temps : un shaker discret qui n'arrivera qu'au Refrain.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",

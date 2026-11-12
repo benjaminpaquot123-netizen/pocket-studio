@@ -115,7 +115,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad du tambourin, touche les 4 cases en pointillé, entre les temps.",
+          "text": "À toi : sur le pad « Rim » (il joue le tambourin), touche les 4 cases en pointillé, entre les temps.",
           "textPro": "À toi : pose le tambourin de la 707 sur chaque contretemps.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",

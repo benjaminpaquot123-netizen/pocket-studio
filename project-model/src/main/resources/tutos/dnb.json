@@ -144,8 +144,8 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé, à chaque contretemps.",
-          "textPro": "À toi : sur le pad « Ride », les contretemps (pas 3, 7, 11, 15). Elle ne jouera que dans les Drops.",
+          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé, à chaque contretemps.",
+          "textPro": "À toi : sur le pad « Cymbale », les contretemps (pas 3, 7, 11, 15). Elle ne jouera que dans les Drops.",
           "why": "La ride fait briller le Drop : on la garde pour lui.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
@@ -457,7 +457,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Ride » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Cymbale » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
           "why": "Un coup de cymbale marque le début de la phrase : le public sait que ça commence.",
           "levels": "p",
           "check": "crash",

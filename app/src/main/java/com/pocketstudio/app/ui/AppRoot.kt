@@ -2578,7 +2578,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         edit = { liveEditing = it },
                         setSize = rhythmVm::setLiveSize,
                         library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
@@ -2613,7 +2613,7 @@ fun AppRoot() {
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
-                        stopAll = rhythmVm::stopLive,
+                        stopAll = rhythmVm::cutEverything,
                         setSize = rhythmVm::setLiveSize,
                         edit = { liveEditing = it },
                         import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },
@@ -2785,7 +2785,7 @@ fun AppRoot() {
                                 liveActions = LivePadsActions(
                         opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                                     tap = rhythmVm::toggleLive,
-                                    stopAll = rhythmVm::stopLive,
+                                    stopAll = rhythmVm::cutEverything,
                                     setSize = rhythmVm::setLiveSize,
                                     edit = { liveEditing = it },
                                     import = { pad -> liveImportPad = pad; rhythmVm.dismissSampleError(); pickLiveAudio.launch(arrayOf("audio/*")) },

@@ -47,14 +47,13 @@ class BenchPadLiveTest {
     private fun state(pad: Int): Int = IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStatesNow)[pad]
 
     /**
-     * The mirror of the engine's own test of T5-PADRETRIG (engine/host-tests/padlive_tests.inc, known_defect_t5_padretrig:
-     * same tempos, sounds and touches). Transport stopped, a « coup » pad (a hit of 1 beat) touched again while its sound
-     * still plays waits for the next beat line of the project's grid, a touch during that wait cancels it, and once all is
-     * off the next touch restarts the clock and sounds at once. This is the phone's behaviour TODAY (recette tel-17): when
-     * the engine is fixed, its host test and this one are inverted together.
+     * The mirror of the engine's own test of T5-PADRETRIG (engine/host-tests/padlive_tests.inc, padlive_hit_retouched_sounds_at_once:
+     * same tempos, sounds and touches; R.7). Transport stopped, a « coup » pad (a hit of 1 beat) touched again while its sound
+     * still plays sounds again at once (it used to wait for the project's next beat line, and a touch during that wait
+     * cancelled it: recette tel-17). The transport playing, a hit still waits for its beat line.
      */
     @Test
-    fun aHitRetouchedWaitsForTheGrid() {
+    fun aHitRetouchedSoundsAtOnce() {
         // 90 BPM (a beat: 667 ms), a clap of 800 ms: the second touch a hair after beat 1.
         engine(90.0)
         pad(0, 800, 1, true)
@@ -63,38 +62,28 @@ class BenchPadLiveTest {
         assertEquals("the first touch sounds at once", 2, state(0))
         ms(666)
         NativeEngine.toggleClip(0)
-        assertEquals("touched again while it sounds: it waits for the grid (T5-PADRETRIG)", 1, state(0))
-        ms(664)
-        assertEquals("still silent at 1331 ms", 1, state(0))
-        ms(4)
-        assertEquals("heard a whole beat late, on beat 2 (1333 ms)", 2, state(0))
+        ms(1)
+        assertEquals("touched again while it sounds: heard at once, not on beat 2 (T5-PADRETRIG)", 2, state(0))
 
-        // 90 BPM, eighth notes (333 ms) with a 400 ms clap: the 2nd touch waits, the 3rd cancels it, the 4th sounds at once.
+        // 90 BPM, eighth notes (333 ms) with a 400 ms clap: every touch sounds, the 3rd no longer cancels the 2nd.
         engine(90.0)
         pad(0, 400, 1, true)
         NativeEngine.toggleClip(0)
-        ms(333)
-        NativeEngine.toggleClip(0)
-        assertEquals("the 2nd touch waits for beat 1 (667 ms)", 1, state(0))
-        ms(333)
-        NativeEngine.toggleClip(0)
-        assertEquals("the waiting hit is cancelled, never heard", 0, state(0))
-        ms(333)
-        NativeEngine.toggleClip(0)
-        ms(1)
-        assertEquals("everything off: the clock restarts, this one sounds at once", 2, state(0))
+        for (k in 1..3) {
+            ms(332)
+            NativeEngine.toggleClip(0)
+            ms(1)
+            assertEquals("touch ${k + 1} sounds at once", 2, state(0))
+        }
 
-        // A 140 BPM project (a beat: 429 ms): the wait follows the project's grid. Retouched at 100 ms, the hit comes at 429 ms.
+        // A 140 BPM project (a beat: 429 ms): retouched at 100 ms, heard at 100 ms (not on the project's beat at 429 ms).
         engine(140.0)
         pad(0, 800, 1, true)
         NativeEngine.toggleClip(0)
         ms(100)
         NativeEngine.toggleClip(0)
-        assertEquals(1, state(0))
-        ms(328)
-        assertEquals("still waiting at 428 ms", 1, state(0))
-        ms(2)
-        assertEquals("on the project's beat 1 (429 ms)", 2, state(0))
+        ms(1)
+        assertEquals("heard at once", 2, state(0))
     }
 
     /**

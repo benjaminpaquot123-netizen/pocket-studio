@@ -155,7 +155,9 @@ class PadLiveSceneTest {
         node.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.invoke(results)
         check(results.isNotEmpty()) { "$tag: no text laid out" }
         val r = results.first()
-        // (didOverflowWidth is no help: a short text laid out narrower than its box says it overflows.)
+        // (didOverflowWidth is no help: a short text laid out narrower than its box says it overflows.) Two lines with every
+        // word whole are not a cut (« Enregistrer ce que je joue » beside « Tout couper », step 4 n° 7).
+        if (r.lineCount > 1) return !com.pocketstudio.ui.WholeWordsAutoSize.fits(r, r.layoutInput.text.text)
         return r.multiParagraph.maxIntrinsicWidth > r.size.width + 0.5f || r.didOverflowHeight || r.isLineEllipsized(r.lineCount - 1)
     }
 

@@ -12,6 +12,8 @@ interface Sonde {
         val xruns: Int, val cpu: Float, val peak: Float, val nonFinite: Boolean, val running: Boolean, val playing: Boolean = false,
         /** T1: the master's short-term loudness (LUFS), the live loudness gain (dB), the song's curve on the master (0..1, null: none). */
         val lufs: Float = Float.NaN, val drive: Float = Float.NaN, val lane: Float? = null,
+        /** The slowest callback (render time over its sound's duration, not smoothed) and the longest wait between two callbacks (in callbacks) since the reading before; 0: unknown. */
+        val cpuWorst: Float = 0f, val gapWorst: Float = 0f,
     )
 
     fun lire(): Lecture

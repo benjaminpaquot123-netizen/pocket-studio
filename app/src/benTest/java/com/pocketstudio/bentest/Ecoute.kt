@@ -27,6 +27,8 @@ object Ecoute {
         val lufs: Float = Float.NaN,
         val drive: Float = Float.NaN,
         val lane: Float? = null,
+        val cpuWorst: Float = 0f,
+        val gapWorst: Float = 0f,
     )
 
     /** One second: its peak (dBFS), its last short-term level and live gain, its curve (the lowest), whether it all played. */
@@ -43,12 +45,24 @@ object Ecoute {
         val cpuMean: Float,
         val cpuMax: Float,
         val peakMax: Float,
+        /** The true worst block (over 1: a callback alone missed its turn) and the longest gap between two callbacks (in callbacks); 0: unknown. */
+        val cpuWorst: Float = 0f,
+        val gapWorst: Float = 0f,
         val nonFinite: Boolean,
         val secondes: List<Seconde>,
         val alertes: List<Alerte>,
     ) {
-        fun text() = "${reads / READS_PER_SECOND} s (en lecture ${playing / READS_PER_SECOND} s), $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (pire ${pct(cpuMax)}), " +
-            "crête ${fmt(peakMax)}, alertes : ${if (alertes.isEmpty()) "aucune" else alertes.joinToString(" ; ") { it.text() }}"
+        /** The loudest short-term level heard (LUFS), null when the engine gave none. */
+        fun lufsMax(): Float? = secondes.map { it.lufs }.filter { it.isFinite() }.maxOrNull()
+
+        /** « pire bloc vrai 80 %, plus long écart 1,2 blocs »: empty when the engine does not say. */
+        fun blocs(): String = if (cpuWorst <= 0f && gapWorst <= 0f) "" else
+            "pire bloc vrai ${pct(cpuWorst)}, plus long écart ${String.format(Locale.ROOT, "%.1f", gapWorst).replace('.', ',')} blocs"
+
+        fun text() = "${reads / READS_PER_SECOND} s (en lecture ${playing / READS_PER_SECOND} s), $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (lissée, pour info ; pire ${pct(cpuMax)}), " +
+            (blocs().takeIf { it.isNotEmpty() }?.let { "$it, " } ?: "") +
+            (lufsMax()?.let { "niveau ${String.format(Locale.ROOT, "%.1f", it)} LUFS, " } ?: "") +
+            "alertes : ${if (alertes.isEmpty()) "aucune" else alertes.joinToString(" ; ") { it.text() }}"
 
         /** The level of each second (dBFS, one decimal), for the report's numbers. */
         fun niveaux(): String = secondes.joinToString(",") { String.format(Locale.ROOT, "%.1f", it.peakDb) }
@@ -129,6 +143,8 @@ object Ecoute {
         cpuMean = if (reads.isEmpty()) 0f else reads.map { it.cpu }.average().toFloat(),
         cpuMax = reads.maxOfOrNull { it.cpu } ?: 0f,
         peakMax = reads.maxOfOrNull { if (it.peak.isFinite()) it.peak else 0f } ?: 0f,
+        cpuWorst = reads.maxOfOrNull { it.cpuWorst } ?: 0f,
+        gapWorst = reads.maxOfOrNull { it.gapWorst } ?: 0f,
         nonFinite = reads.any { it.nonFinite },
         secondes = secondes(reads),
         alertes = alertes(reads),

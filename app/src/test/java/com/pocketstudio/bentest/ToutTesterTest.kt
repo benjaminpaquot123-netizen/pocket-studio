@@ -91,7 +91,9 @@ class ToutTesterTest {
         val ok = Ecoute.bilan(reads(5) { steady(it) }, 3)
         assertEquals(Feu.VERT to "", Feux.style(ok))
         val hot = Ecoute.bilan(reads(5) { i -> steady(i).copy(cpu = if (i == 3) 0.85f else 0.3f, xruns = if (i > 8) 4 else 3) }, 3)
-        assertEquals(Feu.ROUGE to "1 décrochage(s), pire bloc 85 %", Feux.style(hot))
+        // The smoothed load is information only: the dropout makes it red, the 85 % alone would not.
+        assertEquals(Feu.ROUGE to "1 décrochage(s)", Feux.style(hot))
+        assertEquals(Feu.VERT to "", Feux.style(Ecoute.bilan(reads(5) { steady(it).copy(cpu = 0.95f) }, 3)))
         val nan = Ecoute.bilan(reads(5) { i -> steady(i).copy(nonFinite = i == 2) }, 3)
         assertEquals(Feu.ROUGE, Feux.style(nan).first)
         val popped = Ecoute.bilan(reads(6) { i -> steady(i, peak = if (i == 10) 0.9f else 0.1f) }, 3)
@@ -201,5 +203,31 @@ class ToutTesterTest {
         }, c, tmp.root)
         assertEquals("61.00 ms (mesures : 44.50, 61.00, 1 ratée(s))", t.latence())
         assertEquals("orange;61.00 ms", c.lines().single { it.kind == Carnet.FEU }.text)
+    }
+
+    @Test
+    fun `vert - the true worst block and the longest gap light a played song`() {
+        fun light(w: Float, g: Float) = Feux.style(Ecoute.bilan(reads(5) { i -> steady(i).copy(cpuWorst = if (i == 3) w else 0.2f, gapWorst = if (i == 4) g else 1f) }, 3))
+        assertEquals(Feu.VERT, light(0.69f, 1f).first)
+        assertEquals(Feu.ORANGE to "pire bloc vrai 70 %", light(0.7f, 1f))
+        assertEquals(Feu.ORANGE, light(1f, 1f).first)
+        assertEquals(Feu.ROUGE to "pire bloc vrai 120 %", light(1.2f, 1f))
+        assertEquals(Feu.ORANGE to "plus long écart 1,5 blocs", light(0.2f, 1.5f))
+        assertEquals(Feu.ROUGE, light(0.2f, 2.1f).first)
+        assertEquals(Feu.ORANGE, light(0.2f, 2f).first)
+        // Unknown (0): no light from it.
+        assertEquals(Feu.VERT, Feux.style(Ecoute.bilan(reads(5) { steady(it) }, 3)).first)
+    }
+
+    @Test
+    fun `vert - the step line says the true block and gap and the measured level, not the limiter ceiling`() {
+        val b = Ecoute.bilan(reads(5) { i -> steady(i).copy(cpuWorst = if (i == 3) 0.8f else 0.1f, gapWorst = if (i == 5) 1.2f else 1f) }, 3)
+        val t = b.text()
+        assertTrue(t, t.contains("pire bloc vrai 80 %, plus long écart 1,2 blocs"))
+        assertTrue(t, t.contains("niveau -10.0 LUFS") && !t.contains("crête"))
+        assertTrue(t, t.contains("lissée, pour info"))
+        // Nothing known from the engine: neither the blocks nor a level, nothing invented.
+        val none = Ecoute.bilan(reads(5) { steady(it).copy(lufs = Float.NaN) }, 3).text()
+        assertTrue(none, !none.contains("pire bloc vrai") && !none.contains("LUFS"))
     }
 }

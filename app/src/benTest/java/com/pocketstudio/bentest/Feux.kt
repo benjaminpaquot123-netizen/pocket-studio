@@ -53,11 +53,29 @@ object Feux {
         return (if (why.isEmpty()) Feu.VERT else Feu.ORANGE) to why.joinToString(", ")
     }
 
-    /** A song played live: dropouts, worst block, a NaN (red), an alert (orange). The reason says what is not green. */
+    /** The true worst block (render time over the callback's sound): red over 100 %, orange from 70 %. */
+    fun blocVrai(w: Float): Feu = when {
+        w > 1f -> Feu.ROUGE
+        w >= 0.7f -> Feu.ORANGE
+        else -> Feu.VERT
+    }
+
+    /** The longest wait between two callbacks, in callbacks: red over 2, orange over 1. */
+    fun ecart(g: Float): Feu = when {
+        g > 2f -> Feu.ROUGE
+        g > 1f -> Feu.ORANGE
+        else -> Feu.VERT
+    }
+
+    /**
+     * A song played live: red for any dropout, a true worst block over 100 % or a gap over 2 blocks, a NaN; orange for a true
+     * worst block from 70 % or a gap over 1 block, an alert. The smoothed load is information only. The reason says what is not green.
+     */
     fun style(b: Ecoute.Bilan): Pair<Feu, String> {
         val parts = ArrayList<Pair<Feu, String>>()
-        decrochages(b.xruns).takeIf { it != Feu.VERT }?.let { parts += it to "${b.xruns} décrochage(s)" }
-        pireBloc(b.cpuMax).takeIf { it != Feu.VERT }?.let { parts += it to "pire bloc ${Ecoute.pct(b.cpuMax)}" }
+        if (b.xruns > 0) parts += Feu.ROUGE to "${b.xruns} décrochage(s)"
+        blocVrai(b.cpuWorst).takeIf { it != Feu.VERT }?.let { parts += it to "pire bloc vrai ${Ecoute.pct(b.cpuWorst)}" }
+        ecart(b.gapWorst).takeIf { it != Feu.VERT }?.let { parts += it to "plus long écart ${fmt(b.gapWorst.toDouble()).replace('.', ',')} blocs" }
         if (b.nonFinite) parts += Feu.ROUGE to "valeur invalide (NaN)"
         if (b.alertes.isNotEmpty()) parts += Feu.ORANGE to b.alertes.joinToString(", ") { it.kind.lowercase(Locale.ROOT) + " à ${it.second} s" }
         return Feu.pire(parts.map { it.first }) to parts.joinToString(", ") { it.second }

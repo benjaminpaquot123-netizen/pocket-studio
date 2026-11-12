@@ -98,16 +98,18 @@ class ToutTester(
         while (System.currentTimeMillis() < end) {
             j.idle(250)
             val r = sonde.lire()
-            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane)
+            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst)
             reads += lu
             also(lu)
             carnet.add(
                 Carnet.MESURE, step,
-                "xruns=${r.xruns};cpu=${fmt(r.cpu)};peak=${fmt(r.peak)};lufs=${fmt(r.lufs)};drive=${fmt(r.drive)};lane=${r.lane?.let(::fmt) ?: ""};running=${r.running};playing=${r.playing}",
+                "xruns=${r.xruns};cpu=${fmt(r.cpu)};peak=${fmt(r.peak)};lufs=${fmt(r.lufs)};drive=${fmt(r.drive)};lane=${r.lane?.let(::fmt) ?: ""};cpuWorst=${fmt(r.cpuWorst)};gapWorst=${fmt(r.gapWorst)};running=${r.running};playing=${r.playing}",
             )
         }
         val b = Ecoute.bilan(reads, first.xruns)
         carnet.add(Carnet.MESURE, step, "niveaux=${b.niveaux()}")
+        // The step's true worst block and longest gap, for mesures.json (the per-reading values hold each quarter second's).
+        carnet.add(Carnet.MESURE, step, "pires;cpuWorst=${fmt(b.cpuWorst)};gapWorst=${fmt(b.gapWorst)}")
         return b
     }
 

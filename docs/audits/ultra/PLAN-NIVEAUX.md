@@ -27,7 +27,7 @@ Source : `sieges/tour-3` à `tour-6` (`sieges.tsv`, colonnes `mode` et `mission`
 | 6 | 8 | 5 | 1 | 2 | 3 |
 
 - **Les modes sont couverts** aux tours 3 à 5 (8 à 10 sièges Pro sur 24). Le tour 6, tour de contrôle, n'a qu'un siège Pro.
-- **Les missions ne montent pas en niveau.** Les douze missions du banc (`fabrique-sieges.py`, `GOALS`) sont des buts de débutant : `premier-morceau`, `simple`, `tuto-facile`, `tuto-pro`, `defi`, `padlive`, `voix`, `remix-voix`, `exports`, `synthe`, `reprendre`, `libre`. Aucune ne demande de produire quelque chose de précis.
+- **Les missions ne montent pas en niveau.** Le banc connaît douze missions (`seat-metrics.py`, `MISSIONS`) : `premier-morceau`, `simple`, `tuto-facile`, `tuto-pro`, `defi`, `padlive`, `voix`, `remix-voix`, `exports`, `synthe`, `reprendre`, `libre`. Onze ont leurs trois buts dans `fabrique-sieges.py` (`GOALS`) ; **`reprendre` n'y est pas, et son oracle répond toujours « non »** (« oracle à écrire », faute d'horloge) : elle n'a été donnée qu'à un siège par tour aux tours 3 et 4, à aucun aux tours 5 et 6. Aucune ne demande de refaire un résultat imposé ; les oracles lisent peu (`padlive` : un son au premier toucher ; `voix` : une prise sur une piste).
 - **`libre` est le filet des sièges Pro**, et son oracle dit peu : « un son a joué », plus « un changement gardé » ou « un fichier partagé ». Un producteur qui n'arrive pas à faire son morceau est quand même compté « a fini ». `PLAN-TOUR-6.md` § 4 le dit déjà : « a fini » n'est pas « a réussi ».
 - **Il manque trois profils entiers** : le « moyen » qui arrive d'une autre appli avec ses mots, le « confirmé » qui refuse l'assistant et part d'un projet vide, le « pro » qui cherche les limites (gros projet, pistes séparées, set long).
 
@@ -41,16 +41,16 @@ Colonnes comme `sieges-proposes.tsv`. « Mission du banc » : une mission qui ex
 | 0 | N0 b | Le pressé : ne lit rien, « Plus tard » partout, prend Pro par erreur | choisi par le siège | `libre` | un son en 5 gestes au plus ; jamais coincé |
 | 0 | N0 c | 55 ans, police 130 %, néerlandais : « un morceau calme pour ma fille » | Simple | `simple` | morceau partagé ; aucun texte coupé |
 | 1 Débutant motivé | N1 a | Fan de jump up, suit le Guide jusqu'au bout : « un morceau à moi » | Simple puis Pro | **`mon-morceau`** | sons, mélodie et structure différents de ceux de l'assistant |
-| 1 | N1 b | Ado trap : « ma voix sur une instru » | Simple | `voix` | la prise est dans le fichier exporté |
+| 1 | N1 b | Ado trap : « ma voix sur une instru » | Simple | `voix` (oracle à durcir, § 3) | la prise est sur une piste du projet sauvé, et un fichier est partagé |
 | 1 | N1 c | « Enlever la voix d'une chanson et rejouer dessus » | Simple | `remix-voix` | les trois buts de la mission |
-| 1 | N1 d | Revient sur son morceau, change un son, puis veut l'ancien | Simple | `reprendre` | l'ancien son est revenu, rien d'autre n'a bougé |
+| 1 | N1 d | Revient sur son morceau, change un son, puis veut l'ancien | Simple | `reprendre` (oracle à écrire, § 3) | l'ancien son est revenu, rien d'autre n'a bougé |
 | 2 Moyen | N2 a | Vient de BandLab ou FL Studio Mobile, cherche « piano roll », « quantize », « BPM » | Pro | **`boucle-imposee`** | la boucle de la fiche est dans le projet, note pour note |
 | 2 | N2 b | Beatmaker : un sample à découper, charleston en roulements, 808 | Pro | **`beat-sample`** | sample découpé sur les pads, beat exporté |
-| 2 | N2 c | Bidouilleur d'effets : « le filtre qui monte avant le Drop » | Pro | **`courbe`** | la courbe existe sur la bonne partie et se retrouve dans l'export |
+| 2 | N2 c | Bidouilleur d'effets : « le filtre qui monte avant le Drop » | Pro | **`courbe`** | la courbe existe sur la bonne partie du projet sauvé, et un fichier est exporté |
 | 3 Confirmé | N3 a | Producteur techno, **projet vide**, refuse l'assistant | Pro | **`projet-vide`** | 6 pistes et 8 parties au moins, fichier exporté |
 | 3 | N3 b | Compositeur : accords, gamme, mélodie, export MIDI | Pro | **`midi`** | le fichier MIDI relu a les mêmes notes |
 | 4 Pro | N4 a | Ingénieur du son : « les pistes séparées pour mon logiciel » | Pro | **`pistes-separees`** | une piste par instrument, même durée, bons formats |
-| 4 | N4 b | Producteur live : un set long, pads, effets, performance gardée | Pro | `padlive`, budget long | la prise est gardée, rien d'écrasé |
+| 4 | N4 b | Producteur live : un set long, pads, effets, performance gardée | Pro | `padlive`, budget long (oracle à durcir, § 3) | la prise est gardée, rien d'écrasé |
 | 4 | N4 c | Le projet monstre : 8 pistes, 24 parties, des courbes partout | Pro | **`monstre`** (projet fourni) | ouvrir, jouer, modifier, sauver, exporter sans erreur |
 | Hors niveau | X | Le casse-tout : touche à tout, double toucher, Retour au pire moment | choisi par le siège | `libre` | pas de gel, pas de projet perdu, « annuler » fidèle |
 
@@ -60,6 +60,8 @@ Appareils, langues et police se tirent comme aux tours 3 à 5 ; N0 a, N1 a, N2 a
 Règle de `CLAUDE.md` : l'outil de mesure se vérifie avant de mesurer. Chaque point est un lot du banc, avec un test rouge puis vert, et `selftest.sh` vert avant tout siège.
 
 1. **Huit missions neuves avec leur oracle** : `mon-morceau`, `boucle-imposee`, `beat-sample`, `courbe`, `projet-vide`, `midi`, `pistes-separees`, `monstre`. L'oracle lit le projet sauvé et les fichiers exportés, pas l'écran. Pour `boucle-imposee`, la fiche du siège donne le rythme, la basse et les accords ; l'oracle compare les notes.
+   - **Trois oracles de missions qui existent sont à écrire ou à durcir**, sinon ces sièges réussissent comme aujourd'hui : `reprendre` (N1 d : aujourd'hui toujours « non », et absente de `GOALS`), `voix` (N1 b : aujourd'hui « une prise sur une piste »), `padlive` (N4 b : aujourd'hui « un son au premier toucher »). Les « Réussi si » des sièges N0 b, N0 c et X (gestes, texte coupé, gel) se lisent dans les mesures et les fiches du siège, pas dans l'oracle de la mission.
+   - **Limite du faux moteur** (consignes v2, familles `son` et `chiffres`) : sous le banc, le son d'un fichier exporté n'est pas celui du téléphone. L'oracle lit donc dans le projet sauvé ce qui a été fait (prise, courbe, notes, pads) et, pour un export, que le fichier existe, combien il y en a, leur format et leur longueur ; ce que le fichier fait entendre (la voix, la courbe) relève du rapport d'écoute au vrai moteur (§ 6). À prouver par le lot du banc, test rouge puis vert : rien de cela n'est mesuré ici.
 2. **Deux fichiers de plus dans le sélecteur du banc** : un sample pour `beat-sample`, le projet monstre en .zip pour `monstre` (le banc sait déjà offrir une chanson, un .zip et un .mid).
 3. **Un niveau par siège** dans `sieges-proposes.tsv` (colonne `niveau`, 0 à 4 ou X), recopié dans `mesures.json`.
 4. **Le tableau de bord par niveau** (§ 5).
@@ -83,7 +85,7 @@ Pas besoin de nouveau pilote : `human-act.py` et les consignes v2 font déjà le
 | Ce que fait un vrai utilisateur | Le banc | Où le tester |
 |---|---|---|
 | **Écouter** et juger le son | faux moteur : dit si ça joue, pas comment | après le siège, son projet sauvé joué par le vrai moteur (`scripts/live-bench.sh`, `real-projects.sh`) : alertes fondu, silence, saut, volume ; puis « Questions à l'oreille » de BenStudio Test sur le téléphone |
-| **Revenir trois jours après** | pas d'horloge | prévu au tour 7 (`PLAN-RESTE.md`, P2) ; d'ici là N1 d joue `reprendre` sans le saut de date |
+| **Revenir trois jours après** | pas d'horloge | prévu au tour 7 (`PLAN-RESTE.md`, P2) ; d'ici là N1 d joue `reprendre` sans le saut de date, une fois son oracle écrit (§ 3) |
 | **Être interrompu** (appel, appli tuée, rotation, casque) | aucun geste du téléphone | l'étage 3 « chaos » de `AUDIT.md`, l'émulateur (« Nightly real use »), la recette de Benjamin |
 | Le toucher, la latence, la chaleur | non | le téléphone de Benjamin seulement |
 

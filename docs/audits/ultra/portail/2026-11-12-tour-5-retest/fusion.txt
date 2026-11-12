@@ -1,0 +1,8 @@
+fusion: 57b16e8b166341ecee4d15e34e6e9b3bfea56ce4
+branche: eq/tour-5-retest
+tete: 0b3da13311ff543b67d0d4e185a063185b38a774
+relecture: docs/audits/ultra/tour-5-retest-relecture.md
+relu: 1bae09e501791372cd2f124abaef240f09e468af
+filtres: com.pocketstudio.bentest.* com.pocketstudio.bentest.*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

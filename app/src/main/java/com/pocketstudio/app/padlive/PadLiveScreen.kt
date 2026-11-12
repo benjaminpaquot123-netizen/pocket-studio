@@ -771,7 +771,9 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
-            MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
+            // Audit lot 6, R10: a kept take's line has its own « Partager » (the same sheet): one only on the screen.
+            if (ui.takeDone) Spacer(Modifier.weight(1f))
+            else MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),
                 about = listOf("padlive_stop_all", "padlive_live", "padlive_effects", "padlive_party_open", "padlive_share"),

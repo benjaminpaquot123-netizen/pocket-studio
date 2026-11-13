@@ -1,0 +1,120 @@
+Écran 52 (588x1278)
+icône ← @ 51,45
+bouton ▶ @ 231,45
+icône − @ 312,45
+texte « 124 Tempo » @ 378,45
+icône + @ 444,45
+texte « REC » @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » [sélectionné] @ 51,135
+onglet « B » @ 108,135
+onglet « C » @ 165,135
+onglet « D » @ 222,135
+bouton « Fête » ▾ @ 330,135
+bouton ★ @ 534,135
+bouton « ? » @ 464,135
+bouton @ 77,233
+texte « boucle » @ 86,207
+dessin @ 100,203
+texte « Boucle de kick » @ 77,249
+bouton @ 205,233
+dessin @ 228,203
+texte « coup » @ 223,207
+texte « Claquement de mains » @ 205,251
+bouton @ 333,233
+texte « boucle » @ 342,207
+dessin @ 356,203
+texte « Boucle Acid 303 » @ 333,249
+bouton @ 461,233
+texte « boucle » @ 470,207
+dessin @ 484,203
+texte « Boucle de basse » @ 461,249
+bouton ▶ @ 550,233
+bouton @ 77,334
+dessin @ 100,304
+texte « coup » @ 95,308
+texte « Klaxon » @ 69,358
+bouton @ 205,334
+dessin @ 228,304
+texte « coup » @ 223,308
+texte « Laser » @ 191,358
+bouton @ 333,334
+dessin @ 356,304
+texte « coup » @ 351,308
+texte « Sirène » @ 324,358
+bouton @ 461,334
+dessin @ 484,304
+texte « coup » @ 479,308
+texte « Cri « Go go go! » » @ 461,350
+bouton ▶ @ 550,334
+bouton @ 77,435
+dessin @ 100,405
+texte « coup » @ 95,409
+texte « Grosse caisse 1 » @ 77,451
+bouton @ 205,435
+dessin @ 228,405
+texte « coup » @ 223,409
+texte « Caisse » @ 197,459
+bouton @ 333,435
+dessin @ 356,405
+texte « coup » @ 351,409
+texte « Charley » @ 331,459
+bouton @ 461,435
+dessin @ 484,405
+texte « coup » @ 479,409
+texte « Charley ouvert » @ 461,451
+bouton ▶ @ 550,435
+bouton @ 77,536
+dessin @ 100,506
+texte « coup » @ 95,510
+texte « Montée » @ 74,560
+bouton @ 205,536
+dessin @ 228,506
+texte « coup » @ 223,510
+texte « Impact » @ 197,560
+bouton @ 333,536
+dessin @ 356,506
+texte « coup » @ 351,510
+texte « Chute » @ 321,560
+bouton @ 461,536
+dessin @ 484,506
+texte « coup » @ 479,510
+texte « « Go! » » @ 455,560
+bouton ▶ @ 550,536
+texte « Écouter » @ 305,632
+texte « Partager » @ 433,632
+icône ✕ @ 537,632
+texte « Perf gardée · 0:01 » @ 138,632
+bouton « ? » @ 161,704
+texte « EFFETS LIVE » @ 79,704
+texte « Appuie et maintiens » @ 474,704
+bouton @ 106,783
+texte « Filtre » @ 106,771
+texte « grave ↔ aigu » @ 106,798
+bouton @ 294,783
+texte « Écho » @ 294,771
+texte « en sortie » @ 294,798
+bouton @ 482,783
+texte « Roulement » @ 482,771
+texte « 1/16 » @ 482,798
+bouton @ 106,885
+texte « Montée » @ 106,873
+texte « 4 mesures » @ 106,900
+bouton @ 294,885
+texte « Chute » @ 294,873
+texte « freinage » @ 294,900
+bouton @ 482,885
+texte « Bégaie » @ 482,873
+texte « 1/16 » @ 482,900
+bouton ↶ « Annuler » @ 107,981
+bouton (quatre carrés) « Briques » @ 294,981
+bouton (curseurs) « Effets » @ 481,981
+bouton (cotillons) « Gros pads » @ 140,1062
+bouton « ? » @ 548,1062
+bouton ■ « Tout couper » @ 66,1159
+bouton « Enregistrer ce que je joue » @ 258,1152
+bouton ⌃ « Moins » @ 486,1152
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

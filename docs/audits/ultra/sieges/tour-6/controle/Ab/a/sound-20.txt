@@ -1,0 +1,1 @@
+Son : les pads live 1, 4 jouent en boucle ; le pad live 3 attend sa ligne (le prochain temps, ou la prochaine mesure).

@@ -1,0 +1,2 @@
+route=dialogue:« Enregistrer ce que je joue »
+nouvelle=1

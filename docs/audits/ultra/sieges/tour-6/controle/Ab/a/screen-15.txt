@@ -1,0 +1,4 @@
+Écran 15 (588x1278)
+texte « Pages et packs » @ 167,498
+texte « Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi. » @ 294,621
+texte « Compris » @ 489,768

@@ -1,0 +1,11 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+synth/tab_simple_Clavier
+launch
+padlive
+dialogue:« Pages et packs »
+dialogue:« Enregistrer ce que je joue »
+dialogue:« Les pads live de ta prise sont »
+dialogue:projects
+session/tab_simple_Morceau

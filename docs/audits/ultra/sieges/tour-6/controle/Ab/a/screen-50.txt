@@ -1,0 +1,3 @@
+Écran 50 (588x1278)
+texte « Les pads live de ta prise sont sur la piste audio « Pads live ». » @ 294,585
+texte « Compris » @ 489,687

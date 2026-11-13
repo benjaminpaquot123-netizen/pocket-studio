@@ -1,0 +1,2 @@
+Son : le pad live 2 (« Clap ») a joué une fois.
+Un petit message s'affiche quelques secondes en bas de l'écran : « Pad Live a son propre projet « Live » : « Mon projet 1 » t'attend dans Mes projets. ».

@@ -1,0 +1,4 @@
+Écran 17 (588x1278)
+texte « Enregistrer ce que je joue » @ 253,513
+texte « Enregistre ce que tu joues sur les pads, en mesures entières, puis pose-le sur un pad libre ou dans une brique du Live. REC, en haut, enregistre toute ta perf pour en faire un morceau. » @ 294,621
+texte « Compris » @ 489,753

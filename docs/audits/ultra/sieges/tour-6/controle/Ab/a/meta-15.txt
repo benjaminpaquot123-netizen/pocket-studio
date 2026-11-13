@@ -1,0 +1,2 @@
+route=dialogue:« Pages et packs »
+nouvelle=1

@@ -1,1 +1,38 @@
 siege	geste	attente	vu
+A/a	0	0	avant le jeu, pour mettre le banc en route sur cette machine : selftest.sh du lotA relancé (vert, 173 tests), human-tester.sh lancé, fiches start.txt de lotA/b et lotA/c mises de côté (consigne de la discussion principale) ; Read des images et lecture de journal.txt dans mon dossier de siège seulement
+A/b	0	600	le premier « regarde » attendait sans banc lancé ; banc lancé par moi (scripts/human-tester.sh) après le selftest vert du lot (scripts/bench/selftest.sh), sur consigne de la discussion principale ; outils hors human-act : bash (ls, cat, grep, sed sur la sortie du banc et mon dossier de siège), Read sur mes images
+A/b	60	0	l'appui long sur « Écho » ne donne aucune trace d'effet dans la ligne « Son » : le banc ne semble pas dire les effets (la promesse 3 ne se prouve donc qu'à l'écran)
+A/c	0	600	premier « regarde » sans banc lancé (je ne savais pas qu'il fallait lancer scripts/human-tester.sh) ; outils hors human-act.py pour préparer la machine : selftest.sh, human-tester.sh (en-tête lu), lecture de journal.txt et images de mon siège
+B/b	29	0	après « Ich mach's », le texte de l'écran est vide (seule la barre Feedback) ; idem 35, 51, 100, 167, 209, 215, 216 : j'ai dû passer par l'image
+B/b	27	0	deux gestes envoyés dans un même appel Bash par erreur (27-28, 31-32, 71-72), un à la fois ensuite ; seul outil hors human-act : Read sur mes images de siège
+B/b	0	900	avant le lanceur du lot, deux « regarde » ont répondu « L'appli ne s'est pas ouverte (15 min) » ; après démarrage de scripts/human-tester.sh, normal
+B/b	34	0	écran 35 rendu en texte vide (seulement la barre Feedback-Modus) ; l'image montrait la grille
+B/b	42	2	écran 43 en texte vide (de même au geste 55, écran 56) ; revenu avec « attends 2 »
+B/b	0	0	outils hors human-act.py : Read sur les images de mon siège, grep/cat sur journal.txt de mon siège (numéros de gestes) ; avant de jouer, rôle machine : selftest.sh et human-tester.sh sur lotB
+B/c	0	0	banc et selftest du lot B lancés par moi sur consigne (selftest vert, 173/0) ; outils hors human-act : bash (grep, sed, diff sur les sorties du banc et mon dossier de siège), Read sur mes images
+B/c	21	0	quatre « attends 1 » (#21 à #24) faits pour débloquer une image ; le banc ne les compte pas comme gestes, plafond d'images atteint
+C/a	0	900	« L'appli ne s'est pas ouverte (15 min) » deux fois : le banc du lot (human-tester.sh lotC) n'était pas lancé sur ma machine ; relancé par le coordinateur, puis tout a répondu
+C/a	0	0	outils hors human-act.py : lecture des images et de mes fichiers dans mon dossier de siège, écriture de oeil-neuf.tsv et rapport.md (printf), ps et free une fois pour voir si le banc tournait
+C/b	0	900	premier « regarde » lancé avant le banc : « L'appli ne s'est pas ouverte (15 min) » ; banc lancé (human-tester.sh), puis écran 1
+C/b	58	0	« tape » de 4 coups compté comme 1 seul (« 0 sur 4 ») : banc?: rythme
+C/b	80	0	outils hors human-act.py : Read des images du siège ; grep de journal.txt et images.txt du siège pour les numéros de gestes ; avant la partie, mise en route de la machine (git, outils Android, selftest, journal Gradle de /tmp)
+D/a	22	2	écran presque vide après « 自分でやる » (aussi 27, 34, 43, 50, 109, 164, 187, 193) ; « attends 2 » le ramène
+D/a	125	0	le texte en ne montre pas « あなたの番：このパートに「グルーヴ」… » alors qu'il est sur l'image 126
+D/a	8	0	outils hors human-act : filtres d'affichage head/grep/sed sur la sortie (head a cassé un tuyau au geste 8, geste quand même joué) ; une fois sortie redirigée vers lotDsuite/a-tmp.txt (hors siège) puis effacé par rm
+D/a	104	0	« attends » ne compte pas pour le plafond d'images : 5 touches « à vide » sur le bandeau (gestes 111-120) pour pouvoir voir l'image
+D/a	20	2	écran vide (seule la pastille REC/メモ) juste après « 自分でやる », revenu après « attends 2 »
+D/a	27	2	même écran vide après « 自分でやる » (aussi #43 et #63)
+D/b	26	0	écrans 26, 27, 32, 33, 38, 39, 44, 45 (anneau du tuto) rendus en texte vide, seule l'image montrait la grille
+D/b	70	0	siège clos « 5 écrans identiques » : les notes ajoutées au piano-roll n'apparaissent pas dans le texte du banc
+D/c	20	0	écran 21 texte vide alors que l'image montre le studio (aussi écrans 35, 36, 43, 62, 63, 70, 77, juste après « 我来做 » ou « 示范给我看 »)
+D/c	0	0	outils hors human-act : filtres shell (head/sed/grep) sur la sortie du banc et un fichier temporaire last.txt dans mon siège (supprimé) ; une fois trois touches dans un même appel (#29 à #31)
+E/a	10	3	« attends 3 » a renvoyé un écran vide en texte, le « regarde » suivant a montré la feuille « Your take: 5 bars ».
+E/b	-	0	aucun outil hors human-act.py (Read seulement sur brief, consignes et mes images de siège)
+F/a	0	0	aucun outil hors human-act.py (Read seulement sur les images de mon siège) ; menu de partage système fermé sans envoi (écran 66)
+F/b	14	0	la note posée n'apparaît pas dans l'écran en texte, seule l'image la montre ; plafond d'images atteint, 4 gestes « attends » pour pouvoir regarder
+F/b	30	3	écran vide après « Ustaw brzmienie », revenu au geste suivant
+G/a	0	0	outil hors human-act.py : Read sur les consignes et sur les images de mon siège (screen-2/9/13/21/37/43-grille.png), Write pour ce rapport
+G/b	8	0	écran 9, le texte du dialogue d'aide « Memainkan efek live » n'apparaît pas dans la version texte (visible sur l'image)
+H/a	33	0	écran en texte vide (seule la pastille « Mode retours »), l'image montrait bien l'appli ; idem écrans 42, 53, 68, 200, 237, 242
+H/a	0	0	outils hors human-act.py : Read sur les consignes et sur les images screen-*.png de mon siège seulement
+H/a	69	0	les touches sur les notes en pointillé de la grille du Clavier sont notées « DOIGT rien » au journal alors que le compteur « Encore N notes » baisse bien

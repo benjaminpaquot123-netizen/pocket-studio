@@ -202,6 +202,7 @@ import com.pocketstudio.app.remix.beforePlay
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.fadingEdges
 import kotlinx.coroutines.delay
 
 /** The tabs with their own record bar (« ● Enregistrer », then the take's card). */
@@ -362,6 +363,9 @@ fun AppRoot() {
     val spots = remember { com.pocketstudio.app.learn.SpotRegistry() }
     // Le Guide's panel (G2), opened by itself on a song just made (G5: « Ton morceau est prêt » is its first card).
     var guideOpen by rememberSaveable(key = "guide_open") { mutableStateOf(false) }
+    // Tour 6, N1 (seat D c #55): « Ouvrir le Guide de mon morceau » touched during a tutorial: the Guide's panel shows in
+    // the tutorial's place until it is folded (it only changed the tab, no Guide came).
+    var guideOverTuto by rememberSaveable(key = "guide_over_tuto") { mutableStateOf(false) }
     // G5: the next song the assistant makes is « Mon premier morceau » (the welcome's guided song).
     var firstSongNext by rememberSaveable(key = "first_song_next") { mutableStateOf(false) }
     // G5: a song just made (or « Mon premier morceau ») opens the Guide on its first card by itself,
@@ -450,11 +454,19 @@ fun AppRoot() {
     val goHome: () -> Unit = {
         showProjects = false
         projectsNewOnly = false
+        // Tour 6, N16 (seat C b #40: « l'Accueil, et la musique s'arrête sans le dire »): the music that was playing
+        // stops here; a short message says so, and that the song is saved, once it is.
+        val wasPlaying = rhythmVm.transport.value.playing
         launch.ask()
         openScope.launch {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.stop()
             rhythmVm.flushNow()
+            if (wasPlaying) {
+                val saved = rhythmVm.session.lastSaveError.value == null && !rhythmVm.session.unsaved.value
+                // (On the main thread whatever thread the save came back on: a toast needs its looper.)
+                android.os.Handler(android.os.Looper.getMainLooper()).post { Toast.makeText(context, musicStoppedForHome(saved), Toast.LENGTH_LONG).show() }
+            }
         }
     }
     // The studio's last Retour (registered before every other, so any sheet, page or panel open
@@ -620,13 +632,17 @@ fun AppRoot() {
     }
     // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
     var fxChannel by rememberSaveable { mutableStateOf(-1) }
+    // Tour 6, U9 (seat E a #20: « Effects · Remix » opened from Pad Live): the box was opened from Pad Live, whose pads
+    // play through the strip the Remix also uses; its title then says Pad Live, where the user is.
+    var fxFromPadLive by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(fxChannel) { if (fxChannel < 0) fxFromPadLive = false }
     // Chantier 8: the control « Voir le réglage » leads to in that sheet (opened on it, framed), null: none.
     var fxSpot by remember { mutableStateOf<com.pocketstudio.model.AutoTarget?>(null) }
     if (fxChannel >= 0) {
         val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
         val channel = fxProject.mixer.channels.getOrNull(fxChannel)
         if (channel != null) {
-            val name = if (com.pocketstudio.model.Mixer.isPad(fxChannel)) {
+            val name = if (fxFromPadLive) tr("Pad Live") else if (com.pocketstudio.model.Mixer.isPad(fxChannel)) {
                 val lane = fxChannel - com.pocketstudio.model.Mixer.FIRST_PAD
                 tr("pad %1\$d (%2\$s)", lane + 1, fxProject.drums.lanes.getOrNull(lane)?.sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: com.pocketstudio.app.rhythm.DrumKitInfo.names[lane])
             } else {
@@ -1313,12 +1329,18 @@ fun AppRoot() {
     }
     // Step 5c: « Mettre Boys dans mon projet » (one screen of choices) before a song goes into this project.
     var songImport by remember { mutableStateOf<Pair<com.pocketstudio.app.remix.StemSet, List<Boolean>?>?>(null) }
+    // Tour 6, U17 (seat G a #42): the import asked from the Remix page of « Que veux-tu faire ? » (« Dans un projet
+    // existant »); its « Annuler » leads back to that page ([remixHomeAgain]), not into the project without the song.
+    // (Set where the import starts, each time: true from the home Remix page, false from the project's own.)
+    var songImportFromHome by remember { mutableStateOf(false) }
+    var remixHomeAgain by remember { mutableStateOf(false) }
     songImport?.let { (set, heard) ->
         com.pocketstudio.app.remix.SongImportSheet(
             set, rhythmVm.project.collectAsStateWithLifecycle().value,
             sections = { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.remix.SongEnergy.sections(set) } },
             put = { choice, parts ->
                 songImport = null
+                songImportFromHome = false
                 val adopted = rhythmVm.useSong(set, heard, choice, parts)
                 val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
                 val said = when {
@@ -1328,7 +1350,11 @@ fun AppRoot() {
                 }
                 said?.let { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
             },
-            cancel = { songImport = null },
+            cancel = {
+                songImport = null
+                if (songImportFromHome) remixHomeAgain = true
+                songImportFromHome = false
+            },
         )
     }
     // A song separated from « Que veux-tu faire ? » for this project (« Dans un projet existant »): in its Remix now.
@@ -1338,6 +1364,7 @@ fun AppRoot() {
             com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, waiting.setId))
         } ?: return@LaunchedEffect
         // Step 5a: the parts heard while listening come in heard, the others muted; step 5c: after its choices.
+        songImportFromHome = true  // only the home Remix page leaves a song waiting for a project
         songImport = set to waiting.heard
         openRemix()
     }
@@ -1606,6 +1633,7 @@ fun AppRoot() {
         ),
     ) }
     // Owner (2026-10-29): the Remix of « Que veux-tu faire ? » (RemixFromHome): « ← Accueil » goes back there.
+    if (remixHomeAgain) LaunchedEffect(Unit) { remixHomeAgain = false; remixHome = true }
     if (remixHome) {
         val closeRemixHome = {
             remixHome = false
@@ -1629,6 +1657,7 @@ fun AppRoot() {
                         // Step 5a: what was heard while listening (« Voix » alone) decides which parts come in muted.
                         val heard = remixVm.heardFor(set.id)
                         if (!noProject && p.id == rhythmVm.projectId) {
+                            songImportFromHome = true
                             songImport = set to heard
                             openRemix()
                         } else {
@@ -1830,6 +1859,8 @@ fun AppRoot() {
     // over what is edited: it takes its own room), « Voir le réglage » lighting the control.
     val guideVm = rhythmVm.guide
     LaunchedEffect(guideVm, simple) { guideVm.setSimple(simple) }
+    // Tour 6, G2: a new language writes the Guide's step again (it stayed in the old one until the song changed).
+    LaunchedEffect(guideVm, navSettings.language) { guideVm.setLanguage(navSettings.language) }
     var guideSelected by rememberSaveable { mutableStateOf<String?>(null) }
     var guideNotice by remember { mutableStateOf<String?>(null) }
     // The controls « Voir le réglage » lights, the first one on the screen (null: none).
@@ -2049,7 +2080,24 @@ fun AppRoot() {
         }
     }
     // G4 review: a measure running stops with the panel (and when the music starts, below).
-    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure() } }
+    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure(); guideOverTuto = false } }
+    // Tour 6, G1 (seat A a #16: the Guide open, the thumb's « ⋮ Plus » touched, the Plus page came up under the panel):
+    // the panel folds when the user goes to another screen himself (a tab, Plus, a page of Plus); its bar stays, one
+    // touch from the card. The Guide's own « Voir le réglage » is not that: [guideGo] says where the panel now is.
+    val guidePlace = tab to toolPage
+    var guideOpenedOn by remember { mutableStateOf<Pair<AppTab, ToolPage?>?>(null) }
+    LaunchedEffect(guideOpen, guidePlace) {
+        when {
+            !guideOpen -> guideOpenedOn = null
+            guideOpenedOn == null -> guideOpenedOn = guidePlace
+            guideOpenedOn != guidePlace -> guideOpen = false
+        }
+    }
+    // Tour 6, T13 (seat D a #99: « Reprendre le tuto » and the Guide's bar, two guides under one page): while a
+    // tutorial runs or waits to be resumed the Guide stays away, unless it was asked for by name ([guideOverTuto]).
+    val tutoHoldsTheLine = tutoUi != null || tuto.resumable
+    val guideAsked = guideOverTuto && guideOpen
+    val guideFree = !tutoHoldsTheLine || guideAsked
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
     // panel only hides there, it stays open).
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
@@ -2061,7 +2109,14 @@ fun AppRoot() {
         .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
     // Le Guide keeps quiet during a take, on the Live page and on the keyboard lying down, where every dp is a key's
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
-    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe)
+    // Tour 6, G1 (seat F b #10, the 130 % seats): upright on a short screen the keys' page gives the Guide's folded bar's
+    // line to its keys, as it does the thumb's bar's ([KEYS_PAGE_THUMB_BAR_DP]: 16 dp of keys in view on a 360 x 780
+    // phone at 130 %, 64 without the bar). Never by the clock: a bar that left by itself seconds later (while the
+    // « Voir le réglage » card pointed at it, first try) gave the page a height that moved the keys under the finger.
+    val keysTakeGuideLine = tab == AppTab.Synthe && !com.pocketstudio.app.synth.NotesView.shown && !guideOpen &&
+        LocalConfiguration.current.screenHeightDp < KEYS_PAGE_THUMB_BAR_DP
+    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe) &&
+        !keysTakeGuideLine && guideFree
     val guideSide = guideShown && guideOpen && landscape
     // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
     // Audit ultra round 2 (n° 11, seat B a: « Jouer » out of the thumb's reach, the bar hidden under the Guide): the Guide's
@@ -2131,6 +2186,10 @@ fun AppRoot() {
                 guideSpot = listOf("record_start")
             }
         }
+        // The Guide led here: its panel, when it stays open, is at home on this screen (tour 6, G1). Written, not cleared:
+        // a choice that changes no screen (« Écouter », the tempo) left it empty, and the next screen the user went to
+        // became the panel's home (review of the lot).
+        guideOpenedOn = if (guideOpen) tab to toolPage else null
     }
     LaunchedEffect(guideVm) {
         guideVm.opens.collect { o -> guideGo(com.pocketstudio.app.guide.GuideNav.go(o, rhythmVm.project.value, SettingsStore.state.value.simpleMode)) }
@@ -2432,10 +2491,16 @@ fun AppRoot() {
             }
             }
         } },
-        // « Fait : … Annuler » after an intention (the part sheet, a kit).
+        // « Fait : … Annuler » after an intention (the part sheet, a kit). It floats over the page's lower edge: a line
+        // of its own in the bottom bar (tour 6, N15, tried) took room from the page and gave it back six seconds later,
+        // and the page moved under the finger (replay t4-26: « ■ Arrêter » of a take on the keys left the screen).
+        // While a take runs it keeps away: nothing comes over the page where « ■ Arrêter » is the way out. Its message is
+        // let go then, not kept for later: after the take, its « Annuler » would undo the take, not what it names.
         snackbarHost = {
             val done by rhythmVm.done.collectAsStateWithLifecycle()
-            DoneBar(done, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone)
+            val taking = guideQuietRec || guideQuietTaking
+            LaunchedEffect(done, taking) { if (done != null && taking) rhythmVm.dismissDone() }
+            DoneBar(done.takeIf { !taking }, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone)
         },
         bottomBar = {
             Column {
@@ -2444,7 +2509,9 @@ fun AppRoot() {
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).
                 // « Tuto de A à Z »: its panel takes the Guide's place while it runs.
                 val tutoNow = tutoUi
-                if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
+                if (guideAsked && guideShown) {
+                    // N1: the Guide asked for by name has the tutorial's line until it is folded.
+                } else if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
                     val tutoProject by rhythmVm.project.collectAsStateWithLifecycle()
                     val tutoTransport by rhythmVm.transport.collectAsStateWithLifecycle()
                     // « Écouter ton résultat »: only once there is something of the user's to hear.
@@ -2516,8 +2583,8 @@ fun AppRoot() {
                 // pill at the thumb's bar's end: its 48 dp go to the page (the second row of steps above the fold).
                 val guideConfig = LocalConfiguration.current
                 val guideInThumb = thumbBarUp && guideConfig.screenHeightDp < GUIDE_PILL_BELOW_DP && guideConfig.screenWidthDp >= GUIDE_PILL_FROM_WIDTH_DP
-                val guidePill = guideShown && !guideSide && tutoNow == null && !guideOpen && guideInThumb
-                if (guideShown && !guideSide && tutoNow == null && !guidePill) {
+                val guidePill = guideShown && !guideSide && !guideOpen && guideInThumb
+                if (guideShown && !guideSide && !guidePill) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
@@ -3210,10 +3277,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     else com.pocketstudio.app.rhythm.stemSkips(project, project.song.isNotEmpty(), mixerStrips(project).associate { it.ch to com.pocketstudio.model.DefaultNames.shown(it.name) })
                                 },
                                 buses = project.mixer.buses,
-                                // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
-                                strips = mixerStrips(project).let { all ->
-                                    if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
-                                },
+                                // Tour 6, U27 (seat B b #72: Sons showed « Acid 303 », the Mix did not, « Acid 303 renommée »): a strip
+                                // for every track Sons names, in a tutorial too (lot « tuto 4 » had left the silent one out there).
+                                strips = mixerStrips(project),
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
                                 songTracks = if (project.remix.setId == null) null else ({
                                     com.pocketstudio.app.remix.SongTracksCard(
@@ -3321,10 +3387,21 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 }
                             }
                             // Scrollable: whole words on a small phone or with big text (never "Remi/x").
-                            androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
-                                listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
-                                    Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
+                            // Tour 6, R19 (seats B a 21, G a 12: « Générer » cut at the edge, no sign the row went on): the edge
+                            // where pages wait fades and shows « › » (« ‹ » before), gone once that end is in view.
+                            val pagesScroll = androidx.compose.foundation.rememberScrollState()
+                            Box(Modifier.fillMaxWidth().background(Neon.Surface)) {
+                                // (The same row as before, « Secondary » being the one that takes its scroll's state.)
+                                androidx.compose.material3.SecondaryScrollableTabRow(
+                                    selectedTabIndex = audioPage, modifier = Modifier.fadingEdges(pagesScroll), scrollState = pagesScroll,
+                                    containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp,
+                                ) {
+                                    listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
+                                        Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
+                                    }
                                 }
+                                if (pagesScroll.canScrollForward) MoreAside(forward = true, Modifier.align(Alignment.CenterEnd).testTag("audio_pages_more"))
+                                if (pagesScroll.canScrollBackward) MoreAside(forward = false, Modifier.align(Alignment.CenterStart).testTag("audio_pages_before"))
                             }
                             }
                             if (audioPage == 3) {
@@ -3593,6 +3670,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         val heard = preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)
                                         remixVm.pause()
                                         // Step 5c: its choices first (« Mettre Boys dans mon projet »).
+                                        songImportFromHome = false
                                         songImport = set to heard
                                     },
                                     // Audit ultra round 1, n° 1: « Découper ce que je veux »: the song in the project behind the
@@ -3607,7 +3685,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                                 // Audit ultra round 2, zone 1, n° 7 (seat A b: « Annuler » lit up, nothing said): what came in, said.
                                                 Toast.makeText(context, tr("« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).", set.name), Toast.LENGTH_LONG).show()
                                             }
-                                            else -> songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id))
+                                            else -> { songImportFromHome = false; songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)) }
                                         }
                                     },
                                     clearRemix = rhythmVm::clearRemix,
@@ -3652,7 +3730,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 missions = startMissions,
                                 bugReport = { reportBug("Plus") },
                                 simple = simple,
-                                setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+                                // Tour 6, N17 (seat C b #38: every screen changed at a touch meant for « Mes projets »): the entry
+                                // asks first, with the top bar's own « Mode de ce projet ».
+                                setSimple = { modeSwitchOpen = true },
                                 // Tour 5, chantier 5 (G15): what the Mode simple's old ⋮ menu held, as cards.
                                 simpleWays = SimplePlusWays(
                                     live = openLive,
@@ -3678,7 +3758,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     com.pocketstudio.app.settings.HelpActions(
                                         openGuide = { showGuide = true },
                                         // G5: the Guide took over « Prochaine étape »: its panel, on the song.
-                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true },
+                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine; guideOpenedOn = AppTab.Morceau to null },
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },
@@ -3852,7 +3932,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                 browse = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; libraryMine = false; showLibrary = true },
                 // « Plus » › Briques: the Live page of the same project, Pad Live closed under it.
                 openLive = { showPadLive = false; openLive() },
-                openEffects = { fxChannel = it },
+                openEffects = { fxFromPadLive = true; fxChannel = it },
                 fete = libraryVm::liveStarter,
                 welcome = padLiveWelcome,
                 welcomed = { padLiveWelcome = false },
@@ -3948,6 +4028,13 @@ private fun openUri(context: Context, uri: Uri) {
         Toast.makeText(context, tr("Aucun navigateur pour ouvrir GitHub"), Toast.LENGTH_LONG).show()
     }
 }
+
+/**
+ * What is said when the way to « Que veux-tu faire ? » stopped the music (tour 6, N16): « ■ Arrêté », the app's own
+ * sign and word for it, and that the song is [saved] when it is.
+ */
+internal fun musicStoppedForHome(saved: Boolean): String =
+    "■ " + tr("Arrêté") + if (saved) " · " + tr("Ton morceau est sauvegardé.") else ""
 
 /** Drums, acid, every instrument track in its colour, then the remix. */
 fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =

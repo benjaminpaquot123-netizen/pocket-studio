@@ -51,15 +51,18 @@ def converter(name):
             before = masked[pos:m.start()]
             word = indef
             if lang == "ar":
+                # « الـ Intro »: a clitic written apart from its Latin word (a space after the tatweel) is joined too,
+                # never left hanging before the Arabic word (« الـ مقدمة »).
+                near = before[:-1] if before.endswith("ـ ") else before
                 for c, pre in ARTICLE_CLITICS:
-                    if before.endswith(c):
-                        before = before[: -len(c)]
+                    if near.endswith(c):
+                        before = near[: -len(c)]
                         word = join(pre, deff)
                         break
                 else:
                     for c in PLAIN_CLITICS:
-                        if before.endswith(c):
-                            before = before[: -len(c)]
+                        if near.endswith(c):
+                            before = near[: -len(c)]
                             word = join(c[0], indef)
                             break
             if lang in ("zh-CN", "ja"):

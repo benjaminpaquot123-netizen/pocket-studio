@@ -463,7 +463,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : dans Mix, monte « Envoi réverbe » sur le pad « Clap », puis sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
+          "text": "À toi : dans la grille de la batterie, touche le pad « Clap », puis « Effets du pad » : monte « Envoi réverbe ». Fais de même dans Mix sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "clap,pad",

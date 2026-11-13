@@ -41,14 +41,25 @@ toucher ») reste couvert, puisqu'il n'y avait alors aucune note visible.
   venant de l'intégration) : hors des deux fichiers, non réenregistrée.
 - Quand aucune note à poser n'est dans la mesure visible et qu'elles sont aussi plus haut, la ligne dit « plus haut ↑ »
   avant « plus loin → » (ordre des textes dans `TutoPanel.kt`, hors lot).
-- La mesure des rangées visibles reste lue en composition (moyen ouvert de la relecture du lot 1) ; l'attente de 0,2 s
-  ajoute au plus deux recompositions du rouleau à son ouverture.
+- La mesure des rangées visibles reste lue en composition (moyen ouvert de la relecture du lot 1) ; les rangées
+  « stables » ajoutent une recomposition du rouleau chaque fois qu'elles se stabilisent à une nouvelle valeur (0,2 s
+  après un mouvement de la page), tuto ou non.
+- Les rangées ne sont attendues « stables » qu'en sortant de sous le panneau (zéro rangée visible). Une étape qui
+  commence pendant que le panneau change de hauteur place encore le rouleau sur les rangées du moment, comme avant.
+- Vu par la relecture dans `RhythmScreen.kt` (commit `5c72d686`, hors de ce lot) : un trait peint à l'arrêt éteint
+  « Suivre », une case touchée à l'arrêt non. À trancher avec le lot « tutogrille ».
 
 ## Vérifié
 - Tests ciblés : 63 tests verts (les six classes de la ligne « tests: »), dont `GestureBudgetTest` en entier.
-- Rouge constaté avant correction, sur l'assertion : les quatre tests de `TutoSightHintTest`.
+- Rouge constaté avant correction, sur l'assertion : les quatre tests de `TutoSightHintTest`. Jump up (100 et 130 %)
+  rougissait sur la flèche (« a dotted note is in sight, no arrow expected ») ; house (100 et 130 %) sur le placement
+  (« the roll opens with a dotted note in sight » : la note 45 du premier temps, celle que « Je le fais » demande,
+  dessinée de 519 à 549 px pour un rouleau visible à partir de 534). Après la relecture, cette assertion nomme la note
+  demandée elle-même.
+- Non couvert par un test : le second placement abandonné quand l'utilisateur a fait défiler le rouleau, et la demande
+  en attente servie une seule fois (lus par la relecture, sans défaut trouvé).
 - Captures du rouleau et du tuto vérifiées (165 tests) : seule `tuto_app_bass` change à cause du lot.
-- Self-test du banc (`scripts/bench/rejeu-defauts.sh`, comme le portail) : 0 rouge ; rejeu `t4-26-prise-clavier : oracle tenu`.
+- Self-test du banc (`scripts/bench/selftest.sh`, lancé comme le portail le lance, par `scripts/bench/rejeu-defauts.sh`) : 0 rouge ; rejeu `t4-26-prise-clavier : oracle tenu`.
 
 tests: com.pocketstudio.app.ui.GestureBudgetTest com.pocketstudio.app.tuto.TutoSightHintTest com.pocketstudio.app.tuto.TutoGrilleTest com.pocketstudio.app.rhythm.RhythmGrilleTest com.pocketstudio.app.synth.RollToolsWordsTest com.pocketstudio.app.tuto.TutoScreenTest
 

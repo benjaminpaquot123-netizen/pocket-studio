@@ -127,7 +127,11 @@ class TutoSightHintTest {
                 val arrow = if (row.start < s.top) "↑" else "↓"
                 assertTrue("no dotted note in sight, « $arrow » expected: $what", said.contains(arrow))
             }
-            if (log.size == 1) assertTrue("the roll opens with a dotted note in sight: $what", s.whole(next))
+            if (log.size == 1) {
+                // The note « Je le fais » asks for (the first one left, the one lit): itself whole in sight, not just another one.
+                val asked = leftNotes().first()
+                assertTrue("the roll opens with the note asked for (${asked.pitch}@${asked.start / NoteClip.TICKS_PER_STEP}, drawn at ${s.rows[asked]}) whole in sight: $what", asked in s.inTime && s.whole(asked))
+            }
             h.vm.addNote(next)
             settle()
         }

@@ -72,9 +72,15 @@ case "${1:?empreinte|code|ecris|verifie|resultats}" in
   resultats) [ -f "$lot_abs/selftest.ok" ] && grep -qxF "junit: $(junit_sum "$lot_abs")" "$lot_abs/selftest.ok" \
       && green_summary "$lot_abs" "${3:-.}" "${4:-$lot_abs/selftest-resume.txt}" ;;
   verifie) stamp="$lot_abs/selftest.ok"
-    [ -f "$stamp" ] && [ "$(head -2 "$stamp")" = "$(here)" ] && [ "$(sed -n 3p "$stamp")" = "lot: $lot_abs" ] \
-      && [ "$(sed -n 4p "$stamp")" = "sieges: $(seats "$lot_abs")" ] \
-      && [ -f "$lot_abs/selftest-resume.txt" ] && grep -qxF "resume: $(sum "$lot_abs/selftest-resume.txt")" "$stamp" \
-      && grep -qxF "junit: $(junit_sum "$lot_abs")" "$stamp" && green_summary "$lot_abs" ;;
+    # Round 6, lot banc7 (point 7): each refusal says its reason (a bare refusal sent seat E c looking for the wrong cause).
+    no() { echo "tampon : $*" >&2; exit 1; }
+    [ -f "$stamp" ] || no "aucun selftest.ok dans $lot_abs : lance scripts/bench/selftest.sh $lot_abs"
+    [ "$(head -2 "$stamp")" = "$(here)" ] || no "le code a changé depuis le selftest (commit ou fichiers hors docs/) : relance scripts/bench/selftest.sh $lot_abs"
+    [ "$(sed -n 3p "$stamp")" = "lot: $lot_abs" ] || no "ce tampon est celui d'un autre lot ($(sed -n 3p "$stamp")) : relance scripts/bench/selftest.sh $lot_abs"
+    [ "$(sed -n 4p "$stamp")" = "sieges: $(seats "$lot_abs")" ] || no "les start.txt des sièges de $lot_abs ont changé depuis le selftest (le tampon couvre exactement les start.txt présents quand il a tourné ; présents maintenant : $(cd "$lot_abs" && ls -d */start.txt 2>/dev/null | cut -d/ -f1 | tr '\n' ' ')) : laisse seulement les start.txt des sièges à jouer (mets les autres de côté hors du dépôt), PUIS relance scripts/bench/selftest.sh $lot_abs"
+    { [ -f "$lot_abs/selftest-resume.txt" ] && grep -qxF "resume: $(sum "$lot_abs/selftest-resume.txt")" "$stamp"; } \
+      || no "le résumé du selftest de $lot_abs a changé ou manque : relance scripts/bench/selftest.sh $lot_abs"
+    grep -qxF "junit: $(junit_sum "$lot_abs")" "$stamp" || no "les résultats JUnit de $lot_abs ne sont plus ceux du tampon : relance scripts/bench/selftest.sh $lot_abs"
+    green_summary "$lot_abs" ;;
   *) echo "empreinte|code|ecris|verifie|resultats" >&2; exit 2 ;;
 esac

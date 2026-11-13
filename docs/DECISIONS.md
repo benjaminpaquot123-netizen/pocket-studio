@@ -1506,3 +1506,4 @@
 - 2026-11-13 · lot « exports2 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-exports2.md`
 - 2026-11-13 · lot « paquet7 » (tour-6) : 4 décision(s) dans `docs/decisions/tour-6-paquet7.md`
 - 2026-11-13 · lot « tuto3b » (tour-6) : 12 décision(s) dans `docs/decisions/tour-6-tuto3b.md`
+- 2026-11-13 · lot « constate » (tour-6) : 48 décision(s) dans `docs/decisions/tour-6-constate.md`

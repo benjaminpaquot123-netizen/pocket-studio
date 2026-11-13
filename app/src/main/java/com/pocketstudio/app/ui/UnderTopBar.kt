@@ -108,3 +108,7 @@ fun PositionStrip(
     /** Lot 4d: false where the page shows the tempo itself (the Live page's bar). */
     showTempo: Boolean = true,
 ) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug, tempoSteps = tempoSteps, showTempo = showTempo)
+
+/** The play strip's position: what [playPosition] says of [p] now. */
+internal fun stripPosition(p: com.pocketstudio.model.Project, playing: Boolean, session: com.pocketstudio.app.rhythm.SessionUi, bar: Int, playFrom: Int, loopPart: Boolean): PlayPosition? =
+    playPosition(p, playing, session.shownSongIndex, bar, playFrom, loopPart)

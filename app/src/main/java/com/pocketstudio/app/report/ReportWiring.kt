@@ -107,3 +107,8 @@ fun JournalWatch(vm: RhythmViewModel, report: BugReportViewModel, screen: () -> 
         }
     }
 }
+
+/** The report's « where the song is » line. */
+internal fun reportPosition(p: Project, playing: Boolean, session: com.pocketstudio.app.rhythm.SessionUi, bar: Int, playFrom: Int, loopPart: Boolean): String? =
+    com.pocketstudio.app.ui.playPosition(p, playing, session.shownSongIndex, bar, playFrom, loopPart)
+        ?.let { "${it.name} · mes. ${it.bar}/${it.bars}" + if (it.loop) " (en boucle)" else "" }

@@ -42,3 +42,12 @@ ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll, zone 
 - Mineur 1 pris : les briques comptées comme le moteur les joue (clip de toutes les parties, clip « une fois » sur ses passages, piste muette non entendue) ; `HeardLengthTest#bricksAreCountedAsTheEngineLoopsThem`.
 - Mineurs laissés (noté) : le compteur boucle sur la plus longue des longueurs, pas leur PPCM (partie de 3 mesures + brique de 4) ; `takeCounter` (`record/Takes.kt`, hors liste) dit encore « 1/1 » pendant une prise ; numérateur sur la partie entendue, dénominateur sur la partie affichée (défaut d'avant) ; le modulo de `barNow` n'est pas couvert sous Robolectric (`playBar` vaut -1).
 - À aligner à l'entrée du second (chef) : `SongLength.of` de padlive2 compte `loopSteps` des briques de la partie ; `heardSceneSteps` suit `engineLoopSteps` / `belongsTo` / sourdine : même nombre pour une prise posée dans une brique (6, 2, 5 mesures → 8, 2, 4).
+
+## Contrôle Ba-4 / Ab-5 (code testé 831a5a66) : suites
+controle: Ba-4 | code testé: 831a5a66 | bloqués: 0 | graves neufs: 0
+controle: Ab-5 | code testé: 831a5a66 | bloqués: 0 | graves neufs: 0
+- Constatés par le contrôle : A4, A6 (structure et boucle), P6.
+- **P5, autre chemin** (Ab-5, écrans 30-33) : le projet Live déjà ouvert, retouché dans « Mes projets », s'ouvrait sur « Mon morceau » ; il revient comme « Continuer » le ramène, sur Pad Live. `Coquille2SeatTest#p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive`.
+- **A6, autre chemin** (Ba-4, écrans 33-39) : la chanson posée dans un projet sans structure l'allongeait à 20 mesures sans un mot ; c'est dit (« Tu bucle se convierte en un tema tan largo como la canción (0:40). ↶ Deshacer … »), 14 langues. `Coquille2SeatTest#a6_aLoopMadeAsLongAsTheSongIsSaid`.
+chemin: Pad Live › ← › Mes projets › Live (le projet ouvert) (fr, Mode simple) | test: Coquille2SeatTest#p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive
+chemin: Remix › Otras opciones… › Poner en mi proyecto (bloques), projet sans structure (es, Mode simple, main gauche) | test: Coquille2SeatTest#a6_aLoopMadeAsLongAsTheSongIsSaid

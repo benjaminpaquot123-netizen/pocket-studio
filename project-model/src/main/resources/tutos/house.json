@@ -299,7 +299,7 @@
         },
         {
           "id": "map_break",
-          "text": "Écoute le Break : le kick et la basse se taisent, il reste le piano et les charleys.",
+          "text": "Écoute le Break (la pause du morceau) : le kick et la basse se taisent, mais le piano et les charleys continuent.",
           "check": "listen",
           "listen": "part:Break",
           "why": "Sans pause, le Drop suivant ne ferait plus d'effet."
@@ -328,7 +328,7 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis tout se tait juste avant le Drop.",
+          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure. Le temps de silence juste avant le Drop, tu le feras au chapitre « Les transitions ».",
           "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, pad « Rim », piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",
@@ -358,7 +358,7 @@
         },
         {
           "id": "make_drop2",
-          "text": "À toi : crée le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances de fin de phrase (« Montre-moi » les pose).",
+          "text": "À toi : touche « Créer la partie » pour faire le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances (de petits coups de batterie en fin de phrase, qui annoncent la suite).",
           "textPro": "À toi : crée le Drop 2 : tout, sur la batterie de l'exemple (4 mesures, une relance en fin de phrase).",
           "check": "part:Drop 2:full",
           "spot": "song.parts",

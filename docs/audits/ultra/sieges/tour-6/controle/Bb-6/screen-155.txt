@@ -1,0 +1,66 @@
+Écran 155 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « Sing, pfeif oder spiel eine Melodie (oder wähl eine Aufnahme oder eine MIDI-Datei): Ihre Noten ersetzen die der Piano Roll. Rückgängig holt sie zurück. » [coupé] @ 450,302
+bouton (micro) «   Mikro » @ 243,353
+bouton (feuille et flèche) «   Ein Sound » @ 657,353
+bouton (feuille et flèche) «   Eine MIDI-Datei (.mid) » @ 450,437
+titre « TONLEITER UND AKKORDE » [état « Aufgeklappt »] @ 259,557
+bouton « ? » @ 455,557
+bouton « Song-Akkorde (alle Teile) » @ 450,627
+texte « F Moll » @ 227,711
+texte « A♭ Dur » @ 356,711
+texte « D♭ Dur » @ 488,711
+texte « Erraten » @ 86,711
+bouton « Frei » @ 218,795
+bouton « Dur » @ 326,795
+bouton « Moll » @ 437,795
+bouton « Dorisch » @ 577,795
+texte « Tonleiter » @ 95,870
+bouton « Moll-Penta » @ 267,870
+bouton « Dur-Penta » @ 470,870
+bouton « Blues » @ 636,870
+bouton « Phrygisch » [sélectionné] @ 261,945
+bouton « Harmonisch Moll » @ 502,945
+bouton « C » @ 204,1029
+bouton « C♯ » @ 292,1029
+bouton « D » @ 380,1029
+bouton « E♭ » @ 463,1029
+bouton « E » @ 547,1029
+bouton « F » [sélectionné] @ 628,1029
+bouton « F♯ » @ 713,1029
+bouton « G » @ 799,1029
+texte « Grundton » @ 99,1067
+bouton « A♭ » [coupé] @ 208,1093
+bouton « A » [coupé] @ 293,1093
+bouton « B » [coupé] @ 374,1093
+bouton « H » [coupé] @ 455,1093
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,70 @@
+Écran 221 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: F · Build-up » @ 132,273
+bouton « Studio-Kick FX » @ 123,335
+bouton « Kick 2 » @ 341,335
+bouton « Snare » @ 559,335
+bouton « Rumble FX » @ 777,335
+bouton « Clap FX » @ 123,412
+bouton « Hi-Hat L 30 » @ 341,412
+bouton « Offene Hi-Hat R 30 » @ 559,412
+bouton « Tiefes Tom » @ 777,412
+bouton « Mittleres Tom R 45 » @ 123,490
+bouton « Hohes Tom » @ 341,490
+bouton « Rim FX R 50 » @ 559,490
+bouton « Cowbell » @ 777,490
+bouton « Becken R 40 » @ 123,568
+bouton « Shaker L 50 » @ 341,568
+bouton « Conga » @ 559,568
+bouton « Zap » @ 777,568
+bouton « Kit: Studio » ▾ @ 127,646
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 565,646
+bouton ● «  Meine Pads aufnehmen » @ 206,747
+bouton (horloge et flèche) «  Behalten, was ich gerade gespielt habe » @ 693,747
+icône (chronomètre) «  1 » @ 449,747
+titre « STEPS: CLAP · BUILD-UP » [état « Aufgeklappt »] @ 362,872
+bouton « ? » @ 435,872
+bouton « Alle Pads » @ 770,872
+bouton « 1 » @ 143,956
+bouton « 2 » @ 224,956
+bouton « 3 » @ 305,956
+bouton « 4 » [sélectionné] @ 386,956
+bouton « Folgen » @ 502,956
+texte « Takt » @ 70,956
+texte « Takt 4/4 · Clap » [coupé] @ 148,1027
+texte « Die Effekte Kapitel 13/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Tippe auf das Pad „Clap“, dann unter seinem Raster auf „Pad-Effekte“: Dreh den „Reverb-Send“ auf. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

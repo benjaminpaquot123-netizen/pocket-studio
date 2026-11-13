@@ -1,0 +1,48 @@
+Écran 110 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+titre « TONLEITER UND AKKORDE » [état « Aufgeklappt »] @ 259,381
+bouton « ? » @ 455,381
+bouton « Song-Akkorde (alle Teile) » @ 450,451
+texte « F♯ Dur » @ 230,535
+texte « D♭ Dur » @ 362,535
+texte « E♭ Moll » @ 498,535
+texte « Erraten » @ 86,535
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,642
+icône (liste) « Kapitel » @ 759,643
+icône ⌄ @ 843,643
+texte « Du bist dran: Unter der Piano Roll, „Sound der Spur einstellen“: Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. » @ 450,777
+texte « Cutoff: noch +15 » @ 131,875
+texte « Das Kit Techno » [coupé] @ 139,943
+texte « ▸ Warum? » @ 450,990
+icône « Weiterlesen » ⌄ @ 450,1044
+bouton (doigt qui touche) «   Ich mach's » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,53 @@
+Écran 237 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Über den ganzen Teil · 4 Takte » [coupé] @ 274,168
+texte « Steps von Teil D (jeder Teil hat seine eigenen). » @ 321,214
+texte « Glätten » @ 467,277
+icône (loupe −) [désactivé] @ 580,277
+icône (loupe +) @ 688,277
+bouton (pinceau) « Zeichnen » @ 142,277
+bouton (courbe) « Linie » [sélectionné] @ 321,277
+texte « ×1 » @ 634,277
+texte « Linie: Tippe auf den Anfang, dann aufs Ende (oder wisch von einem zum anderen); eine gerade Rampe verbindet sie. » @ 450,394
+texte « 18,0 kHz » @ 81,491
+texte « 849 Hz » [coupé] @ 81,566
+texte « Die Effekte Kapitel 13/16 · Erledigt · Pro » @ 366,621
+icône (liste) « Kapitel » @ 759,622
+icône ⌄ @ 843,622
+image (coupe) @ 57,756
+texte « Bravo, Kapitel geschafft! » @ 259,719
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Der Mix“. » @ 475,776
+texte « Das Kit Techno » @ 139,874
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,940
+bouton « Kit Techno laden (4 MB) » [coupé] @ 450,987
+icône « Weiterlesen » ⌄ @ 450,1023
+bouton « Nächstes Kapitel   » → @ 450,1095
+bouton ▶ «  Meinen Song anhören » @ 251,1193
+icône ← @ 57,1193
+bouton ▶ «  Beispiel anhören » @ 558,1193
+icône « Weiter  » → @ 798,1193
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

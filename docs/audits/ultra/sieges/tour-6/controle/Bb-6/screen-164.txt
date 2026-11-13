@@ -1,0 +1,51 @@
+Écran 164 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Plaits » ⋮ @ 705,204
+icône ♪ « Sound » [coupé] @ 850,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Bassdrum Analoge Kick » ◎ [coupé] @ 174,303
+bouton « Snare Analoge Snare » ◎ [coupé] @ 450,303
+bouton « Hi-Hat Analoge Hi-Hat » ◎ [coupé] @ 726,303
+dessin @ 450,339
+texte « Resonanz » @ 432,339
+texte « 79 » @ 840,340
+curseur [état « 79 », à 78 %] @ 450,408
+dessin @ 450,476
+texte « Cutoff » @ 432,476
+texte « 79 » @ 840,477
+curseur [état « 79 », à 78 %] @ 450,545
+texte « Dein erster Teil: der Groove, deine Grundschleife Kapitel 8/16 · Schritt 1/2 · Pro » @ 366,642
+icône (liste) « Kapitel » @ 759,643
+icône ⌄ @ 843,643
+texte « Hör dir deinen Loop ein paar Sekunden an, dann das Beispiel: Das ist dein „Groove“ (das Wort der Musiker für einen Loop, bei dem man sich bewegen will). Diese Kick, die nie aufhört, und dieses kreisende Riff: Das ist Techno. » @ 450,800
+texte « Das Kit Techno » @ 139,941
+texte « ▸ Warum? » @ 450,990
+icône « Weiterlesen » ⌄ @ 450,1044
+bouton ▶ «   Dein Ergebnis anhören » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 450,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

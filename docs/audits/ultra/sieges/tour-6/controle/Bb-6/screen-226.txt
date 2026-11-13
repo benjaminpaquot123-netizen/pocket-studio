@@ -1,0 +1,56 @@
+Écran 226 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: F · Build-up » @ 132,273
+texte « Dieses Pad loopt über » [coupé] @ 188,316
+texte « − » [coupé] @ 386,322
+texte « 64 Steps » [coupé] @ 490,314
+texte « + » [désactivé, coupé] @ 594,322
+titre « PAD-SOUND » [état « Aufgeklappt »] @ 167,429
+bouton « ? » @ 271,429
+texte « Clap (synthetisiert) » @ 450,483
+bouton (notes sur une pile) «  Sound ändern » @ 450,552
+bouton (curseurs) «  Pad-Einstellungen » @ 450,636
+bouton (curseurs) « Pad-Effekte » @ 243,720
+bouton « Ganzes Kit » @ 657,720
+texte « Pad-Lautstärke » @ 414,788
+texte « 80 % » @ 822,789
+curseur [état « 80 % », à 80 %] @ 450,857
+texte « Pad-Panorama » @ 415,925
+texte « Mitte » @ 823,926
+curseur [état « Mitte », à 50 %] @ 450,994
+texte « Die Effekte Kapitel 13/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (rond coché) « Geschafft Nächster Schritt » → @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

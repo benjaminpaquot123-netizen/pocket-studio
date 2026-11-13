@@ -1,0 +1,52 @@
+Écran 159 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton (hachures) « Formanten Singende Vokale » [coupé] @ 174,314
+bouton (hachures) « Additiv Orgel und Obertöne » [coupé] @ 450,314
+bouton (hachures) « Wavetable Digitale 80er-Sounds » [coupé] @ 726,314
+bouton (hachures) « Wave Terrain Eine wandernde Welle » @ 174,385
+bouton (hachures) « String-Machine 70er-Streicher » @ 450,403
+bouton (hachures) « Akkorde Ein ganzer Akkord pro Taste » @ 726,385
+bouton (hachures) « Schwarm Ein Schwarm Sägezähne, sehr breit » @ 174,523
+titre « PHYSIKALISCH » [état « Aufgeklappt »] @ 450,599
+bouton (téléphone qui vibre) « Gezupfte Saite Gitarre, Harfe, gezupfte Saiten » @ 174,692
+bouton (téléphone qui vibre) « Modal (Percussion) Marimba, Glocken, Holz » @ 450,692
+bouton (téléphone qui vibre) « Partikel Staub und Knistern » @ 726,674
+bouton (téléphone qui vibre) « Gefiltertes Rauschen Gefilterter Atem und Wind » @ 174,830
+bouton (téléphone qui vibre) « Sprache Ein sprechender Roboter » @ 450,812
+titre « DRUMS » [état « Aufgeklappt »] @ 450,923
+bouton ◎ « Bassdrum Analoge Kick » @ 174,998
+bouton ◎ « Snare Analoge Snare » @ 450,998
+bouton ◎ « Hi-Hat Analoge Hi-Hat » @ 726,998
+dessin @ 450,1085
+texte « Resonanz » @ 432,1085
+texte « 60 » @ 831,1086
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

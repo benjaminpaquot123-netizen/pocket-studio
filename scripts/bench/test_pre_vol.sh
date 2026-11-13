@@ -247,5 +247,78 @@ git checkout -q fx-int
 out="$(scripts/bench/fusion-equipes.sh tour-9 paquet 2>&1)"; git merge --abort 2> /dev/null || true; git reset -q --hard fx-int
 if printf '%s\n' "$out" | grep -q "moves the batch"; then echo "vert  the portal names the batch rule"; else reds=$((reds + 1)); echo "ROUGE the portal names the batch rule"; printf '%s\n' "$out" | sed 's/^/      /'; fi
 
+# --- §13.9, first point (lot « portail3 », rules « from_paquet 4 ») --------------------------------------------------
+# From here the toy's portal can go to the end of a merge: stand-ins for the replays with their self-test, for Gradle
+# and for the judge (the real judge's functions, which rapport-zone.py reads; it prints the lines of juge.txt, then
+# « chantier : N écarts », or no such line when the file juge-muet is there). A branch moves the judge by changing
+# juge.txt.
+git checkout -q fx-int
+cat > scripts/bench/rejeu-defauts.sh <<'STUB'
+#!/usr/bin/env bash
+echo "1 verts, 0 rouges, 0 en quarantaine, 0 sautés" > "$PS_REJEUX_SELFTEST/selftest-resume.txt"
+echo "a stamp" > "$PS_REJEUX_SELFTEST/selftest.ok"
+echo "chantier : 0 écarts" > "$PS_REJEUX_SELFTEST/selftest-chantier.txt"
+echo "r1 : oracle tenu"
+STUB
+printf '#!/usr/bin/env bash\nexit 0\n' > scripts/bench/gradle-file.sh
+sed '/^if __name__ == "__main__":/,$d' "$src/scripts/bench/verifie-chantier.py" > scripts/bench/verifie-chantier.py
+cat >> scripts/bench/verifie-chantier.py <<'STUB'
+if __name__ == "__main__":
+    gaps = [l for l in open("juge.txt", encoding="utf-8").read().splitlines() if l] if os.path.exists("juge.txt") else []
+    for gap in gaps:
+        print(gap)
+    if not os.path.exists("juge-muet"):
+        print(f"chantier : {len(gaps)} écarts")
+STUB
+chmod +x scripts/bench/rejeu-defauts.sh scripts/bench/gradle-file.sh scripts/bench/decisions-index.sh
+old_gap="abcdef123 « vert: un ancien » : vert sans rouge du même test avant lui"
+printf '%s\n%s\n' "$old_gap" "résumé refusé : un écart qui s'en ira" > juge.txt
+git add scripts/bench juge.txt && git commit -q -m "the toy's portal goes to the end of a merge"
+batch() { git checkout -q fx-int && sed -i "s/^paquet: .*/paquet: $1/" scripts/bench/portail-paquet.txt && git commit -q -am "batch $1 (test)"; }
+# The real portal on one zone: its exit code in $prc, all it said in $pout, the integration's head before in $pbefore.
+portal() { # <zone>
+  git checkout -q fx-int
+  pbefore="$(git rev-parse HEAD)"
+  prc=0
+  pout="$(scripts/bench/fusion-equipes.sh tour-9 "$1" 2>&1)" || prc=$?
+}
+said() { # <label> <0 when what was wanted was seen>
+  if [ "$2" -eq 0 ]; then echo "vert  $1"; else reds=$((reds + 1)); echo "ROUGE $1 (portal: exit $prc)"; printf '%s\n' "$pout" | sed 's/^/      /'; fi
+}
+has() { printf '%s\n' "$pout" | grep -qF -- "$1"; }
+# Nothing left of an undone merge: the head back where it was, no file changed or left behind, no trace folder.
+untouched() { [ "$(git rev-parse HEAD)" = "$pbefore" ] && [ -z "$(git status --porcelain)" ] && [ -z "$(ls docs/audits/ultra/portail 2>/dev/null | grep -- "-$1\$")" ]; }
+
+# Rule 1: the portal undoes a merge that makes the judge go up, counted against the previous portal trace.
+batch 3
+# (The zones' names: the first trace's folder « …-jzz » sorts AFTER the second's « …-jaa »; the previous trace is the
+# last one committed, by the history, never the last by name.)
+team jzz && rapport jzz && review jzz
+portal jzz
+said "the judge is not compared without a previous portal trace" "$( [ "$prc" -eq 0 ] && has "no previous portal trace" && echo 0 || echo 1)"
+team jaa && printf '%s\n' "$old_gap" > juge.txt && git commit -q -am "one gap closed" && rapport jaa && review jaa
+portal jaa
+said "a lot that makes the judge go down is merged" "$( [ "$prc" -eq 0 ] && has "judge: 1 écarts (previous portal trace: 2" && echo 0 || echo 1)"
+# The lot that goes up: the old gap is still there, printed with a shorter sha (8 letters where the trace has 9), and
+# one gap is new.
+new_gap="1234abcd « vert: un neuf » : vert sans rouge du même test avant lui"
+team jup && printf '%s\n%s\n' "${old_gap/abcdef123/abcdef12}" "$new_gap" > juge.txt && git commit -q -am "one gap more" && rapport jup && review jup
+portal jup
+said "before batch 4 a judge that goes up is only said" "$( [ "$prc" -eq 0 ] && has "the judge goes up (1 → 2 écarts" && has "refused from batch 4" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 4
+portal jup
+said "from batch 4 a lot that makes the judge go up is undone" "$( [ "$prc" -ne 0 ] && has "jup: the judge goes up (1 → 2 écarts" && has "undone" && untouched jup && echo 0 || echo 1)"
+said "the refusal names the new gap, not the old one printed with a shorter sha" "$( has "$new_gap" && ! has "un ancien" && echo 0 || echo 1)"
+team jmuet && echo x > juge-muet && git add juge-muet && git commit -q -m "the judge says no count" && rapport jmuet && review jmuet
+portal jmuet
+said "from batch 4 a judge without its « chantier : » line is undone" "$( [ "$prc" -ne 0 ] && has "jmuet: the judge printed no « chantier : N écarts » line" && untouched jmuet && echo 0 || echo 1)"
+# A previous trace without the judge's count (an older portal's): nothing to compare with, the lot is merged.
+git checkout -q fx-int && mkdir -p docs/audits/ultra/portail/2026-01-01-tour-9-faux \
+  && echo "résumé absent" > docs/audits/ultra/portail/2026-01-01-tour-9-faux/selftest-chantier.txt \
+  && git add docs/audits/ultra/portail && git commit -q -m "Portal traces of the merge of faux (tour-9)"
+portal jup
+said "a previous trace without the judge's count refuses nothing" "$( [ "$prc" -eq 0 ] && has "has no « chantier : » line" && echo 0 || echo 1)"
+
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

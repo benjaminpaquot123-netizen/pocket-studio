@@ -245,6 +245,8 @@ class I18nCatalogTest {
             "GuideParcours.kt: fr",
             // « Tuto de A à Z »: the course's texts (tutos/*.json, checked by TutoCourseTest) and the styles' names (ModelTextsTest).
             "TutoPanel.kt: fr",
+            // Tour 6, lot 2, T2: a quote of the course's French text (tutos/*.json), kept only when it is a kit pad's name.
+            "TutoPanel.kt: theirs[k]",
             // The key sheet's scales (Scale, checked by ModelTextsTest).
             "TutoPanel.kt: sc.label",
             "TutoPanel.kt: harmony.scale.label",

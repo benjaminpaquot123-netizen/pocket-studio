@@ -159,6 +159,12 @@ abstract class HumanTester(private val seat: String) {
         }
         backgroundQuiet(2_000)
         runCatching { service?.destroy() }
+        // Round 6, lot ci2 (CI 43279184052, Zone3JourneysTest#redoAfterUndoInTheModeSimple red): the rest above ignores a worker
+        // waiting on a socket (as « attends » must), so the app's own network work (the assistant's packs' catalogue from GitHub)
+        // ran on past a short test and was the next one's inherited state, or not, by the CI's network speed. Waited for here,
+        // the main looper running, only while every busy app worker is on the network, [NETWORK_END_CAP_MS] at most; other work
+        // and what is left past the cap stay the detector's to name (BenchNetworkEndTest).
+        appNetworkWorkEnded(NETWORK_END_CAP_MS)
         SeparationJob.set(SeparationState.Idle)
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         TutoTestHooks.player = null
@@ -230,6 +236,7 @@ abstract class HumanTester(private val seat: String) {
         var gestures = 0
         var same = 0
         var lastPrint: String? = null
+        var lastSong: Int? = null
         var afterWait = false
         val source = o.replayOf
         // PLAN-RESTE 7.5 (rejeu lisible): the seat the replay was made from (its screens, its finger's journal), and what
@@ -265,16 +272,20 @@ abstract class HumanTester(private val seat: String) {
             val heardNow = heard()
             File(dir, "sound-$n.txt").let { if (!it.isFile) it.writeText(heardNow) }
             val print = fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"))
+            val song = songDigest()
             // « Rien ne change » (the screens after « attends » or « regarde » neither count nor reset it). Round 1 (lot banc):
             // nor while a long work shows its progress (a separation, an export, a pack being made): the screen waits
             // for it, the tester is not going round in circles; the count starts again once it is over.
             if (longWorkShown()) {
                 same = 0
             } else if (!afterWait) {
-                same = if (print == lastPrint) same + 1 else 1
+                // Tour 6, E1 (seat D b #70): notes touched into the piano roll are drawn, not written in the screen's text
+                // (lot « réalisme » R1): the song that changed at the gesture is a change too, whatever the screen's text.
+                same = if (print == lastPrint && song == lastSong) same + 1 else 1
                 if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
             }
             lastPrint = print
+            lastSong = song
             val sound = publish(dir, n, notes)
             journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
@@ -474,6 +485,9 @@ abstract class HumanTester(private val seat: String) {
      */
     private fun fingerprint(text: File, sound: File): String =
         ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+
+    /** The open project as it would be saved, digested (null: none open): what a gesture changed of the song. */
+    private fun songDigest(): Int? = runCatching { vm()?.project?.value?.let { com.pocketstudio.model.ProjectJson.encode(it).hashCode() } }.getOrNull()
 
     /** The stalls the watchdog saw since the last turn, into the journal. */
     private fun stalls(journal: File, n: Int) {
@@ -688,13 +702,18 @@ abstract class HumanTester(private val seat: String) {
         if (NativeEngine.sink !== engine) return null
         val pads = v.project.value.live
         val states = IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStatesNow)
-        val hits = engine.clips.hitsPlayed().distinct()
+        // Tour 6, E12 (seat C b #58): each pad with its number of hits (« tape … 4 » on one pad was heard « une fois »).
+        val played = engine.clips.hitsPlayed().groupingBy { it }.eachCount()
+        val hits = played.keys.toList()
+        fun times(pad: Int) = played[pad]?.let { if (it == 1) "une fois" else "$it fois" }.orEmpty()
         val loops = states.indices.filter { states[it] == 2 && pads.at(it)?.oneShot == false }
         val waiting = states.indices.filter { states[it] == 1 }
         fun names(list: List<Int>) = list.sorted().joinToString(", ") { "${it + 1}" }
         return listOfNotNull(
             hits.takeIf { it.isNotEmpty() }?.let { h ->
-                if (h.size == 1) "le pad live ${h[0] + 1} (« ${pads.at(h[0])?.name ?: "?"} ») a joué une fois" else "les pads live ${names(h)} ont joué une fois"
+                if (h.size == 1) "le pad live ${h[0] + 1} (« ${pads.at(h[0])?.name ?: "?"} ») a joué ${times(h[0])}"
+                else if (h.all { played[it] == 1 }) "les pads live ${names(h)} ont joué une fois"
+                else "les pads live ont joué : " + h.sorted().joinToString(", ") { "le ${it + 1} ${times(it)}" }
             },
             loops.takeIf { it.isNotEmpty() }?.let { if (it.size == 1) "le pad live ${it[0] + 1} joue en boucle" else "les pads live ${names(it)} jouent en boucle" },
             waiting.takeIf { it.isNotEmpty() }?.let {
@@ -1479,6 +1498,38 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /**
+     * The app's network work at the end of a test (lot ci2): waited for, the main looper running, while at least one app worker
+     * is busy and every busy one waits on a socket ([onTheNetwork]), [capMs] at most. Work of the app off the network is not
+     * waited for: the detector (BenchPristine) still names it, as before.
+     */
+    private fun appNetworkWorkEnded(capMs: Long) {
+        val until = System.currentTimeMillis() + capMs
+        while (System.currentTimeMillis() < until) {
+            val busy = appWorkers()
+            if (busy.isEmpty() || !busy.all(::onTheNetwork)) return
+            Thread.sleep(20)
+            runCatching { shadowOf(Looper.getMainLooper()).idle() }
+        }
+    }
+
+    /** The coroutine workers running the app's code (a frame of com.pocketstudio), as BenchPristine.appThreads names them. */
+    private fun appWorkers(): List<Thread> {
+        var root = Thread.currentThread().threadGroup
+        while (root.parent != null) root = root.parent
+        val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
+        val n = root.enumerate(threads, true)
+        return (0 until n).mapNotNull { threads[it] }.filter { t ->
+            t.name.startsWith("DefaultDispatcher-worker") && t !== Thread.currentThread() && t.stackTrace.any { "pocketstudio" in it.className }
+        }
+    }
+
+    /** [t] is in a network call (socket, HTTP or TLS frames anywhere in its stack: an HTTPS read is deep below the app's frame). */
+    private fun onTheNetwork(t: Thread): Boolean = t.stackTrace.any { f ->
+        f.className.startsWith("sun.nio.ch.") || f.className.startsWith("java.net.") || f.className.startsWith("sun.net.") ||
+            f.className.startsWith("sun.security.ssl.") || f.className.startsWith("javax.net.ssl.")
+    }
+
+    /**
      * Flaky fix (audit stage 1): « attends 2 » passes 2 s of the main thread's clock at once, but the work the
      * app runs off the main thread (a project created, a pack read, on Dispatchers.IO / Default) needs real
      * time, and a loaded machine (the whole suite) gave it less than the 160 ms below: the screen was read
@@ -2113,6 +2164,8 @@ abstract class HumanTester(private val seat: String) {
 
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
+        /** The bench's end waits this long at most for the app's network work (PackStore's catalogue: 10 s to connect, 15 s a read); past it, the detector names what is left. */
+        const val NETWORK_END_CAP_MS = 30_000L
 
         /**
          * PLAN-RESTE 4.7 (T5-Cc-41b, round 5 seat C c: « 1 KB »; the phone: 42 Mo for 2 min 26): the bench's encoder is a shadow

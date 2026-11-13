@@ -147,7 +147,7 @@ class StemBoardVmTest {
         val depth = vm.session.undoDepth
         vm.stemBoard.chop(set.id, 3)
         // Audit ultra round 1, n° 2: the kit's first eight are never taken: pads 9 to 11.
-        assertEquals("3 phrases sur les pads 9 à 11.", said(vm))
+        assertEquals("3 phrases sur les pads 9 à 11. (Batterie · 16 pads)", said(vm))
         val p = vm.project.value
         // The kick and the snare as they were.
         assertNull(p.drums.lanes[0].sample)

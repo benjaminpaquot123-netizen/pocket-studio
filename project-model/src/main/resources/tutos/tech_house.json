@@ -38,7 +38,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord tout le morceau : la basse fait la mélodie.",
+          "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord tout le morceau : la basse fait la mélodie. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -105,7 +105,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 (environ 60 % sur une MPC) : les doubles croches entre les autres arrivent en retard, ça roule.",
+          "text": "À toi : mets le swing à 33 % (environ 60 % sur une MPC) : les doubles croches entre les autres arrivent en retard, ça roule.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,hat,perc,perc2"
@@ -216,8 +216,17 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -346,7 +355,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Drop B, Break, Montée, Drop B et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:16,Drop B:16,Break:8,Montée:8,Drop B:16,Fin:8",
@@ -398,6 +408,7 @@
           "text": "À toi : dans la partie « Drop B », ajoute le charley ouvert entre les kicks : la 2e moitié du Drop brille plus.",
           "textPro": "À toi : dans « Drop B », ajoute le charley ouvert sur les contretemps (les blocs C-D d'EDMProd ajoutent une couche).",
           "check": "changed:drums:Drop B",
+          "target": "open_hat",
           "spot": "rhythm.pattern",
           "listen": "part:Drop"
         }

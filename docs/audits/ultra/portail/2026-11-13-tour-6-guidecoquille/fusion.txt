@@ -1,0 +1,8 @@
+fusion: d4958947595325b2a3a69badd52585f6a433f74d
+branche: eq/tour-6-guidecoquille
+tete: a7a8f0ae260915893337f410ae44eeb94c98e872
+relecture: docs/audits/ultra/tour-6-guidecoquille-relecture.md
+relu: db12edee7ec96412ec5dcd177968b0e8f0b11215
+filtres: com.pocketstudio.app.nav.Tour6GuideCoversTest com.pocketstudio.app.nav.Tour6GuideLanguageTest com.pocketstudio.app.nav.Tour6GuideNextStepTest com.pocketstudio.app.nav.Tour6GuideAndTutoTest com.pocketstudio.app.nav.Tour6RecordStopStaysTest com.pocketstudio.app.nav.Tour6HomeStopsMusicTest com.pocketstudio.app.nav.Tour6ModeSwitchAsksTest com.pocketstudio.app.nav.Tour6AudioPagesMoreTest com.pocketstudio.app.nav.Tour6RemixCancelTest com.pocketstudio.app.nav.Tour6MixerNamesTest com.pocketstudio.app.nav.Tour6PadLiveEffectsTitleTest com.pocketstudio.app.nav.SpacesTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.nav.GuideJourneyTest com.pocketstudio.app.nav.Tour6GuideCoversTest com.pocketstudio.app.nav.Tour6GuideLanguageTest com.pocketstudio.app.nav.Tour6GuideNextStepTest com.pocketstudio.app.nav.Tour6GuideAndTutoTest com.pocketstudio.app.nav.Tour6RecordStopStaysTest com.pocketstudio.app.nav.Tour6HomeStopsMusicTest com.pocketstudio.app.nav.Tour6ModeSwitchAsksTest com.pocketstudio.app.nav.Tour6AudioPagesMoreTest com.pocketstudio.app.nav.Tour6RemixCancelTest com.pocketstudio.app.nav.Tour6MixerNamesTest com.pocketstudio.app.nav.Tour6PadLiveEffectsTitleTest com.pocketstudio.app.nav.SpacesTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.nav.GuideJourneyTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

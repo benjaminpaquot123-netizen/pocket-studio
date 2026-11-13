@@ -1,0 +1,43 @@
+Écran 58 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 233,42
+bouton « 专业 » @ 494,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+bouton (maison) « 首页 继续、新歌曲、Remix… » › @ 450,210
+bouton (dossier ouvert) « 我的项目 打开、创建、复制、分享项目 » › @ 450,315
+bouton (? dans un rond) « 帮助 快速导览、向导、术语表 » › @ 450,420
+bouton (drapeau) « 我的第一首歌，跟着向导做 最初的卡片，从选风格到分享 » › @ 450,525
+bouton (livre ouvert) « 音乐词汇，听着学 每个词都配有声音示例 » › @ 450,630
+bouton (roue dentée) « 设置 语言、主题、大小、声音、简单模式 » › @ 450,735
+bouton (interrupteur) › « 切换到简单模式 五个标签页：我的歌曲、节奏、键盘、混音、分享 » [coupé] @ 450,799
+image (chapeau de diplômé) @ 37,855
+texte « 踩镲和打击乐 第 4/16 章 · 第 1/5 步 · 专业 » @ 400,855
+icône (liste) @ 771,855
+icône ⌄ @ 843,855
+image (coupe) @ 57,960
+texte « 太棒了，成功了！ » @ 174,945
+texte « 听听你的成果，准备好了就点“下一步”。 » @ 261,975
+bouton « 下一步   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  听你的成果 » @ 258,1209
+bouton ▶ «  听示例 » @ 580,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » [sélectionné] @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

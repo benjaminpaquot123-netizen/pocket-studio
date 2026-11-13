@@ -508,3 +508,7 @@ SimpleMixScreenshotTest.mixMuet	CONTRAST	1	tour 5 restes (2026-11-11) : « Sorti
 ScreenshotTest.automationNewCurve	HELP	16	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automation (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
 ScreenshotTest.automationPickerHasCurve	HELP	10	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automationPicker (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
 ScreenshotTest.effectsSpotSend	HELP	2	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.effectsFull (les deux envois) (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
+CutBoutShortScreenshotTest.frAt100	HELP	5	tour 6, lot remixdecoupe : « Un bout » sur une page courte, les mêmes onglets des pistes et Annuler que cutScreenOnePiece (ligne plus haut)
+CutBoutShortScreenshotTest.frAt100	CONTRAST	1	tour 6, lot remixdecoupe : « Écouter le bout », à demi sous le fondu du bas qui dit « la suite dessous » (règle des listes du tour 5, ScrollHintBox) tant que la colonne n'a pas défilé ; lisible une fois défilé
+CutBoutShortScreenshotTest.frAt130	HELP	5	tour 6, lot remixdecoupe : comme frAt100 (onglets des pistes et Annuler)
+CutBoutShortScreenshotTest.ptBrAt200	HELP	4	tour 6, lot remixdecoupe : comme frAt100, un onglet de moins à l'écran (la rangée défile à 200 %)

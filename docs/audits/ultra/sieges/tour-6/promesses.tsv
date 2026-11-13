@@ -1,0 +1,88 @@
+siege	id	promesse	ecran	tenue	pourquoi	contredite
+A/a	t6-Aa-1	Je change de partie et c'est bien la partie touchée qui s'affiche et se joue	39	oui	à l'arrêt « C · मुखड़ा » touché → en-tête « मुखड़ा », partie C joue (écrans 14 et 39) ; en lecture, la partie choisie passe « अगला » puis joue et s'affiche (écran 45)	contredite
+A/a	t6-Aa-2	« ▶ यह पार्ट » / « ▶ गाना »	40	oui	« यह पार्ट » boucle la partie affichée (« मुखड़ा बार 2/8 », écrans 15 et 40) ; « गाना » relance le morceau entier (« बार 25/104 », écran 16)	
+A/a	t6-Aa-3	नया गाना → Pop	36	oui	le 2e morceau s'ouvre directement en « सिंपल », sans l'écran « सिंपल या प्रो? »	
+A/a	t6-Aa-4	टेस्ट चेकलिस्ट	19	oui	la tuile « टेस्ट चेकलिस्ट » est dans « और » en Mode simple et ouvre la Recette (écran 20), mais seulement après défilement	contredite
+A/b	t6-Ab-1	« Ma mélodie Mélodie »	49	oui	prise au Clavier (3 notes), Retour pendant la prise (#9), Pad Live, retour par Mes projets : la piste « Ma mélodie » est là, « Vider » actif, notes visibles en « Tout voir » (Do4 mesure 4, une autre fin de mesure 3)	
+A/b	t6-Ab-2	« Tout couper »	56	oui	pads et ▶ lancés : après #28 et #55, « Son : rien ne joue. », ▶ revient, tous les pads éteints ; aucun compteur affiché dans Pad Live	
+A/b	t6-Ab-3	« EFFETS LIVE »	60	oui	4 glissés (#18, #19, #58, #59), aucun effet allumé ni annoncé ; mais un appui long sur « Écho » (#60) n'annonce rien non plus, la preuve est faible	
+A/b	t6-Ab-4	« boucle »	55	non	5 essais (#13, #14, #16, #27, #54), musique en route : le pad s'allume et joue dès l'écran suivant, jamais d'[anneau pâle]	
+A/c	t6-Ac-1	1. Partager un morceau se fait en 3 gestes au plus depuis le studio	10	oui	onglet « Partager » (#6), bouton « Partager » (#7), « WhatsApp » (#9) : 3 gestes, « C'est prêt » à l'écran 10	
+A/c	t6-Ac-2	2. « Mes exports » s'atteint en Mode simple (grave C d #50)	27	oui	bouton « Mes fichiers » visible dans l'onglet Partager en Simple, il ouvre la liste (vide aux écrans 28 et 31, pleine à l'écran 43 : voir défaut)	contredite
+A/c	t6-Ac-3	3. Le projet envoyé en .zip est listé dans « Mes exports »	38	oui	« Trap-20261112-195658.pocketstudio.zip » en tête de la liste, aussi à l'écran 43	
+A/c	t6-Ac-4	4. La longueur annoncée avant l'export est celle du fichier exporté	10	oui	« 2:58 » annoncé (écran 7), « Durée : 2 min 58 s » au bilan (écran 10) ; chiffre du banc, rien jugé de plus	
+B/a	t6-Ba-1	bouton « Simple Para empezar: 5 pestañas, botones grandes y palabras de todos los días. »	3	non	hors du pouce gauche : la carte Simple (écran 3, revu 8), les puces Voz/Batería/Bajo/Resto de « Cortar la canción » (écran 22), les onglets « Pistas de audio » (écran 42) ; « Cortar lo que quiero » demande un glissement d'abord (écran 19)	
+B/a	t6-Ba-2	bouton ✂ «  Cortar lo que quiero »	18	oui	une seule carte orange conseillée après séparation (« Tocar con el proyecto » est en contour) ; séparation rapide : 1 seul geste d'attente (attends 30) après le choix de la chanson	
+B/a	t6-Ba-3	icône (flèches en boucle) « A comp. 1/1 »	39	non	chanson de 0:40 jouée avec un projet d'une mesure en boucle, aucun « la fin será cortada » nulle part sur le panneau (haut revu écran 41)	
+B/a	t6-Ba-4	titre « COMP. 2 A 5 »	28	non	après « Frases », la grande forme d'onde prend la place de la ligne d'outils (« Un trozo », « En el tiempo », ↶, « Inicio aquí », « Fin aquí », « Escuchar el trozo ») qui disparaît	
+B/b	t6-Bb-1	Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %)	23	oui	curseur Swing visible au-dessus du tuto ; à 5 % exactement « Bravo, Kapitel geschafft! » (6 % refusé, il faut viser juste)	
+B/b	t6-Bb-2	Tippe bei einem Sound auf ☆, um ihn unter „Favoriten“ wiederzufinden.	232	oui	☆ à côté de chaque son (Techno), touché → ★, puis « Favoriten 1 Sound » en tête de liste (écran 233)	
+B/b	t6-Bb-3	Neue Kurve: zeichne sie unten.	203	oui	la courbe montée-descente dessinée en deux traits s'affiche aussitôt en barres jaunes	
+B/b	t6-Bb-4	Einstellung zeigen	205	oui	ouvre « Effekte · Melodie », Filter, curseur Cutoff, avec « Eine Kurve bewegt diese Einstellung während der Wiedergabe. »	
+B/b	t6-Bb-1	Du bist dran: Stell den Swing auf 25	62	non	Swing mis à 25 % deux fois (#58, #61), l'étape reste « Schritt 4/5 », la liste dit 4 « 0/5 » (écran 85)	
+B/b	t6-Bb-2	Tippe bei einem Sound auf ☆, um ihn unter „Favoriten“ wiederzufinden.	70	oui	☆ visible à côté de chaque son, devient ★, « Favoriten 1 Sound » apparaît (écran 71)	contredite
+B/b	t6-Bb-3	Neue Kurve: zeichne sie unten.	79	oui	la courbe du filtre tracée au doigt s'affiche aussitôt (image 79)	contredite
+B/b	t6-Bb-4	Einstellung zeigen	80	oui	ouvre « Effekte · Drums » sur « 4. Filter » sélectionné, avec « Eine Kurve bewegt diese Einstellung während der Wiedergabe. »	
+B/c	t6-Bc-1	« محترف للذهاب أبعد: كل الأدوات، البنية والأصوات والمزج والعزف المباشر. »	3	oui	accueil → « البدء من الصفر » → « بسيط أم محترف؟ » → « محترف » : projet ouvert en Pro en 2 gestes, sans impasse, tout en arabe et de droite à gauche	
+B/c	t6-Bc-2	« مرّر Fader للمستوى؛ اضغط على اسم مسار لمؤثراته ومنحنياته. »	34	oui	Fader d'Acid 303 à « -10.5 », effet « 1. Distortion » ajouté (Drive 74%) ; après fermeture, puis après Réglages et retour au Mix, « -10.5 » et le badge ✨ « 1 » restent affichés	
+B/c	t6-Bc-3	« ✏ رسم »	33	oui	note posée sur la ligne « دو4 » (#16, « 1 note du synthé »), glissée (#17) : sur l'image 33 elle est plus haut et plus à droite	
+B/c	t6-Bc-4	« اللغة »	32	oui	passage à English (écran 29), puis retour à « العربية » (écran 32) : tout l'écran revient en arabe	contredite
+D/a	t6-Da-1	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	223	oui	« おめでとう、曲が完成！ » atteint (écran 223), aucune impasse ; mais 5 étapes d'écoute non validées en silence ont coûté un détour (fiche 1)	contredite
+D/a	t6-Da-2	À chaque étape du tuto, le texte d'aide est lisible et l'élément montré est bien à l'écran	78	non	cases et notes en pointillés cachées sous le panneau du tuto (écrans 21, 78, 114)	
+D/a	t6-Da-3	Je peux quitter le tuto puis le reprendre là où je l'avais laissé	42	oui	Retour système à l'écran 40 (chap. 4 étape 1/3), « 続ける » → repris à la même étape (écran 42)	
+D/a	t6-Da-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	81	non	« スタブ », « コード », « リフ », « ライド », « フェーダー », « 小節 » jamais expliqués ; pads nommés autrement que sur l'écran	
+D/a	t6-Da-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	49	non	« Perc », « Rim », « Groove » restent en latin ; bouton « キット テクノ をダウンロード » vraiment coupé (image 17)	
+D/a	t6-Da-1	1. Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	102	pas	chapitres 1 à 6 suivis sans impasse, budget de 120 gestes épuisé au chapitre 7/15, « Bravo » jamais atteint	
+D/a	t6-Da-2	2. À chaque étape du tuto, le texte d'aide est lisible et l'élément montré est bien à l'écran	83	non	la note à toucher passe sous le panneau du tuto (83), le pad « バスドラム類 » n'existe pas à l'écran (20), le bouton de téléchargement est recouvert (6)	
+D/a	t6-Da-3	3. Je peux quitter le tuto puis le reprendre là où je l'avais laissé	101	oui	« チュートリアルをやめる（あとで再開できます） » puis « チュートリアルを再開 » ramène au chapitre 6 terminé ; idem par Retour puis « 続ける » (36)	
+D/a	t6-Da-4	4. chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	34	non	小節, 2拍目と4拍目 (34), キー/スケール (12), リフ (102), スタブ et コード (86), ロール (22) jamais expliqués	
+D/a	t6-Da-5	5. tous les textes vus sont dans ma langue, aucun en français ni coupé	51	non	« Perc » (51), « Groove » (99), « NEW » (35), « Plaits » (65) restent en anglais ; « ゴーストベース » coupé (65)	
+D/b	t6-Db-1	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	70	pas	arrivée au chapitre 5/15 sans impasse, puis le banc a clos le siège (pas de « Bravo » vu)	
+D/b	t6-Db-2	Chaque étape du tuto se valide quand je fais le geste demandé	57	non	étape « 내 결과 듣기 » écoutée puis arrêtée, aucun « 성공 », il a fallu « 다음 » ; l'étape claps validée sans le « 2마디로 바꾸기 » annoncé	
+D/b	t6-Db-3	Le bouton du tuto ne cache aucun contrôle dont j'ai besoin	51	non	le panneau du tuto couvre la 2e rangée de cases pointillées (퍼크) et les notes pointillées de la basse (écran 60)	
+D/b	t6-Db-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	43	non	« 업비트 » non expliqué (la puce explique « 엇박 »), « 마디 », « 노트 », « 루프 », « 퍼크 » jamais expliqués	
+D/b	t6-Db-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	18	non	tout en coréen, mais l'aide des pads est coupée par le panneau (« 길게 누… »)	
+D/c	t6-Dc-1	1. Le tuto Pro se suit sur au moins 3 chapitres sans impasse	84	oui	chapitres 1 à 4 finis et 5 entamé sans impasse (« 4 踩镲和打击乐 » coché)	
+D/c	t6-Dc-2	2. Chaque étape se valide quand je fais le geste demandé	47	non	j'ai écouté l'exemple puis « 下一步 » : l'appli dit « 太棒了，本章完成！ » mais la liste montre « 1 速度和调性 3/4 »	
+D/c	t6-Dc-3	3. Le Guide s'ouvre depuis le studio et son texte est complet	56	non	« 打开我这首歌的向导 » ouvre juste l'onglet 结构, sans aucun texte de guide ; l'autre « 向导 » ouvre « 帮我做一首 » (nouvelle chanson)	
+D/c	t6-Dc-4	4. chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	34	non	混响、失真、滤到 200 Hz、抽吸、弗里几亚、幽灵音、十六分音符、钢琴卷帘、小二度、截止 : rien n'est expliqué	
+D/c	t6-Dc-5	5. tous les textes vus sont dans ma langue, aucun en français ni coupé	28	non	« four-on-the-floor », « Pattern », « Ride », « Drop » restent en anglais ; le bouton « 效果 » est coupé (écran 89)	
+E/a	t6-Ea-1	Pad Live NEW Pads ready to play, your sounds, live effects. It sounds right away.	4	oui	premier toucher sur « Clap » : le pad s'allume et le son part tout de suite (après 1 attente de « Preparing the ready-to-play pads… »).	
+E/a	t6-Ea-2	Stop all	18	oui	projet en lecture + boucle « My take 1 » : « Stop all » coupe tout (aussi écrans 12, 33 en pleine prise, 41 pendant « Listen »).	
+E/a	t6-Ea-3	Set kept · 0:09	40	oui	après REC/End, « Listen » rejoue la performance ; la prise « My take 1 » rejoue aussi sur le pad B1 (écran 14).	contredite
+E/a	t6-Ea-4	Effects · Remix	24	oui	curseurs Speed/Depth/Shape/Left-right entiers et réglables (Depth 60 % → 23 %) ; seules les rangées de puces défilantes sont coupées au bord, et elles défilent.	
+E/a	t6-Ea-5	Pac…	19	non	tout est en anglais, mais des textes sont coupés à 130 % : « Pac… » (écran 19) et « drums, bass, vocals a… » (écran 47).	
+E/b	t6-Eb-1	Streaming · −14 LUFS → Mijn-eerste-beat-loop-streaming-20261112-213547.m4a	16	oui	export M4A « streaming » fait (écran 7), présent dans Mijn bestanden (écran 16)	
+E/b	t6-Eb-2	Club · −8 LUFS → Mijn-eerste-beat-loop-club-20261112-213615.wav	16	oui	export WAV « club » fait (écran 15), présent dans Mijn bestanden (écran 16)	
+E/b	t6-Eb-3	0:16 een deel als loop / 0:32 een deel als loop	15	oui	annoncé 0:16 → « M4A, 48 kHz, 256 kb/s · 16 s » (écran 7), annoncé 0:32 → « WAV, 48 kHz, 24 bits · 32 s » (écran 15)	
+E/b	t6-Eb-4	Luid, zoals in een club (−8 LUFS), gemeten op het luidste stuk. … [coupé]	11	non	tout est en néerlandais, mais le texte d'aide Club est coupé et « Ongedaan… » est tronqué dans la barre du bas	
+E/c	t6-Ec-1	Tout le Remix se fait sans bouton hors de l'écran ni texte coupé avec la police 200 %	18	non	dans « Cortar a música » la courbe et les barres Início/Fim n'apparaissent jamais ; « Baixar o modelo (174 », « Cortar a mú… », « Bateri », « Guard ar » coupés	
+E/c	t6-Ec-2	La séparation de la chanson se lance et se termine	16	oui	modèle téléchargé, chanson lue, puis puces Bateria / Baixo / Resto / Voz	
+E/c	t6-Ec-3	Un bout de voix se pose sur un pad ou une piste	25	oui	« “Voz 1” está no pad live 1. » (écran 21) et « “Voz 1” está numa nova faixa de áudio, no compasso 3. » (écran 25) ; mais c'est la voix entière, pas un bout choisi	
+E/c	t6-Ec-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	13	non	« La menor » au lieu de « Lá menor », et beaucoup de mots coupés (« Des… », « Crie uma bat… », « Bateri »)	
+F/a	t6-Fa-1	Un son joue dès le premier morceau	7	oui	▶ « il brano » après 2 réglages de pas : le banc dit « la musique du projet joue en boucle »	
+F/a	t6-Fa-2	Une deuxième partie se crée et se joue	15	oui	« + Nuova parte (copia di A) » crée B (écran 9), le brano joue B puis A (écrans 15 et 30) ; mais A est sortie du brano (fiche plus bas)	contredite
+F/a	t6-Fa-3	Je ne passe jamais en Pro sans l'avoir voulu	83	oui	toujours « Semplice » jusqu'à la fin, malgré Guida, Condividi, Impostazioni, Aiuto (je n'ai touché aucun bouton « Pro »)	
+F/a	t6-Fa-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	55	non	« Sempli… » et « Batteri / a » coupés, mots anglais (tab, kick, timeline, Squelchy), faute « su il pad »	
+F/b	t6-Fb-1	Przesuń fader, żeby zmienić głośność	7	oui	Acid 303 réglé à -10,5 au geste #5, toujours -10,5 après Struktura puis retour (écran 7) et après changement de langue (écran 26)	
+F/b	t6-Fb-2	✏ Rysuj	18	oui	note posée sur C5 (écran 13, le synthé joue 1 note), glissée plus haut et à droite, l'image écran 18 la montre déplacée	
+F/b	t6-Fb-3	Język	25	oui	Polski → English (écran 22) puis retour à Polski (écran 25), tout repasse en polonais	
+F/b	t6-Fb-4	Przewodnik  · Zrób drugą część 30 %	22	non	en anglais l'étape du Guide reste en polonais ; en polonais, « Prosty: 5 zakładki » est faux et des textes sont coupés (écran 2)	
+G/a	t6-Ga-1	Remix Parça ayırma: davul, bas, vokal ve geri kalanı.	37	oui	Davul/Bas/Kalan/Vokal apparaissent (écran 14), « Dinle » joue la chanson et chaque piste se coupe pendant l'écoute (écran 37)	
+G/a	t6-Ga-2	Vokali cümlelere böl	15	oui	« 9 ile 14 arası pad'lerinde 6 cümle. », les pads Vokal 1 à 6 existent et sonnent (écran 26)	
+G/a	t6-Ga-3	(aucun message « sonu kesilecek » vu)	13	non	chanson de 0:40 ajoutée à un projet d'1 mesure : aucun avertissement, le projet passe en silence à 20 mesures ; passage « 20. ölçüden, 8 ölçü » (écran 42) sans avertissement non plus	
+G/a	t6-Ga-4	0:00 / 0:40 · başlangıç	13	non	tout est en turc, mais des textes sont coupés à 130 % (« başlangıç », « hazırlanıyor… », « Sıra sende: »)	
+G/b	t6-Gb-1	Pad Live BARU Pad siap dimainkan, suaramu, efek live. Langsung berbunyi.	3	oui	premier toucher sur « Tepuk tangan » : le pad s'allume et joue une fois tout de suite	
+G/b	t6-Gb-2	Merekam yang kamu mainkan di pad, per birama penuh (aucun texte vu sur l'attente des pads)	17	non	5 essais (écrans 5, 6, 14, 17, 28), loop déjà en route ou musique lancée : le pad passe tout de suite [allumé], jamais d'anneau pâle d'attente	
+G/b	t6-Gb-3	Stop semua (kotak merah di bawah) menghentikan semuanya: pad, musik, dan waktu.	18	oui	écrans 18, 29, 35, 40 : tout s'arrête, le ▶ du haut revient, tempo 124 inchangé, aucun compteur ne tourne	
+G/b	t6-Gb-4	Pad Live punya 4 halaman berisi 16 pad, A sampai D	33	non	rien en français ni coupé, mais des mots anglais restent : « bar » (écrans 19-21, alors que l'aide dit « birama »), « take-mu » (écran 33)	
+H/a	t6-Ha-1	1. Le premier lancement mène jusqu'au tuto Facile sans impasse	4	oui	« J'apprends » → « Simple … Avec le tuto Facile » → style House → chapitre 1/15 ouvert, en 3 gestes	
+H/a	t6-Ha-2	2. Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	247	oui	« Bravo, ton morceau est fini ! » atteint sans « Suivant » forcé, mais avec des détours (chap. 7 surtout)	
+H/a	t6-Ha-3	3. Chaque étape du tuto se valide quand je fais le geste demandé	239	oui	chaque étape faite passe en « Réussi » ; un coup sur le mauvais pad (Cymbale) n'a pas validé, ce qui est juste	
+H/a	t6-Ha-4	4. chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	13	non	« Tonalité », « gamme mineure », « La », « 909 / 707 », « accord », « relances de fin de phrase », « Break » jamais expliqués ; « pad du tambourin » introuvable	
+H/a	t6-Ha-5	5. tous les textes vus sont dans ma langue, aucun en français ni coupé	242	non	tout est en français, mais « Tout est prêt : aucun solo oublié, aucune piste » coupé au bord, et le champ « Nom du morceau » coupé à l'écran 247	
+H/a	t6-Ha-1	Le premier lancement mène jusqu'au tuto Facile sans impasse	4	oui	J'apprends → Simple (« Avec le tuto Facile ») → Techno → tuto ouvert, 3 gestes, sans impasse	
+H/a	t6-Ha-2	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	104	pas	budget de 120 gestes fini au chapitre 7/15 (6 chapitres faits sans impasse), « Bravo » final jamais atteint	
+H/a	t6-Ha-3	Chaque étape du tuto se valide quand je fais le geste demandé	102	oui	les 15 étapes faites ont toutes donné « Réussi » ou « Bravo, chapitre fini ! » dès le geste fait	
+H/a	t6-Ha-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	52	non	« Perc » (pad absent de l'écran), « mesure », « temps 2 et 4 », « stab », « accord », « riff », « basse » jamais expliqués	
+H/a	t6-Ha-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	69	non	tout est en français, mais « Basse en fantôme » est coupé (on lit « Bas ») et le bouton du kit Techno est caché sous un fondu	

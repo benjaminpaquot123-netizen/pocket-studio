@@ -210,6 +210,12 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
     with tempfile.TemporaryDirectory() as d:
+        banc7_launcher_messages(d)
+    with tempfile.TemporaryDirectory() as d:
+        banc7_stamp_reason(d)
+    with tempfile.TemporaryDirectory() as d:
+        banc7_budget_and_launcher_stall(d)
+    with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
         fingerprint_stable(d)
@@ -225,6 +231,9 @@ def main():
         replay_exact_name(d)
         mutated_red(d)
         replay_window(d)
+        replay_python(d)
+        mutated_bench_helper(d)
+        red_seen_bench_test(d)
         red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
@@ -269,6 +278,10 @@ def main():
         measured_numbers(d)
     with tempfile.TemporaryDirectory() as d:
         empty_cases(d)
+    with tempfile.TemporaryDirectory() as d:
+        verdict_without_state(d)
+    with tempfile.TemporaryDirectory() as d:
+        promises_of_one_seat(d)
     print("ultra bench scripts: OK")
 
 
@@ -602,6 +615,89 @@ def seats_from_ids(d):
     write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
+
+
+def banc7_budget_and_launcher_stall(d):
+    """Round 6, lot banc7 (point 6): « 120 gestes ne suffisent pas pour atteindre le « Bravo » » (D a, H a: budget gone at
+    chapter 7/15); a whole tutorial needs about 250. And the launcher's Gradle queue killed a lot after 20 min without
+    output (PS_STALL_MIN) although a seat may wait 30 min for its tester's next gesture (timeout.minutes=30)."""
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t120\tDébutant\tlibre: le tuto se finit\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "Da" in (r.stdout + r.stderr) and "250" in (r.stdout + r.stderr),
+          "a whole tutorial with 120 gestures is refused, naming the seat and the 250 it needs:\n" + r.stdout + r.stderr)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t250\tDébutant\tlibre: le tuto se finit\n")
+    run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("gestes.max=250" in open(os.path.join(tour, "lotD", "a", "start.txt"), encoding="utf-8").read(), "250 gestures pass")
+    # The launcher: its Gradle queue waits longer than the longest seat's timeout (its own watchdog ends a silent seat first).
+    root = os.path.join(d, "fake-root")
+    os.makedirs(os.path.join(root, "scripts", "bench"))
+    import shutil
+    shutil.copy(os.path.join(HERE, "..", "human-tester.sh"), os.path.join(root, "scripts", "human-tester.sh"))
+    seen = os.path.join(d, "stall.txt")
+    fakes = {"tampon.sh": "#!/usr/bin/env bash\nexit 0\n", "gradle-file.sh": f"#!/usr/bin/env bash\necho \"${{PS_STALL_MIN:-unset}}\" > {seen}\n",
+             "sortie-de-siege.py": "import sys\n"}
+    for name, text in fakes.items():
+        write(os.path.join(root, "scripts", "bench", name), text)
+        os.chmod(os.path.join(root, "scripts", "bench", name), 0o755)
+    lot = os.path.join(d, "lotS")
+    write(os.path.join(lot, "a", "start.txt"), "lang=fr\ntimeout.minutes=30\n")
+    write(os.path.join(lot, "b", "start.txt"), "lang=fr\ntimeout.minutes=45\n")
+    env = {k: v for k, v in os.environ.items() if k != "PS_STALL_MIN"}
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "human-tester.sh"), lot], capture_output=True, text=True, env=env, timeout=60)
+    stall = open(seen).read().strip() if os.path.exists(seen) else "(gradle-file not reached) " + r.stderr
+    check(stall.isdigit() and int(stall) > 45, "the launcher's queue waits longer than the longest seat timeout (45 min): " + stall)
+
+
+def banc7_launcher_messages(d):
+    """Round 6, lot banc7 (point 8): a seat never waits 15 min for a bench that was not started (E9: « L'appli ne s'est
+    pas ouverte (15 min) » at the first « regarde » of four seats)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    seat = os.path.join(lot, "c")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    act = os.path.join(HERE, "..", "human-act.py")
+    # Point 8: no bench running for this lot, nothing on screen yet: told at once what to start.
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+        said, code = r.stdout + r.stderr, r.returncode
+    except subprocess.TimeoutExpired:
+        said, code = "(no answer after 30 s)", None
+    check(code == 1 and "scripts/human-tester.sh" in said and lot in said,
+          "a seat with no bench running is told at once to start scripts/human-tester.sh <lot>:\n" + said)
+    # The bench running (its marker names a live process): the seat waits for its first screen as before (no early refusal).
+    write(os.path.join(lot, ".banc-en-cours"), f"{os.getpid()}\n")
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=3)
+        waited = False
+    except subprocess.TimeoutExpired:
+        waited = True
+    check(waited, "with the bench running, « regarde » waits for the first screen instead of refusing")
+    # A marker left by a bench that died (no such process) is no bench running.
+    write(os.path.join(lot, ".banc-en-cours"), "999999999\n")
+    r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+    check(r.returncode == 1 and "scripts/human-tester.sh" in r.stdout, "a dead bench's marker is not a bench running:\n" + r.stdout)
+
+
+def banc7_stamp_reason(d):
+    """Round 6, lot banc7 (point 7): the stamp refused because the seats' start.txt changed since the self-test says so,
+    and what to do (seat E c and E11: a bare « No green self-test for this code »)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    write(os.path.join(lot, "c", "start.txt"), "lang=fr\n")
+    # Point 7: the stamp refused because the seats' start.txt changed since the self-test says so, and what to do.
+    tampon = os.path.join(HERE, "tampon.sh")
+    fp = os.path.join(d, "banc7", "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    green_lot(lot)
+    subprocess.run([tampon, "ecris", lot, fp], check=True)
+    check(subprocess.run([tampon, "verifie", lot]).returncode == 0, "the lot's fresh stamp fits")
+    write(os.path.join(lot, "a", "start.txt"), "lang=de\n")
+    r = subprocess.run([tampon, "verifie", lot], capture_output=True, text=True)
+    check(r.returncode != 0 and "start.txt" in r.stderr and "selftest.sh" in r.stderr,
+          "a stamp refused for the seats' start.txt says so, and to run the self-test with only the seats to play:\n" + r.stderr)
+    tester = os.path.join(HERE, "..", "human-tester.sh")
+    r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
+    check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
 
 
 def bench_guards(d):
@@ -1515,8 +1611,171 @@ def replay_window(d):
     spec = importlib.util.spec_from_file_location("verifie_chantier", os.path.join(HERE, "verifie-chantier.py"))
     judge = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(judge)
-    check(judge.REPLAYS_UNTIL == "db66a3ce8844a157a81f8cf63e18a05b47343493",
-          f"the replays' window ends at the base of the lot juge6, not {judge.REPLAYS_UNTIL}")
+    check(judge.REPLAYS_UNTIL == "1585bb4672edd5e9f824f890966c1659398d79fc",
+          f"the replays' window ends at the base of the lot juge7, not {judge.REPLAYS_UNTIL}")
+
+
+def replay_python(d):
+    """Lot « juge7 » (the rejeux6 lot's pair d56efddf / 37e2c8ed: the red adds unittest tests to scripts/bench/
+    test_socle.py, the green names none): a bench script's test is replayed like a Kotlin one. « test: Classe#méthode »
+    is a « def test_… » written right in « class Classe(…) » of a scripts/bench/test_*.py, not skipped; the JUnit XML
+    names it « <module>.Classe ». A helper, a skipped test, a test of another class or outside the bench's tests
+    pairs nothing."""
+    root = judge_root(d, "juge-python")
+    resume = os.path.join(root, "selftest-resume.txt")
+    code = os.path.join(root, "scripts", "bench", "counter.py")
+    git_toy(root, "init", "-q")
+    write(code, "def count():\n    return 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    keys = ("honest", "skipped", "helper", "otherclass", "elsewhere")
+    for key in keys:
+        path = os.path.join(root, "scripts", "bench" if key != "elsewhere" else "tools", f"test_{key}.py")
+        deco = "    @unittest.skip(\"later\")\n" if key == "skipped" else ""
+        cls = "Other" if key == "otherclass" else "CounterCounts"
+        name = f"run_the_{key}_counter_once" if key == "helper" else f"test_the_{key}_counter_counts"
+        write(path, f"import unittest\n\n\nclass {cls}(unittest.TestCase):\n{deco}    def {name}(self):\n        pass\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"rouge: the {key} counter is guarded")
+        red = git_toy(root, "rev-parse", "HEAD").strip()
+        write(code, f"def count():\n    return \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the {key} counter reads the song")
+        shas[key] = (red, git_toy(root, "rev-parse", "HEAD").strip(), name)
+    for key, (red, green, name) in shas.items():
+        folder = os.path.join(root, "docs", "audits", "ultra", "paires-rejouees", green)
+        write(os.path.join(folder, "rejeu.txt"), f"rouge: {red}\ntest: CounterCounts#{name}\nrejoué : clone jetable\n")
+        for f, body in (("rouge.xml", '<failure message="0 != 1"/>'), ("vert.xml", "")):
+            write(os.path.join(folder, f), f'<testsuite><testcase classname="test_{key}.CounterCounts" name="{name}">{body}</testcase></testsuite>')
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", shas[keys[-1]][1]], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    check(short["honest"][0] not in out and short["honest"][1] not in out, "a bench script's test replayed is a pair:\n" + out)
+    for key in keys[1:]:
+        check(f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
+    check(f"chantier : {2 * (len(keys) - 1)} écarts" in out, "a red and a green per failed replay, nothing else:\n" + out)
+
+
+def red_seen_bench_test(d):
+    """Lot « juge7 », after replay_python: a red seen in a run (rouges-constates/) may be a bench script's test, but
+    the green leaves that test file alone, as it leaves app/src/test alone: a green that edits scripts/bench/test_*.py
+    and calls its own red « seen » pairs nothing."""
+    root = judge_root(d, "juge-constate-banc")
+    resume = os.path.join(root, "selftest-resume.txt")
+    bench = os.path.join(root, "scripts", "bench")
+    test_file = os.path.join(bench, "test_seen.py")
+    tool = os.path.join(bench, "seen_tool.py")
+    test_text = "import unittest\n\n\nclass SeenRun(unittest.TestCase):\n    def test_the_seen_case_holds(self):\n        pass\n"
+    write(test_file, test_text)
+    write(tool, "def seen():\n    return 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in ("honest", "touchestest"):
+        write(tool, f"def seen():\n    return \"{key}\"\n")
+        if key == "touchestest":
+            write(test_file, test_text + "        # touched\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeenRun#test_the_seen_case_holds {key}")
+        full, parent = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {parent}\ntest: SeenRun#test_the_seen_case_holds\n")
+        write(os.path.join(folder, "TEST-seen.xml"), '<testsuite><testcase classname="test_seen.SeenRun" '
+              'name="test_the_seen_case_holds"><failure message="0 != 1"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    check(shas["honest"] not in out, "a bench script's test seen red in a run, its green leaving it alone, is a pair:\n" + out)
+    check(f"{shas['touchestest']} « vert:" in out, "a green that edits the bench test it calls its red pairs nothing:\n" + out)
+    check("chantier : 1 écarts" in out, "one green without red, nothing else:\n" + out)
+
+def mutated_bench_helper(d):
+    """Lot « juge7 » (the rejeux6 lot's greens a95d9667 and 2e2c5f3d): the bench's own code is under the tests (a Kotlin
+    file of app/src/test with no @Test, such as SeatOptions.kt) or is a bench script (rejeu-etiquettes.py, its test
+    in scripts/bench/test_socle.py). A mutation may take a line off such a helper, and the test the green adds may be
+    a bench script's test. A line taken off a file that holds a test (a @Test, or a scripts/bench/test_*.py) is still
+    no red."""
+    root = judge_root(d, "juge-mute-banc")
+    resume = os.path.join(root, "selftest-resume.txt")
+    human = os.path.join(root, "app", "src", "test", "java", "com", "pocketstudio", "app", "human")
+    other = os.path.join(root, "app", "src", "test", "java", "x")
+    bench = os.path.join(root, "scripts", "bench")
+    git_toy(root, "init", "-q")
+    # Review of « juge7 », G1: a test marked « @org.junit.Test » is a test (fqtest); M1: only the bench's helpers
+    # (app/src/test/…/human/), not any helper of the app's tests (otherhelper).
+    keys = ("kthelper", "pyscript", "intest", "inpytest", "fqtest", "otherhelper", "late")
+
+    def tests_of(key):
+        return other if key == "otherhelper" else human
+    base_kt = "fun reach(): Int {\n    var y = 1\n    return y\n}\n"
+    base_py = "def reach():\n    y = 1\n    return y\n"
+    for key in keys:
+        write(os.path.join(tests_of(key), f"{key.capitalize()}Seat.kt"), base_kt)
+        write(os.path.join(bench, f"{key}_tool.py"), base_py)
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in keys:
+        cls = f"{key.capitalize()}ReachTest"
+        tests = tests_of(key)
+        helper = os.path.join(tests, f"{key.capitalize()}Seat.kt")
+        tool = os.path.join(bench, f"{key}_tool.py")
+        write(helper, base_kt + "\nfun nearest(x: Int): Int {\n    var y = x\n    y += 1\n    return y\n}\n")
+        write(tool, base_py + "\n\ndef nearest(x):\n    y = x\n    y += 1\n    return y\n")
+        if key in ("pyscript", "inpytest"):
+            name = "test_a_command_stands_for_an_untagged_button"
+            body = "        self.assertEqual(1, 1)\n        y = 2\n" if key == "inpytest" else "        self.assertEqual(1, 1)\n"
+            write(os.path.join(bench, f"test_{key}.py"), f"import unittest\n\n\nclass {cls}(unittest.TestCase):\n    def {name}(self):\n{body}")
+            module = f"test_{key}"
+        else:
+            name = "aTagOutOfTheThumbsReachIsTouchedInsideTheReach"
+            extra = "\n  private fun more(): Int {\n    var z = 1\n    return z\n  }\n" if key in ("intest", "fqtest") else ""
+            mark = "@org.junit.Test" if key == "fqtest" else "@Test"
+            write(os.path.join(tests, f"{cls}.kt"), f"class {cls} {{\n  {mark}\n  fun {name}() {{}}\n{extra}}}\n")
+            module = "x"
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the {key} touch lands within the thumb's reach")
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), cls, name, module)
+    history_end = shas[keys[-2]][0]
+
+    def cut(path, line):
+        """The diff of path with its last [line] taken off (taken by git, then undone)."""
+        text = open(path, encoding="utf-8").read()
+        head, sep, tail = text.rpartition(line)
+        assert sep, (path, line)
+        write(path, head + tail)
+        out = git_toy(root, "diff", "--", path)
+        write(path, text)
+        return out
+
+    for key, (green, cls, name, module) in shas.items():
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-mutes", green)
+        tests = tests_of(key)
+        if key in ("kthelper", "otherhelper", "late"):
+            p = cut(os.path.join(tests, f"{key.capitalize()}Seat.kt"), "    y += 1\n")
+        elif key == "pyscript":
+            p = cut(os.path.join(bench, f"{key}_tool.py"), "    y += 1\n")
+        elif key in ("intest", "fqtest"):
+            p = cut(os.path.join(tests, f"{cls}.kt"), "    var z = 1\n")
+        else:
+            p = cut(os.path.join(bench, f"test_{key}.py"), "        y = 2\n")
+        write(os.path.join(folder, "mutation.patch"), p)
+        write(os.path.join(folder, "rejeu.txt"), f"test: {cls}#{name}\nmuté : clone jetable\n")
+        write(os.path.join(folder, "rouge.xml"), f'<testsuite><testcase classname="{module}.{cls}" name="{name}"><failure message="no point"/></testcase></testsuite>')
+        write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="{module}.{cls}" name="{name}"></testcase></testsuite>')
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", history_end], capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    for key in ("kthelper", "pyscript"):
+        check(short[key] not in out, f"a line taken off the bench's own code ({key}) makes the green's new test fail: its red:\n" + out)
+    for key in ("intest", "inpytest", "fqtest", "otherhelper", "late"):
+        check(f"{short[key]} « vert:" in out, f"a mutation that does not hold ({key}) is no red:\n" + out)
+    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
 
 
 def judge_topic_pairs(d):
@@ -3285,6 +3544,82 @@ def missions_of_round_1(d):
     write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "Live", "stars": []}], "shared": []}))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "defi")
     check("mission=partielle" in out and "défi ouvert" in out, "a challenge opened:\n" + out)
+
+
+def verdict_without_state(d):
+    """Round 6 (lecture-recurrents § 7): the seats' etat/ is not committed; seat-metrics re-run on them turned B a, E b and
+    F a « reussie » into « non » (the oracles read an empty state). Without etat/, a re-run keeps the verdict of the seat's
+    own mesures.json and says why; with no verdict to keep, it says « inconnu », never a « non » that looks measured."""
+    for mission, kept in (("simple", "reussie"), ("exports", "reussie"), ("remix-voix", "reussie"), ("tuto-pro", "partielle"),
+                          ("libre", "reussie")):
+        seat = os.path.join(d, mission)
+        write(os.path.join(seat, "start.txt"), f"mission={mission}\n")
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("MODE pro", "MODE simple"))
+        write(os.path.join(seat, "mesures.json"), json.dumps({"siege": mission, "mission": mission, "resultat": kept,
+                                                               "pourquoi": "lu dans l'état du siège", "mesures": {}}))
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and "état du siège absent" in out and "lu dans l'état du siège" in out,
+              f"{mission}: no etat/, the committed verdict « {kept} » is kept and said so:\n" + out)
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and out.count("état du siège absent") == 1, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
+    # Another mission asked by hand: the committed verdict is not that mission's, nothing to keep.
+    out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "simple"), "--mission", "voix")
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state and no verdict of that mission: unknown:\n" + out)
+    # No mesures.json and no etat/: unknown, never « non ».
+    seat = os.path.join(d, "neuf")
+    write(os.path.join(seat, "start.txt"), "mission=exports\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B)
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state, nothing committed: unknown:\n" + out)
+    # libre proven by the journal alone (a sound heard, a file shared, 3 screens, ended by the tester): it stands.
+    write(os.path.join(seat, "start.txt"), "mission=libre\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#2 PARTAGE boucle.m4a\n"
+                                                               "#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 > touche 3 3\n"
+                                                               "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 FIN : fin"))
+    write(os.path.join(seat, "sound-2.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=reussie" in out and "partagé : boucle.m4a" in out and "prouvé sans l'état" in out, "a success the journal proves stands:\n" + out)
+    # padlive reads the journal only: computed as before, state or not.
+    os.remove(os.path.join(seat, "sound-2.txt"))
+    write(os.path.join(seat, "start.txt"), "mission=padlive\n")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "aucun son" in out, "padlive needs no state:\n" + out)
+    # With etat/ there, the oracle reads it (a downgrade read in the state is the state's, not silent).
+    seat = os.path.join(d, "simple")
+    write(os.path.join(seat, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "état du siège absent" not in out, "the state there is read:\n" + out)
+
+
+def promises_of_one_seat(d):
+    """Round 6 (lecture-recurrents § 7): each seat had its own promise ids (t6-Aa-1…), each checked by one seat, and the
+    dashboard said « promesses tenues 0/0 ». The template v2 lines (« promesse: id=… | tenue: oui|non|pas vue ») are
+    counted: kept / decided, and the ones not seen; an older line without id still counts; a seat's later report (its
+    « -suite ») that decides a promise first « pas vue » replaces the « pas vue »."""
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "mission: libre | buts: -\n"
+          "promesse: id=t9-Aa-1 | texte: Le pad joue | ecran: 3 | tenue: oui | pourquoi: il joue\n"
+          "promesse: id=t9-Aa-2 | texte: La partie s'affiche | ecran: 4 | tenue: non | pourquoi: écran vide\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 9 | tenue: pas vue | pourquoi: budget épuisé\n")
+    write(os.path.join(tour, "lotA", "a-suite", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 200 | tenue: oui | pourquoi: Bravo atteint\n")
+    write(os.path.join(tour, "lotA", "b", "rapport.md"),
+          "siege: b | profil: p | lang: de | device: phone | font: 100 | mode: pro\n"
+          "promesse: id=t9-Ab-1 | texte: Export | ecran: 5 | tenue: oui | pourquoi: fichier là\n"
+          "promesse: id=t9-Ab-2 | texte: Swing | ecran: 6 | tenue: pas vue | pourquoi: pas atteint\n"
+          "promesse: Le son part au premier toucher | ecran: 2 | tenue: oui\n")
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), tour, "--base", base, "--verdicts", verdicts)
+    row = next((l for l in board.splitlines() if l.startswith("| D |")), "")
+    check("4 oui, 1 non, 1 pas vue" in row, "D counts every promise line, one seat each (oui / non / pas vue):\n" + board)
+    curve = next((l for l in board.splitlines() if l.startswith("| tour-9 |")), "")
+    check("| 4/5 |" in curve and "0/0" not in curve, "the curve's promises kept: 4 of the 5 decided, never « 0/0 »:\n" + board)
 
 
 if __name__ == "__main__":

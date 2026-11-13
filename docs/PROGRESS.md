@@ -1,6 +1,21 @@
 # Avancement
 
-## Où on en est (2026-10-28)
+## Où on en est (2026-11-13, matin)
+- Étape 5 du plan d'action : **tour 6 joué et corrigé dans la nuit du 12 au 13 novembre**. 19 sièges du banc (8 du plan + 11 de la 2e vague « croisement des langues »), 3 tutos joués en entier (français et japonais en Facile, allemand en Pro, 300 gestes), un balayage automatique des tutos (1 110 parcours verts : 37 styles, Facile et Pro, 15 langues) et un siège son à la mesure. Tout est rangé sous `docs/audits/ultra/sieges/tour-6/` (texte seul ; les écrans lourds restent sur la branche `claude/benstudio-audit-tour-6-gonv23-rassemble`). À lire d'abord : `synthese-tour-6.md`, puis `lecture-recurrents.md`, `verdicts.tsv`, `lots-correction.md`.
+- Bilan : 105 défauts uniques, 43 récurrents, 45 sur le tuto et le Guide, 1 bloquant (découpe invisible à police 200 %), 8 graves. Tri : 67 réels, 11 voulus, 3 artefacts du banc, 5 doublons.
+- Corrections fusionnées par le portail (tête `9f26c244`) : lot 1 tuto-grille, lot 2 tuto-consignes, lot 3 guide-et-coquille, lot 4 remix-decoupe (le bloquant), lot 6 morceau-export-padlive, lot 7 restes, lot 8 cablage, lot 9 reparations, plus banc7 (8 points du banc), et les lots d'avant le tour : gaucher, langues, kick, moyens2, ecoute, juge7, ci2, règle des niveaux (`docs/audits/ultra/PLAN-NIVEAUX.md`).
+- Son : le lot « kick » fait remonter le kick au haut-parleur du téléphone : styles sous les 3 dB visés 28 → 3 sur 37 (`sieges/tour-6/son/rapport-son-apres-kick.md`) ; les exports sont identiques à l'octet.
+- Le self-test et les rejeux du portail ont arrêté 4 vraies régressions avant fusion (piano roll qui poussait la grille sous l'écran, « Fin » qui cassait « Écouter », icône inconnue du banc, bouton « Arrêter » de la prise sorti de l'écran).
+
+## Reste du tour 6
+- [ ] Lot 5 « langues » (textes coupés, mots restés en anglais ou en français) : fait et relu dans la discussion « Sons modernes », pas encore poussé (sa branche porte l'essai de sons) ; à passer au portail (`tour-6 langues2`).
+- [ ] CI sur la tête (run 43375199284) ; captures de référence périmées depuis le lot 1 à ré-enregistrer si `verifyRoborazziDebug` le demande.
+- [ ] Sièges de contrôle du tuto sur la version corrigée (`sieges/tour-6/controle/` : français, japonais, allemand Pro).
+- [ ] Ouverts, à décider : N15 (la ligne « Fait : … Annuler » flotte encore sur la page), N14 « piste audio seule », G1 sur le synthé, R7 (refonte de l'écran de découpe pour le pouce gauche), « plus haut » avant « plus loin » dans `TutoPanel.kt`, les 12 styles encore sous 3 dB sur le pire haut-parleur.
+- [ ] Essai « sons modernes » : 2 essais envoyés à Benjamin, rien n'est fusionné avant son avis (sauvegarde : `f6f6df66`).
+- [ ] Avant tout tour 7 : le lot du banc « niveaux » (8 missions neuves, 3 oracles à durcir).
+
+## Où on en était (2026-10-28)
 - Tuto : une étape réussie n'avance plus jamais seule (« Bravo », « Écouter ton résultat », « Étape suivante »). Banc « testeur humain » (`HumanTester.kt`, `scripts/human-tester.sh`, `scripts/human-act.py`) : la vraie appli dans Robolectric, pilotée par un agent qui ne voit que l'écran. Premier passage : Léa (débutante, Facile) et Karim (producteur, Pro), rapports dans docs/testeur-humain/.
 - Branche `ccr-80af1a1b-mn0wec` (intégration fx-int) : le grand audit final (23 auditeurs, vérifications adverses, 16 lots de correction, relecture neuve et ses 7 MOYEN corrigés), BenStudio (nom, logo, ouverture « double battement » validée), MiniLab 3 et claviers génériques, 15 langues (drapeaux, pluriels CLDR, arabe RTL), « ▶ Écouter seul » (piste, pad, Guide), Guide plus clair avec lueur au rythme d'un cœur, onglet Mix du Mode simple (maquette validée, vumètres en dégradé de pixels), tuto de A à Z jump up (Facile 15 ch. / Pro 17 ch.) et nouvel écran « Nouveau projet » à 3 choix. Tests locaux verts (project-model, app, captures, compilation androidTest). APK 224 envoyé (avant langues/Mix/tuto).
 - Consignes de Benjamin : pas d'APK tant qu'il ne le demande pas ; Play Store seulement à sa demande (branche fx-play rejouée sur fx-int à l'étape E2 de PLAN-REPRISE, rien publié sans lui ; prix prévu 4,99 € avec promo 2,99 €) ; démo automatique « trop tôt » (branche fx-demo abandonnée) ; économiser le quota ; des nouvelles à chaque étape.

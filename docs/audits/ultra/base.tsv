@@ -149,7 +149,7 @@ tab_Sons|● rec / ✎ noter filmer l ecran avec le son|affichage	corrigé	tour-
 tab_simple_Morceau|guide_option_later|rien	corrigé	tour-1	tour-1 T1-25 b09096f	tour-1
 tab_simple_Morceau|jouer|rien	corrigé	tour-1	tour-1 T1-21 b09096f	tour-1
 tab_simple_Rythme|charley g 30|affichage	corrigé	tour-1	tour-1 T1-38 f6bf551	tour-1
-tab_simple_Rythme|tuto_next_folded|incompris	corrigé	tour-1	tour-1 T1-37 05801b8	tour-1
+tab_simple_Rythme|tuto_next_folded|incompris	corrigé	tour-1,tour-6	tour-1 T1-37 05801b8	tour-1
 timeline_screen/tab_Structure|top_play|incompris	banc	tour-1	tour-1 déjà réglé (gel ▶) 72bc474	tour-1
 tuto_finger|montre-moi etape 2/4 kick|sans-nom	banc	tour-1	tour-1 T1-34 5b2b940	tour-1
 tuto_panel/tab_simple_Rythme|ecouter l exemple|incompris	corrigé	tour-1	tour-1 T1-38 f6bf551	tour-1
@@ -178,7 +178,7 @@ dialogue:« Partager « M?j-pierwszy-bit-p? »|m j-pierwszy-bit-p tla-20261104-2
 dialogue:« Rinomina la traccia »|#1307|incompris	corrigé	tour-1	tour-1 T1-26e b09096f	tour-1
 live_grid/tab_Live|rail lateral acid 303 فتح acid 303|affichage	nouveau	tour-1	
 padlive|nom talkback fechar planilha|incompris	nouveau	tour-1	
-padlive|padlive_more|incompris	corrigé	tour-1	tour-1 T1-40 05801b8	tour-1
+padlive|padlive_more|incompris	corrigé	tour-1,tour-6	tour-1 T1-40 05801b8	tour-1
 padlive|padlive_pad_0|incompris	corrigé	tour-1	tour-1 T1-40 05801b8	tour-1
 plus/tab_Plus|tool_Reglages|incompris	corrigé	tour-1	tour-1 T1-40 05801b8	tour-1
 rhythm/tab_Sons|swing slider|sans-nom	corrigé	tour-1	tour-1 T1-39 05801b8	tour-1
@@ -277,7 +277,7 @@ tab_simple_Morceau|ecouter batterie seul en boucle|rien	nouveau	tour-2
 tuto_panel/tab_simple_Rythme|onglet mon morceau|affichage	nouveau	tour-2	
 tuto_panel/tab_simple_Rythme|tuto_play_mine|incompris	corrigé	tour-2	tour-2 n° 24b c494208	tour-2
 tuto_spot_ring|je le fais|lent	nouveau	tour-2	
-mixer/tab_Mix|export|incompris	corrigé	tour-2	tour-2 n° 8a 3b286fe ; tour-2 n° 9c 3b286fe	tour-2
+mixer/tab_Mix|export|incompris	corrigé	tour-2,tour-6	tour-2 n° 8a 3b286fe ; tour-2 n° 9c 3b286fe	tour-2
 mixer/tab_Mix|export_format_M4a|incompris	corrigé	tour-2	tour-2 n° 10b 3b286fe	tour-2
 cut_screen|tranche 4 de la voix mode الجمل|rien	corrigé	tour-3	tour-3 T3-09 151c4c9	tour-3
 dialogue:share_bilan|m4a 48 khz 256 kb/s · 3 s idem wav ecran 64|rien	banc	tour-3	tour-3 T3-14 60c7a2f	tour-3
@@ -503,7 +503,7 @@ tuto_panel/tab_simple_Envoyer|precedent|sans-nom	nouveau	tour-3
 tuto_panel/tab_simple_Envoyer|tuto_next_big|mauvais-ecran	nouveau	tour-3	
 mixer/tab_Mix|export_advanced|incompris	corrigé	tour-3	tour-3 T3-38 2ce48c3	tour-3
 mixer/tab_Mix|export_midi|rien	nouveau	tour-3	
-share_sheet/tab_simple_Envoyer|share_other|incompris	nouveau	tour-3	
+share_sheet/tab_simple_Envoyer|share_other|incompris	nouveau	tour-3,tour-6	
 dialogue:project_delete_p-042c3e99|#6393|rien	banc	tour-4	tour-4 T4-19 d3eccff	tour-4
 dialogue:project_delete_projet-1|#951|rien	banc	tour-4	tour-4 T4-19 d3eccff	tour-4
 dialogue:projects|liste i miei progetti|perdu	nouveau	tour-4	
@@ -547,7 +547,7 @@ dialogue:sound_chooser|sons بيانو fm fm بـ6 مشغلات · البنك 2 
 dialogue:sound_chooser|synth_sounds_fav_0|incompris	nouveau	tour-4	
 dialogue:sound_chooser|点声音上的 ☆ 就能在“收藏”里找到它|rien	nouveau	tour-4	
 dialogue:strip_sheet|ambiance punch|perdu	nouveau	tour-4	
-dialogue:tuto_chapter_list|tuto_quit|incompris	nouveau	tour-4	
+dialogue:tuto_chapter_list|tuto_quit|incompris	nouveau	tour-4,tour-6	
 dialogue:welcome|ecran de bienvenue cartes creer mon premier morceau partir de zero|incompris	nouveau	tour-4	
 dialogue:wizard|geluiden van de stijl downloaden|lent	nouveau	tour-4	
 dialogue:wizard|sub bass reese bass باص music ecran 3 loop mix ok snare build-up live|rien	nouveau	tour-4	
@@ -681,7 +681,7 @@ tab_simple_Rythme|carte kit house / unduh kit house 4 mb|affichage	nouveau	tour-
 timeline_grid|appui-long sur la partie f · strofa 2 dans la timeline|incompris	nouveau	tour-4	
 timeline_screen/tab_Structure|thumb_share|incompris	nouveau	tour-4	
 dialogue:project_name_field|name_clear|rien	banc	tour-4	tour-4 T4-19 d3eccff ; banc fiable 3.2 (verdicts.tsv)	tour-4
-dialogue:song_import|import_cancel|mauvais-ecran	nouveau	tour-4	
+dialogue:song_import|import_cancel|mauvais-ecran	nouveau	tour-4,tour-6	
 mixer/tab_Mix|analyser|rien	nouveau	tour-4	
 dialogue:part_header_menu|part_pick_2|rien	nouveau	tour-5	
 launch|launch_padlive|perdu	nouveau	tour-5	
@@ -691,7 +691,7 @@ dialogue:mode_step|bouton simple pour debuter 5 onglets de gros boutons et des m
 dialogue:remix_dest|remix_dest_new|affichage	nouveau	tour-5	
 dialogue:sound_chooser|synth_sounds_folder_Leads|affichage	nouveau	tour-5	
 share_sheet/tab_simple_Envoyer|↓ la suite plus bas glisse vers le haut pour la voir|affichage	nouveau	tour-5	
-dialogue:cut_auto_0|cut_auto_1|affichage	nouveau	tour-5	
+dialogue:cut_auto_0|cut_auto_1|affichage	nouveau	tour-5,tour-6	
 dialogue:projects|bouton retour|mauvais-ecran	nouveau	tour-5	
 cut_screen|cut_end|incompris	nouveau	tour-5	
 cut_screen|remix_back|perdu	nouveau	tour-5	
@@ -708,7 +708,7 @@ dialogue:thumb_more_menu|touchable remix|affichage	nouveau	tour-5
 dialogue:track_add_sheet|track_add_write|incompris	nouveau	tour-5	
 dialogue:track_menu_sheet|track_menu_settings|affichage	nouveau	tour-5	
 dialogue:« 已有名为“明亮Reese”的保存音色：请换个名字。 »|#2873|perdu	nouveau	tour-5	
-launch|launch_continue|affichage	nouveau	tour-5	
+launch|launch_continue|affichage	nouveau	tour-5,tour-6	
 launch|launch_continue|mauvais-ecran	nouveau	tour-5	
 live_grid/tab_Live|bouton un trozo nom cortes un trozo|perdu	nouveau	tour-5	
 live_grid/tab_Live|live_pad_remix_0|texte-faux	nouveau	tour-5	
@@ -722,7 +722,7 @@ padlive_pads_side|padlive_played|incompris	nouveau	tour-5
 padlive_pads_side|padlive_stop_all|incompris	nouveau	tour-5	
 padlive_pads_side|padlive_undo|perdu	nouveau	tour-5	
 padlive|padlive_mode_5|mauvais-ecran	nouveau	tour-5	
-padlive|padlive_more|affichage	nouveau	tour-5	
+padlive|padlive_more|affichage	nouveau	tour-5,tour-6	
 padlive|padlive_played|sans-aide	nouveau	tour-5	
 padlive|padlive_tempo|affichage	nouveau	tour-5	
 session/tab_Structure|add_part_0|mauvais-ecran	nouveau	tour-5	
@@ -737,12 +737,12 @@ tab_Sons|tuto_kit_later|rien	nouveau	tour-5
 tab_simple_Clavier|chord_mode|affichage	nouveau	tour-5	
 tab_simple_Clavier|record_start|perdu	nouveau	tour-5	
 tab_simple_Clavier|top_undo|affichage	nouveau	tour-5	
-tab_simple_Clavier|tuto_notes_left|affichage	nouveau	tour-5	
+tab_simple_Clavier|tuto_notes_left|affichage	nouveau	tour-5,tour-6	
 tab_simple_Morceau|guide_open_melody|mauvais-ecran	nouveau	tour-5	
 tab_simple_Morceau|top_redo|perdu	nouveau	tour-5	
 timeline_screen/tab_Structure|timeline_fit|affichage	nouveau	tour-5	
-tuto_panel/tab_simple_Clavier|tuto_need|mauvais-ecran	nouveau	tour-5	
-tuto_panel/tab_simple_Rythme|tuto_do|texte-faux	nouveau	tour-5	
+tuto_panel/tab_simple_Clavier|tuto_need|mauvais-ecran	nouveau	tour-5,tour-6	
+tuto_panel/tab_simple_Rythme|tuto_do|texte-faux	nouveau	tour-5,tour-6	
 session/tab_Structure|add_part_new_copy|texte-faux	nouveau	tour-5	
 ?|bouton ハック ハーティー @ 1573 132|affichage	nouveau	tour-5	
 ?|remix_cut_thumb|texte-faux	nouveau	tour-5	
@@ -814,7 +814,7 @@ synth/tab_Sons|mode_notes|affichage	nouveau	tour-5
 synth/tab_Sons|track_sound_0|texte-faux	nouveau	tour-5	
 synth/tab_simple_Clavier|curseur مستوى الخرج etat −1 0 db a 76 % @ 1209 513|texte-faux	nouveau	tour-5	
 tab_Sons|tuto_do|texte-faux	nouveau	tour-5	
-tab_Sons|tuto_show|incompris	nouveau	tour-5	
+tab_Sons|tuto_show|incompris	nouveau	tour-5,tour-6	
 tab_simple_Clavier|e♭4|texte-faux	nouveau	tour-5	
 tab_simple_Clavier|guide_sheet|texte-faux	nouveau	tour-5	
 tab_simple_Clavier|help_labels_button|sans-aide	nouveau	tour-5	
@@ -825,7 +825,7 @@ tab_simple_Morceau|touchable 1 nom الخطوة 1 etat فارغ @ 90 495|incompr
 tab_simple_Morceau|कीबोरड|affichage	nouveau	tour-5	
 tab_simple_Morceau|मेलोडी marimba|affichage	nouveau	tour-5	
 timeline_screen/tab_Structure|timeline_expand|affichage	nouveau	tour-5	
-tuto_panel/tab_simple_Rythme|tuto_do|incompris	nouveau	tour-5	
+tuto_panel/tab_simple_Rythme|tuto_do|incompris	nouveau	tour-5,tour-6	
 tuto_panel/tab_simple_Rythme|tuto_listen|affichage	nouveau	tour-5	
 dialogue:project_name_field|name_clear|incompris	nouveau	tour-5	
 dialogue:scene_menu|scene_pick_1|rien	nouveau	tour-5	
@@ -841,7 +841,7 @@ dialogue:new_project|starter_starter|rien	nouveau	tour-5
 dialogue:share_bilan|share_bilan_ok|texte-faux	corrigé	tour-5		tour-5
 dialogue:synth_sounds_name_dialog|name_clear|perdu	nouveau	tour-5	
 dialogue:welcome|launch_challenges|lent	nouveau	tour-5	
-dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5	
+dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5,tour-6	
 dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	corrigé	tour-5		tour-5
 dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	corrigé	tour-5		tour-5
 guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	corrigé	tour-5	banc fiable 3.2 (verdicts.tsv)	tour-5
@@ -860,3 +860,143 @@ tab_simple_Clavier|record_start|rien	nouveau	tour-4	T4-26 non tranché : pas rep
 mixer_automation|automation_add|option-disparue	corrigé	tour-5	T5-AUTO-OPTION (a53e385e)	tour-5
 live_grid/tab_Live|live_stop_all|rien	corrigé	tour-4	T4-01 (c423455d)	tour-4
 padlive_pads|padlive_pad_N|rien	corrigé	tour-5	T5-PADRETRIG (16f520d7)	tour-5
+dialogue:mode_step|bouton simple para empezar 5 pestanas botones grandes y palabras de todos los dias|affichage	nouveau	tour-6	
+tab_Sons|board_chop|sans-aide	nouveau	tour-6	
+tab_simple_Clavier|tuto_notes_left|sans-aide	nouveau	tour-6	
+tab_simple_Clavier|tuto_notes_left|texte-faux	nouveau	tour-6	
+tuto_panel/tab_simple_Envoyer|tuto_left_ref|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_need|affichage	nouveau	tour-6	
+?|cut_to_track|sans-nom	nouveau	tour-6	
+?|texte pronto o modelo esta no seu celular escolha uma musica coupe|affichage	nouveau	tour-6	
+cut_screen/tab_Sons|titre comp 2 a 5|sans-aide	nouveau	tour-6	
+dialogue:part_header_menu|part_new|incompris	nouveau	tour-6	
+dialogue:projects|icone ← @ 54 54|mauvais-ecran	nouveau	tour-6	
+mixer/tab_Mix|bouton automatisieren coupe @ 243 1029|affichage	nouveau	tour-6	
+plus/tab_Plus|onglet curseurs mix @ 294 1158|mauvais-ecran	nouveau	tour-6	
+plus/tab_Plus|onglet ⋯ meer selectionne|sans-nom	nouveau	tour-6	
+plus/tab_Plus|plus_mode|perdu	nouveau	tour-6	
+rhythm/tab_Sons|tuto_next_folded|affichage	nouveau	tour-6	
+rhythm/tab_Sons|tuto_next_folded|incompris	nouveau	tour-6	
+rhythm/tab_simple_Rythme|step_1|incompris	nouveau	tour-6	
+settings/tab_Plus|lang_button|affichage	nouveau	tour-6	
+synth/tab_simple_Clavier|mode_notes|affichage	nouveau	tour-6	
+tab_Plus|help_steps|mauvais-ecran	nouveau	tour-6	
+tab_Sons|bouton ✂ cortar lo que quiero coupe|affichage	nouveau	tour-6	
+tab_Sons|bouton ✂ cortar lo que quiero|affichage	nouveau	tour-6	
+tab_Sons|dans:rhythm_swing|incompris	nouveau	tour-6	
+tab_Sons|dans:rhythm_swing|rien	nouveau	tour-6	
+tab_Sons|dans:synth|affichage	nouveau	tour-6	
+tab_Sons|tuto_need|mauvais-ecran	nouveau	tour-6	
+tab_simple_Clavier|bouton ヘース · 小節 4/8 タッフする点線のノートかあと 1 個|affichage	nouveau	tour-6	
+tab_simple_Morceau|thumb_more|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_folded|affichage	nouveau	tour-6	
+timeline_screen/tab_Structure|bouton auto house · −8 lufs selectionne|affichage	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|step_0|affichage	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_do|perdu	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_need|mauvais-ecran	nouveau	tour-6	
+dialogue:tuto_chooser|tuto_style_techno|incompris	nouveau	tour-6	
+dialogue:mode_step|mode_card_simple|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_folded|texte-faux	nouveau	tour-6	
+?|bouton bateria|affichage	nouveau	tour-6	
+?|cut_song_3a02635f77d71cd9a979f25b|affichage	nouveau	tour-6	
+?|texte sua musica esta vazia adicione suas partes na ordem em que tocam intro verso refrao|incompris	nouveau	tour-6	
+auto_lane_0/tab_Mix|texte 18 0 khz @ 81 805|affichage	nouveau	tour-6	
+cut_screen/tab_Sons|bouton bateria @ 199 444|affichage	nouveau	tour-6	
+dialogue:effects_box_3|fx_genre_dnb|incompris	nouveau	tour-6	
+dialogue:lang_dialog|lang_en|texte-faux	nouveau	tour-6	
+dialogue:library|library_folder_Sons|affichage	nouveau	tour-6	
+dialogue:library|library_sound_fav_0|affichage	nouveau	tour-6	
+dialogue:mode_switch|mode_card_pro|affichage	nouveau	tour-6	
+dialogue:mode_switch|mode_card_pro|texte-faux	nouveau	tour-6	
+dialogue:my_exports|my_export_send|affichage	nouveau	tour-6	
+dialogue:my_exports|texte trap-20261112-195658 pocketstudio zip|affichage	nouveau	tour-6	
+dialogue:play_from_menu|play_from_6|incompris	nouveau	tour-6	
+dialogue:simple_track_sheet|simple_track_mute|sans-nom	nouveau	tour-6	
+dialogue:song_chords_sheet|song_chords_apply|incompris	nouveau	tour-6	
+dialogue:song_chords_sheet|song_chords_apply|rien	nouveau	tour-6	
+dialogue:tuto_key_sheet|tuto_key_continue|affichage	nouveau	tour-6	
+dialogue:« Condividi il mio brano · Primo »|champ nome del brano inviato|texte-faux	nouveau	tour-6	
+guide_panel/tab_simple_Morceau|bouton charley g 30|sans-aide	nouveau	tour-6	
+launch|bouton quatre vagues remix track separation drums bass vocals and the rest → @ 294 274|affichage	nouveau	tour-6	
+launch|bouton ★ ★ ★ challenges listen to a rhythm play it back on the pads win stars → @ 294 722|incompris	nouveau	tour-6	
+launch|launch_remix|incompris	nouveau	tour-6	
+live_grid/tab_Live|bouton horloge et fleche garder ce que je viens de jouer @ 418 489|affichage	nouveau	tour-6	
+live_grid/tab_Live|bouton kick studio fx|texte-faux	nouveau	tour-6	
+live_grid/tab_Live|live_tab_Pads|affichage	nouveau	tour-6	
+live_grid/tab_Live|texte – @ 135 42|incompris	nouveau	tour-6	
+mission_overlay|guide_spot_close|affichage	nouveau	tour-6	
+mixer/tab_Mix|texte 30 2|sans-nom	nouveau	tour-6	
+mixer/tab_Mix|texte de l axe de la courbe 18 0 ki 849 h schla|affichage	nouveau	tour-6	
+padlive|live_record|texte-faux	nouveau	tour-6	
+padlive|padlive_pad_16|affichage	nouveau	tour-6	
+padlive|padlive_perf_listen|affichage	nouveau	tour-6	
+padlive|padlive_perf_listen|perdu	nouveau	tour-6	
+padlive|padlive_perf_listen|sans-aide	nouveau	tour-6	
+padlive|padlive_played|texte-faux	nouveau	tour-6	
+plus/tab_Plus|tool_Reglages|texte-faux	nouveau	tour-6	
+plus|plus_projects|perdu	nouveau	tour-6	
+plus|tool_Recette|texte-faux	nouveau	tour-6	
+rhythm/tab_Sons|step_15|incompris	nouveau	tour-6	
+rhythm/tab_Sons|tuto_next_folded|sans-aide	nouveau	tour-6	
+rhythm/tab_simple_Rythme|bouton batterie ▸ etat ferme|affichage	nouveau	tour-6	
+rhythm/tab_simple_Rythme|pad_2|texte-faux	nouveau	tour-6	
+rhythm/tab_simple_Rythme|texte chute grave|affichage	nouveau	tour-6	
+settings/tab_Plus|lang_button|texte-faux	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|bouton + nouvelle partie vide coupe @ 190 934|affichage	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|bouton piu tardi|affichage	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|texte ton morceau est vide ajoute tes parties dans l ordre ou elles jouent intro couplet refrain @ 294 752|incompris	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|tuto_end_folded|affichage	nouveau	tour-6	
+simple_mix/tab_simple_Mix|bouton boite fleche vers le bas › salva il brano in zip per un altro dispositivo o una copia di sicurezza|affichage	nouveau	tour-6	
+synth/tab_Sons|bouton bass plaits ⋮|texte-faux	nouveau	tour-6	
+synth/tab_simple_Clavier|bouton batteria ▸|affichage	nouveau	tour-6	
+tab_Sons|bouton ✂ cortar la cancion @ 294 903|incompris	nouveau	tour-6	
+tab_Sons|cut_song_3a02635f77d71cd9a979f25b|affichage	nouveau	tour-6	
+tab_Sons|mode_notes|affichage	nouveau	tour-6	
+tab_Sons|sons_Acide|incompris	nouveau	tour-6	
+tab_Sons|sons_Audio|texte-faux	nouveau	tour-6	
+tab_Sons|step_30|texte-faux	nouveau	tour-6	
+tab_Sons|texte synth @ 204 379|incompris	nouveau	tour-6	
+tab_Sons|thumb_play|sans-aide	nouveau	tour-6	
+tab_Sons|top_share|affichage	nouveau	tour-6	
+tab_Sons|tuto_chapters|texte-faux	nouveau	tour-6	
+tab_Sons|tuto_do|affichage	nouveau	tour-6	
+tab_Sons|tuto_need|affichage	nouveau	tour-6	
+tab_Sons|tuto_next_big|incompris	nouveau	tour-6	
+tab_Sons|tuto_next_big|sans-aide	nouveau	tour-6	
+tab_Sons|tuto_next|incompris	nouveau	tour-6	
+tab_Structure|tuto_next_big|texte-faux	nouveau	tour-6	
+tab_simple_Rythme|step_15|texte-faux	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_big|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_big|sans-aide	nouveau	tour-6	
+tab_simple_Rythme|tuto_next|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_next|sans-aide	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_chapters|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_need|sans-aide	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_next_big|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Mix|tuto_do|affichage	nouveau	tour-6	
+tuto_panel/tab_simple_Morceau|tuto_next_big|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|step_0|texte-faux	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_do|sans-nom	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_mark|affichage	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_mark|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_next_big|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_next|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_next|sans-aide	nouveau	tour-6	
+tuto_spot_ring|akkord e nom de tranche du mixeur|affichage	nouveau	tour-6	
+tuto_spot_ring|texte noch 4 gestrichelte kastchen hier coupe|affichage	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|share_my_exports|perdu	nouveau	tour-6	
+dialogue:« The live pads of your take are »|#2192|incompris	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|share_other|texte-faux	nouveau	tour-6	
+simple_mix/tab_simple_Mix|bouton dossier mes fichiers retrouver et renvoyer m4a wav video zip › @ 272 894|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_play_mine|rien	nouveau	tour-6	
+dialogue:share_sheet|share_format_Wav|affichage	nouveau	tour-6	
+dialogue:song_import|import_cancel|affichage	nouveau	tour-6	
+dialogue:song_import|import_go|affichage	nouveau	tour-6	
+dialogue:song_import|import_go|incompris	nouveau	tour-6	
+dialogue:song_import|import_go|sans-aide	nouveau	tour-6	
+dialogue:« Nummer delen · 2 »|texte opnieuw versturen @ 388 564|incompris	nouveau	tour-6	
+mixer/tab_Mix|export|affichage	nouveau	tour-6	
+padlive|padlive_pad_2|incompris	nouveau	tour-6	
+padlive|padlive_pad_3|rien	nouveau	tour-6	
+rhythm/tab_Sons|tuto_chapters|incompris	nouveau	tour-6	
+share_sheet/tab_simple_Envoyer|share_go|affichage	nouveau	tour-6	

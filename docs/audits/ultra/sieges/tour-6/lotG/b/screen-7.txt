@@ -1,0 +1,4 @@
+Écran 7 (900x1509)
+texte « Halaman dan paket » @ 232,643
+texte « Pad Live punya 4 halaman berisi 16 pad, A sampai D: sentuh satu huruf untuk ganti halaman. “Paket” mengisi halaman yang tampil dengan suara satu gaya; “Batal” mengembalikannya. Bintang “Tantangan” memulai tantangan. » @ 450,736
+texte « Oke, paham » @ 754,853

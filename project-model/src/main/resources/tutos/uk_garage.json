@@ -42,7 +42,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul.",
+          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -117,7 +117,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 30 (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
+          "text": "À toi : mets le swing à 40 % (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,snare,clap,hat,open_hat,perc"
@@ -185,13 +185,22 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.",
           "textPro": "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.",
           "check": "notes:pad",
+          "length": 32,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:kick,pad",
           "skip": "Sans accords, ton garage perd son côté soul."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
         }
       ]
     },
@@ -331,7 +340,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:8,Couplet:12,Pré-refrain:4,Refrain:16,Couplet:12,Pré-refrain:4,Refrain:16,Pont:8,Refrain:16,Fin:8",

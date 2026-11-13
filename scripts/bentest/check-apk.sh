@@ -21,7 +21,8 @@ trap 'rm -rf "${DEX_DIR:?}"' EXIT
 unzip -q -o "$APK" 'classes*.dex' -d "$DEX_DIR"
 for f in "$DEX_DIR"/classes*.dex; do "$BT/dexdump" -d "$f" 2>/dev/null; done > "$DEX_DIR/dump.txt"
 
-for cls in bentest/BenTestActivity bentest/InAppDriver bentest/EssaiEclair bentest/ToutTester bentest/Ecoute bentest/Carnet app/journey/Journey; do
+for cls in bentest/BenTestActivity bentest/InAppDriver bentest/EssaiEclair bentest/ToutTester bentest/Ecoute bentest/Carnet app/journey/Journey \
+    bentest/EcouteMicro bentest/MicroReel bentest/HautParleurReel bentest/Guet bentest/Bandes bentest/Courbe bentest/Empreinte; do
     grep -q "Class descriptor *: 'Lcom/pocketstudio/$cls;'" "$DEX_DIR/dump.txt" || { echo "FAIL: robot class $cls missing" >&2; exit 1; }
 done
 

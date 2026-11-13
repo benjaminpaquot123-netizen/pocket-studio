@@ -27,11 +27,12 @@ class NewSongPartSceneTest {
         vm.toggleHit(0, 0)
         vm.newSongPart(copy = false)
         val empty = vm.project.value.scene
-        assertEquals(listOf(empty), vm.project.value.song.map { it.scene })
+        // Tour 6 lot 6 (U28): the part shown, which has hits, stays first in a song that was empty (A before B).
+        assertEquals(listOf(0, empty), vm.project.value.song.map { it.scene })
         vm.selectScene(0)
         vm.newSongPart(copy = true)
         val p = vm.project.value
-        assertEquals(2, p.song.size)
+        assertEquals(3, p.song.size)
         val copy = p.song.last().scene
         assertTrue("the copy took scene $copy, the song's empty part is $empty", copy != empty)
         assertTrue("the empty part stays empty", p.allScenes[empty].isEmpty)

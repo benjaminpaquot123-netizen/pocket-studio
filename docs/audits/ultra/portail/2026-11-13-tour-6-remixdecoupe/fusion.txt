@@ -1,0 +1,8 @@
+fusion: 4966a019db599af2d3152e271ad5c4a0daaa0db5
+branche: eq/tour-6-remixdecoupe
+tete: 74d3feae636d46ce0961195322ff5c3390d8b6b8
+relecture: docs/audits/ultra/tour-6-remixdecoupe-relecture.md
+relu: 6b28e4376d67e00f1bede0af1d5d2193412bd544
+filtres: com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutScrollSignTest com.pocketstudio.app.remix.RemixThumbWordsTest com.pocketstudio.app.remix.StemBoardRouterTest com.pocketstudio.app.remix.StemBoardVmTest com.pocketstudio.app.session.SongCardEmptyWordsTest com.pocketstudio.app.remix.CutScreenTightTest com.pocketstudio.app.remix.CutJourneyTest com.pocketstudio.app.remix.CutSpanJourneyTest com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutScrollSignTest com.pocketstudio.app.remix.RemixThumbWordsTest com.pocketstudio.app.remix.StemBoardRouterTest com.pocketstudio.app.remix.StemBoardVmTest com.pocketstudio.app.session.SongCardEmptyWordsTest com.pocketstudio.app.remix.CutScreenTightTest com.pocketstudio.app.remix.CutJourneyTest com.pocketstudio.app.remix.CutSpanJourneyTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

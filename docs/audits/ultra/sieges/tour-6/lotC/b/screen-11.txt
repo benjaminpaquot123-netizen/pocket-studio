@@ -1,0 +1,18 @@
+Écran 11 (588x1278)
+dessin @ 294,36
+texte « Son de : Synthé » @ 150,93
+texte « Fermer » @ 509,120
+texte « Touche un son : il remplace celui de cette piste dans tout le morceau. » @ 239,141
+icône ← @ 60,219
+texte « Basses » @ 330,219
+bouton (vagues) (dents de scie) « Basse ronde Brillant · tenu » @ 294,310
+bouton (vagues) (zigzag) « Basse sub Doux · tenu » @ 294,409
+bouton (vagues) (dents de scie) « Basse reese Brillant · tenu » @ 294,508
+bouton (vagues) (dents de scie) « Reese moderne Brillant · 5 voix · tenu » @ 294,607
+bouton (vagues) (dents de scie) « Basse wobble Brillant · tenu » @ 294,706
+bouton (vagues) (dents de scie) « Basse qui parle Brillant · tenu » @ 294,805
+bouton (vagues) (dents de scie) « Basse growl Brillant · 3 voix · tenu » @ 294,904
+bouton (vagues) (dents de scie) « Reese DnB Brillant · 3 voix · tenu » @ 294,1003
+bouton (vagues) (créneaux) « Basse riddim Creux · tenu » @ 294,1102
+bouton (vagues) (dents de scie) « Basse neuro Brillant · 3 voix · tenu » @ 294,1201
+bouton (vagues) (zigzag) « Sub pur Doux · tenu » [coupé] @ 294,1267

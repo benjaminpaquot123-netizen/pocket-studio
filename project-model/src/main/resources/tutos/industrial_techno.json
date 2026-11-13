@@ -36,7 +36,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, la plus noire. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol.",
+          "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Ici, les notes comptent peu : la gamme sert surtout à accorder le grave.",
           "check": "key",
           "spot": "tuto.key",
@@ -45,7 +45,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets un tout petit peu de swing (5 %) : la machine balance à peine.",
+          "text": "À toi : mets un tout petit peu de swing (7 %) : la machine balance à peine.",
           "why": "Juste assez de swing pour que l'usine respire.",
           "levels": "p",
           "check": "swing",
@@ -77,7 +77,7 @@
         },
         {
           "id": "rumble_do",
-          "text": "À toi : sur le pad « Rumble », touche les mêmes cases que le kick : il gronde après chaque coup.",
+          "text": "À toi : sur le pad « Rumble », touche les mêmes cases que le kick : son grondement remplit le vide entre les coups.",
           "textPro": "À toi : le rumble, calé sur le kick : c'est la basse du morceau.",
           "why": "Le rumble est la seule basse : un grave sale qui roule entre les coups.",
           "check": "lane:rumble",
@@ -95,7 +95,7 @@
       "steps": [
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Toms », touche les cases en pointillé : ils cognent entre les kicks.",
+          "text": "À toi : sur le pad « Tom médium », touche les cases en pointillé : ils cognent entre les kicks.",
           "textPro": "À toi : les toms graves entre les kicks, comme un second kick.",
           "why": "Des toms graves sous le kick, comme des machines dans une usine.",
           "check": "lane:tom",
@@ -123,7 +123,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un coup de métal), touche les cases en pointillé : un sur chaque contretemps.",
+          "text": "À toi : sur le pad « Rim » (un coup de métal), touche les cases en pointillé : un sur chaque contretemps.",
           "textPro": "À toi : le métal saturé sur les contretemps.",
           "levels": "p",
           "check": "lane:perc",
@@ -314,8 +314,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:16,Drop B:8,Drop:8,Break:16,Drop 2:32,Fin:16",
@@ -399,7 +399,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

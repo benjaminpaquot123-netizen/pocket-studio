@@ -38,7 +38,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé.",
+          "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -123,7 +123,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,snare,open_hat,bass"
         },
@@ -292,7 +292,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Montée, Drop, Groove, Drop, Break, Drop et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Montée, Drop, Groove, Drop, Break, Drop et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Groove, Montée, Drop, Groove, Drop, Break, Drop et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:8,Groove:12,Montée:4,Drop:8,Groove:16,Drop:8,Break:16,Drop:16,Fin:8",

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,9 +73,13 @@ fun ModeStep(choose: (simple: Boolean) -> Unit, back: () -> Unit, tuto: Boolean 
     val last = remember { ProjectModes.last(context) }
     BoxWithConstraints(Modifier.fillMaxSize().testTag("mode_step"), contentAlignment = Alignment.TopCenter) {
         val wide = maxWidth >= 600.dp
+        val screen = maxHeight
         com.pocketstudio.ui.ReadingWidth(maxWidth = 760.dp) {
+            // Tour 5, F d #2 (t5-04): the question at the top, the cards at the bottom, where a thumb (left or right)
+            // reaches; a short screen (landscape, big text) scrolls as before.
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp),
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).heightIn(min = screen)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -83,6 +88,7 @@ fun ModeStep(choose: (simple: Boolean) -> Unit, back: () -> Unit, tuto: Boolean 
                     }
                     Text(tr("Simple ou Pro ?"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 }
+                Spacer(Modifier.weight(1f))
                 Text(
                     if (tuto) tr("Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.")
                     else tr("Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut."),

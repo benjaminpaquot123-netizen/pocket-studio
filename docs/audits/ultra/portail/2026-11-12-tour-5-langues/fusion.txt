@@ -1,0 +1,8 @@
+fusion: cc4929463452126c6f2f9e10c19f49d316dfcfe4
+branche: eq/tour-5-langues
+tete: 88c615f4f439f19489a00b0482f875e924e0ad99
+relecture: docs/audits/ultra/tour-5-langues-relecture.md
+relu: ecc00a17c5bdc201b3ba96a9dda6455adbac249f
+filtres: *LanguagesScanTest *RtlPunctuationTest *ThumbUndoStaysTest *WizardGridDirectionTest *SoundTileNameOnceTest *PartNameFieldLanguageTest *SongGuideTest *LanguagesScanTest *RtlPunctuationTest *ThumbUndoStaysTest *WizardGridDirectionTest *SoundTileNameOnceTest *PartNameFieldLanguageTest *SongGuideTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

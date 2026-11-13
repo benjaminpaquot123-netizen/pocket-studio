@@ -132,7 +132,8 @@ class TutoTest {
         // A restart: a new controller on the same project finds the same place.
         val again = controller(flow, history, store)
         assertEquals("key", again.ui.value!!.current.id)
-        assertEquals(setOf("tempo"), again.ui.value!!.progress.done)
+        // Tour 6 (N19): the example left by « Suivant » counts.
+        assertEquals(setOf("ref", "tempo"), again.ui.value!!.progress.done)
         // Quit, then « Reprendre le tuto ».
         again.quit()
         assertNull(again.ui.value)

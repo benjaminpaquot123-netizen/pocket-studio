@@ -1,0 +1,1 @@
+Son : l'exemple du tuto joue (encore 2 s) ; défi « Boum boum » (exemple en cours) : pulsation ~120 BPM.

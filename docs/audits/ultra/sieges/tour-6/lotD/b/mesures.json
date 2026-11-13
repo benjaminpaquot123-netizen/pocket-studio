@@ -1,0 +1,45 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "ko",
+    "device": "phone360",
+    "font": "130",
+    "mode": "simple",
+    "gestes.max": "120",
+    "mission": "tuto-facile",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 68,
+    "images": 12,
+    "gestes_premier_son": 4,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 15,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 70,
+    "ecrans_revisites": 15,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 0,
+    "abandon": "rien ne change (5 écrans identiques)",
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 89,
+    "plantage": false,
+    "fin": "rien ne change (5 écrans identiques)",
+    "premier_ecran_s": {
+      "reel": 4.0,
+      "simule": 2.4,
+      "jvm": 9.6,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "partielle",
+  "pourquoi": "« techno » en Facile : 8 étape(s), 1 chapitre(s) entier(s) sur 15"
+}

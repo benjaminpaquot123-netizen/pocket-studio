@@ -1,0 +1,8 @@
+Écran 15 (540x1170)
+texte « Het is klaar » @ 133,409
+texte « Klaar: Mijn-eerste-beat-loop-club-20261112-213615.wav, er staat ook een kopie in Muziek › BenStudio. » @ 270,517
+texte « −8,0 LUFS geïntegreerd · piek −3,4 dBTP » @ 222,596
+texte « WAV, 48 kHz, 24 bits · 32 s » @ 159,629
+texte « Doel: Club · −8 LUFS » @ 131,662
+texte « Mijn bestanden bekijken » @ 261,748
+texte « OK » @ 460,748

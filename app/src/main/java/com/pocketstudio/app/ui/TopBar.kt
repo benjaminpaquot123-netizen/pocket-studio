@@ -62,6 +62,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
@@ -315,13 +316,17 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Box(
-                Modifier.size(34.dp).clip(RoundedCornerShape(10.dp))
-                    .background(Brush.linearGradient(listOf(Neon.Cyan, lerp(Neon.Cyan, Color.Black, 0.3f))))
-                    .background(GLOSS),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
+            Box {
+                Box(
+                    Modifier.size(34.dp).clip(RoundedCornerShape(10.dp))
+                        .background(Brush.linearGradient(listOf(Neon.Cyan, lerp(Neon.Cyan, Color.Black, 0.3f))))
+                        .background(GLOSS),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
+                }
+                // Tour 5, moyens2: the folder alone (no name in the bar), « ✓ Sauvegardé » and « REC dans … » stay, on it.
+                if (!layout.nameShown) FolderStatus(ui, Modifier.align(Alignment.BottomEnd).offset(x = 3.dp, y = 3.dp))
             }
             if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.Column {
                 // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first.
@@ -411,6 +416,31 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 }
 
 /**
+ * Tour 5, moyens2 (phone runs, Mode simple at Taille 130 %): with the folder alone in the row, what was said under the
+ * name, on the folder's corner: a red dot while the ● records into another part (« REC dans B · Refrain », heard), else
+ * the green tick of « Sauvegardé ». No width taken, no line added.
+ */
+@Composable
+private fun FolderStatus(ui: TopBarUi, modifier: Modifier) {
+    val into = ui.recordInto
+    if (into != null) {
+        val words = tr("REC dans %s", into)
+        Box(
+            modifier.size(14.dp).clip(CircleShape).background(Neon.Background).padding(2.dp).clip(CircleShape).background(Neon.Red)
+                .semantics { contentDescription = words }.testTag("top_record_into"),
+        )
+    } else if (ui.saved) {
+        val words = tr("Sauvegardé")
+        Box(
+            modifier.size(16.dp).clip(CircleShape).background(Neon.Background).semantics { contentDescription = words }.testTag("top_saved"),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(13.dp))
+        }
+    }
+}
+
+/**
  * The word under a top ▶ (« cette partie », « le morceau »): small, semi-bold, one line. 10.5 sp: at 11 sp bold « cette
  * partie » took 20 dp more than the old ▶ and pushed the project's name to a line of its own at Taille 130 % on a
  * 411 dp phone (48 dp less for the keys); now about 10.
@@ -431,10 +461,10 @@ private fun playWord(word: String): Pair<androidx.compose.ui.text.TextStyle, Dp>
     return remember(word, base, density) {
         fun width(style: androidx.compose.ui.text.TextStyle) = with(density) { measurer.measure(word, style, softWrap = false, maxLines = 1).size.width.toDp() }
         val w = width(base)
-        val style = if (w > PLAY_WORD_MAX) {
-            val k = PLAY_WORD_MAX / w
-            base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k)
-        } else base
+        // Tour 5, lot « langues » (200 % in Hindi and Arabic: « यह पार्ट », « هذا الجزء » past the bar's foot): never taller
+        // than at 130 % either (it still grows with the phone's font up to there).
+        val k = minOf(if (w > PLAY_WORD_MAX) PLAY_WORD_MAX / w else 1f, 1.3f / density.fontScale.coerceAtLeast(1.3f))
+        val style = if (k < 1f) base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k) else base
         style to maxOf(BUTTON, (if (style === base) w else width(style)) + PLAY_WORD_MARGIN)
     }
 }

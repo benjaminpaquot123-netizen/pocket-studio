@@ -1,0 +1,477 @@
+#0 SIEGE lang=it device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=3.8 simule_s=2.4 jvm_s=8.7 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE c69dfd9c5e | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 450 1030
+#1 DOIGT welcome_empty « Parti da zero »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6a1296ee5b | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Semplice » ellipsized (« … »)
+#2 > touche 229 357
+#2 DOIGT mode_card_simple « Semplice »
+#3 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 0024a29f99 | project=p-21e73a2d no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Salvato » lines cut (taller than its box)
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 331 1148
+#3 DOIGT fill_4 « 1/4 »
+#4 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1fc5f52e7a | project=p-21e73a2d no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « 1/4 » 3.99:1 (needs 4.5:1, 14 sp)
+#4 > touche 341 436
+#4 DOIGT pad_5 « Hi-hat »
+#5 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 4fd99afc78 | project=p-21e73a2d no tuto
+#5 SON Son : le pad « Hi-hat » sonne.
+#5 LAYOUT CONTRAST « Hi-hat » 4.23:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST «  Registra i miei pad » 2.78:1 (needs 4.5:1, 14 sp)
+#5 > touche 294 1099
+#5 DOIGT step_2 « Step 3 »
+#6 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 93b8178fb5 | project=p-21e73a2d no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 348 1285
+#6 DOIGT thumb_play « Suona il brano »
+#7 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bbf16f5235 | project=p-21e73a2d no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 > touche 89 198
+#7 DOIGT part_header_pick « Parte: A »
+#8 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 817a18c589 | project=p-21e73a2d no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 > touche 213 400
+#8 DOIGT part_new « + Nuova parte (copia di A) »
+#9 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 0fdc86acd3 | project=p-21e73a2d no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 > touche 256 1148
+#9 DOIGT fill_2 « 1/2 »
+#10 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE aeb3d3a4ad | project=p-21e73a2d no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 LAYOUT CONTRAST « 1/2 » 4.01:1 (needs 4.5:1, 14 sp)
+#10 > touche 85 1389
+#10 DOIGT tab_simple_Morceau « Il mio brano »
+#11 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 5aa89fae71 | project=p-21e73a2d no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 > touche 102 1135
+#11 DOIGT add_part_0 « + A »
+#12 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 69462ea571 | project=p-21e73a2d no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 > attends 3
+#13 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 69462ea571 | project=p-21e73a2d no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 348 1285
+#13 DOIGT thumb_play « Ferma »
+#14 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 507610fa72 | project=p-21e73a2d no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 348 1285
+#14 DOIGT thumb_play « Suona il brano »
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2b1a8190bc | project=p-21e73a2d no tuto
+#15 SON Son : le morceau joue (partie « B »).
+#15 LAYOUT CONTRAST « × 1  ·  1 batt.  ·  suona » 3.03:1 (needs 4.5:1, 14 sp)
+#15 > attends 2
+#16 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 322d50b368 | project=p-21e73a2d no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 451 1389
+#16 DOIGT tab_simple_Clavier « Tastiera »
+#17 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE efcd5ff673 | project=p-21e73a2d no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST «  Registra la mia melodia » 2.78:1 (needs 4.5:1, 14 sp)
+#17 > touche 71 773
+#17 DOIGT key_60 « Do 4 »
+#18 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 016382e050 | project=p-21e73a2d no tuto
+#18 SON Son : 1 note du synthé.
+#18 > touche 633 1389
+#18 DOIGT tab_simple_Mix « Mix »
+#19 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 7864319d54 | project=p-21e73a2d no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Batteria ▸ » a word split over two lines
+#19 LAYOUT CONTRAST « Uscita » 4.37:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT TARGET « Ascolta “Synth” da solo, in loop » 15 x 40 dp (touch 48 x 48)
+#19 > touche 815 1389
+#19 DOIGT tab_simple_Envoyer « Condividi »
+#20 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE bb6759e090 | project=p-21e73a2d no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 745 1292
+#20 DOIGT thumb_more « Più scelte »
+#21 ROUTE plus | MODE simple | EMPREINTE 8bd4fee2c8 | project=p-21e73a2d no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 855 42
+#21 DOIGT top_more
+#22 ROUTE plus | MODE simple | EMPREINTE 8bd4fee2c8 | project=p-21e73a2d no tuto
+#22 SON Son : rien ne joue.
+#22 > retour
+#22 RETOUR
+#23 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE bb6759e090 | project=p-21e73a2d no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 450 1219
+#23 DOIGT guide_bar « Guida »
+#24 ROUTE guide_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 17053bd309 | project=p-21e73a2d no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « PER INIZIARE » 4.37:1 (needs 4.5:1, 12 sp)
+#24 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Genera una linea Acid 303 » 3.91:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « ↗ » 3.47:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Suona il basso con la tastiera » 4.02:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Più tardi » 1.45:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Salta » 1.45:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Scopri di più » 1.45:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Non proporre più » 1.45:1 (needs 4.5:1, 14 sp)
+#24 > touche 260 949
+#24 DOIGT guide_open_acid « Vedi il parametro: Genera una linea Acid »
+#25 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE f0a48dee5f | project=p-21e73a2d no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « Suono di: Acid 303 » over the touchable « Chiudi il foglio » (224 x 32 dp)
+#25 LAYOUT OVERLAP « Tocca un suono: sostituisce quello di questa traccia in tutto il brano. » over the touchable « Chiudi il foglio » (472 x 48 dp)
+#25 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (58 x 27 dp)
+#25 LAYOUT OVERLAP « Classici » over the touchable « Chiudi il foglio » (77 x 31 dp)
+#25 LAYOUT OVERLAP « Acid di base » over the touchable « Chiudi il foglio » (109 x 23 dp)
+#25 LAYOUT OVERLAP « Brillante » over the touchable « Chiudi il foglio » (63 x 21 dp)
+#25 LAYOUT OVERLAP « Squelchy » over the touchable « Chiudi il foglio » (83 x 23 dp)
+#25 LAYOUT OVERLAP « Brillante · pungente » over the touchable « Chiudi il foglio » (149 x 21 dp)
+#25 LAYOUT OVERLAP « Da Funk » over the touchable « Chiudi il foglio » (72 x 23 dp)
+#25 LAYOUT OVERLAP « Cavo » over the touchable « Chiudi il foglio » (39 x 21 dp)
+#25 LAYOUT OVERLAP « A caso » over the touchable « Chiudi il foglio » (63 x 27 dp)
+#25 LAYOUT OVERLAP « Tieni questo suono » over the touchable « Chiudi il foglio » (174 x 27 dp)
+#25 LAYOUT OVERLAP « “Tieni questo suono” lo salva nei tuoi preferiti, per tutti i tuoi progetti. » over the touchable « Chiudi il foglio » (549 x 24 dp)
+#25 LAYOUT CONTRAST « Tocca un suono: sostituisce quello di questa traccia in tutto il brano. » 2.19:1 (needs 4.5:1, 13 sp)
+#25 LAYOUT CONTRAST « Brillante » 1.24:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « Brillante · pungente » 1.24:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « “Tieni questo suono” lo salva nei tuoi preferiti, per tutti i tuoi progetti. » 2.04:1 (needs 4.5:1, 13 sp)
+#25 > touche 814 988
+#25 DOIGT acid_sound_close « Chiudi »
+#26 ROUTE guide_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 8539f24b5f | project=p-21e73a2d no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « Apri la tastiera » 3.91:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Scrivi le note » 4.02:1 (needs 4.5:1, 14 sp)
+#26 > touche 85 1389
+#26 DOIGT tab_simple_Morceau « Il mio brano »
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1da529464b | project=p-21e73a2d no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 450 779
+#27 DOIGT song_chords « Accordi del brano »
+#28 ROUTE dialogue:song_chords_sheet | MODE simple | EMPREINTE acc7164503 | project=p-21e73a2d no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « Accordi del brano » over the touchable « Chiudi il foglio » (208 x 32 dp)
+#28 LAYOUT OVERLAP « Tonalità: Do maggiore. Le tracce che seguono cambiano con gli accordi, in tutte le parti. » over the touchable « Chiudi il foglio » (566 x 55 dp)
+#28 LAYOUT OVERLAP « Applica a tutto il brano » over the touchable « Chiudi il foglio » (203 x 27 dp)
+#28 LAYOUT OVERLAP « Tocca una progressione: la senti subito, su tutto il brano, prima di applicarla. » over the touchable « Chiudi il foglio » (519 x 48 dp)
+#28 LAYOUT OVERLAP « Progressione per tutto il brano » over the touchable « Chiudi il foglio » (271 x 27 dp)
+#28 LAYOUT OVERLAP « I–V–vi–IV  ·  Do Sol La m Fa » over the touchable « Chiudi il foglio » (239 x 27 dp)
+#28 LAYOUT OVERLAP « vi–IV–I–V  ·  La m Fa Do Sol » over the touchable « Chiudi il foglio » (239 x 27 dp)
+#28 LAYOUT OVERLAP « ii–V–I–I  ·  Re m Sol Do Do » over the touchable « Chiudi il foglio » (225 x 27 dp)
+#28 LAYOUT OVERLAP « I–vi–iii–V  ·  Do La m Mi m Sol » over the touchable « Chiudi il foglio » (257 x 27 dp)
+#28 LAYOUT OVERLAP « I–IV–V–I  ·  Do Fa Sol Do » over the touchable « Chiudi il foglio » (211 x 27 dp)
+#28 LAYOUT OVERLAP « Parte per parte (una casella = una battuta) » over the touchable « Chiudi il foglio » (378 x 27 dp)
+#28 LAYOUT OVERLAP « B  ·  trovati nelle tue note » over the touchable « Chiudi il foglio » (224 x 27 dp)
+#28 LAYOUT OVERLAP « Do » over the touchable « Chiudi il foglio » (25 x 27 dp)
+#28 LAYOUT OVERLAP « A  ·  trovati nelle tue note » over the touchable « Chiudi il foglio » (226 x 27 dp)
+#28 LAYOUT OVERLAP « Tracce che seguono gli accordi » over the touchable « Chiudi il foglio » (280 x 27 dp)
+#28 LAYOUT OVERLAP « Le tracce di “Fammi un brano” seguono; le note che hai scritto restano, a meno che tu non lo chieda qui. » over the touchable « Chiudi il foglio » (568 x 48 dp)
+#28 LAYOUT OVERLAP « Synth » over the touchable « Chiudi il foglio » (53 x 27 dp)
+#28 LAYOUT OVERLAP « Linea acid (Acid 303) » over the touchable « Chiudi il foglio » (192 x 27 dp)
+#28 LAYOUT CONTRAST « Progressione per tutto il brano » 1.26:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « I–V–vi–IV  ·  Do Sol La m Fa » 4.02:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « ii–V–I–I  ·  Re m Sol Do Do » 4.26:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « I–IV–V–I  ·  Do Fa Sol Do » 2.68:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « A  ·  trovati nelle tue note » 1.77:1 (needs 4.5:1, 14 sp)
+#28 > touche 228 721
+#28 DOIGT song_progression_Pop « I–V–vi–IV  ·  Do Sol La m Fa »
+#29 ROUTE dialogue:song_chords_sheet | MODE simple | EMPREINTE d73d8f934b | project=p-21e73a2d no tuto
+#29 SON Son : le morceau joue (partie « B »).
+#29 LAYOUT OVERLAP « Annulla » over the touchable « Chiudi il foglio » (68 x 27 dp)
+#29 LAYOUT OVERLAP « Stai ascoltando i nuovi accordi. “Applica” li tiene (un passo da annullare), “Annulla” rimette quelli di prima. » over the touchable « Chiudi il foglio » (490 x 48 dp)
+#29 LAYOUT OVERLAP « B » over the touchable « Chiudi il foglio » (12 x 27 dp)
+#29 LAYOUT OVERLAP « A » over the touchable « Chiudi il foglio » (13 x 27 dp)
+#29 > touche 356 491
+#29 DOIGT song_chords_apply « Applica a tutto il brano »
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f780c25e75 | project=p-21e73a2d no tuto
+#30 SON Son : le morceau joue (partie « A »).
+#30 LAYOUT OVERLAP « Aggiungi alla fine: » over « Fatto: accordi del brano Do Sol La m Fa » (131 x 16 dp)
+#30 LAYOUT CONTRAST « + A » 3.71:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + B » 3.71:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + Nuova parte (copia di A) » 3.71:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Annulla » 3.63:1 (needs 4.5:1, 14 sp)
+#30 > touche 98 123
+#30 DOIGT top_tempo « Tempo: 120 battiti al minuto »
+#31 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE d02c0a56d2 | project=p-21e73a2d no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « Tempo » over the touchable « Chiudi il foglio » (82 x 32 dp)
+#31 LAYOUT OVERLAP « ? » over the touchable « Chiudi il foglio » (9 x 18 dp)
+#31 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (86 x 53 dp)
+#31 LAYOUT OVERLAP «  BPM » over the touchable « Chiudi il foglio » (50 x 31 dp)
+#31 LAYOUT OVERLAP « 70 » over the touchable « Chiudi il foglio » (25 x 24 dp)
+#31 LAYOUT OVERLAP « 90 » over the touchable « Chiudi il foglio » (25 x 24 dp)
+#31 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#31 LAYOUT OVERLAP « 140 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#31 LAYOUT OVERLAP « 174 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#31 LAYOUT OVERLAP « ½ » over the touchable « Chiudi il foglio » (17 x 31 dp)
+#31 LAYOUT OVERLAP « ×2 » over the touchable « Chiudi il foglio » (26 x 31 dp)
+#31 LAYOUT OVERLAP « 1 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 2 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 3 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 4 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 5 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 6 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 7 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 8 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 9 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « 0 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#31 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (37 x 30 dp)
+#31 LAYOUT OVERLAP « Batti a tempo » over the touchable « Chiudi il foglio » (128 x 31 dp)
+#31 LAYOUT OVERLAP « Tocca qui a ogni battito: il tempo segue. » over the touchable « Chiudi il foglio » (318 x 24 dp)
+#31 LAYOUT CONTRAST « 120 » 2.42:1 (needs 3.0:1, 44 sp)
+#31 LAYOUT CONTRAST «  BPM » 2.42:1 (needs 4.5:1, 16 sp)
+#31 LAYOUT CONTRAST « 1 » 1.41:1 (needs 3.0:1, 22 sp)
+#31 LAYOUT CONTRAST « 2 » 1.41:1 (needs 3.0:1, 22 sp)
+#31 LAYOUT CONTRAST « 3 » 1.41:1 (needs 3.0:1, 22 sp)
+#31 LAYOUT CONTRAST « 4 » 2.02:1 (needs 3.0:1, 22 sp)
+#31 LAYOUT CONTRAST « 6 » 2.02:1 (needs 3.0:1, 22 sp)
+#31 LAYOUT CONTRAST « Tocca qui a ogni battito: il tempo segue. » 3.42:1 (needs 4.5:1, 13 sp)
+#31 > touche 162 990
+#31 DOIGT tempo_preset_90 « 90 »
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE bd633a1369 | project=p-21e73a2d no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « Aggiungi alla fine: » over « Fatto: accordi del brano Do Sol La m Fa » (131 x 13 dp)
+#32 LAYOUT CONTRAST « + A » 3.63:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + B » 3.63:1 (needs 4.5:1, 14 sp)
+#32 > touche 268 1389
+#32 DOIGT tab_simple_Rythme « Ritmo »
+#33 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE efcf1313b4 | project=p-21e73a2d no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « Riempi » over « Fatto: accordi del brano Do Sol La m Fa » (26 x 13 dp)
+#33 LAYOUT OVERLAP « tutto » over « Fatto: accordi del brano Do Sol La m Fa » (43 x 15 dp)
+#33 LAYOUT OVERLAP « 1/2 » over « Fatto: accordi del brano Do Sol La m Fa » (27 x 15 dp)
+#33 LAYOUT OVERLAP « 1/4 » over « Fatto: accordi del brano Do Sol La m Fa » (28 x 15 dp)
+#33 LAYOUT OVERLAP « ◀ » over « Fatto: accordi del brano Do Sol La m Fa » (17 x 15 dp)
+#33 LAYOUT OVERLAP « ▶ » over « Fatto: accordi del brano Do Sol La m Fa » (17 x 15 dp)
+#33 LAYOUT OVERLAP « Cancella » over « Fatto: accordi del brano Do Sol La m Fa » (51 x 15 dp)
+#33 > touche 141 788
+#33 DOIGT kit_chip « Kit: Classico »
+#34 ROUTE dialogue:kit_sheet | MODE simple | EMPREINTE 35c4c11b31 | project=p-21e73a2d no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « Kit di batteria » over the touchable « Chiudi il foglio » (158 x 32 dp)
+#34 LAYOUT OVERLAP « Tocca un kit: sostituisce i suoni dei 16 pad. Annulla li rimette. » over the touchable « Chiudi il foglio » (483 x 24 dp)
+#34 LAYOUT OVERLAP « Nell'app » over the touchable « Chiudi il foglio » (74 x 27 dp)
+#34 LAYOUT OVERLAP « Studio » over the touchable « Chiudi il foglio » (57 x 27 dp)
+#34 LAYOUT OVERLAP « Classico » over the touchable « Chiudi il foglio » (80 x 27 dp)
+#34 LAYOUT OVERLAP « Trap (808) » over the touchable « Chiudi il foglio » (95 x 27 dp)
+#34 LAYOUT OVERLAP « Drill (808) » over the touchable « Chiudi il foglio » (89 x 27 dp)
+#34 LAYOUT OVERLAP « Drum & bass » over the touchable « Chiudi il foglio » (115 x 27 dp)
+#34 LAYOUT OVERLAP « Altri kit: scarica dei pack nella libreria suoni, o la banca di strumenti in Suoni › una traccia › Strumenti. » over the touchable « Chiudi il foglio » (555 x 48 dp)
+#34 LAYOUT CONTRAST « Chiudi » 1.23:1 (needs 4.5:1, 14 sp)
+#34 > touche 234 1152
+#34 DOIGT kit_choice_builtin:3 « Studio »
+#35 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE a9180dd36c | project=p-21e73a2d no tuto
+#35 SON Son : le pad « Grancassa 1 » sonne.
+#35 LAYOUT OVERLAP « Riempi » over « Fatto: kit Studio sui 16 pad » (26 x 13 dp)
+#35 LAYOUT OVERLAP « tutto » over « Fatto: kit Studio sui 16 pad » (43 x 15 dp)
+#35 LAYOUT OVERLAP « 1/2 » over « Fatto: kit Studio sui 16 pad » (27 x 15 dp)
+#35 LAYOUT OVERLAP « 1/4 » over « Fatto: kit Studio sui 16 pad » (28 x 15 dp)
+#35 LAYOUT OVERLAP « ◀ » over « Fatto: kit Studio sui 16 pad » (17 x 15 dp)
+#35 > touche 745 1292
+#35 DOIGT thumb_more « Più scelte »
+#36 ROUTE plus | MODE simple | EMPREINTE 15b9517789 | project=p-21e73a2d no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 450 345
+#36 DOIGT plus_projects « I miei progetti »
+#37 ROUTE dialogue:projects | MODE simple | EMPREINTE 206b027dff | project=p-21e73a2d no tuto
+#37 SON Son : rien ne joue.
+#37 > attends 3
+#38 ROUTE dialogue:projects | MODE simple | EMPREINTE 206b027dff | project=p-21e73a2d no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 54 54
+#38 DOIGT projects_back
+#39 ROUTE launch | MODE simple | EMPREINTE 055cb6553e | project=p-21e73a2d no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 800 327
+#39 DOIGT launch_continue « Continua »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a52968d525 | project=p-21e73a2d no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 750 1149
+#40 DOIGT dans:part_0
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 9d5dd078f8 | project=p-21e73a2d no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 233 727
+#41 DOIGT help_Brano « Cos'è “Brano”? »
+#41 AIDE help_Brano
+#42 ROUTE dialogue:« Brano » | MODE simple | EMPREINTE 92ba2126c4 | project=p-21e73a2d no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 771 872
+#42 DOIGT #2707 « Capito »
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 9d5dd078f8 | project=p-21e73a2d no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 451 1389
+#43 DOIGT tab_simple_Clavier « Tastiera »
+#44 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6f64d67dc0 | project=p-21e73a2d no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 243 373
+#44 DOIGT mode_notes « Note »
+#45 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 5cf237e5b3 | project=p-21e73a2d no tuto
+#45 SON Son : rien ne joue.
+#45 > glisse 700 1150 700 500
+#45 DOIGT rien
+#46 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6763ee4954 | project=p-21e73a2d no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 250 797
+#46 DOIGT rien
+#47 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c1acf4470e | project=p-21e73a2d no tuto
+#47 SON Son : 1 note du synthé.
+#47 > touche 500 1007
+#47 DOIGT rien
+#48 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c1acf4470e | project=p-21e73a2d no tuto
+#48 SON Son : 1 note du synthé.
+#48 > touche 782 42
+#48 DOIGT top_song « Suona il brano »
+#49 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE ebec585ce6 | project=p-21e73a2d no tuto
+#49 SON Son : le morceau joue (partie « B »).
+#49 > touche 782 42
+#49 DOIGT top_song « Ferma »
+#50 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c2c14e5b32 | project=p-21e73a2d no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 633 1389
+#50 DOIGT tab_simple_Mix « Mix »
+#51 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 04026c6782 | project=p-21e73a2d no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT TARGET « Ascolta “Acid 303” da solo, in loop » 15 x 40 dp (touch 48 x 48)
+#51 > glisse 339 657 339 740
+#51 DOIGT mix_fader_2 « Volume di Synth »
+#52 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 6ee003b6f5 | project=p-21e73a2d no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 512 210
+#52 DOIGT mix_loop « ▶ Parte in loop »
+#53 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 475c78d4fd | project=p-21e73a2d no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT CONTRAST « Uscita » 4.34:1 (needs 4.5:1, 13 sp)
+#53 > attends 2
+#54 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE afd4d24cf9 | project=p-21e73a2d no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 468 210
+#54 DOIGT mix_loop « ■ Ferma »
+#55 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE e828937ed7 | project=p-21e73a2d no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 348 1285
+#55 DOIGT thumb_play « Suona il brano »
+#56 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 0c302a52d5 | project=p-21e73a2d no tuto
+#56 SON Son : le morceau joue (partie « B »).
+#56 > attends 6
+#57 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 6ee003b6f5 | project=p-21e73a2d no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 745 1292
+#57 DOIGT thumb_more « Più scelte »
+#58 ROUTE plus | MODE simple | EMPREINTE 400e5a6490 | project=p-21e73a2d no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 741 683
+#58 DOIGT tool_Reglages « Impostazioni »
+#59 ROUTE settings | MODE simple | EMPREINTE e72e5c0d5e | project=p-21e73a2d no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 815 1389
+#59 DOIGT tab_simple_Envoyer « Condividi »
+#60 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE b248cb5035 | project=p-21e73a2d no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 834 309
+#60 DOIGT name_clear
+#61 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 903f7f8b22 | project=p-21e73a2d no tuto
+#61 SON Son : rien ne joue.
+#61 > ecris Primo giro
+#62 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE fb77611c71 | project=p-21e73a2d no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 450 301
+#62 DOIGT share_name « Nome del brano (e del progetto) »
+#62 DIALOGUE 0.3 s
+#63 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 903f7f8b22 | project=p-21e73a2d no tuto
+#63 SON Son : rien ne joue.
+#63 > ecris Primo giro
+#63 DIALOGUE 0.2 s
+#64 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 15c4bccc6d | project=p-21e73a2d no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 450 1021
+#64 DOIGT share_go «   Condividi »
+#64 DIALOGUE 0.3 s
+#65 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 50957700f0 | project=p-21e73a2d no tuto
+#65 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#65 > attends 10
+#65 PARTAGE Primo-giro-brano-20261112-211607.m4a
+#65 DIALOGUE 0.8 s
+#66 ROUTE dialogue:« Condividi il mio brano · Primo » | MODE simple | EMPREINTE a8c3255d78 | project=p-21e73a2d no tuto
+#66 SON Son : rien ne joue.
+#66 > retour
+#66 RETOUR
+#66 DIALOGUE 0.2 s
+#67 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE be59185f7b | project=p-21e73a2d no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 790 936
+#67 DOIGT share_bilan_ok « OK »
+#67 DIALOGUE 0.2 s
+#68 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7ac8f2af25 | project=p-21e73a2d no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 745 1292
+#68 DOIGT thumb_more « Più scelte »
+#68 DIALOGUE 0.2 s
+#69 ROUTE plus | MODE simple | EMPREINTE 73490498a9 | project=p-21e73a2d no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 450 683
+#69 DOIGT tool_Aide « Aiuto »
+#70 ROUTE help_page | MODE simple | EMPREINTE 6cc0fd6696 | project=p-21e73a2d no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 745 1292
+#70 DOIGT thumb_more « Più scelte »
+#71 ROUTE plus | MODE simple | EMPREINTE 73490498a9 | project=p-21e73a2d no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 450 345
+#71 DOIGT plus_projects « I miei progetti »
+#72 ROUTE dialogue:projects | MODE simple | EMPREINTE ce0c3b815c | project=p-21e73a2d no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 450 488
+#72 DOIGT project_p-21e73a2d « Primo giro »
+#73 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 45b668bb20 | project=p-21e73a2d no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 268 1389
+#73 DOIGT tab_simple_Rythme « Ritmo »
+#74 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 45d878706f | project=p-21e73a2d no tuto
+#74 SON Son : rien ne joue.
+#74 > appui-long 559 311
+#74 DOIGT pad_2 « Rullante »
+#74 DIALOGUE 0.4 s
+#75 ROUTE dialogue:library | MODE simple | EMPREINTE c5217ac04a | project=p-21e73a2d no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « ? » 4.29:1 (needs 4.5:1, 12 sp)
+#75 > touche 450 411
+#75 DOIGT library_folder_Sons intégrés « Suoni integrati »
+#75 DIALOGUE 0.2 s
+#76 ROUTE dialogue:library | MODE simple | EMPREINTE f69ba32561 | project=p-21e73a2d no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CUT « Rullante » a word split over two lines
+#76 LAYOUT CUT « ✓ Ora sul pad » ellipsized (« … »)
+#76 LAYOUT CUT « Rullante 2 » a word split over two lines
+#76 LAYOUT CUT « Bordo del tamburo » ellipsized (« … »)
+#76 LAYOUT CONTRAST « ✓ Ora sul pad » 3.67:1 (needs 4.5:1, 12 sp)
+#76 > touche 783 395
+#76 DOIGT library_sound_use_1 « Usa »
+#76 DIALOGUE 0.3 s
+#77 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 3be582c199 | project=p-21e73a2d no tuto
+#77 SON Son : le pad « Rullante 2 » sonne.
+#77 > touche 500 981
+#77 DOIGT step_4 « Step 5 »
+#78 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b69263a1ff | project=p-21e73a2d no tuto
+#78 SON Son : rien ne joue.
+#78 LAYOUT CONTRAST « Rullante 2 » 3.86:1 (needs 4.5:1, 14 sp)
+#78 > touche 500 1062
+#78 DOIGT step_12 « Step 13 »
+#79 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 23314b298f | project=p-21e73a2d no tuto
+#79 SON Son : rien ne joue.
+#79 > touche 773 35
+#79 DOIGT top_play « Suona questa parte »
+#80 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 5cf36e0649 | project=p-21e73a2d no tuto
+#80 SON Son : la musique du projet joue en boucle.
+#80 > touche 773 35
+#80 DOIGT top_play « Ferma »
+#81 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 281922d837 | project=p-21e73a2d no tuto
+#81 SON Son : rien ne joue.
+#81 > touche 85 1389
+#81 DOIGT tab_simple_Morceau « Il mio brano »
+#82 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a4ce38e415 | project=p-21e73a2d no tuto
+#82 SON Son : rien ne joue.
+#82 > touche 348 1285
+#82 DOIGT thumb_play « Suona il brano »
+#83 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 78c796260c | project=p-21e73a2d no tuto
+#83 SON Son : le morceau joue (partie « B »).
+#83 LAYOUT CONTRAST « × 2  ·  2 batt.  ·  suona » 4.33:1 (needs 4.5:1, 14 sp)
+#83 > fin
+#83 FIN : fin

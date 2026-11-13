@@ -1,0 +1,67 @@
+Écran 12 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 280,42
+bouton « Simple » @ 606,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 122  Tempo » @ 98,123
+icône (flèches en boucle) « Montée mesure 1/4 » ▾ @ 297,123
+bouton « ? » @ 855,123
+icône « Partie : F · Montée » ▾ @ 158,198
+bouton « Grosse caisse studio FX » @ 123,311
+bouton « Grosse caisse 2 » @ 341,311
+bouton « Caisse » @ 559,311
+bouton « Caisse 2 » @ 777,311
+bouton « Claquement de mains FX » @ 123,436
+bouton « Charley G 30 » @ 341,436
+bouton « Charley ouvert D 30 » @ 559,436
+bouton « Tom grave » @ 777,436
+bouton « Tom médium D 45 » @ 123,561
+bouton « Tom aigu » @ 341,561
+bouton « Maracas D 50 » @ 559,561
+bouton « Cloche » @ 777,561
+bouton « Ride D 40 » @ 123,686
+bouton « Conga G 50 » @ 341,686
+bouton « Conga » @ 559,686
+bouton « Laser » @ 777,686
+bouton « Kit : Perso » ▾ @ 126,788
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 564,788
+titre « PAS : GROSSE CAISSE STUDIO · MONTÉE » [état « Déplié »] @ 332,896
+bouton « ? » @ 601,896
+bouton « Tous les pads » @ 740,896
+texte « Mesure » @ 92,980
+bouton « 1 » [sélectionné] @ 187,980
+bouton « 2 » @ 268,980
+bouton « 3 » @ 349,980
+bouton « 4 » @ 430,980
+bouton « Suivre » [sélectionné] @ 543,980
+bouton « 1 » [état « coup, force 100 % »] @ 90,1065
+bouton [état « vide »] @ 192,1065
+bouton [état « vide »] @ 294,1065
+bouton [état « vide »] @ 397,1065
+bouton « 2 » [état « coup, force 100 % »] @ 500,1065
+bouton [état « vide »] @ 603,1065
+bouton [état « vide »] @ 706,1065
+bouton [état « vide »] @ 809,1065
+bouton « 3 » [état « coup, force 100 % »] @ 90,1146
+bouton [état « vide »] @ 192,1146
+bouton [état « vide »] @ 294,1146
+bouton [état « vide »] @ 397,1146
+bouton « 4 » [état « coup, force 100 % »] @ 500,1146
+bouton [état « vide »] @ 603,1146
+bouton [état « vide »] @ 706,1146
+bouton [état « vide »] @ 809,1146
+bouton (boussole) « Guide  · Change un son 15 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 148,1292
+bouton ■ « le morceau » @ 354,1292
+texte « 122 Tempo » @ 564,1292
+icône ⋮ « Plus » @ 753,1292
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

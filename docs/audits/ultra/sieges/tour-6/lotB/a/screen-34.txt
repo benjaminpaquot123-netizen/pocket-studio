@@ -1,0 +1,48 @@
+Écran 34 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Batería 16 pads » @ 76,183
+onglet « Acid 303 Línea de bajo » @ 242,183
+onglet « Voz 1 pista » @ 402,183
+onglet « Ma chanson préférée Canción » [coupé, sélectionné] @ 523,183
+onglet « Pistas de audio » @ 114,258
+onglet « Remix » [sélectionné] @ 283,258
+onglet « Afinador » @ 419,258
+onglet « Generar » [coupé] @ 538,258
+texte « Tonalidad: proyecto en La menor, canción en La menor » @ 291,325
+bouton ✂ «  Cortar la canción » @ 294,387
+bouton (barres de son) «  Abrir el tablero de pistas » @ 294,471
+texte « Empezar desde el compás 1 de la canción » @ 222,555
+icône − [désactivé] @ 438,555
+icône + @ 510,555
+texte « Hacia el pad: » @ 102,639
+bouton « 1 comp. » [sélectionné] @ 236,639
+bouton « 2 comp. » @ 375,639
+bouton « 4 comp. » @ 108,720
+texte « Voz » @ 135,804
+bouton (haut-parleur barré) [état « desactivado »] @ 240,804
+bouton (casque) [état « desactivado »] @ 300,804
+texte « → Pad » @ 384,804
+texte « → Live » @ 493,804
+bouton ✂ «  Cortar la canción » @ 294,903
+bouton (boussole) « Guía  · Pon un ritmo 5 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 70,1062
+icône ↷ « Rehacer » [désactivé] @ 176,1062
+bouton ▶ « la canción » @ 285,1062
+texte « 120 Tempo » @ 401,1062
+icône (trois points reliés) « Compartir » @ 515,1062
+onglet (ligne brisée et points) « Estructura » @ 54,1158
+onglet (touches de piano) « Sonidos » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Más » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

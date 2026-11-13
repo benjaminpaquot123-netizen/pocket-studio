@@ -1,0 +1,47 @@
+Écran 6 (900x1509)
+icône (dossier ouvert) « House » @ 280,42
+bouton « Simple » @ 606,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 122  Tempo » @ 98,123
+icône « Montée mesure 25/96 » ▾ @ 315,123
+bouton « ? » @ 855,123
+titre « MES PISTES » [état « Déplié »] @ 143,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 450,288
+bouton « Batterie Changer le son » › @ 278,378
+bouton ▶ « Écouter seule » @ 650,378
+icône (curseurs) @ 822,378
+bouton « Basse Changer le son » › @ 278,488
+bouton ▶ « Écouter seule » @ 650,488
+icône (curseurs) @ 822,488
+bouton « Piano Changer le son » › @ 278,598
+bouton ▶ « Écouter seule » @ 650,598
+icône (curseurs) @ 822,598
+bouton « Mélodie Changer le son » › @ 278,708
+bouton ▶ « Écouter seule » @ 650,708
+icône (curseurs) @ 822,708
+bouton « Souffle montant Changer le son » › @ 278,818
+bouton ▶ « Écouter seule » @ 650,818
+icône (curseurs) @ 822,818
+bouton « Voix Changer le son » › @ 278,928
+bouton ▶ « Écouter seule » @ 650,928
+icône (curseurs) @ 822,928
+bouton « Chute grave Changer le son » › @ 278,1038
+bouton ▶ « Écouter seule » @ 650,1038
+icône (curseurs) @ 822,1038
+bouton (boussole) « Guide » ⌄ [état « ouvert »] @ 450,1147
+texte « Le Guide lit ton morceau… » @ 202,1212
+icône ↶ « Annuler » [désactivé] @ 148,1292
+bouton ■ « le morceau » @ 354,1292
+texte « 122 Tempo » @ 564,1292
+icône ⋮ « Plus » @ 753,1292
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

@@ -1,0 +1,69 @@
+Écran 18 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 98,123
+icône « B battuta 1/2 » ▾ @ 294,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Linea di basso » @ 129,204
+bouton « Synth Synth » ⋮ @ 337,204
+icône ♪ @ 463,205
+bouton + «  Traccia » @ 611,205
+icône « Parte: A » ▾ @ 89,283
+icône (poubelle et traits) «  Svuota » [désactivé] @ 798,373
+bouton « Tastiera » [sélectionné] @ 97,373
+bouton « Note » @ 243,373
+bouton ● «  Registra la mia melodia » @ 192,477
+bouton (horloge et flèche) «  Tieni quello che ho appena suonato » @ 652,477
+icône (chronomètre) «  1 » @ 422,477
+bouton « ? » @ 860,477
+icône − @ 634,605
+icône + @ 822,605
+texte « Ottava 3 » @ 728,605
+titre « TASTIERA » [état « Espanso »] @ 129,605
+bouton « Do » @ 71,795
+bouton @ 100,740
+bouton @ 129,795
+bouton @ 158,740
+bouton @ 187,795
+bouton @ 245,795
+bouton @ 274,740
+bouton @ 303,795
+bouton @ 333,740
+bouton @ 361,795
+bouton @ 391,740
+bouton @ 419,795
+bouton « Do » @ 477,795
+bouton @ 508,740
+bouton @ 535,795
+bouton @ 566,740
+bouton @ 593,795
+bouton @ 651,795
+bouton @ 682,740
+bouton @ 709,795
+bouton @ 741,740
+bouton @ 767,795
+bouton @ 799,740
+bouton @ 825,795
+bouton « Accordi » @ 119,986
+bouton « Pad » @ 255,986
+bouton « 2 ottave » [sélectionné] @ 122,1070
+bouton « 1 ottava » @ 288,1070
+bouton « Scala » @ 436,1070
+texte « Il suono della traccia (lo stesso per tutte le sue note) » [coupé] @ 338,1167
+bouton (boussole) « Guida  · Aggiungi un basso 25 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 120 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

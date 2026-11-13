@@ -1,0 +1,43 @@
+Écran 43 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+titre « LE MIE TRACCE » [état « Espanso »] @ 166,222
+texte « Tocca il nome di una traccia per cambiarne il suono; ▶ per ascoltarla da sola. » @ 450,288
+bouton « Batteria Cambia il suono » › @ 267,378
+bouton ▶ « Ascolta da sola » @ 639,378
+icône (curseurs) @ 822,378
+bouton « Acid 303 Cambia il suono » › @ 267,488
+bouton ▶ « Ascolta da sola » @ 639,488
+icône (curseurs) @ 822,488
+bouton « Synth Cambia il suono » › @ 267,598
+bouton ▶ « Ascolta da sola » @ 639,598
+icône (curseurs) @ 822,598
+titre « IL BRANO » [état « Espanso »] @ 148,727
+bouton « ? » @ 233,727
+texte « Tocca una parte per ascoltare il brano da lì. » @ 301,779
+texte « 3 battute · 0:08 » @ 450,826
+bouton « Accordi del brano B Do A Do Tocca per cambiare gli accordi di tutto il brano. » @ 450,991
+icône ▶ « B × 2  ·  2 batt. » @ 342,1145
+icône − @ 678,1149
+icône + @ 750,1149
+icône ⋮ @ 822,1149
+bouton (boussole) « Guida  · Aggiungi una melodia 35 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

@@ -11,6 +11,7 @@
 #include "MasterCompare.h"
 #include "PlateReverb.h"
 #include "Smoother.h"
+#include "SpeakerKick.h"
 
 namespace ps {
 
@@ -157,6 +158,12 @@ public:
     // the export limits it. Off (versions 1 to 3): after the chain, as always. An export with a loudness
     // target renders the same either way (fader on, chain bypassed, then mastered); a single-pass one follows it.
     void setFaderBeforeChain(bool on) { faderBeforeChain_ = on; }
+    // Tour 5 (kick): the music goes to the phone's own speaker (the app reads it from Android's
+    // AudioManager): the kick's harmonics and click are added on its strip, before its fader (SpeakerKick.h).
+    // Off (the default, an export): the output is the plain one, sample for sample.
+    // `instant`: off at once (a take of the output is armed).
+    void setSpeakerOutput(bool on, bool instant = false) { speakerKick_.setOn(on, instant); }
+    bool speakerOutput() const { return speakerKick_.on(); }
     bool faderBeforeChain() const { return faderBeforeChain_; }
     int outputLatency() const { return chainBypass_ ? 0 : chain_->latency(); }
     MasterChain& masterChain() { return *chain_; }
@@ -352,6 +359,7 @@ private:
     void finishSwaps(int ch);  // the strip is not heard: every effect waiting goes in now
     // --- The master chain (drive, clipper, limiter, meter): on the heap, about 100 kB.
     std::unique_ptr<MasterChain> chain_ = std::make_unique<MasterChain>();
+    SpeakerKick speakerKick_;
     std::unique_ptr<MasterCompare> compare_ = std::make_unique<MasterCompare>();
     std::array<float, kChunk> abL_{}, abR_{};  // the mix before the master's processing (A/B)
     int stemMode_ = StemNormal;

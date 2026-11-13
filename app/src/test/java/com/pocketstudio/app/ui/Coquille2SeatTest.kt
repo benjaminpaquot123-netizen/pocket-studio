@@ -88,11 +88,12 @@ class Coquille2SeatTest : HumanTester("coquille2") {
     }
 
     /**
-     * Seat B a (es, phone, 100 %, Mode simple, left hand), A6: a song (0:40) longer than the project (1 bar) put in it: the app
-     * says its end will be cut AND offers to lengthen, in the same window.
+     * Seat B a (es, phone, 100 %, Mode simple, left hand), A6: a song (0:40) longer than the project (a 1-bar loop) put in
+     * it: the app says so truly (a loop lets the song ring on: no « su final se cortará ») AND offers to lengthen, in the
+     * same window; « Alargar el tema » gives the project a song that holds the whole song.
      */
     @Test
-    fun a6_aSongLongerThanTheProjectIsSaidWithTheOfferToLengthen() {
+    fun a6_aSongLongerThanTheLoopIsSaidTrulyWithTheOfferToLengthen() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
         amenee("remix", java.io.File("build/coquille2-journal.txt"))
@@ -110,12 +111,16 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         // The voice switched on (the seat's speaker, screen 41): the song is heard with a 1-bar project.
         tap("stem_mute_3")
         repeat(2) { act("attends 1") }
-        // Said (« su final se cortará ») with the offer to lengthen (« Alargar … »), in that window, before anything else.
-        assertNotNull("no word that the end will be cut:\n" + screen(), centerOfText("se cortará", substring = true))
+        // Said truly (« sigue sonando mientras el bucle se repite », nothing cut in a loop), with the offer to lengthen.
+        assertNull("« se cortará » said of a loop, which lets the song ring on:\n" + screen(), centerOfText("se cortará", substring = true))
+        assertNotNull("no word that the song is longer than the loop:\n" + screen(), centerOfText("sigue sonando", substring = true))
         assertNotNull("no offer to lengthen with the warning:\n" + screen(), centerOf("notice_lengthen"))
         tap("notice_lengthen")
         act("attends 1")
-        assertTrue("the song still goes past the project's end", rhythm()!!.project.value.remixOverrunSeconds() <= 0)
+        val p = rhythm()!!.project.value
+        // Fresh review: with no song the overrun reads 0 whatever happens; the song made must be there and hold it all.
+        assertTrue("« Alargar el tema » made no song", p.song.isNotEmpty())
+        assertTrue("the song still goes past the project's end", p.remixOverrunSeconds() <= 0)
     }
 
     /**

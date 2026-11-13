@@ -46,7 +46,7 @@
   "Connexion impossible": "تعذّر الاتصال",
   "Coupe un son en morceaux, à chaque attaque, et pose chaque morceau sur un pad pour le rejouer dans un autre ordre.": "يقطّع الصوت إلى قطع عند كل ضربة، ويضع كل قطعة على باد لتعزفها بترتيب آخر.",
   "Dernière mesure réussie : %s": "آخر قياس ناجح: %s",
-  "Des effets à jouer en direct sur tout le morceau : filtre, répétition, arrêt de bande, hachage.": "مؤثرات تعزفها مباشرة على الأغنية كلها: فلتر، Repeat، Tape stop، Stutter.",
+  "Des effets à jouer en direct sur tout le morceau : filtre, répétition, arrêt de bande, hachage.": "مؤثرات تعزفها مباشرة على الأغنية كلها: فلتر، ترديد، إيقاف الشريط، تقطيع.",
   "Des sons (boucles, coups, voix, bouts de morceau) que tu lances d'un toucher par-dessus ta musique : 4 pages de 16 pads dans Pad Live. Chaque pad joue en coup, en boucle ou tant que tu appuies ; les boucles restent calées sur le tempo, comme chez un DJ.": "أصوات (حلقات، ضربات، أصوات بشرية، مقاطع من أغانٍ) تطلقها بلمسة فوق موسيقاك: 4 صفحات من 16 باد في Pad المباشر. كل باد يُعزف ضربةً أو حلقةً أو ما دمت تضغط، والحلقات تبقى على الإيقاع كما عند الـDJ.",
   "Deux effets partagés par toutes les pistes : la réverbe donne l'impression d'une salle, l'écho répète le son. Chaque piste y envoie plus ou moins de son (son « envoi »).": "مؤثران تتشاركهما كل المسارات: صدى المكان يجعل الصوت كأنه في غرفة، والصدى يكرّر الصوت. كل مسار يرسل إليهما صوتًا أكثر أو أقل (الـ«Send»).",
   "Décompte": "العدّ",

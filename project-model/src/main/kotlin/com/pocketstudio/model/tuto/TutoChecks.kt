@@ -2296,45 +2296,56 @@ enum class TutoWay { Later, Earlier, Higher, Lower }
  */
 data class TutoRollView(val left: Float, val right: Float, val top: Float, val bottom: Float, val stepPx: Float, val rowPx: Float, val high: Int)
 
-/** The one rule of the tutorial's line over the piano roll: where the next dotted note is from what is in sight. */
+/**
+ * The one rule of the tutorial's line over the piano roll: where the next dotted note is from what is in sight.
+ * Lot « tuto-flèches » (control seats D a, B b, H a): the line said « plus haut ↑ » for a note that was further right
+ * too, « plus bas ↓ » with the panel over the rows, « à toucher » with nothing in sight. One note is spoken of
+ * ([next]); the bar first, the rows once its time is in sight; nothing when a dotted note is whole in sight.
+ */
 object TutoRollHint {
     fun x(n: Note, v: TutoRollView): Float = n.start / NoteClip.TICKS_PER_STEP.toFloat() * v.stepPx
     fun y(n: Note, v: TutoRollView): Float = (v.high - n.pitch) * v.rowPx
 
-    /** The way to the dotted notes [left] to write (null: nothing to say, « à toucher »). */
-    fun way(left: List<Note>, v: TutoRollView): TutoWay? {
-        val inTime = left.filter { x(it, v) >= v.left && x(it, v) < v.right }.ifEmpty { left }.sortedWith(compareBy({ it.start }, { -it.pitch }))
-        val above = when {
-            left.isEmpty() || v.rowPx <= 0f -> null
-            inTime.any { y(it, v) >= v.top - 1f && y(it, v) + v.rowPx <= v.bottom + 1f } -> null
-            else -> y(inTime.first(), v) < v.top
-        }
-        val ahead = when {
-            left.isEmpty() || v.right <= v.left || left.any { x(it, v) in v.left..v.right } -> null
-            left.all { x(it, v) > v.right } -> true
-            left.all { x(it, v) < v.left } -> false
-            else -> null
-        }
-        return when {
-            above == true -> TutoWay.Higher
-            above == false -> TutoWay.Lower
-            ahead == true -> TutoWay.Later
-            ahead == false -> TutoWay.Earlier
-            else -> null
-        }
+    /** [n]'s first sixteenth is whole in the time in sight. */
+    fun inTime(n: Note, v: TutoRollView): Boolean = x(n, v) >= v.left - 1f && x(n, v) + v.stepPx <= v.right + 1f
+
+    /** [n]'s row is whole in the rows in sight. */
+    fun inRows(n: Note, v: TutoRollView): Boolean = y(n, v) >= v.top - 1f && y(n, v) + v.rowPx <= v.bottom + 1f
+
+    /**
+     * The dotted note of [left] the line speaks of, the one a touch on it (or « Je le fais ») brings into view and
+     * lights: the first of the time in sight, else the first of all; null: none left.
+     */
+    fun next(left: List<Note>, v: TutoRollView): Note? {
+        val all = left.sortedWith(compareBy({ it.start }, { -it.pitch }))
+        return all.firstOrNull { inTime(it, v) } ?: all.firstOrNull()
     }
 
-    /** The dotted note of [left] a touch on the line (or « Je le fais ») brings into view and lights; null: none left. */
-    fun next(left: List<Note>, v: TutoRollView): Note? = left.sortedWith(compareBy({ it.start }, { -it.pitch })).firstOrNull()
+    /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
+    fun way(left: List<Note>, v: TutoRollView): TutoWay? {
+        val n = next(left, v) ?: return null
+        if (v.right <= v.left) return null
+        if (!inTime(n, v)) return if (x(n, v) < v.left) TutoWay.Earlier else TutoWay.Later
+        // Not a row in sight (the tutorial's panel open over the roll): no scroll of the rows would show the note.
+        if (v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return null
+        if (left.any { inTime(it, v) && inRows(it, v) }) return null
+        return if (y(n, v) < v.top) TutoWay.Higher else TutoWay.Lower
+    }
 
     /**
      * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
-     * the rows), zero along an axis where the note already is. [barSteps]: the sixteenths of a bar.
+     * the rows), zero along an axis where the note already is. Along the time, its bar from its first sixteenth
+     * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
      */
     fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
         val n = next(left, v) ?: return 0f to 0f
-        val dx = if (x(n, v) < v.left || x(n, v) + v.stepPx > v.right) x(n, v) - 2 * v.stepPx - v.left else 0f
-        val dy = if (y(n, v) < v.top || y(n, v) + v.rowPx > v.bottom) y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2 else 0f
+        val bar = barSteps * v.stepPx
+        val dx = when {
+            inTime(n, v) -> 0f
+            bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
+            else -> x(n, v) - 2 * v.stepPx - v.left
+        }
+        val dy = if (inRows(n, v)) 0f else y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2
         return dx to dy
     }
 }

@@ -470,7 +470,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les 3 coups du dernier temps (touche les 3 croix rouges) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les 3 coups du pad « Charley » sur le dernier temps (touche les 3 croix rouges) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).",
           "why": "Un temps de rien, et le Drop 2 paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

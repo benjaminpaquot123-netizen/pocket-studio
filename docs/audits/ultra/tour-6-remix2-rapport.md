@@ -6,6 +6,14 @@ Fichiers touchés : `CutScreen.kt`, `CutWave.kt`, `RemixScreen.kt`, et le test `
 
 tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutZoomGestureTest com.pocketstudio.app.remix.RemixCutFromCardTest
 
+controle: Ba-2 | code testé: a4b719df | bloqués: 0 | graves neufs: 0
+controle: Ba-3 | code testé: 10830ce2 | bloqués: 0 | graves neufs: 0
+
+## Constaté par un siège de contrôle (Ba-2, Ba-3 ; rapports dans `sieges/tour-6/controle/Ba-2` et `Ba-3`)
+- **A2** : constaté (Ba-3, écrans 15-18). **A3** : constaté (Ba-3, écran 8). **A5** : constaté (Ba-3, écran 14). **A7** : constaté (Ba-3, écran 21). **A8** : constaté (Ba-3, écrans 8 et 41-51).
+- Garde-fou « Enlever un seul morceau » tenu (Ba-3, écran 40). Buts du siège 3/3.
+- **Pas pris** : A4 (mode Phrases, ligne d'outils), A6 (avertir et allonger : `RhythmViewModel`/`AppRoot`), A8 « Descargar el modelo » en double (tests hors `remix/`), « Remix » du menu « Más » (navigation).
+
 ## Preuve rejouée (par le banc, conditions du siège)
 - **A2** (puces hors du pouce gauche) : « Voz / Batería / Bajo / Resto » descendues sous les outils, atteignables au pouce gauche sans glisser. `RemixLeftThumbSeatTest#a2_stemChipsReachableWithLeftThumb`.
 - **A3** (bouton ✂ et sa phrase d'aide coupés sous la barre flottante) : après séparation, « Cortar lo que quiero » ET sa phrase d'aide entiers, rien sous « Elegir una canción ». `#a3_cutHintWholeNotUnderThumb`.

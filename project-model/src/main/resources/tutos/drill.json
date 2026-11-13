@@ -165,14 +165,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu. Puis les 3 de la mesure 2. « Copier sur les mesures suivantes » écrit la mesure 3 (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu. Puis les 3 de la mesure 2.",
           "textPro": "À toi : crée la piste Basse (« Basse 808 », au piano roll). Mesure 1 : Sol1, puis Sol1 qui glisse vers Sol2. Mesure 2 : Mi♭1 qui glisse vers Si♭1 (la quinte), puis Mi♭1 qui glisse vers la mesure 3. « Copier » : la mesure 3 en Do. Mesure 4 : Ré2 tenu, puis le long glissé descendant vers Sol1. « Copier ».",
           "why": "Deux notes qui se chevauchent glissent : en drill, c'est la signature, plusieurs fois par mesure.",
           "check": "notes:bass",
+          "length": 32,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans 808, ta drill n'a ni grave ni glissés."
+        },
+        {
+          "id": "bass_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 3 s'écrit (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         },
         {
           "id": "bass_pump",
@@ -192,13 +201,22 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les 3 accords suivants se posent tout seuls.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
           "textPro": "À toi : crée la piste Accords (des cordes) : Sol mineur à la mesure 1, puis « Copier » : Mi♭ (VI), Do mineur (iv) et Ré majeur (V, avec le Fa♯), suivis le long de la gamme.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, ton refrain sera moins dramatique."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },

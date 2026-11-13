@@ -212,7 +212,7 @@
   "Les accords de Kerri Chandler": "Kerri Chandler의 코드",
   "Des accords riches (de 4 notes) joués juste après les temps, sans leur note grave : c'est l'âme de la deep house.": "박 바로 뒤에, 낮은 노트 없이 치는 풍성한 코드(노트 4개): 딥 하우스의 영혼이에요.",
   "Écoute le piano seul : deux accords seulement, joués en petits coups juste après les temps.": "피아노만 들어 보세요: 코드는 두 개뿐이고, 박 바로 뒤에 짧게 쳐요.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개, 그다음 2마디의 4개. “다음 마디에 복사”가 다음 코드에서 다시 만들어요.",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개, 그다음 2마디의 4개.",
   "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.": "직접 해 보세요: 코드 트랙을 만드세요. 근음 없는 Fm9 (A♭ C E♭ G)을 박 바로 뒤에, 두 마디. “복사”가 B♭9 (D F A♭ C)으로 내려 줘요. 같은 모양을 옮긴 Kerri Chandler의 “평행 이동”이에요.",
   "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.": "같은 코드를 스케일을 따라 옮기기: Kerri Chandler 진행의 색깔이에요.",
   "Sans accords, ta deep house perd sa couleur.": "코드가 없으면 딥 하우스가 색깔을 잃어요.",
@@ -363,6 +363,8 @@
   "Les stabs de piano": "피아노 스탭",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "짧게 치는 피아노 코드(“스탭”): 하우스에서 기억에 남는 후렴이에요.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "예시의 피아노만 들어 보세요: 첫 박에는 절대 치지 않고, 킥 사이에 떨어지며 통통 튀어요.",
+  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "직접 해 보세요: “다음 마디에 복사”를 탭하고, 3마디와 4마디를 만드세요. 다른 코드, D 코드예요.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고, 그리드 위의 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개를 만드세요.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "직접 해 보세요: 코드 트랙을 만들고 근음 없이(베이스가 맡아요) 스탭을 쓰세요. Am9 = C E G B (1-2마디), D9 = C E F♯ A (3-4마디). 두 노트는 남고 두 노트는 움직여요: 피아니스트의 “보이스 리딩”이에요. 리듬은 첫 박을 피하고, 4마디는 프레이즈를 닫으려고 바뀌어요.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "낮은 노트가 없으니 피아노가 가볍고, 베이스 위로 번지지 않아요.",
   "Sans piano, ta house n'aura pas son refrain.": "피아노가 없으면 하우스에 후렴이 없어요.",
@@ -506,7 +508,7 @@
   "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.": "직접 해 보세요: 믹스에서 “멜로디” 트랙에 “멀티밴드 OTT” 이펙트를 거세요. 음반처럼 목소리가 날카롭고 촘촘해져요.",
   "À toi : monte aussi « Envoi écho » sur la Mélodie : le mot rebondit dans le club.": "직접 해 보세요: 멜로디의 “에코 센드”도 올리세요. 한 마디가 클럽 안에서 튕겨요.",
   "Presque rien : un petit coup d'orgue de temps en temps. En tech house, des accords voleraient la place de la basse.": "거의 없어요: 가끔 작은 오르간 히트 하나. 테크 하우스에서 코드는 베이스의 자리를 빼앗아요.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 1마디의 히트 2개를 놓고 “복사”.",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 1마디의 히트 2개를 놓으세요.",
   "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».": "직접 해 보세요: 코드 트랙(오르간)을 만드세요. Gm7, 마디마다 박 바로 뒤에 두 번, 그다음 “복사”.",
   "En tech house, le Drop est long (32 mesures) : il change à mi-chemin pour ne jamais lasser.": "테크 하우스에서 드롭은 길어요 (32마디). 지루하지 않게 중간에 바뀌어요.",
   "Écoute l'Intro : la batterie seule, pour le DJ.": "인트로를 들어 보세요: DJ를 위한 드럼 혼자.",
@@ -564,7 +566,7 @@
   "À toi : touche « Copier la basse une octave plus bas » : un sub pur, sans effet, sous la basse (le grave des sound systems).": "직접 해 보세요: “베이스를 한 옥타브 아래로 복사”를 탭하세요. 이펙트 없는 순수한 서브가 베이스 아래에 깔려요 (사운드 시스템의 저음).",
   "Des accords jazzy de piano électrique, en petits coups juste après les temps, comme chez MJ Cole.": "MJ Cole처럼 박 바로 뒤에 짧게 치는 재지한 일렉트릭 피아노 코드.",
   "Écoute les accords seuls : quatre couleurs, une par mesure.": "코드만 들어 보세요: 마디마다 하나씩, 색깔 네 개.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트, 그다음 2마디의 히트를 만드세요. “다음 마디에 복사”가 다음 코드 두 개에서 더 낮게 다시 만들어요.",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.": "직접 해 보세요: “코드 트랙 만들기”를 탭하고 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트, 그다음 2마디의 히트를 만드세요.",
   "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.": "직접 해 보세요: 코드 트랙을 만드세요. 근음 없이(베이스가 맡아요): Am9 (C E G B), 그다음 Fmaj9 (A C E G), 박 바로 뒤에. “복사”가 두 마디를 5도 내려요: Dm9 (F A C E), Em7 (E G B D). 개러지의 “코드 플레이닝”이에요.",
   "Sans accords, ton garage perd son côté soul.": "코드가 없으면 개러지가 소울을 잃어요.",
   "Des syllabes découpées et rejouées comme une mélodie : la voix lance un appel, puis se répond plus grave.": "잘라서 멜로디처럼 다시 연주하는 음절들: 목소리가 부르고, 더 낮게 스스로 대답해요.",
@@ -595,6 +597,5 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "리버브는 코드에 자리를 주고, 림은 공기를 조금 머금어요.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "리버브를 들어 보세요: 림과 코드를 먼저 리버브 없이, 그다음 리버브와 함께.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "직접 해 보세요: 믹스에서 “코드” 트랙의 “리버브 센드”를 올리고, “림” 패드에서도 올리세요.",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "킥과 베이스는 함께 앞에, 보컬은 또렷하게, 코드는 뒤에.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "직접 해 보세요: “코드 트랙 만들기”를 탭하고, 그리드 위의 “코드”를 켜세요. 맨 아래 점선 노트를 탭하면 코드 전체가 놓여요. 1마디의 히트 4개, “다음 마디에 복사”, 그다음 3마디와 4마디(다른 코드, D 코드)."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "킥과 베이스는 함께 앞에, 보컬은 또렷하게, 코드는 뒤에."
 }

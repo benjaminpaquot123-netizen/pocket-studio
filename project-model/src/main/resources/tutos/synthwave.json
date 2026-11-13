@@ -198,13 +198,22 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure. « Copier sur les mesures suivantes » pose les 3 autres accords.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : La mineur tenu toute la mesure, puis « Copier » : la copie suit la grille. Dans l'exemple, ces mêmes accords passent dans un arpégiateur (notes une à une, en doubles croches, sur deux octaves).",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, l'Intro n'aura pas son ambiance."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         },
         {
           "id": "pad_attack",

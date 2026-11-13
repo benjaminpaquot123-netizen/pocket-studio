@@ -181,8 +181,17 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) et touche la note du bas en pointillé de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) et touche la note du bas en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (une nappe) : Fa mineur tenu une mesure, puis « Copier » : Sol♭ majeur à la mesure 3, le ♭II du phrygien.",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",

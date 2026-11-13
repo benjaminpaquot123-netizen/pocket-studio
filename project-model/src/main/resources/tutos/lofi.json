@@ -66,14 +66,23 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 2 accords de la mesure 1 (le 2e plus doux), puis « Copier sur les mesures suivantes » : les 3 autres accords se posent tout seuls.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 2 accords de la mesure 1 (le 2e plus doux).",
           "textPro": "À toi : crée la piste Accords (piano électrique). Mesure 1 : Si♭ maj9 sans sa fondamentale (Fa, La, Do, Ré), deux fois, la 2e plus douce. « Copier » : Fa maj9, Ré m9 et Sol m9, suivis le long de la gamme (IV – I – vi – ii, une boucle qui ne se résout pas).",
           "why": "Des accords de 4 notes avec la 7e et la 9e : c'est ce qui sonne « jazz » et doux.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, il n'y a pas de lo-fi."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -168,8 +177,17 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » les reprend plus haut à la mesure 3. Touche ensuite la note longue de la mesure 4, puis « Copier » encore.",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie : Do, La | silence | (« Copier » : Mi, Do) | La tenu une mesure, puis « Copier ». Sur ces accords, ces notes sont des 9es et des 7es : la couleur rêveuse.",
+          "check": "notes:lead",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les 2 notes reviennent plus haut à la mesure 3. Touche ensuite la note longue de la mesure 4, puis « Copier » encore.",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",

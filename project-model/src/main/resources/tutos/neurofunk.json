@@ -217,14 +217,23 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
           "textPro": "À toi : crée la piste Accords (une nappe froide). « Accords » pose la triade d'un toucher : Fa# mineur à la mesure 1, puis « Copier sur les mesures suivantes » : à la mesure 3, l'accord monte d'un demi-ton sur Sol (le ♭II phrygien) et revient.",
           "why": "L'accord qui monte d'un demi-ton et retombe : c'est toute l'harmonie du neurofunk, une menace qui revient.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans nappe, l'Intro et le Break seront tout nus."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },

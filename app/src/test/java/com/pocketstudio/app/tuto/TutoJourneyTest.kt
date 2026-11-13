@@ -365,12 +365,23 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 }
             }
             c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
-                assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
-                click("tuto_need")
-                await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                // Tour 6, T8: a notes step split in two (its first half `length`, « la mesure 1 »): the second half finds its
+                // track made and its first bar written; its first gesture is « Copier sur les mesures suivantes » (the loop's).
+                val half = c.startsWith("notes:") && TutoChecks.trackFor(p(), c.removePrefix("notes:")) != null
+                if (half) {
+                    if (!(has("piano_roll") && TutoHints.notes != null)) {
+                        if (!has("tuto_do")) unfold()
+                        click("tuto_do")
+                    }
+                    await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                } else {
+                    assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
+                    click("tuto_need")
+                    await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                }
                 val (track, notes) = TutoHints.notes!!
                 assertEquals(track, h.vm.selectedTrack.value)
-                assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
+                if (!half) assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
                 assertTrue("${s.id}: a bar or two dotted", notes.map { it.start / 384 }.distinct().size <= 2)
                 var rounds = 0
                 while (s.id !in progress().done) {

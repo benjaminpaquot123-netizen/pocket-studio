@@ -212,7 +212,7 @@
   "Les accords de Kerri Chandler": "كوردات Kerri Chandler",
   "Des accords riches (de 4 notes) joués juste après les temps, sans leur note grave : c'est l'âme de la deep house.": "كوردات غنية (من 4 نوتات) تُعزف بعد النبضات مباشرة، بلا نوتتها المنخفضة: هذه روح الديب هاوس.",
   "Écoute le piano seul : deux accords seulement, joués en petits coups juste après les temps.": "استمع إلى البيانو وحده: كوردان فقط، يُعزفان بضربات صغيرة بعد النبضات مباشرة.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع الضربات الـ4 في المازورة 1، ثم الـ4 في المازورة 2. «انسخ إلى المازورات التالية» يعيدها على الكورد التالي.",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2.": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع الضربات الـ4 في المازورة 1، ثم الـ4 في المازورة 2.",
   "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.": "دورك: أنشئ مسار الكوردات. Fm9 بلا أساس (A♭ C E♭ G)، بعد النبضات مباشرة، مازورتين؛ «نسخ» ينزلها إلى B♭9 ‏(D F A♭ C): الشكل نفسه منقولًا، «الحركة المتوازية» لـKerri Chandler.",
   "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.": "الكورد نفسه منقولًا على طول السلّم: هذا لون تسلسلات Kerri Chandler.",
   "Sans accords, ta deep house perd sa couleur.": "بلا كوردات، تفقد ديب هاوسك لونها.",
@@ -363,6 +363,8 @@
   "Les stabs de piano": "ضربات البيانو",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "كوردات بيانو تُعزف بضربات صغيرة (‏«stabs»): هذه هي اللازمة التي نحفظها في الهاوس.",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "استمع إلى بيانو المثال وحده: لا يعزف أبدًا على النبضة الأولى، يقع بين ضربات الكيك ويتقافز.",
+  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "دورك: اضغط «انسخ إلى المازورات التالية»، ثم اصنع المازورتين 3 و4: كورد آخر، كورد D.",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "دورك: اضغط «أنشئ مسار الكوردات»، ثم شغّل «الكوردات» فوق الشبكة: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع الضربات الـ4 في المازورة 1.",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "دورك: أنشئ مسار الكوردات واكتب الـStabs، بلا أساس (البيس يعزفه): Am9 = C E G B (المازورتان 1-2)، D9 = C E F♯ A (المازورتان 3-4). نوتتان تبقيان، ونوتتان تتحركان: الـ«voice leading» لعازفي البيانو. الإيقاع يتجنب النبضة الأولى؛ والمازورة 4 تتنوع لتغلق الجملة.",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "بلا النوتة المنخفضة، يبقى البيانو خفيفًا ولا يسيل على البيس.",
   "Sans piano, ta house n'aura pas son refrain.": "بلا بيانو، لن تكون لهاوسك لازمتها.",
@@ -506,7 +508,7 @@
   "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.": "دورك: في «المكس»، ضع مؤثر «OTT متعدد النطاقات» على مسار «اللحن»: الصوت يصبح حادًا وكثيفًا، كما في الأسطوانات.",
   "À toi : monte aussi « Envoi écho » sur la Mélodie : le mot rebondit dans le club.": "دورك: ارفع أيضًا «إرسال Echo» على اللحن: الكلمة ترتد في النادي.",
   "Presque rien : un petit coup d'orgue de temps en temps. En tech house, des accords voleraient la place de la basse.": "شبه لا شيء: ضربة أورغن صغيرة من حين لآخر. في التك هاوس، الكوردات ستسرق مكان البيس.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: ضع الضربتين في المازورة 1، ثم «نسخ».",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: ضع الضربتين في المازورة 1.",
   "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».": "دورك: أنشئ مسار الكوردات (أورغن): Gm7، ضربتان في كل مازورة بعد النبضات مباشرة، ثم «نسخ».",
   "En tech house, le Drop est long (32 mesures) : il change à mi-chemin pour ne jamais lasser.": "في التك هاوس، الـDrop طويل (32 مازورة): يتغير في منتصفه كي لا يُملّ أبدًا.",
   "Écoute l'Intro : la batterie seule, pour le DJ.": "استمع إلى الـIntro: الطبول وحدها، للـDJ.",
@@ -564,7 +566,7 @@
   "À toi : touche « Copier la basse une octave plus bas » : un sub pur, sans effet, sous la basse (le grave des sound systems).": "دورك: اضغط «انسخ البيس أوكتافًا أخفض»: Sub نقي، بلا مؤثر، تحت البيس (منخفضات الـSound systems).",
   "Des accords jazzy de piano électrique, en petits coups juste après les temps, comme chez MJ Cole.": "كوردات جازية على بيانو كهربائي، بضربات صغيرة بعد النبضات مباشرة، كما عند MJ Cole.",
   "Écoute les accords seuls : quatre couleurs, une par mesure.": "استمع إلى الكوردات وحدها: أربعة ألوان، لون في كل مازورة.",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع ضربات المازورة 1، ثم ضربات المازورة 2. «انسخ إلى المازورات التالية» يعيدها أخفض، على الكوردين التاليين.",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.": "دورك: اضغط «أنشئ مسار الكوردات» وشغّل «الكوردات»: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع ضربات المازورة 1، ثم ضربات المازورة 2.",
   "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.": "دورك: أنشئ مسار الكوردات. بلا أساس (البيس يعزفه): Am9 ‏(C E G B)، ثم Fmaj9 ‏(A C E G)، بعد النبضات مباشرة؛ «نسخ» ينزل هاتين المازورتين خامسة: Dm9 ‏(F A C E)، ‏Em7 ‏(E G B D). الـ«chord planing» الخاص بالغاراج.",
   "Sans accords, ton garage perd son côté soul.": "بلا كوردات، يفقد غاراجك جانبه السول.",
   "Des syllabes découpées et rejouées comme une mélodie : la voix lance un appel, puis se répond plus grave.": "مقاطع صوتية مقطّعة تُعاد عزفًا كلحن: الصوت يطلق نداءً، ثم يجيب نفسه بصوت أخفض.",
@@ -595,6 +597,5 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "الـReverb يعطي الكوردات مساحة؛ والـRim يحتفظ بقليل من الهواء.",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "استمع إلى الـReverb: الـRim والكوردات، أولًا بدونه ثم معه.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "دورك: في «المكس»، ارفع «إرسال Reverb» على مسار «الكوردات»، ثم على Pad ‏«Rim».",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "الكيك والبيس معًا في الأمام، الأصوات حاضرة بوضوح، والكوردات في الخلف.",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "دورك: اضغط «أنشئ مسار الكوردات»، ثم شغّل «الكوردات» فوق الشبكة: لمس النوتة السفلى المنقّطة يضع الكورد كله. اصنع الضربات الـ4 في المازورة 1، «انسخ إلى المازورات التالية»، ثم المازورتين 3 و4 (كورد آخر، كورد D)."
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "الكيك والبيس معًا في الأمام، الأصوات حاضرة بوضوح، والكوردات في الخلف."
 }

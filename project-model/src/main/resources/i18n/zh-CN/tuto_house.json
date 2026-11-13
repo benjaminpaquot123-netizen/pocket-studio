@@ -212,7 +212,7 @@
   "Les accords de Kerri Chandler": "Kerri Chandler 的和弦",
   "Des accords riches (de 4 notes) joués juste après les temps, sans leur note grave : c'est l'âme de la deep house.": "丰富的和弦（4 个音），在拍子之后弹，去掉最低音：这是 deep house 的灵魂。",
   "Écoute le piano seul : deux accords seulement, joués en petits coups juste après les temps.": "单独听钢琴：只有两个和弦，在拍子之后短促地弹。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.": "轮到你：点“创建和弦音轨”，打开“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下，再做第 2 小节的 4 下。“复制到后面的小节”会在下一个和弦上重做。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2.": "轮到你：点“创建和弦音轨”，打开“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下，再做第 2 小节的 4 下。",
   "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.": "轮到你：创建和弦音轨。没有根音的 Fm9（A♭ C E♭ G），在拍子之后，两小节；“复制”会把它们降到 B♭9（D F A♭ C）：同一个指型平移，Kerri Chandler 的“平行进行”。",
   "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.": "同一个和弦沿着音阶平移：这就是 Kerri Chandler 和弦进行的色彩。",
   "Sans accords, ta deep house perd sa couleur.": "没有和弦，你的 deep house 就失去了色彩。",
@@ -363,6 +363,8 @@
   "Les stabs de piano": "钢琴短促和弦",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "短促弹奏的钢琴和弦（“Stab”）：这就是 house 里让人记住的副歌。",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "单独听示例里的钢琴：它从不弹在第 1 拍，落在底鼓之间，蹦蹦跳跳。",
+  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "轮到你：点“复制到后面的小节”，然后做第 3 和第 4 小节：另一个和弦，D 和弦。",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "轮到你：点“创建和弦音轨”，然后打开网格上方的“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下。",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "轮到你：创建和弦音轨，写 Stab，不带根音（贝斯有了）：Am9 = C E G B（第 1-2 小节），D9 = C E F♯ A（第 3-4 小节）。两个音不动，两个音移动：钢琴手的“声部进行”。节奏避开第 1 拍；第 4 小节有变化，来结束乐句。",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "没有低音，钢琴保持轻盈，不会糊到贝斯上。",
   "Sans piano, ta house n'aura pas son refrain.": "没有钢琴，你的 house 就没有副歌。",
@@ -506,7 +508,7 @@
   "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.": "轮到你：在混音里，给“旋律”音轨加上“多段 OTT”效果：人声变得尖利而密实，就像唱片里那样。",
   "À toi : monte aussi « Envoi écho » sur la Mélodie : le mot rebondit dans le club.": "轮到你：也把旋律的“回声发送”调高：这个词在俱乐部里弹来弹去。",
   "Presque rien : un petit coup d'orgue de temps en temps. En tech house, des accords voleraient la place de la basse.": "几乎什么都没有：时不时一小下风琴。在 tech house 里，和弦会抢走贝斯的位置。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».": "轮到你：点“创建和弦音轨”，打开“和弦”：放好第 1 小节的 2 下，然后点“复制”。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.": "轮到你：点“创建和弦音轨”，打开“和弦”：放好第 1 小节的 2 下。",
   "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».": "轮到你：创建和弦音轨（风琴）：Gm7，每小节两下，就在拍子之后，然后“复制”。",
   "En tech house, le Drop est long (32 mesures) : il change à mi-chemin pour ne jamais lasser.": "在 tech house 里，Drop 很长（32 小节）：它在半途变化，让人永远不腻。",
   "Écoute l'Intro : la batterie seule, pour le DJ.": "听前奏：只有鼓，留给 DJ。",
@@ -564,7 +566,7 @@
   "À toi : touche « Copier la basse une octave plus bas » : un sub pur, sans effet, sous la basse (le grave des sound systems).": "轮到你：点“把贝斯复制到低一个八度”：贝斯下面一条纯 Sub，不加效果（音响系统的低频）。",
   "Des accords jazzy de piano électrique, en petits coups juste après les temps, comme chez MJ Cole.": "爵士味的电钢琴和弦，在拍子之后短促地弹，就像 MJ Cole 那样。",
   "Écoute les accords seuls : quatre couleurs, une par mesure.": "单独听和弦：四种色彩，每小节一个。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.": "轮到你：点“创建和弦音轨”，打开“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的打击，然后是第 2 小节的。“复制到后面的小节”会在后面两个和弦上把它们降低重做。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.": "轮到你：点“创建和弦音轨”，打开“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的打击，然后是第 2 小节的。",
   "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.": "轮到你：创建和弦音轨。不带根音（贝斯有了）：Am9（C E G B），然后 Fmaj9（A C E G），就在拍子之后；“复制”把这两小节降一个五度：Dm9（F A C E）、Em7（E G B D）。garage 的“和弦平移”。",
   "Sans accords, ton garage perd son côté soul.": "没有和弦，你的 garage 就失去了灵魂乐味。",
   "Des syllabes découpées et rejouées comme une mélodie : la voix lance un appel, puis se répond plus grave.": "切开的音节像旋律一样重新弹奏：人声喊出来，然后用更低的音自己回答。",
@@ -595,6 +597,5 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "混响给和弦空间；鼓边保留一点空气感。",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "听混响：鼓边和和弦，先是没有，然后加上。",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "轮到你：在混音里，先把“和弦”音轨、再把“鼓边”打击垫的“混响发送”调高。",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "底鼓和贝斯一起在前，人声清晰，和弦在后。",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "轮到你：点“创建和弦音轨”，然后打开网格上方的“和弦”：点最低的那个虚线音符就会放下整个和弦。做好第 1 小节的 4 下，“复制到后面的小节”，然后是第 3 和第 4 小节（另一个和弦，D 和弦）。"
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "底鼓和贝斯一起在前，人声清晰，和弦在后。"
 }

@@ -219,13 +219,22 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
           "textPro": "À toi : crée la piste Accords (« Nappe chaude »). « Accords » pose la triade d'un toucher : Sol mineur à la mesure 1, puis « Copier sur les mesures suivantes » : Sol m, Sol m, Mi♭, Fa.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans nappe, le Break n'aura pas son ambiance."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },

@@ -816,6 +816,19 @@ object TutoChecks {
      */
     fun asksSoft(step: TutoStep): Boolean = listOfNotNull(step.text, step.textPro).all { "« Doux »" in it }
 
+    /**
+     * A drum step that asks for « Doux » ([asksSoft]) whose dotted cells are all hit, nothing more, in a part it looks
+     * at, but some soft one too loud: only the softness is missing (tour 6, seat Da-3: the panel folded, nothing said
+     * it). False for any other step or state.
+     */
+    fun onlySoftnessMissing(step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val c = step.check
+        if (!c.startsWith("lane:") || !SOFT_HITS_CHECKED || !asksSoft(step) || done(step, p, target)) return false
+        val arg = argOf(c)
+        val line = target.line(arg, partOf(step)) ?: return false
+        return scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls"), soft = false) }
+    }
+
     /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
     private fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
         lanes.any { l -> d.lanes.getOrNull(l)?.hits?.any { (s, h) -> s < d.steps && h.isTriplet } == true }

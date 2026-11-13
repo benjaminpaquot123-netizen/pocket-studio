@@ -664,6 +664,213 @@ class Cards(unittest.TestCase):
             self.assertNotIn(sentence, source, "the cards' text lives in the template, never in the script")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# 3. « code testé » and « joué par » written by the bench; no etat/ of a seat in git
+# ---------------------------------------------------------------------------------------------------------------------
+
+TESTER_REPORT = ("siege: a | profil: t9-Aa curieux | lang: fr | device: phone360 | font: 100 | mode: simple\n"
+                 "mission: simple | buts: son, partie, jamais-pro\n"
+                 "defauts:\n  - geste: 4 | ecran.vu: 5 | cible: « Jouer » | geste.type: touche\n")
+
+
+class SeatReport(unittest.TestCase):
+    """§13.1 and §13.4: a seat's report starts with the commit it judged and who played it. The bench writes both
+    when it STARTS, and its exit check refuses a report that says another commit, or none."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="portail3-siege-")
+        self.depot = os.path.join(self.tmp, "depot")
+        self.lot = os.path.join(self.depot, "docs", "audits", "ultra", "sieges", "tour-9", "lotA")
+        os.makedirs(self.depot)
+        git(self.depot, "init", "-q")
+        write(os.path.join(self.depot, "app.txt"), "v1\n")
+        git(self.depot, "add", "app.txt")
+        git(self.depot, "commit", "-q", "-m", "the code a seat plays")
+        self.start_sha = git(self.depot, "rev-parse", "HEAD").strip()
+        write(os.path.join(self.lot, "a", "start.txt"), "lang=fr\nmission=simple\n")
+        self.report = os.path.join(self.lot, "a", "rapport.md")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def step(self, name, env=None):
+        clean = {"PS_JOUE_PAR": ""}
+        clean.update(env or {})
+        code, out, err = script("sortie-de-siege.py", name, self.lot, "--depot", self.depot, env=clean)
+        return code, out + err
+
+    def head_lines(self):
+        return read(self.report).splitlines()[:2] if os.path.isfile(self.report) else []
+
+    def new_commit(self):
+        write(os.path.join(self.depot, "app.txt"), "v2\n")
+        git(self.depot, "commit", "-q", "-am", "a correction merged while the seat plays")
+        return git(self.depot, "rev-parse", "HEAD").strip()
+
+    def test_the_bench_writes_both_lines_when_it_starts(self):
+        code, said = self.step("avant")
+        self.assertEqual(code, 0, said)
+        self.assertEqual(self.head_lines(), [f"code testé : {self.start_sha}", "joué par : sous-agent neuf"], said)
+
+    def test_only_the_seats_of_the_lot_get_a_report(self):
+        os.makedirs(os.path.join(self.lot, "b"))
+        os.makedirs(os.path.join(self.lot, "briefs"))
+        self.step("avant")
+        self.assertFalse(os.path.exists(os.path.join(self.lot, "b", "rapport.md")), "no start.txt, no seat")
+        self.assertFalse(os.path.exists(os.path.join(self.lot, "briefs", "rapport.md")))
+
+    def test_who_played_comes_from_the_seat_or_the_environment(self):
+        self.step("avant", env={"PS_JOUE_PAR": "Benjamin, sur son téléphone"})
+        self.assertEqual(self.head_lines()[1:], ["joué par : Benjamin, sur son téléphone"])
+        os.remove(self.report)
+        write(os.path.join(self.lot, "a", "start.txt"), "lang=fr\njoue.par=le chef, à la main\n")
+        self.step("avant", env={"PS_JOUE_PAR": "quelqu'un d'autre"})
+        self.assertEqual(self.head_lines()[1:], ["joué par : le chef, à la main"], "the seat's own start.txt says it best")
+
+    def test_the_commit_is_the_one_at_the_start_not_at_the_end(self):
+        self.step("avant")
+        later = self.new_commit()
+        code, said = self.step("apres")
+        self.assertEqual(self.head_lines()[:1], [f"code testé : {self.start_sha}"], "the head moved while the seat played: " + said)
+        self.assertNotIn(later, read(self.report))
+        self.assertEqual(self.step("verifie")[0], 0, "the report names the commit of the start: accepted")
+
+    def test_what_the_tester_wrote_is_kept(self):
+        self.step("avant")
+        write(self.report, TESTER_REPORT)  # the tester wrote his whole file over the bench's two lines
+        code, said = self.step("apres")
+        text = read(self.report)
+        self.assertEqual(text.splitlines()[:2], [f"code testé : {self.start_sha}", "joué par : sous-agent neuf"], said)
+        self.assertTrue(text.endswith(TESTER_REPORT), "the tester's report, byte for byte, under the two lines")
+        self.assertEqual(text.count("code testé :"), 1)
+        self.step("apres")
+        self.step("entete")
+        self.assertEqual(read(self.report), text, "written once, whatever the number of runs")
+
+    def test_a_tester_s_own_lines_are_not_rewritten(self):
+        self.step("avant")
+        write(self.report, f"code testé : {self.start_sha[:10]}\njoué par : sous-agent neuf, relancé une fois\n" + TESTER_REPORT)
+        before = read(self.report)
+        self.step("apres")
+        self.assertEqual(read(self.report), before)
+        self.assertEqual(self.step("verifie")[0], 0, "a short form of the same commit is the same commit")
+
+    def test_a_report_that_names_another_commit_is_refused(self):
+        self.step("avant")
+        later = self.new_commit()
+        write(self.report, f"code testé : {later}\njoué par : sous-agent neuf\n" + TESTER_REPORT)
+        code, said = self.step("verifie")
+        self.assertNotEqual(code, 0, "the seat says it judged a commit the bench did not start on")
+        self.assertIn("lotA/a", said)
+        self.assertIn(self.start_sha[:8], said)
+        self.assertIn(later[:8], said)
+        code, said = self.step("apres")
+        self.assertNotEqual(code, 0, "the exit check itself refuses it")
+        self.assertEqual(read(self.report).splitlines()[0], f"code testé : {later}", "refused, never silently rewritten")
+        with open(os.path.join(self.lot, "lot.json"), encoding="utf-8") as f:
+            self.assertEqual([r.split(" : ")[0] for r in json.load(f)["rapports_refuses"]], ["lotA/a"])
+
+    def test_a_report_without_its_commit_is_refused(self):
+        self.step("avant")
+        self.step("apres")
+        write(self.report, TESTER_REPORT)  # rewritten after the bench ended
+        code, said = self.step("verifie")
+        self.assertNotEqual(code, 0, "« code testé » is missing")
+        self.assertIn("code testé", said)
+        self.assertEqual(read(self.report), TESTER_REPORT, "the check reads, it does not write")
+        write(self.report, "joué par : sous-agent neuf\ncode testé :\n" + TESTER_REPORT)
+        self.assertNotEqual(self.step("verifie")[0], 0, "an empty « code testé » names no commit")
+        write(self.report, f"code testé : {self.start_sha[:4]}\n" + TESTER_REPORT)
+        self.assertNotEqual(self.step("verifie")[0], 0, "four characters name no commit")
+        write(self.report, TESTER_REPORT + f"\ncode testé : {self.start_sha}\n")
+        self.assertNotEqual(self.step("verifie")[0], 0, "the line is the report's heading, not a line lost under the cards")
+
+    def test_a_missing_report_is_refused(self):
+        self.step("avant")
+        if os.path.isfile(self.report):
+            os.remove(self.report)
+        code, said = self.step("verifie")
+        self.assertNotEqual(code, 0)
+        self.assertIn("lotA/a", said)
+
+    def test_a_report_the_bench_never_started_is_refused(self):
+        write(self.report, f"code testé : {self.start_sha}\njoué par : sous-agent neuf\n" + TESTER_REPORT)
+        code, said = self.step("verifie")
+        self.assertNotEqual(code, 0, "nothing recorded at the start: the bench cannot vouch for that commit")
+        self.assertIn("lotA/a", said)
+
+    def test_a_good_lot_passes_and_says_so(self):
+        self.step("avant")
+        with open(self.report, "a", encoding="utf-8") as f:
+            f.write(TESTER_REPORT)
+        code, said = self.step("apres")
+        self.assertEqual(code, 0, said)
+        code, said = self.step("verifie")
+        self.assertEqual(code, 0, said)
+        self.assertIn(self.start_sha[:8], said)
+
+    def test_the_lot_s_own_files_are_not_foreign_files(self):
+        self.step("avant")
+        code, said = self.step("apres")
+        self.assertIn("0 fichier(s) hors des sièges", said, "what the bench writes at the start is no foreign file")
+
+    def test_the_bench_calls_the_record_before_the_seats_play(self):
+        tester = read(os.path.join(HERE, "..", "human-tester.sh"))
+        self.assertTrue(0 < tester.find("sortie-de-siege.py avant") < tester.find(":app:testDebugUnitTest"),
+                        "human-tester.sh records the commit before it starts the seats")
+        self.assertTrue("sortie-de-siege.py apres" in tester)
+
+    def test_the_tester_is_told_to_keep_the_two_lines(self):
+        tour = os.path.join(self.tmp, "tour-9")
+        write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone360\t100\tsimple\t-\tsimple\t110\tcurieux\tlibre: un son joue\n")
+        code, out, err = script("fabrique-sieges.py", tour)
+        self.assertEqual(code, 0, err)
+        brief = read(os.path.join(tour, "briefs", "Aa.txt"))
+        self.assertTrue("code testé" in brief and "joué par" in brief, "the brief says the report already starts with the bench's two lines")
+
+    def test_the_end_of_a_seat_reminds_the_two_lines(self):
+        seat = os.path.join(self.lot, "a")
+        self.step("avant")
+        write(os.path.join(seat, "turn"), "1\n")
+        write(os.path.join(seat, "screen-1.txt"), "Jouer @ 10,10\n")
+        act = os.path.join(HERE, "..", "human-act.py")
+        r = subprocess.run([sys.executable, "-I", act, seat, "fin"], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(f"code testé : {self.start_sha}" in r.stdout and "rapport.md" in r.stdout,
+                        "« fin » says where the report is and the two lines to keep:\n" + r.stdout)
+
+
+class SeatStateOutOfGit(unittest.TestCase):
+    """§13.4: a seat folder does not keep etat/ in git (286 MB to sort after round 6)."""
+
+    def ignored(self, *paths):
+        tmp = tempfile.mkdtemp(prefix="portail3-ignore-")
+        try:
+            git(tmp, "init", "-q")
+            shutil.copy(os.path.join(ROOT, ".gitignore"), os.path.join(tmp, ".gitignore"))
+            out = {}
+            for p in paths:
+                write(os.path.join(tmp, p), "x")
+                r = subprocess.run(["git", "-C", tmp, "check-ignore", "-q", p], capture_output=True)
+                out[p] = r.returncode == 0
+            return out
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_a_seat_s_state_folder_is_ignored(self):
+        seats = "docs/audits/ultra/sieges/"
+        got = self.ignored(seats + "tour-7/lotA/a/etat/resume.json", seats + "tour-7/lotB/f/etat/projects/p1/project.json",
+                           seats + "tour-7/controle/Bb/etat/prefs/prefs.xml", seats + "fumee/lotA/a/etat/partage/morceau.zip")
+        self.assertEqual([p for p, yes in got.items() if not yes], [], "these files of a seat's etat/ must be ignored")
+
+    def test_nothing_else_is_hidden(self):
+        seats = "docs/audits/ultra/sieges/"
+        got = self.ignored(seats + "tour-7/lotA/a/rapport.md", seats + "tour-7/lotA/a/journal.txt", seats + "tour-7/lotA/a/etat.txt",
+                           seats + "tour-7/etat-des-lieux.md", seats + "tour-7/lotA/a/screen-1.txt", "docs/audits/ultra/etat/note.md",
+                           "docs/etat/note.md", "app/src/main/java/etat/Etat.kt", "etat/x.txt")
+        self.assertEqual([p for p, yes in got.items() if yes], [], "only a seat's etat/ folder is ignored")
+
+
 class Hooks(unittest.TestCase):
     """This file is run where the bench's other script tests are: the self-test and pre-vol.sh --ci."""
 

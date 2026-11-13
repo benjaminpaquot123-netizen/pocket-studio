@@ -1,5 +1,5 @@
 # Tour 6 — lot 5 « langues » : relecture neuve
-Relu : 2a04a1437ef21c01be228147ab5da374520cded6
+Relu : 1ee7b54c289e83de900236989fea15827e98c72c
 
 Relecteur neuf (n'a pas écrit ce code). Lu : la section « Lot 5 » de `lots-correction.md` et le complément 3 n° 6 de `lecture-recurrents.md`, le rapport, les décisions, les diffs de `LiveScreen.kt`, `SimpleMix.kt`, `MyExports.kt`, `LanguagePicker.kt`, `FadingScroll.kt`, les 134 catalogues changés (lus clé par clé par un script : marques `%s` / `%1$d` / `%%`, écriture, désaccords entre fichiers d'une langue), les tests neufs, les listes `OPEN` et `Allowed`, les outils du passage sur le tuto. Rejoué dans un worktree jetable (jamais dans wt-lot5) : chaque commit « rouge: » sur son propre état (le code d'avant son « vert: »), puis la tête relue.
 
@@ -125,5 +125,28 @@ Aucun.
 22. La fusion a fait disparaître, dans `tuto_bass.json` d'ar, hi, id et zh-CN, le doublon d'une clé (« … Intro, Montée, Drop, Break, Montée, Drop 2 et Fin … Les durées … », deux fois la même valeur) ; il reste dans les dix autres langues, déjà présent sur l'intégration. Sans effet (même texte), à nettoyer partout au prochain passage.
 23. « Drop B » reste en lettres latines au milieu des noms traduits (hindi « ड्रॉप, Drop B, ड्रॉप ») : c'est le nom d'une partie que l'élève tape (`part:Drop B`), comme déjà noté au point 19.
 24. `Tour6GuideCoquilleLookTest` échoue aussi sur l'intégration nue (dit par l'équipe, non rejoué ici) : hors lot.
+
+## Delta 2a04a143 → 1ee7b54c
+
+Quatrième relecteur neuf (n'a écrit ni le lot, ni la fusion, ni la ligne du rapport). Lu : `git diff cb84f9454 HEAD`, la fusion d9dafc00 (tête d'intégration bdb777a9, équipes tutoordre, tutoordre2, ci3, portail3) et 1ee7b54c (une ligne du rapport).
+
+### Ce qui tient
+
+- **Fusion sans effet sur le lot.** Aucun fichier du lot n'est touché : ni `i18n/*/*.json` (aucun catalogue du tout), ni `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt`. Hors `docs/` et `scripts/`, la fusion n'apporte que `.github/workflows/ci.yml`, `.gitignore`, `TutoController.kt` et deux tests du tuto (`Tour6TutoOrderRaceTest`, `Tour6TutoPanelAlreadyTest`), fichiers d'autres lots. Les tests ciblés de l'app n'avaient donc pas à être rejoués ; `:project-model:test` vert après la fusion (dit par l'équipe).
+- **La ligne ajoutée au rapport est vraie.** la ligne « ne corrige pas: N19 » qui renvoie N19 au lot 2 : `lots-correction.md`, « Complément 2 », range N19 (le défaut le plus lourd de ce complément) au lot 2 « tuto-consignes », fichier `TutoController.kt` ; le rapport ne le cite que dans sa ligne « Complément 2 » (« N19 à N28 sont aux lots 2 et 6 »).
+- **Zone du rapport.** `python3 scripts/bench/rapport-zone.py eq/tour-6-langues2 docs/audits/ultra/tour-6-langues2-rapport.md` : sortie 0.
+- **Arbre propre**, aucun fichier en trop.
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Mineur
+
+25. La fusion apporte un test rouge puis vert de tutoordre sur `Tour6TutoPanelAlreadyTest` (713d66f6) ; il se peut que le point 21 (dépendance à l'ordre avec `Tour6TutoFlechesRollTest`) en soit touché : non rejoué ici, hors lot, reste à tutofleches.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

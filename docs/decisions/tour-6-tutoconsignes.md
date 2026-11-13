@@ -1,0 +1,8 @@
+# Tour 6, lot 2 « tuto-consignes » : décisions (une ligne par choix)
+
+- 2026-11-13 : le lot est fait par trois équipes sur des fichiers séparés (contenu et vérifications : tutos/*.json, TutoChecks.kt, i18n tuto ; panneau et déroulé : TutoPanel.kt, TutoController.kt ; mots : PlainWords.kt, TrackSheet.kt), fusionnées ici. Détail des choix de chaque équipe : `tour-6-tutoconsignes-a.md` et `tour-6-tutoconsignes-b.md`. Retour arrière : annuler la fusion de l'équipe.
+- 2026-11-13 : T6, les puces d'explication du tuto connaissent aussi mesure, temps, accord, riff, stab, pad, effet, gamme, tonalité, dorien, boucle, 909, 707, swing, break ; « temps » n'est pas expliqué dans « en même temps », « longtemps », « de temps en temps ». Pas de puce « Perc » : plus aucune consigne ne dit ce mot (T2). Retour arrière : retirer les lignes de `PlainWords.TERMS`.
+- 2026-11-13 : T16, le choix « Plaits » de la feuille de couche dit « Autres synthés » en Mode simple (« Plaits » reste en Pro, nom du module). Retour arrière : `plaitsLabel` rend toujours « Plaits ».
+- 2026-11-13 : N12 et N24 pour jump up aussi (« Mon morceau », le mot sous le curseur) : `TutoLot4Test` suit la nouvelle règle (il figeait l'ancienne). Retour arrière : revenir aux textes d'avant et à l'exemption `PINNED`.
+- 2026-11-13 : N21 laissé au lot 5 (langues) : les textes du tuto sont déjà cohérents ; le mot divergent est dans `i18n/ja/audit1z56.json` et `i18n/de/audit1z56.json`, `ultra3z5.json`, hors des fichiers du lot.
+- 2026-11-13 : nouveaux textes du panneau et des puces rangés dans `i18n/<langue>/tuto.json` (les fichiers du lot), même quand le texte vient de TrackSheet.kt. Retour arrière : les déplacer dans leur zone.

@@ -51,7 +51,10 @@ class LiveWholeWordsTest {
     /** Bar 30, beat 2 (a counter « 30.2 »). */
     private val clock = 29 * song.stepsPerBar + 4
 
-    private fun cuts(label: String, uiScale: Float, fontScale: Float, project: com.pocketstudio.model.Project = song): List<String> {
+    private fun cuts(
+        label: String, uiScale: Float, fontScale: Float, project: com.pocketstudio.model.Project = song,
+        tab: LivePanelTab = LivePanelTab.Briques, judged: (CutWords.Cut) -> Boolean = { true },
+    ): List<String> {
         if (fontScale != 1f) RuntimeEnvironment.setFontScale(fontScale)
         var lang by mutableStateOf(Lang.FR)
         compose.setContent {
@@ -59,7 +62,7 @@ class LiveWholeWordsTest {
             key(lang) {
                 CompositionLocalProvider(LocalLayoutDirection provides layoutDirectionOf(lang.rtl)) {
                     UiScaled(uiScale) {
-                        PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = clock, playing = true), LiveActions()) }
+                        PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = clock, playing = true), LiveActions(), initialTab = tab) }
                     }
                 }
             }
@@ -72,7 +75,7 @@ class LiveWholeWordsTest {
             compose.waitForIdle()
             for (cut in CutWords.under(compose, "live_screen")) {
                 val line = "$label ${l.code}: $cut"
-                if (cut.tags.any { it in OTHER_FILES || it.startsWith("help_") }) others += line else mine += line
+                if (cut.tags.any { it in OTHER_FILES || it.startsWith("help_") } || !judged(cut)) others += line else mine += line
             }
         }
         File("build/reports/lot5").mkdirs()
@@ -108,6 +111,28 @@ class LiveWholeWordsTest {
     @Test
     fun everyBrickNameIsWholeInTallRowsWithThePhonesFontAt130() {
         val problems = cuts("4 cases, font 130 %", uiScale = 1f, fontScale = 1.3f, project = song.copy(liveRows = 4))
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /** The tools open: the panel's own tabs (« Blokk… », « Acid 3… » at Taille 130 % in Dutch); its pages are other files'. */
+    private fun panelTabs(label: String, uiScale: Float, fontScale: Float) =
+        cuts(label, uiScale, fontScale, tab = LivePanelTab.Effets, judged = { c -> c.tags.any { it.startsWith("live_tab_") } })
+
+    @Test
+    fun thePanelsTabsAreWholeAtTaille130() {
+        val problems = panelTabs("panel, Taille 130 %", uiScale = 1.3f, fontScale = 1f)
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    @Test
+    fun thePanelsTabsAreWholeWithThePhonesFontAt130() {
+        val problems = panelTabs("panel, font 130 %", uiScale = 1f, fontScale = 1.3f)
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    @Test
+    fun thePanelsTabsAreWholeWithThePhonesFontAt200() {
+        val problems = panelTabs("panel, font 200 %", uiScale = 1f, fontScale = 2f)
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 

@@ -8,6 +8,7 @@ import com.pocketstudio.app.rhythm.ClosingSaves
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.model.i18n.I18n
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.FixMethodOrder
@@ -22,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
  * them, seen in a full run): the ViewModel factory that keeps its Application (any screen opened), a save still closing
  * (a project's screen closed), settings changed, the launch rule off. The test after it must start on a pristine process.
  *
- * On purpose without the rule: this class is the ordinary test. Its two tests run in the order of their names.
+ * On purpose without the rule: this class is the ordinary test. Its tests run in the order of their names.
  */
 @RunWith(RobolectricTestRunner::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -45,5 +46,26 @@ class OrdinaryTestsLeaveNothingTest {
     @Test
     fun b_theTestAfterAnOrdinaryTestStartsPristine() {
         assertEquals("left by the ordinary test before", emptyList<String>(), BenchPristine.leaks())
+    }
+
+    /**
+     * Tour 6, lot « stable » (the conductor's request b): the one thing restore() cannot put back is the app's work still
+     * running on the coroutine workers; the next class inherits it, whatever it is. An ordinary test that leaves such work
+     * past the time it is given is red itself, by name (StrictTestApplication.afterTest, every Robolectric test).
+     */
+    @Test
+    fun c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself() {
+        val stop = java.util.concurrent.atomic.AtomicBoolean(false)
+        // A worker kept in this package's code (com.pocketstudio…) far past the time given, as a render or a fetch left on.
+        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Default) { while (!stop.get()) Thread.sleep(20) }
+        try {
+            val m = javaClass.getMethod("c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself")
+            val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
+            assertTrue("red itself, by name: $e", e is AssertionError && "c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself" in e.message.orEmpty())
+            assertTrue("naming the work: ${e?.message}", "OrdinaryTestsLeaveNothingTest" in e?.message.orEmpty() && "worker" in e?.message.orEmpty())
+        } finally {
+            stop.set(true)
+        }
     }
 }

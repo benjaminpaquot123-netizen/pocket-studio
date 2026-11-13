@@ -598,5 +598,8 @@
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "听混响：鼓边和和弦，先是没有，然后加上。",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "轮到你：在混音里，先把“和弦”音轨、再把“鼓边”打击垫的“混响发送”调高。",
   "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "底鼓和贝斯一起在前，人声清晰，和弦在后。",
-  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "轮到你：在“我的歌曲”里的“添加”下面，按顺序点 前奏、渐强段、高潮、间奏、渐强段、高潮 2 和 结束。先别管现在显示的小节数：下一步会给每个段落定好真正的长度。"
+  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "轮到你：在“我的歌曲”里的“添加”下面，按顺序点 前奏、渐强段、高潮、间奏、渐强段、高潮 2 和 结束。先别管现在显示的小节数：下一步会给每个段落定好真正的长度。",
+  "Partage ton morceau": "分享你的曲子",
+  "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "轮到你：点“分享”：应用会把你的曲子做成一个可以发送的声音文件。“M4A”是给朋友的轻巧文件，“WAV”保留录音棚品质。下面的“−14”表示和流媒体音乐一样响，“没有削波”表示没有破音，“没有忘关的独奏”表示没有哪条音轨在单独播放。",
+  "À toi : touche « Partager » et envoie ton morceau.": "轮到你：点“分享”，把你的曲子发出去。"
 }

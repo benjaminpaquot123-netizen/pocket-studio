@@ -529,13 +529,13 @@
     },
     {
       "id": "export",
-      "title": "Exporte ton morceau",
+      "title": "Partage ton morceau",
       "why": "Ton morceau est fini : fais-le écouter !",
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
-          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "text": "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.",
+          "textPro": "À toi : touche « Partager » et envoie ton morceau.",
           "check": "shared",
           "spot": "share.export"
         }

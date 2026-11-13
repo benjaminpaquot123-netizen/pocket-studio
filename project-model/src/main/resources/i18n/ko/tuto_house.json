@@ -598,5 +598,8 @@
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "리버브를 들어 보세요: 림과 코드를 먼저 리버브 없이, 그다음 리버브와 함께.",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "직접 해 보세요: 믹스에서 “코드” 트랙의 “리버브 센드”를 올리고, “림” 패드에서도 올리세요.",
   "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "킥과 베이스는 함께 앞에, 보컬은 또렷하게, 코드는 뒤에.",
-  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 빌드업, 드롭, 브레이크, 빌드업, 드롭 2, 엔딩을 순서대로 탭하세요. 지금 보이는 마디 수는 신경 쓰지 마세요. 다음 단계에서 파트마다 진짜 길이를 정해요."
+  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 빌드업, 드롭, 브레이크, 빌드업, 드롭 2, 엔딩을 순서대로 탭하세요. 지금 보이는 마디 수는 신경 쓰지 마세요. 다음 단계에서 파트마다 진짜 길이를 정해요.",
+  "Partage ton morceau": "곡을 공유하세요",
+  "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "직접 해 보세요: “공유”를 탭하세요. 앱이 곡을 보낼 수 있는 사운드 파일로 만들어 줘요. “M4A”는 친구용 가벼운 파일, “WAV”는 스튜디오 품질을 지켜요. 아래의 “−14”는 스트리밍 음악만큼 크다는 뜻, “찌그러짐 없음”은 소리가 지글거리지 않는다는 뜻, “켜진 솔로”가 없다는 건 혼자만 나오는 트랙이 없다는 뜻이에요.",
+  "À toi : touche « Partager » et envoie ton morceau.": "직접 해 보세요: “공유”를 탭하고 곡을 보내세요."
 }

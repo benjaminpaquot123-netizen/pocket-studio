@@ -116,4 +116,56 @@ class Tour6TutoFlechesRollTest {
     @Test
     @Config(fontScale = 1.3f)
     fun houseBassAfterTheCopyTheRollShowsTheNextNoteAt130() = afterTheCopyTheRollShowsTheNextNote("house")
+
+    /**
+     * Seat D a (techno, chapters 5 and 7): on the real roll, every dotted note of the step is reached by following the
+     * line: no arrow when the note the line speaks of is whole in sight, else at most two touches on the line bring one
+     * whole in sight, above the tutorial's panel. Each note written in turn, the roll left where the user's last
+     * touch put it (nothing scrolls between two notes).
+     */
+    private fun everyNoteIsReachedByFollowingTheLine(style: String, stepId: String) {
+        val target = TutoTarget.of(style)!!
+        h.start(simple = true, build = {
+            session.edit { target.blank() }
+            PrefsTutoStore(h.app).save(projectId, TutoProgress(style, TutoLevel.Facile, current = stepId))
+        })
+        await("the panel") { has("tuto_need") }
+        compose.onNodeWithTag("tuto_need").performClick()
+        await("the dotted notes") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+        settle()
+        var written = 0
+        var arrows = 0
+        while (leftNotes().isNotEmpty() && !has("tuto_roll_copy") && written < 40) {
+            var touches = 0
+            while (leftNotes().none { whole(it) }) {
+                val said = text("tuto_notes_left_text")
+                assertTrue("no dotted note whole in sight and no arrow: « $said » (${leftNotes().size} left)", listOf("↑", "↓", "→", "←").any { it in said })
+                assertTrue("more than two touches on the line « $said » and still no dotted note in sight", touches < 2)
+                compose.onNodeWithTag("tuto_notes_left", useUnmergedTree = true).performClick()
+                touches++
+                arrows++
+                settle()
+            }
+            val said = text("tuto_notes_left_text")
+            assertTrue("a dotted note is whole in sight, no arrow expected: « $said »", listOf("↑", "↓", "→", "←").none { it in said })
+            h.vm.addNote(leftNotes().first { whole(it) })
+            written++
+            settle()
+        }
+        assertTrue("$style/$stepId: notes written $written", written >= 4)
+    }
+
+    @Test
+    fun technoBassEveryNoteIsReachedByFollowingTheLine() = everyNoteIsReachedByFollowingTheLine("techno", "bass_do")
+
+    @Test
+    @Config(fontScale = 1.3f)
+    fun technoBassEveryNoteIsReachedByFollowingTheLineAt130() = everyNoteIsReachedByFollowingTheLine("techno", "bass_do")
+
+    @Test
+    fun technoRiffEveryNoteIsReachedByFollowingTheLine() = everyNoteIsReachedByFollowingTheLine("techno", "lead_do")
+
+    @Test
+    @Config(fontScale = 1.3f)
+    fun trapBassEveryNoteIsReachedByFollowingTheLineAt130() = everyNoteIsReachedByFollowingTheLine("trap", "bass_do")
 }

@@ -1,0 +1,47 @@
+Écran 22 (588x1278)
+icône (dossier ouvert) ✓ « Trap Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 140  BPM » @ 73,114
+icône « Couplet 2 mes. 33/104 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+texte « Format » [coupé] @ 77,157
+bouton « ? » [coupé] @ 133,160
+bouton « M4A · pour partager » [désactivé] @ 169,224
+bouton « WAV · qualité max » [désactivé, sélectionné] @ 423,224
+texte « Qualité studio, lu par tous les logiciels. Le plus lourd. » @ 281,285
+texte « Volume visé » @ 101,333
+bouton « ? » @ 182,332
+bouton « Streaming · −14 LUFS » [désactivé] @ 176,396
+bouton « Club · −8 LUFS » [désactivé, sélectionné] @ 419,396
+bouton « Auto (Trap) · −8,5 LUFS » [désactivé] @ 186,477
+bouton « Désactivée » [désactivé] @ 421,477
+texte « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. » @ 294,573
+texte « Fondu de fin » @ 104,654
+bouton « Aucun » [désactivé] @ 100,717
+bouton « Court (3 s) » [désactivé, sélectionné] @ 246,717
+bouton « Long (8 s) » [désactivé] @ 410,717
+bouton « Avancé Piste par piste · FLAC · MIDI · 48 kHz · 24 bits » ⌄ @ 294,802
+texte « Fabrication du son · 25 % » @ 169,867
+dessin [à 25 %] @ 294,906
+bouton « Annuler » [coupé] @ 294,945
+bouton (boussole) « Guide  · Change un son 29 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

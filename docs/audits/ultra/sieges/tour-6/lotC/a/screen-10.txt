@@ -1,0 +1,29 @@
+Écran 10 (900x1509)
+dessin @ 450,184
+texte « Batterie » @ 382,256
+texte « Fermer » @ 808,256
+texte « Volume » @ 401,330
+texte « Normal » @ 827,330
+curseur [état « Normal », à 80 %] @ 450,404
+bouton ▶ « Écouter seule » @ 163,498
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 350,498
+texte « Ses sons, un par un » @ 156,582
+bouton ■ « Arrêter » [sélectionné] @ 782,654
+texte « Grosse caisse 1 » @ 356,654
+texte « Claquement de mains » @ 320,741
+bouton ▶ « Écouter seul » @ 746,741
+texte « Charley » @ 320,828
+bouton ▶ « Écouter seul » @ 746,828
+bouton ▶ « Écouter seul » @ 746,915
+texte « Charley ouvert » @ 320,915
+bouton ▶ « Écouter seul » @ 746,1002
+texte « Crash » @ 320,1002
+bouton ▶ « Écouter seul » @ 746,1089
+texte « Tom grave » @ 320,1089
+bouton ▶ « Écouter seul » @ 746,1176
+texte « Tom aigu » @ 320,1176
+texte « Rim » @ 320,1263
+bouton ▶ « Écouter seul » @ 746,1263
+texte « Maracas » @ 320,1350
+bouton ▶ « Écouter seul » @ 746,1350
+icône (barres de son) «   Changer le son » @ 450,1437

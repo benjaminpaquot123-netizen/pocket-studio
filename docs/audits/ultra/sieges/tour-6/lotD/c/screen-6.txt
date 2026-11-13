@@ -1,0 +1,63 @@
+Écran 6 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ [désactivé] @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+bouton « 录音棚底鼓 FX » @ 123,319
+bouton « 底鼓 2 » @ 341,319
+bouton « 军鼓 » @ 559,319
+bouton « Rumble FX » @ 777,319
+bouton « 拍手 FX » @ 123,397
+bouton « 踩镲 左 30 » @ 341,397
+bouton « 开镲 右 30 » @ 559,397
+bouton « 低音嗵鼓 » @ 777,397
+bouton « 中音嗵鼓 右 45 » @ 123,475
+bouton « 高音嗵鼓 » @ 341,475
+bouton « 鼓边 FX 右 50 » @ 559,475
+bouton « 牛铃 » @ 777,475
+bouton « 镲片 右 40 » @ 123,553
+bouton « 沙锤 左 50 » @ 341,553
+bouton « 康加鼓 » @ 559,553
+bouton « Zap » @ 777,553
+bouton « 鼓组：Studio » ▾ @ 121,631
+texte « 打击垫只发声，格子保存打击。长按：更换音色。 » @ 559,631
+titre « 步进：录音棚底鼓 » [état « 已展开 »] @ 372,739
+bouton « ? » @ 267,739
+bouton « 所有打击垫 » @ 780,739
+texte « 录音棚底鼓 » @ 106,823
+image (chapeau de diplômé) @ 37,902
+texte « 速度和调性 第 1/16 章 · 第 1/4 步 · 专业 » @ 400,902
+icône (liste) @ 771,902
+icône ⌄ @ 843,902
+texte « 听一段完整的 techno：前奏（给 DJ 的鼓）、贝斯进来，然后是 Drop。每拍一下、永不停歇的底鼓：这就是你要搭建的。 » @ 450,1001
+texte « ▸ 为什么？ » @ 450,1061
+bouton « 继续阅读 » ⌄ @ 450,1053
+bouton ■ «  停止试听 » @ 450,1125
+icône ← «  上一步 » [désactivé] @ 87,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » [désactivé] @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 120 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

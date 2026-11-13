@@ -1,0 +1,6 @@
+Écran 2 (900x1509)
+icône ← @ 54,48
+texte « Semplice o Pro? » @ 486,48
+texte « Come vuoi vedere questo progetto? Puoi cambiare quando vuoi con l'etichetta in alto. » @ 450,148
+bouton « Semplice Per iniziare: 5 schede, pulsanti grandi e parole di tutti i giorni. » @ 229,357
+bouton « Pro Per andare oltre: tutti gli strumenti, struttura, suoni, mix e live. » @ 670,357

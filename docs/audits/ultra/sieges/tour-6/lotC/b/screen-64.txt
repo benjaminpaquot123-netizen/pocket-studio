@@ -1,0 +1,12 @@
+Écran 64 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Changer » @ 367,120
+texte « Ce morceau sera en mode Pro. » @ 164,120
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
+bouton (éclair) « Techno 10 styles » ⌄ [état « fermé »] @ 294,315
+bouton (disque) « House 9 styles » ⌄ [état « fermé »] @ 294,411
+bouton (enceinte) « Bass music 7 styles » ⌄ [état « fermé »] @ 294,507
+bouton (micro) « Hip-hop 7 styles » ⌄ [état « fermé »] @ 294,603
+bouton ♪ « Autres 4 styles » ⌄ [état « fermé »] @ 294,699

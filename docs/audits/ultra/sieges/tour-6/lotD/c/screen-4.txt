@@ -1,0 +1,17 @@
+Écran 4 (900x1509)
+icône ← @ 60,48
+texte « 我要学 » @ 150,48
+texte « 整首曲子由你自己一步步完成：我来讲解和检查。 » @ 288,117
+texte « 选择你的风格 » @ 96,168
+bouton « Techno 132 BPM » → @ 450,253
+bouton « 底特律 techno 126 BPM » → @ 450,367
+bouton « Acid techno 138 BPM » → @ 450,481
+bouton « Hard techno 150 BPM » → @ 450,595
+bouton « 工业 techno 136 BPM » → @ 450,709
+bouton « 复古 techno 128 BPM » → @ 450,823
+bouton « Acidcore 185 BPM » → @ 450,937
+bouton « Trance 138 BPM » → @ 450,1051
+bouton « House 122 BPM » → @ 450,1165
+bouton « Deep house 120 BPM » → @ 450,1279
+bouton « Tech house 126 BPM » → @ 450,1393
+bouton « Acid house 120 BPM » → [coupé] @ 450,1476

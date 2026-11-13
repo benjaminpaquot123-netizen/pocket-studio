@@ -1,0 +1,10 @@
+Écran 30 (588x1278)
+texte « Choose your language » @ 230,228
+bouton « 🇮🇩 Bahasa Indonesia Indonesian » @ 294,321
+bouton « 🇩🇪 Deutsch German » @ 294,420
+bouton « 🇬🇧 English » (rond coché) [sélectionné] @ 294,519
+bouton « 🇪🇸 Español Spanish » @ 294,618
+bouton « 🇫🇷 Français French » @ 294,717
+bouton « 🇮🇹 Italiano Italian » @ 294,816
+bouton « 🇳🇱 Nederlands Dutch » @ 294,915
+texte « Close » @ 504,1038

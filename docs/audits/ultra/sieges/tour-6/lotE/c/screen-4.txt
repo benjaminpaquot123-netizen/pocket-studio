@@ -1,0 +1,5 @@
+Écran 4 (588x1278)
+bouton (casque) « Ouvir uma demo Uma música já pronta, para descobrir o que dá para fazer. » [coupé] @ 294,19
+bouton + « Começar do zero Ainda sem notas: uma bateria, uma Acid 303 e um sintetizador esperam as suas. » @ 294,296
+bouton (tête qui parle) « Extrair a voz de uma música Escolha uma música do celular: o app separa a voz, a bateria, o baixo e o resto. » @ 294,788
+bouton (grille de pads) « Pad Live NOVO Pads prontos para tocar, seus sons, efeitos live. Já sai som na hora. » → [coupé] @ 294,1162

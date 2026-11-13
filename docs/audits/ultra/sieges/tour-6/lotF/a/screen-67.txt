@@ -1,0 +1,9 @@
+Écran 67 (900x1509)
+texte « È pronto » @ 144,563
+texte « Fatto: Primo-giro-brano-20261112-211607.m4a, una copia è anche in Music › BenStudio. » @ 450,655
+texte « Durata: 8 s » @ 131,720
+texte « Livello: come la musica in streaming (−14) » @ 317,762
+texte « Nessuna saturazione. » @ 196,804
+texte « File M4A: leggero, si ascolta su tutti i dispositivi. » @ 353,846
+texte « Vedi i miei file » @ 622,936
+texte « OK » @ 790,936

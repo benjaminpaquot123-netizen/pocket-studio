@@ -1,0 +1,117 @@
+Écran 39 (900x1509)
+icône ← @ 51,45
+bouton ■ @ 543,45
+icône − @ 624,45
+texte « 124 Tempo » @ 690,45
+icône + @ 756,45
+texte « REC » @ 840,45
+texte « Pad Live » @ 295,45
+onglet « A » [sélectionné] @ 57,135
+onglet « B » @ 126,135
+onglet « C » @ 195,135
+onglet « D » @ 264,135
+bouton « Paket: Pesta » ▾ @ 425,135
+bouton ★ «  Tantangan » @ 774,135
+bouton « ? » @ 633,135
+bouton @ 116,273
+dessin @ 165,216
+texte « loop » @ 176,207
+texte « Loop kick » @ 83,337
+bouton @ 322,273
+dessin @ 371,216
+texte « pukul » @ 377,207
+texte « Tepuk tangan » @ 310,337
+bouton @ 528,273
+dessin @ 577,216
+texte « loop » @ 588,207
+texte « Loop Acid 303 » @ 521,337
+bouton @ 734,273
+dessin @ 783,216
+texte « loop » @ 794,207
+texte « Loop bass » @ 705,337
+bouton ▶ @ 862,273
+bouton @ 116,454
+dessin @ 165,397
+texte « pukul » @ 171,388
+texte « Klakson » @ 75,518
+bouton @ 322,454
+dessin @ 371,397
+texte « pukul » @ 377,388
+texte « Laser » @ 269,518
+bouton @ 528,454
+dessin @ 577,397
+texte « pukul » @ 583,388
+texte « Sirene » @ 480,518
+bouton @ 734,454
+dessin @ 783,397
+texte « pukul » @ 789,388
+texte « Teriakan “Go go go!” » @ 734,503
+bouton ▶ @ 862,454
+bouton @ 116,635
+dessin @ 165,578
+texte « pukul » @ 171,569
+texte « Drum bas 1 » @ 90,699
+bouton @ 322,635
+dessin @ 371,578
+texte « pukul » @ 377,569
+texte « Snare » @ 270,699
+bouton @ 528,635
+dessin @ 577,578
+texte « pukul » @ 583,569
+texte « Hi-hat » @ 478,699
+bouton @ 734,635
+dessin @ 783,578
+texte « pukul » @ 789,569
+texte « Hi-hat terbuka » @ 727,699
+bouton ▶ @ 862,635
+bouton @ 116,815
+dessin @ 165,758
+texte « pukul » @ 171,750
+texte « Build-up » @ 78,878
+bouton @ 322,815
+dessin @ 371,758
+texte « pukul » @ 377,750
+texte « Impact » @ 275,878
+bouton @ 528,815
+dessin @ 577,758
+texte « pukul » @ 583,750
+texte « Turun » @ 476,878
+bouton @ 734,815
+dessin @ 783,758
+texte « pukul » @ 789,750
+texte « “Go!” » @ 681,878
+bouton ▶ @ 862,815
+bouton « ? » @ 138,935
+texte « EFEK LIVE » @ 67,935
+texte « Tekan dan tahan » @ 802,935
+bouton @ 158,1014
+texte « Filter » @ 158,1002
+texte « rendah ↔ tinggi » @ 158,1029
+bouton @ 450,1014
+texte « Echo » @ 450,1002
+texte « saat keluar » @ 450,1029
+bouton @ 742,1014
+texte « Roll » @ 742,1002
+texte « 1/16 » @ 742,1029
+bouton @ 158,1116
+texte « Build-up » @ 158,1104
+texte « 4 bar » @ 158,1131
+bouton @ 450,1116
+texte « Turun » @ 450,1104
+texte « pengereman » @ 450,1131
+bouton @ 742,1116
+texte « Gagap » @ 742,1104
+texte « 1/16 » @ 742,1131
+bouton ↶ « Urungkan » @ 159,1212
+bouton (quatre carrés) « Blok » @ 450,1212
+bouton (curseurs) « Efek » @ 741,1212
+bouton (cotillons) « Pad besar » @ 218,1293
+bouton (trois points reliés) « Bagikan » @ 629,1293
+bouton « ? » @ 860,1293
+bouton ■ « Stop semua » @ 66,1390
+bouton « Rekam yang aku mainkan » @ 416,1383
+bouton ⋯ « Tutup » @ 800,1383
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

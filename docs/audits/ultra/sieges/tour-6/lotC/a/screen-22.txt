@@ -1,0 +1,42 @@
+Écran 22 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 280,42
+bouton « Simple » @ 606,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 122  Tempo » @ 98,123
+icône (flèches en boucle) « Montée mesure 1/4 » ▾ @ 297,123
+bouton « ? » @ 855,123
+texte « Fini ? Partage ton morceau » @ 450,204
+champ « Nom du morceau (et du projet) » contenu « House » @ 450,301
+icône ✕ @ 834,309
+texte « 3:09 » @ 71,396
+texte « 19 parties » @ 191,398
+bouton ■ «  Arrêter » @ 767,415
+texte « Niveau : comme la musique en streaming (−14) » @ 341,437
+image (rond coché) @ 45,490
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 472,493
+bouton (clap de cinéma) «   Vidéo pour les réseaux · 30 s » @ 450,568
+bouton (notes sur une pile) « Autres fichiers Piste par piste, MIDI, FLAC… (passe en mode Pro) » › @ 428,664
+bouton « ? » @ 848,664
+bouton (boîte, flèche vers le bas) « Sauvegarder le morceau en .zip Pour un autre appareil ou une copie de sécurité » › @ 428,766
+bouton « ? » @ 848,766
+bouton « M4A · pour partager » [sélectionné] @ 193,862
+bouton « WAV · qualité max » @ 516,862
+bouton (trois points reliés) «   Partager » @ 450,958
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 428,1060
+bouton « ? » @ 848,1060
+bouton (boussole) « Guide  · Change un son 19 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 148,1292
+bouton ■ « le morceau » @ 354,1292
+texte « 122 Tempo » @ 564,1292
+icône ⋮ « Plus » @ 753,1292
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » [sélectionné] @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

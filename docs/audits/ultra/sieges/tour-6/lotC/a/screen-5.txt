@@ -1,0 +1,19 @@
+Écran 5 (900x1509)
+texte « Fais-moi un morceau » @ 211,36
+icône ✕ @ 858,54
+texte « Étape 1 : choisis un style » @ 171,78
+texte « Changer » @ 516,132
+texte « Ce morceau sera en mode Simple. » @ 231,132
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 450,238
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 363,336
+bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌄ [état « fermé »] @ 450,414
+bouton (éclair) « Techno 10 styles » ⌄ [état « fermé »] @ 450,510
+bouton (disque) « House 9 styles » ⌃ [état « ouvert »] @ 450,606
+bouton « House 122 BPM La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. Pour l'idée : • Robin S – Show Me Love (1992) • Marshall Jefferson – Move Your Body (1986) • Joe Smooth – Promised Land (1987) • Frankie Knuckles & Jamie Principle – Your Love (1987) • Farley "Jackmaster" Funk – Love Can't Turn Around (1986) • Jesse Saunders – On and On (1984) » @ 450,959
+icône ▶ @ 57,705
+bouton ▶ «  Créer et écouter » @ 478,847
+bouton « Choisir ce style et continuer » @ 478,931
+bouton « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 450,1363
+icône ▶ @ 57,1315
+bouton « Tech house House · 126 BPM La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. Pour l'idée : Mau P – Drugs From Amsterdam (2022) » [coupé] @ 450,1488
+icône ▶ [coupé] @ 57,1496

@@ -526,6 +526,9 @@ fun ShareSheetContent(
                 )
             }
         }
+        // Tour 6, seat A c (E3): a scrollable tail the height of the fade band, so the last line (« Autres fichiers », the
+        // « .zip » line) can scroll fully clear of the fade and never looks covered by the pinned M4A / WAV row.
+        androidx.compose.foundation.layout.Spacer(Modifier.height(SCROLL_FADE))
     }
         if (scroll.canScrollForward) {
             androidx.compose.foundation.layout.Box(

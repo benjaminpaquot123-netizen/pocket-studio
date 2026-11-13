@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Audit method v3 (docs/audits/AUDIT-ULTRA.md §13.6, §13.9): the conductor's queue of the portal. Run by the main
 # discussion only, in the integration workshop, on the integration branch:
-#   scripts/bench/portail-file.sh <tour-N>:<zone>[:<pushed branch>] [<tour-N>:<zone>[:<pushed branch>] …]
+#   scripts/bench/portail-file.sh <tour-N>:<zone>[:<pushed branch>] [<tour-N>:<zone>[:<pushed branch>] …] [-- <gradle test filters…>]
+# (The filters after « -- » go to the portal for every lot, on top of each zone report's « tests: » line.)
 # For each lot, in the order given, one after the other:
 #   1. the workshop is the pushed head of the integration, nothing else (§13.6: nobody merges anything but the pushed
 #      head), clean, and no wave of testers is playing (EN-COURS.md, « Temps en cours : VAGUE … »: §13.1);
@@ -11,7 +12,8 @@
 #   4. the pre-flight (pre-vol.sh), then the portal (fusion-equipes.sh): a refusal stops the queue, its line is printed
 #      as the conductor's message to the team (GABARIT-FICHES-V3.md, fiche 7);
 #   5. the links' check: no symbolic link committed in the merged tree;
-#   6. the integration is pushed, after EACH success (a restart of the machine then costs one portal, not the batch).
+#   6. the judge is read before and after (the « chantier : N écarts » of the portal's last trace and of this one);
+#   7. the integration is pushed, after EACH success (a restart of the machine then costs one portal, not the batch).
 # A batch is three lots at most (§13.6): from batch 4 on, a fourth « Merge team … » since the batch was opened
 # (the last change of portail-paquet.txt) is refused: the CI goes first (paquet-verifie.sh).
 # Exit: 0 every lot merged and pushed; 2 the workshop is not ready; 3 a lot refused (the lots before it are pushed).
@@ -55,8 +57,24 @@ ready() {
   fi
 }
 
+lots=(); filters=()
+while [ $# -gt 0 ]; do
+  if [ "$1" = "--" ]; then shift; filters=("$@"); break; fi
+  lots+=("$1"); shift
+done
+# The judge's count in the portal's trace a commit brought (« Portal traces of the merge … »), or « ? ».
+judge_of() {
+  local f
+  f="$(git diff-tree --no-commit-id --name-only -r "$1" 2>/dev/null | grep '/selftest-chantier.txt$' | head -1 || true)"
+  if [ -n "$f" ]; then git show "$1:$f" | sed -n 's/^chantier : \([0-9][0-9]*\) écarts.*/\1/p' | tail -1; fi
+}
+last_judge() {
+  local c
+  c="$(git log -1 --format=%H --grep='^Portal traces of the merge ' "$1" 2>/dev/null || true)"
+  if [ -n "$c" ]; then judge_of "$c"; fi
+}
 done_lots=()
-for lot in "$@"; do
+for lot in "${lots[@]}"; do
   IFS=: read -r tour zone lot_branch <<<"$lot"
   [ -n "${tour:-}" ] && [ -n "${zone:-}" ] || stop 2 "« $lot »: expected <tour-N>:<zone>[:<pushed branch>]."
   name="eq/$tour-$zone"
@@ -91,7 +109,10 @@ for lot in "$@"; do
   before="$(git rev-parse HEAD)"
   log="$(mktemp)"
   code=0
-  scripts/bench/fusion-equipes.sh "$tour" "$zone" >"$log" 2>&1 || code=$?
+  judge_before="$(last_judge HEAD)"
+  portal=(scripts/bench/fusion-equipes.sh "$tour" "$zone")
+  [ ${#filters[@]} -eq 0 ] || portal+=(-- "${filters[@]}")
+  "${portal[@]}" >"$log" 2>&1 || code=$?
   if [ "$code" -ne 0 ]; then
     line="$(grep -E "^$zone: " "$log" | tail -1 || true)"
     tail -20 "$log"
@@ -108,6 +129,6 @@ for lot in "$@"; do
   fi
   push_head || stop 3 "$zone: merged here ($(git rev-parse --short HEAD)) but the push of $branch failed four times: push it before the next lot."
   done_lots+=("$zone")
-  say "$zone: merged and pushed ($(git rev-parse --short HEAD))."
+  say "$zone: merged and pushed ($(git rev-parse --short HEAD)); judge: $(judge_of HEAD | grep . || echo '?') (before: ${judge_before:-?})."
 done
 say "queue done: ${done_lots[*]}. Batch ${paquet:-1}: at its end, the CI (scripts/bench/paquet-verifie.sh)."

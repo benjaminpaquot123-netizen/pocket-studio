@@ -161,4 +161,37 @@ class Coquille2SeatTest : HumanTester("coquille2") {
             ?: error("no « Annuler » while the sound is made:\n" + screen())
         assertTrue("« Annuler » cut while the sound is made:\n" + screen(), shownWhole(cancel))
     }
+
+    /**
+     * Seat D a (ja, phone, 100 %, Mode simple, the techno tutorial « Facile »), chapter 12 « トランジション », step « crash »
+     * (screen 177): the line over the grid said « → スタジオのバスドラム » on the cymbal's grid. Its « → » names the pad shown.
+     */
+    @Test
+    fun cymbalGridLineNamesThePadShown() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "ja", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        tap("welcome_learn"); runCatching { tap("mode_card_simple") }; tap("tuto_style_techno")
+        repeat(3) { act("attends 1") }
+        // Chapter 12, its step « gap », from the chapters' list (as the seat's « 次の章 »).
+        tap("tuto_chapters"); tap("tuto_chapter_11")
+        act("attends 1")
+        val v = rhythm()!!
+        fun saysThePadShown(at: String) {
+            val shown = com.pocketstudio.app.rhythm.padName(v.project.value, v.transport.value.selectedPad)
+            val said = screenLines().mapNotNull { Regex("« → ([^»]+) »").find(it)?.groupValues?.get(1)?.trim() }
+            assertTrue("$at: « → ${said.joinToString()} » over the grid of « $shown »:\n" + screen(), said.all { it == shown })
+        }
+        // The seat's screens 175-177: a hit left on the kick's last beat while another pad is shown, the app turns the grid
+        // to the kick and says « → スタジオのバスドラム »; within that moment the next step (« crash ») puts the cymbal on the
+        // grid, as the app does at each step (`tutoUi.pad`). The line must name the cymbal, not the kick.
+        v.selectPad(1)
+        v.toggleHit(0, v.project.value.drums.steps - 1)
+        compose.mainClock.advanceTimeBy(com.pocketstudio.app.tuto.TUTO_TURN_MS + 100)
+        compose.waitForIdle()
+        assertTrue("the grid not turned to the kick", v.transport.value.selectedPad == 0)
+        saysThePadShown("turned to the kick")
+        v.selectPad(com.pocketstudio.model.tuto.TutoChecks.CRASH_LANE)
+        compose.waitForIdle()
+        saysThePadShown("the cymbal on the grid")
+    }
 }

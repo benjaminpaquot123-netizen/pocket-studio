@@ -84,6 +84,36 @@ class Tour6TutoPanelAlreadyTest {
         assertTrue("the step reached done without a gesture is not said « Déjà fait »", ui.already)
     }
 
+    /**
+     * CI 43425565244 (8878 tests, one red: `aStepTheProjectHeldAlreadyIsSaidAlreadyDone`, line 84): « Déjà fait » was
+     * lost when a look at the project begun on the step before ended after the step was reached. It ticked the step
+     * (the project held it) but compared the step it had begun on, so nothing said « Déjà fait », and the look that
+     * the step's arrival asked for came after, the step already ticked, and said nothing either. Played here in that
+     * order: the first look's work done off the main thread before the step is reached, its answer read after.
+     */
+    @Test
+    fun aLookBegunBeforeTheStepStillSaysAlreadyDone() {
+        val tempo = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == "tempo" }
+        val flow = MutableStateFlow<Project>(TutoChecks.show(tempo, target.blank(), target)!!)
+        val c = TutoController(
+            scope, "p1", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
+            render = { FloatArray(8) }, player = Player(), debounceMs = 10,
+        )
+        idle()
+        c.start(style, TutoLevel.Facile)
+        idle()
+        // The look begun on the first step finishes its work; its answer waits on the main thread.
+        Thread.sleep(500)
+        c.goTo(0, c.ui.value!!.chapters[0].steps.indexOfFirst { it.id == "tempo" })
+        val end = System.currentTimeMillis() + 20_000
+        while ("tempo" !in c.ui.value!!.progress.done && System.currentTimeMillis() < end) { idle(); Thread.sleep(5) }
+        repeat(10) { idle(); Thread.sleep(5) }
+        val ui = c.ui.value!!
+        assertEquals("tempo", ui.current.id)
+        assertTrue("tempo ticked by the project", "tempo" in ui.progress.done)
+        assertTrue("a look begun before the step was reached lost « Déjà fait »", ui.already)
+    }
+
     @Test
     fun thePanelSaysAlreadyDone() {
         val chapters = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile)

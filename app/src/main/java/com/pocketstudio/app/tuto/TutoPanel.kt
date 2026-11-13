@@ -266,13 +266,13 @@ fun tutoRollWhere(track: String?, bar: Int, bars: Int): String =
 /** Over the piano roll, the notes to write by hand all written: « Copier » beside it does the rest. */
 fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
 
-/** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
-fun tutoNotesLeft(left: Int, ahead: Boolean?, above: Boolean? = null): String = when {
+/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way). */
+fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")
-    above == true -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
-    above == false -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
-    ahead == true -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
-    ahead == false -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
+    way == com.pocketstudio.model.tuto.TutoWay.Higher -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
+    way == com.pocketstudio.model.tuto.TutoWay.Lower -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
+    way == com.pocketstudio.model.tuto.TutoWay.Later -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
+    way == com.pocketstudio.model.tuto.TutoWay.Earlier -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
     else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
 }
 
@@ -530,6 +530,7 @@ fun TutoPanel(
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                             Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
                         }
+                        ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }

@@ -3,7 +3,7 @@
 Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
 MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : 4cd0dade1f8b56f911a630aac2c9a07a537e230a
+relu : 87ea4747303a6069664efab657f3607d88ab0569
 
 ## Relancé et vu
 - `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
@@ -17,6 +17,10 @@ relu : 4cd0dade1f8b56f911a630aac2c9a07a537e230a
 - `snapHeight` jamais ≤ 0 (`pad + cut.top > 0` exigé).
 - U+200B seulement à l'affichage (`breakableName` dans le `Text`), ni le nom ni l'URI ne changent.
 - « Envoyer le projet (.zip) » dans les 14 langues ; seuls ProjectsScreen.kt:338 et :345 changent.
+
+## Re-signature après fusion de la tête (bdb777a9)
+- La fusion ne touche aucun fichier du lot (export/, ProjectsScreen.kt, i18n/*/partage.json, tests export) ; relancés sur la
+  fusion : I18nCatalogTest, export.*, projects.*, BenchSelfTest : verts.
 
 ## Graves
 Aucun.

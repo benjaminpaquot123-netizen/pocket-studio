@@ -152,6 +152,10 @@ internal object BenchPristine {
      */
     fun afterATestWithTheRule(test: String) {
         if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
+        // Tour 6, lot « stable » (CI 43495469474): the compose rule closes the screen after the test's @After, and its closing
+        // save may wait for the main looper (the save lock of an autosave that resumes there). Let it end, the looper running,
+        // as after an ordinary test; a save still running after the cap is this test's leak, as before.
+        closingSaves()
         val left = leaks().filterNot { it.startsWith("projects/") || it.startsWith("CurrentProject") }
         if (left.isEmpty()) return
         restore()
@@ -177,6 +181,8 @@ internal object BenchPristine {
 
     /** Back to a just-started process (what [HumanTester.end] does, for the state a test can leak). */
     fun restore() {
+        // Tour 6, lot « stable »: a closing save left busy was not put back (the 15 BenchSongClockTest reds after one leak).
+        closingSaves()
         LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
         SeparationJob.set(SeparationState.Idle)

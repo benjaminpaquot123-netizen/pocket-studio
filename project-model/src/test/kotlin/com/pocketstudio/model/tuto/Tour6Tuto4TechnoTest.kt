@@ -178,6 +178,22 @@ class Tour6Tuto4TechnoTest {
         report("marks or export words not said", bad)
     }
 
+    /** M6 (seat B b): the Clap's reverb send is in the pad's effects, under its grid: the Mix has no strip per pad. */
+    @Test
+    fun reverbSendFromThePadsEffects() {
+        val bad = mutableListOf<String>()
+        for (fr in texts(step("reverb"))) {
+            listOf("Clap", "Effets du pad", "Envoi réverbe").filter { !quotes(fr, it) }.forEach { bad += "fr reverb: no « $it »: $fr" }
+            if (Regex("\\bMix\\b|tranche").containsMatchIn(fr)) bad += "fr reverb: sends to the Mix: $fr"
+            for (l in langs) {
+                val t = tr(l, fr)
+                listOf("Clap", "  Effets du pad", "Envoi réverbe").map { tr(l, it).trim() }.filter { !quotes(t, it) }.forEach { bad += "${l.code} reverb: no « $it »: $t" }
+                if (tr(l, "Mix") in t) bad += "${l.code} reverb: sends to the Mix: $t"
+            }
+        }
+        report("reverb steps that do not lead to the pad's effects", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

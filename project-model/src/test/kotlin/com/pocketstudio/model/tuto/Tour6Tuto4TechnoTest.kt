@@ -31,6 +31,30 @@ class Tour6Tuto4TechnoTest {
     private fun report(what: String, bad: List<String>) = assertTrue("${bad.size} $what:\n" + bad.joinToString("\n"), bad.isEmpty())
 
     /**
+     * M1 (seats D a, B b): ch. 2 to 4 name the pad by the name written on it, in every language and at both levels
+     * (« pose la ride » while the pad says « Becken »; « le « toc » » while no pad has that name).
+     */
+    @Test
+    fun padsNamedAsWritten() {
+        val pads = mapOf("kick" to "Kick", "rumble" to "Rumble", "clap" to "Clap", "open_hat" to "Charley ouvert", "hat" to "Charley", "perc" to "Rim", "ride" to "Cymbale")
+        val bad = mutableListOf<String>()
+        for (s in steps) {
+            val role = when {
+                s.check.startsWith("lane:") -> s.check.removePrefix("lane:")
+                s.check == "crash" -> "ride"
+                else -> continue
+            }
+            val name = pads.getValue(role)
+            for (fr in texts(s)) {
+                if (!quotes(fr, name)) bad += "fr ${s.id}: no « $name »: $fr"
+                for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} ${s.id}: no « ${tr(l, name)} »: $t" }
+            }
+        }
+        steps.flatMap(::texts).filter { "« toc »" in it }.forEach { bad += "fr: « toc », no pad's name: $it" }
+        report("drum steps that do not name their pad as written", bad)
+    }
+
+    /**
      * M4 (seats D a, B b): no contradiction: the Break keeps the hats and the « Rim »; the Montée « Créer la partie » makes
      * still plays its last beat (its silence is the transitions' step); ch. 10 says which button makes each part.
      */

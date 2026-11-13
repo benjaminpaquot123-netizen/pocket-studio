@@ -7,6 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performSemanticsAction
@@ -112,6 +117,55 @@ class SimpleMixWholeWordsTest {
     @Test
     fun everyTextIsWholeAtTaille130() {
         val problems = cuts("Taille 130 %", uiScale = 1.3f, fontScale = 1f)
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /**
+     * The drums open on their sounds (a head as wide as all their strips): « Batterie ▾ » is read where the strips start,
+     * not centred over them past the screen's edge (« Bat » cut at the edge, 411 dp phone at Taille 130 %).
+     */
+    @Test
+    @Config(qualifiers = "w411dp-h914dp-xxhdpi")
+    fun theOpenDrumsSayTheirNameOnScreen() {
+        val problems = ArrayList<String>()
+        var lang by mutableStateOf(Lang.FR)
+        val meters = FloatArray(NativeEngine.METERS)
+        val loudness = FloatArray(NativeEngine.LOUDNESS) { NativeEngine.LOUDNESS_NONE }
+        compose.setContent {
+            I18n.lang = lang
+            key(lang) {
+                CompositionLocalProvider(LocalLayoutDirection provides layoutDirectionOf(lang.rtl)) {
+                    UiScaled(1.3f) {
+                        PocketStudioTheme {
+                            SimpleMixScreen(
+                                SimpleMixUi("Acid techno", simpleTracks(song), emptyMap(), 0f, false, null, null),
+                                { meters }, { loudness }, SimpleMixActions(), words = { OutputWords.GOOD },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        for (l in listOf(Lang.FR, Lang.DE, Lang.AR)) {
+            lang = l
+            I18n.lang = l
+            compose.waitForIdle()
+            compose.onNodeWithTag("mix_drums_expand").performSemanticsAction(SemanticsActions.OnClick)
+            compose.waitForIdle()
+            val row = compose.onNode(
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange) and hasAnyDescendant(hasTestTag("mix_drums_expand")),
+                useUnmergedTree = true,
+            ).fetchSemanticsNode().boundsInRoot
+            val name = compose.onNode(
+                hasAnyAncestor(hasTestTag("mix_drums_expand")) and SemanticsMatcher.keyIsDefined(SemanticsProperties.Text), useUnmergedTree = true,
+            ).fetchSemanticsNode()
+            val b = name.boundsInRoot
+            // The words themselves (a centred text's box is as wide as the head): where its first and last letters are drawn.
+            val layout = ArrayList<androidx.compose.ui.text.TextLayoutResult>().also { name.config[SemanticsActions.GetTextLayoutResult].action?.invoke(it) }.first()
+            val left = b.left + (0 until layout.lineCount).minOf { layout.getLineLeft(it) }
+            val right = b.left + (0 until layout.lineCount).maxOf { layout.getLineRight(it) }
+            if (left < row.left - 0.5f || right > row.right + 0.5f) problems += "${l.code}: « ${layout.layoutInput.text} » drawn from $left to $right, the strips seen from ${row.left} to ${row.right}"
+        }
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 }

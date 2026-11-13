@@ -1,0 +1,54 @@
+Écran 120 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Melodie · Takt 2/8 Noch 3 gestrichelte Noten zu tippen » [coupé] @ 450,315
+texte « Takt » @ 84,355
+bouton « 2 » @ 486,363
+bouton « 3 » [coupé] @ 853,363
+texte « D♭ » @ 84,416
+texte « C4 » @ 84,457
+texte « H » @ 84,499
+texte « B » @ 84,541
+texte « A » @ 84,583
+texte « A♭ » @ 84,625
+texte « G » @ 84,667
+texte « G♭ » @ 84,709
+texte « F » @ 84,751
+texte « E » @ 84,793
+texte « E♭ » @ 84,835
+texte « D » @ 84,877
+texte « D♭ » @ 84,919
+texte « C3 » @ 84,961
+texte « H » @ 84,1003
+texte « B » @ 84,1045
+texte « A » @ 84,1086
+dessin [coupé] @ 492,751
+texte « Das Riff Kapitel 7/16 · Schritt 2/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Erstell die Melodie-Spur (Sound „Gefilterter Lead“) und schreib das 2-taktige Riff: tiefes F, hohes F, tiefes F, dann dasselbe, mit A♭ am Schluss. „Auf die nächsten Takte kopieren“. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,45 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "de",
+    "device": "tablet8",
+    "font": "130",
+    "mode": "pro",
+    "gestes.max": "300",
+    "mission": "tuto-pro",
+    "timeout.minutes": "120"
+  },
+  "mesures": {
+    "gestes": 223,
+    "images": 20,
+    "gestes_premier_son": 6,
+    "gestes_premier_partage": 216,
+    "touchers_a_vide": 47,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 1,
+    "ecrans": 225,
+    "ecrans_revisites": 31,
+    "defilements_sans_toucher": 7,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 249,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.6,
+      "simule": 2.4,
+      "jvm": 8.4,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "reussie",
+  "pourquoi": "« techno » en Pro : 52 étape(s), 16 chapitre(s) entier(s) sur 16"
+}

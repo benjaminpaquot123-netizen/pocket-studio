@@ -1,0 +1,8 @@
+Écran 219 (900x1509)
+texte « Fertig » @ 121,584
+texte « Fertig: Mein-Song-club-20261113-124812.m4a, eine Kopie liegt auch in Musik › BenStudio. » @ 450,676
+texte « −8,0 LUFS integriert · Spitze −3,5 dBTP » @ 301,741
+texte « M4A, 48 kHz, 256 kbit/s · 3 min 53 s » @ 285,783
+texte « Ziel: Club · −8 LUFS » @ 186,825
+texte « Meine Dateien ansehen » @ 555,915
+texte « OK » @ 790,915

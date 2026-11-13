@@ -1,0 +1,75 @@
+Écran 209 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 57,181
+bouton (casque) [coupé, état « aus »] @ 111,181
+curseur [état « +0,0 dB », à 80 %] @ 84,342
+texte « +0,0 » @ 84,497
+texte « 3 » @ 96,537
+image (étincelles) @ 74,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 177,181
+bouton (casque) [coupé, état « aus »] @ 231,181
+curseur [état « +0,0 dB », à 80 %] @ 204,342
+texte « +0,0 » @ 204,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 297,181
+bouton (casque) [coupé, état « aus »] @ 351,181
+curseur [état « +0,0 dB », à 80 %] @ 324,342
+texte « +0,0 » @ 324,497
+texte « 1 » @ 336,537
+image (étincelles) @ 317,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 417,181
+bouton (casque) [coupé, état « aus »] @ 471,181
+curseur [état « -5,4 dB », à 58 %] @ 444,342
+texte « -5,4 » @ 444,497
+texte « 1 » @ 456,537
+image (étincelles) @ 437,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 537,181
+bouton (casque) [coupé, état « aus »] @ 591,181
+curseur [état « -5,4 dB », à 58 %] @ 564,342
+texte « -5,4 » @ 564,497
+texte « 1 » @ 557,537
+texte « 1 » @ 595,537
+image (étincelles) @ 538,537
+image (courbe) @ 576,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 657,181
+bouton (casque) [coupé, état « aus »] @ 711,181
+curseur [état « +0,0 dB », à 80 %] @ 684,342
+texte « +0,0 » @ 684,497
+image (courbe) @ 60,654
+texte « Kurven und Effekte » @ 232,636
+texte « 1 Einstellung bewegt sich von selbst. » [coupé] @ 312,674
+texte « Der Mix Kapitel 14/16 · Erledigt · Pro » @ 366,740
+icône (liste) « Kapitel » @ 759,741
+icône ⌄ @ 843,741
+image (coupe) @ 57,875
+texte « Bravo, Kapitel geschafft! » @ 259,838
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Das Mastering“. » @ 475,895
+bouton « Nächstes Kapitel   » → @ 450,1095
+bouton ▶ «  Meinen Song anhören » @ 200,1193
+bouton ▶ «  Beispiel anhören » @ 405,1193
+icône ← @ 57,1193
+bouton ✓ «  Erledigt » @ 610,1193
+icône « Weiter  » → @ 798,1193
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

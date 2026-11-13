@@ -1,0 +1,47 @@
+Écran 220 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Erweitert Spur für Spur · FLAC · MIDI · 48 kHz · 24 Bit » ⌄ [coupé] @ 450,195
+bouton « Song-Datei erstellen » @ 450,276
+texte « Gespeichert in Musik › BenStudio: Mein-Song-club-20261113-124812.m4a » @ 450,360
+texte « ✓ Bereit zum Teilen » @ 177,428
+texte « Dauer: 3 min 53 s » @ 148,470
+texte « Pegel: am Ziel (Club) » @ 167,509
+texte « Spitze: unter dem Limit, keine Übersteuerung » @ 314,548
+texte « M4A, 48 kHz, 256 kbit/s » @ 188,587
+texte « −8,0 LUFS integriert · Spitze −3,5 dBTP » @ 277,639
+bouton « ? » @ 533,638
+texte « Ziel: Club · −8 LUFS » @ 162,690
+bouton « Teilen » @ 450,756
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,842
+icône (liste) « Kapitel » @ 759,843
+icône ⌄ @ 843,843
+image (coupe) @ 42,954
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,954
+bouton ▶ «  Meinen Song anhören » @ 450,1045
+bouton ↺ «  Tutorial neu starten » @ 450,1126
+bouton ✕ «  Tutorial schließen » @ 450,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

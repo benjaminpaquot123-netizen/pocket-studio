@@ -1,0 +1,66 @@
+Écran 225 (900x1509)
+texte « Sound ändern » @ 149,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Für das Pad 6 (Techno · Hi-Hat) » @ 214,78
+onglet ◎ « Kicks » @ 91,143
+onglet ○ « Snares » @ 255,143
+onglet (main) « Claps » @ 420,143
+onglet (points en rond) « Geschlossene Hi-Hats » [sélectionné] @ 690,143
+titre « SOUNDS » [état « Aufgeklappt »] @ 121,233
+icône ← @ 78,299
+texte « Techno » @ 486,299
+bouton (points en rond) « Charley 2 Techno » @ 243,410
+icône ★ @ 227,410
+bouton « Setzen » @ 347,410
+bouton (points en rond) « Charley 4 Techno » @ 657,410
+icône ☆ @ 641,410
+bouton « Setzen » @ 761,410
+bouton (points en rond) « Charley 5 Techno » @ 243,548
+icône ☆ @ 227,548
+bouton « Setzen » @ 347,548
+bouton (points en rond) « Charley 7 Techno » @ 657,548
+icône ☆ @ 641,548
+bouton « Setzen » @ 761,548
+bouton (points en rond) « Charley 8 Techno » @ 243,686
+icône ☆ @ 227,686
+bouton « Setzen » @ 347,686
+bouton (points en rond) « Charley 9 Techno » @ 657,686
+icône ☆ @ 641,686
+bouton « Setzen » @ 761,686
+bouton (points en rond) « Charley 10 Techno » @ 243,824
+icône ☆ @ 227,824
+bouton « Setzen » @ 347,824
+bouton (points en rond) « Charley 3 Techno » @ 657,824
+icône ☆ @ 641,824
+bouton « Setzen » @ 761,824
+bouton (points en rond) « Charley 6 Techno » @ 243,962
+icône ☆ @ 227,962
+bouton « Setzen » @ 347,962
+bouton (points en rond) « Charley 1 Techno » @ 657,962
+icône ☆ @ 641,962
+bouton « Setzen » @ 761,962
+bouton (points en rond) « Charley 11 Techno » @ 243,1100
+icône ☆ @ 227,1100
+bouton « Setzen » @ 347,1100
+bouton (points en rond) « Charley 12 Techno » @ 657,1100
+icône ☆ @ 641,1100
+bouton « Setzen » @ 761,1100
+bouton (points en rond) « Charley 13 Techno » @ 243,1238
+icône ☆ @ 227,1238
+bouton « Setzen » @ 347,1238
+bouton (points en rond) « Charley 14 Techno » @ 657,1238
+icône ☆ @ 641,1238
+bouton « Setzen » @ 761,1238
+bouton (points en rond) « Charley 15 Techno » @ 243,1376
+icône ☆ @ 227,1376
+bouton « Setzen » @ 347,1376
+bouton (points en rond) « Charley 16 Techno » @ 657,1376
+icône ☆ @ 641,1376
+bouton « Setzen » @ 761,1376
+bouton (points en rond) « Charley 17 Techno » [coupé] @ 243,1480
+icône ☆ [coupé] @ 227,1496
+bouton « Setzen » [coupé] @ 347,1495
+bouton (points en rond) « Charley 18 Techno » [coupé] @ 657,1480
+icône ☆ [coupé] @ 641,1496
+bouton « Setzen » [coupé] @ 761,1495

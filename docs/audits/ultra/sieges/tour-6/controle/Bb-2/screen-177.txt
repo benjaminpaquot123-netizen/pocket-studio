@@ -1,0 +1,80 @@
+Écran 177 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: F · Build-up » @ 132,273
+texte « Takt » [coupé] @ 70,308
+bouton « 1 » [coupé] @ 143,309
+bouton « 2 » [coupé] @ 224,309
+bouton « 3 » [coupé] @ 305,309
+bouton « 4 » [coupé, sélectionné] @ 386,309
+bouton « Folgen » [coupé] @ 502,309
+texte « Takt 4/4 · Techno · Hi-Hat » @ 218,379
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,464
+bouton [état « Schlag, Stärke 100 % »] @ 192,464
+bouton [état « leer »] @ 294,464
+bouton [état « Schlag, Stärke 100 % »] @ 397,464
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,464
+bouton [état « Schlag, Stärke 100 % »] @ 603,464
+bouton [état « leer »] @ 706,464
+bouton [état « Schlag, Stärke 100 % »] @ 809,464
+bouton « 3 » [état « Schlag, Stärke 100 % »] @ 90,545
+bouton [état « Schlag, Stärke 100 % »] @ 192,545
+bouton [état « leer »] @ 294,545
+bouton [état « Schlag, Stärke 100 % »] @ 397,545
+bouton « 4 » [état « leer »] @ 500,545
+bouton [état « leer »] @ 603,545
+bouton [état « leer »] @ 706,545
+bouton [état « leer »] @ 809,545
+bouton « Schläge » [sélectionné] @ 122,631
+bouton « Rolls » @ 265,631
+bouton « Panorama » @ 421,631
+bouton « Tonhöhe » @ 604,631
+bouton « Velocity » @ 774,631
+texte « alles » [coupé] @ 163,687
+texte « 1/2 » [coupé] @ 246,687
+texte « 1/4 » [coupé] @ 321,687
+texte « ◀ » [coupé] @ 396,687
+texte « ▶ » [coupé] @ 471,687
+texte « Löschen » [coupé] @ 581,687
+texte « Die Übergänge Kapitel 12/16 · Erledigt · Pro » @ 366,740
+icône (liste) « Kapitel » @ 759,741
+icône ⌄ @ 843,741
+image (coupe) @ 57,875
+texte « Bravo, Kapitel geschafft! » @ 259,838
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Die Effekte“. » @ 475,895
+bouton « Nächstes Kapitel   » → @ 450,1095
+bouton ▶ «  Meinen Song anhören » @ 251,1193
+icône ← @ 57,1193
+bouton ▶ «  Beispiel anhören » @ 558,1193
+icône « Weiter  » → @ 798,1193
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

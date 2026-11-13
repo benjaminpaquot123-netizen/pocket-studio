@@ -1,0 +1,4 @@
+Écran 134 (900x1509)
+texte « Teil zum Bearbeiten » @ 559,115
+icône ✓ « A » @ 570,176
+icône + « Neuer leerer Teil » @ 570,250

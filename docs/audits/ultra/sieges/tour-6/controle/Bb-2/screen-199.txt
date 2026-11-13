@@ -1,0 +1,59 @@
+Écran 199 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Loop » [coupé] @ 100,182
+bouton « Pro Teil » [coupé, sélectionné] @ 243,182
+bouton « Song » [coupé] @ 387,182
+bouton « Über den Drums · 1 Takt » @ 228,260
+bouton « Über den ganzen Teil · 4 Takte » [sélectionné] @ 274,341
+texte « Steps von Teil D (jeder Teil hat seine eigenen). » @ 321,404
+texte « Glätten » @ 467,467
+bouton (pinceau) « Zeichnen » @ 142,467
+bouton (courbe) « Linie » [sélectionné] @ 321,467
+icône (loupe −) [désactivé] @ 580,467
+icône (loupe +) @ 688,467
+texte « ×1 » @ 634,467
+texte « Linie: Tippe auf den Anfang, dann aufs Ende (oder wisch von einem zum anderen); eine gerade Rampe verbindet sie. » @ 450,584
+texte « 18,0 kHz » @ 81,681
+texte « 849 Hz » @ 81,767
+texte « 40 Hz » @ 82,853
+texte « Schlag » @ 81,888
+texte « 1 » @ 134,888
+texte « 3 » @ 229,888
+texte « 5 » @ 319,888
+texte « 7 » @ 411,888
+texte « 9 » @ 503,888
+texte « 11 » @ 598,888
+texte « 13 » @ 692,888
+texte « 15 » @ 783,888
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,988
+bouton « ? » @ 362,988
+texte « Lautstärke: — » [coupé] @ 136,1027
+texte « Die Effekte Kapitel 13/16 · Erledigt · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

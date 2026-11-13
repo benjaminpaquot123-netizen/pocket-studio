@@ -1,0 +1,54 @@
+Écran 93 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+dessin [coupé] @ 450,303
+texte « Cutoff » [coupé] @ 432,303
+texte « 52 » [coupé] @ 840,301
+curseur [état « 52 », à 52 %] @ 450,354
+dessin @ 450,422
+texte « Morph » @ 432,422
+texte « 20 » @ 840,423
+curseur [état « 20 », à 20 %] @ 450,491
+dessin @ 450,559
+texte « Decay » @ 432,559
+texte « 35 » @ 840,560
+curseur [état « 35 », à 35 %] @ 450,628
+dessin @ 450,696
+texte « Farbe » @ 432,696
+texte « 50 » @ 840,697
+curseur [coupé, état « 50 », à 50 %] @ 450,754
+texte « Der Stab (Akkorde) Kapitel 6/16 · Schritt 1/2 · Pro » @ 366,814
+icône (liste) « Kapitel » @ 759,815
+icône ⌄ @ 843,815
+texte « Du bist dran: Erstell die Akkorde-Spur (Sound „Pluck“, Dub-Echo), dann schreib Takt 1: zwei f-Moll-Stabs auf den Offbeats (Steps 4 und 11). » @ 450,949
+texte « ▸ Warum? » @ 450,1047
+bouton ⊕ «   Akkorde-Spur erstellen » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

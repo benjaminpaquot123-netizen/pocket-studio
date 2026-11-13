@@ -1,0 +1,7 @@
+Écran 218 (900x1509)
+texte « Meinen Song teilen · Mein-Song-club-20261113-124812.m4a » @ 450,575
+bouton « WhatsApp » @ 450,664
+bouton « Messages » @ 450,736
+bouton « Gmail » @ 450,808
+bouton « Drive » @ 450,880
+bouton « Files » @ 450,952

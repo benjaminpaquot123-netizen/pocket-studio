@@ -1,0 +1,14 @@
+Écran 1 (900x1509)
+texte « BenStudio » @ 169,78
+texte « Was willst du machen? » @ 263,146
+bouton ✓ « Weiter Pro Mein erster Beat Loop von 1 Takt Gespeichert gerade eben » → @ 450,327
+bouton (étincelles) « Neuer Song Ein Stil mit einem Tippen oder „Mach mir einen Track“. » → @ 450,564
+bouton (dossier ouvert) « Meine Projekte Einen anderen Song öffnen, kopieren oder umbenennen. » → @ 450,757
+bouton (quatre vagues) « Remix Spurtrennung: Schlagzeug, Bass, Gesang und der Rest. » → @ 450,950
+bouton (grille de pads) « Pad Live NEU Spielbereite Pads, deine Sounds, Live-Effekte. Es klingt sofort. » → @ 450,1143
+bouton ★ ★ ★ « Challenges Hör dir einen Rhythmus an, spiel ihn auf den Pads nach: gewinn Sterne. » → [coupé] @ 450,1302
+bouton « ↓ 4 weitere » @ 770,1395
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

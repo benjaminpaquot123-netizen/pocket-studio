@@ -196,6 +196,9 @@ object Allowed {
         // Round 5 (scan r3): what the scan reads since it judges a cut down inside a row that scrolls sideways in a page that scrolls down.
         Rule("acid", "CUT « (\uD83D\uDD12|↑|↓|⌒) » drawn past its parent's edge \\(down", "looked at (phone411 en 1.3): the step's symbol is whole, only its fallback font's tall line box runs past the cell"),
         Rule("session|remix|live_pads_full|rhythm", "CUT « [^»]*\\[[^»]* » (ellipsized|lines dropped)", "the pseudo-language (+40 %) only: shortened with « … » or a hint's end, no real language does it"),
+        // Tour 6, lot 5 (docs/decisions/tour-6-langues2.md): Polish says « Syntezator » for « Synth » (R15, seat F b), one
+        // letter too wide for a strip's name in the 4-strip console of a 360 dp phone. Console.kt is in no lot's files.
+        Rule("mixer", "CUT « Syntezator » a word split over two lines", "the Polish word for « Synth » (R15) in the console's narrow strip, 360 dp: Console.kt's name box, listed for the next lot"),
     )
 
     fun matches(screen: String, f: LayoutScan.Finding): Boolean =

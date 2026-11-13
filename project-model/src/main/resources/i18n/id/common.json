@@ -1,7 +1,7 @@
 {
   "%s (vide)": "%s (kosong)",
   "Arrêter l'enregistrement": "Stop rekaman",
-  "Arrêter la prise et la garder": "Stop take dan simpan",
+  "Arrêter la prise et la garder": "Stop rekaman dan simpan",
   "Boucler la partie au lieu de jouer le morceau": "Loop bagian ini, bukan putar lagunya",
   "Changer de partie": "Ganti bagian",
   "Changer le tempo": "Ubah tempo",
@@ -44,7 +44,7 @@
   "activé": "aktif",
   "désactivé": "mati",
   "en boucle": "loop",
-  "mes. %1$d/%2$d": "bar %1$d/%2$d",
+  "mes. %1$d/%2$d": "birama %1$d/%2$d",
   "Partie : %s": "Bagian: %s",
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Bagian ini di-loop selama kamu edit. ⟳ Loop, di atas, untuk kembali ke lagu.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Di-loop (⟳ Loop). ▶ memutar bagian ini saja.",

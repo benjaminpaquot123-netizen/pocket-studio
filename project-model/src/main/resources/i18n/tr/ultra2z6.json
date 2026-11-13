@@ -11,7 +11,7 @@
   "Volume au max": "Sesi en yükseğe",
   "BPM": "BPM",
   "Tempo : %d battements par minute": "Tempo: dakikada %d vuruş",
-  "D'abord le modèle de séparation": "Önce ayırma modeli",
+  "D'abord le modèle de séparation": "Önce ayrıştırma modeli gerekli",
   "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Bir şarkıyı ayırmak için uygulama önce modelini indirir: %s, yalnızca bir kez.",
   "Tu es en Wi-Fi.": "Wi-Fi'desin.",
   "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi'de değilsin: bu %s mobil verinden gidecek.",

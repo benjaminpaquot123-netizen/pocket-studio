@@ -1,0 +1,32 @@
+2b34c2160 « vert: mode_step re-recorded at 130 % and on the tablet, the step on ea » : vert sans rouge du même test avant lui
+a2a6ec585 « vert: Prêt à partager says the remix's song runs past the song's end ( » : vert sans rouge du même test avant lui
+11c487081 « vert: the separated song's card has one clear button (exact label, scr » : vert sans rouge du même test avant lui
+411b2d512 « vert: « Retester les corrections » runs only the chosen steps of « Tou » : vert sans rouge du même test avant lui
+bc0e6f270 « vert: the bench's script tests ignore PS_REJEUX_DIR (replays of rejeux » : vert sans rouge du même test avant lui
+f0f6cea24 « vert: tab and volume words, jump up kept as TutoLot4Test pins it » : vert sans rouge du même test avant lui
+9321d239e « vert: soft-cell rule switched off until the journey test plays Doux » : vert sans rouge du même test avant lui
+924bf2165 « vert: splits undone until the journey test accepts a second notes step » : vert sans rouge du même test avant lui
+6ed6127bb « vert: une bande de pur bruit n'est pas dite entendue, le balayage pris » : vert sans rouge du même test avant lui
+1f41ed8ca « vert: a stroke cut short is its own undo step, cut by a bar's number » : vert sans rouge du même test avant lui
+10a935e88 « vert: one rule for the roll's hint, the bar first, then the rows » : vert sans rouge du même test avant lui
+10da0221c « vert: « Copier » done, the roll goes to the next note to write » : vert sans rouge du même test avant lui
+f786d2c89 « vert: the part made is told by its name, shown or not » : vert sans rouge du même test avant lui
+ce3835b57 « vert: a part that builds up is 4 bars long, a bar for each speed » : vert sans rouge du même test avant lui
+3932c3ff7 « vert: the song step no longer promises 8 bars a part » : vert sans rouge du même test avant lui
+34cf6f18d « vert: the closed hats' step says which sixteenths (techno, acidcore) » : vert sans rouge du même test avant lui
+16b3766e0 « vert: the tempo step says the tempo a new project starts at » : vert sans rouge du même test avant lui
+3c44d1b6b « vert: a bar fits the phone's width, and the lowest rows come above the » : vert sans rouge du même test avant lui
+96a7a7026 « rouge: NavScreenshotTest.modeStep asserts the step before its capture » : rouge sans vert du même test après lui
+ade1a1740 « rouge: sheets scroll lying down: the test measures a node's own box » : rouge sans vert du même test après lui
+9b8fc4fd4 « rouge: the essai eclair on a first install fails as on Benjamin's phon » : rouge sans vert du même test après lui
+a080ed62a « rouge: empreinte par octave d'un bruit rose filtré » : rouge sans vert du même test après lui
+2140ae6f4 « rouge: the roll's hint leads to the next dotted note, every tutorial s » : rouge sans vert du même test après lui
+1dfac347e « rouge: after « Copier » the roll shows the next note to write (seat H  » : rouge sans vert du même test après lui
+691e90784 « rouge: a part made while the song plays is told with its own bricks (s » : rouge sans vert du même test après lui
+8b5925516 « rouge: a part that builds up « mesure après mesure » is 4 bars long » : rouge sans vert du même test après lui
+7c41f6ffa « rouge: the song step promises no length the parts do not have » : rouge sans vert du même test après lui
+58b298dd6 « rouge: a pad said « en doubles croches » accepts every sixteenth (seat » : rouge sans vert du même test après lui
+358f35fbe « rouge: the tempo step says the tempo the project has (seats D a, H a) » : rouge sans vert du même test après lui
+ddfda4ca3 « rouge: on the real roll, following the line reaches every dotted note » : rouge sans vert du même test après lui
+ea294587a « Merge team tutogrille of tour-6 (audit ultra) » : fusion sans trace du portail
+chantier : 31 écarts

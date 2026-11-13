@@ -14,21 +14,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 /**
  * Fades the side of a row where more content waits (off the start or the end), instead of a hard
  * cut through a word: it says "this scrolls" the way polished apps do. Put it before the scroll.
+ * Tour 6, lot 5 (R19, « la ligne G du Live » in Arabic): a row starts on the right in a right-to-left
+ * language, so what waits further on is on the LEFT there; the fade was drawn on the right, over the
+ * row's first item, and the far side was cut bare.
  */
 fun Modifier.fadingEdges(state: ScrollableState, fade: Dp = 28.dp): Modifier = this
     .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
     .drawWithContent {
         drawContent()
         val f = fade.toPx().coerceAtMost(size.width / 3)
-        if (state.canScrollBackward) {
+        val rtl = layoutDirection == LayoutDirection.Rtl
+        val left = if (rtl) state.canScrollForward else state.canScrollBackward
+        val right = if (rtl) state.canScrollBackward else state.canScrollForward
+        if (left) {
             drawRect(Brush.horizontalGradient(listOf(Color.Transparent, Color.Black), startX = 0f, endX = f), size = Size(f, size.height), blendMode = BlendMode.DstIn)
         }
-        if (state.canScrollForward) {
+        if (right) {
             drawRect(
                 Brush.horizontalGradient(listOf(Color.Black, Color.Transparent), startX = size.width - f, endX = size.width),
                 topLeft = Offset(size.width - f, 0f), size = Size(f, size.height), blendMode = BlendMode.DstIn,

@@ -251,6 +251,7 @@ def main():
         replays_keep_their_selftest(d)
         fusion_forged(d)
         toy_batch_is_its_own(d)
+        ci_state_reads_every_job(d)
         portal_queue(d)
         portal_traces(d)
         zone_report(d)
@@ -2510,6 +2511,47 @@ def review_rows(d):
             check((r.returncode == 0) == want, f"the real review {name} keeps its answer ({want}):\n" + r.stdout)
 
 
+CI_FAKE_GH = """#!/usr/bin/env bash
+# Stand-in for « gh api <url> --jq … »: the lines jq would print, from the toy's files.
+case "$2" in
+  *actions/runs\\?head_sha=*) cat "$PS_TOY_CI/runs.tsv" ;;
+  *actions/runs/*/jobs) cat "$PS_TOY_CI/jobs.tsv" ;;
+  *) exit 1 ;;
+esac
+"""
+
+
+def ci_state_reads_every_job(d):
+    """Lot « ci3 » (review, G1): the CI's long job is now three (tests and screenshots, sound benches, release APK) and
+    none waits for the engine: « ci_build » is the state of EVERY job of the CI workflow but the emulator's and the
+    publication, never of the one job called « Build … »."""
+    toy = os.path.join(d, "ci-etat")
+    write(os.path.join(toy, "bin", "gh"), CI_FAKE_GH)
+    os.chmod(os.path.join(toy, "bin", "gh"), 0o755)
+    write(os.path.join(toy, "runs.tsv"), "1\tCI\tcompleted\tfailure\n")
+    env = dict(os.environ, PATH=os.path.join(toy, "bin") + os.pathsep + os.environ["PATH"], PS_TOY_CI=toy)
+    names = ["Quick checks (seconds)", "Engine tests (Linux)", "Separation tests (Linux)", "Build, unit tests, screenshots",
+             "Sound benches (song, live listening, real projects, soak)", "Release APK (unsigned)", "Emulator smoke test", "Publish APK"]
+
+    def state(**other):
+        rows = []
+        for n in names:
+            status, conclusion = other.get(n.split()[0].lower().strip(","), ("completed", "success"))
+            rows.append(f"{n}\t{status}\t{conclusion}")
+        write(os.path.join(toy, "jobs.tsv"), "\n".join(rows) + "\n")
+        out = subprocess.run(["bash", os.path.join(HERE, "ci-etat.sh")], env=env, capture_output=True, text=True).stdout
+        return dict(l.split("\t", 1) for l in out.splitlines() if l.startswith("ci_"))
+
+    check(state() == {"ci_build": "vert", "ci_emulateur": "vert"}, "every job green: green")
+    for red in ("sound", "release", "engine", "separation", "quick", "build"):
+        got = state(**{red: ("completed", "failure")})
+        check(got.get("ci_build") == "rouge" and got.get("ci_emulateur") == "vert", f"a red « {red} » job makes ci_build red: {got}")
+    got = state(sound=("in_progress", ""))
+    check(got.get("ci_build") == "en cours", f"a job still running: ci_build is not green: {got}")
+    got = state(sound=("in_progress", ""), release=("completed", "failure"))
+    check(got.get("ci_build") == "rouge", f"red wins over running: {got}")
+    got = state(emulator=("completed", "failure"), publish=("completed", "skipped"))
+    check(got == {"ci_build": "vert", "ci_emulateur": "rouge"}, f"the emulator's job is ci_emulateur's, the skipped publication nobody's: {got}")
 QUEUE_PORTAL = """#!/usr/bin/env bash
 # Stand-in for the portal: says what it was given, refuses the zone « refused », merges the others.
 tour="$1"; zone="$2"

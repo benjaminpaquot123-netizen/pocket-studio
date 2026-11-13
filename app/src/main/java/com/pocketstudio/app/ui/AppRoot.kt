@@ -2139,8 +2139,6 @@ fun AppRoot() {
         }
     }
     val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
-        // The Guide leads to a screen: its panel, when it stays open, is at home there (tour 6, G1).
-        guideOpenedOn = null
         when (g) {
             is com.pocketstudio.app.guide.GuideGo.Tab -> {
                 g.audioPage?.let { audioPage = it }
@@ -2187,6 +2185,10 @@ fun AppRoot() {
                 guideSpot = listOf("record_start")
             }
         }
+        // The Guide led here: its panel, when it stays open, is at home on this screen (tour 6, G1). Written, not cleared:
+        // a choice that changes no screen (« Écouter », the tempo) left it empty, and the next screen the user went to
+        // became the panel's home (review of the lot).
+        guideOpenedOn = if (guideOpen) tab to toolPage else null
     }
     LaunchedEffect(guideVm) {
         guideVm.opens.collect { o -> guideGo(com.pocketstudio.app.guide.GuideNav.go(o, rhythmVm.project.value, SettingsStore.state.value.simpleMode)) }
@@ -3748,7 +3750,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     com.pocketstudio.app.settings.HelpActions(
                                         openGuide = { showGuide = true },
                                         // G5: the Guide took over « Prochaine étape »: its panel, on the song.
-                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine; guideOpenedOn = null },
+                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine; guideOpenedOn = AppTab.Morceau to null },
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },

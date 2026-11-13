@@ -1,0 +1,8 @@
+Écran 224 (900x1509)
+texte « Fertig » @ 121,584
+texte « Fertig: Mein-Song-club-20261112-220741.wav, eine Kopie liegt auch in Musik › BenStudio. » @ 450,676
+texte « −8,0 LUFS integriert · Spitze −4,2 dBTP » @ 301,741
+texte « WAV, 48 kHz, 24 Bit · 3 min 53 s » @ 258,783
+texte « Ziel: Club · −8 LUFS » @ 186,825
+texte « Meine Dateien ansehen » @ 555,915
+texte « OK » @ 790,915

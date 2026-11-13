@@ -40,7 +40,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Fa ».",
-          "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa » : la 808 tombe sur Fa1, sous le kick.",
+          "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa » : la 808 tombe sur Fa1, sous le kick. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -279,7 +279,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "listen": "song",
@@ -303,7 +304,7 @@
       "steps": [
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » dans la toute première case.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -342,7 +343,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (les voix). Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (les voix). Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu « Mélodie » : les kicks et la 808 devant, les voix juste derrière.",
           "check": "changed:volumes:lead",
           "spot": "mixer.strip",

@@ -1,0 +1,51 @@
+Écran 42 (540x1170)
+icône (dossier ouvert) ✓ « Pop सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 116  टेम्पो » @ 76,123
+icône « मुखड़ा बार 21/100 » ▾ @ 248,123
+bouton « ? » @ 495,123
+icône ▶ « B · अंतरा × 1  ·  8 बार » [coupé] @ 162,180
+icône − [désactivé, coupé] @ 318,174
+icône + [coupé] @ 390,174
+icône ⋮ [coupé] @ 462,174
+icône ▶ « E · प्री-कोरस × 1  ·  4 बार » @ 162,253
+icône − [désactivé] @ 318,253
+icône + @ 390,253
+icône ⋮ @ 462,253
+icône ▶ « F · प्री-कोरस 2 × 1  ·  4 बार » @ 162,370
+icône − [désactivé] @ 318,370
+icône + @ 390,370
+icône ⋮ @ 462,370
+icône ▶ « C · मुखड़ा 1 बार  ·  मिक्स  ·  बज रहा है » @ 162,505
+icône − [désactivé] @ 318,505
+icône + [désactivé] @ 390,505
+icône ⋮ @ 462,505
+icône ▶ « C · मुखड़ा 6 बार  ·  मिक्स  ·  अगला » @ 162,637
+icône − [désactivé] @ 318,637
+icône + [désactivé] @ 390,637
+icône ⋮ @ 462,637
+icône ▶ « C · मुखड़ा 1 बार  ·  मिक्स » @ 162,751
+icône − [désactivé] @ 318,751
+icône + [désactivé] @ 390,751
+icône ⋮ @ 462,751
+icône ▶ « G · मुखड़ा 2 7 बार » [coupé] @ 162,822
+icône − [désactivé, coupé] @ 318,828
+icône + [désactivé, coupé] @ 390,828
+icône ⋮ [coupé] @ 462,828
+bouton (boussole) « गाइड  · Kick (“बूम”) 19 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » [désactivé] @ 88,951
+bouton ■ « गाना » @ 211,951
+texte « 116 टेम्पो » @ 335,951
+icône ⋮ « और » @ 458,951
+onglet (lignes et note) « मेरा गाना » [sélectionné] @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

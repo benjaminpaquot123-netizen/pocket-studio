@@ -1,0 +1,50 @@
+Écran 54 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ■ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône (flèches en boucle) « B battuta 1/1 » ▾ @ 275,123
+bouton (flèches en boucle) « Loop » [allumé, état « attivo »] @ 743,123
+bouton « ? » @ 855,123
+bouton « ■ Ferma » [sélectionné] @ 468,210
+bouton « ↺ Tutto a zero » @ 725,210
+texte « Mix » @ 51,210
+texte «  · Il mio progetto 1 » @ 202,210
+bouton « ? » @ 341,210
+bouton « ? » @ 571,210
+texte « Tocca a te: alza ciò che deve sentirsi, abbassa ciò che disturba. Tocca ▶ per ascoltare una traccia da sola. » @ 453,311
+bouton « Batteria ▸ » [état « chiuso »] @ 75,421
+curseur [état « Normale », à 80 %] @ 84,604
+texte « Normale » @ 84,765
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 61,832
+bouton ▶ @ 121,819
+texte « Acid 303 » @ 216,421
+curseur [état « Normale », à 80 %] @ 216,604
+texte « Normale » @ 216,765
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 202,832
+bouton ▶ @ 253,819
+texte « Synth » @ 339,407
+curseur [état « −6 », à 57 %] @ 339,576
+texte « −6 » @ 339,737
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 325,804
+bouton ▶ @ 376,791
+texte « Uscita » @ 468,407
+curseur [état « −6 », à 60 %] @ 468,576
+texte « Bene » @ 468,753
+texte « Nessun consiglio per ora: fidati delle orecchie. » @ 342,934
+bouton (boussole) « Guida  · Concatena le tue parti 44 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » [sélectionné] @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

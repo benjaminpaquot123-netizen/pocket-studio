@@ -1,0 +1,5 @@
+Écran 39 (588x1278)
+texte « Hangi projeye? » @ 176,420
+icône (dossier ouvert) « Pop açık proje · 116 BPM » @ 294,535
+icône (dossier ouvert) « İlk ritmim 120 BPM · zaten bir şarkısı var: değiştirilecek » @ 294,693
+icône ← «  Geri » @ 488,847

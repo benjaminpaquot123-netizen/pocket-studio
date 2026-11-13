@@ -1,0 +1,57 @@
+Écran 121 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A Takt 7/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+texte « Teil: A » @ 62,273
+bouton « Akkorde · Takt 4/8 Alle gestrichelten Noten sind gesetzt » [coupé] @ 450,315
+texte « Takt » @ 84,355
+bouton « 4 » @ 462,363
+bouton « 5 » [coupé] @ 830,363
+texte « E♭ » @ 84,417
+texte « D » @ 84,459
+texte « D♭ » @ 84,501
+texte « C4 » @ 84,543
+texte « B » @ 84,585
+texte « B♭ » @ 84,627
+texte « A » @ 84,669
+texte « A♭ » @ 84,711
+texte « G » @ 84,753
+texte « G♭ » @ 84,795
+texte « F » @ 84,837
+texte « E » @ 84,877
+dessin [coupé] @ 492,646
+image (chapeau de diplômé) @ 37,946
+texte « Der Stab (Akkorde) Kapitel 6/16 · Schritt 1/1 · Pro » @ 400,946
+icône (liste) @ 771,947
+icône ⌄ @ 843,947
+image (coupe) @ 57,1081
+texte « Bravo, Kapitel geschafft! » @ 259,1044
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Das Riff“. » @ 475,1101
+bouton « Nächstes Kapitel   » → @ 450,1197
+icône ← @ 57,1281
+bouton ■ «  Stoppen » @ 251,1281
+bouton ▶ «  Beispiel anhören » @ 558,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

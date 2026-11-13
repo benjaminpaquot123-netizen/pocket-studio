@@ -1,0 +1,68 @@
+Écran 44 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Linea di basso » @ 129,204
+bouton « Synth Synth » ⋮ @ 337,204
+icône ♪ @ 463,205
+bouton + «  Traccia » @ 611,205
+icône « Parte: A » ▾ @ 89,283
+icône (poubelle et traits) «  Svuota » [désactivé] @ 798,373
+bouton « Tastiera » [sélectionné] @ 97,373
+bouton « Note » @ 243,373
+bouton ● «  Registra la mia melodia » @ 373,466
+icône (chronomètre) «  1 » @ 783,466
+bouton « ? » @ 860,466
+icône − @ 634,583
+icône + @ 822,583
+texte « Ottava 3 » @ 728,583
+titre « TASTIERA » [état « Espanso »] @ 129,583
+bouton « Do » @ 71,773
+bouton @ 100,718
+bouton @ 129,773
+bouton @ 158,718
+bouton @ 187,773
+bouton @ 245,773
+bouton @ 274,718
+bouton @ 303,773
+bouton @ 333,718
+bouton @ 361,773
+bouton @ 391,718
+bouton @ 419,773
+bouton « Do » @ 477,773
+bouton @ 508,718
+bouton @ 535,773
+bouton @ 566,718
+bouton @ 593,773
+bouton @ 651,773
+bouton @ 682,718
+bouton @ 709,773
+bouton @ 741,718
+bouton @ 767,773
+bouton @ 799,718
+bouton @ 825,773
+bouton « Accordi » @ 119,964
+bouton « Pad » @ 255,964
+bouton « 2 ottave » [sélectionné] @ 122,1048
+bouton « 1 ottava » @ 288,1048
+bouton « Scala » @ 436,1048
+texte « Il suono della traccia (lo stesso per tutte le sue note) » @ 338,1147
+bouton (boussole) « Guida  · Aggiungi una melodia 35 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

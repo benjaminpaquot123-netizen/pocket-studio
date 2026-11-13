@@ -1489,3 +1489,4 @@
 - 2026-11-13 · lot « morceauexport » (tour-6) : 22 décision(s) dans `docs/decisions/tour-6-morceauexport.md`
 - 2026-11-13 · lot « cablage » (tour-6) : 3 décision(s) dans `docs/decisions/tour-6-cablage.md`
 - 2026-11-13 · lot « ecoute » (tour-5) : 40 décision(s) dans `docs/decisions/tour-5-ecoute.md`
+- 2026-11-13 · lot « tutoconsignes » (tour-6) : 50 décision(s) dans `docs/decisions/tour-6-tutoconsignes.md`

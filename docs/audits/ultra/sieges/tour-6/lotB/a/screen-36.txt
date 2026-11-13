@@ -1,0 +1,41 @@
+Écran 36 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Línea de tiempo » [désactivé] @ 129,192
+onglet « Partes » [sélectionné] @ 290,192
+titre « LA CANCIÓN » [état « Desplegado »] @ 152,285
+bouton « ? » @ 240,285
+texte « Tu canción está vacía: añade tus partes en el orden en que suenan (Intro, Estrofa, Estribillo…). » @ 294,346
+texte « Añadir: » @ 77,400
+bouton « + Nueva parte (copia de A) » @ 331,463
+bouton « + A » @ 96,463
+bouton « + Nueva parte vacía » @ 180,544
+bouton (barres de son) «   Lo que suena en la canción » @ 294,628
+titre « AJUSTES DE LA CANCIÓN » [état « Desplegado »] @ 294,694
+bouton « detenerse » [sélectionné] @ 202,760
+bouton « volver a empezar » @ 399,760
+texte « Al final: » @ 78,760
+bouton « seguir la canción » [sélectionné] @ 412,844
+texte « Durante la reproducción: » @ 165,844
+bouton « quedarme en mi parte » @ 178,916
+bouton (boussole) « Guía  · Pon un ritmo 5 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 70,1062
+icône ↷ « Rehacer » [désactivé] @ 176,1062
+bouton ▶ « la canción » @ 285,1062
+texte « 120 Tempo » @ 401,1062
+icône (trois points reliés) « Compartir » @ 515,1062
+onglet (ligne brisée et points) « Estructura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sonidos » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Más » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

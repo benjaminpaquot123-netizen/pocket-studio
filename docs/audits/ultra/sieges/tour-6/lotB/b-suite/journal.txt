@@ -1,0 +1,1133 @@
+#0 SIEGE lang=de device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=300 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.9 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 50c4505b79 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 770 1395
+#1 DOIGT scroll_hint « ↓ 4 weitere »
+#2 ROUTE launch | MODE pro | EMPREINTE 1b13f722c7 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « BenStudio » 1.59:1 (needs 3.0:1, 18 sp)
+#2 > glisse 450 1300 450 400
+#2 DOIGT launch_challenges « Challenges: Hör dir einen Rhythmus an, s »
+#3 ROUTE launch | MODE pro | EMPREINTE eda919101c | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 450 1226
+#3 DOIGT launch_learn « Ich lerne »
+#4 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 08b03a6079 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 670 401
+#4 DOIGT mode_card_pro « Pro »
+#5 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE a8b6eef3ac | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 450 329
+#5 DOIGT tuto_style_techno « Techno »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE b9a16732b6 | project=p-587747eb tuto=techno/Pro active=true step=ref done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#6 > touche 450 1123
+#6 DOIGT tuto_listen «  Beispiel anhören »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 5cc8472b1e | project=p-587747eb tuto=techno/Pro active=true step=ref done=0 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 7 s).
+#7 LAYOUT OVERLAP « ▸ Warum? » over the touchable « Weiterlesen » (87 x 27 dp)
+#7 > touche 798 1207
+#7 DOIGT tuto_next « Weiter  »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 2a2ff06908 | project=p-587747eb tuto=techno/Pro active=true step=tempo done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Kit Techno laden (4 MB) » over the touchable « Weiterlesen » (76 x 27 dp)
+#8 > touche 450 1042
+#8 DOIGT tuto_do «   Ich mach's »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5f9daaf48f | project=p-587747eb tuto=techno/Pro active=true step=tempo done=0 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (82 x 32 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (9 x 18 dp)
+#9 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (90 x 27 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#9 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (50 x 31 dp)
+#9 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#9 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (17 x 31 dp)
+#9 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (26 x 31 dp)
+#9 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (37 x 30 dp)
+#9 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (138 x 31 dp)
+#9 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (364 x 24 dp)
+#9 > touche 163 1083
+#9 DOIGT tempo_key_1 « 1 »
+#10 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE bb11900bc9 | project=p-587747eb tuto=techno/Pro active=true step=tempo done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
+#10 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (196 x 27 dp)
+#10 > touche 737 1083
+#10 DOIGT tempo_key_3 « 3 »
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5db10e02ee | project=p-587747eb tuto=techno/Pro active=true step=tempo done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 13 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#11 > touche 450 1083
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 38c7bfbfe4 | project=p-587747eb tuto=techno/Pro active=true step=tempo done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 132 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#12 > touche 737 1344
+#12 DOIGT tempo_key_ok « OK »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 2c510db382 | project=p-587747eb tuto=techno/Pro active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1196
+#13 DOIGT tuto_next_folded « Geschafft »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 1f5e441787 | project=p-587747eb tuto=techno/Pro active=true step=key done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over « Weiterlesen » (86 x 11 dp)
+#14 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over the touchable « Weiterlesen » (528 x 19 dp)
+#14 > touche 450 1042
+#14 DOIGT tuto_do «   Ich mach's »
+#15 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 3c0c6d177d | project=p-587747eb tuto=techno/Pro active=true step=key done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (213 x 32 dp)
+#15 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (217 x 27 dp)
+#15 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (79 x 27 dp)
+#15 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (34 x 31 dp)
+#15 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (39 x 31 dp)
+#15 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (73 x 31 dp)
+#15 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (103 x 31 dp)
+#15 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (97 x 31 dp)
+#15 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (52 x 31 dp)
+#15 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (99 x 31 dp)
+#15 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (158 x 31 dp)
+#15 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (85 x 27 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (26 x 31 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (19 x 31 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (23 x 31 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (21 x 31 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (14 x 31 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « Tabelle schließen » (20 x 31 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (13 x 31 dp)
+#15 > touche 239 1213
+#15 DOIGT tuto_scale_Phrygian « Phrygisch »
+#16 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 20fccabd53 | project=p-587747eb tuto=techno/Pro active=true step=key done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonart des Tracks: C · Phrygisch » over the touchable « Tabelle schließen » (289 x 27 dp)
+#16 > touche 498 1356
+#16 DOIGT tuto_root_5 « F »
+#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c30b7efa73 | project=p-587747eb tuto=techno/Pro active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Tonart des Tracks: F · Phrygisch » over the touchable « Tabelle schließen » (287 x 27 dp)
+#17 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (426 x 31 dp)
+#17 LAYOUT OVERLAP « Zurück zum Tutorial » over the touchable « Tabelle schließen » (184 x 27 dp)
+#17 > touche 450 1434
+#17 DOIGT tuto_key_continue « Zurück zum Tutorial »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 09d582f557 | project=p-587747eb tuto=techno/Pro active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1196
+#18 DOIGT tuto_next_folded « Geschafft »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 32675069da | project=p-587747eb tuto=techno/Pro active=true step=swing done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Metronom » 1.41:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Einzähler » 1.50:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ? » 1.72:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Effekte » 1.45:1 (needs 4.5:1, 14 sp)
+#19 > glisse 63 442 100 442
+#19 DOIGT dans:rhythm_swing « Swing »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 32675069da | project=p-587747eb tuto=techno/Pro active=true step=swing done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 > glisse 100 442 155 442
+#20 DOIGT dans:rhythm_swing « Swing »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 65ae84961c | project=p-587747eb tuto=techno/Pro active=true step=swing done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 110 442
+#21 DOIGT dans:rhythm_swing « Swing »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 65ae84961c | project=p-587747eb tuto=techno/Pro active=true step=swing done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 102 442
+#22 DOIGT dans:rhythm_swing « Swing »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 65ae84961c | project=p-587747eb tuto=techno/Pro active=true step=swing done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 RIEN NE CHANGE (3 écrans identiques)
+#23 > touche 450 932
+#23 DOIGT tuto_kit_download « Kit Techno laden (4 MB) »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 87d7d065b9 | project=p-587747eb tuto=techno/Pro active=true step=swing done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1123
+#24 DOIGT tuto_next_big « Nächstes Kapitel   »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 6f983d62bd | project=p-587747eb tuto=techno/Pro active=true step=ready done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1123
+#25 DOIGT tuto_mark «   Verstanden »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 9772a5fbda | project=p-587747eb tuto=techno/Pro active=true step=kick_hear done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « Pack auf die nächsten Pads: » 1.22:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT CONTRAST « .zip » 1.32:1 (needs 4.5:1, 14 sp)
+#26 > touche 450 1123
+#26 DOIGT tuto_listen «  Beispiel anhören »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 24479e8d75 | project=p-587747eb tuto=techno/Pro active=true step=kick_hear done=4 playing=false
+#27 SON Son : l'exemple du tuto joue (encore 3 s).
+#27 > touche 798 1207
+#27 DOIGT tuto_next « Weiter  »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE c396d112ff | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1042
+#28 DOIGT tuto_do «   Ich mach's »
+#29 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 90 385
+#29 DOIGT rien
+#30 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 500 385
+#30 DOIGT rien
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE e86ac44e6a | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Du bist dran: Tippe beim Pad „Studio-Kick“ auf die gestrichelten Kästchen: Four-on-the-Floor, eine Kick pro Schlag. » ellipsized (« … »)
+#31 > touche 90 466
+#31 DOIGT step_8 « Step 9 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 3dce629c47 | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 500 466
+#32 DOIGT step_12 « Step 13 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 9c1b038083 | project=p-587747eb tuto=techno/Pro active=true step=kick_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 450 1196
+#33 DOIGT tuto_next_folded « Geschafft »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 49eae05d0c | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 450 1042
+#34 DOIGT tuto_do «   Ich mach's »
+#35 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 90 385
+#35 DOIGT rien
+#36 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 500 385
+#36 DOIGT rien
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE ac6ea4c61b | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Du bist dran: der Rumble auf jeden Schlag: eine zweite, lange Kick, in Reverb getaucht und gesättigt, unter 200 Hz gefiltert, die das Pumpen bei jeder Kick absenkt. » ellipsized (« … »)
+#37 > touche 90 466
+#37 DOIGT step_8 « Step 9 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE a84b71be6e | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 500 466
+#38 DOIGT step_12 « Step 13 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE bb21a2562a | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 450 1196
+#39 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 82ce471e09 | project=p-587747eb tuto=techno/Pro active=true step=rumble_do done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 450 1095
+#40 DOIGT tuto_next_big « Nächstes Kapitel   »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE a5c33538c9 | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Noch 3 gestrichelte Kästchen hier » 2.84:1 (needs 3.0:1, 14 sp)
+#41 > touche 450 1042
+#41 DOIGT tuto_do «   Ich mach's »
+#42 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 500 385
+#42 DOIGT rien
+#43 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 500 466
+#43 DOIGT rien
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 425a230d41 | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 809 466
+#44 DOIGT step_15 « Step 16 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE a5b4b25b0e | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#45 SON Son : rien ne joue.
+#45 > appui-long 809 461
+#45 DOIGT step_15 « Step 16 »
+#46 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 45f853396c | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 615 684
+#46 DOIGT roll_force_2 « Sanft »
+#47 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE ebf1e2cead | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 804 553
+#47 DOIGT roll_close
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE a5b4b25b0e | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 450 1196
+#48 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 1886177909 | project=p-587747eb tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 450 1095
+#49 DOIGT tuto_next_big « Nächstes Kapitel   »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 50e690aa96 | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 450 1042
+#50 DOIGT tuto_do «   Ich mach's »
+#51 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 385
+#51 DOIGT rien
+#52 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 706 385
+#52 DOIGT rien
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE f9842e2a9a | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 466
+#53 DOIGT step_10 « Step 11 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 0e866f61dd | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 706 466
+#54 DOIGT step_14 « Step 15 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE d11f49dca3 | project=p-587747eb tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 1196
+#55 DOIGT tuto_next_folded « Geschafft »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE ddcfcc15f7 | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Noch 12 gestrichelte Kästchen hier » 2.84:1 (needs 3.0:1, 14 sp)
+#56 > touche 450 1042
+#56 DOIGT tuto_do «   Ich mach's »
+#57 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 > glisse 90 385 809 385
+#57 DOIGT rien
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE b0b868ca3f | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#58 SON Son : rien ne joue.
+#58 > glisse 90 466 192 466
+#58 DOIGT step_8 « Step 9 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 9b52952c63 | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#59 SON Son : rien ne joue.
+#59 > glisse 397 466 603 466
+#59 DOIGT step_11 « Step 12 »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 3fa6fa0c51 | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 809 466
+#60 DOIGT step_15 « Step 16 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE d84ad3e0be | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 294 385
+#61 DOIGT step_2 « Step 3 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 07aa477c2b | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 706 385
+#62 DOIGT step_6 « Step 7 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE ffca8e2514 | project=p-587747eb tuto=techno/Pro active=true step=hat_do done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 450 1196
+#63 DOIGT tuto_next_folded « Geschafft »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 593b4f3fe7 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « Noch 4 gestrichelte Kästchen hier » 2.84:1 (needs 3.0:1, 14 sp)
+#64 > touche 450 1042
+#64 DOIGT tuto_do «   Ich mach's »
+#65 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 397 385
+#65 DOIGT rien
+#66 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 706 385
+#66 DOIGT rien
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 59d2dbb626 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 294 466
+#67 DOIGT step_10 « Step 11 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE 29f406a070 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 603 466
+#68 DOIGT step_13 « Step 14 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 3ebd242155 | project=p-587747eb tuto=techno/Pro active=true step=perc_do done=10 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1196
+#69 DOIGT tuto_next_folded « Geschafft »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 1217d2b286 | project=p-587747eb tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 450 1042
+#70 DOIGT tuto_do «   Ich mach's »
+#71 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 90 385
+#71 DOIGT rien
+#72 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 246 636
+#72 DOIGT rien
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 3cad432c18 | project=p-587747eb tuto=techno/Pro active=true step=ride_do done=11 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « 1/2 » 4.01:1 (needs 4.5:1, 14 sp)
+#73 > touche 450 1196
+#73 DOIGT tuto_next_folded « Geschafft »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 2008ef10f2 | project=p-587747eb tuto=techno/Pro active=true step=drums_hear done=11 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 450 1042
+#74 DOIGT tuto_play_mine «   Dein Ergebnis anhören »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 8133195afe | project=p-587747eb tuto=techno/Pro active=true step=drums_hear done=11 playing=true
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 798 1207
+#75 DOIGT tuto_next « Weiter  »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 77bb86f6dd | project=p-587747eb tuto=techno/Pro active=true step=bass_hear done=11 playing=true
+#76 SON Son : la musique du projet joue en boucle.
+#76 > touche 798 1207
+#76 DOIGT tuto_next « Weiter  »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE fce7121b4b | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#77 SON Son : la musique du projet joue en boucle.
+#77 > touche 450 1042
+#77 DOIGT tuto_need «   Bass-Spur erstellen »
+#78 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cc1b261ed3 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#78 SON Son : la musique du projet joue en boucle.
+#78 LAYOUT CUT « Du bist dran: Erstell die Bass-Spur (Sound „Analoger Bass“, mit schon gesetztem Pumpen). Takt 1 in der Piano Roll: zwei Sechzehntel zwischen jeder Kick, alle auf F. „Auf die nächsten Takte kopieren“, dann Takt 4: G♭ (die kleine Sekunde) und das F eine Oktave höher, um die Phrase abzuschließen. „Kopieren“. » ellipsized (« … »)
+#78 > touche 193 850
+#78 DOIGT rien
+#79 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 778f63a6f1 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#79 SON Son : la musique du projet joue en boucle.
+#79 > touche 262 850
+#79 DOIGT rien
+#80 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8bc1942536 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#80 SON Son : la musique du projet joue en boucle.
+#80 > touche 373 850
+#80 DOIGT rien
+#81 ROUTE synth/tab_Sons | MODE pro | EMPREINTE edb20105e8 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 442 850
+#81 DOIGT rien
+#82 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8ca1438ddb | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#82 SON Son : la musique du projet joue en boucle.
+#82 > touche 553 850
+#82 DOIGT rien
+#83 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9da2aa397c | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#83 SON Son : la musique du projet joue en boucle.
+#83 > touche 622 850
+#83 DOIGT rien
+#84 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 87bbc40ac9 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#84 SON Son : la musique du projet joue en boucle.
+#84 > touche 733 850
+#84 DOIGT rien
+#85 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 874dbfba38 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#85 SON Son : la musique du projet joue en boucle.
+#85 > touche 802 850
+#85 DOIGT rien
+#86 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7f84198ca9 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#86 SON Son : la musique du projet joue en boucle.
+#86 > touche 450 1270
+#86 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#87 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1c60ba1782 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#87 SON Son : la musique du projet joue en boucle.
+#87 > touche 450 432
+#87 DOIGT tuto_notes_left « Bass · Takt 1/8 »
+#88 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3902bd1ee3 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#88 SON Son : la musique du projet joue en boucle.
+#88 LAYOUT CONTRAST « Bass · Takt 4/8 » 3.91:1 (needs 4.5:1, 12 sp)
+#88 LAYOUT CONTRAST « Noch 8 gestrichelte Noten zu tippen » 4.25:1 (needs 4.5:1, 14 sp)
+#88 > touche 238 850
+#88 DOIGT rien
+#89 ROUTE synth/tab_Sons | MODE pro | EMPREINTE de0fe73b9f | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#89 SON Son : la musique du projet joue en boucle.
+#89 > touche 307 850
+#89 DOIGT rien
+#90 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a210dec4b7 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#90 SON Son : la musique du projet joue en boucle.
+#90 > touche 418 850
+#90 DOIGT rien
+#91 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 80bf43819e | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#91 SON Son : la musique du projet joue en boucle.
+#91 > touche 487 850
+#91 DOIGT rien
+#92 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c42ce3ec10 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#92 SON Son : la musique du projet joue en boucle.
+#92 > touche 598 850
+#92 DOIGT rien
+#93 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c726ae2293 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#93 SON Son : la musique du projet joue en boucle.
+#93 > touche 667 850
+#93 DOIGT rien
+#94 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8343bae368 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#94 SON Son : la musique du projet joue en boucle.
+#94 > touche 778 808
+#94 DOIGT rien
+#95 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 04991ab753 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#95 SON Son : la musique du projet joue en boucle.
+#95 > touche 450 432
+#95 DOIGT tuto_notes_left « Bass · Takt 4/8 »
+#96 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 703235bc2b | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#96 SON Son : la musique du projet joue en boucle.
+#96 LAYOUT CONTRAST « Noch 1 gestrichelte Note zu tippen » 4.25:1 (needs 4.5:1, 14 sp)
+#96 > touche 825 890
+#96 DOIGT rien
+#97 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 99de6bbdf8 | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=11 playing=true
+#97 SON Son : la musique du projet joue en boucle.
+#97 > touche 763 433
+#97 DOIGT tuto_roll_copy « Kopieren »
+#98 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b4f3429e1c | project=p-587747eb tuto=techno/Pro active=true step=bass_do done=12 playing=true
+#98 SON Son : la musique du projet joue en boucle.
+#98 > touche 450 1270
+#98 DOIGT tuto_next_folded « Geschafft »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 4c531e20ee | project=p-587747eb tuto=techno/Pro active=true step=bass_cutoff done=12 playing=true
+#99 SON Son : la musique du projet joue en boucle.
+#99 > touche 450 1116
+#99 DOIGT tuto_do «   Ich mach's »
+#100 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 64a1e237a5 | project=p-587747eb tuto=techno/Pro active=true step=bass_cutoff done=12 playing=true
+#100 SON Son : la musique du projet joue en boucle.
+#100 LAYOUT LABEL « plaits_knob_1 » long press without text nor description
+#100 LAYOUT LABEL « plaits_knob_2 » long press without text nor description
+#100 LAYOUT LABEL « plaits_knob_3 » long press without text nor description
+#100 LAYOUT LABEL « plaits_knob_4 » long press without text nor description
+#100 LAYOUT LABEL « plaits_knob_5 » long press without text nor description
+#100 LAYOUT LABEL « plaits_knob_6 » long press without text nor description
+#100 > glisse 337 611 560 611
+#100 DOIGT rien
+#101 ROUTE instrument_panel/tab_Sons | MODE pro | EMPREINTE d86efc51c2 | project=p-587747eb tuto=techno/Pro active=true step=bass_cutoff done=13 playing=true
+#101 SON Son : la musique du projet joue en boucle.
+#101 > touche 450 1270
+#101 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE 5e029f8086 | project=p-587747eb tuto=techno/Pro active=true step=bass_cutoff done=13 playing=true
+#102 SON Son : la musique du projet joue en boucle.
+#102 > touche 450 1197
+#102 DOIGT tuto_next_big « Nächstes Kapitel   »
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE f092b23ee7 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#103 SON Son : la musique du projet joue en boucle.
+#103 > touche 450 1116
+#103 DOIGT tuto_need «   Akkorde-Spur erstellen »
+#104 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6139c04796 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#104 SON Son : la musique du projet joue en boucle.
+#104 LAYOUT CUT « Du bist dran: Erstell die Akkorde-Spur (Sound „Pluck“, Dub-Echo). Zwei f-Moll-Stabs pro Takt auf den Offbeats (Steps 4 und 11): Takt 1, „Auf die nächsten Takte kopieren“, dann Takt 4 auf G♭-Dur (die ♭II), „Kopieren“. » ellipsized (« … »)
+#104 > touche 450 310
+#104 DOIGT tuto_notes_left « Akkorde · Takt 4/8 »
+#105 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e7a1323f5e | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#105 SON Son : la musique du projet joue en boucle.
+#105 LAYOUT CONTRAST « Noch 6 gestrichelte Noten zu tippen » 4.29:1 (needs 4.5:1, 14 sp)
+#105 > touche 238 543
+#105 DOIGT rien
+#106 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ffb566774 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#106 SON Son : la musique du projet joue en boucle.
+#106 > touche 238 711
+#106 DOIGT rien
+#107 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 115b8e1c7b | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#107 SON Son : la musique du projet joue en boucle.
+#107 > touche 238 837
+#107 DOIGT rien
+#108 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 08157507e7 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#108 SON Son : la musique du projet joue en boucle.
+#108 > touche 553 543
+#108 DOIGT rien
+#109 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ad32ced753 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#109 SON Son : la musique du projet joue en boucle.
+#109 > touche 553 711
+#109 DOIGT rien
+#110 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f63d45d9a1 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#110 SON Son : la musique du projet joue en boucle.
+#110 > touche 553 837
+#110 DOIGT rien
+#111 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 45426fbb47 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#111 SON Son : la musique du projet joue en boucle.
+#111 > touche 450 1270
+#111 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#112 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b12d96dae8 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#112 SON Son : la musique du projet joue en boucle.
+#112 > touche 450 315
+#112 DOIGT tuto_notes_left « Akkorde · Takt 1/8 »
+#113 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 915939dd09 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#113 SON Son : la musique du projet joue en boucle.
+#113 > touche 238 501
+#113 DOIGT rien
+#114 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2086bf0c27 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#114 SON Son : la musique du projet joue en boucle.
+#114 > touche 238 627
+#114 DOIGT rien
+#115 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e4caa93766 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#115 SON Son : la musique du projet joue en boucle.
+#115 > touche 238 795
+#115 DOIGT rien
+#116 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d5852aa147 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#116 SON Son : la musique du projet joue en boucle.
+#116 > touche 553 501
+#116 DOIGT rien
+#117 ROUTE synth/tab_Sons | MODE pro | EMPREINTE aa87646e80 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#117 SON Son : la musique du projet joue en boucle.
+#117 > touche 553 627
+#117 DOIGT rien
+#118 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ee0390281c | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#118 SON Son : la musique du projet joue en boucle.
+#118 > touche 553 795
+#118 DOIGT rien
+#119 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c7936f994f | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=13 playing=true
+#119 SON Son : la musique du projet joue en boucle.
+#119 > touche 763 312
+#119 DOIGT tuto_roll_copy « Kopieren »
+#120 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a8b90cfbc5 | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=14 playing=true
+#120 SON Son : la musique du projet joue en boucle.
+#120 > touche 450 1270
+#120 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE 732ac7beae | project=p-587747eb tuto=techno/Pro active=true step=pad_do done=14 playing=true
+#121 SON Son : la musique du projet joue en boucle.
+#121 > touche 450 1197
+#121 DOIGT tuto_next_big « Nächstes Kapitel   »
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE bf700d2cb5 | project=p-587747eb tuto=techno/Pro active=true step=lead_hear done=14 playing=true
+#122 SON Son : la musique du projet joue en boucle.
+#122 > touche 798 1281
+#122 DOIGT tuto_next « Weiter  »
+#123 ROUTE tab_Sons | MODE pro | EMPREINTE b5aa416fa1 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#123 SON Son : la musique du projet joue en boucle.
+#123 > touche 450 1116
+#123 DOIGT tuto_need «   Melodie-Spur erstellen »
+#124 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7479dd4e7d | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#124 SON Son : la musique du projet joue en boucle.
+#124 LAYOUT CUT « Du bist dran: Erstell die Melodie-Spur (Sound „Gefilterter Lead“) und schreib das 2-taktige Riff: tiefes F, hohes F, tiefes F, dann dasselbe, mit A♭ am Schluss. „Auf die nächsten Takte kopieren“. » ellipsized (« … »)
+#124 > touche 450 315
+#124 DOIGT tuto_notes_left « Melodie · Takt 4/8 »
+#125 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 21d2b285fd | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#125 SON Son : la musique du projet joue en boucle.
+#125 LAYOUT CONTRAST « Noch 7 gestrichelte Noten zu tippen » 4.29:1 (needs 4.5:1, 14 sp)
+#125 > touche 172 711
+#125 DOIGT rien
+#126 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cbb72f264c | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#126 SON Son : la musique du projet joue en boucle.
+#126 > touche 531 711
+#126 DOIGT rien
+#127 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1167e2154a | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#127 SON Son : la musique du projet joue en boucle.
+#127 > touche 450 315
+#127 DOIGT tuto_notes_left « Melodie · Takt 1/8 »
+#128 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 48c45b8f11 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#128 SON Son : la musique du projet joue en boucle.
+#128 LAYOUT CONTRAST « Noch 5 gestrichelte Noten zu tippen » 4.29:1 (needs 4.5:1, 14 sp)
+#128 > touche 351 751
+#128 DOIGT rien
+#129 ROUTE synth/tab_Sons | MODE pro | EMPREINTE efc7a04f6c | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#129 SON Son : la musique du projet joue en boucle.
+#129 > touche 450 315
+#129 DOIGT tuto_notes_left « Melodie · Takt 1/8 »
+#130 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 36c52f0bb3 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#130 SON Son : la musique du projet joue en boucle.
+#130 LAYOUT CONTRAST « Noch 4 gestrichelte Noten zu tippen » 4.29:1 (needs 4.5:1, 14 sp)
+#130 > touche 261 751
+#130 DOIGT rien
+#131 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0dce112b92 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#131 SON Son : la musique du projet joue en boucle.
+#131 > touche 620 751
+#131 DOIGT rien
+#132 ROUTE synth/tab_Sons | MODE pro | EMPREINTE fc8b3677fc | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#132 SON Son : la musique du projet joue en boucle.
+#132 > touche 800 625
+#132 DOIGT rien
+#133 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 604658eea9 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#133 SON Son : la musique du projet joue en boucle.
+#133 > touche 450 315
+#133 DOIGT tuto_notes_left « Melodie · Takt 2/8 »
+#134 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 61ddd6d2ca | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#134 SON Son : la musique du projet joue en boucle.
+#134 LAYOUT CONTRAST « Noch 1 gestrichelte Note zu tippen » 4.29:1 (needs 4.5:1, 14 sp)
+#134 > touche 440 751
+#134 DOIGT rien
+#135 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d3741b2a4a | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=14 playing=true
+#135 SON Son : la musique du projet joue en boucle.
+#135 > touche 450 1270
+#135 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#136 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 28954bcf20 | project=p-587747eb tuto=techno/Pro active=true step=lead_do done=15 playing=true
+#136 SON Son : la musique du projet joue en boucle.
+#136 > touche 450 1270
+#136 DOIGT tuto_next_folded « Geschafft »
+#137 ROUTE tab_Sons | MODE pro | EMPREINTE d47170f8d0 | project=p-587747eb tuto=techno/Pro active=true step=lead_knobs done=15 playing=true
+#137 SON Son : la musique du projet joue en boucle.
+#137 > touche 450 1116
+#137 DOIGT tuto_do «   Ich mach's »
+#138 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 64a1e237a5 | project=p-587747eb tuto=techno/Pro active=true step=lead_knobs done=15 playing=true
+#138 SON Son : la musique du projet joue en boucle.
+#138 > glisse 527 611 700 611
+#138 DOIGT rien
+#139 ROUTE instrument_panel/tab_Sons | MODE pro | EMPREINTE 00c0c10ecd | project=p-587747eb tuto=techno/Pro active=true step=lead_knobs done=15 playing=true
+#139 SON Son : la musique du projet joue en boucle.
+#139 LAYOUT CUT « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. » ellipsized (« … »)
+#139 > glisse 527 468 700 468
+#139 DOIGT plaits_param_1 « Resonanz »
+#140 ROUTE instrument_panel/tab_Sons | MODE pro | EMPREINTE f8d6c90aa8 | project=p-587747eb tuto=techno/Pro active=true step=lead_knobs done=16 playing=true
+#140 SON Son : la musique du projet joue en boucle.
+#140 > touche 450 1270
+#140 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#141 ROUTE tab_Sons | MODE pro | EMPREINTE dcb448fd64 | project=p-587747eb tuto=techno/Pro active=true step=lead_knobs done=16 playing=true
+#141 SON Son : la musique du projet joue en boucle.
+#141 > touche 450 1197
+#141 DOIGT tuto_next_big « Nächstes Kapitel   »
+#142 ROUTE tab_Sons | MODE pro | EMPREINTE ba93f6c42c | project=p-587747eb tuto=techno/Pro active=true step=groove_hear done=16 playing=true
+#142 SON Son : la musique du projet joue en boucle.
+#142 > touche 798 1281
+#142 DOIGT tuto_next « Weiter  »
+#143 ROUTE tab_Sons | MODE pro | EMPREINTE 97749deaab | project=p-587747eb tuto=techno/Pro active=true step=groove_name done=16 playing=true
+#143 SON Son : la musique du projet joue en boucle.
+#143 > touche 450 1116
+#143 DOIGT tuto_need «   Teil „Groove“ benennen »
+#144 ROUTE tab_Structure | MODE pro | EMPREINTE a3f87977a5 | project=p-587747eb tuto=techno/Pro active=true step=groove_name done=17 playing=true
+#144 SON Son : la musique du projet joue en boucle.
+#144 > touche 450 1123
+#144 DOIGT tuto_next_big « Nächstes Kapitel   »
+#145 ROUTE tab_Structure | MODE pro | EMPREINTE 1f3384a525 | project=p-587747eb tuto=techno/Pro active=true step=brick done=17 playing=true
+#145 SON Son : la musique du projet joue en boucle.
+#145 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#145 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#145 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#145 > touche 450 1123
+#145 DOIGT tuto_mark «   Verstanden »
+#146 ROUTE tab_Structure | MODE pro | EMPREINTE f6dc02ec38 | project=p-587747eb tuto=techno/Pro active=true step=map_intro done=18 playing=true
+#146 SON Son : la musique du projet joue en boucle.
+#146 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#146 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#146 > touche 798 1207
+#146 DOIGT tuto_next « Weiter  »
+#147 ROUTE tab_Structure | MODE pro | EMPREINTE c141d503ef | project=p-587747eb tuto=techno/Pro active=true step=map_intro2 done=18 playing=true
+#147 SON Son : la musique du projet joue en boucle.
+#147 LAYOUT CONTRAST « Intro 2 » 4.15:1 (needs 4.5:1, 12 sp)
+#147 > touche 798 1207
+#147 DOIGT tuto_next « Weiter  »
+#148 ROUTE tab_Structure | MODE pro | EMPREINTE f01a5e5c81 | project=p-587747eb tuto=techno/Pro active=true step=map_drop done=18 playing=true
+#148 SON Son : la musique du projet joue en boucle.
+#148 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#148 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#148 > touche 798 1207
+#148 DOIGT tuto_next « Weiter  »
+#149 ROUTE tab_Structure | MODE pro | EMPREINTE cb028366d7 | project=p-587747eb tuto=techno/Pro active=true step=map_break done=18 playing=true
+#149 SON Son : la musique du projet joue en boucle.
+#149 LAYOUT CONTRAST « Break » 3.78:1 (needs 4.5:1, 12 sp)
+#149 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#149 > touche 798 1207
+#149 DOIGT tuto_next « Weiter  »
+#150 ROUTE tab_Structure | MODE pro | EMPREINTE cd531fb0cd | project=p-587747eb tuto=techno/Pro active=true step=map_montee done=18 playing=true
+#150 SON Son : la musique du projet joue en boucle.
+#150 LAYOUT CONTRAST « 4 » 1.85:1 (needs 4.5:1, 12 sp)
+#150 > touche 798 1207
+#150 DOIGT tuto_next « Weiter  »
+#151 ROUTE tab_Structure | MODE pro | EMPREINTE b93b38e9ba | project=p-587747eb tuto=techno/Pro active=true step=map_phrases done=18 playing=true
+#151 SON Son : la musique du projet joue en boucle.
+#151 > touche 450 1123
+#151 DOIGT tuto_mark «   Verstanden »
+#152 ROUTE tab_Structure | MODE pro | EMPREINTE 5768f45873 | project=p-587747eb tuto=techno/Pro active=true step=make_intro done=19 playing=true
+#152 SON Son : la musique du projet joue en boucle.
+#152 > touche 450 1042
+#152 DOIGT tuto_need «   Teil „Intro“ erstellen »
+#153 ROUTE tab_Structure | MODE pro | EMPREINTE 6a1711f985 | project=p-587747eb tuto=techno/Pro active=true step=make_intro done=20 playing=true
+#153 SON Son : la musique du projet joue en boucle.
+#153 > touche 450 1123
+#153 DOIGT tuto_next_big « Nächster Schritt   »
+#154 ROUTE tab_Structure | MODE pro | EMPREINTE d6f7154210 | project=p-587747eb tuto=techno/Pro active=true step=make_intro2 done=20 playing=true
+#154 SON Son : la musique du projet joue en boucle.
+#154 > touche 450 1042
+#154 DOIGT tuto_need «   Teil „Intro 2“ erstellen »
+#155 ROUTE tab_Structure | MODE pro | EMPREINTE 598eccee86 | project=p-587747eb tuto=techno/Pro active=true step=make_intro2 done=21 playing=true
+#155 SON Son : la musique du projet joue en boucle.
+#155 > touche 450 1123
+#155 DOIGT tuto_next_big « Nächster Schritt   »
+#156 ROUTE tab_Structure | MODE pro | EMPREINTE aa0a2949c2 | project=p-587747eb tuto=techno/Pro active=true step=make_drop done=21 playing=true
+#156 SON Son : la musique du projet joue en boucle.
+#156 > touche 450 1042
+#156 DOIGT tuto_need «   Teil „Drop“ erstellen »
+#157 ROUTE tab_Structure | MODE pro | EMPREINTE c398c6a044 | project=p-587747eb tuto=techno/Pro active=true step=make_drop done=23 playing=true
+#157 SON Son : la musique du projet joue en boucle.
+#157 > touche 450 1123
+#157 DOIGT tuto_next_big « Nächster Schritt   »
+#158 ROUTE tab_Structure | MODE pro | EMPREINTE 3f0e8079be | project=p-587747eb tuto=techno/Pro active=true step=make_break done=23 playing=true
+#158 SON Son : la musique du projet joue en boucle.
+#158 > touche 450 1042
+#158 DOIGT tuto_need «   Teil „Break“ erstellen »
+#159 ROUTE tab_Structure | MODE pro | EMPREINTE 5411889c33 | project=p-587747eb tuto=techno/Pro active=true step=make_break done=24 playing=true
+#159 SON Son : la musique du projet joue en boucle.
+#159 > touche 450 1123
+#159 DOIGT tuto_next_big « Nächster Schritt   »
+#160 ROUTE tab_Structure | MODE pro | EMPREINTE 78ca9f2ae0 | project=p-587747eb tuto=techno/Pro active=true step=make_montee done=24 playing=true
+#160 SON Son : la musique du projet joue en boucle.
+#160 > touche 450 1042
+#160 DOIGT tuto_need «   Teil „Build-up“ erstellen »
+#161 ROUTE tab_Structure | MODE pro | EMPREINTE 3ab73bccc6 | project=p-587747eb tuto=techno/Pro active=true step=make_montee done=25 playing=true
+#161 SON Son : la musique du projet joue en boucle.
+#161 > touche 450 1123
+#161 DOIGT tuto_next_big « Nächster Schritt   »
+#162 ROUTE tab_Structure | MODE pro | EMPREINTE d4600f0d8f | project=p-587747eb tuto=techno/Pro active=true step=make_drop2 done=25 playing=true
+#162 SON Son : la musique du projet joue en boucle.
+#162 > touche 450 1042
+#162 DOIGT tuto_need «   Teil „Drop 2“ erstellen »
+#163 ROUTE tab_Structure | MODE pro | EMPREINTE 77c1e9b879 | project=p-587747eb tuto=techno/Pro active=true step=make_drop2 done=26 playing=true
+#163 SON Son : la musique du projet joue en boucle.
+#163 > touche 450 1123
+#163 DOIGT tuto_next_big « Nächster Schritt   »
+#164 ROUTE tab_Structure | MODE pro | EMPREINTE 0141a66f51 | project=p-587747eb tuto=techno/Pro active=true step=make_fin done=26 playing=true
+#164 SON Son : la musique du projet joue en boucle.
+#164 > touche 450 1042
+#164 DOIGT tuto_need «   Teil „Ende“ erstellen »
+#165 ROUTE tab_Structure | MODE pro | EMPREINTE b8935dc225 | project=p-587747eb tuto=techno/Pro active=true step=make_fin done=27 playing=true
+#165 SON Son : la musique du projet joue en boucle.
+#165 > touche 450 1123
+#165 DOIGT tuto_next_big « Nächstes Kapitel   »
+#166 ROUTE tab_Structure | MODE pro | EMPREINTE a792036827 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#166 SON Son : la musique du projet joue en boucle.
+#166 > touche 450 1042
+#166 DOIGT tuto_do «   Ich mach's »
+#167 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 64a1e237a5 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#167 SON Son : la musique du projet joue en boucle.
+#167 > touche 395 246
+#167 DOIGT rien
+#168 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 64a1e237a5 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#168 SON Son : la musique du projet joue en boucle.
+#168 > touche 622 562
+#168 DOIGT rien
+#169 ROUTE session/tab_Structure | MODE pro | EMPREINTE 287564c894 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#169 SON Son : la musique du projet joue en boucle.
+#169 > touche 146 754
+#169 DOIGT add_part_3 « + D · Drop »
+#170 ROUTE session/tab_Structure | MODE pro | EMPREINTE 84367bb968 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#170 SON Son : la musique du projet joue en boucle.
+#170 > touche 369 754
+#170 DOIGT add_part_4 « + E · Break »
+#171 ROUTE session/tab_Structure | MODE pro | EMPREINTE 319a90c771 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#171 SON Son : la musique du projet joue en boucle.
+#171 > touche 615 754
+#171 DOIGT add_part_5 « + F · Build-up »
+#172 ROUTE session/tab_Structure | MODE pro | EMPREINTE 70ab2015f3 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#172 SON Son : la musique du projet joue en boucle.
+#172 > touche 159 835
+#172 DOIGT add_part_6 « + G · Drop 2 »
+#173 ROUTE session/tab_Structure | MODE pro | EMPREINTE a5c3ad54a1 | project=p-587747eb tuto=techno/Pro active=true step=song_order done=27 playing=true
+#173 SON Son : la musique du projet joue en boucle.
+#173 > touche 391 835
+#173 DOIGT add_part_7 « + H · Ende »
+#174 ROUTE session/tab_Structure | MODE pro | EMPREINTE a819d6cdea | project=p-587747eb tuto=techno/Pro active=true step=song_order done=28 playing=true
+#174 SON Son : la musique du projet joue en boucle.
+#174 > touche 450 1196
+#174 DOIGT tuto_next_folded « Geschafft »
+#175 ROUTE tab_Structure | MODE pro | EMPREINTE 20f9ca0f5d | project=p-587747eb tuto=techno/Pro active=true step=song_phrases done=28 playing=true
+#175 SON Son : la musique du projet joue en boucle.
+#175 > touche 450 1042
+#175 DOIGT tuto_need «   Empfohlene Längen setzen »
+#176 ROUTE tab_Structure | MODE pro | EMPREINTE 39d31edc63 | project=p-587747eb tuto=techno/Pro active=true step=song_phrases done=29 playing=true
+#176 SON Son : la musique du projet joue en boucle.
+#176 > touche 450 1123
+#176 DOIGT tuto_next_big « Nächstes Kapitel   »
+#177 ROUTE tab_Structure | MODE pro | EMPREINTE ac936ea9c2 | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=true
+#177 SON Son : la musique du projet joue en boucle.
+#177 > touche 450 1042
+#177 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#178 ROUTE tab_Sons | MODE pro | EMPREINTE 394c2e1544 | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=true
+#178 SON Son : la musique du projet joue en boucle.
+#178 LAYOUT CUT « Mein Projekt 1 » ellipsized (« … »)
+#178 LAYOUT CUT « Gespeichert » wider than its box (by 19.0 dp)
+#178 LAYOUT CONTRAST « Pluck » 3.80:1 (needs 4.5:1, 12 sp)
+#178 LAYOUT CONTRAST « Techno · Clap » 1.30:1 (needs 4.5:1, 13 sp)
+#178 > touche 450 1042
+#178 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#179 ROUTE tab_Sons | MODE pro | EMPREINTE 80e2b853ce | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=true
+#179 SON Son : la musique du projet joue en boucle.
+#179 > touche 494 1292
+#179 DOIGT thumb_play « Stoppen »
+#180 ROUTE tab_Sons | MODE pro | EMPREINTE 4b50a2f8b1 | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=false
+#180 SON Son : rien ne joue.
+#180 > touche 450 1042
+#180 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#181 ROUTE tab_Sons | MODE pro | EMPREINTE cd77e16315 | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=false
+#181 SON Son : rien ne joue.
+#181 LAYOUT CUT « Gespeichert » wider than its box (by 27.7 dp)
+#181 LAYOUT CUT « F · Build-up » ellipsized (« … »)
+#181 LAYOUT CUT « Du bist dran: Im Teil „Build-up“, „Takt 4“, Pad „Techno · Clap“: Drück lange auf den letzten Schlag vor der letzten Zählzeit, dann „Roll“ ×3 oder ×4: die letzte Salve. » ellipsized (« … »)
+#181 LAYOUT CONTRAST « Techno · Clap » 1.63:1 (needs 4.5:1, 13 sp)
+#181 > appui-long 397 471
+#181 DOIGT step_11 « Step 12 »
+#182 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 2f5dd84503 | project=p-587747eb tuto=techno/Pro active=true step=fill done=29 playing=false
+#182 SON Son : rien ne joue.
+#182 > touche 240 825
+#182 DOIGT roll_3 « ×3 »
+#183 ROUTE tab_Sons | MODE pro | EMPREINTE 09133315ce | project=p-587747eb tuto=techno/Pro active=true step=fill done=30 playing=false
+#183 SON Son : rien ne joue.
+#183 > touche 450 1196
+#183 DOIGT tuto_next_folded « Geschafft »
+#184 ROUTE tab_Sons | MODE pro | EMPREINTE 321b040476 | project=p-587747eb tuto=techno/Pro active=true step=gap done=30 playing=false
+#184 SON Son : rien ne joue.
+#184 > touche 450 1042
+#184 DOIGT tuto_do «   Ich mach's »
+#185 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=gap done=30 playing=false
+#185 SON Son : rien ne joue.
+#185 > touche 500 476
+#185 DOIGT rien
+#186 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=gap done=30 playing=false
+#186 SON Son : rien ne joue.
+#186 > touche 603 476
+#186 DOIGT rien
+#187 ROUTE tab_Sons | MODE pro | EMPREINTE 6e141f098b | project=p-587747eb tuto=techno/Pro active=true step=gap done=30 playing=false
+#187 SON Son : rien ne joue.
+#187 LAYOUT CUT « Du bist dran: Lösch im Teil „Build-up“, „Takt 4“, die Schläge des letzten Schlags (tippe auf jedes rote Kreuz): ein Schlag Stille direkt vor Drop 2. » ellipsized (« … »)
+#187 > touche 809 476
+#187 DOIGT step_15 « Step 16 »
+#188 ROUTE tab_Sons | MODE pro | EMPREINTE 541688574b | project=p-587747eb tuto=techno/Pro active=true step=gap done=31 playing=false
+#188 SON Son : rien ne joue.
+#188 LAYOUT CONTRAST « Techno · Hi-Hat » 1.62:1 (needs 4.5:1, 13 sp)
+#188 > touche 450 1196
+#188 DOIGT tuto_next_folded « Geschafft »
+#189 ROUTE tab_Sons | MODE pro | EMPREINTE 2576ca451d | project=p-587747eb tuto=techno/Pro active=true step=crash done=31 playing=false
+#189 SON Son : rien ne joue.
+#189 LAYOUT CONTRAST « Becken » 1.67:1 (needs 4.5:1, 13 sp)
+#189 > touche 450 1095
+#189 DOIGT tuto_next_big « Nächstes Kapitel   »
+#190 ROUTE tab_Sons | MODE pro | EMPREINTE d24b3a7240 | project=p-587747eb tuto=techno/Pro active=true step=reverb done=31 playing=false
+#190 SON Son : rien ne joue.
+#190 > touche 450 1042
+#190 DOIGT tuto_do «   Ich mach's »
+#191 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE cb68cd51e1 | project=p-587747eb tuto=techno/Pro active=true step=reverb done=31 playing=false
+#191 SON Son : rien ne joue.
+#191 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#191 LAYOUT CONTRAST « Neutral » 4.44:1 (needs 4.5:1, 12 sp)
+#191 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#191 LAYOUT CONTRAST « Gemeinsames Reverb und Echo » 4.44:1 (needs 4.5:1, 14 sp)
+#191 LAYOUT CONTRAST « 0 % » 3.63:1 (needs 4.5:1, 14 sp)
+#191 LAYOUT CONTRAST « Schließen » 3.63:1 (needs 4.5:1, 14 sp)
+#191 > glisse 81 1320 350 1320
+#191 DOIGT send_20_0 « Reverb-Send »
+#192 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE eb9e2f360d | project=p-587747eb tuto=techno/Pro active=true step=reverb done=32 playing=false
+#192 SON Son : rien ne joue.
+#192 LAYOUT CONTRAST « 33 % » 3.63:1 (needs 4.5:1, 14 sp)
+#192 > touche 762 1437
+#192 DOIGT fx_close « Schließen »
+#193 ROUTE tab_Sons | MODE pro | EMPREINTE d9c37a728f | project=p-587747eb tuto=techno/Pro active=true step=reverb done=32 playing=false
+#193 SON Son : rien ne joue.
+#193 LAYOUT CONTRAST « Becken » 1.63:1 (needs 4.5:1, 13 sp)
+#193 > touche 450 1196
+#193 DOIGT tuto_next_folded « Geschafft »
+#194 ROUTE tab_Sons | MODE pro | EMPREINTE d225f0f0e9 | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#194 SON Son : rien ne joue.
+#194 LAYOUT CONTRAST « Becken » 1.60:1 (needs 4.5:1, 13 sp)
+#194 > touche 450 1042
+#194 DOIGT tuto_need «   Zum Teil „Drop“ gehen »
+#195 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d019f13cfa | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#195 SON Son : rien ne joue.
+#195 LAYOUT CUT « Du bist dran: Automatisiere den „Cutoff“ der Spur „Melodie“ im Drop: „Eine Einstellung automatisieren“, „Melodie“, „Filter (Sweep)“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. » ellipsized (« … »)
+#195 > touche 314 438
+#195 DOIGT automation_add «  Eine Einstellung automatisieren »
+#196 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 65477c9ee9 | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#196 SON Son : rien ne joue.
+#196 LAYOUT CONTRAST « Gemeinsames Reverb und Echo » 1.79:1 (needs 4.5:1, 14 sp)
+#196 LAYOUT CONTRAST « Fügt dieser Spur einen Filter hinzu und lässt ihn auf- oder zugehen: der Effekt, den man am meisten hört. » 3.46:1 (needs 4.5:1, 13 sp)
+#196 LAYOUT CONTRAST « Echo-Send » 2.87:1 (needs 4.5:1, 16 sp)
+#196 > touche 625 344
+#196 DOIGT pick_track_6 « Melodie »
+#197 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 79261b110e | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#197 SON Son : rien ne joue.
+#197 > touche 450 661
+#197 DOIGT pick_filter_6 « Filter (Sweep) »
+#198 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 2802554fba | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#198 SON Son : rien ne joue.
+#198 > touche 255 521
+#198 DOIGT auto_mode_0_1 « Pro Teil »
+#199 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE ead9ed9824 | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#199 SON Son : rien ne joue.
+#199 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#199 > touche 274 627
+#199 DOIGT auto_len_part_0 « Über den ganzen Teil · 4 Takte »
+#200 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 3bb459b258 | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#200 SON Son : rien ne joue.
+#200 > glisse 450 950 450 450
+#200 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#201 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5730336df3 | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#201 SON Son : rien ne joue.
+#201 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#201 LAYOUT CUT « Schlag » lines dropped (more lines than room)
+#201 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 5 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 7 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 9 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 11 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 13 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 LAYOUT CUT « 15 » drawn past its parent's edge (down, 18 dp shown of 21)
+#201 > glisse 135 745 490 570
+#201 DOIGT rien
+#202 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3e7bedaa1d | project=p-587747eb tuto=techno/Pro active=true step=filter done=32 playing=false
+#202 SON Son : rien ne joue.
+#202 > glisse 495 570 850 745
+#202 DOIGT rien
+#203 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7b2539735c | project=p-587747eb tuto=techno/Pro active=true step=filter done=33 playing=false
+#203 SON Son : rien ne joue.
+#203 > glisse 450 400 450 800
+#203 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#204 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 6e8ad5195d | project=p-587747eb tuto=techno/Pro active=true step=filter done=33 playing=false
+#204 SON Son : rien ne joue.
+#204 > touche 221 284
+#204 DOIGT auto_show_0 «  Einstellung zeigen »
+#205 ROUTE dialogue:effects_box_6 | MODE pro | EMPREINTE c11ed8c4fd | project=p-587747eb tuto=techno/Pro active=true step=filter done=33 playing=false
+#205 SON Son : rien ne joue.
+#205 LAYOUT CONTRAST « Cutoff » 1.74:1 (needs 4.5:1, 14 sp)
+#205 LAYOUT CONTRAST « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » 1.47:1 (needs 4.5:1, 13 sp)
+#205 LAYOUT CONTRAST « Farbe » 1.60:1 (needs 4.5:1, 14 sp)
+#205 LAYOUT CONTRAST « Dreck » 1.60:1 (needs 4.5:1, 14 sp)
+#205 LAYOUT CONTRAST « DnB » 4.08:1 (needs 4.5:1, 14 sp)
+#205 LAYOUT CONTRAST « Schließen » 3.69:1 (needs 4.5:1, 14 sp)
+#205 > retour
+#205 RETOUR
+#206 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 6e8ad5195d | project=p-587747eb tuto=techno/Pro active=true step=filter done=33 playing=false
+#206 SON Son : rien ne joue.
+#206 > touche 450 1196
+#206 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#207 ROUTE tab_Mix | MODE pro | EMPREINTE 844bd9043a | project=p-587747eb tuto=techno/Pro active=true step=filter done=33 playing=false
+#207 SON Son : rien ne joue.
+#207 > touche 450 1095
+#207 DOIGT tuto_next_big « Nächstes Kapitel   »
+#208 ROUTE tab_Mix | MODE pro | EMPREINTE 08ca24bb2d | project=p-587747eb tuto=techno/Pro active=true step=levels done=33 playing=false
+#208 SON Son : rien ne joue.
+#208 > touche 450 1042
+#208 DOIGT tuto_do «   Ich mach's »
+#209 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=levels done=33 playing=false
+#209 SON Son : rien ne joue.
+#209 > glisse 317 437 317 500
+#209 DOIGT rien
+#210 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 275937cf78 | project=p-587747eb tuto=techno/Pro active=true step=levels done=33 playing=false
+#210 SON Son : rien ne joue.
+#210 LAYOUT CUT « Akkorde » a word split over two lines
+#210 > glisse 437 437 437 500
+#210 DOIGT volume_6 « Lautstärke von Melodie »
+#211 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 905702c500 | project=p-587747eb tuto=techno/Pro active=true step=levels done=34 playing=false
+#211 SON Son : rien ne joue.
+#211 > touche 450 1196
+#211 DOIGT tuto_next_folded « Geschafft »
+#212 ROUTE tab_Mix | MODE pro | EMPREINTE f091e4b1ef | project=p-587747eb tuto=techno/Pro active=true step=meters done=34 playing=false
+#212 SON Son : rien ne joue.
+#212 > touche 450 1123
+#212 DOIGT tuto_mark «   Verstanden »
+#213 ROUTE tab_Mix | MODE pro | EMPREINTE 12e0d5fade | project=p-587747eb tuto=techno/Pro active=true step=buses done=35 playing=false
+#213 SON Son : rien ne joue.
+#213 > touche 450 1042
+#213 DOIGT tuto_mark «   Verstanden »
+#214 ROUTE tab_Mix | MODE pro | EMPREINTE 49e1e71229 | project=p-587747eb tuto=techno/Pro active=true step=loudness done=36 playing=false
+#214 SON Son : rien ne joue.
+#214 LAYOUT CUT « 1 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 3 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 5 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 7 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 9 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 11 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 13 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 LAYOUT CUT « 15 » drawn past its parent's edge (down, 5 dp shown of 21)
+#214 > touche 450 1042
+#214 DOIGT tuto_do «   Ich mach's »
+#215 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=loudness done=36 playing=false
+#215 SON Son : rien ne joue.
+#215 > touche 500 682
+#215 DOIGT rien
+#216 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-587747eb tuto=techno/Pro active=true step=loudness done=37 playing=false
+#216 SON Son : rien ne joue.
+#216 > touche 450 1196
+#216 DOIGT rien
+#217 ROUTE tab_Mix | MODE pro | EMPREINTE 0a2f20e88b | project=p-587747eb tuto=techno/Pro active=true step=loudness done=37 playing=false
+#217 SON Son : rien ne joue.
+#217 > touche 450 1095
+#217 DOIGT tuto_next_big « Nächstes Kapitel   »
+#218 ROUTE tab_Mix | MODE pro | EMPREINTE 7a463abe25 | project=p-587747eb tuto=techno/Pro active=true step=formats done=37 playing=false
+#218 SON Son : rien ne joue.
+#218 > touche 450 1123
+#218 DOIGT tuto_mark «   Verstanden »
+#219 ROUTE tab_Mix | MODE pro | EMPREINTE f34b61dad9 | project=p-587747eb tuto=techno/Pro active=true step=share done=38 playing=false
+#219 SON Son : rien ne joue.
+#219 > touche 450 1123
+#219 DOIGT tuto_do «   Ich mach's »
+#219 DIALOGUE 0.4 s
+#220 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f020a59682 | project=p-587747eb tuto=techno/Pro active=true step=share done=38 playing=false
+#220 SON Son : rien ne joue.
+#220 LAYOUT OVERLAP « Bereit zum Teilen? » over the touchable « Tabelle schließen » (217 x 32 dp)
+#220 LAYOUT OVERLAP « Name des Songs (und des Projekts) » over the touchable « Tabelle schließen » (286 x 24 dp)
+#220 LAYOUT OVERLAP « „Teilen“ benennt auch das Projekt „Mein Projekt 1“ um. » over the touchable « Tabelle schließen » (436 x 24 dp)
+#220 LAYOUT OVERLAP « 3:53 » over the touchable « Tabelle schließen » (55 x 30 dp)
+#220 LAYOUT OVERLAP « 7 Teile » over the touchable « Tabelle schließen » (57 x 27 dp)
+#220 LAYOUT OVERLAP « Lautstärke: −12,9, wie Streaming-Musik (−14) » over the touchable « Tabelle schließen » (183 x 48 dp)
+#220 LAYOUT OVERLAP « Details » over the touchable « Tabelle schließen » (48 x 14 dp)
+#220 LAYOUT OVERLAP «  Anhören » over the touchable « Tabelle schließen » (82 x 27 dp)
+#220 LAYOUT OVERLAP « Ziel-Lautheit » over the touchable « Tabelle schließen » (112 x 27 dp)
+#220 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Tabelle schließen » (196 x 27 dp)
+#220 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Tabelle schließen » (135 x 27 dp)
+#220 LAYOUT OVERLAP « Auto (Stil) · −9 LUFS » over the touchable « Tabelle schließen » (183 x 27 dp)
+#220 LAYOUT OVERLAP « Aus » over the touchable « Tabelle schließen » (35 x 27 dp)
+#220 LAYOUT OVERLAP « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. Dieselbe Einstellung wie in Mix. » over the touchable « Tabelle schließen » (552 x 72 dp)
+#220 LAYOUT OVERLAP « Alles bereit: kein Solo vergessen, keine Spur stumm. » over the touchable « Tabelle schließen » (464 x 27 dp)
+#220 LAYOUT OVERLAP «   Video für Social Media · 30 s » over the touchable « Tabelle schließen » (157 x 27 dp)
+#220 LAYOUT OVERLAP « Weitere Dateien » over the touchable « Tabelle schließen » (144 x 27 dp)
+#220 LAYOUT OVERLAP « Spur für Spur, MIDI, FLAC… in Mix » over the touchable « Tabelle schließen » (272 x 24 dp)
+#220 LAYOUT OVERLAP « Song als .zip sichern » over the touchable « Tabelle schließen » (186 x 27 dp)
+#220 LAYOUT OVERLAP « Für ein anderes Gerät oder als Sicherungskopie » over the touchable « Tabelle schließen » (380 x 24 dp)
+#220 LAYOUT OVERLAP « M4A · zum Teilen » over the touchable « Tabelle schließen » (158 x 27 dp)
+#220 LAYOUT OVERLAP « WAV · max. Qualität » over the touchable « Tabelle schließen » (180 x 27 dp)
+#220 LAYOUT OVERLAP «   Teilen » over the touchable « Tabelle schließen » (68 x 31 dp)
+#220 LAYOUT OVERLAP « Meine Dateien » over the touchable « Tabelle schließen » (130 x 27 dp)
+#220 LAYOUT OVERLAP « Finden und erneut senden: M4A, WAV, Video, .zip » over the touchable « Tabelle schließen » (398 x 24 dp)
+#220 > touche 487 1251
+#220 DOIGT share_format_Wav « WAV · max. Qualität »
+#220 DIALOGUE 0.2 s
+#221 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d9f44fe981 | project=p-587747eb tuto=techno/Pro active=true step=share done=38 playing=false
+#221 SON Son : rien ne joue.
+#221 > touche 450 1347
+#221 DOIGT share_go «   Teilen »
+#221 DIALOGUE 0.3 s
+#222 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 06099bfd2b | project=p-587747eb tuto=techno/Pro active=true step=share done=38 playing=false
+#222 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#222 LAYOUT CONTRAST « Wähl dann die App, mit der du es sendest. » 1.50:1 (needs 4.5:1, 13 sp)
+#222 LAYOUT CONTRAST « Abbrechen » 3.49:1 (needs 4.5:1, 14 sp)
+#222 > attends 20
+#222 PARTAGE Mein-Song-club-20261112-220741.wav
+#222 DIALOGUE 1.8 s
+#223 ROUTE dialogue:« Meinen Song teilen · Mein-Song » | MODE pro | EMPREINTE 82a5153180 | project=p-587747eb tuto=techno/Pro active=true step=share done=39 playing=false
+#223 SON Son : rien ne joue.
+#223 > touche 450 880
+#223 DOIGT vue « Drive »
+#223 DIALOGUE 0.2 s
+#224 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 8e5898a1c6 | project=p-587747eb tuto=techno/Pro active=true step=share done=39 playing=false
+#224 SON Son : rien ne joue.
+#224 LAYOUT CONTRAST « Meine Dateien ansehen » 2.41:1 (needs 4.5:1, 14 sp)
+#224 LAYOUT CONTRAST « OK » 2.41:1 (needs 4.5:1, 14 sp)
+#224 > touche 790 915
+#224 DOIGT share_bilan_ok « OK »
+#224 DIALOGUE 0.2 s
+#225 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 342be08642 | project=p-587747eb tuto=techno/Pro active=true step=share done=39 playing=false
+#225 SON Son : rien ne joue.
+#225 > touche 450 1196
+#225 DOIGT tuto_end_folded « Tutorial geschafft: Bravo! »
+#226 ROUTE tab_Mix | MODE pro | EMPREINTE ef8ab29e81 | project=p-587747eb tuto=techno/Pro active=true step=share done=39 playing=false
+#226 SON Son : rien ne joue.
+#226 > touche 450 1207
+#226 DOIGT tuto_end_close « Tutorial schließen »
+#227 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 29a6fc8edb | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#227 SON Son : rien ne joue.
+#227 > touche 268 1389
+#227 DOIGT tab_Sons « Sounds »
+#228 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 01e0459fea | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#228 SON Son : rien ne joue.
+#228 > glisse 450 400 450 1100
+#228 DOIGT rien
+#229 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b64fcef4e3 | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#229 SON Son : rien ne joue.
+#229 LAYOUT CUT « Roland TR-909 · Offene Hi-Hat » ellipsized (« … »)
+#229 > appui-long 341 360
+#229 DOIGT pad_1 « Kick 2 »
+#229 DIALOGUE 0.4 s
+#230 ROUTE dialogue:library | MODE pro | EMPREINTE d9e5c84e8d | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#230 SON Son : rien ne joue.
+#230 LAYOUT CONTRAST « ? » 4.29:1 (needs 4.5:1, 12 sp)
+#230 > touche 450 795
+#230 DOIGT library_folder_Techno « Techno »
+#230 DIALOGUE 0.2 s
+#231 ROUTE dialogue:library | MODE pro | EMPREINTE ed9872fae8 | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#231 SON Son : rien ne joue.
+#231 LAYOUT CUT « Techno » ellipsized (« … »)
+#231 > touche 227 410
+#231 DOIGT library_sound_fav_0
+#231 DIALOGUE 0.2 s
+#232 ROUTE dialogue:library | MODE pro | EMPREINTE 7a6c62f428 | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#232 SON Son : rien ne joue.
+#232 > touche 78 299
+#232 DOIGT library_back
+#232 DIALOGUE 0.2 s
+#233 ROUTE dialogue:library | MODE pro | EMPREINTE 9342dfedb0 | project=p-587747eb tuto=techno/Pro active=false step=share done=39 playing=false
+#233 SON Son : rien ne joue.
+#233 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#233 > fin
+#233 FIN : fin

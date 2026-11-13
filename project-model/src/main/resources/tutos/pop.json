@@ -53,7 +53,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (la gamme joyeuse) puis « Mi » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Mi majeur, celle d'Anti-Hero (Taylor Swift) : une tonalité confortable pour chanter.",
+          "textPro": "À toi : règle la tonalité sur Mi majeur, celle d'Anti-Hero (Taylor Swift) : une tonalité confortable pour chanter. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -174,13 +174,22 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes d'un coup. Fais les 5 coups de la mesure 1, puis « Copier sur les mesures suivantes » : les 3 autres accords arrivent tout seuls.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes d'un coup. Fais les 5 coups de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (un piano). Mesure 1 : Mi majeur en 5 coups (3-3-4-3-3), puis « Copier sur les mesures suivantes » : la copie suit la grille Si, Do♯m, La.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, ta mélodie n'aura rien sur quoi se poser."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -382,7 +391,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:4,Couplet:8,Pré-refrain:8,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:8,Refrain:16,Pont:8,Refrain:16,Fin:4",
@@ -482,7 +492,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie » ; si tu as chanté, la Voix passe devant tout le reste.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

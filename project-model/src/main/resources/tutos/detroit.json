@@ -45,7 +45,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau : mélancolique mais lumineuse, comme Detroit. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire) puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La dorien : mineur, mais avec la sixte majeure (Fa♯) qui éclaire l'accord de Ré. La couleur de Derrick May et de Jeff Mills.",
+          "textPro": "À toi : règle la tonalité sur La dorien : mineur, mais avec la sixte majeure (Fa♯) qui éclaire l'accord de Ré. La couleur de Derrick May et de Jeff Mills. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes tes notes suivront cette gamme : les cordes sonneront tristes et chaudes à la fois.",
           "check": "key",
           "spot": "tuto.key",
@@ -54,7 +54,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets le swing à environ 15 % : les petits charleys traînent un peu, comme joués par un humain.",
+          "text": "À toi : mets le swing à environ 20 % : les petits charleys traînent un peu, comme joués par un humain.",
           "why": "Detroit, c'est la soul jouée par des machines : le swing donne le côté humain.",
           "levels": "p",
           "check": "swing",
@@ -107,7 +107,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -115,7 +115,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (le bord de la caisse, un « toc » sec), touche les cases en pointillé : il ne tombe jamais avec le kick.",
+          "text": "À toi : sur le pad « Rim » (le bord de la caisse, un « toc » sec), touche les cases en pointillé : il ne tombe jamais avec le kick.",
           "textPro": "À toi : le rim, en réponse au kick : c'est lui qui rend le groove funky.",
           "why": "Il répond au kick au lieu de le doubler : question, réponse, comme dans le funk.",
           "check": "lane:perc",
@@ -125,7 +125,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé : elle suit le kick sur les temps 1 et 3. Elle n'arrivera qu'au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé : elle suit le kick sur les temps 1 et 3. Elle n'arrivera qu'au Drop.",
           "textPro": "À toi : la ride sur 1 et 3, pour le Drop (Strings of Life : « la ride au rythme du kick »).",
           "levels": "p",
           "check": "lane:ride",
@@ -328,8 +328,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:16,Drop 2:24,Fin:16",
@@ -413,7 +413,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ».",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",

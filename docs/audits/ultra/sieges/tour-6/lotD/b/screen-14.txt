@@ -1,0 +1,34 @@
+Écran 14 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132  템포 » @ 78,123
+bouton « ? » @ 495,123
+image (chapeau de diplômé) @ 37,223
+texte « 곡의 빠르기와 색깔 1/15장 · 3/3단계 · 쉬움 » @ 220,223
+icône (liste) @ 411,223
+icône ⌄ @ 483,223
+texte « 직접 해 보세요: 곡의 색깔을 테크노처럼 어둡게 고르세요. “직접 할게요”를 누르면 키 시트가 열려요. 동그라미 쳐진 버튼 두 개, “프리지안”(어두운 스케일), 그다음 “F”(시작 노트)를 탭하세요. 이 단어들은 외우지 않아도 돼요. » @ 270,427
+texte « • 프리지안: 어둡고 조금 으스스한 음계. » @ 228,592
+texte « ▸ 왜요? » [coupé] @ 270,634
+bouton « 계속 읽기 » ⌄ @ 270,625
+bouton (doigt qui touche) «   직접 할게요 » @ 270,697
+bouton ▶ «  예시 듣기 » @ 142,781
+bouton (œil) «  보여 주세요 » @ 397,781
+icône ← «  이전 » @ 83,862
+icône « 다음  » → @ 457,862
+icône ↶ « 실행 취소 » @ 87,950
+bouton ▶ « 곡 » @ 210,950
+texte « 132 템포 » @ 334,950
+icône ⋮ « 더보기 » @ 458,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

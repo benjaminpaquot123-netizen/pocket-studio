@@ -1,0 +1,22 @@
+Écran 41 (588x1278)
+texte « Ma chanson préférée projeme ekle » @ 294,89
+texte « Tempo » @ 83,198
+choix « Projem Ma chanson préférée temposunu alsın (120 BPM) » @ 294,266
+choix « Ma chanson préférée benim tempoma uysun (116 BPM) » [sélectionné] @ 294,354
+texte « Ton » @ 61,433
+texte « Ma chanson préférée: La minör. » @ 247,480
+case « Synth ve baslarım La minör çalsın » [non coché] @ 294,543
+texte « Nereye koyulsun » @ 151,617
+choix « Şarkının tamamı, A bloğundan » @ 294,680
+choix « Sadece bir pasaj » [sélectionné] @ 294,758
+bouton « − » @ 142,836
+bouton « + » @ 506,836
+texte « 1. ölçüden » @ 324,836
+bouton « − » @ 142,914
+texte « 8 ölçü » @ 324,914
+bouton « + » @ 506,914
+choix « Sadece vokal, benim beat'imin üstünde » @ 294,997
+texte « Bölümler » @ 97,1076
+texte « Bölümlerinden blok yap Şarkının zaten bölümleri var » [désactivé, coupé] @ 294,1118
+texte « İptal » @ 241,1206
+bouton « Projeme ekle » @ 426,1206

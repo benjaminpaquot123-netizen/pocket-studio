@@ -1,0 +1,141 @@
+Écran 27 (900x1509)
+icône ← @ 42,42
+bouton ■ @ 123,42
+icône − @ 371,42
+texte « 122 BPM » @ 444,42
+icône + @ 518,42
+texte « 30.2 » @ 765,42
+texte « REC » @ 852,42
+icône (flèches en boucle) « Montée mes. 2/4 » [désactivé] @ 84,123
+bouton « ? » @ 855,123
+bouton « Nouvelle version » @ 260,204
+bouton « Ajouter à la suite » @ 515,204
+texte « La prise : » @ 70,204
+bouton « Lancer à 1 mesure » @ 153,286
+bouton « ? » @ 316,286
+texte « Cases » @ 682,286
+icône − @ 761,287
+texte « 8 » @ 806,287
+icône + @ 852,287
+texte « Batterie » @ 183,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 183,408
+texte « Acid 303 » @ 277,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 277,408
+texte « Basse » @ 371,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 371,408
+texte « Piano » @ 465,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 465,408
+texte « Lead » @ 559,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 559,408
+texte « Souffle montant » @ 653,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 653,408
+texte « Voix » @ 747,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 747,408
+texte « Sub drop » @ 841,353
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 841,408
+bouton « ? » @ 72,387
+bouton « A » @ 72,493
+dessin @ 183,493
+dessin @ 277,493
+dessin @ 371,493
+dessin @ 465,493
+dessin @ 559,493
+dessin @ 653,493
+dessin @ 747,493
+dessin @ 841,493
+bouton « B » @ 72,577
+dessin @ 183,577
+dessin @ 277,577
+dessin @ 371,577
+dessin @ 465,577
+dessin @ 559,577
+dessin @ 653,577
+dessin @ 747,577
+dessin @ 841,577
+bouton « C » @ 72,661
+dessin @ 183,661
+dessin @ 277,661
+dessin @ 371,661
+dessin @ 465,661
+dessin @ 559,661
+dessin @ 653,661
+dessin @ 747,661
+dessin @ 841,661
+bouton « D » @ 72,745
+dessin @ 183,745
+dessin @ 277,745
+dessin @ 371,745
+dessin @ 465,745
+dessin @ 559,745
+dessin @ 653,745
+dessin @ 747,745
+dessin @ 841,745
+bouton « E » @ 72,829
+dessin @ 183,829
+dessin @ 277,829
+dessin @ 371,829
+dessin @ 465,829
+dessin @ 559,829
+dessin @ 653,829
+dessin @ 747,829
+dessin @ 841,829
+bouton « F » @ 72,913
+dessin [allumé] @ 183,913
+dessin @ 277,913
+dessin [allumé] @ 371,913
+dessin [allumé] @ 465,913
+dessin @ 559,913
+dessin [allumé] @ 653,913
+dessin @ 747,913
+dessin @ 841,913
+bouton « G » @ 72,997
+dessin @ 183,997
+dessin @ 277,997
+dessin @ 371,997
+dessin @ 465,997
+dessin @ 559,997
+dessin @ 653,997
+dessin @ 747,997
+dessin @ 841,997
+bouton « H » @ 72,1081
+dessin @ 183,1081
+dessin @ 277,1081
+dessin @ 371,1081
+dessin @ 465,1081
+dessin @ 559,1081
+dessin @ 653,1081
+dessin @ 747,1081
+dessin @ 841,1081
+bouton « I » [coupé] @ 72,1129
+dessin [coupé] @ 183,1129
+dessin [coupé] @ 277,1129
+dessin [coupé] @ 371,1129
+dessin [coupé] @ 465,1129
+dessin [coupé] @ 559,1129
+dessin [coupé] @ 653,1129
+dessin [coupé] @ 747,1129
+dessin [coupé] @ 841,1129
+bouton « ■ Tout » @ 72,1176
+bouton « ■ » @ 183,1176
+bouton « ■ » @ 277,1176
+bouton « ■ » @ 371,1176
+bouton « ■ » @ 465,1176
+bouton « ■ » @ 559,1176
+bouton « ■ » @ 653,1176
+bouton « ■ » @ 747,1176
+bouton « ■ » @ 841,1176
+icône (quatre carrés) « Briques » [sélectionné] @ 110,1275
+icône (neuf points) « Pads » @ 288,1275
+icône (étincelles) « Effets et 303 » @ 466,1275
+icône ♪ « Notes » @ 645,1275
+icône (quatre coins) @ 771,1275
+icône ⌃ @ 843,1275
+onglet (ligne brisée et points) « Structure » @ 85,1389
+onglet (touches de piano) « Sons » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » [sélectionné] @ 633,1389
+onglet ⋯ « Plus » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

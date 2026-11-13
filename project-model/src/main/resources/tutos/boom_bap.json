@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » (une gamme sombre) puis « Ré » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Ré mineur, gamme « Mineure », tonique « Ré » : la contrebasse sonne ronde sur Ré2, le piano chaud dans le médium.",
+          "textPro": "À toi : règle la tonalité sur Ré mineur, gamme « Mineure », tonique « Ré » : la contrebasse sonne ronde sur Ré2, le piano chaud dans le médium. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -117,7 +117,7 @@
         {
           "id": "shaker_do",
           "levels": "p",
-          "text": "À toi : sur le pad « Maracas », les 4 cases en pointillé, entre les temps : un shaker discret qui n'arrivera qu'au Refrain.",
+          "text": "À toi : sur le pad « Shaker », les 4 cases en pointillé, entre les temps : un shaker discret qui n'arrivera qu'au Refrain.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",
@@ -139,19 +139,28 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,snare,hat,bass"
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick. « Copier sur les mesures suivantes » écrit les mesures 2 et 3. Touche ensuite les 3 notes de la mesure 4, puis « Copier » encore.",
+          "text": "À toi : touche « Créer la piste Basse », puis les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse. Mesure 1 : Ré2 sur les kicks, notes courtes. « Copier » : la mesure 2 descend sur Si♭ (l'accord VI), la 3 revient sur Ré. Mesure 4 : Si♭, puis Do qui remonte vers le Ré. « Copier ».",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, ta boucle n'a pas de fond."
+        },
+        {
+          "id": "bass_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 s'écrivent. Touche ensuite les 3 notes de la mesure 4, puis « Copier » encore.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -168,14 +177,23 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 3 accords de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 3 accords de la mesure 1.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : Ré m9 sans sa fondamentale (Fa, La, Do, Mi), 3 fois, le dernier en avance sur le temps. « Copier » : la mesure 2 en Si♭ maj9 (Ré, Fa, La, Do), puis la boucle de 2 mesures se répète.",
           "why": "Des accords de 4 notes, sans la note du bas (la basse la joue) : c'est le son des pianistes de jazz qu'on samplait.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans la boucle, il n'y a plus de boom bap."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -283,7 +301,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "listen": "song",
@@ -358,7 +377,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : le kick et la caisse devant, la boucle derrière, la voix au milieu.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

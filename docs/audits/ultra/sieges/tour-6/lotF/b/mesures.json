@@ -1,0 +1,45 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "pl",
+    "device": "phone360",
+    "font": "100",
+    "mode": "pro",
+    "gestes.max": "110",
+    "mission": "libre",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 38,
+    "images": 6,
+    "gestes_premier_son": 2,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 6,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 42,
+    "ecrans_revisites": 8,
+    "defilements_sans_toucher": 4,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 70,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.3,
+      "simule": 2.4,
+      "jvm": 8.2,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "libre",
+  "resultat": "reussie",
+  "pourquoi": "fini par le testeur, 9 écrans différents, premier son en 2 geste(s) ; « Mon premier rythme » : un son de synthé retouché"
+}

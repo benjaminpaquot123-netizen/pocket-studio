@@ -233,6 +233,7 @@ def main():
         one_red_several_greens(d)
         closed_red_same_lot_only(d)
         red_seen_regularises(d)
+        red_seen_other_tests_only(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1761,6 +1762,69 @@ def closed_red_same_lot_only(d):
     off = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red off the line", app=2)
     out = judge(root)
     check(f"{off} « vert:" in out and "chantier : 1 écarts" in out, "a red off the green's first-parent line gives it nothing:\n" + out)
+
+
+def red_seen_other_tests_only(d):
+    """Review of « juge8 » (G2): a green regularised by rouges-constates/ may change, in the test files, only the plain
+    @Test functions other than the named test (their bodies, adding or removing whole ones: the remix2 green b6d6ede5
+    takes debug lines out of three other tests of the seat). Everything else of a test file stays the same text: the
+    named test with its annotations, its helpers, @Before, rules, fields; no test file is added or removed. Stay gaps:
+    a helper the named test calls weakened, its annotation changed (@Test(expected = …)), @Before rewritten, a @Before
+    added, a new test file."""
+    root = judge_root(d, "juge-constate-autres")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    path = os.path.join(tests, "SeatProofTest.kt")
+
+    def seat(ann="@Test", helper="check(spot() != 0)", before="v = spot()", other="check(true)", extra="", more=""):
+        write(path, "class SeatProofTest {\n  var v = 0\n  @Before\n  fun setUp() { " + before + " }\n" + more +
+              f"  {ann}\n  fun theNamedTestHolds() {{\n    shown()\n    check(v != 0)\n  }}\n"
+              "  @Test\n  fun anotherTestOfTheSeat() {\n    " + other + "\n  }\n" + extra +
+              "  private fun shown() {\n    " + helper + "\n  }\n}\n")
+
+    seat()
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, **change):
+        seat(**change)
+        if key == "newfile":
+            write(os.path.join(tests, "NewProofTest.kt"), "class NewProofTest {\n  @Test\n  fun aNewTestFileAppears() {}\n}\n")
+        write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeatProofTest#theNamedTestHolds ({key})")
+        full, par = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: SeatProofTest#theNamedTestHolds\n")
+        write(os.path.join(folder, "TEST-x.SeatProofTest.xml"), '<testsuite><testcase classname="x.SeatProofTest" '
+              'name="theNamedTestHolds"><failure message="0"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+        seat()
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"chore: the seat as it was ({key})")
+        if key == "newfile":
+            git_toy(root, "rm", "-q", os.path.join(tests, "NewProofTest.kt"))
+            git_toy(root, "commit", "-q", "-m", "chore: no new file")
+
+    green("otherbody", other="check(1 == 1)")
+    green("othertest", extra="  @Test\n  fun aTestAddedBesideIt() {\n    check(true)\n  }\n")
+    green("helper", helper="check(true)")
+    green("expected", ann="@Test(expected = IllegalStateException::class)")
+    green("before", before="v = 1")
+    green("newbefore", more="  @Before\n  fun alsoSetUp() { v = 1 }\n")
+    green("newfile")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for key in ("otherbody", "othertest"):
+        check(shas[key] + " «" not in out, f"a green that changes only other plain tests ({key}) is a pair:\n" + out)
+    for key in ("helper", "expected", "before", "newbefore", "newfile"):
+        check(f"{shas[key]} « vert:" in out, f"a green that changes more of the tests than other plain tests ({key}) makes no pair:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

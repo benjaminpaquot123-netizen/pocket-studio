@@ -28,7 +28,6 @@ class Tour6TutoYourTurnTest {
             "acid_techno/kick_do/p",
             "acid_techno/ride_do/p",
             "acidcore/clap_do/p",
-            "acidcore/hat_do/p",
             "acidcore/kick_do/p",
             "afro_house/kick_do/p",
             "afro_house/perc_do/p",

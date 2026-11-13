@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : 3a41b574d2a22dadf0ed72a92aea176c92413e60
+Relu : 12256c2c9154cd45af8a5cb0864a3d51836d26c7
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -84,5 +84,8 @@ Vérifié moi-même dans le code (lecture seule) : **confirmé**. Une brique de 
 
 
 Reprise sur 3a41b574 : depuis f6fc19dd, la fusion de l'intégration bc97d9eb (lots exports2 et portail4) ne touche ni `padlive/`, ni `live/LiveScreen.kt`, ni `session/LivePadsFullScreen.kt`, ni `SongLength.kt`, ni les tests padlive (diff vide sur ces chemins). Dans `ProjectsScreen.kt`, elle ne change que le libellé « Partager le projet (.zip) » du menu, pas la longueur (ligne 318). 3a41b574 ne touche que le rapport de zone et la copie du rapport du siège Ab-4. Rien de neuf à relire pour ce lot.
+
+
+Reprise sur 12256c2c : la fusion de l'intégration (lots tuto3b et paquet7) ne change rien depuis 4809387c dans `padlive/`, `live/LiveScreen.kt`, `session/LivePadsFullScreen.kt`, `SongLength.kt`, les tests padlive, `SongLengthBricksTest`, ni dans ce que lit ou suppose le calcul de longueur (`LaunchChoice.kt`, `ProjectCatalog.kt`, `AudioTracks.kt`, `LiveCells.kt`, `Scenes.kt`, `engine/…/core`) : diff vide sur tous ces chemins. Rien de neuf à relire.
 
 Verdict : 0 bloquant, 0 grave

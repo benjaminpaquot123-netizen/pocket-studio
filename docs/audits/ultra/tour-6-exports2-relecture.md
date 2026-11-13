@@ -1,42 +1,32 @@
-# Relecture neuve — lot « exports2 » (tour 6, zone Exports)
+# Relecture neuve — lot « exports2 » (tour 6, zone Exports), aller-retour 1
 
-Relecteur neuf (n'a pas écrit le code), sur `app/.../export/ShareSheet.kt` et `app/.../export/MyExports.kt`
-à HEAD de `eq/tour-6-exports2`.
+Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
+MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : d8ef698c Code touché conforme au périmètre (seuls ces deux fichiers d'appli).
+relu : 4cd0dade1f8b56f911a630aac2c9a07a537e230a
 
 ## Relancé et vu
-- Tests du lot relancés verts : `Tour6ExportsNameWrapTest` 1/0, `Tour6ExportsOtherFilesClearTest` 1/0,
-  `Tour6ExportsSaveLabelTest` 1/0, `Tour6ExportsSimpleTargetTest` 2/0, `Lot6UiShareLevelTest` 4/0,
-  `BenchSelfTest` 12 (1 skip)/0.
-- Rejeu rouge vérifié : E4 — code remis au parent du vert (`maxLines=2`/`Ellipsis`) + test rouge
-  (`Tour6ExportsNameWrapTest`) → ROUGE (failures=1) sans le correctif. Arbre restauré, HEAD inchangé.
+- `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
+  BenchSelfTest : 325 tests, 0 échec.
+- Rejeu rouge : ShareSheet.kt remis à `5272056b^` → `Tour6ExportsWholeLinesTest` ROUGE (2/2, assertion
+  « share_check_ok at 470dp: 12 of 60 px ») ; restauré, arbre propre, HEAD inchangé.
+- Banc, parcours du siège Ac-2 (start.txt du siège, appli entière, selftest 176/0) : « oracle tenu » à l'écran 47.
 
-## Contrôles ciblés (tous OK)
-- `SimpleTargetPicker` ne peut pas planter : `pick.choice` non-null, `quickTargets().forEach` sans index,
-  `LoudnessTargets.label(c, null)` → nom seul sans LUFS, `simpleTargetHint` exhaustif (`else` couvre
-  APPLE/FREE), un chip appelle `chooseTarget` via `if (c != pick.choice)`.
-- `ui.target` devenu non-null en Simple : seuls les deux pickers le consomment, gardés par `if (!simple)`
-  (Pro, au-dessus des contrôles) / `if (simple)` (Simple, sous les contrôles) — mutuellement exclusifs,
-  tag `share_target` jamais en double.
-- `Spacer(SCROLL_FADE)` : en fin de colonne défilante ; M4A/WAV, « Partager » et « Mes fichiers » sont
-  épinglés hors du défilement → « Partager » jamais masqué.
-- Ligne « Niveau » Simple : chiffre `%.1f` + `Loudness.describe`, pas d'unité « LUFS » ; `?.let { lufs -> }`
-  → pas de NPE.
-- E6 : seule la ligne `share_project` renommée « Envoyer le projet (.zip) » ; le vrai « Sauvegarder » de
-  Mes projets n'est pas touché.
-- Tests : assertions réelles (hauteur d'une ligne, dégagement du fondu, présence/absence de mots, chiffre).
+## Contrôles (OK)
+- Pas de boucle de mise en page (`stops` stable sous verticalScroll, garde `it != stops`).
+- `snapHeight` jamais ≤ 0 (`pad + cut.top > 0` exigé).
+- U+200B seulement à l'affichage (`breakableName` dans le `Text`), ni le nom ni l'URI ne changent.
+- « Envoyer le projet (.zip) » dans les 14 langues ; seuls ProjectsScreen.kt:338 et :345 changent.
 
 ## Graves
 Aucun.
 
-## Moyens (laissés ouverts, repris dans `docs/REVIEW.md`)
-- `Spacer(SCROLL_FADE)` : sur une page « Envoyer » qui tenait pile, peut ajouter un petit défilement +
-  l'indice de fondu. Cosmétique, accepté pour corriger E3.
-- Seuil du test `Tour6ExportsNameWrapTest` (`long <= short*1.5f`) : distingue 1 vs 2 lignes seulement ;
-  suffisant mais peu strict.
-- (corrigé) Commentaire périmé de la ligne « Niveau » Simple (« mots seuls ») mis à jour pour E1.
-
-Ce qui n'est pas vert : rien.
+## Moyens (repris dans docs/REVIEW.md)
+- AppRoot.kt:940 (projet illisible) et ProjectsViewModel.kt:215/233 disent encore « Sauvegarder le morceau en .zip ».
+- SettingsScreen.kt:224 : l'aide renvoie à « Partager › Sauvegarder le morceau en .zip », libellé disparu.
+- ShareSheet « détails » (Pro) : la mesure jouée sous « Volume » (la cible), sans mot pour les distinguer.
+- E3 : une ligne entière peut être cachée sous un indice de fondu plus faible ; la première image n'est pas arrondie.
+- `Tour6ExportsWholeLinesTest` ne vérifie pas `share_target` (grande police).
+- Mode simple : l'aide sous les puces a disparu, l'étiquette est « Volume visé » (clés déjà traduites).
 
 Verdict : 0 bloquant, 0 grave

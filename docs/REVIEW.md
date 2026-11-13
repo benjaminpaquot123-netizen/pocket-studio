@@ -1204,3 +1204,9 @@ Moyens laissés ouverts :
   corriger E3.
 - **Seuil du test `Tour6ExportsNameWrapTest` (`long <= short*1.5f`)** (zone Exports, lot futur) : distingue
   1 vs 2 lignes seulement ; suffisant mais peu strict. À resserrer si le test reflue.
+
+### Relecture neuve — « exports2 » aller-retour 1 (2026-11-13) : 0 grave ; moyens ouverts (zone Exports sauf mention)
+- AppRoot.kt:940, ProjectsViewModel.kt:215/233 (zone coquille/projets) : « Sauvegarder le morceau en .zip » restant.
+- SettingsScreen.kt:224 (zone réglages/aide) : aide qui renvoie à un libellé disparu.
+- ShareSheet « détails » en Pro : mesure jouée sous la cible, sans mot pour les distinguer.
+- E3 : indice de fondu plus faible quand une ligne entière est cachée ; `Tour6ExportsWholeLinesTest` sans `share_target`.

@@ -1,0 +1,61 @@
+Écran 27 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+curseur [coupé, état « 78% », à 77 %] @ 450,272
+texte « 打击垫声像 » @ 429,321
+texte « 居中 » @ 837,321
+curseur [état « 居中 », à 50 %] @ 450,385
+bouton (dossier ouvert) «  导入 » @ 243,469
+bouton (micro) «  麦克风 » @ 657,469
+texte « 把音色包放到后面的打击垫上： » @ 356,553
+texte « 文件夹 » @ 720,553
+texte « .zip » @ 814,553
+texte « 1 小节 » @ 214,637
+texte « 2 小节 » @ 319,637
+texte « 4 小节 » @ 426,637
+texte « 采集整首歌： » @ 100,637
+texte « 把你自己的声音放到这个打击垫上：设备上的文件（MP3、WAV、FLAC、M4A…）或麦克风。 » @ 445,699
+bouton « 节拍器 » @ 98,809
+bouton « 倒数 » @ 213,809
+bouton « ? » @ 292,809
+bouton « 效果 » @ 814,809
+texte « Swing » [coupé] @ 77,874
+bouton « ? » [coupé] @ 133,872
+texte « 5% » [coupé] @ 840,877
+image (chapeau de diplômé) @ 37,936
+texte « 底鼓和轰鸣 第 2/16 章 · 第 2/4 步 · 专业 » @ 400,936
+icône (liste) @ 771,936
+icône ⌄ @ 843,936
+texte « 单独听 techno 的底鼓：每拍一下干脆低沉的打击。 » @ 295,1017
+texte « ▸ 为什么？ » @ 450,1059
+bouton ■ «  停止试听 » @ 450,1125
+icône ← «  上一步 » @ 87,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

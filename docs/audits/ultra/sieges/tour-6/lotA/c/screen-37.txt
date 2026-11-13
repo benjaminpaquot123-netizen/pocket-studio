@@ -1,0 +1,6 @@
+Écran 37 (588x1278)
+texte « C'est prêt » @ 121,513
+texte « Projet sauvegardé : Trap-20261112-195658.pocketstudio.zip » @ 294,591
+texte « Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ». » @ 294,654
+texte « Voir mes fichiers » @ 347,753
+texte « OK » @ 508,753

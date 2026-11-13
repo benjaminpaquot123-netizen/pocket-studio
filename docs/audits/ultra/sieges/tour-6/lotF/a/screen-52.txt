@@ -1,0 +1,49 @@
+Écran 52 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+bouton « ▶ Parte in loop » @ 512,210
+texte « Mix » @ 51,210
+texte «  · Il mio progetto 1 » @ 202,210
+bouton « ? » @ 341,210
+bouton « ? » @ 659,210
+bouton « ↺ Tutto a zero » @ 138,291
+texte « Tocca a te: alza ciò che deve sentirsi, abbassa ciò che disturba. Tocca ▶ per ascoltare una traccia da sola. » @ 453,392
+bouton « Batteria ▸ » [état « chiuso »] @ 75,502
+curseur [état « Normale », à 80 %] @ 84,685
+texte « Normale » @ 84,846
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 61,913
+bouton ▶ @ 121,900
+texte « Acid 303 » @ 216,502
+curseur [état « Normale », à 80 %] @ 216,685
+texte « Normale » @ 216,846
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 202,913
+bouton ▶ @ 253,900
+texte « Synth » @ 339,488
+curseur [état « −6 », à 57 %] @ 339,657
+texte « −6 » @ 339,818
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 325,885
+bouton ▶ @ 376,872
+texte « Uscita » @ 468,488
+curseur [état « −6 », à 60 %] @ 468,657
+texte « Premi ▶ » @ 468,837
+texte « Nessun consiglio per ora: fidati delle orecchie. » @ 342,1015
+bouton (boussole) « Guida  · Concatena le tue parti 44 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » [sélectionné] @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

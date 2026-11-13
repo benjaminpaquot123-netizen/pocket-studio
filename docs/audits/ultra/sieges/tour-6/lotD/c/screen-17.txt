@@ -1,0 +1,31 @@
+Écran 17 (900x1509)
+dessin @ 450,754
+dessin @ 450,723
+texte « 歌曲调性 » @ 406,795
+texte « 关闭 » @ 832,795
+texte « 曲子的调：F · 弗里几亚 » @ 133,861
+texte « 音阶 » @ 45,907
+bouton « 大调 » @ 66,974
+bouton « 小调 » @ 159,974
+bouton « 多利亚 » @ 264,974
+bouton « 小调五声 » @ 393,974
+bouton « 大调五声 » @ 534,974
+bouton « Blues » @ 658,974
+bouton « 弗里几亚 » @ 783,974
+bouton « 和声小调 » @ 90,1055
+texte « 主音 » @ 45,1121
+bouton « C » @ 63,1188
+bouton « C♯ » @ 150,1188
+bouton « D » @ 237,1188
+bouton « E♭ » @ 324,1188
+bouton « E » @ 411,1188
+bouton « F » @ 498,1188
+bouton « F♯ » @ 585,1188
+bouton « G » @ 672,1188
+bouton « A♭ » @ 759,1188
+bouton « A » @ 63,1269
+bouton « B♭ » @ 150,1269
+bouton « B » @ 237,1269
+image (rond coché) @ 58,1350
+texte « 成功！歌曲的色彩选好了。 » @ 231,1350
+bouton « 返回教程 » @ 450,1434

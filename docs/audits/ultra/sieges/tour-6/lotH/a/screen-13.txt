@@ -1,0 +1,40 @@
+Écran 13 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 132  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+bouton « Grosse caisse studio FX » [coupé] @ 84,256
+bouton « Grosse caisse 2 » [coupé] @ 224,256
+bouton « Caisse » [coupé] @ 364,256
+bouton « Grondement grave FX » [coupé] @ 504,256
+image (chapeau de diplômé) @ 37,334
+texte « La vitesse et la couleur du morceau Chapitre 1/15 · Étape 3/3 · Facile » @ 244,334
+icône (liste) @ 459,335
+icône ⌄ @ 531,335
+texte « À toi : choisis la couleur du morceau, sombre comme la techno. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots. » @ 294,513
+texte « • Phrygienne : une gamme sombre, un peu inquiétante. » @ 271,643
+texte « ▸ Pourquoi ? » @ 294,681
+texte « Le kit Techno » @ 105,741
+bouton « Lire la suite » ⌄ @ 294,741
+bouton (doigt qui touche) «   Je le fais » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 132 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

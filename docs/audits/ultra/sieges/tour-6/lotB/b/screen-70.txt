@@ -1,0 +1,46 @@
+Écran 70 (900x1509)
+texte « Sound ändern » @ 149,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Für das Pad 11 (Rim) » @ 144,78
+onglet ◎ « Kicks » @ 91,143
+onglet ○ « Snares » [sélectionné] @ 255,143
+onglet (main) « Claps » @ 420,143
+onglet (points en rond) « Geschlossene Hi-Hats » @ 690,143
+titre « SOUNDS » [état « Aufgeklappt »] @ 121,233
+icône ← @ 78,299
+texte « Eingebaute Sounds » @ 486,299
+bouton ○ « Snare » @ 243,395
+icône ★ @ 227,395
+bouton « Setzen » @ 347,395
+bouton ○ « Snare 2 » @ 657,395
+icône ☆ @ 641,395
+bouton « Setzen » @ 761,395
+bouton ○ « Rim ✓ Jetzt auf dem Pad » [sélectionné] @ 243,503
+icône ☆ @ 227,503
+bouton « Setzen » @ 347,503
+texte « Tippe auf einen Sound, um ihn zu hören, „Setzen“, um ihn auf das Pad 11 (Rim) zu legen. » @ 450,599
+titre « SOUND-PACKS » [état « Aufgeklappt »] @ 184,722
+bouton « ? » @ 305,722
+texte « Nur herunterladen, wenn du willst; jedes Pack lässt sich mit einer Geste löschen, um Platz zu schaffen. » @ 450,792
+bouton (nuage et flèche) «  Alles laden (68 Packs, 288,4 MB) » @ 450,876
+texte « Moderne 808 » @ 138,947
+bouton « Laden » @ 779,965
+texte « 72 Sounds · 2 MB » @ 147,988
+texte « Acid House » @ 123,1041
+bouton « Laden » @ 779,1059
+texte « 116 Sounds · 2 MB » @ 151,1082
+texte « Acid Techno » @ 130,1135
+bouton « Laden » @ 779,1153
+texte « 128 Sounds · 3 MB » @ 153,1176
+texte « Afro House » @ 122,1229
+bouton « Laden » @ 779,1247
+texte « 100 Sounds · 2 MB » @ 154,1270
+texte « Afrobeats » @ 111,1323
+bouton « Laden » @ 779,1341
+texte « 108 Sounds · 2 MB » @ 154,1364
+texte « Akai MPC60 » @ 129,1417
+bouton « Laden » @ 779,1435
+texte « 104 Sounds · 2 MB » @ 154,1458
+texte « Amapiano » [coupé] @ 113,1498
+bouton « Laden » [coupé] @ 779,1503

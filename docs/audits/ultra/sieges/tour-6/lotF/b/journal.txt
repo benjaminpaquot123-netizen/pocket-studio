@@ -1,0 +1,237 @@
+#0 SIEGE lang=pl device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=3.3 simule_s=2.4 jvm_s=8.2 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 069db9d5e0 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Rozdzielanie ścieżek: perkusja, bas, wokal i reszta. » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 294
+#1 DOIGT launch_continue « Kontynuuj »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 8fa9226a9d | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » ellipsized (« … »)
+#2 LAYOUT CONTRAST « Remix » 1.29:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Rozdziel » 1.23:1 (needs 4.5:1, 12 sp)
+#2 > touche 78 396
+#2 DOIGT pad_0 « Kick »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 0929e195d6 | project=projet-1 no tuto
+#3 SON Son : le pad « Kick » sonne.
+#3 LAYOUT CUT «  Zachowaj to, co właśnie zagrane » ellipsized (« … »)
+#3 LAYOUT CONTRAST «  Nagraj moje pady » 2.78:1 (needs 4.5:1, 14 sp)
+#3 > touche 271 1050
+#3 DOIGT tab_Mix « Miks »
+#4 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e1898ac6f5 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#4 > glisse 204 520 204 640
+#4 DOIGT volume_1 « Głośność: Acid 303 »
+#5 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a25477a251 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 49 1050
+#5 DOIGT tab_Structure « Struktura »
+#6 ROUTE session/tab_Structure | MODE pro | EMPREINTE b9d7164e21 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 271 1050
+#6 DOIGT tab_Mix « Miks »
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a25477a251 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 160 1050
+#7 DOIGT tab_Sons « Dźwięki »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 404c252cdb | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > glisse 450 255 100 255
+#8 DOIGT sons_Audio « Wokal »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 3b74350b28 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 354 255
+#9 DOIGT track_0 « Synth »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 10c2548576 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CUT «  Nagraj moją melodię » ellipsized (« … »)
+#10 LAYOUT CONTRAST «  Nagraj moją melodię » 2.78:1 (needs 4.5:1, 14 sp)
+#10 > touche 236 396
+#10 DOIGT mode_notes « Nuty »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 6b7b539eaf | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Bas-duch » 1.66:1 (needs 4.5:1, 14 sp)
+#11 > glisse 270 760 270 360
+#11 DOIGT loop_plus « + »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 90bd5a289e | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Bas-duch » 1.67:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT TARGET « E5 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « D#5 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « D5 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « C#5 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « C5 C5 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « B4 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « A#4 Graj » 36 x 20 dp (touch 48 x 48)
+#12 LAYOUT TARGET « A4 Graj » 36 x 20 dp (touch 48 x 48)
+#12 > touche 150 716
+#12 DOIGT rien
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE d1a3f5046f | project=projet-1 no tuto
+#13 SON Son : 1 note du synthé.
+#13 > glisse 150 716 300 656
+#13 DOIGT rien
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE ab40824acc | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 423 114
+#14 DOIGT top_play « Graj tę część »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 86ce6aa904 | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > touche 423 114
+#15 DOIGT top_play « Stop »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE ab40824acc | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > attends 1
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE ab40824acc | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > attends 1
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE ab40824acc | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 491 1050
+#18 DOIGT tab_Plus « Więcej »
+#19 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 5cdd4e452b | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 270 795
+#19 DOIGT tool_Reglages « Ustawienia »
+#20 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 72a0f43126 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 129 657
+#20 DOIGT lang_button « 🇵🇱 »
+#21 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 3a5dda7a1d | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Polski » 1.36:1 (needs 3.0:1, 16 sp)
+#21 LAYOUT CONTRAST « 🇮🇩 » 1.79:1 (needs 3.0:1, 24 sp)
+#21 > touche 270 666
+#21 DOIGT lang_en « 🇬🇧 »
+#22 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 24604b8870 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 136 576
+#22 DOIGT lang_button « 🇬🇧 »
+#23 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 1782b33bff | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 🇮🇩 » 2.55:1 (needs 3.0:1, 24 sp)
+#23 LAYOUT CONTRAST « Bahasa Indonesia » 1.58:1 (needs 3.0:1, 16 sp)
+#23 LAYOUT CONTRAST « Deutsch » 1.89:1 (needs 3.0:1, 16 sp)
+#23 LAYOUT CONTRAST « German » 3.55:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « 🇬🇧 » 1.79:1 (needs 3.0:1, 24 sp)
+#23 LAYOUT CONTRAST « English » 1.79:1 (needs 3.0:1, 16 sp)
+#23 LAYOUT CONTRAST « Spanish » 3.98:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « 🇳🇱 » 1.91:1 (needs 3.0:1, 24 sp)
+#23 LAYOUT CONTRAST « Dutch » 1.63:1 (needs 4.5:1, 13 sp)
+#23 > glisse 270 800 270 350
+#23 DOIGT lang_it « 🇮🇹 »
+#24 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 3f736127ef | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « French » 1.58:1 (needs 4.5:1, 13 sp)
+#24 LAYOUT CONTRAST « 🇮🇹 » 2.15:1 (needs 3.0:1, 24 sp)
+#24 LAYOUT CONTRAST « Italiano » 1.38:1 (needs 3.0:1, 16 sp)
+#24 LAYOUT CONTRAST « Italian » 1.89:1 (needs 4.5:1, 13 sp)
+#24 LAYOUT CONTRAST « Portuguese » 3.15:1 (needs 4.5:1, 13 sp)
+#24 > touche 270 534
+#24 DOIGT lang_pl « 🇵🇱 »
+#25 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 72a0f43126 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 271 1050
+#25 DOIGT tab_Mix « Miks »
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ef3b400394 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 270 780 270 380
+#26 DOIGT rien
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE df07e1cf25 | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 160 1050
+#27 DOIGT tab_Sons « Dźwięki »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 27ab78e84b | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 510 258
+#28 DOIGT track_0 « Synth »
+#29 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 621fa2c66e | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 318 483
+#29 DOIGT track_menu_settings « Ustaw brzmienie (filtr, obwiednia…) »
+#30 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 7298639a2a | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT TARGET « C 4 C Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « D 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « E 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « F 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « G 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « A 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « B 4 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « C 5 C Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « D 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « E 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « F 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « G 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « A 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « B 5 Graj » 21 x 120 dp (touch 48 x 120)
+#30 LAYOUT TARGET « C# 4 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « D# 4 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « F# 4 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « G# 4 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « A# 4 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « C# 5 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « D# 5 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « F# 5 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « G# 5 Graj » 15 x 73 dp (touch 48 x 73)
+#30 LAYOUT TARGET « A# 5 Graj » 15 x 73 dp (touch 48 x 73)
+#30 > attends 3
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 6b12df284e | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 246 531
+#31 DOIGT dans:synth « Kwadrat »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE ea39c66d65 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 111 770
+#32 DOIGT float_key_64 « E 4 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE b68d3aa021 | project=projet-1 no tuto
+#33 SON Son : 1 note du synthé.
+#33 > glisse 270 500 270 380
+#33 DOIGT rien
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 51ef32181d | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT LABEL « knob_8 » long press without text nor description
+#34 > touche 480 606
+#34 DOIGT float_keyboard_fold
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 6c296df7c9 | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT LABEL « knob_9 » long press without text nor description
+#35 LAYOUT LABEL « knob_10 » long press without text nor description
+#35 > glisse 270 570 160 570
+#35 DOIGT dans:synth « Odcięcie »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE da9e7cb2c4 | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 40 760 40 360
+#36 DOIGT rien
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE da9e7cb2c4 | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > glisse 150 640 150 360
+#37 DOIGT knob_9 « Rezonans »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE d482da4bad | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT LABEL « knob_15 » long press without text nor description
+#38 LAYOUT LABEL « knob_18 » long press without text nor description
+#38 > glisse 150 640 150 360
+#38 DOIGT knob_15 « Atak »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 668d29bef1 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT LABEL « knob_2 » long press without text nor description
+#39 LAYOUT LABEL « knob_5 » long press without text nor description
+#39 > glisse 150 640 150 340
+#39 DOIGT rien
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 8954b1ba21 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT LABEL « knob_24 » long press without text nor description
+#40 LAYOUT LABEL « knob_25 » long press without text nor description
+#40 > touche 270 882
+#40 DOIGT guide_bar « Przewodnik »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE f46dd6922a | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « NA POCZĄTEK » 4.30:1 (needs 4.5:1, 12 sp)
+#41 > touche 270 558
+#41 DOIGT guide_bar « Przewodnik »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 8954b1ba21 | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > fin
+#42 FIN : fin

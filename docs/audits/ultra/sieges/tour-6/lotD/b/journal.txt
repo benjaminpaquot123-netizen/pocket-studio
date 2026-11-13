@@ -1,0 +1,371 @@
+#0 SIEGE lang=ko device=phone360 font=130 mode=simple theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.6 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 06bd7a7f78 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 270 713
+#1 DOIGT welcome_learn « 배울래요 »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE d60aa5a519 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 270 337
+#2 DOIGT mode_card_simple « 간단 »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE bfbdee8ee4 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 270 329
+#3 DOIGT tuto_style_techno « Techno »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4a24603b6e | project=p-2ab47969 tuto=techno/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « 내 프로젝트 1 » ellipsized (« … »)
+#4 LAYOUT CUT « 저장됨 » lines cut (taller than its box)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 > touche 270 778
+#4 DOIGT tuto_listen «  예시 듣기 »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE cbb93b1d3a | project=p-2ab47969 tuto=techno/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 LAYOUT OVERLAP « ▸ 왜요? » over the touchable « 계속 읽기 » (55 x 27 dp)
+#5 LAYOUT CONTRAST « ▸ 왜요? » 1.49:1 (needs 4.5:1, 14 sp)
+#5 > touche 457 862
+#5 DOIGT tuto_next « 다음  »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7318727a44 | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Techno 킷 » over the touchable « 계속 읽기 » (89 x 26 dp)
+#6 > touche 270 697
+#6 DOIGT tuto_do «   직접 할게요 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 86c23c2958 | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 템포 » over the touchable « 시트 닫기 » (45 x 37 dp)
+#7 LAYOUT OVERLAP « ? » over the touchable « 시트 닫기 » (9 x 18 dp)
+#7 LAYOUT OVERLAP « 닫기 » over the touchable « 시트 닫기 » (35 x 27 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (86 x 53 dp)
+#7 LAYOUT OVERLAP «  BPM » over the touchable « 시트 닫기 » (50 x 31 dp)
+#7 LAYOUT OVERLAP « 70 » over the touchable « 시트 닫기 » (25 x 24 dp)
+#7 LAYOUT OVERLAP « 90 » over the touchable « 시트 닫기 » (25 x 24 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (38 x 24 dp)
+#7 LAYOUT OVERLAP « 140 » over the touchable « 시트 닫기 » (38 x 24 dp)
+#7 LAYOUT OVERLAP « 174 » over the touchable « 시트 닫기 » (38 x 24 dp)
+#7 LAYOUT OVERLAP « ½ » over the touchable « 시트 닫기 » (17 x 31 dp)
+#7 LAYOUT OVERLAP « ×2 » over the touchable « 시트 닫기 » (26 x 31 dp)
+#7 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 2 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 3 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 4 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 5 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 6 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 7 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 8 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 9 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 0 » over the touchable « 시트 닫기 » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 확인 » over the touchable « 시트 닫기 » (45 x 37 dp)
+#7 LAYOUT OVERLAP « 박자에 맞춰 탭 » over the touchable « 시트 닫기 » (123 x 31 dp)
+#7 LAYOUT OVERLAP « 박마다 여기를 탭하세요. 템포가 따라와요. » over the touchable « 시트 닫기 » (256 x 49 dp)
+#7 > touche 103 709
+#7 DOIGT tempo_key_1 « 1 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 385eef0f76 | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (29 x 53 dp)
+#8 LAYOUT OVERLAP « 40~300 사이 » over the touchable « 시트 닫기 » (112 x 27 dp)
+#8 > touche 437 709
+#8 DOIGT tempo_key_3 « 3 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 5e8d7f6fca | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 13 » over the touchable « 시트 닫기 » (57 x 53 dp)
+#9 > touche 437 709
+#9 DOIGT tempo_key_3 « 3 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 69877b012d | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 133 » over the touchable « 시트 닫기 » (86 x 53 dp)
+#10 > touche 103 970
+#10 DOIGT tempo_key_erase « 숫자 지우기 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 5e8d7f6fca | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 709
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE c1aab3725c | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 132 » over the touchable « 시트 닫기 » (86 x 53 dp)
+#12 > touche 437 970
+#12 DOIGT tempo_key_ok « 확인 »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2747d00957 | project=p-2ab47969 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 851
+#13 DOIGT tuto_next_folded « 성공 »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3fb4b8ded0 | project=p-2ab47969 tuto=techno/Facile active=true step=key done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « • 프리지안: 어둡고 조금 으스스한 음계. » over the touchable « 계속 읽기 » (275 x 7 dp)
+#14 LAYOUT OVERLAP « ▸ 왜요? » over the touchable « 계속 읽기 » (55 x 19 dp)
+#14 > touche 270 697
+#14 DOIGT tuto_do «   직접 할게요 »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE fa44665993 | project=p-2ab47969 tuto=techno/Facile active=true step=key done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 곡의 키 » over the touchable « 시트 닫기 » (73 x 37 dp)
+#15 LAYOUT OVERLAP « 곡의 키: 없음 » over the touchable « 시트 닫기 » (103 x 27 dp)
+#15 LAYOUT OVERLAP « 스케일 » over the touchable « 시트 닫기 » (52 x 27 dp)
+#15 LAYOUT OVERLAP « 메이저 » over the touchable « 시트 닫기 » (56 x 31 dp)
+#15 LAYOUT OVERLAP « 마이너 » over the touchable « 시트 닫기 » (56 x 31 dp)
+#15 LAYOUT OVERLAP « 도리안 » over the touchable « 시트 닫기 » (56 x 31 dp)
+#15 LAYOUT OVERLAP « 마이너 펜타 » over the touchable « 시트 닫기 » (99 x 31 dp)
+#15 LAYOUT OVERLAP « 메이저 펜타 » over the touchable « 시트 닫기 » (99 x 31 dp)
+#15 LAYOUT OVERLAP « 블루스 » over the touchable « 시트 닫기 » (56 x 31 dp)
+#15 LAYOUT OVERLAP « 프리지안 » over the touchable « 시트 닫기 » (75 x 31 dp)
+#15 LAYOUT OVERLAP « 하모닉 마이너 » over the touchable « 시트 닫기 » (117 x 31 dp)
+#15 LAYOUT OVERLAP « 키 » over the touchable « 시트 닫기 » (17 x 27 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « 시트 닫기 » (15 x 31 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « 시트 닫기 » (26 x 31 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « 시트 닫기 » (15 x 31 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « 시트 닫기 » (19 x 31 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « 시트 닫기 » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « 시트 닫기 » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « 시트 닫기 » (23 x 31 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « 시트 닫기 » (15 x 31 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « 시트 닫기 » (21 x 31 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « 시트 닫기 » (14 x 31 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « 시트 닫기 » (20 x 31 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « 시트 닫기 » (13 x 31 dp)
+#15 > touche 227 712
+#15 DOIGT tuto_scale_Phrygian « 프리지안 »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE c30e493a11 | project=p-2ab47969 tuto=techno/Facile active=true step=key done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 곡의 키: C · 프리지안 » over the touchable « 시트 닫기 » (167 x 27 dp)
+#16 > touche 63 1017
+#16 DOIGT tuto_root_5 « F »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE ce13948cb7 | project=p-2ab47969 tuto=techno/Facile active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 곡의 키: F · 프리지안 » over the touchable « 시트 닫기 » (165 x 27 dp)
+#17 LAYOUT OVERLAP « 성공! 곡의 색깔을 골랐어요. » over the touchable « 시트 닫기 » (231 x 31 dp)
+#17 LAYOUT OVERLAP « 튜토리얼로 돌아가기 » over the touchable « 시트 닫기 » (162 x 27 dp)
+#17 > touche 270 1095
+#17 DOIGT tuto_key_continue « 튜토리얼로 돌아가기 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2db7b5b4d7 | project=p-2ab47969 tuto=techno/Facile active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 270 851
+#18 DOIGT tuto_next_folded « 성공 »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE eca7dae9b4 | project=p-2ab47969 tuto=techno/Facile active=true step=ready done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 270 778
+#19 DOIGT tuto_mark «   알겠어요 »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2bae60d217 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_hear done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « 이 스타일의 진짜 드럼 사운드예요. 내 곡과 예시에 쓰여요. 없어도 튜토리얼은 기본 사운드로 돌아가요. » over « 계속 읽기 » (66 x 25 dp)
+#20 LAYOUT OVERLAP « 이 스타일의 진짜 드럼 사운드예요. 내 곡과 예시에 쓰여요. 없어도 튜토리얼은 기본 사운드로 돌아가요. » over the touchable « 계속 읽기 » (307 x 32 dp)
+#20 > touche 270 706
+#20 DOIGT tuto_text_more « 계속 읽기 »
+#21 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7450b5c9b3 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_hear done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 270 598
+#21 DOIGT tuto_kit_download « Techno 킷 다운로드 (4 MB) »
+#22 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 21d679dd38 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_hear done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 > attends 20
+#23 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9de362c89a | project=p-2ab47969 tuto=techno/Facile active=true step=kick_hear done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 270 778
+#23 DOIGT tuto_listen «  예시 듣기 »
+#24 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6e91da2dc4 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_hear done=3 playing=false
+#24 SON Son : l'exemple du tuto joue (encore 3 s).
+#24 > touche 457 862
+#24 DOIGT tuto_next « 다음  »
+#25 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f87df6ee86 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 697
+#25 DOIGT tuto_do «   직접 할게요 »
+#26 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 67 314
+#26 DOIGT rien
+#27 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 297 314
+#27 DOIGT rien
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 503e5029bd | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « 직접 해 보세요: “큰북들” 패드(킥을 연주하는 버튼)에서 점선 칸을 탭하세요. 박마다 하나씩이에요. 칸 하나하나가 루프의 한 순간이에요. » ellipsized (« … »)
+#28 > touche 67 385
+#28 DOIGT step_8 « 스텝 9 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa7608f503 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 298 385
+#29 DOIGT step_12 « 스텝 13 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 09ee7052e5 | project=p-2ab47969 tuto=techno/Facile active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 270 851
+#30 DOIGT tuto_next_folded « 성공 »
+#31 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d8b84a0201 | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 270 697
+#31 DOIGT tuto_do «   직접 할게요 »
+#32 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 67 314
+#32 DOIGT rien
+#33 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 298 314
+#33 DOIGT rien
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ba0aa483f | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « 직접 해 보세요: “낮은 울림” 패드(으르렁거림)에서 킥과 같은 칸을 탭하세요. 히트마다 바로 뒤에서 지저분하고 낮은 에코처럼 으르렁대요. » ellipsized (« … »)
+#34 > touche 67 385
+#34 DOIGT step_8 « 스텝 9 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 75696a9b8f | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 298 385
+#35 DOIGT step_12 « 스텝 13 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3e045769ca | project=p-2ab47969 tuto=techno/Facile active=true step=rumble_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 270 851
+#36 DOIGT tuto_next_folded « 성공 »
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c888353452 | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 270 697
+#37 DOIGT tuto_do «   직접 할게요 »
+#38 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 298 314
+#38 DOIGT rien
+#39 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 298 385
+#39 DOIGT rien
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9205a5669f | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « 직접 해 보세요: “손뼉 소리” 패드에서 2마디의 점선 칸을 탭하세요. 2박과 4박, 그리고 다음 마디 바로 앞에 약한 히트 하나. “2마디로 바꾸기”가 나오면 먼저 탭하세요. » ellipsized (« … »)
+#40 > touche 472 385
+#40 DOIGT step_15 « 스텝 16 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1ba19f3e3c | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 270 851
+#41 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c9e5cb9b41 | project=p-2ab47969 tuto=techno/Facile active=true step=clap_do done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 270 750
+#42 DOIGT tuto_next_big « 다음 챕터   »
+#43 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b12935630d | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 270 697
+#43 DOIGT tuto_do «   직접 할게요 »
+#44 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 182 314
+#44 DOIGT rien
+#45 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=6 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 414 314
+#45 DOIGT rien
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c50767b681 | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=6 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « 직접 해 보세요: “Roland TR-909 · 오픈 하이햇” 패드(더 긴 “츠으”)에서 점선 칸을 탭하세요. 킥 바로 사이, 업비트에요. » ellipsized (« … »)
+#46 LAYOUT CONTRAST « 여기 점선 칸이 2개 남았어요 » 2.82:1 (needs 3.0:1, 14 sp)
+#46 > touche 182 385
+#46 DOIGT step_10 « 스텝 11 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8431accb44 | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 여기 점선 칸이 1개 남았어요 » 2.82:1 (needs 3.0:1, 14 sp)
+#47 > touche 414 385
+#47 DOIGT step_14 « 스텝 15 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 07f13a3b35 | project=p-2ab47969 tuto=techno/Facile active=true step=open_hat_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 270 851
+#48 DOIGT tuto_next_folded « 성공 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0c0cbfc3e5 | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 240 288
+#49 DOIGT step_3 « 스텝 4 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f090c7e8d2 | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 414 288
+#50 DOIGT step_6 « 스텝 7 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 90ad928404 | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 483 395
+#51 DOIGT tuto_fold
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 54120f66df | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « 직접 해 보세요: “퍼크” 패드(작은 “똑”)에서 점선 칸을 탭하세요. 박에서 살짝 비껴, 어긋나게 떨어져요. » ellipsized (« … »)
+#52 > touche 182 359
+#52 DOIGT step_10 « 스텝 11 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f84dfe28a0 | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 356 359
+#53 DOIGT step_13 « 스텝 14 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3e01aae05 | project=p-2ab47969 tuto=techno/Facile active=true step=perc_do done=8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 270 851
+#54 DOIGT tuto_next_folded « 성공 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8bfb83ade | project=p-2ab47969 tuto=techno/Facile active=true step=drums_hear done=8 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 270 697
+#55 DOIGT tuto_play_mine «   내 결과 듣기 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e101eb5a1 | project=p-2ab47969 tuto=techno/Facile active=true step=drums_hear done=8 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 270 697
+#56 DOIGT tuto_play_mine «   정지 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8bfb83ade | project=p-2ab47969 tuto=techno/Facile active=true step=drums_hear done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 457 862
+#57 DOIGT tuto_next « 다음  »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1795cdd8b8 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_hear done=8 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 457 862
+#58 DOIGT tuto_next « 다음  »
+#59 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE cabcfb3b85 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT OVERLAP « 직접 해 보세요: “베이스 트랙 만들기”(트랙 = 곡의 악기 하나)를 탭하고, 1마디의 점선 노트를 탭하세요. 킥마다 뒤에 작은 노트 두 개. “다음 마디에 복사”가 2마디와 3마디에 반복해요. 그다음 4마디의 노트를 탭하고(끝이 한 칸 올라갔다가 위로 뛰어요) 다시 “복사”. » over the touchable « 계속 읽기 » (331 x 7 dp)
+#59 LAYOUT OVERLAP « • 킥: 베이스 드럼, 드럼의 낮은 ‘쿵’. » over the touchable « 계속 읽기 » (246 x 19 dp)
+#59 > touche 270 697
+#59 DOIGT tuto_need «   베이스 트랙 만들기 »
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 36d8cb121f | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « 직접 해 보세요: “베이스 트랙 만들기”(트랙 = 곡의 악기 하나)를 탭하고, 1마디의 점선 노트를 탭하세요. 킥마다 뒤에 작은 노트 두 개. “다음 마디에 복사”가 2마디와 3마디에 반복해요. 그다음 4마디의 노트를 탭하고(끝이 한 칸 올라갔다가 위로 뛰어요) 다시 “복사”. » ellipsized (« … »)
+#60 LAYOUT CONTRAST «  트랙 » 1.28:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT TARGET « C3 C3 재생 » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « B2 재생 » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « B♭2 재생 » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « A2 재생 » 36 x 20 dp (touch 48 x 48)
+#60 > glisse 300 670 300 560
+#60 DOIGT rien
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE abb27cd0ac | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT TARGET « A♭2 재생 » 36 x 20 dp (touch 48 x 48)
+#61 LAYOUT TARGET « G2 재생 » 36 x 20 dp (touch 48 x 48)
+#61 LAYOUT TARGET « G♭2 재생 » 36 x 20 dp (touch 48 x 48)
+#61 > touche 483 738
+#61 DOIGT tuto_fold
+#62 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 63e2e1f5a3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 270 697
+#62 DOIGT tuto_do «   직접 할게요 »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE abb27cd0ac | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#63 SON Son : rien ne joue.
+#63 > glisse 300 560 300 680
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 64aab4d34f | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#64 SON Son : rien ne joue.
+#64 > glisse 270 470 270 250
+#64 DOIGT tuto_notes_left « 베이스 · 1/8마디 »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c96a54562c | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT TARGET « F2 재생 » 36 x 20 dp (touch 48 x 48)
+#65 LAYOUT TARGET « E2 재생 » 36 x 20 dp (touch 48 x 48)
+#65 LAYOUT TARGET « E♭2 재생 » 36 x 20 dp (touch 48 x 48)
+#65 > touche 136 596
+#65 DOIGT rien
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d328d94cb3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 180 596
+#66 DOIGT rien
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d328d94cb3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 244 596
+#67 DOIGT rien
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d328d94cb3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#68 SON Son : 1 note du synthé.
+#68 RIEN NE CHANGE (3 écrans identiques)
+#68 > touche 286 596
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d328d94cb3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 352 596
+#69 DOIGT rien
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d328d94cb3 | project=p-2ab47969 tuto=techno/Facile active=true step=bass_do done=8 playing=false
+#70 SON Son : 1 note du synthé.
+#70 RIEN NE CHANGE (5 écrans identiques)
+#70 FIN : rien ne change (5 écrans identiques)

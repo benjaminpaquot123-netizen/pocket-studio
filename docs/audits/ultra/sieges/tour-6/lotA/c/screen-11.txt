@@ -1,0 +1,7 @@
+Écran 11 (588x1278)
+texte « Mes fichiers » @ 143,484
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,572
+texte « Trap-morceau-20261112-195503.m4a » @ 223,654
+texte « Renvoyer » @ 485,667
+texte « 12 nov. 2026 19:55 · 1 Ko » @ 147,682
+texte « Fermer » @ 497,781

@@ -1,0 +1,10 @@
+Écran 29 (540x1170)
+texte « Karta ścieżki (warstwy, historia) » @ 318,339
+texte « Zmień dźwięk » @ 318,411
+texte « Ustaw brzmienie (filtr, obwiednia…) » @ 318,483
+texte « Zmień nazwę » @ 318,555
+texte « Kolor » @ 318,627
+texte « Duplikuj » @ 318,699
+texte « Wyczyść w części A » @ 318,771
+texte « Zamroź ścieżkę (render audio, mniej obliczeń) » @ 318,843
+texte « Usuń (można cofnąć) » @ 318,915

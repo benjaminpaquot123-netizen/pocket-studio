@@ -1,0 +1,49 @@
+Écran 32 (588x1278)
+bouton (dossier ouvert) @ 102,42
+bouton « Pro » @ 234,42
+icône ↶ [désactivé] @ 309,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône (trois points reliés) @ 543,42
+bouton « 116  BPM » @ 83,123
+icône « Ön nakarat ölçü 13/100 » ▾ @ 272,123
+bouton (flèches en boucle) [état « kapalı »] @ 462,123
+bouton « ? » @ 543,123
+onglet « Zaman çizelgesi » [sélectionné] @ 147,201
+onglet « Bölümler » @ 367,201
+bouton » « Takip et » [coupé, sélectionné] @ 489,201
+icône (quatre coins) @ 552,201
+texte « Bölümler » @ 73,263
+texte « Ölçüler » @ 64,303
+dessin @ 381,280
+icône (loupe +) @ 534,313
+icône (loupe −) @ 534,385
+icône (flèches vers les coins) @ 534,457
+texte « Davul » @ 65,345
+bouton (haut-parleur et ondes) [allumé, état « açık »] @ 56,388
+bouton (casque) [état « kapalı »] @ 125,388
+texte « Bas » @ 51,429
+bouton (haut-parleur et ondes) [allumé, état « açık »] @ 56,472
+bouton (casque) [état « kapalı »] @ 125,472
+bouton (courbe) « Seviye · Bas » [coupé] @ 87,501
+dessin [coupé] @ 381,417
+bouton (boussole) « Rehber  · Kick: ses, kalıp, nerede çaldığı 28 % » ⌄ [état « açık »] @ 294,550
+texte « AŞAMA 1 · SESLER VE KALIPLAR » @ 294,632
+texte « Kick: ses, kalıp, nerede çaldığı » @ 294,708
+texte « Nakaratta disko pop gibi her vuruşta kick; kıtada yalnızca 1 ve 3'te, zıplatmak için 3'ten hemen önce küçük bir vuruşla. » @ 294,850
+texte « → » @ 61,971
+texte « Sıra sende: bu sesi tek başına dinle, sonra karar ver. » [coupé] @ 150,985
+icône ↶ « Geri al » [désactivé] @ 72,1061
+icône ↷ « Yinele » [désactivé] @ 180,1061
+bouton ▶ « şarkı » @ 288,1061
+texte « 116 Tempo » @ 402,1061
+icône (trois points reliés) « Paylaş » @ 516,1061
+onglet (ligne brisée et points) « Yapı » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sesler » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Diğer » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Not al » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 162,1248

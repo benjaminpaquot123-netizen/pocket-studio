@@ -1,0 +1,44 @@
+Écran 37 (588x1278)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 480,42
+bouton « محترف » @ 339,42
+icône ↶ @ 261,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône (trois points reliés) @ 45,42
+bouton « 120  BPM » @ 515,114
+bouton « ? » @ 45,114
+onglet « الخط الزمني » [désactivé] @ 493,192
+onglet « الأجزاء » [sélectionné] @ 373,192
+titre « الأغنية » [état « موسَّع »] @ 478,285
+bouton « ? » @ 432,285
+texte « أغنيتك فارغة: أضف أجزاءك بترتيب عزفها (Intro، مقطع، لازمة…). » @ 316,335
+texte « إضافة: » @ 521,382
+bouton « + جزء جديد (نسخة من A) » @ 285,448
+bouton « + A » @ 492,448
+bouton « + جزء جديد فارغ » @ 439,529
+bouton (barres de son) «   ما يُعزف في الأغنية » @ 294,613
+titre « إعدادات الأغنية » [état « موسَّع »] @ 294,679
+texte « في النهاية: » @ 507,745
+bouton « إيقاف » [sélectionné] @ 408,745
+bouton « البدء من جديد » @ 271,745
+bouton « تتبّع الأغنية » [sélectionné] @ 378,829
+bouton « البقاء على جزئي » @ 212,829
+texte « أثناء العزف: » @ 503,829
+texte « الشاشات تعرض الجزء الذي يُعزف. » @ 430,893
+texte « النبضات في المازورة: » [coupé] @ 468,938
+bouton « ? » [coupé] @ 369,936
+bouton (boussole) « المرشد  · ضع إيقاعًا 9 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » [sélectionné] @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

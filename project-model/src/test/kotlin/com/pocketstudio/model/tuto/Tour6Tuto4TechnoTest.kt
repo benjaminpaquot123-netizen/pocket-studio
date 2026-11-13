@@ -50,7 +50,8 @@ class Tour6Tuto4TechnoTest {
                 for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} ${s.id}: no « ${tr(l, name)} »: $t" }
             }
         }
-        steps.flatMap(::texts).filter { "« toc »" in it }.forEach { bad += "fr: « toc », no pad's name: $it" }
+        // « toc » may say how the « Rim » sounds (« un petit « toc » »), never stand for a pad (« le « toc » »).
+        steps.flatMap(::texts).filter { Regex("""\b(le|du|au) « toc »""").containsMatchIn(it) }.forEach { bad += "fr: « toc », no pad's name: $it" }
         report("drum steps that do not name their pad as written", bad)
     }
 

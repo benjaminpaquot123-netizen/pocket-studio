@@ -31,7 +31,9 @@
     the prefix, or a test the red names or adds that the green's message names, or the red's topic: a camelCase word
     of its subject before « ( » that is a class or the start of a function of a test file the red adds or changes,
     named in the green's subject before « ( »; a green closes at most one red per topic). A green of another test
-    closes nothing. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
+    closes nothing. Lot « juge8 »: a red of several tests pairs a green for each: a green that closes no open red pairs
+    an earlier red already closed when it names one of that red's tests no green named yet (each test once; a green
+    that closed the red by its subject, a topic, a replay or a named pair claims all of its tests). A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
     « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
     is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
     ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
@@ -641,11 +643,25 @@ def red_topics(root, sha, subject):
     return found
 
 
+def _named_in(message, name):
+    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(name) + r"(?![A-Za-z0-9_])", message) is not None
+
+
 def same_test(red, green):
     """red, green: (sha, subject, message, names). Same subject after the prefix, or the green names a test of the red."""
     if _rest(red[1]) == _rest(green[1]):
         return True
-    return any(re.search(r"(?<![A-Za-z0-9_])" + re.escape(n) + r"(?![A-Za-z0-9_])", green[2]) for n in red[3])
+    return any(_named_in(green[2], n) for n in red[3])
+
+
+def _test_key(name):
+    """One test, however a message names it: « Class#method », « file::case » or the method alone."""
+    return re.split(r"#|::", name)[-1]
+
+
+def claimed_by(red, message):
+    """Lot « juge8 »: the tests of a red ([red_names]) a green's message names, one key per test."""
+    return {_test_key(n) for n in red[3] if _named_in(message, n)}
 
 
 def _commit(root, sha):
@@ -1263,7 +1279,7 @@ def red_green_pairs(root):
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
     rows, gaps = named_lines(root)
-    open_reds, closed_reds = [], []
+    open_reds, closed_reds, claimed = [], [], {}
     for record in out.split("\x1e")[1:]:
         sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
@@ -1288,10 +1304,21 @@ def red_green_pairs(root):
             named, refused = named_pair(root, sha, rows, open_reds, closed_reds + closed)
             closed += [r for r in named if r in open_reds and r not in closed]
             paired_by_name = bool(named)
+            # Lot « juge8 » (remix2: one red, four tests, a green for each): a green that closed no open red pairs an
+            # earlier red already closed when it names one of that red's tests no green named yet; each test once.
+            again = None
+            if not closed and not paired_by_name:
+                again = next((r for r in closed_reds if claimed_by(r, message) - claimed.get(r[0], set())), None)
+            # A green that closed a red by anything but its tests' names (same subject, topic, replay, named pair) is
+            # that whole red's green: it claims all its tests (a later fix of one of them pairs by evidence, never here).
+            for r in closed + ([again] if again else []):
+                mine = claimed_by(r, message)
+                claimed.setdefault(r[0], set()).update(mine if mine and _rest(r[1]) != _rest(subject)
+                                                       else {_test_key(n) for n in r[3]})
             for r in closed:
                 open_reds.remove(r)
             closed_reds += closed
-            if paired_by_name:
+            if paired_by_name or again is not None:
                 continue
             if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message) \
                     and not mutated_red(root, sha):

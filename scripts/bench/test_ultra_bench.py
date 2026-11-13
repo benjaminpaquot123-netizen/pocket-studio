@@ -1557,6 +1557,11 @@ def one_red_several_greens(d):
     other = commit("vert: OtherProofTest#theOtherThingIsShown, a test the red does not cover")
     unnamed = commit("vert: A5 span tools whole on arrival")
     lonely = commit("rouge: the lonely guard", ("LonelyProofTest", ["theLonelyRedStaysOpen"]))
+    # A red closed by its subject: its green is the whole red's, a later green naming one of its tests stays a gap
+    # (the real 4bf5a58a then 6ed6127b: a regression of that test pairs by evidence, rouges-constates/).
+    whole = commit("rouge: the whole speaker curve", ("CurveProofTest", ["theCurveComesBackWhole", "aBandUnderTheNoiseIsNotMadeUp"]))
+    whole_green = commit("vert: the whole speaker curve")
+    regression = commit("vert: aBandUnderTheNoiseIsNotMadeUp went red again, mended")
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
@@ -1565,7 +1570,9 @@ def one_red_several_greens(d):
     for sha, what in ((again, "a test already claimed"), (other, "a test the red does not cover"), (unnamed, "no test named")):
         check(f"{sha} « vert:" in out, f"a green naming {what} stays a gap:\n" + out)
     check(f"{lonely} « rouge:" in out, "a red no green names stays a gap:\n" + out)
-    check("chantier : 4 écarts" in out, "four gaps, nothing else:\n" + out)
+    check(whole + " «" not in out and whole_green + " «" not in out, "a red closed by its subject is paired:\n" + out)
+    check(f"{regression} « vert:" in out, "a red closed by its subject gave all its tests to that green:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

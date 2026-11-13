@@ -416,4 +416,25 @@ class Tour6Tuto4TechnoTest {
         for (l in langs) tr(l, filter).let { t -> if (!Regex("(?<!\\d)$bars(?!\\d)").containsMatchIn(t)) bad += "${l.code} filter: no $bars: $t" }
         report("tracks or curves said otherwise than shown", bad)
     }
+
+    /**
+     * Round trip 1 after Bb-5, M5: ch. 14 says by how much to lower (« Montre-moi » lowers by about 2 dB, ×0.8), ch. 15
+     * explains OTT and LUFS and gives « Club »'s figure (LoudnessTargets: the style's own when louder than −8).
+     */
+    @Test
+    fun theMixAndTheMasterGiveTheirFigures() {
+        val bad = ArrayList<String>()
+        val levels = step("levels").textPro!!
+        for (t in listOf(levels) + langs.map { tr(it, levels) }) if ("2 dB" !in t) bad += "levels Pro: no « 2 dB »: $t"
+        val club = com.pocketstudio.model.LoudnessTargets.lufs(com.pocketstudio.model.LoudnessTarget.CLUB, "techno", TutoTarget.of("techno")!!.blank().mixVersion)!!
+        val figure = Regex(String.format(java.util.Locale.ROOT, "%.1f", -club).replace(".", "[.,٫]").removeSuffix("[.,٫]0"))
+        val loud = step("loudness").text
+        if (!Regex("OTT \\(").containsMatchIn(loud)) bad += "fr loudness: OTT not explained: $loud"
+        if (!Regex("LUFS \\(").containsMatchIn(loud)) bad += "fr loudness: LUFS not explained: $loud"
+        for (t in listOf(loud) + langs.map { tr(it, loud) }) {
+            if (!Regex("−$figure").containsMatchIn(t)) bad += "loudness: no « −$figure » (Club): $t"
+            if ("LUFS" !in t) bad += "loudness: no LUFS: $t"
+        }
+        report("mix and master steps without their figures", bad)
+    }
 }

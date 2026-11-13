@@ -1,0 +1,2 @@
+route=dialogue:cut_auto_0
+nouvelle=0

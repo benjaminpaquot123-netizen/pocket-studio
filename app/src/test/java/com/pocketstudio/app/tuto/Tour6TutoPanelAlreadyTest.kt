@@ -19,6 +19,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
+import org.junit.Before
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -56,6 +57,9 @@ class Tour6TutoPanelAlreadyTest {
     private val scope = MainScope()
     private val style = "techno"
     private val target = TutoTarget.of(style)!!
+
+    @Before
+    fun clean() = TutoHints.reset()
 
     @After
     fun end() = scope.cancel()

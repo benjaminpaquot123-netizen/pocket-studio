@@ -4,7 +4,7 @@ Siège d'origine : `docs/audits/ultra/sieges/tour-6/lotB/a` (espagnol, télépho
 
 Fichiers touchés : `CutScreen.kt`, `CutWave.kt`, `RemixScreen.kt`, et le test `RemixLeftThumbSeatTest.kt`.
 
-tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest
+tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest
 
 ## Preuve rejouée (par le banc, conditions du siège)
 - **A2** (puces hors du pouce gauche) : « Voz / Batería / Bajo / Resto » descendues sous les outils, atteignables au pouce gauche sans glisser. `RemixLeftThumbSeatTest#a2_stemChipsReachableWithLeftThumb`.
@@ -31,3 +31,9 @@ chemin: Remix › panneau du projet | test: RemixLeftThumbSeatTest#a8_oneCutButt
 
 ## Laissés de côté
 - A4 (en « Phrases » la ligne d'outils reste visible) : non vérifié ce tour ; les puces restent en haut en mode Phrases (la liste des morceaux a besoin des puces au-dessus). À rejouer dans un siège Phrases.
+
+## Relecture neuve (sous-agent, sur 41d39ef5)
+- Relancé : `:app:testDebugUnitTest --tests 'com.pocketstudio.app.remix.*'` → 300 tests, 0 échec.
+- 0 bloquant, 0 grave. Moyen (corrigé avant fusion) : à 488 dp sans défilement la courbe tombait sous 120 dp ; test de garde `CutBoutBigTextTest#aPieceJustAboveTheScrollThreshold` vu rouge (courbe 0 dp), vert après le correctif (courbe fixe 120–180 dp, défilement toujours).
+- Mineurs laissés : à 130 % le chip « Resto » demande un glissement latéral (rangée défilante) ; A7 non vérifié sur une toile claire (il n'y en a pas aujourd'hui).
+- Après correctif : remix.* 0 échec (siège a2/a3/a5/a8 verts), captures cut_bout* réenregistrées et regardées.

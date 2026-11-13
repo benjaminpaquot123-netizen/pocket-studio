@@ -3,6 +3,7 @@ package com.pocketstudio.app.ui
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.model.remixOverrunSeconds
 import com.pocketstudio.app.human.HumanTester
@@ -54,7 +55,7 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         act("touche 294 543")  // the phone's share sheet: WhatsApp
         tap("share_bilan_ok")
         // « Autres fichiers » (the Pro export, as the seat went): its row is half under the format buttons (E3, lot exports2).
-        compose.onNodeWithTag("share_other").performClick()
+        compose.onNodeWithTag("share_other").performScrollTo().performClick()
         repeat(2) { act("attends 1") }
         assertNull("« a changé » right after the file:\n" + screen(), centerOf("export_stale"))
         // The volume of the next file chosen (the seat's « Streaming »): the song itself is the same.
@@ -156,7 +157,7 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         trapSong()
         tap("tab_simple_Envoyer")
-        compose.onNodeWithTag("share_other").performClick()
+        compose.onNodeWithTag("share_other").performScrollTo().performClick()
         repeat(2) { act("attends 1") }
         tap("export")
         act("attends 1")

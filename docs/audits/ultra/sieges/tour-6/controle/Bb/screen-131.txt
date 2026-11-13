@@ -1,0 +1,59 @@
+Écran 131 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Plaits » ⋮ @ 705,204
+icône ♪ « Sound » [coupé] @ 850,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+dessin @ 450,318
+texte « Cutoff » @ 432,318
+texte « 75 » @ 831,317
+curseur [état « 75 », à 75 %] @ 450,373
+dessin @ 450,450
+texte « Morph » @ 432,450
+texte « 70 » @ 840,451
+curseur [état « 70 », à 70 %] @ 450,519
+dessin @ 450,587
+texte « Decay » @ 432,587
+texte « 70 » @ 840,588
+curseur [état « 70 », à 70 %] @ 450,656
+dessin @ 450,724
+texte « Farbe » @ 432,724
+texte « 50 » @ 840,725
+curseur [état « 50 », à 50 %] @ 450,793
+dessin [coupé] @ 450,854
+texte « Release » [coupé] @ 432,854
+texte « 30 » [coupé] @ 840,856
+texte « Das Riff Kapitel 7/16 · Erledigt · Pro » @ 366,918
+icône (liste) « Kapitel » @ 759,919
+icône ⌄ @ 843,919
+image (coupe) @ 57,1053
+texte « Bravo, Kapitel geschafft! » @ 259,1016
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Dein erster Teil: der Groove“. » @ 475,1073
+bouton « Nächstes Kapitel   » → @ 450,1169
+bouton ▶ «  Meinen Song anhören » @ 251,1267
+icône ← @ 57,1267
+bouton ▶ «  Beispiel anhören » @ 558,1267
+icône « Weiter  » → @ 798,1267
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

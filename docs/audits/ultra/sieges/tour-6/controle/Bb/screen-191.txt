@@ -1,0 +1,54 @@
+Écran 191 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Über den ganzen Teil · 4 Takte » [coupé] @ 274,168
+texte « Steps von Teil D (jeder Teil hat seine eigenen). » @ 321,214
+texte « Um diese Einstellung über einen Teil des Songs zu ändern (lauter am Anfang…), wähl „Song“. » @ 450,277
+texte « Glätten » @ 467,358
+bouton (pinceau) « Zeichnen » [sélectionné] @ 142,358
+bouton (courbe) « Linie » @ 321,358
+icône (loupe −) [désactivé] @ 580,358
+texte « ×1 » @ 634,358
+icône (loupe +) @ 688,358
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » @ 450,475
+texte « 18,0 kHz » @ 81,572
+texte « 849 Hz » @ 81,658
+texte « 40 Hz » @ 82,744
+texte « Schlag » @ 81,779
+texte « 1 » @ 134,779
+texte « 2 » @ 319,779
+texte « 3 » @ 503,779
+texte « 4 » @ 686,779
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,879
+bouton « ? » @ 362,879
+texte « Lautstärke: — » @ 136,930
+texte « Master-Lautstärke » @ 397,1011
+texte « −6,0 dB » @ 805,1012
+texte « Die Effekte Kapitel 13/16 · Schritt 2/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Automatisiere den „Cutoff“ der Spur „Melodie“ im Drop: „Eine Einstellung automatisieren“, „Melodie“, „Filter (Sweep)“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

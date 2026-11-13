@@ -127,6 +127,11 @@ data class TutoUi(
      * asks): the panel says « Déjà fait » rather than « Bravo » for a touch never made.
      */
     val already: Boolean = false,
+    /**
+     * Lot « tuto-flèches » (seats D a, H a): what the step's words leave unsaid about the project as it is (the tempo
+     * step: a new project's own tempo, « 100 » under « House 122 BPM »); shown under them, null: nothing.
+     */
+    val note: String? = null,
 ) {
     val current: TutoStep get() = chapters[chapter].steps[step]
     val total: Int get() = chapters.sumOf { it.steps.size }
@@ -426,6 +431,16 @@ class TutoController(
         }
     }
 
+    /**
+     * Lot « tuto-flèches » (seats D a, H a: « House 122 BPM » chosen, « 100 Tempo » on the screen): the tempo step says
+     * the tempo the project has while it is not the style's.
+     */
+    private fun noteFor(s: TutoStep, p: Project): String? {
+        val t = target ?: return null
+        if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
+        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(p.tempoBpm).toInt())
+    }
+
     /** What « Suivant » says on a step left undone: what the song will miss ([TutoStep.skip]), and that a second touch goes on. */
     private fun skipText(s: TutoStep): String =
         (if (s.skip.isNotEmpty()) tutoText(s.skip) else com.pocketstudio.model.i18n.tr("Cette étape n'est pas encore faite.")) + " " +
@@ -438,7 +453,9 @@ class TutoController(
      */
     private fun partMade(before: Project, after: Project, label: String, step: TutoStep): String {
         val full = before.allScenes.map(TutoChecks::bricks).maxByOrNull { it.size }.orEmpty()
-        val now = TutoChecks.bricks(after.currentSceneContent())
+        // Lot « tuto-flèches » (seat D a, chapter 10): the part made, by its name: while the song plays the one shown is
+        // still the one heard (« Intro 2 créée : sans Basse, Accords… » told the Intro's bricks).
+        val now = TutoChecks.bricks(TutoChecks.partContent(after, label) ?: after.currentSceneContent())
         val writes = step.transpose != 0
         val out = (full - now).filterNot { b -> writes && b.startsWith("inst:") && b.removePrefix("inst:").toIntOrNull()?.let { TutoChecks.roleOf(after, it) in setOf("bass", "sub") } == true }
             .map { brickName(after, it) }.distinct()
@@ -511,6 +528,9 @@ class TutoController(
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
+        // Lot « tuto-flèches » (seat H a): « Copier » done and notes still to write (the last bar): the roll goes to
+        // the next one (it stayed on bar 1, « plus loin → » three swipes long, 8 gestures lost).
+        if (need is TutoNeed.Copy && p !== before && !TutoChecks.done(step, p, t, base())) TutoHints.focus++
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
         // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
         // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).
@@ -746,6 +766,7 @@ class TutoController(
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
             // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
             already = if (same) kept!!.already else step.id in saved.done,
+            note = noteFor(step, project.value),
         )
         // A step already done when it is reached (the key already right) is ticked at once.
         if (moved && before != null) scope.launch { check(project.value) }
@@ -790,6 +811,8 @@ class TutoController(
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
         else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        // The step's note follows the project (the tempo once set: nothing more to say).
+        if (_ui.value?.current?.id == u.current.id) noteFor(u.current, p).let { n -> if (_ui.value?.note != n) _ui.value = _ui.value?.copy(note = n) }
         // Testers (lot « tuto 5 »: seven parts in a wrong order, not a word): what is missing, or where the order goes wrong.
         // The durations too: they are not ticked while the order is wrong.
         if (found.isEmpty() && u.current.check.startsWith("song:") && _ui.value?.current?.id == u.current.id && p.song.isNotEmpty()) {

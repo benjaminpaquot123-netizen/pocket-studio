@@ -1,0 +1,3 @@
+- 2026-11-13 : le motif « tonalité » de `PlainWords.kt` perd le drapeau « U » pour un regard en avant sur lettres et chiffres. Raison : le moteur du téléphone refuse « U » et l'appli plantait en Mode simple. Retour arrière : sans objet (l'ancien motif plante).
+- 2026-11-13 : garde par lecture des sources (`PhoneRegexFlagsTest`) plutôt que par le vrai moteur ICU dans les tests. Raison : pas d'ICU Android sur la JVM ; le test sur émulateur reste le juge final. Retour arrière : retirer le test.
+- 2026-11-13 : lot fait par le chef d'orchestre lui-même après l'arrêt des agents locaux (redémarrage de la machine), relu par une discussion qui ne l'a pas écrit.

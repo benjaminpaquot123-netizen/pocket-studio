@@ -1,0 +1,28 @@
+Écran 17 (900x1509)
+dessin @ 450,754
+dessin @ 450,861
+texte « Tonart des Tracks » @ 363,933
+texte « Schließen » @ 789,933
+texte « Tonart des Tracks: C · Phrygisch » @ 241,1004
+texte « Tonleiter » @ 83,1060
+bouton « Dur » @ 67,1132
+bouton « Moll » @ 167,1132
+bouton « Dorisch » @ 297,1132
+bouton « Moll-Penta » @ 474,1132
+bouton « Dur-Penta » @ 668,1132
+bouton « Blues » @ 81,1213
+bouton « Phrygisch » @ 239,1213
+bouton « Harmonisch Moll » @ 478,1213
+texte « Grundton » @ 88,1284
+bouton « C » @ 63,1356
+bouton « C♯ » @ 150,1356
+bouton « D » @ 237,1356
+bouton « E♭ » @ 324,1356
+bouton « E » @ 411,1356
+bouton « F » @ 498,1356
+bouton « F♯ » @ 585,1356
+bouton « G » @ 672,1356
+bouton « A♭ » @ 759,1356
+bouton « A » @ 63,1437
+bouton « B » @ 150,1437
+bouton « H » @ 237,1437

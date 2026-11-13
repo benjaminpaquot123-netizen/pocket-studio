@@ -1,9 +1,9 @@
 ci_build	?
-ci_emulateur	?
+ci_emulateur	rouge (9f26c244, passage 43375199284 : JourneyTest.aFirstSongInTheModeSimple)
 recette_points_rouges	6 (lignes rouges de telephone.tsv au 2026-11-12, après le retest v6 : T6-T01, T6-T02, T6-T03, T6-T04, T6-T05, T6-T06)
 cases_vides	?
-lots_non_joues	?
-sieges_coupes_par_le_banc	?
+lots_non_joues	0 (19 sièges joués, lots A à H)
+sieges_coupes_par_le_banc	1 (D b, clos au geste 70 ; cinq autres arrêtés par leur budget de 120 gestes au chapitre 7 du tuto)
 relecture_bloquants	?
 relecture_graves	?
 corrections_sans_test	?

@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import com.pocketstudio.model.switchScene
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -77,5 +79,35 @@ class Tour6TutoPanelPartMadeTest {
         c.fulfilNeed(); idle(100)
         val made = c.ui.value!!.made.orEmpty()
         assertFalse("« $made » while the step leaves the ride and the riff out", "tout le Groove" in made)
+    }
+
+    /**
+     * Lot « tuto-flèches », control seat D a (chapter 10, the song playing): « Partie « Intro 2 » créée … : sans Rumble,
+     * Clap, Basse, Accords, Mélodie » under « La basse et le stab arrivent » — the bricks of the part made just before.
+     * While the song plays, the screen stays on the part heard (the new one comes at the next bar): what was made is
+     * read from the part made, not from the part shown.
+     */
+    @Test
+    fun whatAPartLeavesOutIsReadFromThePartMadeNotFromTheOneShown() {
+        val flow = MutableStateFlow(upTo("kick_do", "rumble_do", "clap_do", "open_hat_do", "perc_do", "bass_do", "bass_end", "pad_do", "pad_end", "lead_do", "groove_name", "make_intro"))
+        // As the app does while the song plays (RhythmViewModel.tutoEdit): the part heard stays the one shown.
+        val c = TutoController(
+            scope, "p1", flow, edit = { f -> val before = flow.value; val after = before.f(); flow.value = if (after.scene != before.scene) after.switchScene(before.scene) else after },
+            store = MemoryStore(), render = { FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.1f } }, player = Player(), debounceMs = 10,
+        )
+        idle()
+        c.start(style, TutoLevel.Facile)
+        idle()
+        val chapters = c.ui.value!!.chapters
+        val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_intro2" } }
+        c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_intro2" }); idle()
+        assertEquals(TutoNeed.Part("Intro 2"), c.ui.value!!.need)
+        val shown = flow.value.scene
+        c.fulfilNeed(); idle(100)
+        assertEquals("the part heard is still the one shown", shown, flow.value.scene)
+        val made = c.ui.value!!.made.orEmpty()
+        assertTrue("« $made »", "Intro 2" in made)
+        // The step: « tout, sauf la ride et le riff. La basse et le stab arrivent. »
+        for (kept in listOf("Basse", "Accords", "Clap")) assertFalse("« $made » says « $kept » left out of the Intro 2, which keeps it", kept in made.substringAfter("sans", ""))
     }
 }

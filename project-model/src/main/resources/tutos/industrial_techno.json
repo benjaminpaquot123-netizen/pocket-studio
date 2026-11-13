@@ -314,7 +314,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",

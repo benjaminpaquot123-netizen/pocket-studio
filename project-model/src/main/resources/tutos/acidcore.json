@@ -75,7 +75,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé : très serré, presque sans arrêt.",
-          "textPro": "À toi : les charleys fermés en doubles croches.",
+          "textPro": "À toi : pose les charleys fermés sur les doubles croches, sauf les contretemps (le charley ouvert y joue déjà).",
           "levels": "p",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -264,7 +264,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",

@@ -42,6 +42,7 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
 7. **Économie.** On commence par ce qui ne coûte presque rien (automatique), et on finit par ce qui coûte le plus (équipes IA, humains). On ne relance que ce que les corrections ont touché, sauf au tour final où l'on relance tout.
 8. **Où ça tourne.** Ici (Linux, 4 cœurs, sans émulateur : pas de `/dev/kvm`) : tests hôtes, Robolectric, banc testeur, captures. Sur l'émulateur de la CI (lancée à la main) : la release R8 écran par écran, le démarrage à froid, `monkey`, le chaos Android, les images par seconde, la mémoire. Sur le téléphone de Benjamin : sa liste (`docs/PLAN-REPRISE.md`). Un contrôle qui ne peut tourner nulle part est remplacé par le plus proche possible et noté dans DECISIONS, jamais laissé ouvert.
 9. **Les niveaux** (Benjamin, 2026-11-12 : « tester comme de vrais utilisateurs : débutant, moyen, pro »). Tout tour de testeurs a au moins un siège par niveau (curieux, débutant motivé, moyen venu d'une autre appli, confirmé qui part d'un projet vide, pro qui cherche les limites), chacun avec une mission de son niveau dont l'oracle lit un résultat précis ; la mission `libre` ne compte pour aucun niveau ; les résultats se lisent par niveau. Un tour de contrôle ciblé (principe 7 : ne relancer que ce que les corrections ont touché) peut y déroger s'il l'écrit dans son plan. Détail, missions et ce que le banc doit apprendre : `docs/audits/ultra/PLAN-NIVEAUX.md`. S'applique après le tour 6.
+10. **Audit et correction ne se marchent jamais dessus** (Benjamin, 2026-11-13, après l'audit de la nuit du tour 6). Un testeur juge un commit nommé ; pendant une vague de testeurs, rien n'entre dans l'appli ni dans le banc ; un lot ne part que d'un tri fini ; un fichier n'a qu'un lot ouvert ; le tuto n'a qu'un lot à la fois et n'entre que rejoué par un débutant neuf ; les fusions vont par paquets de trois au plus, chacun vérifié par la CI (téléphone simulé compris) avant le suivant ; chaque point à Benjamin finit par ce qui n'est pas vert. Détail, rôles et consignes types : `AUDIT-ULTRA.md` §13, `ultra/GABARIT-FICHES-V3.md`, état du moment dans `ultra/EN-COURS.md`.
 
 ## 2. Carte des risques (où chercher en premier)
 | Zone | Gravité si ça casse | Probabilité | Priorité |
@@ -266,7 +267,7 @@ Ensuite seulement, l'étage 7 (Benjamin et ses proches ; le test fermé du Play 
 - **Étage 5** : quelques équipes, une à la fois.
 - **Étage 6** : de 3 tours au minimum (pour que les 15 langues passent) jusqu'aux critères d'arrêt.
 - **Étage 7** : le temps de Benjamin.
-- Deux équipes au plus (Benjamin, 2026-11-02), avec une consigne fermée, et elles ne lancent que leurs tests ciblés ; l'agent lance les grandes vérifications.
+- Deux équipes au plus (Benjamin, 2026-11-02), avec une consigne fermée, et elles ne lancent que leurs tests ciblés ; l'agent lance les grandes vérifications. Sur une même machine ; le travail réparti entre plusieurs discussions suit le principe 10 (`AUDIT-ULTRA.md` §13 : rôles, zones, paquets).
 
 ## 9. Ce que Benjamin fera
 Une seule liste, en trois moments (APK d'audit, début du test fermé, étage 7), tenue à un seul endroit : `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ».

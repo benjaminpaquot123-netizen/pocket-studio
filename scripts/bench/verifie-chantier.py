@@ -704,7 +704,8 @@ def changes_code(root, sha):
 
 def lot_line(root, red, green):
     """Review of « juge8 » (G1): the commits of the green's first-parent line after the red (full shas), when the red is
-    on that line and no « Merge team … » of the integration lies between them (the same lot); else None."""
+    on that line and the red is in no « Merge team … » merge of the integration that the green descends from (the same
+    lot); else None."""
     try:
         red_full = _git(root, "rev-parse", red + "^{commit}").strip()
         rows = _git(root, "log", "--first-parent", "--format=%H%x1f%P%x1f%s", f"{red_full}..{green}").splitlines()
@@ -712,7 +713,14 @@ def lot_line(root, red, green):
         return None
     if not rows or rows[-1].split("\x1f")[1].split(" ")[0] != red_full:
         return None
-    if any(r.split("\x1f", 2)[2].startswith("Merge team ") for r in rows):
+    # Second review (G3): no « Merge team … » merge descends from the red and is an ancestor of the green. It covers a
+    # « Merge team » on the green's own line between them (the first pass's check) and a lot started from the tip of
+    # another, merged lot's branch (that lot's commits are on its line, its « Merge team » beside it): another lot's red.
+    try:
+        merged = _git(root, "log", "--ancestry-path", "--merges", "--format=%s", f"{red_full}..{green}").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if any(s.startswith("Merge team ") for s in merged):
         return None
     return {r.split("\x1f")[0] for r in rows}
 

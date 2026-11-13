@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : d709a325655a3ea7e2d75d36076a765a690eea2e
+Relu : f18962ad85f952300527b079c685648aaacfa2af
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -17,7 +17,7 @@ Aucun.
 Aucun. Aucun test existant ne change de couleur parmi ceux relancés ; ni sauvegarde ni son touchés ; aucune phrase ne mène un débutant vers un bouton absent.
 
 ## Moyen
-- M7 pas raccord entre les deux tutos : la house dit « Partage ton morceau », la techno garde le titre « Exporte ton morceau » et son Pro dit « touche « Partager », exporte ton morceau et partage-le ». Responsable : zone tuto (techno), prochain lot du tuto.
+- (corrigé, voir le delta) M7 pas raccord entre les deux tutos : la house dit « Partage ton morceau », la techno garde le titre « Exporte ton morceau » et son Pro dit « touche « Partager », exporte ton morceau et partage-le ». Responsable : zone tuto (techno), prochain lot du tuto.
 - `Tour6Tuto4HouseTest#musicianWordsAreExplainedAtFirstSight` ne vérifie l'explication qu'en français ; les autres langues sont seulement « traduites » (lues à la main ici : ja et de ont bien les parenthèses). La techno compte les parenthèses par langue : même garde à ajouter côté house.
 - House, « share » : « « −14 » veut dire aussi fort que la musique en streaming » ; l'écran ne montre « (−14) » que si le morceau est entre −16 et −12 LUFS (`Loudness.kt:28-34`) ; ailleurs le chiffre annoncé n'apparaît pas. Pas de blocage (aucun geste demandé), mais la phrase peut décrire un libellé absent.
 
@@ -34,5 +34,15 @@ Aucun. Aucun test existant ne change de couleur parmi ceux relancés ; ni sauveg
 - rouge constaté : 07e274167 : rejoué sur 4c4b20a44 (parent du vert 1a41c4260, `git worktree` jetable) : `Tour6Tuto4HouseTest#theNumbersAreTheStepsOwn` échoue sur son assertion, « fr: the order step does not say the parts' length comes next ».
 - rouge constaté : 18ca0438f : rejoué sur 18ca0438f (parent du vert 078e11b81, `git worktree` jetable) : `Tour6Tuto4TechnoTest#reverbSendFromThePadsEffects` échoue, « 30 reverb steps that do not lead to the pad's effects » (fr « dans Mix … sur la tranche du pad « Clap » »).
 - Arbres jetables retirés ; l'arbre de `wt-tuto4` n'a pas été touché avant ce commit.
+
+## Delta e7355a9d → f18962ad
+Commits relus : f1cbb3003 (rouge, `Tour6Tuto4TechnoTest#theShareChapterSaysShareLikeTheHouse`) et f18962ad8 (vert).
+- Moyen n° 1 (M7) : **corrigé**. `tutos/techno.json`, chapitre « export » : titre « Partage ton morceau », Pro « À toi : touche « Partager » et envoie ton morceau. », mêmes clés que la house ; plus aucun « export » dans le titre ni les étapes du chapitre.
+- Vert minimal : 2 lignes dans `tutos/techno.json` et, dans les 14 `i18n/*/tuto_techno.json`, la seule clé « À toi : touche « Partager », exporte ton morceau et partage-le. » retirée. Les 15 JSON touchés se lisent (`json.tool`).
+- Clé retirée vraiment inutilisée : aucun `tutos/*.json` ne la cite plus ; les 35 autres styles gardent leurs propres phrases (« À toi : exporte ton morceau et partage-le. » et sa variante M4A/WAV), qui restent traduites dans leurs catalogues.
+- Traduction : `I18n.table` fusionne toutes les zones (`AREAS`, dont `tuto_house`), donc le titre et le Pro de la techno se lisent ja « 曲をシェアしよう » / « あなたの番：「シェア」をタップして曲を送ろう。 », de « Teile deinen Track » / « Du bist dran: Tippe auf „Teilen“ und schick deinen Track. » ; le test vérifie les 14 langues.
+- Le test lit les vraies données (chapitre, étapes, tables de langue) : pas une tautologie.
+- rouge constaté : f1cbb3003 : rejoué sur f1cbb3003 (parent du vert f18962ad8, `git worktree` jetable, retiré ensuite) : `theShareChapterSaysShareLikeTheHouse` échoue sur son assertion, « 2 share texts: fr: « Exporte ton morceau » ; fr: « À toi : touche « Partager », exporte ton morceau et partage-le. » ».
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :project-model:test --rerun` sur f18962ad8 : BUILD SUCCESSFUL, 1148 tests, 0 échec, 1 ignoré.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

@@ -64,11 +64,15 @@ class Tour6ExportsNameWrapTest {
             node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
             val t = layouts.single()
             val text = t.layoutInput.text.text
-            if (t.hasVisualOverflow) wrong += "« $text » is shortened"
+            // Whole: the name's every character is drawn (the lines may be cut by hand, with « \n »), no « … ».
+            val drawn = text.filter { it != '\n' && it != '\u200B' }
+            if ("…" in drawn || drawn !in names) wrong += "« $text » is shortened"
             for (line in 0 until t.lineCount - 1) {
                 val end = t.getLineEnd(line)
-                val before = text[end - 1]
-                val after = text.getOrNull(end)
+                // A line cut by hand ends with « \n »: the character that counts is the one before it.
+                val cut = if (text[end - 1] == '\n') end - 1 else end
+                val before = text[cut - 1]
+                val after = text.getOrNull(end).takeIf { cut == end } ?: text.getOrNull(end)
                 val between = !before.isLetterOrDigit() || after == null || !after.isLetterOrDigit()
                 if (!between) wrong += "« $text » breaks inside a word or a number: « ${text.substring(0, end)} / ${text.substring(end)} »"
             }

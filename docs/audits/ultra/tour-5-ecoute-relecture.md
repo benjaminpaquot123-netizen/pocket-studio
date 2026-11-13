@@ -1,21 +1,22 @@
-Relecture du lot « écoute » (T1b, écoute au micro), après corrections
-Relu : e2810bee34d05a01892617d2958a470e79815569
+Relecture du lot « écoute », v2 : siège son du tour 6 et mesure après kick
+Relu : c1a56711828c0d6d6ad767b81d5f4a0b4b55beb2
 
-Portée : `git diff 9fcc7ab1 HEAD` sur `app/src/benTest`, `app/src/test/java/com/pocketstudio/bentest`, `scripts/bentest`, décisions et rapport. Ordre des commits vérifié : « squelette » (signatures seules), puis chaque « rouge: » (test seul) avant son « vert: » (code seul, sauf un test d'aide ajusté dans le dernier vert).
+Portée : `git diff e2810bee HEAD -- scripts/son docs/audits/ultra/sieges/tour-6/son docs/decisions/tour-6-son.md` (16 fichiers, +1406). Relecteur neuf, rien écrit.
 
-## Les 7 moyens de l'ancienne relecture
+## Périmètre de la branche
 
-| n° | constat | état |
-|----|---------|------|
-| 1 | `debut_s` proche de 0 | corrigé : `HautParleurReel.pasJoues()` lit `NativeEngine.absoluteStep()` (même lecture que `AppRoot.kt:2244`, -1 si moteur absent) ; rouge `HautParleurReelTest` (32 contre -1) puis vert ; le test passe par le vrai `HautParleurReel`. |
-| 2 | bruit de la pièce sommé sur toutes les trames du balayage | corrigé : `Bandes.fenetre` (meilleure suite de ⌈durée⌉+2 trames), bruit × trames de la fenêtre, rsb sur le passage propre de la bande ; rouge `aBandIsJudgedAgainstTheNoiseOfItsOwnFrames` puis vert ; `aBandUnderTheRoomsNoiseIsNotMadeUp` reste vert (bruit pur non dit entendu). Relu : seuil `AU_DESSUS - 1` appliqué à `sig` équivaut à l'ancien `micro >= 4 × bruit`, pas de régression. |
-| 3 | faux « trou » sur des rythmes | corrigé : 8 blocs (160 ms), rouge `theSilencesOfARhythmAreNotHoles` (125 ms de silence à chaque temps) puis vert ; les deux autres tests de trou passent à 250 et 300 ms. Voir MINEUR 3 pour la limite. |
-| 4 | début du balayage manqué | corrigé : `Micro.ecouter(ms, avant, …)` démarre l'enregistrement puis appelle `avant` (= `hp.jouer`) ; tampon 2 s (assez pour l'attente du moteur, 3 s max dans `jouer` : seul un moteur très lent déborderait) ; queue 1,5 s ; test `theMicrophoneListensBeforeTheSweepStarts` (rouge avant). |
-| 5 | pas de test croisé Kotlin et Python | corrigé : `MemeAnalyseTest` et `test_the_same_numbers_as_the_phone` portent le même signal et les mêmes valeurs d'or (5 bandes à 1e-4, 8 octaves à 1e-3, trous inclus) ; verts des deux côtés au rejeu. |
-| 6 | permission : câblage non prouvé, état perdu à la rotation | corrigé en partie : l'état est dans `EcouteMicro.reponseMicro` (une seule fois, testé), plus de `remember`. Le câblage de `BenTestActivity.kt:62-66` reste sans test (voir MINEUR 1). |
-| 7 | « 2 secondes » au lieu de 4 extraits | corrigé : phrase « au plus 4 extraits », assertion ajoutée dans `BoutonMicroTest` (rouge avant). |
+- `git log --no-merges --first-parent e2810bee..HEAD` : 15 commits, tous dans `scripts/son/`, `docs/audits/ultra/sieges/tour-6/son/`, `docs/decisions/tour-6-son.md` (et `4b825222`, l'ancienne fiche de relecture). Aucun ne touche `app/`, `engine/`, `scripts/bench/`, `scripts/bentest/`.
+- `git log --no-merges e2810bee..HEAD -- app engine scripts/bench scripts/bentest` : uniquement des commits de l'intégration (rouge/vert T16, remixdecoupe, ci2, juge, lot kick `bb5ad266`…`ddc8cf11`), arrivés par les fusions. Aucun n'est dans la liste du premier parent.
+- Pas de son commité : `git diff --diff-filter=A --name-only e2810bee HEAD | grep -iE '\.(wav|f32|m4a)$'` est vide (les `.wav` de `git ls-files` sont les échantillons des projets de test, déjà là avant).
 
-Les mineurs : écoute bornée (durée + 5 s), compteur `empty` remis à zéro, `runCatching` autour de `guet.finir()`, repli sur `MIC`, courbe vide dite côté Linux (testé), volume gardé sur disque : tous présents dans le code.
+## Méthode vérifiée
+
+- `haut_parleur.sh` : ajoute `AT -1` puis `C 210 1 0 0` avant la ligne `RENDER` (même forme que `song-bench.sh --kit3`, ligne 107 ; `AT` est lu par `ps_render.cpp:175`), échoue si la ligne manque. Rendu sans 210 comparé par SHA-256 au `hash/` du banc d'avant : `build/son6c/hp/export.tsv` = 37 lignes, toutes « identique ». Reprise par style correcte (json écrit en dernier, par `mv`).
+- Commande 210 = `SetSpeakerOutput` (`Engine.h:241`, `static_assert`). Outils de `build/son6c/tools` ; `845c8beb` contient `5957fac5` et est ancêtre de HEAD.
+- `son6_kick.py` reproduit `ps_measure --punch` (`ps_measure.cpp` 466-620) : enveloppe RMS 5 ms au pas de 1 ms, montée > 4× (12 dB) sur le minimum des 30 ms, > 5 % du max, 80 ms d'écart ; puissance du mono, 40 ms contre [o−120, o−20] ms, sommés sur les coups de la partie, coup gardé si toute la fenêtre est dans la partie. Seul écart : fin de la dernière partie à la longueur du fichier, pas à `SONG frames=` (voir MINEUR 5).
+- `--hits-from` : kick rendu seul depuis les `cmds` du banc (sans 210). Vérifié : `build/son6/kick.tsv` et `build/son6c/hp/kick.tsv` ont, triés, les mêmes (style, partie, coups) sur les 122 lignes. Les coups sont donc les mêmes avant et après.
+- `avant_apres_kick.py build/son6 build/son6c/hp` relancé : sortie identique à l'octet à `kick-avant-apres.tsv`. `build/son6c/live/direct.tsv` identique à `kick-direct.tsv`.
+- Direct : `*.hp.pslive` = `*.pslive` + `C 210 1 0 0` en ligne 4 ; les 12 journaux finissent par « OK: 0 flags over 150 s » et « ALLOC news=0 deletes=0 ».
 
 ## BLOQUANT
 
@@ -23,32 +24,34 @@ Aucun.
 
 ## GRAVE
 
-Aucun. Le GRAVE de la relecture précédente (`debut_s` toujours 0, `pasJoues` non câblé dans `HautParleurReel`) est **corrigé** par `79cd9f70` (`MicroReel.kt:109`), prouvé par `4f41bc29` ; le KDoc orphelin de `Spectre.kt` est aussi remis en place.
+Aucun.
 
 ## MOYEN
 
-Aucun nouveau.
+1. **Conseil 4 plus fort que la preuve.** « Leur kick reste au-dessus de 5 dB au téléphone, il y a de la marge » est faux pour l'acidcore : 4,65 au téléphone, et c'est le seul style dont le coup recule avec le lot (6,55 → 4,65). L'acid house est à 5,06 au téléphone et déjà à 2,70 sur le pire cas, donc sous les 3 dB visés. « Réduire d'un tiers » n'est pas chiffré dans son effet sur le coup. À écrire : « au-dessus de 4,6 dB au téléphone (acidcore 4,7, acid house 5,1). L'acid house est déjà à 2,7 dB sur le pire cas : à exclure, ou à vérifier par la même mesure (coup au téléphone ≥ 3 dB et pire cas sans recul) ».
 
 ## MINEUR
 
-1. `BenTestActivity.kt:62-66` : le câblage lanceur → `reponseMicro()` → `Robot.start` n'est toujours exercé par aucun test (l'état seul l'est) ; un lanceur partagé avec un autre bouton de permission pendant l'attente pourrait aussi démarrer la mise en route sur la mauvaise réponse (peu probable : une seule demande à la fois).
-2. (corrigé) KDoc orphelin de `Spectre.kt` déplacé sur `mesurer`.
-3. `Guet.kt:123` : à 160 ms, un vrai décrochage plus court n'est plus attrapé au micro (dit dans les décisions) ; à l'inverse un trap en demi-temps (double croche > 160 ms) ou un break d'un temps peut encore sonner « trou » (orange + extrait). Test à 125 ms seulement.
-4. `MicroReel.kt:111,118` : si l'appli meurt en plein son, le volume reste à 60 % jusqu'au prochain passage (aucune remise au lancement de l'appli) ; un fichier `volume.txt` périmé remettrait une valeur ancienne si Benjamin a changé son volume entre-temps.
-5. `MicroReel.kt:37` : si la source choisie est déjà `MIC` et refuse, `ouvrir(MIC)` est retenté pour rien (inoffensif).
-6. `Bandes.fenetre` prend le MAX des fenêtres glissantes : pour une bande de pur bruit à peu de bacs (50 Hz) l'écart est de l'ordre de +50 % sur l'énergie, très loin du seuil ×4 : sans effet, noté pour mémoire.
+1. « Les plus gros gains au téléphone » : l'amapiano (+4,63) manque alors que le trap (+4,55) y est. Le tableau n'est pas trié par gain (lo-fi +5,89 en tête, puis deep house +5,20, minimal +4,92, drill +4,77, afro house +4,71, amapiano +4,63, trap +4,55).
+2. « La charge du fil audio en direct n'a pas été mesurée ici » est trop prudent. Les journaux `ps_live` la donnent sur la machine Linux : moyenne de 7,3 à 11,5 %, à ±0,2 point près avec ou sans haut-parleur. Ce ne sont pas des chiffres de téléphone. Les `over`/`glitches` de l'hôte sont du même ordre éteint et allumé.
+3. Décisions, « l'appli n'a changé que des écrans entre les deux » : `Headphones.kt` (route du haut-parleur), `RhythmViewModel.kt` (prise), `StemBoardRouter.kt` et `SongGuide.kt` (texte) ont aussi changé. Aucun ne touche les recettes ni l'export. L'égalité à l'octet ne prouve que le côté moteur. Écrire « rien qui fabrique ou exporte les morceaux ».
+4. `rapport-son.md` : les points N4, N5 et N6 de `relecture.md` ne sont pas appliqués. Résumé ligne 1, « ni en écoute en direct » sans « (8 styles) » ; « 0,2 à 2,4 LU » sans « face aux cibles mesurées » ; phrase « ceux à écouter plus phonk… ».
+5. `son6_kick.py` coupe la dernière partie à la longueur du fichier, alors que `ps_measure` borne à `SONG frames=`. Les coups de la traîne peuvent compter. L'écart est sans effet constaté : l'égalité sur 122 parties est notée en décision.
+6. Conseils 1 et 2 : « +2 dB » sur le kick ou le clic « devrait suffire » est une estimation non mesurée. Elle est bien présentée comme non codée, avec son critère de contrôle. On pourrait ajouter « estimé ».
 
-## Vérifié sans problème
+## Recalculé depuis les données (`build/son6`, `build/son6c/hp`, `build/son6c/live`)
 
-- Calcul de `Courbe.mesurer` (fenêtre) : `k = ⌈trames balayées⌉ + 2` couvre la durée de la bande plus les bords ; `fenetre` retombe sur la somme entière quand il y a moins de trames que `k` ; `compte = min(k, trames)` ; la mémoire des trames gardées (~2 MB pour 13 s) ne contient que des chiffres. Le moteur est lancé depuis le fil du robot, jamais dans le callback audio.
-- Ordre micro puis balayage : `rec` libéré dans `finally`, `until` calculé avant `startRecording`, marge 5 s ; `hp.jouer` appelle `arreter()` d'abord.
-- Python : `apply_curve` rend `None`, `octaves` rend `None` pour une octave dont un tiers est `None`, `compare` et `light` savent le traiter (testé : `test_a_band_the_phone_did_not_hear_is_not_a_missing_bass`) ; courbe entièrement vide : message clair, pas de trace d'erreur.
-- Delta `2646da66..HEAD` relu : 3 fichiers de code/test, rien d'autre ; `absoluteStep` est le compteur déjà lu par l'appli (hors callback audio).
-- Rien dans la vraie appli : `git diff origin/ccr-80af1a1b-mn0wec...HEAD -- app/src/main app/build.gradle.kts` vide.
-
-## Rejeu
-
-- `python3 -I scripts/bentest/test_empreinte.py` : 12 tests, OK.
-- `scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests 'com.pocketstudio.bentest.*'` : BUILD SUCCESSFUL (4 min 47) sur 2646da66 ; le delta est rejoué par le coordinateur (94 tests, 0 échec), non relancé ici. Aucun fichier de code ou de test modifié, rien commité.
+- Téléphone : médiane 1,83 → 5,27 ; sous 3 dB 28 → 3 (gabber, jungle, phonk) ; sous 2 dB 23 → 0.
+- Pire cas : médiane 0,96 → 3,93 ; sous 3 dB 26 → 12 ; sous 2 dB 24 → 4 (dnb 1,56, dubstep 1,93, jungle 1,01, phonk 1,28).
+- Pleine bande : médiane 3,87 → 4,39 ; sous 3 dB 7 → 2 ; sous 2 dB 0 → 1 (phonk 1,84).
+- Recul au téléphone et sur le pire cas : acidcore seul (6,55 → 4,65 ; 6,35 → 5,38). Gabber 2,79 → 2,80.
+- Manques : phonk 0,77 et 1,72, jungle 0,68 et 1,99, gabber 0,20, dnb 1,44, dubstep 1,07. Export pleine bande : phonk 2,30, jungle 2,13.
+- Exports : 37/37 identiques. Écrêtés 0 ; `non_finite` 0 ; silences et sauts 0/37 (`son6.tsv`). Crête après de −1,20 à −1,16 dBTP.
+- Niveau : LUFS-I médiane +0,12 (de −0,19 à +0,57, jungle) ; Drop de −0,17 à +0,35.
+- Bas-médium : médiane +2,19 ; Detroit +6,07, acid techno +5,83, acid house +5,59, acidcore +3,99 ; dnb +1,06, dubstep +0,71. Médium : +0,36.
+- Basse et lead face au morceau : médiane −0,58 (de −2,68 afro house à +0,63) ; boom bap −1,82, tech house −1,81, house −1,63, deep house −1,60. Kick face au morceau : +8,88.
+- Temps de rendu : rapport médian 1,006 (de 0,816 à 1,156).
+- Direct : les 6 lignes du tableau, toutes conformes (phonk −0,18 → 3,13 et −0,51 → 2,10 ; dnb 2,52 → 6,56 et 1,29 → 4,66 ; house 5,35 → 9,60…).
+- Avant (`rapport-son.md`) : 9 styles ≥ 3 dB au téléphone ; échantillon de 5 lignes du tableau des plus faibles conforme.
 
 Verdict : 0 bloquant, 0 grave

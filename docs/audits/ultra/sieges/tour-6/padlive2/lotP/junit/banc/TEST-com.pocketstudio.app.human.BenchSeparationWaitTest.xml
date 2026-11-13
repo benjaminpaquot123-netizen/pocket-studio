@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pocketstudio.app.human.BenchSeparationWaitTest" tests="4" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:10:14.130Z" hostname="vm" time="109.066">
+<testsuite name="com.pocketstudio.app.human.BenchSeparationWaitTest" tests="4" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:30:25.085Z" hostname="vm" time="108.947">
   <properties/>
-  <testcase name="twoWaitsOfThirtySecondsGiveTheSeparatedSong" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="34.338"/>
-  <testcase name="aStuckStandInGivesTheHandBackWithinTwentySeconds" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="34.119"/>
-  <testcase name="aBusyWorkerHoldsTheWaitUntilItsWorkIsOver" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="40.566"/>
+  <testcase name="twoWaitsOfThirtySecondsGiveTheSeparatedSong" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="34.179"/>
+  <testcase name="aStuckStandInGivesTheHandBackWithinTwentySeconds" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="34.074"/>
+  <testcase name="aBusyWorkerHoldsTheWaitUntilItsWorkIsOver" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="40.65"/>
   <testcase name="drive" classname="com.pocketstudio.app.human.BenchSeparationWaitTest" time="0.04">
     <skipped message="org.junit.AssumptionViolatedException: only with -Phuman.dir" type="org.junit.AssumptionViolatedException">org.junit.AssumptionViolatedException: only with -Phuman.dir
 	at org.junit.Assume.assumeTrue(Assume.java:68)
@@ -73,12 +73,13 @@
 </skipped>
   </testcase>
   <system-out><![CDATA[BANC attente retenue par :
-fil battement du remplaçant (BenchSeparation) occupé (vu 138 fois sur 28873 ms) :
+fil battement du remplaçant (BenchSeparation) occupé (vu 138 fois sur 28924 ms) :
 
-fil DefaultDispatcher-worker-3 @coroutine#126460 occupé (vu 33 fois sur 28874 ms) :
-    at com.pocketstudio.app.human.BenchSong.voice(BenchSong.kt:269)
-    at com.pocketstudio.app.human.BenchSong.part(BenchSong.kt:67)
-    at com.pocketstudio.app.human.BenchSeparation.separate(BenchSeparation.kt:116)
+fil DefaultDispatcher-worker-6 @coroutine#126452 occupé (vu 30 fois sur 28927 ms) :
+    at java.base/java.io.FileOutputStream.writeBytes(Native Method)
+    at java.base/java.io.FileOutputStream.write(FileOutputStream.java:367)
+    at com.pocketstudio.app.audio.FloatWav.write(FloatWav.kt:65)
+    at com.pocketstudio.app.human.BenchSeparation.separate(BenchSeparation.kt:121)
     at com.pocketstudio.app.remix.SeparationService.separateInto(SeparationService.kt:250)
     at com.pocketstudio.app.remix.SeparationService.separate(SeparationService.kt:236)
     at com.pocketstudio.app.remix.SeparationService.access$separate(SeparationService.kt:48)
@@ -87,11 +88,10 @@ fil DefaultDispatcher-worker-3 @coroutine#126460 occupé (vu 33 fois sur 28874 m
     at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
     at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
     at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:807)
-    at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-PLAN-RESTE 4.4 mesure : « attends 2 », drapeau seul : 15379 ms réelles
-PLAN-RESTE 4.4 mesure : « attends 2 », remplaçant bloqué : 15387 ms réelles
+PLAN-RESTE 4.4 mesure : « attends 2 », drapeau seul : 15385 ms réelles
+PLAN-RESTE 4.4 mesure : « attends 2 », remplaçant bloqué : 15377 ms réelles
 BANC attente retenue par :
-fil DefaultDispatcher-worker-2 @coroutine#131445 occupé (vu 389 fois sur 34788 ms) :
+fil DefaultDispatcher-worker-1 @coroutine#131430 occupé (vu 389 fois sur 34830 ms) :
     at com.pocketstudio.app.human.BenchSeparationWaitTest$aBusyWorkerHoldsTheWaitUntilItsWorkIsOver$1.invokeSuspend(BenchSeparationWaitTest.kt:93)
     at com.pocketstudio.app.human.BenchSeparationWaitTest$aBusyWorkerHoldsTheWaitUntilItsWorkIsOver$1.invoke(BenchSeparationWaitTest.kt)
     at com.pocketstudio.app.human.BenchSeparationWaitTest$aBusyWorkerHoldsTheWaitUntilItsWorkIsOver$1.invoke(BenchSeparationWaitTest.kt)
@@ -104,7 +104,7 @@ fil DefaultDispatcher-worker-2 @coroutine#131445 occupé (vu 389 fois sur 34788 
     at kotlinx.coroutines.TimeoutKt.withTimeoutOrNull(Timeout.kt:159)
     at com.pocketstudio.app.rhythm.ClosingSaves$launch$1.invokeSuspend(ClosingSaves.kt:28)
     at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-banc6b mesure : « attends 2 », un fil occupé 25 s : 40144 ms réelles
+banc6b mesure : « attends 2 », un fil occupé 25 s : 40188 ms réelles
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

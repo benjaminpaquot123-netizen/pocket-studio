@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pocketstudio.app.human.BenchShareTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-13T20:12:03.209Z" hostname="vm" time="37.376">
+<testsuite name="com.pocketstudio.app.human.BenchShareTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-13T20:32:14.043Z" hostname="vm" time="35.754">
   <properties/>
-  <testcase name="twoStemsLeaveAsTwoFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="7.18"/>
-  <testcase name="theBackGestureStopsItToo" classname="com.pocketstudio.app.human.BenchShareTest" time="1.938"/>
-  <testcase name="theTutoSongGoesOutAsAWavFromTheSheet" classname="com.pocketstudio.app.human.BenchShareTest" time="4.609"/>
-  <testcase name="fourStemsLeaveAsFourFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="6.626"/>
-  <testcase name="aDoubleTouchInFacileMakesOneSongAndOneMenu" classname="com.pocketstudio.app.human.BenchShareTest" time="5.704"/>
-  <testcase name="theShareMenuSpeaksTheSeatsLanguage" classname="com.pocketstudio.app.human.BenchShareTest" time="4.642"/>
-  <testcase name="annulerStopsAndClosesAtOnce" classname="com.pocketstudio.app.human.BenchShareTest" time="6.669"/>
+  <testcase name="twoStemsLeaveAsTwoFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="7.032"/>
+  <testcase name="theBackGestureStopsItToo" classname="com.pocketstudio.app.human.BenchShareTest" time="1.858"/>
+  <testcase name="theTutoSongGoesOutAsAWavFromTheSheet" classname="com.pocketstudio.app.human.BenchShareTest" time="4.492"/>
+  <testcase name="fourStemsLeaveAsFourFiles" classname="com.pocketstudio.app.human.BenchShareTest" time="6.599"/>
+  <testcase name="aDoubleTouchInFacileMakesOneSongAndOneMenu" classname="com.pocketstudio.app.human.BenchShareTest" time="5.12"/>
+  <testcase name="theShareMenuSpeaksTheSeatsLanguage" classname="com.pocketstudio.app.human.BenchShareTest" time="4.547"/>
+  <testcase name="annulerStopsAndClosesAtOnce" classname="com.pocketstudio.app.human.BenchShareTest" time="6.098"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pocketstudio.app.human.BenchAmeneesTest" tests="13" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:07:16.319Z" hostname="vm" time="41.021">
+<testsuite name="com.pocketstudio.app.human.BenchAmeneesTest" tests="13" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:27:31.371Z" hostname="vm" time="39.389">
   <properties/>
-  <testcase name="remixStartsOnTheRemixPage" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.426"/>
-  <testcase name="aMidImportedPutsItsNotesIn" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="7.482"/>
-  <testcase name="fourTapsOnAnotherPadAreFourTouchesAndHeardFourTimes" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.712"/>
-  <testcase name="padLiveLightsStopsAndRecordsAsOnAPhone" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="5.63"/>
-  <testcase name="firstSongStartsInAnEmptyProjectInSimpleMode" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="1.25"/>
-  <testcase name="livePadsLightGoOutAndAreHeardAsPadLivesDo" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.303"/>
-  <testcase name="aTappedRhythmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.698"/>
-  <testcase name="aTapDuringTheExampleIsNotCounted" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.499"/>
-  <testcase name="aTappedRhythmAtNinetyBpmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.032"/>
-  <testcase name="padLiveStartsWithItsPadsReady" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="1.855"/>
-  <testcase name="aPackFillsThePageShown" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.556"/>
-  <testcase name="aZipImportedOutsideRemixAddsAProject" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.527"/>
-  <testcase name="drive" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="0.044">
+  <testcase name="remixStartsOnTheRemixPage" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.279"/>
+  <testcase name="aMidImportedPutsItsNotesIn" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="7.398"/>
+  <testcase name="fourTapsOnAnotherPadAreFourTouchesAndHeardFourTimes" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.537"/>
+  <testcase name="padLiveLightsStopsAndRecordsAsOnAPhone" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="5.256"/>
+  <testcase name="firstSongStartsInAnEmptyProjectInSimpleMode" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="1.308"/>
+  <testcase name="livePadsLightGoOutAndAreHeardAsPadLivesDo" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.16"/>
+  <testcase name="aTappedRhythmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.418"/>
+  <testcase name="aTapDuringTheExampleIsNotCounted" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.254"/>
+  <testcase name="aTappedRhythmAtNinetyBpmIsScored" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="2.952"/>
+  <testcase name="padLiveStartsWithItsPadsReady" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="1.911"/>
+  <testcase name="aPackFillsThePageShown" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.462"/>
+  <testcase name="aZipImportedOutsideRemixAddsAProject" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="3.402"/>
+  <testcase name="drive" classname="com.pocketstudio.app.human.BenchAmeneesTest" time="0.045">
     <skipped message="org.junit.AssumptionViolatedException: only with -Phuman.dir" type="org.junit.AssumptionViolatedException">org.junit.AssumptionViolatedException: only with -Phuman.dir
 	at org.junit.Assume.assumeTrue(Assume.java:68)
 	at com.pocketstudio.app.human.HumanTester.drive(HumanTester.kt:191)
@@ -82,28 +82,28 @@
 </skipped>
   </testcase>
   <system-out><![CDATA[at the pulse: 3 star(s) (bpm 120.0, every 500 ms)
-20:07:40.285 Défi : aucun pad « coup » sur la page
-20:07:40.285 Défi : aucun pad « coup » sur la page
-20:07:40.936 Défi 1 prêt
-20:07:41.337 Défi 1 : 4/4, 3 étoile(s)
+20:27:54.306 Défi : aucun pad « coup » sur la page
+20:27:54.307 Défi : aucun pad « coup » sur la page
+20:27:54.866 Défi 1 prêt
+20:27:55.257 Défi 1 : 4/4, 3 étoile(s)
 touches during the example: done 3246 ms after « Écouter » (example 3000 ms)
 during the example: 0 star(s) (bpm 80.0, every 750 ms)
-20:07:42.899 Défi : aucun pad « coup » sur la page
-20:07:42.900 Défi : aucun pad « coup » sur la page
-20:07:43.597 Défi 1 prêt
-20:07:43.978 Défi 1 prêt
+20:27:56.693 Défi : aucun pad « coup » sur la page
+20:27:56.693 Défi : aucun pad « coup » sur la page
+20:27:57.292 Défi 1 prêt
+20:27:57.656 Défi 1 prêt
 after the example: 3 star(s) (bpm 80.0, every 750 ms)
-20:07:42.899 Défi : aucun pad « coup » sur la page
-20:07:42.900 Défi : aucun pad « coup » sur la page
-20:07:43.597 Défi 1 prêt
-20:07:43.978 Défi 1 prêt
-20:07:44.853 Défi 1 : 4/4, 3 étoile(s)
+20:27:56.693 Défi : aucun pad « coup » sur la page
+20:27:56.693 Défi : aucun pad « coup » sur la page
+20:27:57.292 Défi 1 prêt
+20:27:57.656 Défi 1 prêt
+20:27:58.516 Défi 1 : 4/4, 3 étoile(s)
 at 90 BPM: 3 star(s) (bpm 90.0, every 666 ms)
-20:07:46.389 Défi : aucun pad « coup » sur la page
-20:07:46.389 Défi : aucun pad « coup » sur la page
-20:07:47.048 Défi 1 prêt
-20:07:47.455 Défi 1 prêt
-20:07:47.882 Défi 1 : 4/4, 3 étoile(s)
+20:27:59.960 Défi : aucun pad « coup » sur la page
+20:27:59.961 Défi : aucun pad « coup » sur la page
+20:28:00.693 Défi 1 prêt
+20:28:01.056 Défi 1 prêt
+20:28:01.476 Défi 1 : 4/4, 3 étoile(s)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

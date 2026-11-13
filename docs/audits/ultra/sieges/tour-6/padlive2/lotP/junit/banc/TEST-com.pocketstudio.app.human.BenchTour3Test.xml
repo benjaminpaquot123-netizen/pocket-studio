@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pocketstudio.app.human.BenchTour3Test" tests="3" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:13:21.284Z" hostname="vm" time="4.605">
+<testsuite name="com.pocketstudio.app.human.BenchTour3Test" tests="3" skipped="1" failures="0" errors="0" timestamp="2026-11-13T20:33:29.593Z" hostname="vm" time="4.656">
   <properties/>
-  <testcase name="padLiveRowsStartAndStopAndStopAllCutsThem" classname="com.pocketstudio.app.human.BenchTour3Test" time="2.351"/>
-  <testcase name="theSongPlaysFromAPartAndFromItsStart" classname="com.pocketstudio.app.human.BenchTour3Test" time="2.21"/>
+  <testcase name="padLiveRowsStartAndStopAndStopAllCutsThem" classname="com.pocketstudio.app.human.BenchTour3Test" time="2.439"/>
+  <testcase name="theSongPlaysFromAPartAndFromItsStart" classname="com.pocketstudio.app.human.BenchTour3Test" time="2.17"/>
   <testcase name="drive" classname="com.pocketstudio.app.human.BenchTour3Test" time="0.041">
     <skipped message="org.junit.AssumptionViolatedException: only with -Phuman.dir" type="org.junit.AssumptionViolatedException">org.junit.AssumptionViolatedException: only with -Phuman.dir
 	at org.junit.Assume.assumeTrue(Assume.java:68)

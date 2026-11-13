@@ -192,5 +192,5 @@ vert : Tour3NameFieldIdleTest#aNameFieldTouchedThenTypedInRests
 vert : Tour3RenameEffectsIdleTest#aFlowEmittedOnAnIoThreadIsWrittenOnTheMainThread
 vert : Tour3RenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
 vert : Tour3StudioRenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
-machine : 24 Go disque, 15 Go mémoire, 0 démon(s), 0 orphelin
-code testé : f14645c39a43efe739a2ecb0513c13cc87ddd12f
+machine : 24 Go disque, 14 Go mémoire, 0 démon(s), 0 orphelin
+code testé : e6bc378c851060deeb2b86ff0d55f7be552e30e6

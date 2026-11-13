@@ -1,7 +1,7 @@
 # Relecture du lot « guidecoquille » (tour 6, lot 3)
-Relu : f9a62e8cef888137a68f0ba126c4991bbece5c54
+Relu : db12edee7ec96412ec5dcd177968b0e8f0b11215
 
-Trois relecteurs neufs (processus séparés, lecture seule, aucun n'a écrit le code) : la relecture complète ci-dessous a lu le lot à 461866df18e2dc08ac62177e7aacaa5cd4401efa ; deux relectures de delta ont lu les deux commits suivants, qui ne changent que le rapport de zone (jusqu'à f9a62e8cef888137a68f0ba126c4991bbece5c54, le commit nommé ci-dessus). Une première relecture complète, à 41bd7820, est résumée en fin de fichier. Seule la forme des titres « Bloquant » et « Grave » a été retouchée pour le portail.
+Relecteurs neufs (processus séparés, lecture seule, aucun n'a écrit le code). La relecture complète ci-dessous a lu le lot à 461866df18e2dc08ac62177e7aacaa5cd4401efa ; deux relectures de delta ont lu les deux commits de rapport suivants (jusqu'à f9a62e8c). Le portail a ensuite refusé le lot (rejeu t4-26-prise-clavier) ; deux autres relectures de delta, en fin de fichier, ont lu le correctif et ses suites jusqu'à db12edee7ec96412ec5dcd177968b0e8f0b11215, le commit nommé ci-dessus. Une première relecture complète, à 41bd7820, est résumée aussi. Seule la forme des titres « Bloquant » et « Grave » a été retouchée pour le portail. À lire avec le delta d'après refus : le constat N15 de la relecture complète (« la ligne est dans la colonne de la barre du bas ») décrit un correctif retiré depuis.
 
 J'ai lu le diff complet des cinq fichiers source et le code autour dans `AppRoot.kt`, `GuidePanel.kt`, `GuideViewModel.kt`, `DoneBar.kt`, `AppSpaces.kt`, plus `FadingScroll.kt` et `TutoController.kt` dont le lot dépend. J'ai lu les tests `Tour6*` sauf `Tour6GuideNextStepTest`, `Tour6MixerNamesTest`, `Tour6ModeSwitchAsksTest` et `Tour6GuideCoquilleLookTest`, les retouches de `SpacesTest` et `SimpleModeAuditTest`, le rapport, les décisions, la section « Lot 3 » et les verdicts. J'ai regardé trois captures entières (`shell_guide_panel_more_simple_100`, `shell_audio_pages_tr_130`, `shell_done_line_simple_130`). Rien n'a été lancé (lecture seule) : les chiffres de tests du rapport ne sont pas revérifiés ici.
 
@@ -71,6 +71,52 @@ Bilan de ce delta : aucun bloquant, aucun défaut de gravité haute. Ses trois c
   - **Selftest** : la phrase reconnaît elle-même que ses traces ne sont pas dans le dépôt.
 - (mineur) Les renvois aux sièges ajoutés dans la première phrase (« Wszystkie pady » F b #1, B c écran 4, F a, A c #21) ne se relisent pas dans le dépôt : `lots-correction.md` et `verdicts.tsv` sont absents de `docs/audits/ultra/sieges/tour-6/` à f9a62e8c, et « Wszystkie pady » n'apparaît nulle part ailleurs sous `docs/audits/ultra`. L'attribution au tri repose donc sur la parole du rapport. Cela n'affaiblit pas l'aveu « non vérifié ».
 - (mineur) Trois constats restent sans preuve relisible : « 203 verts, 44 sautés à chacun des deux », « lancé avec un dossier de lot vide », et le passage rouge sur la base e57f1bc6. Le rapport le dit lui-même, donc la phrase n'est pas plus forte que sa preuve, mais ce sont des affirmations de session. La grande vérification devra rejouer `GestureBudgetTest`, comme le texte le demande.
+
+
+Bilan de ce delta : aucun bloquant, aucun défaut de gravité haute.
+
+## Relecture du delta après le refus du portail (f9a62e8c → 53d7a303)
+
+Lu sans rien lancer (lecture seule : ni les tests ni le rejeu n'ont été rejoués par moi). J'ai lu les quatre commits du lot (462dd881 rouge, 5fadb52b vert, 1cdf7a9a et 53d7a303 docs), le diff de `AppRoot.kt`, `DoneBar.kt`, des tests `Tour6*` et des deux documents. Autour des lignes changées : `keysTakeGuideLine`, `guideShown`, `thumbBarUp`, le `snackbarHost` et le `bottomBar` du `Scaffold`, les lignes sous la barre du haut. Dans `RhythmViewModel.kt` : toutes les sources de `_done`, le début et la fin d'une prise de notes et d'une prise micro. Enfin `RecordBar.kt` et le dossier du rejeu (`start.txt`, `oracle.txt`).
+
+- « juste » Le `snackbarHost` est revenu mot pour mot à ce qu'il était avant le lot (avant 3b77d668), plus le masquage pendant une prise. La ligne « Fait » ne prend donc plus de hauteur à la page et ne peut plus la déplacer en partant.
+- « juste » Pendant une prise, la ligne ne peut pas s'afficher, pas même une image : `done.takeIf { !taking }` est lu dans la même composition que `taking`. Le décompte est couvert aussi : `_recording` passe à vrai avant le décompte (`RhythmViewModel.kt:8709`) et `_audioRecording` est posé dès l'attente (`:2309`).
+- « juste » Le nouveau `LaunchedEffect(done, taking)` n'a pas de bug d'état que j'aie trouvé. Il ne boucle pas, et la minuterie de six secondes de `DoneBar` s'annule quand le texte devient nul.
+- « juste » Le message de fin de prise micro n'est pas perdu : `_audioRecording` repasse à nul (`:2467`) avant que `placeTake` écrive « Huit prises gardées… » (`:2509`). Même ordre pour la prise de notes (`:8737`).
+- « juste » La barre du Guide ne quitte plus la page du clavier à la minuterie sur un écran court : le retrait de `guideSpot == null` suffit. Rien d'autre dans le `bottomBar` ne dépend d'une horloge pendant une prise sur cette page. La barre du pouce dépend de l'onglet et de la taille d'écran. La barre du Guide part au début de la prise, au geste de l'utilisateur, comme avant le lot.
+- « juste » Le rapport et les décisions disent honnêtement que N15 reste ouvert hors des prises, que le test ne reproduit pas le déplacement du rejeu et que l'assertion « a bougé » a été retirée.
+- (moyen) Les trois tests `theStopButtonStaysWhenTheDoneLineLeaves*` ne prouvent pas l'abandon du message. Ils appellent eux-mêmes `h.vm.dismissDone()` avant de vérifier l'absence de la ligne puis son non-retour après la prise. Ces deux assertions passeraient sans le `LaunchedEffect`, et sans doute aussi sur le code refusé. Depuis le retrait de « a bougé », aucune de leurs assertions n'a été vue rouge. Ce sont des garde-fous (« ■ Arrêter » entier, à l'écran, rien de la coquille dessus), pas des preuves. Le rapport les liste pourtant comme preuve du chemin « Fait affiché puis prise lancée ».
+- (moyen) Seul `noDoneLineComesOverThePageDuringATake` prouve quelque chose du correctif : le masquage, sur une prise de notes au clavier en Mode simple. La phrase du rapport « son message est abandonné (après la prise, son Annuler annulerait la prise) » n'a donc aucun test qui serait rouge sans elle. Il manque un test qui lance la prise, l'arrête sans toucher à `dismissDone`, puis lit `done_bar`.
+- (moyen) Sur un écran court, la carte « Voir le réglage » dit toujours « Le Guide t'attend dans sa barre, en bas » alors que la barre n'est plus là sur le clavier. C'est écrit dans les décisions (G1 clavier), mais pas dans la section G1 du rapport, et aucun test ne couvre ce changement de `keysTakeGuideLine`. « Même cause écartée ailleurs » repose sur la lecture du code seule. Pour un débutant, la phrase montre un endroit vide.
+- (mineur) Message perdu dans un cas étroit : un « Fait » affiché depuis moins de six secondes disparaît, avec son « Annuler », dès qu'une prise démarre. Cela touche « Piste supprimée », « Nouveau son » et surtout « Huit prises gardées : la plus ancienne est oubliée. Annuler la ramène. » si une prise de notes suit aussitôt. Un gel de piste qui finit pendant une prise ne dit plus « Fait : piste gelée ». « ↶ » reste, mais annule d'abord la prise. Le choix est assumé dans les décisions ; ce cas précis n'y est pas nommé.
+- (mineur) « Pendant une prise (notes ou micro) » : la moitié micro (`guideQuietTaking`) n'a aucun test. La prise de performance du Live et l'écriture de la prise (`takeSaving`) ne sont pas dans `taking`. C'est sans effet sur le clavier, mais le commentaire « while a take runs » est plus large que le code.
+- (mineur) Le nom `theStopButtonStaysWhenTheDoneLineLeaves` et le commentaire « goes by itself after six seconds, the take still running » décrivent l'ancien scénario. Avec le correctif, la ligne part au début de la prise et le `dismissDone()` du test ne fait plus rien.
+- (mineur) Deux restes périmés dans le rapport. Ligne 119 : la « ligne Fait » figure encore parmi les captures que le lot fait bouger. Ligne 124 : « la page gagne puis rend la hauteur de la ligne Fait » et « couché, pas de marge sous elle » sont encore listés comme moyens laissés, alors que ce code est retiré.
+- (mineur) « Oracle tenu », « 176 verts » et « 195 tests, 0 rouge » sont des affirmations que je n'ai pas pu vérifier. L'oracle du rejeu ne lit que l'absence de « Rien n'a été joué pendant la prise » après 32 gestes. Il prouve que la prise s'arrête sur ce siège (téléphone, police à 200 %, Mode simple), pas sur les autres tailles.
+
+
+Bilan de ce delta : aucun bloquant, aucun défaut de gravité haute. Ses constats moyens sur les tests et les lignes périmées du rapport ont été repris au commit db12edee.
+
+## Relecture du dernier delta (53d7a303 → db12edee)
+
+- « juste » (1) Les cinq fichiers source du lot (`ui/AppRoot.kt`, `ui/AppSpaces.kt`, `ui/DoneBar.kt`, `guide/GuidePanel.kt`, `guide/GuideViewModel.kt`) sont identiques entre les deux commits (diff vide). Le commit propre au lot, db12edee, ne touche que le test et le rapport.
+- « juste » Le seul autre fichier du périmètre qui bouge est `guide/TrackSheet.kt` (`plaitsLabel`, « Autres synthés »). Il vient de la fusion de l'intégration (commits 211cc9aa et 22db53bd, T16 du lot 2), pas de ce lot.
+- « juste » (2) Les trois tests renommés `theDoneLineIsLetGoWhenATakeStarts…` n'appellent plus `dismissDone()`. Ils attendent que l'appli vide elle-même le message (`h.vm.done.value == null` sous 3 s) pendant la prise.
+- « juste » (2) Ces tests tomberaient sans le `LaunchedEffect(done, taking)` de `AppRoot.kt:2502`, d'après la lecture du code (rien n'a été lancé, relecture en lecture seule) :
+  - `_done` ne se vide que par `dismissDone()` et `undoDone()` (`RhythmViewModel.kt:3537-3545`).
+  - La seule minuterie est dans `DoneBar`, qui n'est plus composée pendant la prise (texte nul), donc elle est annulée.
+  - Sans la ligne, le message resterait, l'assertion sur `done.value` tomberait, et la dernière aussi (la ligne « Sauté… » reviendrait après « ■ Arrêter »).
+  - Le commit dit l'avoir vu rouge sans cette ligne, ce qui concorde.
+- « juste » (2) La dernière assertion est plus stricte qu'avant : plus de `!has("done_bar") ||`, et le texte est vide quand la ligne est absente.
+- « juste » (3) La ligne N15 du rapport ne dit pas plus que le code et les tests :
+  - elle annonce le message abandonné au démarrage d'une prise de notes (rouge sans le correctif), l'absence de ligne pendant la prise (`noDoneLineComesOverThePageDuringATake`) et « ■ Arrêter » en garde-fou ;
+  - elle avoue que la moitié « micro » n'a pas de test ;
+  - elle avoue que le déplacement de la page n'est prouvé que par le rejeu.
+- « juste » (3) Les deux lignes périmées sont corrigées : la ligne « Fait » sort des captures de référence qui bougent et des moyens laissés, puisqu'elle flotte de nouveau comme avant le lot. Les trois lignes « chemin | test » portent les nouveaux noms, qui existent dans la classe.
+- « juste » (3) Le nouveau « Reste » sur la carte « Voir le réglage » correspond au texte de `GuidePanel.kt:811` et dit bien qu'aucun test ne joue ce cas.
+- (mineur) Le message d'échec de `Tour6RecordStopStaysTest.kt:85`, « the message of before the take is kept for after it », décrit le défaut et non l'attendu, comme ses voisins. C'est cohérent dans le fichier, mais il se lit à l'envers dans un journal.
+- (mineur) Le rapport cite « Huit prises gardées… Annuler la ramène » comme perdu « si une prise démarre aussitôt ». Ce message est posé par `placeTake` (`RhythmViewModel.kt:2509`), pendant l'écriture de la prise micro, en arrière-plan. Je n'ai pas vérifié qu'il arrive toujours après la fin de `audioRecording` ni hors d'une autre prise en cours ; sinon il serait abandonné sans avoir été vu. Aucun test ne couvre ce cas, ce que le rapport reconnaît pour le micro. À regarder dans une prochaine passe.
+- (mineur) Les deux assertions de `Tour6RecordStopStaysTest.kt:84-85` se recouvrent en partie : la première (`!has("done_bar")`) passerait aussi sans le `LaunchedEffect`. Seules la seconde et la dernière prouvent l'abandon du message. Rien à corriger.
 
 
 Bilan de ce delta : aucun bloquant, aucun défaut de gravité haute.

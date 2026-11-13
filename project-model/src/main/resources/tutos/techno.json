@@ -538,7 +538,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.",
-          "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "textPro": "À toi : dans Mix, baisse d'environ 2 dB le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",
@@ -565,7 +565,7 @@
       "steps": [
         {
           "id": "loudness",
-          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT (un compresseur très fort qui rapproche les sons doux des sons forts) ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : −7,5 LUFS (LUFS : le volume qu'on entend ; plus près de 0, plus c'est fort ; le streaming est à −14), aussi fort qu'en club.",
           "check": "loudness:CLUB",
           "spot": "mixer.master",
           "listen": "song"

@@ -211,4 +211,22 @@ class Tour6LanguagesTest {
         }
         report("NEW, Groove, Plaits", wrong)
     }
+
+    /**
+     * Fresh review of lot 5: where the Latin word was written apart from its article (« الـ Pads »), the change of words
+     * left the article hanging before the Arabic one (« على الـ بادات », « استمع إلى الـ باد »); and « Sample », a
+     * masculine loan, became « عيّنة », a feminine word, after a masculine « this » (« اعزف هذا العيّنة »). Every Arabic
+     * text outside the tutorial joins the article to its word and says « هذه » before a feminine noun.
+     */
+    @Test
+    fun theArabicArticlesAndThisAgreeWithTheirWords() {
+        val hanging = Regex("(^|[\\s«(])(ال|لل|بال|وال|كال|فال)ـ\\s+[\\u0621-\\u064A]")
+        val masculineThis = Regex("هذا (ال[^\\s«»\"،.:؟!]+ة)(?=[\\s«»\"،.:؟!]|$)")
+        val wrong = ArrayList<String>()
+        texts(Lang.AR).forEach { (area, _, v) ->
+            if (hanging.containsMatchIn(v)) wrong += "ar/$area: an article apart from its word in « ${v.take(70)} »"
+            masculineThis.findAll(v).forEach { wrong += "ar/$area: « ${it.value} » in « ${v.take(70)} »" }
+        }
+        report("Arabic articles and « this » that do not agree", wrong)
+    }
 }

@@ -1405,7 +1405,7 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
         val words = remember(labels, maxWidth, density, labelStyle) {
             // Each tab's share of the dock (its padding, ⛶ and ︿ aside); the floor of WholeWordsAutoSize at this font size.
             val tabW = with(density) { ((maxWidth - 8.dp - 96.dp) / tabs.size).toPx() }
-            val smallest = DOCK_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
+            val smallest = TAB_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
             maxWidth >= 300.dp && labels.all { measurer.measure(it, labelStyle.copy(fontSize = smallest.sp), maxLines = 1, softWrap = false).size.width <= tabW }
         }
         Row(
@@ -1435,7 +1435,7 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
                         val style = MaterialTheme.typography.labelMedium
                         Text(
                             label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(DOCK_WORDS_MIN, style.fontSize),
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(TAB_WORDS_MIN, style.fontSize),
                         )
                     }
                 }
@@ -1451,8 +1451,8 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
 /** The dock's height (its floating margins aside). */
 private val DOCK_HEIGHT = 60.dp
 
-/** The smallest a dock tab's word gets (past 130 % of the phone's font, smaller still: see WholeWordsAutoSize). */
-private val DOCK_WORDS_MIN = 9.sp
+/** The smallest a tab's word gets, in the dock and the panel (past 130 % of the phone's font, smaller still: see WholeWordsAutoSize). */
+private val TAB_WORDS_MIN = 9.sp
 
 /**
  * Lot 4d, the tools open: a panel from the bottom (lying down, [sideways]: on the right). On top
@@ -1541,31 +1541,52 @@ private val TIGHT_PANEL = 380.dp
 
 /** The open panel's tabs, one segmented control: the page shown lit; « Briques » folds the panel. */
 @Composable
-private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePanelTab, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, modifier: Modifier) {
-    Row(
-        modifier.height(48.dp).clip(RoundedCornerShape(24.dp)).background(GridLook.Ground.copy(alpha = 0.7f)).padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
-        tabs.forEach { t ->
-            val label = tabLabel(t, sideBySide)
-            val selected = t == shown
-            val idle = t == LivePanelTab.Acide && !ui.hasAcid
-            // The tabs share the row by the length of their names (a bigger text makes them smaller).
-            Box(
-                Modifier.weight(label.length + 3f).fillMaxHeight().clip(RoundedCornerShape(21.dp)).background(if (selected) Neon.Cyan else Color.Transparent)
-                    .clickable { choose(t) }.padding(horizontal = 2.dp).testTag("live_tab_${t.name}").semantics { this.selected = selected },
-                contentAlignment = Alignment.Center,
-            ) {
-                val style = MaterialTheme.typography.labelLarge
-                Text(
-                    label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
-                    style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
-                )
+private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePanelTab, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, modifier: Modifier) =
+    BoxWithConstraints(modifier) {
+        val labels = tabs.map { tabLabel(it, sideBySide) }
+        val style = MaterialTheme.typography.labelLarge
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        // Tour 6, lot 5 (R1: « Blokk… », « Acid 3… » at Taille 130 %): the words only when each fits whole in its share at
+        // the smallest size it may take; else every tab shows its icon, its name said (as the dock does).
+        val words = remember(labels, maxWidth, density, style) {
+            val weights = labels.map { it.length + 3f }
+            val inner = with(density) { (maxWidth - 6.dp - 2.dp * (tabs.size - 1)).toPx() }
+            val smallest = TAB_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
+            labels.indices.all { i ->
+                val room = inner * weights[i] / weights.sum() - with(density) { 4.dp.toPx() }
+                measurer.measure(labels[i], style.copy(fontSize = smallest.sp), maxLines = 1, softWrap = false).size.width <= room
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(24.dp)).background(GridLook.Ground.copy(alpha = 0.7f)).padding(3.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            tabs.forEachIndexed { i, t ->
+                val label = labels[i]
+                val selected = t == shown
+                val idle = t == LivePanelTab.Acide && !ui.hasAcid
+                val ink = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary
+                // The tabs share the row by the length of their names (a bigger text makes them smaller); as icons, evenly.
+                Box(
+                    Modifier.weight(if (words) label.length + 3f else 1f).fillMaxHeight().clip(RoundedCornerShape(21.dp))
+                        .background(if (selected) Neon.Cyan else Color.Transparent)
+                        .clickable { choose(t) }.padding(horizontal = 2.dp).testTag("live_tab_${t.name}")
+                        .semantics { this.selected = selected; if (!words) contentDescription = label },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (words) {
+                        Text(
+                            label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(TAB_WORDS_MIN, style.fontSize),
+                        )
+                    } else {
+                        Icon(tabIcon(t), contentDescription = null, tint = ink, modifier = Modifier.size(22.dp))
+                    }
+                }
             }
         }
     }
-}
 
 /** ﹀ (lying down: →): the panel folds back to the dock (or the rail). */
 @Composable

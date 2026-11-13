@@ -1,0 +1,8 @@
+fusion: 426e2fb468a7d11cbd01a115be0aac3b91d130ea
+branche: eq/tour-6-tutoordre
+tete: bb21d65f03d78f5de5a2d78d31142b06f7f39461
+relecture: docs/audits/ultra/tour-6-tutoordre-relecture.md
+relu: e337db4ed6a1d5e6253e0213b3b2d8b38a738713
+filtres: com.pocketstudio.app.tuto.Tour6TutoPanelAlreadyTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

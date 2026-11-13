@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : ee4c2a92566bb2b6d7afeae799c0191c60c2e915
+Relu : e053f20ee4748b3169b98ce2be42963ed212cfea
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -26,12 +26,19 @@ Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou d
 
 ## P4 : le ▶ du haut montre ■ quand des boucles jouent
 
-- **moyen** : `app/src/main/java/com/pocketstudio/app/padlive/PadLiveScreen.kt:135-138`. `soundsNow` vaut vrai dès qu'un pad est à un état différent de 0, y compris un **coup** (pad SHOT). Le moteur le met à l'état Playing (2) tant qu'il sonne (`ClipLauncher::State`).
+- **moyen, corrigé** (ce89f794, voir plus bas) : `app/src/main/java/com/pocketstudio/app/padlive/PadLiveScreen.kt:135-138`. `soundsNow` vaut vrai dès qu'un pad est à un état différent de 0, y compris un **coup** (pad SHOT). Le moteur le met à l'état Playing (2) tant qu'il sonne (`ClipLauncher::State`).
   - Effet 1 : transport arrêté, chaque frappe sur un coup fait passer brièvement le bouton du haut au ■ vert, ce qui donne un clignotement à chaque coup.
   - Effet 2 : un toucher sur ce bouton pendant qu'un coup résonne appelle `cutEverything` au lieu de lancer la musique.
   - Scénario « curieux » : il tape le Clap (ou une cymbale longue), puis tout de suite ▶ pour lancer un rythme. Le coup est coupé, rien ne démarre, et il doit retoucher le bouton.
   - Correction possible : ne compter que les boucles (`PadLive.modeOf(clip) != SHOT`, ou `oneShot == false`).
 - **mineur** : `PadLiveScreen.kt:138`. Quand des boucles jouent toutes seules, le bouton du haut ne permet plus de démarrer le transport (métronome, scène) sans d'abord tout couper. C'est voulu, mais c'est un changement de comportement à garder en tête. Autre conséquence : `cutEverything` termine aussi un « Enregistrer ce que je joue » en cours (`padLive.played.endForCut()`). Le bouton ▶, qui avant ne touchait jamais à cet enregistrement, peut désormais l'arrêter.
 - Tests : `PadLivePlayShowsTest` couvre bien les trois cas (boucles seules, pad en attente, transport en route) dans les deux écrans (barre et « Fête »), et `BenchAmeneesTest` est adapté proprement. Aucun cas n'essaie un coup isolé, ce qui explique que le défaut ci-dessus n'ait pas été vu.
+
+## Reprise sur e053f20e (`git diff a95b0cb4..e053f20e -- app/`)
+
+- Moyen P4 **corrigé** : `PadLiveScreen.kt:134-137`. `soundsNow` ne compte plus que les pads à l'état différent de 0 dont le clip n'est pas un coup (`oneShot == false`, ce qui couvre les boucles et les pads HOLD). Un coup qui résonne laisse le bouton sur ▶ « Jouer », et un toucher lance bien la musique (`togglePlay`). L'indexation `pads.at(pad)` est globale aux quatre pages, comme `states`, donc cohérente avec le reste de l'écran. « Fête » en profite aussi, puisque l'écran utilise la même propriété.
+- Le test `PadLivePlayShowsTest#aHitRingingKeepsPlay` (pad 1, le Clap, joué en coup) prouve la correction : il échouait avec l'ancien code (bouton sur « Arrêter », toucher envoyé à « stop all »). Les cas existants restent valides, car les pads 0, 2 et 3 du jeu de départ sont des boucles.
+- **mineur** : `PadLiveScreen.kt:137`. Un pad HOLD tenu compte comme « ça joue », donc le bouton passe à ■ tant que le doigt reste posé. C'est cohérent, puisque ça sonne vraiment, et sans gêne pratique : le doigt est occupé. Je le note seulement.
+- Rien d'autre n'a changé dans `app/`. Les trois autres moyens (choix partagé avec la page Live, bouton Record du contrôleur MIDI, morceau plein) restent ouverts et sont notés dans `tour-6-padlive2-rapport.md`.
 
 Verdict : 0 bloquant, 0 grave

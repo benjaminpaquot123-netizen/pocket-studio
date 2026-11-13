@@ -147,5 +147,6 @@
   "Partie « %s » créée (copie du Groove).": "Part “%s” made (a copy of the Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "A new track starts at %d BPM: you are the one who gives it the style's speed.",
   "%1$s : encore +%2$d": "%1$s: +%2$d more",
-  "Touche ici": "Tap here"
+  "Touche ici": "Tap here",
+  "Accords en pointillé à toucher : %d": "Dotted chords to tap: %d"
 }

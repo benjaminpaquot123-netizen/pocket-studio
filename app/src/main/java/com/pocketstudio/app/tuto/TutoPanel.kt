@@ -278,6 +278,22 @@ fun tutoRollWhere(track: String?, bar: Int, bars: Int): String =
 /** Over the piano roll, the notes to write by hand all written: « Copier » beside it does the rest. */
 fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
 
+/**
+ * With « Accords » on, one touch writes a whole dotted chord: the line counts chords, said as such (control seats:
+ * « Encore 9 notes » over three chords), the arrow of [way] around it.
+ */
+fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String {
+    if (left <= 0) return tutoNotesLeft(0, way)
+    val said = tr("Accords en pointillé à toucher : %d", left)
+    return when (way) {
+        com.pocketstudio.model.tuto.TutoWay.Higher -> "$said ↑"
+        com.pocketstudio.model.tuto.TutoWay.Lower -> "$said ↓"
+        com.pocketstudio.model.tuto.TutoWay.Later -> "$said →"
+        com.pocketstudio.model.tuto.TutoWay.Earlier -> "← $said"
+        null -> said
+    }
+}
+
 /** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way). */
 fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")

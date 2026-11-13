@@ -147,5 +147,6 @@
   "Partie « %s » créée (copie du Groove).": "パート「%s」を作りました（グルーヴのコピー）。",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "新しい曲は %d BPM から始まる。スタイルの速さにするのはあなた。",
   "%1$s : encore +%2$d": "%1$s：あと +%2$d",
-  "Touche ici": "ここをタップ"
+  "Touche ici": "ここをタップ",
+  "Accords en pointillé à toucher : %d": "タップする点線のコード：%d"
 }

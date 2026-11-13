@@ -1430,7 +1430,8 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, way),
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),

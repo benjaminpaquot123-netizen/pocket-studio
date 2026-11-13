@@ -147,5 +147,6 @@
   "Partie « %s » créée (copie du Groove).": "Parte “%s” criada (cópia do Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Uma música nova começa em %d BPM: é você quem dá a ela a velocidade do estilo.",
   "%1$s : encore +%2$d": "%1$s: mais +%2$d",
-  "Touche ici": "Toque aqui"
+  "Touche ici": "Toque aqui",
+  "Accords en pointillé à toucher : %d": "Acordes pontilhados para tocar: %d"
 }

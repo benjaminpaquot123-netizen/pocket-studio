@@ -147,5 +147,6 @@
   "Partie « %s » créée (copie du Groove).": "تم إنشاء الجزء «%s» (نسخة من الغروف).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "المقطوعة الجديدة تبدأ عند %d BPM: أنت من يعطيها سرعة الأسلوب.",
   "%1$s : encore +%2$d": "%1$s: +%2$d أخرى",
-  "Touche ici": "المس هنا"
+  "Touche ici": "المس هنا",
+  "Accords en pointillé à toucher : %d": "الكوردات المنقّطة المتبقية للمس: %d"
 }

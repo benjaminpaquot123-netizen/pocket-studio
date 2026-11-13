@@ -147,5 +147,6 @@
   "Partie « %s » créée (copie du Groove).": "Parte “%s” creata (copia del Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Un brano nuovo parte a %d BPM: sei tu a dargli la velocità dello stile.",
   "%1$s : encore +%2$d": "%1$s: ancora +%2$d",
-  "Touche ici": "Tocca qui"
+  "Touche ici": "Tocca qui",
+  "Accords en pointillé à toucher : %d": "Accordi tratteggiati da toccare: %d"
 }

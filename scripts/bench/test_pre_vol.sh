@@ -433,7 +433,7 @@ expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de 
 portal tok
 said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
 
-# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 6 ») --------------------------------
+# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 8 ») --------------------------------
 # A lot writes « tenté » in docs/audits/ultra/corrections.tsv, never « corrigé », « rejoué » (the portal's) nor
 # « constaté » (the chief's, after a control seat): portal exit 11, before the merge. After a merge, the portal itself
 # turns the lot's « tenté » to « rejoué » when its proof (a replay of rejeux/) held on the merged head.
@@ -454,12 +454,12 @@ STUB
     team "$1" && sed -i "s/^\(tour-9\t$2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1$3\t1234567\t$4/" docs/audits/ultra/corrections.tsv && git commit -q -am "$1 writes $2 $3"
   }
   state cself C1 corrigé r1 && fixes cself
-  batch 4
-  expect "before batch 6 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 6" non tour-9 cself
+  batch 7
+  expect "before batch 8 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 8" non tour-9 cself
   portal cself
-  said "before batch 6 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
+  said "before batch 8 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
   git reset -q --hard "$pbefore"
-  batch 6
+  batch 8
   expect "a lot that writes « corrigé »: refused" 1 "état réservé du registre des réparations : .*tour-9 C1.*« corrigé »" oui tour-9 cself
   portal cself
   said "the portal names the lot that gives itself « corrigé », nothing merged" "$( [ "$prc" -eq 11 ] && has "cself: the lot gives itself a state of the repairs register" && has "not merged" && untouched cself && echo 0 || echo 1)"

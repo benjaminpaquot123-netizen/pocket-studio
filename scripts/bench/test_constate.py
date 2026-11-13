@@ -6,9 +6,9 @@ only when a tester saw it. Seconds, no Gradle, no network (toy repositories and 
 
 1. corrections.tsv, the one register: four states (« pas pris », « tenté », « rejoué », « constaté »), an acceptance
    sentence and the seat of origin; the lines of the rounds before keep their text; the programs that read it go on.
-2. The portal (scripts/bench/fusion-equipes.sh, from batch 6): refuses a lot that gives itself « corrigé », « rejoué » or
+2. The portal (scripts/bench/fusion-equipes.sh, from batch 8): refuses a lot that gives itself « corrigé », « rejoué » or
    « constaté » (read against the base and the integration's head, never in the branch alone), and sets « rejoué »
-   itself when the proof holds after the merge. The pre-flight says the same (« À VOIR » before batch 6).
+   itself when the proof holds after the merge. The pre-flight says the same (« À VOIR » before batch 8).
 """
 import importlib.util
 import io
@@ -686,11 +686,11 @@ def rules_of(text):
 class PortalAndPreflight(unittest.TestCase):
     """The rule's place in the portal and its mirror in the pre-flight."""
 
-    def test_the_portal_refuses_from_batch_5_before_the_merge(self):
+    def test_the_portal_refuses_from_batch_8_before_the_merge(self):
         portal = read(PORTAL)
         lines = [l for l in rules_of(portal) if "reparations.py --lot" in l]
         self.assertEqual(len(lines), 1, "one refusal line calls reparations.py --lot")
-        self.assertIn("from_paquet 6", lines[0])
+        self.assertIn("from_paquet 8", lines[0])
         self.assertIn("exit 11", lines[0])
         self.assertLess(portal.index("reparations.py --lot"), portal.index('git merge --no-ff -m "Merge team'))
         self.assertRegex(lines[0], r'base:\$base" "tete:\$\(git rev-parse HEAD\)"')
@@ -702,7 +702,7 @@ class PortalAndPreflight(unittest.TestCase):
         self.assertGreater(at, portal.index("trap undo_merge ERR"), "after the checks, inside the traces' step")
         self.assertLess(at, portal.index('git commit -q -m "Portal traces of the merge'))
         block = portal[portal.rindex("\n  if ", 0, at):at]
-        self.assertIn("from_paquet 6", block)
+        self.assertIn("from_paquet 8", block)
         self.assertIn("computed+=(docs/audits/ultra/corrections.tsv)", block, "taken back by clean_merge on a failure")
         self.assertIn('rejeux:$lot/rejeux.txt', portal[at:at + 300])
         self.assertIn('tete:$before', portal[at:at + 300])
@@ -711,7 +711,7 @@ class PortalAndPreflight(unittest.TestCase):
         prevol = read(PREVOL)
         self.assertTrue("reparations.py --lot" in prevol, "the pre-flight calls the rule")
         at = prevol.index("reparations.py --lot")
-        self.assertIn("rule_from 6", prevol[at:at + 900])
+        self.assertIn("rule_from 8", prevol[at:at + 900])
 
     def test_the_preflight_knows_the_portal_s_rules(self):
         portal = read(PORTAL)

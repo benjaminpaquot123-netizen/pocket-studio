@@ -188,7 +188,7 @@
         {
           "id": "bass_do",
           "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : deux petites notes après chaque kick.",
-          "textPro": "À toi : crée la piste Basse (son « Basse analogique », avec sa pompe déjà posée), puis écris la mesure 1 dans le piano roll : deux doubles croches entre chaque kick, toutes sur Fa.",
+          "textPro": "À toi : crée la piste Basse (son « Plaits », avec sa pompe déjà posée), puis écris la mesure 1 dans le piano roll : deux doubles croches entre chaque kick, toutes sur Fa.",
           "why": "Une basse qui ne joue jamais avec le kick laisse chaque coup claquer.",
           "check": "notes:bass",
           "length": 16,
@@ -227,7 +227,7 @@
         {
           "id": "pad_do",
           "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).",
-          "textPro": "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).",
+          "textPro": "À toi : crée la piste Accords (son « Synthé », un pluck court, écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).",
           "why": "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.",
           "check": "notes:pad",
           "length": 16,
@@ -261,7 +261,7 @@
         {
           "id": "lead_do",
           "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Puis « Copier sur les mesures suivantes ».",
-          "textPro": "À toi : crée la piste Mélodie (son « Lead filtré ») et écris le riff de 2 mesures : Fa grave, Fa aigu, Fa grave, puis la même chose terminée par La♭. « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Plaits », un lead filtré) et écris le riff de 2 mesures : Fa grave, Fa aigu, Fa grave, puis la même chose terminée par La♭. « Copier sur les mesures suivantes ».",
           "why": "Deux notes suffisent : on retient le motif, et le filtre fera le reste.",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -518,7 +518,7 @@
         },
         {
           "id": "filter",
-          "text": "À toi : automatise la « Coupure » de la piste « Mélodie » sur le Drop : « Automatiser un réglage », « Mélodie », « Filtre (balayage) », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.",
+          "text": "À toi : automatise la « Coupure » de la piste « Mélodie » sur le Drop : « Automatiser un réglage », « Mélodie », « Filtre (balayage) », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.",
           "why": "Les notes ne changent pas : c'est le filtre qui raconte l'histoire pendant 32 mesures.",
           "levels": "p",
           "check": "automation:wave",

@@ -231,6 +231,7 @@ def main():
         named_pairs(d)
         judge_reads_any_bytes(d)
         one_red_several_greens(d)
+        red_seen_regularises(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1573,6 +1574,97 @@ def one_red_several_greens(d):
     check(whole + " «" not in out and whole_green + " «" not in out, "a red closed by its subject is paired:\n" + out)
     check(f"{regression} « vert:" in out, "a red closed by its subject gave all its tests to that green:\n" + out)
     check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
+
+
+def red_seen_regularises(d):
+    """Lot « juge8 » (the portal of « remix2 »: greens that cannot name their test any more, history being fixed): the
+    evidence of rouges-constates/<green>/ (rouge.txt: « parent: <the green's parent> », « test: Classe#méthode »; a
+    JUnit XML where that test fails on the parent) also holds when the green touches test files, provided that test's
+    function is the same text in the parent and in the green (its assertion untouched), and the green changes code;
+    when the green's message does not name the test, a vert.xml (the test run on the green) shows it passing. A test a
+    red adds that such evidence names closes that red (one test, one green). Stay gaps: the green rewrites the named
+    test, the XML does not show it failing, rouge.txt has no parent, an unnamed green without vert.xml or whose
+    vert.xml still fails, a red no evidence names."""
+    root = judge_root(d, "juge-constate-large")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+
+    def journey(whole="", other=""):
+        write(os.path.join(tests, "JourneyProofTest.kt"),
+              "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {\n    check(spot() != 0)" + whole + "\n  }\n"
+              "  @Test\n  fun theOtherCourse() {\n    check(true)" + other + "\n  }\n}\n")
+
+    def seat(chips="", hint=""):
+        write(os.path.join(tests, "SeatProofTest.kt"),
+              "class SeatProofTest {\n  @Test\n  fun theChipsAreReachable() {\n    check(true)" + chips + "\n  }\n"
+              "  @Test\n  fun theHintIsWholeOnScreen() {\n    check(true)" + hint + "\n  }\n}\n")
+
+    journey()
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def commit(message, key=None):
+        if key is not None:
+            write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        full = git_toy(root, "rev-parse", "HEAD").strip()
+        if key is not None:
+            shas[key] = (full, git_toy(root, "rev-parse", "HEAD^").strip())
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    def evidence(key, cls="JourneyProofTest", test="theWholeCourse", parent=True, failing=True, vert=None):
+        full, par = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), (f"parent: {par}\n" if parent else "") + f"test: {cls}#{test}\n")
+        body = '<failure message="not seen"/>' if failing else ""
+        write(os.path.join(folder, f"TEST-x.{cls}.xml"),
+              f'<testsuite><testcase classname="x.{cls}" name="{test}">{body}</testcase></testsuite>')
+        if vert is not None:
+            write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{test}">'
+                  + ("" if vert else '<failure message="still"/>') + "</testcase></testsuite>")
+
+    journey(other="\n    check(1 == 1)")
+    commit("vert: JourneyProofTest#theWholeCourse, another test of its file tidied", "tidy")
+    commit("vert: the course reaches its end (no test named)", "unnamed")
+    commit("vert: the course reaches its end, no vert.xml", "novert")
+    commit("vert: the course reaches its end, vert.xml still red", "stillred")
+    journey(whole="\n    check(false || true)", other="\n    check(1 == 1)")
+    commit("vert: JourneyProofTest#theWholeCourse, its own assertion rewritten", "rewrites")
+    commit("vert: JourneyProofTest#theWholeCourse, never seen failing", "notfailing")
+    commit("vert: JourneyProofTest#theWholeCourse, rouge.txt without parent", "noparent")
+    seat()
+    red = commit("rouge: the left-thumb seat (chips, hint)")
+    seat(hint="\n    check(2 == 2)")
+    commit("vert: A2 chips at the bottom (its seat's other test tidied)", "chips")
+    commit("vert: A3 hint whole on screen", "hint")
+    write(os.path.join(tests, "LonelyProofTest.kt"), "class LonelyProofTest {\n  @Test\n  fun theLonelyRedStaysOpen() {}\n}\n")
+    lonely = commit("rouge: the lonely seat")
+    evidence("tidy")
+    evidence("unnamed", vert=True)
+    evidence("novert")
+    evidence("stillred", vert=False)
+    evidence("rewrites")
+    evidence("notfailing", failing=False)
+    evidence("noparent", parent=False)
+    evidence("chips", cls="SeatProofTest", test="theChipsAreReachable", vert=True)
+    evidence("hint", cls="SeatProofTest", test="theHintIsWholeOnScreen", vert=True)
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    for key, what in (("tidy", "touching another test of the file"), ("unnamed", "unnamed, its vert.xml passing"),
+                      ("chips", "of a red's test"), ("hint", "of the red's second test")):
+        check(short[key] + " «" not in out, f"a green whose red was seen in a run ({what}) is a pair:\n" + out)
+    check(red + " «" not in out, "a red whose test the evidence names is closed:\n" + out)
+    for key in ("novert", "stillred", "rewrites", "notfailing", "noparent"):
+        check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no evidence names stays a gap:\n" + out)
+    check("chantier : 6 écarts" in out, "six gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

@@ -1,6 +1,6 @@
 # Tour 6, lot 2 « tuto-consignes » : rapport de l'auteur
 
-Branche `ccr-6f42e003-tutoconsignes`, partie de `ccr-80af1a1b-mn0wec` avec le lot langues (`ccr-6f42e003-295715`) et le lot gaucher (`ccr-4cc0bb93-xljmti`) fusionnés d'abord, puis la tête de l'intégration fusionnée avant la relecture. Fait par l'orchestrateur et quatre équipes sur des fichiers séparés (contenu et vérifications ; panneau et déroulé ; restes de parcours ; en-tête du panneau), fusionnées ici. Décisions : `docs/decisions/tour-6-tutoconsignes.md` (et ses deux annexes `-a`, `-b`).
+Branche `ccr-6f42e003-tutoconsignes`, partie de `ccr-80af1a1b-mn0wec` avec le lot langues (`ccr-6f42e003-295715`) et le lot gaucher (`ccr-4cc0bb93-xljmti`) fusionnés d'abord, puis la tête de l'intégration fusionnée avant la relecture. Fait par l'orchestrateur et quatre équipes sur des fichiers séparés (contenu et vérifications ; panneau et déroulé ; restes de parcours ; en-tête du panneau), fusionnées ici. Décisions : `docs/decisions/tour-6-tutoconsignes.md` (une ligne par choix, toutes équipes).
 
 tests: *Tour6Tuto* *Tour6Plai* *TutoJourneyTest *TutoTest *TutoLot4Test *TutoPanelFitsPhoneLandTest *TutoKickSoundTest
 

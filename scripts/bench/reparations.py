@@ -273,7 +273,8 @@ def brought(branch, base, head):
         cells = line.split("\t")
         if header is None:
             header = cells
-            header_known = line in known_lines or not known_lines
+            # (The register's own header, COLUMNS, is no invention of a lot: the lot « constate » brought it.)
+            header_known = line in known_lines or not known_lines or cells == COLUMNS
             continue
         if line not in known_lines:
             out.append((line, dict(zip(header, cells + [""] * (len(header) - len(cells))))))

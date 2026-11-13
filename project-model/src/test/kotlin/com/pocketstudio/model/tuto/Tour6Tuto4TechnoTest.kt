@@ -293,4 +293,29 @@ class Tour6Tuto4TechnoTest {
         I18n.table(Lang.JA)[facile.getValue("chords").title]?.let { if ("スタブ（" !in it) bad += "ja chords title: スタブ not explained: $it" }
         report("words shown before they are explained", bad)
     }
+
+    /**
+     * Round trip 1 after Da-5, M5: ch. 12 says how many red « × » the gap erases (screen 164), counted on the Montée the
+     * steps make; the share step says what « −14 » means (screen 183: « Niveau : comme la musique en streaming (−14) »),
+     * like the house, in every language.
+     */
+    @Test
+    fun theGapCountsItsCrossesAndTheShareSaysMinus14() {
+        val bad = ArrayList<String>()
+        val target = TutoTarget.of("techno")!!
+        var p = target.blank()
+        val made = steps.takeWhile { it.id != "gap" }.filter { s -> listOf("lane:", "notes:", "label:", "part:").any { s.check.startsWith(it) } }
+        for (s in made) if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: error("${s.id}: no Montre-moi")
+        val montee = p.allScenes.indexOfFirst { it.label == "Montée" }
+        val crosses = TutoChecks.toErase(step("gap"), p.switchScene(montee), target)!!.values.sumOf { it.size }
+        if (crosses == 0) bad += "gap: nothing to erase in the Montée"
+        val gap = step("gap")
+        for (fr in texts(gap)) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
+            if (!Regex("(?<![\\d−-])$crosses(?!\\d)").containsMatchIn(t)) bad += "gap: the $crosses crosses not counted: $t"
+        }
+        val share = step("share").text
+        if (!Regex("« −14 ».*streaming").containsMatchIn(share)) bad += "fr share: « −14 » not explained: $share"
+        for (l in langs) tr(l, share).let { t -> if ("−14" !in t) bad += "${l.code} share: no « −14 »: $t" }
+        report("numbers the screen shows and the step does not say", bad)
+    }
 }

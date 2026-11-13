@@ -158,7 +158,10 @@ internal fun MyExportsList(list: List<MyExport>, send: (MyExport) -> Unit) {
         items(list, key = { it.uri.toString() }) { e ->
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).testTag("my_export")) {
                 Column(Modifier.weight(1f)) {
-                    Text(e.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    // Tour 6, seat A c (E4): a long file name has no spaces; wrapping it cut a word or a number in its
+                    // middle (« pocketstudio.z / ip »). It stays on one line, shortened with « … » in its middle instead.
+                    Text(e.name, style = MaterialTheme.typography.bodyMedium, maxLines = 1, softWrap = false,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.MiddleEllipsis)
                     val kind = when (e.kind) { MyExport.Kind.Sound -> null; MyExport.Kind.Video -> tr("vidéo"); MyExport.Kind.Project -> tr("projet") }
                     Text(listOfNotNull(kind, MyExports.detail(e)).joinToString(" · "), style = MaterialTheme.typography.bodySmall,
                         color = Neon.TextSecondary, modifier = Modifier.testTag("my_export_detail"))

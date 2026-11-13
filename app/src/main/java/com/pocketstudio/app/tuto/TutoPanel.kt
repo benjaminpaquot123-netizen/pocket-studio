@@ -415,6 +415,12 @@ fun TutoPanel(
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
+    // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). While the words scroll, they stop
+    // above it ([moreRoom] kept free at the bottom of their room): the panel's height as before, nothing under it. The
+    // words' scroll is the step's own (the step before's left its room in the height held for this one).
+    val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
+    var moreHeight by remember { mutableIntStateOf(0) }
+    val moreRoom = if (words.maxValue > 0) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
     Surface(
         color = panelColor(), shape = shape,
         modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
@@ -477,14 +483,10 @@ fun TutoPanel(
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
-            val words = rememberScrollState()
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
-            // N31: « Lire la suite » under the words takes its room from them (the panel no taller than before, over the screen).
-            var moreHeight by remember { mutableIntStateOf(0) }
-            val moreRoom = if (words.maxValue > 0) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
-            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = (most - moreRoom).coerceAtLeast(52.dp)))) {
+            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most))) {
             Column(
-                Modifier.verticalScroll(words),
+                Modifier.padding(bottom = moreRoom).verticalScroll(words),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
@@ -515,16 +517,10 @@ fun TutoPanel(
                 // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
                 if (step.id != READY_STEP) kit?.invoke()
             }
-            // Tour 6 (N31): the fade only shows (a touch goes through it); « Lire la suite » is under the words, never over
-            // « ▸ Pourquoi ? » or the kit's buttons (it read on when the user meant to open the reason).
-            if (words.canScrollForward) Box(
-                Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(16.dp)
-                    .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, panelColor()))),
-            )
-            }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (words.maxValue > 0) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
+            if (words.maxValue > 0) MoreWords(words.canScrollForward, Modifier.align(Alignment.BottomCenter).onSizeChanged { moreHeight = it.height }) {
                 words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
+            }
             }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }

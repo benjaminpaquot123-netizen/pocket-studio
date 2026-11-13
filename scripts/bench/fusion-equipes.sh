@@ -80,6 +80,13 @@ for zone in "${zones[@]}"; do
   report_out=""
   # shellcheck disable=SC2086
   if from_paquet 2 && ! report_out="$(python3 -I scripts/bench/rapport-zone.py "eq/$tour-$zone" "$report" $added)"; then echo "$zone: zone report refused: $(printf '%s' "$report_out" | tr '\n' ';'): not merged." >&2; exit 7; fi
+  # AUDIT-ULTRA §13.9 (lot « portail3 », from batch 4): a lot that says it fixes a blocking or grave defect adds its
+  # replay. One line per defect fixed in the zone report, « corrige: <id> | gravité: … | rejeu: <id du rejeu> » (or
+  # « … | rejeu impossible : <raison> »); a grave the tables know (verdicts.tsv turned « corrigé », the round's triage
+  # named by the report or a commit) cannot go without its line (scripts/bench/rapport-zone.py --corrections).
+  fix_out=""
+  # shellcheck disable=SC2086
+  if from_paquet 4 && ! fix_out="$(python3 -I scripts/bench/rapport-zone.py --corrections "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour" $added)"; then echo "$zone: fix without its replay: $(printf '%s' "$fix_out" | tr '\n' ';'): not merged." >&2; exit 8; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).

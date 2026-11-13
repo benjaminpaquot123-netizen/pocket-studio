@@ -324,7 +324,7 @@ said "a previous trace without the judge's count refuses nothing" "$( [ "$prc" -
 # report's line, one per defect fixed: « corrige: <id> | gravité: bloquant|grave|moyen|mineur | rejeu: <id du rejeu> »,
 # or « … | rejeu impossible : <raison> ».
 # The two tables that know a defect's gravity: the bench's verdicts (a row turned « corrigé ») and the round's triage.
-git checkout -q fx-int && mkdir -p docs/audits/ultra/sieges/tour-9
+git checkout -q fx-int && before_triage="$(git rev-parse HEAD)" && mkdir -p docs/audits/ultra/sieges/tour-9
 printf '# Verdicts\ntour\titem\tcle\tgravite\tverdict\tetat\ntour-9\tT9-01\tk1\tgrave\tappli\touvert\ntour-9\tT9-02\tk2\tmineur\tappli\touvert\n' > docs/audits/ultra/verdicts.tsv
 printf 'n°\tverdict\tgravité retenue\tfichier:fonction\tpreuve\nG1\tréel\tgrave\tA.kt:a\tvu\nG2\tréel\tmineur\tB.kt:b\tvu\nG3\tvoulu\tgrave\tC.kt:c\tvu\n' > docs/audits/ultra/sieges/tour-9/verdicts.tsv
 git add docs/audits/ultra/verdicts.tsv docs/audits/ultra/sieges && git commit -q -m "the verdicts and the round's triage"
@@ -365,6 +365,10 @@ team fcommit && git commit -q --allow-empty -m "vert: G1, the note stays above t
 expect "a grave of the triage named by a commit without its line: refused" 1 "G1 (grave in docs/audits/ultra/sieges/tour-9/verdicts.tsv) is named in the commit « vert: G1, the note stays above the panel » without its line" oui tour-9 fcommit
 team flower && fixes flower "corrige: G1 | gravité: mineur"
 expect "a grave of the triage fixed as « mineur »: refused" 1 "corrige « G1 »: says mineur, docs/audits/ultra/sieges/tour-9/verdicts.tsv says grave" oui tour-9 flower
+# (A branch that left before the triage was committed: the table is read at the integration's head.)
+git checkout -q -b eq/tour-9-fearly "$before_triage" && echo fearly > travail-fearly.txt && git add travail-fearly.txt && git commit -q -m "work of fearly" \
+  && fixes fearly "- G1 : la note reste au-dessus du panneau."
+expect "a grave of a triage the branch does not hold yet is still known: refused" 1 "G1 (grave in docs/audits/ultra/sieges/tour-9/verdicts.tsv) is named in the zone report without its line" oui tour-9 fearly
 team fnotfix && fixes fnotfix "- G1 reste couvert par le test du lot 1 ; G3 et G12 sont hors lot." "ne corrige pas: G1 : cité pour son test, le défaut reste ouvert"
 expect "a grave only cited says so in one line, and is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 fnotfix
 team fnotfixword && fixes fnotfixword "- G1 reste couvert." "ne corrige pas: G1 : non"

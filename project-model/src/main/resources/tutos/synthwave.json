@@ -45,7 +45,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre et rêveuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » (la gamme triste) puis « La » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur La mineur, celle de Nightcall (Kavinsky).",
+          "textPro": "À toi : règle la tonalité sur La mineur, celle de Nightcall (Kavinsky). « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -198,13 +198,22 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure. « Copier sur les mesures suivantes » pose les 3 autres accords.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : La mineur tenu toute la mesure, puis « Copier » : la copie suit la grille. Dans l'exemple, ces mêmes accords passent dans un arpégiateur (notes une à une, en doubles croches, sur deux octaves).",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, l'Intro n'aura pas son ambiance."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         },
         {
           "id": "pad_attack",
@@ -380,7 +389,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:8,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",
@@ -497,7 +507,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

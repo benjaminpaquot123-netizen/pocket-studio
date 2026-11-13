@@ -6349,7 +6349,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Lot 6, R4 / tour 6 A6: « sa fin sera coupée », with « Allonger le morceau » in the same window. */
     private fun sayRemixPastEnd() {
         remixPastEnd().takeIf { it > 0 }?.let {
-            val said = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
+            val clock = com.pocketstudio.app.export.shareClock(it)
+            // Fresh review (grave): a loop lets the song ring on (nothing is cut): said as such, the offer the same.
+            val said = if (project.value.song.isEmpty()) tr("La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.", clock)
+            else tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", clock)
             _notice.value = said
             _noticeLengthen.value = said
         }

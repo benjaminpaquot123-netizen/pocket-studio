@@ -399,6 +399,47 @@ class LotGivesItselfAState(ToyRegister):
         self.accepted()
 
 
+OLD_HEADER = HEADER.replace("\tphrase_acceptation\tsiege_origine\tconstat", "")
+
+
+class LotCutBeforeTheColumns(ToyRegister):
+    """Review of « constate », G1: a branch cut before the three columns keeps the 9-column header; its lines are read
+    with the register's own columns, never with its branch's header (the cells after the 9th were invisible)."""
+
+    def setUp(self):
+        super().setUp()
+        # The base: the register as before this lot; the integration then gets the columns and the sorter's line.
+        git(self.repo, "checkout", "-q", "int")
+        self.put([OLD_HEADER, self.lines[1]])
+        self.base = self.commit("the register before the columns")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        git(self.repo, "checkout", "-q", "int")
+        self.put(self.lines)
+        self.commit("the columns and the sorter's lines")
+        git(self.repo, "checkout", "-q", BRANCH)
+
+    def test_a_12_cell_line_under_the_old_header_is_refused(self):
+        self.put([OLD_HEADER, self.lines[1],
+                  row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", "MA PHRASE", "tour-6/lotZ/z",
+                      "docs/audits/ultra/sieges/tour-6/controle/Ba#9")])
+        self.commit("a long line under the old header")
+        out = self.refused("tour-6 A2", "header")
+        self.assertIn("merge", out)
+
+    def test_cells_beyond_the_register_s_columns_are_refused(self):
+        git(self.repo, "merge", "-q", "--no-edit", "int")
+        lines = list(self.lines)
+        lines[2] = row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "", "en plus")
+        self.put(lines)
+        self.commit("a 13th cell")
+        self.refused("tour-6 A2", "13 cells")
+
+    def test_an_old_header_branch_that_does_not_touch_the_register_enters(self):
+        write(os.path.join(self.repo, "app.txt"), "code\n")
+        self.commit("code only")
+        self.accepted()
+
+
 class PortalSetsRejoue(ToyRegister):
     """§ 3, rule 5: « rejoué » is the portal's, when the proof of rule 2 holds on the merged head."""
 

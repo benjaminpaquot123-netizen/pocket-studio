@@ -41,6 +41,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -393,10 +395,19 @@ fun ShareSheetContent(
     // row, looked covered by it. Rule 17 (« Tout défilement se voit »): the cut edge fades while more waits below (and
     // the top edge once scrolled), its band tagged for the screen scans (LayoutScan).
     val scroll = rememberScrollState()
-    androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false)) {
-    Column(
-        Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    // Tour 6, control seat Ac-2 (E3, screen 40): the sheet opened with « Autres fichiers » and its « ? » cut in half by
+    // the bottom edge, right above the pinned M4A / WAV row. What scrolls now ends where a line ends: its height is cut
+    // down to the top of the first line that does not fit whole ([snapHeight]), so every line shows whole or not at all.
+    var stops by remember { mutableStateOf(SnapStops()) }
+    val topPad = if (page) 12.dp else 0.dp
+    androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false).layout { measurable, c ->
+        val h = if (c.hasBoundedHeight) snapHeight(stops, topPad.roundToPx(), c.maxHeight) else c.maxHeight
+        val p = measurable.measure(c.copy(minHeight = minOf(c.minHeight, h), maxHeight = h))
+        layout(p.width, p.height) { p.place(0, 0) }
+    }) {
+    SnapColumn(
+        Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = topPad),
+        gap = 12.dp, onStops = { if (it != stops) stops = it },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(if (page) tr("Fini ? Partage ton morceau") else tr("Prêt à partager ?"), // Little room: the title on one line, so that the duration under the name stays in sight.
@@ -488,7 +499,7 @@ fun ShareSheetContent(
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's. Pro keeps it above the checks.
         if (!simple) ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = (if (ui.checks.isEmpty()) Modifier.layoutId(WHOLE_LINE) else Modifier).testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
             }
@@ -497,13 +508,13 @@ fun ShareSheetContent(
         // Tour 6, seat A c (E1): in the Mode simple the target sits just below the checks, so the « prêt ? » checks
         // (« Rien à entendre »…) keep their place at the top of what scrolls; a streaming/club file is still two touches.
         if (simple) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
-        OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
+        OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.layoutId(WHOLE_LINE).fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
             Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
         // The formats' « ? » sits here, at the end of the line about the other formats: beside the M4A / WAV
         // chips it did not fit a 360 dp phone and fell alone on a line of its own.
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.layoutId(WHOLE_LINE), verticalAlignment = Alignment.CenterVertically) {
         // Chantier 2 (G3): the shared link row. Lot 2: the Mode simple has no Mix (the line takes it to the full mode).
         com.pocketstudio.ui.LinkRow(
             tr("Autres fichiers"), onClick = actions.otherExports, modifier = Modifier.weight(1f).testTag("share_other"), icon = Icons.Filled.LibraryMusic,
@@ -515,7 +526,7 @@ fun ShareSheetContent(
         // Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself, to go on with it elsewhere, where one sends
         // (it was only in Mes projets › ⋯).
         actions.sendProject?.let { send ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.layoutId(WHOLE_LINE), verticalAlignment = Alignment.CenterVertically) {
                 // Tour 6, seat A c (E6): one touch here opens Android's share menu (it sends the .zip, it does not save it
                 // on its own): the line is named « Envoyer », never « Sauvegarder », so the word matches what the touch does.
                 com.pocketstudio.ui.LinkRow(
@@ -568,6 +579,51 @@ fun ShareSheetContent(
     }
 }
 
+/** One line of [SnapColumn]: where it starts and ends, in pixels; [whole]: never to be cut by the edge ([WHOLE_LINE]). */
+internal data class SnapLine(val top: Int, val bottom: Int, val whole: Boolean)
+
+/** The lines of [SnapColumn], top to bottom. */
+internal data class SnapStops(val lines: List<SnapLine> = emptyList())
+
+/** The layout id of a line that shows whole or not at all (a link row and its « ? »): [snapHeight]. */
+internal const val WHOLE_LINE = "whole_line"
+
+/**
+ * The height of what scrolls, at most [max] px: [max] itself, unless the bottom edge would cut a [SnapLine.whole] line;
+ * then down to that line's top (the gap above it at the bottom), so it shows whole once scrolled, never cut in half.
+ * [pad]: the space above the lines.
+ */
+internal fun snapHeight(stops: SnapStops, pad: Int, max: Int): Int {
+    val cut = stops.lines.firstOrNull { pad + it.bottom > max } ?: return max
+    return if (cut.whole && pad + cut.top < max && pad + cut.top > 0) pad + cut.top else max
+}
+
+/** A column of lines [gap] apart that says where each line is ([onStops]), for [snapHeight]. */
+@Composable
+private fun SnapColumn(modifier: Modifier, gap: androidx.compose.ui.unit.Dp, onStops: (SnapStops) -> Unit, content: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(content, modifier) { measurables, c ->
+        val g = gap.roundToPx()
+        val loose = c.copy(minHeight = 0, maxHeight = androidx.compose.ui.unit.Constraints.Infinity)
+        val placeables = measurables.map { it.measure(loose) }
+        val lines = ArrayList<SnapLine>()
+        var y = 0
+        placeables.forEachIndexed { i, p ->
+            if (i > 0) y += g
+            lines += SnapLine(y, y + p.height, measurables[i].layoutId == WHOLE_LINE)
+            y += p.height
+        }
+        onStops(SnapStops(lines))
+        layout(c.maxWidth.takeIf { c.hasBoundedWidth } ?: (placeables.maxOfOrNull { it.width } ?: 0), y) {
+            var at = 0
+            placeables.forEachIndexed { i, p ->
+                if (i > 0) at += g
+                p.place(0, at)
+                at += p.height
+            }
+        }
+    }
+}
+
 /**
  * Tour 6, seat A c (E1): « Volume visé » in the Mode simple. The same setting as Pro's « Volume visé » (it changes
  * the project's one target), in plain words and with no LUFS: a « streaming » or a « club » file is two touches away
@@ -575,7 +631,7 @@ fun ShareSheetContent(
  */
 @Composable
 private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choose: (com.pocketstudio.model.TargetChoice) -> Unit, enabled: Boolean) {
-    Column(Modifier.testTag("share_target"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(Modifier.layoutId(WHOLE_LINE).testTag("share_target"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             // The common choices, in the same order as Pro, with plain names (« Club », « Streaming »), no LUFS.

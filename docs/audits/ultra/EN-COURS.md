@@ -2,7 +2,7 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-13, 07 h 40 UTC.
+- **Mise à jour** : 2026-11-13, 07 h 55 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : CORRECTION du tour 6. Aucune vague de testeurs ne joue.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
@@ -16,7 +16,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 ## Ce qui n'est pas vert
 
-1. **CI de la tête** (`9f26c244`, passage 43375199284) : « Emulator smoke test » ROUGE depuis 06 h 44 (`JourneyTest.aFirstSongInTheModeSimple` : « nothing tagged wizard after 15000 ms ») ; « Build, unit tests, screenshots » tourne encore. Réparation : lot « emulateur ».
+1. **CI de la tête** (`9f26c244`, passage 43375199284) : « Emulator smoke test » ROUGE depuis 06 h 44 (`JourneyTest.aFirstSongInTheModeSimple` : « nothing tagged wizard after 15000 ms ») ; le reste de ce passage est vert (tests, captures, bancs ; l'endurance finit). **Cause trouvée (07 h 50)** : le lot « tutoconsignes » (`b621715da`) a écrit dans `PlainWords.kt` un motif `(?iU)…` ; le moteur de motifs du téléphone (ICU) refuse le drapeau « U », la JVM des tests et du banc l'accepte. Sur un vrai téléphone, l'assistant et le panneau du tuto en Mode simple plantent : **ne rien installer sur un téléphone depuis cette tête.** Réparation : lot « emulateur », avec un test de garde sur tous les motifs de l'appli.
 2. **Le tuto** : les trois contrôles vont au « Bravo », mais 12 défauts corrigés sur 32, trois graves neufs (flèches contradictoires au chapitre 7, doubles-croches refusées au chapitre 4 du tuto Pro, flottement après « Copier sur les mesures suivantes »), trois chapitres bloqués. Lot 10 « tutofleches » en cours.
 3. **Le juge du chantier** : 68 écarts (8 après le lot « juge7 »), presque tous des paires rouge/vert dépareillées. À ramener par le lot du banc « portail3 ».
 4. **Les rejeux** : un seul (`t4-26-prise-clavier`) ; aucun des bloquants ou graves corrigés dans la nuit n'a le sien. Lot du banc « rejeux7 ».
@@ -29,7 +29,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 | Lot | Zone | Fichiers | Qui | État |
 |---|---|---|---|---|
-| `tour-6 emulateur` (réparation de la CI) | coquille, premier lancement | ceux que l'enquête désigne sur le chemin « premier lancement, mode Simple, assistant » ; à écrire ici dès qu'ils sont connus | agent local, atelier `eq-tour-6-emulateur` | enquête en cours ; passe seul, avant tout autre lot |
+| `tour-6 emulateur` (réparation de la CI) | coquille, premier lancement | `app/…/library/PlainWords.kt` (une ligne), deux tests neufs sous `app/src/test`, peut-être `JourneyTest` (ne plus avaler l'exception) | agent local, atelier `eq-tour-6-emulateur` | cause trouvée, correction en cours ; passe seul, avant tout autre lot |
 | `tour-6 tutofleches` (lot 10) | tuto | `PianoRoll.kt`, `RhythmScreen.kt`, `TutoPanel.kt`, `TutoController.kt`, `TutoChecks.kt`, `resources/tutos/*.json`, `i18n/*/tuto*.json` | agent local, atelier `eq-tour-6-tutofleches` | en cours ; siège de contrôle sur sa branche avant le portail (13.5) |
 | `tour-6 langues2` (lot 5) | textes | `i18n/*/*.json` hors tuto, `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt` | discussion « Sons modernes » | fait et relu chez elle ; attend de pouvoir pousser |
 

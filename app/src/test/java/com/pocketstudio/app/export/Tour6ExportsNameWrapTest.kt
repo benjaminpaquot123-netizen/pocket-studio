@@ -4,9 +4,10 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
@@ -21,10 +22,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 /**
- * Tour 6, seat A c (E4): in « Mes fichiers » a long file name with no spaces (« Trap-morceau-club-20261112-195612.wav »)
- * was wrapped by the renderer at any character, cutting a word or a number in its middle (« pocketstudio.z / ip »,
- * « 19 / 5558.wav »). A name now stays on one line, shortened with « … » in its middle: its height is a single line's,
- * however long it is.
+ * Tour 6, seat A c then control seat Ac-2 (E4): in « Mes fichiers » a long file name was cut inside a word or a number
+ * (« pocketstudio.z / ip », « 19 / 5558.wav », then « Trap-morceau-clu…61113-144507.wav » with a middle « … »). A name
+ * now goes to the next line only between its parts (after « - » or « _ », before « . »), and is shown whole: no line
+ * ends inside a word or a number, nothing is shortened.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -39,28 +40,40 @@ class Tour6ExportsNameWrapTest {
     private fun export(name: String, id: Long) =
         MyExport(name, Uri.parse("content://media/external/audio/media/$id"), 2_300_000L, 1_700_000_000L, "audio/wav")
 
+    private val names = listOf(
+        "Trap-morceau-club-20261113-144507.wav",
+        "Trap-morceau-streaming-20261113-144445.m4a",
+        "Trap-20261113-144539.pocketstudio.zip",
+    )
+
     @Test
-    fun aLongNameStaysOnOneLineLikeAShortOne() {
+    fun aLongNameBreaksOnlyBetweenItsPartsAndStaysWhole() {
         I18n.lang = Lang.FR
-        val shortName = "Trap.wav"
-        val longName = "Trap-morceau-club-20261112-195612-final-master.wav"
         compose.setContent {
             PocketStudioTheme {
-                // A phone column's width for the name (the « Renvoyer » button and padding take the rest).
-                Box(Modifier.width(220.dp)) {
-                    MyExportsList(listOf(export(shortName, 1), export(longName, 2))) {}
-                }
+                // The name's column on a 360 dp phone (the dialog, its padding and « Renvoyer » take the rest).
+                Box(Modifier.width(200.dp)) { MyExportsList(names.mapIndexed { i, n -> export(n, i.toLong()) }) {} }
             }
         }
         compose.waitForIdle()
-        val rows: List<SemanticsNode> = compose.onAllNodesWithTag("my_export", useUnmergedTree = true).fetchSemanticsNodes()
-        // The name is the first text of each row; its line box is that text node's height.
-        val short = rows[0].children.first().size.height.toFloat()
-        val long = rows[1].children.first().size.height.toFloat()
-        assertTrue("a short name should be one line (got ${short}px)", short > 0f)
-        assertTrue(
-            "a long name must stay one line like a short one (short=${short}px, long=${long}px)",
-            long <= short * 1.5f,
-        )
+        val wrong = mutableListOf<String>()
+        // The name is the first text of each row.
+        val nameNodes = compose.onAllNodesWithTag("my_export", useUnmergedTree = true).fetchSemanticsNodes().map { it.children.first() }
+        nameNodes.forEach { node ->
+            val layouts = mutableListOf<TextLayoutResult>()
+            node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
+            val t = layouts.single()
+            val text = t.layoutInput.text.text
+            if (t.hasVisualOverflow) wrong += "« $text » is shortened"
+            for (line in 0 until t.lineCount - 1) {
+                val end = t.getLineEnd(line)
+                val before = text[end - 1]
+                val after = text.getOrNull(end)
+                val between = !before.isLetterOrDigit() || after == null || !after.isLetterOrDigit()
+                if (!between) wrong += "« $text » breaks inside a word or a number: « ${text.substring(0, end)} / ${text.substring(end)} »"
+            }
+        }
+        assertTrue("names checked: ${nameNodes.size}", nameNodes.size == names.size)
+        assertTrue(wrong.joinToString("\n"), wrong.isEmpty())
     }
 }

@@ -102,20 +102,6 @@ class Tour6GuideCoquilleLookTest {
         shot("keys_simple_100")
     }
 
-    /** N15: « Fait : … Annuler » on its own line, the page's last buttons free. */
-    private fun done(simple: Boolean, scale: Float, tab: String) {
-        start(simple, scale)
-        shell.tap(tab)
-        h.vm.guide.skip(h.vm.guide.ui.value.next!!.id)
-        assertTrue(shell.reached(5_000) { shell.has("done_bar") })
-        shot("done_line_${mode(simple)}_${size(scale)}")
-    }
-
-    @Test fun doneLineSimple100() = done(true, 1f, "tab_simple_Envoyer")
-    @Test fun doneLineSimple130() = done(true, 1.3f, "tab_simple_Morceau")
-    @Test fun doneLinePro100() = done(false, 1f, "tab_Structure")
-    @Test fun doneLinePro130() = done(false, 1.3f, "tab_Mix")
-
     /** N17: « Passer en mode Simple » asks. */
     @Test
     fun modeAskedFromPlusPro100() {

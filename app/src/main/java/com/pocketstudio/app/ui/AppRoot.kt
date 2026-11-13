@@ -2111,8 +2111,9 @@ fun AppRoot() {
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
     // Tour 6, G1 (seat F b #10, the 130 % seats): upright on a short screen the keys' page gives the Guide's folded bar's
     // line to its keys, as it does the thumb's bar's ([KEYS_PAGE_THUMB_BAR_DP]: 16 dp of keys in view on a 360 x 780
-    // phone at 130 %, 64 without the bar). The bar stays while the Guide's « Voir le réglage » card points at it.
-    val keysTakeGuideLine = tab == AppTab.Synthe && !com.pocketstudio.app.synth.NotesView.shown && !guideOpen && guideSpot == null &&
+    // phone at 130 %, 64 without the bar). Never by the clock: a bar that left by itself seconds later (while the
+    // « Voir le réglage » card pointed at it, first try) gave the page a height that moved the keys under the finger.
+    val keysTakeGuideLine = tab == AppTab.Synthe && !com.pocketstudio.app.synth.NotesView.shown && !guideOpen &&
         LocalConfiguration.current.screenHeightDp < KEYS_PAGE_THUMB_BAR_DP
     val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe) &&
         !keysTakeGuideLine && guideFree
@@ -2490,12 +2491,19 @@ fun AppRoot() {
             }
             }
         } },
+        // « Fait : … Annuler » after an intention (the part sheet, a kit). It floats over the page's lower edge: a line
+        // of its own in the bottom bar (tour 6, N15, tried) took room from the page and gave it back six seconds later,
+        // and the page moved under the finger (replay t4-26: « ■ Arrêter » of a take on the keys left the screen).
+        // While a take runs it keeps away: nothing comes over the page where « ■ Arrêter » is the way out. Its message is
+        // let go then, not kept for later: after the take, its « Annuler » would undo the take, not what it names.
+        snackbarHost = {
+            val done by rhythmVm.done.collectAsStateWithLifecycle()
+            val taking = guideQuietRec || guideQuietTaking
+            LaunchedEffect(done, taking) { if (done != null && taking) rhythmVm.dismissDone() }
+            DoneBar(done.takeIf { !taking }, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone)
+        },
         bottomBar = {
             Column {
-                // « Fait : … Annuler » after an intention (the part sheet, a kit). Tour 6, N15 (seat C b #13: « Mes fichiers »
-                // hidden under it): a line of its own above the bars, no longer floating over the page's last buttons.
-                val done by rhythmVm.done.collectAsStateWithLifecycle()
-                DoneBar(done, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone, modifier = Modifier.windowInsetsPadding(SIDE_INSETS))
                 // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
                 // keeps quiet during a take, on the Live page and on the keyboard lying down, where
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).

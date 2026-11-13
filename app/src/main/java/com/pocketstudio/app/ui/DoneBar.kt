@@ -28,8 +28,9 @@ private const val DONE_MS = 6000L
 /**
  * « Fait : un fill à la fin de C · Drop » with « Annuler » beside it, after an intention (the
  * part sheet, a kit): what was done is said, and undone in one touch. It goes by itself.
- * Audit ultra round 6, N15: it is a line of the bottom bar, above the Guide and the tabs (it floated over the page and
- * covered its last buttons for six seconds, « Mes fichiers » under it); nothing a touch can reach is under it.
+ * It floats over the page's lower edge for six seconds and the page never changes height for it (audit ultra round 6,
+ * N15: a line of its own in the bottom bar was tried and moved the page under the finger). Its host hides it while a
+ * take runs and lets its message go.
  */
 @Composable
 fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modifier = Modifier) {

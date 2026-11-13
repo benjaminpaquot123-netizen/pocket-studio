@@ -1155,6 +1155,12 @@ NAMED = os.path.join("scripts", "bench", "juge-paires-nommees.tsv")
 NAMED_UNTIL = "cc6175a4246b9c8eb23a0abd183f6c58357831da"
 
 
+# Review of « portail3 » (G1): the judge checks an order, a class and a change of code, never that the green mends what
+# the red shows: a line added later could pair any old green with any older red and hide a gap. The file is frozen as
+# this lot wrote it; changed, it pairs nothing and is a gap of its own.
+NAMED_SHA256 = "876a69c33215dfb206208e3dcf332ca08ed2fcc122aeddb7416d1fbbd8a4c541"
+
+
 def named_lines(root):
     """([(line number, green, red, class)], [gap]) of [NAMED]: four tab-separated cells, two full shas, a class name and
     a reason of three words or more; anything else is a gap of its own (a line that is ignored hides nothing)."""
@@ -1162,7 +1168,11 @@ def named_lines(root):
     if not os.path.isfile(path):
         return [], []
     rows, gaps = [], []
-    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
+    with open(path, "rb") as f:
+        raw = f.read()
+    if hashlib.sha256(raw).hexdigest() != NAMED_SHA256:
+        return [], [f"{NAMED.replace(os.sep, '/')} : changé depuis le lot « portail3 » (fichier gelé : une paire neuve s'apparie par ses mots) : aucune paire nommée n'est lue"]
+    for n, line in enumerate(raw.decode("utf-8").split("\n"), 1):
         if not line.strip() or line.startswith("#"):
             continue
         cells = line.split("\t")
@@ -1327,10 +1337,12 @@ def main():
                     help="the first « rouge: » commit (a guard added in one of its ancestors was there before); a toy's own")
     ap.add_argument("--fin-rejeux", metavar="SHA", default=REPLAYS_UNTIL,
                     help="the last commit whose greens a replay (paires-rejouees/) may close; a toy's own")
+    ap.add_argument("--empreinte-nommees", metavar="SHA256", default=NAMED_SHA256, help="the frozen file of named pairs; a toy's own")
     ap.add_argument("--fin-nommees", metavar="SHA", default=NAMED_UNTIL,
                     help="the last commit whose greens a named pair (juge-paires-nommees.tsv) may close; a toy's own")
     a = ap.parse_args()
     globals()["NAMED_UNTIL"] = a.fin_nommees
+    globals()["NAMED_SHA256"] = a.empreinte_nommees
     globals()["DISCIPLINE_START"] = a.debut_discipline
     globals()["REPLAYS_UNTIL"] = a.fin_rejeux
     if a.preuves:

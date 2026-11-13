@@ -101,7 +101,14 @@ for lot in "${lots[@]}"; do
   fi
   merged_lot="$(git -C "$work" rev-parse HEAD)"
   git worktree remove --force "$work"
-  git branch -q -f "$name" "$merged_lot"
+  # (Review of « portail3 », M2: said, never silent; a branch held by another worktree is a refusal, not git's raw error.)
+  was="$(git rev-parse -q --verify "refs/heads/$name" || true)"
+  if [ -n "$was" ] && ! git merge-base --is-ancestor "$was" "$merged_lot"; then
+    say "$zone: the local $name ($(git rev-parse --short "$was")) is not in the pushed lot: replaced by the pushed one (kept as refs/portail-file/$name)."
+    git update-ref "refs/portail-file/$name" "$was"
+  fi
+  git branch -q -f "$name" "$merged_lot" 2>/dev/null \
+    || stop 3 "$zone: the local branch $name cannot be moved (checked out in another worktree?): free it, then run the queue again."
   if [ -x scripts/bench/pre-vol.sh ] && ! prevol="$(scripts/bench/pre-vol.sh "$tour" "$zone" 2>&1)"; then
     printf '%s\n' "$prevol" | tail -15
     stop 3 "$zone: the pre-flight refuses the lot (pre-vol.sh $tour $zone): the portal is not disturbed."

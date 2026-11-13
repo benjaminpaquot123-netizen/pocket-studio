@@ -2,6 +2,7 @@
 """Checks seat-metrics.py and fuse-reports.py (Audit ultra, banc 2) on a tiny round made here: two
 seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/test_ultra_bench.py`).
 Standard library only."""
+import hashlib
 import json
 import os
 
@@ -1446,11 +1447,14 @@ def named_pairs(d):
     lines.append("\t".join([shas["before"][1], shas["late"][0], shas["late"][2], why]))
     lines.append("\t".join([shas["honest"][1], shas["honest"][0], shas["honest"][2]]))            # no reason
     lines.append("\t".join([shas["honest"][1][:8], shas["honest"][0], shas["honest"][2], why]))    # a short sha
-    write(os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv"), "\n".join(lines) + "\n")
+    named = os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv")
+    write(named, "\n".join(lines) + "\n")
     commit("the named pairs")
+    with open(named, "rb") as f:
+        frozen = hashlib.sha256(f.read()).hexdigest()
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
-                          "--fin-nommees", history_end], capture_output=True, text=True).stdout
+                          "--fin-nommees", history_end, "--empreinte-nommees", frozen], capture_output=True, text=True).stdout
     short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
     for key in ("honest", "mended", "mended-first"):
         check(short[key][0] + " «" not in out and short[key][1] + " «" not in out, f"a pair named and checked ({key}) is a pair:\n" + out)
@@ -2606,6 +2610,8 @@ def portal_queue(d):
     check(code == 3, "a refusal of the portal stops the queue (exit 3):\n" + out)
     check("portal a has-head" in said(), "the pushed head of the integration is merged into the lot before the portal:\n" + said())
     check("a.txt" in tree() and "leftover.txt" not in tree(), "the lot merged is the pushed one, never a local leftover:\n" + out)
+    check("replaced by the pushed one" in out and "leftover.txt" in tree("refs/portail-file/eq/tour-9-a"),
+          "a local leftover is said and kept aside, never lost (review, M2):\n" + out)
     check(pushed() == git_toy(root, "rev-parse", "HEAD").strip() and "a.txt" in tree(pushed()), "the integration is pushed after each success:\n" + out)
     check("le portail refuse refused (sortie 3)" in out and "« refused: review refused: toy: not merged. »" in out,
           "a refusal prints the conductor's message with the portal's exact line:\n" + out)

@@ -152,16 +152,30 @@ def table(text):
     return rows
 
 
-def triage_graves(branch, head, tour):
-    """{n°: gravity} of the « réel » rows of the round's triage that are bloquant or grave, and the table's path. The
-    table is the branch's, or the integration's when the branch has none (it left before the triage was committed)."""
+def triage_graves(branch, head, tour, base=None):
+    """{n°: gravity} of the rows of the round's triage that are « réel » and bloquant or grave, and the table's path.
+    Review of « portail3 » (G2): read in the branch, at its base and at the integration's head; a row is grave when ANY
+    of them says so (a branch that rewrites the triage lowers nothing)."""
     path = f"docs/audits/ultra/sieges/{tour}/verdicts.tsv"
     out = {}
-    for row in table(show(branch, path) or (show(head, path) if head else None)):
-        gravity = next((v.lower() for k, v in row.items() if k.lower().startswith("gravit")), "")
-        if row.get("n°") and row.get("verdict", "").lower() == "réel" and gravity in SERIOUS:
-            out[row["n°"]] = gravity
+    for rev in (branch, base, head):
+        for row in table(show(rev, path)) if rev else []:
+            gravity = next((v.lower() for k, v in row.items() if k.lower().startswith("gravit")), "")
+            if row.get("n°") and row.get("verdict", "").lower() == "réel" and gravity in SERIOUS:
+                out.setdefault(row["n°"], gravity)
     return out, path
+
+
+def without_code_blocks(text):
+    """Review of « portail3 » (M1): a fenced block (``` … ```) shows a format, it states nothing."""
+    out, inside = [], False
+    for line in text.split("\n"):
+        if line.strip().startswith("```"):
+            inside = not inside
+            continue
+        if not inside:
+            out.append(line)
+    return "\n".join(out)
 
 
 def named(defect, text):
@@ -171,19 +185,24 @@ def named(defect, text):
 
 def corrections(branch, path, base, tour, added=(), head=None):
     """The refusals of « a blocking or grave fix adds its replay »."""
-    text = show(branch, path) or ""
+    text = without_code_blocks(show(branch, path) or "")
     refusals, fixed, cited = [], {}, set()
     for m in NOT_FIX_LINE.finditer(text):
         cited.add(m.group(1))
         if not real_reason(m.group(2)):
             refusals.append(f"« ne corrige pas: {m.group(1)} » without a real reason (a few words: « ne corrige pas: <id> : <raison> »)")
-    known, triage = triage_graves(branch, head, tour) if tour else ({}, "")
+    known, triage = triage_graves(branch, head, tour, base) if tour else ({}, "")
     sources = {d: triage for d in known}
     now = {r.get("item"): r for r in table(show(branch, VERDICTS))}
-    for item, row in now.items():
-        if item and row.get("gravite", "").lower() in SERIOUS:
-            known.setdefault(item, row["gravite"].lower())
-            sources.setdefault(item, VERDICTS)
+    # Review of « portail3 » (G2): the gravity of a row is the strongest of the branch, its base and the integration's head.
+    grave_rows = {}
+    for rev in (branch, base, head):
+        for row in table(show(rev, VERDICTS)) if rev else []:
+            if row.get("item") and row.get("gravite", "").lower() in SERIOUS:
+                grave_rows.setdefault(row["item"], row["gravite"].lower())
+    for item, gravity in grave_rows.items():
+        known.setdefault(item, gravity)
+        sources.setdefault(item, VERDICTS)
     for m in FIX_LINE.finditer(text):
         parts = [p.strip() for p in m.group(1).strip().strip("`").split("|")]
         gravity = GRAVITY.match(parts[1]) if len(parts) in (2, 3) else None
@@ -210,14 +229,20 @@ def corrections(branch, path, base, tour, added=(), head=None):
             refusals.append(f"corrige « {defect} » ({said}): replay {replay.group(1).strip('`')} is not a folder the branch adds "
                             "to docs/audits/ultra/rejeux/ (the replay comes with the fix, often from rejeux-attente/; or "
                             "« rejeu impossible : <raison> »)")
-    # A grave row of the bench's verdicts the branch turns « corrigé ».
+    # A grave row of the bench's verdicts the branch turns « corrigé » (the word, whatever follows it) or takes away.
     if base:
         before = {r.get("item"): r for r in table(show(base, VERDICTS))}
-        for item, row in now.items():
-            if (item and row.get("gravite", "").lower() in SERIOUS and row.get("etat") == "corrigé"
-                    and before.get(item, {}).get("etat") != "corrigé" and item not in fixed):
-                refusals.append(f"{item} ({row['gravite'].lower()}) turned « corrigé » in {VERDICTS} without its line "
-                                f"« corrige: {item} | gravité: {row['gravite'].lower()} | rejeu: <id> » in {path}")
+        for item, gravity in sorted(grave_rows.items()):
+            was = before.get(item, {}).get("etat", "").strip().lower().startswith("corrigé") if item in before else None
+            row = now.get(item)
+            if item in fixed or was:
+                continue
+            if row is None and item in before:
+                refusals.append(f"{item} ({gravity}) taken out of {VERDICTS} without its line "
+                                f"« corrige: {item} | gravité: {gravity} | rejeu: <id> » in {path}")
+            elif row is not None and row.get("etat", "").strip().lower().startswith("corrigé"):
+                refusals.append(f"{item} ({gravity}) turned « corrigé » in {VERDICTS} without its line "
+                                f"« corrige: {item} | gravité: {gravity} | rejeu: <id> » in {path}")
     # A grave of the round's triage the report or a commit of the branch names.
     prose = "\n".join(l for l in text.split("\n") if not FIX_LINE.match(l) and not NOT_FIX_LINE.match(l))
     subjects = []

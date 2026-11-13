@@ -3,7 +3,7 @@
   "Copier ces %d notes": "Salin %d not ini",
   "Supprimer la note": "Hapus not",
   "Supprimer ces %d notes": "Hapus %d not ini",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Sentuh kotak: menambah not. Sentuh not: memilihnya. Tekan lama: menunya (salin, hapus…). Geser: memindah, ujungnya: memanjangkan. Angka di atas: satu bar penuh. Lajur bawah: geser untuk mengatur velocity.",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Sentuh kotak: menambah not. Sentuh not: memilihnya. Tekan lama: menunya (salin, hapus…). Geser: memindah, ujungnya: memanjangkan. Angka di atas: satu birama penuh. Lajur bawah: geser untuk mengatur velocity.",
   "%s demi-ton": "%s semiton",
   "Régler le son (filtre, enveloppe…)": "Atur suara (filter, envelope…)",
   "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "Low-pass di %s: menjaga bas dan melembutkan treble.",

@@ -1,0 +1,6 @@
+dialogue:welcome
+dialogue:mode_step
+?
+dialogue:remix_model_ask
+cut_screen
+dialogue:cut_auto_0

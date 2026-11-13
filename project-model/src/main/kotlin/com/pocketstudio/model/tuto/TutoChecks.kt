@@ -784,10 +784,10 @@ object TutoChecks {
     }
 
     /**
-     * Tour 6, T3: off until TutoJourneyTest plays a step's soft cells as its consigne says (long press › « Doux »):
-     * it taps every dotted cell at full strength, and techno's clap would never tick there. Turn on with it.
+     * Tour 6, T3: on since TutoJourneyTest plays a step's soft cells as its consigne says (long press › « Doux »).
+     * Off: a step that asks for « Doux » ticks at any strength again.
      */
-    const val SOFT_HITS_CHECKED = false
+    const val SOFT_HITS_CHECKED = true
 
     /** A hit this soft or softer is « doux » (the force menu's « Doux » 0.2 and « Moyen » 0.5; a line's 'o' is 0.35). */
     private const val SOFT_VELOCITY = 0.5f

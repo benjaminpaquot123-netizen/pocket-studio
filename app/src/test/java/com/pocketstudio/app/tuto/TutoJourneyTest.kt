@@ -3,10 +3,12 @@ package com.pocketstudio.app.tuto
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.app.nav.AppHarness
@@ -294,6 +296,21 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 for (cell in cells.sorted()) {
                     if (has("step_$cell")) click("step_$cell") else h.vm.toggleStep(cell)
                     compose.waitForIdle()
+                }
+                // Tour 6, T3: a step that says « appui long dessus, puis « Doux » » has its soft cells played so, as a user does:
+                // a long press on the hit (its menu), « Doux », then the menu's « Fermer ».
+                if (TutoChecks.asksSoft(s)) {
+                    val line = target.line(TutoChecks.argOf(c))!!
+                    val soft = StarterWizard.hits(line, p().drums.steps).filterValues { it.velocity < 0.5f }.keys.filter { it in cells }
+                    assertTrue("${s.id}: asks for « Doux », no soft cell", soft.isNotEmpty())
+                    for (cell in soft.sorted()) {
+                        assertTrue("${s.id}: soft cell $cell not on the screen", has("step_$cell"))
+                        compose.onNodeWithTag("step_$cell").performTouchInput { longClick() }
+                        compose.waitForIdle()
+                        await("${s.id}: the hit's menu") { has("roll_menu") }
+                        click("roll_force_2")
+                        if (has("roll_close")) click("roll_close")
+                    }
                 }
                 // "lane:<role>:rolls" (Pro): each roll of the line made as a user would (long press › « Roulement » ×N).
                 if (c.endsWith(":rolls")) {

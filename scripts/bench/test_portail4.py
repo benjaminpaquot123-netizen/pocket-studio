@@ -166,6 +166,18 @@ class Zone(Toy):
         self.report()
         self.assertEqual(self.accepted(), "")
 
+    def test_a_change_the_integration_already_holds_is_not_the_lot_s(self):
+        # The same change entered the integration by another way after the branch left (the branch has not merged it
+        # in): the file is in the branch's diff since its base, but the lot brings nothing the integration has not.
+        self.change(PANEL)
+        same = read(self.path(PANEL))
+        git(self.repo, "checkout", "-q", "int")
+        write(self.path(PANEL), same)
+        self.commit("the same change of the tutorial, already in the integration")
+        git(self.repo, "checkout", "-q", BRANCH)
+        self.report()
+        self.assertEqual(self.accepted(), "")
+
     def test_a_deleted_file_of_the_zone_counts(self):
         os.remove(self.path(SCRIPT))
         self.commit("a chapter taken away")

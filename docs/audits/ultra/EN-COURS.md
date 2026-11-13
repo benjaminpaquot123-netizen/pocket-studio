@@ -12,7 +12,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 1. Remplis le cache des tests : `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'` (si Maven répond 429, réessaie toutes les dix minutes).
 2. Écris au chef d'orchestre, en une ligne : « prêt : <un nom court> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non ».
-3. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+3. Économie de quota (Benjamin, 13 novembre) : aucun texte pour Benjamin dans ta discussion, pas de résumé ni de récit d'étape ; tes messages au chef tiennent en une ligne ; sorties de commandes filtrées (`tail`, `grep`), jamais un fichier entier quand un extrait suffit ; un sous-agent seulement quand la fiche le demande.
+4. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 
 ## Ce qui n'est pas vert
 
@@ -31,7 +32,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 |---|---|---|---|---|
 | `tour-6 emulateur` (réparation de la CI) | coquille, premier lancement | `app/…/library/PlainWords.kt` (une ligne), deux tests neufs sous `app/src/test`, peut-être `JourneyTest` (ne plus avaler l'exception) | agent local, atelier `eq-tour-6-emulateur` | cause trouvée, correction en cours ; passe seul, avant tout autre lot |
 | `tour-6 tutofleches` (lot 10) | tuto | `PianoRoll.kt`, `RhythmScreen.kt`, `TutoPanel.kt`, `TutoController.kt`, `TutoChecks.kt`, `resources/tutos/*.json`, `i18n/*/tuto*.json` | agent local, atelier `eq-tour-6-tutofleches` | en cours ; siège de contrôle sur sa branche avant le portail (13.5) |
-| `tour-6 langues2` (lot 5) | textes | `i18n/*/*.json` hors tuto, `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt` | discussion « Sons modernes » | fait et relu chez elle ; attend de pouvoir pousser |
+| `tour-6 langues2` (lot 5) | textes | `i18n/*/*.json` hors tuto, `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt` | discussion « Sons modernes » | poussé (`c8a107b1`), relu, pré-vol prêt ; entre au paquet 3 |
 
 ## File du portail
 
@@ -42,7 +43,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 ## Discussions
 
 - Testeurs (machines chaudes, ne modifient pas l'appli) : « Testeur 1 » (tuto Facile, français), « Testeur 2 » (tuto Facile, japonais), « Testeur 3 » (tuto Pro, allemand, tablette).
-- « Sons modernes » : lot 5, et l'essai de sons (rien n'est fusionné avant l'avis de Benjamin ; sauvegarde `f6f6df66`).
+- « Sons modernes » : lot 5 livré. Essai de sons : Benjamin préfère les sons d'avant, on ne fusionne pas (sauvegarde `f6f6df66`).
 - « Plan d'audit utilisateur » : la discussion de Benjamin (règle des niveaux, `PLAN-NIVEAUX.md`).
 - Fermées dans la nuit, à rouvrir au besoin (machine froide au réveil) : les discussions des lots kick, gaucher, langues, écoute, et cinq discussions de sièges.
 

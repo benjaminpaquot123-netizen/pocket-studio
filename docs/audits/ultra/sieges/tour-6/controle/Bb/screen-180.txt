@@ -1,0 +1,59 @@
+Écran 180 (900x1509)
+dessin @ 450,36
+texte « Drums » @ 372,108
+texte « Schließen » @ 789,108
+bouton « Stumm » @ 96,195
+bouton « Solo » @ 235,195
+texte « Lautstärke » @ 397,269
+texte « +0,0 dB » @ 823,269
+curseur [état « +0,0 dB », à 80 %] @ 450,343
+texte « Panorama » @ 95,417
+bouton « ? » @ 188,417
+texte « Mitte » @ 841,417
+curseur [état « Mitte », à 50 %] @ 450,491
+bouton (barres de son) «  Was spielt » @ 234,578
+bouton (courbe) «  Kurven » @ 666,578
+texte « Effekte » @ 72,649
+texte « Aktive Effekte: 3 von 8 » @ 179,705
+bouton « 1. Kompressor » @ 306,768
+icône ⏻ @ 624,768
+icône ⌃ [désactivé] @ 696,768
+icône ⌄ @ 768,768
+icône ✕ @ 840,768
+bouton « Alles » [sélectionné] @ 196,846
+bouton « A · Groove » @ 359,846
+bouton « B · Intro » @ 541,846
+bouton « C · Intro 2 » @ 718,846
+bouton « D · Drop » [coupé] @ 847,846
+texte « Spielt in: » @ 76,846
+icône ⏻ @ 624,924
+icône ⌃ @ 696,924
+icône ⌄ @ 768,924
+icône ✕ @ 840,924
+bouton « 2. Sättigung » @ 306,924
+texte « Spielt in: » @ 76,1002
+bouton « Alles » [sélectionné] @ 196,1002
+bouton « A · Groove » @ 359,1002
+bouton « B · Intro » @ 541,1002
+bouton « C · Intro 2 » @ 718,1002
+bouton « D · Drop » [coupé] @ 847,1002
+bouton « 3. Soft Clipper » @ 306,1080
+icône ⏻ @ 624,1080
+icône ⌃ @ 696,1080
+icône ⌄ [désactivé] @ 768,1080
+icône ✕ @ 840,1080
+texte « Spielt in: » @ 76,1158
+bouton « Alles » [sélectionné] @ 196,1158
+bouton « A · Groove » @ 359,1158
+bouton « B · Intro » @ 541,1158
+bouton « C · Intro 2 » @ 718,1158
+bouton « D · Drop » [coupé] @ 847,1158
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 450,1236
+bouton + «   Effekt hinzufügen » @ 450,1314
+texte « Fertige Vibes » @ 115,1386
+bouton « ? » @ 227,1386
+bouton « Für: Drums » [sélectionné] @ 123,1456
+bouton ★ « Favoriten » @ 331,1456
+bouton « Atmosphäre » @ 547,1456
+bouton « Farbe » @ 727,1456
+bouton « Dreck » [coupé] @ 838,1456

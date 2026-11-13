@@ -1,0 +1,1 @@
+Control seat D a, run 5, before the portal of lot tuto4 (tutorial words; coordinator request, 2026-11-13): code 307759b3 (origin/eq/tour-6-tuto4), local lot lotDcontrole5 (gestes.max=300, timeout.minutes=120), frozen list, fresh sub-agent reading only the testers instructions and the screens. Text files only.

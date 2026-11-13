@@ -1,0 +1,43 @@
+Écran 165 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « エンディング 小節 7/8 » ▾ @ 258,114
+bouton « ? » @ 543,114
+bouton « 曲のコード B · イントロ Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm C · イントロ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ D · ドロップ Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ E · ブレイク Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ F · ビルドアップ Fm  Fm  Fm  G♭ G · ドロップ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ …ほか 1 パート タップで曲全体のコードを変更。 » [coupé] @ 294,162
+icône ▶ « B · イントロ 16 小節 » @ 186,234
+icône − [désactivé] @ 366,234
+icône + [désactivé] @ 438,234
+icône ⋮ @ 510,234
+icône ▶ « C · イントロ 2 16 小節 » [coupé] @ 186,291
+texte « トランジション チャプター 12/15 · ステップ 2/2 · かんたん » @ 207,342
+icône (liste) « チャプター » @ 444,342
+icône ⌄ @ 531,342
+texte « あなたの番：「ドロップ」パートで、「シンバル」パッドのいちばん最初のマスをタップしよう：全部が入ってくる瞬間に1発だけ。 » @ 294,459
+texte « • ドロップ：曲のいちばんの山場。全部が一気に戻ってくるところ。 » @ 294,549
+texte « • パッド：さわると音が鳴る四角。 » @ 173,594
+texte « キット テクノ » @ 101,653
+texte « ▸ なぜ？ » @ 294,692
+icône « 続きを読む » ⌄ @ 294,741
+bouton ⊕ «   パート「ドロップ」へ移動 » @ 294,813
+bouton ▶ «  例を聴く » @ 154,897
+bouton (œil) «  見せて » @ 433,897
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » [sélectionné] @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

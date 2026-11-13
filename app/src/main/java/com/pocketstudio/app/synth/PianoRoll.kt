@@ -213,6 +213,12 @@ fun PianoRoll(
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
     var showGhosts by rememberSaveable { mutableStateOf(true) }
+    // Lot « tuto-flèches » (seats H a and D a, the riff after the chords): a step of the tutorial whose dotted notes come one
+    // at a time begins with « Accords » off (it stayed on from the chords' step: a touch beside a dotted note wrote a chord,
+    // and nothing said why). Once a step: turned on again by the user, it stays.
+    val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
+    val singleNotes = hints.isNotEmpty() && hints.groupBy { it.start }.all { it.value.size == 1 }
+    LaunchedEffect(tutoStep, singleNotes) { if (singleNotes && com.pocketstudio.app.tuto.TutoHints.active) chordMode = false }
     var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }
     // Owner (lot « tuto 5 », É8): a pinch zooms the time and the notes, « Tout voir » frames every note; the zoom
     // stays the user's (0: not chosen yet, a bar fits the width). Nothing scrolls nor zooms by itself.

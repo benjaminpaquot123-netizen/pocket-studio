@@ -97,7 +97,11 @@ class TutoGrilleTest {
         return Seen(panelTop, view.top, view.bottom, rows, inTime)
     }
 
-    /** T4 / N4: a dotted note of the bar in sight is drawn whole above the panel, or the line says ↑ / ↓. */
+    /**
+     * T4 / N4: a dotted note of the bar in sight is drawn whole above the panel, or the line says ↑ / ↓.
+     * Tour 6 repairs: one of them whole in sight is enough for no arrow (the line said « plus haut ↑ » over three
+     * dotted notes in sight, for a fourth one above: TutoSightHintTest); the arrow is owed when none is.
+     */
     private fun dottedNotesInSightOrPointedAt(id: String, level: TutoLevel, simple: Boolean) {
         openNotesStep(id, level, simple)
         val s = seen()
@@ -106,7 +110,7 @@ class TutoGrilleTest {
         assertTrue(
             "$id: notes under the panel (top ${s.panelTop}, roll ${s.rollTop}..${s.rollBottom}) and the line says « $said »: " +
                 hidden.map { "${it.pitch}@${it.start / NoteClip.TICKS_PER_STEP} ${s.rows[it]}" },
-            hidden.isEmpty() || said.contains("↑") || said.contains("↓"),
+            hidden.size < s.inTime.size || s.inTime.isEmpty() || said.contains("↑") || said.contains("↓"),
         )
         // A touch on the line brings the next one whole above the panel.
         compose.onNodeWithTag("tuto_notes_left").performClick()

@@ -31,7 +31,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Album
@@ -72,6 +71,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -146,9 +146,10 @@ internal fun SonsHeader(
  */
 @Composable
 internal fun MoreAside(forward: Boolean, modifier: Modifier = Modifier) {
+    // One icon for both edges, turned round for « before » (the bench knows every icon of the app by its shape).
     Icon(
-        if (forward) Icons.AutoMirrored.Filled.KeyboardArrowRight else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-        contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(20.dp),
+        Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.TextPrimary,
+        modifier = modifier.size(20.dp).graphicsLayer { if (!forward) scaleX = -1f },
     )
 }
 

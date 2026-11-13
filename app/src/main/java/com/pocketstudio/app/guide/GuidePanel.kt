@@ -453,7 +453,7 @@ fun GuideCard(
                 )
             }
         }
-        // Tour 6, G3: « Plus tard » is never the card's big button (the first real choice is).
+        // Tour 6, G3: « Plus tard » is never the card's big button (the first choice is, when it is a real one).
         choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0 && !o.later, listen, actions) }
         // Under the decision (it stays two gestures away), effect by effect.
         if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)

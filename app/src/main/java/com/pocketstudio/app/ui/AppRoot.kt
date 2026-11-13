@@ -1331,7 +1331,8 @@ fun AppRoot() {
     var songImport by remember { mutableStateOf<Pair<com.pocketstudio.app.remix.StemSet, List<Boolean>?>?>(null) }
     // Tour 6, U17 (seat G a #42): the import asked from the Remix page of « Que veux-tu faire ? » (« Dans un projet
     // existant »); its « Annuler » leads back to that page ([remixHomeAgain]), not into the project without the song.
-    var songImportFromHome by rememberSaveable(key = "song_import_from_home") { mutableStateOf(false) }
+    // (Set where the import starts, each time: true from the home Remix page, false from the project's own.)
+    var songImportFromHome by remember { mutableStateOf(false) }
     var remixHomeAgain by remember { mutableStateOf(false) }
     songImport?.let { (set, heard) ->
         com.pocketstudio.app.remix.SongImportSheet(
@@ -1363,6 +1364,7 @@ fun AppRoot() {
             com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, waiting.setId))
         } ?: return@LaunchedEffect
         // Step 5a: the parts heard while listening come in heard, the others muted; step 5c: after its choices.
+        songImportFromHome = true  // only the home Remix page leaves a song waiting for a project
         songImport = set to waiting.heard
         openRemix()
     }
@@ -1654,8 +1656,8 @@ fun AppRoot() {
                         launch.settled()
                         // Step 5a: what was heard while listening (« Voix » alone) decides which parts come in muted.
                         val heard = remixVm.heardFor(set.id)
-                        songImportFromHome = true
                         if (!noProject && p.id == rhythmVm.projectId) {
+                            songImportFromHome = true
                             songImport = set to heard
                             openRemix()
                         } else {
@@ -3658,6 +3660,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         val heard = preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)
                                         remixVm.pause()
                                         // Step 5c: its choices first (« Mettre Boys dans mon projet »).
+                                        songImportFromHome = false
                                         songImport = set to heard
                                     },
                                     // Audit ultra round 1, n° 1: « Découper ce que je veux »: the song in the project behind the
@@ -3672,7 +3675,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                                 // Audit ultra round 2, zone 1, n° 7 (seat A b: « Annuler » lit up, nothing said): what came in, said.
                                                 Toast.makeText(context, tr("« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).", set.name), Toast.LENGTH_LONG).show()
                                             }
-                                            else -> songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id))
+                                            else -> { songImportFromHome = false; songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)) }
                                         }
                                     },
                                     clearRemix = rhythmVm::clearRemix,

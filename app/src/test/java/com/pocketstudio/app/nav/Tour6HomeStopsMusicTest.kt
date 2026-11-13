@@ -66,6 +66,7 @@ class Tour6HomeStopsMusicTest {
         val said = ShadowToast.getTextOfLatestToast()
         assertNotNull("the music stopped on the way to « Que veux-tu faire ? » and nothing said so", said)
         assertTrue("« $said » says the music stopped (« ${tr("Arrêté")} »)", said!!.contains(tr("Arrêté")))
+        assertTrue("« $said » says the song is saved (« ${tr("Ton morceau est sauvegardé.")} »)", said.contains(tr("Ton morceau est sauvegardé.")))
         assertTrue("« $said » is in ${lang.code}", lang == Lang.FR || !said.contains("Arrêté"))
     }
 

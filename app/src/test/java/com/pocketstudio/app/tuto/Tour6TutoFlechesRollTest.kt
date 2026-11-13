@@ -39,8 +39,7 @@ class Tour6TutoFlechesRollTest {
 
     @After
     fun end() {
-        TutoHints.cells = null
-        TutoHints.notes = null
+        TutoHints.reset()
         h.finish()
     }
 

@@ -188,6 +188,18 @@ object TutoHints {
     var page by mutableStateOf<Triple<Int, Int, Long>?>(null)
     /** [copy] is the drum grid's (the hats' strengths), not the piano roll's. */
     var copyOnGrid by mutableStateOf(false)
+
+    /**
+     * Every field back to its default. A test that drove a real screen (the piano roll, the grid) leaves these set;
+     * the next test must not read them (Tour 6: `Tour6TutoPanelAlreadyTest` turned red after `Tour6TutoFlechesRollTest`,
+     * which had cleared only [cells] and [notes]). The app itself never calls this.
+     */
+    @androidx.annotation.VisibleForTesting
+    fun reset() {
+        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
+        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null
+        step = null; copy = null; page = null; copyOnGrid = false
+    }
 }
 
 /** The tutorial's line over the drum grid, as a spot (a reveal of the cells keeps it in sight). */

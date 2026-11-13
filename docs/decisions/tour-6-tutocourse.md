@@ -1,0 +1,3 @@
+- 2026-11-13 : `check()` ignore la réponse d'un regard sur un projet changé depuis son départ. Raison : les réponses dans le désordre remettaient le besoin d'un projet ancien (cause commune de trois classes du tuto rouges selon le passage). Retour arrière : revenir le commit vert.
+- 2026-11-13 : besoin et texte d'ordre dits dès que l'étape montrée n'est pas trouvée par ce regard (plus « rien trouvé »). Raison : les regards périmés ne cochant plus, un regard peut cocher d'autres étapes et devoir quand même parler de l'étape montrée. Retour arrière : avec le précédent.
+- 2026-11-13 : le chef confie le lot à tuto3 ; le dépanneur « Fable » devient contre-expert indépendant (relit, tente de faire retomber les trois classes).

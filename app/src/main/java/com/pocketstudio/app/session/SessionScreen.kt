@@ -380,6 +380,10 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         SectionLabel(tr("Le morceau"), color = Neon.Magenta, help = Glossary.SONG)
         Text(
             when {
+                // Tour 6, N14 (seats C b #19, E c #27): « vide » was said while a part played in a loop: the order is empty,
+                // not the music. Said with words already in every language.
+                ui.song.isEmpty() && (ui.playing || ui.scenes.any { it != null && !it.isEmpty }) ->
+                    tr("La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.") + " " + tr("Ajoute-les dans l'ordre.")
                 ui.song.isEmpty() -> tr("Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).")
                 ui.songIndex >= 0 -> tr("Touche une partie : elle joue juste après celle en cours.")
                 else -> tr("Touche une partie pour écouter le morceau à partir d'elle.")

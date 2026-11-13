@@ -416,7 +416,8 @@ fun GuideCard(
                 )
             }
         }
-        choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0, listen, actions) }
+        // Tour 6, G3: « Plus tard » is never the card's big button (the first real choice is).
+        choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0 && !o.later, listen, actions) }
         // Under the decision (it stays two gestures away), effect by effect.
         if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)
         if (reference != null && card.options.any { it.listen == "reference" }) {
@@ -515,7 +516,9 @@ private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.po
  */
 internal fun nextStep(card: GuideCardUi, choices: List<GuideOptionUi>, opens: List<GuideOptionUi>, canAlone: Boolean, alone: Boolean): String? {
     if (card.status.settled) return null
-    val first = choices.firstOrNull()
+    // Tour 6, G3 (seat F b: « À toi : touche « Plus tard » »): putting the card off is a way out, never the task;
+    // a card whose only real choice opens a screen names that screen.
+    val first = choices.firstOrNull { !it.later }
     return when {
         canAlone && !alone -> tr("À toi : écoute ce son tout seul, puis décide.")
         canAlone && first != null -> tr("À toi : il te plaît ? Touche « %s ».", first.label)

@@ -45,6 +45,8 @@ data class GuideOptionUi(
     val heard: Boolean = edits,
     /** G4: a check to hear ("mono", "phone", "reference"): the option itself plays it. */
     val listen: String? = null,
+    /** It only puts the card off (« Plus tard »): a way out, never the thing to do (tour 6, G3). */
+    val later: Boolean = false,
 )
 
 /**
@@ -418,6 +420,7 @@ class GuideViewModel(
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
             edits = o.action.edits, heard = o.action.heard && (o.action.type != com.pocketstudio.model.guide.GuideAction.BALANCE || levels),
             listen = o.action.name.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.LISTEN },
+            later = o.action.type == com.pocketstudio.model.guide.GuideAction.LATER,
         )
         val effects = effectsOf(r, p)
         // The first track of each role (« Voir le réglage » › its sheet).

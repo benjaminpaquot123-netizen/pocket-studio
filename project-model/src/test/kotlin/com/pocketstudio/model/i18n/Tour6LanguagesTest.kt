@@ -112,6 +112,23 @@ class Tour6LanguagesTest {
     }
 
     /**
+     * R15 (seat B c, Arabic, Mode pro): the drum pads « Cowbell », « Rim » and « Zap » stayed in Latin letters among
+     * « سنير », « شيكر », « كونغا », and so did the kit's names and the styles' texts that name them. Every pad of the
+     * drum grid and of a kit, and every text naming a rim or a cowbell, in Arabic letters (a style's name, « Phonk »,
+     * « Drift », stays as written).
+     */
+    @Test
+    fun theArabicDrumPadsAreNamedInArabicLetters() {
+        val wrong = ArrayList<String>()
+        I18n.lang = Lang.AR
+        val pads = com.pocketstudio.model.DefaultNames.KIT_PADS + listOf("Cymbale", "Shaker", "Zap", "Cowbell 808", "Cloche phonk")
+        pads.forEach { k -> tr(k).replace("Phonk", "").let { if (Regex("[A-Za-z]").containsMatchIn(it)) wrong += "ar: pad « $k » shows « $it »" } }
+        val pad = Regex("(?i)(?<![A-Za-z])(rim|cowbell)(?![A-Za-z])")
+        texts(Lang.AR).forEach { (area, _, v) -> pad.findAll(v).forEach { wrong += "ar/$area: « ${it.value} » in « ${v.take(70)} »" } }
+        report("Arabic drum pads in Latin letters", wrong)
+    }
+
+    /**
      * R15 (seats F a in Italian, F b in Polish, G b in Indonesian, A a in Hindi): « kick », « step », « timeline », « 5 tab »,
      * « Squelchy »; « Synth » under a track; « bar », « take-mu »; « Post-chorus », « Fade in / Fade out / Ending », where the
      * language has its word (« cassa », « passo », « schede »; « syntezator »; « birama », « rekaman »; Devanagari). Wherever

@@ -4,7 +4,9 @@ Branche reconstruite (2026-11-13, accord du chef) : `eq/tour-6-remix2b`, depuis 
 
 Siège d'origine : `docs/audits/ultra/sieges/tour-6/lotB/a` (espagnol, téléphone, police 100 %, Mode simple, main gauche). Base : `ccr-80af1a1b-mn0wec` (tête poussée). Preuves rejouées par le banc dans les conditions du siège, appli entière (`RemixLeftThumbSeatTest`), jamais sur un écran isolé.
 
-Fichiers touchés : `CutScreen.kt`, `CutWave.kt`, `RemixScreen.kt`, et le test `RemixLeftThumbSeatTest.kt`.
+Fichiers touchés : `CutScreen.kt`, `CutWave.kt`, `CutModel.kt`, `RemixScreen.kt` ; tests `RemixLeftThumbSeatTest.kt` (neuf), `CutBoutBigTextTest.kt`, `CutZoomGestureTest.kt`, `RemixCutFromCardTest.kt`, `CutJourneyTest.kt` ; captures `cut_*.png`, `remix/cut_bout_short_*.png`, `remix_*.png`.
+
+Erratum d'histoire : le rouge 3a57ff12 nomme `CutZoomGestureTest#removeAfterTouchesAndACutTakesOnlyThePieceUnderTheHead`, absent de son arbre ; le test qui y rougit s'appelle `CutZoomGestureTest#removeAfterTouchesAndAnEditTakesOnlyThePieceUnderTheHead` (« after cut expected:<63> but was:<61> »), et le vert 250716a6 le découpe en `…AndACut…`, `…AndALoop…`, `…ACutAndUndo…`. Les deux commits portent le même sujet (le juge les apparie par lui) ; laissé tel quel pour ne pas réécrire une branche poussée.
 
 tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutZoomGestureTest com.pocketstudio.app.remix.RemixCutFromCardTest com.pocketstudio.app.remix.CutJourneyTest
 
@@ -37,7 +39,7 @@ chemin: Remix › Cortar la canción › Frases (courbe) | test: CutZoomGestureT
 chemin: Remix › panneau du projet (carte de la chanson) | test: RemixCutFromCardTest#aSongAlreadyInTheProjectOpensItsCutScreenAtOnce
 
 ## Tenté (code + capture, non vérifiable par le banc dans les termes du siège)
-- **A7** (morceau choisi marqué nettement) : bande vive de la couleur du morceau, encadrée, en plus du numéro (`CutWave.kt`). C'est un dessin : pas de nœud à lire pour le banc. Le geste pour cocher n'est pas changé (régression du tour 3).
+- **A7** (morceau choisi marqué nettement) : bande vive de la couleur du morceau, encadrée, en plus du numéro (`CutWave.kt`). Depuis le contrôle Ba-2, toucher le corps d'un morceau le choisit aussi (section Ba-2). C'est un dessin : pas de nœud à lire pour le banc. (Au premier aller, le geste pour cocher n'avait pas été changé ; il l'a été au retour du contrôle Ba-2.)
 
 ## Pas pris (hors des fichiers `remix/` ou trop gros)
 - **A6** (avertir « la fin sera coupée » + proposer d'allonger) : l'action d'allongement n'existe pas dans `RemixActions` ; elle touche `RhythmViewModel`/`AppRoot`. Demande au chef.
@@ -54,5 +56,5 @@ chemin: Remix › panneau du projet (carte de la chanson) | test: RemixCutFromCa
 ## Relecture neuve (sous-agent, sur a80fe9f4)
 - Relancé : `:app:testDebugUnitTest --tests 'com.pocketstudio.app.remix.*'` → 300 tests, 0 échec.
 - 0 bloquant, 0 grave. Moyen (corrigé avant fusion) : à 488 dp sans défilement la courbe tombait sous 120 dp ; test de garde `CutBoutBigTextTest#aPieceJustAboveTheScrollThreshold` vu rouge (courbe 0 dp), vert après le correctif (courbe fixe 120–180 dp, défilement toujours).
-- Mineurs laissés : à 130 % le chip « Resto » demande un glissement latéral (rangée défilante) ; A7 non vérifié sur une toile claire (il n'y en a pas aujourd'hui).
+- Mineurs laissés : à 130 % le chip « Resto » demande un glissement latéral (rangée défilante) ; A7 non vérifié sur une toile claire (non vérifié s'il en existe une).
 - Après correctif : remix.* 0 échec (siège a2/a3/a5/a8 verts), captures cut_bout* réenregistrées et regardées.

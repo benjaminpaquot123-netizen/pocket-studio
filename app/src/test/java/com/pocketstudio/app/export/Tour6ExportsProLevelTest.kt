@@ -35,4 +35,17 @@ class Tour6ExportsProLevelTest {
         assertTrue("the file's number (−8,0): « $said »", "−8,0" in said)
         assertFalse("not the streaming words under Club: « $said »", "streaming" in said)
     }
+
+    /** Bench replay of Ac-2 (screen 47): « Club · −8 LUFS » chosen, the line read « −8,0, très fort (les plateformes le baisseront) ». */
+    @Test
+    fun theWordsUnderClubSayClub() {
+        I18n.lang = Lang.FR
+        val ui = ShareSheetUi(name = "Trap", seconds = 178, parts = 26, checks = emptyList(), projectName = "Trap", lufs = -13.0, exportLufs = -8.0,
+            target = com.pocketstudio.app.mixer.TargetPick(com.pocketstudio.model.TargetChoice.CLUB))
+        compose.setContent { PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions(), simple = false) } }
+        compose.waitForIdle()
+        val said = compose.onNodeWithTag("share_loudness").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString("") { it.text }
+        assertTrue("the words say club under « Club »: « $said »", "club" in said)
+        assertFalse("not « les plateformes le baisseront » for the club file chosen: « $said »", "baisseront" in said)
+    }
 }

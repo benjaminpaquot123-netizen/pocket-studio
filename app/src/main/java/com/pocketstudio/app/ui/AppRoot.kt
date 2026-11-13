@@ -1423,6 +1423,15 @@ fun AppRoot() {
     // [padLiveWelcome]: just opened from the card, its first hit sounds once.
     var showPadLive by rememberSaveable(key = "pad_live") { mutableStateOf(false) }
     var padLiveWelcome by rememberSaveable(key = "pad_live_welcome") { mutableStateOf(false) }
+    // Tour 6, seat A b (P5): another project opened (« Mes projets », the rebuild of the app): the « Live » project goes on in Pad
+    // Live, where it is played, as « Continuer » does; any other project on its own screens.
+    var padLiveFor by rememberSaveable(key = "pad_live_for") { mutableStateOf(rhythmVm.projectId) }
+    remember(rhythmVm.projectId) {
+        if (padLiveFor != rhythmVm.projectId) {
+            padLiveFor = rhythmVm.projectId
+            showPadLive = rhythmVm.project.value.padLive.home
+        }
+    }
     // Audit ultra round 1, n° 3: the library's « Découper « Boys » »: the Remix of this project, over Pad Live too.
     LaunchedEffect(libraryCutAsk) {
         if (libraryCutAsk == null) return@LaunchedEffect

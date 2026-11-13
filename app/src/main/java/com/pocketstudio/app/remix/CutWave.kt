@@ -329,12 +329,18 @@ internal fun CutZoom(
                                 drawSpanBar(z, outward = 1f, barW, handleW, handleH, ruler)
                             }
                         } else {
-                        // Each piece's ground, in its colour.
+                        // Each piece's ground, in its colour. Tour 6, seat B a #A7: a chosen piece is marked clearly — a
+                        // bright band of its colour framed on both sides — not only a small number, so a touched voice piece
+                        // reads at once as the one picked.
                         pieces.forEachIndexed { i, p ->
                             val x0 = view.x(p.start)
                             val x1 = view.x(p.end)
                             if (x1 < 0f || x0 > size.width) return@forEachIndexed
-                            drawRect(pieceColor(i).copy(alpha = 0.16f), Offset(max(0f, x0), 0f), Size(min(size.width, x1) - max(0f, x0), size.height))
+                            val ticked = i in model.chosen
+                            val l = max(0f, x0)
+                            val w = min(size.width, x1) - l
+                            drawRect(pieceColor(i).copy(alpha = if (ticked) 0.42f else 0.16f), Offset(l, 0f), Size(w, size.height))
+                            if (ticked) drawRect(pieceColor(i), Offset(l, 0f), Size(w, size.height), style = androidx.compose.ui.graphics.drawscope.Stroke(2f * hair))
                         }
                         // The curve: each column in its piece's colour, grey outside the pieces.
                         val peaks = if (levels.ready > stem) levels.of(stem) else null

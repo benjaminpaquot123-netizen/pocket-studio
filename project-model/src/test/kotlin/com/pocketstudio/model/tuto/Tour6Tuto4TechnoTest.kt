@@ -227,6 +227,25 @@ class Tour6Tuto4TechnoTest {
         report("things called by two names", bad)
     }
 
+    /**
+     * Round trip 2 after Bb-6, M2 (screen 164): the Pro course skips the listening steps (TutoController.settled), so
+     * « Groove », explained only in « groove_hear », came unexplained; the first step a Pro reads it in explains it
+     * between brackets right after the word, in every language.
+     */
+    @Test
+    fun theProExplainsTheGrooveWhereItFirstReadsIt() {
+        val bad = ArrayList<String>()
+        val pro = course.chaptersFor(TutoLevel.Pro).flatMap { it.steps }.filter { !it.listening }
+        val first = pro.first { "« Groove »" in it.textFor(TutoLevel.Pro) }
+        val fr = first.textFor(TutoLevel.Pro)
+        // The quoted word, then its explanation between brackets.
+        val explained = Regex("[$OPEN][^$OPEN$CLOSE]+[$CLOSE][\\s\u00A0\u202F]?[(（]")
+        for ((code, t) in listOf("fr" to fr) + langs.map { it.code to tr(it, fr) }) {
+            if (!explained.containsMatchIn(t)) bad += "$code ${first.id}: « Groove » not explained where the Pro first reads it: $t"
+        }
+        report("Pro steps that use « Groove » unexplained", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

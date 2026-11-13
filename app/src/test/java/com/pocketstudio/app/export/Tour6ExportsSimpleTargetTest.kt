@@ -45,8 +45,9 @@ class Tour6ExportsSimpleTargetTest {
         compose.waitForIdle()
     }
 
+    // Merged tree: a FilterChip (clickable) carries its label text on its tagged node; a plain tagged Text does too.
     private fun tagText(tag: String): String? =
-        compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()
             ?.config?.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }
 
     @Test

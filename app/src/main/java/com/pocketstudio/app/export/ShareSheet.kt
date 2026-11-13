@@ -443,7 +443,9 @@ fun ShareSheetContent(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // Audit ultra round 3 (n° 14): the Mode simple reads the words alone (no number, no LUFS under « détails »).
                         Text(
-                            if (simple) tr("Niveau : %s", Loudness.describe(lufs))
+                            // Tour 6, seat A c (E1): the Mode simple carries the file's number too, as Pro does (a word
+                            // alone did not match « −8,5 » in Pro); plain, with no LUFS unit.
+                            if (simple) tr("Niveau : %1\$s, %2\$s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs))
                             else tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
                         )
@@ -487,7 +489,10 @@ fun ShareSheetContent(
         }
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's.
-        ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
+        ui.target?.let { pick ->
+            if (simple) SimpleTargetPicker(pick, actions.chooseTarget, enabled = !ui.running)
+            else com.pocketstudio.app.mixer.TargetPicker(pick, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix."))
+        }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
@@ -563,6 +568,39 @@ fun ShareSheetContent(
         MyExportsButton("share_my_exports", Modifier.padding(horizontal = 20.dp), compact = short)
     }
     }
+}
+
+/**
+ * Tour 6, seat A c (E1): « Volume du fichier » in the Mode simple. The same setting as Pro's « Volume visé » (it changes
+ * the project's one target), in plain words and with no LUFS: a « streaming » or a « club » file is two touches away
+ * without going Pro. [pick] is the project's target; [choose] sets it (as Pro's TargetPicker does).
+ */
+@Composable
+private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choose: (com.pocketstudio.model.TargetChoice) -> Unit, enabled: Boolean) {
+    Column(Modifier.testTag("share_target"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(tr("Volume du fichier"), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // The common choices, in the same order as Pro, with plain names (« Club », « Streaming »), no LUFS.
+            com.pocketstudio.app.mixer.quickTargets(pick.choice).forEach { c ->
+                FilterChip(
+                    selected = pick.choice == c, onClick = { if (c != pick.choice) choose(c) }, enabled = enabled,
+                    label = { Text(com.pocketstudio.model.LoudnessTargets.label(c, null)) },
+                    colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_target_${c.name}"),
+                )
+            }
+        }
+        Text(simpleTargetHint(pick.choice), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            modifier = Modifier.testTag("share_target_hint"))
+    }
+}
+
+/** The plain words under the Mode simple's « Volume du fichier » chips (no LUFS, no jargon). */
+private fun simpleTargetHint(choice: com.pocketstudio.model.TargetChoice): String = when (choice) {
+    com.pocketstudio.model.TargetChoice.STREAMING -> tr("Comme sur Spotify ou YouTube : un peu plus doux.")
+    com.pocketstudio.model.TargetChoice.CLUB -> tr("Plus fort, comme en club.")
+    com.pocketstudio.model.TargetChoice.AUTO -> tr("Le volume habituel de ce style de musique.")
+    com.pocketstudio.model.TargetChoice.OFF -> tr("Le volume reste celui que tu as réglé.")
+    else -> tr("Le volume que tu choisis.")
 }
 
 /** One check: what is wrong in plain words, then its one-touch fix. */
@@ -699,7 +737,9 @@ fun ShareSheetRoute(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb, exportLufs = shareExportLufs(project),
-            target = if (simple) null else com.pocketstudio.app.mixer.TargetPick.of(project),
+            // Tour 6, seat A c (E1): the target is offered in the Mode simple too (plain words, SimpleTargetPicker), so
+            // a « streaming » or a « club » file is two touches away without slipping into Pro.
+            target = com.pocketstudio.app.mixer.TargetPick.of(project),
             loop = if (project.song.isEmpty()) LoopPick.of(export.bars, export.sceneBars, export.audioBars) else null,
         )
     )

@@ -34,10 +34,10 @@ class Lot6UiShareLevelTest {
 
     private val base = ShareSheetUi(name = "Nuit trap", seconds = 150, parts = 4, checks = emptyList(), projectName = "Nuit trap")
 
-    // Tour 6, seat A c (E1): the Mode simple level now carries the file's number too (as Pro does), in plain words, no LUFS.
+    // Tour 6, seat A c / control Ac-2 (E1): the Mode simple says the file's level as Pro does, same words, same number.
     private fun expected(v: Double): String {
         I18n.lang = Lang.FR
-        return tr("Niveau : %1\$s, %2\$s", String.format(Lang.FR.locale, "%.1f", v).replace('-', '−'), Loudness.describe(v))
+        return tr("Volume : %s, %s", String.format(Lang.FR.locale, "%.1f", v).replace('-', '−'), Loudness.describe(v))
     }
 
     @Test

@@ -435,19 +435,16 @@ fun ShareSheetContent(
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.padding(start = 10.dp).weight(1f, fill = false),
                     )
                 }
-                // Lot 6, U2 (seat A c): the Mode simple says the level the file will have (its target), not the one
-                // heard while it played (« streaming (−14) » said of a file aiming at −8,5).
-                (if (simple) ui.exportLufs ?: ui.lufs else ui.lufs)?.let { lufs ->
+                // Lot 6, U2 (seat A c): the level said is the one the file will have (its target), not the one heard while
+                // it played (« streaming (−14) » said of a file aiming at −8,5). Tour 6, control seat Ac-2 (new, screen 40):
+                // Pro said what played too (« −13,0, comme la musique en streaming » under « Club »): both modes say the
+                // file's level, with the same words and the same number (E1); the reading heard stays under « détails ».
+                (ui.exportLufs ?: ui.lufs)?.let { lufs ->
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Round 3 (n° 14) kept words alone in the Mode simple; tour 6 (seat A c, E1) brings the file's
-                        // number back on this line (same chiffre as Pro), still plain and without the LUFS unit.
                         Text(
-                            // Tour 6, seat A c (E1): the Mode simple carries the file's number too, as Pro does (a word
-                            // alone did not match « −8,5 » in Pro); plain, with no LUFS unit.
-                            if (simple) tr("Niveau : %1\$s, %2\$s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs))
-                            else tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
+                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
                         )
                         if (!simple) Text(
@@ -458,7 +455,7 @@ fun ShareSheetContent(
                     }
                     if (details && !simple) {
                         Text(
-                            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
+                            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(ui.lufs ?: lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
                             style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness_details"),
                         )
                     }
@@ -572,14 +569,14 @@ fun ShareSheetContent(
 }
 
 /**
- * Tour 6, seat A c (E1): « Volume du fichier » in the Mode simple. The same setting as Pro's « Volume visé » (it changes
+ * Tour 6, seat A c (E1): « Volume visé » in the Mode simple. The same setting as Pro's « Volume visé » (it changes
  * the project's one target), in plain words and with no LUFS: a « streaming » or a « club » file is two touches away
  * without going Pro. [pick] is the project's target; [choose] sets it (as Pro's TargetPicker does).
  */
 @Composable
 private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choose: (com.pocketstudio.model.TargetChoice) -> Unit, enabled: Boolean) {
     Column(Modifier.testTag("share_target"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(tr("Volume du fichier"), style = MaterialTheme.typography.bodyMedium)
+        Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             // The common choices, in the same order as Pro, with plain names (« Club », « Streaming »), no LUFS.
             com.pocketstudio.app.mixer.quickTargets(pick.choice).forEach { c ->
@@ -590,18 +587,7 @@ private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choo
                 )
             }
         }
-        Text(simpleTargetHint(pick.choice), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-            modifier = Modifier.testTag("share_target_hint"))
     }
-}
-
-/** The plain words under the Mode simple's « Volume du fichier » chips (no LUFS, no jargon). */
-private fun simpleTargetHint(choice: com.pocketstudio.model.TargetChoice): String = when (choice) {
-    com.pocketstudio.model.TargetChoice.STREAMING -> tr("Comme sur Spotify ou YouTube : un peu plus doux.")
-    com.pocketstudio.model.TargetChoice.CLUB -> tr("Plus fort, comme en club.")
-    com.pocketstudio.model.TargetChoice.AUTO -> tr("Le volume habituel de ce style de musique.")
-    com.pocketstudio.model.TargetChoice.OFF -> tr("Le volume reste celui que tu as réglé.")
-    else -> tr("Le volume que tu choisis.")
 }
 
 /** One check: what is wrong in plain words, then its one-touch fix. */

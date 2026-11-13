@@ -295,7 +295,7 @@
         {
           "id": "groove_name",
           "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
-          "textPro": "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "textPro": "À toi : nomme cette partie « Groove » (le mot des musiciens pour une boucle qui donne envie de bouger) : la boucle complète, d'où tu tireras les autres parties.",
           "check": "label:Groove",
           "spot": "song.parts",
           "listen": "parts:kick,rumble,clap,open_hat,hat,perc,bass,pad,lead"

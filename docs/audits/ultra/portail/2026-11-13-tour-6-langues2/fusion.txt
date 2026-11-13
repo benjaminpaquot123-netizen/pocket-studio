@@ -1,0 +1,8 @@
+fusion: 58ef34f77d3f2ca3caaba373bcd2a08882fd0e1a
+branche: eq/tour-6-langues2
+tete: 94a0fdb0b69d75892e91b4e1554697eb545e9cda
+relecture: docs/audits/ultra/tour-6-langues2-relecture.md
+relu: 1ee7b54c289e83de900236989fea15827e98c72c
+filtres: *MyFilesNamesTest *MyFilesWaitTest *LanguageListPhoneOnTopTest *LanguageListNamesWholeTest *LiveCounterNameTest *LiveWholeWordsTest *SimpleMixWholeWordsTest *FadingRowsTest *Tour6WordsOnScreenTest *LanguagesScanTest *CaptureMatrixPhone360Test
+rejeux :
+  t4-26-prise-clavier : oracle tenu

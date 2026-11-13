@@ -352,7 +352,7 @@ class Portal(unittest.TestCase):
         self.assertIn("from_paquet 5", lines[0])
         self.assertIn("exit 10", lines[0])
         self.assertIn("not merged", lines[0])
-        self.assertLess(portal.index("rapport-zone.py --tuto"), portal.index("git merge --no-ff"), "refused BEFORE the merge")
+        self.assertLess(portal.index("rapport-zone.py --tuto"), portal.index("if ! git merge --no-ff -m"), "refused BEFORE the merge")
 
     def test_the_preflight_repeats_it_from_batch_5(self):
         pre_vol = read(os.path.join(HERE, "pre-vol.sh"))

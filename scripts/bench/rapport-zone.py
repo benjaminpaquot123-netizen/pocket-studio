@@ -41,6 +41,37 @@ A lot does not get round the rule by leaving the line out, where the repository 
 Not seen (docs/decisions/tour-6-portail3.md): a defect no table knows, or that neither the report nor a commit
 names; whether the replay named is the defect's own; whether a reason is a good one (the fresh review reads them).
 Prints one line per refusal, exit 1; nothing when all is well.
+
+AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 5): no lot of the tutorial enters before a fresh beginner
+replayed it on the lot's branch.
+
+  rapport-zone.py --tuto <branch> <report path> base:<commit the branch left> tete:<the integration's head> tour:<tour-N>
+
+The lot touches the tutorial zone when a file it changes since its base (the last commit of the integration it
+holds: what the branch merged in from the integration is not the lot's) is application code or a resource of the
+tutorial:
+  <module>/src/main/…/tuto/…   <module>/src/main/…/tutos/…   <module>/src/main/…/i18n/<lang>/tuto*.json
+or is PianoRoll.kt (under src/main) while the zone report says « tuto » (the word, any case, outside fenced blocks).
+Not the zone: the tutorial's tests (src/test), the reference screenshots, the docs, the bench.
+Then the zone report carries, per control seat, the line (a list bullet and backquotes are allowed):
+
+  controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0
+
+- at least one such line; EVERY « controle: » line well-formed, with 0 and 0;
+- <sha> (7 to 40 hex letters) is a commit of the branch (an ancestor of its head), not older than the lot's last change
+  of the tutorial: every commit of the lot (tete..branch, merges left out) that changes one of the zone's files above
+  is <sha> or one of its ancestors, and those files are the same at <sha> and at the branch's head (a merge changed
+  none of them after the seat played);
+- <id> is a seat whose report is in the branch, docs/audits/ultra/sieges/<tour-N>/controle/<id>/rapport.md (<id>: one
+  folder, « Ha », or a lot and its seat, « lotK/a »), whose head (the lines before « siege: », the first eight at most,
+  as scripts/bench/sortie-de-siege.py writes and reads them) says « code testé : <the same commit> », and none of
+  whose « chapitre: » lines says « bloqué ».
+Not seen (docs/decisions/tour-6-portail4.md): whether the seat was a fresh beginner, played the whole tutorial, in the
+same language and profile as the seat before; a grave the seat's report describes without the line counting it; a
+lot that changes PianoRoll.kt for the tutorial without its report saying « tuto »; the other files of the zone of
+§13.3 (RhythmScreen.kt, PlainWords.kt, TrackSheet.kt).
+Prints one line per refusal, exit 1. Accepted: « tuto: … » (the zone's files and the seats) when the lot touches the
+zone, nothing at all when it does not.
 """
 import importlib.util
 import os
@@ -257,7 +288,134 @@ def corrections(branch, path, base, tour, added=(), head=None):
     return refusals
 
 
+ZONE = re.compile(r"(?:^|/)src/main/(?:.*/)?(?:tutos?/.+|i18n/[^/]+/tuto[^/]*\.json)$")
+ZONE_IF_SAID = re.compile(r"(?:^|/)src/main/(?:.*/)?PianoRoll\.kt$")
+SAID = re.compile(r"\btuto", re.I)
+SEAT_LINE = re.compile(r"^\s*(?:[-*]\s*)?`?contr[oô]le\s*:(.*)$", re.M | re.I)
+SEAT_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*(?:/[A-Za-z0-9][A-Za-z0-9_.-]*)?$")
+SEAT_CODE = re.compile(r"^code\s+test[ée]\s*:\s*([0-9a-f]{7,40})$", re.I)
+SEAT_BLOCKED = re.compile(r"^bloqu[ée]s\s*:\s*(\d+)$", re.I)
+SEAT_GRAVES = re.compile(r"^graves\s+neufs\s*:\s*(\d+)$", re.I)
+SEAT_SHAPE = "« controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 »"
+SEAT_HEAD = re.compile(r"^code testé\s*:\s*(\S*)\s*$")
+CHAPTER = re.compile(r"^chapitre\s*:\s*([^|]*)\|[^|]*\|\s*(bloqu[ée][^|]*)", re.M | re.I)
+
+
+def git_out(*args):
+    r = subprocess.run(["git", *args], capture_output=True, text=True)
+    return r.returncode, r.stdout
+
+
+def tutorial_files(branch, text, base, head):
+    """The files of the tutorial zone the lot changes since its base."""
+    code, out = git_out("diff", "--no-renames", "--name-only", base, branch)
+    said = SAID.search(text or "") is not None
+    files = []
+    for f in out.splitlines() if code == 0 else []:
+        if not (ZONE.search(f) or (said and ZONE_IF_SAID.search(f))):
+            continue
+        files.append(f)
+    return files
+
+
+def seat_head(text):
+    """« code testé » of a seat report's head, as sortie-de-siege.py reads it: before « siege: », eight lines at most."""
+    for line in text.splitlines()[:8]:
+        if line.startswith("siege:"):
+            break
+        m = SEAT_HEAD.match(line)
+        if m:
+            return m.group(1)
+    return None
+
+
+def tutorial(branch, path, base, head, tour):
+    """(refusals, what to say when accepted) of « a lot of the tutorial comes with its control seat »."""
+    raw = show(branch, path)
+    text = without_code_blocks(raw or "")
+    files = tutorial_files(branch, text, base, head)
+    if not files:
+        return [], ""
+    zone = f"{len(files)} file(s) of the tutorial zone ({', '.join(files[:4])}{', …' if len(files) > 4 else ''})"
+    if raw is None:
+        return [f"no zone report {path} in {branch}, and the lot changes {zone}: its control seat's line "
+                f"{SEAT_SHAPE} is missing"], ""
+    lines = [m for m in SEAT_LINE.finditer(text)]
+    if not lines:
+        return [f"no « controle: » line in {path}, and the lot changes {zone}: one line per control seat that replayed "
+                f"the tutorial on this branch, {SEAT_SHAPE}"], ""
+    # The lot's own commits that change the zone's files (the integration's, merged in, are not the lot's).
+    own = []
+    if head:
+        code, out = git_out("rev-list", "--no-merges", "--full-history", f"{head}..{branch}", "--", *files)
+        own = out.split() if code == 0 else []
+    refusals, seats = [], []
+    for m in lines:
+        parts = [p.strip() for p in m.group(1).strip().strip("`").split("|")]
+        ok = len(parts) == 4 and SEAT_ID.match(parts[0]) and ".." not in parts[0]
+        sha, blocked, graves = (SEAT_CODE.match(parts[1]), SEAT_BLOCKED.match(parts[2]), SEAT_GRAVES.match(parts[3])) if ok else (None,) * 3
+        if not (ok and sha and blocked and graves):
+            refusals.append(f"« {m.group(0).strip()[:90]} » is not {SEAT_SHAPE}")
+            continue
+        seat, sha = parts[0], sha.group(1).lower()
+        if int(blocked.group(1)) or int(graves.group(1)):
+            refusals.append(f"control seat « {seat} »: bloqués: {int(blocked.group(1))}, graves neufs: {int(graves.group(1))} "
+                            "(a lot of the tutorial enters with 0 chapter blocked and 0 new grave)")
+            continue
+        code, full = git_out("rev-parse", "-q", "--verify", sha + "^{commit}")
+        full = full.strip()
+        if code != 0 or not full:
+            refusals.append(f"control seat « {seat} »: code testé {sha} is not a commit here")
+            continue
+        if subprocess.run(["git", "merge-base", "--is-ancestor", full, branch]).returncode != 0:
+            refusals.append(f"control seat « {seat} »: code testé {sha[:10]} is not an ancestor of {branch} "
+                            "(the seat replays the lot's branch)")
+            continue
+        late = [c for c in own if subprocess.run(["git", "merge-base", "--is-ancestor", c, full]).returncode != 0]
+        if late:
+            refusals.append(f"control seat « {seat} »: code testé {sha[:10]} was played before the lot's last change of the "
+                            f"tutorial ({', '.join(c[:8] for c in late[:3])}): the seat replays after the last fix")
+            continue
+        code, moved = git_out("diff", "--no-renames", "--name-only", full, branch, "--", *files)
+        if code != 0 or moved.strip():
+            refusals.append(f"control seat « {seat} »: {' '.join(moved.split()[:4])} at the head of {branch} are not the files "
+                            f"the seat played at {sha[:10]} (a merge changed them since): the seat replays the head")
+            continue
+        seat_path = f"docs/audits/ultra/sieges/{tour}/controle/{seat}/rapport.md"
+        seat_text = show(branch, seat_path)
+        if seat_text is None:
+            refusals.append(f"control seat « {seat} »: no report {seat_path} in {branch} (the seat's folder comes with the lot)")
+            continue
+        said = seat_head(seat_text)
+        if not said:
+            refusals.append(f"control seat « {seat} »: no « code testé : <sha> » on top of {seat_path} (the bench writes it at "
+                            "the seat's start: scripts/bench/sortie-de-siege.py)")
+            continue
+        if not re.fullmatch(r"[0-9a-f]{7,64}", said) or not full.startswith(said):
+            refusals.append(f"control seat « {seat} »: {seat_path} names another commit (« code testé : {said[:12]} ») than the "
+                            f"line of {path} ({sha[:10]})")
+            continue
+        stuck = CHAPTER.search(seat_text)
+        if stuck:
+            refusals.append(f"control seat « {seat} »: its own report says « chapitre: {stuck.group(1).strip()[:40]} … "
+                            f"{stuck.group(2).strip()[:40]} » while the line says bloqués: 0")
+            continue
+        seats.append(f"{seat}@{full[:8]}")
+    return refusals, f"tuto: {zone}; control seat(s): {', '.join(seats)}"
+
+
 def main(argv):
+    if len(argv) >= 4 and argv[1] == "--tuto":
+        opts = dict(a.split(":", 1) for a in argv[4:] if ":" in a)
+        if not opts.get("base") or not opts.get("tete") or not opts.get("tour"):
+            print("rapport-zone.py --tuto: base:<commit>, tete:<commit> and tour:<tour-N> are needed")
+            return 2
+        refusals, said = tutorial(argv[2], argv[3], opts["base"], opts["tete"], opts["tour"])
+        for r in refusals:
+            print(r)
+        if not refusals and said:
+            print(said)
+        return 1 if refusals else 0
     if len(argv) >= 4 and argv[1] == "--corrections":
         opts = dict(a.split(":", 1) for a in argv[4:] if ":" in a and not a.startswith("ajout:"))
         refusals = corrections(argv[2], argv[3], opts.get("base"), opts.get("tour"),

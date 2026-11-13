@@ -318,4 +318,19 @@ class Tour6Tuto4TechnoTest {
         for (l in langs) tr(l, share).let { t -> if ("−14" !in t) bad += "${l.code} share: no « −14 »: $t" }
         report("numbers the screen shows and the step does not say", bad)
     }
+
+    /**
+     * Round trip 1 after Da-5, M7 (screen 183: « 共有 » under the button « シェア »): the share sheet's sentences that name the
+     * « Partager » button (finish.json) name it as the button says it, in every language.
+     */
+    @Test
+    fun theShareSheetNamesTheShareButtonAsItReads() {
+        val bad = ArrayList<String>()
+        for (l in langs) {
+            val button = tr(l, "Partager")
+            for ((fr, t) in I18n.area(l, "finish")) if ("« Partager »" in fr && !quotes(t, button)) bad += "${l.code}: not « $button »: $t"
+        }
+        I18n.area(Lang.JA, "finish").values.filter { "共有" in it }.forEach { bad += "ja finish: 共有 where the button says シェア: $it" }
+        report("share sheet sentences that call the button by another name", bad)
+    }
 }

@@ -97,15 +97,18 @@ class Tour6Tuto4TechnoTest {
     }
 
     /**
-     * M3 (seats D a, B b): the numbers tell the truth: « Ajouter » makes each part 8 bars long (TutoChecks, song:phrases),
-     * the durations said are the step's, the stabs of the Pro's bar 1 are on steps 4 and 11 (one of them only on an offbeat).
+     * M3 (seats D a, B b): the numbers tell the truth: « Ajouter » makes each part as long as its loop (8 bars, the
+     * Montée 4: Tour6TutoBuildBarsTest), the durations said are the step's, the stabs of the Pro's bar 1 are on steps 4 and 11 (one of them only on an offbeat).
      */
     @Test
     fun numbersTellTheTruth() {
         val bad = mutableListOf<String>()
         for (fr in texts(step("song_order"))) {
             if (!Regex("\\b8 mesures\\b").containsMatchIn(fr)) bad += "fr song_order: the 8 bars « Ajouter » gives not said: $fr"
-            for (l in langs) tr(l, fr).let { t -> if (!t.contains(Regex("(?<!\\d)8(?!\\d)"))) bad += "${l.code} song_order: no 8: $t" }
+            if (!Regex("Montée 4|4 pour la Montée").containsMatchIn(fr)) bad += "fr song_order: the Montée's 4 bars not said: $fr"
+            for (l in langs) tr(l, fr).let { t ->
+                listOf("8", "4").filter { n -> !t.contains(Regex("(?<!\\d)$n(?!\\d)")) }.forEach { bad += "${l.code} song_order: no $it: $t" }
+            }
         }
         // The durations said are the step's own (« Break 12 »), in every language.
         val phrases = step("song_phrases")

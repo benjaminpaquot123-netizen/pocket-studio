@@ -1,0 +1,8 @@
+fusion: 2c146a420eb7a2ef466d2425915f1ae1f01f7518
+branche: eq/tour-6-reparations
+tete: c4f30154b4379d12e2b7b826c3854068052ef9a4
+relecture: docs/audits/ultra/tour-6-reparations-relecture.md
+relu: 20a1c61f058b7ebb3358280b990e4e7e9014c361
+filtres: com.pocketstudio.app.ui.GestureBudgetTest com.pocketstudio.app.tuto.TutoSightHintTest com.pocketstudio.app.tuto.TutoGrilleTest com.pocketstudio.app.rhythm.RhythmGrilleTest com.pocketstudio.app.synth.RollToolsWordsTest com.pocketstudio.app.tuto.TutoScreenTest com.pocketstudio.app.ui.GestureBudgetTest com.pocketstudio.app.tuto.TutoSightHintTest com.pocketstudio.app.tuto.TutoGrilleTest com.pocketstudio.app.rhythm.RhythmGrilleTest com.pocketstudio.app.synth.RollToolsWordsTest com.pocketstudio.app.tuto.TutoScreenTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

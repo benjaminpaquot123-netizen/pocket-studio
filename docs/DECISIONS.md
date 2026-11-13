@@ -1491,3 +1491,4 @@
 - 2026-11-13 · lot « ecoute » (tour-5) : 40 décision(s) dans `docs/decisions/tour-5-ecoute.md`
 - 2026-11-13 · lot « tutoconsignes » (tour-6) : 50 décision(s) dans `docs/decisions/tour-6-tutoconsignes.md`
 - 2026-11-13 · lot « guidecoquille » (tour-6) : 15 décision(s) dans `docs/decisions/tour-6-guidecoquille.md`
+- 2026-11-13 · lot « reparations » (tour-6) : 4 décision(s) dans `docs/decisions/tour-6-reparations.md`

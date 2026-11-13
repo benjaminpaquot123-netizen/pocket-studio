@@ -31,6 +31,11 @@ Attente du testeur, pas un défaut de « Déjà fait » : l'étape « make_monte
 ## Histoire refaite (eq/tour-6-tuto3b)
 Branche `eq/tour-6-tuto3b` : les commits de `eq/tour-6-tuto3` rejoués sur la tête `c384b6939`, arbre final identique à celui de `eq/tour-6-tuto3` fusionnée avec cette tête (`git diff` vide) ; seule la paire du toucher reçoit un sujet commun (« a tap a hair off a tutorial ghost writes the ghost, not a parasite ») pour que le juge l'apparie. Les shas cités ci-dessus sont ceux de cette branche. Les sièges ont joué `e4286b40` (même code d'appli du lot ; la tête a apporté depuis tutoordre, tutoordre2 et tutocourse dans `TutoController.check()`, qui ne touchent pas les chemins des défauts du lot).
 
+## Contrôle final (après le dernier changement du tuto)
+controle: Da-6 | code testé: fbf14ee1 | bloqués: 0 | graves neufs: 0
+
+- Da-6 (ja, Facile, 12 chapitres) : Bravo en 164 gestes, 4 hésitations, 0 bloqué, aucun grave ; T4 corrigé (écrans 87 et 109 : « ここをタップ » vu à l'écran, un geste par note), « Accords » compté en accords (écran 94), « Déjà fait » sans « À toi » au ch. 12 (écran 160) ; T2, T7a, T7c, T8 toujours corrigés (écrans 110, 6, 96, 160). Dossier `sieges/tour-6/controle/Da-6/` dans la branche. Aucun commit de code du tuto après `fbf14ee1`.
+
 ## Contrôles sur la branche (2e essai)
 controle: Ha-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
 controle: Da-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0

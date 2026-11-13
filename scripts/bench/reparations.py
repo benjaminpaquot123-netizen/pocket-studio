@@ -277,7 +277,13 @@ def brought(branch, base, head):
             header_known = line in known_lines or not known_lines or cells == COLUMNS
             continue
         if line not in known_lines:
-            out.append((line, dict(zip(header, cells + [""] * (len(header) - len(cells))))))
+            # Review of « constate », G1: a line is read with the register's own columns, never with its branch's header
+            # (a branch cut before the three columns has 9; the cells after them were invisible). Its cells beyond
+            # its branch's header, or beyond the register's columns, are a refusal (« long »).
+            row = dict(zip(COLUMNS, cells + [""] * (len(COLUMNS) - len(cells))))
+            row["_long"] = len(cells) if len(cells) > min(len(header), len(COLUMNS)) else 0
+            row["_header"] = len(header)
+            out.append((line, row))
     return header, out, known, header_known
 
 
@@ -290,6 +296,11 @@ def lot_refusals(branch, base, head):
         out.append(f"{REGISTER}: the lot changes the register's header (« {' '.join(header)} »): its columns are not the lot's")
     for line, r in lines:
         name = f"« {r.get('tour')} {r.get('item')} {r.get('siege')}#{r.get('ecran')} »"
+        if r["_long"]:
+            out.append(f"{REGISTER} line {name}: {r['_long']} cells, its branch's header has {r['_header']} and the register "
+                       f"{len(COLUMNS)} ({' '.join(COLUMNS)}): merge the integration (its header has the register's columns), "
+                       "and write no cell beyond them")
+            continue
         said = state(r.get("etat"))
         if said not in LOT_STATES:
             who = {"rejoué": "the portal's", "constaté": "the chief's, after a control seat", "corrigé": "given by nobody since round 6"}

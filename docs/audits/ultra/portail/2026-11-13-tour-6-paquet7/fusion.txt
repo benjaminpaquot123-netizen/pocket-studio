@@ -1,0 +1,7 @@
+fusion: 05ca92461fca45c3555597a395344a46e44db568
+branche: eq/tour-6-paquet7
+tete: 6e5ff2b3a72eebb69fe933dde34c3a3717d12c41
+relecture: docs/audits/ultra/tour-6-paquet7-relecture.md
+relu: e18d6932e3720581a480e0d16832bfad0cbb16eb
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -1,4 +1,16 @@
 siege	id	promesse	ecran	tenue	pourquoi	contredite
+a	t6-Ac-1	Fini ? Partage ton morceau	11	oui	depuis le studio, onglet « Partager » puis bouton « Partager » = 2 gestes jusqu'au choix de l'appli (écran 8 puis 11)	
+a	t6-Ac-2	Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip	19	oui	atteint en Mode simple depuis l'onglet Partager ou « Voir mes fichiers » (l'appli dit « Mes fichiers », pas « Mes exports »)	
+a	t6-Ac-3	Trap-20261113-144539.pocketstudio.zip	27	oui	le .zip sauvegardé (Mes projets › ⋮ › Sauvegarder le morceau en .zip) est en tête de « Mes fichiers »	
+a	t6-Ac-4	Durée : 2 min 58 s	18	oui	2:58 annoncé avant (écran 8) = « Durée : 2 min 58 s » après export M4A (écran 12) et WAV (écran 18)	
+a	t6-Ac-1	Partager	12	oui	depuis le studio, onglet Partager puis bouton Partager puis l'appli : 3 gestes, fichier parti (écran 12)	
+a	t6-Ac-2	Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip	18	oui	en Mode simple, l'onglet Partager et « Voir mes fichiers » ouvrent la liste (elle s'appelle « Mes fichiers », pas « Mes exports »)	
+a	t6-Ac-3	Trap-20261113-171050.pocketstudio.zip	32	oui	le .zip envoyé depuis Mes projets est listé (écrans 32 et 39) ; une fois la liste est restée vide (écran 26, fiche ci-dessous)	contredite
+a	t6-Ac-4	Durée : 2 min 58 s	12	oui	2:58 annoncé avant (écran 8), 2 min 58 s dans le bilan (écrans 12 et 17)	
+a	t6-Ac-1	Partager un morceau se fait en 3 gestes au plus depuis le studio	11	oui	onglet Partager (#6), Partager (#8), WhatsApp (#10), plus une attente de l'export	
+a	t6-Ac-2	« Mes exports » s'atteint en Mode simple	12	oui	« Voir mes fichiers » après l'envoi, et « Mes fichiers » visible sur l'écran Partager (écran 7)	
+a	t6-Ac-3	Le projet envoyé en .zip est listé dans « Mes exports »	26	oui	« Trap-20261113-202322.pocketstudio.zip » en tête de « Mes fichiers »	
+a	t6-Ac-4	La longueur annoncée avant l'export est celle du fichier exporté	11	oui	2:58 annoncé (écran 7), « Durée : 2 min 58 s » au bilan (chiffre du banc)	
 a	t6-Ba-1	« Ce point est trop loin de ton pouce » sur « 2 » (morceau) et « + » de « Empezar desde el compás 1 de la canción »	21	non	pastilles des morceaux (Frases/Compases) et « + » du compás de départ hors du pouce gauche (#20, #26, #38)	
 a	t6-Ba-2	« ✂ Cortar lo que quiero » (seule carte « Ma chanson préférée » après la séparation)	8	oui	une seule carte de résultat, un seul bouton plein conseillé dedans	
 a	t6-Ba-3	-	-	pas	aucun avertissement « el final se cortará » rencontré ; impossible d'amener la fin au bout du morceau à une main (défilement de l'onde ~2 s par geste)	

@@ -247,10 +247,10 @@ internal fun CutZoom(
                         if (!moved) {
                             onTouched()
                             val at = view.frameAt(down.position.x)
-                            // Round 3, zone 1, n° 9, made unambiguous (round 3 review): a touch on a piece's number (the
-                            // band on top of the curve) ticks it or unticks it and leaves the play head; a touch on the
-                            // curve itself only places the play head (it ticked the piece under it too: every « place
-                            // the head, then Couper ici » chose pieces nobody meant to send).
+                            // A touch on a piece's number (the band on top of the curve) ticks it or unticks it and leaves
+                            // the play head (round 3, zone 1, n° 9). A touch on the curve's body places the play head and,
+                            // since tour 6 (control Ba-2, A7), also chooses the piece under it; « Enlever » ignores such
+                            // choices (CutModel.remove).
                             val onNumber = !grabbing && down.position.y < PIECE_NUMBER_ZONE.toPx()
                             // Tour 6, control Ba-2 (A7, a left thumb that cannot reach the numbers on top): a touch on a
                             // piece's body places the play head AND chooses that piece (never unticks it).

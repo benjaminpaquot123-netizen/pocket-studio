@@ -1,7 +1,7 @@
 # Relecture neuve du siège son, tour 6 (deuxième passage)
 Relu : 6e77ecac6e0280d1d6fd5e054c70b1e749163d89
 
-J'ai relu le delta `86095814..6e77ecac` : `rapport-son.md`, `par-style.tsv`, `kick-par-partie.tsv`, `docs/decisions/tour-6-son.md`, `scripts/son/son6.py` et `tableau_son6.py`. Je l'ai comparé aux données régénérées : `build/son6/son6.tsv` et `kick.tsv` (23 h 28), `build/son6/json-kick/`, `build/son6/report.md`, `build/son6-live/report.md` et `build/son6/cmds/`. Le premier passage, à `86095814`, est dans l'historique git de ce fichier.
+J'ai relu le delta `86095814..6e77ecac` : `rapport-son.md`, `par-style.tsv`, `kick-par-partie.tsv`, `docs/decisions/tour-5-ecoute.md`, `scripts/son/son6.py` et `tableau_son6.py`. Je l'ai comparé aux données régénérées : `build/son6/son6.tsv` et `kick.tsv` (23 h 28), `build/son6/json-kick/`, `build/son6/report.md`, `build/son6-live/report.md` et `build/son6/cmds/`. Le premier passage, à `86095814`, est dans l'historique git de ce fichier.
 
 ## Ce que j'ai recalculé
 
@@ -57,7 +57,7 @@ Aucun.
 
 ### MINEUR
 
-- **N1. Compte des cibles estimées.** L'afro house est désormais une estimation : `par-style.tsv` donne 14 cibles mesurées, donc 23 estimées. Le rapport (« Ce qui n'a pas pu être fait ici ») et `docs/decisions/tour-6-son.md` (ligne « Cibles par genre ») disent encore 22. À corriger : 22 → 23.
+- **N1. Compte des cibles estimées.** L'afro house est désormais une estimation : `par-style.tsv` donne 14 cibles mesurées, donc 23 estimées. Le rapport (« Ce qui n'a pas pu être fait ici ») et `docs/decisions/tour-5-ecoute.md` (ligne « Cibles par genre ») disent encore 22. À corriger : 22 → 23.
 - **N2. Une cause présentée comme établie.** « Leur kick est plus saturé, ou son attaque est plus claire » (G1, « Ceux qui tiennent ») : aucune mesure ne le montre. À écrire : « peut-être un kick plus saturé ou une attaque plus claire, non mesuré ».
 - **N3. Les trois mineurs restants du premier passage**, inchangés dans `rapport-son.md` :
   - Leads sombres : retirer la phonk (−14,8) de la liste, ajouter la riddim (−51,1), et dire seulement « lead sombre » dans la fiche phonk.

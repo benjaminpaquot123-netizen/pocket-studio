@@ -1,6 +1,6 @@
 # Tour 6, siège son : les 37 morceaux de l'assistant, jugés à la mesure
 
-Version jugée : `1585bb46` (tête de `ccr-80af1a1b-mn0wec` au 2026-11-12). Tableau par style : `par-style.tsv`, coups de kick partie par partie : `kick-par-partie.tsv` (à côté). Cibles par genre et leurs sources : `cibles-genres.md`. Décisions : `docs/decisions/tour-6-son.md`. Relecture neuve : `relecture.md`.
+Version jugée : `1585bb46` (tête de `ccr-80af1a1b-mn0wec` au 2026-11-12). Tableau par style : `par-style.tsv`, coups de kick partie par partie : `kick-par-partie.tsv` (à côté). Cibles par genre et leurs sources : `cibles-genres.md`. Décisions : `docs/decisions/tour-5-ecoute.md`. Relecture neuve : `relecture.md`.
 
 ## En bref (à lire à voix haute)
 

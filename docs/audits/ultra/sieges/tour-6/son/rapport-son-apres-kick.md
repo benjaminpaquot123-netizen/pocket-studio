@@ -1,7 +1,7 @@
 # Tour 6, siège son : le kick au téléphone, avant et après le lot « kick »
 
 - **Version jugée :** tête `845c8beb` de l'intégration, qui contient le lot « kick qui tape au haut-parleur du téléphone ». L'« avant » est le siège son du `1585bb46` (`rapport-son.md`).
-- **Fichiers :** tableau par style `kick-avant-apres.tsv` ; écoute en direct `kick-direct.tsv` ; décisions dans `docs/decisions/tour-6-son.md` (partie « Après le lot kick »).
+- **Fichiers :** tableau par style `kick-avant-apres.tsv` ; écoute en direct `kick-direct.tsv` ; décisions dans `docs/decisions/tour-5-ecoute.md` (partie « Après le lot kick »).
 
 ## En bref (à lire à voix haute)
 

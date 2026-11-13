@@ -3,13 +3,13 @@
 Source : `docs/audits/ultra/sieges/tour-6/lots-correction.md` (lot 3), `verdicts.tsv`, `lecture-recurrents.md` (branche `eq/tour-6-tri`). En cours de lot : N14 « piste audio seule » (reçu du lot 4), U9 et U1 (reçus du lot 6).
 Fichiers touchés : `guide/GuidePanel.kt`, `guide/GuideViewModel.kt`, `ui/AppRoot.kt`, `ui/AppSpaces.kt`, `ui/DoneBar.kt`, les tests neufs et leurs captures. Deux anciens tests adaptés au nouveau comportement : `SpacesTest` (N17) et `SimpleModeAuditTest` (G1, clavier). Aucun fichier de traduction touché : tous les mots neufs à l'écran sont des textes déjà traduits dans les 15 langues.
 
-tests: com.pocketstudio.app.nav.Tour6GuideCoversTest com.pocketstudio.app.nav.Tour6GuideLanguageTest com.pocketstudio.app.nav.Tour6GuideNextStepTest com.pocketstudio.app.nav.Tour6GuideAndTutoTest com.pocketstudio.app.nav.Tour6DoneBarTest com.pocketstudio.app.nav.Tour6HomeStopsMusicTest com.pocketstudio.app.nav.Tour6ModeSwitchAsksTest com.pocketstudio.app.nav.Tour6AudioPagesMoreTest com.pocketstudio.app.nav.Tour6RemixCancelTest com.pocketstudio.app.nav.Tour6MixerNamesTest com.pocketstudio.app.nav.Tour6PadLiveEffectsTitleTest com.pocketstudio.app.nav.SpacesTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.nav.GuideJourneyTest
+tests: com.pocketstudio.app.nav.Tour6GuideCoversTest com.pocketstudio.app.nav.Tour6GuideLanguageTest com.pocketstudio.app.nav.Tour6GuideNextStepTest com.pocketstudio.app.nav.Tour6GuideAndTutoTest com.pocketstudio.app.nav.Tour6RecordStopStaysTest com.pocketstudio.app.nav.Tour6HomeStopsMusicTest com.pocketstudio.app.nav.Tour6ModeSwitchAsksTest com.pocketstudio.app.nav.Tour6AudioPagesMoreTest com.pocketstudio.app.nav.Tour6RemixCancelTest com.pocketstudio.app.nav.Tour6MixerNamesTest com.pocketstudio.app.nav.Tour6PadLiveEffectsTitleTest com.pocketstudio.app.nav.SpacesTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.nav.GuideJourneyTest
 
 Derniers passages : les classes `Tour6*`, les suites `Guide*Test` de `nav`, `SpacesTest`, `SimpleModeAuditTest`, `RemixFindableTest`, `TrackSheetTest`, `PlayingRecomposeTest` : 191 tests, 0 rouge ; avant le correctif de la relecture, `nav.*`, `guide.*`, `tuto.*` et `Zone3Round2Test` : 945 tests, tous verts sauf deux causes corrigées depuis (un `Toast` hors du fil principal, une capture retirée).
 
 Méthode : chaque test a été écrit et vu rouge sur son assertion avant toute correction (un seul passage Gradle pour les dix premiers, un autre pour U9), puis les corrections, un commit « vert » par défaut. Téléphone de 360 x 780 dp, Simple et Pro, 100 % et 130 %.
 
-## Traités (les 11 du lot, dont 3 en partie : G1, N1, U27 ; plus U9)
+## Traités (10 des 11 du lot, dont 3 en partie : G1, N1, U27 ; plus U9 ; N15 retiré après le refus du portail)
 
 ### G1 — le Guide cache le contenu (3 choses)
 - Le panneau ouvert se replie quand l'utilisateur change lui-même d'écran (onglet, « ⋮ Plus » du pouce ou du haut, page de Plus) ; sa barre reste. « Voir le réglage » du Guide n'est pas concerné.
@@ -55,12 +55,17 @@ chemin: tuto en cours, Plus › Aide › Ouvrir le Guide de mon morceau (Simple)
 chemin: tuto en cours, Plus › Aide › Ouvrir le Guide de mon morceau (Pro) | test: Tour6GuideAndTutoTest#duringATutorialTheGuideAskedForShowsInPro
 chemin: tuto quitté, Plus › Aide › Ouvrir le Guide de mon morceau | test: Tour6GuideAndTutoTest#afterATutorialQuitTheGuideAskedForShows
 
-### N15 — « Fait : … Annuler » recouvrait des boutons
-La ligne a sa place dans la barre du bas, au-dessus du Guide et des onglets ; plus rien de touchable dessous.
+### N15 — « Fait : … Annuler » recouvrait des boutons : correctif retiré, défaut laissé
+Le premier correctif donnait à la ligne sa place dans la barre du bas. Le portail a refusé le lot : le rejeu `t4-26-prise-clavier` (clavier du Mode simple, police à 200 %) ne trouvait plus « ■ Arrêter » au geste 32. Cause, lue dans les écrans 29 et 30 du rejeu : la ligne prenait de la hauteur à la page puis la lui rendait six secondes après ; la page, qui défile quand on joue une touche, se retrouvait ailleurs, la barre de prise coupée en haut. Une prise qu'on ne peut pas arrêter est pire que le défaut d'origine.
+- La ligne flotte de nouveau au bas de la page (comme avant le lot) : la page ne change jamais de hauteur pour elle.
+- En plus : pendant une prise (notes ou micro), la ligne ne s'affiche pas et son message est abandonné (après la prise, son « Annuler » annulerait la prise, pas ce qu'elle nomme).
+- N15 reste donc ouvert hors des prises : la ligne peut encore couvrir six secondes les derniers boutons d'une page. Lui trouver une place fixe qui ne déplace rien demande un choix de dessin (par exemple une ligne réservée en permanence), pas un correctif local.
+- Le test neuf ne reproduit pas le déplacement de la page du rejeu (il ne joue pas le défilement du clavier) : il vérifie que rien ne vient sur la page pendant une prise et que « ■ Arrêter » reste entier et atteignable ; la preuve du déplacement est le rejeu lui-même. Dans le commit rouge 462dd881, l'une des deux assertions rouges (« a bougé ») mesurait un déplacement normal de la barre de prise, pas le défaut : retirée.
 
-chemin: « Fait : … » sur les cinq onglets du Mode simple | test: Tour6DoneBarTest#theDoneLineCoversNothingToTouchInSimple
-chemin: « Fait : … » sur les espaces du Pro | test: Tour6DoneBarTest#theDoneLineCoversNothingToTouchInPro
-chemin: « Fait : … » à 130 % | test: Tour6DoneBarTest#theDoneLineCoversNothingToTouchWithBigText
+chemin: Clavier, « Fait » affiché puis prise lancée | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeaves
+chemin: le même à 130 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesWithBigText
+chemin: le même sur le siège du rejeu, police à 200 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesAtTwiceTheFont
+chemin: Clavier, un choix fait pendant la prise | test: Tour6RecordStopStaysTest#noDoneLineComesOverThePageDuringATake
 
 ### N16 — la musique s'arrête sans le dire au retour de Mes projets
 Décision dans `docs/decisions/tour-6-guidecoquille.md` : le retour à « Que veux-tu faire ? » reste, la musique s'y arrête, et un message le dit quand elle jouait : « ■ Arrêté · Ton morceau est sauvegardé. ». Même chose pour « Accueil » de Plus.
@@ -107,7 +112,7 @@ chemin: Pad Live › Plus › Effets | test: Tour6PadLiveEffectsTitleTest#theEff
 - **U1** (reçu du lot 6) : le lot 7 a préparé l'en-tête (`PlayPosition.next`, « %s : ensuite » dans `ui/PlayStrip.kt`), mais l'appel qui doit lui donner la partie en file n'est pas dans AppRoot.kt : c'est `ui/UnderTopBar.kt`, ligne 60 (`playPosition(project, playing, songIndex, bar.value, playFrom, loopPart)`, à compléter par `queued`), et `report/ReportWiring.kt`, ligne 43, pour le rapport de bug. Aucun des deux n'est un fichier du lot.
 
 ## Captures regardées
-`app/screenshots/tour6/shell_*.png` (classe `Tour6GuideCoquilleLookTest`, 24 images, 360 x 780 dp) : panneau du Guide avec « ↓ La suite » puis fin de carte (Simple et Pro, 100 % et 130 %), Plus après le Guide ouvert, clavier à 100 % et 130 %, ligne « Fait » (Simple et Pro, 100 % et 130 %), « Mode de ce projet » depuis Plus, pages de Sons › Voix (français 100 %, turc 130 %), tuto quitté, Guide demandé pendant un tuto, Mix pendant un tuto, carte « Fais une deuxième partie ». Cette classe n'est pas une classe du recensement des écrans (`ScreenRegistry`) : ce sont des états d'écrans déjà recensés.
+`app/screenshots/tour6/shell_*.png` (classe `Tour6GuideCoquilleLookTest`, 20 images, 360 x 780 dp) : panneau du Guide avec « ↓ La suite » puis fin de carte (Simple et Pro, 100 % et 130 %), Plus après le Guide ouvert, clavier à 100 % et 130 %, « Mode de ce projet » depuis Plus, pages de Sons › Voix (français 100 %, turc 130 %), tuto quitté, Guide demandé pendant un tuto, Mix pendant un tuto, carte « Fais une deuxième partie ». Cette classe n'est pas une classe du recensement des écrans (`ScreenRegistry`) : ce sont des états d'écrans déjà recensés.
 Les captures de référence existantes que le lot fait bouger (panneaux du Guide dont la carte dépasse, Mix d'un tuto, ligne « Fait », clavier d'un écran court, tuto quitté) n'ont pas été réenregistrées : la CI les listera comme « différentes » (avertissement, pas un rouge) ; à réenregistrer dans une passe de captures.
 
 ## Après la relecture neuve

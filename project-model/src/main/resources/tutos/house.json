@@ -57,8 +57,8 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : le kit est celui de la house, la boîte à rythmes 909 et le tambourin de la 707. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tout est prêt : tu n'as rien à régler.",
-          "textPro": "Déjà prêt pour toi : kick, clap et charleys de la TR-909, tambourin de la TR-707, kick accordé sur la tonalité. Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "text": "Avant de commencer : le kit est celui de la house, les sons de la boîte à rythmes 909 et le pad « Rim » de la 707. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tout est prêt : tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : kick, clap et charleys de la TR-909, pad « Rim » de la TR-707, kick accordé sur la tonalité. Chaque piste que tu créeras arrivera avec son son conseillé.",
           "check": "manual"
         },
         {
@@ -91,9 +91,9 @@
     },
     {
       "id": "hats",
-      "title": "Les charleys et le tambourin",
-      "titlePro": "Charleys, tambourin et swing",
-      "why": "Le « tchi » du charley ouvert entre chaque coup de kick pousse le corps vers l'avant ; le petit charley fermé et le tambourin font danser les épaules.",
+      "title": "Les charleys et le bord de caisse",
+      "titlePro": "Charleys, bord de caisse et swing",
+      "why": "Le « tchi » du charley ouvert entre chaque coup de kick pousse le corps vers l'avant ; le petit charley fermé et le pad « Rim » font danser les épaules.",
       "steps": [
         {
           "id": "ohat_do",
@@ -115,8 +115,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim » (il joue le tambourin), touche les 4 cases en pointillé, entre les temps.",
-          "textPro": "À toi : pose le tambourin de la 707 sur chaque contretemps.",
+          "text": "À toi : sur le pad « Rim », touche les 8 cases en pointillé (4 par mesure), entre les temps.",
+          "textPro": "À toi : pose le pad « Rim » de la 707 sur chaque contretemps.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -329,7 +329,7 @@
         {
           "id": "make_montee",
           "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis tout se tait juste avant le Drop.",
-          "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, tambourin, piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
+          "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, pad « Rim », piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",
           "keep": "clap,open_hat,hat,perc,pad",
@@ -349,7 +349,7 @@
         },
         {
           "id": "make_break",
-          "text": "À toi : crée le Break : le piano, les charleys et le tambourin seulement.",
+          "text": "À toi : crée le Break : le piano, les charleys et le pad « Rim » seulement.",
           "check": "part:Break:nokick+nobass",
           "spot": "song.parts",
           "keep": "open_hat,hat,perc,pad",

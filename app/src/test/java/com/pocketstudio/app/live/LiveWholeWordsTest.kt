@@ -51,7 +51,7 @@ class LiveWholeWordsTest {
     /** Bar 30, beat 2 (a counter « 30.2 »). */
     private val clock = 29 * song.stepsPerBar + 4
 
-    private fun cuts(label: String, uiScale: Float, fontScale: Float): List<String> {
+    private fun cuts(label: String, uiScale: Float, fontScale: Float, project: com.pocketstudio.model.Project = song): List<String> {
         if (fontScale != 1f) RuntimeEnvironment.setFontScale(fontScale)
         var lang by mutableStateOf(Lang.FR)
         compose.setContent {
@@ -59,7 +59,7 @@ class LiveWholeWordsTest {
             key(lang) {
                 CompositionLocalProvider(LocalLayoutDirection provides layoutDirectionOf(lang.rtl)) {
                     UiScaled(uiScale) {
-                        PocketStudioTheme { LiveScreen(LiveScreenUi(song, LiveState.on(0), clock = clock, playing = true), LiveActions()) }
+                        PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = clock, playing = true), LiveActions()) }
                     }
                 }
             }
@@ -95,6 +95,19 @@ class LiveWholeWordsTest {
     @Test
     fun everyTextIsWholeAtTaille130() {
         val problems = cuts("Taille 130 %", uiScale = 1.3f, fontScale = 1f)
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /** « Cases − 4 + »: rows tall enough for each brick's part name under its letter (« Cou… », « Refr… » at 100 %). */
+    @Test
+    fun everyBrickNameIsWholeInTallRows() {
+        val problems = cuts("4 cases", uiScale = 1f, fontScale = 1f, project = song.copy(liveRows = 4))
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    @Test
+    fun everyBrickNameIsWholeInTallRowsWithThePhonesFontAt130() {
+        val problems = cuts("4 cases, font 130 %", uiScale = 1f, fontScale = 1.3f, project = song.copy(liveRows = 4))
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 

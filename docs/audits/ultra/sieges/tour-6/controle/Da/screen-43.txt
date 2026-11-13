@@ -1,0 +1,59 @@
+Écran 43 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+bouton « 1 » [coupé, état « 空 »] @ 70,233
+bouton [coupé, état « 空 »] @ 133,233
+bouton [coupé, état « 空 »] @ 197,234
+bouton [coupé, état « 空 »] @ 261,234
+bouton « 2 » [coupé, état « ヒット、強さ 100 % »] @ 325,234
+bouton [coupé, état « 空 »] @ 389,234
+bouton [coupé, état « 空 »] @ 453,234
+bouton [coupé, état « 空 »] @ 517,234
+bouton « 3 » [état « 空 »] @ 70,294
+bouton [état « 空 »] @ 133,294
+bouton [état « 空 »] @ 197,295
+bouton [état « 空 »] @ 261,295
+bouton « 4 » [état « ヒット、強さ 100 % »] @ 325,295
+bouton [état « 空 »] @ 389,295
+bouton [état « 空 »] @ 453,295
+bouton [état « ヒット、強さ 20 % »] @ 517,295
+texte « すべて » @ 147,380
+texte « 1/2 » @ 229,380
+texte « 1/4 » @ 304,380
+texte « ◀ » @ 379,380
+texte « ▶ » @ 454,380
+texte « 埋める » @ 71,380
+texte « 消去 » @ 78,452
+texte « マスをタップでヒットを追加、指をすべらせてまとめて塗れます。ヒットを長押し：強さとロール（×2〜×8）。 » @ 294,527
+texte « 長さ » @ 63,603
+bouton « 1小節 » [sélectionné] @ 143,603
+bouton « 2 » @ 239,603
+bouton « 3 » @ 320,603
+bouton « 4 » @ 401,603
+titre « パッドの音 » [état « 開いた状態 »] @ 136,720
+bouton « ? » @ 208,720
+texte « テクノ · 手拍子 » @ 294,769
+bouton (notes sur une pile) «  音を変更 » @ 294,833
+bouton (curseurs) «  パッドの設定 » @ 294,917
+texte « チュートリアルを再開 » @ 147,990
+texte « チュートリアルをやり直す » @ 441,990
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

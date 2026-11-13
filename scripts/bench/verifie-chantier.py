@@ -992,81 +992,61 @@ def _owner(text, pos):
     return next((name for start, name in reversed(starts) if start < brace), "") if brace >= 0 else ""
 
 
-def kotlin_test_text(text, cls, method):
-    """Lot « juge8 »: the text of the function cls#method of a Kotlin file, its comments blanked, from « fun » to the
-    end of its body (a block, or an expression body and the lines indented under it), or None."""
+def _fun_end(bare, fun_start, name_end):
+    """The end of a Kotlin function whose « fun » is at fun_start and name ends at name_end (comments blanked): its
+    block's closing brace, or an expression body and the lines indented under the « fun » line."""
+    i = _after_parens(bare, bare.find("(", name_end))
+    brace, eq = bare.find("{", i), bare.find("=", i)
+    if brace >= 0 and (eq < 0 or brace < eq):
+        return _block_end(bare, brace)
+    line_start = bare.rfind("\n", 0, fun_start) + 1
+    head = bare[line_start:fun_start]
+    indent = len(head) - len(head.lstrip())
+    end = bare.find("\n", i)
+    while 0 <= end < len(bare) - 1:
+        nxt = bare[end + 1:].split("\n", 1)[0]
+        if nxt.strip() and len(nxt) - len(nxt.lstrip()) <= indent:
+            break
+        end = bare.find("\n", end + 1)
+    return len(bare) if end < 0 else end
+
+
+def without_other_tests(text, cls, method):
+    """Review of « juge8 » (G2): a Kotlin test file, comments blanked, without its plain tests other than cls#method
+    (a function whose only annotation is @Test: taken out whole, annotation, signature and body), whitespace runs made
+    one space. What is left (the named test with its annotations, helpers, @Before, rules, fields, imports) is what a
+    green regularised by rouges-constates/ may not change."""
     bare = without_comments(text)
-    for m in FUN.finditer(bare):
-        if m.group(1) != method or _owner(bare, m.start(1)) != cls:
+    cut, at = [], 0
+    for m in ANNOTATED_FUN.finditer(bare):
+        if not re.fullmatch(r"@(?:org\.junit\.)?Test", m.group(1).strip()):
             continue
-        i = _after_parens(bare, bare.find("(", m.end()))
-        brace, eq = bare.find("{", i), bare.find("=", i)
-        if brace >= 0 and (eq < 0 or brace < eq):
-            return bare[m.start():_block_end(bare, brace)]
-        line_start = bare.rfind("\n", 0, m.start()) + 1
-        head = bare[line_start:m.start()]
-        indent = len(head) - len(head.lstrip())
-        end = bare.find("\n", i)
-        while 0 <= end < len(bare) - 1:
-            nxt = bare[end + 1:].split("\n", 1)[0]
-            if nxt.strip() and len(nxt) - len(nxt.lstrip()) <= indent:
-                break
-            end = bare.find("\n", end + 1)
-        return bare[m.start():len(bare) if end < 0 else end]
-    return None
-
-
-def py_test_text(text, cls, method):
-    """Lot « juge8 »: the lines of « def method » written right in « class cls » of a bench script's tests, comments
-    kept (a Python comment is a line of the file), or None."""
-    lines, in_cls = text.split("\n"), False
-    for i, line in enumerate(lines):
-        if re.match(r"class\s+" + re.escape(cls) + r"\s*[(:]", line):
-            in_cls = True
+        if m.group(2) == method and _owner(bare, m.start(2)) == cls:
             continue
-        if line.strip() and not line[0].isspace() and not line.lstrip().startswith("#"):
-            in_cls = False
-        m = re.match(r"    def\s+([A-Za-z0-9_]+)\s*\(", line) if in_cls else None
-        if m and m.group(1) == method:
-            j = i + 1
-            while j < len(lines) and (not lines[j].strip() or lines[j].startswith("     ")):
-                j += 1
-            return "\n".join(lines[i:j])
-    return None
-
-
-def test_text(root, rev, cls, method):
-    """The text of the test cls#method in rev ([kotlin_test_text], [py_test_text]), whitespace runs made one space;
-    None when no file, or more than one, holds it."""
-    try:
-        listed = _git(root, "grep", "-l", "-F", method, rev, "--", *TEST_DIRS).splitlines()
-    except (subprocess.SubprocessError, OSError):
-        listed = []
-    found = [kotlin_test_text(_show(root, rev, l.split(":", 1)[1]) or "", cls, method) for l in listed]
-    try:
-        scripts = _git(root, "ls-tree", "-r", "--name-only", rev, "--", "scripts/bench").splitlines()
-    except (subprocess.SubprocessError, OSError):
-        scripts = []
-    found += [py_test_text(_show(root, rev, f) or "", cls, method) for f in scripts if PY_TEST_FILE.match(f)]
-    found = [" ".join(t.split()) for t in found if t is not None]
-    return found[0] if len(found) == 1 else None
+        cut.append(bare[at:m.start()])
+        at = _fun_end(bare, bare.find("fun", m.start()), m.end(2))
+    cut.append(bare[at:])
+    return " ".join("".join(cut).split())
 
 
 def red_seen(root, sha, message):
     """Review of the « portail » lot: a test that existed went red in a run, and this green fixes the app. Evidence in
     docs/audits/ultra/rouges-constates/<the green's full sha>/: rouge.txt (« parent: <the green's parent> »,
     « test: Classe#méthode ») and a JUnit XML of that run where that test fails. The test (« Classe#méthode »), or None
-    unless all of it holds. Lot « juge8 » (a lot regularises without rewriting its history): the green may touch test
-    files, but that test's function is the same text in the parent and in the green (its assertion untouched:
-    [test_text]), and the green changes a file that is neither a test nor a document; a green whose message does not
-    name the test needs vert.xml, the test run on the green, passing."""
+    unless all of it holds. Lot « juge8 » (a lot regularises without rewriting its history): the green changes a file
+    that is neither a test nor a document; in the tests, it only changes Kotlin test files that were there, and in them
+    only plain @Test functions other than the named one (review G2: [without_other_tests] is the same text in the
+    parent and in the green; no bench test touched); a green whose message does not name the test needs vert.xml, the
+    test run on the green, passing."""
     import xml.etree.ElementTree as ET
     try:
         full = _git(root, "rev-parse", sha + "^{commit}").strip()
         parents = _git(root, "rev-list", "--parents", "-n", "1", full).split()[1:]
-        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split("\n") if f]
+        changed = [l.split("\t", 1) for l in _git(root, "diff-tree", "--no-commit-id", "--name-status", "-r", full + "^", full)
+                   .split("\n") if "\t" in l]
     except (subprocess.SubprocessError, OSError):
         return None
+    files = [f for _, f in changed]
     folder = os.path.join(root, RED_SEEN, full)
     try:
         facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8", errors="replace").read()
@@ -1084,10 +1064,15 @@ def red_seen(root, sha, message):
     for rev in (parents[0], full):
         if not test_in(root, rev, cls, bare):
             return None
-    # Lot « juge8 »: the test's own text unchanged (before: no test file touched at all; lot « juge7 »: nor a bench test).
-    if any(TEST_FILE.search(f) for f in files):
-        before = test_text(root, parents[0], cls, bare)
-        if before is None or before != test_text(root, full, cls, bare):
+    # Lot « juge8 », review G2: before, no test file touched at all (lot « juge7 »: nor a bench test); now a Kotlin test
+    # file that was there, changed only in plain tests other than the named one.
+    for status, f in changed:
+        if not TEST_FILE.search(f):
+            continue
+        if status != "M" or not f.endswith(".kt") or not f.startswith(TEST_DIRS):
+            return None
+        before = without_other_tests(_show(root, parents[0], f) or "", cls, bare)
+        if before != without_other_tests(_show(root, full, f) or "", cls, bare):
             return None
     if not names(message, test.group(1)) and _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
         return None

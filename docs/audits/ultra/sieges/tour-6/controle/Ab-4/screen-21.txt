@@ -1,0 +1,66 @@
+Écran 21 (588x1278)
+icône − @ 135,48
+texte « 124 Tempo » @ 210,48
+icône + @ 285,48
+bouton ▶ @ 375,48
+texte « REC » @ 462,48
+icône (carré dans un rond) « Tout couper » @ 537,48
+icône ← @ 45,48
+texte « Touche : jouer · appui long : changer » @ 174,135
+icône − [désactivé] @ 431,135
+icône + [désactivé] @ 537,135
+texte « Pads » @ 368,135
+texte « 16 » @ 484,135
+icône ◎ @ 80,618
+texte « Boucle de kick » @ 80,635
+texte « 1 mes. » @ 81,666
+icône ♪ @ 223,618
+texte « Claquement de mains » @ 223,634
+texte « une fois » @ 223,665
+icône ♪ @ 366,618
+texte « Boucle Acid 303 » @ 366,634
+texte « 1 mes. » @ 367,665
+icône (vagues) @ 508,618
+texte « Boucle de basse » @ 508,634
+texte « 2 mes. » @ 509,665
+icône ♪ @ 80,761
+texte « Klaxon » @ 81,767
+texte « une fois » @ 81,795
+icône ♪ @ 223,761
+texte « Laser » @ 223,767
+texte « une fois » @ 223,795
+icône ♪ @ 366,761
+texte « Sirène » @ 367,767
+texte « une fois » @ 366,795
+icône ♪ @ 508,761
+texte « Cri « Go go go! » » @ 508,778
+texte « une fois » @ 508,809
+icône ○ @ 80,904
+texte « Grosse caisse 1 » @ 80,921
+texte « une fois » @ 80,952
+icône ○ @ 223,904
+texte « Caisse » @ 223,910
+texte « une fois » @ 223,938
+icône (points en rond) @ 366,904
+texte « Charley » @ 367,910
+texte « une fois » @ 367,938
+icône (points en rond) @ 508,904
+texte « Charley ouvert » @ 508,921
+texte « une fois » @ 508,952
+icône ♪ @ 80,1047
+texte « Montée » @ 80,1053
+texte « une fois » @ 80,1081
+icône (étincelles) @ 223,1047
+texte « Impact » @ 224,1053
+texte « une fois » @ 224,1081
+icône ♪ @ 366,1047
+texte « Chute » @ 366,1053
+texte « une fois » @ 366,1081
+icône ♪ @ 508,1047
+texte « « Go! » » @ 508,1053
+texte « une fois » @ 508,1081
+bouton (curseurs) « Effets live » ⌃ @ 294,1167
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,99 @@
+Écran 20 (588x1278)
+icône ← @ 42,42
+bouton ▶ @ 123,42
+icône − @ 207,42
+texte « 124 Tempo » @ 282,42
+icône + @ 357,42
+texte « – mesure » @ 447,42
+texte « REC » @ 540,42
+bouton « ? » @ 543,114
+image (compteur de vitesse) @ 31,177
+bouton « Annuler » @ 509,177
+texte « Tempo calé sur Ma prise 1 : 124 » @ 247,177
+bouton « Lancer à 1 mesure » @ 123,252
+bouton « ? » @ 256,252
+icône − @ 452,252
+icône + @ 540,252
+texte « Cases » @ 383,252
+texte « 8 » @ 496,252
+texte « Batterie » @ 130,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 130,372
+texte « Acid 303 » @ 229,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 229,372
+texte « Synthé » @ 328,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 328,372
+texte « Audio 1 » @ 427,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 427,372
+texte « Audio 2 » @ 526,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 526,372
+bouton « ? » @ 45,351
+bouton « A » @ 45,447
+dessin @ 130,447
+dessin @ 229,447
+dessin @ 328,447
+dessin @ 427,447
+dessin @ 526,447
+bouton « B » @ 45,513
+dessin @ 130,513
+dessin @ 229,513
+dessin @ 328,513
+dessin @ 427,513
+dessin @ 526,513
+bouton « C » @ 45,579
+dessin @ 130,579
+dessin @ 229,579
+dessin @ 328,579
+dessin @ 427,579
+dessin @ 526,579
+bouton « D » @ 45,645
+dessin @ 130,645
+dessin @ 229,645
+dessin @ 328,645
+dessin @ 427,645
+dessin @ 526,645
+bouton « E » @ 45,711
+dessin @ 130,711
+dessin @ 229,711
+dessin @ 328,711
+dessin @ 427,711
+dessin @ 526,711
+bouton « F » @ 45,777
+dessin @ 130,777
+dessin @ 229,777
+dessin @ 328,777
+dessin @ 427,777
+dessin @ 526,777
+bouton « G » @ 45,843
+dessin @ 130,843
+dessin @ 229,843
+dessin @ 328,843
+dessin @ 427,843
+dessin @ 526,843
+bouton « H » [coupé] @ 45,891
+dessin [coupé] @ 130,891
+dessin [coupé] @ 229,891
+dessin [coupé] @ 328,891
+dessin [coupé] @ 427,891
+dessin [coupé] @ 526,891
+bouton « ■ Tout » @ 45,945
+bouton « ■ » @ 130,945
+bouton « ■ » @ 229,945
+bouton « ■ » @ 328,945
+bouton « ■ » @ 427,945
+bouton « ■ » @ 526,945
+icône (quatre carrés) « Briques » [sélectionné] @ 61,1044
+icône (neuf points) « Pads » @ 142,1044
+icône (étincelles) « Effets » @ 223,1044
+icône ♪ « Notes » @ 303,1044
+icône (barres de son) « Acid 303 » @ 383,1044
+icône (quatre coins) @ 459,1044
+icône ⌃ @ 531,1044
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

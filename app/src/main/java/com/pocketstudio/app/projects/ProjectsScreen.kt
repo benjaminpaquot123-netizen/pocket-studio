@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -190,6 +191,17 @@ fun ProjectsScreen(
                     modifier = Modifier.clickable(onClick = actions.dismissMessage))
             }
             // Lot 1: no project at all (the last one deleted, or none saved yet): what to do next, big.
+            // Lot 6, U23 (seat F a #36): while the catalogue is read (its queue may wait for a save closing), the screen says so:
+            // it showed neither the list nor the empty card, as if the project were gone.
+            if (ui.loading && ui.projects.isEmpty()) {
+                Row(
+                    Modifier.fillMaxWidth().padding(vertical = 24.dp).testTag("projects_loading"),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    androidx.compose.material3.CircularProgressIndicator(Modifier.size(24.dp), color = Neon.Cyan, strokeWidth = 2.5.dp)
+                    Text(tr("Chargement de la liste…"), style = MaterialTheme.typography.bodyLarge, color = Neon.TextSecondary)
+                }
+            }
             if (!ui.loading && ui.projects.isEmpty()) EmptyProjects(newSong = { setChoosingStart(true) }, importZip = actions.importZip)
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
                 items(ui.projects, key = { it.id }) { p ->

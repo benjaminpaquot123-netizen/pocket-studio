@@ -66,6 +66,19 @@ class WeekInTheLifeTest {
         }
     }
 
+    /**
+     * Tour 6, lot « stable » (a shuffled run of the suite, seed 1: this test hung 20 min in `runBlocking { vm.flushNow() }`,
+     * no worker in the app's code): an autosave started by [until]'s clock held the project's save lock, its write done,
+     * waiting for the main thread to come back to it; the main thread was blocked waiting for that lock. On a fast disk the
+     * autosave was over before; on a slow one, never. The flush runs off the main thread, the main looper running meanwhile.
+     */
+    private fun flush(vm: RhythmViewModel) {
+        val result = java.util.concurrent.CompletableFuture<Unit>()
+        kotlin.concurrent.thread(name = "week-flush") { runCatching { runBlocking { vm.flushNow() } }.fold({ result.complete(Unit) }, { result.completeExceptionally(it) }) }
+        until("the project's save never ended") { result.isDone }
+        result.get()
+    }
+
     /** What must be true of the project every day after Monday. */
     private fun assertMondayIsThere(p: Project, monday: Project, cellTrack: Int) {
         assertEquals("the tempo set on Monday", 150.0, p.tempoBpm, 1e-9)
@@ -122,7 +135,7 @@ class WeekInTheLifeTest {
         val cellTrack = vm.project.value.audioTracks.first { it.clip != null }.id
         val monday = vm.project.value
         assertMondayIsThere(monday, monday, cellTrack)
-        runBlocking { vm.flushNow() }
+        flush(vm)
 
         // --- Thursday: the app opened again (a new process: the ViewModel and the settings read again).
         SettingsStore.forgetForTests()
@@ -138,7 +151,7 @@ class WeekInTheLifeTest {
         vm.toggleHit(6, 7)
         vm.undo()
         assertMondayIsThere(vm.project.value, monday, cellTrack)
-        runBlocking { vm.flushNow() }
+        flush(vm)
 
         // --- Exported as a .zip and imported on another phone: the same project, its loop's sound with it.
         val catalog = projectCatalog(app)

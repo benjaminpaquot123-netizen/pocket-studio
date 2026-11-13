@@ -1,0 +1,44 @@
+Écran 73 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ■ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « A 小節 7/8 » [désactivé] @ 231,114
+bouton « ? » @ 543,114
+onglet « Acid 303 ベースライン » [sélectionné] @ 96,183
+bouton « ベース Plaits » @ 244,183
+bouton + «  トラック » @ 403,183
+icône « パート：A » ▾ @ 84,258
+texte « Acid 303 アシッドハウスのキュンと鳴くベース。「ラインを書いて」をタップして、マスをタップすると音を変えられます。 » @ 294,360
+bouton (étincelles) « ラインを書いて » @ 294,490
+texte « 音の数 » @ 269,562
+texte « 80% » @ 521,562
+curseur [état « 80% », à 80 %] @ 294,628
+titre « ベースライン · ルート C » [état « 開いた状態 »] @ 242,763
+bouton « ? » @ 328,763
+bouton « C D E » [sélectionné] @ 494,763
+bouton « 1小節 » [coupé, sélectionné] @ 141,827
+bouton « 2 » [coupé] @ 237,827
+bouton « 3 » [coupé] @ 318,827
+bouton « 4 » [coupé] @ 399,827
+bouton « 8 » [coupé] @ 480,827
+icône (liste) « チャプター » @ 444,879
+texte « ベース チャプター 5/15 · ステップ 2/3 · かんたん » @ 207,879
+icône ⌃ @ 531,879
+icône (rond coché) « 成功 次のステップ » → @ 294,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » [sélectionné] @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

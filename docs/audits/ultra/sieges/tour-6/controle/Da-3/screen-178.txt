@@ -1,0 +1,7 @@
+Écran 178 (588x1278)
+texte « 曲をシェア · マイソング-曲-20261113-150721.m4a » @ 294,460
+bouton « WhatsApp » @ 294,548
+bouton « Messages » @ 294,620
+bouton « Gmail » @ 294,692
+bouton « Drive » @ 294,764
+bouton « Files » @ 294,836

@@ -1,0 +1,22 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tab_simple_Rythme
+tuto_panel/tab_simple_Rythme
+dialogue:tempo_sheet
+dialogue:tuto_key_sheet
+tuto_spot_ring
+dialogue:roll_menu
+tuto_panel
+launch
+tab_simple_Clavier
+tuto_panel/tab_simple_Clavier
+tuto_panel/tab_simple_Morceau
+session/tab_simple_Morceau
+simple_mix/tab_simple_Mix
+tuto_panel/tab_simple_Mix
+dialogue:share_progress
+dialogue:« 曲をシェア · マイソング-曲-20261113-15072 »
+dialogue:share_bilan
+share_sheet/tab_simple_Envoyer
+tab_simple_Envoyer

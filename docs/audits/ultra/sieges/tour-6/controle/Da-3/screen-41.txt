@@ -1,0 +1,47 @@
+Écran 41 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+texte « ここに点線のマスがあと 4 個 » @ 197,231
+bouton « 1 » [coupé, état « 空 »] @ 70,279
+bouton [coupé, état « 空 »] @ 133,279
+bouton [coupé, état « 空、点線：タップしてね »] @ 197,279
+bouton [coupé, état « 空 »] @ 261,279
+bouton « 2 » [coupé, état « 空 »] @ 325,279
+bouton [coupé, état « 空 »] @ 389,279
+bouton [coupé, état « 空、点線：タップしてね »] @ 453,279
+bouton [coupé, état « 空 »] @ 517,279
+texte « ハイハット チャプター 4/15 · ステップ 1/3 · かんたん » @ 207,342
+icône (liste) « チャプター » @ 444,342
+icône ⌄ @ 531,342
+texte « あなたの番：「オープンハイハット」パッド（長めの「ツー」）で、点線のマスをタップしよう：キックのちょうど間、裏拍に。 » @ 294,459
+texte « • キック：バスドラム。ドラムの低い「ドン」。 » @ 230,536
+texte « • ハイハット：「チッ」と鳴る小さなシンバル。リズムのチクタク。 » @ 294,580
+texte « • 裏拍：拍と拍のあいだ。足でリズムを取らないところ。 » @ 269,625
+texte « • パッド：さわると音が鳴る四角。 » @ 173,655
+texte « ▸ なぜ？ » @ 294,692
+icône « 続きを読む » ⌄ @ 294,741
+bouton (doigt qui touche) «   自分でやる » @ 294,813
+bouton ▶ «  例を聴く » @ 154,897
+bouton (œil) «  見せて » @ 433,897
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

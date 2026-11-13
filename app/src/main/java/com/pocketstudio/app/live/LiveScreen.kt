@@ -1131,11 +1131,13 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
     ) {
         Box(Modifier.fillMaxWidth().height(3.dp).background(c.color.copy(alpha = 0.9f)))
         // A narrow column (six tracks on a phone): the name gets smaller before it is cut; R1 (« Souffle mo… » at 130 %):
-        // a name of two words that no size fits on one line goes on two.
+        // a name of two words that no size fits on one line goes on two. One word (« Syntezator ») is never split over
+        // two lines: it stays on one, smaller still (Chinese, Japanese and Korean break between any two signs).
+        val oneWord = c.name.none { it.isWhitespace() || it.code >= 0x2E80 }
         com.pocketstudio.ui.FitText(
             // Lines a little closer than the style's: two of them fit over a short M (a header 56 dp high).
             c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 1.dp), style = MaterialTheme.typography.labelMedium.copy(lineHeight = 15.sp),
-            maxLines = 2, min = 8.sp, textAlign = TextAlign.Center,
+            maxLines = if (oneWord) 1 else 2, min = if (oneWord) 7.sp else 8.sp, textAlign = TextAlign.Center,
         )
         // Under the name: a finger that misses it does not land on a pad (which would launch a
         // scene, into the take). Lying down it is shorter, as wide as the column.

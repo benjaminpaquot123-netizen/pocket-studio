@@ -96,6 +96,42 @@ class Tour6Tuto4TechnoTest {
     }
 
     /**
+     * M3 (seats D a, B b): the numbers tell the truth: « Ajouter » makes each part 8 bars long (TutoChecks, song:phrases),
+     * the durations said are the step's, the stabs of the Pro's bar 1 are on steps 4 and 11 (one of them only on an offbeat).
+     */
+    @Test
+    fun numbersTellTheTruth() {
+        val bad = mutableListOf<String>()
+        for (fr in texts(step("song_order"))) {
+            if (!Regex("\\b8 mesures\\b").containsMatchIn(fr)) bad += "fr song_order: the 8 bars « Ajouter » gives not said: $fr"
+            for (l in langs) tr(l, fr).let { t -> if (!t.contains(Regex("(?<!\\d)8(?!\\d)"))) bad += "${l.code} song_order: no 8: $t" }
+        }
+        // The durations said are the step's own (« Break 12 »), in every language.
+        val phrases = step("song_phrases")
+        val numbers = Regex("\\d+").findAll(phrases.song).map { it.value }.sorted().toList()
+        for (fr in texts(phrases)) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
+            if (Regex("\\d+").findAll(t).map { it.value }.sorted().toList() != numbers) bad += "song_phrases: not the durations $numbers: $t"
+        }
+        val lengths = phrases.song.split(',').associate { it.substringBeforeLast(':') to it.substringAfterLast(':').toInt() }
+        val (b, m) = lengths.getValue("Break") to lengths.getValue("Montée")
+        if ("$b + $m = ${b + m}" !in step("map_phrases").why.orEmpty()) bad += "map_phrases: not « $b + $m = ${b + m} »"
+        // The stab's bar 1: as many chords as said, on the steps said; an offbeat is the 3rd sixteenth of a beat.
+        val chords = course.lines.getValue("pad").split(' ').map { it.substringBefore(':').toInt() }.filter { it < 16 }
+        if ("les ${chords.size} accords de la mesure 1" !in step("pad_do").text) bad += "pad_do: not ${chords.size} chords: ${step("pad_do").text}"
+        val pro = step("pad_do").textPro!!
+        if ("pas ${chords.joinToString(" et ") { "${it + 1}" }}" !in pro) bad += "pad_do Pro: not the steps $chords: $pro"
+        if (chords.any { it % 4 != 2 }) {
+            if ("contretemps" in pro) bad += "fr pad_do Pro: « contretemps » while steps ${chords.map { it + 1 }} are not all offbeats: $pro"
+            tr(Lang.DE, pro).let { if ("Offbeat" in it) bad += "de pad_do Pro: « Offbeats »: $it" }
+        }
+        // The riff: as many notes per bar as said.
+        val lead = course.lines.getValue("lead").split(' ').map { it.substringBefore(':').toInt() }
+        val said = "${lead.count { it < 16 }} à la mesure 1, ${lead.count { it in 16 until 32 }} à la mesure 2"
+        if (said !in step("lead_do").text) bad += "lead_do: not « $said »"
+        report("numbers that do not match the course", bad)
+    }
+
+    /**
      * M4 (seats D a, B b): no contradiction: the Break keeps the hats and the « Rim »; the Montée « Créer la partie » makes
      * still plays its last beat (its silence is the transitions' step); ch. 10 says which button makes each part.
      */

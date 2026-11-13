@@ -5572,11 +5572,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return if (line > first && at - line < 4) line else performanceEnd(at.toInt())
     }
 
-    /**
-     * The take ends on [end]: written into the song in one undo step. Lot 6, U11 (seat E a #38: « End » kept the set but
-     * the music went on): the playback stops with it ([stop]; false when the stop itself ends the take).
-     */
-    private fun finishPerformance(end: Int, stop: Boolean = true) {
+    /** The take ends on [end]: written into the song in one undo step. */
+    private fun finishPerformance(end: Int) {
         // A Drop's bar line passed before the watch saw it: what it cleared is written first.
         settleDropIfPassed()
         val t = performance ?: return
@@ -5601,7 +5598,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (written.parts == 0) {
             dropTakeJournal(t)
-            if (stop && _transport.value.playing) toggleTransport(songStep = aloneSongStep())
             _take.value = com.pocketstudio.app.live.TakeUi.Ready
             _notice.value = if (written.cut) tr("Le morceau est plein : choisis « Nouvelle version » pour enregistrer.") else tr("Prise trop courte : rien n'a été écrit.")
             return
@@ -5624,13 +5620,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             tr("Les effets joués après la mesure %d n'ont pas été écrits (les lancements, si).", effectsEndBar(project.value)).takeIf { written.late > 0 },
         )
         if (lost.isNotEmpty()) _notice.value = lost.joinToString(" ")
-        if (stop && _transport.value.playing) {
-            toggleTransport(songStep = aloneSongStep())
-        } else if (NativeEngine.isAvailable) {
+        if (NativeEngine.isAvailable) {
             // The song is written: from here the grid plays on its own again (its curves wait for the song).
             if (_transport.value.playing) NativeEngine.leaveSong()
+            pushAutomation()
         }
-        if (NativeEngine.isAvailable) pushAutomation()
         val first = if (performanceAppend) before.song.size else 0
         _take.value = com.pocketstudio.app.live.TakeUi.Done(written.parts, written.settings, first.coerceAtMost(project.value.song.lastIndex))
         AppLog.add("Live : morceau écrit (${written.parts} parties, ${written.settings} réglages)")
@@ -5810,7 +5804,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun endPerformanceOnStop() {
         when (_take.value) {
             is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
-            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()), stop = false)
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()))
             else -> Unit
         }
     }

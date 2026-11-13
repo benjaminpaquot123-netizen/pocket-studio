@@ -90,6 +90,12 @@ class PadLivePlayShowsTest {
         assertEquals(listOf("stop all"), done)
     }
 
+    /** Review of padlive2 (moyen): a « coup » ringing (the clap, pad 1) is no music playing: ▶ stays ▶ and starts the music. */
+    @Test
+    fun aHitRingingKeepsPlay() {
+        assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { if (it == 1) 2 else 0 }, playing = false, expect = "Jouer"))
+    }
+
     @Test
     fun nothingPlayingShowsPlay() {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { 0 }, playing = false, expect = "Jouer"))

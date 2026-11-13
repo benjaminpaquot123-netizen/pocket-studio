@@ -8176,6 +8176,7 @@ void testCommandBudgetPerCallback() {
 #include "contract_tests.inc"
 #include "audit4_tests.inc"
 #include "hardtechno_tests.inc"
+#include "speakerkick_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8189,6 +8190,7 @@ int main(int argc, char** argv) {
         PS_CONTRACT_TESTS
         PS_AUDIT4_TESTS
         PS_HARDTECHNO_TESTS
+        PS_SPEAKERKICK_TESTS
         {"spsc_queue", testSpscQueue},
         {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},

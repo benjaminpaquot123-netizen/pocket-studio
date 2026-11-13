@@ -236,6 +236,9 @@ enum class CommandType : uint8_t {
     // Lot E (« Master pro »), numbered 190 to 209.
     SetMasterPro = 190,    // a: MasterProParam, value: its setting
     InstallReference = 191,// sample: the reference song (nullptr: none), value: its integrated loudness (LUFS)
+    // Tour 5 (kick), numbered apart (210 on): value 1, the music goes to the phone's own speaker (the
+    // app reads Android's AudioManager): the kick's harmonics and click (Mixer::setSpeakerOutput); 0 off.
+    SetSpeakerOutput = 210,
 };
 // SetMasterPro's settings.
 enum MasterProParam : int {
@@ -255,6 +258,7 @@ static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt
 static_assert(static_cast<int>(CommandType::LaunchClipRow) == 150, "NativeEngine.kt numbers the lot B2 commands from 150");
 static_assert(static_cast<int>(CommandType::InstallRemixCell) == 170, "NativeEngine.kt numbers the lot D2 commands from 170");
 static_assert(static_cast<int>(CommandType::SetMasterPro) == 190, "NativeEngine.kt numbers the lot E commands from 190");
+static_assert(static_cast<int>(CommandType::SetSpeakerOutput) == 210, "NativeEngine.kt numbers the speaker command 210");
 
 // « Enregistrer ce que je joue » (lot B2): what the output plays, from a bar line of the live pads'
 // clock to another (stereo, interleaved, after the master). The app owns it (allocated off the audio
@@ -674,6 +678,10 @@ private:
     // « Enregistrer ce que je joue » (ResampleArm): the bar lines of the live pads' clock as heard
     // (output frames, the master's delay included), kept until the output reaches them.
     ResampleBuffer* resample_ = nullptr;
+    // Tour 5 (kick): the app says the output is the phone's speaker (SetSpeakerOutput). The mixer plays
+    // the speaker's kick only while no take of the output is armed (a take is kept, played anywhere).
+    bool speakerOutput_ = false;
+    void applySpeakerOutput() { mixer_.setSpeakerOutput(speakerOutput_ && !resample_, resample_ != nullptr); }
     bool resampleWait_ = false;
     int64_t resampleArmed_ = 0;  // output frame it was armed at: earlier bar lines do not start it
     int64_t resampleStop_ = -1;  // output frame its end was asked at (-1: not asked)

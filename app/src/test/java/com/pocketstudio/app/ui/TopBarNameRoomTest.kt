@@ -13,6 +13,7 @@ import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -96,5 +97,34 @@ class TopBarNameRoomTest {
         compose.waitForIdle()
         val narrow = compose.onNodeWithTag("bar").getBoundsInRoot().let { it.bottom - it.top }
         assertEquals("the bar at 316 dp is as high as one row ($oneRow), it is $narrow", oneRow, narrow)
+    }
+    /**
+     * Tour 5, moyens2 (phone runs, Mode simple at Taille 130 %): where the row keeps the folder alone (no name in the bar),
+     * « ✓ Sauvegardé » and « REC dans … » went with the name: nothing said the project was saved, nor where the ● records.
+     * Both stay in the bar, on the folder, seen and heard (TalkBack, the bench).
+     */
+    @Test
+    fun theFolderAloneStillSaysSavedAndWhereTheTakeGoes() {
+        var into by mutableStateOf<String?>(null)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(316.dp)) {  // a 411 dp phone at Taille 130 %
+                    TopBar(
+                        TopBarUi("Mon premier rythme", playing = false, canUndo = true, canRedo = false, saved = true, recordInto = into, mode = true, undo = false, redo = false),
+                        TopBarActions(more = {}),
+                    )
+                }
+            }
+        }
+        compose.waitForIdle()
+        assertTrue("the folder alone in the row (the case of the phone runs)",
+            compose.onAllNodesWithText("Mon premier rythme", useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
+        compose.onNodeWithTag("top_saved", useUnmergedTree = true).assertIsDisplayed()
+        compose.onNodeWithContentDescription("Sauvegardé", useUnmergedTree = true).assertIsDisplayed()
+        into = "B · Refrain"
+        compose.waitForIdle()
+        compose.onNodeWithTag("top_record_into", useUnmergedTree = true).assertIsDisplayed()
+        compose.onNodeWithContentDescription("REC dans B · Refrain", useUnmergedTree = true).assertIsDisplayed()
+        for (tag in listOf("top_projects", "top_record", "top_play", "top_more")) compose.onNodeWithTag(tag).assertIsDisplayed()
     }
 }

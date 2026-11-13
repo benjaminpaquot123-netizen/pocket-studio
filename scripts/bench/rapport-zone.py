@@ -47,9 +47,9 @@ replayed it on the lot's branch.
 
   rapport-zone.py --tuto <branch> <report path> base:<commit the branch left> tete:<the integration's head> tour:<tour-N>
 
-The lot touches the tutorial zone when a file it changes since its base (the last commit of the integration it
-holds: what the branch merged in from the integration is not the lot's) is application code or a resource of the
-tutorial:
+The lot touches the tutorial zone when a file it changes (changed since the base, and not the integration head's
+version: a file that differs only because the branch merged the integration in is not the lot's) is application code
+or a resource of the tutorial:
   <module>/src/main/…/tuto/…   <module>/src/main/…/tutos/…   <module>/src/main/…/i18n/<lang>/tuto*.json
 or is PianoRoll.kt (under src/main) while the zone report says « tuto » (the word, any case, outside fenced blocks).
 Not the zone: the tutorial's tests (src/test), the reference screenshots, the docs, the bench.
@@ -307,12 +307,14 @@ def git_out(*args):
 
 
 def tutorial_files(branch, text, base, head):
-    """The files of the tutorial zone the lot changes since its base."""
+    """The files of the tutorial zone the lot changes: changed since the base, and not the integration head's version."""
     code, out = git_out("diff", "--no-renames", "--name-only", base, branch)
     said = SAID.search(text or "") is not None
     files = []
     for f in out.splitlines() if code == 0 else []:
         if not (ZONE.search(f) or (said and ZONE_IF_SAID.search(f))):
+            continue
+        if head and subprocess.run(["git", "diff", "--quiet", head, branch, "--", f]).returncode == 0:
             continue
         files.append(f)
     return files

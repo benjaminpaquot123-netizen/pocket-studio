@@ -50,6 +50,8 @@ Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire
 - Fusionner : paquets de trois lots au plus ; la CI part à la fin de chaque paquet ; rien d'autre n'entre avant qu'elle soit verte, téléphone simulé compris ; le juge du chantier ne monte pas. On ne fusionne jamais autre chose que la tête poussée.
 - Dire : chaque point à Benjamin se fait après lecture de la CI et finit par « Ce qui n'est pas vert ». Une APK pour son téléphone ne part que d'un commit à la CI verte.
 
+- Points d'étape pour Benjamin : heures belges ; un seul compteur, en trois lignes (« Bugs corrigés dans l'appli », « En salle d'attente », « Bugs encore à corriger ») ; « corrigé » seulement quand un testeur l'a constaté ; devant une CI rouge, lire l'artefact (test, message, classes d'avant) avant d'en parler. Détail : `docs/audits/AUDIT-ULTRA.md` § 13.10.
+
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.
 

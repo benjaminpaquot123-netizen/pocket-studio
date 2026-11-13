@@ -12,6 +12,8 @@ Branche `eq/tour-6-padlive2`, partie de `ccr-80af1a1b-mn0wec` (bdb777a9). Zone :
 
 Preuve rejouée : siège `sieges/tour-6/padlive2/lotP/a` (fr, téléphone, 100 %, Simple, mission padlive), joué sur ee4c2a92 par le correcteur du lot, appli entière par le banc, selftest vert (176 verts, 0 rouge). Ce n'est pas le contrôle neuf : un testeur neuf rejoue la branche avant le portail.
 
+Relecture neuve (`tour-6-padlive2-relecture.md`) : 0 bloquant, 0 grave. Moyen pris : un « coup » qui sonne ne fait plus passer le ▶ en ■ (rouge / vert `PadLivePlayShowsTest#aHitRingingKeepsPlay`). Moyens laissés, hors des fichiers du lot : le bouton « Record » d'un contrôleur MIDI (`midi/AutoKnobsVm.kt`, appelle `togglePerformance` sans passer par `PadLiveController.record`) remplace encore le morceau ; morceau plein ou au-delà de la mesure des effets, le message de `RhythmViewModel` parle de « Nouvelle version », absent de Pad Live.
+
 Restent hors du lot : la carte « Pad Live » de l'accueil dit encore « Ça sonne tout de suite. » (`onboarding/`, textes) ; l'effet de bord de P3 (le choix « Nouvelle version / Ajouter à la suite » de la page Live suit la dernière prise de Pad Live).
 
 Juge du chantier : 109 écarts (tête : 110).
@@ -22,6 +24,7 @@ tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.pa
 
 - chemin: Pad Live bouton ▶ du haut avec des boucles seules | test: PadLivePlayShowsTest#loopsOnTheirOwnShowTheSquareAndOneTouchStopsThem
 - chemin: Pad Live bouton ▶ du haut avec un pad en attente | test: PadLivePlayShowsTest#aPadWaitingForItsLineAlreadyShowsTheSquare
+- chemin: Pad Live bouton ▶ du haut pendant qu'un coup sonne | test: PadLivePlayShowsTest#aHitRingingKeepsPlay
 - chemin: Pad Live plein écran « Fête » bouton ▶ | test: PadLivePlayShowsTest#thePartyScreenSaysTheSame
 - chemin: Pad Live ■ sur le banc (moteur, pads éteints) | test: BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
 - chemin: accueil carte « Pad Live » ouverture | test: PadLiveSilentOpenTest#openingFromTheCardPlaysNothing

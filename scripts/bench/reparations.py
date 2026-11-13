@@ -34,7 +34,7 @@ screen, no line, a defect « pas pris », a folder elsewhere, a seat that played
 
   reparations.py --lot <branch> base:<commit the branch left> tete:<the integration's head>
 
-The portal's rule (scripts/bench/fusion-equipes.sh, from batch 6; pre-vol.sh says it before), the branch against the
+The portal's rule (scripts/bench/fusion-equipes.sh, from batch 8; pre-vol.sh says it before), the branch against the
 base and the integration's head, line by line (KEY), never in the branch alone:
 - every line of the branch is read with the register's own columns (COLUMNS), never its branch's header; a line with
   more cells than its branch's header (a branch cut before the columns) or than COLUMNS is refused;

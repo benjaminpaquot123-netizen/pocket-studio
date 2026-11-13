@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -110,20 +112,36 @@ fun LanguageList(current: Lang, pick: (Lang) -> Unit, close: () -> Unit, phone: 
             // Tour 6, R18 (seats B c #29, F b screen 23): the phone's language stays on top, out of the scroll, one touch
             // away whatever language is in use (opened on the language in use, the list had scrolled it out of sight).
             // The list of all of them, under it, still opens on the language in use (15 do not fit at once).
-            val first = if (current == phone) 0 else (Lang.PICKER.indexOf(current) - 1).coerceAtLeast(0)
-            val list = rememberLazyListState(initialFirstVisibleItemIndex = first)
-            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (phone != null) {
-                    SectionLabel(tr("Langue du téléphone"))
-                    LanguageRow(phone, phone == current, "lang_suggested") { pick(phone) }
-                }
-                SectionLabel(tr("Toutes les langues"))
-                LazyColumn(
-                    Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 380.dp).testTag("lang_list"),
-                    state = list,
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items(Lang.PICKER, key = { it.code }) { lang -> LanguageRow(lang, lang == current, "lang_${lang.code}") { pick(lang) } }
+            BoxWithConstraints {
+                // Fresh review of lot 5: on a phone lying down (360 dp high), at a big size, the list under the phone's
+                // language had no room left (0 dp, no other language to pick). Without room for the phone's language and
+                // two rows of the list (some 260 dp, more with the phone's font), all of it scrolls together, opened on
+                // the phone's language (as before R18, in sight at the opening).
+                val roomy = phone == null || !constraints.hasBoundedHeight || maxHeight >= 260.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)
+                val first = if (current == phone || !roomy) 0 else (Lang.PICKER.indexOf(current) - 1).coerceAtLeast(0)
+                val list = rememberLazyListState(initialFirstVisibleItemIndex = first)
+                if (roomy || phone == null) {
+                    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (phone != null) {
+                            SectionLabel(tr("Langue du téléphone"))
+                            LanguageRow(phone, phone == current, "lang_suggested") { pick(phone) }
+                        }
+                        SectionLabel(tr("Toutes les langues"))
+                        LazyColumn(
+                            Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 380.dp).testTag("lang_list"),
+                            state = list,
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            items(Lang.PICKER, key = { it.code }) { lang -> LanguageRow(lang, lang == current, "lang_${lang.code}") { pick(lang) } }
+                        }
+                    }
+                } else {
+                    LazyColumn(Modifier.fillMaxWidth().testTag("lang_list"), state = list, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        item(key = "h_phone") { SectionLabel(tr("Langue du téléphone")) }
+                        item(key = "phone") { LanguageRow(phone, phone == current, "lang_suggested") { pick(phone) } }
+                        item(key = "h_all") { SectionLabel(tr("Toutes les langues")) }
+                        items(Lang.PICKER, key = { it.code }) { lang -> LanguageRow(lang, lang == current, "lang_${lang.code}") { pick(lang) } }
+                    }
                 }
             }
         },

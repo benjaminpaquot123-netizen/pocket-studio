@@ -208,7 +208,7 @@
         },
         {
           "id": "bass_cutoff",
-          "text": "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.",
+          "text": "À toi : au-dessus des notes, touche « Régler le son de la piste ↓ » : la page descend jusqu'au son de la piste. Monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.",
           "why": "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.",
           "levels": "p",
           "check": "changed:synth:bass:CUTOFF",
@@ -271,7 +271,7 @@
         },
         {
           "id": "lead_knobs",
-          "text": "À toi : dans « Régler le son de la piste » de la Mélodie, monte la « Coupure » et la « Résonance » d'au moins 15 chacune : le riff siffle et mord.",
+          "text": "À toi : sur la piste Mélodie, touche « Régler le son de la piste ↓ » au-dessus des notes, puis monte la « Coupure » et la « Résonance » d'au moins 15 chacune : le riff siffle et mord.",
           "levels": "p",
           "check": "changed:synth:lead:CUTOFF+RESONANCE",
           "spot": "sounds.track",

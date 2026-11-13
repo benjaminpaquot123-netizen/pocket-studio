@@ -2041,6 +2041,14 @@ fun AppRoot() {
     // The hits to take away left on another pad only (« Caisse » done, « Charley » next): that pad shown, said.
     val tutoErase = com.pocketstudio.app.tuto.TutoHints.erase
     val tutoPad by remember(rhythmVm) { rhythmVm.transport.map { it.selectedPad }.distinctUntilChanged() }.collectAsStateWithLifecycle(rhythmVm.transport.value.selectedPad)
+    // Tour 6, seat D a (chapter 12, screen 177): « → <pad> » says the pad the grid turned to; another pad put on the grid
+    // within that moment (the next step's cymbal) is the one named.
+    LaunchedEffect(tutoPad) {
+        val said = com.pocketstudio.app.tuto.TutoHints.banner ?: return@LaunchedEffect
+        if (!said.startsWith("→ ")) return@LaunchedEffect
+        val shown = "→ " + com.pocketstudio.app.rhythm.padName(rhythmVm.project.value, tutoPad)
+        if (said != shown) com.pocketstudio.app.tuto.TutoHints.banner = shown
+    }
     LaunchedEffect(tutoErase, tutoPad) {
         val left = tutoErase?.filterValues { it.isNotEmpty() }?.keys ?: return@LaunchedEffect
         if (left.isEmpty() || tutoPad in left) return@LaunchedEffect

@@ -1,0 +1,11 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+synth/tab_simple_Clavier
+launch
+padlive
+dialogue:projects
+dialogue:padlive_take_sheet
+live_grid
+live_pads_full
+session/tab_simple_Morceau

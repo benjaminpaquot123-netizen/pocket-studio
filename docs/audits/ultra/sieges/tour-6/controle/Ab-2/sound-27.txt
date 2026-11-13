@@ -1,0 +1,2 @@
+Son : le pad live 1 joue en boucle.
+Rien ne change à l'écran depuis 3 gestes.

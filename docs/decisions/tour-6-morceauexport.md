@@ -1,0 +1,22 @@
+- 2026-11-12 : R4, l'avertissement est la boîte au texte déjà traduit de la feuille de partage (« la fin sera coupée »), y compris quand un projet vide est allongé. Raison : aucun texte neuf. Retour arrière : le bloc après `_tempoSet` dans `useSong`.
+- 2026-11-12 : U28, la partie affichée passe en premier seulement si elle a du contenu. Raison : pas de première partie muette. Retour arrière : la valeur `first` de `newSongPart`.
+- 2026-11-13 : U11 annulé (« Fin » ne coupe plus la lecture) : il cassait « Écouter » et « Enregistrer ce que je joue » juste après une prise (self-test du banc, 2 rouges). Raison : un défaut moyen ne vaut pas deux régressions. Retour arrière : rejouer 3a3691f8 et 413e088a une fois la cause trouvée.
+- 2026-11-12 : U20, « Écouter » garde la ligne de la prise ; ✕ la retire. Retour arrière : `_take.value = Ready` dans `listenPerformance`.
+- 2026-11-12 : U3, `madeHash` ignore la partie affichée seulement s'il y a un morceau. Raison : sans morceau, la boucle partagée est la partie affichée. Retour arrière : le `switchScene(0)` de `madeHash`.
+- 2026-11-12 : U5, le Mix suit le choix de format du Simple une fois enregistré ; sinon WAV. Raison : ne pas changer le défaut des exports. Retour arrière : `sharePrefs` et son écouteur.
+- 2026-11-12 : U14, le message nomme les accords posés, dans l'ordre de la grille. Retour arrière : le filtre `placed` d'`applyChords`.
+- 2026-11-12 : N25, pendant la lecture du morceau le changement de partie passe par `selectScene` (arrive à la mesure suivante, l'en-tête le dit). Retour arrière : le bloc après `afterGuideEdit` dans `tutoEdit`.
+- 2026-11-12 : T2 (kit), seuls les pads Rumble/808 gardent ce nom. Retour arrière : `kept` dans `loadTutoKit`.
+- 2026-11-12 : U2, en Simple le niveau dit est la cible de l'export (`LoudnessTargets.of(project)`), même avant écoute ; Pro inchangé. Retour arrière : `exportLufs` de la branche Simple.
+- 2026-11-12 : U4/U15/N7, un fondu au bord de la partie qui défile (bande `scroll_hint_fade`) plutôt que la puce « ↓ n autres ». Raison : peu de place. Retour arrière : la Box et le fondu autour de la colonne.
+- 2026-11-12 : U16, l'étiquette dit « Nom » quand le partage ne renomme pas le projet (texte déjà traduit). Retour arrière : « Nom du morceau envoyé ».
+- 2026-11-12 : R23, le Mix ne descend à son export que si un fichier est fait pendant qu'il est ouvert. Retour arrière : la condition de défilement de `ExportCard`.
+- 2026-11-12 : U23, « Chargement de la liste… » (déjà traduit) et un signe d'attente ; ProjectsViewModel non touché. Retour arrière : le bloc d'attente de `ProjectsScreen`.
+- 2026-11-12 : U10, médaillons Défis et Pad Live ronds, 48 dp. Retour arrière : leurs formes dans `LaunchChoice`.
+- 2026-11-12 : N18, « ♪ Son » (texte déjà traduit) ; TalkBack garde « Changer le son de X ». Retour arrière : le libellé du bouton.
+- 2026-11-13 : R19 (pistes), une flèche ← / → (ArrowBack / ArrowForward) sans toucher sur le fondu, pas un chevron : le banc ne décrit pas le chevron gauche (self-test rouge). Raison : un bouton couvrirait la puce coupée. Retour arrière : `RowMoreSign`.
+- 2026-11-12 : R10, la prise gardée garde son Partager, celui du menu « Plus » laisse place vide. Retour arrière : la ligne `if (ui.takeDone) Spacer` de `MoreRow`.
+- 2026-11-12 : U21, tous les messages du Pad Live passent sous les pads (debout et couché). Coût : un vide sous les pads sur un grand téléphone. Retour arrière : `notes()` au-dessus de `PadsGrid`.
+- 2026-11-12 : U18, « Moins » a une flèche de pli (ExpandLess). Retour arrière : un `if` de `PadLiveControls`.
+- 2026-11-12 : R8 laissé : artefact du banc, prouvé par un test sans banc. Retour arrière : —.
+- 2026-11-12 : U1, U9, « Boum boum » laissés : leurs corrections sont dans PlayStrip.kt / AppRoot.kt / Challenge.kt, hors du lot. Retour arrière : —.

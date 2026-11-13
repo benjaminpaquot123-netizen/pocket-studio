@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -85,6 +86,8 @@ import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.SCROLL_FADE
+import com.pocketstudio.ui.fadingVerticalEdges
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
 
@@ -310,7 +313,12 @@ data class ShareSheetUi(
     val target: com.pocketstudio.app.mixer.TargetPick? = null,
     /** The loop's length to pick (no song yet: a part goes out looped); null: the whole song goes out. */
     val loop: LoopPick? = null,
+    /** Lot 6, U2: the loudness the file aims at (the project's target, LUFS); null: no target. */
+    val exportLufs: Double? = null,
 )
+
+/** Lot 6, U2: what the file of [p] aims at (its one loudness target), in LUFS; null without a target. */
+fun shareExportLufs(p: Project): Double? = LoudnessTargets.of(p)?.toDouble()
 
 class ShareSheetActions(
     val setName: (String) -> Unit = {},
@@ -381,8 +389,13 @@ fun ShareSheetContent(
         Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+    // Lot 6, U4 / U15 / N7 (seats A c, F a, H a, D a): the line cut by the bottom edge, right above the pinned M4A / WAV
+    // row, looked covered by it. Rule 17 (« Tout défilement se voit »): the cut edge fades while more waits below (and
+    // the top edge once scrolled), its band tagged for the screen scans (LayoutScan).
+    val scroll = rememberScrollState()
+    androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false)) {
     Column(
-        Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
+        Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -394,10 +407,12 @@ fun ShareSheetContent(
             }
         }
         // « Partager » renames the project too (a default « Mon projet 3 » becomes the name typed): the label says so.
+        // Lot 6, U16 (seat F a #66): otherwise the label is « Nom » alone (it read « Nom du morceau envoyé », « already
+        // sent? », after a share closed without sending); the line under it says the project keeps its name.
         // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
         val renames = ui.projectName?.let { shareRenamesProject(it, ui.name) || ShareSong.isDefaultName(it) } ?: true
         com.pocketstudio.app.ui.SelectAllTextField(
-            value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom du morceau envoyé")) },
+            value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom")) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )
@@ -420,7 +435,9 @@ fun ShareSheetContent(
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.padding(start = 10.dp).weight(1f, fill = false),
                     )
                 }
-                ui.lufs?.let { lufs ->
+                // Lot 6, U2 (seat A c): the Mode simple says the level the file will have (its target), not the one
+                // heard while it played (« streaming (−14) » said of a file aiming at −8,5).
+                (if (simple) ui.exportLufs ?: ui.lufs else ui.lufs)?.let { lufs ->
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -506,6 +523,12 @@ fun ShareSheetContent(
                     about = listOf("share_project"),
                 )
             }
+        }
+    }
+        if (scroll.canScrollForward) {
+            androidx.compose.foundation.layout.Box(
+                Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(SCROLL_FADE).testTag("scroll_hint_fade"),
+            )
         }
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
@@ -670,7 +693,7 @@ fun ShareSheetRoute(
         ShareSheetUi(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
-            truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
+            truePeakDb = levels.truePeakDb, lossDb = levels.lossDb, exportLufs = shareExportLufs(project),
             target = if (simple) null else com.pocketstudio.app.mixer.TargetPick.of(project),
             loop = if (project.song.isEmpty()) LoopPick.of(export.bars, export.sceneBars, export.audioBars) else null,
         )

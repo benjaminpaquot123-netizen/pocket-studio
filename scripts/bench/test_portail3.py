@@ -443,12 +443,233 @@ class Batch(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join(HERE, "portail-paquets.tsv")), "scripts/bench/portail-paquets.tsv is missing")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# 2. fiche.sh
+# ---------------------------------------------------------------------------------------------------------------------
+
+AIDE = os.path.join(ROOT, "docs", "AIDE-FUSIONS-TESTS.md")
+SEAT_KEYS = ["NOM=Lancelot", "TOUR=tour-7", "LOT=B", "SIEGE=c", "SHA=0123abcd", "BRANCHE=ccr-jouet", "DOSSIER_DU_LOT=/tmp/lotB",
+             "BRIEF=briefs/Bc.txt", "CONSIGNES_TESTEUR_MD_DU_TOUR=tour-7/consignes-testeur.md", "GESTES=300", "MINUTES=120",
+             "LISTE=t6-12, t6-14"]
+FIX_KEYS = ["NOM=Perceval", "TOUR=tour-7", "ZONE=pads", "IDS=t6-12", "LOTS_CORRECTION_MD_SECTION_DU_LOT=lots-correction.md §2",
+            "VERDICTS_TSV=verdicts.tsv", "LA_LECTURE=lecture-recurrents.md", "LISTE=PadGrid.kt"]
+TOY_GABARIT = """# Fiches jouet
+
+## 1. Un siège
+
+> Chef → <NOM>. Une phrase que le script ne peut pas connaître : <valeur neuve>.
+> Réponds « <NOM> fini : <branche> <sha> ».
+
+Un paragraphe hors fiche, jamais imprimé.
+
+## 2. Un lot
+
+> Lot <zone> pour <NOM>.
+
+## 3. Un lot du banc
+
+> - Ligne en plus : `from_paquet <numéro du paquet suivant>`.
+"""
+
+
+def card(*args, env=None):
+    return script("fiche.sh", *args, env=env)
+
+
+def variables(n, env=None):
+    """{key: (placeholder, what is said of it)} from fiche.sh --variables <n>."""
+    code, out, err = card("--variables", str(n), env=env)
+    rows = [l.split("\t") for l in out.splitlines() if "\t" in l]
+    return code, {r[0]: (r[1], r[2] if len(r) > 2 else "") for r in rows}, err
+
+
+class Cards(unittest.TestCase):
+    """§13.4: an instruction is copied from the template, only its variables change; fiche.sh prints it filled."""
+
+    def test_a_seat_card_is_printed_with_its_variables_filled(self):
+        code, out, err = card("1", "CHOIX=pilote", *SEAT_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertIn("Chef d'orchestre → Lancelot, rôle TESTEUR. Siège tour-7 Bc (pilote).", out)
+        self.assertIn("`git rev-parse HEAD` rend bien `0123abcd`", out)
+        self.assertIn("`git fetch origin ccr-jouet`", out)
+        self.assertIn("« code testé : 0123abcd »", out, "the commit to judge is written in the report's heading line too")
+        self.assertIn("Budget : 300 gestes, délai 120 min", out)
+        self.assertFalse([l for l in out.splitlines() if l.startswith(">")], "printed ready to paste, without the quote marks")
+
+    def test_the_recipient_s_own_branch_and_commit_stay_his_to_fill(self):
+        code, out, err = card("1", "CHOIX=vague", *SEAT_KEYS)
+        self.assertEqual(code, 0, err)
+        reply = [l for l in out.splitlines() if "fini siège" in l]
+        self.assertEqual(len(reply), 1, out)
+        self.assertIn("« Lancelot fini siège Bc : <branche> <sha>, code testé 0123abcd,", reply[0])
+
+    def test_a_placeholder_left_unfilled_fails_and_is_listed(self):
+        keys = [k for k in SEAT_KEYS if not k.startswith(("SHA=", "GESTES="))]
+        code, out, err = card("1", "CHOIX=vague", *keys)
+        self.assertNotEqual(code, 0, "a card with a variable left empty must fail")
+        self.assertEqual(out, "", "nothing to paste when a variable is missing")
+        self.assertIn("SHA", err)
+        self.assertIn("<sha>", err)
+        self.assertIn("GESTES", err)
+        self.assertNotIn("MINUTES", err, "only what is missing is listed")
+
+    def test_an_empty_value_is_a_missing_one(self):
+        code, _, err = card("1", "CHOIX=vague", *[k if not k.startswith("SHA=") else "SHA=" for k in SEAT_KEYS])
+        self.assertNotEqual(code, 0)
+        self.assertIn("SHA", err)
+
+    def test_brouillon_prints_with_the_holes(self):
+        code, out, err = card("--brouillon", "1", "NOM=Lancelot")
+        self.assertEqual(code, 0, err)
+        self.assertIn("→ Lancelot, rôle TESTEUR", out)
+        self.assertIn("<sha>", out)
+        self.assertIn("<vague | pilote | contrôle du lot <zone>>", out)
+
+    def test_a_choice_needs_its_key_and_one_of_its_values(self):
+        code, out, err = card("1", *SEAT_KEYS)
+        self.assertNotEqual(code, 0, "the choice « vague | pilote | contrôle » left open must fail")
+        self.assertIn("CHOIX", err)
+        code, out, err = card("1", "CHOIX=essai", *SEAT_KEYS)
+        self.assertNotEqual(code, 0, "a value that is none of the alternatives must fail")
+        self.assertIn("pilote", err)
+        self.assertEqual(out, "")
+
+    def test_an_alternative_with_its_own_variable_asks_for_it(self):
+        code, out, err = card("1", "CHOIX=contrôle", *SEAT_KEYS)
+        self.assertNotEqual(code, 0, "« contrôle du lot <zone> » needs ZONE")
+        self.assertIn("ZONE", err)
+        code, out, err = card("1", "CHOIX=controle", "ZONE=pads", *SEAT_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertIn("Siège tour-7 Bc (contrôle du lot pads).", out)
+        code, out, err = card("1", "CHOIX=vague", *SEAT_KEYS)
+        self.assertEqual(code, 0, "« vague » needs no ZONE: " + err)
+        self.assertIn("Siège tour-7 Bc (vague).", out)
+
+    def test_variables_lists_the_keys_of_a_card(self):
+        code, keys, err = variables(1)
+        self.assertEqual(code, 0, err)
+        for k in [k.split("=")[0] for k in SEAT_KEYS] + ["CHOIX", "ZONE"]:
+            self.assertIn(k, keys, f"--variables 1 must list {k}")
+        self.assertEqual(keys["SIEGE"][0], "<siège>")
+        self.assertIn("vague", keys["CHOIX"][0])
+
+    def test_an_unknown_key_is_refused(self):
+        code, out, err = card("1", "CHOIX=vague", "SHAA=1", *SEAT_KEYS)
+        self.assertNotEqual(code, 0, "a key that is no variable of the card is a typo")
+        self.assertIn("SHAA", err)
+        self.assertEqual(out, "")
+
+    def test_an_unknown_card_is_refused(self):
+        code, out, _ = card("8")
+        self.assertNotEqual(code, 0)
+        self.assertEqual(out, "")
+        self.assertNotEqual(card()[0], 0)
+
+    def test_a_correction_card_keeps_the_templates_the_team_fills_itself(self):
+        code, out, err = card("2", *FIX_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertIn("rôle CORRECTEUR. Lot tour-7 pads : défauts t6-12.", out)
+        self.assertIn("`docs/decisions/tour-7-pads.md`", out)
+        self.assertIn("`scripts/bench/pre-vol.sh --avant-relecture tour-7 pads`", out)
+        self.assertIn("« rouge: <sujet> »", out)
+        self.assertIn("« Demande : <fichier> : <pourquoi> »", out)
+        self.assertIn("`scripts/bench/rejeu-nouveau.sh <dossier du siège> <n> <id> 'attendu=…'`", out)
+        self.assertIn("« Perceval fini lot pads : <branche> <sha>,", out)
+
+    def test_the_bench_card_is_the_correction_card_plus_its_own_lines(self):
+        _, fix, _ = card("2", *FIX_KEYS)
+        code, out, err = card("3", "NUMERO_DU_PAQUET_SUIVANT=7", *FIX_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertTrue(fix.strip() and out.startswith(fix.rstrip("\n")), "fiche 3 starts with fiche 2, word for word")
+        extra = out[len(fix.rstrip("\n")):]
+        self.assertIn("`from_paquet 7`", extra)
+        self.assertIn("jamais `app/src/main`", extra)
+
+    def test_the_next_batch_number_is_read_from_the_portal_when_not_given(self):
+        current = int(read(os.path.join(HERE, "portail-paquet.txt")).split("paquet:")[1].split()[0])
+        code, out, err = card("3", *FIX_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertIn(f"`from_paquet {current + 1}`", out)
+
+    def test_the_reviewer_s_card_is_the_one_of_the_help_plus_its_own_lines(self):
+        code, out, err = card("6", "TOUR_N=tour-7", "ZONE=pads")
+        self.assertEqual(code, 0, err)
+        help_text = read(AIDE).split("## La fiche du relecteur\n", 1)[1].split("\n## ", 1)[0].strip().splitlines()
+        self.assertGreaterEqual(len(help_text), 5)
+        for line in help_text:
+            self.assertIn(line.replace("<tour-N>", "tour-7").replace("<zone>", "pads"), out)
+        self.assertIn("`docs/audits/ultra/tour-7-pads-relecture.md`", out)
+        self.assertIn("« Relu : <sha du commit que tu as lu> »", out, "what the reviewer fills stays a template")
+        self.assertIn("Est GRAVE, quel que soit ton premier mot", out)
+        self.assertLess(out.index("Dernière ligne, seule"), out.index("Est GRAVE"), "the help's card first, then the extra lines")
+
+    def test_the_refusal_card_takes_the_portal_s_line_though_it_sits_in_quotes(self):
+        keys = ["NOM=Karadoc", "ZONE=pads", "CODE=4", "CE_QUE_LA_LIGNE_DEMANDE=ajoute le rejeu"]
+        code, out, err = card("7", *keys)
+        self.assertNotEqual(code, 0, "the portal's exact line is the chief's to give")
+        self.assertIn("LIGNE", err)
+        code, out, err = card("7", "LIGNE=not merged: no replay", *keys)
+        self.assertEqual(code, 0, err)
+        self.assertIn("le portail refuse pads (sortie 4). Sa ligne exacte : « not merged: no replay ».", out)
+        self.assertIn("« Karadoc fini pads v<n> : <sha>, cause : … »", out)
+
+    def test_reading_and_sorting_are_two_cards_of_number_4(self):
+        code, out, err = card("--brouillon", "4")
+        self.assertEqual(code, 0, err)
+        self.assertIn("rôle LECTEUR", out)
+        self.assertIn("rôle TRIEUR", out)
+        code, out, err = card("--brouillon", "4b")
+        self.assertEqual(code, 0, err)
+        self.assertNotIn("rôle LECTEUR", out)
+        self.assertIn("rôle TRIEUR", out)
+
+    def test_every_card_of_the_real_template_can_be_listed_and_filled(self):
+        for n in range(8):
+            with self.subTest(fiche=n):
+                code, keys, err = variables(n)
+                self.assertEqual(code, 0, err)
+                given = []
+                for k, (placeholder, said) in keys.items():
+                    if k == "CHOIX":
+                        given.append("CHOIX=" + placeholder.strip("<>").split(" | ")[0])
+                    elif said.startswith("à remplir"):
+                        given.append(f"{k}=x{k.lower()}x")
+                code, out, err = card(str(n), *given)
+                self.assertEqual(code, 0, f"fiche {n} with every « à remplir » key given: {err}")
+                self.assertGreater(len(out.splitlines()), 0)
+                for k, (placeholder, said) in keys.items():
+                    if said.startswith("à remplir") and k != "CHOIX":
+                        self.assertIn(f"x{k.lower()}x", out, f"fiche {n}: {k} given but not printed")
+                if n == 0:
+                    self.assertIn("Tu fais partie de l'équipe", out)
+
+    def test_the_text_is_read_from_the_template_at_run_time(self):
+        toy = os.path.join(tempfile.mkdtemp(prefix="portail3-fiche-"), "gabarit.md")
+        write(toy, TOY_GABARIT)
+        try:
+            code, out, err = card("1", "NOM=Bohort", "VALEUR_NEUVE=42", env={"PS_FICHE_GABARIT": toy})
+            self.assertEqual(code, 0, err)
+            self.assertEqual(out, "Chef → Bohort. Une phrase que le script ne peut pas connaître : 42.\n"
+                                  "Réponds « Bohort fini : <branche> <sha> ».\n")
+            code, out, err = card("3", "NOM=Bohort", "ZONE=z", "NUMERO_DU_PAQUET_SUIVANT=9", env={"PS_FICHE_GABARIT": toy})
+            self.assertEqual(out, "Lot z pour Bohort.\n- Ligne en plus : `from_paquet 9`.\n", err)
+            code, out, err = card("5", env={"PS_FICHE_GABARIT": toy})
+            self.assertNotEqual(code, 0, "a card the template does not hold is refused")
+        finally:
+            shutil.rmtree(os.path.dirname(toy), ignore_errors=True)
+        path = os.path.join(HERE, "fiche.sh")
+        source = read(path) if os.path.isfile(path) else ""
+        self.assertTrue(source, "scripts/bench/fiche.sh is missing")
+        for sentence in ("Tu ne suis pas la tête", "Aucune question à Benjamin", "Tu fais partie de l'équipe", "rôle TESTEUR"):
+            self.assertNotIn(sentence, source, "the cards' text lives in the template, never in the script")
+
+
 class Hooks(unittest.TestCase):
     """This file is run where the bench's other script tests are: the self-test and pre-vol.sh --ci."""
 
     def test_the_preflight_and_the_selftest_run_this_file(self):
-        self.assertIn("scripts/bench/test_portail3.py", read(os.path.join(HERE, "pre-vol.sh")), "pre-vol --ci must run this test")
-        self.assertIn("scripts/bench/test_portail3.py", read(os.path.join(HERE, "selftest.sh")), "the self-test must run this test")
+        self.assertTrue("scripts/bench/test_portail3.py" in read(os.path.join(HERE, "pre-vol.sh")), "pre-vol --ci must run this test")
+        self.assertTrue("scripts/bench/test_portail3.py" in read(os.path.join(HERE, "selftest.sh")), "the self-test must run this test")
 
 
 if __name__ == "__main__":

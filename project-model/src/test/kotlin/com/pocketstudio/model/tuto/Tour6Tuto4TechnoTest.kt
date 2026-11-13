@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.switchScene
+import com.pocketstudio.model.track
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import org.junit.Assert.assertTrue
@@ -332,5 +333,44 @@ class Tour6Tuto4TechnoTest {
         }
         I18n.area(Lang.JA, "finish").values.filter { "共有" in it }.forEach { bad += "ja finish: 共有 where the button says シェア: $it" }
         report("share sheet sentences that call the button by another name", bad)
+    }
+    /**
+     * Round trip 1 after Bb-5, M2 (de, Pro: « Groove » on screen 22 before ch. 8, « Offbeats » explained only under
+     * « Warum », « Solo » never explained): in every language and at both levels, a word of the trade first shows where it
+     * is explained (the chapters' titles and « why » counted, in the order they show).
+     */
+    @Test
+    fun wordsFirstShowWhereTheyAreExplained() {
+        // « solo » is also « alone » in Spanish, Italian and Portuguese: there, the share sheet's words.
+        val alone = setOf(Lang.ES, Lang.IT, Lang.PT_BR)
+        fun form(word: String, lang: Lang): Regex = when (word) {
+            "groove" -> Regex("(?i)groove|グルーヴ|그루브|律动|ग्रूव|غروف")
+            "offbeat" -> Regex("(?i)contretemps|offbeat|contratiempo|controtemp|contratempo|levare|ऑफ़बीट|裏拍|엇박|업비트|反拍|معاكس|أنصاف النبضات|słab\\w* częś|ara vuruş")
+            else -> if (lang in alone) Regex("(?i)solo (olvidad|dimenticat|esquecid)") else Regex("(?i)solo|ソロ|솔로|独奏|منفرد")
+        }
+        // Where each word is explained: a chapter's title (« title:<chapter> ») or a step's own text.
+        val explained = mapOf("groove" to "title:groove", "offbeat" to "open_hat_do", "solo" to "share")
+        val bad = ArrayList<String>()
+        for (level in TutoLevel.entries) {
+            val shown = ArrayList<Pair<String, String>>()
+            for (c in course.chaptersFor(level)) {
+                shown += "title:${c.id}" to c.title
+                shown += "why:${c.id}" to c.why
+                for (s in c.steps) {
+                    shown += s.id to s.textFor(level)
+                    s.why?.let { shown += "why:${s.id}" to it }
+                }
+            }
+            for (lang in Lang.entries) {
+                val texts = shown.map { (id, fr) -> id to if (lang == Lang.FR) fr else tr(lang, fr) }
+                for ((word, at) in explained) {
+                    val first = texts.indexOfFirst { form(word, lang).containsMatchIn(it.second) }
+                    val there = texts.indexOfFirst { it.first == at }
+                    if (first in 0 until there) bad += "${lang.code} $level: « $word » first in ${texts[first].first} before its explanation ($at): ${texts[first].second}"
+                    if (there >= 0 && !form(word, lang).containsMatchIn(texts[there].second)) bad += "${lang.code} $level: $at does not say « $word »: ${texts[there].second}"
+                }
+            }
+        }
+        report("words of the trade shown before they are explained", bad)
     }
 }

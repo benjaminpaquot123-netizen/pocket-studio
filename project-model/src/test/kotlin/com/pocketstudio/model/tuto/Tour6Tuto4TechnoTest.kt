@@ -423,9 +423,15 @@ class Tour6Tuto4TechnoTest {
         for (s in steps.filter { it.check.startsWith("notes:") && it.textPro != null }) {
             val track = p.track(TutoChecks.trackFor(p, s.check.removePrefix("notes:"))!!)
             val sound = Regex("son « ([^»]+) »").find(s.textPro!!)?.groupValues?.get(1) ?: continue
-            if (sound != track.soundLabel && sound != track.name) bad += "fr ${s.id}: son « $sound » while the track shows « ${track.name} · ${track.soundLabel} »"
-            val shown = if (track.soundLabel == "Plaits") "Plaits" else null
-            for (l in langs) tr(l, s.textPro!!).let { t -> (shown ?: tr(l, track.soundLabel)).let { w -> if (!quotes(t, w)) bad += "${l.code} ${s.id}: not the track's « $w »: $t" } }
+            // Round trip 2 after Bb-6, M4 (screen 119: « Akkorde · Pluck » while the step said „Synth“): the sound as the
+            // track's bar shows it (GuideSheets.soundName: the library's name, « Pluck », « Lead filtré »), in every language.
+            for (l in Lang.entries) {
+                I18n.lang = l
+                val w = com.pocketstudio.model.guide.GuideSheets.soundName(track)
+                val t = if (l == Lang.FR) s.textPro!! else tr(l, s.textPro!!)
+                if (!quotes(t, w)) bad += "${l.code} ${s.id}: son « $sound », not the track's « $w »: $t"
+            }
+            I18n.lang = Lang.FR
         }
         val drop = p.switchScene(p.allScenes.indexOfFirst { it.label == "Drop" })
         val bars = drop.drums.steps / drop.stepsPerBar

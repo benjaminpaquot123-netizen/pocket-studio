@@ -62,6 +62,15 @@ class CutModel(
         cuts.stems.forEach { sc -> sc.chosen.forEach { i -> sc.pieces.getOrNull(i)?.let { add(Triple(sc.stem, it.start, it.end)) } } }
     }
 
+    /**
+     * Review of remix2 (grave, third pass): what the project keeps. A choice made by placing the play head (A7) is a
+     * moment's choice: it lights the send buttons now but is not saved, so reopening the cut screen never turns it into
+     * a tick « Enlever » would take.
+     */
+    private fun toSave(c: SongCuts): SongCuts = c.copy(stems = c.stems.map { sc ->
+        sc.copy(chosen = sc.chosen.filter { i -> sc.pieces.getOrNull(i)?.let { Triple(sc.stem, it.start, it.end) in ticked } == true })
+    })
+
     private fun tickedOnPurpose(i: Int): Boolean = pieces.getOrNull(i)?.let { Triple(stem, it.start, it.end) in ticked } == true
 
     /** The orange play head: where « Couper ici », « Début » and « Fin » act; a touch on the curve moves it. */
@@ -122,7 +131,7 @@ class CutModel(
         if (after == before && cuts.of(stem) != null) return false
         pushUndo()
         cuts = cuts.with(after)
-        if (save) onChange(cuts)
+        if (save) onChange(toSave(cuts))
         return true
     }
 
@@ -187,7 +196,7 @@ class CutModel(
         val auto = if (found.isEmpty()) s.auto else mode.name
         val span = s.span ?: Cuts.firstSpan(found, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid)
         cuts = cuts.with(s.copy(pieces = pieces, chosen = keepChoice(s, pieces), auto = auto, span = span))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /** « Un bout » placed when a stem cut before has none (a project of before): on its first piece, else two bars from [shownFrom]. */
@@ -197,7 +206,7 @@ class CutModel(
         val first = s.pieces.takeIf { it != Cuts.whole(frames) }.orEmpty().map { it.start until it.end }
         val placed = Cuts.firstSpan(first, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid) ?: return
         cuts = cuts.with(s.copy(span = placed))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /** « Un bout » first placed: on the magnet's beats, so that its length reads in beats or bars. */
@@ -252,7 +261,7 @@ class CutModel(
     private fun setChosen(now: List<Int>) {
         // Ticking is no cut to undo: kept without an undo step.
         cuts = cuts.with(stemCuts().copy(chosen = now))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /**
@@ -284,7 +293,7 @@ class CutModel(
         ticked.removeAll { it.first == stem }
         if (chosen.size != all.size) pieces.forEach { ticked.add(Triple(stem, it.start, it.end)) }
         cuts = cuts.with(stemCuts().copy(chosen = if (chosen.size == all.size) emptyList() else all))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     // --- A cut moved by a finger: one undo step for the whole move, saved when it lifts ---------
@@ -385,7 +394,7 @@ class CutModel(
         spanFrom = null
         movingFrom = null
         movedTo = null
-        if (moved) onChange(cuts)
+        if (moved) onChange(toSave(cuts))
         moved = false
         return edge
     }
@@ -394,7 +403,7 @@ class CutModel(
         val before = history.removeLastOrNull() ?: return
         undoCount = history.size
         cuts = before
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     // --- What the actions take ---------------------------------------------------------------

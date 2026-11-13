@@ -127,6 +127,12 @@ android {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
                 if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4
+                // Tour 6, lot « stable »: -Pshuffle=<seed> runs the whole suite in one JVM in an order drawn from the seed
+                // (ShuffledOrderTest, a suite of every test class): each class meets other neighbours than the alphabetical ones.
+                providers.gradleProperty("shuffle").orNull?.let { seed ->
+                    it.systemProperty("ps.shuffle", seed)
+                    it.filter.includeTestsMatching("com.pocketstudio.app.ShuffledOrderTest")
+                }
                 // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
                 // passes of one) never read or wipe each other's results in the shared build/test-results.
                 providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }

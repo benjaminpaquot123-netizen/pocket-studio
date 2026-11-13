@@ -796,17 +796,22 @@ class TutoController(
         val t = target ?: return
         if (u.demo != null || demoJob != null) return
         val base = base()
-        val (found, need) = withContext(worker) {
+        val (seen, need) = withContext(worker) {
             u.chapters.flatMap { it.steps }.filter { s ->
                 s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoChecks.done(s, p, t, base)
             }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
         }
         if (_ui.value?.progress?.style != u.progress.style || _ui.value?.demo != null) return
+        // Only what is not ticked yet NOW: a look begun before an earlier one answered finds its steps again (CI
+        // 43448175188: then « found » was never empty and what the song's order lacks was never said).
+        val found = seen - _ui.value?.progress?.done.orEmpty()
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
         if (found.isNotEmpty()) {
             tick(found, advance = false, bravo = true)
-            // N20: the step shown ticked with nothing changed since it was reached: the project held it already.
-            if (u.current.id in found && arrived.let { it != null && (it === p || it == p) }) _ui.value = _ui.value?.copy(already = true)
+            // N20: the step shown ticked with nothing changed since it was reached: the project held it already. The step
+            // shown NOW, not the one this look began on (CI 43425565244: a look begun on the step before, answered after
+            // the step was reached, ticked it and said nothing; the arrival's own look then found it ticked already).
+            if (_ui.value?.current?.id in found && arrived.let { it != null && (it === p || it == p) }) _ui.value = _ui.value?.copy(already = true)
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }

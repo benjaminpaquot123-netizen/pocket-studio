@@ -1,0 +1,7 @@
+fusion: 262d9c839ca1f5f9b5068c028e6d03a9b3239fab
+branche: eq/tour-6-ci3
+tete: 143a6653b6d0121ae889c3f86cf8a69c133cb2c8
+relecture: docs/audits/ultra/tour-6-ci3-relecture.md
+relu: d7f19678af51b0a5305cee1bee8e0750af85b1af
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -96,6 +96,15 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
     }
 
     @Test
+    fun a3_cutHintWholeNotUnderThumb() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        val id = separate()
+        // After separation, before cutting: « Cortar lo que quiero » and its help line whole, nothing under the thumb bar.
+        assertTrue("cut_song_$id cut off", whole("cut_song_$id"))
+        assertTrue("cut_song_hint_$id cut off (under the thumb bar)", whole("cut_song_hint_$id"))
+    }
+
+    @Test
     fun a8_oneCutButtonInProject() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         val id = separate()

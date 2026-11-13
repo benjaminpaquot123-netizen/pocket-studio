@@ -124,5 +124,22 @@
   "aucune": "nenhuma",
   "Tonalité du morceau : %s": "Tom da música: %s",
   "Tonalité du morceau": "Tonalidade da música",
-  "Lire la suite": "Continuar lendo"
+  "Lire la suite": "Continuar lendo",
+  "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Compasso: uma volta do ritmo, quatro tempos; você conta “1, 2, 3, 4”.",
+  "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Tempo: cada “1, 2, 3, 4” de um compasso, onde você bate o pé.",
+  "Accord : plusieurs notes jouées ensemble.": "Acorde: várias notas tocadas juntas.",
+  "Riff : une petite mélodie courte qui revient en boucle.": "Riff: uma melodia curtinha que volta sem parar.",
+  "Stab : un accord très court, comme un coup.": "Stab: um acorde bem curto, como uma batida.",
+  "Pad : un carré qu'on touche pour jouer un son.": "Pad: um quadrado que você toca para tocar um som.",
+  "Effet : ce qui change le son (écho, filtre, distorsion…).": "Efeito: o que muda o som (eco, filtro, distorção…).",
+  "Gamme : les notes qui vont bien ensemble dans le morceau.": "Escala: as notas que combinam na música.",
+  "Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.": "Tom: a nota de partida da música e a cor dela, alegre ou sombria.",
+  "Dorien : une gamme un peu triste mais douce.": "Dórico: uma escala um pouco triste, mas suave.",
+  "Perc : une petite percussion (bois, bongo, cloche…).": "Perc: uma pequena percussão (madeira, bongô, sino…).",
+  "Boucle : un passage qui se répète sans s'arrêter.": "Loop: um trecho que se repete sem parar.",
+  "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: uma bateria eletrônica famosa, os sons de bateria dela.",
+  "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: uma bateria eletrônica famosa, os sons de bateria dela.",
+  "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: atrasar uma batida a cada duas para o ritmo balançar.",
+  "Break : un moment plus calme, la batterie se tait.": "Break: um momento mais calmo, a bateria para.",
+  "Autres synthés": "Outros sintetizadores"
 }

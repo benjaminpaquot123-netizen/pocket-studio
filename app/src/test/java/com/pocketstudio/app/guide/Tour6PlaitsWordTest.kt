@@ -23,6 +23,8 @@ class Tour6PlaitsWordTest {
             I18n.lang = lang
             assertFalse("${lang.code}: ${plaitsLabel(simple = true)}", plaitsLabel(simple = true).contains("Plaits"))
         }
+        I18n.lang = Lang.JA
+        assertEquals("ほかのシンセ", plaitsLabel(simple = true))
         I18n.lang = Lang.FR
         assertEquals("Plaits", plaitsLabel(simple = false))
     }

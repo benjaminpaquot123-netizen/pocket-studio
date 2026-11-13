@@ -124,5 +124,22 @@
   "aucune": "brak",
   "Tonalité du morceau : %s": "Tonacja utworu: %s",
   "Tonalité du morceau": "Tonacja utworu",
-  "Lire la suite": "Czytaj dalej"
+  "Lire la suite": "Czytaj dalej",
+  "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Takt: jedno okrążenie rytmu, cztery miary; liczysz „1, 2, 3, 4”.",
+  "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Miara: każde „1, 2, 3, 4” w takcie, tam gdzie tupiesz nogą.",
+  "Accord : plusieurs notes jouées ensemble.": "Akord: kilka nut zagranych razem.",
+  "Riff : une petite mélodie courte qui revient en boucle.": "Riff: krótka melodia, która ciągle wraca.",
+  "Stab : un accord très court, comme un coup.": "Stab: bardzo krótki akord, jak uderzenie.",
+  "Pad : un carré qu'on touche pour jouer un son.": "Pad: kwadrat, którego dotykasz, żeby zagrać dźwięk.",
+  "Effet : ce qui change le son (écho, filtre, distorsion…).": "Efekt: to, co zmienia dźwięk (echo, filtr, przester…).",
+  "Gamme : les notes qui vont bien ensemble dans le morceau.": "Skala: dźwięki, które dobrze brzmią razem w utworze.",
+  "Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.": "Tonacja: dźwięk, od którego zaczyna się utwór, i jego barwa, wesoła lub mroczna.",
+  "Dorien : une gamme un peu triste mais douce.": "Dorycka: skala trochę smutna, ale łagodna.",
+  "Perc : une petite percussion (bois, bongo, cloche…).": "Perc: mała perkusja (drewienko, bongo, dzwonek…).",
+  "Boucle : un passage qui se répète sans s'arrêter.": "Pętla: fragment, który powtarza się bez przerwy.",
+  "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: słynny automat perkusyjny, jego dźwięki perkusji.",
+  "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: słynny automat perkusyjny, jego dźwięki perkusji.",
+  "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: przesunięcie co drugiego uderzenia, żeby rytm się kołysał.",
+  "Break : un moment plus calme, la batterie se tait.": "Break: spokojniejszy moment, perkusja milknie.",
+  "Autres synthés": "Inne syntezatory"
 }

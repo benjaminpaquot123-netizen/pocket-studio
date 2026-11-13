@@ -124,5 +124,22 @@
   "aucune": "tidak ada",
   "Tonalité du morceau : %s": "Nada dasar lagu: %s",
   "Tonalité du morceau": "Kunci nada lagu",
-  "Lire la suite": "Baca selanjutnya"
+  "Lire la suite": "Baca selanjutnya",
+  "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Birama: satu putaran ritme, empat ketukan; kamu menghitung “1, 2, 3, 4”.",
+  "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Ketukan: setiap “1, 2, 3, 4” dalam birama, tempat kakimu mengetuk.",
+  "Accord : plusieurs notes jouées ensemble.": "Akor: beberapa nada yang dimainkan bersamaan.",
+  "Riff : une petite mélodie courte qui revient en boucle.": "Riff: melodi pendek yang terus kembali.",
+  "Stab : un accord très court, comme un coup.": "Stab: akor yang sangat pendek, seperti pukulan.",
+  "Pad : un carré qu'on touche pour jouer un son.": "Pad: kotak yang kamu sentuh untuk memainkan suara.",
+  "Effet : ce qui change le son (écho, filtre, distorsion…).": "Efek: yang mengubah suara (gema, filter, distorsi…).",
+  "Gamme : les notes qui vont bien ensemble dans le morceau.": "Tangga nada: nada-nada yang cocok bersama dalam lagu.",
+  "Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.": "Kunci nada: nada awal lagu dan warnanya, ceria atau gelap.",
+  "Dorien : une gamme un peu triste mais douce.": "Dorian: tangga nada yang agak sedih tapi lembut.",
+  "Perc : une petite percussion (bois, bongo, cloche…).": "Perc: perkusi kecil (kayu, bongo, lonceng…).",
+  "Boucle : un passage qui se répète sans s'arrêter.": "Loop: bagian yang berulang tanpa berhenti.",
+  "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: drum machine terkenal, suara drumnya.",
+  "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: drum machine terkenal, suara drumnya.",
+  "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: menggeser setiap ketukan kedua supaya ritmenya berayun.",
+  "Break : un moment plus calme, la batterie se tait.": "Break: saat yang lebih tenang, drum diam.",
+  "Autres synthés": "Synth lain"
 }

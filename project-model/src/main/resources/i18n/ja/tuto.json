@@ -124,5 +124,22 @@
   "aucune": "なし",
   "Tonalité du morceau : %s": "曲のキー：%s",
   "Tonalité du morceau": "曲のキー",
-  "Lire la suite": "続きを読む"
+  "Lire la suite": "続きを読む",
+  "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "小節：リズムのひと回り、4拍。「1、2、3、4」と数えます。",
+  "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "拍：小節の中の「1、2、3、4」それぞれ。足でリズムをとるところ。",
+  "Accord : plusieurs notes jouées ensemble.": "コード：いくつかの音をいっしょに鳴らしたもの。",
+  "Riff : une petite mélodie courte qui revient en boucle.": "リフ：何度もくり返す短いメロディ。",
+  "Stab : un accord très court, comme un coup.": "スタブ：とても短いコード。パンチのような音。",
+  "Pad : un carré qu'on touche pour jouer un son.": "パッド：さわると音が鳴る四角。",
+  "Effet : ce qui change le son (écho, filtre, distorsion…).": "エフェクト：音を変えるもの（エコー、フィルター、ひずみなど）。",
+  "Gamme : les notes qui vont bien ensemble dans le morceau.": "スケール：曲の中でよく合う音のならび。",
+  "Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.": "キー：曲の始まりの音と、その明るさや暗さ。",
+  "Dorien : une gamme un peu triste mais douce.": "ドリアン：少しさびしいけれど、やさしいスケール。",
+  "Perc : une petite percussion (bois, bongo, cloche…).": "パーカッション：小さな打楽器（木、ボンゴ、ベルなど）。",
+  "Boucle : un passage qui se répète sans s'arrêter.": "ループ：止まらずにくり返す部分。",
+  "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909：有名なリズムマシン。そのドラムの音。",
+  "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707：有名なリズムマシン。そのドラムの音。",
+  "Swing : décaler un coup sur deux pour que le rythme balance.": "スウィング：ひとつおきの音を少しずらして、リズムをゆらすこと。",
+  "Break : un moment plus calme, la batterie se tait.": "ブレイク：静かになる部分。ドラムが止まります。",
+  "Autres synthés": "ほかのシンセ"
 }

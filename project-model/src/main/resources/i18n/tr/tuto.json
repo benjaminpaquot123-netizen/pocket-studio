@@ -124,5 +124,22 @@
   "aucune": "hiçbiri",
   "Tonalité du morceau : %s": "Parçanın tonu: %s",
   "Tonalité du morceau": "Parçanın tonu",
-  "Lire la suite": "Devamını oku"
+  "Lire la suite": "Devamını oku",
+  "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Ölçü: ritmin bir turu, dört vuruş; “1, 2, 3, 4” diye sayarsın.",
+  "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Vuruş: bir ölçüdeki her “1, 2, 3, 4”, ayağınla tempo tuttuğun yer.",
+  "Accord : plusieurs notes jouées ensemble.": "Akor: birlikte çalınan birkaç nota.",
+  "Riff : une petite mélodie courte qui revient en boucle.": "Riff: sürekli geri gelen kısa bir melodi.",
+  "Stab : un accord très court, comme un coup.": "Stab: çok kısa bir akor, bir vuruş gibi.",
+  "Pad : un carré qu'on touche pour jouer un son.": "Pad: bir ses çalmak için dokunduğun kare.",
+  "Effet : ce qui change le son (écho, filtre, distorsion…).": "Efekt: sesi değiştiren şey (yankı, filtre, distorsiyon…).",
+  "Gamme : les notes qui vont bien ensemble dans le morceau.": "Gam: şarkıda birbirine uyan notalar.",
+  "Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.": "Ton: şarkının başlangıç notası ve rengi, neşeli ya da karanlık.",
+  "Dorien : une gamme un peu triste mais douce.": "Dorian: biraz hüzünlü ama yumuşak bir gam.",
+  "Perc : une petite percussion (bois, bongo, cloche…).": "Perc: küçük bir vurmalı (tahta, bongo, çan…).",
+  "Boucle : un passage qui se répète sans s'arrêter.": "Döngü: durmadan tekrar eden bir bölüm.",
+  "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: ünlü bir ritim makinesi, onun davul sesleri.",
+  "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: ünlü bir ritim makinesi, onun davul sesleri.",
+  "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: ritim sallansın diye her ikinci vuruşu kaydırmak.",
+  "Break : un moment plus calme, la batterie se tait.": "Break: daha sakin bir an, davullar susar.",
+  "Autres synthés": "Diğer synth'ler"
 }

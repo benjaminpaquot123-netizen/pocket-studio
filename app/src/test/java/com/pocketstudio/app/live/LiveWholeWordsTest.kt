@@ -11,6 +11,8 @@ import com.pocketstudio.app.audit.CutWords
 import com.pocketstudio.app.nav.acidTechnoSong
 import com.pocketstudio.app.ui.UiScaled
 import com.pocketstudio.model.LiveState
+import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.addTrack
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.ui.PocketStudioTheme
@@ -111,6 +113,20 @@ class LiveWholeWordsTest {
     @Test
     fun everyBrickNameIsWholeInTallRowsWithThePhonesFontAt130() {
         val problems = cuts("4 cases, font 130 %", uiScale = 1f, fontScale = 1.3f, project = song.copy(liveRows = 4))
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /**
+     * A track's name of one long word in a narrow column (six tracks, 360 dp, the phone's font at 100 %): Polish says
+     * « Syntezator » for « Synthé » since this lot (R15), and the two-line name split it « Syntezato / r ». A name of
+     * one word is never split: it gets smaller on its one line, whole. (Texts of several words: the tests above.)
+     */
+    @Test
+    fun aOneWordTrackNameIsNeverSplit() {
+        // The Live page's six columns of the screenshots (drums, acid, the synth, a bass, a voice, a remix).
+        val synth = com.pocketstudio.model.Project(scenes = song.scenes, remix = com.pocketstudio.model.Remix(setId = "x", name = "Chanson"))
+            .addTrack("Basse")!!.addAudioTrack("Voix")!!
+        val problems = cuts("one word, 100 %", uiScale = 1f, fontScale = 1f, project = synth, judged = { c -> c.text.none { it.isWhitespace() } })
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 

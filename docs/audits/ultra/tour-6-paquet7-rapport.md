@@ -19,3 +19,6 @@ Paires : « rouge: the tutorial rule waits for batch 7 » (tests seuls, vus roug
 ## Après l'entrée
 
 Le chef passe `portail-paquet.txt` à 7 : la règle vaut alors, et `test_socle` compare au portail du commit d'ouverture du paquet 7, qui la tient déjà.
+
+## Chemins
+- chemin: banc › autotest du testeur humain | test: BenchSelfTest#reachTagTouchesAVisibleElementInPlace

@@ -317,7 +317,7 @@ for zone in "$@"; do
           "dans $report : une ligne par défaut corrigé, « corrige: <id> | gravité: bloquant|grave|moyen|mineur | rejeu: <id du rejeu> » ; pour un bloquant ou un grave, le rejeu est un dossier que la branche AJOUTE à docs/audits/ultra/rejeux/ (avec sa ligne « <id> : oracle tenu »), ou bien « … | rejeu impossible : <raison> » ; un grave du tri seulement cité : « ne corrige pas: <id> : <raison> »"
       done <<< "$why"
     fi
-    # AUDIT-ULTRA §13.5, last point (from batch 6): a lot of the tutorial comes with its control seat
+    # AUDIT-ULTRA §13.5, last point (from batch 7): a lot of the tutorial comes with its control seat
     # (rapport-zone.py --tuto). A lot outside the tutorial zone: not a word.
     if why="$(python3 -I scripts/bench/rapport-zone.py --tuto "$branch" "$report" "base:$base" "tete:$head" "tour:$tour")"; then
       [ -z "$why" ] || ok "tuto : le lot touche au tuto, siège(s) de contrôle acceptés (${why#tuto: })"

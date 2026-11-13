@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests of the bench lot « portail4 » (docs/audits/AUDIT-ULTRA.md §13.5, last point): no lot of the tutorial enters
-before a fresh beginner replayed it ON THE LOT'S BRANCH. The portal refuses (exit 10, from batch 6) a lot that touches
+before a fresh beginner replayed it ON THE LOT'S BRANCH. The portal refuses (exit 10, from batch 7) a lot that touches
 the tutorial zone when its zone report does not carry, per control seat, the line
 
   controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0

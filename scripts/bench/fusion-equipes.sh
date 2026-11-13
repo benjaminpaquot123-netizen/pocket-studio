@@ -87,7 +87,7 @@ for zone in "${zones[@]}"; do
   fix_out=""
   # shellcheck disable=SC2086
   if from_paquet 4 && ! fix_out="$(python3 -I scripts/bench/rapport-zone.py --corrections "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour" $added)"; then echo "$zone: fix without its replay: $(printf '%s' "$fix_out" | tr '\n' ';'): not merged." >&2; exit 8; fi
-  # AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 6): no lot of the tutorial enters before a fresh
+  # AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 7): no lot of the tutorial enters before a fresh
   # beginner replayed it on the lot's branch. A lot that changes the tutorial zone (code and resources of src/main:
   # …/tuto/, …/tutos/, i18n/*/tuto*.json; PianoRoll.kt when its report says « tuto ») carries, per control seat,
   # « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its zone report: <sha> a commit of the

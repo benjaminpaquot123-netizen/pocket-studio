@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Piosenka trwa o %s dłużej niż twoja pętla: gra dalej, gdy pętla się powtarza."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Piosenka trwa o %s dłużej niż twoja pętla: gra dalej, gdy pętla się powtarza.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Twoja pętla staje się utworem tak długim jak piosenka (%s). ↶ Cofnij przywraca ją do poprzedniego stanu."
 }

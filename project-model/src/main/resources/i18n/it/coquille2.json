@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "La canzone dura %s più del tuo loop: continua a suonare mentre il loop si ripete."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "La canzone dura %s più del tuo loop: continua a suonare mentre il loop si ripete.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Il tuo loop diventa un brano lungo quanto la canzone (%s). ↶ Annulla lo rimette com'era."
 }

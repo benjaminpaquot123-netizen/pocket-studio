@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "曲はループより %s 長く、ループがくり返すあいだも鳴り続けます。"
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "曲はループより %s 長く、ループがくり返すあいだも鳴り続けます。",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "ループが曲と同じ長さのトラックになります（%s）。↶ 元に戻すで前の状態に戻せます。"
 }

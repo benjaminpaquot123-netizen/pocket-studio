@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Het nummer duurt %s langer dan je loop: het blijft spelen terwijl de loop zich herhaalt."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Het nummer duurt %s langer dan je loop: het blijft spelen terwijl de loop zich herhaalt.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Je loop wordt een nummer zo lang als het liedje (%s). ↶ Ongedaan maken zet het terug zoals het was."
 }

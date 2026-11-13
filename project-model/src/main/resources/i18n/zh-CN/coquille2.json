@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "这首歌比你的循环长 %s：循环重复时，它会继续播放。"
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "这首歌比你的循环长 %s：循环重复时，它会继续播放。",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "你的循环变成和这首歌一样长的曲子（%s）。↶ 撤销可恢复原样。"
 }

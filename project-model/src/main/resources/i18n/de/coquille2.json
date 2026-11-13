@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Der Song dauert %s länger als deine Schleife: Er spielt weiter, während sich die Schleife wiederholt."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Der Song dauert %s länger als deine Schleife: Er spielt weiter, während sich die Schleife wiederholt.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Deine Schleife wird zu einem Stück, so lang wie der Song (%s). ↶ Rückgängig stellt sie wieder her."
 }

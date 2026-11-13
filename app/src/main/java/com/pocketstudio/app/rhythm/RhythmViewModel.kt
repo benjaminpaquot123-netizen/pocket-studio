@@ -6307,7 +6307,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         // Lot 6, R4 (seats B a #38, G a #12): a song longer than the project is said when it is chosen, not only in
         // « Prêt à partager ? » (its end is cut in the file; that sheet offers the two fixes).
-        sayRemixPastEnd()
+        // Control seat B a-4 (A6, screens 37-39): a loop made as long as the song (it had no song) is said too.
+        val made = project.value
+        if (before.song.isEmpty() && made.song.isNotEmpty() && made.remixOverrunSeconds() <= 0) {
+            val steps = made.song.sumOf { made.partSteps(it).toLong() }
+            _notice.value = tr("Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.",
+                com.pocketstudio.app.export.shareClock(kotlin.math.ceil(steps * 15.0 / made.tempoBpm.coerceAtLeast(1.0)).toInt()))
+        } else sayRemixPastEnd()
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)

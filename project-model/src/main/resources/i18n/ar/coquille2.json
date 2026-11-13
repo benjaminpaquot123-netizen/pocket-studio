@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "الأغنية أطول من حلقتك بـ %s: تستمر في العزف بينما تتكرر الحلقة."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "الأغنية أطول من حلقتك بـ %s: تستمر في العزف بينما تتكرر الحلقة.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "تصبح حلقتك مقطوعة بطول الأغنية (%s). ↶ التراجع يعيدها كما كانت."
 }

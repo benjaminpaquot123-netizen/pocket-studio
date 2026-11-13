@@ -1,3 +1,4 @@
 {
-  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Lagunya %s lebih panjang dari loop-mu: lagu terus diputar selama loop berulang."
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "Lagunya %s lebih panjang dari loop-mu: lagu terus diputar selama loop berulang.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Loop-mu menjadi lagu sepanjang lagunya (%s). ↶ Urungkan mengembalikannya seperti semula."
 }

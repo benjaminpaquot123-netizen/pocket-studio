@@ -71,6 +71,25 @@ class PadLivePlayShowsTest {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { if (it == 0) 2 else 0 }, playing = true, expect = "Arrêter"))
     }
 
+    /** « Fête » full screen says the same with its own ▶ (the same error, everywhere it can come back). */
+    @Test
+    fun thePartyScreenSaysTheSame() {
+        val done = ArrayList<String>()
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                PartyScreen(
+                    PadLiveUi(pads, loops, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4),
+                    PadLiveActions(togglePlay = { done += "play" }, stopAll = { done += "stop all" }),
+                    clockOf = { -1 }, levels = PadLevels(), readLevels = null, leave = {}, still = true,
+                )
+            }
+        }
+        compose.onNodeWithTag("padlive_party_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
     @Test
     fun nothingPlayingShowsPlay() {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { 0 }, playing = false, expect = "Jouer"))

@@ -128,6 +128,15 @@ class PadLiveUi(
     val perfSeconds: Int = 0,
 )
 
+/**
+ * Tour 6, padlive2 (P4, control seat A b #11: « le ▶ du haut reste ▶ avec 3 boucles en route »): something plays, the
+ * transport or loops started on their own (waiting for their line included); the play buttons show ■ then.
+ */
+internal val PadLiveUi.soundsNow: Boolean get() = playing || states.any { it != 0 }
+
+/** What a touch on a play button does: ▶ starts the music; ■ stops what plays (the transport's ■ also cuts the pads; pads alone: « Tout couper »). */
+internal fun PadLiveActions.playOrStop(ui: PadLiveUi): () -> Unit = if (!ui.playing && ui.soundsNow) stopAll else togglePlay
+
 /** Every gesture of Pad Live, given by the app. */
 class PadLiveActions(
     val back: () -> Unit = {},
@@ -381,13 +390,14 @@ private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composab
         }
         // Lot D2: smaller before it is cut (« Pad… » on a 360 dp phone), in every language.
         com.pocketstudio.ui.FitText(tr("Pad Live"), Modifier.weight(1f).testTag("padlive_title"), MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        val sounding = ui.soundsNow
         Box(
-            Modifier.size(48.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.SurfaceHigh)
-                .clickable(role = Role.Button, onClick = actions.togglePlay).testTag("padlive_play")
-                .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
+            Modifier.size(48.dp).clip(CircleShape).background(if (sounding) Neon.Acid else Neon.SurfaceHigh)
+                .clickable(role = Role.Button, onClick = actions.playOrStop(ui)).testTag("padlive_play")
+                .semantics { contentDescription = if (sounding) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {
-            Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = if (ui.playing) Color.Black else Neon.TextPrimary)
+            Icon(if (sounding) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = if (sounding) Color.Black else Neon.TextPrimary)
         }
         Spacer(Modifier.width(8.dp))
         Row(Modifier.clip(RoundedCornerShape(14.dp)).background(Neon.Surface), verticalAlignment = Alignment.CenterVertically) {

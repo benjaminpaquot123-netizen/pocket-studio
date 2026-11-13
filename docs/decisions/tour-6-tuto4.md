@@ -1,0 +1,8 @@
+# Décisions du lot « tuto4 » (tour 6, 2026-11-13)
+
+- 2026-11-13 · tour-6-tuto4 · Deux équipes sur des fichiers séparés : la house (`tutos/house.json`, `i18n/*/tuto_house.json`) et la techno avec les textes communs (`tutos/techno.json`, `i18n/*/tuto_techno.json`, `tuto.json`). Raison : les sièges jouaient la House (Ha) et la Techno (Da, Bb). Retour arrière : sans objet.
+- 2026-11-13 · tour-6-tuto4 · Une phrase française partagée par plusieurs tutos n'est pas réécrite en place : la house a pris sa propre clé dans `tuto_house.json`, la techno a laissé l'ancienne clé pour les autres styles. Raison : ne pas changer les autres tutos sans leurs sièges. Retour arrière : supprimer les clés propres.
+- 2026-11-13 · tour-6-tuto4 · Rien de Kotlin : ce qui demande du code (compteur « Encore N notes », définition « Break » de `PlainWords.kt`, bandeau de grille resté, pluriel japonais du Mode simple, 共有 de `finish.json`) est listé « pas pris » avec son fichier. Retour arrière : sans objet.
+- 2026-11-13 · tour-6-tuto4 · Techno, M1 à M3 : un deuxième commit « vert: » du même sujet corrige le test (« un petit « toc » » décrit le son, pas un pad), la Montée qui parlait des transitions avant le ch. 12, un « 당신 » coréen, et la durée de la Montée (4 mesures, `Tour6TutoBuildBarsTest`). Retour arrière : sans objet.
+- 2026-11-13 · tour-6-tuto4 · ja, M7 : « Partager » se dit シェア dans le tuto, comme sur le bouton. Retour arrière : les clés de `oneWordPerThing`.
+- 2026-11-13 · tour-6-tuto4 · Base : `eq/tour-6-tuto3` puis la tête de l'intégration ; trois `tuto.json` (ar, hi, zh-CN) en conflit, fusionnés clé par clé, puis le passage des mots du lot 5 rejoué. Retour arrière : sans objet.

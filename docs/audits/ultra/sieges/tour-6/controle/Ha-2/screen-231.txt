@@ -1,0 +1,9 @@
+Écran 231 (588x1278)
+texte « C'est prêt » @ 121,477
+texte « C'est prêt : Mon-morceau-20261113-124017.m4a, une copie est aussi dans Musique › BenStudio. » @ 294,555
+texte « Durée : 3 min 9 s » @ 113,604
+texte « Niveau : comme la musique en streaming (−14) » @ 250,637
+texte « Pas de saturation. » @ 118,670
+texte « Fichier M4A : léger, lu par tous les appareils. » @ 238,703
+texte « Voir mes fichiers » @ 347,789
+texte « OK » @ 508,789

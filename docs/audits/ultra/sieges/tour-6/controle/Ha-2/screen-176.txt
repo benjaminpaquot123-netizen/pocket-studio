@@ -1,0 +1,37 @@
+Écran 176 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + Nouvelle partie (copie de A · Groove) » [coupé] @ 276,286
+texte « Comprendre les parties Chapitre 9/15 · Étape 5/5 · Facile » @ 207,348
+icône (liste) « Chapitres » @ 444,348
+icône ⌄ @ 531,348
+texte « Regarde la carte : chaque case est une partie avec sa durée en mesures. L'Intro (16 mesures) et la Montée (8 mesures) font 24 mesures ; le Break (16 mesures) et la Montée qui le suit (8 mesures) aussi. » @ 294,501
+texte « • Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ». » @ 294,627
+texte « • Break : un moment plus calme, la batterie se tait. » @ 250,670
+texte « Énergie » @ 58,705
+texte « ▸ Pourquoi ? » @ 294,774
+icône « Lire la suite » ⌄ @ 294,822
+bouton ✓ «   J'ai compris » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -75,6 +75,13 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
     val harmony = StarterWizard.harmonyOf(style, mood)
 
     /**
+     * The tempo a new project of this style starts at ([blank] sets it the same way): a fixed number the tempo step
+     * names (« Un morceau neuf démarre à … BPM »), whatever the user has done to the tempo since (tour 6 review: « 110 »
+     * read half-way from 100 to 122).
+     */
+    val startTempo: Double = Project().tempoBpm.let { fresh -> if (kotlin.math.abs(fresh - style.bpm) <= TEMPO_SLACK) FAR_TEMPO else fresh }
+
+    /**
      * The drum line of [role] (a [StarterWizard.Role] id: "kick", "open_hat", "rumble"…): in the
      * part [part] when the course gives it its own drums, else the course's or the recipe's line
      * for every part, else the first part of the course that has one; null when none.

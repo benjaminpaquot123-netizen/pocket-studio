@@ -433,12 +433,13 @@ class TutoController(
 
     /**
      * Lot « tuto-flèches » (seats D a, H a: « House 122 BPM » chosen, « 100 Tempo » on the screen): the tempo step says
-     * the tempo the project has while it is not the style's.
+     * the tempo a new song starts at while the project's is not the style's (tour 6 review: the tempo the project had
+     * NOW, « 110 » half-way from 100 to 122, was named as the start).
      */
     private fun noteFor(s: TutoStep, p: Project): String? {
         val t = target ?: return null
         if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
-        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(p.tempoBpm).toInt())
+        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(t.startTempo).toInt())
     }
 
     /** What « Suivant » says on a step left undone: what the song will miss ([TutoStep.skip]), and that a second touch goes on. */

@@ -398,7 +398,7 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : touche « Créer la partie « Montée » » : sans kick ni basse, son clap va de plus en plus vite, mesure après mesure. Le temps de silence de la fin viendra au chapitre des transitions.",
+          "text": "À toi : touche « Créer la partie « Montée » » : sans kick ni basse, son clap va de plus en plus vite, mesure après mesure. Le temps de silence de la fin, tu le feras au chapitre 12.",
           "textPro": "À toi : touche « Créer la partie « Montée » », 4 mesures sans kick : le clap accélère (noires, croches, doubles) et le stab reste ; le silence du dernier temps viendra avec les transitions.",
           "why": "La tension monte parce que le kick manque et que le clap s'emballe.",
           "check": "part:Montée:nokick",

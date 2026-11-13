@@ -2,7 +2,8 @@
 """A seat's measures and its mission's verdict (Audit ultra §3.3 and §3.4), read from what the bench
 left in the seat's folder: journal.txt, cmd-N.txt, sound-N.txt, images.txt, start.txt and etat/
 (resume.json, the projects' files, the prefs, the shared files). « Réussie » is read in the state,
-never said by the tester.
+never said by the tester. etat/ is not committed with a seat: re-run without it, a mission that needs the state keeps
+the verdict of the seat's own mesures.json (said so), or says « inconnu », never a silent « non » (round 6).
 
     seat-metrics.py <seat folder> [--mission NAME]     writes <seat folder>/mesures.json, prints it
 
@@ -437,6 +438,30 @@ MISSIONS = {
 ALIASES = {"remix": "remix-voix", "song": "premier-morceau", "pad-live": "padlive", "synth": "synthe", "tuto": "tuto-facile"}
 
 
+# The oracles that read only the journal and the sounds (no etat/ needed).
+JOURNAL_ONLY = {"padlive", "reprendre"}
+NO_STATE = "état du siège absent"
+
+
+def kept_verdict(seat, name, result, why):
+    """Round 6 (lecture-recurrents § 7): etat/ is not committed with the seat, so a re-run elsewhere reads an empty state
+    and its oracle answers « non » for a mission the seat did. Without etat/, the verdict of the seat's own mesures.json
+    (written where etat/ was) is kept and said so; with no verdict of that mission to keep, a « reussie » proven without
+    the state (the journal's shares and sounds) stands, anything lower is « inconnu », never a « non » that looks measured."""
+    try:
+        with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
+            before = json.load(f)
+    except (OSError, ValueError):
+        before = {}
+    if before.get("mission") == name and before.get("resultat") and before.get("resultat") != "inconnu":
+        said = before.get("pourquoi", "")
+        note = f"{NO_STATE} (etat/ non commité) : verdict gardé du mesures.json du siège"
+        return before["resultat"], said if note in said else f"{said} [{note}]"
+    if result == "reussie":
+        return result, f"{why} [{NO_STATE} : prouvé sans l'état]"
+    return "inconnu", f"{NO_STATE} (etat/ non commité) et aucun verdict « {name} » gardé : verdict impossible à relire (sans l'état : {result}, {why})"
+
+
 def verdict(seat, mission, j, m):
     state = {}
     raw = read(os.path.join(seat, "etat", "resume.json"))
@@ -450,6 +475,9 @@ def verdict(seat, mission, j, m):
     if name not in MISSIONS:
         return name, "non", f"mission inconnue ({', '.join(MISSIONS)})"
     result, why = MISSIONS[name][1](state, j, m)
+    if name not in JOURNAL_ONLY and not os.path.exists(os.path.join(seat, "etat")):
+        result, why = kept_verdict(seat, name, result, why)
+        print(f"ATTENTION : {NO_STATE} ({os.path.join(seat, 'etat')}) : mission={result}, {why}", file=sys.stderr)
     return name, result, why
 
 

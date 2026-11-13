@@ -304,22 +304,26 @@ private fun RemixThumbRow(ui: RemixUi, pick: () -> Unit, download: () -> Unit, c
     ) {
         // A song in the project: its cutting, the page's next gesture.
         if (cut != null) {
-            Button(onClick = cut, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_cut_thumb")) {
+            Button(onClick = cut, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("remix_cut_thumb")) {
                 Icon(Icons.Filled.ContentCut, contentDescription = null)
-                Text(" " + tr("Découper la chanson"), maxLines = 1)
+                Text(" " + tr("Découper la chanson"), maxLines = 2, autoSize = thumbWords())
             }
         } else if (!ui.modelInstalled) {
-            Button(onClick = download, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_download_thumb")) {
-                Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel), maxLines = 1)
+            Button(onClick = download, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("remix_download_thumb")) {
+                Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center, autoSize = thumbWords())
             }
         } else {
-            Button(onClick = pick, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_pick_thumb")) {
+            Button(onClick = pick, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("remix_pick_thumb")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
-                Text(" " + tr("Choisir une chanson"), maxLines = 1)
+                Text(" " + tr("Choisir une chanson"), maxLines = 2, autoSize = thumbWords())
             }
         }
     }
 }
+
+/** Tour 6, R1 (E c #5, pt-BR at 200 %: « Baixar o modelo (174 »): the thumb row's words on two lines, smaller before ever cut. */
+@Composable
+private fun thumbWords() = com.pocketstudio.ui.WholeWordsAutoSize(11.sp, MaterialTheme.typography.labelLarge.fontSize)
 
 @Composable
 private fun RemixPanes(

@@ -46,7 +46,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Visibility
@@ -432,8 +431,9 @@ fun TutoPanel(
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.School, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
-                Column(Modifier.weight(1f).padding(start = 8.dp).clickable(onClick = actions.toggle).testTag("tuto_toggle")) {
+                // Tour 6 (N22 fallout): the school icon (22 dp and 8 dp, decorative) gave its room to « Chapitres »: the title
+                // and the chapter's line keep the room they had beside the bare list icon.
+                Column(Modifier.weight(1f).clickable(onClick = actions.toggle).testTag("tuto_toggle")) {
                     // The chapter's whole title (testers: « Le tempo et la ton… »), on two lines when it needs them.
                     // n° 38 (200 %): three lines at most, a little smaller rather than cut.
                     com.pocketstudio.ui.WholeWordsText(
@@ -449,18 +449,29 @@ fun TutoPanel(
                     )
                 }
                 // Tour 6 (N22): a bare list icon was not read as the chapters (seat ja took the ← arrow): its name under it,
-                // whole on one line (never cut), folded or not.
+                // whole on one line (never cut), folded or not. At most [CHAPTERS_WIDTH] wide (the list icon's 48 dp and the
+                // school icon's 30): a longer word (« Hoofdstukken », 130 %) a little smaller, never wider.
                 Column(
-                    Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp).clip(RoundedCornerShape(10.dp))
+                    Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp, max = CHAPTERS_WIDTH).clip(RoundedCornerShape(10.dp))
                         .clickable(onClickLabel = tr("Chapitres"), role = androidx.compose.ui.semantics.Role.Button, onClick = actions.chapters)
-                        .padding(horizontal = 4.dp).testTag("tuto_chapters"),
+                        .padding(horizontal = 2.dp).testTag("tuto_chapters"),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
                 ) {
                     Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, modifier = Modifier.size(20.dp))
                     // Its words grow up to 130 % only: at 200 % the panel's head stays a finger high (the cells above it in sight).
                     val label = MaterialTheme.typography.labelSmall
                     val cap = minOf(1f, 1.3f / LocalDensity.current.fontScale.coerceAtLeast(0.1f))
-                    Text(tr("Chapitres"), style = label.copy(fontSize = label.fontSize * cap, lineHeight = label.lineHeight * cap), maxLines = 1, softWrap = false)
+                    val name = tr("Chapitres")
+                    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+                    val room = with(LocalDensity.current) { (CHAPTERS_WIDTH - 4.dp).toPx() }
+                    var fit = label.copy(fontSize = label.fontSize * cap, lineHeight = label.lineHeight * cap)
+                    for (k in 0 until 6) {
+                        val w = measurer.measure(name, fit, maxLines = 1, softWrap = false).size.width
+                        if (w <= room) break
+                        val by = room / w * 0.97f
+                        fit = fit.copy(fontSize = fit.fontSize * by, lineHeight = fit.lineHeight * by)
+                    }
+                    Text(name, style = fit, maxLines = 1, softWrap = false)
                 }
                 IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
                     Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))
@@ -526,6 +537,9 @@ fun TutoPanel(
         }
     }
 }
+
+/** The panel's way to the chapters, at its widest: the bare list icon's 48 dp and the school icon's 22 + 8 it replaced. */
+private val CHAPTERS_WIDTH = 78.dp
 
 /** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
 private const val READY_STEP = "ready"

@@ -28,7 +28,9 @@ chemin: Partager › Autres fichiers › Exporter (Fabrication du son) (fr, Mode
 - **E7** (« Retour » après un export revient d'où je viens) : contredit la règle du propriétaire (2026-10-29, « Mes projets › ← » va à l'accueil) et le lot « l'accueil arrête la musique » ; six tests l'encodent. Tentative annulée avant poussée. À trancher.
 - **P1** (« Notes » montre tout ce que je joue) : le cadrage vit dans `synth/PianoRoll.kt` (zone tuto) et la règle « rien ne zoome tout seul » (lot tuto 5) ; la puce de `SynthScreen.kt` ne peut pas cadrer sans lui.
 - **A10** (un seul « Descargar el modelo » par panneau) : retirer le bouton de la carte casse `nav/SimpleModeAuditTest` et `audit/BenchContrastRemixLibraryTest` (hors liste) ; retirer celui du pouce casse la portée du pouce gauche (`RemixThumbReachTest`). À autoriser.
-- **N1, N4, N5, A11** : au-delà des 8 du lot (consigne du chef).
+- **N1, N4, N5, A11** (phrases du siège A c et B a, numérotées dans la fiche du chef) : au-delà des 8 du lot (consigne du chef). Ces N4 / N5 ne sont pas ceux du tri (`verdicts.tsv`, piano roll du tuto) :
+ne corrige pas: N4 : le N4 du tri (flèche « plus bas » du piano roll, zone tuto) n'est pas ce lot ; le N4 de la fiche (« Mes fichiers » vide après un envoi) est laissé pour coquille3
+ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll, zone tuto) n'est pas ce lot ; le N5 de la fiche (« détails ? » au milieu d'une phrase en Pro) est laissé pour coquille3
 
 ## Relecture neuve (1re passe) : suites
 - Grave A6 (boucle) : phrase juste dans les 14 langues (accord du chef), test resserré (structure créée et couvrante).

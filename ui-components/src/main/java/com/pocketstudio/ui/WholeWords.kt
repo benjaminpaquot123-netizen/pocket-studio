@@ -88,13 +88,11 @@ class WholeWords(private val maxFontSize: TextUnit, private val minScale: Float)
         // Audit ultra round 1, n° 38 (200 %: « Char… », « Écouter l'exempl »): past 130 % the words may shrink as far as
         // they would at 130 %, never further (a size in sp grows with the phone's font, its floor with it).
         val min = max * minScale / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)
-        var size = max
-        while (size > min) {
+        // Tour 5, moyens2 (seat A d, 200 %: 789 ms at the app's opening): the same half points, searched by halves.
+        return largestFitting(max, min, 0.5f) { size ->
             val layout = performLayout(constraints, text, size.sp)
-            if (!layout.hasVisualOverflow && !splitsAWord(layout, text.text)) return size.sp
-            size -= 0.5f
-        }
-        return min.sp
+            !layout.hasVisualOverflow && !splitsAWord(layout, text.text)
+        }?.sp ?: min.sp
     }
 
     override fun equals(other: Any?) = other is WholeWords && other.maxFontSize == maxFontSize && other.minScale == minScale
@@ -113,3 +111,26 @@ fun splitsAWord(layout: TextLayoutResult, text: String): Boolean {
 
 /** The phone's font size from which [WholeWords] and [WholeWordsAutoSize] let the words shrink further (130 %). */
 internal const val BIG_FONT_FROM = 1.3f
+
+/**
+ * The largest of [top], [top] − [step], [top] − 2 [step]… still above [bottom] for which [fits] holds (null: none), as a
+ * search from [top] down, one step after the other, finds it, in far fewer layouts (tour 5, moyens2: up to 15 layouts a
+ * label at 200 %, 168 for the first screen of seat A d). [top] first (a label that fits costs one layout), then by halves:
+ * a text that fits at a size fits at a smaller one, so the first size that fits splits the steps in two.
+ */
+internal fun largestFitting(top: Float, bottom: Float, step: Float, fits: (Float) -> Boolean): Float? {
+    if (!(top > bottom)) return null
+    if (fits(top)) return top
+    // The sizes as the step-by-step search made them (by repeated subtraction: the same floats).
+    var n = 0
+    var s = top
+    while (s > bottom) { n++; s -= step }
+    fun sizeAt(k: Int): Float { var v = top; repeat(k) { v -= step }; return v }
+    var lo = 1
+    var hi = n
+    while (lo < hi) {
+        val mid = (lo + hi) ushr 1
+        if (fits(sizeAt(mid))) hi = mid else lo = mid + 1
+    }
+    return if (lo < n) sizeAt(lo) else null
+}

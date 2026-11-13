@@ -210,6 +210,12 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
     with tempfile.TemporaryDirectory() as d:
+        banc7_launcher_messages(d)
+    with tempfile.TemporaryDirectory() as d:
+        banc7_stamp_reason(d)
+    with tempfile.TemporaryDirectory() as d:
+        banc7_budget_and_launcher_stall(d)
+    with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
         fingerprint_stable(d)
@@ -272,6 +278,10 @@ def main():
         measured_numbers(d)
     with tempfile.TemporaryDirectory() as d:
         empty_cases(d)
+    with tempfile.TemporaryDirectory() as d:
+        verdict_without_state(d)
+    with tempfile.TemporaryDirectory() as d:
+        promises_of_one_seat(d)
     print("ultra bench scripts: OK")
 
 
@@ -605,6 +615,89 @@ def seats_from_ids(d):
     write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
+
+
+def banc7_budget_and_launcher_stall(d):
+    """Round 6, lot banc7 (point 6): « 120 gestes ne suffisent pas pour atteindre le « Bravo » » (D a, H a: budget gone at
+    chapter 7/15); a whole tutorial needs about 250. And the launcher's Gradle queue killed a lot after 20 min without
+    output (PS_STALL_MIN) although a seat may wait 30 min for its tester's next gesture (timeout.minutes=30)."""
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t120\tDébutant\tlibre: le tuto se finit\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "Da" in (r.stdout + r.stderr) and "250" in (r.stdout + r.stderr),
+          "a whole tutorial with 120 gestures is refused, naming the seat and the 250 it needs:\n" + r.stdout + r.stderr)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t250\tDébutant\tlibre: le tuto se finit\n")
+    run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("gestes.max=250" in open(os.path.join(tour, "lotD", "a", "start.txt"), encoding="utf-8").read(), "250 gestures pass")
+    # The launcher: its Gradle queue waits longer than the longest seat's timeout (its own watchdog ends a silent seat first).
+    root = os.path.join(d, "fake-root")
+    os.makedirs(os.path.join(root, "scripts", "bench"))
+    import shutil
+    shutil.copy(os.path.join(HERE, "..", "human-tester.sh"), os.path.join(root, "scripts", "human-tester.sh"))
+    seen = os.path.join(d, "stall.txt")
+    fakes = {"tampon.sh": "#!/usr/bin/env bash\nexit 0\n", "gradle-file.sh": f"#!/usr/bin/env bash\necho \"${{PS_STALL_MIN:-unset}}\" > {seen}\n",
+             "sortie-de-siege.py": "import sys\n"}
+    for name, text in fakes.items():
+        write(os.path.join(root, "scripts", "bench", name), text)
+        os.chmod(os.path.join(root, "scripts", "bench", name), 0o755)
+    lot = os.path.join(d, "lotS")
+    write(os.path.join(lot, "a", "start.txt"), "lang=fr\ntimeout.minutes=30\n")
+    write(os.path.join(lot, "b", "start.txt"), "lang=fr\ntimeout.minutes=45\n")
+    env = {k: v for k, v in os.environ.items() if k != "PS_STALL_MIN"}
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "human-tester.sh"), lot], capture_output=True, text=True, env=env, timeout=60)
+    stall = open(seen).read().strip() if os.path.exists(seen) else "(gradle-file not reached) " + r.stderr
+    check(stall.isdigit() and int(stall) > 45, "the launcher's queue waits longer than the longest seat timeout (45 min): " + stall)
+
+
+def banc7_launcher_messages(d):
+    """Round 6, lot banc7 (point 8): a seat never waits 15 min for a bench that was not started (E9: « L'appli ne s'est
+    pas ouverte (15 min) » at the first « regarde » of four seats)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    seat = os.path.join(lot, "c")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    act = os.path.join(HERE, "..", "human-act.py")
+    # Point 8: no bench running for this lot, nothing on screen yet: told at once what to start.
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+        said, code = r.stdout + r.stderr, r.returncode
+    except subprocess.TimeoutExpired:
+        said, code = "(no answer after 30 s)", None
+    check(code == 1 and "scripts/human-tester.sh" in said and lot in said,
+          "a seat with no bench running is told at once to start scripts/human-tester.sh <lot>:\n" + said)
+    # The bench running (its marker names a live process): the seat waits for its first screen as before (no early refusal).
+    write(os.path.join(lot, ".banc-en-cours"), f"{os.getpid()}\n")
+    try:
+        r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=3)
+        waited = False
+    except subprocess.TimeoutExpired:
+        waited = True
+    check(waited, "with the bench running, « regarde » waits for the first screen instead of refusing")
+    # A marker left by a bench that died (no such process) is no bench running.
+    write(os.path.join(lot, ".banc-en-cours"), "999999999\n")
+    r = subprocess.run([sys.executable, "-I", act, seat, "regarde"], capture_output=True, text=True, timeout=30)
+    check(r.returncode == 1 and "scripts/human-tester.sh" in r.stdout, "a dead bench's marker is not a bench running:\n" + r.stdout)
+
+
+def banc7_stamp_reason(d):
+    """Round 6, lot banc7 (point 7): the stamp refused because the seats' start.txt changed since the self-test says so,
+    and what to do (seat E c and E11: a bare « No green self-test for this code »)."""
+    lot = os.path.join(d, "banc7", "lotQ")
+    write(os.path.join(lot, "c", "start.txt"), "lang=fr\n")
+    # Point 7: the stamp refused because the seats' start.txt changed since the self-test says so, and what to do.
+    tampon = os.path.join(HERE, "tampon.sh")
+    fp = os.path.join(d, "banc7", "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    green_lot(lot)
+    subprocess.run([tampon, "ecris", lot, fp], check=True)
+    check(subprocess.run([tampon, "verifie", lot]).returncode == 0, "the lot's fresh stamp fits")
+    write(os.path.join(lot, "a", "start.txt"), "lang=de\n")
+    r = subprocess.run([tampon, "verifie", lot], capture_output=True, text=True)
+    check(r.returncode != 0 and "start.txt" in r.stderr and "selftest.sh" in r.stderr,
+          "a stamp refused for the seats' start.txt says so, and to run the self-test with only the seats to play:\n" + r.stderr)
+    tester = os.path.join(HERE, "..", "human-tester.sh")
+    r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
+    check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
 
 
 def bench_guards(d):
@@ -3451,6 +3544,82 @@ def missions_of_round_1(d):
     write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "Live", "stars": []}], "shared": []}))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "defi")
     check("mission=partielle" in out and "défi ouvert" in out, "a challenge opened:\n" + out)
+
+
+def verdict_without_state(d):
+    """Round 6 (lecture-recurrents § 7): the seats' etat/ is not committed; seat-metrics re-run on them turned B a, E b and
+    F a « reussie » into « non » (the oracles read an empty state). Without etat/, a re-run keeps the verdict of the seat's
+    own mesures.json and says why; with no verdict to keep, it says « inconnu », never a « non » that looks measured."""
+    for mission, kept in (("simple", "reussie"), ("exports", "reussie"), ("remix-voix", "reussie"), ("tuto-pro", "partielle"),
+                          ("libre", "reussie")):
+        seat = os.path.join(d, mission)
+        write(os.path.join(seat, "start.txt"), f"mission={mission}\n")
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("MODE pro", "MODE simple"))
+        write(os.path.join(seat, "mesures.json"), json.dumps({"siege": mission, "mission": mission, "resultat": kept,
+                                                               "pourquoi": "lu dans l'état du siège", "mesures": {}}))
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and "état du siège absent" in out and "lu dans l'état du siège" in out,
+              f"{mission}: no etat/, the committed verdict « {kept} » is kept and said so:\n" + out)
+        out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+        check(f"mission={kept}" in out and out.count("état du siège absent") == 1, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
+    # Another mission asked by hand: the committed verdict is not that mission's, nothing to keep.
+    out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "simple"), "--mission", "voix")
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state and no verdict of that mission: unknown:\n" + out)
+    # No mesures.json and no etat/: unknown, never « non ».
+    seat = os.path.join(d, "neuf")
+    write(os.path.join(seat, "start.txt"), "mission=exports\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B)
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=inconnu" in out and "état du siège absent" in out, "no state, nothing committed: unknown:\n" + out)
+    # libre proven by the journal alone (a sound heard, a file shared, 3 screens, ended by the tester): it stands.
+    write(os.path.join(seat, "start.txt"), "mission=libre\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#2 PARTAGE boucle.m4a\n"
+                                                               "#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 > touche 3 3\n"
+                                                               "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 FIN : fin"))
+    write(os.path.join(seat, "sound-2.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=reussie" in out and "partagé : boucle.m4a" in out and "prouvé sans l'état" in out, "a success the journal proves stands:\n" + out)
+    # padlive reads the journal only: computed as before, state or not.
+    os.remove(os.path.join(seat, "sound-2.txt"))
+    write(os.path.join(seat, "start.txt"), "mission=padlive\n")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "aucun son" in out, "padlive needs no state:\n" + out)
+    # With etat/ there, the oracle reads it (a downgrade read in the state is the state's, not silent).
+    seat = os.path.join(d, "simple")
+    write(os.path.join(seat, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=non" in out and "état du siège absent" not in out, "the state there is read:\n" + out)
+
+
+def promises_of_one_seat(d):
+    """Round 6 (lecture-recurrents § 7): each seat had its own promise ids (t6-Aa-1…), each checked by one seat, and the
+    dashboard said « promesses tenues 0/0 ». The template v2 lines (« promesse: id=… | tenue: oui|non|pas vue ») are
+    counted: kept / decided, and the ones not seen; an older line without id still counts; a seat's later report (its
+    « -suite ») that decides a promise first « pas vue » replaces the « pas vue »."""
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "mission: libre | buts: -\n"
+          "promesse: id=t9-Aa-1 | texte: Le pad joue | ecran: 3 | tenue: oui | pourquoi: il joue\n"
+          "promesse: id=t9-Aa-2 | texte: La partie s'affiche | ecran: 4 | tenue: non | pourquoi: écran vide\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 9 | tenue: pas vue | pourquoi: budget épuisé\n")
+    write(os.path.join(tour, "lotA", "a-suite", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 200 | tenue: oui | pourquoi: Bravo atteint\n")
+    write(os.path.join(tour, "lotA", "b", "rapport.md"),
+          "siege: b | profil: p | lang: de | device: phone | font: 100 | mode: pro\n"
+          "promesse: id=t9-Ab-1 | texte: Export | ecran: 5 | tenue: oui | pourquoi: fichier là\n"
+          "promesse: id=t9-Ab-2 | texte: Swing | ecran: 6 | tenue: pas vue | pourquoi: pas atteint\n"
+          "promesse: Le son part au premier toucher | ecran: 2 | tenue: oui\n")
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), tour, "--base", base, "--verdicts", verdicts)
+    row = next((l for l in board.splitlines() if l.startswith("| D |")), "")
+    check("4 oui, 1 non, 1 pas vue" in row, "D counts every promise line, one seat each (oui / non / pas vue):\n" + board)
+    curve = next((l for l in board.splitlines() if l.startswith("| tour-9 |")), "")
+    check("| 4/5 |" in curve and "0/0" not in curve, "the curve's promises kept: 4 of the 5 decided, never « 0/0 »:\n" + board)
 
 
 if __name__ == "__main__":

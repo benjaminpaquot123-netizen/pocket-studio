@@ -497,11 +497,9 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit,
                 color = Neon.TextSecondary, modifier = Modifier.testTag("remix_keys"))
         }
         if (ui.board != null) {
-            // Lot C (n° 24): cutting the song into pieces, the way a sampler slices, first.
-            Button(onClick = openCut, modifier = Modifier.fillMaxWidth().testTag("remix_open_cut")) {
-                Icon(Icons.Filled.ContentCut, contentDescription = null)
-                Text(" " + tr("Découper la chanson"))
-            }
+            // Tour 6, seat B a #A8 (« deux Cortar la canción »): « Découper la chanson » lives only in the thumb row
+            // below (left-thumb reach), not a second time here — one button per action on the panel. The thumb row's cut
+            // shows under the very same condition this card does (a song in the project with its board), so none is lost.
             // The big curves of each stem, to choose a stretch and send it anywhere.
             OutlinedButton(onClick = openBoard, modifier = Modifier.fillMaxWidth().testTag("remix_open_board")) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)

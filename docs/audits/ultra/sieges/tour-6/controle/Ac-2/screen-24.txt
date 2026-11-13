@@ -1,0 +1,6 @@
+Écran 24 (588x1278)
+texte « Renommer » @ 390,563
+texte « Dupliquer » @ 390,635
+texte « Sauvegarder le morceau en .zip » @ 390,707
+texte « Copie d'avant cette séance » @ 390,779
+texte « Supprimer » @ 390,851

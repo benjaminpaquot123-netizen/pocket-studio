@@ -104,3 +104,19 @@ les conditions du siège, appli entière, par le banc » : état « tenté » ju
   défiler (après correction : la cible passe avant « Tout est prêt »), bilans « Niveau : à la cible (Club) » puis
   « Volume · −8,0 », Mes fichiers aux noms entiers coupés entre leurs parties, Mes projets › ⋮ « Envoyer le projet (.zip) ».
   Le rejeu a aussi montré « −8,0, très fort (les plateformes le baisseront) » sous Club en Pro : corrigé (mots de la cible).
+
+## Contrôles
+
+controle: Ac-2 | code testé: d946d916 | bloqués: 0 | graves neufs: 0
+controle: Ac-3 | code testé: 35930493 | bloqués: 0 | graves neufs: 0
+
+Verdict du contrôle Ac-3 (35930493), buts 3/3 :
+- E1 constaté corrigé (écrans 12, 17) ; E4 constaté corrigé (32) ; E6 constaté corrigé (23) ; N3 constaté corrigé (44).
+- E3 : tenté (le testeur n'a plus vu de ligne « Autres fichiers » coupée ni entière ; « Mes fichiers » entière en
+  Simple, écran 8, et en Pro, écran 45) ; pas de nouvel essai.
+- E2, E5, E7 : pas pris (hors liste de fichiers).
+- Neufs notés, pas pris : « Mes fichiers » vide une fois juste après les envois, plein au 2e passage (écran 39) ;
+  en Pro, « détails » et son « ? » s'insèrent au milieu de la phrase du volume (image 45).
+
+Copie des sièges de contrôle (texte seul) : `docs/audits/ultra/sieges/tour-6/controle/Ac-2/` et `Ac-3/`
+(branche ccr-6a8c6318-dvnp3y, c28d043a).

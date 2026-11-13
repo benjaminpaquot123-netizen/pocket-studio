@@ -1,0 +1,16 @@
+Écran 39 (588x1278)
+texte « Mes fichiers » @ 143,328
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,416
+texte « Trap-​20261113-​171141​.pocketstudio​.zip » @ 227,505
+texte « Renvoyer » @ 485,519
+texte « projet · 13 nov. 2026 17:11 · 1 Ko » @ 177,548
+texte « Trap-​20261113-​171050​.pocketstudio​.zip » @ 227,604
+texte « Renvoyer » @ 485,618
+texte « projet · 13 nov. 2026 17:10 · 1 Ko » @ 179,647
+texte « Trap-​morceau-​club-​20261113-​171016​.m4a » @ 227,703
+texte « Renvoyer » @ 485,717
+texte « 13 nov. 2026 17:10 · 1 Ko » @ 145,746
+texte « Trap-​morceau-​streaming-​20261113-​171000​.m4a » @ 227,802
+texte « Renvoyer » @ 485,816
+texte « 13 nov. 2026 17:10 · 1 Ko » @ 145,845
+texte « Fermer » @ 497,937

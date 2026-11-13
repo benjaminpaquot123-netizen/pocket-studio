@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : ee338a4ed4debe288f6153426eed2ab779b79864
+Relu : 3a41b574d2a22dadf0ed72a92aea176c92413e60
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -81,5 +81,8 @@ Vérifié moi-même dans le code (lecture seule) : **confirmé**. Une brique de 
 - Côté appli, sans morceau, rien ne réarme de changement à chaque tour : `stageSongPart` sort tout de suite quand `song` est vide (`RhythmViewModel.kt:3946`). Les autres appels à `stageScene` (`RhythmViewModel.kt:3354`, `3705`, `3833`, `10261`) suivent un choix de scène ou une annulation, jamais un tour de boucle.
 - `LiveCells.kt:69-75` : une prise de 6 mesures donne bien 8 mesures (|ln(8/6)| < |ln(4/6)|).
 - Seule réserve, déjà notée par le rapport : le compteur « A mesure 1/1 » du transport compte la scène, pas la brique. C'est un affichage, confié à coquille2, et ce n'est pas un défaut de ce lot.
+
+
+Reprise sur 3a41b574 : depuis f6fc19dd, la fusion de l'intégration bc97d9eb (lots exports2 et portail4) ne touche ni `padlive/`, ni `live/LiveScreen.kt`, ni `session/LivePadsFullScreen.kt`, ni `SongLength.kt`, ni les tests padlive (diff vide sur ces chemins). Dans `ProjectsScreen.kt`, elle ne change que le libellé « Partager le projet (.zip) » du menu, pas la longueur (ligne 318). 3a41b574 ne touche que le rapport de zone et la copie du rapport du siège Ab-4. Rien de neuf à relire pour ce lot.
 
 Verdict : 0 bloquant, 0 grave

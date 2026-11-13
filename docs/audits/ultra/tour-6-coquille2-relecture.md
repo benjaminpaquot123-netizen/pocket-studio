@@ -1,8 +1,16 @@
 # Relecture neuve — lot coquille2 (tour 6)
 
-Relu : 8868eb9d
+Relu : fed88a22
 
 Portée : tout le lot (`git diff origin/ccr-80af1a1b-mn0wec...HEAD`). Quatrième passe : la 1re sur a2c12c1c, la 2e sur 98324743, la 3e sur c3190921 (P6), celle-ci sur `c3190921..a032ab20`. Depuis la 3e passe, seuls `HeardLength.kt` et `HeardLengthTest.kt` ont changé dans `app`, `project-model` et `engine` ; la fusion de l'intégration (`0ff032ee`, `9cacbbb2`) n'apporte que le banc et des docs. Lecture du code seulement, Gradle non lancé.
+
+## 6e passe (`8868eb9d..fed88a22`, après les sièges de contrôle)
+
+- **P5 bis : correct.** `AppRoot.kt:483`, `:897` et `:1435-1438` (`resumedFromProjects`). Toucher dans « Mes projets » le projet déjà ouvert ramène sur Pad Live quand c'est le projet Live (`padLive.home`), comme « Continuer ». Pour un autre projet, rien ne change. Le drapeau est un `remember` simple, remis à faux aussitôt lu. Une rotation entre le toucher et la lecture le perdrait, mais la lecture se fait à la recomposition suivante : ce n'est pas un risque réel. **mineur** : c'est encore une écriture d'état pendant la composition, le même motif que `padLiveFor`. On peut le passer en `LaunchedEffect`, ou le laisser. Le test `p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive` suit le chemin du siège (`padlive_back` › `launch_projects` › le projet ouvert) et lit `padlive`.
+- **A6 bis : correct.** `RhythmViewModel.kt:6310-6316`. Un projet sans structure qui en reçoit une aussi longue que la chanson (`withRemixPlaced`, ou les briques de `withSongSections`) le dit maintenant, sans le bouton « Allonger » (`_noticeLengthen` n'est pas posé). Le reste passe toujours par `sayRemixPastEnd`. « ↶ Annuler la remet comme avant » est vrai : `useSong` se fait en une seule étape d'annulation (`session.edit("remix")`). La durée vient de la somme des `partSteps` au tempo ; `coerceAtLeast(1.0)` évite une division par zéro. Le test `a6_aLoopMadeAsLongAsTheSongIsSaid` lit la phrase à l'écran.
+  - **mineur** : la condition est `before.song.isEmpty()`, et non « le projet avait une boucle ». Un projet existant encore vide (`adopts`, sans musique à lui) reçoit donc « Ta boucle devient un morceau… » alors qu'il n'avait pas de boucle. À faire : ajouter `before.hasMusicOfItsOwn()` à la condition, ou une phrase sans « ta boucle » pour ce cas.
+- **Traductions de la nouvelle clé (14 langues) : bonnes.** Chacune garde son `%s` une seule fois, au bon registre. « ↶ Annuler » est rendu par le nom du bouton ↶ dans chaque langue (Undo, Deshacer, Rückgängig, 元に戻す… ; c'est bien la traduction de « Annuler la dernière action », et non « Cancel »). **mineur** : en anglais, « Your loop becomes a song as long as the song » répète « song ». Proposition : « Your loop becomes a track as long as the song (%s). ↶ Undo puts it back as it was. ».
+- **Fusion de docs : rien dans le code.**
 
 ## 5e passe (`a032ab20..8868eb9d`)
 

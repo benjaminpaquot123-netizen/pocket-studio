@@ -1,0 +1,62 @@
+Écran 240 (900x1509)
+texte « Sound ändern » @ 149,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Für das Pad 5 (Clap) » @ 146,78
+onglet ◎ « Kicks » @ 91,143
+onglet ○ « Snares » @ 255,143
+onglet (main) « Claps » [sélectionné] @ 420,143
+onglet (points en rond) « Geschlossene Hi-Hats » @ 690,143
+titre « SOUNDS » [état « Aufgeklappt »] @ 121,233
+icône ← @ 78,299
+texte « Weitere Kit-Sounds » @ 486,299
+bouton (main) « Kick » @ 243,395
+icône ☆ @ 227,395
+bouton « Setzen » @ 347,395
+bouton (main) « Kick 2 » @ 657,395
+icône ☆ @ 641,395
+bouton « Setzen » @ 761,395
+bouton (main) « Snare » @ 243,503
+icône ☆ @ 227,503
+bouton « Setzen » @ 347,503
+bouton (main) « Snare 2 » @ 657,503
+icône ☆ @ 641,503
+bouton « Setzen » @ 761,503
+bouton (main) « Hi-Hat » @ 243,611
+icône ☆ @ 227,611
+bouton « Setzen » @ 347,611
+bouton (main) « Offene Hi-Hat » @ 657,611
+icône ☆ @ 641,611
+bouton « Setzen » @ 761,611
+bouton (main) « Tiefes Tom » @ 243,719
+icône ☆ @ 227,719
+bouton « Setzen » @ 347,719
+bouton (main) « Mittleres Tom » @ 657,719
+icône ☆ @ 641,719
+bouton « Setzen » @ 761,719
+bouton (main) « Hohes Tom » @ 243,827
+icône ☆ @ 227,827
+bouton « Setzen » @ 347,827
+bouton (main) « Rim » @ 657,827
+icône ☆ @ 641,827
+bouton « Setzen » @ 761,827
+bouton (main) « Cowbell » @ 243,935
+icône ☆ @ 227,935
+bouton « Setzen » @ 347,935
+bouton (main) « Becken » @ 657,935
+icône ☆ @ 641,935
+bouton « Setzen » @ 761,935
+bouton (main) « Shaker » @ 243,1043
+icône ☆ @ 227,1043
+bouton « Setzen » @ 347,1043
+bouton (main) « Conga » @ 657,1043
+icône ☆ @ 641,1043
+bouton « Setzen » @ 761,1043
+bouton (main) « Zap » @ 243,1151
+icône ☆ @ 227,1151
+bouton « Setzen » @ 347,1151
+texte « Tippe auf einen Sound, um ihn zu hören, „Setzen“, um ihn auf das Pad 5 (Clap) zu legen. » @ 450,1247
+titre « SOUND-PACKS » [état « Aufgeklappt »] @ 184,1370
+bouton « ? » @ 305,1370
+texte « Nur herunterladen, wenn du willst; jedes Pack lässt sich mit einer Geste löschen, um Platz zu schaffen. » @ 450,1440
+bouton (nuage et flèche) «  Alles laden (68 Packs, 288,4 MB) » [coupé] @ 450,1500

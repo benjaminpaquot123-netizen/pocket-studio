@@ -215,17 +215,21 @@ class CutJourneyTest {
         compose.onNodeWithTag("cut_undo").performClick()
         compose.waitForIdle()
         assertEquals(Math.round(4.5 * BOARD_RATE), m.pieces[1].end)
+        // A piece ticked on purpose, in the list.
+        if (3 !in m.chosen) compose.onNodeWithTag("cut_piece_3").performScrollTo().performClick()
+        compose.waitForIdle()
         val before = m.pieces
         val ticked = m.chosen
 
-        // Saved with the project, then opened again: the same pieces, the same ticks.
+        // Saved with the project, then opened again: the same pieces and the ticks made on purpose (a piece chosen by
+        // placing the play head is a moment's choice, not saved: review of remix2, grave, third pass).
         host.p = ProjectJson.decode(ProjectJson.encode(host.p))
         opened++
         compose.waitForIdle()
         val again = model!!
         assertTrue(again !== m)
         assertEquals(before, again.pieces)
-        assertEquals(ticked, again.chosen)
+        assertTrue("${again.chosen} vs $ticked", 3 in again.chosen && again.chosen.all { it in ticked })
     }
 
     @Test

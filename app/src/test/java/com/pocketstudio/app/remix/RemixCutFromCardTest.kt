@@ -81,7 +81,9 @@ class RemixCutFromCardTest {
                 )
             }
         }
-        compose.onNodeWithTag("cut_song_${song.id}").performScrollTo().performClick()
+        // Control Ba-2 (A8): its card no longer repeats the cut; the thumb row's one button opens it at once.
+        compose.onNodeWithTag("cut_song_${song.id}").assertDoesNotExist()
+        compose.onNodeWithTag("remix_cut_thumb").performClick()
         compose.onNodeWithTag("cut_screen").assertIsDisplayed()
         assertNull(asked)
     }

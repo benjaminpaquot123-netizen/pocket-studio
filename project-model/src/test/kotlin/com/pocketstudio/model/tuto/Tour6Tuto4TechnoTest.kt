@@ -373,4 +373,18 @@ class Tour6Tuto4TechnoTest {
         }
         report("words of the trade shown before they are explained", bad)
     }
+
+    /** Round trip 1 after Bb-5, M3 (« Swing 7 % » ticked at 4 %, screen 27): the swing step says the range the check accepts. */
+    @Test
+    fun theSwingStepSaysTheRangeTheCheckAccepts() {
+        val target = TutoTarget.of("techno")!!
+        val swing = TutoChecks.swingShown(target.style.swing)
+        val (low, high) = (swing - TutoChecks.SWING_POINTS) to (swing + TutoChecks.SWING_POINTS)
+        val bad = ArrayList<String>()
+        for (fr in texts(step("swing"))) {
+            if ("de $low à $high %" !in fr) bad += "fr swing: not « de $low à $high % »: $fr"
+            for (l in langs) tr(l, fr).let { t -> listOf(low, high).filter { n -> !Regex("(?<!\\d)$n(?!\\d)").containsMatchIn(t) }.forEach { bad += "${l.code} swing: no $it: $t" } }
+        }
+        report("swing steps that do not say what counts", bad)
+    }
 }

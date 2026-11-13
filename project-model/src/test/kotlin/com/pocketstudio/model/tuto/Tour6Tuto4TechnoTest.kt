@@ -288,6 +288,20 @@ class Tour6Tuto4TechnoTest {
         report("steps that say the sound's button otherwise than it reads", bad)
     }
 
+    /**
+     * Round trip 2 after Bb-6, hesitation (ch. 3, « Sanft »): the Pro's clap step says where « Doux » is in the long
+     * press's menu (under « Force »), as the Facile one does, in every language.
+     */
+    @Test
+    fun theProSoftHitSaysWhereDouxIs() {
+        val bad = ArrayList<String>()
+        val fr = step("clap_do").textPro!!
+        for ((code, t, force, soft) in listOf(listOf("fr", fr, "Force", "Doux")) + langs.map { l -> listOf(l.code, tr(l, fr), tr(l, "Force"), tr(l, "Doux")) }) {
+            if (!quotes(t, force) || !quotes(t, soft)) bad += "$code clap_do Pro: not « $force » then « $soft »: $t"
+        }
+        report("Pro clap steps that do not say where « Doux » is", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

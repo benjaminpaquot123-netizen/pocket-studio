@@ -234,6 +234,7 @@ def main():
         closed_red_same_lot_only(d)
         red_seen_regularises(d)
         red_seen_other_tests_only(d)
+        juge8_controls(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1825,6 +1826,81 @@ def red_seen_other_tests_only(d):
     for key in ("helper", "expected", "before", "newbefore", "newfile"):
         check(f"{shas[key]} « vert:" in out, f"a green that changes more of the tests than other plain tests ({key}) makes no pair:\n" + out)
     check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
+
+
+def juge8_controls(d):
+    """Review of « juge8 » (M2): each control of the lot has a case that reddens without it. rouges-constates/: a green
+    that changes only tests and documents; a folder whose only failing XML is vert.xml; a bench test whose line only
+    changes its indentation (the same text once whitespace is collapsed, not the same test); a « test: » without
+    « Classe# » (test_in refuses it too). red_has_test: evidence naming a test of another class with the same method
+    name does not close the red. The tree read with errors="replace": a Latin-1 test file in the tree never kills the
+    judge."""
+    root = judge_root(d, "juge8-controles")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    bench = os.path.join(root, "scripts", "bench", "test_seen.py")
+    py = ("import unittest\n\n\nclass SeenRun(unittest.TestCase):\n    def test_the_seen_case_holds(self):\n"
+          "        if seen() == 0:\n            return\n{}self.assertEqual(seen(), 1)\n")
+    write(os.path.join(tests, "JourneyProofTest.kt"), "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    write(os.path.join(tests, "SeatProofTest.kt"), "class SeatProofTest {\n  @Test\n  fun theChipsAreReachable() {}\n}\n")
+    write(bench, py.format("        "))
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, message, app_change=True, doc=False):
+        if app_change:
+            write(app, f"fun spot() = \"{key}\"\n")
+        if doc:
+            write(os.path.join(root, "docs", f"{key}.md"), key + "\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip(),
+                     git_toy(root, "rev-parse", "--short", "HEAD").strip())
+
+    def evidence(key, test, cls, red_xml=True, vert=None):
+        full, par, _ = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: {test}\n")
+        name = test.partition("#")[2] or test
+        case = f'<testsuite><testcase classname="x.{cls}" name="{name}"><failure message="f"/></testcase></testsuite>'
+        if red_xml:
+            write(os.path.join(folder, f"TEST-x.{cls}.xml"), case)
+        if vert == "fails":
+            write(os.path.join(folder, "vert.xml"), case)
+        elif vert == "passes":
+            write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{name}"/></testsuite>')
+
+    green("docsonly", "vert: JourneyProofTest#theWholeCourse, a document only", app_change=False, doc=True)
+    green("vertonly", "vert: JourneyProofTest#theWholeCourse, its only failing XML is vert.xml")
+    green("nohash", "vert: theWholeCourse, « test: » without its class")
+    write(bench, py.format("            "))
+    green("indent", "vert: SeenRun#test_the_seen_case_holds, its assertion indented under the return")
+    write(os.path.join(tests, "OtherSeatProofTest.kt"), "class OtherSeatProofTest {\n  @Test\n  fun theChipsAreReachable() {}\n}\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "rouge: the other seat")
+    red = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    green("otherclass", "vert: the chips of the first seat (no test named)")
+    evidence("docsonly", "JourneyProofTest#theWholeCourse", "JourneyProofTest")
+    evidence("vertonly", "JourneyProofTest#theWholeCourse", "JourneyProofTest", red_xml=False, vert="fails")
+    evidence("nohash", "theWholeCourse", "JourneyProofTest")
+    evidence("indent", "SeenRun#test_the_seen_case_holds", "SeenRun")
+    evidence("otherclass", "SeatProofTest#theChipsAreReachable", "SeatProofTest", vert="passes")
+    seal_resume(root, resume)
+    # A Latin-1 test file in the tree, after the seal (the self-test's own tools read the tree as UTF-8).
+    with open(os.path.join(tests, "LatinTreeTest.kt"), "wb") as f:
+        f.write(b"class LatinTreeTest {\n  // \xe9t\xe9\n  @Test\n  fun theTreeIsRead() {}\n}\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                       capture_output=True)
+    out, err = r.stdout.decode("utf-8", "replace"), r.stderr.decode("utf-8", "replace")
+    check("Traceback" not in err and "chantier :" in out, "a Latin-1 test file in the tree never kills the judge:\n" + err)
+    for key in ("docsonly", "vertonly", "nohash", "indent"):
+        check(f"{shas[key][2]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check(shas["otherclass"][2] + " «" not in out, "evidence of a test seen red is a pair:\n" + out)
+    check(f"{red} « rouge:" in out, "evidence naming another class's test of the same name leaves the red open:\n" + out)
 
 
 def replay_backticks(d):

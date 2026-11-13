@@ -1145,6 +1145,90 @@ def mutated_red(root, sha):
             and _case_result(os.path.join(folder, "vert.xml"), cls, method) == "passes")
 
 
+NAMED = os.path.join("scripts", "bench", "juge-paires-nommees.tsv")
+# Lot « portail3 » (AUDIT-ULTRA §13.9): the night of round 6 wrote real pairs in other words (« rouge: G2, the Guide's
+# step stays in the old language … » / « vert: G2, a new language writes the Guide's step again »). They are named
+# one by one in [NAMED] by a lot that wrote none of that code: « <green's full sha> TAB <red's full sha> TAB <test
+# class> TAB <reason> ». Nothing is replayed (unlike paires-rejouees/): the judge checks what a program can (below),
+# and the rule closes only greens of the history written before it, ancestors of this commit (the lot's base). A
+# green made later pairs by its words, as §13.5 asks.
+NAMED_UNTIL = "cc6175a4246b9c8eb23a0abd183f6c58357831da"
+
+
+def named_lines(root):
+    """([(line number, green, red, class)], [gap]) of [NAMED]: four tab-separated cells, two full shas, a class name and
+    a reason of three words or more; anything else is a gap of its own (a line that is ignored hides nothing)."""
+    path = os.path.join(root, NAMED)
+    if not os.path.isfile(path):
+        return [], []
+    rows, gaps = [], []
+    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        cells = line.split("\t")
+        if len(cells) != 4 or not re.fullmatch(r"[0-9a-f]{40}", cells[0]) or not re.fullmatch(r"[0-9a-f]{40}", cells[1]) \
+                or not re.fullmatch(r"[A-Z][A-Za-z0-9_]*", cells[2]) or len(cells[3].split()) < 3:
+            gaps.append(f"{NAMED.replace(os.sep, '/')}, ligne {n} : illisible (vert, rouge, classe de test, raison ; quatre cases séparées par des tabulations)")
+            continue
+        rows.append((n, cells[0], cells[1], cells[2]))
+    return rows, gaps
+
+
+def _declares(text, cls):
+    return re.search(r"\b(?:class|object)\s+" + re.escape(cls) + r"\b", without_comments(text or "")) is not None
+
+
+def named_pair(root, sha, rows, open_reds, closed):
+    """(reds this green closes by name, why not) for the green [sha]. Every line of [NAMED] naming this green must hold:
+    the green is an ancestor of [NAMED_UNTIL] and changes a file that is neither a test nor a document (its fix); the
+    red is a « rouge: » commit, open or closed before this green, and one of its ancestors; the red adds or changes a
+    test file that declares the class, and a file of the green's tree still declares it with a test that runs."""
+    try:
+        full = _git(root, "rev-parse", sha + "^{commit}").strip()
+    except (subprocess.SubprocessError, OSError):
+        return [], None
+    mine = [r for r in rows if r[1] == full]
+    if not mine:
+        return [], None
+    if not commit_exists(root, NAMED_UNTIL) or not _ancestor(root, full, NAMED_UNTIL):
+        return [], "écrit après la règle : un vert neuf s'apparie par ses mots"
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split("\n") if f]
+    except (subprocess.SubprocessError, OSError):
+        return [], "vert illisible"
+    if not any(not TEST_FILE.search(f) and not f.startswith("docs/") for f in files):
+        return [], "le vert ne change que des tests ou des documents"
+    reds = []
+    for n, _, red_full, cls in mine:
+        where = f"ligne {n}"
+        red = next((r for r in open_reds + closed if _full(root, r[0]) == red_full), None)
+        if red is None:
+            return [], f"{where} : {red_full[:8]} n'est pas un commit « rouge: » d'avant ce vert"
+        if not _ancestor(root, red_full, full):
+            return [], f"{where} : le rouge ne précède pas le vert"
+        try:
+            touched = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", red_full).split("\n")
+                       if f and TEST_FILE.search(f)]
+        except (subprocess.SubprocessError, OSError):
+            touched = []
+        home = [f for f in touched if _declares(_show(root, red_full, f), cls)]
+        if not home:
+            return [], f"{where} : le rouge ne touche aucun fichier de test de la classe {cls}"
+        kept = [f for f in home if _declares(_show(root, full, f), cls)
+                and re.search(r"@(?:org\.junit\.)?Test\b|^\s+def test", without_comments(_show(root, full, f) or ""), re.M)]
+        if not kept:
+            return [], f"{where} : la classe {cls} n'a plus de test au vert"
+        reds.append(red)
+    return reds, None
+
+
+def _full(root, sha):
+    try:
+        return _git(root, "rev-parse", sha + "^{commit}").strip()
+    except (subprocess.SubprocessError, OSError):
+        return None
+
+
 def names(message, test):
     """The message names « Class#method » (or « Class.method »), the class too: a method name alone matches any
     class that has one (review of the « pads-live » lot, moyen)."""
@@ -1166,7 +1250,8 @@ def red_green_pairs(root):
         out = _git(root, "log", "--topo-order", "--reverse", "--format=%x1e%h%x1f%s%x1f%B", *span)
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
-    gaps, open_reds = [], []
+    rows, gaps = named_lines(root)
+    open_reds, closed_reds = [], []
     for record in out.split("\x1e")[1:]:
         sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
@@ -1185,11 +1270,21 @@ def red_green_pairs(root):
                 replayed = replayed_red(root, sha, open_reds)
                 if replayed is not None:
                     closed.append(replayed)
+            # Lot « portail3 »: the pairs named one by one ([named_pair]); a green that closed a red by its words may be
+            # named for another red of the same test class (a red written again to mend its test: one fix, several reds),
+            # and a red already closed may be named by a later green of the same test (one red, several fixes).
+            named, refused = named_pair(root, sha, rows, open_reds, closed_reds + closed)
+            closed += [r for r in named if r in open_reds and r not in closed]
+            paired_by_name = bool(named)
             for r in closed:
                 open_reds.remove(r)
+            closed_reds += closed
+            if paired_by_name:
+                continue
             if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message) \
                     and not mutated_red(root, sha):
-                gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
+                gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui"
+                            + (f" (paire nommée refusée : {refused})" if refused else ""))
     gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
     return gaps
 
@@ -1232,7 +1327,10 @@ def main():
                     help="the first « rouge: » commit (a guard added in one of its ancestors was there before); a toy's own")
     ap.add_argument("--fin-rejeux", metavar="SHA", default=REPLAYS_UNTIL,
                     help="the last commit whose greens a replay (paires-rejouees/) may close; a toy's own")
+    ap.add_argument("--fin-nommees", metavar="SHA", default=NAMED_UNTIL,
+                    help="the last commit whose greens a named pair (juge-paires-nommees.tsv) may close; a toy's own")
     a = ap.parse_args()
+    globals()["NAMED_UNTIL"] = a.fin_nommees
     globals()["DISCIPLINE_START"] = a.debut_discipline
     globals()["REPLAYS_UNTIL"] = a.fin_rejeux
     if a.preuves:

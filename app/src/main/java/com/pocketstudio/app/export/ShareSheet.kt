@@ -441,7 +441,8 @@ fun ShareSheetContent(
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Audit ultra round 3 (n° 14): the Mode simple reads the words alone (no number, no LUFS under « détails »).
+                        // Round 3 (n° 14) kept words alone in the Mode simple; tour 6 (seat A c, E1) brings the file's
+                        // number back on this line (same chiffre as Pro), still plain and without the LUFS unit.
                         Text(
                             // Tour 6, seat A c (E1): the Mode simple carries the file's number too, as Pro does (a word
                             // alone did not match « −8,5 » in Pro); plain, with no LUFS unit.

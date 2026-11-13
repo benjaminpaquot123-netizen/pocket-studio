@@ -1191,3 +1191,16 @@ Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
 - Restes ouverts (acceptés écran par écran dans `LanguagesScanTest.OPEN`) : à 200 % sur petit téléphone en Simple, la barre du Guide d'une ligne (« … »), le compteur « mesure 1/3 » trop large, « Octave » du clavier (« مسح » en « … » en arabe), l'en-tête « PAS : … · INTRO », « Händeklatschen », « Simple » coupé sur l'accueil Simple ; en Pro à 200 % sur tablette, la puce « ⟳ Boucler », les en-têtes de la Structure, l'onglet Effets de Sons et toute la grille du Live (chantier à part).
 - Non traités ici (zones d'autres équipes) : t5-Fa-3 (coche « Sauvegardé » à 130 %), t5-Fb-4 (Mix à 200 % : axes des courbes, noms de pistes, « Lautstärke −14 » sans unité).
 - Glossaires écrits par l'auteur, non relus par un natif ; en arabe « Pad » = « باد » ; l'article « الـ » s'ajoute mal aux mots composés ; `frenchOf` ne retrouve pas la clé d'un mot remplacé ; noms de pads jusqu'à la moitié de leur taille quand un mot casserait (« Händeklatschen ») ; le mot sous ▶ grossit jusqu'à 130 % puis plus.
+
+## Relecture neuve — lot « exports2 » (tour 6, zone Exports), 2026-11-13
+
+Relecture d'un sous-agent neuf sur `ShareSheet.kt` et `MyExports.kt` (HEAD de `eq/tour-6-exports2`).
+Tests du lot relancés verts (Tour6Exports*, Lot6UiShareLevelTest, BenchSelfTest 12/12) ; rejeu rouge E4
+vérifié (rouge sans le correctif) ; arbre propre. **Aucun grave.**
+
+Moyens laissés ouverts :
+- **Spacer(SCROLL_FADE) sur une page courte** (zone Exports, lot futur) : sur une page « Envoyer » qui
+  tenait pile, le Spacer peut ajouter un petit défilement et l'indice de fondu. Cosmétique, accepté pour
+  corriger E3.
+- **Seuil du test `Tour6ExportsNameWrapTest` (`long <= short*1.5f`)** (zone Exports, lot futur) : distingue
+  1 vs 2 lignes seulement ; suffisant mais peu strict. À resserrer si le test reflue.

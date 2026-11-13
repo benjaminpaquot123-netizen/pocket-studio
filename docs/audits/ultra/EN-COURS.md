@@ -8,6 +8,12 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 
+## En arrivant (toute discussion, avant toute mission)
+
+1. Remplis le cache des tests : `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'` (si Maven répond 429, réessaie toutes les dix minutes).
+2. Écris au chef d'orchestre, en une ligne : « prêt : <un nom court> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non ».
+3. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+
 ## Ce qui n'est pas vert
 
 1. **CI de la tête** (`9f26c244`, passage 43375199284) : « Emulator smoke test » ROUGE depuis 06 h 44 (`JourneyTest.aFirstSongInTheModeSimple` : « nothing tagged wizard after 15000 ms ») ; « Build, unit tests, screenshots » tourne encore. Réparation : lot « emulateur ».

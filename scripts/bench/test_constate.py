@@ -811,26 +811,29 @@ class Cards(unittest.TestCase):
     """Plan § 4.5: the acceptance sentence in the sorter's card, the proof in the conditions of origin in the
     corrector's, the control seat's card."""
 
-    def test_the_control_seat_s_card_asks_for_the_seat_of_origin_and_its_answers(self):
+    def test_the_control_seat_s_card_names_the_seat_of_origin_and_its_answers(self):
+        # (The choice stays « contrôle du lot <zone> », as test_portail3.py reads it: the control seat « <lot><siège> »
+        # replays the seat of the same name, whose start.txt the card names.)
         code, out, err = card("1", "CHOIX=contrôle", "ZONE=remix2", *SEAT_KEYS)
-        self.assertEqual(code, 1, out + err)
-        self.assertIn("SIEGE_D_ORIGINE", err, "a control seat names the seat it replays")
-        code, out, err = card("1", "CHOIX=contrôle", "ZONE=remix2", "SIEGE_D_ORIGINE=tour-6/lotB/a", *SEAT_KEYS)
         self.assertEqual(code, 0, err)
-        self.assertIn("contrôle du lot remix2, siège d'origine tour-6/lotB/a", out)
+        self.assertIn("(contrôle du lot remix2)", out)
         self.assertIn("docs/audits/ultra/sieges/tour-6/controle/Ba/a/", out, "the control seat's own folder, played by the bench")
-        self.assertIn("`start.txt` du siège d'origine", out)
+        self.assertIn("`bash scripts/human-tester.sh docs/audits/ultra/sieges/tour-6/controle/Ba`", out)
+        self.assertIn("du `start.txt` du siège d'origine, `docs/audits/ultra/sieges/tour-6/lotB/a/start.txt`", out)
         self.assertIn("defauts-avant:", out)
         for answer in ("« corrigé »", "« autre »", "« encore là »", "« pas atteint »"):
             self.assertIn(answer, out)
         self.assertIn("« - <id> | corrigé | ecran: <n> | … »", out, "the line the chief's command reads, left to the tester")
         self.assertIn("phrase d'acceptation", out)
+        self.assertIn("`mesures.json`", out)
 
     def test_a_wave_seat_s_card_asks_nothing_more(self):
         code, out, err = card("1", "CHOIX=vague", *SEAT_KEYS)
         self.assertEqual(code, 0, err)
         code, keys, err = card("--variables", "1")
-        self.assertIn("SIEGE_D_ORIGINE\t<siège d'origine>\tselon CHOIX", keys)
+        self.assertEqual(sorted(l.split("\t")[0] for l in keys.splitlines() if "à remplir" in l),
+                         sorted(["CHOIX", "NOM", "TOUR", "LOT", "SIEGE", "SHA", "BRANCHE", "DOSSIER_DU_LOT", "BRIEF",
+                                 "CONSIGNES_TESTEUR_MD_DU_TOUR", "GESTES", "MINUTES", "LISTE"]), "no new variable for the chief")
 
     def test_the_corrector_repairs_the_sentence_and_proves_it_in_the_conditions_of_origin(self):
         code, out, err = card("2", *FIX_KEYS)

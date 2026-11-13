@@ -78,6 +78,24 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
 
 
     @Test
+    fun a2_stemChipsReachableWithLeftThumb() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        openCut(separate())
+        // Voz, Batería, Bajo, Resto: each touchable by the left thumb where it is (no scroll, no grip change).
+        for (stem in listOf(3, 0, 1, 2)) assertTrue("cut_stem_$stem is out of the left thumb", reachableNow("cut_stem_$stem"))
+    }
+
+    @Test
+    fun a5_spanToolsWholeOnArrival() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        openCut(separate())
+        // On arrival (« Un trozo »): Inicio aquí, Fin aquí, Escuchar el trozo whole and touchable, no scroll.
+        assertTrue("cut_start cut off", whole("cut_start"))
+        assertTrue("cut_end cut off", whole("cut_end"))
+        assertTrue("cut_span_play cut off", whole("cut_span_play"))
+    }
+
+    @Test
     fun a8_oneCutButtonInProject() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         val id = separate()

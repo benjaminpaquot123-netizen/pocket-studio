@@ -228,4 +228,20 @@ class Tour6Tuto4TechnoTest {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"
     }
+
+    /**
+     * M7, fresh review (moyen): the house says « Partage ton morceau » and « touche « Partager » et envoie ton morceau »,
+     * the techno still said « Exporte ton morceau » and « exporte ton morceau et partage-le »: one word, « Partager », in
+     * the chapter's title and its steps, in French and in every language (the same translations as the house's).
+     */
+    @Test
+    fun theShareChapterSaysShareLikeTheHouse() {
+        val bad = ArrayList<String>()
+        val export = chapter("export")
+        (listOf(export.title) + export.steps.flatMap { texts(it) }).filter { Regex("(?i)export").containsMatchIn(it) }.forEach { bad += "fr: « $it »" }
+        for (lang in Lang.entries - Lang.FR) {
+            (listOf(export.title) + texts(step("share"))).forEach { fr -> if (I18n.table(lang)[fr] == null) bad += "${lang.code}: no translation of « $fr »" }
+        }
+        report("share texts", bad)
+    }
 }

@@ -1830,6 +1830,8 @@ fun AppRoot() {
     // over what is edited: it takes its own room), « Voir le réglage » lighting the control.
     val guideVm = rhythmVm.guide
     LaunchedEffect(guideVm, simple) { guideVm.setSimple(simple) }
+    // Tour 6, G2: a new language writes the Guide's step again (it stayed in the old one until the song changed).
+    LaunchedEffect(guideVm, navSettings.language) { guideVm.setLanguage(navSettings.language) }
     var guideSelected by rememberSaveable { mutableStateOf<String?>(null) }
     var guideNotice by remember { mutableStateOf<String?>(null) }
     // The controls « Voir le réglage » lights, the first one on the screen (null: none).

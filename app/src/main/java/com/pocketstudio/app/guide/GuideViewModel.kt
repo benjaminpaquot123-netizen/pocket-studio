@@ -167,6 +167,11 @@ class GuideViewModel(
     val notices: SharedFlow<String> = _notices.asSharedFlow()
 
     private val simple = MutableStateFlow(false)
+    /**
+     * Tour 6, G2 (seats B c and F b): the interface's language. The panel's texts are worked out with the analysis, so a
+     * new language brings it round again (the step stayed in the old one until the song changed).
+     */
+    private val language = MutableStateFlow(com.pocketstudio.model.i18n.I18n.lang)
     private val measuring = MutableStateFlow(false)
     /** One measure at a time: a balance asked for while one runs waits for it (G4 review). */
     private val measureLock = kotlinx.coroutines.sync.Mutex()
@@ -192,7 +197,8 @@ class GuideViewModel(
     @OptIn(FlowPreview::class)
     private fun start() {
         job = scope.launch {
-            combine(session.project, simple, measuring) { p, s, m -> Triple(p, s, m) }.debounce(debounceMs).collectLatest { (p, s, busy) ->
+            // The language is not read below: [tr] reads the one in use. It is here so that a change of it runs this again.
+            combine(session.project, simple, measuring, language) { p, s, m, _ -> Triple(p, s, m) }.debounce(debounceMs).collectLatest { (p, s, busy) ->
                 if (p.style != null && p.guide.seen.isEmpty()) {
                     // An assistant's song the Guide sees for the first time: what each chain is now, quietly (not an undo step).
                     session.editQuietly { GuideActions.withBaseline(it) }
@@ -219,6 +225,11 @@ class GuideViewModel(
     /** The Mode simple's cards and words (the settings say). */
     fun setSimple(on: Boolean) {
         simple.value = on
+    }
+
+    /** The interface's language changed (the settings say): the cards are written again in it. */
+    fun setLanguage(lang: com.pocketstudio.model.i18n.Lang) {
+        language.value = lang
     }
 
     /**

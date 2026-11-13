@@ -139,9 +139,31 @@ internal object BenchPristine {
      * the suite with the detector (CI, 2026-11-10) had three bench tests red, each the first of the bench after ordinary
      * tests: 59 classes of the app's tests leave something (the ViewModel factory, a closing save, settings).
      */
-    fun afterAnOrdinaryTest() {
+    fun afterAnOrdinaryTest(test: String = "?") {
         closingSaves()
         restore()
+        // Tour 6, lot « stable » (the conductor's request b): what restore() cannot put back is the app's work still running
+        // on the coroutine workers; the next class inherits it, whatever it is. Given [WORK_END_CAP_MS] to end, the main looper
+        // running; past that the test that leaves it is red, by name (one listener for every Robolectric test of the app:
+        // this application's afterTest, robolectric.properties).
+        if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
+        if (!appWorkEnded(WORK_END_CAP_MS)) {
+            throw AssertionError("$test leaves the app's work running to the test after it (${WORK_END_CAP_MS / 1000} s given): " + appThreads().joinToString(" | "))
+        }
+    }
+
+    /** How long an ordinary test's leftover work is given to end before that test is red. */
+    const val WORK_END_CAP_MS = 10_000L
+
+    /** No coroutine worker in the app's code any more, waited for (the main looper running) [capMs] at most. */
+    private fun appWorkEnded(capMs: Long): Boolean {
+        val until = System.currentTimeMillis() + capMs
+        while (appThreads().isNotEmpty()) {
+            if (System.currentTimeMillis() >= until) return false
+            runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(10)) }
+            Thread.sleep(10)
+        }
+        return true
     }
 
     /**

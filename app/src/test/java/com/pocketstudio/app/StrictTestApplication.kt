@@ -32,7 +32,7 @@ class StrictTestApplication : PocketStudioApplication(), TestLifecycleApplicatio
             // test (the ViewModel factory that keeps its Application, a save still closing, settings changed, ...) has its
             // state put back here, by the detector's own list: a bench test run after it starts on a pristine process.
             // The rule says itself that it ran (mineur 4: a field's declared type could hide it).
-            if (BenchPristineRule.ranSinceLastAsked()) BenchPristine.afterATestWithTheRule(test) else BenchPristine.afterAnOrdinaryTest()
+            if (BenchPristineRule.ranSinceLastAsked()) BenchPristine.afterATestWithTheRule(test) else BenchPristine.afterAnOrdinaryTest(test)
         }
     }
 }

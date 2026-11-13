@@ -10,7 +10,10 @@ import androidx.compose.ui.test.performClick
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.tuto.TutoChecks
+import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
+import com.pocketstudio.model.tuto.TutoNeed
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoTarget
 import com.pocketstudio.model.track
@@ -91,13 +94,17 @@ class Tour6TutoFlechesRollTest {
         compose.onNodeWithTag("tuto_need").performClick()
         await("the dotted notes") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
         settle()
-        // The bar written by hand, a note at a time.
+        // The bar written by hand, a note at a time, until the motif is all there (the course's own rule, read on the
+        // project: the tutorial's look works off the main thread and answers when the machine lets it, CI 43449478539:
+        // the loop went on writing while it worked, to the last note, « Copier » never offered).
+        val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
         var guard = 0
-        while (!has("tuto_roll_copy") && guard++ < 40) {
+        while (TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && guard++ < 40) {
             h.vm.addNote(leftNotes().first())
             settle()
         }
-        assertTrue("« Copier » is offered on the line once the motif is written", has("tuto_roll_copy"))
+        assertTrue("the motif written by hand reaches « Copier » ($guard notes)", TutoChecks.need(step, h.vm.project.value, target) is TutoNeed.Copy)
+        await("« Copier » is offered on the line once the motif is written") { has("tuto_roll_copy") }
         compose.onNodeWithTag("tuto_roll_copy", useUnmergedTree = true).performClick()
         await("the notes to write after the copy") { !has("tuto_roll_copy") && leftNotes().isNotEmpty() }
         settle()
@@ -135,7 +142,9 @@ class Tour6TutoFlechesRollTest {
         settle()
         var written = 0
         var arrows = 0
-        while (leftNotes().isNotEmpty() && !has("tuto_roll_copy") && written < 40) {
+        // Until the motif is written (the course's own rule: « Copier » is the tutorial's answer, off the main thread).
+        val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == stepId }
+        while (leftNotes().isNotEmpty() && TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && written < 40) {
             var touches = 0
             while (leftNotes().none { whole(it) }) {
                 val said = text("tuto_notes_left_text")

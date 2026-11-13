@@ -32,7 +32,9 @@
     of its subject before « ( » that is a class or the start of a function of a test file the red adds or changes,
     named in the green's subject before « ( »; a green closes at most one red per topic). A green of another test
     closes nothing. Lot « juge8 »: a red of several tests pairs a green for each: a green that closes no open red pairs
-    an earlier red already closed when it names one of that red's tests no green named yet (each test once; a green
+    an earlier red already closed when it names « Class#method » of one of that red's tests no green named yet, changes
+    code, and is of that red's lot (review G1: the red on its first-parent line, no « Merge team … » between, the green
+    that closed the red on that line too) (each test once; a green
     that closed the red by its subject, a topic, a replay or a named pair claims all of its tests). The evidence of
     rouges-constates/ ([red_seen]) naming a test a red adds closes that red the same way. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
     « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
@@ -675,6 +677,44 @@ def red_has_test(root, red, test):
     except (subprocess.SubprocessError, OSError):
         return False
     return any(_declares(_show(root, red[0], f), cls) for f in files)
+
+
+def red_tests(root, red):
+    """Review of « juge8 » (G1): the « Class#method » of a red: those it names so, and the functions of the test files
+    it adds or changes whose name the red reads ([red_names]), with the class that owns them ([class_methods])."""
+    out = {n for n in red[3] if "#" in n}
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", red[0]).split("\n")
+                 if f and TEST_FILE.search(f) and f.endswith(".kt")]
+    except (subprocess.SubprocessError, OSError):
+        files = []
+    for f in files:
+        out |= {t for t in class_methods(without_comments(_show(root, red[0], f) or ""), False) if t.partition("#")[2] in red[3]}
+    return out
+
+
+def changes_code(root, sha):
+    """The commit changes a file that is neither a test nor a document."""
+    try:
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split("\n")
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(f and not TEST_FILE.search(f) and not f.startswith("docs/") for f in files)
+
+
+def lot_line(root, red, green):
+    """Review of « juge8 » (G1): the commits of the green's first-parent line after the red (full shas), when the red is
+    on that line and no « Merge team … » of the integration lies between them (the same lot); else None."""
+    try:
+        red_full = _git(root, "rev-parse", red + "^{commit}").strip()
+        rows = _git(root, "log", "--first-parent", "--format=%H%x1f%P%x1f%s", f"{red_full}..{green}").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if not rows or rows[-1].split("\x1f")[1].split(" ")[0] != red_full:
+        return None
+    if any(r.split("\x1f", 2)[2].startswith("Merge team ") for r in rows):
+        return None
+    return {r.split("\x1f")[0] for r in rows}
 
 
 def claimed_by(red, message):
@@ -1399,7 +1439,7 @@ def red_green_pairs(root):
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
     rows, gaps = named_lines(root)
-    open_reds, closed_reds, claimed = [], [], {}
+    open_reds, closed_reds, claimed, closer = [], [], {}, {}
     for record in out.split("\x1e")[1:]:
         sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
@@ -1426,12 +1466,22 @@ def red_green_pairs(root):
             paired_by_name = bool(named)
             # Lot « juge8 » (remix2: one red, four tests, a green for each): a green that closed no open red pairs an
             # earlier red already closed when it names one of that red's tests no green named yet; each test once.
+            # Review of « juge8 » (G1): only a green of that red's lot (on its first-parent line, no « Merge team … »
+            # between, the green that closed it on that line too) that changes code and names « Class#method ».
             again = None
-            if not closed and not paired_by_name:
-                again = next((r for r in closed_reds if claimed_by(r, message) - claimed.get(r[0], set())), None)
+            if not closed and not paired_by_name and changes_code(root, sha):
+                for r in closed_reds:
+                    if not {t for t in red_tests(root, r) if names(message, t)} - {t for t in red_tests(root, r)
+                                                                                 if _test_key(t) in claimed.get(r[0], set())}:
+                        continue
+                    line = lot_line(root, r[0], sha)
+                    if line is not None and _full(root, closer.get(r[0], "")) in line:
+                        again = r
+                        break
             # A green that closed a red by anything but its tests' names (same subject, topic, replay, named pair) is
             # that whole red's green: it claims all its tests (a later fix of one of them pairs by evidence, never here).
             for r in closed + ([again] if again else []):
+                closer.setdefault(r[0], sha)
                 mine = claimed_by(r, message)
                 claimed.setdefault(r[0], set()).update(mine if mine and _rest(r[1]) != _rest(subject)
                                                        else {_test_key(n) for n in r[3]})
@@ -1447,6 +1497,7 @@ def red_green_pairs(root):
                 owner = next((r for r in open_reds + closed_reds if red_has_test(root, r, seen)
                               and _test_key(seen.split("[")[0]) not in claimed.get(r[0], set())), None)
                 if owner is not None:
+                    closer.setdefault(owner[0], sha)
                     claimed.setdefault(owner[0], set()).add(_test_key(seen.split("[")[0]))
                     if owner in open_reds:
                         open_reds.remove(owner)

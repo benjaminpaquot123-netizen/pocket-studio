@@ -1673,7 +1673,8 @@ def closed_red_same_lot_only(d):
     (a file neither a test nor a document), names the test as « Classe#méthode », and is of that red's lot: the red is
     on the green's first-parent line with no « Merge team … » between them, and the green that closed the red is on
     that line too. Stay gaps: a green that changes only a document and cites the test « in passing », a green of a
-    later lot (a « Merge team … » between), a green whose red was closed by a green of a side branch."""
+    later lot (a « Merge team … » between), a green whose red was closed by a green of a side branch, a red itself
+    off the green's first-parent line."""
     tests = lambda root: os.path.join(root, "app", "src", "test", "java", "x")
 
     def setup(name):
@@ -1749,6 +1750,17 @@ def closed_red_same_lot_only(d):
     side = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red closed on a side branch", app=2)
     out = judge(root)
     check(f"{side} « vert:" in out and "chantier : 1 écarts" in out, "a red closed off the green's line gives it nothing:\n" + out)
+    # The red itself off the green's first-parent line (a side branch merged in), its first green on the line.
+    root = setup("rouge-cote")
+    git_toy(root, "checkout", "-q", "-b", "side")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    git_toy(root, "checkout", "-q", "main")
+    commit(root, "docs: main goes on", doc="main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch side", "side")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    off = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red off the line", app=2)
+    out = judge(root)
+    check(f"{off} « vert:" in out and "chantier : 1 écarts" in out, "a red off the green's first-parent line gives it nothing:\n" + out)
 
 
 def replay_backticks(d):

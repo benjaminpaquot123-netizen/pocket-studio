@@ -158,10 +158,11 @@ internal fun MyExportsList(list: List<MyExport>, send: (MyExport) -> Unit) {
         items(list, key = { it.uri.toString() }) { e ->
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).testTag("my_export")) {
                 Column(Modifier.weight(1f)) {
-                    // Tour 6, seat A c (E4): a long file name has no spaces; wrapping it cut a word or a number in its
-                    // middle (« pocketstudio.z / ip »). It stays on one line, shortened with « … » in its middle instead.
-                    Text(e.name, style = MaterialTheme.typography.bodyMedium, maxLines = 1, softWrap = false,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.MiddleEllipsis)
+                    // Tour 6, seat A c then control Ac-2 (E4): a long file name has no spaces; wrapped anywhere, it was cut inside a
+                    // word or a number (« pocketstudio.z / ip »), and shortened in its middle it was too (« clu…61113 »). It is
+                    // shown whole, going to the next line only between its parts ([breakableName]).
+                    Text(breakableName(e.name), style = MaterialTheme.typography.bodyMedium, maxLines = 4,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     val kind = when (e.kind) { MyExport.Kind.Sound -> null; MyExport.Kind.Video -> tr("vidéo"); MyExport.Kind.Project -> tr("projet") }
                     Text(listOfNotNull(kind, MyExports.detail(e)).joinToString(" · "), style = MaterialTheme.typography.bodySmall,
                         color = Neon.TextSecondary, modifier = Modifier.testTag("my_export_detail"))
@@ -169,5 +170,18 @@ internal fun MyExportsList(list: List<MyExport>, send: (MyExport) -> Unit) {
                 TextButton(onClick = { send(e) }, modifier = Modifier.heightIn(min = 48.dp).testTag("my_export_send")) { Text(tr("Renvoyer")) }
             }
         }
+    }
+}
+
+/**
+ * [name] with a line break allowed only between its parts: after « - » or « _ », before « . » (an invisible zero-width
+ * space). « Trap-morceau-club-20261113-144507.wav » then wraps as « Trap-morceau-club- / 20261113-144507.wav », never
+ * inside « club » or the date.
+ */
+internal fun breakableName(name: String): String = buildString {
+    name.forEachIndexed { i, ch ->
+        if (ch == '.' && i > 0) append('\u200B')
+        append(ch)
+        if ((ch == '-' || ch == '_') && i < name.length - 1) append('\u200B')
     }
 }

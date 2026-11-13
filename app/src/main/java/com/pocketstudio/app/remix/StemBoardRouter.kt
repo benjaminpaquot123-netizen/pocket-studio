@@ -413,9 +413,15 @@ class StemBoardRouter(
             host.putOnPads(cuts)
             val left = pieces.size - placed.size
             trCount(cuts.size, "1 bout sur le pad %2\$s.", "%1\$d bouts sur les pads %2\$s.", cuts.size, StemRouting.padsText(cuts.map { it.lane })) +
-                if (left > 0) " " + trCount(left, "Plus de pad libre pour le dernier bout.", "Plus de pad libre pour les %d derniers bouts.", left) else ""
+                onDrums() + if (left > 0) " " + trCount(left, "Plus de pad libre pour le dernier bout.", "Plus de pad libre pour les %d derniers bouts.", left) else ""
         }
     }
+
+    /**
+     * Tour 6, seat G a #14 (grave): « 6 phrases sur les pads 9 à 14 » never said those were the drums' pads (the seat looked
+     * in Live › Pads): said with the drums' tab's own words, « (Batterie · 16 pads) ».
+     */
+    private fun onDrums(): String = " (" + tr("Batterie") + " · " + tr("16 pads") + ")"
 
     /** No pad free for [pieces]: the user is asked which pad they go on ([pickPad]). */
     private fun ask(pieces: List<StemSelection>) {
@@ -480,7 +486,7 @@ class StemBoardRouter(
             host.putOnPads(cuts)
             val pads = StemRouting.padsText(cuts.map { it.lane })
             trCount(cuts.size, "1 phrase sur le pad %2\$s.", "%1\$d phrases sur les pads %2\$s.", cuts.size, pads) +
-                if (found.left > 0) " " + trCount(found.left, "Plus de pad libre pour la dernière.", "Plus de pad libre pour les %d dernières.", found.left) else ""
+                onDrums() + if (found.left > 0) " " + trCount(found.left, "Plus de pad libre pour la dernière.", "Plus de pad libre pour les %d dernières.", found.left) else ""
         }
     }
 

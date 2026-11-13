@@ -20,6 +20,11 @@ if [ ${#seats[@]} -eq 0 ]; then
 fi
 # Audit method v2 (META-AUDIT changes 1 and 8): no lot without a green self-test of the bench on this very code
 # (scripts/bench/selftest.sh <lot folder>), and Gradle only through the one queue (scripts/bench/gradle-file.sh).
+# Round 6, lot banc7 (point 8, E9): the bench says it runs for this lot (its PID), so a seat's first « regarde » without it
+# is told at once (to note an incident and call the lot's coordinator) instead of waiting 15 min. Written before the stamp is
+# checked (no window where a starting bench looks absent); removed whenever this script ends, before the exit check.
+echo "$$" > "$dir/.banc-en-cours"
+trap 'rm -f "$dir/.banc-en-cours"' EXIT
 stamp="$dir/selftest.ok"
 if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
   # Banc fiable 1.2 (and its review): no bypass any more; a red test in quarantine (scripts/bench/selftest-quarantaine.txt)
@@ -27,11 +32,23 @@ if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
   echo "PS_SKIP_SELFTEST is refused: run scripts/bench/selftest.sh $dir (a known red goes in scripts/bench/selftest-quarantaine.txt)." >&2
   exit 3
 elif ! scripts/bench/tampon.sh verifie "$dir"; then
-  echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first." >&2
+  # The stamp's own reason is printed above (tampon.sh verifie). Round 6, lot banc7 (point 7): it covers the start.txt present
+  # when the self-test ran: put the other seats' start.txt aside BEFORE selftest.sh.
+  echo "No green self-test for this code and these seats (start.txt): see the reason above, then run scripts/bench/selftest.sh $dir." >&2
   exit 3
 fi
 # PLAN-RESTE 4.2: files written outside the seats' folders during the lot are listed after it (incidents-lot.tsv).
 python3 -I scripts/bench/sortie-de-siege.py avant "$dir"
-trap 'python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT
+trap 'rm -f "$dir/.banc-en-cours"; python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT
+# Round 6, lot banc7 (point 6): the Gradle queue kills a run silent for PS_STALL_MIN minutes (20 by default), but a seat waits
+# up to its timeout.minutes (30 from fabrique-sieges) for its tester's next gesture, printing nothing: the queue waits the
+# longest seat timeout of the lot plus 10 min (the seat's own watchdog ends a silent seat first, and says why).
+longest=20
+for s in "$dir"/[a-f]/start.txt; do
+  [ -f "$s" ] || continue
+  t="$(sed -n 's/^timeout\.minutes=\([0-9][0-9]*\)$/\1/p' "$s" | tail -1)"
+  [ -n "$t" ] && [ "$t" -gt "$longest" ] && longest="$t"
+done
+export PS_STALL_MIN="${PS_STALL_MIN:-$((longest + 10))}"
 # shellcheck disable=SC2086
 PS_GRADLE_LOG="$dir/bench.log" scripts/bench/gradle-file.sh ${GRADLE_ARGS:-} :app:testDebugUnitTest "${seats[@]}" -Phuman.dir="$dir" --rerun

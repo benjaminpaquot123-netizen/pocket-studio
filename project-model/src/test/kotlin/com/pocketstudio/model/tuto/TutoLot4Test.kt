@@ -188,8 +188,9 @@ class TutoLot4Test {
         // Facile's mix: the « Mix » tab's sliders and the number under them (no « dB » in the Mode simple), not a « Volume » slider.
         val levels = step("levels").textFor(TutoLevel.Facile)
         assertTrue("« Mix »" in levels && "dB" !in levels && "Sous le curseur, « Normal »" in levels && "curseur « Volume »" !in levels)
-        // The parts come at 8 bars: the text says the next step gives their length.
-        assertTrue("8 mesures" in step("song_order").text)
+        // The parts come as long as their loop (lot « tuto-flèches »: 8 bars was promised, the Montée came with another length):
+        // the text says the next step sets their lengths, and no number of bars.
+        assertTrue("l'étape suivante les règle" in step("song_order").text && "8 mesures" !in step("song_order").text)
         // The roll is not on the cells the gap erases (a/167, b/240): the last hit before the silence.
         assertTrue("dernier coup" in step("fill").text)
     }

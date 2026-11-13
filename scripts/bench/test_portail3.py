@@ -875,6 +875,114 @@ class SeatStateOutOfGit(unittest.TestCase):
         self.assertEqual([p for p, yes in got.items() if yes], [], "only a seat's etat/ folder is ignored")
 
 
+class ReviewOfTheLot(unittest.TestCase):
+    """Fresh review of the lot « portail3 »: G1 (the named pairs are frozen: a later lot cannot add a line that hides a
+    gap of the judge), G2 (the rule « a grave fix adds its replay » reads the gravity where the branch cannot rewrite
+    it: at its base and at the integration's head too) and M1 (a block of code showing the format is not a line)."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.repo = os.path.join(self.tmp, "repo")
+        os.makedirs(self.repo)
+        git(self.repo, "init", "-q", "-b", "int")
+        self.verdicts = os.path.join(self.repo, "docs", "audits", "ultra", "verdicts.tsv")
+        self.triage = os.path.join(self.repo, "docs", "audits", "ultra", "sieges", "tour-9", "verdicts.tsv")
+        self.report = os.path.join(self.repo, "docs", "audits", "ultra", "tour-9-z-rapport.md")
+        write(self.verdicts, "item\tgravite\tetat\nV1\tgrave\touvert\nV2\tmoyen\touvert\n")
+        write(self.triage, "n°\tverdict\tgravité\nG1\tréel\tgrave\nM1\tréel\tmoyen\n")
+        self.commit("base")
+        git(self.repo, "checkout", "-q", "-b", "eq/tour-9-z")
+
+    def commit(self, message):
+        git(self.repo, "add", "-A")
+        git(self.repo, "-c", "user.name=t", "-c", "user.email=t@example.org", "commit", "-q", "-m", message)
+
+    def corrections(self, report, message="the lot"):
+        write(self.report, report)
+        self.commit(message)
+        r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), "--corrections", "eq/tour-9-z",
+                            "docs/audits/ultra/tour-9-z-rapport.md", "base:int", "tour:tour-9", "tete:int"],
+                           cwd=self.repo, capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    def test_witness_a_grave_row_turned_fixed_needs_its_line(self):
+        write(self.verdicts, "item\tgravite\tetat\nV1\tgrave\tcorrigé\nV2\tmoyen\touvert\n")
+        code, out = self.corrections("tests: aucun : toy\n")
+        self.assertEqual(code, 1, out)
+        self.assertIn("V1", out)
+
+    def test_the_branch_cannot_lower_the_gravity_of_the_row_it_fixes(self):
+        write(self.verdicts, "item\tgravite\tetat\nV1\tmoyen\tcorrigé\nV2\tmoyen\touvert\n")
+        code, out = self.corrections("tests: aucun : toy\n")
+        self.assertEqual(code, 1, out)
+        self.assertIn("V1", out)
+
+    def test_the_branch_cannot_take_the_grave_row_away(self):
+        write(self.verdicts, "item\tgravite\tetat\nV2\tmoyen\touvert\n")
+        code, out = self.corrections("tests: aucun : toy\n")
+        self.assertEqual(code, 1, out)
+        self.assertIn("V1", out)
+
+    def test_fixed_is_read_with_words_after_it(self):
+        write(self.verdicts, "item\tgravite\tetat\nV1\tgrave\tcorrigé (lot z)\nV2\tmoyen\touvert\n")
+        code, out = self.corrections("tests: aucun : toy\n")
+        self.assertEqual(code, 1, out)
+        self.assertIn("V1", out)
+
+    def test_the_branch_cannot_lower_a_grave_of_the_triage(self):
+        for row in ("G1\tréel\tmoyen", "G1\tvoulu\tgrave"):
+            write(self.triage, "n°\tverdict\tgravité\n" + row + "\nM1\tréel\tmoyen\n")
+            code, out = self.corrections("tests: aucun : toy\ncorrige: G1 | gravité: moyen\n", message="lot " + row)
+            self.assertEqual(code, 1, row + "\n" + out)
+            self.assertIn("G1", out)
+
+    def test_a_medium_row_fixed_needs_nothing(self):
+        write(self.verdicts, "item\tgravite\tetat\nV1\tgrave\touvert\nV2\tmoyen\tcorrigé\n")
+        code, out = self.corrections("tests: aucun : toy\n")
+        self.assertEqual(code, 0, out)
+
+    def test_a_block_of_code_showing_the_format_is_not_a_line(self):
+        code, out = self.corrections("tests: aucun : toy\n\nLe format :\n```\ncorrige: <id du défaut> | gravité: bloquant|grave|moyen|mineur | rejeu: <id du rejeu>\n"
+                                     "ne corrige pas: <id> : <raison>\n```\n")
+        self.assertEqual(code, 0, out)
+
+    def test_this_lot_s_own_report_passes(self):
+        root = os.path.dirname(os.path.dirname(HERE))
+        report = "docs/audits/ultra/tour-6-portail3-rapport.md"
+        if not os.path.isfile(os.path.join(root, report)):
+            self.skipTest("the lot's report is not here")
+        write(self.report, read(os.path.join(root, report)))
+        self.commit("the real report")
+        r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), "--corrections", "eq/tour-9-z",
+                            "docs/audits/ultra/tour-9-z-rapport.md", "base:int", "tour:tour-9", "tete:int"],
+                           cwd=self.repo, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_the_named_pairs_are_frozen(self):
+        """The judge reads juge-paires-nommees.tsv only as this lot wrote it (its sha256 is in the judge): a line added
+        later is a gap of its own and pairs nothing."""
+        import hashlib
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("vc", os.path.join(HERE, "verifie-chantier.py"))
+        judge = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(judge)
+        root = os.path.dirname(os.path.dirname(HERE))
+        raw = open(os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv"), "rb").read()
+        self.assertEqual(getattr(judge, "NAMED_SHA256", None), hashlib.sha256(raw).hexdigest(),
+                         "the judge names the sha256 of the file of named pairs")
+        toy = os.path.join(self.tmp, "toy")
+        path = os.path.join(toy, "scripts", "bench", "juge-paires-nommees.tsv")
+        write(path, raw.decode("utf-8"))
+        rows, gaps = judge.named_lines(toy)
+        self.assertEqual((len(rows), gaps), (31, []))
+        write(path, raw.decode("utf-8") + "\t".join(["a" * 40, "b" * 40, "AnyTest", "une ligne de plus"]) + "\n")
+        rows, gaps = judge.named_lines(toy)
+        self.assertEqual(rows, [], "a changed file pairs nothing")
+        self.assertEqual(len(gaps), 1, gaps)
+        self.assertIn("changé", gaps[0])
+
+
 class Hooks(unittest.TestCase):
     """This file is run where the bench's other script tests are: the self-test and pre-vol.sh --ci."""
 

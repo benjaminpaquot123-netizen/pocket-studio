@@ -238,4 +238,22 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         val counted = screenLines().firstNotNullOfOrNull { Regex("mes(?:\\.|ure) \\d+/(\\d+)").find(it)?.groupValues?.get(1)?.toInt() }
         assertTrue("the brick loops on $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
     }
+
+    /**
+     * Control seat A b-5 (fr, phone, 100 %, Mode simple), P5 again (screens 30-33): the Live project, the one open, touched
+     * in « Mes projets » from the welcome page opens on Pad Live, as « Continuer » does — not on « Mon morceau ».
+     */
+    @Test
+    fun p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("padlive", java.io.File("build/coquille2-journal.txt"))
+        val live = rhythm()!!.projectId
+        tap("padlive_back")
+        tap("launch_projects")
+        tap("project_$live")
+        repeat(3) { act("attends 1") }
+        assertTrue("another project open", rhythm()!!.projectId == live)
+        assertNotNull("the Live project touched in « Mes projets » opened elsewhere than Pad Live:\n" + screen(), centerOf("padlive"))
+    }
 }

@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : 4e516875984ab682d4144f7b9c172b5c73f6b43c
+Relu : ee338a4ed4debe288f6153426eed2ab779b79864
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -70,5 +70,16 @@ P3, longueur d'une boucle avec ses briques (`8cfec2b6` rouge, `41b7c2f5` vert) :
 Bilan de cette reprise : 0 bloquant, 0 grave, 0 moyen, 4 mineurs.
 
 Reprise sur 4e516875 : ce commit (le seul après 16db7a51) ne touche que des traces du banc sous `docs/audits/ultra/sieges/tour-6/padlive2/lotR/` (marqueur `.banc-en-cours` retiré, `incidents-lot.tsv` et `lot.json` ajoutés) ; ni code de l'appli ni tests, rien à relire de plus.
+
+
+## Reprise sur ee338a4e (rapport : « la longueur affichée est celle qu'on entend »)
+
+Vérifié moi-même dans le code (lecture seule) : **confirmé**. Une brique de 128 pas dans une scène de 16 pas, jouée seule, sonne sur 8 mesures : elle n'est ni coupée ni relancée à chaque tour de la scène.
+- `engine/src/main/cpp/core/Sequencer.h:11` : le pas du transport est absolu (compté depuis le départ) et ne revient pas à 0 au bout de la scène.
+- `Engine.h:827` (`localOf` = `step - slot.start`) et `Engine.cpp:936` : le pas local de chaque piste audio vient de ce pas absolu. `AudioTracks.cpp:165-167` ne relance la voix que si `since % loopSteps == 0`, soit tous les 128 pas, et rien ne la coupe entre deux tours de la scène. La batterie, elle, reboucle sur sa propre longueur.
+- `slot.start` n'est remis qu'au départ du transport (`Engine.cpp:105-121`), à l'arrêt (`Engine.cpp:837`), à un changement de scène (`swapScene`, `Engine.cpp:1174-1178`, déclenché seulement si `swapAt_ >= 0`, `Engine.cpp:919-923`) ou au lancement d'un pad (`Engine.cpp:1355`).
+- Côté appli, sans morceau, rien ne réarme de changement à chaque tour : `stageSongPart` sort tout de suite quand `song` est vide (`RhythmViewModel.kt:3946`). Les autres appels à `stageScene` (`RhythmViewModel.kt:3354`, `3705`, `3833`, `10261`) suivent un choix de scène ou une annulation, jamais un tour de boucle.
+- `LiveCells.kt:69-75` : une prise de 6 mesures donne bien 8 mesures (|ln(8/6)| < |ln(4/6)|).
+- Seule réserve, déjà notée par le rapport : le compteur « A mesure 1/1 » du transport compte la scène, pas la brique. C'est un affichage, confié à coquille2, et ce n'est pas un défaut de ce lot.
 
 Verdict : 0 bloquant, 0 grave

@@ -1,0 +1,1 @@
+Control seat B a (coordinator request, 2026-11-13): code b3617da2, played in local lot lotBcontrole (the bench only accepts …/lot<X>/<a-f>/ seat paths, so controle/Ba/a could not be played directly; its start.txt is kept here), by a fresh sub-agent that read only the brief, the testers instructions and the screens. Text files only.

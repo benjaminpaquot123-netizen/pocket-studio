@@ -1,0 +1,37 @@
+Écran 8 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône ← «  Mi canción » @ 97,180
+texte « Remix » @ 224,180
+titre « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,279
+bouton « ? » @ 360,279
+texte « Elige una canción del dispositivo: la app la separa en batería, bajo, voz y el resto. Tarda unos minutos; puedes apagar la pantalla. » @ 294,358
+bouton « Elegir una canción » @ 294,451
+texte « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » @ 294,526
+titre « Ma chanson préférée » [état « Desplegado »] @ 174,642
+icône (poubelle) @ 510,655
+texte « 0:40 · 120 BPM · La menor » @ 161,673
+texte « Tu proyecto: 120 BPM » @ 141,716
+bouton ✂ «  Cortar lo que quiero » @ 294,778
+texte « Elige trozos de cada pista y ponlos en tus pads, en el Live o en una pista. » [coupé] @ 294,839
+bouton + «  Elegir una canción » @ 294,903
+bouton (boussole) « Guía  · Pon un ritmo 0 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » [désactivé] @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

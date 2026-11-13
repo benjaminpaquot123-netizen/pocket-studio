@@ -1,0 +1,5 @@
+Écran 12 (588x1278)
+texte « Un trozo » @ 102,654
+texte « Frases » @ 102,726
+texte « Transitorios » @ 102,798
+texte « Compases » @ 102,870

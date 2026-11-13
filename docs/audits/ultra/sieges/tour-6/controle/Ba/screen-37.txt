@@ -1,0 +1,20 @@
+Écran 37 (588x1278)
+icône ← «  Atrás » @ 68,36
+texte « Remix » @ 166,36
+titre « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,135
+bouton « ? » @ 360,135
+texte « Elige una canción del dispositivo: la app la separa en batería, bajo, voz y el resto. Tarda unos minutos; puedes apagar la pantalla. » @ 294,214
+bouton « Elegir una canción » @ 294,307
+texte « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » @ 294,382
+titre « Ma chanson préférée » [état « Desplegado »] @ 174,498
+icône (poubelle) @ 510,511
+texte « 0:40 · 120 BPM · La menor » @ 161,529
+bouton (étincelles) « Hacer un tema con esta canción » @ 294,598
+texte « Otras opciones… » @ 294,685
+bouton ▶ «  Escuchar » @ 147,769
+texte « Activa o silencia cada pista, incluso en plena reproducción. » @ 405,769
+bouton « Batería » @ 102,859
+bouton « Bajo » @ 230,859
+bouton « Resto » @ 358,859
+bouton « Voz » @ 486,859
+bouton + «  Elegir una canción » @ 294,1227

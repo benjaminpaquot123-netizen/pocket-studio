@@ -1,0 +1,183 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=left amenee=-
+#0 PREMIER ECRAN reel_s=5.0 simule_s=2.4 jvm_s=11.3 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 200 1140
+#1 DOIGT welcome_remix « Extraer la voz de una canción »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 46233d081c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 150 933
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE ? | MODE simple | EMPREINTE 051387ac13 | project=p-f60d678c no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 200 903
+#3 DOIGT remix_download_thumb « Descargar el modelo (174 MB) »
+#4 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 7a1a6c5e47 | project=p-f60d678c no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 463 783
+#4 DOIGT remix_model_ask_ok « Descargar »
+#5 ROUTE ? | MODE simple | EMPREINTE 91e73097ec | project=p-f60d678c no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 20
+#6 ROUTE ? | MODE simple | EMPREINTE 866567be1e | project=p-f60d678c no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 200 903
+#6 DOIGT remix_pick_thumb «  Elegir una canción »
+#7 ROUTE ? | MODE simple | EMPREINTE 4bb5b4af95 | project=p-f60d678c no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 30
+#8 ROUTE ? | MODE simple | EMPREINTE 1372c3c040 | project=p-f60d678c no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 200 778
+#8 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar lo que quiero »
+#9 ROUTE cut_screen | MODE simple | EMPREINTE 6d69bb856a | project=p-f60d678c no tuto
+#9 SON Son : rien ne joue.
+#9 > glisse 150 380 150 200
+#9 REFUS hors de portée du pouce (d'une main, la gauche)
+#10 ROUTE cut_screen | MODE simple | EMPREINTE ba541c9371 | project=p-f60d678c no tuto
+#10 SON Son : rien ne joue.
+#10 > glisse 100 880 100 560
+#10 DOIGT cut_auto « Cortes: Un trozo »
+#11 ROUTE cut_screen | MODE simple | EMPREINTE bfa84359be | project=p-f60d678c no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 131 570
+#11 DOIGT cut_auto « Cortes: Un trozo »
+#12 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 4a1fba7b5e | project=p-f60d678c no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 102 726
+#12 DOIGT cut_auto_1 « Frases »
+#13 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#13 SON Son : rien ne joue.
+#13 > glisse 100 800 100 550
+#13 DOIGT rien (texte « Marca trozos para ponerlos en un pad o u »)
+#14 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 150 640
+#14 DOIGT rien
+#15 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#15 SON Son : rien ne joue.
+#15 RIEN NE CHANGE (3 écrans identiques)
+#15 > touche 300 600
+#15 DOIGT rien
+#16 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 117 753
+#16 DOIGT cut_auto « Cortes: Frases »
+#17 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 681670ae91 | project=p-f60d678c no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 102 942
+#17 DOIGT cut_auto_1 « Frases »
+#18 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 293 549
+#18 REFUS hors de portée du pouce (d'une main, la gauche)
+#19 ROUTE cut_screen | MODE simple | EMPREINTE 730f2e0dae | project=p-f60d678c no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 220 640
+#19 DOIGT rien
+#20 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-f60d678c no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 117 753
+#20 DOIGT cut_auto « Cortes: Frases »
+#21 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 681670ae91 | project=p-f60d678c no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 102 870
+#21 DOIGT cut_auto_0 « Un trozo »
+#22 ROUTE cut_screen | MODE simple | EMPREINTE 6bd23c5389 | project=p-f60d678c no tuto
+#22 SON Son : rien ne joue.
+#22 > glisse 100 880 100 560
+#22 DOIGT cut_auto « Cortes: Un trozo »
+#23 ROUTE cut_screen | MODE simple | EMPREINTE bfa84359be | project=p-f60d678c no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 436 666
+#23 REFUS hors de portée du pouce (d'une main, la gauche)
+#24 ROUTE cut_screen | MODE simple | EMPREINTE fb85d64611 | project=p-f60d678c no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 330 666
+#24 DOIGT cut_span_play « Escuchar el trozo »
+#25 ROUTE cut_screen | MODE simple | EMPREINTE b4484a7116 | project=p-f60d678c no tuto
+#25 SON Son : un bout de la chanson joue : la voix seule, 3,0 s.
+#25 > touche 96 876
+#25 DOIGT cut_to_pads « En los pads »
+#26 ROUTE cut_screen | MODE simple | EMPREINTE 39a050453b | project=p-f60d678c no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 54 1158
+#26 DOIGT tab_simple_Morceau « Mi canción »
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 30aefbda9e | project=p-f60d678c no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 288 1062
+#27 DOIGT thumb_play « Reproducir la canción »
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE bb9320221c | project=p-f60d678c no tuto
+#28 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#28 > touche 150 730
+#28 DOIGT song_what_plays «   Lo que suena en la canción »
+#29 ROUTE dialogue:what_plays | MODE simple | EMPREINTE 5c66e2d4a9 | project=p-f60d678c no tuto
+#29 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#29 LAYOUT CONTRAST « Salida general » 1.50:1 (needs 4.5:1, 16 sp)
+#29 LAYOUT CONTRAST « Volumen general » 2.41:1 (needs 4.5:1, 16 sp)
+#29 > retour
+#29 RETOUR
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE bb9320221c | project=p-f60d678c no tuto
+#30 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#30 > touche 288 1062
+#30 DOIGT thumb_play « Detener »
+#31 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 30aefbda9e | project=p-f60d678c no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 517 1062
+#31 DOIGT thumb_more « Más opciones »
+#32 ROUTE plus | MODE simple | EMPREINTE 42cecc911b | project=p-f60d678c no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 107 472
+#32 REFUS hors de portée du pouce (d'une main, la gauche)
+#33 ROUTE plus | MODE simple | EMPREINTE a031518496 | project=p-f60d678c no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 150 700 150 950
+#33 DOIGT plus_mode « Cambiar al modo Pro »
+#34 ROUTE plus | MODE simple | EMPREINTE 42cecc911b | project=p-f60d678c no tuto
+#34 SON Son : rien ne joue.
+#34 > retour
+#34 RETOUR
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 30aefbda9e | project=p-f60d678c no tuto
+#35 SON Son : rien ne joue.
+#35 > retour
+#35 RETOUR
+#36 ROUTE launch | MODE simple | EMPREINTE 076838c397 | project=p-f60d678c no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 150 829
+#36 DOIGT launch_remix « Remix »
+#37 ROUTE dialogue:remix_home | MODE simple | EMPREINTE c81abdf982 | project=p-f60d678c no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 200 685
+#37 DOIGT use_3a02635f77d71cd9a979f25b « Otras opciones… »
+#38 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE b353ccd550 | project=p-f60d678c no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « En un proyecto existente » 1.76:1 (needs 3.0:1, 14 sp)
+#38 LAYOUT CONTRAST « Cancelar » 1.77:1 (needs 4.5:1, 14 sp)
+#38 > touche 200 817
+#38 DOIGT remix_dest_existing « En un proyecto existente »
+#39 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE a5ef59e188 | project=p-f60d678c no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « proyecto abierto · 120 BPM · ya tiene una canción: se reemplazará » 1.39:1 (needs 4.5:1, 13 sp)
+#39 LAYOUT CONTRAST «  Atrás » 1.50:1 (needs 4.5:1, 14 sp)
+#39 > touche 200 620
+#39 DOIGT remix_dest_project_p-f60d678c « Remix »
+#40 ROUTE dialogue:song_import | MODE simple | EMPREINTE dd536f8622 | project=p-f60d678c no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Mi proyecto toma el tempo de Ma chanson préférée (120 BPM) » 1.89:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Ma chanson préférée se ajusta a mi tempo (120 BPM) » 4.30:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Solo la voz sobre mi beat » 1.47:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Partes » 1.82:1 (needs 3.0:1, 14 sp)
+#40 > touche 150 993
+#40 DOIGT import_bricks « Hacer bloques con sus partes »
+#41 ROUTE dialogue:song_import | MODE simple | EMPREINTE d4a1a908c1 | project=p-f60d678c no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 330 1101
+#41 DOIGT import_go « Poner en mi proyecto »
+#42 ROUTE ? | MODE simple | EMPREINTE dbffc6b06a | project=p-f60d678c no tuto
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « 0:00 / 0:40 · inicio » lines dropped (more lines than room)
+#42 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#42 LAYOUT CONTRAST « Efectos » 4.37:1 (needs 4.5:1, 14 sp)
+#42 > fin
+#42 FIN : fin

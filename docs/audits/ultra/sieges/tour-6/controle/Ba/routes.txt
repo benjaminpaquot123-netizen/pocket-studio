@@ -1,0 +1,13 @@
+dialogue:welcome
+dialogue:mode_step
+?
+dialogue:remix_model_ask
+cut_screen
+dialogue:cut_auto_0
+session/tab_simple_Morceau
+dialogue:what_plays
+plus
+launch
+dialogue:remix_home
+dialogue:remix_dest
+dialogue:song_import

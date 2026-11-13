@@ -129,6 +129,25 @@ class Tour6LanguagesTest {
     }
 
     /**
+     * R15 (seat B c, Arabic, Mode pro; seen on the Live's capture): the Live's effects stayed in English among Arabic
+     * buttons (« Repeat », « Stutter », « Brake », « Backspin », « Tape stop », « Half time », « Wobble », « High-pass »,
+     * « Fade-in »), where Japanese writes them in its script. Every Arabic text outside the tutorial names them in Arabic
+     * letters (« Dub », a style's name, stays as written).
+     */
+    @Test
+    fun theArabicLiveEffectsAreNamedInArabicLetters() {
+        val wrong = ArrayList<String>()
+        I18n.lang = Lang.AR
+        listOf("Répéter", "Répéter %s", "Hacher", "Hachoir", "Demi-tempo", "Freinage", "Rembobiner", "Stop bande", "Passe-haut →", "Wobble",
+            "Sans fondu au début", "Sans fondu à la fin", "Flanger", "Phaser").forEach { k ->
+            tr(k).let { if (Regex("[A-Za-z]").containsMatchIn(it.replace("%s", ""))) wrong += "ar: « $k » shows « $it »" }
+        }
+        val fx = Regex("(?<![A-Za-z])(Repeat|Stutter|Chopper|Brake|Backspin|Tape stop|Reverse|Half time|High-pass|Low-pass|Wobble|Fade-in|Fade-out|Flanger|Phaser)(?![A-Za-z])")
+        texts(Lang.AR).forEach { (area, _, v) -> fx.findAll(v).forEach { wrong += "ar/$area: « ${it.value} » in « ${v.take(70)} »" } }
+        report("Arabic Live effects in English", wrong)
+    }
+
+    /**
      * R15 (seats F a in Italian, F b in Polish, G b in Indonesian, A a in Hindi): « kick », « step », « timeline », « 5 tab »,
      * « Squelchy »; « Synth » under a track; « bar », « take-mu »; « Post-chorus », « Fade in / Fade out / Ending », where the
      * language has its word (« cassa », « passo », « schede »; « syntezator »; « birama », « rekaman »; Devanagari). Wherever

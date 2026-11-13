@@ -33,14 +33,16 @@
     named in the green's subject before « ( »; a green closes at most one red per topic). A green of another test
     closes nothing. Lot « juge8 »: a red of several tests pairs a green for each: a green that closes no open red pairs
     an earlier red already closed when it names one of that red's tests no green named yet (each test once; a green
-    that closed the red by its subject, a topic, a replay or a named pair claims all of its tests). A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
+    that closed the red by its subject, a topic, a replay or a named pair claims all of its tests). The evidence of
+    rouges-constates/ ([red_seen]) naming a test a red adds closes that red the same way. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
     « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
     is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
     ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
     was the red. The guard's origin is followed through renamed classes, reformatted annotations and moved files.
     Commits are read from 8f36fa3 on by ancestry, never by date. A green whose red was an existing test seen failing in
     a run is a pair by its evidence kept under docs/audits/ultra/rouges-constates/<green sha>/ (rouge.txt and the
-    JUnit XML: [red_seen]). A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    JUnit XML: [red_seen]; lot « juge8 »: the green may touch test files but not that test's function, and when its
+    message does not name the test, vert.xml shows it passing on the green). A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
@@ -659,6 +661,22 @@ def _test_key(name):
     return re.split(r"#|::", name)[-1]
 
 
+def red_has_test(root, red, test):
+    """Lot « juge8 »: « Class#method » is a test of the red: named so in it, or its method is a name the red reads
+    ([red_names]) and the red adds or changes a test file that declares the class."""
+    cls, _, method = test.split("[")[0].partition("#")
+    if f"{cls}#{method}" in red[3]:
+        return True
+    if method not in red[3]:
+        return False
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", red[0]).split("\n")
+                 if f and TEST_FILE.search(f)]
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(_declares(_show(root, red[0], f), cls) for f in files)
+
+
 def claimed_by(red, message):
     """Lot « juge8 »: the tests of a red ([red_names]) a green's message names, one key per test."""
     return {_test_key(n) for n in red[3] if _named_in(message, n)}
@@ -902,37 +920,139 @@ def py_test_in(text, cls, method):
     return False
 
 
+def _block_end(text, i):
+    """The index after the « } » that closes the « { » at text[i] (comments already blanked; strings skipped)."""
+    depth, n = 0, len(text)
+    while i < n:
+        if text.startswith('"""', i):
+            j = text.find('"""', i + 3)
+            i = n if j < 0 else j + 3
+            continue
+        c = text[i]
+        if c in "\"'":
+            j = i + 1
+            while j < n and text[j] != c and text[j] != "\n":
+                j += 2 if text[j] == "\\" else 1
+            i = j + 1
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return n
+
+
+def _owner(text, pos):
+    """The class owning a function at pos, as [class_methods] reads it (« » at top level)."""
+    starts = [(m.start(), m.group(1)) for m in CLASS.finditer(text)]
+    brace = next((b for at, b in reversed(_open_braces(text)) if at <= pos), -1)
+    return next((name for start, name in reversed(starts) if start < brace), "") if brace >= 0 else ""
+
+
+def kotlin_test_text(text, cls, method):
+    """Lot « juge8 »: the text of the function cls#method of a Kotlin file, its comments blanked, from « fun » to the
+    end of its body (a block, or an expression body and the lines indented under it), or None."""
+    bare = without_comments(text)
+    for m in FUN.finditer(bare):
+        if m.group(1) != method or _owner(bare, m.start(1)) != cls:
+            continue
+        i = _after_parens(bare, bare.find("(", m.end()))
+        brace, eq = bare.find("{", i), bare.find("=", i)
+        if brace >= 0 and (eq < 0 or brace < eq):
+            return bare[m.start():_block_end(bare, brace)]
+        line_start = bare.rfind("\n", 0, m.start()) + 1
+        head = bare[line_start:m.start()]
+        indent = len(head) - len(head.lstrip())
+        end = bare.find("\n", i)
+        while 0 <= end < len(bare) - 1:
+            nxt = bare[end + 1:].split("\n", 1)[0]
+            if nxt.strip() and len(nxt) - len(nxt.lstrip()) <= indent:
+                break
+            end = bare.find("\n", end + 1)
+        return bare[m.start():len(bare) if end < 0 else end]
+    return None
+
+
+def py_test_text(text, cls, method):
+    """Lot « juge8 »: the lines of « def method » written right in « class cls » of a bench script's tests, comments
+    kept (a Python comment is a line of the file), or None."""
+    lines, in_cls = text.split("\n"), False
+    for i, line in enumerate(lines):
+        if re.match(r"class\s+" + re.escape(cls) + r"\s*[(:]", line):
+            in_cls = True
+            continue
+        if line.strip() and not line[0].isspace() and not line.lstrip().startswith("#"):
+            in_cls = False
+        m = re.match(r"    def\s+([A-Za-z0-9_]+)\s*\(", line) if in_cls else None
+        if m and m.group(1) == method:
+            j = i + 1
+            while j < len(lines) and (not lines[j].strip() or lines[j].startswith("     ")):
+                j += 1
+            return "\n".join(lines[i:j])
+    return None
+
+
+def test_text(root, rev, cls, method):
+    """The text of the test cls#method in rev ([kotlin_test_text], [py_test_text]), whitespace runs made one space;
+    None when no file, or more than one, holds it."""
+    try:
+        listed = _git(root, "grep", "-l", "-F", method, rev, "--", *TEST_DIRS).splitlines()
+    except (subprocess.SubprocessError, OSError):
+        listed = []
+    found = [kotlin_test_text(_show(root, rev, l.split(":", 1)[1]) or "", cls, method) for l in listed]
+    try:
+        scripts = _git(root, "ls-tree", "-r", "--name-only", rev, "--", "scripts/bench").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        scripts = []
+    found += [py_test_text(_show(root, rev, f) or "", cls, method) for f in scripts if PY_TEST_FILE.match(f)]
+    found = [" ".join(t.split()) for t in found if t is not None]
+    return found[0] if len(found) == 1 else None
+
+
 def red_seen(root, sha, message):
     """Review of the « portail » lot: a test that existed went red in a run, and this green fixes the app. Evidence in
     docs/audits/ultra/rouges-constates/<the green's full sha>/: rouge.txt (« parent: <the green's parent> »,
-    « test: Classe#méthode ») and a JUnit XML of that run where that test fails; the green names the test and does not
-    touch the test's file (nor any file of the tests). True only when all of it holds."""
+    « test: Classe#méthode ») and a JUnit XML of that run where that test fails. The test (« Classe#méthode »), or None
+    unless all of it holds. Lot « juge8 » (a lot regularises without rewriting its history): the green may touch test
+    files, but that test's function is the same text in the parent and in the green (its assertion untouched:
+    [test_text]), and the green changes a file that is neither a test nor a document; a green whose message does not
+    name the test needs vert.xml, the test run on the green, passing."""
     import xml.etree.ElementTree as ET
     try:
         full = _git(root, "rev-parse", sha + "^{commit}").strip()
         parents = _git(root, "rev-list", "--parents", "-n", "1", full).split()[1:]
-        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split()
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split("\n") if f]
     except (subprocess.SubprocessError, OSError):
-        return False
+        return None
     folder = os.path.join(root, RED_SEEN, full)
     try:
         facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8", errors="replace").read()
     except OSError:
-        return False
+        return None
     parent = re.search(r"^parent:\s*([0-9a-f]{40})\s*$", facts, re.M)
     test = re.search(r"^test:\s*(\S.*?)\s*$", facts, re.M)
-    if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or not names(message, test.group(1)):
-        return False
-    # Lot « juge7 »: a bench script's tests are tests too ([py_test_in]).
-    if any(f.startswith(TEST_DIRS) or PY_TEST_FILE.match(f) for f in files):
-        return False
+    if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or "#" not in test.group(1):
+        return None
+    if not any(not TEST_FILE.search(f) and not f.startswith("docs/") for f in files):
+        return None
     cls, _, method = test.group(1).partition("#")
+    bare = method.split("[")[0]
     # Second review of the « portail » lot (G2): the test exists, in the green's parent and in the green.
     for rev in (parents[0], full):
-        if not test_in(root, rev, cls, method.split("[")[0]):
-            return False
+        if not test_in(root, rev, cls, bare):
+            return None
+    # Lot « juge8 »: the test's own text unchanged (before: no test file touched at all; lot « juge7 »: nor a bench test).
+    if any(TEST_FILE.search(f) for f in files):
+        before = test_text(root, parents[0], cls, bare)
+        if before is None or before != test_text(root, full, cls, bare):
+            return None
+    if not names(message, test.group(1)) and _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
+        return None
     for name in os.listdir(folder):
-        if not name.endswith(".xml"):
+        if not name.endswith(".xml") or name == "vert.xml":
             continue
         try:
             cases = ET.parse(os.path.join(folder, name)).getroot().iter("testcase")
@@ -941,8 +1061,8 @@ def red_seen(root, sha, message):
         for case in cases:
             if case.get("classname", "").rsplit(".", 1)[-1] == cls and case.get("name") == method \
                     and (case.find("failure") is not None or case.find("error") is not None):
-                return True
-    return False
+                return test.group(1)
+    return None
 
 
 REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
@@ -1320,7 +1440,18 @@ def red_green_pairs(root):
             closed_reds += closed
             if paired_by_name or again is not None:
                 continue
-            if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message) \
+            seen = None if closed else red_seen(root, sha, message)
+            if seen:
+                # Lot « juge8 »: the test seen red is a test a red adds or names: that red is closed (or, closed
+                # already, that test of it is claimed), one test, one green.
+                owner = next((r for r in open_reds + closed_reds if red_has_test(root, r, seen)
+                              and _test_key(seen.split("[")[0]) not in claimed.get(r[0], set())), None)
+                if owner is not None:
+                    claimed.setdefault(owner[0], set()).add(_test_key(seen.split("[")[0]))
+                    if owner in open_reds:
+                        open_reds.remove(owner)
+                        closed_reds.append(owner)
+            if not closed and not seen and not any(names(message, t) for t in known_defects_lifted(root, sha)) \
                     and not mutated_red(root, sha):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui"
                             + (f" (paire nommée refusée : {refused})" if refused else ""))

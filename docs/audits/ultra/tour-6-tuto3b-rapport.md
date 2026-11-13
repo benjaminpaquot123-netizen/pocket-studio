@@ -43,12 +43,15 @@ controle: Bb-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
 - **T8 (« Déjà fait ») : tenté, hors lot.** Bb-4 : « Schon erledigt! » existe (écrans 193-195), mais au premier passage l'étape 3/3 du ch. 12 est sautée sans message (écran 192). À reprendre.
 - Le second aller-retour n'est pas consommé (décision du chef, pour ne pas retarder). Aucun commit de code d'appli après e4286b40 dans ce lot, hors fusion de la tête.
 
+## Corrections et rejeux
+corrige: T4 | gravité: grave | rejeu impossible : le siège qui a vu le défaut (Da-3, joué sur 4cb88f55) n'est pas dans l'intégration, sa branche n'a pas été poussée ; le contrôle Da-4 l'a dit corrigé (écrans 80-106) et Tour6TutoFlechesTest#theLinePointsToTheNearestNoteLeft le garde sur tous les styles
+- Zone de ce lot au portail : « tuto3b » (branche `eq/tour-6-tuto3b`, histoire refaite de `eq/tour-6-tuto3`) ; première relecture neuve gardée dans `tour-6-tuto3b-relecture-1.md` (relu 600abd29, 0 bloquant, 0 grave), re-signée dans `tour-6-tuto3b-relecture.md` après le renommage.
+
 tests: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest
 
-chemin: Tuto Pro › techno › ch. 7 « lead_knobs » › Coupure et Résonance +15 | test: Tour6TutoKnobStepTest#fifteenOnTheScreenTicksTheStepEvenWhenTheRawDeltaIsJustUnderThePoint15
 chemin: Tuto Facile › mélodie › dernière note en pointillé au bord › toucher | test: Tour6TutoGhostTapTest#aTapAHairPastADottedNoteWritesThatNoteNotAParasite
 chemin: Tuto Facile › House › étape tempo › à mi-chemin | test: Tour6TutoTempoNoteTest#theTempoNoteNamesTheStartNotATempoHalfWay
 chemin: Tuto › piste Mélodie › « Accords » allumé › retour sur la piste | test: Tour6TutoChordModeTest#accordsTurnedOnByTheUserStaysWhenTheRollComesBack
-chemin: Tuto Facile › ch. 7 › notes restantes hors de vue › la flèche de la ligne | test: Tour6TutoFlechesTest#theLinePointsToTheNearestNoteLeft
+chemin: Tuto Facile › ch. 7 › notes restantes hors de vue › la flèche de la ligne | test: Tour6TutoFlechesRollTest#technoBassEveryNoteIsReachedByFollowingTheLine
 chemin: Tuto Facile › techno › ch. 3 « clap_do » › cases posées pas douces, panneau replié | test: Tour6TutoSoftOpenTest#cellsAllHitButNotSoftOpenTheFoldedPanel
 chemin: Tuto Pro › techno › ch. 7 « lead_knobs » › Coupure à +7 | test: Tour6TutoKnobLeftTest#aKnobNotUpEnoughSaysHowMuchIsLeft

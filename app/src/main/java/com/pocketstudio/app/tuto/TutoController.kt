@@ -127,6 +127,11 @@ data class TutoUi(
      * asks): the panel says « Déjà fait » rather than « Bravo » for a touch never made.
      */
     val already: Boolean = false,
+    /**
+     * Lot « tuto-flèches » (seats D a, H a): what the step's words leave unsaid about the project as it is (the tempo
+     * step: a new project's own tempo, « 100 » under « House 122 BPM »); shown under them, null: nothing.
+     */
+    val note: String? = null,
 ) {
     val current: TutoStep get() = chapters[chapter].steps[step]
     val total: Int get() = chapters.sumOf { it.steps.size }

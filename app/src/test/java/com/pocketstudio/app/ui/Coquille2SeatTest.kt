@@ -201,4 +201,36 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         compose.waitForIdle()
         saysThePadShown("the cymbal on the grid")
     }
+
+    /**
+     * Seat A b (fr, phone, 100 %, Mode simple), P6 (padlive2, path « Enregistrer ce que je joue » › « Dans une brique du
+     * Live »): after a take of several bars put in a brick, the screen and the transport say the length one hears, not
+     * « A mesure 1/1 ».
+     */
+    @Test
+    fun p6_aTakeInABrickIsCountedAtTheLengthHeard() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("padlive", java.io.File("build/coquille2-journal.txt"))
+        // The take: the bench has no microphone (the recorder answers « Pas assez de mémoire »), so the take the seat's
+        // « Enregistrer ce que je joue » made (4 bars and more) is put where « Dans une brique du Live » puts it
+        // (`PlayedTake.placeInBrick` → `placeInCell(SongPart.audio(-1), scene, …)`), 6 bars at the project's tempo.
+        val v0 = rhythm()!!
+        val bars = 6
+        val frames = (bars * v0.project.value.beatsPerBar * 60.0 / v0.project.value.tempoBpm * 48_000).toInt()
+        val pcm = com.pocketstudio.app.audio.Pcm(FloatArray(frames * 2) { i -> if ((i / 2) % 12_000 < 600) 0.3f else 0f }, 2, 48_000)
+        assertTrue("the take not put in a brick", v0.placeInCell(com.pocketstudio.model.SongPart.audio(-1), v0.project.value.scene, pcm, "Ma prise 1", known = v0.project.value.tempoBpm))
+        repeat(4) { act("attends 1") }
+        val v = rhythm()!!
+        // As the message says (« Plus › Briques »): the Live's bricks, played; the counter under the top bar says « mes. x/<bars> ».
+        runCatching { tap("padlive_more") }
+        tap("padlive_live")
+        repeat(2) { act("attends 1") }
+        // Back to the project (the seat's « lecture « A mesure 1/1 » »), its part played in a loop: « ▶ cette partie ».
+        repeat(3) { if (centerOf("top_play") == null) act("retour") }
+        if (!v.transport.value.playing) tap("top_play")
+        repeat(3) { act("attends 1") }
+        val counted = screenLines().firstNotNullOfOrNull { Regex("mes(?:\\.|ure) \\d+/(\\d+)").find(it)?.groupValues?.get(1)?.toInt() }
+        assertTrue("the take lasts $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
+    }
 }

@@ -445,10 +445,15 @@ data class ExportUi(
          * playing): the same project seen on another part. Without a song the loop shared is the part shown: it counts.
          */
         fun madeHash(p: Project): Int =
-            (if (p.song.isNotEmpty()) p.switchScene(0) else p).copy(
-                name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
-                guide = com.pocketstudio.model.guide.GuideState.EMPTY,
-            ).hashCode()
+            (if (p.song.isNotEmpty()) p.switchScene(0) else p).let { q ->
+                q.copy(
+                    name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
+                    guide = com.pocketstudio.model.guide.GuideState.EMPTY,
+                    // Tour 6, seat A c (E2): the volume the NEXT file aims at (« Streaming », « Club », « Auto ») is no change of the
+                    // song: choosing it called the song « changé depuis cet export ».
+                    mixer = q.mixer.copy(target = com.pocketstudio.model.LoudnessTarget.OFF, pro = q.mixer.pro?.copy(targetLufs = null, free = false)),
+                )
+            }.hashCode()
     }
 }
 

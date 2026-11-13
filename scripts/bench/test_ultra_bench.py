@@ -229,6 +229,7 @@ def main():
         judge_topic_pairs(d)
         replayed_pairs(d)
         named_pairs(d)
+        judge_reads_any_bytes(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1467,6 +1468,51 @@ def named_pairs(d):
     check(out.count("juge-paires-nommees.tsv, ligne") == 2 and ", ligne 9 : illisible" in out and ", ligne 10 : illisible" in out,
           "a line without a reason and a line with a short sha are gaps of their own:\n" + out)
     check("chantier : 10 écarts" in out, "four pairs refused (eight gaps), two lines unread, nothing else:\n" + out)
+
+
+def judge_reads_any_bytes(d):
+    """Lot « juge8 » (the portal of « remix2 »: the judge died on a UnicodeDecodeError): git's output is bytes, not
+    always UTF-8: a test file written in Latin-1 (read by « git show », « git grep » and from the tree), a commit
+    message in Latin-1 (read by « git log »). The judge reads them all, never dies, and still pairs by the names it can
+    read; a red no green names stays a gap."""
+    root = judge_root(d, "juge-octets")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    git_toy(root, "init", "-q")
+    write(app, "val x = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+
+    def commit(message, raw=None):
+        git_toy(root, "add", "-A")
+        if raw is None:
+            git_toy(root, "commit", "-q", "-m", message)
+        else:
+            path = os.path.join(d, "message.txt")
+            with open(path, "wb") as f:
+                f.write(raw)
+            git_toy(root, "commit", "-q", "-F", path)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    # A red whose test file is Latin-1 (« é » as the one byte 0xe9), its green's message Latin-1 too.
+    with open(os.path.join(tests, "LatinProofTest.kt"), "wb") as f:
+        f.write(b"class LatinProofTest {\n  // r\xe9sum\xe9\n  @Test\n  fun theLatinCommentStays() {}\n}\n")
+    red = commit("rouge: LatinProofTest#theLatinCommentStays")
+    write(app, "val x = 1\n")
+    green = commit("", raw=b"vert: LatinProofTest#theLatinCommentStays (r\xe9sum\xe9 in Latin-1)\n")
+    # A red no green names stays a gap.
+    with open(os.path.join(tests, "LonelyProofTest.kt"), "wb") as f:
+        f.write(b"class LonelyProofTest {\n  // \xe9t\xe9\n  @Test\n  fun theLonelyRedStaysOpen() {}\n}\n")
+    lonely = commit("rouge: LonelyProofTest#theLonelyRedStaysOpen")
+    seal_resume(root, resume)
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                       capture_output=True)
+    out, err = r.stdout.decode("utf-8", "replace"), r.stderr.decode("utf-8", "replace")
+    check("Traceback" not in err and r.returncode in (0, 1), "the judge reads bytes that are not UTF-8 and goes on:\n" + err)
+    check(red + " «" not in out and green + " «" not in out, "a pair whose bytes are not all UTF-8 is a pair:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no green names stays a gap, Latin-1 or not:\n" + out)
+    check("chantier : 1 écarts" in out, "one gap, nothing else:\n" + out + err)
 
 
 def replay_backticks(d):

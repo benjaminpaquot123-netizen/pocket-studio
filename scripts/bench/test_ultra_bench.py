@@ -235,6 +235,7 @@ def main():
         red_seen_regularises(d)
         red_seen_other_tests_only(d)
         juge8_controls(d)
+        juge8_controls_second(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1916,6 +1917,66 @@ def juge8_controls(d):
         check(f"{shas[key][2]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
     check(shas["otherclass"][2] + " «" not in out, "evidence of a test seen red is a pair:\n" + out)
     check(f"{red} « rouge:" in out, "evidence naming another class's test of the same name leaves the red open:\n" + out)
+
+
+def juge8_controls_second(d):
+    """Second review of « juge8 » (M3): two controls of rouges-constates/ have a case that reddens without them. A
+    test file added or removed (status other than M), even one whose text is empty once its plain tests are taken
+    out: an empty Kotlin file added to the tests, a file of one loose top-level @Test removed. A function carrying @Test and
+    another annotation (« @Before @Test ») is no plain test: it stays in the compared text, a green that rewrites it
+    makes no pair."""
+    root = judge_root(d, "juge8-controles-2")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    path = os.path.join(tests, "SeatProofTest.kt")
+    loose = os.path.join(tests, "LooseTest.kt")
+    empty = os.path.join(tests, "Switch.kt")
+
+    def seat(before="v = spot()"):
+        write(path, "class SeatProofTest {\n  var v = 0\n  @Before @Test\n  fun setUpAndCheck() { " + before + " }\n"
+              "  @Test\n  fun theNamedTestHolds() {\n    check(v != 0)\n  }\n}\n")
+
+    seat()
+    write(loose, "@Test\nfun aLooseTopLevelCheck() {}\n")
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key):
+        if key == "multiann":
+            seat(before="v = 1")
+        elif key == "added":
+            write(empty, "")
+        elif key == "removed":
+            os.remove(loose)
+        write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeatProofTest#theNamedTestHolds ({key})")
+        full, par = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: SeatProofTest#theNamedTestHolds\n")
+        write(os.path.join(folder, "TEST-x.SeatProofTest.xml"), '<testsuite><testcase classname="x.SeatProofTest" '
+              'name="theNamedTestHolds"><failure message="0"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+        seat()
+        if key == "removed":
+            write(loose, "@Test\nfun aLooseTopLevelCheck() {}\n")
+        if key == "added":
+            os.remove(empty)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"chore: the tests as they were ({key})")
+
+    for key in ("multiann", "added", "removed"):
+        green(key)
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for key in ("multiann", "added", "removed"):
+        check(f"{shas[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check("chantier : 3 écarts" in out, "three gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

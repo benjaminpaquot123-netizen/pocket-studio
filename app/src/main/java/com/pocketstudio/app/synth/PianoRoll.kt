@@ -1436,6 +1436,16 @@ private fun TutoNotesLeft(
                 modifier = Modifier.testTag("tuto_notes_left_text"),
             )
         }
+        // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
+        // brings the note into view: said on the line while it points away.
+        if (copy == null && way != null && left.isNotEmpty()) {
+            Text(
+                tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = Neon.OnAccent, maxLines = 1, softWrap = false,
+                modifier = Modifier.padding(start = 6.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Neon.Amber)
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
+            )
+        }
         if (copy != null) {
             androidx.compose.material3.Button(
                 onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_roll_copy"),

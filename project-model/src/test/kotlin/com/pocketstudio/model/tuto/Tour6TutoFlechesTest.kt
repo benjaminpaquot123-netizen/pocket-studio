@@ -135,13 +135,16 @@ class Tour6TutoFlechesTest {
         }
     })
 
+    /**
+     * For the note the line speaks of, the bar first. (Seat Da-3, 4cb88f55: no more « across only when no note is in
+     * the time in sight »: an in-time note an octave up is not nearer than the next one a step away.)
+     */
     @Test
     fun theBarIsSaidBeforeTheRows() = report(failures { c, v ->
         val w = TutoRollHint.way(c.left, v) ?: return@failures null
         val n = TutoRollHint.next(c.left, v)!!
         when {
             !across(w) && !inTime(n, v) -> "$w for the note ${n.pitch}@${n.start / tick}, which is not in the time in sight"
-            across(w) && c.left.any { inTime(it, v) } -> "$w while a dotted note is in the time in sight"
             w == TutoWay.Later && x(n) < v.left || w == TutoWay.Earlier && x(n) > v.left -> "$w, the note ${n.pitch}@${n.start / tick} is the other way"
             w == TutoWay.Higher && y(n) > v.top || w == TutoWay.Lower && y(n) < v.top -> "$w, the note ${n.pitch}@${n.start / tick} is the other way"
             else -> null
@@ -165,6 +168,48 @@ class Tour6TutoFlechesTest {
         }
         null
     })
+
+    /**
+     * Control seat Da-3 (japanese, Facile, chapters 5 and 7, on 4cb88f55): « もっと上 ↑ » (higher) while the dotted
+     * notes left were just to the right or left out of sight: 12 gestures of search. The riff jumps an octave, so the
+     * one note of the time in sight could be an octave up while the next ones sat in the rows in sight, a step away.
+     * The line points to the NEAREST note left (the shortest scroll that shows it whole), on the side it is.
+     */
+    @Test
+    fun theLinePointsToTheNearestNoteLeft() = report(failures { c, v ->
+        val w = TutoRollHint.way(c.left, v) ?: return@failures null
+        if (v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return@failures null
+        fun gap(n: Note): Float {
+            val dx = if (inTime(n, v)) 0f else if (x(n) < v.left) v.left - x(n) else x(n) + step - v.right
+            val dy = if (inRows(n, v)) 0f else if (y(n) < v.top) v.top - y(n) else y(n) + row - v.bottom
+            return dx + dy
+        }
+        val nearest = c.left.minOf { gap(it) }
+        val n = TutoRollHint.next(c.left, v)!!
+        val side = when (w) {
+            TutoWay.Later -> x(n) + step > v.right + 1f
+            TutoWay.Earlier -> x(n) < v.left - 1f
+            TutoWay.Higher -> y(n) < v.top - 1f
+            TutoWay.Lower -> y(n) + row > v.bottom + 1f
+        }
+        when {
+            gap(n) > nearest + 0.5f -> "$w toward ${n.pitch}@${n.start / tick} (${gap(n)} px away) while another note left is ${nearest} px away"
+            !side -> "$w, but the note ${n.pitch}@${n.start / tick} is not that side"
+            else -> null
+        }
+    })
+
+    /** Seat Da-3's case, written out: the in-time note an octave up, the next one a step to the right in the rows in sight. */
+    @Test
+    fun anOctaveUpInTimeButAStepRightInRowsSaysRight() {
+        val a = Note(0, 2 * tick, 77)
+        val b = Note(8 * tick, 2 * tick, 65)
+        val v = view(0f, y(b) - 4 * row, 8 * step, 10 * row)
+        assertTrue("setup: a is in time, out of the rows", inTime(a, v) && !inRows(a, v))
+        assertTrue("setup: b is in the rows, just right", inRows(b, v) && !inTime(b, v))
+        assertEquals(TutoWay.Later, TutoRollHint.way(listOf(a, b), v))
+        assertEquals(b, TutoRollHint.next(listOf(a, b), v))
+    }
 
     /** The tutorial's panel open over the roll (seat D a, screen 125: not a row in sight, the line said « plus bas ↓ »). */
     @Test

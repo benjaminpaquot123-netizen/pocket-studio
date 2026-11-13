@@ -836,7 +836,7 @@ class TutoController(
         val t = target ?: return true
         if (u.demo != null || demoJob != null) return true
         val base = base()
-        val (found, need) = withContext(worker) {
+        val (seen, need) = withContext(worker) {
             u.chapters.flatMap { it.steps }.filter { s ->
                 s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoChecks.done(s, p, t, base)
             }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
@@ -845,6 +845,9 @@ class TutoController(
         val now = _ui.value?.takeIf { it.demo == null } ?: return true
         // The answer is about the step, the progress and the project it began on: one of them moved, it counts no more.
         if (now.progress != u.progress || target !== t || project.value.let { it !== p && it != p }) return false
+        // Only what is not ticked yet NOW (lot « tutoordre2 », CI 43448175188; since the looks are made one at a time and
+        // an answer about a progress that moved is thrown away, that is all of what this look saw).
+        val found = seen - now.progress.done
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
         if (found.isNotEmpty()) {
             tick(found, advance = false, bravo = true)

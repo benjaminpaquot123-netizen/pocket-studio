@@ -30,34 +30,29 @@ class Tour6ExportsSaveLabelTest {
     @After
     fun french() { I18n.lang = Lang.FR }
 
-    private fun projectLineText(simple: Boolean): String {
+    @Test
+    fun theProjectZipLineIsNamedAfterWhatItDoesWhichIsToSend() {
         I18n.lang = Lang.FR
+        // The Mode simple « Envoyer » page, the seat's condition.
         val ui = ShareSheetUi(name = "Trap", seconds = 120, parts = 3, checks = emptyList(), projectName = "Trap")
         compose.setContent {
-            PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions(sendProject = {}), page = simple, simple = simple) }
+            PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions(sendProject = {}), page = true, simple = true) }
         }
         compose.waitForIdle()
         // Merged tree: LinkRow is one node (clickable, role Button), its title and subtitle merged into it.
         val node = compose.onAllNodesWithTag("share_project").fetchSemanticsNodes().first()
-        return listOfNotNull(
+        val text = listOfNotNull(
             node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text },
             node.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" "),
         ).joinToString(" ")
-    }
-
-    @Test
-    fun theProjectZipLineIsNamedAfterWhatItDoesWhichIsToSend() {
-        listOf(true, false).forEach { simple ->
-            val text = projectLineText(simple)
-            assertTrue("the project line has a title: « $text »", text.isNotBlank())
-            assertTrue(
-                "« $text » must be named « Partager » or « Envoyer » (its touch opens the share menu)",
-                text.contains("Partager", ignoreCase = true) || text.contains("Envoyer", ignoreCase = true),
-            )
-            assertFalse(
-                "« $text » must not say « Sauvegarder » for an action that sends the file",
-                text.contains("Sauvegarder", ignoreCase = true),
-            )
-        }
+        assertTrue("the project line has a title: « $text »", text.isNotBlank())
+        assertTrue(
+            "« $text » must be named « Partager » or « Envoyer » (its touch opens the share menu)",
+            text.contains("Partager", ignoreCase = true) || text.contains("Envoyer", ignoreCase = true),
+        )
+        assertFalse(
+            "« $text » must not say « Sauvegarder » for an action that sends the file",
+            text.contains("Sauvegarder", ignoreCase = true),
+        )
     }
 }

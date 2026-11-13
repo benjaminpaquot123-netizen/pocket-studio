@@ -513,13 +513,15 @@ fun ShareSheetContent(
         // (it was only in Mes projets › ⋯).
         actions.sendProject?.let { send ->
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Tour 6, seat A c (E6): one touch here opens Android's share menu (it sends the .zip, it does not save it
+                // on its own): the line is named « Envoyer », never « Sauvegarder », so the word matches what the touch does.
                 com.pocketstudio.ui.LinkRow(
-                    tr("Sauvegarder le morceau en .zip"), onClick = send, modifier = Modifier.weight(1f).testTag("share_project"), icon = Icons.Filled.Archive,
+                    tr("Envoyer le projet (.zip)"), onClick = send, modifier = Modifier.weight(1f).testTag("share_project"), icon = Icons.Filled.Archive,
                     subtitle = tr("Pour un autre appareil ou une copie de sécurité"), enabled = !ui.running,
                 )
                 // Round 3 integration: its « ? », as the other exports' line has one (what a project file is, where it opens).
                 com.pocketstudio.ui.HelpDot(
-                    com.pocketstudio.ui.Help(tr("Sauvegarder le morceau en .zip"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
+                    com.pocketstudio.ui.Help(tr("Envoyer le projet (.zip)"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
                     about = listOf("share_project"),
                 )
             }

@@ -68,8 +68,9 @@ object Rapport {
 
     /** [about]: the app's version and commit, the device, Android. */
     /** [tout]: « Tout tester » (each step's light, the verdict in lights). */
-    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false, retest: Int? = null, oreille: Boolean = false): String = buildString {
-        appendLine(if (oreille) "# BenStudio Test : questions à l'oreille" else if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
+    /** [micro]: « Écoute au micro » (lights, its section). */
+    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false, retest: Int? = null, oreille: Boolean = false, micro: Boolean = false): String = buildString {
+        appendLine(if (micro) "# BenStudio Test : écoute au micro" else if (oreille) "# BenStudio Test : questions à l'oreille" else if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
         appendLine()
         if (retest != null) { appendLine("**${Retest.entete(retest)}**"); appendLine() }
         about.forEach { (k, v) -> appendLine("- $k : $v") }
@@ -94,6 +95,7 @@ object Rapport {
             appendLine("| ${e.label} |$light $result | $took | ${end?.text.orEmpty().replace("|", "/").replace("\n", " ")} |")
         }
         QuestionsOreille.section(lines, etapes).takeIf { it.isNotEmpty() }?.let { appendLine(); append(it) }
+        EcouteMicro.section(lines).takeIf { it.isNotEmpty() }?.let { appendLine(); append(it) }
         val notes = lines.filter { it.kind == Carnet.NOTE }
         if (notes.isNotEmpty()) {
             appendLine()
@@ -105,7 +107,7 @@ object Rapport {
     /** Every reading of the logbook (mesures), by step, with its time. */
     fun json(lines: List<Carnet.Ligne>, about: List<Pair<String, String>>): String {
         val stamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT)
-        val steps = lines.filter { it.kind != Carnet.MESURE }.map { l ->
+        val steps = lines.filter { it.kind != Carnet.MESURE && it.kind != Carnet.MICRO }.map { l ->
             JsonText.obj("t" to JsonText.string(stamp.format(Date(l.atMs))), "kind" to JsonText.string(l.kind), "step" to JsonText.string(l.step), "text" to JsonText.string(l.text))
         }
         val reads = lines.filter { it.kind == Carnet.MESURE }.map { l ->
@@ -119,7 +121,9 @@ object Rapport {
             JsonText.obj("question" to JsonText.string(a.id), "reponse" to JsonText.string(a.verdict.mot), "commentaire" to JsonText.string(a.commentaire), "capture" to JsonText.string(a.capture))
         }
         val questions = if (answers.isEmpty()) emptyArray() else arrayOf("questions" to JsonText.array(answers))
-        return JsonText.obj(*head.toTypedArray(), "steps" to JsonText.array(steps), "reads" to JsonText.array(reads), *questions)
+        // « Écoute au micro »: the speaker's curve and the fingerprints (scripts/bentest/empreinte.py reads them).
+        val micro = EcouteMicro.json(lines)?.let { arrayOf("micro" to it) } ?: emptyArray()
+        return JsonText.obj(*head.toTypedArray(), "steps" to JsonText.array(steps), "reads" to JsonText.array(reads), *questions, *micro)
     }
 
     /** Why a step is not green: its worst light's reason. */

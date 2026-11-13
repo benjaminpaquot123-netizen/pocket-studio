@@ -54,13 +54,13 @@ class CutBoutBigTextTest {
     private val frames = 60L * BOARD_RATE
     private val bar = 4 * 24_000L
 
-    private class Shown(private val cuts: SongCuts) : StemBoardActions by NoStemBoardActions {
-        override val state = MutableStateFlow(StemBoardState())
+    private class Shown(private val cuts: SongCuts, message: String? = null) : StemBoardActions by NoStemBoardActions {
+        override val state = MutableStateFlow(StemBoardState(message = message))
         override fun savedCuts(setId: String, frames: Long) = cuts
     }
 
     /** « Un bout » on [height] of screen under the app's bars, its text at [fontScale]. */
-    private fun show(height: Dp, fontScale: Float) {
+    private fun show(height: Dp, fontScale: Float, message: String? = null) {
         val cuts = SongCuts("song", listOf(StemCuts(VOCALS_STEM, listOf(CutPiece(2 * bar, 4 * bar)), auto = "Selection")))
         val ui = StemBoardUi("song", "Ma chanson préférée", frames, 120.0, 0.0, StemPeakSource { StemPeaks.of(frames, 1) { _, n -> FloatArray(n) } }, peaksContext = EmptyCoroutineContext)
         compose.setContent {
@@ -69,7 +69,7 @@ class CutBoutBigTextTest {
                 PocketStudioTheme {
                     Box(Modifier.fillMaxWidth().height(height)) {
                         val model = remember { CutModel("song", frames, 120.0, 0.0, cuts, mode = AutoCut.Selection) }
-                        CutScreen(ui, remember { Shown(cuts) }, onClose = {}, model = model)
+                        CutScreen(ui, remember { Shown(cuts, message) }, onClose = {}, model = model)
                     }
                 }
             }
@@ -131,5 +131,24 @@ class CutBoutBigTextTest {
     private fun bringIntoViewText(text: String) {
         runCatching { compose.onAllNodesWithText(text, useUnmergedTree = true)[0].performScrollTo() }
         compose.waitForIdle()
+    }
+
+    /**
+     * Tour 6, U13 (seat E c #24, pt-BR at 200 %): once « Voz 1 » was put on a track, its message took the place of the
+     * stems' chips and the four send buttons lost their words (icons alone). With the message shown, the chips and the
+     * four buttons' words stay reachable and whole.
+     */
+    @Test
+    fun theChipsAndTheSendButtonsStayWithTheMessageInPortugueseAtTwiceTheText() {
+        I18n.lang = Lang.PT_BR
+        show(430.dp, 2f, message = "“Voz 1” está numa nova faixa de áudio, no compasso 3.")
+        for (tag in listOf("cut_stem_0", "cut_stem_3", "cut_message", "cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track")) {
+            bringIntoView(tag)
+            compose.onNodeWithTag(tag, useUnmergedTree = true).assertIsDisplayed()
+        }
+        for (word in listOf("Nos pads", "No Live", "Guardar", "Numa faixa")) {
+            bringIntoViewText(word)
+            assertTrue("« $word » gone or cut with the message shown", compose.onAllNodesWithText(word, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() && whole(word))
+        }
     }
 }

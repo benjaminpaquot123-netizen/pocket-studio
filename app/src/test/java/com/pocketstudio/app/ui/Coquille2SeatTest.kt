@@ -214,13 +214,17 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         amenee("padlive", java.io.File("build/coquille2-journal.txt"))
         // The take: the bench has no microphone (the recorder answers « Pas assez de mémoire »), so the take the seat's
         // « Enregistrer ce que je joue » made (4 bars and more) is put where « Dans une brique du Live » puts it
-        // (`PlayedTake.placeInBrick` → `placeInCell(SongPart.audio(-1), scene, …)`), 6 bars at the project's tempo.
+        // (`PlayedTake.placeInBrick` → `placeInCell(SongPart.audio(-1), scene, …)`), 4 bars at the project's tempo (the seat's
+        // « 4 mesures »).
         val v0 = rhythm()!!
-        val bars = 6
-        val frames = (bars * v0.project.value.beatsPerBar * 60.0 / v0.project.value.tempoBpm * 48_000).toInt()
+        val taken = 4
+        val frames = (taken * v0.project.value.beatsPerBar * 60.0 / v0.project.value.tempoBpm * 48_000).toInt()
         val pcm = com.pocketstudio.app.audio.Pcm(FloatArray(frames * 2) { i -> if ((i / 2) % 12_000 < 600) 0.3f else 0f }, 2, 48_000)
         assertTrue("the take not put in a brick", v0.placeInCell(com.pocketstudio.model.SongPart.audio(-1), v0.project.value.scene, pcm, "Ma prise 1", known = v0.project.value.tempoBpm))
         repeat(4) { act("attends 1") }
+        // What one hears: the brick loops on its own length (whole bars, `LiveCells.loopBars`).
+        val bars = rhythm()!!.project.value.let { p -> p.audioTracks.mapNotNull { it.clip }.first { !it.song && it.scene == p.scene }.loopSteps / p.stepsPerBar }
+        assertTrue("a take of one bar only: $bars", bars > 1)
         val v = rhythm()!!
         // As the message says (« Plus › Briques »): the Live's bricks, played; the counter under the top bar says « mes. x/<bars> ».
         runCatching { tap("padlive_more") }
@@ -231,6 +235,6 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         if (!v.transport.value.playing) tap("top_play")
         repeat(3) { act("attends 1") }
         val counted = screenLines().firstNotNullOfOrNull { Regex("mes(?:\\.|ure) \\d+/(\\d+)").find(it)?.groupValues?.get(1)?.toInt() }
-        assertTrue("the take lasts $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
+        assertTrue("the brick loops on $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
     }
 }

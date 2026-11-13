@@ -184,6 +184,8 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         fun saysThePadShown(at: String) {
             val shown = com.pocketstudio.app.rhythm.padName(v.project.value, v.transport.value.selectedPad)
             val said = screenLines().mapNotNull { Regex("« → ([^»]+) »").find(it)?.groupValues?.get(1)?.trim() }
+            // Fresh review: a line with no « → » at all would pass unseen; the moment checked is the banner's.
+            assertTrue("$at: no « → » on the screen:\n" + screen(), said.isNotEmpty())
             assertTrue("$at: « → ${said.joinToString()} » over the grid of « $shown »:\n" + screen(), said.all { it == shown })
         }
         // The seat's screens 175-177: a hit left on the kick's last beat while another pad is shown, the app turns the grid

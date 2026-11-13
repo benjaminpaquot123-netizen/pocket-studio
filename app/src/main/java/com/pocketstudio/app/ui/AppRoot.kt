@@ -363,6 +363,9 @@ fun AppRoot() {
     val spots = remember { com.pocketstudio.app.learn.SpotRegistry() }
     // Le Guide's panel (G2), opened by itself on a song just made (G5: « Ton morceau est prêt » is its first card).
     var guideOpen by rememberSaveable(key = "guide_open") { mutableStateOf(false) }
+    // Tour 6, N1 (seat D c #55): « Ouvrir le Guide de mon morceau » touched during a tutorial: the Guide's panel shows in
+    // the tutorial's place until it is folded (it only changed the tab, no Guide came).
+    var guideOverTuto by rememberSaveable(key = "guide_over_tuto") { mutableStateOf(false) }
     // G5: the next song the assistant makes is « Mon premier morceau » (the welcome's guided song).
     var firstSongNext by rememberSaveable(key = "first_song_next") { mutableStateOf(false) }
     // G5: a song just made (or « Mon premier morceau ») opens the Guide on its first card by itself,
@@ -2071,7 +2074,12 @@ fun AppRoot() {
         }
     }
     // G4 review: a measure running stops with the panel (and when the music starts, below).
-    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure() } }
+    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure(); guideOverTuto = false } }
+    // Tour 6, T13 (seat D a #99: « Reprendre le tuto » and the Guide's bar, two guides under one page): while a
+    // tutorial runs or waits to be resumed the Guide stays away, unless it was asked for by name ([guideOverTuto]).
+    val tutoHoldsTheLine = tutoUi != null || tuto.resumable
+    val guideAsked = guideOverTuto && guideOpen
+    val guideFree = !tutoHoldsTheLine || guideAsked
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
     // panel only hides there, it stays open).
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
@@ -2083,7 +2091,8 @@ fun AppRoot() {
         .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
     // Le Guide keeps quiet during a take, on the Live page and on the keyboard lying down, where every dp is a key's
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
-    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe)
+    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe) &&
+        guideFree
     val guideSide = guideShown && guideOpen && landscape
     // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
     // Audit ultra round 2 (n° 11, seat B a: « Jouer » out of the thumb's reach, the bar hidden under the Guide): the Guide's
@@ -2465,7 +2474,9 @@ fun AppRoot() {
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).
                 // « Tuto de A à Z »: its panel takes the Guide's place while it runs.
                 val tutoNow = tutoUi
-                if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
+                if (guideAsked && guideShown) {
+                    // N1: the Guide asked for by name has the tutorial's line until it is folded.
+                } else if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
                     val tutoProject by rhythmVm.project.collectAsStateWithLifecycle()
                     val tutoTransport by rhythmVm.transport.collectAsStateWithLifecycle()
                     // « Écouter ton résultat »: only once there is something of the user's to hear.
@@ -2537,8 +2548,8 @@ fun AppRoot() {
                 // pill at the thumb's bar's end: its 48 dp go to the page (the second row of steps above the fold).
                 val guideConfig = LocalConfiguration.current
                 val guideInThumb = thumbBarUp && guideConfig.screenHeightDp < GUIDE_PILL_BELOW_DP && guideConfig.screenWidthDp >= GUIDE_PILL_FROM_WIDTH_DP
-                val guidePill = guideShown && !guideSide && tutoNow == null && !guideOpen && guideInThumb
-                if (guideShown && !guideSide && tutoNow == null && !guidePill) {
+                val guidePill = guideShown && !guideSide && !guideOpen && guideInThumb
+                if (guideShown && !guideSide && !guidePill) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
@@ -3711,7 +3722,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     com.pocketstudio.app.settings.HelpActions(
                                         openGuide = { showGuide = true },
                                         // G5: the Guide took over « Prochaine étape »: its panel, on the song.
-                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true },
+                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine },
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },

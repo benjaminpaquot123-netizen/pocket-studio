@@ -13,10 +13,11 @@ tests: aucun : lot du banc seul (scripts et gabarits), aucun test Gradle changé
 | 3. Les sièges de contrôle | `human-act.py`, `human-tester.sh` (joue `controle/<id>/a/`, écrit `mesures.json` de chaque siège), `sortie-de-siege.py`, `fuse-reports.py`, `tableau-de-bord.py`, verrou du tuto (`rapport-zone.py --tuto`), gabarit du rapport (rubrique `defauts-avant`) | `4475642e` | `42700d30` |
 | 4. Le tableau de bord | une ligne « Réparations » par tour, quatre chiffres et « réparés : C sur N pris » | `a848cbe4` | `2da01534` |
 | 5. Les fiches | fiche 1 (siège de contrôle), fiche 2 (« 4 bis » : phrase, conditions d'origine, « tenté »), fiche 4b (« 2 bis » : le trieur écrit la phrase et le siège d'origine) | `7ce1fee5` | `6ede7980` |
+| 2 bis. Constat tardif | l'en-tête propre du registre (`COLUMNS`) n'est pas un changement du lot : sans cela, ce lot-ci aurait été refusé par sa propre règle dès le paquet 5 ; tout autre en-tête reste refusé | `037d4f73` | `696a6ee0` |
 
 Hors paires : `04bb954d` et `fb6e2439` (`test_portail4.py` exigeait exactement 17 règles du portail ; il en exige au moins 17 ; le second remet une ligne que le premier avait effacée).
 
-Chaque rouge a été vu rouge sur des assertions (`FAIL`, aucune `ERROR`) avant son vert : point 1, 9 échecs ; point 2, 24 échecs Python et 7 rouges de `test_pre_vol.sh` ; point 3, 11 ; point 4, 3 ; point 5, 4.
+Chaque rouge a été vu rouge sur des assertions (`FAIL`, aucune `ERROR`) avant son vert : point 1, 9 échecs ; point 2, 24 échecs Python et 7 rouges de `test_pre_vol.sh` ; point 3, 11 ; point 4, 3 ; point 5, 4 ; paire 2 bis, 1.
 
 ## Les formats
 
@@ -41,7 +42,7 @@ defauts-avant:
   - <id du défaut visé> | <corrigé|autre|encore là|pas atteint> | ecran: <n°> | <ce que tu as vu, avec tes mots>
 ```
 
-Les écritures du tour 6 se lisent aussi (`- A1 : corrigé`, `- A7 | corrigé (écran 21 : …)`, `- T4 | corrigé (écran 98) : …`).
+Les écritures du tour 6 se lisent aussi (`- A1 : corrigé`, `- A7 | corrigé (écran 21 : …)`, `- <id> | corrigé (écran 98) : …`).
 
 Ligne de refus neuve du portail (`scripts/bench/fusion-equipes.sh`) :
 
@@ -64,14 +65,14 @@ Siège de contrôle joué par le banc : `docs/audits/ultra/sieges/<tour>/control
 Chaque contrôle neuf a été cassé une fois (copie jetable, fichier remis ensuite), suite relancée :
 
 - Point 1 (13 cassures) : accents, mot de la réponse, écran exigé, défaut « pas pris », colonne réécrite, fin de rubrique, filtre « tenté » d'`applique-corrections.py`, passage « constaté » → « corrigé » dans `base.tsv`, lecture de l'état, cases manquantes : toutes rouges. Trois restaient vertes au premier passage (`.strip()` de la ligne réécrite, fin de rubrique, lecture de l'état dans `applique-corrections.py`) : tests ajoutés, puis rouges.
-- Point 2 (19 cassures) : état réservé, lecture à la tête, phrase, siège d'origine, refus d'une phrase effacée, `constat`, en-tête, dernier verdict d'un rejeu, classe entière des filtres, filtre « tenté », lignes du lot seulement, comparaison des lignes : rouges dans `test_constate.py`. Portail sans `from_paquet 5`, « rejoué » non mis dans le commit, bloc « rejoué » retiré, pré-vol sans `rule_from 5`, pré-vol sans le bloc : rouges dans `test_pre_vol.sh`. `tete:$before` remplacé par `tete:$base` : vert dans `test_pre_vol.sh` (dans le jouet, base et tête sont le même commit), rouge dans `test_constate.py` (contrôle de la ligne du portail) ; `computed+=` du registre retiré : rouge dans `test_constate.py`.
+- Point 2 (20 cassures, dont l en-tête propre de la paire 2 bis) : état réservé, lecture à la tête, phrase, siège d'origine, refus d'une phrase effacée, `constat`, en-tête, dernier verdict d'un rejeu, classe entière des filtres, filtre « tenté », lignes du lot seulement, comparaison des lignes : rouges dans `test_constate.py`. Portail sans `from_paquet 5`, « rejoué » non mis dans le commit, bloc « rejoué » retiré, pré-vol sans `rule_from 5`, pré-vol sans le bloc : rouges dans `test_pre_vol.sh`. `tete:$before` remplacé par `tete:$base` : vert dans `test_pre_vol.sh` (dans le jouet, base et tête sont le même commit), rouge dans `test_constate.py` (contrôle de la ligne du portail) ; `computed+=` du registre retiré : rouge dans `test_constate.py`.
 - Point 3 (11 cassures) : chemin de contrôle de `human-act.py` (2), mesures à la fin du lot, message du dossier plat, nom du siège dans `sortie-de-siege.py`, nom dans les grappes et les incidents, rubrique `defauts-avant`, missions du tour sans les contrôles, plusieurs sièges dans un dossier, dossier imbriqué : toutes rouges.
 - Point 4 (6 cassures) : meilleur état, tour, double compte, « pris » sans les « pas pris », lecture de l'état, ligne absente : toutes rouges ; le double compte restait vert au premier passage, ligne de test ajoutée.
 - Point 5 (5 cassures) : chaque ligne neuve des fiches retirée, la ligne `defauts-avant` changée, un des quatre mots retiré : toutes rouges.
 
 ## Comptes, sur un arbre au repos
 
-`bash scripts/bench/test_pre_vol.sh` : tout est vert (94 contrôles) ; `test_socle.py` 29 OK ; `test_portail3.py` 77 OK ; `test_portail4.py` 59 OK ; `test_constate.py` 47 OK ; `test_ultra_bench.py` « ultra bench scripts: OK ». Sur le vrai dépôt : `applique-corrections.py --dry` donne la même sortie qu'avant (347 citations, 315 clés, 0 sans clé, 0 ambiguës) ; `fuse-reports.py` sur le tour 6 nomme `controle/Da`, `controle/Ha` ; le tableau de bord des tours 5 et 6 imprime ses deux lignes « Réparations » (aujourd'hui tout à 0 : aucune ligne du tour 6 dans le registre).
+`bash scripts/bench/test_pre_vol.sh` : tout est vert (94 contrôles) ; `test_socle.py` 29 OK ; `test_portail3.py` 77 OK ; `test_portail4.py` 59 OK ; `test_constate.py` 48 OK ; `test_ultra_bench.py` « ultra bench scripts: OK ». Sur le vrai dépôt : `applique-corrections.py --dry` donne la même sortie qu'avant (347 citations, 315 clés, 0 sans clé, 0 ambiguës) ; `fuse-reports.py` sur le tour 6 nomme `controle/Da`, `controle/Ha` ; le tableau de bord des tours 5 et 6 imprime ses deux lignes « Réparations » (aujourd'hui tout à 0 : aucune ligne du tour 6 dans le registre).
 
 ## Ce que les programmes ne voient toujours pas
 

@@ -1,5 +1,5 @@
 # Tour 6 — lot 5 « langues » : relecture neuve
-Relu : 4bc3661e090d9f1819935908a71aa65f0c75c3b9
+Relu : 2a04a1437ef21c01be228147ab5da374520cded6
 
 Relecteur neuf (n'a pas écrit ce code). Lu : la section « Lot 5 » de `lots-correction.md` et le complément 3 n° 6 de `lecture-recurrents.md`, le rapport, les décisions, les diffs de `LiveScreen.kt`, `SimpleMix.kt`, `MyExports.kt`, `LanguagePicker.kt`, `FadingScroll.kt`, les 134 catalogues changés (lus clé par clé par un script : marques `%s` / `%1$d` / `%%`, écriture, désaccords entre fichiers d'une langue), les tests neufs, les listes `OPEN` et `Allowed`, les outils du passage sur le tuto. Rejoué dans un worktree jetable (jamais dans wt-lot5) : chaque commit « rouge: » sur son propre état (le code d'avant son « vert: »), puis la tête relue.
 
@@ -94,5 +94,36 @@ Aucun.
 
 19. Le passage laisse quelques mots latins que les tests n'exigent pas (hindi « Pad और bell चले जाते हैं », « ride के बिना » ; arabe « Drop B » dans une liste de boutons) : cohérents avec ce qu'affiche l'écran quand le nom vient du son ou d'une partie nommée, à revoir au prochain passage de langue.
 20. `it_words.py` et `convert.py` n'accordent que le mot voisin : un prochain passage du même genre doit être suivi de `Tour6TutoAgreementTest` (ou de son équivalent pour la langue visée).
+
+## Delta 4bc3661e → 2a04a143
+
+Troisième relecteur neuf (n'a écrit ni le lot, ni le passage sur le tuto, ni la fusion). Lu : `git diff c8a107b1 HEAD`, la fusion 7ab87aff (tête d'intégration b4ac25f2, lot « tutofleches ») et 2a04a143 (deux captures arabes du Guide). Base commune : 2bb86bc3.
+
+### Ce qui tient
+
+- **Aucune phrase de tutofleches perdue.** Script clé par clé sur les 15 fichiers `tuto*.json` des cinq langues (ar, hi, id, it, zh-CN), quatre états (base 2bb86bc3, intégration b4ac25f2, lot c8a107b1, tête) : chaque clé que l'intégration a ajoutée ou changée est là ; aucune n'est revenue au texte de la base ; les clés que l'intégration a retirées (« Chaque partie arrive avec 8 mesures… », « les charleys fermés en doubles croches ») ont disparu aussi ici. Le même script sur les 1 027 catalogues de toutes les langues : rien d'autre.
+- **Aucune correction du lot perdue.** Toute clé que l'intégration n'a pas touchée a, à la tête, exactement le texte du lot (0 écart, toutes langues, tous fichiers). Hors des 15 fichiers, la fusion ne change aucun catalogue par rapport au lot.
+- **Mots du lot dans les phrases neuves.** 37 phrases de l'intégration diffèrent de son texte : toutes par les seuls mots du lot (arabe « مقدمة / دروب / فاصل / تصاعد / دروب زائف », « بـIntro » devenu « بمقدمة » ; hindi « ड्रॉप, ब्रेक, फ़ेक ड्रॉप, मिनी-ब्रेक » ; chinois « 高潮、间奏、渐强段 » ; italien « sotto la cassa », féminin juste). Marques `%s` / `%d` identiques à celles de l'intégration. `apply_to_tutos.sh … show` rejoué sur la tête : 0 changement (le passage est complet et idempotent).
+- **JSON.** Les 1 027 catalogues se lisent ; aucune marque de conflit restée.
+- **Tests (rejoués ici).** `:project-model:test --tests 'com.pocketstudio.model.tuto.*' --tests 'com.pocketstudio.model.i18n.*'` : 166 tests, 0 échec (dont `Tour6TutoAgreementTest`, `Tour6TutoSixteenthsTest`, `Tour6LanguagesTest`). `:app:testDebugUnitTest --tests '*TutoFleche*' --tests '*Tour6Words*' --tests '*Tour6GuideLanguage*'` : 17 tests, 0 échec.
+- **Captures.** `ar_guide_card.png` et `ar_guide_panel.png` regardées en entier : Guide de l'intégration (bandeau « المرشد », « المزيد في الأسفل »), mots du lot (« مقدمة 2 » dans la barre et sur les blocs, « تشبّع خفيف · Drive 20% »), flèche de « دورك » tournée vers la droite, rien de coupé ni de chevauché ; même mise en page que `de_guide_card.png`.
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Moyen
+
+21. **Hors lot : `Tour6TutoPanelAlreadyTest#aStepTheProjectHeldAlreadyIsSaidAlreadyDone` dépend de l'ordre.** Seul : vert (deux fois). Avec `Tour6TutoFlechesRollTest` dans la même exécution : rouge « the step reached done without a gesture is not said « Déjà fait » ». Reproduit à l'identique sur l'intégration nue b4ac25f2 (worktree jetable, mêmes deux classes) : la cause vient de tutofleches (un état global, `TutoHints` ou voisin, laissé par la classe du rouleau), pas du lot, qui ne touche ni au code du tuto ni à ces tests. À rendre au lot tutofleches.
+
+### Mineur
+
+22. La fusion a fait disparaître, dans `tuto_bass.json` d'ar, hi, id et zh-CN, le doublon d'une clé (« … Intro, Montée, Drop, Break, Montée, Drop 2 et Fin … Les durées … », deux fois la même valeur) ; il reste dans les dix autres langues, déjà présent sur l'intégration. Sans effet (même texte), à nettoyer partout au prochain passage.
+23. « Drop B » reste en lettres latines au milieu des noms traduits (hindi « ड्रॉप, Drop B, ड्रॉप ») : c'est le nom d'une partie que l'élève tape (`part:Drop B`), comme déjà noté au point 19.
+24. `Tour6GuideCoquilleLookTest` échoue aussi sur l'intégration nue (dit par l'équipe, non rejoué ici) : hors lot.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

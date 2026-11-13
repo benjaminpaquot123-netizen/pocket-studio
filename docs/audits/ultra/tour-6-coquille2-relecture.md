@@ -1,12 +1,17 @@
 # Relecture neuve — lot coquille2 (tour 6)
 
-Relu : a032ab20
+Relu : 8868eb9d
 
 Portée : tout le lot (`git diff origin/ccr-80af1a1b-mn0wec...HEAD`). Quatrième passe : la 1re sur a2c12c1c, la 2e sur 98324743, la 3e sur c3190921 (P6), celle-ci sur `c3190921..a032ab20`. Depuis la 3e passe, seuls `HeardLength.kt` et `HeardLengthTest.kt` ont changé dans `app`, `project-model` et `engine` ; la fusion de l'intégration (`0ff032ee`, `9cacbbb2`) n'apporte que le banc et des docs. Lecture du code seulement, Gradle non lancé.
 
+## 5e passe (`a032ab20..8868eb9d`)
+
+- **Fusion de l'intégration (exports2) : rien à signaler.** Elle touche la page de partage et `export/` (`ShareSheet.kt`, `ShareSongUi.kt`, `SaveProjectZip.kt`), `ProjectsScreen.kt` et des traductions. Aucun fichier du lot n'a changé : `RhythmViewModel.kt`, `AppRoot.kt`, `CutScreen.kt`, `MixerScreen.kt`, `PlayStrip.kt` et `HeardLength.kt` sont identiques à a032ab20.
+- **mineur** — `app/src/test/java/com/pocketstudio/app/ui/Coquille2SeatTest.kt:58` et `:160`. « Autres fichiers » est maintenant atteint par `performScrollTo().performClick()`. C'est juste : exports2 a descendu la ligne sur la page, et `share_other` est toujours là (`ShareSheet.kt:522`). Ce clic par la sémantique contourne toutefois le geste du siège (`tap` aux coordonnées). Comme les deux tests jugent l'écran d'après (E2 et N2), pas l'accès à la ligne, c'est acceptable. `performScrollTo` échoue si la page ne défile pas : ce serait un rouge visible, pas un faux vert.
+
 ## Points des passes précédentes
 
-- **A6 dans une boucle (grave) : réglé.** La phrase est juste dans une boucle, et « Allonger » n'accompagne que son propre avis. Le test A6 vérifie la structure créée. Le test N2 vise `export_cancel`. Constaté en 2e passe, toujours vrai.
+- **A6 dans une boucle (grave)** : **corrigé**. La phrase est juste dans une boucle, et « Allonger » n'accompagne que son propre avis. Le test A6 vérifie la structure créée. Le test N2 vise `export_cancel`. Constaté en 2e passe, toujours vrai.
 - **E2 et les mineurs que le chef a notés : acceptés**, comme dit dans la dernière section du rapport.
 - **Japonais de `coquille2` : réglé.** La phrase est maintenant au registre poli d'un bout à l'autre (« 曲はループより %s 長く、ループがくり返すあいだも鳴り続けます。 »), et `%s` est gardé.
 - **Test de la cymbale : réglé.** `said.isNotEmpty()` empêche que le test passe sans aucun « → » à l'écran.

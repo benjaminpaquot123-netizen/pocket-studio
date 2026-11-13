@@ -96,6 +96,30 @@ class PadLivePlayShowsTest {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { if (it == 1) 2 else 0 }, playing = false, expect = "Jouer"))
     }
 
+    /**
+     * Control seat Ab-2 (P4 « autre », écran 41): « Plus › Briques » shows its own ▶ at the top; a loop pad playing on its own
+     * there says ■ too, and one touch cuts it (the pads' « Tout couper »), as on Pad Live's page.
+     */
+    @Test
+    fun theBricksPageSaysTheSame() {
+        val done = ArrayList<String>()
+        val project = com.pocketstudio.model.PadLive.newProject().copy(live = pads)
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.live.LiveScreen(
+                    com.pocketstudio.app.live.LiveScreenUi(project, playing = false),
+                    com.pocketstudio.app.live.LiveActions(togglePlay = { done += "play" }),
+                    pads = com.pocketstudio.app.session.LivePadsUi(pads, loops, editing = null),
+                    padsActions = com.pocketstudio.app.session.LivePadsActions(stopAll = { done += "stop all" }),
+                )
+            }
+        }
+        compose.onNodeWithTag("live_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
     @Test
     fun nothingPlayingShowsPlay() {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { 0 }, playing = false, expect = "Jouer"))

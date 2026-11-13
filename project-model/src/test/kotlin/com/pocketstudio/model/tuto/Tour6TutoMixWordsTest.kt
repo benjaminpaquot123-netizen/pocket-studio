@@ -16,7 +16,7 @@ class Tour6TutoMixWordsTest {
         val bad = mutableListOf<String>()
         var checked = 0
         // jump up: TutoLot4Test (C3, C4) pins « nombre sous le curseur » there, until its owner updates it.
-        for (style in TutoCourse.STYLES - "jump_up") {
+        for (style in TutoCourse.STYLES) {
             for (s in TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }.filter { it.check.startsWith("changed:volumes") }) {
                 val text = s.text
                 if ("nombre sous le curseur" in text) bad += "$style/${s.id}: $text"

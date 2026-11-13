@@ -28,9 +28,9 @@ class Tour6TutoTabNamesTest {
     companion object {
         /**
          * Courses whose Facile words an older test pins (TutoLot4Test C3: jump up's « dans « Le morceau » », no « Mon
-         * morceau »): left as they are until that test's owner updates it, then taken out of here.
+         * morceau »): none any more (TutoLot4Test updated with jump up's texts).
          */
-        val PINNED = setOf("jump_up")
+        val PINNED = emptySet<String>()
 
         /** The Mode simple's tabs (SimpleTab) and the full app's spaces (Space), French. */
         val SIMPLE_TABS = setOf("Mon morceau", "Rythme", "Clavier", "Mix", "Partager")

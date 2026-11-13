@@ -182,12 +182,12 @@ class TutoLot4Test {
         all.forEach { t ->
             assertFalse("« 4 mesures » for an 8 bars line: $t", "sur 4 mesures" in t)
             assertFalse("« la 4e » of an 8 bars Montée: $t", "(la 4e)" in t)
-            assertFalse("« Mon morceau » for « Le morceau »: $t", "Mon morceau" in t)
         }
-        assertTrue("« Le morceau »" in step("song_order").text)
+        // Tour 6, lot 2, N12: the tab is named as it shows in the Mode simple (« Mon morceau »).
+        assertTrue("« Mon morceau »" in step("song_order").text)
         // Facile's mix: the « Mix » tab's sliders and the number under them (no « dB » in the Mode simple), not a « Volume » slider.
         val levels = step("levels").textFor(TutoLevel.Facile)
-        assertTrue("« Mix »" in levels && "dB" !in levels && "nombre sous le curseur" in levels && "curseur « Volume »" !in levels)
+        assertTrue("« Mix »" in levels && "dB" !in levels && "Sous le curseur, « Normal »" in levels && "curseur « Volume »" !in levels)
         // The parts come at 8 bars: the text says the next step gives their length.
         assertTrue("8 mesures" in step("song_order").text)
         // The roll is not on the cells the gap erases (a/167, b/240): the last hit before the silence.
@@ -221,7 +221,7 @@ class TutoLot4Test {
     fun theFacileWordsAreExplained() {
         val facile = course.chaptersFor(TutoLevel.Facile)
         val text = facile.flatMap { c -> c.steps.map { it.textFor(TutoLevel.Facile) } }.joinToString("\n")
-        for (w in listOf("kick (", "caisse claire (", "« Charley » (", "accord (", "c'est le groove", "transition (", "le mix, c'est", "« mes. 1/2 »", "« Suivre »", "nombre sous le curseur", "« M4A »", "« WAV »")) {
+        for (w in listOf("kick (", "caisse claire (", "« Charley » (", "accord (", "c'est le groove", "transition (", "le mix, c'est", "« mes. 1/2 »", "« Suivre »", "« Normal » devient", "« M4A »", "« WAV »")) {
             assertTrue("$w not explained", w in text)
         }
         assertEquals("La vitesse et la couleur du morceau", facile.first().title)

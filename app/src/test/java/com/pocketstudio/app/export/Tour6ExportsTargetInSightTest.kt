@@ -50,4 +50,25 @@ class Tour6ExportsTargetInSightTest {
         val ready = top("share_check_ok")
         assertTrue("« Club » ($chips px) comes before « Tout est prêt » ($ready px)", chips < ready)
     }
+
+    /**
+     * Bench replay after the « ? » was added (screen 8): the label's row grew to the « ? »'s 48 dp and the target no longer
+     * fitted whole above the pinned row on a phone, so the page opened without « Streaming » and « Club ». The target
+     * (its words, its chips and its « ? ») keeps to two rows' room: at most 110 dp on a 360 dp phone.
+     */
+    @Test
+    fun theSimpleTargetStaysCompact() {
+        I18n.lang = Lang.FR
+        val ui = ShareSheetUi(
+            name = "Trap", seconds = 178, parts = 26, checks = emptyList(), projectName = "Trap", exportLufs = -8.5,
+            target = TargetPick.of(Project(style = "trap")),
+        )
+        compose.setContent {
+            PocketStudioTheme { Box(Modifier.fillMaxWidth().height(2000.dp)) { ShareSheetContent(ui, ShareSheetActions(), page = true, simple = true) } }
+        }
+        compose.waitForIdle()
+        val n = compose.onAllNodesWithTag("share_target", useUnmergedTree = true).fetchSemanticsNodes().single()
+        val dp = n.size.height / compose.density.density
+        assertTrue("the Simple target takes $dp dp (at most 110)", dp <= 110f)
+    }
 }

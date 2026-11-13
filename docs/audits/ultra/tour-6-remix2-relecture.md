@@ -1,11 +1,13 @@
 # Tour 6 — lot « remix2 » (zone Remix, siège B a, pouce gauche) : relecture neuve, aller-retour 1 du contrôle Ba-2, puis trois passes sur le grave (a1bbd8f1, c4aac715, 3ec13da4)
-Relu : 3ec13da47014307bfc8cef80a2fa50b4748c0b1d
+Relu : e5ba40c55f98d697662fab995d91fc7301c02de1
 
 Relecteur neuf (n'a pas écrit ce code). Lu : `docs/AIDE-FUSIONS-TESTS.md` (fiche du relecteur), le lot entier `ce0aed6f..HEAD` (`CutScreen.kt`, `CutWave.kt`, `CutModel.kt`, `RemixScreen.kt`, `RemixLeftThumbSeatTest.kt`, `CutBoutBigTextTest.kt`, `CutZoomGestureTest.kt`, `RemixCutFromCardTest.kt`), dont le delta `a4b719df..864e3d90`.
 Captures regardées en entier : `cut_bout.png`, `cut_bout_130.png`, `cut_screen.png`, `remix/cut_bout_short_{fr_100,fr_130,ptbr_200}.png`, `remix_board_button.png`, `remix_song_mix.png` (comparée à sa version de a4b719df).
 Rejoué :
 - à HEAD 3ec13da4 : `:app:testDebugUnitTest --tests 'com.pocketstudio.app.remix.*'`, 308 tests, 0 échec, dont `RemixLeftThumbSeatTest#a7` (302 à 864e3d90, 303 à a1bbd8f1, 307 à c4aac715) ;
 - au passage précédent (7046598a) : `verifyRoborazziDebug` des captures de découpe, de tailles et de tablette, vert.
+
+Delta 10830ce2..12e5e818, relu : de la documentation seule. Ce sont la copie texte des sièges de contrôle Ba-2 et Ba-3, et les lignes `controle:` et « Constaté / Pas pris » du rapport de zone ; aucun fichier hors de `docs/`, aucun lien symbolique. Les verdicts A2, A3, A5, A7 et A8 du rapport correspondent à ceux de `controle/Ba-3/rapport.md` (« corrigé », mêmes écrans), mais une phrase en disait plus que le siège (moyen n°8). Delta 12e5e818..e5ba40c5 relu : de la documentation seule (le rapport de zone et `docs/decisions/tour-6-remix2.md`), qui règle les moyens 8 et 9.
 
 Les rouges et les sondes ont été joués dans des worktrees jetables, retirés ensuite. Les sondes sont des tests ajoutés seulement dans ces worktrees, jamais commités.
 
@@ -80,11 +82,22 @@ Aucun.
    - Il laisserait passer la perte d'une coche faite exprès par une tuile plus haut dans le parcours (0 ou 2).
    - Honnête sur son intention, mais trop large. Mieux : retenir les tuiles cochées exprès dans le parcours, et exiger `again.chosen` égal à exactement celles-là.
 
+8. **Le rapport de zone dit plus que le siège Ba-3** (`tour-6-remix2-rapport.md`, delta 12e5e818).
+   - Il écrit « Garde-fou « Enlever un seul morceau » tenu (Ba-3, écran 40) ». Or Ba-3, ligne A9, dit « aucun bouton « Quitar » vu ; en touchant le rond numéroté d'un des 2 morceaux, seul celui-là part (écran 40, 2 → 1 trozo) ». `screen-40.txt` montre « 1 trozo elegido » et aucun « Quitar ».
+   - Le siège a décoché un choix ; il n'a jamais touché « Enlever », qui n'était pas à l'écran en Compases (A4, pas pris). Le garde-fou « Enlever un seul » n'est prouvé que par les tests et mes sondes, pas par le siège.
+   - « Buts du siège 3/3 » n'est écrit nulle part par Ba-3. On peut le déduire : `abandon: jamais`, séparation, découpe et pose faites (écran 70). Il faut l'écrire comme une lecture du chef.
+   - À reformuler (fiche, point 6), par exemple : « A9 : décocher par le rond numéroté retire un seul choix (écran 40) ; « Quitar » n'a pas été vu ».
+   - **corrigé** (documenté) en e5ba40c5. Le rapport dit maintenant qu'à l'écran 40, un bout a été décoché par son rond, que « Enlever » n'a pas été touché, et que le garde-fou n'est prouvé que par les tests. « Buts 3/3 » y est donné comme une lecture du chef.
+9. **Ba-3, défaut du geste 27 : il faut 4 gestes, sans aide, pour retirer un des deux bouts choisis** (« contourne-en-4-gestes », « sans-aide »). Le siège a retouché le bout, puis fait un appui long : rien ne se passe, car A7 choisit sans jamais décocher. Seul le rond numéroté décoche.
+   - Plus de 3 gestes, mais `revu: non` le ramène à moyen par la règle de `fuse-reports.py` : cohérent avec « 0 grave neuf ».
+   - Le rapport de zone ne le cite pas, alors qu'il découle directement du choix « jamais décoché » d'A7. À noter dans le rapport et les décisions : une aide sur le rond numéroté, ou un second toucher sur un bout choisi par la tête qui le décoche.
+   - **corrigé** (documenté) en e5ba40c5. Le rapport le cite comme moyen de Ba-3, pas pris dans ce lot. `docs/decisions/tour-6-remix2.md` y consacre la ligne « Décocher après A7 », avec sa raison et son retour arrière. Le défaut lui-même reste à jouer par un siège.
+
 ## Mineur
 
-8. Commentaires périmés : `CutScreen.kt` l.217 (« when the screen scrolls (a large font) »), l.228 (« the curve takes the room »), l.242 (« that fits without scrolling »), (le commentaire périmé de `CutWave.kt` l.249-252 a été corrigé en 1ffefd76).
-9. À 200 %, la 4e puce (« Resto ») est coupée net au bord droit, sans fondu. Elle reste atteignable en glissant. Le défaut existait déjà avant le lot.
-10. A2 n'est prouvé qu'à 100 % : à 130 %, `bigText` est faux et les puces sont sous le pli.
-11. A7 (bande vive encadrée) n'a été regardé qu'en sombre ; le jaune et le vert clair, sur une toile claire, n'ont pas été vérifiés.
+10. Commentaires périmés : `CutScreen.kt` l.217 (« when the screen scrolls (a large font) »), l.228 (« the curve takes the room »), l.242 (« that fits without scrolling »), (le commentaire périmé de `CutWave.kt` l.249-252 a été corrigé en 1ffefd76).
+11. À 200 %, la 4e puce (« Resto ») est coupée net au bord droit, sans fondu. Elle reste atteignable en glissant. Le défaut existait déjà avant le lot.
+12. A2 n'est prouvé qu'à 100 % : à 130 %, `bigText` est faux et les puces sont sous le pli.
+13. A7 (bande vive encadrée) n'a été regardé qu'en sombre ; le jaune et le vert clair, sur une toile claire, n'ont pas été vérifiés.
 
 Verdict : 0 bloquant, 0 grave

@@ -15,7 +15,7 @@ Méthode : chaque test a été écrit et vu rouge sur son assertion avant toute 
 - Le panneau ouvert se replie quand l'utilisateur change lui-même d'écran (onglet, « ⋮ Plus » du pouce ou du haut, page de Plus) ; sa barre reste. « Voir le réglage » du Guide n'est pas concerné.
 - Quand la carte dépasse du panneau, son bord s'estompe et une ligne « ↓ La suite » sous la carte fait monter le reste ; elle part à la fin. Un premier essai posait ce signe par-dessus la carte : il prenait les touchers des boutons dessous (37 anciens tests du Guide rouges), retiré.
 - Sur la page du clavier d'un écran court (moins de 700 dp), la barre repliée du Guide laisse sa ligne aux touches : 12 dp de touches visibles avant (mesuré par le test rouge, 360 x 780 à 130 %), la hauteur de la barre en plus après ; le test exige au moins 48 dp.
-- Reste : le siège F b #10 (360 x 780 à 100 %) est au-dessus du seuil ; le réglage fin de la page du clavier est dans `synth/SynthScreen.kt`, hors du lot.
+- Reste : le siège F b #10 (360 x 780 à 100 %) est au-dessus du seuil ; le réglage fin de la page du clavier est dans `synth/SynthScreen.kt`, hors du lot. Les autres écrans cités par le tri pour G1 (parties, export, « Annuler » pendant la fabrication du siège A c #21) n'ont pas de test à eux : la barre et le panneau y prennent leur ligne sans rien recouvrir, et les pages défilent.
 
 chemin: Guide ouvert puis « ⋮ Plus » du pouce (Simple) | test: Tour6GuideCoversTest#thePlusPageOpenedFromTheThumbIsNotUnderTheOpenGuide
 chemin: Guide ouvert puis « ⋮ » du haut à 130 % | test: Tour6GuideCoversTest#thePlusPageOpenedFromTheTopBarIsNotUnderTheOpenGuideWithBigText
@@ -117,12 +117,12 @@ Les captures de référence existantes que le lot fait bouger (panneaux du Guide
 - `theGuidesOwnWayToAScreenKeepsItsBar` est un garde-fou (vert avant le lot aussi), pas une preuve du correctif.
 
 ## Banc et voisins
-- `scripts/bench/selftest.sh` : un premier passage rouge sur `BenchSelfTest#everyIconOfTheAppHasItsShape` (l'icône « ‹ » de R19, sans forme connue du banc) ; corrigé en retournant l'icône « › » ; second passage, sur le code final (commit du correctif de la relecture) : 203 verts, 0 rouge, 0 en quarantaine, 44 sautés.
-- `GestureBudgetTest#aStrokeCutShortIsStillItsOwnUndoStep` est rouge sur la branche (attendu 11, obtenu 10). Ce test dessine `RhythmScreen` seul avec son ViewModel : aucun des cinq fichiers du lot n'est sur son chemin. À regarder côté intégration (RhythmScreen.kt a changé avec le lot 1).
+- `scripts/bench/selftest.sh` : un premier passage rouge sur `BenchSelfTest#everyIconOfTheAppHasItsShape` (l'icône « ‹ » de R19, sans forme connue du banc) ; corrigé en retournant l'icône « › » ; deux passages verts ensuite, sur le correctif de la relecture puis après la fusion de l'intégration e57f1bc6 : 203 verts, 0 rouge, 0 en quarantaine, 44 sautés.
+- `GestureBudgetTest#aStrokeCutShortIsStillItsOwnUndoStep` est rouge sur la branche (attendu 11, obtenu 10). Il est rouge de la même façon avec les cinq fichiers du lot remis à leur version de l'intégration (e57f1bc6), passage fait le 2026-11-13 : il ne vient pas du lot. Il dessine `RhythmScreen` seul avec son ViewModel. À regarder côté intégration avant la fusion : le portail rejoue ce test (chemin du lot « jank » du tour 5).
 
 ## À dire au relecteur
 - Aucun rejeu ajouté, retiré ni changé ; rien touché sous `scripts/bench/`, `docs/audits/ultra/portail/`, les fichiers de traduction.
-- La branche a fusionné la tête poussée de l'intégration (a7f8ed62) ; son histoire garde aussi la première fusion de tutogrille (ea294587), que le portail a défaite depuis.
+- La branche a fusionné la tête poussée de l'intégration (a7f8ed62 puis e57f1bc6) ; son histoire garde aussi la première fusion de tutogrille (ea294587), que le portail a défaite depuis.
 - Les commits « vert » ont été découpés par défaut après le passage vert de l'ensemble : chaque commit intermédiaire n'a pas été testé seul, seul l'état final l'a été.
 - T13 et N1 partagent un commit rouge et un commit vert (même condition dans AppRoot.kt).
 - Le découpage par défaut laisse quelques lignes communes (G1 s'appuie sur T13/N1, U9 vient après).

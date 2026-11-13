@@ -40,6 +40,7 @@ machine="machine : ${free_gb} Go disque, ${mem_gb} Go mÃ©moire, ${daemons:-0} dÃ
 
 python3 -I scripts/bench/test_ultra_bench.py >"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc (voir $lot/selftest-scripts.log)"
 [ ! -f scripts/bench/test_portail3.py ] || python3 -I scripts/bench/test_portail3.py >>"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc, portail3 (voir $lot/selftest-scripts.log)"
+[ ! -f scripts/bench/test_stable.py ] || python3 -I scripts/bench/test_stable.py >>"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc, ci-rouge (voir $lot/selftest-scripts.log)"
 
 junit="$lot/junit"
 rm -rf "$junit"; mkdir -p "$junit"

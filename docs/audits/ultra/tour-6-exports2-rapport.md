@@ -53,7 +53,7 @@ Fichiers touchés : `app/src/main/java/com/pocketstudio/app/export/ShareSheet.kt
 
 ## Tests
 
-tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.export.Tour6Exports*' --tests 'com.pocketstudio.app.export.Lot6UiShareLevelTest' --tests 'com.pocketstudio.app.human.BenchSelfTest'
+tests: com.pocketstudio.app.export.Tour6Exports* com.pocketstudio.app.export.Lot6UiShareLevelTest com.pocketstudio.app.human.BenchSelfTest
 chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimplePageOffersStreamingAndClubWithoutGoingPro
 chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimpleLevelLineCarriesTheFilesNumber
 chemin: page Partager (Mode simple) | test: Tour6ExportsOtherFilesClearTest#theOtherFilesLineCanClearTheFadeBand

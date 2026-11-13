@@ -3,7 +3,7 @@
 Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
 MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : fdbc0f50bd479f8b95e491ea275e6b3f4a3adf26
+relu : 9390387da73c7c21c7f010773c71efdf2f67101b
 
 ## Relancé et vu
 - `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
@@ -41,6 +41,11 @@ relu : fdbc0f50bd479f8b95e491ea275e6b3f4a3adf26
 - Banc, parcours Ac-2 (selftest 176/0) : « oracle tenu », puces Streaming et Club touchées sans défiler.
 - Moyens : le test de noms ne regarde plus `hasVisualOverflow` ; une ligne inutile (`after`) ; en Simple, revenir à
   « Désactivée » demande Pro ou Mix ; aucune capture du bloc « Volume visé » simple.
+
+## Re-signature (fusion de la tête c384b693, contrôle Ac-4)
+- Depuis fdbc0f50 (dernière relecture du code) : fusion de la tête, copie du siège Ac-4, rapport ; docs/REVIEW.md rendu
+  à la tête. Aucun fichier du lot (export/, ProjectsScreen.kt, partage.json, tests export) n'a changé ; relancés sur la
+  fusion : I18nCatalogTest, LexiconWordsTest, export.*, projects.*, ScreenScanTest, BenchSelfTest : verts.
 
 ## Graves
 Aucun.

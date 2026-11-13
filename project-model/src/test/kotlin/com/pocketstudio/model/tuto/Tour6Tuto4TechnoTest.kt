@@ -269,4 +269,28 @@ class Tour6Tuto4TechnoTest {
         }
         report("steps naming one pad by a plural", bad)
     }
+
+    /**
+     * Round trip 1 after Da-5, M2: the « Rim » pad explained where it first shows (screen 177: « Rim » never said), and a
+     * chapter's title explains its word of the trade, since the « Bravo » of the chapter before already shows it
+     * (screen 92 « スタブ », explained only on screen 93; the same for « Groove » and « transition »), in every language.
+     */
+    @Test
+    fun theRimAndTheTitlesWordsExplainedWhereTheyFirstShow() {
+        val bad = ArrayList<String>()
+        val firstRim = steps.first { s -> texts(s).any { "Rim" in it } }
+        if (firstRim.id != "perc_do") bad += "« Rim » first shows in ${firstRim.id}"
+        val rim = firstRim.text
+        if (!Regex("« Rim » \\([^)]*bord").containsMatchIn(rim)) bad += "fr perc_do: the « Rim » not explained (the rim of a drum): $rim"
+        for (l in langs) I18n.table(l)[rim].let { t -> if (t == null) bad += "${l.code}: no translation of « $rim »" else if (t.count { it == '(' || it == '（' } < 1) bad += "${l.code} perc_do: no explanation: $t" }
+        val titles = mapOf("chords" to "accord court", "groove" to "boucle", "transitions" to "passage")
+        val facile = course.chaptersFor(TutoLevel.Facile).associateBy { it.id }
+        for ((id, plain) in titles) {
+            val title = facile.getValue(id).title
+            if (plain !in title) bad += "fr title of $id: no « $plain »: $title"
+            for (l in langs) if (I18n.table(l)[title] == null) bad += "${l.code}: no translation of « $title »"
+        }
+        I18n.table(Lang.JA)[facile.getValue("chords").title]?.let { if ("スタブ（" !in it) bad += "ja chords title: スタブ not explained: $it" }
+        report("words shown before they are explained", bad)
+    }
 }

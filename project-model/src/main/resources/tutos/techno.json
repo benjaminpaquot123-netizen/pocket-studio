@@ -28,7 +28,7 @@
       "steps": [
         {
           "id": "ref",
-          "text": "Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse, puis le Drop. Un kick sur chaque temps qui ne s'arrête jamais : c'est ce que tu vas construire.",
+          "text": "Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse (les notes graves), puis le Drop (le moment où tout joue). Un kick (la grosse caisse) sur chaque temps, qui ne s'arrête jamais : c'est ce que tu vas construire.",
           "check": "listen",
           "listen": "song"
         },
@@ -65,7 +65,7 @@
     {
       "id": "kick",
       "title": "Le kick et le grondement",
-      "why": "Le kick (la grosse caisse), c'est le moteur : en techno, il tape chaque temps, du début à la fin. On compte 1, 2, 3, 4 dans chaque mesure.",
+      "why": "Le kick (la grosse caisse), c'est le moteur : en techno, il tape chaque temps, du début à la fin. On compte 1, 2, 3, 4 : ces 4 temps font une mesure.",
       "steps": [
         {
           "id": "ready",
@@ -108,7 +108,7 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long dessus, puis « Doux ».",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long dessus ; dans le menu, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.",
           "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, et son fantôme juste avant la mesure suivante : appui long dessus, puis « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",
@@ -226,7 +226,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).",
           "textPro": "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, en contretemps (pas 4 et 11).",
           "why": "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.",
           "check": "notes:pad",
@@ -287,7 +287,7 @@
       "steps": [
         {
           "id": "groove_hear",
-          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Ce kick qui ne s'arrête pas et ce riff qui tourne, c'est la techno.",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple : c'est ton « Groove » (le mot des musiciens pour une boucle qui donne envie de bouger). Ce kick qui ne s'arrête pas et ce riff qui tourne, c'est la techno.",
           "check": "listen",
           "listen": "parts:kick,rumble,clap,open_hat,hat,perc,bass,pad,lead",
           "hearMine": true
@@ -470,7 +470,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).",
           "why": "Un temps de rien, et le Drop 2 paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

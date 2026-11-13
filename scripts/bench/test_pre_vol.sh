@@ -16,7 +16,7 @@ git config user.name essai
 git config user.email essai@localhost
 mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
 cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
-for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
+for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py reparations.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
 # The batch of merges in this little repository: 1 (a rule « from_paquet 2 » waits).
 printf '# Paquet de fusions en cours\npaquet: 1\n' > scripts/bench/portail-paquet.txt
 echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
@@ -432,6 +432,56 @@ tutofix tok && seat Ha "$tsha" && fixes tok "controle: Ha | code testé: $tsha |
 expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de contrôle" non tour-9 tok
 portal tok
 said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
+
+# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 8 ») --------------------------------
+# A lot writes « tenté » in docs/audits/ultra/corrections.tsv, never « corrigé », « rejoué » (the portal's) nor
+# « constaté » (the chief's, after a control seat): portal exit 11, before the merge. After a merge, the portal itself
+# turns the lot's « tenté » to « rejoué » when its proof (a replay of rejeux/) held on the merged head.
+if [ -f scripts/bench/reparations.py ] || [ -f "$src/scripts/bench/reparations.py" ]; then
+  git checkout -q fx-int
+  [ ! -f "$src/scripts/bench/reparations.py" ] || cp "$src/scripts/bench/reparations.py" scripts/bench/
+  # (The stand-in for the replays now says every replay of rejeux/ held, as the real one does on a green merge.)
+  cat > scripts/bench/rejeu-defauts.sh <<'STUB'
+#!/usr/bin/env bash
+echo "1 verts, 0 rouges, 0 en quarantaine, 0 sautés" > "$PS_REJEUX_SELFTEST/selftest-resume.txt"
+echo "a stamp" > "$PS_REJEUX_SELFTEST/selftest.ok"
+echo "chantier : 0 écarts" > "$PS_REJEUX_SELFTEST/selftest-chantier.txt"
+for d in docs/audits/ultra/rejeux/*/; do case "$(basename "$d")" in _*) ;; *) echo "$(basename "$d") : oracle tenu" ;; esac; done
+STUB
+  printf 'tour\titem\tsiege\tecran\tetat\tcommit\ttest\tnote\tcible\tphrase_acceptation\tsiege_origine\tconstat\ntour-9\tC1\tB/a\t15\tpas pris\t-\t-\t\t\tje touche Voz et la piste s ouvre\ttour-9/lotB/a\t\ntour-9\tC2\tB/a\t16\tpas pris\t-\t-\t\t\t\ttour-9/lotB/a\t\n' > docs/audits/ultra/corrections.tsv
+  git add scripts/bench docs/audits/ultra/corrections.tsv && git commit -q -m "the register of the repairs"
+  state() { # <zone> <item> <state> <proof>: the lot turns its line to this state
+    team "$1" && sed -i "s/^\(tour-9\t$2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1$3\t1234567\t$4/" docs/audits/ultra/corrections.tsv && git commit -q -am "$1 writes $2 $3"
+  }
+  state cself C1 corrigé r1 && fixes cself
+  batch 7
+  expect "before batch 8 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 8" non tour-9 cself
+  portal cself
+  said "before batch 8 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
+  git reset -q --hard "$pbefore"
+  batch 8
+  expect "a lot that writes « corrigé »: refused" 1 "état réservé du registre des réparations : .*tour-9 C1.*« corrigé »" oui tour-9 cself
+  portal cself
+  said "the portal names the lot that gives itself « corrigé », nothing merged" "$( [ "$prc" -eq 11 ] && has "cself: the lot gives itself a state of the repairs register" && has "not merged" && untouched cself && echo 0 || echo 1)"
+  state cconst C1 constaté r1 && fixes cconst
+  portal cconst
+  said "the portal refuses a lot that writes « constaté » (the chief's)" "$( [ "$prc" -eq 11 ] && has "« constaté »" && untouched cconst && echo 0 || echo 1)"
+  state crej C1 rejoué r1 && fixes crej
+  expect "a lot that writes « rejoué » (the portal's): refused" 1 "état réservé du registre des réparations" oui tour-9 crej
+  # The whole way: the lot says « tenté » with its replay r8, added and held; the portal merges it and writes « rejoué »
+  # itself, in the commit of its traces. C2's proof is a replay the portal never played: it stays « tenté ».
+  state ctente C1 tenté r8 && replay r8 && sed -i "s/^\(tour-9\tC2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1tenté\t1234567\tr404/" docs/audits/ultra/corrections.tsv \
+    && git commit -q -am "C2 tried" && fixes ctente "r8 : oracle tenu"
+  expect "a lot that writes « tenté » is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 ctente
+  portal ctente
+  c1="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')"
+  c2="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C2" {print $5}')"
+  said "the portal merges the lot and sets « rejoué » itself where the replay held" "$( [ "$prc" -eq 0 ] && has "ctente: merged" && [ "$c1" = "rejoué" ] && [ "$c2" = "tenté" ] \
+    && [ "$(git log -1 --format=%s HEAD)" = "Portal traces of the merge of ctente (tour-9)" ] && echo 0 || echo 1)"
+  said "« rejoué » is written by the commit of the traces, not by the lot" "$( [ "$(git show HEAD^:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')" = "tenté" ] && git show --stat HEAD | grep -q corrections.tsv && echo 0 || echo 1)"
+else
+  reds=$((reds + 1)); echo "ROUGE scripts/bench/reparations.py is missing (the repairs register's rule)"
+fi
 
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

@@ -37,3 +37,8 @@ ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll, zone 
 - Moyen : « Allonger » n'accompagne plus que l'avis auquel il appartient ; le test N2 vise `export_cancel`.
 - Moyen E2 laissé, voulu : le volume visé règle le prochain fichier (phrase E2 du siège) ; le fichier déjà fait reste partageable. Le cas « vraie modification → a changé » reste couvert par les tests du tour 3 (n° 12).
 - Mineurs laissés (noté) : solo / volume d'une voix ne disent rien ; « Allonger » plafonne à 256 mesures ; ordre TalkBack des menus en « Phrases » (sous la courbe, avant le panneau).
+
+## Relecture neuve (3e passe, P6) : suites
+- Mineur 1 pris : les briques comptées comme le moteur les joue (clip de toutes les parties, clip « une fois » sur ses passages, piste muette non entendue) ; `HeardLengthTest#bricksAreCountedAsTheEngineLoopsThem`.
+- Mineurs laissés (noté) : le compteur boucle sur la plus longue des longueurs, pas leur PPCM (partie de 3 mesures + brique de 4) ; `takeCounter` (`record/Takes.kt`, hors liste) dit encore « 1/1 » pendant une prise ; numérateur sur la partie entendue, dénominateur sur la partie affichée (défaut d'avant) ; le modulo de `barNow` n'est pas couvert sous Robolectric (`playBar` vaut -1).
+- À aligner à l'entrée du second (chef) : `SongLength.of` de padlive2 compte `loopSteps` des briques de la partie ; `heardSceneSteps` suit `engineLoopSteps` / `belongsTo` / sourdine : même nombre pour une prise posée dans une brique (6, 2, 5 mesures → 8, 2, 4).

@@ -1,28 +1,37 @@
 # Relecture neuve — lot coquille2 (tour 6)
 
-Relu : 98324743
+Relu : c3190921
 
-Portée : `git diff origin/ccr-80af1a1b-mn0wec...HEAD` sur `rhythm/RhythmViewModel.kt`, `ui/AppRoot.kt`, `remix/CutScreen.kt`, `mixer/MixerScreen.kt`, `I18n.kt` et les 14 `i18n/*/coquille2.json`, plus `ui/Coquille2SeatTest.kt` et `remix/CutScreenTightTest.kt`. Deuxième passe : 1re passe sur a2c12c1c, puis les correctifs `5dd6ab72` à `2c561afe`. Code relu seulement (Gradle non lancé).
+Portée : tout le lot (`git diff origin/ccr-80af1a1b-mn0wec...HEAD`). Troisième passe : la 1re sur a2c12c1c, la 2e sur 98324743, celle-ci sur les commits `d0fbbcd9` à `c3190921`, c'est-à-dire P6 (`HeardLength.kt`, `PlayStrip.playPosition`, `RhythmViewModel.barNow`) et les mineurs de la 2e passe. Lecture du code seulement, Gradle non lancé.
 
-## Points de la 1re passe : où ils en sont
+## Points des passes précédentes
 
-- **A6 dans une boucle (grave) : réglé.** Dans `RhythmViewModel.kt:6349-6358`, une boucle (`song.isEmpty()`) dit maintenant « La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète. ». C'est juste : l'export d'une boucle la laisse sonner (`exportEndBars`, jusqu'à 1024 mesures), et la durée dite est bien le dépassement sur la boucle (`atStep + remixSteps − sceneSteps`). Une structure garde « sa fin sera coupée ». « Allonger » reste proposé, c'est un choix, et la décision est notée.
-- **Test A6 qui ne prouvait rien (moyen) : réglé.** `Coquille2SeatTest.kt` vérifie maintenant `song.isNotEmpty()` et un dépassement nul, l'absence de « se cortará » et la présence de « sigue sonando ».
-- **Drapeau `_noticeLengthen` (moyen) : réglé.** Il garde le texte de l'avis auquel il appartient, et `AppRoot.kt:1088` ne montre « Allonger le morceau » que si `noticeLengthen == text`. Un avis posé par-dessus n'a donc plus le bouton, et `dismissNotice` remet tout à zéro.
-- **E2, empreinte et volume visé (moyen) : accepté.** Le chef a tranché dans `tour-6-coquille2-rapport.md` (dernière section) : le volume visé règle le prochain fichier, et le cas « vraie modification → a changé » reste couvert par les tests du tour 3 (n° 12). Rien à ajouter.
-- **Mineurs laissés, notés par le chef :** solo et volume d'une voix ne disent rien, « Allonger » plafonne à 256 mesures, l'ordre TalkBack en « Phrases ». Rien de neuf.
-- **Test N2 (mineur) : réglé.** Il vise `export_cancel`.
-- **P5, écriture d'état pendant la composition (`AppRoot.kt:1432-1438`) : inchangé, mineur.** Les chemins relus sont bons. On peut passer à `LaunchedEffect(rhythmVm.projectId)` si l'occasion se présente.
-- **N2, l'effet `bringIntoView` (`MixerScreen.kt:640-647`) : rien à faire.** Sa clé est un booléen, il ne part qu'une fois par export : pas de boucle ni de saccade.
+- **A6 dans une boucle (grave) : réglé.** La phrase est juste dans une boucle, et « Allonger » n'accompagne que son propre avis. Le test A6 vérifie la structure créée. Le test N2 vise `export_cancel`. Constaté en 2e passe, toujours vrai.
+- **E2 et les mineurs que le chef a notés : acceptés**, comme dit dans la dernière section du rapport.
+- **Japonais de `coquille2` : réglé.** La phrase est maintenant au registre poli d'un bout à l'autre (« 曲はループより %s 長く、ループがくり返すあいだも鳴り続けます。 »), et `%s` est gardé.
+- **Test de la cymbale : réglé.** `said.isNotEmpty()` empêche que le test passe sans aucun « → » à l'écran.
+- **P5, écriture d'état pendant la composition : inchangé, mineur.**
 
-## Constats de la 2e passe
+## P6 (3e passe)
 
-1. **mineur** — `project-model/src/main/resources/i18n/ja/coquille2.json:2`. « 曲はループより %s 長いよ：ループがくり返すあいだも鳴り続けます。 » mélange le familier (« 長いよ ») et le poli (« 続けます ») dans une même phrase. Le reste du japonais de l'appli est poli (« ループで流れます »). À faire, par exemple : « 曲はループより %s 長く、ループがくり返すあいだも鳴り続けます。 ». Les 13 autres langues se lisent bien, sont au bon registre (tu/du/tú, polies en ko et hi) et gardent toutes leur `%s` une seule fois. L'aire `coquille2` est bien ajoutée à `I18n.AREAS`.
+Points vérifiés et justes :
+- **Le calcul ne sert qu'à l'affichage.** `heardSceneSteps` n'est appelé que dans `PlayStrip.playPosition` (`PlayStrip.kt:105`) et `RhythmViewModel.barNow` (`:3274`). `playBar` ne sert qu'aux compteurs (`UnderTopBar`, `RecordBar.takeCounter`, `ReportWiring`). La boucle du moteur, `sceneBars` de l'export, `exportEnd` et `SongLength` n'y touchent pas.
+- **Le mode morceau ne change pas.** `barNow` sort avant pour `songIndex >= 0`, et la branche morceau de `playPosition` lit `songBars`. Seules les branches « boucle » (`playing` sans morceau, `loopPart`) changent.
+- **Les clips de morceau sont exclus** (`!it.song`), et **la brique d'une autre partie aussi** (`it.scene == scene`, couvert par `HeardLengthTest`).
+- **Le cas du siège tombe juste.** Le moteur relance un clip de partie sur `(local − start) % loopSteps` (`AudioTracks.cpp:166-168`), et `absoluteStep` est le pas depuis le début de la partie (`Engine.cpp:975`). Pour une brique posée par `placeInCell` (début 0, boucle d'une puissance de 2 mesures, `LiveCells.loopBars`) dans une partie d'une mesure, « mesure x/N » suit bien ce qu'on entend.
 
-2. **mineur** — `app/src/main/java/com/pocketstudio/app/ui/AppRoot.kt:2044-2051`, bandeau « → <pad> » du tuto. C'est correct. Le seul autre endroit qui écrit un bandeau « → », l'effet `tutoErase` juste en dessous, choisit le pad puis écrit le bandeau dans la même coroutine : le nouvel effet le trouve donc identique et ne fait rien. Deux effets de bord, sans gravité. (a) Si l'utilisateur touche lui-même un autre pad pendant que le bandeau est affiché, le bandeau prend son nom : c'est vrai, mais ce n'est plus la consigne du tuto. (b) Renommer le texte relance la minuterie de `TutoPanel.kt:209/228`, qui a le texte pour clé, et le bandeau reste jusqu'à deux fois `TUTO_BANNER_MS`. On peut l'accepter.
+Constats :
 
-3. **mineur** — `app/src/test/java/com/pocketstudio/app/ui/Coquille2SeatTest.kt`, `cymbalGridLineNamesThePadShown`. `saysThePadShown` vérifie `said.all { it == shown }`, ce qui est vrai par défaut quand aucun bandeau n'est à l'écran. Si le bandeau ne s'affiche plus (régression, ou minuterie déjà finie), le test passe quand même. À faire : ajouter `said.isNotEmpty()` au moins pour le premier cas (« turned to the kick ») et pour le second (la cymbale). Le commit rouge `a51c504b` montre qu'il a bien attrapé le défaut une fois.
+1. **mineur** — `project-model/src/main/kotlin/com/pocketstudio/model/HeardLength.kt:11`. La longueur prise est `loopSteps` pour tous les clips. Or le moteur joue un clip « une fois » (`once`) sur `engineLoopSteps(sceneSteps, tempo)` (`AudioTracks.kt:201-209`), pas sur `loopSteps`. La valeur rangée dans `loopSteps` d'un tel clip n'a pas de sens pour le moteur et peut gonfler ou réduire le compteur. Autres oublis : un clip sans partie (`scene == null`, vieux projets, fichier importé), qui joue pourtant dans toutes les parties (`belongsTo`), n'est pas compté ; une piste audio coupée, ou dont le clip est éteint, l'est. À faire : prendre `engineLoopSteps(sceneSteps(scene), tempoBpm)` et `belongsTo(scene)` plutôt que `loopSteps` et `scene == scene`, et ignorer les pistes muettes. On peut aussi le laisser en l'état : ça ne touche que l'affichage.
 
-Rien de neuf qui plante, qui perde une sauvegarde ou qui casse « Annuler ».
+2. **mineur** — `RhythmViewModel.kt:3274` (`barNow`). Le modulo sur le maximum n'est juste que si les longueurs se divisent entre elles. Avec une partie de 3 mesures et une brique de 4, le vrai cycle fait 12 mesures, et la brique suit son propre départ (`start`, ou le `localOf(audioSlot)` d'une case lancée en direct), pas forcément le début de la partie. « mesure x/N » peut alors ne pas tomber sur la reprise de la brique. Ça reste de l'affichage, et le cas courant (partie d'une mesure, briques en puissances de 2, début 0) est juste. On peut l'accepter et le noter.
+
+3. **mineur** — `app/src/main/java/com/pocketstudio/app/record/Takes.kt:77-78` (`takeCounter`), une incohérence entre écrans. Le compteur de la prise de notes garde `sceneSteps` : « 1/1 », alors que la barre du haut dit « 3/4 » pendant la même lecture. C'est défendable, la prise de notes boucle sur la partie, mais il faut le savoir pour la recette.
+
+4. **mineur** — `RhythmViewModel.kt:3274` contre `PlayStrip.kt:105`. Le numérateur boucle sur `heardScene ?: p.scene`, le dénominateur sur `p.scene`. Si la partie entendue n'est pas celle affichée, et maintenant que leurs briques peuvent différer, le compteur reste bloqué sur « N/N » à cause de `coerceIn`. Ce problème existait déjà avec `sceneSteps`, P6 le rend seulement plus visible. À faire : lire la même partie des deux côtés.
+
+5. **mineur** — `app/src/test/java/com/pocketstudio/app/ui/Coquille2SeatTest.kt` (`p6_…`). Sous Robolectric, `NativeEngine.isAvailable` est faux : `playBar` vaut -1 et le test ne vérifie que le dénominateur, venu de `playPosition`. Le modulo de `barNow` n'est couvert par aucun test. `HeardLengthTest` couvre bien la fonction du modèle avec 6, 2 et 5 mesures et la brique d'une autre partie, mais ni un clip « une fois », ni un clip de morceau, ni un clip sans partie. À faire : ajouter ces trois cas à `HeardLengthTest`.
+
+Rien qui plante, qui perde une sauvegarde ou qui touche au moteur ou aux exports.
 
 Verdict : 0 bloquant, 0 grave

@@ -791,5 +791,63 @@ class DashboardLine(unittest.TestCase):
         self.assertTrue('opt("--corrections", os.path.join(docs, "corrections.tsv"))' in board, "the register's default path")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# 5. The cards (docs/audits/ultra/GABARIT-FICHES-V3.md, printed by scripts/bench/fiche.sh)
+# ---------------------------------------------------------------------------------------------------------------------
+
+SEAT_KEYS = ["NOM=Lancelot", "TOUR=tour-6", "LOT=B", "SIEGE=a", "SHA=0123abcd", "BRANCHE=ccr-jouet",
+             "DOSSIER_DU_LOT=docs/audits/ultra/sieges/tour-6/controle/Ba", "BRIEF=briefs/Ba.txt",
+             "CONSIGNES_TESTEUR_MD_DU_TOUR=tour-6/consignes-testeur.md", "GESTES=110", "MINUTES=30", "LISTE=A2, A3"]
+FIX_KEYS = ["NOM=Perceval", "TOUR=tour-6", "ZONE=remix2", "IDS=A2, A3", "LOTS_CORRECTION_MD_SECTION_DU_LOT=lots-correction.md §2",
+            "VERDICTS_TSV=verdicts.tsv", "LA_LECTURE=lecture-recurrents.md", "LISTE=RemixScreen.kt"]
+
+
+def card(*args):
+    r = subprocess.run(["bash", os.path.join(HERE, "fiche.sh"), *args], capture_output=True, text=True)
+    return r.returncode, r.stdout, r.stderr
+
+
+class Cards(unittest.TestCase):
+    """Plan § 4.5: the acceptance sentence in the sorter's card, the proof in the conditions of origin in the
+    corrector's, the control seat's card."""
+
+    def test_the_control_seat_s_card_asks_for_the_seat_of_origin_and_its_answers(self):
+        code, out, err = card("1", "CHOIX=contrôle", "ZONE=remix2", *SEAT_KEYS)
+        self.assertEqual(code, 1, out + err)
+        self.assertIn("SIEGE_D_ORIGINE", err, "a control seat names the seat it replays")
+        code, out, err = card("1", "CHOIX=contrôle", "ZONE=remix2", "SIEGE_D_ORIGINE=tour-6/lotB/a", *SEAT_KEYS)
+        self.assertEqual(code, 0, err)
+        self.assertIn("contrôle du lot remix2, siège d'origine tour-6/lotB/a", out)
+        self.assertIn("docs/audits/ultra/sieges/tour-6/controle/Ba/a/", out, "the control seat's own folder, played by the bench")
+        self.assertIn("`start.txt` du siège d'origine", out)
+        self.assertIn("defauts-avant:", out)
+        for answer in ("« corrigé »", "« autre »", "« encore là »", "« pas atteint »"):
+            self.assertIn(answer, out)
+        self.assertIn("« - <id> | corrigé | ecran: <n> | … »", out, "the line the chief's command reads, left to the tester")
+        self.assertIn("phrase d'acceptation", out)
+
+    def test_a_wave_seat_s_card_asks_nothing_more(self):
+        code, out, err = card("1", "CHOIX=vague", *SEAT_KEYS)
+        self.assertEqual(code, 0, err)
+        code, keys, err = card("--variables", "1")
+        self.assertIn("SIEGE_D_ORIGINE\t<siège d'origine>\tselon CHOIX", keys)
+
+    def test_the_corrector_repairs_the_sentence_and_proves_it_in_the_conditions_of_origin(self):
+        code, out, err = card("2", *FIX_KEYS)
+        self.assertEqual(code, 0, err)
+        for words in ("phrase d'acceptation", "siège d'origine", "conditions d'origine", "`start.txt`", "« tenté »",
+                      "colonne `test`", "« rejoué »", "« constaté »"):
+            self.assertIn(words, out)
+
+    def test_the_sorter_writes_the_sentence_and_the_seat_of_origin(self):
+        code, out, err = card("--brouillon", "4b")
+        self.assertEqual(code, 0, err)
+        for words in ("phrase d'acceptation", "`phrase_acceptation`", "`siege_origine`", "« pas pris »",
+                      "docs/audits/ultra/corrections.tsv"):
+            self.assertIn(words, out)
+        code, out, err = card("--brouillon", "4a")
+        self.assertNotIn("phrase d'acceptation", out, "the reader gives facts, not the sentence")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

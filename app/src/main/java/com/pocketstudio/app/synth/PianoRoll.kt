@@ -117,6 +117,21 @@ internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordM
     if (!chordMode) listOf(dotted)
     else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
 
+/**
+ * The dotted note a tap means while the tutorial shows some: the one under the tap ([tick] in its span, same row),
+ * or — when the tap just missed it — the nearest one still to write, within one step in time and one row in pitch.
+ * A tutorial's dotted note drawn as a sliver at the view's edge (control seat, tuto Facile, chapter 7: the last
+ * dotted note half off the right edge) is a tiny target; a tap a hair off it must still write the note the tutorial
+ * asked for, not a parasite one beside it (six gestures to undo). Null: no dotted note near enough (a free tap).
+ * [left]: the dotted notes not written yet.
+ */
+internal fun tutoTapTarget(tick: Int, pitch: Int, left: List<Note>): Note? {
+    left.firstOrNull { it.pitch == pitch && tick in it.start until it.end }?.let { return it }
+    fun timeGap(n: Note) = when { tick < n.start -> n.start - tick; tick >= n.end -> tick - n.end + 1; else -> 0 }
+    return left.filter { kotlin.math.abs(it.pitch - pitch) <= 1 && timeGap(it) <= TICK }
+        .minByOrNull { timeGap(it) + kotlin.math.abs(it.pitch - pitch) * TICK }
+}
+
 private const val LOW = 24   // C1
 private const val HIGH = 108 // C8: the top of a piano, where the keyboard's highest octaves still write
 /** A row (a semitone) on a phone, and on a tablet where fingers aim at a single row. */
@@ -922,7 +937,11 @@ private fun Grid(
                                     select(emptySet())
                                 } else if ((up.position - down.position).getDistance() < slop) {
                                     val tick = tickAt(down.position.x)
-                                    val dotted = hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
+                                    // While the tutorial shows dotted notes, a tap snaps to the one it means even if the finger
+                                    // was a hair off a note drawn as a sliver at the edge; else the exact note under the tap.
+                                    val dotted = if (com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty())
+                                        tutoTapTarget(tick, pitchAt(down.position.y), hints.filter { h -> clip.notes.none { it.pitch == h.pitch && it.start == h.start } })
+                                    else hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
                                     val start = tick / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
                                     // A dotted note of the tutorial touched: written as it is (its length, its place); with

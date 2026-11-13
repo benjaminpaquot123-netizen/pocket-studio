@@ -148,6 +148,19 @@ class Tour6LanguagesTest {
     }
 
     /**
+     * R15 (seat B c, Arabic, Mode pro; seen on the Settings' and the Mix's Arabic captures): « Metronome » and « Fader »
+     * stayed in English while the Rythme screen already says « المترونوم » and Japanese « フェーダー ». Every Arabic text
+     * outside the tutorial says them in Arabic letters.
+     */
+    @Test
+    fun theArabicMetronomeAndFadersAreInArabicLetters() {
+        val words = Regex("(?i)(?<![A-Za-z])(metronome|faders?)(?![A-Za-z])")
+        val wrong = ArrayList<String>()
+        texts(Lang.AR).forEach { (area, _, v) -> words.findAll(v).forEach { wrong += "ar/$area: « ${it.value} » in « ${v.take(70)} »" } }
+        report("Arabic metronome and faders in English", wrong)
+    }
+
+    /**
      * R15 (seats F a in Italian, F b in Polish, G b in Indonesian, A a in Hindi): « kick », « step », « timeline », « 5 tab »,
      * « Squelchy »; « Synth » under a track; « bar », « take-mu »; « Post-chorus », « Fade in / Fade out / Ending », where the
      * language has its word (« cassa », « passo », « schede »; « syntezator »; « birama », « rekaman »; Devanagari). Wherever

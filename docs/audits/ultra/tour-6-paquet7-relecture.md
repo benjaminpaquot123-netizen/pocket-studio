@@ -1,0 +1,9 @@
+# Tour 6, lot du banc « paquet7 » : relecture neuve
+Relu : cfd56635b1ce0136acaa1f2e6c3a1708c9999f6f
+
+Lu : `git diff origin/ccr-80af1a1b-mn0wec..HEAD` (base 339d6eaaa, trois commits : « rouge: the tutorial rule waits for batch 7 », « vert: … », rapport de zone et décisions), `test_socle.py` (`PortalRulesFrozenPerBatch`), la fonction `rule_from` et le calcul de `KNOWN_RULES` de `pre-vol.sh`, `relecture-verdict.py`. Lancé sur la tête : `python3 -I scripts/bench/test_socle.py` (29 OK), `test_portail4.py` (59 OK), `bash scripts/bench/test_pre_vol.sh` (tout vert). Empreinte recalculée comme dans `pre-vol.sh` : « 17 c445a874a1 », égale à `KNOWN_RULES`. Dans un arbre jetable sous /tmp : le commit rouge (tests seuls, il ne touche que `test_portail4.py` et `test_pre_vol.sh`) donne 2 échecs de `test_portail4` et 2 ROUGE de `test_pre_vol` contre l'ancien code ; la base (parent du rouge) a bien `test_socle` rouge sur la règle gelée ; la tête plus un commit « paquet: 7 » dans `portail-paquet.txt` garde `test_socle`, `test_portail4` et `test_pre_vol` verts. Fichiers touchés : seulement `scripts/bench/` (4 fichiers), `docs/decisions/tour-6-paquet7.md`, `docs/audits/ultra/tour-6-paquet7-rapport.md` ; `portail-paquet.txt` non touché.
+
+- M1 : des commentaires disent encore « from batch 6 » pour cette règle : `fusion-equipes.sh` ligne 90, `pre-vol.sh` ligne 320, `test_portail4.py` ligne 3, `rapport-zone.py` ligne 45 (ce dernier hors de la liste du lot). Sans effet sur le comportement, mais trompeur pour le prochain lecteur ; à aligner sur « batch 7 » au prochain lot du banc qui touche ces fichiers.
+- M2 : la consigne parlait de 4 commits, la branche en porte 3 au-dessus de la base (rouge, vert, rapport et décisions) ; rien ne manque pour autant (paire rouge/vert, rapport, décisions).
+
+Verdict : 0 bloquant, 0 grave

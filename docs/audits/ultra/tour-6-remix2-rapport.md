@@ -4,7 +4,7 @@ Siège d'origine : `docs/audits/ultra/sieges/tour-6/lotB/a` (espagnol, télépho
 
 Fichiers touchés : `CutScreen.kt`, `CutWave.kt`, `RemixScreen.kt`, et le test `RemixLeftThumbSeatTest.kt`.
 
-tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest
+tests: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutZoomGestureTest com.pocketstudio.app.remix.RemixCutFromCardTest
 
 ## Preuve rejouée (par le banc, conditions du siège)
 - **A2** (puces hors du pouce gauche) : « Voz / Batería / Bajo / Resto » descendues sous les outils, atteignables au pouce gauche sans glisser. `RemixLeftThumbSeatTest#a2_stemChipsReachableWithLeftThumb`.
@@ -16,6 +16,14 @@ chemin: Remix › Cortar la canción › Un trozo (es, téléphone, 100 %, Mode 
 chemin: Remix › Cortar la canción › Un trozo (arrivée) | test: RemixLeftThumbSeatTest#a5_spanToolsWholeOnArrival
 chemin: Remix › après la séparation (carte de la chanson) | test: RemixLeftThumbSeatTest#a3_cutHintWholeNotUnderThumb
 chemin: Remix › panneau du projet | test: RemixLeftThumbSeatTest#a8_oneCutButtonInProject
+
+## Contrôle Ba-2 (aller-retour 1) : A7 et A8 repris
+- **A7** : toucher un morceau de voix sur la courbe (Frases/Compases) le choisit, au pouce gauche ; « En los pads » s'allume. `RemixLeftThumbSeatTest#a7_touchingAVoicePieceChoosesIt` (rouge 4cbd19c0, vert 5893e286).
+- **A8** : plus de second ✂ « Cortar lo que quiero » sur la page Remix quand la chanson est dans le projet. `RemixLeftThumbSeatTest#a8_oneCutButtonInProject` (même paire).
+
+chemin: Remix › Cortar la canción › Frases (toucher un morceau de voix, main gauche) | test: RemixLeftThumbSeatTest#a7_touchingAVoicePieceChoosesIt
+chemin: Remix › Cortar la canción › Frases (courbe) | test: CutZoomGestureTest#placingThePlayHeadChoosesThePieceAndNeverUnticksIt
+chemin: Remix › panneau du projet (carte de la chanson) | test: RemixCutFromCardTest#aSongAlreadyInTheProjectOpensItsCutScreenAtOnce
 
 ## Tenté (code + capture, non vérifiable par le banc dans les termes du siège)
 - **A7** (morceau choisi marqué nettement) : bande vive de la couleur du morceau, encadrée, en plus du numéro (`CutWave.kt`). C'est un dessin : pas de nœud à lire pour le banc. Le geste pour cocher n'est pas changé (régression du tour 3).

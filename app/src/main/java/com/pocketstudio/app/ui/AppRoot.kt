@@ -632,13 +632,17 @@ fun AppRoot() {
     }
     // Quick effects of one mixer channel, opened from the synth, drums or audio tracks (-1: closed).
     var fxChannel by rememberSaveable { mutableStateOf(-1) }
+    // Tour 6, U9 (seat E a #20: « Effects · Remix » opened from Pad Live): the box was opened from Pad Live, whose pads
+    // play through the strip the Remix also uses; its title then says Pad Live, where the user is.
+    var fxFromPadLive by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(fxChannel) { if (fxChannel < 0) fxFromPadLive = false }
     // Chantier 8: the control « Voir le réglage » leads to in that sheet (opened on it, framed), null: none.
     var fxSpot by remember { mutableStateOf<com.pocketstudio.model.AutoTarget?>(null) }
     if (fxChannel >= 0) {
         val fxProject by rhythmVm.project.collectAsStateWithLifecycle()
         val channel = fxProject.mixer.channels.getOrNull(fxChannel)
         if (channel != null) {
-            val name = if (com.pocketstudio.model.Mixer.isPad(fxChannel)) {
+            val name = if (fxFromPadLive) tr("Pad Live") else if (com.pocketstudio.model.Mixer.isPad(fxChannel)) {
                 val lane = fxChannel - com.pocketstudio.model.Mixer.FIRST_PAD
                 tr("pad %1\$d (%2\$s)", lane + 1, fxProject.drums.lanes.getOrNull(lane)?.sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: com.pocketstudio.app.rhythm.DrumKitInfo.names[lane])
             } else {
@@ -3915,7 +3919,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                 browse = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; libraryMine = false; showLibrary = true },
                 // « Plus » › Briques: the Live page of the same project, Pad Live closed under it.
                 openLive = { showPadLive = false; openLive() },
-                openEffects = { fxChannel = it },
+                openEffects = { fxFromPadLive = true; fxChannel = it },
                 fete = libraryVm::liveStarter,
                 welcome = padLiveWelcome,
                 welcomed = { padLiveWelcome = false },

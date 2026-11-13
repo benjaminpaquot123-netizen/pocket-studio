@@ -1322,12 +1322,17 @@ fun AppRoot() {
     }
     // Step 5c: « Mettre Boys dans mon projet » (one screen of choices) before a song goes into this project.
     var songImport by remember { mutableStateOf<Pair<com.pocketstudio.app.remix.StemSet, List<Boolean>?>?>(null) }
+    // Tour 6, U17 (seat G a #42): the import asked from the Remix page of « Que veux-tu faire ? » (« Dans un projet
+    // existant »); its « Annuler » leads back to that page ([remixHomeAgain]), not into the project without the song.
+    var songImportFromHome by rememberSaveable(key = "song_import_from_home") { mutableStateOf(false) }
+    var remixHomeAgain by remember { mutableStateOf(false) }
     songImport?.let { (set, heard) ->
         com.pocketstudio.app.remix.SongImportSheet(
             set, rhythmVm.project.collectAsStateWithLifecycle().value,
             sections = { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.remix.SongEnergy.sections(set) } },
             put = { choice, parts ->
                 songImport = null
+                songImportFromHome = false
                 val adopted = rhythmVm.useSong(set, heard, choice, parts)
                 val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
                 val said = when {
@@ -1337,7 +1342,11 @@ fun AppRoot() {
                 }
                 said?.let { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
             },
-            cancel = { songImport = null },
+            cancel = {
+                songImport = null
+                if (songImportFromHome) remixHomeAgain = true
+                songImportFromHome = false
+            },
         )
     }
     // A song separated from « Que veux-tu faire ? » for this project (« Dans un projet existant »): in its Remix now.
@@ -1615,6 +1624,7 @@ fun AppRoot() {
         ),
     ) }
     // Owner (2026-10-29): the Remix of « Que veux-tu faire ? » (RemixFromHome): « ← Accueil » goes back there.
+    if (remixHomeAgain) LaunchedEffect(Unit) { remixHomeAgain = false; remixHome = true }
     if (remixHome) {
         val closeRemixHome = {
             remixHome = false
@@ -1637,6 +1647,7 @@ fun AppRoot() {
                         launch.settled()
                         // Step 5a: what was heard while listening (« Voix » alone) decides which parts come in muted.
                         val heard = remixVm.heardFor(set.id)
+                        songImportFromHome = true
                         if (!noProject && p.id == rhythmVm.projectId) {
                             songImport = set to heard
                             openRemix()

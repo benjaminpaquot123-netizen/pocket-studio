@@ -3231,10 +3231,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     else com.pocketstudio.app.rhythm.stemSkips(project, project.song.isNotEmpty(), mixerStrips(project).associate { it.ch to com.pocketstudio.model.DefaultNames.shown(it.name) })
                                 },
                                 buses = project.mixer.buses,
-                                // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
-                                strips = mixerStrips(project).let { all ->
-                                    if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
-                                },
+                                // Tour 6, U27 (seat B b #72: Sons showed « Acid 303 », the Mix did not, « Acid 303 renommée »): a strip
+                                // for every track Sons names, in a tutorial too (lot « tuto 4 » had left the silent one out there).
+                                strips = mixerStrips(project),
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
                                 songTracks = if (project.remix.setId == null) null else ({
                                     com.pocketstudio.app.remix.SongTracksCard(

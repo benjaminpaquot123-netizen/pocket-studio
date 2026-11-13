@@ -197,7 +197,12 @@ internal class SimplePlusWays(val live: () -> Unit, val remix: () -> Unit, val v
 internal fun plusEntries(
     /** « Accueil »: « Que veux-tu faire ? » (null: not offered). */
     home: (() -> Unit)? = null,
-    projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
+    projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean,
+    /**
+     * « Passer en mode Simple / Pro »: the other mode is asked for (true: the Mode simple). Tour 6, N17: the app answers
+     * with « Mode de ce projet », the question the top bar's chip asks; the screens never change at this touch alone.
+     */
+    setSimple: (Boolean) -> Unit,
     /** « Signaler un bug » (null: not offered). */
     bugReport: (() -> Unit)? = null,
     /** The Mode simple's own ways (null: Pro's list). */

@@ -3661,7 +3661,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 missions = startMissions,
                                 bugReport = { reportBug("Plus") },
                                 simple = simple,
-                                setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+                                // Tour 6, N17 (seat C b #38: every screen changed at a touch meant for « Mes projets »): the entry
+                                // asks first, with the top bar's own « Mode de ce projet ».
+                                setSimple = { modeSwitchOpen = true },
                                 // Tour 5, chantier 5 (G15): what the Mode simple's old ⋮ menu held, as cards.
                                 simpleWays = SimplePlusWays(
                                     live = openLive,

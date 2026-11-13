@@ -385,7 +385,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",

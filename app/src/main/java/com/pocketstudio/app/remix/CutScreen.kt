@@ -72,6 +72,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.AutoCut
 import com.pocketstudio.model.CutMagnet
 import com.pocketstudio.model.i18n.tr
@@ -198,10 +199,17 @@ fun CutScreen(
             // the curve's fixed 210 dp pushed « Coupes », the tools and the pieces' list out (no way back to « Un bout », no
             // piece to tick). Little room: everything stays, the curve shorter, the column scrolls.
             val tight = !wide && !model.single && maxHeight < 700.dp
+            // Tour 6, seat E c #17 (the round's blocker, pt-BR at 200 %; seat B a screen 21 at 100 %): « Un bout » gave its
+            // curve only what the send bar left, in a column that did not scroll: the curve and its Início / Fim bars fell
+            // to nothing. Little room: the whole screen scrolls, the curve keeps a height a finger can work with.
+            val scrollsAll = !wide && model.single && maxHeight < 700.dp
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
-                fun curve(m: Modifier) = Column(if (tight) m.verticalScroll(rememberScrollState()) else m, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = androidx.compose.foundation.layout.Box(m) {
+                  val scroll = rememberScrollState()
+                  val scrolls = tight || scrollsAll
+                  Column(if (scrolls) Modifier.fillMaxSize().verticalScroll(scroll) else Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -213,6 +221,7 @@ fun CutScreen(
                     // « Un bout »: no list of pieces, the curve takes the room (taller bars to grab).
                     val zoom = when {
                         tight -> Modifier.fillMaxWidth().height(140.dp)
+                        scrollsAll -> Modifier.fillMaxWidth().height(180.dp)
                         model.single || wide -> Modifier.fillMaxWidth().weight(1f).heightIn(min = 120.dp)
                         else -> Modifier.fillMaxWidth().weight(1.3f)
                     }
@@ -224,6 +233,10 @@ fun CutScreen(
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
                         }
                     }
+                    tail()
+                  }
+                  // Tour 6, R3 (seat B a, screen 28: « plus aucun outil listé »): something waits below, the bottom fades.
+                  if (scrolls && scroll.canScrollForward) ScrollMore(Modifier.align(Alignment.BottomCenter))
                 }
                 if (wide) {
                     Row(Modifier.weight(1f).padding(start = 12.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -239,6 +252,10 @@ fun CutScreen(
                             SendBar(model, actions, work, note) { note = null }
                         }
                     }
+                } else if (scrollsAll) {
+                    curve(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                        SendBar(model, actions, work, note, Modifier.padding(vertical = 12.dp)) { note = null }
+                    }
                 } else {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp))
                     SendBar(model, actions, work, note) { note = null }
@@ -246,6 +263,19 @@ fun CutScreen(
             }
         }
     }
+}
+
+/**
+ * More below a scrolling column: its bottom fades into the page (as the lists of tour 5, ScrollHintBox), over nothing a
+ * finger needs (a touch goes through it).
+ */
+@Composable
+private fun ScrollMore(modifier: Modifier) {
+    Box(
+        modifier.fillMaxWidth().height(28.dp)
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, Neon.Background)))
+            .testTag("cut_more"),
+    )
 }
 
 @Composable
@@ -260,7 +290,9 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
         }
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                // Tour 6, R1 (E c, pt-BR at 200 %: « Cortar a mú… »): two lines, smaller before ever cut.
+                Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(14.sp, MaterialTheme.typography.titleLarge.fontSize),
                     modifier = Modifier.weight(1f, fill = false))
                 // Lot « Aide à jour »: how to cut, by the title (the rows under it keep their height).
                 // « Un bout »: one « ? » for the whole screen (its bars, its two listens, where it goes).
@@ -578,12 +610,12 @@ private fun PieceTile(i: Int, frames: Long, loop: Boolean, ticked: Boolean, hear
 
 /** At the bottom: how many pieces are ticked and how long, then where they go; what was done, or why not. */
 @Composable
-private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, dismissNote: () -> Unit) {
+private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, outer: Modifier = Modifier.padding(12.dp), dismissNote: () -> Unit) {
     val sels = model.toSend()
     val busy = work.value.busy
     val message = work.value.message
     Column(
-        Modifier.fillMaxWidth().padding(12.dp).clip(RoundedCornerShape(18.dp)).background(Neon.Surface)
+        Modifier.fillMaxWidth().then(outer).clip(RoundedCornerShape(18.dp)).background(Neon.Surface)
             .padding(horizontal = 12.dp, vertical = 10.dp).testTag("cut_send"),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -626,6 +658,8 @@ private fun androidx.compose.foundation.layout.RowScope.Send(icon: ImageVector, 
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(22.dp))
-        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = TextAlign.Center)
+        // Tour 6, R1 (E c, pt-BR at 200 %: « Guard / ar »): a word never split over two lines.
+        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = TextAlign.Center,
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(8.sp, MaterialTheme.typography.labelMedium.fontSize))
     }
 }

@@ -3,7 +3,7 @@
 Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
 MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : 9390387da73c7c21c7f010773c71efdf2f67101b
+relu : 231e6404961af4cf8f6475d3bdad88bc5130b041
 
 ## Relancé et vu
 - `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
@@ -46,6 +46,9 @@ relu : 9390387da73c7c21c7f010773c71efdf2f67101b
 - Depuis fdbc0f50 (dernière relecture du code) : fusion de la tête, copie du siège Ac-4, rapport ; docs/REVIEW.md rendu
   à la tête. Aucun fichier du lot (export/, ProjectsScreen.kt, partage.json, tests export) n'a changé ; relancés sur la
   fusion : I18nCatalogTest, LexiconWordsTest, export.*, projects.*, ScreenScanTest, BenchSelfTest : verts.
+
+## Rouge constaté rejoué par le relecteur
+rouge constaté : d8ef698c2cb38b7a11bde5980c1033d1291501fb : rejoué sur 8c73d6c6 : BenchSelfTest#chipsTogglesAndDrawnMarksAreWrittenAsDrawn ROUGE (1 échec sur 12 tests, 1 ignoré) : « java.lang.AssertionError: written otherwise than drawn: the check's icon before « Rien à entendre »: - » ; VERT sur d8ef698c (0 échec sur 12, 1 ignoré)
 
 ## Graves
 Aucun.

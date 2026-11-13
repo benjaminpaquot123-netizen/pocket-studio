@@ -450,11 +450,19 @@ fun AppRoot() {
     val goHome: () -> Unit = {
         showProjects = false
         projectsNewOnly = false
+        // Tour 6, N16 (seat C b #40: « l'Accueil, et la musique s'arrête sans le dire »): the music that was playing
+        // stops here; a short message says so, and that the song is saved, once it is.
+        val wasPlaying = rhythmVm.transport.value.playing
         launch.ask()
         openScope.launch {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.stop()
             rhythmVm.flushNow()
+            if (wasPlaying) {
+                val saved = rhythmVm.session.lastSaveError.value == null && !rhythmVm.session.unsaved.value
+                // (On the main thread whatever thread the save came back on: a toast needs its looper.)
+                android.os.Handler(android.os.Looper.getMainLooper()).post { Toast.makeText(context, musicStoppedForHome(saved), Toast.LENGTH_LONG).show() }
+            }
         }
     }
     // The studio's last Retour (registered before every other, so any sheet, page or panel open
@@ -3949,6 +3957,13 @@ private fun openUri(context: Context, uri: Uri) {
         Toast.makeText(context, tr("Aucun navigateur pour ouvrir GitHub"), Toast.LENGTH_LONG).show()
     }
 }
+
+/**
+ * What is said when the way to « Que veux-tu faire ? » stopped the music (tour 6, N16): « ■ Arrêté », the app's own
+ * sign and word for it, and that the song is [saved] when it is.
+ */
+internal fun musicStoppedForHome(saved: Boolean): String =
+    "■ " + tr("Arrêté") + if (saved) " · " + tr("Ton morceau est sauvegardé.") else ""
 
 /** Drums, acid, every instrument track in its colour, then the remix. */
 fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =

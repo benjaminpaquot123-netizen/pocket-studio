@@ -12,6 +12,13 @@ Branche `eq/tour-6-padlive2`, partie de `ccr-80af1a1b-mn0wec` (bdb777a9). Zone :
 
 Preuve rejouée : siège `sieges/tour-6/padlive2/lotP/a` (fr, téléphone, 100 %, Simple, mission padlive), joué sur ee4c2a92 par le correcteur du lot, appli entière par le banc, selftest vert (176 verts, 0 rouge). Ce n'est pas le contrôle neuf : un testeur neuf rejoue la branche avant le portail.
 
+## Aller-retour 1 (contrôle Ab-2, code ee4c2a92, branche `ccr-a548b78b-controle-ab2`)
+
+- P2 : corrigé selon le siège (écran 9).
+- P3, autre chemin : le siège a enregistré par « Enregistrer ce que je joue » puis « Dans une brique du Live » (pas le REC du haut, celui rejoué ici). Les prises vont dans des briques audio ; le projet reste « Boucle de 1 mes. », lecture « A mesure 1/1 ». Cause : la longueur de la boucle ne compte pas les briques audio, `project-model/…/Scenes.kt` `Scene.stepsFor` (batterie, 303, notes seulement) lu par `SongLength.of` (`project-model/…/SongLength.kt`) et par le transport. **Pas pris** (modèle partagé, hors des fichiers du lot). Le chemin REC reste prouvé (écran 23 du siège lotP/a).
+- P4 dans « Plus » : `live/LiveScreen.kt` (Briques, écran 41) tenté : ■ quand les boucles des pads jouent seules, un toucher : « Tout couper » (rouge / vert `PadLivePlayShowsTest#theBricksPageSaysTheSame`). La vue plein écran « Pads » (écran 45, étiquette `live_pads_full_play`) est dans `session/LivePadsFullScreen.kt` (`StageButton` l. 405, lit `playing` seul) : **pas pris** (hors des fichiers du lot).
+- Anneau pâle (gestes 21-23) : voulu. Un pad de boucle touché transport arrêté part tout de suite (décision du 2026-11-11, T5-PADRETRIG) ; le 2e et le 3e attendent leur ligne, mais un geste du banc dure plus que la ligne (124 BPM) : le siège Ab l'avait vu à son écran 20. Le banc, pas l'appli.
+
 Relecture neuve (`tour-6-padlive2-relecture.md`) : 0 bloquant, 0 grave. Moyen pris : un « coup » qui sonne ne fait plus passer le ▶ en ■ (rouge / vert `PadLivePlayShowsTest#aHitRingingKeepsPlay`). Moyens laissés, hors des fichiers du lot : le bouton « Record » d'un contrôleur MIDI (`midi/AutoKnobsVm.kt`, appelle `togglePerformance` sans passer par `PadLiveController.record`) remplace encore le morceau ; morceau plein ou au-delà de la mesure des effets, le message de `RhythmViewModel` parle de « Nouvelle version », absent de Pad Live.
 
 Restent hors du lot : la carte « Pad Live » de l'accueil dit encore « Ça sonne tout de suite. » (`onboarding/`, textes) ; l'effet de bord de P3 (le choix « Nouvelle version / Ajouter à la suite » de la page Live suit la dernière prise de Pad Live).
@@ -25,6 +32,7 @@ tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.pa
 - chemin: Pad Live bouton ▶ du haut avec des boucles seules | test: PadLivePlayShowsTest#loopsOnTheirOwnShowTheSquareAndOneTouchStopsThem
 - chemin: Pad Live bouton ▶ du haut avec un pad en attente | test: PadLivePlayShowsTest#aPadWaitingForItsLineAlreadyShowsTheSquare
 - chemin: Pad Live bouton ▶ du haut pendant qu'un coup sonne | test: PadLivePlayShowsTest#aHitRingingKeepsPlay
+- chemin: Plus › Briques bouton ▶ du haut avec des boucles seules | test: PadLivePlayShowsTest#theBricksPageSaysTheSame
 - chemin: Pad Live plein écran « Fête » bouton ▶ | test: PadLivePlayShowsTest#thePartyScreenSaysTheSame
 - chemin: Pad Live ■ sur le banc (moteur, pads éteints) | test: BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
 - chemin: accueil carte « Pad Live » ouverture | test: PadLiveSilentOpenTest#openingFromTheCardPlaysNothing

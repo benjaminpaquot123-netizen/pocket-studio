@@ -157,9 +157,18 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 2 accords de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 2 accords de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (son « Pluck », écho « dub » déjà posé) : deux stabs de Sol mineur en contretemps (pas 4 et 11), puis « Copier ».",
           "why": "L'écho transforme deux petits accords en tout un rythme.",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",

@@ -3,10 +3,12 @@ package com.pocketstudio.app.tuto
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.app.nav.AppHarness
@@ -295,6 +297,21 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     if (has("step_$cell")) click("step_$cell") else h.vm.toggleStep(cell)
                     compose.waitForIdle()
                 }
+                // Tour 6, T3: a step that says « appui long dessus, puis « Doux » » has its soft cells played so, as a user does:
+                // a long press on the hit (its menu), « Doux », then the menu's « Fermer ».
+                if (TutoChecks.asksSoft(s)) {
+                    val line = target.line(TutoChecks.argOf(c))!!
+                    val soft = StarterWizard.hits(line, p().drums.steps).filterValues { it.velocity < 0.5f }.keys.filter { it in cells }
+                    assertTrue("${s.id}: asks for « Doux », no soft cell", soft.isNotEmpty())
+                    for (cell in soft.sorted()) {
+                        assertTrue("${s.id}: soft cell $cell not on the screen", has("step_$cell"))
+                        compose.onNodeWithTag("step_$cell").performTouchInput { longClick() }
+                        compose.waitForIdle()
+                        await("${s.id}: the hit's menu") { has("roll_menu") }
+                        click("roll_force_2")
+                        if (has("roll_close")) click("roll_close")
+                    }
+                }
                 // "lane:<role>:rolls" (Pro): each roll of the line made as a user would (long press › « Roulement » ×N).
                 if (c.endsWith(":rolls")) {
                     val line = target.line(c.removePrefix("lane:").substringBefore(':'))!!
@@ -348,12 +365,23 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 }
             }
             c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
-                assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
-                click("tuto_need")
-                await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                // Tour 6, T8: a notes step split in two (its first half `length`, « la mesure 1 »): the second half finds its
+                // track made and its first bar written; its first gesture is « Copier sur les mesures suivantes » (the loop's).
+                val half = c.startsWith("notes:") && TutoChecks.trackFor(p(), c.removePrefix("notes:")) != null
+                if (half) {
+                    if (!(has("piano_roll") && TutoHints.notes != null)) {
+                        if (!has("tuto_do")) unfold()
+                        click("tuto_do")
+                    }
+                    await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                } else {
+                    assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
+                    click("tuto_need")
+                    await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+                }
                 val (track, notes) = TutoHints.notes!!
                 assertEquals(track, h.vm.selectedTrack.value)
-                assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
+                if (!half) assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
                 assertTrue("${s.id}: a bar or two dotted", notes.map { it.start / 384 }.distinct().size <= 2)
                 var rounds = 0
                 while (s.id !in progress().done) {

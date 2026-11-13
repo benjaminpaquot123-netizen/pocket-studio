@@ -31,43 +31,15 @@ class Tour6TutoActionsTest {
         const val MAX = 3
 
         /**
-         * Consignes still to split (tour 6). A split notes step (a first step `length: 16`, the bar 1; a second one, « Copier »
-         * and the rest) is ready in TutoChecks, but TutoJourneyTest expects each notes step to create its own track: to change
-         * there first. Until then this list only shrinks.
+         * Consignes still to split (tour 6): jump up's, whose step ids and order TutoLot4Test, TutoLot5Test and their app
+         * twins pin (« bass_do », « pad_do », « make_drop2 » followed by the next part). A split notes step: a first step
+         * `length: 16` (or 32), its first bars; a second one, « Copier » and the rest. This list only shrinks.
          */
         val PENDING = setOf<String>(
-            "afrobeats/pad_do/f",
-            "boom_bap/bass_do/f",
-            "boom_bap/pad_do/f",
-            "deep_house/pad_do/f",
-            "dnb/pad_do/f",
-            "drill/bass_do/f",
-            "drill/pad_do/f",
-            "dubstep/hat_do/f",
-            "dubstep/pad_do/f",
-            "grime/pad_do/f",
-            "house/pad_do/f",
             "jump_up/bass_do/f",
             "jump_up/bass_do/p",
             "jump_up/make_drop2/p",
             "jump_up/pad_do/f",
-            "jungle/pad_do/f",
-            "liquid_dnb/pad_do/f",
-            "lofi/lead_do/f",
-            "lofi/pad_do/f",
-            "minimal/pad_do/f",
-            "neurofunk/pad_do/f",
-            "phonk/pad_do/f",
-            "pop/pad_do/f",
-            "reggaeton/pad_do/f",
-            "riddim/pad_do/f",
-            "synthwave/pad_do/f",
-            "tech_house/pad_do/f",
-            "techno/bass_do/f",
-            "techno/pad_do/f",
-            "trance/pad_do/f",
-            "trap/pad_do/f",
-            "uk_garage/pad_do/f",
         )
     }
 }

@@ -190,14 +190,23 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2.",
           "textPro": "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.",
           "why": "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.",
           "check": "notes:pad",
+          "length": 32,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:kick,pad",
           "skip": "Sans accords, ta deep house perd sa couleur."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
         }
       ]
     },

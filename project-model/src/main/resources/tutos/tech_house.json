@@ -216,8 +216,17 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",

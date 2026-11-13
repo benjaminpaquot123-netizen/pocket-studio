@@ -212,7 +212,7 @@
   "Les accords de Kerri Chandler": "ケリー・チャンドラーのコード",
   "Des accords riches (de 4 notes) joués juste après les temps, sans leur note grave : c'est l'âme de la deep house.": "拍のすぐあとに、低い音を抜いて鳴らす豊かな（4音の）コード：ディープハウスの魂。",
   "Écoute le piano seul : deux accords seulement, joués en petits coups juste après les temps.": "ピアノだけを聴こう：コードは2つだけ、拍のすぐあとに短いヒットで鳴る。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒット、次に2小節目の4ヒット。「次の小節にコピー」で次のコードに置きなおされる。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2.": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒット、次に2小節目の4ヒット。",
   "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.": "あなたの番：コードトラックを作ろう。ルートなしの Fm9（A♭ C E♭ G）を拍のすぐあとに2小節。「コピー」で B♭9（D F A♭ C）に下げる：同じ形をずらす、ケリー・チャンドラーの「平行移動」。",
   "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.": "同じコードをスケールに沿ってずらす：これがケリー・チャンドラーの進行の色。",
   "Sans accords, ta deep house perd sa couleur.": "コードがないと、ディープハウスの色がなくなる。",
@@ -363,6 +363,8 @@
   "Les stabs de piano": "ピアノのスタブ",
   "Des accords de piano joués en petits coups (des « stabs ») : c'est le refrain qu'on retient en house.": "短いヒットで鳴らすピアノのコード（「スタブ」）：ハウスで覚えてもらえるサビ。",
   "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.": "お手本のピアノだけを聴こう：1拍目には絶対に鳴らず、キックの間に入って弾む。",
+  "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.": "あなたの番：「次の小節にコピー」をタップして、3、4小節目を置こう：別のコード、D のコード。",
+  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1.": "あなたの番：「コードトラックを作る」をタップして、グリッドの上の「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒットを置こう。",
   "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.": "あなたの番：コードトラックを作り、ルートなしでスタブを書こう（ルートはベースが持っている）：Am9 = C E G B（1〜2小節目）、D9 = C E F♯ A（3〜4小節目）。2音は残り、2音が動く：ピアニストの「ボイスリーディング」。リズムは1拍目を避け、4小節目は変化をつけてフレーズを閉じる。",
   "Sans la note grave, le piano reste léger et ne bave pas sur la basse.": "低い音がないから、ピアノは軽いままでベースににじまない。",
   "Sans piano, ta house n'aura pas son refrain.": "ピアノがないと、ハウスのサビがない。",
@@ -506,7 +508,7 @@
   "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.": "あなたの番：ミックスで「メロディ」トラックに「マルチバンド OTT」エフェクトを入れよう：レコードみたいに、声がキンキンして密になる。",
   "À toi : monte aussi « Envoi écho » sur la Mélodie : le mot rebondit dans le club.": "あなたの番：メロディの「エコー・センド」も上げよう：ひと言がクラブに跳ね返る。",
   "Presque rien : un petit coup d'orgue de temps en temps. En tech house, des accords voleraient la place de la basse.": "ほとんど何もなし：ときどきオルガンの小さなヒット。テックハウスでは、コードはベースの居場所を奪ってしまう。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1, puis « Copier ».": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：1小節目の2ヒットを置いて、次に「コピー」。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : pose les 2 coups de la mesure 1.": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：1小節目の2ヒットを置こう。",
   "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».": "あなたの番：コードトラック（オルガン）を作ろう：Gm7、1小節に2ヒット、拍のすぐあと。次に「コピー」。",
   "En tech house, le Drop est long (32 mesures) : il change à mi-chemin pour ne jamais lasser.": "テックハウスのドロップは長い（32小節）：飽きさせないよう途中で変わる。",
   "Écoute l'Intro : la batterie seule, pour le DJ.": "イントロを聴こう：DJ のための、ドラムだけ。",
@@ -564,7 +566,7 @@
   "À toi : touche « Copier la basse une octave plus bas » : un sub pur, sans effet, sous la basse (le grave des sound systems).": "あなたの番：「ベースを1オクターブ下にコピー」をタップしよう：ベースの下に、エフェクトなしの純粋なサブ（サウンドシステムの低音）。",
   "Des accords jazzy de piano électrique, en petits coups juste après les temps, comme chez MJ Cole.": "MJ コールみたいに、拍のすぐあとに短いヒットで鳴らすジャジーなエレピのコード。",
   "Écoute les accords seuls : quatre couleurs, une par mesure.": "コードだけを聴こう：1小節に1つ、4つの色。",
-  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目のヒット、次に2小節目のヒット。「次の小節にコピー」で、次の2つのコードに低くして置きなおされる。",
+  "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.": "あなたの番：「コードトラックを作る」をタップして「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目のヒット、次に2小節目のヒット。",
   "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.": "あなたの番：コードトラックを作ろう。ルートなしで（ルートはベースが持っている）：Am9（C E G B）、次に Fmaj9（A C E G）、拍のすぐあと。「コピー」でこの2小節を5度下げる：Dm9（F A C E）、Em7（E G B D）。ガラージの「コード・プレーニング」。",
   "Sans accords, ton garage perd son côté soul.": "コードがないと、ガラージのソウルっぽさがなくなる。",
   "Des syllabes découpées et rejouées comme une mélodie : la voix lance un appel, puis se répond plus grave.": "音節を切り刻んでメロディみたいに鳴らす：声が呼びかけ、低い声で自分に答える。",
@@ -595,6 +597,5 @@
   "La réverbe donne de la place aux accords ; le rim garde un peu d'air.": "リバーブはコードにスペースを与え、リムに少し空気を残す。",
   "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.": "リバーブを聴こう：リムとコード、最初はなしで、次にありで。",
   "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».": "あなたの番：ミックスで「コード」トラック、次に「リム」パッドの「リバーブ・センド」を上げよう。",
-  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "キックとベースはいっしょに前、声はしっかり、コードは後ろ。",
-  "À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré).": "あなたの番：「コードトラックを作る」をタップして、グリッドの上の「コード」をオンに：下の点線のノートをタップするとコード全体が置ける。1小節目の4ヒットを置いて「次の小節にコピー」、次に3、4小節目（別のコード、D のコード）。"
+  "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.": "キックとベースはいっしょに前、声はしっかり、コードは後ろ。"
 }

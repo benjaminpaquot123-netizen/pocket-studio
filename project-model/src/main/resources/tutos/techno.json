@@ -187,14 +187,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : deux petites notes après chaque kick. « Copier sur les mesures suivantes » la répète sur les mesures 2 et 3. Touche ensuite les notes de la mesure 4 (la fin monte d'un cran, puis saute en haut), puis « Copier » encore.",
-          "textPro": "À toi : crée la piste Basse (son « Basse analogique », avec sa pompe déjà posée). Mesure 1 dans le piano roll : deux doubles croches entre chaque kick, toutes sur Fa. « Copier sur les mesures suivantes », puis la mesure 4 : Sol♭ (la seconde mineure) et le Fa de l'octave au-dessus pour fermer la phrase. « Copier ».",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : deux petites notes après chaque kick.",
+          "textPro": "À toi : crée la piste Basse (son « Basse analogique », avec sa pompe déjà posée), puis écris la mesure 1 dans le piano roll : deux doubles croches entre chaque kick, toutes sur Fa.",
           "why": "Une basse qui ne joue jamais avec le kick laisse chaque coup claquer.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, ton Drop n'aura pas de grave qui roule."
+        },
+        {
+          "id": "bass_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent. Touche ensuite les notes de la mesure 4 (la fin monte d'un cran, puis saute en haut), puis « Copier » encore.",
+          "textPro": "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 : Sol♭ (la seconde mineure) et le Fa de l'octave au-dessus pour fermer la phrase. « Copier » encore.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_cutoff",
@@ -216,14 +226,24 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1, touche « Copier sur les mesures suivantes », puis fais les 2 de la mesure 4 (un cran plus haut) et « Copier » encore.",
-          "textPro": "À toi : crée la piste Accords (son « Pluck », écho dub). Deux stabs de Fa mineur par mesure, en contretemps (pas 4 et 11) : mesure 1, « Copier sur les mesures suivantes », puis mesure 4 sur Sol♭ majeur (le ♭II), « Copier ».",
+          "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1.",
+          "textPro": "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, en contretemps (pas 4 et 11).",
           "why": "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:kick,pad",
           "skip": "Sans stab, l'Intro 2 et le Break perdent leur couleur."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.",
+          "textPro": "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 sur Sol♭ majeur (le ♭II) et « Copier » encore.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
         }
       ]
     },

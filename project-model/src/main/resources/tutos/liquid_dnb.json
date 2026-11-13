@@ -221,14 +221,23 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les accords suivent la basse tout seuls.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
           "textPro": "À toi : crée la piste Accords (« Rhodes FM »). « Accords » pose la triade d'un toucher : La m sur la basse Fa (= Fa maj7) à la mesure 1, puis « Copier sur les mesures suivantes » : Sol sur la basse Mi (= Mi m7), Do sur la basse La (= La m7).",
           "why": "On n'y met pas la note de la basse : basse et piano ensemble font l'accord de 7e, sans boue dans le grave.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans piano, il n'y a plus de liquid."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         },
         {
           "id": "pad_chorus",

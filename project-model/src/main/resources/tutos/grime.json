@@ -141,8 +141,17 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) : toucher la note du bas en pointillé pose les 2 notes. Fais les 2 coups de la mesure 1, puis les 3 de la mesure 2, puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) : toucher la note du bas en pointillé pose les 2 notes. Fais les 2 coups de la mesure 1, puis les 3 de la mesure 2.",
           "textPro": "À toi : crée la piste Accords : Mi et son octave, 2 coups mesure 1, 3 coups mesure 2. « Copier » : la même figure sur Do, puis Si.",
+          "check": "notes:pad",
+          "length": 32,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:bass,pad"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",

@@ -160,9 +160,18 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 6 accords de la mesure 1, puis « Copier sur les mesures suivantes » : ils suivent la grille.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 6 accords de la mesure 1.",
           "textPro": "À toi : crée la piste Accords (son « Supersaw », pompe et réverbe déjà posées) : La mineur haché en 3-3-2 sur la mesure 1, puis « Copier » qui suit la grille i–VI–III–VII.",
           "why": "Le rythme 3-3-2 fait danser les accords même sans batterie.",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad"
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",

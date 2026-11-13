@@ -198,6 +198,10 @@ class Batch(unittest.TestCase):
         code, out, _ = self.run_it()
         self.assertNotIn("verte", out)
         self.assertNotEqual(code, 0, "a job with no known conclusion must not exit 0")
+        self.set_job("Engine tests (Linux)", status="un état que personne ne connaît", conclusion="success")
+        code, out, _ = self.run_it()
+        self.assertNotIn("verte", out)
+        self.assertNotEqual(code, 0, "a job in a state nobody knows must not exit 0")
 
     def test_no_emulator_job_at_all_is_not_green(self):
         self.ci["runs"][0]["jobs"] = [j for j in green_jobs() if j["name"] != SMOKE]

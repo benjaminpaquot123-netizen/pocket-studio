@@ -224,6 +224,8 @@ class TutoController(
 
     /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
     private var arrived: Project? = null
+    /** The step whose folded panel was opened because only its cells' softness was missing (once a step). */
+    private var softSaid: String? = null
 
     /**
      * The looks at the project asked for and not begun ([look]): one waits at most (a second request meanwhile is the
@@ -442,12 +444,19 @@ class TutoController(
 
     /**
      * Lot « tuto-flèches » (seats D a, H a: « House 122 BPM » chosen, « 100 Tempo » on the screen): the tempo step says
-     * the tempo the project has while it is not the style's.
+     * the tempo a new song starts at while the project's is not the style's (tour 6 review: the tempo the project had
+     * NOW, « 110 » half-way from 100 to 122, was named as the start).
      */
     private fun noteFor(s: TutoStep, p: Project): String? {
         val t = target ?: return null
+        if (s.check.startsWith("changed:synth:")) {
+            // Tour 6, seat Bb-3: what is left on each knob the step names (« Coupure : encore +8 »), as the screen counts.
+            return TutoChecks.knobsShort(s, p, base()).joinToString(" · ") { (k, left) ->
+                com.pocketstudio.model.i18n.tr("%1\$s : encore +%2\$d", com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == k }?.second ?: "?", left)
+            }.ifEmpty { null }
+        }
         if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
-        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(p.tempoBpm).toInt())
+        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(t.startTempo).toInt())
     }
 
     /** What « Suivant » says on a step left undone: what the song will miss ([TutoStep.skip]), and that a second touch goes on. */
@@ -859,6 +868,12 @@ class TutoController(
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
         else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        // Tour 6, seat Da-3: the cells all hit, only their softness missing, the panel folded: it opens once on its words
+        // (« appui long dessus, puis « Doux » »), which say what is left to do.
+        if (found.isEmpty() && _ui.value?.current?.id == u.current.id && softSaid != u.current.id && TutoChecks.onlySoftnessMissing(u.current, p, t)) {
+            softSaid = u.current.id
+            if (_ui.value?.open == false) _ui.value = _ui.value?.copy(open = true)
+        }
         // The step's note follows the project (the tempo once set: nothing more to say).
         if (_ui.value?.current?.id == u.current.id) noteFor(u.current, p).let { n -> if (_ui.value?.note != n) _ui.value = _ui.value?.copy(note = n) }
         // Testers (lot « tuto 5 »: seven parts in a wrong order, not a word): what is missing, or where the order goes wrong.

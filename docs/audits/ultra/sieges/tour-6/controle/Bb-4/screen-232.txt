@@ -1,0 +1,54 @@
+Écran 232 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » [coupé] @ 450,176
+texte « 18,0 kHz » @ 81,216
+texte « 849 Hz » @ 81,302
+texte « 40 Hz » @ 82,388
+texte « Schlag » @ 81,423
+texte « 1 » @ 134,423
+texte « 2 » @ 319,423
+texte « 3 » @ 503,423
+texte « 4 » @ 686,423
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,523
+bouton « ? » @ 362,523
+texte « Lautstärke: — » @ 136,574
+texte « Master-Lautstärke » @ 397,656
+texte « −6,0 dB » @ 805,656
+curseur [état « −6,0 dB », à 60 %] @ 450,727
+texte « Keine Übersteuerung: alles gut. » @ 231,793
+texte « Details » @ 104,859
+texte « Ziel-Lautheit » @ 126,928
+bouton « ? » @ 231,928
+bouton « Auto (Stil) · −9 LUFS » @ 204,998
+bouton « Club · −8 LUFS » [sélectionné] @ 501,998
+bouton « Streaming · −14 LUFS » @ 213,1079
+bouton « Apple Music · −16 LUFS » @ 579,1079
+bouton « Frei » @ 92,1159
+bouton « Aus » @ 202,1159
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

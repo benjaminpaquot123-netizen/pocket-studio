@@ -1,0 +1,52 @@
+Écran 230 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+curseur [coupé, état « 60 % », à 60 %] @ 450,162
+texte « Dämpfung » @ 414,210
+texte « 50 % » @ 822,211
+curseur [état « 50 % », à 50 %] @ 450,279
+texte « Breite » @ 405,347
+texte « 100 % » @ 813,348
+curseur [état « 100 % », à 100 %] @ 450,416
+texte « Pre-Delay » @ 408,484
+texte « 20 ms » @ 816,485
+curseur [état « 20 ms », à 10 %] @ 450,553
+texte « Echo » @ 75,621
+texte « Zeit » @ 426,674
+texte « 1/8 » @ 834,675
+curseur [état « 1/8 », à 33 %] @ 450,743
+texte « Feedback » @ 414,811
+texte « 40 % » @ 822,812
+curseur [état « 40 % », à 40 %] @ 450,880
+texte « Ping-Pong » @ 405,948
+texte « 100 % » @ 813,949
+curseur [état « 100 % », à 100 %] @ 450,1017
+texte « Klang » @ 397,1085
+texte « 4,8 kHz » @ 805,1086
+curseur [état « 4,8 kHz », à 60 %] @ 450,1154
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

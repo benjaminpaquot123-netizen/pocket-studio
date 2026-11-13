@@ -1,0 +1,80 @@
+Écran 237 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 140,42
+bouton « Pro » @ 310,42
+bouton « D · Drop » ▾ @ 433,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,351
+bouton [état « leer »] @ 192,351
+bouton [état « Schlag, Stärke 100 % »] @ 294,351
+bouton [état « leer »] @ 397,351
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,351
+bouton [état « leer »] @ 603,351
+bouton [état « Schlag, Stärke 100 % »] @ 706,351
+bouton [état « leer »] @ 809,351
+bouton « 3 » [état « Schlag, Stärke 100 % »] @ 90,432
+bouton [état « leer »] @ 192,432
+bouton [état « Schlag, Stärke 100 % »] @ 294,432
+bouton [état « leer »] @ 397,432
+bouton « 4 » [état « Schlag, Stärke 100 % »] @ 500,432
+bouton [état « leer »] @ 603,432
+bouton [état « Schlag, Stärke 100 % »] @ 706,432
+bouton [état « leer »] @ 809,432
+bouton « Schläge » [sélectionné] @ 122,518
+bouton « Rolls » @ 265,518
+bouton « Panorama » @ 421,518
+bouton « Tonhöhe » @ 604,518
+bouton « Velocity » @ 774,518
+texte « alles » @ 163,602
+texte « 1/2 » @ 246,602
+texte « 1/4 » @ 321,602
+texte « ◀ » @ 396,602
+texte « ▶ » @ 471,602
+texte « Löschen » @ 581,602
+texte « Füllen » @ 79,602
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,704
+texte « Länge » @ 83,806
+bouton « 1 Takt » [sélectionné] @ 196,806
+bouton « 2 » @ 305,806
+bouton « 3 » @ 386,806
+bouton « 4 » @ 467,806
+texte « − » @ 386,890
+texte « + » [désactivé] @ 594,890
+texte « Dieses Pad loopt über » @ 188,890
+texte « 16 Steps » @ 490,890
+titre « PAD-SOUND » [état « Aufgeklappt »] @ 167,1007
+bouton « ? » @ 271,1007
+texte « Becken (synthetisiert) » @ 450,1061
+bouton (notes sur une pile) «  Sound ändern » @ 450,1130
+bouton (curseurs) «  Pad-Einstellungen » [coupé] @ 450,1180
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

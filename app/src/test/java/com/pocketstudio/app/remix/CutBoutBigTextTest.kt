@@ -102,6 +102,10 @@ class CutBoutBigTextTest {
     @Test
     fun aPieceAtTheUsualTextOnAPhone() = curveAndControls(480.dp, 1f)
 
+    /** Remix2 review: just above the scroll threshold (485 dp), the column fits without a scroll: the curve still 120 dp. */
+    @Test
+    fun aPieceJustAboveTheScrollThreshold() = curveAndControls(488.dp, 1f)
+
     @After
     fun french() {
         I18n.lang = Lang.FR

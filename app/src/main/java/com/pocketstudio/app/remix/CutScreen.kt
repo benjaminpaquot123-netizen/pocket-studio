@@ -200,13 +200,13 @@ fun CutScreen(
             // piece to tick). Little room: everything stays, the curve shorter, the column scrolls.
             val tight = !wide && !model.single && maxHeight < 700.dp
             // Tour 6, seat E c #17 (the round's blocker, pt-BR at 200 %) and B a #A5 (es, 100 %, phone): « Un bout » squeezed
-            // « Inicio aquí », « Fin aquí » and « Escuchar el trozo » to their tops. Two regimes: at a normal font the whole
-            // column fits (the curve flexes, everything stays whole without a scroll); only a large font or a very short
-            // screen makes the content taller than the room, and then the screen scrolls behind a fixed curve so nothing is
-            // crushed. The seat (nested under the project's bars, ~492 dp) keeps the span tools whole and does not scroll;
-            // a phone shorter than that (down to the 480 dp of CutBoutBigTextTest) scrolls so the curve stays usable.
+            // « Inicio aquí », « Fin aquí » and « Escuchar el trozo » to their tops. The column always scrolls behind a fixed
+            // curve, so the tools keep their full height; at a normal font they stay in view without a scroll.
             val bigText = androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.3f
-            val scrollsAll = !wide && model.single && (bigText || maxHeight < 485.dp)
+            val scrollsAll = !wide && model.single
+            // The fixed curve takes what the room leaves above the tools (120 dp, a finger's, up to 180 dp): on the seat's
+            // ~492 dp the tools stay in view without a scroll and the curve never falls under 120 dp (review of remix2).
+            val curveHeight = (maxHeight - 380.dp).coerceIn(120.dp, 180.dp)
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
@@ -217,7 +217,7 @@ fun CutScreen(
                     // The stem chips stay on top in « Phrases » (over the pieces' list that scrolls below) and in « Un bout »
                     // when the screen scrolls (a large font): the whole column is reached by scrolling, so they read first.
                     // Landscape (wide) keeps them with the tools in the side column.
-                    if (!wide && (!model.single || scrollsAll)) StemChips(model) { actions.stop() }
+                    if (!wide && (!model.single || bigText)) StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // « Un bout » numbers its bars on the curve's ruler: no « Mes. 3 à 8 » above it.
@@ -228,8 +228,8 @@ fun CutScreen(
                     // « Un bout »: no list of pieces, the curve takes the room (taller bars to grab).
                     val zoom = when {
                         tight -> Modifier.fillMaxWidth().height(140.dp)
-                        scrollsAll -> Modifier.fillMaxWidth().height(180.dp)
-                        model.single || wide -> Modifier.fillMaxWidth().weight(1f).heightIn(min = 96.dp)
+                        scrollsAll -> Modifier.fillMaxWidth().height(curveHeight)
+                        model.single || wide -> Modifier.fillMaxWidth().weight(1f).heightIn(min = 120.dp)
                         else -> Modifier.fillMaxWidth().weight(1.3f)
                     }
                     CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom, onLetGo = ::letGo)
@@ -242,7 +242,7 @@ fun CutScreen(
                         // Tour 6, seat B a #A2 (a left thumb): in « Un bout » that fits without scrolling, « Voz / Batería /
                         // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
                         // left thumb reaches — the big curve above keeps them off the top, out of reach.
-                        if (model.single && !scrollsAll) StemChips(model) { actions.stop() }
+                        if (model.single && !bigText) StemChips(model) { actions.stop() }
                     }
                     tail()
                   }

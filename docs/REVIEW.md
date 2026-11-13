@@ -1210,3 +1210,5 @@ Moyens laissés ouverts :
 - SettingsScreen.kt:224 (zone réglages/aide) : aide qui renvoie à un libellé disparu.
 - ShareSheet « détails » en Pro : mesure jouée sous la cible, sans mot pour les distinguer.
 - E3 : indice de fondu plus faible quand une ligne entière est cachée ; `Tour6ExportsWholeLinesTest` sans `share_target`.
+- exports2 (relu fdbc0f50) : `Tour6ExportsNameWrapTest` sans `hasVisualOverflow` ; en Simple « Désactivée » n'est offerte
+  que si c'est la cible ; pas de capture Roborazzi du bloc « Volume visé » simple (zone Exports, prochain lot).

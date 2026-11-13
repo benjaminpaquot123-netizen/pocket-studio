@@ -128,3 +128,10 @@ Copie des sièges de contrôle (texte seul) : `docs/audits/ultra/sieges/tour-6/c
 - `ScreenScanTest` (recensement de NavScreenshotTest.simpleSend) : les puces « Volume visé » du Mode simple n'avaient
   pas de « ? » : ajouté, en mots simples (Streaming, Club), sans LUFS.
 chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetHelpTest#theSimpleTargetHasItsHelp
+
+## Fusion de langues2 (tête ade5ba57)
+- MyExports.kt : version de langues2 gardée (même défaut E4) ; partage.json : les deux côtés gardés.
+- Le rejeu du siège dans le banc a montré « Streaming »/« Club » hors de vue : le « ? » ajouté avait grandi le bloc ;
+  le bloc tient désormais en un seul flux (test `Tour6ExportsTargetInSightTest#theSimpleTargetStaysCompact`, rouge puis
+  vert) ; rejeu suivant : « oracle tenu », puces touchées sans défiler.
+chemin: page Partager (Mode simple) | test: Tour6ExportsTargetInSightTest#theSimpleTargetStaysCompact

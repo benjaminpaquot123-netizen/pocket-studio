@@ -24,3 +24,9 @@
   (réponse 1A, 2026-11-09 : « Partager » seul verbe). La phrase E6 accepte « Partager » : la ligne qui ouvre le menu de
   partage dit « Partager le projet (.zip) ». Le tableau du lexique de `docs/DESIGN.md` (ligne « Sauvegarder le morceau
   en .zip ») est hors de mes fichiers : à mettre à jour par le chef. Retour arrière : remettre la clé « Sauvegarder… ».
+- **E1 — bloc « Volume visé » compact (après la fusion de langues2).** En Mode simple : mots, Streaming, Club, Auto et
+  « ? » dans un seul bloc ; « Désactivée » n'apparaît que si c'est la cible (revenir à « Désactivée » se fait en Pro ou
+  dans Mix). Raison : le bloc doit tenir entier au-dessus de la rangée épinglée d'un téléphone. Retour arrière : la
+  colonne d'avant (mots et « ? » sur une ligne, puces dessous).
+- **E4 — FileName de langues2.** À la fusion, la version de langues2 (R14, noms coupés entre leurs mots, extension
+  gardée) remplace `breakableName` de ce lot, même défaut.

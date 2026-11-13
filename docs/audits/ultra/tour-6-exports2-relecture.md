@@ -3,7 +3,7 @@
 Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
 MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : 3ef415e1c720a5d59e931b3a0e190d263a88605b
+relu : fdbc0f50bd479f8b95e491ea275e6b3f4a3adf26
 
 ## Relancé et vu
 - `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
@@ -31,6 +31,16 @@ relu : 3ef415e1c720a5d59e931b3a0e190d263a88605b
   345 seulement. Aucune unité LUFS dans l'aide du Mode simple.
 - Moyens : « Envoyer le projet » reste dans deux commentaires et un nom de test ; « Volume visé » en indonésien est
   « Target loudness » (anglais), plus visible comme titre du « ? ».
+
+## Relecture après la fusion de langues2 (relu fdbc0f50)
+- MyExports.kt identique à la tête (FileName de langues2, même défaut E4) ; `Tour6ExportsNameWrapTest` lit les lignes
+  coupées à la main, toujours sensible à une coupure entre deux lettres ou deux chiffres.
+- `SimpleTargetPicker` en un seul bloc (mots, puces, « ? ») ; « Désactivée » montrée seulement quand c'est la cible.
+- Relancés : I18nCatalogTest, LexiconWordsTest, export.*, projects.*, ScreenScanTest, HelpCoverageTest, BenchSelfTest :
+  701 tests, 0 échec. Rejeu rouge : ShareSheet.kt de fdbc0f50^ → `theSimpleTargetStaysCompact` ROUGE (134,67 dp > 110).
+- Banc, parcours Ac-2 (selftest 176/0) : « oracle tenu », puces Streaming et Club touchées sans défiler.
+- Moyens : le test de noms ne regarde plus `hasVisualOverflow` ; une ligne inutile (`after`) ; en Simple, revenir à
+  « Désactivée » demande Pro ou Mix ; aucune capture du bloc « Volume visé » simple.
 
 ## Graves
 Aucun.

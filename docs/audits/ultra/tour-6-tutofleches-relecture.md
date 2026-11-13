@@ -1,5 +1,5 @@
 # Tour 6 — lot « tutofleches » : relecture neuve
-Relu : 862b3f7fc4b0482c029ab9aac4044a68c62f16d8
+Relu : b42f0ee73859b46074e7a0366b53779b0ce8ab16
 
 Relecture en lecture seule de `git diff 911c61959 862b3f7fc` : tout le code de l'appli (`PianoRoll.kt`, `TutoController.kt`, `TutoPanel.kt`, `TutoChecks.kt`), les sept fichiers de tests, les 17 `tutos/*.json` et les 42 `i18n/*/tuto*.json` (contrôlés par script : tous se lisent, 15 phrases nouvelles présentes dans les 14 langues, `%d` gardé, aucune restée en français, chaque phrase française nouvelle a sa clé), le rapport et les décisions. Gradle n'a pas été lancé. Aucune expression régulière ajoutée dans le code de l'appli (rien pour ICU). Je ne trouve ni plantage, ni boucle de recomposition (la marge du bas ne change ni la taille du rouleau ni ses rangées visibles), ni étape devenue impossible à valider, ni flèche qui se contredit : la règle unique sert à la ligne et au toucher, avec les mêmes mesures.
 

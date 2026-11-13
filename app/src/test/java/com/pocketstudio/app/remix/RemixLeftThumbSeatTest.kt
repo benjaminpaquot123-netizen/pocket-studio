@@ -88,7 +88,6 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
     fun a5_spanToolsWholeOnArrival() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         openCut(separate())
-        File(out, "a5.txt").writeText(screenLines().joinToString("\n"))
         // On arrival (« Un trozo »): Inicio aquí, Fin aquí, Escuchar el trozo whole and touchable, no scroll.
         assertTrue("cut_start cut off", whole("cut_start"))
         assertTrue("cut_end cut off", whole("cut_end"))
@@ -99,7 +98,6 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
     fun a3_cutHintWholeNotUnderThumb() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         val id = separate()
-        File(out, "a3.txt").writeText(screenLines().joinToString("\n"))
         // After separation, before cutting: « Cortar lo que quiero » and its help line whole, nothing under the thumb bar.
         assertTrue("cut_song_$id cut off", whole("cut_song_$id"))
         assertTrue("cut_song_hint_$id cut off (under the thumb bar)", whole("cut_song_hint_$id"))
@@ -113,7 +111,6 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
         // and the Remix page shows the project panel (seat screen 41).
         openCut(id)
         repeat(30) { if (node("remix_project") != null) return@repeat; runCatching { tap("cut_close") }; act("attends 1") }
-        File(out, "a8.txt").writeText(screenLines().joinToString("\n"))
         // One « Cortar la canción » on the panel, not two.
         assertTrue("the project panel never came:\n" + screenLines().joinToString("\n"), node("remix_project") != null)
         assertEquals("two « Découper la chanson » buttons", 1, countText("Cortar la canción"))

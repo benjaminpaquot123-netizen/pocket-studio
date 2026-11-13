@@ -4,3 +4,5 @@
 - 2026-11-13 : le n° 8 (ordre des tests) sort en lot « tutoordre », sur demande du chef ; diagnostic : une course, pas une fuite d'état.
 - 2026-11-13 : n° 4 (flèches), n° 6 (mots, 14 langues par phrase), 7b et grave 3 (Mix Pro) laissés de côté, listés dans le rapport. Raison : hors zone (grave 3, n° 5) ou trop gros sans rejouer.
 - 2026-11-13 : machine sans SDK Android au départ : SDK installé dans /root/android-sdk (plate-forme 37.0, build-tools 37, NDK 30.0.16248370, cmake 3.22.1) et `local.properties` local (non commité) ; Robolectric 16 téléchargé à la main dans ~/.m2.
+- 2026-11-13 : la ligne du rouleau parle de la note restante la plus proche (contrôle Da-3), plus de « la première du temps en vue ». Raison : la phrase d'acceptation du chef. Retour arrière : revenir `3732502b` et la propriété de `482d82d7`.
+- 2026-11-13 : le panneau replié se rouvre une fois par étape quand seule la douceur des cases manque, plutôt qu'une phrase neuve. Raison : ses mots disent déjà « appui long dessus, puis « Doux » » dans toutes les langues, sans texte à traduire. Retour arrière : revenir `7e86a638`.

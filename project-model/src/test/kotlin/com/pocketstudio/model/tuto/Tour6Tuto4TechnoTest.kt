@@ -55,6 +55,47 @@ class Tour6Tuto4TechnoTest {
     }
 
     /**
+     * M2 (seats D a, B b): each musician's word is explained in simple words where it first shows (kick, bass, Drop,
+     * bar, stab, Groove, Break, mix, transition, BPM; the hit menu's « Force », « Roulement », « Triolet »), in Japanese too.
+     */
+    @Test
+    fun tradeWordsExplainedWhereTheyFirstShow() {
+        val bad = mutableListOf<String>()
+        fun need(where: String, text: String, vararg parts: String) = parts.filter { it !in text }.forEach { bad += "$where: no « $it »: $text" }
+        need("ref", step("ref").text, "kick (la grosse caisse)", "basse (les notes graves)", "Drop (le moment où tout joue)")
+        need("kick chapter", chapter("kick").why, "font une mesure")
+        need("clap_do", step("clap_do").text, "« Force » (", "« Roulement » (", "« Triolet » (")
+        need("pad_do", step("pad_do").text, "stabs (")
+        need("groove_hear", step("groove_hear").text, "« Groove » (")
+        need("gap", step("gap").text, "transition (")
+        need("map_break", step("map_break").text, "Break (la pause)")
+        need("levels", step("levels").text, "le mix, c'est")
+        need("tempo", step("tempo").text, "battements par minute")
+        // In the Facile course, the first step that says the word (with its chapter's title) is the one that explains it.
+        val firsts = mapOf("kick" to "ref", "basse" to "ref", "Drop" to "ref", "stab" to "pad_do", "Groove" to "groove_hear", "Break" to "map_break", "transition" to "gap", "mix" to "levels", "BPM" to "tempo")
+        val facile = course.chaptersFor(TutoLevel.Facile).flatMap { c -> c.steps.mapIndexed { i, s -> s.id to ((if (i == 0) c.title + "\n" else "") + s.text) } }
+        for ((word, id) in firsts) {
+            val first = facile.firstOrNull { (_, t) -> Regex("(?i)\\b${word}s?\\b").containsMatchIn(t) }?.first
+            if (first != id) bad += "« $word » first shows in $first, explained in $id"
+        }
+        // Japanese: ベース, the menu's words, スタブ, グルーヴ, トランジション explained there; German: the bar (Takt).
+        val ja = Lang.JA
+        need("ja ref", tr(ja, step("ref").text), "ベース（")
+        need("ja clap_do", tr(ja, step("clap_do").text), *listOf("Force", "Roulement", "Triolet").map { tr(ja, it) + "」（" }.toTypedArray())
+        need("ja pad_do", tr(ja, step("pad_do").text), "スタブ（")
+        need("ja groove_hear", tr(ja, step("groove_hear").text), "グルーヴ」（")
+        need("ja gap", tr(ja, step("gap").text), "トランジション（")
+        need("de kick chapter", tr(Lang.DE, chapter("kick").why), "Takt")
+        // Every language keeps the explanations: as many brackets as the French.
+        for (id in listOf("ref", "clap_do", "pad_do", "groove_hear", "gap")) {
+            val fr = step(id).text
+            val n = fr.count { it == '(' }
+            for (l in langs) tr(l, fr).let { t -> if (t.count { it == '(' || it == '（' } < n) bad += "${l.code} $id: an explanation lost: $t" }
+        }
+        report("words of the trade not explained where they first show", bad)
+    }
+
+    /**
      * M4 (seats D a, B b): no contradiction: the Break keeps the hats and the « Rim »; the Montée « Créer la partie » makes
      * still plays its last beat (its silence is the transitions' step); ch. 10 says which button makes each part.
      */

@@ -72,4 +72,35 @@ class Tour6Tuto4AcidTechnoTest {
         }
         report("languages saying one lead by a plural", bad)
     }
+
+    /**
+     * Seat D a (Japanese, Mode simple): the kick pad read 「バスドラム 1」 while the step said 「バスドラム」. In Japanese the
+     * Mode simple's kick pad is named as every course's kick steps quote it.
+     */
+    @Test
+    fun theJapaneseKickPadIsNamedAsTheStepsQuoteIt() {
+        val bad = ArrayList<String>()
+        try {
+            I18n.lang = Lang.JA
+            I18n.everyday = true
+            val pad = I18n.t("Kick")
+            val pads = listOf("Kick", "Kick 2", "Kick studio", "Kick dur").map(I18n::t).toSet()
+            val quoted = Regex("「([^」]+)」")
+            // The pad's word leads back to « Kick », not to the plural « Kicks » (the same word in Japanese).
+            if (I18n.frenchOf(pad) != "Kick") bad += "「$pad」 leads back to « ${I18n.frenchOf(pad)} », not « Kick »"
+            for (style in TutoCourse.STYLES) {
+                val kicks = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.filter { it.check == "lane:kick" }
+                for (s in kicks) for (fr in listOfNotNull(s.text, s.textPro)) {
+                    val t = I18n.t(fr)
+                    val names = quoted.findAll(t).map { it.groupValues[1].trim() }.filter { "バスドラム" in it || "キック" in it }.toList()
+                    // A step may quote another kick pad by its own name (« Kick studio »…), never a name no pad shows.
+                    names.filter { it !in pads }.forEach { bad += "$style ${s.id}: pad 「$pad」, step quotes 「$it」: $t" }
+                }
+            }
+        } finally {
+            I18n.everyday = false
+            I18n.lang = Lang.FR
+        }
+        report("Japanese kick steps quoting a name the pad does not show", bad)
+    }
 }

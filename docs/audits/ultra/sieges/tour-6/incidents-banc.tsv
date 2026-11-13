@@ -1,4 +1,6 @@
 siege	geste	attente	vu
+a	0	0	aucun outil hors human-act.py, sauf lecture de mon journal.txt et de mes images (dossier du siège)
+a	11	0	taille annoncée 34230,9 Ko au partage, « 1 Ko » dans Mes fichiers (chiffres du banc, pas jugé)
 a	-	0	outils hors human-act.py : Read sur mes images de siège (screen-*-grille.png) et cat/grep/ls du journal de MON dossier de siège pour les numéros de gestes
 a	7	60	séparation finie en un seul « attends 60 » (1 geste d'attente, pas lente) ; banc?: temps
 a	30	0	j'ai enchaîné deux commandes dans un seul appel (#30 attends et #31 touche), sans effet sur le test ; aucun outil hors human-act.py sauf Read des images et ls/cat/grep de mon dossier de siège (start.txt, rapport.md, fin.txt, journal.txt)

@@ -1,40 +1,35 @@
-# Tour 6 — lot 6 « morceau-export-padlive » : relecture neuve (v2, après le self-test)
-Relu : 6c4344fc89ea787ea188becd799bf3319d6ee901
+# Tour 6 — lot 6 « morceau-export-padlive » : relecture neuve (v3, après la fusion de la tête)
+Relu : 813c34f6680fe5ea632c647134486529e86d1045
 
-Delta relu : fdb844ef..6c4344fc (3 commits : 69e09546 annulation d'U11, 7c36fe67 flèches de TrackBar, 6c4344fc rapport
-et décisions), plus la capture `app/screenshots/tracks.png`. Tests non relancés (lecture seule) ; le self-test vert
-(203 verts, 0 rouge) est celui annoncé par l'orchestrateur.
+Delta relu : 6c4344fc..813c34f6, commit de fusion (parents 55549d79 = lot, a7f8ed62 = tête d'intégration). Tests non
+relancés (lecture seule) ; 84 tests ciblés et self-test complet (203 verts, 0 rouge) après la fusion sont ceux annoncés
+par l'orchestrateur.
 
 ## Bloquant
 Aucun.
 
 ## Grave
 Aucun. Vérifié :
-- U11 annulé proprement : le diff de 69e09546 sur `RhythmViewModel.kt` est l'exact inverse de 413e088a (`git diff
-  413e088a~1 HEAD` ne touche plus `finishPerformance` ni `endPerformanceOnStop`) : plus de paramètre `stop`, plus
-  d'appel `toggleTransport(aloneSongStep())`, `leaveSong` + `pushAutomation` revenus dans le même bloc. Le test
-  `Lot6VmTakeEndTest` (3a3691f8) est supprimé et n'est plus cité nulle part (rapport : sa ligne `chemin:` retirée).
-  Rien d'autre retiré : les autres corrections du lot (U20 dans `listenPerformance`, U3, U5, R4, U28…) sont intactes.
-- TrackBar : seul `RowMoreSign` change (icône ArrowBack / ArrowForward au lieu des chevrons), même taille 22 dp, même
-  teinte, sans toucher, mêmes `testTag` (`track_bar_less` / `track_bar_more`) ; `IconShapes` connaît « ← » et « → ».
-  Aucun autre effet.
-- Capture `tracks.png` regardée en entier : flèche → nette au bord droit de la rangée de pistes, dans son fondu, sans
-  recouvrir de puce ; rien d'autre ne bouge à l'écran.
-- Rapport et décisions disent vrai : « 20 sur 24, plus N25 », U11 passé dans « Laissé de côté (4 défauts du lot) » avec
-  ses deux rouges nommés et la preuve (arrêt coupé : verts) ; décision U11 datée du 13 avec retour arrière (rejouer
-  3a3691f8 et 413e088a) ; décision R19 mise à jour (flèches, raison du banc).
+- `RhythmViewModel.kt` : le seul écart avec la version relue est +2 lignes dans le `render` du garde M4A
+  (`r?.let { proReport = it }`, « Tour 5, moyens2 »). Ce sont exactement les 2 lignes que la tête apporte depuis la
+  base commune (5957fac5..a7f8ed62, même texte) ; `git diff 55549d79 HEAD` sur ce fichier ne montre qu'elles, et
+  `git diff a7f8ed62 HEAD` sur `app/src/main` ne montre que les 7 fichiers du lot. Fusion sans conflit, sans mélange.
+- Compatibilité avec le lot : `proReport` est la variable locale de l'export (l. 11327), déjà alimentée l. 11420 et
+  transmise à `ExportUi` l. 11543 à côté de `madeFrom = ExportUi.madeHash(made)` (U3) ; l'apport la met seulement à jour
+  quand le M4A est rendu de nouveau, sous `solo == null` comme `loudness`. Rien de R4 `useSong`, U28 `newSongPart`, U20
+  `listenPerformance`, U5 format, U14 `applyChords`, N25 `tutoEdit` ni T2 `loadTutoKit` n'est touché.
+- Autres fichiers de la tête (Challenge, CutScreen, RemixScreen, StemBoardRouter, RhythmScreen, SessionScreen,
+  PianoRoll, PlayStrip, TopBar, plus `ui/`) : aucun n'est un fichier du lot ; PadLiveScreen, ShareSheet, TrackBar et
+  MixerScreen ne figurent pas dans le delta (identiques à la version relue). Aucun marqueur de conflit dans `app/src`.
 
 ## Moyen
-- (relecture précédente, tient) `PadLiveScreen.kt:274-276` U21 couché ou petit écran : les pads rétrécissent encore,
-  non testé ; le rapport le dit désormais.
-- U11 rouvert : « Fin » laisse la musique continuer (défaut d'origine du siège E a #38), cause de la casse
-  d'« Écouter » / « Enregistrer ce que je joue » après un arrêt non trouvée ; à reprendre dans un lot suivant.
+- (tient) `PadLiveScreen.kt:274-276` U21 couché ou petit écran : pads qui rétrécissent encore, non testé (le rapport le dit).
+- (tient) U11 rouvert : « Fin » laisse la musique continuer ; à reprendre dans un lot suivant.
 
 ## Mineur
-- `TrackBar.kt:33` : l'import `KeyboardArrowRight` n'est plus utilisé (simple avertissement Kotlin, pas d'erreur de
-  compilation : aucun `allWarningsAsErrors`).
-- (relecture précédente, tiennent, une ligne chacun) U3 export « Boucle » Pro choisi à la main ne dit plus « changé » ;
-  U5 écouteur ne réagit qu'au changement de valeur et clé « format » dupliquée ; `scroll_hint_fade` Box repère, fondu
-  non mesuré ; R23 `filesAtOpen` par composition ; U28 `at` ignoré sur morceau vide ; `Spacer(0.dp)` de PadLiveScreen.
+- (tiennent, une ligne chacun) import `KeyboardArrowRight` inutilisé dans `TrackBar.kt:33` ; U3 export « Boucle » Pro
+  choisi à la main ne dit plus « changé » ; U5 écouteur au seul changement de valeur et clé « format » dupliquée ;
+  `scroll_hint_fade` fondu non mesuré ; R23 `filesAtOpen` par composition ; U28 `at` ignoré sur morceau vide ;
+  `Spacer(0.dp)` de PadLiveScreen.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

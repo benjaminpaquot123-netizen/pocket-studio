@@ -231,6 +231,7 @@ def main():
         named_pairs(d)
         judge_reads_any_bytes(d)
         one_red_several_greens(d)
+        closed_red_same_lot_only(d)
         red_seen_regularises(d)
         replay_backticks(d)
         replay_exact_name(d)
@@ -1553,10 +1554,10 @@ def one_red_several_greens(d):
     seat = ("ThumbSeatProofTest", ["a2_chipsReachableWithThumb", "a3_cutHintWholeOnScreen", "a5_spanToolsWholeOnArrival"])
     red = commit("rouge: the left-thumb cut screen (A2, A3, A5)", seat)
     first = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb, the chips at the bottom")
-    second = commit("vert: a3_cutHintWholeOnScreen, the intro card gone after a separation")
+    second = commit("vert: ThumbSeatProofTest#a3_cutHintWholeOnScreen, the intro card gone after a separation")
     again = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb once more")
     other = commit("vert: OtherProofTest#theOtherThingIsShown, a test the red does not cover")
-    unnamed = commit("vert: A5 span tools whole on arrival")
+    unnamed = commit("vert: a5_spanToolsWholeOnArrival, named by its bare name only")
     lonely = commit("rouge: the lonely guard", ("LonelyProofTest", ["theLonelyRedStaysOpen"]))
     # A red closed by its subject: its green is the whole red's, a later green naming one of its tests stays a gap
     # (the real 4bf5a58a then 6ed6127b: a regression of that test pairs by evidence, rouges-constates/).
@@ -1568,7 +1569,7 @@ def one_red_several_greens(d):
                          capture_output=True, text=True).stdout
     for sha, what in ((red, "the red"), (first, "the first green"), (second, "a second green naming another of its tests")):
         check(sha + " «" not in out, f"{what} is paired:\n" + out)
-    for sha, what in ((again, "a test already claimed"), (other, "a test the red does not cover"), (unnamed, "no test named")):
+    for sha, what in ((again, "a test already claimed"), (other, "a test the red does not cover"), (unnamed, "a bare method name, no class")):
         check(f"{sha} « vert:" in out, f"a green naming {what} stays a gap:\n" + out)
     check(f"{lonely} « rouge:" in out, "a red no green names stays a gap:\n" + out)
     check(whole + " «" not in out and whole_green + " «" not in out, "a red closed by its subject is paired:\n" + out)
@@ -1665,6 +1666,89 @@ def red_seen_regularises(d):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
     check(f"{lonely} « rouge:" in out, "a red no evidence names stays a gap:\n" + out)
     check("chantier : 6 écarts" in out, "six gaps, nothing else:\n" + out)
+
+
+def closed_red_same_lot_only(d):
+    """Review of « juge8 » (G1): a green that closes no open red pairs an already closed red only when it changes code
+    (a file neither a test nor a document), names the test as « Classe#méthode », and is of that red's lot: the red is
+    on the green's first-parent line with no « Merge team … » between them, and the green that closed the red is on
+    that line too. Stay gaps: a green that changes only a document and cites the test « in passing », a green of a
+    later lot (a « Merge team … » between), a green whose red was closed by a green of a side branch."""
+    tests = lambda root: os.path.join(root, "app", "src", "test", "java", "x")
+
+    def setup(name):
+        root = judge_root(d, name)
+        git_toy(root, "init", "-q", "-b", "main")
+        write(os.path.join(root, "app", "src", "main", "Spot.kt"), "val x = 0\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", "start")
+        return root
+
+    def commit(root, message, app=None, doc=None, seat=None):
+        if app is not None:
+            write(os.path.join(root, "app", "src", "main", "Spot.kt"), f"val x = {app}\n")
+        if doc is not None:
+            write(os.path.join(root, "docs", f"{doc}.md"), doc + "\n")
+        if seat is not None:
+            write(os.path.join(tests(root), f"{seat}.kt"), f"class {seat} {{\n  @Test\n  fun firstTestOfTheSeat() {{}}\n"
+                  "  @Test\n  fun secondTestOfTheSeat() {}\n}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    def judge(root):
+        resume = os.path.join(root, "selftest-resume.txt")
+        seal_resume(root, resume)
+        return subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                              capture_output=True, text=True).stdout
+
+    # One lot: red, a green for each test, both with code: paired.
+    root = setup("lot-meme")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    commit(root, "docs: notes", doc="notes")
+    same = commit(root, "vert: OldSeatTest#secondTestOfTheSeat", app=2)
+    out = judge(root)
+    check(same + " «" not in out and "chantier : 0 écarts" in out, "a green of the red's own lot, with code, pairs:\n" + out)
+    # A green that changes only a document and cites the test in passing.
+    root = setup("lot-doc")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    lone = commit(root, "vert: unrelated change (see also OldSeatTest#secondTestOfTheSeat)", doc="later")
+    out = judge(root)
+    check(f"{lone} « vert:" in out and "chantier : 1 écarts" in out, "a green without code stays a gap:\n" + out)
+    # A later lot: the old lot merged by « Merge team … », then a green on the integration naming the unclaimed test.
+    root = setup("lot-suivant")
+    git_toy(root, "checkout", "-q", "-b", "eq/old")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team old of tour-9 (audit ultra)", "eq/old")
+    later = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, a later lot", app=2)
+    out = judge(root)
+    check(f"{later} « vert:" in out and "chantier : 1 écarts" in out, "a green of a later lot stays a gap:\n" + out)
+    # The red on the integration's line itself, a « Merge team … » between it and the green.
+    root = setup("lot-traverse")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "-b", "eq/other")
+    commit(root, "docs: another lot", doc="other")
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team other of tour-9 (audit ultra)", "eq/other")
+    across = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, across a merge", app=2)
+    out = judge(root)
+    check(f"{across} « vert:" in out and "chantier : 1 écarts" in out, "a green across a « Merge team » stays a gap:\n" + out)
+    # The red closed by a green of a side branch (not on the green's first-parent line).
+    root = setup("lot-cote")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    git_toy(root, "checkout", "-q", "-b", "side")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    commit(root, "docs: main goes on", doc="main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch side", "side")
+    side = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red closed on a side branch", app=2)
+    out = judge(root)
+    check(f"{side} « vert:" in out and "chantier : 1 écarts" in out, "a red closed off the green's line gives it nothing:\n" + out)
 
 
 def replay_backticks(d):

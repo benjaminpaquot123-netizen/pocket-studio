@@ -565,7 +565,7 @@
       "steps": [
         {
           "id": "loudness",
-          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT (un compresseur très fort qui rapproche les sons doux des sons forts) ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : −7,5 LUFS (LUFS : le volume qu'on entend ; plus près de 0, plus c'est fort ; le streaming est à −14), aussi fort qu'en club.",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT (un compresseur très fort qui rapproche les sons doux des sons forts) ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : −8 LUFS (LUFS : le volume qu'on entend ; plus près de 0, plus c'est fort ; le streaming est à −14), aussi fort qu'en club.",
           "check": "loudness:CLUB",
           "spot": "mixer.master",
           "listen": "song"

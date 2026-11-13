@@ -53,13 +53,20 @@ Fichiers touchés : `app/src/main/java/com/pocketstudio/app/export/ShareSheet.kt
 
 ## Tests
 
-tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.export.Tour6Exports*' --tests 'com.pocketstudio.app.export.Lot6UiShareLevelTest'
+tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.export.Tour6Exports*' --tests 'com.pocketstudio.app.export.Lot6UiShareLevelTest' --tests 'com.pocketstudio.app.human.BenchSelfTest'
 chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimplePageOffersStreamingAndClubWithoutGoingPro
 chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimpleLevelLineCarriesTheFilesNumber
 chemin: page Partager (Mode simple) | test: Tour6ExportsOtherFilesClearTest#theOtherFilesLineCanClearTheFadeBand
-chemin: Mes fichiers | test: Tour6ExportsNameWrapTest#aLongNameStaysOnOneLineLikeAShortOne
 chemin: page Partager, ligne projet | test: Tour6ExportsSaveLabelTest#theProjectZipLineIsNamedAfterWhatItDoesWhichIsToSend
 chemin: page Partager (Mode simple), niveau | test: Lot6UiShareLevelTest#theSimpleLevelIsTheExportsTarget
+chemin: C'est prêt (Mode simple) | test: Tour6ExportsBilanNumberTest#theSimpleReportGivesTheFilesNumber
+chemin: Prêt à partager ? (Pro) | test: Tour6ExportsProLevelTest#theProLevelIsTheFilesTarget
+chemin: Prêt à partager ? (Pro) | test: Tour6ExportsProLevelTest#theWordsUnderClubSayClub
+chemin: page Partager (Mode simple) | test: Tour6ExportsTargetInSightTest#streamingAndClubAreInSightWhenThePageOpens
+chemin: Prêt à partager ? (Pro) | test: Tour6ExportsWholeLinesTest#theProSheetOpensWithWholeLines
+chemin: page Partager (Mode simple) | test: Tour6ExportsWholeLinesTest#theSimplePageOpensWithWholeLines
+chemin: Mes fichiers | test: Tour6ExportsNameWrapTest#aLongNameBreaksOnlyBetweenItsPartsAndStaysWhole
+chemin: Mes projets › ⋮ | test: Tour6ExportsZipMenuWordTest#theZipThatIsSentIsCalledSendEverywhere
 
 Note (conditions) : ces tests sont des tests d'écran (Robolectric), ils ne valent pas la preuve « dans
 les conditions du siège, appli entière, par le banc » : état « tenté » jusqu'au rejeu d'un testeur neuf.
@@ -74,3 +81,26 @@ les conditions du siège, appli entière, par le banc » : état « tenté » ju
 ## Laissés de côté
 
 - E5 (taille/« · 3 ») : artefact du banc, rien dans le code poussé ; à revérifier sur téléphone.
+
+## Aller-retour 1 (contrôle Ac-2, code testé d946d916)
+
+- E1 corrigé (écran 8) ; le bilan « C'est prêt » n'avait pas le chiffre : ajout de « Volume · −8,1 » sous la ligne
+  « Niveau » (Mode simple, sans LUFS).
+- E3 encore là en Pro (écran 40, « Autres fichiers » coupé à l'ouverture) : le `Spacer` ne jouait qu'une fois défilé.
+  Le défilement s'arrête désormais au-dessus d'une ligne entière que le bord couperait (`SnapColumn`/`snapHeight`,
+  lignes marquées `WHOLE_LINE` : vidéo, « Autres fichiers », .zip, « Tout est prêt », « Volume visé » en Simple).
+- E4 encore là (écran 19, « …clu…61113… » avec le « … » au milieu) : le nom est montré entier et ne passe à la ligne
+  qu'entre ses parties (après « - »/« _ », avant « . »).
+- E6 « autre » : le libellé vu était celui de Mes projets › ⋮ (accordé par le chef : ProjectsScreen.kt l. 338 et 345)
+  et le titre du menu de partage (SaveProjectZip.kt) : tous disent « Envoyer le projet (.zip) », traduit dans les
+  14 langues (partage.json, accordé).
+- Neuf N3 (écran 40, Pro, « −13,0 comme streaming » sous Club) : les deux modes disent le volume du fichier (sa
+  cible) avec les mêmes mots « Volume : −8,0, … » ; la mesure entendue reste sous « détails ».
+- Pas pris (hors lot) : le texte d'aide « Partager › Sauvegarder le morceau en .zip » (clé d'aide de partage.json,
+  écran d'aide) et le titre du menu de partage écrit dans `ui/AppRoot.kt` (projet illisible) gardent l'ancien mot.
+- Rejeu du parcours du siège Ac-2 dans le banc (start.txt du siège : fr, téléphone, 100 %, Mode simple ; appli entière,
+  46 gestes par étiquettes, attentes allongées pour les exports du banc, oracle à l'écran 47 = Pro « Prêt à partager ? »
+  sans « Autres fichiers » coupé) : « oracle tenu ». Vu dans ce rejeu : chips Streaming/Club touchés en Simple sans
+  défiler (après correction : la cible passe avant « Tout est prêt »), bilans « Niveau : à la cible (Club) » puis
+  « Volume · −8,0 », Mes fichiers aux noms entiers coupés entre leurs parties, Mes projets › ⋮ « Envoyer le projet (.zip) ».
+  Le rejeu a aussi montré « −8,0, très fort (les plateformes le baisseront) » sous Club en Pro : corrigé (mots de la cible).

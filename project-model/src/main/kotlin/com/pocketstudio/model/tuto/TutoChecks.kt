@@ -42,6 +42,7 @@ import com.pocketstudio.model.withFx
 import com.pocketstudio.model.withTrack
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /**
  * What the course aims at in a style: the recipe's lines, notes and whole song, as the assistant
@@ -612,10 +613,14 @@ object TutoChecks {
     )
 
     /**
-     * How much a knob must go up to count (or be near its top already): « au moins 15 » on its 0-100
-     * scale (Théo, lot « tuto 5 »: ticked at the first touch, no value said).
+     * The knob read as the screen shows it: its 0..1 value as a rounded percent (SynthScreen draws
+     * « (value × 100) rounded »). Tour 6 control seat (tuto Pro, chapter 7): « au moins 15 » was counted on the raw
+     * value with a strict `v ≥ was + 0.15`, so a move the screen showed as +15 could be refused (its raw delta a
+     * little under 0.15 after rounding) and only +20 ticked it. The step counts what the instruction and the screen
+     * say: the shown percent gone up by at least 15.
      */
-    private const val KNOB_STEP = 0.15f
+    private fun knobPct(x: Float): Int = (x * 100f).roundToInt()
+    private const val KNOB_STEP_PCT = 15
 
     /**
      * Synth knob [k] ([SynthPatch] index) as track [t] plays it: its synth's, or the Plaits knob doing
@@ -914,7 +919,7 @@ object TutoChecks {
                 val before = (base?.getOrNull(0) as? SynthPatch)?.let { s -> now?.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) }
                 before != null && now != null && knobs.all { k ->
                     val was = knobValue(before, k)
-                    knobValue(now, k)?.let { v -> was != null && (v >= was + KNOB_STEP || v >= 0.95f) } == true
+                    knobValue(now, k)?.let { v -> was != null && (knobPct(v) - knobPct(was) >= KNOB_STEP_PCT || knobPct(v) >= 95) } == true
                 }
             }
             // Théo (lot « tuto 5 »): « percussion ou charley ouvert », not any hit (a closed hat ticked it): a new hit on one of those pads.

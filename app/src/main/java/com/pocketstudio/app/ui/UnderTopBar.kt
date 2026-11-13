@@ -55,9 +55,9 @@ fun UnderTopBar(
         if (transport.playing) lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollPosition() }
     }
     val playing = transport.playing
-    val songIndex = sessionUi.shownSongIndex
-    val position = remember(project, playing, songIndex, playFrom, loopPart, bar) {
-        { playPosition(project, playing, songIndex, bar.value, playFrom, loopPart) }
+    // Tour 6 lot 8 (U1): the part queued by « Jouer depuis… » while the song plays, said by the strip until it comes.
+    val position = remember(project, playing, sessionUi, playFrom, loopPart, bar) {
+        { stripPosition(project, playing, sessionUi, bar.value, playFrom, loopPart) }
     }
     val parts = project.song.map { partName(project, it.scene) }
     val soloed = soloedTracks(project)
@@ -111,4 +111,4 @@ fun PositionStrip(
 
 /** The play strip's position: what [playPosition] says of [p] now. */
 internal fun stripPosition(p: com.pocketstudio.model.Project, playing: Boolean, session: com.pocketstudio.app.rhythm.SessionUi, bar: Int, playFrom: Int, loopPart: Boolean): PlayPosition? =
-    playPosition(p, playing, session.shownSongIndex, bar, playFrom, loopPart)
+    playPosition(p, playing, session.shownSongIndex, bar, playFrom, loopPart, session.queued)

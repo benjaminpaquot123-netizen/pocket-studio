@@ -537,7 +537,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -584,7 +584,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

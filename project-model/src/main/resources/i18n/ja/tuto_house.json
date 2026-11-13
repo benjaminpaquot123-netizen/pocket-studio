@@ -400,7 +400,7 @@
   "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.": "あなたの番：ドロップで、シンバルのパッドのいちばん最初のマスをタップしよう：全部戻ってきたと告げる「シャーン」。",
   "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.": "あなたの番：ドロップとドロップ 2 の1拍目にシンバルを置こう。",
   "Les DJ et les danseurs attendent un signal sur la tourne des 16 mesures.": "DJ もダンサーも、16小節の区切りで合図を待っている。",
-  "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » (ou le charley ouvert) : une couche de plus que dans le Drop.": "あなたの番：「ドロップ 2」パートで、「シェイカー」パッド（またはオープンハイハット）にヒットをいくつか足そう：ドロップよりレイヤーが1つ多くなる。",
+  "À toi : dans la partie « Drop 2 », sur le pad « Shaker », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche.": "あなたの番：「ドロップ 2」パートの「シェイカー」パッドで、1小節目の各拍に1つずつ、4マスをタップしよう：ドロップの上に音が1つ増えて、もっと厚く聞こえる。",
   "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.": "あなたの番：ドロップ 2 で「シェイカー」パッドにヒットを足そう（またはオープンハイハットをもう1つ）：16小節ごとにレイヤーを1つ、ハウスのルール。",
   "La réverbe donne de l'espace au clap ; le filtre qui s'ouvre fait monter la tension.": "リバーブはクラップに空間を与え、開くフィルターが緊張を高める。",
   "Écoute la réverbe (l'écho d'une grande salle) : le clap et le piano, d'abord sans, puis avec.": "リバーブ（大きなホールの響き）を聴こう：クラップとピアノ、最初はなしで、次にありで。",
@@ -601,5 +601,6 @@
   "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "あなたの番：「マイソング」の「追加」の下で、イントロ、ビルドアップ、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングの順にタップしよう。今表示されている小節数は気にしなくていいよ：次のステップで各パートに本当の長さを付ける。",
   "Partage ton morceau": "曲をシェアしよう",
   "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "あなたの番：「シェア」をタップ：アプリが曲を送れるオーディオファイルにする。「M4A」は友だち向けの軽いファイル、「WAV」はスタジオ品質のまま。その下の「−14」はストリーミングの音楽と同じくらいの音量、「音割れはありません」は音がバリバリしないこと、「ソロの消し忘れ」がないのは、1つのトラックだけが鳴っていないこと。",
-  "À toi : touche « Partager » et envoie ton morceau.": "あなたの番：「シェア」をタップして曲を送ろう。"
+  "À toi : touche « Partager » et envoie ton morceau.": "あなたの番：「シェア」をタップして曲を送ろう。",
+  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "あなたの番：「ミックス」タブ（それぞれの音の音量を決める場所）で、「コード」トラックのスライダーを少し下げ、次に「メロディ」トラックのスライダーも下げよう。スライダーの数字は「+4」（大きめ）から「−∞」（まったく音なし）まで、どれだけ上げ下げしたかを示すだけ。"
 }

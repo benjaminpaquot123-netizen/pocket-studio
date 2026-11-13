@@ -400,7 +400,7 @@
   "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.": "轮到你：在高潮里，点镲片打击垫的第一格：一声“嚓——”宣告一切都回来了。",
   "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.": "轮到你：在高潮和高潮 2 的第 1 拍上放一声镲片。",
   "Les DJ et les danseurs attendent un signal sur la tourne des 16 mesures.": "DJ 和舞者都在等 16 小节转折处的信号。",
-  "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » (ou le charley ouvert) : une couche de plus que dans le Drop.": "轮到你：在“高潮 2”段落里，在“沙锤”打击垫（或开镲）上加几下：比高潮多一层。",
+  "À toi : dans la partie « Drop 2 », sur le pad « Shaker », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche.": "轮到你：在“高潮 2”段落的“沙锤”打击垫上，点 4 个格子，第 1 小节每拍一个：在高潮上面多加一种声音，让它听起来更丰满。",
   "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.": "轮到你：在高潮 2 里，在“沙锤”打击垫上加几下（或多一个开镲）：每 16 小节多一层，这是 house 的规矩。",
   "La réverbe donne de l'espace au clap ; le filtre qui s'ouvre fait monter la tension.": "混响给拍手空间；打开的滤波器让张力上升。",
   "Écoute la réverbe (l'écho d'une grande salle) : le clap et le piano, d'abord sans, puis avec.": "听混响（大厅的回响）：拍手和钢琴，先是没有，然后加上。",
@@ -601,5 +601,6 @@
   "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "轮到你：在“我的歌曲”里的“添加”下面，按顺序点 前奏、渐强段、高潮、间奏、渐强段、高潮 2 和 结束。先别管现在显示的小节数：下一步会给每个段落定好真正的长度。",
   "Partage ton morceau": "分享你的曲子",
   "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "轮到你：点“分享”：应用会把你的曲子做成一个可以发送的声音文件。“M4A”是给朋友的轻巧文件，“WAV”保留录音棚品质。下面的“−14”表示和流媒体音乐一样响，“没有削波”表示没有破音，“没有忘关的独奏”表示没有哪条音轨在单独播放。",
-  "À toi : touche « Partager » et envoie ton morceau.": "轮到你：点“分享”，把你的曲子发出去。"
+  "À toi : touche « Partager » et envoie ton morceau.": "轮到你：点“分享”，把你的曲子发出去。",
+  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "轮到你：在“混音”标签页里（调每种声音音量的地方），把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。推子上的数字，从“+4”（更响）到“−∞”（完全没声音），只是告诉你调高或调低了多少。"
 }

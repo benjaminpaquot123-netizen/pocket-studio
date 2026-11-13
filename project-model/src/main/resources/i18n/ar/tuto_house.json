@@ -400,7 +400,7 @@
   "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.": "دورك: في الدروب، اضغط أول خانة تمامًا في باد الصنج: «تشششش» تعلن أن كل شيء عاد.",
   "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.": "دورك: ضع صنجًا على النبضة الأولى من الدروب والدروب 2.",
   "Les DJ et les danseurs attendent un signal sur la tourne des 16 mesures.": "الـDJs والراقصون ينتظرون إشارة عند منعطف الـ16 مازورة.",
-  "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » (ou le charley ouvert) : une couche de plus que dans le Drop.": "دورك: في الجزء «دروب 2»، أضف بعض الضربات على باد ‏«شيكر» (أو الهاي هات المفتوح): طبقة أكثر مما في الدروب.",
+  "À toi : dans la partie « Drop 2 », sur le pad « Shaker », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche.": "دورك: في الجزء «دروب 2»، على باد ‏«شيكر»، اضغط 4 خانات، واحدة على كل نبضة من المازورة 1: صوت إضافي فوق الدروب ليبدو أغنى.",
   "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.": "دورك: في الدروب 2، أضف ضربات على باد ‏«شيكر» (أو هاي هات مفتوحًا إضافيًا): طبقة إضافية كل 16، قاعدة الهاوس.",
   "La réverbe donne de l'espace au clap ; le filtre qui s'ouvre fait monter la tension.": "صدى المكان يعطي الكلاب مساحة؛ والفلتر الذي ينفتح يرفع التوتر.",
   "Écoute la réverbe (l'écho d'une grande salle) : le clap et le piano, d'abord sans, puis avec.": "استمع إلى صدى المكان (صدى قاعة كبيرة): الكلاب والبيانو، أولًا بدونه ثم معه.",
@@ -601,5 +601,6 @@
   "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.": "دورك: في «أغنيتي»، تحت «إضافة»، اضغط بالترتيب مقدمة وتصاعد ودروب وفاصل وتصاعد ودروب 2 والنهاية. لا تهتم بعدد المازورات الظاهر الآن: الخطوة التالية تعطي كل جزء مدته الحقيقية.",
   "Partage ton morceau": "شارك مقطوعتك",
   "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "دورك: اضغط «مشاركة»: يصنع التطبيق من مقطوعتك ملفًا صوتيًا لترسله. «M4A» يصنع ملفًا خفيفًا لأصدقائك، و«WAV» يحفظ جودة الاستوديو. وتحت ذلك: «−14» تعني أنها بقوة موسيقى الـStreaming، و«لا تشويش» أن لا شيء يخشخش، و«لا عزف منفرد مفعّل» أن لا مسار يعزف وحده.",
-  "À toi : touche « Partager » et envoie ton morceau.": "دورك: اضغط «مشاركة» وأرسل مقطوعتك."
+  "À toi : touche « Partager » et envoie ton morceau.": "دورك: اضغط «مشاركة» وأرسل مقطوعتك.",
+  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "دورك: في تبويب «المكس» (حيث تضبط صوت كل آلة)، اخفض قليلًا فيدر مسار «الكوردات»، ثم فيدر مسار «اللحن». أرقام الفيدر، من «+4» (أعلى) إلى «−∞» (لا صوت أبدًا)، تقول فقط بكم ترفع أو تخفض."
 }

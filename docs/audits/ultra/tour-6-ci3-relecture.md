@@ -1,7 +1,7 @@
 # Relecture du lot du banc « ci3 » (tour 6), par un relecteur neuf
-Relu : c32133ddfc26c183fbc4b08603c152abd99224a6
+Relu : d7f19678af51b0a5305cee1bee8e0750af85b1af
 
-Cible : `git diff b4ac25f2..c32133dd` — première passe sur `3adb3040` (`.github/workflows/ci.yml`, rapport, décisions), seconde passe sur `2ca5403d` (rouge : le test `ci_state_reads_every_job`) et `c32133dd` (vert : `scripts/bench/ci-etat.sh`). Aucun code de l'appli touché. Pas de Gradle, pas d'accès à GitHub : les durées du rapport sont lues pour leur cohérence seulement.
+Cible : `git diff b4ac25f2..c32133dd` — première passe sur `3adb3040` (`.github/workflows/ci.yml`, rapport, décisions), seconde passe sur `2ca5403d` (rouge : le test `ci_state_reads_every_job`) et `c32133dd` (vert : `scripts/bench/ci-etat.sh`), troisième passe sur `d7f19678` (fusion de la tête poussée de l'intégration `ce0aed6f` dans la branche, premier parent `70e70efe`). Aucun code de l'appli touché. Pas de Gradle, pas d'accès à GitHub : les durées du rapport sont lues pour leur cohérence seulement.
 
 ## Ce qui a été refait
 
@@ -19,6 +19,12 @@ Cible : `git diff b4ac25f2..c32133dd` — première passe sur `3adb3040` (`.gith
 - Attaques sur le vrai `ci-etat.sh` avec un faux `gh` (script hors dépôt) : ordre des tâches inversé avec le rouge en premier → rouge (le résultat ne dépend pas de l'ordre) ; `build` sautée → rouge ; `engine` annulée → rouge ; passage sans aucune tâche → « en cours » des deux côtés ; rouge contre « en cours » → rouge ; tâche de l'émulateur rouge → `ci_emulateur` rouge et `ci_build` vert, publication sautée ignorée.
 - Lecteurs : `tableau-de-bord.py` (clé `ci_build`, critère H) et `pre-vol.sh` lisent toujours les deux mêmes lignes, au même format (`clé<TAB>valeur`) ; le format de sortie n'a pas changé. Deux défauts de ces lecteurs, antérieurs au lot et non introduits par lui, sont notés ci-dessous (m2, m3).
 
+### Troisième passe (d7f19678) : la fusion avec l'intégration
+- `git diff ce0aed6f d7f19678 --stat` : six fichiers, tous du lot (`.github/workflows/ci.yml`, `scripts/bench/ci-etat.sh`, `scripts/bench/test_ultra_bench.py`, le rapport, les décisions, cette relecture). L'intégration n'avait touché ni `ci.yml` ni `ci-etat.sh` depuis la base (`git diff b4ac25f2 ce0aed6f` vide sur ces deux fichiers), et `git diff c32133dd d7f19678` est vide sur `ci.yml`, `ci-etat.sh`, le rapport et les décisions : le lot arrive intact.
+- Résolution de `test_ultra_bench.py` (`git show d7f19678 --cc`) : les deux côtés n'ajoutent que du code, aux deux mêmes endroits (appel dans `main()`, fonction avant `fusion_toy`) ; les deux sont gardés. Compté par programme (script hors dépôt) : définitions 101 (lot) / 102 (intégration) / 104 (fusion), appels de `main()` 62 / 63 / 64, aucun manquant, aucun en double, aucun de trop. `git diff ce0aed6f d7f19678` sur ce fichier : 42 lignes ajoutées, 0 ôtée.
+- `scripts/bench/paquet-verifie.sh` (arrivé avec l'intégration) : il prend le dernier passage « CI » et met en rouge toute tâche rouge, quel que soit son nom (`red` sur toutes les tâches, ligne 121), et exige le passage entier vert. Les noms neufs ne peuvent donc pas le faire répondre vert avec une tâche rouge ; ils manquent seulement à sa liste « doivent être là » (`REQUIRED`, ligne 32) : moyen M3.
+- Sur `d7f19678` : `python3 -I scripts/bench/test_ultra_bench.py` vert (« ultra bench scripts: OK »), `test_socle.py` OK, `test_portail3.py` OK, `bash scripts/bench/test_pre_vol.sh` « tout est vert ».
+
 ## Constats
 
 | id | gravité | constat | fichier:ligne | état |
@@ -26,10 +32,11 @@ Cible : `git diff b4ac25f2..c32133dd` — première passe sur `3adb3040` (`.gith
 | G1 | grave | `ci-etat.sh` ne lisait que la tâche nommée « Build … » : un banc du son, un APK, un moteur ou une séparation rouges laissaient « ci_build vert ». | scripts/bench/ci-etat.sh:34-51 | **corrigé** par c32133dd (rouge 2ca5403d rejoué, vert vérifié, contrôle cassé deux fois : voir « Seconde passe ») |
 | M1 | moyen | Deux passages de CI pour le même commit : le pire l'emporte sur l'ensemble des passages, donc une relance verte n'efface jamais un rouge précédent (vérifié : vert neuf + rouge ancien → rouge). Direction sûre, mais le tableau de bord restera rouge après une relance qui corrige un test instable. | scripts/bench/ci-etat.sh:24-52 | ouvert |
 | M2 | moyen | Un passage d'un autre flux de travail sur le même commit écrase encore `ci_build` par simple affectation : `Packs` (tâches « build (techno) » sans nom explicite) rend vert un `ci_build` rouge de la CI (vérifié), et une tâche « build » sautée le rend rouge. Antérieur au lot, mais c'est la même porte que le G1. | scripts/bench/ci-etat.sh:47-50 ; .github/workflows/packs.yml:87 | ouvert |
+| M3 | moyen | `paquet-verifie.sh` n'exige la présence que de « Build, unit tests, screenshots » et « Emulator smoke test » : « Sound benches … », « Release APK (unsigned) », « Engine tests (Linux) » absents ou sautés ne l'arrêteraient pas (un rouge, lui, l'arrête). | scripts/bench/paquet-verifie.sh:32 | ouvert |
 | m1 | mineur | Le test neuf ne couvre que le flux « CI » : la branche « autre flux de travail » (lecture `*uild*`) n'a aucun cas, donc M2 ne rougirait nulle part. | scripts/bench/test_ultra_bench.py:2447-2477 | ouvert |
 | m2 | mineur | Antérieur au lot : `pre-vol.sh` lit la sortie avec `sed -n 's/^ci_build //p'` (espace) alors que `ci-etat.sh` écrit une tabulation ; le motif ne trouve rien (vérifié), donc le garde-fou « la CI de ce commit est déjà rouge » ne se déclenche jamais. | scripts/bench/pre-vol.sh:113 ; scripts/bench/ci-etat.sh:60 | ouvert |
 | m3 | mineur | Antérieur au lot : `--ecris` écrit « vert (c32133d) » et `tableau-de-bord.py` compare à « vert » exactement, donc le critère H est « non » même tout vert (vérifié avec un faux `gh`). | scripts/bench/ci-etat.sh:56-57 ; scripts/bench/tableau-de-bord.py:233 | ouvert |
-| m4 | mineur | « Publish APK » est exclue des deux états : un rouge de la signature ou du contrôle de la clé n'apparaît nulle part dans `ci_build` (comportement voulu et écrit dans les décisions ; `paquet-verifie.sh` le verra quand il exigera toutes les tâches). | scripts/bench/ci-etat.sh:36 | ouvert |
+| m4 | mineur | « Publish APK » est exclue des deux états : un rouge de la signature ou du contrôle de la clé n'apparaît nulle part dans `ci_build` (comportement voulu et écrit dans les décisions ; `paquet-verifie.sh`, lui, le voit : toute tâche rouge l'arrête). | scripts/bench/ci-etat.sh:36 | ouvert |
 | m5 | mineur | Trois caches ccache et trois caches Gradle au lieu d'un : plus de place prise dans les 10 Go de caches du dépôt (le cache de l'émulateur peut être chassé) ; non mesuré. | .github/workflows/ci.yml:153, 218, 331 | ouvert |
 
 Les constats M1, m1 et M2 de la première passe (ligne « chemin » du rapport, « six artefacts », « sept tâches », l'étape des banques d'instruments, `paquet-verifie.sh`) sont repris dans le rapport : vérifié sur `c32133dd`.

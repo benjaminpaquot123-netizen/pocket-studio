@@ -386,5 +386,52 @@ batch 4
 portal fok
 said "the portal merges a grave fix with its replay" "$( [ "$prc" -eq 0 ] && has "fok: merged" && echo 0 || echo 1)"
 
+# --- §13.5, last point (lot « portail4 », rule « from_paquet 7 ») ----------------------------------------------------
+# No lot of the tutorial enters before a fresh beginner replayed it on the lot's branch: a lot that changes the
+# tutorial zone carries, per control seat, « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its
+# zone report, the seat's own report being in the branch (rapport-zone.py --tuto). Portal: exit 10, before the merge.
+git checkout -q fx-int
+mkdir -p app/src/main/java/t/tuto && echo panneau > app/src/main/java/t/tuto/TutoPanel.kt && git add app/src/main && git commit -q -m "the application's tutorial"
+tutofix() { # <zone>: a lot that changes the tutorial; its last change of the tutorial in $tsha
+  team "$1" && echo "$1" >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "the tutorial, changed by $1" && tsha="$(git rev-parse HEAD)"
+}
+seat() { # <id> <commit played>: a control seat's report, as the bench starts it
+  mkdir -p "docs/audits/ultra/sieges/tour-9/controle/$1"
+  printf 'code testé : %s\njoué par : sous-agent neuf\nsiege: a | profil: controle\nchapitre: 1 Un chapitre | ecran: 3 | compris du premier coup | vu\n' "$2" > "docs/audits/ultra/sieges/tour-9/controle/$1/rapport.md"
+  git add "docs/audits/ultra/sieges/tour-9/controle/$1" && git commit -q -m "control seat $1"
+}
+tutofix tnone && fixes tnone
+# Before batch 7 the rule waits: said by the pre-flight, not a word from the portal.
+batch 6
+expect "before batch 7 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 7" non tour-9 tnone
+portal tnone
+said "before batch 7 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 7
+expect "a tutorial lot without its control seat: refused" 1 "lot du tuto sans son siège de contrôle : no « controle: » line" oui tour-9 tnone
+portal tnone
+said "the portal names the tutorial lot without its control seat, nothing merged" "$( [ "$prc" -eq 10 ] && has "tnone: tutorial lot without its control seat: no « controle: » line" && has "not merged" && untouched tnone && echo 0 || echo 1)"
+tutofix told && seat Ha "$tsha" && played="$tsha" && echo encore >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "one more change of the tutorial, after the seat" \
+  && fixes told "controle: Ha | code testé: $played | bloqués: 0 | graves neufs: 0"
+expect "a seat that played before the last change of the tutorial: refused" 1 "before the lot's last change of the tutorial" oui tour-9 told
+portal told
+said "the portal refuses the seat that played the older code with exit 10" "$( [ "$prc" -eq 10 ] && has "told: tutorial lot without its control seat" && untouched told && echo 0 || echo 1)"
+tutofix tblocked && seat Ha "$tsha" && fixes tblocked "controle: Ha | code testé: $tsha | bloqués: 1 | graves neufs: 0"
+expect "a control seat with a blocked chapter: refused" 1 "bloqués: 1" oui tour-9 tblocked
+tutofix tinvented && fixes tinvented "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a line without the seat's report in the branch: refused" 1 "controle/Ha/rapport.md" oui tour-9 tinvented
+# An honest lot outside the tutorial: nothing asked, not a word about the tutorial from the pre-flight or the portal.
+team plain && fixes plain
+git checkout -q fx-int
+out="$(scripts/bench/pre-vol.sh tour-9 plain 2>&1)"; rc=$?
+if [ "$rc" -eq 0 ] && ! printf '%s\n' "$out" | grep -qi "tuto"; then echo "vert  a lot outside the tutorial: the pre-flight says nothing of the tutorial"; else reds=$((reds + 1)); echo "ROUGE a lot outside the tutorial (pre-flight: exit $rc)"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+portal plain
+said "the portal merges a lot outside the tutorial and says nothing of the tutorial" "$( [ "$prc" -eq 0 ] && has "plain: merged" && ! printf '%s\n' "$pout" | grep -qi "tuto" && echo 0 || echo 1)"
+# The whole way: the fix, the seat that played it, its line; the real portal merges the lot.
+tutofix tok && seat Ha "$tsha" && fixes tok "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de contrôle" non tour-9 tok
+portal tok
+said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
+
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

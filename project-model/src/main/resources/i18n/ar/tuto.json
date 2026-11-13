@@ -139,12 +139,14 @@
   "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: آلة إيقاع شهيرة، أصوات طبولها.",
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: آلة إيقاع شهيرة، أصوات طبولها.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "التأرجح: إزاحة ضربة من كل ضربتين ليتمايل الإيقاع.",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص.",
   "Autres synthés": "مُركِّبات أخرى",
   "Déjà fait !": "تم بالفعل!",
   "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "كان في مقطوعتك بالفعل ما تطلبه هذه الخطوة: لا شيء لتلمسه.",
   "Tu as déjà fait cette étape.": "لقد قمت بهذه الخطوة بالفعل.",
   "Partie « %s » créée (copie du Groove).": "تم إنشاء الجزء «%s» (نسخة من الغروف).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "المقطوعة الجديدة تبدأ عند %d BPM: أنت من يعطيها سرعة الأسلوب.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d أخرى"
+  "%1$s : encore +%2$d": "%1$s: +%2$d أخرى",
+  "Touche ici": "المس هنا",
+  "Accords en pointillé à toucher : %d": "الكوردات المنقّطة المتبقية للمس: %d",
+  "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص."
 }

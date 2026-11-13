@@ -139,12 +139,14 @@
   "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: ein berühmter Drumcomputer, seine Schlagzeugsounds.",
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: ein berühmter Drumcomputer, seine Schlagzeugsounds.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: jeden zweiten Schlag verschieben, damit der Rhythmus schwingt.",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: ein ruhigerer Moment, Kick und Bass schweigen.",
   "Autres synthés": "Andere Synths",
   "Déjà fait !": "Schon erledigt!",
   "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Dein Song hatte schon, was dieser Schritt verlangt: nichts zu tun.",
   "Tu as déjà fait cette étape.": "Diesen Schritt hast du schon gemacht.",
   "Partie « %s » créée (copie du Groove).": "Teil „%s“ erstellt (Kopie des Grooves).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Ein neuer Track startet mit %d BPM: Du gibst ihm das Tempo des Stils.",
-  "%1$s : encore +%2$d": "%1$s: noch +%2$d"
+  "%1$s : encore +%2$d": "%1$s: noch +%2$d",
+  "Touche ici": "Hier tippen",
+  "Accords en pointillé à toucher : %d": "Gestrichelte Akkorde zu tippen: %d",
+  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: ein ruhigerer Moment, Kick und Bass schweigen."
 }

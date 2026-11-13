@@ -1430,10 +1430,21 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, way),
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),
+            )
+        }
+        // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
+        // brings the note into view: said on the line while it points away.
+        if (copy == null && way != null && left.isNotEmpty()) {
+            Text(
+                tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = Neon.OnAccent, maxLines = 1, softWrap = false,
+                modifier = Modifier.padding(start = 6.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Neon.Amber)
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
             )
         }
         if (copy != null) {

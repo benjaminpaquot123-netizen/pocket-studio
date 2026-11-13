@@ -139,12 +139,14 @@
   "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: एक मशहूर ड्रम मशीन, उसकी ड्रम आवाज़ें।",
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: एक मशहूर ड्रम मशीन, उसकी ड्रम आवाज़ें।",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "स्विंग: हर दूसरी चोट को थोड़ा खिसकाना, ताकि रिदम झूमे।",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "ब्रेक: शांत पल, किक और बेस चुप हो जाते हैं।",
   "Autres synthés": "दूसरे सिंथ",
   "Déjà fait !": "पहले ही हो गया!",
   "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "तुम्हारे गाने में यह कदम जो माँगता है वह पहले से था: कुछ छूने की ज़रूरत नहीं।",
   "Tu as déjà fait cette étape.": "तुम यह कदम पहले ही कर चुके हो।",
   "Partie « %s » créée (copie du Groove).": "पार्ट “%s” बन गया (ग्रूव की कॉपी)।",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "नया ट्रैक %d BPM से शुरू होता है: स्टाइल की रफ़्तार तुम ही देते हो।",
-  "%1$s : encore +%2$d": "%1$s: +%2$d और"
+  "%1$s : encore +%2$d": "%1$s: +%2$d और",
+  "Touche ici": "यहाँ टैप करें",
+  "Accords en pointillé à toucher : %d": "टैप करने के लिए बिंदुदार कॉर्ड: %d",
+  "Break : un moment plus calme, le kick et la basse se taisent.": "ब्रेक: शांत पल, किक और बेस चुप हो जाते हैं।"
 }

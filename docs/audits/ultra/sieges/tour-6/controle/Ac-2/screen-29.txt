@@ -1,0 +1,13 @@
+Écran 29 (588x1278)
+texte « Mes fichiers » @ 143,400
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,488
+texte « Trap-20261113-144539.pocketstudio.zip » @ 227,570
+texte « Renvoyer » @ 485,583
+texte « projet · 13 nov. 2026 14:45 · 1 Ko » @ 182,598
+texte « Trap-morceau-club-20261113-144507.wav » @ 227,654
+texte « Renvoyer » @ 485,667
+texte « 13 nov. 2026 14:45 · 1 Ko » @ 148,682
+texte « Renvoyer » @ 485,751
+texte « Trap-morceau-streaming-20261113-144445.m4a » @ 227,738
+texte « 13 nov. 2026 14:44 · 1 Ko » @ 148,766
+texte « Fermer » @ 497,865

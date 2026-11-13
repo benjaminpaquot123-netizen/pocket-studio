@@ -1,0 +1,6 @@
+Écran 23 (588x1278)
+texte « Renommer » @ 413,563
+texte « Dupliquer » @ 413,635
+texte « Envoyer le projet (.zip) » @ 413,707
+texte « Copie d'avant cette séance » @ 413,779
+texte « Supprimer » @ 413,851

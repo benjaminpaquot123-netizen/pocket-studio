@@ -1,5 +1,5 @@
 # Grappes du tour « tour-6 »
-21 siège(s), 194 grappe(s) : 111 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 28 même bouton (tour-1 : 4, tour-3 : 11, tour-4 : 4, tour-5 : 9), 0 qui revien(nen)t (confirmé par un lecteur), 31 candidat(s) « revient ? » à confirmer dans revient.tsv, 15 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 13 vue(s) par ≥ 2 sièges (confirmées sans juge).
+21 siège(s), 219 grappe(s) : 125 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 32 même bouton (tour-1 : 4, tour-3 : 13, tour-4 : 4, tour-5 : 11), 0 qui revien(nen)t (confirmé par un lecteur), 34 candidat(s) « revient ? » à confirmer dans revient.tsv, 19 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 14 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] grave ×1 (B/a#2) dialogue:mode_step · « bouton simple para empezar 5 pestanas botones grandes y palabras de todos los dias » · affichage — choisir le mode Simple au pouce gauche / trop loin du pouce, les deux
 - [nouveau] grave ×1 (G/a#14) tab_Sons · « board_chop » · sans-aide — le message dit où trouver les pads 9 à 14 / rien ne dit que c'est le canal « Davul 16 pad » ; dans Live > Pad'ler (8 pads) je ne les trouve pas
@@ -10,7 +10,6 @@
 - [nouveau] grave ×1 (D/a#199) tuto_panel/tab_simple_Envoyer · « tuto_left_ref » · incompris — le « Bravo » à la fin du chap. 15, ou un avertissement à chaque étape d'écoute passée avec « 次へ » / « もう少しで完成！ », 5 écoutes (
 - [nouveau] grave ×1 (D/b#59) tuto_panel/tab_simple_Rythme · « tuto_need » · affichage — les 8 notes pointillées visibles au-dessus du panneau / grille vide, notes sous le panneau ; « 직접 할게요 » n'aide pas, 3 défilements a
 - [nouveau] moyen ×2 (a#16, D/b#17) dialogue:tuto_key_sheet · « tuto_key_continue » · affichage — un bouton « Chapitre suivant » visible à la fin du chapitre / il est caché dans la bande repliée, à deviner à chaque chapi
-- [nouveau] moyen ×2 (b#20, B/b#22) tab_Sons · « dans:rhythm_swing » · incompris — validation vers 7 % comme demandé, ou un message « encore un peu » / « Bravo, Kapitel geschafft! » à 4 %
 - [déjà vu (tour-5)] moyen ×2 (D/a#82, H/a#92, H/a#86, H/a#94) tab_simple_Clavier · « tuto_notes_left » · affichage — la dernière note à toucher apparaît dans la grille / la grille défile et la note en pointillé se retro
 - [revient ?] moyen ×2 (D/b#18, H/a#12) tab_simple_Rythme · « tuto_next_folded » · incompris — le kit affiché est Techno, rien à régler / l'écran montre « 킷: 스튜디오 » ; le téléchargement du kit Techno est caché sous « 계속 읽
 - [nouveau] moyen ×1 (E/c#24) ? · « cut_to_track » · sans-nom — le message s'ajoute sans rien cacher / les puces Voz/Bateria disparaissent et les 4 boutons d'envoi perdent leur nom (icônes seules)
@@ -25,6 +24,7 @@
 - [nouveau] moyen ×1 (a#18) cut_screen · « titre comp 2 a 5 » · rien — toucher un morceau de voix (Frases) le marque comme choisi et active « En los pads » / rien ne se passe (la tête de lecture bouge), boutons de destin
 - [même bouton (tour-5)] moyen ×1 (F/a#8) dialogue:part_header_menu · « part_new » · incompris — le brano = A puis B / le brano ne contient plus que B (1 battuta) ; A rajoutée à la main par « + A », et elle passe après B
 - [nouveau] moyen ×1 (C/b#40) dialogue:projects · « icone ← @ 54 54 » · mauvais-ecran — Retour depuis « Mes projets » (ouvert par Plus) ramène au studio / l'Accueil, et la musique s'arrête sans le dire
+- [nouveau] moyen ×1 (a#30) dialogue:projects · « projects_back » · mauvais-ecran — la flèche ← de Mes projets (ouvert depuis le studio) me ramène au studio / écran d'accueil « Que veux-tu faire ? », le morceau s'arrête
 - [nouveau] moyen ×1 (a#70) dialogue:« La canción pasa 0:38 del final » · « texte entendido @ 481 687 » · affichage — fermer l'avertissement « su final se cortará » / hors du pouce, fermé par Retour (#71)
 - [nouveau] moyen ×1 (B/b#73) mixer/tab_Mix · « bouton automatisieren coupe @ 243 1029 » · affichage — ouvre les courbes / rien, le bouton est caché sous le panneau du tuto (image 74)
 - [nouveau] moyen ×1 (C/b#30) plus/tab_Plus · « onglet curseurs mix @ 294 1158 » · mauvais-ecran — l'onglet Mix s'ouvre sur les curseurs de volume, comme en Simple / il s'ouvre au milieu de la page (export, puis automati
@@ -41,20 +41,20 @@
 - [nouveau] moyen ×1 (B/a#18) tab_Sons · « bouton ✂ cortar lo que quiero » · affichage — ouvrir la découpe au pouce / trop loin du pouce ; il faut faire défiler vers le bas puis retoucher
 - [nouveau] moyen ×1 (B/b#61) tab_Sons · « dans:rhythm_swing » · rien — Swing sur 25 → « Bravo » et étape suivante / rien ne se valide, l'étape reste « Kapitel 4/17 · Schritt 4/5 », chapitre 4 « 0/5 »
 - [nouveau] moyen ×1 (F/b#31) tab_Sons · « dans:synth » · affichage — réglages du son lisibles sur un petit téléphone / le clavier ouvert d'office ne laisse qu'une rangée de réglages (boutons de forme d'onde coupés), il 
+- [même bouton (tour-5)] moyen ×1 (b#36) tab_Sons · « step_15 » · incompris — l'appui long sur la case pointillée ouvre le menu avec « Sanft » / pose un coup à 100 % sans menu ; un 2e appui long ouvre le menu
 - [nouveau] moyen ×1 (B/b#178) tab_Sons · « tuto_need » · mauvais-ecran — ouvrir la partie F · Build-up / reste sur « Teil: A · Groove » tant que « der Song » joue ; il faut arrêter le Song puis retoucher
 - [nouveau] moyen ×1 (a#114) tab_simple_Clavier · « bouton basse · mesure 4/8 encore 2 notes en pointille a toucher » · affichage — toucher la note en pointillé (à moitié hors du cadre à droite) / une fausse note posée j
 - [nouveau] moyen ×1 (D/a#78) tab_simple_Clavier · « bouton ヘース · 小節 4/8 タッフする点線のノートかあと 1 個 » · affichage — le bandeau amène la note en pointillés au milieu de la grille / la note atterrit au bord bas, sous le panneau du
 - [nouveau] moyen ×1 (a#98) tab_simple_Clavier · « tuto_need_folded » · perdu — copie faite, on m'emmène à la mesure à écrire / reste « mesure 1/8 », flèches « plus bas ↓ » puis « plus loin → », 8 gestes perdus avant « J
 - [nouveau] moyen ×1 (A/a#16) tab_simple_Morceau · « thumb_more » · affichage — le panneau « और » montre toutes ses tuiles / le guide ouvert recouvre le bas du panneau (Live et Remix coupés, le reste caché) ; il faut le 
+- [même bouton (tour-5)] moyen ×1 (a#37, a#40) tab_simple_Rythme · « step_15 » · sans-aide — cases posées mais pas « ソフト » : l'écran dit ce qui manque (T3) / aucun message, panneau rouvert sur la même consigne
 - [revient ?] moyen ×1 (D/b#48) tab_simple_Rythme · « tuto_next_folded » · affichage — toutes les cases pointillées visibles / le panneau du tuto couvre la 2e rangée (2 cases), il faut le replier avec ⌄
 - [nouveau] moyen ×1 (C/a#24) timeline_screen/tab_Structure · « bouton auto house · −8 lufs selectionne » · affichage — l'onglet Mix (Pro) montre les tranches de volume, comme en Simple / la page s'ouvre en bas, sur le v
 - [nouveau] moyen ×1 (a#149) tuto_panel/tab_simple_Clavier · « tuto_need » · incompris — piste Mélodie en notes simples, ou consigne qui dit quoi faire du mode Accords / « Accords » reste allumé, rien ne le dit ; je l'ai
 - [revient ?] moyen ×1 (D/a#19) tuto_panel/tab_simple_Rythme · « step_0 » · affichage — les 4 cases en pointillés visibles / grille presque entièrement sous le panneau (image 21), 2 cases invisibles ; il faut « 自分でやる »
+- [nouveau] moyen ×1 (a#22) tuto_panel/tab_simple_Rythme · « texte ここに点線のマスかあと 2 個 » · affichage — la ligne indique où sont les cases restantes et la toucher m'y amène / pas de flèche, rien ne bouge, cases cachées sous l
 - [nouveau] moyen ×1 (H/a#33) tuto_panel/tab_simple_Rythme · « tuto_do » · perdu — « Je le fais » ouvre la mesure 1 avec son titre visible / il ouvre la mesure 2, titre caché en haut ; je remplis la mauvaise mesure d'abo
 - [nouveau] moyen ×1 (H/a#220) tuto_panel/tab_simple_Rythme · « tuto_need » · mauvais-ecran — « Aller dans la partie « Drop 2 » » ouvre le pad Conga demandé / il ouvre le pad Cymbale ; mon coup dessus ne fait rien, sans 
+- [nouveau] moyen ×1 (b#103) tuto_spot_ring · « cutoff » · sans-aide — « Cutoff: noch +N » visible pendant le réglage / carte repliée sous le panneau, le reste n'apparaît qu'après « Lesen » (même chose écran 144, Melodie
 - [revient ?] moyen ×1 (b#46) tab_Sons · « step_0 » · incompris — des doubles-croches partout acceptées, ou la consigne dit « sauf les contretemps » / « 4 Schläge zu viel hier (durchgestrichen) », 4 gestes pour les retir
-- [déjà vu (tour-5)] moyen ×1 (D/a#86) tuto_panel/tab_simple_Clavier · « tuto_need » · mauvais-ecran — la grille s'ouvre sur la mesure 1 comme dit la consigne / elle s'ouvre sur la mesure 4 de 8, il faut deviner qu'on to
-- [nouveau] mineur ×3 (D/a#3, D/c#4, H/a#3) dialogue:tuto_chooser · « tuto_style_techno » · incompris — le style choisi « テクノ 132 BPM » donne un projet à 132 / le projet est à 120, puis le tuto me demande de taper 132 mo
-- [revient ?] mineur (pire : bloquant) ×2 (a#8, a#8, E/c#17, E/c#17) ? · « cut_song_3a02635f77d71cd9a979f25b » · affichage — à l'arrivée sur la découpe, voir « En los pads / En el Live / Guardar / En una pista » / carte 
-- [même bouton (tour-1)] mineur ×2 (E/c#5, E/c#5, E/c#5, F/a#2) dialogue:mode_step · « mode_card_simple » · affichage — le bouton lisible en entier / « Baixar o modelo (174 » coupé
-- … et 138 grappe(s) de plus : voir clusters-complet.md.
+- … et 163 grappe(s) de plus : voir clusters-complet.md.

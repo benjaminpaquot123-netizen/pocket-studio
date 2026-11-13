@@ -109,6 +109,7 @@ les conditions du siège, appli entière, par le banc » : état « tenté » ju
 
 controle: Ac-2 | code testé: d946d916 | bloqués: 0 | graves neufs: 0
 controle: Ac-3 | code testé: 35930493 | bloqués: 0 | graves neufs: 0
+controle: Ac-4 | code testé: b840b6f3 | bloqués: 0 | graves neufs: 0
 
 Verdict du contrôle Ac-3 (35930493), buts 3/3 :
 - E1 constaté corrigé (écrans 12, 17) ; E4 constaté corrigé (32) ; E6 constaté corrigé (23) ; N3 constaté corrigé (44).
@@ -135,3 +136,17 @@ chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetHelpTest#the
   le bloc tient désormais en un seul flux (test `Tour6ExportsTargetInSightTest#theSimpleTargetStaysCompact`, rouge puis
   vert) ; rejeu suivant : « oracle tenu », puces touchées sans défiler.
 chemin: page Partager (Mode simple) | test: Tour6ExportsTargetInSightTest#theSimpleTargetStaysCompact
+
+## Contrôle Ac-4 (code testé b840b6f3)
+E1, E3, E4, E6 et N3 constatés corrigés (écrans 7/11/20, 7/17, 12/26, 23, 17), 0 défaut neuf, buts 3/3 en 23 gestes.
+Copie du siège (texte seul) : `docs/audits/ultra/sieges/tour-6/controle/Ac-4/` (ccr-6a8c6318-dvnp3y, 8f8edb59).
+
+## Moyens laissés ouverts (pour docs/REVIEW.md, à reporter par le chef)
+- AppRoot.kt:940 (projet illisible) et ProjectsViewModel.kt:215/233 disent encore « Sauvegarder le morceau en .zip ».
+- SettingsScreen.kt:224 : l'aide renvoie à « Partager › Sauvegarder le morceau en .zip », libellé disparu.
+- docs/DESIGN.md : la ligne du lexique « Sauvegarder le morceau en .zip » est à mettre à jour (« Partager le projet (.zip) »).
+- ShareSheet « détails » en Pro : la mesure jouée sous la cible, sans mot pour les distinguer.
+- E3 : indice de fondu plus faible quand une ligne entière est cachée ; première image non arrondie.
+- `Tour6ExportsNameWrapTest` ne regarde plus `hasVisualOverflow`.
+- En Mode simple, « Désactivée » n'est offerte que si c'est la cible (revenir à « Désactivée » : Pro ou Mix).
+- Pas de capture Roborazzi du bloc « Volume visé » du Mode simple.

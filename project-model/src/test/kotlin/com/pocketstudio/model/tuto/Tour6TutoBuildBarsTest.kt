@@ -59,4 +59,34 @@ class Tour6TutoBuildBarsTest {
         assertTrue("parts that build up: $seen, pads written by hand: $byHands", seen >= 30 && byHands >= 100)
         assertTrue("${bad.size} of $seen:\n" + bad.joinToString("\n"), bad.isEmpty())
     }
+
+    /**
+     * Seat D a, chapter 11: « Chaque partie arrive avec 8 mesures » and the Build-up came with another length. A part
+     * added by hand comes once, as long as its loop: a step that says a number of bars says the one every part has.
+     */
+    @Test
+    fun theSongStepPromisesNoLengthThePartsDoNotHave() {
+        val said = Regex("arrive avec (\\d+) mesures")
+        val bad = mutableListOf<String>()
+        var seen = 0
+        for (style in TutoCourse.STYLES) for (level in TutoLevel.values()) {
+            val target = TutoTarget.of(style)!!
+            var p = target.blank()
+            for (s in TutoCourse.of(style)!!.chaptersFor(level).flatMap { it.steps }) {
+                if (s.check.startsWith("song:order")) {
+                    seen++
+                    val text = s.textPro?.takeIf { level == TutoLevel.Pro && it.isNotEmpty() } ?: s.text
+                    val bars = p.allScenes.indices.map { TutoChecks.partContent(p, p.allScenes[it].label) }.filterNotNull().filter { !it.isEmpty }
+                        .associate { it.label to it.stepsFor(p.stepsPerBar) / p.stepsPerBar }
+                    said.find(text)?.groupValues?.get(1)?.toInt()?.let { n ->
+                        val other = bars.filterValues { it != n }
+                        if (other.isNotEmpty()) bad += "$style/${level.name}/${s.id}: « ${said.find(text)!!.value} », but $other"
+                    }
+                }
+                if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: p
+            }
+        }
+        assertTrue("steps that put the parts in the song: $seen", seen >= 60)
+        assertTrue("${bad.size} of $seen:\n" + bad.joinToString("\n"), bad.isEmpty())
+    }
 }

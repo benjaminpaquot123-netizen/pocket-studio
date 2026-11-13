@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-6/lotG/a
+rejeu.n=14
+rejeu.attendu=(Davul · 16 pad)

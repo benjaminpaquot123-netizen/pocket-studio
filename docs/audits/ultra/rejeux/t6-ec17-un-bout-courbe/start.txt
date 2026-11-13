@@ -1,0 +1,6 @@
+lang=pt-BR
+device=phone
+font=200
+mode=simple
+gestes.max=110
+mission=remix-voix

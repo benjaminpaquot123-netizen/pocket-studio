@@ -1,0 +1,6 @@
+lang=tr
+device=phone
+font=130
+mode=pro
+gestes.max=110
+mission=remix-voix

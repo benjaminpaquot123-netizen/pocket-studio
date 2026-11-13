@@ -92,7 +92,7 @@
         {
           "id": "rumble_do",
           "text": "À toi : sur le pad « Rumble » (le grondement), touche les cases en pointillé : les mêmes que le kick, une sur chaque temps. Son long grondement sale et grave remplit le vide entre les coups.",
-          "textPro": "À toi : pose le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
+          "textPro": "À toi : sur le pad « Rumble », pose un coup sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
           "why": "Le rumble remplit le grave entre les kicks : c'est le son des clubs de Berlin.",
           "check": "lane:rumble",
           "spot": "rhythm.pattern",
@@ -109,7 +109,7 @@
         {
           "id": "clap_do",
           "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long dessus, puis « Doux ».",
-          "textPro": "À toi : pose le clap sur 2 et 4, et son fantôme juste avant la mesure suivante : appui long dessus, puis « Doux ».",
+          "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, et son fantôme juste avant la mesure suivante : appui long dessus, puis « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -127,7 +127,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps.",
-          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
+          "textPro": "À toi : sur le pad « Charley ouvert », pose les contretemps.",
           "why": "Kick, charley, kick, charley : ce va-et-vient pousse à danser.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -137,7 +137,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.",
-          "textPro": "À toi : pose les charleys fermés sur les doubles croches, sauf les contretemps (le charley ouvert y joue déjà), plus doux sous le kick.",
+          "textPro": "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.",
           "why": "Les petits coups font rouler le rythme sans le charger.",
           "levels": "p",
           "check": "lane:hat",
@@ -148,7 +148,7 @@
         {
           "id": "perc_do",
           "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
-          "textPro": "À toi : pose le rim décalé, la petite accroche rythmique qui tourne en boucle.",
+          "textPro": "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.",
           "why": "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -158,7 +158,7 @@
         {
           "id": "ride_do",
           "text": "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
-          "textPro": "À toi : pose la ride en croches, pour le Drop.",
+          "textPro": "À toi : sur le pad « Cymbale » (la ride), pose des croches, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
@@ -479,7 +479,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale : un seul coup, au moment où tout arrive.",
+          "text": "À toi : dans la partie « Drop », sur le pad « Cymbale », touche la toute première case : un seul coup, au moment où tout arrive.",
           "why": "Une cymbale au premier temps marque l'entrée ; ailleurs, elle se répéterait toutes les mesures.",
           "check": "crash",
           "spot": "rhythm.pattern",

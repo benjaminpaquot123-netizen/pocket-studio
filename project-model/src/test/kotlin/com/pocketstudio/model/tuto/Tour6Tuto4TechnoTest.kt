@@ -194,6 +194,32 @@ class Tour6Tuto4TechnoTest {
         report("reverb steps that do not lead to the pad's effects", bad)
     }
 
+    /**
+     * M7 (seats D a, B b): one word per thing: the kit (the pads may show the built-in sounds, « Kit : Studio »: no
+     * « 909 kit », the card's « Plus tard »), a « partie » (not « scène »), the « Cymbale » (not « ride » in Facile),
+     * « Partager » as the button says it (Japanese シェア, never 共有).
+     */
+    @Test
+    fun oneWordPerThing() {
+        val bad = mutableListOf<String>()
+        for (fr in texts(step("ready"))) {
+            if ("909" in fr) bad += "fr ready: promises a 909 kit the pads may not show: $fr"
+            if (!quotes(fr, "Plus tard")) bad += "fr ready: no « Plus tard »: $fr"
+            for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, "Plus tard"))) bad += "${l.code} ready: no « ${tr(l, "Plus tard")} »: $t" }
+        }
+        steps.flatMap(::texts).filter { Regex("(?i)\\bscènes?\\b").containsMatchIn(it) }.forEach { bad += "fr: « scène » for a part: $it" }
+        course.chaptersFor(TutoLevel.Facile).flatMap { it.steps }.flatMap { listOfNotNull(it.text, it.why) }
+            .filter { Regex("(?i)\\bride\\b").containsMatchIn(it) }.forEach { bad += "fr Facile: « ride » for the « Cymbale » pad: $it" }
+        for (fr in texts(step("share"))) {
+            if (!quotes(fr, "Partager")) bad += "fr share: no « Partager »: $fr"
+            for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, "Partager"))) bad += "${l.code} share: no « ${tr(l, "Partager")} »: $t" }
+        }
+        val ja = I18n.area(Lang.JA, "tuto") + I18n.area(Lang.JA, "tuto_techno")
+        (steps.flatMap { listOfNotNull(it.text, it.textPro, it.why) } + I18n.area(Lang.JA, "tuto").keys).mapNotNull { ja[it] }
+            .filter { "共有" in it }.forEach { bad += "ja: 共有 where the button says シェア: $it" }
+        report("things called by two names", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

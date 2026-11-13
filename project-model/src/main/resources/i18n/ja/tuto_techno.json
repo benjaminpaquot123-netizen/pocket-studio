@@ -588,7 +588,7 @@
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "あなたの番：「次の小節にコピー」をタップして、4小節目の2つのコード（1段高い）を置き、もう一度「コピー」。",
   "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).": "あなたの番：「コードトラックを作る」をタップして、グリッドのすぐ上の「コード」をオンに：下の点線のノートをタップするとコードの3音が置ける。1小節目の2つのコードを置こう：2つのスタブ（短く乾いた、叩くようなコード）。",
   "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 sur Sol♭ majeur (le ♭II) et « Copier » encore.": "あなたの番：「次の小節にコピー」、次に4小節目を G♭ メジャー（♭II）で書いて、もう一度「コピー」。",
-  "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, en contretemps (pas 4 et 11).": "あなたの番：コードトラックを作り（音は「プラック」、ダブエコー）、1小節目を書こう：F マイナーのスタブを2つ、裏で（ステップ 4 と 11）。",
+  "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).": "あなたの番：コードトラックを作り（音は「プラック」、ダブエコー）、1小節目を書こう：F マイナーのスタブを2つ、拍からずらして（ステップ 4 と 11）。",
   "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.": "いつも同じ場所に戻ってくる同じ小さなコードが催眠をかける。4小節目の半音がフレーズを押し出す。",
   "Sans stab, l'Intro 2 et le Break perdent leur couleur.": "スタブがないと、イントロ 2 とブレイクの色がなくなる。",
   "Une petite boucle de deux notes qui respire : une note grave, la même plus haut, un silence. En techno, le son bouge plus que les notes.": "息をする2音の小さなループ：低い音、同じ音の高いほう、無音。テクノでは、ノートより音色が動く。",
@@ -693,5 +693,7 @@
   "Repères : le kick et la basse devant, la mélodie bien présente au-dessus, les accords larges juste derrière. Compare au morceau d'exemple.": "目安：キックとベースが前、メロディはその上でしっかり、広いコードはそのすぐ後ろ。例の曲と比べてみよう。",
   "À toi : sur le pad « Charley ouvert », pose les contretemps.": "あなたの番：「オープンハイハット」パッドで、裏拍に置こう。",
   "À toi : dans la partie « Drop », sur le pad « Cymbale », touche la toute première case : un seul coup, au moment où tout arrive.": "あなたの番：「ドロップ」パートで、「シンバル」パッドのいちばん最初のマスをタップしよう：全部が入ってくる瞬間に1発だけ。",
-  "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).": "あなたの番：「ビルドアップ」パートの最後の小節で、最後の拍のヒットを消そう（赤い×をそれぞれタップ）。ドロップ 2 の直前に1拍の無音。これがトランジション（次のパートを知らせる、短いつなぎ）。"
+  "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).": "あなたの番：「ビルドアップ」パートの最後の小節で、最後の拍のヒットを消そう（赤い×をそれぞれタップ）。ドロップ 2 の直前に1拍の無音。これがトランジション（次のパートを知らせる、短いつなぎ）。",
+  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante lui donne sa vraie durée.": "あなたの番：「マイソング」の「追加」の下で、イントロ、イントロ 2、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングで終わるボタンを順にタップしよう（たとえば「+ B · イントロ」）。どのパートも8小節で入る：次のステップで本当の長さにするよ。",
+  "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (chacune arrive avec 8 mesures, l'étape suivante règle les durées).": "あなたの番：「構成」で、イントロ、イントロ 2、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングの順に追加しよう（どれも8小節で入り、長さは次のステップで決める）。"
 }

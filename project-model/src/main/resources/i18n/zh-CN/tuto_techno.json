@@ -588,7 +588,7 @@
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "轮到你：点“复制到后面的小节”，然后做第 4 小节的 2 个和弦（高一级），再“复制”一次。",
   "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).": "轮到你：点“创建和弦音轨”，然后打开网格正上方的“和弦”：点下面那个虚线音符，就能放下和弦的 3 个音。做出第 1 小节的 2 个和弦：两个 stab（短促干脆、像敲一下的和弦）。",
   "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 sur Sol♭ majeur (le ♭II) et « Copier » encore.": "轮到你：“复制到后面的小节”，然后用 G♭ 大调（♭II）写第 4 小节，再“复制”一次。",
-  "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, en contretemps (pas 4 et 11).": "轮到你：创建和弦音轨（“Pluck”音色，Dub 回声），然后写第 1 小节：两个 F 小调 Stab，在反拍上（第 4 步和第 11 步）。",
+  "À toi : crée la piste Accords (son « Pluck », écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).": "轮到你：创建和弦音轨（音色“Pluck”，dub 回声），然后写第 1 小节：两个 F 小调 stab，错开拍点（第 4 步和第 11 步）。",
   "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.": "同一个小和弦总在同一个位置回来，令人着迷；第 4 小节的半音让乐句重新推进。",
   "Sans stab, l'Intro 2 et le Break perdent leur couleur.": "没有 Stab，前奏 2 和间奏就失去了色彩。",
   "Une petite boucle de deux notes qui respire : une note grave, la même plus haut, un silence. En techno, le son bouge plus que les notes.": "一个会呼吸的两音小循环：一个低音，同一个音高一点，一个休止。在 techno 里，音色比音符变化得更多。",
@@ -693,5 +693,7 @@
   "Repères : le kick et la basse devant, la mélodie bien présente au-dessus, les accords larges juste derrière. Compare au morceau d'exemple.": "参考：底鼓和贝斯在前，旋律清晰地在上面，宽阔的和弦紧随其后。和示例曲子比一比。",
   "À toi : sur le pad « Charley ouvert », pose les contretemps.": "轮到你：在“开镲”打击垫上，放在反拍上。",
   "À toi : dans la partie « Drop », sur le pad « Cymbale », touche la toute première case : un seul coup, au moment où tout arrive.": "轮到你：在“高潮”段落里，在“镲片”打击垫上点最前面那一格：一切进来的那一刻，只打一下。",
-  "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).": "轮到你：在“渐强段”段落的最后一小节，删掉最后一拍的敲击（点每个红叉）：高潮 2 之前留出一拍安静。这就是过渡（预告下一段的那一小段）。"
+  "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).": "轮到你：在“渐强段”段落的最后一小节，删掉最后一拍的敲击（点每个红叉）：高潮 2 之前留出一拍安静。这就是过渡（预告下一段的那一小段）。",
+  "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante lui donne sa vraie durée.": "轮到你：在“我的歌曲”里的“添加”下面，按顺序点结尾是 前奏、前奏 2、高潮、间奏、渐强段、高潮 2 和 结束 的按钮（比如“+ B · 前奏”）。每个段落加进来时都是 8 小节：下一步再给它真正的时长。",
+  "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (chacune arrive avec 8 mesures, l'étape suivante règle les durées).": "轮到你：在“结构”里按顺序添加 前奏、前奏 2、高潮、间奏、渐强段、高潮 2 和 结束（每段加进来都是 8 小节，下一步再设时长）。"
 }

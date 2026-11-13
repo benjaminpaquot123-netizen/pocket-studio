@@ -137,27 +137,33 @@ class CutZoomGestureTest {
     }
 
     /** Review of remix2 (grave, second pass): the same after « Couper ici », « Boucle » or « Couper ici » then « Annuler ». */
-    @Test
-    fun removeAfterTouchesAndAnEditTakesOnlyThePieceUnderTheHead() {
-        for (between in listOf("cut", "loop", "cut+undo")) {
-            val (m, v, _) = setUp()
-            listOf(3, 7, 5).forEach { piece ->
-                val x = v.x(piece * bar + bar / 2)
-                compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
-                compose.waitForIdle()
-            }
-            compose.runOnIdle {
-                when (between) {
-                    "cut" -> m.cutHere(m.cursor)
-                    "loop" -> m.loop()
-                    else -> { m.cutHere(m.cursor); m.undo() }
-                }
-            }
-            val count = m.pieces.size
-            compose.runOnIdle { m.remove() }
-            assertEquals("after $between", count - 1, m.pieces.size)
+    private fun removeAfterTouchesAnd(between: String) {
+        val (m, v, _) = setUp()
+        listOf(3, 7, 5).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
         }
+        compose.runOnIdle {
+            when (between) {
+                "cut" -> m.cutHere(m.cursor)
+                "loop" -> m.loop()
+                else -> { m.cutHere(m.cursor); m.undo() }
+            }
+        }
+        val count = m.pieces.size
+        compose.runOnIdle { m.remove() }
+        assertEquals("after $between", count - 1, m.pieces.size)
     }
+
+    @Test
+    fun removeAfterTouchesAndACutTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("cut")
+
+    @Test
+    fun removeAfterTouchesAndALoopTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("loop")
+
+    @Test
+    fun removeAfterTouchesACutAndUndoTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("cut+undo")
 
     /** A piece ticked on purpose (its number) still goes with « Enlever », with the head elsewhere. */
     @Test

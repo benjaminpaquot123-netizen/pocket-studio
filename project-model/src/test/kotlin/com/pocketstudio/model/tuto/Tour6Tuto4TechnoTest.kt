@@ -156,6 +156,28 @@ class Tour6Tuto4TechnoTest {
         report("steps that contradict the screen", bad)
     }
 
+    /**
+     * M5 (seat D a): the fader's marks (+4, 0, −12, −∞, SimpleMix) and the export's « Niveau » and « Pas de saturation »
+     * (ExportCheck) said in one simple sentence, in every language.
+     */
+    @Test
+    fun marksAndExportWordsSaid() {
+        val bad = mutableListOf<String>()
+        val levels = step("levels").text
+        for (t in listOf(levels) + langs.map { tr(it, levels) }) {
+            listOf("+4", "−12", "−∞").filter { it !in t }.forEach { bad += "levels: no « $it »: $t" }
+        }
+        val share = step("share").text
+        listOf("Niveau", "Pas de saturation").filter { !quotes(share, it) }.forEach { bad += "fr share: no « $it »: $share" }
+        for (l in langs) {
+            val t = tr(l, share)
+            val level = tr(l, "Niveau : %s").split(':', '：').first().trim()
+            val clean = tr(l, "Pas de saturation.").trimEnd('.', '。', '।')
+            listOf(level, clean).filter { !quotes(t, it) }.forEach { bad += "${l.code} share: no « $it »: $t" }
+        }
+        report("marks or export words not said", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

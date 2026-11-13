@@ -1,5 +1,7 @@
 package com.pocketstudio.model.tuto
 
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.switchScene
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import org.junit.Assert.assertTrue
@@ -243,5 +245,28 @@ class Tour6Tuto4TechnoTest {
             (listOf(export.title) + texts(step("share"))).forEach { fr -> if (I18n.table(lang)[fr] == null) bad += "${lang.code}: no translation of « $fr »" }
         }
         report("share texts", bad)
+    }
+    /**
+     * Round trip 1 after Da-5, M1 (« 手拍子たち », screen 35): in the Mode simple a step names one pad by the word the pad
+     * shows, never a plural (« Clap » and « Claps » give the same word, the plural's everyday word used to win), in every language.
+     */
+    @Test
+    fun theSimpleModeNamesOnePadInTheSingular() {
+        val bad = ArrayList<String>()
+        try {
+            I18n.everyday = true
+            for (lang in Lang.entries) {
+                I18n.lang = lang
+                val clap = I18n.t("Clap")
+                I18n.t(step("clap_do").text).let { t -> if (!quotes(t, clap)) bad += "${lang.code} clap_do: not the pad's « $clap »: $t" }
+                // « Kick » shows « Grosse caisse 1 » on the pad: the step may leave out the number, never say a plural.
+                val kick = I18n.t("Kick")
+                I18n.t(step("kick_do").text).let { t -> if (!quotes(t, kick) && !quotes(t, kick.removeSuffix(" 1"))) bad += "${lang.code} kick_do: not the pad's « $kick »: $t" }
+            }
+        } finally {
+            I18n.everyday = false
+            I18n.lang = Lang.FR
+        }
+        report("steps naming one pad by a plural", bad)
     }
 }

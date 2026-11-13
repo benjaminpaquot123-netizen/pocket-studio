@@ -37,7 +37,7 @@ class ProjectZipSender internal constructor(
             id, name, saveFirst = { id != rhythmVm.projectId || rhythmVm.flushNow() },
             failed = { if (toast) Toast.makeText(context, it, Toast.LENGTH_LONG).show() },
         ) { zip ->
-            if (WavExporter.share(context, listOf(zip.file), tr("Envoyer le projet (.zip)"))) saved = zip.file.name to zip.kept
+            if (WavExporter.share(context, listOf(zip.file), tr("Partager le projet (.zip)"))) saved = zip.file.name to zip.kept
         }
     }
 }

@@ -335,14 +335,14 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     if (p.unreadable) {
                         DropdownMenuItem(
-                            text = { Text(tr("Envoyer le projet (.zip)")) },
+                            text = { Text(tr("Partager le projet (.zip)")) },
                             onClick = { menu = false; actions.exportRaw(p) },
                             modifier = Modifier.testTag("project_raw_${p.id}"),
                         )
                     } else {
                         DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; onRename() })
                         DropdownMenuItem(text = { Text(tr("Dupliquer")) }, onClick = { menu = false; actions.duplicate(p) })
-                        DropdownMenuItem(text = { Text(tr("Envoyer le projet (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
+                        DropdownMenuItem(text = { Text(tr("Partager le projet (.zip)")) }, onClick = { menu = false; actions.exportZip(p) })
                         if (p.hasOpening) {
                             DropdownMenuItem(
                                 text = { Text(if (open) tr("Copie d'avant cette séance") else tr("Copie d'avant la dernière séance")) },

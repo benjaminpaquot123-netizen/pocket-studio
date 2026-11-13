@@ -59,7 +59,12 @@ class BenTestActivity : ComponentActivity() {
             PocketStudioTheme {
                 val etat by Robot.etat.collectAsStateWithLifecycle()
                 var refresh by remember { mutableIntStateOf(0) }
-                val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { refresh++ }
+                // « Écoute au micro » waits for the microphone's answer (kept out of the screen: a turn does not lose it);
+                // refused, its steps are « passées ».
+                val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                    refresh++
+                    if (EcouteMicro.reponseMicro()) Robot.start(application, Robot.MICRO)
+                }
                 val granted = remember(refresh) { PERMISSIONS.associate { (p, _) -> p to (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED) } }
                 LaunchedEffect(Unit) { Robot.look(this@BenTestActivity) }
                 val candidats = remember(etat.running, etat.verdict) { Robot.candidats(this@BenTestActivity) }
@@ -73,6 +78,13 @@ class BenTestActivity : ComponentActivity() {
                         startTout = { Robot.start(application, Robot.TOUT) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
+                        startMicro = {
+                            EcouteMicro.demarrer(
+                                autorise = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
+                                demander = { ask.launch(Manifest.permission.RECORD_AUDIO) },
+                                lancer = { Robot.start(application, Robot.MICRO) },
+                            )
+                        },
                         resume = { Robot.start(application) },
                         answer = Robot::answer,
                         reset = { Robot.reset(this) },
@@ -105,6 +117,8 @@ class BenTestActions(
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
     val startOreille: () -> Unit = {},
+    /** « Écoute au micro » (T1b), once its sentence is read: the microphone asked for if needed, then the run. */
+    val startMicro: () -> Unit = {},
     /** « Reprendre »: the run the logbook holds. */
     val resume: () -> Unit = {},
     val answer: (Boolean) -> Unit = {},
@@ -116,6 +130,7 @@ class BenTestActions(
 @Composable
 fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean>>, actions: BenTestActions, candidats: List<Robot.Candidat> = emptyList()) {
     var liste by remember { mutableStateOf(false) }
+    var micro by remember { mutableStateOf(false) }
     val coches = remember(candidats) { mutableStateMapOf<String, Boolean>().apply { candidats.forEach { put(it.id, it.coche) } } }
     Column(
         Modifier.fillMaxSize().background(Neon.Background).safeDrawingPadding().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -147,10 +162,19 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.resume, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
                 }
                 etat.verdict?.let {
-                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; Robot.MICRO -> "Écoute au micro terminée : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    if (etat.extraits > 0) Text(
+                        "Le rapport contient ${etat.extraits} extrait" + (if (etat.extraits > 1) "s" else "") + " de 2 s enregistré" + (if (etat.extraits > 1) "s" else "") + " par le micro, autour d'un problème entendu. Rien d'autre du micro.",
+                        color = Neon.Amber, modifier = Modifier.testTag("bentest_extraits"),
+                    )
                     Button(onClick = actions.send, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_envoyer")) { Text("Envoyer le rapport") }
                 }
-                if (etat.interrompu == null && etat.verdict == null && liste) {
+                if (etat.interrompu == null && etat.verdict == null && micro) {
+                    Text("Écoute au micro", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
+                    Text(EcouteMicro.PHRASE, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_micro_phrase"))
+                    Button(onClick = { micro = false; actions.startMicro() }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_micro_go")) { Text("Commencer") }
+                    OutlinedButton(onClick = { micro = false }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_micro_retour")) { Text("Retour") }
+                } else if (etat.interrompu == null && etat.verdict == null && liste) {
                     Text("Retester les corrections : coche les étapes à refaire", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
                     if (candidats.none { it.coche }) {
                         Text(
@@ -187,6 +211,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startOreille, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_oreille")) { Text("Questions à l'oreille") }
+                    Text("Écoute au micro : environ 5 minutes, téléphone posé, pièce calme. Le robot écoute le haut-parleur avec le micro.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = { micro = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_micro")) { Text("Écoute au micro") }
                     OutlinedButton(onClick = { liste = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest")) { Text("Retester les corrections") }
                 }
                 if (etat.interrompu != null || etat.verdict != null) {

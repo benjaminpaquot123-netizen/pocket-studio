@@ -83,6 +83,8 @@ defauts-avant:
   - A7 | corrigé | ecran: 21 | la phrase touchée, « 1 trozo elegido »
 hesitations:
   - ecran: 6 | cherchais: A9 | regarde: corrigé, écran 3
+incidents-banc:
+  - A5 : corrigé (écran 44), une ligne hors de la rubrique
 abandon: jamais
 """
 
@@ -107,6 +109,7 @@ class Registry(unittest.TestCase):
             row("tour-6", "A8", "B/a", "31", "pas pris", "-", "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "A7", "B/a", "21", "tenté", "3333333", "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "T4", "H/a", "98", "rejoué", "4444444", "rejeu-t4", "", "", "", "tour-6/lotH/a", ""),
+            row("tour-6", "A5", "B/a", "44", "Tente", "5555555", "-", "", "", "", "tour-6/lotB/a", ""),
         ]) + "\n")
         self.seat = os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-6", "controle", "Ba-3")
         write(os.path.join(self.seat, "rapport.md"), CONTROL_REPORT)
@@ -191,7 +194,7 @@ class Registry(unittest.TestCase):
     def test_anything_but_corrigé_with_a_screen_is_refused_and_changes_nothing(self):
         before = read(self.reg)
         for item, word in (("A3", "autre"), ("A4", "encore là"), ("A6", "pas atteint"), ("A1", "screen"),
-                           ("A9", "no line"), ("A8", "pas pris")):
+                           ("A9", "no line"), ("A8", "pas pris"), ("A5", "no line")):
             code, out = self.constate(item)
             self.assertEqual(code, 1, f"{item}: {out}")
             self.assertIn(word, out, item)
@@ -213,6 +216,8 @@ class Registry(unittest.TestCase):
         changed = [i for i, (a, b) in enumerate(zip(before, after)) if a != b]
         self.assertEqual(changed, [2, 3], "only the two lines of A2")
         self.assertEqual(after[1], self.old)
+        self.assertEqual(after[2], before[2].replace("\ttenté\t", "\tconstaté\t") + "docs/audits/ultra/sieges/tour-6/controle/Ba-3#15",
+                         "only the state and the « constat » cell change, in their columns")
 
     # --- the programs that read it -------------------------------------------------------------------------------------
 
@@ -220,9 +225,9 @@ class Registry(unittest.TestCase):
         mod = load("applique-corrections.py")
         base = os.path.join(self.tmp, "base.tsv")
         write(base, "cle\tetat\tvu\tnote\tcorrige_au\nk-a2\tdéjà vu\ttour-6\t\t\nk-a4\tdéjà vu\ttour-6\t\t\n"
-                    "k-t4\tdéjà vu\ttour-6\t\t\nk-old\tdéjà vu\ttour-5\t\t\nk-a8\tdéjà vu\ttour-6\t\t\n")
+                    "k-t4\tdéjà vu\ttour-6\t\t\nk-old\tdéjà vu\ttour-5\t\t\nk-a8\tdéjà vu\ttour-6\t\t\nk-a5\tdéjà vu\ttour-6\t\t\n")
         where = {"B/a#15": "k-a2", "B/c#40": "k-a2", "B/a#9": "k-a4", "H/a#98": "k-t4", "A/a#12": "k-old", "B/a#31": "k-a8",
-                 "B/a#8": "k-a3", "B/a#3": "k-a1", "B/a#30": "k-a6", "B/a#21": "k-a7"}
+                 "B/a#8": "k-a3", "B/a#3": "k-a1", "B/a#30": "k-a6", "B/a#21": "k-a7", "B/a#44": "k-a5"}
         clusters = [{"key": k, "where": [w for w, kk in where.items() if kk == k]} for k in sorted(set(where.values()))]
         mod.fuse_mod.fuse = lambda *a, **k: (clusters, [], [], [], [])
         self.constate("A2")
@@ -237,6 +242,7 @@ class Registry(unittest.TestCase):
         self.assertEqual(states["k-old"], "corrigé")
         self.assertEqual(states["k-a4"], "déjà vu")
         self.assertEqual(states["k-a8"], "déjà vu")
+        self.assertEqual(states["k-a5"], "déjà vu", "« Tente » is « tenté », as a person writes it")
         self.assertIn("0 sans clé", out.getvalue())
 
     def test_fuse_reports_reads_the_register_s_rows(self):

@@ -131,7 +131,7 @@ if [ "${1:-}" = "--ci" ]; then
     fi
   }
   found=0
-  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_portail4.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
+  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_portail4.py scripts/bench/test_constate.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
     [ -f "$t" ] || continue
     found=1
     run_bare "$t" python3 -I "$t"

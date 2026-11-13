@@ -230,6 +230,7 @@ def main():
         replayed_pairs(d)
         named_pairs(d)
         judge_reads_any_bytes(d)
+        one_red_several_greens(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1519,6 +1520,52 @@ def judge_reads_any_bytes(d):
     check(red + " «" not in out and green + " «" not in out, "a pair whose bytes are not all UTF-8 is a pair:\n" + out)
     check(f"{lonely} « rouge:" in out, "a red no green names stays a gap, Latin-1 or not:\n" + out)
     check("chantier : 1 écarts" in out, "one gap, nothing else:\n" + out + err)
+
+
+def one_red_several_greens(d):
+    """Lot « juge8 » (the portal of « remix2 »: one red for four tests, a green for each): a red that adds or names
+    several tests pairs a green for each of them. A green pairs an earlier red, open or already closed, when it names
+    one of that red's tests no green named yet ([red_names]: « Classe#méthode », or the method's name of 12 letters or
+    more); each test is claimed once. Stay gaps: a green naming a test the red does not cover, a second green naming a
+    test already claimed, a red no green names."""
+    root = judge_root(d, "juge-plusieurs-verts")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Cut.kt")
+    git_toy(root, "init", "-q")
+    write(app, "val cut = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    n = [0]
+
+    def commit(message, test=None):
+        if test is None:
+            n[0] += 1
+            write(app, f"val cut = {n[0]}\n")
+        else:
+            write(os.path.join(tests, f"{test[0]}.kt"),
+                  f"class {test[0]} {{\n" + "".join(f"  @Test\n  fun {m}() {{}}\n" for m in test[1]) + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    seat = ("ThumbSeatProofTest", ["a2_chipsReachableWithThumb", "a3_cutHintWholeOnScreen", "a5_spanToolsWholeOnArrival"])
+    red = commit("rouge: the left-thumb cut screen (A2, A3, A5)", seat)
+    first = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb, the chips at the bottom")
+    second = commit("vert: a3_cutHintWholeOnScreen, the intro card gone after a separation")
+    again = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb once more")
+    other = commit("vert: OtherProofTest#theOtherThingIsShown, a test the red does not cover")
+    unnamed = commit("vert: A5 span tools whole on arrival")
+    lonely = commit("rouge: the lonely guard", ("LonelyProofTest", ["theLonelyRedStaysOpen"]))
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for sha, what in ((red, "the red"), (first, "the first green"), (second, "a second green naming another of its tests")):
+        check(sha + " «" not in out, f"{what} is paired:\n" + out)
+    for sha, what in ((again, "a test already claimed"), (other, "a test the red does not cover"), (unnamed, "no test named")):
+        check(f"{sha} « vert:" in out, f"a green naming {what} stays a gap:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no green names stays a gap:\n" + out)
+    check("chantier : 4 écarts" in out, "four gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

@@ -206,7 +206,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="14 e54e60f075"
+KNOWN_RULES="15 97195f3725"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -227,6 +227,11 @@ else
 fi
 free_gb="$(df -BG --output=avail . | tail -1 | tr -dc 0-9)"
 [ "${free_gb:-0}" -ge 4 ] || warn "disque : ${free_gb} Go libres (le selftest du portail tombe rouge sous 2 Go)" "libérer de la place avant le portail (app/build des ateliers finis)"
+# AUDIT-ULTRA §13.9: the portal plays the judge again after the merge and takes the merge back when its count went up
+# since the previous portal trace (from batch 4). Not checked here (the judge reads the merged tree, its traces and
+# the last self-test's summary): said once, with the count to stay under.
+last_count="$(c="$(git log -1 --format=%H --grep='^Portal traces of the merge ' HEAD -- "$traces_root" 2>/dev/null)"; [ -z "$c" ] || git show "$c" -- "$traces_root" 2>/dev/null | sed -n 's/^+chantier : \([0-9][0-9]*\) écart.*/\1/p' | tail -1)"
+[ -z "$last_count" ] || echo "  …       juge du chantier : $last_count écarts à la dernière trace du portail ; le portail annule la fusion d'un lot qui le fait monter (à partir du paquet 4, non contrôlé ici)"
 
 head="$(git rev-parse HEAD)" # moves on, in memory, as each clean zone is merged
 for zone in "$@"; do

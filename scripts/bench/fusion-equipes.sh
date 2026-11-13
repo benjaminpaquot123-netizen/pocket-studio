@@ -120,7 +120,8 @@ for zone in "${zones[@]}"; do
   # leaves no half-written traces.
   trace=""
   computed=()
-  undo_merge() {
+  # (What a failed step after the checks takes back: the trace folder, the computed files, the merge itself.)
+  clean_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
     # The files fuse-reports.py and tableau-de-bord.py wrote: back to the merge's version, or gone when it had none.
     for f in "${computed[@]}"; do
@@ -129,6 +130,9 @@ for zone in "${zones[@]}"; do
     # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
     git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
+  }
+  undo_merge() {
+    clean_merge
     echo "$zone: a step after the checks failed (traces of the portal): undone (kept in $lot)." >&2
     exit 5
   }
@@ -144,6 +148,42 @@ for zone in "${zones[@]}"; do
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
   # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
   python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
+  # AUDIT-ULTRA §13.9 (lot « portail3 », from batch 4): a lot never makes the judge go up. Its count here, the traces
+  # in place, against the count of the previous portal trace: the one of the last « Portal traces of the merge … »
+  # commit before this merge, found by the history (the folders' names sort by date and zone, not by time). The gaps
+  # named are the new ones: lines the previous trace did not have, the shas cut to 7 letters on both sides (older
+  # traces print 9 letters, newer ones 8). Nothing to compare with (no previous trace, or one without its count):
+  # said, and the lot goes on. A judge without its « chantier : » line counts as a judge gone up.
+  count_of() { sed -n 's/^chantier : \([0-9][0-9]*\) écart.*/\1/p' | tail -1; }
+  short_shas() { sed -E 's/\b([0-9a-f]{7})[0-9a-f]{1,33}\b/\1/g'; }
+  judge_now="$(count_of < "$trace/selftest-chantier.txt")"
+  prev_commit="$(git log -1 --format=%H --grep='^Portal traces of the merge ' "$before" -- "$traces_root" || true)"
+  prev_file=""; prev_text=""
+  [ -z "$prev_commit" ] || prev_file="$(git diff-tree --no-commit-id --name-only -r "$prev_commit" -- "$traces_root" | grep '/selftest-chantier\.txt$' | head -1 || true)"
+  [ -z "$prev_file" ] || prev_text="$(git show "$prev_commit:$prev_file" 2>/dev/null || true)"
+  judge_prev="$(printf '%s\n' "$prev_text" | count_of)"
+  judge_why=""
+  if [ -z "$judge_now" ]; then
+    judge_why="the judge printed no « chantier : N écarts » line"
+  elif [ -z "$prev_commit" ]; then
+    echo "$zone: judge: $judge_now écarts (no previous portal trace: not compared)"
+  elif [ -z "$judge_prev" ]; then
+    echo "$zone: judge: $judge_now écarts (the previous portal trace, of $(git rev-parse --short "$prev_commit"), has no « chantier : » line: not compared)"
+  else
+    echo "$zone: judge: $judge_now écarts (previous portal trace: $judge_prev, $(dirname "$prev_file"))"
+    if [ "$judge_now" -gt "$judge_prev" ]; then
+      # (Each line as the judge printed it, beside its form with short shas: the second is compared, the first said.)
+      new_gaps="$(grep -v '^chantier : ' "$trace/selftest-chantier.txt" | short_shas | paste -d '\t' <(grep -v '^chantier : ' "$trace/selftest-chantier.txt") - \
+        | awk -F '\t' 'NR == FNR { seen[$0] = 1; next } !($2 in seen) { print $1 }' <(printf '%s\n' "$prev_text" | short_shas) - | head -12 | tr '\n' ';' || true)"
+      judge_why="the judge goes up ($judge_prev → $judge_now écarts since $(dirname "$prev_file")); new gap(s): $new_gaps"
+    fi
+  fi
+  if [ -n "$judge_why" ]; then
+    # (The judge's lines of this merge stay in the lot, the trace folder going away with the merge.)
+    cp "$trace/selftest-chantier.txt" "$lot/selftest-chantier-apres.txt"
+    if from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
+    echo "$zone: $judge_why — refused from batch 4 (batch in progress: ${paquet:-1})"
+  fi
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
   index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)

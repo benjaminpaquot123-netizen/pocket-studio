@@ -1,5 +1,5 @@
 # Tour 6 — lot 5 « langues » : relecture neuve
-Relu : 864cbd06d6dc1660a1b93cb935bfaf559cbb4a72
+Relu : 4bc3661e090d9f1819935908a71aa65f0c75c3b9
 
 Relecteur neuf (n'a pas écrit ce code). Lu : la section « Lot 5 » de `lots-correction.md` et le complément 3 n° 6 de `lecture-recurrents.md`, le rapport, les décisions, les diffs de `LiveScreen.kt`, `SimpleMix.kt`, `MyExports.kt`, `LanguagePicker.kt`, `FadingScroll.kt`, les 134 catalogues changés (lus clé par clé par un script : marques `%s` / `%1$d` / `%%`, écriture, désaccords entre fichiers d'une langue), les tests neufs, les listes `OPEN` et `Allowed`, les outils du passage sur le tuto. Rejoué dans un worktree jetable (jamais dans wt-lot5) : chaque commit « rouge: » sur son propre état (le code d'avant son « vert: »), puis la tête relue.
 
@@ -63,5 +63,36 @@ Aucun.
 13. Rapport et décisions : l'essai à blanc du script dit « ar 1165 », il en change 1218 aujourd'hui ; en français, « Plaits » reste seul (lexique, bouton MIDI) sans être cité dans « Laissé de côté » ; la décision « Les noms de pads (« Kick ») restent » vaut pour l'italien, pas pour l'arabe (« طبل كبير ») ; l'en-tête du rapport donne encore la base 5957fac5, la branche a depuis fusionné 70d2d8de.
 14. Structure en arabe à 200 % (tablette debout) : les noms de parties des repères, coupés dans une case d'une mesure, montrent un bout du milieu du mot (« دمه » pour « مقدمة », « زمه », « وب ») ; dessinés par la ligne du temps (hors lot), invisibles au balayage (pas de texte sémantique) : à donner au lot qui la touche.
 15. Sur `i18n/ar_simple_mix_drums`, le dernier son des tranches s'écrit encore en latin (« …ash ») ; c'était déjà là avant le lot, le nom vient de `DefaultNames.shown` (hors lot).
+
+## Delta 864cbd06 → 4bc3661e
+
+Second relecteur neuf (n'a écrit ni le lot ni le passage sur le tuto). Lu : `git diff 562c0e76 HEAD`, la fusion 29b78b73 (tête d'intégration 2bb86bc3, lots 1, 2, 4, 6, 7, 8) et 3caed7cd (`apply_to_tutos.sh` lancé sur les 28 `tuto*.json` ar, hi, zh-CN, it, id) ; par script : chaque texte changé comparé à son état de 29b78b73 ; à la main : environ 200 textes changés, toutes langues.
+
+### Ce qui tient
+
+- **Fusion propre.** Les deux côtés ne touchent ensemble que quatre `padlive.json` (ar, id, ja, ko) : les lignes du lot (« البادات », « birama », « 新機能 », « 새 기능 ») et la clé ajoutée par l'intégration (« À taper : %s ») sont toutes deux dans le résultat. Aucun autre fichier du lot touché par l'intégration.
+- **Passage sur le tuto.** Mêmes clés qu'avant dans les 28 fichiers ; 0 marque `%s` / `%1$d` / `%%` changée ; aucun espace neuf entre deux caractères chinois ou devant une ponctuation chinoise, aucun double espace, aucun article arabe laissé seul (« الـ »). Les noms cités entre guillemets que le passage introduit sont les libellés réels de la langue : « Salin ke birama berikutnya », « Ubah ke 2 birama » (boutons de `tuto.json`), « دروب 2 », « + B · مقدمة », « 高潮 2 », « ड्रॉप 2 » (nom de partie composé comme à l'écran). Hindi (« ग्रूव से इंट्रो बनाओ », « बिल्ड-अप हर ड्रॉप से ठीक पहले ») et indonésien (« birama » partout, accords inchangés) sans faute vue. Point 7 de la relecture précédente : fait.
+- **Tests.** À 3caed7cd : `:project-model:test` vert (1 118), `:app:testDebugUnitTest --tests '*Tuto*'` : 336 tests, 0 échec. Après correction (4bc3661e) : `:project-model:test` 1 121 tests, 0 échec ; `*Tuto*` côté app : 336, 0 échec ; `I18nArabicScreenshotTest` réenregistré : seule `i18n/ar_rhythm` change, regardée en entier (« ملء » à la place de « حشوة » devant « الكل · 1/2 · 1/4 », rien d'autre ne bouge).
+
+rouge constaté : 7e7bd843 : rejoué sur 3caed7cd : `Tour6TutoAgreementTest` 3 tests, 3 échecs sur leur assertion : « Italian « cassa » with a masculine word (76) », « Arabic feminine parts with a masculine verb (12) », « Arabic « Remplir » (1) »
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Moyen
+
+16. **Italien : « cassa » prend la place de « kick » sans ses accords.** Le script accorde l'article collé au mot, pas le reste : « Il tuo cassa è accordato su Fa♯ », « Questo cassa che picchia », « un secondo cassa lunga, annegato… », « Ascolta la cassa della drum & bass, da solo: corto e secco », « una cassa corta e secco », « tra una cassa e l'altro », « cassa accordato », et « La cassa (la cassa) » (l'ancien « Il kick (la cassa) ») : environ 60 textes du tuto. **corrigé** en 4bc3661e (rouge 7e7bd843, `Tour6TutoAgreementTest#theItalianCassaIsFeminineEverywhere`).
+17. **Arabe : « المقدمة » et « الحشوة » (féminins) avec un verbe au masculin.** Le « Intro » latin se disait au masculin : « المقدمة يشوّق دون أن يكشف » (×3), « المقدمة يبلغ 32 مازورة » (×2), « يزرع », « يرسّخ », « يجعل المقدمة يرتفع », « الحشوة يعلن اللازمة دون أن يقطع », « سيكون المقدمة والفاصل », « يفقد المقدمة 2 والفاصل ». **corrigé** en 4bc3661e (rouge 7e7bd843, `theArabicIntroAndFillAgreeAsFeminineWords`).
+18. **Point 3 de la relecture précédente, à faire « à la fusion avec le lot 2 », non fait.** Le bouton « Remplir » de la grille disait toujours « حشوة » (le roulement de batterie), et le passage sur le tuto en a mis la citation dans 27 étapes (« «حشوة الكل» », « «حشوة 1/2» »). **corrigé** en 4bc3661e (rouge 7e7bd843, `theArabicGridsFillIsNotTheDrumFill`) : « ملء » sur le bouton (`ar/rhythm.json`) et dans chaque citation ; « Fill » (le roulement) reste « حشوة ».
+
+### Mineur
+
+19. Le passage laisse quelques mots latins que les tests n'exigent pas (hindi « Pad और bell चले जाते हैं », « ride के बिना » ; arabe « Drop B » dans une liste de boutons) : cohérents avec ce qu'affiche l'écran quand le nom vient du son ou d'une partie nommée, à revoir au prochain passage de langue.
+20. `it_words.py` et `convert.py` n'accordent que le mot voisin : un prochain passage du même genre doit être suivi de `Tour6TutoAgreementTest` (ou de son équivalent pour la langue visée).
 
 Verdict : 0 bloquant, 0 grave — fusion possible

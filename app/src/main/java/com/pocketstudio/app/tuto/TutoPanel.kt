@@ -81,6 +81,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -574,7 +575,8 @@ private fun MoreWords(shown: Boolean, modifier: Modifier = Modifier, more: suspe
     Row(
         modifier.fillMaxWidth()
             .then(if (shown) Modifier.clickable(onClickLabel = tr("Lire la suite"), role = androidx.compose.ui.semantics.Role.Button) { scope.launch { more() } }.testTag("tuto_text_more")
-            else Modifier.alpha(0f))
+            // Its room kept, empty and silent: nothing left for TalkBack to read (fresh review, moyen).
+            else Modifier.alpha(0f).clearAndSetSemantics {})
             .heightIn(min = 32.dp),
         horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically,
     ) {

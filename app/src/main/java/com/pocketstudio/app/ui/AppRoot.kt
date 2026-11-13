@@ -2434,13 +2434,12 @@ fun AppRoot() {
             }
             }
         } },
-        // « Fait : … Annuler » after an intention (the part sheet, a kit).
-        snackbarHost = {
-            val done by rhythmVm.done.collectAsStateWithLifecycle()
-            DoneBar(done, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone)
-        },
         bottomBar = {
             Column {
+                // « Fait : … Annuler » after an intention (the part sheet, a kit). Tour 6, N15 (seat C b #13: « Mes fichiers »
+                // hidden under it): a line of its own above the bars, no longer floating over the page's last buttons.
+                val done by rhythmVm.done.collectAsStateWithLifecycle()
+                DoneBar(done, undo = rhythmVm::undoDone, dismiss = rhythmVm::dismissDone, modifier = Modifier.windowInsetsPadding(SIDE_INSETS))
                 // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
                 // keeps quiet during a take, on the Live page and on the keyboard lying down, where
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).

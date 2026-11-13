@@ -111,10 +111,10 @@ Toutes remplies : non
 | A | Items ≥ grave côté appli, non tranchés ou non faits | 8 | 0 | non |
 | B | Items ≥ grave classés banc (garde + preuve sans banc) ; « banc? » ≥ moyen sans verdict | 0 ; 7 | ≤ 2, prouvés ; 0 | ? |
 | C | Revient / banc contredit (≥ moyen ; mineurs) ; candidats à lire | 0 ; 0 ; 12 | 0 ; ≤ 2 ; 0 | ? |
-| D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 10/22 ; 0/120 ; 36 oui, 36 non, 1 pas vue ; 12 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
-| E | Missions réussies (oracle mesures.json) | 10/16 | ≥ 90 % | non |
-| F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 47 (2) | ≤ 5 (0) | non |
-| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 260, 2 | 0, 0, 0, 0 | non |
+| D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 10/22 ; 0/120 ; 36 oui, 36 non, 1 pas vue ; 14 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
+| E | Missions réussies (oracle mesures.json) | 11/17 | ≥ 90 % | non |
+| F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 50 (1) | ≤ 5 (0) | non |
+| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 273, 2 | 0, 0, 0, 0 | non |
 | H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/rouge (9f26c244, passage 43375199284 : JourneyTest.aFirstSongInTheModeSimple), 6 (lignes rouges de telephone.tsv au 2026-11-12, après le retest v6 : T6-T01, T6-T02, T6-T03, T6-T04, T6-T05, T6-T06) | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 13 (padlive_party, live_screen, piano_roll, acid, audio_tracks, master_pro_panel, video_sheet, remix_project, board, midi, glossary, latency, studio), 36, 2, 11 / 1 | 0, 0, 0, ≥ 16 / ≤ 3 | non |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
@@ -133,7 +133,7 @@ Toutes remplies : non
 | tour-3 | 24 | 241 | 10.0 | v1 | 2.25 | 2.25 | 231 | 0 | 0 | 1/3 | 0 |
 | tour-4 | 20 | 186 | 9.3 | v1 | 1.35 | 1.3 | 183 | 0 | 0 | 1/2 | 0 |
 | tour-5 | 24 | 190 | 7.9 | v2 | 0.62 | 0.33 | 182 | 2 | 14 | 24/78 | 7 |
-| tour-6 | 21 | 234 | 11.1 | v2 | 0.62 | 0.43 | 201 | 0 | 50 | 36/72 | 1 |
+| tour-6 | 21 | 262 | 12.5 | v2 | 0.62 | 0.43 | 219 | 0 | 59 | 36/72 | 1 |
 
 Changement d'échelle entre tour-4 et tour-5 (v1 → v2) : les graves de ces deux tours ne se comparent pas.
 

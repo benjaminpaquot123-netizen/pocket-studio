@@ -1,0 +1,51 @@
+Écran 252 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 127,42
+bouton « Pro » @ 283,42
+bouton « D · Drop » ▾ @ 406,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+bouton (vagues) (créneaux) « Riddim-Bass Rechteck · gehalten » [coupé] @ 243,309
+bouton (vagues) (dents de scie) « Neuro-Bass Säge · 3 Stimmen · gehalten » [coupé] @ 657,309
+bouton (vagues) (zigzag) « Reiner Sub Dreieck · gehalten » @ 243,375
+bouton (vagues) (dents de scie) « Rollender Bass Säge · gehalten » @ 657,375
+bouton (vagues) (dents de scie) « Pluck-Bass Säge · kurz » @ 243,478
+bouton (vagues) (zigzag) « Synth-808 Dreieck · gehalten » @ 657,478
+bouton (vagues) (zigzag) « Donk Dreieck · kurz » @ 243,581
+bouton (vagues) (zigzag) « Warmer Sub Dreieck · gehalten » @ 657,581
+bouton (dé) « Zufällig » @ 243,675
+bouton ★ « Diesen Sound behalten » @ 657,675
+texte « „Diesen Sound behalten“ legt ihn in deine Favoriten, für alle deine Projekte. » @ 450,759
+titre « SOUND-EINSTELLUNGEN » [coupé, état « Aufgeklappt »] @ 227,862
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,916
+icône (liste) « Kapitel » @ 759,917
+icône ⌄ @ 843,917
+image (coupe) @ 42,1028
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,1028
+bouton ▶ «  Meinen Song anhören » @ 450,1119
+bouton ↺ «  Tutorial neu starten » @ 450,1200
+bouton ✕ «  Tutorial schließen » @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

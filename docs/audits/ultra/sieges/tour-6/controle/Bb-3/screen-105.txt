@@ -1,0 +1,72 @@
+Écran 105 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « C » [coupé] @ 71,342
+bouton [coupé] @ 100,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 129,342
+bouton [coupé] @ 158,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 187,342
+bouton [coupé] @ 245,342
+bouton [coupé] @ 274,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 303,342
+bouton [coupé] @ 333,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 361,342
+bouton [coupé] @ 391,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 419,342
+bouton « C » [coupé] @ 477,342
+bouton [coupé] @ 508,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 535,342
+bouton [coupé] @ 566,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 593,342
+bouton [coupé] @ 651,342
+bouton [coupé] @ 682,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 709,342
+bouton [coupé] @ 741,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 767,342
+bouton [coupé] @ 799,307
+dessin [désactivé, coupé, état « Außerhalb der Tonleiter des Songs »] @ 825,342
+titre « NOTEN IMPORTIEREN » [état « Aufgeklappt »] @ 204,466
+texte « Sing, pfeif oder spiel eine Melodie (oder wähl eine Aufnahme oder eine MIDI-Datei): Ihre Noten ersetzen die der Piano Roll. Rückgängig holt sie zurück. » @ 450,550
+bouton (micro) «   Mikro » @ 243,652
+bouton (feuille et flèche) «   Ein Sound » @ 657,652
+bouton (feuille et flèche) «   Eine MIDI-Datei (.mid) » @ 450,736
+titre « TONLEITER UND AKKORDE » [état « Aufgeklappt »] @ 259,856
+bouton « ? » @ 455,856
+bouton « Song-Akkorde (alle Teile) » @ 450,926
+texte « F♯ Dur » @ 230,1010
+texte « D♭ Dur » @ 362,1010
+texte « E♭ Moll » @ 498,1010
+texte « Erraten » @ 86,1010
+bouton « Frei » [coupé] @ 218,1088
+bouton « Dur » [coupé] @ 326,1088
+bouton « Moll » [coupé] @ 437,1088
+bouton « Dorisch » [coupé] @ 577,1088
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Unter der Piano Roll, „Sound der Spur einstellen“: Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

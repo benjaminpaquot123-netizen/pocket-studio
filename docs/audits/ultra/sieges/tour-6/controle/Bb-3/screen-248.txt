@@ -1,0 +1,65 @@
+Écran 248 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 127,42
+bouton « Pro » @ 283,42
+bouton « D · Drop » ▾ @ 406,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+dessin [coupé] @ 240,303
+texte « Release » [coupé] @ 94,303
+texte « 254 ms » [coupé] @ 387,301
+dessin [coupé] @ 660,303
+texte « Dicke (Verstimmung) » [coupé] @ 601,303
+texte « 30 % » [coupé] @ 822,301
+curseur [état « 254 ms », à 65 %] @ 240,354
+curseur [état « 30 % », à 30 %] @ 660,354
+dessin @ 240,422
+texte « Sub-Bass » @ 106,422
+texte « 0 % » @ 411,423
+dessin @ 660,453
+texte « 1 Stimme » @ 817,453
+texte « Unisono (Supersaw) » @ 598,453
+bouton « ? » @ 755,453
+curseur [état « 0 % », à 0 %] @ 240,491
+curseur [état « 1 Stimme », à 0 %] @ 660,552
+dessin @ 240,620
+texte « Unisono-Breite » @ 142,620
+texte « 30 % » @ 402,621
+dessin @ 660,620
+texte « Lautstärke » @ 532,620
+texte « 60 % » @ 822,621
+curseur [état « 30 % », à 30 %] @ 240,689
+curseur [état « 60 % », à 60 %] @ 660,689
+icône ⌄ « Erweiterte Einstellungen » @ 246,773
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,916
+icône (liste) « Kapitel » @ 759,917
+icône ⌄ @ 843,917
+image (coupe) @ 42,1028
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,1028
+bouton ▶ «  Meinen Song anhören » @ 450,1119
+bouton ↺ «  Tutorial neu starten » @ 450,1200
+bouton ✕ «  Tutorial schließen » @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

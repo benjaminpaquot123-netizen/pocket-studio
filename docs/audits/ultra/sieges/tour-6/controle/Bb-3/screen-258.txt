@@ -1,0 +1,64 @@
+Écran 258 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 127,42
+bouton « Pro » @ 283,42
+bouton « D · Drop » ▾ @ 406,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 94,204
+onglet « Vocals Mikrofon » @ 268,204
+onglet « Remix Trennen » @ 438,204
+bouton « Bass Plaits » @ 583,204
+bouton « Akkorde Pluck » ⋮ @ 749,204
+icône « Sound » ♪ [coupé] @ 872,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+texte « Wirkt auf Akkorde (mehrere Noten gleichzeitig). » @ 329,327
+bouton « Nein » @ 260,393
+bouton « ↑ » [sélectionné] @ 362,393
+bouton « ↓ » @ 445,393
+bouton « ↑↓ » @ 541,393
+bouton « Zufall » @ 663,393
+texte « Arpeggio » @ 97,431
+bouton « ? » @ 173,430
+bouton « Pattern » @ 278,468
+texte « Tempo » @ 83,552
+bouton « 1/8 » @ 213,552
+bouton « 1/16 » [sélectionné] @ 319,552
+bouton « 1/32 » @ 434,552
+texte « Strum » @ 78,636
+bouton « Nein » @ 224,636
+bouton « Leicht » [sélectionné] @ 355,636
+bouton « Mittel » @ 494,636
+bouton « Langsam » @ 654,636
+texte « Der Sound der Spur (gleich für alle ihre Noten) » @ 302,735
+titre « INSTRUMENT » [état « Aufgeklappt »] @ 173,813
+bouton « ? » @ 282,813
+onglet (curseurs) « Synth » [coupé, sélectionné] @ 116,856
+onglet (rond relié à des points) « Plaits » [coupé] @ 272,856
+onglet (barres de son) « Sample » [coupé] @ 438,856
+onglet (touches de piano) « Echte Instrumente » [coupé] @ 693,856
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,916
+icône (liste) « Kapitel » @ 759,917
+icône ⌄ @ 843,917
+image (coupe) @ 42,1028
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,1028
+bouton ▶ «  Meinen Song anhören » @ 450,1119
+bouton ↺ «  Tutorial neu starten » @ 450,1200
+bouton ✕ «  Tutorial schließen » @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

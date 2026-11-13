@@ -1,0 +1,48 @@
+Écran 216 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Automatisieren » [coupé] @ 243,166
+bouton « Was spielt » [coupé] @ 657,166
+titre « KURVEN » [état « Aufgeklappt »] @ 327,270
+bouton « ? » @ 218,270
+bouton ● « Aufnehmen » @ 735,270
+texte « Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps). » @ 450,354
+bouton + «  Eine Einstellung automatisieren » @ 314,438
+bouton (vagues) «  Was spielt » @ 722,438
+texte « Noch bewegt sich nichts. Idee: der Filter eines Pads, der sich über 8 Takte öffnet. » [coupé] @ 450,502
+texte « Die Effekte Kapitel 13/16 · Schritt 2/2 · Pro » @ 366,568
+icône (liste) « Kapitel » @ 759,569
+icône ⌄ @ 843,569
+texte « Du bist dran: Automatisiere den „Cutoff“ der Spur „Melodie“ im Drop: „Eine Einstellung automatisieren“, „Melodie“, „Filter (Sweep)“, „Pro Teil“, und zeichne eine Kurve, die bis zur Mitte des Drops steigt und dann wieder fällt. » @ 450,726
+texte « Das Kit Techno » @ 139,867
+texte « ▸ Warum? » @ 450,916
+icône « Weiterlesen » ⌄ @ 450,970
+bouton ⊕ «   Zum Teil „Drop“ gehen » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

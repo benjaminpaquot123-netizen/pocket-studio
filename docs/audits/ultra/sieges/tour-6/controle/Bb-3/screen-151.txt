@@ -1,0 +1,63 @@
+Écran 151 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « A♭ » [coupé] @ 208,306
+bouton « A » [coupé] @ 293,306
+bouton « B » [coupé] @ 374,306
+bouton « H » [coupé] @ 455,306
+texte « Tonleiter sperren » @ 155,357
+bouton « ? » @ 290,357
+bouton [allumé] @ 819,394
+texte « Tastatur, Akkord-Pads und MIDI spielen nur Töne der Tonleiter: keine falschen Töne. » @ 411,415
+texte « Ein Tonleiterwechsel verschiebt die schon gesetzten Noten nicht. » @ 434,481
+bouton « i–vii–VI–iv » [sélectionné] @ 328,547
+bouton « VI–iv–i–vii » @ 518,547
+bouton « II–vii–i–i » @ 694,547
+texte « Progression » @ 114,585
+bouton « ? » @ 207,584
+bouton « i–VI–III–vii » @ 329,622
+bouton « i–iv–vii–i » @ 510,622
+texte « Akkorde » @ 243,706
+texte « Bassline » @ 403,706
+texte « Arpeggio » @ 570,706
+texte « Erzeugen » @ 99,706
+texte « Ersetzt die Noten der gewählten Spur (Rückgängig holt sie zurück). Eine Spur pro Rolle: Bass, Akkorde, Arpeggio. » @ 450,790
+texte « Akkordspiel » @ 121,867
+texte « Wirkt auf Akkorde (mehrere Noten gleichzeitig). » @ 329,918
+bouton « Nein » [sélectionné] @ 260,984
+bouton « ↑ » [désactivé] @ 362,984
+bouton « ↓ » [désactivé] @ 445,984
+bouton « ↑↓ » [désactivé] @ 541,984
+bouton « Zufall » [désactivé] @ 663,984
+texte « Arpeggio » @ 97,1022
+bouton « ? » @ 173,1021
+bouton « Pattern » [désactivé] @ 278,1059
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

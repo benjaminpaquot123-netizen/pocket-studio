@@ -1,0 +1,50 @@
+Écran 235 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Schlag » [coupé] @ 81,166
+texte « 1 » [coupé] @ 134,165
+texte « 2 » [coupé] @ 319,165
+texte « 3 » [coupé] @ 503,165
+texte « 4 » [coupé] @ 686,165
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,255
+bouton « ? » @ 362,255
+texte « Lautstärke: — » @ 136,306
+texte « Master-Lautstärke » @ 397,388
+texte « −6,0 dB » @ 805,388
+curseur [état « −6,0 dB », à 60 %] @ 450,459
+texte « Keine Übersteuerung: alles gut. » [coupé] @ 231,512
+texte « Das Mastering Kapitel 15/16 · Schritt 1/1 · Pro » @ 366,568
+icône (liste) « Kapitel » @ 759,569
+icône ⌄ @ 843,569
+texte « Der Master-Ausgang hat einen eingebauten Limiter, immer der letzte in der Kette (er erscheint nicht in seinen „Effekte“): Er verhindert, dass der Sound übersteuert. Kein OTT hier: Er würde den Attack der Kick plattdrücken. Du bist dran: Stell im „Master-Ausgang“ die „Ziel-Lautheit“ auf „Club“: Dein Track klingt so laut wie im Club. » @ 450,760
+texte « ▸ Warum? » @ 450,916
+icône « Weiterlesen » ⌄ @ 450,970
+bouton (doigt qui touche) «   Ich mach's » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

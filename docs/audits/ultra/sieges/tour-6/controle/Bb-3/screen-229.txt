@@ -1,0 +1,64 @@
+Écran 229 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 57,181
+bouton (casque) [coupé, état « aus »] @ 111,181
+curseur [état « +0,0 dB », à 80 %] @ 84,342
+texte « +0,0 » @ 84,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 177,181
+bouton (casque) [coupé, état « aus »] @ 231,181
+curseur [état « +0,0 dB », à 80 %] @ 204,342
+texte « +0,0 » @ 204,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 297,181
+bouton (casque) [coupé, état « aus »] @ 351,181
+curseur [état « +0,0 dB », à 80 %] @ 324,342
+texte « +0,0 » @ 324,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 417,181
+bouton (casque) [coupé, état « aus »] @ 471,181
+curseur [état « +0,0 dB », à 80 %] @ 444,342
+texte « +0,0 » @ 444,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 537,181
+bouton (casque) [coupé, état « aus »] @ 591,181
+curseur [état « +0,0 dB », à 80 %] @ 564,342
+texte « +0,0 » @ 564,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 657,181
+bouton (casque) [coupé, état « aus »] @ 711,181
+curseur [état « +0,0 dB », à 80 %] @ 684,342
+texte « +0,0 » @ 684,497
+texte « Der Mix Kapitel 14/16 · Schritt 1/3 · Pro » @ 366,568
+icône (liste) « Kapitel » @ 759,569
+icône ⌄ @ 843,569
+texte « Du bist dran: Zieh in Mix den Fader der Spur „Akkorde“ etwas runter, dann den der Spur „Melodie“. » @ 450,680
+texte « Das Kit Techno » @ 139,776
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,842
+texte « ▸ Warum? » @ 450,916
+icône « Weiterlesen » ⌄ @ 450,970
+bouton (doigt qui touche) «   Ich mach's » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

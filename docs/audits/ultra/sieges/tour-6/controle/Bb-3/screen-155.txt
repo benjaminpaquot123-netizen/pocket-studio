@@ -1,0 +1,54 @@
+Écran 155 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Plaits » ⋮ @ 705,204
+icône ♪ « Sound » [coupé] @ 850,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Wave Terrain Eine wandernde Welle » (hachures) [coupé] @ 174,305
+bouton (hachures) « String-Machine 70er-Streicher » [coupé] @ 450,323
+bouton « Akkorde Ein ganzer Akkord pro Taste » (hachures) [coupé] @ 726,305
+bouton (hachures) « Schwarm Ein Schwarm Sägezähne, sehr breit » @ 174,403
+titre « PHYSIKALISCH » [état « Aufgeklappt »] @ 450,479
+bouton (téléphone qui vibre) « Gezupfte Saite Gitarre, Harfe, gezupfte Saiten » @ 174,572
+bouton (téléphone qui vibre) « Modal (Percussion) Marimba, Glocken, Holz » @ 450,572
+bouton (téléphone qui vibre) « Partikel Staub und Knistern » @ 726,554
+bouton (téléphone qui vibre) « Gefiltertes Rauschen Gefilterter Atem und Wind » @ 174,710
+bouton (téléphone qui vibre) « Sprache Ein sprechender Roboter » @ 450,692
+titre « DRUMS » [état « Aufgeklappt »] @ 450,803
+bouton ◎ « Bassdrum Analoge Kick » @ 174,878
+bouton ◎ « Snare Analoge Snare » @ 450,878
+bouton ◎ « Hi-Hat Analoge Hi-Hat » @ 726,878
+dessin @ 450,965
+texte « Resonanz » @ 432,965
+texte « 76 » @ 831,966
+curseur [état « 76 », à 75 %] @ 450,1022
+dessin [coupé] @ 450,1097
+texte « Cutoff » [coupé] @ 432,1097
+texte « 60 » [coupé] @ 831,1099
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

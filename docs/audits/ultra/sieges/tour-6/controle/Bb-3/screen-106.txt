@@ -1,0 +1,71 @@
+Écran 106 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « F♯ Dur » @ 230,334
+texte « D♭ Dur » @ 362,334
+texte « E♭ Moll » @ 498,334
+texte « Erraten » @ 86,334
+bouton « Frei » @ 218,418
+bouton « Dur » @ 326,418
+bouton « Moll » @ 437,418
+bouton « Dorisch » @ 577,418
+texte « Tonleiter » @ 95,493
+bouton « Moll-Penta » @ 267,493
+bouton « Dur-Penta » @ 470,493
+bouton « Blues » @ 636,493
+bouton « Phrygisch » [sélectionné] @ 261,568
+bouton « Harmonisch Moll » @ 502,568
+bouton « C » @ 204,652
+bouton « C♯ » @ 292,652
+bouton « D » @ 380,652
+bouton « E♭ » @ 463,652
+bouton « E » @ 547,652
+bouton « F » [sélectionné] @ 628,652
+bouton « F♯ » @ 713,652
+bouton « G » @ 799,652
+texte « Grundton » @ 99,690
+bouton « A♭ » @ 208,727
+bouton « A » @ 293,727
+bouton « B » @ 374,727
+bouton « H » @ 455,727
+texte « Tonleiter sperren » @ 155,796
+bouton « ? » @ 290,796
+bouton [allumé] @ 819,833
+texte « Tastatur, Akkord-Pads und MIDI spielen nur Töne der Tonleiter: keine falschen Töne. » @ 411,854
+texte « Ein Tonleiterwechsel verschiebt die schon gesetzten Noten nicht. » @ 434,920
+bouton « i–vii–VI–iv » [sélectionné] @ 328,986
+bouton « VI–iv–i–vii » @ 518,986
+bouton « II–vii–i–i » @ 694,986
+texte « Progression » @ 114,1024
+bouton « ? » @ 207,1023
+bouton « i–VI–III–vii » @ 329,1061
+bouton « i–iv–vii–i » @ 510,1061
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Unter der Piano Roll, „Sound der Spur einstellen“: Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

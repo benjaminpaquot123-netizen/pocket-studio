@@ -1,0 +1,54 @@
+Écran 255 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 136,42
+bouton « Pro » @ 301,42
+bouton « D » ▾ @ 379,42
+icône ↶ @ 454,42
+icône ↷ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 94,204
+onglet « Vocals Mikrofon » @ 268,204
+onglet « Remix Trennen » @ 438,204
+bouton « Bass Plaits » @ 583,204
+bouton « Akkorde Pluck » ⋮ @ 749,204
+icône « Sound » ♪ [coupé] @ 872,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+icône ← [coupé] @ 78,311
+texte « Pluck » [coupé] @ 486,308
+bouton (points épars) (créneaux) « Pluck Rechteck · kurz » [sélectionné] @ 243,386
+bouton (points épars) (dents de scie) « Future-Pluck Säge · 4 Stimmen · kurz » @ 657,386
+bouton (points épars) (créneaux) « Arpeggio Rechteck · kurz » @ 243,489
+bouton (points épars) (zigzag) « Glocke Dreieck · kurz » @ 657,489
+bouton (dé) « Zufällig » @ 243,583
+bouton ★ « Diesen Sound behalten » @ 657,583
+texte « „Diesen Sound behalten“ legt ihn in deine Favoriten, für alle deine Projekte. » @ 450,667
+titre « SOUND-EINSTELLUNGEN » [état « Aufgeklappt »] @ 227,784
+texte « Wellenform » @ 118,834
+image ✓ @ 54,812
+texte « Abbrechen » @ 782,812
+texte « Neuer Sound: Runder Bass » @ 379,812
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,916
+icône (liste) « Kapitel » @ 759,917
+icône ⌄ @ 843,917
+image (coupe) @ 42,1028
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,1028
+bouton ▶ «  Meinen Song anhören » @ 450,1119
+bouton ↺ «  Tutorial neu starten » @ 450,1200
+bouton ✕ «  Tutorial schließen » @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

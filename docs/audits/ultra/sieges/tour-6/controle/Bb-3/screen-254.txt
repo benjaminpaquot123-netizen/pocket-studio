@@ -1,0 +1,55 @@
+Écran 254 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 127,42
+bouton « Pro » @ 283,42
+bouton « D · Drop » ▾ @ 406,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 94,204
+onglet « Vocals Mikrofon » @ 268,204
+onglet « Remix Trennen » @ 438,204
+bouton « Bass Plaits » @ 583,204
+bouton « Akkorde Runder Bass » ⋮ @ 769,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: D · Drop » @ 107,273
+icône ← [coupé] @ 78,311
+texte « Bässe » [coupé] @ 486,308
+bouton (vagues) (dents de scie) « Runder Bass Säge · gehalten » [sélectionné] @ 243,386
+bouton (vagues) (zigzag) « Sub-Bass Dreieck · gehalten » @ 657,386
+bouton (vagues) (dents de scie) « Reese-Bass Säge · gehalten » @ 243,489
+bouton (vagues) (dents de scie) « Moderner Reese Säge · 5 Stimmen · gehalten » @ 657,489
+bouton (vagues) (dents de scie) « Wobble-Bass Säge · gehalten » @ 243,592
+bouton (vagues) (dents de scie) « Sprechender Bass Säge · gehalten » @ 657,592
+bouton (vagues) (dents de scie) « Growl-Bass Säge · 3 Stimmen · gehalten » @ 243,695
+bouton (vagues) (dents de scie) « DnB-Reese Säge · 3 Stimmen · gehalten » @ 657,695
+bouton (vagues) (créneaux) « Riddim-Bass Rechteck · gehalten » @ 243,798
+bouton (vagues) (dents de scie) « Neuro-Bass Säge · 3 Stimmen · gehalten » @ 657,798
+bouton « Reiner Sub Dreieck · gehalten » (vagues) (zigzag) [coupé] @ 243,861
+bouton « Rollender Bass Säge · gehalten » (vagues) (dents de scie) [coupé] @ 657,861
+image ✓ @ 54,812
+texte « Abbrechen » @ 782,812
+texte « Neuer Sound: Runder Bass » @ 379,812
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,916
+icône (liste) « Kapitel » @ 759,917
+icône ⌄ @ 843,917
+image (coupe) @ 42,1028
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,1028
+bouton ▶ «  Meinen Song anhören » @ 450,1119
+bouton ↺ «  Tutorial neu starten » @ 450,1200
+bouton ✕ «  Tutorial schließen » @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

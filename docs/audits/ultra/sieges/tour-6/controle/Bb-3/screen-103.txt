@@ -1,0 +1,56 @@
+Écran 103 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « Im Takt 50 % » [coupé] @ 526,304
+texte « 100 % » [coupé] @ 697,304
+texte « Löschen » @ 119,351
+texte « Takt » @ 84,412
+bouton « 4 » @ 486,420
+bouton « 5 » [coupé] @ 853,420
+texte « C4 » [coupé] @ 84,459
+texte « H » @ 84,487
+texte « B » @ 84,529
+texte « A » @ 84,571
+texte « A♭ » @ 84,613
+texte « G » @ 84,655
+texte « G♭ » @ 84,697
+texte « F » @ 84,739
+texte « E » @ 84,781
+texte « E♭ » @ 84,823
+texte « D » @ 84,865
+texte « D♭ » @ 84,907
+texte « C3 » @ 84,949
+texte « H » @ 84,991
+texte « B » @ 84,1033
+texte « A » @ 84,1075
+texte « A♭ » [coupé] @ 84,1101
+dessin [coupé] @ 492,780
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Unter der Piano Roll, „Sound der Spur einstellen“: Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

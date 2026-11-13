@@ -1,0 +1,51 @@
+Écran 147 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « 2 » [coupé] @ 486,302
+bouton « 3 » [coupé] @ 853,302
+texte « D♭ » @ 84,334
+texte « C5 » @ 84,375
+texte « H » @ 84,417
+texte « B » @ 84,459
+texte « A » @ 84,501
+texte « A♭ » @ 84,543
+texte « G » [coupé] @ 84,578
+dessin [coupé] @ 492,453
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,642
+icône (liste) « Kapitel » @ 759,643
+icône ⌄ @ 843,643
+texte « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. » @ 450,777
+texte « Das Kit Techno » @ 139,896
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » [coupé] @ 450,943
+texte « ▸ Warum? » @ 450,990
+icône « Weiterlesen » ⌄ @ 450,1044
+bouton (doigt qui touche) «   Ich mach's » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

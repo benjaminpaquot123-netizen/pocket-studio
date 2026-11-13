@@ -1,0 +1,48 @@
+Écran 108 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « Kein Akkord in diesen Noten: Hier gibt es nichts zu ändern. Der Sound ist für die ganze Spur gleich und wird weiter unten eingestellt. » [coupé] @ 450,343
+texte « Sound der Spur einstellen » @ 236,434
+texte « Der Sound der Spur (gleich für alle ihre Noten) » @ 302,533
+titre « INSTRUMENT » [état « Aufgeklappt »] @ 173,611
+bouton « ? » @ 282,611
+onglet (curseurs) « Synth » @ 116,674
+onglet (rond relié à des points) « Plaits » [sélectionné] @ 272,674
+onglet (barres de son) « Sample » @ 438,674
+onglet (touches de piano) « Echte Instrumente » @ 693,674
+texte « 24 Syntheseverfahren aus dem Plaits-Modul (Mutable Instruments): von analogem Sound bis FM im DX7-Stil, von Streichern bis Percussion. » @ 450,770
+titre « ANALOG » [état « Aufgeklappt »] @ 450,854
+bouton (curseurs) « Analog Der klassische Synth » @ 174,929
+bouton (curseurs) « Analog + Filter Zwei Oszillatoren und ein Filter » [sélectionné] @ 450,947
+bouton (curseurs) « Waveshaper Sanft bis stark verzerrt » @ 726,929
+bouton (curseurs) « Phasenverzerrung Rund oder bissig, im Stil des Casio CZ » [coupé] @ 174,1064
+bouton (curseurs) « Chiptune 8-Bit-Videospiele » @ 450,1064
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Unter der Piano Roll, „Sound der Spur einstellen“: Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

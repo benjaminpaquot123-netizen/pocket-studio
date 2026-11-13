@@ -1,0 +1,65 @@
+Écran 150 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton (micro) «   Mikro » [coupé] @ 243,323
+bouton (feuille et flèche) «   Ein Sound » [coupé] @ 657,323
+bouton (feuille et flèche) «   Eine MIDI-Datei (.mid) » @ 450,397
+titre « TONLEITER UND AKKORDE » [état « Aufgeklappt »] @ 259,517
+bouton « ? » @ 455,517
+bouton « Song-Akkorde (alle Teile) » @ 450,587
+texte « F Moll » @ 227,671
+texte « A♭ Dur » @ 356,671
+texte « D♭ Dur » @ 488,671
+texte « Erraten » @ 86,671
+bouton « Frei » @ 218,755
+bouton « Dur » @ 326,755
+bouton « Moll » @ 437,755
+bouton « Dorisch » @ 577,755
+bouton « Moll-Penta » @ 267,830
+bouton « Dur-Penta » @ 470,830
+bouton « Blues » @ 636,830
+texte « Tonleiter » @ 95,830
+bouton « Phrygisch » [sélectionné] @ 261,905
+bouton « Harmonisch Moll » @ 502,905
+bouton « C » @ 204,989
+bouton « C♯ » @ 292,989
+bouton « D » @ 380,989
+bouton « E♭ » @ 463,989
+bouton « E » @ 547,989
+bouton « F » [sélectionné] @ 628,989
+bouton « F♯ » @ 713,989
+bouton « G » @ 799,989
+texte « Grundton » @ 99,1027
+bouton « A♭ » @ 208,1064
+bouton « A » @ 293,1064
+bouton « B » @ 374,1064
+bouton « H » @ 455,1064
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Dreh unter „Sound der Spur einstellen“ der Melodie „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

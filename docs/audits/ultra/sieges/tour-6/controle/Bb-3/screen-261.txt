@@ -1,0 +1,19 @@
+Écran 261 (900x1509)
+texte « Tutorial von A bis Z » @ 414,60
+icône ✕ @ 840,60
+bouton « 1 Tempo und Tonart » (rond coché) @ 450,149
+bouton « 2 Die Kick und das Grollen » (rond coché) @ 450,240
+bouton « 3 Der Clap » (rond coché) @ 450,331
+bouton « 4 Hi-Hats und Percussion » (rond coché) @ 450,422
+bouton « 5 Der Bass » (rond coché) @ 450,513
+bouton « 6 Der Stab (Akkorde) » (rond coché) @ 450,604
+bouton « 7 Das Riff » (rond coché) @ 450,695
+bouton « 8 Dein erster Teil: der Groove » (rond coché) @ 450,786
+bouton « 9 Die Teile verstehen » (rond coché) @ 450,877
+bouton « 10 Bau deine Teile » (rond coché) @ 450,968
+bouton « 11 Ordne deine Teile » (rond coché) @ 450,1059
+bouton « 12 Die Übergänge » (rond coché) @ 450,1150
+bouton « 13 Die Effekte » (rond coché) [coupé] @ 450,1216
+bouton « Zurück zu Einfach » @ 450,1281
+bouton ↺ «  Tutorial neu starten (neues leeres Projekt) » @ 450,1365
+texte « Tutorial beenden (du kannst es fortsetzen) » @ 450,1449

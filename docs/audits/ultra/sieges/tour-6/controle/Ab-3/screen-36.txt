@@ -1,0 +1,8 @@
+Écran 36 (588x1278)
+dessin @ 294,639
+dessin @ 294,822
+texte « Ta prise : 5 mesures » @ 183,879
+texte « Où la mettre ? Elle tourne en boucle au tempo du projet. » @ 294,948
+bouton « Sur le pad vide B1 » @ 294,1032
+bouton « Dans une brique du Live » @ 294,1122
+texte « Jeter la prise » @ 294,1212

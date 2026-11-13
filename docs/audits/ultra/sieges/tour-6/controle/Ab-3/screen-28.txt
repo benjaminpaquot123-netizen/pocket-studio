@@ -1,0 +1,4 @@
+Écran 28 (588x1278)
+texte « Partie à modifier » @ 124,309
+texte « A » @ 188,366
+texte « + Nouvelle partie (copie de A) » @ 188,440

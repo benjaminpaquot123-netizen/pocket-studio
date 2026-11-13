@@ -1,0 +1,9 @@
+dialogue:welcome
+padlive
+dialogue:padlive_take_sheet
+live_grid
+live_pads_full
+session/tab_simple_Morceau
+rhythm/tab_simple_Rythme
+dialogue:part_header_menu
+launch

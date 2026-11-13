@@ -22,7 +22,6 @@ class Tour6PlainWordsTest {
         "Choisis la gamme et la tonalité." to "Gamme",
         "Choisis la gamme et la tonalité." to "Tonalité",
         "Règle la tonalité sur Ré dorien." to "Dorien",
-        "Ajoute la perc." to "Perc",
         "Une petite boucle de deux notes." to "Boucle",
         "Le son d'une 909." to "909",
         "Le son d'une 707." to "707",

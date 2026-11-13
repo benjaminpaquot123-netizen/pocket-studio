@@ -48,7 +48,6 @@ internal object PlainWords {
         Term(Regex("""(?i)\bgammes?\b""")) { tr("Gamme : les notes qui vont bien ensemble dans le morceau.") },
         Term(Regex("""(?iU)\btonalités?\b""")) { tr("Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.") },
         Term(Regex("""(?i)\bdorien(ne)?\b""")) { tr("Dorien : une gamme un peu triste mais douce.") },
-        Term(Regex("""(?i)\bpercs?\b""")) { tr("Perc : une petite percussion (bois, bongo, cloche…).") },
         Term(Regex("""(?i)\bboucles?\b""")) { tr("Boucle : un passage qui se répète sans s'arrêter.") },
         Term(Regex("""\b909\b""")) { tr("909 : une boîte à rythmes célèbre, ses sons de batterie.") },
         Term(Regex("""\b707\b""")) { tr("707 : une boîte à rythmes célèbre, ses sons de batterie.") },

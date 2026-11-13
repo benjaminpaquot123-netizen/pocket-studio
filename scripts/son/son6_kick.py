@@ -5,7 +5,10 @@
 apart; power of the mono sum, the 40 ms from the hit against the 100 ms ending 20 ms before, summed over the part's
 hits), at full range (to check it against ps_measure) and through the two phone models of son6.py.
 
-  son6_kick.py OUT_DIR out.tsv [--styles a,b]
+  son6_kick.py OUT_DIR out.tsv [--styles a,b] [--hits-from BENCH_DIR]
+
+--hits-from: the kick rendered alone from BENCH_DIR/cmds (the same song without the speaker's processing), so that
+the hits are the same before and after (SpeakerKick changes the kick alone too: its own hits would not be the song's).
 
 One row per style and part where the kick plays. Renders the kick alone again (OUT/tools/ps_render), deletes it.
 """
@@ -65,7 +68,8 @@ def main(argv):
                     kick_id = line.split(" ", 2)[2].strip()
                     break
         kp = os.path.join(tmp, s + ".kick-only.wav")
-        subprocess.run([os.path.join(out_dir, "tools", "ps_render"), "--no-limiter", "--solo", kick_id, cmd, kp], check=True, capture_output=True)
+        hits_cmd = os.path.join(argv[argv.index("--hits-from") + 1], "cmds", s + ".pscmd") if "--hits-from" in argv else cmd
+        subprocess.run([os.path.join(out_dir, "tools", "ps_render"), "--no-limiter", "--solo", kick_id, hits_cmd, kp], check=True, capture_output=True)
         kick = S.read_wav(kp)
         os.remove(kp)
         hits = onsets(kick)

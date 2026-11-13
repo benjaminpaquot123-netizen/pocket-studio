@@ -51,6 +51,9 @@ class CutModel(
     /** The stem shown (0 drums, 1 bass, 2 other, 3 voice): the voice first, it is what is cut most. */
     var stem by mutableIntStateOf(VOCALS_STEM)
 
+    /** The pieces of [stem] chosen only by placing the play head on them (A7), not ticked on purpose: kept off « Enlever ». */
+    private val byTouch = mutableSetOf<Pair<Int, Int>>()
+
     /** The orange play head: where « Couper ici », « Début » and « Fin » act; a touch on the curve moves it. */
     var cursor by mutableLongStateOf(0L)
 
@@ -104,6 +107,8 @@ class CutModel(
 
     /** One undoable change of the stem shown; false (nothing kept) when it changed nothing. */
     private fun edit(save: Boolean = true, change: (StemCuts) -> StemCuts): Boolean {
+        // Pieces renumber after a cut: the head's choices are forgotten (they stay chosen, as plain choices).
+        byTouch.clear()
         val before = stemCuts()
         val after = change(before)
         if (after == before && cuts.of(stem) != null) return false
@@ -149,7 +154,9 @@ class CutModel(
 
     /** « Enlever »: the ticked pieces go, else the one under the play head. */
     fun remove(): Boolean {
-        val which = chosen.ifEmpty { listOfNotNull(current.takeIf { it >= 0 }) }
+        // Review of remix2 (grave): pieces chosen only by placing the play head (A7) never go with « Enlever »; the
+        // ones ticked on purpose (number, tile, « Tout choisir ») do; none of those: the piece under the head.
+        val which = (chosen - byTouch.filter { it.first == stem }.map { it.second }.toSet()).ifEmpty { listOfNotNull(current.takeIf { it >= 0 }) }
         if (which.isEmpty()) return false
         return edit { s -> s.copy(pieces = Cuts.remove(s.pieces, which), chosen = emptyList()) }
     }
@@ -228,6 +235,7 @@ class CutModel(
 
     fun toggleChosen(i: Int) {
         if (i !in pieces.indices) return
+        byTouch.remove(stem to i)
         val now = chosen.toMutableSet().apply { if (!add(i)) remove(i) }.sorted()
         // Ticking is no cut to undo: kept without an undo step.
         cuts = cuts.with(stemCuts().copy(chosen = now))
@@ -253,12 +261,16 @@ class CutModel(
     fun choosePieceAt(at: Long): Boolean {
         if (single) return false
         val i = Cuts.pieceAt(pieces, at).takeIf { it in pieces.indices } ?: return false
-        if (i !in chosen) toggleChosen(i)
+        if (i !in chosen) {
+            toggleChosen(i)
+            byTouch.add(stem to i)
+        }
         return true
     }
 
     /** « Tout choisir », or none when all are. */
     fun chooseAll() {
+        byTouch.clear()
         val all = pieces.indices.toList()
         cuts = cuts.with(stemCuts().copy(chosen = if (chosen.size == all.size) emptyList() else all))
         onChange(cuts)

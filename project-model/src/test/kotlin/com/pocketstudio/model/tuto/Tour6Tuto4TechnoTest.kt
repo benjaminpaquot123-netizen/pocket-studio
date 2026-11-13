@@ -451,13 +451,16 @@ class Tour6Tuto4TechnoTest {
         val bad = ArrayList<String>()
         val levels = step("levels").textPro!!
         for (t in listOf(levels) + langs.map { tr(it, levels) }) if ("2 dB" !in t) bad += "levels Pro: no « 2 dB »: $t"
-        val club = com.pocketstudio.model.LoudnessTargets.lufs(com.pocketstudio.model.LoudnessTarget.CLUB, "techno", TutoTarget.of("techno")!!.blank().mixVersion)!!
+        // Round trip 2 after Bb-6, M5 (screen 250: « −7,5 » said, « Club · −8 LUFS » on the button): the figure of the
+        // tutorial's own project (TutoTarget.blank, the project the course opens), as the chip and the engine take it.
+        val tutoProject = TutoTarget.of("techno")!!.blank()
+        val club = com.pocketstudio.model.LoudnessTargets.lufs(com.pocketstudio.model.LoudnessTarget.CLUB, tutoProject.style, tutoProject.mixVersion)!!
         val figure = Regex(String.format(java.util.Locale.ROOT, "%.1f", -club).replace(".", "[.,٫]").removeSuffix("[.,٫]0"))
         val loud = step("loudness").text
         if (!Regex("OTT \\(").containsMatchIn(loud)) bad += "fr loudness: OTT not explained: $loud"
         if (!Regex("LUFS \\(").containsMatchIn(loud)) bad += "fr loudness: LUFS not explained: $loud"
         for (t in listOf(loud) + langs.map { tr(it, loud) }) {
-            if (!Regex("−$figure").containsMatchIn(t)) bad += "loudness: no « −$figure » (Club): $t"
+            if (!Regex("−$figure(?![.,٫]\\d)").containsMatchIn(t)) bad += "loudness: no « −$figure » (Club): $t"
             if ("LUFS" !in t) bad += "loudness: no LUFS: $t"
         }
         report("mix and master steps without their figures", bad)

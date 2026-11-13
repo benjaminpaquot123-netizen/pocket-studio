@@ -512,8 +512,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val notice: StateFlow<String?> = _notice.asStateFlow()
 
     /** Tour 6, seat B a (A6): the notice says the song goes past the project's end; « Allonger le morceau » offered with it. */
-    private val _noticeLengthen = MutableStateFlow(false)
-    val noticeLengthen: StateFlow<Boolean> = _noticeLengthen.asStateFlow()
+    // The notice it belongs to (fresh review): a notice put over it later carries no « Allonger ».
+    private val _noticeLengthen = MutableStateFlow<String?>(null)
+    val noticeLengthen: StateFlow<String?> = _noticeLengthen.asStateFlow()
 
     /**
      * Audit ultra round 2 (n° 17, seat B d: a track's sound changed or a track deleted said nothing): said as « Fait : … »
@@ -536,7 +537,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun keptSoundNames(): Set<String> = _favorites.value.let { f -> (f.synth.map { it.name } + f.plaits.map { it.name }).toSet() }
     fun dismissNotice() {
         _notice.value = null
-        _noticeLengthen.value = false
+        _noticeLengthen.value = null
         favoritesBeforeDelete = null
     }
 
@@ -6348,8 +6349,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Lot 6, R4 / tour 6 A6: « sa fin sera coupée », with « Allonger le morceau » in the same window. */
     private fun sayRemixPastEnd() {
         remixPastEnd().takeIf { it > 0 }?.let {
-            _notice.value = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
-            _noticeLengthen.value = true
+            val said = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
+            _notice.value = said
+            _noticeLengthen.value = said
         }
     }
     fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo, mute = s.mute && s.solo) } }

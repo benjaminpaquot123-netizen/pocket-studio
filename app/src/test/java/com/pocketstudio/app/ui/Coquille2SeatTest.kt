@@ -156,8 +156,9 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         tap("export")
         act("attends 1")
         assertTrue("the export is not running", rhythm()?.export?.value?.running == true)
-        val cancel = compose.onAllNodes(androidx.compose.ui.test.hasText("Annuler") and androidx.compose.ui.test.hasClickAction())
-            .fetchSemanticsNodes().firstOrNull() ?: error("no « Annuler » while the sound is made:\n" + screen())
+        // The export's own « Annuler » (fresh review: not the first « Annuler » of the screen).
+        val cancel = compose.onAllNodesWithTag("export_cancel").fetchSemanticsNodes().firstOrNull()
+            ?: error("no « Annuler » while the sound is made:\n" + screen())
         assertTrue("« Annuler » cut while the sound is made:\n" + screen(), shownWhole(cancel))
     }
 }

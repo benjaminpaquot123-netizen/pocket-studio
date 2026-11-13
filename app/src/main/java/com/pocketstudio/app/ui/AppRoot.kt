@@ -1085,7 +1085,7 @@ fun AppRoot() {
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
-            } else if (noticeLengthen) {
+            } else if (noticeLengthen == text) {
                 // Tour 6, seat B a (A6): the song past the project's end: the fix offered in the same window.
                 { TextButton(onClick = { rhythmVm.lengthenSongForRemix(); rhythmVm.dismissNotice() }, modifier = Modifier.testTag("notice_lengthen")) { Text(tr("Allonger le morceau")) } }
             } else null,

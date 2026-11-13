@@ -1501,16 +1501,30 @@ abstract class HumanTester(private val seat: String) {
      * The app's network work at the end of a test (lot ci2): waited for, the main looper running, while at least one app worker
      * is busy and every busy one waits on a socket ([onTheNetwork]), [capMs] at most. Work of the app off the network is not
      * waited for: the detector (BenchPristine) still names it, as before.
+     *
+     * Tour 6, lot « stable » (CI 43498223553): a job is network work for as long as it runs, not only at the instants it sits
+     * on a socket. The packs' catalogue failed, and the same job went on to its fallbacks (its saved copy on disk, then the
+     * pinned index, on the network again): sampled in between, it looked like « other work » and the end returned with it
+     * still running. A job seen on the network during this wait (its worker and its first frame of the app, the coroutine it
+     * runs) is waited for until it ends, on or off the network, [capMs] at most.
      */
     private fun appNetworkWorkEnded(capMs: Long) {
         val until = System.currentTimeMillis() + capMs
+        val networkJobs = HashSet<Pair<Thread, String>>()
         while (System.currentTimeMillis() < until) {
-            val busy = appWorkers()
-            if (busy.isEmpty() || !busy.all(::onTheNetwork)) return
+            // One look at each worker's stack (a worker that ended its job between two looks is not busy).
+            val busy = appWorkers().map { t -> t.stackTrace.let { st -> (t to jobOf(st)) to onTheNetwork(st) } }
+                .filter { (job, _) -> job.second.isNotEmpty() }
+            busy.filter { it.second }.forEach { networkJobs += it.first }
+            if (busy.isEmpty() || !busy.all { it.first in networkJobs }) return
             Thread.sleep(20)
             runCatching { shadowOf(Looper.getMainLooper()).idle() }
         }
     }
+
+    /** The job a worker runs: its outermost frame of the app (the coroutine's own code, the same from its start to its end). */
+    private fun jobOf(stack: Array<StackTraceElement>): String =
+        stack.lastOrNull { "pocketstudio" in it.className }?.let { "${it.className}.${it.methodName}" }.orEmpty()
 
     /** The coroutine workers running the app's code (a frame of com.pocketstudio), as BenchPristine.appThreads names them. */
     private fun appWorkers(): List<Thread> {
@@ -1524,7 +1538,9 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /** [t] is in a network call (socket, HTTP or TLS frames anywhere in its stack: an HTTPS read is deep below the app's frame). */
-    private fun onTheNetwork(t: Thread): Boolean = t.stackTrace.any { f ->
+    private fun onTheNetwork(t: Thread): Boolean = onTheNetwork(t.stackTrace)
+
+    private fun onTheNetwork(stack: Array<StackTraceElement>): Boolean = stack.any { f ->
         f.className.startsWith("sun.nio.ch.") || f.className.startsWith("java.net.") || f.className.startsWith("sun.net.") ||
             f.className.startsWith("sun.security.ssl.") || f.className.startsWith("javax.net.ssl.")
     }

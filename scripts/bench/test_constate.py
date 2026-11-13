@@ -354,6 +354,21 @@ class LotGivesItselfAState(ToyRegister):
         self.commit("a lot drops a column")
         self.refused("header")
 
+    def test_the_register_s_own_header_is_no_change_of_the_lot(self):
+        # The lot that brings the three columns (this one) starts from the old header: its new header is the register's
+        # own (reparations.COLUMNS), not a lot's invention; any other header stays refused.
+        old = HEADER.replace("\tphrase_acceptation\tsiege_origine\tconstat", "")
+        git(self.repo, "checkout", "-q", "int")
+        self.put([old] + self.lines[1:2])
+        self.base = self.commit("the register before the lot « constate »")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        self.put([HEADER] + self.lines[1:2])
+        self.commit("the three columns")
+        self.accepted()
+        self.put([HEADER + "\tautre"] + self.lines[1:2])
+        self.commit("one column more")
+        self.refused("header")
+
     def test_a_line_the_integration_already_holds_is_not_the_lot_s(self):
         # The chief wrote « constaté » on the integration; the lot merged the integration in: nothing of its own.
         done = row("tour-6", "A3", "B/a", "8", "constaté", "7777777", "-", "", "", "", "tour-6/lotB/a",

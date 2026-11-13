@@ -574,7 +574,7 @@
     },
     {
       "id": "export",
-      "title": "Exporte ton morceau",
+      "title": "Partage ton morceau",
       "why": "Ton morceau est fini : fais-le écouter !",
       "steps": [
         {
@@ -585,7 +585,7 @@
         {
           "id": "share",
           "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.",
-          "textPro": "À toi : touche « Partager », exporte ton morceau et partage-le.",
+          "textPro": "À toi : touche « Partager » et envoie ton morceau.",
           "check": "shared",
           "spot": "share.export"
         }

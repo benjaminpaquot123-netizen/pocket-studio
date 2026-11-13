@@ -699,6 +699,5 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "轮到你：混音就是调每条音轨的音量。在“混音”标签页里，把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。滑块下面的“正常”会变成“−2”“−4”…：越低越小声。旁边的刻度（+4、0、−12、−∞）也是一个意思：0 是正常音量，−∞ 是静音。",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "轮到你：点“分享”：应用会把你的曲子做成一个能发出去的音频文件。“M4A”是给朋友的轻便文件，“WAV”保留录音室音质。之后，“电平”告诉你曲子听起来响还是轻，“没有削波”的意思是声音不会噼啪作响。",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "轮到你：点“拍手”打击垫，然后在它的网格下面点“打击垫效果”：把“混响发送”调高。",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "轮到你：把这个段落命名为“律动”：完整的循环，其他段落都从它而来。",
-  "À toi : touche « Partager », exporte ton morceau et partage-le.": "轮到你：点“分享”，导出你的曲子并分享出去。"
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "轮到你：把这个段落命名为“律动”：完整的循环，其他段落都从它而来。"
 }

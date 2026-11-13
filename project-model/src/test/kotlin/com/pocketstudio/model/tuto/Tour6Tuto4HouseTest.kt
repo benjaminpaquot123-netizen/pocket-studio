@@ -135,6 +135,22 @@ class Tour6Tuto4HouseTest {
         report("numbers left unsaid", bad)
     }
 
+    /** M6: the Clap's reverb send is in the pad's effects (« Effets du pad », from the grid), not in the Mix. */
+    @Test
+    fun theClapsReverbIsInThePadsEffects() {
+        val bad = mutableListOf<String>()
+        val reverb = step("reverb").text
+        val button = "  Effets du pad".trim()
+        if ("« $button »" !in reverb) bad += "fr: no « $button »: $reverb"
+        if (Regex("""dans Mix, monte « Envoi réverbe » sur le pad""").containsMatchIn(reverb)) bad += "fr: the pad's send said in the Mix: $reverb"
+        for (lang in translated) tr(lang, reverb)?.let { v ->
+            val shown = word(lang, "  Effets du pad").trim()
+            if (shown !in v) bad += "${lang.code}: no « $shown »: $v"
+        }
+        everyLanguage(listOf(reverb), bad)
+        report("reverb steps that lead elsewhere", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

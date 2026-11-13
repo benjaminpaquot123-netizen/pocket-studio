@@ -455,7 +455,7 @@ fun ShareSheetContent(
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
+                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice })),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
                         )
                         if (!simple) Text(
@@ -579,6 +579,16 @@ fun ShareSheetContent(
         MyExportsButton("share_my_exports", Modifier.padding(horizontal = 20.dp), compact = short)
     }
     }
+}
+
+/**
+ * The words of the share line's level: the target's own when the file aims at Club or Streaming (bench replay of Ac-2:
+ * « Club · −8 LUFS » chosen, the line said « très fort (les plateformes le baisseront) »), else what [lufs] sounds like.
+ */
+internal fun shareLevelWords(lufs: Double, choice: com.pocketstudio.model.TargetChoice?): String = when (choice) {
+    com.pocketstudio.model.TargetChoice.CLUB -> tr("fort, comme la musique de club")
+    com.pocketstudio.model.TargetChoice.STREAMING -> tr("comme la musique en streaming (−14)")
+    else -> Loudness.describe(lufs)
 }
 
 /** One line of [SnapColumn]: where it starts and ends, in pixels; [whole]: never to be cut by the edge ([WHOLE_LINE]). */

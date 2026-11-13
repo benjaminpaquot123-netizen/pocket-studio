@@ -28,6 +28,18 @@ Attente du testeur, pas un défaut de « Déjà fait » : l'étape « make_monte
 - Neufs du contrôle Bb-3, moyens, pas pris (hors du tuto ou à trier) : ☆ introuvable sur les sons de synthé (écran 253) ; noms des pistes hors écran dans le Mix au ch. 14 ; rejouer le ch. 1 après la fin montre « Bravo » sans étapes.
 - Rejeux : aucun siège de contrôle n'est encore fusionné (branches des testeurs) ; rejeux à ajouter quand leurs dossiers seront dans l'intégration.
 
+## Contrôles sur la branche (2e essai)
+controle: Ha-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
+controle: Da-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
+controle: Bb-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
+
+- Ha-4 (fr) : Bravo en 233 gestes ; T4 corrigé (écran 98) ; T8 corrigé (écran 242).
+- Da-4 (ja) : Bravo en 167 gestes, 5 hésitations ; T4 corrigé (écrans 80-106).
+- Bb-4 (de, Pro) : Bravo en 226 gestes, 8 hésitations ; T1 corrigé (écrans 146-149) ; T4 corrigé (écran 89).
+- **T3 (« Doux » au ch. 3) : tenté, hors lot.** Ha-4 : « au ch. 3 aucun "Doux" n'est demandé, l'étape se valide dès les cases posées » (le style joué n'a pas de « Doux » à cette étape) ; Da-4 : encore là (écrans 38/40). Le panneau rouvert ne suffit pas toujours : à reprendre dans un prochain lot.
+- **T8 (« Déjà fait ») : tenté, hors lot.** Bb-4 : « Schon erledigt! » existe (écrans 193-195), mais au premier passage l'étape 3/3 du ch. 12 est sautée sans message (écran 192). À reprendre.
+- Le second aller-retour n'est pas consommé (décision du chef, pour ne pas retarder). Aucun commit de code d'appli après e4286b40 dans ce lot, hors fusion de la tête.
+
 tests: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest
 
 chemin: Tuto Pro › techno › ch. 7 « lead_knobs » › Coupure et Résonance +15 | test: Tour6TutoKnobStepTest#fifteenOnTheScreenTicksTheStepEvenWhenTheRawDeltaIsJustUnderThePoint15

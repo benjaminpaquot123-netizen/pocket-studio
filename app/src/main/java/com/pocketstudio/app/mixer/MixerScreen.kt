@@ -657,9 +657,12 @@ internal fun ExportCard(
         }
         // Audit ultra round 1 (n° 16, seats A c, E d, F c): the file and its report came under the button, off the
         // screen (« Exporter » seemed to do nothing): once made, they are brought into view.
+        // Lot 6, R23 (seats C a #24, C b #30): only a file made while the card is on screen; one made before (in « Envoyer »)
+        // made the Mix open at its bottom, the strips out of sight.
         val resultInView = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        val filesAtOpen = androidx.compose.runtime.remember { export.files }
         androidx.compose.runtime.LaunchedEffect(export.files) {
-            if (export.files.isNotEmpty()) { kotlinx.coroutines.delay(60); resultInView.bringIntoView() }
+            if (export.files.isNotEmpty() && export.files != filesAtOpen) { kotlinx.coroutines.delay(60); resultInView.bringIntoView() }
         }
         if (export.files.isNotEmpty()) Column(Modifier.bringIntoViewRequester(resultInView).testTag("export_result"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             // Audit ultra round 2 (n° 10): where the file is, in every report (a WAV said « Prêt : » alone).

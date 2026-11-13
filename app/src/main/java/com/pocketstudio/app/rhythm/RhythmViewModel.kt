@@ -30,6 +30,7 @@ import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.hasMusicOfItsOwn
+import com.pocketstudio.model.remixOverrunSeconds
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.withRecordedCell
@@ -440,9 +441,11 @@ data class ExportUi(
          * no export plays (a challenge's stars, the Pad Live page shown, the MIDI map, the song's versions kept aside):
          * a star won in Pad Live called the song « changé depuis cet export » and took its « Partager » away.
          * T5-ALERTE: nor the Guide's cards (sharing ticks « Prêt à partager ? »: the song just shared was called changed).
+         * Lot 6, U3 (seat A c, screens 14, 20, 24): nor, once there is a song, the part shown (the screens follow the part
+         * playing): the same project seen on another part. Without a song the loop shared is the part shown: it counts.
          */
         fun madeHash(p: Project): Int =
-            p.copy(
+            (if (p.song.isNotEmpty()) p.switchScene(0) else p).copy(
                 name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
                 guide = com.pocketstudio.model.guide.GuideState.EMPTY,
             ).hashCode()
@@ -603,7 +606,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun tutoEdit(transform: Project.() -> Project) {
         val before = project.value
         session.edit(tag = "tuto") { it.transform() }
+        val wanted = project.value.scene
         afterGuideEdit(before)
+        // Lot 6, N25 (seat B b-suite #178): « Aller dans la partie « Build-up » » while the song plays: the screens
+        // following the song took the part back at the next swap. It is picked as a touch on it does: it loops from the
+        // next bar (the editors say « … arrive à la prochaine mesure »), shown from then on.
+        val heard = heardScene
+        if (wanted != before.scene && _transport.value.playing && NativeEngine.isAvailable && _followSong.value && heard != null && heard != wanted) {
+            if (project.value.scene != heard) session.showQuietly { it.switchScene(heard) }
+            selectScene(wanted)
+        }
     }
 
     /** Engine updates the Guide's edits asked for (tests). */
@@ -3481,11 +3493,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Les %d parties sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
             return
         }
-        val place = (at ?: p.song.size).coerceIn(0, p.song.size)
+        // Lot 6, U28 (seat F a #8): no song yet, the part shown loops alone: it becomes the song's first part, the new
+        // one comes after it (B alone, then « + A » after it, was the song the other way round). An empty part stays out.
+        val first = p.scene.takeIf { p.song.isEmpty() && p.allScenes.getOrNull(it)?.isEmpty == false }
+        val place = if (first != null) 1 else (at ?: p.song.size).coerceIn(0, p.song.size)
         val following = songPlaying()
         // The new scene made (a copy, or an empty one) and placed in the song while it is the one shown (an empty scene
         // at the end that nothing uses yet is dropped by any other step), then the scene shown before.
-        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q).switchScene(target).insertSongPart(place, target).switchScene(q.scene)
+        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q)
+            .let { r -> if (first != null) r.insertSongPart(0, first) else r }
+            .switchScene(target).insertSongPart(place, target).switchScene(q.scene)
         if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
             if (!_transport.value.playing || !NativeEngine.isAvailable) _sessionUi.value = SessionUi()
             session.edit { made(it).switchScene(target) }
@@ -5726,10 +5743,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (alone) undo() else _notice.value = tr("D'autres changements ont suivi la prise : utilise ↶ en haut pour revenir en arrière pas à pas.")
     }
 
-    /** « Écouter »: the song from the take's first part. */
+    /**
+     * « Écouter »: the song from the take's first part. Lot 6, U20 (seat G b #38: « plus aucune trace de la prise à
+     * l'écran »): its line (« Perf gardée », « Partager », « Annuler ») stays while it plays; ✕ takes it away.
+     */
     fun listenPerformance() {
         val done = _take.value as? com.pocketstudio.app.live.TakeUi.Done ?: return
-        _take.value = com.pocketstudio.app.live.TakeUi.Ready
         if (_transport.value.playing) toggleTransport()
         playSongFrom(done.firstPart.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)))
     }
@@ -6271,6 +6290,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (choice?.bricks == true && place != com.pocketstudio.model.SongPlace.Passage) placed.withSongSections(sections) ?: placed else placed
         }
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
+        // Lot 6, R4 (seats B a #38, G a #12): a song longer than the project is said when it is chosen, not only in
+        // « Prêt à partager ? » (its end is cut in the file; that sheet offers the two fixes).
+        project.value.remixOverrunSeconds().takeIf { it > 0 }?.let {
+            _notice.value = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
+        }
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)
@@ -7217,14 +7241,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val app = getApplication<Application>()
                 val pads = ArrayList<Pair<Int, PadSample>>()
+                // Lot 6, T2 (seat D b #31): a pad the course names by its studio voice (« Rumble », « 808 ») keeps that
+                // name with the pack's sound (it was « Techno · Caisse 2 », a name no step says).
+                val voices = project.value.padVoices
                 for ((lane, s) in sounds) {
                     val (id, name, sound) = s
+                    val kept = voices[lane]?.kind?.takeIf { it == PadVoice.RUMBLE || it == PadVoice.BASS_808 }?.let { PadVoice.NAMES[it] }
                     val file = com.pocketstudio.app.library.PackStore.file(app, id, sound)
                     val pcm = withContext(Dispatchers.IO) {
                         runCatching { tutoKitDecodeForTest?.invoke(file) ?: com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(file)) }
                             .onFailure { AppLog.add("Tuto : son du kit illisible, ${sound.file} (${it.message})") }.getOrNull()
                     } ?: continue
-                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
+                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), kept ?: com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
                         .onFailure { AppLog.add("Tuto : son du kit non préparé, ${sound.file} (${it.message})") }.getOrNull() ?: continue
                     padSamples.register(prepared.second)
                     pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)
@@ -10512,7 +10540,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.commitQuietEdits(before, chordDepth)
         val p = project.value
         val english = com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes
-        val names = tried?.progression?.let { pr -> com.pocketstudio.model.ChordTrack.degreesOf(p, pr).joinToString(" ") { com.pocketstudio.model.ChordTrack.name(p, it, english) } }
+        // Lot 6, U14 (seat F a, screen 30): the chords the song got, not the whole progression: parts shorter than it
+        // only take its first chords (two 1-bar parts on Do Sol La m Fa: Do).
+        val placed = com.pocketstudio.model.ChordTrack.songScenes(p).flatMap { com.pocketstudio.model.ChordTrack.chordsOf(p, it) }.toSet()
+        val names = tried?.progression?.let { pr ->
+            val degrees = com.pocketstudio.model.ChordTrack.degreesOf(p, pr)
+            (if (degrees.all { it in placed }) degrees else degrees.filter { it in placed }.distinct()).takeIf { it.isNotEmpty() }
+                ?.joinToString(" ") { com.pocketstudio.model.ChordTrack.name(p, it, english) }
+        }
         _done.value = if (names != null) tr("Fait : accords du morceau %s", names) else tr("Fait : accords du morceau changés")
         AppLog.add("Accords du morceau : ${tried?.progression ?: tried?.chords}")
     }
@@ -10668,7 +10703,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Export ----------------------------------------------------------------------------
 
-    private val _export = MutableStateFlow(ExportUi())
+    /**
+     * Lot 6, U5: the Mode simple's « Partager » keeps its format (M4A / WAV) in [com.pocketstudio.app.export.SharePrefs];
+     * once one was chosen there, the Mix (Pro) starts from it and follows each new choice (its own FLAC stays until then).
+     */
+    private val sharePrefs = app.getSharedPreferences(com.pocketstudio.app.export.SharePrefs.PREFS, android.content.Context.MODE_PRIVATE)
+
+    private fun sharedFormat(): ExportFormat? =
+        sharePrefs.getString(SHARE_FORMAT_KEY, null)?.let { com.pocketstudio.app.export.SharePrefs.parse(it) }
+
+    private val sharedFormatListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == SHARE_FORMAT_KEY) sharedFormat()?.let { f -> _export.value = _export.value.copy(format = f) }
+    }
+
+    private val _export = MutableStateFlow(ExportUi().let { e -> sharedFormat()?.let { e.copy(format = it) } ?: e })
+
+    init {
+        sharePrefs.registerOnSharedPreferenceChangeListener(sharedFormatListener)
+    }
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
     val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ ->
         e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p))
@@ -11628,6 +11680,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        sharePrefs.unregisterOnSharedPreferenceChangeListener(sharedFormatListener)
         liveRemix.close()
         stemBoardMade?.stop()  // the stretch heard alone goes with the screen
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
@@ -11679,6 +11732,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** [com.pocketstudio.app.export.SharePrefs]' key for the format chosen in « Partager » (its only one). */
+        private const val SHARE_FORMAT_KEY = "format"
         /** A microphone sample louder than this is the take's first sound (step 7b, an audio cell's bar line). */
         private const val MIC_ONSET = 0.02f
         /** [beforePress]'s key for a row or « ■ Tout » (a column's key is never empty). */

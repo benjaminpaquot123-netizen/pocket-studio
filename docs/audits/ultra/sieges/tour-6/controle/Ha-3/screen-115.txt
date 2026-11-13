@@ -1,0 +1,20 @@
+Écran 115 (588x1278)
+dessin @ 294,36
+texte « Son de : Synthé » @ 150,93
+texte « Fermer » @ 509,120
+texte « Touche un son : il remplace celui de cette piste dans tout le morceau. » @ 239,141
+champ (loupe) « Chercher un son (caisse, conga, sirène…) » contenu «  » @ 294,243
+bouton (vagues) « Basses 16 sons » › @ 294,357
+bouton (éclair) « Mélodies 6 sons » › @ 294,453
+bouton (nuage) « Nappes 4 sons » › @ 294,549
+bouton (points épars) « Son court 4 sons » › @ 294,645
+bouton (touches de piano) « Claviers 2 sons » › @ 294,741
+bouton (étincelles) « Effets 2 sons » › @ 294,837
+texte « Touche ☆ sur un son pour le retrouver dans « Favoris ». » @ 277,904
+bouton (dé) « Au hasard » @ 156,966
+bouton ★ « Garder ce son » @ 432,966
+texte « « Garder ce son » le range dans tes favoris, pour tous tes projets. » @ 294,1041
+titre « INSTRUMENTS RÉELS » @ 152,1095
+texte « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » @ 294,1159
+bouton (touches de piano) « Piano à queue À télécharger : 11 Mo » [coupé] @ 294,1245
+icône ▶ [coupé] @ 516,1254

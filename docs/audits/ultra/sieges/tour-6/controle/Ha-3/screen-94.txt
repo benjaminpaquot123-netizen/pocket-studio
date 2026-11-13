@@ -1,0 +1,50 @@
+Écran 94 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse ronde » ⋮ @ 323,186
+icône ♪ « Son » @ 484,186
+bouton + «  Piste » [coupé] @ 560,186
+image → @ 559,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » [coupé] @ 480,351
+bouton « Accords » @ 109,351
+bouton « Basse en fantôme » [sélectionné] @ 296,351
+bouton « Basse · mesure 1/8 Encore 1 note en pointillé à toucher » @ 294,432
+texte « mes. » @ 69,489
+bouton « 1 » @ 321,501
+dessin [coupé] @ 69,540
+dessin @ 69,562
+texte « Do3 » @ 69,592
+dessin @ 69,622
+dessin @ 69,652
+dessin @ 69,682
+dessin @ 69,712
+dessin @ 69,742
+dessin @ 69,772
+dessin @ 69,802
+dessin [coupé] @ 69,824
+dessin [coupé] @ 321,682
+icône (liste) « Chapitres » @ 444,879
+texte « La basse Chapitre 5/15 · Étape 2/2 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : touche « Créer la piste Basse », puis les notes en pointillé de la mesure 1 (La grave, La aigu). « Copier sur les mesures suivantes » fait la mesure 2, puis la même chose sur Ré en mesure 3. Écris enfin la mesure 4 : elle finit sur Mi et Sol pour revenir vers La. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

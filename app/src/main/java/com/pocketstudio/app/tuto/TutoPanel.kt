@@ -548,19 +548,24 @@ fun TutoPanel(
                     else -> {
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         // Tour 6 (N20): reached done, never touched: said, not left to look like a mistake.
-                        alreadyWords(ui)?.let { words ->
+                        val alreadySaid = alreadyWords(ui)
+                        alreadySaid?.let { words ->
                             Column(Modifier.testTag("tuto_already")) {
                                 Text(tr("Déjà fait !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                                 Text(words, style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary)
                             }
                         }
-                        Row(verticalAlignment = Alignment.Top) {
-                            if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                            Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                        // Control seat Da-5 (tour 6, chapter 12): « déjà fait » under « À toi : … efface » : a step the song held
+                        // already asks for nothing, its words are not shown.
+                        if (alreadySaid == null) {
+                            Row(verticalAlignment = Alignment.Top) {
+                                if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
+                                Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                            }
                         }
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
-                        com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (alreadySaid == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,

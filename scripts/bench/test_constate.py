@@ -71,7 +71,7 @@ def row(*cells):
 
 
 # A seat of control's report, the three forms of round 6 (controle/Ba, controle/Ba-3, controle/Ha-4) and the template's.
-CONTROL_REPORT = """code testé : 10830ce2
+CONTROL_REPORT = """code testé : {played}
 joué par : sous-agent neuf
 
 siege: a | profil: t6-Ba gaucher-espagnol-une-main | lang: es | device: phone | font: 100 | mode: simple
@@ -84,6 +84,7 @@ defauts-avant:
   - T4 | corrigé (écran 98) : « Encore 2 notes en pointillé, plus haut ↑ »
   - A6 | pas atteint | ecran: 30 | le budget s'est fini avant
   - A7 | corrigé | ecran: 21 | la phrase touchée, « 1 trozo elegido »
+  - A9 | corrigé ? non, toujours sous le pouce (écran 5)
 hesitations:
   - ecran: 6 | cherchais: A9 | regarde: corrigé, écran 3
 incidents-banc:
@@ -98,24 +99,36 @@ class Registry(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="constate-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
+        # (Review of « constate », M5: the root is a repository; the lines name the repair's commit, the seat played a
+        # commit after it.)
+        git(self.tmp, "init", "-q")
+        write(os.path.join(self.tmp, "app.txt"), "v1\n")
+        git(self.tmp, "add", "app.txt")
+        git(self.tmp, "commit", "-q", "-m", "the repair")
+        self.fix = git(self.tmp, "rev-parse", "HEAD").stdout.strip()
+        write(os.path.join(self.tmp, "app.txt"), "v2\n")
+        git(self.tmp, "commit", "-q", "-am", "the code the control seat played")
+        self.played = git(self.tmp, "rev-parse", "HEAD").stdout.strip()
+        f = self.fix[:8]
         self.reg = os.path.join(self.tmp, "corrections.tsv")
         self.old = row("tour-5", "T5-01", "A/a", "12", "corrigé", "abc1234", "FooTest", "une note ancienne", "")
         write(self.reg, "\n".join([
             HEADER,
             self.old,
-            row("tour-6", "A2", "B/a", "15", "tenté", "1111111", "rejeu-a2", "", "", "en espagnol, main gauche : je touche « Voz »", "tour-6/lotB/a", ""),
-            row("tour-6", "A2", "B/c", "40", "rejoué", "1111111", "rejeu-a2", "", "", "en espagnol, main gauche : je touche « Voz »", "tour-6/lotB/a", ""),
+            row("tour-6", "A2", "B/a", "15", "tenté", f, "rejeu-a2", "", "", "en espagnol, main gauche : je touche « Voz »", "tour-6/lotB/a", ""),
+            row("tour-6", "A2", "B/c", "40", "rejoué", f, "rejeu-a2", "", "", "en espagnol, main gauche : je touche « Voz »", "tour-6/lotB/a", ""),
             row("tour-6", "A3", "B/a", "8", "tenté", "2222222", "-", "", "", "la phrase d'aide entière", "tour-6/lotB/a", ""),
             row("tour-6", "A4", "B/a", "9", "tenté", "-", "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "A1", "B/a", "3", "tenté", "-", "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "A6", "B/a", "30", "tenté", "-", "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "A8", "B/a", "31", "pas pris", "-", "-", "", "", "", "tour-6/lotB/a", ""),
-            row("tour-6", "A7", "B/a", "21", "tenté", "3333333", "-", "", "", "", "tour-6/lotB/a", ""),
-            row("tour-6", "T4", "H/a", "98", "rejoué", "4444444", "rejeu-t4", "", "", "", "tour-6/lotH/a", ""),
-            row("tour-6", "A5", "B/a", "44", "Tente", "5555555", "-", "", "", "", "tour-6/lotB/a", ""),
+            row("tour-6", "A7", "B/a", "21", "tenté", f, "-", "", "", "", "tour-6/lotB/a", ""),
+            row("tour-6", "T4", "H/a", "98", "rejoué", f, "rejeu-t4", "", "", "", "tour-6/lotH/a", ""),
+            row("tour-6", "A5", "B/a", "44", "Tente", f, "-", "", "", "", "tour-6/lotB/a", ""),
+            row("tour-6", "A9", "B/a", "5", "tenté", f, "-", "", "", "", "tour-6/lotB/a", ""),
         ]) + "\n")
         self.seat = os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-6", "controle", "Ba-3")
-        write(os.path.join(self.seat, "rapport.md"), CONTROL_REPORT)
+        write(os.path.join(self.seat, "rapport.md"), CONTROL_REPORT.replace("{played}", self.played[:8]))
 
     def constate(self, item, tour="tour-6"):
         return script("reparations.py", "--constate", tour, item, self.seat, "--registre", self.reg, "--racine", self.tmp)
@@ -197,7 +210,8 @@ class Registry(unittest.TestCase):
     def test_anything_but_corrigé_with_a_screen_is_refused_and_changes_nothing(self):
         before = read(self.reg)
         for item, word in (("A3", "autre"), ("A4", "encore là"), ("A6", "pas atteint"), ("A1", "screen"),
-                           ("A9", "no line"), ("A8", "pas pris"), ("A5", "no line")):
+                           ("A10", "no line"), ("A8", "pas pris"), ("A5", "no line"),
+                           ("A9", "no line")):
             code, out = self.constate(item)
             self.assertEqual(code, 1, f"{item}: {out}")
             self.assertIn(word, out, item)
@@ -210,6 +224,46 @@ class Registry(unittest.TestCase):
         code, out = self.constate("A2")
         self.assertEqual(code, 1, out)
         self.assertIn("rapport.md", out)
+
+    def test_only_a_control_seat_of_the_same_round_constates(self):
+        # Review of « constate », M5: a folder outside sieges/<tour>/controle/ (a wave seat, another round, anywhere).
+        before = read(self.reg)
+        for where in (os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-6", "lotB", "a"),
+                      os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-5", "controle", "Ba"),
+                      os.path.join(self.tmp, "ailleurs", "controle", "Ba"),
+                      os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-6", "controle")):
+            write(os.path.join(where, "rapport.md"), CONTROL_REPORT.replace("{played}", self.played[:8]))
+            code, out = script("reparations.py", "--constate", "tour-6", "A2", where, "--registre", self.reg, "--racine", self.tmp)
+            self.assertEqual(code, 1, f"{where}: {out}")
+            self.assertIn("controle", out, where)
+        self.assertEqual(read(self.reg), before)
+
+    def test_the_seat_played_a_commit_that_holds_the_repair(self):
+        # M5: « code testé » on top of the seat's report, a commit after (or at) the commit the line names.
+        before = read(self.reg)
+        report = os.path.join(self.seat, "rapport.md")
+        git(self.tmp, "checkout", "-q", "--orphan", "ailleurs")
+        write(os.path.join(self.tmp, "autre.txt"), "x\n")
+        git(self.tmp, "add", "autre.txt")
+        git(self.tmp, "commit", "-q", "-m", "a code without the repair")
+        elsewhere = git(self.tmp, "rev-parse", "HEAD").stdout.strip()
+        for head, word in ((f"code testé : {elsewhere[:8]}\n", "does not hold"), ("joué par : x\n", "code testé"),
+                           (f"code testé : {self.fix[:8]}0000\n", "code testé")):
+            write(report, head + CONTROL_REPORT.split("\n", 1)[1])
+            code, out = self.constate("A2")
+            self.assertEqual(code, 1, out)
+            self.assertIn(word, out)
+            self.assertEqual(read(self.reg), before)
+        write(report, f"code testé : {self.fix}\n" + CONTROL_REPORT.split("\n", 1)[1])
+        code, out = self.constate("A2")
+        self.assertEqual(code, 0, "the commit of the repair itself: " + out)
+
+    def test_a_line_without_its_commit_is_not_constated(self):
+        before = read(self.reg)
+        write(self.reg, before.replace(f"\tA7\tB/a\t21\ttenté\t{self.fix[:8]}\t", "\tA7\tB/a\t21\ttenté\t-\t"))
+        code, out = self.constate("A7")
+        self.assertEqual(code, 1, out)
+        self.assertIn("commit", out)
 
     def test_the_other_lines_are_kept_byte_for_byte(self):
         before = read(self.reg).splitlines()
@@ -393,6 +447,63 @@ class LotGivesItselfAState(ToyRegister):
         code, out = script("reparations.py", "--lot", BRANCH, cwd=self.repo)
         self.assertEqual(code, 2, out)
 
+    # --- Review of « constate »: M1, M4, M6, M2 --------------------------------------------------------------------------
+
+    def test_the_sorter_s_sentence_erased_is_refused(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", "", "tour-6/lotB/a", "")))
+        self.refused("tour-6 A2", "acceptance sentence")
+
+    def test_a_lot_does_not_remove_a_line(self):
+        self.put(self.lines[:3])
+        self.commit("A3 taken out")
+        self.refused("tour-6 A3", "removes")
+
+    def test_a_lot_does_not_add_a_line_not_even_pas_pris(self):
+        for said in ("tenté", "pas pris"):
+            with self.subTest(said=said):
+                git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+                self.lot(add=[row("tour-6", "A9", "C/a", "4", said, "7777777", "r7", "", "", "", "tour-6/lotC/a", "")])
+                self.refused("tour-6 A9", "adds")
+
+    def test_a_lot_does_not_lower_a_state(self):
+        # The integration: A2 « rejoué » (the portal), A3 « tenté » (another try); the lot merged it in.
+        git(self.repo, "checkout", "-q", "int")
+        lines = list(self.lines)
+        lines[2] = row("tour-6", "A2", "B/a", "15", "rejoué", "7777777", "r7", "rejoué au portail", "", PHRASE, "tour-6/lotB/a", "")
+        lines[3] = row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "r8", "", "", "", "tour-6/lotB/a", "")
+        self.put(lines)
+        self.commit("the portal and another try")
+        git(self.repo, "checkout", "-q", BRANCH)
+        git(self.repo, "merge", "-q", "--no-edit", "int")
+        for i, text, word in ((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", ""), "rejoué"),
+                              (3, row("tour-6", "A3", "B/a", "8", "pas pris", "-", "-", "", "", "", "tour-6/lotB/a", ""), "pas pris")):
+            with self.subTest(i=i):
+                git(self.repo, "reset", "-q", "--hard", "HEAD")
+                mine = list(lines)
+                mine[i] = text
+                self.put(mine)
+                self.commit("lower")
+                self.refused(word)
+                git(self.repo, "reset", "-q", "--hard", "HEAD^")
+
+    def test_a_lot_changes_no_other_cell(self):
+        for i, text in ((3, row("tour-6", "A3", "B/a", "8", "pas pris", "-", "-", "une note", "", "", "tour-6/lotB/a", "")),
+                        (3, row("tour-6", "A3", "B/b", "8", "tenté", "7777777", "-", "", "", "", "tour-6/lotB/a", "")),
+                        (1, row("tour-5", "T5-01", "A/a", "12", "corrigé", "abc1234", "FooTest", "réécrite", ""))):
+            with self.subTest(text=text):
+                git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+                self.lot((i, text))
+                code, out = self.rule()
+                self.assertEqual(code, 1, out)
+
+    def test_another_line_separator_or_control_character_is_refused(self):
+        for sep in (" ", " ", "\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", "\r"):
+            with self.subTest(sep=repr(sep)):
+                git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+                self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "")
+                          + sep + row("tour-6", "A3", "B/a", "8", "constaté", "7777777", "r7", "", "", "", "tour-6/lotB/a", "x#1")))
+                self.refused("character")
+
     def test_a_lot_that_does_not_touch_the_register_is_not_a_word(self):
         write(os.path.join(self.repo, "app.txt"), "code\n")
         self.commit("code only")
@@ -474,16 +585,37 @@ class PortalSetsRejoue(ToyRegister):
         self.assertEqual(rows[("A2", "15")]["etat"], "tenté", out)
         self.assertEqual(rows[("A3", "8")]["etat"], "tenté", "a replay the portal did not play")
 
-    def test_a_test_proof_holds_when_the_portal_ran_it_green(self):
-        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "FooTest#works", "", "", PHRASE, "tour-6/lotB/a", "")),
-                 (3, row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "BarTest#cut", "", "", "", "tour-6/lotB/a", "")))
-        rows, out, _ = self.promote("filtre:FooTest.works", "filtre:BazTest")
-        self.assertEqual(rows[("A2", "15")]["etat"], "rejoué", out)
-        self.assertEqual(rows[("A3", "8")]["etat"], "tenté", "a test the portal did not run")
-        git(self.repo, "reset", "-q", "--hard", self.base)
-        git(self.repo, "checkout", "-q", BRANCH)
-        rows, out, _ = self.promote("filtre:BarTest")
-        self.assertEqual(rows[("A3", "8")]["etat"], "rejoué", "the whole class ran")
+    def tests_in_the_branch(self):
+        """FooTest#works and BarTest#cut, @Test of app/src/test in the lot's branch; BarTest#gone is @Ignore."""
+        write(os.path.join(self.repo, "app/src/test/java/com/pocketstudio/app/x/FooTest.kt"),
+              "package com.pocketstudio.app.x\n\nimport org.junit.Test\n\nclass FooTest {\n    @Test\n    fun works() {}\n}\n")
+        write(os.path.join(self.repo, "app/src/test/java/com/pocketstudio/app/x/BarTest.kt"),
+              "package com.pocketstudio.app.x\n\nimport org.junit.Ignore\nimport org.junit.Test\n\nclass BarTest {\n"
+              "    @Test\n    fun cut() {}\n\n    @Ignore\n    @Test\n    fun gone() {}\n}\n")
+        self.commit("the lot's tests")
+
+    def test_a_test_proof_holds_for_the_filters_the_portal_really_passes(self):
+        # Review of « constate », M3: the forms of zone_filters (rapport-zone.py turns « Classe#méthode » into
+        # « Classe.méthode »; a team writes a class, its package, or « *Classe »), the test a @Test of the merged head.
+        cases = (("FooTest#works", "filtre:com.pocketstudio.app.x.FooTest", "rejoué"),
+                 ("FooTest#works", "filtre:*FooTest", "rejoué"),
+                 ("FooTest#works", "filtre:FooTest.works", "rejoué"),
+                 ("FooTest#works", "filtre:com.pocketstudio.app.x.FooTest.works", "rejoué"),
+                 ("FooTest#works", "filtre:FooTest", "rejoué"),
+                 ("FooTest#works", "filtre:*Foo*", "tenté"),
+                 ("FooTest#works", "filtre:BazTest", "tenté"),
+                 ("FooTest#works", "filtre:FooTest.other", "tenté"),
+                 ("BarTest#gone", "filtre:BarTest", "tenté"),
+                 ("BarTest#nothing", "filtre:BarTest", "tenté"))
+        for proof, f, want in cases:
+            with self.subTest(proof=proof, filtre=f):
+                git(self.repo, "checkout", "-q", "-f", "int")
+                git(self.repo, "reset", "-q", "--hard", self.base)
+                git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+                self.tests_in_the_branch()
+                self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", proof, "", "", PHRASE, "tour-6/lotB/a", "")))
+                rows, out, _ = self.promote(f)
+                self.assertEqual(rows[("A2", "15")]["etat"], want, out)
 
     def test_only_the_lot_s_own_tenté_lines_are_promoted(self):
         # A « tenté » the integration held before (another lot's), and a « pas pris »: untouched.
@@ -841,6 +973,23 @@ class DashboardLine(unittest.TestCase):
         self.assertLess(tour6.index("Réparations"), tour6.index("Toutes remplies"), "under the round's own table")
         self.assertFalse(any(l.startswith("| R") or "réparations" in l.lower() for l in out.splitlines() if l.startswith("|")),
                          "not a row of the stop criterion: its A to J stay as they are")
+
+    def test_every_reader_refuses_another_line_separator(self):
+        # Review of « constate », M2: one reader for every program; a « tenté » line hiding « constaté » behind U+2028.
+        text = read(self.reg).replace("\ttenté\t1\t-\t\t\n", "\ttenté\t1\t-\t\t tour-6\tA3\tB/a\t8\tconstaté\t1\t-\t\t\n", 1)
+        self.assertIn(" ", text)
+        write(self.reg, text)
+        code, out = script("tableau-de-bord.py", os.path.join(self.tmp, "tour-6"), "--base", os.path.join(self.tmp, "base.tsv"),
+                           "--verdicts", os.path.join(self.tmp, "v.tsv"), "--caches", os.path.join(self.tmp, "c.tsv"),
+                           "--corrections", self.reg)
+        self.assertEqual(code, 0, out)
+        self.assertIn("Réparations (registre corrections.tsv) : illisible", out)
+        base = os.path.join(self.tmp, "base.tsv")
+        before = read(base)
+        code, out = script("applique-corrections.py", "--corrections", self.reg, "--base", base, "--sieges", self.tmp)
+        self.assertEqual(code, 2, out)
+        self.assertIn("U+2028", out)
+        self.assertEqual(read(base), before)
 
     def test_the_real_register_is_the_default(self):
         board = read(os.path.join(HERE, "tableau-de-bord.py"))

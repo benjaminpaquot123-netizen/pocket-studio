@@ -40,4 +40,20 @@ class Tour6PlainWordsTest {
         // « en même temps », « longtemps », « de temps en temps » are not the beat.
         assertTrue(PlainWords.of("Écoute en même temps, depuis longtemps.").none { it.startsWith("Temps") })
     }
+    /**
+     * Tour 6, lot « tuto4 », round trip 1 after Da-5, M4 (screen 134: ブレイク « ドラムが止まります » while the Break keeps
+     * the hats, the « Rim » and the stab): the Break's plain line says what stops, the kick and the bass, in every language.
+     */
+    @Test
+    fun theBreaksPlainLineSaysTheKickAndTheBassStop() {
+        val line = PlainWords.of("Écoute le Break.").single { it.startsWith("Break") }
+        val bad = ArrayList<String>()
+        if ("batterie" in line || "kick" !in line || "basse" !in line) bad += "fr: $line"
+        for (lang in com.pocketstudio.model.i18n.Lang.entries - com.pocketstudio.model.i18n.Lang.FR) {
+            val t = com.pocketstudio.model.i18n.I18n.table(lang)[line]
+            if (t == null) bad += "${lang.code}: no translation of « $line »"
+        }
+        com.pocketstudio.model.i18n.I18n.table(com.pocketstudio.model.i18n.Lang.JA)[line]?.let { if ("ドラムが止" in it) bad += "ja: $it" }
+        assertTrue("Break lines that say the drums stop:\n" + bad.joinToString("\n"), bad.isEmpty())
+    }
 }

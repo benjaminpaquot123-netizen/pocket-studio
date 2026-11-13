@@ -30,7 +30,7 @@ for f in "$BENCH"/cmds/*.pscmd; do
     grep -q "^C 210 1 0 0$" "$OUT/cmds/$s.pscmd" || { echo "no RENDER line in $f" >&2; exit 1; }
 done
 export BENCH OUT
-ls "$OUT/cmds" | sed 's/\.pscmd$//' | xargs -P "$JOBS" -I{} sh -c '
+ls "$OUT/cmds" | grep "\.pscmd$" | sed "s/\.pscmd$//" | xargs -P "$JOBS" -I{} sh -c '
     [ -s "$OUT/json/{}.json" ] && exit 0
     t0=$(date +%s.%N)
     "$OUT/tools/ps_render" "$OUT/cmds/{}.pscmd" "$OUT/tmp/{}.wav" > /dev/null || { echo "FAILED: {}" >&2; exit 255; }

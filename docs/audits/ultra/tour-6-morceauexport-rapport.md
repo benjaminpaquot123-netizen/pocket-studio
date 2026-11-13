@@ -4,9 +4,9 @@ Source : `lots-correction.md` (lot 6 et complément 2, eq/tour-6-tri-gaucher 974
 `ccr-80af1a1b-mn0wec` (5957fac5, gaucher, langues et kick dedans). Trois sous-agents, un par groupe de fichiers, chacun
 dans sa copie du dépôt ; branches fusionnées ici. Aucun texte neuf à traduire (mots déjà traduits réutilisés).
 
-## Corrigé (rouge puis vert) : 21 sur 24, plus N25
+## Corrigé (rouge puis vert) : 20 sur 24, plus N25
 - **RhythmViewModel.kt** : R4 (« la fin sera coupée » quand la chanson dépasse le morceau), U28 (« + Nouvelle partie »
-  sur un morceau vide garde A avant B), U11 (« Fin » arrête la lecture), U20 (« Écouter » garde la ligne de la prise),
+  sur un morceau vide garde A avant B), U20 (« Écouter » garde la ligne de la prise),
   U3 (la scène affichée seule ne rend pas l'export « changé »), U5 (le format choisi en Simple est gardé en Pro),
   U14 (« Fait : accords… » nomme les accords posés), N25 (« Aller dans la partie… » pendant la lecture montre la
   partie, qui arrive à la mesure suivante, sans arrêter), T2 part `loadTutoKit` (le pad du grondement garde « Rumble »).
@@ -18,12 +18,18 @@ dans sa copie du dépôt ; branches fusionnées ici. Aucun texte neuf à traduir
   pendant qu'il est ouvert).
 - **ProjectsScreen.kt** : U23 (« Chargement de la liste… » et un signe d'attente pendant la lecture du catalogue).
 - **LaunchChoice.kt** : U10 (médaillons ronds de même taille, « Défis » aligné).
-- **TrackBar.kt** : N18 (« ♪ Son » écrit), R19 part pistes (un chevron sur le fondu où la rangée continue).
+- **TrackBar.kt** : N18 (« ♪ Son » écrit), R19 part pistes (une flèche ← / → sur le fondu où la rangée continue ; une
+  flèche et non un chevron : le banc ne connaissait pas le chevron gauche, self-test rouge `BenchSelfTest#everyIconOfTheAppHasItsShape`).
 - **PadLiveScreen.kt** : R10 (un seul Partager par écran), U18 (« Moins » montre une flèche de pli, pas ⋯), U21 (les
   pads gardent taille et place quand le bandeau « Set gardé » apparaît, debout sur 360×780 à 130 % (testé) ; couché ou
   sur un écran plus petit, les pads rétrécissent encore un peu : non corrigé, non testé).
 
-## Laissé de côté (3 défauts du lot, plus 2 notes)
+## Laissé de côté (4 défauts du lot, plus 2 notes)
+- **U11** (« Fin » arrête la lecture) : fait puis annulé. Le self-test du banc sur le lot fusionné avec l'intégration a
+  rougi deux fois à cause de lui (prouvé en coupant l'arrêt : tous deux verts) : `BenchTour1Test#aKeptPerformanceIsHeard`
+  (« Écouter » après « Fin » ne jouait rien) et `BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone`
+  (« Enregistrer ce que je joue » après une prise ne démarrait pas). Faire quitter au moteur le morceau de la prise avant
+  l'arrêt n'a pas suffi. « Fin » laisse la musique continuer, comme avant ; cause à trouver dans `RhythmViewModel`.
 - **U1** (« Joue d'ici » annonce le saut) : la file d'attente de la partie est voulue ; le dire demande `PlayStrip.kt`
   (et `AppRoot.kt`), hors du lot (ex. « %s : ensuite », déjà traduit).
 - **U9** (effets ouverts depuis Pad Live titrés « Remix ») : le titre est construit dans `ui/AppRoot.kt` (dialogue des
@@ -44,11 +50,10 @@ dans sa copie du dépôt ; branches fusionnées ici. Aucun texte neuf à traduir
 padlive_more, padlive_perf, padlive_recording, padlive_small, padlive_home, share_sheet, partage/loop_pro,
 partage/loop_simple, tracks.
 
-tests: *Lot6* *NewSongPartSceneTest *ShareSheet* *TrackBar* *ExportCard* *ProjectsTrash* *PadLiveTake* *TutoKit*
+tests: *Lot6* *NewSongPartSceneTest *BenchTour1Test *BenchAmeneesTest *BenchSelfTest *ShareSheet* *TrackBar* *ExportCard* *ProjectsTrash* *PadLiveTake* *TutoKit*
 
 chemin: Morceau › chanson du Remix plus longue | test: Lot6VmSongOverrunTest#aSongLongerThanTheProjectSaysItsEndWillBeCut
 chemin: Structure › + Nouvelle partie sur morceau vide | test: Lot6VmNewPartTest#aNewPartOnAnEmptySongKeepsTheLoopingPartFirst
-chemin: Live › Fin d'une prise | test: Lot6VmTakeEndTest#endingATakeStopsThePlayback
 chemin: Live › Écouter la prise | test: Lot6VmTakeListenTest#listeningToTheTakeKeepsItsLine
 chemin: Partager › export après changement de partie affichée | test: Lot6VmExportStaleTest#theSceneShownAloneNeverMakesTheSongsExportStale
 chemin: Partager Simple › Mix Pro, format | test: Lot6VmExportFormatTest#theFormatChosenInSimpleIsKeptInPro

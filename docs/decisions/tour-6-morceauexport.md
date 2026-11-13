@@ -1,6 +1,6 @@
 - 2026-11-12 : R4, l'avertissement est la boîte au texte déjà traduit de la feuille de partage (« la fin sera coupée »), y compris quand un projet vide est allongé. Raison : aucun texte neuf. Retour arrière : le bloc après `_tempoSet` dans `useSong`.
 - 2026-11-12 : U28, la partie affichée passe en premier seulement si elle a du contenu. Raison : pas de première partie muette. Retour arrière : la valeur `first` de `newSongPart`.
-- 2026-11-12 : U11, « Fin » arrête la lecture (aussi une prise trop courte et la fin automatique à 128 parties) ; ■ ne l'arrête pas deux fois. Retour arrière : le paramètre `stop` de `finishPerformance`.
+- 2026-11-13 : U11 annulé (« Fin » ne coupe plus la lecture) : il cassait « Écouter » et « Enregistrer ce que je joue » juste après une prise (self-test du banc, 2 rouges). Raison : un défaut moyen ne vaut pas deux régressions. Retour arrière : rejouer 3a3691f8 et 413e088a une fois la cause trouvée.
 - 2026-11-12 : U20, « Écouter » garde la ligne de la prise ; ✕ la retire. Retour arrière : `_take.value = Ready` dans `listenPerformance`.
 - 2026-11-12 : U3, `madeHash` ignore la partie affichée seulement s'il y a un morceau. Raison : sans morceau, la boucle partagée est la partie affichée. Retour arrière : le `switchScene(0)` de `madeHash`.
 - 2026-11-12 : U5, le Mix suit le choix de format du Simple une fois enregistré ; sinon WAV. Raison : ne pas changer le défaut des exports. Retour arrière : `sharePrefs` et son écouteur.
@@ -14,7 +14,7 @@
 - 2026-11-12 : U23, « Chargement de la liste… » (déjà traduit) et un signe d'attente ; ProjectsViewModel non touché. Retour arrière : le bloc d'attente de `ProjectsScreen`.
 - 2026-11-12 : U10, médaillons Défis et Pad Live ronds, 48 dp. Retour arrière : leurs formes dans `LaunchChoice`.
 - 2026-11-12 : N18, « ♪ Son » (texte déjà traduit) ; TalkBack garde « Changer le son de X ». Retour arrière : le libellé du bouton.
-- 2026-11-12 : R19 (pistes), un chevron sans toucher sur le fondu. Raison : un bouton couvrirait la puce coupée. Retour arrière : `RowMoreSign`.
+- 2026-11-13 : R19 (pistes), une flèche ← / → (ArrowBack / ArrowForward) sans toucher sur le fondu, pas un chevron : le banc ne décrit pas le chevron gauche (self-test rouge). Raison : un bouton couvrirait la puce coupée. Retour arrière : `RowMoreSign`.
 - 2026-11-12 : R10, la prise gardée garde son Partager, celui du menu « Plus » laisse place vide. Retour arrière : la ligne `if (ui.takeDone) Spacer` de `MoreRow`.
 - 2026-11-12 : U21, tous les messages du Pad Live passent sous les pads (debout et couché). Coût : un vide sous les pads sur un grand téléphone. Retour arrière : `notes()` au-dessus de `PadsGrid`.
 - 2026-11-12 : U18, « Moins » a une flèche de pli (ExpandLess). Retour arrière : un `if` de `PadLiveControls`.

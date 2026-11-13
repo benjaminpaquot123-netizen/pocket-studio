@@ -37,9 +37,9 @@ controle: Da-6 | code testé: fbf14ee1 | bloqués: 0 | graves neufs: 0
 - Da-6 (ja, Facile, 12 chapitres) : Bravo en 164 gestes, 4 hésitations, 0 bloqué, aucun grave ; T4 corrigé (écrans 87 et 109 : « ここをタップ » vu à l'écran, un geste par note), « Accords » compté en accords (écran 94), « Déjà fait » sans « À toi » au ch. 12 (écran 160) ; T2, T7a, T7c, T8 toujours corrigés (écrans 110, 6, 96, 160). Dossier `sieges/tour-6/controle/Da-6/` dans la branche. Aucun commit de code du tuto après `fbf14ee1`.
 
 ## Contrôles sur la branche (2e essai)
-controle: Ha-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
-controle: Da-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
-controle: Bb-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
+- (historique, joué sur e4286b40 de l'ancienne histoire `eq/tour-6-tuto3`, pas un ancêtre de cette branche) Ha-4 : bloqués 0, graves neufs 0
+- (historique, joué sur e4286b40 de l'ancienne histoire `eq/tour-6-tuto3`, pas un ancêtre de cette branche) Da-4 : bloqués 0, graves neufs 0
+- (historique, joué sur e4286b40 de l'ancienne histoire `eq/tour-6-tuto3`, pas un ancêtre de cette branche) Bb-4 : bloqués 0, graves neufs 0
 
 - Ha-4 (fr) : Bravo en 233 gestes ; T4 corrigé (écran 98) ; T8 corrigé (écran 242).
 - Da-4 (ja) : Bravo en 167 gestes, 5 hésitations ; T4 corrigé (écrans 80-106).
@@ -56,7 +56,7 @@ controle: Bb-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
 - Da-5 : la règle de la note la plus proche tient (ses flèches successives suivent chaque fois la note restante la plus proche) ; ses dix glissés venaient de ne pas savoir qu'un toucher amène la note (Da-4 l'a touchée : 3 gestes).
 
 ## Corrections et rejeux
-corrige: T4 | gravité: grave | rejeu impossible : le siège qui a vu le défaut (Da-3, joué sur 4cb88f55) n'est pas dans l'intégration, sa branche n'a pas été poussée ; le contrôle Da-4 l'a dit corrigé (écrans 80-106) et Tour6TutoFlechesTest#theLinePointsToTheNearestNoteLeft le garde sur tous les styles
+corrige: T4 | gravité: grave | rejeu impossible : le siège qui a vu le défaut (Da-3, joué sur 4cb88f55) n'est pas dans l'intégration, sa branche est poussée mais pas fusionnée ; le contrôle Da-4 l'a dit corrigé (écrans 80-106) et Tour6TutoFlechesTest#theLinePointsToTheNearestNoteLeft le garde sur tous les styles
 - Zone de ce lot au portail : « tuto3b » (branche `eq/tour-6-tuto3b`, histoire refaite de `eq/tour-6-tuto3`) ; première relecture neuve gardée dans `tour-6-tuto3b-relecture-1.md` (relu 600abd29, 0 bloquant, 0 grave), re-signée dans `tour-6-tuto3b-relecture.md` après le renommage.
 
 tests: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest com.pocketstudio.app.tuto.Tour6TutoLineGoTest com.pocketstudio.app.tuto.Tour6TutoChordWordsTest com.pocketstudio.app.tuto.Tour6TutoAlreadyQuietTest

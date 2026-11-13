@@ -151,6 +151,20 @@ class Tour6Tuto4HouseTest {
         report("reverb steps that lead elsewhere", bad)
     }
 
+    /** M7: one word for one thing: the song goes out by « Partager » (the button's word), never « exporter ». */
+    @Test
+    fun theSongIsShared() {
+        val bad = mutableListOf<String>()
+        allTexts().filter { Regex("""(?i)\bexport""").containsMatchIn(it) }.forEach { bad += "fr: « $it »" }
+        val share = step("share")
+        if ("« Partager »" !in share.text) bad += "fr: the button not named: ${share.text}"
+        val title = chapter("export").title
+        if (!title.startsWith("Partage")) bad += "fr: title « $title »"
+        for (lang in translated) tr(lang, share.text)?.let { v -> if (word(lang, "Partager") !in v) bad += "${lang.code}: no « ${word(lang, "Partager")} »: $v" }
+        everyLanguage(listOfNotNull(share.text, share.textPro, title), bad)
+        report("texts with another word for « Partager »", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

@@ -4,21 +4,25 @@ Source : consigne de la discussion principale (après le lot 6) ; défauts laiss
 fr/en/de, U1 part PlayStrip). Base : tête de `ccr-80af1a1b-mn0wec` (5957fac5). Fichiers : `padlive/Challenge.kt`,
 `model/DefaultNames.kt`, `ui/PlayStrip.kt`, une clé neuve dans les 14 `i18n/*/padlive.json`, tests et une capture.
 
-## Corrigé (rouge puis vert)
+## Corrigé (rouge puis vert) : 2 sur 3
 - **« Boum boum »** (candidat du banc, confirmé au lot 6) : avant et pendant l'essai, le panneau du défi nomme les pads
-  à taper, « À taper : A9 · Klaxon » (place et son ; plusieurs pads séparés par des virgules). Une clé neuve
+  à taper, « À taper : A9 · Klaxon » (place et son, le son dit comme les pads le montrent, dans la langue de
+  l'interface ; plusieurs pads séparés par des virgules). Une clé neuve
   « À taper : %s », traduite dans les 14 langues (ajoutée seule en fin de chaque `padlive.json`). Capture
   `padlive_challenge` réenregistrée et regardée : la ligne tient ; les pads perdent un peu de hauteur (une ligne de plus
   dans le panneau).
 - **T2 hors français, anglais, allemand** : les noms des voix intégrées (`PadVoice.NAMES` : 808, Kick studio, Kick dur,
   Rumble) sont des noms de l'appli dans `DefaultNames` : affichés dans la langue de l'interface (럼블, ランブル), comme
   la consigne du tuto, et reconnus dans n'importe quelle langue. Tous les tests de `project-model` passent.
-- **U1, part PlayStrip** : la position porte la partie en attente et la bande dit « Refrain : ensuite » à la place de
-  la mesure jusqu'à ce qu'elle arrive (mots déjà traduits).
+
+## Fait à moitié
+- **U1, part PlayStrip seulement** : la position sait porter la partie en attente et la bande dit alors « Refrain :
+  ensuite » à la place de la mesure (mots déjà traduits). Pas encore visible dans l'appli : voir la limite.
 
 ## Limite
-- U1 n'est visible dans l'appli qu'une fois `SessionUi.queued` passé à `playPosition` depuis `ui/AppRoot.kt` (lot 3,
-  hors de ce lot) : d'ici là rien ne change à l'écran. Le test prouve la bande et la position, pas le câblage.
+- U1 n'est visible dans l'appli qu'une fois `SessionUi.queued` passé à `playPosition` par ses appelants
+  (`ui/UnderTopBar.kt` l. 60, `report/ReportWiring.kt` l. 43 ; part AppRoot du lot 3), hors de ce lot : d'ici là rien
+  ne change à l'écran. Le test prouve la bande et la position, pas le câblage.
 - T2 : la part `loadTutoKit` (le pad garde « Rumble ») est au lot 6 ; ce lot rend ce nom traduit.
 
 tests: *Lot7ChallengePadTest *Lot7PlayStripNextTest *PadLiveChallenge* *PlayStrip*

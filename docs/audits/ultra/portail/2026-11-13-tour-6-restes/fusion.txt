@@ -1,0 +1,8 @@
+fusion: 9cc8e9c6397fee224b95146c39c9ed8692c0c905
+branche: eq/tour-6-restes
+tete: 851c28e64e03876791acc615ce2b1fd67e398425
+relecture: docs/audits/ultra/tour-6-restes-relecture.md
+relu: 347f060503d1ed5fe6290b8ab01845195d28b05f
+filtres: *Lot7ChallengePadTest *Lot7PlayStripNextTest *PadLiveChallenge* *PlayStrip* *Lot7ChallengePadTest *Lot7PlayStripNextTest *PadLiveChallenge* *PlayStrip*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

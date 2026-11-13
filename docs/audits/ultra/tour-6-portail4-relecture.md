@@ -1,7 +1,7 @@
-# Tour 6, lot du banc « portail4 » : relecture neuve (deux passes)
-Relu : 8f80df83819ea328d0e0a28905ebbd8e6f5fdfeb
+# Tour 6, lot du banc « portail4 » : relecture neuve (trois passes)
+Relu : 5dacfa15c8978b1d99c779bada359dbf1cff8246
 
-Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `e8503cbe` (2 graves), seconde sur `8f80df83` (les corrections de la première). Lu : `git diff ce0aed6f..e8503cbe` puis `git diff e8503cbe..8f80df83`, `AUDIT-ULTRA.md` §13.3 et §13.5, les deux fiches de `docs/AIDE-FUSIONS-TESTS.md`, `relecture-verdict.py`, la fiche 6 du gabarit, le rapport et les décisions du lot, la relecture de portail3 comme modèle. Gradle n'a pas été lancé (consigne) ; l'atelier principal n'a pas été touché. Essais sur dépôts jouets et arbres jetables (`git archive`) seulement.
+Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `e8503cbe` (2 graves), seconde sur `8f80df83` (les corrections de la première), troisième, courte, sur `5dacfa15` (la fusion de l'intégration `8afb9abc` dans la branche, puis la règle reportée au paquet 6). Lu : `git diff ce0aed6f..e8503cbe` puis `git diff e8503cbe..8f80df83`, `AUDIT-ULTRA.md` §13.3 et §13.5, les deux fiches de `docs/AIDE-FUSIONS-TESTS.md`, `relecture-verdict.py`, la fiche 6 du gabarit, le rapport et les décisions du lot, la relecture de portail3 comme modèle. Gradle n'a pas été lancé (consigne) ; l'atelier principal n'a pas été touché. Essais sur dépôts jouets et arbres jetables (`git archive`) seulement.
 
 ## Ce qui a été refait, première passe (`e8503cbe`)
 
@@ -23,6 +23,13 @@ Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `e85
 - 11 contrôles cassés exprès, un par un, puis remis (copie jetable) : tous font rougir `test_portail4.py` : fichiers partagés comptés dès que le lot touche la zone (4 rouges), les trois noms neufs de `ZONE_IF_SAID` (5), `-z` de la zone (5), `-z` des fichiers changés par une fusion (1), blocs `~~~` (2), format de chapitre de `Da` (1), formes de la ligne `controle:` (2), `--no-renames` (1), « .. » dans l'id (1), sortie 2 sans options (1), `-z` du mode simple (1).
 - Sommeil et sortie avant la fusion : inchangés par la seconde passe (`fusion-equipes.sh` et `pre-vol.sh` non touchés depuis `e8503cbe`).
 
+## Ce qui a été refait, troisième passe (`5dacfa15`)
+
+- La fusion `c85d4c0e` (parents `fd1c2637`, ma relecture de la seconde passe, et `8afb9abc`, tête poussée de l'intégration) n'apporte que l'intégration : le diff de `8afb9abc` à `5dacfa15` ne montre que les neuf fichiers du lot ; le diff de `fd1c2637` à `c85d4c0e` sur les six scripts du lot est vide : rien du lot n'est perdu.
+- Le commit `5dacfa15` ne fait que passer 5 → 6 : la ligne du portail (`from_paquet 6`), `rule_from 6` du pré-vol, `KNOWN_RULES="17 b3bb3a0b98"` (recalculé par moi sur le portail : 17 lignes, même empreinte), deux épingles de `test_portail4.py`, le cas « avant le paquet 6 » de `test_pre_vol.sh`, une ligne de docstring, le rapport et les décisions (une ligne neuve qui dit pourquoi). Aucun contrôle de la règle ne change.
+- Le dépôt est au paquet 5 (`portail-paquet.txt`) : la règle dort aujourd'hui. Le cas de `test_pre_vol.sh` qui le prouve tourne au paquet 4 ; je l'ai rejoué au paquet 5 sur une copie jetable : « before batch 6 … only said » et « before batch 6 the portal merges … » restent verts. Au paquet 6, les cas du dépôt jouet refusent (sortie 10, atelier immobile) : verts.
+- Tests sur la tête : `test_pre_vol.sh` « tout est vert » ; `test_socle.py` 29 OK ; `test_portail3.py` 77 OK ; `test_portail4.py` 59 OK ; `test_ultra_bench.py` « ultra bench scripts: OK ».
+
 ## Constats
 
 | id | gravité | constat | fichier:ligne | état |
@@ -42,7 +49,7 @@ Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `e85
 
 ## Ce qui tient
 
-- Le portail : appel unique, sous `from_paquet 5`, sortie 10, avant la fusion, lecture seule ; `KNOWN_RULES` du pré-vol à jour (17 règles) ; aujourd'hui (paquet 3) rien ne change pour aucun lot.
+- Le portail : appel unique, sous `from_paquet 6` depuis `5dacfa15` (`from_paquet 5` lors des deux premières passes), sortie 10, avant la fusion, lecture seule ; `KNOWN_RULES` du pré-vol à jour (17 règles) ; aujourd'hui (paquet 5) rien ne change pour aucun lot.
 - La date du siège : chaque commit propre au lot qui change la zone ou un fichier partagé est ancêtre de `code testé`, et ces fichiers sont identiques au commit joué et à la tête : une fusion qui les change après le siège est vue.
 - Chaque contrôle neuf a un test qui rougit quand on le casse (11 sur 11 dans cette passe).
 

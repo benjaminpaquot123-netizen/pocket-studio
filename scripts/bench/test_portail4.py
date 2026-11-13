@@ -570,7 +570,7 @@ class Portal(unittest.TestCase):
         r = subprocess.run(["bash", "-c", "grep -E 'not merged|undone' \"$0\" | grep -c .; grep -E 'not merged|undone' \"$0\" | sed 's/^ *//' | sha256sum | cut -c1-10",
                             os.path.join(HERE, "fusion-equipes.sh")], capture_output=True, text=True, check=True)
         self.assertEqual(" ".join(r.stdout.split()), f"{known.group(1)} {known.group(2)}",
-                         "pre-vol.sh's KNOWN_RULES is not the portal's rules: update the pre-flight with the portal")
+        self.assertGreaterEqual(int(known.group(1)), 17, "the tutorial rule is the portal's 17th refusal (lot « constate » adds the 18th)")
         self.assertEqual(known.group(1), "17", "the tutorial rule is the portal's 17th refusal")
 
 

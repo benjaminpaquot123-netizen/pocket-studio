@@ -1456,8 +1456,11 @@ def red_green_pairs(root):
             again = None
             if not closed and not paired_by_name and changes_code(root, sha):
                 for r in closed_reds:
-                    if not {t for t in red_tests(root, r) if names(message, t)} - {t for t in red_tests(root, r)
-                                                                                 if _test_key(t) in claimed.get(r[0], set())}:
+                    # The cheap reading first (no git): a test of the red the message names, not claimed yet.
+                    if not claimed_by(r, message) - claimed.get(r[0], set()):
+                        continue
+                    if not {t for t in red_tests(root, r) if names(message, t)
+                            and _test_key(t) not in claimed.get(r[0], set())}:
                         continue
                     line = lot_line(root, r[0], sha)
                     if line is not None and _full(root, closer.get(r[0], "")) in line:

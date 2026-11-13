@@ -20,6 +20,8 @@ tests: *MyFilesNamesTest *MyFilesWaitTest *LanguageListPhoneOnTopTest *LanguageL
 | complément 3 n° 6 | défaut réel, corrigé | les noms des parties du morceau dans l'écriture de l'arabe, du hindi et du chinois (comme le japonais et le coréen) |
 | Complément 2 | rien pour ce lot | N19 à N28 sont aux lots 2 et 6 |
 
+ne corrige pas: N19 : grave du lot 2 « tuto-consignes » (TutoController.kt) seulement cité dans la ligne « Complément 2 »
+
 Corrigés : 9 sur 9, avec les restes ci-dessous (fichiers d'autres lots).
 
 ## Liste des chemins

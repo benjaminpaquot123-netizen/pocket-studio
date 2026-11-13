@@ -1,0 +1,851 @@
+#0 SIEGE lang=ja device=phone font=100 mode=simple theme=- fresh=non gestes.max=300 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.7 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 2b63db70e7 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 620
+#1 DOIGT welcome_learn « 学ぶ »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 32d8af5961 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 922
+#2 DOIGT mode_card_simple « シンプル »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 652592ee50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 289
+#3 DOIGT tuto_style_techno « テクノ »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0f65bfb0db | project=p-f7a4234e tuto=techno/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « マイプロジェクト 1 » ellipsized (« … »)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ なぜ？ » 364 x 21 dp (touch 364 x 48)
+#4 > touche 294 894
+#4 DOIGT tuto_listen «  例を聴く »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c94a6070e7 | project=p-f7a4234e tuto=techno/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 > touche 511 978
+#5 DOIGT tuto_next « 次へ  »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2a615f9d09 | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 813
+#6 DOIGT tuto_do «   自分でやる »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE bce2e1531f | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « テンポ » over the touchable « シートを閉じる » (66 x 33 dp)
+#7 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (7 x 15 dp)
+#7 LAYOUT OVERLAP « 閉じる » over the touchable « シートを閉じる » (42 x 21 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (86 x 53 dp)
+#7 LAYOUT OVERLAP «  BPM » over the touchable « シートを閉じる » (39 x 24 dp)
+#7 LAYOUT OVERLAP « 70 » over the touchable « シートを閉じる » (21 x 19 dp)
+#7 LAYOUT OVERLAP « 90 » over the touchable « シートを閉じる » (21 x 19 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « 140 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « 174 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « ½ » over the touchable « シートを閉じる » (14 x 24 dp)
+#7 LAYOUT OVERLAP « ×2 » over the touchable « シートを閉じる » (21 x 24 dp)
+#7 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 2 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 3 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 4 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 5 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 6 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 7 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 8 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 9 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 0 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « OK » over the touchable « シートを閉じる » (33 x 27 dp)
+#7 LAYOUT OVERLAP « リズムに合わせてタップ » over the touchable « シートを閉じる » (176 x 24 dp)
+#7 LAYOUT OVERLAP « 拍ごとにここをタップ。テンポが合わせて変わります。 » over the touchable « シートを閉じる » (293 x 37 dp)
+#7 > touche 111 845
+#7 DOIGT tempo_key_1 « 1 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 94bc873f8c | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (29 x 53 dp)
+#8 LAYOUT OVERLAP « 40〜300 の範囲 » over the touchable « シートを閉じる » (104 x 21 dp)
+#8 > touche 477 845
+#8 DOIGT tempo_key_3 « 3 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE c02103ef03 | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 13 » over the touchable « シートを閉じる » (57 x 53 dp)
+#9 > touche 294 845
+#9 DOIGT tempo_key_2 « 2 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b5e4f95fb6 | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 132 » over the touchable « シートを閉じる » (86 x 53 dp)
+#10 > touche 477 1106
+#10 DOIGT tempo_key_ok « OK »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc997c79ac | project=p-f7a4234e tuto=techno/Facile active=true step=tempo done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 978
+#11 DOIGT tuto_next_folded « 成功 »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8f3273a498 | project=p-f7a4234e tuto=techno/Facile active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 813
+#12 DOIGT tuto_do «   自分でやる »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 0699fa6088 | project=p-f7a4234e tuto=techno/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 曲のキー » over the touchable « シートを閉じる » (87 x 33 dp)
+#13 LAYOUT OVERLAP « 曲のキー：なし » over the touchable « シートを閉じる » (98 x 21 dp)
+#13 LAYOUT OVERLAP « スケール » over the touchable « シートを閉じる » (56 x 21 dp)
+#13 LAYOUT OVERLAP « メジャー » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « マイナー » over the touchable « シートを閉じる » (64 x 24 dp)
+#13 LAYOUT OVERLAP « ドリアン » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « マイナーペンタ » over the touchable « シートを閉じる » (112 x 24 dp)
+#13 LAYOUT OVERLAP « メジャーペンタ » over the touchable « シートを閉じる » (111 x 24 dp)
+#13 LAYOUT OVERLAP « ブルース » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « フリジアン » over the touchable « シートを閉じる » (79 x 24 dp)
+#13 LAYOUT OVERLAP « ハーモニックマイナー » over the touchable « シートを閉じる » (160 x 24 dp)
+#13 LAYOUT OVERLAP « キー » over the touchable « シートを閉じる » (28 x 21 dp)
+#13 LAYOUT OVERLAP « C » over the touchable « シートを閉じる » (12 x 24 dp)
+#13 LAYOUT OVERLAP « C♯ » over the touchable « シートを閉じる » (21 x 24 dp)
+#13 LAYOUT OVERLAP « D » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 LAYOUT OVERLAP « E♭ » over the touchable « シートを閉じる » (15 x 24 dp)
+#13 LAYOUT OVERLAP « E » over the touchable « シートを閉じる » (9 x 24 dp)
+#13 LAYOUT OVERLAP « F » over the touchable « シートを閉じる » (9 x 24 dp)
+#13 LAYOUT OVERLAP « F♯ » over the touchable « シートを閉じる » (18 x 24 dp)
+#13 LAYOUT OVERLAP « G » over the touchable « シートを閉じる » (12 x 24 dp)
+#13 LAYOUT OVERLAP « A♭ » over the touchable « シートを閉じる » (17 x 24 dp)
+#13 LAYOUT OVERLAP « A » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 LAYOUT OVERLAP « B♭ » over the touchable « シートを閉じる » (16 x 24 dp)
+#13 LAYOUT OVERLAP « B » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 > touche 242 911
+#13 DOIGT tuto_scale_Phrygian « フリジアン »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 1efea851b0 | project=p-f7a4234e tuto=techno/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 曲のキー：C · フリジアン » over the touchable « シートを閉じる » (161 x 21 dp)
+#14 > touche 498 1125
+#14 DOIGT tuto_root_5 « F »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 873d2f7671 | project=p-f7a4234e tuto=techno/Facile active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 曲のキー：F · フリジアン » over the touchable « シートを閉じる » (159 x 21 dp)
+#15 LAYOUT OVERLAP « できました！曲の色が決まりました。 » over the touchable « シートを閉じる » (272 x 24 dp)
+#15 LAYOUT OVERLAP « チュートリアルに戻る » over the touchable « シートを閉じる » (141 x 21 dp)
+#15 > touche 294 1203
+#15 DOIGT tuto_key_continue « チュートリアルに戻る »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 19eac5a128 | project=p-f7a4234e tuto=techno/Facile active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 978
+#16 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 90e9a8ee0c | project=p-f7a4234e tuto=techno/Facile active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 894
+#17 DOIGT tuto_next_big « 次の章   »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fe573cf2ed | project=p-f7a4234e tuto=techno/Facile active=true step=ready done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 894
+#18 DOIGT tuto_mark «   わかった »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8b978a21db | project=p-f7a4234e tuto=techno/Facile active=true step=kick_hear done=4 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 511 978
+#19 DOIGT tuto_next « 次へ  »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6271d17357 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 813
+#20 DOIGT tuto_do «   自分でやる »
+#21 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 70 298
+#21 DOIGT rien
+#22 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 325 298
+#22 DOIGT rien
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d672f12e30 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CUT « あなたの番：「スタジオのバスドラム」パッド（キックを鳴らすボタン）で、点線のマスをタップしよう：1拍に1つずつ。1マスがループの中の1つの瞬間。 » ellipsized (« … »)
+#23 > touche 70 378
+#23 DOIGT step_8 « ステップ 9 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 65cc2cf0f1 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 325 378
+#24 DOIGT step_12 « ステップ 13 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7fdd498b77 | project=p-f7a4234e tuto=techno/Facile active=true step=kick_do done=6 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « スタジオのバスドラム » 1.30:1 (needs 4.5:1, 13 sp)
+#25 > touche 294 978
+#25 DOIGT tuto_next_folded « 成功 »
+#26 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3c5e81239c | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 294 813
+#26 DOIGT tuto_do «   自分でやる »
+#27 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 70 298
+#27 DOIGT rien
+#28 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 325 298
+#28 DOIGT rien
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9d42275061 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « あなたの番：「低いうなり」パッド（うなり）で、点線のマスをタップしよう：キックと同じマス、毎拍に1つ。長くて汚れた低いうなりが、ヒットの間のすき間を埋める。 » ellipsized (« … »)
+#29 > touche 70 378
+#29 DOIGT step_8 « ステップ 9 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4bc3df93e4 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 325 378
+#30 DOIGT step_12 « ステップ 13 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0703ed84b6 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=7 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 低いうなり » 1.33:1 (needs 4.5:1, 13 sp)
+#31 > touche 294 978
+#31 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#32 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b19d30e6a3 | project=p-f7a4234e tuto=techno/Facile active=true step=rumble_do done=7 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « 低いうなり » 1.30:1 (needs 4.5:1, 13 sp)
+#32 > touche 294 894
+#32 DOIGT tuto_next_big « 次の章   »
+#33 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a631a5478c | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 813
+#33 DOIGT tuto_do «   自分でやる »
+#34 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 325 298
+#34 DOIGT rien
+#35 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 325 378
+#35 DOIGT rien
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d0c26f16bd | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « あなたの番：「手拍子」パッドで、点線のマスをタップしよう：2拍目と4拍目、そして次の周の直前の最後のマス。この最後のヒットは弱く：長押しして、メニューの「ベロシティ」（叩く強さ）の下の「ソフト」をタップ。「ロール」（とても速い連打）と「3連符」（3つの詰まったヒット）はここでは使わない。 » ellipsized (« … »)
+#36 > touche 517 378
+#36 DOIGT step_15 « ステップ 16 »
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE aae9ef7626 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « 手拍子 » 1.89:1 (needs 4.5:1, 13 sp)
+#37 > touche 294 813
+#37 DOIGT tuto_do «   自分でやる »
+#38 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#38 SON Son : rien ne joue.
+#38 > appui-long 517 378
+#38 DOIGT rien
+#39 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE 2f186bcae7 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 312 591
+#39 DOIGT roll_force_2 « ソフト »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2042e830fb | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « 手拍子 » 1.33:1 (needs 4.5:1, 13 sp)
+#40 > touche 40 42
+#40 DOIGT top_projects « マイプロジェクト 1 »
+#41 ROUTE dialogue:projects | MODE simple | EMPREINTE b2d0f7e200 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#41 SON Son : rien ne joue.
+#41 > retour
+#41 RETOUR
+#42 ROUTE launch | MODE simple | EMPREINTE b445efd520 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 294 305
+#42 DOIGT launch_continue « 続ける »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a3dde7ef57 | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 手拍子 » 4.09:1 (needs 4.5:1, 14 sp)
+#43 > touche 294 978
+#43 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#44 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7aaeb61b3f | project=p-f7a4234e tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « 手拍子 » 3.81:1 (needs 4.5:1, 14 sp)
+#44 > touche 294 894
+#44 DOIGT tuto_next_big « 次の章   »
+#45 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5bb6459fad | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 294 813
+#45 DOIGT tuto_do «   自分でやる »
+#46 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 197 298
+#46 DOIGT rien
+#47 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 453 298
+#47 DOIGT rien
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 732468dc0d | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « あなたの番：「オープンハイハット」パッド（長めの「ツー」）で、点線のマスをタップしよう：キックのちょうど間、裏拍に。 » ellipsized (« … »)
+#48 > touche 197 378
+#48 DOIGT step_10 « ステップ 11 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0cf872361b | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 453 378
+#49 DOIGT step_14 « ステップ 15 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d56e6e6a76 | project=p-f7a4234e tuto=techno/Facile active=true step=open_hat_do done=9 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « オープンハイハット » 1.24:1 (needs 4.5:1, 13 sp)
+#50 > touche 294 978
+#50 DOIGT tuto_next_folded « 成功 »
+#51 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 718f1a83e4 | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=9 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 813
+#51 DOIGT tuto_do «   自分でやる »
+#52 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=9 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 261 298
+#52 DOIGT rien
+#53 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=9 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 453 298
+#53 DOIGT rien
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 80c29e9759 | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=9 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT « あなたの番：「太鼓のふち」パッド（太鼓のふちを叩く音：小さな「コッ」）で、点線のマスをタップしよう：拍からずれた位置に来る。 » ellipsized (« … »)
+#54 > touche 197 378
+#54 DOIGT step_10 « ステップ 11 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2eaa8381b | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=9 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 389 378
+#55 DOIGT step_13 « ステップ 14 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd72d967d4 | project=p-f7a4234e tuto=techno/Facile active=true step=perc_do done=10 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « 太鼓のふち » 1.33:1 (needs 4.5:1, 13 sp)
+#56 > touche 294 978
+#56 DOIGT tuto_next_folded « 成功 »
+#57 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f5f944d6ab | project=p-f7a4234e tuto=techno/Facile active=true step=drums_hear done=10 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « 太鼓のふち » 1.89:1 (needs 4.5:1, 13 sp)
+#57 > touche 294 813
+#57 DOIGT tuto_play_mine «   結果を聴く »
+#58 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dd65c99075 | project=p-f7a4234e tuto=techno/Facile active=true step=drums_hear done=10 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 294 897
+#58 DOIGT tuto_listen «  例を聴く »
+#59 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5fdff95c7f | project=p-f7a4234e tuto=techno/Facile active=true step=drums_hear done=10 playing=false
+#59 SON Son : l'exemple du tuto joue (encore 3 s).
+#59 > touche 511 978
+#59 DOIGT tuto_next « 次へ  »
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dd355513c1 | project=p-f7a4234e tuto=techno/Facile active=true step=drums_hear done=11 playing=false
+#60 SON Son : l'exemple du tuto joue (encore 2 s).
+#60 > touche 294 894
+#60 DOIGT tuto_next_big « 次の章   »
+#61 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c7aab114ef | project=p-f7a4234e tuto=techno/Facile active=true step=bass_hear done=11 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « 太鼓のふち » 1.32:1 (needs 4.5:1, 13 sp)
+#61 > touche 511 978
+#61 DOIGT tuto_next « 次へ  »
+#62 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 53acc015b4 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 813
+#62 DOIGT tuto_need «   ベーストラックを作る »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 349519525a | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « あなたの番：「ベーストラックを作る」をタップ（トラック＝曲の楽器1つ）、次に1小節目の点線のノート：キックのあとに小さな2音ずつ。 » ellipsized (« … »)
+#63 LAYOUT TARGET « A2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « A♭2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « G2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « G♭2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « F2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « E2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « E♭2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « D2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « D♭2 再生 » 36 x 20 dp (touch 48 x 48)
+#63 > touche 137 682
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f0055181a1 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#64 SON Son : 1 note du synthé.
+#64 > touche 180 682
+#64 DOIGT rien
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 019d89acdd | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#65 SON Son : 1 note du synthé.
+#65 > touche 250 682
+#65 DOIGT rien
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5f2f12186f | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 292 682
+#66 DOIGT rien
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 173e83890c | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 362 682
+#67 DOIGT rien
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7ad3f26a0e | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#68 SON Son : 1 note du synthé.
+#68 > touche 404 682
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a630f26dbc | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 474 682
+#69 DOIGT rien
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a90a8eab89 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=12 playing=false
+#70 SON Son : 1 note du synthé.
+#70 > touche 516 682
+#70 DOIGT rien
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5db8f06e09 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_do done=13 playing=false
+#71 SON Son : 1 note du synthé.
+#71 > touche 294 978
+#71 DOIGT tuto_next_folded « 成功 »
+#72 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 9f8418565f | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 294 813
+#72 DOIGT tuto_need «   次の小節にコピー »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE aa7b1a9bc7 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CUT « あなたの番：「次の小節にコピー」をタップ：2小節目と3小節目が埋まる。次に4小節目のノート（最後は1段上がって、上に跳ぶ）をタップして、もう一度「コピー」。 » ellipsized (« … »)
+#73 > touche 137 682
+#73 DOIGT rien
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bbbd8f8153 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#74 SON Son : 1 note du synthé.
+#74 > touche 180 682
+#74 DOIGT rien
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 898fc86b44 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#75 SON Son : 1 note du synthé.
+#75 > touche 250 682
+#75 DOIGT rien
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4d2d8489f0 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#76 SON Son : 1 note du synthé.
+#76 > touche 292 682
+#76 DOIGT rien
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 32e6b5b99a | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#77 SON Son : 1 note du synthé.
+#77 > touche 362 682
+#77 DOIGT rien
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9c4aa4291d | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#78 SON Son : 1 note du synthé.
+#78 > touche 404 682
+#78 DOIGT rien
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5aa132815c | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#79 SON Son : 1 note du synthé.
+#79 > touche 474 651
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6a12a83a7c | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#80 SON Son : 1 note du synthé.
+#80 > glisse 320 580 320 780
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 732d3882f0 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT TARGET « E♭3 再生 » 36 x 20 dp (touch 48 x 48)
+#81 LAYOUT TARGET « D3 再生 » 36 x 20 dp (touch 48 x 48)
+#81 LAYOUT TARGET « D♭3 再生 » 36 x 20 dp (touch 48 x 48)
+#81 LAYOUT TARGET « C3 C3 再生 » 36 x 20 dp (touch 48 x 48)
+#81 LAYOUT TARGET « B2 再生 » 36 x 20 dp (touch 48 x 48)
+#81 LAYOUT TARGET « B♭2 再生 » 36 x 20 dp (touch 48 x 48)
+#81 > glisse 320 560 320 800
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3a3bc29886 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT TARGET « B♭3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « A3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « A♭3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « G3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « G♭3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « F3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 LAYOUT TARGET « E3 再生 » 36 x 20 dp (touch 48 x 48)
+#82 > touche 516 714
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2585329fc8 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=13 playing=false
+#83 SON Son : 1 note du synthé.
+#83 LAYOUT CUT « パターンを置いたよ！ 続きはコピーで： » ellipsized (« … »)
+#83 > touche 294 978
+#83 DOIGT tuto_need_folded « 次の小節にコピー »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1d51760fbf | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=14 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 294 978
+#84 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#85 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE ddaad121b4 | project=p-f7a4234e tuto=techno/Facile active=true step=bass_end done=14 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 294 894
+#85 DOIGT tuto_next_big « 次の章   »
+#86 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 4cbf73650e | project=p-f7a4234e tuto=techno/Facile active=true step=pad_do done=14 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 294 813
+#86 DOIGT tuto_need «   コードトラックを作る »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 345aabd8b5 | project=p-f7a4234e tuto=techno/Facile active=true step=pad_do done=14 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CUT « あなたの番：「コードトラックを作る」をタップして、グリッドのすぐ上の「コード」をオンに：下の点線のノートをタップするとコードの3音が置ける。1小節目の2つのコードを置こう：2つのスタブ（短く乾いた、叩くようなコード）。 » ellipsized (« … »)
+#87 LAYOUT TARGET « C4 C4 再生 » 36 x 20 dp (touch 48 x 48)
+#87 LAYOUT TARGET « B3 再生 » 36 x 20 dp (touch 48 x 48)
+#87 > touche 98 351
+#87 DOIGT chord_mode « コード »
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ab5cd400bc | project=p-f7a4234e tuto=techno/Facile active=true step=pad_do done=14 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 194 772
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 04f8951f26 | project=p-f7a4234e tuto=techno/Facile active=true step=pad_do done=14 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 390 772
+#89 DOIGT rien
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e98dc3d5af | project=p-f7a4234e tuto=techno/Facile active=true step=pad_do done=15 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 294 978
+#90 DOIGT tuto_next_folded « 成功 »
+#91 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2ba1214bcf | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=15 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 813
+#91 DOIGT tuto_need «   次の小節にコピー »
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ac3b240946 | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=15 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CUT « あなたの番：「次の小節にコピー」をタップして、4小節目の2つのコード（1段高い）を置き、もう一度「コピー」。 » ellipsized (« … »)
+#92 > touche 194 742
+#92 DOIGT rien
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 49b441f88a | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=15 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 390 742
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6c31855cff | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=15 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 294 978
+#94 DOIGT tuto_need_folded « 次の小節にコピー »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b9a923ed42 | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=16 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 294 978
+#95 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#96 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 379a289ff0 | project=p-f7a4234e tuto=techno/Facile active=true step=pad_end done=16 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 294 894
+#96 DOIGT tuto_next_big « 次の章   »
+#97 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE aba929dfc6 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_hear done=16 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 511 978
+#97 DOIGT tuto_next « 次へ  »
+#98 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 64dd2219b7 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 294 813
+#98 DOIGT tuto_need «   メロディトラックを作る »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4122806b34 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CUT « フィルターのかかったメロディ » ellipsized (« … »)
+#99 LAYOUT CUT « あなたの番：「メロディトラックを作る」をタップして、点線のノートをタップしよう：1小節目に3つ、2小節目に4つ。次に「次の小節にコピー」。 » ellipsized (« … »)
+#99 > touche 125 682
+#99 DOIGT rien
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 910138f542 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#100 SON Son : 1 note du synthé.
+#100 > touche 348 682
+#100 DOIGT rien
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b9dfcdb32f | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#101 SON Son : 1 note du synthé.
+#101 > glisse 480 760 160 760
+#101 DOIGT rien
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 323fa67b3f | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 278 682
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 30b606fc1e | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#103 SON Son : 1 note du synthé.
+#103 > touche 502 682
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4d9932ffdd | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > glisse 480 760 160 760
+#104 DOIGT rien
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d6bc568dd6 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 320 592
+#105 DOIGT rien
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 444d7a7888 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > glisse 200 760 400 760
+#106 DOIGT rien
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1248267d8a | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#107 SON Son : rien ne joue.
+#107 > glisse 320 600 320 720
+#107 DOIGT rien
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8164eb2f9e | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#108 SON Son : rien ne joue.
+#108 > glisse 320 580 320 780
+#108 DOIGT rien
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 01666c7038 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#109 SON Son : rien ne joue.
+#109 LAYOUT TARGET « G♭4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 LAYOUT TARGET « F4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 LAYOUT TARGET « E4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 LAYOUT TARGET « E♭4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 LAYOUT TARGET « D4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 LAYOUT TARGET « D♭4 再生 » 36 x 20 dp (touch 48 x 48)
+#109 > touche 270 594
+#109 DOIGT rien
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8dcd1ebae0 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#110 SON Son : 1 note du synthé.
+#110 > glisse 200 760 400 760
+#110 DOIGT rien
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9a68b7c234 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#111 SON Son : rien ne joue.
+#111 > glisse 150 760 450 760
+#111 DOIGT rien
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 66c5349cf5 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 236 594
+#112 DOIGT rien
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 721515d63e | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=17 playing=false
+#113 SON Son : 1 note du synthé.
+#113 > touche 294 978
+#113 DOIGT tuto_need_folded « 次の小節にコピー »
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 18b71a976f | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=18 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 294 978
+#114 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#115 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE b2334281b2 | project=p-f7a4234e tuto=techno/Facile active=true step=lead_do done=18 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 294 894
+#115 DOIGT tuto_next_big « 次の章   »
+#116 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE a3bf82c1df | project=p-f7a4234e tuto=techno/Facile active=true step=groove_hear done=18 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 294 813
+#116 DOIGT tuto_play_mine «   結果を聴く »
+#117 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE ec3b1cc18b | project=p-f7a4234e tuto=techno/Facile active=true step=groove_hear done=18 playing=true
+#117 SON Son : la musique du projet joue en boucle.
+#117 > touche 294 897
+#117 DOIGT tuto_listen «  例を聴く »
+#118 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 1a4f4d66d7 | project=p-f7a4234e tuto=techno/Facile active=true step=groove_hear done=18 playing=false
+#118 SON Son : l'exemple du tuto joue (encore 3 s).
+#118 > touche 511 978
+#118 DOIGT tuto_next « 次へ  »
+#119 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE b0351cb7bd | project=p-f7a4234e tuto=techno/Facile active=true step=groove_name done=19 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 294 813
+#119 DOIGT tuto_need «   パートに「Groove」と名前を付ける »
+#120 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 527b61c620 | project=p-f7a4234e tuto=techno/Facile active=true step=groove_name done=20 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 294 894
+#120 DOIGT tuto_next_big « 次の章   »
+#121 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 415619a42b | project=p-f7a4234e tuto=techno/Facile active=true step=brick done=20 playing=false
+#121 SON Son : rien ne joue.
+#121 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#121 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#121 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#121 > touche 294 894
+#121 DOIGT tuto_mark «   わかった »
+#122 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9bf51877f6 | project=p-f7a4234e tuto=techno/Facile active=true step=map_intro done=21 playing=false
+#122 SON Son : rien ne joue.
+#122 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#122 > touche 511 978
+#122 DOIGT tuto_next « 次へ  »
+#123 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 45fadd312b | project=p-f7a4234e tuto=techno/Facile active=true step=map_intro2 done=22 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 511 978
+#123 DOIGT tuto_next « 次へ  »
+#124 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE acff4e8d88 | project=p-f7a4234e tuto=techno/Facile active=true step=map_drop done=23 playing=false
+#124 SON Son : rien ne joue.
+#124 LAYOUT CONTRAST « ドロップ » 3.09:1 (needs 4.5:1, 12 sp)
+#124 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#124 > touche 511 978
+#124 DOIGT tuto_next « 次へ  »
+#125 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e68a30e7fa | project=p-f7a4234e tuto=techno/Facile active=true step=map_break done=24 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 511 978
+#125 DOIGT tuto_next « 次へ  »
+#126 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE fbe8181415 | project=p-f7a4234e tuto=techno/Facile active=true step=map_montee done=25 playing=false
+#126 SON Son : rien ne joue.
+#126 LAYOUT CONTRAST « 4 » 2.05:1 (needs 4.5:1, 12 sp)
+#126 > touche 511 978
+#126 DOIGT tuto_next « 次へ  »
+#127 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e61731dcdc | project=p-f7a4234e tuto=techno/Facile active=true step=map_phrases done=26 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 294 894
+#127 DOIGT tuto_mark «   わかった »
+#128 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 584ea2d2ed | project=p-f7a4234e tuto=techno/Facile active=true step=map_phrases done=27 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 294 894
+#128 DOIGT tuto_next_big « 次の章   »
+#129 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2076e7cfe3 | project=p-f7a4234e tuto=techno/Facile active=true step=make_intro done=27 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 294 813
+#129 DOIGT tuto_need «   パート「イントロ」を作る »
+#130 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 18d9d58b8e | project=p-f7a4234e tuto=techno/Facile active=true step=make_intro done=28 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 294 894
+#130 DOIGT tuto_next_big « 次のステップ   »
+#131 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 674c3101b2 | project=p-f7a4234e tuto=techno/Facile active=true step=make_intro2 done=28 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 294 813
+#131 DOIGT tuto_need «   パート「イントロ 2」を作る »
+#132 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dbcd8a532e | project=p-f7a4234e tuto=techno/Facile active=true step=make_intro2 done=29 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 294 894
+#132 DOIGT tuto_next_big « 次のステップ   »
+#133 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE df9c9bf810 | project=p-f7a4234e tuto=techno/Facile active=true step=make_drop done=29 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 294 813
+#133 DOIGT tuto_need «   パート「ドロップ」を作る »
+#134 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE addc0fab21 | project=p-f7a4234e tuto=techno/Facile active=true step=make_drop done=30 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 294 894
+#134 DOIGT tuto_next_big « 次のステップ   »
+#135 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5f2d85f789 | project=p-f7a4234e tuto=techno/Facile active=true step=make_break done=30 playing=false
+#135 SON Son : rien ne joue.
+#135 > touche 294 813
+#135 DOIGT tuto_need «   パート「ブレイク」を作る »
+#136 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b03fbccbf7 | project=p-f7a4234e tuto=techno/Facile active=true step=make_break done=31 playing=false
+#136 SON Son : rien ne joue.
+#136 > touche 294 894
+#136 DOIGT tuto_next_big « 次のステップ   »
+#137 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a2f5d32d33 | project=p-f7a4234e tuto=techno/Facile active=true step=make_montee done=31 playing=false
+#137 SON Son : rien ne joue.
+#137 > touche 294 813
+#137 DOIGT tuto_need «   パート「ビルドアップ」を作る »
+#138 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9f87acb91b | project=p-f7a4234e tuto=techno/Facile active=true step=make_montee done=33 playing=false
+#138 SON Son : rien ne joue.
+#138 > touche 294 894
+#138 DOIGT tuto_next_big « 次のステップ   »
+#139 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 4f0e749525 | project=p-f7a4234e tuto=techno/Facile active=true step=make_drop2 done=33 playing=false
+#139 SON Son : rien ne joue.
+#139 > touche 294 813
+#139 DOIGT tuto_need «   パート「ドロップ 2」を作る »
+#140 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ee62cdad77 | project=p-f7a4234e tuto=techno/Facile active=true step=make_drop2 done=34 playing=false
+#140 SON Son : rien ne joue.
+#140 > touche 294 894
+#140 DOIGT tuto_next_big « 次のステップ   »
+#141 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6164a3c2bd | project=p-f7a4234e tuto=techno/Facile active=true step=make_fin done=34 playing=false
+#141 SON Son : rien ne joue.
+#141 > touche 294 813
+#141 DOIGT tuto_need «   パート「エンディング」を作る »
+#142 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 211fcf9adc | project=p-f7a4234e tuto=techno/Facile active=true step=make_fin done=35 playing=false
+#142 SON Son : rien ne joue.
+#142 > touche 294 894
+#142 DOIGT tuto_next_big « 次の章   »
+#143 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f0994066ce | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#143 SON Son : rien ne joue.
+#143 > touche 294 813
+#143 DOIGT tuto_do «   自分でやる »
+#144 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#144 SON Son : rien ne joue.
+#144 > touche 365 265
+#144 DOIGT rien
+#145 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#145 SON Son : rien ne joue.
+#145 > touche 155 472
+#145 DOIGT rien
+#146 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 582636c81c | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#146 SON Son : rien ne joue.
+#146 LAYOUT CUT « あなたの番：「マイソング」の「追加」の下で、イントロ、イントロ 2、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングで終わるボタンを順にタップしよう（たとえば「+ B · イントロ」）。どのパートもループの長さで入る（8小節、ビルドアップは4）：次のステップで本当の長さにするよ。 » ellipsized (« … »)
+#146 LAYOUT OVERLAP « B · イントロ » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#146 LAYOUT OVERLAP « B · イントロ » over the touchable « パートから再生 » (52 x 4 dp)
+#146 > touche 384 471
+#146 DOIGT add_part_3 « + D · ドロップ »
+#147 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 625768307a | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#147 SON Son : rien ne joue.
+#147 LAYOUT OVERLAP « C · イントロ 2 » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#147 LAYOUT OVERLAP « C · イントロ 2 » over the touchable « パートから再生 » (69 x 4 dp)
+#147 > touche 145 552
+#147 DOIGT add_part_4 « + E · ブレイク »
+#148 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 207d468c76 | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#148 SON Son : rien ne joue.
+#148 LAYOUT OVERLAP « D · ドロップ » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#148 LAYOUT OVERLAP « D · ドロップ » over the touchable « パートから再生 » (53 x 4 dp)
+#148 > touche 382 552
+#148 DOIGT add_part_5 « + F · ビルドアップ »
+#149 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3942190b78 | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#149 SON Son : rien ne joue.
+#149 LAYOUT OVERLAP « E · ブレイク » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#149 LAYOUT OVERLAP « E · ブレイク » over the touchable « パートから再生 » (50 x 4 dp)
+#149 > touche 156 633
+#149 DOIGT add_part_6 « + G · ドロップ 2 »
+#150 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 477019d18b | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=35 playing=false
+#150 SON Son : rien ne joue.
+#150 LAYOUT OVERLAP « F · ビルドアップ » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#150 LAYOUT OVERLAP « F · ビルドアップ » over the touchable « パートから再生 » (87 x 4 dp)
+#150 > touche 406 633
+#150 DOIGT add_part_7 « + H · エンディング »
+#151 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 815cb8dcd9 | project=p-f7a4234e tuto=techno/Facile active=true step=song_order done=36 playing=false
+#151 SON Son : rien ne joue.
+#151 LAYOUT OVERLAP « G · ドロップ 2 » over the touchable « テンポ：1分間に132拍 テンポを変更 » (40 x 4 dp)
+#151 LAYOUT OVERLAP « G · ドロップ 2 » over the touchable « パートから再生 » (69 x 4 dp)
+#151 > touche 294 978
+#151 DOIGT tuto_next_folded « 成功 »
+#152 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0c7bb3a498 | project=p-f7a4234e tuto=techno/Facile active=true step=song_phrases done=36 playing=false
+#152 SON Son : rien ne joue.
+#152 LAYOUT OVERLAP « タップで曲全体のコードを変更。 » over the touchable « テンポ：1分間に132拍 テンポを変更 » (62 x 4 dp)
+#152 LAYOUT OVERLAP « タップで曲全体のコードを変更。 » over the touchable « パートから再生 » (96 x 4 dp)
+#152 > touche 294 813
+#152 DOIGT tuto_need «   おすすめの長さにする »
+#153 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3b58b76f39 | project=p-f7a4234e tuto=techno/Facile active=true step=song_phrases done=37 playing=false
+#153 SON Son : rien ne joue.
+#153 LAYOUT OVERLAP « タップで曲全体のコードを変更。 » over the touchable « パートから再生 » (105 x 4 dp)
+#153 > touche 294 894
+#153 DOIGT tuto_next_big « 次の章   »
+#154 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 47c0f4de61 | project=p-f7a4234e tuto=techno/Facile active=true step=gap done=37 playing=false
+#154 SON Son : rien ne joue.
+#154 > touche 294 894
+#154 DOIGT tuto_next_big « 次のステップ   »
+#155 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c304e1613e | project=p-f7a4234e tuto=techno/Facile active=true step=crash done=37 playing=false
+#155 SON Son : rien ne joue.
+#155 > touche 294 813
+#155 DOIGT tuto_need «   パート「ドロップ」へ移動 »
+#156 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de7bb40cde | project=p-f7a4234e tuto=techno/Facile active=true step=crash done=37 playing=false
+#156 SON Son : rien ne joue.
+#156 LAYOUT CUT « あなたの番：「ドロップ」パートで、「シンバル」パッドのいちばん最初のマスをタップしよう：全部が入ってくる瞬間に1発だけ。 » ellipsized (« … »)
+#156 > touche 70 299
+#156 DOIGT step_0 « ステップ 1 »
+#157 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4e0d8e706a | project=p-f7a4234e tuto=techno/Facile active=true step=crash done=38 playing=false
+#157 SON Son : rien ne joue.
+#157 LAYOUT CONTRAST « シンバル » 1.28:1 (needs 4.5:1, 13 sp)
+#157 > touche 294 978
+#157 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#158 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7289bcb7b8 | project=p-f7a4234e tuto=techno/Facile active=true step=crash done=38 playing=false
+#158 SON Son : rien ne joue.
+#158 LAYOUT CONTRAST « シンバル » 1.23:1 (needs 4.5:1, 13 sp)
+#158 > touche 294 894
+#158 DOIGT tuto_next_big « 次の章   »
+#159 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 93a8241603 | project=p-f7a4234e tuto=techno/Facile active=true step=reverb_hear done=38 playing=false
+#159 SON Son : rien ne joue.
+#159 > touche 511 978
+#159 DOIGT tuto_next « 次へ  »
+#160 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fbf7e1493b | project=p-f7a4234e tuto=techno/Facile active=true step=filter_hear done=39 playing=false
+#160 SON Son : rien ne joue.
+#160 > touche 511 978
+#160 DOIGT tuto_next « 次へ  »
+#161 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fe07dae029 | project=p-f7a4234e tuto=techno/Facile active=true step=filter_hear done=40 playing=false
+#161 SON Son : rien ne joue.
+#161 > touche 294 894
+#161 DOIGT tuto_next_big « 次の章   »
+#162 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3089715163 | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=40 playing=false
+#162 SON Son : rien ne joue.
+#162 LAYOUT CONTRAST « シンバル » 1.75:1 (needs 4.5:1, 13 sp)
+#162 > touche 294 813
+#162 DOIGT tuto_do «   自分でやる »
+#163 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=40 playing=false
+#163 SON Son : rien ne joue.
+#163 > glisse 340 368 340 420
+#163 DOIGT rien
+#164 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE c72c7b2280 | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=40 playing=false
+#164 SON Son : rien ne joue.
+#164 LAYOUT CUT « あなたの番：ミックスとは各トラックの音量を調整すること。「ミックス」タブで、「コード」トラックのスライダーを少し下げ、次に「メロディ」トラックのスライダーも下げよう。スライダーの下の「ふつう」が「−2」「−4」…に変わる：低いほど小さい。横の目盛り（+4、0、−12、−∞）も同じ意味：0 がふつうの音量、−∞ は無音。 » ellipsized (« … »)
+#164 LAYOUT CONTRAST « ▶を押す » 1.64:1 (needs 3.0:1, 14 sp)
+#164 > glisse 462 368 462 420
+#164 DOIGT mix_fader_6 « メロディ の音量 »
+#165 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 1862cea2cf | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=41 playing=false
+#165 SON Son : rien ne joue.
+#165 > glisse 300 760 300 400
+#165 DOIGT rien
+#166 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE c3a30a7bf2 | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=41 playing=false
+#166 SON Son : rien ne joue.
+#166 > glisse 500 300 150 300
+#166 DOIGT mix_fader_6 « メロディ の音量 »
+#167 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 662ba5a4a7 | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=41 playing=false
+#167 SON Son : rien ne joue.
+#167 LAYOUT CONTRAST « 出力 » 4.33:1 (needs 4.5:1, 13 sp)
+#167 > touche 294 978
+#167 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#168 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 430281a71b | project=p-f7a4234e tuto=techno/Facile active=true step=levels done=41 playing=false
+#168 SON Son : rien ne joue.
+#168 LAYOUT CONTRAST « 出力 » 4.34:1 (needs 4.5:1, 13 sp)
+#168 > touche 294 894
+#168 DOIGT tuto_next_big « 次の章   »
+#169 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 73410d4ac7 | project=p-f7a4234e tuto=techno/Facile active=true step=share done=41 playing=false
+#169 SON Son : rien ne joue.
+#169 > touche 294 822
+#169 DOIGT tuto_text_more « 続きを読む »
+#170 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 587f28d26f | project=p-f7a4234e tuto=techno/Facile active=true step=share done=41 playing=false
+#170 SON Son : rien ne joue.
+#170 > touche 294 894
+#170 DOIGT tuto_do «   自分でやる »
+#171 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 9c9863b138 | project=p-f7a4234e tuto=techno/Facile active=true step=share done=41 playing=false
+#171 SON Son : rien ne joue.
+#171 > touche 294 670
+#171 DOIGT rien
+#172 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 788e1c3a61 | project=p-f7a4234e tuto=techno/Facile active=true step=share done=41 playing=false
+#172 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#172 LAYOUT CONTRAST « キャンセル » 4.20:1 (needs 4.5:1, 14 sp)
+#172 > attends 10
+#172 PARTAGE マイソング-曲-20261113-225502.m4a
+#173 ROUTE dialogue:« 曲をシェア · マイソング-曲-20261113-22550 » | MODE simple | EMPREINTE d202363a0b | project=p-f7a4234e tuto=techno/Facile active=true step=share done=42 playing=false
+#173 SON Son : rien ne joue.
+#173 > touche 294 836
+#173 DOIGT vue « Files »
+#174 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 663eaa73cf | project=p-f7a4234e tuto=techno/Facile active=true step=share done=42 playing=false
+#174 SON Son : rien ne joue.
+#174 > touche 508 794
+#174 DOIGT share_bilan_ok « OK »
+#175 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 6d812e3a01 | project=p-f7a4234e tuto=techno/Facile active=true step=share done=42 playing=false
+#175 SON Son : rien ne joue.
+#175 > touche 294 978
+#175 DOIGT tuto_end_folded « チュートリアル完了：おめでとう！ »
+#176 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 66f3cfcebf | project=p-f7a4234e tuto=techno/Facile active=true step=share done=42 playing=false
+#176 SON Son : rien ne joue.
+#176 > fin
+#176 FIN : fin

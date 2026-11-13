@@ -1,0 +1,46 @@
+Écran 20 (588x1278)
+icône (dossier ouvert) ✓ « Trap Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 140  BPM » @ 73,114
+icône « Couplet mes. 28/104 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+bouton « Auto (Trap) · −8,5 LUFS » [coupé] @ 186,161
+bouton « Désactivée » [coupé] @ 421,161
+texte « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. » @ 294,224
+texte « Fondu de fin » @ 104,278
+bouton « Aucun » @ 100,341
+bouton « Court (3 s) » [sélectionné] @ 246,341
+bouton « Long (8 s) » @ 410,341
+bouton « Avancé Piste par piste · FLAC · MIDI · 48 kHz · 24 bits » ⌄ @ 294,426
+bouton « Créer le fichier du morceau » @ 294,512
+texte « Sauvegardé dans Musique › BenStudio : Trap-morceau-streaming-20261113-122406.wav » @ 294,587
+texte « ✓ Prêt à partager » @ 132,641
+texte « Durée : 2 min 58 s » @ 125,672
+texte « Niveau : à la cible (Streaming) » @ 180,702
+texte « Crête : sous la limite, pas de saturation » @ 218,732
+texte « WAV, 48 kHz, 24 bits » @ 137,762
+bouton « ? » @ 411,809
+texte « −14,0 LUFS intégrés · crête −10,1 dBTP » @ 216,809
+texte « Cible : Streaming · −14 LUFS » @ 172,856
+bouton « Partager » @ 294,918
+bouton (boussole) « Guide  · Change un son 29 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

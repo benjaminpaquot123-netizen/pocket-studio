@@ -1,0 +1,41 @@
+Écran 6 (588x1278)
+icône (dossier ouvert) « Trap » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 140  Tempo » @ 83,114
+icône « Intro mesure 1/104 » ▾ @ 262,114
+bouton « ? » @ 543,114
+titre « MES PISTES » [état « Déplié »] @ 128,204
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 294,261
+bouton « Batterie Changer le son » › @ 219,342
+bouton ▶ @ 435,342
+icône (curseurs) @ 510,342
+bouton « Nappe Changer le son » › [coupé] @ 219,433
+bouton ▶ [coupé] @ 435,436
+icône (curseurs) [coupé] @ 510,439
+bouton (boussole) « Guide  · Change un son 15 % » ⌄ [état « ouvert »] @ 294,492
+texte « POUR COMMENCER » @ 294,570
+texte « Change un son » @ 162,615
+texte « Fais-le tien : un autre son pour la mélodie ou pour la batterie. » @ 294,678
+texte « → » @ 61,744
+texte « À toi : touche « Le son de la mélodie ». » @ 303,741
+texte « VOIR LE RÉGLAGE » @ 129,795
+texte « ↗ Le son de la mélodie » @ 294,855
+texte « ↗ Une autre batterie » [coupé] @ 294,934
+bouton « ↓ La suite » @ 294,996
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,12 @@
+Écran 37 (588x1278)
+bouton (dossier ouvert) « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » → @ 294,82
+bouton (quatre vagues) « Remix Séparation des pistes : batterie, basse, voix et le reste. » → @ 294,247
+bouton (grille de pads) « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite. » → @ 294,427
+bouton ★ ★ ★ « Défis Écoute un rythme, refais-le sur les pads : gagne des étoiles. » → @ 294,607
+bouton (micro) « Enregistrer ma voix ou ma guitare Le micro enregistre par-dessus ta musique, pile en rythme. » → @ 294,793
+bouton (chapeau de diplômé) « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » → @ 294,994
+icône (drapeau) « Reprendre Mon premier morceau » @ 294,1140
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

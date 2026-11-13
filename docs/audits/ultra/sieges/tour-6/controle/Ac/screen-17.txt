@@ -1,0 +1,49 @@
+Écran 17 (588x1278)
+icône (dossier ouvert) ✓ « Trap Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 140  BPM » @ 73,114
+icône « Refrain 2 mes. 18/104 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+titre « AUTRES FICHIERS » [coupé, état « Déplié »] @ 157,147
+texte « Quoi » @ 65,177
+bouton « Le morceau entier » [sélectionné] @ 158,240
+bouton « La partie en boucle » @ 406,240
+texte « Toutes les parties de Structure, dans l'ordre. » @ 243,301
+texte « Format » @ 77,349
+bouton « ? » @ 133,348
+bouton « M4A · pour partager » @ 169,418
+bouton « WAV · qualité max » [sélectionné] @ 423,418
+texte « Qualité studio, lu par tous les logiciels. Le plus lourd. » @ 281,479
+texte « Volume visé » @ 101,527
+bouton « ? » @ 182,526
+bouton « Streaming · −14 LUFS » [sélectionné] @ 176,590
+bouton « Club · −8 LUFS » @ 419,590
+bouton « Auto (Trap) · −8,5 LUFS » @ 186,671
+bouton « Désactivée » @ 421,671
+texte « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. » @ 294,740
+texte « Fondu de fin » @ 104,794
+bouton « Aucun » @ 100,857
+bouton « Court (3 s) » [sélectionné] @ 246,857
+bouton « Long (8 s) » @ 410,857
+bouton « Avancé Piste par piste · FLAC · MIDI · 48 kHz · 24 bits » ⌄ [coupé] @ 294,929
+bouton (boussole) « Guide  · Change un son 29 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1716,6 +1716,9 @@ object TutoChecks {
         return q
     }
 
+    /** The bars of a part that builds up ([built]): a bar for each speed of its pad. */
+    private const val BUILD_BARS = 4
+
     /** The bars a part brings when « Ajouter » puts it in the song. */
     private const val ADDED_BARS = 8
 
@@ -1724,10 +1727,13 @@ object TutoChecks {
      * in the last bar is a fill, not a build): quarters, eighths, 16ths, then 16ths rolled in two
      * (32nds), louder and louder, up to the silence of its last beat, where its notes stop too.
      */
-    fun built(p: Project, role: String, gap: Int = GAP_CELLS): Project {
+    fun built(given: Project, role: String, gap: Int = GAP_CELLS): Project {
         val lane = laneOf(role)
+        val per = given.stepsPerBar.coerceAtLeast(4)
+        // Lot « tuto-flèches » (seats D a, B b): 4 bars long, a bar for each speed, whatever the Groove's pads are (techno's
+        // one-bar loop gave a Montée of 1 bar: « mesure après mesure » and « dernière mesure » meant nothing there).
+        val p = withSteps(given, (BUILD_BARS * per).coerceAtMost(DrumPattern.MAX_STEPS))
         val n = p.drums.steps
-        val per = p.stepsPerBar.coerceAtLeast(4)
         val beat = per / 4
         val end = n - gap
         // Each quarter of the loop (a bar of a 4-bar one) faster than the one before.

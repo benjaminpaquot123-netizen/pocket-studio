@@ -1,0 +1,37 @@
+# Relecture du lot « padlive2 » (tour 6)
+Relu : ee4c2a92566bb2b6d7afeae799c0191c60c2e915
+
+Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
+Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
+
+## P2 : Pad Live s'ouvre en silence
+
+- **mineur** : `app/src/test/java/com/pocketstudio/app/padlive/PadLiveSilentOpenTest.kt:19-25`. Ce test se contente de chercher du texte dans les fichiers sources (`"welcome()"`, `"fun welcome("`). Il resterait vert si un autre chemin faisait sonner un pad à l'ouverture, par exemple une fonction renommée ou un `toggle(pad)` appelé ailleurs dans la route. Scénario : un futur lot rajoute un « coup d'accueil » sous un autre nom, le test reste vert et le siège entend de nouveau le Clap. Il vaudrait mieux un test de comportement : ouvrir la route avec `welcome = true`, puis vérifier que `toggleForTest` ne reçoit rien et que `welcomed()` est bien appelé.
+- Le code lui-même est correct : `LaunchedEffect(welcome)` ne fait plus que `welcomed()`, et `welcome()` a disparu avec son job. Rien ne fuit.
+
+## P3 : une deuxième prise s'ajoute à la suite
+
+- **moyen** : `app/src/main/java/com/pocketstudio/app/padlive/PadLiveController.kt:257`. `vm.setTakeAppend(...)` écrit dans `_takeAppend`, et ce flux est partagé avec le choix « Nouvelle version / Ajouter à la suite » de la page Live (`LiveScreen.kt:827-828`, `AppRoot.kt:4386`). Pad Live écrase donc en silence le choix fait par l'utilisateur sur la page Live, dans les deux sens.
+  - Scénario 1 : sur la page Live, l'utilisateur choisit « Nouvelle version ». Il ouvre Pad Live et fait une deuxième prise (la valeur passe à `true`). De retour sur la page Live, « Ajouter à la suite » est coché, et sa prise suivante s'ajoute au lieu de remplacer.
+  - Scénario 2 : sur la page Live, il choisit « Ajouter à la suite » avec un morceau fait à la main (`liveTake` vide). Une prise dans Pad Live remet la valeur à `false`.
+  - Correction possible : sauvegarder puis restaurer la valeur autour de la prise, ou passer le mode « à la suite » à `armPerformance` sans toucher au choix de la page.
+- **moyen** : `app/src/main/java/com/pocketstudio/app/midi/AutoKnobsVm.kt:330`. Le bouton Record d'un contrôleur MIDI appelle `vm.togglePerformance()` directement, sans passer par `PadLiveController.record`. Or les contrôleurs servent bien dans Pad Live (lot B2). Le défaut n° 49 se reproduit donc par ce chemin.
+  - Scénario : une première prise de 4 mesures est gardée dans Pad Live. L'utilisateur lance la deuxième prise avec le bouton Record de son contrôleur : elle remplace le morceau, qui retombe à « 1 mes. ».
+  - Le morceau précédent reste en version et se récupère par ↶, donc il n'est pas perdu. Mais c'est exactement le symptôme que le lot devait corriger, et la règle « vérifier partout où elle peut se reproduire » n'est pas tenue.
+- **moyen** : `PadLiveController.kt:257` combiné à `RhythmViewModel.kt:5107-5112`. En mode « à la suite », un morceau plein (128 parties, `songFullForTake`) bloque toute prise. Le message affiché, « choisis « Nouvelle version » pour enregistrer », renvoie vers un bouton qui n'existe pas dans Pad Live.
+  - Scénario : après quelques longues prises riches en lancements (chaque lancement compte une partie), le ● de Pad Live ne fait plus rien, à part afficher ce message. L'utilisateur reste coincé sans savoir quoi faire.
+  - Même famille : au-delà de `effectsEndBar` (`RhythmViewModel.kt:5113-5115`), une prise ajoutée à la suite perd ses effets, et l'avertissement correspondant parle lui aussi de choix absents de Pad Live.
+- **mineur** : `PadLiveController.kt:257`. La règle « `liveTake` non vide » se trompe sur un projet « Live » dont le morceau a été construit à la main, ou importé, sans prise. La première prise de Pad Live remplace alors ce morceau. Il est gardé en version et récupérable par ↶, donc l'impact reste faible. L'annulation d'une prise, elle, est saine : `takeUndoTarget(before, …)` repart de `before`, donc `liveTake` revient à sa valeur d'avant. Les états Armed, Recording et Writing ne sont pas touchés, puisque le choix n'est fait qu'en Ready ou en Done (Done passe bien par `armPerformance`, branche `else` de `togglePerformance`).
+- **mineur** : `app/src/test/java/com/pocketstudio/app/padlive/PadLiveTakeAfterTest.kt:62-80`. Le test vérifie seulement le drapeau `takeAppend`, pas qu'une deuxième prise réellement jouée (arm → enregistrement → fin) laisse le morceau à 4 + N mesures. Il ne vérifie pas non plus que `PadLiveRoute` branche bien `vm.padLive.record` sur le ● : un retour en arrière de `PadLiveRoute.kt:178` vers `actions.record` laisserait ce test vert. Le bench (`BenchAmeneesTest`, `tap("live_record")`) couvre en partie ce branchement, mais pas le cas d'une deuxième prise.
+
+## P4 : le ▶ du haut montre ■ quand des boucles jouent
+
+- **moyen** : `app/src/main/java/com/pocketstudio/app/padlive/PadLiveScreen.kt:135-138`. `soundsNow` vaut vrai dès qu'un pad est à un état différent de 0, y compris un **coup** (pad SHOT). Le moteur le met à l'état Playing (2) tant qu'il sonne (`ClipLauncher::State`).
+  - Effet 1 : transport arrêté, chaque frappe sur un coup fait passer brièvement le bouton du haut au ■ vert, ce qui donne un clignotement à chaque coup.
+  - Effet 2 : un toucher sur ce bouton pendant qu'un coup résonne appelle `cutEverything` au lieu de lancer la musique.
+  - Scénario « curieux » : il tape le Clap (ou une cymbale longue), puis tout de suite ▶ pour lancer un rythme. Le coup est coupé, rien ne démarre, et il doit retoucher le bouton.
+  - Correction possible : ne compter que les boucles (`PadLive.modeOf(clip) != SHOT`, ou `oneShot == false`).
+- **mineur** : `PadLiveScreen.kt:138`. Quand des boucles jouent toutes seules, le bouton du haut ne permet plus de démarrer le transport (métronome, scène) sans d'abord tout couper. C'est voulu, mais c'est un changement de comportement à garder en tête. Autre conséquence : `cutEverything` termine aussi un « Enregistrer ce que je joue » en cours (`padLive.played.endForCut()`). Le bouton ▶, qui avant ne touchait jamais à cet enregistrement, peut désormais l'arrêter.
+- Tests : `PadLivePlayShowsTest` couvre bien les trois cas (boucles seules, pad en attente, transport en route) dans les deux écrans (barre et « Fête »), et `BenchAmeneesTest` est adapté proprement. Aucun cas n'essaie un coup isolé, ce qui explique que le défaut ci-dessus n'ait pas été vu.
+
+Verdict : 0 bloquant, 0 grave

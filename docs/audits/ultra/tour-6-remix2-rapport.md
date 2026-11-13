@@ -11,7 +11,8 @@ controle: Ba-3 | code testé: 10830ce2 | bloqués: 0 | graves neufs: 0
 
 ## Constaté par un siège de contrôle (Ba-2, Ba-3 ; rapports dans `sieges/tour-6/controle/Ba-2` et `Ba-3`)
 - **A2** : constaté (Ba-3, écrans 15-18). **A3** : constaté (Ba-3, écran 8). **A5** : constaté (Ba-3, écran 14). **A7** : constaté (Ba-3, écran 21). **A8** : constaté (Ba-3, écrans 8 et 41-51).
-- Garde-fou « Enlever un seul morceau » tenu (Ba-3, écran 40). Buts du siège 3/3.
+- Ba-3, écran 40 : un bout décoché par son rond numéroté (« 2 → 1 trozo ») ; « Enlever » n'a pas été touché par le siège (le garde-fou « Enlever un seul morceau » n'est prouvé que par les tests `CutZoomGestureTest#removeAfter…`). Buts 3/3 : lecture du chef (séparation, découpe et pose faites, jamais d'abandon), pas une ligne du siège.
+- Moyen relevé par Ba-3 (geste 27, `revu: non`) : retirer un des deux bouts choisis demande 4 gestes sans aide ; retoucher le bout ou appui long ne le décoche pas (A7 : un choix par la tête n'est jamais décoché), seul le rond numéroté le fait. Pas pris dans ce lot.
 - **Pas pris** : A4 (mode Phrases, ligne d'outils), A6 (avertir et allonger : `RhythmViewModel`/`AppRoot`), A8 « Descargar el modelo » en double (tests hors `remix/`), « Remix » du menu « Más » (navigation).
 
 ## Preuve rejouée (par le banc, conditions du siège)

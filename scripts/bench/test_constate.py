@@ -501,5 +501,233 @@ class PortalAndPreflight(unittest.TestCase):
         self.assertEqual((int(m.group(1)), m.group(2)), (len(rules), fingerprint), "KNOWN_RULES of pre-vol.sh")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# 3. Control seats: the bench plays docs/audits/ultra/sieges/<tour>/controle/<id>/<a-f>/ as it plays lot<X>/<a-f>/
+# ---------------------------------------------------------------------------------------------------------------------
+
+GRADLE_STUB = """#!/usr/bin/env bash
+# The bench's stand-in: each seat of -Phuman.dir plays one gesture and ends, as HumanTester leaves it.
+for a in "$@"; do case "$a" in -Phuman.dir=*) dir="${a#-Phuman.dir=}" ;; esac; done
+for s in "$dir"/[a-f]; do
+  [ -f "$s/start.txt" ] || continue
+  printf '#0 SIEGE lang=es\\n#1 ROUTE remix | MODE simple | EMPREINTE aaaa | project=p-1 no tuto\\n#1 SON Son : rien ne joue.\\n#1 > touche 10 10\\n#2 ROUTE remix | MODE simple | EMPREINTE bbbb | project=p-1 no tuto\\n#2 FIN : fin du test\\n' > "$s/journal.txt"
+  echo "fin du test" > "$s/fin.txt"
+done
+"""
+
+
+class ControlSeats(unittest.TestCase):
+    """Point 3 (plan § 4.3): the bench accepts a control folder wherever it accepts lot<X>/<a-f> (B a of round 6 had to
+    be played in a lot of its own, then copied; three control seats had no mesures.json and guessed their goals)."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="constate-siege-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.depot = os.path.join(self.tmp, "depot")
+        os.makedirs(os.path.join(self.depot, "scripts", "bench"))
+        for f in ("human-tester.sh", "human-act.py"):
+            shutil.copy(os.path.join(ROOT, "scripts", f), os.path.join(self.depot, "scripts", f))
+        for f in ("sortie-de-siege.py", "seat-metrics.py"):
+            shutil.copy(os.path.join(HERE, f), os.path.join(self.depot, "scripts", "bench", f))
+        write(os.path.join(self.depot, "scripts", "bench", "tampon.sh"), "#!/usr/bin/env bash\nexit 0\n")
+        write(os.path.join(self.depot, "scripts", "bench", "gradle-file.sh"), GRADLE_STUB)
+        for f in ("tampon.sh", "gradle-file.sh"):
+            os.chmod(os.path.join(self.depot, "scripts", "bench", f), 0o755)
+        git(self.depot, "init", "-q")
+        git(self.depot, "add", "-A")
+        git(self.depot, "commit", "-q", "-m", "the code a control seat plays")
+        self.sha = git(self.depot, "rev-parse", "HEAD").stdout.strip()
+        self.round = os.path.join(self.depot, "docs", "audits", "ultra", "sieges", "tour-6")
+        self.control = os.path.join(self.round, "controle", "Ba")
+        write(os.path.join(self.control, "a", "start.txt"), "lang=es\ndevice=phone\nfont=100\nmode=simple\nmain=gauche\n"
+                                                            "gestes.max=110\nmission=remix-voix\ntimeout.minutes=30\n")
+
+    def bench(self, folder):
+        r = subprocess.run(["bash", os.path.join(self.depot, "scripts", "human-tester.sh"), folder], cwd=self.depot,
+                           capture_output=True, text=True, env=dict(os.environ, PS_JOUE_PAR="sous-agent neuf"))
+        return r.returncode, r.stdout + r.stderr
+
+    def test_the_bench_plays_a_control_folder_and_writes_its_head_and_its_measures(self):
+        code, out = self.bench(self.control)
+        self.assertEqual(code, 0, out)
+        seat = os.path.join(self.control, "a")
+        head = read(os.path.join(seat, "rapport.md")).splitlines()[:2]
+        self.assertEqual(head, [f"code testé : {self.sha}", "joué par : sous-agent neuf"], out)
+        self.assertTrue(os.path.isfile(os.path.join(seat, "mesures.json")), "the bench writes mesures.json itself:\n" + out)
+        self.assertIn('"mission": "remix-voix"', read(os.path.join(seat, "mesures.json")))
+
+    def test_every_seat_of_a_wave_lot_gets_its_measures_too(self):
+        lot = os.path.join(self.round, "lotB")
+        write(os.path.join(lot, "c", "start.txt"), "lang=fr\nmission=simple\n")
+        code, out = self.bench(lot)
+        self.assertEqual(code, 0, out)
+        self.assertTrue(os.path.isfile(os.path.join(lot, "c", "mesures.json")), out)
+
+    def test_a_flat_control_folder_is_told_where_its_seat_goes(self):
+        flat = os.path.join(self.round, "controle", "Ha")
+        write(os.path.join(flat, "start.txt"), "lang=fr\nmission=tuto-facile\n")
+        code, out = self.bench(flat)
+        self.assertEqual(code, 2, out)
+        self.assertIn(os.path.join(flat, "a", "start.txt"), out)
+
+    def test_the_tester_s_finger_accepts_a_control_seat(self):
+        seat = os.path.join(self.control, "a")
+        act = os.path.join(self.depot, "scripts", "human-act.py")
+        r = subprocess.run([sys.executable, act, seat, "regarde"], capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        self.assertNotIn("Siège refusé", out, "a control seat is a seat")
+        self.assertIn("Le banc ne tourne pas", out, "it goes as far as the bench's own check")
+        for wrong in (os.path.join(self.round, "controle", "Ba"), os.path.join(self.round, "controle", "Ba", "g"),
+                      os.path.join(self.round, "ailleurs", "Ba", "a"), os.path.join(self.round, "controle", "..", "a")):
+            os.makedirs(wrong, exist_ok=True)
+            write(os.path.join(wrong, "start.txt"), "lang=fr\n")
+            r = subprocess.run([sys.executable, act, wrong, "regarde"], capture_output=True, text=True)
+            self.assertIn("Siège refusé", r.stdout + r.stderr, wrong)
+        spec = importlib.util.spec_from_file_location("human_act", act)
+        mod = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(mod)
+        except ImportError as e:  # (Pillow missing here: the label is read from its regular expression)
+            self.skipTest(f"human-act.py needs {e}")
+        self.assertEqual(mod.seat_label(seat), "controle/Ba/a")
+        self.assertEqual(mod.seat_label(os.path.join(self.round, "lotB")), None)
+
+    def test_the_exit_check_names_a_control_seat_by_its_folder(self):
+        sortie = load("sortie-de-siege.py")
+        self.assertEqual(sortie.seat_name(self.control, "a"), "controle/Ba/a")
+        self.assertEqual(sortie.seat_name(os.path.join(self.round, "lotB"), "c"), "lotB/c")
+        # A seat started, its report gone: the refusal names the control seat.
+        code, out = script("sortie-de-siege.py", "avant", self.control, "--depot", self.depot)
+        self.assertEqual(code, 0, out)
+        os.remove(os.path.join(self.control, "a", "rapport.md"))
+        code, out = script("sortie-de-siege.py", "verifie", self.control)
+        self.assertEqual(code, 1, out)
+        self.assertIn("controle/Ba/a : pas de rapport.md", out)
+
+
+SEAT_REPORT = """siege: a | profil: t6-Ba gaucher | lang: es | device: phone | font: 100 | mode: simple
+mission: remix-voix | buts: separe, decoupe, pose
+defauts-avant:
+  - A7 | corrigé | ecran: 21 | la phrase touchée
+  - geste: 3 | ecran.vu: 4 | cible: « Cortar » | geste.type: touche
+hesitations:
+  - ecran: 6 | cherchais: la voix | regarde: rien
+defauts:
+  - geste: 5 | ecran.vu: 6 | cible: « Voz » | geste.type: touche
+    attendu: la voix | obtenu: rien
+    symptome: hors-pouce
+    gravite: finition | revu: oui: ecran 6 | banc?: non | promesse: -
+"""
+
+
+class ControlSeatsInTheRound(unittest.TestCase):
+    """fuse-reports.py and tableau-de-bord.py read a round that holds control seats, nested or flat (round 6)."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="constate-tour-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.round = os.path.join(self.tmp, "tour-6")
+        for folder in ("lotB/a", "controle/Ba/a", "controle/Ha"):
+            write(os.path.join(self.round, folder, "rapport.md"), SEAT_REPORT)
+            write(os.path.join(self.round, folder, "journal.txt"),
+                  "#5 ROUTE remix | MODE simple | EMPREINTE a | project=p no tuto\n#5 > touche 1 1\n#5 DOIGT remix_voice « Voz »\n"
+                  "#6 ROUTE remix | MODE simple | EMPREINTE b | project=p no tuto\n#6 BANC : état hérité remis\n")
+        write(os.path.join(self.tmp, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+
+    def test_a_control_seat_is_named_by_its_folder_and_its_section_is_no_defect(self):
+        fuse = load("fuse-reports.py")
+        clusters, rejected, seats, promises, incidents = fuse.fuse(self.round, os.path.join(self.tmp, "base.tsv"), None, "tour-6")
+        where = sorted(w for c in clusters for w in c["where"])
+        self.assertEqual(where, ["B/a#5", "controle/Ba/a#5", "controle/Ha#5"], "one defect a seat, three seats apart")
+        code, out = script("fuse-reports.py", self.round, "--base", os.path.join(self.tmp, "base.tsv"), "--tour", "tour-6")
+        self.assertEqual(code, 0, out)
+        bench = read(os.path.join(self.round, "incidents-banc.tsv"))
+        self.assertIn("controle/Ba/a\t6", bench)
+        self.assertIn("controle/Ha\t6", bench)
+
+    def test_the_round_s_missions_leave_the_control_seats_out(self):
+        board = load("tableau-de-bord.py")
+        for folder, result in (("lotB/a", "reussie"), ("controle/Ba/a", "non"), ("controle/Ha", "non")):
+            write(os.path.join(self.round, folder, "mesures.json"), '{"mission": "remix-voix", "resultat": "%s", "mesures": {"fin": "fin"}}' % result)
+        name, rows, curve = board.round_numbers(self.round, os.path.join(self.tmp, "base.tsv"), os.path.join(self.tmp, "v.tsv"), 120,
+                                                os.path.join(self.tmp, "caches.tsv"))
+        e = next(r for r in rows if r[0] == "E")
+        self.assertEqual(e[2], "1/1", "a control seat replays a lot's branch: it is not one of the round's missions")
+
+
+class TutoLockAcceptsTheBenchLayout(unittest.TestCase):
+    """The lock of « portail4 » (rapport-zone.py --tuto): a control seat played by the bench now lives in
+    controle/<id>/a/, its rapport.md starting « code testé : <sha> »; « controle: <id> » names it by its folder."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="constate-tuto-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.repo = os.path.join(self.tmp, "depot")
+        os.makedirs(self.repo)
+        git(self.repo, "init", "-q", "-b", "int")
+        self.panel = os.path.join(self.repo, "app/src/main/java/p/tuto/TutoPanel.kt")
+        write(self.panel, "v1\n")
+        git(self.repo, "add", "-A")
+        git(self.repo, "commit", "-q", "-m", "base")
+        git(self.repo, "checkout", "-q", "-b", "eq/tour-9-z")
+        write(self.panel, "v2\n")
+        git(self.repo, "commit", "-q", "-am", "the tutorial, changed")
+        self.sha = git(self.repo, "rev-parse", "HEAD").stdout.strip()
+
+    def seat(self, rel, sha=None):
+        write(os.path.join(self.repo, "docs/audits/ultra/sieges/tour-9/controle", rel, "rapport.md"),
+              f"code testé : {sha or self.sha}\njoué par : sous-agent neuf\nsiege: a | profil: t9\n"
+              "chapitre: 1 Un chapitre | ecran: 3 | compris du premier coup | vu\n")
+        git(self.repo, "add", "-A")
+        git(self.repo, "commit", "-q", "-m", "control seat")
+
+    def rule(self, seat_id):
+        write(os.path.join(self.repo, "docs/audits/ultra/tour-9-z-rapport.md"),
+              f"# Rapport\n\ntests: aucun : jouet\n\ncontrole: {seat_id} | code testé: {self.sha[:10]} | bloqués: 0 | graves neufs: 0\n")
+        git(self.repo, "add", "-A")
+        git(self.repo, "commit", "-q", "-m", "report")
+        base = git(self.repo, "merge-base", "int", "eq/tour-9-z").stdout.strip()
+        return script("rapport-zone.py", "--tuto", "eq/tour-9-z", "docs/audits/ultra/tour-9-z-rapport.md", f"base:{base}",
+                      f"tete:{git(self.repo, 'rev-parse', 'int').stdout.strip()}", "tour:tour-9", cwd=self.repo)
+
+    def test_the_folder_of_a_seat_the_bench_played_is_its_id(self):
+        self.seat("Ba/a")
+        code, out = self.rule("Ba")
+        self.assertEqual(code, 0, out)
+        self.assertIn("Ba@", out)
+        code, out = self.rule("Ba/a")
+        self.assertEqual(code, 0, out)
+
+    def test_the_seat_s_report_is_still_read(self):
+        self.seat("Ba/a", sha="0" * 40)
+        code, out = self.rule("Ba")
+        self.assertEqual(code, 1, out)
+        self.assertIn("names another commit", out)
+
+    def test_two_seats_in_one_control_folder_are_not_guessed(self):
+        self.seat("Ba/a")
+        self.seat("Ba/b")
+        code, out = self.rule("Ba")
+        self.assertEqual(code, 1, out)
+        self.assertIn("Ba/a", out)
+
+
+class ReportTemplate(unittest.TestCase):
+    """The tester's template gets the section « defauts-avant » with the four answers of rule 3."""
+
+    def test_the_template_has_the_section_and_its_four_answers(self):
+        text = read(os.path.join(ROOT, "docs", "audits", "GABARIT-RAPPORT-TESTEUR.md"))
+        block = text.split("```")[1] if text.count("```") >= 2 else ""
+        self.assertIn("defauts-avant:", block)
+        line = next((l for l in block.splitlines() if l.strip().startswith("- <id")), "")
+        for answer in ("corrigé", "autre", "encore là", "pas atteint"):
+            self.assertIn(answer, line)
+        self.assertIn("ecran:", line)
+        mod = load("reparations.py")
+        filled = ("defauts-avant:\n" + line.replace("<id du défaut visé>", "A7").replace("<corrigé|autre|encore là|pas atteint>", "corrigé")
+                  .replace("<n°>", "21"))
+        self.assertEqual(mod.before_defects(filled).get("A7", (None,))[:2], ("corrigé", "21"), "the chief's command reads the template's line")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

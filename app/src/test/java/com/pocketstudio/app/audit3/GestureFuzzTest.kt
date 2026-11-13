@@ -140,7 +140,7 @@ class GestureFuzzTest {
         n.config.getOrNull(SemanticsProperties.TestTag) ?: n.config.getOrNull(SemanticsProperties.Text)?.joinToString()?.take(30)
             ?: n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString()?.take(30) ?: "#${n.id}"
 
-    private fun run(seed: Long, steps: Int) {
+    private fun run(seed: Long, steps: Int, slowSaveMs: Long = 0) {
         val rnd = Random(seed)
         var controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val until = System.currentTimeMillis() + 15_000
@@ -150,9 +150,16 @@ class GestureFuzzTest {
         }
         val trail = ArrayDeque<String>()
         var done = 0
+        var reopened = 0
+        // Tour 6, lot « stable » (CI 43498458467: « too few gestures made (133) », nothing else said): the gestures not made, by kind.
+        val missed = sortedMapOf<String, Int>()
         // Things that leave the app or wait on the network are not touched (the rest of the app is).
         val avoid = Regex("(?i)share|partag|github|retour|report|download|télécharg|feedback|update|mise à jour")
+        // Gestures that fell on a screen still opening its project (« Ouverture du projet… »): the finger's pace against the
+        // disk's, not the app's screens; there must be none, however slow the disk (aSlowDiskDoesNotEatTheGestures).
+        var onTheOpening = 0
         for (i in 0 until steps) {
+            val opening = compose.onAllNodesWithTag("project_opening", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
             val action = rnd.nextInt(100)
             val what = try {
                 when {
@@ -192,12 +199,18 @@ class GestureFuzzTest {
             }
             trail.addLast(what)
             if (trail.size > 15) trail.removeFirst()
+            if (opening) onTheOpening++
             if (what.startsWith("touch") || what.startsWith("long") || what.startsWith("swipe") || what == "back") done++
+            else missed.merge(what.substringBefore(" (").take(40), 1, Int::plus)
             try {
                 idle()
                 // Back on the home screen may close the app: open it again, as the person would.
                 if (controller.get().isFinishing) {
                     controller.pause().stop().destroy()
+                    // A slow disk (a loaded runner): the closed screen's last save takes [slowSaveMs] to write, and the next
+                    // opening waits for it (« Ouverture du projet… », ProjectOpening.prepare).
+                    if (slowSaveMs > 0) com.pocketstudio.app.rhythm.ClosingSaves.launch(slowSaveMs + 10_000) { Thread.sleep(slowSaveMs) }
+                    reopened++
                     controller = Robolectric.buildActivity(MainActivity::class.java).setup()
                     idle()
                 }
@@ -207,8 +220,9 @@ class GestureFuzzTest {
                 }
             }
         }
-        System.err.println("GestureFuzzTest seed $seed: $done gestures made of $steps ($textWindowsClosed text windows closed with Retour)")
-        assertTrue("seed $seed: too few gestures made ($done)", done > steps / 2)
+        System.err.println("GestureFuzzTest seed $seed: $done gestures made of $steps ($textWindowsClosed text windows closed with Retour; $reopened times opened again; $onTheOpening on the opening screen; not made: $missed)")
+        assertEquals("seed $seed: gestures drawn while the project was still opening (not made: $missed)", 0, onTheOpening)
+        assertTrue("seed $seed: too few gestures made ($done; opened again $reopened times; not made: $missed; last gestures: ${trail.joinToString(" → ")})", done > steps / 2)
         val vm = ViewModelProvider(controller.get())[RhythmViewModel::class.java]
         runCatching { idle() }.exceptionOrNull()?.let { if (!standIn(it)) throw it }
         val p = vm.project.value
@@ -221,10 +235,10 @@ class GestureFuzzTest {
         }.exceptionOrNull()?.let { if (!standIn(it)) throw it }
     }
 
-    private fun fuzz(defaultSeed: Long) {
+    private fun fuzz(defaultSeed: Long, slowSaveMs: Long = 0) {
         val seed = System.getenv("PS_GESTURE_SEED")?.toLongOrNull() ?: defaultSeed
         val steps = System.getenv("PS_GESTURE_STEPS")?.toIntOrNull() ?: 300
-        run(seed, steps)
+        run(seed, steps, slowSaveMs)
         if (standInLimits.isNotEmpty()) System.err.println("GestureFuzzTest: native readings without a stand-in: $standInLimits")
     }
 
@@ -260,4 +274,13 @@ class GestureFuzzTest {
 
     @Test
     fun anotherRandomFingerNeverCrashesTheApp() = fuzz(20261103L)
+
+    /**
+     * Tour 6, lot « stable » (CI 43498458467: seed 11, « too few gestures made (133) » in 2.1 s, 299 here in 5.6 s): the
+     * finger went on at the loop's own pace while the app, opened again, waited for its disk (« Ouverture du projet… »,
+     * nothing to touch): on a loaded runner the wait is longer and more gestures fell on the empty screen. Here the disk is
+     * slow on purpose (each closing save 8 s): no gesture is drawn while the project still opens, however slow the disk.
+     */
+    @Test
+    fun aSlowDiskDoesNotEatTheGestures() = fuzz(11L, slowSaveMs = 8_000)
 }

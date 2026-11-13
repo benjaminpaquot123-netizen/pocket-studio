@@ -165,6 +165,30 @@ class CutZoomGestureTest {
     @Test
     fun removeAfterTouchesACutAndUndoTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("cut+undo")
 
+    /**
+     * Review of remix2 (grave, third pass): touch 3 and 7, leave the cut screen and come back (a new model on what was
+     * saved), touch 5: « Enlever » takes piece 5 only. A choice made by placing the head is not saved as a tick.
+     */
+    @Test
+    fun removeAfterReopeningTakesOnlyThePieceUnderTheHead() {
+        val (m, v, saved) = setUp()
+        listOf(3, 7).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+        }
+        val reopened = compose.runOnIdle {
+            CutModel("song", song, 120.0, 0.0, saved.lastOrNull() ?: m.cuts, mode = com.pocketstudio.model.AutoCut.Phrases)
+        }
+        val five = reopened.pieces[5]
+        val count = reopened.pieces.size
+        reopened.cursor = 5 * bar + bar / 2
+        reopened.choosePieceAt(reopened.cursor)
+        reopened.remove()
+        assertEquals(count - 1, reopened.pieces.size)
+        assertFalse(five in reopened.pieces)
+    }
+
     /** A piece ticked on purpose (its number) still goes with « Enlever », with the head elsewhere. */
     @Test
     fun removeTakesThePiecesTickedOnPurpose() {

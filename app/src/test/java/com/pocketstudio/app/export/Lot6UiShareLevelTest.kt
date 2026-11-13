@@ -34,21 +34,27 @@ class Lot6UiShareLevelTest {
 
     private val base = ShareSheetUi(name = "Nuit trap", seconds = 150, parts = 4, checks = emptyList(), projectName = "Nuit trap")
 
+    // Tour 6, seat A c / control Ac-2 (E1): the Mode simple says the file's level as Pro does, same words, same number.
+    private fun expected(v: Double): String {
+        I18n.lang = Lang.FR
+        return tr("Volume : %s, %s", String.format(Lang.FR.locale, "%.1f", v).replace('-', '−'), Loudness.describe(v))
+    }
+
     @Test
     fun theSimpleLevelIsTheExportsTarget() {
         // Heard at −14 LUFS while the file aims at −8,5 (the Trap style's « Auto »).
-        assertEquals(tr("Niveau : %s", Loudness.describe(-8.5)), said(base.copy(lufs = -14.0, exportLufs = -8.5)))
+        assertEquals(expected(-8.5), said(base.copy(lufs = -14.0, exportLufs = -8.5)))
     }
 
     @Test
     fun theSimpleLevelIsSaidBeforeAnyListen() {
         // Not played yet (no reading): the file's level is known all the same.
-        assertEquals(tr("Niveau : %s", Loudness.describe(-8.5)), said(base.copy(lufs = null, exportLufs = -8.5)))
+        assertEquals(expected(-8.5), said(base.copy(lufs = null, exportLufs = -8.5)))
     }
 
     @Test
     fun withoutATargetTheSimpleLevelIsWhatIsHeard() {
-        assertEquals(tr("Niveau : %s", Loudness.describe(-14.0)), said(base.copy(lufs = -14.0, exportLufs = null)))
+        assertEquals(expected(-14.0), said(base.copy(lufs = -14.0, exportLufs = null)))
     }
 
     @Test

@@ -97,6 +97,7 @@ def main(argv):
             f"Mission {mission}; its 3 goals (ids, the bench checks them): {GOALS.get(mission, 'but1, but2, but3')}.",
             "Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):",
         ] + [f"  - id={i} | {p}" for i, p in proms] + [
+            f"Your report {d}/rapport.md already starts with two lines the bench wrote when it started (« code testé : … », « joué par : … »): keep them as its first two lines, write your block under them.",
             "Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.",
         ]
         with open(os.path.join(t, "briefs", f"{lot}{seat}.txt"), "w", encoding="utf-8") as f:

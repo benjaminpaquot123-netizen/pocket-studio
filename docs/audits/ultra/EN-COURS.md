@@ -30,6 +30,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 **11 h 47** : CI 43402800379 VERTE sur `b3617da21` (émulateur compris). Paquet 3 ouvert : `tutofleches`, `langues2`, `portail3` ; puis CI et contrôle du tuto par les trois testeurs. `rejeux7` au paquet 4.
 
+**12 h 30** : paquet 3 = `tutofleches` (`b4ac25f21`) + `portail3` (`afd7fa918`), CI lancée. `langues2` refusé (conflit avec `tutofleches` sur `i18n/*/tuto*.json`), rendu à « Sons modernes » ; il passera seul, en tête du paquet 4, avec `rejeux7`. Contrôle du tuto en cours sur `b4ac25f21` : Testeur 1 (fr), 2 (ja), 3 (de Pro). Contrôles sur `b3617da21` : Pad Live 2/3 corrigés, Remix voix 1/8, Exports 1/7 : lots « remix2 » et « exports2 » à ouvrir. Lot du banc « ci3 » (CI en moins d'une heure) chez « Banc · portail3 ». Audit `AUDIT-PARALLELE.md` : gel par zone, CI de chaque lot sur sa branche avant le portail (dès le paquet 4).
+
 ## Lots ouverts (un fichier = un seul lot ouvert)
 
 | Lot | Zone | Fichiers | Qui | État |

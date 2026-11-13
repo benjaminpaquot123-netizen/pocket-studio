@@ -147,6 +147,15 @@ def seat_label(seat):
     return f"{m.group(1)}/{m.group(2)}"
 
 
+def report_reminder(seat):
+    """Method v3 (AUDIT-ULTRA §13.4): the two lines the bench wrote on top of the seat's report when it started
+    (scripts/bench/sortie-de-siege.py), said again when the seat ends."""
+    head = [l for l in read(os.path.join(seat, "rapport.md")).splitlines()[:8] if l.startswith(("code testé :", "joué par :"))]
+    if head:
+        print(f"Rapport : {os.path.join(seat, 'rapport.md')} commence déjà par « {' » et « '.join(head)} » (écrit par le banc) : "
+              "garde ces lignes en tête, écris ton bloc dessous.")
+
+
 def main():
     if len(sys.argv) < 3:
         print(__doc__)
@@ -181,6 +190,7 @@ def main():
     why = ended(seat)
     if why is not None:
         print(f"Fin du siège : {why}.")
+        report_reminder(seat)
         return
     cmd = " ".join(words)
     tmp = os.path.join(seat, f"cmd-{n}.tmp")
@@ -189,6 +199,7 @@ def main():
     os.rename(tmp, os.path.join(seat, f"cmd-{n}.txt"))
     if cmd == "fin":
         print("Fin du test.")
+        report_reminder(seat)
         return
     n = wait_beyond(seat, n, 300, "L'appli ne répond plus (5 min sans nouvel écran).")
     show_text(seat, n)

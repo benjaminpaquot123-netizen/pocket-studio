@@ -2,6 +2,8 @@ package com.pocketstudio.app.ui
 
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import com.pocketstudio.model.remixOverrunSeconds
 import com.pocketstudio.app.human.HumanTester
 import com.pocketstudio.app.human.SeatOptions
 import org.junit.Assert.assertNotNull
@@ -78,5 +80,36 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         repeat(4) { act("attends 1") }
         assertTrue("the Live project is not the one open", rhythm()!!.projectId == live)
         assertNotNull("the Live project opened again elsewhere than Pad Live:\n" + screen(), centerOf("padlive"))
+    }
+
+    /**
+     * Seat B a (es, phone, 100 %, Mode simple, left hand), A6: a song (0:40) longer than the project (1 bar) put in it: the app
+     * says its end will be cut AND offers to lengthen, in the same window.
+     */
+    @Test
+    fun a6_aSongLongerThanTheProjectIsSaidWithTheOfferToLengthen() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
+        amenee("remix", java.io.File("build/coquille2-journal.txt"))
+        tap("remix_download_thumb")
+        runCatching { tap("remix_model_ask_ok") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        runCatching { tap("remix_pick_thumb") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        val id = com.pocketstudio.app.remix.StemStore.list(ApplicationProvider.getApplicationContext()).first().id
+        // As the seat: « Cortar lo que quiero » puts the song in the project (kept as a store of sounds, the project a 1-bar
+        // loop), then the cut screen closed, the song played with the project.
+        tap("cut_song_$id")
+        repeat(20) { act("attends 1") }
+        repeat(10) { if (centerOf("remix_project") != null) return@repeat; runCatching { tap("cut_close") }; act("attends 1") }
+        // The voice switched on (the seat's speaker, screen 41): the song is heard with a 1-bar project.
+        tap("stem_mute_3")
+        repeat(2) { act("attends 1") }
+        // Said (« su final se cortará ») with the offer to lengthen (« Alargar … »), in that window, before anything else.
+        assertNotNull("no word that the end will be cut:\n" + screen(), centerOfText("se cortará", substring = true))
+        assertNotNull("no offer to lengthen with the warning:\n" + screen(), centerOf("notice_lengthen"))
+        tap("notice_lengthen")
+        act("attends 1")
+        assertTrue("the song still goes past the project's end", rhythm()!!.project.value.remixOverrunSeconds() <= 0)
     }
 }

@@ -120,6 +120,29 @@ class PadLivePlayShowsTest {
         assertEquals(listOf("stop all"), done)
     }
 
+    /**
+     * Control seat Ab-3 (P4 « autre », écrans 20 et 24): « Plus › Briques › Pads » on the whole screen, its ▶ at the top
+     * said ▶ with a loop playing on its own and its touch started the project's music too; it says ■ and cuts the loops.
+     */
+    @Test
+    fun thePadsFullScreenSaysTheSame() {
+        val done = ArrayList<String>()
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.session.LivePadsFullScreen(
+                    com.pocketstudio.app.session.LivePadsUi(pads, loops, editing = null),
+                    com.pocketstudio.app.session.LivePadsActions(stopAll = { done += "stop all" }),
+                    close = {}, tempoBpm = 124.0, beatsPerBar = 4, playing = false, clockOf = { -1 },
+                    togglePlay = { done += "play" }, effects = {},
+                )
+            }
+        }
+        compose.onNodeWithTag("live_pads_full_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
     @Test
     fun nothingPlayingShowsPlay() {
         assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { 0 }, playing = false, expect = "Jouer"))

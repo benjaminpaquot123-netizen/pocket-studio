@@ -28,4 +28,22 @@ class HeardLengthTest {
         val other = withTake(6).let { it.copy(audioTracks = it.audioTracks.map { t -> t.copy(clip = t.clip!!.copy(scene = 3)) }) }
         assertEquals(other.sceneSteps(other.scene), other.heardSceneSteps(other.scene))
     }
+
+    /**
+     * Fresh review (minor 1): counted as the engine loops them ([AudioClip.engineLoopSteps], [AudioClip.belongsTo]): a
+     * clip of every part counts, a « once » clip counts its whole passes, a muted track is not heard.
+     */
+    @Test
+    fun bricksAreCountedAsTheEngineLoopsThem() {
+        val p = Project()
+        val spb = p.stepsPerBar
+        fun with(clip: AudioClip, mute: Boolean = false): Project {
+            val q = p.copy(audioTracks = listOf(AudioTrack(id = 0, name = "Audio 1", clip = clip)))
+            return if (!mute) q else q.copy(mixer = q.mixer.copy(channels = q.mixer.channels.mapIndexed { i, c -> if (i == AudioTrack.mixerChannel(0)) c.copy(mute = true) else c }))
+        }
+        val bar = p.beatsPerBar * 60.0 / p.tempoBpm
+        assertEquals("a clip of every part", 4 * spb, with(AudioClip("a.wav", "a", seconds = 4 * bar, loopSteps = 4 * spb, scene = null)).heardSceneSteps(p.scene))
+        assertEquals("a « once » clip, its passes", 3 * spb, with(AudioClip("a.wav", "a", seconds = 3 * bar, loopSteps = spb, once = true, scene = p.scene)).heardSceneSteps(p.scene))
+        assertEquals("a muted track", p.sceneSteps(p.scene), with(AudioClip("a.wav", "a", seconds = 4 * bar, loopSteps = 4 * spb, scene = p.scene), mute = true).heardSceneSteps(p.scene))
+    }
 }

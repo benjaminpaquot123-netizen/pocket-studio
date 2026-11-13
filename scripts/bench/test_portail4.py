@@ -593,13 +593,15 @@ class RealLots(unittest.TestCase):
         return r.returncode, r.stdout + r.stderr
 
     def test_the_tutorial_lots_of_tour_6_would_have_been_asked_for_their_seat(self):
-        for merge, zone in (("35645c88", "tutofleches"), ("0b8ba680", "tutoconsignes"), ("1980dff6", "tutogrille"), ("ea294587", "tutogrille")):
+        for merge, zone in (("35645c88", "tutofleches"), ("0b8ba680", "tutoconsignes"), ("1980dff6", "tutogrille"), ("ea294587", "tutogrille"),
+                            # (Review of the lot, G1: « emulateur » repaired PlainWords.kt, « le panneau du tuto » in its report.)
+                            ("2c146a42", "reparations"), ("911c6195", "emulateur")):
             code, out = self.rule(merge, zone)
             self.assertEqual(code, 1, f"{zone}: {out}")
             self.assertIn("no « controle: » line", out, zone)
 
     def test_the_bench_lots_of_tour_6_are_left_alone(self):
-        for merge, zone in (("42f608f6", "portail3"), ("c40b834e", "banc7"), ("911c6195", "emulateur")):
+        for merge, zone in (("42f608f6", "portail3"), ("c40b834e", "banc7"), ("d4958947", "guidecoquille"), ("9b106bd5", "cablage")):
             code, out = self.rule(merge, zone)
             self.assertEqual((code, out), (0, ""), zone)
 

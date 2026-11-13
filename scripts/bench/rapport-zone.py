@@ -51,9 +51,13 @@ The lot touches the tutorial zone when a file it changes (changed since the base
 version: a file that differs only because the branch merged the integration in is not the lot's) is application code
 or a resource of the tutorial:
   <module>/src/main/…/tuto/…   <module>/src/main/…/tutos/…   <module>/src/main/…/i18n/<lang>/tuto*.json
-or is PianoRoll.kt (under src/main) while the zone report says « tuto » (the word, any case, outside fenced blocks).
+or is one of the four files the tutorial shares with the rest of the application (AUDIT-ULTRA §13.3: PianoRoll.kt,
+RhythmScreen.kt, PlainWords.kt, TrackSheet.kt, under src/main) while the zone report says « tuto » (the word, any case,
+outside fenced blocks). Once a lot touches the zone, the shared files it changes are tutorial code whatever its report
+says: the seat plays after their last change too. File names are read with « -z » (git quotes « tuto_café.json »).
 Not the zone: the tutorial's tests (src/test), the reference screenshots, the docs, the bench.
-Then the zone report carries, per control seat, the line (a list bullet and backquotes are allowed):
+Then the zone report carries, per control seat, the line (a list bullet, a number, a table row, bold and backquotes
+are allowed: a « controle: » line is read or refused, never passed over):
 
   controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0
 
@@ -65,11 +69,12 @@ Then the zone report carries, per control seat, the line (a list bullet and back
 - <id> is a seat whose report is in the branch, docs/audits/ultra/sieges/<tour-N>/controle/<id>/rapport.md (<id>: one
   folder, « Ha », or a lot and its seat, « lotK/a »), whose head (the lines before « siege: », the first eight at most,
   as scripts/bench/sortie-de-siege.py writes and reads them) says « code testé : <the same commit> », and none of
-  whose « chapitre: » lines says « bloqué ».
+  whose chapter lines says « bloqué » (« chapitre: <n titre> | ecran: <n> | bloqué | … » or
+  « - chapitre <n> « titre » : bloqué (…) », the two forms of tour 6).
 Not seen (docs/decisions/tour-6-portail4.md): whether the seat was a fresh beginner, played the whole tutorial, in the
 same language and profile as the seat before; a grave the seat's report describes without the line counting it; a
-lot that changes PianoRoll.kt for the tutorial without its report saying « tuto »; the other files of the zone of
-§13.3 (RhythmScreen.kt, PlainWords.kt, TrackSheet.kt).
+lot that changes only shared files for the tutorial without its report saying « tuto »; a seat's report written by
+hand in the branch (code-teste.tsv is not read).
 Prints one line per refusal, exit 1. Accepted: « tuto: … » (the zone's files and the seats) when the lot touches the
 zone, nothing at all when it does not.
 """
@@ -95,8 +100,9 @@ APP_TESTS = "app/src/test"
 
 def is_app_test(branch, cls, method):
     """Classe#méthode is a function of class Classe in a file of app/src/test of the branch, with @Test, no @Ignore."""
-    r = subprocess.run(["git", "grep", "-l", "-F", method, branch, "--", APP_TESTS], capture_output=True, text=True)
-    for line in r.stdout.splitlines():
+    # (Review of « portail4 », G2: « -z », git quotes a name that is not plain ASCII otherwise.)
+    r = subprocess.run(["git", "grep", "-z", "-l", "-F", method, branch, "--", APP_TESTS], capture_output=True, text=True)
+    for line in filter(None, r.stdout.split("\0")):
         text = judge.without_comments(show(branch, line.split(":", 1)[1]) or "")
         if f"{cls}#{method}" in judge.class_methods(text, False) and judge.still_runs(text, method):
             return True
@@ -198,11 +204,12 @@ def triage_graves(branch, head, tour, base=None):
 
 
 def without_code_blocks(text):
-    """Review of « portail3 » (M1): a fenced block (``` … ```) shows a format, it states nothing."""
-    out, inside = [], False
+    """Review of « portail3 » (M1): a fenced block (``` … ``` or ~~~ … ~~~) shows a format, it states nothing."""
+    out, inside = [], None
     for line in text.split("\n"):
-        if line.strip().startswith("```"):
-            inside = not inside
+        fence = line.strip()[:3]
+        if fence in ("```", "~~~") and inside in (None, fence):
+            inside = None if inside else fence
             continue
         if not inside:
             out.append(line)
@@ -289,16 +296,19 @@ def corrections(branch, path, base, tour, added=(), head=None):
 
 
 ZONE = re.compile(r"(?:^|/)src/main/(?:.*/)?(?:tutos?/.+|i18n/[^/]+/tuto[^/]*\.json)$")
-ZONE_IF_SAID = re.compile(r"(?:^|/)src/main/(?:.*/)?PianoRoll\.kt$")
+# (AUDIT-ULTRA §13.3: the four files the tutorial shares with the rest of the application.)
+ZONE_IF_SAID = re.compile(r"(?:^|/)src/main/(?:.*/)?(?:PianoRoll|RhythmScreen|PlainWords|TrackSheet)\.kt$")
 SAID = re.compile(r"\btuto", re.I)
-SEAT_LINE = re.compile(r"^\s*(?:[-*]\s*)?`?contr[oô]le\s*:(.*)$", re.M | re.I)
+# (A list bullet, a number, a check box, a quote, a table row, bold, backquotes: the line is read all the same.)
+SEAT_LINE = re.compile(r"^[ \t>#|*_`+\-0-9.)\[\]xX]*contr[oô]le[*_`]*\s*:(.*)$", re.M | re.I)
 SEAT_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*(?:/[A-Za-z0-9][A-Za-z0-9_.-]*)?$")
 SEAT_CODE = re.compile(r"^code\s+test[ée]\s*:\s*([0-9a-f]{7,40})$", re.I)
 SEAT_BLOCKED = re.compile(r"^bloqu[ée]s\s*:\s*(\d+)$", re.I)
 SEAT_GRAVES = re.compile(r"^graves\s+neufs\s*:\s*(\d+)$", re.I)
 SEAT_SHAPE = "« controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 »"
 SEAT_HEAD = re.compile(r"^code testé\s*:\s*(\S*)\s*$")
-CHAPTER = re.compile(r"^chapitre\s*:\s*([^|]*)\|[^|]*\|\s*(bloqu[ée][^|]*)", re.M | re.I)
+# (« chapitre: 13 Die Effekte | ecran: 193 | bloqué | … » and « - chapitre 5 « ベース » : bloqué (…) », both of tour 6.)
+CHAPTER = re.compile(r"^\s*(?:[-*]\s*)?(chapitre\b[^\n]*?)\s*[|:]\s*(bloqu[ée][^|\n]*)", re.M | re.I)
 
 
 def git_out(*args):
@@ -306,18 +316,26 @@ def git_out(*args):
     return r.returncode, r.stdout
 
 
+def names(*args):
+    """The file names a git command lists, read with « -z » (git quotes a name that is not plain ASCII otherwise)."""
+    code, out = git_out(*args)
+    return code, [f for f in out.split("\0") if f]
+
+
 def tutorial_files(branch, text, base, head):
-    """The files of the tutorial zone the lot changes: changed since the base, and not the integration head's version."""
-    code, out = git_out("diff", "--no-renames", "--name-only", base, branch)
+    """The files of the tutorial zone the lot changes: changed since the base, and not the integration head's version.
+    Review of « portail4 » (G1): once the lot is a lot of the tutorial, the four shared files of §13.3 it changes are
+    tutorial code too, whatever its report says."""
+    code, changed = names("diff", "-z", "--no-renames", "--name-only", base, branch)
     said = SAID.search(text or "") is not None
-    files = []
-    for f in out.splitlines() if code == 0 else []:
-        if not (ZONE.search(f) or (said and ZONE_IF_SAID.search(f))):
+    files, shared = [], []
+    for f in changed if code == 0 else []:
+        if not (ZONE.search(f) or ZONE_IF_SAID.search(f)):
             continue
         if head and subprocess.run(["git", "diff", "--quiet", head, branch, "--", f]).returncode == 0:
             continue
-        files.append(f)
-    return files
+        (files if ZONE.search(f) or said else shared).append(f)
+    return files + shared if files else []
 
 
 def seat_head(text):
@@ -353,7 +371,7 @@ def tutorial(branch, path, base, head, tour):
         own = out.split() if code == 0 else []
     refusals, seats = [], []
     for m in lines:
-        parts = [p.strip() for p in m.group(1).strip().strip("`").split("|")]
+        parts = [p.strip(" \t*_`") for p in m.group(1).strip(" \t*_`|").split("|")]
         ok = len(parts) == 4 and SEAT_ID.match(parts[0]) and ".." not in parts[0]
         sha, blocked, graves = (SEAT_CODE.match(parts[1]), SEAT_BLOCKED.match(parts[2]), SEAT_GRAVES.match(parts[3])) if ok else (None,) * 3
         if not (ok and sha and blocked and graves):
@@ -378,9 +396,9 @@ def tutorial(branch, path, base, head, tour):
             refusals.append(f"control seat « {seat} »: code testé {sha[:10]} was played before the lot's last change of the "
                             f"tutorial ({', '.join(c[:8] for c in late[:3])}): the seat replays after the last fix")
             continue
-        code, moved = git_out("diff", "--no-renames", "--name-only", full, branch, "--", *files)
-        if code != 0 or moved.strip():
-            refusals.append(f"control seat « {seat} »: {' '.join(moved.split()[:4])} at the head of {branch} are not the files "
+        code, moved = names("diff", "-z", "--no-renames", "--name-only", full, branch, "--", *files)
+        if code != 0 or moved:
+            refusals.append(f"control seat « {seat} »: {', '.join(moved[:4])} at the head of {branch} are not the files "
                             f"the seat played at {sha[:10]} (a merge changed them since): the seat replays the head")
             continue
         seat_path = f"docs/audits/ultra/sieges/{tour}/controle/{seat}/rapport.md"
@@ -399,7 +417,7 @@ def tutorial(branch, path, base, head, tour):
             continue
         stuck = CHAPTER.search(seat_text)
         if stuck:
-            refusals.append(f"control seat « {seat} »: its own report says « chapitre: {stuck.group(1).strip()[:40]} … "
+            refusals.append(f"control seat « {seat} »: its own report says « {stuck.group(1).strip()[:50]} … "
                             f"{stuck.group(2).strip()[:40]} » while the line says bloqués: 0")
             continue
         seats.append(f"{seat}@{full[:8]}")

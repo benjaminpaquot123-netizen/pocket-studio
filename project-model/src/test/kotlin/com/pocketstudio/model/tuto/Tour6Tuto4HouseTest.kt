@@ -55,6 +55,23 @@ class Tour6Tuto4HouseTest {
         report("texts that do not name the pad as written", bad)
     }
 
+    /** M2: Groove, kick, relances, Break, Mix, solo, Tonique, BPM: each said in simple words where a Facile reader first meets it. */
+    @Test
+    fun musicianWordsAreExplainedAtFirstSight() {
+        val bad = mutableListOf<String>()
+        val reading = facileReading()
+        for ((w, explained) in FIRST_SIGHT) {
+            val first = reading.firstOrNull { w.containsMatchIn(it) }
+            if (first == null) { bad += "fr: « ${w.pattern} » never said"; continue }
+            if (!explained.containsMatchIn(first)) bad += "fr: « ${w.pattern} » not explained where first seen: $first"
+            everyLanguage(listOf(first), bad)
+        }
+        // The key sheet's own word, as the sheet shows it in each language.
+        val key = step("key").text
+        for (lang in translated) tr(lang, key)?.let { v -> if (word(lang, "Tonique") !in v) bad += "${lang.code}: no « ${word(lang, "Tonique")} »: $v" }
+        report("musician words met unexplained", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

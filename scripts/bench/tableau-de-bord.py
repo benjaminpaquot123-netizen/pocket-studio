@@ -3,7 +3,7 @@
 
     tableau-de-bord.py <round folder> [<round folder> …] [--out <last round>/tableau-de-bord.md]
                        [--base docs/audits/ultra/base.tsv] [--verdicts docs/audits/ultra/verdicts.tsv] [--promesses-total 120]
-                       [--caches docs/audits/ultra/defauts-caches.tsv]
+                       [--caches docs/audits/ultra/defauts-caches.tsv] [--corrections docs/audits/ultra/corrections.tsv]
 
 A round folder is docs/audits/ultra/sieges/tour-N (lotX/s/rapport.md, journal.txt, mesures.json when seat-metrics ran)
 plus, written by the coordinator at the end of the round, hors-banc.tsv (key<TAB>value: relecture_bloquants,
@@ -14,6 +14,9 @@ then NOT met (the criterion is never reached by lack of a number).
 Writes one table per round (the stop criterion's conditions A-I, and J: the defects the bench hides, MT1, each « oui », « non » or « ? ») and the convergence
 curve across the rounds given. The stop criterion (docs/audits/AUDIT-ULTRA.md §9): A-I « oui » on each of the last two
 complete rounds. Standard library only.
+Lot « constate » (PLAN-REPARATIONS-CONSTATEES.md, rule 5): under each round's table, one line « Réparations » with the
+four figures of the register (scripts/bench/reparations.py: constaté, rejoué, tenté, pas pris; each defect once, at its
+best state) and « réparés : <constaté> sur <pris> »; not a condition of the stop criterion.
 """
 import json
 import os
@@ -26,6 +29,7 @@ DOCS = os.path.join(HERE, "..", "..", "docs", "audits", "ultra")
 sys.path.insert(0, HERE)
 fuse_mod = __import__("fuse-reports")
 caches_mod = __import__("defauts-caches")
+registre = __import__("reparations")
 
 
 def read(path):
@@ -280,7 +284,8 @@ def main(argv):
     verdicts = opt("--verdicts", os.path.join(docs, "verdicts.tsv"))
     total = int(opt("--promesses-total", "120"))
     caches = opt("--caches", os.path.join(docs, "defauts-caches.tsv"))
-    flags = {"--out", "--base", "--verdicts", "--promesses-total", "--caches"}
+    repairs = registre.load(read(opt("--corrections", os.path.join(docs, "corrections.tsv"))))[1]
+    flags = {"--out", "--base", "--verdicts", "--promesses-total", "--caches", "--corrections"}
     tours = [a for i, a in enumerate(argv) if not a.startswith("--") and (i == 0 or argv[i - 1] not in flags)]
     # External audit: each round once, in round order (« tour-5 tour-1 » made tour-1 the last one; a round given twice
     # counted twice for the stop).
@@ -295,6 +300,7 @@ def main(argv):
         met.append(all(r[4] == "oui" for r in rows))
         lines += [f"## {name}", "", "| | Condition | Mesure | Seuil | Remplie |", "|---|---|---|---|---|"]
         lines += [f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} |" for r in rows]
+        lines += ["", registre.line(repairs, name)]
         lines += ["", f"Toutes remplies : {'oui' if met[-1] else 'non'}", ""]
     lines += ["## Courbe de convergence", "",
               "`echelle` : v1 = le mot du testeur (bloquant, grave…), v2 = la conséquence (mission-impossible, contourne-en-N-gestes) ; "

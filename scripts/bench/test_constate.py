@@ -752,6 +752,8 @@ class DashboardLine(unittest.TestCase):
             row("tour-6", "A3", "B/a", "8", "tenté", "1", "-", "", ""),
             row("tour-6", "A5", "B/a", "44", "Tente", "1", "-", "", ""),
             row("tour-6", "A4", "B/a", "9", "pas pris", "-", "-", "", ""),
+            # (A defect with a line of another state too, « banc » here: counted once, at its repair state.)
+            row("tour-6", "A3", "B/d", "10", "banc", "1", "-", "", ""),
         ]) + "\n")
         for t in ("tour-5", "tour-6"):
             os.makedirs(os.path.join(self.tmp, t))

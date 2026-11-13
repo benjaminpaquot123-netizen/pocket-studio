@@ -209,6 +209,40 @@ def constate(tour, item, seat, register, root):
     return 0, [f"constaté : {tour} {item} ({r.get('siege')}#{r.get('ecran')}) ← {where}#{screen}" for _, r in takeable]
 
 
+def counts(rows, tour):
+    """The four figures of a round (plan, rule 5): each defect (round, item) once, at its best state (constaté >
+    rejoué > tenté > pas pris); « avant »: the states of the lines from before the rule (corrigé, banc, voulu), by defect."""
+    rank = {s: i for i, s in enumerate(STATES)}
+    best, before = {}, {}
+    for r in rows:
+        if r.get("tour") != tour:
+            continue
+        said = state(r.get("etat"))
+        if said in rank:
+            if rank[said] > rank.get(best.get(r.get("item")), -1):
+                best[r.get("item")] = said
+        elif said:
+            before.setdefault(r.get("item"), said)
+    out = {s: sum(1 for v in best.values() if v == s) for s in STATES}
+    out["avant"] = {}
+    for item, said in before.items():
+        if item not in best:
+            out["avant"][said] = out["avant"].get(said, 0) + 1
+    return out
+
+
+def line(rows, tour):
+    """The dashboard's line « réparations » of a round."""
+    n = counts(rows, tour)
+    taken = n["tenté"] + n["rejoué"] + n["constaté"]
+    text = (f"Réparations (registre corrections.tsv) : constaté {n['constaté']}, rejoué {n['rejoué']}, tenté {n['tenté']}, "
+            f"pas pris {n['pas pris']} — réparés : {n['constaté']} sur {taken} pris (seul « constaté » se dit corrigé ; "
+            "les pas pris à part)")
+    if n["avant"]:
+        text += " ; états d'avant la règle : " + ", ".join(f"{k} {v}" for k, v in n["avant"].items())
+    return text
+
+
 LOT_STATES = ("tenté", "pas pris")
 
 

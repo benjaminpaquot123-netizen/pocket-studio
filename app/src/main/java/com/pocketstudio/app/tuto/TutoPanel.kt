@@ -419,7 +419,10 @@ fun TutoPanel(
     // words' scroll is the step's own (the step before's left its room in the height held for this one).
     val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
     var moreHeight by remember { mutableIntStateOf(0) }
-    val moreRoom = if (words.maxValue > 0) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
+    // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », its room went into the
+    // height held for the step, empty under words that fit. Room only once the words are measured longer than their room.
+    val scrolls = words.maxValue in 1 until Int.MAX_VALUE
+    val moreRoom = if (scrolls) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
     Surface(
         color = panelColor(), shape = shape,
         modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
@@ -529,7 +532,7 @@ fun TutoPanel(
                 if (step.id != READY_STEP) kit?.invoke()
             }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (words.maxValue > 0) MoreWords(words.canScrollForward, Modifier.align(Alignment.BottomCenter).onSizeChanged { moreHeight = it.height }) {
+            if (scrolls) MoreWords(words.canScrollForward, Modifier.align(Alignment.BottomCenter).onSizeChanged { moreHeight = it.height }) {
                 words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
             }
             }

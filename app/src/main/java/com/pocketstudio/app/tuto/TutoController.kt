@@ -158,6 +158,9 @@ data class TutoUi(
             c.startsWith("triplet:") -> TutoChecks.laneOf(TutoChecks.argOf(c))
             c == "fill" || c == "gap" -> TutoChecks.laneOf("snare")
             c == "crash" -> TutoChecks.CRASH_LANE
+            // Tour 6 (N6): a drum variation in a part (« ajoute quelques coups … dans le Drop 2 »): the pad its target names
+            // first, else the open hat (the course's own example starts there).
+            c.startsWith("changed:drums:") -> TutoChecks.laneOf(current.target.substringBefore(',').trim().ifEmpty { "open_hat" })
             else -> null
         }
     }

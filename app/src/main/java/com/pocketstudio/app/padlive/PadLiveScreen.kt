@@ -130,9 +130,11 @@ class PadLiveUi(
 
 /**
  * Tour 6, padlive2 (P4, control seat A b #11: « le ▶ du haut reste ▶ avec 3 boucles en route »): something plays, the
- * transport or loops started on their own (waiting for their line included); the play buttons show ■ then.
+ * transport or loops started on their own (waiting for their line included, a hit ringing not); the play buttons show ■ then.
  */
-internal val PadLiveUi.soundsNow: Boolean get() = playing || states.any { it != 0 }
+internal val PadLiveUi.soundsNow: Boolean
+    // A « coup » ringing is not music playing (review of padlive2): only loops, lit or waiting, count.
+    get() = playing || states.withIndex().any { (pad, state) -> state != 0 && pads.at(pad)?.oneShot == false }
 
 /** What a touch on a play button does: ▶ starts the music; ■ stops what plays (the transport's ■ also cuts the pads; pads alone: « Tout couper »). */
 internal fun PadLiveActions.playOrStop(ui: PadLiveUi): () -> Unit = if (!ui.playing && ui.soundsNow) stopAll else togglePlay

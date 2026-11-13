@@ -141,4 +141,23 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         assertTrue("« Frases ▾ » cut on:\n" + screen(), whole("cut_auto"))
         assertTrue("« En el tiempo ▾ » cut on:\n" + screen(), whole("cut_magnet"))
     }
+
+    /**
+     * Seat A c (fr, phone, 100 %, Mode simple), N2 (gesture 21, screen 23): during « Fabrication du son » of the Pro
+     * export, its « Annuler » is whole on the screen, not cut under the « Guide » bar.
+     */
+    @Test
+    fun n2_theExportsCancelIsWholeWhileTheSoundIsMade() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        trapSong()
+        tap("tab_simple_Envoyer")
+        compose.onNodeWithTag("share_other").performClick()
+        repeat(2) { act("attends 1") }
+        tap("export")
+        act("attends 1")
+        assertTrue("the export is not running", rhythm()?.export?.value?.running == true)
+        val cancel = compose.onAllNodes(androidx.compose.ui.test.hasText("Annuler") and androidx.compose.ui.test.hasClickAction())
+            .fetchSemanticsNodes().firstOrNull() ?: error("no « Annuler » while the sound is made:\n" + screen())
+        assertTrue("« Annuler » cut while the sound is made:\n" + screen(), shownWhole(cancel))
+    }
 }

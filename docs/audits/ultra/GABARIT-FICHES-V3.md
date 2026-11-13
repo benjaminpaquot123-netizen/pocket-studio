@@ -79,3 +79,7 @@ La fiche « du relecteur » de `docs/AIDE-FUSIONS-TESTS.md`, avec ces lignes en 
 ## 7. Un refus du portail (message du chef)
 
 > Chef d'orchestre → <NOM> : le portail refuse <zone> (sortie <code>). Sa ligne exacte : « <ligne> ». À faire sur ta branche : fusionne la tête poussée ; <ce que la ligne demande> ; self-test et rejeux ; relecture du seul changement, en dernier commit ; pré-vol PRÊT. Une ligne : « <NOM> fini <zone> v<n> : <sha>, cause : … ».
+
+## 8. Avant d'annoncer « prêt pour le portail » (tout correcteur, 13 novembre)
+
+> Lance toi-même `bash scripts/bench/pre-vol.sh <tour> <zone>` depuis une copie à jour de la tête poussée et n'annonce que s'il dit PRÊT. Vérifie : une paire « rouge: Classe#méthode … » / « vert: Classe#méthode … » PAR TEST ; juge (`scripts/bench/verifie-chantier.py`) au plus égal à la tête ; pour chaque bloquant ou grave nommé dans ton rapport, sa ligne `corrige: <id> | gravité: … | rejeu: <id>` ou `ne corrige pas: <id> : <raison>` ; toute preuve `rouges-constates/<sha>/` contresignée dans la relecture par « rouge constaté : <sha> : rejoué sur <parent> : <ce qui a été vu> » ; la relecture est ton DERNIER commit ; aucun fichier hors de ta liste (`docs/REVIEW.md` est au chef : tes moyens vont dans ton rapport de zone). Tu ne dis jamais « corrigé » : « tenté » ou « preuve rejouée » ; c'est le siège de contrôle qui constate, avant le portail.

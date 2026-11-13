@@ -504,6 +504,9 @@ fun TutoPanel(
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
             // The words take the room « Pourquoi ? » and « Lire la suite » leave them (measured first, no frame late).
+            // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »
+            // whole under them, not squeezed); on a screen high enough it is pinned under them.
+            val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
             Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(
                 Modifier.weight(1f, fill = false).verticalScroll(words),
@@ -527,6 +530,7 @@ fun TutoPanel(
                         }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                             modifier = Modifier.bringIntoViewRequester(reason).testTag("tuto_why_text"))
@@ -539,7 +543,7 @@ fun TutoPanel(
                 if (step.id != READY_STEP) kit?.invoke()
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-            if (why != null) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
+            if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
             if (scrolls) MoreWords(words.canScrollForward) {
                 words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
@@ -552,6 +556,9 @@ fun TutoPanel(
 
 /** The panel's way to the chapters, at its widest: the bare list icon's 48 dp and the school icon's 22 + 8 it replaced. */
 private val CHAPTERS_WIDTH = 78.dp
+
+/** The screen's height (dp) from which « Pourquoi ? » is pinned under the words (a phone upright, a tablet; not on its side). */
+private const val WHY_PINNED_SCREEN = 480
 
 /** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
 private const val READY_STEP = "ready"

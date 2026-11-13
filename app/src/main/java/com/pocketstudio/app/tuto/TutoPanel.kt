@@ -46,7 +46,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Visibility
@@ -66,6 +65,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -415,12 +416,18 @@ fun TutoPanel(
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
-    // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). While the words scroll, they stop
-    // above it ([moreRoom] kept free at the bottom of their room): the panel's height as before, nothing under it. The
-    // words' scroll is the step's own (the step before's left its room in the height held for this one).
+    // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
+    // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
+    // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
+    // before's left its room in the height held for this one).
     val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
-    var moreHeight by remember { mutableIntStateOf(0) }
-    val moreRoom = if (words.maxValue > 0) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
+    // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
+    // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
+    val scrolls = words.maxValue in 1 until Int.MAX_VALUE
+    val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null && !ui.bravo }
+    var whyOpen by rememberSaveable(why) { mutableStateOf(false) }
+    val reason = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) reason.bringIntoView() }
     Surface(
         color = panelColor(), shape = shape,
         modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
@@ -432,8 +439,9 @@ fun TutoPanel(
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.School, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
-                Column(Modifier.weight(1f).padding(start = 8.dp).clickable(onClick = actions.toggle).testTag("tuto_toggle")) {
+                // Tour 6 (N22 fallout): the school icon (22 dp and 8 dp, decorative) gave its room to « Chapitres »: the title
+                // and the chapter's line keep the room they had beside the bare list icon.
+                Column(Modifier.weight(1f).clickable(onClick = actions.toggle).testTag("tuto_toggle")) {
                     // The chapter's whole title (testers: « Le tempo et la ton… »), on two lines when it needs them.
                     // n° 38 (200 %): three lines at most, a little smaller rather than cut.
                     com.pocketstudio.ui.WholeWordsText(
@@ -449,18 +457,29 @@ fun TutoPanel(
                     )
                 }
                 // Tour 6 (N22): a bare list icon was not read as the chapters (seat ja took the ← arrow): its name under it,
-                // whole on one line (never cut), folded or not.
+                // whole on one line (never cut), folded or not. At most [CHAPTERS_WIDTH] wide (the list icon's 48 dp and the
+                // school icon's 30): a longer word (« Hoofdstukken », 130 %) a little smaller, never wider.
                 Column(
-                    Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp).clip(RoundedCornerShape(10.dp))
+                    Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp, max = CHAPTERS_WIDTH).clip(RoundedCornerShape(10.dp))
                         .clickable(onClickLabel = tr("Chapitres"), role = androidx.compose.ui.semantics.Role.Button, onClick = actions.chapters)
-                        .padding(horizontal = 4.dp).testTag("tuto_chapters"),
+                        .padding(horizontal = 2.dp).testTag("tuto_chapters"),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
                 ) {
                     Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, modifier = Modifier.size(20.dp))
                     // Its words grow up to 130 % only: at 200 % the panel's head stays a finger high (the cells above it in sight).
                     val label = MaterialTheme.typography.labelSmall
                     val cap = minOf(1f, 1.3f / LocalDensity.current.fontScale.coerceAtLeast(0.1f))
-                    Text(tr("Chapitres"), style = label.copy(fontSize = label.fontSize * cap, lineHeight = label.lineHeight * cap), maxLines = 1, softWrap = false)
+                    val name = tr("Chapitres")
+                    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+                    val room = with(LocalDensity.current) { (CHAPTERS_WIDTH - 4.dp).toPx() }
+                    var fit = label.copy(fontSize = label.fontSize * cap, lineHeight = label.lineHeight * cap)
+                    for (k in 0 until 6) {
+                        val w = measurer.measure(name, fit, maxLines = 1, softWrap = false).size.width
+                        if (w <= room) break
+                        val by = room / w * 0.97f
+                        fit = fit.copy(fontSize = fit.fontSize * by, lineHeight = fit.lineHeight * by)
+                    }
+                    Text(name, style = fit, maxLines = 1, softWrap = false)
                 }
                 IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
                     Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))
@@ -484,9 +503,13 @@ fun TutoPanel(
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
-            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most))) {
+            // The words take the room « Pourquoi ? » and « Lire la suite » leave them (measured first, no frame late).
+            // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »
+            // whole under them, not squeezed); on a screen high enough it is pinned under them.
+            val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
+            Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(
-                Modifier.padding(bottom = moreRoom).verticalScroll(words),
+                Modifier.weight(1f, fill = false).verticalScroll(words),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
@@ -507,8 +530,10 @@ fun TutoPanel(
                         }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
-                        // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-                        Why(step.why ?: chapter.why.takeIf { it.isNotEmpty() }) { held = 0 }
+                        if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
+                        // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
+                        if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
+                            modifier = Modifier.bringIntoViewRequester(reason).testTag("tuto_why_text"))
                         if (chapter.map && map.isNotEmpty()) SongMap(map, focus = mapFocus(step.listen))
                         if (ui.failed) Text(tr("L'exemple ne s'entend pas : monte le volume du téléphone, puis touche encore « Écouter l'exemple »."), color = Neon.Amber,
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
@@ -517,8 +542,10 @@ fun TutoPanel(
                 // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
                 if (step.id != READY_STEP) kit?.invoke()
             }
+            // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
+            if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (words.maxValue > 0) MoreWords(words.canScrollForward, Modifier.align(Alignment.BottomCenter).onSizeChanged { moreHeight = it.height }) {
+            if (scrolls) MoreWords(words.canScrollForward) {
                 words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
             }
             }
@@ -526,6 +553,12 @@ fun TutoPanel(
         }
     }
 }
+
+/** The panel's way to the chapters, at its widest: the bare list icon's 48 dp and the school icon's 22 + 8 it replaced. */
+private val CHAPTERS_WIDTH = 78.dp
+
+/** The screen's height (dp) from which « Pourquoi ? » is pinned under the words (a phone upright, a tablet; not on its side). */
+private const val WHY_PINNED_SCREEN = 480
 
 /** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
 private const val READY_STEP = "ready"
@@ -982,14 +1015,11 @@ private fun ListenContent(ui: TutoUi, busy: Boolean) {
     com.pocketstudio.ui.WholeWordsText(" " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple"), textAlign = TextAlign.Center)
 }
 
-/** « Pourquoi ? »: one or two sentences, folded until touched ([toggled]: after each touch). */
+/** « Pourquoi ? »: its reason (one or two sentences, in the step's words) folded until touched ([toggle]). */
 @Composable
-private fun Why(text: String?, toggled: () -> Unit = {}) {
-    if (text == null) return
-    var open by rememberSaveable(text) { mutableStateOf(false) }
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable { open = !open; toggled() }.testTag("tuto_why")) {
+private fun Why(open: Boolean, toggle: () -> Unit) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = toggle).testTag("tuto_why")) {
         Text((if (open) "▾ " else "▸ ") + tr("Pourquoi ?"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
-        if (open) Text(tutoText(text), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_why_text"))
     }
 }
 

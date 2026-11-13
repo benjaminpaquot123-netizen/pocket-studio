@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : 82cf731892e5c69eb5407e9387f27ce1e24426bd
+Relu : 4e516875984ab682d4144f7b9c172b5c73f6b43c
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -68,5 +68,7 @@ P3, longueur d'une boucle avec ses briques (`8cfec2b6` rouge, `41b7c2f5` vert) :
 - Remarque : si l'utilisateur fait ensuite un morceau de cette scène, la partie dure `sceneSteps` (sans les briques). La carte passe alors de « Boucle de 6 mes. » à « 1 mes. · 1 partie ». C'est cohérent avec ce que joue le morceau, mais le saut peut surprendre ; hors périmètre du lot.
 
 Bilan de cette reprise : 0 bloquant, 0 grave, 0 moyen, 4 mineurs.
+
+Reprise sur 4e516875 : ce commit (le seul après 16db7a51) ne touche que des traces du banc sous `docs/audits/ultra/sieges/tour-6/padlive2/lotR/` (marqueur `.banc-en-cours` retiré, `incidents-lot.tsv` et `lot.json` ajoutés) ; ni code de l'appli ni tests, rien à relire de plus.
 
 Verdict : 0 bloquant, 0 grave

@@ -32,6 +32,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 **12 h 30** : paquet 3 = `tutofleches` (`b4ac25f21`) + `portail3` (`afd7fa918`), CI lancée. `langues2` refusé (conflit avec `tutofleches` sur `i18n/*/tuto*.json`), rendu à « Sons modernes » ; il passera seul, en tête du paquet 4, avec `rejeux7`. Contrôle du tuto en cours sur `b4ac25f21` : Testeur 1 (fr), 2 (ja), 3 (de Pro). Contrôles sur `b3617da21` : Pad Live 2/3 corrigés, Remix voix 1/8, Exports 1/7 : lots « remix2 » et « exports2 » à ouvrir. Lot du banc « ci3 » (CI en moins d'une heure) chez « Banc · portail3 ». Audit `AUDIT-PARALLELE.md` : gel par zone, CI de chaque lot sur sa branche avant le portail (dès le paquet 4).
 
+**14 h 20 (heure belge ; les heures plus haut sont en UTC)** : lots ouverts dans des discussions à elles, branche poussée, contrôle par un siège AVANT le portail : `tuto3` (session_014RxrDP876zy2EEdoGR97qE, zone tuto), `remix2` (session_014RxrDKfQRPMPDTVzpApVD1, `app/…/remix/`), `exports2` (session_014RxrDL1ZNw6Jw2xsHSp5Ut, `app/…/export/`, `MyExports.kt`). Contrôles du tuto sur `b4ac25f21` : fr 233 gestes, 12 hésités, 0 bloqué ; ja 176, 8, 0 ; de Pro 219, 10, 1 bloqué (ch. 7, déjà là avant) : lot gardé, `tuto3` ouvert. Règle « corrigé se mérite » (§ 13.5) en vigueur.
+
 ## Lots ouverts (un fichier = un seul lot ouvert)
 
 | Lot | Zone | Fichiers | Qui | État |

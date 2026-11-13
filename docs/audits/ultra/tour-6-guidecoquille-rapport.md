@@ -62,6 +62,9 @@ Le premier correctif donnait à la ligne sa place dans la barre du bas. Le porta
 - N15 reste donc ouvert hors des prises : la ligne peut encore couvrir six secondes les derniers boutons d'une page. Lui trouver une place fixe qui ne déplace rien demande un choix de dessin (par exemple une ligne réservée en permanence), pas un correctif local.
 - Le test neuf ne reproduit pas le déplacement de la page du rejeu (il ne joue pas le défilement du clavier) : il vérifie que rien ne vient sur la page pendant une prise et que « ■ Arrêter » reste entier et atteignable ; la preuve du déplacement est le rejeu lui-même. Dans le commit rouge 462dd881, l'une des deux assertions rouges (« a bougé ») mesurait un déplacement normal de la barre de prise, pas le défaut : retirée.
 
+- Après le correctif (2026-11-13) : `scripts/bench/rejeu-defauts.sh` en entier, comme le portail : « t4-26-prise-clavier : oracle tenu » (le seul rejeu du dossier), son auto-test du banc à 176 verts, 0 rouge, 17 sautés ; puis les classes `Tour6*`, les `Guide*Test` de `nav`, `SpacesTest`, `SimpleModeAuditTest`, `SimpleMelodyTest`, `PlayingRecomposeTest`, `Zone3Round2Test` : 195 tests, 0 rouge.
+- Même cause écartée ailleurs : la barre du Guide ne quitte plus la page du clavier « à la minuterie » (voir G1 dans les décisions).
+
 chemin: Clavier, « Fait » affiché puis prise lancée | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeaves
 chemin: le même à 130 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesWithBigText
 chemin: le même sur le siège du rejeu, police à 200 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesAtTwiceTheFont

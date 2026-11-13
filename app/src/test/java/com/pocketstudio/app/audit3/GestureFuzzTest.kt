@@ -116,6 +116,21 @@ class GestureFuzzTest {
 
     private var textWindowsClosed = 0
 
+    /**
+     * Tour 6, lot « stable »: a person waits for « Ouverture du projet… » to go before touching; the finger did not, and on a
+     * slow disk (the closed screen's last save, which the opening waits for) its gestures fell on that screen (CI 43498458467).
+     * Before each gesture, the opening is let end, the main looper running, on its state (the screen gone), not on a clock;
+     * [OPENING_CAP_MS] is only the cap past which the app is stuck opening (red).
+     */
+    private fun projectOpened(seed: Long, i: Int) {
+        val until = System.currentTimeMillis() + OPENING_CAP_MS
+        while (compose.onAllNodesWithTag("project_opening", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()) {
+            check(System.currentTimeMillis() < until) { "seed $seed, before gesture $i: the project still opening after ${OPENING_CAP_MS / 1000} s" }
+            idle()
+            Thread.sleep(10)
+        }
+    }
+
     /** Native readings the stand-in engine does not answer, met on the way (printed at the end). */
     private val standInLimits = HashSet<String>()
 
@@ -159,6 +174,7 @@ class GestureFuzzTest {
         // disk's, not the app's screens; there must be none, however slow the disk (aSlowDiskDoesNotEatTheGestures).
         var onTheOpening = 0
         for (i in 0 until steps) {
+            projectOpened(seed, i)
             val opening = compose.onAllNodesWithTag("project_opening", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
             val action = rnd.nextInt(100)
             val what = try {
@@ -271,6 +287,11 @@ class GestureFuzzTest {
 
     @Test
     fun aRandomFingerNeverCrashesTheApp() = fuzz(11L)
+
+    private companion object {
+        /** The opening waits 10 s at most for a save (ProjectOpening.WAIT_MS), then reads the project: far more than that. */
+        const val OPENING_CAP_MS = 60_000L
+    }
 
     @Test
     fun anotherRandomFingerNeverCrashesTheApp() = fuzz(20261103L)

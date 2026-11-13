@@ -6,6 +6,9 @@ only when a tester saw it. Seconds, no Gradle, no network (toy repositories and 
 
 1. corrections.tsv, the one register: four states (« pas pris », « tenté », « rejoué », « constaté »), an acceptance
    sentence and the seat of origin; the lines of the rounds before keep their text; the programs that read it go on.
+2. The portal (scripts/bench/fusion-equipes.sh, from batch 5): refuses a lot that gives itself « corrigé », « rejoué » or
+   « constaté » (read against the base and the integration's head, never in the branch alone), and sets « rejoué »
+   itself when the proof holds after the merge. The pre-flight says the same (« À VOIR » before batch 5).
 """
 import importlib.util
 import io
@@ -250,6 +253,252 @@ class Registry(unittest.TestCase):
         rows = fuse.load_tsv(self.reg)
         self.assertEqual(rows[0]["etat"], "corrigé")
         self.assertEqual(rows[1]["phrase_acceptation"], "en espagnol, main gauche : je touche « Voz »")
+
+
+PORTAL = os.path.join(HERE, "fusion-equipes.sh")
+PREVOL = os.path.join(HERE, "pre-vol.sh")
+TOY_REGISTER = "docs/audits/ultra/corrections.tsv"
+BRANCH = "eq/tour-9-z"
+PHRASE = "en espagnol, main gauche, téléphone à 100 %, Mode simple : je touche « Voz » au pouce et la piste voix s'ouvre"
+
+
+class ToyRegister(unittest.TestCase):
+    """A toy repository: the integration « int » with its register, and the lot's branch."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="constate-lot-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.repo = os.path.join(self.tmp, "depot")
+        os.makedirs(self.repo)
+        git(self.repo, "init", "-q", "-b", "int")
+        self.lines = [
+            HEADER,
+            row("tour-5", "T5-01", "A/a", "12", "corrigé", "abc1234", "FooTest", "ancienne", ""),
+            row("tour-6", "A2", "B/a", "15", "pas pris", "-", "-", "", "", PHRASE, "tour-6/lotB/a", ""),
+            row("tour-6", "A3", "B/a", "8", "pas pris", "-", "-", "", "", "", "tour-6/lotB/a", ""),
+        ]
+        self.put(self.lines)
+        self.base = self.commit("base")
+        git(self.repo, "checkout", "-q", "-b", BRANCH)
+
+    def put(self, lines):
+        write(os.path.join(self.repo, TOY_REGISTER), "\n".join(lines) + "\n")
+
+    def commit(self, message):
+        git(self.repo, "add", "-A")
+        git(self.repo, "commit", "-q", "--allow-empty", "-m", message)
+        return git(self.repo, "rev-parse", "HEAD").stdout.strip()
+
+    def lot(self, *changes, add=()):
+        """The lot's commit: lines of the register replaced ({index: new line}) or added."""
+        lines = list(self.lines)
+        for i, text in changes:
+            lines[i] = text
+        self.put(lines + list(add))
+        return self.commit("the lot writes the register")
+
+    def rule(self, *more, cwd=None):
+        return script("reparations.py", "--lot", BRANCH, f"base:{self.base}",
+                      f"tete:{git(self.repo, 'rev-parse', 'int').stdout.strip()}", *more, cwd=cwd or self.repo)
+
+    def refused(self, *words):
+        code, out = self.rule()
+        self.assertEqual(code, 1, out)
+        for w in words:
+            self.assertIn(w, out)
+        return out
+
+    def accepted(self):
+        code, out = self.rule()
+        self.assertEqual(code, 0, out)
+        self.assertEqual(out.strip(), "", "nothing said of an honest lot")
+
+
+class LotGivesItselfAState(ToyRegister):
+    """§ 3, rule 5: « tenté » is the team's; « rejoué » the portal's; « constaté » the chief's after a control seat;
+    « corrigé » is given by nobody from round 6 on."""
+
+    def test_a_lot_that_turns_its_defect_to_tenté_enters(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "rejeu-a2", "", "", PHRASE, "tour-6/lotB/a", "")))
+        self.accepted()
+
+    def test_a_lot_that_writes_corrigé_rejoué_or_constaté_is_refused(self):
+        for said in ("corrigé", "rejoué", "constaté", "Corrige", "CORRIGÉ", "corrigé ✓", "constaté", " rejoue ", "fait"):
+            with self.subTest(said=said):
+                git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+                self.lot((2, row("tour-6", "A2", "B/a", "15", said, "7777777", "rejeu-a2", "", "", PHRASE, "tour-6/lotB/a", "")))
+                out = self.refused("tour-6 A2", "« tenté »")
+                self.assertIn("B/a#15", out)
+
+    def test_a_new_line_of_an_old_round_cannot_say_corrigé_either(self):
+        self.lot(add=[row("tour-5", "T5-09", "C/b", "4", "corrigé", "abc1234", "BarTest", "", "")])
+        self.refused("tour-5 T5-09", "corrigé")
+
+    def test_a_lot_does_not_write_the_sorter_s_sentence_nor_the_seat_of_origin(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "-", "", "", "je touche Voz", "tour-6/lotB/a", "")))
+        self.refused("acceptance sentence", "sorter")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        self.lot((3, row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "-", "", "", "une phrase à moi", "tour-6/lotB/a", "")))
+        self.refused("acceptance sentence")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "-", "", "", PHRASE, "tour-6/lotF/f", "")))
+        self.refused("seat of origin")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "-", "", "", PHRASE, "tour-6/lotB/a", "controle/Ba#3")))
+        self.refused("constat")
+
+    def test_the_header_is_not_the_lot_s(self):
+        lines = list(self.lines)
+        lines[0] = HEADER.replace("\tconstat", "")
+        self.put(lines)
+        self.commit("a lot drops a column")
+        self.refused("header")
+
+    def test_a_line_the_integration_already_holds_is_not_the_lot_s(self):
+        # The chief wrote « constaté » on the integration; the lot merged the integration in: nothing of its own.
+        done = row("tour-6", "A3", "B/a", "8", "constaté", "7777777", "-", "", "", "", "tour-6/lotB/a",
+                   "docs/audits/ultra/sieges/tour-6/controle/Ba#8")
+        git(self.repo, "checkout", "-q", "int")
+        lines = list(self.lines)
+        lines[3] = done
+        self.put(lines)
+        self.commit("the chief: A3 constaté")
+        git(self.repo, "checkout", "-q", BRANCH)
+        git(self.repo, "merge", "-q", "--no-edit", "int")
+        self.accepted()
+
+    def test_the_lines_are_read_at_the_base_and_the_head_not_in_the_branch(self):
+        # A branch whose own history says « constaté » (written, then left) is still the lot's line.
+        self.lot((3, row("tour-6", "A3", "B/a", "8", "constaté", "7777777", "-", "", "", "", "tour-6/lotB/a",
+                         "docs/audits/ultra/sieges/tour-6/controle/Ba#8")))
+        self.commit("again")
+        self.refused("tour-6 A3", "constaté")
+
+    def test_without_its_options_the_rule_says_so(self):
+        code, out = script("reparations.py", "--lot", BRANCH, cwd=self.repo)
+        self.assertEqual(code, 2, out)
+
+    def test_a_lot_that_does_not_touch_the_register_is_not_a_word(self):
+        write(os.path.join(self.repo, "app.txt"), "code\n")
+        self.commit("code only")
+        self.accepted()
+
+
+class PortalSetsRejoue(ToyRegister):
+    """§ 3, rule 5: « rejoué » is the portal's, when the proof of rule 2 holds on the merged head."""
+
+    def setUp(self):
+        super().setUp()
+        self.rejeux = os.path.join(self.tmp, "rejeux.txt")
+        write(self.rejeux, "r1 : oracle tenu\nr7 : oracle non tenu (geste 3)\nr7 : oracle tenu\nr8 : oracle tenu\nr8 : oracle non tenu (écran 4)\n")
+
+    def promote(self, *filters):
+        git(self.repo, "checkout", "-q", "int")
+        git(self.repo, "merge", "-q", "--no-ff", "--no-edit", BRANCH)
+        merged = git(self.repo, "rev-parse", "HEAD").stdout.strip()
+        code, out = script("reparations.py", "--rejoue", BRANCH, f"base:{self.base}", f"tete:{self.base}",
+                           f"rejeux:{self.rejeux}", f"fusion:{merged}", *filters, cwd=self.repo)
+        self.assertEqual(code, 0, out)
+        header = read(os.path.join(self.repo, TOY_REGISTER)).splitlines()[0].split("\t")
+        return {(r[1], r[3]): dict(zip(header, r)) for r in (l.split("\t") for l in read(os.path.join(self.repo, TOY_REGISTER)).splitlines()[1:])}, out, merged
+
+    def test_a_tenté_whose_replay_holds_after_the_merge_becomes_rejoué(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "")))
+        rows, out, merged = self.promote()
+        self.assertEqual(rows[("A2", "15")]["etat"], "rejoué", out)
+        self.assertIn(merged[:8], rows[("A2", "15")]["note"], "the note names the merge the proof held on")
+        self.assertIn("r7", rows[("A2", "15")]["note"])
+        self.assertIn("rejoué", out)
+        self.assertEqual(rows[("T5-01", "12")]["etat"], "corrigé")
+
+    def test_a_replay_whose_last_verdict_is_not_held_leaves_tenté(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r8", "", "", PHRASE, "tour-6/lotB/a", "")),
+                 (3, row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "r9", "", "", "", "tour-6/lotB/a", "")))
+        rows, out, _ = self.promote()
+        self.assertEqual(rows[("A2", "15")]["etat"], "tenté", out)
+        self.assertEqual(rows[("A3", "8")]["etat"], "tenté", "a replay the portal did not play")
+
+    def test_a_test_proof_holds_when_the_portal_ran_it_green(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "FooTest#works", "", "", PHRASE, "tour-6/lotB/a", "")),
+                 (3, row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "BarTest#cut", "", "", "", "tour-6/lotB/a", "")))
+        rows, out, _ = self.promote("filtre:FooTest.works", "filtre:BazTest")
+        self.assertEqual(rows[("A2", "15")]["etat"], "rejoué", out)
+        self.assertEqual(rows[("A3", "8")]["etat"], "tenté", "a test the portal did not run")
+        git(self.repo, "reset", "-q", "--hard", self.base)
+        git(self.repo, "checkout", "-q", BRANCH)
+        rows, out, _ = self.promote("filtre:BarTest")
+        self.assertEqual(rows[("A3", "8")]["etat"], "rejoué", "the whole class ran")
+
+    def test_only_the_lot_s_own_tenté_lines_are_promoted(self):
+        # A « tenté » the integration held before (another lot's), and a « pas pris »: untouched.
+        git(self.repo, "checkout", "-q", "int")
+        lines = list(self.lines)
+        lines[3] = row("tour-6", "A3", "B/a", "8", "tenté", "7777777", "r1", "", "", "", "tour-6/lotB/a", "")
+        self.put(lines)
+        self.base = self.commit("another lot's tenté")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        self.lines = lines
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "pas pris", "-", "r1", "x", "", PHRASE, "tour-6/lotB/a", "")))
+        rows, out, _ = self.promote()
+        self.assertEqual(rows[("A3", "8")]["etat"], "tenté", out)
+        self.assertEqual(rows[("A2", "15")]["etat"], "pas pris", out)
+
+    def test_nothing_else_of_the_file_moves(self):
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "")))
+        git(self.repo, "checkout", "-q", "int")
+        git(self.repo, "merge", "-q", "--no-ff", "--no-edit", BRANCH)
+        before = read(os.path.join(self.repo, TOY_REGISTER)).splitlines()
+        git(self.repo, "checkout", "-q", BRANCH)
+        git(self.repo, "checkout", "-q", "int")
+        script("reparations.py", "--rejoue", BRANCH, f"base:{self.base}", f"tete:{self.base}", f"rejeux:{self.rejeux}",
+               "fusion:abcdef12", cwd=self.repo)
+        after = read(os.path.join(self.repo, TOY_REGISTER)).splitlines()
+        self.assertEqual([i for i, (a, b) in enumerate(zip(before, after)) if a != b], [2])
+        self.assertEqual(after[2].split("\t")[:4] + after[2].split("\t")[5:7], before[2].split("\t")[:4] + before[2].split("\t")[5:7])
+
+
+def rules_of(text):
+    return [l for l in text.splitlines() if re.search(r"not merged|undone", l)]
+
+
+class PortalAndPreflight(unittest.TestCase):
+    """The rule's place in the portal and its mirror in the pre-flight."""
+
+    def test_the_portal_refuses_from_batch_5_before_the_merge(self):
+        portal = read(PORTAL)
+        lines = [l for l in rules_of(portal) if "reparations.py --lot" in l]
+        self.assertEqual(len(lines), 1, "one refusal line calls reparations.py --lot")
+        self.assertIn("from_paquet 5", lines[0])
+        self.assertIn("exit 11", lines[0])
+        self.assertLess(portal.index("reparations.py --lot"), portal.index('git merge --no-ff -m "Merge team'))
+        self.assertRegex(lines[0], r'base:\$base" "tete:\$\(git rev-parse HEAD\)"')
+
+    def test_the_portal_sets_rejoue_after_the_merge_and_takes_it_back_with_it(self):
+        portal = read(PORTAL)
+        self.assertTrue("reparations.py --rejoue" in portal, "the portal sets « rejoué »")
+        at = portal.index("reparations.py --rejoue")
+        self.assertGreater(at, portal.index("trap undo_merge ERR"), "after the checks, inside the traces' step")
+        self.assertLess(at, portal.index('git commit -q -m "Portal traces of the merge'))
+        block = portal[portal.rindex("\n  if ", 0, at):at]
+        self.assertIn("from_paquet 5", block)
+        self.assertIn("computed+=(docs/audits/ultra/corrections.tsv)", block, "taken back by clean_merge on a failure")
+        self.assertIn('rejeux:$lot/rejeux.txt', portal[at:at + 300])
+        self.assertIn('tete:$before', portal[at:at + 300])
+
+    def test_the_preflight_mirrors_the_rule(self):
+        prevol = read(PREVOL)
+        self.assertTrue("reparations.py --lot" in prevol, "the pre-flight calls the rule")
+        at = prevol.index("reparations.py --lot")
+        self.assertIn("rule_from 5", prevol[at:at + 900])
+
+    def test_the_preflight_knows_the_portal_s_rules(self):
+        portal = read(PORTAL)
+        rules = rules_of(portal)
+        import hashlib
+        fingerprint = hashlib.sha256(("\n".join(l.lstrip(" ") for l in rules) + "\n").encode()).hexdigest()[:10]
+        m = re.search(r'^KNOWN_RULES="(\d+) ([0-9a-f]+)"', read(PREVOL), re.M)
+        self.assertIsNotNone(m)
+        self.assertEqual((int(m.group(1)), m.group(2)), (len(rules), fingerprint), "KNOWN_RULES of pre-vol.sh")
 
 
 if __name__ == "__main__":

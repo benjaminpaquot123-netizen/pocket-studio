@@ -377,7 +377,7 @@ internal fun ChallengePanel(
         // during the try (only the colour of the rhythm's dots hinted at them).
         if (c != null && (ui is ChallengeUi.Ready || ui is ChallengeUi.Listening || ui is ChallengeUi.YourTurn)) {
             val names = c.hits.map { it.pad }.distinct().joinToString(", ") { pad ->
-                padName(pad) + (pads.all.getOrNull(pad)?.name?.takeIf { it.isNotBlank() }?.let { " · $it" } ?: "")
+                padName(pad) + (pads.all.getOrNull(pad)?.name?.takeIf { it.isNotBlank() }?.let { " · " + com.pocketstudio.model.DefaultNames.shownSample(it) } ?: "")
             }
             Text(
                 tr("À taper : %s", names), style = MaterialTheme.typography.labelLarge, color = Neon.Amber, maxLines = 2,

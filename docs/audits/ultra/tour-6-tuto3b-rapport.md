@@ -43,11 +43,18 @@ controle: Bb-4 | code testé: e4286b40 | bloqués: 0 | graves neufs: 0
 - **T8 (« Déjà fait ») : tenté, hors lot.** Bb-4 : « Schon erledigt! » existe (écrans 193-195), mais au premier passage l'étape 3/3 du ch. 12 est sautée sans message (écran 192). À reprendre.
 - Le second aller-retour n'est pas consommé (décision du chef, pour ne pas retarder). Aucun commit de code d'appli après e4286b40 dans ce lot, hors fusion de la tête.
 
+## Après le contrôle Da-5 (ja, sur 307759b3)
+9. **T4, pour le débutant qui ne sait pas toucher la ligne** : tant que la ligne du rouleau pointe ailleurs, elle montre « Touche ici » à côté de ses mots (un toucher amène la note). Paire `c3b9e2d0` → `5890c134`. Le rappel est là dès qu'une flèche l'est, donc aussi au premier défilement à la main.
+10. **« Encore 9 notes » sur les accords** : « Accords » allumé, la ligne compte les accords et le dit (« Accords en pointillé à toucher : 3 », la flèche autour). Paire `fbc3cfd9` → `beeb92f3`.
+11. **Ch. 12, « déjà fait » sous « À toi : … efface »** : une étape déjà tenue ne montre plus ses mots « À toi » ni leurs explications. Paire `e90e9baf` → `547438f2`.
+- Deux phrases neuves (« Touche ici », « Accords en pointillé à toucher : %d »), traduites dans les 14 langues ; le compte en « %d » après deux-points évite les formes du pluriel.
+- Da-5 : la règle de la note la plus proche tient (ses flèches successives suivent chaque fois la note restante la plus proche) ; ses dix glissés venaient de ne pas savoir qu'un toucher amène la note (Da-4 l'a touchée : 3 gestes).
+
 ## Corrections et rejeux
 corrige: T4 | gravité: grave | rejeu impossible : le siège qui a vu le défaut (Da-3, joué sur 4cb88f55) n'est pas dans l'intégration, sa branche n'a pas été poussée ; le contrôle Da-4 l'a dit corrigé (écrans 80-106) et Tour6TutoFlechesTest#theLinePointsToTheNearestNoteLeft le garde sur tous les styles
 - Zone de ce lot au portail : « tuto3b » (branche `eq/tour-6-tuto3b`, histoire refaite de `eq/tour-6-tuto3`) ; première relecture neuve gardée dans `tour-6-tuto3b-relecture-1.md` (relu 600abd29, 0 bloquant, 0 grave), re-signée dans `tour-6-tuto3b-relecture.md` après le renommage.
 
-tests: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest
+tests: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest com.pocketstudio.app.tuto.Tour6TutoLineGoTest com.pocketstudio.app.tuto.Tour6TutoChordWordsTest com.pocketstudio.app.tuto.Tour6TutoAlreadyQuietTest
 
 chemin: Tuto Facile › mélodie › dernière note en pointillé au bord › toucher | test: Tour6TutoGhostTapTest#aTapAHairPastADottedNoteWritesThatNoteNotAParasite
 chemin: Tuto Facile › House › étape tempo › à mi-chemin | test: Tour6TutoTempoNoteTest#theTempoNoteNamesTheStartNotATempoHalfWay
@@ -55,3 +62,6 @@ chemin: Tuto › piste Mélodie › « Accords » allumé › retour sur la pist
 chemin: Tuto Facile › ch. 7 › notes restantes hors de vue › la flèche de la ligne | test: Tour6TutoFlechesRollTest#technoBassEveryNoteIsReachedByFollowingTheLine
 chemin: Tuto Facile › techno › ch. 3 « clap_do » › cases posées pas douces, panneau replié | test: Tour6TutoSoftOpenTest#cellsAllHitButNotSoftOpenTheFoldedPanel
 chemin: Tuto Pro › techno › ch. 7 « lead_knobs » › Coupure à +7 | test: Tour6TutoKnobLeftTest#aKnobNotUpEnoughSaysHowMuchIsLeft
+chemin: Tuto Facile › ch. 7 › notes restantes hors de vue › « Touche ici » sur la ligne | test: Tour6TutoLineGoTest#aLinePointingAwaySaysATouchTakesYouThere
+chemin: Tuto › Accords › « Accords » allumé › ligne des accords restants | test: Tour6TutoChordWordsTest#withAccordsOnTheLineSaysChordsNotNotes
+chemin: Tuto Facile › ch. 12 › étape déjà tenue › « Déjà fait » sans « À toi » | test: Tour6TutoAlreadyQuietTest#aStepDoneAlreadyDoesNotAskToDoIt

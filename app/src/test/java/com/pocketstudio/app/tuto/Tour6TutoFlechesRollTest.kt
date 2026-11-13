@@ -10,7 +10,10 @@ import androidx.compose.ui.test.performClick
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.tuto.TutoChecks
+import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
+import com.pocketstudio.model.tuto.TutoNeed
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoTarget
 import com.pocketstudio.model.track
@@ -93,11 +96,15 @@ class Tour6TutoFlechesRollTest {
         settle()
         // The bar written by hand, a note at a time.
         var guard = 0
-        while (!has("tuto_roll_copy") && guard++ < 40) {
+        // The motif's end read on the project with the course's own rule, then the button awaited: the controller's look
+        // runs in real time while settle() advances virtual time (a note every few real ms outran it; CI 43474046159).
+        val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
+        while (TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && guard++ < 40) {
             h.vm.addNote(leftNotes().first())
             settle()
         }
-        assertTrue("« Copier » is offered on the line once the motif is written", has("tuto_roll_copy"))
+        assertTrue("the motif written by hand reaches « Copier » ($guard notes)", TutoChecks.need(step, h.vm.project.value, target) is TutoNeed.Copy)
+        await("« Copier » is offered on the line once the motif is written") { has("tuto_roll_copy") }
         compose.onNodeWithTag("tuto_roll_copy", useUnmergedTree = true).performClick()
         await("the notes to write after the copy") { !has("tuto_roll_copy") && leftNotes().isNotEmpty() }
         settle()
@@ -135,7 +142,9 @@ class Tour6TutoFlechesRollTest {
         settle()
         var written = 0
         var arrows = 0
-        while (leftNotes().isNotEmpty() && !has("tuto_roll_copy") && written < 40) {
+        val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == stepId }
+        // Read on the project, not on the screen's button (the controller's look may answer after the next note).
+        while (leftNotes().isNotEmpty() && TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && written < 40) {
             var touches = 0
             while (leftNotes().none { whole(it) }) {
                 val said = text("tuto_notes_left_text")

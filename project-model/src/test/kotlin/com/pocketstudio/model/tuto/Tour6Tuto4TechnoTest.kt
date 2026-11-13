@@ -387,4 +387,33 @@ class Tour6Tuto4TechnoTest {
         }
         report("swing steps that do not say what counts", bad)
     }
+
+    /**
+     * Round trip 1 after Bb-5, M4: a track is named as the screen shows it (screen 88: « Analoger Bass » while the track
+     * reads « Bass · Plaits »), and the filter's curve « Par partie » is said as long as it is: the Drop's loop, not
+     * « jusqu'au milieu du Drop » (screen 222: a curve of one bar).
+     */
+    @Test
+    fun theTrackAndTheCurveAreSaidAsTheScreenShowsThem() {
+        val bad = ArrayList<String>()
+        val target = TutoTarget.of("techno")!!
+        var p = target.blank()
+        for (s in steps.takeWhile { it.id != "levels" }.filter { s -> listOf("lane:", "notes:", "label:", "part:").any { s.check.startsWith(it) } }) {
+            if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: error("${s.id}: no Montre-moi")
+        }
+        for (s in steps.filter { it.check.startsWith("notes:") && it.textPro != null }) {
+            val track = p.track(TutoChecks.trackFor(p, s.check.removePrefix("notes:"))!!)
+            val sound = Regex("son « ([^»]+) »").find(s.textPro!!)?.groupValues?.get(1) ?: continue
+            if (sound != track.soundLabel && sound != track.name) bad += "fr ${s.id}: son « $sound » while the track shows « ${track.name} · ${track.soundLabel} »"
+            val shown = if (track.soundLabel == "Plaits") "Plaits" else null
+            for (l in langs) tr(l, s.textPro!!).let { t -> (shown ?: tr(l, track.soundLabel)).let { w -> if (!quotes(t, w)) bad += "${l.code} ${s.id}: not the track's « $w »: $t" } }
+        }
+        val drop = p.switchScene(p.allScenes.indexOfFirst { it.label == "Drop" })
+        val bars = drop.drums.steps / drop.stepsPerBar
+        val filter = step("filter").text
+        if ("milieu du Drop" in filter) bad += "fr filter: « milieu du Drop » while the curve « Par partie » is the Drop's loop: $filter"
+        if (!Regex("boucle du Drop \\($bars mesures?\\)").containsMatchIn(filter)) bad += "fr filter: not « boucle du Drop ($bars mesure) »: $filter"
+        for (l in langs) tr(l, filter).let { t -> if (!Regex("(?<!\\d)$bars(?!\\d)").containsMatchIn(t)) bad += "${l.code} filter: no $bars: $t" }
+        report("tracks or curves said otherwise than shown", bad)
+    }
 }

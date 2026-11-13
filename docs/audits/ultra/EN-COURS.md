@@ -36,6 +36,12 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 **19 h 42 (heure belge)** : CI 43477060206 VERTE sur `5025b7712` (tutofleches, portail3, tutoordre, ci3, tutoordre2 ; CI en 42 min). Paquet 5 ouvert : `langues2` seul en tête, puis `remix2` et `exports2` (validés par leur siège avant le portail : remix 5 sur 5 visés, exports 4 sur 5). `tutocourse` (cause de fond du tuto : regards qui répondent dans le désordre, défaut de l'appli sur téléphone lent) : porté par le dépanneur Fable sur `eq/tour-6-tutocourse-contre`, relu par tuto3, deux CI vertes exigées ; `tuto3` (validé par trois sièges) entre après lui. Compteur de Benjamin : constatées dans l'appli 16, à la porte 17, sur 55 rejouées.
 
+**20 h 25 (heure belge) — DÉCISION DE BENJAMIN** : pleins pouvoirs au chef (« oui pour tout, recommandé pour tout »). On ne s'arrête que quand toutes les erreurs remontées par les testeurs le 13 novembre sont constatées corrigées par un siège ; puis tout est fusionné (intégration, puis `main` par une PR quand la CI est verte) et le chef s'arrête jusqu'à « continue ». Plus aucun lot neuf hors de cette liste :
+1. Entrés dans le paquet 5 : `langues2` (`ade5ba57e`). À entrer : `exports2` (refait sa fusion), `remix2b` (histoire refaite en paires, arbre identique), puis CI.
+2. `tutocourse` (cause de fond du tuto ; `eq/tour-6-tutocourse-contre`, une CI verte sur `db8ba2c8`, la seconde en cours), puis `tuto3`, puis CI.
+3. Lots du banc prêts : `rejeux7`, `portail4`, `constate`.
+4. Lots à faire pour le reste des erreurs du jour, un siège de contrôle avant le portail : `padlive2` (ouvert, session_014RxrDNP6EU2ViWpMiTQdrp) ; `tuto4` (vocabulaire du tuto en toutes langues, T3, T8, départ Reverb du Clap, restes des sièges ; après `tutocourse` et `tuto3`) ; `coquille2` (fichiers partagés `RhythmViewModel.kt` / `AppRoot.kt` : restes « pas pris » de remix2 et d'exports2 ; seul, en dernier).
+
 ## Lots ouverts (un fichier = un seul lot ouvert)
 
 | Lot | Zone | Fichiers | Qui | État |

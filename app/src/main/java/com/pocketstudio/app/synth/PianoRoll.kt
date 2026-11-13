@@ -83,6 +83,7 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.collectLatest
 
 data class PianoRollActions(
     val add: (Note) -> Unit = {},
@@ -649,8 +650,35 @@ private fun Grid(
         hints.filter { h -> h.pitch in low..high && clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }.sortedWith(compareBy({ it.start }, { -it.pitch }))
     }
     val inSight = sight?.value
-    LaunchedEffect(step, hintTop != null, inSight != null) {
+    // Tour 6 repairs: the rows in sight once they have stopped moving (0.2 s; null while the roll has not one row in
+    // sight). The page brings the roll up from under the tutorial's panel after « Je le fais »: it was placed, and its
+    // next note asked for, with no row in sight yet.
+    var steady by remember { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
+    LaunchedEffect(sight, rowPx) {
+        val rows = sight ?: return@LaunchedEffect
+        androidx.compose.runtime.snapshotFlow { rows.value }.collectLatest { now ->
+            if (now == null || now.endInclusive - now.start < rowPx) steady = null
+            else {
+                kotlinx.coroutines.delay(200)
+                steady = now
+            }
+        }
+    }
+    // Where the placement below left the roll before its rows in sight were steady (null: nothing to place again).
+    var placedEarly by remember { mutableStateOf<Int?>(null) }
+    LaunchedEffect(step, hintTop != null, inSight != null, steady != null) {
         val key = if (hintTop != null) step ?: "" else null
+        val rows = steady
+        val early = placedEarly
+        if (placed && key == placedFor && hintTop != null && rows != null && early != null) {
+            // Placed with rows still moving: once more with the steady ones, unless the user has scrolled the roll since.
+            placedEarly = null
+            if (vScroll.value == early) {
+                val pitches = hints.map { it.pitch }.sorted()
+                val middle = pitches[pitches.size / 2].coerceIn(low, high)
+                vScroll.scrollTo(((high - middle) * rowPx + rowPx / 2 - (rows.start + rows.endInclusive) / 2).roundToInt().coerceAtLeast(0))
+            }
+        }
         if (!placed || (key != null && key != placedFor)) {
             // Tour 6 lot 1 (T4): the dotted notes' middle row in the middle of the rows really in sight (above the
             // tutorial's panel), once that is known; and (T11) a step that begins opens on the bar of its first one.
@@ -664,6 +692,7 @@ private fun Grid(
                     val barPx = barSteps * stepPx
                     hScroll.scrollTo(((first.start / TICK) / barSteps * barPx).roundToInt().coerceAtLeast(0))
                 }
+                placedEarly = if (steady == null) vScroll.value else null
             } else vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt())
         }
         if (key != null) placedFor = key
@@ -672,8 +701,11 @@ private fun Grid(
     var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     var lit by remember { mutableStateOf<Note?>(null) }
     val focus = com.pocketstudio.app.tuto.TutoHints.focus
-    LaunchedEffect(focus, view) {
+    LaunchedEffect(focus, view, steady != null) {
         if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
+        // Tour 6 repairs: « Je le fais » asks for the note while the roll is still under the tutorial's panel (no row in
+        // sight: the note went to the roll's top edge, cut, under « plus haut ↑ »): the asking waits for rows in sight.
+        if (sight != null && steady == null) return@LaunchedEffect
         val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
         if (!asked) return@LaunchedEffect
@@ -1315,8 +1347,8 @@ private fun TutoNotesLeft(
     val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
     val rowPx = with(LocalDensity.current) { rowHeight.toPx() }
     // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
-    // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel; a note of the bar in sight
-    // that is not points the way to it (the panel covered them while the line said « à toucher »).
+    // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel; when no note of the bar
+    // in sight is, the line points the way to the next one (the panel covered them while the line said « à toucher »).
     val above by remember(left, rowPx, high, vScroll, sight, stepPx) {
         androidx.compose.runtime.derivedStateOf {
             val v = vScroll ?: return@derivedStateOf null
@@ -1325,10 +1357,13 @@ private fun TutoNotesLeft(
             fun y(n: Note) = (high - n.pitch) * rowPx
             fun x(n: Note) = n.start / TICK.toFloat() * stepPx
             val inTime = left.filter { x(it) >= hScroll.value && x(it) < hScroll.value + hScroll.viewportSize }.ifEmpty { left }
-            val hidden = inTime.filter { y(it) < from - 1f || y(it) + rowPx > to + 1f }
+                .sortedWith(compareBy({ it.start }, { -it.pitch }))
+            // Tour 6 repairs: the arrow only when none of them is whole in sight (as « plus loin → » for the bars): it said
+            // « Encore 4 notes en pointillé, plus haut ↑ » over three dotted notes in sight, for the fourth one alone.
             when {
-                left.isEmpty() || v.viewportSize == 0 || rowPx <= 0f || hidden.isEmpty() -> null
-                else -> y(hidden.first()) < from
+                left.isEmpty() || v.viewportSize == 0 || rowPx <= 0f -> null
+                inTime.any { y(it) >= from - 1f && y(it) + rowPx <= to + 1f } -> null
+                else -> y(inTime.first()) < from
             }
         }
     }

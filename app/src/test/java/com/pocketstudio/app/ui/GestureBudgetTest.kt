@@ -14,6 +14,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import com.pocketstudio.model.instrumentTracks
@@ -470,8 +471,11 @@ class GestureBudgetTest {
     }
 
     /**
-     * Review m9: a stroke cut short (the page turning with the playhead under the finger restarts the
-     * gesture) is still one undo step of its own, not merged into the next stroke.
+     * Review m9: a stroke cut short (the page turned under the finger restarts the gesture) is still one
+     * undo step of its own, not merged into the next stroke.
+     * Tour 6 (U6, lot « tutogrille »): a finger on the cells turns « Suivre » off, so the playhead no longer
+     * turns the page under it (the stroke stays open, its bar in sight); the page still turns under a finger
+     * when another one touches a bar's number, and that is what cuts the stroke short here.
      */
     @Test
     fun aStrokeCutShortIsStillItsOwnUndoStep() {
@@ -498,8 +502,15 @@ class GestureBudgetTest {
         val painted = vm.project.value.drums.lanes[7].hits.keys
         assertTrue(painted.isNotEmpty())
         assertEquals("the stroke is still open", depth, vm.session.undoDepth)
-        step = 20  // the playhead in bar 2: the page turns, the finger still down
+        step = 20  // the playhead in bar 2, the finger still down: the page stays on the bar being painted (U6)
         compose.waitForIdle()
+        compose.onNodeWithTag("step_0").assertExists()
+        assertEquals("the playhead does not cut the stroke", depth, vm.session.undoDepth)
+        // Another finger on « 2 » of « Mesure »: the page turns under the first one, the stroke is cut short.
+        compose.onNodeWithTag("drum_page_1").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnClick)
+        compose.waitForIdle()
+        compose.onNodeWithTag("step_16").assertExists()
+        assertEquals(painted, vm.project.value.drums.lanes[7].hits.keys)
         assertEquals(depth + 1, vm.session.undoDepth)
         // The next edit is a step of its own: undoing it leaves the stroke.
         vm.toggleStep(15)

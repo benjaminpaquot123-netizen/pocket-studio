@@ -274,19 +274,23 @@ private val FADER_H = 184.dp
 private val MINI_W = 60.dp
 private val MINI_FADER_H = 120.dp
 
-/** The coloured head of a strip: its name over its colour. */
+/**
+ * The coloured head of a strip: its name over its colour; [atStart] (the drums open, a head as wide as all their strips):
+ * the name where the strips start, not centred past the screen's edge (« Bat » cut at the edge, tour 6).
+ */
 @Composable
-private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier) {
+private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier, atStart: Boolean = false) {
     Box(
         modifier.fillMaxWidth().clip(RoundedCornerShape(6.dp))
             .background(Brush.verticalGradient(listOf(color.copy(alpha = 0.44f), color.copy(alpha = 0.28f))))
             .drawBehind { drawRect(color, Offset.Zero, Size(size.width, 3.dp.toPx())) }.padding(horizontal = 2.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = if (atStart) Alignment.CenterStart else Alignment.Center,
     ) {
         // Tour 6, lot 5 (R1: « Batteri / e ▸ », « Batteri / a » at 130 %, « आउटपुट » at 200 %): smaller before a word is cut
         // in two (FitText: WholeWordsText lets a Hindi word break before its vowel sign), as small as a 64 dp strip needs.
         com.pocketstudio.ui.FitText(
-            name, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp), fontWeight = FontWeight.Bold, maxLines = 2, textAlign = TextAlign.Center,
+            name, if (atStart) Modifier.padding(start = 10.dp) else Modifier, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp),
+            fontWeight = FontWeight.Bold, maxLines = 2, textAlign = if (atStart) TextAlign.Start else TextAlign.Center,
             min = 7.sp,
         )
     }
@@ -336,7 +340,7 @@ private fun DrumsGroup(
                 .semantics { stateDescription = if (open) tr("ouvert") else tr("fermé") }
                 .testTag("mix_drums_expand"),
         ) {
-            StripHead(t.name + if (open) " ▾" else " ▸", t.color)
+            StripHead(t.name + if (open) " ▾" else " ▸", t.color, atStart = open)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Column(Modifier.width(STRIP_W), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {

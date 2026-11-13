@@ -28,12 +28,9 @@ class WholeWordsAutoSize(private val min: TextUnit, private val max: TextUnit, p
         val top = if (max.isSp) max.value else 14f
         // n° 38: past 130 %, its floor as at 130 % (a floor in sp grows with the phone's font: « Sim… » at 200 %).
         val bottom = if (min.isSp) (min.value / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)).coerceAtMost(top) else top
-        var size = top
-        while (size > bottom) {
-            if (fits(performLayout(constraints, text, size.sp), text.text)) return size.sp
-            size -= if (step.isSp) step.value.coerceAtLeast(0.25f) else 0.5f
-        }
-        return bottom.sp
+        // Tour 5, moyens2: the same steps, searched by halves ([largestFitting]).
+        val by = if (step.isSp) step.value.coerceAtLeast(0.25f) else 0.5f
+        return largestFitting(top, bottom, by) { size -> fits(performLayout(constraints, text, size.sp), text.text) }?.sp ?: bottom.sp
     }
 
     override fun equals(other: Any?): Boolean = other is WholeWordsAutoSize && other.min == min && other.max == max && other.step == step

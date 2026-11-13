@@ -1481,3 +1481,7 @@
 - 2026-11-12 · lot « gaucher » (tour-5) : 4 décision(s) dans `docs/decisions/tour-5-gaucher.md`
 - 2026-11-12 · lot « langues » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-langues.md`
 - 2026-11-12 · lot « kick » (tour-5) : 5 décision(s) dans `docs/decisions/tour-5-kick.md`
+- 2026-11-12 · lot « banc7 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-banc7.md`
+- 2026-11-13 · lot « remixdecoupe » (tour-6) : 5 décision(s) dans `docs/decisions/tour-6-remixdecoupe.md`
+- 2026-11-13 · lot « moyens2 » (tour-5) : 3 décision(s) dans `docs/decisions/tour-5-moyens2.md`
+- 2026-11-13 · lot « restes » (tour-6) : 6 décision(s) dans `docs/decisions/tour-6-restes.md`

@@ -109,5 +109,6 @@
   "Pad %1$d sur %2$d…": "パッド %1$d / %2$d…",
   "C'est prêt (fichiers : %d). Une copie est aussi dans Musique › BenStudio.": "完成（ファイル：%d）。ミュージック › BenStudio にもコピーがあります。",
   "C'est prêt (fichiers : %d). Choisis l'appli pour les envoyer.": "完成（ファイル：%d）。送るアプリを選んでね。",
-  "Partager les pistes": "トラックを共有"
+  "Partager les pistes": "トラックを共有",
+  "À taper : %s": "たたくパッド：%s"
 }

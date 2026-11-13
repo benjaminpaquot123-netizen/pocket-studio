@@ -109,5 +109,6 @@
   "Pad %1$d sur %2$d…": "Pad %2$d içinden %1$d…",
   "C'est prêt (fichiers : %d). Une copie est aussi dans Musique › BenStudio.": "Hazır (dosya: %d). Bir kopyası da Müzik › BenStudio’da.",
   "C'est prêt (fichiers : %d). Choisis l'appli pour les envoyer.": "Hazır (dosya: %d). Göndermek için uygulamayı seç.",
-  "Partager les pistes": "Kanalları paylaş"
+  "Partager les pistes": "Kanalları paylaş",
+  "À taper : %s": "Dokun: %s"
 }

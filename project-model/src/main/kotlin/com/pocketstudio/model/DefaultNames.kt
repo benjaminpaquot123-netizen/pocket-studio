@@ -35,7 +35,10 @@ object DefaultNames {
                 // The ready-to-play live pads and the party sounds put on a pad (Benjamin's list n° 12).
                 LiveStarter.PADS.map { it.name } + PartySounds.ALL.map { it.name } +
                 // Audit ultra round 2 (n° 17): a track named after the library sound it plays (« Basse sub »).
-                SoundLibrary.SYNTH.map { it.name } + SoundLibrary.PLAITS.map { it.name } + MultiInstruments.KNOWN.map { it.name }
+                SoundLibrary.SYNTH.map { it.name } + SoundLibrary.PLAITS.map { it.name } + MultiInstruments.KNOWN.map { it.name } +
+                // Tour 6 lot 7 (T2): a pad named after its built-in voice (« Rumble », « Kick studio »: the tutorial's kit
+                // keeps it), shown as the tutorial's step says it (럼블, ランブル).
+                PadVoice.NAMES.filter { it.isNotBlank() }
             ).toSet()
     }
 

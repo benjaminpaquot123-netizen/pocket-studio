@@ -28,6 +28,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 **09 h 40** : lot « emulateur » fusionné et poussé (`b3617da21`), CI lancée sur cette tête. Le portail est FERMÉ jusqu'à son vert, émulateur compris. En attente pour le paquet 3 : `tutofleches` (agent local, en cours), `langues2` (`eq/tour-6-langues2`), et les lots du banc `portail3` (`eq/tour-6-portail3`, juge 68 → 15) et `rejeux7` (`eq/tour-6-rejeux7`, 3 rejeux). Contrôle du tuto : sur la tête poussée, pendant la CI du paquet 3, par Testeurs 2 et 3 ; le lot est retiré s'il échoue.
 
+**11 h 47** : CI 43402800379 VERTE sur `b3617da21` (émulateur compris). Paquet 3 ouvert : `tutofleches`, `langues2`, `portail3` ; puis CI et contrôle du tuto par les trois testeurs. `rejeux7` au paquet 4.
+
 ## Lots ouverts (un fichier = un seul lot ouvert)
 
 | Lot | Zone | Fichiers | Qui | État |

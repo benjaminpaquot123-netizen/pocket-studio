@@ -167,6 +167,42 @@ class Tour6TutoLooksTest {
         assertTrue("the steps the project held are ticked", "make_fin" in c.ui.value!!.progress.done)
     }
 
+    /**
+     * An answer begun on the step before says nothing of the step shown: the song's order found right by a look begun
+     * on « song_order » wiped what « Suivant » had just said on the next step (the look's own step read after the
+     * step had changed).
+     */
+    @Test
+    fun anAnswerBegunOnTheStepBeforeLeavesTheWordsOfTheStepShown() {
+        val target = TutoTarget.of("jump_up")!!
+        val flat = TutoCourse.of("jump_up")!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }
+        val steps = flat.associateBy { it.id }
+        var parts = target.blank()
+        for (id in listOf("kick_do", "snare_do", "hat_do", "bass_do", "pad_do", "lead_do", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", "make_drop2", "make_fin")) {
+            if (!TutoChecks.done(steps.getValue(id), parts, target)) parts = TutoChecks.show(steps.getValue(id), parts, target)!!
+        }
+        val full = TutoChecks.show(steps.getValue("song_order"), parts, target)!!
+        // The first step after the order that this project leaves to do, with something to say on « Suivant ».
+        val next = flat.drop(flat.indexOfFirst { it.id == "song_order" } + 1).dropLast(1).first { !it.manual && !it.listening && !TutoChecks.done(it, full, target) }
+        val flow = MutableStateFlow(parts)
+        val c = controller(flow)
+        c.start("jump_up", TutoLevel.Facile)
+        answerAll()
+        goTo(c, "song_order")
+        answerAll()
+        // The parts put in order: the look that will tick the step begins, and still works when the user goes on.
+        flow.value = full
+        idle()
+        goTo(c, next.id)
+        c.next()
+        val said = c.ui.value!!.made
+        assertTrue("« Suivant » on a step left undone says what it costs: « $said »", said != null)
+        answerAll()
+        assertTrue("the order is ticked", "song_order" in c.ui.value!!.progress.done)
+        assertEquals("the step shown", next.id, c.ui.value!!.current.id)
+        assertEquals("the words of the step shown are still there", said, c.ui.value!!.made)
+    }
+
     /** The rule itself: one look at a time (a second one asked meanwhile waits for the first one's answer). */
     @Test
     fun theLooksAreMadeOneAtATime() {

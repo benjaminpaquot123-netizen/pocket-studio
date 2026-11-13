@@ -19,13 +19,21 @@ Preuve rejouée : siège `sieges/tour-6/padlive2/lotP/a` (fr, téléphone, 100 %
 - P4 dans « Plus » : `live/LiveScreen.kt` (Briques, écran 41) tenté : ■ quand les boucles des pads jouent seules, un toucher : « Tout couper » (rouge / vert `PadLivePlayShowsTest#theBricksPageSaysTheSame`). La vue plein écran « Pads » (écran 45, étiquette `live_pads_full_play`) est dans `session/LivePadsFullScreen.kt` (`StageButton` l. 405, lit `playing` seul) : **pas pris** (hors des fichiers du lot).
 - Anneau pâle (gestes 21-23) : voulu. Un pad de boucle touché transport arrêté part tout de suite (décision du 2026-11-11, T5-PADRETRIG) ; le 2e et le 3e attendent leur ligne, mais un geste du banc dure plus que la ligne (124 BPM) : le siège Ab l'avait vu à son écran 20. Le banc, pas l'appli.
 
+## Aller-retour 2 (contrôle Ab-3, code ffbcb886, branche `ccr-a548b78b-controle-ab3`)
+
+Le chef a accordé `session/LivePadsFullScreen.kt` et la longueur affichée (`project-model`) à ce lot.
+- P2 : corrigé selon le siège (écrans 7 et 31).
+- P4 vue « Pads » plein écran (écrans 20, 24) : tenté. Le ▶ de `StageBar` lisait `playing` seul ; il dit ■ quand les boucles des pads jouent seules et un toucher les coupe (« Tout couper »), sans lancer la musique du projet (rouge / vert `PadLivePlayShowsTest#thePadsFullScreenSaysTheSame`). Briques : déjà tenté à l'aller-retour 1 (le siège Ab-3 jouait ffbcb886, d'avant).
+- P3 par les briques (écrans 30 et 39, « Boucle de 1 mes. ») : tenté dans `SongLength.of` (`project-model/…/SongLength.kt`), pas dans `Scene.stepsFor` (celle-là sert au transport, à l'export et au mode morceau, et ne voit pas les pistes audio) : sans morceau, la longueur montrée est la plus longue du contenu de la scène et de ses briques audio (clips de la scène affichée, hors clips du morceau). Affichage seul : carte d'accueil et « Mes projets ». Suite `project-model` entière verte ; tests export, projets, accueil, morceau de l'appli verts (un test du remix, `RemixSongEverywhereTest`, rouge une fois en charge, vert seul : sans lien). Rouge / vert `SongLengthBricksTest#aLoopLastsAsLongAsItsLongestBrick`.
+- Reste hors du lot : « A mesure 1/1 » de Briques (transport, `RhythmViewModel`), « Ton morceau est vide » alors que les prises sont listées (`session/SessionScreen.kt`).
+
 Relecture neuve (`tour-6-padlive2-relecture.md`) : 0 bloquant, 0 grave. Moyen pris : un « coup » qui sonne ne fait plus passer le ▶ en ■ (rouge / vert `PadLivePlayShowsTest#aHitRingingKeepsPlay`). Moyens laissés, hors des fichiers du lot : le bouton « Record » d'un contrôleur MIDI (`midi/AutoKnobsVm.kt`, appelle `togglePerformance` sans passer par `PadLiveController.record`) remplace encore le morceau ; morceau plein ou au-delà de la mesure des effets, le message de `RhythmViewModel` parle de « Nouvelle version », absent de Pad Live.
 
 Restent hors du lot : la carte « Pad Live » de l'accueil dit encore « Ça sonne tout de suite. » (`onboarding/`, textes) ; l'effet de bord de P3 (le choix « Nouvelle version / Ajouter à la suite » de la page Live suit la dernière prise de Pad Live).
 
 Juge du chantier : 109 écarts (tête : 110).
 
-tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.padlive.PadLiveSilentOpenTest com.pocketstudio.app.padlive.PadLiveTakeAfterTest com.pocketstudio.app.padlive.PadLiveTouchCountTest com.pocketstudio.app.padlive.PadLiveSaveUndoTest com.pocketstudio.app.human.BenchAmeneesTest
+tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.padlive.PadLiveSilentOpenTest com.pocketstudio.app.padlive.PadLiveTakeAfterTest com.pocketstudio.app.padlive.PadLiveTouchCountTest com.pocketstudio.app.padlive.PadLiveSaveUndoTest com.pocketstudio.app.human.BenchAmeneesTest com.pocketstudio.app.LivePadsFullScreenTest
 
 ## Liste des chemins
 
@@ -33,6 +41,7 @@ tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.pa
 - chemin: Pad Live bouton ▶ du haut avec un pad en attente | test: PadLivePlayShowsTest#aPadWaitingForItsLineAlreadyShowsTheSquare
 - chemin: Pad Live bouton ▶ du haut pendant qu'un coup sonne | test: PadLivePlayShowsTest#aHitRingingKeepsPlay
 - chemin: Plus › Briques bouton ▶ du haut avec des boucles seules | test: PadLivePlayShowsTest#theBricksPageSaysTheSame
+- chemin: Plus › Briques › Pads plein écran bouton ▶ avec des boucles seules | test: PadLivePlayShowsTest#thePadsFullScreenSaysTheSame
 - chemin: Pad Live plein écran « Fête » bouton ▶ | test: PadLivePlayShowsTest#thePartyScreenSaysTheSame
 - chemin: Pad Live ■ sur le banc (moteur, pads éteints) | test: BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
 - chemin: accueil carte « Pad Live » ouverture | test: PadLiveSilentOpenTest#openingFromTheCardPlaysNothing

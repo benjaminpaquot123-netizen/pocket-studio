@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour5AppProof4Test" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-13T22:18:26.919Z" hostname="vm" time="0.385">
+  <properties/>
+  <testcase name="theSongStartedInItsMiddleCountsOn" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.068"/>
+  <testcase name="theChallengesDotsNameTheirPad" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.05"/>
+  <testcase name="theStreamingTargetIsMeasuredOnTheWholeExportedFile" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.036"/>
+  <testcase name="theSimpleShareReportSaysTheLevelOnce" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.038"/>
+  <testcase name="theSongsColumnMutedInTheLiveMutesItsChannel" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.046"/>
+  <testcase name="aFourBarMelodyInAOneBarSceneLengthensEachPartOnIt" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.037"/>
+  <testcase name="myExportsGivesEachFileItsTime" classname="com.pocketstudio.app.human.Tour5AppProof4Test" time="0.104"/>
+  <system-out><![CDATA[T5-DEFI-COULEURS: known defect still there (a dot of the challenge has the colour of several pads: « Klaxon » and [Caisse, Montée])
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -499,15 +499,17 @@ fun ShareSheetContent(
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's. Pro keeps it above the checks.
         if (!simple) ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
+        if (simple && ui.checks.isEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = (if (ui.checks.isEmpty()) Modifier.layoutId(WHOLE_LINE) else Modifier).testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
             }
             ui.checks.forEach { check -> CheckRow(check, ui, actions, simple) }
         }
-        // Tour 6, seat A c (E1): in the Mode simple the target sits just below the checks, so the « prêt ? » checks
-        // (« Rien à entendre »…) keep their place at the top of what scrolls; a streaming/club file is still two touches.
-        if (simple) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
+        // Tour 6, seat A c (E1): in the Mode simple, a warning (« Rien à entendre »…) keeps its place at the top of what
+        // scrolls and the target comes under it; with nothing to fix, the target comes first, in sight when the page
+        // opens (control seat Ac-2: under « Tout est prêt » it fell below the edge on a phone): two touches, no scroll.
+        if (simple && ui.checks.isNotEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
         OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.layoutId(WHOLE_LINE).fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
             Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)

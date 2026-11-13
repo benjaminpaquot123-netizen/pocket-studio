@@ -403,6 +403,17 @@ def tutorial(branch, path, base, head, tour):
             continue
         seat_path = f"docs/audits/ultra/sieges/{tour}/controle/{seat}/rapport.md"
         seat_text = show(branch, seat_path)
+        if seat_text is None and "/" not in seat:
+            # Lot « constate »: the bench plays a control seat in controle/<id>/<a-f>/ (scripts/human-tester.sh
+            # controle/<id>); « <id> » names that folder when it holds one seat's report, never a guess among several.
+            nested = [p for p in (f"docs/audits/ultra/sieges/{tour}/controle/{seat}/{s}/rapport.md" for s in "abcdef")
+                      if show(branch, p) is not None]
+            if len(nested) > 1:
+                refusals.append(f"control seat « {seat} »: {len(nested)} seats in its folder "
+                                f"({', '.join(p.split('/controle/')[1][:-len('/rapport.md')] for p in nested)}): name one, « {seat}/a »")
+                continue
+            if nested:
+                seat_path, seat_text = nested[0], show(branch, nested[0])
         if seat_text is None:
             refusals.append(f"control seat « {seat} »: no report {seat_path} in {branch} (the seat's folder comes with the lot)")
             continue

@@ -29,6 +29,15 @@ defauts:   (10 au plus)
     gravite: <mission-impossible|contourne-en-N-gestes|finition> | revu: <oui: ecran n°|non> | banc?: <non|son|temps|moteur|micro|rythme|clavier|fichier|horloge|gel> | promesse: <id ou ->
 mots-faux:   (facultatif, une ligne par mot)
   - ecran: <n°> | vu: <mot> | attendu: <mot>
+defauts-avant:   (siège de contrôle seulement : une ligne par défaut visé par le lot, dans l'ordre du brief)
+  - <id du défaut visé> | <corrigé|autre|encore là|pas atteint> | ecran: <n°> | <ce que tu as vu, avec tes mots>
 ```
+
+Rubrique `defauts-avant` (siège de contrôle, `docs/audits/ultra/PLAN-REPARATIONS-CONSTATEES.md`, règle 3) : le brief donne, pour chaque défaut visé, sa phrase d'acceptation (ce que tu dois voir, avec ses conditions). Tu refais le parcours et tu réponds par un seul de ces quatre mots :
+- `corrigé` : tu as vu exactement ce que dit la phrase ; `ecran:` = le numéro de l'écran où tu l'as vu (obligatoire : un « corrigé » sans écran ne compte pas) ;
+- `autre` : la chose a changé mais la phrase n'est pas tenue ; dis avec tes mots ce que tu vois à la place ;
+- `encore là` : le défaut est toujours là, comme avant ; `ecran:` = où tu l'as revu ;
+- `pas atteint` : ton budget ou un autre défaut t'a empêché d'arriver jusqu'à cet endroit.
+Seul un `corrigé` avec son écran fait passer la réparation à « constaté » (`scripts/bench/reparations.py --constate`). Ces lignes ne sont pas des fiches de défaut : un défaut neuf va dans `defauts:`.
 
 Clé de fusion calculée par le script : route + bouton touché au geste `#N` (lus dans le journal) + famille de symptôme. Une grappe vue par deux sièges est un défaut confirmé sans juge ; une clé déjà « corrigée » qui revient est marquée `[revient]`, une clé classée « banc » qui revient `[banc contredit]`.

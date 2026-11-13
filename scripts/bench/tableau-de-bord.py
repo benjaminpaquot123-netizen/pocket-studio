@@ -208,7 +208,9 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
         elif "pas vue" in k.values():
             every["pas vue"] += 1
     missions, succeeded = 0, 0
-    for root, _, files in os.walk(tour_dir):
+    for root, dirs, files in os.walk(tour_dir):
+        # (Lot « constate »: a control seat replays a lot's branch, not the round's code: not one of its missions.)
+        dirs[:] = [d for d in dirs if d != "controle"]
         if "mesures.json" in files:
             try:
                 m = json.loads(read(os.path.join(root, "mesures.json")))

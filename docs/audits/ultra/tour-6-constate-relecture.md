@@ -1,7 +1,7 @@
-# Tour 6, lot du banc « constate » : relecture neuve (trois passes)
-Relu : 42b2ea99b3eda7ef8f6e52fa65aa7b1c13b49bf6
+# Tour 6, lot du banc « constate » : relecture neuve (quatre passes)
+Relu : 00063ae7c5cfa36a1b81a45a16e4cbdd93e20a3e
 
-Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `6e144989` (1 grave), seconde sur `a8d03728` (les corrections de la première : paires `18cffddd`/`d346c9ed` et `16925f45`/`936d4963`), troisième, courte, sur `42b2ea99` (fusion de la tête d'intégration `8afb9abc` par `9b871be5`, puis règles de ce lot et de portail4 regardées au paquet 6). Lu : les commits propres au lot (`git diff aea5b506..6e144989`, puis `git diff 6e144989..a8d03728`), `PLAN-REPARATIONS-CONSTATEES.md` en entier, les deux fiches de `docs/AIDE-FUSIONS-TESTS.md`, `relecture-verdict.py`, la fiche 6 du gabarit, `AUDIT-ULTRA.md` §13, le rapport et les décisions du lot, la relecture de portail4 comme modèle. Gradle n'a pas été lancé (consigne) ; l'atelier principal n'a pas été touché. Essais sur dépôts jouets, arbres jetables (`git worktree`, `git archive`) et copies temporaires.
+Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `6e144989` (1 grave), seconde sur `a8d03728` (les corrections de la première : paires `18cffddd`/`d346c9ed` et `16925f45`/`936d4963`), troisième, courte, sur `42b2ea99` (fusion de la tête d'intégration `8afb9abc` par `9b871be5`, puis règles de ce lot et de portail4 regardées au paquet 6) ; quatrième, courte, sur `00063ae7` (depuis `8fc4c424`, dernier état relu : fusion de l'intégration `53e8e0bf` par `3f52e2ed`, paire rouge/vert « règles au paquet 8 », rapport et décisions). Lu : les commits propres au lot (`git diff aea5b506..6e144989`, puis `git diff 6e144989..a8d03728`), `PLAN-REPARATIONS-CONSTATEES.md` en entier, les deux fiches de `docs/AIDE-FUSIONS-TESTS.md`, `relecture-verdict.py`, la fiche 6 du gabarit, `AUDIT-ULTRA.md` §13, le rapport et les décisions du lot, la relecture de portail4 comme modèle. Gradle n'a pas été lancé (consigne) ; l'atelier principal n'a pas été touché. Essais sur dépôts jouets, arbres jetables (`git worktree`, `git archive`) et copies temporaires.
 
 ## Ce qui a été refait, première passe (`6e144989`)
 
@@ -29,6 +29,16 @@ Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `6e1
 - Tests sur la tête, arbre au repos : `test_pre_vol.sh` « tout est vert » (94) ; `test_socle.py` 29 OK ; `test_portail3.py` 77 OK ; `test_portail4.py` 59 OK ; `test_constate.py` 64 OK ; `test_ultra_bench.py` « ultra bench scripts: OK ».
 - Hors de cette relecture : le pré-vol refuse encore « decisions written outside docs/decisions/tour-6-constate.md: docs/decisions/tour-6-portail4.md » tant que portail4 n'est pas passé seul au portail.
 
+## Ce qui a été refait, quatrième passe (`00063ae7`)
+
+- Lu : `git diff 8fc4c424..00063ae7 -- scripts/ docs/decisions/tour-6-constate.md docs/audits/ultra/tour-6-constate-rapport.md` (10 fichiers, 39 lignes ajoutées, 35 retirées). Rien d'autre que des numéros de paquet, les épingles des tests, `KNOWN_RULES` et une ligne de rapport et de décisions.
+- Fusion `3f52e2ed` (parents `8fc4c424`, `53e8e0bf` = `origin/ccr-80af1a1b-mn0wec`, « Open portal batch 7 », qui contient `05ca9246`) : l'intégration est ancêtre de la tête. `git diff origin/ccr-80af1a1b-mn0wec..HEAD` sur `fusion-equipes.sh`, `pre-vol.sh`, `rapport-zone.py`, `test_portail4.py`, `test_pre_vol.sh` ne montre que les ajouts de ce lot : refus sortie 11 et bloc « rejoué » (`from_paquet 8`), `computed=(…)` devenu `computed+=(…)` (le tableau est bien initialisé plus haut, ligne 144), miroir du pré-vol (`rule_from 8`), `test_constate.py` dans `--ci`, `reparations.py` copié par `test_pre_vol.sh`, le dossier imbriqué `controle/<id>/<a-f>` de `rapport-zone.py --tuto`, l'épingle « 17 » relâchée en « ≥ 17 ». Côté portail4, la règle du tuto reste celle de l'intégration (`from_paquet 7`, `rule_from 7`, textes « batch 7 ») : rien de l'intégration n'est perdu.
+- `KNOWN_RULES="18 b5d9c7711c"` recalculé à la main : `grep -E 'not merged|undone' fusion-equipes.sh | sed 's/^ *//'` donne 18 lignes, sha256 `b5d9c7711c` : égal.
+- `portail-paquet.txt` dit `paquet: 7` ; les deux règles de ce lot portent `from_paquet 8` / `rule_from 8` : conforme à « Règles gelées » (une règle ajoutée pendant le paquet N vaut au paquet N+1). Plus aucune garde « paquet 6 » dans `scripts/bench/`.
+- Rouge `afc08e08` (tests seuls : `test_constate.py`, `test_pre_vol.sh`) rejoué dans un arbre jetable sous `/tmp` (retiré ensuite) : `test_constate.py` 3 échecs, `test_pre_vol.sh` 2 ROUGE, `test_socle.py` 1 échec (la règle gelée, `from_paquet 6` sous le paquet 7) ; tous sur assertion. Le vert `3e1b87dc` ne touche que le code (`fusion-equipes.sh`, `pre-vol.sh`, la docstring de `reparations.py`) : honnête.
+- Tests sur la tête : `test_socle.py` 29 OK ; `test_constate.py` 64 OK ; `test_portail4.py` 59 OK ; `test_portail3.py` 77 OK ; `test_pre_vol.sh` « tout est vert ». `test_pre_vol.sh` montre aussi le sommeil des règles : « before batch 7 … » (tuto) et « before batch 8 … » (registre) ne font que dire.
+- Constat neuf m6 (mineur) ci-dessous.
+
 ## Constats
 
 | id | gravité | constat | fichier:ligne | état |
@@ -45,12 +55,13 @@ Relecteur neuf : je n'ai écrit aucune ligne de ce lot. Première passe sur `6e1
 | m2 | mineur | La condition d'entrée de la règle 3 n'est pas contrôlée. | rapport | ouvert, maintenant dit par le lot |
 | m3 | mineur | `\r` gardé par `rewrite()` sans test. | `scripts/bench/reparations.py:189` | corrigé en `936d4963` : `\r` refusé par le lecteur, plus rien à garder |
 | m4 | mineur | La courbe compte les sièges de contrôle, E non. | `scripts/bench/tableau-de-bord.py:217` | ouvert, dit et justifié par le lot |
+| m6 | mineur | La branche ajoute encore à `tour-6-portail4-rapport.md` (fichier d'un autre lot, déjà fusionné) la ligne « Re-garde : … à partir du paquet 6 » de `42b2ea99`, alors que l'intégration garde la règle du tuto au paquet 7 : texte périmé, et seul écart avec l'intégration hors des fichiers de ce lot. À retirer à la prochaine occasion. | `docs/audits/ultra/tour-6-portail4-rapport.md:75` | ouvert |
 | m5 | mineur | Une case de clé avec une espace insécable ou finale (« A2 ») passe `--lot`, car `key()` enlève les espaces. Mais `--constate` et le décompte lisent la case brute : la ligne ne se constate plus sous « A2 » et compte comme un autre défaut. Il faut le vouloir. | `scripts/bench/reparations.py:322` | ouvert |
 
 ## Ce qui tient
 
 - Une ligne neuve, rabaissée, retirée ou dont une case autre que `etat`, `commit`, `test`, `note` change est refusée, quelle que soit l'écriture (casse, accents, espaces, CRLF, séparateurs cachés, BOM, tabulations en trop, en-tête permuté). Seule exception : le registre supprimé entier (M1).
-- Un seul lecteur du registre ; « rejoué » posé par le portail seul, après la fusion verte, à partir du paquet 6, sur les lignes du lot, avec une preuve qui a vraiment tourné ; défait avec la fusion. « constaté » seulement d'après un siège de contrôle du même tour qui a joué la réparation.
+- Un seul lecteur du registre ; « rejoué » posé par le portail seul, après la fusion verte, à partir du paquet 8, sur les lignes du lot, avec une preuve qui a vraiment tourné ; défait avec la fusion. « constaté » seulement d'après un siège de contrôle du même tour qui a joué la réparation.
 - Les lignes des tours 1 à 4 sont intactes ; sièges ordinaires, `applique-corrections.py` et grappes inchangés ; aucun lot honnête de correction n'est refusé à tort.
 - Chaque contrôle neuf a un test qui rougit quand on le casse (15 sur 15 dans cette passe).
 

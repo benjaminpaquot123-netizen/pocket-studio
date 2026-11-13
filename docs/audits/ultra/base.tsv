@@ -398,7 +398,7 @@ tab_Plus|schon bereit die 909 des assistenten kick „crunch“ sattigung echo u
 tab_Sons|carte enregistrer ma voix ou ma guitare par-dessus ta musique|rien	corrigé	tour-3	tour-3 T3-19 b804a22	tour-3
 tab_Sons|cut_to_live|incompris	corrigé	tour-3	tour-3 T3-04 151c4c9	tour-3
 tab_Sons|kit acid techno laden 4 mb|rien	nouveau	tour-3	
-tab_Sons|step_0|incompris	corrigé	tour-3	tour-3 T3-34 b3ee0d6	tour-3
+tab_Sons|step_0|incompris	corrigé	tour-3,tour-6	tour-3 T3-34 b3ee0d6	tour-3
 tab_Sons|top_share|incompris	corrigé	tour-3	tour-3 T3-10 0bb71bf	tour-3
 tab_Structure|ascolta appena prima del primo grande momento|rien	nouveau	tour-3	
 tab_simple_Clavier|onglet mix mode simple|incompris	nouveau	tour-3	
@@ -1000,3 +1000,26 @@ padlive|padlive_pad_2|incompris	nouveau	tour-6
 padlive|padlive_pad_3|rien	nouveau	tour-6	
 rhythm/tab_Sons|tuto_chapters|incompris	nouveau	tour-6	
 share_sheet/tab_simple_Envoyer|share_go|affichage	nouveau	tour-6	
+tab_simple_Clavier|bouton ヘース · 小節 4/8 点線の音かあと1個 もっと上 ↑|perdu	nouveau	tour-6	
+tab_simple_Clavier|bouton メロティ · 小節 1/8 点線の音かあと1個 もっと下 ↓|texte-faux	nouveau	tour-6	
+tab_Mix|strip_more_0|mauvais-ecran	nouveau	tour-6	
+tab_simple_Clavier|bouton basse · mesure 4/8 encore 2 notes en pointille a toucher|affichage	nouveau	tour-6	
+tab_simple_Clavier|tuto_need_folded|perdu	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_need|incompris	nouveau	tour-6	
+dialogue:library|library_folder_Techno|affichage	nouveau	tour-6	
+dialogue:tuto_chooser|tuto_style_house|incompris	nouveau	tour-6	
+dialogue:tuto_chooser|tuto_style_techno|texte-faux	nouveau	tour-6	
+session/tab_simple_Morceau|add_part_5|texte-faux	nouveau	tour-6	
+synth/tab_Sons|tuto_notes_left|perdu	nouveau	tour-6	
+tab_Sons|tuto_end_close|affichage	nouveau	tour-6	
+tab_Sons|tuto_kit_download|texte-faux	nouveau	tour-6	
+tab_Sons|tuto_need|texte-faux	nouveau	tour-6	
+tab_Structure|add_part_5|texte-faux	nouveau	tour-6	
+tab_simple_Clavier|tuto_next|texte-faux	nouveau	tour-6	
+tab_simple_Morceau|tuto_need|incompris	nouveau	tour-6	
+tab_simple_Rythme|tuto_chapter_end_folded|affichage	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_big|texte-faux	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_need|texte-faux	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|tuto_next_big|texte-faux	nouveau	tour-6	
+tuto_spot_ring|texte 少し下ける coupe|affichage	nouveau	tour-6	
+tab_Mix|thumb_share|texte-faux	nouveau	tour-6	

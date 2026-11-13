@@ -1,4 +1,18 @@
 siege	id	promesse	ecran	tenue	pourquoi	contredite
+b	t6-Bb-1	Du bist dran: Gib ein ganz kleines bisschen Swing dazu (7 %)	21	oui	curseur Swing visible sous la consigne, glissé à la main, « Bravo, Kapitel geschafft! » (validé dès 4 %, voir défaut)	
+b	t6-Bb-2	Tippe bei einem Sound auf ☆, um ihn unter „Favoriten“ wiederzufinden.	220	oui	☆ à côté de chaque son (Sound ändern › Techno), touché, devient ★	contredite
+b	t6-Bb-3	Neue Kurve: zeichne sie unten.	192	oui	les barres de la courbe Filter Cutoff montent sous le doigt dès le premier tracé	
+b	t6-Bb-4	Einstellung zeigen	195	oui	ouvre « Effekte · Melodie », 1. Filter, Cutoff, avec « Eine Kurve bewegt diese Einstellung »	
+a	t6-Da-1	1. Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	189	oui	15 chapitres finis, « おめでとう、曲が完成！ » atteint, malgré deux longs détours (ch. 5 et 7)	
+a	t6-Da-2	2. À chaque étape du tuto, le texte d'aide est lisible et l'élément montré est bien à l'écran	79	non	note pointillée introuvable (« もっと上 ↑ » trompeur), « 少し下げる » sous le panneau du tuto, « あとで » sous le fondu	
+a	t6-Da-3	3. Je peux quitter le tuto puis le reprendre là où je l'avais laissé	44	oui	« チュートリアルをやめる » puis « チュートリアルを再開 » : retour exact à la fin du chapitre 3	
+a	t6-Da-4	4. chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	156	non	résultats qui contredisent la consigne (ch. 10), flèches contradictoires (ch. 7), mots non expliqués (ライド, ロール, ベロシティ, グルーヴ, Fm/G♭)	
+a	t6-Da-5	5. tous les textes vus sont dans ma langue, aucun en français ni coupé	133	non	pas de français, mais du latin : « Groove », « Roland TR-909 », « Plaits », « Rim » ; « あとで » et « 少し下げる » coupés	
+a	t6-Ha-1	« La vitesse et la couleur du morceau Chapitre 1/15 · Étape 1/3 · Facile »	4	oui	accueil « J'apprends » → « Simple … Avec le tuto Facile » → style → tuto ouvert en 3 gestes, sans impasse	
+a	t6-Ha-2	« Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer. »	260	oui	15/15 chapitres faits sans « Suivant » forcé ; mais « Chapitre suivant » est caché dans la bande repliée « Bravo, chapitre fini ! » à chaque fin de chapitre	contredite
+a	t6-Ha-3	« Réussi Étape suivante »	236	oui	chaque étape s'est validée dès le geste demandé (case, note, curseur, export), jamais de refus injuste	
+a	t6-Ha-4	« À toi : crée le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances de fin de phrase (« Montre-moi » les pose). »	205	non	mots non expliqués (BPM au choix du style, Groove, Tonique, relances de fin de phrase, Mix, solo, saturation, « (−14) ») et perdu dans la grille de la basse après la copie	
+a	t6-Ha-5	« Télécharger le kit House (4 Mo) » [coupé]	18	non	tout est en français, mais des textes coupés : ce bouton (écrans 18, 81…), « Plus tard » (85), « Tout est prêt : aucun solo oublié, aucune piste » (255)	
 A/a	t6-Aa-1	Je change de partie et c'est bien la partie touchée qui s'affiche et se joue	39	oui	à l'arrêt « C · मुखड़ा » touché → en-tête « मुखड़ा », partie C joue (écrans 14 et 39) ; en lecture, la partie choisie passe « अगला » puis joue et s'affiche (écran 45)	contredite
 A/a	t6-Aa-2	« ▶ यह पार्ट » / « ▶ गाना »	40	oui	« यह पार्ट » boucle la partie affichée (« मुखड़ा बार 2/8 », écrans 15 et 40) ; « गाना » relance le morceau entier (« बार 25/104 », écran 16)	
 A/a	t6-Aa-3	नया गाना → Pop	36	oui	le 2e morceau s'ouvre directement en « सिंपल », sans l'écran « सिंपल या प्रो? »	

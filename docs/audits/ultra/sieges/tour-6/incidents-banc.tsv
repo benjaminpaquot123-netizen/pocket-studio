@@ -1,4 +1,12 @@
 siege	geste	attente	vu
+b	53	5	écran 54 au texte vide alors que l'image montre l'appli (Ich mach's)
+b	54	5	écran 55 au texte vide
+b	89	10	écran 90 au texte vide, « regarde » refait, toujours vide ; image normale
+b	127	5	écran 128 au texte vide, image normale
+b	0	0	outils hors human-act : Read des PNG et ls/grep de mon propre dossier de siège (journal.txt pour les #N), rien d'autre
+a	20	0	après « 自分でやる » l'écran texte ne contient que la pastille REC (écrans 21, 22, 27, 28, 36, 37, 46, 47, 160, 161, 179, 184) ; l'image, elle, est normale ; outils hors human-act : Read sur les images du banc seulement
+a	33	0	écran 34 rendu vide en texte (seule la pastille REC), l'image était normale ; idem gestes 41, 209, 248, 254 (écrans 42, 210, 249, 255)
+a	26	0	outils utilisés hors human-act.py : Read (consignes et .png du siège), grep/sed/head pour filtrer la sortie, fichier temporaire last.txt dans le siège (effacé) ; un « head » a cassé l'affichage au geste 26 (geste bien joué)
 A/a	0	0	avant le jeu, pour mettre le banc en route sur cette machine : selftest.sh du lotA relancé (vert, 173 tests), human-tester.sh lancé, fiches start.txt de lotA/b et lotA/c mises de côté (consigne de la discussion principale) ; Read des images et lecture de journal.txt dans mon dossier de siège seulement
 A/b	0	600	le premier « regarde » attendait sans banc lancé ; banc lancé par moi (scripts/human-tester.sh) après le selftest vert du lot (scripts/bench/selftest.sh), sur consigne de la discussion principale ; outils hors human-act : bash (ls, cat, grep, sed sur la sortie du banc et mon dossier de siège), Read sur mes images
 A/b	60	0	l'appui long sur « Écho » ne donne aucune trace d'effet dans la ligne « Son » : le banc ne semble pas dire les effets (la promesse 3 ne se prouve donc qu'à l'écran)

@@ -1493,3 +1493,4 @@
 - 2026-11-13 · lot « guidecoquille » (tour-6) : 15 décision(s) dans `docs/decisions/tour-6-guidecoquille.md`
 - 2026-11-13 · lot « reparations » (tour-6) : 4 décision(s) dans `docs/decisions/tour-6-reparations.md`
 - 2026-11-13 · lot « methode-v3 » (tour-6) : 5 décision(s) dans `docs/decisions/tour-6-methode-v3.md`
+- 2026-11-13 · lot « emulateur » (tour-6) : 3 décision(s) dans `docs/decisions/tour-6-emulateur.md`

@@ -28,7 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -284,11 +285,14 @@ fun TrackBar(
     }
 }
 
-/** Lot 6, R19: the sign that the row goes on past this edge (a chevron, mirrored in a right-to-left language); no touch. */
+/**
+ * Lot 6, R19: the sign that the row goes on past this edge (an arrow, mirrored in a right-to-left language); no touch.
+ * Arrows, not chevrons: the bench describes ← and → (its IconShapes had no left chevron: self-test red).
+ */
 @Composable
 private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
     Icon(
-        if (forward) Icons.AutoMirrored.Filled.KeyboardArrowRight else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+        if (forward) Icons.AutoMirrored.Filled.ArrowForward else Icons.AutoMirrored.Filled.ArrowBack,
         contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(22.dp),
     )
 }

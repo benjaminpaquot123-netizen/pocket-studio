@@ -1,0 +1,61 @@
+Écran 55 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+titre « ステップ：太鼓のふち » [coupé, état « 開いた状態 »] @ 227,227
+bouton « ? » [coupé] @ 306,227
+bouton « 全パッド » [coupé] @ 479,228
+texte « 太鼓のふち » @ 105,285
+texte « ここに点線のマスがあと 2 個 » @ 196,314
+bouton « 1 » [état « 空 »] @ 70,383
+bouton [état « 空 »] @ 133,383
+bouton [état « 空 »] @ 197,384
+bouton [état « ヒット、強さ 100 % »] @ 261,384
+bouton « 2 » [état « 空 »] @ 325,384
+bouton [état « 空 »] @ 389,384
+bouton [état « ヒット、強さ 100 % »] @ 453,384
+bouton [état « 空 »] @ 517,384
+bouton « 3 » [état « 空 »] @ 70,462
+bouton [état « 空 »] @ 133,462
+bouton [état « 空、点線：タップしてね »] @ 197,463
+bouton [état « 空 »] @ 261,463
+bouton « 4 » [état « 空 »] @ 325,463
+bouton [état « 空、点線：タップしてね »] @ 389,463
+bouton [état « 空 »] @ 453,463
+bouton [état « 空 »] @ 517,463
+texte « すべて » @ 147,548
+texte « 1/2 » @ 229,548
+texte « 1/4 » @ 304,548
+texte « ◀ » @ 379,548
+texte « ▶ » @ 454,548
+texte « 埋める » @ 71,548
+texte « 消去 » @ 78,620
+texte « マスをタップでヒットを追加、指をすべらせてまとめて塗れます。ヒットを長押し：強さとロール（×2〜×8）。 » @ 294,695
+bouton « 1小節 » [sélectionné] @ 143,771
+bouton « 2 » @ 239,771
+bouton « 3 » @ 320,771
+bouton « 4 » @ 401,771
+texte « 長さ » @ 63,771
+icône (liste) « チャプター » @ 444,879
+texte « ハイハット チャプター 4/15 · ステップ 2/3 · かんたん » @ 207,879
+icône ⌃ @ 531,879
+icône « あなたの番：「太鼓のふち」パッド（小さな「コッ」）で、点線のマスをタップしよう：拍からずれた位置に来る。 読む » ⌃ @ 294,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

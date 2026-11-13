@@ -75,7 +75,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé : très serré, presque sans arrêt.",
-          "textPro": "À toi : les charleys fermés en doubles croches.",
+          "textPro": "À toi : pose les charleys fermés sur les doubles croches, sauf les contretemps (le charley ouvert y joue déjà).",
           "levels": "p",
           "check": "lane:hat",
           "spot": "rhythm.pattern",

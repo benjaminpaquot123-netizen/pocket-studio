@@ -39,7 +39,7 @@ class Tour6TutoSixteenthsTest {
                 if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: p
             }
         }
-        assertTrue("pads said « en doubles croches »: $seen", seen >= 3)
+        assertTrue("pads said « en doubles croches »: $seen", seen >= 2)
         assertTrue("${bad.size} of $seen:\n" + bad.joinToString("\n"), bad.isEmpty())
     }
 }

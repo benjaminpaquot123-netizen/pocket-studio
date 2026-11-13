@@ -137,7 +137,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.",
-          "textPro": "À toi : pose les charleys fermés en doubles croches, plus doux sous le kick.",
+          "textPro": "À toi : pose les charleys fermés sur les doubles croches, sauf les contretemps (le charley ouvert y joue déjà), plus doux sous le kick.",
           "why": "Les petits coups font rouler le rythme sans le charger.",
           "levels": "p",
           "check": "lane:hat",

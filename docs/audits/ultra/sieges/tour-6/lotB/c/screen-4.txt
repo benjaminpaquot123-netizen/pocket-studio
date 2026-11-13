@@ -1,0 +1,56 @@
+Écran 4 (588x1278)
+icône « مشروعي 1 » ✓ @ 289,36
+bouton « محترف » @ 51,36
+bouton (dossier ouvert) @ 477,114
+bouton « A » ▾ @ 336,114
+icône ↶ [désactivé] @ 261,114
+bouton ● @ 189,114
+bouton ▶ « هذا الجزء » @ 117,114
+icône (trois points reliés) @ 45,114
+bouton « 120  BPM » @ 515,186
+bouton « ? » @ 45,186
+onglet « الطبول 16 Pad » [sélectionné] @ 517,255
+onglet « Acid 303 خط باص » @ 376,255
+onglet « الغناء الميكروفون » @ 229,255
+onglet « ريمكس تقسيم » @ 101,255
+bouton « Synth Synth » [coupé] @ 24,255
+texte « الجزء: A » @ 534,318
+bouton « Kick » @ 504,402
+bouton « Kick 2 » @ 363,402
+bouton « Snare » @ 223,402
+bouton « Snare 2 » @ 83,402
+bouton « Clap » @ 504,492
+bouton « هاي هات » @ 363,492
+bouton « هاي هات مفتوح » @ 223,492
+bouton « Tom منخفض » @ 83,492
+bouton « Tom متوسط » @ 504,582
+bouton « Tom عالٍ » @ 363,582
+bouton « Rim » @ 223,582
+bouton « Cowbell » @ 83,582
+bouton « صنج » @ 504,672
+bouton « Shaker » @ 363,672
+bouton « Conga » @ 223,672
+bouton « Zap » @ 83,672
+bouton « الطقم: كلاسيكي » ▾ @ 467,756
+texte « الـPads تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: تغيير الصوت. » @ 185,756
+bouton (horloge et flèche) «  احفظ ما عزفته للتو » @ 128,849
+bouton ● «  سجّل الـPads » @ 460,849
+icône (chronomètre) «  1 » @ 294,849
+bouton « كل الـPads » [coupé] @ 474,946
+titre « الخطوات: KICK » [coupé, état « موسَّع »] @ 222,947
+texte « ? » [coupé] @ 236,947
+bouton (boussole) « المرشد  · ضع إيقاعًا 5 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » [désactivé] @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » [sélectionné] @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

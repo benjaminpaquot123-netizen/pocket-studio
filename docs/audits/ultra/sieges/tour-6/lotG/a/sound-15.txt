@@ -1,0 +1,7 @@
+Son : rien ne joue.
+Le pad 9 reçoit « Voix 1 » et le joue une fois : on entend cette partie de la chanson, seule.
+Le pad 10 reçoit « Voix 2 » et le joue une fois : on entend cette partie de la chanson, seule.
+Le pad 11 reçoit « Voix 3 » et le joue une fois : on entend cette partie de la chanson, seule.
+Le pad 12 reçoit « Voix 4 » et le joue une fois : on entend cette partie de la chanson, seule.
+Le pad 13 reçoit « Voix 5 » et le joue une fois : on entend cette partie de la chanson, seule.
+Le pad 14 reçoit « Voix 6 » et le joue une fois : on entend cette partie de la chanson, seule.

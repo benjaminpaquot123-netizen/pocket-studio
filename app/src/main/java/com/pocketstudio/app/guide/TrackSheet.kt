@@ -666,6 +666,11 @@ private fun roleWhy(role: String): String = when (role) {
     else -> ""
 }
 
+/** The second synth's chip in a layer's sound picker. */
+internal fun plaitsLabel(simple: Boolean): String =
+    // Tour 6, lot 2, T16 (seat D a, Japanese: « Plaits », a module's name, meaningless to a beginner): said plainly in the Mode simple.
+    if (simple) com.pocketstudio.model.i18n.tr("Autres synthés") else "Plaits"
+
 /** The sounds a layer can take (the synth's, Plaits', the favourites; the 808 for a sub). */
 @Composable
 private fun SoundPicker(p: Picking, favorites: Favorites, back: () -> Unit, pick: (role: String, sound: LayerSound, label: String) -> Unit) {
@@ -681,7 +686,7 @@ private fun SoundPicker(p: Picking, favorites: Favorites, back: () -> Unit, pick
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = !plaits, onClick = { plaits = false }, label = { Text(tr("Synthé")) }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("layer_picker_synth"))
-            FilterChip(selected = plaits, onClick = { plaits = true }, label = { Text("Plaits") }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("layer_picker_plaits"))
+            FilterChip(selected = plaits, onClick = { plaits = true }, label = { Text(plaitsLabel(com.pocketstudio.app.settings.observedSettings().simpleMode)) }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("layer_picker_plaits"))
             if (role == LayerRole.SUB || role == "") {
                 OutlinedButton(onClick = { pick(role, LayerSound.bass808(), "808") }, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_picker_808")) { Text("808") }
             }

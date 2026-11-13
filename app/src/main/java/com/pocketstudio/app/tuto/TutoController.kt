@@ -122,13 +122,29 @@ data class TutoUi(
     val atEnd: Boolean = false,
     /** What the step's main button just made, in words (« Créer la partie Intro »: what it took out). */
     val made: String? = null,
+    /**
+     * Tour 6 (N20): the step shown was ticked with no gesture since it was reached (the project already held what it
+     * asks): the panel says « Déjà fait » rather than « Bravo » for a touch never made.
+     */
+    val already: Boolean = false,
 ) {
     val current: TutoStep get() = chapters[chapter].steps[step]
     val total: Int get() = chapters.sumOf { it.steps.size }
     val doneCount: Int get() = chapters.sumOf { c -> c.steps.count { it.id in progress.done } }
 
     /** The steps still to do for the end, in order (in Pro, an example not listened to does not hold it back). */
-    val left: List<TutoStep> get() = chapters.flatMap { it.steps }.filter { it.id !in progress.done && !(progress.level == TutoLevel.Pro && it.listening) }
+    val left: List<TutoStep> get() = chapters.flatMap { it.steps }.filterNot(::settled)
+
+    /** Tour 6 (T9): step [s] holds nothing back (done, or in Pro an example): one rule for the end, the « Bravo » and the chapters' list. */
+    fun settled(s: TutoStep): Boolean = s.id in progress.done || (progress.level == TutoLevel.Pro && s.listening)
+
+    /** Tour 6 (N23): every step of the chapter shown is settled ([settled]). */
+    val chapterOver: Boolean get() = chapters[chapter].steps.all(::settled)
+
+    /** N23: the chapter's « Bravo » shown before its last step (that one done before): « Chapitre suivant » goes to the next chapter. */
+    // Every step after it done (a Pro example still to hear after it is not skipped: it stays the next step).
+    val chapterEndEarly: Boolean get() = bravo && chapterOver && step < chapters[chapter].steps.lastIndex && chapter < chapters.lastIndex &&
+        chapters[chapter].steps.drop(step + 1).all { it.id in progress.done }
     val finished: Boolean get() = left.isEmpty()
 
     /** Where step [s] is: (chapter, step) indices. */
@@ -142,6 +158,9 @@ data class TutoUi(
             c.startsWith("triplet:") -> TutoChecks.laneOf(TutoChecks.argOf(c))
             c == "fill" || c == "gap" -> TutoChecks.laneOf("snare")
             c == "crash" -> TutoChecks.CRASH_LANE
+            // Tour 6 (N6): a drum variation in a part (« ajoute quelques coups … dans le Drop 2 »): the pad its target names
+            // first, else the open hat (the course's own example starts there).
+            c.startsWith("changed:drums:") -> TutoChecks.laneOf(current.target.substringBefore(',').trim().ifEmpty { "open_hat" })
             else -> null
         }
     }
@@ -195,6 +214,9 @@ class TutoController(
 
     /** The step whose « Suivant » already said what leaving it undone costs (the next touch lets it go). */
     private var skipSaid: String? = null
+
+    /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
+    private var arrived: Project? = null
 
     init {
         store.load(projectId)?.let(::show)
@@ -263,6 +285,17 @@ class TutoController(
         val u = _ui.value ?: return
         val flat = u.chapters.flatMap { it.steps }
         val at = flat.indexOf(u.current)
+        // Tour 6 (N19, grave): an example left by « Suivant » was never counted, and the end held five of them without a
+        // word. « Suivant » on an example counts it: the user chose to go on (nothing to make, nothing to check).
+        if (by > 0 && u.current.listening && u.current.id !in u.progress.done) {
+            markDone()
+            return
+        }
+        // N23: the chapter's « Bravo » on a step before its last one (done before): « Chapitre suivant » is the next chapter.
+        if (by > 0 && u.chapterEndEarly) {
+            save(u.progress.copy(current = u.chapters[u.chapter + 1].steps.first().id))
+            return
+        }
         // Testers (lot « tuto 5 »: the tempo left at 120, the melody skipped, without a word): « Suivant » on a
         // step to do, not done, says what the song will miss first; a second touch lets it go (the last one: the end says what is left).
         if (by > 0 && at < flat.lastIndex && skipSaid != u.current.id && !u.current.manual && !u.current.listening && u.current.id !in u.progress.done) {
@@ -285,7 +318,13 @@ class TutoController(
     /** « C'est fait » / « J'ai compris »: a step only the user can tick. */
     fun markDone() {
         val u = _ui.value ?: return
-        tick(setOf(u.current.id), advance = true, bravo = false)
+        val c = u.chapters[u.chapter]
+        // Tour 6 (N10): the chapter's last step (or the one that finishes it) stays with its « Bravo » (chapter 9 of the
+        // Facile course ends on « C'est fait »: it went straight on, never a « Bravo, chapitre fini ! »); the course's last
+        // chapter goes to the end as before.
+        val ends = u.chapter < u.chapters.lastIndex && u.current.id !in u.progress.done &&
+            (u.step == c.steps.lastIndex || c.steps.all { it.id == u.current.id || u.settled(it) })
+        tick(setOf(u.current.id), advance = !ends, bravo = ends)
     }
 
     /** Where « Je le fais » goes for [s] (null: nowhere): the very control the step asks for, on the track it is about. */
@@ -404,7 +443,10 @@ class TutoController(
         val out = (full - now).filterNot { b -> writes && b.startsWith("inst:") && b.removePrefix("inst:").toIntOrNull()?.let { TutoChecks.roleOf(after, it) in setOf("bass", "sub") } == true }
             .map { brickName(after, it) }.distinct()
         val name = com.pocketstudio.model.Scene.shownLabel(label)
-        val made = if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
+        // Tour 6 (N26): « tout le Groove y joue » only for a part that keeps everything (the Intro 2 leaves out the ride and
+        // the riff: a Groove without them yet made it say so all the same).
+        val made = if (out.isEmpty() && "*" !in step.keep.split(',').map { it.trim() }) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
+        else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
         else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
@@ -689,6 +731,7 @@ class TutoController(
         val moved = before?.current?.id != step.id
         if (moved) {
             skipSaid = null
+            arrived = project.value
             stopListening()
             stopDemo()
             baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoChecks.signature(it.removePrefix("changed:"), project.value) }
@@ -701,6 +744,8 @@ class TutoController(
             need = target?.let { TutoChecks.need(step, project.value, it, base()) },
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
+            // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
+            already = if (same) kept!!.already else step.id in saved.done,
         )
         // A step already done when it is reached (the key already right) is ticked at once.
         if (moved && before != null) scope.launch { check(project.value) }
@@ -739,6 +784,8 @@ class TutoController(
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
         if (found.isNotEmpty()) {
             tick(found, advance = false, bravo = true)
+            // N20: the step shown ticked with nothing changed since it was reached: the project held it already.
+            if (u.current.id in found && arrived.let { it != null && (it === p || it == p) }) _ui.value = _ui.value?.copy(already = true)
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }

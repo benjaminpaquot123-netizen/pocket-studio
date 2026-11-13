@@ -28,7 +28,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -52,6 +54,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -138,8 +142,11 @@ fun TrackBar(
     // Rule 16: the row's buttons grow with the font as the chips do (44 dp × the font scale at most, never less than 44).
     val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
     androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
+    // Lot 6, R19 (seats D b, F b, B b): the fade alone read as a chip cut at the edge. While the row goes on off screen,
+    // a chevron lies over the fade on that side; it takes no touch (the chip under it still answers).
+    Box(modifier) {
     Row(
-        modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
+        Modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -210,9 +217,16 @@ fun TrackBar(
                 }
             }
             // The chosen track's sound, one touch away (« Changer le son »).
+            // Lot 6, N18 (seat C b, screen 10): a word beside the ♪ (« Son »): the note alone did not say what it does.
             if (selected) ui.changeSound?.let { change ->
-                IconButton(onClick = { change(t.id) }, modifier = Modifier.testTag("track_sound_${t.id}")) {
-                    Icon(Icons.Filled.MusicNote, contentDescription = tr("Changer le son de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), tint = color)
+                val said = tr("Changer le son de %s", com.pocketstudio.model.DefaultNames.shown(t.name))
+                TextButton(
+                    onClick = { change(t.id) },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.heightIn(min = 48.dp).semantics { contentDescription = said }.testTag("track_sound_${t.id}"),
+                ) {
+                    Icon(Icons.Filled.MusicNote, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
+                    Text(tr("Son"), color = color, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
                 }
             }
         }
@@ -226,6 +240,9 @@ fun TrackBar(
                 Text(tr(" Piste"))
             }
         }
+    }
+    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.align(Alignment.CenterStart).testTag("track_bar_less"))
+    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.align(Alignment.CenterEnd).testTag("track_bar_more"))
     }
     }
     if (choosing) {
@@ -266,6 +283,18 @@ fun TrackBar(
             confirmButton = { TextButton(onClick = { colouringId = null }) { Text(tr("Fermer")) } },
         )
     }
+}
+
+/**
+ * Lot 6, R19: the sign that the row goes on past this edge (an arrow, mirrored in a right-to-left language); no touch.
+ * Arrows, not chevrons: the bench describes ← and → (its IconShapes had no left chevron: self-test red).
+ */
+@Composable
+private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
+    Icon(
+        if (forward) Icons.AutoMirrored.Filled.ArrowForward else Icons.AutoMirrored.Filled.ArrowBack,
+        contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(22.dp),
+    )
 }
 
 /** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */

@@ -1,0 +1,46 @@
+Écran 67 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132  템포 » @ 78,123
+bouton « ? » @ 495,123
+onglet « Acid 303 베이스 라인 » @ 100,205
+bouton « 베이스 Plaits » ⋮ @ 277,205
+icône ♪ @ 403,206
+bouton «  트랙 » + [coupé] @ 488,206
+icône « 파트: A » ▾ @ 78,285
+texte « 마디 » [coupé] @ 69,330
+bouton « 1 » [coupé] @ 298,337
+dessin [coupé] @ 69,367
+texte « C3 » @ 69,387
+dessin @ 69,417
+dessin @ 69,447
+dessin @ 69,477
+dessin @ 69,507
+dessin @ 69,537
+dessin @ 69,567
+dessin @ 69,597
+dessin @ 69,627
+dessin @ 69,657
+dessin [coupé] @ 69,679
+dessin [coupé] @ 297,524
+image (chapeau de diplômé) @ 37,738
+texte « 베이스 5/15장 · 2/2단계 · 쉬움 » @ 220,738
+icône (liste) @ 411,738
+icône ⌃ @ 483,738
+icône « 직접 해 보세요: “베이스 트랙 만들기”(트랙 = 곡의 악기 하나)를 탭하고, 1마디의 점선 노트를 탭하세요. 킥마다 뒤에 작은 노트 두 개. “다음 마디에 복사”가 2마디와 3마디에 반복해요. 그다음 4마디의 노트를 탭하고(끝이 한 칸 올라갔다가 위로 뛰어요) 다시 “복사”. 읽기 » ⌃ @ 270,851
+icône ↶ « 실행 취소 » @ 87,950
+bouton ▶ « 곡 » @ 210,950
+texte « 132 템포 » @ 334,950
+icône ⋮ « 더보기 » @ 458,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » @ 160,1050
+onglet (touches de piano) « 건반 » [sélectionné] @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

@@ -1,0 +1,36 @@
+Écran 21 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 98,123
+icône « B battuta 1/2 » ▾ @ 294,123
+bouton « ? » @ 855,123
+icône ← « Indietro  · Altro » @ 450,216
+bouton (maison) « Home » @ 159,345
+bouton (dossier ouvert) « I miei progetti » @ 450,345
+bouton (neuf points) « Live: suona dal vivo » @ 741,345
+bouton (disque) « Remix » @ 159,523
+bouton (micro) « Registra la mia voce » @ 450,523
+bouton (notes sur une pile) « Libreria suoni » @ 741,523
+bouton ★ « La mia libreria » @ 159,683
+bouton (? dans un rond) « Aiuto » @ 450,683
+bouton (roue dentée) « Impostazioni » @ 741,683
+bouton (interrupteur) « Passa alla modalità Pro » @ 159,842
+bouton (insecte) « Segnala un bug » @ 450,842
+bouton (liste cochée) « Checklist di test » @ 741,842
+bouton (boussole) « Guida  · Aggiungi un basso 25 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 120 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

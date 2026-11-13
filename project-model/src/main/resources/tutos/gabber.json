@@ -39,7 +39,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre et agressive. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Fa♯ ».",
-          "textPro": "À toi : règle la tonalité sur Fa♯ mineur. Ton kick est accordé sur Fa♯ : sa queue grave joue la basse.",
+          "textPro": "À toi : règle la tonalité sur Fa♯ mineur. Ton kick est accordé sur Fa♯ : sa queue grave joue la basse. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Le kick est accordé sur la note du morceau : il fait la batterie et la basse à la fois.",
           "check": "key",
           "spot": "tuto.key",
@@ -86,7 +86,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Le rebond entre chaque kick : c'est sur lui qu'on danse le « hakken ».",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -305,8 +305,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:32,Break:24,Montée:8,Drop 2:32,Fin:16",
@@ -397,7 +397,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

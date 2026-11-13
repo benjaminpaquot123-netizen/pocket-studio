@@ -1,0 +1,4 @@
+Écran 11 (900x1509)
+texte « Rekam yang aku mainkan » @ 286,643
+texte « Merekam yang kamu mainkan di pad, per birama penuh, lalu taruh di pad kosong atau di blok Live. REC di atas merekam seluruh penampilanmu untuk dijadikan lagu. » @ 450,736
+texte « Oke, paham » @ 754,853

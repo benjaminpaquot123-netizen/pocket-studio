@@ -1,0 +1,49 @@
+Écran 75 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,221
+texte « +0,0 » @ 84,304
+image (étincelles) @ 74,344
+texte « 3 » @ 96,344
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,221
+texte « +0,0 » @ 204,304
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,221
+texte « +0,0 » @ 324,304
+image (courbe) @ 60,479
+texte « Kurven und Effekte » @ 232,443
+texte « Noch bewegt sich nichts: Lass einen Filter aufgehen, eine Lautstärke steigen… » @ 475,502
+bouton « Automatisieren » @ 243,586
+bouton « Was spielt » @ 657,586
+titre « KURVEN » [état « Aufgeklappt »] @ 327,721
+bouton « ? » @ 218,721
+bouton ● « Aufnehmen » @ 735,721
+texte « Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps). » @ 450,805
+bouton + «  Eine Einstellung automatisieren » @ 314,889
+bouton (vagues) «  Was spielt » @ 722,889
+texte « Noch bewegt sich nichts. Idee: der Filter eines Pads, der sich über 8 Takte öffnet. » @ 450,973
+image (chapeau de diplômé) @ 37,1083
+texte « Hi-Hats, Tamburin und Swing Kapitel 4/17 · Schritt 4/5 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Stell den Swing auf 25: Die geraden Sechzehntel kommen etwas später, zwischen Chicago House (55–60 %) und New York House (70–80 %). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

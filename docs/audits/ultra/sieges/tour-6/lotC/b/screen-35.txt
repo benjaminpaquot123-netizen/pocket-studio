@@ -1,0 +1,20 @@
+Écran 35 (588x1278)
+dessin @ 294,108
+texte « Accords du morceau » @ 188,165
+texte « Tonalité : Do majeure. Les pistes qui suivent changent avec les accords, dans toutes les parties. » @ 294,231
+bouton « Appliquer à tout le morceau » [désactivé] @ 215,312
+bouton « Fermer » @ 491,312
+texte « Touche une progression : tu l'entends tout de suite, sur tout le morceau, avant de l'appliquer. » @ 294,390
+texte « Progression pour tout le morceau » @ 192,447
+bouton « I–V–vi–IV  ·  Do Sol La m Fa » @ 184,513
+bouton « vi–IV–I–V  ·  La m Fa Do Sol » @ 184,594
+bouton « ii–V–I–I  ·  Ré m Sol Do Do » @ 177,675
+bouton « I–vi–iii–V  ·  Do La m Mi m Sol » @ 196,756
+bouton « I–IV–V–I  ·  Do Fa Sol Do » @ 168,837
+texte « Partie par partie (une case = une mesure) » @ 232,903
+texte « A  ·  trouvés dans tes notes » @ 162,948
+bouton « Do » @ 66,1005
+texte « Pistes qui suivent les accords » @ 174,1071
+texte « Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici. » @ 294,1128
+bouton « Basse ronde » @ 112,1206
+bouton « Ligne acide (Acid 303) » @ 350,1206

@@ -81,7 +81,11 @@ import com.pocketstudio.ui.Neon
  * Where the music is, or where ▶ starts: part [name], bar [bar] (from 1) of [bars]. [loop]: the
  * part loops (« ⟳ Partie »), the bars are the part's; else they are the whole song's.
  */
-data class PlayPosition(val name: String, val bar: Int, val bars: Int, val loop: Boolean = false)
+data class PlayPosition(
+    val name: String, val bar: Int, val bars: Int, val loop: Boolean = false,
+    /** Tour 6 lot 7 (U1): the part queued to come next (« Jouer depuis… » while the song plays), null: none. */
+    val next: String? = null,
+)
 
 /** How a part is named in the strip: its section name (« Refrain »), else its scene's letter. */
 fun partName(p: Project, scene: Int): String =
@@ -93,7 +97,7 @@ fun partName(p: Project, scene: Int): String =
  * Stopped: where ▶ starts, the part [playFrom] of the song, or the scene shown with [loopPart].
  * Null: nothing to say (stopped, no song).
  */
-fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFrom: Int, loopPart: Boolean): PlayPosition? {
+fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFrom: Int, loopPart: Boolean, queued: Int = -1): PlayPosition? {
     val spb = p.stepsPerBar.coerceAtLeast(1)
     val songBars = p.songBars.coerceAtLeast(1)
     val sceneBars = ((p.sceneSteps(p.scene) + spb - 1) / spb).coerceAtLeast(1)
@@ -101,7 +105,11 @@ fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFro
     return when {
         playing && songIndex >= 0 && songIndex < song.size -> {
             val start = p.songStepOf(songIndex) / spb
-            PlayPosition(partName(p, song[songIndex].scene), (if (bar >= 0) bar else start).coerceIn(0, songBars - 1) + 1, songBars)
+            PlayPosition(
+                partName(p, song[songIndex].scene), (if (bar >= 0) bar else start).coerceIn(0, songBars - 1) + 1, songBars,
+                // Tour 6 lot 7 (U1): the part queued (« Jouer depuis… » while the song plays), said until it comes.
+                next = queued.takeIf { it in song.indices && it != songIndex }?.let { partName(p, song[it].scene) },
+            )
         }
         playing -> PlayPosition(partName(p, p.scene), bar.coerceIn(0, sceneBars - 1) + 1, sceneBars, loop = true)
         song.isEmpty() -> null
@@ -303,7 +311,11 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                     }
                     // The bar rolls to the next one, as on a studio display. Audit ultra round 2, n° 24 (seat A a): « mes. » said
                     // in a whole word in the Mode simple.
-                    RollingText(
+                    // Tour 6 lot 7 (U1): a part queued is said in place of the bar until it comes (« Refrain : ensuite »).
+                    if (pos.next != null) Text(
+                        tr("%s : ensuite", pos.next), style = MaterialTheme.typography.labelMedium.copy(lineHeight = 16.sp), color = Neon.Amber,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("top_position_next"),
+                    ) else RollingText(
                         if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", pos.bar, pos.bars) else tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
                         maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"),
                     )

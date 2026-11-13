@@ -1,0 +1,10 @@
+Écran 23 (540x1170)
+texte « Choose your language » @ 230,174
+bouton « 🇮🇩 Bahasa Indonesia Indonesian » @ 270,267
+bouton « 🇩🇪 Deutsch German » @ 270,366
+bouton « 🇬🇧 English » (rond coché) [sélectionné] @ 270,465
+bouton « 🇪🇸 Español Spanish » @ 270,564
+bouton « 🇫🇷 Français French » @ 270,663
+bouton « 🇮🇹 Italiano Italian » @ 270,762
+bouton « 🇳🇱 Nederlands Dutch » @ 270,861
+texte « Close » @ 456,984

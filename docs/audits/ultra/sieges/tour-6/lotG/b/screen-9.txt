@@ -1,0 +1,4 @@
+Écran 9 (900x1509)
+texte « Memainkan efek live » @ 243,628
+texte « Tahan jarimu di satu efek: efeknya jalan selama kamu menekan, lalu semua kembali. Filter dan Roll: geser jari ke atas untuk mengatur suara atau kecepatan pukulan. Dengan “Lainnya”: Build-up (desis yang naik), Turun (musik mengerem), Gagap (suara terpotong-potong). » @ 450,736
+texte « Oke, paham » @ 754,868

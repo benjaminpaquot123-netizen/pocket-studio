@@ -109,5 +109,6 @@
   "Pad %1$d sur %2$d…": "Pad %1$d de %2$d…",
   "C'est prêt (fichiers : %d). Une copie est aussi dans Musique › BenStudio.": "Pronto (arquivos: %d). Uma cópia também está em Música › BenStudio.",
   "C'est prêt (fichiers : %d). Choisis l'appli pour les envoyer.": "Pronto (arquivos: %d). Escolha o app para enviá-los.",
-  "Partager les pistes": "Compartilhar as faixas"
+  "Partager les pistes": "Compartilhar as faixas",
+  "À taper : %s": "Toque: %s"
 }

@@ -37,6 +37,22 @@ internal object PlainWords {
         Term(Regex("""(?i)\bphrygien(ne)?\b""")) { tr("Phrygienne : une gamme sombre, un peu inquiétante.") },
         Term(Regex("""(?i)\bcontretemps\b""")) { tr("Contretemps : entre deux temps, là où on ne tape pas du pied.") },
         Term(Regex("""\b808\b""")) { tr("808 : une basse grave qui sonne comme un kick long.") },
+        // Tour 6, lot 2 « tuto-consignes », T6 (seats D a, D b, H a): the tutorial's other words of the trade.
+        Term(Regex("""(?i)\bmesures?\b""")) { tr("Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».") },
+        Term(Regex("""(?i)(?<!même )(?<!de )\btemps\b(?! en temps)""")) { tr("Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.") },
+        Term(Regex("""(?i)\baccords?\b""")) { tr("Accord : plusieurs notes jouées ensemble.") },
+        Term(Regex("""(?i)\briffs?\b""")) { tr("Riff : une petite mélodie courte qui revient en boucle.") },
+        Term(Regex("""(?i)\bstabs?\b""")) { tr("Stab : un accord très court, comme un coup.") },
+        Term(Regex("""(?i)\bpads?\b(?! Live)""")) { tr("Pad : un carré qu'on touche pour jouer un son.") },
+        Term(Regex("""(?i)\beffets?\b""")) { tr("Effet : ce qui change le son (écho, filtre, distorsion…).") },
+        Term(Regex("""(?i)\bgammes?\b""")) { tr("Gamme : les notes qui vont bien ensemble dans le morceau.") },
+        Term(Regex("""(?iU)\btonalités?\b""")) { tr("Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.") },
+        Term(Regex("""(?i)\bdorien(ne)?\b""")) { tr("Dorien : une gamme un peu triste mais douce.") },
+        Term(Regex("""(?i)\bboucles?\b""")) { tr("Boucle : un passage qui se répète sans s'arrêter.") },
+        Term(Regex("""\b909\b""")) { tr("909 : une boîte à rythmes célèbre, ses sons de batterie.") },
+        Term(Regex("""\b707\b""")) { tr("707 : une boîte à rythmes célèbre, ses sons de batterie.") },
+        Term(Regex("""(?i)\bswing\b""")) { tr("Swing : décaler un coup sur deux pour que le rythme balance.") },
+        Term(Regex("""(?i)\bbreaks?\b""")) { tr("Break : un moment plus calme, la batterie se tait.") },
     )
 
     /** The plain lines for the words of the trade in [french] (French keys), each once, in the list's order. */

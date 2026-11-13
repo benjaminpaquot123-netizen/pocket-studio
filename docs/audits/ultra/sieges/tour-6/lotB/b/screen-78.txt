@@ -1,0 +1,51 @@
+Écran 78 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Neue Kurve: zeichne sie unten. » @ 268,194
+texte « Drums » @ 128,247
+texte « Leeren » @ 695,269
+icône (poubelle) @ 810,269
+texte « Filter Cutoff » @ 134,293
+texte « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. » @ 558,359
+bouton (curseurs) «  Einstellung zeigen » @ 233,440
+bouton « Loop » [sélectionné] @ 112,521
+bouton « Pro Teil » @ 255,521
+bouton « Song » @ 399,521
+texte « Dieselbe Kurve bei jedem Loop-Durchlauf (32 Steps). » @ 374,584
+texte « Glätten » @ 479,647
+bouton (pinceau) « Zeichnen » [sélectionné] @ 154,647
+bouton (courbe) « Linie » @ 333,647
+icône (loupe −) [désactivé] @ 592,647
+icône (loupe +) @ 700,647
+texte « ×1 » @ 646,647
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » @ 450,764
+texte « 18,0 kHz » @ 93,861
+texte « 849 Hz » @ 93,947
+texte « 40 Hz » [coupé] @ 94,1025
+image (chapeau de diplômé) @ 37,1083
+texte « Hi-Hats, Tamburin und Swing Kapitel 4/17 · Schritt 4/5 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Stell den Swing auf 25: Die geraden Sechzehntel kommen etwas später, zwischen Chicago House (55–60 %) und New York House (70–80 %). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

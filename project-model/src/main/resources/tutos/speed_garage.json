@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol mineur (i–i–VI–v : Sol m, Sol m, Mi♭, Ré m).",
+          "textPro": "À toi : règle la tonalité sur Sol mineur (i–i–VI–v : Sol m, Sol m, Mi♭, Ré m). « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -107,7 +107,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 : les charleys traînent un peu, le balancement garage.",
+          "text": "À toi : mets le swing à 33 % : les charleys traînent un peu, le balancement garage.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,snare,open_hat,hat,perc"
@@ -339,7 +339,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:16,Break:8,Montée:8,Drop 2:16,Fin:16",
@@ -382,7 +383,7 @@
         {
           "id": "crash",
           "text": "À toi : une cymbale sur la toute première case du Drop.",
-          "textPro": "À toi : une cymbale sur le 1er temps du Drop et du Drop 2.",
+          "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop,Drop 2",
@@ -392,6 +393,7 @@
           "id": "variation",
           "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » : il roule et pousse le 2e Drop.",
           "check": "changed:drums:Drop 2",
+          "target": "perc2",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         },

@@ -1,0 +1,33 @@
+Écran 25 (588x1278)
+texte « Effects · Remix » @ 190,62
+texte « Effects in place: 1 of 8 » @ 201,133
+bouton « 1. Tremolo » [sélectionné] @ 294,196
+icône ⏻ @ 285,268
+icône ⌃ [désactivé] @ 357,268
+icône ⌄ [désactivé] @ 429,268
+icône ✕ @ 501,268
+texte « Speed » @ 249,330
+texte « 0.4 Hz » @ 492,331
+curseur [état « 0.4 Hz », à 25 %] @ 294,387
+texte « Depth » @ 262,443
+texte « 23% » @ 505,444
+curseur [état « 23% », à 22 %] @ 294,500
+texte « Shape » @ 241,556
+texte « Smooth » @ 484,557
+curseur [état « Smooth », à 0 %] @ 294,613
+texte « Left/right » @ 253,669
+texte « 100% » @ 496,670
+curseur [état « 100% », à 100 %] @ 294,726
+bouton + «   Add an effect » @ 294,804
+texte « Ready-made vibes » @ 178,876
+bouton « ? » @ 326,876
+bouton « For: Audio » @ 145,946
+bouton ★ « Favourites » @ 356,946
+bouton « Ambience » [coupé] @ 505,946
+bouton « Techno » [coupé] @ 86,1030
+bouton « DnB » @ 183,1030
+bouton « Dubstep » [sélectionné] @ 326,1030
+bouton « House » [coupé] @ 477,1030
+bouton « Underwater » @ 157,1112
+bouton « Dub echo » @ 361,1112
+texte « Close » @ 479,1206

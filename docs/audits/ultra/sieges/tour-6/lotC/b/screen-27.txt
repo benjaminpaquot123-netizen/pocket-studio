@@ -1,0 +1,74 @@
+Écran 27 (588x1278)
+icône ← @ 42,42
+bouton ■ @ 123,42
+icône − @ 216,42
+texte « 120 BPM » @ 288,42
+icône + @ 360,42
+texte « 23.3 » @ 453,42
+texte « REC » @ 540,42
+icône (flèches en boucle) « A mes. 1/1 » [désactivé] @ 81,114
+bouton « ? » @ 543,114
+bouton « Nouvelle version » @ 210,186
+bouton « Ajouter à la suite » @ 416,186
+texte « La prise : » @ 57,186
+bouton « Lancer à 1 mesure » @ 123,268
+bouton « ? » @ 256,268
+icône − @ 452,269
+icône + @ 540,269
+texte « Cases » @ 383,269
+texte « 8 » @ 496,268
+texte « Batterie » @ 175,335
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 175,390
+texte « Acid 303 » @ 337,335
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 337,390
+texte « Basse ronde » @ 499,335
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 499,390
+bouton « ? » @ 51,369
+bouton « A » @ 51,468
+dessin [allumé] @ 175,468
+dessin [allumé] @ 337,468
+dessin @ 499,468
+bouton « B » @ 51,537
+dessin @ 175,537
+dessin @ 337,537
+dessin @ 499,537
+bouton « C » @ 51,606
+dessin @ 175,606
+dessin @ 337,606
+dessin @ 499,606
+bouton « D » @ 51,675
+dessin @ 175,675
+dessin @ 337,675
+dessin @ 499,675
+bouton « E » @ 51,744
+dessin @ 175,744
+dessin @ 337,744
+dessin @ 499,744
+bouton « F » @ 51,813
+dessin @ 175,813
+dessin @ 337,813
+dessin @ 499,813
+bouton « G » [coupé] @ 51,876
+dessin [coupé] @ 175,876
+dessin [coupé] @ 337,876
+dessin [coupé] @ 499,876
+bouton « ■ Tout » @ 51,945
+bouton « ■ » @ 175,945
+bouton « ■ » @ 337,945
+bouton « ■ » @ 499,945
+icône (quatre carrés) « Briques » [sélectionné] @ 61,1044
+icône (neuf points) « Pads » @ 142,1044
+icône (étincelles) « Effets » @ 223,1044
+icône ♪ « Notes » @ 303,1044
+icône (barres de son) « Acid 303 » @ 383,1044
+icône (quatre coins) @ 459,1044
+icône ⌃ @ 531,1044
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » [sélectionné] @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

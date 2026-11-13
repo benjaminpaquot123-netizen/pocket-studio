@@ -1,0 +1,8 @@
+fusion: 9b106bd59d0d19afca241b0a3e9d95e5ca129ff1
+branche: eq/tour-6-cablage
+tete: 23919ed90372b2c417ba57210812a5e24aece1d5
+relecture: docs/audits/ultra/tour-6-cablage-relecture.md
+relu: 2d12b95d3853437fc8a897096ab4ff0ea91c940b
+filtres: com.pocketstudio.app.ui.Lot8QueuedWiringTest com.pocketstudio.app.remix.CutBoutBigTextTest *Lot7PlayStripNextTest com.pocketstudio.app.ui.Lot8QueuedWiringTest com.pocketstudio.app.remix.CutBoutBigTextTest *Lot7PlayStripNextTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

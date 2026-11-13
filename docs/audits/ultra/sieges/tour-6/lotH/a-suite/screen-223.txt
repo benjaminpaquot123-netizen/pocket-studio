@@ -1,0 +1,56 @@
+Écran 223 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : F · Drop 2 » ▾ @ 123,180
+bouton « Tom médium D 45 » [coupé] @ 84,250
+bouton « Tom aigu » [coupé] @ 224,250
+bouton « Bord de caisse D 50 » [coupé] @ 364,250
+bouton « Cloche » [coupé] @ 504,250
+bouton « Cymbale D 40 » @ 84,332
+bouton « Maracas G 50 » @ 224,332
+bouton « Conga » @ 364,332
+bouton « Laser » @ 504,332
+bouton « Kit : Studio » ▾ @ 112,416
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 394,416
+titre « PAS : CYMBALE · DROP 2 » [état « Déplié »] @ 198,524
+bouton « ? » @ 332,524
+bouton « Tous les pads » @ 450,524
+texte « Mesure » @ 79,608
+bouton « 1 » [sélectionné] @ 161,608
+bouton « 2 » @ 242,608
+bouton « 3 » @ 323,608
+bouton « 4 » @ 404,608
+bouton « Suivre » @ 99,689
+texte « Mesure 1/4 · Cymbale » @ 160,773
+bouton « 1 » [coupé, état « vide »] @ 70,826
+bouton [coupé, état « vide »] @ 133,826
+bouton [coupé, état « coup, force 100 % »] @ 197,826
+bouton [coupé, état « vide »] @ 261,826
+bouton « 2 » [coupé, état « vide »] @ 325,826
+bouton [coupé, état « vide »] @ 389,826
+bouton [coupé, état « vide »] @ 453,826
+bouton [coupé, état « vide »] @ 517,826
+image (chapeau de diplômé) @ 37,879
+texte « Les transitions Chapitre 12/15 · Étape 3/3 · Facile » @ 244,879
+icône (liste) @ 459,879
+icône ⌃ @ 531,879
+icône « À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Conga » (ou le charley ouvert) : une couche de plus que dans le Drop. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 122 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

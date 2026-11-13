@@ -1,0 +1,74 @@
+Écran 35 (588x1278)
+icône ← @ 546,42
+bouton ▶ @ 465,42
+icône − @ 372,42
+texte « 120 BPM » @ 300,42
+icône + @ 228,42
+texte « – » @ 135,42
+texte « REC » @ 48,42
+bouton « ? » @ 45,114
+bouton « الإطلاق على مازورة واحدة » @ 453,184
+icône − @ 136,185
+icône + @ 48,185
+texte « الخانات » @ 202,185
+texte « 8 » @ 92,184
+bouton « ? » @ 309,184
+texte « الطبول » @ 412,251
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 412,306
+texte « Acid 303 » @ 250,251
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 250,306
+texte « Synth » @ 88,251
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 88,306
+bouton « ? » @ 537,285
+bouton « A » @ 537,384
+dessin @ 412,384
+dessin @ 250,384
+dessin @ 88,384
+bouton « B » @ 537,453
+dessin @ 412,453
+dessin @ 250,453
+dessin @ 88,453
+bouton « C » @ 537,522
+dessin @ 412,522
+dessin @ 250,522
+dessin @ 88,522
+bouton « D » @ 537,591
+dessin @ 412,591
+dessin @ 250,591
+dessin @ 88,591
+bouton « E » @ 537,660
+dessin @ 412,660
+dessin @ 250,660
+dessin @ 88,660
+bouton « F » @ 537,729
+dessin @ 412,729
+dessin @ 250,729
+dessin @ 88,729
+bouton « G » @ 537,798
+dessin @ 412,798
+dessin @ 250,798
+dessin @ 88,798
+bouton « H » @ 537,867
+dessin @ 412,867
+dessin @ 250,867
+dessin @ 88,867
+bouton « ■ الكل » @ 537,942
+bouton « ■ » @ 412,942
+bouton « ■ » @ 250,942
+bouton « ■ » @ 88,942
+icône (quatre carrés) « الكتل » [sélectionné] @ 526,1044
+icône (neuf points) « Pads » @ 445,1044
+icône (étincelles) « المؤثرات » @ 365,1044
+icône ♪ « النوتات » @ 285,1044
+icône (barres de son) « Acid 303 » @ 205,1044
+icône (quatre coins) @ 129,1044
+icône ⌃ @ 57,1044
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » [sélectionné] @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

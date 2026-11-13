@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Un petit message s'affiche quelques secondes en bas de l'écran : « “Ma chanson préférée” está no seu projeto, sem som, para cortar (a seta de desfazer tira). ».

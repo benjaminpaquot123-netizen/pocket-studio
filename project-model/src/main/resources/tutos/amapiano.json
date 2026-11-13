@@ -38,7 +38,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz.",
+          "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -103,7 +103,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 20 : un balancement léger. Le log drum le prendra aussi.",
+          "text": "À toi : mets le swing à 27 % : un balancement léger. Le log drum le prendra aussi.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,hat,clap,perc,perc2"
@@ -270,6 +270,7 @@
           "id": "variation",
           "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de conga ou de « toc » : une réponse de plus au log drum.",
           "check": "changed:drums:Drop 2",
+          "target": "perc",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2",
           "why": "Une percussion de plus garde l'oreille en éveil."
@@ -299,7 +300,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:8,Groove:24,Drop:16,Break:8,Drop 2:16,Fin:8",

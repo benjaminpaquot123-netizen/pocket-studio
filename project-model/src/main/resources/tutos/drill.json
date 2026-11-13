@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure harmonique » (une gamme sombre, un peu orientale) puis « Sol » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill.",
+          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -165,14 +165,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu. Puis les 3 de la mesure 2. « Copier sur les mesures suivantes » écrit la mesure 3 (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu. Puis les 3 de la mesure 2.",
           "textPro": "À toi : crée la piste Basse (« Basse 808 », au piano roll). Mesure 1 : Sol1, puis Sol1 qui glisse vers Sol2. Mesure 2 : Mi♭1 qui glisse vers Si♭1 (la quinte), puis Mi♭1 qui glisse vers la mesure 3. « Copier » : la mesure 3 en Do. Mesure 4 : Ré2 tenu, puis le long glissé descendant vers Sol1. « Copier ».",
           "why": "Deux notes qui se chevauchent glissent : en drill, c'est la signature, plusieurs fois par mesure.",
           "check": "notes:bass",
+          "length": 32,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans 808, ta drill n'a ni grave ni glissés."
+        },
+        {
+          "id": "bass_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 3 s'écrit (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         },
         {
           "id": "bass_pump",
@@ -192,13 +201,22 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les 3 accords suivants se posent tout seuls.",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
           "textPro": "À toi : crée la piste Accords (des cordes) : Sol mineur à la mesure 1, puis « Copier » : Mi♭ (VI), Do mineur (iv) et Ré majeur (V, avec le Fa♯), suivis le long de la gamme.",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, ton refrain sera moins dramatique."
+        },
+        {
+          "id": "pad_end",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -328,7 +346,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "listen": "song",
@@ -353,7 +372,7 @@
         {
           "id": "fill",
           "levels": "p",
-          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -362,7 +381,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -420,7 +439,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick d'abord, puis la caisse, puis les charleys.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

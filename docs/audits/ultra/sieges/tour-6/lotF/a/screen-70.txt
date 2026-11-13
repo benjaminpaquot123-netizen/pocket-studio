@@ -1,0 +1,36 @@
+Écran 70 (900x1509)
+icône (dossier ouvert) ✓ « Primo giro Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+bouton ← « Altro  · Aiuto » @ 450,198
+titre « AIUTO » [état « Espanso »] @ 106,294
+bouton « Imparo Fai tutto il brano da solo, passo dopo passo: io ti spiego e controllo. » @ 450,392
+bouton « Il mio primo brano, con la Guida » @ 450,509
+bouton « Rivedi il tour rapido » @ 450,593
+bouton « Apri la Guida del mio brano » @ 450,677
+bouton (notes sur une pile) «   Le parole della musica, da ascoltare » @ 450,761
+texte « Il “?” alla fine della fascia sotto la barra in alto etichetta la schermata: un tocco per vedere, un altro per nascondere. » @ 450,845
+texte « In tutta l'app, anche il piccolo “?” accanto a una parola la spiega. » @ 428,911
+texte « Riprendere il tuo brano su un altro dispositivo: “Condividi” › “Salva il brano in .zip” (uno .zip con tutti i suoi suoni), poi, sull'altro dispositivo, I miei progetti › “Importa un progetto (.zip)”. » @ 450,995
+titre « MODALITÀ FEEDBACK » [état « Espanso »] @ 208,1133
+texte « Una bolla per registrare lo schermo con il suono e scrivere note, da inviare dopo. » [coupé] @ 411,1173
+bouton [coupé, allumé] @ 819,1179
+bouton (boussole) « Guida  · Concatena le tue parti 50 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

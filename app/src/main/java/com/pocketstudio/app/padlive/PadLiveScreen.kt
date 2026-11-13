@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Stop
@@ -259,8 +260,10 @@ fun PadLiveScreen(
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 PadLiveBar(ui, actions, record)
                 PageRow(ui, actions)
-                notes()
+                // Audit lot 6, U21: the notes (« Perf gardée », a message) under the pads, in the room the grid leaves
+                // below them: above, they pushed the pads down and made them smaller under the playing finger.
                 PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f))
+                notes()
                 PadLiveControls(ui, actions, more, toggleMore = { more = !more }, held, party = { party = true })
             }
         } else {
@@ -268,8 +271,9 @@ fun PadLiveScreen(
                 PadLiveBar(ui, actions, record)
                 Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f).testTag("padlive_pads_side"))
                         notes()
-                        PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f).padding(bottom = 8.dp).testTag("padlive_pads_side"))
+                        Spacer(Modifier.height(0.dp))
                     }
                     Column(
                         Modifier.width(side).fillMaxHeight().verticalScroll(rememberScrollState()).testTag("padlive_side"),
@@ -360,7 +364,9 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary)
+            // Audit lot 6, U18: open, it folds (« Moins », « Tutup », « 閉じる »), no more the ⋯ of a menu still to open.
+            if (more) Icon(Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_fold"))
+            else Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.testTag("padlive_more_dots"))
             Text(if (more) tr("Moins") else tr("Plus"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
         }
     }
@@ -771,7 +777,9 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
-            MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
+            // Audit lot 6, R10: a kept take's line has its own « Partager » (the same sheet): one only on the screen.
+            if (ui.takeDone) Spacer(Modifier.weight(1f))
+            else MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),
                 about = listOf("padlive_stop_all", "padlive_live", "padlive_effects", "padlive_party_open", "padlive_share"),

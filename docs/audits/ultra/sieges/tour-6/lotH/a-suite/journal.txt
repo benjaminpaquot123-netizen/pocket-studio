@@ -1,0 +1,1203 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=300 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.2 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 621
+#1 DOIGT welcome_learn « J'apprends »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 5c300fde3f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 351
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE c127b1ae50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 1201
+#3 DOIGT tuto_style_house « House »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa4dbbf9c6 | project=p-3391b76b tuto=house/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#4 > touche 294 894
+#4 DOIGT tuto_listen «  Écouter l'exemple »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4c661c689d | project=p-3391b76b tuto=house/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over the touchable « Lire la suite » (361 x 6 dp)
+#5 LAYOUT OVERLAP « ▸ Pourquoi ? » over the touchable « Lire la suite » (81 x 20 dp)
+#5 > attends 8
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92cafb219d | project=p-3391b76b tuto=house/Facile active=true step=ref done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over « Lire la suite » (73 x 16 dp)
+#6 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over the touchable « Lire la suite » (361 x 30 dp)
+#6 > touche 294 894
+#6 DOIGT tuto_next_big « Étape suivante   »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 24ee7465c5 | project=p-3391b76b tuto=house/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 14 dp)
+#7 > touche 294 813
+#7 DOIGT tuto_do «   Je le fais »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e193184936 | project=p-3391b76b tuto=house/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Tempo » over the touchable « Fermer la feuille » (73 x 28 dp)
+#8 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#8 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#8 LAYOUT OVERLAP « 100 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#8 LAYOUT OVERLAP «  BPM » over the touchable « Fermer la feuille » (39 x 24 dp)
+#8 LAYOUT OVERLAP « 70 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#8 LAYOUT OVERLAP « 90 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#8 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « 140 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « 174 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « ½ » over the touchable « Fermer la feuille » (14 x 24 dp)
+#8 LAYOUT OVERLAP « ×2 » over the touchable « Fermer la feuille » (21 x 24 dp)
+#8 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 2 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 3 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 4 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 5 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 6 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 7 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 8 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 9 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (33 x 27 dp)
+#8 LAYOUT OVERLAP « Taper en rythme » over the touchable « Fermer la feuille » (128 x 24 dp)
+#8 LAYOUT OVERLAP « Touche ici à chaque temps : le tempo suit. » over the touchable « Fermer la feuille » (254 x 18 dp)
+#8 > touche 111 852
+#8 DOIGT tempo_key_1 « 1 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 8aa793c97e | project=p-3391b76b tuto=house/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (29 x 53 dp)
+#9 LAYOUT OVERLAP « Entre 40 et 300 » over the touchable « Fermer la feuille » (104 x 20 dp)
+#9 > touche 294 852
+#9 DOIGT tempo_key_2 « 2 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 60eaa8fc2f | project=p-3391b76b tuto=house/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 12 » over the touchable « Fermer la feuille » (57 x 53 dp)
+#10 > touche 294 852
+#10 DOIGT tempo_key_2 « 2 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 1ff63fdebc | project=p-3391b76b tuto=house/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 122 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#11 > touche 477 1113
+#11 DOIGT tempo_key_ok « OK »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e183081871 | project=p-3391b76b tuto=house/Facile active=true step=tempo done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Grosse caisse studio » 1.52:1 (needs 4.5:1, 13 sp)
+#12 > touche 294 978
+#12 DOIGT tuto_next_folded « Réussi »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 79916f237b | project=p-3391b76b tuto=house/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 813
+#13 DOIGT tuto_do «   Je le fais »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE d5de733462 | project=p-3391b76b tuto=house/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Tonalité du morceau » over the touchable « Fermer la feuille » (215 x 28 dp)
+#14 LAYOUT OVERLAP « Tonalité du morceau : aucune » over the touchable « Fermer la feuille » (195 x 20 dp)
+#14 LAYOUT OVERLAP « Gamme » over the touchable « Fermer la feuille » (52 x 20 dp)
+#14 LAYOUT OVERLAP « Majeure » over the touchable « Fermer la feuille » (61 x 24 dp)
+#14 LAYOUT OVERLAP « Mineure » over the touchable « Fermer la feuille » (62 x 24 dp)
+#14 LAYOUT OVERLAP « Dorienne » over the touchable « Fermer la feuille » (71 x 24 dp)
+#14 LAYOUT OVERLAP « Penta mineure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#14 LAYOUT OVERLAP « Penta majeure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#14 LAYOUT OVERLAP « Blues » over the touchable « Fermer la feuille » (42 x 24 dp)
+#14 LAYOUT OVERLAP « Phrygienne » over the touchable « Fermer la feuille » (85 x 24 dp)
+#14 LAYOUT OVERLAP « Mineure harmonique » over the touchable « Fermer la feuille » (156 x 24 dp)
+#14 LAYOUT OVERLAP « Tonique » over the touchable « Fermer la feuille » (55 x 20 dp)
+#14 LAYOUT OVERLAP « Do » over the touchable « Fermer la feuille » (21 x 24 dp)
+#14 LAYOUT OVERLAP « Do♯ » over the touchable « Fermer la feuille » (29 x 24 dp)
+#14 LAYOUT OVERLAP « Ré » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Mi♭ » over the touchable « Fermer la feuille » (24 x 24 dp)
+#14 LAYOUT OVERLAP « Mi » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Fa » over the touchable « Fermer la feuille » (18 x 24 dp)
+#14 LAYOUT OVERLAP « Fa♯ » over the touchable « Fermer la feuille » (26 x 24 dp)
+#14 LAYOUT OVERLAP « Sol » over the touchable « Fermer la feuille » (23 x 24 dp)
+#14 LAYOUT OVERLAP « La♭ » over the touchable « Fermer la feuille » (23 x 24 dp)
+#14 LAYOUT OVERLAP « La » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Si♭ » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Si » over the touchable « Fermer la feuille » (14 x 24 dp)
+#14 > touche 371 831
+#14 DOIGT tuto_scale_Dorian « Dorienne »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 84002deb90 | project=p-3391b76b tuto=house/Facile active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonalité du morceau : Do · Dorienne » over the touchable « Fermer la feuille » (237 x 20 dp)
+#15 > touche 324 1206
+#15 DOIGT tuto_root_9 « La »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE d5683346b5 | project=p-3391b76b tuto=house/Facile active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonalité du morceau : La · Dorienne » over the touchable « Fermer la feuille » (234 x 20 dp)
+#16 LAYOUT OVERLAP « Réussi ! La couleur du morceau est choisie. » over the touchable « Fermer la feuille » (273 x 48 dp)
+#16 LAYOUT OVERLAP « Revenir au tuto » over the touchable « Fermer la feuille » (106 x 20 dp)
+#16 > touche 294 1203
+#16 DOIGT tuto_key_continue « Revenir au tuto »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 05821a385c | project=p-3391b76b tuto=house/Facile active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 978
+#17 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fa14339202 | project=p-3391b76b tuto=house/Facile active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 12 dp)
+#18 > touche 294 894
+#18 DOIGT tuto_next_big « Chapitre suivant   »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 202a50de32 | project=p-3391b76b tuto=house/Facile active=true step=ready done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over « Lire la suite » (73 x 18 dp)
+#19 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 32 dp)
+#19 > touche 294 894
+#19 DOIGT tuto_mark «   J'ai compris »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6b066d33ac | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « Le kit House » over the touchable « Lire la suite » (85 x 20 dp)
+#20 LAYOUT CONTRAST « Le kit House » 1.58:1 (needs 3.0:1, 14 sp)
+#20 > touche 294 813
+#20 DOIGT tuto_need «   Passer à 2 mesures »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 76ea803962 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « À toi : la boucle de batterie fait 2 mesures (une mesure = un tour de 4 temps). Touche « Passer à 2 mesures », puis sur le pad « Grosse caisse studio », touche les cases en pointillé : un coup sur chaque temps, et un petit coup en plus juste avant la fin de la mesure 2. » ellipsized (« … »)
+#21 LAYOUT CONTRAST « Mesure » 1.41:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Suivre » 1.24:1 (needs 4.5:1, 14 sp)
+#21 > touche 70 383
+#21 DOIGT step_0 « Pas 1 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f7f79b0332 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 325 384
+#22 DOIGT step_4 « Pas 5 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b41d1f811e | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 70 462
+#23 DOIGT step_8 « Pas 9 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 90eb5622dd | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 325 463
+#24 DOIGT step_12 « Pas 13 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 31d2e078e8 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « Mesure 1/2 · Grosse caisse studio » ellipsized (« … »)
+#25 > touche 410 300
+#25 DOIGT tuto_bar_go « Mesure 2 · 5 cases → »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ccc8abc941 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 1 » 1.28:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 2 » 1.94:1 (needs 4.5:1, 14 sp)
+#26 > touche 70 383
+#26 DOIGT step_16 « Pas 1 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a8c2d9c996 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 325 384
+#27 DOIGT step_20 « Pas 5 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5d2e5a6bd5 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 70 462
+#28 DOIGT step_24 « Pas 9 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2a80e80900 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 325 463
+#29 DOIGT step_28 « Pas 13 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c81bd25864 | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 453 463
+#30 DOIGT step_30 « Pas 15 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 069e45776a | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 978
+#31 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#32 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d0b5d206be | project=p-3391b76b tuto=house/Facile active=true step=kick_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT «  Écouter mon morceau » ellipsized (« … »)
+#32 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over the touchable « Lire la suite » (174 x 4 dp)
+#32 LAYOUT CONTRAST « Mesure » 1.43:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 1 » 1.22:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 2 » 1.96:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Suivre » 1.25:1 (needs 4.5:1, 14 sp)
+#32 > touche 294 888
+#32 DOIGT tuto_next_big « Chapitre suivant   »
+#33 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 71e22a4595 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over « Lire la suite » (17 x 16 dp)
+#33 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over the touchable « Lire la suite » (174 x 20 dp)
+#33 LAYOUT CONTRAST « Télécharger le kit House (4 Mo) » 2.39:1 (needs 4.5:1, 14 sp)
+#33 > touche 294 813
+#33 DOIGT tuto_do «   Je le fais »
+#34 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 325 300
+#34 DOIGT rien
+#35 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 325 380
+#35 DOIGT rien
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f9a4be9a96 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « Mesure 2/2 · Claquement de mains » ellipsized (« … »)
+#36 LAYOUT CUT « À toi : sur le pad « Claquement de mains », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4. » ellipsized (« … »)
+#36 LAYOUT CONTRAST « Mesure 2/2 · Claquement de mains » 1.32:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « Mesure 1 · 2 cases » 1.33:1 (needs 3.0:1, 14 sp)
+#36 > touche 425 234
+#36 DOIGT tuto_bar_go « Mesure 1 · 2 cases »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 60846cfa01 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Encore 2 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#37 > touche 325 300
+#37 DOIGT step_4 « Pas 5 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1cd538c1ab | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Encore 1 case en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#38 > touche 325 379
+#38 DOIGT step_12 « Pas 13 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d68da937d4 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « Mesure 1/2 · Claquement de mains » 1.32:1 (needs 4.5:1, 13 sp)
+#39 > touche 294 978
+#39 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#40 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a711ed8550 | project=p-3391b76b tuto=house/Facile active=true step=clap_do done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over « Lire la suite » (17 x 8 dp)
+#40 LAYOUT CONTRAST « Mesure 1/2 · Claquement de mains » 1.26:1 (needs 4.5:1, 13 sp)
+#40 > touche 294 888
+#40 DOIGT tuto_next_big « Chapitre suivant   »
+#41 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 30c2548c89 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » 4.41:1 (needs 4.5:1, 13 sp)
+#41 > touche 294 813
+#41 DOIGT tuto_do «   Je le fais »
+#42 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 197 300
+#42 DOIGT rien
+#43 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 453 300
+#43 DOIGT rien
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 51d22b4d21 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « À toi : sur le pad « Charley ouvert » (le « tchi »), touche les cases en pointillé : une entre chaque coup de kick. » ellipsized (« … »)
+#44 > touche 197 380
+#44 DOIGT step_10 « Pas 11 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 68c40243d1 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 453 380
+#45 DOIGT step_14 « Pas 15 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 40af09de7c | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « Mesure 1/2 · Charley ouvert » ellipsized (« … »)
+#46 LAYOUT CONTRAST « Mesure 1/2 · Charley ouvert » 1.32:1 (needs 4.5:1, 13 sp)
+#46 LAYOUT CONTRAST « Mesure 2 · 4 cases → » 1.28:1 (needs 3.0:1, 14 sp)
+#46 > touche 410 234
+#46 DOIGT tuto_bar_go « Mesure 2 · 4 cases → »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 27204355cc | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « Encore 4 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#47 > touche 197 300
+#47 DOIGT step_18 « Pas 3 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d94d048fe8 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Encore 3 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#48 > touche 453 300
+#48 DOIGT step_22 « Pas 7 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 51d22b4d21 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 197 379
+#49 DOIGT step_26 « Pas 11 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 68c40243d1 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 453 379
+#50 DOIGT step_30 « Pas 15 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fff9992b29 | project=p-3391b76b tuto=house/Facile active=true step=ohat_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Mesure 2/2 · Charley ouvert » 1.32:1 (needs 4.5:1, 13 sp)
+#51 > touche 294 978
+#51 DOIGT tuto_next_folded « Réussi »
+#52 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fb7eec9508 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 294 813
+#52 DOIGT tuto_do «   Je le fais »
+#53 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > glisse 70 300 133 300
+#53 DOIGT rien
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0cc6a95a02 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT « À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide, avec un trou là où sonne le « tchi ». » ellipsized (« … »)
+#54 LAYOUT CONTRAST « Encore 10 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#54 > glisse 261 300 389 300
+#54 DOIGT step_19 « Pas 4 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3285431a07 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Encore 7 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#55 > touche 517 300
+#55 DOIGT step_23 « Pas 8 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 288ccb54cf | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Encore 6 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#56 > glisse 70 378 133 378
+#56 DOIGT step_24 « Pas 9 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7b2b9f109c | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#57 SON Son : rien ne joue.
+#57 > glisse 261 379 389 379
+#57 DOIGT step_27 « Pas 12 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 44768b0103 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 517 379
+#58 DOIGT step_31 « Pas 16 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 244dc92b55 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « Mesure 2/2 · Charley » 1.32:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « Mesure 1 · 12 cases » 1.32:1 (needs 3.0:1, 14 sp)
+#59 > touche 420 234
+#59 DOIGT tuto_bar_go « Mesure 1 · 12 cases »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61898717a6 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « Encore 12 cases en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#60 > glisse 70 300 133 300
+#60 DOIGT step_0 « Pas 1 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0cc6a95a02 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#61 SON Son : rien ne joue.
+#61 > glisse 261 300 389 300
+#61 DOIGT step_3 « Pas 4 »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3285431a07 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 517 300
+#62 DOIGT step_7 « Pas 8 »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 288ccb54cf | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#63 SON Son : rien ne joue.
+#63 > glisse 70 378 133 378
+#63 DOIGT step_8 « Pas 9 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7b2b9f109c | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#64 SON Son : rien ne joue.
+#64 > glisse 261 379 389 379
+#64 DOIGT step_11 « Pas 12 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 44768b0103 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=7 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 517 379
+#65 DOIGT step_15 « Pas 16 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 35e3c28fd5 | project=p-3391b76b tuto=house/Facile active=true step=hat_do done=8 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Mesure 1/2 · Charley » 1.32:1 (needs 4.5:1, 13 sp)
+#66 > touche 294 978
+#66 DOIGT tuto_next_folded « Réussi »
+#67 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9faf71b93d | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over the touchable « Lire la suite » (174 x 6 dp)
+#67 > touche 294 813
+#67 DOIGT tuto_do «   Je le fais »
+#68 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 197 300
+#68 DOIGT rien
+#69 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 453 300
+#69 DOIGT rien
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a491d37924 | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 197 379
+#70 DOIGT step_10 « Pas 11 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b02843ca9d | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 453 379
+#71 DOIGT step_14 « Pas 15 »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b5552ec76a | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « Mesure 1/2 · Bord de caisse » ellipsized (« … »)
+#72 LAYOUT CONTRAST « Mesure 1/2 · Bord de caisse » 1.30:1 (needs 4.5:1, 13 sp)
+#72 > touche 410 234
+#72 DOIGT tuto_bar_go « Mesure 2 · 4 cases → »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 219c7f3601 | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 197 300
+#73 DOIGT step_18 « Pas 3 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1485ea070e | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 453 300
+#74 DOIGT step_22 « Pas 7 »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a491d37924 | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 197 379
+#75 DOIGT step_26 « Pas 11 »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b02843ca9d | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=8 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 453 379
+#76 DOIGT step_30 « Pas 15 »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b95ae2439c | project=p-3391b76b tuto=house/Facile active=true step=perc_do done=9 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.32:1 (needs 4.5:1, 13 sp)
+#77 > touche 294 978
+#77 DOIGT tuto_next_folded « Réussi »
+#78 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 78f272fb2a | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=9 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.57:1 (needs 4.5:1, 13 sp)
+#78 > touche 294 813
+#78 DOIGT tuto_play_mine «   Écouter ton résultat »
+#79 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c814979c28 | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=9 playing=true
+#79 SON Son : la musique du projet joue en boucle.
+#79 > attends 5
+#80 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c814979c28 | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=9 playing=true
+#80 SON Son : la musique du projet joue en boucle.
+#80 > touche 294 813
+#80 DOIGT tuto_play_mine «   Arrêter »
+#81 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 78f272fb2a | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=9 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 294 897
+#81 DOIGT tuto_listen «  Écouter l'exemple »
+#82 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5d0f2ec44d | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=9 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 4
+#83 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 996ed9b27c | project=p-3391b76b tuto=house/Facile active=true step=drums_hear done=10 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 10 dp)
+#83 > touche 294 888
+#83 DOIGT tuto_next_big « Chapitre suivant   »
+#84 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f49cb32117 | project=p-3391b76b tuto=house/Facile active=true step=bass_hear done=10 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 16 dp)
+#84 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.26:1 (needs 4.5:1, 13 sp)
+#84 > touche 294 894
+#84 DOIGT tuto_listen «  Écouter l'exemple »
+#85 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4992e20ea9 | project=p-3391b76b tuto=house/Facile active=true step=bass_hear done=10 playing=false
+#85 SON Son : l'exemple du tuto joue (encore 3 s).
+#85 > attends 8
+#86 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 647f373e1e | project=p-3391b76b tuto=house/Facile active=true step=bass_hear done=11 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 294 894
+#86 DOIGT tuto_next_big « Étape suivante   »
+#87 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d857ef8994 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 24 dp)
+#87 > touche 294 813
+#87 DOIGT tuto_need «   Créer la piste Basse »
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 923e9ac9e2 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « À toi : touche « Créer la piste Basse », puis les notes en pointillé de la mesure 1 (La grave, La aigu). « Copier sur les mesures suivantes » fait la mesure 2, puis la même chose sur Ré en mesure 3. Écris enfin la mesure 4 : elle finit sur Mi et Sol pour revenir vers La. » ellipsized (« … »)
+#88 LAYOUT TARGET « Mi2 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Ré♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Ré2 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Do♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Do2 Do2 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Si1 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « La♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « La1 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 LAYOUT TARGET « Sol♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#88 > touche 126 759
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a6c818e79a | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 194 759
+#89 DOIGT rien
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 51d411e608 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 348 759
+#90 DOIGT rien
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 085c35c0f1 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 419 759
+#91 DOIGT rien
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 616bf14a1e | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 294 432
+#92 DOIGT tuto_notes_left « Basse · mesure 1/8 »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE af7217b7d3 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT TARGET « Fa♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Fa3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Mi3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Ré♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Ré3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Do♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Do3 Do3 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « Si2 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « La♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#93 > touche 278 816
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 340d9b0e9c | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 503 816
+#94 DOIGT rien
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6d9398a63f | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 294 978
+#95 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0d7b13c37e | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 294 432
+#96 DOIGT tuto_notes_left « Basse · mesure 1/8 »
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6c1a259502 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT TARGET « Sol1 Jouer » 36 x 20 dp (touch 48 x 48)
+#97 LAYOUT TARGET « Fa♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#97 LAYOUT TARGET « Fa1 Jouer » 36 x 20 dp (touch 48 x 48)
+#97 LAYOUT TARGET « Mi1 Jouer » 36 x 20 dp (touch 48 x 48)
+#97 LAYOUT TARGET « Ré♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#97 > touche 180 818
+#97 DOIGT rien
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5e15be7a03 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 250 818
+#98 DOIGT rien
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee188eabbb | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#99 SON Son : 1 note du synthé.
+#99 > touche 404 818
+#99 DOIGT rien
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 24555313b5 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#100 SON Son : 1 note du synthé.
+#100 > touche 475 758
+#100 DOIGT rien
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dc25b1bf2c | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#101 SON Son : 1 note du synthé.
+#101 > touche 542 670
+#101 DOIGT rien
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dc25b1bf2c | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#102 SON Son : 1 note du synthé.
+#102 > glisse 400 640 200 640
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fb9059b07c | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 405 668
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88ef6f748f | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > touche 294 432
+#104 DOIGT tuto_notes_left « Basse · mesure 4/8 »
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6ccf98f9b8 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT TARGET « La2 Jouer » 36 x 20 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Sol♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Sol2 Jouer » 36 x 20 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Fa♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Fa2 Jouer » 36 x 20 dp (touch 48 x 48)
+#105 > touche 158 818
+#105 DOIGT rien
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 56ac2fd96f | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=11 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > touche 294 978
+#106 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f56b5906ae | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=12 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 294 978
+#107 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#108 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 36e04b6fa4 | project=p-3391b76b tuto=house/Facile active=true step=bass_do done=12 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 294 888
+#108 DOIGT tuto_next_big « Chapitre suivant   »
+#109 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 5629cef31b | project=p-3391b76b tuto=house/Facile active=true step=pad_hear done=12 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 294 894
+#109 DOIGT tuto_listen «  Écouter l'exemple »
+#110 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 29d34a876a | project=p-3391b76b tuto=house/Facile active=true step=pad_hear done=12 playing=false
+#110 SON Son : l'exemple du tuto joue (encore 3 s).
+#110 > attends 8
+#111 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 22a441b7af | project=p-3391b76b tuto=house/Facile active=true step=pad_hear done=13 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 294 894
+#111 DOIGT tuto_next_big « Étape suivante   »
+#112 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 106ad10f39 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 294 813
+#112 DOIGT tuto_need «   Créer la piste Accords »
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8eafd66119 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT CUT « À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, « Copier sur les mesures suivantes », puis les mesures 3 et 4 (un autre accord, celui de Ré). » ellipsized (« … »)
+#113 LAYOUT TARGET « Ré4 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « Do♯4 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « Do4 Do4 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « Si3 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « La♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « La3 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « Sol♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 LAYOUT TARGET « Sol3 Jouer » 36 x 20 dp (touch 48 x 48)
+#113 > touche 109 351
+#113 DOIGT chord_mode « Accords »
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bd10c540f1 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 294 432
+#114 DOIGT tuto_notes_left « Accords · mesure 4/8 »
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 63bc34c459 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 180 758
+#115 DOIGT rien
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE daa3b184ad | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 278 758
+#116 DOIGT rien
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 010a8696b4 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 391 758
+#117 DOIGT rien
+#118 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f995fe073c | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 447 758
+#118 DOIGT rien
+#119 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d50f7c41f5 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 294 978
+#119 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#120 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a8c48a580f | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 294 432
+#120 DOIGT tuto_notes_left « Accords · mesure 1/8 »
+#121 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ab5d351fb7 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 180 788
+#121 DOIGT rien
+#122 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 851bc40dc9 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 278 788
+#122 DOIGT rien
+#123 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 943a69ca80 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 391 788
+#123 DOIGT rien
+#124 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6a4524e9d1 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 447 788
+#124 DOIGT rien
+#125 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9d05a183cb | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 294 432
+#125 DOIGT tuto_notes_left « Accords · mesure 3/8 »
+#126 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 259d0dc921 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 180 788
+#126 DOIGT rien
+#127 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 75766af48b | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 278 788
+#127 DOIGT rien
+#128 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc501290af | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 348 788
+#128 DOIGT rien
+#129 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 32ad0888ed | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 447 788
+#129 DOIGT rien
+#130 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 16d5e42dfc | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 503 788
+#130 DOIGT rien
+#131 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c6a8bf2dfe | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=13 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 294 978
+#131 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#132 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ffcd062799 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=14 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 294 978
+#132 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#133 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8110cb2b99 | project=p-3391b76b tuto=house/Facile active=true step=pad_do done=14 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 294 888
+#133 DOIGT tuto_next_big « Chapitre suivant   »
+#134 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE ea6e81dc3a | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 294 813
+#134 DOIGT tuto_need «   Créer la piste Mélodie »
+#135 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 63a00c0547 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#135 SON Son : rien ne joue.
+#135 LAYOUT CUT « À toi : touche « Créer la piste Mélodie », puis les 8 notes en pointillé de la mesure 1, puis les 8 de la mesure 2. « Copier sur les mesures suivantes » fait le reste. » ellipsized (« … »)
+#135 > touche 294 432
+#135 DOIGT tuto_notes_left « Mélodie · mesure 4/8 »
+#136 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 53bb8397fb | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#136 SON Son : rien ne joue.
+#136 > touche 166 698
+#136 DOIGT rien
+#137 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 752269e844 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#137 SON Son : 1 note du synthé.
+#137 > touche 278 698
+#137 DOIGT rien
+#138 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 26ce7f477a | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#138 SON Son : 1 note du synthé.
+#138 > touche 391 698
+#138 DOIGT rien
+#139 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 45a0346b6a | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#139 SON Son : 1 note du synthé.
+#139 > touche 503 698
+#139 DOIGT rien
+#140 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 862676e748 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#140 SON Son : 1 note du synthé.
+#140 > touche 294 432
+#140 DOIGT tuto_notes_left « Mélodie · mesure 1/8 »
+#141 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3c7c67d283 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#141 SON Son : rien ne joue.
+#141 > glisse 320 780 320 600
+#141 DOIGT rien
+#142 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 43eba90055 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#142 SON Son : rien ne joue.
+#142 > touche 222 692
+#142 DOIGT rien
+#143 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e1aba043d5 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#143 SON Son : 1 note du synthé.
+#143 > touche 447 812
+#143 DOIGT rien
+#144 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bb1e5a1287 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#144 SON Son : 1 note du synthé.
+#144 > glisse 320 780 320 600
+#144 DOIGT rien
+#145 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5c6aa40778 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#145 SON Son : rien ne joue.
+#145 > touche 112 747
+#145 DOIGT rien
+#146 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 86fb5dbcd9 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#146 SON Son : 1 note du synthé.
+#146 > touche 335 747
+#146 DOIGT rien
+#147 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 86f0b3a2c7 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#147 SON Son : 1 note du synthé.
+#147 > touche 294 432
+#147 DOIGT tuto_notes_left « Mélodie · mesure 1/8 »
+#148 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a81b0286b3 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#148 SON Son : rien ne joue.
+#148 > touche 166 747
+#148 DOIGT rien
+#149 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 725b06e327 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#149 SON Son : 1 note du synthé.
+#149 > glisse 320 600 320 760
+#149 DOIGT rien
+#150 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ad59f360ff | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#150 SON Son : rien ne joue.
+#150 > touche 391 582
+#150 DOIGT rien
+#151 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 595098a49f | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#151 SON Son : 1 note du synthé.
+#151 > touche 278 672
+#151 DOIGT rien
+#152 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 175858f726 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#152 SON Son : 1 note du synthé.
+#152 > touche 503 672
+#152 DOIGT rien
+#153 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e031a1c447 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#153 SON Son : 1 note du synthé.
+#153 > glisse 320 600 320 720
+#153 DOIGT rien
+#154 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 42a6cbf4d5 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#154 SON Son : rien ne joue.
+#154 > touche 222 618
+#154 DOIGT rien
+#155 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 61972c0816 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#155 SON Son : 1 note du synthé.
+#155 > touche 335 618
+#155 DOIGT rien
+#156 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1be78de1c1 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#156 SON Son : 1 note du synthé.
+#156 > touche 447 618
+#156 DOIGT rien
+#157 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0eac464054 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#157 SON Son : 1 note du synthé.
+#157 > touche 294 432
+#157 DOIGT tuto_notes_left « Mélodie · mesure 2/8 »
+#158 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE df6ccc3a4a | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#158 SON Son : rien ne joue.
+#158 > glisse 320 600 320 780
+#158 DOIGT rien
+#159 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 179c73ac29 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#159 SON Son : rien ne joue.
+#159 LAYOUT TARGET « Mi4 Jouer » 36 x 20 dp (touch 48 x 48)
+#159 LAYOUT TARGET « Ré♯4 Jouer » 36 x 20 dp (touch 48 x 48)
+#159 > touche 531 879
+#159 DOIGT tuto_fold
+#160 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7b03811cb9 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#160 SON Son : rien ne joue.
+#160 > touche 294 813
+#160 DOIGT tuto_do «   Je le fais »
+#161 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 179c73ac29 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#161 SON Son : rien ne joue.
+#161 > glisse 200 650 400 780
+#161 DOIGT rien
+#162 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d2f099b4c5 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#162 SON Son : rien ne joue.
+#162 LAYOUT TARGET « Sol♯4 Jouer » 36 x 20 dp (touch 48 x 48)
+#162 LAYOUT TARGET « Sol4 Jouer » 36 x 20 dp (touch 48 x 48)
+#162 LAYOUT TARGET « Fa♯4 Jouer » 36 x 20 dp (touch 48 x 48)
+#162 LAYOUT TARGET « Fa4 Jouer » 36 x 20 dp (touch 48 x 48)
+#162 > touche 294 432
+#162 DOIGT tuto_notes_left « Mélodie · mesure 3/8 »
+#163 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 106228cfc2 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#163 SON Son : rien ne joue.
+#163 > touche 166 818
+#163 DOIGT rien
+#164 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8a3aaf0d69 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=14 playing=false
+#164 SON Son : 1 note du synthé.
+#164 > touche 294 978
+#164 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#165 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bbe40aa3c3 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=15 playing=false
+#165 SON Son : rien ne joue.
+#165 > touche 294 978
+#165 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#166 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e372894007 | project=p-3391b76b tuto=house/Facile active=true step=lead_do done=15 playing=false
+#166 SON Son : rien ne joue.
+#166 > touche 294 888
+#166 DOIGT tuto_next_big « Chapitre suivant   »
+#167 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE c078a24af6 | project=p-3391b76b tuto=house/Facile active=true step=groove_hear done=15 playing=false
+#167 SON Son : rien ne joue.
+#167 > touche 294 813
+#167 DOIGT tuto_play_mine «   Écouter ton résultat »
+#168 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 01b3a18ab3 | project=p-3391b76b tuto=house/Facile active=true step=groove_hear done=15 playing=true
+#168 SON Son : la musique du projet joue en boucle.
+#168 > attends 4
+#169 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e24d5acbd7 | project=p-3391b76b tuto=house/Facile active=true step=groove_hear done=15 playing=true
+#169 SON Son : la musique du projet joue en boucle.
+#169 > touche 294 897
+#169 DOIGT tuto_listen «  Écouter l'exemple »
+#170 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE b5395ad349 | project=p-3391b76b tuto=house/Facile active=true step=groove_hear done=15 playing=false
+#170 SON Son : l'exemple du tuto joue (encore 3 s).
+#170 > attends 6
+#171 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 98f68c6f77 | project=p-3391b76b tuto=house/Facile active=true step=groove_hear done=16 playing=false
+#171 SON Son : rien ne joue.
+#171 > touche 294 888
+#171 DOIGT tuto_next_big « Étape suivante   »
+#172 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 6b21b49ea7 | project=p-3391b76b tuto=house/Facile active=true step=groove_name done=16 playing=false
+#172 SON Son : rien ne joue.
+#172 > touche 294 813
+#172 DOIGT tuto_need «   Nommer la partie « Groove » »
+#173 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 904c331040 | project=p-3391b76b tuto=house/Facile active=true step=groove_name done=17 playing=false
+#173 SON Son : rien ne joue.
+#173 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 20 dp)
+#173 LAYOUT CONTRAST « Plus tard » 1.52:1 (needs 4.5:1, 14 sp)
+#173 > touche 294 888
+#173 DOIGT tuto_next_big « Chapitre suivant   »
+#174 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1fc2f76b78 | project=p-3391b76b tuto=house/Facile active=true step=map_intro done=17 playing=false
+#174 SON Son : rien ne joue.
+#174 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#174 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#174 > touche 294 894
+#174 DOIGT tuto_listen «  Écouter l'exemple »
+#175 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e041d67b4d | project=p-3391b76b tuto=house/Facile active=true step=map_intro done=17 playing=false
+#175 SON Son : l'exemple du tuto joue (encore 3 s).
+#175 > attends 6
+#176 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3b3e575d3a | project=p-3391b76b tuto=house/Facile active=true step=map_intro done=18 playing=false
+#176 SON Son : rien ne joue.
+#176 > touche 294 894
+#176 DOIGT tuto_next_big « Étape suivante   »
+#177 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f7d2444a7c | project=p-3391b76b tuto=house/Facile active=true step=map_montee done=18 playing=false
+#177 SON Son : rien ne joue.
+#177 LAYOUT OVERLAP « Chaque nombre : la durée de la partie en mesures. » over the touchable « Lire la suite » (306 x 10 dp)
+#177 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#177 > touche 294 894
+#177 DOIGT tuto_listen «  Écouter l'exemple »
+#178 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 886bea1d91 | project=p-3391b76b tuto=house/Facile active=true step=map_montee done=18 playing=false
+#178 SON Son : l'exemple du tuto joue (encore 3 s).
+#178 > attends 6
+#179 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e219645816 | project=p-3391b76b tuto=house/Facile active=true step=map_montee done=19 playing=false
+#179 SON Son : rien ne joue.
+#179 > touche 294 894
+#179 DOIGT tuto_next_big « Étape suivante   »
+#180 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dfcabcab73 | project=p-3391b76b tuto=house/Facile active=true step=map_drop done=19 playing=false
+#180 SON Son : rien ne joue.
+#180 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over « Lire la suite » (73 x 6 dp)
+#180 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 6 dp)
+#180 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#180 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#180 > touche 294 894
+#180 DOIGT tuto_listen «  Écouter l'exemple »
+#181 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cae10861c0 | project=p-3391b76b tuto=house/Facile active=true step=map_drop done=19 playing=false
+#181 SON Son : l'exemple du tuto joue (encore 3 s).
+#181 > attends 6
+#182 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2488259351 | project=p-3391b76b tuto=house/Facile active=true step=map_drop done=20 playing=false
+#182 SON Son : rien ne joue.
+#182 > touche 294 894
+#182 DOIGT tuto_next_big « Étape suivante   »
+#183 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d414bf886a | project=p-3391b76b tuto=house/Facile active=true step=map_break done=20 playing=false
+#183 SON Son : rien ne joue.
+#183 LAYOUT OVERLAP « Chaque nombre : la durée de la partie en mesures. » over « Lire la suite » (34 x 10 dp)
+#183 LAYOUT OVERLAP «  Intro » over the touchable « Lire la suite » (31 x 4 dp)
+#183 LAYOUT OVERLAP «  Montée » over the touchable « Lire la suite » (49 x 4 dp)
+#183 LAYOUT OVERLAP «  Drop » over the touchable « Lire la suite » (33 x 4 dp)
+#183 LAYOUT OVERLAP «  Break » over the touchable « Lire la suite » (40 x 4 dp)
+#183 LAYOUT OVERLAP «  Drop 2 » over the touchable « Lire la suite » (45 x 4 dp)
+#183 LAYOUT OVERLAP «  Fin » over the touchable « Lire la suite » (22 x 4 dp)
+#183 LAYOUT OVERLAP « Chaque nombre : la durée de la partie en mesures. » over the touchable « Lire la suite » (306 x 18 dp)
+#183 LAYOUT CONTRAST « Break » 3.78:1 (needs 4.5:1, 12 sp)
+#183 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#183 LAYOUT CONTRAST « Chaque nombre : la durée de la partie en mesures. » 1.55:1 (needs 4.5:1, 13 sp)
+#183 > touche 294 894
+#183 DOIGT tuto_listen «  Écouter l'exemple »
+#184 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c01c61cf4e | project=p-3391b76b tuto=house/Facile active=true step=map_break done=20 playing=false
+#184 SON Son : l'exemple du tuto joue (encore 3 s).
+#184 > attends 6
+#185 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 702de43c0d | project=p-3391b76b tuto=house/Facile active=true step=map_break done=21 playing=false
+#185 SON Son : rien ne joue.
+#185 > touche 294 894
+#185 DOIGT tuto_next_big « Étape suivante   »
+#186 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 772d71ecd7 | project=p-3391b76b tuto=house/Facile active=true step=map_phrases done=21 playing=false
+#186 SON Son : rien ne joue.
+#186 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#186 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#186 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#186 > touche 294 894
+#186 DOIGT tuto_mark «   J'ai compris »
+#187 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 013063abef | project=p-3391b76b tuto=house/Facile active=true step=make_intro done=22 playing=false
+#187 SON Son : rien ne joue.
+#187 > touche 294 813
+#187 DOIGT tuto_need «   Créer la partie « Intro » »
+#188 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 05e4f1b53a | project=p-3391b76b tuto=house/Facile active=true step=make_intro done=23 playing=false
+#188 SON Son : rien ne joue.
+#188 > touche 294 888
+#188 DOIGT tuto_next_big « Étape suivante   »
+#189 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f30482f0ca | project=p-3391b76b tuto=house/Facile active=true step=make_montee done=23 playing=false
+#189 SON Son : rien ne joue.
+#189 > touche 294 813
+#189 DOIGT tuto_need «   Créer la partie « Montée » »
+#190 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 94bda3e094 | project=p-3391b76b tuto=house/Facile active=true step=make_montee done=24 playing=false
+#190 SON Son : rien ne joue.
+#190 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 8 dp)
+#190 > touche 294 888
+#190 DOIGT tuto_next_big « Étape suivante   »
+#191 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a6b2a417b2 | project=p-3391b76b tuto=house/Facile active=true step=make_drop done=24 playing=false
+#191 SON Son : rien ne joue.
+#191 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over « Lire la suite » (17 x 10 dp)
+#191 > touche 294 813
+#191 DOIGT tuto_need «   Créer la partie « Drop » »
+#192 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE da3c7e5bf9 | project=p-3391b76b tuto=house/Facile active=true step=make_drop done=25 playing=false
+#192 SON Son : rien ne joue.
+#192 > touche 294 888
+#192 DOIGT tuto_next_big « Étape suivante   »
+#193 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE bb3f0d6734 | project=p-3391b76b tuto=house/Facile active=true step=make_break done=25 playing=false
+#193 SON Son : rien ne joue.
+#193 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over « Lire la suite » (17 x 4 dp)
+#193 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 8 dp)
+#193 > touche 294 813
+#193 DOIGT tuto_need «   Créer la partie « Break » »
+#194 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3727238e5b | project=p-3391b76b tuto=house/Facile active=true step=make_break done=26 playing=false
+#194 SON Son : rien ne joue.
+#194 > touche 294 888
+#194 DOIGT tuto_next_big « Étape suivante   »
+#195 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 44b2987794 | project=p-3391b76b tuto=house/Facile active=true step=make_drop2 done=26 playing=false
+#195 SON Son : rien ne joue.
+#195 > touche 294 813
+#195 DOIGT tuto_need «   Créer la partie « Drop 2 » »
+#196 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE fce170f187 | project=p-3391b76b tuto=house/Facile active=true step=make_drop2 done=27 playing=false
+#196 SON Son : rien ne joue.
+#196 > touche 294 888
+#196 DOIGT tuto_next_big « Étape suivante   »
+#197 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2a06506796 | project=p-3391b76b tuto=house/Facile active=true step=make_fin done=27 playing=false
+#197 SON Son : rien ne joue.
+#197 > touche 294 813
+#197 DOIGT tuto_need «   Créer la partie « Fin » »
+#198 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f79fd52e57 | project=p-3391b76b tuto=house/Facile active=true step=make_fin done=28 playing=false
+#198 SON Son : rien ne joue.
+#198 > touche 294 888
+#198 DOIGT tuto_next_big « Chapitre suivant   »
+#199 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dfd8549163 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#199 SON Son : rien ne joue.
+#199 > touche 294 813
+#199 DOIGT tuto_do «   Je le fais »
+#200 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#200 SON Son : rien ne joue.
+#200 > touche 335 264
+#200 DOIGT rien
+#201 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#201 SON Son : rien ne joue.
+#201 > touche 140 470
+#201 DOIGT rien
+#202 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f706ef17ab | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#202 SON Son : rien ne joue.
+#202 LAYOUT CUT « À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. » ellipsized (« … »)
+#202 LAYOUT OVERLAP « B · Intro » over the touchable « Tempo : 122 battements par minute Change » (45 x 4 dp)
+#202 LAYOUT OVERLAP « B · Intro » over the touchable « Jouer depuis une partie » (16 x 4 dp)
+#202 > touche 340 471
+#202 DOIGT add_part_3 « + D · Drop »
+#203 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8866fa53e6 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#203 SON Son : rien ne joue.
+#203 LAYOUT OVERLAP « C · Montée » over the touchable « Tempo : 122 battements par minute Change » (45 x 4 dp)
+#203 LAYOUT OVERLAP « C · Montée » over the touchable « Jouer depuis une partie » (43 x 4 dp)
+#203 > touche 133 552
+#203 DOIGT add_part_4 « + E · Break »
+#204 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c8d6bcd000 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#204 SON Son : rien ne joue.
+#204 LAYOUT OVERLAP « D · Drop » over the touchable « Tempo : 122 battements par minute Change » (45 x 4 dp)
+#204 LAYOUT OVERLAP « D · Drop » over the touchable « Jouer depuis une partie » (19 x 4 dp)
+#204 > touche 143 471
+#204 DOIGT add_part_2 « + C · Montée »
+#205 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7bb30fd485 | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#205 SON Son : rien ne joue.
+#205 LAYOUT OVERLAP « E · Break » over the touchable « Tempo : 122 battements par minute Change » (45 x 4 dp)
+#205 LAYOUT OVERLAP « E · Break » over the touchable « Jouer depuis une partie » (24 x 4 dp)
+#205 > touche 328 552
+#205 DOIGT add_part_5 « + F · Drop 2 »
+#206 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE df4c7336bc | project=p-3391b76b tuto=house/Facile active=true step=song_order done=28 playing=false
+#206 SON Son : rien ne joue.
+#206 > touche 121 633
+#206 DOIGT add_part_6 « + G · Fin »
+#207 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1abfe2effc | project=p-3391b76b tuto=house/Facile active=true step=song_order done=29 playing=false
+#207 SON Son : rien ne joue.
+#207 LAYOUT OVERLAP « F · Drop 2 » over the touchable « Tempo : 122 battements par minute Change » (45 x 4 dp)
+#207 LAYOUT OVERLAP « F · Drop 2 » over the touchable « Jouer depuis une partie » (32 x 4 dp)
+#207 > touche 294 978
+#207 DOIGT tuto_next_folded « Réussi »
+#208 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d1bf3fc1a9 | project=p-3391b76b tuto=house/Facile active=true step=song_phrases done=29 playing=false
+#208 SON Son : rien ne joue.
+#208 LAYOUT OVERLAP « Touche pour changer les accords de tout le morceau. » over the touchable « Tempo : 122 battements par minute Change » (67 x 4 dp)
+#208 LAYOUT OVERLAP « Touche pour changer les accords de tout le morceau. » over the touchable « Jouer depuis une partie » (118 x 4 dp)
+#208 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 30 dp)
+#208 LAYOUT CONTRAST « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » 4.31:1 (needs 4.5:1, 13 sp)
+#208 > touche 294 813
+#208 DOIGT tuto_need «   Donner les durées conseillées »
+#209 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 63cbbd4622 | project=p-3391b76b tuto=house/Facile active=true step=song_phrases done=30 playing=false
+#209 SON Son : rien ne joue.
+#209 > touche 294 894
+#209 DOIGT tuto_next_big « Chapitre suivant   »
+#210 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b7868b6a2e | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#210 SON Son : rien ne joue.
+#210 > touche 294 813
+#210 DOIGT tuto_need «   Aller dans la partie « Montée » »
+#211 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d38357528e | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#211 SON Son : rien ne joue.
+#211 LAYOUT CUT « À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. » ellipsized (« … »)
+#211 > touche 325 460
+#211 DOIGT step_60 « Pas 13 »
+#212 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a4887f8753 | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#212 SON Son : rien ne joue.
+#212 > touche 389 460
+#212 DOIGT step_61 « Pas 14 »
+#213 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bfeb7b24c4 | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#213 SON Son : rien ne joue.
+#213 > touche 517 460
+#213 DOIGT step_63 « Pas 16 »
+#214 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de25c98e36 | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#214 SON Son : rien ne joue.
+#214 > touche 453 460
+#214 DOIGT step_62 « Pas 15 »
+#215 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f53f8d9100 | project=p-3391b76b tuto=house/Facile active=true step=gap done=30 playing=false
+#215 SON Son : rien ne joue.
+#215 > touche 453 460
+#215 DOIGT step_62 « Pas 15 »
+#216 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6744ca2f67 | project=p-3391b76b tuto=house/Facile active=true step=gap done=31 playing=false
+#216 SON Son : rien ne joue.
+#216 > touche 294 978
+#216 DOIGT tuto_next_folded « Réussi »
+#217 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a42f85cdae | project=p-3391b76b tuto=house/Facile active=true step=crash done=31 playing=false
+#217 SON Son : rien ne joue.
+#217 LAYOUT CONTRAST « Mesure 4/4 · Cymbale » 1.50:1 (needs 4.5:1, 13 sp)
+#217 > touche 294 813
+#217 DOIGT tuto_need «   Aller dans la partie « Drop » »
+#218 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ee98b26ad4 | project=p-3391b76b tuto=house/Facile active=true step=crash done=31 playing=false
+#218 SON Son : rien ne joue.
+#218 LAYOUT CUT « À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu. » ellipsized (« … »)
+#218 > touche 70 299
+#218 DOIGT step_0 « Pas 1 »
+#219 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8f94f12241 | project=p-3391b76b tuto=house/Facile active=true step=crash done=32 playing=false
+#219 SON Son : rien ne joue.
+#219 LAYOUT CONTRAST « Mesure 1/2 · Cymbale » 1.32:1 (needs 4.5:1, 13 sp)
+#219 > touche 294 978
+#219 DOIGT tuto_next_folded « Réussi »
+#220 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d73c1de58d | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#220 SON Son : rien ne joue.
+#220 LAYOUT OVERLAP « Le kit House » over the touchable « Lire la suite » (85 x 18 dp)
+#220 LAYOUT CONTRAST « Mesure 1/2 · Cymbale » 1.57:1 (needs 4.5:1, 13 sp)
+#220 > touche 294 813
+#220 DOIGT tuto_need «   Aller dans la partie « Drop 2 » »
+#221 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d81288b5f3 | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#221 SON Son : rien ne joue.
+#221 LAYOUT CUT « À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Conga » (ou le charley ouvert) : une couche de plus que dans le Drop. » ellipsized (« … »)
+#221 > touche 197 381
+#221 DOIGT step_2 « Pas 3 »
+#222 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2f5853529b | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#222 SON Son : rien ne joue.
+#222 > glisse 294 300 294 800
+#222 DOIGT rien
+#223 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 626116c8f8 | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#223 SON Son : rien ne joue.
+#223 LAYOUT CONTRAST « Cymbale » 4.41:1 (needs 4.5:1, 14 sp)
+#223 > touche 364 332
+#223 DOIGT pad_14 « Conga »
+#224 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f6c941efed | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#224 SON Son : le pad « Conga » sonne.
+#224 LAYOUT CONTRAST « Conga » 4.22:1 (needs 4.5:1, 14 sp)
+#224 LAYOUT CONTRAST «  Enregistrer mes pads » 2.78:1 (needs 4.5:1, 14 sp)
+#224 > glisse 294 760 294 300
+#224 DOIGT rien
+#225 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8467e2f70c | project=p-3391b76b tuto=house/Facile active=true step=variation done=32 playing=false
+#225 SON Son : rien ne joue.
+#225 > touche 197 516
+#225 DOIGT step_2 « Pas 3 »
+#226 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f469aeb83e | project=p-3391b76b tuto=house/Facile active=true step=variation done=33 playing=false
+#226 SON Son : rien ne joue.
+#226 > touche 453 516
+#226 DOIGT step_6 « Pas 7 »
+#227 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 72daae9543 | project=p-3391b76b tuto=house/Facile active=true step=variation done=33 playing=false
+#227 SON Son : rien ne joue.
+#227 > touche 197 595
+#227 DOIGT step_10 « Pas 11 »
+#228 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e6f342fe9f | project=p-3391b76b tuto=house/Facile active=true step=variation done=33 playing=false
+#228 SON Son : rien ne joue.
+#228 > touche 294 978
+#228 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#229 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 99e5ef542a | project=p-3391b76b tuto=house/Facile active=true step=variation done=33 playing=false
+#229 SON Son : rien ne joue.
+#229 > touche 294 888
+#229 DOIGT tuto_next_big « Chapitre suivant   »
+#230 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ab683b402c | project=p-3391b76b tuto=house/Facile active=true step=reverb_hear done=33 playing=false
+#230 SON Son : rien ne joue.
+#230 > touche 294 894
+#230 DOIGT tuto_listen «  Écouter l'exemple »
+#231 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2d926e225a | project=p-3391b76b tuto=house/Facile active=true step=reverb_hear done=33 playing=false
+#231 SON Son : l'exemple du tuto joue (encore 7 s).
+#231 > attends 6
+#232 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9796cf8e0d | project=p-3391b76b tuto=house/Facile active=true step=reverb_hear done=34 playing=false
+#232 SON Son : l'exemple du tuto joue (encore 1 s).
+#232 > touche 294 894
+#232 DOIGT tuto_next_big « Étape suivante   »
+#233 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e38e8d654d | project=p-3391b76b tuto=house/Facile active=true step=riser_hear done=34 playing=false
+#233 SON Son : rien ne joue.
+#233 > touche 294 894
+#233 DOIGT tuto_listen «  Écouter l'exemple »
+#234 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5441b38263 | project=p-3391b76b tuto=house/Facile active=true step=riser_hear done=34 playing=false
+#234 SON Son : l'exemple du tuto joue (encore 3 s).
+#234 > attends 8
+#235 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 03dbba6732 | project=p-3391b76b tuto=house/Facile active=true step=riser_hear done=35 playing=false
+#235 SON Son : rien ne joue.
+#235 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over « Lire la suite » (17 x 18 dp)
+#235 LAYOUT OVERLAP « Télécharger le kit House (4 Mo) » over the touchable « Lire la suite » (174 x 18 dp)
+#235 LAYOUT CONTRAST « Télécharger le kit House (4 Mo) » 2.86:1 (needs 4.5:1, 14 sp)
+#235 > touche 294 888
+#235 DOIGT tuto_next_big « Chapitre suivant   »
+#236 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 10435a4a3e | project=p-3391b76b tuto=house/Facile active=true step=levels done=35 playing=false
+#236 SON Son : rien ne joue.
+#236 > touche 294 813
+#236 DOIGT tuto_do «   Je le fais »
+#237 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=levels done=35 playing=false
+#237 SON Son : rien ne joue.
+#237 > glisse 347 377 347 440
+#237 DOIGT rien
+#238 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 962e8b4c3a | project=p-3391b76b tuto=house/Facile active=true step=levels done=35 playing=false
+#238 SON Son : rien ne joue.
+#238 LAYOUT CUT « À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». » ellipsized (« … »)
+#238 LAYOUT CONTRAST « Lance ▶ » 1.47:1 (needs 3.0:1, 14 sp)
+#238 > glisse 463 377 463 440
+#238 DOIGT mix_fader_6 « Volume de Mélodie »
+#239 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 975a5fc736 | project=p-3391b76b tuto=house/Facile active=true step=levels done=36 playing=false
+#239 SON Son : rien ne joue.
+#239 > touche 294 978
+#239 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#240 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE afcae68191 | project=p-3391b76b tuto=house/Facile active=true step=levels done=36 playing=false
+#240 SON Son : rien ne joue.
+#240 > touche 294 888
+#240 DOIGT tuto_next_big « Chapitre suivant   »
+#241 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 1e63ae9235 | project=p-3391b76b tuto=house/Facile active=true step=share done=36 playing=false
+#241 SON Son : rien ne joue.
+#241 > touche 294 894
+#241 DOIGT tuto_do «   Je le fais »
+#242 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-3391b76b tuto=house/Facile active=true step=share done=36 playing=false
+#242 SON Son : rien ne joue.
+#242 > touche 294 669
+#242 DOIGT rien
+#243 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 1f1e14652a | project=p-3391b76b tuto=house/Facile active=true step=share done=36 playing=false
+#243 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#243 LAYOUT CONTRAST « Annuler » 3.62:1 (needs 4.5:1, 14 sp)
+#243 > attends 15
+#243 PARTAGE Mon-morceau-20261112-214052.m4a
+#244 ROUTE dialogue:« Partager mon morceau · Mon-mor » | MODE simple | EMPREINTE 6add6c92c1 | project=p-3391b76b tuto=house/Facile active=true step=share done=37 playing=false
+#244 SON Son : rien ne joue.
+#244 > touche 294 543
+#244 DOIGT vue « WhatsApp »
+#245 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE f85286d33c | project=p-3391b76b tuto=house/Facile active=true step=share done=37 playing=false
+#245 SON Son : rien ne joue.
+#245 LAYOUT CONTRAST « Pas de saturation. » 1.35:1 (needs 4.5:1, 13 sp)
+#245 > touche 508 789
+#245 DOIGT share_bilan_ok « OK »
+#246 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 8270a7db1a | project=p-3391b76b tuto=house/Facile active=true step=share done=37 playing=false
+#246 SON Son : rien ne joue.
+#246 > touche 294 978
+#246 DOIGT tuto_end_folded « Tuto fini : bravo ! »
+#247 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 76cd6e71b8 | project=p-3391b76b tuto=house/Facile active=true step=share done=37 playing=false
+#247 SON Son : rien ne joue.
+#247 > fin
+#247 FIN : fin

@@ -80,6 +80,34 @@ class Tour6GuideCoversTest {
         }
     }
 
+    /**
+     * Review of the lot (grave): a choice of the card that changes no screen (« Écouter » of « Ton morceau est prêt »), then
+     * the thumb's « ⋮ Plus »: the panel still folds (the Guide's own way had made the next screen its home).
+     */
+    @Test
+    fun afterAChoiceThatChangesNoScreenThePanelStillFoldsOnLeaving() {
+        val style = com.pocketstudio.model.StarterWizard.style("house")!!
+        val song = com.pocketstudio.model.StarterWizard.build(
+            style, style.lines.associate { it.role to null as com.pocketstudio.model.PadSample? }, style.melody.mood,
+            com.pocketstudio.model.StarterWizard.defaultParts(style).associateWith { com.pocketstudio.model.StarterWizard.soundsFor(it, style).first() },
+        )
+        val made = com.pocketstudio.model.guide.GuideStart.begin(song.copy(name = "House du soir"), com.pocketstudio.model.guide.GuideStart.SONG,
+            listOf(com.pocketstudio.model.guide.GuidePageText("Ton morceau House est prêt", listOf("Intro, Groove, Drop."))))
+        h.start(simple = true) { session.edit { made } }
+        assertTrue("the Guide opens on « Ton morceau est prêt »", shell.reached(30_000) { shell.has("guide_card_start.ready") })
+        // « Voir le guide du morceau »: a window over the page, no other screen.
+        shell.tap("guide_open_guide")
+        assertTrue("the song's guide shows", shell.reached(5_000) { shell.has("song_guide") })
+        compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+        shell.idle(600)
+        assertTrue("the Guide's panel is still open on the same screen", shell.reached(5_000) { shell.has("guide_panel") })
+        shell.tap("thumb_more")
+        assertTrue("the Plus page shows", shell.reached(3_000) { shell.has("plus_projects") })
+        shell.idle(600)
+        val under = underThePanel()
+        assertTrue("after a choice of the card, the Guide's open panel covers the Plus page the user just asked for:\n" + under.joinToString("\n"), under.isEmpty())
+    }
+
     /** The same from the top bar's « ⋮ », with big text. */
     @Test
     fun thePlusPageOpenedFromTheTopBarIsNotUnderTheOpenGuideWithBigText() {

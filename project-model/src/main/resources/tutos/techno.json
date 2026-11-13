@@ -470,7 +470,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les 3 coups du dernier temps (touche les 3 croix rouges) : un temps de silence juste avant le Drop 2. C'est une transition (le petit passage qui annonce la partie suivante).",
           "why": "Un temps de rien, et le Drop 2 paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -584,7 +584,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.",
+          "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux (« −14 » : aussi fort que la musique en streaming), et « Pas de saturation » veut dire qu'il ne grésille pas.",
           "textPro": "À toi : touche « Partager » et envoie ton morceau.",
           "check": "shared",
           "spot": "share.export"

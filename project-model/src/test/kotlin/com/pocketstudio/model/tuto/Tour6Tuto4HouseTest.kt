@@ -96,6 +96,25 @@ class Tour6Tuto4HouseTest {
         report("numbers that are not the step's", bad)
     }
 
+    /** M4: no sentence says what another denies: the Break keeps its hats; the Montée's silence comes later; one button for the Drop 2. */
+    @Test
+    fun theSentencesAgree() {
+        val bad = mutableListOf<String>()
+        val brk = step("map_break").text
+        if ("batterie se tait" in brk) bad += "fr: $brk"
+        if ("hat" in step("make_break").keep && "charleys" !in brk) bad += "fr: the Break's hats not said: $brk"
+        val montee = step("make_montee").text
+        val gap = course.chapters.first { c -> c.steps.any { it.check == "gap" } }
+        if ("tout se tait" in montee) bad += "fr: the Montée said silent before its gap step: $montee"
+        if ("« ${gap.title} »" !in montee) bad += "fr: the Montée does not say where its silence is made (« ${gap.title} »): $montee"
+        for (lang in translated) tr(lang, montee)?.let { v -> if (word(lang, gap.title) !in v) bad += "${lang.code}: no « ${word(lang, gap.title)} »: $v" }
+        val drop2 = step("make_drop2").text
+        if ("Montre-moi" in drop2) bad += "fr: « Montre-moi » keeps nothing, the part is made by « Créer la partie »: $drop2"
+        if ("« Créer la partie »" !in drop2) bad += "fr: the button to touch not named: $drop2"
+        everyLanguage(listOf(brk, montee, drop2), bad)
+        report("sentences that contradict", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

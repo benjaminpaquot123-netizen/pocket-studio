@@ -28,13 +28,19 @@ Le chef a accordé `session/LivePadsFullScreen.kt` et la longueur affichée (`pr
 - Condition du chef (la longueur affichée doit être celle qu'on entend) : vérifiée par lecture du moteur, pas à l'oreille. Une brique audio part de `local = step - slot.start` (`engine/…/core/Engine.h` `localOf`, `AudioTracks.cpp` `onStep`) : `step` est le pas du transport, qui ne revient pas à 0 à chaque tour de la scène, et `slot.start` n'est remis qu'à un changement de scène (`Engine.cpp` `swapScene`, `resetSlots`), que l'appli ne demande qu'en changeant de scène ou de partie (`RhythmViewModel.stageScene`), pas à chaque tour d'une scène jouée seule. La brique rejoue donc tous les `loopSteps` (8 mesures pour une prise de 6 : `LiveCells.loopBars` arrondit à 1, 2, 4, 8…) pendant que la scène de 1 mesure tourne : on entend 8 mesures, l'étiquette « Boucle de 8 mes. » dit vrai. Ce qui ment, c'est le compteur « A mesure 1/1 » du transport (donné à coquille2).
 - Reste hors du lot : « A mesure 1/1 » de Briques (transport, `RhythmViewModel`), « Ton morceau est vide » alors que les prises sont listées (`session/SessionScreen.kt`).
 
+## Contrôle Ab-4 (siège neuf, code 82cf7318)
+
+controle: Ab-4 | code testé: 82cf7318 | bloqués: 0 | graves neufs: 0
+
+P2, P3 et P4 constatés corrigés par le siège (accueil écran 27 et Mes projets écran 28 « Boucle de 8 mes. » après 7 + 2 mesures ; Briques écran 20, Pads écran 23). Rapport du siège : `origin/ccr-a548b78b-controle-ab4` (ea8b6158), copie texte `sieges/tour-6/padlive2/controle-Ab-4-rapport.md`.
+
 Relecture neuve (`tour-6-padlive2-relecture.md`) : 0 bloquant, 0 grave. Moyen pris : un « coup » qui sonne ne fait plus passer le ▶ en ■ (rouge / vert `PadLivePlayShowsTest#aHitRingingKeepsPlay`). Moyens laissés, hors des fichiers du lot : le bouton « Record » d'un contrôleur MIDI (`midi/AutoKnobsVm.kt`, appelle `togglePerformance` sans passer par `PadLiveController.record`) remplace encore le morceau ; morceau plein ou au-delà de la mesure des effets, le message de `RhythmViewModel` parle de « Nouvelle version », absent de Pad Live.
 
 Restent hors du lot : la carte « Pad Live » de l'accueil dit encore « Ça sonne tout de suite. » (`onboarding/`, textes) ; l'effet de bord de P3 (le choix « Nouvelle version / Ajouter à la suite » de la page Live suit la dernière prise de Pad Live).
 
 Juge du chantier : 109 écarts (tête : 110).
 
-tests: com.pocketstudio.app.padlive.PadLivePlayShowsTest com.pocketstudio.app.padlive.PadLiveSilentOpenTest com.pocketstudio.app.padlive.PadLiveTakeAfterTest com.pocketstudio.app.padlive.PadLiveTouchCountTest com.pocketstudio.app.padlive.PadLiveSaveUndoTest com.pocketstudio.app.human.BenchAmeneesTest com.pocketstudio.app.LivePadsFullScreenTest
+tests: PadLivePlayShowsTest PadLiveSilentOpenTest PadLiveTakeAfterTest PadLiveTouchCountTest PadLiveSaveUndoTest BenchAmeneesTest LivePadsFullScreenTest SongLengthBricksTest
 
 ## Liste des chemins
 

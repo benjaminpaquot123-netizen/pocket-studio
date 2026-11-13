@@ -336,19 +336,20 @@ fun PianoRoll(
                     select = { selection = it }, copy = { NoteEdits.toClipboard(selection, barTicks)?.let(copyNotes) }, paste = paste, apply = apply)
             } else {
                 if (board != null) PasteRow(board, pasteBar, paste)
-                // Tour 6 lot 1 (T16): the row wraps on a phone too: its last chip (« Basse en fantôme ») was cut by the screen's
-                // edge, « Bas… » under the fading edge of a row scrolled sideways.
-                ToolRow(true, spacing = 2.dp) {
+                // Tour 6 lot 1 (T16), v2: « Basse en fantôme » second, in sight whole (it was the end of a row scrolled sideways,
+                // « Bas… » under the fading edge). The row still scrolls: wrapped, its extra line pushed the grid out of a
+                // phone's screen (the portal's self-test, BenchTour1Test).
+                ToolRow(tablet, spacing = 2.dp) {
                     // Testers (lot « tuto 5 »): « Accords » first, in sight (it was the last of a row cut at the edge).
                     FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))
+                    FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     // « Remettre en rythme » from where the notes were played: « Comme joué » undoes it any time.
                     TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("En rythme 50 %")) }
                     TextButton(onClick = { actions.quantize(grid, 1f) }, modifier = Modifier.testTag("quantize_100")) { Text(com.pocketstudio.model.i18n.percent(100)) }
                     if (clip.anyMovedInTime) {
                         TextButton(onClick = actions.asPlayed, modifier = Modifier.testTag("notes_as_played")) { Text(tr("Comme joué")) }
                     }
-                    FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text(tr("Effacer")) }
                 }
             }

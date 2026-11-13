@@ -1,10 +1,20 @@
-# Tour 6 — lot 1 « tuto-grille » : relecture neuve
-Relu : 9c3cf7771385a8219d6c3ddcdd68096f1c2669e0
+# Tour 6 — lot 1 « tuto-grille » : relecture neuve (v2, après le refus du portail)
+Relu : 19a9137d3de8304817a9e54af6b3f2a1887d3e5d
 
-Relecture par lecture du code et de l'historique (aucun test relancé). Base : `3d1a443a`. 18 commits : chaque « rouge »
-ne touche que des tests et précède son « vert », qui ne touche que `PianoRoll.kt` ou `RhythmScreen.kt`. Code touché :
-ces deux fichiers seulement (plus 3 fichiers de test, 8 captures, 2 docs). Les 9 défauts du lot ont chacun leur
-correction et un test qui, à la lecture, rougit sans elle (sauf T4 pads / T15, garde-fou annoncé comme tel).
+Delta relu depuis `d247350f` (relecture précédente : `9c3cf777`, 0 bloquant, 0 grave). Code du lot touché par le
+delta : `PianoRoll.kt` seulement (commit `dcba8920`, 5 lignes), plus 8 captures et 2 docs (`19a9137d`). Le
+`Headphones.kt` du diff vient de la fusion de banc7 (`1f736d50`/`78017f60`), hors lot, non relu ici. Aucun test relancé.
+
+Cause : plausible. La v1 passait `ToolRow(true, …)` (rangée en `FlowRow` sur téléphone) ; une ligne d'outils de plus
+au-dessus du rouleau, dans la page Simple, descend la grille. `BenchTour1Test#notesAddedInThePianoRollAreNotNothingChanges`
+touche au plus à y = 1000 px (`minOf(grid.bottom, 1000f)`) : grille plus basse, touchers hors grille, aucune note.
+La v2 revient à `ToolRow(tablet, …)`, exactement l'appel d'avant le lot (vérifié contre `3d1a443a`) : la mise en page
+du téléphone est celle qui passait le banc, la tablette garde son passage à la ligne. Seul changement restant : la
+puce « Basse en fantôme » déplacée en 2e, même `onClick`, mêmes couleurs, pas de `testTag` perdu.
+
+T16 non réintroduit : capture `scale130/fr_piano_roll_waltz.png` (360 dp, 130 %) regardée en entier : « Accords » et
+« Basse en fantôme » entiers, grille, couloir de force et aide visibles ; rien ne chevauche. `RollToolsWordsTest`
+(360 et 392 dp) vérifie la puce entière à l'écran, et rougissait sur la position d'avant le lot (`d98de596`).
 
 ## Bloquant
 Aucun.
@@ -13,40 +23,22 @@ Aucun.
 Aucun.
 
 ## Moyen
-- `RhythmScreen.kt:715` (U6, chemin « peindre ») : `if (follow) { chosenBar = bar; follow = false }` sans condition de
-  lecture, alors que le chemin « toucher » (l. 802) exige `followedBar >= 0`. Scénario : transport arrêté, « Suivre »
-  allumé (valeur d'office), un glissé sur les cases éteint « Suivre » ; au Play suivant la page ne suit plus la tête et
-  la puce « Suivre » est éteinte sans que l'utilisateur l'ait touchée. Non couvert par un test (seul le toucher l'est).
-  À aligner sur le toucher (lire `followedBar` via `rememberUpdatedState`).
-- `PianoRoll.kt:370` et `PianoRoll.kt:650` (T4/N4) : `rollSight.value` est lu en composition (dans `PianoRoll` et dans
-  `Grid`), et `onGloballyPositioned` (l. 738) le réécrit à chaque changement de position. Le rouleau est dans la page
-  défilante de `SynthScreen.kt:291` : pendant un défilement de la page où le rouleau est coupé (bord de l'écran, ou
-  panneau du tuto ouvert), `from`/`to` changent à chaque image, donc `PianoRoll` et `Grid` se recomposent à chaque
-  image, y compris hors tuto. Pas de boucle (l'écriture est filtrée par égalité et la mise en page ne dépend pas de
-  `sight`), mais c'est du travail lourd à chaque image. Parade : ne lire la valeur que dans les effets
-  (`snapshotFlow`) et passer l'état, pas sa valeur, à `TutoNotesLeft` (lu dans son `derivedStateOf`).
-- `PianoRoll.kt:743` : `spots.coverTop` est un simple `var` (`Spotlight.kt:74`), pas un état. Si le panneau du tuto
-  change de hauteur sans que le rouleau bouge (consigne plus longue à l'étape suivante, panneau replié/déplié), le
-  rappel de position du rouleau ne repart pas et `rollSight` garde l'ancien haut du panneau : le placement de l'étape
-  suivante (et la flèche ↑/↓) se fait sur des rangées qui ne sont plus visibles. Plausible, non prouvé ; les tests
-  n'ouvrent qu'une étape sans changer le panneau.
+- Ouverts de la relecture précédente, code inchangé par le delta :
+  - `RhythmScreen.kt:717` (U6, chemin « peindre ») éteint « Suivre » sans condition de lecture, contrairement au toucher (l. 804).
+  - `PianoRoll.kt:371` : `rollSight.value` lu en composition, recomposition du rouleau à chaque image pendant un défilement de page.
+  - `PianoRoll.kt:744` : `spots.coverTop` n'est pas un état, `rollSight` peut garder un ancien haut de panneau.
 
 ## Mineur
-- `PianoRoll.kt:1330` : `y(hidden.first()) < from` prend la première note cachée d'une liste non triée ; avec des
-  notes cachées à la fois au-dessus et au-dessous, la flèche ↑/↓ dépend de l'ordre des pointillés.
-- `PianoRoll.kt:1371` (N8) : le compte « touches = départs distincts » suppose qu'un toucher en mode Accords pose
-  exactement l'accord en pointillé ; si l'accord de l'harmonie diffère (renversement), le compteur ne baisse pas.
-  Non vérifié dans ce lot.
-- `TutoGrilleTest.kt:42` : l'`@After` remet `cells` et `notes` mais pas `TutoHints.step` (le test T11 y écrit
-  « …_next ») ni `page` ; `active` est remis par `AppRoot` à la fermeture. Même schéma que `TutoScreenTest`, fuite
-  possible d'état global entre classes Robolectric.
-- Rapport, N8 : « 16 → 4 en house » alors que le verdict parle de 36 notes pour 9 accords ; le test ne vérifie que la
-  règle (N touches, pas N notes), pas ces nombres. Préciser le niveau ou retirer les chiffres.
-- Rapport, T4 pads / T15 : « déjà tenu » est bien présenté comme garde-fou sans rouge, et le test accepte une aide
-  des pads « défilée hors de vue » (`help.height <= 1f`) : formulation exacte, rien de plus fort que la preuve.
-- Rapport, N8 : l'affirmation porte bien sur « Accords » allumé (le test l'allume) ; hors mode Accords le compteur
-  reste en notes, ce qui est voulu (un toucher = une note).
-- Défilement « jamais tout seul » hors tuto : respecté (le défilement horizontal de T11 est sous
-  `TutoHints.active`, le placement vertical ne joue que comme avant). Rien à redire.
+- Le rapport dit « la ligne de plus poussait la grille hors de l'écran ». La page défile : la grille restait atteignable
+  en faisant défiler, elle sortait de la zone touchée par le banc et du premier écran. La conclusion (refuser la v1)
+  tient, la formule est un peu forte. Le message de commit dit « real regression: no grid in sight », même nuance.
+- Aucun test du lot ne garde « la grille dans le premier écran en Simple à 360 dp » : seul le test du banc le couvre
+  (de façon indirecte, par ses touchers). Acceptable, il tourne dans le self-test du portail.
+- Rapport et décision v2 disent vrai : « Effacer », « En rythme 50 % », « 100 % » restent au bout de la rangée qui
+  défile (visible sur la capture : « En rythm… » sous le fondu), noté « hors lot, famille R19 » ; la v1 annonçait aussi
+  « Effacer » plus coupé, la v2 ne le prétend plus. Décision datée, raison et retour arrière présents.
+- Ouverts de la relecture précédente : `PianoRoll.kt:1331` (flèche ↑/↓ sur la 1re note cachée d'une liste non triée),
+  N8 (accord renversé non compté), `TutoGrilleTest` `@After` ne remet pas `TutoHints.step`/`page`, chiffres N8 du
+  rapport non prouvés par le test.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

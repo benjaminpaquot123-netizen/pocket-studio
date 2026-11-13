@@ -271,6 +271,23 @@ class Tour6Tuto4TechnoTest {
         report("gaps that do not name their pad", bad)
     }
 
+    /**
+     * Round trip 2 after Bb-6, hesitations (ch. 5 and 7): « Régler le son de la piste » was said « sous le piano roll »,
+     * while its button sits above the notes and reads « Régler le son de la piste ↓ » (SynthScreen); each step quotes it
+     * as it reads, in every language.
+     */
+    @Test
+    fun theSoundButtonIsSaidAsItReads() {
+        val bad = ArrayList<String>()
+        val button = "Régler le son de la piste"
+        for (s in steps) for (fr in texts(s).filter { button in it }) {
+            if ("sous le piano roll" in fr) bad += "fr ${s.id}: « sous le piano roll », the button is above the notes: $fr"
+            if (!quotes(fr, "$button ↓")) bad += "fr ${s.id}: not « $button ↓ »: $fr"
+            for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, button) + " ↓")) bad += "${l.code} ${s.id}: not « ${tr(l, button)} ↓ »: $t" }
+        }
+        report("steps that say the sound's button otherwise than it reads", bad)
+    }
+
     companion object {
         private const val OPEN = "«“„「『\"‘"
         private const val CLOSE = "»”“」』\"’"

@@ -1,0 +1,83 @@
+Écran 212 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: F · Build-up » @ 132,273
+titre « STEPS: CLAP · BUILD-UP » [coupé, état « Aufgeklappt »] @ 362,319
+bouton « ? » [coupé] @ 435,319
+bouton « Alle Pads » [coupé] @ 770,320
+bouton « 1 » @ 143,400
+bouton « 2 » @ 224,400
+bouton « 3 » @ 305,400
+bouton « 4 » [sélectionné] @ 386,400
+bouton « Folgen » @ 502,400
+texte « Takt » @ 70,400
+texte « Takt 4/4 · Clap » @ 148,484
+bouton « ×2 1 » [état « Schlag, Stärke 90 %, 2 Wiederholungen »] @ 90,569
+bouton « ×2 » [état « Schlag, Stärke 91 %, 2 Wiederholungen »] @ 192,569
+bouton « ×2 » [état « Schlag, Stärke 92 %, 2 Wiederholungen »] @ 294,569
+bouton « ×2 » [état « Schlag, Stärke 93 %, 2 Wiederholungen »] @ 397,569
+bouton « ×2 2 » [état « Schlag, Stärke 93 %, 2 Wiederholungen »] @ 500,569
+bouton « ×2 » [état « Schlag, Stärke 94 %, 2 Wiederholungen »] @ 603,569
+bouton « ×2 » [état « Schlag, Stärke 95 %, 2 Wiederholungen »] @ 706,569
+bouton « ×2 » [état « Schlag, Stärke 96 %, 2 Wiederholungen »] @ 809,569
+bouton « ×2 3 » [état « Schlag, Stärke 97 %, 2 Wiederholungen »] @ 90,650
+bouton « ×2 » [état « Schlag, Stärke 98 %, 2 Wiederholungen »] @ 192,650
+bouton « ×2 » [état « Schlag, Stärke 98 %, 2 Wiederholungen »] @ 294,650
+bouton « ×4 » [état « Schlag, Stärke 99 %, 4 Wiederholungen »] @ 397,650
+bouton « 4 » [état « leer »] @ 500,650
+bouton [état « leer »] @ 603,650
+bouton [état « leer »] @ 706,650
+bouton [état « leer »] @ 809,650
+bouton « Schläge » [sélectionné] @ 122,736
+bouton « Rolls » @ 265,736
+bouton « Panorama » @ 421,736
+bouton « Tonhöhe » @ 604,736
+bouton « Velocity » @ 774,736
+texte « alles » @ 163,820
+texte « 1/2 » @ 246,820
+texte « 1/4 » @ 321,820
+texte « ◀ » @ 396,820
+texte « ▶ » @ 471,820
+texte « Löschen » @ 581,820
+texte « Füllen » @ 79,820
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,922
+texte « Länge » [coupé] @ 83,1018
+bouton « 1 Takt » [coupé] @ 196,1016
+bouton « 2 » [coupé] @ 305,1016
+bouton « 3 » [coupé] @ 386,1016
+bouton « 4 » [coupé, sélectionné] @ 467,1016
+texte « Die Effekte Kapitel 13/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Tippe auf das Pad „Clap“, dann unter seinem Raster auf „Pad-Effekte“: Dreh den „Reverb-Send“ auf. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

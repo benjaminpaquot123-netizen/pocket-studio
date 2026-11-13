@@ -1,0 +1,52 @@
+Écran 31 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+curseur [état « Mitte », à 50 %] @ 450,345
+bouton (dossier ouvert) «  Importieren » @ 243,429
+bouton (micro) «  Mikro » @ 657,429
+texte « Ordner » @ 704,513
+texte « .zip » @ 814,513
+texte « Pack auf die nächsten Pads: » @ 340,513
+texte « 1 Takt » [coupé] @ 457,582
+texte « 2 Takte » [coupé] @ 592,582
+texte « 4 Takte » [coupé] @ 739,582
+texte « Den ganzen Song einfangen: » [coupé] @ 216,589
+texte « Die Kick und das Grollen Kapitel 2/16 · Schritt 2/4 · Pro » @ 366,649
+icône (liste) « Kapitel » @ 759,650
+icône ⌄ @ 843,650
+texte « Hör dir die Techno-Kick allein an: ein trockener, tiefer Schlag auf jedem Schlag. » @ 450,761
+texte « Das Kit Techno » @ 139,857
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,923
+texte « ▸ Warum? » @ 450,997
+icône « Weiterlesen » ⌄ @ 450,1051
+bouton ■ «  Anhören stoppen » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

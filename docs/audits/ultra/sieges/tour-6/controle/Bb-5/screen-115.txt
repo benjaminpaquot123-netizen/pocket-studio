@@ -1,0 +1,55 @@
+Écran 115 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+dessin [coupé] @ 450,307
+texte « Cutoff » [coupé] @ 432,307
+texte « 53 » [coupé] @ 831,306
+curseur [état « 53 », à 52 %] @ 450,351
+dessin @ 450,428
+texte « Morph » @ 432,428
+texte « 20 » @ 840,429
+curseur [état « 20 », à 20 %] @ 450,497
+dessin @ 450,565
+texte « Decay » @ 432,565
+texte « 35 » @ 840,566
+curseur [coupé, état « 35 », à 35 %] @ 450,629
+texte « Der Bass Kapitel 5/16 · Erledigt · Pro » @ 366,695
+icône (liste) « Kapitel » @ 759,696
+icône ⌄ @ 843,696
+image (coupe) @ 57,830
+texte « Bravo, Kapitel geschafft! » @ 259,793
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Der Stab (Akkorde)“. » @ 475,850
+texte « Das Kit Techno » @ 139,948
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,1014
+bouton « Kit Techno laden (4 MB) » [coupé] @ 450,1061
+icône « Weiterlesen » ⌄ @ 450,1097
+bouton « Nächstes Kapitel   » → @ 450,1169
+bouton ▶ «  Meinen Song anhören » @ 251,1267
+icône ← @ 57,1267
+bouton ▶ «  Beispiel anhören » @ 558,1267
+icône « Weiter  » → @ 798,1267
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

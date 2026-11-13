@@ -1,0 +1,53 @@
+Écran 126 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « Pattern gesetzt! Der Rest wird kopiert: » [coupé] @ 319,315
+bouton « Kopieren » [coupé] @ 763,312
+texte « Takt » @ 84,355
+bouton « 1 » @ 486,363
+bouton « 2 » [coupé] @ 853,363
+texte « B » [coupé] @ 84,413
+texte « A » @ 84,452
+texte « A♭ » @ 84,494
+texte « G » @ 84,536
+texte « G♭ » [coupé] @ 84,574
+dessin [coupé] @ 492,494
+texte « Der Stab (Akkorde) Kapitel 6/16 · Schritt 2/2 · Pro » @ 366,642
+icône (liste) « Kapitel » @ 759,643
+icône ⌄ @ 843,643
+texte « Du bist dran: „Auf die nächsten Takte kopieren“, dann schreib Takt 4 auf G♭-Dur (die ♭II) und nochmal „Kopieren“. » @ 450,754
+texte « Das Kit Techno » @ 139,850
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,916
+texte « ▸ Warum? » @ 450,990
+icône « Weiterlesen » ⌄ @ 450,1044
+bouton ⊕ «   Auf die nächsten Takte kopieren » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

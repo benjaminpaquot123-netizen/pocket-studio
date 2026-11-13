@@ -1,0 +1,59 @@
+Écran 156 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Plaits » ⋮ @ 705,204
+icône ♪ « Sound » [coupé] @ 850,205
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton ◎ « Bassdrum Analoge Kick » [coupé] @ 174,335
+bouton ◎ « Snare Analoge Snare » [coupé] @ 450,335
+bouton ◎ « Hi-Hat Analoge Hi-Hat » [coupé] @ 726,335
+dessin @ 450,412
+texte « Resonanz » @ 432,412
+texte « 82 » @ 831,413
+curseur [état « 82 », à 81 %] @ 450,469
+dessin @ 450,555
+texte « Cutoff » @ 432,555
+texte « 82 » @ 831,556
+curseur [état « 82 », à 81 %] @ 450,612
+dessin @ 450,689
+texte « Morph » @ 432,689
+texte « 70 » @ 840,690
+curseur [état « 70 », à 70 %] @ 450,758
+dessin @ 450,826
+texte « Decay » @ 432,826
+texte « 70 » @ 840,827
+curseur [état « 70 », à 70 %] @ 450,895
+dessin @ 450,963
+texte « Farbe » @ 432,963
+texte « 50 » @ 840,964
+curseur [état « 50 », à 50 %] @ 450,1032
+dessin [coupé] @ 450,1093
+texte « Release » [coupé] @ 432,1093
+texte « 30 » [coupé] @ 840,1095
+texte « Das Riff Kapitel 7/16 · Erledigt · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

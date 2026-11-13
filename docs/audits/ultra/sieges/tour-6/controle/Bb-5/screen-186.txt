@@ -1,0 +1,48 @@
+Écran 186 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/8 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+bouton « Song-Akkorde B · Intro Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm Tippe, um die Akkorde des ganzen Songs zu ändern. » @ 450,280
+icône ▶ « B · Intro × 1  ·  8 Takte » @ 342,414
+icône − [désactivé] @ 678,414
+icône + @ 750,414
+icône ⋮ @ 822,414
+texte « Am Ende hinzufügen: » @ 184,488
+bouton « + A · Groove » @ 163,557
+bouton « + B · Intro » @ 395,557
+bouton « + C · Intro 2 » @ 623,557
+bouton « + D · Drop » @ 146,638
+bouton « + E · Break » @ 369,638
+bouton « + F · Build-up » @ 615,638
+bouton « + G · Drop 2 » @ 159,719
+bouton « + H · Ende » @ 391,719
+bouton « + Neuer Teil (Kopie von H · Ende) » @ 303,800
+bouton « + Neuer leerer Teil » @ 205,881
+bouton (barres de son) «   Was im Song spielt » @ 450,965
+titre « SONG-EINSTELLUNGEN » [coupé, état « Aufgeklappt »] @ 450,1023
+texte « Ordne deine Teile Kapitel 11/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Füg in „Struktur“ der Reihe nach Intro, Intro 2, Drop, Break, Build-up, Drop 2 und Ende hinzu (jeder Teil kommt mit der Länge seines Loops, 8 Takte oder 4 fürs Build-up; der nächste Schritt stellt die Längen ein). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

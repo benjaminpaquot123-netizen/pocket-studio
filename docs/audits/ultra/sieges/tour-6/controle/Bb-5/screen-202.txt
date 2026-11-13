@@ -1,0 +1,79 @@
+Écran 202 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+image → @ 871,204
+texte « Teil: F · Build-up » @ 132,273
+texte « Takt 4/4 · Hi-Hat » [coupé] @ 161,307
+texte « 2 Schläge zu viel hier (durchgestrichen) » @ 334,334
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,404
+bouton [état « Schlag, Stärke 100 % »] @ 192,404
+bouton [état « leer »] @ 294,404
+bouton [état « Schlag, Stärke 100 % »] @ 397,404
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,404
+bouton [état « Schlag, Stärke 100 % »] @ 603,404
+bouton [état « leer »] @ 706,404
+bouton [état « Schlag, Stärke 100 % »] @ 809,404
+bouton « 3 » [état « Schlag, Stärke 100 % »] @ 90,485
+bouton [état « Schlag, Stärke 100 % »] @ 192,485
+bouton [état « leer »] @ 294,485
+bouton [état « Schlag, Stärke 100 % »] @ 397,485
+bouton « 4 » [état « leer »] @ 500,485
+bouton [état « Schlag, Stärke 100 %, durchgestrichen: wegnehmen »] @ 603,485
+bouton [état « leer »] @ 706,485
+bouton [état « Schlag, Stärke 100 %, durchgestrichen: wegnehmen »] @ 809,485
+bouton « Schläge » [sélectionné] @ 122,571
+bouton « Rolls » @ 265,571
+bouton « Panorama » @ 421,571
+bouton « Tonhöhe » @ 604,571
+bouton « Velocity » @ 774,571
+texte « alles » @ 163,655
+texte « 1/2 » @ 246,655
+texte « 1/4 » @ 321,655
+texte « ◀ » @ 396,655
+texte « ▶ » @ 471,655
+texte « Löschen » @ 581,655
+texte « Füllen » @ 79,655
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,757
+texte « Länge » @ 83,859
+bouton « 1 Takt » @ 196,859
+bouton « 2 » @ 305,859
+bouton « 3 » @ 386,859
+bouton « 4 » [sélectionné] @ 467,859
+texte « − » @ 386,943
+texte « + » [désactivé] @ 594,943
+texte « Dieses Pad loopt über » @ 188,943
+texte « 64 Steps » @ 490,943
+texte « Die Übergänge Kapitel 12/16 · Schritt 2/3 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Lösch im Teil „Build-up“, letzter Takt, die Schläge des letzten Schlags (tippe auf jedes rote Kreuz): ein Schlag Stille direkt vor Drop 2. Das ist ein Übergang (die kleine Stelle, die den nächsten Teil ankündigt). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

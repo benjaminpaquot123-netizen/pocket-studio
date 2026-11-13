@@ -1,0 +1,32 @@
+Écran 245 (900x1509)
+dessin @ 450,85
+texte « Bereit zum Teilen? » @ 414,157
+icône ✕ @ 834,157
+champ « Name des Songs (und des Projekts) » contenu « Mein Song » @ 450,266
+icône ✕ @ 834,274
+texte « „Teilen“ benennt auch das Projekt „Mein Projekt 1“ um. » @ 357,357
+texte « 3:53 » @ 71,415
+texte « 7 Teile » @ 170,417
+bouton ▶ «  Anhören » @ 758,452
+texte « Lautstärke: −14,3, wie Streaming-Musik (−14) » @ 257,474
+texte « Details » @ 538,474
+bouton « ? » @ 612,474
+texte « Ziel-Lautheit » @ 114,549
+bouton « ? » @ 219,549
+bouton « Streaming · −14 LUFS » @ 201,613
+bouton « Club · −8 LUFS » [sélectionné] @ 508,613
+bouton « Auto (Stil) · −9 LUFS » @ 192,694
+bouton « Aus » @ 414,694
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. Dieselbe Einstellung wie in Mix. » @ 450,790
+image (rond coché) @ 45,879
+texte « Alles bereit: kein Solo vergessen, keine Spur stumm. » @ 472,882
+bouton (clap de cinéma) «   Video für Social Media · 30 s » @ 450,957
+bouton (notes sur une pile) « Weitere Dateien Spur für Spur, MIDI, FLAC… in Mix » › @ 428,1053
+bouton « ? » @ 848,1053
+bouton (boîte, flèche vers le bas) « Song als .zip sichern Für ein anderes Gerät oder als Sicherungskopie » › @ 428,1155
+bouton « ? » @ 848,1155
+bouton « M4A · zum Teilen » [sélectionné] @ 173,1251
+bouton « WAV · max. Qualität » @ 487,1251
+bouton (trois points reliés) «   Teilen » @ 450,1347
+bouton (dossier) « Meine Dateien Finden und erneut senden: M4A, WAV, Video, .zip » › @ 428,1449
+bouton « ? » @ 848,1449

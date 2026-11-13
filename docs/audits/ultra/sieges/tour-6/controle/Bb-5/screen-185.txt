@@ -1,0 +1,48 @@
+Écran 185 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+texte « Hinzufügen: » [coupé] @ 123,180
+bouton « + A · Groove » @ 163,246
+bouton « + B · Intro » @ 395,246
+bouton « + C · Intro 2 » @ 623,246
+bouton « + D · Drop » @ 146,327
+bouton « + E · Break » @ 369,327
+bouton « + F · Build-up » @ 615,327
+bouton « + G · Drop 2 » @ 159,408
+bouton « + H · Ende » @ 391,408
+bouton « + Neuer Teil (Kopie von H · Ende) » @ 303,489
+bouton « + Neuer leerer Teil » @ 205,570
+bouton (barres de son) «   Was im Song spielt » @ 450,654
+titre « SONG-EINSTELLUNGEN » [état « Aufgeklappt »] @ 450,720
+texte « Am Ende: » @ 105,786
+bouton « stoppen » [sélectionné] @ 261,786
+bouton « neu anfangen » @ 469,786
+texte « Beim Abspielen: » @ 148,870
+bouton « dem Song folgen » [sélectionné] @ 408,870
+bouton « bei meinem Teil bleiben » @ 227,942
+texte « Die Bildschirme zeigen den Teil, der gerade spielt. » @ 342,1008
+texte « Ordne deine Teile Kapitel 11/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Füg in „Struktur“ der Reihe nach Intro, Intro 2, Drop, Break, Build-up, Drop 2 und Ende hinzu (jeder Teil kommt mit der Länge seines Loops, 8 Takte oder 4 fürs Build-up; der nächste Schritt stellt die Längen ein). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

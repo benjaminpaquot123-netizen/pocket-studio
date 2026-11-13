@@ -119,3 +119,5 @@ Essais à blanc, en lecture seule : ce lot passe sa propre règle (`--lot eq/tou
 - Aucune demande Kotlin : le banc joue `<human.dir>/<a-f>` quel que soit le chemin.
 
 Re-garde (2026-11-13) : les règles de ce lot valent à partir du paquet 6 (`from_paquet 6`), parce que le paquet 5 s'est ouvert avant sa fusion ; rien d'autre ne change.
+
+Re-garde (2026-11-13, nuit) : le paquet 7 s'est ouvert (53e8e0bff) avant la fusion de ce lot ; ses deux règles (sortie 11 et « rejoué » posé par le portail) valent donc à partir du paquet 8 (`from_paquet 8`, pré-vol `rule_from 8`, `KNOWN_RULES="18 b5d9c7711c"`). Les mentions « paquet 6 » plus haut sont l'histoire du lot. L'intégration (paquet7 entré, 05ca92461) est fusionnée dans la branche ; la règle du tuto y vaut au paquet 7. Paire : « rouge: the repairs register rules wait for batch 8 » puis « vert: … ».

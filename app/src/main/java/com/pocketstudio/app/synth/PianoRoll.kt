@@ -117,6 +117,21 @@ internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordM
     if (!chordMode) listOf(dotted)
     else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
 
+/**
+ * The dotted note a tap means while the tutorial shows some: the one under the tap ([tick] in its span, same row),
+ * or — when the tap just missed it — the nearest one still to write, within one step in time and one row in pitch.
+ * A tutorial's dotted note drawn as a sliver at the view's edge (control seat, tuto Facile, chapter 7: the last
+ * dotted note half off the right edge) is a tiny target; a tap a hair off it must still write the note the tutorial
+ * asked for, not a parasite one beside it (six gestures to undo). Null: no dotted note near enough (a free tap).
+ * [left]: the dotted notes not written yet.
+ */
+internal fun tutoTapTarget(tick: Int, pitch: Int, left: List<Note>): Note? {
+    left.firstOrNull { it.pitch == pitch && tick in it.start until it.end }?.let { return it }
+    fun timeGap(n: Note) = when { tick < n.start -> n.start - tick; tick >= n.end -> tick - n.end + 1; else -> 0 }
+    return left.filter { kotlin.math.abs(it.pitch - pitch) <= 1 && timeGap(it) <= TICK }
+        .minByOrNull { timeGap(it) + kotlin.math.abs(it.pitch - pitch) * TICK }
+}
+
 private const val LOW = 24   // C1
 private const val HIGH = 108 // C8: the top of a piano, where the keyboard's highest octaves still write
 /** A row (a semitone) on a phone, and on a tablet where fingers aim at a single row. */
@@ -216,9 +231,17 @@ fun PianoRoll(
     // Lot « tuto-flèches » (seats H a and D a, the riff after the chords): a step of the tutorial whose dotted notes come one
     // at a time begins with « Accords » off (it stayed on from the chords' step: a touch beside a dotted note wrote a chord,
     // and nothing said why). Once a step: turned on again by the user, it stays.
+    // Tour 6 (review of lot « tuto-flèches »): turned off once per step; the roll coming back on the same step turned
+    // off the « Accords » the user had turned on.
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
     val singleNotes = hints.isNotEmpty() && hints.groupBy { it.start }.all { it.value.size == 1 }
-    LaunchedEffect(tutoStep, singleNotes) { if (singleNotes && com.pocketstudio.app.tuto.TutoHints.active) chordMode = false }
+    var chordOffFor by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(tutoStep, singleNotes) {
+        if (singleNotes && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordOffFor != tutoStep) {
+            chordMode = false
+            chordOffFor = tutoStep
+        }
+    }
     var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }
     // Owner (lot « tuto 5 », É8): a pinch zooms the time and the notes, « Tout voir » frames every note; the zoom
     // stays the user's (0: not chosen yet, a bar fits the width). Nothing scrolls nor zooms by itself.
@@ -922,7 +945,11 @@ private fun Grid(
                                     select(emptySet())
                                 } else if ((up.position - down.position).getDistance() < slop) {
                                     val tick = tickAt(down.position.x)
-                                    val dotted = hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
+                                    // While the tutorial shows dotted notes, a tap snaps to the one it means even if the finger
+                                    // was a hair off a note drawn as a sliver at the edge; else the exact note under the tap.
+                                    val dotted = if (com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty())
+                                        tutoTapTarget(tick, pitchAt(down.position.y), hints.filter { h -> clip.notes.none { it.pitch == h.pitch && it.start == h.start } })
+                                    else hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
                                     val start = tick / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
                                     // A dotted note of the tutorial touched: written as it is (its length, its place); with
@@ -1403,10 +1430,21 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, way),
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),
+            )
+        }
+        // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
+        // brings the note into view: said on the line while it points away.
+        if (copy == null && way != null && left.isNotEmpty()) {
+            Text(
+                tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = Neon.OnAccent, maxLines = 1, softWrap = false,
+                modifier = Modifier.padding(start = 6.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Neon.Amber)
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
             )
         }
         if (copy != null) {

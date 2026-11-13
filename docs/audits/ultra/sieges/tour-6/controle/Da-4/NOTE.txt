@@ -1,0 +1,1 @@
+Control seat D a, run 4, before the portal of lot tuto3 (coordinator request, 2026-11-13): code e4286b40 (origin/eq/tour-6-tuto3), local lot lotDcontrole4 (gestes.max=300, timeout.minutes=120), fresh sub-agent reading only the testers instructions and the screens. Text files only.

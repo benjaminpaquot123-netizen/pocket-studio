@@ -45,7 +45,7 @@ Laissés de côté :
 - T2 : avec le kit d'un style téléchargé, un pad peut afficher le nom du son du pack (non vérifiable ici) ; le nom donné au pad au téléchargement est au lot 6.
 
 ## Captures regardées
-Voir plus bas, après la vérification finale.
+`verifyRoborazziDebug` sur tous les tests de captures après la fusion de l'intégration : 19 écarts. Les 10 du tuto viennent du lot et sont regardées (images de comparaison) puis enregistrées : « Chapitres » sous l'icône de liste (le chapeau décoratif retiré, le titre garde une ligne à 100 %), « ▸ Pourquoi ? » puis « Lire la suite » sous le texte, jamais coupés, aucun vide quand le texte tient, plan du morceau lisible, boutons encadrés de la carte de fin, panneau pas plus haut qu'avant (Facile et Pro, 100 % et 130 % de droite à gauche). Les 9 autres (`nl_nav_*`, `fr_guide_simple`, `fr_simple_mix`, `folded_cards`) ne viennent pas du lot (coche « ✓ » sur le dossier, livrée par l'intégration) : pas réenregistrées ici. Une première version du panneau élargissait l'en-tête et gardait un vide sous « Pourquoi ? » : vue sur ces captures, corrigée (`Tour6TutoPanelFit*`).
 
 ## Chemins
 chemin: tuto Facile et Pro › étape à écouter passée par Suivant | test: Tour6TutoPanelListenSkipTest#suivantOnEveryExampleLeavesNoneForTheEnd

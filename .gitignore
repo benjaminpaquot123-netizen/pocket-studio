@@ -12,3 +12,5 @@ signing/*.jks
 __pycache__/
 # Passwords never go in the repository (signing, upload): keep them outside it.
 *password*.txt
+# A seat's state (projects, preferences, shared files) never goes in git: a seat gives back text only (AUDIT-ULTRA §13.4).
+docs/audits/ultra/sieges/**/etat/

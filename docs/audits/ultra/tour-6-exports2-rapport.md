@@ -53,12 +53,13 @@ Fichiers touchés : `app/src/main/java/com/pocketstudio/app/export/ShareSheet.kt
 
 ## Tests
 
-tests: `app:testDebugUnitTest --tests 'com.pocketstudio.app.export.Tour6Exports*'` (+ `Lot6UiShareLevelTest`).
-- chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest (E1 chips + chiffre)
-- chemin: page Partager (Mode simple) | test: Tour6ExportsOtherFilesClearTest (E3)
-- chemin: Mes fichiers | test: Tour6ExportsNameWrapTest (E4)
-- chemin: page Partager, ligne projet | test: Tour6ExportsSaveLabelTest (E6)
-- chemin: page Partager (Mode simple), niveau | test: Lot6UiShareLevelTest (mis à jour au nouveau format E1)
+tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.export.Tour6Exports*' --tests 'com.pocketstudio.app.export.Lot6UiShareLevelTest'
+chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimplePageOffersStreamingAndClubWithoutGoingPro
+chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetTest#theSimpleLevelLineCarriesTheFilesNumber
+chemin: page Partager (Mode simple) | test: Tour6ExportsOtherFilesClearTest#theOtherFilesLineCanClearTheFadeBand
+chemin: Mes fichiers | test: Tour6ExportsNameWrapTest#aLongNameStaysOnOneLineLikeAShortOne
+chemin: page Partager, ligne projet | test: Tour6ExportsSaveLabelTest#theProjectZipLineIsNamedAfterWhatItDoesWhichIsToSend
+chemin: page Partager (Mode simple), niveau | test: Lot6UiShareLevelTest#theSimpleLevelIsTheExportsTarget
 
 Note (conditions) : ces tests sont des tests d'écran (Robolectric), ils ne valent pas la preuve « dans
 les conditions du siège, appli entière, par le banc » : état « tenté » jusqu'au rejeu d'un testeur neuf.

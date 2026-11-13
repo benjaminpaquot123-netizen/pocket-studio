@@ -1,0 +1,9 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+session/tab_simple_Morceau
+plus
+?
+dialogue:remix_model_ask
+dialogue:song_import
+dialogue:« Tu bucle se convierte en un te »

@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -192,7 +194,7 @@ class TutoController(
     private val pauseMusic: () -> Unit = {},
     private val worker: CoroutineDispatcher = Dispatchers.Default,
     /** Detection waits for the edits to settle (a stroke of cells). */
-    debounceMs: Long = 250,
+    private val debounceMs: Long = 250,
     /** « Montre-moi »'s frames ([TutoDemo.frames]) shown and heard; null: the project as it was. */
     private val demoShow: (Project?) -> Unit = {},
     private val demoSound: (TutoSound) -> Unit = {},
@@ -223,9 +225,16 @@ class TutoController(
     /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
     private var arrived: Project? = null
 
+    /**
+     * The looks at the project asked for and not begun ([look]): one waits at most (a second request meanwhile is the
+     * same look), and [looks] makes them one at a time.
+     */
+    private val asked = Channel<Unit>(Channel.CONFLATED)
+
     init {
         store.load(projectId)?.let(::show)
-        scope.launch { project.debounce(debounceMs).collect { check(it) } }
+        scope.launch { project.debounce(debounceMs).collect { look() } }
+        scope.launch { looks() }
     }
 
     /** The tutorial was saved for this project but quit: « Reprendre le tuto » can bring it back. */
@@ -535,7 +544,7 @@ class TutoController(
         // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
         // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).
         if (!TutoChecks.done(step, p, t, base()) && TutoChecks.need(step, p, t, base()) == null) _ui.value = _ui.value?.copy(open = false)
-        scope.launch { check(project.value) }
+        look()
     }
 
     /**
@@ -600,7 +609,7 @@ class TutoController(
                 val back = step.manual || step.spot.isEmpty() || _ui.value?.need != null
                 if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null, open = it.open || (back && it.current.id == step.id)) }
                 demoJob = null
-                scope.launch { check(project.value) }
+                look()
             }
         }
         return true
@@ -735,7 +744,7 @@ class TutoController(
         target = TutoTarget.of(p.style) ?: return
         if (!p.active) return
         save(p, chapters = course.chaptersFor(p.level))
-        scope.launch { check(project.value) }
+        look()
     }
 
     /** [p] saved and shown on its current step (the first not done when none is named); a new step opens the panel, its « Bravo » kept while it stays. */
@@ -769,7 +778,7 @@ class TutoController(
             note = noteFor(step, project.value),
         )
         // A step already done when it is reached (the key already right) is ticked at once.
-        if (moved && before != null) scope.launch { check(project.value) }
+        if (moved && before != null) look()
     }
 
     /**
@@ -790,18 +799,52 @@ class TutoController(
         save(u.progress.copy(done = done, current = next.id), bravo = bravo && !moveOn && u.current.id in ids, atEnd = moveOn && after == null)
     }
 
-    /** Every step whose detector holds now is ticked (a "changed:…" one only while it is shown); never during « Montre-moi ». */
-    private suspend fun check(p: Project) {
-        val u = _ui.value ?: return
-        val t = target ?: return
-        if (u.demo != null || demoJob != null) return
+    /**
+     * Asks for a look at the project ([check]) as it will be when the look begins: at once when none is under way, else
+     * once that one has answered. Never two at a time, never an answer out of its turn (CI 43425565244, 43448175188,
+     * 43449478539: the looks were launched from each place that wanted one and worked side by side; on a slow phone an
+     * answer about a project that was no more came last and took back what a newer one had said: « Déjà fait » lost,
+     * the song's order never said, « Copier sur les mesures suivantes » gone until the next note).
+     */
+    private fun look() {
+        asked.trySend(Unit)
+    }
+
+    /**
+     * The looks asked for ([look]), one at a time. A look whose answer no longer counts ([check]: the step, the progress
+     * or the project moved while it worked) is made again, on what is there now; a project that moved is looked at once
+     * its edits have settled, as any edit is. A look that ticked steps is made again too: what is left on the step
+     * shown (its button, its words) is said by a look that finds nothing new.
+     */
+    private suspend fun looks() {
+        while (true) {
+            asked.receive()
+            while (true) {
+                val p = project.value
+                if (check(p)) break
+                if (project.value.let { it !== p && it != p }) project.debounce(debounceMs).first()
+            }
+        }
+    }
+
+    /**
+     * Every step whose detector holds now is ticked (a "changed:…" one only while it is shown); never during « Montre-moi ».
+     * False: this look is to be made again ([looks]).
+     */
+    private suspend fun check(p: Project): Boolean {
+        val u = _ui.value ?: return true
+        val t = target ?: return true
+        if (u.demo != null || demoJob != null) return true
         val base = base()
         val (found, need) = withContext(worker) {
             u.chapters.flatMap { it.steps }.filter { s ->
                 s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoChecks.done(s, p, t, base)
             }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
         }
-        if (_ui.value?.progress?.style != u.progress.style || _ui.value?.demo != null) return
+        // The tutorial quit, or « Montre-moi » begun meanwhile (its end asks for a look): nothing to say.
+        val now = _ui.value?.takeIf { it.demo == null } ?: return true
+        // The answer is about the step, the progress and the project it began on: one of them moved, it counts no more.
+        if (now.progress != u.progress || target !== t || project.value.let { it !== p && it != p }) return false
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
         if (found.isNotEmpty()) {
             tick(found, advance = false, bravo = true)
@@ -822,6 +865,7 @@ class TutoController(
             val said = if (wanted != have) orderText(u.current, p) else null
             if (said != null && _ui.value?.made != said) _ui.value = _ui.value?.copy(made = said)
         }
+        return found.isEmpty() || _ui.value?.progress == u.progress
     }
 
     private fun audible(pcm: FloatArray): Boolean {

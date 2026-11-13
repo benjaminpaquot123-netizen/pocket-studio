@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : 6af680f4d02aec44bd2cf03cdc0a45c6b790b2fd
+Relu : 82cf731892e5c69eb5407e9387f27ce1e24426bd
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -48,5 +48,25 @@ Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou d
 - **mineur** : `loopsOn` (`LiveScreen.kt:707`) et `PadLiveUi.soundsNow` (`PadLiveScreen.kt:136`) recopient la même règle à deux endroits. Si l'une change sans l'autre (par exemple pour un futur mode de pad), les deux barres ne diront plus la même chose. Une fonction commune, par exemple dans `PadLive`, éviterait cet écart.
 - `PadLivePlayShowsTest#theBricksPageSaysTheSame` : le test prouve la correction. Avant elle, le bouton disait « Jouer » et le toucher envoyait « play ». Aucun test ne joue en revanche le cas « coup qui résonne » sur la page Live : c'est mineur, puisque la règle est la même que celle déjà testée par `aHitRingingKeepsPlay`.
 - `BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone` (adaptation de ee4c2a92, inchangée depuis) : je le juge **non affaibli** pour ce qu'il prouvait du ■ de la barre. Il vérifie toujours que le moteur reçoit `toggleClip -1`, que les pads se taisent et que le voyant s'éteint, et il ajoute que le transport reste arrêté, puis le cycle ▶/■. **mineur** : un sous-chemin n'est plus joué au banc, celui où le ■ du transport en route coupe aussi une boucle (`BenchPadLiveStopTest` passe par « Tout couper », pas par ce bouton). On pourrait le remettre en quelques gestes : pad, ▶, ■, puis vérifier.
+
+Verdict : 0 bloquant, 0 grave
+
+## Reprise sur 82cf7318 (`git diff 61769181..82cf7318 -- app/src/main project-model/src app/src/test`, fusion 82cf7318 ignorée : une ligne de `scripts/bench`)
+
+P4, plein écran des pads (`a155a357` rouge, `86faca39` vert) :
+- `LivePadsFullScreen.kt:196-199` : juste. Le bouton du haut reçoit `playing || ui.loopsOn()` et, transport arrêté avec des boucles seules, son toucher appelle `actions.stopAll` ; transport en route, il garde `togglePlay`. Même règle que `LiveTopBar` (`LiveScreen.kt:436`) et que `PadLiveUi.soundsNow`, donc les trois barres disent la même chose. `togglePlay` nul : le bouton reste caché, comme avant. L'horloge des pads (`active`, ligne 167) comptait déjà tout pad allumé, rien ne change de ce côté.
+- `PadLivePlayShowsTest#thePadsFullScreenSaysTheSame` prouve la correction : sans elle, le bouton dit « Lecture » (l'assertion « Arrêter » échoue) et le toucher envoie « play ».
+- **mineur** : aucun test du cas « coup qui résonne » ni « transport en route + boucles » sur ce plein écran ; la règle est la même que celle testée ailleurs (`aHitRingingKeepsPlay`), le risque est faible.
+
+P3, longueur d'une boucle avec ses briques (`8cfec2b6` rouge, `41b7c2f5` vert) :
+- `SongLength.kt:25-27` : juste pour le cas visé. L'indice de scène est cohérent : `withAudioInCell` (`LiveCells.kt:289`) pose `scene = scene` avec le même indice que `Project.scene` / `allScenes`, et `withTake` (`Takes.kt:73`) met `scene = take.scene` hors morceau. `loopSteps` à 0 ou négatif donne 0 brique (arrondi `(x + spb - 1) / spb` → 0), donc la scène seule compte ; pas de division par zéro (`spb` ≥ 1).
+- Lecteurs de `SongLength.of` : seulement `LaunchChoice.kt:176` (carte de l'accueil) et `ProjectCatalog.kt:50` (`ProjectInfo.bars` / `seconds`, affichés par `ProjectsScreen.kt:318`). Le tri du catalogue se fait sur `modified`, pas sur la longueur. Le transport, l'export, le mode morceau (`partSteps` / `sceneSteps`), la sauvegarde et l'horloge du studio (`SessionScreen.kt:504`, qui n'utilise que `SongLength.seconds`) ne lisent pas ce calcul : aucun changement de comportement hors affichage. Avec un morceau, la branche `p.song` n'a pas bougé.
+- `SongLengthBricksTest#aLoopLastsAsLongAsItsLongestBrick` prouve la correction (1 mes. avant, 6 après). `anotherScenesBrickOrASongClipDoesNotCount` passerait aussi sans la correction : c'est un garde-fou, pas une preuve, ce qui est normal.
+- **mineur** : `SongLength.kt:26`. Un clip de scène sans scène (`scene == null`, `song == false` : vieux projet, fichier importé par `RhythmViewModel.kt:2030` ou `:5296`) joue « dans toutes les parties » (doc d'`AudioClip.scene`) mais n'est pas compté. Une boucle importée de 8 mesures sur une scène d'une mesure affiche encore « Boucle de 1 mes. ». Ce n'est pas une régression (jamais compté avant) ; `it.scene == null || it.scene == p.scene` le couvrirait.
+- **mineur** : `SongLength.kt:26`. Une prise de scène posée par `withTake` porte `once = true` (jouée une fois par passage, pas en boucle) : elle allonge quand même « Boucle de N mes. », alors que la scène, elle, reboucle sur sa propre longueur. Cas rare hors Live (les briques du Live ont `once = false`), affichage seulement.
+- **mineur** : la brique de remix de la scène (`remix.cell(scene)?.loopSteps`, comptée par `slotLoopSteps`, `Live.kt:212`) n'entre pas dans le calcul. Un projet remix dont la brique dure plus que la scène garde une longueur trop courte sur la carte. Pas une régression.
+- Remarque : si l'utilisateur fait ensuite un morceau de cette scène, la partie dure `sceneSteps` (sans les briques). La carte passe alors de « Boucle de 6 mes. » à « 1 mes. · 1 partie ». C'est cohérent avec ce que joue le morceau, mais le saut peut surprendre ; hors périmètre du lot.
+
+Bilan de cette reprise : 0 bloquant, 0 grave, 0 moyen, 4 mineurs.
 
 Verdict : 0 bloquant, 0 grave

@@ -53,7 +53,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets un tout petit peu de swing (7 %) : les petits charleys traînent à peine, le groove respire sans boiter.",
+          "text": "À toi : mets un tout petit peu de swing (7 %) : les petits charleys traînent à peine, le rythme respire sans boiter.",
           "why": "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.",
           "levels": "p",
           "check": "swing",
@@ -127,7 +127,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps.",
-          "textPro": "À toi : sur le pad « Charley ouvert », pose les contretemps.",
+          "textPro": "À toi : sur le pad « Charley ouvert », pose les contretemps (entre deux temps, pile entre les kicks).",
           "why": "Kick, charley, kick, charley : ce va-et-vient pousse à danser.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -584,8 +584,8 @@
         },
         {
           "id": "share",
-          "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux (« −14 » : aussi fort que la musique en streaming), et « Pas de saturation » veut dire qu'il ne grésille pas.",
-          "textPro": "À toi : touche « Partager » et envoie ton morceau.",
+          "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux (« −14 » : aussi fort que la musique en streaming), et « Pas de saturation » veut dire qu'il ne grésille pas, « aucun solo oublié » qu'aucune piste ne joue toute seule.",
+          "textPro": "À toi : touche « Partager » et envoie ton morceau. « aucun solo oublié » : aucune piste n'est restée en solo, à jouer toute seule.",
           "check": "shared",
           "spot": "share.export"
         }

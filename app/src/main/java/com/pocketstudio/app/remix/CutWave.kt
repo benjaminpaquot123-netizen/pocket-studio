@@ -252,7 +252,12 @@ internal fun CutZoom(
                             // curve itself only places the play head (it ticked the piece under it too: every « place
                             // the head, then Couper ici » chose pieces nobody meant to send).
                             val onNumber = !grabbing && down.position.y < PIECE_NUMBER_ZONE.toPx()
-                            if (!onNumber || !model.touchPiece(at)) model.cursor = at
+                            // Tour 6, control Ba-2 (A7, a left thumb that cannot reach the numbers on top): a touch on a
+                            // piece's body places the play head AND chooses that piece (never unticks it).
+                            if (!onNumber || !model.touchPiece(at)) {
+                                model.cursor = at
+                                if (!grabbing) model.choosePieceAt(at)
+                            }
                         }
                     }
                 }

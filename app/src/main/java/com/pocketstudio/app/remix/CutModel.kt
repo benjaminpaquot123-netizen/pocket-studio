@@ -245,6 +245,18 @@ class CutModel(
         return true
     }
 
+    /**
+     * Tour 6, control Ba-2 (A7): a touch on a piece's body in « Phrases », « Attaques », « Mesures » chooses it — it is
+     * added, never taken out, so placing the play head again in a chosen piece keeps it chosen (its number or its tile
+     * untick it). False in « Un bout » or off the pieces.
+     */
+    fun choosePieceAt(at: Long): Boolean {
+        if (single) return false
+        val i = Cuts.pieceAt(pieces, at).takeIf { it in pieces.indices } ?: return false
+        if (i !in chosen) toggleChosen(i)
+        return true
+    }
+
     /** « Tout choisir », or none when all are. */
     fun chooseAll() {
         val all = pieces.indices.toList()

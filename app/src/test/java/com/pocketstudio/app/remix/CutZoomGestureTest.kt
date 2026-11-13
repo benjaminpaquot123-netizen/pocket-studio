@@ -66,9 +66,10 @@ class CutZoomGestureTest {
         assertEquals(v.frameAt(x).toDouble(), m.cursor.toDouble(), v.framesPerPx * 2)
         assertEquals(before, m.pieces)
         assertFalse(m.canUndo)
-        // Round 3 review: a touch on the curve places the play head only; it ticked the piece under it too.
-        assertEquals(emptyList<Int>(), m.chosen)
-        assertTrue(saved.isEmpty())
+        // Tour 6, control Ba-2 (A7): a touch on a piece's body also chooses that piece (it never moves a cut).
+        assertEquals(listOf(com.pocketstudio.model.Cuts.pieceAt(m.pieces, m.cursor)), m.chosen)
+        // Only the choice is saved: no cut moved.
+        assertTrue(saved.all { it.stems.single().pieces == before })
     }
 
     /**
@@ -100,17 +101,20 @@ class CutZoomGestureTest {
         assertEquals(listOf(3), m.chosen)
     }
 
-    /** Round 3 review: placing the play head on a piece, then again on another, ticks neither (the gesture was both). */
+    /**
+     * Tour 6, control Ba-2 (A7, a left thumb that cannot reach the numbers): placing the play head on a piece chooses it,
+     * and placing it again in a chosen piece keeps it chosen (only its number or its tile untick it).
+     */
     @Test
-    fun placingThePlayHeadTicksNothing() {
+    fun placingThePlayHeadChoosesThePieceAndNeverUnticksIt() {
         val (m, v, _) = setUp()
-        listOf(3, 7).forEach { piece ->
+        listOf(3, 7, 7).forEach { piece ->
             val x = v.x(piece * bar + bar / 2)
             compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
             compose.waitForIdle()
             assertEquals(piece, com.pocketstudio.model.Cuts.pieceAt(m.pieces, m.cursor))
         }
-        assertEquals(emptyList<Int>(), m.chosen)
+        assertEquals(listOf(3, 7), m.chosen)
     }
 
     @Test

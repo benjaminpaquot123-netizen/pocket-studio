@@ -347,7 +347,9 @@ private fun RemixPanes(
                 ui.sets.forEach { set ->
                     StemCard(
                         set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home,
-                        cut = { cutSong(set) }.takeIf { !ui.home },
+                        // Control Ba-2 (A8): the song in the project with its stems in gets « Découper la chanson » from the
+                        // thumb row below; its card does not repeat it as « Découper ce que je veux » (one button per action).
+                        cut = { cutSong(set) }.takeIf { !ui.home && !(ui.remix.setId == set.id && ui.board?.setId == set.id) },
                         cutWaiting = cutFor == set.id && ui.remix.setId == set.id,
                     )
                 }

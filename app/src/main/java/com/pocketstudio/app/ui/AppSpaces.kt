@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Album
@@ -136,6 +137,19 @@ internal fun SonsHeader(
             },
         )
     }
+}
+
+/**
+ * « › » at the edge of a row that goes on past it (« ‹ » where it started before): the sign that more waits there,
+ * over the row's faded edge (tour 6, R19: « Générer » cut at the screen's edge, « sans signe de suite »). Drawn only:
+ * the row itself scrolls under the finger.
+ */
+@Composable
+internal fun MoreAside(forward: Boolean, modifier: Modifier = Modifier) {
+    Icon(
+        if (forward) Icons.AutoMirrored.Filled.KeyboardArrowRight else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+        contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(20.dp),
+    )
 }
 
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */

@@ -202,6 +202,7 @@ import com.pocketstudio.app.remix.beforePlay
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.fadingEdges
 import kotlinx.coroutines.delay
 
 /** The tabs with their own record bar (« ● Enregistrer », then the take's card). */
@@ -3330,10 +3331,21 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 }
                             }
                             // Scrollable: whole words on a small phone or with big text (never "Remi/x").
-                            androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
-                                listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
-                                    Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
+                            // Tour 6, R19 (seats B a 21, G a 12: « Générer » cut at the edge, no sign the row went on): the edge
+                            // where pages wait fades and shows « › » (« ‹ » before), gone once that end is in view.
+                            val pagesScroll = androidx.compose.foundation.rememberScrollState()
+                            Box(Modifier.fillMaxWidth().background(Neon.Surface)) {
+                                // (The same row as before, « Secondary » being the one that takes its scroll's state.)
+                                androidx.compose.material3.SecondaryScrollableTabRow(
+                                    selectedTabIndex = audioPage, modifier = Modifier.fadingEdges(pagesScroll), scrollState = pagesScroll,
+                                    containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp,
+                                ) {
+                                    listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
+                                        Tab(selected = audioPage == i, onClick = { audioPage = i }, text = { Text(label, maxLines = 1, softWrap = false) }, modifier = Modifier.testTag("audio_page_$i"))
+                                    }
                                 }
+                                if (pagesScroll.canScrollForward) MoreAside(forward = true, Modifier.align(Alignment.CenterEnd).testTag("audio_pages_more"))
+                                if (pagesScroll.canScrollBackward) MoreAside(forward = false, Modifier.align(Alignment.CenterStart).testTag("audio_pages_before"))
                             }
                             }
                             if (audioPage == 3) {

@@ -4,6 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import com.pocketstudio.model.i18n.Lang
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -51,8 +53,10 @@ class Tour6AudioPagesMoreTest {
         assertTrue("« Générer » is cut at the edge and nothing says the row goes on", shell.has("audio_pages_more"))
         assertFalse("a sign of pages before the first one", shell.has("audio_pages_before"))
         // The end of the row in view: the sign goes, the other edge now says pages wait before.
-        compose.onNodeWithTag("audio_page_3").performScrollTo()
+        compose.onNodeWithTag("audio_page_1").performTouchInput { swipeLeft() }
         shell.idle(600)
+        compose.onNodeWithTag("audio_page_3").performScrollTo()
+        shell.idle(300)
         assertFalse("the last page is still cut", lastPageCut())
         assertFalse("« › » still shows with the row's end in view", shell.has("audio_pages_more"))
         assertTrue("nothing says pages wait before", shell.has("audio_pages_before"))

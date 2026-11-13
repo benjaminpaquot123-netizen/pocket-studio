@@ -51,6 +51,28 @@ class CutModel(
     /** The stem shown (0 drums, 1 bass, 2 other, 3 voice): the voice first, it is what is cut most. */
     var stem by mutableIntStateOf(VOCALS_STEM)
 
+    /**
+     * Review of remix2 (grave): the pieces ticked ON PURPOSE (their number, their tile, « Tout choisir »), by stem and by
+     * their bounds — not their index, which shifts with every cut — so no edit loses them. Only those go with « Enlever »;
+     * a piece chosen by placing the play head on it (A7) never does. A cut through a ticked piece leaves it out (its
+     * bounds changed): « Enlever » then takes less, never more.
+     */
+    private val ticked = mutableSetOf<Triple<Int, Long, Long>>().apply {
+        // The choices of a saved project count as ticked on purpose.
+        cuts.stems.forEach { sc -> sc.chosen.forEach { i -> sc.pieces.getOrNull(i)?.let { add(Triple(sc.stem, it.start, it.end)) } } }
+    }
+
+    /**
+     * Review of remix2 (grave, third pass): what the project keeps. A choice made by placing the play head (A7) is a
+     * moment's choice: it lights the send buttons now but is not saved, so reopening the cut screen never turns it into
+     * a tick « Enlever » would take.
+     */
+    private fun toSave(c: SongCuts): SongCuts = c.copy(stems = c.stems.map { sc ->
+        sc.copy(chosen = sc.chosen.filter { i -> sc.pieces.getOrNull(i)?.let { Triple(sc.stem, it.start, it.end) in ticked } == true })
+    })
+
+    private fun tickedOnPurpose(i: Int): Boolean = pieces.getOrNull(i)?.let { Triple(stem, it.start, it.end) in ticked } == true
+
     /** The orange play head: where « Couper ici », « Début » and « Fin » act; a touch on the curve moves it. */
     var cursor by mutableLongStateOf(0L)
 
@@ -109,7 +131,7 @@ class CutModel(
         if (after == before && cuts.of(stem) != null) return false
         pushUndo()
         cuts = cuts.with(after)
-        if (save) onChange(cuts)
+        if (save) onChange(toSave(cuts))
         return true
     }
 
@@ -149,7 +171,9 @@ class CutModel(
 
     /** « Enlever »: the ticked pieces go, else the one under the play head. */
     fun remove(): Boolean {
-        val which = chosen.ifEmpty { listOfNotNull(current.takeIf { it >= 0 }) }
+        // Review of remix2 (grave): pieces chosen only by placing the play head (A7) never go with « Enlever »; the
+        // ones ticked on purpose (number, tile, « Tout choisir ») do; none of those: the piece under the head.
+        val which = chosen.filter(::tickedOnPurpose).ifEmpty { listOfNotNull(current.takeIf { it >= 0 }) }
         if (which.isEmpty()) return false
         return edit { s -> s.copy(pieces = Cuts.remove(s.pieces, which), chosen = emptyList()) }
     }
@@ -172,7 +196,7 @@ class CutModel(
         val auto = if (found.isEmpty()) s.auto else mode.name
         val span = s.span ?: Cuts.firstSpan(found, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid)
         cuts = cuts.with(s.copy(pieces = pieces, chosen = keepChoice(s, pieces), auto = auto, span = span))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /** « Un bout » placed when a stem cut before has none (a project of before): on its first piece, else two bars from [shownFrom]. */
@@ -182,7 +206,7 @@ class CutModel(
         val first = s.pieces.takeIf { it != Cuts.whole(frames) }.orEmpty().map { it.start until it.end }
         val placed = Cuts.firstSpan(first, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid) ?: return
         cuts = cuts.with(s.copy(span = placed))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /** « Un bout » first placed: on the magnet's beats, so that its length reads in beats or bars. */
@@ -228,10 +252,16 @@ class CutModel(
 
     fun toggleChosen(i: Int) {
         if (i !in pieces.indices) return
-        val now = chosen.toMutableSet().apply { if (!add(i)) remove(i) }.sorted()
+        val p = pieces[i]
+        val key = Triple(stem, p.start, p.end)
+        if (i in chosen) ticked.remove(key) else ticked.add(key)
+        setChosen(chosen.toMutableSet().apply { if (!add(i)) remove(i) }.sorted())
+    }
+
+    private fun setChosen(now: List<Int>) {
         // Ticking is no cut to undo: kept without an undo step.
         cuts = cuts.with(stemCuts().copy(chosen = now))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     /**
@@ -245,11 +275,25 @@ class CutModel(
         return true
     }
 
+    /**
+     * Tour 6, control Ba-2 (A7): a touch on a piece's body in « Phrases », « Attaques », « Mesures » chooses it — it is
+     * added, never taken out, so placing the play head again in a chosen piece keeps it chosen (its number or its tile
+     * untick it). False in « Un bout » or off the pieces.
+     */
+    fun choosePieceAt(at: Long): Boolean {
+        if (single) return false
+        val i = Cuts.pieceAt(pieces, at).takeIf { it in pieces.indices } ?: return false
+        if (i !in chosen) setChosen((chosen + i).sorted())
+        return true
+    }
+
     /** « Tout choisir », or none when all are. */
     fun chooseAll() {
         val all = pieces.indices.toList()
+        ticked.removeAll { it.first == stem }
+        if (chosen.size != all.size) pieces.forEach { ticked.add(Triple(stem, it.start, it.end)) }
         cuts = cuts.with(stemCuts().copy(chosen = if (chosen.size == all.size) emptyList() else all))
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     // --- A cut moved by a finger: one undo step for the whole move, saved when it lifts ---------
@@ -350,7 +394,7 @@ class CutModel(
         spanFrom = null
         movingFrom = null
         movedTo = null
-        if (moved) onChange(cuts)
+        if (moved) onChange(toSave(cuts))
         moved = false
         return edge
     }
@@ -359,7 +403,7 @@ class CutModel(
         val before = history.removeLastOrNull() ?: return
         undoCount = history.size
         cuts = before
-        onChange(cuts)
+        onChange(toSave(cuts))
     }
 
     // --- What the actions take ---------------------------------------------------------------

@@ -49,7 +49,7 @@
   "Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.": "音频轨都已占用：这次录音的 Live 打击垫没有被保留。",
   "Écriture des pads live…": "正在写入 Live 打击垫…",
   "Les pads live de ta prise sont sur la piste audio « %s ».": "你录音里的 Live 打击垫在音频轨“%s”上。",
-  "Pads enregistrés, pas M : pour un break, utilise ■.": "打击垫已录下，M 没有：要做 Break，请用 ■。",
+  "Pads enregistrés, pas M : pour un break, utilise ■.": "打击垫已录下，M 没有：要做间奏，请用 ■。",
   "Pas de piste à jouer : ajoute une piste dans Synthé.": "没有可演奏的音轨：在 合成器 里添加一条。",
   "Octave plus grave": "降八度",
   "Octave plus aiguë": "升八度",

@@ -102,8 +102,9 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
          * what it shows; a new finding on these screens still fails.
          * - the Mode simple at 200 % on a small phone: the Guide bar's one line (its whole step one touch away), the position's
          *   counter in the play strip, the keyboard's « Octave » (and « مسح », « … » in Arabic), the step's header, one pad name in German;
-         * - the Pro at 200 % (tablet upright): the play strip's loop chip, the Structure's column heads, the Sons effects tab,
-         *   the whole Live grid (a chantier of its own).
+         * - the Pro at 200 % (tablet upright): the play strip's loop chip (« تكرار » in Arabic since tour 6), the Structure's
+         *   column heads, the Sons effects tab, the whole Live grid (a chantier of its own); in Arabic (tour 6, lot 5), the
+         *   drum pad « طبل كبير » and the top bar's part chip.
          */
         val OPEN: List<Pair<Regex, Regex>> = listOf(
             Regex("(simple_\\w+|welcome_mode)_2\\.0") to Regex("CUT « +· [^»]+ » ellipsized"),
@@ -111,10 +112,15 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             Regex("simple_keys_2\\.0") to Regex("CUT « ((Octave|Oktave|الأوكتاف) \\d[^»]*|\\s*مسح) »"),
             Regex("simple_rhythm_2\\.0") to Regex("CUT « (PAS : |Händeklatschen)[^»]* » a word split"),
             Regex("launch_simple_2\\.0") to Regex("CUT « Simple » a word split"),
-            Regex("(plus|sons|structure)_2\\.0") to Regex("CUT « (Loop|Boucler|लूप|循环) » drawn past"),
+            Regex("(plus|sons|structure)_2\\.0") to Regex("CUT « (Loop|Boucler|लूप|循环|تكرار) » (drawn past|lines cut)"),
             Regex("structure_2\\.0") to Regex("CUT « (Mesures|Takte|الأجزاء|المازورات|पार्ट्स|bar|段落|小节) » (drawn past|lines cut)"),
             Regex("sons_2\\.0") to Regex("CUT « ([^»]*ثرات|इफ़ेक्ट्स|स्टेप: [^»]*) » (lines dropped|wider)"),
             Regex("live_2\\.0") to Regex("CUT "),
+            // Tour 6, lot 5 (docs/decisions/tour-6-langues2.md): Arabic's own words, taller and wider than the Latin ones
+            // they replace, in boxes of other lots' files: the drum pad's name (RhythmScreen.kt, lot 1, by 1.3 dp) and the
+            // top bar's part chip (AppRoot.kt, lot 3, drawn 9 dp below it). Both read whole on the capture.
+            Regex("sons_2\\.0") to Regex("CUT « طبل كبير » wider than its box"),
+            Regex("sons_2\\.0") to Regex("CUT « [A-Z] · [^»A-Za-z]+ » drawn past its parent's edge \\(down"),
         )
 
         /** The five languages of tour 6 (docs/decisions/tour-5-langues.md). */

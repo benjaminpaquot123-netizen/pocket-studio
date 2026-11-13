@@ -1,0 +1,8 @@
+fusion: 617bb45256240d6483ceeec3661df8d70e30ba86
+branche: eq/tour-6-remix2b
+tete: 9842ab3ef99a034eeaa84b7cf7c9be08f3b0269e
+relecture: docs/audits/ultra/tour-6-remix2b-relecture.md
+relu: bdf4621b64215f31d31dd7750c5d08c60fbcbf47
+filtres: com.pocketstudio.app.remix.RemixLeftThumbSeatTest com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.CutZoomGestureTest com.pocketstudio.app.remix.RemixCutFromCardTest com.pocketstudio.app.remix.CutJourneyTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

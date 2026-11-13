@@ -227,6 +227,7 @@ def main():
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
         replayed_pairs(d)
+        named_pairs(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1390,6 +1391,76 @@ def replayed_pairs(d):
     for key in ("stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
         check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
     check("chantier : 12 écarts" in out, "twelve gaps, nothing else:\n" + out)
+
+
+def named_pairs(d):
+    """Lot « portail3 » (AUDIT-ULTRA §13.9, the night of round 6: real pairs written in other words): a pair named in
+    scripts/bench/juge-paires-nommees.tsv (« green TAB red TAB test class TAB reason », full shas) is a pair when the
+    judge can check it: the red is a « rouge: » commit before the green that adds or changes a test file of that
+    class, the green changes code, and the green was written before the rule (--fin-nommees). A green may be named for
+    a second red of the same class (a red written again to mend its test). Anything less pairs nothing, and a line the
+    judge cannot read is a gap of its own."""
+    root = judge_root(d, "juge-nommees")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def commit(message):
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "HEAD").strip()
+
+    for key in ("honest", "testonly", "otherclass", "before", "late"):
+        cls = f"{key.capitalize()}NamedTest"
+        path = os.path.join(tests, f"{cls}.kt")
+        write(path, f"class {cls} {{\n  @Test\n  fun the{key.capitalize()}GuideFolds() {{}}\n}}\n")
+        red = commit(f"rouge: G1, the {key} guide covers the page")
+        if key == "testonly":
+            write(path, f"class {cls} {{\n  @Test\n  fun the{key.capitalize()}GuideFolds() {{ check(true) }}\n}}\n")
+        else:
+            write(app, f"fun counter() = \"{key}\"\n")
+        shas[key] = (red, commit(f"vert: G1, the {key} guide folds when the page is left"), cls)
+        if key == "honest":
+            # One fix, two reds: the first pairs by its words, the second (the test mended) only by its name.
+            path = os.path.join(tests, "MendedNamedTest.kt")
+            write(path, "class MendedNamedTest {\n  @Test\n  fun theFieldSpeaksItalian() {}\n}\n")
+            first = commit("rouge: the field speaks the app's language")
+            write(path, "class MendedNamedTest {\n  @Test\n  fun theFieldSpeaksItalian() { check(true) }\n}\n")
+            second = commit("rouge: the field speaks the app's language (clock by hand)")
+            write(app, "fun counter() = \"mended\"\n")
+            shas["mended"] = (second, commit("vert: the field speaks the app's language"), "MendedNamedTest")
+            shas["mended-first"] = (first, shas["mended"][1], "MendedNamedTest")
+        if key == "before":
+            history_end = shas[key][1]
+    why = "même défaut, mots différents"
+    lines = ["# comment", ""]
+    for key in ("honest", "mended", "testonly", "late"):
+        lines.append("\t".join([shas[key][1], shas[key][0], shas[key][2], why]))
+    lines.append("\t".join([shas["otherclass"][1], shas["otherclass"][0], "HonestNamedTest", why]))
+    lines.append("\t".join([shas["before"][1], shas["late"][0], shas["late"][2], why]))
+    lines.append("\t".join([shas["honest"][1], shas["honest"][0], shas["honest"][2]]))            # no reason
+    lines.append("\t".join([shas["honest"][1][:8], shas["honest"][0], shas["honest"][2], why]))    # a short sha
+    write(os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv"), "\n".join(lines) + "\n")
+    commit("the named pairs")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-nommees", history_end], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    for key in ("honest", "mended", "mended-first"):
+        check(short[key][0] + " «" not in out and short[key][1] + " «" not in out, f"a pair named and checked ({key}) is a pair:\n" + out)
+    for key, reason in (("testonly", "ne change que des tests"), ("otherclass", "aucun fichier de test de la classe HonestNamedTest"),
+                        ("before", "n'est pas un commit « rouge: » d'avant ce vert"), ("late", "écrit après la règle")):
+        check(f"{short[key][0]} « rouge:" in out, f"a named pair that does not hold ({key}) leaves its red open:\n" + out)
+        green = next((l for l in out.splitlines() if l.startswith(f"{short[key][1]} « vert:")), "")
+        check("paire nommée refusée" in green and reason in green, f"a named pair that does not hold ({key}) says why ({reason}):\n" + out)
+    check(out.count("juge-paires-nommees.tsv, ligne") == 2 and ", ligne 9 : illisible" in out and ", ligne 10 : illisible" in out,
+          "a line without a reason and a line with a short sha are gaps of their own:\n" + out)
+    check("chantier : 10 écarts" in out, "four pairs refused (eight gaps), two lines unread, nothing else:\n" + out)
 
 
 def replay_backticks(d):

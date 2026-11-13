@@ -384,7 +384,7 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
         else -> tr("Copier la basse une octave plus bas")
     }
     is TutoNeed.Part -> tr("Créer la partie « %s »", Scene.shownLabel(need.label))
-    is TutoNeed.Name -> tr("Nommer la partie « %s »", need.label)
+    is TutoNeed.Name -> tr("Nommer la partie « %s »", Scene.shownLabel(need.label))
     TutoNeed.Lengths -> tr("Donner les durées conseillées")
     is TutoNeed.Scene -> tr("Aller dans la partie « %s »", Scene.shownLabel(need.label))
     is TutoNeed.Copy -> tr("Copier sur les mesures suivantes")

@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "Your turn: on the “Hi-hat” pad (the little “tick”), tap the dotted cells: it fills the gaps between the other hits.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "Your turn: on the “Hi-hat” pad, put the sixteenths, except the offbeats (the “Open hi-hat” plays there already), softer under the kick.",
   "Les petits coups font rouler le rythme sans le charger.": "The little hits make the rhythm roll without weighing it down.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Your turn: on the “Rim” pad (a little “tock”), tap the dotted cells: it lands beside the beats, offset.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Your turn: on the “Rim” pad (a hit on the edge of the drum: a little “tock”), tap the dotted cells: it lands beside the beats, offset.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "Your turn: on the “Rim” pad, put the off-beat hit, the little rhythmic hook that goes round in a loop.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "An offset sound that comes back the same every bar: that's what hypnotises.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "Your turn: on the “Cymbal” pad (a ringing cymbal), tap the dotted cells. It will only come in at the Drop to make it shine.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "Without a bass, your Drop won't have a rolling low end.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "Your turn: under the piano roll, “Set the track's sound”: raise the “Cutoff” by at least 15. The bass opens up and gets more biting.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "In techno, it's the filter that moves a bass that hardly changes note.",
-  "Le stab": "The stab",
+  "Le stab (un accord court)": "The stab (a short chord)",
   "Le stab (accords)": "The stab (chords)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "No big pads in techno: a short, dry chord, struck twice a bar, with an echo. It's called a “stab”.",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "Your turn: tap “Copy to the next bars”, then make the 2 chords of bar 4 (a notch higher) and “Copy” again.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "Your turn: mixing means setting each track's volume. In the “Mix” tab, lower the “Chords” track's slider a little, then the “Melody” track's. Under the slider, “Normal” becomes “−2”, “−4”…: lower means quieter. The marks beside it (+4, 0, −12, −∞) say the same: 0 is the normal volume, −∞ is silence.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "Your turn: tap “Share”: the app makes a sound file of your song, to send. “M4A” makes a light file for your friends, “WAV” keeps studio quality. Then “Level” says whether your song sounds loud or soft, and “No clipping” means it doesn't crackle.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "Your turn: tap the “Clap” pad, then under its grid, “Pad effects”: raise “Reverb send”.",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Your turn: name this part “Groove”: the full loop you'll draw the other parts from."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Your turn: name this part “Groove”: the full loop you'll draw the other parts from.",
+  "Les transitions : les passages entre les parties": "Transitions: moving from one part to the next"
 }

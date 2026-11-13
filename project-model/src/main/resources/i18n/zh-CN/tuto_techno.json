@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "轮到你：在“踩镲”打击垫上（小小的“嘀”），点虚线格子：它填满其他打击之间的空隙。",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "轮到你：在“踩镲”打击垫上放十六分音符，反拍除外（那里已经有“开镲”），底鼓下面弱一点。",
   "Les petits coups font rouler le rythme sans le charger.": "小打击让节奏滚动起来，又不显得满。",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "轮到你：在“鼓边”打击垫上（一声小小的“哒”），点虚线格子：它落在拍子旁边，错开的。",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "轮到你：在“鼓边”打击垫上（敲在鼓的边上：一声小小的“哒”），点虚线格子：它落在拍子旁边，错开的。",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "轮到你：在“鼓边”打击垫上放那个错位的一下，就是循环里那个小小的节奏钩子。",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "一个错位的声音每小节都一样地回来：这就是催眠的原因。",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "轮到你：在“镲片”打击垫上（叮叮作响的镲片），点虚线格子。它只会在高潮时出现，让高潮闪闪发亮。",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "没有贝斯，你的高潮就没有滚动的低频。",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "轮到你：在钢琴卷帘下面，“设置音轨的音色”：把“截止”至少调高 15。贝斯打开了，变得更有咬劲。",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "在 techno 里，是滤波器让一条几乎不换音的贝斯动起来。",
-  "Le stab": "短促和弦",
+  "Le stab (un accord court)": "短促和弦（短短一下的和弦）",
   "Le stab (accords)": "短促和弦（和弦）",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "techno 里没有大片的 Pad：一个短促干脆的和弦，每小节打两下，带回声。这叫“Stab”。",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "轮到你：点“复制到后面的小节”，然后做第 4 小节的 2 个和弦（高一级），再“复制”一次。",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "轮到你：混音就是调每条音轨的音量。在“混音”标签页里，把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。滑块下面的“正常”会变成“−2”“−4”…：越低越小声。旁边的刻度（+4、0、−12、−∞）也是一个意思：0 是正常音量，−∞ 是静音。",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "轮到你：点“分享”：应用会把你的曲子做成一个能发出去的音频文件。“M4A”是给朋友的轻便文件，“WAV”保留录音室音质。之后，“电平”告诉你曲子听起来响还是轻，“没有削波”的意思是声音不会噼啪作响。",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "轮到你：点“拍手”打击垫，然后在它的网格下面点“打击垫效果”：把“混响发送”调高。",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "轮到你：把这个段落命名为“律动”：完整的循环，其他段落都从它而来。"
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "轮到你：把这个段落命名为“律动”：完整的循环，其他段落都从它而来。",
+  "Les transitions : les passages entre les parties": "过渡：从一段到下一段"
 }

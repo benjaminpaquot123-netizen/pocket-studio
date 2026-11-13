@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "Giliranmu: di pad “Hi-hat” (“tik” kecil), sentuh kotak bergaris putus: ia mengisi celah di antara pukulan lain.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "Giliranmu: di pad “Hi-hat”, taruh not 1/16, kecuali di offbeat (“Hi-hat terbuka” sudah main di sana), lebih lembut di bawah kick.",
   "Les petits coups font rouler le rythme sans le charger.": "Pukulan-pukulan kecil membuat ritme menggelinding tanpa memberatkannya.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Giliranmu: di pad “Rim” (“tok” kecil), sentuh kotak bergaris putus: ia jatuh di samping ketukan, bergeser.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Giliranmu: di pad “Rim” (pukulan di pinggir drum: “tok” kecil), sentuh kotak bergaris putus: ia jatuh di samping ketukan, bergeser.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "Giliranmu: di pad “Rim”, taruh pukulan yang bergeser, kait ritmis kecil yang berputar dalam loop.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "Suara bergeser yang kembali sama di tiap birama: itulah yang menghipnotis.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "Giliranmu: di pad “Simbal” (simbal yang berdenting), sentuh kotak bergaris putus. Ia baru masuk di Drop untuk membuatnya berkilau.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "Tanpa bass, Drop-mu tidak punya low end yang menggelinding.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "Giliranmu: di bawah piano roll, “Atur suara trek”: naikkan “Cutoff” minimal 15. Bass-nya membuka dan jadi lebih menggigit.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "Di techno, filterlah yang menggerakkan bass yang hampir tidak ganti not.",
-  "Le stab": "Stab",
+  "Le stab (un accord court)": "Stab (akor pendek)",
   "Le stab (accords)": "Stab (akor)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "Tidak ada pad besar di techno: akor pendek dan kering, dipukul dua kali per birama, dengan echo. Namanya “stab”.",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "Giliranmu: sentuh “Salin ke birama berikutnya”, lalu buat 2 akor di birama 4 (satu tingkat lebih tinggi) dan “Salin” lagi.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "Giliranmu: mix artinya mengatur volume tiap trek. Di tab “Mix”, turunkan sedikit slider trek “Akor”, lalu slider trek “Melodi”. Di bawah penggeser, “Normal” menjadi “−2”, “−4”…: makin rendah, makin pelan. Tanda di sampingnya (+4, 0, −12, −∞) bilang hal yang sama: 0 itu volume normal, −∞ itu hening.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "Giliranmu: sentuh “Bagikan”: aplikasi membuat file suara dari lagumu, untuk dikirim. “M4A” membuat file ringan untuk teman-temanmu, “WAV” menjaga kualitas studio. Lalu “Level” memberi tahu apakah lagumu terdengar keras atau pelan, dan “Tidak ada distorsi” artinya suaranya tidak kresek-kresek.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "Giliranmu: sentuh pad “Clap”, lalu di bawah grid-nya, “Efek pad”: naikkan “Send reverb”.",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Giliranmu: beri nama bagian ini “Groove”: loop lengkap, sumber bagian-bagian lainnya."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Giliranmu: beri nama bagian ini “Groove”: loop lengkap, sumber bagian-bagian lainnya.",
+  "Les transitions : les passages entre les parties": "Transisi: perpindahan antarbagian"
 }

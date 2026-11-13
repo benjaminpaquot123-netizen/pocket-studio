@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "Twoja kolej: na padzie „Hi-hat” (małe „tik”) dotknij kropkowanych pól: wypełnia dziury między innymi uderzeniami.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "Twoja kolej: na padzie „Hi-hat” połóż szesnastki, oprócz słabych części miary (tam gra już „Otwarty hi-hat”), ciszej pod kickiem.",
   "Les petits coups font rouler le rythme sans le charger.": "Drobne uderzenia sprawiają, że rytm się toczy, nie obciążając go.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Twoja kolej: na padzie „Rim” (małe „tok”) dotknij kropkowanych pól: wypada obok ćwierćnut, przesunięty.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Twoja kolej: na padzie „Rim” (uderzenie w obręcz bębna: małe „tok”) dotknij kropkowanych pól: wypada obok ćwierćnut, przesunięty.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "Twoja kolej: na padzie „Rim” połóż przesunięte uderzenie, mały rytmiczny haczyk, który kręci się w pętli.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "Przesunięty dźwięk, który wraca taki sam w każdym takcie: to on hipnotyzuje.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "Twoja kolej: na padzie „Talerz” (dzwoniący talerz) dotknij kropkowanych pól. Wejdzie dopiero na Dropie, żeby go rozświetlić.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "Bez basu twój Drop nie będzie miał toczącego się dołu.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "Twoja kolej: pod piano rollem, „Ustaw dźwięk ścieżki”: podkręć „Odcięcie” o co najmniej 15. Bas się otwiera i staje się bardziej gryzący.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "W techno to filtr porusza basem, który prawie nie zmienia nut.",
-  "Le stab": "Stab",
+  "Le stab (un accord court)": "Stab (krótki akord)",
   "Le stab (accords)": "Stab (akordy)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "W techno nie ma wielkiego pada: krótki, suchy akord, uderzony dwa razy na takt, z echem. Nazywa się to „stab”.",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "Twoja kolej: dotknij „Kopiuj na kolejne takty”, potem zrób 2 akordy w takcie 4 (stopień wyżej) i znów „Kopiuj”.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "Twoja kolej: miks to ustawianie głośności każdej ścieżki. Na karcie „Miks” ścisz trochę suwak ścieżki „Akordy”, potem suwak ścieżki „Melodia”. Pod suwakiem „Normalnie” zmienia się w „−2”, „−4”…: niżej znaczy ciszej. Znaczniki obok (+4, 0, −12, −∞) mówią to samo: 0 to zwykła głośność, −∞ to cisza.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "Twoja kolej: dotknij „Udostępnij”: aplikacja robi z utworu plik dźwiękowy do wysłania. „M4A” daje lekki plik dla znajomych, „WAV” zachowuje jakość studyjną. Potem „Poziom” mówi, czy utwór brzmi głośno, czy cicho, a „Bez przesterowania” znaczy, że nie trzeszczy.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "Twoja kolej: dotknij padu „Clap”, potem pod jego siatką „Efekty pada”: podkręć „Wysyłka na pogłos”.",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Twoja kolej: nazwij tę część „Groove”: pełna pętla, z której wyprowadzisz pozostałe części."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Twoja kolej: nazwij tę część „Groove”: pełna pętla, z której wyprowadzisz pozostałe części.",
+  "Les transitions : les passages entre les parties": "Przejścia: od jednej części do następnej"
 }

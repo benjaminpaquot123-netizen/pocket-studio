@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "دورك: على باد «هاي هات» (الـ«تك» الصغيرة)، اضغط الخانات المنقّطة: يملأ الفراغات بين الضربات الأخرى.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "دورك: على باد «هاي هات»، ضع السداسيات العشرية، ما عدا النبضات المعاكسة (يعزف فيها «هاي هات مفتوح» من قبل)، وأنعم تحت الكيك.",
   "Les petits coups font rouler le rythme sans le charger.": "الضربات الصغيرة تجعل الإيقاع يتدحرج دون أن تُثقله.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "دورك: على باد «ريم» (‏«طق» صغيرة)، اضغط الخانات المنقّطة: تقع بجانب النبضات، مُزاحة.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "دورك: على باد «ريم» (ضربة على حافة الطبل: ‏«طق» صغيرة)، اضغط الخانات المنقّطة: تقع بجانب النبضات، مُزاحة.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "دورك: على باد «ريم»، ضع الضربة المزاحة، اللمسة الإيقاعية الصغيرة التي تدور في حلقة.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "صوت مُزاح يعود كما هو في كل مازورة: هذا ما ينوّم.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "دورك: على باد «صنج» (صنج يرن)، اضغط الخانات المنقّطة. لن يدخل إلا في الدروب ليجعله يلمع.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "بلا بيس، لن يكون لدروبك صوت منخفض يتدحرج.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "دورك: تحت الـPiano roll، «ضبط صوت المسار»: ارفع «Cutoff» إلى 15 على الأقل. البيس ينفتح ويصبح أكثر حدة.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "في التكنو، الفلتر هو ما يحرّك بيسًا لا يكاد يغيّر نوتاته.",
-  "Le stab": "الستاب",
+  "Le stab (un accord court)": "الستاب (كورد قصير)",
   "Le stab (accords)": "الستاب (الكوردات)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "لا باد كبير في التكنو: كورد قصير وجاف، يُضرب مرتين في المازورة، مع صدى. نسميه «ستاب».",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "دورك: اضغط «انسخ إلى المازورات التالية»، ثم اصنع الكوردين في المازورة 4 (أعلى بدرجة) و«نسخ» مجددًا.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "دورك: المزج هو ضبط مستوى كل مسار. في تبويب «المكس»، اخفض قليلًا فيدر مسار «الكوردات»، ثم فيدر مسار «اللحن». تحت المنزلق، تصبح «عادي» ‏«−2» ثم «−4»…: كلما انخفض، خفت الصوت. العلامات بجانبه (+4، 0، −12، −∞) تقول الشيء نفسه: 0 هو المستوى العادي، و−∞ هو الصمت.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "دورك: اضغط «مشاركة»: يصنع التطبيق ملفًا صوتيًا من مقطوعتك لترسله. «M4A» يصنع ملفًا خفيفًا لأصدقائك، و«WAV» يحافظ على جودة الاستوديو. بعدها، «المستوى» يقول إن كانت مقطوعتك قوية أم هادئة، و«لا تشويش» يعني أنها لا تخشخش.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "دورك: اضغط باد «تصفيق»، ثم تحت شبكته «مؤثرات الباد»: ارفع «إرسال صدى المكان».",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "دورك: سمِّ هذا الجزء «غروف»: الحلقة الكاملة التي ستستخرج منها الأجزاء الأخرى."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "دورك: سمِّ هذا الجزء «غروف»: الحلقة الكاملة التي ستستخرج منها الأجزاء الأخرى.",
+  "Les transitions : les passages entre les parties": "الانتقالات: المرور من جزء إلى آخر"
 }

@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "Sıra sende: “Hi-hat” pad'inde (küçük “tik”) noktalı kutulara dokun: diğer vuruşların arasındaki boşlukları doldurur.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "Sıra sende: “Hi-hat” padinde onaltılıkları koy, ara vuruşlar hariç (orada “Açık hi-hat” zaten çalıyor), kick'in altında daha yumuşak.",
   "Les petits coups font rouler le rythme sans le charger.": "Küçük vuruşlar ritmi yüklemeden yuvarlar.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Sıra sende: “Rim” pad'inde (küçük bir “tok”) noktalı kutulara dokun: vuruşların yanına, kaydırılmış düşer.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Sıra sende: “Rim” pad'inde (davulun kenarına bir vuruş: küçük bir “tok”) noktalı kutulara dokun: vuruşların yanına, kaydırılmış düşer.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "Sıra sende: “Rim” padinde kaydırılmış darbeyi koy, döngüde dönen küçük ritmik kanca.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "Her ölçüde aynı şekilde geri gelen kaydırılmış bir ses: hipnotize eden budur.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "Sıra sende: “Zil” pad'inde (çınlayan bir zil) noktalı kutulara dokun. Onu parlatmak için yalnızca Drop'ta gelecek.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "Bas olmadan Drop'unda yuvarlanan pes ses olmaz.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "Sıra sende: piano roll'un altında “Kanalın sesini ayarla”: “Cutoff” değerini en az 15 artır. Bas açılır ve daha ısırıcı olur.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "Techno'da neredeyse hiç nota değiştirmeyen bir bası hareket ettiren filtredir.",
-  "Le stab": "Stab",
+  "Le stab (un accord court)": "Stab (kısa bir akor)",
   "Le stab (accords)": "Stab (akorlar)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "Techno'da büyük pad yok: ölçüde iki kez vurulan, ekolu, kısa ve kuru bir akor. Buna “stab” denir.",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "Sıra sende: “Sonraki ölçülere kopyala”ya dokun, sonra 4. ölçünün 2 akorunu yap (bir basamak yukarıda) ve yine “Kopyala”.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "Sıra sende: mix, her kanalın seviyesini ayarlamaktır. “Mix” sekmesinde “Akorlar” kanalının sürgüsünü biraz indir, sonra “Melodi” kanalınınkini. Kaydırıcının altında “Normal”, “−2”, “−4”… olur: ne kadar düşükse o kadar kısık. Yanındaki işaretler (+4, 0, −12, −∞) aynı şeyi söyler: 0 normal ses, −∞ sessizlik.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "Sıra sende: “Paylaş”a dokun: uygulama parçandan gönderilecek bir ses dosyası yapar. “M4A” arkadaşların için hafif bir dosya yapar, “WAV” stüdyo kalitesini korur. Sonra “Seviye” parçanın yüksek mi kısık mı duyulduğunu söyler, “Doyma yok” da cızırdamadığı anlamına gelir.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "Sıra sende: “Clap” padine dokun, sonra ızgarasının altında “Pad efektleri”: “Reverb gönderimi”ni yükselt.",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Sıra sende: bu bölüme “Groove” adını ver: diğer bölümleri çıkaracağın tam döngü."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Sıra sende: bu bölüme “Groove” adını ver: diğer bölümleri çıkaracağın tam döngü.",
+  "Les transitions : les passages entre les parties": "Geçişler: bir bölümden ötekine"
 }

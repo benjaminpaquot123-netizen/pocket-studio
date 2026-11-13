@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "Te toca: en el pad “Hi-hat” (el pequeño “tic”), toca las casillas punteadas: rellena los huecos entre los otros golpes.",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "Te toca: en el pad “Hi-hat”, pon las semicorcheas, salvo los contratiempos (ahí ya suena el “Hi-hat abierto”), más suave bajo el kick.",
   "Les petits coups font rouler le rythme sans le charger.": "Los golpecitos hacen rodar el ritmo sin cargarlo.",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Te toca: en el pad “Rim” (un pequeño “toc”), toca las casillas punteadas: cae al lado de los tiempos, desplazado.",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "Te toca: en el pad “Rim” (un golpe en el borde del tambor: un pequeño “toc”), toca las casillas punteadas: cae al lado de los tiempos, desplazado.",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "Te toca: en el pad “Rim”, pon el golpe desplazado, el pequeño gancho rítmico que gira en bucle.",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "Un sonido desplazado que vuelve igual en cada compás: eso es lo que hipnotiza.",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "Te toca: en el pad “Platillo” (un platillo que tintinea), toca las casillas punteadas. Solo llegará en el Drop para hacerlo brillar.",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "Sin bajo, tu Drop no tendrá graves que rueden.",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "Te toca: bajo el piano roll, “Ajustar el sonido de la pista”: sube el “Corte” al menos a 15. El bajo se abre y se vuelve más mordiente.",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "En techno, es el filtro el que mueve un bajo que casi no cambia de nota.",
-  "Le stab": "El stab",
+  "Le stab (un accord court)": "El stab (un acorde corto)",
   "Le stab (accords)": "El stab (acordes)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "Nada de grandes pads en techno: un acorde corto y seco, golpeado dos veces por compás, con eco. Se le llama “stab”.",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "Te toca: toca “Copiar en los compases siguientes”, luego haz los 2 acordes del compás 4 (un escalón más arriba) y “Copiar” otra vez.",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "Te toca: mezclar es ajustar el volumen de cada pista. En la pestaña “Mix”, baja un poco el fader de la pista “Acordes” y luego el de la pista “Melodía”. Bajo el control, “Normal” pasa a “−2”, “−4”…: más bajo, menos fuerte. Las marcas de al lado (+4, 0, −12, −∞) dicen lo mismo: 0 es el volumen normal, −∞ el silencio.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "Te toca: toca “Compartir”: la app hace un archivo de sonido de tu tema, para enviarlo. “M4A” hace un archivo ligero para tus amigos, “WAV” conserva la calidad de estudio. Después, “Nivel” dice si tu tema suena fuerte o suave, y “Sin saturación” quiere decir que no chisporrotea.",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "Te toca: toca el pad “Clap” y luego, bajo su cuadrícula, “Efectos del pad”: sube “Envío de reverb”.",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Te toca: llama a esta parte “Groove”: el bucle completo del que sacarás las otras partes."
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "Te toca: llama a esta parte “Groove”: el bucle completo del que sacarás las otras partes.",
+  "Les transitions : les passages entre les parties": "Las transiciones: el paso de una parte a otra"
 }

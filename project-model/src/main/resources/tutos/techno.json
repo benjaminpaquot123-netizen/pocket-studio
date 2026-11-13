@@ -147,7 +147,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
+          "text": "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
           "textPro": "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.",
           "why": "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.",
           "check": "lane:perc",
@@ -220,7 +220,7 @@
     },
     {
       "id": "chords",
-      "title": "Le stab",
+      "title": "Le stab (un accord court)",
       "titlePro": "Le stab (accords)",
       "why": "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».",
       "steps": [
@@ -282,7 +282,7 @@
     },
     {
       "id": "groove",
-      "title": "Ta première partie : le Groove",
+      "title": "Ta première partie : le Groove, ta boucle de base",
       "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
       "steps": [
         {
@@ -455,7 +455,7 @@
     },
     {
       "id": "transitions",
-      "title": "Les transitions",
+      "title": "Les transitions : les passages entre les parties",
       "why": "Entre deux parties, un petit événement prévient l'oreille : un silence, une cymbale.",
       "steps": [
         {

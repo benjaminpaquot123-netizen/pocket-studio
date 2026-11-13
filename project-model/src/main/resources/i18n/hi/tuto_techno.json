@@ -567,7 +567,7 @@
   "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.": "तुम्हारी बारी: “Hi-hat” पैड (छोटी “टिक”) पर डॉटेड खाने दबाओ: ये बाकी हिट्स के बीच के ख़ाली हिस्से भरता है।",
   "À toi : sur le pad « Charley », pose les doubles croches, sauf les contretemps (le « Charley ouvert » y joue déjà), plus doux sous le kick.": "तुम्हारी बारी: “Hi-hat” पैड पर सिक्सटीन्थ नोट्स रखो, ऑफ़बीट छोड़कर (वहाँ “Open hi-hat” पहले से बजता है), kick के नीचे धीमे।",
   "Les petits coups font rouler le rythme sans le charger.": "छोटे हिट्स रिदम को भारी किए बिना लुढ़काते हैं।",
-  "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "तुम्हारी बारी: “Rim” पैड (छोटा “टॉक”) पर डॉटेड खाने दबाओ: ये बीट्स के बगल में, खिसककर पड़ता है।",
+  "À toi : sur le pad « Rim » (un coup sur le bord du tambour : un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.": "तुम्हारी बारी: “Rim” पैड (ड्रम के किनारे पर एक चोट: छोटा “टॉक”) पर डॉटेड खाने दबाओ: ये बीट्स के बगल में, खिसककर पड़ता है।",
   "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle.": "तुम्हारी बारी: “Rim” पैड पर खिसका हुआ हिट रखो, वो छोटा रिदमिक हुक जो लूप में घूमता है।",
   "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.": "हर बार में एक जैसा लौटता खिसका हुआ साउंड: यही सम्मोहित करता है।",
   "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.": "तुम्हारी बारी: “Cymbal” पैड (खनकता cymbal) पर डॉटेड खाने दबाओ। ये सिर्फ़ ड्रॉप में आएगी, उसे चमकाने के लिए।",
@@ -582,7 +582,7 @@
   "Sans basse, ton Drop n'aura pas de grave qui roule.": "बेस के बिना तुम्हारे ड्रॉप में लुढ़कता लो नहीं होगा।",
   "À toi : sous le piano roll, « Régler le son de la piste » : monte la « Coupure » d'au moins 15. La basse s'ouvre et devient plus mordante.": "तुम्हारी बारी: piano roll के नीचे, “ट्रैक का साउंड सेट करो”: “Cutoff” कम से कम 15 बढ़ाओ। बेस खुलता है और ज़्यादा काटने वाला बनता है।",
   "En techno, c'est le filtre qui fait bouger une basse qui ne change presque pas de note.": "Techno में फ़िल्टर ही उस बेस को हिलाता है जो लगभग अपना नोट नहीं बदलता।",
-  "Le stab": "स्टैब",
+  "Le stab (un accord court)": "स्टैब (एक छोटा कॉर्ड)",
   "Le stab (accords)": "स्टैब (कॉर्ड्स)",
   "Pas de grande nappe en techno : un accord court et sec, frappé deux fois par mesure, avec un écho. On l'appelle un « stab ».": "Techno में कोई बड़ा pad नहीं: एक छोटा, सूखा कॉर्ड, हर बार में दो बार बजाया, echo के साथ। इसे “stab” कहते हैं।",
   "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.": "तुम्हारी बारी: “अगले बार पर कॉपी करो” दबाओ, फिर बार 4 के 2 कॉर्ड्स (एक दर्जा ऊपर) बनाओ और फिर से “कॉपी”।",
@@ -699,5 +699,6 @@
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "तुम्हारी बारी: मिक्स मतलब हर ट्रैक का वॉल्यूम सेट करना। “मिक्स” टैब में “कॉर्ड्स” ट्रैक का फ़ेडर थोड़ा नीचे करो, फिर “मेलोडी” ट्रैक का। फ़ेडर के नीचे “सामान्य” बदलकर “−2”, “−4”… हो जाता है: जितना कम, उतना धीमा। बगल के निशान (+4, 0, −12, −∞) भी यही कहते हैं: 0 सामान्य वॉल्यूम है, −∞ ख़ामोशी।",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "तुम्हारी बारी: “शेयर करो” दबाओ: ऐप तुम्हारे गाने की एक साउंड फ़ाइल बनाता है, भेजने के लिए। “M4A” दोस्तों के लिए हल्की फ़ाइल बनाता है, “WAV” स्टूडियो क्वालिटी रखता है। फिर “लेवल” बताता है कि गाना तेज़ बजता है या धीमा, और “कोई खरखराहट नहीं” का मतलब है कि वो खरखराता नहीं।",
   "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "तुम्हारी बारी: “Clap” पैड दबाओ, फिर उसकी ग्रिड के नीचे “पैड इफ़ेक्ट्स”: “Reverb सेंड” बढ़ाओ।",
-  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "तुम्हारी बारी: इस पार्ट का नाम “ग्रूव” रखो: पूरा लूप, जिससे तुम बाकी पार्ट्स निकालोगे।"
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "तुम्हारी बारी: इस पार्ट का नाम “ग्रूव” रखो: पूरा लूप, जिससे तुम बाकी पार्ट्स निकालोगे।",
+  "Les transitions : les passages entre les parties": "ट्रांज़िशन: एक पार्ट से दूसरे पार्ट तक जाना"
 }

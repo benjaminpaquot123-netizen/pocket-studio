@@ -1763,6 +1763,21 @@ def closed_red_same_lot_only(d):
     off = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red off the line", app=2)
     out = judge(root)
     check(f"{off} « vert:" in out and "chantier : 1 écarts" in out, "a red off the green's first-parent line gives it nothing:\n" + out)
+    # Second review of « juge8 » (G3, B1): a later lot started from the tip of a merged lot's branch (eq/k, not the
+    # integration): K's red and first green are on its first-parent line, no « Merge team » between; it merges the
+    # integration midway. K's red is inside « Merge team k », an ancestor of the green: another lot's.
+    root = setup("lot-pointe")
+    git_toy(root, "checkout", "-q", "-b", "eq/k")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team k of tour-9 (audit ultra)", "eq/k")
+    git_toy(root, "checkout", "-q", "-b", "eq/l", "eq/k")
+    commit(root, "docs: lot l starts", doc="l")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch main into eq/l", "main")
+    tip = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, from the tip of another lot's branch", app=2)
+    out = judge(root)
+    check(f"{tip} « vert:" in out and "chantier : 1 écarts" in out, "a red already inside a « Merge team » gives a later lot nothing:\n" + out)
 
 
 def red_seen_other_tests_only(d):

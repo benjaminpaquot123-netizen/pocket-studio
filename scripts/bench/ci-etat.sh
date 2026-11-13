@@ -19,7 +19,7 @@ state_of() {  # <status> <conclusion>
   esac
 }
 build="absent"; emu="absent"
-# The CI workflow holds the build and the emulator smoke test as two jobs; audit-emulator.yml is a workflow of its own.
+# The CI workflow holds the emulator smoke test and every other check as jobs; audit-emulator.yml is a workflow of its own.
 if [ -n "$sha" ] && runs="$(gh api "repos/$repo/actions/runs?head_sha=$sha&per_page=20" --jq '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' 2>/dev/null)"; then
   while IFS=$'\t' read -r id name status conclusion; do
     [ -n "$name" ] || continue
@@ -31,8 +31,24 @@ if [ -n "$sha" ] && runs="$(gh api "repos/$repo/actions/runs?head_sha=$sha&per_p
     while IFS=$'\t' read -r jname jstatus jconclusion; do
       [ -n "$jname" ] && printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
       case "$jname" in
+        "") ;;
         *mulat*) emu="$(state_of "$jstatus" "$jconclusion")" ;;
-        *uild*) build="$(state_of "$jstatus" "$jconclusion")" ;;
+        Publish*) ;;
+        *)
+          # Lot « ci3 » (review, G1): the CI's long job is three jobs side by side and none waits for the engine, so
+          # « ci_build » is every job of the CI workflow but the emulator's and the publication (which only follows
+          # the others): red wins, then « en cours », then green. Another workflow keeps the old reading (« *uild* »).
+          if [ "$name" = "CI" ]; then
+            one="$(state_of "$jstatus" "$jconclusion")"
+            case "$build/$one" in
+              rouge/*) ;;
+              */rouge) build="rouge" ;;
+              "en cours"/*) ;;
+              *) build="$one" ;;
+            esac
+          else
+            case "$jname" in *uild*) build="$(state_of "$jstatus" "$jconclusion")" ;; esac
+          fi ;;
       esac
     done <<<"$jobs"
     # A run that exists but has not created a job yet: that job is on its way, not absent.

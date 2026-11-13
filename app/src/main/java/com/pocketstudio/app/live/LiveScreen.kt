@@ -1175,9 +1175,11 @@ private fun SceneButton(
         // R1 (the letter cut at the phone's font 200 % in a short row): smaller before it is cut.
         com.pocketstudio.ui.FitText(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, min = 9.sp)
         if (label != null && height >= 52.dp) {
-            Text(
-                label, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
-                maxLines = if (height >= 72.dp && width >= 72.dp) 2 else 1, overflow = TextOverflow.Ellipsis,
+            // Tour 6, lot 5 (R1: « Cou… », « Refr… », « Przejś… » in a 52 dp column): smaller, on two lines when the row has
+            // room, without the small labels' wide spacing, before a word is cut.
+            com.pocketstudio.ui.FitText(
+                label, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary, textAlign = TextAlign.Center,
+                maxLines = if (height >= 64.dp) 2 else 1, min = 6.sp,
             )
         }
     }

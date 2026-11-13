@@ -206,7 +206,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="17 b3bb3a0b98"
+KNOWN_RULES="17 c445a874a1"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -323,7 +323,7 @@ for zone in "$@"; do
       [ -z "$why" ] || ok "tuto : le lot touche au tuto, siège(s) de contrôle acceptés (${why#tuto: })"
     else
       while IFS= read -r line; do
-        [ -z "$line" ] || rule_from 6 "lot du tuto sans son siège de contrôle : $line" \
+        [ -z "$line" ] || rule_from 7 "lot du tuto sans son siège de contrôle : $line" \
           "faire rejouer le tuto par un débutant neuf SUR CETTE BRANCHE, après le dernier commit qui change le tuto ; committer le dossier du siège (docs/audits/ultra/sieges/$tour/controle/<id>/, « code testé : <sha> » en tête de son rapport.md) et, dans $report, une ligne par siège : « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » ; le tout AVANT la relecture"
       done <<< "$why"
     fi

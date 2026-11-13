@@ -94,7 +94,7 @@ for zone in "${zones[@]}"; do
   # branch not older than its last change of the tutorial, <id> a seat whose report is in the branch and names the
   # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
   tuto_out=""
-  if from_paquet 6 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).

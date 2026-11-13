@@ -157,7 +157,12 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
         var examples = 0
         val early = ArrayList<String>()
         for (s in steps) {
-            await("${s.id} shown") { progress().current == s.id }
+            // Tour 6 (N23): « Chapitre suivant » on a chapter whose last steps were done before goes past them.
+            await("${s.id} shown") { progress().current == s.id || (s.id in progress().done && steps.indexOfFirst { it.id == progress().current } > steps.indexOf(s)) }
+            if (progress().current != s.id) {
+                early += s.id
+                continue
+            }
             if (s.id in progress().done) {
                 early += s.id
                 if (has("tuto_next_big")) click("tuto_next_big")
@@ -210,7 +215,12 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
             perform(s, level)
             await("${s.id}: ticked once done") { s.id in progress().done }
             // « C'est fait » goes on (the user's own touch); a step seen done stays (owner, 2026-10-28).
-            if (s.manual) continue
+            if (s.manual) {
+                // Tour 6 (N10): a chapter's last step ticked by hand stays with its « Bravo »: « Chapitre suivant ».
+                idle(400)
+                if (progress().current == s.id && has("tuto_next_big")) click("tuto_next_big")
+                continue
+            }
             idle(400)
             assertEquals("${s.id}: went on by itself", s.id, progress().current)
             if (steps.all { it.id in progress().done }) break

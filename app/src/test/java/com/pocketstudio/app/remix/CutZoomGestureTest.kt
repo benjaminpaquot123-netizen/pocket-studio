@@ -136,6 +136,43 @@ class CutZoomGestureTest {
         assertFalse(five in m.pieces)
     }
 
+    /** Review of remix2 (grave, second pass): the same after « Couper ici », « Boucle » or « Couper ici » then « Annuler ». */
+    @Test
+    fun removeAfterTouchesAndAnEditTakesOnlyThePieceUnderTheHead() {
+        for (between in listOf("cut", "loop", "cut+undo")) {
+            val (m, v, _) = setUp()
+            listOf(3, 7, 5).forEach { piece ->
+                val x = v.x(piece * bar + bar / 2)
+                compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+                compose.waitForIdle()
+            }
+            compose.runOnIdle {
+                when (between) {
+                    "cut" -> m.cutHere(m.cursor)
+                    "loop" -> m.loop()
+                    else -> { m.cutHere(m.cursor); m.undo() }
+                }
+            }
+            val count = m.pieces.size
+            compose.runOnIdle { m.remove() }
+            assertEquals("after $between", count - 1, m.pieces.size)
+        }
+    }
+
+    /** A piece ticked on purpose (its number) still goes with « Enlever », with the head elsewhere. */
+    @Test
+    fun removeTakesThePiecesTickedOnPurpose() {
+        val (m, v, _) = setUp()
+        listOf(3, 7).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, 12.dp.toPx())) }
+            compose.waitForIdle()
+        }
+        val count = m.pieces.size
+        compose.runOnIdle { m.remove() }
+        assertEquals(count - 2, m.pieces.size)
+    }
+
     @Test
     fun aSecondFingerZoomsEvenWhenTheFirstLandedOnALine() {
         val (m, v, saved) = setUp()

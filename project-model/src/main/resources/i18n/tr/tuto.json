@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: ünlü bir ritim makinesi, onun davul sesleri.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: ritim sallansın diye her ikinci vuruşu kaydırmak.",
   "Break : un moment plus calme, la batterie se tait.": "Break: daha sakin bir an, davullar susar.",
-  "Autres synthés": "Diğer synth'ler"
+  "Autres synthés": "Diğer synth'ler",
+  "Déjà fait !": "Zaten yapıldı!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Parçanda bu adımın istediği zaten vardı: dokunacak bir şey yok.",
+  "Tu as déjà fait cette étape.": "Bu adımı zaten yaptın.",
+  "Partie « %s » créée (copie du Groove).": "“%s” bölümü oluşturuldu (Groove'un kopyası)."
 }

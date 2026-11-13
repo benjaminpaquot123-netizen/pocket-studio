@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: słynny automat perkusyjny, jego dźwięki perkusji.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: przesunięcie co drugiego uderzenia, żeby rytm się kołysał.",
   "Break : un moment plus calme, la batterie se tait.": "Break: spokojniejszy moment, perkusja milknie.",
-  "Autres synthés": "Inne syntezatory"
+  "Autres synthés": "Inne syntezatory",
+  "Déjà fait !": "Już zrobione!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Twój utwór miał już to, czego wymaga ten krok: nic nie trzeba dotykać.",
+  "Tu as déjà fait cette étape.": "Ten krok już zrobiłeś.",
+  "Partie « %s » créée (copie du Groove).": "Utworzono część „%s” (kopia Groove’u)."
 }

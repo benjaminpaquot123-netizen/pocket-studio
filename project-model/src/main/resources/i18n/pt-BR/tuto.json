@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: uma bateria eletrônica famosa, os sons de bateria dela.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: atrasar uma batida a cada duas para o ritmo balançar.",
   "Break : un moment plus calme, la batterie se tait.": "Break: um momento mais calmo, a bateria para.",
-  "Autres synthés": "Outros sintetizadores"
+  "Autres synthés": "Outros sintetizadores",
+  "Déjà fait !": "Já feito!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Sua música já tinha o que este passo pede: nada para tocar.",
+  "Tu as déjà fait cette étape.": "Você já fez este passo.",
+  "Partie « %s » créée (copie du Groove).": "Parte “%s” criada (cópia do Groove)."
 }

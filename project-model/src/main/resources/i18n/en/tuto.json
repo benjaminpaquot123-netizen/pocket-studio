@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: a famous drum machine, its drum sounds.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: shifting every other hit so the rhythm sways.",
   "Break : un moment plus calme, la batterie se tait.": "Break: a calmer moment, the drums go quiet.",
-  "Autres synthés": "Other synths"
+  "Autres synthés": "Other synths",
+  "Déjà fait !": "Already done!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Your track already had what this step asks for: nothing to touch.",
+  "Tu as déjà fait cette étape.": "You already did this step.",
+  "Partie « %s » créée (copie du Groove).": "Part “%s” made (a copy of the Groove)."
 }

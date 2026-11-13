@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: 유명한 드럼 머신, 그 드럼 소리.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "스윙: 리듬이 흔들리도록 두 번째 음마다 살짝 미루는 것.",
   "Break : un moment plus calme, la batterie se tait.": "브레이크: 조용해지는 부분, 드럼이 쉬어요.",
-  "Autres synthés": "다른 신스"
+  "Autres synthés": "다른 신스",
+  "Déjà fait !": "이미 했어요!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "곡에 이 단계에서 필요한 것이 이미 있었어요: 건드릴 것이 없어요.",
+  "Tu as déjà fait cette étape.": "이 단계는 이미 했어요.",
+  "Partie « %s » créée (copie du Groove).": "“%s” 파트를 만들었어요(그루브 복사본)."
 }

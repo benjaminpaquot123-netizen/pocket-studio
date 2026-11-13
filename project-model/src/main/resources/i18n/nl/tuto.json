@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: een beroemde drumcomputer, zijn drumgeluiden.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: elke tweede slag verschuiven zodat het ritme deint.",
   "Break : un moment plus calme, la batterie se tait.": "Break: een rustiger moment, de drums zwijgen.",
-  "Autres synthés": "Andere synths"
+  "Autres synthés": "Andere synths",
+  "Déjà fait !": "Al gedaan!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Je nummer had al wat deze stap vraagt: niets aan te raken.",
+  "Tu as déjà fait cette étape.": "Je hebt deze stap al gedaan.",
+  "Partie « %s » créée (copie du Groove).": "Deel ‘%s’ gemaakt (kopie van de Groove)."
 }

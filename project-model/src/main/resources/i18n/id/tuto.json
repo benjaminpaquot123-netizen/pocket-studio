@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: drum machine terkenal, suara drumnya.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: menggeser setiap ketukan kedua supaya ritmenya berayun.",
   "Break : un moment plus calme, la batterie se tait.": "Break: saat yang lebih tenang, drum diam.",
-  "Autres synthés": "Synth lain"
+  "Autres synthés": "Synth lain",
+  "Déjà fait !": "Sudah selesai!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Lagumu sudah punya yang diminta langkah ini: tidak ada yang perlu disentuh.",
+  "Tu as déjà fait cette étape.": "Kamu sudah melakukan langkah ini.",
+  "Partie « %s » créée (copie du Groove).": "Bagian “%s” dibuat (salinan Groove)."
 }

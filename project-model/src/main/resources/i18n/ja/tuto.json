@@ -140,5 +140,9 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707：有名なリズムマシン。そのドラムの音。",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "スウィング：ひとつおきの音を少しずらして、リズムをゆらすこと。",
   "Break : un moment plus calme, la batterie se tait.": "ブレイク：静かになる部分。ドラムが止まります。",
-  "Autres synthés": "ほかのシンセ"
+  "Autres synthés": "ほかのシンセ",
+  "Déjà fait !": "もうできています！",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "曲にはこのステップで必要なものがもうありました：触るところはありません。",
+  "Tu as déjà fait cette étape.": "このステップはもう済んでいます。",
+  "Partie « %s » créée (copie du Groove).": "パート「%s」を作りました（グルーヴのコピー）。"
 }

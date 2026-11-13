@@ -146,5 +146,6 @@
   "Tu as déjà fait cette étape.": "这一步你已经做过了。",
   "Partie « %s » créée (copie du Groove).": "已创建段落“%s”（律动的副本）。",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "新歌从 %d BPM 开始：这种风格的速度由你来定。",
-  "%1$s : encore +%2$d": "%1$s：还差 +%2$d"
+  "%1$s : encore +%2$d": "%1$s：还差 +%2$d",
+  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "轮到你：在高潮上自动化 303 的“截止”：“自动化一个参数”、“Acid 303”、“截止”、“按段落”，然后在高潮的循环（1 小节）上画一条升到中间再降下来的曲线：滤波器每小节打开又关上。"
 }

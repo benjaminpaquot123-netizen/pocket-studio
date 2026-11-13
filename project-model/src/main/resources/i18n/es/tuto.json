@@ -146,5 +146,6 @@
   "Tu as déjà fait cette étape.": "Ya hiciste este paso.",
   "Partie « %s » créée (copie du Groove).": "Parte “%s” creada (copia del Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Un tema nuevo empieza a %d BPM: tú le das la velocidad del estilo.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d más"
+  "%1$s : encore +%2$d": "%1$s: +%2$d más",
+  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "Te toca: automatiza el “Corte” de la 303 en el Drop: “Automatizar un ajuste”, “Acid 303”, “Corte”, “Por parte”, y en el bucle del Drop (1 compás) dibuja una curva que sube hasta la mitad y luego vuelve a bajar: el filtro se abre y se cierra en cada compás."
 }

@@ -146,5 +146,6 @@
   "Tu as déjà fait cette étape.": "You already did this step.",
   "Partie « %s » créée (copie du Groove).": "Part “%s” made (a copy of the Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "A new track starts at %d BPM: you are the one who gives it the style's speed.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d more"
+  "%1$s : encore +%2$d": "%1$s: +%2$d more",
+  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "Your turn: automate the 303's “Cutoff” on the Drop: “Automate a setting”, “Acid 303”, “Cutoff”, “Per part”, and on the Drop's loop (1 bar) draw a curve that rises until the middle, then comes back down: the filter opens and closes in every bar."
 }

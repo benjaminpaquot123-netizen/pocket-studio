@@ -146,5 +146,6 @@
   "Tu as déjà fait cette étape.": "لقد قمت بهذه الخطوة بالفعل.",
   "Partie « %s » créée (copie du Groove).": "تم إنشاء الجزء «%s» (نسخة من الغروف).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "المقطوعة الجديدة تبدأ عند %d BPM: أنت من يعطيها سرعة الأسلوب.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d أخرى"
+  "%1$s : encore +%2$d": "%1$s: +%2$d أخرى",
+  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "دورك: أتمِت «Cutoff» الـ303 على الدروب: «أتمتة إعداد»، «Acid 303»، «Cutoff»، «لكل جزء»، وارسم على حلقة الدروب (مازورة 1) منحنى يصعد حتى المنتصف ثم ينزل: ينفتح الفلتر وينغلق في كل مازورة."
 }

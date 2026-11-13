@@ -47,6 +47,9 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         /** An answer to a question of the banner: « verdict;capture;comment » (Oreille.kt). */
         const val REPONSE = "reponse"
 
+        /** « Écoute au micro »'s numbers: « bruit;csv », « courbe;csv », « empreinte;style;… », « anomalie;… » (EcouteMicro.kt). */
+        const val MICRO = "micro"
+
         /** A logbook's text read back (a report zip's carnet.tsv too). */
         fun lire(text: String): List<Ligne> = text.lines().mapNotNull { raw ->
             // A line cut by the crash itself (half written) is left out.

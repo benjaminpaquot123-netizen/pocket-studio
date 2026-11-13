@@ -95,6 +95,13 @@ for zone in "${zones[@]}"; do
   # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
   tuto_out=""
   if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): a repair is « done » only when a tester saw
+  # it. In docs/audits/ultra/corrections.tsv a lot writes « tenté » (or « pas pris »), never « corrigé », « rejoué » (the
+  # portal's, set below after the merge) nor « constaté » (the chief's, after a control seat); nor the sorter's
+  # acceptance sentence or seat of origin. Its own lines are those neither the base nor the integration's head has
+  # (scripts/bench/reparations.py --lot).
+  states_out=""
+  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
@@ -202,12 +209,22 @@ for zone in "${zones[@]}"; do
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
   index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): « rejoué » is the portal's. Each line of
+  # docs/audits/ultra/corrections.tsv the lot brought in « tenté » whose proof held on the merged head (a replay of
+  # rejeux/ « oracle tenu » in this merge's self-test, or a test among the filters run green above) becomes « rejoué »,
+  # written in the traces' commit (taken back with the merge when a later step fails).
+  if from_paquet 8 && [ -f docs/audits/ultra/corrections.tsv ] && [ -f scripts/bench/reparations.py ]; then
+    computed+=(docs/audits/ultra/corrections.tsv)
+    proofs=(); for f in "${zone_filters[@]}"; do proofs+=("filtre:$f"); done
+    python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$before" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" | sed "s/^/$zone: /"
+    git diff --quiet -- docs/audits/ultra/corrections.tsv || index+=(docs/audits/ultra/corrections.tsv)
+  fi
   # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
   # round, on the merged code; what they write goes into the traces' commit.
   round="docs/audits/ultra/sieges/$tour"
   # (Its failure undoes the merge: a rule of the portal, frozen until batch 2 like the others.)
   if from_paquet 2 && [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
-    computed=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
+    computed+=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
     python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
     mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
     computed+=("${rounds[-1]}/tableau-de-bord.md")

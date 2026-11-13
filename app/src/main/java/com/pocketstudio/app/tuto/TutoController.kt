@@ -802,6 +802,10 @@ class TutoController(
             }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
         }
         if (_ui.value?.progress?.style != u.progress.style || _ui.value?.demo != null) return
+        // A look about a project that has changed since says nothing: a newer look follows (the edits' own look runs on
+        // every change), and a late answer put back what the older project needed (« Copier » taken back after the
+        // motif was written: three tutorial classes red now and then on the CI).
+        if (p !== project.value && p != project.value) return
         // Only what is not ticked yet NOW: a look begun before an earlier one answered finds its steps again (CI
         // 43448175188: then « found » was never empty and what the song's order lacks was never said).
         val found = seen - _ui.value?.progress?.done.orEmpty()
@@ -815,12 +819,14 @@ class TutoController(
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
-        else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        // What the step needs follows the project while the step is not ticked by this look (other steps ticked at the
+        // same time do not hold it back: a look that ticked the parts' steps never said what the order lacked).
+        if (u.current.id !in found && _ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
         // The step's note follows the project (the tempo once set: nothing more to say).
         if (_ui.value?.current?.id == u.current.id) noteFor(u.current, p).let { n -> if (_ui.value?.note != n) _ui.value = _ui.value?.copy(note = n) }
         // Testers (lot « tuto 5 »: seven parts in a wrong order, not a word): what is missing, or where the order goes wrong.
         // The durations too: they are not ticked while the order is wrong.
-        if (found.isEmpty() && u.current.check.startsWith("song:") && _ui.value?.current?.id == u.current.id && p.song.isNotEmpty()) {
+        if (u.current.id !in found && u.current.id !in _ui.value?.progress?.done.orEmpty() && u.current.check.startsWith("song:") && _ui.value?.current?.id == u.current.id && p.song.isNotEmpty()) {
             val (wanted, have) = TutoChecks.orderOf(u.current, p)
             val said = if (wanted != have) orderText(u.current, p) else null
             if (said != null && _ui.value?.made != said) _ui.value = _ui.value?.copy(made = said)

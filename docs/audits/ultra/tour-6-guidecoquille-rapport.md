@@ -5,20 +5,23 @@ Fichiers touchés : `guide/GuidePanel.kt`, `guide/GuideViewModel.kt`, `ui/AppRoo
 
 tests: com.pocketstudio.app.nav.Tour6GuideCoversTest com.pocketstudio.app.nav.Tour6GuideLanguageTest com.pocketstudio.app.nav.Tour6GuideNextStepTest com.pocketstudio.app.nav.Tour6GuideAndTutoTest com.pocketstudio.app.nav.Tour6DoneBarTest com.pocketstudio.app.nav.Tour6HomeStopsMusicTest com.pocketstudio.app.nav.Tour6ModeSwitchAsksTest com.pocketstudio.app.nav.Tour6AudioPagesMoreTest com.pocketstudio.app.nav.Tour6RemixCancelTest com.pocketstudio.app.nav.Tour6MixerNamesTest com.pocketstudio.app.nav.Tour6PadLiveEffectsTitleTest com.pocketstudio.app.nav.SpacesTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.nav.GuideJourneyTest
 
+Derniers passages : les classes `Tour6*`, les suites `Guide*Test` de `nav`, `SpacesTest`, `SimpleModeAuditTest`, `RemixFindableTest`, `TrackSheetTest`, `PlayingRecomposeTest` : 191 tests, 0 rouge ; avant le correctif de la relecture, `nav.*`, `guide.*`, `tuto.*` et `Zone3Round2Test` : 945 tests, tous verts sauf deux causes corrigées depuis (un `Toast` hors du fil principal, une capture retirée).
+
 Méthode : chaque test a été écrit et vu rouge sur son assertion avant toute correction (un seul passage Gradle pour les dix premiers, un autre pour U9), puis les corrections, un commit « vert » par défaut. Téléphone de 360 x 780 dp, Simple et Pro, 100 % et 130 %.
 
-## Corrigés (11 sur 11 du lot, plus U9)
+## Traités (les 11 du lot, dont 3 en partie : G1, N1, U27 ; plus U9)
 
 ### G1 — le Guide cache le contenu (3 choses)
 - Le panneau ouvert se replie quand l'utilisateur change lui-même d'écran (onglet, « ⋮ Plus » du pouce ou du haut, page de Plus) ; sa barre reste. « Voir le réglage » du Guide n'est pas concerné.
 - Quand la carte dépasse du panneau, son bord s'estompe et une ligne « ↓ La suite » sous la carte fait monter le reste ; elle part à la fin. Un premier essai posait ce signe par-dessus la carte : il prenait les touchers des boutons dessous (37 anciens tests du Guide rouges), retiré.
-- Sur la page du clavier d'un écran court (moins de 700 dp), la barre repliée du Guide laisse sa ligne aux touches : 12 dp de touches visibles avant, environ 60 après (360 x 780 à 130 %).
+- Sur la page du clavier d'un écran court (moins de 700 dp), la barre repliée du Guide laisse sa ligne aux touches : 12 dp de touches visibles avant (mesuré par le test rouge, 360 x 780 à 130 %), la hauteur de la barre en plus après ; le test exige au moins 48 dp.
 - Reste : le siège F b #10 (360 x 780 à 100 %) est au-dessus du seuil ; le réglage fin de la page du clavier est dans `synth/SynthScreen.kt`, hors du lot.
 
 chemin: Guide ouvert puis « ⋮ Plus » du pouce (Simple) | test: Tour6GuideCoversTest#thePlusPageOpenedFromTheThumbIsNotUnderTheOpenGuide
 chemin: Guide ouvert puis « ⋮ » du haut à 130 % | test: Tour6GuideCoversTest#thePlusPageOpenedFromTheTopBarIsNotUnderTheOpenGuideWithBigText
 chemin: Guide ouvert puis Plus › Réglages (Pro) | test: Tour6GuideCoversTest#aPageOfPlusIsNotUnderTheOpenGuideInPro
 chemin: « Voir le réglage » du Guide garde le Guide à l'écran | test: Tour6GuideCoversTest#theGuidesOwnWayToAScreenKeepsItsBar
+chemin: un choix de la carte qui ne change pas d'écran puis « ⋮ Plus » | test: Tour6GuideCoversTest#afterAChoiceThatChangesNoScreenThePanelStillFoldsOnLeaving
 chemin: panneau du Guide, carte coupée (Simple) | test: Tour6GuideCoversTest#theOpenGuidesCutCardSaysMoreWaitsInSimple
 chemin: panneau du Guide, carte coupée (Pro) | test: Tour6GuideCoversTest#theOpenGuidesCutCardSaysMoreWaitsInPro
 chemin: panneau du Guide, carte coupée à 130 % | test: Tour6GuideCoversTest#theOpenGuidesCutCardSaysMoreWaitsWithBigText
@@ -105,9 +108,21 @@ chemin: Pad Live › Plus › Effets | test: Tour6PadLiveEffectsTitleTest#theEff
 
 ## Captures regardées
 `app/screenshots/tour6/shell_*.png` (classe `Tour6GuideCoquilleLookTest`, 24 images, 360 x 780 dp) : panneau du Guide avec « ↓ La suite » puis fin de carte (Simple et Pro, 100 % et 130 %), Plus après le Guide ouvert, clavier à 100 % et 130 %, ligne « Fait » (Simple et Pro, 100 % et 130 %), « Mode de ce projet » depuis Plus, pages de Sons › Voix (français 100 %, turc 130 %), tuto quitté, Guide demandé pendant un tuto, Mix pendant un tuto, carte « Fais une deuxième partie ». Cette classe n'est pas une classe du recensement des écrans (`ScreenRegistry`) : ce sont des états d'écrans déjà recensés.
+Les captures de référence existantes que le lot fait bouger (panneaux du Guide dont la carte dépasse, Mix d'un tuto, ligne « Fait », clavier d'un écran court, tuto quitté) n'ont pas été réenregistrées : la CI les listera comme « différentes » (avertissement, pas un rouge) ; à réenregistrer dans une passe de captures.
+
+## Après la relecture neuve
+- Grave **corrigé** : après un choix de la carte qui ne change pas d'écran, le panneau ne se repliait plus au départ de l'utilisateur. Test rouge 19e35771 (`afterAChoiceThatChangesNoScreenThePanelStillFoldsOnLeaving`), puis le correctif (`guideGo` écrit l'écran où le panneau est au lieu de l'effacer).
+- Moyens repris : l'origine de l'import (U17) est posée là où chaque import commence, plus de drapeau sauvegardé qui pouvait rester levé ; le message de N16 est vérifié avec « Ton morceau est sauvegardé. » ; une seule icône pour les deux bords de la rangée des pages.
+- Moyens laissés, notés dans la relecture : la page gagne puis rend la hauteur de la ligne « Fait » et de la ligne « La suite » ; couché, la ligne « Fait » n'a pas de marge sous elle quand rien ne la suit ; sur un écran court la page du clavier n'a plus la barre du Guide ; dans le projet d'un tuto quitté, le Guide ne s'ouvre que par Plus › Aide.
+- `theGuidesOwnWayToAScreenKeepsItsBar` est un garde-fou (vert avant le lot aussi), pas une preuve du correctif.
+
+## Banc et voisins
+- `scripts/bench/selftest.sh` : un premier passage rouge sur `BenchSelfTest#everyIconOfTheAppHasItsShape` (l'icône « ‹ » de R19, sans forme connue du banc) ; corrigé en retournant l'icône « › » ; second passage, sur le code final (commit du correctif de la relecture) : 203 verts, 0 rouge, 0 en quarantaine, 44 sautés.
+- `GestureBudgetTest#aStrokeCutShortIsStillItsOwnUndoStep` est rouge sur la branche (attendu 11, obtenu 10). Ce test dessine `RhythmScreen` seul avec son ViewModel : aucun des cinq fichiers du lot n'est sur son chemin. À regarder côté intégration (RhythmScreen.kt a changé avec le lot 1).
 
 ## À dire au relecteur
 - Aucun rejeu ajouté, retiré ni changé ; rien touché sous `scripts/bench/`, `docs/audits/ultra/portail/`, les fichiers de traduction.
+- La branche a fusionné la tête poussée de l'intégration (a7f8ed62) ; son histoire garde aussi la première fusion de tutogrille (ea294587), que le portail a défaite depuis.
 - Les commits « vert » ont été découpés par défaut après le passage vert de l'ensemble : chaque commit intermédiaire n'a pas été testé seul, seul l'état final l'a été.
 - T13 et N1 partagent un commit rouge et un commit vert (même condition dans AppRoot.kt).
 - Le découpage par défaut laisse quelques lignes communes (G1 s'appuie sur T13/N1, U9 vient après).

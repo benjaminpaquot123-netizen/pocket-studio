@@ -40,7 +40,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ».",
           "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -52,7 +52,7 @@
     },
     {
       "id": "kick",
-      "title": "Le kick",
+      "title": "Le kick : la grosse caisse",
       "why": "Le kick (la grosse caisse) tape sur chaque temps, du début à la fin : c'est la house qui a fait de ce « boum boum boum boum » la règle de la piste de danse.",
       "steps": [
         {
@@ -251,7 +251,7 @@
     },
     {
       "id": "groove",
-      "title": "Ta première partie : le Groove",
+      "title": "Ta première partie : le Groove, ta boucle de base",
       "why": "Tout ce que tu as fait joue ensemble : c'est ta partie de départ. Les autres parties naîtront d'elle.",
       "steps": [
         {

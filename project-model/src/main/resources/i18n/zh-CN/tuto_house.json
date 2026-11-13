@@ -328,7 +328,7 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 122 BPM, 122 battements par minute. « Je le fais » ouvre la fiche Tempo.": "轮到你：把速度（曲子的快慢）设为 122 BPM，也就是每分钟 122 拍。“我来做”会打开“速度”面板。",
   "À toi : règle le tempo sur 122 BPM, le cœur de la house classique (119 à 125).": "轮到你：把速度设为 122 BPM，经典 house 的核心（119 到 125）。",
   "Sans ça, ton morceau reste à 100 BPM : bien trop lent pour la house.": "不设的话，你的曲子会停在 100 BPM：对 house 来说太慢了。",
-  "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».": "轮到你：选曲子的色彩。“我来做”会打开“音调”面板：点“多利亚”（带一个让人微笑的明亮音的小调音阶），再点“A”。",
+  "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ».": "轮到你：选曲子的色彩。“我来做”会打开“音调”面板：点“多利亚”（一种有点暗、但带一个让人微笑的明亮音的小调音阶），再在“主音”（曲子出发的那个音）下面点“A”。",
   "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.": "轮到你：把调设为 A 多利亚：带大六度（F♯）的小调，产生一个大调的 IV 级和弦。这是钢琴 house 的色彩。“我来做”会打开“音调”面板。",
   "Sans cette gamme, ton piano ne prendra pas la couleur chaude de la house.": "没有这个音阶，你的钢琴就出不来 house 的温暖色彩。",
   "Le kick (la grosse caisse) tape sur chaque temps, du début à la fin : c'est la house qui a fait de ce « boum boum boum boum » la règle de la piste de danse.": "底鼓从头到尾每拍都打：是 house 让这个“咚咚咚咚”成了舞池的规矩。",
@@ -602,5 +602,7 @@
   "Partage ton morceau": "分享你的曲子",
   "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "轮到你：点“分享”：应用会把你的曲子做成一个可以发送的声音文件。“M4A”是给朋友的轻巧文件，“WAV”保留录音棚品质。下面的“−14”表示和流媒体音乐一样响，“没有削波”表示没有破音，“没有忘关的独奏”表示没有哪条音轨在单独播放。",
   "À toi : touche « Partager » et envoie ton morceau.": "轮到你：点“分享”，把你的曲子发出去。",
-  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "轮到你：在“混音”标签页里（调每种声音音量的地方），把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。推子上的数字，从“+4”（更响）到“−∞”（完全没声音），只是告诉你调高或调低了多少。"
+  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "轮到你：在“混音”标签页里（调每种声音音量的地方），把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。推子上的数字，从“+4”（更响）到“−∞”（完全没声音），只是告诉你调高或调低了多少。",
+  "Le kick : la grosse caisse": "底鼓：大鼓",
+  "Ta première partie : le Groove, ta boucle de base": "你的第一段：律动，你的基本循环"
 }

@@ -328,7 +328,7 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 122 BPM, 122 battements par minute. « Je le fais » ouvre la fiche Tempo.": "あなたの番：テンポ（曲の速さ）を 122 BPM、1分間に122拍にしよう。「自分でやる」でテンポのシートが開くよ。",
   "À toi : règle le tempo sur 122 BPM, le cœur de la house classique (119 à 125).": "あなたの番：テンポを 122 BPM にしよう。クラシックなハウスのど真ん中（119〜125）。",
   "Sans ça, ton morceau reste à 100 BPM : bien trop lent pour la house.": "これをしないと曲は 100 BPM のまま。ハウスには遅すぎる。",
-  "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».": "あなたの番：曲の雰囲気を選ぼう。「自分でやる」でキーのシートが開くよ：「ドリアン」（明るい音が1つ入って笑顔になるマイナースケール）、次に「A」をタップ。",
+  "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ».": "あなたの番：曲の雰囲気を選ぼう。「自分でやる」でキーのシートが開くよ：「ドリアン」（少し暗めだけど、明るい音が1つ入って笑顔になるマイナースケール）、次に「キー」（曲の出発点になる音）の下の「A」をタップ。",
   "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.": "あなたの番：キーを A ドリアンにしよう：長6度（F♯）入りのマイナーで、IV がメジャーになる。これがピアノハウスの色。「自分でやる」でキーのシートが開くよ。",
   "Sans cette gamme, ton piano ne prendra pas la couleur chaude de la house.": "このスケールがないと、ピアノがハウスのあたたかい色にならない。",
   "Le kick (la grosse caisse) tape sur chaque temps, du début à la fin : c'est la house qui a fait de ce « boum boum boum boum » la règle de la piste de danse.": "キック（バスドラム）は最初から最後まで毎拍を叩く：この「ドン・ドン・ドン・ドン」をダンスフロアのルールにしたのはハウス。",
@@ -602,5 +602,7 @@
   "Partage ton morceau": "曲をシェアしよう",
   "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.": "あなたの番：「シェア」をタップ：アプリが曲を送れるオーディオファイルにする。「M4A」は友だち向けの軽いファイル、「WAV」はスタジオ品質のまま。その下の「−14」はストリーミングの音楽と同じくらいの音量、「音割れはありません」は音がバリバリしないこと、「ソロの消し忘れ」がないのは、1つのトラックだけが鳴っていないこと。",
   "À toi : touche « Partager » et envoie ton morceau.": "あなたの番：「シェア」をタップして曲を送ろう。",
-  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "あなたの番：「ミックス」タブ（それぞれの音の音量を決める場所）で、「コード」トラックのスライダーを少し下げ、次に「メロディ」トラックのスライダーも下げよう。スライダーの数字は「+4」（大きめ）から「−∞」（まったく音なし）まで、どれだけ上げ下げしたかを示すだけ。"
+  "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.": "あなたの番：「ミックス」タブ（それぞれの音の音量を決める場所）で、「コード」トラックのスライダーを少し下げ、次に「メロディ」トラックのスライダーも下げよう。スライダーの数字は「+4」（大きめ）から「−∞」（まったく音なし）まで、どれだけ上げ下げしたかを示すだけ。",
+  "Le kick : la grosse caisse": "キック：大きな太鼓",
+  "Ta première partie : le Groove, ta boucle de base": "最初のパート：グルーヴ、基本のループ"
 }

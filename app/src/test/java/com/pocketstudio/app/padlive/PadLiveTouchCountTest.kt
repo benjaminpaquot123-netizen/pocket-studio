@@ -29,11 +29,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.io.File
 
 /**
  * Pad Live's exit test (n° 25, lot B1), counted from the home screen as a user touches: the first
- * sound in 1 touch (the card: Pad Live opens and its first hit sounds), the first rhythm that
+ * sound in 2 touches (the card, then a pad: Pad Live opens in silence, tour 6 padlive2), the first rhythm that
  * plays in 3 at most, and no function of Pad Live deeper than 3 touches. The seconds (first sound
  * under 5 s, a rhythm under 30 s) are measured on Benjamin's phone.
  */
@@ -130,23 +129,11 @@ class PadLiveTouchCountTest {
     }
 
     @Test
-    fun theFirstSoundIsOneTouchAway() {
-        done.clear()
-        home()
-        val g = GestureBudget(compose, "Premier son")
-        g.tap("launch_padlive")
-        g.assertWithin(1)
-        assertTrue(openedFromHome)
-        compose.onNodeWithTag("padlive").assertExists()
-        // The card's touch is the first sound: the app opens Pad Live with its welcome hit
-        // (AppRoot › padLiveWelcome, PadLiveRoute › PadLiveController.welcome, tested in PadLiveSaveUndoTest).
-        val root = File("src/main/java/com/pocketstudio/app/ui/AppRoot.kt").readText()
-        val card = root.substringAfter("padLive = {").substringBefore("remix = {")
-        assertTrue("the card asks for the welcome hit", "padLiveWelcome = true" in card && "showPadLive = true" in card)
-        val route = File("src/main/java/com/pocketstudio/app/padlive/PadLiveRoute.kt").readText()
-        assertTrue("Pad Live plays it", "vm.padLive.welcome()" in route)
-        // The page shown has a hit to play (the ready-to-play set's clap).
-        assertTrue(PadLive.pageClips(pads, 0).any { it != null && PadLive.modeOf(it) == PadMode.SHOT })
+    fun theFirstSoundIsTwoTouchesAway() {
+        // Tour 6, padlive2 (P2): the card opens Pad Live in silence (no welcome hit any more, PadLiveSilentOpenTest);
+        // the first sound is the first pad touched: two touches from the home screen.
+        reach("Premier son", 2, "touch 1 down") { press("padlive_pad_1") }
+        assertTrue(PadLive.modeOf(pads.at(1)!!) == PadMode.SHOT)
     }
 
     @Test

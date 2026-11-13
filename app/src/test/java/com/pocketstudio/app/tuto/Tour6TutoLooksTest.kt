@@ -4,6 +4,8 @@ import android.os.Looper
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
@@ -136,6 +138,33 @@ class Tour6TutoLooksTest {
         idle()
         answerAll(newest = true)
         assertEquals("the motif is written, the last look said so: « Copier sur les mesures suivantes »", TutoNeed.Copy("bass"), c.ui.value!!.need)
+    }
+
+    /**
+     * The same defect by the way lot « tutocourse » first showed it (tuto3's `Tour6TutoLateAnswerTest`, which needed two
+     * looks at work at once and real pauses): jump up, « Créer la piste Basse » begins a look; the motif is written by
+     * hand before it has answered. Its answer, about the project without the motif, came last and took « Copier » back.
+     */
+    @Test
+    fun theLookOfCreateTheTrackDoesNotTakeTheCopyButtonBack() {
+        val target = TutoTarget.of("jump_up")!!
+        val bass = TutoCourse.of("jump_up")!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
+        val flow = MutableStateFlow(target.blank())
+        val c = controller(flow)
+        c.start("jump_up", TutoLevel.Facile)
+        answerAll()
+        goTo(c, "bass_do")
+        answerAll()
+        assertEquals(TutoNeed.Track("bass"), c.ui.value!!.need)
+        c.fulfilNeed()
+        idle()
+        // The motif written by hand: « Copier » is what the step needs now.
+        val q = flow.value
+        val (track, motif) = TutoChecks.ghostNotes(bass, q, target)!!
+        flow.value = q.withTrack(q.track(track).copy(notes = q.track(track).notes.copy(notes = motif)))
+        idle()
+        answerAll(newest = true)
+        assertEquals("the motif is written: « Copier sur les mesures suivantes »", TutoNeed.Copy("bass"), c.ui.value!!.need)
     }
 
     /**

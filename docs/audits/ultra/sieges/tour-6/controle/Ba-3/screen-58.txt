@@ -1,0 +1,20 @@
+Écran 58 (588x1278)
+texte « ¿En qué pad? » @ 152,360
+texte « El sonido del pad tocado se reemplaza (la flecha atrás lo devuelve). » @ 294,435
+bouton « 1 Bombo 1 » @ 97,510
+bouton « 2 Bombo 2 » @ 229,510
+bouton « 3 Caja » @ 360,510
+bouton « 4 Caja 2 » @ 491,510
+bouton « 5 Palmada » @ 97,597
+bouton « 6 Hi-hat » @ 229,597
+bouton « 7 Hi-hat abierto » @ 360,603
+bouton « 8 Tom grave » @ 491,597
+bouton « 9 Tom medio » @ 97,696
+bouton « 10 Tom agudo » @ 229,696
+bouton « 11 Aro del tambor » @ 360,702
+bouton « 12 Campana » @ 491,696
+bouton « 13 Platillo » @ 97,795
+bouton « 14 Maracas » @ 229,795
+bouton « 15 Conga » @ 360,795
+bouton « 16 Láser » @ 491,795
+texte « Cancelar » @ 487,906

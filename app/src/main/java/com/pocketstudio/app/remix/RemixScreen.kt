@@ -347,7 +347,9 @@ private fun RemixPanes(
                 ui.sets.forEach { set ->
                     StemCard(
                         set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home,
-                        cut = { cutSong(set) }.takeIf { !ui.home },
+                        // Control Ba-2 (A8): the song in the project with its stems in gets « Découper la chanson » from the
+                        // thumb row below; its card does not repeat it as « Découper ce que je veux » (one button per action).
+                        cut = { cutSong(set) }.takeIf { !ui.home && !(ui.remix.setId == set.id && ui.board?.setId == set.id) },
                         cutWaiting = cutFor == set.id && ui.remix.setId == set.id,
                     )
                 }
@@ -361,7 +363,10 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
     if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard, openCut)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
-        Text(
+        // Tour 6, seat B a #A3 (es, phone, Mode simple): once a song is separated, this « what is this » intro only pushes
+        // the song's card — « Cortar lo que quiero » and its help line — down under the floating « Elegir una canción »
+        // bar; shown only the first time, before anything is separated.
+        if (ui.sets.isEmpty()) Text(
             tr("Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste.") + " " +
                 tr("Compte quelques minutes ; tu peux éteindre l'écran."),
             style = MaterialTheme.typography.bodyMedium,
@@ -497,11 +502,9 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit,
                 color = Neon.TextSecondary, modifier = Modifier.testTag("remix_keys"))
         }
         if (ui.board != null) {
-            // Lot C (n° 24): cutting the song into pieces, the way a sampler slices, first.
-            Button(onClick = openCut, modifier = Modifier.fillMaxWidth().testTag("remix_open_cut")) {
-                Icon(Icons.Filled.ContentCut, contentDescription = null)
-                Text(" " + tr("Découper la chanson"))
-            }
+            // Tour 6, seat B a #A8 (« deux Cortar la canción »): « Découper la chanson » lives only in the thumb row
+            // below (left-thumb reach), not a second time here — one button per action on the panel. The thumb row's cut
+            // shows under the very same condition this card does (a song in the project with its board), so none is lost.
             // The big curves of each stem, to choose a stretch and send it anywhere.
             OutlinedButton(onClick = openBoard, modifier = Modifier.fillMaxWidth().testTag("remix_open_board")) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)

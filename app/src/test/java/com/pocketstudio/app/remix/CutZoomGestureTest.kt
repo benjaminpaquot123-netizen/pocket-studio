@@ -66,9 +66,10 @@ class CutZoomGestureTest {
         assertEquals(v.frameAt(x).toDouble(), m.cursor.toDouble(), v.framesPerPx * 2)
         assertEquals(before, m.pieces)
         assertFalse(m.canUndo)
-        // Round 3 review: a touch on the curve places the play head only; it ticked the piece under it too.
-        assertEquals(emptyList<Int>(), m.chosen)
-        assertTrue(saved.isEmpty())
+        // Tour 6, control Ba-2 (A7): a touch on a piece's body also chooses that piece (it never moves a cut).
+        assertEquals(listOf(com.pocketstudio.model.Cuts.pieceAt(m.pieces, m.cursor)), m.chosen)
+        // Only the choice is saved: no cut moved.
+        assertTrue(saved.all { it.stems.single().pieces == before })
     }
 
     /**
@@ -100,17 +101,106 @@ class CutZoomGestureTest {
         assertEquals(listOf(3), m.chosen)
     }
 
-    /** Round 3 review: placing the play head on a piece, then again on another, ticks neither (the gesture was both). */
+    /**
+     * Tour 6, control Ba-2 (A7, a left thumb that cannot reach the numbers): placing the play head on a piece chooses it,
+     * and placing it again in a chosen piece keeps it chosen (only its number or its tile untick it).
+     */
     @Test
-    fun placingThePlayHeadTicksNothing() {
+    fun placingThePlayHeadChoosesThePieceAndNeverUnticksIt() {
         val (m, v, _) = setUp()
-        listOf(3, 7).forEach { piece ->
+        listOf(3, 7, 7).forEach { piece ->
             val x = v.x(piece * bar + bar / 2)
             compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
             compose.waitForIdle()
             assertEquals(piece, com.pocketstudio.model.Cuts.pieceAt(m.pieces, m.cursor))
         }
-        assertEquals(emptyList<Int>(), m.chosen)
+        assertEquals(listOf(3, 7), m.chosen)
+    }
+
+    /**
+     * Review of remix2 (grave): pieces chosen by placing the play head must not all go with « Enlever »: touching 3, 7,
+     * then 5, « Enlever » takes piece 5 (under the head) only, as before A7.
+     */
+    @Test
+    fun removeAfterTouchesTakesOnlyThePieceUnderTheHead() {
+        val (m, v, _) = setUp()
+        val count = m.pieces.size
+        val five = m.pieces[5]
+        listOf(3, 7, 5).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+        }
+        compose.runOnIdle { m.remove() }
+        assertEquals(count - 1, m.pieces.size)
+        assertFalse(five in m.pieces)
+    }
+
+    /** Review of remix2 (grave, second pass): the same after « Couper ici », « Boucle » or « Couper ici » then « Annuler ». */
+    private fun removeAfterTouchesAnd(between: String) {
+        val (m, v, _) = setUp()
+        listOf(3, 7, 5).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+        }
+        compose.runOnIdle {
+            when (between) {
+                "cut" -> m.cutHere(m.cursor)
+                "loop" -> m.loop()
+                else -> { m.cutHere(m.cursor); m.undo() }
+            }
+        }
+        val count = m.pieces.size
+        compose.runOnIdle { m.remove() }
+        assertEquals("after $between", count - 1, m.pieces.size)
+    }
+
+    @Test
+    fun removeAfterTouchesAndACutTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("cut")
+
+    @Test
+    fun removeAfterTouchesAndALoopTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("loop")
+
+    @Test
+    fun removeAfterTouchesACutAndUndoTakesOnlyThePieceUnderTheHead() = removeAfterTouchesAnd("cut+undo")
+
+    /**
+     * Review of remix2 (grave, third pass): touch 3 and 7, leave the cut screen and come back (a new model on what was
+     * saved), touch 5: « Enlever » takes piece 5 only. A choice made by placing the head is not saved as a tick.
+     */
+    @Test
+    fun removeAfterReopeningTakesOnlyThePieceUnderTheHead() {
+        val (m, v, saved) = setUp()
+        listOf(3, 7).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+        }
+        val reopened = compose.runOnIdle {
+            CutModel("song", song, 120.0, 0.0, saved.lastOrNull() ?: m.cuts, mode = com.pocketstudio.model.AutoCut.Phrases)
+        }
+        val five = reopened.pieces[5]
+        val count = reopened.pieces.size
+        reopened.cursor = 5 * bar + bar / 2
+        reopened.choosePieceAt(reopened.cursor)
+        reopened.remove()
+        assertEquals(count - 1, reopened.pieces.size)
+        assertFalse(five in reopened.pieces)
+    }
+
+    /** A piece ticked on purpose (its number) still goes with « Enlever », with the head elsewhere. */
+    @Test
+    fun removeTakesThePiecesTickedOnPurpose() {
+        val (m, v, _) = setUp()
+        listOf(3, 7).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, 12.dp.toPx())) }
+            compose.waitForIdle()
+        }
+        val count = m.pieces.size
+        compose.runOnIdle { m.remove() }
+        assertEquals(count - 2, m.pieces.size)
     }
 
     @Test

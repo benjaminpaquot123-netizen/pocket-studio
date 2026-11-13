@@ -1,5 +1,5 @@
 # Grappes du tour « tour-6 »
-21 siège(s), 179 grappe(s) : 100 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 28 même bouton (tour-1 : 4, tour-3 : 11, tour-4 : 4, tour-5 : 9), 0 qui revien(nen)t (confirmé par un lecteur), 29 candidat(s) « revient ? » à confirmer dans revient.tsv, 13 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 11 vue(s) par ≥ 2 sièges (confirmées sans juge).
+21 siège(s), 194 grappe(s) : 111 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 28 même bouton (tour-1 : 4, tour-3 : 11, tour-4 : 4, tour-5 : 9), 0 qui revien(nen)t (confirmé par un lecteur), 31 candidat(s) « revient ? » à confirmer dans revient.tsv, 15 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 13 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] grave ×1 (B/a#2) dialogue:mode_step · « bouton simple para empezar 5 pestanas botones grandes y palabras de todos los dias » · affichage — choisir le mode Simple au pouce gauche / trop loin du pouce, les deux
 - [nouveau] grave ×1 (G/a#14) tab_Sons · « board_chop » · sans-aide — le message dit où trouver les pads 9 à 14 / rien ne dit que c'est le canal « Davul 16 pad » ; dans Live > Pad'ler (8 pads) je ne les trouve pas
@@ -16,8 +16,16 @@
 - [nouveau] moyen ×1 (E/c#24) ? · « cut_to_track » · sans-nom — le message s'ajoute sans rien cacher / les puces Voz/Bateria disparaissent et les 4 boutons d'envoi perdent leur nom (icônes seules)
 - [nouveau] moyen ×1 (E/c#12) ? · « texte pronto o modelo esta no seu celular escolha uma musica coupe » · affichage — tout le Remix visible en grand / la fenêtre du Remix fait ~4 lignes, il faut faire défiler sans cesse
 - [nouveau] moyen ×1 (B/a#28) cut_screen/tab_Sons · « titre comp 2 a 5 » · sans-aide — toucher le morceau de voix le marque / rien ; seule la petite pastille « 1 » marque le trozo (geste 29)
+- [nouveau] moyen ×1 (a#12) cut_screen · « bouton ✂ un trozo ▾ @ 131 474 » · affichage — après avoir fait monter la page pour voir les destinations, les outils restent au pouce / « Un trozo » remonte hors du pouce (#13 r
+- [revient ?] moyen ×1 (a#33) cut_screen · « cut_to_pads » · affichage — après « En los pads », les destinations restent visibles / le message « “Voz 1” está en el pad live 1. » pousse les 4 boutons sous « Guía » (image 
+- [nouveau] moyen ×1 (a#23) cut_screen · « dessin morceau 2 de la voix forme d onde droite » · affichage — choisir la 2e phrase de voix / hors du pouce ; il faut faire glisser la forme d'onde puis viser plus bas (#24, #2
+- [nouveau] moyen ×1 (a#21) cut_screen · « minicarte de la chanson au-dessus de comp 2 a 5 » · affichage — sauter ailleurs dans la chanson / hors du pouce ; glisser la forme d'onde à la place (#22)
+- [nouveau] moyen ×1 (a#27) cut_screen · « texte 2 trozos elegidos · 0 07 en total » · sans-aide — un bouton « Quitar » ou retoucher le morceau pour l'enlever / aucun « Quitar » ; retoucher/appui long ne fait rien ; seul
+- [nouveau] moyen ×1 (a#20) cut_screen · « titre comp 2 a 5 » · affichage — la pastille numérotée du morceau (« 2 ») à portée du pouce gauche / « Ce point est trop loin de ton pouce » (aussi #26 en Compases)
+- [nouveau] moyen ×1 (a#18) cut_screen · « titre comp 2 a 5 » · rien — toucher un morceau de voix (Frases) le marque comme choisi et active « En los pads » / rien ne se passe (la tête de lecture bouge), boutons de destin
 - [même bouton (tour-5)] moyen ×1 (F/a#8) dialogue:part_header_menu · « part_new » · incompris — le brano = A puis B / le brano ne contient plus que B (1 battuta) ; A rajoutée à la main par « + A », et elle passe après B
 - [nouveau] moyen ×1 (C/b#40) dialogue:projects · « icone ← @ 54 54 » · mauvais-ecran — Retour depuis « Mes projets » (ouvert par Plus) ramène au studio / l'Accueil, et la musique s'arrête sans le dire
+- [nouveau] moyen ×1 (a#70) dialogue:« La canción pasa 0:38 del final » · « texte entendido @ 481 687 » · affichage — fermer l'avertissement « su final se cortará » / hors du pouce, fermé par Retour (#71)
 - [nouveau] moyen ×1 (B/b#73) mixer/tab_Mix · « bouton automatisieren coupe @ 243 1029 » · affichage — ouvre les courbes / rien, le bouton est caché sous le panneau du tuto (image 74)
 - [nouveau] moyen ×1 (C/b#30) plus/tab_Plus · « onglet curseurs mix @ 294 1158 » · mauvais-ecran — l'onglet Mix s'ouvre sur les curseurs de volume, comme en Simple / il s'ouvre au milieu de la page (export, puis automati
 - [nouveau] moyen ×1 (E/b#24) plus/tab_Plus · « onglet ⋯ meer selectionne » · sans-nom — un accès à Mijn bestanden (mes exports) dans Meer / Start, Mijn projecten, Hulp, Gids, Muziekwoorden, Instellingen : pas de Mijn be
@@ -47,14 +55,6 @@
 - [revient ?] moyen ×1 (b#46) tab_Sons · « step_0 » · incompris — des doubles-croches partout acceptées, ou la consigne dit « sauf les contretemps » / « 4 Schläge zu viel hier (durchgestrichen) », 4 gestes pour les retir
 - [déjà vu (tour-5)] moyen ×1 (D/a#86) tuto_panel/tab_simple_Clavier · « tuto_need » · mauvais-ecran — la grille s'ouvre sur la mesure 1 comme dit la consigne / elle s'ouvre sur la mesure 4 de 8, il faut deviner qu'on to
 - [nouveau] mineur ×3 (D/a#3, D/c#4, H/a#3) dialogue:tuto_chooser · « tuto_style_techno » · incompris — le style choisi « テクノ 132 BPM » donne un projet à 132 / le projet est à 120, puis le tuto me demande de taper 132 mo
+- [revient ?] mineur (pire : bloquant) ×2 (a#8, a#8, E/c#17, E/c#17) ? · « cut_song_3a02635f77d71cd9a979f25b » · affichage — à l'arrivée sur la découpe, voir « En los pads / En el Live / Guardar / En una pista » / carte 
 - [même bouton (tour-1)] mineur ×2 (E/c#5, E/c#5, E/c#5, F/a#2) dialogue:mode_step · « mode_card_simple » · affichage — le bouton lisible en entier / « Baixar o modelo (174 » coupé
-- [revient ?] mineur ×2 (D/a#50, H/a#66, H/a#51) tab_simple_Rythme · « tuto_next_folded » · texte-faux — un nom de pad en japonais et présent dans la grille / « Perc » en anglais, aucun pad de ce nom
-- [nouveau] mineur ×2 (a#253, H/a#241) tuto_panel/tab_simple_Mix · « tuto_do » · affichage — phrase entière et mots simples / phrase coupée à droite sur l'image 255 ; « solo », « (−14) », « saturation » (écran 258) non e
-- [même bouton (tour-3)] mineur ×2 (a#204, D/a#175) tuto_panel/tab_simple_Morceau · « tuto_next_big » · incompris — « relances de fin de phrase » expliqué, et la preuve qu'elles sont posées / mot non expliqué, réussite a
-- [déjà vu (tour-5)] mineur ×2 (D/a#33, D/b#37) tuto_panel/tab_simple_Rythme · « tuto_do » · incompris — un bouton « 2 小節にする » ou deux mesures à remplir / aucun bouton, grille à « 1小節 », chapitre réussi avec 3 frappes à 
-- [déjà vu (tour-5)] mineur ×2 (D/a#49, D/b#31) tuto_panel/tab_simple_Rythme · « tuto_do » · texte-faux — le nom du pad tel qu'écrit dessus / « Perc » (latin) ; le pad s'appelle « 太鼓のふち », ailleurs « 「コッ」 » et « Rim »
-- [nouveau] mineur ×1 (E/c#15) ? · « bouton bateria » · affichage — « Bateria » entier / « Bateri » coupé dans la puce
-- [revient ?] mineur (pire : bloquant) ×1 (E/c#17, E/c#17, E/c#17) ? · « cut_song_3a02635f77d71cd9a979f25b » · affichage — la courbe de la voix avec les barres Início/Fim pour choisir un bout / aucune courbe ni barre à 2
-- [nouveau] mineur ×1 (E/c#27) ? · « texte sua musica esta vazia adicione suas partes na ordem em que tocam intro verso refrao » · incompris — voir que la voix est posée au compasso 3 / « Sua música está vazia » alors qu
-- [nouveau] mineur ×1 (B/b#78) auto_lane_0/tab_Mix · « texte 18 0 khz @ 81 805 » · affichage — échelle de la courbe lisible / « 18,0 kl », « 849 H: », « Schla » coupés par la grille (image 79)
-- … et 123 grappe(s) de plus : voir clusters-complet.md.
+- … et 138 grappe(s) de plus : voir clusters-complet.md.

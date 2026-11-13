@@ -1,4 +1,7 @@
 siege	geste	attente	vu
+a	-	0	outils hors human-act.py : Read sur mes images de siège (screen-*-grille.png) et cat/grep/ls du journal de MON dossier de siège pour les numéros de gestes
+a	7	60	séparation finie en un seul « attends 60 » (1 geste d'attente, pas lente) ; banc?: temps
+a	30	0	j'ai enchaîné deux commandes dans un seul appel (#30 attends et #31 touche), sans effet sur le test ; aucun outil hors human-act.py sauf Read des images et ls/cat/grep de mon dossier de siège (start.txt, rapport.md, fin.txt, journal.txt)
 b	53	5	écran 54 au texte vide alors que l'image montre l'appli (Ich mach's)
 b	54	5	écran 55 au texte vide
 b	89	10	écran 90 au texte vide, « regarde » refait, toujours vide ; image normale

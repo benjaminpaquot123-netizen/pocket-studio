@@ -3,7 +3,7 @@
 Relecteur neuf (n'a pas écrit le code), sur le diff `d946d916..HEAD` : export/ShareSheet.kt, ShareSongUi.kt,
 MyExports.kt, SaveProjectZip.kt, projects/ProjectsScreen.kt (deux libellés accordés), i18n/*/partage.json (une clé accordée).
 
-relu : 87ea4747303a6069664efab657f3607d88ab0569
+relu : 3ef415e1c720a5d59e931b3a0e190d263a88605b
 
 ## Relancé et vu
 - `:project-model:test --tests '*I18nCatalogTest'` (13/13 vert) et `:app:testDebugUnitTest` export.*, projects.*,
@@ -21,6 +21,16 @@ relu : 87ea4747303a6069664efab657f3607d88ab0569
 ## Re-signature après fusion de la tête (bdb777a9)
 - La fusion ne touche aucun fichier du lot (export/, ProjectsScreen.kt, i18n/*/partage.json, tests export) ; relancés sur la
   fusion : I18nCatalogTest, export.*, projects.*, BenchSelfTest : verts.
+
+## Relecture après la CI 276 (relu 3ef415e1)
+- Diff 248a2ca3..3ef415e1 : « Partager le projet (.zip) » (LexiconWordsTest : « Envoyer le projet » mot ancien, réponse
+  1A) et le « ? » du sélecteur Simple (ScreenScanTest). Relancés : I18nCatalogTest, LexiconWordsTest, export.*, projects.*,
+  ScreenScanTest, HelpCoverageTest, BenchSelfTest : 659 + 20 tests, 0 échec. Rejeu rouge : ShareSheet.kt de 6344abf5^ →
+  Tour6ExportsSimpleTargetHelpTest ROUGE (« expected:<1> but was:<0> ») ; restauré, arbre propre.
+- Traductions : les 14 langues disent « partager » avec le mot de leur clé « Partager ». ProjectsScreen.kt : l. 338 et
+  345 seulement. Aucune unité LUFS dans l'aide du Mode simple.
+- Moyens : « Envoyer le projet » reste dans deux commentaires et un nom de test ; « Volume visé » en indonésien est
+  « Target loudness » (anglais), plus visible comme titre du « ? ».
 
 ## Graves
 Aucun.

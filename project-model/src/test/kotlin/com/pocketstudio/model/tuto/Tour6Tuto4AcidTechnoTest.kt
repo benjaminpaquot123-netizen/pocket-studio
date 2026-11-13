@@ -44,4 +44,32 @@ class Tour6Tuto4AcidTechnoTest {
         for (l in langs) tr(l, filter).let { t -> if (!Regex("(?<!\\d)$bars(?!\\d)").containsMatchIn(t)) bad += "${l.code} filter: no $bars: $t" }
         report("curves said otherwise than drawn", bad)
     }
+
+    /**
+     * As the pads' (commit of « Claps » / « Kicks »): when « Lead » and « Leads » give the same word in a language
+     * (Italian « Lead »), the Mode simple used to say a quoted « Lead » by the plural's everyday word (« Melodie »);
+     * a quoted name is one thing, said in the singular, in every language.
+     */
+    @Test
+    fun theSimpleModeSaysAQuotedLeadInTheSingular() {
+        val bad = ArrayList<String>()
+        try {
+            for (lang in Lang.entries) {
+                I18n.lang = lang
+                I18n.everyday = false
+                val one = I18n.t("Lead")
+                if (one != I18n.t("Leads")) continue
+                I18n.everyday = true
+                val melody = I18n.t("Lead")
+                val said = I18n.t("« $one »")
+                if (said != "« $melody »") bad += "${lang.code}: « $one » said $said, not the singular's « $melody »"
+                // Nor the other way round: the singular's word never leads back to the plural (a track named so is a melody's).
+                if (I18n.frenchOf(melody) == "Leads") bad += "${lang.code}: « $melody » leads back to « Leads »"
+            }
+        } finally {
+            I18n.everyday = false
+            I18n.lang = Lang.FR
+        }
+        report("languages saying one lead by a plural", bad)
+    }
 }

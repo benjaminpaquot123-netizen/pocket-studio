@@ -60,7 +60,7 @@ class Tour6RecordStopStaysTest {
         shell.idle(300)
     }
 
-    /** The replay's order: the line shows, the take starts, the line goes. */
+    /** The replay's order: the line shows, then the take starts: the line goes at once, for good, « ■ Arrêter » in reach. */
     private fun theLineLeavingDuringATake(scale: Float, fontScale: Float = 1f) {
         if (fontScale != 1f) org.robolectric.RuntimeEnvironment.setFontScale(fontScale)
         h.start(simple = true, scale = scale)
@@ -80,26 +80,25 @@ class Tour6RecordStopStaysTest {
         h.vm.playedClockForTest = 2.0
         h.vm.synthNoteOff(64)
         shell.idle(300)
-        // « Fait : … » goes by itself after six seconds, the take still running.
-        h.vm.dismissDone()
-        shell.idle(600)
+        // The take running, the line is away and its message let go (nothing here dismisses it: the app does).
         assertTrue("« Fait : … » over the keys' page during the take", !shell.has("done_bar"))
+        assertTrue("the message of before the take is kept for after it", shell.reached(3_000) { h.vm.done.value == null })
         stopInReach("« Fait » gone, a note played")
         shell.tap("record_stop")
         assertTrue("« ■ Arrêter » stops the take", shell.reached(3_000) { !h.vm.recording.value })
         // The old message does not come back after the take (its « Annuler » would undo the take instead).
         shell.idle(600)
-        assertTrue("« Fait : … » of before the take is back after it", !shell.has("done_bar") || !shell.textOf("done_text").contains(com.pocketstudio.model.i18n.tr("Sauté : le Guide passe à la suite.")))
+        assertTrue("« Fait : … » of before the take is back after it: « ${shell.textOf("done_text")} »", !shell.textOf("done_text").contains(com.pocketstudio.model.i18n.tr("Sauté : le Guide passe à la suite.")))
     }
 
-    @Test fun theStopButtonStaysWhenTheDoneLineLeaves() = theLineLeavingDuringATake(1f)
+    @Test fun theDoneLineIsLetGoWhenATakeStarts() = theLineLeavingDuringATake(1f)
 
-    @Test fun theStopButtonStaysWhenTheDoneLineLeavesWithBigText() = theLineLeavingDuringATake(1.3f)
+    @Test fun theDoneLineIsLetGoWhenATakeStartsWithBigText() = theLineLeavingDuringATake(1.3f)
 
     /** The replay's own seat: a 392 x 852 dp phone, the phone's font at 200 %. */
     @Test
     @Config(qualifiers = "w392dp-h852dp-xhdpi")
-    fun theStopButtonStaysWhenTheDoneLineLeavesAtTwiceTheFont() = theLineLeavingDuringATake(1f, fontScale = 2f)
+    fun theDoneLineIsLetGoWhenATakeStartsAtTwiceTheFont() = theLineLeavingDuringATake(1f, fontScale = 2f)
 
     /** The other order: the take runs, something is done meanwhile: no line comes over the page during the take. */
     @Test

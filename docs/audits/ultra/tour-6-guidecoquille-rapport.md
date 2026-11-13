@@ -15,6 +15,7 @@ Méthode : chaque test a été écrit et vu rouge sur son assertion avant toute 
 - Le panneau ouvert se replie quand l'utilisateur change lui-même d'écran (onglet, « ⋮ Plus » du pouce ou du haut, page de Plus) ; sa barre reste. « Voir le réglage » du Guide n'est pas concerné.
 - Quand la carte dépasse du panneau, son bord s'estompe et une ligne « ↓ La suite » sous la carte fait monter le reste ; elle part à la fin. Un premier essai posait ce signe par-dessus la carte : il prenait les touchers des boutons dessous (37 anciens tests du Guide rouges), retiré.
 - Sur la page du clavier d'un écran court (moins de 700 dp), la barre repliée du Guide laisse sa ligne aux touches : 12 dp de touches visibles avant (mesuré par le test rouge, 360 x 780 à 130 %), la hauteur de la barre en plus après ; le test exige au moins 48 dp.
+- Reste : sur ces écrans courts, la carte « Voir le réglage » dit encore « Le Guide t'attend dans sa barre, en bas » alors que la barre n'est pas sur la page du clavier (elle revient en la quittant) ; ce texte est dans GuidePanel.kt mais le changer demande une phrase à traduire. Aucun test ne joue ce cas.
 - Reste : le siège F b #10 (360 x 780 à 100 %) est au-dessus du seuil ; le réglage fin de la page du clavier est dans `synth/SynthScreen.kt`, hors du lot. Les autres écrans cités par le tri pour G1 n'ont pas de test à eux et ne sont pas vérifiés par ce lot : Live pads (« Wszystkie pady », F b #1), les cases des pas coupées (B c écran 4), la ligne de la partie B (F a), les parties, l'export et « Annuler » pendant la fabrication (A c #21).
 
 chemin: Guide ouvert puis « ⋮ Plus » du pouce (Simple) | test: Tour6GuideCoversTest#thePlusPageOpenedFromTheThumbIsNotUnderTheOpenGuide
@@ -60,14 +61,14 @@ Le premier correctif donnait à la ligne sa place dans la barre du bas. Le porta
 - La ligne flotte de nouveau au bas de la page (comme avant le lot) : la page ne change jamais de hauteur pour elle.
 - En plus : pendant une prise (notes ou micro), la ligne ne s'affiche pas et son message est abandonné (après la prise, son « Annuler » annulerait la prise, pas ce qu'elle nomme).
 - N15 reste donc ouvert hors des prises : la ligne peut encore couvrir six secondes les derniers boutons d'une page. Lui trouver une place fixe qui ne déplace rien demande un choix de dessin (par exemple une ligne réservée en permanence), pas un correctif local.
-- Le test neuf ne reproduit pas le déplacement de la page du rejeu (il ne joue pas le défilement du clavier) : il vérifie que rien ne vient sur la page pendant une prise et que « ■ Arrêter » reste entier et atteignable ; la preuve du déplacement est le rejeu lui-même. Dans le commit rouge 462dd881, l'une des deux assertions rouges (« a bougé ») mesurait un déplacement normal de la barre de prise, pas le défaut : retirée.
+- Le test neuf ne reproduit pas le déplacement de la page du rejeu (il ne joue pas le défilement du clavier) : il vérifie que la ligne part et que son message est abandonné quand une prise de notes démarre (rouge sans le correctif), qu'aucune ligne ne vient pendant la prise, et, en garde-fou, que « ■ Arrêter » reste entier et atteignable ; la moitié « micro » de la règle n'a pas de test ; un « Fait » de moins de six secondes (« Huit prises gardées… Annuler la ramène ») est perdu si une prise démarre aussitôt, « ↶ » restant le recours ; la preuve du déplacement est le rejeu lui-même. Dans le commit rouge 462dd881, l'une des deux assertions rouges (« a bougé ») mesurait un déplacement normal de la barre de prise, pas le défaut : retirée.
 
 - Après le correctif (2026-11-13) : `scripts/bench/rejeu-defauts.sh` en entier, comme le portail : « t4-26-prise-clavier : oracle tenu » (le seul rejeu du dossier), son auto-test du banc à 176 verts, 0 rouge, 17 sautés ; puis les classes `Tour6*`, les `Guide*Test` de `nav`, `SpacesTest`, `SimpleModeAuditTest`, `SimpleMelodyTest`, `PlayingRecomposeTest`, `Zone3Round2Test` : 195 tests, 0 rouge.
 - Même cause écartée ailleurs : la barre du Guide ne quitte plus la page du clavier « à la minuterie » (voir G1 dans les décisions).
 
-chemin: Clavier, « Fait » affiché puis prise lancée | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeaves
-chemin: le même à 130 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesWithBigText
-chemin: le même sur le siège du rejeu, police à 200 % | test: Tour6RecordStopStaysTest#theStopButtonStaysWhenTheDoneLineLeavesAtTwiceTheFont
+chemin: Clavier, « Fait » affiché puis prise lancée | test: Tour6RecordStopStaysTest#theDoneLineIsLetGoWhenATakeStarts
+chemin: le même à 130 % | test: Tour6RecordStopStaysTest#theDoneLineIsLetGoWhenATakeStartsWithBigText
+chemin: le même sur le siège du rejeu, police à 200 % | test: Tour6RecordStopStaysTest#theDoneLineIsLetGoWhenATakeStartsAtTwiceTheFont
 chemin: Clavier, un choix fait pendant la prise | test: Tour6RecordStopStaysTest#noDoneLineComesOverThePageDuringATake
 
 ### N16 — la musique s'arrête sans le dire au retour de Mes projets
@@ -116,12 +117,12 @@ chemin: Pad Live › Plus › Effets | test: Tour6PadLiveEffectsTitleTest#theEff
 
 ## Captures regardées
 `app/screenshots/tour6/shell_*.png` (classe `Tour6GuideCoquilleLookTest`, 20 images, 360 x 780 dp) : panneau du Guide avec « ↓ La suite » puis fin de carte (Simple et Pro, 100 % et 130 %), Plus après le Guide ouvert, clavier à 100 % et 130 %, « Mode de ce projet » depuis Plus, pages de Sons › Voix (français 100 %, turc 130 %), tuto quitté, Guide demandé pendant un tuto, Mix pendant un tuto, carte « Fais une deuxième partie ». Cette classe n'est pas une classe du recensement des écrans (`ScreenRegistry`) : ce sont des états d'écrans déjà recensés.
-Les captures de référence existantes que le lot fait bouger (panneaux du Guide dont la carte dépasse, Mix d'un tuto, ligne « Fait », clavier d'un écran court, tuto quitté) n'ont pas été réenregistrées : la CI les listera comme « différentes » (avertissement, pas un rouge) ; à réenregistrer dans une passe de captures.
+Les captures de référence existantes que le lot fait bouger (panneaux du Guide dont la carte dépasse, Mix d'un tuto, clavier d'un écran court, tuto quitté) n'ont pas été réenregistrées : la CI les listera comme « différentes » (avertissement, pas un rouge) ; à réenregistrer dans une passe de captures.
 
 ## Après la relecture neuve
 - Grave **corrigé** : après un choix de la carte qui ne change pas d'écran, le panneau ne se repliait plus au départ de l'utilisateur. Test rouge 19e35771 (`afterAChoiceThatChangesNoScreenThePanelStillFoldsOnLeaving`), puis le correctif (`guideGo` écrit l'écran où le panneau est au lieu de l'effacer).
 - Moyens repris : l'origine de l'import (U17) est posée là où chaque import commence, plus de drapeau sauvegardé qui pouvait rester levé ; le message de N16 est vérifié avec « Ton morceau est sauvegardé. » ; une seule icône pour les deux bords de la rangée des pages.
-- Moyens laissés, notés dans la relecture : la page gagne puis rend la hauteur de la ligne « Fait » et de la ligne « La suite » ; couché, la ligne « Fait » n'a pas de marge sous elle quand rien ne la suit ; sur un écran court la page du clavier n'a plus la barre du Guide ; dans le projet d'un tuto quitté, le Guide ne s'ouvre que par Plus › Aide.
+- Moyens laissés, notés dans la relecture : la page gagne puis rend la hauteur de la ligne « La suite » (la ligne « Fait » a été remise au-dessus de la page depuis, voir N15) ; sur un écran court la page du clavier n'a plus la barre du Guide ; dans le projet d'un tuto quitté, le Guide ne s'ouvre que par Plus › Aide.
 - `theGuidesOwnWayToAScreenKeepsItsBar` est un garde-fou (vert avant le lot aussi), pas une preuve du correctif.
 
 ## Banc et voisins

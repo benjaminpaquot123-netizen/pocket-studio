@@ -109,5 +109,6 @@
   "Pad %1$d sur %2$d…": "패드 %1$d / %2$d…",
   "C'est prêt (fichiers : %d). Une copie est aussi dans Musique › BenStudio.": "준비 완료(파일: %d). 음악 › BenStudio에도 사본이 있어요.",
   "C'est prêt (fichiers : %d). Choisis l'appli pour les envoyer.": "준비 완료(파일: %d). 보낼 앱을 고르세요.",
-  "Partager les pistes": "트랙 공유"
+  "Partager les pistes": "트랙 공유",
+  "À taper : %s": "두드릴 패드: %s"
 }

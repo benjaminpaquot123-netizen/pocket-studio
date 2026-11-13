@@ -256,4 +256,33 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         assertTrue("another project open", rhythm()!!.projectId == live)
         assertNotNull("the Live project touched in « Mes projets » opened elsewhere than Pad Live:\n" + screen(), centerOf("padlive"))
     }
+
+    /**
+     * Control seat B a-4 (es, phone, 100 %, Mode simple, left hand), A6 again (screens 33-39): the song put in a project
+     * with no song yet (a 1-bar loop) by « Otras opciones… › En un proyecto existente › Hacer bloques con sus partes ›
+     * Poner en mi proyecto » makes the project as long as the song: said on the screen, not silently.
+     */
+    @Test
+    fun a6_aLoopMadeAsLongAsTheSongIsSaid() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
+        amenee("remix", java.io.File("build/coquille2-journal.txt"))
+        tap("remix_download_thumb")
+        runCatching { tap("remix_model_ask_ok") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        runCatching { tap("remix_pick_thumb") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        val id = com.pocketstudio.app.remix.StemStore.list(ApplicationProvider.getApplicationContext()).first().id
+        val v = rhythm()!!
+        assertTrue("the project has a song already", v.project.value.song.isEmpty())
+        // The project open: « Otras opciones… » comes straight to « Poner … en mi proyecto » (the seat came by « En un
+        // proyecto existente » to the same sheet); « Hacer bloques con sus partes » on, as the seat left it.
+        tap("use_$id")
+        if (centerOf("remix_dest_existing") != null) { tap("remix_dest_existing"); tap("remix_dest_project_${v.projectId}") }
+        tap("import_go")
+        repeat(3) { act("attends 1") }
+        val p = rhythm()!!.project.value
+        assertTrue("the song not put", p.remix.setId != null && p.song.isNotEmpty())
+        assertNotNull("the loop became a song as long as the song, said nowhere:\n" + screen(), centerOfText("tan largo como la canción", substring = true))
+    }
 }

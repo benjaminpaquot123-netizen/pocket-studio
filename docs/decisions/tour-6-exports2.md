@@ -14,9 +14,13 @@
 - **E4 — nom sur une ligne, « … » au milieu.** Choix : `maxLines = 1` + `TextOverflow.MiddleEllipsis`
   plutôt qu'un retour à la ligne entre mots (les noms de fichiers n'ont pas d'espaces). Raison : option
   première de la phrase E4. Retour arrière : revenir à `maxLines = 2` + `Ellipsis`.
-- **E6 — « Envoyer le projet (.zip) ».** Choix : renommer la seule ligne de la page Partager qui ouvre
+- **E6 — « Partager le projet (.zip) ».** Choix : renommer la seule ligne de la page Partager qui ouvre
   le menu de partage ; garder « Sauvegarder » pour le vrai enregistrement de Mes projets. Raison : le
   mot doit dire ce que fait le geste. Retour arrière : remettre « Sauvegarder le morceau en .zip ».
 - **SDK Android.** Le conteneur n'avait pas de SDK : installé `/opt/android-sdk` (cmdline-tools,
   platforms;android-37.0, build-tools;35.0.0, ndk 30.0.16248370) + `local.properties` (gitignoré, non
   commité) pour lancer les tests unitaires. Sans conséquence sur le dépôt.
+- **E6 — « Partager le projet (.zip) » (après la CI 276).** « Envoyer le projet » est un mot ancien du lexique
+  (réponse 1A, 2026-11-09 : « Partager » seul verbe). La phrase E6 accepte « Partager » : la ligne qui ouvre le menu de
+  partage dit « Partager le projet (.zip) ». Le tableau du lexique de `docs/DESIGN.md` (ligne « Sauvegarder le morceau
+  en .zip ») est hors de mes fichiers : à mettre à jour par le chef. Retour arrière : remettre la clé « Sauvegarder… ».

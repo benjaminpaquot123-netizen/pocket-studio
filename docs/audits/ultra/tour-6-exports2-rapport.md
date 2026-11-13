@@ -32,7 +32,7 @@ Fichiers touchés : `app/src/main/java/com/pocketstudio/app/export/ShareSheet.kt
   le code ; à revérifier sur un vrai téléphone.
 - **E6** (« Sauvegarder » sauvegarde ; un bouton qui envoie s'appelle « Partager »/« Envoyer ») :
   **tenté**. La ligne « Sauvegarder le morceau en .zip » de la page Partager (un geste = menu de
-  partage Android) devient « Envoyer le projet (.zip) ». Le vrai « Sauvegarder » de Mes projets est
+  partage Android) devient « Partager le projet (.zip) ». Le vrai « Sauvegarder » de Mes projets est
   conservé.
 - **E7** (après un export, « Retour » revient à l'écran d'où je viens, pas à l'accueil) : **pas pris**.
   La navigation « Retour » (`BackHandler` → `goHome` dans `ui/AppRoot.kt`) est hors de ma liste.
@@ -92,7 +92,7 @@ les conditions du siège, appli entière, par le banc » : état « tenté » ju
 - E4 encore là (écran 19, « …clu…61113… » avec le « … » au milieu) : le nom est montré entier et ne passe à la ligne
   qu'entre ses parties (après « - »/« _ », avant « . »).
 - E6 « autre » : le libellé vu était celui de Mes projets › ⋮ (accordé par le chef : ProjectsScreen.kt l. 338 et 345)
-  et le titre du menu de partage (SaveProjectZip.kt) : tous disent « Envoyer le projet (.zip) », traduit dans les
+  et le titre du menu de partage (SaveProjectZip.kt) : tous disent « Partager le projet (.zip) », traduit dans les
   14 langues (partage.json, accordé).
 - Neuf N3 (écran 40, Pro, « −13,0 comme streaming » sous Club) : les deux modes disent le volume du fichier (sa
   cible) avec les mêmes mots « Volume : −8,0, … » ; la mesure entendue reste sous « détails ».
@@ -102,7 +102,7 @@ les conditions du siège, appli entière, par le banc » : état « tenté » ju
   46 gestes par étiquettes, attentes allongées pour les exports du banc, oracle à l'écran 47 = Pro « Prêt à partager ? »
   sans « Autres fichiers » coupé) : « oracle tenu ». Vu dans ce rejeu : chips Streaming/Club touchés en Simple sans
   défiler (après correction : la cible passe avant « Tout est prêt »), bilans « Niveau : à la cible (Club) » puis
-  « Volume · −8,0 », Mes fichiers aux noms entiers coupés entre leurs parties, Mes projets › ⋮ « Envoyer le projet (.zip) ».
+  « Volume · −8,0 », Mes fichiers aux noms entiers coupés entre leurs parties, Mes projets › ⋮ « Partager le projet (.zip) ».
   Le rejeu a aussi montré « −8,0, très fort (les plateformes le baisseront) » sous Club en Pro : corrigé (mots de la cible).
 
 ## Contrôles
@@ -120,3 +120,11 @@ Verdict du contrôle Ac-3 (35930493), buts 3/3 :
 
 Copie des sièges de contrôle (texte seul) : `docs/audits/ultra/sieges/tour-6/controle/Ac-2/` et `Ac-3/`
 (branche ccr-6a8c6318-dvnp3y, c28d043a).
+
+## Après le contrôle Ac-3 (CI 276 rouge sur 35930493)
+- `LexiconWordsTest.oneWordPerThingInFrench` : « Envoyer le projet » est un mot ancien (réponse 1A de Benjamin,
+  2026-11-09 : « Partager » est le seul verbe pour un fichier qui sort). Le libellé devient « Partager le projet (.zip) »
+  partout (page Partager, Mes projets › ⋮, titre du menu de partage, 14 langues) : E6 tenu (« Partager »).
+- `ScreenScanTest` (recensement de NavScreenshotTest.simpleSend) : les puces « Volume visé » du Mode simple n'avaient
+  pas de « ? » : ajouté, en mots simples (Streaming, Club), sans LUFS.
+chemin: page Partager (Mode simple) | test: Tour6ExportsSimpleTargetHelpTest#theSimpleTargetHasItsHelp

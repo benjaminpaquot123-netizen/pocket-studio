@@ -2,9 +2,9 @@
 
 Branche `eq/tour-6-coquille2`, depuis la tête poussée `ccr-80af1a1b-mn0wec`, une paire rouge/vert par test. Restes « pas pris » de remix2b (siège B a) et d'exports2 (siège A c), plus P5 de padlive2 (siège A b). Preuves rejouées par le banc dans les conditions du siège d'origine, appli entière (`Coquille2SeatTest`), jamais sur un écran isolé.
 
-Fichiers touchés : `rhythm/RhythmViewModel.kt`, `ui/AppRoot.kt`, `remix/CutScreen.kt`, `mixer/MixerScreen.kt`, `I18n.kt` (aire `coquille2`) et `i18n/<14 langues>/coquille2.json` (accord du chef) ; tests `ui/Coquille2SeatTest.kt` (neuf), `remix/CutScreenTightTest.kt` (lit `cut_auto` en vue au lieu de défiler jusqu'à lui : il ne défile plus).
+Fichiers touchés : `rhythm/RhythmViewModel.kt`, `ui/AppRoot.kt`, `remix/CutScreen.kt`, `mixer/MixerScreen.kt`, `I18n.kt` (aire `coquille2`) et `i18n/<14 langues>/coquille2.json` (accord du chef), `ui/PlayStrip.kt` et `project-model/…/HeardLength.kt` (neuf, accord du chef pour P6) ; tests `ui/Coquille2SeatTest.kt` (neuf), `remix/CutScreenTightTest.kt` (lit `cut_auto` en vue au lieu de défiler jusqu'à lui : il ne défile plus).
 
-tests: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutScreenTightTest com.pocketstudio.model.i18n.I18nCatalogTest
+tests: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutScreenTightTest com.pocketstudio.model.i18n.I18nCatalogTest com.pocketstudio.model.HeardLengthTest
 
 ## Tenté, preuve rejouée (banc, conditions du siège)
 - **E2** (A c, fr, Simple) : choisir seulement le volume du prochain fichier (« Streaming ») ne fait plus dire « Le morceau a changé depuis cet export ». `#e2_noSongChangeSaidWhenOnlyTheFilesVolumeIsChosen` (rouge 8eace0da, vert 00d8dafd).
@@ -14,9 +14,12 @@ tests: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutS
 - **A4** (B a, geste 19) : en « Frases », « ✂ Frases ▾ » et « En el tiempo ▾ » restent entiers, plus coupés sous le panneau des actions. `#a4_thePhrasesModeMenusStayWholeInView` (rouge db8ecbe3, vert 41035050).
 - **N2** (A c, geste 21) : pendant « Fabrication du son » de l'export Pro, « Annuler » est entier, plus sous la barre « Guide ». `#n2_theExportsCancelIsWholeWhileTheSoundIsMade` (rouge 44264af9, vert d5705280).
 
+- **P6** (A b, fr, Simple ; signalé par padlive2) : une prise rangée dans une brique du Live, la partie jouée : « mesure x/4 » (la boucle de la brique), plus « A mesure 1/1 ». `#p6_aTakeInABrickIsCountedAtTheLengthHeard`. Le banc n'a pas de micro (« Pas assez de mémoire pour enregistrer ») : la prise est posée par `placeInCell`, comme « Dans une brique du Live ». Une prise de 6 mesures tourne sur 8 (mesures entières, `LiveCells.loopBars`) : c'est ce qu'on entend. Affichage seulement : boucle du moteur, export et mode morceau inchangés. Même compte que `SongLength.of` de padlive2 (bricks : `loopSteps` de la scène) ; padlive2 n'étant pas encore sur la tête, le test 6/2/5 porte sur ma fonction (`HeardLengthTest`) : à aligner à l'entrée du second.
+
 chemin: Partager › Autres fichiers › Volume visé Streaming (fr, téléphone, 100 %, Mode simple) | test: Coquille2SeatTest#e2_noSongChangeSaidWhenOnlyTheFilesVolumeIsChosen
 chemin: Pad Live › Mes projets › autre projet › projet Live (fr, Mode simple) | test: Coquille2SeatTest#p5_theLiveProjectOpensAgainOnPadLive
 chemin: Remix › Cortar lo que quiero › voz encendida (es, Mode simple, main gauche) | test: Coquille2SeatTest#a6_aSongLongerThanTheLoopIsSaidTrulyWithTheOfferToLengthen
+chemin: Pad Live › prise dans une brique › Plus › Briques › ▶ cette partie (fr, Mode simple) | test: Coquille2SeatTest#p6_aTakeInABrickIsCountedAtTheLengthHeard
 chemin: Apprendre › techno › chapitre 12 « トランジション » (ja, Mode simple) | test: Coquille2SeatTest#cymbalGridLineNamesThePadShown
 chemin: Remix › Cortar la canción › Frases (es, Mode simple, main gauche) | test: Coquille2SeatTest#a4_thePhrasesModeMenusStayWholeInView
 chemin: Partager › Autres fichiers › Exporter (Fabrication du son) (fr, Mode simple) | test: Coquille2SeatTest#n2_theExportsCancelIsWholeWhileTheSoundIsMade

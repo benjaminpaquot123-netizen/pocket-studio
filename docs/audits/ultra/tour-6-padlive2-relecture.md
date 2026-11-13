@@ -1,5 +1,5 @@
 # Relecture du lot « padlive2 » (tour 6)
-Relu : e053f20ee4748b3169b98ce2be42963ed212cfea
+Relu : 6af680f4d02aec44bd2cf03cdc0a45c6b790b2fd
 
 Périmètre : `git diff bdb777a9..ee4c2a92 -- app/` (PadLiveController, PadLiveRoute, PadLiveScreen, PartyMode et leurs tests). Lecture seule, pas de Gradle.
 Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou de verrou.
@@ -40,5 +40,13 @@ Thread audio : rien de touché côté moteur ; aucun problème d'allocation ou d
 - Le test `PadLivePlayShowsTest#aHitRingingKeepsPlay` (pad 1, le Clap, joué en coup) prouve la correction : il échouait avec l'ancien code (bouton sur « Arrêter », toucher envoyé à « stop all »). Les cas existants restent valides, car les pads 0, 2 et 3 du jeu de départ sont des boucles.
 - **mineur** : `PadLiveScreen.kt:137`. Un pad HOLD tenu compte comme « ça joue », donc le bouton passe à ■ tant que le doigt reste posé. C'est cohérent, puisque ça sonne vraiment, et sans gêne pratique : le doigt est occupé. Je le note seulement.
 - Rien d'autre n'a changé dans `app/`. Les trois autres moyens (choix partagé avec la page Live, bouton Record du contrôleur MIDI, morceau plein) restent ouverts et sont notés dans `tour-6-padlive2-rapport.md`.
+
+## Reprise sur 6af680f4 (`git diff ffbcb886..6af680f4 -- app/src/main/java/com/pocketstudio/app/live app/src/test/java/com/pocketstudio/app/padlive`, fichiers de la fusion 61e41ce0 ignorés)
+
+- `LiveScreen.kt:436` et `LiveScreen.kt:684-698` (`LiveTopBar`) : la correction est juste. Le bouton ▶ de la page Live, et de « Plus › Briques », passe à ■ dès que ça joue (`ui.playing || padsOn`). Transport arrêté avec des boucles qui jouent seules, un toucher appelle `padsActions.stopAll`. Dans l'appli, c'est `rhythmVm::cutEverything` (`AppRoot.kt:2655`, `AppRoot.kt:2690`). Transport en route, le toucher garde `togglePlay`. Le bouton s'appuie sur des états frais, car `LiveRoute` interroge `pollLiveStates()` tant que la page est ouverte (`AppRoot.kt:4407`), quel que soit l'onglet affiché.
+- `LiveScreen.kt:707-709` (`loopsOn`) : même règle que `PadLiveUi.soundsNow`. Un coup qui résonne ne compte pas, et un état à `null` donne `false`. Elle reste cohérente avec Pad Live.
+- **mineur** : `loopsOn` (`LiveScreen.kt:707`) et `PadLiveUi.soundsNow` (`PadLiveScreen.kt:136`) recopient la même règle à deux endroits. Si l'une change sans l'autre (par exemple pour un futur mode de pad), les deux barres ne diront plus la même chose. Une fonction commune, par exemple dans `PadLive`, éviterait cet écart.
+- `PadLivePlayShowsTest#theBricksPageSaysTheSame` : le test prouve la correction. Avant elle, le bouton disait « Jouer » et le toucher envoyait « play ». Aucun test ne joue en revanche le cas « coup qui résonne » sur la page Live : c'est mineur, puisque la règle est la même que celle déjà testée par `aHitRingingKeepsPlay`.
+- `BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone` (adaptation de ee4c2a92, inchangée depuis) : je le juge **non affaibli** pour ce qu'il prouvait du ■ de la barre. Il vérifie toujours que le moteur reçoit `toggleClip -1`, que les pads se taisent et que le voyant s'éteint, et il ajoute que le transport reste arrêté, puis le cycle ▶/■. **mineur** : un sous-chemin n'est plus joué au banc, celui où le ■ du transport en route coupe aussi une boucle (`BenchPadLiveStopTest` passe par « Tout couper », pas par ce bouton). On pourrait le remettre en quelques gestes : pad, ▶, ■, puis vérifier.
 
 Verdict : 0 bloquant, 0 grave

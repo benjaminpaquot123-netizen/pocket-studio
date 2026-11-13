@@ -729,5 +729,65 @@ class ReportTemplate(unittest.TestCase):
         self.assertEqual(mod.before_defects(filled).get("A7", (None,))[:2], ("corrigé", "21"), "the chief's command reads the template's line")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# 4. The dashboard: one line « réparations » with the four figures per round
+# ---------------------------------------------------------------------------------------------------------------------
+
+class DashboardLine(unittest.TestCase):
+    """Plan § 3, rule 5: a point gives the four figures; « réparés sur N » counts « constaté » among the defects taken,
+    the « pas pris » apart. One defect (round, item) counts once, at its best state."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="constate-tdb-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.reg = os.path.join(self.tmp, "corrections.tsv")
+        write(self.reg, "\n".join([
+            HEADER,
+            row("tour-5", "T5-01", "A/a", "12", "corrigé", "abc", "-", "", ""),
+            row("tour-5", "T5-02", "A/b", "13", "banc", "abc", "-", "", ""),
+            row("tour-5", "T5-02", "A/c", "14", "banc", "abc", "-", "", ""),
+            row("tour-6", "A1", "B/a", "3", "constaté", "1", "r1", "", "", "", "", "controle/Ba#3"),
+            row("tour-6", "A1", "B/c", "9", "tenté", "1", "r1", "", ""),
+            row("tour-6", "A2", "B/a", "15", "rejoué", "1", "r2", "", ""),
+            row("tour-6", "A3", "B/a", "8", "tenté", "1", "-", "", ""),
+            row("tour-6", "A5", "B/a", "44", "Tente", "1", "-", "", ""),
+            row("tour-6", "A4", "B/a", "9", "pas pris", "-", "-", "", ""),
+        ]) + "\n")
+        for t in ("tour-5", "tour-6"):
+            os.makedirs(os.path.join(self.tmp, t))
+        write(os.path.join(self.tmp, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+
+    def test_the_four_figures_of_a_round(self):
+        mod = load("reparations.py")
+        self.assertTrue(hasattr(mod, "counts"), "reparations.counts(rows, tour) gives the four figures")
+        if not hasattr(mod, "counts"):
+            return
+        rows = mod.load(read(self.reg))[1]
+        self.assertEqual(mod.counts(rows, "tour-6"), {"constaté": 1, "rejoué": 1, "tenté": 2, "pas pris": 1, "avant": {}})
+        self.assertEqual(mod.counts(rows, "tour-5"), {"constaté": 0, "rejoué": 0, "tenté": 0, "pas pris": 0,
+                                                       "avant": {"corrigé": 1, "banc": 1}})
+        self.assertEqual(mod.counts(rows, "tour-7"), {"constaté": 0, "rejoué": 0, "tenté": 0, "pas pris": 0, "avant": {}})
+
+    def test_the_dashboard_prints_one_line_per_round(self):
+        code, out = script("tableau-de-bord.py", os.path.join(self.tmp, "tour-5"), os.path.join(self.tmp, "tour-6"),
+                           "--base", os.path.join(self.tmp, "base.tsv"), "--verdicts", os.path.join(self.tmp, "v.tsv"),
+                           "--caches", os.path.join(self.tmp, "c.tsv"), "--corrections", self.reg)
+        self.assertEqual(code, 0, out)
+        lines = [l for l in out.splitlines() if l.startswith("Réparations")]
+        self.assertEqual(lines, [
+            "Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris "
+            "(seul « constaté » se dit corrigé ; les pas pris à part) ; états d'avant la règle : corrigé 1, banc 1",
+            "Réparations (registre corrections.tsv) : constaté 1, rejoué 1, tenté 2, pas pris 1 — réparés : 1 sur 4 pris "
+            "(seul « constaté » se dit corrigé ; les pas pris à part)"], out)
+        tour6 = out.split("## tour-6")[1]
+        self.assertLess(tour6.index("Réparations"), tour6.index("Toutes remplies"), "under the round's own table")
+        self.assertFalse(any(l.startswith("| R") or "réparations" in l.lower() for l in out.splitlines() if l.startswith("|")),
+                         "not a row of the stop criterion: its A to J stay as they are")
+
+    def test_the_real_register_is_the_default(self):
+        board = read(os.path.join(HERE, "tableau-de-bord.py"))
+        self.assertTrue('opt("--corrections", os.path.join(docs, "corrections.tsv"))' in board, "the register's default path")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

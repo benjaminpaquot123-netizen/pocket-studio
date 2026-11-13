@@ -227,7 +227,7 @@
         {
           "id": "pad_do",
           "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).",
-          "textPro": "À toi : crée la piste Accords (son « Synthé », un pluck court, écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).",
+          "textPro": "À toi : crée la piste Accords (son « Pluck », un pluck court, écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).",
           "why": "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.",
           "check": "notes:pad",
           "length": 16,
@@ -261,7 +261,7 @@
         {
           "id": "lead_do",
           "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Puis « Copier sur les mesures suivantes ».",
-          "textPro": "À toi : crée la piste Mélodie (son « Plaits », un lead filtré) et écris le riff de 2 mesures : Fa grave, Fa aigu, Fa grave, puis la même chose terminée par La♭. « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Lead filtré ») et écris le riff de 2 mesures : Fa grave, Fa aigu, Fa grave, puis la même chose terminée par La♭. « Copier sur les mesures suivantes ».",
           "why": "Deux notes suffisent : on retient le motif, et le filtre fera le reste.",
           "check": "notes:lead",
           "spot": "notes.track",

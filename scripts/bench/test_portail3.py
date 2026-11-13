@@ -955,7 +955,7 @@ class ReviewOfTheLot(unittest.TestCase):
         write(self.report, read(os.path.join(root, report)))
         self.commit("the real report")
         r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), "--corrections", "eq/tour-9-z",
-                            "docs/audits/ultra/tour-9-z-rapport.md", "base:int", "tour:tour-9", "tete:int"],
+                            "docs/audits/ultra/tour-9-z-rapport.md", "base:int", "tour:tour-0", "tete:int"],
                            cwd=self.repo, capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stdout)
 

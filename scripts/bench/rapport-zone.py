@@ -42,7 +42,7 @@ Not seen (docs/decisions/tour-6-portail3.md): a defect no table knows, or that n
 names; whether the replay named is the defect's own; whether a reason is a good one (the fresh review reads them).
 Prints one line per refusal, exit 1; nothing when all is well.
 
-AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 6): no lot of the tutorial enters before a fresh beginner
+AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 7): no lot of the tutorial enters before a fresh beginner
 replayed it on the lot's branch.
 
   rapport-zone.py --tuto <branch> <report path> base:<commit the branch left> tete:<the integration's head> tour:<tour-N>

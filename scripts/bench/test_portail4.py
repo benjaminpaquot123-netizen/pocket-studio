@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests of the bench lot « portail4 » (docs/audits/AUDIT-ULTRA.md §13.5, last point): no lot of the tutorial enters
-before a fresh beginner replayed it ON THE LOT'S BRANCH. The portal refuses (exit 10, from batch 6) a lot that touches
+before a fresh beginner replayed it ON THE LOT'S BRANCH. The portal refuses (exit 10, from batch 7) a lot that touches
 the tutorial zone when its zone report does not carry, per control seat, the line
 
   controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0
@@ -549,19 +549,19 @@ class ReviewOfTheLot(Toy):
 class Portal(unittest.TestCase):
     """The rule is in the portal with its batch guard, and the pre-flight repeats it."""
 
-    def test_the_portal_refuses_with_exit_10_from_batch_5(self):
+    def test_the_portal_refuses_with_exit_10_from_batch_7(self):
         portal = read(os.path.join(HERE, "fusion-equipes.sh"))
         lines = [l for l in portal.splitlines() if "rapport-zone.py --tuto" in l]
         self.assertEqual(len(lines), 1, "one line of the portal calls rapport-zone.py --tuto")
-        self.assertIn("from_paquet 6", lines[0])
+        self.assertIn("from_paquet 7", lines[0])
         self.assertIn("exit 10", lines[0])
         self.assertIn("not merged", lines[0])
         self.assertLess(portal.index("rapport-zone.py --tuto"), portal.index("if ! git merge --no-ff -m"), "refused BEFORE the merge")
 
-    def test_the_preflight_repeats_it_from_batch_5(self):
+    def test_the_preflight_repeats_it_from_batch_7(self):
         pre_vol = read(os.path.join(HERE, "pre-vol.sh"))
         self.assertIn("rapport-zone.py --tuto", pre_vol)
-        self.assertRegex(pre_vol, r"rule_from 6 ")
+        self.assertRegex(pre_vol, r"rule_from 7 ")
 
     def test_the_preflight_knows_the_portal_s_rules(self):
         pre_vol = read(os.path.join(HERE, "pre-vol.sh"))

@@ -1,5 +1,5 @@
 # Grappes du tour « tour-6 »
-21 siège(s), 194 grappe(s) : 111 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 28 même bouton (tour-1 : 4, tour-3 : 11, tour-4 : 4, tour-5 : 9), 0 qui revien(nen)t (confirmé par un lecteur), 31 candidat(s) « revient ? » à confirmer dans revient.tsv, 15 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 13 vue(s) par ≥ 2 sièges (confirmées sans juge).
+21 siège(s), 201 grappe(s) : 112 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 28 même bouton (tour-1 : 4, tour-3 : 11, tour-4 : 4, tour-5 : 9), 0 qui revien(nen)t (confirmé par un lecteur), 33 candidat(s) « revient ? » à confirmer dans revient.tsv, 19 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 13 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] grave ×1 (B/a#2) dialogue:mode_step · « bouton simple para empezar 5 pestanas botones grandes y palabras de todos los dias » · affichage — choisir le mode Simple au pouce gauche / trop loin du pouce, les deux
 - [nouveau] grave ×1 (G/a#14) tab_Sons · « board_chop » · sans-aide — le message dit où trouver les pads 9 à 14 / rien ne dit que c'est le canal « Davul 16 pad » ; dans Live > Pad'ler (8 pads) je ne les trouve pas
@@ -25,6 +25,7 @@
 - [nouveau] moyen ×1 (a#18) cut_screen · « titre comp 2 a 5 » · rien — toucher un morceau de voix (Frases) le marque comme choisi et active « En los pads » / rien ne se passe (la tête de lecture bouge), boutons de destin
 - [même bouton (tour-5)] moyen ×1 (F/a#8) dialogue:part_header_menu · « part_new » · incompris — le brano = A puis B / le brano ne contient plus que B (1 battuta) ; A rajoutée à la main par « + A », et elle passe après B
 - [nouveau] moyen ×1 (C/b#40) dialogue:projects · « icone ← @ 54 54 » · mauvais-ecran — Retour depuis « Mes projets » (ouvert par Plus) ramène au studio / l'Accueil, et la musique s'arrête sans le dire
+- [nouveau] moyen ×1 (a#30) dialogue:projects · « projects_back » · mauvais-ecran — la flèche ← de Mes projets (ouvert depuis le studio) me ramène au studio / écran d'accueil « Que veux-tu faire ? », le morceau s'arrête
 - [nouveau] moyen ×1 (a#70) dialogue:« La canción pasa 0:38 del final » · « texte entendido @ 481 687 » · affichage — fermer l'avertissement « su final se cortará » / hors du pouce, fermé par Retour (#71)
 - [nouveau] moyen ×1 (B/b#73) mixer/tab_Mix · « bouton automatisieren coupe @ 243 1029 » · affichage — ouvre les courbes / rien, le bouton est caché sous le panneau du tuto (image 74)
 - [nouveau] moyen ×1 (C/b#30) plus/tab_Plus · « onglet curseurs mix @ 294 1158 » · mauvais-ecran — l'onglet Mix s'ouvre sur les curseurs de volume, comme en Simple / il s'ouvre au milieu de la page (export, puis automati
@@ -56,5 +57,4 @@
 - [déjà vu (tour-5)] moyen ×1 (D/a#86) tuto_panel/tab_simple_Clavier · « tuto_need » · mauvais-ecran — la grille s'ouvre sur la mesure 1 comme dit la consigne / elle s'ouvre sur la mesure 4 de 8, il faut deviner qu'on to
 - [nouveau] mineur ×3 (D/a#3, D/c#4, H/a#3) dialogue:tuto_chooser · « tuto_style_techno » · incompris — le style choisi « テクノ 132 BPM » donne un projet à 132 / le projet est à 120, puis le tuto me demande de taper 132 mo
 - [revient ?] mineur (pire : bloquant) ×2 (a#8, a#8, E/c#17, E/c#17) ? · « cut_song_3a02635f77d71cd9a979f25b » · affichage — à l'arrivée sur la découpe, voir « En los pads / En el Live / Guardar / En una pista » / carte 
-- [même bouton (tour-1)] mineur ×2 (E/c#5, E/c#5, E/c#5, F/a#2) dialogue:mode_step · « mode_card_simple » · affichage — le bouton lisible en entier / « Baixar o modelo (174 » coupé
-- … et 138 grappe(s) de plus : voir clusters-complet.md.
+- … et 145 grappe(s) de plus : voir clusters-complet.md.

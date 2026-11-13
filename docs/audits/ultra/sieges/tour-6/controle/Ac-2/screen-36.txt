@@ -1,0 +1,5 @@
+Écran 36 (588x1278)
+texte « Mes fichiers » @ 143,498
+texte « Retrouver et renvoyer : M4A, WAV, vidéo, .zip
+Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,621
+texte « Compris » @ 489,768

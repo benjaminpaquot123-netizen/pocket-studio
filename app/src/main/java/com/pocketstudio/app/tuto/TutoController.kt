@@ -438,7 +438,9 @@ class TutoController(
      */
     private fun partMade(before: Project, after: Project, label: String, step: TutoStep): String {
         val full = before.allScenes.map(TutoChecks::bricks).maxByOrNull { it.size }.orEmpty()
-        val now = TutoChecks.bricks(after.currentSceneContent())
+        // Lot « tuto-flèches » (seat D a, chapter 10): the part made, by its name: while the song plays the one shown is
+        // still the one heard (« Intro 2 créée : sans Basse, Accords… » told the Intro's bricks).
+        val now = TutoChecks.bricks(TutoChecks.partContent(after, label) ?: after.currentSceneContent())
         val writes = step.transpose != 0
         val out = (full - now).filterNot { b -> writes && b.startsWith("inst:") && b.removePrefix("inst:").toIntOrNull()?.let { TutoChecks.roleOf(after, it) in setOf("bass", "sub") } == true }
             .map { brickName(after, it) }.distinct()

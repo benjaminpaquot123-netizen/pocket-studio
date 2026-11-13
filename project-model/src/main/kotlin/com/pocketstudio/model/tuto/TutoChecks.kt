@@ -756,6 +756,12 @@ object TutoChecks {
 
     private fun sceneLabelled(p: Project, label: String): Int = p.allScenes.indexOfFirst { labelIs(it.label, label) && !it.isEmpty }
 
+    /**
+     * What plays in the part named [label], shown or not (lot « tuto-flèches »: while the song plays, a part just made
+     * is not the one shown yet); null when there is none.
+     */
+    fun partContent(p: Project, label: String): Scene? = sceneLabelled(p, label).takeIf { it >= 0 }?.let { sceneAt(p, it) }
+
     /** The user's main loop: the scene named Groove, else the one where the most plays. */
     private fun grooveOf(p: Project): Int {
         val all = p.allScenes

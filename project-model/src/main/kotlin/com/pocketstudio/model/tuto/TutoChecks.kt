@@ -2285,3 +2285,56 @@ object TutoChecks {
         return d.lanes.mapIndexedNotNull { i, l -> if (i !in silent) null else l.hits.keys.filter { it in last }.toSet().takeIf { it.isNotEmpty() }?.let { i to it } }.toMap()
     }
 }
+
+/** Which way the tutorial's line over the piano roll sends the user to its next dotted note. */
+enum class TutoWay { Later, Earlier, Higher, Lower }
+
+/**
+ * What the piano roll shows of its notes, in pixels of its whole drawing: the time from [left] to [right], the rows
+ * from [top] to [bottom] (above the tutorial's panel), a sixteenth [stepPx] wide, a row [rowPx] high, the top row
+ * being the note [high]. [right] not past [left], or [rowPx] zero: not measured yet.
+ */
+data class TutoRollView(val left: Float, val right: Float, val top: Float, val bottom: Float, val stepPx: Float, val rowPx: Float, val high: Int)
+
+/** The one rule of the tutorial's line over the piano roll: where the next dotted note is from what is in sight. */
+object TutoRollHint {
+    fun x(n: Note, v: TutoRollView): Float = n.start / NoteClip.TICKS_PER_STEP.toFloat() * v.stepPx
+    fun y(n: Note, v: TutoRollView): Float = (v.high - n.pitch) * v.rowPx
+
+    /** The way to the dotted notes [left] to write (null: nothing to say, « à toucher »). */
+    fun way(left: List<Note>, v: TutoRollView): TutoWay? {
+        val inTime = left.filter { x(it, v) >= v.left && x(it, v) < v.right }.ifEmpty { left }.sortedWith(compareBy({ it.start }, { -it.pitch }))
+        val above = when {
+            left.isEmpty() || v.rowPx <= 0f -> null
+            inTime.any { y(it, v) >= v.top - 1f && y(it, v) + v.rowPx <= v.bottom + 1f } -> null
+            else -> y(inTime.first(), v) < v.top
+        }
+        val ahead = when {
+            left.isEmpty() || v.right <= v.left || left.any { x(it, v) in v.left..v.right } -> null
+            left.all { x(it, v) > v.right } -> true
+            left.all { x(it, v) < v.left } -> false
+            else -> null
+        }
+        return when {
+            above == true -> TutoWay.Higher
+            above == false -> TutoWay.Lower
+            ahead == true -> TutoWay.Later
+            ahead == false -> TutoWay.Earlier
+            else -> null
+        }
+    }
+
+    /** The dotted note of [left] a touch on the line (or « Je le fais ») brings into view and lights; null: none left. */
+    fun next(left: List<Note>, v: TutoRollView): Note? = left.sortedWith(compareBy({ it.start }, { -it.pitch })).firstOrNull()
+
+    /**
+     * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
+     * the rows), zero along an axis where the note already is. [barSteps]: the sixteenths of a bar.
+     */
+    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
+        val n = next(left, v) ?: return 0f to 0f
+        val dx = if (x(n, v) < v.left || x(n, v) + v.stepPx > v.right) x(n, v) - 2 * v.stepPx - v.left else 0f
+        val dy = if (y(n, v) < v.top || y(n, v) + v.rowPx > v.bottom) y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2 else 0f
+        return dx to dy
+    }
+}

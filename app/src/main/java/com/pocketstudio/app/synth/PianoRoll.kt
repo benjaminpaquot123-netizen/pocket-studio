@@ -709,16 +709,17 @@ private fun Grid(
         val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
         if (!asked) return@LaunchedEffect
-        val next = left.firstOrNull() ?: return@LaunchedEffect
-        fun x(n: Note) = n.start / TICK.toFloat() * stepPx
-        fun y(n: Note) = (high - n.pitch) * rowPx
-        lit = next
-        if (x(next) < hScroll.value || x(next) + stepPx > hScroll.value + view.width) hScroll.animateScrollTo((x(next) - 2 * stepPx).roundToInt().coerceIn(0, hScroll.maxValue))
         // Tour 6 lot 1 (N4): within the rows really in sight (the tutorial's panel covers the roll's bottom).
         val seen = sight?.value ?: (0f..view.height.toFloat())
-        if (y(next) < vScroll.value + seen.start || y(next) + rowPx > vScroll.value + seen.endInclusive) {
-            vScroll.animateScrollTo((y(next) + rowPx / 2 - (seen.start + seen.endInclusive) / 2).roundToInt().coerceIn(0, vScroll.maxValue))
-        }
+        val shown = com.pocketstudio.model.tuto.TutoRollView(
+            left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
+            stepPx = stepPx, rowPx = rowPx, high = high,
+        )
+        val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown) ?: return@LaunchedEffect
+        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps)
+        lit = next
+        if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
+        if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }
     // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
     val latestZoom = rememberUpdatedState(zoomBy)
@@ -1347,38 +1348,20 @@ private fun TutoNotesLeft(
     val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
     val rowPx = with(LocalDensity.current) { rowHeight.toPx() }
     // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
-    // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel; when no note of the bar
-    // in sight is, the line points the way to the next one (the panel covered them while the line said « à toucher »).
-    val above by remember(left, rowPx, high, vScroll, sight, stepPx) {
+    // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel. One rule for the bar
+    // and the rows ([com.pocketstudio.model.tuto.TutoRollHint]), read where it is drawn: a scroll recomposes this line only.
+    val way by remember(left, rowPx, high, vScroll, sight, stepPx) {
         androidx.compose.runtime.derivedStateOf {
-            val v = vScroll ?: return@derivedStateOf null
-            val from = v.value + (sight?.start ?: 0f)
-            val to = v.value + (sight?.endInclusive ?: v.viewportSize.toFloat())
-            fun y(n: Note) = (high - n.pitch) * rowPx
-            fun x(n: Note) = n.start / TICK.toFloat() * stepPx
-            val inTime = left.filter { x(it) >= hScroll.value && x(it) < hScroll.value + hScroll.viewportSize }.ifEmpty { left }
-                .sortedWith(compareBy({ it.start }, { -it.pitch }))
-            // Tour 6 repairs: the arrow only when none of them is whole in sight (as « plus loin → » for the bars): it said
-            // « Encore 4 notes en pointillé, plus haut ↑ » over three dotted notes in sight, for the fourth one alone.
-            when {
-                left.isEmpty() || v.viewportSize == 0 || rowPx <= 0f -> null
-                inTime.any { y(it) >= from - 1f && y(it) + rowPx <= to + 1f } -> null
-                else -> y(inTime.first()) < from
-            }
-        }
-    }
-    // Read where it is drawn: a scroll recomposes this line only.
-    val ahead by remember(left, stepPx) {
-        androidx.compose.runtime.derivedStateOf {
-            val from = hScroll.value.toFloat()
-            val to = from + hScroll.viewportSize
-            fun x(n: Note) = n.start / TICK.toFloat() * stepPx
-            when {
-                left.isEmpty() || hScroll.viewportSize == 0 || left.any { x(it) in from..to } -> null
-                left.all { x(it) > to } -> true
-                left.all { x(it) < from } -> false
-                else -> null
-            }
+            val v = vScroll
+            val rows = v != null && v.viewportSize != 0
+            com.pocketstudio.model.tuto.TutoRollHint.way(
+                left,
+                com.pocketstudio.model.tuto.TutoRollView(
+                    left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + hScroll.viewportSize,
+                    top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
+                    stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
+                ),
+            )
         }
     }
     // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
@@ -1404,7 +1387,7 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, ahead, above),
+                else com.pocketstudio.app.tuto.tutoNotesLeft(if (chords) left.map { it.start }.distinct().size else left.size, way),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),

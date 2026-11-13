@@ -46,7 +46,7 @@ internal object PlainWords {
         Term(Regex("""(?i)\bpads?\b(?! Live)""")) { tr("Pad : un carré qu'on touche pour jouer un son.") },
         Term(Regex("""(?i)\beffets?\b""")) { tr("Effet : ce qui change le son (écho, filtre, distorsion…).") },
         Term(Regex("""(?i)\bgammes?\b""")) { tr("Gamme : les notes qui vont bien ensemble dans le morceau.") },
-        Term(Regex("""(?i)\btonalités?(?![\p{L}\p{N}])""")) { tr("Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.") },
+        Term(Regex("""(?iu)\btonalités?(?![\p{L}\p{N}])""")) { tr("Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre.") },
         Term(Regex("""(?i)\bdorien(ne)?\b""")) { tr("Dorien : une gamme un peu triste mais douce.") },
         Term(Regex("""(?i)\bboucles?\b""")) { tr("Boucle : un passage qui se répète sans s'arrêter.") },
         Term(Regex("""\b909\b""")) { tr("909 : une boîte à rythmes célèbre, ses sons de batterie.") },

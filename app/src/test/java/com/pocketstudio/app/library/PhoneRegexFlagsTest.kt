@@ -38,6 +38,7 @@ class PhoneRegexFlagsTest {
     fun tonaliteIsStillExplainedWithItsAccent() {
         assertTrue(PlainWords.of("Choisis la tonalité").any { it.startsWith("Tonalité") })
         assertTrue(PlainWords.of("Les Tonalités du morceau").any { it.startsWith("Tonalité") })
+        assertTrue(PlainWords.of("LA TONALITÉ").any { it.startsWith("Tonalité") })
         assertTrue(PlainWords.of("Une atonalitée").none { it.startsWith("Tonalité") })
     }
 }

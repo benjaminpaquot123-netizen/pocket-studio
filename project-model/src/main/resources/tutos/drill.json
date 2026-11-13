@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure harmonique » (une gamme sombre, un peu orientale) puis « Sol » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill.",
+          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -328,7 +328,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "listen": "song",
@@ -353,7 +354,7 @@
         {
           "id": "fill",
           "levels": "p",
-          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -362,7 +363,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -420,7 +421,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick d'abord, puis la caisse, puis les charleys.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

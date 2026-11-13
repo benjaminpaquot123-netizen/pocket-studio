@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre comme la trap. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » (une gamme sombre) puis « Fa » (la note de départ).",
-          "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa ». La 808 joue ainsi sur Fa1, 44 Hz : assez grave pour trembler, assez haut pour que la saturation l'entende au téléphone.",
+          "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa ». La 808 joue ainsi sur Fa1, 44 Hz : assez grave pour trembler, assez haut pour que la saturation l'entende au téléphone. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -328,7 +328,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro (la fin rejoue l'Intro). L'étape suivante donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro (la fin rejoue l'Intro). L'étape suivante donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro (la fin rejoue l'Intro). L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "listen": "song",
@@ -353,7 +354,7 @@
         {
           "id": "fill",
           "levels": "p",
-          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup avant la fin, puis « Roulement » ×4 « ↗ Montant » : une rafale qui monte jusqu'au Refrain.",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup avant la fin, puis « Roulement » ×4 « ↗ Montant » : une rafale qui monte jusqu'au Refrain.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -362,7 +363,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case : le Refrain arrive avec un éclat.",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case : le Refrain arrive avec un éclat.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -410,7 +411,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu les faders « Accords » et « Mélodie » : le kick et la 808 devant, les cordes loin derrière.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

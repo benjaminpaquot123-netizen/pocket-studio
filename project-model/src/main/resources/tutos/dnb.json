@@ -144,8 +144,8 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé, à chaque contretemps.",
-          "textPro": "À toi : sur le pad « Ride », les contretemps (pas 3, 7, 11, 15). Elle ne jouera que dans les Drops.",
+          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé, à chaque contretemps.",
+          "textPro": "À toi : sur le pad « Cymbale », les contretemps (pas 3, 7, 11, 15). Elle ne jouera que dans les Drops.",
           "why": "La ride fait briller le Drop : on la garde pour lui.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
@@ -242,7 +242,7 @@
       "steps": [
         {
           "id": "lead_hear",
-          "text": "Écoute le riff avec la basse.",
+          "text": "Écoute le riff de l'exemple, avec sa basse : c'est ce que tu vas écrire.",
           "check": "listen",
           "listen": "parts:bass,lead"
         },
@@ -415,7 +415,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:32,Break:8,Montée:8,Drop 2:32,Fin:16",
@@ -456,7 +457,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Ride » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Cymbale » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
           "why": "Un coup de cymbale marque le début de la phrase : le public sait que ça commence.",
           "levels": "p",
           "check": "crash",
@@ -513,7 +514,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

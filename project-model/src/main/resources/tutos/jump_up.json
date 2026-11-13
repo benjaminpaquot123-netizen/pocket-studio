@@ -150,7 +150,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,snare,hat,bass"
         },
@@ -408,6 +408,7 @@
         {
           "id": "song_order",
           "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:28,Montée:4,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16",
@@ -431,8 +432,8 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », touche « Mesure 4 », pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
-          "textPro": "À toi : dans la partie « Montée », « Mesure 4 », pad « Caisse » (elle y roule déjà en ×2) : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » (elle y roule déjà en ×2) : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -440,7 +441,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "listen": "vs:Montée:Drop",
@@ -451,6 +452,7 @@
           "levels": "p",
           "text": "À toi : dans la partie « Drop 2 », ajoute un coup sur le pad « Charley ouvert » ou sur un pad de percussion : le Drop 2 ne sonne plus tout à fait comme le Drop, l'oreille reste en éveil.",
           "check": "changed:drums:Drop 2",
+          "target": "open_hat",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }

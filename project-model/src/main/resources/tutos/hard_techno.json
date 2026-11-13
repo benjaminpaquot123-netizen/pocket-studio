@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
-          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument.",
+          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Le kick est accordé sur la note du morceau : grave et notes ne se battent pas.",
           "check": "key",
           "spot": "tuto.key",
@@ -110,7 +110,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -128,7 +128,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
           "textPro": "À toi : la percu tous les 3 pas, à la schranz.",
           "why": "Trois contre quatre : la percussion tourne en rond, c'est le tournis de la schranz (la techno allemande très dure).",
           "check": "lane:perc",
@@ -138,7 +138,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé. Elle arrivera au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé. Elle arrivera au Drop.",
           "textPro": "À toi : la ride sur les contretemps, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",
@@ -356,8 +356,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:8,Montée:4,Faux drop:4,Drop 2:32,Fin:16",
@@ -458,7 +458,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

@@ -768,7 +768,7 @@ object TutoChecks {
      * does (n° 34; « Montre-moi » clears the role's other pads too). The loop must be as long as the line first
      * (« Passer à 2 mesures »), in Facile as in Pro: its second bar's cells are cells to fill too.
      */
-    private fun laneMatches(d: DrumPattern, lanes: Set<Int>, line: StarterWizard.Line, perBar: Int, rolls: Boolean = false): Boolean {
+    private fun laneMatches(d: DrumPattern, lanes: Set<Int>, line: StarterWizard.Line, perBar: Int, rolls: Boolean = false, soft: Boolean = false): Boolean {
         if (d.steps < line.pattern.length.coerceAtMost(4 * perBar.coerceAtLeast(1))) return false
         val wanted = StarterWizard.hits(line, d.steps).ifEmpty { return false }
         val hits = HashMap<Int, Hit>()
@@ -777,9 +777,26 @@ object TutoChecks {
         // Audit ultra round 1, n° 34 (seat B d: « Bravo » with steps 1, 3 and 11 for a two-step on 1 and 11): no hit
         // more than the dotted cells; one there is crossed out on the grid ([toErase]) until it is taken away.
         if (!(mine.containsAll(wanted.keys) && (mine - wanted.keys).isEmpty())) return false
+        // Tour 6, T3: a step that asks for « Doux » wants its soft cells soft (« Doux » or « Moyen »), not at 100 %.
+        if (soft && wanted.any { (s, h) -> h.velocity < SOFT_VELOCITY && (hits[s]?.velocity ?: 1f) > SOFT_VELOCITY }) return false
         // "lane:hat:rolls": each roll of the line (trap's hats, a « 3 »: three hits in one cell) rolled there too.
         return !rolls || wanted.all { (s, h) -> (h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats) && (hits[s]?.span ?: 1) == h.span }
     }
+
+    /**
+     * Tour 6, T3: off until TutoJourneyTest plays a step's soft cells as its consigne says (long press › « Doux »):
+     * it taps every dotted cell at full strength, and techno's clap would never tick there. Turn on with it.
+     */
+    const val SOFT_HITS_CHECKED = false
+
+    /** A hit this soft or softer is « doux » (the force menu's « Doux » 0.2 and « Moyen » 0.5; a line's 'o' is 0.35). */
+    private const val SOFT_VELOCITY = 0.5f
+
+    /**
+     * A drum step that names the « Doux » button in every level's words (« appui long dessus, puis « Doux » »): its
+     * soft cells count only played soft (tour 6, T3). A step that does not ask for it ticks at any strength.
+     */
+    fun asksSoft(step: TutoStep): Boolean = listOfNotNull(step.text, step.textPro).all { "« Doux »" in it }
 
     /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
     private fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
@@ -840,11 +857,12 @@ object TutoChecks {
             step.manual || step.listening -> false
             c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= TutoTarget.TEMPO_SLACK
             c == "key" -> p.harmony.root == target.harmony.root && p.harmony.scale == target.harmony.scale
-            // The style's swing (house, garage, boom bap, lo-fi), within 5 points of it.
-            c == "swing" -> target.style.swing > 0.0 && kotlin.math.abs(p.swing - target.style.swing) <= minOf(SWING_TOLERANCE, target.style.swing / 2)
+            // The style's swing (house, garage, boom bap, lo-fi) as the slider shows it (swing / MAX_SWING, in %), give or
+            // take [SWING_POINTS] (tour 6, T5: the raw value was compared, « 25 » on the slider was 0.1875, never 0.25).
+            c == "swing" -> target.style.swing > 0.0 && p.swing > 0.0 && kotlin.math.abs(swingShown(p.swing) - swingShown(target.style.swing)) <= SWING_POINTS
             // With a [TutoStep.part]: the course's drums of that part, in that part.
             c.startsWith("lane:") -> target.line(arg, partOf(step))?.let { line ->
-                scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls")) }
+                scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls"), soft = SOFT_HITS_CHECKED && asksSoft(step)) }
             } ?: false
             // The 4 hats on the beats softer than those between them (one hit made « Doux » is not the groove).
             c == "velocity:hat" -> p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }
@@ -855,8 +873,9 @@ object TutoChecks {
             // The 303's line: every step of it, its note, its accent and its slide.
             c == "notes:acid" -> target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
             // Every dotted note written (not 3 of 12: the testers' bass and chords ticked with the screen's first notes).
+            // Tour 6, T8: a step split in two (« la mesure 1 », then « Copier » and the rest): its [TutoStep.length] the cells it asks for.
             c.startsWith("notes:") -> target.roleNotes(arg)?.let { wanted ->
-                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), wanted.notes) }
+                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), wanted.notes.filter { step.length <= 0 || it.start < step.length * NoteClip.TICKS_PER_STEP }) }
             } ?: false
             c == "track:sub" -> trackFor(p, "bass")?.let { bass ->
                 val wanted = subOf(notesOf(p, bass))
@@ -940,8 +959,11 @@ object TutoChecks {
         return hits.count { if (early) it.offset <= -OFFSET_MS else it.offset >= OFFSET_MS } * 2 >= hits.size
     }
 
-    /** The swing that counts as the style's (its value, give or take this much). */
-    const val SWING_TOLERANCE = 0.05
+    /** The swing that counts as the style's: the slider's number (%), give or take this many points (a finger is not exact). */
+    const val SWING_POINTS = 3
+
+    /** A swing as the Rythme slider shows it: its share of [com.pocketstudio.model.Project.MAX_SWING], in whole %. */
+    fun swingShown(swing: Double): Int = Math.round(swing / com.pocketstudio.model.Project.MAX_SWING * 100).toInt()
 
     /** A curve's shapes: "rise" (the Montée's), "fall", "wave" (up then down again in the part: the techno filter's cycle). */
     const val RISE_SHAPE = "rise"

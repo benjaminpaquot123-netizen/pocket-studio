@@ -45,7 +45,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Ré ».",
-          "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII).",
+          "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII). « Je le fais » ouvre la fiche Tonalité.",
           "why": "Trois accords qui montent vers le retour au Ré : la grille de toutes les raves.",
           "check": "key",
           "spot": "tuto.key",
@@ -87,7 +87,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Le « tchi » entre les kicks fait sauter la salle.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -116,7 +116,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad du « zap » (un bruit de laser), touche la case en pointillé, une fois toutes les 2 mesures.",
+          "text": "À toi : sur le pad du « Zap » (un bruit de laser), touche la case en pointillé, une fois toutes les 2 mesures.",
           "textPro": "À toi : le zap toutes les 2 mesures.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -312,8 +312,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:16,Mini-break:2,Drop:14,Break:16,Drop 2:24,Fin:16",
@@ -404,7 +404,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ».",
           "check": "changed:volumes:lead,bass",
           "spot": "mixer.strip",

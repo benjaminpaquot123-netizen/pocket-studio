@@ -44,7 +44,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre comme la techno. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots.",
-          "textPro": "À toi : règle la tonalité sur Fa phrygien : un seul accord mineur qui monte parfois d'un demi-ton (Sol♭), la couleur de la techno de Berlin. Ton kick est accordé sur Fa.",
+          "textPro": "À toi : règle la tonalité sur Fa phrygien : un seul accord mineur qui monte parfois d'un demi-ton (Sol♭), la couleur de la techno de Berlin. Ton kick est accordé sur Fa. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -53,7 +53,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets un tout petit peu de swing (5 %) : les petits charleys traînent à peine, le groove respire sans boiter.",
+          "text": "À toi : mets un tout petit peu de swing (7 %) : les petits charleys traînent à peine, le groove respire sans boiter.",
           "why": "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.",
           "levels": "p",
           "check": "swing",
@@ -91,8 +91,8 @@
         },
         {
           "id": "rumble_do",
-          "text": "À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick : il gronde juste après chaque coup, comme un écho sale et grave.",
-          "textPro": "À toi : le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
+          "text": "À toi : sur le pad « Rumble » (le grondement), touche les cases en pointillé : les mêmes que le kick, une sur chaque temps. Son long grondement sale et grave remplit le vide entre les coups.",
+          "textPro": "À toi : pose le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
           "why": "Le rumble remplit le grave entre les kicks : c'est le son des clubs de Berlin.",
           "check": "lane:rumble",
           "spot": "rhythm.pattern",
@@ -108,8 +108,8 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : sur les temps 2 et 4, plus un petit coup doux juste avant la mesure suivante. Touche d'abord « Passer à 2 mesures » si on te le propose.",
-          "textPro": "À toi : le clap sur 2 et 4, avec son fantôme juste avant la mesure suivante (en « Doux »).",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long dessus, puis « Doux ».",
+          "textPro": "À toi : pose le clap sur 2 et 4, et son fantôme juste avant la mesure suivante : appui long dessus, puis « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -127,7 +127,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Kick, charley, kick, charley : ce va-et-vient pousse à danser.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -137,7 +137,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.",
-          "textPro": "À toi : les charleys fermés en doubles croches, plus doux sous le kick.",
+          "textPro": "À toi : pose les charleys fermés en doubles croches, plus doux sous le kick.",
           "why": "Les petits coups font rouler le rythme sans le charger.",
           "levels": "p",
           "check": "lane:hat",
@@ -147,8 +147,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
-          "textPro": "À toi : le rim décalé, la petite accroche rythmique qui tourne en boucle.",
+          "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
+          "textPro": "À toi : pose le rim décalé, la petite accroche rythmique qui tourne en boucle.",
           "why": "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -157,8 +157,8 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
-          "textPro": "À toi : la ride en croches, pour le Drop.",
+          "text": "À toi : sur le pad « Cymbale » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
+          "textPro": "À toi : pose la ride en croches, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
@@ -181,7 +181,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec le kick : elle se glisse entre les coups.",
+          "text": "Écoute la basse de l'exemple avec le kick : elle se glisse entre les coups.",
           "check": "listen",
           "listen": "parts:kick,bass"
         },
@@ -234,7 +234,7 @@
       "steps": [
         {
           "id": "lead_hear",
-          "text": "Écoute le riff avec la basse.",
+          "text": "Écoute le riff de l'exemple, avec sa basse : c'est ce que tu vas écrire.",
           "check": "listen",
           "listen": "parts:bass,lead"
         },
@@ -414,8 +414,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16",
@@ -425,7 +425,7 @@
         {
           "id": "song_phrases",
           "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
-          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "textPro": "À toi : donne les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. Près de 4 minutes à 132 BPM.",
           "check": "song:phrases",
           "spot": "song.parts",
@@ -440,7 +440,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
           "levels": "p",
           "check": "fill",
           "spot": "rhythm.pattern",
@@ -450,7 +450,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », « Mesure 4 », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le Drop 2 paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -517,7 +517,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

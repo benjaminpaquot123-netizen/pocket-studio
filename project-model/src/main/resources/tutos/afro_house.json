@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi ».",
-          "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee.",
+          "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -97,7 +97,7 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom », touche les 3 cases en pointillé des 2 mesures : il répond en fin de mesure, comme un bongo.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures : il répond en fin de mesure, comme un bongo.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",
           "target": "tom",
@@ -122,7 +122,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 : congas et shaker traînent, comme joués à la main.",
+          "text": "À toi : mets le swing à 33 % : congas et shaker traînent, comme joués à la main.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,perc,hat,perc2,tom"
@@ -297,6 +297,7 @@
           "id": "variation",
           "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur un pad de percussion (congas, bois) ou de charley ouvert : le 2e Drop ne sonne plus tout à fait comme le 1er.",
           "check": "changed:drums:Drop 2",
+          "target": "perc",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2",
           "why": "Une percussion de plus garde l'oreille en éveil."
@@ -326,7 +327,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop 2:16,Fin:16",
@@ -349,7 +351,7 @@
       "steps": [
         {
           "id": "toms",
-          "text": "À toi : dans la partie « Break », pad « Tom », touche les 4 cases du dernier temps : un roulement de toms qui ramène le kick.",
+          "text": "À toi : dans la partie « Break », pad « Tom médium », touche les 4 cases du dernier temps : un roulement de toms qui ramène le kick.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "tom",

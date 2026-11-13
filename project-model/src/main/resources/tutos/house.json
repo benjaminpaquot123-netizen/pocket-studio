@@ -41,7 +41,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house.",
+          "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -64,7 +64,7 @@
         {
           "id": "kick_do",
           "text": "À toi : la boucle de batterie fait 2 mesures (une mesure = un tour de 4 temps). Touche « Passer à 2 mesures », puis sur le pad « Kick », touche les cases en pointillé : un coup sur chaque temps, et un petit coup en plus juste avant la fin de la mesure 2.",
-          "textPro": "À toi : 4 coups par mesure sur 2 mesures, plus le coup doux du pas 15 de la mesure 2 : le « jack » de Chicago.",
+          "textPro": "À toi : pose 4 coups par mesure sur 2 mesures, plus le coup doux du pas 15 de la mesure 2 : le « jack » de Chicago.",
           "why": "Le petit coup en plus relance la boucle de 2 mesures : c'est le « jack » des disques de Chicago.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -81,7 +81,7 @@
         {
           "id": "clap_do",
           "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4.",
-          "textPro": "À toi : le clap sur 2 et 4. L'appli le joue quelques millisecondes en avance, comme sur les disques de New York.",
+          "textPro": "À toi : pose le clap sur 2 et 4. L'appli le joue quelques millisecondes en avance, comme sur les disques de New York.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -98,7 +98,7 @@
         {
           "id": "ohat_do",
           "text": "À toi : sur le pad « Charley ouvert » (le « tchi »), touche les cases en pointillé : une entre chaque coup de kick.",
-          "textPro": "À toi : le charley ouvert sur chaque contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur chaque contretemps.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -107,7 +107,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide, avec un trou là où sonne le « tchi ».",
-          "textPro": "À toi : les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.",
+          "textPro": "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -115,8 +115,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad du tambourin, touche les 4 cases en pointillé, entre les temps.",
-          "textPro": "À toi : le tambourin de la 707 sur chaque contretemps.",
+          "text": "À toi : sur le pad « Rim » (il joue le tambourin), touche les 4 cases en pointillé, entre les temps.",
+          "textPro": "À toi : pose le tambourin de la 707 sur chaque contretemps.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -125,7 +125,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).",
+          "text": "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,open_hat,hat,perc"
@@ -146,7 +146,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,clap,open_hat,bass"
         },
@@ -195,7 +195,7 @@
       "steps": [
         {
           "id": "pad_hear",
-          "text": "Écoute le piano seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.",
+          "text": "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.",
           "check": "listen",
           "listen": "parts:pad"
         },
@@ -297,7 +297,7 @@
         },
         {
           "id": "map_phrases",
-          "text": "Regarde la carte : chaque case est une partie avec sa durée en mesures. L'Intro et la Montée font 16 + 8 = 24 mesures, le Break et la sienne 16 + 8.",
+          "text": "Regarde la carte : chaque case est une partie avec sa durée en mesures. L'Intro (16 mesures) et la Montée (8 mesures) font 24 mesures ; le Break (16 mesures) et la Montée qui le suit (8 mesures) aussi.",
           "check": "manual",
           "why": "Les DJ comptent en phrases de 8 : le Drop tombe toujours au début d'une phrase."
         }
@@ -376,7 +376,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Montée:8,Drop:16,Break:16,Montée:8,Drop 2:16,Fin:16",
@@ -420,7 +421,7 @@
         {
           "id": "crash",
           "text": "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.",
-          "textPro": "À toi : une cymbale sur le 1er temps du Drop et du Drop 2.",
+          "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop,Drop 2",
@@ -429,9 +430,10 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Conga » (ou le charley ouvert) : une couche de plus que dans le Drop.",
-          "textPro": "À toi : dans le Drop 2, ajoute la conga (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.",
+          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » (ou le charley ouvert) : une couche de plus que dans le Drop.",
+          "textPro": "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.",
           "check": "changed:drums:Drop 2",
+          "target": "perc2",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }

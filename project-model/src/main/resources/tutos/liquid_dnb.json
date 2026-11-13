@@ -142,7 +142,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
+          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
           "target": "ride",
@@ -421,7 +421,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16",
@@ -462,7 +463,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Ride » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Cymbale » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
           "levels": "p",
           "check": "crash",
           "spot": "rhythm.pattern",
@@ -518,7 +519,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la cloche (« Mélodie ») et celui du piano (« Accords »), juste assez pour que la basse respire.",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",

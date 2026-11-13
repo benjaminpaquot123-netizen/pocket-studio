@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Sol ».",
-          "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord pour tout le morceau : en minimal, la mélodie, c'est le rythme.",
+          "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord pour tout le morceau : en minimal, la mélodie, c'est le rythme. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Un seul accord, une seule couleur : l'oreille se concentre sur les petits clics.",
           "check": "key",
           "spot": "tuto.key",
@@ -52,7 +52,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets le swing à environ 15 % : les petits coups entre les temps traînent, le groove se met à balancer.",
+          "text": "À toi : mets le swing à environ 20 % : les petits coups entre les temps traînent, le groove se met à balancer.",
           "why": "La minimal vit de son balancement : sans swing, les clics sonnent comme un métronome.",
           "levels": "p",
           "check": "swing",
@@ -94,7 +94,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Perc » (un « toc » de rim), touche les cases en pointillé des 2 mesures : il tombe à côté des temps, et la 2e mesure change un peu. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "text": "À toi : sur le pad « Rim » (un « toc » de rim), touche les cases en pointillé des 2 mesures : il tombe à côté des temps, et la 2e mesure change un peu. Touche d'abord « Passer à 2 mesures » si on te le propose.",
           "textPro": "À toi : le rim décalé sur 2 mesures : la 2e mesure diffère d'un coup.",
           "why": "Une boucle de 2 mesures qui change d'un seul coup : l'oreille croit l'entendre bouger sans cesse.",
           "check": "lane:perc",
@@ -316,8 +316,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:24,Fin:16",
@@ -373,7 +373,7 @@
         },
         {
           "id": "delay",
-          "text": "À toi : dans Mix, monte « Envoi écho » sur la tranche du pad « Perc » (le rim) : chaque « toc » se répète en rythme.",
+          "text": "À toi : dans Mix, monte « Envoi écho » sur la tranche du pad « Rim » (le rim) : chaque « toc » se répète en rythme.",
           "why": "Un écho réglé sur le tempo invente des coups que tu n'as pas écrits.",
           "levels": "p",
           "check": "send:1",
@@ -402,7 +402,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

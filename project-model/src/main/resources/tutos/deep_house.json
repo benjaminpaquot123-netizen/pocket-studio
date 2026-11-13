@@ -42,7 +42,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure douce, un peu jazz), puis « Fa ».",
-          "textPro": "À toi : règle la tonalité sur Fa dorien : Fm9 et B♭9, les deux accords que Kerri Chandler fait tourner toute une nuit.",
+          "textPro": "À toi : règle la tonalité sur Fa dorien : Fm9 et B♭9, les deux accords que Kerri Chandler fait tourner toute une nuit. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -110,7 +110,7 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
           "textPro": "À toi : le tom 909 sur les cases 3, 9 et 11 : le motif « rolling » de la deep house.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",
@@ -120,7 +120,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 30 (environ 61 à 66 % sur une MPC) : les doubles croches paires traînent, paresseuses.",
+          "text": "À toi : mets le swing à 40 % (environ 61 à 66 % sur une MPC) : les doubles croches paires traînent, paresseuses.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,hat,perc,tom"
@@ -274,7 +274,7 @@
         },
         {
           "id": "map_phrases",
-          "text": "Regarde la carte : l'Intro et la petite Montée font 28 + 4 = 32 mesures, le Break et sa Montée 12 + 4 = 16.",
+          "text": "Regarde la carte : l'Intro (28 mesures) et la petite Montée (4 mesures) font 32 mesures ; le Break (12 mesures) et la Montée qui le suit (4 mesures) en font 16.",
           "check": "manual",
           "why": "Chaque Drop tombe au début d'une phrase de 8, là où le DJ l'attend."
         }
@@ -348,7 +348,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:28,Montée:4,Drop:16,Break:12,Montée:4,Drop 2:16,Fin:16",
@@ -371,7 +372,7 @@
       "steps": [
         {
           "id": "toms",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom médium » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
           "textPro": "À toi : un fill de toms 909 sur l'avant-dernier temps de la Montée, juste avant le temps de silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
@@ -392,6 +393,7 @@
           "id": "variation",
           "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de shaker ou de charley ouvert : une couche de plus que dans le Drop.",
           "check": "changed:drums:Drop 2",
+          "target": "perc2",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }

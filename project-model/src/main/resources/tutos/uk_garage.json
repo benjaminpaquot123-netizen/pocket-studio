@@ -42,7 +42,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul.",
+          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -117,7 +117,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 30 (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
+          "text": "À toi : mets le swing à 40 % (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,snare,clap,hat,open_hat,perc"
@@ -331,7 +331,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
+          "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:8,Couplet:12,Pré-refrain:4,Refrain:16,Couplet:12,Pré-refrain:4,Refrain:16,Pont:8,Refrain:16,Fin:8",

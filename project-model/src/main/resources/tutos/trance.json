@@ -43,7 +43,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau : mélancolique et lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « La ».",
-          "textPro": "À toi : règle la tonalité sur La mineur, grille i–VI–III–VII (La m, Fa, Do, Sol), un accord par mesure : la grille des hymnes trance.",
+          "textPro": "À toi : règle la tonalité sur La mineur, grille i–VI–III–VII (La m, Fa, Do, Sol), un accord par mesure : la grille des hymnes trance. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Quatre accords, un par mesure, font tout le voyage : de la mélancolie à l'euphorie.",
           "check": "key",
           "spot": "tuto.key",
@@ -84,7 +84,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Boum, tss, boum, tss : ce charley entre les kicks fait décoller la trance.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -103,7 +103,7 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Ride », touche les cases en pointillé. Elle arrivera au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé. Elle arrivera au Drop.",
           "textPro": "À toi : la ride sur les contretemps, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",
@@ -343,8 +343,8 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
-          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:8,Montée:8,Drop:32,Break:24,Montée:8,Drop 2:32,Fin:8",
@@ -444,7 +444,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

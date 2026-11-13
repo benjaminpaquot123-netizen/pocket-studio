@@ -1,0 +1,10 @@
+lang=pt-BR
+device=phone
+font=200
+mode=simple
+gestes.max=110
+mission=remix-voix
+rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux/t6-ec17-un-bout-courbe
+rejeu.origine=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-6/lotE/c
+rejeu.n=17
+rejeu.attendu=Pince para ampliar

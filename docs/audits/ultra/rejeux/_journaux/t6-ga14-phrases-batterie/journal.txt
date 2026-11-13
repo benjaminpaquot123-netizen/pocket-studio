@@ -1,0 +1,87 @@
+#0 SIEGE lang=tr device=phone font=130 mode=pro theme=- fresh=non gestes.max=110 lit=oui main=both amenee=- rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux/t6-ga14-phrases-batterie rejeu.n=14
+#0 PREMIER ECRAN reel_s=11.8 simule_s=2.4 jvm_s=25.3 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 219a425f43 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 ETIQUETTE launch_remix : 294 1012
+#1 > touche 294 1012
+#1 DOIGT launch_remix « Remix »
+#2 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 7305b4d139 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Remix » 4.20:1 (needs 4.5:1, 14 sp)
+#2 ETIQUETTE remix_download_thumb : 294 1227
+#2 > touche 294 1227
+#2 DOIGT remix_download_thumb « Modeli indir (174 MB) »
+#3 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE 11b4d8c416 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Sonra » 3.64:1 (needs 4.5:1, 14 sp)
+#3 ETIQUETTE remix_model_ask_ok : 485 804
+#3 > touche 485 804
+#3 DOIGT remix_model_ask_ok « İndir »
+#4 ROUTE dialogue:remix_home | MODE pro | EMPREINTE affe234838 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > attends 30
+#5 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 7f7fa49e2a | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 ETIQUETTE remix_pick : 294 475
+#5 > touche 294 475
+#5 DOIGT remix_pick « Bir şarkı seç »
+#6 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 1851c5adbd | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 30
+#7 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE cb266f1d1e | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 ETIQUETTE remix_dest_existing : 294 860
+#7 > touche 294 860
+#7 DOIGT remix_dest_existing « Var olan bir projeye »
+#8 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 3ed1c0ca4f | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « İlk ritmim » 1.34:1 (needs 3.0:1, 14 sp)
+#8 ETIQUETTE remix_dest_project_projet-1 : 294 623
+#8 > touche 294 623
+#8 DOIGT remix_dest_project_projet-1 « İlk ritmim »
+#9 ROUTE dialogue:song_import | MODE pro | EMPREINTE 33b1a9ac3c | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « İptal » 3.84:1 (needs 4.5:1, 14 sp)
+#9 ETIQUETTE import_voice : 294 896
+#9 > touche 294 896
+#9 DOIGT import_voice « Sadece vokal, benim beat'imin üstünde »
+#10 ROUTE dialogue:song_import | MODE pro | EMPREINTE e5d1dacc7e | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 ETIQUETTE import_whole : 294 735
+#10 > touche 294 735
+#10 DOIGT import_whole « Şarkının tamamı, A bloğundan »
+#11 ROUTE dialogue:song_import | MODE pro | EMPREINTE 33b1a9ac3c | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 ETIQUETTE import_voice : 294 896
+#11 > touche 294 896
+#11 DOIGT import_voice « Sadece vokal, benim beat'imin üstünde »
+#12 ROUTE dialogue:song_import | MODE pro | EMPREINTE e5d1dacc7e | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 ETIQUETTE import_go : 426 1151
+#12 > touche 426 1151
+#12 DOIGT import_go « Projeme ekle »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 69d98984fd | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#13 LAYOUT CUT « 0:00 / 0:40 · başlangıç » lines dropped (more lines than room)
+#13 LAYOUT CONTRAST « Şarkı » 1.30:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « ŞARKI: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Efektler » 4.37:1 (needs 4.5:1, 14 sp)
+#13 ETIQUETTE remix_open_board : 294 617
+#13 > touche 294 617
+#13 DOIGT remix_open_board «  Kanal panosunu aç »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 10343e746c | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Kanal panosu » ellipsized (« … »)
+#14 LAYOUT CUT « Ma chanson préférée · 120 BPM » ellipsized (« … »)
+#14 LAYOUT CUT « Davul » lines cut (taller than its box)
+#14 LAYOUT CUT « Bas » lines cut (taller than its box)
+#14 LAYOUT CUT « Kalan » lines cut (taller than its box)
+#14 LAYOUT CUT « Vokal » lines cut (taller than its box)
+#14 ETIQUETTE board_chop : 294 874
+#14 > touche 294 874
+#14 DOIGT board_chop «  Vokali cümlelere böl »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE c99e346666 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 FIN : rejeu : oracle tenu

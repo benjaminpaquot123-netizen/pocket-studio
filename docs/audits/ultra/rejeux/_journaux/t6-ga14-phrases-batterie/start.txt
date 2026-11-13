@@ -1,0 +1,10 @@
+lang=tr
+device=phone
+font=130
+mode=pro
+gestes.max=110
+mission=remix-voix
+rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux/t6-ga14-phrases-batterie
+rejeu.origine=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-6/lotG/a
+rejeu.n=14
+rejeu.attendu=(Davul · 16 pad)

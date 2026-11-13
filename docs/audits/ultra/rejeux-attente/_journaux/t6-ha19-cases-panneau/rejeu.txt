@@ -1,0 +1,2 @@
+oracle non tenu : « [coupé, état « vide, en pointillé : à toucher »] » encore là
+  dernier écran différent de l'origine : écran 20, empreinte 80e392e64b (origine 6b066d33ac), première ligne différente : origine « image (chapeau de diplômé) @ 37,342 », rejeu « texte « Le kick Chapitre 2/15 · Étape 2/2 · Facile » @ 207,342 »

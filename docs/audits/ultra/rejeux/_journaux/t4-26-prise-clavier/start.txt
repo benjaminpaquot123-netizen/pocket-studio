@@ -1,0 +1,10 @@
+lang=fr
+device=phone
+font=200
+mode=simple
+gestes.max=60
+mission=tuto-facile
+rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux/t4-26-prise-clavier
+rejeu.origine=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-4/lotA/b
+rejeu.n=32
+rejeu.absent=Rien n'a été joué pendant la prise

@@ -1,0 +1,140 @@
+#0 SIEGE lang=ja device=phone font=100 mode=simple theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/pocket-studio/docs/audits/ultra/rejeux/t6-da15-ecoute-passee rejeu.n=15
+#0 PREMIER ECRAN reel_s=11.5 simule_s=2.4 jvm_s=25.0 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 2b63db70e7 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 ETIQUETTE welcome_learn : 294 620
+#1 > touche 294 620
+#1 DOIGT welcome_learn « 学ぶ »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 32d8af5961 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 ETIQUETTE mode_card_simple : 294 922
+#2 > touche 294 922
+#2 DOIGT mode_card_simple « シンプル »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 652592ee50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 ETIQUETTE tuto_style_techno : 294 289
+#3 > touche 294 289
+#3 DOIGT tuto_style_techno « テクノ »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b16a71d3a4 | project=p-9efeb3d9 tuto=techno/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « マイプロジェクト 1 » ellipsized (« … »)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ なぜ？ » 364 x 21 dp (touch 364 x 48)
+#4 ETIQUETTE tuto_listen : 294 894
+#4 > touche 294 894
+#4 DOIGT tuto_listen «  例を聴く »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 142a04fce6 | project=p-9efeb3d9 tuto=techno/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 ETIQUETTE tuto_next : 511 978
+#5 > touche 511 978
+#5 DOIGT tuto_next « 次へ  »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4887cdefc3 | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 ETIQUETTE tuto_do : 294 813
+#6 > touche 294 813
+#6 DOIGT tuto_do «   自分でやる »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE bce2e1531f | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « テンポ » over the touchable « シートを閉じる » (66 x 33 dp)
+#7 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (7 x 15 dp)
+#7 LAYOUT OVERLAP « 閉じる » over the touchable « シートを閉じる » (42 x 21 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (86 x 53 dp)
+#7 LAYOUT OVERLAP «  BPM » over the touchable « シートを閉じる » (39 x 24 dp)
+#7 LAYOUT OVERLAP « 70 » over the touchable « シートを閉じる » (21 x 19 dp)
+#7 LAYOUT OVERLAP « 90 » over the touchable « シートを閉じる » (21 x 19 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « 140 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « 174 » over the touchable « シートを閉じる » (32 x 19 dp)
+#7 LAYOUT OVERLAP « ½ » over the touchable « シートを閉じる » (14 x 24 dp)
+#7 LAYOUT OVERLAP « ×2 » over the touchable « シートを閉じる » (21 x 24 dp)
+#7 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 2 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 3 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 4 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 5 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 6 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 7 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 8 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 9 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « 0 » over the touchable « シートを閉じる » (14 x 27 dp)
+#7 LAYOUT OVERLAP « OK » over the touchable « シートを閉じる » (33 x 27 dp)
+#7 LAYOUT OVERLAP « リズムに合わせてタップ » over the touchable « シートを閉じる » (176 x 24 dp)
+#7 LAYOUT OVERLAP « 拍ごとにここをタップ。テンポが合わせて変わります。 » over the touchable « シートを閉じる » (293 x 37 dp)
+#7 ETIQUETTE tempo_key_1 : 111 845
+#7 > touche 111 845
+#7 DOIGT tempo_key_1 « 1 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 94bc873f8c | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (29 x 53 dp)
+#8 LAYOUT OVERLAP « 40〜300 の範囲 » over the touchable « シートを閉じる » (104 x 21 dp)
+#8 ETIQUETTE tempo_key_3 : 477 845
+#8 > touche 477 845
+#8 DOIGT tempo_key_3 « 3 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE c02103ef03 | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 13 » over the touchable « シートを閉じる » (57 x 53 dp)
+#9 ETIQUETTE tempo_key_2 : 294 845
+#9 > touche 294 845
+#9 DOIGT tempo_key_2 « 2 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b5e4f95fb6 | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 132 » over the touchable « シートを閉じる » (86 x 53 dp)
+#10 ETIQUETTE tempo_key_ok : 477 1106
+#10 > touche 477 1106
+#10 DOIGT tempo_key_ok « OK »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc997c79ac | project=p-9efeb3d9 tuto=techno/Facile active=true step=tempo done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 ETIQUETTE tuto_next_folded : 294 978
+#11 > touche 294 978
+#11 DOIGT tuto_next_folded « 成功 »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8f3273a498 | project=p-9efeb3d9 tuto=techno/Facile active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 ETIQUETTE tuto_do : 294 813
+#12 > touche 294 813
+#12 DOIGT tuto_do «   自分でやる »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 0699fa6088 | project=p-9efeb3d9 tuto=techno/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 曲のキー » over the touchable « シートを閉じる » (87 x 33 dp)
+#13 LAYOUT OVERLAP « 曲のキー：なし » over the touchable « シートを閉じる » (98 x 21 dp)
+#13 LAYOUT OVERLAP « スケール » over the touchable « シートを閉じる » (56 x 21 dp)
+#13 LAYOUT OVERLAP « メジャー » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « マイナー » over the touchable « シートを閉じる » (64 x 24 dp)
+#13 LAYOUT OVERLAP « ドリアン » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « マイナーペンタ » over the touchable « シートを閉じる » (112 x 24 dp)
+#13 LAYOUT OVERLAP « メジャーペンタ » over the touchable « シートを閉じる » (111 x 24 dp)
+#13 LAYOUT OVERLAP « ブルース » over the touchable « シートを閉じる » (63 x 24 dp)
+#13 LAYOUT OVERLAP « フリジアン » over the touchable « シートを閉じる » (79 x 24 dp)
+#13 LAYOUT OVERLAP « ハーモニックマイナー » over the touchable « シートを閉じる » (160 x 24 dp)
+#13 LAYOUT OVERLAP « キー » over the touchable « シートを閉じる » (28 x 21 dp)
+#13 LAYOUT OVERLAP « C » over the touchable « シートを閉じる » (12 x 24 dp)
+#13 LAYOUT OVERLAP « C♯ » over the touchable « シートを閉じる » (21 x 24 dp)
+#13 LAYOUT OVERLAP « D » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 LAYOUT OVERLAP « E♭ » over the touchable « シートを閉じる » (15 x 24 dp)
+#13 LAYOUT OVERLAP « E » over the touchable « シートを閉じる » (9 x 24 dp)
+#13 LAYOUT OVERLAP « F » over the touchable « シートを閉じる » (9 x 24 dp)
+#13 LAYOUT OVERLAP « F♯ » over the touchable « シートを閉じる » (18 x 24 dp)
+#13 LAYOUT OVERLAP « G » over the touchable « シートを閉じる » (12 x 24 dp)
+#13 LAYOUT OVERLAP « A♭ » over the touchable « シートを閉じる » (17 x 24 dp)
+#13 LAYOUT OVERLAP « A » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 LAYOUT OVERLAP « B♭ » over the touchable « シートを閉じる » (16 x 24 dp)
+#13 LAYOUT OVERLAP « B » over the touchable « シートを閉じる » (11 x 24 dp)
+#13 ETIQUETTE tuto_scale_Phrygian : 242 911
+#13 > touche 242 911
+#13 DOIGT tuto_scale_Phrygian « フリジアン »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 1efea851b0 | project=p-9efeb3d9 tuto=techno/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 曲のキー：C · フリジアン » over the touchable « シートを閉じる » (161 x 21 dp)
+#14 ETIQUETTE tuto_root_5 : 498 1125
+#14 > touche 498 1125
+#14 DOIGT tuto_root_5 « F »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 873d2f7671 | project=p-9efeb3d9 tuto=techno/Facile active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 曲のキー：F · フリジアン » over the touchable « シートを閉じる » (159 x 21 dp)
+#15 LAYOUT OVERLAP « できました！曲の色が決まりました。 » over the touchable « シートを閉じる » (272 x 24 dp)
+#15 LAYOUT OVERLAP « チュートリアルに戻る » over the touchable « シートを閉じる » (141 x 21 dp)
+#15 ETIQUETTE tuto_key_continue : 294 1203
+#15 > touche 294 1203
+#15 DOIGT tuto_key_continue « チュートリアルに戻る »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 19eac5a128 | project=p-9efeb3d9 tuto=techno/Facile active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 FIN : rejeu : oracle tenu

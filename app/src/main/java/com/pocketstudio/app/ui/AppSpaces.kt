@@ -71,6 +71,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -138,6 +139,20 @@ internal fun SonsHeader(
     }
 }
 
+/**
+ * « › » at the edge of a row that goes on past it (« ‹ » where it started before): the sign that more waits there,
+ * over the row's faded edge (tour 6, R19: « Générer » cut at the screen's edge, « sans signe de suite »). Drawn only:
+ * the row itself scrolls under the finger.
+ */
+@Composable
+internal fun MoreAside(forward: Boolean, modifier: Modifier = Modifier) {
+    // One icon for both edges, turned round for « before » (the bench knows every icon of the app by its shape).
+    Icon(
+        Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.TextPrimary,
+        modifier = modifier.size(20.dp).graphicsLayer { if (!forward) scaleX = -1f },
+    )
+}
+
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
 internal val REMIX_COLOR = com.pocketstudio.app.remix.SONG_COLOR
 
@@ -197,7 +212,12 @@ internal class SimplePlusWays(val live: () -> Unit, val remix: () -> Unit, val v
 internal fun plusEntries(
     /** « Accueil »: « Que veux-tu faire ? » (null: not offered). */
     home: (() -> Unit)? = null,
-    projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
+    projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean,
+    /**
+     * « Passer en mode Simple / Pro »: the other mode is asked for (true: the Mode simple). Tour 6, N17: the app answers
+     * with « Mode de ce projet », the question the top bar's chip asks; the screens never change at this touch alone.
+     */
+    setSimple: (Boolean) -> Unit,
     /** « Signaler un bug » (null: not offered). */
     bugReport: (() -> Unit)? = null,
     /** The Mode simple's own ways (null: Pro's list). */

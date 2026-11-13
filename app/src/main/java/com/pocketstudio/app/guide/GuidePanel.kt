@@ -5,6 +5,7 @@ import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,6 +72,8 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.learn.SoundGlossary
 import com.pocketstudio.ui.NeonCard
+import com.pocketstudio.ui.fadingVerticalEdges
+import kotlinx.coroutines.launch
 import com.pocketstudio.ui.Neon
 
 /** What the Guide's bar and panel do (each one a call of [GuideViewModel], [GuideListen] or the app's navigation). */
@@ -225,18 +228,22 @@ fun GuidePanel(
     /** The phone's « Supprimer les animations »: the window's edge stays still. */
     reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
 ) {
-    val sized = if (height != null) modifier.fillMaxWidth().height(height) else modifier
+    val scroll = rememberScrollState()
+    // Tour 6, G1: « ↓ La suite » adds its own line to the panel while the card goes on below (the card's choices keep the
+    // room they had: GuideJourneyTest's budget).
+    val sized = if (height != null) modifier.fillMaxWidth().height(height + if (scroll.canScrollForward) MORE_BELOW_HEIGHT else 0.dp) else modifier
     // The window's edge beats softly (a double heartbeat), drawn only: the panel is not recomposed for it.
     val beat = rememberGuideBeat(animated = !reducedMotion)
     Column(sized.background(Neon.Background).guideEdge(beat, Neon.Cyan).testTag("guide_panel")) {
         GuideBar(ui, open = true, toggle = actions.toggle)
-        val scroll = rememberScrollState()
         // Another card shown (decided, picked in the plan): back to the top, where the card is.
         val shownId = if (ui.loading) null else (selected?.let { ui.cards[it] } ?: ui.alerts.firstOrNull() ?: ui.next)?.id
         androidx.compose.runtime.LaunchedEffect(shownId) { scroll.animateScrollTo(0) }
         Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.TopCenter) {
             Column(
-                Modifier.widthIn(max = 720.dp).fillMaxWidth().fillMaxHeight().verticalScroll(scroll)
+                // Tour 6, G1 (seat F a #23: the card's own buttons cut at the panel's edge, no sign of more): the edge
+                // where more waits fades, and the line « ↓ La suite » under it brings it up.
+                Modifier.widthIn(max = 720.dp).fillMaxWidth().fillMaxHeight().fadingVerticalEdges(scroll).verticalScroll(scroll)
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                     .padding(horizontal = 12.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -250,6 +257,36 @@ fun GuidePanel(
                 Spacer(Modifier.height(8.dp))
             }
         }
+        // A line of its own under the card, never over it (a sign drawn over the card's edge took the touches meant for
+        // the buttons under it); the panel is that line higher while it shows ([sized]): the card keeps its room.
+        if (scroll.canScrollForward) {
+            val scope = androidx.compose.runtime.rememberCoroutineScope()
+            MoreBelow {
+                // Most of a panel's height further: what was cut at the edge comes up whole, the last line read stays in sight.
+                scope.launch { scroll.animateScrollBy(scroll.viewportSize * MORE_BELOW_SHARE) }
+            }
+        }
+    }
+}
+
+/** How much of the panel's height « ↓ La suite » scrolls. */
+private const val MORE_BELOW_SHARE = 0.7f
+
+/** The height of the line « ↓ La suite ». */
+private val MORE_BELOW_HEIGHT = 40.dp
+
+/**
+ * « ↓ La suite », the last line of the Guide's panel while its card goes on below (tour 6, G1): a beginner saw
+ * buttons cut in half and did not know the panel scrolled. A touch brings the rest up; it goes at the card's end.
+ */
+@Composable
+private fun MoreBelow(onClick: () -> Unit) {
+    Box(
+        Modifier.fillMaxWidth().background(lerp(Neon.Background, Color.Black, 0.1f)).height(MORE_BELOW_HEIGHT)
+            .clickable(role = Role.Button, onClick = onClick).testTag("guide_more_below"),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("↓ " + tr("La suite"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1)
     }
 }
 
@@ -416,7 +453,8 @@ fun GuideCard(
                 )
             }
         }
-        choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0, listen, actions) }
+        // Tour 6, G3: « Plus tard » is never the card's big button (the first choice is, when it is a real one).
+        choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0 && !o.later, listen, actions) }
         // Under the decision (it stays two gestures away), effect by effect.
         if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)
         if (reference != null && card.options.any { it.listen == "reference" }) {
@@ -515,7 +553,9 @@ private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.po
  */
 internal fun nextStep(card: GuideCardUi, choices: List<GuideOptionUi>, opens: List<GuideOptionUi>, canAlone: Boolean, alone: Boolean): String? {
     if (card.status.settled) return null
-    val first = choices.firstOrNull()
+    // Tour 6, G3 (seat F b: « À toi : touche « Plus tard » »): putting the card off is a way out, never the task;
+    // a card whose only real choice opens a screen names that screen.
+    val first = choices.firstOrNull { !it.later }
     return when {
         canAlone && !alone -> tr("À toi : écoute ce son tout seul, puis décide.")
         canAlone && first != null -> tr("À toi : il te plaît ? Touche « %s ».", first.label)

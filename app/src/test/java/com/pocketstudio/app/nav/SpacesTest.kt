@@ -178,13 +178,16 @@ class SpacesTest {
         h.start()
         val before = h.vm.project.value
         tap("tab_Plus")
+        // Tour 6, N17: the entry asks (« Mode de ce projet »), the card answers.
         tap("plus_mode")
+        tap("mode_card_simple")
         assertTrue(SettingsStore.state.value.simpleMode)
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
         assertEquals(before, h.vm.project.value)
         // Back with « ⋯ › Mode complet »: the same project, nothing to undo.
         tap("top_more")
         tap("plus_mode")
+        tap("mode_card_pro")
         assertFalse(SettingsStore.state.value.simpleMode)
         compose.onNodeWithTag("tab_Structure").assertIsDisplayed()
         assertEquals(before, h.vm.project.value)

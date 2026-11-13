@@ -1,0 +1,19 @@
+Écran 43 (588x1278)
+texte « ヒット 16 » @ 247,554
+icône ✕ @ 492,554
+texte « ベロシティ » @ 92,614
+bouton « 強め » [sélectionné] @ 85,675
+bouton « ふつう » @ 193,675
+bouton « ソフト » @ 312,675
+texte « ロール » @ 71,735
+bouton « ×1 » [sélectionné] @ 75,796
+bouton « ×2 » @ 156,796
+bouton « ×3 » @ 239,796
+bouton « ×4 » @ 323,796
+bouton « ×6 » @ 406,796
+bouton « ×8 » @ 489,796
+texte « 3連符 » @ 67,856
+bouton « 2マスに3打 » [désactivé] @ 119,917
+bouton « ↗ 上昇 » [désactivé] @ 95,998
+bouton « 均等 » [désactivé, sélectionné] @ 204,998
+bouton « ↘ 下降 » [désactivé] @ 312,998

@@ -1,0 +1,1 @@
+Control seat D a, second run after lot tutofleches (coordinator request, 2026-11-13): code b4ac25f2, local lot lotDcontrole2 (gestes.max=300, timeout.minutes=120), fresh sub-agent reading only the testers instructions and the screens. Text files only.

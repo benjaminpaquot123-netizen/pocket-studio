@@ -69,8 +69,8 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick 909 accordé sur Fa, rumble, charleys 909), leurs volumes et leurs effets (badge « FX »). Chaque piste que tu créeras arrivera avec son son conseillé."
+          "text": "Avant de commencer : tes pads ont déjà des sons pour la techno, avec leurs effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Si la carte du kit Techno s'affiche, « Plus tard » suffit : le tuto marche avec ces sons. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick accordé sur Fa, rumble), leurs volumes et leurs effets (badge « FX »). La carte du kit Techno télécharge les vrais sons de batterie du style ; « Plus tard » garde ceux-ci. Chaque piste que tu créeras arrivera avec son son conseillé."
         },
         {
           "id": "kick_hear",
@@ -295,7 +295,7 @@
         {
           "id": "groove_name",
           "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
-          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "textPro": "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.",
           "check": "label:Groove",
           "spot": "song.parts",
           "listen": "parts:kick,rumble,clap,open_hat,hat,perc,bass,pad,lead"
@@ -329,7 +329,7 @@
         },
         {
           "id": "map_drop",
-          "text": "Écoute le Drop : la ride et le riff arrivent, tout joue.",
+          "text": "Écoute le Drop : la cymbale et le riff arrivent, tout joue.",
           "why": "C'est le cœur du morceau : 32 mesures où le riff tourne.",
           "check": "listen",
           "listen": "part:Drop"
@@ -585,7 +585,7 @@
         {
           "id": "share",
           "text": "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.",
-          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "textPro": "À toi : touche « Partager », exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"
         }

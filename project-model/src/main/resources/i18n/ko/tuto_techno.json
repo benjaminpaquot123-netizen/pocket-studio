@@ -547,8 +547,8 @@
   "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.": "테크노에서 스윙은 가벼워요. 기계가 딱딱하게 들리지 않을 만큼만.",
   "Le kick et le grondement": "킥과 으르렁거림",
   "Le kick (la grosse caisse), c'est le moteur : en techno, il tape chaque temps, du début à la fin. On compte 1, 2, 3, 4 : ces 4 temps font une mesure.": "킥(베이스 드럼)은 엔진이에요: 테크노에서는 처음부터 끝까지 매 박을 쳐요. 1, 2, 3, 4로 세요: 이 4박이 한 마디예요.",
-  "Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler.": "시작하기 전에: 킷은 이미 테크노 킷(909 드럼 머신)이고, 이펙트도 들어 있어요. 패드에 있는 “FX”는 이펙트가 이미 걸려 있다는 뜻이에요. 설정할 건 없어요.",
-  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick 909 accordé sur Fa, rumble, charleys 909), leurs volumes et leurs effets (badge « FX »). Chaque piste que tu créeras arrivera avec son son conseillé.": "이미 준비됐어요: “곡을 만들어 주세요”의 테크노 사운드(F에 맞춘 909 킥, 럼블, 909 하이햇), 볼륨과 이펙트(“FX” 배지). 새로 만드는 트랙은 모두 추천 사운드로 들어와요.",
+  "Avant de commencer : tes pads ont déjà des sons pour la techno, avec leurs effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Si la carte du kit Techno s'affiche, « Plus tard » suffit : le tuto marche avec ces sons. Tu n'as rien à régler.": "시작하기 전에: 패드에는 이미 테크노용 사운드와 이펙트가 들어 있어요. 패드의 “FX”는 이펙트가 이미 걸려 있다는 뜻이에요. Techno 킷 카드가 나오면 “나중에”로 충분해요. 튜토리얼은 이 사운드로 진행돼요. 설정할 건 없어요.",
+  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick accordé sur Fa, rumble), leurs volumes et leurs effets (badge « FX »). La carte du kit Techno télécharge les vrais sons de batterie du style ; « Plus tard » garde ceux-ci. Chaque piste que tu créeras arrivera avec son son conseillé.": "준비 완료: “곡을 만들어 주세요”의 테크노 사운드(F로 튜닝한 킥, 럼블), 볼륨과 이펙트(“FX” 배지). Techno 킷 카드는 이 스타일의 진짜 드럼 사운드를 내려받아요. “나중에”를 누르면 지금 사운드를 그대로 써요. 새로 만드는 트랙마다 추천 사운드가 들어 있어요.",
   "Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps.": "테크노 킥만 들어 보세요: 매 박에 마르고 낮은 한 방.",
   "À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle.": "직접 해 보세요: “킥” 패드(킥을 연주하는 버튼)에서 점선 칸을 탭하세요. 박마다 하나씩이에요. 칸 하나하나가 루프의 한 순간이에요.",
   "À toi : sur le pad « Kick », touche les cases en pointillé : le four-on-the-floor, un kick par temps.": "직접 해 보세요: “킥” 패드에서 점선 칸을 탭하세요. 포 온 더 플로어, 박마다 킥 하나.",
@@ -602,7 +602,7 @@
   "Le DJ a 16 mesures pour caler ton morceau sur le précédent.": "DJ는 16마디 동안 내 곡을 앞 곡에 맞춰요.",
   "Écoute l'Intro 2 : la basse et le stab arrivent.": "인트로 2를 들어 보세요: 베이스와 스탭이 들어와요.",
   "Une brique de plus toutes les 8 ou 16 mesures : l'énergie monte sans qu'on s'en rende compte.": "8마디나 16마디마다 블록이 하나씩 늘어요. 모르는 사이에 에너지가 올라가요.",
-  "Écoute le Drop : la ride et le riff arrivent, tout joue.": "드롭을 들어 보세요: 라이드와 리프가 들어오고, 전부 연주해요.",
+  "Écoute le Drop : la cymbale et le riff arrivent, tout joue.": "드롭을 들어 보세요: 심벌과 리프가 들어오고, 전부 울려요.",
   "C'est le cœur du morceau : 32 mesures où le riff tourne.": "곡의 심장이에요: 리프가 도는 32마디.",
   "Écoute le Break (la pause) : plus de kick ni de basse ; le stab reste avec les charleys et le « Rim ».": "브레이크(쉬는 부분)를 들어 보세요: 킥도 베이스도 없고, 스탭이 하이햇과 “림”과 함께 남아요.",
   "Le kick manque, le clap s'emballe : tout le monde attend son retour.": "킥이 빠지고 클랩이 폭주해요. 모두가 킥이 돌아오길 기다려요.",
@@ -698,5 +698,7 @@
   "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (chacune arrive avec 8 mesures, l'étape suivante règle les durées).": "직접 해 보세요: “구성”에서 인트로, 인트로 2, 드롭, 브레이크, 빌드업, 드롭 2, 엔딩을 순서대로 추가하세요(모두 8마디로 들어오고, 길이는 다음 단계에서 정해요).",
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "직접 해 보세요: 믹스는 트랙마다 볼륨을 맞추는 거예요. “믹스” 탭에서 “코드” 트랙의 슬라이더를 조금 내리고, “멜로디” 트랙의 슬라이더도 내리세요. 슬라이더 아래 “보통”이 “−2”, “−4”…로 바뀌어요. 낮을수록 작아요. 옆의 눈금(+4, 0, −12, −∞)도 같은 뜻이에요: 0은 보통 볼륨, −∞는 무음이에요.",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "직접 해 보세요: “공유”를 탭하세요. 앱이 곡을 보낼 수 있는 사운드 파일로 만들어요. “M4A”는 친구용 가벼운 파일, “WAV”는 스튜디오 품질 그대로예요. 그다음 “레벨”은 곡이 크게 들리는지 작게 들리는지, “찌그러짐 없음”은 지글거리지 않는다는 뜻이에요.",
-  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "직접 해 보세요: “클랩” 패드를 탭한 다음, 그리드 아래 “패드 이펙트”에서 “리버브 센드”를 올리세요."
+  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "직접 해 보세요: “클랩” 패드를 탭한 다음, 그리드 아래 “패드 이펙트”에서 “리버브 센드”를 올리세요.",
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "직접 해 보세요: 이 파트의 이름을 “그루브”로 지으세요. 완성된 루프로, 여기서 다른 파트들을 만들어요.",
+  "À toi : touche « Partager », exporte ton morceau et partage-le.": "직접 해 보세요: “공유”를 탭해서 곡을 내보내고 공유하세요."
 }

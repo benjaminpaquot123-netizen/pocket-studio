@@ -547,8 +547,8 @@
   "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.": "テクノのスウィングは軽め：マシンが硬く聞こえない程度に。",
   "Le kick et le grondement": "キックとうなり",
   "Le kick (la grosse caisse), c'est le moteur : en techno, il tape chaque temps, du début à la fin. On compte 1, 2, 3, 4 : ces 4 temps font une mesure.": "キック（バスドラム）はエンジン：テクノでは最初から最後まで毎拍を叩く。1、2、3、4 と数える：この4拍で1小節。",
-  "Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler.": "始める前に：キットはもうテクノ用（909 のドラムマシン）で、エフェクトも入っている。パッドの「FX」は、エフェクトがもうかかっているという意味。設定することは何もないよ。",
-  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick 909 accordé sur Fa, rumble, charleys 909), leurs volumes et leurs effets (badge « FX »). Chaque piste que tu créeras arrivera avec son son conseillé.": "準備OK：「曲を作って」のテクノの音（F にチューニングした 909 キック、ランブル、909 ハイハット）、音量とエフェクト（「FX」バッジ）。これから作るトラックにも、おすすめの音が入っているよ。",
+  "Avant de commencer : tes pads ont déjà des sons pour la techno, avec leurs effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Si la carte du kit Techno s'affiche, « Plus tard » suffit : le tuto marche avec ces sons. Tu n'as rien à régler.": "始める前に：パッドにはもうテクノ用の音とエフェクトが入っている。パッドの「FX」は、エフェクトがもうかかっているという意味。テクノのキットのカードが出たら「あとで」で大丈夫：チュートリアルはこの音で進む。設定することは何もないよ。",
+  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick accordé sur Fa, rumble), leurs volumes et leurs effets (badge « FX »). La carte du kit Techno télécharge les vrais sons de batterie du style ; « Plus tard » garde ceux-ci. Chaque piste que tu créeras arrivera avec son son conseillé.": "準備OK：「曲を作って」のテクノの音（F にチューニングしたキック、ランブル）、音量とエフェクト（「FX」バッジ）。テクノのキットのカードはこのスタイル本来のドラムの音をダウンロードする。「あとで」なら今の音のまま。これから作るトラックにも、おすすめの音が入っているよ。",
   "Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps.": "テクノのキックだけを聴こう：毎拍に乾いた低い一撃。",
   "À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle.": "あなたの番：「キック」パッド（キックを鳴らすボタン）で、点線のマスをタップしよう：1拍に1つずつ。1マスがループの中の1つの瞬間。",
   "À toi : sur le pad « Kick », touche les cases en pointillé : le four-on-the-floor, un kick par temps.": "あなたの番：「キック」パッドで、点線のマスをタップしよう：4つ打ち、1拍に1キック。",
@@ -602,7 +602,7 @@
   "Le DJ a 16 mesures pour caler ton morceau sur le précédent.": "DJ は16小節で、前の曲にあなたの曲を合わせる。",
   "Écoute l'Intro 2 : la basse et le stab arrivent.": "イントロ 2 を聴こう：ベースとスタブが入る。",
   "Une brique de plus toutes les 8 ou 16 mesures : l'énergie monte sans qu'on s'en rende compte.": "8小節か16小節ごとにブロックを1つ足す：気づかないうちにエネルギーが上がる。",
-  "Écoute le Drop : la ride et le riff arrivent, tout joue.": "ドロップを聴こう：ライドとリフが入り、全部鳴る。",
+  "Écoute le Drop : la cymbale et le riff arrivent, tout joue.": "ドロップを聴こう：シンバルとリフが入り、全部鳴る。",
   "C'est le cœur du morceau : 32 mesures où le riff tourne.": "曲の心臓：リフが回る32小節。",
   "Écoute le Break (la pause) : plus de kick ni de basse ; le stab reste avec les charleys et le « Rim ».": "ブレイク（休み）を聴こう：キックもベースもなく、スタブがハイハットと「リム」といっしょに残る。",
   "Le kick manque, le clap s'emballe : tout le monde attend son retour.": "キックがなく、クラップが暴走する：みんながキックの戻りを待っている。",
@@ -698,5 +698,7 @@
   "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (chacune arrive avec 8 mesures, l'étape suivante règle les durées).": "あなたの番：「構成」で、イントロ、イントロ 2、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングの順に追加しよう（どれも8小節で入り、長さは次のステップで決める）。",
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "あなたの番：ミックスとは各トラックの音量を調整すること。「ミックス」タブで、「コード」トラックのスライダーを少し下げ、次に「メロディ」トラックのスライダーも下げよう。スライダーの下の「ふつう」が「−2」「−4」…に変わる：低いほど小さい。横の目盛り（+4、0、−12、−∞）も同じ意味：0 がふつうの音量、−∞ は無音。",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "あなたの番：「シェア」をタップ：アプリが曲を送れる音声ファイルにする。「M4A」は友だち向けの軽いファイル、「WAV」はスタジオ品質のまま。そのあと「レベル」は曲の音が大きいか小さいかを、「音割れはありません」はバリバリ鳴らないことを教えてくれる。",
-  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "あなたの番：「クラップ」パッドをタップして、グリッドの下の「パッドのエフェクト」で「リバーブ・センド」を上げよう。"
+  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "あなたの番：「クラップ」パッドをタップして、グリッドの下の「パッドのエフェクト」で「リバーブ・センド」を上げよう。",
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "あなたの番：このパートに「グルーヴ」と名前を付けよう。完成したループで、ここからほかのパートを作る。",
+  "À toi : touche « Partager », exporte ton morceau et partage-le.": "あなたの番：「シェア」をタップして、曲を書き出してシェアしよう。"
 }

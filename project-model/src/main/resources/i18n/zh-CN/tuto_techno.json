@@ -547,8 +547,8 @@
   "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.": "在 techno 里，Swing 很轻：刚好让机器听起来不僵硬。",
   "Le kick et le grondement": "底鼓和轰鸣",
   "Le kick (la grosse caisse), c'est le moteur : en techno, il tape chaque temps, du début à la fin. On compte 1, 2, 3, 4 : ces 4 temps font une mesure.": "底鼓（大鼓）是发动机：在 techno 里，它从头到尾每拍都打。数 1、2、3、4：这 4 拍就是一个小节。",
-  "Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler.": "开始之前：你的鼓组已经是 techno 的（一台 909 鼓机），带着它的效果。打击垫上的“FX”表示已经加了效果。你什么都不用调。",
-  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick 909 accordé sur Fa, rumble, charleys 909), leurs volumes et leurs effets (badge « FX »). Chaque piste que tu créeras arrivera avec son son conseillé.": "已经准备好：“帮我做一首”的 techno 音色（调到 F 的 909 底鼓、Rumble、909 踩镲）、它们的音量和效果（“FX”标记）。你创建的每条音轨都会自带推荐的音色。",
+  "Avant de commencer : tes pads ont déjà des sons pour la techno, avec leurs effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Si la carte du kit Techno s'affiche, « Plus tard » suffit : le tuto marche avec ces sons. Tu n'as rien à régler.": "开始之前：你的打击垫已经有适合 techno 的声音和效果了。打击垫上的“FX”表示上面已经加了效果。如果出现 Techno 鼓组的卡片，点“稍后”就行：教程用这些声音也能进行。你什么都不用调。",
+  "Déjà prêt : les sons de la techno de « Fais-moi un morceau » (kick accordé sur Fa, rumble), leurs volumes et leurs effets (badge « FX »). La carte du kit Techno télécharge les vrais sons de batterie du style ; « Plus tard » garde ceux-ci. Chaque piste que tu créeras arrivera avec son son conseillé.": "已经准备好：“帮我做一首”里的 techno 声音（调到 F 的底鼓、rumble），它们的音量和效果（“FX”标记）。Techno 鼓组的卡片会下载这个风格真正的鼓声；点“稍后”就保留现在这些。你新建的每条音轨都会带上推荐的音色。",
   "Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps.": "单独听 techno 的底鼓：每拍一下干脆低沉的打击。",
   "À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle.": "轮到你：在“底鼓”打击垫上（演奏底鼓的按钮），点虚线格子：每拍一个。每一格都是循环里的一个时刻。",
   "À toi : sur le pad « Kick », touche les cases en pointillé : le four-on-the-floor, un kick par temps.": "轮到你：在“底鼓”打击垫上，点虚线格子：four-on-the-floor，每拍一个底鼓。",
@@ -602,7 +602,7 @@
   "Le DJ a 16 mesures pour caler ton morceau sur le précédent.": "DJ 有 16 小节来把你的曲子对齐上一首。",
   "Écoute l'Intro 2 : la basse et le stab arrivent.": "听前奏 2：贝斯和 Stab 进来。",
   "Une brique de plus toutes les 8 ou 16 mesures : l'énergie monte sans qu'on s'en rende compte.": "每 8 或 16 小节多一块积木：能量不知不觉地上升。",
-  "Écoute le Drop : la ride et le riff arrivent, tout joue.": "听高潮：Ride 和 Riff 进来，全部播放。",
+  "Écoute le Drop : la cymbale et le riff arrivent, tout joue.": "听高潮：镲片和 riff 进来，所有声音一起响。",
   "C'est le cœur du morceau : 32 mesures où le riff tourne.": "这是曲子的心脏：Riff 打转的 32 小节。",
   "Écoute le Break (la pause) : plus de kick ni de basse ; le stab reste avec les charleys et le « Rim ».": "听间奏（休息段）：底鼓和贝斯都没了；stab 和踩镲、“鼓边”一起留下。",
   "Le kick manque, le clap s'emballe : tout le monde attend son retour.": "底鼓缺席，拍手越来越急：所有人都在等它回来。",
@@ -698,5 +698,7 @@
   "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (chacune arrive avec 8 mesures, l'étape suivante règle les durées).": "轮到你：在“结构”里按顺序添加 前奏、前奏 2、高潮、间奏、渐强段、高潮 2 和 结束（每段加进来都是 8 小节，下一步再设时长）。",
   "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort. Les repères à côté (+4, 0, −12, −∞) disent la même chose : 0 est le volume normal, −∞ le silence.": "轮到你：混音就是调每条音轨的音量。在“混音”标签页里，把“和弦”音轨的推子稍微拉低一点，再把“旋律”音轨的推子拉低。滑块下面的“正常”会变成“−2”“−4”…：越低越小声。旁边的刻度（+4、0、−12、−∞）也是一个意思：0 是正常音量，−∞ 是静音。",
   "À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux, et « Pas de saturation » veut dire qu'il ne grésille pas.": "轮到你：点“分享”：应用会把你的曲子做成一个能发出去的音频文件。“M4A”是给朋友的轻便文件，“WAV”保留录音室音质。之后，“电平”告诉你曲子听起来响还是轻，“没有削波”的意思是声音不会噼啪作响。",
-  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "轮到你：点“拍手”打击垫，然后在它的网格下面点“打击垫效果”：把“混响发送”调高。"
+  "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».": "轮到你：点“拍手”打击垫，然后在它的网格下面点“打击垫效果”：把“混响发送”调高。",
+  "À toi : nomme cette partie « Groove » : la boucle complète, d'où tu tireras les autres parties.": "轮到你：把这个段落命名为“律动”：完整的循环，其他段落都从它而来。",
+  "À toi : touche « Partager », exporte ton morceau et partage-le.": "轮到你：点“分享”，导出你的曲子并分享出去。"
 }

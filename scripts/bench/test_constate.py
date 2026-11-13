@@ -85,6 +85,7 @@ defauts-avant:
   - A6 | pas atteint | ecran: 30 | le budget s'est fini avant
   - A7 | corrigé | ecran: 21 | la phrase touchée, « 1 trozo elegido »
   - A9 | corrigé ? non, toujours sous le pouce (écran 5)
+  - A11 : corrigé : non, encore sous le pouce (écran 6)
 hesitations:
   - ecran: 6 | cherchais: A9 | regarde: corrigé, écran 3
 incidents-banc:
@@ -126,6 +127,7 @@ class Registry(unittest.TestCase):
             row("tour-6", "T4", "H/a", "98", "rejoué", f, "rejeu-t4", "", "", "", "tour-6/lotH/a", ""),
             row("tour-6", "A5", "B/a", "44", "Tente", f, "-", "", "", "", "tour-6/lotB/a", ""),
             row("tour-6", "A9", "B/a", "5", "tenté", f, "-", "", "", "", "tour-6/lotB/a", ""),
+            row("tour-6", "A11", "B/a", "6", "tenté", f, "-", "", "", "", "tour-6/lotB/a", ""),
         ]) + "\n")
         self.seat = os.path.join(self.tmp, "docs", "audits", "ultra", "sieges", "tour-6", "controle", "Ba-3")
         write(os.path.join(self.seat, "rapport.md"), CONTROL_REPORT.replace("{played}", self.played[:8]))
@@ -211,7 +213,7 @@ class Registry(unittest.TestCase):
         before = read(self.reg)
         for item, word in (("A3", "autre"), ("A4", "encore là"), ("A6", "pas atteint"), ("A1", "screen"),
                            ("A10", "no line"), ("A8", "pas pris"), ("A5", "no line"),
-                           ("A9", "no line")):
+                           ("A9", "no line"), ("A11", "no line")):
             code, out = self.constate(item)
             self.assertEqual(code, 1, f"{item}: {out}")
             self.assertIn(word, out, item)
@@ -352,7 +354,9 @@ class ToyRegister(unittest.TestCase):
         return self.commit("the lot writes the register")
 
     def rule(self, *more, cwd=None):
-        return script("reparations.py", "--lot", BRANCH, f"base:{self.base}",
+        # (The base the portal passes: the merge base of the integration and the branch.)
+        base = git(self.repo, "merge-base", "int", BRANCH).stdout.strip()
+        return script("reparations.py", "--lot", BRANCH, f"base:{base}",
                       f"tete:{git(self.repo, 'rev-parse', 'int').stdout.strip()}", *more, cwd=cwd or self.repo)
 
     def refused(self, *words):
@@ -486,6 +490,36 @@ class LotGivesItselfAState(ToyRegister):
                 self.refused(word)
                 git(self.repo, "reset", "-q", "--hard", "HEAD^")
 
+    def test_a_lot_that_did_not_merge_the_integration_does_not_lower_either(self):
+        # The integration turned A2 « rejoué » after the branch left: the branch's « tenté » would win nothing, but it
+        # is refused all the same (read at the head).
+        git(self.repo, "checkout", "-q", "int")
+        lines = list(self.lines)
+        lines[2] = row("tour-6", "A2", "B/a", "15", "rejoué", "7777777", "r7", "rejoué au portail", "", PHRASE, "tour-6/lotB/a", "")
+        self.put(lines)
+        self.commit("the portal")
+        git(self.repo, "checkout", "-q", BRANCH)
+        self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "8888888", "r9", "", "", PHRASE, "tour-6/lotB/a", "")))
+        self.refused("lowers", "rejoué")
+
+    def test_a_line_rejoué_at_the_base_is_not_turned_back_to_tenté(self):
+        # The line « rejoué » at the base, gone from the head: still not the lot's to turn back.
+        git(self.repo, "checkout", "-q", "int")
+        lines = list(self.lines)
+        lines[2] = row("tour-6", "A2", "B/a", "15", "rejoué", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "")
+        self.put(lines)
+        self.commit("rejoué")
+        git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+        git(self.repo, "checkout", "-q", "int")
+        self.put(lines[:2] + lines[3:])
+        self.commit("the line moved out by the chief")
+        git(self.repo, "checkout", "-q", BRANCH)
+        mine = list(lines)
+        mine[2] = row("tour-6", "A2", "B/a", "15", "tenté", "8888888", "r9", "", "", PHRASE, "tour-6/lotB/a", "")
+        self.put(mine)
+        self.commit("back to tenté")
+        self.refused("« tenté » from « rejoué »")
+
     def test_a_lot_changes_no_other_cell(self):
         for i, text in ((3, row("tour-6", "A3", "B/a", "8", "pas pris", "-", "-", "une note", "", "", "tour-6/lotB/a", "")),
                         (3, row("tour-6", "A3", "B/b", "8", "tenté", "7777777", "-", "", "", "", "tour-6/lotB/a", "")),
@@ -497,7 +531,7 @@ class LotGivesItselfAState(ToyRegister):
                 self.assertEqual(code, 1, out)
 
     def test_another_line_separator_or_control_character_is_refused(self):
-        for sep in (" ", " ", "\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", "\r"):
+        for sep in ("\u2028", "\u2029", "\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", "\r"):
             with self.subTest(sep=repr(sep)):
                 git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
                 self.lot((2, row("tour-6", "A2", "B/a", "15", "tenté", "7777777", "r7", "", "", PHRASE, "tour-6/lotB/a", "")
@@ -976,8 +1010,8 @@ class DashboardLine(unittest.TestCase):
 
     def test_every_reader_refuses_another_line_separator(self):
         # Review of « constate », M2: one reader for every program; a « tenté » line hiding « constaté » behind U+2028.
-        text = read(self.reg).replace("\ttenté\t1\t-\t\t\n", "\ttenté\t1\t-\t\t tour-6\tA3\tB/a\t8\tconstaté\t1\t-\t\t\n", 1)
-        self.assertIn(" ", text)
+        text = read(self.reg).replace("\ttenté\t1\t-\t\t\n", "\ttenté\t1\t-\t\t\u2028tour-6\tA3\tB/a\t8\tconstaté\t1\t-\t\t\n", 1)
+        self.assertIn("\u2028", text)
         write(self.reg, text)
         code, out = script("tableau-de-bord.py", os.path.join(self.tmp, "tour-6"), "--base", os.path.join(self.tmp, "base.tsv"),
                            "--verdicts", os.path.join(self.tmp, "v.tsv"), "--caches", os.path.join(self.tmp, "c.tsv"),

@@ -284,7 +284,10 @@ def main(argv):
     verdicts = opt("--verdicts", os.path.join(docs, "verdicts.tsv"))
     total = int(opt("--promesses-total", "120"))
     caches = opt("--caches", os.path.join(docs, "defauts-caches.tsv"))
-    repairs = registre.load(read(opt("--corrections", os.path.join(docs, "corrections.tsv"))))[1]
+    try:
+        repairs = registre.load(read(opt("--corrections", os.path.join(docs, "corrections.tsv"))))[1]
+    except registre.RegisterError as e:
+        repairs = str(e)
     flags = {"--out", "--base", "--verdicts", "--promesses-total", "--caches", "--corrections"}
     tours = [a for i, a in enumerate(argv) if not a.startswith("--") and (i == 0 or argv[i - 1] not in flags)]
     # External audit: each round once, in round order (« tour-5 tour-1 » made tour-1 the last one; a round given twice
@@ -300,7 +303,8 @@ def main(argv):
         met.append(all(r[4] == "oui" for r in rows))
         lines += [f"## {name}", "", "| | Condition | Mesure | Seuil | Remplie |", "|---|---|---|---|---|"]
         lines += [f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} |" for r in rows]
-        lines += ["", registre.line(repairs, name)]
+        lines += ["", registre.line(repairs, name) if isinstance(repairs, list)
+                  else f"Réparations (registre corrections.tsv) : illisible ({repairs[:160]})"]
         lines += ["", f"Toutes remplies : {'oui' if met[-1] else 'non'}", ""]
     lines += ["## Courbe de convergence", "",
               "`echelle` : v1 = le mot du testeur (bloquant, grave…), v2 = la conséquence (mission-impossible, contourne-en-N-gestes) ; "

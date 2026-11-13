@@ -30,7 +30,13 @@ def main(argv):
     corrections = opt("--corrections", os.path.join(DOCS, "corrections.tsv"))
     base = opt("--base", os.path.join(DOCS, "base.tsv"))
     sieges = opt("--sieges", os.path.join(DOCS, "sieges"))
-    rows = fuse_mod.load_tsv(corrections)
+    # (Review of « constate », M2: the register's one reader, which cuts lines on « \n » only and refuses another line
+    # separator; fuse-reports.py's load_tsv cut on U+2028 too.)
+    try:
+        rows = registre.load(registre.read(corrections) or "")[1]
+    except registre.RegisterError as e:
+        print(f"{corrections}: {e}")
+        return 2
     # (Lot « constate »: a state read as written, any case or accent; « tenté » and « pas pris » are no repair yet.)
     for r in rows:
         r["etat"] = registre.state(r.get("etat", ""))

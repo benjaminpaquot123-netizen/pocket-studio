@@ -8,63 +8,89 @@ One line per tester's citation of a defect (round, item, seat « X/s », screen)
                       proof (language, device, font, mode, options; rule 2);
   constat             for « constaté »: the control seat's folder and the screen of its « corrigé » line (« …#21 »).
 The lines of rounds 1 to 5 keep their text (9 cells, states « corrigé », « banc », « voulu »): a missing cell is empty.
+A line is known by its round, item, seat, screen and card (« cible »): KEY.
+
+One reader for every program (load(), review of « constate », M2): lines are cut on « \\n » only, and a register that
+holds any other line separator or control character (U+2028, U+2029, \\v, \\f, \\x1c-\\x1e, \\x85, \\r, the C0 controls
+but the tab) is unreadable (RegisterError), never read another way by another program.
 
 The four states of a repair (rule 5), and who gives each:
-  pas pris   the sorter                  the defect is in no lot
-  tenté      the team                    a commit, without the proof in the conditions of origin
+  pas pris   the sorter                  the defect is in no lot (the sorter writes each retained defect's line)
+  tenté      the team                    its own line, from « pas pris » (or « tenté »): a commit, its proof
   rejoué     the portal                  the proof of rule 2 held on the merged head (scripts/bench/fusion-equipes.sh)
   constaté   the chief, from a seat      the « corrigé » line of a control seat, with its screen number
 Only « constaté » is said « corrigé » to Benjamin.
 
   reparations.py --constate <tour-N> <item> <control seat folder> [--registre <corrections.tsv>] [--racine <repo>]
 
-The chief's command: reads the section « defauts-avant: » of <folder>/rapport.md (one line per defect aimed at:
-« - <id> | corrigé | ecran: <n> | … », and the forms of round 6, « - A7 | corrigé (écran 21 : …) », « - T4 | corrigé
-(écran 98) : … »); the defect's line must say « corrigé » and name its screen. Then every line of that round and item in
-« tenté » or « rejoué » becomes « constaté », its « constat » the folder (from the repository's root) and the screen.
-Refused (exit 1, nothing written): « autre », « encore là », « pas atteint », no screen, no line, a defect « pas pris ».
+The chief's command. The folder is a control seat of the same round, under <repo>/docs/audits/ultra/sieges/<tour-N>/
+controle/. Its rapport.md says on top « code testé : <sha> », a commit of <repo> that holds the repair: the commit each
+line names (its « commit » cell) is that commit or one of its ancestors. Its section « defauts-avant: » has the
+defect's line (« - <id> | corrigé | ecran: <n> | … », and the forms of round 6, « - A7 | corrigé (écran 21 : …) »,
+« - <id> | corrigé (écran 98) : … »), saying « corrigé » and its screen (« corrigé ? non … » is no « corrigé »). Then
+every line of that round and item in « tenté » or « rejoué » becomes « constaté », its « constat » the folder (from the
+repository's root) and the screen. Refused (exit 1, nothing written): « autre », « encore là », « pas atteint », no
+screen, no line, a defect « pas pris », a folder elsewhere, a seat that played a code without the repair.
 
   reparations.py --lot <branch> base:<commit the branch left> tete:<the integration's head>
 
-The portal's rule (scripts/bench/fusion-equipes.sh, from batch 5; pre-vol.sh says it before): the lot's own lines of
-the register are those of the branch that are neither at the base nor at the integration's head (a line the chief wrote
-on the integration and the lot merged in is not the lot's; nothing is read in the branch alone but the lines it brings).
-Each of them says « tenté » or « pas pris » (any case, accents or not); never « corrigé » (given by nobody from round 6
-on, and a new line of an older round is new all the same), « rejoué » (the portal's), « constaté » (the chief's), nor a
-word the register does not know. Its acceptance sentence and its seat of origin are the sorter's: the same as a line of
-that round and item at the base or the head, or empty when none has one. Its « constat » cell is empty (the chief's).
-The header is not the lot's to change. Prints one line per refusal, exit 1; nothing when all is well.
-Not seen: a line the lot takes out (a « constaté » removed); whether the commit and the proof it names are the repair's.
+The portal's rule (scripts/bench/fusion-equipes.sh, from batch 5; pre-vol.sh says it before), the branch against the
+base and the integration's head, line by line (KEY), never in the branch alone:
+- every line of the branch is read with the register's own columns (COLUMNS), never its branch's header; a line with
+  more cells than its branch's header (a branch cut before the columns) or than COLUMNS is refused;
+- a line the branch brings (in neither the base nor the head) must be a line of the base or the head (same KEY) that the
+  lot turns from « pas pris » or « tenté » to « tenté », changing only « etat », « commit », « test » and « note »: the
+  lot adds no line (not even « pas pris », the sorter's), writes no « corrigé », « rejoué », « constaté » or unknown
+  word, changes no other cell (the sorter's sentence and seat of origin, the chief's « constat »), lowers nothing (a
+  line « rejoué » or « constaté » at the head stays so);
+- a line of the base the branch no longer has, while the head still has it, is removed by the lot: refused;
+- the header is not the lot's (the register's own COLUMNS excepted: the lot « constate » brought it);
+- a register that is unreadable (see the reader) in the branch is refused.
+Prints one line per refusal, exit 1; nothing when all is well.
 
   reparations.py --rejoue <branch> base:<commit> tete:<the head before the merge> rejeux:<file> fusion:<merged commit>
                  [filtre:<Gradle filter the portal ran green> …] [--registre <corrections.tsv>]
 
 The portal's own writing, after a green merge: each line the lot brought (as above) that says « tenté » becomes
 « rejoué » in the working file when its proof, the « test » cell, held on the merged head: a replay id whose last line in
-<file> (rejeu-defauts.sh's « <id> : oracle tenu ») is « oracle tenu », or « Classe#méthode » of a test the portal ran
-green (« Classe.méthode » or the whole « Classe » among its filters). Its note gets « rejoué au portail <sha> : <proof> ».
-Every other line is kept byte for byte. Not seen: that the proof was played in the conditions of the seat of origin
-(start.txt), nor that it was red before the repair (rule 2): the lot's report and its fresh review say so.
+<file> (rejeu-defauts.sh's « <id> : oracle tenu ») is « oracle tenu »; or « Classe#méthode », a @Test (no @Ignore) of
+app/src/test at the merged commit (read as rapport-zone.py reads a path's test), and one of the filters the portal ran
+green covers it: « Classe », « pkg.Classe », « *Classe », « Classe.méthode », « pkg.Classe.méthode » (a wildcard
+elsewhere proves nothing). Its note gets « rejoué au portail <sha> : <proof> ». Every other line is kept byte for byte.
+Not seen: that the proof was played in the conditions of the seat of origin (start.txt), nor that it was red before the
+repair (rule 2): the lot's report and its fresh review say so.
 Standard library only.
 """
+import importlib.util
 import os
 import re
 import subprocess
 import sys
 import unicodedata
 
+sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 REGISTER = "docs/audits/ultra/corrections.tsv"
 COLUMNS = ["tour", "item", "siege", "ecran", "etat", "commit", "test", "note", "cible",
            "phrase_acceptation", "siege_origine", "constat"]
+KEY = ("tour", "item", "siege", "ecran", "cible")
 STATES = ("pas pris", "tenté", "rejoué", "constaté")
 GIVEN_BY = {"pas pris": "le trieur", "tenté": "l'équipe", "rejoué": "le portail",
             "constaté": "le chef, d'après un siège de contrôle"}
 # Rounds 1 to 5: « corrigé » (a lot's own word, before the rule), « banc », « voulu ».
 OLD_STATES = ("corrigé", "banc", "voulu")
 OLD_REPAIR = ("corrigé",)
+# Review of « constate », M4: a lot moves its own line from « pas pris » (or « tenté ») to « tenté », nothing else.
+LOT_STATES = ("tenté",)
+LOT_CELLS = ("etat", "commit", "test", "note")
+# Review of « constate », M2: every character that some reader (str.splitlines) takes for an end of line, and the
+# other control characters but the tab and the newline.
+FORBIDDEN = re.compile("[\u2028\u2029\x85\x00-\x08\x0b-\x1f\x7f]")
 
+
+class RegisterError(ValueError):
+    pass
 
 
 def plain(text):
@@ -87,23 +113,43 @@ def round_no(tour):
     return int(m.group(1)) if m else -1
 
 
-def load(text):
-    """(header, [rows as {column: cell}]); « # » lines are comments; a short line's missing cells are empty."""
-    header, rows = None, []
-    for line in (text or "").split("\n"):
+def unreadable(text):
+    """The characters that make the register unreadable: « line N: U+XXXX », or []."""
+    out = []
+    for n, line in enumerate((text or "").split("\n"), 1):
+        for m in FORBIDDEN.finditer(line):
+            out.append(f"line {n}: U+{ord(m.group()):04X}")
+    return out
+
+
+def indexed_rows(text, strict=True):
+    """(header, [(index of the line in the file, row)]): the one reader. « # » lines are comments; a short line's
+    missing cells are empty. strict: a forbidden character raises RegisterError."""
+    bad = unreadable(text)
+    if bad and strict:
+        raise RegisterError(f"unreadable register: a line separator or control character ({', '.join(bad[:3])}): "
+                            "the register's lines end with « \\n » only")
+    header, out = None, []
+    for i, line in enumerate((text or "").split("\n")):
         if not line.strip() or line.startswith("#"):
             continue
-        cells = line.rstrip("\r").split("\t")
+        cells = line.split("\t")
         if header is None:
             header = cells
             continue
-        rows.append(dict(zip(header, cells + [""] * (len(header) - len(cells)))))
-    return header or list(COLUMNS), rows
+        out.append((i, dict(zip(header, cells + [""] * (len(header) - len(cells))))))
+    return header or list(COLUMNS), out
+
+
+def load(text, strict=True):
+    """(header, [rows as {column: cell}]) (indexed_rows without the indexes)."""
+    header, rows = indexed_rows(text, strict)
+    return header, [r for _, r in rows]
 
 
 def read(path):
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8", newline="") as f:
             return f.read()
     except OSError:
         return None
@@ -111,7 +157,11 @@ def read(path):
 
 AVANT_HEAD = re.compile(r"^\s*d[ée]fauts[- ]avant\s*:", re.I)
 SECTION = re.compile(r"^[A-Za-z][\w.\-?]*\s*:")
-AVANT_LINE = re.compile(r"^\s*[-*]\s*`?([^\s|:`]+)`?\s*[|:]\s*(corrig[ée]e?|autre|encore\s+l[àa]|pas\s+atteint)(?![\w])(.*)$", re.I)
+# (Review of « constate », m1: the answer is followed by the end, « ( », « | » or « : », and no « non », « pas » or
+# « ? » after it: « corrigé ? non, toujours là » is no « corrigé ».)
+AVANT_LINE = re.compile(r"^\s*[-*]\s*`?([^\s|:`]+)`?\s*[|:]\s*(corrig[ée]e?|autre|encore\s+l[àa]|pas\s+atteint)"
+                        r"(?=\s*(?:$|[(|:]))(.*)$", re.I)
+DENIED = re.compile(r"^\s*[(|:]?\s*(?:non\b|pas\b|\?)", re.I)
 SCREEN = re.compile(r"\b[ée]crans?\s*:?\s*(\d+)", re.I)
 
 
@@ -127,7 +177,7 @@ def before_defects(text):
         if not inside:
             continue
         m = AVANT_LINE.match(raw)
-        if m:
+        if m and not DENIED.match(m.group(3)):
             word = plain(m.group(2))
             answer = ("corrigé" if word.startswith("corrig") else "autre" if word == "autre"
                       else "encore là" if word.startswith("encore") else "pas atteint")
@@ -138,38 +188,34 @@ def before_defects(text):
 
 def rewrite(path, changes):
     """Rewrites the lines of the register whose index (0 = the file's first line) is in changes {index: {column: value}};
-    every other line is kept byte for byte."""
-    with open(path, encoding="utf-8", newline="") as f:
-        lines = f.read().split("\n")
-    header = None
-    for i, line in enumerate(lines):
-        if not line.strip() or line.startswith("#"):
-            continue
-        if header is None:
-            header = line.rstrip("\r").split("\t")
-            continue
-        if i in changes:
-            cells = line.rstrip("\r").split("\t")
-            cells += [""] * (len(header) - len(cells))
-            for k, v in changes[i].items():
-                cells[header.index(k)] = v
-            lines[i] = "\t".join(cells) + ("\r" if line.endswith("\r") else "")
+    every other line is kept byte for byte (the register is read strictly first: no « \\r » to keep)."""
+    text = read(path)
+    header, _ = indexed_rows(text)
+    lines = text.split("\n")
+    for i, values in changes.items():
+        cells = lines[i].split("\t")
+        cells += [""] * (len(header) - len(cells))
+        for k, v in values.items():
+            cells[header.index(k)] = v
+        lines[i] = "\t".join(cells)
     with open(path, "w", encoding="utf-8", newline="") as f:
         f.write("\n".join(lines))
 
 
-def indexed_rows(text):
-    """[(index of the line in the file, row)]."""
-    header, out = None, []
-    for i, line in enumerate((text or "").split("\n")):
-        if not line.strip() or line.startswith("#"):
-            continue
-        cells = line.rstrip("\r").split("\t")
-        if header is None:
-            header = cells
-            continue
-        out.append((i, dict(zip(header, cells + [""] * (len(header) - len(cells))))))
-    return header or [], out
+def git_root(root, *args):
+    r = subprocess.run(["git", "-C", root, *args], capture_output=True, text=True)
+    return r.returncode, r.stdout.strip()
+
+
+def seat_head(text):
+    """« code testé » of a seat report's head: its lines before « siege: », the first eight at most."""
+    for line in (text or "").splitlines()[:8]:
+        if line.startswith("siege:"):
+            break
+        m = re.match(r"^code testé\s*:\s*(\S*)\s*$", line)
+        if m:
+            return m.group(1)
+    return None
 
 
 def constate(tour, item, seat, register, root):
@@ -177,8 +223,11 @@ def constate(tour, item, seat, register, root):
     text = read(register)
     if text is None:
         return 2, [f"no register {register}"]
-    header, rows = indexed_rows(text)
-    missing = [c for c in ("etat", "constat") if c not in header]
+    try:
+        header, rows = indexed_rows(text)
+    except RegisterError as e:
+        return 2, [f"{register}: {e}"]
+    missing = [c for c in ("etat", "constat", "commit") if c not in header]
     if missing:
         return 2, [f"{register}: no column {', '.join(missing)} (header: {' '.join(header)})"]
     # (The register first: a defect no lot took is never constaté, whatever a seat says of it.)
@@ -190,23 +239,44 @@ def constate(tour, item, seat, register, root):
         states = ", ".join(sorted({state(r.get("etat")) for _, r in mine}))
         return 1, [f"{item}: its line(s) say « {states} »: only a repair « tenté » or « rejoué » becomes « constaté » "
                    "(a defect « pas pris » was in no lot)"]
+    # Review of « constate », M5: a control seat of this round, under the repository's sieges/<tour>/controle/.
+    controls = os.path.realpath(os.path.join(root, "docs", "audits", "ultra", "sieges", tour, "controle"))
+    folder = os.path.realpath(seat)
+    if os.path.commonpath([folder, controls]) != controls or folder == controls:
+        return 1, [f"{item}: {seat} is not a control seat of {tour} (a folder under {os.path.relpath(controls, root)}/)"]
     report = os.path.join(seat, "rapport.md")
     said = read(report)
     if said is None:
         return 1, [f"{item}: no report {report} (the control seat's rapport.md, with its section « defauts-avant: »)"]
     answers = before_defects(said)
     if item not in answers:
-        return 1, [f"{item}: no line for this defect in the section « defauts-avant: » of {report} (no line: nothing to "
-                   "constate; the seat writes « - <id> | corrigé | ecran: <n> | … »)"]
+        return 1, [f"{item}: no line for this defect in the section « defauts-avant: » of {report} (no line, or no "
+                   "readable answer: nothing to constate; the seat writes « - <id> | corrigé | ecran: <n> | … »)"]
     answer, screen, rest = answers[item]
     if answer != "corrigé":
         return 1, [f"{item}: the control seat says « {answer} » ({rest[:80]}): not constaté (only « corrigé » is)"]
     if not screen:
         return 1, [f"{item}: the control seat says « corrigé » without its screen number: a « corrigé » is read again on "
                    "its screen (« - <id> | corrigé | ecran: <n> | … »)"]
+    # M5: the seat played a commit that holds the repair: each line's commit is that commit or one of its ancestors.
+    played = seat_head(said)
+    code, full = git_root(root, "rev-parse", "-q", "--verify", f"{played}^{{commit}}") if played else (1, "")
+    if not played or not re.fullmatch(r"[0-9a-f]{7,64}", played) or code != 0 or not full.startswith(played):
+        return 1, [f"{item}: no « code testé : <sha> » of a commit of this repository on top of {report} "
+                   f"(« {played or ''} »): the seat's code is not known"]
+    for _, r in takeable:
+        fix = (r.get("commit") or "").strip()
+        code, fixed = git_root(root, "rev-parse", "-q", "--verify", f"{fix}^{{commit}}") if re.fullmatch(r"[0-9a-f]{7,64}", fix) else (1, "")
+        if code != 0:
+            return 1, [f"{item}: the line {r.get('siege')}#{r.get('ecran')} names no commit of this repository (« {fix} »): "
+                       "the repair a seat saw is a commit"]
+        if subprocess.run(["git", "-C", root, "merge-base", "--is-ancestor", fixed, full]).returncode != 0:
+            return 1, [f"{item}: the seat played {full[:8]}, which does not hold the repair {fixed[:8]} of the line "
+                       f"{r.get('siege')}#{r.get('ecran')}: not constaté"]
     where = os.path.relpath(os.path.abspath(seat), os.path.abspath(root)).replace(os.sep, "/").rstrip("/")
     rewrite(register, {i: {"etat": "constaté", "constat": f"{where}#{screen}"} for i, _ in takeable})
-    return 0, [f"constaté : {tour} {item} ({r.get('siege')}#{r.get('ecran')}) ← {where}#{screen}" for _, r in takeable]
+    return 0, [f"constaté : {tour} {item} ({r.get('siege')}#{r.get('ecran')}) ← {where}#{screen}, code {full[:8]}"
+               for _, r in takeable]
 
 
 def counts(rows, tour):
@@ -243,58 +313,68 @@ def line(rows, tour):
     return text
 
 
-LOT_STATES = ("tenté", "pas pris")
-
-
 def show(rev, path):
-    r = subprocess.run(["git", "show", f"{rev}:{path}"], capture_output=True, text=True)
-    return r.stdout if r.returncode == 0 else None
+    # (Bytes, decoded here: text mode would turn a « \r » into a « \n » and hide it from the reader.)
+    r = subprocess.run(["git", "show", f"{rev}:{path}"], capture_output=True)
+    return r.stdout.decode("utf-8", "replace") if r.returncode == 0 else None
+
+
+def key(r):
+    return tuple((r.get(k) or "").strip() for k in KEY)
 
 
 def brought(branch, base, head):
-    """(the branch's header, [(line, row)] the lines of the register the branch has that neither the base nor the head
-    has, known: {(tour, item): [rows at the base or the head]}, header line known or not)."""
+    """The register of the branch against the base and the head. Returns a dict: header, lines [(line, row)] the
+    branch brings (in neither the base nor the head; read with COLUMNS), header_known, base / head {KEY: row},
+    branch_keys, unreadable (the branch's register's forbidden characters). None when the branch has no register."""
     text = show(branch, REGISTER)
     if text is None:
-        return None, [], {}, True
-    known_lines, known = set(), {}
-    for rev in (base, head):
+        return None
+    known_lines, sides = set(), {}
+    for name, rev in (("base", base), ("head", head)):
         other = show(rev, REGISTER)
+        sides[name] = {}
         if other is None:
             continue
-        known_lines |= {l.rstrip("\r") for l in other.split("\n")}
-        for r in load(other)[1]:
-            known.setdefault((r.get("tour"), r.get("item")), []).append(r)
-    header, out, header_known = None, [], True
+        known_lines |= set(other.split("\n"))
+        for r in load(other, strict=False)[1]:
+            sides[name][key(r)] = r
+    out = {"header": None, "lines": [], "header_known": True, "base": sides["base"], "head": sides["head"],
+           "branch_keys": set(), "unreadable": unreadable(text)}
     for line in text.split("\n"):
         if not line.strip() or line.startswith("#"):
             continue
-        line = line.rstrip("\r")
         cells = line.split("\t")
-        if header is None:
-            header = cells
+        if out["header"] is None:
+            out["header"] = cells
             # (The register's own header, COLUMNS, is no invention of a lot: the lot « constate » brought it.)
-            header_known = line in known_lines or not known_lines or cells == COLUMNS
+            out["header_known"] = line in known_lines or not known_lines or cells == COLUMNS
             continue
+        # Review of « constate », G1: a line is read with the register's own columns, never with its branch's header
+        # (a branch cut before the three columns has 9; the cells after them were invisible). Its cells beyond its
+        # branch's header, or beyond the register's columns, are a refusal (« long »).
+        row = dict(zip(COLUMNS, cells + [""] * (len(COLUMNS) - len(cells))))
+        out["branch_keys"].add(key(row))
         if line not in known_lines:
-            # Review of « constate », G1: a line is read with the register's own columns, never with its branch's header
-            # (a branch cut before the three columns has 9; the cells after them were invisible). Its cells beyond
-            # its branch's header, or beyond the register's columns, are a refusal (« long »).
-            row = dict(zip(COLUMNS, cells + [""] * (len(COLUMNS) - len(cells))))
-            row["_long"] = len(cells) if len(cells) > min(len(header), len(COLUMNS)) else 0
-            row["_header"] = len(header)
-            out.append((line, row))
-    return header, out, known, header_known
+            row["_long"] = len(cells) if len(cells) > min(len(out["header"]), len(COLUMNS)) else 0
+            row["_header"] = len(out["header"])
+            out["lines"].append((line, row))
+    return out
 
 
 def lot_refusals(branch, base, head):
-    header, lines, known, header_known = brought(branch, base, head)
-    if header is None:
+    seen = brought(branch, base, head)
+    if seen is None:
         return []
     out = []
-    if not header_known:
-        out.append(f"{REGISTER}: the lot changes the register's header (« {' '.join(header)} »): its columns are not the lot's")
-    for line, r in lines:
+    if seen["unreadable"]:
+        out.append(f"{REGISTER}: a line separator or control character ({', '.join(seen['unreadable'][:3])}): the register's "
+                   "lines end with « \\n » only (another reader would cut them elsewhere)")
+    if not seen["header_known"]:
+        out.append(f"{REGISTER}: the lot changes the register's header (« {' '.join(seen['header'])} »): its columns are not "
+                   "the lot's")
+    rank = {s: i for i, s in enumerate(STATES)}
+    for line, r in seen["lines"]:
         name = f"« {r.get('tour')} {r.get('item')} {r.get('siege')}#{r.get('ecran')} »"
         if r["_long"]:
             out.append(f"{REGISTER} line {name}: {r['_long']} cells, its branch's header has {r['_header']} and the register "
@@ -303,20 +383,38 @@ def lot_refusals(branch, base, head):
             continue
         said = state(r.get("etat"))
         if said not in LOT_STATES:
-            who = {"rejoué": "the portal's", "constaté": "the chief's, after a control seat", "corrigé": "given by nobody since round 6"}
-            out.append(f"{REGISTER} line {name} says « {said} »: a lot writes « tenté » (or « pas pris »), never "
+            who = {"rejoué": "the portal's", "constaté": "the chief's, after a control seat", "corrigé": "given by nobody since round 6",
+                   "pas pris": "the sorter's"}
+            out.append(f"{REGISTER} line {name} says « {said} »: a lot turns its own line to « tenté », never "
                        f"« {said} » ({who.get(said, 'a state the register does not know')}; « rejoué » is the portal's, "
-                       "« constaté » the chief's after a control seat)")
-        others = known.get((r.get("tour"), r.get("item")), [])
-        for column, what in (("phrase_acceptation", "acceptance sentence"), ("siege_origine", "seat of origin")):
-            mine = (r.get(column) or "").strip()
-            theirs = {(o.get(column) or "").strip() for o in others} - {""}
-            if (mine and mine not in theirs) or (theirs and not mine):
-                out.append(f"{REGISTER} line {name}: its {what} is not the sorter's (« {mine[:60]} »"
-                           + (f", the sorter wrote « {sorted(theirs)[0][:60]} »" if theirs else ", the sorter wrote none")
-                           + "): the sorter writes it, the lot repairs it as written")
-        if (r.get("constat") or "").strip():
-            out.append(f"{REGISTER} line {name}: its « constat » cell is the chief's (« {r['constat'][:60]} »)")
+                       "« constaté » the chief's after a control seat, « pas pris » the sorter's)")
+        priors = [p for p in (seen["head"].get(key(r)), seen["base"].get(key(r))) if p is not None]
+        if not priors:
+            out.append(f"{REGISTER} line {name}: the lot adds a line; the sorter writes the register's lines (« pas pris », "
+                       "with the acceptance sentence and the seat of origin), a lot only turns its own to « tenté »")
+            continue
+        at_head = seen["head"].get(key(r))
+        if at_head is not None and rank.get(state(at_head.get("etat")), -1) > rank["tenté"]:
+            out.append(f"{REGISTER} line {name}: the lot lowers « {state(at_head.get('etat'))} » (at the integration's head) "
+                       f"to « {said} »")
+            continue
+        if said in LOT_STATES and not any(state(p.get("etat")) in ("pas pris", "tenté") for p in priors):
+            out.append(f"{REGISTER} line {name}: « {said} » from « {state(priors[0].get('etat'))} »: a lot turns « pas pris » "
+                       "(or its own « tenté ») to « tenté », nothing else")
+        what = {"phrase_acceptation": "acceptance sentence (the sorter's)", "siege_origine": "seat of origin (the sorter's)",
+                "constat": "« constat » cell (the chief's)"}
+        changed = [c for c in COLUMNS if c not in LOT_CELLS
+                   and all((r.get(c) or "").strip() != (p.get(c) or "").strip() for p in priors)]
+        for c in changed:
+            out.append(f"{REGISTER} line {name}: the lot changes its {what.get(c, '« ' + c + ' »')} "
+                       f"(« {(priors[0].get(c) or '')[:50]} » → « {(r.get(c) or '')[:50]} »): a lot changes only "
+                       f"{', '.join(LOT_CELLS)}; the sorter writes the sentence and the seat of origin, the lot repairs "
+                       "it as written")
+    # A line of the base the branch no longer has, the head still having it: removed by the lot.
+    for k, r in seen["base"].items():
+        if k not in seen["branch_keys"] and k in seen["head"]:
+            out.append(f"{REGISTER} line « {r.get('tour')} {r.get('item')} {r.get('siege')}#{r.get('ecran')} »: the lot "
+                       "removes it (a line of the register is never taken out by a lot)")
     return out
 
 
@@ -329,30 +427,60 @@ def last_verdicts(text):
     return out
 
 
-def held(proof, verdicts, filters):
+def covers(f, cls, method):
+    """The Gradle filter f runs the test cls.method: « Classe », « pkg.Classe », « *Classe », or the same with
+    « .méthode »; any other wildcard proves nothing."""
+    f = f.strip()
+    if f.startswith("*"):
+        f = f[1:]
+        if f.startswith("."):
+            f = f[1:]
+    if not f:
+        return False
+    # (A wildcard left in f never equals a class or a method name below: it proves nothing.)
+    parts = f.split(".")
+    return parts[-1] == cls or (len(parts) >= 2 and parts[-2] == cls and parts[-1] == method)
+
+
+_zone = None
+
+
+def is_app_test(rev, cls, method):
+    """Classe#méthode is a @Test (no @Ignore) of app/src/test at rev, as rapport-zone.py reads a path's test."""
+    global _zone
+    if _zone is None:
+        spec = importlib.util.spec_from_file_location("rapport_zone", os.path.join(HERE, "rapport-zone.py"))
+        _zone = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_zone)
+    return _zone.is_app_test(rev, cls, method)
+
+
+def held(proof, verdicts, filters, rev):
     proof = (proof or "").strip().strip("`")
     if not proof or proof == "-":
         return False
     if verdicts.get(proof) == "oracle tenu":
         return True
-    m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)[#.]([A-Za-z_][A-Za-z0-9_]*)", proof)
-    return bool(m) and (f"{m.group(1)}.{m.group(2)}" in filters or m.group(1) in filters)
+    m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)#([A-Za-z_][A-Za-z0-9_]*)", proof)
+    return bool(m) and any(covers(f, m.group(1), m.group(2)) for f in filters) and is_app_test(rev, m.group(1), m.group(2))
 
 
 def rejoue(branch, base, head, rejeux, merged, filters, register):
     """(exit code, lines to print)."""
-    header, lines, _, _ = brought(branch, base, head)
+    seen = brought(branch, base, head)
     text = read(register)
-    if header is None or text is None:
+    if seen is None or text is None:
         return 0, []
+    try:
+        _, rows = indexed_rows(text)
+    except RegisterError as e:
+        return 2, [f"{register}: {e}"]
     verdicts = last_verdicts(read(rejeux) or "")
-    mine = {line: r for line, r in lines if state(r.get("etat")) == "tenté"}
+    mine = {line for line, r in seen["lines"] if state(r.get("etat")) == "tenté" and not r["_long"]}
     changes, said = {}, []
-    file_header, rows = indexed_rows(text)
     raw = text.split("\n")
     for i, r in rows:
-        line = raw[i].rstrip("\r")
-        if line not in mine or not held(r.get("test"), verdicts, filters):
+        if raw[i] not in mine or not held(r.get("test"), verdicts, filters, merged):
             continue
         proof = r.get("test").strip().strip("`")
         note = (r.get("note") or "").strip()

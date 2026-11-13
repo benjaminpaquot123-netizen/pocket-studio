@@ -1,4 +1,4 @@
 # Paquet de fusions en cours du portail (scripts/bench/fusion-equipes.sh), docs/AIDE-FUSIONS-TESTS.md « Règles gelées ».
 # Une règle ajoutée au portail pendant le paquet N porte « from_paquet N+1 » : elle ne vaut qu'au paquet suivant.
 # Seule la discussion principale change ce numéro, quand elle ouvre un paquet (après la CI du précédent).
-paquet: 3
+paquet: 4

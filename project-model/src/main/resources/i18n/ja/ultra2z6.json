@@ -1,5 +1,6 @@
 {
-  "Grosse caisse 1": "バスドラム 1",
+  "Grosses caisses": "バスドラム",
+  "Grosse caisse 1": "バスドラム",
   "Grosse caisse 2": "バスドラム 2",
   "Grosse caisse studio": "スタジオのバスドラム",
   "Grosse caisse sèche": "硬いバスドラム",
@@ -7,7 +8,6 @@
   "Claquement de mains": "手拍子",
   "Claquements de mains": "手拍子",
   "Bord de caisse": "太鼓のふち",
-  "Grosses caisses": "バスドラム",
   "Volume au max": "音量を最大に",
   "BPM": "BPM",
   "Tempo : %d battements par minute": "テンポ：1分間に%d拍",

@@ -117,6 +117,25 @@ class CutZoomGestureTest {
         assertEquals(listOf(3, 7), m.chosen)
     }
 
+    /**
+     * Review of remix2 (grave): pieces chosen by placing the play head must not all go with « Enlever »: touching 3, 7,
+     * then 5, « Enlever » takes piece 5 (under the head) only, as before A7.
+     */
+    @Test
+    fun removeAfterTouchesTakesOnlyThePieceUnderTheHead() {
+        val (m, v, _) = setUp()
+        val count = m.pieces.size
+        val five = m.pieces[5]
+        listOf(3, 7, 5).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+        }
+        compose.runOnIdle { m.remove() }
+        assertEquals(count - 1, m.pieces.size)
+        assertFalse(five in m.pieces)
+    }
+
     @Test
     fun aSecondFingerZoomsEvenWhenTheFirstLandedOnALine() {
         val (m, v, saved) = setUp()

@@ -751,7 +751,8 @@ internal fun RecordButton(take: TakeUi, record: () -> Unit) {
                 else -> Box(Modifier.size(22.dp).clip(CircleShape).background(Neon.Red))
             }
         }
-        Text(label, style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1)
+        // Tour 6, lot 5 (R1: « REC » cut at the phone's font 200 %): smaller before it is cut.
+        com.pocketstudio.ui.FitText(label, style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 7.sp)
     }
 }
 
@@ -842,35 +843,87 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
 @Composable
 private fun TakeChoice(label: String, selected: Boolean, tag: String, choose: () -> Unit) {
     Box(
-        Modifier.height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Red.copy(alpha = 0.85f) else Neon.Surface)
-            .clickable(onClick = choose).padding(horizontal = 12.dp).testTag(tag)
+        Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Red.copy(alpha = 0.85f) else Neon.Surface)
+            .clickable(onClick = choose).padding(horizontal = 12.dp, vertical = 4.dp).testTag(tag)
             .semantics { if (selected) contentDescription = "$label ✓" },
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = if (selected) Color.White else Neon.TextPrimary, maxLines = 1)
+        // R1 (« Ajouter à la suite » cut at the phone's font 200 %): on two lines, words whole, rather than cut.
+        com.pocketstudio.ui.FitText(
+            label, style = MaterialTheme.typography.labelMedium, color = if (selected) Color.White else Neon.TextPrimary, maxLines = 2, textAlign = TextAlign.Center,
+        )
     }
 }
 
+/**
+ * Where the song is, bar.beat (« 30.2 », « – » stopped), over its unit (« mesure », as « BPM » under the tempo), in a
+ * frame that fills up, clockwise from the top, to the next launch line (cyan while a launch waits).
+ * Tour 6, lot 5 (R20: « un cercle « 30.2 » sans unité », « un rond gris « – » qui ne fait rien »): it says what it
+ * counts, on screen and to TalkBack (« Mesure 30 · temps 2 », stopped « Mesure · Arrêté »).
+ */
 @Composable
 private fun Counter(ui: LiveScreenUi) {
     val p = ui.project
     // The only part of the bar that follows the clock (it alone recomposes, 30 times a second).
     val step = ui.clockOf()
     val waiting = ui.grid?.hasPending == true
-    // Waiting: the ring counts down to the first launch line armed (each keeps the quantum it was armed with).
+    // Waiting: the frame counts down to the first launch line armed (each keeps the quantum it was armed with).
     val q = ui.grid?.let { g -> nextLaunchQuantum(g, step, p.liveQuantumSteps) } ?: p.liveQuantumSteps
     val ring = if (step < 0) 0f else (step % q) / q.toFloat()
-    val text = if (step < 0) "–" else "${step / p.stepsPerBar + 1}.${step % p.stepsPerBar / 4 + 1}"
+    val bar = step / p.stepsPerBar + 1
+    val beat = step % p.stepsPerBar / 4 + 1
+    val text = if (step < 0) "–" else "$bar.$beat"
+    val unit = tr("mesure")
+    val said = if (step < 0) unit.replaceFirstChar { it.titlecase() } + " · " + tr("Arrêté") else tr("Mesure %d", bar) + " · " + tr("temps") + " " + beat
     val accent = if (waiting) Neon.Cyan else Neon.Outline
     val track = Neon.SurfaceHigh
-    Box(Modifier.size(48.dp).testTag("live_counter"), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.size(44.dp)) {
-            val stroke = 4.dp.toPx()
-            drawArc(track, 0f, 360f, false, style = Stroke(stroke), topLeft = Offset(stroke / 2, stroke / 2), size = Size(size.width - stroke, size.height - stroke))
-            drawArc(accent, -90f, 360f * ring, false, style = Stroke(stroke), topLeft = Offset(stroke / 2, stroke / 2), size = Size(size.width - stroke, size.height - stroke))
-        }
-        Text(text, style = MonoStyle, color = Neon.TextPrimary)
+    Column(
+        Modifier.size(COUNTER_W, 48.dp)
+            .drawBehind {
+                val stroke = 3.dp.toPx()
+                val frame = counterFrame(stroke / 2, stroke / 2, size.width - stroke, size.height - stroke, 12.dp.toPx())
+                drawPath(frame, track, style = Stroke(stroke))
+                if (ring > 0f) {
+                    val measure = androidx.compose.ui.graphics.PathMeasure().apply { setPath(frame, false) }
+                    val done = androidx.compose.ui.graphics.Path()
+                    measure.getSegment(0f, measure.length * ring, done, true)
+                    drawPath(done, accent, style = Stroke(stroke, cap = StrokeCap.Round))
+                }
+            }
+            .semantics(mergeDescendants = true) { contentDescription = said }
+            .testTag("live_counter")
+            .padding(horizontal = 4.dp, vertical = 3.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        com.pocketstudio.ui.FitText(
+            text, style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 18.sp), color = Neon.TextPrimary, maxLines = 1,
+        )
+        // Without the small labels' wide spacing: « compasso », « Schlag » fit at a big font size.
+        com.pocketstudio.ui.FitText(
+            unit, style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp, letterSpacing = 0.sp), color = Neon.TextSecondary, maxLines = 1, min = 7.sp,
+        )
     }
+}
+
+/** The counter's width: as ● REC beside it. */
+private val COUNTER_W = 56.dp
+
+/** A frame [w] x [h] from ([x], [y]), its corners [r] round, drawn from the middle of its top edge clockwise (as a clock's hand). */
+private fun counterFrame(x: Float, y: Float, w: Float, h: Float, r: Float) = androidx.compose.ui.graphics.Path().apply {
+    val c = r.coerceAtMost(minOf(w, h) / 2f)
+    val right = x + w
+    val bottom = y + h
+    moveTo(x + w / 2f, y)
+    lineTo(right - c, y)
+    arcTo(androidx.compose.ui.geometry.Rect(right - 2 * c, y, right, y + 2 * c), -90f, 90f, false)
+    lineTo(right, bottom - c)
+    arcTo(androidx.compose.ui.geometry.Rect(right - 2 * c, bottom - 2 * c, right, bottom), 0f, 90f, false)
+    lineTo(x + c, bottom)
+    arcTo(androidx.compose.ui.geometry.Rect(x, bottom - 2 * c, x + 2 * c, bottom), 90f, 90f, false)
+    lineTo(x, y + c)
+    arcTo(androidx.compose.ui.geometry.Rect(x, y, x + 2 * c, y + 2 * c), 180f, 90f, false)
+    close()
 }
 
 /**
@@ -1077,12 +1130,14 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
         Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp)).background(GridLook.Panel),
     ) {
         Box(Modifier.fillMaxWidth().height(3.dp).background(c.color.copy(alpha = 0.9f)))
-        // A narrow column (six tracks on a phone): the name gets smaller before it is cut.
-        val style = MaterialTheme.typography.labelMedium
-        Text(
-            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 2.dp), style = style,
-            maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, softWrap = false,
-            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
+        // A narrow column (six tracks on a phone): the name gets smaller before it is cut; R1 (« Souffle mo… » at 130 %):
+        // a name of two words that no size fits on one line goes on two. One word (« Syntezator ») is never split over
+        // two lines: it stays on one, smaller still (Chinese, Japanese and Korean break between any two signs).
+        val oneWord = c.name.none { it.isWhitespace() || it.code >= 0x2E80 }
+        com.pocketstudio.ui.FitText(
+            // Lines a little closer than the style's: two of them fit over a short M (a header 56 dp high).
+            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 1.dp), style = MaterialTheme.typography.labelMedium.copy(lineHeight = 15.sp),
+            maxLines = if (oneWord) 1 else 2, min = if (oneWord) 7.sp else 8.sp, textAlign = TextAlign.Center,
         )
         // Under the name: a finger that misses it does not land on a pad (which would launch a
         // scene, into the take). Lying down it is shorter, as wide as the column.
@@ -1119,11 +1174,14 @@ private fun SceneButton(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+        // R1 (the letter cut at the phone's font 200 % in a short row): smaller before it is cut.
+        com.pocketstudio.ui.FitText(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, min = 9.sp)
         if (label != null && height >= 52.dp) {
-            Text(
-                label, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
-                maxLines = if (height >= 72.dp && width >= 72.dp) 2 else 1, overflow = TextOverflow.Ellipsis,
+            // Tour 6, lot 5 (R1: « Cou… », « Refr… », « Przejś… » in a 52 dp column): smaller, on two lines when the row has
+            // room, without the small labels' wide spacing, before a word is cut.
+            com.pocketstudio.ui.FitText(
+                label, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary, textAlign = TextAlign.Center,
+                maxLines = if (height >= 64.dp) 2 else 1, min = 6.sp,
             )
         }
     }
@@ -1302,7 +1360,7 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
         val style = MaterialTheme.typography.titleSmall
         // Audit stage 1: two lines before a cut word (« ■ Wszys » in Polish on a phone): « ■ » then the word.
         com.pocketstudio.ui.FitText(
-            label, Modifier.padding(horizontal = 2.dp), style, color = Neon.TextPrimary, maxLines = 2, min = 8.sp,
+            label, Modifier.padding(horizontal = 2.dp), style, color = Neon.TextPrimary, maxLines = 2, min = 7.sp,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         )
     }
@@ -1339,8 +1397,19 @@ private fun liveTabs(sideBySide: Boolean): List<LivePanelTab> =
 private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, unfold: () -> Unit, immersive: Boolean, toggleFull: () -> Unit) {
     val shape = RoundedCornerShape(20.dp)
     BoxWithConstraints(Modifier.fillMaxWidth().background(GridLook.Ground).padding(horizontal = 10.dp, vertical = 6.dp)) {
-        // A narrow dock (a small phone, a big text size): the icons alone, their names said.
-        val words = maxWidth >= 300.dp
+        // A narrow dock (a small phone, a big text size): the icons alone, their names said. Tour 6, lot 5 (R1: « Bauste… »,
+        // « Acid 3… » at 130 %): the words only when each fits whole at the smallest size its label may take.
+        val tabs = liveTabs(sideBySide)
+        val labelStyle = MaterialTheme.typography.labelMedium
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val labels = tabs.map { tabLabel(it, sideBySide) }
+        val words = remember(labels, maxWidth, density, labelStyle) {
+            // Each tab's share of the dock (its padding, ⛶ and ︿ aside); the floor of WholeWordsAutoSize at this font size.
+            val tabW = with(density) { ((maxWidth - 8.dp - 96.dp) / tabs.size).toPx() }
+            val smallest = TAB_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
+            maxWidth >= 300.dp && labels.all { measurer.measure(it, labelStyle.copy(fontSize = smallest.sp), maxLines = 1, softWrap = false).size.width <= tabW }
+        }
         Row(
             Modifier.fillMaxWidth().height(DOCK_HEIGHT).shadow(10.dp, shape).clip(shape).background(Neon.Surface)
                 .border(1.dp, Color.White.copy(alpha = 0.06f), shape).padding(horizontal = 4.dp).testTag("live_dock"),
@@ -1368,7 +1437,7 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
                         val style = MaterialTheme.typography.labelMedium
                         Text(
                             label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(TAB_WORDS_MIN, style.fontSize),
                         )
                     }
                 }
@@ -1383,6 +1452,9 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
 
 /** The dock's height (its floating margins aside). */
 private val DOCK_HEIGHT = 60.dp
+
+/** The smallest a tab's word gets, in the dock and the panel (past 130 % of the phone's font, smaller still: see WholeWordsAutoSize). */
+private val TAB_WORDS_MIN = 9.sp
 
 /**
  * Lot 4d, the tools open: a panel from the bottom (lying down, [sideways]: on the right). On top
@@ -1471,31 +1543,52 @@ private val TIGHT_PANEL = 380.dp
 
 /** The open panel's tabs, one segmented control: the page shown lit; « Briques » folds the panel. */
 @Composable
-private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePanelTab, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, modifier: Modifier) {
-    Row(
-        modifier.height(48.dp).clip(RoundedCornerShape(24.dp)).background(GridLook.Ground.copy(alpha = 0.7f)).padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
-        tabs.forEach { t ->
-            val label = tabLabel(t, sideBySide)
-            val selected = t == shown
-            val idle = t == LivePanelTab.Acide && !ui.hasAcid
-            // The tabs share the row by the length of their names (a bigger text makes them smaller).
-            Box(
-                Modifier.weight(label.length + 3f).fillMaxHeight().clip(RoundedCornerShape(21.dp)).background(if (selected) Neon.Cyan else Color.Transparent)
-                    .clickable { choose(t) }.padding(horizontal = 2.dp).testTag("live_tab_${t.name}").semantics { this.selected = selected },
-                contentAlignment = Alignment.Center,
-            ) {
-                val style = MaterialTheme.typography.labelLarge
-                Text(
-                    label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
-                    style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
-                )
+private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePanelTab, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, modifier: Modifier) =
+    BoxWithConstraints(modifier) {
+        val labels = tabs.map { tabLabel(it, sideBySide) }
+        val style = MaterialTheme.typography.labelLarge
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        // Tour 6, lot 5 (R1: « Blokk… », « Acid 3… » at Taille 130 %): the words only when each fits whole in its share at
+        // the smallest size it may take; else every tab shows its icon, its name said (as the dock does).
+        val words = remember(labels, maxWidth, density, style) {
+            val weights = labels.map { it.length + 3f }
+            val inner = with(density) { (maxWidth - 6.dp - 2.dp * (tabs.size - 1)).toPx() }
+            val smallest = TAB_WORDS_MIN.value / (density.fontScale / 1.3f).coerceAtLeast(1f)
+            labels.indices.all { i ->
+                val room = inner * weights[i] / weights.sum() - with(density) { 4.dp.toPx() }
+                measurer.measure(labels[i], style.copy(fontSize = smallest.sp), maxLines = 1, softWrap = false).size.width <= room
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(24.dp)).background(GridLook.Ground.copy(alpha = 0.7f)).padding(3.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            tabs.forEachIndexed { i, t ->
+                val label = labels[i]
+                val selected = t == shown
+                val idle = t == LivePanelTab.Acide && !ui.hasAcid
+                val ink = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary
+                // The tabs share the row by the length of their names (a bigger text makes them smaller); as icons, evenly.
+                Box(
+                    Modifier.weight(if (words) label.length + 3f else 1f).fillMaxHeight().clip(RoundedCornerShape(21.dp))
+                        .background(if (selected) Neon.Cyan else Color.Transparent)
+                        .clickable { choose(t) }.padding(horizontal = 2.dp).testTag("live_tab_${t.name}")
+                        .semantics { this.selected = selected; if (!words) contentDescription = label },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (words) {
+                        Text(
+                            label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(TAB_WORDS_MIN, style.fontSize),
+                        )
+                    } else {
+                        Icon(tabIcon(t), contentDescription = null, tint = ink, modifier = Modifier.size(22.dp))
+                    }
+                }
             }
         }
     }
-}
 
 /** ﹀ (lying down: →): the panel folds back to the dock (or the rail). */
 @Composable

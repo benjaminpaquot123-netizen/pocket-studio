@@ -1,6 +1,6 @@
 {
   "3. Réglage Honor": "3. احترام الإعداد",
-  "Accorde ta guitare, ta basse ou ta voix avant d'enregistrer une piste audio.": "اضبط غيتارك أو الـBass أو صوتك قبل تسجيل مسار صوتي.",
+  "Accorde ta guitare, ta basse ou ta voix avant d'enregistrer une piste audio.": "اضبط غيتارك أو الباص أو صوتك قبل تسجيل مسار صوتي.",
   "Accordeur": "الموالِف",
   "Affichée pendant que la musique joue ou s'enregistre": "يظهر أثناء تشغيل الموسيقى أو التسجيل",
   "Android ne coupe plus le son pour économiser la batterie.": "يتوقف Android عن قطع الصوت لتوفير البطارية.",
@@ -26,8 +26,8 @@
   "Enregistrée à %1$d BPM, le morceau est à %2$d BPM : elle ne tombe plus pile sur le temps.": "سُجّل على %1$d BPM والأغنية على %2$d BPM: لم يعد يقع على النبضة تمامًا.",
   "Fermer": "إغلاق",
   "Fichier son": "ملف صوتي",
-  "Fondu au début": "Fade-in",
-  "Fondu à la fin": "Fade-out",
+  "Fondu au début": "ظهور تدريجي",
+  "Fondu à la fin": "تلاشٍ تدريجي",
   "Garder la sélection": "الإبقاء على التحديد",
   "Graves  ·  Médiums  ·  Aigus": "المنخفضات  ·  المتوسطات  ·  المرتفعات",
   "Guitare (accordage standard)": "غيتار (ضبط عادي)",

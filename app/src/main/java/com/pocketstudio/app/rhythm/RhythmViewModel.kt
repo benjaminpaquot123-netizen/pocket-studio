@@ -31,6 +31,8 @@ import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.hasMusicOfItsOwn
 import com.pocketstudio.model.remixOverrunSeconds
+import com.pocketstudio.model.remixSteps
+import com.pocketstudio.model.remixEndBars
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.withRecordedCell
@@ -509,6 +511,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val _notice = MutableStateFlow<String?>(null)
     val notice: StateFlow<String?> = _notice.asStateFlow()
 
+    /** Tour 6, seat B a (A6): the notice says the song goes past the project's end; « Allonger le morceau » offered with it. */
+    private val _noticeLengthen = MutableStateFlow(false)
+    val noticeLengthen: StateFlow<Boolean> = _noticeLengthen.asStateFlow()
+
     /**
      * Audit ultra round 2 (n° 17, seat B d: a track's sound changed or a track deleted said nothing): said as « Fait : … »
      * is, with « Annuler » beside it ([done], [com.pocketstudio.app.ui.DoneBar]).
@@ -530,6 +536,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun keptSoundNames(): Set<String> = _favorites.value.let { f -> (f.synth.map { it.name } + f.plaits.map { it.name }).toSet() }
     fun dismissNotice() {
         _notice.value = null
+        _noticeLengthen.value = false
         favoritesBeforeDelete = null
     }
 
@@ -6297,9 +6304,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         // Lot 6, R4 (seats B a #38, G a #12): a song longer than the project is said when it is chosen, not only in
         // « Prêt à partager ? » (its end is cut in the file; that sheet offers the two fixes).
-        project.value.remixOverrunSeconds().takeIf { it > 0 }?.let {
-            _notice.value = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
-        }
+        sayRemixPastEnd()
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)
@@ -6321,7 +6326,32 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
     // Muted and alone at once means nothing (Benjamin, 2026-11-04): lighting one puts the other out.
-    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute, solo = s.solo && s.mute) } }
+    fun toggleStemMute(stem: Int) {
+        val before = remixPastEnd()
+        editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute, solo = s.solo && s.mute) } }
+        // Tour 6, seat B a (A6): the song heard again past the project's end (a 1-bar loop) is said, with the offer to lengthen.
+        if (before <= 0) sayRemixPastEnd()
+    }
+
+    /**
+     * Tour 6, seat B a (A6): seconds of the remix's song heard past the project's end: its song's, or, when it has none
+     * (a loop, the song kept as a store of sounds), the loop's; 0 when it ends in time or is not heard.
+     */
+    private fun remixPastEnd(p: Project = project.value): Int {
+        p.remixOverrunSeconds().let { if (it > 0) return it }
+        val seconds = remixSecondsNow(p)
+        if (p.song.isNotEmpty() || p.tempoBpm <= 0 || p.remixEndBars(seconds) == 0) return 0
+        val over = p.remix.atStep.toLong() + p.remixSteps(seconds) - p.sceneSteps(p.scene)
+        return if (over > 1) kotlin.math.ceil(over * 15.0 / p.tempoBpm - 1e-6).toInt().coerceAtLeast(1) else 0
+    }
+
+    /** Lot 6, R4 / tour 6 A6: « sa fin sera coupée », with « Allonger le morceau » in the same window. */
+    private fun sayRemixPastEnd() {
+        remixPastEnd().takeIf { it > 0 }?.let {
+            _notice.value = tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", com.pocketstudio.app.export.shareClock(it))
+            _noticeLengthen.value = true
+        }
+    }
     fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo, mute = s.mute && s.solo) } }
     fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
 
@@ -6368,7 +6398,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun lengthenSongForRemix() {
         val following = songPlaying()
         val before = project.value.song
-        session.edit { it.withSongLengthenedForRemix() }
+        val seconds = remixSecondsNow()
+        session.edit { p ->
+            if (p.song.isNotEmpty()) p.withSongLengthenedForRemix()
+            // Tour 6 (A6): a loop gets a song as long as the remix's (the loop's brick replayed), as a placed song does.
+            else if (remixPastEnd(p) <= 0) p
+            else {
+                val steps = p.remix.atStep.toLong() + p.remixSteps(seconds)
+                val bars = ((steps + p.stepsPerBar - 1) / p.stepsPerBar.coerceAtLeast(1)).toInt().coerceIn(1, com.pocketstudio.model.SongPart.MAX_BARS)
+                p.copy(song = listOf(com.pocketstudio.model.SongPart(scene = p.scene, bars = bars)))
+            }
+        }
         // Fresh review (grave): the engine may already hold the song's end for the part playing; the parts added
         // after it are staged as « + » does ([insertSongPart]); the part on now keeps playing.
         if (following && project.value.song != before) followSongEdit { i, _ -> i }

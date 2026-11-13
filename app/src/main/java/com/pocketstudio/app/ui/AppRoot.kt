@@ -1076,6 +1076,7 @@ fun AppRoot() {
     }
     val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()
+    val noticeLengthen by rhythmVm.noticeLengthen.collectAsStateWithLifecycle()
     // G3 review: a track's sheet or its layers show their notice in their own line, never a window
     // over them that blocks every touch.
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
@@ -1084,6 +1085,9 @@ fun AppRoot() {
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
+            } else if (noticeLengthen) {
+                // Tour 6, seat B a (A6): the song past the project's end: the fix offered in the same window.
+                { TextButton(onClick = { rhythmVm.lengthenSongForRemix(); rhythmVm.dismissNotice() }, modifier = Modifier.testTag("notice_lengthen")) { Text(tr("Allonger le morceau")) } }
             } else null,
             text = { Text(text) },
         )

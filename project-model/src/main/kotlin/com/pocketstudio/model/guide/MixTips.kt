@@ -1,6 +1,5 @@
 package com.pocketstudio.model.guide
 
-import com.pocketstudio.model.DefaultNames
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.i18n.tr
@@ -34,7 +33,7 @@ object MixTips {
         }
         val facts = GuideFacts.of(p)
         val solos = facts.tracks.filter { it.channel != Mixer.MASTER && p.mixer.channels.getOrNull(it.channel)?.solo == true }
-        if (solos.isNotEmpty()) tips += MixTip("solo", tr("Un solo est resté allumé : on n'entend plus que %s.", names(solos)), tr("Tout réentendre"))
+        if (solos.isNotEmpty()) tips += MixTip("solo", tr("Un solo est resté allumé : on n'entend plus que %s.", names(p, solos)), tr("Tout réentendre"))
         // The acid line is the bass of an acid song.
         val bassRoles = setOf(GuideRoles.BASS, GuideRoles.SUB, GuideRoles.BASS2, GuideRoles.ACID)
         val kickPlays = facts.playing(GuideRoles.KICK).isNotEmpty()
@@ -45,7 +44,7 @@ object MixTips {
                 .firstOrNull()?.let { (key, offset) ->
                     val t = facts.trackOf(key) ?: return@let
                     val db = -offset.coerceIn(-GuideLevels.MAX_MOVE_DB, GuideLevels.MAX_MOVE_DB)
-                    tips += tip("level:$key", t, db, kickPlays && t.role in bassRoles)
+                    tips += tip(p, "level:$key", t, db, kickPlays && t.role in bassRoles)
                 }
         }
         // Not measured: what the faders say.
@@ -53,11 +52,11 @@ object MixTips {
             .distinctBy { it.channel }
         if (kickPlays) {
             heard.filter { it.role in bassRoles }.firstOrNull { t -> overStart(p, t.channel) >= BASS_OVER_DB }?.let { t ->
-                tips += tip("bass:${t.key}", t, -BASS_OVER_DB, bass = true)
+                tips += tip(p, "bass:${t.key}", t, -BASS_OVER_DB, bass = true)
             }
         }
         // Testers (lot « tuto 5 »): only a track that plays (« Rim couvre les autres » for a pad never touched).
-        heard.firstOrNull { t -> facts.song.plays(t.key) && db(p.mixer.channels[t.channel].volume) >= HOT_DB && overStart(p, t.channel) > 0.5f }?.let { t -> tips += tip("hot:${t.key}", t, -HOT_DB, bass = false) }
+        heard.firstOrNull { t -> facts.song.plays(t.key) && db(p.mixer.channels[t.channel].volume) >= HOT_DB && overStart(p, t.channel) > 0.5f }?.let { t -> tips += tip(p, "hot:${t.key}", t, -HOT_DB, bass = false) }
         return tips.distinctBy { it.ch.takeIf { ch -> ch >= 0 } ?: it.id }
     }
 
@@ -74,8 +73,9 @@ object MixTips {
         else -> p
     }
 
-    private fun tip(id: String, t: GuideTrack, db: Float, bass: Boolean): MixTip {
-        val name = DefaultNames.shown(t.name)
+    // Tour 6, Japanese seat: a pad named as the pad reads (« リム », not the French « Rim »).
+    private fun tip(p: Project, id: String, t: GuideTrack, db: Float, bass: Boolean): MixTip {
+        val name = p.shownName(t)
         return when {
             bass && db < 0f -> MixTip(id, tr("La basse et le kick se gênent."), tr("Baisser la basse un peu"), t.channel, db)
             db < 0f -> MixTip(id, tr("« %s » couvre les autres.", name), tr("Le baisser un peu"), t.channel, db)
@@ -87,5 +87,5 @@ object MixTips {
 
     private fun db(v: Float): Float = GuideLevels.faderDb(v)
 
-    private fun names(ts: List<GuideTrack>): String = ts.joinToString(", ") { DefaultNames.shown(it.name) }
+    private fun names(p: Project, ts: List<GuideTrack>): String = ts.joinToString(", ") { p.shownName(it) }
 }

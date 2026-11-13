@@ -480,6 +480,8 @@ fun AppRoot() {
     // Testers (lot « tuto 3 »): while another project opens (the activity is rebuilt on it), a plain background
     // rather than the project left behind (« Guide · Étape 7/18 », 120 BPM, a moment before the tutorial's own).
     var switching by remember { mutableStateOf(false) }
+    // Control seat A b-5 (P5): the open project touched in « Mes projets » comes back as « Continuer » brings it, Pad Live too.
+    var resumedFromProjects by remember { mutableStateOf(false) }
     LaunchedEffect(switching) { if (switching) { kotlinx.coroutines.delay(SWITCH_COVER_MS); switching = false } }
     val switchProject: (String, String?) -> Unit = { id, deleteAfter ->
         // On the main thread whatever the scope's dispatcher: Activity.recreate() and the Toast need it
@@ -892,7 +894,7 @@ fun AppRoot() {
                         stopDemo = libraryVm::stopDemoPreview,
                         back = closeProjects,
                         // The open project touched: on it, as « Continuer » does.
-                        resume = { showProjects = false; projectsNewOnly = false; tab = OpeningTab.of(rhythmVm.project.value); launch.settled() },
+                        resume = { showProjects = false; projectsNewOnly = false; tab = OpeningTab.of(rhythmVm.project.value); launch.settled(); resumedFromProjects = true },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
                         wizard = {
@@ -1430,6 +1432,10 @@ fun AppRoot() {
     // Tour 6, seat A b (P5): another project opened (« Mes projets », the rebuild of the app): the « Live » project goes on in Pad
     // Live, where it is played, as « Continuer » does; any other project on its own screens.
     var padLiveFor by rememberSaveable(key = "pad_live_for") { mutableStateOf(rhythmVm.projectId) }
+    if (resumedFromProjects) {
+        resumedFromProjects = false
+        if (rhythmVm.project.value.padLive.home) showPadLive = true
+    }
     remember(rhythmVm.projectId) {
         if (padLiveFor != rhythmVm.projectId) {
             padLiveFor = rhythmVm.projectId

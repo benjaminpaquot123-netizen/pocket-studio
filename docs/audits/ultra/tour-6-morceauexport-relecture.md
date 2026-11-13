@@ -1,58 +1,40 @@
-# Tour 6 — lot 6 « morceau-export-padlive » : relecture neuve
-Relu : d81a5839d264c3acd05cc0aadb308097c0432191
+# Tour 6 — lot 6 « morceau-export-padlive » : relecture neuve (v2, après le self-test)
+Relu : 6c4344fc89ea787ea188becd799bf3319d6ee901
 
-Base 5957fac5. Lu : les 47 commits, le diff de `app/src/main` (7 fichiers touchés sur les 9 permis : PadLiveRoute.kt et
-ProjectsViewModel.kt inchangés ; rien d'autre dans `app/src/main`), les 18 tests Lot6*, NewSongPartSceneTest, la fiche
-du lot, les verdicts, le rapport et les décisions. Tests non relancés (lecture seule).
-
-## Ordre rouge → vert
-Chaque correction a son commit « rouge » (test seul, ou test plus un `testTag` / un champ vide nécessaires à la
-compilation : 0fc659f9 ajoute `padlive_more_dots`, 96298b5c le champ `exportLufs`) avant le « vert ». Lus un par un,
-les tests rougiraient sans la correction (Fin laissait jouer, Écouter remettait `Ready`, B seul dans le morceau, aucune
-notice dans `useSong`, deux `padlive_share`, `padlive_more_dots` ouvert, grille poussée par la bande, etc.).
-Deux retouches de test après le vert, légitimes : 43684e6f (l'édition « autre partie » passe par le ViewModel, plus
-forte) ; ba20c4c3 (`aRowThatFitsSaysNothing` : nom court et sans bouton ♪ pour une rangée qui tient vraiment).
-R8 : test vert du premier coup, dit tel quel dans le rapport (non reproduit sans banc) — conforme à la règle.
+Delta relu : fdb844ef..6c4344fc (3 commits : 69e09546 annulation d'U11, 7c36fe67 flèches de TrackBar, 6c4344fc rapport
+et décisions), plus la capture `app/screenshots/tracks.png`. Tests non relancés (lecture seule) ; le self-test vert
+(203 verts, 0 rouge) est celui annoncé par l'orchestrateur.
 
 ## Bloquant
 Aucun.
 
 ## Grave
-Aucun. Points sensibles vérifiés :
-- `RhythmViewModel.kt:10721` écouteur `SharedPreferences` : référence forte dans un champ (le registre est faible),
-  inscrit dans `init` après `_export`, retiré dans `onCleared` : pas de fuite, pas d'accès avant initialisation.
-- `finishPerformance(stop)` : l'arrêt passe par `toggleTransport` alors que `_take` vaut `Writing` et `performance`
-  est nul : `endPerformanceOnStop` ne rappelle pas `finishPerformance` (pas de boucle) ; l'arrêt par ■ passe
-  `stop = false` ; `pushAutomation` toujours fait. Écriture du morceau (`editQuietly`, version gardée) inchangée.
-- `madeHash` (`:447`) : `switchScene(0)` passe par `syncScenes`, aucune édition de la partie affichée n'est perdue
-  dans l'empreinte (le test 43684e6f le prouve par le ViewModel).
-- Aucun code du thread audio touché.
+Aucun. Vérifié :
+- U11 annulé proprement : le diff de 69e09546 sur `RhythmViewModel.kt` est l'exact inverse de 413e088a (`git diff
+  413e088a~1 HEAD` ne touche plus `finishPerformance` ni `endPerformanceOnStop`) : plus de paramètre `stop`, plus
+  d'appel `toggleTransport(aloneSongStep())`, `leaveSong` + `pushAutomation` revenus dans le même bloc. Le test
+  `Lot6VmTakeEndTest` (3a3691f8) est supprimé et n'est plus cité nulle part (rapport : sa ligne `chemin:` retirée).
+  Rien d'autre retiré : les autres corrections du lot (U20 dans `listenPerformance`, U3, U5, R4, U28…) sont intactes.
+- TrackBar : seul `RowMoreSign` change (icône ArrowBack / ArrowForward au lieu des chevrons), même taille 22 dp, même
+  teinte, sans toucher, mêmes `testTag` (`track_bar_less` / `track_bar_more`) ; `IconShapes` connaît « ← » et « → ».
+  Aucun autre effet.
+- Capture `tracks.png` regardée en entier : flèche → nette au bord droit de la rangée de pistes, dans son fondu, sans
+  recouvrir de puce ; rien d'autre ne bouge à l'écran.
+- Rapport et décisions disent vrai : « 20 sur 24, plus N25 », U11 passé dans « Laissé de côté (4 défauts du lot) » avec
+  ses deux rouges nommés et la preuve (arrêt coupé : verts) ; décision U11 datée du 13 avec retour arrière (rejouer
+  3a3691f8 et 413e088a) ; décision R19 mise à jour (flèches, raison du banc).
 
 ## Moyen
-- `PadLiveScreen.kt:274-276` (U21, couché) : la décision dit « debout et couché », le test ne couvre que debout
-  360×780. Couché, la grille est limitée par la hauteur (`side = min(byWidth*1.15, byHeight)`) : quand « Perf gardée »
-  ou un message apparaît sous elle, les pads gardent leur haut mais rétrécissent encore. Même chose debout sur un
-  petit écran où la hauteur limite. Le rapport (« les pads gardent taille et place ») est plus fort que la preuve.
+- (relecture précédente, tient) `PadLiveScreen.kt:274-276` U21 couché ou petit écran : les pads rétrécissent encore,
+  non testé ; le rapport le dit désormais.
+- U11 rouvert : « Fin » laisse la musique continuer (défaut d'origine du siège E a #38), cause de la casse
+  d'« Écouter » / « Enregistrer ce que je joue » après un arrêt non trouvée ; à reprendre dans un lot suivant.
 
 ## Mineur
-- `RhythmViewModel.kt:447` (U3) : avec un morceau, un export Pro « Boucle » choisi à la main (`ExportWhat.Loop`,
-  `:11289`) rend la partie affichée ; changer de partie ne dit plus « Le morceau a changé depuis cet export ».
-- `RhythmViewModel.kt:10721` (U5) : l'écouteur ne se déclenche que si la valeur change ; Simple en M4A, Mix passé en
-  FLAC, puis M4A re-choisi en Simple : le Mix reste en FLAC. Clé « format » dupliquée (`SHARE_FORMAT_KEY` contre la
-  clé privée de `SharePrefs`) : à garder en phase.
-- `ShareSheet.kt:530` (U4/U15/N7) : la bande `scroll_hint_fade` est une Box vide (un repère pour le test) ; le fondu
-  vu vient de `fadingVerticalEdges`, que le test ne mesure pas. La ligne reste coupée, estompée : le rapport dit « ne
-  recouvre plus rien », c'est « se voit coupée avec un signe ». Le fondu de 24 dp est discret (noté « À surveiller »).
-- `MixerScreen.kt:663-665` (R23) : `filesAtOpen` est mémorisé par composition de la carte ; un fichier refait sous le
-  même nom (même seconde) ne serait pas ramené à l'écran. Improbable (nom horodaté).
-- `RhythmViewModel.kt:3498` (U28) : sur un morceau vide, un `at` donné est ignoré (place 1). Sans appelant connu.
-- `PadLiveScreen.kt:276` : `Spacer(Modifier.height(0.dp))` ne sert qu'à garder l'écart de 8 dp de `spacedBy` ; un
-  `padding(bottom = 8.dp)` sur `notes` le dirait mieux.
-- Rapport : la section « Laissé de côté (3) » liste cinq puces (U1, U9, R8, plus « Boum boum » et T2 hors fr/en/de,
-  qui ne sont pas des défauts du lot) ; le compte 21/24 est juste.
-- NewSongPartSceneTest (c1f2ed69) : modification légitime, l'attente suit le nouveau comportement voulu (A avant B) et
-  ce qu'il prouve (la copie ne prend jamais la partie vide, celle-ci reste vide) est inchangé.
-
-Mise à jour (d81a5839, rapport seul) : les remarques sur le rapport sont corrigées (U4 « estompée », le test vérifie le repère ; U21 « debout 360×780 testé, couché non corrigé » ; titre « Laissé de côté » juste). Les constats sur le code restent ouverts.
+- `TrackBar.kt:33` : l'import `KeyboardArrowRight` n'est plus utilisé (simple avertissement Kotlin, pas d'erreur de
+  compilation : aucun `allWarningsAsErrors`).
+- (relecture précédente, tiennent, une ligne chacun) U3 export « Boucle » Pro choisi à la main ne dit plus « changé » ;
+  U5 écouteur ne réagit qu'au changement de valeur et clé « format » dupliquée ; `scroll_hint_fade` Box repère, fondu
+  non mesuré ; R23 `filesAtOpen` par composition ; U28 `at` ignoré sur morceau vide ; `Spacer(0.dp)` de PadLiveScreen.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

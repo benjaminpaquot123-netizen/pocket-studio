@@ -114,5 +114,33 @@ class RemixLeftThumbSeatTest : HumanTester("remix2") {
         // One « Cortar la canción » on the panel, not two.
         assertTrue("the project panel never came:\n" + screenLines().joinToString("\n"), node("remix_project") != null)
         assertEquals("two « Découper la chanson » buttons", 1, countText("Cortar la canción"))
+        // Control Ba-2, screen 52: and no second ✂ « Cortar lo que quiero » on the same page for that song.
+        assertEquals("a second ✂ on the page", 0, countText("Cortar lo que quiero"))
     }
+
+    /** Control Ba-2 (screens 19-29): in « Frases », a touch on a voice piece of the curve chooses it, with the left thumb. */
+    @Test
+    fun a7_touchingAVoicePieceChoosesIt() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        openCut(separate())
+        tap("cut_auto")
+        tap("cut_auto_1")
+        repeat(10) { act("attends 1") }
+        val wave = node("cut_wave") ?: error("no curve:\n" + screenLines().joinToString("\n"))
+        val m = app.resources.displayMetrics
+        val b = BenchWindows.drawnBounds(wave, m)
+        // A point on the curve's body (not its number band), within the left thumb, on a voice piece.
+        val points = (1..9).flatMap { i -> (5..8).map { j -> b.left + (b.right - b.left) * i / 10f to b.top + (b.bottom - b.top) * j / 10f } }
+            .filter { (x, y) -> SeatOptions.reachable(LEFT, x, y, m.widthPixels, m.heightPixels, m.density) }
+        assertTrue("no point of the curve within the left thumb", points.isNotEmpty())
+        val before = sendEnabled()
+        assertTrue("a piece was chosen before any touch", !before)
+        for ((x, y) in points) {
+            act("touche $x $y")
+            if (sendEnabled()) break
+        }
+        assertTrue("touching a voice piece chose nothing (« En los pads » stays grey)", sendEnabled())
+    }
+
+    private fun sendEnabled(): Boolean = node("cut_to_pads")?.config?.contains(androidx.compose.ui.semantics.SemanticsProperties.Disabled) == false
 }

@@ -120,8 +120,9 @@ internal fun tutoKitQuotes(fr: String, shown: String): String {
     val quoted = Regex("[$TUTO_OPEN][\\s  ]?([^$TUTO_OPEN$TUTO_CLOSE]+?)[\\s  ]?[$TUTO_CLOSE]")
     val theirs = quoted.findAll(fr).map { it.groupValues[1] }.toList()
     val ours = quoted.findAll(shown).toList()
-    // Only when both sentences quote as many things: the order of the quotes is the one sure link between them.
-    if (theirs.isEmpty() || theirs.size != ours.size) return shown
+    // Only when each sentence quotes one thing: a language orders its words its own way, so with several quotes the k-th of the
+    // translation is not the k-th of the French (fresh review, grave: « Envoi réverbe » became « Clap » in Chinese).
+    if (theirs.size != 1 || ours.size != 1) return shown
     val kit = com.pocketstudio.app.rhythm.DrumKitInfo.names.toSet()
     val out = StringBuilder(shown)
     // From the end, so that the places still to change stay where they are.

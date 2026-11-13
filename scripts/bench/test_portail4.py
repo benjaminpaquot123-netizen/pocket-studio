@@ -27,6 +27,13 @@ COURSE = "project-model/src/main/kotlin/m/tuto/TutoCourse.kt"
 SCRIPT = "project-model/src/main/resources/tutos/house.json"
 WORDS = "project-model/src/main/resources/i18n/fr/tuto_house.json"
 ROLL = "app/src/main/java/p/synth/PianoRoll.kt"
+RHYTHM = "app/src/main/java/p/rhythm/RhythmScreen.kt"
+PLAIN = "app/src/main/java/p/words/PlainWords.kt"
+SHEET = "app/src/main/java/p/track/TrackSheet.kt"
+# AUDIT-ULTRA §13.3: the four files the tutorial shares with the rest of the application.
+SHARED = (ROLL, RHYTHM, PLAIN, SHEET)
+ACCENT = "project-model/src/main/resources/i18n/fr/tuto_café.json"
+SPACE = "project-model/src/main/resources/tutos/deep house.json"
 ZONE = (PANEL, COURSE, SCRIPT, WORDS)
 # What is NOT the tutorial zone: its tests, the other texts, the reference screenshots, the bench, the docs.
 OUTSIDE = ("app/src/test/java/p/tuto/TutoPanelTest.kt", "project-model/src/test/kotlin/m/tuto/TutoCourseTest.kt",
@@ -59,7 +66,7 @@ class Toy(unittest.TestCase):
         self.repo = os.path.join(self.tmp, "depot")
         os.makedirs(self.repo)
         git(self.repo, "init", "-q", "-b", "int")
-        for path in ZONE + OUTSIDE + (ROLL,):
+        for path in ZONE + OUTSIDE + SHARED + (ACCENT, SPACE):
             write(self.path(path), "ligne 1\nligne 2\nligne 3\nligne 4\nligne 5\n")
         self.commit("base")
         git(self.repo, "checkout", "-q", "-b", BRANCH)
@@ -352,6 +359,191 @@ class Seat(Toy):
         self.seat("Ha", sha, chapters=("compris du premier coup", "bloqué : aucune note ne se pose"))
         self.report(self.line("Ha", sha))
         self.refused("Ha", "chapitre: 2", "bloqué")
+
+
+class ReviewOfTheLot(Toy):
+    """Fresh review of the lot (first pass, on e8503cbe). G1: the tutorial zone is §13.3's, with RhythmScreen.kt,
+    PlainWords.kt and TrackSheet.kt beside PianoRoll.kt. G2: git quotes a file name that is not plain ASCII; the names
+    are read unquoted. M3: « bloqué » is read in the real seats' format too. M4: three controls had no test. Minor:
+    « ~~~ » blocks, and a « controle: » line written as a numbered item, a table row or in bold."""
+
+    def run_plain(self, *args):
+        r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), *args], cwd=self.repo, capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    # --- G1 ---
+    def test_each_shared_file_counts_when_the_report_says_tuto(self):
+        for path in SHARED:
+            git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+            self.change(path)
+            self.report("Le tuto ne perd plus sa flèche.")
+            self.refused("no « controle: » line", path)
+
+    def test_a_shared_file_alone_without_the_word_is_left_alone(self):
+        for path in SHARED:
+            self.change(path)
+        self.report("Les écrans gardent leur titre.")
+        self.assertEqual(self.accepted(), "")
+
+    def test_a_later_fix_in_a_shared_file_is_a_change_of_the_tutorial_whatever_the_report_says(self):
+        for words in ((), ("Le tuto montre la bonne case.",)):
+            git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+            first = self.change(PANEL)
+            self.seat("Ha", first)
+            last = self.change(RHYTHM, "the tutorial fixed again, in the rhythm screen")
+            self.report(self.line("Ha", first), *words)
+            self.refused("Ha", first[:7], last[:7], "before the lot's last change of the tutorial")
+
+    def test_each_shared_file_changed_after_the_seat_refuses_a_tutorial_lot(self):
+        for path in SHARED:
+            git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+            first = self.change(COURSE)
+            self.seat("Ha", first)
+            last = self.change(path)
+            self.report(self.line("Ha", first))
+            self.refused("Ha", last[:7], "before the lot's last change of the tutorial")
+
+    def test_a_shared_file_a_merge_changes_after_the_seat_refuses_a_tutorial_lot(self):
+        self.change(PANEL)
+        sha = self.change(SHEET)
+        self.seat("Ha", sha)
+        git(self.repo, "checkout", "-q", "int")
+        self.change(SHEET, "the integration changes the same shared file", line=4)
+        git(self.repo, "checkout", "-q", BRANCH)
+        git(self.repo, "merge", "-q", "--no-ff", "-m", "Merge the integration", "int")
+        self.report(self.line("Ha", sha))
+        self.refused("Ha", SHEET, "not the files the seat played")
+
+    def test_a_seat_that_played_after_the_shared_file_s_fix_counts(self):
+        self.change(PANEL)
+        last = self.change(RHYTHM)
+        self.seat("Ha", last)
+        self.report(self.line("Ha", last))
+        self.assertIn(RHYTHM, self.accepted())
+
+    # --- G2 ---
+    def test_a_file_name_with_an_accent_is_in_the_zone(self):
+        self.change(ACCENT)
+        self.report()
+        self.refused("no « controle: » line", ACCENT)
+
+    def test_a_new_file_with_an_accent_is_in_the_zone(self):
+        write(self.path("project-model/src/main/resources/i18n/fr/tuto_éveil.json"), "{}\n")
+        self.commit("a new chapter's words")
+        self.report()
+        self.refused("no « controle: » line", "tuto_éveil.json")
+
+    def test_a_file_name_with_a_space_is_in_the_zone(self):
+        self.change(SPACE)
+        self.report()
+        self.refused("no « controle: » line", SPACE)
+
+    def test_a_seat_that_played_before_an_accented_file_changed_does_not_count(self):
+        first = self.change(PANEL)
+        self.seat("Ha", first)
+        last = self.change(ACCENT)
+        self.report(self.line("Ha", first))
+        self.refused("Ha", last[:7], "before the lot's last change of the tutorial")
+
+    def test_an_accented_or_spaced_file_a_merge_changes_after_the_seat_is_named(self):
+        for path in (ACCENT, SPACE):
+            git(self.repo, "checkout", "-q", "int")
+            git(self.repo, "checkout", "-q", "-B", BRANCH, "int")
+            sha = self.change(path)
+            self.seat("Ha", sha)
+            git(self.repo, "checkout", "-q", "int")
+            self.change(path, "the integration changes the same file", line=4)
+            git(self.repo, "checkout", "-q", BRANCH)
+            git(self.repo, "merge", "-q", "--no-ff", "-m", "Merge the integration", "int")
+            self.report(self.line("Ha", sha))
+            self.refused("Ha", path, "not the files the seat played")
+
+    def test_a_good_lot_on_an_accented_file_passes(self):
+        sha = self.good_lot(ACCENT)
+        self.assertIn(ACCENT, self.accepted())
+        self.assertIn(sha[:7], self.accepted())
+
+    def test_the_plain_mode_finds_a_test_in_a_file_with_an_accent(self):
+        write(self.path("app/src/test/java/t/CaféTest.kt"), "package t\n\nimport org.junit.Test\n\nclass CafeTest {\n    @Test\n    fun works() {}\n}\n")
+        self.commit("a test in a file with an accent")
+        self.report("- chemin: Accueil | test: CafeTest#works")
+        code, out = self.run_plain(BRANCH, REPORT)
+        self.assertEqual(code, 0, out)
+
+    # --- M3 ---
+    def seat_says(self, *lines):
+        sha = self.change(PANEL)
+        self.seat("Da", sha)
+        path = self.path("docs/audits/ultra/sieges/tour-9/controle/Da/rapport.md")
+        write(path, read(path) + "chapitres:\n" + "".join(l + "\n" for l in lines))
+        self.commit("the seat's chapters, as the seats of tour 6 wrote them")
+        self.report(self.line("Da", sha))
+
+    def test_blocked_is_read_in_the_real_seats_format(self):
+        self.seat_says("  - chapitre 4 « ハイハット » : hésitation (nom latin)", "  - chapitre 5 « ベース » : bloqué (note restante introuvable, 14 gestes de détour)")
+        self.refused("Da", "chapitre 5", "bloqué")
+
+    def test_a_chapter_that_only_mentions_the_word_is_not_blocked(self):
+        self.seat_says("  - chapitre 4 « ハイハット » : hésitation (j'ai cru le pad bloqué)", "  - chapitre 5 « ベース » : compris du premier coup")
+        self.accepted()
+
+    # --- M4 ---
+    def test_a_tutorial_file_renamed_out_of_the_zone_counts(self):
+        os.makedirs(self.path("project-model/src/main/resources/autres"))
+        git(self.repo, "mv", SCRIPT, "project-model/src/main/resources/autres/house.json")
+        self.commit("a chapter moved out of tutos/")
+        self.report()
+        self.refused("no « controle: » line", SCRIPT)
+
+    def test_two_dots_in_the_seat_s_name_are_refused(self):
+        sha = self.change(PANEL)
+        self.seat("lot..K", sha)
+        self.report(self.line("lot..K", sha))
+        self.refused("is not « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 »")
+
+    def test_without_its_three_options_the_rule_answers_2_never_0(self):
+        self.good_lot()
+        base, head = git(self.repo, "merge-base", "int", BRANCH), git(self.repo, "rev-parse", "int")
+        options = (f"base:{base}", f"tete:{head}", "tour:tour-9")
+        code, out = self.run_plain("--tuto", BRANCH, REPORT, *options)
+        self.assertEqual(code, 0, out)
+        for missing in options:
+            code, out = self.run_plain("--tuto", BRANCH, REPORT, *(o for o in options if o != missing))
+            self.assertEqual(code, 2, f"without {missing.split(':')[0]}: {out}")
+            self.assertIn("are needed", out)
+
+    # --- minor ---
+    def test_a_tilde_block_shows_a_format_too(self):
+        sha = self.change(PANEL)
+        self.seat("Ha", sha)
+        self.report("~~~", self.line("Ha", sha), "~~~")
+        self.refused("no « controle: » line")
+
+    def test_tuto_in_a_tilde_block_is_not_said(self):
+        self.change(ROLL)
+        self.report("~~~", "controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 (lots du tuto)", "~~~")
+        self.assertEqual(self.accepted(), "")
+
+    def shapes(self, line):
+        return ("1. " + line, "2) " + line, "| " + line + " |", "**" + line + "**", line.replace("controle:", "**controle:**"),
+                "> " + line, "+ " + line, "- [x] " + line, "*" + line + "*")
+
+    def test_a_line_as_a_numbered_item_a_table_row_or_in_bold_is_read(self):
+        sha = self.change(PANEL)
+        self.seat("Ha", sha)
+        for line in self.shapes(self.line("Ha", sha)):
+            self.report(line)
+            self.assertIn("Ha@", self.accepted(), line)
+
+    def test_a_bad_line_in_any_shape_is_never_ignored_next_to_a_good_one(self):
+        sha = self.change(PANEL)
+        self.seat("Ha", sha)
+        self.seat("Da", sha)
+        for line in self.shapes(self.line("Da", sha, blocked=1)):
+            self.report(self.line("Ha", sha), line)
+            code, out = self.run_rule()
+            self.assertEqual(code, 1, line + "\n" + out)
+            self.assertIn("Da", out, line)
 
 
 class Portal(unittest.TestCase):

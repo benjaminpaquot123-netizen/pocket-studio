@@ -361,7 +361,10 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
     if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard, openCut)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
-        Text(
+        // Tour 6, seat B a #A3 (es, phone, Mode simple): once a song is separated, this « what is this » intro only pushes
+        // the song's card — « Cortar lo que quiero » and its help line — down under the floating « Elegir una canción »
+        // bar; shown only the first time, before anything is separated.
+        if (ui.sets.isEmpty()) Text(
             tr("Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste.") + " " +
                 tr("Compte quelques minutes ; tu peux éteindre l'écran."),
             style = MaterialTheme.typography.bodyMedium,

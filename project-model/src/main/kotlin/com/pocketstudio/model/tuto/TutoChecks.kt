@@ -2338,11 +2338,18 @@ object TutoRollHint {
 
     /**
      * The dotted note of [left] the line speaks of, the one a touch on it (or « Je le fais ») brings into view and
-     * lights: the first of the time in sight, else the first of all; null: none left.
+     * lights: the nearest one, the shortest scroll that shows it whole (along the time only while no row is in sight),
+     * the first in time among equals; null: none left. Control seat Da-3 (tour 6, 4cb88f55): « plus haut ↑ » for the
+     * one note of the time in sight, an octave up, while the next ones were a step away in the rows in sight.
      */
     fun next(left: List<Note>, v: TutoRollView): Note? {
-        val all = left.sortedWith(compareBy({ it.start }, { -it.pitch }))
-        return all.firstOrNull { inTime(it, v) } ?: all.firstOrNull()
+        val rows = v.rowPx > 0f && v.bottom - v.top >= v.rowPx - 1f
+        fun gap(n: Note): Float {
+            val dx = if (v.right <= v.left || inTime(n, v)) 0f else if (x(n, v) < v.left) v.left - x(n, v) else x(n, v) + v.stepPx - v.right
+            val dy = if (!rows || inRows(n, v)) 0f else if (y(n, v) < v.top) v.top - y(n, v) else y(n, v) + v.rowPx - v.bottom
+            return dx + dy
+        }
+        return left.sortedWith(compareBy({ it.start }, { -it.pitch })).minByOrNull { gap(it) }
     }
 
     /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */

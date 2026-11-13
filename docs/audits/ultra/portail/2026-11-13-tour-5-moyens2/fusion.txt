@@ -1,0 +1,8 @@
+fusion: b5af646c357bf29c2737d25c3851cae3633dbeb2
+branche: eq/tour-5-moyens2
+tete: 0c3a62074542ace0951ffd2c87236966fec38287
+relecture: docs/audits/ultra/tour-5-moyens2-relecture.md
+relu: a6f718b545834de3eefc105299f92d76f1dab9d0
+filtres: *TopBarNameRoomTest *.ui.TopBarTest *OneLoudnessExportTest *OneTargetExportTest *WholeWordsCostTest *PadLiveNarrowWordsTest *UiScaleTest *NavScale130ScreenshotTest *TopBarNameRoomTest *.ui.TopBarTest *OneLoudnessExportTest *OneTargetExportTest *WholeWordsCostTest *PadLiveNarrowWordsTest *UiScaleTest *NavScale130ScreenshotTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

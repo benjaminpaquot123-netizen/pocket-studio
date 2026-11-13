@@ -66,7 +66,7 @@ KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*(?:id\s*=\s*)?"([^"]+)"[^)]*\)\s*(?
 
 def read_tsv(path):
     rows, header = [], None
-    with open(path, encoding="utf-8") as f:
+    with open(path, encoding="utf-8", errors="replace") as f:
         for line in f:
             line = line.rstrip("\n")
             if not line or line.startswith("#"):
@@ -88,7 +88,7 @@ def test_sources(root):
             for name in files:
                 if not name.endswith(".kt"):
                     continue
-                text = open(os.path.join(d, name), encoding="utf-8").read()
+                text = open(os.path.join(d, name), encoding="utf-8", errors="replace").read()
                 decl = list(re.finditer(r"^(?:internal |private |open |abstract |data )*class\s+([A-Za-z0-9_]+)", text, re.M))
                 for i, m in enumerate(decl):
                     end = decl[i + 1].start() if i + 1 < len(decl) else len(text)
@@ -189,7 +189,7 @@ def engine_test(root, path, fn):
     if ".." in path.split("/"):
         return False, None
     try:
-        text = open(os.path.join(root, path), encoding="utf-8").read()
+        text = open(os.path.join(root, path), encoding="utf-8", errors="replace").read()
     except OSError:
         return False, None
     defined = re.search(r"\bvoid\s+" + re.escape(fn) + r"\s*\(", text) is not None
@@ -216,7 +216,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 def code_here(root):
     """The tree id of root's working files but docs/ (tampon.sh code), or None."""
     try:
-        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True, timeout=300)
+        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, encoding="utf-8", errors="replace", timeout=300)
     except (subprocess.SubprocessError, OSError):
         return None
     out = r.stdout.strip()
@@ -250,7 +250,7 @@ def unsealed(root, resume_path):
     if os.path.isdir(os.path.join(lot, "junit")):
         r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "resultats", lot, os.path.abspath(root),
                             os.path.abspath(resume_path)],
-                           capture_output=True, text=True)
+                           capture_output=True, encoding="utf-8", errors="replace")
         if r.returncode != 0:
             return "ses résultats JUnit ne donnent pas ce résumé vert, ou le tampon ne les scelle pas"
     elif not committed_trace(root, resume_path):
@@ -311,7 +311,7 @@ def owner_trials(root):
     if not os.path.isfile(path):
         return []
     trials, date, device = [], None, None
-    for line in open(path, encoding="utf-8").read().splitlines():
+    for line in open(path, encoding="utf-8", errors="replace").read().splitlines():
         m = TRIAL_BULLET.match(line)
         if m:
             date, device = None, None
@@ -453,7 +453,7 @@ def merge_trace_gaps(root):
     for d in sorted(os.listdir(base)) if os.path.isdir(base) else []:
         fusion = os.path.join(base, d, "fusion.txt")
         if os.path.isfile(fusion) and all(os.path.isfile(os.path.join(base, d, t)) for t in TRACES):
-            traced |= set(re.findall(r"^fusion: ([0-9a-f]{40})\s*$", open(fusion, encoding="utf-8").read(), re.M))
+            traced |= set(re.findall(r"^fusion: ([0-9a-f]{40})\s*$", open(fusion, encoding="utf-8", errors="replace").read(), re.M))
     try:
         merges = _git(root, "log", "--merges", "--format=%H%x1f%h%x1f%s").splitlines()
     except (subprocess.SubprocessError, OSError) as e:
@@ -485,7 +485,7 @@ def check(root, resume_path=None, with_git=True):
             gaps.append(f"résumé refusé : {why} ({resume_path}) : aucune garde n'y est verte")
             resume = ""
         else:
-            resume = open(resume_path, encoding="utf-8").read()
+            resume = open(resume_path, encoding="utf-8", errors="replace").read()
     base = {r.get("cle"): r for r in read_tsv(os.path.join(ultra, "base.tsv"))}
     # The owner's trials, when his notes are there: only an annotation tied to one of them is a proof.
     trials = owner_trials(root) if os.path.isfile(notes_path(root)) else None
@@ -591,7 +591,9 @@ SCRIPT = re.compile(r"preuve\s*:\s*script\s+`?([A-Za-z0-9_./-]+)")
 
 
 def _git(root, *args):
-    return subprocess.run(["git", "-C", root, *args], capture_output=True, text=True, timeout=120, check=True).stdout
+    """git's output, read as UTF-8 whatever its bytes (lot « juge8 »: a Latin-1 test file or message, a hunk header
+    cut inside a character, killed the judge on a UnicodeDecodeError at the portal of « remix2 »)."""
+    return subprocess.run(["git", "-C", root, *args], capture_output=True, encoding="utf-8", errors="replace", timeout=120, check=True).stdout
 
 
 def _rest(subject):
@@ -898,7 +900,7 @@ def red_seen(root, sha, message):
         return False
     folder = os.path.join(root, RED_SEEN, full)
     try:
-        facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8", errors="replace").read()
     except OSError:
         return False
     parent = re.search(r"^parent:\s*([0-9a-f]{40})\s*$", facts, re.M)
@@ -969,7 +971,7 @@ def replayed_red(root, sha, open_reds):
         return None
     folder = os.path.join(root, REPLAYED, full)
     try:
-        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8", errors="replace").read()
     except OSError:
         return None
     red = re.search(r"^rouge:\s*([0-9a-f]{40})\s*$", facts, re.M)
@@ -1101,8 +1103,8 @@ def mutated_red(root, sha):
         return False
     folder = os.path.join(root, MUTATED, full)
     try:
-        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
-        patch_text = open(os.path.join(folder, "mutation.patch"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8", errors="replace").read()
+        patch_text = open(os.path.join(folder, "mutation.patch"), encoding="utf-8", errors="replace").read()
     except OSError:
         return False
     test = re.search(r"^test:\s*" + TEST_NAME + r"\s*$", facts, re.M)
@@ -1172,7 +1174,7 @@ def named_lines(root):
         raw = f.read()
     if hashlib.sha256(raw).hexdigest() != NAMED_SHA256:
         return [], [f"{NAMED.replace(os.sep, '/')} : changé depuis le lot « portail3 » (fichier gelé : une paire neuve s'apparie par ses mots) : aucune paire nommée n'est lue"]
-    for n, line in enumerate(raw.decode("utf-8").split("\n"), 1):
+    for n, line in enumerate(raw.decode("utf-8", "replace").split("\n"), 1):
         if not line.strip() or line.startswith("#"):
             continue
         cells = line.split("\t")
@@ -1305,7 +1307,7 @@ def checked_lines(root):
     if not os.path.isfile(path):
         return []
     gaps = []
-    for m in CHECKED.finditer(open(path, encoding="utf-8").read()):
+    for m in CHECKED.finditer(open(path, encoding="utf-8", errors="replace").read()):
         ident, text = m.group(1), m.group(2)
         where = f"journal, ligne cochée {ident}"
         pairs, scripts = PAIR.findall(text), SCRIPT.findall(text)

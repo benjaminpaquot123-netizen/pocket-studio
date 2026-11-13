@@ -1472,7 +1472,7 @@ def named_pairs(d):
 
 def judge_reads_any_bytes(d):
     """Lot « juge8 » (the portal of « remix2 »: the judge died on a UnicodeDecodeError): git's output is bytes, not
-    always UTF-8: a test file written in Latin-1 (read by « git show », « git grep » and from the tree), a commit
+    always UTF-8: a test file written in Latin-1 (read by « git show » and « git grep »), a commit
     message in Latin-1 (read by « git log »). The judge reads them all, never dies, and still pairs by the names it can
     read; a red no green names stays a gap."""
     root = judge_root(d, "juge-octets")
@@ -1505,6 +1505,12 @@ def judge_reads_any_bytes(d):
     with open(os.path.join(tests, "LonelyProofTest.kt"), "wb") as f:
         f.write(b"class LonelyProofTest {\n  // \xe9t\xe9\n  @Test\n  fun theLonelyRedStaysOpen() {}\n}\n")
     lonely = commit("rouge: LonelyProofTest#theLonelyRedStaysOpen")
+    # The tree in UTF-8 again (the self-test's own tools read it): the Latin-1 bytes stay in git's history.
+    for name in ("LatinProofTest.kt", "LonelyProofTest.kt"):
+        with open(os.path.join(tests, name), "rb") as f:
+            text = f.read().decode("latin-1")
+        write(os.path.join(tests, name), text)
+    commit("chore: the toy's tests in UTF-8")
     seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                        capture_output=True)

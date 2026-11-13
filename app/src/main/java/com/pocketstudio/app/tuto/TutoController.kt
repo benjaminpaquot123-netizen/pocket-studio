@@ -431,6 +431,16 @@ class TutoController(
         }
     }
 
+    /**
+     * Lot « tuto-flèches » (seats D a, H a: « House 122 BPM » chosen, « 100 Tempo » on the screen): the tempo step says
+     * the tempo the project has while it is not the style's.
+     */
+    private fun noteFor(s: TutoStep, p: Project): String? {
+        val t = target ?: return null
+        if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
+        return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(p.tempoBpm).toInt())
+    }
+
     /** What « Suivant » says on a step left undone: what the song will miss ([TutoStep.skip]), and that a second touch goes on. */
     private fun skipText(s: TutoStep): String =
         (if (s.skip.isNotEmpty()) tutoText(s.skip) else com.pocketstudio.model.i18n.tr("Cette étape n'est pas encore faite.")) + " " +
@@ -756,6 +766,7 @@ class TutoController(
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
             // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
             already = if (same) kept!!.already else step.id in saved.done,
+            note = noteFor(step, project.value),
         )
         // A step already done when it is reached (the key already right) is ticked at once.
         if (moved && before != null) scope.launch { check(project.value) }
@@ -800,6 +811,8 @@ class TutoController(
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
         else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        // The step's note follows the project (the tempo once set: nothing more to say).
+        if (_ui.value?.current?.id == u.current.id) noteFor(u.current, p).let { n -> if (_ui.value?.note != n) _ui.value = _ui.value?.copy(note = n) }
         // Testers (lot « tuto 5 »: seven parts in a wrong order, not a word): what is missing, or where the order goes wrong.
         // The durations too: they are not ticked while the order is wrong.
         if (found.isEmpty() && u.current.check.startsWith("song:") && _ui.value?.current?.id == u.current.id && p.song.isNotEmpty()) {

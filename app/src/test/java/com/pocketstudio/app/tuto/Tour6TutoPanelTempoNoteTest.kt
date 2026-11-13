@@ -67,7 +67,9 @@ class Tour6TutoPanelTempoNoteTest {
         assertTrue("$style: the tempo step says the project's tempo ($now): « $note »", now.toString() in note)
         // The tempo set: nothing more to say.
         flow.value = flow.value.copy(tempoBpm = target.style.bpm)
-        idle(200)
+        // The check runs off the main thread, after its debounce.
+        val end = System.currentTimeMillis() + 10_000
+        while (c.ui.value!!.note != null && System.currentTimeMillis() < end) { Thread.sleep(20); idle(20) }
         assertEquals("$style: the tempo is the style's", null, c.ui.value!!.note)
     }
 

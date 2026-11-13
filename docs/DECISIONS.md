@@ -1504,3 +1504,4 @@
 - 2026-11-13 · lot « tutocourse » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-tutocourse.md`
 - 2026-11-13 · lot « portail4 » (tour-6) : 33 décision(s) dans `docs/decisions/tour-6-portail4.md`
 - 2026-11-13 · lot « exports2 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-exports2.md`
+- 2026-11-13 · lot « paquet7 » (tour-6) : 4 décision(s) dans `docs/decisions/tour-6-paquet7.md`

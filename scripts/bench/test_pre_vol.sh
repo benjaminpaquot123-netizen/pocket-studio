@@ -386,7 +386,7 @@ batch 4
 portal fok
 said "the portal merges a grave fix with its replay" "$( [ "$prc" -eq 0 ] && has "fok: merged" && echo 0 || echo 1)"
 
-# --- §13.5, last point (lot « portail4 », rule « from_paquet 6 ») ----------------------------------------------------
+# --- §13.5, last point (lot « portail4 », rule « from_paquet 7 ») ----------------------------------------------------
 # No lot of the tutorial enters before a fresh beginner replayed it on the lot's branch: a lot that changes the
 # tutorial zone carries, per control seat, « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its
 # zone report, the seat's own report being in the branch (rapport-zone.py --tuto). Portal: exit 10, before the merge.
@@ -401,12 +401,13 @@ seat() { # <id> <commit played>: a control seat's report, as the bench starts it
   git add "docs/audits/ultra/sieges/tour-9/controle/$1" && git commit -q -m "control seat $1"
 }
 tutofix tnone && fixes tnone
-# Before batch 6 the rule waits: said by the pre-flight, not a word from the portal.
-expect "before batch 6 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 6" non tour-9 tnone
-portal tnone
-said "before batch 6 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
-git reset -q --hard "$pbefore"
+# Before batch 7 the rule waits: said by the pre-flight, not a word from the portal.
 batch 6
+expect "before batch 7 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 7" non tour-9 tnone
+portal tnone
+said "before batch 7 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 7
 expect "a tutorial lot without its control seat: refused" 1 "lot du tuto sans son siège de contrôle : no « controle: » line" oui tour-9 tnone
 portal tnone
 said "the portal names the tutorial lot without its control seat, nothing merged" "$( [ "$prc" -eq 10 ] && has "tnone: tutorial lot without its control seat: no « controle: » line" && has "not merged" && untouched tnone && echo 0 || echo 1)"

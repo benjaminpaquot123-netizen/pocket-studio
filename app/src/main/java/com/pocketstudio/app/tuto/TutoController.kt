@@ -511,6 +511,9 @@ class TutoController(
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
+        // Lot « tuto-flèches » (seat H a): « Copier » done and notes still to write (the last bar): the roll goes to
+        // the next one (it stayed on bar 1, « plus loin → » three swipes long, 8 gestures lost).
+        if (need is TutoNeed.Copy && p !== before && !TutoChecks.done(step, p, t, base())) TutoHints.focus++
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
         // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
         // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).

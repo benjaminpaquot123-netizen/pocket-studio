@@ -701,11 +701,13 @@ private fun Grid(
     var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     var lit by remember { mutableStateOf<Note?>(null) }
     val focus = com.pocketstudio.app.tuto.TutoHints.focus
-    LaunchedEffect(focus, view, steady != null) {
+    LaunchedEffect(focus, view, steady != null, left.isEmpty()) {
         if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
         // Tour 6 repairs: « Je le fais » asks for the note while the roll is still under the tutorial's panel (no row in
         // sight: the note went to the roll's top edge, cut, under « plus haut ↑ »): the asking waits for rows in sight.
         if (sight != null && steady == null) return@LaunchedEffect
+        // Lot « tuto-flèches »: asked right after « Copier », the notes to write next not shown yet: the asking waits for them.
+        if (left.isEmpty() && com.pocketstudio.app.tuto.TutoHints.active) return@LaunchedEffect
         val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
         if (!asked) return@LaunchedEffect

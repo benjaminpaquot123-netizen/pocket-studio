@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchEngineTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-13T21:35:29.750Z" hostname="vm" time="16.019">
+  <properties/>
+  <testcase name="thePlayHeadMovesWithTheTempo" classname="com.pocketstudio.app.human.BenchEngineTest" time="3.736"/>
+  <testcase name="theGridsHeadTurnsWithTheDrumsUnderALongMelody" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.117"/>
+  <testcase name="aKnobMovedWithAutomationRecordWritesAPoint" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.102"/>
+  <testcase name="aMicTakeLeftRunningIsKeptWhenTheSongEnds" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.551"/>
+  <testcase name="aThreeMinuteRenderLastsThreeMinutes" classname="com.pocketstudio.app.human.BenchEngineTest" time="1.289"/>
+  <testcase name="anM4aIsMadeAndShared" classname="com.pocketstudio.app.human.BenchEngineTest" time="1.593"/>
+  <testcase name="anExportSizeIsSaidToBeTheBenchs" classname="com.pocketstudio.app.human.BenchEngineTest" time="1.379"/>
+  <testcase name="aWavIsMadeAndShared" classname="com.pocketstudio.app.human.BenchEngineTest" time="1.348"/>
+  <testcase name="aRenderLastsWhatIsAskedAndSoundsLikeItsProject" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.184"/>
+  <testcase name="thePlayHeadReadsTheEnginesClock" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.091"/>
+  <testcase name="exportProfile" classname="com.pocketstudio.app.human.BenchEngineTest" time="5.439"/>
+  <testcase name="aKnobMovedWhileTheSongPlaysWritesOnTheSongsBar" classname="com.pocketstudio.app.human.BenchEngineTest" time="0.048"/>
+  <system-out><![CDATA[PROFIL 4.7 : Wav 4.0 s de morceau : 1291 ms réelles, 1536192 octets
+PROFIL 4.7 : M4a 4.0 s de morceau : 1342 ms réelles, 768000 octets
+PROFIL 4.7 : Wav 16.0 s de morceau : 1371 ms réelles, 6144192 octets
+PROFIL 4.7 : M4a 16.0 s de morceau : 1405 ms réelles, 3072000 octets
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -2511,9 +2511,15 @@ QUEUE_PORTAL = """#!/usr/bin/env bash
 tour="$1"; zone="$2"
 pushed="$(git ls-remote origin refs/heads/int | cut -f1)"
 head="no-head"; if git merge-base --is-ancestor "$pushed" "eq/$tour-$zone"; then head="has-head"; fi
-echo "portal $zone $head" >> "$PS_TOY_CALLS"
+echo "portal $zone $head $3 $4" >> "$PS_TOY_CALLS"
 if [ "$zone" = refused ]; then echo "$zone: review refused: toy: not merged." >&2; exit 3; fi
 git merge -q --no-ff -m "Merge team $zone of $tour (audit ultra)" "eq/$tour-$zone"
+# Its traces, as the real portal: the judge counts as many gaps as the lots merged so far.
+n="$(git log --first-parent --merges --format=%s | grep -c '^Merge team ')"
+mkdir -p "docs/audits/ultra/portail/$zone"
+echo "chantier : $n écarts" > "docs/audits/ultra/portail/$zone/selftest-chantier.txt"
+git add "docs/audits/ultra/portail/$zone"
+git commit -q -m "Portal traces of the merge of $zone ($tour)"
 """
 
 
@@ -2632,7 +2638,10 @@ def portal_queue(d):
     check(code == 3 and "symbolic link" in out and "alias.txt" in out, "a symbolic link in the merged tree is refused:\n" + out)
     check(pushed() == head and git_toy(root, "rev-parse", "HEAD").strip() == head, "the merge with a link is undone and not pushed:\n" + out)
     # 6. Three lots per batch: said before batch 4, refused from batch 4 on (a batch opens when portail-paquet.txt changes).
-    code, out = queue("tour-9:b", "tour-9:c", "tour-9:d")
+    code, out = queue("tour-9:b", "tour-9:c", "tour-9:d", "--", "*QueueTest")
+    check("portal b has-head -- *QueueTest" in said() and "portal d has-head -- *QueueTest" in said(), "the filters after « -- » go to the portal for every lot:\n" + said())
+    check("b: merged and pushed" in out and "judge: 2 (before: 1)" in out and "judge: 4 (before: 3)" in out,
+          "the judge is read before and after each portal, in its traces:\n" + out)
     check(code == 0 and "À VOIR" in out and "d.txt" in tree(pushed()), "before batch 4 a fourth lot is said, not refused:\n" + out)
     write(os.path.join(bench, "portail-paquet.txt"), "paquet: 4\n")
     commit("batch 4 opens")

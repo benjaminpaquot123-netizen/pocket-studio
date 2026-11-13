@@ -9,11 +9,11 @@ tests: aucun : lot du banc seul (scripts et gabarits), aucun test Gradle changé
 | Point | Ce qui change | Rouge | Vert |
 |---|---|---|---|
 | 1. Le registre | `corrections.tsv` : en-tête + `phrase_acceptation`, `siege_origine`, `constat` (lignes des tours 1 à 4 intactes) ; `scripts/bench/reparations.py` (quatre états, lecture, commande du chef `--constate`) ; `applique-corrections.py` lit les nouveaux états | `c7baadfe` | `7adffbb5` |
-| 2. Le portail | refus neuf avant la fusion (sortie 11, `from_paquet 5`) d'un lot qui écrit « corrigé », « rejoué », « constaté », un mot inconnu, une phrase ou un siège d'origine qui ne sont pas du trieur ; après une fusion verte, le portail pose lui-même « rejoué » ; miroir dans `pre-vol.sh`, `KNOWN_RULES="18 5f49949e50"` | `2385e569` | `3c24f639` |
+| 2. Le portail | refus neuf avant la fusion (sortie 11, `from_paquet 6`) d'un lot qui écrit « corrigé », « rejoué », « constaté », un mot inconnu, une phrase ou un siège d'origine qui ne sont pas du trieur ; après une fusion verte, le portail pose lui-même « rejoué » ; miroir dans `pre-vol.sh`, `KNOWN_RULES="18 2c75cdfbfb"` | `2385e569` | `3c24f639` |
 | 3. Les sièges de contrôle | `human-act.py`, `human-tester.sh` (joue `controle/<id>/a/`, écrit `mesures.json` de chaque siège), `sortie-de-siege.py`, `fuse-reports.py`, `tableau-de-bord.py`, verrou du tuto (`rapport-zone.py --tuto`), gabarit du rapport (rubrique `defauts-avant`) | `4475642e` | `42700d30` |
 | 4. Le tableau de bord | une ligne « Réparations » par tour, quatre chiffres et « réparés : C sur N pris » | `a848cbe4` | `2da01534` |
 | 5. Les fiches | fiche 1 (siège de contrôle), fiche 2 (« 4 bis » : phrase, conditions d'origine, « tenté »), fiche 4b (« 2 bis » : le trieur écrit la phrase et le siège d'origine) | `7ce1fee5` | `6ede7980` |
-| 2 bis. Constat tardif | l'en-tête propre du registre (`COLUMNS`) n'est pas un changement du lot : sans cela, ce lot-ci aurait été refusé par sa propre règle dès le paquet 5 ; tout autre en-tête reste refusé | `037d4f73` | `696a6ee0` |
+| 2 bis. Constat tardif | l'en-tête propre du registre (`COLUMNS`) n'est pas un changement du lot : sans cela, ce lot-ci aurait été refusé par sa propre règle dès le paquet 6 ; tout autre en-tête reste refusé | `037d4f73` | `696a6ee0` |
 
 Hors paires : `04bb954d` et `fb6e2439` (`test_portail4.py` exigeait exactement 17 règles du portail ; il en exige au moins 17 ; le second remet une ligne que le premier avait effacée).
 
@@ -47,10 +47,10 @@ Les écritures du tour 6 se lisent aussi (`- A1 : corrigé`, `- A7 | corrigé (�
 Ligne de refus neuve du portail (`scripts/bench/fusion-equipes.sh`) :
 
 ```
-  if from_paquet 5 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
+  if from_paquet 6 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
 ```
 
-Pré-vol : « le lot se donne un état réservé du registre des réparations : … », RECALÉ dès le paquet 5, « À VOIR … refusé à partir du paquet 5 » avant.
+Pré-vol : « le lot se donne un état réservé du registre des réparations : … », RECALÉ dès le paquet 6, « À VOIR … refusé à partir du paquet 6 » avant.
 
 Tableau de bord, sous le tableau de chaque tour :
 
@@ -65,7 +65,7 @@ Siège de contrôle joué par le banc : `docs/audits/ultra/sieges/<tour>/control
 Chaque contrôle neuf a été cassé une fois (copie jetable, fichier remis ensuite), suite relancée :
 
 - Point 1 (13 cassures) : accents, mot de la réponse, écran exigé, défaut « pas pris », colonne réécrite, fin de rubrique, filtre « tenté » d'`applique-corrections.py`, passage « constaté » → « corrigé » dans `base.tsv`, lecture de l'état, cases manquantes : toutes rouges. Trois restaient vertes au premier passage (`.strip()` de la ligne réécrite, fin de rubrique, lecture de l'état dans `applique-corrections.py`) : tests ajoutés, puis rouges.
-- Point 2 (20 cassures, dont l en-tête propre de la paire 2 bis) : état réservé, lecture à la tête, phrase, siège d'origine, `constat`, en-tête, dernier verdict d'un rejeu, classe entière des filtres, filtre « tenté », lignes du lot seulement, comparaison des lignes : rouges dans `test_constate.py`. Portail sans `from_paquet 5`, « rejoué » non mis dans le commit, bloc « rejoué » retiré, pré-vol sans `rule_from 5`, pré-vol sans le bloc : rouges dans `test_pre_vol.sh`. `tete:$before` remplacé par `tete:$base` : vert dans `test_pre_vol.sh` (dans le jouet, base et tête sont le même commit), rouge dans `test_constate.py` (contrôle de la ligne du portail) ; `computed+=` du registre retiré : rouge dans `test_constate.py`. (Corrigé après la relecture, M6 : « refus d'une phrase effacée » était écrit ici sans test qui le montre ; le test existe depuis `16925f45`.)
+- Point 2 (20 cassures, dont l en-tête propre de la paire 2 bis) : état réservé, lecture à la tête, phrase, siège d'origine, `constat`, en-tête, dernier verdict d'un rejeu, classe entière des filtres, filtre « tenté », lignes du lot seulement, comparaison des lignes : rouges dans `test_constate.py`. Portail sans `from_paquet 6`, « rejoué » non mis dans le commit, bloc « rejoué » retiré, pré-vol sans `rule_from 6`, pré-vol sans le bloc : rouges dans `test_pre_vol.sh`. `tete:$before` remplacé par `tete:$base` : vert dans `test_pre_vol.sh` (dans le jouet, base et tête sont le même commit), rouge dans `test_constate.py` (contrôle de la ligne du portail) ; `computed+=` du registre retiré : rouge dans `test_constate.py`. (Corrigé après la relecture, M6 : « refus d'une phrase effacée » était écrit ici sans test qui le montre ; le test existe depuis `16925f45`.)
 - Point 3 (11 cassures) : chemin de contrôle de `human-act.py` (2), mesures à la fin du lot, message du dossier plat, nom du siège dans `sortie-de-siege.py`, nom dans les grappes et les incidents, rubrique `defauts-avant`, missions du tour sans les contrôles, plusieurs sièges dans un dossier, dossier imbriqué : toutes rouges.
 - Point 4 (6 cassures) : meilleur état, tour, double compte, « pris » sans les « pas pris », lecture de l'état, ligne absente : toutes rouges ; le double compte restait vert au premier passage, ligne de test ajoutée.
 - Point 5 (5 cassures) : chaque ligne neuve des fiches retirée, la ligne `defauts-avant` changée, un des quatre mots retiré : toutes rouges.
@@ -81,7 +81,7 @@ Chaque contrôle neuf a été cassé une fois (copie jetable, fichier remis ensu
 - Un siège de contrôle « plat » (`controle/<id>/start.txt`) ne se joue pas : le banc dit où mettre le `start.txt`.
 - Que le siège de contrôle était neuf, avait le même profil et le budget de la mission d'origine ; un « corrigé » se relit sur son écran, il ne se recalcule pas.
 - La règle des allers-retours (règle 4 : un « autre » retourne à l'équipe, deux fois au plus) : rien ne la compte.
-- Aujourd'hui (paquet 4), le refus et « rejoué » dorment : ils valent dès que le chef ouvre le paquet 5.
+- Aujourd'hui (paquet 5), le refus et « rejoué » dorment : ils valent dès que le chef ouvre le paquet 6.
 - La condition d'entrée de la règle 3 (aucun bloquant ni grave visé « autre » ou « encore là », aucun grave neuf) : au chef et à la relecture (m2).
 
 ## Relecture neuve (première passe sur 6e144989 : 1 grave, corrigé)
@@ -117,3 +117,5 @@ Essais à blanc, en lecture seule : ce lot passe sa propre règle (`--lot eq/tou
 - Demande : `docs/AIDE-FUSIONS-TESTS.md` (fiche des équipes, point 8 ou 11) : « dans `corrections.tsv`, ta ligne passe à tenté, jamais corrigé » ; hors de mes fichiers.
 - Demande : `docs/audits/AUDIT-ULTRA.md` §13.5 : renvoyer aux formats de ce rapport (registre, rubrique `defauts-avant`, dossier `controle/<id>/a/`).
 - Aucune demande Kotlin : le banc joue `<human.dir>/<a-f>` quel que soit le chemin.
+
+Re-garde (2026-11-13) : les règles de ce lot valent à partir du paquet 6 (`from_paquet 6`), parce que le paquet 5 s'est ouvert avant sa fusion ; rien d'autre ne change.

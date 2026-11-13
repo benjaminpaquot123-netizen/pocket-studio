@@ -4,7 +4,7 @@ Branche : `eq/tour-6-portail4` (base `ce0aed6f`, tête poussée de l'intégratio
 
 tests: aucun : lot du banc seul (scripts du portail), aucun test Gradle changé ; banc : `python3 -I scripts/bench/test_portail4.py`, `bash scripts/bench/test_pre_vol.sh`, `python3 -I scripts/bench/test_socle.py`, `python3 -I scripts/bench/test_portail3.py`, `python3 -I scripts/bench/test_ultra_bench.py`
 
-## La règle (à partir du paquet 5)
+## La règle (à partir du paquet 6)
 
 Le portail refuse, avant la fusion et avec la sortie 10, un lot qui change la zone du tuto si son rapport de zone ne porte pas, pour chaque siège de contrôle, cette ligne :
 
@@ -12,7 +12,7 @@ Le portail refuse, avant la fusion et avec la sortie 10, un lot qui change la zo
 controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0
 ```
 
-Le refus du portail : `<zone>: tutorial lot without its control seat: <raisons>: not merged.` Le pré-vol dit la même chose : « lot du tuto sans son siège de contrôle : … », RECALÉ dès le paquet 5, « À VOIR … refusé à partir du paquet 5 » avant.
+Le refus du portail : `<zone>: tutorial lot without its control seat: <raisons>: not merged.` Le pré-vol dit la même chose : « lot du tuto sans son siège de contrôle : … », RECALÉ dès le paquet 6, « À VOIR … refusé à partir du paquet 6 » avant.
 
 - **Zone** : un fichier que le lot change (diff depuis sa base, et différent de la tête de l'intégration) sous `src/main`, dans un dossier `tuto/` ou `tutos/`, ou nommé `i18n/<langue>/tuto*.json`. Les quatre fichiers partagés de §13.3 (`PianoRoll.kt`, `RhythmScreen.kt`, `PlainWords.kt`, `TrackSheet.kt`) comptent quand le rapport dit le mot (hors blocs de code). Les tests, les captures de référence et les docs n'en font pas partie. Les noms de fichiers sont lus tels quels, accents et espaces compris.
 - **Lignes** : au moins une ; chacune bien formée, avec 0 et 0. Une seule mauvaise refuse le lot. Une ligne écrite en puce, en numéro, en ligne de tableau, en citation ou en gras est lue comme les autres.
@@ -66,8 +66,10 @@ Les deux lignes « depuis la relecture » montrent le prix du point resté ouver
 
 ## Demandes (fichiers hors de la fiche)
 
-- Demande : `docs/AIDE-FUSIONS-TESTS.md` : ajouter au point 11 de la fiche des équipes la ligne `controle:` (lots du tuto, refusé sans elle à partir du paquet 5) et l'ordre « siège avant relecture ».
+- Demande : `docs/AIDE-FUSIONS-TESTS.md` : ajouter au point 11 de la fiche des équipes la ligne `controle:` (lots du tuto, refusé sans elle à partir du paquet 6) et l'ordre « siège avant relecture ».
 - Demande : `docs/audits/ultra/GABARIT-FICHES-V3.md` : fiche du correcteur, point 9 : après le contrôle, committer le dossier du siège et la ligne `controle:` dans le rapport de zone ; fiche 1 (siège de contrôle) : rappeler que la tête du rapport porte le commit joué.
 
 ## Chemins
 - chemin: banc › autotest du testeur humain | test: BenchSelfTest#reachTagTouchesAVisibleElementInPlace
+
+Re-garde (2026-11-13) : les règles de ce lot valent à partir du paquet 6 (`from_paquet 6`), parce que le paquet 5 s'est ouvert avant sa fusion ; rien d'autre ne change.

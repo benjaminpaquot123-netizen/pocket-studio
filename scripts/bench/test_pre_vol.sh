@@ -386,7 +386,7 @@ batch 4
 portal fok
 said "the portal merges a grave fix with its replay" "$( [ "$prc" -eq 0 ] && has "fok: merged" && echo 0 || echo 1)"
 
-# --- §13.5, last point (lot « portail4 », rule « from_paquet 5 ») ----------------------------------------------------
+# --- §13.5, last point (lot « portail4 », rule « from_paquet 6 ») ----------------------------------------------------
 # No lot of the tutorial enters before a fresh beginner replayed it on the lot's branch: a lot that changes the
 # tutorial zone carries, per control seat, « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its
 # zone report, the seat's own report being in the branch (rapport-zone.py --tuto). Portal: exit 10, before the merge.
@@ -401,12 +401,12 @@ seat() { # <id> <commit played>: a control seat's report, as the bench starts it
   git add "docs/audits/ultra/sieges/tour-9/controle/$1" && git commit -q -m "control seat $1"
 }
 tutofix tnone && fixes tnone
-# Before batch 5 the rule waits: said by the pre-flight, not a word from the portal.
-expect "before batch 5 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 5" non tour-9 tnone
+# Before batch 6 the rule waits: said by the pre-flight, not a word from the portal.
+expect "before batch 6 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 6" non tour-9 tnone
 portal tnone
-said "before batch 5 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
+said "before batch 6 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
 git reset -q --hard "$pbefore"
-batch 5
+batch 6
 expect "a tutorial lot without its control seat: refused" 1 "lot du tuto sans son siège de contrôle : no « controle: » line" oui tour-9 tnone
 portal tnone
 said "the portal names the tutorial lot without its control seat, nothing merged" "$( [ "$prc" -eq 10 ] && has "tnone: tutorial lot without its control seat: no « controle: » line" && has "not merged" && untouched tnone && echo 0 || echo 1)"
@@ -432,7 +432,7 @@ expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de 
 portal tok
 said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
 
-# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 5 ») --------------------------------
+# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 6 ») --------------------------------
 # A lot writes « tenté » in docs/audits/ultra/corrections.tsv, never « corrigé », « rejoué » (the portal's) nor
 # « constaté » (the chief's, after a control seat): portal exit 11, before the merge. After a merge, the portal itself
 # turns the lot's « tenté » to « rejoué » when its proof (a replay of rejeux/) held on the merged head.
@@ -454,11 +454,11 @@ STUB
   }
   state cself C1 corrigé r1 && fixes cself
   batch 4
-  expect "before batch 5 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 5" non tour-9 cself
+  expect "before batch 6 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 6" non tour-9 cself
   portal cself
-  said "before batch 5 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
+  said "before batch 6 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
   git reset -q --hard "$pbefore"
-  batch 5
+  batch 6
   expect "a lot that writes « corrigé »: refused" 1 "état réservé du registre des réparations : .*tour-9 C1.*« corrigé »" oui tour-9 cself
   portal cself
   said "the portal names the lot that gives itself « corrigé », nothing merged" "$( [ "$prc" -eq 11 ] && has "cself: the lot gives itself a state of the repairs register" && has "not merged" && untouched cself && echo 0 || echo 1)"

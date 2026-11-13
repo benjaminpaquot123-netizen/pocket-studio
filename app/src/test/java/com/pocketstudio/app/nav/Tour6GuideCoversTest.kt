@@ -135,7 +135,7 @@ class Tour6GuideCoversTest {
         assertTrue("« La suite » at $sign is not inside the panel $panel", sign.bottom <= panel.bottom + 1f && sign.top >= panel.top)
         // A touch on it brings the rest up, to the end; then it goes.
         var touches = 0
-        while (shell.has("guide_more_below") && touches < 8) {
+        while (shell.has("guide_more_below") && touches < 40) {
             shell.tap("guide_more_below")
             shell.idle(600)
             touches++

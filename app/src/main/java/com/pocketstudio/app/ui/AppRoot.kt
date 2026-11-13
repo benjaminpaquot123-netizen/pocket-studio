@@ -2075,6 +2075,18 @@ fun AppRoot() {
     }
     // G4 review: a measure running stops with the panel (and when the music starts, below).
     LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure(); guideOverTuto = false } }
+    // Tour 6, G1 (seat A a #16: the Guide open, the thumb's « ⋮ Plus » touched, the Plus page came up under the panel):
+    // the panel folds when the user goes to another screen himself (a tab, Plus, a page of Plus); its bar stays, one
+    // touch from the card. The Guide's own « Voir le réglage » is not that: [guideGo] says where the panel now is.
+    val guidePlace = tab to toolPage
+    var guideOpenedOn by remember { mutableStateOf<Pair<AppTab, ToolPage?>?>(null) }
+    LaunchedEffect(guideOpen, guidePlace) {
+        when {
+            !guideOpen -> guideOpenedOn = null
+            guideOpenedOn == null -> guideOpenedOn = guidePlace
+            guideOpenedOn != guidePlace -> guideOpen = false
+        }
+    }
     // Tour 6, T13 (seat D a #99: « Reprendre le tuto » and the Guide's bar, two guides under one page): while a
     // tutorial runs or waits to be resumed the Guide stays away, unless it was asked for by name ([guideOverTuto]).
     val tutoHoldsTheLine = tutoUi != null || tuto.resumable
@@ -2091,8 +2103,13 @@ fun AppRoot() {
         .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
     // Le Guide keeps quiet during a take, on the Live page and on the keyboard lying down, where every dp is a key's
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
+    // Tour 6, G1 (seat F b #10, the 130 % seats): upright on a short screen the keys' page gives the Guide's folded bar's
+    // line to its keys, as it does the thumb's bar's ([KEYS_PAGE_THUMB_BAR_DP]: 16 dp of keys in view on a 360 x 780
+    // phone at 130 %, 64 without the bar). The bar stays while the Guide's « Voir le réglage » card points at it.
+    val keysTakeGuideLine = tab == AppTab.Synthe && !com.pocketstudio.app.synth.NotesView.shown && !guideOpen && guideSpot == null &&
+        LocalConfiguration.current.screenHeightDp < KEYS_PAGE_THUMB_BAR_DP
     val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe) &&
-        guideFree
+        !keysTakeGuideLine && guideFree
     val guideSide = guideShown && guideOpen && landscape
     // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
     // Audit ultra round 2 (n° 11, seat B a: « Jouer » out of the thumb's reach, the bar hidden under the Guide): the Guide's
@@ -2116,6 +2133,8 @@ fun AppRoot() {
         }
     }
     val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
+        // The Guide leads to a screen: its panel, when it stays open, is at home there (tour 6, G1).
+        guideOpenedOn = null
         when (g) {
             is com.pocketstudio.app.guide.GuideGo.Tab -> {
                 g.audioPage?.let { audioPage = it }
@@ -3722,7 +3741,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     com.pocketstudio.app.settings.HelpActions(
                                         openGuide = { showGuide = true },
                                         // G5: the Guide took over « Prochaine étape »: its panel, on the song.
-                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine },
+                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true; guideOverTuto = tutoHoldsTheLine; guideOpenedOn = null },
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },

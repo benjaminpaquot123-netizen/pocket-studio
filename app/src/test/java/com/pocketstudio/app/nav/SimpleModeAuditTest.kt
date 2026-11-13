@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -139,14 +140,17 @@ class SimpleModeAuditTest {
         compose.onNodeWithTag("sound_chooser").assertExists()
     }
 
-    /** 08 #11: on a phone at 130 %, the Clavier's keys are whole above the Guide's bar. */
+    /**
+     * 08 #11: on a phone at 130 %, the Clavier's keys are whole above the Guide's bar. Tour 6, G1: on a screen that short
+     * the bar now gives its line to the keys (Tour6GuideCoversTest); where it shows, the keys still end above it.
+     */
     @Test
     fun theKeysAreAboveTheGuidesBarAt130() {
         h.start(simple = true, scale = 1.3f)
         tap("tab_simple_Clavier")
         val keys = compose.onNodeWithTag("keyboard").fetchSemanticsNode().boundsInRoot
-        val guide = compose.onNodeWithTag("guide_bar").fetchSemanticsNode().boundsInRoot
-        assertTrue("the keys end at ${keys.bottom}, the Guide's bar starts at ${guide.top}", keys.bottom <= guide.top + 1f)
+        val guide = compose.onAllNodesWithTag("guide_bar").fetchSemanticsNodes().firstOrNull()?.boundsInRoot
+        assertTrue("the keys end at ${keys.bottom}, the Guide's bar starts at ${guide?.top}", guide == null || keys.bottom <= guide.top + 1f)
         assertTrue(keys.height > 0f && keys.bottom <= compose.onRoot().fetchSemanticsNode().boundsInRoot.bottom)
     }
 

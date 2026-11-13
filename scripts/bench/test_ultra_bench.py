@@ -250,6 +250,7 @@ def main():
         replays_keep_their_selftest(d)
         fusion_forged(d)
         toy_batch_is_its_own(d)
+        portal_queue(d)
         portal_traces(d)
         zone_report(d)
         portal_recomputes(d)
@@ -2503,6 +2504,142 @@ def review_rows(d):
             with open(path, encoding="utf-8") as f:
                 r = subprocess.run([sys.executable, "-I", script], input=f.read(), capture_output=True, text=True)
             check((r.returncode == 0) == want, f"the real review {name} keeps its answer ({want}):\n" + r.stdout)
+
+
+QUEUE_PORTAL = """#!/usr/bin/env bash
+# Stand-in for the portal: says what it was given, refuses the zone « refused », merges the others.
+tour="$1"; zone="$2"
+pushed="$(git ls-remote origin refs/heads/int | cut -f1)"
+head="no-head"; if git merge-base --is-ancestor "$pushed" "eq/$tour-$zone"; then head="has-head"; fi
+echo "portal $zone $head" >> "$PS_TOY_CALLS"
+if [ "$zone" = refused ]; then echo "$zone: review refused: toy: not merged." >&2; exit 3; fi
+git merge -q --no-ff -m "Merge team $zone of $tour (audit ultra)" "eq/$tour-$zone"
+"""
+
+
+def portal_queue(d):
+    """Lot « portail3 » (AUDIT-ULTRA §13.9): portail-file.sh, the conductor's queue, on a toy workshop with a toy
+    remote and a stand-in for the portal. The workshop must be the pushed head; the lot merged is the PUSHED lot with
+    the pushed head merged into it, never a local leftover; the integration is pushed after each success; a refusal
+    stops the queue and prints the conductor's message; a symbolic link after the merge is undone and not pushed; a
+    conflict with the head never reaches the portal; nothing is merged during a wave; a batch holds three lots (from
+    batch 4 on)."""
+    check(os.path.isfile(os.path.join(HERE, "portail-file.sh")), "the conductor's queue is in the repository (scripts/bench/portail-file.sh)")
+    remote = os.path.join(d, "queue-remote.git")
+    root = os.path.join(d, "queue")
+    calls = os.path.join(d, "queue-calls.txt")
+    subprocess.run(["git", "init", "-q", "--bare", "-b", "int", remote], check=True)
+    os.makedirs(root)
+    git_toy(root, "init", "-q", "-b", "int")
+    git_toy(root, "remote", "add", "origin", remote)
+    bench = os.path.join(root, "scripts", "bench")
+    with open(os.path.join(HERE, "portail-file.sh"), encoding="utf-8") as f:
+        write(os.path.join(bench, "portail-file.sh"), f.read())
+    write(os.path.join(bench, "fusion-equipes.sh"), QUEUE_PORTAL)
+    write(os.path.join(bench, "pre-vol.sh"), '#!/usr/bin/env bash\n[ "$2" != recale ] || { echo "RECALÉ : toy"; exit 1; }\n')
+    for f in ("portail-file.sh", "fusion-equipes.sh", "pre-vol.sh"):
+        os.chmod(os.path.join(bench, f), 0o755)
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 3\n")
+    en_cours = os.path.join(root, "docs", "audits", "ultra", "EN-COURS.md")
+    write(en_cours, "# En cours\n\n- **Temps en cours** : CORRECTION du tour 9. Aucune vague de testeurs ne joue.\n")
+    write(os.path.join(root, "shared.txt"), "one\n")
+
+    def commit(message):
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "HEAD").strip()
+
+    start = commit("start")
+    git_toy(root, "push", "-q", "origin", "int")
+
+    def lot(zone, files, links=()):
+        """A lot's branch, made from the start and pushed as eq/tour-9-<zone>; the workshop comes back to int."""
+        git_toy(root, "checkout", "-q", "-b", f"tmp-{zone}", start)
+        for name, text in files.items():
+            write(os.path.join(root, name), text)
+        for name in links:
+            os.symlink("shared.txt", os.path.join(root, name))
+        commit(f"lot {zone}")
+        git_toy(root, "push", "-q", "origin", f"HEAD:refs/heads/eq/tour-9-{zone}")
+        git_toy(root, "checkout", "-q", "int")
+        git_toy(root, "branch", "-q", "-D", f"tmp-{zone}")
+
+    for zone in "abcdefgh":
+        lot(zone, {f"{zone}.txt": zone + "\n"})
+    lot("refused", {"refused.txt": "r\n"})
+    lot("recale", {"recale.txt": "r\n"})
+    lot("link", {"link.txt": "l\n"}, links=("alias.txt",))
+    lot("conflict", {"shared.txt": "the lot's\n"})
+    # The integration moves after the lots were cut: its pushed head is not in them.
+    write(os.path.join(root, "shared.txt"), "two\n")
+    commit("the integration goes on")
+    git_toy(root, "push", "-q", "origin", "int")
+    # A local leftover under the lot's name: never what is merged.
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-a", start)
+    write(os.path.join(root, "leftover.txt"), "never pushed\n")
+    commit("a local leftover")
+    git_toy(root, "checkout", "-q", "int")
+
+    env = dict(os.environ, PS_INTEGRATION="int", PS_TOY_CALLS=calls)
+
+    def queue(*lots):
+        r = subprocess.run(["bash", os.path.join(bench, "portail-file.sh"), *lots], cwd=root, env=env, capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    def pushed():
+        return subprocess.run(["git", "-C", remote, "rev-parse", "int"], capture_output=True, text=True).stdout.strip()
+
+    def said():
+        return open(calls, encoding="utf-8").read() if os.path.isfile(calls) else ""
+
+    def tree(rev="HEAD"):
+        return git_toy(root, "ls-tree", "-r", "--name-only", rev).split()
+
+    # 1. One good lot, one refused, one never reached.
+    code, out = queue("tour-9:a", "tour-9:refused", "tour-9:b")
+    check(code == 3, "a refusal of the portal stops the queue (exit 3):\n" + out)
+    check("portal a has-head" in said(), "the pushed head of the integration is merged into the lot before the portal:\n" + said())
+    check("a.txt" in tree() and "leftover.txt" not in tree(), "the lot merged is the pushed one, never a local leftover:\n" + out)
+    check(pushed() == git_toy(root, "rev-parse", "HEAD").strip() and "a.txt" in tree(pushed()), "the integration is pushed after each success:\n" + out)
+    check("le portail refuse refused (sortie 3)" in out and "« refused: review refused: toy: not merged. »" in out,
+          "a refusal prints the conductor's message with the portal's exact line:\n" + out)
+    check("portal b " not in said() and "b.txt" not in tree(), "the lot after a refusal is not tried:\n" + out)
+    # 2. The workshop ahead of the pushed head.
+    write(os.path.join(root, "local.txt"), "not pushed\n")
+    commit("a local commit, never pushed")
+    before = said()
+    code, out = queue("tour-9:b")
+    check(code == 2 and "not the pushed head" in out and said() == before, "a workshop that is not the pushed head merges nothing (exit 2):\n" + out)
+    git_toy(root, "reset", "-q", "--hard", pushed())
+    # 3. A wave of testers plays.
+    write(en_cours, "# En cours\n\n- **Temps en cours** : VAGUE du tour 9, départ abc1234.\n")
+    commit("a wave starts")
+    git_toy(root, "push", "-q", "origin", "int")
+    code, out = queue("tour-9:b")
+    check(code == 2 and "wave of testers" in out and said() == before, "nothing is merged during a wave (exit 2):\n" + out)
+    write(en_cours, "# En cours\n\n- **Temps en cours** : CORRECTION du tour 9. Aucune vague de testeurs ne joue.\n")
+    commit("the wave is over")
+    git_toy(root, "push", "-q", "origin", "int")
+    # 4. The pre-flight refuses: the portal is not disturbed. A conflict with the head: neither.
+    code, out = queue("tour-9:recale")
+    check(code == 3 and "pre-flight refuses" in out and "portal recale" not in said(), "a lot the pre-flight refuses never reaches the portal:\n" + out)
+    code, out = queue("tour-9:conflict")
+    check(code == 3 and "does not merge" in out and "shared.txt" in out and "portal conflict" not in said(),
+          "a lot that conflicts with the pushed head never reaches the portal:\n" + out)
+    # 5. A symbolic link after the merge: undone, not pushed.
+    head = pushed()
+    code, out = queue("tour-9:link")
+    check(code == 3 and "symbolic link" in out and "alias.txt" in out, "a symbolic link in the merged tree is refused:\n" + out)
+    check(pushed() == head and git_toy(root, "rev-parse", "HEAD").strip() == head, "the merge with a link is undone and not pushed:\n" + out)
+    # 6. Three lots per batch: said before batch 4, refused from batch 4 on (a batch opens when portail-paquet.txt changes).
+    code, out = queue("tour-9:b", "tour-9:c", "tour-9:d")
+    check(code == 0 and "À VOIR" in out and "d.txt" in tree(pushed()), "before batch 4 a fourth lot is said, not refused:\n" + out)
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 4\n")
+    commit("batch 4 opens")
+    git_toy(root, "push", "-q", "origin", "int")
+    code, out = queue("tour-9:e", "tour-9:f", "tour-9:g", "tour-9:h")
+    check(code == 3 and "from_paquet 4" in out and "three at most" in out, "from batch 4 on a fourth lot of the batch is refused:\n" + out)
+    check("g.txt" in tree(pushed()) and "h.txt" not in tree(pushed()) and "portal h" not in said(), "the three lots of the batch are pushed, the fourth never tried:\n" + out)
 
 
 def fusion_toy(d, name):

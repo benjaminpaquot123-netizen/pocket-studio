@@ -33,6 +33,7 @@ import com.pocketstudio.model.hasMusicOfItsOwn
 import com.pocketstudio.model.remixOverrunSeconds
 import com.pocketstudio.model.remixSteps
 import com.pocketstudio.model.remixEndBars
+import com.pocketstudio.model.heardSceneSteps
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.withRecordedCell
@@ -3269,7 +3270,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_sessionUi.value.songIndex >= 0) return NativeEngine.songStep().let { if (it < 0) -1 else it / spb }
         val steps = NativeEngine.absoluteStep()
         if (steps < 0) return -1
-        return steps % p.sceneSteps(heardScene ?: p.scene).coerceAtLeast(1) / spb
+        // Tour 6, P6: the bar in what is heard, the scene's audio bricks included ([heardSceneSteps]).
+        return steps % p.heardSceneSteps(heardScene ?: p.scene).coerceAtLeast(1) / spb
     }
 
     /**

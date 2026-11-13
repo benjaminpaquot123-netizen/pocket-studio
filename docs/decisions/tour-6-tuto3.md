@@ -6,3 +6,4 @@
 - 2026-11-13 : machine sans SDK Android au départ : SDK installé dans /root/android-sdk (plate-forme 37.0, build-tools 37, NDK 30.0.16248370, cmake 3.22.1) et `local.properties` local (non commité) ; Robolectric 16 téléchargé à la main dans ~/.m2.
 - 2026-11-13 : la ligne du rouleau parle de la note restante la plus proche (contrôle Da-3), plus de « la première du temps en vue ». Raison : la phrase d'acceptation du chef. Retour arrière : revenir `3732502b` et la propriété de `482d82d7`.
 - 2026-11-13 : le panneau replié se rouvre une fois par étape quand seule la douceur des cases manque, plutôt qu'une phrase neuve. Raison : ses mots disent déjà « appui long dessus, puis « Doux » » dans toutes les langues, sans texte à traduire. Retour arrière : revenir `7e86a638`.
+- 2026-11-13 : ce qui manque sur un bouton se dit dans la note de l'étape (« Coupure : encore +8 »), une phrase neuve traduite dans les 14 langues. Retour arrière : revenir `896b63ff`.

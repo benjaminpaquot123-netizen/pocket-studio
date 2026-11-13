@@ -4,7 +4,7 @@ Consigne du chef : réparer les phrases d'acceptation M1 à M7 (sièges de contr
 Branche : `eq/tour-6-tuto4`, partie de `eq/tour-6-tuto3` (dcc06432c) avec la tête de `ccr-80af1a1b-mn0wec` fusionnée. Décisions : `docs/decisions/tour-6-tuto4.md`.
 Fichiers : `project-model/src/main/resources/tutos/house.json`, `tutos/techno.json`, `i18n/*/tuto_house.json`, `i18n/*/tuto_techno.json` (14 langues) et les tests.
 
-tests: com.pocketstudio.model.tuto.Tour6Tuto4HouseTest com.pocketstudio.model.tuto.Tour6Tuto4TechnoTest com.pocketstudio.model.tuto.Tour6TutoForeignWordsTest com.pocketstudio.model.tuto.Tour6TutoAgreementTest
+tests: *Tour6TutoPadNamesTest *Tour6TutoPanelPadQuotesTest *Tour6TutoPanelPartMadeTest
 
 ## Les phrases, point par point (toutes « tentées » : seul le siège de contrôle peut les dire corrigées)
 | point | house (Ha, fr) | techno (Da ja, Bb de) | pas pris (code ou fichier d'un autre) |
@@ -20,20 +20,12 @@ tests: com.pocketstudio.model.tuto.Tour6Tuto4HouseTest com.pocketstudio.model.tu
 ne corrige pas: N19 : grave du lot 2 (TutoController.kt), hors des phrases de ce lot
 
 ## Liste des chemins
-chemin: Tuto Facile › House › ch. 2 et 4 › pad Rim nommé comme écrit | test: Tour6Tuto4HouseTest#thePadIsNamedAsWrittenOnIt
-chemin: Tuto Facile › House › mots de musicien à leur première vue | test: Tour6Tuto4HouseTest#musicianWordsAreExplainedAtFirstSight
-chemin: Tuto Facile › House › chiffres de l'étape | test: Tour6Tuto4HouseTest#theNumbersAreTheStepsOwn
-chemin: Tuto Facile › House › Break Montée et Drop 2 | test: Tour6Tuto4HouseTest#theSentencesAgree
-chemin: Tuto Facile › House › ch. 12 14 et 15 | test: Tour6Tuto4HouseTest#howManyAndWhatTheNumbersMean
-chemin: Tuto Pro › House › ch. 13 envoi réverbe du Clap | test: Tour6Tuto4HouseTest#theClapsReverbIsInThePadsEffects
-chemin: Tuto › House › Partager | test: Tour6Tuto4HouseTest#theSongIsShared
-chemin: Tuto › Techno › pads nommés comme écrits | test: Tour6Tuto4TechnoTest#padsNamedAsWritten
-chemin: Tuto Facile › Techno japonais › mots expliqués à leur première vue | test: Tour6Tuto4TechnoTest#tradeWordsExplainedWhereTheyFirstShow
-chemin: Tuto Pro › Techno allemand › Takte et accords | test: Tour6Tuto4TechnoTest#numbersTellTheTruth
-chemin: Tuto › Techno › Break Montée et ch. 10 | test: Tour6Tuto4TechnoTest#noContradiction
-chemin: Tuto › Techno › ch. 14 et 15 | test: Tour6Tuto4TechnoTest#marksAndExportWordsSaid
-chemin: Tuto Pro › Techno › ch. 13 envoi réverbe du Clap | test: Tour6Tuto4TechnoTest#reverbSendFromThePadsEffects
-chemin: Tuto › Techno › un mot par chose | test: Tour6Tuto4TechnoTest#oneWordPerThing
+Les phrases sont prouvées par `Tour6Tuto4HouseTest` et `Tour6Tuto4TechnoTest` (project-model, 7 méthodes chacun, une paire rouge/vert par méthode). Les écrans de l'appli qui lisent ces mêmes phrases :
+chemin: Tuto › chaque pad cité entre guillemets est un pad affiché | test: Tour6TutoPadNamesTest#aPadNamedIsAPadShown
+chemin: Tuto en japonais › le pad cité prend le nom du kit | test: Tour6TutoPanelPadQuotesTest#japanese
+chemin: Tuto en coréen › le pad cité prend le nom du kit | test: Tour6TutoPanelPadQuotesTest#korean
+chemin: Tuto › Créer la partie › ce que dit le bouton suit l'étape | test: Tour6TutoPanelPartMadeTest#aPartThatLeavesBricksOutIsNotSaidTheWholeGroove
+chemin: Tuto › Créer la partie › ce qui manque se lit sur la partie créée | test: Tour6TutoPanelPartMadeTest#whatAPartLeavesOutIsReadFromThePartMadeNotFromTheOneShown
 
 ## Preuves
 - Chaque méthode vue rouge sur son assertion avant la correction, puis verte (paires « rouge: » / « vert: » par méthode ; M1, M2 et M3 techno ont un deuxième « vert: » du même sujet, expliqué dans les décisions).

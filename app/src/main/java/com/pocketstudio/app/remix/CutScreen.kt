@@ -199,10 +199,14 @@ fun CutScreen(
             // the curve's fixed 210 dp pushed « Coupes », the tools and the pieces' list out (no way back to « Un bout », no
             // piece to tick). Little room: everything stays, the curve shorter, the column scrolls.
             val tight = !wide && !model.single && maxHeight < 700.dp
-            // Tour 6, seat E c #17 (the round's blocker, pt-BR at 200 %; seat B a screen 21 at 100 %): « Un bout » gave its
-            // curve only what the send bar left, in a column that did not scroll: the curve and its Início / Fim bars fell
-            // to nothing. Little room: the whole screen scrolls, the curve keeps a height a finger can work with.
-            val scrollsAll = !wide && model.single && maxHeight < 700.dp
+            // Tour 6, seat E c #17 (the round's blocker, pt-BR at 200 %) and B a #A5 (es, 100 %, phone): « Un bout » squeezed
+            // « Inicio aquí », « Fin aquí » and « Escuchar el trozo » to their tops. The column always scrolls behind a fixed
+            // curve, so the tools keep their full height; at a normal font they stay in view without a scroll.
+            val bigText = androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.3f
+            val scrollsAll = !wide && model.single
+            // The fixed curve takes what the room leaves above the tools (120 dp, a finger's, up to 180 dp): on the seat's
+            // ~492 dp the tools stay in view without a scroll and the curve never falls under 120 dp (review of remix2).
+            val curveHeight = (maxHeight - 380.dp).coerceIn(120.dp, 180.dp)
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
@@ -210,7 +214,10 @@ fun CutScreen(
                   val scroll = rememberScrollState()
                   val scrolls = tight || scrollsAll
                   Column(if (scrolls) Modifier.fillMaxSize().verticalScroll(scroll) else Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    StemChips(model) { actions.stop() }
+                    // The stem chips stay on top in « Phrases » (over the pieces' list that scrolls below) and in « Un bout »
+                    // when the screen scrolls (a large font): the whole column is reached by scrolling, so they read first.
+                    // Landscape (wide) keeps them with the tools in the side column.
+                    if (!wide && (!model.single || bigText)) StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // « Un bout » numbers its bars on the curve's ruler: no « Mes. 3 à 8 » above it.
@@ -221,7 +228,7 @@ fun CutScreen(
                     // « Un bout »: no list of pieces, the curve takes the room (taller bars to grab).
                     val zoom = when {
                         tight -> Modifier.fillMaxWidth().height(140.dp)
-                        scrollsAll -> Modifier.fillMaxWidth().height(180.dp)
+                        scrollsAll -> Modifier.fillMaxWidth().height(curveHeight)
                         model.single || wide -> Modifier.fillMaxWidth().weight(1f).heightIn(min = 120.dp)
                         else -> Modifier.fillMaxWidth().weight(1.3f)
                     }
@@ -232,6 +239,10 @@ fun CutScreen(
                             ToolRow(model, actions, work)
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
                         }
+                        // Tour 6, seat B a #A2 (a left thumb): in « Un bout » that fits without scrolling, « Voz / Batería /
+                        // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
+                        // left thumb reaches — the big curve above keeps them off the top, out of reach.
+                        if (model.single && !bigText) StemChips(model) { actions.stop() }
                     }
                     tail()
                   }
@@ -243,6 +254,7 @@ fun CutScreen(
                         curve(Modifier.weight(1f).padding(bottom = 12.dp))
                         Column(Modifier.width(360.dp).fillMaxHeight().verticalScroll(rememberScrollState()).padding(top = 8.dp)) {
                             Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                StemChips(model) { actions.stop() }
                                 AutoRow(model, finding, onAuto = { pick(it) })
                                 if (model.single) SpanRow(model, actions, work) else {
                                     ToolRow(model, actions, work)

@@ -98,6 +98,10 @@ open class ShareScreenshotTest {
     @Test
     fun myFilesEmpty() = shoot("my_files_empty") { MyExportsDialog(shown = emptyList()) {} }
 
+    /** « Mes fichiers » while the phone's files are read (tour 6, U22): a sign of waiting (still here: its arc at the start of its turn), then where the files are. */
+    @Test
+    fun myFilesWaiting() = shoot("my_files_waiting") { MyExportsDialog(read = { kotlinx.coroutines.awaitCancellation() }) {} }
+
     /** « C'est prêt » after « Partager »: the file, its report, OK and « Voir mes fichiers ». */
     @Test
     fun readySong() = shoot("ready_song") {

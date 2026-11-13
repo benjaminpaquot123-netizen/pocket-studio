@@ -449,6 +449,12 @@ class TutoController(
      */
     private fun noteFor(s: TutoStep, p: Project): String? {
         val t = target ?: return null
+        if (s.check.startsWith("changed:synth:")) {
+            // Tour 6, seat Bb-3: what is left on each knob the step names (« Coupure : encore +8 »), as the screen counts.
+            return TutoChecks.knobsShort(s, p, base()).joinToString(" · ") { (k, left) ->
+                com.pocketstudio.model.i18n.tr("%1\$s : encore +%2\$d", com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == k }?.second ?: "?", left)
+            }.ifEmpty { null }
+        }
         if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
         return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(t.startTempo).toInt())
     }

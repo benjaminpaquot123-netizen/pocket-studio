@@ -646,6 +646,26 @@ object TutoChecks {
         else -> t
     }
 
+    /**
+     * The knobs a "changed:synth:<role>:<KNOB>…" step names still short of « au moins 15 » since it began, each with
+     * how many points the screen must still go up (tour 6, seat Bb-3: at +7 nothing said what was missing); empty when
+     * none is short, for any other step, or without the step's [baseline].
+     */
+    fun knobsShort(step: TutoStep, p: Project, baseline: Any?): List<Pair<Int, Int>> {
+        val c = step.check
+        if (!c.startsWith("changed:synth:")) return emptyList()
+        val (role, knobs) = knobsOf(c)
+        val base = baseline as? List<*> ?: return emptyList()
+        val now = trackFor(p, role)?.let { p.track(it) } ?: return emptyList()
+        val before = (base.getOrNull(0) as? SynthPatch)?.let { s -> now.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) } ?: return emptyList()
+        return knobs.mapNotNull { k ->
+            val was = knobValue(before, k) ?: return@mapNotNull null
+            val v = knobValue(now, k) ?: return@mapNotNull null
+            val left = KNOB_STEP_PCT - (knobPct(v) - knobPct(was))
+            if (left > 0 && knobPct(v) < 95) k to left else null
+        }
+    }
+
     /** The knobs of a "changed:synth:…" check (empty: any change counts) and its role. */
     private fun knobsOf(check: String): Pair<String, List<Int>> {
         val spec = check.removePrefix("changed:synth:")

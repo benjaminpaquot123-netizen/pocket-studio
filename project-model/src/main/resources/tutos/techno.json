@@ -502,7 +502,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la tranche du pad « Clap ».",
+          "text": "À toi : touche le pad « Clap », puis sous sa grille, « Effets du pad » : monte « Envoi réverbe ».",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",

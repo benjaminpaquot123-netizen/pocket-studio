@@ -72,6 +72,30 @@ class Tour6Tuto4HouseTest {
         report("musician words met unexplained", bad)
     }
 
+    /** M3: the numbers a step says are the step's own: the cells of the « Rim » pad; the parts' length before « Durées ». */
+    @Test
+    fun theNumbersAreTheStepsOwn() {
+        val bad = mutableListOf<String>()
+        var p = target.blank()
+        var checked = 0
+        for (s in course.chaptersFor(TutoLevel.Facile).flatMap { it.steps }) {
+            if (s.id == "perc_do") {
+                val (_, cells) = TutoChecks.hint(s, target, p.drums.steps)!!
+                val said = Regex("""(\d+) cases""").find(s.text)?.groupValues?.get(1)?.toInt()
+                if (said != cells.size) bad += "fr: says $said cells, ${cells.size} dotted: ${s.text}"
+                for (lang in translated) tr(lang, s.text)?.let { v -> if ("${cells.size}" !in v) bad += "${lang.code}: no ${cells.size}: $v" }
+                checked++
+            }
+            if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: p
+        }
+        // « Ajouter » brings a part at its loop's length: the order step says the lengths come next (the map said 16).
+        val order = step("song_order").text
+        if ("durée" !in order) bad += "fr: the order step does not say the parts' length comes next: $order"
+        everyLanguage(listOf(order), bad)
+        assertTrue("perc_do not met", checked == 1)
+        report("numbers that are not the step's", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

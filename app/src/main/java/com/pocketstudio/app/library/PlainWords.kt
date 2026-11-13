@@ -52,7 +52,7 @@ internal object PlainWords {
         Term(Regex("""\b909\b""")) { tr("909 : une boîte à rythmes célèbre, ses sons de batterie.") },
         Term(Regex("""\b707\b""")) { tr("707 : une boîte à rythmes célèbre, ses sons de batterie.") },
         Term(Regex("""(?i)\bswing\b""")) { tr("Swing : décaler un coup sur deux pour que le rythme balance.") },
-        Term(Regex("""(?i)\bbreaks?\b""")) { tr("Break : un moment plus calme, la batterie se tait.") },
+        Term(Regex("""(?i)\bbreaks?\b""")) { tr("Break : un moment plus calme, le kick et la basse se taisent.") },
     )
 
     /** The plain lines for the words of the trade in [french] (French keys), each once, in the list's order. */

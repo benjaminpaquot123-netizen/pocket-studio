@@ -8,11 +8,13 @@ import java.io.File
 
 /**
  * Tour 6, control seat Ac-2 (E6, round 1): Mes projets › ⋮ › « Sauvegarder le morceau en .zip » opened Android's list
- * of apps to send to (the share menu titled the same). A button that sends says so: « Envoyer le projet (.zip) », in
+ * of apps to send to (the share menu titled the same). A button that sends says so: « Partager le projet (.zip) », in
  * the menu, in the share menu's title and on the share page, translated in every language (none falls back to French).
+ * The verb is « Partager », the app's one verb for a file that leaves (owner's answer 1A, 2026-11-09; LexiconWordsTest:
+ * « Envoyer le projet » is an old word).
  */
 class Tour6ExportsZipMenuWordTest {
-    private val key = "Envoyer le projet (.zip)"
+    private val key = "Partager le projet (.zip)"
 
     @Test
     fun theZipThatIsSentIsCalledSendEverywhere() {

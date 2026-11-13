@@ -1500,3 +1500,4 @@
 - 2026-11-13 · lot « ci3 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-ci3.md`
 - 2026-11-13 · lot « tutoordre2 » (tour-6) : 2 décision(s) dans `docs/decisions/tour-6-tutoordre2.md`
 - 2026-11-13 · lot « langues2 » (tour-6) : 27 décision(s) dans `docs/decisions/tour-6-langues2.md`
+- 2026-11-13 · lot « remix2b » (tour-6) : 12 décision(s) dans `docs/decisions/tour-6-remix2b.md`

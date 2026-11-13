@@ -643,28 +643,32 @@ private fun SnapColumn(modifier: Modifier, gap: androidx.compose.ui.unit.Dp, onS
  */
 @Composable
 private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choose: (com.pocketstudio.model.TargetChoice) -> Unit, enabled: Boolean) {
-    Column(Modifier.layoutId(WHOLE_LINE).testTag("share_target"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
-            // Its « ? », in plain words made of the level's own (translated) words: no LUFS in the Mode simple.
-            com.pocketstudio.ui.HelpDot(
-                com.pocketstudio.ui.Help(tr("Volume visé"), listOf(
-                    tr("Streaming") + " : " + tr("comme la musique en streaming (−14)"),
-                    tr("Club") + " : " + tr("fort, comme la musique de club"),
-                ).joinToString("\n")),
-                about = listOf("share_target_*"),
-            )
-        }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            // The common choices, in the same order as Pro, with plain names (« Club », « Streaming »), no LUFS.
-            com.pocketstudio.app.mixer.quickTargets(pick.choice).forEach { c ->
+    // Bench replay after its « ? » came (screen 8): a row of its own for the words and the « ? » (48 dp), then the chips
+    // on two rows, did not fit above the pinned row on a phone, and the page opened without « Streaming » and « Club ».
+    // One flowing block instead: the words, the chips (« Désactivée » only when it is the target), the « ? ».
+    FlowRow(
+        Modifier.layoutId(WHOLE_LINE).testTag("share_target"), itemVerticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
+        // The common choices, in the same order as Pro, with plain names (« Club », « Streaming »), no LUFS.
+        com.pocketstudio.app.mixer.quickTargets(pick.choice)
+            .filter { it != com.pocketstudio.model.TargetChoice.OFF || it == pick.choice }
+            .forEach { c ->
                 FilterChip(
                     selected = pick.choice == c, onClick = { if (c != pick.choice) choose(c) }, enabled = enabled,
                     label = { Text(com.pocketstudio.model.LoudnessTargets.label(c, null)) },
                     colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_target_${c.name}"),
                 )
             }
-        }
+        // Its « ? », in plain words made of the level's own (translated) words: no LUFS in the Mode simple.
+        com.pocketstudio.ui.HelpDot(
+            com.pocketstudio.ui.Help(tr("Volume visé"), listOf(
+                tr("Streaming") + " : " + tr("comme la musique en streaming (−14)"),
+                tr("Club") + " : " + tr("fort, comme la musique de club"),
+            ).joinToString("\n")),
+            about = listOf("share_target_*"),
+        )
     }
 }
 

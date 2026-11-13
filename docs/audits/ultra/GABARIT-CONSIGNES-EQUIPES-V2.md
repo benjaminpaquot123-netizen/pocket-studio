@@ -1,5 +1,7 @@
 # Consignes communes aux équipes de correction, v2 (à copier dans `sieges/tour-N/consignes-equipes.md`)
 
+> **2026-11-13 :** pour le travail à plusieurs discussions, la consigne à envoyer est la fiche 2 de `GABARIT-FICHES-V3.md` (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13). Ce gabarit reste vrai pour des équipes dans des ateliers de la même machine.
+
 Méthode d'audit v2 (`docs/audits/AUDIT-ULTRA.md` §12). Remplace les consignes des tours 1 à 3 (six équipes dans un seul dossier, commits par morceaux).
 
 - **Atelier** : le tien seul, `/home/user/eq-tour-N-<zone>` sur la branche `eq/tour-N-<zone>` (créé par le coordinateur avec `scripts/bench/equipe-atelier.sh cree tour-N <zone>`). Tu ne touches jamais `/home/user/fx-int` ni l'atelier d'une autre équipe. 3 équipes au plus par tour.

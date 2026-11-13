@@ -8,6 +8,10 @@
 - Le self-test et les rejeux du portail ont arrêté 4 vraies régressions avant fusion (piano roll qui poussait la grille sous l'écran, « Fin » qui cassait « Écouter », icône inconnue du banc, bouton « Arrêter » de la prise sorti de l'écran).
 
 ## Reste du tour 6
+- **Méthode v3 depuis le 2026-11-13** (`docs/audits/AUDIT-ULTRA.md` §13) : l'état du moment, les lots ouverts, la file du portail et « ce qui n'est pas vert » sont dans `docs/audits/ultra/EN-COURS.md` ; les consignes types dans `docs/audits/ultra/GABARIT-FICHES-V3.md` ; l'audit de la nuit dans `docs/audits/ultra/AUDIT-NUIT-TOUR-6.md`.
+- [ ] CI de la tête ROUGE sur le téléphone simulé (`JourneyTest.aFirstSongInTheModeSimple`) : lot « emulateur », seul dans son paquet, avant tout autre lot.
+- [ ] Tuto : lot 10 « tutofleches », puis siège de contrôle sur sa branche avant le portail ; boucle jusqu'à 0 chapitre bloqué et 0 grave neuf.
+- [ ] Lots du banc : « portail3 » (le portail apprend les règles de la v3, le juge revient de 68 à 8), puis « rejeux7 » (un rejeu par bloquant ou grave corrigé dans la nuit).
 - [ ] Lot 5 « langues » (textes coupés, mots restés en anglais ou en français) : fait et relu dans la discussion « Sons modernes », pas encore poussé (sa branche porte l'essai de sons) ; à passer au portail (`tour-6 langues2`).
 - [ ] CI sur la tête (run 43375199284) ; captures de référence périmées depuis le lot 1 à ré-enregistrer si `verifyRoborazziDebug` le demande.
 - [ ] Sièges de contrôle du tuto sur la version corrigée (`sieges/tour-6/controle/` : français, japonais, allemand Pro).

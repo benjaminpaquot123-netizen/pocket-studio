@@ -277,3 +277,79 @@ Leçon : les icônes dépareillées de l'accueil (rondes et carrées, Défis plu
 - Chaque écart est une fiche du rapport (symptôme `finition` ou plus si on ne trouve plus le bouton), avec la capture et l'élément voisin qui sert de modèle.
 - Couverture : la liste des écrans analysés est jointe au tour ; un écran non analysé = condition I non remplie (`tableau-de-bord.py` doit compter ces écrans : à ajouter avec le chantier « banc fiable »).
 
+
+## 13. Méthode v3 : audit et correction ne se marchent jamais dessus (appliquée le 2026-11-13)
+
+Source : `docs/audits/ultra/AUDIT-NUIT-TOUR-6.md`, l'audit par un agent neuf de la nuit du tour 6 (19 sièges, 10 lots, 16 fusions, 9 refus du portail ; notes sur dix : audit 6, tri 6, sûreté des corrections 5, efficacité 4, vitesse 6, coût 3, franchise 7, banc branché sur l'appli 5). Demande de Benjamin (2026-11-13) : « que audit et correction ne se marchent pas dessus et qu'on ne perde jamais de temps ». Ce paragraphe prime sur le §12 quand ils se contredisent. Le reste du §12 tient toujours : la nuit a surtout montré ce que coûte de le sauter (aucun rejeu 12.5, pas de liste des chemins 12.6, `hors-banc.tsv` vide 12.10, consignes improvisées au lieu des deux fiches de `docs/AIDE-FUSIONS-TESTS.md`). L'état du moment est dans `docs/audits/ultra/EN-COURS.md` ; les consignes à envoyer sont dans `docs/audits/ultra/GABARIT-FICHES-V3.md`.
+
+### 13.1 Trois temps, jamais mélangés sur le même code
+- **Avant une vague de testeurs, on vide la file.** Tout lot prêt est fusionné, le paquet est fermé et sa CI est verte, téléphone simulé compris (13.6). Le chef d'orchestre écrit alors le **départ** (le commit jugé) dans `EN-COURS.md`. Pourquoi : le siège son du tour 6 a jugé un code d'avant le lot « kick » ; il a fallu remesurer.
+- **Pendant la vague**, chaque siège joue le commit du départ, nommé dans sa fiche, jamais « la tête », et l'écrit en tête de son rapport (« code testé : <sha> »). Rien de ce qui change l'appli ou le banc n'entre dans l'intégration (`app/src`, `engine/src`, `project-model/src`, `ui-components/src`, `scripts/bench`, `scripts/human-*`). Les correcteurs peuvent écrire et faire relire, sur leurs branches, des lots d'un tri **déjà fini** ; jamais d'après un rapport de la vague en cours.
+- **Après la vague** : lecture, tri, puis lots (13.5), dans cet ordre. Un verdict se vérifie dans le code de la tête : « déjà corrigé » est un verdict.
+- **Un siège de contrôle** (rejouer après une correction) n'est pas une vague : il joue la branche d'un lot ou un commit poussé, nommé dans sa fiche, et ne gèle rien.
+
+### 13.2 Un rôle par discussion, annoncé avant toute mission
+
+| Rôle | Fait | Ne fait jamais |
+|---|---|---|
+| Chef d'orchestre (la discussion principale) | distribue par fiches, tient `EN-COURS.md`, passe le portail, pousse sur l'intégration, lance et lit la CI, parle à Benjamin | écrire le code d'un lot ; fusionner hors du portail |
+| Testeur | héberge des sièges joués par des sous-agents neufs (un sous-agent = un siège, jamais réutilisé) ; rend du texte | lire ou modifier le code de l'appli |
+| Correcteur | écrit un lot à la fois, dans sa liste de fichiers | jouer un siège lui-même ; toucher un fichier hors de sa liste |
+| Banc | corrige le banc et le portail (`app/src/test/…/human`, `scripts/bench`, `scripts/human-*`, les rejeux) | toucher `app/src/main` ; être fusionné pendant une vague |
+| Lecteur, trieur | dédoublonne les rapports, vérifie chaque défaut dans le code (lecture seule), propose les lots | avoir tenu ou hébergé un siège de la vague qu'il lit |
+| Vérificateur | à la fin de chaque paquet : la CI lue jusqu'au bout, le juge, les captures ; écrit le verdict dans `EN-COURS.md` | corriger lui-même (il demande un lot « réparation ») |
+
+- **Première réponse de toute discussion**, avant toute mission : « prêt : <nom> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non » (tests chauds : un test Robolectric a déjà tourné vert sur sa machine). Pourquoi : un lot donné à une discussion qui n'avait pas le droit de toucher l'appli, une autre qui ne pouvait pousser que sur une seule branche, une machine neuve bloquée deux heures par le téléchargement des tests.
+- L'indépendance ne se rattrape pas : qui a tenu ou hébergé un siège d'une vague ne lit ni ne trie cette vague ; qui a écrit du code de l'appli ne joue pas de siège lui-même.
+- Machines neuves : le remplissage du cache des tests part dès l'ouverture, deux machines neuves à la fois au plus (au-delà, Maven Central répond 429).
+- Coût : une discussion dont le contexte est plein à plus de 40 % ne reçoit plus de lot neuf (chaque geste lui coûte jusqu'à dix fois plus qu'à une discussion neuve). Elle reste ouverte pour répondre de son travail ; le lot neuf va à une discussion ou à un sous-agent neufs.
+
+### 13.3 Les zones : un fichier, un seul lot ouvert
+- La liste des fichiers d'un lot est écrite dans `EN-COURS.md` à son ouverture. Deux lots ouverts ne partagent aucun fichier. Hors de sa liste, un correcteur ne touche à rien : il écrit « Demande : <fichier> : <pourquoi> » dans son rapport, et le chef la confie au lot propriétaire.
+- **Zones d'un seul tenant** : un seul lot ouvert à la fois sur toute la zone, parce que le comportement se joue entre ses fichiers.
+  - **Tuto** : `app/…/tuto/`, `project-model/…/tuto/`, `resources/tutos/`, `i18n/*/tuto*.json`, `PianoRoll.kt`, `RhythmScreen.kt`, `PlainWords.kt`, `TrackSheet.kt`.
+  - **Coquille** : `AppRoot.kt`, `AppSpaces.kt`, `LaunchChoice.kt`, `TopBar.kt`, `UnderTopBar.kt`, `DoneBar.kt`, `GuidePanel.kt`, `GuideViewModel.kt`.
+  - **Textes** : `i18n/*/*.json` hors tuto (un autre lot n'y ajoute que ses clés neuves).
+  - **Moteur** : `engine/` et le pont JNI. **Banc** : voir 13.2.
+- Les captures de référence (`app/screenshots/`) n'appartiennent à personne : le lot qui change un écran les réenregistre et les regarde ; un conflit se règle en les réenregistrant après la fusion de la tête.
+- Au plus **6 lots ouverts** à la fois (deux paquets, 13.6). Un lot fini qui attend vieillit : la tête bouge, et une fusion qui touche ses fichiers demande une nouvelle relecture.
+
+### 13.4 Les consignes sortent du gabarit, jamais de la tête du chef
+- Toute consigne envoyée à une discussion est copiée de `GABARIT-FICHES-V3.md` ; seules les variables changent (tour, zone, fichiers, commit, budget). Les deux fiches de `docs/AIDE-FUSIONS-TESTS.md` (équipes, relecteur) font foi et y sont citées, pas résumées.
+- **Avant une vague : un siège pilote par mission**, vingt minutes, avec la fiche et le budget exacts. La vague ne part que si le pilote a atteint le but de sa mission. Pourquoi : 120 gestes donnés pour un tuto qui en demande 250 (cinq sièges arrêtés au chapitre 7 sur 15) ; la ligne « lance le banc » oubliée (cinq sièges arrêtés un quart d'heure).
+- Un siège rend du **texte seul** (rapport, journal, mesures, gestes, écrans en `.txt`), avec « code testé : » et « joué par : » en tête ; jamais de dossier `etat/`, d'image ni de son dans sa branche (286 Mo à trier au tour 6).
+- Un compte rendu tient en une ligne, envoyée au chef. Une discussion ne pose pas de question à Benjamin : elle écrit au chef, qui tranche ou regroupe.
+
+### 13.5 Corriger : la preuve avant le code, le parcours avant le portail
+- L'ordre d'un lot, sans exception : rejeu « non tenu » pour chaque bloquant ou grave (12.5) → commit « rouge: <sujet> » (le test seul, vu rouge sur son assertion) → correction → commit « vert: <le même sujet> » → self-test et **tous** les rejeux verts sur le dernier commit → `pre-vol.sh --avant-relecture` → relecture neuve → `pre-vol.sh` « PRÊT » → « fini ». Le rouge est commité **avant** d'écrire la correction, et l'histoire n'est pas rangée après coup : le juge apparie rouge et vert par leur sujet ou par le nom du test ; au matin du 13 il comptait 68 écarts au lieu de 8, presque tous des paires dépareillées.
+- Un bloquant ou un grave sans rejeu dans `rejeux/` n'est pas compté « corrigé ». Pourquoi : au matin du 13 un seul rejeu protégeait l'appli, et c'est lui qui a arrêté une vraie régression (le bouton « Arrêter » d'une prise sorti de l'écran).
+- **La relecture neuve relance** les tests du lot et rejoue au moins un rouge sur le parent de son vert ; elle écrit ce qu'elle a relancé. Est **grave**, quel que soit le mot du relecteur, tout constat qui (a) fait changer de couleur un test existant, (b) peut bloquer un débutant ou lui coûter plus de trois gestes, (c) touche la sauvegarde ou le son. Pourquoi : la relecture du lot 1 avait vu, classés « moyen » et « mineur », les deux défauts qui ont coûté le plus cher (un test resté rouge quatre heures, les flèches du tuto).
+- À la fusion, le chef recopie chaque « moyen » restant dans `docs/REVIEW.md`, avec un responsable (une zone) et une échéance (un lot ou un tour).
+- **Le tuto** : un lot du tuto ne passe au portail qu'avec la ligne d'un testeur neuf qui a rejoué ses chapitres **sur la branche du lot** : tuto entier, 300 gestes, même langue, même style et même profil que le siège d'avant. Il entre si : 0 chapitre bloqué, 0 grave neuf, et chaque défaut visé est dit « corrigé » par le testeur. Les hésitations sont notées avant et après, mais ne tranchent pas seules (leur compte dépend du testeur). Pourquoi : huit lots fusionnés dans la nuit, trois d'entre eux dans le tuto en même temps, aucun testeur avant la fin ; au contrôle, 12 défauts corrigés sur 32, trois graves neufs, un chapitre bloqué devenu trois.
+
+### 13.6 Fusionner par paquets, vérifier chaque paquet
+- **Un paquet = trois lots au plus**, aux fichiers disjoints, passés au portail l'un après l'autre ; l'intégration est poussée après chaque réussite (un redémarrage de la machine ne coûte alors qu'un portail).
+- **À la fin du paquet, la CI part tout de suite** ; son numéro va dans `EN-COURS.md`. Le paquet suivant ne s'ouvre (`scripts/bench/portail-paquet.txt`) que quand elle est verte, **téléphone simulé compris**, que le juge du chantier n'a pas monté et que les captures de référence sont à jour. CI rouge : seul un lot « réparation » passe, seul dans son paquet. Pourquoi : le portail ne rejoue que les tests du banc et ceux que le lot cite ; un test est resté rouge quatre heures dans l'intégration, seize captures ont périmé, et le parcours sur téléphone simulé a cassé sans que personne le lise.
+- Pendant que la CI tourne, rien n'attend : les lots du paquet suivant s'écrivent, se relisent, passent leur pré-vol et, pour le tuto, leur siège de contrôle.
+- Personne ne fusionne autre chose que la **tête poussée** (`git fetch origin ccr-80af1a1b-mn0wec`, puis `git merge FETCH_HEAD`). Pourquoi : un agent a fusionné l'intégration locale au milieu d'un portail, et un lot refusé est entré dans l'histoire par sa branche.
+- « C'est vert » ne se dit qu'avec le numéro de la CI.
+
+### 13.7 L'état est dans le dépôt, et chaque point dit ce qui n'est pas vert
+- `docs/audits/ultra/EN-COURS.md` tient en une page : le temps en cours (vague, tri, correction), le départ, les lots ouverts avec leurs fichiers et leur responsable, la file du portail, le paquet et sa CI, et la liste « ce qui n'est pas vert ». Le chef le met à jour à chaque événement (lot ouvert, rendu, refusé, fusionné ; CI lue). C'est aussi la fiche de reprise : une discussion neuve peut reprendre le rôle de chef en le lisant.
+- Tout écart au plan s'écrit le jour même dans `docs/decisions/<tour-N>-depart.md` ; `hors-banc.tsv` se remplit à la fin de chaque paquet.
+- **Avant chaque point à Benjamin**, le chef lit la CI de la tête, téléphone simulé compris. **Chaque point finit par « Ce qui n'est pas vert »**, même s'il n'y a rien. On ne dit pas « sans perte » sans l'avoir compté.
+
+### 13.8 Le téléphone de Benjamin
+- Une APK pour son téléphone ne part que d'un commit dont la CI est verte, téléphone simulé compris, et jamais pendant qu'un paquet est ouvert. Le numéro de version et le commit sont dans le rapport de l'essai.
+- Son retour est un rapport comme un autre : il passe par le tri (réel, voulu, déjà corrigé) avant tout lot. On ne corrige pas « à chaud » d'après un essai.
+- Sa liste ne contient que ce que seul un vrai téléphone juge (l'oreille, la vraie latence, l'écran éteint, le Bluetooth, la chauffe). Un point vert qui n'a pas changé depuis son dernier essai ne lui est pas redemandé.
+- Pendant qu'il teste, les corrections continuent sur leurs branches ; rien ne change dans la version qu'il a en main.
+
+### 13.9 Ce que les programmes doivent encore apprendre (lot du banc « portail3 », règles `from_paquet` du paquet suivant)
+Tant que ce lot n'est pas fusionné, le chef applique ces points à la main et l'écrit dans `EN-COURS.md`.
+- Le portail refuse un lot qui fait monter le juge, et un lot qui dit corriger un bloquant ou un grave sans ajouter son rejeu.
+- `scripts/bench/portail-file.sh` : la file du chef (fusion de la tête dans la branche du lot, portail, contrôle des liens, poussée après chaque réussite), aujourd'hui un script de brouillon hors du dépôt.
+- `scripts/bench/paquet-verifie.sh` : à la fin d'un paquet, lit la CI jusqu'au bout, le juge et les captures, écrit le verdict dans `EN-COURS.md`, et refuse d'ouvrir le paquet suivant tant que ce n'est pas vert.
+- `scripts/bench/fiche.sh` : imprime une consigne du gabarit avec ses variables.
+- Le banc écrit lui-même « code testé » et « joué par » dans le rapport d'un siège, et un dossier de siège ne garde pas `etat/` dans git.
+- Le juge revient à son plancher (8 écarts nommés après le lot « juge7 ») : les paires de la nuit sont appariées ou nommées une par une.

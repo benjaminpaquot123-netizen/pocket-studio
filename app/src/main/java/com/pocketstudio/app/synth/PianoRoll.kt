@@ -132,6 +132,8 @@ private val BLACK = setOf(1, 3, 6, 8, 10)
 private val ZOOMS = listOf(18.dp, 30.dp, 46.dp)
 /** A sixteenth at its widest (zoomed in), and at its narrowest a few dp: 16 bars still fit on a phone (« Tout voir »). */
 private const val MAX_STEP = 64f
+/** The narrowest sixteenth a bar fitted to the screen's width gets by itself (a 320 dp phone: 16 dp and a little more). */
+private const val FIT_STEP = 14f
 private const val MIN_STEP = 1.2f
 /** A row (a semitone) at its tallest and at its smallest (« Tout voir »: a whole bass and lead fit; still seen, still touched). */
 private const val MAX_ROW = 40f
@@ -243,7 +245,9 @@ fun PianoRoll(
         val viewWidth = (maxWidth - keysWidth).value.coerceAtLeast(1f)
         // Not chosen yet: a whole bar in sight on a phone (testers, lot « tuto 5 »: half a bar was shown, no bar number in it),
         // a short loop filling a tablet's width.
-        val defaultStep = (viewWidth / barSteps).coerceIn(ZOOMS[0].value, ZOOMS[1].value)
+        // Lot « tuto-flèches » (seat H a): down to [FIT_STEP] so that the bar really fits a 360 dp phone (18 dp a sixteenth
+        // left its last one cut at the edge: the bar's last dotted note half out of the frame, a wrong note put beside it).
+        val defaultStep = (viewWidth / barSteps).coerceIn(FIT_STEP, ZOOMS[1].value)
         val stepWidth = maxOf(if (stepDp > 0f) stepDp else defaultStep, viewWidth / clip.steps).coerceAtMost(MAX_STEP).dp
         // A whole number of pixels a row: the keys (one box a row) and the grid's rows (drawn) stay in line at any zoom.
         val rowHeight = with(LocalDensity.current) {
@@ -766,6 +770,7 @@ private fun Grid(
     // Testers (lot « tuto 4 »): the keys and the grid each scrolled with the same state, and the keys' labels
     // (« Do3 / Do2 ») jumped an octave while the grid stayed: one vertical scroll now carries both.
     val keysPx = with(density) { keysWidth.roundToPx() }
+    val covered = if (com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty() && inSight != null && view.height > 0) (view.height - inSight.endInclusive).coerceAtLeast(0f) else 0f
     val spots = com.pocketstudio.app.learn.LocalSpots.current
     Row(
         Modifier.fillMaxWidth().height(height)
@@ -811,7 +816,10 @@ private fun Grid(
                     }
                 }
             }
-            .verticalScroll(vScroll),
+            .verticalScroll(vScroll)
+            // Lot « tuto-flèches »: as much room under the lowest row as the tutorial's panel covers of the roll, so that
+            // the lowest notes can come above it (trap's 808 at 130 %: « plus bas ↓ » and no way to scroll that far).
+            .padding(bottom = with(density) { covered.toDp() }),
     ) {
         Column(Modifier.width(keysWidth).testTag("roll_keys")) {
             // Zoomed far out the rows are too small to carry a name: the C's lines stay.

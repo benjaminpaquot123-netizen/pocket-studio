@@ -225,12 +225,7 @@ class I18nCatalogTest {
         val PENDING_TRANSLATION_AREAS = emptySet<String>()
 
         /** Kept although no code writes them: names an older version may have saved in English or Dutch. */
-        private val KEPT_UNUSED = setOf(
-            "Charleston", "Cloche (Plaits)",
-            // Tour 6, lot tuto4: the acid techno filter step's old words (now in tuto.json), left in tuto_techno.json while
-            // the control seats replay the techno course; remove both lines and this entry once that file is free again.
-            "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.",
-        )
+        private val KEPT_UNUSED = setOf("Charleston", "Cloche (Plaits)")
 
         /** Calls of tr() with a variable, each one's texts checked elsewhere (see the test above). */
         private val CHECKED_SOURCES = setOf(

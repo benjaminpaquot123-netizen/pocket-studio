@@ -146,6 +146,5 @@
   "Tu as déjà fait cette étape.": "Kamu sudah melakukan langkah ini.",
   "Partie « %s » créée (copie du Groove).": "Bagian “%s” dibuat (salinan Groove).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Lagu baru mulai di %d BPM: kamulah yang memberinya kecepatan gaya ini.",
-  "%1$s : encore +%2$d": "%1$s: tambah +%2$d",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "Giliranmu: otomasi “Cutoff” 303 di Drop: “Otomasi pengaturan”, “Acid 303”, “Cutoff”, “Per bagian”, lalu di loop Drop (1 birama) gambar kurva yang naik sampai tengah lalu turun lagi: filternya membuka dan menutup di setiap birama."
+  "%1$s : encore +%2$d": "%1$s: tambah +%2$d"
 }

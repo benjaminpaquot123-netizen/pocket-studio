@@ -146,6 +146,5 @@
   "Tu as déjà fait cette étape.": "このステップはもう済んでいます。",
   "Partie « %s » créée (copie du Groove).": "パート「%s」を作りました（グルーヴのコピー）。",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "新しい曲は %d BPM から始まる。スタイルの速さにするのはあなた。",
-  "%1$s : encore +%2$d": "%1$s：あと +%2$d",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "あなたの番：ドロップで 303 の「カットオフ」をオートメーションしよう：「設定をオートメーション」、「Acid 303」、「カットオフ」、「パートごと」と進み、ドロップのループ（1小節）に、真ん中まで上がってまた下がるカーブを描く。フィルターが小節ごとに開いて閉じる。"
+  "%1$s : encore +%2$d": "%1$s：あと +%2$d"
 }

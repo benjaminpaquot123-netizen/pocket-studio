@@ -146,6 +146,5 @@
   "Tu as déjà fait cette étape.": "이 단계는 이미 했어요.",
   "Partie « %s » créée (copie du Groove).": "“%s” 파트를 만들었어요(그루브 복사본).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "새 곡은 %d BPM에서 시작해요. 스타일의 빠르기는 직접 맞춰요.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d 더",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "직접 해 보세요: 드롭에서 303의 “컷오프”를 오토메이션하세요. “설정 오토메이션”, “Acid 303”, “컷오프”, “파트별”, 그리고 드롭의 루프(1마디)에 가운데까지 올라갔다 다시 내려오는 곡선을 그리세요. 필터가 마디마다 열렸다 닫혀요."
+  "%1$s : encore +%2$d": "%1$s: +%2$d 더"
 }

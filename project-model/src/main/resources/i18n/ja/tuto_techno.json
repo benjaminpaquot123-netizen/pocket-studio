@@ -61,7 +61,7 @@
   "Le geste du filtre": "フィルターの動き",
   "Le vrai instrument de l'acid, c'est le filtre de la 303 : fermé, la ligne gronde ; ouvert, elle couine. On l'ouvre et on le ferme pendant tout le morceau.": "アシッドの本当の楽器は 303 のフィルター。閉じるとラインはうなり、開くとキーキー鳴る。曲の間ずっと開けたり閉めたりする。",
   "Écoute le Drop : la 303 s'ouvre petit à petit, crie, puis se referme.": "ドロップを聴こう：303 が少しずつ開いて叫び、また閉じていく。",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.": "あなたの番：ドロップで 303 の「カットオフ」をオートメーションしよう：「設定をオートメーション」、「Acid 303」、「カットオフ」、「パートごと」と進み、ドロップの真ん中まで上がってまた下がるカーブを描く。",
+  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "あなたの番：ドロップで 303 の「カットオフ」をオートメーションしよう：「設定をオートメーション」、「Acid 303」、「カットオフ」、「パートごと」と進み、ドロップのループ（1小節）に、真ん中まで上がってまた下がるカーブを描く。フィルターが小節ごとに開いて閉じる。",
   "La ligne ne change presque pas : c'est le filtre qui raconte l'histoire.": "ラインはほとんど変わらない。ストーリーを語るのはフィルター。",
   "À toi : automatise aussi la « Coupure » de la 303 sur l'Intro 2 : une courbe qui monte du début à la fin. La ligne arrive fermée et s'ouvre.": "あなたの番：イントロ 2 でも 303 の「カットオフ」をオートメーションしよう：最初から最後まで上がるカーブ。ラインは閉じた状態で入ってきて開いていく。",
   "Le mix : les volumes": "ミックス：音量",

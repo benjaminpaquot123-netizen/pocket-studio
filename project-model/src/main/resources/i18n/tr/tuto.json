@@ -146,6 +146,5 @@
   "Tu as déjà fait cette étape.": "Bu adımı zaten yaptın.",
   "Partie « %s » créée (copie du Groove).": "“%s” bölümü oluşturuldu (Groove'un kopyası).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Yeni bir parça %d BPM ile başlar: ona tarzın hızını sen verirsin.",
-  "%1$s : encore +%2$d": "%1$s: +%2$d daha",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "Sıra sende: Drop'ta 303'ün “Cutoff” ayarını otomatikleştir: “Bir ayarı otomatikleştir”, “Acid 303”, “Cutoff”, “Bölüm başına”, ve Drop'un döngüsüne (1 ölçü) ortasına kadar çıkıp sonra inen bir eğri çiz: filtre her ölçüde açılıp kapanır."
+  "%1$s : encore +%2$d": "%1$s: +%2$d daha"
 }

@@ -146,6 +146,5 @@
   "Tu as déjà fait cette étape.": "तुम यह कदम पहले ही कर चुके हो।",
   "Partie « %s » créée (copie du Groove).": "पार्ट “%s” बन गया (ग्रूव की कॉपी)।",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "नया ट्रैक %d BPM से शुरू होता है: स्टाइल की रफ़्तार तुम ही देते हो।",
-  "%1$s : encore +%2$d": "%1$s: +%2$d और",
-  "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.": "तुम्हारी बारी: ड्रॉप पर 303 का “Cutoff” ऑटोमेट करो: “एक सेटिंग ऑटोमेट करो”, “Acid 303”, “Cutoff”, “हर पार्ट में”, और ड्रॉप के लूप (1 बार) पर एक कर्व ड्रॉ करो जो बीच तक ऊपर जाए फिर नीचे आए: फ़िल्टर हर बार में खुलता और बंद होता है।"
+  "%1$s : encore +%2$d": "%1$s: +%2$d और"
 }

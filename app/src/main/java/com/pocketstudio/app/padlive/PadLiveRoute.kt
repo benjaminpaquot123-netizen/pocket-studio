@@ -175,7 +175,7 @@ fun PadLiveRoute(
                 dismissTake = vm::dismissPerformance,
             ),
             clockOf = live.clockOf,
-            record = { RecordButton(live.take, actions.record) },
+            record = { RecordButton(live.take) { vm.padLive.record(actions.record) } },
             readLevels = if (com.pocketstudio.engine.NativeEngine.isNative) com.pocketstudio.engine.NativeEngine::clipLevels else null,
         )
     }

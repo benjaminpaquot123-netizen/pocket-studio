@@ -243,6 +243,21 @@ class PadLiveController(private val vm: RhythmViewModel) {
         if (!p.padLive.home || page == 0 || PadLive.filled(p.live, page) > 0 || p.padLive.packOf(page).isNotEmpty()) return
         PadLive.FIRST_PACKS.getOrNull(page)?.let { loadPack(it, quiet = true, fete = fete) }
     }
+
+    /**
+     * Tour 6, padlive2 (P3, control seat A b #49: a first perf of 4 bars, then a take of 0:01, and the « Live » project
+     * falls to « 1 mes. »): Pad Live's ● [record]. Pad Live has no « Nouvelle version » / « Ajouter à la suite » to
+     * show, so a take after one already in the song goes after it and the project keeps its length; the first take
+     * still replaces the new project's empty song. Ready (or a take done): the choice is made here, never while armed.
+     */
+    fun record(record: () -> Unit) {
+        val take = vm.take.value
+        if (take is com.pocketstudio.app.live.TakeUi.Ready || take is com.pocketstudio.app.live.TakeUi.Done) {
+            val p = vm.project.value
+            vm.setTakeAppend(p.liveTake.isNotEmpty() && p.song.isNotEmpty())
+        }
+        record()
+    }
 }
 
 /**

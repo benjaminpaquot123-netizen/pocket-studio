@@ -1285,7 +1285,9 @@ object TutoChecks {
                 p.copy(acid = mine.copy(length = maxOf(mine.length, wantedLength(wanted, a)), steps = mine.steps.mapIndexed { i, st -> wanted[i] ?: st }))
             }
             c.startsWith("notes:") -> {
-                val notes = target.roleNotes(arg) ?: return null
+                val all = target.roleNotes(arg) ?: return null
+                // A step cut in two (its first half has a length): the demo lays its own bars only, as its check reads them.
+                val notes = if (step.length <= 0) all else all.copy(notes = all.notes.filter { it.start < step.length * NoteClip.TICKS_PER_STEP })
                 val (q, id) = ensureTrack(p, arg, target) ?: return null
                 q.withTrack(q.track(id).copy(notes = notes))
             }

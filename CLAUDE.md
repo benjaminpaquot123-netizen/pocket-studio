@@ -33,12 +33,22 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 
 ## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)
 Ordre des étapes, règles anti-conflit et sources : `docs/PLAN-REPRISE.md`.
-- Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux (sauf les sièges d'un tour de testeurs de l'Audit, seuls sur la machine) ; toujours le modèle le plus fort (choix 1B).
+- Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux sur une même machine (sauf les sièges d'un tour de testeurs de l'Audit, seuls sur la machine ; le travail réparti entre plusieurs discussions suit la section « Travail à plusieurs discussions ») ; toujours le modèle le plus fort (choix 1B).
 - Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
 - L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.
 - Nouvelles à Benjamin à chaque étape, en 3 à 5 lignes.
 - Ne jamais attendre pour rien : surveillance automatique (disque < 2 Go, test Gradle figé > 20 min, démon Gradle bloqué, équipe sans nouveau commit ni note de suivi depuis 45 min, même échec relancé 2 fois) ; à chaque alerte, l'orchestrateur regarde la note de suivi et agit (tuer le processus figé, libérer le disque, relancer une fois, recadrer ou arrêter l'équipe qui tourne en rond, découper le lot) au lieu d'attendre.
+
+## Travail à plusieurs discussions (méthode v3, Benjamin, 2026-11-13)
+Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire en arrivant : `docs/audits/ultra/EN-COURS.md`. Consignes types : `docs/audits/ultra/GABARIT-FICHES-V3.md`.
+- La discussion principale est le chef d'orchestre : elle distribue le travail par fiches, fusionne seule (par le portail), pousse seule sur l'intégration et parle seule à Benjamin. Décision de Benjamin : ses fiches valent ses consignes pour ce travail, dans les limites de ce fichier (jamais de push sur l'intégration ni sur `main`, pas de PR, rien de destructif, aucun secret). En cas de doute : une ligne au chef, pas une question à Benjamin.
+- En arrivant, une discussion répond d'abord : « prêt : nom ; modifier l'appli oui/non ; pousser une branche neuve oui/non ; tests chauds oui/non ». Un rôle par discussion : testeur, correcteur, banc, lecteur-trieur ou vérificateur. Un testeur ne lit ni ne modifie le code de l'appli ; un correcteur ne joue pas de siège.
+- Audit et correction ne se mélangent pas : un siège joue un commit nommé et l'écrit (« code testé ») ; pendant une vague de testeurs, rien n'entre dans l'appli ni dans le banc ; un lot ne part que d'un tri fini.
+- Un fichier = un seul lot ouvert ; hors de sa liste de fichiers, on ne touche à rien, on le demande. Le tuto est une seule zone : un lot à la fois, et il n'entre que si un débutant neuf a rejoué ses chapitres sur la branche du lot (0 chapitre bloqué, 0 grave neuf).
+- Corriger : rejeu d'abord pour tout bloquant ou grave ; commit « rouge: sujet » avant la correction, puis « vert: même sujet » ; self-test et rejeux verts ; pré-vol PRÊT ; relecture neuve en dernier commit. Les deux fiches de `docs/AIDE-FUSIONS-TESTS.md` font foi.
+- Fusionner : paquets de trois lots au plus ; la CI part à la fin de chaque paquet ; rien d'autre n'entre avant qu'elle soit verte, téléphone simulé compris ; le juge du chantier ne monte pas. On ne fusionne jamais autre chose que la tête poussée.
+- Dire : chaque point à Benjamin se fait après lecture de la CI et finit par « Ce qui n'est pas vert ». Une APK pour son téléphone ne part que d'un commit à la CI verte.
 
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.

@@ -55,4 +55,28 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         act("attends 1")
         assertNull("« Le morceau a changé » though only the file's volume was chosen:\n" + screen(), centerOf("export_stale"))
     }
+
+    /** Seat A b (fr, phone, 100 %, Mode simple), P5: the Live project opened again from « Mes projets » opens on Pad Live. */
+    @Test
+    fun p5_theLiveProjectOpensAgainOnPadLive() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille2-journal.txt"))
+        val song = rhythm()!!.projectId
+        act("retour")
+        tap("launch_padlive")
+        repeat(5) { act("attends 1") }
+        assertNotNull("Pad Live not open:\n" + screen(), centerOf("padlive"))
+        val live = rhythm()!!.projectId
+        tap("padlive_back")
+        val projects = centerOfText("Mes projets", substring = true) ?: error("no « Mes projets »:\n" + screen())
+        act("touche ${projects.first} ${projects.second}")
+        tap("project_$song")
+        repeat(4) { act("attends 1") }
+        tap("top_more"); tap("top_projects")
+        tap("project_$live")
+        repeat(4) { act("attends 1") }
+        assertTrue("the Live project is not the one open", rhythm()!!.projectId == live)
+        assertNotNull("the Live project opened again elsewhere than Pad Live:\n" + screen(), centerOf("padlive"))
+    }
 }

@@ -65,6 +65,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -414,15 +416,18 @@ fun TutoPanel(
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
-    // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). While the words scroll, they stop
-    // above it ([moreRoom] kept free at the bottom of their room): the panel's height as before, nothing under it. The
-    // words' scroll is the step's own (the step before's left its room in the height held for this one).
+    // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
+    // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
+    // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
+    // before's left its room in the height held for this one).
     val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
-    var moreHeight by remember { mutableIntStateOf(0) }
-    // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », its room went into the
-    // height held for the step, empty under words that fit. Room only once the words are measured longer than their room.
+    // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
+    // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
     val scrolls = words.maxValue in 1 until Int.MAX_VALUE
-    val moreRoom = if (scrolls) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
+    val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null && !ui.bravo }
+    var whyOpen by rememberSaveable(why) { mutableStateOf(false) }
+    val reason = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) reason.bringIntoView() }
     Surface(
         color = panelColor(), shape = shape,
         modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
@@ -498,9 +503,10 @@ fun TutoPanel(
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
-            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most))) {
+            // The words take the room « Pourquoi ? » and « Lire la suite » leave them (measured first, no frame late).
+            Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(
-                Modifier.padding(bottom = moreRoom).verticalScroll(words),
+                Modifier.weight(1f, fill = false).verticalScroll(words),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
@@ -521,8 +527,9 @@ fun TutoPanel(
                         }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
-                        // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-                        Why(step.why ?: chapter.why.takeIf { it.isNotEmpty() }) { held = 0 }
+                        // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
+                        if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
+                            modifier = Modifier.bringIntoViewRequester(reason).testTag("tuto_why_text"))
                         if (chapter.map && map.isNotEmpty()) SongMap(map, focus = mapFocus(step.listen))
                         if (ui.failed) Text(tr("L'exemple ne s'entend pas : monte le volume du téléphone, puis touche encore « Écouter l'exemple »."), color = Neon.Amber,
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
@@ -531,8 +538,10 @@ fun TutoPanel(
                 // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
                 if (step.id != READY_STEP) kit?.invoke()
             }
+            // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
+            if (why != null) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (scrolls) MoreWords(words.canScrollForward, Modifier.align(Alignment.BottomCenter).onSizeChanged { moreHeight = it.height }) {
+            if (scrolls) MoreWords(words.canScrollForward) {
                 words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
             }
             }
@@ -999,14 +1008,11 @@ private fun ListenContent(ui: TutoUi, busy: Boolean) {
     com.pocketstudio.ui.WholeWordsText(" " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple"), textAlign = TextAlign.Center)
 }
 
-/** « Pourquoi ? »: one or two sentences, folded until touched ([toggled]: after each touch). */
+/** « Pourquoi ? »: its reason (one or two sentences, in the step's words) folded until touched ([toggle]). */
 @Composable
-private fun Why(text: String?, toggled: () -> Unit = {}) {
-    if (text == null) return
-    var open by rememberSaveable(text) { mutableStateOf(false) }
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable { open = !open; toggled() }.testTag("tuto_why")) {
+private fun Why(open: Boolean, toggle: () -> Unit) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = toggle).testTag("tuto_why")) {
         Text((if (open) "▾ " else "▸ ") + tr("Pourquoi ?"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
-        if (open) Text(tutoText(text), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_why_text"))
     }
 }
 

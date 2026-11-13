@@ -1,0 +1,8 @@
+fusion: 35645c8867c9976ca09b4135eac56c122e35c435
+branche: eq/tour-6-tutofleches
+tete: 1313614c680e1640e4496ef9e91b2a82bd833651
+relecture: docs/audits/ultra/tour-6-tutofleches-relecture.md
+relu: b42f0ee73859b46074e7a0366b53779b0ce8ab16
+filtres: com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoPanelPartMadeTest com.pocketstudio.app.tuto.Tour6TutoPanelTempoNoteTest com.pocketstudio.app.tuto.TutoSightHintTest com.pocketstudio.app.tuto.TutoGrilleTest com.pocketstudio.app.tuto.TutoScreenTest com.pocketstudio.app.tuto.TutoJourneyTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

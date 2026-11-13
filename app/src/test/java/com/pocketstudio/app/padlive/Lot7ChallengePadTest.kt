@@ -63,4 +63,17 @@ class Lot7ChallengePadTest {
         val line = said(ChallengeUi.Ready(c))
         assertTrue("« $line » names $names", names.size > 1 && names.all { line.contains(it) })
     }
+
+    /** The pad's sound named as the pads show it: in the interface's language (« Klaxon » is « Air horn » in English). */
+    @Test
+    fun thePadsSoundIsSaidInTheInterfacesLanguage() {
+        val c = PadChallenge.make(1, PadChallenge.shotsOf(pads, 0), 100.0)!!
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.EN
+        try {
+            val line = said(ChallengeUi.Ready(c))
+            assertTrue("« $line » says the sound in English", line.contains("Air horn") && !line.contains("Klaxon"))
+        } finally {
+            com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        }
+    }
 }

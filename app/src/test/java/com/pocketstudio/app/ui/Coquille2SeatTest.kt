@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -30,6 +31,10 @@ class Coquille2SeatTest : HumanTester("coquille2") {
     }
 
     private fun screen() = screenLines().joinToString("\n")
+
+    /** The first node tagged [tag] is drawn whole (not cut by a parent that scrolls, nor by an edge). */
+    private fun whole(tag: String): Boolean =
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let { shownWhole(it) } == true
 
     /** Seat A c's start: « Fais-moi un morceau », Simple, Hip-hop › Trap, « Créer et écouter ». */
     private fun trapSong() {
@@ -111,5 +116,29 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         tap("notice_lengthen")
         act("attends 1")
         assertTrue("the song still goes past the project's end", rhythm()!!.project.value.remixOverrunSeconds() <= 0)
+    }
+
+    /**
+     * Seat B a (es, phone, 100 %, Mode simple, left hand), A4: « Cortar la canción » in « Frases »: the mode menus
+     * (« ✂ Frases ▾ », « En el tiempo ▾ ») stay whole on the screen, not cut under the panel of actions.
+     */
+    @Test
+    fun a4_thePhrasesModeMenusStayWholeInView() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
+        amenee("remix", java.io.File("build/coquille2-journal.txt"))
+        tap("remix_download_thumb")
+        runCatching { tap("remix_model_ask_ok") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        runCatching { tap("remix_pick_thumb") }
+        repeat(80) { if (com.pocketstudio.app.remix.SeparationJob.state.value is com.pocketstudio.app.remix.SeparationState.Done) return@repeat; act("attends 1") }
+        val id = com.pocketstudio.app.remix.StemStore.list(ApplicationProvider.getApplicationContext()).first().id
+        tap("cut_song_$id")
+        repeat(20) { act("attends 1") }
+        // The seat's gesture 19: « ✂ Un trozo ▾ », then « Frases ».
+        tap("cut_auto"); tap("cut_auto_1")
+        repeat(3) { act("attends 1") }
+        assertTrue("« Frases ▾ » cut on:\n" + screen(), whole("cut_auto"))
+        assertTrue("« En el tiempo ▾ » cut on:\n" + screen(), whole("cut_magnet"))
     }
 }

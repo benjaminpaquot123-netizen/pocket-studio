@@ -1,0 +1,63 @@
+Écran 213 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Schieb einen Fader für die Lautstärke; tippe auf einen Spurnamen für Effekte und Kurven. » [coupé] @ 450,183
+texte « Drums » @ 84,270
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 57,345
+bouton (casque) [état « aus »] @ 111,345
+curseur [état « +0,0 dB », à 80 %] @ 84,516
+texte « +0,0 » @ 84,671
+texte « Bass » @ 204,270
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 177,345
+bouton (casque) [état « aus »] @ 231,345
+curseur [état « +0,0 dB », à 80 %] @ 204,516
+texte « +0,0 » @ 204,671
+texte « Akkorde » @ 324,270
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 297,345
+bouton (casque) [état « aus »] @ 351,345
+curseur [état « -3,5 dB », à 65 %] @ 324,516
+texte « -3,5 » @ 324,671
+texte « Melodie » @ 444,270
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 417,345
+bouton (casque) [état « aus »] @ 471,345
+curseur [état « -3,5 dB », à 65 %] @ 444,516
+texte « -3,5 » @ 444,671
+texte « Remix » @ 564,270
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 537,345
+bouton (casque) [état « aus »] @ 591,345
+curseur [état « +0,0 dB », à 80 %] @ 564,516
+texte « +0,0 » @ 564,671
+image (chapeau de diplômé) @ 37,740
+texte « Der Mix Kapitel 14/16 · Schritt 3/3 · Pro » @ 400,740
+icône (liste) @ 771,741
+icône ⌄ @ 843,741
+texte « Anhaltspunkte für die Balance: die Kick vor allem, Rumble und Bass knapp darunter, der Clap präsent, Stab und Riff ein paar dB dahinter. Vergleich mit dem Beispiel-Track. » @ 450,875
+texte « ▸ Warum? » @ 450,973
+bouton ✓ «   Verstanden » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 450,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

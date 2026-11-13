@@ -1,0 +1,52 @@
+Écran 123 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A Takt 1/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+texte « Teil: A » @ 62,273
+bouton « 4 » [coupé] @ 462,302
+bouton « 5 » [coupé] @ 830,302
+texte « E♭ » @ 84,335
+texte « D » @ 84,377
+texte « D♭ » @ 84,419
+texte « C4 » @ 84,461
+texte « B » @ 84,503
+texte « B♭ » @ 84,545
+texte « A » @ 84,587
+texte « A♭ » @ 84,629
+texte « G » @ 84,671
+texte « G♭ » [coupé] @ 84,705
+dessin [coupé] @ 492,516
+image (chapeau de diplômé) @ 37,768
+texte « Das Riff Kapitel 7/16 · Schritt 2/3 · Pro » @ 400,768
+icône (liste) @ 771,769
+icône ⌄ @ 843,769
+texte « Du bist dran: Erstell die Melodie-Spur (Sound „Gefilterter Lead“) und schreib das 2-taktige Riff: tiefes F, hohes F, tiefes F, dann dasselbe, mit A♭ am Schluss. „Auf die nächsten Takte kopieren“. » @ 450,926
+texte « ▸ Warum? » @ 450,1047
+bouton ⊕ «   Melodie-Spur erstellen » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

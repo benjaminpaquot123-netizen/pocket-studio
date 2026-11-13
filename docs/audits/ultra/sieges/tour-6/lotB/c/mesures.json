@@ -1,0 +1,45 @@
+{
+  "siege": "c",
+  "options": {
+    "lang": "ar",
+    "device": "phone",
+    "font": "100",
+    "fresh": "reel",
+    "gestes.max": "120",
+    "mission": "libre",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 35,
+    "images": 8,
+    "gestes_premier_son": 3,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 5,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 41,
+    "ecrans_revisites": 8,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 106,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.8,
+      "simule": 2.4,
+      "jvm": 8.9,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "libre",
+  "resultat": "partielle",
+  "pourquoi": "fini par le testeur, 11 écrans différents, mais aucun changement gardé ni fichier partagé (état du siège absent)"
+}

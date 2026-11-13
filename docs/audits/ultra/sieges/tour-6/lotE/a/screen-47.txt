@@ -1,0 +1,11 @@
+Écran 47 (588x1278)
+bouton (dossier ouvert) « My projects Open another song, copy or rename it. » → @ 294,83
+bouton (quatre vagues) « Remix Track separation: drums, bass, vocals and the rest. » → @ 294,274
+bouton (grille de pads) « Pad Live NEW Pads ready to play, your sounds, live effects. It sounds right away. » → @ 294,488
+bouton ★ ★ ★ « Challenges Listen to a rhythm, play it back on the pads: win stars. » → @ 294,722
+bouton (micro) « Record my voice or guitar The mic records over your music, right on the beat. » → @ 294,980
+bouton (chapeau de diplômé) → « I'm learning You make the whole song yourself, step by step: I explain and I check. » [coupé] @ 294,1175
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

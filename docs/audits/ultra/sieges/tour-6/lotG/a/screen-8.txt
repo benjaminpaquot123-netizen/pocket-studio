@@ -1,0 +1,4 @@
+Écran 8 (588x1278)
+texte « Hangi projeye? » @ 176,508
+icône (dossier ouvert) « İlk ritmim açık proje · 120 BPM » @ 294,623
+icône ← «  Geri » @ 488,759

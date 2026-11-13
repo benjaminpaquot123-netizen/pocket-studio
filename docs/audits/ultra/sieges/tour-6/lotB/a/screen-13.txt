@@ -1,0 +1,37 @@
+Écran 13 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ [désactivé] @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Batería 16 pads » @ 76,183
+onglet « Acid 303 Línea de bajo » @ 242,183
+onglet « Voz Micro » @ 398,183
+onglet « Remix Separar » [coupé, sélectionné] @ 519,183
+onglet « Pistas de audio » @ 114,258
+onglet « Remix » [sélectionné] @ 283,258
+onglet « Afinador » @ 419,258
+onglet « Generar » [coupé] @ 538,258
+titre « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,357
+bouton « ? » @ 360,357
+texte « Elige una canción del dispositivo: la app la separa en batería, bajo, voz y el resto. Tarda unos minutos; puedes apagar la pantalla. » @ 294,436
+texte « Leyendo “Ma chanson préférée”… » @ 235,511
+bouton « Cancelar » @ 294,607
+bouton (boussole) « Guía  · Pon un ritmo 5 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » [désactivé] @ 70,1062
+icône ↷ « Rehacer » [désactivé] @ 176,1062
+bouton ▶ « la canción » @ 285,1062
+texte « 120 Tempo » @ 401,1062
+icône (trois points reliés) « Compartir » @ 515,1062
+onglet (ligne brisée et points) « Estructura » @ 54,1158
+onglet (touches de piano) « Sonidos » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Más » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

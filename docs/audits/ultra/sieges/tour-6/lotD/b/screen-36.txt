@@ -1,0 +1,52 @@
+Écran 36 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132  템포 » @ 78,123
+bouton « ? » @ 495,123
+icône « 파트: A » ▾ @ 78,198
+texte « Techno · 스네어 2 » [coupé] @ 160,240
+bouton « 1 » [état « 히트, 세기 100 % »] @ 67,308
+bouton [état « 비어 있음 »] @ 124,308
+bouton [état « 비어 있음 »] @ 182,308
+bouton [état « 비어 있음 »] @ 240,308
+bouton « 2 » [état « 히트, 세기 100 % »] @ 298,308
+bouton [état « 비어 있음 »] @ 356,308
+bouton [état « 비어 있음 »] @ 414,308
+bouton [état « 비어 있음 »] @ 472,308
+bouton « 3 » [état « 히트, 세기 100 % »] @ 67,379
+bouton [état « 비어 있음 »] @ 124,379
+bouton [état « 비어 있음 »] @ 182,379
+bouton [état « 비어 있음 »] @ 240,379
+bouton « 4 » [état « 히트, 세기 100 % »] @ 298,379
+bouton [état « 비어 있음 »] @ 356,379
+bouton [état « 비어 있음 »] @ 414,379
+bouton [état « 비어 있음 »] @ 472,379
+texte « 전체 » @ 155,460
+texte « 1/2 » @ 233,460
+texte « 1/4 » @ 308,460
+texte « ◀ » @ 383,460
+texte « ▶ » @ 458,460
+texte « 채우기 » @ 77,460
+texte « 지우기 » @ 94,532
+texte « 칸을 탭하면 히트가 들어가고, 손가락을 밀면 여러 개를 그려요. 히트를 길게 누르면: 세기와 롤 (×2~×8). » @ 270,633
+image (chapeau de diplômé) @ 37,738
+texte « 킥과 으르렁거림 2/15장 · 4/4단계 · 쉬움 » @ 220,738
+icône (liste) @ 411,738
+icône ⌃ @ 483,738
+icône (rond coché) « 성공 다음 단계 » → @ 270,851
+icône ↶ « 실행 취소 » @ 87,950
+bouton ▶ « 곡 » @ 210,950
+texte « 132 템포 » @ 334,950
+icône ⋮ « 더보기 » @ 458,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

@@ -1,0 +1,15 @@
+Écran 29 (588x1278)
+icône ← @ 54,48
+texte « Yeni proje » @ 330,48
+bouton (chapeau de diplômé) « Öğreniyorum Bütün parçayı adım adım kendin yaparsın: ben anlatırım ve kontrol ederim. » → @ 294,226
+bouton (éclair) « Bana bir parça yap Bir tarz seç: uygulama parçayı yapar, Rehber bitirmene yardım eder. » → @ 294,480
+texte « Tek dokunuşla bir stil » @ 329,653
+image ♪ @ 81,694
+texte « Bir stile dokun: dinlemeye hazır, eksiksiz bir şarkı. » @ 343,718
+bouton « Techno » @ 116,813
+bouton « House » @ 271,813
+bouton « Trap » @ 406,813
+bouton « Pop » @ 92,897
+bouton « Lo-fi hip-hop » @ 269,897
+bouton (crayon) « Sıfırdan başlıyorum Henüz nota yok: bir davul, bir Acid 303 ve bir synth seninkileri bekliyor. » → @ 294,1071
+bouton « ↓ 2 tane daha » @ 425,1212

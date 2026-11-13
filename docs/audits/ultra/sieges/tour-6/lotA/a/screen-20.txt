@@ -1,0 +1,31 @@
+Écran 20 (540x1170)
+icône (dossier ouvert) ✓ « Trap सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,123
+icône « अंतरा बार 29/104 » ▾ @ 248,123
+bouton « ? » @ 495,123
+bouton ← « और  · टेस्ट चेकलिस्ट » @ 270,198
+texte « टेस्ट चेकलिस्ट » @ 136,288
+texte « Banc fiable : les 10 essais restants (8 faits sur le téléphone, merci). Chaque point dit le mode, les gestes un par un, et la réponse à recopier. » @ 270,433
+titre « नया क्या है » [état « खुला हुआ »] @ 122,608
+texte « Recette, deuxième fournée : « On en a gros ! »
+- La liste Recette ne garde que les 10 essais restants (les 8 premiers sont faits, merci).
+- Chaque essai dit maintenant le mode (Simple ou Pro), les gestes un par un et la réponse à recopier.
+- Rien d'autre ne change dans l'appli : les défauts trouvés sont notés pour les équipes de correction. » [coupé] @ 270,739
+bouton (boussole) « गाइड  · एक साउंड बदलो 15 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » [désactivé] @ 88,951
+bouton ■ « गाना » @ 211,951
+texte « 140 टेम्पो » @ 335,951
+icône ⋮ « और » @ 458,951
+onglet (lignes et note) « मेरा गाना » @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

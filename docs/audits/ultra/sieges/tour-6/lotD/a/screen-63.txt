@@ -1,0 +1,45 @@
+Écran 63 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+texte « 太鼓のふち » [coupé] @ 105,223
+bouton « 1 » [coupé, état « 空 »] @ 70,272
+bouton [coupé, état « 空 »] @ 133,272
+bouton [coupé, état « 空 »] @ 197,272
+bouton [coupé, état « ヒット、強さ 100 % »] @ 261,272
+bouton « 2 » [coupé, état « 空 »] @ 325,272
+bouton [coupé, état « 空 »] @ 389,272
+bouton [coupé, état « ヒット、強さ 100 % »] @ 453,272
+bouton [coupé, état « 空 »] @ 517,272
+image (chapeau de diplômé) @ 37,335
+texte « ベース チャプター 5/15 · ステップ 2/2 · かんたん » @ 244,335
+icône (liste) @ 459,335
+icône ⌄ @ 531,335
+texte « あなたの番：「ベーストラックを作る」をタップ（トラック＝曲の楽器1つ）、次に1小節目の点線のノート：キックのあとに小さな2音ずつ。「次の小節にコピー」で2小節目と3小節目にくり返される。次に4小節目のノート（最後は1段上がって、上に跳ぶ）をタップして、もう一度「コピー」。 » @ 294,513
+texte « • キック：バスドラム。ドラムの低い「ドン」。 » @ 230,644
+texte « ▸ なぜ？ » @ 294,682
+texte « キット テクノ » @ 101,743
+bouton « 続きを読む » ⌄ @ 294,741
+bouton ⊕ «   ベーストラックを作る » @ 294,813
+bouton ▶ «  例を聴く » @ 154,897
+bouton (œil) «  見せて » @ 433,897
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

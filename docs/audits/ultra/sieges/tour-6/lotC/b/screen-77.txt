@@ -1,0 +1,19 @@
+Écran 77 (588x1278)
+texte « Changer le son » @ 144,35
+icône ■ @ 474,48
+icône ✕ @ 546,48
+texte « Pour le pad 2 (Kick 2) » @ 123,69
+onglet ◎ « Kicks » [sélectionné] @ 82,129
+onglet ○ « Caisses claires » @ 268,129
+onglet (main) « Claps » @ 454,129
+onglet « Charleys fermés » (points en rond) [coupé] @ 549,129
+titre « SONS » [état « Déplié »] @ 94,216
+champ (loupe) « Chercher un son (caisse, conga, sirène…) » contenu «  » @ 294,306
+bouton (neuf points) « Sons intégrés 2 sons » › @ 294,420
+bouton (neuf points) « Autres sons du kit 14 sons » › @ 294,516
+bouton (cotillons) « Fête 22 sons » › @ 294,612
+texte « Touche ☆ sur un son pour le retrouver dans « Favoris ». » @ 294,693
+texte « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad 2 (Kick 2). » @ 294,759
+titre « PACKS DE SONS » [état « Déplié »] @ 171,873
+bouton « ? » @ 278,873
+texte « Chargement de la liste… » @ 180,925

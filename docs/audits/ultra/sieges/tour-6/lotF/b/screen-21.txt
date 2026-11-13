@@ -1,0 +1,11 @@
+Écran 21 (540x1170)
+texte « Wybierz język » @ 160,174
+texte « JĘZYK TELEFONU » @ 129,247
+bouton « 🇵🇱 Polski » (rond coché) [sélectionné] @ 270,318
+texte « WSZYSTKIE JĘZYKI » @ 137,397
+bouton « 🇮🇩 Bahasa Indonesia Indonezyjski » @ 270,468
+bouton « 🇩🇪 Deutsch Niemiecki » @ 270,567
+bouton « 🇬🇧 English Angielski » @ 270,666
+bouton « 🇪🇸 Español Hiszpański » @ 270,765
+bouton « 🇫🇷 Français Francuski » @ 270,864
+texte « Zamknij » @ 444,984

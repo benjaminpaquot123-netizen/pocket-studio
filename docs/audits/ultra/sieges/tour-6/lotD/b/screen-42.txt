@@ -1,0 +1,57 @@
+Écran 42 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132  템포 » @ 78,123
+bouton « ? » @ 495,123
+icône « 파트: A » ▾ @ 78,198
+texte « Techno · 손뼉 » [coupé] @ 137,240
+bouton « 1 » [état « 비어 있음 »] @ 67,308
+bouton [état « 비어 있음 »] @ 124,308
+bouton [état « 비어 있음 »] @ 182,308
+bouton [état « 비어 있음 »] @ 240,308
+bouton « 2 » [état « 히트, 세기 100 % »] @ 298,308
+bouton [état « 비어 있음 »] @ 356,308
+bouton [état « 비어 있음 »] @ 414,308
+bouton [état « 비어 있음 »] @ 472,308
+bouton « 3 » [état « 비어 있음 »] @ 67,379
+bouton [état « 비어 있음 »] @ 124,379
+bouton [état « 비어 있음 »] @ 182,379
+bouton [état « 비어 있음 »] @ 240,379
+bouton « 4 » [état « 히트, 세기 100 % »] @ 298,379
+bouton [état « 비어 있음 »] @ 356,379
+bouton [état « 비어 있음 »] @ 414,379
+bouton [état « 히트, 세기 100 % »] @ 472,379
+texte « 전체 » [coupé] @ 155,438
+texte « 1/2 » [coupé] @ 233,438
+texte « 1/4 » [coupé] @ 308,438
+texte « ◀ » [coupé] @ 383,438
+texte « ▶ » [coupé] @ 458,438
+texte « 채우기 » [coupé] @ 77,444
+image (chapeau de diplômé) @ 37,498
+texte « 클랩 3/15장 · 1/1단계 · 쉬움 » @ 220,498
+icône (liste) @ 411,498
+icône ⌄ @ 483,498
+image (coupe) @ 57,633
+texte « 잘했어요, 챕터 완료! » @ 209,596
+texte « 지금 상태의 곡을 들어 보고 다음 챕터로 넘어가세요: “하이햇”. » @ 295,653
+bouton « 다음 챕터   » → @ 270,750
+bouton ▶ «  내 곡 듣기 » @ 170,848
+bouton ▶ «  예시 듣기 » @ 317,848
+icône ← @ 57,848
+icône « 다음  » → @ 457,848
+icône ↶ « 실행 취소 » @ 87,950
+bouton ▶ « 곡 » @ 210,950
+texte « 132 템포 » @ 334,950
+icône ⋮ « 더보기 » @ 458,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

@@ -1,0 +1,6 @@
+Écran 30 (588x1278)
+icône ← @ 54,48
+texte « Basit mi Pro mu? » @ 330,48
+texte « Bu projeyi nasıl görmek istersin? Üstteki etiketle istediğin zaman değiştirebilirsin. » @ 294,171
+bouton « Basit Başlamak için: 5 sekme, büyük düğmeler ve günlük kelimeler. » @ 294,380
+bouton « Pro Daha ileri gitmek için: tüm araçlar, yapı, sesler, miks ve canlı. » @ 294,643

@@ -115,6 +115,26 @@ class Tour6Tuto4HouseTest {
         report("sentences that contradict", bad)
     }
 
+    /** M5: « quelques coups … une couche de plus » says how many; the fader's and the export's numbers in one simple sentence. */
+    @Test
+    fun howManyAndWhatTheNumbersMean() {
+        val bad = mutableListOf<String>()
+        val variation = step("variation").text
+        if ("quelques" in variation || "couche" in variation) bad += "fr: how many, what a « couche » is: $variation"
+        if (!Regex("""\d+ (cases|coups)""").containsMatchIn(variation)) bad += "fr: no number of hits: $variation"
+        val levels = step("levels").text
+        val share = step("share").text
+        for ((text, signs) in listOf(levels to listOf("+4", "−∞"), share to listOf("−14", "saturation"))) {
+            signs.filter { it !in text }.forEach { bad += "fr: « $it » not said: $text" }
+        }
+        for (lang in translated) {
+            tr(lang, levels)?.let { v -> listOf("+4", "−∞").filter { it !in v }.forEach { bad += "${lang.code}: no $it: $v" } }
+            tr(lang, share)?.let { v -> if ("−14" !in v) bad += "${lang.code}: no −14: $v" }
+        }
+        everyLanguage(listOf(variation, levels, share), bad)
+        report("numbers left unsaid", bad)
+    }
+
     companion object {
         /** The word for a tambourine in each language's former texts. */
         val TAMBOURINE = listOf(

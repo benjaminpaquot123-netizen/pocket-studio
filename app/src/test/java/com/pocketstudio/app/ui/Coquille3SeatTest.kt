@@ -50,9 +50,10 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         trapSong()
         tap("top_more"); tap("top_projects")
         repeat(2) { act("attends 1") }
-        val said = compose.onAllNodesWithTag("projects_back", useUnmergedTree = true).fetchSemanticsNodes().flatMap { n ->
+        val said = compose.onAllNodesWithTag("projects_back").fetchSemanticsNodes().flatMap { n ->
             n.children.flatMap { it.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription) { emptyList() } } +
-                n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription) { emptyList() }
+                n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription) { emptyList() } +
+                n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }.map { it.text }
         }
         assertTrue("the arrow of « Mes projets » says $said, not where it goes:\n" + screen(), said.any { "Accueil" in it })
         tap("projects_back")

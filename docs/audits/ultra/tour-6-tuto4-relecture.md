@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : f431efc40ce6feff6d8133a6149f308aca78fbf5
+Relu : 33473d12a19947c8d5595893f3c8b93ef58b2673
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -81,5 +81,11 @@ Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne 
 - rouge constaté : 96b5fa133 : rejoué sur 81da2f9f3 (parent du vert 0fbfe3f13, même arbre jetable) : `Tour6LongPressEmptyCellTest#aLongPressOnAnEmptyCellPutsTheHitAndOpensItsMenu` échoue sur son assertion, « the hit's menu not open after one long press ».
 - Un redémarrage de la machine a coupé le premier passage des deux rejeux ; relancés à la main, résultats ci-dessus. Arbre jetable retiré (`git worktree remove`) ; `wt-tuto4` non modifié avant ce commit.
 - `rejeu-defauts.sh t6-ha19-cases-panneau` non relancé ici (le rapport le donne « oracle tenu » sur 0e250438b, et la fusion ne touche ni `TutoPanel.kt` ni `RhythmScreen.kt`) ; le test `Tour6TutoCellsPanel100Test` qui en reprend l'oracle est vert sur la tête.
+
+### Delta 166f0def → 33473d12a
+- Seul apport : la fusion propre de la tête d'intégration `09e2f2b0c` (lot coquille4, 16 fichiers). Lu : `git diff 166f0defb HEAD`, dont les trois morceaux de coquille4 dans `AppRoot.kt` : tailles des paquets de la bibliothèque (~l. 549) et remix en attente (~l. 1381) écrits sur le fil principal ; fenêtre d'avis (~l. 1095) : bouton renommé `notice_ok` → `notice_close`, phrase reliée à « Allonger le morceau » par `HelpAbout`.
+- Aucun croisement avec tuto4 : ses deux morceaux d'`AppRoot.kt` (révélation du bouton du son de la piste, désormais l. 2055 ; noms des pads de `simpleTracks`, l. 4791) sont intacts et loin de ceux de coquille4 ; les drapeaux du panneau (`TutoHints.knobs/strip/soundButtonInSight`, `tutoReveal`) ne sont touchés par aucune ligne de coquille4. Plus aucune trace de `notice_ok` dans `app/src` (aucun test tuto4 ne s'en servait).
+- Le mineur « `AppRoot.kt:2048` » ci-dessus se lit maintenant l. 2055.
+- Pas de relance : l'équipe donne `:project-model:test` et `:app:testDebugUnitTest` (Tuto, LongPress, SimpleMixPadName, MixTips, TrackSheet, WhatPlays) à 1598 tests, 0 échec, sur cette tête ; rien dans le delta n'en fait douter.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

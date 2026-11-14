@@ -182,6 +182,8 @@ object TutoHints {
      * leaves their rows room (replay t6-ha19-cases-panneau: at 100 % the first row was cut under the open panel).
      */
     var gridInSight by mutableStateOf(false)
+    /** « Régler le son de la piste ↓ » is on the screen (the notes page): a step on the track's sound reveals it, the panel leaves it room. */
+    var soundButtonInSight by mutableStateOf(false)
     /** The step shown (its id): a screen places its view once per step, never again by itself (lot « tuto 5 »). */
     var step by mutableStateOf<String?>(null)
     /**
@@ -202,7 +204,7 @@ object TutoHints {
     @androidx.annotation.VisibleForTesting
     fun reset() {
         cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
-        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false
+        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }
 }
@@ -452,7 +454,9 @@ fun TutoPanel(
     val end = ui.atEnd || ui.finished
     // Replay t6-ha19-cases-panneau (100 %, panel open on the kick step): the cells to touch on the grid shown keep
     // their two rows above the panel; the words scroll (« Lire la suite ») in a lower room (the height taken again).
-    val cellsToTouch = TutoHints.gridInSight && TutoHints.cells?.second?.isNotEmpty() == true
+    // The same for a step on the track's sound (knobs named) with « Régler le son de la piste ↓ » on the screen (H5, H7).
+    val cellsToTouch = (TutoHints.gridInSight && TutoHints.cells?.second?.isNotEmpty() == true) ||
+        (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.

@@ -2036,6 +2036,9 @@ fun AppRoot() {
         val place = tuto.place()
         com.pocketstudio.app.tuto.TutoHints.knobs = place?.knobs.orEmpty().toSet()
         com.pocketstudio.app.tuto.TutoHints.strip = place?.strip
+        // Tour 6, seats Bb-7/Bb-8 (H5, H7): a step on the track's sound while its notes page shows: « Régler le son de la
+        // piste ↓ », at the top of that page (scrolled away to the grid), brought into view by itself.
+        if (place?.knobs?.isNotEmpty() == true && com.pocketstudio.app.tuto.TutoHints.soundButtonInSight) tutoReveal = listOf(com.pocketstudio.app.synth.SOUND_BUTTON_SPOT)
     }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.

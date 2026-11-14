@@ -113,7 +113,12 @@ class BenchNetworkEndTest : HumanTester("ci2net") {
                 emptyList<String>(),
                 BenchPristine.appThreads(),
             )
-            if (gapMs != null) assertTrue("the job read its saved copy (the step off the network happened)", writer.get()?.isAlive == false)
+            if (gapMs != null) {
+                // Review M7: the writer's last steps (closing the pipe) may still run after the job has read it; its end is
+                // waited for (bounded: a writer that no reader ever opened stays blocked, and that is the red).
+                writer.get()?.join(WRITER_END_CAP_MS)
+                assertTrue("the job read its saved copy (the step off the network happened)", writer.get()?.isAlive == false)
+            }
         } finally {
             before.forEach { (k, v) -> if (v == null) System.clearProperty(k) else System.setProperty(k, v) }
             server.close()
@@ -127,5 +132,7 @@ class BenchNetworkEndTest : HumanTester("ci2net") {
         const val HOLD_MS = 10_000L
         /** How long the job stays off the network between the catalogue and its fallbacks (the saved copy, a pipe). */
         const val GAP_MS = 3_000L
+        /** How long a writer whose pipe was read is given to close it. */
+        const val WRITER_END_CAP_MS = 5_000L
     }
 }

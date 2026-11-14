@@ -1,0 +1,5 @@
+Écran 14 (588x1278)
+texte « Mes fichiers » @ 143,511
+texte « Chargement de la liste… » @ 191,574
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,641
+texte « Fermer » @ 497,754

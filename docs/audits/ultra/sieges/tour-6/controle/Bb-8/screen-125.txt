@@ -1,0 +1,55 @@
+Écran 125 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Akkorde · Takt 4/8 Noch 2 gestrichelte Noten zu tippen » [coupé] @ 450,315
+texte « Takt » @ 84,355
+bouton « 4 » @ 486,363
+bouton « 5 » [coupé] @ 853,363
+texte « G♭ » @ 84,416
+texte « F » @ 84,457
+texte « E » @ 84,499
+texte « E♭ » @ 84,541
+texte « D » @ 84,583
+texte « D♭ » @ 84,625
+texte « C4 » @ 84,667
+texte « H » @ 84,709
+texte « B » @ 84,751
+texte « A » @ 84,793
+texte « A♭ » @ 84,835
+texte « G » @ 84,877
+texte « G♭ » @ 84,919
+texte « F » @ 84,961
+texte « E » @ 84,1003
+texte « E♭ » @ 84,1045
+texte « D » @ 84,1086
+dessin [coupé] @ 492,751
+texte « Der Stab (Akkorde) Kapitel 6/16 · Schritt 2/2 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: „Auf die nächsten Takte kopieren“, dann schreib Takt 4 auf G♭-Dur (die ♭II) und nochmal „Kopieren“. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

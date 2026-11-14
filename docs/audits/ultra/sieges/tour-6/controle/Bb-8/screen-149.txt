@@ -1,0 +1,52 @@
+Écran 149 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Nein » [coupé, sélectionné] @ 224,303
+bouton « Leicht » [désactivé, coupé] @ 355,303
+bouton « Mittel » [désactivé, coupé] @ 494,303
+bouton « Langsam » [désactivé, coupé] @ 654,303
+texte « Kein Akkord in diesen Noten: Hier gibt es nichts zu ändern. Der Sound ist für die ganze Spur gleich und wird weiter unten eingestellt. » @ 450,384
+texte « Sound der Spur einstellen » @ 236,486
+texte « Der Sound der Spur (gleich für alle ihre Noten) » @ 302,585
+titre « INSTRUMENT » [état « Aufgeklappt »] @ 173,663
+bouton « ? » @ 282,663
+onglet (curseurs) « Synth » @ 116,726
+onglet (rond relié à des points) « Plaits » [sélectionné] @ 272,726
+onglet (barres de son) « Sample » @ 438,726
+onglet (touches de piano) « Echte Instrumente » @ 693,726
+texte « 24 Syntheseverfahren aus dem Plaits-Modul (Mutable Instruments): von analogem Sound bis FM im DX7-Stil, von Streichern bis Percussion. » @ 450,822
+titre « ANALOG » [état « Aufgeklappt »] @ 450,906
+bouton (curseurs) « Analog Der klassische Synth » @ 174,981
+bouton (curseurs) « Analog + Filter Zwei Oszillatoren und ein Filter » [sélectionné] @ 450,999
+bouton (curseurs) « Waveshaper Sanft bis stark verzerrt » @ 726,981
+bouton (curseurs) « Phasenverzerrung Rund oder bissig, im Stil des Casio CZ » [coupé] @ 174,1090
+bouton (curseurs) « Chiptune 8-Bit-Videospiele » [coupé] @ 450,1090
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe auf der Melodie-Spur auf „Sound der Spur einstellen ↓“: Dieser Knopf ist ganz oben auf der Notenseite, direkt unter „Tastatur“ und „Noten“ (scroll die Seite nach oben, um ihn zu sehen). Dann dreh „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

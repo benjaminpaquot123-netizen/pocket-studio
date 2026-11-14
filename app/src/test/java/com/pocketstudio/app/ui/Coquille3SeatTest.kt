@@ -97,6 +97,22 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertTrue("« détails » beside the sentence, read in its middle:\n" + screen(), details.boundsInRoot.top >= sentence.boundsInRoot.bottom - 1f)
     }
 
+    /** Seat B a (es, Mode simple, left hand), A11 (control Ba-5, screen 6): « Remix » of « Más » is under the left thumb. */
+    @Test
+    fun a11_remixOfMoreIsUnderTheLeftThumb() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
+        amenee("premier-morceau", java.io.File("build/coquille3-journal.txt"))
+        tap("thumb_more")
+        repeat(2) { act("attends 1") }
+        // Its middle, where a thumb aims (control Ba-5: reached only by the card's edge).
+        val n = compose.onAllNodesWithTag("plus_remix").fetchSemanticsNodes().firstOrNull() ?: error("no « Remix »:\n" + screen())
+        val m = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics
+        val p = com.pocketstudio.app.human.BenchWindows.drawnPosition(n, m)
+        assertTrue("« Remix » of « Más » out of the left thumb (its middle):\n" + screen(),
+            SeatOptions.reachable(SeatOptions.Hand.LEFT, p.x + n.size.width / 2f, p.y + n.size.height / 2f, m.widthPixels, m.heightPixels, m.density))
+    }
+
     /** Seat B a (es, Mode simple, left hand), A10 (control Ba-2 screen 3): one « Descargar el modelo (174 MB) » on the panel. */
     @Test
     fun a10_oneDownloadButtonOnTheRemixPanel() {

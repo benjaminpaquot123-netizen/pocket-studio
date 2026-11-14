@@ -37,8 +37,12 @@ class OrdinaryTestsLeaveNothingTest {
         SettingsStore.update(app) { it.copy(simpleMode = false, guideSeen = true) }  // as ShellFixesTest, OnboardingUiTest
         I18n.everyday = true  // as OnboardingUiTest
         LaunchRule.askAtStartForTest = false  // as SpacesRestoreTest
+        // Tour 6, lot « stable » (shuffled suite, seed 5: Tour6TutoLineGoTest red, « hints=5/5 »): the tutorial's hints of a
+        // class run earlier (a step that asked five times to bring a note into view) stayed for the next roll drawn.
+        com.pocketstudio.app.tuto.TutoHints.focus = 5
+        com.pocketstudio.app.tuto.TutoHints.banner = "Mesure 2 →"
         val left = BenchPristine.leaks().joinToString("; ")
-        for (what in listOf("AndroidViewModelFactory._instance", "ClosingSaves busy", "SettingsStore.state", "I18n.everyday", "LaunchRule.askAtStartForTest")) {
+        for (what in listOf("AndroidViewModelFactory._instance", "ClosingSaves busy", "SettingsStore.state", "I18n.everyday", "LaunchRule.askAtStartForTest", "TutoHints")) {
             assertTrue("this test must leave $what for the next one to be a proof: $left", what in left)
         }
     }

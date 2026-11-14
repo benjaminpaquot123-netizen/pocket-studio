@@ -60,4 +60,25 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertNotNull("the arrow did not go to the welcome page:\n" + screen(), centerOf("launch_projects"))
     }
 
+    /** Seat A c, gestures 7-13: the song sent as M4A (the share page's choice), then « Autres fichiers » (Pro). */
+    private fun sentThenPro() {
+        trapSong()
+        tap("tab_simple_Envoyer")
+        tap("share_go")
+        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
+        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        runCatching { tap("share_bilan_ok") }
+        compose.onNodeWithTag("share_other").performScrollTo().performClick()
+        repeat(2) { act("attends 1") }
+    }
+
+    /** Seat A c (gesture 13, screen 17): going Pro from the share page keeps the format chosen there (M4A), never WAV by itself. */
+    @Test
+    fun n1_proKeepsTheFormatChosenOnTheSharePage() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        sentThenPro()
+        val format = rhythm()!!.export.value.format
+        assertTrue("Pro's files are $format though M4A was chosen:\n" + screen(), format == com.pocketstudio.app.rhythm.ExportFormat.M4a)
+    }
+
 }

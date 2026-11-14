@@ -1,0 +1,52 @@
+Écran 94 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+texte « Mesure 2/2 · Bord de caisse » [coupé] @ 190,223
+bouton « 1 » [état « vide »] @ 70,299
+bouton [état « vide »] @ 133,299
+bouton [état « coup, force 100 % »] @ 197,300
+bouton [état « vide »] @ 261,300
+bouton « 2 » [état « vide »] @ 325,300
+bouton [état « vide »] @ 389,300
+bouton [état « coup, force 100 % »] @ 453,300
+bouton [état « vide »] @ 517,300
+bouton « 3 » [coupé, état « vide »] @ 70,359
+bouton [coupé, état « vide »] @ 133,359
+bouton [coupé, état « coup, force 100 % »] @ 197,359
+bouton [coupé, état « vide »] @ 261,359
+bouton « 4 » [coupé, état « vide »] @ 325,359
+bouton [coupé, état « vide »] @ 389,359
+bouton [coupé, état « coup, force 100 % »] @ 453,359
+bouton [coupé, état « vide »] @ 517,359
+texte « La basse Chapitre 5/15 · Étape 1/2 · Facile » @ 207,423
+icône (liste) « Chapitres » @ 444,423
+icône ⌄ @ 531,423
+texte « Écoute la basse de l'exemple avec la batterie. » @ 280,504
+texte « Le kit House » @ 100,567
+texte « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » @ 294,631
+bouton « Télécharger le kit House (4 Mo) » @ 294,715
+texte « ▸ Pourquoi ? » @ 294,774
+icône « Lire la suite » ⌄ @ 294,822
+bouton ▶ «  Écouter l'exemple » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

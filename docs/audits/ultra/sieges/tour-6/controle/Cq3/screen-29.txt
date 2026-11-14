@@ -1,0 +1,26 @@
+Écran 29 (588x1278)
+dessin @ 294,57
+icône ✕ @ 522,129
+texte « Prêt à partager ? » @ 258,129
+champ « Nom du morceau (et du projet) » contenu « Démo · Acid house » @ 294,232
+icône ✕ @ 522,239
+bouton ▶ «  Écouter » @ 466,335
+texte « 0:13 » @ 66,335
+texte « 4 parties » @ 161,340
+bouton « ? » @ 170,410
+texte « Volume visé » @ 89,411
+bouton « Streaming · −14 LUFS » @ 164,474
+bouton « Club · −8 LUFS » @ 407,474
+bouton « Auto (style) · −9 LUFS » @ 166,555
+bouton « Désactivée » [sélectionné] @ 393,555
+texte « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. Le même réglage que dans Mix. » @ 294,637
+image (rond coché) @ 45,713
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,726
+bouton (clap de cinéma) «   Vidéo pour les réseaux · 30 s » @ 294,810
+bouton (notes sur une pile) « Autres fichiers Piste par piste, MIDI, FLAC… dans Mix » › @ 272,906
+bouton « ? » @ 536,906
+bouton « M4A · pour partager » [sélectionné] @ 157,1020
+bouton « WAV · qualité max » @ 414,1020
+bouton (trois points reliés) «   Partager » @ 294,1116
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,1218
+bouton « ? » @ 536,1218

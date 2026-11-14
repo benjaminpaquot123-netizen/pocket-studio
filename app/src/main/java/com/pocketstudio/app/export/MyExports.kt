@@ -146,7 +146,10 @@ fun MyExportsDialog(
 ) {
     val context = LocalContext.current
     var items by remember { mutableStateOf(shown) }
-    LaunchedEffect(Unit) { if (shown == null) items = read(context) }
+    // Lot coquille3 (control seat Cq3, portal of batch 8): the list read off the main thread is written on the main thread.
+    // Where the effect resumes on the reading thread (seen in the tests' clock), a write from there never reached the
+    // screen: « Chargement de la liste… » for good.
+    LaunchedEffect(Unit) { if (shown == null) { val read = read(context); withContext(Dispatchers.Main) { items = read } } }
     ScaledAlertDialog(
         onDismissRequest = close,
         title = { Text(tr("Mes fichiers")) },

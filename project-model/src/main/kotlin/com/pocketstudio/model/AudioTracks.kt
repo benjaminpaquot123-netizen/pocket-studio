@@ -57,6 +57,20 @@ data class AudioTrack(
         )
     }
 
+    /**
+     * Every take the track keeps (the one playing included) in a fixed order, oldest first, each with
+     * the number it is shown with (« Prise 2 »): choosing one never moves them. Takes without a
+     * number (saved before numbers, an imported sound) come first, by name then file.
+     */
+    fun takesInOrder(): List<Pair<AudioClip, Int>> {
+        val all = (listOfNotNull(clip) + otherTakes).distinctBy { it.file }
+        val unnumbered = all.filter { it.take <= 0 }.sortedWith(compareBy({ it.name }, { it.file }))
+        return unnumbered.mapIndexed { i, c -> c to i + 1 } + all.filter { it.take > 0 }.sortedBy { it.take }.map { it to it.take }
+    }
+
+    /** The number of the next take recorded on this track: after every number shown ([takesInOrder]). */
+    fun nextTake(): Int = ((takesInOrder().maxOfOrNull { it.second } ?: 0) + 1).coerceAtMost(AudioClip.MAX_TAKE_NUMBER)
+
     /** [transform] on the clip and every take kept. */
     fun mapTakes(transform: (AudioClip) -> AudioClip?): AudioTrack =
         copy(clip = clip?.let(transform), previous = previous?.let(transform), older = older.mapNotNull(transform))
@@ -76,6 +90,7 @@ data class AudioTrack(
 }
 
 /** A clip of an audio track: a sound file of the project and how it plays. */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class AudioClip(
     val file: String,
@@ -86,6 +101,7 @@ data class AudioClip(
     val start: Int = 0,
     /** It comes back every this many sixteenths (whole bars of the time signature). */
     val loopSteps: Int = 16,
+    /** Linear, 0..[MAX_GAIN] (+12 dB: a quiet voice brought up, see the take's auto level). */
     val gain: Float = 1f,
     /** Fade in and out, in seconds. */
     val fadeIn: Float = 0f,
@@ -103,18 +119,52 @@ data class AudioClip(
      * (and when that scene plays on its own). Null: in every part (older projects, an imported file).
      */
     val scene: Int? = null,
+    /**
+     * The part of [offsetMs] set by « Décaler la prise » (a latency correction, which a punch-in or a
+     * retake must apply again), apart from what a cut left there ([afterCutStart], a real place in
+     * time). Null: all of [offsetMs] (clips never cut, and every clip saved before it existed).
+     * Left out of the file when null.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val nudgeMs: Float? = null,
+    /**
+     * Step 4e: a loop (from the library, on the Live grid) that follows the project's tempo live,
+     * stretched from [bpm] ([AutoTempo.fittedFrames]). False (left out of the file): it keeps its
+     * speed (a take: « Recaler sur le tempo »).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val fit: Boolean = false,
+    /**
+     * Audit ultra round 2 (n° 18, seat B b: two « Prise 03:37 » whose order changed at each touch):
+     * its number among its track's takes (« Prise 2 »), given once when it is recorded and never
+     * changed ([AudioTrack.nextTake]); 0 (left out of the file): an imported sound, or a take saved
+     * before numbers ([AudioTrack.takesInOrder] numbers those by their name).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val take: Int = 0,
 ) {
+    /** It is stretched to the project's tempo. */
+    val follows: Boolean get() = fit && !song && bpm > 0.0
+
+    /** « Décaler la prise » as the user set it (see [nudgeMs]). */
+    val manualOffsetMs: Float get() = nudgeMs ?: offsetMs
+
+    /** « Décaler la prise » to [ms] in all: the change goes to the manual part too. */
+    fun withOffset(ms: Float): AudioClip = copy(offsetMs = ms, nudgeMs = nudgeMs?.let { it + (ms - offsetMs) })
+
+    /** [manualOffsetMs] in frames at [sampleRate]. */
+    fun manualOffsetFrames(sampleRate: Int): Int = Math.round(manualOffsetMs / 1000.0 * sampleRate).toInt()
+
     fun sanitized(): AudioClip = copy(
         name = name.take(40),
         seconds = seconds.takeIf { it.isFinite() }?.coerceIn(0.0, 600.0) ?: 0.0,
         start = start.coerceIn(0, if (song) MAX_SONG_START else MAX_START),
         loopSteps = ((loopSteps.coerceIn(8, MAX_LOOP) + 3) / 4) * 4,
-        gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f,
+        gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, MAX_GAIN) ?: 1f,
         fadeIn = fadeIn.takeIf { it.isFinite() }?.coerceIn(0f, 10f) ?: 0f,
         fadeOut = fadeOut.takeIf { it.isFinite() }?.coerceIn(0f, 10f) ?: 0f,
         offsetMs = offsetMs.takeIf { it.isFinite() }?.coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS) ?: 0f,
         bpm = bpm.takeIf { it.isFinite() && it in 20.0..400.0 } ?: 0.0,
         scene = scene?.takeIf { !song && it in 0 until Scene.MAX },
+        nudgeMs = nudgeMs?.takeIf { it.isFinite() }?.coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS),
+        take = take.coerceIn(0, MAX_TAKE_NUMBER),
     )
 
     /** It sounds in the parts of [scene] (a song clip: wherever the song is). */
@@ -136,7 +186,8 @@ data class AudioClip(
         val newStart = (start + eighths * 2).coerceIn(0, max)
         if (!song && newStart >= sceneSteps) return this
         val rest = total - (newStart - start) / 2.0 * eighthMs
-        return copy(start = newStart, offsetMs = rest.toFloat().coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS))
+        // From now on the offset also holds the cut's rest: the manual part is noted on its own.
+        return copy(start = newStart, offsetMs = rest.toFloat().coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS), nudgeMs = manualOffsetMs)
     }
 
     /** Sixteenths it lasts at [bpm] (rounded up). */
@@ -168,6 +219,8 @@ data class AudioClip(
 
     companion object {
         const val MAX_START = 1023
+        /** A take's number at most ([take]). */
+        const val MAX_TAKE_NUMBER = 9999
         /** A song clip may start anywhere in the longest song (256 bars of 7/4). */
         const val MAX_SONG_START = 256 * 28
         /** 64 bars. */
@@ -176,6 +229,8 @@ data class AudioClip(
         const val ENGINE_MAX_LOOP = 4096
         /** A Bluetooth headset can lag by 200 ms and more. */
         const val MAX_OFFSET_MS = 300f
+        /** The clip's volume at most (×4, +12 dB). */
+        const val MAX_GAIN = 4f
         /** « Décaler la prise » moves by this much per touch (the fine buttons)… */
         const val OFFSET_STEP_MS = 5f
         /** …and by this much with the coarse ones. */
@@ -256,6 +311,19 @@ fun Project.chooseTake(id: Int, index: Int): Project {
     val kept = listOfNotNull(t.clip) + others.filterIndexed { i, _ -> i != index }
     // Another take on a frozen track's audio: no longer the frozen sound (the notes play again).
     return withAudioTrack(t.copy(clip = chosen, previous = kept.firstOrNull(), older = kept.drop(1), frozenFrom = null, frozenSignature = 0))
+}
+
+/**
+ * Owner (2026-11-04, a fix everywhere the same gap is): take [index] of [AudioTrack.otherTakes] left
+ * out of « Prises » (an unwanted take); the one playing stays. Its file stays on disk while an undo
+ * step can bring it back.
+ */
+fun Project.forgetTake(id: Int, index: Int): Project {
+    val t = audioTracks.firstOrNull { it.id == id } ?: return this
+    val others = t.otherTakes
+    if (index !in others.indices) return this
+    val kept = others.filterIndexed { i, _ -> i != index }
+    return withAudioTrack(t.copy(previous = kept.firstOrNull(), older = kept.drop(1)))
 }
 
 /**

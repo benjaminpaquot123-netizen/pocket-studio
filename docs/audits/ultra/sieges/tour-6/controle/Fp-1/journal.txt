@@ -1,0 +1,112 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=300 lit=oui main=both amenee=-
+#0 OPTION ? fresh=reel : mode et thème ne sont pas réglés d'avance (la personne les choisit)
+#0 PREMIER ECRAN reel_s=6.4 simule_s=2.4 jvm_s=13.9 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 621
+#1 DOIGT welcome_learn « J'apprends »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 798c83c20d | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 1161
+#2 DOIGT mode_card_pro « Pro »
+#3 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE c127b1ae50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 1201
+#3 DOIGT tuto_style_house « House »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 9ac4a234b9 | project=p-5167d4b2 tuto=house/Pro active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#4 > touche 444 636
+#4 DOIGT tuto_chapters « Chapitres »
+#5 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 333d310206 | project=p-5167d4b2 tuto=house/Pro active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 1 » 4.17:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Le tempo et la tonalité » 1.36:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 1/3 » 1.23:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 4 » 2.71:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « La basse » 2.53:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Le grave et la pompe » 2.69:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 0/2 » 2.04:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 11 » 2.40:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Construis tes parties » 2.39:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Quitter le tuto (tu pourras le reprendre) » 3.26:1 (needs 4.5:1, 14 sp)
+#5 > glisse 294 900 294 300
+#5 DOIGT tuto_chapter_9 « 10 »
+#6 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 3fa38e1f90 | project=p-5167d4b2 tuto=house/Pro active=true step=ref done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 13 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 14 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 15 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 16 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 17 » 3.63:1 (needs 4.5:1, 16 sp)
+#6 > touche 294 711
+#6 DOIGT tuto_chapter_13 « 14 »
+#7 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fb33e93cf0 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 531 342
+#7 DOIGT tuto_fold
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 0f2bf1b399 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « À toi : dans la grille de la batterie, touche le pad « Clap », puis « Effets du pad » : monte « Envoi réverbe ». Fais de même dans Mix sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990. » ellipsized (« … »)
+#8 > touche 84 486
+#8 DOIGT pad_4 « Clap »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE b2c357c9c9 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#9 SON Son : le pad « Clap » sonne.
+#9 LAYOUT CONTRAST « Clap » 4.03:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST «  Enregistrer mes pads » 2.78:1 (needs 4.5:1, 14 sp)
+#9 > glisse 294 700 294 350
+#9 DOIGT rien
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE d742497554 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Cymbale » 3.13:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Shaker » 2.60:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Conga » 1.57:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Zap » 1.59:1 (needs 4.5:1, 14 sp)
+#10 > glisse 294 800 294 400
+#10 DOIGT rien
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 7646c4b829 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Clap » 1.26:1 (needs 4.5:1, 13 sp)
+#11 > glisse 294 800 294 400
+#11 DOIGT rien (texte « Touche une case pour ajouter un coup, gl »)
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 6f0799e194 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 > glisse 294 800 294 400
+#12 DOIGT rien (texte « Clap (synthétisé) »)
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 8998911d99 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « ? » 3.90:1 (needs 4.5:1, 12 sp)
+#13 > touche 165 646
+#13 DOIGT pad_effects « Effets du pad »
+#14 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 2022ad521c | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=0 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Sans effet » 3.33:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Saleté » 2.42:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Couleur » 1.60:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Saleté » 1.60:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Mouvement » 1.60:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Espace » 1.60:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Fermer » 3.26:1 (needs 4.5:1, 14 sp)
+#14 > glisse 100 1089 300 1089
+#14 DOIGT send_20_0 « Envoi réverbe »
+#15 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 6b03f9c51a | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Neutre » 4.44:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Réverbe et écho communs » 4.44:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 45 % » 3.63:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Fermer » 3.63:1 (needs 4.5:1, 14 sp)
+#15 > touche 482 1206
+#15 DOIGT fx_close « Fermer »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 74c74669f0 | project=p-5167d4b2 tuto=house/Pro active=true step=reverb done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > fin
+#16 FIN : fin

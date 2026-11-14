@@ -1,0 +1,16 @@
+Écran 82 (616x1371)
+texte « Mettre Ma chanson préférée dans mon projet » @ 308,235
+texte « Tempo » @ 71,334
+choix « Mon projet prend le tempo de Ma chanson préférée (120 BPM) » @ 308,391
+choix « Ma chanson préférée se cale sur mon tempo (120 BPM) » [sélectionné] @ 308,469
+texte « La tonalité » @ 90,538
+texte « Ma chanson préférée est en La mineur. » @ 228,574
+case « Mes synthés et basses jouent en La mineur » [non coché] @ 308,631
+texte « Où la mettre » @ 99,700
+choix « Toute la chanson, à partir de la brique A » [sélectionné] @ 308,757
+choix « Seulement un passage » @ 308,835
+choix « Juste la voix sur mon beat » @ 308,913
+texte « Parties » @ 73,982
+interrupteur « Faire des briques avec ses parties Ton morceau a déjà ses parties » [désactivé, non coché] @ 308,1039
+bouton « Annuler » @ 199,1147
+bouton « Mettre dans mon projet » @ 425,1147

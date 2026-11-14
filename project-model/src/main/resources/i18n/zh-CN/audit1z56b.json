@@ -1,0 +1,17 @@
+{
+  "Lire": "阅读",
+  "Bravo, chapitre fini !": "太棒了，本章完成！",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "听听你现在的歌曲，然后进入下一章：“%s”。",
+  "Chapitre suivant : « %s ».": "下一章：“%s”。",
+  "Chapitre suivant": "下一章",
+  "Écouter mon morceau": "听我的歌",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "已有名为“%s”的保存音色：请换个名字。",
+  "Ce son est déjà dans tes favoris : « %s ».": "这个音色已在你的收藏中：“%s”。",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "音色已连同效果保存到收藏：“%s”。",
+  "Son renommé : « %s ».": "音色已重命名：“%s”。",
+  "Déjà dans tes favoris": "已在收藏中",
+  "Renommer « %s »": "重命名“%s”",
+  "Renommer le son": "重命名音色",
+  "Nom du son": "音色名称",
+  "%d ms": "%d 毫秒"
+}

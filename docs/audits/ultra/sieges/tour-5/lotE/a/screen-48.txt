@@ -1,0 +1,102 @@
+Écran 48 (588x1278)
+bouton « Retour » @ 51,45
+bouton « Jouer » @ 231,45
+bouton « Moins vite » @ 312,45
+bouton « 124 Tempo » @ 378,45
+bouton « Plus vite » @ 444,45
+touchable « REC » (nom « Enregistrer la performance ») @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » (nom « Page A ») [sélectionné] @ 51,135
+onglet « B » (nom « Page B · vide ») @ 108,135
+onglet « C » (nom « Page C · vide ») @ 165,135
+onglet « D » (nom « Page D · vide ») @ 222,135
+bouton « Fête » @ 330,135
+bouton « Défi : refais ce rythme » @ 534,135
+bouton « ? » (nom « Qu'est-ce que « Pages et packs » ? ») @ 464,135
+bouton « Boucle de kick, boucle, prêt, pad A1 » @ 77,256
+texte « boucle » @ 86,207
+bouton « Réglages du pad, pad A1 » @ 100,210
+texte « Boucle de kick » @ 77,287
+bouton « Claquement de mains, coup, prêt, pad A2 » @ 205,256
+bouton « Réglages du pad, pad A2 » @ 228,210
+texte « coup » @ 223,207
+texte « Claquement de mains » @ 205,296
+bouton « Boucle Acid 303, boucle, prêt, pad A3 » @ 333,256
+texte « boucle » @ 342,207
+bouton « Réglages du pad, pad A3 » @ 356,210
+texte « Boucle Acid 303 » @ 333,289
+bouton « Boucle de basse, boucle, prêt, pad A4 » @ 461,256
+texte « boucle » @ 470,207
+bouton « Réglages du pad, pad A4 » @ 484,210
+texte « Boucle de basse » @ 461,289
+bouton « Lancer la ligne 1 à la mesure » @ 550,256
+bouton « Klaxon, coup, prêt, pad A5 » @ 77,402
+bouton « Réglages du pad, pad A5 » @ 100,356
+texte « coup » @ 95,353
+texte « Klaxon » @ 69,448
+bouton « Laser, coup, prêt, pad A6 » @ 205,402
+bouton « Réglages du pad, pad A6 » @ 228,356
+texte « coup » @ 223,353
+texte « Laser » @ 191,448
+bouton « Sirène, coup, prêt, pad A7 » @ 333,402
+bouton « Réglages du pad, pad A7 » @ 356,356
+texte « coup » @ 351,353
+texte « Sirène » @ 324,448
+bouton « Cri « Go go go! », coup, prêt, pad A8 » @ 461,402
+bouton « Réglages du pad, pad A8 » @ 484,356
+texte « coup » @ 479,353
+texte « Cri « Go go go! » » @ 461,433
+bouton « Lancer la ligne 2 à la mesure » @ 550,402
+bouton « Grosse caisse 1, coup, prêt, pad A9 » @ 77,548
+bouton « Réglages du pad, pad A9 » @ 100,502
+texte « coup » @ 95,499
+texte « Grosse caisse 1 » @ 77,579
+bouton « Caisse, coup, prêt, pad A10 » @ 205,548
+bouton « Réglages du pad, pad A10 » @ 228,502
+texte « coup » @ 223,499
+texte « Caisse » @ 197,594
+bouton « Charley, coup, prêt, pad A11 » @ 333,548
+bouton « Réglages du pad, pad A11 » @ 356,502
+texte « coup » @ 351,499
+texte « Charley » @ 331,594
+bouton « Charley ouvert, coup, prêt, pad A12 » @ 461,548
+bouton « Réglages du pad, pad A12 » @ 484,502
+texte « coup » @ 479,499
+texte « Charley ouvert » @ 461,579
+bouton « Lancer la ligne 3 à la mesure » @ 550,548
+bouton « Montée, coup, prêt, pad A13 » @ 77,694
+bouton « Réglages du pad, pad A13 » @ 100,648
+texte « coup » @ 95,645
+texte « Montée » @ 74,740
+bouton « Impact, coup, prêt, pad A14 » @ 205,694
+bouton « Réglages du pad, pad A14 » @ 228,648
+texte « coup » @ 223,645
+texte « Impact » @ 197,740
+bouton « Chute, coup, prêt, pad A15 » @ 333,694
+bouton « Réglages du pad, pad A15 » @ 356,648
+texte « coup » @ 351,645
+texte « Chute » @ 321,740
+bouton « « Go! », coup, prêt, pad A16 » @ 461,694
+bouton « Réglages du pad, pad A16 » @ 484,648
+texte « coup » @ 479,645
+texte « « Go! » » @ 455,740
+bouton « Lancer la ligne 4 à la mesure » @ 550,694
+bouton « ? » (nom « Qu'est-ce que « Effets de scène » ? ») @ 216,989
+texte « EFFETS DE SCÈNE » @ 106,989
+texte « Appuie et maintiens » @ 474,989
+bouton « Filtre · grave ↔ aigu » @ 106,1068
+texte « Filtre » @ 106,1056
+texte « grave ↔ aigu » @ 106,1083
+bouton « Écho · en sortie » @ 294,1068
+texte « Écho » @ 294,1056
+texte « en sortie » @ 294,1083
+bouton « Roulement · 1/16 » @ 482,1068
+texte « Roulement » @ 482,1056
+texte « 1/16 » @ 482,1083
+bouton « Enregistrer ce que je joue » @ 188,1167
+bouton « Plus » @ 497,1167
+bouton « ? » (nom « Qu'est-ce que « Enregistrer ce que je joue » ? ») @ 391,1167
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

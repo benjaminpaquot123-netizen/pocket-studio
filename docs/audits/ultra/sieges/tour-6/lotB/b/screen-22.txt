@@ -1,0 +1,80 @@
+Écran 22 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+texte « Takt » [coupé] @ 70,315
+bouton « 1 » [coupé, sélectionné] @ 143,316
+bouton « 2 » [coupé] @ 224,316
+bouton « Folgen » [coupé] @ 340,316
+texte « Takt 1/2 · Studio-Kick » @ 191,375
+texte « Noch 4 gestrichelte Kästchen hier » @ 293,413
+bouton « 1 » [état « leer, gepunktet: antippen »] @ 90,483
+bouton [état « leer »] @ 192,483
+bouton [état « leer »] @ 294,483
+bouton [état « leer »] @ 397,483
+bouton « 2 » [état « leer, gepunktet: antippen »] @ 500,483
+bouton [état « leer »] @ 603,483
+bouton [état « leer »] @ 706,483
+bouton [état « leer »] @ 809,483
+bouton « 3 » [état « leer, gepunktet: antippen »] @ 90,564
+bouton [état « leer »] @ 192,564
+bouton [état « leer »] @ 294,564
+bouton [état « leer »] @ 397,564
+bouton « 4 » [état « leer, gepunktet: antippen »] @ 500,564
+bouton [état « leer »] @ 603,564
+bouton [état « leer »] @ 706,564
+bouton [état « leer »] @ 809,564
+bouton « Schläge » [sélectionné] @ 122,650
+bouton « Rolls » @ 265,650
+bouton « Panorama » @ 421,650
+bouton « Tonhöhe » @ 604,650
+bouton « Velocity » @ 774,650
+texte « Füllen » @ 79,734
+texte « alles » @ 163,734
+texte « 1/2 » @ 246,734
+texte « 1/4 » @ 321,734
+texte « ◀ » [désactivé] @ 396,734
+texte « ▶ » [désactivé] @ 471,734
+texte « Löschen » [désactivé] @ 581,734
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,836
+bouton « 1 Takt » @ 196,938
+bouton « 2 » [sélectionné] @ 305,938
+bouton « 3 » @ 386,938
+bouton « 4 » @ 467,938
+texte « Länge » @ 83,938
+texte « Dieses Pad loopt über » [coupé] @ 188,1017
+texte « − » [coupé] @ 386,1011
+texte « 32 Steps » [coupé] @ 490,1019
+texte « + » [désactivé, coupé] @ 594,1011
+image (chapeau de diplômé) @ 37,1083
+texte « Die Kick Kapitel 2/17 · Schritt 2/2 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: 4 Schläge pro Takt über 2 Takte, plus der leise Schlag auf Step 15 in Takt 2: der „Jack“ aus Chicago. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

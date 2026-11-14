@@ -1,0 +1,314 @@
+#0 SIEGE lang=nl device=tablet11Land font=100 mode=simple theme=- fresh=non gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 5d66911161 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇳🇱 » 1.23:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST «   Nederlands » 1.23:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « Je muziekstudio, in je broekzak. » 2.13:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Je maakt het hele nummer zelf, stap voor stap: ik leg uit en ik controleer. » 3.61:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Een kant-en-klaar nummer, om te ontdekken wat je kunt doen. » 1.40:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Vanaf nul beginnen » 2.15:1 (needs 3.0:1, 22 sp)
+#1 > touche 960 390
+#1 DOIGT welcome_guided « Mijn eerste nummer maken (begeleid) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6d8fa4e9b6 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Eenvoudig » 2.32:1 (needs 3.0:1, 24 sp)
+#2 LAYOUT CONTRAST « Om te beginnen: 5 tabbladen, grote knoppen en gewone woorden. » 1.78:1 (needs 4.5:1, 16 sp)
+#2 > touche 679 261
+#2 DOIGT mode_card_simple « Eenvoudig »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE af89e5ef24 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « • BPM: de snelheid van het nummer, in tellen per minuut. » 2.42:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Techno » 1.85:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 10 stijlen » 1.36:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 2.11:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 9 stijlen » 1.34:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Bass music » 1.75:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Hiphop » 2.39:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Overig » 1.95:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 stijlen » 1.65:1 (needs 4.5:1, 13 sp)
+#3 > touche 960 738
+#3 DOIGT wizard_family_Autres « Overig »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7984a94e0a | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Reggaeton » 2.37:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Het Latijnse ritme waar overal op gedanst wordt: de "boem-tsji-boem-tsji" van de dembow, een ronde bas en wiegende akkoorden. » 2.98:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Afrobeats » 1.74:1 (needs 4.5:1, 16 sp)
+#4 > touche 1100 1029
+#4 DOIGT wizard_style_afrobeats « Afrobeats »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE dfc6ba2988 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « • Rema & Selena Gomez – Calm Down (2022) » 2.00:1 (needs 4.5:1, 13 sp)
+#5 > glisse 960 1000 960 500
+#5 DOIGT wizard_style_afrobeats « Afrobeats »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4979f8a76f | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 7 stijlen » 1.89:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Overig » 1.73:1 (needs 3.0:1, 16 sp)
+#6 LAYOUT CONTRAST « 4 stijlen » 1.38:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Reggaeton » 1.85:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 96 BPM » 1.23:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Ter inspiratie: Bad Bunny – Tití Me Preguntó (2022) » 2.08:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « Afrobeats » 1.88:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « 105 BPM » 1.34:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Pop uit Nigeria en Ghana: een soepele, dansbare groove, percussie die elkaar antwoordt en zonnige melodieën. » 3.56:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Ter inspiratie: » 2.18:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Rema & Selena Gomez – Calm Down (2022) » 2.04:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Wizkid feat. Tems – Essence (2020) » 1.91:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Davido – Fall (2017) » 1.75:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Wizkid – Ojuelegba (2014) » 1.62:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Kies deze stijl » 2.72:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « Synthwave » 1.97:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Ter inspiratie: The Weeknd – Blinding Lights (2019) » 2.72:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « 116 BPM » 1.78:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « De radiopop van nu: een simpel ritme waar je van wilt bewegen, de vier akkoorden die je overal hoort en een melodie die blijft hangen. Alleen jouw stem ontbreekt nog! » 2.13:1 (needs 4.5:1, 13 sp)
+#6 > touche 988 823
+#6 DOIGT wizard_style_choose_afrobeats « Kies deze stijl »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0edafeaba1 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Geluiden van de stijl downloaden » 2.40:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Duister / episch » 2.77:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Mineurakkoorden: mysterieus, intens of een beetje droevig. » 2.59:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Heldere akkoorden die je energie geven. » 1.86:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Futuristisch / elektro » 2.11:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Een koude, hypnotische mineurkleur, gemaakt voor elektro. » 2.17:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Dromerig / zwevend » 1.62:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Zachte akkoorden die zweven: laat je gewoon meevoeren. » 2.24:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Nog geen melodie » 2.14:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Dit is de aangeraden sfeer voor Afrobeats. » 1.94:1 (needs 4.5:1, 13 sp)
+#7 > touche 1225 1146
+#7 DOIGT wizard_next « Volgende »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0222a1d346 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Het fundament van het nummer: de diepe hartslag die iedereen volgt door met de voet te tikken. » 3.41:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « In Afrobeats: kick op de 1, dan een verschoven klap net voor de 3: dat geeft de vaart. » 3.79:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Deze lijn gebruiken » 2.43:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Speelt in Couplet en Refrein » 2.09:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « DE ECHTE GELUIDEN VAN DE STIJL » 1.69:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « Zodat het echt als Afrobeats klinkt: Afrobeats (2,2 MB). De assistent haalt zijn geluiden daaruit. » 2.41:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « KIES HET GELUID » 2.77:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST «   Met het ritme » 1.95:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Ingebouwde geluiden » 2.33:1 (needs 3.0:1, 16 sp)
+#8 LAYOUT CONTRAST « Kick » 1.74:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#8 > touche 1225 1146
+#8 DOIGT wizard_next « Volgende »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 097fea308e | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « In Afrobeats: een droog tikje op 2 en 4, op de rand van de trom (de "rim"): nooit een snare die hard knalt. » 2.37:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Deze lijn gebruiken » 2.58:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Speelt in Couplet en Refrein » 1.98:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST «   Met het ritme » 1.97:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Ingebouwde geluiden » 2.34:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « Rim » 1.43:1 (needs 4.5:1, 14 sp)
+#9 > touche 1225 1146
+#9 DOIGT wizard_next « Volgende »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE cb78b53686 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « In Afrobeats: een shaker (een kleine maraca) die onafgebroken speelt, harder op de tellen: de motor van de groove. » 2.24:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Speelt in alle delen » 2.11:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Shaker » 1.74:1 (needs 4.5:1, 14 sp)
+#10 > touche 1225 1146
+#10 DOIGT wizard_next « Volgende »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE dee36dd127 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « In Afrobeats: de conga's huppelen tussen de kicks, als een antwoord. » 2.60:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « 3 » 1.38:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 1.38:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Deze lijn gebruiken » 1.71:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « Speelt in Refrein en Brug » 2.58:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Zodat het echt als Afrobeats klinkt: Afrobeats (2,2 MB). De assistent haalt zijn geluiden daaruit. » 2.12:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Geluiden van de stijl downloaden » 2.46:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « KIES HET GELUID » 1.92:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Ingebouwde geluiden » 2.86:1 (needs 3.0:1, 16 sp)
+#11 LAYOUT CONTRAST « Conga » 2.00:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Koebel » 2.54:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Shaker » 1.66:1 (needs 4.5:1, 14 sp)
+#11 > touche 1225 1146
+#11 DOIGT wizard_next « Volgende »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE d90a7d6da8 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « Aanbevolen » ellipsized (« … »)
+#12 LAYOUT CUT « Zacht · aangehouden » ellipsized (« … »)
+#12 LAYOUT CUT « Helder · aangehouden » ellipsized (« … »)
+#12 LAYOUT CUT « Hol · aangehouden » ellipsized (« … »)
+#12 LAYOUT CUT « Getokkelde snaar » ellipsized (« … »)
+#12 LAYOUT CONTRAST « In Afrobeats: een ronde, vloeiende bas die de kick volgt en omhoog stuitert. » 1.89:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Dit spoor maken » 1.83:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « Speelt in Couplet en Refrein » 1.82:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « KIES HET GELUID » 2.31:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Ronde bas » 2.11:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Subbas » 2.01:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Moderne reese » 1.33:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Helder · dik » 1.33:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Wobblebas » 1.70:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Helder · aangehouden » 2.29:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Pratende bas » 2.75:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Helder · aangehouden » 2.20:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Riddimbas » 1.96:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Neurobas » 1.96:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Helder · aangehouden » 1.96:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Plukbas » 1.88:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Helder · kort » 2.24:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Synth-808 » 1.63:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Zacht · aangehouden » 2.24:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Donk » 1.23:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Zacht · kort » 2.10:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Zacht · aangehouden » 2.10:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Analoge bas » 2.43:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Analoog » 2.11:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « FM-bas » 2.19:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 2-op FM » 2.13:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#12 > touche 1225 1146
+#12 DOIGT wizard_next « Volgende »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 837e118f1d | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Helder · zwelt langzaam aan » ellipsized (« … »)
+#13 LAYOUT CUT « Zacht · zwelt langzaam aan » ellipsized (« … »)
+#13 LAYOUT CUT « Future-bass-akkoorden » a word split over two lines
+#13 LAYOUT CONTRAST « Nu maken met de aangeraden keuzes » 2.83:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « PAD / AKKOORDEN » 3.41:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Dit spoor maken » 2.06:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « Speelt in Refrein en Brug » 1.78:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « KIES HET GELUID » 2.67:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Elektrische piano » 1.83:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Aanbevolen » 1.83:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Pad » 1.96:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Helder · dik » 4.12:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Strijkers » 1.76:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Helder · zwelt langzaam aan » 2.36:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Orgel » 1.63:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Hol · aangehouden » 2.29:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Akkoordenpad » 2.43:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Akkoorden » 1.35:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Stringmachine » 2.43:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Zwerm » 2.11:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Zwerm » 1.99:1 (needs 4.5:1, 12 sp)
+#13 > touche 960 156
+#13 DOIGT wizard_create_now « Nu maken met de aangeraden keuzes »
+#14 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE fb73249df6 | project=p-c2727917 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Tegenmelodie » a word split over two lines
+#14 LAYOUT CONTRAST « ? » 4.33:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#14 > touche 1803 42
+#14 DOIGT top_play
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 03d9bba0b4 | project=p-c2727917 no tuto
+#15 SON Son : le morceau joue (partie « A »).
+#15 LAYOUT CONTRAST « × 1  ·  4 mt.  ·  speelt » 4.13:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « OM TE BEGINNEN » 4.30:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « De klank van de melodie » 3.89:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Een ander drumstel » 3.95:1 (needs 4.5:1, 14 sp)
+#15 > touche 798 685
+#15 DOIGT simple_track_inst:2 « Melodie »
+#16 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 4fefeab1ff | project=p-c2727917 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 LAYOUT CUT « Hij glijdt van noot naar noot, niets te downloaden » ellipsized (« … »)
+#16 LAYOUT OVERLAP « Geluid van: Melodie » over the touchable « Blad sluiten » (211 x 28 dp)
+#16 LAYOUT OVERLAP « Tik op een geluid: het vervangt het geluid van dit spoor in het hele nummer. » over the touchable « Blad sluiten » (456 x 18 dp)
+#16 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (48 x 20 dp)
+#16 LAYOUT OVERLAP « Korte klank » over the touchable « Blad sluiten » (90 x 24 dp)
+#16 LAYOUT OVERLAP « FM-piano » over the touchable « Blad sluiten » (65 x 17 dp)
+#16 LAYOUT OVERLAP « 6-op FM · bank 2 » over the touchable « Blad sluiten » (100 x 16 dp)
+#16 LAYOUT OVERLAP « FM-Rhodes » over the touchable « Blad sluiten » (79 x 17 dp)
+#16 LAYOUT OVERLAP « FM-vibrafoon » over the touchable « Blad sluiten » (92 x 17 dp)
+#16 LAYOUT OVERLAP « FM-bel » over the touchable « Blad sluiten » (48 x 17 dp)
+#16 LAYOUT OVERLAP « Marimba » over the touchable « Blad sluiten » (60 x 17 dp)
+#16 LAYOUT OVERLAP « Modaal (percussie) » over the touchable « Blad sluiten » (116 x 16 dp)
+#16 LAYOUT OVERLAP « Bel » over the touchable « Blad sluiten » (21 x 17 dp)
+#16 LAYOUT OVERLAP « Willekeurig » over the touchable « Blad sluiten » (79 x 20 dp)
+#16 LAYOUT OVERLAP « Bewaar dit geluid » over the touchable « Blad sluiten » (119 x 20 dp)
+#16 LAYOUT OVERLAP « ‘Bewaar dit geluid’ zet het bij je favorieten, voor al je projecten. » over the touchable « Blad sluiten » (381 x 18 dp)
+#16 LAYOUT OVERLAP « ECHTE INSTRUMENTEN » over the touchable « Blad sluiten » (160 x 16 dp)
+#16 LAYOUT OVERLAP « Noot voor noot opgenomen. Eén keer downloaden (wifi aangeraden); tot dan speelt de track een synthgeluid. » over the touchable « Blad sluiten » (582 x 36 dp)
+#16 LAYOUT OVERLAP « Vleugel » over the touchable « Blad sluiten » (51 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 11 MB » over the touchable « Blad sluiten » (131 x 16 dp)
+#16 LAYOUT OVERLAP « Concertpiano » over the touchable « Blad sluiten » (92 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 16 MB » over the touchable « Blad sluiten » (134 x 16 dp)
+#16 LAYOUT OVERLAP « Strijkers » over the touchable « Blad sluiten » (56 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 9 MB » over the touchable « Blad sluiten » (129 x 16 dp)
+#16 LAYOUT OVERLAP « Pizzicato-strijkers » over the touchable « Blad sluiten » (124 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 2 MB » over the touchable « Blad sluiten » (128 x 16 dp)
+#16 LAYOUT OVERLAP « Koperblazers » over the touchable « Blad sluiten » (90 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 6 MB » over the touchable « Blad sluiten » (129 x 16 dp)
+#16 LAYOUT OVERLAP « Houtblazers » over the touchable « Blad sluiten » (82 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 7 MB » over the touchable « Blad sluiten » (127 x 16 dp)
+#16 LAYOUT OVERLAP « Harp » over the touchable « Blad sluiten » (33 x 17 dp)
+#16 LAYOUT OVERLAP « Te downloaden: 4 MB » over the touchable « Blad sluiten » (129 x 16 dp)
+#16 LAYOUT OVERLAP « 808-bas » over the touchable « Blad sluiten » (58 x 17 dp)
+#16 LAYOUT OVERLAP « Hij glijdt van noot naar noot, niets te downloaden » over the touchable « Blad sluiten » (239 x 16 dp)
+#16 LAYOUT CONTRAST « Geluid van: Melodie » 1.23:1 (needs 3.0:1, 22 sp)
+#16 LAYOUT CONTRAST « Korte klank » 1.73:1 (needs 3.0:1, 16 sp)
+#16 LAYOUT CONTRAST « 6-op FM · bank 2 » 1.62:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « FM-Rhodes » 4.10:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « FM-vibrafoon » 2.01:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « 6-op FM · bank 2 » 2.01:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « FM-bel » 4.43:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « 6-op FM · bank 2 » 1.84:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Marimba » 1.98:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Modaal (percussie) » 2.01:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « ECHTE INSTRUMENTEN » 4.00:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Te downloaden: 11 MB » 2.92:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Te downloaden: 9 MB » 1.56:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Koperblazers » 1.60:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Te downloaden: 6 MB » 1.62:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT LABEL « #1781 » long press without text nor description
+#16 > touche 1191 484
+#16 DOIGT plaits_sounds_16 « Bel »
+#17 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6ed5f5e871 | project=p-c2727917 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 LAYOUT CONTRAST « Het klavier openen » 3.89:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « De noten bekijken » 3.95:1 (needs 4.5:1, 14 sp)
+#17 > touche 1182 672
+#17 DOIGT simple_volume_inst:2
+#18 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE e7559246ff | project=p-c2727917 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT OVERLAP « Melodie » over the touchable « Blad sluiten » (85 x 28 dp)
+#18 LAYOUT OVERLAP « Volume » over the touchable « Blad sluiten » (57 x 24 dp)
+#18 LAYOUT OVERLAP « +0,0 dB » over the touchable « Blad sluiten » (54 x 17 dp)
+#18 LAYOUT OVERLAP « Alleen beluisteren » over the touchable « Blad sluiten » (129 x 20 dp)
+#18 LAYOUT OVERLAP « Geluid » over the touchable « Blad sluiten » (36 x 13 dp)
+#18 LAYOUT OVERLAP «   Klank wijzigen » over the touchable « Blad sluiten » (108 x 20 dp)
+#18 LAYOUT OVERLAP «   Spoor verwijderen (kan ongedaan worden gemaakt) » over the touchable « Blad sluiten » (360 x 20 dp)
+#18 LAYOUT CONTRAST « Sluiten » 4.12:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « +0,0 dB » 2.12:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Alleen beluisteren » 1.56:1 (needs 3.0:1, 14 sp)
+#18 LAYOUT LABEL « #1984 » long press without text nor description
+#18 > glisse 1200 829 1360 829
+#18 DOIGT simple_track_volume
+#19 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE eefd70c9ce | project=p-c2727917 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 LAYOUT OVERLAP « +2,7 dB » over the touchable « Blad sluiten » (54 x 17 dp)
+#19 LAYOUT CONTRAST « +2,7 dB » 2.12:1 (needs 4.5:1, 14 sp)
+#19 > touche 1361 691
+#19 DOIGT dans:simple_track_sheet « Sluiten »
+#20 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b9c9d4cf04 | project=p-c2727917 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 60 541
+#20 DOIGT tab_simple_Envoyer « Versturen »
+#21 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 0a01a42f66 | project=p-c2727917 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > touche 693 277
+#21 DOIGT share_name « Naam van het nummer (en van het project) »
+#22 ROUTE dialogue:? | MODE simple | EMPREINTE ba26029bf3 | project=p-c2727917 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > ecris  voor Sem
+#23 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 8fb4e7cc97 | project=p-c2727917 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 693 844
+#23 DOIGT share_go «   Delen »
+#24 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 06215f24d9 | project=p-c2727917 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > attends 10
+#24 PARTAGE Afrobeats-voor-Sem-nummer-20261104-200737.m4a
+#25 ROUTE dialogue:« Partager « Afrobeats-voor-Sem- » | MODE simple | EMPREINTE 00d6165793 | project=p-c2727917 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 960 488
+#25 DOIGT vue « WhatsApp »
+#26 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE dd6c283adb | project=p-c2727917 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > fin
+#26 FIN : fin

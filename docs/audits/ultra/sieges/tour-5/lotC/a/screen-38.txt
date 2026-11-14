@@ -1,0 +1,15 @@
+Écran 38 (1920x1200)
+texte « BenStudio » @ 396,54
+texte « Que veux-tu faire ? » @ 460,114
+bouton « ▭▭▭ ▭▭▭ Live ▭▭▭ ▭▭▭ » @ 633,649
+bouton « Nouveau morceau ▭▭▭ » @ 1334,229
+bouton « Mes projets ▭▭▭ » @ 1334,388
+bouton « Remix ▭▭▭ » @ 1334,547
+bouton « Pad Live ▭▭▭ ▭▭▭ » @ 1334,706
+bouton « Défis ▭▭▭ » @ 1334,865
+bouton « Enregistrer ma voix ou ma guitare ▭▭▭ » @ 1334,1045
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ▭▭▭ ▭▭▭ » @ 1692,1170
+touchable « ▭▭▭ ▭▭▭ » @ 1788,1170
+touchable « ▭▭▭ » @ 1872,1170
+texte « ▭▭▭ » @ 828,1170

@@ -1,0 +1,19 @@
+Écran 31 (588x1278)
+icône ✕ @ 492,533
+texte « Coup 8 » @ 247,533
+texte « Force » @ 68,593
+bouton « Fort » [sélectionné] @ 84,653
+bouton « Moyen » @ 194,653
+bouton « Doux » @ 310,653
+texte « Roulement » @ 94,713
+bouton « ×1 » [sélectionné] @ 75,773
+bouton « ×2 » @ 156,773
+bouton « ×3 » @ 239,773
+bouton « ×4 » @ 323,773
+bouton « ×6 » @ 406,773
+bouton « ×8 » @ 489,773
+texte « Triolet » @ 72,833
+bouton « 3 sur 2 cases » @ 132,893
+bouton « ↗ Montant » [désactivé] @ 117,974
+bouton « Égal » [désactivé, sélectionné] @ 248,974
+bouton « ↘ Descendant » [désactivé] @ 397,974

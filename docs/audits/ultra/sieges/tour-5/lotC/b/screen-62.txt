@@ -1,0 +1,4 @@
+Écran 62 (616x1371)
+texte « ¿En qué proyecto? » @ 195,552
+touchable « Remix proyecto abierto · 120 BPM · ya tiene una canción: se reemplazará » @ 308,667
+bouton «  Atrás » @ 518,807

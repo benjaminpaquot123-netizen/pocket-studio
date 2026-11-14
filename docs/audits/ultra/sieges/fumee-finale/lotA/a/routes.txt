@@ -1,0 +1,10 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+session/tab_simple_Morceau
+tab_simple_Morceau
+dialogue:sound_chooser
+share_sheet/tab_simple_Envoyer
+dialogue:share_progress
+dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »
+dialogue:share_bilan

@@ -1,0 +1,3 @@
+rouge: e2fc77531720f4a3bc27d4093d880a993265b9a6
+test: NewSongOpenTest#theNewSongOpeningIsNotLoggedAsAFailure
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *NewSongOpenTest (rc=1 131s ; rc=0 556s)

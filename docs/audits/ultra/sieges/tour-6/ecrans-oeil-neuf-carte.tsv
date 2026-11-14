@@ -1,0 +1,39 @@
+# Les 36 écrans de carte-ecrans.tsv face aux deux feuilles œil neuf (PLAN-TOUR-6.md § 4). Rempli par le lecteur après le lot 3 : pour chaque écran, les lignes de lotC/a/oeil-neuf.tsv et lotC/b/oeil-neuf.tsv qui le montrent (« - » sinon), puis vu = oui ou non.
+# Ensuite le lecteur écrit ecrans-oeil-neuf.txt (lu par tableau-de-bord.py) : une ligne par écran analysé, son id seul ; chaque écran non vu en commentaire « # non vu: <id> » (une ligne sans « # » compterait comme analysée). Jamais deviné.
+ecran	ou	Ca_lignes	Cb_lignes	vu
+launch	accueil « Que veux-tu faire ? »	?	?	?
+projects	Mes projets	?	?	?
+new_project	Nouveau morceau	?	?	?
+wizard	assistant pas à pas	?	?	?
+padlive	Pad Live	?	?	?
+padlive_party	Pad Live, mode Fête	?	?	?
+live_screen	Live (grille de briques)	?	?	?
+live_grid	Live, grille	?	?	?
+live_pads_full	pads live plein écran	?	?	?
+session	Morceau, Structure	?	?	?
+timeline_screen	Timeline	?	?	?
+rhythm	pas à pas et pads de batterie	?	?	?
+synth	synthé, clavier	?	?	?
+piano_roll	piano roll	?	?	?
+acid	Acid 303	?	?	?
+audio_tracks	pistes audio	?	?	?
+instrument_panel	instruments	?	?	?
+mixer	Mix (Pro)	?	?	?
+simple_mix	Mix (Mode simple)	?	?	?
+master_pro_panel	master Pro	?	?	?
+share_sheet	Partager, export	?	?	?
+video_sheet	vidéo de partage	?	?	?
+remix_project	Remix	?	?	?
+cut_screen	découpe d'un bout	?	?	?
+board	tableau des pistes	?	?	?
+library	bibliothèque de sons	?	?	?
+midi	MIDI	?	?	?
+plus	onglet Plus	?	?	?
+settings	Réglages	?	?	?
+help_page	aide	?	?	?
+glossary	lexique	?	?	?
+latency	calage de la latence	?	?	?
+recette	liste de recette	?	?	?
+studio	studio	?	?	?
+guide_panel	Guide	?	?	?
+tuto_panel	tuto	?	?	?

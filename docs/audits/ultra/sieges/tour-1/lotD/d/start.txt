@@ -1,0 +1,9 @@
+lang=fr
+device=phone360
+font=100
+mode=simple
+theme=night
+main=une
+gestes.max=60
+mission=simple
+timeout.minutes=25

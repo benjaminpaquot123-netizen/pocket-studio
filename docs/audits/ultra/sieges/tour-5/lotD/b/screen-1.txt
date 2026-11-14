@@ -1,0 +1,14 @@
+Écran 1 (1035x1243)
+texte « BenStudio » @ 224,72
+texte « 你想做什么？ » @ 223,136
+bouton « 继续 专业 我的第一个节奏 1 小节 的循环 已保存 刚刚 » @ 518,305
+bouton « 新歌曲 一键选风格，或者跟着助手一步一步来。 » @ 518,504
+bouton « 我的项目 打开另一首歌，复制或重命名它。 » @ 518,648
+bouton « Remix 分轨：鼓、贝斯、人声和其余部分。 » @ 518,798
+bouton « Pad Live 新 即弹即用的打击垫、你的声音、舞台效果。马上就有声音。 » @ 518,954
+bouton « 挑战 听一段节奏，在打击垫上照着打：赢星星。 » (nom « 挑战：听一段节奏，在打击垫上照着打，赢星星。 ») @ 518,1110
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « 录制屏幕和声音 ») @ 807,1213
+touchable « ✎  记一笔 » (nom « 写笔记 ») @ 903,1213
+touchable « ⋯ » (nom « 反馈模式 ») @ 987,1213
+texte « 反馈模式 » @ 385,1213

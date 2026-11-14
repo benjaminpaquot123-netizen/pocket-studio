@@ -1,0 +1,29 @@
+Écran 7 (588x1278)
+dessin @ 294,411
+texte « テンポ » @ 74,483
+bouton « ? » @ 145,483
+texte « 閉じる » @ 513,483
+texte « 120 » @ 264,577
+icône − @ 60,577
+icône + @ 528,577
+texte «  BPM » @ 358,587
+bouton « 70 » @ 64,671
+bouton « 90 » @ 153,671
+bouton « 120 » [sélectionné] @ 250,671
+bouton « 140 » @ 355,671
+bouton « 174 » @ 460,671
+bouton « ½ » @ 60,752
+bouton « ×2 » @ 144,752
+bouton « 1 » @ 111,845
+bouton « 2 » @ 294,845
+bouton « 3 » @ 477,845
+bouton « 4 » @ 111,932
+bouton « 5 » @ 294,932
+bouton « 6 » @ 477,932
+bouton « 7 » @ 111,1019
+bouton « 8 » @ 294,1019
+bouton « 9 » @ 477,1019
+bouton ⌫ [désactivé] @ 111,1106
+bouton « 0 » @ 294,1106
+bouton « OK » [désactivé] @ 477,1106
+bouton (doigt qui touche) « リズムに合わせてタップ 拍ごとにここをタップ。テンポが合わせて変わります。 » @ 294,1208

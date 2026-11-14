@@ -15,6 +15,9 @@ namespace ps {
 class SoundFontPlayer {
 public:
     static constexpr int kMaxVoices = 48;
+    // Voices kept free or fading for a new note: past kMaxVoices - kReserve held, the oldest note
+    // held is released quickly (voice stealing) instead of the new one being silent.
+    static constexpr int kReserve = 4;
     static constexpr float kBendRange = 12.0f;  // semitones of a full pitch wheel
 
     ~SoundFontPlayer();
@@ -60,6 +63,8 @@ private:
     };
     void queue(const Event& e);
     void applyBend();
+    // Audio thread, before a note-on: the oldest notes held quickly released when the voices run out.
+    void makeRoom(int note, float velocity);
 
     void renderSpan(float* left, float* right, int frames);
     tsf* instance_ = nullptr;

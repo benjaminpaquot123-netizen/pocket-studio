@@ -1,0 +1,57 @@
+Écran 23 (588x1278)
+touchable « ▭▭▭ ▭▭▭ » @ 134,42
+bouton « ▭▭▭ » @ 311,42
+bouton (icône) @ 399,42
+bouton (icône) @ 471,42
+bouton (icône) @ 543,42
+bouton « ▭▭▭ ▭▭▭ » @ 83,114
+bouton « ▭▭▭ ▭▭▭ » @ 248,114
+interrupteur « ▭▭▭ » [non coché] @ 543,114
+bouton « Song chords E · Intro 2 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm F · Intro 3 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm A · Intro Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm G · Groove 2 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm H · Groove 3 ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,185
+bouton « E · Intro 2 ▭▭▭ » @ 186,280
+bouton (icône) [désactivé] @ 366,280
+bouton (icône) @ 438,280
+bouton (icône) @ 510,280
+bouton « F · Intro 3 ▭▭▭ » @ 186,376
+bouton (icône) [désactivé] @ 366,376
+bouton (icône) @ 438,376
+bouton (icône) @ 510,376
+bouton « A · Intro ▭▭▭ » @ 186,472
+bouton (icône) [désactivé] @ 366,472
+bouton (icône) [désactivé] @ 438,472
+bouton (icône) @ 510,472
+bouton « A · Intro ▭▭▭ » @ 186,568
+bouton (icône) [désactivé] @ 366,568
+bouton (icône) [désactivé] @ 438,568
+bouton (icône) @ 510,568
+bouton « G · Groove 2 ▭▭▭ » @ 186,664
+bouton (icône) [désactivé] @ 366,664
+bouton (icône) [désactivé] @ 438,664
+bouton (icône) @ 510,664
+bouton « G · Groove 2 ▭▭▭ » @ 186,760
+bouton (icône) [désactivé] @ 366,760
+bouton (icône) [désactivé] @ 438,760
+bouton (icône) @ 510,760
+bouton « H · Groove 3 ▭▭▭ » @ 186,856
+bouton (icône) [désactivé] @ 366,856
+bouton (icône) [désactivé] @ 438,856
+bouton (icône) @ 510,856
+bouton « H · Groove 3 ▭▭▭ » @ 186,929
+bouton (icône) [désactivé] @ 366,935
+bouton (icône) [désactivé] @ 438,935
+bouton (icône) @ 510,935
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,984
+bouton « ▭▭▭ » [désactivé] @ 95,1059
+bouton (icône) @ 223,1059
+bouton « ▭▭▭ ▭▭▭ » @ 356,1059
+bouton « ▭▭▭ » @ 493,1059
+onglet « ▭▭▭ » [sélectionné] @ 54,1158
+onglet « ▭▭▭ » @ 174,1158
+onglet « ▭▭▭ » @ 294,1158
+onglet « ▭▭▭ » @ 414,1158
+onglet « ▭▭▭ » @ 534,1158
+touchable « ▭▭▭ ▭▭▭ » @ 360,1248
+touchable « ▭▭▭ ▭▭▭ » @ 456,1248
+touchable « ▭▭▭ » @ 540,1248
+texte « ▭▭▭ » @ 162,1248

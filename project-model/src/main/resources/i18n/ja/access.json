@@ -1,0 +1,7 @@
+{
+  "Enregistrer au clavier": "鍵盤で録音する",
+  "Touche le bouton rouge, puis joue : l'appli écrit tes notes dans la partie, tu les retrouves dans « Notes ». Le chiffre à côté est le décompte : les mesures entendues avant de jouer. « Garder ce que je viens de jouer » reprend ce que tu viens de jouer, sans le refaire.": "赤いボタンにタッチしてから弾こう。アプリが音をパートに書き込み、「ノート」で見られます。横の数字はカウントイン:弾く前に聞こえる小節の数です。「今弾いたものを残す」は、今弾いたものを弾き直さずに取り戻します。",
+  "Le Mix simple": "シンプルミックス",
+  "Monte le curseur de ce qui doit s'entendre, baisse ce qui gêne. Sous « Sortie », un mot juge le volume final : « Bien » ou « Fort et propre », c'est prêt à partager ; « Ça sature », baisse la sortie. « Tout à zéro » remet les volumes du départ.": "聞かせたいもののスライダーを上げ、じゃまなものを下げよう。「出力」の下の言葉が最終的な音量を判定します。「良い」か「大きくてクリア」ならシェアの準備OK、「音割れ」なら出力を下げて。「すべて元に戻す」は最初の音量に戻します。",
+  "La partie en cours tourne en boucle pendant que tu règles : tu entends tout de suite ce que tu changes. « ■ Arrêter » coupe la boucle.": "調整している間、今のパートがループで流れます。変えたことがすぐに聞こえます。「■ 停止」でループを止めます。"
+}

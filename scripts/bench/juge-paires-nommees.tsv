@@ -1,0 +1,34 @@
+# Paires rouge/vert nommées une par une (lot « portail3 », AUDIT-ULTRA §13.9 ; règle : verifie-chantier.py, named_pair).
+# Une ligne : <vert, sha entier> TAB <rouge, sha entier> TAB <classe de test que le rouge ajoute ou change> TAB <raison>.
+# Le juge ne ferme par ce fichier que des verts écrits avant la règle (NAMED_UNTIL). Un vert neuf s'apparie par ses mots.
+4d88d329e32cca4772dfd95e29749e6f9535c462	586c0519db00477f55a4837d33bee486478f3c12	Tour6GuideCoversTest	lot guidecoquille, défaut G1 : même défaut, mots différents
+a9b9d2c89ea4e3e317f1c4f227f2c0a79d8dbe8e	9d3ee2477bacd6a32cc68f53a6e55eb1473199f0	Tour6GuideLanguageTest	lot guidecoquille, défaut G2 : même défaut, mots différents
+192e3d65b85f31c01f074b28d53e41459b014678	c021206e57a9387a488705b5cd3392e7f381502e	Tour6GuideNextStepTest	lot guidecoquille, défaut G3 : même défaut, mots différents
+90f3c38e25258a8572ef1e62a6be4d0256b73a56	d623cc0c2af52233b8dbe44e39cb3996e5ee745b	Tour6GuideAndTutoTest	lot guidecoquille, défauts T13 et N1 : même défaut, mots différents
+3b77d66837753dc25ad7d77a94fab2e246e913f8	c1ac44b689a906bf404f8c86647133b616e30702	Tour6DoneBarTest	lot guidecoquille, défaut N15 : même défaut, mots différents
+0540529f4638b7f253b0a1a09490bd745a3ded9c	934ba4787f57ecf67125b5d398caf775cf142c15	Tour6HomeStopsMusicTest	lot guidecoquille, défaut N16 : même défaut, mots différents
+f46139185d0e9247dfe4a37fd1cc63e76b4375c0	b155f71c7a86311b03ccd278eccc9bc8f587dd6e	Tour6ModeSwitchAsksTest	lot guidecoquille, défaut N17 : même défaut, mots différents
+fe6604caba2ca0b771e827aeae47e01ad501f3d6	acc4435e961f8c11946419b2c3d74b4195482938	Tour6AudioPagesMoreTest	lot guidecoquille, défaut R19 : même défaut, mots différents
+085b98478da9de91496486156e6eddcdff25efef	361bfe8a39c6f6858b105068b3918c4ffb4b0168	Tour6RemixCancelTest	lot guidecoquille, défaut U17 : même défaut, mots différents
+eb2b444f7af6049972967908291727eafbbbffe0	61461e7027e49fd0fa4e33975d2811b605a8f3f3	Tour6MixerNamesTest	lot guidecoquille, défaut U27 : même défaut, mots différents
+9f464f7847a83b469900b54b3733027e92e117c5	d20686514dd419bd1bca0609cc2f43d96c0eafbe	Tour6PadLiveEffectsTitleTest	lot guidecoquille, défaut U9 : même défaut, mots différents
+51240566f20d1b5c78d062542bd1612c7efc9e80	19e357714c3a8db04acc4f2f2fa61cffc9a80a18	Tour6GuideCoversTest	lot guidecoquille, constat de sa relecture : le panneau se replie après un choix
+5fadb52b353a7a3c4daa48dc24df9415093a9c83	462dd8813907a1a1bcd8d886da75c4fc202e0da8	Tour6RecordStopStaysTest	lot guidecoquille, refus du portail (rejeu t4-26) : le bouton Arrêter ne bouge plus
+5a9f659e8703b3ab3aa3bd0cb1deb17cd826845c	bdb1fe29ffc9239074377f1fec4339a03a744c2c	Tour6TutoTabNamesTest	lot tutoconsignes, défauts N12 et N24 : même sujet, parenthèse différente
+812ebb73a84dc2be74dc7820a29b40c963136dcc	b0c014532773f526e3d984b174054af1dccd0d45	Tour6TutoPanelMapNamesTest	lot tutoconsignes : un vert pour deux rouges (noms des parties sur la carte)
+812ebb73a84dc2be74dc7820a29b40c963136dcc	d748f9ac3092078bb0b703ad8c70c6b708d8f23e	Tour6TutoPanelMapBarsTest	lot tutoconsignes : un vert pour deux rouges (nombres de mesures sur la carte)
+51d46d7c6f1fe986ebce38e6bba9ba6a83e938ea	a65c950416f9d0c12f9f1451f9c7cf91308f3b7c	Tour6TutoSoftHitTest	lot tutoconsignes, défaut T3 : même défaut, mots différents
+78259cdf95466f3d8ad8f87e1275cbf0c6a86e3d	5f6d4630a25de4db5f4ec7c7b91c3ffb845981a4	Tour6TutoActionsTest	lot tutoconsignes, défaut T8 : même défaut, mots différents
+41ad711e868b0612796e79afb00f06745e1646a2	cecbe6f73d9345f245a58e1190c9df93e65324e6	Tour6TutoPanelFitHeaderTest	lot tutoconsignes : le titre du chapitre garde sa place
+045d89c76db651570ae8b8012b2d7c2a9771c5f7	26b5379de64c3d4fb90af887e4c847f2d38ac43e	Tour6TutoPanelFitRoomTest	lot tutoconsignes : pas de vide sous les mots
+9caf894940b33b9a2f05062a6fb2435b72dc19da	333544f82511c657b259a8f23793eaa4473a8bd8	Tour6TutoPanelFitWhyTest	lot tutoconsignes : le pourquoi n'est jamais coupé
+8dfa76844e57471d675a1506ab1163d894b73bfa	43066b98b4d78af6dcaa0593383c48d555e36ef8	LanguagesScanTest	lot langues : même sujet, parenthèse différente (mots de métier en lettres latines)
+f94d8f8d38c08261e807aec8b68c0f505cf1c8ac	0823cd5cb463c0d798501e324c5cb469df20c106	LanguagesScanTest	lot langues : correction d'un constat du balayage des cinq langues (bande de lecture, écriture haute)
+e88999b0fd0900ab90e0655d6ec59ac9d3cf355f	0823cd5cb463c0d798501e324c5cb469df20c106	LanguagesScanTest	lot langues : correction d'un constat du balayage des cinq langues (compteur arabe entier)
+05a0d7672fdea1766b0ecd9f2eabf214925c09be	0823cd5cb463c0d798501e324c5cb469df20c106	LanguagesScanTest	lot langues : correction d'un constat du balayage des cinq langues (Vider sur une ligne à 200 %)
+ecc00a17c5bdc201b3ba96a9dda6455adbac249f	43066b98b4d78af6dcaa0593383c48d555e36ef8	LanguagesScanTest	lot langues : derniers mots de métier en japonais et en coréen, même test
+8d39af2f40d709b72e737b87ec446466667d2de1	e3558c3acd6e849b1ebf328f7e3c21159066003f	RtlPunctuationTest	lot langues : le rouge récrit pour que son motif compile, même test, même correction
+1cac8977947228ddc3113f44fd00d17d5fe05b40	7f1f642e3677c5226ff591d197a2f1ebb0e34afc	PartNameFieldLanguageTest	lot langues : le rouge récrit (horloge à la main), même test, même correction
+1cac8977947228ddc3113f44fd00d17d5fe05b40	98d375f33b9a3c77b0f2687099a7668a39745ae0	PartNameFieldLanguageTest	lot langues : le rouge récrit (champs dessinés seuls), même test, même correction
+5275eba7812675a0d0adda1782ce463369ea10b8	8a2930a699fd46128687c7bea3e09c15124ee0d1	TutoGrilleTest	lot tutogrille, défaut N8 : deux rouges du même test, un vert (accords comptés par touche)
+8d8c5dc15237b0d8453480644fd3db5489dadc20	95822fe74d6d6fabfbe4aa903610587a562e5035	BoutonMicroTest	lot écoute : la phrase du bouton micro dit au plus 4 extraits, corrigée par ce vert

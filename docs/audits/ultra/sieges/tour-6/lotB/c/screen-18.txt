@@ -1,0 +1,58 @@
+Écran 18 (588x1278)
+icône « مشروعي 1 » ✓ @ 289,36
+bouton « محترف » @ 51,36
+bouton (dossier ouvert) @ 477,114
+bouton « A » ▾ @ 336,114
+icône ↶ @ 261,114
+bouton ● @ 189,114
+bouton ▶ « هذا الجزء » @ 117,114
+icône (trois points reliés) @ 45,114
+bouton « 120  BPM » @ 515,186
+bouton « ? » @ 45,186
+onglet « الطبول 16 Pad » @ 517,258
+onglet « Acid 303 خط باص » @ 376,258
+onglet « الغناء الميكروفون » @ 229,258
+onglet « ريمكس تقسيم » @ 101,258
+bouton « Synth Synth » ⋮ [coupé] @ 24,258
+texte « الجزء: A » @ 534,324
+bouton « 1/8 » [coupé, sélectionné] @ 541,351
+bouton « 1/16 » [coupé] @ 483,351
+texte « + » [coupé] @ 337,354
+texte « − » [désactivé, coupé] @ 141,354
+bouton « Ghost bass » [coupé, sélectionné] @ 472,411
+texte « 100% » @ 348,411
+texte « ضبط 50% » @ 231,411
+bouton « الكوردات » @ 102,411
+bouton « 1 » @ 321,480
+texte « مازورة » @ 69,471
+dessin [coupé] @ 321,731
+dessin @ 69,528
+dessin @ 69,558
+dessin @ 69,588
+dessin @ 69,618
+texte « دو4 » @ 69,648
+dessin @ 69,678
+dessin @ 69,708
+dessin @ 69,738
+dessin @ 69,768
+dessin @ 69,798
+dessin @ 69,828
+dessin @ 69,858
+dessin @ 69,888
+dessin @ 69,918
+dessin [coupé] @ 69,941
+bouton (boussole) « المرشد  · ضع إيقاعًا 9 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » [sélectionné] @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

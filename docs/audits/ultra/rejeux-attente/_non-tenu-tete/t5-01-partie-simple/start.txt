@@ -1,0 +1,10 @@
+lang=hi
+device=phone360
+font=130
+fresh=reel
+gestes.max=60
+mission=premier-morceau
+rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-01-partie-simple
+rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotA/a
+rejeu.n=27
+rejeu.attendu=पार्ट: C

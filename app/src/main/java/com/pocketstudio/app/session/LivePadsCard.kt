@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.shrinkToFit
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -11,11 +12,6 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.Button
 import com.pocketstudio.app.help.Glossary
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,12 +45,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
+import com.pocketstudio.ui.hit
+import com.pocketstudio.ui.pressScale
+import com.pocketstudio.ui.padLight
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -74,6 +76,8 @@ class LivePadsUi(
     /** Drum pads that have a sound of their own (index to name), to reuse on a live pad. */
     val drumSounds: List<Pair<Int, String>> = emptyList(),
     val busy: String? = null,
+    /** Seconds recorded so far while the microphone records onto a live pad (null: not recording). */
+    val recording: Float? = null,
 )
 
 class LivePadsActions(
@@ -92,22 +96,31 @@ class LivePadsActions(
     val setOneShot: (Int, Boolean) -> Unit = { _, _ -> },
     val setGain: (Int, Float) -> Unit = { _, _ -> },
     val clear: (Int) -> Unit = {},
+    /** Step 7e: « Garder » a pad's sound in « Ma bibliothèque ». */
+    val keep: (Int) -> Unit = {},
     /** The effects box of the live pads' strip (shared with the remix), null: no button. */
     val effects: (() -> Unit)? = null,
     /** The pads on the whole screen, to play them live (null: no button). */
     val fullScreen: (() -> Unit)? = null,
+    /** The pads shown: an empty set gets the ready-to-play sounds ([com.pocketstudio.model.LiveStarter]) once. */
+    val opened: () -> Unit = {},
+    /** The one sound browser for a pad, opened on « Ma bibliothèque » (true) or on the app's sounds (false). */
+    val browse: (pad: Int, mine: Boolean) -> Unit = { pad, _ -> library(pad) },
+    /** « Enregistrer »: the microphone onto this pad until [stopRecord] (null: not offered). */
+    val record: ((Int) -> Unit)? = null,
+    val stopRecord: () -> Unit = {},
 )
 
 private fun beatsLabel(beats: Int) = when {
-    beats == 1 -> tr("1 temps")
-    beats < 4 -> tr("%d temps", beats)
+    beats < 4 -> com.pocketstudio.model.i18n.trCount(beats, "1 temps", "%d temps")
     beats % 4 == 0 -> com.pocketstudio.app.ui.barsShort(beats / 4)
-    else -> tr("%d temps", beats)
+    else -> com.pocketstudio.model.i18n.trCount(beats, "1 temps", "%d temps")
 }
 
 /** Live pads: a tap switches a sound on (in time), the next tap switches it off. */
 @Composable
 fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
+    androidx.compose.runtime.LaunchedEffect(Unit) { actions.opened() }
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("live_pads")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(tr("Pads live"), Modifier.weight(1f), help = Glossary.LIVE_PADS)
@@ -136,12 +149,10 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
                 )
             }
         }
-        val blink = rememberInfiniteTransition(label = "waiting")
-        val waitAlpha by blink.animateFloat(0.3f, 1f, infiniteRepeatable(tween(250), RepeatMode.Reverse), label = "waitAlpha")
         (0 until ui.pads.size step 4).forEach { start ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (i in start until start + 4) {
-                    LivePad(i, ui.pads.clips.getOrNull(i), ui.states.getOrElse(i) { 0 }, ui.editing == i, waitAlpha, Modifier.weight(1f)) {
+                    LivePad(i, ui.pads.clips.getOrNull(i), ui.states.getOrElse(i) { 0 }, ui.editing == i, Modifier.weight(1f)) {
                         when {
                             ui.editing != null -> actions.edit(i)
                             ui.pads.clips.getOrNull(i) == null -> actions.edit(i)
@@ -151,7 +162,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
                 }
             }
         }
-        ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
+        ui.busy?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
         if (ui.editing == null) {
             Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = { actions.edit(0) }, modifier = Modifier.weight(1f).fillMaxHeight().testTag("live_edit")) {
@@ -159,7 +170,7 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
                 }
                 // On stage: the pads big, on the whole screen, with the effects a touch away.
                 actions.fullScreen?.let { open ->
-                    Button(onClick = open, modifier = Modifier.weight(1f).fillMaxHeight().testTag("live_pads_fullscreen")) {
+                    Button(onClick = open, modifier = Modifier.pressScale().weight(1f).fillMaxHeight().testTag("live_pads_fullscreen")) {
                         Icon(Icons.Filled.Fullscreen, contentDescription = null)
                         WholeWordsText(tr("Plein écran"), Modifier.padding(start = 6.dp), textAlign = TextAlign.Center)
                     }
@@ -172,9 +183,10 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
 }
 
 @Composable
-private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, waitAlpha: Float, modifier: Modifier, onClick: () -> Unit) {
+private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
-    // Empty: hollow. Loaded: in relief. Playing: lit green with a glow.
+    // Empty: hollow. Loaded: in relief. Playing: lit green, with the one light of every pad (n° 25):
+    // waiting, its ring still; nothing moves on a pad that does not play.
     val fill = when {
         clip == null -> Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.22f), Color.Black.copy(alpha = 0.3f)))
         state == 2 -> Brush.verticalGradient(listOf(lerp(Neon.Acid, Color.White, 0.2f), Neon.Acid))
@@ -182,21 +194,35 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
     }
     val border = when {
         selected -> BorderStroke(3.dp, Neon.Cyan)
-        state == 1 -> BorderStroke(3.dp, Neon.Acid.copy(alpha = waitAlpha))
         clip == null -> BorderStroke(1.dp, Color.White.copy(alpha = 0.06f))
         else -> BorderStroke(1.dp, Color.White.copy(alpha = 0.16f))
     }
+    val haptics = LocalHapticFeedback.current
+    val light = com.pocketstudio.ui.rememberPadLight()
     Box(
         modifier.aspectRatioAtMost(1f, 96.dp)
-            .then(if (state == 2) Modifier.shadow(14.dp, shape, ambientColor = Neon.Acid, spotColor = Neon.Acid) else Modifier)
-            .clip(shape).background(fill).border(border, shape).clickable(onClick = onClick).testTag("live_pad_$i"),
+            // The same light tick as every pad of the app.
+            .clip(shape).background(fill).border(border, shape)
+            .padLight(light, Neon.Acid, playing = clip != null && state == 2, waiting = clip != null && state == 1, corner = 12.dp)
+            .clickable { haptics.hit(); onClick() }.testTag("live_pad_$i"),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
             val ink = if (state == 2) Color(0xFF14210F) else if (clip == null) Neon.TextSecondary else Neon.TextPrimary
-            Text(clip?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center, maxLines = 2, lineHeight = 13.sp)
-            if (clip != null) Text(if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), color = ink.copy(alpha = 0.75f), fontSize = 10.sp, maxLines = 1)
+            if (clip == null) Text("+", color = ink, fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 23.sp)
+            else {
+                // Audit stage 1 (« carte des pads live »): whole words, smaller before they are cut (a small phone,
+                // a big font, Hindi or Korean: « Kick 909 », « 2 batt. » fell off the pad's bottom).
+                com.pocketstudio.ui.FitText(
+                    com.pocketstudio.model.DefaultNames.shownSample(clip.name), Modifier,
+                    androidx.compose.ui.text.TextStyle(fontSize = 12.sp, lineHeight = 13.sp), color = ink, fontWeight = FontWeight.Bold,
+                    maxLines = 2, min = 8.sp, textAlign = TextAlign.Center,
+                )
+                com.pocketstudio.ui.FitText(
+                    if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), style = androidx.compose.ui.text.TextStyle(fontSize = 10.sp, lineHeight = 12.sp),
+                    color = ink.copy(alpha = 0.75f), min = 7.sp, textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
@@ -205,7 +231,7 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
 private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, String>>, actions: LivePadsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("live_editor")) {
         Text(tr("Pad %1\$d : %2\$s", pad + 1, clip?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("vide")), style = MaterialTheme.typography.titleSmall)
-        Button(onClick = { actions.library(pad) }, modifier = Modifier.fillMaxWidth().testTag("live_library")) {
+        Button(onClick = { actions.library(pad) }, modifier = Modifier.pressScale().fillMaxWidth().testTag("live_library")) {
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
             Text("  " + tr("Bibliothèque de sons"))
         }
@@ -246,7 +272,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 }
             }
             Text(tr("Volume"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
+            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) }, label = tr("Volume"), valueText = com.pocketstudio.model.i18n.percent(kotlin.math.round(clip.gain * 100).toInt()))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (clip != null) {

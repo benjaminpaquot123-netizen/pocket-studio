@@ -1,0 +1,7 @@
+Écran 28 (588x1278)
+texte « Partager le morceau · 1 » @ 294,460
+bouton « WhatsApp » @ 294,529
+bouton « Messages » @ 294,601
+bouton « Gmail » @ 294,673
+bouton « Drive » @ 294,745
+bouton « Files » @ 294,817

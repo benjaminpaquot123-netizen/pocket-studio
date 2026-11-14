@@ -1,0 +1,74 @@
+Écran 39 (588x1278)
+icône ← @ 546,42
+bouton ▶ @ 465,42
+icône − @ 372,42
+texte « 120 BPM » @ 300,42
+icône + @ 228,42
+texte « – » @ 135,42
+texte « REC » @ 48,42
+icône (flèches en boucle) « A المازورة 1/1 » [désactivé] @ 507,114
+bouton « ? » @ 45,114
+bouton « نسخة جديدة » @ 431,186
+bouton « إضافة بعده » @ 299,186
+texte « التسجيل: » @ 540,186
+bouton « الإطلاق على مازورة واحدة » @ 453,268
+bouton « ? » @ 309,268
+texte « الخانات » @ 202,269
+icône − @ 136,269
+icône + @ 48,269
+texte « 8 » @ 92,268
+texte « الطبول » @ 412,335
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 412,390
+texte « Acid 303 » @ 250,335
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 250,390
+texte « Synth » @ 88,335
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 88,390
+bouton « ? » @ 537,369
+bouton « A » @ 537,468
+dessin @ 412,468
+dessin @ 250,468
+dessin @ 88,468
+bouton « B » @ 537,537
+dessin @ 412,537
+dessin @ 250,537
+dessin @ 88,537
+bouton « C » @ 537,606
+dessin @ 412,606
+dessin @ 250,606
+dessin @ 88,606
+bouton « D » @ 537,675
+dessin @ 412,675
+dessin @ 250,675
+dessin @ 88,675
+bouton « E » @ 537,744
+dessin @ 412,744
+dessin @ 250,744
+dessin @ 88,744
+bouton « F » @ 537,813
+dessin @ 412,813
+dessin @ 250,813
+dessin @ 88,813
+bouton « G » [coupé] @ 537,876
+dessin [coupé] @ 412,876
+dessin [coupé] @ 250,876
+dessin [coupé] @ 88,876
+bouton « ■ الكل » @ 537,945
+bouton « ■ » @ 412,945
+bouton « ■ » @ 250,945
+bouton « ■ » @ 88,945
+icône (quatre carrés) « الكتل » [sélectionné] @ 526,1044
+icône (neuf points) « Pads » @ 445,1044
+icône (étincelles) « المؤثرات » @ 365,1044
+icône ♪ « النوتات » @ 285,1044
+icône (barres de son) « Acid 303 » @ 205,1044
+icône (quatre coins) @ 129,1044
+icône ⌃ @ 57,1044
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » [sélectionné] @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

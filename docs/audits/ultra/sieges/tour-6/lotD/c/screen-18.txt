@@ -1,0 +1,74 @@
+Écran 18 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+bouton « 录音棚底鼓 FX » @ 123,323
+bouton « 底鼓 2 » @ 341,323
+bouton « 军鼓 » @ 559,323
+bouton « Rumble FX » @ 777,323
+bouton « 拍手 FX » @ 123,410
+bouton « 踩镲 左 30 » @ 341,410
+bouton « 开镲 右 30 » @ 559,410
+bouton « 低音嗵鼓 » @ 777,410
+bouton « 中音嗵鼓 右 45 » @ 123,497
+bouton « 高音嗵鼓 » @ 341,497
+bouton « 鼓边 FX 右 50 » @ 559,497
+bouton « 牛铃 » @ 777,497
+bouton « 镲片 右 40 » @ 123,584
+bouton « 沙锤 左 50 » @ 341,584
+bouton « 康加鼓 » @ 559,584
+bouton « Zap » @ 777,584
+bouton « 鼓组：Studio » ▾ @ 121,667
+texte « 打击垫只发声，格子保存打击。长按：更换音色。 » @ 559,667
+titre « 步进：录音棚底鼓 » [état « 已展开 »] @ 372,775
+bouton « ? » @ 267,775
+bouton « 所有打击垫 » @ 780,775
+texte « 录音棚底鼓 » @ 106,859
+bouton « 1 » [état « 空 »] @ 90,944
+bouton [état « 空 »] @ 192,944
+bouton [état « 空 »] @ 294,944
+bouton [état « 空 »] @ 397,944
+bouton « 2 » [état « 空 »] @ 500,944
+bouton [état « 空 »] @ 603,944
+bouton [état « 空 »] @ 706,944
+bouton [état « 空 »] @ 809,944
+bouton « 3 » [état « 空 »] @ 90,1025
+bouton [état « 空 »] @ 192,1025
+bouton [état « 空 »] @ 294,1025
+bouton [état « 空 »] @ 397,1025
+bouton « 4 » [état « 空 »] @ 500,1025
+bouton [état « 空 »] @ 603,1025
+bouton [état « 空 »] @ 706,1025
+bouton [état « 空 »] @ 809,1025
+image (chapeau de diplômé) @ 37,1110
+texte « 速度和调性 第 1/16 章 · 第 3/4 步 · 专业 » @ 400,1110
+icône (liste) @ 771,1110
+icône ⌃ @ 843,1110
+icône (rond coché) « 成功 下一步 » → @ 450,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

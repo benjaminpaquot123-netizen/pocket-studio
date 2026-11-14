@@ -1,0 +1,11 @@
+Écran 3 (588x1278)
+texte « J'apprends » @ 242,48
+bouton « Retour » @ 60,48
+texte « Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 294,225
+texte « Choisis ton style » @ 194,397
+touchable « Techno 132 BPM » @ 294,522
+touchable « Techno de Detroit 126 BPM » @ 294,688
+touchable « Acid techno 138 BPM » @ 294,854
+touchable « Hard techno 150 BPM » @ 294,1020
+touchable « Techno industrielle 136 BPM » @ 294,1186
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

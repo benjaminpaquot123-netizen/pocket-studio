@@ -1,0 +1,15 @@
+Écran 1 (1920x1200)
+bouton « 🇫🇷 ▭▭▭ » @ 1610,78
+texte « BenStudio » @ 422,168
+texte « ▭▭▭ » @ 510,213
+texte « ▭▭▭ » @ 607,270
+bouton « Créer mon premier morceau (guidé) ▭▭▭ » @ 579,390
+bouton « J'apprends ▭▭▭ » @ 1341,390
+bouton « Écouter une démo ▭▭▭ » @ 579,555
+bouton « Partir de zéro ▭▭▭ » @ 1341,570
+bouton « Extraire la voix d'une chanson ▭▭▭ » @ 579,750
+bouton « Pad Live ▭▭▭ ▭▭▭ » @ 1341,742
+bouton « Enregistrer ma voix ou ma guitare ▭▭▭ » @ 579,915
+bouton « Défis ▭▭▭ » @ 1341,922
+bouton « ▭▭▭ » @ 960,1053
+texte « ▭▭▭ » @ 960,1126

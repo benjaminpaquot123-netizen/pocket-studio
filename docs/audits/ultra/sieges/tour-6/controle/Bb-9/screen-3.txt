@@ -1,0 +1,13 @@
+Écran 3 (900x1509)
+bouton (étincelles) « Neuer Song Ein Stil mit einem Tippen oder „Mach mir einen Track“. » → [coupé] @ 450,52
+bouton (dossier ouvert) « Meine Projekte Einen anderen Song öffnen, kopieren oder umbenennen. » → @ 450,213
+bouton (quatre vagues) « Remix Spurtrennung: Schlagzeug, Bass, Gesang und der Rest. » → @ 450,406
+bouton (grille de pads) « Pad Live NEU Spielbereite Pads, deine Sounds, Live-Effekte. Es klingt sofort. » → @ 450,599
+bouton ★ ★ ★ « Challenges Hör dir einen Rhythmus an, spiel ihn auf den Pads nach: gewinn Sterne. » → @ 450,792
+bouton (micro) « Meine Stimme oder Gitarre aufnehmen Das Mikro nimmt über deiner Musik auf, genau im Takt. » → @ 450,1009
+bouton (chapeau de diplômé) « Ich lerne Du baust den ganzen Track selbst, Schritt für Schritt: Ich erkläre und prüfe. » → @ 450,1226
+icône (drapeau) « Mein erster Song, mit dem Guide » @ 450,1371
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

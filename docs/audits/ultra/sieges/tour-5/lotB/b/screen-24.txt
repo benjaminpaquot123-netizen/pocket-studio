@@ -1,0 +1,69 @@
+Écran 24 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Zatrzymaj nagrywanie » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 1/4 » (nom « w pętli ») @ 248,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+onglet « Acid 303 Linia basu » @ 88,186
+touchable « Riser Bas reese » @ 245,186
+touchable « Moja melodia Kwasowa melodia » (nom « Opcje: Moja melodia ») @ 445,186
+  → la suite sur le côté (glisse pour la voir)
+bouton « Część: G · Build-up » (nom « w pętli ») @ 149,264
+texte « Gra w pętli, gdy ją edytujesz. ⟳ Pętla u góry przywraca utwór. » @ 294,321
+case « Klawiatura » [sélectionné] @ 98,408
+case « Nuty » @ 236,408
+bouton «  Wyczyść » (nom « Wyczyść tę ścieżkę w części G · Build-up ») @ 488,408
+bouton «  Stop » @ 493,501
+texte « Nagrywanie » @ 145,488
+texte « Twoje nagranie: 2 nuty » @ 179,519
+bouton « Oktawa niżej » @ 340,618
+bouton « Oktawa wyżej » @ 510,618
+texte « Oktawa 4 » @ 425,618
+bouton « KLAWIATURA » [état « Rozwinięte »] @ 133,618
+bouton « C » (nom « C 4 ») @ 60,778
+bouton « C# 4 » [désactivé, état « Poza skalą utworu »] @ 77,734
+bouton « D 4 » @ 96,778
+bouton « D# 4 » [désactivé, état « Poza skalą utworu »] @ 113,734
+bouton « E 4 » @ 132,778
+bouton « F 4 » @ 168,778
+bouton « F# 4 » [désactivé, état « Poza skalą utworu »] @ 185,734
+bouton « G 4 » @ 204,778
+bouton « G# 4 » [désactivé, état « Poza skalą utworu »] @ 221,734
+bouton « A 4 » @ 240,778
+bouton « A# 4 » @ 257,734
+bouton « B 4 » [désactivé, état « Poza skalą utworu »] @ 276,778
+bouton « C » (nom « C 5 ») @ 312,778
+bouton « C# 5 » [désactivé, état « Poza skalą utworu »] @ 329,734
+bouton « D 5 » @ 348,778
+bouton « D# 5 » [désactivé, état « Poza skalą utworu »] @ 365,734
+bouton « E 5 » @ 384,778
+bouton « F 5 » @ 420,778
+bouton « F# 5 » [désactivé, état « Poza skalą utworu »] @ 437,734
+bouton « G 5 » @ 456,778
+bouton « G# 5 » [désactivé, état « Poza skalą utworu »] @ 473,734
+bouton « A 5 » @ 492,778
+bouton « A# 5 » @ 509,734
+bouton « B 5 » [désactivé, état « Poza skalą utworu »] @ 528,778
+case « Akordy » @ 103,939
+case « Pady » @ 223,939
+case « 2 oktawy » [sélectionné] @ 113,1009
+case « 1 oktawa » @ 263,1009
+case « Skala » @ 395,1009
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Cofnij » [désactivé] @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » [sélectionné] @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

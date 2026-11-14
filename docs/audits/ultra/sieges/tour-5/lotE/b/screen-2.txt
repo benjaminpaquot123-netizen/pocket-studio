@@ -1,0 +1,6 @@
+Écran 2 (588x1278)
+bouton (icône) @ 54,48
+texte « Simple or Pro? » @ 330,48
+texte « ▭▭▭ » @ 294,138
+bouton « Simple ▭▭▭ » @ 294,282
+bouton « Pro ▭▭▭ » @ 294,480

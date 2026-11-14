@@ -1,0 +1,55 @@
+Écran 15 (540x1170)
+icône « Mój pierwszy bit » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « A » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ■ « ta część » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 120  BPM » @ 73,186
+icône (flèches en boucle) « A takt 1/1 » [désactivé] @ 218,186
+bouton « ? » @ 495,186
+onglet « Wokal Mikrofon » @ 78,258
+onglet « Remix Rozdziel » @ 223,258
+bouton « Synth Synth » ⋮ @ 373,258
+icône ♪ @ 490,258
+texte « Część: A » @ 65,321
+texte « − » [désactivé] @ 141,398
+texte « + » @ 282,398
+bouton « 1/16 » @ 442,398
+bouton « 1/8 » [coupé, sélectionné] @ 497,398
+texte « Pętla » @ 65,398
+texte « 1 takt » @ 212,398
+texte «   Nuta » @ 362,398
+texte « Do rytmu 50% » @ 259,479
+texte « 100% » @ 403,479
+bouton « Akordy » @ 103,479
+bouton « Bas-duch » [coupé, sélectionné] @ 476,479
+texte « takt » @ 69,536
+bouton « 1 » @ 298,548
+dessin @ 69,596
+dessin @ 69,626
+dessin @ 69,656
+dessin @ 69,686
+texte « C5 » @ 69,716
+dessin @ 69,746
+dessin @ 69,776
+dessin @ 69,806
+dessin [coupé] @ 69,833
+dessin [coupé] @ 297,713
+bouton (boussole) « Przewodnik  · Zrób drugą część 30 % » ⌃ [état « zwinięte »] @ 270,882
+icône ↶ « Cofnij » @ 63,954
+icône ↷ « Ponów » [désactivé] @ 161,954
+bouton ■ « utwór » @ 260,954
+texte « 120 Tempo » @ 364,954
+icône (trois points reliés) « Udostępnij » @ 473,954
+onglet (ligne brisée et points) « Struktura » @ 49,1050
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 160,1050
+onglet (curseurs) « Miks » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Więcej » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Zanotuj » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Tryb uwag » @ 138,1140

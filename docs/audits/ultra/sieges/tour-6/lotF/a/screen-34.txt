@@ -1,0 +1,13 @@
+Écran 34 (900x1509)
+dessin @ 450,754
+dessin @ 450,919
+texte « Kit di batteria » @ 143,979
+texte « Chiudi » @ 814,997
+texte « Tocca un kit: sostituisce i suoni dei 16 pad. Annulla li rimette. » @ 387,1021
+texte « Nell'app » @ 79,1074
+bouton « Studio » @ 234,1152
+bouton « Classico » @ 666,1152
+bouton « Trap (808) » @ 234,1248
+bouton « Drill (808) » @ 666,1248
+bouton « Drum & bass » @ 234,1344
+texte « Altri kit: scarica dei pack nella libreria suoni, o la banca di strumenti in Suoni › una traccia › Strumenti. » @ 450,1437

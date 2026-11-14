@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchRecetteTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-11T11:36:12.391Z" hostname="vm" time="25.315">
+  <properties/>
+  <testcase name="simpleSongCounterFollowsTheEnginePastTheFirstPart" classname="com.pocketstudio.app.human.BenchRecetteTest" time="24.53"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

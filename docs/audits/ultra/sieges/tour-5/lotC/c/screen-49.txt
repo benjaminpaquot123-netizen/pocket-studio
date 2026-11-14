@@ -1,0 +1,7 @@
+Écran 49 (588x1278)
+texte « Send the project · My-first-beat-20261105-211741.pocketstudio.zip » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

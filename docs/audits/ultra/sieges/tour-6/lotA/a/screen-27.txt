@@ -1,0 +1,34 @@
+Écran 27 (540x1170)
+icône (dossier ouvert) ✓ « Trap सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,123
+icône « मुखड़ा बार 13/104 » ▾ @ 248,123
+bouton « ? » @ 495,123
+texte « 0:21 / 2:58 » [coupé] @ 161,163
+texte « बार 13.4 / 104 » [coupé] @ 389,164
+bouton « गाने के कॉर्ड्स A · इंट्रो Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ C · मुखड़ा Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ E · मुखड़ा 2 Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ B · अंतरा A♭  Fm  Fm  A♭  Fm  Cm  Fm  A♭ F · अंतरा 2 A♭  Fm  Fm  A♭ G · अंतरा 3 Fm  Cm  Fm  A♭ … और 2 पार्ट पूरे गाने के कॉर्ड्स बदलने के लिए टैप करो। » @ 270,430
+icône ▶ « A · इंट्रो × 1  ·  8 बार » @ 162,703
+icône − [désactivé] @ 318,703
+icône + @ 390,703
+icône ⋮ @ 462,703
+icône ▶ « C · मुखड़ा 1 बार  ·  मिक्स » @ 162,798
+icône − [désactivé] @ 318,799
+icône + [désactivé] @ 390,799
+icône ⋮ @ 462,799
+bouton (boussole) « गाइड  · एक साउंड बदलो 15 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » [désactivé] @ 88,951
+bouton ■ « गाना » @ 211,951
+texte « 140 टेम्पो » @ 335,951
+icône ⋮ « और » @ 458,951
+onglet (lignes et note) « मेरा गाना » [sélectionné] @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

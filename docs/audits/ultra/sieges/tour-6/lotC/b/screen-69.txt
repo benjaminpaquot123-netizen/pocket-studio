@@ -1,0 +1,34 @@
+Écran 69 (588x1278)
+icône (dossier ouvert) ✓ « Techno Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ [désactivé] @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 73,114
+icône « Montée mes. 57/176 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+bouton (maison) « Accueil Continuer, nouveau morceau, Remix… » › @ 294,210
+bouton (dossier ouvert) « Mes projets Ouvrir, créer, dupliquer, partager un projet » › @ 294,315
+bouton (? dans un rond) « Aide La visite rapide, le Guide, le lexique » › @ 294,420
+bouton (drapeau) « Mon premier morceau, avec le Guide Ses premières cartes, du style au partage » › @ 294,525
+bouton (livre ouvert) « Les mots de la musique, à écouter Chaque mot avec un exemple sonore » › @ 294,630
+bouton (roue dentée) « Réglages Langue, thème, taille, son, mode simple » › @ 294,735
+bouton (interrupteur) « Passer en mode Simple Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager » › @ 294,846
+bouton (touches de piano) « Clavier MIDI Brancher un clavier, apprendre des potards » › [coupé] @ 294,931
+bouton (boussole) « Guide  · Change un son 24 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 132 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

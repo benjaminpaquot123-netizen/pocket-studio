@@ -1,0 +1,36 @@
+Écran 15 (1920x1200)
+texte « أغنية جديدة، خطوة خطوة » @ 1310,40
+bouton « إغلاق » @ 462,57
+texte « الخطوة 7 من 10 · Lo-fi hip-hop » @ 1348,84
+bouton « أنشئها الآن بالاختيارات المنصوح بها » @ 960,173
+bouton « باص » [état « موسَّع »] @ 1419,269
+texte « يعزف النوتة الأساسية لكل كورد، في الأسفل: يربط الطبول بالهارموني. » @ 1163,320
+texte « في Lo-fi hip-hop: باص ناعم ودافئ مقفل على الـKick: يبقى في الخلفية. » @ 1167,371
+texte « • الكيك: الطبلة الكبيرة، «بوم» العميقة في الإيقاع. » @ 1285,417
+texte « إنشاء هذا المسار » @ 999,482
+interrupteur « إنشاء هذا المسار » [coché] @ 501,482
+texte « يُعزف في مقطع ولازمة » @ 1365,548
+bouton « اختر الصوت » [état « موسَّع »] @ 1391,650
+bouton « باص مستدير منصوح به » @ 1338,725
+bouton « Sub bass يُعزف… » [sélectionné] @ 1086,723
+bouton « Reese bass لامع · ممدود » @ 834,723
+bouton « Reese حديث لامع · سميك » @ 582,725
+bouton « Wobble bass لامع · ممدود » @ 1338,825
+bouton « باص متكلم لامع · ممدود » @ 1086,827
+bouton « Growl bass لامع · سميك » @ 834,825
+bouton « Reese ‏DnB لامع · سميك » @ 582,825
+bouton « Riddim bass أجوف · ممدود » @ 1338,927
+bouton « Neuro bass لامع · سميك » @ 1086,927
+bouton « Sub صافٍ ناعم · ممدود » @ 834,929
+bouton « Rolling bass لامع · ممدود » @ 582,927
+bouton « Pluck bass لامع · قصير » @ 1338,1029
+bouton « 808 ‏Synth ناعم · ممدود » @ 1086,1029
+bouton « Donk ناعم · قصير » @ 834,1029
+bouton « Sub دافئ ناعم · ممدود » @ 582,1031
+bouton « باص تناظري تناظري » @ 1338,1096
+bouton « FM bass FM بمشغّلين » @ 1086,1096
+bouton « باص منقور وتر منقور » @ 834,1096
+bouton « Log drum Kick » @ 582,1096
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « رجوع » @ 1225,1146
+bouton « التالي » @ 694,1146

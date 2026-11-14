@@ -112,6 +112,12 @@ class KickPanJourneyTest {
         assertEquals(0, h.vm.transport.value.selectedPad)
     }
 
+    /** The selected pad's (the kick's) sheet, from its card's « Réglages du pad ». */
+    private fun openKickSheet() {
+        compose.onNodeWithTag("pad_settings").performScrollTo().performClick()
+        compose.waitForIdle()
+    }
+
     /** The rest of the song as it plays on, stopped on B (Benjamin's file is on scene 1). */
     private fun playOnToB() {
         for (scene in listOf(1, 6, 2, 7, 3, 1)) {
@@ -176,9 +182,8 @@ class KickPanJourneyTest {
     @Test
     fun closingTheKicksPadSheetWithTheBackGestureLeavesItCentred() {
         openAndListenToTheIntro()
-        // « Appui long : son, volume. »: the kick's sheet.
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
-        compose.waitForIdle()
+        // The kick's sheet (« Réglages du pad » on its card; a long press is « Changer le son » since 2026-11-04).
+        openKickSheet()
         compose.onNodeWithTag("pad_sheet").assertExists()
         assertCentred("holding the kick's pad")
         // The sheet closed with the back gesture, the thumb at the height of its last slider (the
@@ -221,8 +226,7 @@ class KickPanJourneyTest {
     @Test
     fun withoutTheStrayGestureTheKickStaysCentredThroughTheJourney() {
         openAndListenToTheIntro()
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
-        compose.waitForIdle()
+        openKickSheet()
         compose.onNodeWithTag("pad_sheet_close").performClick()
         compose.waitForIdle()
         assertCentred("the pad sheet opened and closed")

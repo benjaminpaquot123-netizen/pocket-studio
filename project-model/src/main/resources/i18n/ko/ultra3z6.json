@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "타임라인: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "곡 기록됨: %1$s, %2$s",
+  "Grille des notes : %s": "노트 그리드: %s",
+  "1 pas": "1스텝",
+  "1 piste": "트랙 1개",
+  "1 réglage": "설정 1개",
+  "%d réglages": "설정 %d개",
+  "Fait : break de 1 mesure après %2$s": "완료: %2$s 뒤에 1마디 브레이크",
+  "Fait : montée de 1 mesure avant %2$s": "완료: %2$s 앞에 1마디 빌드업",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "아직 곡이 없어요. 파트가 루프로 나가요 (1마디).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Live 테이크가 저장됐어요: 곡에 있어요 (파트 1개).",
+  "Ton texte (1 caractère)": "내 글 (1자)",
+  "trop bas de 1 cent": "1센트 낮아요",
+  "trop haut de 1 cent": "1센트 높아요",
+  "−%d demi-ton": "−%d 반음",
+  "%d min": "%d분",
+  "%1$d min %2$d": "%1$d분 %2$d초",
+  "Hors de la gamme du morceau": "곡의 스케일 밖",
+  "Poignée : glisse vers le bas pour fermer": "손잡이: 아래로 밀어서 닫기"
+}

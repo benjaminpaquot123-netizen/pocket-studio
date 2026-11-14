@@ -1,0 +1,13 @@
+Écran 23 (588x1278)
+touchable « Live : jouer en direct » @ 401,183
+touchable « Enregistrer ma voix » @ 401,255
+touchable « Bibliothèque de sons » @ 401,327
+touchable « Ma bibliothèque » @ 401,399
+touchable « Remix » @ 401,471
+touchable « Renommer le morceau » @ 401,543
+touchable « Accueil » @ 401,615
+touchable « Mes projets » @ 401,687
+touchable « Réglages » @ 401,759
+touchable « Aide et premiers pas » @ 401,831
+touchable « Passer en mode Pro » @ 401,903
+touchable « Signaler un bug » @ 401,975

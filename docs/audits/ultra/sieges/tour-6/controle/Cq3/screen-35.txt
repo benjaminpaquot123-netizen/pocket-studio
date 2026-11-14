@@ -1,0 +1,46 @@
+Écran 35 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ [désactivé] @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+bouton « M4A · pour partager » [coupé] @ 169,157
+bouton « WAV · qualité max » [coupé] @ 423,157
+texte « FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois). » @ 294,221
+texte « Volume visé » @ 101,282
+bouton « ? » @ 182,281
+bouton « Streaming · −14 LUFS » @ 176,345
+bouton « Club · −8 LUFS » @ 419,345
+bouton « Auto (style) · −9 LUFS » @ 178,426
+bouton « Désactivée » [sélectionné] @ 405,426
+texte « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. » @ 294,495
+texte « Fondu de fin » @ 104,549
+bouton « Aucun » @ 100,612
+bouton « Court (3 s) » [sélectionné] @ 246,612
+bouton « Long (8 s) » @ 410,612
+bouton « Avancé Piste par piste · FLAC · MIDI · 48 kHz · 24 bits » ⌃ @ 294,697
+bouton « ? » @ 267,768
+bouton « Piste par piste » @ 139,783
+bouton « FLAC (sans perte, léger) » [sélectionné] @ 190,864
+bouton « Sans limiteur (pour le mastering) » [coupé] @ 234,937
+bouton (boussole) « Guide  · Ajoute une mélodie 35 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

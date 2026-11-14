@@ -1,0 +1,8 @@
+Écran 1 (588x1278)
+bouton « 🇫🇷   Français » (nom « Choisis ta langue ») @ 402,78
+texte « BenStudio » @ 277,178
+texte « Ton studio de musique, dans ta poche. » @ 348,303
+texte « Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ? » @ 294,505
+bouton « Créer mon premier morceau (guidé) Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » @ 294,897
+bouton « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 294,1236
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

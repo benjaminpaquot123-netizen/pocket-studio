@@ -1,0 +1,12 @@
+Écran 3 (540x1170)
+icône ← @ 60,48
+texte « 배울래요 » @ 168,48
+texte « 곡 전체를 직접 한 단계씩 만들어요. 제가 설명하고 확인해 드려요. » @ 270,145
+texte « 스타일을 고르세요 » @ 139,229
+bouton « Techno 132 BPM » → @ 270,329
+bouton « Detroit techno 126 BPM » → @ 270,462
+bouton « Acid techno 138 BPM » → @ 270,595
+bouton « Hard techno 150 BPM » → @ 270,728
+bouton « Industrial techno 136 BPM » → @ 270,861
+bouton « Retro techno 128 BPM » → @ 270,994
+bouton « Acidcore 185 BPM » → [coupé] @ 270,1111

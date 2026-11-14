@@ -1,0 +1,615 @@
+#0 SIEGE lang=ar device=tablet11Land font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1d521a49fb | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST «   العربية » 1.23:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « استوديو الموسيقى الخاص بك، في جيبك. » 1.78:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « أهلًا بك! اصنع موسيقاك على جهازك. من أين نبدأ؟ » 3.04:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « اصنع أغنيتي الأولى (بإرشاد) » 2.37:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « اختر نمطًا، وسأساعدك خطوة خطوة، من بداية الأغنية إلى نهايتها. » 2.06:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « أتعلّم » 1.37:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « استمع إلى عرض تجريبي » 2.67:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « أغنية جاهزة، لتكتشف ما يمكنك فعله. » 2.36:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « استخراج الصوت من أغنية » 1.84:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « اختر أغنية من هاتفك: يفصل التطبيق الصوت والطبول والباص والباقي. » 2.86:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « وسادات جاهزة للعزف، أصواتك، مؤثرات مسرح. يُسمع الصوت فورًا. » 2.10:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « سجّل صوتك أو جيتارك » 1.89:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « يسجّل الميكروفون فوق موسيقاك، على الإيقاع تمامًا. » 2.21:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « لاحقًا: انظر إيقاع البداية » 2.03:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « دليل الخطوات الأولى يبقى في ⋮ › المساعدة والخطوات الأولى. » 3.21:1 (needs 4.5:1, 13 sp)
+#1 > touche 1341 402
+#1 DOIGT welcome_guided « اصنع أغنيتي الأولى (بإرشاد) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 52a41ee22d | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « بسيط » 2.39:1 (needs 3.0:1, 24 sp)
+#2 LAYOUT CONTRAST « للبداية: 5 تبويبات وأزرار كبيرة وكلمات يومية. » 1.99:1 (needs 4.5:1, 16 sp)
+#2 > touche 1240 259
+#2 DOIGT mode_card_simple « بسيط »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9979b43a63 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « الخطوة 1: اختر نمطًا » 1.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « • BPM: سرعة المقطوعة، بعدد النبضات في الدقيقة. » 2.53:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 2.12:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « باص music » 1.79:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.86:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « أخرى » 1.91:1 (needs 3.0:1, 16 sp)
+#3 > touche 960 641
+#3 DOIGT wizard_family_Hip-hop « Hip-hop »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0af65d03fb | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Hip-hop · 140 BPM » 1.20:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « راب اليوم، المولود في أتلانتا: 808 يهتز، Hi-hats تتدحرج بسرعة كبيرة، Clap ثقيل ولحن متكرر. » 2.86:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « للمرجع: Travis Scott – FE!N (2023) » 2.53:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « الجانب المظلم من الـTrap، من لندن إلى باريس: 808 منزلق، سنير خارج النبضة وHi-hats قافزة. » 1.94:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « للمرجع: Central Cee – Doja (2022) » 2.79:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « صوت فيديوهات الـDrift: لحن Cowbell متكرر، 808 مشوَّه يزمجر وطبول تضرب بقوة. » 3.38:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « راب نيويورك القديم: Loop بيانو جازي، Kick مستدير، سنير حاد وGroove متمايل. » 2.04:1 (needs 4.5:1, 13 sp)
+#4 > touche 1443 740
+#4 DOIGT wizard_style_listen_trap
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE b54ff8e31e | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#5 > touche 900 775
+#5 DOIGT wizard_style_trap « Trap »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE bf73c036c3 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#6 LAYOUT CONTRAST «  أنشئ واستمع » 1.92:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « • Future – Mask Off (2017) » 3.58:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Migos – Bad and Boujee (2016) » 1.94:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Waka Flocka Flame – Hard in da Paint (2010) » 3.21:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Drill » 2.04:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Hip-hop · 142 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#6 > touche 931 917
+#6 DOIGT wizard_style_choose_trap « اختر هذا النمط، خطوة بخطوة »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 943e26cfa1 | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#7 LAYOUT CONTRAST « الخطوة 2 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « أنشئها الآن بالاختيارات المنصوح بها » 2.40:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « قصير » 2.29:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « حوالي 40 ث » 3.42:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « كامل » 2.82:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « حوالي 3 د » 2.38:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « أي مزاج للّحن؟ أختار السلّم والكوردات المناسبة، وأقفل لوحة المفاتيح على ذلك السلّم: لا نوتات خاطئة ممكنة، ولا حاجة لنظرية الموسيقى. » 3.52:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « أصوات النمط الحقيقية » 2.26:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « تنزيل أصوات النمط » 2.21:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « اضغط على مزاج لسماعه: كورداته الأربعة، معزوفة على إيقاع النمط. » 2.39:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « قاتم / ملحمي » 2.07:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « كوردات صغيرة: غامضة، مكثفة أو حزينة قليلًا. » 2.77:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « مرح / نشيط » 2.00:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « كوردات لامعة تشحنك بالطاقة. » 1.94:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « رجوع » 2.04:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « التالي » 2.04:1 (needs 4.5:1, 14 sp)
+#7 > touche 1212 366
+#7 DOIGT wizard_length_short « قصير »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0664a5e0ad | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#8 > touche 694 1146
+#8 DOIGT wizard_next « التالي »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 86059267d0 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « الخطوة 3 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « أساس المقطوعة: نبض القلب العميق الذي يتبعه الجميع، ضاربين بأقدامهم. » 1.71:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « في Trap: ضربات Kick قليلة، دائمًا مع الـ808. » 2.58:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « • الكيك: الطبلة الكبيرة، «بوم» العميقة في الإيقاع. » 2.22:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « استخدام هذا الخط » 2.99:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 1.92:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « الأصوات المدمجة » 2.07:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « الطبل الكبير 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « اضغط على صوت لسماعه واختياره؛ «مع الإيقاع» يعزفه مع الخطوط المختارة مسبقًا. » 1.94:1 (needs 4.5:1, 13 sp)
+#9 > touche 560 826
+#9 DOIGT wizard_line_listen «   مع الإيقاع »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 92dffbe51d | project=projet-1 no tuto
+#10 SON Son : un son de la bibliothèque joue (écoute).
+#10 > touche 694 1146
+#10 DOIGT wizard_next « التالي »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3d90e2fd8f | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « الخطوة 4 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « تصفيقة يد: تقوّي الـSnare أو تحلّ محلّه، شائعة جدًا في الـHouse والـTrap. » 1.77:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « في Trap: clap واحد في كل مازورة، على الـ3: هذا ما يجعل الـGroove بطيئًا وثقيلًا. » 2.58:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « استخدام هذا الخط » 2.67:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 2.26:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « اختر الصوت » 2.75:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST «   مع الإيقاع » 1.64:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « الأصوات المدمجة » 2.43:1 (needs 3.0:1, 16 sp)
+#11 LAYOUT CONTRAST « تصفيق » 1.76:1 (needs 4.5:1, 14 sp)
+#11 > touche 1429 441
+#11 DOIGT rien
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3d90e2fd8f | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 694 1146
+#12 DOIGT wizard_next « التالي »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE e397994ee6 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « الخطوة 5 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « «التك-تك» المنتظم الخفيف: يعطي السرعة والـGroove. » 1.73:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « • الهاي هات: الصنج الصغير الذي يقول «تس»، تكتكة الإيقاع. » 2.21:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « • الرول: ضربات سريعة جدًا متتالية، كطبل يتدحرج. » 1.86:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « 3 » 2.71:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 2 » 2.24:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 3 » 2.22:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 4 » 2.23:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 1 » 2.23:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « استخدام هذا الخط » 2.29:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « يُعزف في كل جزء » 1.93:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Maracas » 1.61:1 (needs 4.5:1, 14 sp)
+#13 > retour
+#13 RETOUR
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE ec7962fb83 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « ابحث عن صوت (snare، conga، صفارة…) » 2.06:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « المس ☆ على صوت لتجده في «المفضّلات». » 1.94:1 (needs 4.5:1, 13 sp)
+#14 > retour
+#14 RETOUR
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3d90e2fd8f | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 501 559
+#15 DOIGT wizard_enabled « استخدام هذا الخط »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE d99350b342 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 694 1146
+#16 DOIGT wizard_next « التالي »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE e397994ee6 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 694 1146
+#17 DOIGT wizard_next « التالي »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4036f33736 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « الخطوة 6 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « في Trap: هاي هات مفتوح بين حين وآخر ليتنفّس. » 2.58:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « يُعزف في لازمة » 2.26:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « هاي هات مفتوح » 1.97:1 (needs 4.5:1, 14 sp)
+#18 > touche 694 1146
+#18 DOIGT wizard_next « التالي »
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE 1f86b38666 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « الخطوة 7 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « يعزف النوتة الأساسية لكل كورد، في الأسفل: يربط الطبول بالهارموني. » 1.46:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « في Trap: إنه الـ808: باص عميق جدًا يضرب مع الـKick، ثم ينزلق صعودًا. » 2.58:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « إنشاء هذا المسار » 1.77:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « يُعزف في مقطع ولازمة » 2.63:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Sub bass » 1.83:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « منصوح به » 3.71:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « باص مستدير » 1.70:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « لامع · ممدود » 2.31:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « لامع · ممدود » 2.10:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Reese حديث » 1.64:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « لامع · سميك » 1.95:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Wobble bass » 2.29:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « لامع · ممدود » 2.28:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « باص متكلم » 3.31:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Riddim bass » 1.95:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Neuro bass » 1.78:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Pluck bass » 2.00:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « لامع · قصير » 1.94:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « 808 ‏Synth » 2.00:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ناعم · ممدود » 1.94:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Donk » 1.77:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ناعم · قصير » 1.65:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Sub دافئ » 1.77:1 (needs 4.5:1, 14 sp)
+#19 > touche 1086 1063
+#19 DOIGT wizard_part_sound_13 « 808 ‏Synth »
+#20 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6101fb9b5d | project=projet-1 no tuto
+#20 SON Son : un son de la bibliothèque joue (écoute).
+#20 LAYOUT CONTRAST « Sub bass » 1.78:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « منصوح به » 3.26:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « يُعزف… » 1.94:1 (needs 4.5:1, 12 sp)
+#20 > touche 694 1146
+#20 DOIGT wizard_next « التالي »
+#21 ROUTE dialogue:wizard | MODE simple | EMPREINTE f3038776df | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « الخطوة 8 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « في Trap: وتريات قاتمة في الخلفية، منخفضة: تدخل في اللازمة. » 2.58:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « إنشاء هذا المسار » 2.45:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « يُعزف في Intro, لازمة وBridge » 1.66:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « الوتريات » 2.13:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « منصوح به » 1.76:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « Pad » 1.86:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « أورغ » 2.33:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « أجوف · ممدود » 2.45:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « بيانو كهربائي » 2.34:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « سرب » 1.92:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « سرب » 1.69:1 (needs 4.5:1, 12 sp)
+#21 > touche 694 1146
+#21 DOIGT wizard_next « التالي »
+#22 ROUTE dialogue:wizard | MODE simple | EMPREINTE 40f0d3258f | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « الخطوة 9 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « صوت أعلى يعزف لحنًا صغيرًا فوق الكوردات: الجزء الذي يتذكره الناس. » 1.46:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « في Trap: لحن الجرس الذي يتكرر من البداية إلى النهاية: الجزء الذي يتذكره الناس. » 2.58:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « هذا هو الصوت الذي يصنع النمط: يُعزف في كل جزء. » 2.22:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « إنشاء هذا المسار » 1.87:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « يُعزف في كل جزء » 2.76:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « منصوح به » 1.58:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « اللحن » 1.64:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « لامع · ممدود » 1.45:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « أجوف · ممدود » 1.64:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « لامع · ممدود » 1.64:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « Supersaw » 2.20:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « لامع · سميك » 2.31:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « لحن Trance » 2.30:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « صوت قصير مستقبلي » 2.05:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Arpeggio » 1.83:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « أجوف · قصير » 2.30:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « بيانو كهربائي » 3.57:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « لحن مفلتر » 3.57:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « تناظري + فلتر » 1.94:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « لحن Chiptune » 1.77:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Chiptune » 1.65:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « صوت روبوت » 1.77:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Formants » 1.65:1 (needs 4.5:1, 12 sp)
+#22 > touche 694 1146
+#22 DOIGT wizard_next « التالي »
+#23 ROUTE dialogue:wizard | MODE simple | EMPREINTE 592c226988 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « الخطوة 10 من 10 · Trap » 1.23:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « مثل أغنية حقيقية: كل جزء يضيف أصواتًا إلى ما قبله، ثم يأخذ الـBridge استراحة بلا Kick ولا باص قبل آخر لازمة. » 2.65:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « Intro · البداية، بهدوء » 1.93:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « هاي هات مغلق, Pad, اللحن » 1.76:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « B » 2.47:1 (needs 3.0:1, 14 sp)
+#23 LAYOUT CONTRAST « مقطع · مكان للصوت: Kick، باص ولحن، بلا كوردات » 2.58:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « Kick, هاي هات مغلق, باص, اللحن » 2.18:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « Kick, هاي هات مغلق, هاي هات مفتوح, باص, Pad, اللحن, Impact, لحن مضاد » 1.87:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « Bridge · استراحة بلا Kick ولا باص » 1.70:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « هاي هات مغلق, Pad, اللحن » 2.29:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « الأغنية: Intro → لازمة → مقطع → النهاية: نحو 40 ث. » 2.07:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « أغنيتك TRAP » 1.86:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « السرعة 140 BPM. » 2.46:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « Kick (الطبلة الكبيرة) » 2.53:1 (needs 4.5:1, 16 sp)
+#23 LAYOUT CONTRAST « 1 » 2.21:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « 2 » 2.63:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « هاي هات مغلق » 3.57:1 (needs 4.5:1, 16 sp)
+#23 LAYOUT CONTRAST « إنشاء الأغنية » 2.04:1 (needs 4.5:1, 14 sp)
+#23 > touche 694 1146
+#23 DOIGT wizard_create « إنشاء الأغنية »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5a3b9b1dfe | project=p-ebc38d94 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#24 > touche 117 42
+#24 DOIGT top_play
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 63f813121f | project=p-ebc38d94 no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 LAYOUT CONTRAST « × 1  ·  4 مازورات  ·  يُعزف » 4.26:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « البداية » 4.24:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « صوت اللحن » 3.81:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « ↗ » 3.44:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « طقم طبول آخر » 3.93:1 (needs 4.5:1, 14 sp)
+#25 > touche 330 545
+#25 DOIGT guide_open_melody « عرض الإعداد: صوت اللحن »
+#26 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 706f7720bb | project=p-ebc38d94 no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 LAYOUT OVERLAP « صوت: اللحن » over the touchable « إغلاق الورقة » (102 x 37 dp)
+#26 LAYOUT OVERLAP « اضغط على صوت: يستبدل صوت هذا المسار في الأغنية كلها. » over the touchable « إغلاق الورقة » (5 x 22 dp)
+#26 LAYOUT OVERLAP « إغلاق » over the touchable « إغلاق الورقة » (30 x 24 dp)
+#26 LAYOUT OVERLAP « صوت قصير » over the touchable « إغلاق الورقة » (69 x 28 dp)
+#26 LAYOUT OVERLAP « بيانو FM » over the touchable « إغلاق الورقة » (48 x 24 dp)
+#26 LAYOUT OVERLAP « FM بـ6 مشغّلات · البنك 2 » over the touchable « إغلاق الورقة » (119 x 20 dp)
+#26 LAYOUT OVERLAP « FM Rhodes » over the touchable « إغلاق الورقة » (75 x 17 dp)
+#26 LAYOUT OVERLAP « FM vibraphone » over the touchable « إغلاق الورقة » (101 x 17 dp)
+#26 LAYOUT OVERLAP « جرس FM » over the touchable « إغلاق الورقة » (53 x 24 dp)
+#26 LAYOUT OVERLAP « ماريمبا » over the touchable « إغلاق الورقة » (35 x 24 dp)
+#26 LAYOUT OVERLAP « Modal (إيقاعيات) » over the touchable « إغلاق الورقة » (89 x 20 dp)
+#26 LAYOUT OVERLAP « جرس » over the touchable « إغلاق الورقة » (29 x 24 dp)
+#26 LAYOUT OVERLAP « عشوائي » over the touchable « إغلاق الورقة » (43 x 24 dp)
+#26 LAYOUT OVERLAP « احفظ هذا الصوت » over the touchable « إغلاق الورقة » (95 x 24 dp)
+#26 LAYOUT OVERLAP « «احفظ هذا الصوت» يضعه في مفضّلاتك، لكل مشاريعك. » over the touchable « إغلاق الورقة » (259 x 22 dp)
+#26 LAYOUT OVERLAP « آلات حقيقية » over the touchable « إغلاق الورقة » (57 x 20 dp)
+#26 LAYOUT OVERLAP « مسجَّل نوتة نوتة. نزّله مرة واحدة (يُنصح بالـWi-Fi)؛ حتى ذلك الحين يعزف المسار صوت Synth. » over the touchable « إغلاق الورقة » (288 x 22 dp)
+#26 LAYOUT OVERLAP « بيانو كبير » over the touchable « إغلاق الورقة » (48 x 24 dp)
+#26 LAYOUT OVERLAP « قريبًا » over the touchable « إغلاق الورقة » (21 x 20 dp)
+#26 LAYOUT OVERLAP « بيانو حفلات » over the touchable « إغلاق الورقة » (63 x 24 dp)
+#26 LAYOUT OVERLAP « الوتريات » over the touchable « إغلاق الورقة » (44 x 24 dp)
+#26 LAYOUT OVERLAP « وتريات Pizzicato » over the touchable « إغلاق الورقة » (103 x 24 dp)
+#26 LAYOUT OVERLAP « نحاسيات » over the touchable « إغلاق الورقة » (48 x 24 dp)
+#26 LAYOUT OVERLAP « آلات نفخ خشبية » over the touchable « إغلاق الورقة » (85 x 24 dp)
+#26 LAYOUT OVERLAP « هارب » over the touchable « إغلاق الورقة » (28 x 24 dp)
+#26 LAYOUT OVERLAP « 808 باص » over the touchable « إغلاق الورقة » (54 x 24 dp)
+#26 LAYOUT OVERLAP « ينزلق من نوتة إلى أخرى، لا شيء للتنزيل » over the touchable « إغلاق الورقة » (103 x 20 dp)
+#26 LAYOUT OVERLAP « التسجيلات: Salamander Grand Piano V3 (Alexander Holm، CC BY 3.0)، Splendid Grand Piano (Akai، ملكية عامة)، VS Chamber Orchestra (Versilian Studios، CC0). » over the touchable « إغلاق الورقة » (580 x 5 dp)
+#26 LAYOUT CONTRAST « اضغط على صوت: يستبدل صوت هذا المسار في الأغنية كلها. » 1.53:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT CONTRAST « FM Rhodes » 4.37:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « FM vibraphone » 2.04:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « FM بـ6 مشغّلات · البنك 2 » 4.01:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Modal (إيقاعيات) » 4.15:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « عشوائي » 1.85:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « احفظ هذا الصوت » 1.87:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « آلات حقيقية » 2.00:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « بيانو حفلات » 1.88:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « نحاسيات » 3.84:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « قريبًا » 1.68:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « قريبًا » 2.04:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « ينزلق من نوتة إلى أخرى، لا شيء للتنزيل » 2.04:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « التسجيلات: Salamander Grand Piano V3 (Alexander Holm، CC BY 3.0)، Splendid Grand Piano (Akai، ملكية عامة)، VS Chamber Orchestra (Versilian Studios، CC0). » 2.04:1 (needs 4.5:1, 13 sp)
+#26 > touche 1191 509
+#26 DOIGT plaits_sounds_15 « ماريمبا »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9e6b208f74 | project=p-ebc38d94 no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 LAYOUT OVERLAP « B · مقطع » over « صوت جديد: ماريمبا » (15 x 24 dp)
+#27 LAYOUT OVERLAP « صوت جديد: ماريمبا » over the touchable « التشغيل من هذا الجزء » (47 x 24 dp)
+#27 LAYOUT OVERLAP « إلغاء » over the touchable « توسيع » (25 x 24 dp)
+#27 LAYOUT CONTRAST « A · Intro » 2.94:1 (needs 3.0:1, 18 sp)
+#27 LAYOUT CONTRAST « × 1  ·  4 مازورات  ·  يُعزف » 2.99:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « B · مقطع » 2.72:1 (needs 3.0:1, 18 sp)
+#27 LAYOUT CONTRAST « 7 مازورات » 1.68:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « فتح لوحة المفاتيح » 3.88:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « ↗ » 3.46:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « عرض النوتات » 3.90:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 0/8 » 1.48:1 (needs 3.0:1, 14 sp)
+#27 LAYOUT CONTRAST « الأصوات والأنماط » 1.50:1 (needs 4.5:1, 16 sp)
+#27 LAYOUT CONTRAST « إلغاء » 3.63:1 (needs 4.5:1, 14 sp)
+#27 > touche 520 575
+#27 DOIGT guide_open_keys « عرض الإعداد: فتح لوحة المفاتيح »
+#28 ROUTE mission_overlay | MODE simple | EMPREINTE 0715d6fd81 | project=p-ebc38d94 no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 > touche 673 138
+#28 DOIGT guide_spot_close « فهمت »
+#29 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c7aecf218e | project=p-ebc38d94 no tuto
+#29 SON Son : le morceau joue (partie « A »).
+#29 LAYOUT CONTRAST «  سجّل لحني » 2.78:1 (needs 4.5:1, 14 sp)
+#29 > touche 316 963
+#29 DOIGT record_start «  سجّل لحني »
+#30 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7abec82594 | project=p-ebc38d94 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 316 983
+#30 DOIGT record_start «  سجّل لحني »
+#31 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e26a47e77b | project=p-ebc38d94 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST «  إيقاف » 2.78:1 (needs 4.5:1, 14 sp)
+#31 > touche 1164 963
+#31 DOIGT key_77 « فا 5 »
+#32 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE cc01c76b50 | project=p-ebc38d94 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 1224 963
+#32 DOIGT key_79 « صول 5 »
+#33 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 49b1987523 | project=p-ebc38d94 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 1250 898
+#33 DOIGT key_80 « صول# 5 »
+#34 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e804e11a3e | project=p-ebc38d94 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 189 42
+#34 DOIGT top_record
+#35 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 91770423ac | project=p-ebc38d94 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 117 42
+#35 DOIGT top_play
+#36 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 716adb184f | project=p-ebc38d94 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 1164 963
+#36 DOIGT key_77 « فا 5 »
+#37 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c143401c84 | project=p-ebc38d94 no tuto
+#37 SON Son : rien ne joue.
+#37 > appui-long 1164 1050
+#37 DOIGT key_77 « فا 5 »
+#38 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 539c6aa06b | project=p-ebc38d94 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 303 351
+#38 DOIGT chord_pads_switch « Pads »
+#39 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE b074b94c5e | project=p-ebc38d94 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 1635 913
+#39 DOIGT chord_pad_0 « فا m »
+#40 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE b074b94c5e | project=p-ebc38d94 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 1860 568
+#40 DOIGT tab_simple_Envoyer « إرسال »
+#41 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE d9e992fae0 | project=p-ebc38d94 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 486 292
+#41 DOIGT name_clear
+#42 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE f3809ea993 | project=p-ebc38d94 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 900 285
+#42 DOIGT share_name « اسم الأغنية (واسم المشروع) »
+#43 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 53d5928364 | project=p-ebc38d94 no tuto
+#43 SON Son : rien ne joue.
+#43 > ecris أغنيتي الأولى
+#44 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE e2a545eedf | project=p-ebc38d94 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 900 1008
+#44 DOIGT share_go «   مشاركة »
+#45 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 3656bb8c6f | project=p-ebc38d94 no tuto
+#45 SON Son : rien ne joue.
+#45 > attends 10
+#45 PARTAGE أغنيتي-الأولى-الأغنية-20261105-143312.m4a
+#46 ROUTE dialogue:« شارك أغنيتي · أغنيتي-الأولى-ال » | MODE simple | EMPREINTE 607d3067aa | project=p-ebc38d94 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 960 495
+#46 DOIGT vue « WhatsApp »
+#47 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 276aca2968 | project=p-ebc38d94 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 619 791
+#47 DOIGT share_bilan_ok « OK »
+#48 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 7f86935768 | project=p-ebc38d94 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « تم الحفظ » lines cut (taller than its box)
+#48 > touche 1143 42
+#48 DOIGT top_projects « أغنيتي الأولى »
+#49 ROUTE dialogue:projects | MODE simple | EMPREINTE 8b54a9e90c | project=p-ebc38d94 no tuto
+#49 SON Son : rien ne joue.
+#49 > retour
+#49 RETOUR
+#50 ROUTE launch | MODE simple | EMPREINTE 987eef1a07 | project=p-ebc38d94 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 1860 289
+#50 DOIGT rien
+#51 ROUTE launch | MODE simple | EMPREINTE 987eef1a07 | project=p-ebc38d94 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 586 1019
+#51 DOIGT launch_voice « سجّل صوتك أو جيتارك »
+#52 ROUTE audio_tracks | MODE simple | EMPREINTE 60e9e6389d | project=p-ebc38d94 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 1554 861
+#52 DOIGT audio_record_0 «  تسجيل »
+#53 ROUTE audio_tracks | MODE simple | EMPREINTE b2987d6fb0 | project=p-ebc38d94 no tuto
+#53 SON Son : le morceau joue (partie « A »).
+#53 > attends 6
+#54 ROUTE audio_tracks | MODE simple | EMPREINTE 44d1f6a99e | project=p-ebc38d94 no tuto
+#54 SON Son : le morceau joue (partie « A »).
+#54 > touche 1542 708
+#54 DOIGT audio_stop « إيقاف وحفظ »
+#55 ROUTE audio_tracks | MODE simple | EMPREINTE e65c2dac28 | project=p-ebc38d94 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 1037 777
+#55 DOIGT help_مسار صوتي « ما معنى «مسار صوتي»؟ »
+#55 AIDE help_
+#56 ROUTE dialogue:« مسار صوتي » | MODE simple | EMPREINTE eb26b5d713 | project=p-ebc38d94 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 619 694
+#56 DOIGT #3268 « فهمت »
+#57 ROUTE audio_tracks | MODE simple | EMPREINTE e65c2dac28 | project=p-ebc38d94 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 1860 475
+#57 DOIGT tab_simple_Mix « المكس »
+#58 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE f280a80825 | project=p-ebc38d94 no tuto
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « المخرج » 4.40:1 (needs 4.5:1, 13 sp)
+#58 > glisse 1716 528 1716 620
+#58 DOIGT mix_fader_0 « مستوى الطبول »
+#59 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 1982d78576 | project=p-ebc38d94 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 261 42
+#59 DOIGT top_undo
+#60 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE c82c887991 | project=p-ebc38d94 no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 261 42
+#60 DOIGT top_redo
+#61 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 1982d78576 | project=p-ebc38d94 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 45 42
+#61 DOIGT top_more
+#62 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 9826fbad96 | project=p-ebc38d94 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 134 702
+#62 DOIGT more_settings « الإعدادات »
+#63 ROUTE settings | MODE simple | EMPREINTE 939ef91a1b | project=p-ebc38d94 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 1545 210
+#63 DOIGT plus_home « الرئيسية »
+#64 ROUTE launch | MODE simple | EMPREINTE 987eef1a07 | project=p-ebc38d94 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 586 870
+#64 DOIGT launch_challenges « التحديات: استمع إلى إيقاع، أعده على الـP »
+#65 ROUTE padlive_pads_side | MODE simple | EMPREINTE d770f85866 | project=p-e5483d8c no tuto
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « الحزمة: حفلة » ellipsized (« … »)
+#65 LAYOUT OVERLAP « ليزر » over « هاي هات مفتوح » (17 x 14 dp)
+#65 LAYOUT OVERLAP « 1 » over « 6 » (6 x 9 dp)
+#65 LAYOUT OVERLAP « ? » over «  تحدٍّ » (9 x 14 dp)
+#65 LAYOUT OVERLAP « الطبل الكبير 1 » over the touchable « لوب كيك, حلقة, جاهز, Pad A1 » (69 x 24 dp)
+#65 LAYOUT OVERLAP « Snare » over the touchable « لوب Acid 303, حلقة, جاهز, Pad A3 » (41 x 17 dp)
+#65 LAYOUT OVERLAP « تصفيق » over the touchable « بوق, ضربة, جاهز, Pad A5 » (37 x 24 dp)
+#65 LAYOUT OVERLAP « هاي هات » over the touchable « ليزر, ضربة, جاهز, Pad A6 » (47 x 24 dp)
+#65 LAYOUT OVERLAP « هاي هات مفتوح » over the touchable « صفارة, ضربة, جاهز, Pad A7 » (85 x 24 dp)
+#65 LAYOUT OVERLAP « ليزر » over the touchable « هاي هات مفتوح, ضربة, جاهز, Pad A12 » (20 x 18 dp)
+#65 LAYOUT OVERLAP « 1 » over the touchable « التحدي 6 · الزعيم · النجوم: 0 من 3 » (6 x 16 dp)
+#65 LAYOUT OVERLAP « 2 » over the touchable « التحدي 2 · Ping-pong · النجوم: 0 من 3 » (8 x 16 dp)
+#65 LAYOUT OVERLAP « A » over the touchable « تشغيل » (11 x 20 dp)
+#65 LAYOUT OVERLAP « 124 » over the touchable « لوب كيك, حلقة, جاهز, Pad A1 » (32 x 19 dp)
+#65 LAYOUT OVERLAP « ? » over the touchable « تحدٍّ: أعِد هذا الإيقاع » (9 x 24 dp)
+#65 LAYOUT OVERLAP « حلقة » over the touchable « إعدادات الوسادة, Pad A1 إعدادات الوسادة » (21 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A2 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « حلقة » over the touchable « إعدادات الوسادة, Pad A3 إعدادات الوسادة » (21 x 20 dp)
+#65 LAYOUT OVERLAP « حلقة » over the touchable « إعدادات الوسادة, Pad A4 إعدادات الوسادة » (21 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A5 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A6 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A7 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « الخطوة 8 إضافة أو حذف فارغ » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A8 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A9 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A10 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A11 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A12 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A13 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « Build-up » over the touchable « فتح المرشد مطويّ » (59 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A14 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « Impact » over the touchable « فتح المرشد مطويّ » (47 x 20 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A15 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « هبوط » over the touchable « فتح المرشد مطويّ » (29 x 24 dp)
+#65 LAYOUT OVERLAP « ضربة » over the touchable « إعدادات الوسادة, Pad A16 إعدادات الوسادة » (23 x 20 dp)
+#65 LAYOUT OVERLAP « «Go!» » over the touchable « فتح المرشد مطويّ » (43 x 20 dp)
+#65 LAYOUT OVERLAP «  تحدٍّ » over the touchable « تسمية الشاشة » (28 x 26 dp)
+#65 LAYOUT OVERLAP « التحدي 1 · بوم بوم » over the touchable « طيّ موسَّع » (97 x 17 dp)
+#65 LAYOUT OVERLAP « ? » over the touchable « طيّ موسَّع » (7 x 11 dp)
+#65 LAYOUT OVERLAP « استمع إلى الإيقاع، ثم أعِد عزفه على الأزرار. » over the touchable « الخطوة 4 إضافة أو حذف فارغ » (65 x 24 dp)
+#65 LAYOUT OVERLAP « استمع إلى الإيقاع، ثم أعِد عزفه على الأزرار. » over the touchable « الخطوة 5 إضافة أو حذف فارغ » (65 x 24 dp)
+#65 LAYOUT OVERLAP « استمع إلى الإيقاع، ثم أعِد عزفه على الأزرار. » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (65 x 24 dp)
+#65 LAYOUT OVERLAP « استمع إلى الإيقاع، ثم أعِد عزفه على الأزرار. » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#65 LAYOUT OVERLAP « 1 » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (7 x 20 dp)
+#65 LAYOUT OVERLAP « 2 » over the touchable « الخطوة 5 إضافة أو حذف فارغ » (9 x 20 dp)
+#65 LAYOUT OVERLAP « 3 » over the touchable « الخطوة 4 إضافة أو حذف فارغ » (10 x 20 dp)
+#65 LAYOUT OVERLAP « 4 » over the touchable « الخطوة 3 إضافة أو حذف فارغ » (10 x 20 dp)
+#65 LAYOUT OVERLAP « 5 » over the touchable « الخطوة 2 إضافة أو حذف فارغ » (9 x 20 dp)
+#65 LAYOUT OVERLAP « 6 » over the touchable « الخطوة 1 إضافة أو حذف فارغ » (10 x 20 dp)
+#65 LAYOUT CONTRAST « الطبل الكبير 1 » 3.13:1 (needs 4.5:1, 14 sp)
+#65 LAYOUT CONTRAST « 2 » 4.31:1 (needs 4.5:1, 12 sp)
+#65 > touche 520 591
+#65 DOIGT padlive_challenge_listen « استمع »
+#66 ROUTE padlive_pads_side | MODE simple | EMPREINTE ecb2e0c44e | project=p-e5483d8c no tuto
+#66 SON Son : l'exemple du tuto joue (encore 2 s).
+#66 LAYOUT OVERLAP « استمع جيدًا… راقب الأزرار التي تضيء. » over the touchable « الخطوة 4 إضافة أو حذف فارغ » (45 x 24 dp)
+#66 LAYOUT OVERLAP « استمع جيدًا… راقب الأزرار التي تضيء. » over the touchable « الخطوة 5 إضافة أو حذف فارغ » (65 x 24 dp)
+#66 LAYOUT OVERLAP « استمع جيدًا… راقب الأزرار التي تضيء. » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (65 x 24 dp)
+#66 LAYOUT OVERLAP « استمع جيدًا… راقب الأزرار التي تضيء. » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#66 > touche 357 591
+#66 DOIGT padlive_challenge_go « دوري! »
+#67 ROUTE padlive_pads_side | MODE simple | EMPREINTE 7ac13f638e | project=p-e5483d8c no tuto
+#67 SON Son : rien ne joue.
+#67 LAYOUT OVERLAP « دورك! اعزفه على الأزرار. » over the touchable « الخطوة 5 إضافة أو حذف فارغ » (40 x 24 dp)
+#67 LAYOUT OVERLAP « دورك! اعزفه على الأزرار. » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (65 x 24 dp)
+#67 LAYOUT OVERLAP « دورك! اعزفه على الأزرار. » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#67 > touche 1477 218
+#67 DOIGT padlive_pad_1 « تصفيق, ضربة, جاهز, Pad A2 »
+#68 ROUTE padlive_pads_side | MODE simple | EMPREINTE 15c5c6338e | project=p-e5483d8c no tuto
+#68 SON Son : rien ne joue.
+#68 LAYOUT OVERLAP « دورك! 1 من 4 » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (58 x 24 dp)
+#68 LAYOUT OVERLAP « دورك! 1 من 4 » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#68 > touche 1477 218
+#68 DOIGT padlive_pad_1 « تصفيق, ضربة, جاهز, Pad A2 »
+#69 ROUTE padlive_pads_side | MODE simple | EMPREINTE 90707cf484 | project=p-e5483d8c no tuto
+#69 SON Son : rien ne joue.
+#69 LAYOUT OVERLAP « دورك! 2 من 4 » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (61 x 24 dp)
+#69 LAYOUT OVERLAP « دورك! 2 من 4 » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#69 > touche 1477 218
+#69 DOIGT padlive_pad_1 « تصفيق, ضربة, جاهز, Pad A2 »
+#70 ROUTE padlive_pads_side | MODE simple | EMPREINTE 0eea6461d4 | project=p-e5483d8c no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT OVERLAP « دورك! 3 من 4 » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (61 x 24 dp)
+#70 LAYOUT OVERLAP « دورك! 3 من 4 » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#70 > touche 1477 218
+#70 DOIGT padlive_pad_1 « تصفيق, ضربة, جاهز, Pad A2 »
+#71 ROUTE padlive_pads_side | MODE simple | EMPREINTE 913278f931 | project=p-e5483d8c no tuto
+#71 SON Son : rien ne joue.
+#71 LAYOUT OVERLAP « حاول مرة أخرى! 1 من 4. » over the touchable « الخطوة 5 إضافة أو حذف فارغ » (46 x 24 dp)
+#71 LAYOUT OVERLAP « حاول مرة أخرى! 1 من 4. » over the touchable « الخطوة 6 إضافة أو حذف فارغ » (65 x 24 dp)
+#71 LAYOUT OVERLAP « حاول مرة أخرى! 1 من 4. » over the touchable « الخطوة 7 إضافة أو حذف فارغ » (9 x 24 dp)
+#71 > touche 129 237
+#71 DOIGT help_تحدٍّ « ما معنى «تحدٍّ»؟ »
+#71 AIDE help_
+#72 ROUTE dialogue:« تحدٍّ » | MODE simple | EMPREINTE 07ae7be261 | project=p-e5483d8c no tuto
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « فهمت » 3.15:1 (needs 4.5:1, 14 sp)
+#72 > touche 619 694
+#72 DOIGT #4940 « فهمت »
+#73 ROUTE padlive_pads_side | MODE simple | EMPREINTE a6c0819027 | project=p-e5483d8c no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 1869 45
+#73 DOIGT padlive_back
+#74 ROUTE launch | MODE simple | EMPREINTE 555dcaefe5 | project=p-e5483d8c no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 586 391
+#74 DOIGT launch_projects « مشاريعي »
+#75 ROUTE dialogue:projects | MODE simple | EMPREINTE 2aae93deb1 | project=p-e5483d8c no tuto
+#75 SON Son : rien ne joue.
+#75 > touche 960 619
+#75 DOIGT project_p-ebc38d94 « أغنيتي الأولى »
+#76 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b312853b3a | project=p-ebc38d94 no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « لحني » 2.07:1 (needs 3.0:1, 14 sp)
+#76 > glisse 700 900 700 500
+#76 DOIGT simple_track_inst:4 « Riser »
+#77 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0a694945fb | project=p-ebc38d94 no tuto
+#77 SON Son : rien ne joue.
+#77 > fin
+#77 FIN : fin

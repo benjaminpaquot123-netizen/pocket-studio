@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.model.partMarks
+import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
@@ -51,6 +52,8 @@ fun AutomateLaneRoute(vm: RhythmViewModel, target: com.pocketstudio.model.AutoTa
         playStep = { if (transport.playing) live.currentStep else -1 },
         playSongStep = { if (transport.playing) live.songStep else -1 },
         parts = project.partMarks(),
+        partSteps = project.sceneSteps(project.scene),
+        playPartStep = { if (transport.playing) live.absoluteStep else -1 },
     )
     val actions = AutomationActions(
         remove = { vm.removeAutomation(it); close() },
@@ -60,6 +63,7 @@ fun AutomateLaneRoute(vm: RhythmViewModel, target: com.pocketstudio.model.AutoTa
         setSongPoint = vm::setAutomationSongPoint,
         edit = vm::editAutomationLane,
         setResolution = vm::setLaneResolution,
+        setLoopSteps = vm::setAutomationLoopSteps,
     )
     AutomateLaneSheet(lane, ui, project.mixer.channels, project.mixer.master, strips, actions, automationLabel(l.target, project.mixer.channels, project.mixer.master, strips), close)
 }

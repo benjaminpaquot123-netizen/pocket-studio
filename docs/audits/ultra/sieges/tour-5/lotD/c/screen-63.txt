@@ -1,0 +1,6 @@
+Écran 63 (1035x1243)
+touchable « Rinomina » @ 825,551
+touchable « Duplica » @ 825,623
+touchable « Invia / salva una copia (.zip) » @ 825,695
+touchable « Copia di prima di questa sessione » @ 825,767
+touchable « Elimina » @ 825,839

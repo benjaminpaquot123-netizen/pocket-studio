@@ -1,5 +1,6 @@
 package com.pocketstudio.app.report
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledPopup
 
@@ -8,6 +9,7 @@ import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +44,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -229,9 +231,9 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
             )
         }
         ui.message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("bug_message")) }
-        Button(onClick = actions.share, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bug_share")) {
+        Button(onClick = actions.share, enabled = !ui.busy, modifier = Modifier.pressScale(enabled = !ui.busy).fillMaxWidth().heightIn(min = 56.dp).testTag("bug_share")) {
             if (ui.busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = Neon.OnAccent)
-            else Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+            else Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
         TextButton(onClick = actions.copy, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bug_copy")) {
@@ -244,14 +246,15 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
 @Composable
 private fun SwitchRow(title: String, line: String, on: Boolean, set: (Boolean) -> Unit, tag: String) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Switch) { set(!on) }.padding(vertical = 4.dp),
+        // Fix 2, n° 7 (« règle partout »): the row is the switch, and says whether it is on.
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).clip(RoundedCornerShape(12.dp)).toggleable(value = on, role = Role.Switch, onValueChange = set).padding(vertical = 4.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyLarge)
             Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-        Switch(checked = on, onCheckedChange = set, modifier = Modifier.padding(start = 8.dp).testTag(tag))
+        Switch(checked = on, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
     }
 }
 
@@ -322,7 +325,7 @@ fun CaptureChipContent(capture: () -> Unit, cancel: () -> Unit) {
         ) {
             Button(
                 onClick = capture, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Color.Black),
-                modifier = Modifier.heightIn(min = 48.dp).testTag("bug_capture_now"),
+                modifier = Modifier.pressScale().heightIn(min = 48.dp).testTag("bug_capture_now"),
             ) {
                 Text("📸 " + tr("Capturer"), fontWeight = FontWeight.Bold, maxLines = 1)
             }
@@ -363,7 +366,7 @@ fun captureScreen(view: View): Bitmap? = runCatching {
 
 /** « Ce qui sera envoyé », in the interface's language. */
 fun bugSummary(s: BugReportState, projectName: String?): List<String> = buildList {
-    add(if (s.text.isBlank()) tr("Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).") else tr("Ton texte (%d caractères)", s.text.length))
+    add(if (s.text.isBlank()) tr("Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).") else com.pocketstudio.model.i18n.trCount(s.text.length, "Ton texte (1 caractère)", "Ton texte (%d caractères)"))
     add(tr("La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son"))
     val stream = Metrics.streamInfo.value
     add(tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", stream.xruns, stream.restarts))

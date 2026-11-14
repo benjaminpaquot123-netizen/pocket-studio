@@ -1,0 +1,15 @@
+Écran 39 (900x1509)
+texte « BenStudio » @ 169,78
+texte « Cosa vuoi fare? » @ 188,146
+bouton ✓ « Continua Semplice Il mio progetto 1 2 batt. · 0:05 · 2 parti Salvato proprio ora » → @ 450,327
+bouton (étincelles) « Nuovo brano Uno stile con un tocco, o “Fammi un brano”. » → @ 450,544
+bouton (dossier ouvert) « I miei progetti Apri un altro brano, copialo o rinominalo. » → @ 450,696
+bouton (quatre vagues) « Remix Separazione delle tracce: batteria, basso, voce e il resto. » → @ 450,868
+bouton (grille de pads) « Pad Live NUOVO Pad pronti da suonare, i tuoi suoni, effetti live. Suona subito. » → @ 450,1061
+bouton ★ ★ ★ « Sfide Ascolta un ritmo, rifallo sui pad: vinci stelle. » → @ 450,1236
+bouton (micro) → « Registra la mia voce o la chitarra Il microfono registra sopra la tua musica, perfettamente a tempo. » [coupé] @ 450,1339
+bouton « ↓ 3 altri » @ 796,1395
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

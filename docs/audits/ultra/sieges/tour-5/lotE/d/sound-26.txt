@@ -1,0 +1,2 @@
+Son : la musique du projet joue en boucle ; le pad live 3 joue en boucle.
+Le pad 2 (« Clap ») joue une fois.

@@ -1,0 +1,26 @@
+Écran 17 (1920x1200)
+texte « Effekte · Drums » @ 727,72
+texte « ← Dunkel » @ 692,277
+texte « ↓ Trocken » @ 959,277
+texte « Hell → » @ 1227,277
+texte « Wisch mit dem Finger, um den Sound live zu verbiegen. Zweimal tippen: zurück zum Ausgangssound. » @ 960,391
+curseur « Farbe » [état « Neutral », à 50 %] @ 638,520
+texte « Farbe » @ 638,589
+texte « Neutral » @ 638,640
+curseur « Dreck » [état « 0 », à 0 %] @ 852,520
+texte « Dreck » @ 852,589
+texte « 0 » @ 852,640
+curseur « Bewegung » [état « 0 », à 0 %] @ 1067,520
+texte « Bewegung » @ 1066,589
+texte « 0 » @ 1067,640
+curseur « Raum » [état « 0 », à 0 %] @ 1282,520
+texte « Raum » @ 1281,589
+texte « 0 » @ 1282,640
+texte « Gemeinsames Reverb und Echo » @ 833,704
+texte « Reverb-Send » @ 923,775
+texte « 0 % » @ 1352,775
+curseur « Reverb-Send » [état « 0 % », à 0 %] @ 960,854
+texte « Echo-Send » @ 923,933
+texte « 0 % » @ 1352,933
+curseur « Echo-Send » [état « 0 % », à 0 %] @ 960,1012
+bouton « Schließen » @ 1275,1124

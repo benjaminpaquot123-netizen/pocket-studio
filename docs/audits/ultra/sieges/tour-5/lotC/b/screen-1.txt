@@ -1,0 +1,11 @@
+Écran 1 (616x1371)
+bouton «  Atrás » @ 68,36
+texte « Remix » @ 166,36
+bouton « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,135
+bouton « ? » (nom « ¿Qué es “Remix”? ») @ 360,135
+texte « Elige una canción del dispositivo: la app la separa en batería, bajo, voz y el resto. Tarda unos minutos; puedes apagar la pantalla. » @ 308,214
+texte « Primero hace falta el modelo de separación (174 MB, una sola vez, mejor con Wi-Fi). » @ 308,298
+bouton « Descargar el modelo (174 MB) » @ 308,373
+bouton « Elegir una canción » @ 308,457
+texte « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » @ 308,532
+bouton « Descargar el modelo (174 MB) » @ 308,1320

@@ -1,0 +1,6 @@
+Écran 2 (588x1278)
+texte « Einfach oder Pro? » @ 330,48
+icône ← @ 54,48
+texte « Wie willst du dieses Projekt sehen? Du kannst es jederzeit oben mit dem Umschalter ändern. » @ 294,228
+bouton « Einfach Zum Einstieg: 5 Tabs, große Knöpfe und Alltagswörter. » @ 294,529
+bouton « Pro Für mehr: alle Werkzeuge, Struktur, Sounds, Mix und Live. » @ 294,894

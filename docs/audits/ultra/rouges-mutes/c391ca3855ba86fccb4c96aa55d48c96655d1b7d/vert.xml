@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.PremiereInstallationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-12T14:23:19.087Z" hostname="vm" time="27.196">
+  <properties/>
+  <testcase name="aFirstInstallExportsAndShowsItsFiveScreens" classname="com.pocketstudio.bentest.PremiereInstallationTest" time="21.769"/>
+  <testcase name="aFirstInstallReachesTheFirstSongsCreation" classname="com.pocketstudio.bentest.PremiereInstallationTest" time="4.47"/>
+  <testcase name="aFailedStepSaysWhatWasOnScreen" classname="com.pocketstudio.bentest.PremiereInstallationTest" time="0.322"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

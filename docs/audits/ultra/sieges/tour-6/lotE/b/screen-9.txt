@@ -1,0 +1,27 @@
+Écran 9 (540x1170)
+dessin @ 270,36
+image (i dans un rond) @ 0,0
+texte « Klaar om te delen? » @ 234,108
+icône ✕ @ 474,108
+champ « Naam van het nummer (en van het project) » contenu « Mijn eerste beat » @ 270,211
+icône ✕ @ 474,218
+bouton ▶ «  Luisteren » @ 409,314
+texte « 0:16 » @ 66,314
+texte « een deel als loop » @ 201,319
+texte « Lengte van de loop » @ 125,383
+bouton « 4 » @ 66,434
+bouton « 8 » [sélectionné] @ 150,434
+bouton « 16 » @ 234,434
+bouton « 32 » @ 320,434
+texte « Doelvolume » @ 88,510
+bouton « ? » @ 168,509
+bouton « Streaming · −14 LUFS » [sélectionné] @ 164,573
+bouton « Club · −8 LUFS » @ 407,573
+bouton « Auto (stijl) · −9 LUFS » @ 160,654
+bouton « Uit » @ 339,654
+texte « −14 LUFS over het hele nummer: het volume waarop Spotify en YouTube alle nummers zetten. Dezelfde instelling als in Mix. » @ 270,736
+bouton « M4A · om te delen » [sélectionné] @ 147,831
+bouton « WAV · max. kwaliteit » @ 159,912
+bouton (trois points reliés) «   Delen » @ 270,1008
+bouton (dossier) « Mijn bestanden Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » › @ 248,1110
+bouton « ? » @ 488,1110

@@ -1,0 +1,61 @@
+Écran 31 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 234,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 495,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+bouton « SONG-EINSTELLUNGEN » [état « Aufgeklappt »] @ 450,149
+case « stoppen » [sélectionné] @ 214,203
+case « neu anfangen » @ 385,203
+texte « Am Ende: » @ 89,203
+case « dem Song folgen » [sélectionné] @ 323,287
+case « bei meinem Teil bleiben » @ 589,287
+texte « Beim Abspielen: » @ 121,287
+texte « Die Bildschirme zeigen den Teil, der gerade spielt. » @ 272,348
+bouton « ? » (nom « Was ist „Schläge pro Takt“? ») @ 238,395
+texte « Schläge pro Takt: » @ 129,396
+case « 2/4 » @ 84,465
+case « 3/4 » @ 178,465
+case « 4/4 » [sélectionné] @ 273,465
+case « 5/4 » @ 367,465
+case « 6/4 » @ 461,465
+case « 7/4 » @ 555,465
+texte « 4/4 für die meisten Songs, 3/4 für einen Walzer, 6/4 oder 7/4 für seltenere Rhythmen. » @ 430,526
+bouton « BAUSTEINE » [état « Aufgeklappt »] @ 145,627
+bouton « ? » (nom « Was ist „Baustein“? ») @ 227,627
+texte « Ein Baustein = die Drums, Acid und Noten eines Teils. Die Teile des Songs bestehen daraus. Tippe auf einen, um ihn zu bearbeiten, halte und zieh, um ihn zu verschieben. » @ 450,688
+texte « Zeigen: » @ 78,763
+case « 8 » [sélectionné] @ 160,763
+case « 16 » @ 241,763
+case « 24 » @ 324,763
+bouton « A leer » @ 139,874
+bouton « B leer » @ 346,874
+bouton « C leer » @ 553,874
+bouton « D leer » @ 760,874
+bouton « E leer » @ 139,1002
+bouton « F leer » @ 346,1002
+bouton « G leer » @ 553,1002
+bouton « H leer » @ 760,1002
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 4/4 · Pro » @ 400,1104
+bouton « Kapitel » @ 771,1104
+bouton « Aufklappen » @ 843,1104
+touchable « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. Lesen » @ 450,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » [sélectionné] @ 85,1389
+onglet « Sounds » @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

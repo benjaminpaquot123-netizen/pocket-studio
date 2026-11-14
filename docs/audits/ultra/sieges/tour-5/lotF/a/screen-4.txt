@@ -1,0 +1,18 @@
+Écran 4 (1035x1243)
+texte « Nouveau morceau, pas à pas » @ 280,36
+bouton « Fermer » @ 993,54
+texte « Étape 1 : choisis un style » @ 171,78
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 517,166
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 363,264
+bouton « Calme (Chill, Lo-fi) 6 styles » [état « fermé »] @ 517,342
+bouton « Techno 10 styles » [état « fermé »] @ 517,438
+bouton « House 9 styles » [état « ouvert »] @ 517,534
+touchable « House 122 BPM La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. Pour l'idée : Robin S – Show Me Love (1992) » @ 517,681
+bouton « Écouter » @ 57,633
+touchable « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 517,879
+bouton « Écouter » @ 57,831
+touchable « Tech house House · 126 BPM La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. Pour l'idée : Mau P – Drugs From Amsterdam (2022) » @ 517,1077
+bouton « Écouter » @ 57,1029
+touchable « Acid house House · 120 BPM La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle. Pour l'idée : Phuture – Acid Tracks (1987) » @ 517,1212
+bouton « Écouter » @ 57,1220
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

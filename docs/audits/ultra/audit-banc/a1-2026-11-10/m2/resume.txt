@@ -1,0 +1,6 @@
+BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone : rouge : java.lang.AssertionError: the touch went to the engine
+BenchTour3Test#padLiveRowsStartAndStopAndStopAllCutsThem : rouge : java.lang.AssertionError: the row went to the engine
+BenchTour4Test#liveStopsReachTheirLaunchLineOnTheBench : rouge : java.lang.AssertionError: the drums' ■ went to the engine
+Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine : rouge : java.lang.AssertionError: expected:<[[150, 0.0, 0, 4]]> but was:<[]>
+Tour4AppProofTest#liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows : rouge : java.util.NoSuchElementException: List is empty.
+Tour3Zone1Test#aLivePadTouchedGoesToTheEngine : rouge : java.lang.AssertionError: expected:<[[46, 1.0, 0, 0]]> but was:<[]>

@@ -1,0 +1,12 @@
+tampon : ce tampon est celui d'un autre lot (lot: /tmp/tmpv16rovga) : relance scripts/bench/selftest.sh /tmp/tmpv16rovga/autre-lot
+tampon : les start.txt des sièges de /tmp/tmpv16rovga ont changé depuis le selftest (le tampon couvre exactement les start.txt présents quand il a tourné ; présents maintenant : z ) : laisse seulement les start.txt des sièges à jouer (mets les autres de côté hors du dépôt), PUIS relance scripts/bench/selftest.sh /tmp/tmpv16rovga
+tampon : le code a changé depuis le selftest (commit ou fichiers hors docs/) : relance scripts/bench/selftest.sh /tmp/tmpv16rovga
+ultra bench scripts: OK
+........................................................./home/user/pocket-studio/scripts/bench/test_portail3.py:971: ResourceWarning: unclosed file <_io.BufferedReader name='/home/user/pocket-studio/scripts/bench/juge-paires-nommees.tsv'>
+  raw = open(os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv"), "rb").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+....................
+----------------------------------------------------------------------
+Ran 77 tests in 8.070s
+
+OK

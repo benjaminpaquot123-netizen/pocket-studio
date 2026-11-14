@@ -1,0 +1,8 @@
+Écran 4 (588x1278)
+icône ← «  Geri » @ 70,36
+texte « Remix » @ 179,36
+titre « BİR ŞARKIYI AYRIŞTIR » [état « Genişletildi »] @ 228,135
+bouton « ? » @ 393,135
+texte « Cihazından bir şarkı seç: uygulama onu davul, bas, vokal ve geri kalan olarak ayırır. Birkaç dakika sürer; ekranı kapatabilirsin. » @ 294,251
+texte « Model indiriliyor… %2 » @ 193,368
+bouton « İptal » @ 294,469

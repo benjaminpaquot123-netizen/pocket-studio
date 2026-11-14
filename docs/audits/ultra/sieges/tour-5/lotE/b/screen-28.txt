@@ -1,0 +1,60 @@
+Écran 28 (588x1278)
+touchable « ▭▭▭ ▭▭▭ » @ 134,42
+bouton « ▭▭▭ » @ 311,42
+bouton (icône) @ 399,42
+bouton (icône) @ 471,42
+bouton (icône) @ 543,42
+bouton « ▭▭▭ ▭▭▭ » @ 83,114
+bouton « ▭▭▭ ▭▭▭ » @ 248,114
+interrupteur « ▭▭▭ » [non coché] @ 543,114
+bouton « H · Groove 3 ▭▭▭ » @ 186,183
+bouton (icône) [désactivé] @ 366,180
+bouton (icône) [désactivé] @ 438,180
+bouton (icône) @ 510,180
+bouton « H · Groove 3 ▭▭▭ » @ 186,276
+bouton (icône) [désactivé] @ 366,276
+bouton (icône) [désactivé] @ 438,276
+bouton (icône) @ 510,276
+bouton « B · Groove ▭▭▭ » @ 186,372
+bouton (icône) @ 366,372
+bouton (icône) @ 438,372
+bouton (icône) @ 510,372
+bouton « A · Intro ▭▭▭ » @ 186,468
+bouton (icône) [désactivé] @ 366,468
+bouton (icône) @ 438,468
+bouton (icône) @ 510,468
+bouton « I · Build-up ▭▭▭ » @ 186,565
+bouton (icône) [désactivé] @ 366,565
+bouton (icône) @ 438,565
+bouton (icône) @ 510,565
+bouton « J · Build-up 2 ▭▭▭ » @ 186,662
+bouton (icône) [désactivé] @ 366,662
+bouton (icône) @ 438,662
+bouton (icône) @ 510,662
+bouton « C · Drop ▭▭▭ » @ 186,758
+bouton (icône) [désactivé] @ 366,758
+bouton (icône) [désactivé] @ 438,758
+bouton (icône) @ 510,758
+bouton « C · Drop ▭▭▭ » @ 186,854
+bouton (icône) [désactivé] @ 366,854
+bouton (icône) [désactivé] @ 438,854
+bouton (icône) @ 510,854
+bouton « K · Drop 2 ▭▭▭ » @ 186,928
+bouton (icône) [désactivé] @ 366,934
+bouton (icône) [désactivé] @ 438,934
+bouton (icône) @ 510,934
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,984
+bouton « ▭▭▭ » @ 95,1059
+bouton (icône) @ 223,1059
+bouton « ▭▭▭ ▭▭▭ » @ 356,1059
+bouton « ▭▭▭ » @ 493,1059
+onglet « ▭▭▭ » [sélectionné] @ 54,1158
+onglet « ▭▭▭ » @ 174,1158
+onglet « ▭▭▭ » @ 294,1158
+onglet « ▭▭▭ » @ 414,1158
+onglet « ▭▭▭ » @ 534,1158
+touchable « ▭▭▭ ▭▭▭ » @ 360,1248
+touchable « ▭▭▭ ▭▭▭ » @ 456,1248
+touchable « ▭▭▭ » @ 540,1248
+texte « ▭▭▭ » @ 162,1248

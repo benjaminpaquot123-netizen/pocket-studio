@@ -1,0 +1,17 @@
+Écran 16 (616x1371)
+texte « Changer le son » @ 144,35
+bouton « Jouer le morceau » @ 502,48
+bouton « Fermer » @ 574,48
+texte « Pour le pad live 13 » @ 108,69
+onglet « Grosses caisses » @ 138,129
+onglet « Caisses claires » @ 380,129
+onglet « Claquements de mains » @ 550,129
+  → la suite sur le côté (glisse pour la voir)
+bouton « SONS » [état « Déplié »] @ 94,216
+champ « Chercher un son (caisse, conga, sirène…) » contenu «  » @ 308,306
+bouton « Fête 22 sons » @ 308,420
+texte « Touche ☆ sur un son pour le retrouver dans « Favoris ». » @ 295,487
+texte « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad live 13. » @ 308,540
+bouton « PACKS DE SONS » [état « Déplié »] @ 171,654
+bouton « ? » (nom « Qu'est-ce que « Pack de sons » ? ») @ 278,654
+texte « Chargement de la liste… » @ 180,706

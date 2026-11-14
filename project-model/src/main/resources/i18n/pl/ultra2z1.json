@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "Nie udało się dać dźwięku na pad: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "Wyzwania: posłuchaj rytmu, powtórz go na padach, zdobywaj gwiazdki.",
+  "Défis": "Wyzwania",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "Posłuchaj rytmu, powtórz go na padach: zdobywaj gwiazdki.",
+  "%s, sur le pad": "%s, na padzie",
+  "✓ Sur le pad maintenant": "✓ Teraz na padzie",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "„%1$s” zastępuje „%2$s” na padzie %3$d (strzałka cofania go przywraca). Umieść go w Perkusji, w wybranej części.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "„%s” jest w twoim projekcie, wyciszona, do cięcia (strzałka cofania ją usuwa).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live ma własny projekt „Live”: „%s” czeka na ciebie w Moich projektach."
+}

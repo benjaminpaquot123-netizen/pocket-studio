@@ -8,8 +8,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * G0: no track of the assistant's songs left untreated (Benjamin's Sub, Voix and Sub drop had no
- * effect at all), each at its place in the stereo (his faders all at 0 dB, nothing panned).
+ * G0: no track of the assistant's songs left untreated (a beginner's draft leaves its Sub, Voix and
+ * Sub drop without any effect), each at its place in the stereo (faders all at 0 dB, nothing panned).
  */
 class RoleMixTest {
     private fun song(id: String) = DropVariationTest.song(StarterWizard.style(id)!!)
@@ -17,8 +17,8 @@ class RoleMixTest {
     private fun Project.strip(track: Int) = mixer.channels[InstrumentTrack.mixerChannel(track)]
 
     @Test
-    fun benjaminsSubVoiceAndSubDropHadNothing() {
-        val p = DropVariationTest.benj()
+    fun aDraftsSubVoiceAndSubDropHaveNothing() {
+        val p = DropVariationTest.draft()
         val untreated = p.instrumentTracks.filter { t -> p.strip(t.id).inserts.all { it.type == 0 } }.map { it.name }
         assertEquals(listOf("Sub", "Voix", "Sub drop"), untreated)
         // Nothing panned but the pads of the drums.
@@ -63,7 +63,7 @@ class RoleMixTest {
     @Test
     fun aPadsPanSnapsToTheCentreForTheWholeSong() {
         // Benjamin's kick: hard left in every scene but the two intro ones, copies of the song's one pan (Scenes.kt keeps them in step).
-        val p = DropVariationTest.benj()
+        val p = DropVariationTest.draft()
         assertEquals(-1f, p.drums.lanes[Role.Kick.lane].pan, 0f)
         // The sliders snap near the middle, as the console does.
         val d = p.drums.withPadPan(Role.Kick.lane, 0.03f)

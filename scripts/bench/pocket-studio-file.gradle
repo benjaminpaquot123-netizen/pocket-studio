@@ -1,0 +1,10 @@
+// PLAN-RESTE 7.2: in this workshop Gradle runs only through scripts/bench/gradle-file.sh (one queue, daemons stopped,
+// memory budget). A direct ./gradlew on pocket-studio is refused, as a guard rail, not a lock: gradle-file.sh sets
+// PS_GRADLE_FILE=1 and the daemon sees the client's environment. (The shell lock cannot be read from here: flock(2)
+// and the JVM's fcntl locks are different locks, and the configuration cache forbids an external process.)
+// Installed in ~/.gradle/init.d/ by scripts/bench/equipe-atelier.sh. Groovy, not kts: a kts init script costs 15 s per run.
+gradle.settingsEvaluated { settings ->
+    if (settings.rootProject.name == "pocket-studio" && System.getenv("PS_GRADLE_FILE") == null) {
+        throw new GradleException("pocket-studio: run Gradle through scripts/bench/gradle-file.sh (one queue, memory budget), not ./gradlew directly.")
+    }
+}

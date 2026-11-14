@@ -1,0 +1,26 @@
+Écran 94 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+texte « Prêt à partager ? » @ 258,108
+bouton « Fermer » @ 522,108
+champ « Nom du morceau (et du projet) » contenu « Démo · Acid house » @ 294,211
+bouton « Effacer » @ 522,218
+bouton «  Écouter » @ 466,314
+texte « 0:13 » @ 66,314
+texte «   4 parties » @ 152,319
+texte « Volume visé » @ 89,390
+bouton « ? » (nom « Qu'est-ce que « Volume visé » ? ») @ 170,389
+case « Streaming · −14 LUFS » @ 164,453
+case « Club · −8 LUFS » [sélectionné] @ 407,453
+case « Auto (style) · −9 LUFS » @ 166,534
+case « Désactivée » @ 393,534
+texte « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. Le même réglage que dans Mix. » @ 294,630
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,732
+bouton «   Vidéo pour les réseaux · 30 s » @ 294,816
+bouton « Autres exports Piste par piste, MIDI, FLAC… dans Mix » @ 272,910
+bouton « ? » (nom « Qu'est-ce que « WAV, FLAC, M4A » ? ») @ 536,910
+bouton « Envoyer le projet Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. » @ 272,1018
+bouton « ? » (nom « Qu'est-ce que « Envoyer le projet » ? ») @ 536,1036
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « M4A · pour partager » @ 157,1122
+case « WAV · qualité max » [sélectionné] @ 414,1122
+bouton «   Partager » @ 294,1218

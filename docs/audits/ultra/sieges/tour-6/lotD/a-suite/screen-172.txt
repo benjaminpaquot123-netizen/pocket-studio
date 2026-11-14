@@ -1,0 +1,46 @@
+Écran 172 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône « イントロ 小節 1/49 » ▾ @ 231,114
+bouton « ? » @ 543,114
+icône ▶ « G · ドロップ 2 × 1  ·  8 小節 » [coupé] @ 186,166
+icône − [désactivé, coupé] @ 366,160
+icône + [coupé] @ 438,160
+icône ⋮ [coupé] @ 510,160
+icône ▶ « H · エンディング × 1  ·  8 小節 » @ 186,243
+icône − [désactivé] @ 366,243
+icône + @ 438,243
+icône ⋮ @ 510,243
+texte « 最後に追加： » @ 105,312
+bouton « + A · グルーヴ » @ 147,376
+bouton « + B · イントロ » @ 365,376
+bouton « + C · イントロ 2 » @ 156,457
+bouton « + D · ドロップ » @ 384,457
+bouton « + E · ブレイク » @ 145,538
+bouton « + F · ビルドアップ » @ 382,538
+bouton « + G · ドロップ 2 » @ 156,619
+bouton « + H · エンディング » @ 406,619
+bouton « + 新しいパート（H · エンディングのコピー） » @ 294,700
+bouton « + 新しい空のパート » @ 173,781
+image (chapeau de diplômé) @ 37,872
+texte « パートを並べよう チャプター 11/15 · ステップ 1/2 · かんたん » @ 244,872
+icône (liste) @ 459,872
+icône ⌃ @ 531,872
+icône (rond coché) « 成功 次のステップ » → @ 294,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » [sélectionné] @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

@@ -1,0 +1,35 @@
+Écran 45 (588x1278)
+touchable « Démo · Acid house Sauvegardé » (nom « Mes projets ») @ 114,42
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 255,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Partager mon morceau » @ 543,42
+bouton « 126  BPM » (nom « Tempo : 126 BPM ») @ 73,114
+bouton « A mes. 1/7 » @ 218,114
+interrupteur « Boucler la partie au lieu de jouer le morceau » [non coché, état « désactivé »] @ 462,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « Réglages Langue, thème, taille, son, mode simple » @ 294,175
+bouton « Passer en mode Simple Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Envoyer » @ 294,270
+bouton « Clavier MIDI Brancher un clavier, apprendre des potards » @ 294,387
+bouton « Latence Mesurer le retard du micro pour des prises calées » @ 294,504
+bouton « Lecture en arrière-plan La musique continue écran éteint » @ 294,615
+bouton « Son de test Un la à 440 Hz pour vérifier la sortie » @ 294,720
+bouton « Signaler un bug Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? » » @ 294,831
+bouton « Recette La liste de tests de la version, et signaler un problème » @ 294,921
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une mélodie 38 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 126 Tempo » (nom « Tempo : 126 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

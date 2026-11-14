@@ -1,0 +1,271 @@
+#0 SIEGE lang=ja device=tablet8 font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 80de531072 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇯🇵 » 2.06:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « はじめての曲を作る（ガイド付き） » 2.34:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « 曲をまるごと自分で作る、一歩ずつ。説明とチェックはまかせて。 » 2.99:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « デモを聴く » 1.98:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « 完成済みの曲。何ができるか体験しよう。 » 2.69:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « マイクが曲に重ねて、リズムぴったりに録音します。 » 2.04:1 (needs 4.5:1, 14 sp)
+#1 > touche 450 391
+#1 DOIGT welcome_guided « はじめての曲を作る（ガイド付き） »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE ac3157701e | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « このプロジェクトをどう表示する？上のバッジでいつでも変えられます。 » 3.10:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « もっと深く：すべてのツール、構成、音、ミックス、ライブ。 » 2.29:1 (needs 4.5:1, 16 sp)
+#2 > touche 229 264
+#2 DOIGT mode_card_simple « シンプル »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 25fc12f954 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 落ち着いた系（チル、Lo-fi） » 2.93:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « テクノ » 2.21:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 10 スタイル » 2.30:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « ハウス » 2.76:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 9 スタイル » 2.59:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « ヒップホップ » 2.74:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 スタイル » 1.77:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 4 スタイル » 1.36:1 (needs 4.5:1, 13 sp)
+#3 > touche 450 266
+#3 DOIGT wizard_family_calm « 落ち着いた系（チル、Lo-fi） »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 25ecac326b | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Lo-fi ヒップホップ » 2.63:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « ヒップホップ · 84 BPM » 2.55:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 参考： Nujabes – Aruarian Dance (2004) » 1.64:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « ディープハウス » 2.71:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « 参考： Mr. Fingers – Can You Feel It (1986) » 2.59:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « ゆったりした南アフリカのハウス：木の太鼓（「ログドラム」）のように弾むベースと、ジャジーなピアノ。 » 2.07:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 参考： Tyla – Water (2023) » 3.39:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « シンセウェイヴ » 1.89:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « 105 BPM » 1.89:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 再び流行りの80年代サウンド（Stranger Things、Blinding Lights）：響き渡る巨大なスネア、脈打ち続けるベース、ループするシンセのフレーズ。 » 3.92:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « ヒップホップ · 92 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 参考： Nekfeu – On verra (2015) » 4.33:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « リキッド DnB » 1.48:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « 9 スタイル » 2.12:1 (needs 4.5:1, 13 sp)
+#4 > touche 500 397
+#4 DOIGT wizard_style_lofi « Lo-fi ヒップホップ »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 1ea4343767 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST «  作って聴く » 2.26:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « 参考： » 2.16:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « • J Dilla – Don't Cry (2006) » 2.51:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « やわらかく温かいハウス：まろやかなエレピ、丸いベース、夕焼けの雰囲気。 » 1.91:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « ハウス · 112 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « シンセウェイヴ » 4.38:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 105 BPM » 1.32:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 参考： The Weeknd – Blinding Lights (2019) » 1.63:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « ブーンバップ » 1.93:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « リキッド DnB » 2.88:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « やわらかく温かいドラムンベース：同じ速いリズムに、ジャジーなエレピのコードと丸いベース。 » 2.04:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 参考： Netsky – Memory Lane (2010) » 2.04:1 (needs 4.5:1, 12 sp)
+#5 > touche 478 480
+#5 DOIGT wizard_style_play_lofi «  作って聴く »
+#6 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0d35cd993c | project=p-6bd7b576 no tuto
+#6 SON Son : le morceau joue (partie « A »).
+#6 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 > attends 5
+#7 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE aef447d8e6 | project=p-6bd7b576 no tuto
+#7 SON Son : le morceau joue (partie « A »).
+#7 LAYOUT CONTRAST « はじめに » 4.24:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « メロディの音 » 3.91:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « ↗ » 3.44:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « ほかのドラムキット » 4.02:1 (needs 4.5:1, 14 sp)
+#7 > touche 92 1145
+#7 DOIGT guide_later « あとで »
+#8 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE 966e5a0f42 | project=p-6bd7b576 no tuto
+#8 SON Son : le morceau joue (partie « A »).
+#8 LAYOUT OVERLAP « 音を変更 » over « 後回しにしました：あとで戻れます。 » (45 x 19 dp)
+#8 LAYOUT OVERLAP « 単独で聴く » over « キャンセル » (8 x 10 dp)
+#8 LAYOUT OVERLAP « 後回しにしました：あとで戻れます。 » over the touchable « ベース の音を変更 » (236 x 21 dp)
+#8 LAYOUT OVERLAP « キャンセル » over the touchable « 「ベース」を単独でループ再生 単独で聴く » (19 x 21 dp)
+#8 LAYOUT CONTRAST « ベース » 1.39:1 (needs 3.0:1, 14 sp)
+#8 LAYOUT CONTRAST « キャンセル » 3.63:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 鍵盤を開く » 3.95:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « ノートを見る » 4.02:1 (needs 4.5:1, 14 sp)
+#8 > touche 868 532
+#8 DOIGT guide_bar « ガイド »
+#9 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE de3bbd8339 | project=p-6bd7b576 no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 LAYOUT OVERLAP « E · Aメロ 2 » over « 後回しにしました：あとで戻れます。 » (53 x 12 dp)
+#9 LAYOUT OVERLAP « B♭  F  Dm  Gm » over « 後回しにしました：あとで戻れます。 » (91 x 12 dp)
+#9 LAYOUT OVERLAP « F · Aメロ 3 » over « 後回しにしました：あとで戻れます。 » (52 x 5 dp)
+#9 LAYOUT OVERLAP « B♭  F  Dm  Gm » over « 後回しにしました：あとで戻れます。 » (91 x 4 dp)
+#9 LAYOUT OVERLAP « 後回しにしました：あとで戻れます。 » over the touchable « 曲のコード » (236 x 21 dp)
+#9 LAYOUT OVERLAP « キャンセル » over the touchable « 曲のコード » (70 x 21 dp)
+#9 LAYOUT CONTRAST « F · Aメロ 3 » 3.60:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « G · サビ 2 » 1.78:1 (needs 4.5:1, 14 sp)
+#9 > glisse 450 1000 450 400
+#9 DOIGT song_chords « 曲のコード »
+#10 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d2014dc9bf | project=p-6bd7b576 no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 LAYOUT OVERLAP « B · Aメロ » over « 後回しにしました：あとで戻れます。 » (75 x 5 dp)
+#10 LAYOUT OVERLAP « × 1  ·  8 小節 » over « 後回しにしました：あとで戻れます。 » (85 x 15 dp)
+#10 LAYOUT OVERLAP « 後回しにしました：あとで戻れます。 » over the touchable « このパートから再生 » (236 x 21 dp)
+#10 LAYOUT CONTRAST « A · イントロ » 2.94:1 (needs 3.0:1, 18 sp)
+#10 LAYOUT CONTRAST « × 1  ·  4 小節  ·  再生中 » 2.94:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « B · Aメロ » 1.34:1 (needs 3.0:1, 18 sp)
+#10 > touche 822 729
+#10 DOIGT part_menu_0
+#11 ROUTE dialogue:part_sheet | MODE simple | EMPREINTE 8426323cd8 | project=p-6bd7b576 no tuto
+#11 SON Son : le morceau joue (partie « A »).
+#11 LAYOUT OVERLAP « パート 1 · A · イントロ » over the touchable « シートを閉じる » (218 x 33 dp)
+#11 LAYOUT OVERLAP « 4 小節  ·  2 回再生 » over the touchable « シートを閉じる » (117 x 21 dp)
+#11 LAYOUT OVERLAP « 閉じる » over the touchable « シートを閉じる » (42 x 21 dp)
+#11 LAYOUT OVERLAP « 曲中で 2 回再生。編集する範囲： » over the touchable « シートを閉じる » (213 x 21 dp)
+#11 LAYOUT OVERLAP « このパートだけ » over the touchable « シートを閉じる » (99 x 21 dp)
+#11 LAYOUT OVERLAP « 2 個すべて » over the touchable « シートを閉じる » (67 x 21 dp)
+#11 LAYOUT OVERLAP « 最後にフィル » over the touchable « シートを閉じる » (84 x 21 dp)
+#11 LAYOUT OVERLAP « 後にブレイク · 4小節 » over the touchable « シートを閉じる » (133 x 21 dp)
+#11 LAYOUT OVERLAP « 後にブレイク · 8小節 » over the touchable « シートを閉じる » (133 x 21 dp)
+#11 LAYOUT OVERLAP « 前にビルドアップ · 4小節 » over the touchable « シートを閉じる » (162 x 21 dp)
+#11 LAYOUT OVERLAP « 前にビルドアップ · 8小節 » over the touchable « シートを閉じる » (161 x 21 dp)
+#11 LAYOUT OVERLAP « フェードイン » over the touchable « シートを閉じる » (85 x 21 dp)
+#11 LAYOUT OVERLAP « フェードアウト » over the touchable « シートを閉じる » (99 x 21 dp)
+#11 LAYOUT OVERLAP « エンディングを追加 » over the touchable « シートを閉じる » (126 x 21 dp)
+#11 LAYOUT OVERLAP « エネルギー：3 » over the touchable « シートを閉じる » (93 x 21 dp)
+#11 LAYOUT OVERLAP « 1 · パッド » over the touchable « シートを閉じる » (60 x 21 dp)
+#11 LAYOUT OVERLAP « 2 · ＋ベース » over the touchable « シートを閉じる » (76 x 21 dp)
+#11 LAYOUT OVERLAP « 3 · ＋ドラム » over the touchable « シートを閉じる » (76 x 21 dp)
+#11 LAYOUT OVERLAP « 4 · 全開 » over the touchable « シートを閉じる » (49 x 21 dp)
+#11 LAYOUT OVERLAP « 長さ » over the touchable « シートを閉じる » (28 x 21 dp)
+#11 LAYOUT OVERLAP « 小節 » over the touchable « シートを閉じる » (25 x 19 dp)
+#11 LAYOUT OVERLAP « OK » over the touchable « シートを閉じる » (21 x 20 dp)
+#11 LAYOUT OVERLAP « パート » over the touchable « シートを閉じる » (42 x 21 dp)
+#11 LAYOUT OVERLAP « 名前を変更 » over the touchable « シートを閉じる » (70 x 21 dp)
+#11 LAYOUT OVERLAP « 鳴っているもの » over the touchable « シートを閉じる » (98 x 21 dp)
+#11 LAYOUT OVERLAP « 上へ移動 » over the touchable « シートを閉じる » (56 x 21 dp)
+#11 LAYOUT OVERLAP « 下へ移動 » over the touchable « シートを閉じる » (56 x 21 dp)
+#11 LAYOUT OVERLAP « 複製 » over the touchable « シートを閉じる » (28 x 21 dp)
+#11 LAYOUT OVERLAP « 後ろに挿入 » over the touchable « シートを閉じる » (70 x 21 dp)
+#11 LAYOUT OVERLAP « 外す » over the touchable « シートを閉じる » (28 x 21 dp)
+#11 LAYOUT CONTRAST « 閉じる » 2.01:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « 後にブレイク · 8小節 » 2.94:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « 鳴っているもの » 3.52:1 (needs 4.5:1, 14 sp)
+#11 > touche 112 1416
+#11 DOIGT part_insert_0 « 後ろに挿入 »
+#12 ROUTE dialogue:pick_scene_0 | MODE simple | EMPREINTE e44113ab7c | project=p-6bd7b576 no tuto
+#12 SON Son : le morceau joue (partie « A »).
+#12 LAYOUT CONTRAST « I · クラッシュ » 1.24:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « J · フィル » 1.24:1 (needs 4.5:1, 14 sp)
+#12 > touche 688 907
+#12 DOIGT add_part_new_empty « + 新しい空のパート »
+#13 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE fa0f6e67c9 | project=p-6bd7b576 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 621 42
+#13 DOIGT top_mode « シンプルモード。タップでモードを変更。 »
+#14 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 31445e0567 | project=p-6bd7b576 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 LAYOUT CONTRAST « はじめての人に：5つのタブ、大きなボタン、ふだんの言葉。 » 2.33:1 (needs 4.5:1, 16 sp)
+#14 > touche 795 1033
+#14 DOIGT mode_switch_close « 閉じる »
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE fa0f6e67c9 | project=p-6bd7b576 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > retour
+#15 RETOUR
+#16 ROUTE launch | MODE simple | EMPREINTE 3afe7e9987 | project=p-6bd7b576 no tuto
+#16 SON Son : rien ne joue.
+#16 > glisse 450 1200 450 500
+#16 DOIGT rien
+#17 ROUTE launch | MODE simple | EMPREINTE b313e269d3 | project=p-6bd7b576 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 450 341
+#17 DOIGT launch_new « 新しい曲 »
+#18 ROUTE dialogue:new_project | MODE simple | EMPREINTE 2f1ccf2515 | project=p-6bd7b576 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 450 639
+#18 DOIGT start_others « ▸ ほかの始め方 »
+#19 ROUTE dialogue:new_project | MODE simple | EMPREINTE aac35b79c3 | project=p-6bd7b576 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 450 1211
+#19 DOIGT quick_family_Hip-hop « ヒップホップ »
+#20 ROUTE dialogue:new_project | MODE simple | EMPREINTE af2ffc89fd | project=p-6bd7b576 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 400 1355
+#20 DOIGT quick_style_trap « トラップ »
+#21 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9636194616 | project=p-6bd7b576 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « 前回の選択 » ellipsized (« … »)
+#21 > touche 229 264
+#21 DOIGT mode_card_simple « シンプル »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE fda999fda3 | project=p-d5a7c711 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « ? » 4.33:1 (needs 4.5:1, 12 sp)
+#22 > touche 347 1290
+#22 DOIGT thumb_play
+#23 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2b7d4be957 | project=p-d5a7c711 no tuto
+#23 SON Son : le morceau joue (partie « A »).
+#23 LAYOUT CONTRAST « チャプター 1 · 音とパターン » 4.30:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « トラック「バスドラム 1」のシート » 3.91:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « ほかの音のアイデア » 3.97:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « ↗ » 3.46:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « 鳴る場所 » 4.03:1 (needs 4.5:1, 14 sp)
+#23 > retour
+#23 RETOUR
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 54d53f3ec1 | project=p-d5a7c711 no tuto
+#24 SON Son : le morceau joue (partie « A »).
+#24 LAYOUT CONTRAST « A · イントロ » 2.90:1 (needs 3.0:1, 18 sp)
+#24 LAYOUT CONTRAST « × 1  ·  8 小節  ·  再生中 » 2.90:1 (needs 4.5:1, 14 sp)
+#24 > retour
+#24 RETOUR
+#25 ROUTE launch | MODE simple | EMPREINTE 832c6e9193 | project=p-d5a7c711 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 450 648
+#25 DOIGT launch_projects « マイプロジェクト »
+#26 ROUTE dialogue:projects | MODE simple | EMPREINTE 022cf10c74 | project=p-d5a7c711 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 450 243
+#26 DOIGT project_new «   新規プロジェクト：スタイル、デモ、空 »
+#27 ROUTE dialogue:new_project | MODE simple | EMPREINTE 2f1ccf2515 | project=p-d5a7c711 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 450 639
+#27 DOIGT start_others « ▸ ほかの始め方 »
+#28 ROUTE dialogue:new_project | MODE simple | EMPREINTE aac35b79c3 | project=p-d5a7c711 no tuto
+#28 SON Son : rien ne joue.
+#28 > glisse 450 1300 450 500
+#28 DOIGT quick_family_Autres « その他 »
+#29 ROUTE dialogue:new_project | MODE simple | EMPREINTE c0029975a4 | project=p-d5a7c711 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « プロジェクトを読み込む（.zip） » 2.89:1 (needs 4.5:1, 16 sp)
+#29 > touche 69 1216
+#29 DOIGT demo_play_2
+#30 ROUTE dialogue:new_project | MODE simple | EMPREINTE a2014c0cfd | project=p-d5a7c711 no tuto
+#30 SON Son : un son de la bibliothèque joue (écoute).
+#30 > touche 420 1220
+#30 DOIGT rien (texte « 88 BPM、ゆったりしたビートと、切ないコード進行に乗るエレピ。 »)
+#31 ROUTE dialogue:new_project | MODE simple | EMPREINTE a2014c0cfd | project=p-d5a7c711 no tuto
+#31 SON Son : un son de la bibliothèque joue (écoute).
+#31 > touche 450 805
+#31 DOIGT starter_starter « スタートのビート »
+#32 ROUTE dialogue:mode_step | MODE simple | EMPREINTE ec8452bd69 | project=p-d5a7c711 no tuto
+#32 SON Son : un son de la bibliothèque joue (écoute).
+#32 > touche 229 264
+#32 DOIGT mode_card_simple « シンプル »
+#33 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f4327e890c | project=p-5efc782f no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 85 1389
+#33 DOIGT tab_simple_Morceau « マイソング »
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 5ad6a631ba | project=p-5efc782f no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 96 818
+#34 DOIGT add_part_0 « + A »
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d0864802e0 | project=p-5efc782f no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 340 1133
+#35 DOIGT add_part_new_copy « + 新しいパート（Aのコピー） »
+#36 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 25b7443a81 | project=p-5efc782f no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 347 1290
+#36 DOIGT thumb_play
+#37 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6610870b5b | project=p-5efc782f no tuto
+#37 SON Son : le morceau joue (partie « A »).
+#37 LAYOUT CONTRAST « × 1  ·  1小節  ·  再生中 » 3.03:1 (needs 4.5:1, 14 sp)
+#37 > touche 815 1389
+#37 DOIGT tab_simple_Envoyer « 送る »
+#38 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 3bfc7166a7 | project=p-5efc782f no tuto
+#38 SON Son : le morceau joue (partie « A »).
+#38 > fin
+#38 FIN : fin

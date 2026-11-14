@@ -1,0 +1,3 @@
+Écran 10 (588x1278)
+texte « Envoyer mes retours » @ 452,1086
+texte « Masquer la bulle » @ 452,1158

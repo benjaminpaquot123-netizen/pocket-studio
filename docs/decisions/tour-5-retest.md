@@ -1,0 +1,7 @@
+# Tour 5, zone « retest » : décisions
+
+- 2026-11-12 : « Retester les corrections » lance toujours d'abord « Ouverture du studio » (Retest.PREALABLES), absente de la liste à cocher, présente dans le rapport ; l'en-tête « Retest : N étapes » ne compte que les étapes cochées. Raison : passage v6, les 5 étapes cochées partaient de l'écran de BenStudio Test, le studio arrêté dessous, et ratées en 15 s. Retour arrière : retirer « ouverture » de PREALABLES.
+- 2026-11-12 : le robot ne lit et ne touche que les fenêtres affichées (isShown) : une activité arrêtée garde sa fenêtre attachée, cachée, avec son dernier arbre. Raison : même passage, le studio caché était lu et touché. Retour arrière : retirer le filtre dans InAppDriver.roots.
+- 2026-11-12 : sans derniere.tsv (aucun passage gardé par cette version), la liste coche d'après le dernier carnet enregistré (toute version, tout passage), sinon le carnet du dernier zip de rapport ; rien du tout : rien coché et « Coche les étapes à revoir. ». Raison : demande de la zone, la v6 n'avait encore rien gardé. Retour arrière : Robot.candidats sans Retest.repli.
+- 2026-11-12 : toute la ligne d'une étape coche ou décoche (pas seulement la petite case). Raison : un doigt sur le nom de l'étape ne faisait rien. Retour arrière : enlever toggleable de la ligne.
+- 2026-11-12 : « Questions à l'oreille » après un autre passage : déjà correct (sa première étape ouvre le studio) ; gardé par un test, rien changé.

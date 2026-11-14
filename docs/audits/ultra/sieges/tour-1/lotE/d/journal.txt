@@ -1,0 +1,469 @@
+#0 SIEGE lang=ja device=phone411 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 1d37a7ada3 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#1 > touche 308 470
+#1 DOIGT launch_new « 新しい曲 »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE 8b831aaad2 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 308 349
+#2 DOIGT starter_wizard « 曲を作って »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 9df8132131 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « このプロジェクトをどう表示する？上のバッジでいつでも変えられます。 » 3.24:1 (needs 4.5:1, 16 sp)
+#3 > touche 308 480
+#3 DOIGT mode_card_pro « プロ »
+#4 ROUTE dialogue:wizard | MODE pro | EMPREINTE 6adeb51055 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « スタイルを選んでね。ドラム、それから曲のパートを用意します。あとで全部変えられます。 カードをタップで説明を読む、▶ で試聴。 » 2.33:1 (needs 4.5:1, 14 sp)
+#4 > touche 308 250
+#4 DOIGT wizard_family_Techno « テクノ »
+#5 ROUTE dialogue:wizard | MODE pro | EMPREINTE 8789eaf8d8 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « アシッドテクノ：キュンと鳴いてねじれるライン（Roland の名機 TB-303）が、叩きつける 909 キックの上でループします。 » ellipsized (« … »)
+#5 LAYOUT CUT « 参考： Josh Wink – Higher State of Consciousness (1995) » ellipsized (« … »)
+#5 LAYOUT CUT « アシッド・ハードコア：185 BPM の歪んだガバキックの上で 303 が大暴れ。ほぼ全ステップで鳴り、オクターブを跳び、フィルターは曲中ずっと開閉します。 » ellipsized (« … »)
+#5 > touche 340 381
+#5 DOIGT wizard_style_techno « テクノ »
+#6 ROUTE dialogue:wizard | MODE pro | EMPREINTE 4837d5b8d4 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 336 621
+#6 DOIGT wizard_style_choose_techno « このスタイルを選ぶ »
+#7 ROUTE dialogue:wizard | MODE pro | EMPREINTE 62b6860bd2 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 308 162
+#7 DOIGT wizard_create_now « おすすめの設定ですぐ作る »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 9a5ec686d3 | project=p-17d5bde8 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 追従 » over « ● » (11 x 17 dp)
+#8 LAYOUT OVERLAP « 追従 » over «  REC » (12 x 13 dp)
+#8 LAYOUT OVERLAP « ループ » over «  メモ » (4 x 15 dp)
+#8 LAYOUT OVERLAP « ループ » over « ⋯ » (13 x 21 dp)
+#8 LAYOUT OVERLAP « 追従 » over the touchable « 画面を音声付きで録画 » (27 x 21 dp)
+#8 LAYOUT OVERLAP « ループ » over the touchable « メモを書く » (7 x 21 dp)
+#8 LAYOUT OVERLAP « ループ » over the touchable « フィードバックモード » (30 x 21 dp)
+#8 LAYOUT CONTRAST « ループ » 3.19:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « ● » 3.54:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « ✎ » 3.43:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT TARGET « ドラム をミュート オフ » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « トラック ドラム をソロ オフ » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « Acid 303 をミュート オフ » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « トラック Acid 303 をソロ オフ » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « ベース をミュート オフ » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « トラック ベース をソロ オフ » 40 x 22 dp (touch 48 x 48)
+#8 > touche 307 1311
+#8 DOIGT tab_Mix « ミックス »
+#9 ROUTE tab_Mix | MODE pro | EMPREINTE 4f28e070f3 | project=p-17d5bde8 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « はじめに » 4.24:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « ● » 2.60:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « ✎ » 3.36:1 (needs 4.5:1, 13 sp)
+#9 > touche 308 739
+#9 DOIGT guide_bar « ガイド »
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2821587d5e | project=p-17d5bde8 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « +0.0 » 4.42:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « 2 » 3.41:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#10 > glisse 550 344 50 344
+#10 DOIGT strip_more_6 « リード »
+#11 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0fc4fdaa16 | project=p-17d5bde8 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 5 » 3.70:1 (needs 4.5:1, 12 sp)
+#11 > glisse 308 1150 308 350
+#11 DOIGT rien (texte « 設定を自動で動かそう：設定を選んで、カーブを描きます（指で、または2回タップで直 »)
+#12 ROUTE automation/tab_Mix | MODE pro | EMPREINTE d32081bc88 | project=p-17d5bde8 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 鳴っているもの » over «  REC » (23 x 13 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over « ✎ » (13 x 18 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over «  メモ » (23 x 15 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over « ⋯ » (13 x 20 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over the touchable « 画面を音声付きで録画 » (28 x 21 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over the touchable « メモを書く » (42 x 21 dp)
+#12 LAYOUT OVERLAP « 鳴っているもの » over the touchable « フィードバックモード » (28 x 21 dp)
+#12 LAYOUT CONTRAST « 空にする » 4.44:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « ● » 2.63:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « ✎ » 3.97:1 (needs 4.5:1, 13 sp)
+#12 > glisse 308 1150 308 250
+#12 DOIGT rien
+#13 ROUTE automation/tab_Mix | MODE pro | EMPREINTE f5a1707040 | project=p-17d5bde8 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « 18.0 kHz » lines dropped (more lines than room)
+#13 LAYOUT CUT « E · イントロ 2 » ellipsized (« … »)
+#13 LAYOUT CUT « F · イントロ 3 » ellipsized (« … »)
+#13 LAYOUT CUT « A · イントロ » ellipsized (« … »)
+#13 LAYOUT CUT « G · グルーヴ 2 » ellipsized (« … »)
+#13 LAYOUT CUT « H · グルーヴ 3 » ellipsized (« … »)
+#13 LAYOUT CUT « B · グルーヴ » ellipsized (« … »)
+#13 LAYOUT CUT « I · ビルドアップ » ellipsized (« … »)
+#13 LAYOUT CUT « J · ビルドアップ 2 » ellipsized (« … »)
+#13 LAYOUT CUT « C · ドロップ » ellipsized (« … »)
+#13 LAYOUT CUT « K · ドロップ 2 » ellipsized (« … »)
+#13 LAYOUT CUT « L · ドロップ 3 » ellipsized (« … »)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over « ● » (11 x 6 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over «  REC » (23 x 4 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over « ✎ » (13 x 7 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over «  メモ » (23 x 5 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over « ⋯ » (13 x 9 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 4 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « パートから再生 » (105 x 4 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « 曲を再生せずパートをループ オフ » (85 x 4 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « 画面にラベルを表示 » (23 x 4 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « 画面を音声付きで録画 » (42 x 16 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « メモを書く » (42 x 16 dp)
+#13 LAYOUT OVERLAP « 曲全体（176 小節）で1拍に1つの値（¼小節）。ポイント間はなめらかに変化します。 » over the touchable « フィードバックモード » (30 x 16 dp)
+#13 LAYOUT CONTRAST « ● » 2.62:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « ✎ » 3.40:1 (needs 4.5:1, 13 sp)
+#13 > touche 559 1311
+#13 DOIGT tab_Plus « その他 »
+#14 ROUTE plus/tab_Plus | MODE pro | EMPREINTE f4a3422999 | project=p-17d5bde8 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « ● » 2.59:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « ✎ » 3.39:1 (needs 4.5:1, 13 sp)
+#14 > touche 571 42
+#14 DOIGT top_share
+#15 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE e71ac65cbd | project=p-17d5bde8 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « シェアの準備はいい？ » over the touchable « シートを閉じる » (218 x 33 dp)
+#15 LAYOUT OVERLAP « 曲名（プロジェクト名にもなります） » over the touchable « シートを閉じる » (217 x 19 dp)
+#15 LAYOUT OVERLAP « 5:20 » over the touchable « シートを閉じる » (48 x 27 dp)
+#15 LAYOUT OVERLAP «   34 パート » over the touchable « シートを閉じる » (72 x 21 dp)
+#15 LAYOUT OVERLAP «  試聴 » over the touchable « シートを閉じる » (32 x 21 dp)
+#15 LAYOUT OVERLAP « 準備OK：ソロの消し忘れも、ミュートしたトラックもありません。 » over the touchable « シートを閉じる » (328 x 41 dp)
+#15 LAYOUT OVERLAP «   SNS 用の動画 · 30秒 » over the touchable « シートを閉じる » (59 x 21 dp)
+#15 LAYOUT OVERLAP « ほかの書き出し » over the touchable « シートを閉じる » (99 x 21 dp)
+#15 LAYOUT OVERLAP « トラックごと、MIDI、FLAC…はミックスで » over the touchable « シートを閉じる » (249 x 19 dp)
+#15 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (7 x 15 dp)
+#15 LAYOUT OVERLAP « M4A · シェア向け » over the touchable « シートを閉じる » (114 x 21 dp)
+#15 LAYOUT OVERLAP « WAV · 最高品質 » over the touchable « シートを閉じる » (100 x 21 dp)
+#15 LAYOUT OVERLAP «   シェア » over the touchable « シートを閉じる » (56 x 24 dp)
+#15 LAYOUT CONTRAST «   SNS 用の動画 · 30秒 » 3.10:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « ほかの書き出し » 3.10:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « トラックごと、MIDI、FLAC…はミックスで » 3.10:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « ? » 3.10:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT LABEL « #3236 » long press without text nor description
+#15 > touche 286 1119
+#15 DOIGT share_other « ほかの書き出し »
+#16 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e4565178b5 | project=p-17d5bde8 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 100% » over the touchable « フィードバックモード » (6 x 17 dp)
+#16 LAYOUT CONTRAST « ● » 2.64:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « ✎ » 3.45:1 (needs 4.5:1, 13 sp)
+#16 > glisse 308 300 308 1000
+#16 DOIGT rien (texte « トーン »)
+#17 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8a3e1f5184 | project=p-17d5bde8 no tuto
+#17 SON Son : rien ne joue.
+#17 > glisse 308 300 308 1150
+#17 DOIGT rien (texte « 幅 »)
+#18 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 45a9230a75 | project=p-17d5bde8 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over «  REC » (21 x 13 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over « ✎ » (13 x 17 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over «  メモ » (23 x 15 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over « ⋯ » (7 x 19 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « 画面を音声付きで録画 » (25 x 21 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « メモを書く » (42 x 21 dp)
+#18 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « フィードバックモード » (16 x 21 dp)
+#18 LAYOUT CONTRAST « ✎ » 3.68:1 (needs 4.5:1, 13 sp)
+#18 > glisse 308 300 308 800
+#18 DOIGT rien
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 70de0d892f | project=p-17d5bde8 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « ✎ » 3.41:1 (needs 4.5:1, 13 sp)
+#19 > touche 308 914
+#19 DOIGT master_pro « 詳細: プロのマスター »
+#20 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9de12a83a3 | project=p-17d5bde8 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « ? » 4.38:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « 音量：— » 4.37:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « 詳細: プロのマスター » 3.90:1 (needs 4.5:1, 14 sp)
+#20 > glisse 308 1100 308 600
+#20 DOIGT rien
+#21 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9a764e88ab | project=p-17d5bde8 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 80 Hz » 2.11:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 120 Hz » 1.42:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 160 Hz » 2.11:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « ● » 2.61:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « ✎ » 3.67:1 (needs 4.5:1, 13 sp)
+#21 > glisse 308 1100 308 500
+#21 DOIGT rien (texte « 4. やわらかいサチュレーション · 入っています »)
+#22 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE 2c3b5df165 | project=p-17d5bde8 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « フリー » over the touchable « テンポ：132 BPM テンポを変更 » (42 x 3 dp)
+#22 > glisse 308 400 308 900
+#22 DOIGT rien
+#23 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb7b804baf | project=p-17d5bde8 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « オフ » over « ● » (9 x 3 dp)
+#23 LAYOUT OVERLAP « ストリーミング · −14 » over the touchable « テンポ：132 BPM テンポを変更 » (47 x 3 dp)
+#23 LAYOUT OVERLAP « ストリーミング · −14 » over the touchable « パートから再生 » (82 x 3 dp)
+#23 LAYOUT OVERLAP « オフ » over the touchable « 画面を音声付きで録画 » (13 x 13 dp)
+#23 LAYOUT CONTRAST « ● » 2.89:1 (needs 4.5:1, 13 sp)
+#23 > touche 273 407
+#23 DOIGT help_目標ラウドネス « 「目標ラウドネス」って何？ »
+#23 AIDE help_
+#24 ROUTE dialogue:help_listen | MODE pro | EMPREINTE 5f6c388a50 | project=p-17d5bde8 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 536 803
+#24 DOIGT #5341 « OK »
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb7b804baf | project=p-17d5bde8 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 181 474
+#25 DOIGT pro_target_SPOTIFY « Spotify, YouTube · −14 »
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 87a717ce58 | project=p-17d5bde8 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 308 300 308 650
+#26 DOIGT rien
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e81700ca7b | project=p-17d5bde8 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 168 486
+#27 DOIGT loudness_target_STREAMING « ストリーミング · −14 »
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 361d478335 | project=p-17d5bde8 no tuto
+#28 SON Son : rien ne joue.
+#28 > glisse 308 1150 308 150
+#28 DOIGT rien
+#29 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE 5001ed8927 | project=p-17d5bde8 no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over « ● » (11 x 2 dp)
+#29 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 4 dp)
+#29 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over the touchable « パートから再生 » (105 x 4 dp)
+#29 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over the touchable « 画面を音声付きで録画 » (19 x 12 dp)
+#29 LAYOUT OVERLAP « ? » over the touchable « 画面を音声付きで録画 » (7 x 9 dp)
+#29 LAYOUT OVERLAP «  REC » over the touchable « 「マスターのチェーン」って何？ » (19 x 4 dp)
+#29 > glisse 308 1150 308 150
+#29 DOIGT rien
+#30 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1b3a77b972 | project=p-17d5bde8 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « パートから再生 » (75 x 3 dp)
+#30 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « 曲を再生せずパートをループ オフ » (16 x 3 dp)
+#30 > glisse 308 1150 308 150
+#30 DOIGT rien
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d4f37566fc | project=p-17d5bde8 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « タイム » over the touchable « テンポ：132 BPM テンポを変更 » (42 x 4 dp)
+#31 LAYOUT OVERLAP « 1/8 » over the touchable « 画面にラベルを表示 » (24 x 4 dp)
+#31 LAYOUT CONTRAST « ✎ » 3.42:1 (needs 4.5:1, 13 sp)
+#31 > glisse 308 1100 308 600
+#31 DOIGT rien
+#32 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aefa49a9ee | project=p-17d5bde8 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 308 1017
+#32 DOIGT export_advanced « 詳細 »
+#33 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b45d1d904d | project=p-17d5bde8 no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 308 1100 308 600
+#33 DOIGT export_format_Flac « FLAC（ロスレス、軽い） »
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9441157769 | project=p-17d5bde8 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « 書き出す » over the touchable « テンポ：132 BPM テンポを変更 » (51 x 4 dp)
+#34 > touche 222 933
+#34 DOIGT export_final « 最終ファイル: 48 kHz · 24 ビット »
+#35 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4502da687a | project=p-17d5bde8 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 最終ファイル: 48 kHz · 24 ビット » 3.95:1 (needs 4.5:1, 14 sp)
+#35 > touche 110 1060
+#35 DOIGT export_rate_44100 « 44.1 kHz »
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7a3ba68a75 | project=p-17d5bde8 no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 308 1100 308 700
+#36 DOIGT rien
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5233c519f5 | project=p-17d5bde8 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « フェードアウト » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 3 dp)
+#37 LAYOUT OVERLAP « フェードアウト » over the touchable « パートから再生 » (29 x 3 dp)
+#37 > glisse 308 1100 308 500
+#37 DOIGT rien
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 14f0cd0a19 | project=p-17d5bde8 no tuto
+#38 SON Son : rien ne joue.
+#38 > glisse 308 1100 308 600
+#38 DOIGT rien
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « 書き出す範囲 » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 4 dp)
+#39 LAYOUT OVERLAP « 書き出す範囲 » over the touchable « パートから再生 » (15 x 4 dp)
+#39 LAYOUT OVERLAP « 選んだ範囲 » over the touchable « 画面を音声付きで録画 » (27 x 4 dp)
+#39 LAYOUT OVERLAP « 選んだ範囲 » over the touchable « メモを書く » (42 x 4 dp)
+#39 > touche 308 1101
+#39 DOIGT export « 曲を書き出す »
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#40 SON Son : rien ne joue.
+#40 > attends 15
+#41 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 308 1100
+#41 DOIGT export « 曲を書き出す »
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#42 SON Son : rien ne joue.
+#42 RIEN NE CHANGE (3 écrans identiques)
+#42 > attends 30
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#43 SON Son : rien ne joue.
+#43 RIEN NE CHANGE (3 écrans identiques)
+#43 > glisse 308 1000 308 500
+#43 DOIGT export_midi « ノートを MIDI ファイルで書き出す（曲全体） »
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c297b4fa58 | project=p-17d5bde8 no tuto
+#44 SON Son : rien ne joue.
+#44 > glisse 308 300 308 1150
+#44 DOIGT rien
+#45 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 18d4dbcd44 | project=p-17d5bde8 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT OVERLAP « スタジオ品質、どのソフトでも開けます。いちばん重い。 » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 4 dp)
+#45 LAYOUT OVERLAP « スタジオ品質、どのソフトでも開けます。いちばん重い。 » over the touchable « パートから再生 » (105 x 4 dp)
+#45 LAYOUT OVERLAP « スタジオ品質、どのソフトでも開けます。いちばん重い。 » over the touchable « 曲を再生せずパートをループ オフ » (85 x 4 dp)
+#45 > touche 571 42
+#45 DOIGT top_share
+#46 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE e71ac65cbd | project=p-17d5bde8 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST «   SNS 用の動画 · 30秒 » 3.84:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « トラックごと、MIDI、FLAC…はミックスで » 1.91:1 (needs 4.5:1, 13 sp)
+#46 LAYOUT LABEL « #5479 » long press without text nor description
+#46 > touche 363 1215
+#46 DOIGT share_format_Wav « WAV · 最高品質 »
+#47 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 1b2572a8b6 | project=p-17d5bde8 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 308 1311
+#47 DOIGT share_go «   シェア »
+#48 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 7b1175f38c | project=p-17d5bde8 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST «   41% » 2.04:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 次に、送るアプリを選んでね。 » 1.39:1 (needs 4.5:1, 13 sp)
+#48 > attends 20
+#48 PARTAGE ???-?-20261104-202008.wav
+#49 ROUTE dialogue:« Partager « ???-?-20261104-2020 » | MODE pro | EMPREINTE 01b6a2a274 | project=p-17d5bde8 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 308 877
+#49 DOIGT vue « Enregistrer dans Fichiers »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f2107490f0 | project=p-17d5bde8 no tuto
+#50 SON Son : rien ne joue.
+#50 > glisse 308 200 308 1180
+#50 DOIGT rien
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ab3eeb00ae | project=p-17d5bde8 no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT OVERLAP « エコー » over the touchable « テンポ：132 BPM テンポを変更 » (42 x 4 dp)
+#51 > glisse 308 200 308 1180
+#51 DOIGT rien (texte « タイム »)
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e7d11c6647 | project=p-17d5bde8 no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « パートから再生 » (75 x 4 dp)
+#52 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « 曲を再生せずパートをループ オフ » (16 x 4 dp)
+#52 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « 画面を音声付きで録画 » (42 x 5 dp)
+#52 LAYOUT OVERLAP « リファレンスを読み込む » over the touchable « メモを書く » (7 x 5 dp)
+#52 LAYOUT CONTRAST « ● » 2.91:1 (needs 4.5:1, 13 sp)
+#52 LAYOUT CONTRAST « ✎ » 3.47:1 (needs 4.5:1, 13 sp)
+#52 > glisse 308 200 308 1180
+#52 DOIGT rien
+#53 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE 982f3dca3d | project=p-17d5bde8 no tuto
+#53 SON Son : rien ne joue.
+#53 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over the touchable « 画面を音声付きで録画 » (19 x 8 dp)
+#53 LAYOUT OVERLAP « ? » over the touchable « 曲を再生せずパートをループ オフ » (3 x 4 dp)
+#53 LAYOUT OVERLAP « ? » over the touchable « 画面を音声付きで録画 » (7 x 5 dp)
+#53 > glisse 308 200 308 1000
+#53 DOIGT rien
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aaddf28e6d | project=p-17d5bde8 no tuto
+#54 SON Son : rien ne joue.
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over «  REC » (21 x 6 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over « ✎ » (13 x 9 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over «  メモ » (23 x 7 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over « ⋯ » (7 x 11 dp)
+#54 LAYOUT OVERLAP « 目標ラウドネス » over the touchable « テンポ：132 BPM テンポを変更 » (63 x 4 dp)
+#54 LAYOUT OVERLAP « 目標ラウドネス » over the touchable « パートから再生 » (29 x 4 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « 画面を音声付きで録画 » (25 x 17 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « メモを書く » (42 x 17 dp)
+#54 LAYOUT OVERLAP « クラブ · −7.5 » over the touchable « フィードバックモード » (16 x 17 dp)
+#54 LAYOUT CONTRAST « クラブ · −7.5 » 4.28:1 (needs 4.5:1, 14 sp)
+#54 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#54 > touche 437 199
+#54 DOIGT retours_note « メモを書く »
+#55 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE abab20823a | project=p-17d5bde8 no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT OVERLAP « マスターのチェーン（順番どおり） » over « メモを書く » (68 x 3 dp)
+#55 LAYOUT OVERLAP « 1. イコライザー · なし » over « メモを書く » (68 x 11 dp)
+#55 LAYOUT OVERLAP « 2. バスコンプレッサー（グルー） · 入っています » over « Mixeur » (29 x 12 dp)
+#55 LAYOUT OVERLAP « 3. ステレオ幅 · なし » over « メモ内容 » (51 x 14 dp)
+#55 LAYOUT OVERLAP « ガイド » over « ヒント：キーボードのマイクで音声入力できます。スクリーンショットが添付されます。 » (42 x 15 dp)
+#55 LAYOUT OVERLAP «  · キック：音、パターン、鳴る場所 » over « ヒント：キーボードのマイクで音声入力できます。スクリーンショットが添付されます。 » (220 x 15 dp)
+#55 LAYOUT OVERLAP « 29 % » over « ヒント：キーボードのマイクで音声入力できます。スクリーンショットが添付されます。 » (30 x 14 dp)
+#55 LAYOUT OVERLAP « ミックス » over « キャンセル » (47 x 4 dp)
+#55 LAYOUT OVERLAP « Live » over « メモを保存 » (3 x 3 dp)
+#55 LAYOUT OVERLAP « その他 » over « メモを保存 » (17 x 4 dp)
+#55 LAYOUT OVERLAP « ヒント：キーボードのマイクで音声入力できます。スクリーンショットが添付されます。 » over the touchable « ガイドを開く 折りたたみ » (355 x 29 dp)
+#55 LAYOUT CONTRAST « オート（スタイル） · −7.5 » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « クラブ · −7.5 » 2.54:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « ストリーミング · −14 » 4.07:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « オフ » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « −14：Spotify や YouTube がすべての曲をそろえる音量です。 » 3.73:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « 詳細: プロのマスター » 3.02:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « ? » 3.12:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « Spotify, YouTube · −14 » 4.07:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « Apple Music · −16 » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « クラブ · −9 » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « スタイルどおり · −7.5 » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « フリー » 3.47:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « ? » 3.16:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « −1.0 dBTP » 4.07:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « −0.5 dBTP » 3.48:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « −0.3 dBTP » 3.48:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 2. バスコンプレッサー（グルー） · 入っています » 1.99:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « Live » 1.35:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « その他 » 1.35:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « ● » 2.03:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST «  REC » 3.84:1 (needs 4.5:1, 10 sp)
+#55 LAYOUT CONTRAST « ✎ » 2.16:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST «  メモ » 3.37:1 (needs 4.5:1, 10 sp)
+#55 LAYOUT CONTRAST « ⋯ » 2.81:1 (needs 3.0:1, 16 sp)
+#55 > touche 329 1311
+#55 DOIGT retours_note_cancel « キャンセル »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aaddf28e6d | project=p-17d5bde8 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 121 648
+#56 DOIGT pro_target_CLUB « クラブ · −9 »
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3fb99eb126 | project=p-17d5bde8 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 448 862
+#57 DOIGT pro_ceiling_-0.3 « −0.3 dBTP »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d4674bbfb5 | project=p-17d5bde8 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 571 42
+#58 DOIGT top_share
+#59 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 1b2572a8b6 | project=p-17d5bde8 no tuto
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « 曲名（プロジェクト名にもなります） » 1.88:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT LABEL « #5628 » long press without text nor description
+#59 > touche 308 1311
+#59 DOIGT share_go «   シェア »
+#60 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 61f184ccbf | project=p-17d5bde8 no tuto
+#60 SON Son : rien ne joue.
+#60 > attends 20
+#60 PARTAGE ???-?-20261104-202122.wav
+#61 ROUTE dialogue:« Partager « ???-?-20261104-2021 » | MODE pro | EMPREINTE 45abb8a7f2 | project=p-17d5bde8 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 308 877
+#61 DOIGT vue « Enregistrer dans Fichiers »
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3c202858c4 | project=p-17d5bde8 no tuto
+#62 SON Son : rien ne joue.
+#62 > glisse 308 300 308 650
+#62 DOIGT loudness_target_OFF « オフ »
+#63 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 364776d910 | project=p-17d5bde8 no tuto
+#63 SON Son : rien ne joue.
+#63 LAYOUT OVERLAP « −1.0 dB » over « ⋯ » (10 x 3 dp)
+#63 LAYOUT OVERLAP « −1.0 dB » over the touchable « フィードバックモード » (18 x 9 dp)
+#63 > touche 85 398
+#63 DOIGT loudness_details « 詳細 »
+#64 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5187fa22f0 | project=p-17d5bde8 no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « 詳細を隠す » 3.78:1 (needs 4.5:1, 13 sp)
+#64 > touche 499 42
+#64 DOIGT top_play
+#65 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3f24116aa7 | project=p-17d5bde8 no tuto
+#65 SON Son : le morceau joue (partie « E »).
+#65 > attends 5
+#66 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3f24116aa7 | project=p-17d5bde8 no tuto
+#66 SON Son : le morceau joue (partie « E »).
+#66 > touche 499 42
+#66 DOIGT top_play
+#67 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5187fa22f0 | project=p-17d5bde8 no tuto
+#67 SON Son : rien ne joue.
+#67 > fin
+#67 FIN : fin

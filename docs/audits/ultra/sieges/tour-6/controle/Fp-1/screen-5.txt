@@ -1,0 +1,17 @@
+Écran 5 (588x1278)
+icône ✕ @ 528,60
+texte « Tuto de A à Z » @ 258,60
+bouton « 1 Le tempo et la tonalité 1/3 » @ 294,144
+bouton « 2 Le kick : la grosse caisse 0/2 » @ 294,225
+bouton « 3 Le clap 0/1 » @ 294,306
+bouton « 4 Charleys, bord de caisse et swing 1/5 » @ 294,387
+bouton « 5 La basse 1/2 » @ 294,468
+bouton « 6 Le grave et la pompe 0/2 » @ 294,549
+bouton « 7 Les stabs de piano 1/3 » @ 294,630
+bouton « 8 L'arpège 0/2 » @ 294,711
+bouton « 9 Ta première partie : le Groove, ta boucle de base 1/2 » @ 294,810
+bouton « 10 Comprendre les parties 4/5 » @ 294,909
+bouton « 11 Construis tes parties 0/6 » [coupé] @ 294,972
+bouton « Revenir en Facile » @ 294,1038
+bouton ↺ «  Recommencer le tuto (nouveau projet vide) » @ 294,1128
+texte « Quitter le tuto (tu pourras le reprendre) » @ 294,1218

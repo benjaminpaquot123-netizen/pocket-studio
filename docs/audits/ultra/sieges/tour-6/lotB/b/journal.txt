@@ -1,0 +1,504 @@
+#0 SIEGE lang=de device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=6.0 simule_s=2.4 jvm_s=12.7 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 50c4505b79 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 770 1395
+#1 DOIGT scroll_hint « ↓ 4 weitere »
+#2 ROUTE launch | MODE pro | EMPREINTE 1b13f722c7 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « BenStudio » 1.59:1 (needs 3.0:1, 18 sp)
+#2 > glisse 450 1300 450 400
+#2 DOIGT launch_challenges « Challenges: Hör dir einen Rhythmus an, s »
+#3 ROUTE launch | MODE pro | EMPREINTE eda919101c | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 450 1226
+#3 DOIGT launch_learn « Ich lerne »
+#4 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 08b03a6079 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 670 401
+#4 DOIGT mode_card_pro « Pro »
+#5 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE a8b6eef3ac | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 450 1393
+#5 DOIGT tuto_style_house « House »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 942bab08ba | project=p-bad1ac05 tuto=house/Pro active=true step=ref done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#6 > touche 450 1123
+#6 DOIGT tuto_listen «  Beispiel anhören »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE f69717c358 | project=p-bad1ac05 tuto=house/Pro active=true step=ref done=0 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 7 s).
+#7 LAYOUT OVERLAP « ▸ Warum? » over the touchable « Weiterlesen » (87 x 27 dp)
+#7 > touche 798 1207
+#7 DOIGT tuto_next « Weiter  »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 3c436ccf67 | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Kit House laden (4 MB) » over the touchable « Weiterlesen » (63 x 27 dp)
+#8 > touche 83 123
+#8 DOIGT top_tempo « Tempo: 100 BPM »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 791cbb12af | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=0 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (82 x 32 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (9 x 18 dp)
+#9 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (90 x 27 dp)
+#9 LAYOUT OVERLAP « 100 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#9 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (50 x 31 dp)
+#9 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#9 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#9 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (17 x 31 dp)
+#9 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (26 x 31 dp)
+#9 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#9 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (37 x 30 dp)
+#9 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (138 x 31 dp)
+#9 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (364 x 24 dp)
+#9 LAYOUT CONTRAST « 4 » 1.90:1 (needs 3.0:1, 22 sp)
+#9 LAYOUT CONTRAST « 6 » 1.90:1 (needs 3.0:1, 22 sp)
+#9 LAYOUT CONTRAST « Tippe hier auf jeden Schlag: Das Tempo folgt. » 3.42:1 (needs 4.5:1, 13 sp)
+#9 > touche 163 1083
+#9 DOIGT tempo_key_1 « 1 »
+#10 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 208824a02c | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
+#10 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (196 x 27 dp)
+#10 > touche 450 1083
+#10 DOIGT tempo_key_2 « 2 »
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6f94d53fd2 | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 12 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#11 > touche 450 1083
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE a7b05e18aa | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 122 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#12 > touche 737 1344
+#12 DOIGT tempo_key_ok « OK »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 1b1b3b1330 | project=p-bad1ac05 tuto=house/Pro active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1123
+#13 DOIGT tuto_next_big « Nächster Schritt   »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE e3cffaa8b2 | project=p-bad1ac05 tuto=house/Pro active=true step=key done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over « Weiterlesen » (86 x 11 dp)
+#14 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over the touchable « Weiterlesen » (528 x 19 dp)
+#14 > touche 450 1042
+#14 DOIGT tuto_do «   Ich mach's »
+#15 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE a2cc8c57f0 | project=p-bad1ac05 tuto=house/Pro active=true step=key done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (213 x 32 dp)
+#15 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (217 x 27 dp)
+#15 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (79 x 27 dp)
+#15 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (34 x 31 dp)
+#15 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (39 x 31 dp)
+#15 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (76 x 31 dp)
+#15 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (103 x 31 dp)
+#15 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (97 x 31 dp)
+#15 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (52 x 31 dp)
+#15 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (94 x 31 dp)
+#15 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (158 x 31 dp)
+#15 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (85 x 27 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (26 x 31 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (19 x 31 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (12 x 31 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (23 x 31 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (21 x 31 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (15 x 31 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « Tabelle schließen » (20 x 31 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (13 x 31 dp)
+#15 > touche 299 1132
+#15 DOIGT tuto_scale_Dorian « Dorisch »
+#16 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE d534db272e | project=p-bad1ac05 tuto=house/Pro active=true step=key done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonart des Tracks: C · Dorisch » over the touchable « Tabelle schließen » (269 x 27 dp)
+#16 > touche 63 1437
+#16 DOIGT tuto_root_9 « A »
+#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 7509869bef | project=p-bad1ac05 tuto=house/Pro active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Tonart des Tracks: A · Dorisch » over the touchable « Tabelle schließen » (268 x 27 dp)
+#17 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (426 x 31 dp)
+#17 LAYOUT OVERLAP « Zurück zum Tutorial » over the touchable « Tabelle schließen » (184 x 27 dp)
+#17 > touche 789 755
+#17 DOIGT tuto_key_close « Schließen »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE cd9ba476dd | project=p-bad1ac05 tuto=house/Pro active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1196
+#18 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE e0ec554c4f | project=p-bad1ac05 tuto=house/Pro active=true step=key done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Kit House laden (4 MB) » over the touchable « Weiterlesen » (63 x 5 dp)
+#19 > touche 450 1123
+#19 DOIGT tuto_next_big « Nächstes Kapitel   »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 9437b88bc0 | project=p-bad1ac05 tuto=house/Pro active=true step=ready done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1123
+#20 DOIGT tuto_mark «   Verstanden »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 1571535b7b | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1042
+#21 DOIGT tuto_need «   Auf 2 Takte umstellen »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE ccd60f109f | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « Du bist dran: 4 Schläge pro Takt über 2 Takte, plus der leise Schlag auf Step 15 in Takt 2: der „Jack“ aus Chicago. » ellipsized (« … »)
+#22 LAYOUT CONTRAST « Takt » 2.76:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 1 » 3.96:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 2 » 2.09:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Folgen » 2.08:1 (needs 4.5:1, 14 sp)
+#22 > touche 90 483
+#22 DOIGT step_0 « Step 1 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE d938b221d8 | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 500 483
+#23 DOIGT step_4 « Step 5 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 27a2dbbb2b | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 90 564
+#24 DOIGT step_8 « Step 9 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 39d549f04b | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 500 564
+#25 DOIGT step_12 « Step 13 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 46807e0a2c | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 684 393
+#26 DOIGT tuto_bar_go « Takt 2 · 5 Kästchen → »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE ffb2a46d6c | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « 1 » 1.83:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 2 » 4.02:1 (needs 4.5:1, 14 sp)
+#27 > touche 90 483
+#27 DOIGT step_16 « Step 1 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE e9e6cc8c6b | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 500 483
+#28 DOIGT step_20 « Step 5 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 8b8525ce98 | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 90 564
+#29 DOIGT step_24 « Step 9 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 5e485a6714 | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 500 564
+#30 DOIGT step_28 « Step 13 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 467f14db12 | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=3 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 706 564
+#31 DOIGT step_30 « Step 15 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 4986ca4065 | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 450 1196
+#32 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 07d8624cbd | project=p-bad1ac05 tuto=house/Pro active=true step=kick_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Takt » 2.63:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « 1 » 2.23:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « 2 » 4.39:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Folgen » 2.11:1 (needs 4.5:1, 14 sp)
+#33 > touche 450 1095
+#33 DOIGT tuto_next_big « Nächstes Kapitel   »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE ee7f5ceaac | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 450 1042
+#34 DOIGT tuto_do «   Ich mach's »
+#35 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 500 400
+#35 DOIGT rien
+#36 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 500 480
+#36 DOIGT rien
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 9a52a8e518 | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Du bist dran: der Clap auf 2 und 4. Die App spielt ihn ein paar Millisekunden früher, wie auf den New Yorker Platten. » ellipsized (« … »)
+#37 LAYOUT CONTRAST « Takt 2/2 · Clap » 2.05:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « Takt 1 · 2 Kästchen » 2.24:1 (needs 3.0:1, 14 sp)
+#37 > touche 704 322
+#37 DOIGT tuto_bar_go « Takt 1 · 2 Kästchen »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 3ba393981b | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 500 399
+#38 DOIGT step_4 « Step 5 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 1cd625d0d3 | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=4 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 500 480
+#39 DOIGT step_12 « Step 13 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE bf09ec9ecc | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Takt 1/2 · Clap » 2.05:1 (needs 4.5:1, 13 sp)
+#40 > touche 771 1084
+#40 DOIGT tuto_chapters
+#41 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 5d051d79ef | project=p-bad1ac05 tuto=house/Pro active=true step=clap_do done=5 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « 3 » 1.23:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « Der Clap » 1.77:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 4 » 1.23:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 0/5 » 1.35:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 5 » 1.20:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « Der Bass » 1.35:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 0/2 » 1.34:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 6 » 2.10:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « Der Tiefbass und das Pumpen » 1.89:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 0/2 » 1.89:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « Tutorial beenden (du kannst es fortsetzen) » 3.26:1 (needs 4.5:1, 14 sp)
+#41 > touche 450 422
+#41 DOIGT tuto_chapter_3 « 4 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 720c2ae015 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT OVERLAP « Später » over the touchable « Weiterlesen » (60 x 4 dp)
+#42 > touche 450 1042
+#42 DOIGT tuto_do «   Ich mach's »
+#43 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > attends 2
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE b3ceaccba5 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 294 399
+#44 DOIGT step_2 « Step 3 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE e166996410 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 706 399
+#45 DOIGT step_6 « Step 7 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 62dedf0fa4 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 294 480
+#46 DOIGT step_10 « Step 11 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 83af6a163b | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 706 480
+#47 DOIGT step_14 « Step 15 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 303c9705f3 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Takt 1/2 · Offene Hi-Hat » 2.03:1 (needs 4.5:1, 13 sp)
+#48 LAYOUT CONTRAST « Takt 2 · 4 Kästchen → » 2.24:1 (needs 3.0:1, 14 sp)
+#48 > touche 843 1084
+#48 DOIGT tuto_fold
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 77ff8fe2ca | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « Takt 1/2 · Offene Hi-Hat » 1.91:1 (needs 4.5:1, 13 sp)
+#49 LAYOUT CONTRAST « Takt 2 · 4 Kästchen → » 2.19:1 (needs 3.0:1, 14 sp)
+#49 > touche 798 1207
+#49 DOIGT tuto_next « Weiter  »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 22dd9ba538 | project=p-bad1ac05 tuto=house/Pro active=true step=ohat_do done=5 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over « Weiterlesen » (86 x 10 dp)
+#50 LAYOUT OVERLAP « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » over the touchable « Weiterlesen » (528 x 18 dp)
+#50 > touche 798 1207
+#50 DOIGT tuto_next « Weiter  »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE ee29f3915f | project=p-bad1ac05 tuto=house/Pro active=true step=hat_do done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 798 1207
+#51 DOIGT tuto_next « Weiter  »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 836009c4dc | project=p-bad1ac05 tuto=house/Pro active=true step=hat_do done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « Das Kit House » over the touchable « Weiterlesen » (128 x 25 dp)
+#52 > touche 798 1207
+#52 DOIGT tuto_next « Weiter  »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 4e19db233f | project=p-bad1ac05 tuto=house/Pro active=true step=perc_do done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « Weiter  » 4.18:1 (needs 4.5:1, 14 sp)
+#53 > touche 798 1207
+#53 DOIGT tuto_next « Weiter  »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 547b53f87e | project=p-bad1ac05 tuto=house/Pro active=true step=perc_do done=5 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 798 1207
+#54 DOIGT tuto_next « Weiter  »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 55b8504c10 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Metronom » 1.41:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « Einzähler » 1.50:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « ? » 1.72:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « Effekte » 1.45:1 (needs 4.5:1, 14 sp)
+#55 > touche 450 1042
+#55 DOIGT tuto_do «   Ich mach's »
+#56 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 2d269dcf56 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#56 SON Son : rien ne joue.
+#56 > attends 2
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 334c022b16 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « Du bist dran: Stell den Swing auf 25: Die geraden Sechzehntel kommen etwas später, zwischen Chicago House (55–60 %) und New York House (70–80 %). » ellipsized (« … »)
+#57 > touche 245 955
+#57 DOIGT dans:rhythm_swing « Swing »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 253 955
+#58 DOIGT dans:rhythm_swing « Swing »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#59 SON Son : rien ne joue.
+#59 > attends 3
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#60 SON Son : rien ne joue.
+#60 > glisse 120 955 253 955
+#60 DOIGT dans:rhythm_swing « Swing »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#61 SON Son : rien ne joue.
+#61 RIEN NE CHANGE (3 écrans identiques)
+#61 > touche 253 955
+#61 DOIGT dans:rhythm_swing « Swing »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 843 1084
+#62 DOIGT tuto_fold
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 64d4922cc9 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 667 1126
+#63 DOIGT tuto_show «  Zeig's mir »
+#64 ROUTE tuto_finger | MODE pro | EMPREINTE c90f2fa550 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#64 SON Son : rien ne joue.
+#64 > attends 3
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE d02c26c5d3 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#65 > attends 4
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 33c485ae7e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#66 SON Son : rien ne joue.
+#66 > glisse 450 400 450 900
+#66 DOIGT rien
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 02888b35ab | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « Rim (synthetisiert) » 2.31:1 (needs 4.5:1, 14 sp)
+#67 > touche 450 379
+#67 DOIGT open_library «  Sound ändern »
+#67 DIALOGUE 0.5 s
+#68 ROUTE dialogue:library | MODE pro | EMPREINTE d552cc7710 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « Für das Pad 11 (Rim) » 3.86:1 (needs 4.5:1, 13 sp)
+#68 LAYOUT CONTRAST « Sound suchen (Snare, Conga, Sirene…) » 1.83:1 (needs 4.5:1, 16 sp)
+#68 LAYOUT CONTRAST « Weitere Kit-Sounds » 1.71:1 (needs 4.5:1, 16 sp)
+#68 LAYOUT CONTRAST « 13 Sounds » 1.71:1 (needs 4.5:1, 13 sp)
+#68 LAYOUT CONTRAST « Laden » 1.60:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 116 Sounds · 2 MB » 4.42:1 (needs 4.5:1, 13 sp)
+#68 LAYOUT CONTRAST « Laden » 3.64:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 100 Sounds · 2 MB » 3.26:1 (needs 4.5:1, 13 sp)
+#68 LAYOUT CONTRAST « Laden » 2.04:1 (needs 4.5:1, 14 sp)
+#68 > touche 450 411
+#68 DOIGT library_folder_Sons intégrés « Eingebaute Sounds »
+#68 DIALOGUE 0.3 s
+#69 ROUTE dialogue:library | MODE pro | EMPREINTE c9af86f980 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CUT « Snare » a word split over two lines
+#69 LAYOUT CUT « Snare 2 » a word split over two lines
+#69 LAYOUT CUT « ✓ Jetzt auf dem Pad » ellipsized (« … »)
+#69 LAYOUT CONTRAST « ✓ Jetzt auf dem Pad » 3.35:1 (needs 4.5:1, 12 sp)
+#69 LAYOUT CONTRAST « ? » 4.29:1 (needs 4.5:1, 12 sp)
+#69 > touche 227 395
+#69 DOIGT library_sound_fav_0
+#69 DIALOGUE 0.2 s
+#70 ROUTE dialogue:library | MODE pro | EMPREINTE 01abb4fa11 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 78 299
+#70 DOIGT library_back
+#70 DIALOGUE 0.2 s
+#71 ROUTE dialogue:library | MODE pro | EMPREINTE a7508d7665 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#71 > touche 858 54
+#71 DOIGT library_close
+#71 DIALOGUE 0.2 s
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 02888b35ab | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 451 1389
+#72 DOIGT tab_Mix « Mix »
+#73 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 26d854fc2f | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#73 > touche 243 1025
+#73 DOIGT rien
+#74 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 26d854fc2f | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#74 SON Son : rien ne joue.
+#74 > glisse 600 800 600 300
+#74 DOIGT rien
+#75 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 67c77fb5cf | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 243 586
+#75 DOIGT automation_entry_open « Automatisieren »
+#76 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 67c77fb5cf | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 314 889
+#76 DOIGT automation_add «  Eine Einstellung automatisieren »
+#77 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 63eb31e69e | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « Drums » 1.22:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « Synth » 2.58:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 2. Was sich auf „Drums“ bewegt: » 3.49:1 (needs 4.5:1, 14 sp)
+#77 > touche 450 661
+#77 DOIGT pick_filter_0 « Filter (Sweep) »
+#78 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 5d7cb84de1 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#78 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#78 > glisse 200 1000 800 880
+#78 DOIGT rien
+#79 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 0fba5b4f30 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CUT « Schlag » lines dropped (more lines than room)
+#79 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 2 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 4 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 5 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 6 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 7 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 LAYOUT CUT « 8 » drawn past its parent's edge (down, 18 dp shown of 21)
+#79 > touche 220 384
+#79 DOIGT auto_show_0 «  Einstellung zeigen »
+#80 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE f56521b2d7 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CONTRAST « 1. Kompressor » 4.34:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « 3. Soft Clipper » 1.56:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Mischung » 2.03:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « ? » 1.60:1 (needs 4.5:1, 12 sp)
+#80 LAYOUT CONTRAST « Dubstep » 1.38:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Schließen » 3.69:1 (needs 4.5:1, 14 sp)
+#80 > touche 762 1437
+#80 DOIGT fx_close « Schließen »
+#81 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 0fba5b4f30 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 268 1389
+#81 DOIGT tab_Sons « Sounds »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 02888b35ab | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 259 204
+#82 DOIGT sons_Acide « Acid 303 »
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE b4cb0682b0 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 447
+#83 DOIGT acid_generate « Erzeug mir ein Pattern »
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 93ec65b4c8 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « C » 4.28:1 (needs 4.5:1, 12 sp)
+#84 > touche 771 1084
+#84 DOIGT tuto_chapters
+#85 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 5d051d79ef | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « 4 » 4.24:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/5 » 4.24:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « Der Tiefbass und das Pumpen » 4.10:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/2 » 1.41:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/2 » 4.17:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « Dein erster Teil: der Groove » 2.23:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/2 » 3.10:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « Die Teile verstehen » 2.26:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/5 » 3.10:1 (needs 4.5:1, 16 sp)
+#85 LAYOUT CONTRAST « 0/2 » 1.60:1 (needs 4.5:1, 16 sp)
+#85 > touche 840 60
+#85 DOIGT dans:tuto_chapter_list
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE 93ec65b4c8 | project=p-bad1ac05 tuto=house/Pro active=true step=swing done=5 playing=false
+#86 SON Son : rien ne joue.
+#86 > fin
+#86 FIN : fin

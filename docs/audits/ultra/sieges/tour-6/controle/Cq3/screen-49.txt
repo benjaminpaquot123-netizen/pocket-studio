@@ -1,0 +1,41 @@
+Écran 49 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 60,189
+texte « Courbes et effets » @ 193,162
+texte « Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume… » @ 319,207
+bouton « Automatiser » @ 165,282
+bouton « Ce qui joue » @ 423,282
+bouton ● « Enregistrer » @ 447,417
+titre « COURBES » [état « Déplié »] @ 195,417
+bouton « ? » @ 208,417
+texte « Fais bouger un réglage tout seul : choisis-le, puis dessine sa courbe (au doigt, ou une ligne en deux touches). » @ 294,505
+bouton + «  Automatiser un réglage » @ 218,594
+bouton (vagues) «  Ce qui joue » @ 152,675
+texte « Rien ne bouge encore. Idée : le filtre d'une nappe qui s'ouvre sur 8 mesures. » @ 294,750
+titre « SORTIE GÉNÉRALE » [état « Déplié »] @ 182,861
+bouton « ? » @ 301,861
+texte « Volume : — » @ 100,907
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,55 @@
+Écran 46 (900x1509)
+touchable « Ma chanson préférée 저장됨 » (nom « 내 프로젝트 ») @ 234,42
+bouton « 프로 » (nom « 프로 모드. 눌러서 모드를 바꾸세요. ») @ 495,42
+bouton « 실행 취소 » @ 567,42
+bouton « 다시 실행 » [désactivé] @ 639,42
+bouton « 녹음: 마이크, 건반 또는 패드 » @ 711,42
+bouton « 재생 » @ 783,42
+bouton « 내 곡 공유 » @ 855,42
+bouton « 120  BPM » (nom « 템포: 120 BPM ») @ 73,114
+bouton « A 마디 1/20 » @ 218,114
+interrupteur « 루프 » (nom « 곡 대신 파트를 루프 ») [non coché, état « 꺼짐 »] @ 758,114
+interrupteur « ? » (nom « 화면 이름표 ») [non coché] @ 855,114
+texte « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » @ 450,148
+texte « 파일 없음: 드럼 (비어 있음), Acid 303 (비어 있음), 신스 (비어 있음). » @ 313,178
+texte « 포맷 » @ 61,225
+bouton « ? » (nom « “WAV, FLAC, M4A”란 뭘까요? ») @ 101,225
+case « M4A · 공유용 » @ 128,295
+case « WAV · 최고 품질 » [sélectionné] @ 322,295
+texte « 스튜디오 품질, 어떤 프로그램에서도 열려요. 가장 무거워요. » @ 271,357
+bouton « 고급 » @ 450,419
+bouton « ? » (nom « “트랙별로”란 뭘까요? ») @ 198,488
+case « 트랙별로 » [sélectionné] @ 105,503
+case « FLAC (무손실, 가벼움) » @ 354,503
+case « 마스터 출력 이펙트 포함 » @ 617,503
+texte « 마스터 출력의 이펙트와 리미터 없이: 트랙을 다시 합치면 믹스가 돼요. » @ 311,565
+bouton « 최종 파일: 48 kHz · 32비트 부동소수점 » @ 235,627
+bouton « ? » (nom « “최종 파일”이란 뭘까요? ») @ 449,627
+bouton « 노트를 MIDI 파일로 내보내기 (곡 전체) » @ 450,711
+bouton « 트랙 내보내기 » @ 450,795
+texte « 음악 › BenStudio에 저장됨: 봄밤-리믹스-클럽-곡-20261105-213358.wav » @ 343,857
+texte « ✓ 공유 준비 완료 » @ 116,898
+texte « 길이: 40초 » @ 85,931
+texte « 레벨: 목표에 맞음 (클럽) » @ 137,962
+texte « 피크: 한계 아래, 클리핑 없음 » @ 152,993
+texte « WAV, 48 kHz, 24비트 » @ 135,1024
+texte « 통합 −8.0 LUFS · 피크 −2.6 dBTP » @ 184,1072
+bouton « ? » (nom « “체감 음량 (LUFS)”(이)란 뭘까요? ») @ 348,1071
+texte « 목표: 클럽 · −8 LUFS » @ 129,1119
+bouton « 공유 » @ 450,1165
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « 가이드  · 비트 넣기 14 % » [état « 접힘 »] @ 450,1215
+bouton « 실행 취소 » @ 125,1290
+bouton « 다시 실행 » [désactivé] @ 286,1290
+bouton « 재생 » @ 444,1290
+bouton « 120 템포 » (nom « 템포: 120 BPM ») @ 608,1290
+bouton « 공유 » (nom « 내 곡 공유 ») @ 775,1290
+onglet « 구성 » @ 85,1389
+onglet « 사운드 » @ 268,1389
+onglet « 믹스 » [sélectionné] @ 451,1389
+onglet « Live » @ 633,1389
+onglet « 더보기 » @ 815,1389
+touchable « ●  REC » (nom « 소리와 함께 화면 녹화 ») @ 672,1479
+touchable « ✎  메모 » (nom « 메모 쓰기 ») @ 768,1479
+touchable « ⋯ » (nom « 피드백 모드 ») @ 852,1479
+texte « 피드백 모드 » @ 318,1479

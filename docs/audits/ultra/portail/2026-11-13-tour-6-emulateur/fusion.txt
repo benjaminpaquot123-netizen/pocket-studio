@@ -1,0 +1,8 @@
+fusion: 911c61959aa3cbdfeed5dd84a6b22c349065975c
+branche: eq/tour-6-emulateur
+tete: 3549181b3534ee57d856111b2fe1bb63f58c762e
+relecture: docs/audits/ultra/tour-6-emulateur-relecture.md
+relu: 4e31f98cd4c87215ab9c143b0c24c21686db4c1a
+filtres: com.pocketstudio.app.library.PhoneRegexFlagsTest com.pocketstudio.app.library.Tour6PlainWordsTest com.pocketstudio.app.library.WizardPlainWordsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

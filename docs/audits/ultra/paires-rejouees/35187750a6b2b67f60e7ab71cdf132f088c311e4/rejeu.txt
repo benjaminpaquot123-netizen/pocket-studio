@@ -1,0 +1,4 @@
+rouge: b38381808c3917cf056513282366cea8eb3d277b
+test: OreilleTest#theEightQuestionsAreAskedInOnePass
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *OreilleTest (rc=1 431s ; rc=0 521s)
+aussi : 9 autres cas d'OreilleTest rouges sur le rouge (stubs) et verts sur le vert ; theBannerGivesUpAtItsTimeout vert dans les deux (rouge.xml, vert.xml)

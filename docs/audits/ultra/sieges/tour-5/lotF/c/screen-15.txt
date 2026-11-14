@@ -1,0 +1,50 @@
+Écran 15 (900x1509)
+touchable « Lo-fi ヒップホップ 保存しました » (nom « マイプロジェクト ») @ 288,42
+bouton « シンプル » (nom « シンプルモード。タップでモードを変更。 ») @ 621,42
+bouton « 録音：マイク、鍵盤、パッド » @ 711,42
+bouton « 停止 » @ 783,42
+bouton « ほかの選択肢 » @ 855,42
+bouton « 84  テンポ » (nom « テンポ：1分間に84拍 ») @ 71,114
+bouton « イントロ 小節 1/4 » (nom « ループ中 ») @ 221,114
+interrupteur « ループ » (nom « 曲を再生せずパートをループ ») [coché, état « オン »] @ 746,114
+interrupteur « ? » (nom « 画面にラベルを表示 ») [non coché] @ 855,114
+bouton « 曲 » [état « 開いた状態 »] @ 96,199
+bouton « ? » (nom « 「曲」って何？ ») @ 129,199
+texte « パートをタップすると、そこから曲を聴けます。 » @ 252,247
+texte « 68 小節 · 3:14 » @ 450,288
+bouton « 曲のコード A · イントロ B♭  F  Dm  Gm M F  F  F  F C · サビ B♭  F  Dm  Gm  B♭  F  Dm  Gm B · Aメロ B♭  F  Dm  Gm  B♭  F  Dm  Gm E · Aメロ 2 B♭  F  Dm  Gm F · Aメロ 3 B♭  F  Dm  Gm …ほか 1 パート タップで曲全体のコードを変更。 » @ 450,524
+bouton « A · イントロ × 1  ·  4 小節 » @ 342,753
+bouton « リピートを1回減らす » [désactivé] @ 678,753
+bouton « リピートを1回増やす » @ 750,753
+bouton « その他の操作 » @ 822,753
+bouton « M × 1  ·  4 小節 » @ 342,849
+bouton « リピートを1回減らす » [désactivé] @ 678,849
+bouton « リピートを1回増やす » @ 750,849
+bouton « その他の操作 » @ 822,849
+bouton « C · サビ 1小節  ·  ミックス » @ 342,945
+bouton « リピートを1回減らす » [désactivé] @ 678,945
+bouton « リピートを1回増やす » [désactivé] @ 750,945
+bouton « その他の操作 » @ 822,945
+bouton « C · サビ 6 小節  ·  ミックス » @ 342,1041
+bouton « リピートを1回減らす » [désactivé] @ 678,1041
+bouton « リピートを1回増やす » [désactivé] @ 750,1041
+bouton « その他の操作 » @ 822,1041
+bouton « C · サビ 1小節  ·  ミックス » @ 342,1137
+bouton « リピートを1回減らす » [désactivé] @ 678,1137
+bouton « リピートを1回増やす » [désactivé] @ 750,1137
+bouton « その他の操作 » @ 822,1137
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ガイド  · メロディを録音 26 % » [état « 折りたたみ »] @ 450,1215
+bouton « 元に戻す » (nom « 最後の操作を取り消す ») @ 157,1290
+bouton « 停止 » @ 347,1290
+bouton « 84 テンポ » (nom « テンポ：1分間に84拍 ») @ 544,1290
+bouton « その他 » (nom « ほかの選択肢 ») @ 743,1290
+onglet « マイソング » [sélectionné] @ 85,1389
+onglet « リズム » @ 268,1389
+onglet « 鍵盤 » @ 451,1389
+onglet « ミックス » @ 633,1389
+onglet « 送る » @ 815,1389
+touchable « ●  REC » (nom « 画面を音声付きで録画 ») @ 672,1479
+touchable « ✎  メモ » (nom « メモを書く ») @ 768,1479
+touchable « ⋯ » (nom « フィードバックモード ») @ 852,1479
+texte « フィードバックモード » @ 318,1479

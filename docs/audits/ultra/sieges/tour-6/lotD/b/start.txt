@@ -1,0 +1,7 @@
+lang=ko
+device=phone360
+font=130
+mode=simple
+gestes.max=120
+mission=tuto-facile
+timeout.minutes=30

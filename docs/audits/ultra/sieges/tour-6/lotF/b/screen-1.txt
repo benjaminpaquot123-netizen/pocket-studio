@@ -1,0 +1,13 @@
+Écran 1 (540x1170)
+texte « BenStudio » @ 156,72
+texte « Co chcesz zrobić? » @ 215,132
+bouton ✓ « Kontynuuj Pro Mój pierwszy bit Pętla 1 takt Zapisano przed chwilą » → @ 270,294
+bouton (étincelles) « Nowy utwór Styl jednym dotknięciem albo „Zrób mi utwór”. » → @ 270,499
+bouton (dossier ouvert) « Moje projekty Otwórz inny utwór, skopiuj go lub zmień nazwę. » → @ 270,664
+bouton (quatre vagues) « Remix Rozdzielanie ścieżek: perkusja, bas, wokal i reszta. » → @ 270,829
+bouton (grille de pads) « Pad Live NOWOŚĆ Pady gotowe do gry, twoje dźwięki, efekty live. Gra od razu. » → [coupé] @ 270,969
+bouton « ↓ jeszcze 5 » @ 431,1056
+texte « ●  REC » @ 312,1140
+texte « ✎  Zanotuj » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Tryb uwag » @ 138,1140

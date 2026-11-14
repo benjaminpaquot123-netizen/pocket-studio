@@ -1,0 +1,3 @@
+divergé au pas 7 (étiquette « track_menu_settings » introuvable)
+  dernier écran différent de l'origine : écran 7, empreinte d72a9b9d05 (origine 06ffd69f02), première ligne différente : origine « touchable « 音轨面板（层、历史） » @ 772,267 », rejeu « dessin @ 518,36 »
+  pas 7 : à l'origine sous le doigt : track_menu_settings « 调整声音（滤波器、包络…） »

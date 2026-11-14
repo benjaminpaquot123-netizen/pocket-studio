@@ -90,6 +90,7 @@ class RecordingSink(private val samplesDir: File, private val renderer: File?) :
             CommandSink.Install.AudioClip -> "AUDIOCLIP $index $local"
             CommandSink.Install.Stems -> "STEMS $local"
             CommandSink.Install.Instrument -> "INSTRUMENT $index 0"
+            CommandSink.Install.RemixCell -> "REMIXCELL $index $local"
             // Live only (the JNI never sends them to an export engine).
             CommandSink.Install.LiveClip, CommandSink.Install.PreviewStems -> return
         }

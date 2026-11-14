@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -50,7 +51,8 @@ class TopBarTest {
         compose.onNodeWithTag("top_undo").assertIsDisplayed()
         compose.onNodeWithTag("top_record").assertIsDisplayed()
         val play = compose.onNodeWithTag("top_play").getBoundsInRoot()
-        assertEquals((play.right - play.left).value, (play.bottom - play.top).value, 0.5f)
+        // Tour 5, chantier 4: « ▶ cette partie », its disc over its word: as wide as the word, 48 dp at least each way.
+        assertTrue("play ${play.right - play.left} x ${play.bottom - play.top}", play.right - play.left >= 48.dp - 0.5.dp && play.bottom - play.top >= 48.dp - 0.5.dp)
         assertTrue("play ends at ${play.right}", play.right <= width.dp + 0.5.dp)
         compose.onNodeWithTag("top_share").assertIsDisplayed()
         val share = compose.onNodeWithTag("top_share").getBoundsInRoot()
@@ -107,6 +109,26 @@ class TopBarTest {
         compose.onNodeWithTag("top_projects").performTouchInput { longClick() }
         assertEquals(1, opened)
         assertEquals(1, renamed)
+    }
+
+    /**
+     * Relecture tour 1 (intégration): the Mode simple on a phone under 820 dp with the Guide's panel open (no thumb's
+     * bar): « Rétablir » was nowhere. With nowhere else to be, it keeps its place in the bar, the essentials too.
+     */
+    @Test
+    fun redoWithNowhereElseKeepsItsPlace() {
+        for (w in listOf(360, 392, 412)) assertTrue("$w dp", topBarLayout(w.dp, false, modeChipRoom(true), redoFirst = true).showRedo)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(360.dp)) {
+                    TopBar(TopBarUi("Mon morceau de dubstep", playing = false, canUndo = true, canRedo = true, mode = true, redoFirst = true), TopBarActions())
+                }
+            }
+        }
+        compose.onNodeWithTag("top_redo").assertIsDisplayed()
+        for (tag in listOf("top_projects", "top_undo", "top_record", "top_play", "top_share")) compose.onNodeWithTag(tag).assertIsDisplayed()
+        val share = compose.onNodeWithTag("top_share").getBoundsInRoot()
+        assertTrue("share ends at ${share.right}", share.right <= 360.dp + 0.5.dp)
     }
 
     @Test
@@ -179,7 +201,8 @@ class TopBarTest {
         val projects = compose.onNodeWithTag("top_projects").getBoundsInRoot()
         assertTrue("projects ${projects.right - projects.left}", projects.right - projects.left >= 48.dp)
         val play = compose.onNodeWithTag("top_play").getBoundsInRoot()
-        assertEquals((play.right - play.left).value, (play.bottom - play.top).value, 0.5f)
+        // Tour 5, chantier 4: « ▶ cette partie », its disc over its word: as wide as the word, 48 dp at least each way.
+        assertTrue("play ${play.right - play.left} x ${play.bottom - play.top}", play.right - play.left >= 48.dp - 0.5.dp && play.bottom - play.top >= 48.dp - 0.5.dp)
         assertTrue(play.right <= 300.dp)
         compose.onNodeWithTag("top_redo").assertDoesNotExist()
     }
@@ -200,6 +223,20 @@ class TopBarTest {
         show(360, scene = SceneChipUi(2, listOf("A · Intro", "B · Couplet", "C · Refrain")))
         compose.onNodeWithTag("top_project_line").assertDoesNotExist()
         compose.onNodeWithText("Mon morceau de dubstep").assertIsDisplayed()
+    }
+
+    /** Tour 5, moyens M2: during a take on the song both ▶ show ■ and say « Arrêter » (a touch on either stops). */
+    @Test
+    fun duringATakeOnTheSongBothPlaysSayStop() {
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(480.dp)) {
+                    TopBar(TopBarUi("Mon morceau", playing = true, canUndo = false, canRedo = false, recording = true, partPlaying = false, songPlaying = true, songButton = true), TopBarActions())
+                }
+            }
+        }
+        compose.onNodeWithTag("top_song").assertContentDescriptionEquals("Arrêter")
+        compose.onNodeWithTag("top_play").assertContentDescriptionEquals("Arrêter")
     }
 
     @Test

@@ -1,0 +1,39 @@
+Écran 33 (588x1278)
+touchable « ▭▭▭ ▭▭▭ » @ 134,42
+bouton « ▭▭▭ » @ 311,42
+bouton (icône) @ 399,42
+bouton (icône) @ 471,42
+bouton (icône) @ 543,42
+bouton « ▭▭▭ ▭▭▭ » @ 83,114
+bouton « ▭▭▭ ▭▭▭ » @ 248,114
+interrupteur « ▭▭▭ » [non coché] @ 543,114
+texte « Done? Send your song » @ 294,183
+champ « ▭▭▭ » contenu « ▭▭▭ » @ 294,271
+bouton (icône) @ 522,278
+texte « 5:49 » @ 66,361
+bouton « ▭▭▭ » @ 481,374
+texte « ▭▭▭ » @ 149,366
+texte « ▭▭▭ » @ 211,394
+texte « ▭▭▭ » @ 316,443
+bouton « ▭▭▭ » @ 294,514
+bouton « ▭▭▭ ▭▭▭ » @ 272,622
+bouton « ▭▭▭ » @ 536,622
+bouton « ▭▭▭ ▭▭▭ » @ 272,716
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « ▭▭▭ » [sélectionné] @ 144,792
+case « ▭▭▭ » @ 387,792
+bouton « ▭▭▭ » @ 294,888
+bouton « ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,984
+bouton « ▭▭▭ » @ 95,1059
+bouton (icône) @ 223,1059
+bouton « ▭▭▭ ▭▭▭ » @ 356,1059
+bouton « ▭▭▭ » @ 493,1059
+onglet « ▭▭▭ » @ 54,1158
+onglet « ▭▭▭ » @ 174,1158
+onglet « ▭▭▭ » @ 294,1158
+onglet « ▭▭▭ » @ 414,1158
+onglet « ▭▭▭ » [sélectionné] @ 534,1158
+touchable « ▭▭▭ ▭▭▭ » @ 360,1248
+touchable « ▭▭▭ ▭▭▭ » @ 456,1248
+touchable « ▭▭▭ » @ 540,1248
+texte « ▭▭▭ » @ 162,1248

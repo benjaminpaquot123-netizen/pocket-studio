@@ -1,0 +1,6 @@
+Écran 51 (588x1278)
+texte « Renommer la piste » @ 244,507
+champ « Nom 6/24 » contenu « Synthé » @ 294,620
+bouton « Effacer » @ 468,611
+bouton « Annuler » @ 346,758
+bouton « OK » @ 460,758

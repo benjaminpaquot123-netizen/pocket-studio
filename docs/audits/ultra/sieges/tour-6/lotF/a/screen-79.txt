@@ -1,0 +1,68 @@
+Écran 79 (900x1509)
+icône (dossier ouvert) ✓ « Primo giro Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+icône « Parte: A » ▾ @ 89,198
+bouton « Grancassa 1 » @ 123,311
+bouton « Grancassa 2 » @ 341,311
+bouton « Rullante 2 » @ 559,311
+bouton « Rullante 2 » @ 777,311
+bouton « Battimani » @ 123,436
+bouton « Hi-hat » @ 341,436
+bouton « Hi-hat aperto » @ 559,436
+bouton « Tom grave » @ 777,436
+bouton « Tom medio » @ 123,561
+bouton « Tom acuto » @ 341,561
+bouton « Bordo del tamburo » @ 559,561
+bouton « Campana » @ 777,561
+bouton « Piatto » @ 123,686
+bouton « Maracas » @ 341,686
+bouton « Conga » @ 559,686
+bouton « Laser » @ 777,686
+bouton « Kit: Personale » ▾ @ 151,788
+texte « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » @ 589,788
+titre « STEP: RULLANTE 2 · A » [état « Espanso »] @ 359,896
+bouton « ? » @ 400,896
+bouton « Tutti i pad » @ 767,896
+bouton « 1 » [état « vuoto »] @ 90,981
+bouton [état « vuoto »] @ 192,981
+bouton [état « vuoto »] @ 294,981
+bouton [état « vuoto »] @ 397,981
+bouton « 2 » [état « colpo, forza 100 % »] @ 500,981
+bouton [état « vuoto »] @ 603,981
+bouton [état « vuoto »] @ 706,981
+bouton [état « vuoto »] @ 809,981
+bouton « 3 » [état « vuoto »] @ 90,1062
+bouton [état « vuoto »] @ 192,1062
+bouton [état « vuoto »] @ 294,1062
+bouton [état « vuoto »] @ 397,1062
+bouton « 4 » [état « colpo, forza 100 % »] @ 500,1062
+bouton [état « vuoto »] @ 603,1062
+bouton [état « vuoto »] @ 706,1062
+bouton [état « vuoto »] @ 809,1062
+texte « Riempi » @ 83,1148
+texte « tutto » @ 172,1148
+texte « 1/2 » @ 256,1148
+texte « 1/4 » @ 331,1148
+texte « ◀ » @ 406,1148
+texte « ▶ » @ 481,1148
+texte « Cancella » @ 592,1148
+bouton (boussole) « Guida  · Concatena le tue parti 53 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

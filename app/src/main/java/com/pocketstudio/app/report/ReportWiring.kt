@@ -40,13 +40,12 @@ fun masterLaneValue(p: Project, songStep: Int, minBars: Int = 8): Float? {
 fun reportProject(vm: RhythmViewModel): ReportProject {
     val p = vm.project.value
     val playing = vm.transport.value.playing
-    val pos = com.pocketstudio.app.ui.playPosition(p, playing, vm.sessionUi.value.shownSongIndex, vm.playBar.value, vm.playFrom.value, vm.loopPart.value)
     return ReportProject(
         ProjectSummary(
             name = DefaultNames.shown(p.name),
             style = p.style,
             tempoBpm = p.tempoBpm,
-            position = pos?.let { "${it.name} · mes. ${it.bar}/${it.bars}" + if (it.loop) " (en boucle)" else "" },
+            position = reportPosition(p, playing, vm.sessionUi.value, vm.playBar.value, vm.playFrom.value, vm.loopPart.value),
             playing = playing,
             parts = p.song.size,
             songBars = p.songBars,
@@ -107,3 +106,9 @@ fun JournalWatch(vm: RhythmViewModel, report: BugReportViewModel, screen: () -> 
         }
     }
 }
+
+/** The report's « where the song is » line. */
+internal fun reportPosition(p: Project, playing: Boolean, session: com.pocketstudio.app.rhythm.SessionUi, bar: Int, playFrom: Int, loopPart: Boolean): String? =
+    // Tour 6 lot 8 (U1): the part queued by « Jouer depuis… », as the strip says it.
+    com.pocketstudio.app.ui.playPosition(p, playing, session.shownSongIndex, bar, playFrom, loopPart, session.queued)
+        ?.let { "${it.name} · mes. ${it.bar}/${it.bars}" + (if (it.loop) " (en boucle)" else "") + (it.next?.let { n -> " · ensuite $n" } ?: "") }

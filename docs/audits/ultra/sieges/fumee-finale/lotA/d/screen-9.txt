@@ -1,0 +1,19 @@
+Écran 9 (588x1278)
+texte « Diesen Teil abspielen » @ 101,52
+texte « Aufnehmen » @ 101,52
+texte « Mehr Auswahl » @ 101,52
+texte « Meine Projekte » @ 101,52
+texte « Tempo » @ 123,214
+texte « Ab einem Teil » @ 358,251
+texte « Teile und Spuren » @ 112,580
+texte « Der Guide: Wo dein Song steht » @ 297,591
+bouton « Beschriftungen ausblenden » @ 150,864
+bouton « 🐞 Bug melden » @ 450,864
+texte « Lautstärken » @ 414,1025
+texte « Datei oder Video » @ 414,1025
+texte « Drums » @ 174,1051
+texte « Spielen, aufnehmen » @ 213,1077
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Bęben basowy 1",
+  "Grosse caisse 2": "Bęben basowy 2",
+  "Grosse caisse studio": "Bęben basowy studyjny",
+  "Grosse caisse sèche": "Suchy bęben basowy",
+  "Grondement grave": "Niskie dudnienie",
+  "Claquement de mains": "Klaśnięcie",
+  "Claquements de mains": "Klaskanie",
+  "Bord de caisse": "Obręcz bębna",
+  "Grosses caisses": "Bębny basowe",
+  "Volume au max": "Głośność na maks",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d uderzeń na minutę",
+  "D'abord le modèle de séparation": "Najpierw model rozdzielania",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Aby rozdzielić piosenkę, aplikacja najpierw pobiera model: %s, tylko raz.",
+  "Tu es en Wi-Fi.": "Masz Wi-Fi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Nie masz Wi-Fi: te %s pójdą z twojego pakietu danych.",
+  "Télécharger, puis choisir la chanson": "Pobierz, potem wybierz piosenkę"
+}

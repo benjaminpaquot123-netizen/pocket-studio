@@ -1,0 +1,50 @@
+Écran 2 (540x1170)
+icône « Mijn eerste beat » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « A » ▾ @ 204,114
+icône ↶ [désactivé] @ 279,114
+bouton ● @ 351,114
+bouton ▶ « dit deel » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 120  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « Drums 16 pads » [sélectionné] @ 76,255
+onglet « Acid 303 Baslijn » @ 223,255
+onglet « Zang Microfoon » @ 382,255
+onglet « Remix Splitsen » [coupé] @ 498,255
+texte « Deel: A » @ 56,315
+bouton « Kick » @ 78,396
+bouton « Kick 2 » @ 206,396
+bouton « Snare » @ 334,396
+bouton « Snare 2 » @ 462,396
+bouton « Clap » @ 78,486
+bouton « Hi-hat » @ 206,486
+bouton « Open hi-hat » @ 334,486
+bouton « Lage tom » @ 462,486
+bouton « Midtom » @ 78,576
+bouton « Hoge tom » @ 206,576
+bouton « Rim » @ 334,576
+bouton « Koebel » @ 462,576
+bouton « Bekken » @ 78,666
+bouton « Shaker » @ 206,666
+bouton « Conga » @ 334,666
+bouton « Zap » @ 462,666
+bouton « Kit: Klassiek » ▾ @ 121,755
+texte « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » @ 379,754
+bouton « Alle pads » [coupé] @ 425,844
+bouton (boussole) « Gids  · Voeg een melodie toe 23 % » ⌃ [état « ingeklapt »] @ 270,882
+icône ↶ « Ongedaan maken » [désactivé] @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 171,954
+bouton ▶ « het nummer » @ 275,954
+texte « 120 Tempo » @ 386,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

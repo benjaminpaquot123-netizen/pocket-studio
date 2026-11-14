@@ -1,0 +1,9 @@
+divergé au pas 97 (étiquette « top_more » introuvable)
+  dernier écran différent de l'origine : écran 97, empreinte ab199ea2b3 (origine 00c130ee8e), première ligne différente : origine « touchable « Techno Sauvegardé » (nom « Mes projets ») @ 134,42 », rejeu « texte « BenStudio » @ 156,72 »
+  pas 24 : bouton (project_menu_p-dc41c6c2) absent, sous le doigt : project_menu_p-38531a10
+  pas 25 : bouton « Supprimer » (project_delete_p-dc41c6c2) absent, sous le doigt : project_delete_p-38531a10 « Supprimer »
+  pas 29 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-38531a10 « Mon projet 1 »
+  pas 52 : bouton (project_menu_p-296abaa7) absent, sous le doigt : project_menu_p-e094ab7d
+  pas 53 : bouton « Supprimer » (project_delete_p-296abaa7) absent, sous le doigt : project_delete_p-e094ab7d « Supprimer »
+  pas 64 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-38531a10 « Mon projet 1 »
+  pas 97 : à l'origine sous le doigt : top_more

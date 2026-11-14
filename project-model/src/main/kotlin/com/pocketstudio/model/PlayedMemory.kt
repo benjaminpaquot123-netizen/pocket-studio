@@ -105,15 +105,17 @@ class PlayedMemory(val capacity: Int = 2048) {
         val isEmpty: Boolean get() = notes.isEmpty() && hits.isEmpty()
     }
 
-    fun capture(now: Double, bars: Int, stepsPerBar: Int): Capture {
+    /** [keys], [pads]: which are kept (audit ultra round 1, n° 31: the Clavier's « Garder » keeps the keys alone, not a pad hit touched before). */
+    fun capture(now: Double, bars: Int, stepsPerBar: Int, keys: Boolean = true, pads: Boolean = true): Capture {
         @Suppress("NAME_SHADOWING") val bars = bars.coerceAtLeast(1)
         val bar = stepsPerBar.coerceAtLeast(1).toDouble()
         val from = now - bars * bar
         var first = Double.POSITIVE_INFINITY
         var last = Double.NEGATIVE_INFINITY
+        fun wanted(k: Int) = if (kind[k] == NOTE) keys else pads
         for (i in 0 until count) {
             val k = slot(i)
-            if (epochOf[k] != epoch || start[k] < from || start[k] > now) continue
+            if (epochOf[k] != epoch || start[k] < from || start[k] > now || !wanted(k)) continue
             first = minOf(first, start[k])
             last = maxOf(last, start[k])
         }
@@ -125,7 +127,7 @@ class PlayedMemory(val capacity: Int = 2048) {
         val hits = ArrayList<KeptHit>()
         for (i in 0 until count) {
             val k = slot(i)
-            if (epochOf[k] != epoch || start[k] < from || start[k] > now) continue
+            if (epochOf[k] != epoch || start[k] < from || start[k] > now || !wanted(k)) continue
             val at = (start[k] - origin).coerceAtLeast(0.0)
             if (at >= span * bar) continue
             if (kind[k] == NOTE) {

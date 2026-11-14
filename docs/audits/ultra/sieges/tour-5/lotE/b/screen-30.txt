@@ -1,0 +1,6 @@
+Écran 30 (588x1278)
+texte « Getting your song ready… » @ 260,517
+texte « ▭▭▭ » @ 270,580
+texte « ▭▭▭ » @ 522,622
+texte « ▭▭▭ » @ 187,662
+bouton « ▭▭▭ » @ 498,748

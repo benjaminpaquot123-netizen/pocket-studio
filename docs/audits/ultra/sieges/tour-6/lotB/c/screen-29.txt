@@ -1,0 +1,37 @@
+Écran 29 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 543,114
+bouton ← « More  · Settings » @ 294,180
+titre « DISPLAY » [état « Expanded »] @ 109,276
+texte « This project's mode » @ 140,321
+bouton « Simple: 5 tabs » @ 140,384
+bouton « Pro: every tool » [sélectionné] @ 345,384
+texte « Changing the way of working changes nothing in your songs. » @ 294,459
+texte « Language » @ 91,513
+bouton « 🇬🇧   English » ⌄ @ 136,576
+texte « Theme » @ 76,639
+bouton « Studio (grey and orange) » [sélectionné] @ 193,702
+bouton « Night (darker) » @ 138,786
+bouton « Colour-blind friendly » @ 174,870
+texte « Interface size » @ 109,933
+bouton (boussole) « Guide  · ضع إيقاعًا 9 % » ⌃ [état « folded »] @ 294,990
+icône ↶ « Undo » @ 72,1062
+icône ↷ « Redo » [désactivé] @ 180,1062
+bouton ▶ « the song » @ 288,1062
+texte « 120 Tempo » @ 402,1062
+icône (trois points reliés) « Share » @ 516,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sounds » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « More » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

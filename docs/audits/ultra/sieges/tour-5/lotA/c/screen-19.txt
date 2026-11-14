@@ -1,0 +1,12 @@
+Écran 19 (588x1278)
+touchable « Fermer la feuille » @ 294,639
+texte « Poignée : glisse vers le bas pour fermer » @ 294,697
+texte « Synthé » @ 239,769
+bouton « Fermer » @ 509,769
+texte « Volume » @ 253,838
+texte « +0,0 dB » @ 523,838
+curseur « Volume de Synthé » [état « +0,0 dB », à 80 %] @ 294,907
+bouton « Écouter seule » (nom « Écouter « Synthé » seul, en boucle ») @ 140,999
+interrupteur « Son de Synthé » [coché, état « activé »] @ 305,998
+bouton «   Changer le son » @ 294,1090
+bouton «   Supprimer la piste (Annuler possible) » @ 294,1206

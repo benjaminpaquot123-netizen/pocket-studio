@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "タイムライン：%1$s、%2$s",
+  "Morceau écrit : %1$s, %2$s": "曲を書き込みました：%1$s、%2$s",
+  "Grille des notes : %s": "ノートグリッド：%s",
+  "1 pas": "1 ステップ",
+  "1 piste": "1 トラック",
+  "1 réglage": "1 個の設定",
+  "%d réglages": "%d 個の設定",
+  "Fait : break de 1 mesure après %2$s": "完了：%2$s の後に 1 小節のブレイク",
+  "Fait : montée de 1 mesure avant %2$s": "完了：%2$s の前に 1 小節のビルドアップ",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "まだ曲になっていません。パートがループとして書き出されます（1 小節）。",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Live テイクを残しました。曲に入っています（1 パート）。",
+  "Ton texte (1 caractère)": "あなたのテキスト（1 文字）",
+  "trop bas de 1 cent": "1 セント低い",
+  "trop haut de 1 cent": "1 セント高い",
+  "−%d demi-ton": "−%d 半音",
+  "%d min": "%d分",
+  "%1$d min %2$d": "%1$d分%2$d秒",
+  "Hors de la gamme du morceau": "曲のスケール外",
+  "Poignée : glisse vers le bas pour fermer": "ハンドル：下にスワイプして閉じる"
+}

@@ -1,0 +1,35 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "zh-CN",
+    "device": "foldable",
+    "font": "100",
+    "mode": "pro",
+    "gestes.max": "120",
+    "mission": "synthe",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 55,
+    "images": 4,
+    "gestes_premier_son": 9,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 59,
+    "ecrans_revisites": 23,
+    "defilements_sans_toucher": 6,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 169,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "synthe",
+  "resultat": "partielle",
+  "pourquoi": "un son sur une seule piste avec des notes (0 piste(s) de synthé jouée(s))"
+}

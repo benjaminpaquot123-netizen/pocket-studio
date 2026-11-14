@@ -1,0 +1,10 @@
+Écran 11 (588x1278)
+texte « C'est prêt » @ 121,445
+texte « C'est prêt : Trap-morceau-streaming-20261113-202221.m4a, une copie est aussi dans Musique › BenStudio. » @ 294,538
+texte « Durée : 2 min 58 s » @ 119,602
+texte « Niveau : à la cible (Streaming) » @ 174,635
+texte « Volume · −14,0 » @ 103,668
+texte « Pas de saturation. » @ 118,701
+texte « Fichier M4A : léger, lu par tous les appareils. » @ 238,734
+texte « Voir mes fichiers » @ 347,820
+texte « OK » @ 508,820

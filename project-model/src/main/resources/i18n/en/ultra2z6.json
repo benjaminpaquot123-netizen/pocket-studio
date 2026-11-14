@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Bass drum 1",
+  "Grosse caisse 2": "Bass drum 2",
+  "Grosse caisse studio": "Studio bass drum",
+  "Grosse caisse sèche": "Tight bass drum",
+  "Grondement grave": "Low rumble",
+  "Claquement de mains": "Handclap",
+  "Claquements de mains": "Handclaps",
+  "Bord de caisse": "Drum rim",
+  "Grosses caisses": "Bass drums",
+  "Volume au max": "Max volume",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d beats per minute",
+  "D'abord le modèle de séparation": "First, the separation model",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "To separate a song, the app first downloads its model: %s, only once.",
+  "Tu es en Wi-Fi.": "You're on Wi-Fi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "You're not on Wi-Fi: these %s will come out of your mobile data.",
+  "Télécharger, puis choisir la chanson": "Download, then choose the song"
+}

@@ -1,0 +1,17 @@
+{
+  "Lire": "Read",
+  "Bravo, chapitre fini !": "Well done, chapter finished!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Listen to your song as it is now, then go on to the next chapter: “%s”.",
+  "Chapitre suivant : « %s ».": "Next chapter: “%s”.",
+  "Chapitre suivant": "Next chapter",
+  "Écouter mon morceau": "Listen to my song",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "A kept sound is already called “%s”: choose another name.",
+  "Ce son est déjà dans tes favoris : « %s ».": "This sound is already in your favourites: “%s”.",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "Sound kept in your favourites with its effects: “%s”.",
+  "Son renommé : « %s ».": "Sound renamed: “%s”.",
+  "Déjà dans tes favoris": "Already in your favourites",
+  "Renommer « %s »": "Rename “%s”",
+  "Renommer le son": "Rename the sound",
+  "Nom du son": "Sound name",
+  "%d ms": "%d ms"
+}

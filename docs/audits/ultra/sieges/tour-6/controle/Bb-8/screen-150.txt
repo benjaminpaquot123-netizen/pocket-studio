@@ -1,0 +1,50 @@
+Écran 150 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « Analog Der klassische Synth » (curseurs) [coupé] @ 174,300
+bouton (curseurs) « Analog + Filter Zwei Oszillatoren und ein Filter » [coupé, sélectionné] @ 450,318
+bouton « Waveshaper Sanft bis stark verzerrt » (curseurs) [coupé] @ 726,300
+bouton (curseurs) « Phasenverzerrung Rund oder bissig, im Stil des Casio CZ » @ 174,411
+bouton (curseurs) « Chiptune 8-Bit-Videospiele » @ 450,393
+titre « FM » [état « Aufgeklappt »] @ 450,504
+bouton (rond relié à des points) « FM 2-Op. Glocken und Metall » @ 174,579
+bouton (rond relié à des points) « FM 6-Op. · Bank 1 DX7-Sounds, Serie 1 » @ 450,597
+bouton (rond relié à des points) « FM 6-Op. · Bank 2 DX7-Sounds, Serie 2 » @ 726,597
+bouton (rond relié à des points) « FM 6-Op. · Bank 3 DX7-Sounds, Serie 3 » @ 174,735
+titre « TEXTUREN » [état « Aufgeklappt »] @ 450,828
+bouton (hachures) « Formanten Singende Vokale » @ 174,903
+bouton (hachures) « Additiv Orgel und Obertöne » @ 450,903
+bouton (hachures) « Wavetable Digitale 80er-Sounds » @ 726,903
+bouton (hachures) « Wave Terrain Eine wandernde Welle » @ 174,1006
+bouton (hachures) « String-Machine 70er-Streicher » @ 450,1024
+bouton (hachures) « Akkorde Ein ganzer Akkord pro Taste » @ 726,1006
+bouton « Schwarm Ein Schwarm Sägezähne, sehr breit » (hachures) [coupé] @ 174,1103
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe auf der Melodie-Spur auf „Sound der Spur einstellen ↓“: Dieser Knopf ist ganz oben auf der Notenseite, direkt unter „Tastatur“ und „Noten“ (scroll die Seite nach oben, um ihn zu sehen). Dann dreh „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

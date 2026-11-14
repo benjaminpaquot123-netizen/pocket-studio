@@ -1,0 +1,10 @@
+Écran 7 (1035x1243)
+touchable « 音轨面板（层、历史） » @ 772,267
+touchable « 更换音色 » @ 772,339
+touchable « 调整声音（滤波器、包络…） » @ 772,411
+touchable « 重命名 » @ 772,483
+touchable « 色彩 » @ 772,555
+touchable « 复制 » @ 772,627
+touchable « 在段落 A 里清空 » [désactivé] @ 772,699
+touchable « 冻结音轨（渲染成音频，更省 CPU） » @ 772,771
+touchable « 删除（可撤销） » @ 772,843

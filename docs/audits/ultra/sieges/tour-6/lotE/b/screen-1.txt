@@ -1,0 +1,13 @@
+Écran 1 (540x1170)
+texte « BenStudio » @ 156,72
+texte « Wat wil je doen? » @ 192,132
+bouton ✓ « Doorgaan Pro Mijn eerste beat Loop van 1 maat Opgeslagen zojuist » → @ 270,294
+bouton (étincelles) « Nieuw nummer Een stijl met één tik, of ‘Maak een nummer voor me’. » → @ 270,514
+bouton (dossier ouvert) « Mijn projecten Open een ander nummer, kopieer of hernoem het. » → @ 270,694
+bouton (quatre vagues) « Remix Sporen scheiden: drums, bas, zang en de rest. » → @ 270,859
+bouton (quatre vagues) → « Pad Live NIEUW Pads klaar om te spelen, je eigen geluiden, live-effecten. Het klinkt meteen. » [coupé] @ 270,984
+bouton « ↓ nog 5 » @ 450,1056
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

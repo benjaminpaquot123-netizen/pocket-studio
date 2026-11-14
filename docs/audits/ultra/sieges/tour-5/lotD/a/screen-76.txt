@@ -1,0 +1,71 @@
+Écran 76 (1920x1200)
+touchable « My first beat Saved » (nom « My projects ») @ 705,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 1437,42
+bouton « A » (nom « Current part: A. Tap to change part. ») @ 1512,42
+bouton « Undo » @ 1587,42
+bouton « Redo » [désactivé] @ 1659,42
+bouton « Record: microphone, keys or pads » @ 1731,42
+bouton « Play » @ 1803,42
+bouton « Share my song » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 1875,114
+onglet « Structure » @ 60,193
+onglet « Sounds » [sélectionné] @ 60,280
+onglet « Mix » @ 60,367
+onglet « Live » @ 60,454
+onglet « More » @ 60,541
+onglet « Drums 16 pads » @ 196,183
+onglet « Acid 303 Bass line » @ 343,183
+onglet « Vocals Microphone » @ 511,183
+onglet « Remix Split » @ 664,183
+touchable « Synth Synth » (nom « Options for Synth ») @ 803,183
+bouton « Change the sound of Synth » @ 920,183
+bouton « Effects » @ 1037,183
+bouton «  Track » @ 1200,183
+case « Keyboard » [sélectionné] @ 205,270
+case « Notes » @ 343,270
+bouton «  Clear » (nom « Clear this track in part A ») @ 468,270
+case « 3 octaves » @ 613,270
+case « 1 octave » @ 762,270
+case « Scale » [sélectionné] @ 890,270
+case « Chords » @ 1492,270
+case « Pads » @ 1613,270
+bouton « Octave down » @ 1709,270
+bouton « Octave up » @ 1872,270
+texte « Octave 4 » @ 1790,270
+texte « Bend » @ 171,351
+curseur « Bend » [état « 0.0 semitone », à 50 %] @ 544,351
+texte « Mod. » @ 918,351
+curseur « Mod. » [état « 0% », à 0 %] @ 1292,351
+case « Sustain » @ 1691,351
+case « Arpeggio » @ 1836,351
+texte « The track's sound (the same for all its notes) » @ 340,421
+bouton « INSTRUMENT » [état « Expanded »] @ 270,495
+bouton « ? » (nom « What is “Instrument”? ») @ 362,495
+onglet « Synth » [sélectionné] @ 221,556
+onglet « Plaits » @ 359,556
+onglet « Sample » @ 505,556
+onglet « Real instruments » @ 710,556
+onglet « Instruments » @ 938,556
+bouton « READY-TO-PLAY SOUNDS » [état « Expanded »] @ 311,664
+bouton « Previous folder » @ 192,730
+texte « Basses » @ 1056,730
+bouton « Round bass Saw · sustained » @ 367,783
+bouton « Sub bass Triangle · sustained » @ 802,783
+bouton « Reese bass Saw · sustained » @ 1237,783
+bouton « Modern reese Saw · 5 voices · sustained » @ 1672,783
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « C 1 » (nom « C 4 ») @ 207,963
+bouton « D 2 » (nom « D 4 ») @ 364,963
+bouton « E 3 » (nom « E 4 ») @ 521,963
+bouton « F 4 » @ 678,963
+bouton « G 5 » (nom « G 4 ») @ 836,963
+bouton « A 6 » (nom « A 4 ») @ 994,963
+bouton « B 7 » (nom « B 4 ») @ 1152,963
+bouton « C 8 » (nom « C 5 ») @ 1310,963
+bouton «  Record my melody » @ 1603,963
+bouton «  1 » (nom « Count-in: 1 bar ») @ 1864,963
+touchable « ●  REC » (nom « Record the screen with sound ») @ 1692,1170
+touchable « ✎  Note » (nom « Write a note ») @ 1788,1170
+touchable « ⋯ » (nom « Feedback mode ») @ 1872,1170
+texte « Feedback mode » @ 828,1170

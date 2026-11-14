@@ -91,16 +91,31 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile private var cancelled = false
     @Volatile private var render: OfflineExport? = null
 
-    /** The plan for the open project, for the sheet's preview and text. */
+    /** The part chosen in the sheet (null: [VideoPlanner.defaultPart]) and the length in seconds (03 M9). */
+    data class Choice(val part: Int? = null, val seconds: Int = VideoPlan.SECONDS.toInt())
+
+    private val _choice = MutableStateFlow(Choice())
+    val choice: StateFlow<Choice> = _choice.asStateFlow()
+
+    fun choosePart(part: Int) {
+        if (job?.isActive != true) _choice.value = _choice.value.copy(part = part)
+    }
+
+    fun chooseSeconds(seconds: Int) {
+        if (job?.isActive != true && seconds in VideoPlan.LENGTHS) _choice.value = _choice.value.copy(seconds = seconds)
+    }
+
+    /** The plan for the open project, for the sheet's preview and text: the part and length chosen. */
     fun plan(rhythmVm: RhythmViewModel): VideoPlan {
         val p = rhythmVm.project.value
-        return VideoPlanner.plan(p, DefaultNames.shown(p.name))
+        val c = _choice.value
+        return VideoPlanner.plan(p, DefaultNames.shown(p.name), length = c.seconds.toDouble(), part = c.part)
     }
 
     fun start(rhythmVm: RhythmViewModel) {
         if (job?.isActive == true) return
         if (!NativeEngine.isAvailable) {
-            _state.value = VideoExportUi(error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
+            _state.value = VideoExportUi(error = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la."))
             return
         }
         if (rhythmVm.exportBusy) {
@@ -234,9 +249,11 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
     companion object {
         /** The part of the progress bar the sound's render takes. */
         const val SOUND_SHARE = 0.4f
-        const val MOVIES_FOLDER = "Movies/Pocket Studio"
+        const val MOVIES_FOLDER = "Movies/BenStudio"
+        /** Android's collection for [MOVIES_FOLDER] (read back by « Mes fichiers »). */
+        val MOVIES_COLLECTION: android.net.Uri get() = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
-        /** A copy in Movies › Pocket Studio, as the songs go to Music (no permission needed). Blocking. */
+        /** A copy in Movies › BenStudio, as the songs go to Music (no permission needed). Blocking. */
         fun copyToMovies(context: Context, file: File): Boolean = runCatching {
             val resolver = context.contentResolver
             val values = ContentValues().apply {
@@ -245,7 +262,7 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
                 put(MediaStore.Video.Media.RELATIVE_PATH, MOVIES_FOLDER)
                 put(MediaStore.Video.Media.IS_PENDING, 1)
             }
-            val uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values) ?: return false
+            val uri = resolver.insert(MOVIES_COLLECTION, values) ?: return false
             try {
                 resolver.openOutputStream(uri)!!.use { o -> file.inputStream().use { it.copyTo(o) } }
                 values.clear()

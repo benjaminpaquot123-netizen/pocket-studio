@@ -1,0 +1,6 @@
+Écran 4 (588x1278)
+icône ← @ 54,48
+texte « ¿Simple o Pro? » @ 330,48
+texte « ¿Cómo quieres ver este proyecto? Puedes cambiarlo cuando quieras con la etiqueta de arriba. » @ 294,156
+bouton « Simple Para empezar: 5 pestañas, botones grandes y palabras de todos los días. » @ 294,333
+bouton « Pro Para ir más lejos: todas las herramientas, estructura, sonidos, mezcla y directo. » @ 294,561

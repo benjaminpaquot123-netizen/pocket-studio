@@ -1,0 +1,40 @@
+# Écrans de docs/CARTE-CODE.md (PLAN-RESTE 6.5) : une ligne par écran ou fenêtre, avec l'étiquette (testTag) de sa page telle que le journal du banc l'écrit (« #n ROUTE <page>/<onglet> » ou « dialogue:<étiquette> »).
+# tableau-de-bord.py compte cases_vides = écrans qu'aucune route des journaux du tour n'atteint, ecrans_non_analyses = écrans absents de <tour>/ecrans-oeil-neuf.txt (passe « œil neuf », AUDIT-ULTRA §12.11).
+# Un écran ajouté à CARTE-CODE.md s'ajoute ici ; test_ultra_bench.py (empty_cases) vérifie que chaque étiquette existe dans app/src/main.
+ecran	fichier	ou
+launch	A/onboarding/LaunchChoice.kt	accueil « Que veux-tu faire ? »
+projects	A/projects/ProjectsScreen.kt	Mes projets
+new_project	A/projects/NewProjectPage.kt	Nouveau morceau
+wizard	A/library/WizardScreen.kt	assistant pas à pas
+padlive	A/padlive/PadLiveScreen.kt	Pad Live
+padlive_party	A/padlive/PartyMode.kt	Pad Live, mode Fête
+live_screen	A/live/LiveScreen.kt	Live (grille de briques)
+live_grid	A/live/LiveScreen.kt	Live, grille
+live_pads_full	A/session/LivePadsFullScreen.kt	pads live plein écran
+session	A/session/SessionScreen.kt	Morceau, Structure
+timeline_screen	A/session/TimelineScreen.kt	Timeline
+rhythm	A/rhythm/RhythmScreen.kt	pas à pas et pads de batterie
+synth	A/synth/SynthScreen.kt	synthé, clavier
+piano_roll	A/synth/PianoRoll.kt	piano roll
+acid	A/acid/AcidScreen.kt	Acid 303
+audio_tracks	A/audiotracks/AudioTracksScreen.kt	pistes audio
+instrument_panel	A/instruments/InstrumentPanel.kt	instruments
+mixer	A/mixer/MixerScreen.kt	Mix (Pro)
+simple_mix	A/mixer/SimpleMix.kt	Mix (Mode simple)
+master_pro_panel	A/mixer/MasterPro.kt	master Pro
+share_sheet	A/export/ShareSheet.kt	Partager, export
+video_sheet	A/export/video/VideoSheet.kt	vidéo de partage
+remix_project	A/remix/RemixScreen.kt	Remix
+cut_screen	A/remix/CutScreen.kt	découpe d'un bout
+board	A/remix/StemBoardScreen.kt	tableau des pistes
+library	A/library/LibraryScreen.kt	bibliothèque de sons
+midi	A/midi/MidiScreen.kt	MIDI
+plus	A/ui/AppSpaces.kt	onglet Plus
+settings	A/settings/SettingsScreen.kt	Réglages
+help_page	A/settings/SettingsScreen.kt	aide
+glossary	A/learn/GlossaryPage.kt	lexique
+latency	A/latency/LatencyScreen.kt	calage de la latence
+recette	A/recette/RecetteScreen.kt	liste de recette
+studio	A/studio/StudioScreen.kt	studio
+guide_panel	A/guide/GuidePanel.kt	Guide
+tuto_panel	A/tuto/TutoPanel.kt	tuto

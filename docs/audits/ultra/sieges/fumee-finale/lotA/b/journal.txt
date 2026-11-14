@@ -1,0 +1,108 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=40 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=16.9 simule_s=2.4 jvm_s=34.8 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 426
+#1 DOIGT welcome_guided « Fais-moi un morceau »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e57b618a9b | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 297
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 360
+#3 DOIGT wizard_family_calm « Calme (Chill, Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 733f16f6ae | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle. » ellipsized (« … »)
+#4 LAYOUT CUT « La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy. » ellipsized (« … »)
+#4 LAYOUT CUT « Le son des années 80 remis à la mode (Stranger Things, Blinding Lights) : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des notes de synthé qui tournent en boucle. » ellipsized (« … »)
+#4 LAYOUT CUT « Le rap à l'ancienne de New York : une boucle de piano jazz, un kick rond, une caisse claire qui claque et un groove qui balance. » ellipsized (« … »)
+#4 > touche 294 489
+#4 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 362af49637 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 322 711
+#5 DOIGT wizard_style_choose_lofi « Choisir ce style et continuer »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 253bfab38e | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Complet » 4.44:1 (needs 4.5:1, 16 sp)
+#6 > touche 294 228
+#6 DOIGT wizard_create_now « Créer tout de suite avec les choix conse »
+#7 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ce5c6ee991 | project=p-df167137 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#7 > touche 414 1158
+#7 DOIGT tab_simple_Mix « Mix »
+#8 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 0c70f69db8 | project=p-df167137 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Lance ▶ » 1.46:1 (needs 3.0:1, 14 sp)
+#8 > touche 294 1158
+#8 DOIGT tab_simple_Clavier « Clavier »
+#9 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 298cf3d0af | project=p-df167137 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Ligne de basse » 3.32:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT TARGET « Do 4 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Ré 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Mi 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Fa 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Sol 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « La 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Do 5 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Ré 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Mi 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Fa 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « Sol 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « La 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#9 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#9 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#9 > touche 540 1248
+#9 DOIGT retours_more « Mode retours »
+#10 ROUTE dialogue:retours_menu_send | MODE simple | EMPREINTE 6df5155fa2 | project=p-df167137 no tuto
+#10 SON Son : rien ne joue.
+#10 > retour
+#10 RETOUR
+#11 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 298cf3d0af | project=p-df167137 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 534 1158
+#11 DOIGT tab_simple_Envoyer « Partager »
+#12 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 2109f974bf | project=p-df167137 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 384 42
+#12 DOIGT top_record
+#13 ROUTE dialogue:record_choice | MODE simple | EMPREINTE 2df964c9d6 | project=p-df167137 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST «   Les pads (la batterie) » 4.20:1 (needs 4.5:1, 14 sp)
+#13 > touche 294 489
+#13 DOIGT record_choice_mic «   Le micro : ta voix, une guitare, un in »
+#14 ROUTE audio_tracks | MODE simple | EMPREINTE f5d0f784ca | project=p-df167137 no tuto
+#14 SON Son : le morceau joue (partie « A »).
+#14 > attends 8
+#15 ROUTE audio_tracks | MODE simple | EMPREINTE 4f9197efc7 | project=p-df167137 no tuto
+#15 SON Son : le morceau joue (partie « A »).
+#15 > touche 177 798
+#15 DOIGT audio_stop « Arrêter et garder »
+#16 ROUTE audio_tracks | MODE simple | EMPREINTE 4442acd3ab | project=p-df167137 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 225 1062
+#16 DOIGT thumb_play « Jouer le morceau »
+#17 ROUTE ? | MODE simple | EMPREINTE ee3d5e4a1d | project=p-df167137 no tuto
+#17 SON Son : le morceau joue (partie « A »).
+#17 > touche 54 1158
+#17 DOIGT tab_simple_Morceau « Mon morceau »
+#18 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 3493f294ee | project=p-df167137 no tuto
+#18 SON Son : le morceau joue (partie « A »).
+#18 LAYOUT CONTRAST « Touche une partie : elle joue juste après celle en cours. » 1.89:1 (needs 4.5:1, 13 sp)
+#18 > retour
+#18 RETOUR
+#19 ROUTE launch | MODE simple | EMPREINTE d49e207f26 | project=p-df167137 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 294 312
+#19 DOIGT launch_continue « Continuer »
+#20 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 95097bd908 | project=p-df167137 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Touche une partie pour écouter le morceau à partir d'elle. » 1.76:1 (needs 4.5:1, 13 sp)
+#20 > fin
+#20 FIN : fin

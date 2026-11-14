@@ -38,7 +38,7 @@ class RhythmBeginnerTest {
 
     private fun screen(project: Project, actions: RhythmActions = RhythmActions()) = compose.setContent {
         PocketStudioTheme {
-            RhythmScreen(project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = actions)
+            RhythmScreen(project, TransportUi(), { LiveUi() }, canUndo = false, canRedo = false, actions = actions)
         }
     }
 
@@ -51,7 +51,7 @@ class RhythmBeginnerTest {
         val project = RhythmViewModel.starterProject()
         compose.setContent {
             PocketStudioTheme {
-                RhythmScreen(project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = RhythmActions())
+                RhythmScreen(project, TransportUi(), { LiveUi() }, canUndo = false, canRedo = false, actions = RhythmActions())
             }
         }
         val first = compose.onNodeWithTag("step_0").getBoundsInRoot()

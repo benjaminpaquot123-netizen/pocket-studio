@@ -1,0 +1,5 @@
+# Shared files where every lot only ADDS lines at the end (docs/AIDE-FUSIONS-TESTS.md, « Documents partagés »):
+# two lots merged one after the other keep both their lines instead of a conflict (git's built-in union driver).
+# Never for a file whose lines are edited in place (verdicts.tsv, PLAN-RESTE.md, the bench journal whose checked lines get
+# their « preuve: » later): union would keep the old line and the new, with no conflict said.
+docs/DECISIONS.md merge=union

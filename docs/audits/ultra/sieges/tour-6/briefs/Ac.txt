@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotA/c (seat c, lot A; lang fr, device phone, font 100, mode simple, options -, mission exports, budget 100 gestures).
+Profile (id t6-Ac): Lycéen qui veut envoyer son morceau à un ami, téléphone, police 100 %, Mode simple. Passe aussi par le Mix et note « vu, rien à juger » (ne juge ni le son ni la vitesse). Promesses : pour chacune, oui ou non avec le numéro d'écran. À la fin, sur ton dernier écran, réponds aux questions 1, 6 et 9 de l'œil neuf (une image). Act as this person (habits, patience, vocabulary).
+Mission exports; its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Ac-1 | 1. Partager un morceau se fait en 3 gestes au plus depuis le studio
+  - id=t6-Ac-2 | 2. « Mes exports » s'atteint en Mode simple (grave C d #50)
+  - id=t6-Ac-3 | 3. Le projet envoyé en .zip est listé dans « Mes exports »
+  - id=t6-Ac-4 | 4. La longueur annoncée avant l'export est celle du fichier exporté
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

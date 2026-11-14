@@ -1,0 +1,65 @@
+Écran 151 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ■ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Groove Takt 6/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…). » @ 450,373
+texte « Hinzufügen: » @ 123,441
+bouton « + A · Groove » @ 163,510
+bouton « + Neuer Teil (Kopie von A · Groove) » @ 568,510
+bouton « + Neuer leerer Teil » [coupé] @ 205,563
+image (chapeau de diplômé) @ 37,622
+texte « Die Teile verstehen Kapitel 9/16 · Schritt 7/7 · Pro » @ 400,622
+icône (liste) @ 771,623
+icône ⌄ @ 843,623
+texte « Schau dir die Karte an: Jedes Feld ist ein Teil, mit seiner Länge in Takten. Die Kurve zeigt die Energie. » @ 450,734
+texte « ▸ Warum? » @ 450,809
+texte « Energie » @ 69,855
+texte « Intro » @ 74,948
+texte « 16 » @ 74,980
+texte « Intro 2 » @ 182,948
+texte « 16 » @ 182,980
+texte « Drop » @ 342,948
+texte « 32 » @ 343,980
+texte « Break » @ 489,948
+texte « 12 » @ 489,980
+texte « 4 » @ 545,964
+texte « Drop 2 » @ 666,948
+texte « 32 » @ 667,980
+texte « Ende » @ 826,948
+texte « 16 » @ 827,980
+texte «  Intro » @ 68,1018
+texte «  Intro 2 » @ 173,1018
+texte «  Drop » @ 280,1018
+texte «  Break » @ 383,1018
+texte «  Build-up » @ 508,1018
+texte «  Drop 2 » @ 638,1018
+texte «  Ende » @ 748,1018
+texte « Jede Zahl: die Länge des Teils in Takten. » @ 265,1057
+bouton ✓ «   Verstanden » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

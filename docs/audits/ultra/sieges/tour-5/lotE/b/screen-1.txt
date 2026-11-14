@@ -1,0 +1,11 @@
+Écran 1 (588x1278)
+bouton « 🇬🇧 ▭▭▭ » @ 464,78
+texte « BenStudio » @ 242,168
+texte « ▭▭▭ » @ 306,213
+texte « ▭▭▭ » @ 294,288
+bouton « Make my first song (guided) ▭▭▭ » @ 294,447
+bouton « I'm learning ▭▭▭ » @ 294,648
+bouton « Listen to a demo ▭▭▭ » @ 294,828
+bouton « Start from scratch ▭▭▭ » @ 294,1008
+bouton « Extract the vocals from a song ▭▭▭ » @ 294,1194
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

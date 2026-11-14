@@ -1,0 +1,74 @@
+#0 SIEGE lang=zh-CN device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-07-etoile-sons rejeu.n=39
+#0 PREMIER ECRAN reel_s=6.2 simule_s=2.4 jvm_s=14.1 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 8bb93baa8f | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 ETIQUETTE launch_continue : 518 305
+#1 > touche 518 305
+#1 DOIGT launch_continue « 继续 »
+#2 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 145ef4fcdf | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 力度 » 2.59:1 (needs 4.5:1, 14 sp)
+#2 ETIQUETTE track_0 : 636 183
+#2 > touche 636 183
+#2 DOIGT track_0 « 合成器 »
+#3 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 986558bb1b | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST «  音轨 » 1.62:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST «  录下我的旋律 » 2.78:1 (needs 4.5:1, 14 sp)
+#3 ETIQUETTE track_sound_0 : 772 186
+#3 > touche 772 186
+#3 DOIGT track_sound_0
+#4 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE fa950b986a | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 音色：合成器 » over the touchable « 关闭工作表 » (131 x 33 dp)
+#4 LAYOUT OVERLAP « 点一个音色：它会替换整首歌里这条音轨的音色。 » over the touchable « 关闭工作表 » (281 x 19 dp)
+#4 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#4 LAYOUT OVERLAP « 贝斯 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#4 LAYOUT OVERLAP « 圆润贝斯 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 持续 » over the touchable « 关闭工作表 » (71 x 19 dp)
+#4 LAYOUT OVERLAP « Sub 贝斯 » over the touchable « 关闭工作表 » (58 x 21 dp)
+#4 LAYOUT OVERLAP « 三角波 · 持续 » over the touchable « 关闭工作表 » (71 x 19 dp)
+#4 LAYOUT OVERLAP « Reese 贝斯 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 现代 Reese » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 5 个声部 · 持续 » over the touchable « 关闭工作表 » (128 x 19 dp)
+#4 LAYOUT OVERLAP « Wobble 贝斯 » over the touchable « 关闭工作表 » (83 x 21 dp)
+#4 LAYOUT OVERLAP « 会说话的贝斯 » over the touchable « 关闭工作表 » (84 x 21 dp)
+#4 LAYOUT OVERLAP « Growl 贝斯 » over the touchable « 关闭工作表 » (71 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 3 个声部 · 持续 » over the touchable « 关闭工作表 » (128 x 19 dp)
+#4 LAYOUT OVERLAP « DnB Reese » over the touchable « 关闭工作表 » (72 x 17 dp)
+#4 LAYOUT OVERLAP « Riddim 贝斯 » over the touchable « 关闭工作表 » (79 x 21 dp)
+#4 LAYOUT OVERLAP « 方波 · 持续 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « Neuro 贝斯 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 纯 Sub » over the touchable « 关闭工作表 » (44 x 21 dp)
+#4 LAYOUT OVERLAP « 滚动贝斯 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#4 LAYOUT OVERLAP « Pluck 贝斯 » over the touchable « 关闭工作表 » (69 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 短 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « 合成器 808 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « Donk » over the touchable « 关闭工作表 » (35 x 17 dp)
+#4 LAYOUT OVERLAP « 三角波 · 短 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « 温暖 Sub » over the touchable « 关闭工作表 » (58 x 21 dp)
+#4 LAYOUT OVERLAP « 随机 » over the touchable « 关闭工作表 » (29 x 21 dp)
+#4 LAYOUT OVERLAP « 保留这个声音 » over the touchable « 关闭工作表 » (85 x 21 dp)
+#4 LAYOUT OVERLAP « “保留这个声音”会把它存进你的收藏，所有项目都能用。 » over the touchable « 关闭工作表 » (317 x 19 dp)
+#4 LAYOUT OVERLAP « 真实乐器 » over the touchable « 关闭工作表 » (51 x 19 dp)
+#4 LAYOUT OVERLAP « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » over the touchable « 关闭工作表 » (483 x 19 dp)
+#4 LAYOUT CONTRAST « Wobble 贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 会说话的贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 真实乐器 » 3.26:1 (needs 4.5:1, 12 sp)
+#4 > touche synth_sounds_2
+#4 REFUS « synth_sounds_2 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#5 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche key_60
+#5 REFUS « key_60 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#6 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche track_0
+#6 REFUS « track_0 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#7 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 RIEN NE CHANGE (3 écrans identiques)
+#7 > touche track_menu_settings
+#7 BANC étiquette introuvable : track_menu_settings
+#7 FIN : rejeu : divergé au pas 7 (étiquette « track_menu_settings » introuvable)

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.app.settings.ProjectModes
+
 import com.pocketstudio.model.i18n.tr
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -16,8 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -47,9 +48,13 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     /**
      * The catalog's operations run one at a time, in the order asked: a restore tapped while the
      * trash is being emptied waits for it (and finds nothing left), never renames a folder that is
-     * half deleted.
+     * half deleted. One queue read by one worker: a lock taken by each operation's own coroutine
+     * kept the one-at-a-time but not the order (CI 43137620831: the list asked right after the
+     * first work took the catalog first, said « loaded », and the unused first project was still there).
      */
-    private val operations = Mutex()
+    private val operations = Channel<suspend () -> Unit>(Channel.UNLIMITED).also { queue ->
+        viewModelScope.launch(Dispatchers.IO) { for (operation in queue) operation() }
+    }
     private val running = AtomicInteger(0)
 
     /** Tests: runs inside each operation, before it touches the catalog. */
@@ -67,28 +72,49 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             forgetGoneJournals()
             // The open project deleted from the list: trashed now that another one is open.
             CurrentProject.takeDeleteLater(app)?.let { id -> catalog.info(id)?.let(::delete) }
+            // Audit ultra round 2 (n° 14): the install's first project, left unused for another one at once, goes for
+            // good (never a project the person did not make in their list); once its screen's last save is written.
+            // Relecture tour 2: after the takes being written too (a take of the first project lands in its folder).
+            if (com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS) && com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)) {
+                val store = com.pocketstudio.app.rhythm.ProjectOpening.projectStore(app)
+                CurrentProject.takeUnusedStarter(
+                    app, load = { id -> store.load(id) }, folder = { id -> store.folder(id) },
+                    journaled = { id -> com.pocketstudio.app.rhythm.LiveTakeJournals.of(app).file(id).exists() },
+                )?.let { id ->
+                    runCatching { catalog.deleteForever(catalog.delete(id)) }.onSuccess { AppLog.add("Premier projet inutilisé effacé") }
+                    forgetGoneJournals()
+                }
+            }
         }
     }
 
     fun refresh() = io(tr("Liste des projets"), counts = false) { refreshNow() }
 
-    /** Live take journals of projects gone for good (deleted, purged from the trash): never written anywhere. */
+    /** Live take journals and Simple/Pro records of projects gone for good (deleted, purged from the trash): never written anywhere. */
     private fun forgetGoneJournals() {
         val app = getApplication<Application>()
         com.pocketstudio.app.rhythm.LiveTakeJournals.of(app).dropMissing(catalog.knownIds() + CurrentProject.get(app))
+        ProjectModes.dropMissing(app) { catalog.knownIds() + CurrentProject.get(app) }
     }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
-    fun create(project: Project, replacing: String? = null, then: (String) -> Unit) = io(tr("Nouveau projet")) {
+    fun create(project: Project, replacing: String? = null, then: (String) -> Unit) = modeOfNew().let { simple -> io(tr("Nouveau projet")) {
         // [replacing]: a project about to go to the trash; its name is free again (no « Mon projet 1 » / « 2 » seesaw).
         val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName(ignoring = replacing)) else project
         val id = catalog.create(named.asNewProject())
+        ProjectModes.set(getApplication(), id, simple)
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
-    }
+    } }
+
+    /**
+     * The mode the new project is made in (Simple or Pro, just chosen by the user): read when the
+     * creation is asked, before the screens that asked for it close (and show the open project's).
+     */
+    private fun modeOfNew(): Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
-    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io(tr("Nouveau morceau"), failed) {
+    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = modeOfNew().let { simple -> io(tr("Nouveau morceau"), failed) {
         // Never the same name as a song already there (a second « Rétro techno » is « Rétro techno 2 »):
         // the new song is plainly another project, the first one still in the list.
         val named = if (project.name.isBlank()) project.copy(name = catalog.nextName()) else project.copy(name = catalog.freeName(project.name))
@@ -96,9 +122,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
         }
+        ProjectModes.set(getApplication(), id, simple)
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
-    }
+    } }
 
     /**
      * [saveFirst]: saves the open project first (when [info] is it); false (not saved: a full
@@ -107,7 +134,8 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun duplicate(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }) = io(tr("Copie du projet")) {
         if (!saved(saveFirst)) return@io
         // Saved in French, shown translated (DefaultNames).
-        catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
+        val copy = catalog.duplicate(info.id, catalog.copyName(info.name))
+        ProjectModes.copy(getApplication(), info.id, copy)
         refreshNow()
     }
 
@@ -138,8 +166,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun delete(info: ProjectInfo) = io(tr("Suppression")) {
         // The last saves of the screen just closed on it (another project opened) first: a save
         // after the move would bring its folder back, in the list and in the trash at once.
-        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS)
-        com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)
+        // Still writing after that (a stuck write): nothing moves, the user tries again.
+        if (!com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS) || !com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)) {
+            throw java.io.IOException(tr("une sauvegarde est encore en cours, réessaie dans un instant"))
+        }
         // A blank project nobody touched is deleted outright: no trash entry, no « Annuler » for nothing.
         if (untouched(info.id)) {
             val entry = catalog.delete(info.id)
@@ -171,16 +201,54 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). [saveFirst]: see [duplicate]. */
-    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (File) -> Unit) = io(tr("Export du projet")) {
+    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (SavedZip) -> Unit) = exportZip(info.id, info.name, saveFirst, then = then)
+
+    /** A project's .zip as [exportZip] made it: the [file] to give to Android's share menu, and whether its copy is in Documents › BenStudio ([kept]). */
+    data class SavedZip(val file: File, val kept: Boolean)
+
+    /**
+     * [exportZip] by the project's [id] and [name] (audit ultra round 3, n° 13: from « Prêt à partager ? », the open project).
+     * T5-ZIP (recette tel-03): the .zip is also copied to Documents › BenStudio, where « Mes fichiers » lists it (it only
+     * lived an hour in the app's own cache: nothing to find again). Here, on the one path every « Sauvegarder le morceau
+     * en .zip » takes, so that no call site forgets it.
+     */
+    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (SavedZip) -> Unit) = io(tr("Sauvegarder le morceau en .zip"), failed) {
         if (!saved(saveFirst)) return@io
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
-        val file = com.pocketstudio.app.export.WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(info.name).ifBlank { "projet" })
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(name).ifBlank { "projet" })
             .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".pocketstudio.zip") }
-        val missing = file.outputStream().use { catalog.exportZip(info.id, it) }
+        val missing = file.outputStream().use { catalog.exportZip(id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
         if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
+        val kept = com.pocketstudio.app.export.WavExporter.copyToDocuments(app, file, "application/zip")
+        AppLog.add("Projet exporté : copie dans Documents › BenStudio : $kept")
+        withContext(Dispatchers.Main) { then(SavedZip(file, kept)) }
+    }
+
+    /**
+     * A project the app cannot read, its folder as it is (files and sounds, nothing decoded) as a
+     * .zip in the export folder; [then] gets the file (to send it, to have it repaired).
+     */
+    fun exportRaw(info: ProjectInfo, then: (File) -> Unit) = io(tr("Sauvegarder le morceau en .zip")) {
+        val app = getApplication<Application>()
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, "projet-illisible")
+            .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".zip") }
+        file.outputStream().use { catalog.exportRawZip(info.id, it) }
+        AppLog.add("Projet illisible envoyé tel quel : ${file.length() / 1024} Ko")
         withContext(Dispatchers.Main) { then(file) }
+    }
+
+    /**
+     * « La version d'avant la séance » of [info] as a new project in the list (« … (avant la
+     * séance) »), its sounds copied: the project itself is not touched.
+     */
+    fun restoreOpening(info: ProjectInfo) = io(tr("Copie du projet")) {
+        val name = ProjectCatalog.beforeSessionName(info.name)
+        catalog.restoreOpening(info.id, name)
+        AppLog.add("Version d'avant la séance copiée")
+        _state.value = _state.value.copy(message = tr("Copie faite : « %s ». Touche-la pour l'ouvrir.", com.pocketstudio.model.DefaultNames.shown(name)), messageOk = true)
+        refreshNow()
     }
 
     /** A project .zip (from this app) becomes a new project in the list. */
@@ -245,12 +313,15 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             running.incrementAndGet()
             _state.update { it.copy(busy = true) }
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        operations.trySend {
             try {
-                operations.withLock {
-                    beforeOperationForTest(what)
-                    block()
-                }
+                beforeOperationForTest(what)
+                block()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                // Not a failure: the screens were rebuilt (a new song opened from its own « then », which clears
+                // this model) while the work ended. BenStudio Test, essai éclair n° 3: « Nouveau morceau impossible :
+                // Job was cancelled » logged as an error for each song made and opened.
+                throw e
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
                 val message = tr("%s impossible (%s).", what, e.message ?: tr("erreur"))

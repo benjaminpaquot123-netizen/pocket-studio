@@ -10,6 +10,12 @@
 #include "AudioGenerator.h"
 #include "Separator.h"
 
+namespace {
+// The last separation's own words (an ONNX Runtime error…), read right after by the same worker
+// thread for the bug log (Demucs.lastMessage).
+thread_local std::string lastSeparationMessage;
+}  // namespace
+
 extern "C" {
 
 // Returns the SeparationResult code; `listener` gets onProgress(float): Boolean (false = cancel).
@@ -26,6 +32,7 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparate(JN
         env->ExceptionClear();
         env->ReleaseStringUTFChars(model, modelPath);
         env->ReleaseStringUTFChars(outDir, dir);
+        lastSeparationMessage = "progress listener missing";
         return static_cast<jint>(ps::SeparationResult::ModelError);
     }
     const jsize length = env->GetArrayLength(audio);
@@ -45,6 +52,7 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparate(JN
                                      threads);
     env->ReleaseStringUTFChars(model, modelPath);
     env->ReleaseStringUTFChars(outDir, dir);
+    lastSeparationMessage = result.message;
     return static_cast<jint>(result.code);
 }
 
@@ -64,6 +72,7 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparateFil
         env->ReleaseStringUTFChars(model, modelPath);
         env->ReleaseStringUTFChars(raw, rawPath);
         env->ReleaseStringUTFChars(outDir, dir);
+        lastSeparationMessage = "progress listener missing";
         return static_cast<jint>(ps::SeparationResult::ModelError);
     }
     const int threads = std::max(2, static_cast<int>(std::thread::hardware_concurrency()) / 2);
@@ -80,7 +89,13 @@ JNIEXPORT jint JNICALL Java_com_pocketstudio_separation_Demucs_nativeSeparateFil
     env->ReleaseStringUTFChars(model, modelPath);
     env->ReleaseStringUTFChars(raw, rawPath);
     env->ReleaseStringUTFChars(outDir, dir);
+    lastSeparationMessage = result.message;
     return static_cast<jint>(result.code);
+}
+
+// What the last separation on this thread said (empty when it went well or said nothing).
+JNIEXPORT jstring JNICALL Java_com_pocketstudio_separation_Demucs_nativeLastMessage(JNIEnv* env, jobject) {
+    return env->NewStringUTF(lastSeparationMessage.c_str());
 }
 
 // Basic Pitch transcription. Returns [start, end, pitch, amplitude] * N (seconds, MIDI note,

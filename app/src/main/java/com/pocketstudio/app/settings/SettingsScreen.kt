@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.named
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -54,11 +56,12 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel(tr("Affichage"))
             // Phase 36: the Mode simple or every tool; the project stays the same either way.
-            Text(tr("Façon de travailler"), style = MaterialTheme.typography.bodyMedium)
+            // Owner (2026-10-29): it is the open project's mode (each project keeps its own).
+            Text(tr("Mode de ce projet"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : 4 onglets")) },
+                FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : %d onglets", com.pocketstudio.app.ui.SimpleTab.entries.size)) },
                     colors = chip, modifier = Modifier.testTag("mode_simple"))
-                FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Complet : tous les outils")) },
+                FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Pro : tous les outils")) },
                     colors = chip, modifier = Modifier.testTag("mode_full"))
             }
             Text(tr("Changer de façon de travailler ne change rien à tes morceaux."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -78,7 +81,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
             }
             Text(tr("Noms des notes"), style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(selected = !s.englishNotes, onClick = { actions.update { it.copy(englishNotes = false) } }, label = { Text("Do Ré Mi") }, colors = chip)
+                FilterChip(selected = !s.englishNotes, onClick = { actions.update { it.copy(englishNotes = false) } }, label = { Text(tr("Do Ré Mi")) }, colors = chip)
                 FilterChip(selected = s.englishNotes, onClick = { actions.update { it.copy(englishNotes = true) } }, label = { Text("C D E") }, colors = chip)
             }
         }
@@ -95,13 +98,19 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     }, second = {
         NeonCard {
             SectionLabel(tr("Son"))
+            Toggle(tr("Battement à l'ouverture"), tr("Deux battements de cœur en vibration quand l'appli s'ouvre. Rien si le téléphone est en silencieux."), s.introSound, "intro_sound") { v ->
+                actions.update { it.copy(introSound = v) }
+            }
             Text(tr("Volume du métronome : %d %%", (s.metronomeLevel * 100).roundToInt()), style = MaterialTheme.typography.bodyMedium)
-            ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
+            ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, label = tr("Volume du métronome"), valueText = com.pocketstudio.model.i18n.percent((s.metronomeLevel * 100).roundToInt()), modifier = Modifier.testTag("metronome_level"))
             Text(tr("Décompte avant d'enregistrer"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(0 to tr("Aucun"), 1 to tr("1 mesure"), 2 to tr("2 mesures")).forEach { (bars, label) ->
                     FilterChip(selected = s.recordCountIn == bars, onClick = { actions.update { it.copy(recordCountIn = bars) } }, label = { Text(label) }, colors = chip)
                 }
+            }
+            if (s.recordCountIn == 0) {
+                Text(tr("Pour le micro, le décompte dure quand même 1 mesure : ta prise commence pile sur le temps."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             FilterChip(
                 selected = s.metronomeInTakes, onClick = { actions.update { it.copy(metronomeInTakes = !it.metronomeInTakes) } },
@@ -121,7 +130,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         }
         NeonCard {
             SectionLabel(tr("Aide"))
-            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir la visite rapide")) }
             GlossaryButton("settings_glossary")
             var lexicon by rememberSaveable { mutableStateOf(false) }
             OutlinedButton(onClick = { lexicon = !lexicon }, modifier = Modifier.fillMaxWidth().testTag("open_lexicon")) {
@@ -138,7 +147,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                 }
             }
             TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().testTag("settings_reset")) { Text(tr("Remettre les réglages par défaut")) }
-            Text("Pocket Studio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text("BenStudio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     })
 }
@@ -147,7 +156,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
 @Composable
 private fun GlossaryButton(tag: String) {
     val learn = com.pocketstudio.app.learn.LocalLearn.current
-    androidx.compose.material3.Button(onClick = { learn.open("") }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
+    androidx.compose.material3.Button(onClick = { learn.open("") }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
         androidx.compose.material3.Icon(Icons.Filled.LibraryMusic, contentDescription = null)
         Text("  " + tr("Les mots de la musique, à écouter"))
     }
@@ -160,7 +169,7 @@ private fun Toggle(title: String, hint: String, checked: Boolean, tag: String, o
             Text(title, style = MaterialTheme.typography.bodyLarge)
             Text(hint, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-        Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.testTag(tag))
+        Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.testTag(tag).named(title))
     }
 }
 
@@ -170,6 +179,10 @@ class HelpActions(
     val showSteps: () -> Unit = {},
     /** « Mon premier morceau » (the old Missions, now the Guide's first cards; null: not offered). */
     val missions: (() -> Unit)? = null,
+    /** Testers (lot « tuto 5 »): « J'apprends », the tutorial step by step, from any project (null: not offered). */
+    val tuto: (() -> Unit)? = null,
+    /** « Reprendre le tuto » of this project (null: none to resume). */
+    val resumeTuto: (() -> Unit)? = null,
 )
 
 /** Outils › Aide, the first page of Outils: the guide, the song's steps, and every word explained. */
@@ -182,19 +195,36 @@ fun HelpPage(actions: HelpActions) {
         ) {
             NeonCard {
                 SectionLabel(tr("Aide"))
+                actions.resumeTuto?.let { resume ->
+                    androidx.compose.material3.Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_tuto_resume")) {
+                        Text(tr("Reprendre le tuto"))
+                    }
+                }
+                actions.tuto?.let { open ->
+                    OutlinedButton(onClick = open, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_tuto")) {
+                        Column(Modifier.fillMaxWidth()) {
+                            Text(tr("J'apprends"), style = MaterialTheme.typography.titleSmall)
+                            Text(tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                        }
+                    }
+                }
                 actions.missions?.let { start ->
-                    androidx.compose.material3.Button(onClick = start, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
+                    androidx.compose.material3.Button(onClick = start, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
                         Text(tr("Mon premier morceau, avec le Guide"))
                     }
                 }
-                OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+                OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir la visite rapide")) }
                 OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Ouvrir le Guide de mon morceau")) }
                 GlossaryButton("help_glossary")
                 Text(tr("Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                // Audit ultra round 3 (n° 13, seat F d 58): going on with a song on another device was said nowhere.
+                Text(tr("Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) »."),
+                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("help_other_device"))
             }
+            com.pocketstudio.app.retours.RetoursHelpCard()
             NeonCard {
                 SectionLabel(tr("Lexique"))
                 Glossary.ALL.forEach { h ->

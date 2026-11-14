@@ -1,0 +1,48 @@
+Écran 226 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. » [coupé] @ 450,193
+texte « Fade-out » @ 103,257
+bouton « Keiner » @ 111,326
+bouton « Kurz (3 s) » [sélectionné] @ 279,326
+bouton « Lang (8 s) » @ 471,326
+bouton « Erweitert Spur für Spur · FLAC · MIDI · 48 kHz · 24 Bit » ⌄ @ 450,421
+bouton « Song-Datei erstellen » @ 450,517
+texte « Gespeichert in Musik › BenStudio: Mein-Song-club-20261112-220741.wav » @ 450,601
+texte « ✓ Bereit zum Teilen » @ 177,669
+texte « Dauer: 3 min 53 s » @ 148,711
+texte « Pegel: am Ziel (Club) » @ 167,750
+texte « Spitze: unter dem Limit, keine Übersteuerung » [coupé] @ 314,781
+image (chapeau de diplômé) @ 37,842
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 400,842
+icône (liste) @ 771,843
+icône ⌄ @ 843,843
+image (coupe) @ 42,954
+texte « Bravo, dein Track ist fertig! Du kannst alles nochmal anhören und weiter ändern. » @ 477,954
+bouton ▶ «  Meinen Song anhören » @ 450,1045
+bouton ↺ «  Tutorial neu starten » @ 450,1126
+texte « Tutorial schließen » @ 450,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

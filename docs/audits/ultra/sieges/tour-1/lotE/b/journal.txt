@@ -1,0 +1,342 @@
+#0 SIEGE lang=it device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE cc2a8ce138 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « Il mio primo ritmo » over « BenStudio » (89 x 4 dp)
+#1 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo: 120 BPM Cambia il tempo » (31 x 16 dp)
+#1 LAYOUT OVERLAP « Cosa vuoi fare? » over the touchable « Tempo: 120 BPM Cambia il tempo » (71 x 30 dp)
+#1 LAYOUT OVERLAP « Pad pronti da suonare, i tuoi suoni, effetti da palco. Suona subito. » over the touchable « Chiudi Espanso » (371 x 29 dp)
+#1 LAYOUT OVERLAP « Pad pronti da suonare, i tuoi suoni, effetti da palco. Suona subito. » over the touchable « Cos'è “Step”? » (29 x 29 dp)
+#1 LAYOUT OVERLAP « Il mio primo brano, con la Guida » over the touchable « Step 3 Aggiungi o togli vuoto » (25 x 20 dp)
+#1 LAYOUT OVERLAP « Il mio primo brano, con la Guida » over the touchable « Step 4 Aggiungi o togli vuoto » (65 x 20 dp)
+#1 LAYOUT OVERLAP « Il mio primo brano, con la Guida » over the touchable « Step 5 Aggiungi o togli colpo, forza 100 » (65 x 20 dp)
+#1 LAYOUT OVERLAP « Il mio primo brano, con la Guida » over the touchable « Step 6 Aggiungi o togli vuoto » (51 x 20 dp)
+#1 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 447
+#1 DOIGT launch_new « Nuovo brano »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE ea26a5d328 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 450 492
+#2 DOIGT start_empty « Parto da zero »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE ad1f2ff9c9 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Come vuoi vedere questo progetto? Puoi cambiare quando vuoi con l'etichetta in alto. » 1.97:1 (needs 4.5:1, 16 sp)
+#3 > touche 670 297
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 1ce26e6d8a | project=p-e3972ee6 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#4 > touche 73 114
+#4 DOIGT top_tempo « Tempo: 120 BPM »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 09ca6adc78 | project=p-e3972ee6 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Chiudi il foglio » (73 x 28 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Chiudi il foglio » (7 x 15 dp)
+#5 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (45 x 20 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Chiudi il foglio » (39 x 24 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Chiudi il foglio » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Chiudi il foglio » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Chiudi il foglio » (14 x 24 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Chiudi il foglio » (21 x 24 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (33 x 27 dp)
+#5 LAYOUT OVERLAP « Batti a tempo » over the touchable « Chiudi il foglio » (101 x 24 dp)
+#5 LAYOUT OVERLAP « Tocca qui a ogni battito: il tempo segue. » over the touchable « Chiudi il foglio » (242 x 18 dp)
+#5 LAYOUT CONTRAST « 120 » 1.81:1 (needs 3.0:1, 44 sp)
+#5 LAYOUT CONTRAST « 70 » 1.25:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « 90 » 1.38:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « 120 » 1.38:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « 140 » 1.38:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « 174 » 1.23:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « ½ » 1.36:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « ×2 » 1.38:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 2 » 1.23:1 (needs 3.0:1, 22 sp)
+#5 LAYOUT CONTRAST « 4 » 1.63:1 (needs 3.0:1, 22 sp)
+#5 LAYOUT CONTRAST « 8 » 2.22:1 (needs 3.0:1, 22 sp)
+#5 LAYOUT LABEL « #1055 » long press without text nor description
+#5 > touche 737 1257
+#5 DOIGT tempo_key_9 « 9 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 7b1ff47611 | project=p-e3972ee6 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 9 » over the touchable « Chiudi il foglio » (29 x 53 dp)
+#6 LAYOUT OVERLAP « Tra 40 e 300 » over the touchable « Chiudi il foglio » (87 x 20 dp)
+#6 LAYOUT CONTRAST « Tempo » 2.51:1 (needs 3.0:1, 22 sp)
+#6 LAYOUT CONTRAST «  BPM » 3.17:1 (needs 4.5:1, 16 sp)
+#6 > touche 450 1170
+#6 DOIGT tempo_key_5 « 5 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE b05c503358 | project=p-e3972ee6 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 95 » over the touchable « Chiudi il foglio » (57 x 53 dp)
+#7 LAYOUT CONTRAST « 95 » 1.81:1 (needs 3.0:1, 44 sp)
+#7 > touche 737 1344
+#7 DOIGT tempo_key_ok « OK »
+#8 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7671e73e6c | project=p-e3972ee6 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 90 1015
+#8 DOIGT step_0 « Step 1 »
+#9 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 0317aa18a0 | project=p-e3972ee6 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 90 1096
+#9 DOIGT step_8 « Step 9 »
+#10 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE f98670d13f | project=p-e3972ee6 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 559 342
+#10 DOIGT pad_2 « Rullante »
+#11 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 2d4473d10d | project=p-e3972ee6 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Rullante » 3.81:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST «  Registra i miei pad » 2.78:1 (needs 4.5:1, 14 sp)
+#11 > touche 500 1111
+#11 DOIGT step_4 « Step 5 »
+#12 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 643c18f193 | project=p-e3972ee6 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 500 1192
+#12 DOIGT step_12 « Step 13 »
+#13 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 78c3175650 | project=p-e3972ee6 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 341 468
+#13 DOIGT pad_5 « Hi-hat »
+#14 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8097ef7c3d | project=p-e3972ee6 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Hi-hat » 4.18:1 (needs 4.5:1, 14 sp)
+#14 > glisse 450 1250 450 950
+#14 DOIGT rien
+#15 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a4c61e4e38 | project=p-e3972ee6 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 221 1086
+#15 DOIGT fill_2 « 1/2 »
+#16 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE d667548c87 | project=p-e3972ee6 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 1/2 » 4.01:1 (needs 4.5:1, 14 sp)
+#16 > touche 439 183
+#16 DOIGT sons_Audio « Voce »
+#17 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 716186a462 | project=p-e3972ee6 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 450 637
+#17 DOIGT audio_add «   Traccia audio »
+#18 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE a626e95089 | project=p-e3972ee6 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 243 753
+#18 DOIGT audio_record_0 «  Registra »
+#19 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE a626e95089 | project=p-e3972ee6 no tuto
+#19 SON Son : rien ne joue.
+#19 > attends 2
+#20 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE a626e95089 | project=p-e3972ee6 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 711 42
+#20 DOIGT top_record
+#21 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE a626e95089 | project=p-e3972ee6 no tuto
+#21 SON Son : rien ne joue.
+#21 RIEN NE CHANGE (3 écrans identiques)
+#21 > touche 822 669
+#21 DOIGT dans:audio_track_0
+#22 ROUTE dialogue:« Rinomina » | MODE pro | EMPREINTE a8380c7d44 | project=p-e3972ee6 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 659 753
+#22 DOIGT #1290 « Rinomina »
+#23 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE b8d1359be6 | project=p-e3972ee6 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Annulla » 1.71:1 (needs 4.5:1, 14 sp)
+#23 > ecris Chitarra
+#24 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE e80ef92ffb | project=p-e3972ee6 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 450 736
+#24 DOIGT #1307 « Nome »
+#25 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE b8d1359be6 | project=p-e3972ee6 no tuto
+#25 SON Son : rien ne joue.
+#25 > ecris Chitarra
+#26 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE ddfc77eb2c | project=p-e3972ee6 no tuto
+#26 SON Son : rien ne joue.
+#26 > appui-long 450 736
+#26 DOIGT #1307 « Nome »
+#27 ROUTE dialogue:« Seleziona tutto » | MODE pro | EMPREINTE 7e944be6e9 | project=p-e3972ee6 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 118 101
+#27 DOIGT vue « Seleziona tutto »
+#28 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE ddfc77eb2c | project=p-e3972ee6 no tuto
+#28 SON Son : rien ne joue.
+#28 > ecris Chitarra
+#29 ROUTE dialogue:« Rinomina la traccia » | MODE pro | EMPREINTE bac3b380dd | project=p-e3972ee6 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 616 857
+#29 DOIGT #1322 « OK »
+#30 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 8d6c7bb9bf | project=p-e3972ee6 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 243 753
+#30 DOIGT audio_record_0 «  Registra »
+#31 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 8d6c7bb9bf | project=p-e3972ee6 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 815 1449
+#31 DOIGT tab_Plus « Altro »
+#32 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 5fc12d051b | project=p-e3972ee6 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 450 1050
+#32 DOIGT tool_Latence « Latenza »
+#33 ROUTE latency/tab_Plus | MODE pro | EMPREINTE c6bbadeb45 | project=p-e3972ee6 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 783 42
+#33 DOIGT top_play
+#34 ROUTE latency/tab_Plus | MODE pro | EMPREINTE 8c992792d5 | project=p-e3972ee6 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 268 1449
+#34 DOIGT tab_Sons « Suoni »
+#35 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 243 753
+#35 DOIGT audio_record_0 «  Registra »
+#36 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > appui-long 243 753
+#36 DOIGT audio_record_0 «  Registra »
+#37 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 RIEN NE CHANGE (3 écrans identiques)
+#37 > touche 815 1449
+#37 DOIGT tab_Plus « Altro »
+#38 ROUTE latency/tab_Plus | MODE pro | EMPREINTE 8c992792d5 | project=p-e3972ee6 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 450 735
+#38 DOIGT fold_Sortie seule (estimation du système) « SOLO USCITA (STIMA DEL SISTEMA) »
+#39 ROUTE latency/tab_Plus | MODE pro | EMPREINTE cf316e0471 | project=p-e3972ee6 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CONTRAST « SOLO USCITA (STIMA DEL SISTEMA) » 4.31:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « Latenza di uscita » 1.20:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « sconosciuta » 1.20:1 (needs 4.5:1, 14 sp)
+#39 > touche 450 180
+#39 DOIGT plus_back « Altro »
+#40 ROUTE plus/tab_Plus | MODE pro | EMPREINTE c96c2e92cd | project=p-e3972ee6 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 450 735
+#40 DOIGT tool_Reglages « Impostazioni »
+#41 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 3fa6e6170d | project=p-e3972ee6 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT LABEL « haptics » toggle without text nor description
+#41 > glisse 450 1250 450 450
+#41 DOIGT rien
+#42 ROUTE settings/tab_Plus | MODE pro | EMPREINTE ebe76a2159 | project=p-e3972ee6 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT LABEL « live_beat_haptics » toggle without text nor description
+#42 LAYOUT LABEL « keep_screen » toggle without text nor description
+#42 LAYOUT LABEL « intro_sound » toggle without text nor description
+#42 > glisse 450 1250 450 650
+#42 DOIGT rien
+#43 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 995b7be842 | project=p-e3972ee6 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 268 1449
+#43 DOIGT tab_Sons « Suoni »
+#44 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 711 42
+#44 DOIGT top_record
+#45 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#45 SON Son : la musique du projet joue en boucle.
+#45 > attends 4
+#46 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 178 837
+#46 DOIGT audio_effects_0 « Effetti di questa traccia »
+#47 ROUTE dialogue:effects_box_12 | MODE pro | EMPREINTE 5cc1535135 | project=p-e3972ee6 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « ? » 1.71:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « Per: Audio » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Preferiti » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Ambiente » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Colore » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Sporco » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Movimento » 1.89:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Techno » 2.67:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « DnB » 1.37:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Vecchia radio » 2.45:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Telefono » 2.45:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Grande cattedrale » 2.45:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Nessun effetto » 2.45:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Tieni il dito su un'atmosfera per ascoltarla; lascia e il suono torna. » 3.47:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « ? » 1.44:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « Spazio » 4.22:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Sporco » 4.22:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « ↑ Lontano » 1.62:1 (needs 4.5:1, 12 sp)
+#47 > touche 797 1437
+#47 DOIGT fx_close « Chiudi »
+#48 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 1f63760e58 | project=p-e3972ee6 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 85 1449
+#48 DOIGT tab_Structure « Struttura »
+#49 ROUTE session/tab_Structure | MODE pro | EMPREINTE 56404b2ab1 | project=p-e3972ee6 no tuto
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 451 1449
+#49 DOIGT tab_Mix « Mix »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 848cb64ce2 | project=p-e3972ee6 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#50 > glisse 437 510 437 555
+#50 DOIGT volume_12 « Volume di Chitarra »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2cbc4cd246 | project=p-e3972ee6 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 855 42
+#51 DOIGT top_share
+#52 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 708ed6c25a | project=p-e3972ee6 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT OVERLAP « Pronto a condividere? » over the touchable « Chiudi il foglio » (230 x 28 dp)
+#52 LAYOUT OVERLAP « Nome del brano (e del progetto) » over the touchable « Chiudi il foglio » (194 x 18 dp)
+#52 LAYOUT OVERLAP « “Condividi” rinomina anche il progetto “Il mio progetto 1”. » over the touchable « Chiudi il foglio » (343 x 18 dp)
+#52 LAYOUT OVERLAP « 0:20 » over the touchable « Chiudi il foglio » (48 x 27 dp)
+#52 LAYOUT OVERLAP «   una parte in loop » over the touchable « Chiudi il foglio » (120 x 20 dp)
+#52 LAYOUT OVERLAP «  Ferma » over the touchable « Chiudi il foglio » (46 x 20 dp)
+#52 LAYOUT OVERLAP « Ancora nessun brano: la tua parte esce come loop (8 battute). » over the touchable « Chiudi il foglio » (411 x 20 dp)
+#52 LAYOUT OVERLAP « Modifica il brano » over the touchable « Chiudi il foglio » (115 x 20 dp)
+#52 LAYOUT OVERLAP « Altri export » over the touchable « Chiudi il foglio » (76 x 20 dp)
+#52 LAYOUT OVERLAP « Traccia per traccia, MIDI, FLAC… in Mix » over the touchable « Chiudi il foglio » (239 x 18 dp)
+#52 LAYOUT OVERLAP « M4A · per condividere » over the touchable « Chiudi il foglio » (150 x 20 dp)
+#52 LAYOUT OVERLAP « WAV · qualità massima » over the touchable « Chiudi il foglio » (156 x 20 dp)
+#52 LAYOUT OVERLAP «   Condividi » over the touchable « Chiudi il foglio » (83 x 24 dp)
+#52 LAYOUT CONTRAST « Pronto a condividere? » 2.62:1 (needs 3.0:1, 22 sp)
+#52 LAYOUT CONTRAST « Nome del brano (e del progetto) » 1.79:1 (needs 4.5:1, 13 sp)
+#52 LAYOUT LABEL « #2718 » long press without text nor description
+#52 > touche 459 1353
+#52 DOIGT share_format_Wav « WAV · qualità massima »
+#53 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 8428e25a01 | project=p-e3972ee6 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 450 1449
+#53 DOIGT share_go «   Condividi »
+#54 ROUTE dialogue:share_progress | MODE pro | EMPREINTE a728f5a36c | project=p-e3972ee6 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « Poi scegli l'app per inviarlo. » 3.74:1 (needs 4.5:1, 13 sp)
+#54 > attends 5
+#54 PARTAGE Il-mio-brano-loop-20261104-202030.wav
+#55 ROUTE dialogue:« Partager « Il-mio-brano-loop-2 » | MODE pro | EMPREINTE b6fa3e3e7f | project=p-e3972ee6 no tuto
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 450 932
+#55 DOIGT vue « Enregistrer dans Fichiers »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4ec9ca73c5 | project=p-e3972ee6 no tuto
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 783 42
+#56 DOIGT top_play
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE cd6fb4908b | project=p-e3972ee6 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 268 1449
+#57 DOIGT tab_Sons « Suoni »
+#58 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 46b08b8e2a | project=p-e3972ee6 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 243 753
+#58 DOIGT audio_record_0 «  Registra »
+#59 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 46b08b8e2a | project=p-e3972ee6 no tuto
+#59 SON Son : rien ne joue.
+#59 > attends 5
+#60 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 46b08b8e2a | project=p-e3972ee6 no tuto
+#60 SON Son : rien ne joue.
+#60 > fin
+#60 FIN : fin

@@ -1,0 +1,7 @@
+lang=pl
+device=foldable
+font=100
+mode=pro
+gestes.max=90
+mission=exports
+timeout.minutes=25

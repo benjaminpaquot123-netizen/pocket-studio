@@ -1,0 +1,35 @@
+{
+  "siege": "c",
+  "options": {
+    "lang": "en",
+    "device": "phone",
+    "font": "100",
+    "mode": "pro",
+    "gestes.max": "90",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 68,
+    "images": 2,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": 26,
+    "touchers_a_vide": 14,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 75,
+    "ecrans_revisites": 21,
+    "defilements_sans_toucher": 5,
+    "appels_aide": 4,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 60,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : My-first-beat-20261105-211648.pocketstudio.zip, My-first-beat-20261105-211741.pocketstudio.zip, My-first-beat-loop-streaming-20261105-211622.m4a, My-first-beat-loop-streaming-20261105-211809.m4a (cibles non mesurées ici : ffprobe à brancher)"
+}

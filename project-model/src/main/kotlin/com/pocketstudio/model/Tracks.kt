@@ -148,6 +148,56 @@ private fun Project.removeInstrumentTrack(id: Int, ch: Int): Project {
     )
 }
 
+/**
+ * Owner (2026-11-04, « J'aimerais supprimer le synthé »): the first track cannot leave the project (its
+ * fields are the project's own), so its « Supprimer la piste » empties it instead: its notes in every
+ * scene, its sound, name and strip back to a new project's, its automation and frozen sound gone, and
+ * [firstTrackHidden] set, so « Mes pistes » and the track chips no longer show it ([firstTrackDeleted]).
+ */
+fun Project.removeFirstTrack(): Project {
+    val ch = InstrumentTrack.mixerChannel(0)
+    val unfrozen = audioTracks.filter { it.frozenFrom == 0 }.fold(this) { p, a -> p.removeAudioTrack(a.id) }
+    val fresh = Project()
+    val blank = unfrozen.withTrack(InstrumentTrack(0, fresh.synthTrackName, synthTrackColor, notes = synthNotes.cleared()))
+    return blank.copy(
+        firstTrackHidden = true,
+        scenes = blank.scenes.map { it.copy(synthNotes = it.synthNotes.cleared()) },
+        automation = blank.automation.filterNot { it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == ch },
+        mixer = blank.mixer.copy(channels = blank.mixer.channels.mapIndexed { i, c -> if (i == ch) Channel() else c }),
+    )
+}
+
+/**
+ * The first track was deleted ([removeFirstTrack]) and is still blank: hidden. Notes written on it
+ * again, or the assistant's part put on it (its name), show it again.
+ */
+val Project.firstTrackDeleted: Boolean
+    get() = firstTrackHidden && synthTrackName == FIRST_TRACK_NAME &&
+        synthNotes.notes.isEmpty() && scenes.all { it.synthNotes.notes.isEmpty() }
+
+/** A new project's first track's name ([Project.synthTrackName]). */
+private const val FIRST_TRACK_NAME = "Synthé"
+
+/**
+ * Track [id], just added, moved into the deleted first track's place ([firstTrackDeleted]): « Ajouter
+ * une piste » brings the first track back with the new one's name, sound, notes and level, rather
+ * than leaving a hidden blank track beside it.
+ */
+fun Project.intoFirstTrack(id: Int): Project {
+    if (id == 0) return this
+    val t = tracks.firstOrNull { it.id == id } ?: return this
+    val from = InstrumentTrack.mixerChannel(id)
+    val to = InstrumentTrack.mixerChannel(0)
+    val level = mixer.channels.getOrNull(from) ?: Channel()
+    val moved = withTrack(t.copy(id = 0)).copy(
+        firstTrackHidden = false,
+        scenes = scenes.map { s -> s.copy(synthNotes = s.trackNotes[id] ?: s.synthNotes, trackNotes = s.trackNotes - id) },
+        mixer = mixer.copy(channels = mixer.channels.mapIndexed { i, c -> if (i == to) level else c }),
+        automation = automation.map { if (it.target.kind != AutoTarget.BUS_PARAM && it.target.ch == from) it.copy(target = it.target.copy(ch = to)) else it },
+    )
+    return moved.removeInstrumentTrack(id, from)
+}
+
 /** A copy of track [id] with its notes and mixer settings, as a new track (null when full). */
 fun Project.duplicateTrack(id: Int): Project? {
     val source = track(id)

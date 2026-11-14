@@ -1,0 +1,27 @@
+Écran 17 (588x1278)
+dessin @ 294,83
+icône ✕ @ 522,155
+texte « Prêt à partager ? » @ 258,155
+champ « Nom du morceau (et du projet) » contenu « Trap » @ 294,258
+icône ✕ @ 522,265
+texte « 2:58 » @ 66,345
+texte « 26 parties » @ 167,350
+bouton ■ «  Arrêter » @ 470,386
+texte « Volume : −8,0, fort, comme la musique de club » @ 135,405
+texte « détails » @ 284,406
+bouton « ? » @ 348,405
+bouton « ? » @ 170,485
+texte « Volume visé » @ 89,486
+bouton « Streaming · −14 LUFS » @ 164,549
+bouton « Club · −8 LUFS » [sélectionné] @ 407,549
+bouton « Auto (Trap) · −8,5 LUFS » @ 174,630
+bouton « Désactivée » @ 409,630
+texte « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. Le même réglage que dans Mix. » @ 294,726
+image (rond coché) @ 45,815
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,828
+bouton (clap de cinéma) «   Vidéo pour les réseaux · 30 s » @ 294,912
+bouton « M4A · pour partager » [sélectionné] @ 157,1020
+bouton « WAV · qualité max » @ 414,1020
+bouton (trois points reliés) «   Partager » @ 294,1116
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,1218
+bouton « ? » @ 536,1218

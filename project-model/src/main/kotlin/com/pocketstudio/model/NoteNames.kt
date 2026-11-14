@@ -6,6 +6,30 @@ package com.pocketstudio.model
  * note goes through here, so the setting is never half applied.
  */
 object NoteNames {
+    /**
+     * The solfège as the interface's language writes it: « Ré » in French and Portuguese, « Re » in Italian,
+     * Spanish and Turkish (audit ultra round 3, n° 38: « Ré♭ » in the Italian chords).
+     */
+    private fun solfege(names: List<String>): List<String> = when (com.pocketstudio.model.i18n.I18n.lang) {
+        in PLAIN_RE -> names.map { it.replace("Ré", "Re") }
+        // Arabic names notes دو ري مي (round 3, n° 38: « A الصغير » for « لا الصغير »).
+        com.pocketstudio.model.i18n.Lang.AR -> names.map { n -> ARABIC.entries.fold(n) { acc, (fr, ar) -> acc.replace(fr, ar) } }
+        else -> names
+    }
+
+    /**
+     * Tour 5, lot « langues » (promise t5-Bc-3): German writes the note between A and C « H », its flat « B »
+     * (« B♭ » would read « B-flat-flat »); the other letters as in English.
+     */
+    private fun letters(names: List<String>): List<String> =
+        if (com.pocketstudio.model.i18n.I18n.lang == com.pocketstudio.model.i18n.Lang.DE) names.map { GERMAN[it] ?: it } else names
+
+    private val GERMAN = mapOf("B" to "H", "B♭" to "B", "B♯" to "H♯")
+
+    private val ARABIC = linkedMapOf("Sol" to "صول", "Do" to "دو", "Ré" to "ري", "Mi" to "مي", "Fa" to "فا", "La" to "لا", "Si" to "سي")
+
+    private val PLAIN_RE = setOf(com.pocketstudio.model.i18n.Lang.IT, com.pocketstudio.model.i18n.Lang.ES, com.pocketstudio.model.i18n.Lang.TR)
+
     private val FR = listOf("Do", "Do#", "Ré", "Ré#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si")
     private val EN = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
     private val FR_KEY = listOf("Do", "Do♯", "Ré", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si")
@@ -13,12 +37,12 @@ object NoteNames {
 
     /** The pitch class of [note] (a MIDI note or 0..11) with sharps: "Do#" or "C#" ([sharp] replaces the "#"). */
     fun pitchClass(note: Int, english: Boolean, sharp: String = "#"): String {
-        val name = (if (english) EN else FR)[Math.floorMod(note, 12)]
+        val name = (if (english) letters(EN) else solfege(FR))[Math.floorMod(note, 12)]
         return if (sharp == "#") name else name.replace("#", sharp)
     }
 
     /** A key or a chord root, spelt the usual way (E♭, A♭, B♭): "Mi♭" or "E♭". */
-    fun key(note: Int, english: Boolean): String = (if (english) EN_KEY else FR_KEY)[Math.floorMod(note, 12)]
+    fun key(note: Int, english: Boolean): String = (if (english) letters(EN_KEY) else solfege(FR_KEY))[Math.floorMod(note, 12)]
 
     private val FR_LETTERS = listOf("Do", "Ré", "Mi", "Fa", "Sol", "La", "Si")
     private val EN_LETTERS = listOf("C", "D", "E", "F", "G", "A", "B")
@@ -33,11 +57,12 @@ object NoteNames {
     /** Pitch class [pc] written on [letter] (0 = Do … 6 = Si): "Sol♯", "Mi♯", "Do♭", "G♯"; null when it would need a double sharp or flat. */
     fun spelt(pc: Int, letter: Int, english: Boolean): String? {
         val a = accidental(pc, letter) ?: return null
-        return (if (english) EN_LETTERS else FR_LETTERS)[letter] + when (a) {
+        val name = (if (english) EN_LETTERS else solfege(FR_LETTERS))[letter] + when (a) {
             1 -> "♯"
             -1 -> "♭"
             else -> ""
         }
+        return if (english) letters(listOf(name)).first() else name
     }
 
     /** Pitch class [pc] with sharps ([sharps]: "Ré♯") or flats ("Mi♭"), a natural note plain. */

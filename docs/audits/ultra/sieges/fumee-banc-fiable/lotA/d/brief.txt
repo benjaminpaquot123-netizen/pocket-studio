@@ -1,0 +1,12 @@
+First read and follow /tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/lotA/d (seat d, lot A; lang ko, device tablet8, font 100, mode pro, options amenee=remix, mission exports, budget 40 gestures).
+Profile (id t5-Ec): Producteur coréen qui remixe puis exporte (rejeu T3 F b, disque plein : T3-12, T3-13). Act as this person (habits, patience, vocabulary).
+Mission exports; its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).
+Promises to check, one « promesse: » line each in your report, with its id:
+  - id=t5-Ec-1 | « Piste par piste » d'un remix donne 4 fichiers
+  - id=t5-Ec-2 | « Prêt » signale une partie du remix coupée
+  - id=t5-Ec-3 | « Partager les 2 fichiers » en envoie deux
+  - id=t5-Ec-4 | nom de fichier coréen intact
+  - id=t5-Ec-5 | le nom tapé ne renomme pas le projet
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.
+Smoke round of the repaired bench: play your mission normally; everything the bench says about itself goes in « incidents-banc: ».

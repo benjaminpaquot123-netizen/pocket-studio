@@ -1,0 +1,6 @@
+Écran 20 (1035x1243)
+texte « 保留这个声音 » @ 240,506
+champ « 音色名称 » contenu « 明亮Reese » @ 517,606
+bouton « 清除 » @ 865,613
+bouton « 取消 » @ 758,727
+bouton « 保留 » @ 857,727

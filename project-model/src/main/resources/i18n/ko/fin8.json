@@ -1,0 +1,15 @@
+{
+  "Faire un kit avec la batterie": "드럼으로 킷 만들기",
+  "La chanson est en silence ici : elle sert de réserve de sons. Touche un haut-parleur pour l'entendre.": "여기서 노래는 무음이에요: 소리 저장소로 쓰여요. 들으려면 스피커를 터치하세요.",
+  "Mettre la voix sur les pads": "보컬을 패드에 놓기",
+  "Piocher dans la chanson": "노래에서 가져오기",
+  "Prêt": "준비 완료",
+  "Prêt : l'enregistrement part au prochain lancement.": "준비 완료: 다음 실행 때 녹음이 시작돼요.",
+  "Rejouer la basse en notes": "베이스를 노트로 다시 연주하기",
+  "Rejouer la basse sur l'Acid 303": "베이스를 Acid 303으로 다시 연주하기",
+  "Rejouer la voix en notes": "보컬을 노트로 다시 연주하기",
+  "Réécouter toutes les pistes": "모든 트랙 다시 듣기",
+  "Ses phrases de voix sur tes pads, sa batterie en kit, sa basse et sa voix en notes": "보컬 프레이즈는 패드로, 드럼은 킷으로, 베이스와 보컬은 노트로",
+  "Seule": "솔로",
+  "Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, son casque (l'écouter seule) et son haut-parleur (la couper).": "노래 전체가 효과와 함께 믹서의 ‘%s’ 채널을 거쳐요. 여기서 각 트랙에는 볼륨, 헤드폰(혼자 듣기), 스피커(음소거)가 있어요."
+}

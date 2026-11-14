@@ -1,0 +1,6 @@
+Écran 42 (588x1278)
+texte « Mode de ce projet » @ 203,303
+texte « Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi. » @ 294,399
+bouton « Simple En ce moment Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » @ 294,576
+bouton « Pro Pour aller loin : tous les outils, structure, sons, mix et live. » @ 294,804
+texte « Fermer » @ 485,963

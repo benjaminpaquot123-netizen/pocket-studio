@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Timeline: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Song written: %1$s, %2$s",
+  "Grille des notes : %s": "Note grid: %s",
+  "1 pas": "1 step",
+  "1 piste": "1 track",
+  "1 réglage": "1 setting",
+  "%d réglages": "%d settings",
+  "Fait : break de 1 mesure après %2$s": "Done: a 1-bar break after %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Done: a 1-bar build-up before %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "No song yet: your part goes out as a loop (1 bar).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Your Live take was kept: it is in the song (1 part).",
+  "Ton texte (1 caractère)": "Your text (1 character)",
+  "trop bas de 1 cent": "1 cent too low",
+  "trop haut de 1 cent": "1 cent too high",
+  "−%d demi-ton": "−%d semitone",
+  "%d min": "%d min",
+  "%1$d min %2$d": "%1$d min %2$d",
+  "Hors de la gamme du morceau": "Outside the song's scale",
+  "Poignée : glisse vers le bas pour fermer": "Handle: swipe down to close"
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour4AppProofTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T13:10:59.955Z" hostname="vm" time="0.044">
+  <properties/>
+  <testcase name="liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.04"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

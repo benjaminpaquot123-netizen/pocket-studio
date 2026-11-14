@@ -181,6 +181,10 @@ object AudioDecoder {
         var encoding = if (input.containsKey(MediaFormat.KEY_PCM_ENCODING)) input.getInteger(MediaFormat.KEY_PCM_ENCODING)
         else AudioFormat.ENCODING_PCM_16BIT
         var shown = -1
+        checkFormat(rate, srcChannels)
+        // Too long by the file's own length: refused before minutes of decoding for nothing, with
+        // its true length (half a second of slack for the encoder's padding).
+        if (!cut && durationUs > 0 && durationUs / 1e6 > maxSeconds + 0.5) throw TooLongException(durationUs / 1e6)
         try {
             CodecPump.run(
                 codec,
@@ -189,6 +193,7 @@ object AudioDecoder {
                     rate = f.getInteger(MediaFormat.KEY_SAMPLE_RATE)
                     srcChannels = f.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                     if (f.containsKey(MediaFormat.KEY_PCM_ENCODING)) encoding = f.getInteger(MediaFormat.KEY_PCM_ENCODING)
+                    checkFormat(rate, srcChannels)
                 },
                 output = { buf, info ->
                     buf.order(ByteOrder.LITTLE_ENDIAN)
@@ -210,6 +215,15 @@ object AudioDecoder {
         return minOf(srcChannels, 2) to rate
     }
 
+    /** Rates a sound may claim (a lying header: 0 channels looped forever, a tiny rate asked gigabytes). */
+    val RATES = 4_000..768_000
+    const val MAX_CHANNELS = 32
+
+    /** Audit stage 3: a header with no channels or an impossible rate fails cleanly, before any sample. */
+    internal fun checkFormat(rate: Int, channels: Int) {
+        if (rate !in RATES || channels !in 1..MAX_CHANNELS) throw IOException(tr("format audio illisible"))
+    }
+
     /** Receives decoded samples; folds more than two channels into stereo (odd ones left, even ones right). */
     internal abstract class FoldingSink {
         /** Samples received (all channels). */
@@ -223,6 +237,8 @@ object AudioDecoder {
         protected abstract fun add(v: Float)
 
         fun appendFolded(buf: java.nio.ByteBuffer, encoding: Int, channels: Int) {
+            // No channel would read nothing and never end.
+            if (channels < 1) throw IOException(tr("format audio illisible"))
             outChannels = minOf(channels, 2)
             val frame = FloatArray(channels)
             while (true) {

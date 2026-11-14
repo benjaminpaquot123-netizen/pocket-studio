@@ -1,0 +1,3 @@
+parent: e5c016d1525fb0f0b3ca3e72dac3c0b7065e5396
+test: Tour6TutoBuildBarsTest#theSongStepPromisesNoLengthThePartsDoNotHave
+rejoué : 2026-11-14, worktree jetable détaché à e5c016d15, gradle-file.sh : « techno/Facile/song_order: « arrive avec 8 mesures », but {Montée=4} »

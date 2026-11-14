@@ -1,0 +1,54 @@
+Écran 12 (588x1278)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 480,42
+bouton « محترف » @ 339,42
+icône ↶ @ 261,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône (trois points reliés) @ 45,42
+bouton « 120  BPM » @ 515,114
+bouton « ? » @ 45,114
+texte « المستويات » @ 315,196
+bouton « ? » @ 57,195
+texte « مرّر Fader للمستوى؛ اضغط على اسم مسار لمؤثراته ومنحنياته. » @ 332,239
+texte « الطبول » @ 504,322
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 531,397
+bouton (casque) [état « متوقف »] @ 477,397
+curseur [état « ⁦+0.0 dB⁩ », à 80 %] @ 504,568
+texte « ⁦+0.0⁩ » @ 504,719
+texte « Acid 303 » @ 384,322
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 411,397
+bouton (casque) [état « متوقف »] @ 357,397
+curseur [état « ⁦-10.5 dB⁩ », à 43 %] @ 384,568
+texte « ⁦-10.5⁩ » @ 384,719
+image (étincelles) @ 390,751
+texte « 1 » @ 372,751
+texte « Synth » @ 264,322
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 291,397
+bouton (casque) [état « متوقف »] @ 237,397
+curseur [état « ⁦+0.0 dB⁩ », à 80 %] @ 264,568
+texte « ⁦+0.0⁩ » @ 264,719
+texte « ريمكس » @ 144,322
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 171,397
+bouton (casque) [état « متوقف »] @ 117,397
+curseur [état « ⁦+0.0 dB⁩ », à 80 %] @ 144,568
+texte « ⁦+0.0⁩ » @ 144,719
+image (courbe) @ 528,861
+texte « المنحنيات والمؤثرات » @ 404,844
+texte « لا شيء يتحرك بعد: افتح فلترًا، ارفع مستوى… » @ 336,881
+bouton « أتمتة » [coupé] @ 423,930
+bouton « ما يُعزف » [coupé] @ 165,930
+bouton (boussole) « المرشد  · ضع إيقاعًا 5 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » [sélectionné] @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

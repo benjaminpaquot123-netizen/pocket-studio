@@ -1,0 +1,6 @@
+Écran 4 (1035x1243)
+texte « Rinomina » @ 388,490
+champ « Nome del progetto 18/40 » contenu « Il mio primo ritmo » @ 517,603
+bouton « Cancella » @ 691,594
+bouton « Annulla » @ 570,741
+bouton « OK » @ 683,741

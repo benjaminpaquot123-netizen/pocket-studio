@@ -1,0 +1,8 @@
+fusion: 4cf727113400a2e22dcbcd026f85cee78b45991e
+branche: eq/tour-6-exports2
+tete: 591cba077e2d788d8db5f87f4412aa1fd48c1c68
+relecture: docs/audits/ultra/tour-6-exports2-relecture.md
+relu: 773e0caab44daf3feddc841d5ae2964b2fc2c011
+filtres: com.pocketstudio.app.export.Tour6Exports* com.pocketstudio.app.export.Lot6UiShareLevelTest com.pocketstudio.app.human.BenchSelfTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

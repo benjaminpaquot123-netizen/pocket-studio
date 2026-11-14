@@ -1,0 +1,108 @@
+#0 SIEGE lang=fr device=tablet11Land font=100 mode=pro theme=Colorblind fresh=non gestes.max=90 lit=oui main=both amenee=- rejeu=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/tour-1/lotA/d rejeu.n=20
+#1 ROUTE launch | MODE pro | EMPREINTE ba7cea088a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#1 > touche 1334 384
+#1 DOIGT launch_new « Nouveau morceau »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE c0ee152a84 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 960 327
+#2 DOIGT starter_wizard « Fais-moi un morceau »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 23411fcc8c | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 1225 297
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE dialogue:wizard | MODE pro | EMPREINTE 209c9a3409 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 960 501
+#4 DOIGT wizard_family_Hip-hop « Hip-hop »
+#5 ROUTE dialogue:wizard | MODE pro | EMPREINTE 7c7ec22a86 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 1100 1116
+#5 DOIGT wizard_style_boom_bap « Boom bap »
+#6 ROUTE dialogue:wizard | MODE pro | EMPREINTE 2f41d3616c | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > glisse 960 1000 960 500
+#6 DOIGT wizard_style_phonk « Phonk »
+#7 ROUTE dialogue:wizard | MODE pro | EMPREINTE 3a0e2c0b6f | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 988 940
+#7 DOIGT wizard_style_choose_boom_bap « Choisir ce style »
+#8 ROUTE dialogue:wizard | MODE pro | EMPREINTE 23dcbf76cc | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 1225 1146
+#8 DOIGT wizard_next « Suivant »
+#9 ROUTE dialogue:wizard | MODE pro | EMPREINTE eb915823ff | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#9 > touche 1225 1146
+#9 DOIGT wizard_next « Suivant »
+#10 ROUTE dialogue:wizard | MODE pro | EMPREINTE 6ae08efe5e | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 1225 1146
+#10 DOIGT wizard_next « Suivant »
+#11 ROUTE dialogue:wizard | MODE pro | EMPREINTE e5cfe0ebc1 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 1225 1146
+#11 DOIGT wizard_next « Suivant »
+#12 ROUTE dialogue:wizard | MODE pro | EMPREINTE b52f34616b | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 1225 1146
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE pro | EMPREINTE a3a27625bc | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 1225 1146
+#13 DOIGT wizard_next « Suivant »
+#14 ROUTE dialogue:wizard | MODE pro | EMPREINTE d66bbc8edd | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Triangle · tenu » ellipsized (« … »)
+#14 LAYOUT CUT « Scie · 5 voix · tenu » ellipsized (« … »)
+#14 LAYOUT CUT « Scie · 3 voix · tenu » ellipsized (« … »)
+#14 LAYOUT CUT « Triangle · court » ellipsized (« … »)
+#14 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#14 > touche 1225 1146
+#14 DOIGT wizard_next « Suivant »
+#15 ROUTE dialogue:wizard | MODE pro | EMPREINTE eaaa72981c | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « Scie · monte doucement » ellipsized (« … »)
+#15 LAYOUT CUT « Triangle · monte doucement » ellipsized (« … »)
+#15 LAYOUT CUT « Scie · 7 voix · tenu » ellipsized (« … »)
+#15 LAYOUT CUT « Machine à cordes » ellipsized (« … »)
+#15 > touche 960 156
+#15 DOIGT wizard_create_now « Créer tout de suite avec les choix conse »
+#16 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE fdae961ea9 | project=p-a292c2f5 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « ● » over the touchable « Replier le Guide ouvert » (11 x 17 dp)
+#16 LAYOUT OVERLAP «  REC » over the touchable « Replier le Guide ouvert » (23 x 13 dp)
+#16 LAYOUT OVERLAP « ✎ » over the touchable « Replier le Guide ouvert » (13 x 18 dp)
+#16 LAYOUT OVERLAP «  Noter » over the touchable « Replier le Guide ouvert » (29 x 13 dp)
+#16 LAYOUT OVERLAP « ⋯ » over the touchable « Replier le Guide ouvert » (13 x 22 dp)
+#16 LAYOUT CONTRAST « Suivre » 3.79:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « ● » 3.12:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « ✎ » 3.20:1 (needs 4.5:1, 13 sp)
+#16 > touche 1803 42
+#16 DOIGT top_play
+#17 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 599374842b | project=p-a292c2f5 no tuto
+#17 SON Son : le morceau joue (partie « A »).
+#17 LAYOUT CUT « La grosse caisse : le « boum » grave qui marque les temps. En house et en techno, il tape sur chaque temps. » ellipsized (« … »)
+#17 LAYOUT OVERLAP «  · Le kick : son, motif, où il joue » over « ● » (11 x 16 dp)
+#17 LAYOUT OVERLAP «  · Le kick : son, motif, où il joue » over «  REC » (7 x 13 dp)
+#17 LAYOUT OVERLAP « 29 % » over « ⋯ » (4 x 18 dp)
+#17 LAYOUT OVERLAP «  · Le kick : son, motif, où il joue » over the touchable « Filmer l'écran avec le son » (22 x 20 dp)
+#17 LAYOUT OVERLAP « 29 % » over the touchable « Mode retours » (12 x 18 dp)
+#17 LAYOUT CONTRAST « CHAPITRE 1 · LES SONS ET LES MOTIFS » 3.90:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « ↗ » 3.12:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « La fiche de la piste « Kick » » 3.58:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « ↗ » 3.14:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Autre idée de son » 3.62:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « ↗ » 3.16:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Où il joue » 3.67:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « ↗ » 3.21:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Garder ce son dans mes favoris » 3.73:1 (needs 4.5:1, 14 sp)
+#17 > touche 1731 42
+#17 DOIGT top_record
+#18 ROUTE timeline_grid/tab_Structure | MODE pro | EMPREINTE ca41dd993e | project=p-a292c2f5 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT OVERLAP «  Arrêter » over « ⋯ » (13 x 15 dp)
+#18 LAYOUT OVERLAP «  Arrêter » over the touchable « Mode retours » (26 x 20 dp)
+#18 FIN : rejeu : divergé au pas 17

@@ -1,0 +1,51 @@
+Écran 63 (616x1371)
+touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 339,42
+bouton « Enregistrer : micro, clavier ou pads » @ 427,42
+bouton « Jouer » @ 499,42
+bouton « Plus de choix » @ 571,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+bouton « Refrain mesure 1/20 » @ 255,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 571,114
+bouton «  Mon morceau » @ 111,180
+texte « Remix » @ 252,180
+texte « Découper la chanson » @ 246,253
+bouton « ? » (nom « Qu'est-ce que « Outils de coupe » ? ») @ 436,252
+bouton « Écouter depuis la ligne orange » @ 556,267
+bouton « Retour » @ 42,267
+texte « Ma chanson préférée · 0:40 » @ 215,289
+case « Voix » [sélectionné] @ 72,366
+case « Batterie » @ 208,366
+case « Basse » @ 353,366
+case « Reste » @ 488,366
+titre « MES. 3 À 6 » @ 91,501
+texte « Pince pour zoomer » @ 500,501
+bouton « Phrases » (nom « Coupes : Phrases ») @ 125,786
+bouton « Au temps » (nom « Aimant : Au temps ») @ 347,786
+bouton « ? » (nom « Qu'est-ce que « Coupes et aimant » ? ») @ 484,786
+bouton « Annuler » [désactivé] @ 562,786
+bouton « Couper ici » @ 92,838
+bouton « Début » @ 224,838
+bouton « Fin » @ 332,838
+bouton « Enlever » @ 440,838
+bouton « Boucle » @ 548,838
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+texte « Coche des bouts pour les envoyer. » @ 210,891
+bouton « Sur les pads » [désactivé] @ 99,963
+bouton « Dans le Live » [désactivé] @ 238,963
+bouton « Garder » [désactivé] @ 377,963
+bouton « Sur une piste » [désactivé] @ 516,963
+bouton « Guide  · Pose un rythme 7 % » [état « replié »] @ 308,1077
+bouton « Jouer » @ 234,1152
+bouton « Annuler » (nom « Annuler la dernière action ») @ 100,1152
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 373,1152
+bouton « Plus » (nom « Plus de choix ») @ 516,1152
+onglet « Mon morceau » @ 56,1251
+onglet « Rythme » @ 181,1251
+onglet « Clavier » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Envoyer » @ 559,1251
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

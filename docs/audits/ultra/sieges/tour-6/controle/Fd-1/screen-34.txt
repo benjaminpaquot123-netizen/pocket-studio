@@ -1,0 +1,56 @@
+Écran 34 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+bouton « 1 » @ 161,274
+bouton « 2 » [sélectionné] @ 242,274
+bouton « Suivre » @ 344,274
+texte « Mesure » @ 79,274
+texte « Mesure 2/2 · Grosse caisse studio » @ 218,358
+bouton « 1 » [état « coup, force 100 % »] @ 70,441
+bouton [état « vide »] @ 133,441
+bouton [état « vide »] @ 197,442
+bouton [état « vide »] @ 261,442
+bouton « 2 » [état « coup, force 100 % »] @ 325,442
+bouton [état « vide »] @ 389,442
+bouton [état « vide »] @ 453,442
+bouton [état « vide »] @ 517,442
+bouton « 3 » [état « coup, force 100 % »] @ 70,517
+bouton [état « vide »] @ 133,517
+bouton [coupé, état « vide »] @ 197,517
+bouton [coupé, état « vide »] @ 261,517
+bouton « 4 » [coupé, état « coup, force 100 % »] @ 325,517
+bouton [coupé, état « vide »] @ 389,517
+bouton [coupé, état « coup, force 100 % »] @ 453,517
+bouton [coupé, état « vide »] @ 517,517
+texte « Le kick : la grosse caisse Chapitre 2/15 · Fait · Facile » @ 207,597
+icône (liste) « Chapitres » @ 444,597
+icône ⌄ @ 531,597
+image (coupe) @ 57,714
+texte « Bravo, chapitre fini ! » @ 194,687
+texte « Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « Le clap ». » @ 319,729
+icône « Lire la suite » ⌄ @ 294,816
+bouton « Chapitre suivant   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Écouter mon morceau » @ 177,975
+bouton ▶ «  Écouter l'exemple » @ 336,975
+icône « Suivant  » → @ 493,975
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

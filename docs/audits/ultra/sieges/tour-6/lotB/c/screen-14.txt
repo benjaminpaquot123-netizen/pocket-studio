@@ -1,0 +1,72 @@
+Écran 14 (588x1278)
+icône « مشروعي 1 » ✓ @ 289,36
+bouton « محترف » @ 51,36
+bouton (dossier ouvert) @ 477,114
+bouton « A » ▾ @ 336,114
+icône ↶ @ 261,114
+bouton ● @ 189,114
+bouton ▶ « هذا الجزء » @ 117,114
+icône (trois points reliés) @ 45,114
+bouton « 120  BPM » @ 515,186
+bouton « ? » @ 45,186
+onglet « الطبول 16 Pad » @ 517,258
+onglet « Acid 303 خط باص » @ 376,258
+onglet « الغناء الميكروفون » @ 229,258
+onglet « ريمكس تقسيم » @ 101,258
+bouton « Synth Synth » ⋮ [coupé] @ 24,258
+texte « الجزء: A » @ 534,324
+icône (poubelle et traits) «  مسح » [désactivé] @ 73,402
+bouton « لوحة المفاتيح » [sélectionné] @ 490,402
+bouton « النوتات » @ 348,402
+bouton ● «  سجّل لحني » @ 473,498
+icône (chronomètre) «  1 » @ 321,498
+bouton (horloge et flèche) «  احفظ ما عزفته للتو » @ 169,498
+bouton « ? » @ 39,498
+icône − @ 238,618
+icône + @ 78,618
+texte « الأوكتاف 3 » @ 158,618
+titre « لوحة المفاتيح » [état « موسَّع »] @ 475,618
+bouton « الكوردات » @ 486,702
+bouton « Pads » @ 366,702
+bouton « أوكتافان » [sélectionné] @ 488,786
+bouton « أوكتاف واحد » @ 345,786
+bouton « السلّم » @ 214,786
+bouton [coupé] @ 528,892
+bouton [coupé] @ 509,892
+bouton [coupé] @ 492,892
+bouton [coupé] @ 473,892
+bouton [coupé] @ 456,892
+bouton [coupé] @ 437,892
+bouton [coupé] @ 420,892
+bouton [coupé] @ 384,892
+bouton [coupé] @ 365,892
+bouton [coupé] @ 348,892
+bouton [coupé] @ 329,892
+bouton « دو » [coupé] @ 312,892
+bouton [coupé] @ 276,892
+bouton [coupé] @ 257,892
+bouton [coupé] @ 240,892
+bouton [coupé] @ 221,892
+bouton [coupé] @ 204,892
+bouton [coupé] @ 185,892
+bouton [coupé] @ 168,892
+bouton [coupé] @ 132,892
+bouton [coupé] @ 113,892
+bouton [coupé] @ 96,892
+bouton [coupé] @ 77,892
+bouton « دو » [coupé] @ 60,892
+bouton (boussole) « المرشد  · ضع إيقاعًا 5 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » [sélectionné] @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

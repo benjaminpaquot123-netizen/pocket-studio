@@ -1,0 +1,59 @@
+Écran 2 (1920x1200)
+bouton (icône) @ 51,45
+bouton (icône) @ 1563,45
+bouton (icône) @ 1644,45
+bouton « 124 ▭▭▭ » @ 1710,45
+bouton (icône) @ 1776,45
+touchable « ▭▭▭ » @ 1860,45
+texte « ▭▭▭ » @ 805,45
+texte « ▭▭▭ » @ 198,108
+onglet « ▭▭▭ » [sélectionné] @ 1263,132
+onglet « ▭▭▭ » @ 1332,132
+onglet « ▭▭▭ » @ 1401,132
+onglet « ▭▭▭ » @ 1470,132
+bouton « ▭▭▭ » [désactivé] @ 1609,132
+bouton « ▭▭▭ » @ 1833,132
+bouton « ▭▭▭ » @ 1731,132
+bouton (icône) @ 1848,237
+texte « ▭▭▭ » @ 1505,237
+bouton « ▭▭▭ » @ 1790,237
+texte « ▭▭▭ » @ 1563,315
+bouton « ▭▭▭ » @ 1457,426
+bouton « ▭▭▭ » @ 1829,426
+bouton « ▭▭▭ » @ 1723,426
+bouton (icône) @ 156,254
+texte « + » @ 157,255
+bouton (icône) @ 443,254
+texte « + » @ 444,255
+bouton (icône) @ 730,254
+texte « + » @ 731,255
+bouton (icône) @ 1017,254
+texte « + » @ 1018,255
+bouton (icône) @ 156,505
+texte « + » @ 157,506
+bouton (icône) @ 443,505
+texte « + » @ 444,506
+bouton (icône) @ 730,505
+texte « + » @ 731,506
+bouton (icône) @ 1017,505
+texte « + » @ 1018,506
+bouton (icône) @ 156,756
+texte « + » @ 157,757
+bouton (icône) @ 443,756
+texte « + » @ 444,757
+bouton (icône) @ 730,756
+texte « + » @ 731,757
+bouton (icône) @ 1017,756
+texte « + » @ 1018,757
+bouton (icône) @ 156,1007
+texte « + » @ 157,1008
+bouton (icône) @ 443,1007
+texte « + » @ 444,1008
+bouton (icône) @ 730,1007
+texte « + » @ 731,1008
+bouton (icône) @ 1017,1007
+texte « + » @ 1018,1008
+touchable « ▭▭▭ ▭▭▭ » @ 1692,1170
+touchable « ▭▭▭ ▭▭▭ » @ 1788,1170
+touchable « ▭▭▭ » @ 1872,1170
+texte « ▭▭▭ » @ 828,1170

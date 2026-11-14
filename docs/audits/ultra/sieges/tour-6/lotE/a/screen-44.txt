@@ -1,0 +1,67 @@
+Écran 44 (588x1278)
+icône ← @ 51,47
+bouton ▶ @ 228,47
+icône − @ 309,47
+texte « 124 BPM » @ 376,46
+icône + @ 444,47
+texte « REC » @ 528,47
+texte « Pad Live » @ 138,46
+onglet « A » @ 51,138
+onglet « B » [sélectionné] @ 108,138
+onglet « C » @ 165,138
+onglet « D » @ 222,138
+bouton « Pack… » ▾ @ 349,138
+bouton ★ @ 534,138
+bouton « ? » @ 464,138
+bouton @ 77,250
+dessin @ 100,210
+texte « loop » @ 92,214
+texte « My take 1 » @ 77,272
+bouton @ 205,250
+texte « + » @ 205,250
+bouton @ 333,250
+texte « + » @ 333,250
+bouton @ 461,250
+texte « + » @ 461,250
+bouton ▶ @ 550,250
+bouton @ 77,378
+texte « + » @ 77,378
+bouton @ 205,378
+texte « + » @ 205,378
+bouton @ 333,378
+texte « + » @ 333,378
+bouton @ 461,378
+texte « + » @ 461,378
+bouton @ 77,506
+texte « + » @ 77,506
+bouton @ 205,506
+texte « + » @ 205,506
+bouton @ 333,506
+texte « + » @ 333,506
+bouton @ 461,506
+texte « + » @ 461,506
+bouton @ 77,633
+texte « + » @ 77,633
+bouton @ 205,633
+texte « + » @ 205,633
+bouton @ 333,633
+texte « + » @ 333,633
+bouton @ 461,633
+texte « + » @ 461,633
+texte « Challenge » @ 236,757
+bouton « ? » @ 458,757
+icône ✕ @ 516,757
+texte « This page needs “hit” pads: pick a pack or another page. » @ 294,846
+bouton ↶ « Undo » @ 107,965
+bouton (quatre carrés) « Blocks » @ 294,965
+bouton (curseurs) « Effects » @ 481,965
+bouton (cotillons) « Big pads » @ 140,1046
+bouton (trois points reliés) « Share » @ 395,1046
+bouton « ? » @ 548,1046
+bouton ■ « Stop all » @ 66,1151
+bouton « Record what I play » @ 260,1136
+bouton ⋯ « Less » @ 488,1136
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

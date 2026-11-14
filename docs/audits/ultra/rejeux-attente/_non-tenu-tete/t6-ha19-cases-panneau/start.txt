@@ -1,0 +1,11 @@
+lang=fr
+device=phone
+font=100
+fresh=reel
+gestes.max=300
+mission=tuto-facile
+rejeu=/tmp/claude-0/-home-user-pocket-studio/0572a75f-9995-5e1d-b63d-56ea7bbc2294/scratchpad/cand/t6-ha19-cases-panneau
+rejeu.origine=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-6/lotH/a-suite
+rejeu.n=19
+rejeu.attendu=en pointillé : à toucher
+rejeu.absent=[coupé, état « vide, en pointillé : à toucher »]

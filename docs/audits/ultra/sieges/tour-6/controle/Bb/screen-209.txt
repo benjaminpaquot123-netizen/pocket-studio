@@ -1,0 +1,54 @@
+Écran 209 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Schlag » [coupé] @ 81,166
+texte « 1 » [coupé] @ 134,165
+texte « 2 » [coupé] @ 319,165
+texte « 3 » [coupé] @ 503,165
+texte « 4 » [coupé] @ 686,165
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,255
+bouton « ? » @ 362,255
+texte « Lautstärke: — » @ 136,306
+texte « Master-Lautstärke » @ 397,388
+texte « −6,0 dB » @ 805,388
+curseur [état « −6,0 dB », à 60 %] @ 450,459
+texte « Keine Übersteuerung: alles gut. » @ 231,525
+texte « Details » @ 104,591
+texte « Ziel-Lautheit » @ 126,660
+bouton « ? » @ 231,660
+bouton « Auto (Stil) · −9 LUFS » @ 204,730
+bouton « Club · −8 LUFS » [sélectionné] @ 501,730
+bouton « Streaming · −14 LUFS » @ 213,811
+bouton « Apple Music · −16 LUFS » @ 579,811
+texte « Exportiere deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,913
+icône (liste) « Kapitel » @ 759,914
+icône ⌄ @ 843,914
+texte « Du bist dran: Exportier deinen Track und teile ihn. » @ 367,1002
+texte « ▸ Warum? » @ 450,1054
+bouton (doigt qui touche) «   Ich mach's » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

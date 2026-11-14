@@ -1,0 +1,66 @@
+Écran 232 (900x1509)
+texte « Sound ändern » @ 149,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Für das Pad 2 (Kick 2) » @ 156,78
+onglet ◎ « Kicks » [sélectionné] @ 91,143
+onglet ○ « Snares » @ 255,143
+onglet (main) « Claps » @ 420,143
+onglet (points en rond) « Geschlossene Hi-Hats » @ 690,143
+titre « SOUNDS » [état « Aufgeklappt »] @ 121,233
+icône ← @ 78,299
+texte « Techno » @ 486,299
+bouton ◎ « Kick 3 Techno » @ 243,410
+icône ★ @ 227,410
+bouton « Setzen » @ 347,410
+bouton ◎ « Kick 4 Techno » @ 657,410
+icône ☆ @ 641,410
+bouton « Setzen » @ 761,410
+bouton ◎ « Kick 5 Techno » @ 243,548
+icône ☆ @ 227,548
+bouton « Setzen » @ 347,548
+bouton ◎ « Kick 7 Techno » @ 657,548
+icône ☆ @ 641,548
+bouton « Setzen » @ 761,548
+bouton ◎ « Kick 9 Techno » @ 243,686
+icône ☆ @ 227,686
+bouton « Setzen » @ 347,686
+bouton ◎ « Kick 10 Techno » @ 657,686
+icône ☆ @ 641,686
+bouton « Setzen » @ 761,686
+bouton ◎ « Kick 14 Techno » @ 243,824
+icône ☆ @ 227,824
+bouton « Setzen » @ 347,824
+bouton ◎ « Kick 2 Techno » @ 657,824
+icône ☆ @ 641,824
+bouton « Setzen » @ 761,824
+bouton ◎ « Kick 15 Techno » @ 243,962
+icône ☆ @ 227,962
+bouton « Setzen » @ 347,962
+bouton ◎ « Kick 1 Techno » @ 657,962
+icône ☆ @ 641,962
+bouton « Setzen » @ 761,962
+bouton ◎ « Kick 12 Techno » @ 243,1100
+icône ☆ @ 227,1100
+bouton « Setzen » @ 347,1100
+bouton ◎ « Kick 11 Techno » @ 657,1100
+icône ☆ @ 641,1100
+bouton « Setzen » @ 761,1100
+bouton ◎ « Kick 8 Techno » @ 243,1238
+icône ☆ @ 227,1238
+bouton « Setzen » @ 347,1238
+bouton ◎ « Kick 6 Techno » @ 657,1238
+icône ☆ @ 641,1238
+bouton « Setzen » @ 761,1238
+bouton ◎ « Kick 13 Techno » @ 243,1376
+icône ☆ @ 227,1376
+bouton « Setzen » @ 347,1376
+bouton ◎ « Kick 16 Techno » @ 657,1376
+icône ☆ @ 641,1376
+bouton « Setzen » @ 761,1376
+bouton ◎ « Kick 17 Techno » [coupé] @ 243,1480
+icône ☆ [coupé] @ 227,1496
+bouton « Setzen » [coupé] @ 347,1495
+bouton ◎ « Kick 18 Techno » [coupé] @ 657,1480
+icône ☆ [coupé] @ 641,1496
+bouton « Setzen » [coupé] @ 761,1495

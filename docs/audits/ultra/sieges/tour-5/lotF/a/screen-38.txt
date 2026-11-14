@@ -1,0 +1,11 @@
+Écran 38 (1035x1243)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 553,54
+bouton «   Nouveau morceau guidé » @ 517,147
+bouton «   Nouveau projet : style, démo ou vide » @ 517,243
+bouton « Importer un projet (.zip) » @ 517,333
+touchable « Techno de Detroit OUVERT à l'instant · 126 BPM · 176 mes. · 5:35 · 36 parties » @ 517,476
+bouton « Options de Techno de Detroit » @ 981,476
+bouton « Partager mon morceau » @ 236,517
+touchable « House il y a 1 min · 122 BPM · 104 mes. · 3:25 · 20 parties » @ 517,636
+bouton « Options de House » @ 981,636

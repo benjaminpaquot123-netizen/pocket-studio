@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.OreilleTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-11-12T14:01:33.541Z" hostname="vm" time="0.573">
+  <properties/>
+  <testcase name="whenTheAppLeftTheScreenTheRobotReopensItBeforeReadingAndNotesIt" classname="com.pocketstudio.bentest.OreilleTest" time="0.057"/>
+  <testcase name="aNoKeepsItsPictureItsJournalAndItsMeasuresAndTheRunGoesOn" classname="com.pocketstudio.bentest.OreilleTest" time="0.03"/>
+  <testcase name="theBannerWaitsForTheAnswerAndClearsItself" classname="com.pocketstudio.bentest.OreilleTest" time="0.016"/>
+  <testcase name="questionEightAsksBenjaminForTheBackGesturesInsteadOfSwipingForHim" classname="com.pocketstudio.bentest.OreilleTest" time="0.013"/>
+  <testcase name="onceBluetoothIsConnectedAfterReadyQuestionSixIsAsked" classname="com.pocketstudio.bentest.OreilleTest" time="0.015"/>
+  <testcase name="theKickIsComparedWithItsPanBeforeNotWithTheCentre" classname="com.pocketstudio.bentest.OreilleTest" time="0.017"/>
+  <testcase name="theBluetoothAndTheBackGestureQuestionsHaveTheirOwnButtons" classname="com.pocketstudio.bentest.OreilleTest" time="0.017"/>
+  <testcase name="theThresholdIsFiveHundredthsOfPan" classname="com.pocketstudio.bentest.OreilleTest" time="0.001"/>
+  <testcase name="theReportHasItsSectionAndTheMeasuresHoldTheAnswers" classname="com.pocketstudio.bentest.OreilleTest" time="0.043"/>
+  <testcase name="withoutAWiredHeadsetQuestionFiveIsSkippedNotAsked" classname="com.pocketstudio.bentest.OreilleTest" time="0.02"/>
+  <testcase name="skippingTheBluetoothPlugInQuestionSkipsQuestionSix" classname="com.pocketstudio.bentest.OreilleTest" time="0.017"/>
+  <testcase name="skippingTheBackGesturesIsNotAFailureAndReadsNothingAfter" classname="com.pocketstudio.bentest.OreilleTest" time="0.015"/>
+  <testcase name="withoutAConnectedBluetoothDeviceTheBannerAsksToConnectOneThenSkipsIfStillNone" classname="com.pocketstudio.bentest.OreilleTest" time="0.014"/>
+  <testcase name="theBannerGivesUpAtItsTimeout" classname="com.pocketstudio.bentest.OreilleTest" time="0.201"/>
+  <testcase name="theEightQuestionsAreAskedInOnePass" classname="com.pocketstudio.bentest.OreilleTest" time="0.028"/>
+  <testcase name="anUnreadablePanIsARedNeverAGreenByDefault" classname="com.pocketstudio.bentest.OreilleTest" time="0.015"/>
+  <testcase name="aKickThatMovedIsARedWithItsPictureAndBothValues" classname="com.pocketstudio.bentest.OreilleTest" time="0.011"/>
+  <testcase name="aSkippedQuestionIsNotAFailure" classname="com.pocketstudio.bentest.OreilleTest" time="0.011"/>
+  <testcase name="noAnswerToTheBackGesturesFailsTheStep" classname="com.pocketstudio.bentest.OreilleTest" time="0.011"/>
+  <testcase name="noAnswerFailsTheStepInsteadOfWaitingForever" classname="com.pocketstudio.bentest.OreilleTest" time="0.012"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

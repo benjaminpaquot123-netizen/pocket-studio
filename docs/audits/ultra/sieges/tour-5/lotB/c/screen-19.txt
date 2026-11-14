@@ -1,0 +1,30 @@
+Écran 19 (900x1509)
+touchable « Tabelle schließen » @ 450,754
+texte « Griff: zum Schließen nach unten wischen » @ 450,726
+bouton « Schließen » @ 805,798
+texte « Tonart des Tracks » @ 379,798
+texte « Tonart des Tracks: F · Phrygisch » @ 184,864
+texte « Tonleiter » @ 69,909
+touchable « Dur » @ 63,975
+touchable « Moll » @ 153,975
+touchable « Dorisch » @ 266,975
+touchable « Moll-Penta » @ 416,975
+touchable « Dur-Penta » @ 580,975
+touchable « Blues » @ 714,975
+touchable « Phrygisch » @ 101,1056
+touchable « Harmonisch Moll » @ 302,1056
+texte « Grundton » @ 72,1122
+touchable « C » @ 63,1188
+touchable « C♯ » @ 150,1188
+touchable « D » @ 237,1188
+touchable « E♭ » @ 324,1188
+touchable « E » @ 411,1188
+touchable « F » @ 498,1188
+touchable « F♯ » @ 585,1188
+touchable « G » @ 672,1188
+touchable « A♭ » @ 759,1188
+touchable « A » @ 63,1269
+touchable « B♭ » @ 150,1269
+touchable « B » @ 237,1269
+texte « Geschafft! Die Farbe des Songs ist gewählt. » @ 342,1350
+bouton « Zurück zum Tutorial » @ 450,1434

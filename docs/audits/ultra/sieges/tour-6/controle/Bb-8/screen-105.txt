@@ -1,0 +1,49 @@
+Écran 105 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton (curseurs) « Analog Der klassische Synth » [coupé] @ 174,325
+bouton (curseurs) « Analog + Filter Zwei Oszillatoren und ein Filter » [coupé, sélectionné] @ 450,343
+bouton (curseurs) « Waveshaper Sanft bis stark verzerrt » [coupé] @ 726,325
+bouton (curseurs) « Phasenverzerrung Rund oder bissig, im Stil des Casio CZ » @ 174,461
+bouton (curseurs) « Chiptune 8-Bit-Videospiele » @ 450,443
+titre « FM » [état « Aufgeklappt »] @ 450,554
+bouton (rond relié à des points) « FM 2-Op. Glocken und Metall » @ 174,629
+bouton (rond relié à des points) « FM 6-Op. · Bank 1 DX7-Sounds, Serie 1 » @ 450,647
+bouton (rond relié à des points) « FM 6-Op. · Bank 2 DX7-Sounds, Serie 2 » @ 726,647
+bouton (rond relié à des points) « FM 6-Op. · Bank 3 DX7-Sounds, Serie 3 » @ 174,785
+titre « TEXTUREN » [état « Aufgeklappt »] @ 450,878
+bouton (hachures) « Formanten Singende Vokale » @ 174,953
+bouton (hachures) « Additiv Orgel und Obertöne » @ 450,953
+bouton (hachures) « Wavetable Digitale 80er-Sounds » @ 726,953
+bouton (hachures) « Wave Terrain Eine wandernde Welle » @ 174,1056
+bouton (hachures) « String-Machine 70er-Streicher » [coupé] @ 450,1059
+bouton (hachures) « Akkorde Ein ganzer Akkord pro Taste » @ 726,1056
+texte « Der Bass Kapitel 5/16 · Schritt 4/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe auf „Sound der Spur einstellen ↓“: Dieser Knopf ist ganz oben auf der Notenseite, direkt unter „Tastatur“ und „Noten“ (scroll die Seite nach oben, um ihn zu sehen). Die Seite scrollt zum Sound der Spur. Dreh den „Cutoff“ um mindestens 15 auf. Der Bass öffnet sich und wird bissiger. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

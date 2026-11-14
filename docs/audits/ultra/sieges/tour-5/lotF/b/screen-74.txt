@@ -1,0 +1,84 @@
+Écran 74 (1920x1200)
+touchable « Mein erster Beat Gespeichert » (nom « Meine Projekte ») @ 694,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 1422,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 1507,42
+bouton « Rückgängig » @ 1587,42
+bouton « Wiederholen » [désactivé] @ 1659,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 1731,42
+bouton « Stoppen » @ 1803,42
+bouton « Meinen Song teilen » @ 1875,42
+bouton « A Takt 1/1 » (nom « im Loop ») @ 329,144
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 114,144
+interrupteur « Loop » (nom « Teil loopen statt den Song spielen ») [coché, état « an »] @ 1750,144
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 1875,144
+onglet « Struktur » @ 76,266
+onglet « Sounds » [sélectionné] @ 70,378
+onglet « Mix » @ 60,490
+onglet « Live » @ 60,602
+onglet « Mehr » @ 60,714
+onglet « Drums 16 Pads » [sélectionné] @ 267,240
+onglet « Acid 303 Bassline » @ 490,240
+onglet « Vocals Mikrofon » @ 726,240
+onglet « Remix Trennen » @ 958,240
+touchable « Synth Synth » @ 1153,240
+bouton «  Spur » @ 1342,240
+texte « Teil: A » @ 262,310
+image « im Loop » @ 183,310
+texte « Er läuft im Loop, während du ihn bearbeitest. ⟳ Loop oben bringt den Song zurück. » @ 914,364
+touchable « Kick » @ 275,478
+touchable « Kick 2 » @ 491,478
+touchable « Snare » @ 707,478
+touchable « Snare 2 » @ 923,478
+touchable « Clap » @ 275,616
+touchable « Hi-Hat » @ 491,616
+touchable « Offene Hi-Hat » @ 707,616
+touchable « Tiefes Tom » @ 923,616
+touchable « Mittleres Tom » @ 275,754
+touchable « Hohes Tom » @ 491,754
+touchable « Rim » @ 707,754
+touchable « Cowbell » @ 923,754
+touchable « Becken » @ 275,892
+touchable « Shaker » @ 491,892
+touchable « Conga » @ 707,892
+touchable « Zap » @ 923,892
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 771,1017
+bouton « Kit: Klassisch » @ 337,1038
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « Alle Pads » @ 1765,474
+bouton « STEPS: KICK · A » [état « Aufgeklappt »] @ 1361,474
+bouton « ? » (nom « Was ist „Step“? ») @ 1461,474
+touchable « 1 » (nom « Step 1 ») [état « Schlag, Stärke 100 % »] @ 1116,581
+touchable « Step 2 » [état « leer »] @ 1218,582
+touchable « Step 3 » [état « leer »] @ 1320,582
+touchable « Step 4 » [état « leer »] @ 1422,582
+touchable « 2 » (nom « Step 5 ») [état « Schlag, Stärke 100 % »] @ 1524,582
+touchable « Step 6 » [état « leer »] @ 1626,582
+touchable « Step 7 » [état « leer »] @ 1728,582
+touchable « Step 8 » [état « leer »] @ 1830,582
+touchable « 3 » (nom « Step 9 ») [état « Schlag, Stärke 100 % »] @ 1116,707
+touchable « Step 10 » [état « leer »] @ 1218,708
+touchable « Step 11 » [état « leer »] @ 1320,708
+touchable « Step 12 » [état « leer »] @ 1422,708
+touchable « 4 » (nom « Step 13 ») [état « Schlag, Stärke 100 % »] @ 1524,708
+touchable « Step 14 » [état « leer »] @ 1626,708
+touchable « Step 15 » [état « leer »] @ 1728,708
+touchable « Step 16 » [état « leer »] @ 1830,708
+case « Schläge » [sélectionné] @ 1170,816
+case « Rolls » @ 1347,816
+case « Panorama » @ 1543,816
+case « Tonhöhe » @ 1773,816
+  → la suite sur le côté (glisse pour la voir)
+texte « Füllen » @ 1123,900
+bouton « alles » @ 1236,900
+bouton « 1/2 » @ 1336,900
+bouton « 1/4 » @ 1421,900
+bouton « ◀ » @ 1502,900
+bouton « ▶ » @ 1577,900
+bouton « Löschen » @ 1710,900
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 1473,1008
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Füg eine Melodie hinzu 29 % » [état « eingeklappt »] @ 960,1104
+texte « Feedback-Modus » @ 780,1170
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 1604,1170
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 1748,1170
+touchable « ⋯ » (nom « Feedback-Modus ») @ 1872,1170

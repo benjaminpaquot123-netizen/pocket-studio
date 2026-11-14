@@ -1,0 +1,59 @@
+Écran 79 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Drums » @ 116,191
+texte « Leeren » @ 707,213
+icône (poubelle) @ 822,213
+texte « Filter Cutoff » @ 122,237
+texte « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. » @ 558,303
+bouton (curseurs) «  Einstellung zeigen » @ 221,384
+bouton « Loop » [sélectionné] @ 100,465
+bouton « Pro Teil » @ 243,465
+bouton « Song » @ 387,465
+texte « Dieselbe Kurve bei jedem Loop-Durchlauf (32 Steps). » @ 362,528
+texte « Glätten » @ 467,591
+bouton (pinceau) « Zeichnen » [sélectionné] @ 142,591
+bouton (courbe) « Linie » @ 321,591
+icône (loupe −) [désactivé] @ 580,591
+texte « ×1 » @ 634,591
+icône (loupe +) @ 688,591
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » @ 450,708
+texte « 18,0 kHz » @ 81,805
+texte « 849 Hz » @ 81,891
+texte « 40 Hz » @ 82,977
+texte « Schlag » @ 81,1012
+texte « 1 » @ 134,1012
+texte « 2 » @ 228,1012
+texte « 3 » @ 320,1012
+texte « 4 » @ 412,1012
+texte « 5 » @ 502,1012
+texte « 6 » @ 595,1012
+texte « 7 » @ 685,1012
+texte « 8 » @ 778,1012
+image (chapeau de diplômé) @ 37,1083
+texte « Hi-Hats, Tamburin und Swing Kapitel 4/17 · Schritt 4/5 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Stell den Swing auf 25: Die geraden Sechzehntel kommen etwas später, zwischen Chicago House (55–60 %) und New York House (70–80 %). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

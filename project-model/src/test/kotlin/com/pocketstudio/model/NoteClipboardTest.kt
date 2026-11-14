@@ -37,9 +37,11 @@ class NoteClipboardTest {
         assertEquals(0, r.dropped)
         assertEquals(listOf(0, bar + 2 * t, bar + 10 * t), r.clip.notes.map { it.start })
         assertEquals(2, r.selection.size)
-        // On bar 1 of the same clip: on top of what is there, same timing.
+        // On bar 1 of the same clip: on top of what is there, same timing. Audit final (lot notes):
+        // the same notes on the same places make one each (no invisible double), still chosen.
         val same = NoteEdits.pasteOnBar(source, board, 0, bar)
-        assertEquals(4, same.clip.notes.size)
+        assertEquals(2, same.clip.notes.size)
+        assertEquals(2, same.selection.size)
         // Past the longest loop: what does not fit is counted, not lost silently.
         val full = NoteClip(steps = NoteClip.MAX_STEPS).sanitized()
         val past = NoteEdits.pasteOnBar(full, board, NoteClip.MAX_STEPS / 16, bar)
@@ -55,6 +57,8 @@ class NoteClipboardTest {
         assertEquals(48, NoteClip(steps = 48).sanitized().steps)
         assertEquals(80, NoteClip(steps = 80).sanitized().steps)
         assertEquals(NoteClip.MAX_STEPS, NoteClip(steps = 999).sanitized().steps)
-        assertEquals(16, NoteClip(steps = 20).sanitized().steps)
+        // Audit final (lot notes): whole beats, so whole bars of any time signature (20 = a bar of 5/4).
+        assertEquals(20, NoteClip(steps = 20).sanitized().steps)
+        assertEquals(16, NoteClip(steps = 18).sanitized().steps)
     }
 }

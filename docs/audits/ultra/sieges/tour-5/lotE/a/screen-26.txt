@@ -1,0 +1,15 @@
+Écran 26 (588x1278)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 330,54
+bouton «   Nouveau morceau guidé » @ 294,147
+bouton «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton « Importer un projet (.zip) » @ 294,333
+texte « « Mon projet 1 » est dans la corbeille (30 jours). » @ 200,420
+bouton « Annuler » @ 424,420
+bouton « OK » @ 526,420
+texte « Aucun projet pour l'instant » @ 200,513
+texte « Commence un morceau, ou ramène un projet envoyé depuis un autre téléphone. » @ 294,576
+bouton «   Nouveau morceau » @ 294,660
+bouton « Importer un projet » @ 294,750
+bouton « ▸ Corbeille (1) gardés 30 jours » @ 166,865
+bouton « Vider la corbeille » @ 442,866

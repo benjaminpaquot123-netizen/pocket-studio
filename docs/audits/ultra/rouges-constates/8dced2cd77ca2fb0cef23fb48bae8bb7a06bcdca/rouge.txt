@@ -1,0 +1,3 @@
+parent: 1a35610ce684c03feafa92b9b18c95a048837c16
+test: Tour6TutoGhostTapTest#aTapAHairPastADottedNoteWritesThatNoteNotAParasite
+rejoué : 2026-11-14, worktree jetable détaché à 1a35610ce, gradle-file.sh : « a tap a hair past the ghost writes the ghost, not a parasite »

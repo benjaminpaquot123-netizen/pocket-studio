@@ -1,0 +1,56 @@
+Écran 30 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 234,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 495,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Timeline » [désactivé] @ 91,192
+onglet « Teile » [sélectionné] @ 206,192
+bouton « DER SONG » [état « Aufgeklappt »] @ 140,285
+bouton « ? » (nom « Was ist „Song“? ») @ 217,285
+texte « Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…). » @ 450,346
+texte « Hinzufügen: » @ 102,400
+bouton « + Neuer Teil (Kopie von A) » @ 329,463
+bouton « + Neuer leerer Teil » @ 638,463
+bouton « + A » @ 96,463
+bouton «   Was im Song spielt » @ 450,547
+bouton « SONG-EINSTELLUNGEN » [état « Aufgeklappt »] @ 450,613
+texte « Am Ende: » @ 89,679
+case « stoppen » [sélectionné] @ 214,679
+case « neu anfangen » @ 385,679
+texte « Beim Abspielen: » @ 121,763
+case « dem Song folgen » [sélectionné] @ 323,763
+case « bei meinem Teil bleiben » @ 589,763
+texte « Die Bildschirme zeigen den Teil, der gerade spielt. » @ 272,824
+texte « Schläge pro Takt: » @ 129,872
+bouton « ? » (nom « Was ist „Schläge pro Takt“? ») @ 238,871
+case « 2/4 » @ 84,941
+case « 3/4 » @ 178,941
+case « 4/4 » [sélectionné] @ 273,941
+case « 5/4 » @ 367,941
+case « 6/4 » @ 461,941
+case « 7/4 » @ 555,941
+texte « 4/4 für die meisten Songs, 3/4 für einen Walzer, 6/4 oder 7/4 für seltenere Rhythmen. » @ 430,1002
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 4/4 · Pro » @ 400,1104
+bouton « Kapitel » @ 771,1104
+bouton « Aufklappen » @ 843,1104
+touchable « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. Lesen » @ 450,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » [sélectionné] @ 85,1389
+onglet « Sounds » @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

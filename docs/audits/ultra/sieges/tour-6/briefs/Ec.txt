@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotE/c (seat c, lot E; lang pt-BR, device phone, font 200, mode simple, options -, mission remix-voix, budget 110 gestures).
+Profile (id t6-Ec): Utilisatrice brésilienne malvoyante, téléphone, police 200 %, Mode simple, veut séparer la voix d'une chanson. Note ce qui est trop gros ou coupé. Promesses : pour chacune, oui ou non avec le numéro d'écran. Act as this person (habits, patience, vocabulary).
+Mission remix-voix; its 3 goals (ids, the bench checks them): separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Ec-1 | 1. Tout le Remix se fait sans bouton hors de l'écran ni texte coupé avec la police 200 %
+  - id=t6-Ec-2 | 2. La séparation de la chanson se lance et se termine
+  - id=t6-Ec-3 | 3. Un bout de voix se pose sur un pad ou une piste
+  - id=t6-Ec-4 | 4. tous les textes vus sont dans ma langue, aucun en français ni coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

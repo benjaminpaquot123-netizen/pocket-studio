@@ -1,0 +1,79 @@
+Écran 58 (1200x540)
+bouton « Retour » @ 51,45
+bouton « Jouer » @ 852,45
+bouton « Moins vite » @ 933,45
+bouton « 126 BPM » @ 994,45
+bouton « Plus vite » @ 1056,45
+touchable « REC » (nom « Enregistrer la performance ») @ 1140,45
+texte « Pad Live » @ 450,45
+bouton « Ma prise 1, boucle, prêt, pad B1 » @ 167,135
+texte « boucle » @ 175,111
+bouton « Réglages du pad, pad B1 » @ 190,106
+texte « Ma prise 1 » @ 165,160
+bouton « vide, pad B2 » @ 293,135
+texte « + » @ 293,136
+bouton « vide, pad B3 » @ 419,135
+texte « + » @ 419,136
+bouton « vide, pad B4 » @ 545,135
+texte « + » @ 545,136
+bouton « Lancer la ligne 1 à la mesure » @ 633,135
+bouton « vide, pad B5 » @ 167,232
+texte « + » @ 167,233
+bouton « vide, pad B6 » @ 293,232
+texte « + » @ 293,233
+bouton « vide, pad B7 » @ 419,232
+texte « + » @ 419,233
+bouton « vide, pad B8 » @ 545,232
+texte « + » @ 545,233
+bouton « vide, pad B9 » @ 167,329
+texte « + » @ 167,330
+bouton « vide, pad B10 » @ 293,329
+texte « + » @ 293,330
+bouton « vide, pad B11 » @ 419,329
+texte « + » @ 419,330
+bouton « vide, pad B12 » @ 545,329
+texte « + » @ 545,330
+bouton « vide, pad B13 » @ 167,426
+texte « + » @ 167,426
+bouton « vide, pad B14 » @ 293,426
+texte « + » @ 293,426
+bouton « vide, pad B15 » @ 419,426
+texte « + » @ 419,426
+bouton « vide, pad B16 » @ 545,426
+texte « + » @ 545,426
+onglet « A » (nom « Page A ») @ 796,132
+onglet « B » (nom « Page B ») [sélectionné] @ 853,132
+onglet « C » (nom « Page C · vide ») @ 910,132
+onglet « D » (nom « Page D · vide ») @ 967,132
+bouton « Pack… » @ 1027,132
+bouton « Défi : refais ce rythme » @ 1146,132
+bouton « ? » (nom « Qu'est-ce que « Pages et packs » ? ») @ 1076,132
+texte « EFFETS DE SCÈNE » @ 851,207
+bouton « ? » (nom « Qu'est-ce que « Effets de scène » ? ») @ 961,207
+texte « Appuie et maintiens » @ 1086,207
+bouton « Filtre · grave ↔ aigu » @ 828,286
+texte « Filtre » @ 828,277
+texte « grave ↔ aigu » @ 828,301
+bouton « Écho · en sortie » @ 972,286
+texte « Écho » @ 972,274
+texte « en sortie » @ 972,301
+bouton « Roulement · 1/16 » @ 1116,286
+texte « Roulement » @ 1116,274
+texte « 1/16 » @ 1116,300
+bouton « Montée · 4 mesures » @ 828,388
+texte « Montée » @ 828,377
+texte « 4 mesures » @ 828,403
+bouton « Chute · freinage » @ 972,388
+texte « Chute » @ 972,376
+texte « freinage » @ 972,403
+bouton « Bégaie · 1/16 » @ 1116,388
+texte « Bégaie » @ 1116,376
+texte « 1/16 » @ 1116,403
+bouton « Tout couper » @ 829,464
+bouton « Annuler » @ 972,464
+bouton « Briques » @ 1115,464
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 972,510
+touchable « ✎  Noter » (nom « Écrire une note ») @ 1068,510
+touchable « ⋯ » (nom « Mode retours ») @ 1152,510
+texte « Mode retours » @ 468,510

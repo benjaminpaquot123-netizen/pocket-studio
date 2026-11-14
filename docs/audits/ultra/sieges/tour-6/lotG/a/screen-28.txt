@@ -1,0 +1,13 @@
+Écran 28 (588x1278)
+texte « BenStudio » @ 169,78
+texte « Ne yapmak istersin? » @ 238,146
+bouton ✓ « Devam et Pro İlk ritmim 20 ölçü · 0:40 · 1 bölüm az önce kaydedildi » → @ 294,327
+bouton (étincelles) « Yeni şarkı Tek dokunuşla bir stil ya da “Bana bir parça yap”. » → @ 294,564
+bouton (dossier ouvert) « Projelerim Başka bir şarkı aç, kopyala ya da yeniden adlandır. » → @ 294,778
+bouton (quatre vagues) « Remix Parça ayırma: davul, bas, vokal ve geri kalanı. » → @ 294,991
+bouton (quatre vagues) → « Pad Live YENİ Çalmaya hazır padler, senin seslerin, canlı efektler. Hemen ses verir. » [coupé] @ 294,1111
+bouton « ↓ 5 tane daha » @ 443,1164
+texte « ●  REC » @ 360,1248
+texte « ✎  Not al » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 162,1248

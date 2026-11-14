@@ -1,5 +1,6 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -130,7 +131,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
                         tr("À télécharger une seule fois (%s, Wi-Fi conseillé). Licence libre.", bank.sizeLabel),
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth().testTag("download_library")) {
+                    Button(onClick = ui.download, modifier = Modifier.pressScale().fillMaxWidth().testTag("download_library")) {
                         Text(tr("Télécharger %s (%s)", bank.name, bank.sizeLabel))
                     }
                 }
@@ -145,7 +146,7 @@ fun InstrumentPanel(ui: InstrumentUi) {
                 }
                 is LibraryState.Failed -> {
                     Text(lib.message, color = Neon.RedText)
-                    Button(onClick = ui.download, modifier = Modifier.fillMaxWidth()) { Text(tr("Réessayer")) }
+                    Button(onClick = ui.download, modifier = Modifier.pressScale().fillMaxWidth()) { Text(tr("Réessayer")) }
                 }
                 is LibraryState.Ready -> Browser(lib.presets, ui.current, ui.bankId, ui.select, ui.loadKit)
             }
@@ -188,7 +189,7 @@ private fun Browser(
         }
         val chosen = kits.firstOrNull { current?.bankId == bankId && current.bank == 128 && current.program == it.program }
         if (chosen != null) {
-            Button(onClick = { loadKit(chosen) }, modifier = Modifier.fillMaxWidth().testTag("kit_to_pads")) {
+            Button(onClick = { loadKit(chosen) }, modifier = Modifier.pressScale().fillMaxWidth().testTag("kit_to_pads")) {
                 Text(tr("Mettre « %s » sur les 16 pads du Rythme", chosen.name))
             }
         }

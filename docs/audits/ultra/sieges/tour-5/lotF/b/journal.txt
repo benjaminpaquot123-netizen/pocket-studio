@@ -1,0 +1,546 @@
+#0 SIEGE lang=de device=tablet11Land font=200 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 447bdea1b7 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Spurtrennung: Schlagzeug, Bass, Gesang und der Rest. » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 633 679
+#1 DOIGT launch_continue « Weiter »
+#2 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 82055c7e48 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « 16 Pads » lines cut (taller than its box)
+#2 LAYOUT CUT « Bassline » lines cut (taller than its box)
+#2 LAYOUT CUT « Mikrofon » lines cut (taller than its box)
+#2 LAYOUT CUT « Trennen » lines cut (taller than its box)
+#2 LAYOUT CUT « Synth » lines cut (taller than its box)
+#2 LAYOUT CUT «  Spur » drawn past its parent's edge (down, 28 dp shown of 37)
+#2 LAYOUT CUT « ? » lines cut (taller than its box)
+#2 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#2 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#2 LAYOUT CONTRAST « 16 Pads » 3.10:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « Bassline » 3.10:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « Mikrofon » 3.10:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « Trennen » 3.10:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « Synth » 3.10:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 2 » 1.63:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 3 » 1.63:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 4 » 1.63:1 (needs 4.5:1, 14 sp)
+#2 > touche 60 490
+#2 DOIGT tab_Mix « Mix »
+#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c4f1d5c7f9 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Drums » a word split over two lines
+#3 LAYOUT CUT « Synth » a word split over two lines
+#3 LAYOUT CUT « Remix » a word split over two lines
+#3 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#3 > touche 1427 590
+#3 DOIGT automation_add «  Eine Einstellung automatisieren »
+#4 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE c3af3cfbbd | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Drums » 3.50:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Acid 303 » 3.50:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Lautstärke » 2.84:1 (needs 4.5:1, 16 sp)
+#4 > touche 960 749
+#4 DOIGT pick_filter_0 « Filter (Sweep) »
+#5 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5e375e6dd7 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > glisse 1473 1000 1473 450
+#5 DOIGT rien (texte « Öffnet (hell) oder schließt (dumpf) den  »)
+#6 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7302d0be1b | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > glisse 1473 1000 1473 450
+#6 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fb14fd836e | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#7 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#7 LAYOUT CUT « 40 Hz » lines dropped (more lines than room)
+#7 LAYOUT CUT « Schlag » lines dropped (more lines than room)
+#7 LAYOUT CUT « 1 » lines cut (taller than its box)
+#7 LAYOUT CUT « 2 » lines cut (taller than its box)
+#7 LAYOUT CUT « 3 » lines cut (taller than its box)
+#7 LAYOUT CUT « 4 » lines cut (taller than its box)
+#7 > glisse 1170 820 1840 680
+#7 DOIGT rien
+#8 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fb14fd836e | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 1412 303
+#8 DOIGT auto_tool_line_0 « Linie »
+#9 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c36e8659db | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 1170 820
+#9 DOIGT rien
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c36e8659db | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 1840 680
+#10 DOIGT rien
+#11 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c36e8659db | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 RIEN NE CHANGE (3 écrans identiques)
+#11 > touche 1803 42
+#11 DOIGT top_play
+#12 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4575b9dd2a | project=projet-1 no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 > glisse 1473 400 1473 900
+#12 DOIGT rien
+#13 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c11be2155 | project=projet-1 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 1298 496
+#13 DOIGT auto_show_0 «  Einstellung zeigen »
+#14 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 675437634f | project=projet-1 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 LAYOUT CONTRAST « 1. Filter » 3.50:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Acid » 1.40:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Lo-Fi Tape » 2.75:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Kleiner Raum » 1.45:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Schließen » 1.58:1 (needs 4.5:1, 14 sp)
+#14 > glisse 960 950 960 350
+#14 DOIGT rien (texte « Halte den Finger auf einem Vibe, um ihn  »)
+#15 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE f152a2a54d | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 LAYOUT CONTRAST « Bewegung » 1.63:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « ↓ Trocken » 1.50:1 (needs 4.5:1, 12 sp)
+#15 > glisse 960 1050 960 250
+#15 DOIGT rien
+#16 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE f152a2a54d | project=projet-1 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 > glisse 1350 1000 1350 300
+#16 DOIGT rien (texte « Wisch mit dem Finger, um den Sound live  »)
+#17 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 92cce720ae | project=projet-1 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 LAYOUT CONTRAST « ↓ Trocken » 3.93:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Farbe » 1.57:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Neutral » 1.33:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Gemeinsames Reverb und Echo » 3.23:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Reverb-Send » 2.79:1 (needs 4.5:1, 14 sp)
+#17 > glisse 1350 300 1350 1050
+#17 DOIGT rien (texte « Hell → »)
+#18 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE aa854a89fb | project=projet-1 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT CONTRAST « Lo-Fi Tape » 3.50:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Kleiner Raum » 3.51:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « XY-Pad, oben-unten: » 4.10:1 (needs 4.5:1, 13 sp)
+#18 > glisse 1350 300 1350 1050
+#18 DOIGT rien (texte « Tippe auf einen Vibe, um ihn auszuprobie »)
+#19 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 675437634f | project=projet-1 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 > touche 816 230
+#19 DOIGT fx_chip_0_0 « 1. Filter »
+#20 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 56921e2bac | project=projet-1 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 LAYOUT CONTRAST « Mischung » 2.71:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST «   Effekt hinzufügen » 1.89:1 (needs 4.5:1, 14 sp)
+#20 > attends 3
+#21 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 56921e2bac | project=projet-1 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > attends 1
+#22 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 56921e2bac | project=projet-1 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > attends 1
+#23 ROUTE dialogue:effects_box_0 | MODE pro | EMPREINTE 56921e2bac | project=projet-1 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 1275 1124
+#23 DOIGT fx_close « Schließen »
+#24 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c11be2155 | project=projet-1 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > glisse 800 1000 800 300
+#24 DOIGT rien
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a1b35b45b1 | project=projet-1 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 804 986
+#25 DOIGT automation_entry_overview « Was spielt »
+#26 ROUTE dialogue:what_plays | MODE pro | EMPREINTE dd41d4edd0 | project=projet-1 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST « Bewegt: Filter Cutoff » 1.32:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. Bei jedem Loop-Durchlauf. Steigt von 15 % auf 84 %. » 2.89:1 (needs 4.5:1, 13 sp)
+#26 > touche 1275 1095
+#26 DOIGT what_plays_close « Schließen »
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a1b35b45b1 | project=projet-1 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 76 266
+#27 DOIGT tab_Structure « Struktur »
+#28 ROUTE session/tab_Structure | MODE pro | EMPREINTE 42efbfa7e0 | project=projet-1 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 264 660
+#28 DOIGT add_part_0 « + A »
+#29 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 62e7b35ccc | project=projet-1 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CUT « Takte » drawn past its parent's edge (down, 24 dp shown of 32)
+#29 LAYOUT CUT « Loop » drawn past its parent's edge (down, 32 dp shown of 37)
+#29 LAYOUT CONTRAST « Folgen » 4.06:1 (needs 4.5:1, 14 sp)
+#29 > touche 444 243
+#29 DOIGT structure_parts « Teile »
+#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 5eb8a40ae5 | project=projet-1 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 628 1058
+#30 DOIGT add_part_new_copy « + Neuer Teil (Kopie von A) »
+#31 ROUTE session/tab_Structure | MODE pro | EMPREINTE 50544bcc3d | project=projet-1 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 60 490
+#31 DOIGT tab_Mix « Mix »
+#32 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 46dad0d9f1 | project=projet-1 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 237 473
+#32 DOIGT strip_more_0 « Drums »
+#33 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 66729729fa | project=projet-1 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CUT «  Was sich bewegt (1) » ellipsized (« … »)
+#33 LAYOUT OVERLAP « Drums » over the touchable « Tabelle schließen » (110 x 45 dp)
+#33 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (126 x 37 dp)
+#33 LAYOUT OVERLAP « Stumm » over the touchable « Tabelle schließen » (89 x 37 dp)
+#33 LAYOUT OVERLAP « Solo » over the touchable « Tabelle schließen » (56 x 37 dp)
+#33 LAYOUT OVERLAP « Lautstärke » over the touchable « Tabelle schließen » (140 x 42 dp)
+#33 LAYOUT OVERLAP « +0,0 dB » over the touchable « Tabelle schließen » (97 x 31 dp)
+#33 LAYOUT OVERLAP « Panorama » over the touchable « Tabelle schließen » (135 x 42 dp)
+#33 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (13 x 18 dp)
+#33 LAYOUT OVERLAP « Mitte » over the touchable « Tabelle schließen » (65 x 31 dp)
+#33 LAYOUT OVERLAP «  Was sich bewegt (1) » over the touchable « Tabelle schließen » (221 x 37 dp)
+#33 LAYOUT OVERLAP «  Kurven » over the touchable « Tabelle schließen » (98 x 37 dp)
+#33 LAYOUT OVERLAP « Effekte » over the touchable « Tabelle schließen » (89 x 37 dp)
+#33 LAYOUT OVERLAP « Aktive Effekte: 1 von 8 » over the touchable « Tabelle schließen » (281 x 37 dp)
+#33 LAYOUT OVERLAP « 1. Filter » over the touchable « Tabelle schließen » (90 x 37 dp)
+#33 LAYOUT OVERLAP « Spielt in: » over the touchable « Tabelle schließen » (103 x 35 dp)
+#33 LAYOUT OVERLAP « Alles » over the touchable « Tabelle schließen » (62 x 37 dp)
+#33 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (19 x 37 dp)
+#33 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (17 x 37 dp)
+#33 LAYOUT OVERLAP « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » over the touchable « Tabelle schließen » (574 x 69 dp)
+#33 LAYOUT OVERLAP «   Effekt hinzufügen » over the touchable « Tabelle schließen » (240 x 37 dp)
+#33 LAYOUT OVERLAP « Fertige Vibes » over the touchable « Tabelle schließen » (167 x 18 dp)
+#33 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (13 x 8 dp)
+#33 LAYOUT CONTRAST « Lautstärke » 3.80:1 (needs 4.5:1, 16 sp)
+#33 LAYOUT CONTRAST « Effekte » 2.50:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Aktive Effekte: 1 von 8 » 2.33:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « 1. Filter » 2.84:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST «   Effekt hinzufügen » 1.58:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Fertige Vibes » 2.04:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#33 > touche 944 926
+#33 DOIGT fx_scene_0_0_1 « B »
+#34 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE ab46d889e0 | project=projet-1 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > glisse 1350 1050 1350 250
+#34 DOIGT rien (texte « Ein Effekt kann nur in bestimmten Teilen »)
+#35 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 055075795a | project=projet-1 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT OVERLAP « 1. Filter » over the touchable « Tabelle schließen » (90 x 19 dp)
+#35 LAYOUT OVERLAP « Fertige Vibes » over the touchable « Tabelle schließen » (167 x 37 dp)
+#35 LAYOUT OVERLAP « Für: Drums » over the touchable « Tabelle schließen » (139 x 37 dp)
+#35 LAYOUT OVERLAP « Favoriten » over the touchable « Tabelle schließen » (119 x 37 dp)
+#35 LAYOUT OVERLAP « Atmosphäre » over the touchable « Tabelle schließen » (154 x 37 dp)
+#35 LAYOUT OVERLAP « Farbe » over the touchable « Tabelle schließen » (47 x 37 dp)
+#35 LAYOUT OVERLAP « Stil: » over the touchable « Tabelle schließen » (44 x 35 dp)
+#35 LAYOUT OVERLAP « Acid » over the touchable « Tabelle schließen » (57 x 37 dp)
+#35 LAYOUT OVERLAP « Techno » over the touchable « Tabelle schließen » (95 x 37 dp)
+#35 LAYOUT OVERLAP « DnB » over the touchable « Tabelle schließen » (52 x 37 dp)
+#35 LAYOUT OVERLAP « Dubstep » over the touchable « Tabelle schließen » (106 x 37 dp)
+#35 LAYOUT OVERLAP « House » over the touchable « Tabelle schließen » (74 x 37 dp)
+#35 LAYOUT OVERLAP « Punch » over the touchable « Tabelle schließen » (81 x 37 dp)
+#35 LAYOUT OVERLAP « EDM-Pump » over the touchable « Tabelle schließen » (144 x 37 dp)
+#35 LAYOUT OVERLAP « Knusprig » over the touchable « Tabelle schließen » (114 x 37 dp)
+#35 LAYOUT OVERLAP « Lo-Fi Tape » over the touchable « Tabelle schließen » (135 x 37 dp)
+#35 LAYOUT OVERLAP « Kleiner Raum » over the touchable « Tabelle schließen » (167 x 37 dp)
+#35 LAYOUT OVERLAP « Ohne Effekt » over the touchable « Tabelle schließen » (150 x 37 dp)
+#35 LAYOUT OVERLAP « Tippe auf einen Vibe, um ihn auszuprobieren: Mit Rückgängig kommst du immer zurück. » over the touchable « Tabelle schließen » (584 x 69 dp)
+#35 LAYOUT OVERLAP « Halte den Finger auf einem Vibe, um ihn zu hören; lass los, dein Sound kommt zurück. » over the touchable « Tabelle schließen » (595 x 69 dp)
+#35 LAYOUT OVERLAP « XY-Pad, oben-unten: » over the touchable « Tabelle schließen » (250 x 35 dp)
+#35 LAYOUT OVERLAP « Raum » over the touchable « Tabelle schließen » (71 x 37 dp)
+#35 LAYOUT OVERLAP « Dreck » over the touchable « Tabelle schließen » (74 x 37 dp)
+#35 LAYOUT OVERLAP « Bewegung » over the touchable « Tabelle schließen » (135 x 37 dp)
+#35 LAYOUT OVERLAP « ↑ Fern » over the touchable « Tabelle schließen » (89 x 21 dp)
+#35 LAYOUT CONTRAST « 1. Filter » 1.23:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Für: Drums » 3.16:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Stil: » 2.39:1 (needs 4.5:1, 13 sp)
+#35 LAYOUT CONTRAST « DnB » 3.14:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Kleiner Raum » 1.37:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Dreck » 1.58:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Bewegung » 1.58:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « ↑ Fern » 2.04:1 (needs 4.5:1, 12 sp)
+#35 > touche 960 342
+#35 DOIGT fx_add_0 «   Effekt hinzufügen »
+#36 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 6fa8ed5071 | project=projet-1 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT OVERLAP «   Effektliste schließen » over the touchable « Tabelle schließen » (272 x 37 dp)
+#36 LAYOUT OVERLAP « Tippe auf die gewünschten Effekte: Sie werden nacheinander angehängt, der Reihe nach. » over the touchable « Tabelle schließen » (562 x 69 dp)
+#36 LAYOUT OVERLAP « Verzerrung & Farbe » over the touchable « Tabelle schließen » (246 x 37 dp)
+#36 LAYOUT OVERLAP « Equalizer » over the touchable « Tabelle schließen » (117 x 37 dp)
+#36 LAYOUT OVERLAP « Sättigung » over the touchable « Tabelle schließen » (122 x 37 dp)
+#36 LAYOUT OVERLAP « Bitcrusher » over the touchable « Tabelle schließen » (132 x 37 dp)
+#36 LAYOUT OVERLAP « Parametrischer EQ » over the touchable « Tabelle schließen » (237 x 37 dp)
+#36 LAYOUT OVERLAP « Altes Vinyl » over the touchable « Tabelle schließen » (136 x 37 dp)
+#36 LAYOUT OVERLAP « Walkie-Talkie » over the touchable « Tabelle schließen » (169 x 37 dp)
+#36 LAYOUT OVERLAP « Distortion » over the touchable « Tabelle schließen » (125 x 37 dp)
+#36 LAYOUT OVERLAP « Hörbarer Bass » over the touchable « Tabelle schließen » (180 x 37 dp)
+#36 LAYOUT OVERLAP « Filter & Bewegung » over the touchable « Tabelle schließen » (231 x 37 dp)
+#36 LAYOUT OVERLAP « Chorus » over the touchable « Tabelle schließen » (92 x 37 dp)
+#36 LAYOUT OVERLAP « Filter » over the touchable « Tabelle schließen » (64 x 37 dp)
+#36 LAYOUT OVERLAP « Flanger » over the touchable « Tabelle schließen » (95 x 37 dp)
+#36 LAYOUT OVERLAP « Phaser » over the touchable « Tabelle schließen » (88 x 37 dp)
+#36 LAYOUT OVERLAP « Tremolo » over the touchable « Tabelle schließen » (104 x 37 dp)
+#36 LAYOUT OVERLAP « Wah-Wah » over the touchable « Tabelle schließen » (124 x 37 dp)
+#36 LAYOUT OVERLAP « Auto-Pan » over the touchable « Tabelle schließen » (120 x 37 dp)
+#36 LAYOUT OVERLAP « Wobble » over the touchable « Tabelle schließen » (96 x 37 dp)
+#36 LAYOUT OVERLAP « Raum » over the touchable « Tabelle schließen » (71 x 21 dp)
+#36 LAYOUT CONTRAST « Verzerrung & Farbe » 1.87:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Equalizer » 1.28:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Parametrischer EQ » 2.71:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Walkie-Talkie » 2.76:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Distortion » 3.24:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Hörbarer Bass » 2.80:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Chorus » 3.46:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Filter » 3.46:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Wah-Wah » 1.73:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Raum » 2.04:1 (needs 4.5:1, 14 sp)
+#36 > touche 890 602
+#36 DOIGT fx_pick_0_SATURATION « Sättigung »
+#37 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 3a0f46dada | project=projet-1 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT OVERLAP « 2. Sättigung » over the touchable « Tabelle schließen » (153 x 37 dp)
+#37 LAYOUT OVERLAP « Drive » over the touchable « Tabelle schließen » (64 x 37 dp)
+#37 LAYOUT OVERLAP « 30 % » over the touchable « Tabelle schließen » (66 x 31 dp)
+#37 LAYOUT OVERLAP « Klang » over the touchable « Tabelle schließen » (69 x 37 dp)
+#37 LAYOUT OVERLAP « Offen » over the touchable « Tabelle schließen » (70 x 31 dp)
+#37 LAYOUT OVERLAP « Mischung » over the touchable « Tabelle schließen » (120 x 37 dp)
+#37 LAYOUT OVERLAP « 100 % » over the touchable « Tabelle schließen » (83 x 31 dp)
+#37 LAYOUT OVERLAP « Lautstärke » over the touchable « Tabelle schließen » (130 x 37 dp)
+#37 LAYOUT OVERLAP « 70 % » over the touchable « Tabelle schließen » (66 x 31 dp)
+#37 LAYOUT OVERLAP « Konstante Lautstärke » over the touchable « Tabelle schließen » (261 x 37 dp)
+#37 LAYOUT OVERLAP « Nein » over the touchable « Tabelle schließen » (58 x 31 dp)
+#37 LAYOUT OVERLAP « Tippe auf die gewünschten Effekte: Sie werden nacheinander angehängt, der Reihe nach. » over the touchable « Tabelle schließen » (562 x 7 dp)
+#37 LAYOUT CONTRAST « 2. Sättigung » 3.50:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Lautstärke » 2.54:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST «   Effektliste schließen » 1.58:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Tippe auf die gewünschten Effekte: Sie werden nacheinander angehängt, der Reihe nach. » 2.04:1 (needs 4.5:1, 13 sp)
+#37 > touche 859 306
+#37 DOIGT fx_scene_0_1_0 « A »
+#38 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8871166303 | project=projet-1 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > retour
+#38 RETOUR
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5c484f25a3 | project=projet-1 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 1222 679
+#39 DOIGT automation_overview «  Was spielt »
+#40 ROUTE dialogue:what_plays | MODE pro | EMPREINTE 147209a4f5 | project=projet-1 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CONTRAST « Bewegt: Filter Cutoff » 1.21:1 (needs 4.5:1, 16 sp)
+#40 LAYOUT CONTRAST « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. Bei jedem Loop-Durchlauf. Steigt von 15 % auf 84 %. » 2.67:1 (needs 4.5:1, 13 sp)
+#40 LAYOUT CONTRAST « Effekte und Sends » 1.37:1 (needs 4.5:1, 16 sp)
+#40 > touche 872 393
+#40 DOIGT what_plays_scene_0 « A »
+#41 ROUTE dialogue:what_plays | MODE pro | EMPREINTE 86e40ee7d3 | project=projet-1 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT CONTRAST « Sättigung » 2.84:1 (needs 4.5:1, 16 sp)
+#41 > touche 957 341
+#41 DOIGT what_plays_scene_1 « B »
+#42 ROUTE dialogue:what_plays | MODE pro | EMPREINTE 18c14108bf | project=projet-1 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST « Filter » 2.84:1 (needs 4.5:1, 16 sp)
+#42 > touche 1275 1121
+#42 DOIGT what_plays_close « Schließen »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5c484f25a3 | project=projet-1 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 > glisse 1473 1000 1473 200
+#43 DOIGT rien (texte « Öffnet (hell) oder schließt (dumpf) den  »)
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c9c1333b39 | project=projet-1 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 > glisse 1473 1000 1473 200
+#44 DOIGT rien
+#45 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c9c1333b39 | project=projet-1 no tuto
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 1587 42
+#45 DOIGT top_undo
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2ff848c5e2 | project=projet-1 no tuto
+#46 SON Son : la musique du projet joue en boucle.
+#46 > glisse 1473 800 1473 150
+#46 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7b23c35f49 | project=projet-1 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 1151 1051
+#47 DOIGT loudness_details « Details »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8cc2f0c1b1 | project=projet-1 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CONTRAST « Details ausblenden » 3.90:1 (needs 4.5:1, 13 sp)
+#48 > glisse 1473 900 1473 200
+#48 DOIGT rien
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c615daf1bf | project=projet-1 no tuto
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 1473 926
+#49 DOIGT master_pro « Erweitert: Pro-Master »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f2ef35564c | project=projet-1 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « Erweitert: Pro-Master » 3.95:1 (needs 4.5:1, 14 sp)
+#50 > glisse 1300 900 1300 200
+#50 DOIGT master_pro « Erweitert: Pro-Master »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 24df0e79a7 | project=projet-1 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 > glisse 1300 1000 1300 300
+#51 DOIGT rien (texte « 5. Limiter: 1 ms Look-ahead »)
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c3859d186 | project=projet-1 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 1284 1052
+#52 DOIGT pro_listen_1 « B · ohne den Master »
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 03c028a42b | project=projet-1 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 1272 983
+#53 DOIGT pro_listen_0 « A · mit dem Master »
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c3859d186 | project=projet-1 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 1247 910
+#54 DOIGT help_A/B hören « Was ist „A/B hören“? »
+#54 AIDE help_A
+#55 ROUTE dialogue:« A/B hören » | MODE pro | EMPREINTE 97e31fae35 | project=projet-1 no tuto
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 1216 834
+#55 DOIGT #3288 « Verstanden »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c3859d186 | project=projet-1 no tuto
+#56 SON Son : la musique du projet joue en boucle.
+#56 > glisse 1700 800 1700 300
+#56 DOIGT pro_chain « Pro-Kette einsetzen (Einstellungen in „E »
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c56cf08f48 | project=projet-1 no tuto
+#57 SON Son : la musique du projet joue en boucle.
+#57 > retour
+#57 RETOUR
+#58 ROUTE launch | MODE pro | EMPREINTE 5b19f17656 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 633 679
+#58 DOIGT launch_continue « Weiter »
+#59 ROUTE session/tab_Structure | MODE pro | EMPREINTE e07c3eaed4 | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 60 490
+#59 DOIGT tab_Mix « Mix »
+#60 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6d2832f8ff | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 237 473
+#60 DOIGT strip_more_0 « Drums »
+#61 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 1c7aed76ca | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 LAYOUT OVERLAP « Aktive Effekte: 2 von 8 » over the touchable « Tabelle schließen » (287 x 37 dp)
+#61 LAYOUT OVERLAP « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » over the touchable « Tabelle schließen » (574 x 51 dp)
+#61 LAYOUT CONTRAST « Aktive Effekte: 2 von 8 » 2.33:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « Alles » 1.70:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « A » 1.68:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « B » 1.68:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » 2.04:1 (needs 4.5:1, 13 sp)
+#61 > retour
+#61 RETOUR
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6d2832f8ff | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 1803 42
+#62 DOIGT top_play
+#63 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e727841638 | project=projet-1 no tuto
+#63 SON Son : le morceau joue (partie « A »).
+#63 > attends 2
+#64 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e727841638 | project=projet-1 no tuto
+#64 SON Son : le morceau joue (partie « A »).
+#64 > glisse 1473 750 1473 350
+#64 DOIGT rien
+#65 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d3c637ee34 | project=projet-1 no tuto
+#65 SON Son : le morceau joue (partie « A »).
+#65 > touche 1317 781
+#65 DOIGT auto_mode_0_1 « Pro Teil »
+#66 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 40d678e05f | project=projet-1 no tuto
+#66 SON Son : le morceau joue (partie « A »).
+#66 > glisse 1473 600 1473 200
+#66 DOIGT rien (texte « Öffnet (hell) oder schließt (dumpf) den  »)
+#67 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 220fcb9659 | project=projet-1 no tuto
+#67 SON Son : le morceau joue (partie « A »).
+#67 > glisse 1473 800 1473 450
+#67 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#68 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 418042b411 | project=projet-1 no tuto
+#68 SON Son : le morceau joue (partie « A »).
+#68 > touche 329 144
+#68 DOIGT top_position « A »
+#69 ROUTE dialogue:play_from_menu | MODE pro | EMPREINTE dd97ef7af2 | project=projet-1 no tuto
+#69 SON Son : le morceau joue (partie « A »).
+#69 LAYOUT CUT « Der ganze Song, von Anfang an » ellipsized (« … »)
+#69 > touche 438 452
+#69 DOIGT play_from_1 « 2 · B »
+#70 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 418042b411 | project=projet-1 no tuto
+#70 SON Son : le morceau joue (partie « A »).
+#70 > attends 3
+#71 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 418042b411 | project=projet-1 no tuto
+#71 SON Son : le morceau joue (partie « A »).
+#71 > touche 70 378
+#71 DOIGT tab_Sons « Sounds »
+#72 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c75057b958 | project=projet-1 no tuto
+#72 SON Son : le morceau joue (partie « A »).
+#72 > touche 1507 42
+#72 DOIGT top_scene « Aktueller Teil: A. Tippen, um den Teil z »
+#73 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 96bb0f6749 | project=projet-1 no tuto
+#73 SON Son : le morceau joue (partie « A »).
+#73 LAYOUT CONTRAST « B » 2.23:1 (needs 4.5:1, 14 sp)
+#73 > touche 1684 264
+#73 DOIGT scene_pick_1 « B »
+#74 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE fae484c334 | project=projet-1 no tuto
+#74 SON Son : la musique du projet joue en boucle.
+#74 > touche 60 490
+#74 DOIGT tab_Mix « Mix »
+#75 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 976b0ac4ab | project=projet-1 no tuto
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 70 378
+#75 DOIGT tab_Sons « Sounds »
+#76 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE fae484c334 | project=projet-1 no tuto
+#76 SON Son : la musique du projet joue en boucle.
+#76 > touche 1507 42
+#76 DOIGT top_scene « Aktueller Teil: A. Tippen, um den Teil z »
+#77 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE c1e96deb82 | project=projet-1 no tuto
+#77 SON Son : la musique du projet joue en boucle.
+#77 > touche 1684 264
+#77 DOIGT scene_pick_1 « B »
+#78 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE fae484c334 | project=projet-1 no tuto
+#78 SON Son : la musique du projet joue en boucle.
+#78 > touche 76 266
+#78 DOIGT tab_Structure « Struktur »
+#79 ROUTE session/tab_Structure | MODE pro | EMPREINTE 0cddbcfd02 | project=projet-1 no tuto
+#79 SON Son : la musique du projet joue en boucle.
+#79 > touche 1371 569
+#79 DOIGT scene_1 « B »
+#80 ROUTE session/tab_Structure | MODE pro | EMPREINTE 0cddbcfd02 | project=projet-1 no tuto
+#80 SON Son : la musique du projet joue en boucle.
+#80 LAYOUT CONTRAST « danach » 4.20:1 (needs 4.5:1, 11 sp)
+#80 > touche 1803 42
+#80 DOIGT top_play
+#81 ROUTE session/tab_Structure | MODE pro | EMPREINTE aa164e59c1 | project=projet-1 no tuto
+#81 SON Son : rien ne joue.
+#81 > touche 1371 725
+#81 DOIGT scene_1 « B »
+#82 ROUTE session/tab_Structure | MODE pro | EMPREINTE aef75ded8e | project=projet-1 no tuto
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST « 1 Takt » 4.43:1 (needs 4.5:1, 11 sp)
+#82 > touche 60 490
+#82 DOIGT tab_Mix « Mix »
+#83 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3bb210e275 | project=projet-1 no tuto
+#83 SON Son : rien ne joue.
+#83 > glisse 1473 700 1473 150
+#83 DOIGT rien
+#84 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 22390de2e1 | project=projet-1 no tuto
+#84 SON Son : rien ne joue.
+#84 > glisse 1473 1000 1473 450
+#84 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#85 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c0de2c3d10 | project=projet-1 no tuto
+#85 SON Son : rien ne joue.
+#85 > glisse 1170 680 1840 815
+#85 DOIGT rien
+#86 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c0de2c3d10 | project=projet-1 no tuto
+#86 SON Son : rien ne joue.
+#86 > retour
+#86 RETOUR
+#87 ROUTE launch | MODE pro | EMPREINTE 5b19f17656 | project=projet-1 no tuto
+#87 SON Son : rien ne joue.
+#87 > touche 633 679
+#87 DOIGT launch_continue « Weiter »
+#88 ROUTE session/tab_Structure | MODE pro | EMPREINTE aef75ded8e | project=projet-1 no tuto
+#88 SON Son : rien ne joue.
+#88 > touche 60 490
+#88 DOIGT tab_Mix « Mix »
+#89 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3bb210e275 | project=projet-1 no tuto
+#89 SON Son : rien ne joue.
+#89 > glisse 1473 700 1473 150
+#89 DOIGT rien
+#90 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 22390de2e1 | project=projet-1 no tuto
+#90 SON Son : rien ne joue.
+#90 > glisse 1473 1000 1473 450
+#90 DOIGT rien (texte « Zeichne mit dem Finger; zweimal schnell  »)
+#91 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c0de2c3d10 | project=projet-1 no tuto
+#91 SON Son : rien ne joue.
+#91 > fin
+#91 FIN : fin

@@ -12,9 +12,44 @@ Décision de Benjamin (2026-10-18) : **moderne, mais pas trop, et facile à pren
 7. **Animations courtes et utiles** (150 à 250 ms), jamais décoratives ; fluides à 120 Hz.
 8. **Cohérence** : tous les écrans utilisent les composants de `ui-components` (cartes, boutons, potards), jamais de style ad hoc.
 9. **Repliable** : chaque carte à titre se replie en touchant son titre ; la flèche est petite et pâle, pour ne pas gêner.
+10. **Un mot par idée** (audit final) : « Partie » = un moment du morceau (Intro, Couplet, Drop…), « Brique » = une case A, B, C… qui en donne le contenu, « Place » (pas « Panoramique »), « Courbes » (le verbe reste « Automatiser »), « Partager » = sortir un fichier (réponse 1A de Benjamin, 2026-11-09 : plus d'« Envoyer » ni d'« Exporter » sur le chemin du partage ; la liste s'appelle « Mes fichiers », le .zip du projet « Sauvegarder le morceau en .zip »). Anglais : part, block, pan, curves ; la case de la ligne du temps = cell (néerlandais : deel, blok, pan, curven, vakje). Le Mode simple ne cite que ses onglets (Mon morceau, Rythme, Clavier, Mix, Partager, ⋮) et aucun chiffre technique (Hz, dB, LUFS).
+11. **Pareil que les voisins** (Benjamin, 2026-11-06, accueil : icônes rondes et carrées mélangées) : tout ce qu'on ajoute à un écran (carte, bouton, icône, puce) se compare d'abord à ses voisins sur la capture de l'écran **entier** : même forme et même taille d'icône, titres alignés au même endroit, mêmes marges, mêmes coins, même famille de couleurs, même place pour la flèche. Une exception (une carte « mise en avant ») se voit par sa couleur, jamais par une forme ou une taille dépareillée.
+
+Règles 12 à 22 : audit de prise en main (2026-11-09, `docs/audits/AUDIT-PRISE-EN-MAIN.md` § 6), ajoutées par le lot « composants » (2026-11-10).
+
+12. **Un lien a l'air d'un lien** : tout ce qui ouvre un autre écran est une `LinkRow` (fond, icône, titre, chevron) ; jamais une phrase colorée seule.
+13. **Un repli montre ce qu'il cache** : `Disclosure` avec titre + résumé des valeurs ; un réglage dont dépend le résultat (longueur, format) n'est jamais sous « Avancé ».
+14. **Une action = un bouton par écran** : un seul ▶, un seul Partager, un seul ⋮ visibles à la fois ; en portrait c'est la barre du pouce qui les porte.
+15. **Une icône par action, celle d'Android** (Partager = `Icons.Filled.Share`) ; une couleur par sens : vert = joue ou réussi, orange = choisi ou action ; aucune troisième couleur d'accent sans ligne dans DECISIONS.md.
+16. **Jamais de hauteur fixe autour d'un texte** : `heightIn(min)` et padding ; chaque composant à texte se vérifie à 1,3 et 1,5.
+17. **Tout défilement se voit** : fondu en bas + puce « ↓ n autres » dès que du contenu dépasse l'écran.
+18. **Après chaque action, une preuve et une suite** : un message qui nomme le résultat (fichier, courbe, prise) et un bouton vers lui ; un message vide ne contredit jamais ce qu'on vient de faire.
+19. **Un lien dit où il mène**, jamais ce qu'il espère (« Ouvrir Effets · Batterie », pas « Voir le réglage » si l'écran n'y va pas).
+20. **Même chose, même endroit, même mot dans les deux modes** ; une liste des noms autorisés par fonction, sous test (Lot2TextsTest, LexiconWordsTest).
+21. **Un geste de jeu n'ouvre jamais une fenêtre** : les réglages d'un pad sont un badge visible ; un glissé ne déclenche pas un effet (touch slop) ; un effet qui part vibre.
+22. **En paysage et à 130 %, chaque feuille défile ou se réorganise** ; une capture de la matrice par feuille (phoneLand 1,0 et 1,3).
+
+## Lexique (un mot, un sens)
+
+Tour 5, chantier 3 (2026-11-10), d'après `docs/audits/AUDIT-PRISE-EN-MAIN.md` § 5. Le français est la source ; chaque langue garde le même terme partout (sous test : `LexiconWordsTest`, `SimpleNoDecibelTest`).
+
+| Mot | Sens unique | Ce qui disparaît à l'écran |
+|---|---|---|
+| Morceau | ce que tu fabriques | « projet » (reste dans le code et « Mes projets ») |
+| Fais-moi un morceau | le nom de l'assistant qui compose (carte, écran, aide) | « assistant », « guidé », « pas à pas » pour lui ; dans les phrases courantes on dit « l'appli » |
+| J'apprends | le tuto de A à Z, toi aux commandes (« étape par étape » est réservé à lui) | — |
+| Guide | la barre à cartes du bas et ses cartes, seule | « guide des premiers pas » |
+| Visite rapide | la fenêtre de 5 pages (GuideDialog), rouverte par ⋮ › Aide | « Aide et premiers pas » (l'entrée s'appelle « Aide ») |
+| Partager | sortir un fichier vers une appli ou un dossier ; « Créer le fichier… » fabrique le fichier dans Mix | « Exporter », « Envoyer » dans ce sens |
+| Sauvegarder le morceau en .zip | garder le morceau entier pour un autre appareil | « Envoyer le projet » |
+| Mettre sur… | poser un bout sur un pad, une piste, le Live | « Envoyer les bouts », « envoie-le » |
+| Effets live | les effets de Pad Live et de Live | « Effets de scène » |
+| Volume | fort ou faible : en Mode simple « Normal », « +3 », « −6 », « Muet », « un peu » | « dB » (le Mode simple n'en montre aucun ; le Pro garde ses chiffres) |
+| Mes fichiers | la liste de ce que tu as partagé | « Mes exports » |
 
 ## Composants
 - `NeonCard` (panneau en relief, repliable par son premier `SectionLabel`), `SectionLabel` (barre de couleur + petites capitales), `ProSlider` (piste fine en dégradé, pouce lumineux), `pillColors` (puce choisie remplie d'accent), `LevelMeter` (LED vert → ambre → rouge).
+- `LinkRow` (ligne qui ouvre : fond, icône, titre, sous-ligne, chevron ›), `Disclosure` (repli pleine largeur : nom, résumé de ce qu'il cache, valeur changée en orange, chevron qui tourne), `TrackChip` (pastille de piste : point de couleur, nom, son ; hauteur qui suit la police). Partager = `Icons.Filled.Share`, partout.
 - `SoundTile`, `FamilyChip`, `TileGrid` : vignettes de sons (icône et couleur de famille via `SoundLooks`).
 - Écrans : `DrumPad` (pads en relief qui s'allument), touches de clavier en relief, `FloatingKeyboard` (clavier qui suit).
 
@@ -50,3 +85,6 @@ Une seule boîte d'effets, la même partout où un son se choisit : carte « Eff
 | Pitch shift / harmoniseur | voix plus aiguë ou plus grave | pas encore (pitch des pads et des prises seulement) |
 | Vocoder, granulaire, convolution | voix robot musicale, textures, vraies salles | pas encore |
 | Limiteur / maximiseur | volume final | limiteur de la sortie générale (fixe) |
+
+## Lumière des pads et des cases (n° 25, lot B1)
+Un seul composant, `PadLight` (`ui-components/.../PadLight.kt`), sur tous les écrans à pads et à cases (Rythme : pads, pas, « Tous les pads » ; Live : briques, pads live, plein écran ; Pad Live). Pad ou case inactifs : rien ne bouge, jamais (ni onde, ni souffle, ni clignotement). Qui joue : lumière intérieure douce et fin anneau d'avancement de sa boucle ; en attente de son temps : l'anneau pâle, immobile ; touché : petite onde de 200 ms au point du doigt ; effet maintenu : léger voile de couleur sur les bords. Allumage 150 ms, extinction 250 ms. Test « partout » : `StillPadsEverywhereTest`.

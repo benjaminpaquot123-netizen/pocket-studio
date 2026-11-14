@@ -1,0 +1,61 @@
+Écran 14 (588x1278)
+touchable « Devoir musique L1 Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « Partie : A » @ 82,180
+touchable « Grosse caisse 1 » @ 84,276
+touchable « Grosse caisse 2 » @ 224,276
+touchable « Caisse » @ 364,276
+touchable « Caisse 2 » @ 504,276
+touchable « Claquement de mains » @ 84,366
+touchable « Charley » @ 224,366
+touchable « Charley ouvert » @ 364,366
+touchable « Tom grave » @ 504,366
+touchable « Tom médium » @ 84,456
+touchable « Tom aigu » @ 224,456
+touchable « Bord de caisse » @ 364,456
+touchable « Cloche » @ 504,456
+touchable « Cymbale » @ 84,546
+touchable « Maracas » @ 224,546
+touchable « Conga » @ 364,546
+touchable « Laser » @ 504,546
+bouton « Kit : Classique » @ 130,635
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 412,634
+bouton « PAS : GROSSE CAISSE 1 » [état « Déplié »] @ 198,747
+bouton « ? » (nom « Qu'est-ce que « Pas » ? ») @ 332,747
+case « Tous les pads » @ 450,747
+touchable « 1 » (nom « Pas 1 ») [état « coup, force 100 % »] @ 70,830
+touchable « Pas 2 » [état « vide »] @ 133,830
+touchable « Pas 3 » [état « vide »] @ 197,831
+touchable « Pas 4 » [état « vide »] @ 261,831
+touchable « 2 » (nom « Pas 5 ») [état « coup, force 100 % »] @ 325,831
+touchable « Pas 6 » [état « vide »] @ 389,831
+touchable « Pas 7 » [état « vide »] @ 453,831
+touchable « Pas 8 » [état « vide »] @ 517,831
+touchable « 3 » (nom « Pas 9 ») [état « vide »] @ 70,909
+touchable « Pas 10 » [état « vide »] @ 133,909
+touchable « Pas 11 » [état « vide »] @ 197,910
+touchable « Pas 12 » [état « vide »] @ 261,910
+touchable « 4 » (nom « Pas 13 ») [état « vide »] @ 325,910
+touchable « Pas 14 » [état « vide »] @ 389,910
+touchable « Pas 15 » [état « vide »] @ 453,910
+touchable « Pas 16 » [état « vide »] @ 517,910
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 13 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » [sélectionné] @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

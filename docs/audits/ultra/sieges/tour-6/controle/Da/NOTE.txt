@@ -1,0 +1,1 @@
+Control seat D a after the round-6 fixes (coordinator request, 2026-11-13): code 9f26c244, local lot lotDcontrole (gestes.max=300, timeout.minutes=120), played by a fresh sub-agent that read only the testers instructions and the screens. Text files only (no etat/, no images). Bench measures: the journal (no mesures.json written by this bench run).

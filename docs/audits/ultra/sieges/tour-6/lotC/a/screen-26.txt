@@ -1,0 +1,50 @@
+Écran 26 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 224,42
+bouton « Pro » @ 477,42
+icône ↶ @ 552,42
+icône ↷ [désactivé] @ 624,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+icône (flèches en boucle) « Montée mes. 1/4 » ▾ @ 255,123
+bouton (flèches en boucle) « Boucler » [état « désactivé »] @ 724,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+curseur [coupé, état « 100 % », à 100 %] @ 450,163
+texte « Tonalité » @ 397,211
+texte « 4,8 kHz » @ 805,212
+curseur [état « 4,8 kHz », à 60 %] @ 450,280
+titre « AUTRES FICHIERS » [état « Déplié »] @ 182,397
+texte « Quoi » @ 73,447
+bouton « Le morceau entier » [sélectionné] @ 190,516
+bouton « La partie en boucle » @ 503,516
+texte « Toutes les parties de Structure, dans l'ordre. » @ 308,582
+texte « Format » @ 89,633
+bouton « ? » @ 158,633
+bouton « M4A · pour partager » @ 205,703
+bouton « WAV · qualité max » [sélectionné] @ 525,703
+texte « Qualité studio, lu par tous les logiciels. Le plus lourd. » @ 356,769
+texte « Volume visé » @ 123,820
+bouton « ? » @ 225,820
+bouton « Streaming · −14 LUFS » @ 213,884
+bouton « Club · −8 LUFS » @ 520,884
+bouton « Auto (House) · −8 LUFS » [sélectionné] @ 226,965
+bouton « Désactivée » @ 521,965
+texte « Le volume des morceaux de ce style (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. » @ 450,1079
+texte « Fondu de fin » [coupé] @ 125,1173
+bouton (boussole) « Guide  · Change un son 26 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 114,1292
+icône ↷ « Rétablir » [désactivé] @ 268,1292
+bouton ■ « le morceau » @ 440,1292
+texte « 122 Tempo » @ 617,1292
+icône (trois points reliés) « Partager » @ 780,1292
+onglet (ligne brisée et points) « Structure » @ 85,1389
+onglet (touches de piano) « Sons » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Plus » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

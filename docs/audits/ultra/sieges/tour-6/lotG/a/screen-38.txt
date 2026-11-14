@@ -1,0 +1,6 @@
+Écran 38 (588x1278)
+texte « “Ma chanson préférée” ile ne yapılsın? » @ 294,281
+icône (étincelles) « Önerilen Bu şarkıdan bir parça yap Onun temposunda ve tonunda (120 BPM, La minör) yeni bir proje, kanalları hazır. » @ 294,474
+icône ⊕ « Yeni bir projeye Boş bir proje; şarkı parçalarını alman için Remix’te seni bekliyor. » @ 294,684
+icône (dossier ouvert) « Var olan bir projeye Hangisi olduğunu seç: şarkı onun Remix’ine gelir. » @ 294,860
+texte « İptal » @ 504,1014

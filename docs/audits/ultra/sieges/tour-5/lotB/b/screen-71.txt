@@ -1,0 +1,4 @@
+Écran 71 (588x1278)
+texte « Paczka dźwięków » @ 191,513
+texte « Zbiór dźwięków dla stylu (techno, UK garage, trap…), słynnej maszyny (TR-808, Juno, DX7…) albo współczesnych brzmień. Pobieraj tylko, jeśli chcesz, i usuwaj, kiedy chcesz. » @ 294,621
+bouton « Jasne » @ 502,753

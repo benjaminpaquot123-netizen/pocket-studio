@@ -1,0 +1,37 @@
+Écran 21 (1920x1200)
+texte « Effekte · Drums » @ 727,72
+texte « Aktive Effekte: 1 von 8 » @ 743,160
+case « 1. Filter » [sélectionné] @ 816,230
+bouton « Effekt ausschalten » @ 1137,230
+bouton « Effekt nach oben » [désactivé] @ 1209,230
+bouton « Effekt nach unten » [désactivé] @ 1281,230
+bouton « Effekt entfernen » @ 1353,230
+texte « Cutoff » @ 888,300
+texte « 1,6 kHz » @ 1317,300
+curseur « Cutoff » [état « 1,6 kHz », à 60 %] @ 960,364
+texte « Resonanz » @ 910,428
+texte « 20 % » @ 1339,428
+curseur « Resonanz » [état « 20 % », à 20 %] @ 960,492
+texte « Typ » @ 878,556
+texte « Tiefpass » @ 1307,556
+curseur « Typ » [état « Tiefpass », à 0 %] @ 960,620
+texte « Mischung » @ 898,684
+texte « 100 % » @ 1327,684
+curseur « Mischung » [état « 100 % », à 100 %] @ 960,748
+bouton «   Effekt hinzufügen » @ 960,830
+texte « Fertige Vibes » @ 657,913
+bouton « ? » (nom « Was ist „Effekt-Vibe“? ») @ 805,913
+case « Für: Drums » [sélectionné] @ 660,989
+case « Favoriten » @ 924,989
+case « Atmosphäre » @ 1199,989
+case « Farbe » @ 1368,989
+  → la suite sur le côté (glisse pour la voir)
+texte « Stil: » @ 565,1047
+case « Acid » @ 675,1046
+case « Techno » @ 848,1046
+case « DnB » @ 1017,1046
+case « Dubstep » @ 1194,1046
+case « House » @ 1348,1046
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Schließen » @ 1275,1124

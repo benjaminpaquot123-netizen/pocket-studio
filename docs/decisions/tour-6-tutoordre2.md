@@ -1,0 +1,2 @@
+- 2026-11-13 : `check()` compte seulement les étapes pas encore cochées au moment de sa réponse. Raison : un regard en retard retrouvait les étapes d'un autre et ne disait plus ce qui manque (CI 43448175188). Retour arrière : revenir le commit vert.
+- 2026-11-13 : diagnostic « course révélée par la charge de la CI », pas « régression de tutoordre » : la ligne de tutoordre ne touche que « Déjà fait » ; le rouge est reproduit sans elle par un test qui fixe l'ordre des regards.

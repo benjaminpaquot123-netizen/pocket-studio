@@ -124,6 +124,23 @@ object WideMix {
         return s
     }
 
+    /**
+     * Final audit (report 10, « le Drop ne tombe pas au téléphone »): the Drop's bass speaks where a phone
+     * plays (over 300 Hz): its mid layer fuller and driven harder, the wobble's filter never shut as far
+     * (its cut-off this much higher). (mid layer, its drive 0..1, cut-off added) by style.
+     */
+    private val PHONE_MIDS: Map<String, Triple<Float, Float, Float>> = mapOf(
+        "dubstep" to Triple(0.9f, 0.7f, 0.08f), "riddim" to Triple(0.8f, 0.65f, 0.05f), "neurofunk" to Triple(0.8f, 0.65f, 0.04f),
+        "jump_up" to Triple(0.75f, 0.6f, 0f), "dnb" to Triple(0.6f, 0.6f, 0f),
+    )
+
+    /** [p] with [style]'s [PHONE_MIDS] (as it is for a style without). */
+    fun phoneMids(p: SynthPatch, style: String): SynthPatch {
+        val (layer, drive, cutoff) = PHONE_MIDS[style] ?: return p
+        return p.with(SynthPatch.MID_LAYER, maxOf(p.get(SynthPatch.MID_LAYER), layer)).with(SynthPatch.MID_LAYER_DRIVE, drive)
+            .with(SynthPatch.CUTOFF, (p.get(SynthPatch.CUTOFF) + cutoff).coerceAtMost(1f))
+    }
+
     /** The riddim wobble: a square sweep (a gate), resonant. */
     fun riddim(p: SynthPatch): SynthPatch =
         bassMusic(p).with(SynthPatch.LFO2_SHAPE, SynthPatch.SHAPE_SQUARE)
@@ -162,12 +179,12 @@ object WideMix {
                     val plain = SoundLibrary.synthNameOf(t.synth)?.let { ProVoices.untouched(t.synth, it) } ?: t.synth
                     t.copy(synth = if (plain.get(SynthPatch.SUB) == 0f) plain.with(SynthPatch.SUB, SynthPatch.DEFAULTS[SynthPatch.SUB]) else plain)
                 }
-                t.id in basses && bassMusic && synth -> t.copy(synth = when {
+                t.id in basses && bassMusic && synth -> t.copy(synth = phoneMids(when {
                     style.id == "neurofunk" -> neuro(t.synth)
                     style.id == "riddim" -> riddim(t.synth)
                     style.id in REESE_STYLES && isReese(t.synth) -> reese(t.synth)
                     else -> bassMusic(t.synth)
-                })
+                }, style.id))
                 else -> t
             }
             if (edited != t) p = p.withTrack(edited)

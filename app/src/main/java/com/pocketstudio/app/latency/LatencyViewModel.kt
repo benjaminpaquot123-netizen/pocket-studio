@@ -112,7 +112,7 @@ class LatencyViewModel : ViewModel() {
     companion object {
         private fun explain(o: RunOutcome): String = when {
             o.start == LatencyStart.MicUnavailable ->
-                tr("Le micro refuse de s'ouvrir. Vérifie que l'accès au micro est autorisé pour Pocket Studio, et qu'aucune autre appli ne l'utilise (appel, dictée).")
+                tr("Le micro refuse de s'ouvrir. Vérifie que l'accès au micro est autorisé pour BenStudio, et qu'aucune autre appli ne l'utilise (appel, dictée).")
             o.start == LatencyStart.NotForeground -> tr("Mesure interrompue : l'appli est passée en arrière-plan.")
             o.start == LatencyStart.OutputFailed -> tr("Le haut-parleur n'a pas pu démarrer. Réessaie dans quelques secondes.")
             o.start == LatencyStart.MicSilent || o.result?.failure == LatencyFailure.Interrupted ->

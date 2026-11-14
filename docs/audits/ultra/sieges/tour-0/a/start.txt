@@ -1,0 +1,7 @@
+lang=fr
+device=phone
+font=100
+fresh=reel
+gestes.max=60
+mission=premier-morceau
+timeout.minutes=25

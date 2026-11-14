@@ -1,0 +1,56 @@
+Écran 80 (900x1509)
+texte « Effekte · Drums » @ 194,62
+texte « Aktive Effekte: 4 von 8 » @ 207,133
+bouton « 1. Kompressor » @ 306,196
+icône ⏻ @ 597,196
+icône ⌃ [désactivé] @ 669,196
+icône ⌄ @ 741,196
+icône ✕ @ 813,196
+bouton « 2. Sättigung » @ 306,274
+icône ⏻ @ 597,274
+icône ⌃ @ 669,274
+icône ⌄ @ 741,274
+icône ✕ @ 813,274
+icône ⏻ @ 597,352
+icône ⌃ @ 669,352
+icône ⌄ @ 741,352
+icône ✕ @ 813,352
+bouton « 3. Soft Clipper » @ 306,352
+bouton « 4. Filter » [sélectionné] @ 306,430
+icône ⏻ @ 597,430
+icône ⌃ @ 669,430
+icône ⌄ [désactivé] @ 741,430
+icône ✕ @ 813,430
+texte « Eine Kurve bewegt diese Einstellung während der Wiedergabe. » @ 450,517
+texte « Cutoff » @ 397,573
+texte « 1,6 kHz » @ 787,574
+curseur [état « 1,6 kHz », à 60 %] @ 450,630
+texte « Resonanz » @ 414,695
+texte « 20 % » @ 813,696
+curseur [état « 20 % », à 20 %] @ 450,752
+texte « Typ » @ 391,808
+texte « Tiefpass » @ 790,809
+curseur [état « Tiefpass », à 0 %] @ 450,865
+texte « Mischung » @ 405,921
+texte « 100 % » @ 804,922
+curseur [état « 100 % », à 100 %] @ 450,978
+bouton + «   Effekt hinzufügen » @ 450,1056
+texte « Fertige Vibes » @ 142,1128
+bouton « ? » @ 254,1128
+bouton « Für: Drums » [sélectionné] @ 150,1198
+bouton ★ « Favoriten » @ 358,1198
+bouton « Atmosphäre » @ 574,1198
+bouton « Farbe » @ 754,1198
+bouton « Dreck » [coupé] @ 838,1198
+bouton « Acid » @ 160,1282
+bouton « Techno » @ 299,1282
+bouton « DnB » @ 435,1282
+bouton « Dubstep » @ 578,1282
+bouton « House » @ 737,1282
+bouton « Lo-Fi » [coupé] @ 832,1282
+texte « Stil: » @ 73,1282
+bouton « Punch » [coupé] @ 118,1353
+bouton « EDM-Pump » [coupé] @ 297,1353
+bouton « Knusprig » [coupé] @ 494,1353
+bouton « Lo-Fi Tape » [coupé] @ 686,1353
+texte « Schließen » @ 762,1437

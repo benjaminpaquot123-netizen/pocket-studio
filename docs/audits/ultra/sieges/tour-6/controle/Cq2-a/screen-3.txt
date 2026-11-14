@@ -1,0 +1,5 @@
+Écran 3 (588x1278)
+texte « Ta démo est prête » @ 190,543
+texte « Écoute-la en entier, puis va voir dans Mon morceau comment elle est construite : tu peux tout changer. » @ 294,621
+texte « Plus tard » @ 283,723
+bouton ▶ «  Écouter » @ 455,723

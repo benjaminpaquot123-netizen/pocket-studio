@@ -1,0 +1,30 @@
+Écran 80 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+touchable « Le stab Chapitre 6/15 · Étape 1/1 · Facile » @ 244,278
+bouton « Chapitres » @ 459,278
+bouton « Replier » @ 531,278
+texte « À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1, touche « Copier sur les mesures suivantes », puis fais les 2 de la mesure 4 (un cran plus haut) et « Copier » encore. » @ 294,565
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Lire la suite » @ 294,719
+bouton «   Créer la piste Accords » @ 294,794
+bouton «  Écouter l'exemple » @ 154,908
+bouton «  Montre-moi » @ 433,908
+bouton «  Précédent » @ 156,1022
+bouton « Suivant  » @ 458,1022
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » @ 174,1146
+onglet « Clavier » [sélectionné] @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

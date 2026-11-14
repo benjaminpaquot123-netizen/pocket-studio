@@ -1,0 +1,16 @@
+Écran 5 (1035x1243)
+texte « Nouveau morceau, pas à pas » @ 280,36
+bouton « Fermer » @ 993,54
+texte « Étape 1 : choisis un style » @ 171,78
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 517,166
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 363,264
+bouton « Calme (Chill, Lo-fi) 6 styles » [état « fermé »] @ 517,342
+bouton « Techno 10 styles » [état « fermé »] @ 517,438
+bouton « House 9 styles » [état « ouvert »] @ 517,534
+touchable « House 122 BPM La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. Pour l'idée : • Robin S – Show Me Love (1992) • Marshall Jefferson – Move Your Body (1986) • Joe Smooth – Promised Land (1987) • Frankie Knuckles & Jamie Principle – Your Love (1987) • Farley "Jackmaster" Funk – Love Can't Turn Around (1986) • Jesse Saunders – On and On (1984) » @ 517,887
+bouton « Écouter » @ 57,633
+bouton «  Créer et écouter » @ 546,775
+bouton « Choisir ce style, pas à pas » @ 546,859
+touchable « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 517,1220
+bouton « Écouter » @ 57,1228
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

@@ -1,0 +1,57 @@
+Écran 28 (1920x1200)
+touchable « Mein erster Beat Gespeichert » (nom « Meine Projekte ») @ 738,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 1509,42
+bouton « Rückgängig » @ 1587,42
+bouton « Wiederholen » [désactivé] @ 1659,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 1731,42
+bouton « Stoppen » @ 1803,42
+bouton « Meinen Song teilen » @ 1875,42
+bouton « A Takt 1/1 » (nom « im Loop ») [désactivé] @ 315,144
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 114,144
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 1875,144
+onglet « Struktur » [sélectionné] @ 76,266
+onglet « Sounds » @ 70,378
+onglet « Mix » @ 60,490
+onglet « Live » @ 60,602
+onglet « Mehr » @ 60,714
+onglet « Timeline » [désactivé] @ 282,252
+onglet « Teile » [sélectionné] @ 456,252
+bouton « DER SONG » [état « Aufgeklappt »] @ 345,348
+bouton « ? » (nom « Was ist „Song“? ») @ 473,348
+texte « Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…). » @ 599,462
+texte « Hinzufügen: » @ 307,580
+bouton « + A » @ 264,660
+bouton « + Neuer Teil (Kopie von A) » @ 628,660
+bouton « + Neuer leerer Teil » @ 407,749
+bouton «   Was im Song spielt » @ 599,841
+bouton « SONG-EINSTELLUNGEN » [état « Aufgeklappt »] @ 599,917
+texte « Am Ende: » @ 283,989
+case « stoppen » [sélectionné] @ 485,989
+case « neu anfangen » @ 752,989
+texte « Beim Abspielen: » @ 343,1056
+case « dem Song folgen » [sélectionné] @ 690,1056
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « BAUSTEINE » [état « Aufgeklappt »] @ 1229,270
+bouton « ? » (nom « Was ist „Baustein“? ») @ 1368,270
+texte « Tippe auf einen Baustein: Er übernimmt im nächsten Takt. » @ 1473,358
+texte « Zeigen: » @ 1138,458
+case « 8 » [sélectionné] @ 1253,458
+case « 16 » @ 1344,458
+case « 24 » @ 1448,458
+bouton « A 1 Takt » @ 1166,569
+bouton « B leer » @ 1371,569
+bouton « C leer » @ 1576,569
+bouton « D leer » @ 1781,569
+bouton « E leer » @ 1166,707
+bouton « F leer » @ 1371,707
+bouton « G leer » @ 1576,707
+bouton « H leer » @ 1781,707
+bouton « Benennen » (nom « Baustein A benennen ») @ 1166,832
+bouton « Neu » (nom « Neuer leerer Baustein ») @ 1371,832
+bouton « Duplizieren » (nom « Baustein A duplizieren ») @ 1576,833
+bouton « Leeren » (nom « Baustein A leeren ») @ 1781,832
+bouton « Guide  · Füg eine Melodie hinzu 21 % » [état « eingeklappt »] @ 960,1104
+texte « Feedback-Modus » @ 780,1170
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 1604,1170
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 1748,1170
+touchable « ⋯ » (nom « Feedback-Modus ») @ 1872,1170

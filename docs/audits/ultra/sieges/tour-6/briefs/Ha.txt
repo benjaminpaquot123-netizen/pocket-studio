@@ -1,0 +1,11 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotH/a (seat a, lot H; lang fr, device phone, font 100, mode -, options fresh=reel, mission tuto-facile, budget 120 gestures).
+Profile (id t6-Ha): Grand débutant français qui n'a jamais fait de musique, téléphone, police 100 %, premier lancement réel. Choisis toi-même le Mode Facile/simple quand l'appli le demande. Suis le tuto Facile du début à la fin Pour le tuto, une hésitation est déjà un défaut : note chaque moment où tu ne sais pas quoi toucher, où un mot n'est pas clair, où tu ne comprends pas pourquoi l'étape est réussie ou ratée.. Promesses : pour chacune, oui ou non avec le numéro d'écran. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile; its 3 goals (ids, the bench checks them): chap1 (1er chapitre fini), chap3 (3e chapitre fini), bravo (« Bravo » du tuto).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Ha-1 | 1. Le premier lancement mène jusqu'au tuto Facile sans impasse
+  - id=t6-Ha-2 | 2. Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse
+  - id=t6-Ha-3 | 3. Chaque étape du tuto se valide quand je fais le geste demandé
+  - id=t6-Ha-4 | 4. chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué
+  - id=t6-Ha-5 | 5. tous les textes vus sont dans ma langue, aucun en français ni coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

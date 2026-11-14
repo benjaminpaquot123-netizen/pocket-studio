@@ -42,7 +42,12 @@ class GuideParcoursTest {
     fun everyCardHasTwoOrThreeOptionsWithKnownActionsAndDetectors() {
         val spots = mutableSetOf<String>()
         for (p in all + generic + alerts + common) for (c in p.cards) {
-            assertTrue("${p.style}/${c.id}: ${c.proposals.size} options", c.proposals.size in 2..3)
+            // « C'est fait » (audit final) comes on top of a card whose options all open a screen.
+            val choices = c.proposals.filterNot { it.label == "C'est fait" }
+            assertTrue("${p.style}/${c.id}: ${c.proposals.size} options", choices.size in 2..3)
+            if (c.done.isEmpty() && choices.all { it.action.type == GuideAction.OPEN }) {
+                assertTrue("${p.style}/${c.id}: no way to tick it", (c.proposals + c.elsewhere).any { it.action.type == GuideAction.KEEP })
+            }
             assertTrue("${p.style}/${c.id}", c.kind in setOf(GuideCard.DECIDE, GuideCard.REVIEW, GuideCard.CHECK))
             assertTrue("${p.style}/${c.id}", c.target == GuideRoles.SONG || c.target in GuideRoles.ORDER)
             assertTrue("${p.style}/${c.id}: lexicon ${c.lexicon}", c.lexicon.isEmpty() || SoundGlossary.ALL.any { it.key == c.lexicon })
@@ -73,10 +78,11 @@ class GuideParcoursTest {
         val texts = (all + generic + alerts + common).flatMap { p ->
             p.cards.flatMap { c ->
                 listOfNotNull(c.title, c.why, c.simpleTitle, c.simpleWhy, c.whenText, c.howMuch, c.howOften) +
-                    (c.proposals + c.elsewhere).flatMap { listOfNotNull(it.label, it.why, it.value) }
+                    (c.proposals + c.elsewhere).flatMap { listOfNotNull(it.label, it.why, it.value, it.simpleLabel, it.simpleWhy) }
             } + p.whys.values.flatMap { it.values }
-        }.filter { it.isNotBlank() }.toSet() + GuideStages.TITLES + GuideStages.SHORT + GuideStages.START_TITLE + GuideStages.START_SHORT
-        for (lang in listOf(Lang.EN, Lang.NL)) {
+        }.filter { it.isNotBlank() }.toSet() + GuideStages.TITLES + GuideStages.SHORT + GuideStages.START_TITLE + GuideStages.START_SHORT +
+            GuideStages.SIMPLE_TITLES.values
+        for (lang in (Lang.entries - Lang.FR)) {
             val table = I18n.table(lang)
             val missing = texts.filter { table[it].isNullOrBlank() }
             assertTrue("${missing.size} without ${lang.code}: ${missing.take(10)}", missing.isEmpty())
@@ -108,7 +114,49 @@ class GuideParcoursTest {
         assertTrue(jump.card("arr.differ")!!.proposals.first().label.contains("lead"))
         assertTrue(trap.card("mix.contrast")!!.proposals.first().label.contains("pont"))
         // The sidechain: kept as it is when the song already ducks.
-        assertEquals(listOf("sidechain|changed:sidechain"), jump.card("fx.sidechain")!!.done)
+        // Audit final: the ducking the assistant put is to hear (decided), not ticked by itself.
+        assertEquals(listOf("sidechain", "by_hand|changed:sidechain"), jump.card("fx.sidechain")!!.done)
+        // The style's sound cards are shown on its own song (decided, or the track changed by hand).
+        assertEquals(listOf("has:kick", "by_hand|changed:kick"), jump.card("sound.kick")!!.done)
+        // « Plus d'écho » of the lead no longer promises a send level the song does not have.
+        assertTrue(jump.card("fx.lead")!!.howMuch.orEmpty().none { it.isDigit() })
+        // « Poser ma voix » says what it does (the robot is not replaced by itself).
+        assertTrue(jump.card("sound.vocal")!!.proposals.none { it.why.contains("à la place") })
+        assertEquals("sounds.track", jump.card("sound.vocal")!!.proposals.first { it.id == "other" }.action.spot)
+        // The chords' wait in the first Drop offered once (arr.pad has it).
+        assertTrue(jump.card("arr.differ")!!.proposals.none { it.id == "pad_waits" })
+    }
+
+    /**
+     * Audit (textes): the Mode simple says everyday words: no Hz, dB, LUFS, M4A, master, OTT or
+     * ratio in what a simple card shows (its title, why, options and their values, its stage).
+     */
+    @Test
+    fun theModeSimpleSpeaksWithoutJargon() {
+        val jargon = Regex("""\b(k?Hz|dB|dBTP|LUFS|M4A|OTT|[Mm]aster|[Rr]atio|fader)\b|élargisseur|pré-délai""")
+        val bad = (all + generic + common).flatMap { p ->
+            p.cards.filter { it.simple }.flatMap { c ->
+                (listOf(c.titleFor(true), c.whyFor(true), GuideStages.title(c.stage, simple = true)) +
+                    (c.proposals + c.elsewhere).flatMap { o -> listOfNotNull(o.labelFor(true), o.whyFor(true), o.valueFor(true)) })
+                    .filter { jargon.containsMatchIn(it) }.map { "${p.style}/${c.id}: $it" }
+            }
+        }.distinct()
+        assertTrue("${bad.size} texts of the Mode simple with jargon:\n" + bad.take(20).joinToString("\n"), bad.isEmpty())
+        // The full mode keeps its figures.
+        val mono = GuideLibrary.forStyle("house")!!.card("mix.mono")!!.proposals.first { it.id == "narrow" }
+        assertEquals("150 Hz", mono.valueFor(false))
+        assertEquals(null, mono.valueFor(true))
+    }
+
+    /** Audit (textes): a sung song has no Drop: the common cards and the effects' whys say « le grand moment ». */
+    @Test
+    fun aSungSongHearsNoDrop() {
+        val pop = GuideLibrary.forStyle("pop")!!
+        val texts = (pop.cards + common.cards).filter { it.id != "move.build" }.flatMap { c ->
+            listOfNotNull(c.title, c.why, c.simpleTitle, c.simpleWhy) + (c.proposals + c.elsewhere).flatMap { listOfNotNull(it.label, it.why, it.simpleLabel, it.simpleWhy) }
+        } + listOf("riser", "pad").mapNotNull { pop.whys[it]?.get("FILTER") }
+        val drops = texts.filter { "Drop" in it }
+        assertTrue("Drop in a pop song: $drops", drops.isEmpty())
     }
 
     /** The parcours files and i18n/{en,nl}/guide.json are made by scripts/guides/make_guides.py: an edit of one without the other fails here. */

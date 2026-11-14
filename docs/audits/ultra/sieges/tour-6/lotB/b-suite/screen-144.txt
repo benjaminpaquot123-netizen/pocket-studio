@@ -1,0 +1,48 @@
+Écran 144 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ■ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Groove Takt 7/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…). » @ 450,373
+texte « Hinzufügen: » @ 123,441
+bouton « + A · Groove » @ 163,510
+bouton « + Neuer Teil (Kopie von A · Groove) » @ 568,510
+bouton « + Neuer leerer Teil » @ 205,591
+bouton (barres de son) «   Was im Song spielt » @ 450,675
+titre « SONG-EINSTELLUNGEN » [coupé, état « Aufgeklappt »] @ 450,729
+image (chapeau de diplômé) @ 37,786
+texte « Dein erster Teil: der Groove Kapitel 8/16 · Schritt 2/2 · Pro » @ 400,786
+icône (liste) @ 771,787
+icône ⌄ @ 843,787
+image (coupe) @ 57,921
+texte « Bravo, Kapitel geschafft! » @ 259,884
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Die Teile verstehen“. » @ 475,941
+bouton « Nächstes Kapitel   » → @ 450,1123
+icône ← @ 57,1207
+bouton ■ «  Stoppen » @ 251,1207
+bouton ▶ «  Beispiel anhören » @ 558,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

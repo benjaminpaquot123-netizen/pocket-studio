@@ -1,0 +1,51 @@
+Écran 119 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ■ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « A 小節 8/8 » [désactivé] @ 231,114
+bouton « ? » @ 543,114
+onglet « Acid 303 ベースライン » [coupé] @ 51,186
+bouton « ベース Plaits » @ 153,186
+bouton « コード 短い音 » @ 272,186
+bouton « メロディ フィルターのかかったメロディ » ⋮ @ 456,186
+icône « パート：A » ▾ @ 84,264
+texte « リズム補正 50% » @ 256,351
+texte « 100% » @ 406,351
+bouton « コード » [sélectionné] @ 98,351
+bouton « ゴーストベース » [coupé, sélectionné] @ 501,351
+bouton « メロディ · 小節 2/8 タップする点線のノートがあと 1 個 » @ 294,432
+texte « 小節 » @ 69,491
+bouton « 2 » [coupé] @ 292,501
+bouton « 3 » [coupé] @ 519,501
+dessin [coupé] @ 69,546
+dessin @ 69,573
+dessin @ 69,603
+dessin @ 69,633
+dessin @ 69,663
+dessin @ 69,693
+dessin @ 69,723
+dessin @ 69,753
+dessin @ 69,783
+dessin [coupé] @ 69,807
+dessin [coupé] @ 321,675
+image (chapeau de diplômé) @ 37,872
+texte « リフ チャプター 7/15 · ステップ 2/2 · かんたん » @ 244,872
+icône (liste) @ 459,872
+icône ⌃ @ 531,872
+icône « あなたの番：「メロディトラックを作る」をタップして、点線のノートをタップしよう：1小節目に3つ、2小節目に4つ。次に「次の小節にコピー」。 読む » ⌃ @ 294,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ■ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » [sélectionné] @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

@@ -1,0 +1,306 @@
+#0 SIEGE lang=en device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=non main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 705b229ee7 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Pick a style, I'll help you step by step, from the start of the song to its end. » 1.96:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « You make the whole song yourself, step by step: I explain and I check. » 4.25:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Pick a song on your phone: the app separates the vocals, drums, bass and the rest. » 3.42:1 (needs 4.5:1, 14 sp)
+#1 > touche 294 447
+#1 DOIGT welcome_guided « Make my first song (guided) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE aedebce836 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « How do you want to see this project? You can change any time with the chip at the top. » 3.66:1 (needs 4.5:1, 16 sp)
+#2 > touche 294 282
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 48b5c8f58a | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 10 styles » 1.79:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 1.88:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 9 styles » 2.05:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Bass music » 2.19:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 styles » 2.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.99:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 styles » 1.89:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 4 styles » 1.82:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 384
+#3 DOIGT wizard_family_Techno « Techno »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE e5557fa82f | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « The techno of Berlin's clubs: a heavy kick on every beat, a bass rolling between the hits, hypnotic loops. » ellipsized (« … »)
+#4 LAYOUT CUT « For reference: Rhythim Is Rhythim – Strings of Life (1987) » ellipsized (« … »)
+#4 LAYOUT CUT « For reference: Josh Wink – Higher State of Consciousness (1995) » ellipsized (« … »)
+#4 LAYOUT CUT « Today's party techno, faster and harder: a distorted kick followed by a rumble, and rave sirens. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « 132 BPM » 2.20:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « For reference: Amelie Lens – Hypnotized (2019) » 1.85:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « The very first techno, born in Detroit: melancholic, funky strings over a rolling drum machine. » 1.92:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Techno · 138 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Hard techno » 1.70:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Techno · 150 BPM » 1.70:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « For reference: I Hate Models – Daydream (2016) » 3.26:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Retro techno » 2.04:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Techno · 128 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#4 > touche 57 483
+#4 DOIGT wizard_style_listen_techno
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE b66022ca3d | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#5 > touche 320 513
+#5 DOIGT wizard_style_techno « Techno »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9a4463b345 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#6 LAYOUT CONTRAST « Detroit techno » 1.70:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Techno · 126 BPM » 1.70:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « For reference: Josh Wink – Higher State of Consciousness (1995) » 3.26:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « Hard techno » 2.04:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Techno · 150 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#6 > touche 322 624
+#6 DOIGT wizard_style_play_techno «  Create and listen »
+#7 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 5ef69d0cbd | project=p-c438582f no tuto
+#7 SON Son : le morceau joue (partie « I »).
+#7 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#7 > touche 248 114
+#7 DOIGT top_position « Build-up »
+#8 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE 68c0dca5dc | project=p-c438582f no tuto
+#8 SON Son : le morceau joue (partie « I »).
+#8 LAYOUT CONTRAST « 1 · Intro 2 » 1.89:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 6 · Groove 2 » 2.09:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 7 · Groove 3 » 4.10:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 11 · Build-up 2 » 1.38:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 12 · Drop » 3.50:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « 13 · Drop » 2.25:1 (needs 4.5:1, 14 sp)
+#8 > retour
+#8 RETOUR
+#9 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE da78eda9ad | project=p-c438582f no tuto
+#9 SON Son : le morceau joue (partie « I »).
+#9 LAYOUT CONTRAST « GETTING STARTED » 4.30:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « The melody's sound » 3.89:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Another drum kit » 3.95:1 (needs 4.5:1, 14 sp)
+#9 > touche 356 1059
+#9 DOIGT thumb_tempo « Tempo: 132 beats per minute »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b7d6044e8c | project=p-c438582f no tuto
+#10 SON Son : le morceau joue (partie « I »).
+#10 LAYOUT OVERLAP « Tempo » over the touchable « Close sheet » (73 x 28 dp)
+#10 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (7 x 15 dp)
+#10 LAYOUT OVERLAP « Close » over the touchable « Close sheet » (39 x 20 dp)
+#10 LAYOUT OVERLAP « 132 » over the touchable « Close sheet » (86 x 53 dp)
+#10 LAYOUT OVERLAP «  BPM » over the touchable « Close sheet » (39 x 24 dp)
+#10 LAYOUT OVERLAP « 70 » over the touchable « Close sheet » (21 x 19 dp)
+#10 LAYOUT OVERLAP « 90 » over the touchable « Close sheet » (21 x 19 dp)
+#10 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (32 x 19 dp)
+#10 LAYOUT OVERLAP « 140 » over the touchable « Close sheet » (32 x 19 dp)
+#10 LAYOUT OVERLAP « 174 » over the touchable « Close sheet » (32 x 19 dp)
+#10 LAYOUT OVERLAP « ½ » over the touchable « Close sheet » (14 x 24 dp)
+#10 LAYOUT OVERLAP « ×2 » over the touchable « Close sheet » (21 x 24 dp)
+#10 LAYOUT OVERLAP « 1 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 2 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 3 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 4 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 5 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 6 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 7 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 8 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 9 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « 0 » over the touchable « Close sheet » (14 x 27 dp)
+#10 LAYOUT OVERLAP « OK » over the touchable « Close sheet » (33 x 27 dp)
+#10 LAYOUT OVERLAP « Tap in time » over the touchable « Close sheet » (84 x 24 dp)
+#10 LAYOUT OVERLAP « Tap here on each beat: the tempo follows. » over the touchable « Close sheet » (253 x 18 dp)
+#10 LAYOUT CONTRAST «  BPM » 4.10:1 (needs 4.5:1, 16 sp)
+#10 LAYOUT CONTRAST « 7 » 2.25:1 (needs 3.0:1, 22 sp)
+#10 LAYOUT CONTRAST « 8 » 2.25:1 (needs 3.0:1, 22 sp)
+#10 LAYOUT CONTRAST « 9 » 2.25:1 (needs 3.0:1, 22 sp)
+#10 LAYOUT CONTRAST « Tap here on each beat: the tempo follows. » 2.04:1 (needs 4.5:1, 13 sp)
+#10 > retour
+#10 RETOUR
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE da78eda9ad | project=p-c438582f no tuto
+#11 SON Son : le morceau joue (partie « I »).
+#11 > touche 127 204
+#11 DOIGT fold_Mes pistes « MY TRACKS »
+#12 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c592fbc166 | project=p-c438582f no tuto
+#12 SON Son : le morceau joue (partie « I »).
+#12 LAYOUT CONTRAST « MY TRACKS » 4.31:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Tap a track's name to change its sound; ▶ to hear it alone. » 1.21:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#12 > touche 174 1158
+#12 DOIGT tab_simple_Rythme « Rhythm »
+#13 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bddbca0a1e | project=p-c438582f no tuto
+#13 SON Son : le morceau joue (partie « I »).
+#13 > touche 118 180
+#13 DOIGT part_header_pick « Part: I · Build-up »
+#14 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 6bca523c22 | project=p-c438582f no tuto
+#14 SON Son : le morceau joue (partie « I »).
+#14 LAYOUT CONTRAST « A · Intro » 1.45:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « F · Intro 3 » 2.81:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « J · Build-up 2 » 1.89:1 (needs 4.5:1, 14 sp)
+#14 > retour
+#14 RETOUR
+#15 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bddbca0a1e | project=p-c438582f no tuto
+#15 SON Son : le morceau joue (partie « I »).
+#15 > touche 83 114
+#15 DOIGT top_tempo « Tempo: 132 beats per minute »
+#16 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b7d6044e8c | project=p-c438582f no tuto
+#16 SON Son : le morceau joue (partie « I »).
+#16 LAYOUT CONTRAST « ? » 3.18:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « ½ » 3.65:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « ×2 » 4.11:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « 1 » 2.20:1 (needs 3.0:1, 22 sp)
+#16 LAYOUT CONTRAST « 2 » 1.81:1 (needs 3.0:1, 22 sp)
+#16 LAYOUT CONTRAST « 4 » 1.58:1 (needs 3.0:1, 22 sp)
+#16 LAYOUT CONTRAST « 6 » 1.58:1 (needs 3.0:1, 22 sp)
+#16 > retour
+#16 RETOUR
+#17 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bddbca0a1e | project=p-c438582f no tuto
+#17 SON Son : le morceau joue (partie « I »).
+#17 > touche 456 1248
+#17 DOIGT retours_note « Write a note »
+#18 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7b300bdd74 | project=p-c438582f no tuto
+#18 SON Son : le morceau joue (partie « I »).
+#18 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#18 > retour
+#18 RETOUR
+#19 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bddbca0a1e | project=p-c438582f no tuto
+#19 SON Son : le morceau joue (partie « I »).
+#19 > touche 54 1158
+#19 DOIGT tab_simple_Morceau « My song »
+#20 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE f3530f3573 | project=p-c438582f no tuto
+#20 SON Son : le morceau joue (partie « I »).
+#20 > touche 127 204
+#20 DOIGT fold_Mes pistes « MY TRACKS »
+#21 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE f3530f3573 | project=p-c438582f no tuto
+#21 SON Son : le morceau joue (partie « I »).
+#21 LAYOUT CONTRAST « MY TRACKS » 4.24:1 (needs 4.5:1, 12 sp)
+#21 > touche 127 204
+#21 DOIGT fold_Mes pistes « MY TRACKS »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b9094d5a7b | project=p-c438582f no tuto
+#22 SON Son : le morceau joue (partie « I »).
+#22 > glisse 294 900 294 300
+#22 DOIGT rien
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1e10e706a9 | project=p-c438582f no tuto
+#23 SON Son : le morceau joue (partie « I »).
+#23 > glisse 294 900 294 200
+#23 DOIGT rien
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 91e715b9bc | project=p-c438582f no tuto
+#24 SON Son : le morceau joue (partie « I »).
+#24 LAYOUT CONTRAST « × 1  ·  4 bars  ·  playing » 2.99:1 (needs 4.5:1, 14 sp)
+#24 > touche 438 372
+#24 DOIGT dans:part_8
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c753e9332d | project=p-c438582f no tuto
+#25 SON Son : le morceau joue (partie « I »).
+#25 > touche 510 372
+#25 DOIGT part_menu_8
+#26 ROUTE dialogue:part_sheet | MODE simple | EMPREINTE 7e8f0a68b5 | project=p-c438582f no tuto
+#26 SON Son : le morceau joue (partie « I »).
+#26 LAYOUT OVERLAP « Part 9 · B · Groove » over the touchable « Close sheet » (187 x 28 dp)
+#26 LAYOUT OVERLAP « 16 bars » over the touchable « Close sheet » (53 x 17 dp)
+#26 LAYOUT OVERLAP « Variation » over the touchable « Close sheet » (61 x 20 dp)
+#26 LAYOUT OVERLAP « Fill at the end » over the touchable « Close sheet » (91 x 20 dp)
+#26 LAYOUT OVERLAP « Break after · 4 bars » over the touchable « Close sheet » (95 x 40 dp)
+#26 LAYOUT OVERLAP « Break after · 8 bars » over the touchable « Close sheet » (128 x 20 dp)
+#26 LAYOUT OVERLAP « Build-up before · 4 bars » over the touchable « Close sheet » (128 x 40 dp)
+#26 LAYOUT OVERLAP « Build-up before · 8 bars » over the touchable « Close sheet » (127 x 40 dp)
+#26 LAYOUT OVERLAP « Fade in » over the touchable « Close sheet » (49 x 20 dp)
+#26 LAYOUT OVERLAP « Fade out » over the touchable « Close sheet » (58 x 20 dp)
+#26 LAYOUT OVERLAP « Add an ending » over the touchable « Close sheet » (98 x 20 dp)
+#26 LAYOUT OVERLAP « Energy: 3 » over the touchable « Close sheet » (64 x 20 dp)
+#26 LAYOUT OVERLAP « 1 · pads » over the touchable « Close sheet » (52 x 20 dp)
+#26 LAYOUT OVERLAP « 2 · + bass » over the touchable « Close sheet » (66 x 20 dp)
+#26 LAYOUT OVERLAP « 3 · + drums » over the touchable « Close sheet » (77 x 20 dp)
+#26 LAYOUT OVERLAP « 4 · all out » over the touchable « Close sheet » (63 x 20 dp)
+#26 LAYOUT OVERLAP « Length » over the touchable « Close sheet » (47 x 20 dp)
+#26 LAYOUT OVERLAP « bars » over the touchable « Close sheet » (27 x 18 dp)
+#26 LAYOUT OVERLAP « OK » over the touchable « Close sheet » (21 x 20 dp)
+#26 LAYOUT OVERLAP « Part » over the touchable « Close sheet » (27 x 20 dp)
+#26 LAYOUT OVERLAP « Rename » over the touchable « Close sheet » (55 x 20 dp)
+#26 LAYOUT OVERLAP « What's playing » over the touchable « Close sheet » (102 x 20 dp)
+#26 LAYOUT OVERLAP « Move up » over the touchable « Close sheet » (58 x 20 dp)
+#26 LAYOUT OVERLAP « Move down » over the touchable « Close sheet » (79 x 20 dp)
+#26 LAYOUT OVERLAP « Duplicate » over the touchable « Close sheet » (65 x 20 dp)
+#26 LAYOUT OVERLAP « Insert after » over the touchable « Close sheet » (74 x 20 dp)
+#26 LAYOUT OVERLAP « Remove » over the touchable « Close sheet » (54 x 20 dp)
+#26 LAYOUT CONTRAST « Build-up before · 8 bars » 3.85:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Fade in » 2.99:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Fade out » 2.00:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 2 · + bass » 2.75:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Rename » 1.25:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Remove » 3.42:1 (needs 4.5:1, 14 sp)
+#26 > touche 115 1246
+#26 DOIGT part_insert_8 « Insert after »
+#27 ROUTE dialogue:pick_scene_0 | MODE simple | EMPREINTE bcdaf927fb | project=p-c438582f no tuto
+#27 SON Son : le morceau joue (partie « I »).
+#27 LAYOUT CONTRAST « A · Intro » 1.85:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « C · Drop » 1.60:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « J · Build-up 2 » 2.99:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « K · Drop 2 » 1.43:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « M · Drop 4 » 3.25:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « Q · Fill » 1.67:1 (needs 4.5:1, 14 sp)
+#27 > touche 114 201
+#27 DOIGT pick_scene_0 « A · Intro »
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d1f8271f93 | project=p-c438582f no tuto
+#28 SON Son : le morceau joue (partie « I »).
+#28 > touche 534 1158
+#28 DOIGT tab_simple_Envoyer « Send »
+#29 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 959e6d5122 | project=p-c438582f no tuto
+#29 SON Son : le morceau joue (partie « I »).
+#29 > touche 294 888
+#29 DOIGT share_go «   Share »
+#30 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 4bddd1ffdf | project=p-c438582f no tuto
+#30 SON Son : le morceau joue (partie « I »).
+#30 > attends 30
+#30 PARTAGE Techno-song-20261105-213439.m4a
+#31 ROUTE dialogue:« Share my song · Techno-song-20 » | MODE simple | EMPREINTE a4eaa09699 | project=p-c438582f no tuto
+#31 SON Son : le morceau joue (partie « I »).
+#31 > touche 294 543
+#31 DOIGT vue « WhatsApp »
+#32 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 12a82f0d16 | project=p-c438582f no tuto
+#32 SON Son : le morceau joue (partie « I »).
+#32 LAYOUT CONTRAST « Level: on target (Auto (style)) » 4.20:1 (needs 4.5:1, 13 sp)
+#32 LAYOUT CONTRAST « OK » 1.97:1 (needs 4.5:1, 14 sp)
+#32 > touche 508 805
+#32 DOIGT share_bilan_ok « OK »
+#33 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 959e6d5122 | project=p-c438582f no tuto
+#33 SON Son : le morceau joue (partie « I »).
+#33 > touche 294 1158
+#33 DOIGT tab_simple_Clavier « Keyboard »
+#34 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7b5559b975 | project=p-c438582f no tuto
+#34 SON Son : le morceau joue (partie « I »).
+#34 LAYOUT CONTRAST «  Record my melody » 2.78:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT TARGET « C 4 C Play » 21 x 150 dp (touch 48 x 150)
+#34 LAYOUT TARGET « F 4 Play » 21 x 150 dp (touch 48 x 150)
+#34 LAYOUT TARGET « C 5 C Play » 21 x 150 dp (touch 48 x 150)
+#34 LAYOUT TARGET « F 5 Play » 21 x 150 dp (touch 48 x 150)
+#34 LAYOUT TARGET « C# 4 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « D# 4 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « F# 4 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « G# 4 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « A# 4 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « C# 5 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « D# 5 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « F# 5 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « G# 5 Play » 15 x 91 dp (touch 48 x 91)
+#34 LAYOUT TARGET « A# 5 Play » 15 x 91 dp (touch 48 x 91)
+#34 > touche 543 114
+#34 DOIGT help_labels_button « Label the screen »
+#34 AIDE help_labels_button
+#35 ROUTE help_labels | MODE simple | EMPREINTE d93db8dff8 | project=p-c438582f no tuto
+#35 SON Son : le morceau joue (partie « I »).
+#35 LAYOUT OVERLAP « Tempo » over « Play, record » (13 x 13 dp)
+#35 LAYOUT OVERLAP « My projects » over « The Guide: where your song stands » (76 x 17 dp)
+#35 LAYOUT OVERLAP « More choices » over « The Guide: where your song stands » (87 x 18 dp)
+#35 LAYOUT OVERLAP « Stop » over the touchable « Stop » (29 x 18 dp)
+#35 LAYOUT OVERLAP « Tempo » over the touchable « Tempo: 132 beats per minute Change the t » (43 x 18 dp)
+#35 LAYOUT OVERLAP « Play from a part » over the touchable « Play from a part » (101 x 18 dp)
+#35 LAYOUT OVERLAP « Parts and tracks » over the touchable « Undo » (56 x 18 dp)
+#35 LAYOUT OVERLAP « Play, record » over the touchable « Stop » (17 x 18 dp)
+#35 LAYOUT OVERLAP « Play, record » over the touchable « Tempo: 132 beats per minute Change the t » (28 x 18 dp)
+#35 LAYOUT OVERLAP « Share » over the touchable « More choices » (19 x 18 dp)
+#35 LAYOUT OVERLAP « Hide the labels » over the touchable « Open the Guide folded » (79 x 10 dp)
+#35 LAYOUT OVERLAP « 🐞 Report a bug » over the touchable « Open the Guide folded » (86 x 10 dp)
+#35 > retour
+#35 RETOUR
+#36 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7b5559b975 | project=p-c438582f no tuto
+#36 SON Son : le morceau joue (partie « I »).
+#36 > touche 168 850
+#36 DOIGT key_65 « F 4 »
+#37 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fec0468250 | project=p-c438582f no tuto
+#37 SON Son : le morceau joue (partie « I ») ; 1 note du synthé.
+#37 > fin
+#37 FIN : fin

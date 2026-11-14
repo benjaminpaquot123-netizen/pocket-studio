@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour3AppProofTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-12T20:57:21.710Z" hostname="vm" time="0.137">
+  <properties/>
+  <testcase name="theSongPlaysFromAPartOrATakeWithAnEngine" classname="com.pocketstudio.app.human.Tour3AppProofTest" time="0.072"/>
+  <testcase name="padLiveRowsAndStopAllGoToTheEngine" classname="com.pocketstudio.app.human.Tour3AppProofTest" time="0.036"/>
+  <testcase name="withoutAnEngineNothingPlays" classname="com.pocketstudio.app.human.Tour3AppProofTest" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

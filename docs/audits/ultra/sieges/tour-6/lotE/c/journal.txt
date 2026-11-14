@@ -1,0 +1,151 @@
+#0 SIEGE lang=pt-BR device=phone font=200 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=9.9 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE a1f4cabf5d | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 456 1224
+#1 DOIGT scroll_hint « ↓ mais 7 »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3afe3f08aa | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 294 1100 294 200
+#2 DOIGT welcome_learn « Estou aprendendo »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 8d913f53fc | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 294 1100 294 200
+#3 DOIGT welcome_empty « Começar do zero »
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE 8e206c0c09 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « NOVO » a word split over two lines
+#4 LAYOUT CUT « Pads prontos para tocar, seus sons, efeitos live. Já sai som na hora. » ellipsized (« … »)
+#4 > touche 294 788
+#4 DOIGT welcome_remix « Extrair a voz de uma música »
+#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE af1cd85db2 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 294 561
+#5 DOIGT mode_card_simple « Simples »
+#6 ROUTE ? | MODE simple | EMPREINTE 36e62d1138 | project=p-48ca5a78 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « ? » lines cut (taller than its box)
+#6 LAYOUT CUT « Baixar o modelo (174 MB) » lines dropped (more lines than room)
+#6 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#6 LAYOUT CUT «  · Crie uma batida » ellipsized (« … »)
+#6 LAYOUT CUT « Desfazer » ellipsized (« … »)
+#6 LAYOUT CUT « Modo comentários » ellipsized (« … »)
+#6 LAYOUT CONTRAST « Primeiro é preciso o modelo de separação (174 MB, uma vez só, Wi-Fi recomendado). » 1.93:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 > touche 294 848
+#6 DOIGT remix_download_thumb « Baixar o modelo (174 MB) »
+#7 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 1f5ddad432 | project=p-48ca5a78 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 456 943
+#7 DOIGT remix_model_ask_ok « Baixar »
+#8 ROUTE ? | MODE simple | EMPREINTE dcdda5f7f1 | project=p-48ca5a78 no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 30
+#9 ROUTE ? | MODE simple | EMPREINTE 8d20543bf7 | project=p-48ca5a78 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 294 848
+#9 DOIGT remix_pick_thumb «  Escolher uma música »
+#10 ROUTE ? | MODE simple | EMPREINTE 4d1b437005 | project=p-48ca5a78 no tuto
+#10 SON Son : rien ne joue.
+#10 > attends 60
+#11 ROUTE ? | MODE simple | EMPREINTE c63b66b195 | project=p-48ca5a78 no tuto
+#11 SON Son : rien ne joue.
+#11 > glisse 294 700 294 350
+#11 DOIGT rien (texte « Escolha uma música do aparelho: o app a  »)
+#12 ROUTE ? | MODE simple | EMPREINTE 035a5893c9 | project=p-48ca5a78 no tuto
+#12 SON Son : rien ne joue.
+#12 > glisse 294 700 294 350
+#12 DOIGT rien (texte « No máximo 7 minutos. As 3 últimas música »)
+#13 ROUTE ? | MODE simple | EMPREINTE 87c632d45d | project=p-48ca5a78 no tuto
+#13 SON Son : rien ne joue.
+#13 > glisse 294 700 294 350
+#13 DOIGT rien
+#14 ROUTE ? | MODE simple | EMPREINTE 93e77e4f68 | project=p-48ca5a78 no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 294 700 294 350
+#14 DOIGT rien (texte « Escolha pedaços de cada faixa e coloque  »)
+#15 ROUTE ? | MODE simple | EMPREINTE b4d3a30695 | project=p-48ca5a78 no tuto
+#15 SON Son : rien ne joue.
+#15 > glisse 294 700 294 350
+#15 DOIGT rien (texte « Liga ou desliga cada faixa, mesmo durant »)
+#16 ROUTE ? | MODE simple | EMPREINTE 92e6a08228 | project=p-48ca5a78 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « Bateria » lines dropped (more lines than room)
+#16 > glisse 294 400 294 700
+#16 DOIGT rien (texte « Liga ou desliga cada faixa, mesmo durant »)
+#17 ROUTE ? | MODE simple | EMPREINTE 4e0524c061 | project=p-48ca5a78 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 294 330
+#17 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar o que eu quiser »
+#18 ROUTE ? | MODE simple | EMPREINTE c81381c2c0 | project=p-48ca5a78 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Cortar a música » ellipsized (« … »)
+#18 LAYOUT CUT « Ma chanson préférée · 0:40 » ellipsized (« … »)
+#18 LAYOUT CUT « Guardar » a word split over two lines
+#18 > glisse 294 650 294 450
+#18 DOIGT rien (texte « Posicione Início e Fim, depois coloque e »)
+#19 ROUTE ? | MODE simple | EMPREINTE e2dc315ea1 | project=p-48ca5a78 no tuto
+#19 SON Son : rien ne joue.
+#19 > glisse 294 560 294 860
+#19 DOIGT rien (texte « Posicione Início e Fim, depois coloque e »)
+#20 ROUTE ? | MODE simple | EMPREINTE e2dc315ea1 | project=p-48ca5a78 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 96 788
+#20 DOIGT cut_to_pads « Nos pads »
+#21 ROUTE ? | MODE simple | EMPREINTE fa75225432 | project=p-48ca5a78 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Nos pads » lines cut (taller than its box)
+#21 LAYOUT CUT « No Live » lines cut (taller than its box)
+#21 LAYOUT CUT « Guardar » lines cut (taller than its box)
+#21 LAYOUT CUT « Numa faixa » lines cut (taller than its box)
+#21 > touche 464 326
+#21 DOIGT help_Um trecho « O que é “Um trecho”? »
+#21 AIDE help_Um
+#22 ROUTE dialogue:« Um trecho » | MODE simple | EMPREINTE 6fe6bc7d7d | project=p-48ca5a78 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 461 1013
+#22 DOIGT #1382 « Entendi »
+#23 ROUTE ? | MODE simple | EMPREINTE fa75225432 | project=p-48ca5a78 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 504 514
+#23 DOIGT cut_message_ok « OK »
+#24 ROUTE ? | MODE simple | EMPREINTE e2dc315ea1 | project=p-48ca5a78 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 492 788
+#24 DOIGT cut_to_track « Numa faixa »
+#25 ROUTE ? | MODE simple | EMPREINTE c4fe6b9e61 | project=p-48ca5a78 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 42 355
+#25 DOIGT cut_close
+#26 ROUTE ? | MODE simple | EMPREINTE be50548cab | project=p-48ca5a78 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « 0:00 / 0:40 · início » lines dropped (more lines than room)
+#26 LAYOUT CONTRAST « MÚSICA: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Efeitos » 4.37:1 (needs 4.5:1, 14 sp)
+#26 > touche 294 848
+#26 DOIGT remix_cut_thumb «  Cortar a música »
+#27 ROUTE ? | MODE simple | EMPREINTE c4fe6b9e61 | project=p-48ca5a78 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 54 1146
+#27 DOIGT tab_simple_Morceau « Minha música »
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 62497e7dc4 | project=p-48ca5a78 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 435 528
+#28 DOIGT simple_alone_audio:0 « Ouvir “Voz 1” sozinho, em loop »
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 25cb4a2aff | project=p-48ca5a78 no tuto
+#29 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#29 LAYOUT CUT « compasso 1/1 » lines dropped (more lines than room)
+#29 > touche 435 528
+#29 DOIGT simple_alone_audio:0 « Parar »
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 62497e7dc4 | project=p-48ca5a78 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 174 1146
+#30 DOIGT tab_simple_Rythme « Ritmo »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b9d3da4ff4 | project=p-48ca5a78 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Os pads soam, os quadrados guardam as batidas. Toque e segure: trocar o som. » ellipsized (« … »)
+#31 > attends 1
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b9d3da4ff4 | project=p-48ca5a78 no tuto
+#32 SON Son : rien ne joue.
+#32 > fin
+#32 FIN : fin

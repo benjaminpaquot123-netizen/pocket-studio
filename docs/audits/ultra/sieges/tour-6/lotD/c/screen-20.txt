@@ -1,0 +1,58 @@
+Écran 20 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+texte « 把音色包放到后面的打击垫上： » @ 356,300
+texte « 文件夹 » @ 720,300
+texte « .zip » @ 814,300
+texte « 1 小节 » @ 214,384
+texte « 2 小节 » @ 319,384
+texte « 4 小节 » @ 426,384
+texte « 采集整首歌： » @ 100,384
+texte « 把你自己的声音放到这个打击垫上：设备上的文件（MP3、WAV、FLAC、M4A…）或麦克风。 » @ 445,446
+bouton « 节拍器 » @ 98,556
+bouton « 倒数 » @ 213,556
+bouton « ? » @ 292,556
+bouton « 效果 » @ 814,556
+texte « Swing » @ 77,626
+bouton « ? » @ 133,625
+texte « 0% » @ 840,625
+curseur [état « 0% », à 0 %] @ 450,695
+image (chapeau de diplômé) @ 37,790
+texte « 速度和调性 第 1/16 章 · 第 4/4 步 · 专业 » @ 400,790
+icône (liste) @ 771,790
+icône ⌄ @ 843,790
+texte « 轮到你：加一点点 Swing（5%）：小踩镲稍微拖后一点，律动在呼吸，但不会瘸。 » @ 450,889
+texte « ▾ 为什么？ 在 techno 里，Swing 很轻：刚好让机器听起来不僵硬。 » @ 450,965
+bouton (doigt qui touche) «   我来做 » @ 450,1044
+bouton ▶ «  听示例 » @ 232,1128
+bouton (œil) «  示范给我看 » @ 667,1128
+icône ← «  上一步 » @ 87,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

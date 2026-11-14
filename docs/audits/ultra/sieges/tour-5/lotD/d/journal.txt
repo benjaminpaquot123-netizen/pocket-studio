@@ -1,0 +1,212 @@
+#0 SIEGE lang=ar device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 06a2f21309 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇸🇦 » 1.26:1 (needs 3.0:1, 20 sp)
+#1 > touche 294 1182
+#1 DOIGT welcome_remix « استخراج الصوت من أغنية »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6175dc376a | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « كيف تريد أن ترى هذا المشروع؟ يمكنك التغيير في أي وقت بالشارة في الأعلى. » 2.64:1 (needs 4.5:1, 16 sp)
+#2 > touche 294 288
+#2 DOIGT mode_card_simple « بسيط »
+#3 ROUTE ? | MODE simple | EMPREINTE e461bd73ea | project=p-0612cdd6 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « تم الحفظ » lines cut (taller than its box)
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 499
+#3 DOIGT remix_download « تنزيل النموذج (174 MB) »
+#4 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE af0620c790 | project=p-0612cdd6 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « لفصل أغنية، يحمّل التطبيق نموذجه أولًا: 174 MB، مرة واحدة فقط. » 1.58:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « لست على Wi-Fi: ستُخصم هذه الـ 174 MB من باقة بياناتك. » 4.23:1 (needs 4.5:1, 14 sp)
+#4 > touche 95 742
+#4 DOIGT remix_model_ask_ok « تنزيل »
+#5 ROUTE ? | MODE simple | EMPREINTE 812ae374ab | project=p-0612cdd6 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 60
+#6 ROUTE ? | MODE simple | EMPREINTE 82d2724826 | project=p-0612cdd6 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 90
+#7 ROUTE ? | MODE simple | EMPREINTE fe2c187d59 | project=p-0612cdd6 no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 20
+#8 ROUTE ? | MODE simple | EMPREINTE d088827d8e | project=p-0612cdd6 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 294 475
+#8 DOIGT remix_pick « اختر أغنية »
+#9 ROUTE ? | MODE simple | EMPREINTE d74cce2988 | project=p-0612cdd6 no tuto
+#9 SON Son : rien ne joue.
+#9 > attends 60
+#10 ROUTE ? | MODE simple | EMPREINTE c5d657340c | project=p-0612cdd6 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 534 1158
+#10 DOIGT tab_simple_Morceau « أغنيتي »
+#11 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 80d9fcf18c | project=p-0612cdd6 no tuto
+#11 SON Son : rien ne joue.
+#11 > glisse 294 850 294 350
+#11 DOIGT rien
+#12 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2601e667bf | project=p-0612cdd6 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 294 870
+#12 DOIGT song_what_plays «   ما يُعزف في الأغنية »
+#13 ROUTE dialogue:what_plays | MODE simple | EMPREINTE e41030418d | project=p-0612cdd6 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « كل ما يؤثر على الصوت: المؤثرات، الإرسالات، المنحنيات المتحركة. «تعديل» يأخذك إلى مكان ضبطه. » 2.13:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « مستوى الـMaster » 1.86:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « تعديل » 4.16:1 (needs 4.5:1, 14 sp)
+#13 > touche 94 851
+#13 DOIGT what_plays_close « إغلاق »
+#14 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2601e667bf | project=p-0612cdd6 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 95 1059
+#14 DOIGT thumb_more « خيارات أكثر »
+#15 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE fe8a8d1f4f | project=p-0612cdd6 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « الإبلاغ عن خلل » 1.80:1 (needs 4.5:1, 14 sp)
+#15 > touche 178 471
+#15 DOIGT thumb_more_remix « ريمكس »
+#16 ROUTE ? | MODE simple | EMPREINTE e2779cbee3 | project=p-0612cdd6 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 294 766
+#16 DOIGT cut_song_3a02635f77d71cd9a979f25b «  اقطع ما أريد »
+#17 ROUTE cut_screen | MODE simple | EMPREINTE b87ef5b97a | project=p-0612cdd6 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 457 600
+#17 DOIGT cut_auto « القص: قطعة واحدة »
+#18 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE dba3d62d4f | project=p-0612cdd6 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 486 756
+#18 DOIGT cut_auto_1 « الجُمل »
+#19 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#19 SON Son : rien ne joue.
+#19 > glisse 300 700 300 530
+#19 DOIGT rien
+#20 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 294 640
+#20 DOIGT rien
+#21 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#21 SON Son : rien ne joue.
+#21 RIEN NE CHANGE (3 écrans identiques)
+#21 > attends 15
+#22 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#22 SON Son : rien ne joue.
+#22 RIEN NE CHANGE (3 écrans identiques)
+#22 > glisse 450 560 450 230
+#22 DOIGT rien
+#23 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 394 368
+#23 DOIGT cut_stem_0 « الطبول »
+#24 ROUTE cut_screen | MODE simple | EMPREINTE 97d23e1a23 | project=p-0612cdd6 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 517 368
+#24 DOIGT cut_stem_3 « الغناء »
+#25 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#25 SON Son : rien ne joue.
+#25 > glisse 300 770 300 560
+#25 DOIGT rien
+#26 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 220 640
+#26 DOIGT rien
+#27 ROUTE cut_screen | MODE simple | EMPREINTE 1203c4d29b | project=p-0612cdd6 no tuto
+#27 SON Son : rien ne joue.
+#27 RIEN NE CHANGE (3 écrans identiques)
+#27 > touche 294 556
+#27 DOIGT rien
+#28 ROUTE cut_screen | MODE simple | EMPREINTE 6bac433ce3 | project=p-0612cdd6 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 492 870
+#28 DOIGT cut_to_pads « على الـPads »
+#29 ROUTE cut_screen | MODE simple | EMPREINTE 476401bcdf | project=p-0612cdd6 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 79 729
+#29 DOIGT cut_message_ok « OK »
+#30 ROUTE cut_screen | MODE simple | EMPREINTE 6bac433ce3 | project=p-0612cdd6 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 380 620
+#30 DOIGT rien
+#31 ROUTE cut_screen | MODE simple | EMPREINTE 6bac433ce3 | project=p-0612cdd6 no tuto
+#31 SON Son : rien ne joue.
+#31 > glisse 560 780 560 420
+#31 DOIGT rien
+#32 ROUTE cut_screen | MODE simple | EMPREINTE 6bac433ce3 | project=p-0612cdd6 no tuto
+#32 SON Son : rien ne joue.
+#32 RIEN NE CHANGE (3 écrans identiques)
+#32 > glisse 300 510 300 250
+#32 DOIGT rien
+#33 ROUTE cut_screen | MODE simple | EMPREINTE 5da6e53957 | project=p-0612cdd6 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « ? » 1.80:1 (needs 4.5:1, 12 sp)
+#33 > glisse 300 700 300 450
+#33 DOIGT cut_end « النهاية »
+#34 ROUTE cut_screen | MODE simple | EMPREINTE c4a21b5e6c | project=p-0612cdd6 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « 0:03.0 » 3.77:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « 0:02.0 » 3.92:1 (needs 4.5:1, 14 sp)
+#34 > touche 300 610
+#34 DOIGT cut_piece_1 « القطعة 2 »
+#35 ROUTE cut_screen | MODE simple | EMPREINTE 1edff0109e | project=p-0612cdd6 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 0:02.0 » 3.32:1 (needs 4.5:1, 14 sp)
+#35 > touche 96 870
+#35 DOIGT cut_to_track « على مسار »
+#36 ROUTE cut_screen | MODE simple | EMPREINTE 41e3533e50 | project=p-0612cdd6 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 79 729
+#36 DOIGT cut_message_ok « OK »
+#37 ROUTE cut_screen | MODE simple | EMPREINTE 1edff0109e | project=p-0612cdd6 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 470 344
+#37 DOIGT cut_auto « القص: الجُمل »
+#38 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE cbac0a3ad9 | project=p-0612cdd6 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 486 416
+#38 DOIGT cut_auto_0 « قطعة واحدة »
+#39 ROUTE cut_screen | MODE simple | EMPREINTE 09c88749fc | project=p-0612cdd6 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 520 180
+#39 DOIGT remix_back «  أغنيتي »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 359b670e5e | project=p-0612cdd6 no tuto
+#40 SON Son : rien ne joue.
+#40 > glisse 294 800 294 300
+#40 DOIGT song_what_plays «   ما يُعزف في الأغنية »
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 359b670e5e | project=p-0612cdd6 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 450 321
+#41 DOIGT simple_track_audio:0 « الغناء 1 »
+#42 ROUTE audio_tracks | MODE simple | EMPREINTE 7a9fe589cf | project=p-0612cdd6 no tuto
+#42 SON Son : rien ne joue.
+#42 > retour
+#42 RETOUR
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 359b670e5e | project=p-0612cdd6 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 414 1158
+#43 DOIGT tab_simple_Rythme « الإيقاع »
+#44 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE d1c835ccbc | project=p-0612cdd6 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 174 1158
+#44 DOIGT tab_simple_Mix « المكس »
+#45 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 33a2fe784c | project=p-0612cdd6 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « المخرج » 4.40:1 (needs 4.5:1, 13 sp)
+#45 > touche 95 1059
+#45 DOIGT thumb_more « خيارات أكثر »
+#46 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE fe8a8d1f4f | project=p-0612cdd6 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « مكتبة الأصوات » 1.72:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « ريمكس » 1.24:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « الإبلاغ عن خلل » 1.52:1 (needs 4.5:1, 14 sp)
+#46 > touche 178 183
+#46 DOIGT thumb_more_live « المباشر: العزف المباشر »
+#47 ROUTE live_grid | MODE simple | EMPREINTE 0a9926c947 | project=p-0612cdd6 no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#47 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 13 sp)
+#47 > retour
+#47 RETOUR
+#48 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 33a2fe784c | project=p-0612cdd6 no tuto
+#48 SON Son : rien ne joue.
+#48 > fin
+#48 FIN : fin

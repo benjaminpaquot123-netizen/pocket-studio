@@ -4,8 +4,6 @@ import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDialog
 
 import com.pocketstudio.model.i18n.tr
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,14 +17,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -42,7 +43,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -52,15 +52,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.scrollHintItem
+import com.pocketstudio.app.ui.IconMedallion
+import com.pocketstudio.app.ui.showcasePanel
 
 /** The three ways to start offered at the first launch, and "later" (stay on the first project). */
 class WelcomeActions(
     val guided: () -> Unit = {},
+    /** « J'apprends »: the tutorial's chooser (Facile or Pro, then the style). */
+    val learn: () -> Unit = {},
     val demo: () -> Unit = {},
     val empty: () -> Unit = {},
     val later: () -> Unit = {},
-    /** Phase 36: the Mode simple (true) or every tool (false), chosen before starting. */
+    /** Remix testers (Sarah): « Extraire la voix d'une chanson », the Remix on a project of its own. */
+    val remix: () -> Unit = {},
+    /** The mode of the project about to start: Simple (true) or Pro (false), chosen at « Simple ou Pro ? ». */
     val chooseMode: (Boolean) -> Unit = {},
+    /** Pad Live (lot B3: the child persona installed the app and found no Pad Live): the pads ready to play, straight away. */
+    val padLive: () -> Unit = {},
+    /** Audit ultra round 2, zone 1, n° 3: « Défis » (three stars): Pad Live opened on its challenges, straight away. */
+    val challenges: () -> Unit = {},
+    /**
+     * Audit ultra round 2, n° 21 (seat B b, a guitarist: nothing here to record a voice or a guitar):
+     * the first project's beat, on the microphone's page (no « Simple ou Pro ? », as « Plus tard »).
+     */
+    val voice: () -> Unit = {},
 )
 
 /**
@@ -74,17 +90,44 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
     var demoReady by rememberSaveable(key = "demo_ready") { mutableStateOf(false) }
     // A project is being opened (the activity rebuilds then): the choices stay until it is.
     var leaving by remember { mutableStateOf(false) }
+    // Owner (2026-10-29): each way to start (but « Plus tard ») asks « Simple ou Pro ? » first; its
+    // Retour comes back to the choices. The way touched waits here (kept through a rotation).
+    var asking by rememberSaveable(key = "welcome_asking") { mutableStateOf<String?>(null) }
     if (show || leaving) {
-        ScaledDialog(onDismissRequest = { leaving = false; demoReady = false; actions.later() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
+        ScaledDialog(
+            onDismissRequest = { if (asking != null) asking = null else { leaving = false; demoReady = false; actions.later() } },
+            properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
+        ) {
             Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-                WelcomeScreen(
-                    WelcomeActions(
-                        guided = actions.guided,
+                val start: (String) -> Unit = { way ->
+                    when (way) {
+                        "guided" -> actions.guided()
+                        "learn" -> actions.learn()
                         // A second quick touch while the first project opens makes no second one.
-                        demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
-                        empty = { if (!leaving) { leaving = true; actions.empty() } },
+                        "demo" -> if (!leaving) { demoReady = true; leaving = true; actions.demo() }
+                        "empty" -> if (!leaving) { leaving = true; actions.empty() }
+                        "remix" -> if (!leaving) { leaving = true; actions.remix() }
+                    }
+                }
+                val way = asking
+                if (way != null) {
+                    com.pocketstudio.app.ui.ModeStep(
+                        choose = { v -> asking = null; actions.chooseMode(v); start(way) },
+                        back = { asking = null },
+                        tuto = way == "learn",
+                    )
+                } else WelcomeScreen(
+                    WelcomeActions(
+                        guided = { asking = "guided" },
+                        learn = { asking = "learn" },
+                        demo = { if (!leaving) asking = "demo" },
+                        empty = { if (!leaving) asking = "empty" },
+                        remix = { if (!leaving) asking = "remix" },
+                        // No « Simple ou Pro ? » for Pad Live: it has its own simple level.
+                        padLive = { if (!leaving) actions.padLive() },
+                        challenges = { if (!leaving) actions.challenges() },
+                        voice = { if (!leaving) { demoReady = false; actions.voice() } },
                         later = { leaving = false; demoReady = false; actions.later() },
-                        chooseMode = actions.chooseMode,
                     ),
                     simple = simple,
                 )
@@ -95,7 +138,10 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
             onDismissRequest = { demoReady = false },
             title = { Text(tr("Ta démo est prête")) },
             text = {
-                Text(tr("Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer."))
+                Text(
+                    if (simple) tr("Écoute-la en entier, puis va voir dans Mon morceau comment elle est construite : tu peux tout changer.")
+                    else tr("Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer."),
+                )
             },
             confirmButton = {
                 Button(onClick = { demoReady = false; playDemo() }, modifier = Modifier.testTag("demo_play")) {
@@ -112,41 +158,81 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
 /** The choice screen itself: the guided song first and biggest, then the demo, then the empty project. */
 @Composable
 fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
-    // Steps to read: centred at a comfortable width on a tablet.
-    com.pocketstudio.ui.ReadingWidth(maxWidth = 600.dp) {
+    // Steps to read: centred at a comfortable width on a tablet. Audit ultra round 1, n° 41 (seat D b, a tablet lying
+    // down): a narrow column with « Pad Live » under the fold and the sides empty; there the choices go two by two.
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
+    val wide = maxWidth >= com.pocketstudio.ui.EXPANDED_FROM && maxWidth > maxHeight
+    com.pocketstudio.ui.ReadingWidth(maxWidth = if (wide) 1040.dp else 600.dp) {
+        // Rule 17 (hands-on audit G9; Benjamin, 2026-11-06): the cards below the fold are said (a fade, « ↓ 4 autres »).
+        val hint = com.pocketstudio.ui.rememberScrollHint()
+        com.pocketstudio.ui.ScrollHintBox(hint, Modifier.fillMaxSize()) {
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
+            Modifier.fillMaxSize().verticalScroll(hint.scroll).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text("Pocket Studio", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
-            // The language first: French is ticked, the other ones are one tap away.
-            com.pocketstudio.app.settings.LanguagePicker()
-            // Phase 36: how the app is laid out, before anything (Réglages changes it later, nothing is lost).
-            ModeChoice(simple, actions.chooseMode)
+            // The language on top (the phone's is already chosen), one touch away.
+            com.pocketstudio.app.settings.LanguagePicker(Modifier.align(Alignment.End))
+            // Who we are: the mark, the name, one line.
+            Row(Modifier.fillMaxWidth().testTag("welcome_brand"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // The pads take half of the mark's box: the box overflows a smaller slot.
+                Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) { BenStudioMark(120.dp, Modifier.requiredSize(120.dp)) }
+                Column(Modifier.weight(1f)) {
+                    BenStudioWordmark(sizeSp = 28)
+                    Text(tr("Ton studio de musique, dans ta poche."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+                }
+            }
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
-            Choice(
-                Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
-                tr("Choisis un style, je t'aide pas à pas : intro, couplet, refrain."),
+            val choices = listOf<@Composable () -> Unit>(
+            { Choice(
+                Icons.Filled.AutoAwesome, tr("Fais-moi un morceau"),
+                tr("L'appli compose, tu écoutes et tu changes."),
                 Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
-            )
-            Choice(
+            ) },
+            { Choice(
+                Icons.Filled.School, tr("J'apprends"),
+                tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
+                Neon.Acid, onClick = actions.learn, tag = "welcome_learn",
+            ) },
+            { Choice(
                 Icons.Filled.Headphones, tr("Écouter une démo"),
                 tr("Un morceau déjà prêt, pour découvrir ce qu'on peut faire."),
                 Color(0xFF5BB8F5), onClick = actions.demo, tag = "welcome_demo",  // sky blue: green means "playing"
-            )
-            Choice(
+            ) },
+            { Choice(
                 Icons.Filled.Add, tr("Partir de zéro"),
-                tr("Un projet vide : à toi de jouer."),
+                tr("Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."),
                 Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
+            ) },
+            // Remix testers (Sarah installed the app for this and found it nowhere): one way in, under the others.
+            { Choice(
+                Icons.Filled.RecordVoiceOver, tr("Extraire la voix d'une chanson"),
+                tr("Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste."),
+                com.pocketstudio.app.ui.REMIX_COLOR, onClick = actions.remix, tag = "welcome_remix",
+            ) },
+            // Lot B3 (persona Léo, 8): Pad Live was only on « Que veux-tu faire ? », never on the first launch.
+            { PadLiveCard(actions.padLive) },
+            // Audit ultra round 2, n° 21 (seat B b, a guitarist: « aucune carte ne parle d'enregistrer »).
+            { Choice(
+                Icons.Filled.Mic, tr("Enregistrer ma voix ou ma guitare"),
+                tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
+                Neon.Red, onClick = actions.voice, tag = "welcome_voice",
+            ) },
+            // Audit ultra round 2, zone 1, n° 3: the challenges as a picture (a child who cannot read looks for a star).
+            { ChallengeCard(actions.challenges) },
             )
+            val counted = choices.map { card -> @Composable { Box(Modifier.scrollHintItem(hint)) { card() } } }
+            if (wide) com.pocketstudio.ui.AdaptiveColumns(counted, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
+            else counted.forEach { it() }
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
                 }
             }
-            Text(tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
+            Text(if (simple) tr("La visite rapide reste dans ⋮ › Aide.") else tr("La visite rapide reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
+        }
+    }
     }
 }
 
@@ -155,53 +241,18 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
 private fun Choice(icon: ImageVector, title: String, line: String, color: Color, primary: Boolean = false, onClick: () -> Unit, tag: String) {
     val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = if (primary) 104.dp else 84.dp).clip(shape)
-            .background(if (primary) color.copy(alpha = 0.2f) else Neon.Surface)
-            .border(if (primary) 2.dp else 1.dp, if (primary) color else Neon.Outline, shape)
+        Modifier.fillMaxWidth().heightIn(min = if (primary) 104.dp else 84.dp)
+            .showcasePanel(shape, accent = color.takeIf { primary }, edge = if (primary) 2.dp else 1.dp)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(16.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Box(Modifier.size(52.dp).clip(RoundedCornerShape(26.dp)).background(color.copy(alpha = if (primary) 1f else 0.18f)), contentAlignment = Alignment.Center) {
-            Icon(icon, contentDescription = null, tint = if (primary) Neon.OnAccent else color, modifier = Modifier.size(28.dp))
-        }
+        IconMedallion(icon, color, 52.dp, 28.dp, filled = primary)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = if (primary) color else Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         }
-    }
-}
-
-/**
- * « Comment veux-tu travailler ? »: the Mode simple (four tabs, everyday words) or every tool
- * (the five spaces). Two cards side by side, the chosen one lit; Réglages changes it later.
- */
-@Composable
-private fun ModeChoice(simple: Boolean, choose: (Boolean) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("welcome_mode")) {
-        Text(tr("Comment veux-tu travailler ?"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min)) {
-            ModeCard(tr("Simple"), tr("4 onglets et des mots de tous les jours : idéal pour commencer."), simple, "welcome_mode_simple", Modifier.weight(1f)) { choose(true) }
-            ModeCard(tr("Complet"), tr("Tous les outils : structure, sons, mix et live."), !simple, "welcome_mode_full", Modifier.weight(1f)) { choose(false) }
-        }
-    }
-}
-
-@Composable
-private fun ModeCard(title: String, line: String, chosen: Boolean, tag: String, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(14.dp)
-    Column(
-        modifier.fillMaxHeight().clip(shape)
-            .background(if (chosen) Neon.Cyan.copy(alpha = 0.18f) else Neon.Surface)
-            .border(if (chosen) 2.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
-            .selectable(selected = chosen, role = Role.RadioButton, onClick = onClick)
-            .padding(12.dp)
-            .testTag(tag),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (chosen) Neon.Cyan else Neon.TextPrimary)
-        Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }

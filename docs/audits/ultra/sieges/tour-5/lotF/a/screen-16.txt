@@ -1,0 +1,34 @@
+Écran 16 (1035x1243)
+texte « Poignée : glisse vers le bas pour fermer » @ 518,36
+texte « Partie 4 · B · Groove » @ 236,96
+bouton « Fermer » @ 906,113
+texte « 8 mes. » @ 107,137
+bouton « Variation » @ 287,211
+bouton « Fill à la fin » @ 749,211
+bouton « Break après · 4 mes. » @ 287,310
+bouton « Break après · 8 mes. » @ 749,310
+bouton « Montée avant · 4 mes. » @ 287,409
+bouton « Montée avant · 8 mes. » @ 749,409
+bouton « Fondu d'entrée » @ 287,508
+bouton « Fondu de sortie » @ 749,508
+bouton « Ajouter une fin » @ 287,607
+texte « Énergie : 3 » @ 134,684
+case « 1 · nappes » @ 154,756
+case « 2 · + basse » @ 355,756
+case « 3 · + batterie » [sélectionné] @ 575,756
+case « 4 · à fond » @ 785,756
+texte « Longueur » @ 127,827
+champ « mesures » contenu « 8 » @ 306,918
+bouton « Effacer » @ 353,926
+bouton « Raccourcir » [désactivé] @ 98,918
+bouton « Allonger » @ 179,918
+bouton « OK » [désactivé] @ 441,918
+texte « Partie » @ 102,1008
+bouton « Renommer » @ 171,1080
+bouton « Ce qui joue » @ 397,1080
+bouton « Monter » @ 599,1080
+bouton « Descendre » @ 799,1080
+bouton « Dupliquer » @ 163,1152
+bouton « Insérer après » @ 395,1152
+bouton « Retirer » @ 608,1152
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

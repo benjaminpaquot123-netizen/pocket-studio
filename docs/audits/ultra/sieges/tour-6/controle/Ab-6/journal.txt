@@ -1,0 +1,171 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=5.2 simule_s=2.4 jvm_s=12.4 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 485 1224
+#1 DOIGT scroll_hint « ↓ 4 autres »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 914738cda8 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 1240
+#2 DOIGT rien
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 914738cda8 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 294 1000 294 500
+#3 DOIGT rien
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE 4cb2c97ba0 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 294 868
+#4 DOIGT launch_padlive « Pad Live »
+#5 ROUTE padlive | MODE simple | EMPREINTE 4e30fc6301 | project=p-96b67a34 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Grosse caisse 1 » over « Boucle de kick » (43 x 27 dp)
+#5 LAYOUT OVERLAP « Caisse » over « Boucle Acid 303 » (30 x 17 dp)
+#5 LAYOUT OVERLAP « Claquement de mains » over « coup » (32 x 16 dp)
+#5 LAYOUT OVERLAP « Charley » over « coup » (32 x 9 dp)
+#5 LAYOUT OVERLAP « Charley ouvert » over « coup » (32 x 16 dp)
+#5 LAYOUT OVERLAP « Laser » over « Charley ouvert » (16 x 5 dp)
+#5 LAYOUT OVERLAP « ? » over « Chute » (7 x 12 dp)
+#5 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#5 LAYOUT OVERLAP « 124 » over « Roulement » (12 x 15 dp)
+#5 LAYOUT OVERLAP « 124 » over « 1/16 » (12 x 9 dp)
+#5 LAYOUT OVERLAP « Tempo » over « 1/16 » (16 x 7 dp)
+#5 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (55 x 33 dp)
+#5 LAYOUT OVERLAP « Caisse » over the touchable « Boucle Acid 303, boucle, prêt, pad A3 » (41 x 17 dp)
+#5 LAYOUT OVERLAP « Claquement de mains » over the touchable « Klaxon, coup, prêt, pad A5 » (70 x 32 dp)
+#5 LAYOUT OVERLAP « Claquement de mains » over the touchable « Réglages du pad, pad A5 Réglages du pad » (47 x 26 dp)
+#5 LAYOUT OVERLAP « Charley » over the touchable « Laser, coup, prêt, pad A6 » (52 x 17 dp)
+#5 LAYOUT OVERLAP « Charley » over the touchable « Réglages du pad, pad A6 Réglages du pad » (47 x 17 dp)
+#5 LAYOUT OVERLAP « Charley ouvert » over the touchable « Sirène, coup, prêt, pad A7 » (44 x 33 dp)
+#5 LAYOUT OVERLAP « Charley ouvert » over the touchable « Réglages du pad, pad A7 Réglages du pad » (44 x 26 dp)
+#5 LAYOUT OVERLAP « Laser » over the touchable « Charley ouvert, coup, prêt, pad A12 » (29 x 17 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Chute, coup, prêt, pad A15 » (7 x 15 dp)
+#5 LAYOUT OVERLAP « 124 » over the touchable « Page A » (32 x 18 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#5 LAYOUT OVERLAP « 124 » over the touchable « Roulement · 1/16 » (22 x 24 dp)
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Roulement · 1/16 » (26 x 13 dp)
+#5 LAYOUT OVERLAP « Plus » over the touchable « Roulement · 1/16 » (21 x 13 dp)
+#5 LAYOUT OVERLAP « A » over the touchable « Tempo : 124 battements par minute Change » (12 x 22 dp)
+#5 LAYOUT OVERLAP « B » over the touchable « Tempo : 124 battements par minute Change » (11 x 22 dp)
+#5 LAYOUT OVERLAP « boucle » over the touchable « Changer de partie » (44 x 10 dp)
+#5 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A1 Réglages du pad » (37 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A2 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A3 Réglages du pad » (37 x 16 dp)
+#5 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A4 Réglages du pad » (37 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A5 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A6 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A7 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A8 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A9 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A10 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A11 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A12 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A13 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « Montée » over the touchable « Replier Déplié » (48 x 20 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A14 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « Impact » over the touchable « Replier Déplié » (47 x 20 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A15 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « Chute » over the touchable « Replier Déplié » (42 x 20 dp)
+#5 LAYOUT OVERLAP « Chute » over the touchable « Qu'est-ce que « Pas » ? » (28 x 19 dp)
+#5 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A16 Réglages du pad » (32 x 16 dp)
+#5 LAYOUT OVERLAP « EFFETS LIVE » over the touchable « Ouvrir le Guide replié » (81 x 18 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Ouvrir le Guide replié » (7 x 15 dp)
+#5 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Ouvrir le Guide replié » (126 x 18 dp)
+#5 LAYOUT OVERLAP « Filtre » over the touchable « Annuler la dernière action » (36 x 20 dp)
+#5 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Annuler la dernière action » (52 x 16 dp)
+#5 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Rétablir » (21 x 16 dp)
+#5 LAYOUT OVERLAP « Écho » over the touchable « Jouer le morceau Jouer le morceau » (23 x 20 dp)
+#5 LAYOUT OVERLAP « en sortie » over the touchable « Jouer le morceau Jouer le morceau » (47 x 16 dp)
+#5 LAYOUT OVERLAP « Roulement » over the touchable « Tempo : 124 battements par minute Change » (31 x 20 dp)
+#5 LAYOUT OVERLAP « Roulement » over the touchable « Plus de choix » (29 x 20 dp)
+#5 LAYOUT OVERLAP « 1/16 » over the touchable « Tempo : 124 battements par minute Change » (26 x 16 dp)
+#5 LAYOUT CONTRAST « Charley » 4.43:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#5 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#5 > touche 242 1152
+#5 DOIGT padlive_played « Enregistrer ce que je joue »
+#6 ROUTE padlive | MODE simple | EMPREINTE 6651a37666 | project=p-96b67a34 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 77 256
+#6 DOIGT padlive_pad_0 « Boucle de kick, boucle, prêt, pad A1 »
+#7 ROUTE padlive | MODE simple | EMPREINTE c9d30206c9 | project=p-96b67a34 no tuto
+#7 SON Son : le pad live 1 joue en boucle.
+#7 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Boucle de kick, boucle, joue, pad A1 » (55 x 33 dp)
+#7 LAYOUT CONTRAST « Grosse caisse 1 » 4.36:1 (needs 4.5:1, 14 sp)
+#7 > touche 205 256
+#7 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#8 ROUTE padlive | MODE simple | EMPREINTE 1356748fc7 | project=p-96b67a34 no tuto
+#8 SON Son : le pad live 2 (« Clap ») a joué une fois ; le pad live 1 joue en boucle.
+#8 > touche 242 1152
+#8 DOIGT padlive_played « 2 mesures · touche pour finir »
+#9 ROUTE dialogue:padlive_take_sheet | MODE simple | EMPREINTE 3ff3de6e93 | project=p-96b67a34 no tuto
+#9 SON Son : le pad live 1 joue en boucle.
+#9 LAYOUT OVERLAP « Ta prise : 2 mesures » over the touchable « Fermer la feuille » (211 x 28 dp)
+#9 LAYOUT OVERLAP « Où la mettre ? Elle tourne en boucle au tempo du projet. » over the touchable « Fermer la feuille » (321 x 40 dp)
+#9 LAYOUT OVERLAP « Sur le pad vide B1 » over the touchable « Fermer la feuille » (120 x 20 dp)
+#9 LAYOUT OVERLAP « Dans une brique du Live » over the touchable « Fermer la feuille » (164 x 20 dp)
+#9 LAYOUT OVERLAP « Jeter la prise » over the touchable « Fermer la feuille » (88 x 20 dp)
+#9 LAYOUT CONTRAST « Jeter la prise » 4.21:1 (needs 4.5:1, 14 sp)
+#9 > touche 294 1032
+#9 DOIGT padlive_take_pad « Sur le pad vide B1 »
+#10 ROUTE padlive | MODE simple | EMPREINTE e869dd2958 | project=p-96b67a34 no tuto
+#10 SON Son : le pad live 1 joue en boucle.
+#10 LAYOUT OVERLAP « Ta prise est sur le pad B1. » over the touchable « Pas 9 Poser ou retirer vide » (38 x 20 dp)
+#10 LAYOUT OVERLAP « Ta prise est sur le pad B1. » over the touchable « Pas 10 Poser ou retirer vide » (38 x 20 dp)
+#10 LAYOUT OVERLAP « Ta prise est sur le pad B1. » over the touchable « Pas 11 Poser ou retirer vide » (39 x 20 dp)
+#10 LAYOUT OVERLAP « Ta prise est sur le pad B1. » over the touchable « Pas 12 Poser ou retirer vide » (27 x 20 dp)
+#10 > touche 51 45
+#10 DOIGT padlive_back
+#11 ROUTE launch | MODE simple | EMPREINTE ea2406ed2f | project=p-96b67a34 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 294 664
+#11 DOIGT launch_projects « Mes projets »
+#12 ROUTE dialogue:projects | MODE simple | EMPREINTE f8e08f4c87 | project=p-96b67a34 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 250 465
+#12 DOIGT project_p-96b67a34 « Live »
+#13 ROUTE padlive | MODE simple | EMPREINTE 8b40f932be | project=p-96b67a34 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 108 135
+#13 DOIGT padlive_page_B « Page B »
+#14 ROUTE padlive | MODE simple | EMPREINTE 9e29fc6b5d | project=p-96b67a34 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « ? » over the touchable « vide, pad B15 » (7 x 15 dp)
+#14 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad B1 Réglages du pad » (37 x 16 dp)
+#14 LAYOUT CONTRAST « 124 » 1.66:1 (needs 3.0:1, 16 sp)
+#14 > touche 242 1152
+#14 DOIGT padlive_played « Enregistrer ce que je joue »
+#15 ROUTE padlive | MODE simple | EMPREINTE 2dac3c90b9 | project=p-96b67a34 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 77 256
+#15 DOIGT padlive_pad_16 « Ma prise 1, boucle, prêt, pad B1 »
+#16 ROUTE padlive | MODE simple | EMPREINTE 95b020b909 | project=p-96b67a34 no tuto
+#16 SON Son : le pad live 17 joue en boucle.
+#16 > touche 242 1152
+#16 DOIGT padlive_played « 1 mesure · touche pour finir »
+#17 ROUTE dialogue:padlive_take_sheet | MODE simple | EMPREINTE 036d2107bd | project=p-96b67a34 no tuto
+#17 SON Son : le pad live 17 joue en boucle.
+#17 LAYOUT OVERLAP « Ta prise : 1 mesure » over the touchable « Fermer la feuille » (195 x 28 dp)
+#17 LAYOUT OVERLAP « Sur le pad vide B2 » over the touchable « Fermer la feuille » (123 x 20 dp)
+#17 > touche 294 1032
+#17 DOIGT padlive_take_pad « Sur le pad vide B2 »
+#18 ROUTE padlive | MODE simple | EMPREINTE 0a96ea4534 | project=p-96b67a34 no tuto
+#18 SON Son : le pad live 17 joue en boucle.
+#18 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad B2 Réglages du pad » (37 x 16 dp)
+#18 LAYOUT OVERLAP « Ta prise est sur le pad B2. » over the touchable « Pas 9 Poser ou retirer vide » (38 x 20 dp)
+#18 LAYOUT OVERLAP « Ta prise est sur le pad B2. » over the touchable « Pas 10 Poser ou retirer vide » (38 x 20 dp)
+#18 LAYOUT OVERLAP « Ta prise est sur le pad B2. » over the touchable « Pas 11 Poser ou retirer vide » (39 x 20 dp)
+#18 LAYOUT OVERLAP « Ta prise est sur le pad B2. » over the touchable « Pas 12 Poser ou retirer vide » (30 x 20 dp)
+#18 > retour
+#18 RETOUR
+#19 ROUTE launch | MODE simple | EMPREINTE ea2406ed2f | project=p-96b67a34 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 294 664
+#19 DOIGT launch_projects « Mes projets »
+#20 ROUTE dialogue:projects | MODE simple | EMPREINTE f8e08f4c87 | project=p-96b67a34 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 150 478
+#20 DOIGT project_p-96b67a34 « Live »
+#21 ROUTE padlive | MODE simple | EMPREINTE 287c874966 | project=p-96b67a34 no tuto
+#21 SON Son : rien ne joue.
+#21 > fin
+#21 FIN : fin

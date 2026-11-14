@@ -1,0 +1,8 @@
+fusion: cef7861ad125908eaff77484a2dd0e5d0d0beca5
+branche: eq/tour-5-jank
+tete: 2030d8eb2ba5328f737d983e5cc9bf3a3bb38430
+relecture: docs/audits/ultra/tour-5-jank-relecture.md
+relu: f5e4878734c99be1272a314739c099c9b52831ef
+filtres: *PlayingRecomposeTest *.rhythm.RhythmBeginnerTest *GestureBudgetTest *.nav.SpacesTest *.app.ScreenshotTest *WriteScreenshotTest *PlayingRecomposeTest *.rhythm.RhythmBeginnerTest *GestureBudgetTest *.nav.SpacesTest *.app.ScreenshotTest *WriteScreenshotTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

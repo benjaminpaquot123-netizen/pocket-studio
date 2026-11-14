@@ -1,0 +1,6 @@
+Écran 34 (616x1371)
+texte « Que faire de « Ma chanson préférée » ? » @ 308,391
+touchable « Faire un morceau à partir de cette chanson Un nouveau projet à son tempo et dans sa tonalité (120 BPM, La mineur), avec ses pistes prêtes. » @ 308,544
+touchable « Dans un nouveau projet Un projet vide ; la chanson t'attend dans le Remix pour en prendre des morceaux. » @ 308,704
+touchable « Dans un projet existant Choisis lequel : la chanson arrive dans son Remix. » @ 308,851
+bouton « Annuler » @ 521,991

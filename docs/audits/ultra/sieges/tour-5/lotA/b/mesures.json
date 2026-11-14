@@ -1,0 +1,35 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "pt-BR",
+    "device": "phone411",
+    "font": "100",
+    "mode": "simple",
+    "gestes.max": "90",
+    "mission": "voix",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 32,
+    "images": 3,
+    "gestes_premier_son": 5,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 2,
+    "retours_immediats": 1,
+    "ecrans": 45,
+    "ecrans_revisites": 11,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 10,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "voix",
+  "resultat": "reussie",
+  "pourquoi": "1 prise(s) sur une piste audio"
+}

@@ -1,0 +1,3 @@
+divergé au pas 9 (étiquette « vue_Drive » introuvable)
+  dernier écran différent de l'origine : écran 9, empreinte 0a4f0d60e7 (origine b52d87d388), première ligne différente : origine « texte « Partager mon morceau · Démo-Acid-house-morceau-streaming-20261105-211501.m4a » @ 294,460 », rejeu « texte « Je prépare ton morceau… » @ 258,517 »
+  pas 9 : à l'origine sous le doigt : vue « Drive »

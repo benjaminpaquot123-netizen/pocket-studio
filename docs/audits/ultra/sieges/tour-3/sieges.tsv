@@ -1,0 +1,24 @@
+A	a	fr	tablet11Land	100	simple	fresh=reel;lit=non	defi	60	Enfant de 6 ans qui ne lit pas (tablette couchée, premier lancement réel)	« Défis » : un jeu à étoiles trouvable et jouable sans lire ; les pads de Pad Live sonnent tout de suite
+A	b	fr	phone360	100	-	fresh=reel;main=une	premier-morceau	60	Parent, une seule main (pouce droit), pressé, jamais fait de musique	« Créer et écouter » : un morceau qui sonne un toucher après le style ; tout l'essentiel au pouce ; retrouvé dans Mes projets
+A	c	fr	phone	200	simple	-	tuto-facile	60	Retraitée de 70 ans, texte à 200 %, lit tout lentement, peur des mots anglais	Un tuto Facile se lit en entier à 200 %, aucune fenêtre ne surgit à la place, « Écouter mon morceau » à la fin
+A	d	en	phone	100	pro	-	exports	90	DJ club anglais, exigeant sur le volume	« Version club » et « version streaming » réellement différentes, un rapport honnête, le fichier trouvable
+B	a	fr	phone	100	simple	theme=night	reprendre	60	Étudiante anxieuse (thème sombre) qui revient 3 jours après	Rien n'est perdu : « Sauvegardé » visible, le projet retrouvé tel quel, Annuler/Rétablir trouvables
+B	b	fr	phone	130	simple	lit=non	premier-morceau	80	Personne malvoyante qui se fie aux noms lus par TalkBack (texte 130 %)	Chaque bouton a un nom parlé ; un premier morceau possible sans voir l'écran
+B	c	ar	phone	100	simple	-	remix-voix	80	Fan de rap marocain, appli en arabe (de droite à gauche)	Remix : la chanson se sépare en batterie/basse/voix et la voix se découpe ; tout l'écran correctement en droite-à-gauche
+B	d	de	tablet8	100	pro	-	tuto-pro	90	Producteur allemand qui veut progresser	Un tuto Pro qui apprend vraiment une technique, en allemand juste
+C	a	pt-BR	phone411	100	simple	-	voix	90	Rappeur brésilien qui pose sa voix sur une instru	Enregistrer sa voix sur un rythme, choisir la meilleure prise, l'entendre avec la musique, la partager
+C	b	ja	tablet11Land	100	pro	amenee=padlive	padlive	90	Performeur live japonais sur tablette couchée	Pad Live jouable en direct : lancer/arrêter des lignes à la mesure, effets tenus visibles, enregistrer sa performance
+C	c	hi	phone	100	-	fresh=reel	simple	60	Débutant indien, appli en hindi, premier lancement réel	Tout faire en Mode simple sans jamais être obligé de passer en Pro, en hindi compréhensible
+C	d	zh-CN	foldable	100	pro	-	synthe	120	Étudiante en son chinoise sur écran pliable	Un son de synthé de A à Z, gardé comme preset avec ses effets, posé sur deux pistes
+D	a	fr	phone	100	-	-	libre	90	« Casse-tout » impatient : touche partout vite, revient en arrière sans arrêt, change d'avis	L'appli ne se perd jamais : pas d'écran vide, pas de plantage, rien de perdu, toujours un chemin de retour
+D	b	tr	phoneLand	100	simple	-	libre	90	Lycéen turc, téléphone couché	Tout l'écran utilisable en paysage, en turc juste
+D	c	id	tablet8	130	-	-	libre	90	Enseignante indonésienne qui prépare un atelier musique	Ce que l'accueil et les aides promettent se fait vraiment, en indonésien juste
+D	d	pl	phone	100	pro	-	libre	120	Musicien polonais confirmé qui lit chaque aide « ? » et essaie ce qu'elle dit	Chaque aide « ? » dit vrai : ce qu'elle décrit existe et marche
+E	a	it	phone	100	pro	-	premier-morceau	120	Beatmaker italien qui veut un vrai morceau de 3 min (intro, couplet, drop, fin)	Un morceau complet structuré (parties, arrangement), exporté
+E	b	nl	tablet8	100	simple	-	tuto-facile	80	Professeur néerlandais qui teste un tuto pour sa classe	Un tuto Facile qu'un enfant de 10 ans suivrait seul, en néerlandais naturel
+E	c	en	phone	100	simple	-	voix	90	Chanteuse-guitariste anglaise	Enregistrer guitare puis voix sur deux pistes, décompte, niveau, prises, mix des deux
+E	d	es	phone411	100	-	amenee=remix	remix-voix	90	DJ espagnol qui veut jouer des bouts de chanson sur des pads	Remix → bouts de voix sur des pads libres (rien d'écrasé sans prévenir), joués en boucle
+F	a	fr	phone	100	-	-	libre	120	Chasseur de promesses : lit chaque carte de l'accueil, chaque bandeau, chaque bouton « magique » et vérifie qu'il tient parole	Toute promesse écrite à l'écran est tenue (sinon : défaut « promesse non tenue »)
+F	b	ko	tablet8	100	pro	amenee=remix	exports	90	Producteur coréen qui remixe puis exporte	Remix exporté proprement, nom de fichier en coréen intact, cible de volume tenue
+F	c	fr	phone360	200	simple	-	padlive	60	Adolescent malvoyant léger (texte 200 %, petit téléphone) qui veut juste jouer	Pad Live : premier son en un toucher, pads lisibles à 200 %
+F	d	en	phone	100	pro	-	libre	120	Producteur anglais qui veut partager avec un ami et reprendre sur un autre appareil	Partager le projet / le morceau, MIDI, reprendre ailleurs : ce que l'appli promet sur le partage marche

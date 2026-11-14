@@ -1,0 +1,19 @@
+{
+  "Désactivée": "关闭",
+  "Auto (style)": "自动（按风格）",
+  "Club": "俱乐部",
+  "Streaming": "流媒体",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "当前 %s · 3 秒内 %s · 自 ▶ 起 %s LUFS",
+  "Volume visé": "目标响度",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "响度保持你设置的样子；输出只是防止失真。",
+  "Gain ajouté pour la cible : %s dB": "为达到目标增加的增益：%s dB",
+  "%d min %d s": "%d 分 %d 秒",
+  "%d s": "%d 秒",
+  "44,1 kHz": "44.1 kHz",
+  "16 bits": "16 位",
+  "Volume : —": "音量：—",
+  "Volume %1$s · %2$s": "音量 %1$s · %2$s",
+  "Détails": "详情",
+  "Masquer les détails": "隐藏详情"
+}

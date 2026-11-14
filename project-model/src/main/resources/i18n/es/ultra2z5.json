@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Copiar la nota",
+  "Copier ces %d notes": "Copiar estas %d notas",
+  "Supprimer la note": "Borrar la nota",
+  "Supprimer ces %d notes": "Borrar estas %d notas",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Toca una casilla: añade una nota. Toca una nota: la elige. Mantén pulsado: su menú (copiar, borrar…). Desliza: mueve; el extremo: alarga. Números arriba: un compás entero. Carril de abajo: desliza para ajustar la fuerza.",
+  "%s demi-ton": "%s semitono",
+  "Régler le son (filtre, enveloppe…)": "Ajustar el sonido (filtro, envolvente…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "Un pasa bajos a %s: conserva los graves y suaviza los agudos.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "Un pasa banda alrededor de %s: solo conserva esa zona del sonido.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "Un pasa altos a %s: quita los graves por debajo.",
+  "Un égaliseur : %1$s vers %2$s.": "Un ecualizador: %1$s en %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "¡Logrado! El color de la canción está elegido.",
+  "Revenir au tuto": "Volver al tutorial"
+}

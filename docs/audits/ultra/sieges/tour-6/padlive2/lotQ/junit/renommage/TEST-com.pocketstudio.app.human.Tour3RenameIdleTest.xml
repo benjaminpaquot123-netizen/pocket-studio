@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour3RenameIdleTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-13T21:42:11.205Z" hostname="vm" time="3.088">
+  <properties/>
+  <testcase name="aProjectRenamedInSimpleModeKeepsItsNewName" classname="com.pocketstudio.app.human.Tour3RenameIdleTest" time="3.083"/>
+  <system-out><![CDATA[Tour3RenameIdleTest(Night): launched in 1632 ms, 3 workers
+Tour3RenameIdleTest(Night): renamed in 2838 ms
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

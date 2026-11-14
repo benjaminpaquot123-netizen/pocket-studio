@@ -1,0 +1,6 @@
+Écran 2 (616x1371)
+texte « Primero, el modelo de separación » @ 308,508
+texte « Para separar una canción, la app descarga primero su modelo: 174 MB, una sola vez. » @ 308,610
+texte « No estás con wifi: estos 174 MB saldrán de tus datos móviles. » @ 308,682
+bouton « Descargar y luego elegir la canción » @ 363,784
+bouton « Más tarde » @ 511,874

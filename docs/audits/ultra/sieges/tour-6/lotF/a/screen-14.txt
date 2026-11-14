@@ -1,0 +1,47 @@
+Écran 14 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 98,123
+icône « B battuta 1/2 » ▾ @ 294,123
+bouton « ? » @ 855,123
+bouton « Batteria Cambia il suono » › [coupé] @ 267,185
+bouton ▶ « Ascolta da sola » [coupé] @ 639,182
+icône (curseurs) [coupé] @ 822,179
+bouton « Synth Cambia il suono » › @ 267,276
+bouton ▶ « Ascolta da sola » @ 639,276
+icône (curseurs) @ 822,276
+titre « IL BRANO » [état « Espanso »] @ 148,405
+bouton « ? » @ 233,405
+texte « Tocca una parte per ascoltare il brano da lì. » @ 301,457
+texte « 2 battute · 0:04 » @ 450,504
+bouton « Accordi del brano B Do A Do Tocca per cambiare gli accordi di tutto il brano. » @ 450,669
+icône ▶ « B × 1  ·  1 batt. » @ 342,827
+icône − [désactivé] @ 678,827
+icône + @ 750,827
+icône ⋮ @ 822,827
+icône ▶ « A × 1  ·  1 batt. » @ 342,923
+icône − [désactivé] @ 678,923
+icône + @ 750,923
+icône ⋮ @ 822,923
+texte « Aggiungi alla fine: » @ 161,997
+bouton « + A » @ 102,1066
+bouton « + B » @ 230,1066
+bouton « + Nuova parte (copia di B) » @ 510,1066
+bouton « + Nuova parte vuota » @ 217,1147
+bouton (boussole) « Guida  · Aggiungi un basso 25 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 120 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

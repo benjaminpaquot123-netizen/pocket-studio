@@ -48,17 +48,38 @@ data class MidiUi(
     val scanning: Boolean = false,
     /** Send our tempo, start and stop to the connected device. */
     val sendClock: Boolean = false,
+    /** The controller connected: its name and the profile the app found for it (null: none connected). */
+    val controller: ControllerInfo? = null,
+    /** « Apprendre mes pads »: the pads heard so far (null: not learning). */
+    val learningPads: Int? = null,
 )
+
+/** The controller connected: [name] (the settings know it by it), its [kind] and the app's [profile] for it (null: generic). */
+data class ControllerInfo(val name: String, val kind: String, val profile: com.pocketstudio.model.midi.ControllerProfile?)
 
 /** What a MIDI device asks of the project (the tempo and the transport are the project's). */
 sealed interface MidiCommand {
     data object Start : MidiCommand
+    /** MIDI Continue: the other machine carries on where it stopped (not from the top). */
+    data object Continue : MidiCommand
     data object Stop : MidiCommand
     data class Tempo(val bpm: Double) : MidiCommand
+    /**
+     * Lot B2: a controller's pad (as [Pad]) let go while the pads do not play the drums (Pad Live: a
+     * « tenir » pad stops).
+     */
+    data class PadUp(val index: Int) : MidiCommand
     /** A note received (it already sounds): for live recording. Channel 10 (9) = pads. */
     data class Note(val channel: Int, val pitch: Int, val velocity: Float, val on: Boolean) : MidiCommand
     /** A knob or fader moved (MIDI learn, mapped controls). */
     data class Control(val channel: Int, val controller: Int, val value: Int) : MidiCommand
+    /**
+     * A pad of the controller (0..15, bank B from 8) hit while the pads do not play the drums (the
+     * Live page: launches, mutes, live pads). The drums are played from the MIDI thread instead.
+     */
+    data class Pad(val index: Int, val velocity: Float) : MidiCommand
+    /** « Apprendre mes pads »: a note heard (it plays nothing meanwhile). */
+    data class PadLearnt(val packed: Int) : MidiCommand
 }
 
 /**
@@ -74,6 +95,18 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _state = MutableStateFlow(MidiUi(available = manager != null))
     val state: StateFlow<MidiUi> = _state.asStateFlow()
+
+    // Revue neuve (MOYEN 5): the monitor apart from [state] (a pitch bend wheel sends hundreds of
+    // messages a second), shown at most every [MONITOR_MS], read by « Contrôleur MIDI » alone.
+    private val monitorLines = ArrayDeque<String>()
+    private val monitorPosted = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val _monitor = MutableStateFlow<List<String>>(emptyList())
+    /** The last messages received, newest first (« Contrôleur MIDI »'s monitor). */
+    val monitor: StateFlow<List<String>> = _monitor.asStateFlow()
+    private val publishMonitor = Runnable {
+        monitorPosted.set(false)
+        _monitor.value = synchronized(monitorLines) { monitorLines.toList() }
+    }
 
     private val _commands = MutableSharedFlow<MidiCommand>(extraBufferCapacity = 256)
     val commands: SharedFlow<MidiCommand> = _commands.asSharedFlow()
@@ -92,6 +125,23 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     // The track each sounding note started on: its release goes there even if another track was
     // selected meanwhile (else the note would hang on the old one). Under held's lock.
     private val trackOf = IntArray(128)
+
+    /**
+     * Which notes are pads, and whether pads play the drums at once from the MIDI thread (every
+     * screen but the Live page, which takes them as launches). Set from the main thread, read on the
+     * MIDI thread: immutable snapshots behind @Volatile.
+     */
+    @Volatile var pads: PadMap = PadMap()
+    @Volatile var padsToDrums: Boolean = true
+
+    /**
+     * n° 9: an Acid 303 cell of the Live records: the keys play the 303 (the app sounds them and
+     * writes them into the cell) instead of the synth. Set from the main thread.
+     */
+    @Volatile var keysToAcid: Boolean = false
+    /** Keys down that went to the 303 ([keysToAcid] when pressed): their release goes there too. Under held's lock. */
+    private val acidOn = BooleanArray(128)
+    @Volatile private var padLearning: Boolean = false
 
     /** The project's key: when locked, keys out of the scale play the nearest note of it. */
     @Volatile var harmony: com.pocketstudio.model.Harmony = com.pocketstudio.model.Harmony()
@@ -196,26 +246,87 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             else -> "autre"
         }
         AppLog.add("MIDI connecté : appareil $kind")
-        _state.update { it.copy(connected = id, last = null, clockBpm = null) }
+        val info = deviceIdOf(d.info)
+        val profile = com.pocketstudio.model.midi.Controllers.detect(info)
+        if (profile != null) AppLog.add("MIDI : profil ${profile.id}")
+        val name = nameOf(d.info)
+        pads = PadMap(profile)  // the user's own pads come from the settings (the app sets them)
+        _state.update { it.copy(connected = id, last = null, clockBpm = null, controller = ControllerInfo(name, kindOf(d.info), profile)) }
+        synchronized(monitorLines) { monitorLines.clear() }
+        _monitor.value = emptyList()
+        greet(profile, name)
         refresh(autoConnect = false)
+        if (_state.value.sendClock) startClock()
     }
 
     fun disconnect() {
         ++connection
-        clockJob?.cancel()
+        stopClock()
         runCatching { sendPort?.close() }
         sendPort = null
         runCatching { port?.close() }
         runCatching { device?.close() }
         port = null
         device = null
-        synchronized(held) {
+        releaseHeld()
+        padLearning = false
+        _state.update { it.copy(connected = null, clockBpm = null, controller = null, learningPads = null) }
+    }
+
+    /**
+     * Every key still down let go (unplugged, « all notes off »): silent in the engine, and ended for
+     * the app too (step 4f: a cell recording or a Live take never keeps a note ringing to its end).
+     */
+    private fun releaseHeld() {
+        val ended = synchronized(held) {
             if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
+            val notes = held.toList() + acidOn.indices.filter { acidOn[it] }.map { playedAs[it].takeIf { p -> p >= 0 } ?: it }
             held.clear()
+            acidOn.fill(false)
             playedAs.fill(-1)
             keysOn.fill(0)
+            notes
         }
-        _state.update { it.copy(connected = null, clockBpm = null) }
+        ended.forEach { _commands.tryEmit(MidiCommand.Note(0, it, 0f, false)) }
+    }
+
+    /** « MiniLab 3 connecté — prêt à jouer »: a short toast once a controller is ready. */
+    private fun greet(profile: com.pocketstudio.model.midi.ControllerProfile?, name: String) {
+        val text = greeting(profile, name)
+        _state.update { it.copy(last = text) }
+        runCatching { android.widget.Toast.makeText(getApplication(), text, android.widget.Toast.LENGTH_SHORT).show() }
+    }
+
+    private fun deviceIdOf(info: MidiDeviceInfo): com.pocketstudio.model.midi.DeviceId {
+        val p = info.properties
+        val usb = runCatching {
+            @Suppress("DEPRECATION")
+            p.getParcelable<android.hardware.usb.UsbDevice>(MidiDeviceInfo.PROPERTY_USB_DEVICE)
+        }.getOrNull()
+        return com.pocketstudio.model.midi.DeviceId(
+            name = nameOf(info), manufacturer = p.getString(MidiDeviceInfo.PROPERTY_MANUFACTURER), product = p.getString(MidiDeviceInfo.PROPERTY_PRODUCT),
+            vendorId = usb?.vendorId ?: -1, productId = usb?.productId ?: -1,
+        )
+    }
+
+    /** « Apprendre mes pads »: the notes heard next become pads 1, 2… (they play nothing meanwhile). */
+    fun learnPads(on: Boolean) {
+        padLearning = on
+        _state.update { it.copy(learningPads = if (on) 0 else null) }
+    }
+
+    /** One more pad learnt (from the main thread): [count] so far. */
+    fun padsLearnt(count: Int) {
+        _state.update { it.copy(learningPads = if (padLearning) count else null) }
+    }
+
+    /** A message for the monitor, newest first, the last [MONITOR] kept. */
+    private fun monitor(text: String) {
+        synchronized(monitorLines) {
+            monitorLines.addFirst(text)
+            while (monitorLines.size > MONITOR) monitorLines.removeLast()
+        }
+        if (monitorPosted.compareAndSet(false, true)) main.postDelayed(publishMonitor, MONITOR_MS)
     }
 
     fun setFollowClock(on: Boolean) {
@@ -270,97 +381,145 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Incoming events (MIDI thread) -----------------------------------------------------------
 
-    // --- Clock out: 24 ticks a beat, sent ahead with timestamps (Android delivers them on time) ---
+    // --- Clock out (lot B2): the engine counts it on the beats' frames ([MidiClockOut]) ---------
 
-    @Volatile private var clockBpm = 120.0
     private var clockJob: kotlinx.coroutines.Job? = null
 
     private var playing = false
 
+    /** Tests: where the clock goes instead of a device (status, time). */
+    @androidx.annotation.VisibleForTesting
+    internal var clockSentForTest: ((Int, Long) -> Unit)? = null
+    /** Tests: the engine's clock queue in place of [NativeEngine.drainMidiClock]. */
+    internal var clockDrainForTest: ((LongArray) -> Int)? = null
+    /** The clock just switched off, still sending the engine's last messages (its Stop). */
+    private var clockDraining: kotlinx.coroutines.Job? = null
+
     fun setSendClock(on: Boolean) {
         // Following and sending at once with the same device would loop the clock back.
         _state.update { it.copy(sendClock = on, followClock = if (on) false else it.followClock) }
-        if (!on) stopClock() else transport(playing, clockBpm)
+        if (on) startClock() else stopClock()
     }
 
-    /** The transport started or stopped, or the tempo changed (from the main thread). */
-    fun transport(playing: Boolean, bpm: Double) {
+    /** The transport started or stopped, or the tempo changed (from the main thread): the engine sends the clock with it. */
+    fun transport(playing: Boolean, @Suppress("UNUSED_PARAMETER") bpm: Double) {
         this.playing = playing
-        clockBpm = bpm
-        if (!_state.value.sendClock || sendPort == null) return
-        if (playing && clockJob?.isActive != true) startClock() else if (!playing) stopClock()
+        if (_state.value.sendClock && clockJob?.isActive != true) startClock()
     }
 
     private fun send(byte: Int, at: Long) {
+        clockSentForTest?.let { it(byte, at); return }
         runCatching { sendPort?.send(byteArrayOf(byte.toByte()), 0, 1, at) }
     }
 
     private fun startClock() {
+        if (clockJob?.isActive == true || (sendPort == null && clockSentForTest == null)) return
+        NativeEngine.setMidiClockOut(true)
+        val out = clockDrainForTest?.let { MidiClockOut(::send, it) } ?: MidiClockOut(::send)
+        // The engine's clock queue has one reader: the clock switched off a moment ago ends first.
+        val previous = clockJob ?: clockDraining
+        clockDraining = null
         clockJob = viewModelScope.launch(kotlinx.coroutines.Dispatchers.Default) {
-            // Wait for the first step (after any count-in): the other machine starts with it.
-            while (NativeEngine.isAvailable && NativeEngine.absoluteStep() < 0) kotlinx.coroutines.delay(2)
-            val latencyNs = (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0) * 1_000_000
-            val position = NativeEngine.playPosition().coerceAtLeast(0.0)  // sixteenths already played
-            val stepNs = 15e9 / clockBpm
-            var next = System.nanoTime() + latencyNs.toLong() - (position * stepNs).toLong()
-            val tickNs = (60e9 / (clockBpm * 24)).toLong()
-            if (position < 1.0) {
-                send(0xFA, next)  // from the top: Start on the first step
-            } else {
-                // Switched on while playing: no burst of past ticks, carry on from now.
-                val now = System.nanoTime()
-                while (next < now) next += tickNs
-                send(0xFB, next)
-            }
-            while (true) {
-                val horizon = System.nanoTime() + 60_000_000
-                while (next < horizon) {
-                    send(0xF8, next)
-                    next += (60e9 / (clockBpm * 24)).toLong()
+            try {
+                // Waited for even when switched off meanwhile: this job ends after it, so the next one waits for both.
+                previous?.let { kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { it.join() } }
+                while (true) {
+                    out.pump()
+                    kotlinx.coroutines.delay(MidiClockOut.PUMP_MS)
                 }
-                kotlinx.coroutines.delay(20)
+            } finally {
+                // The engine's Stop (sent when the clock is switched off while playing) goes out too.
+                kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) {
+                    kotlinx.coroutines.delay(MidiClockOut.PUMP_MS * 4)
+                    out.pump()
+                }
             }
         }
     }
 
     private fun stopClock() {
         if (clockJob == null) return
+        NativeEngine.setMidiClockOut(false)
         clockJob?.cancel()
+        clockDraining = clockJob
         clockJob = null
-        send(0xFC, System.nanoTime())
     }
 
     private val listener = object : MidiListener {
         override fun noteOn(channel: Int, note: Int, velocity: Int) {
-            if (!NativeEngine.isAvailable) return
+            if (padLearning) {
+                _commands.tryEmit(MidiCommand.PadLearnt(com.pocketstudio.model.midi.Controllers.packPad(channel, note)))
+                monitor(tr("Note %1\$s · canal %2\$d", noteLabel(note), channel + 1))
+                return
+            }
             val v = velocity / 127f
+            val pad = pads.padOf(channel, note)
+            monitor(
+                if (pad != null) tr("Pad %1\$d · note %2\$s · canal %3\$d", pad + 1, noteLabel(note), channel + 1)
+                else tr("Note %1\$s · force %2\$d · canal %3\$d", noteLabel(note), velocity, channel + 1),
+            )
+            if (pad != null) {
+                if (!padsToDrums) {
+                    _commands.tryEmit(MidiCommand.Pad(pad, v))
+                } else {
+                    if (NativeEngine.isAvailable && pad < NativeEngine.LANES) NativeEngine.liveTriggerPad(pad, v)
+                    _commands.tryEmit(MidiCommand.Note(DRUM_CHANNEL, FIRST_PAD_NOTE + pad, v, true))
+                }
+                show(tr("Note %s (pads)", noteLabel(note)))
+                return
+            }
             if (channel == DRUM_CHANNEL) {
-                if (note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
+                // Revue neuve (MOYEN 6): a channel 10 note none of the pads has (GM kick 35, crashes,
+                // pads set to another bank) plays and records as before profiles: a drum note.
+                if (NativeEngine.isAvailable && note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) {
+                    NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
+                }
                 _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
-            } else {
+                show(tr("Note %s (pads)", noteLabel(note)))
+                return
+            }
+            if (!NativeEngine.isAvailable) return
+            run {
                 val h = harmony
                 val played = if (h.lock) h.snap(note).coerceIn(0, 127) else note
                 synchronized(held) {
                     if (note in playedAs.indices) playedAs[note] = played
-                    held += played
-                    if (keysOn[played]++ == 0) trackOf[played] = NativeEngine.liveTrack
-                    NativeEngine.liveNoteOn(played, v, trackOf[played])
+                    if (keysToAcid && note in acidOn.indices) {
+                        // The app sounds it on the 303 (RhythmViewModel.midiNote): not on the synth.
+                        acidOn[note] = true
+                    } else {
+                        held += played
+                        if (keysOn[played]++ == 0) trackOf[played] = NativeEngine.liveTrack
+                        NativeEngine.liveNoteOn(played, v, trackOf[played])
+                    }
                 }
                 _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
-            show(if (channel == DRUM_CHANNEL) tr("Note %s (pads)", noteLabel(note)) else tr("Note %s", noteLabel(note)))
+            show(tr("Note %s", noteLabel(note)))
         }
 
         override fun noteOff(channel: Int, note: Int) {
-            if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL) return
+            if (padLearning) return
+            // Pad Live: a pad let go (a « tenir » pad stops); the drums ignore it.
+            val pad = pads.padOf(channel, note)
+            if (pad != null && !padsToDrums) {
+                _commands.tryEmit(MidiCommand.PadUp(pad))
+                return
+            }
+            if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL || pad != null) return
             val played = synchronized(held) {
                 val p = playedAs.getOrNull(note)?.takeIf { it >= 0 } ?: note
                 if (note in playedAs.indices) playedAs[note] = -1
-                if (p in keysOn.indices) keysOn[p] = (keysOn[p] - 1).coerceAtLeast(0)
-                // Another key still holds the same note: it keeps sounding.
-                if (keysOn.getOrElse(p) { 0 } == 0) {
-                    held -= p
-                    NativeEngine.liveNoteOff(p, trackOf.getOrElse(p) { NativeEngine.liveTrack })
+                if (acidOn.getOrElse(note) { false }) {
+                    // A 303 key: the app lets it go there.
+                    acidOn[note] = false
+                } else {
+                    if (p in keysOn.indices) keysOn[p] = (keysOn[p] - 1).coerceAtLeast(0)
+                    // Another key still holds the same note: it keeps sounding.
+                    if (keysOn.getOrElse(p) { 0 } == 0) {
+                        held -= p
+                        NativeEngine.liveNoteOff(p, trackOf.getOrElse(p) { NativeEngine.liveTrack })
+                    }
                 }
                 p
             }
@@ -368,11 +527,13 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         override fun pitchBend(channel: Int, value: Int) {
+            monitor(tr("Pitch bend %1\$d · canal %2\$d", value, channel + 1))
             if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) NativeEngine.liveExpression(NativeEngine.EXPR_BEND, value / 8192f * BEND_RANGE)
         }
 
         override fun controlChange(channel: Int, controller: Int, value: Int) {
             show(tr("Bouton %d : %d", controller, value))
+            monitor(tr("CC %1\$d = %2\$d · canal %3\$d", controller, value, channel + 1))
             if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) {
                 when (controller) {
                     CC_MOD_WHEEL -> NativeEngine.liveExpression(NativeEngine.EXPR_MOD, value / 127f)
@@ -380,16 +541,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             _commands.tryEmit(MidiCommand.Control(channel, controller, value))
-            if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) {
-                synchronized(held) {
-                    if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
-                    held.clear()
-                    playedAs.fill(-1)
-                    keysOn.fill(0)
-            playedAs.fill(-1)
-            keysOn.fill(0)
-                }
-            }
+            if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) releaseHeld()
         }
 
         override fun clock() {
@@ -410,7 +562,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             show(tr("Départ"))
         }
 
-        override fun continuePlayback() = start()
+        override fun continuePlayback() {
+            tempo.reset()
+            if (_state.value.followClock) _commands.tryEmit(MidiCommand.Continue)
+            show(tr("Continuer"))
+        }
 
         override fun stop() {
             if (_state.value.followClock) _commands.tryEmit(MidiCommand.Stop)
@@ -418,11 +574,25 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Tests: MIDI bytes as if the connected controller had sent them (named [name]). */
+    @androidx.annotation.VisibleForTesting
+    internal fun receiveForTest(bytes: ByteArray, name: String = "Arturia MiniLab 3") {
+        if (_state.value.controller?.name != name) {
+            val profile = com.pocketstudio.model.midi.Controllers.detect(name)
+            pads = PadMap(profile, pads.learnt)
+            _state.update { it.copy(controller = ControllerInfo(name, "USB", profile)) }
+        }
+        testParser.feed(bytes)
+    }
+
+    private val testParser by lazy { MidiParser(listener) }
+
     private fun show(text: String) {
         _state.update { it.copy(last = text) }
     }
 
     override fun onCleared() {
+        main.removeCallbacks(publishMonitor)
         // Another project opened within the ten seconds: the timer is cancelled with the scope,
         // so the search (battery, and this ViewModel kept by its callback) stops here.
         stopScan()
@@ -431,7 +601,22 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /**
+         * The toast once a controller is ready: the model the app knows it as, else the device's own name
+         * (Audit stage 2, Benjamin 2026-11-03: the name shown is always the real one, never « Clavier MIDI »
+         * for a keyboard the phone names), « Clavier MIDI » only when the phone gives no name.
+         */
+        fun greeting(profile: com.pocketstudio.model.midi.ControllerProfile?, name: String?): String = when {
+            profile != null -> tr("%s connecté — prêt à jouer", profile.name.removePrefix("Arturia "))
+            !name.isNullOrBlank() && name != tr("Appareil MIDI") -> tr("%s connecté — prêt à jouer", name.trim())
+            else -> tr("Clavier MIDI connecté — prêt à jouer")
+        }
+
         const val DRUM_CHANNEL = 9
+        /** Lines kept in the monitor. */
+        const val MONITOR = 10
+        /** The monitor shown at most this often (ms). */
+        const val MONITOR_MS = 100L
         const val FIRST_PAD_NOTE = 36  // General MIDI kick: pad 1
         const val CC_ALL_SOUND_OFF = 120
         const val CC_ALL_NOTES_OFF = 123
@@ -443,4 +628,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         fun noteLabel(note: Int): String =
             com.pocketstudio.model.NoteNames.withOctave(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes)
     }
+}
+
+/** Which notes of the connected controller are pads: its profile's, or those « Apprendre mes pads » heard. */
+class PadMap(val profile: com.pocketstudio.model.midi.ControllerProfile? = null, val learnt: List<Int>? = null) {
+    fun padOf(channel: Int, note: Int): Int? = com.pocketstudio.model.midi.Controllers.padOf(channel, note, profile, learnt)
 }

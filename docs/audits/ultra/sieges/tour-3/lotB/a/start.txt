@@ -1,0 +1,8 @@
+lang=fr
+device=phone
+font=100
+mode=simple
+theme=night
+gestes.max=60
+mission=reprendre
+timeout.minutes=25

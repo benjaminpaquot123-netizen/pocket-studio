@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Timeline: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Song geschrieben: %1$s, %2$s",
+  "Grille des notes : %s": "Notenraster: %s",
+  "1 pas": "1 Step",
+  "1 piste": "1 Spur",
+  "1 réglage": "1 Einstellung",
+  "%d réglages": "%d Einstellungen",
+  "Fait : break de 1 mesure après %2$s": "Erledigt: Break von 1 Takt nach %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Erledigt: Build-up von 1 Takt vor %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Noch kein Song: Dein Teil geht als Loop raus (1 Takt).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Dein Live-Take wurde behalten: Er ist im Song (1 Teil).",
+  "Ton texte (1 caractère)": "Dein Text (1 Zeichen)",
+  "trop bas de 1 cent": "1 Cent zu tief",
+  "trop haut de 1 cent": "1 Cent zu hoch",
+  "−%d demi-ton": "−%d Halbton",
+  "%d min": "%d Min.",
+  "%1$d min %2$d": "%1$d Min. %2$d",
+  "Hors de la gamme du morceau": "Außerhalb der Tonleiter des Songs",
+  "Poignée : glisse vers le bas pour fermer": "Griff: zum Schließen nach unten wischen"
+}

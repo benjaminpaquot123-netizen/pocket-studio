@@ -1,0 +1,58 @@
+Écran 138 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+texte « 追加： » @ 73,164
+bouton « + A · グルーヴ » @ 147,228
+bouton « + 新しいパート（A · グルーヴのコピー） » [coupé] @ 274,279
+image (chapeau de diplômé) @ 37,341
+texte « パートを理解する チャプター 9/15 · ステップ 3/7 · かんたん » @ 244,341
+icône (liste) @ 459,341
+icône ⌄ @ 531,341
+image (rond coché) @ 36,426
+texte « イントロ 2 を聴こう：ベースとスタブが入る。 » @ 313,447
+texte « ▸ なぜ？ » @ 294,507
+texte « エネルギー » @ 69,546
+texte « イントロ » @ 53,641
+texte « 16 » @ 53,667
+texte « イントロ 2 » @ 122,641
+texte « 16 » @ 122,667
+texte « ドロップ » @ 224,641
+texte « 32 » @ 225,667
+texte « ブレイク » @ 318,641
+texte « 12 » @ 318,667
+texte « ドロップ 2 » @ 432,641
+texte « 32 » @ 432,667
+texte « エンディング » @ 534,641
+texte « 16 » @ 534,667
+texte «  イントロ » @ 78,703
+texte «  イントロ 2 » @ 200,703
+texte «  ドロップ » @ 323,703
+texte «  ブレイク » @ 436,703
+texte «  ビルドアップ » @ 97,734
+texte «  ドロップ 2 » @ 238,734
+texte «  エンディング » @ 379,734
+texte « 数字はパートの長さ（小節数）。 » @ 165,765
+texte « キット テクノ » @ 101,824
+bouton « 続きを読む » ⌄ @ 294,822
+bouton « 次のステップ   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  例を聴く » @ 274,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » [sélectionné] @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

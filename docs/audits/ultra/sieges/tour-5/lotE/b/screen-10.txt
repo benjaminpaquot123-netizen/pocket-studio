@@ -1,0 +1,29 @@
+Écran 10 (588x1278)
+texte (icône) @ 294,418
+bouton « ▭▭▭ » @ 516,490
+texte « Tempo » @ 79,490
+bouton « ▭▭▭ » @ 156,490
+bouton (icône) @ 60,584
+texte « 132 » @ 264,584
+bouton (icône) @ 528,584
+texte « ▭▭▭ » @ 358,594
+case « ▭▭▭ » @ 64,678
+case « ▭▭▭ » @ 153,678
+case « ▭▭▭ » @ 250,678
+case « ▭▭▭ » @ 355,678
+case « ▭▭▭ » @ 460,678
+case « ▭▭▭ » @ 60,759
+case « ▭▭▭ » @ 144,759
+bouton « 1 » @ 111,852
+bouton « 2 » @ 294,852
+bouton « 3 » @ 477,852
+bouton « 4 » @ 111,939
+bouton « 5 » @ 294,939
+bouton « 6 » @ 477,939
+bouton « 7 » @ 111,1026
+bouton « 8 » @ 294,1026
+bouton « 9 » @ 477,1026
+bouton (icône) [désactivé] @ 111,1113
+bouton « 0 » @ 294,1113
+bouton « OK » [désactivé] @ 477,1113
+bouton « ▭▭▭ ▭▭▭ » @ 294,1212

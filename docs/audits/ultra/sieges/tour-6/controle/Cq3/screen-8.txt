@@ -1,0 +1,4 @@
+Écran 8 (588x1278)
+texte « Mes fichiers » @ 143,528
+texte « Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil. » @ 294,621
+texte « Fermer » @ 497,738

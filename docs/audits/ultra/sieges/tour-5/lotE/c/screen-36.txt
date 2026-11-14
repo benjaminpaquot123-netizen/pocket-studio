@@ -1,0 +1,7 @@
+Écran 36 (900x1509)
+texte « 내 곡 공유 · 봄밤-리믹스-클럽-곡-20261105-213358.wav » @ 450,575
+bouton « WhatsApp » @ 450,646
+bouton « Messages » @ 450,718
+bouton « Gmail » @ 450,790
+bouton « Drive » @ 450,862
+bouton « Files » @ 450,934

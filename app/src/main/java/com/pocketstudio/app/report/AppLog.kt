@@ -33,27 +33,37 @@ object AppLog {
     fun previous(dir: File, maxLines: Int = 40): String =
         runCatching {
             // Crash reports go to a public issue: song and file names (between « ») stay on the phone.
-            File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n").replace(Regex("«[^»]*»"), "«…»")
+            LogTail.forPublicIssue(File(dir, "applog-previous.txt").readLines().takeLast(maxLines).joinToString("\n"))
         }.getOrDefault("")
 
     fun add(message: String) {
         val clean = LogTail.redact(message)
         // The bug report's journal sees it too (with its own time stamps).
         Journal.app(clean)
+        // « Mode retours »: the journal (errors among it) in its event log too, while it is on.
+        com.pocketstudio.app.retours.Retours.fromLog(clean)
         val line = "${LocalTime.now().format(time)} $clean"
         synchronized(lines) {
             if (lines.size == CAPACITY) lines.removeFirst()
             lines.addLast(line)
-            // Small appends, a few per minute at most; never from the audio thread.
+            // Small appends, a few per minute at most; on a thread of their own (audit 14: not on
+            // the main thread), in order. Never from the audio thread.
             file?.let { f ->
-                runCatching {
-                    // Keep the newest lines: halve the file when it grows past 256 KB.
-                    if (f.length() > 256_000) f.writeText(f.readText().takeLast(128_000).substringAfter('\n'))
-                    f.appendText(line + "\n")
+                writer.execute {
+                    runCatching {
+                        // Keep the newest lines: halve the file when it grows past 256 KB.
+                        if (f.length() > 256_000) f.writeText(f.readText().takeLast(128_000).substringAfter('\n'))
+                        f.appendText(line + "\n")
+                    }
                 }
             }
         }
     }
+
+    /** One thread at most, gone when idle; its queue keeps the lines in order. */
+    private val writer = java.util.concurrent.ThreadPoolExecutor(1, 1, 10, java.util.concurrent.TimeUnit.SECONDS, java.util.concurrent.LinkedBlockingQueue()) { r ->
+        Thread(r, "applog").apply { isDaemon = true }
+    }.apply { allowCoreThreadTimeOut(true) }
 
     fun dump(maxLines: Int = 80): String = synchronized(lines) { lines.takeLast(maxLines).joinToString("\n") }
 

@@ -1,0 +1,85 @@
+Écran 58 (588x1278)
+bouton « Wstecz » @ 42,36
+touchable « Stop » @ 123,36
+bouton « Tempo w dół » @ 213,36
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 288,36
+bouton « Tempo w górę » @ 363,36
+texte « 60.3 » @ 453,36
+touchable « REC » (nom « Nagraj występ ») @ 540,36
+texte « Utwór zapisany: 2 części, 0 ustawień » @ 71,114
+bouton « Anuluj » @ 191,114
+bouton « Słuchaj » @ 312,114
+bouton « Wersje » @ 435,114
+bouton « Zamknij » @ 537,114
+touchable « Start w rytmie: 1 takt » @ 135,196
+bouton « ? » (nom « Co to jest „„Start w rytmie” i pola”? ») @ 280,196
+bouton « Mniej pól » @ 452,197
+bouton « Więcej pól » @ 540,197
+texte « Pola » @ 392,197
+texte « 8 » @ 496,196
+texte « Perkusja » @ 155,263
+interrupteur « Dźwięk: Perkusja » [coché, état « wł. »] @ 155,318
+texte « Acid 303 » @ 276,263
+interrupteur « Dźwięk: Acid 303 » [coché, état « wł. »] @ 276,318
+texte « Riser » @ 397,263
+interrupteur « Dźwięk: Riser » [coché, état « wł. »] @ 397,318
+texte « Moja melodia » @ 518,263
+interrupteur « Dźwięk: Moja melodia » [coché, état « wł. »] @ 518,318
+bouton « ? » (nom « Co to jest „Klocki i pola”? ») @ 51,297
+bouton « A » @ 51,402
+bouton « Perkusja · A · Intro · gotowe » @ 155,402
+bouton « Acid 303 · A · Intro · pusty » @ 276,402
+bouton « Riser · A · Intro · pusty » @ 397,402
+bouton « Moja melodia · A · Intro · pusty » @ 518,402
+bouton « B » @ 51,484
+bouton « Perkusja · B · Groove · gra » @ 155,484
+bouton « Acid 303 · B · Groove · gra » @ 276,484
+bouton « Riser · B · Groove · gra » @ 397,484
+bouton « Moja melodia · B · Groove · gra » @ 518,484
+bouton « C » @ 51,566
+bouton « Perkusja · C · Drop · gotowe » @ 155,566
+bouton « Acid 303 · C · Drop · gotowe » @ 276,566
+bouton « Riser · C · Drop · gotowe » @ 397,566
+bouton « Moja melodia · C · Drop · pusty » @ 518,566
+bouton « D » @ 51,648
+bouton « Perkusja · D · Break · gotowe » @ 155,648
+bouton « Acid 303 · D · Break · gotowe » @ 276,648
+bouton « Riser · D · Break · gotowe » @ 397,648
+bouton « Moja melodia · D · Break · pusty » @ 518,648
+bouton « E » @ 51,730
+bouton « Perkusja · E · Intro 2 · gotowe » @ 155,730
+bouton « Acid 303 · E · Intro 2 · pusty » @ 276,730
+bouton « Riser · E · Intro 2 · pusty » @ 397,730
+bouton « Moja melodia · E · Intro 2 · pusty » @ 518,730
+bouton « F » @ 51,812
+bouton « Perkusja · F · Groove 2 · gotowe » @ 155,812
+bouton « Acid 303 · F · Groove 2 · pusty » @ 276,812
+bouton « Riser · F · Groove 2 · gotowe » @ 397,812
+bouton « Moja melodia · F · Groove 2 · pusty » @ 518,812
+bouton « G » @ 51,894
+bouton « Perkusja · G · Build-up · gotowe » @ 155,894
+bouton « Acid 303 · G · Build-up · gotowe » @ 276,894
+bouton « Riser · G · Build-up · gotowe » @ 397,894
+bouton « Moja melodia · G · Build-up · gotowe » @ 518,894
+bouton « H » @ 51,976
+bouton « Perkusja · H · Build-up 2 · gotowe » @ 155,976
+bouton « Acid 303 · H · Build-up 2 · gotowe » @ 276,976
+bouton « Riser · H · Build-up 2 · gotowe » @ 397,976
+bouton « Moja melodia · H · Build-up 2 · pusty » @ 518,976
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ■ Wszystko » @ 51,1065
+bouton « ■ » (nom « Zatrzymaj ścieżkę ») @ 155,1065
+bouton « ■ » (nom « Zatrzymaj ścieżkę ») @ 276,1065
+bouton « ■ » (nom « Zatrzymaj ścieżkę ») @ 397,1065
+bouton « ■ » (nom « Zatrzymaj ścieżkę ») @ 518,1065
+touchable « Klocki » [sélectionné] @ 61,1164
+touchable « Pady » @ 142,1164
+touchable « Efekty » @ 223,1164
+touchable « Nuty » @ 303,1164
+touchable « Acid 303 » @ 383,1164
+bouton « Wyjdź z pełnego ekranu » @ 459,1164
+bouton « Rozwiń » @ 531,1164
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

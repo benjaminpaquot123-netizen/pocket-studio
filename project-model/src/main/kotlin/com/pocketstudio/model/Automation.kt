@@ -191,6 +191,11 @@ data class AutomationLane(
      * (what a take heard: the Montée up to the Drop's bar line, then nothing). Points drawn only.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val songJumps: List<Int> = emptyList(),
+    /**
+     * Audit 06: a loop (or per-scene) curve's own length in steps, from the part's start: the
+     * whole part (its longest loop) instead of the drum loop's. 0: the drum loop's, as before.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val loopSteps: Int = 0,
 ) {
     fun sanitized(): AutomationLane {
         val song = clean(songValues, songValues.size.coerceAtMost(maxSongPoints)).dropLastWhile { it == null }
@@ -200,6 +205,7 @@ data class AutomationLane(
             sceneValues = sceneValues.filterKeys { it in 0 until Scene.MAX }.mapValues { clean(it.value, STEPS) },
             songValues = song,
             songJumps = songJumps.filter { it in song.indices && song[it] != null }.distinct().sorted(),
+            loopSteps = loopSteps.takeIf { it in 1..STEPS } ?: 0,
         )
     }
 

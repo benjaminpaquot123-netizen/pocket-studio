@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchSongClockTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-12T19:45:06.342Z" hostname="vm" time="0.243">
+  <properties/>
+  <testcase name="absoluteStepRestartsAtTheSwap" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.017"/>
+  <testcase name="transportStepIsMinusOneDuringTheCountIn" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.013"/>
+  <testcase name="aTakeStillCountingInIsNotEndedByStop" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.013"/>
+  <testcase name="aSongPlaysOnAndARestartArmedAheadWaitsForItsBar" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.031"/>
+  <testcase name="aPartArmedDuringTheCountInWaitsForItsBarAfterIt" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.011"/>
+  <testcase name="aTakeWaitsForTheTransportsOwnCountIn" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.013"/>
+  <testcase name="theDrumPatternsStepFollowsTheSceneTakingOver" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.01"/>
+  <testcase name="aMicTakeEndsWithTheSongsEnd" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.033"/>
+  <testcase name="transportStepKeepsItsStepsAcrossATempoChange" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.012"/>
+  <testcase name="aTakeArmedIsKeptWhenTheSongEnds" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.015"/>
+  <testcase name="aTempoChangeKeepsTheStepsPlayed" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.012"/>
+  <testcase name="aSongMarkComesTrueOnItsLineAndPutsTheSongThere" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.013"/>
+  <testcase name="aNewArmReplacesTheOneWaitingAndANegativeOneCancelsIt" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.014"/>
+  <testcase name="leavingTheSongTakesTheSongPositionAwayAtOnce" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.013"/>
+  <testcase name="theSongsEndStopsTheTransportOnItsBarLine" classname="com.pocketstudio.app.human.BenchSongClockTest" time="0.015"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

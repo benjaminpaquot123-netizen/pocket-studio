@@ -19,18 +19,34 @@ object NoteEdits {
     }
 
     /**
-     * Up or down by [semitones]; notes past the keyboard stay where they are. The whole clip
-     * chosen: the notes hidden past its end (a shortened loop) move too, so they come back in key.
+     * Up or down by [semitones], the selection as one block: when a note would leave the keyboard
+     * (0..127) nothing moves (a chord never folds onto itself). The whole clip chosen: the notes
+     * hidden past its end (a shortened loop) move too, so they come back in key.
      */
     fun transpose(clip: NoteClip, selection: Set<Note>, semitones: Int): Result {
+        if (semitones == 0 || selection.isEmpty() || semitones !in transposeRange(selection)) return Result(clip, selection)
         val move = { n: Note -> if (n.pitch + semitones in 0..127) n.copy(pitch = n.pitch + semitones) else n }
-        val all = clip.hidden.isNotEmpty() && selection.isNotEmpty() && selection.containsAll(clip.notes)
+        val all = clip.hidden.isNotEmpty() && selection.containsAll(clip.notes)
         return replace(if (all) clip.copy(hidden = clip.hidden.map(move)) else clip, selection, move)
     }
 
-    /** Earlier or later by [ticks], inside the loop. */
-    fun shift(clip: NoteClip, selection: Set<Note>, ticks: Int): Result =
-        replace(clip, selection) { n -> n.copy(start = (n.start + ticks).coerceIn(0, clip.ticks - 1), played = null) }
+    /** The semitones [selection] can move by as one block and stay on the keyboard (0..127). */
+    fun transposeRange(selection: Set<Note>): IntRange =
+        if (selection.isEmpty()) 0..0 else -selection.minOf { it.pitch }..(127 - selection.maxOf { it.pitch })
+
+    /**
+     * Earlier or later by [ticks], inside the loop, the selection as one block: against the loop's
+     * start or end it stops there ([shiftRange]), its notes keeping their gaps (never piled on one tick).
+     */
+    fun shift(clip: NoteClip, selection: Set<Note>, ticks: Int): Result {
+        val by = ticks.coerceIn(shiftRange(clip, selection))
+        if (by == 0 || selection.isEmpty()) return Result(clip, selection)
+        return replace(clip, selection) { n -> n.copy(start = n.start + by, played = null) }
+    }
+
+    /** The ticks [selection] can move by as one block and stay in [clip]'s loop. */
+    fun shiftRange(clip: NoteClip, selection: Set<Note>): IntRange =
+        if (selection.isEmpty()) 0..0 else -selection.minOf { it.start }..(clip.ticks - 1 - selection.maxOf { it.start }).coerceAtLeast(-selection.minOf { it.start })
 
     fun setVelocity(clip: NoteClip, selection: Set<Note>, velocity: Float): Result =
         replace(clip, selection) { it.copy(velocity = velocity.coerceIn(0.05f, 1f)) }
@@ -131,7 +147,9 @@ object NoteEdits {
         val at = bar.coerceAtLeast(0) * barTicks
         val needed = at + board.bars * barTicks
         val grown = if (needed > clip.ticks) {
-            val steps = ((needed / NoteClip.TICKS_PER_STEP + 15) / 16 * 16).coerceAtMost(NoteClip.MAX_STEPS)
+            // Whole bars of the time signature ([barTicks]): 12 steps a bar in 3/4, never rounded to 4/4's 16.
+            val bar = (barTicks / NoteClip.TICKS_PER_STEP).coerceAtLeast(1)
+            val steps = ((needed / NoteClip.TICKS_PER_STEP + bar - 1) / bar * bar).coerceAtMost(NoteClip.MAX_STEPS / bar * bar)
             clip.withSteps(maxOf(clip.steps, steps))
         } else clip
         return paste(grown, board.notes, at)

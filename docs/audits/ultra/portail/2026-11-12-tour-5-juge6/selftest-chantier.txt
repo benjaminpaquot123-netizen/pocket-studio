@@ -1,0 +1,8 @@
+2b34c216 « vert: mode_step re-recorded at 130 % and on the tablet, the step on ea » : vert sans rouge du même test avant lui
+a2a6ec58 « vert: Prêt à partager says the remix's song runs past the song's end ( » : vert sans rouge du même test avant lui
+11c48708 « vert: the separated song's card has one clear button (exact label, scr » : vert sans rouge du même test avant lui
+411b2d51 « vert: « Retester les corrections » runs only the chosen steps of « Tou » : vert sans rouge du même test avant lui
+96a7a702 « rouge: NavScreenshotTest.modeStep asserts the step before its capture » : rouge sans vert du même test après lui
+ade1a174 « rouge: sheets scroll lying down: the test measures a node's own box » : rouge sans vert du même test après lui
+9b8fc4fd « rouge: the essai eclair on a first install fails as on Benjamin's phon » : rouge sans vert du même test après lui
+chantier : 7 écarts

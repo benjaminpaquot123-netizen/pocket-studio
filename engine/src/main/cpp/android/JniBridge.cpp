@@ -42,6 +42,12 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stop(JNIEnv*, j
     host().stop();
 }
 
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeRetryOutput(JNIEnv*, jobject) {
+    // Never creates the host (the device callback fires once at the app's start, before any sound).
+    std::lock_guard<std::mutex> guard(g_lock);
+    if (g_host) g_host->retryOutput();
+}
+
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(JNIEnv*, jobject, jint type,
                                                                           jfloat value, jint a, jint b) {
     return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
@@ -260,6 +266,20 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsLoad(JNIE
     }
 }
 
+// A short sound (interleaved stereo at 48 kHz) played by the preview player, apart from the project:
+// the tutorial's and the Guide's examples go out where the pads do. Stem 0 holds it, the others are silent.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsFromPcm(JNIEnv* env, jobject, jfloatArray data) {
+    const jsize n = data ? env->GetArrayLength(data) : 0;
+    if (n < 2) return 0;
+    try {
+        std::vector<std::vector<float>> stems(ps::StemBundle::kStems, std::vector<float>(static_cast<size_t>(n & ~1), 0.0f));
+        env->GetFloatArrayRegion(data, 0, n & ~1, stems[0].data());
+        return reinterpret_cast<jlong>(ps::StemBundle::fromFloat(stems));
+    } catch (...) {
+        return 0;
+    }
+}
+
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsRelease(JNIEnv*, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::StemBundle*>(handle);
     if (b && b->release()) delete b;
@@ -354,6 +374,43 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
     return JNI_FALSE;
 }
 
+// Lot D2: a remix cell's passage; `index` = cell | refit (0x100) | loop steps << 12 (NativeEngine.setRemixCellSound).
+static ps::Command remixCellCommand(jint index, ps::Sample* s) {
+    ps::Command command{ps::CommandType::InstallRemixCell, 0.0f, index & (0xFF | ps::kRefit), static_cast<int32_t>(static_cast<uint32_t>(index) >> 12)};
+    command.sample = s;
+    return command;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallRemixCell(JNIEnv*, jobject, jint index, jlong handle) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;
+    if (s) s->retain();
+    if (host().post(remixCellCommand(index, s))) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallRemixCell(JNIEnv*, jobject, jlong exportHandle, jint index, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return;
+    if (s) s->retain();
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(remixCellCommand(index, s));
+}
+
+// Lot E: the reference song heard in « Master pro » (handle 0: none), at its integrated loudness (LUFS).
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallReference(JNIEnv*, jobject, jlong handle, jfloat lufs) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallReference, lufs, 0, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAudioClip(JNIEnv*, jobject, jlong exportHandle, jint track,
                                                                                     jlong handle) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
@@ -410,12 +467,21 @@ static void freeReleasedTakes() {
 }
 
 // Opens the microphone and arms a recording of up to `seconds`; 0 when the microphone is unavailable.
-// `onStart`: the recording begins exactly when the transport reaches its first step.
-JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds) {
+// `onStart`: the recording begins exactly when the transport reaches its first step; the last
+// `prerollFrames` before it (the count-in) are kept in front of it.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds, jint prerollFrames) {
     if (seconds <= 0 || seconds > 600) return 0;
     freeReleasedTakes();
     if (!host().startRecordingInput(ps::AudioHost::MicRecording)) return 0;
-    auto* buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
+    const int64_t preroll = onStart ? std::clamp<int64_t>(prerollFrames, 0, 48000 * 4) : 0;
+    ps::RecordBuffer* buffer = nullptr;
+    try {
+        buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000, preroll);
+    } catch (const std::bad_alloc&) {
+        // Out of memory (big instruments loaded): no take, as with no microphone, never a crash.
+        host().stopRecordingInput(ps::AudioHost::MicRecording);
+        return 0;
+    }
     ps::Command command{ps::CommandType::RecordArm, 0.0f, onStart ? 1 : 0, 0};
     command.record = buffer;
     if (!host().post(command)) {
@@ -426,18 +492,26 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JN
     return reinterpret_cast<jlong>(buffer);
 }
 
-// [state (0 waiting, 1 recording, 2 finished), frames written, input peak].
+// [state (0 waiting, 1 recording, 2 finished), frames written (after the pre-roll), input peak].
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStatus(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
+    const int64_t written = std::max<int64_t>(0, b->written.load(std::memory_order_acquire) - b->preroll);
     const jfloat values[3] = {static_cast<jfloat>(b->state.load(std::memory_order_acquire)),
-                              static_cast<jfloat>(b->written.load(std::memory_order_acquire)), b->peak.load(std::memory_order_relaxed)};
+                              static_cast<jfloat>(written), b->peak.load(std::memory_order_relaxed)};
     jfloatArray out = env->NewFloatArray(3);
     if (out) env->SetFloatArrayRegion(out, 0, 3, values);
     return out;
 }
 
+// The engine no longer writes into it: the pre-roll ring is put in order, then copied out (the
+// pre-roll first, then the take).
 static jfloatArray takeOut(JNIEnv* env, ps::RecordBuffer* b) {
     const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
+    if (b->preroll > 0 && frames >= b->preroll) {
+        const int64_t head = std::clamp<int64_t>(b->prerollHead.load(std::memory_order_acquire), 0, b->preroll);
+        std::rotate(b->data.begin(), b->data.begin() + head, b->data.begin() + b->preroll);
+        b->prerollHead.store(0, std::memory_order_relaxed);
+    }
     jfloatArray out = env->NewFloatArray(frames);
     if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
     return out;
@@ -446,7 +520,7 @@ static jfloatArray takeOut(JNIEnv* env, ps::RecordBuffer* b) {
 // Ends the recording and returns what was recorded (mono, 48 kHz), freeing the buffer. When the
 // stream is closed (the app was closed in the middle of a take), the engine cannot let go of it:
 // what was recorded is copied out all the same (the audio thread cannot run meanwhile) and the
-// buffer is kept until the engine lets go. Null only when the stream runs but never answered.
+// buffer is kept until the engine lets go. The same when the engine has not answered yet.
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFinish(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
     host().post({ps::CommandType::RecordStop, 0.0f});
@@ -456,8 +530,10 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     }
     host().stopRecordingInput(ps::AudioHost::MicRecording);
     if (b->state.load(std::memory_order_acquire) != 2) {
-        jfloatArray out = nullptr;
-        host().runWhileStopped([&] { out = takeOut(env, b); });
+        // Frames [0, written) never change once published (written is stored with release after
+        // them): copied out even while the engine still holds the buffer (a queue full of a resync,
+        // Bluetooth callbacks far apart), never a take lost (audit 13).
+        jfloatArray out = takeOut(env, b);
         // The engine may still apply the queued commands when the stream comes back: keep the
         // buffer until it says it let go.
         std::lock_guard<std::mutex> guard(zombieLock);
@@ -468,6 +544,106 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     delete b;
     freeReleasedTakes();
     return out;
+}
+
+// --- Lot B2: « Enregistrer ce que je joue » (the output from bar line to bar line) ---
+
+static std::mutex resampleLock;
+static std::vector<ps::ResampleBuffer*> resampleZombies;
+
+static void freeReleasedResamples() {
+    std::lock_guard<std::mutex> guard(resampleLock);
+    resampleZombies.erase(std::remove_if(resampleZombies.begin(), resampleZombies.end(), [](ps::ResampleBuffer* b) {
+        if (b->state.load(std::memory_order_acquire) != 2) return false;
+        delete b;
+        return true;
+    }), resampleZombies.end());
+}
+
+// Arms a take of at most `seconds` from the next bar line of the live pads' clock (`waitForSound`:
+// the first one where a pad plays or the transport runs); 0 when there is no memory for it.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStart(JNIEnv*, jobject, jint seconds, jboolean waitForSound) {
+    if (seconds <= 0 || seconds > 120) return 0;
+    freeReleasedResamples();
+    ps::ResampleBuffer* buffer = nullptr;
+    try {
+        buffer = new ps::ResampleBuffer(static_cast<int64_t>(seconds) * host().engine().sampleRate());
+    } catch (const std::bad_alloc&) {
+        return 0;
+    }
+    ps::Command command{ps::CommandType::ResampleArm, 0.0f, waitForSound ? 1 : 0, 0};
+    command.resample = buffer;
+    if (!host().post(command)) {
+        delete buffer;
+        return 0;
+    }
+    return reinterpret_cast<jlong>(buffer);
+}
+
+// [state (0 waiting for its bar line, 1 recording, 2 finished), frames written].
+JNIEXPORT jlongArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStatus(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    const jlong values[2] = {b->state.load(std::memory_order_acquire), b->written.load(std::memory_order_acquire)};
+    jlongArray out = env->NewLongArray(2);
+    if (out) env->SetLongArrayRegion(out, 0, 2, values);
+    return out;
+}
+
+// Take `handle` ends on the next bar line heard (its state becomes 2 there); a stop arriving after
+// another take was armed leaves that one alone.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStop(JNIEnv*, jobject, jlong handle) {
+    if (handle == 0) return;
+    ps::Command command{ps::CommandType::ResampleStop, 0.0f, 0};
+    command.resample = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    host().post(command);
+}
+
+// What was recorded (stereo interleaved, the engine's rate), freeing the buffer. Not finished yet
+// (or the stream closed): ended at once first; when the engine has not let go, what it wrote is
+// copied all the same and the buffer is kept until it does (as recordFinish).
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleFinish(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    if (b->state.load(std::memory_order_acquire) != 2) {
+        ps::Command stop{ps::CommandType::ResampleStop, 0.0f, 1};
+        stop.resample = b;
+        host().post(stop);
+        for (int waited = 0; waited < 500 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
+            if (host().runWhileStopped([] {})) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        }
+    }
+    const auto frames = static_cast<jsize>(std::clamp<int64_t>(b->written.load(std::memory_order_acquire), 0, b->capacity));
+    jfloatArray out = env->NewFloatArray(frames * 2);
+    if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames * 2, b->data.get());
+    if (b->state.load(std::memory_order_acquire) != 2) {
+        std::lock_guard<std::mutex> guard(resampleLock);
+        resampleZombies.push_back(b);
+        return out;
+    }
+    delete b;
+    freeReleasedResamples();
+    return out;
+}
+
+// MIDI clock out (lot B2): the engine's clock messages, as [status, when] pairs into `out` (when: the
+// System.nanoTime() clock, CLOCK_MONOTONIC like steady_clock, the output device's own latency not
+// included); returns how many pairs.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeDrainMidiClock(JNIEnv* env, jobject, jlongArray out) {
+    const jsize room = std::min<jsize>(env->GetArrayLength(out) / 2, 256);
+    jlong buf[512];
+    auto& engine = host().engine();
+    int64_t frame = 0, nanos = 0;
+    engine.callbackClock(frame, nanos);
+    const double nanosPerFrame = 1e9 / std::max(1, engine.sampleRate());
+    ps::MidiClockEvent e;
+    jsize n = 0;
+    while (n < room && engine.popClockEvent(e)) {
+        buf[n * 2] = e.status;
+        buf[n * 2 + 1] = nanos + static_cast<jlong>(std::llround(static_cast<double>(e.frame - frame) * nanosPerFrame));
+        ++n;
+    }
+    if (n > 0) env->SetLongArrayRegion(out, 0, n * 2, buf);
+    return n;
 }
 
 // Steps since the song (re)started (song automation), -1 when stopped.
@@ -483,6 +659,24 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_readScope(JNIEn
     float buf[ps::Engine::kScopeFrames];
     host().engine().readScope(microphone, buf);
     env->SetFloatArrayRegion(out, 0, ps::Engine::kScopeFrames, buf);
+}
+
+// « Mode retours »: the output's copy for the screen recording (one reader thread).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_tapStart(JNIEnv*, jobject) { host().engine().tapStart(); }
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_tapStop(JNIEnv*, jobject) { host().engine().tapStop(); }
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_tapRead(JNIEnv* env, jobject, jfloatArray out) {
+    const jsize capacity = env->GetArrayLength(out);
+    float buf[4096];
+    jsize done = 0;
+    while (done < capacity) {
+        const std::size_t want = static_cast<std::size_t>(std::min<jsize>(4096, capacity - done));
+        const std::size_t got = host().engine().tapRead(buf, want);
+        if (got == 0) break;
+        env->SetFloatArrayRegion(out, done, static_cast<jsize>(got), buf);
+        done += static_cast<jsize>(got);
+        if (got < (want & ~std::size_t{1})) break;
+    }
+    return done;
 }
 
 // Microphone on for the tuner (false: unavailable); off again with micClose.
@@ -514,6 +708,19 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIE
     for (int i = 0; i < ps::ClipLauncher::kSlots; ++i) states[i] = host().engine().clipState(i);
     const jsize n = std::min<jsize>(env->GetArrayLength(out), ps::ClipLauncher::kSlots);
     env->SetIntArrayRegion(out, 0, n, states);
+}
+
+// B3: how loud each live pad sounds now (ClipLauncher::level), for the lights that follow the sound.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeClipLevels(JNIEnv* env, jobject, jfloatArray out) {
+    jfloat levels[ps::ClipLauncher::kSlots];
+    for (int i = 0; i < ps::ClipLauncher::kSlots; ++i) levels[i] = host().engine().clipLevel(i);
+    const jsize n = std::min<jsize>(env->GetArrayLength(out), ps::ClipLauncher::kSlots);
+    env->SetFloatArrayRegion(out, 0, n, levels);
+}
+
+// The audio track whose microphone is sent back now (-1: none, also once the output reopened). Any thread.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeMonitorTrack(JNIEnv*, jobject) {
+    return static_cast<jint>(host().engine().monitorTrack());
 }
 
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSceneSwaps(JNIEnv*, jobject) {
@@ -674,13 +881,31 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFormat
     renderer(handle)->setOutputFormat(rate, bits);
 }
 
+// Lot E (« Master pro »): the next render's finish (layout: NativeEngine.FINISH_*): fade-in frames,
+// start trimmed (1), end trimmed (1), silence after the end (frames), first frame kept, noise shaping (1).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFinish(JNIEnv* env, jobject, jlong handle, jlongArray values) {
+    if (!values || env->GetArrayLength(values) < 6) return;
+    jlong v[6];
+    env->GetLongArrayRegion(values, 0, 6, v);
+    ps::OfflineRenderer::Finish f;
+    f.fadeInFrames = v[0];
+    f.trimStart = v[1] != 0;
+    f.trimEnd = v[2] != 0;
+    f.endSilenceFrames = v[3];
+    f.rangeStart = v[4];
+    f.noiseShaping = v[5] != 0;
+    renderer(handle)->setFinish(f);
+}
+
 // What the last render wrote (layout: NativeEngine.REPORT_*): integrated loudness (LUFS, -1000
 // for silence), true peak (dBTP), length (seconds), sample rate, the loudness target's drive (dB).
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportReport(JNIEnv* env, jobject, jlong handle) {
     const auto& r = renderer(handle)->report();
     // S5: then what the clipper and the limiter took off (LU), the loud part's loudness (LUFS, the
     // Drop; -1000 without a two-pass Drop render) and the target's mode (0 song, 1 Drop).
-    const jfloat values[8] = {
+    // Lot E: then the loudest 400 ms and 3 s (LUFS), the loudness range (LU), the stereo correlation,
+    // the mono fold's loudness (LUFS) and the target (LUFS, 0: none).
+    const jfloat values[14] = {
         static_cast<jfloat>(r.lufs),
         r.truePeak > 0.0f ? 20.0f * std::log10(r.truePeak) : -1000.0f,
         r.sampleRate > 0 ? static_cast<jfloat>(static_cast<double>(r.frames) / r.sampleRate) : 0.0f,
@@ -689,9 +914,15 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRe
         r.lossDb,
         static_cast<jfloat>(r.loudLufs),
         static_cast<jfloat>(r.mode),
+        static_cast<jfloat>(r.maxMomentary),
+        static_cast<jfloat>(r.maxShortTerm),
+        static_cast<jfloat>(r.lra),
+        static_cast<jfloat>(r.correlation),
+        static_cast<jfloat>(r.monoLufs),
+        std::isfinite(r.targetLufs) ? r.targetLufs : 0.0f,
     };
-    jfloatArray result = env->NewFloatArray(8);
-    if (result) env->SetFloatArrayRegion(result, 0, 8, values);
+    jfloatArray result = env->NewFloatArray(14);
+    if (result) env->SetFloatArrayRegion(result, 0, 14, values);
     return result;
 }
 
@@ -781,12 +1012,15 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_loudnessMeters(
 
 // Fills `out` (NativeEngine.HEALTH floats) for the bug report's health journal, without taking
 // anything another meter reads: the master's momentary and short-term loudness (LUFS), the
-// limiter's gain now (linear) and the audio thread's load. Atomics only, from the UI thread.
+// limiter's gain now (linear), the audio thread's load, then (taken: the health poll is their one
+// reader) its worst block and its longest wait between two callbacks since the last call. Atomics
+// only, from the UI thread.
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_healthMeters(JNIEnv* env, jobject, jfloatArray out) {
     auto& e = host().engine();
     auto& m = e.mixer();
-    jfloat values[4] = {m.loudness().momentary(), m.loudness().shortTerm(), m.limiterGain(), e.cpuLoad()};
-    const int n = std::min(4, static_cast<int>(env->GetArrayLength(out)));
+    const int n = std::min(6, static_cast<int>(env->GetArrayLength(out)));
+    jfloat values[6] = {m.loudness().momentary(), m.loudness().shortTerm(), m.limiterGain(), e.cpuLoad(),
+                        n > 4 ? e.takeWorstBlock() : 0.0f, n > 5 ? e.takeWorstGap() : 0.0f};
     if (n > 0) env->SetFloatArrayRegion(out, 0, n, values);
 }
 

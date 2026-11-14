@@ -1,0 +1,45 @@
+{
+  "siege": "a",
+  "options": {
+    "lang": "fr",
+    "device": "phone",
+    "font": "100",
+    "mode": "simple",
+    "gestes.max": "100",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 43,
+    "images": 6,
+    "gestes_premier_son": 5,
+    "gestes_premier_partage": 9,
+    "touchers_a_vide": 1,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 1,
+    "ecrans": 47,
+    "ecrans_revisites": 20,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 1,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 65,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.7,
+      "simule": 2.4,
+      "jvm": 8.3,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : 1, Trap-20261113-144539.pocketstudio.zip, Trap-morceau-club-20261113-144507.wav, Trap-morceau-streaming-20261113-144445.m4a (cibles non mesurées ici : ffprobe à brancher)"
+}

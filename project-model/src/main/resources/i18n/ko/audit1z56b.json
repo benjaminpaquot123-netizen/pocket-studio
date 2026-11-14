@@ -1,0 +1,17 @@
+{
+  "Lire": "읽기",
+  "Bravo, chapitre fini !": "잘했어요, 챕터 완료!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "지금 상태의 곡을 들어 보고 다음 챕터로 넘어가세요: “%s”.",
+  "Chapitre suivant : « %s ».": "다음 챕터: “%s”.",
+  "Chapitre suivant": "다음 챕터",
+  "Écouter mon morceau": "내 곡 듣기",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "“%s”(이)라는 저장된 사운드가 이미 있어요. 다른 이름을 고르세요.",
+  "Ce son est déjà dans tes favoris : « %s ».": "이 사운드는 이미 즐겨찾기에 있어요: “%s”.",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "효과와 함께 즐겨찾기에 저장했어요: “%s”.",
+  "Son renommé : « %s ».": "사운드 이름을 바꿨어요: “%s”.",
+  "Déjà dans tes favoris": "이미 즐겨찾기에 있음",
+  "Renommer « %s »": "“%s” 이름 바꾸기",
+  "Renommer le son": "사운드 이름 바꾸기",
+  "Nom du son": "사운드 이름",
+  "%d ms": "%d ms"
+}

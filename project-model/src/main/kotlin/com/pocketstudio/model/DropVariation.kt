@@ -58,7 +58,7 @@ object DropVariation {
                             val loop = (scene.drums.steps / spb).coerceAtLeast(1)
                             val b = from % loop
                             val hits = scene.drums.lanes.flatMapIndexed { lane, l ->
-                                l.hits.filterKeys { it in b * spb until (b + 1) * spb }.map { (st, h) -> "$lane:${st - b * spb}:${h.repeats}" }
+                                l.hits.filterKeys { it in b * spb until (b + 1) * spb }.map { (st, h) -> "$lane:${st - b * spb}:${h.repeats}:${h.span}" }
                             }
                             if (hits.isNotEmpty()) heard += "D[" + hits.sorted().joinToString(",") + "]"
                         }

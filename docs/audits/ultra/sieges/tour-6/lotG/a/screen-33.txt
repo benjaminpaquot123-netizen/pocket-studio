@@ -1,0 +1,11 @@
+Écran 33 (588x1278)
+icône ← @ 54,54
+texte « Projelerim » @ 330,54
+bouton (étincelles) «   Bana bir parça yap » @ 294,147
+bouton + «   Yeni proje: stil, demo ya da boş » @ 294,243
+bouton (boîte, flèche vers le haut) « Proje içe aktar (.zip) » › @ 294,339
+bouton « Pop AÇIK az önce · 116 BPM · 100 ölçü · 3:27 · 26 bölüm » @ 294,506
+icône ⋮ @ 534,506
+icône (trois points reliés) « Şarkımı paylaş » @ 178,565
+bouton « İlk ritmim az önce · 120 BPM · 20 ölçü · 0:40 · 1 bölüm · remix » @ 294,702
+icône ⋮ @ 534,702

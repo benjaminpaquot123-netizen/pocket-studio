@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.nav.HiddenDefectsGuardTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-12T19:11:04.590Z" hostname="vm" time="10.615">
+  <properties/>
+  <testcase name="theFilterSweepJustAddedIsStillNamedInThePicker" classname="com.pocketstudio.app.nav.HiddenDefectsGuardTest" time="9.19"/>
+  <testcase name="showTheSettingBringsTheReverbSendIntoView" classname="com.pocketstudio.app.nav.HiddenDefectsGuardTest" time="0.713"/>
+  <system-out><![CDATA[CACHE-B20: known defect still there (« Voir le réglage » leaves the reverb send out of view)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

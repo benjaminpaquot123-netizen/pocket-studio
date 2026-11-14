@@ -1,0 +1,58 @@
+Écran 185 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + Nouvelle partie (copie de A · Groove) » [coupé] @ 276,286
+image (chapeau de diplômé) @ 37,348
+texte « Comprendre les parties Chapitre 9/15 · Étape 4/5 · Facile » @ 244,348
+icône (liste) @ 459,348
+icône ⌄ @ 531,348
+image (rond coché) @ 36,426
+texte « Écoute le Break : le kick et la basse se taisent, il reste le piano et les charleys. » @ 313,447
+texte « • Kick : la grosse caisse, le « boum » grave de la batterie. » @ 283,505
+texte « • Charley : la petite cymbale qui fait « tss », le tic-tac du rythme. » @ 294,549
+texte « ▸ Pourquoi ? » @ 294,600
+texte « Énergie » @ 58,636
+texte « Intro » @ 65,729
+texte « 16 » @ 65,753
+texte « 8 » @ 134,741
+texte « Drop » @ 203,729
+texte « 16 » @ 203,753
+texte « Break » @ 294,729
+texte « 16 » @ 294,753
+texte « 8 » @ 363,741
+texte « Drop 2 » @ 432,729
+texte « 16 » @ 432,753
+texte « Fin » @ 523,729
+texte « 16 » @ 523,753
+texte «  Intro » @ 60,790
+texte «  Montée » @ 151,790
+texte «  Drop » @ 244,790
+texte «  Break » @ 331,790
+texte «  Drop 2 » @ 426,790
+texte «  Fin » @ 508,790
+texte « Chaque nombre : la durée de la partie en mesures. » @ 251,820
+bouton « Lire la suite » ⌄ @ 294,822
+bouton « Étape suivante   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  Écouter l'exemple » @ 256,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 122 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,22 @@
+Écran 18 (1920x1200)
+texte « Effekte · Drums » @ 727,72
+case « Punch » @ 616,170
+case « EDM-Pump » @ 844,170
+case « Knusprig » @ 1096,170
+case « Lo-Fi Tape » @ 656,242
+case « Kleiner Raum » @ 941,242
+case « Ohne Effekt » @ 1238,242
+texte « Tippe auf einen Vibe, um ihn auszuprobieren: Mit Rückgängig kommst du immer zurück. » @ 960,342
+texte « Halte den Finger auf einem Vibe, um ihn zu hören; lass los, dein Sound kommt zurück. » @ 960,458
+texte « XY-Pad, oben-unten: » @ 719,548
+bouton « ? » (nom « Was ist „XY-Pad“? ») @ 938,548
+case « Raum » [sélectionné] @ 609,622
+case « Dreck » @ 776,622
+case « Bewegung » @ 991,622
+texte « ↑ Fern » @ 960,694
+texte « ← Dunkel » @ 692,1003
+texte « ↓ Trocken » @ 959,1003
+texte « Hell → » @ 1227,1003
+texte « Wisch mit dem Finger, um den Sound live zu verbiegen. Zweimal tippen: zurück zum Ausgangssound. » @ 960,1043
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Schließen » @ 1275,1124

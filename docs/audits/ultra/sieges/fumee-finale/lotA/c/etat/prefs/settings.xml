@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="englishNotes" value="true" />
+    <string name="language">en</string>
+    <boolean name="guideSeen" value="true" />
+    <boolean name="simpleMode" value="false" />
+</map>

@@ -1,0 +1,59 @@
+Écran 225 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : F · Drop 2 » ▾ @ 123,180
+bouton « 1 » [sélectionné] @ 161,268
+bouton « 2 » @ 242,268
+bouton « 3 » @ 323,268
+bouton « 4 » @ 404,268
+texte « Mesure » @ 79,268
+bouton « Suivre » @ 99,349
+texte « Mesure 1/4 · Conga » @ 150,433
+bouton « 1 » [état « vide »] @ 70,516
+bouton [état « vide »] @ 133,516
+bouton [état « vide »] @ 197,517
+bouton [état « vide »] @ 261,517
+bouton « 2 » [état « vide »] @ 325,517
+bouton [état « vide »] @ 389,517
+bouton [état « vide »] @ 453,517
+bouton [état « vide »] @ 517,517
+bouton « 3 » [état « vide »] @ 70,595
+bouton [état « vide »] @ 133,595
+bouton [état « vide »] @ 197,596
+bouton [état « vide »] @ 261,596
+bouton « 4 » [état « vide »] @ 325,596
+bouton [état « vide »] @ 389,596
+bouton [état « vide »] @ 453,596
+bouton [état « vide »] @ 517,596
+texte « tout » @ 152,681
+texte « 1/2 » @ 227,681
+texte « 1/4 » @ 302,681
+texte « ◀ » [désactivé] @ 377,681
+texte « ▶ » [désactivé] @ 452,681
+texte « Remplir » @ 77,681
+texte « Effacer » [désactivé] @ 91,753
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » [coupé] @ 294,816
+image (chapeau de diplômé) @ 37,879
+texte « Les transitions Chapitre 12/15 · Étape 3/3 · Facile » @ 244,879
+icône (liste) @ 459,879
+icône ⌃ @ 531,879
+icône « À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Conga » (ou le charley ouvert) : une couche de plus que dans le Drop. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 122 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

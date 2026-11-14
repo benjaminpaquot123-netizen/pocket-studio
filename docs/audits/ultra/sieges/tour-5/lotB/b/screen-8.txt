@@ -1,0 +1,29 @@
+Écran 8 (588x1278)
+texte « Nowy utwór, krok po kroku » @ 236,35
+bouton « Zamknij » @ 546,48
+texte « Krok 4 z 12 · Acid techno » @ 137,69
+bouton « Utwórz od razu z polecanymi wyborami » @ 294,156
+bouton « OTWARTY HI-HAT » [état « Rozwinięte »] @ 157,252
+texte « Dłuższe „tsss”: położone między ćwierćnutami pozwala rytmowi oddychać. » @ 294,318
+texte « W Acid techno: otwarty hi-hat między kickami daje typowy galop. » @ 294,396
+texte « • Kick: stopa, niski „bum” perkusji. » @ 199,451
+texte « • Hi-hat: mały talerz, który robi „ts”, tykanie rytmu. » @ 271,481
+texte « 1 » @ 105,561
+texte « 2 » @ 231,561
+texte « 3 » @ 357,561
+texte « 4 » @ 483,561
+texte « Użyj tej linii » @ 255,621
+interrupteur « Użyj tej linii » [coché] @ 507,621
+texte « Gra w Drop » @ 105,684
+bouton «   Z rytmem » (nom « Słuchaj ») @ 437,801
+bouton « WYBIERZ DŹWIĘK » [état « Rozwinięte »] @ 185,801
+bouton « Poprzedni folder » @ 78,885
+texte « Wbudowane dźwięki » @ 330,885
+bouton « Otwarty hi-hat » [sélectionné] @ 294,981
+bouton « Dodaj do ulubionych » @ 498,981
+bouton « Talerz » @ 294,1089
+bouton « Dodaj do ulubionych » @ 498,1089
+texte « Dotknij dźwięku, żeby go usłyszeć i wybrać; „Z rytmem” gra go z już wybranymi liniami. » @ 294,1165
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Wstecz » @ 151,1224
+bouton « Dalej » @ 436,1224

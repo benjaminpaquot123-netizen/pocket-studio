@@ -1,0 +1,55 @@
+Écran 90 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A Takt 8/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône ♪ [coupé] @ 875,205
+texte « Teil: A » @ 62,273
+texte « Im Takt 50 % » [coupé] @ 315,304
+texte « 100 % » [coupé] @ 486,304
+texte « Löschen » @ 119,351
+bouton « Bass · Takt 4/8 Noch 6 gestrichelte Noten zu tippen » @ 450,432
+texte « Takt » @ 84,494
+bouton « 3 » [coupé] @ 147,502
+bouton « 4 » @ 515,502
+texte « C3 » @ 84,556
+texte « B » @ 84,598
+texte « B♭ » @ 84,640
+texte « A » @ 84,682
+texte « A♭ » @ 84,724
+texte « G » @ 84,766
+texte « G♭ » @ 84,808
+texte « F » @ 84,850
+texte « E » @ 84,892
+texte « E♭ » @ 84,934
+texte « D » @ 84,976
+texte « D♭ » @ 84,1018
+texte « C2 » @ 84,1060
+texte « B » [coupé] @ 84,1094
+dessin [coupé] @ 492,821
+image (chapeau de diplômé) @ 37,1157
+texte « Der Bass Kapitel 5/16 · Schritt 2/3 · Pro » @ 400,1157
+icône (liste) @ 771,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Erstell die Bass-Spur (Sound „Analoger Bass“, mit schon gesetztem Pumpen). Takt 1 in der Piano Roll: zwei Sechzehntel zwischen jeder Kick, alle auf F. „Auf die nächsten Takte kopieren“, dann Takt 4: G♭ (die kleine Sekunde) und das F eine Oktave höher, um die Phrase abzuschließen. „Kopieren“. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

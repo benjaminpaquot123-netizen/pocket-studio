@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.model.i18n.I18nCatalogTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-14T17:37:06.772Z" hostname="vm" time="7.454">
+  <properties/>
+  <testcase name="theLanguageIsFollowedAndFrenchIsTheFallback" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.148"/>
+  <testcase name="theWordsOfTheTutoPanelAreTheInterfacesWords" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.091"/>
+  <testcase name="aFrenchTextHasOneTranslationAcrossAreas" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.36"/>
+  <testcase name="theWelcomeLineKeepsAcid303Whole" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="1.047"/>
+  <testcase name="pluralFormsBelongToACountAndALanguagesCategory" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.398"/>
+  <testcase name="everyTextHasItsTranslations" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="1.833"/>
+  <testcase name="noTranslationIsLeftUnused" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="1.998"/>
+  <testcase name="englishSaysBlockForABrique" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.012"/>
+  <testcase name="everyTextPassedInAVariableComesFromACheckedSource" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.322"/>
+  <testcase name="aShownTextLeadsBackToItsFrenchKey" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.005"/>
+  <testcase name="noTextNamesAnOldTab" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.788"/>
+  <testcase name="dutchAndEnglishWording" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.048"/>
+  <testcase name="catalogsAreValidAndHaveTheSameKeysInEveryLanguage" classname="com.pocketstudio.model.i18n.I18nCatalogTest" time="0.398"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

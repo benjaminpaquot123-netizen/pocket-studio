@@ -1,0 +1,50 @@
+Écran 65 (1035x1243)
+touchable « Notte a Napoli (copia) Salvato » (nom « I miei progetti ») @ 301,42
+bouton « Pro » (nom « Modalità Pro. Tocca per cambiare modalità. ») @ 630,42
+bouton « Annulla l'ultima azione » [désactivé] @ 702,42
+bouton « Ripristina » [désactivé] @ 774,42
+bouton « Registra: microfono, tastiera o pad » @ 846,42
+bouton « Suona » @ 918,42
+bouton « Condividi il mio brano » @ 990,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « Intro batt. 1/90 » @ 219,114
+interrupteur « Loop » (nom « Ripeti la parte invece di suonare il brano ») [non coché, état « disattivo »] @ 887,114
+interrupteur « ? » (nom « Etichetta la schermata ») [non coché] @ 990,114
+onglet « Timeline » [sélectionné] @ 79,183
+onglet « Parti » @ 193,183
+touchable « Segui » [sélectionné] @ 315,183
+touchable « Loop » @ 443,183
+bouton « Tracce più alte » @ 545,183
+bouton « Ingrandisci » @ 711,183
+bouton « Riduci zoom » @ 783,183
+bouton « Vedi tutto il brano » @ 855,183
+bouton « Aiuto della timeline » @ 927,183
+bouton « Schermo intero » @ 999,183
+texte « Parti » @ 41,245
+texte « Battute » @ 54,285
+texte « Righello delle battute: tocca per suonare da una parte » @ 658,262
+bouton « Batteria » @ 66,374
+interrupteur « Suono di Batteria » [coché, état « attivo »] @ 56,431
+interrupteur « Ascolta solo la traccia Batteria » [non coché, état « disattivo »] @ 125,431
+bouton « Acid 303 » @ 72,572
+interrupteur « Suono di Acid 303 » [coché, état « attivo »] @ 56,629
+interrupteur « Ascolta solo la traccia Acid 303 » [non coché, état « disattivo »] @ 125,629
+bouton « Synth » @ 56,770
+interrupteur « Suono di Synth » [coché, état « attivo »] @ 56,827
+interrupteur « Ascolta solo la traccia Synth » [non coché, état « disattivo »] @ 125,827
+texte « Timeline: 5 parti, 3 tracce » @ 658,600
+bouton « Guida » [état « chiuso »] @ 517,949
+bouton « Annulla » (nom « Annulla l'ultima azione ») [désactivé] @ 148,1024
+bouton « Ripristina » [désactivé] @ 331,1024
+bouton « Suona » @ 512,1024
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 698,1024
+bouton « Condividi » (nom « Condividi il mio brano ») @ 888,1024
+onglet « Struttura » [sélectionné] @ 99,1123
+onglet « Suoni » @ 309,1123
+onglet « Mix » @ 518,1123
+onglet « Live » @ 727,1123
+onglet « Altro » @ 936,1123
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

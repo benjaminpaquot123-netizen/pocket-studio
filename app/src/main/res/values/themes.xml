@@ -5,7 +5,18 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <!--
+    The opening (androidx SplashScreen, Android 12 and later): the BenStudio pads pop in on the
+    brand's dark background, then the app's own intro (BrandIntro) takes over at the same place.
+    -->
+    <style name="Theme.BenStudio.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_logo</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.PocketStudio</item>
+    </style>
     <color name="background">#FF3A3E44</color>
-    <color name="neon_cyan">#FFFFA347</color>
-    <color name="neon_magenta">#FF7FD46B</color>
+    <!-- Same as BrandIntro's background (scripts/brand/render_brand.py SPLASH_BG). -->
+    <color name="splash_background">#FF1E2126</color>
 </resources>

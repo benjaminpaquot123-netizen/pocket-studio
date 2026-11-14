@@ -1,0 +1,36 @@
+Écran 37 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 1/4 » (nom « w pętli ») @ 248,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « Wstecz  · Pomoc » (nom « Wstecz ») @ 294,180
+texte « Klocek » @ 77,237
+texte « Jedno z pól A, B, C… w Struktura › Części: pętla perkusji, basu i nut. Każda część utworu gra klocek (refren może znowu zagrać klocek zwrotki); zmiana klocka zmienia każdą część, która go gra. Dotknij jego kratki: przejmie na końcu taktu. » @ 294,319
+texte « Utwór » @ 73,414
+texte « Części ułożone jedna za drugą, każda powtórzona dowolną liczbę razy. Na osi czasu każda kratka włącza lub wyłącza ścieżkę w jednej części. » @ 294,469
+texte « Oś czasu » @ 89,537
+texte « Jedna kolumna na część utworu, jeden rząd na ścieżkę: zapalona kratka – ścieżka gra w tej części; zgaszona – milczy. » @ 294,592
+texte « Live » @ 63,660
+texte « Strona Live: jedno pole na ścieżkę i klocek. Dotknij pola, by odpalić je w następnym miejscu startu („Start w rytmie”: takt, 2 takty…); puste pole proponuje wstawić dźwięk albo się nagrać. Kolumna Remix gra fragmenty twojej rozdzielonej piosenki. » @ 294,742
+texte « Nagraj mój występ » @ 136,837
+texte « W Live REC nagrywa wszystko, co grasz (pola, pady, efekty, nuty). Po zatrzymaniu twoje nagranie staje się utworem: nową wersją albo dodane za nim. „Anuluj” usuwa je od razu; poprzedni utwór zostaje w „Wersje”. » @ 294,900
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « zwinięte »] @ 294,984
+bouton « Cofnij » @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

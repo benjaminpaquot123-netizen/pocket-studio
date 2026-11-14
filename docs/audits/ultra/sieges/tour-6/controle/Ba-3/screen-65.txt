@@ -1,0 +1,6 @@
+Écran 65 (588x1278)
+texte « ¿Qué hacer con “Ma chanson préférée”? » @ 294,340
+icône (étincelles) « Recomendado Hacer un tema a partir de esta canción Un proyecto nuevo a su tempo y en su tonalidad (120 BPM, La menor), con sus pistas listas. » @ 294,505
+icône ⊕ « En un proyecto nuevo Un proyecto vacío; la canción te espera en el Remix para que tomes trozos. » @ 294,677
+icône (dossier ouvert) « En un proyecto existente Elige cuál: la canción llega a su Remix. » @ 294,817
+texte « Cancelar » @ 487,949

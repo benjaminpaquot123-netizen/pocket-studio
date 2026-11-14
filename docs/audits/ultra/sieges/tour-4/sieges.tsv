@@ -1,0 +1,24 @@
+A	a	fr	tablet11Land	100	simple	fresh=reel;lit=non	defi	60	Enfant de 6 ans qui ne lit pas (rejeu tour 3)	Défis jouables sans lire : le rythme à refaire dessiné, le tempo, les étoiles gagnées visibles
+A	b	fr	phone	200	simple	-	tuto-facile	60	Retraitée de 70 ans, texte à 200 % (rejeu tour 3)	Le tuto ne se fait jamais remplacer par une fenêtre ; les pads ont le nom que dit le tuto ; « Écouter mon morceau » à la fin
+A	c	es	phone411	100	pro	amenee=remix	remix-voix	90	DJ espagnol, bouts de voix sur des pads (rejeu tour 3)	Les bouts vont sur des pads libres sans rien écraser et jouent en boucle dans Pad Live
+A	d	pt-BR	phone411	100	simple	-	voix	90	Rappeur brésilien (rejeu tour 3)	Écouter tout le morceau avec sa voix, depuis le début et depuis une partie ; comparer ses prises
+B	a	fr	phone	100	pro	-	libre	120	Ingénieur du son qui mixe : volumes, panoramiques, effets d'envoi, égaliseur, compresseur, master	Le Mix et les effets font ce qu'ils annoncent, chaque réglage a un nom, une unité, et s'entend (le banc dit ce qui joue)
+B	b	en	tablet11Land	100	pro	-	libre	120	Compositeur qui écrit au piano roll : notes, durées, vélocité, copier/coller, quantifier, gammes	Le piano roll permet d'écrire 16 mesures proprement, d'annuler, de copier, de quantifier
+B	c	ja	tablet11Land	100	pro	amenee=padlive	padlive	120	Performeur live japonais (rejeu tour 3)	Lancer/arrêter des lignes à la mesure, tout couper, effets tenus visibles, enregistrer sa performance et la retrouver
+B	d	de	tablet8	100	pro	-	tuto-pro	90	Producteur allemand (rejeu tour 3)	Le tuto Pro parle comme l'écran, dit ce qui manque, en allemand juste
+C	a	fr	phone	100	-	-	libre	120	Musicien qui échange des projets : exporte le projet (.zip), l'importe, ouvre un fichier MIDI, reprend un morceau reçu	Envoyer / recevoir un projet et un MIDI marche, rien ne se perd au passage
+C	b	ko	phone	100	pro	-	libre	120	Claviériste coréen qui branche un clavier MIDI (simulé) et règle l'appli	Les réglages (MIDI, latence, langue, thème, métronome, décompte) font ce qu'ils disent et se retrouvent
+C	c	pl	phone	100	simple	-	libre	90	Musicien polonais qui lit chaque aide « ? » (rejeu tour 3)	Chaque aide dit vrai ; les étiquettes « ? » sont sur les bons boutons ; le polonais est juste
+C	d	tr	phoneLand	100	simple	-	libre	90	Lycéen turc, téléphone couché (rejeu tour 3)	Tout l'écran utilisable en paysage ; la recherche de sons trouve les mots turcs
+D	a	nl	tablet8	130	simple	-	premier-morceau	80	Grand-père néerlandais, texte 130 %, tablette, fait un morceau pour son petit-fils	Un premier morceau joli en peu de gestes, lisible à 130 %, retrouvé ensuite
+D	b	it	foldable	100	pro	-	libre	120	Beatmaker italien sur écran pliable : arrangement en parties, renommer, dupliquer, morceau de 3 min	Les parties se renomment, se lisent, s'arrangent ; tout l'écran pliable sert
+D	c	ar	tablet11Land	100	simple	-	simple	80	Étudiante arabophone sur tablette couchée, tout en Simple	Tout faire en Simple, en arabe juste, droite-à-gauche correct sur tablette
+D	d	hi	phone360	130	simple	fresh=reel	premier-morceau	60	Débutant indien, petit téléphone, texte 130 %, premier lancement	Premier morceau en un toucher, en hindi compréhensible, sans mots anglais en Simple
+E	a	fr	phone	100	-	theme=night	reprendre	80	Étudiante anxieuse (rejeu tour 3), renomme son projet et une piste	Renommer marche sans jamais figer ; « Sauvegardé » visible ; rien perdu ; Rétablir trouvable
+E	b	en	phone	100	pro	-	exports	90	DJ club anglais (rejeu tour 3)	Choisir club/streaming là où on exporte ; liste de ses exports ; rapport honnête ; ancienne version jamais proposée
+E	c	id	phone	100	simple	-	tuto-facile	80	Enseignante indonésienne qui fait un tuto Facile avec sa classe	Tuto Facile sans jargon, en indonésien naturel, progression exacte, reprise du tuto en cours
+E	d	zh-CN	foldable	100	pro	-	synthe	120	Étudiante en son chinoise (rejeu tour 3)	Éditeur de synthé utilisable sur pliable, preset mis à jour, piste avec son favori
+F	a	fr	phone	100	-	-	libre	150	Casse-tout impatient (rejeu tour 3) : Retour partout, rotation d'avis, quitte au milieu des choses	L'appli ne se perd jamais : jamais coincé, rien de perdu, toujours un chemin de retour
+F	b	en	phone	100	simple	lit=non	premier-morceau	80	Personne malvoyante guidée par TalkBack (rejeu tour 3)	Chaque bouton a un nom parlé, chaque action est annoncée ; premier morceau possible à l'oreille
+F	c	fr	phone	100	-	-	libre	150	Chasseur de promesses (rejeu tour 3) sur tout l'accueil, les cartes, les aides et les messages	Toute promesse écrite à l'écran est tenue
+F	d	es	tablet8	100	pro	-	libre	120	Productrice espagnole qui travaille un morceau complet : automatisations, effets par piste, export final	Un morceau pro de bout en bout (arrangement, automatisation, effets, export) sans impasse

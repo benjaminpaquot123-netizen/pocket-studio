@@ -1,0 +1,38 @@
+Écran 102 (588x1278)
+touchable « Démo · Acid house Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 126  Tempo » (nom « Tempo : 126 battements par minute ») @ 83,114
+bouton « A mesure 1/7 » @ 248,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+texte « Fini ? Envoie ton morceau » @ 294,183
+champ « Nom du morceau (et du projet) » contenu « Démo · Acid house » @ 294,271
+bouton « Effacer » @ 522,278
+bouton «  Écouter » @ 466,374
+texte « 0:13 » @ 66,374
+texte «   4 parties » @ 152,379
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,458
+bouton «   Vidéo pour les réseaux · 30 s » @ 294,542
+bouton « Autres exports Piste par piste, MIDI, FLAC… (passe en mode Pro) » @ 272,650
+bouton « ? » (nom « Qu'est-ce que « WAV, FLAC, M4A » ? ») @ 536,650
+bouton « Envoyer le projet Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. » @ 272,730
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « M4A · pour partager » @ 157,792
+case « WAV · qualité max » [sélectionné] @ 414,792
+bouton «   Partager » @ 294,888
+bouton « Guide  · Ajoute une mélodie 50 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 126 Tempo » (nom « Tempo : 126 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

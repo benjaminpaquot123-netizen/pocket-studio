@@ -1,0 +1,8 @@
+fusion: 0b8ba680cc04c928df51c63f18da9e224da46dbe
+branche: eq/tour-6-tutoconsignes
+tete: fdd63c0e878196100df0f98abefedd95760ccfbf
+relecture: docs/audits/ultra/tour-6-tutoconsignes-relecture.md
+relu: 10f5b2a9433832c4884851d9225dc2d1410e42c6
+filtres: *Tour6Tuto* *Tour6Plai* *TutoJourneyTest *TutoTest *TutoLot4Test *TutoPanelFitsPhoneLandTest *TutoKickSoundTest *Tour6Tuto* *Tour6Plai* *TutoJourneyTest *TutoTest *TutoLot4Test *TutoPanelFitsPhoneLandTest *TutoKickSoundTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

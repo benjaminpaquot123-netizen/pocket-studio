@@ -16,6 +16,12 @@ object Headphones {
     private val _state = MutableStateFlow(Listening.Speaker)
     val state: StateFlow<Listening> = _state.asStateFlow()
     private var watching = false
+    private var read: (() -> Unit)? = null
+
+    /** The outputs read again now (the engine saw its output reopen before the device callback came). */
+    fun refresh() {
+        read?.invoke()
+    }
 
     private val BLUETOOTH = setOf(
         AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO, AudioDeviceInfo.TYPE_HEARING_AID,
@@ -33,17 +39,40 @@ object Headphones {
         else -> Listening.Speaker
     }
 
+    /**
+     * Tour 5 (kick): whether the engine plays the kick for a small speaker (its harmonics and click):
+     * only on the phone's own speaker. Headphones and Bluetooth hear the sound as mixed.
+     */
+    fun speakerKick(listening: Listening): Boolean = listening == Listening.Speaker
+
+    /** The outputs of [types] now: the state, and the engine told whether it plays on the speaker. */
+    fun route(types: Collection<Int>): Listening {
+        val listening = classify(types)
+        _state.value = listening
+        com.pocketstudio.engine.NativeEngine.setSpeakerOutput(speakerKick(listening))
+        return listening
+    }
+
     /** Starts following the outputs (once, for the whole app). */
     fun watch(context: Context) {
         if (watching) return
         val audio = context.getSystemService(AudioManager::class.java) ?: return
         watching = true
         fun update() {
-            _state.value = classify(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
+            route(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
         }
+        read = ::update
+        // A device change also wakes the engine's revival when the sound was cut and could not
+        // come back yet (audit 13 M3): a headset that took seconds to connect is heard at once.
         audio.registerAudioDeviceCallback(object : AudioDeviceCallback() {
-            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) = update()
-            override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) = update()
+            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
+                update()
+                com.pocketstudio.engine.NativeEngine.retryOutput()
+            }
+            override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) {
+                update()
+                com.pocketstudio.engine.NativeEngine.retryOutput()
+            }
         }, null)
         update()
     }

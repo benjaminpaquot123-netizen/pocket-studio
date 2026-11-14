@@ -1,0 +1,13 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+session/tab_simple_Morceau
+simple_mix/tab_simple_Mix
+synth/tab_simple_Clavier
+dialogue:retours_menu_send
+share_sheet/tab_simple_Envoyer
+dialogue:record_choice
+audio_tracks
+?
+simple_tracks/tab_simple_Morceau
+launch

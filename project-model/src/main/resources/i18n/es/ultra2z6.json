@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Bombo 1",
+  "Grosse caisse 2": "Bombo 2",
+  "Grosse caisse studio": "Bombo de estudio",
+  "Grosse caisse sèche": "Bombo seco",
+  "Grondement grave": "Retumbo grave",
+  "Claquement de mains": "Palmada",
+  "Claquements de mains": "Palmadas",
+  "Bord de caisse": "Aro del tambor",
+  "Grosses caisses": "Bombos",
+  "Volume au max": "Volumen al máximo",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d golpes por minuto",
+  "D'abord le modèle de séparation": "Primero, el modelo de separación",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Para separar una canción, la app descarga primero su modelo: %s, una sola vez.",
+  "Tu es en Wi-Fi.": "Estás con wifi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "No estás con wifi: estos %s saldrán de tus datos móviles.",
+  "Télécharger, puis choisir la chanson": "Descargar y luego elegir la canción"
+}

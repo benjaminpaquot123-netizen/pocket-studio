@@ -1,0 +1,267 @@
+#0 SIEGE lang=ar device=phone font=100 mode=- theme=- fresh=reel gestes.max=120 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=3.8 simule_s=2.4 jvm_s=8.9 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 4c5f040f7b | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 962
+#1 DOIGT welcome_empty « البدء من الصفر »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 0edbadbd39 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 493
+#2 DOIGT mode_card_pro « محترف »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 910d86f669 | project=p-3ac55ba0 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 504 402
+#3 DOIGT pad_0 « Kick »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 43bcf1a405 | project=p-3ac55ba0 no tuto
+#4 SON Son : le pad « Kick » sonne.
+#4 LAYOUT CONTRAST «  سجّل الـPads » 2.78:1 (needs 4.5:1, 14 sp)
+#4 > touche 517 931
+#4 DOIGT rien
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE fd3c1fc2ce | project=p-3ac55ba0 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 294 1158
+#5 DOIGT tab_Mix « المكس »
+#6 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 217c92abdd | project=p-3ac55ba0 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « تم الحفظ » lines cut (taller than its box)
+#6 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#6 > glisse 384 500 384 620
+#6 DOIGT volume_1 « مستوى Acid 303 »
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 71072a3bd0 | project=p-3ac55ba0 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 384 322
+#7 DOIGT strip_more_1 « Acid 303 »
+#8 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE e5d34acf6f | project=p-3ac55ba0 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Acid 303 » over the touchable « إغلاق الورقة » (95 x 28 dp)
+#8 LAYOUT OVERLAP « إغلاق » over the touchable « إغلاق الورقة » (30 x 24 dp)
+#8 LAYOUT OVERLAP « مكتوم » over the touchable « إغلاق الورقة » (33 x 24 dp)
+#8 LAYOUT OVERLAP « Solo » over the touchable « إغلاق الورقة » (32 x 20 dp)
+#8 LAYOUT OVERLAP « المستوى » over the touchable « إغلاق الورقة » (48 x 28 dp)
+#8 LAYOUT OVERLAP « ⁦-10.5 dB⁩ » over the touchable « إغلاق الورقة » (63 x 17 dp)
+#8 LAYOUT OVERLAP « Pan » over the touchable « إغلاق الورقة » (28 x 24 dp)
+#8 LAYOUT OVERLAP « ? » over the touchable « إغلاق الورقة » (7 x 15 dp)
+#8 LAYOUT OVERLAP « الوسط » over the touchable « إغلاق الورقة » (36 x 23 dp)
+#8 LAYOUT OVERLAP «  ما يُعزف » over the touchable « إغلاق الورقة » (47 x 24 dp)
+#8 LAYOUT OVERLAP « المؤثرات » over the touchable « إغلاق الورقة » (45 x 24 dp)
+#8 LAYOUT OVERLAP « المؤثرات المضافة: 0 من 8 » over the touchable « إغلاق الورقة » (140 x 24 dp)
+#8 LAYOUT OVERLAP « لا شيء بعد: أضف مؤثرًا، أو اضغط على أجواء جاهزة. » over the touchable « إغلاق الورقة » (124 x 22 dp)
+#8 LAYOUT OVERLAP «   إضافة مؤثر » over the touchable « إغلاق الورقة » (67 x 24 dp)
+#8 LAYOUT OVERLAP « أجواء جاهزة » over the touchable « إغلاق الورقة » (68 x 24 dp)
+#8 LAYOUT OVERLAP « الأجواء » over the touchable « إغلاق الورقة » (39 x 24 dp)
+#8 LAYOUT OVERLAP « اللون » over the touchable « إغلاق الورقة » (27 x 24 dp)
+#8 LAYOUT OVERLAP « النمط: » over the touchable « إغلاق الورقة » (29 x 22 dp)
+#8 LAYOUT OVERLAP « Acid » over the touchable « إغلاق الورقة » (32 x 20 dp)
+#8 LAYOUT OVERLAP « DnB » over the touchable « إغلاق الورقة » (29 x 20 dp)
+#8 LAYOUT OVERLAP « Dub عميق » over the touchable « إغلاق الورقة » (59 x 24 dp)
+#8 LAYOUT OVERLAP « Fat bass » over the touchable « إغلاق الورقة » (58 x 20 dp)
+#8 LAYOUT OVERLAP « Wob ‏Dubstep » over the touchable « إغلاق الورقة » (93 x 20 dp)
+#8 LAYOUT OVERLAP « Crunchy » over the touchable « إغلاق الورقة » (59 x 20 dp)
+#8 LAYOUT OVERLAP « طائرة نفاثة » over the touchable « إغلاق الورقة » (61 x 24 dp)
+#8 LAYOUT OVERLAP « Pump » over the touchable « إغلاق الورقة » (41 x 20 dp)
+#8 LAYOUT OVERLAP « بلا مؤثر » over the touchable « إغلاق الورقة » (41 x 24 dp)
+#8 LAYOUT OVERLAP « الصوت كما هو: لا مؤثرات بعد الآن، والـMacros في وضع الراحة. » over the touchable « إغلاق الورقة » (297 x 22 dp)
+#8 LAYOUT CONTRAST « مكتوم » 3.74:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « المستوى » 3.92:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « ⁦-10.5 dB⁩ » 4.04:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « المؤثرات » 2.58:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « المؤثرات المضافة: 0 من 8 » 2.67:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « أجواء جاهزة » 3.87:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « بلا مؤثر » 2.47:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « الصوت كما هو: لا مؤثرات بعد الآن، والـMacros في وضع الراحة. » 4.23:1 (needs 4.5:1, 13 sp)
+#8 > touche 294 790
+#8 DOIGT fx_add_1 «   إضافة مؤثر »
+#9 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 0443e967b4 | project=p-3ac55ba0 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP «   إغلاق قائمة المؤثرات » over the touchable « إغلاق الورقة » (117 x 24 dp)
+#9 LAYOUT OVERLAP « اضغط على المؤثرات التي تريدها: تُضاف واحدًا تلو الآخر، بالترتيب. » over the touchable « إغلاق الورقة » (241 x 22 dp)
+#9 LAYOUT OVERLAP « التشويه واللون » over the touchable « إغلاق الورقة » (78 x 24 dp)
+#9 LAYOUT OVERLAP « المعادل » over the touchable « إغلاق الورقة » (39 x 24 dp)
+#9 LAYOUT OVERLAP « Saturation » over the touchable « إغلاق الورقة » (72 x 20 dp)
+#9 LAYOUT OVERLAP « Bitcrusher » over the touchable « إغلاق الورقة » (72 x 20 dp)
+#9 LAYOUT OVERLAP « EQ بارامتري » over the touchable « إغلاق الورقة » (67 x 24 dp)
+#9 LAYOUT OVERLAP « Vinyl قديم » over the touchable « إغلاق الورقة » (65 x 24 dp)
+#9 LAYOUT OVERLAP « Walkie-talkie » over the touchable « إغلاق الورقة » (91 x 20 dp)
+#9 LAYOUT OVERLAP « Distortion » over the touchable « إغلاق الورقة » (69 x 20 dp)
+#9 LAYOUT OVERLAP « باص مسموع » over the touchable « إغلاق الورقة » (67 x 24 dp)
+#9 LAYOUT OVERLAP « الفلاتر والحركة » over the touchable « إغلاق الورقة » (79 x 24 dp)
+#9 > touche 259 1105
+#9 DOIGT fx_pick_1_DISTORTION « Distortion »
+#10 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 730111de0d | project=p-3ac55ba0 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « المؤثرات المضافة: 1 من 8 » over the touchable « إغلاق الورقة » (137 x 24 dp)
+#10 LAYOUT OVERLAP « 1. Distortion » over the touchable « إغلاق الورقة » (82 x 20 dp)
+#10 LAYOUT OVERLAP « يدفع الصوت إلى الأحمر: دافئ (Overdrive)، مشعّث (Fuzz)، حاد (Clipping) أو معدني (Foldback). » over the touchable « إغلاق الورقة » (311 x 40 dp)
+#10 LAYOUT OVERLAP « Drive » over the touchable « إغلاق الورقة » (35 x 20 dp)
+#10 LAYOUT OVERLAP « 45% » over the touchable « إغلاق الورقة » (33 x 17 dp)
+#10 LAYOUT OVERLAP « النغمة » over the touchable « إغلاق الورقة » (29 x 24 dp)
+#10 LAYOUT OVERLAP « 5.2 kHz » over the touchable « إغلاق الورقة » (53 x 17 dp)
+#10 LAYOUT OVERLAP « النوع » over the touchable « إغلاق الورقة » (25 x 24 dp)
+#10 LAYOUT OVERLAP « Overdrive » over the touchable « إغلاق الورقة » (65 x 17 dp)
+#10 LAYOUT OVERLAP « Mix » over the touchable « إغلاق الورقة » (23 x 20 dp)
+#10 LAYOUT OVERLAP « 100% » over the touchable « إغلاق الورقة » (42 x 17 dp)
+#10 > glisse 300 919 150 919
+#10 DOIGT fxp_1_0_0 « Drive »
+#11 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 730111de0d | project=p-3ac55ba0 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 74% » over the touchable « إغلاق الورقة » (33 x 17 dp)
+#11 > touche 67 108
+#11 DOIGT strip_sheet_close « إغلاق »
+#12 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0c875b2850 | project=p-3ac55ba0 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 414 1158
+#12 DOIGT tab_Sons « الأصوات »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 9359666a9a | project=p-3ac55ba0 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 24 255
+#13 DOIGT track_0 « Synth »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 7ef72cc607 | project=p-3ac55ba0 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST «  سجّل لحني » 2.78:1 (needs 4.5:1, 14 sp)
+#14 > touche 348 402
+#14 DOIGT mode_notes « النوتات »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE da4cfc2e74 | project=p-3ac55ba0 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « − » 2.46:1 (needs 4.5:1, 14 sp)
+#15 > glisse 294 900 294 420
+#15 DOIGT rien
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 27458f82db | project=p-3ac55ba0 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT TARGET « مي4 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « ري#4 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « ري4 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « دو#4 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « دو4 دو4 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « سي3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « لا#3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « لا3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « صول#3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « صول3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « فا#3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « فا3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « مي3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 LAYOUT TARGET « ري#3 تشغيل » 36 x 20 dp (touch 48 x 48)
+#16 > touche 200 648
+#16 DOIGT rien
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 835eefdeb0 | project=p-3ac55ba0 no tuto
+#17 SON Son : 1 note du synthé.
+#17 > glisse 205 648 330 588
+#17 DOIGT rien
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 27458f82db | project=p-3ac55ba0 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 117 114
+#18 DOIGT top_play « تشغيل هذا الجزء »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE d1b209c10d | project=p-3ac55ba0 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 > attends 2
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE d1b209c10d | project=p-3ac55ba0 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 117 114
+#20 DOIGT top_play « إيقاف »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#21 SON Son : rien ne joue.
+#21 > attends 1
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#22 SON Son : rien ne joue.
+#22 > attends 1
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#23 SON Son : rien ne joue.
+#23 > attends 1
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#24 SON Son : rien ne joue.
+#24 > attends 1
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 54 1158
+#25 DOIGT tab_Plus « المزيد »
+#26 ROUTE plus/tab_Plus | MODE pro | EMPREINTE efe8614341 | project=p-3ac55ba0 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 294 735
+#26 DOIGT tool_Reglages « الإعدادات »
+#27 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 6abebb3b7a | project=p-3ac55ba0 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 464 567
+#27 DOIGT lang_button « 🇸🇦 »
+#28 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 14252774d4 | project=p-3ac55ba0 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « لغة الهاتف » 1.85:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « 🇸🇦 » 2.15:1 (needs 3.0:1, 24 sp)
+#28 LAYOUT CONTRAST « العربية » 2.15:1 (needs 3.0:1, 16 sp)
+#28 LAYOUT CONTRAST « الإنجليزية » 3.15:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « الفرنسية » 1.64:1 (needs 4.5:1, 13 sp)
+#28 > touche 294 746
+#28 DOIGT lang_en « 🇬🇧 »
+#29 ROUTE settings/tab_Plus | MODE pro | EMPREINTE d85e3edc85 | project=p-3ac55ba0 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 136 576
+#29 DOIGT lang_button « 🇬🇧 »
+#30 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 2691d9de84 | project=p-3ac55ba0 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « 🇮🇩 » 2.55:1 (needs 3.0:1, 24 sp)
+#30 LAYOUT CONTRAST « Bahasa Indonesia » 1.58:1 (needs 3.0:1, 16 sp)
+#30 LAYOUT CONTRAST « Deutsch » 1.89:1 (needs 3.0:1, 16 sp)
+#30 LAYOUT CONTRAST « German » 3.55:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « 🇬🇧 » 1.79:1 (needs 3.0:1, 24 sp)
+#30 LAYOUT CONTRAST « English » 1.79:1 (needs 3.0:1, 16 sp)
+#30 LAYOUT CONTRAST « 🇳🇱 » 1.91:1 (needs 3.0:1, 24 sp)
+#30 LAYOUT CONTRAST « Dutch » 1.63:1 (needs 4.5:1, 13 sp)
+#30 > glisse 294 900 294 350
+#30 DOIGT lang_nl « 🇳🇱 »
+#31 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 612a494797 | project=p-3ac55ba0 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « Italian » 1.58:1 (needs 4.5:1, 13 sp)
+#31 LAYOUT CONTRAST « 🇳🇱 » 2.15:1 (needs 3.0:1, 24 sp)
+#31 LAYOUT CONTRAST « Nederlands » 1.38:1 (needs 3.0:1, 16 sp)
+#31 LAYOUT CONTRAST « Dutch » 1.89:1 (needs 4.5:1, 13 sp)
+#31 LAYOUT CONTRAST « 🇧🇷 » 1.81:1 (needs 3.0:1, 24 sp)
+#31 LAYOUT CONTRAST « Türkçe » 1.47:1 (needs 3.0:1, 16 sp)
+#31 LAYOUT CONTRAST « Turkish » 3.15:1 (needs 4.5:1, 13 sp)
+#31 > touche 294 786
+#31 DOIGT lang_ar « 🇸🇦 »
+#32 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 6abebb3b7a | project=p-3ac55ba0 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 414 1158
+#32 DOIGT tab_Sons « الأصوات »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 32011c9a21 | project=p-3ac55ba0 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 294 1158
+#33 DOIGT tab_Mix « المكس »
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0c875b2850 | project=p-3ac55ba0 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 174 1158
+#34 DOIGT tab_Live « المباشر »
+#35 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 1d7847121e | project=p-3ac55ba0 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 13 sp)
+#35 > touche 135 42
+#35 DOIGT rien (texte « – »)
+#36 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 1d7847121e | project=p-3ac55ba0 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 534 1158
+#36 DOIGT tab_Structure « البنية »
+#37 ROUTE session/tab_Structure | MODE pro | EMPREINTE b8546b26c5 | project=p-3ac55ba0 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 492 448
+#37 DOIGT add_part_0 « + A »
+#38 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE a80f4b21a0 | project=p-3ac55ba0 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « تتبّع » 4.06:1 (needs 4.5:1, 14 sp)
+#38 > touche 174 1158
+#38 DOIGT tab_Live « المباشر »
+#39 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE b26b80e421 | project=p-3ac55ba0 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « نسخة جديدة » 3.34:1 (needs 4.5:1, 13 sp)
+#39 > touche 465 42
+#39 DOIGT live_play « تشغيل »
+#40 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 63de412b38 | project=p-3ac55ba0 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT OVERLAP « حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك. » over the touchable « الطبول · D · فارغ » (72 x 24 dp)
+#40 LAYOUT OVERLAP « حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك. » over the touchable « Acid 303 · D · فارغ » (102 x 24 dp)
+#40 LAYOUT OVERLAP « حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك. » over the touchable « Synth · D · فارغ » (56 x 24 dp)
+#40 > touche 465 42
+#40 DOIGT live_play « إيقاف »
+#41 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE b26b80e421 | project=p-3ac55ba0 no tuto
+#41 SON Son : rien ne joue.
+#41 > fin
+#41 FIN : fin

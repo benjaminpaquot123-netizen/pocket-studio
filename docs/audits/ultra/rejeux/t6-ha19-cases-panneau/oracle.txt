@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-6/lotH/a-suite
+rejeu.n=19
+rejeu.attendu=en pointillé : à toucher
+rejeu.absent=[coupé, état « vide, en pointillé : à toucher »]

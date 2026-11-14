@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Un petit message s'affiche quelques secondes en bas de l'écran : « Ton morceau garde son tempo (120 BPM) : la chanson s'y cale, sans changer de hauteur. ».

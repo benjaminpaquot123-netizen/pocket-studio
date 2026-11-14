@@ -2,7 +2,10 @@ package com.pocketstudio.app.instruments
 
 import com.pocketstudio.model.i18n.tr
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import com.pocketstudio.ui.ProSlider
@@ -43,16 +46,26 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
         }
     }
     val values = p.engineValues()
-    PlaitsPatch.PARAMS.forEachIndexed { i, label ->
+    PlaitsPatch.PARAMS.indices.forEach { i ->
         val param = i + 1
-        // A long press on the name: « Automatiser » (phase 37).
-        val automate = ui.automatePlaits?.takeIf { param in com.pocketstudio.model.AutoTarget.PLAITS_PARAMS }
-        com.pocketstudio.app.synth.AutomatableKnob(automate?.let { a -> { a(param) } }, "plaits_knob_$param", Modifier.fillMaxWidth()) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(tr(label), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+        // « Analogique + filtre »: its filter's knobs named as the synth's (« Coupure », « Résonance »).
+        val label = PlaitsPatch.labelOf(p.model, param)
+        // The synth knob this one stands for, when a tutorial's step names it (techno Pro: the « Lead filtré »'s filter).
+        val asked = PlaitsPatch.synthParamOf(p.model, param)?.takeIf { it in com.pocketstudio.app.tuto.TutoHints.knobs }
+        val body = @Composable {
+            // A long press on the name: « Automatiser » (phase 37).
+            val automate = ui.automatePlaits?.takeIf { param in com.pocketstudio.model.AutoTarget.PLAITS_PARAMS }
+            com.pocketstudio.app.synth.AutomatableKnob(automate?.let { a -> { a(param) } }, "plaits_knob_$param", Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr(label), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                    Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+                }
             }
+            ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, label = tr(label), valueText = "${(values[param] * 100).roundToInt()}", modifier = Modifier.testTag("plaits_param_$param"))
         }
-        ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))
+        if (asked != null) {
+            // Dashed and found by the step's ring and « Montre-moi », as the synth's own knob would be.
+            Column(Modifier.fillMaxWidth().spot("synth_knob_$asked").then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_knob_$asked")) { body() }
+        } else body()
     }
 }

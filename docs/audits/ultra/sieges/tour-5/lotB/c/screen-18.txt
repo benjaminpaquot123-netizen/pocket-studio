@@ -1,0 +1,28 @@
+Écran 18 (900x1509)
+touchable « Tabelle schließen » @ 450,754
+texte « Griff: zum Schließen nach unten wischen » @ 450,894
+texte « Tonart des Tracks » @ 379,966
+bouton « Schließen » @ 805,966
+texte « Tonart des Tracks: C · Phrygisch » @ 186,1032
+texte « Tonleiter » @ 69,1077
+touchable « Dur » @ 63,1143
+touchable « Moll » @ 153,1143
+touchable « Dorisch » @ 266,1143
+touchable « Moll-Penta » @ 416,1143
+touchable « Dur-Penta » @ 580,1143
+touchable « Blues » @ 714,1143
+touchable « Phrygisch » @ 101,1224
+touchable « Harmonisch Moll » @ 302,1224
+texte « Grundton » @ 72,1290
+touchable « C » @ 63,1356
+touchable « C♯ » @ 150,1356
+touchable « D » @ 237,1356
+touchable « E♭ » @ 324,1356
+touchable « E » @ 411,1356
+touchable « F » @ 498,1356
+touchable « F♯ » @ 585,1356
+touchable « G » @ 672,1356
+touchable « A♭ » @ 759,1356
+touchable « A » @ 63,1437
+touchable « B♭ » @ 150,1437
+touchable « B » @ 237,1437

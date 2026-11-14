@@ -1,0 +1,4 @@
+Écran 40 (588x1278)
+texte « My exports » @ 152,558
+texte « In Music › BenStudio on this phone. Newest first. » @ 294,621
+bouton « Got it » @ 489,708

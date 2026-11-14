@@ -1,0 +1,38 @@
+Écran 185 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + B · Intro » @ 336,228
+bouton « + Nouvelle partie (copie de B · Intro) » [coupé] @ 262,283
+texte « Construis tes parties Chapitre 10/15 · Étape 2/6 · Facile » @ 207,342
+icône (liste) « Chapitres » @ 444,342
+icône ⌄ @ 531,342
+texte « À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis se tait sur le dernier temps, avec le piano. Les charleys et le pad « Bord de caisse » y jouent encore : tu les feras taire au chapitre « Les transitions », pour un temps de silence juste avant le Drop. » @ 294,531
+texte « • Kick : la grosse caisse, le « boum » grave de la batterie. » [coupé] @ 283,667
+texte « ▸ Pourquoi ? » @ 294,693
+icône « Lire la suite » ⌄ @ 294,741
+bouton ⊕ «   Créer la partie « Montée » » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

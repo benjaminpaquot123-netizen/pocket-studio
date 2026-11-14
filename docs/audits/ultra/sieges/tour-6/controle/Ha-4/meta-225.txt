@@ -1,0 +1,2 @@
+route=simple_mix/tab_simple_Mix
+nouvelle=1

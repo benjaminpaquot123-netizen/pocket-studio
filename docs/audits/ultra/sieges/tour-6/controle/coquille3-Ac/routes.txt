@@ -1,0 +1,5 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+dialogue:projects
+launch

@@ -1,0 +1,152 @@
+# Tour 6 — lot 5 « langues » : relecture neuve
+Relu : 1ee7b54c289e83de900236989fea15827e98c72c
+
+Relecteur neuf (n'a pas écrit ce code). Lu : la section « Lot 5 » de `lots-correction.md` et le complément 3 n° 6 de `lecture-recurrents.md`, le rapport, les décisions, les diffs de `LiveScreen.kt`, `SimpleMix.kt`, `MyExports.kt`, `LanguagePicker.kt`, `FadingScroll.kt`, les 134 catalogues changés (lus clé par clé par un script : marques `%s` / `%1$d` / `%%`, écriture, désaccords entre fichiers d'une langue), les tests neufs, les listes `OPEN` et `Allowed`, les outils du passage sur le tuto. Rejoué dans un worktree jetable (jamais dans wt-lot5) : chaque commit « rouge: » sur son propre état (le code d'avant son « vert: »), puis la tête relue.
+
+## Ce qui tient
+
+- **Périmètre propre.** Hors tests, captures et docs, seuls changent `LiveScreen.kt`, `SimpleMix.kt`, `MyExports.kt`, `LanguagePicker.kt`, `FadingScroll.kt` et des `i18n/*/*.json` ; aucun `tuto*.json`, aucun lien symbolique, aucun `__pycache__` (les outils Python posent `dont_write_bytecode`), arbre propre. La fusion de la base (70d2d8de) n'a touché aucun catalogue.
+- **Les 18 rouges du lot échouent sur leur assertion, les verts passent.** Chaque « rouge: » ne contient que son test ; rejoué sur son propre commit (le code d'avant le vert), il échoue par `AssertionError`, jamais à la compilation ; les tests des rouges précédents, déjà verts, passent au même état (Tour6LanguagesTest : un seul test rouge à chaque fois). Les verts ne retouchent pas les tests des rouges, sauf `MyFilesNamesTest` (le filtre suit le saut de ligne inséré, et un contrôle du sens des lignes est ajouté : plus strict, pas plus lâche) et `MyFilesWaitTest` (un second cas, « puis la liste »).
+- **Catalogues.** 0 marque de format cassée sur 134 fichiers ; aucune valeur arabe devenue entièrement latine ; aucun désaccord neuf entre deux fichiers d'une même langue (ar 27 → 8, hi 19 → 15, zh-CN 13 → 9) ; les clés ajoutées le sont seulement à `mots_simples.json` (ar, hi, zh-CN). Sens relu par sondage en ar (environ 160 textes), it, id, hi, zh-CN, pl, es, tr, ja, ko : accords italiens « la cassa » justes, « birama » / « rekaman » cohérents avec les boutons cités entre guillemets, « का अंत » accordé, « 高潮 / 间奏 / 渐强段 » justes. `:project-model:test` : `i18n.*` et `*Names*` (88 tests), `tuto.*`, `learn.*`, `guide.*`, `PackCatalogTest`, `NewTracksTest` (168 tests), 0 échec, dont `SimpleWordsNonLatinTest`, `Round3LanguagesTest`, `I18nCatalogTest`, `PluralTest`, qui citent d'anciens mots.
+- **Code Compose.** Les nouveaux `BoxWithConstraints` (`Segmented`, `FileName`, la liste des langues) ne sont jamais mesurés par intrinsèques (parents `Row` à `weight`, items de `LazyColumn`, texte d'une `AlertDialog` qui contenait déjà une `LazyColumn`) ; `FileRow` place par `placeRelative` (miroir juste en arabe) ; `fadingEdges` suit le sens d'écriture et ses quatre appelants sont des rangées horizontales sans `reverseLayout` ; les `remember` sont clés sur des valeurs stables (listes comparées par égalité) : pas de boucle de recomposition. TalkBack : onglets en icônes nommés (`contentDescription = label`), compteur « Mesure 30 · temps 2 », nom de fichier entier. La roue de « Mes fichiers » s'en va dès la lecture finie (`MyFilesWaitTest` vérifie son absence) ; dans les tests, l'animation infinie est suspendue par la règle Compose, rien ne bloque l'état de repos.
+- **Tests qui vérifient vraiment.** `FadingRowsTest` lit les pixels des deux bords ; `MyFilesNamesTest` lit la mise en page (ellipse, ligne de l'extension, coupure dans un mot, sens de chaque ligne) ; `CutWords` réutilise `WholeWordsAutoSize.fits` sur la mise en page réelle (il voit aussi la coupure hindie avant une voyelle) ; `Tour6WordsOnScreenTest` lit la sémantique des écrans, pas le catalogue.
+- **Listes `OPEN` et `Allowed`.** Les trois débordements arabes acceptés sont dans des fichiers d'autres lots (`RhythmScreen.kt`, `AppRoot.kt`, `PlayStrip.kt`) et la règle « Syntezator » vise `Console.kt`, fichier d'aucun lot ; rien du lot n'y est caché : les écrans du lot (Mix simple, Live) ont leurs propres balayages, qui ne laissent de côté que les textes dessinés par d'autres fichiers (tempo et « Lancer à » de `LiveDock.kt`, « Cases », les « ? » de `Help.kt`), écrits dans `build/reports/lot5/live-others.txt` et listés au rapport.
+- **Outil du tuto.** `apply_to_tutos.sh <i18n> apply` lancé sur une copie : sortie 0, JSON valides, seuls les `tuto*.json` changent (ar 1218, hi 422, zh-CN 463, id 581 textes, it 530 lignes).
+- **Captures regardées en entier.** `i18n/ar_live_fx`, `i18n/ar_simple_mix_drums` (avant / après : « الطبول ▾ » passe au début des tranches, le fondu passe du côté où la suite attend), `i18n/ar_rhythm`, `i18n/ar_session`, `i18n/ar_language_list`, `i18n/hi_live_fx`, `scale130/nl_live_grid`, `scale130/fr_simple_mix_drums`, `live_fx`, `partage/130_my_files`, `partage/my_files_waiting`.
+- **La tête relue (864cbd06) passe ses tests et ses captures.** `:app:verifyRoborazziDebug` sur les tests du lot et de la relecture (`LanguageListLyingTest`, `MyFiles*`, `LanguageList*`, `LiveCounterNameTest`, `LiveWholeWordsTest`, `SimpleMixWholeWordsTest`, `FadingRowsTest`, `Tour6WordsOnScreenTest`, `LanguagesScanTest`, `CaptureMatrixPhone360Test`) et les classes de captures qui portent les images changées (`ScreenshotTest`, `I18n*ScreenshotTest` dont l'arabe, `UiScaleScreenshotTest`, `ShareScreenshotTest`, `nav.SimpleMixTest`, `BrandTest`, `*TabletScreenshotTest`), plus `RtlPunctuationTest`, `AppTextsTest`, `CountWordsTest`, `ExportLengthTest`, `LiveDockTest`, `LiveScreenTest` : 2 402 tests, 1 échec, `ScreenshotTest#foldedCards` (le bas de la carte « Briques », déjà vu instable selon l'ordre des tests à la relecture de remixdecoupe, n° 8) ; rejoué seul à 864cbd06 : vert. `Tour6WordsOnScreenTest` sur les catalogues de la base : 7 échecs sur 7 (« كل الـPads », « NEW », « Loop », « Ghost bass », « 5 zakładki », « comp. 1 a 20 », « Plaits：音色 »), comme le dit le rapport. Les images du balayage en arabe à 200 % (Sons, Structure, Plus, tablette debout) regardées en entier : « طبل كبير », « A · مقدمة » et « تكرار », acceptés dans `OPEN`, se lisent en entier.
+
+rouge constaté : 61f509f0 : rejoué à 1051b1b0 (même code de production) : `MyFilesNamesTest#eachNameKeepsItsExtension` échoue dans ses 15 cas (fr, de, nl, ar, hi à 100 %, Taille 130 %, police 200 %)
+rouge constaté : 4a8545b7 : « « Mes fichiers » being read shows no sign of waiting »
+rouge constaté : 1051b1b0 : `LanguageListPhoneOnTopTest` « the phone's language is not in sight at the opening » (ar, pl, de, hi, 12 cas)
+rouge constaté : 82748f92 : `LanguageListNamesWholeTest` à 200 % (ar, pl, de, hi) « « Bahasa Indonesia » cut, « Português (Brasil) » cut » ; 100 % et 130 % déjà verts
+rouge constaté : 7f284b0c : `theSeatsCatalogMistakesAreFixed` « catalog mistakes (13) »
+rouge constaté : 9cccd3c0 : `thePartsOfTheSongAreNamedInTheLanguagesOwnScript` « parts named in Latin letters (558) »
+rouge constaté : aecc3237 : `theSeatsEnglishWordsAreSaidInTheirLanguage` « English words left (497) » et `theArabicCatalogsWriteTheTradesWordsInArabic` (958)
+rouge constaté : 3c76e92b : `newGrooveAndPlaitsAreSaidOrExplainedOutsideTheTutorial` « NEW, Groove, Plaits (30) »
+rouge constaté : 96d952d6 : `theArabicDrumPadsAreNamedInArabicLetters` « Arabic drum pads in Latin letters (16) »
+rouge constaté : d7869d7e : `LiveCounterNameTest` « fr playing: «  » (wanted « Mesure 30 », « temps » and 2) »
+rouge constaté : ed5cb3a8 : `LiveWholeWordsTest` (« Souffle montant » à Taille 130 % et police 130 %, « REC » à 200 %) et `SimpleMixWholeWordsTest` (« Demasiado bajo », « Batterie ▸ », « Sortie » sur deux lignes)
+rouge constaté : b80a1116 : `FadingRowsTest` « rtl at the start: left 1.000, right 0.008 », Mix et Live en arabe (3 cas) ; les 4 cas gauche-droite passaient déjà (le fondu y existait, comme le dit la décision)
+rouge constaté : 0ac770af : « fr: « Batterie ▾ » drawn from 1102.0 to 1332.0, the strips seen from 47.0 to 1186.0 »
+rouge constaté : e2e1d57a : « 4 cases fr: « Groove 2 » (1 lines, 48 x 16 dp at 12.0 sp) », et « Groove » à 130 %
+rouge constaté : 11d9530c : onglets du panneau « Acid 303 » (police 130 % et 200 %) et « Briques » (Taille 130 %)
+rouge constaté : 7b3cce0b : « one word, 100 % pl: « Syntezator » (2 lines, 42 x 27 dp at 13.0 sp) »
+rouge constaté : 54f5e4bb : `theArabicLiveEffectsAreNamedInArabicLetters` « Arabic Live effects in English (54) »
+rouge constaté : b35b015a : `theArabicMetronomeAndFadersAreInArabicLetters` « Arabic metronome and faders in English (10) »
+rouge constaté : 108f55f6 : (relecture) `theArabicArticlesAndThisAgreeWithTheirWords` « Arabic articles and « this » that do not agree (7) » ; vert à a5e3f747 (62 tests `i18n.*` verts)
+rouge constaté : 1afcfb73 : (relecture) `LanguageListLyingTest` « the list of the languages is 206..264 dp high » (100 %), « 232..264 » (police 130 %), « 0..0 » (police 200 %, Taille 130 %) ; vert à 864cbd06 (`LanguageListLyingTest`, `LanguageListPhoneOnTopTest`, `LanguageListNamesWholeTest` : 28 tests verts)
+
+## Bloquant
+
+Aucun.
+
+## Grave
+
+1. **Liste des langues, téléphone couché : plus aucune langue à choisir.** En sortant la langue du téléphone du défilement (R18), le lot ne laisse à la liste de toutes les langues que la place restante (`weight(1f, fill = false)`). Sur un téléphone couché (800 × 360 dp), mesuré : 58 dp de liste à 100 % (une seule rangée), 32 dp avec la police du téléphone à 130 %, **0 dp** à 200 % et à Taille 130 % : seule la langue du téléphone se touche, aucune autre langue n'est atteignable sans tourner le téléphone. Avant le lot, toute la fenêtre défilait. **corrigé** en 864cbd06 (rouge 1afcfb73) : quand la fenêtre n'a pas la place de la langue du téléphone et de deux rangées (260 dp fois la police du téléphone), tout défile ensemble, ouvert sur la langue du téléphone (toujours en vue à l'ouverture) ; sinon, le rendu du lot reste tel quel (les captures `language_list` ne bougent pas). `LanguageListLyingTest` (4 tailles, couché) : chaque langue amenée en vue ; `LanguageListPhoneOnTopTest` et `LanguageListNamesWholeTest` toujours verts.
+
+## Moyen
+
+2. **Arabe : des fautes laissées par le changement de mots.** « على الـ بادات », « كل الـ بادات » (×2), « جملة واحدة على الـ باد », « استمع إلى الـ باد » (`ar/remixvoix.json` : l'article resté seul devant le mot arabe, le mot latin était écrit à part) ; « اعزف هذا العيّنة » (menu du pad, et l'aide qui le cite : « Sample », emprunt masculin, devenu un nom féminin). **corrigé** en a5e3f747 (rouge 108f55f6, `Tour6LanguagesTest#theArabicArticlesAndThisAgreeWithTheirWords`, qui balaie tous les textes arabes hors tuto) ; le script du tuto faisait la même faute (« الـ مقدمة », « للـ دروب » dans `tuto.json`) : **corrigé** en dc914882, vérifié sur une copie (plus aucun article seul dans les textes arabes du tuto).
+3. **« Remplir » dit « حشوة » (le break de batterie).** Sur la grille de pas, « Remplir : tout · 1/2 · 1/4 » (remplir les cases) s'écrit maintenant « حشوة » , le mot choisi pour « Fill » (le roulement) : faux sens sur un bouton. Le mot anglais « Fill » servait aux deux sens ; le tuto cite ce bouton « «Fill 1/4» », que le script changera en « «حشوة 1/4» ». À corriger ensemble à la fusion avec le lot 2 : le bouton (`ar/rhythm.json`, « ملء ») et les citations « Remplir … » du tuto.
+4. **Le Mode simple arabe perd ses mots de tous les jours.** `ar/mots_simples.json` est « aligné » sur les nouveaux mots du Mode pro : « ذروة » (le sommet) devient « دروب », « جملة لافتة » devient « هوك », « جملة » devient « ريف », « ضربة قصيرة » « ستاب », « نقرة » « بلك », « لفّة » « رول », « إيقاع » « غروف ». Les catalogues n'écrivant plus le mot latin, `EverydayWords` n'a plus rien à remplacer : le débutant arabe lit désormais les emprunts du métier, à l'inverse du but du Mode simple (tour 5, `EverydayWords.kt`). La décision le dit en une demi-ligne sans dire que le Mode simple y perd. À trancher : garder les mots de tous les jours en Mode simple (clés arabes dans `mots_simples.json`, ce qui demande que `EverydayWords.apply` ne s'arrête plus aux textes sans lettre latine, hors des fichiers du lot) ou l'écrire comme choix assumé.
+5. **Deux emprunts arabes sont déjà des mots arabes d'un autre sens.** « دروب » se lit « les chemins » (pluriel de درب), « الريف » « la campagne » : « الريف! كورد مضروب… » (`ar/model.json`, « Le riff ! … »), « لكل دروب مفاجأته », « ما الذي يجعل هذا الدروب لك؟ » (`ar/guide.json`). Le contexte aide, mais un mot sans double sens serait plus sûr. Aussi : « Crash » devient « صنج » comme « Cymbale » (deux pads du même nom quand un kit a les deux).
+6. **Le lot crée un mot coupé en polonais hors de ses fichiers.** « Syntezator » (R15) se coupe en « Syntezato / r » dans la console du Mix Pro sur 360 dp (`Console.kt`, fichier d'aucun lot) ; la règle ajoutée à `CaptureMatrixTest.Allowed` le laisse passer. C'est écrit dans les décisions et le rapport, mais c'est une régression visible tant que `Console.kt` ne réduit pas le nom comme `FitText` : à donner au prochain lot qui touche la console.
+7. **Le tuto cite les anciens mots jusqu'au passage du script.** En indonésien, le tuto dit encore « Take baru » / « bar » quand les boutons disent « Rekaman baru » / « birama » ; en arabe Mode pro, « Snare », « Drop », « Loop » en latin à côté de « سنير », « دروب », « تكرار » ; de même hi, zh-CN, it (« kick »). Le rapport le dit et fournit `apply_to_tutos.sh` : **à lancer à la fusion avec le lot 2**, sinon un débutant cherche un bouton qui n'existe plus sous ce nom.
+8. **R1 et R16 : des cas cités ne sont ni corrigés ni rangés.** La consigne demande de passer sur les écrans cités et d'envoyer chaque cas d'un autre fichier à son lot. Le rapport range bien `LiveDock.kt`, `CutScreen.kt`, `ShareSheet.kt`, `PadLiveScreen.kt`, `RecordBar.kt`, `TrackAdd.kt`…, mais ne dit rien de « Sempli… » (F a #2), « Pac… » (E a #13), « drums, bass, vocals a… » (E a #47), « başlangıç » / « hazırlanıyor… » (G a #12, #19), « Sıra sende: » (G a #42), « 18,0 kl » / « 849 H: » (B b #78), le texte Club sous M4A (E b #11), « Przytrzym… » (F b #1), « F · प्री-कोरस 2 » (A a q9), « Akkord / e », « Schla », « Kick / 3 / Te… » (B b-suite), « 效果 » (D c #88) ; ni de « A compasso 1/1 (em loop) » peu clair (R16, E c). Aucun autre lot ne les a dans sa consigne : ils sont listés ici pour ne pas se perdre.
+
+## Mineur
+
+9. `LanguagesScanTest.OPEN` s'élargit plus que nécessaire : « lines cut » est désormais accepté pour « Loop », « Boucler », « लूप », « 循环 » (seul « تكرار » en avait besoin) ; et `CUT « [A-Z] · [^»A-Za-z]+ » drawn past…` sur `sons_2.0` vaut pour toutes les langues (hi, zh compris), alors que seul l'arabe « A · مقدمة » a été vu. Mieux : `[؀-ۿ ]+`.
+10. Nouveaux planchers de taille : 6 sp (nom de partie sous la lettre d'une brique du Live) et 6,5 sp (nom d'un son du Mix simple), sous le plus bas de l'appli jusqu'ici (7 sp) ; c'est le prix du mot entier, mais à surveiller (DESIGN.md, principe 3).
+11. Le compteur du Live crée un `Path` et un `PathMeasure` à chaque dessin (30 fois par seconde en lecture) : du travail pour le ramasse-miettes sur le fil de l'interface (pas sur le fil audio). Sa phrase TalkBack colle « temps » puis le chiffre (« 拍 2 », « 박 2 », « vuruş 2 ») là où ces langues mettent le chiffre devant : une clé « temps %d » serait plus juste.
+12. Les tests des onglets du panneau du Live passent aussi quand tous les onglets sont en icônes (rien à juger) ; seules les captures (« Briques Pads Effets Notes Acid 303 » à 100 %) gardent les mots là où ils tiennent.
+13. Rapport et décisions : l'essai à blanc du script dit « ar 1165 », il en change 1218 aujourd'hui ; en français, « Plaits » reste seul (lexique, bouton MIDI) sans être cité dans « Laissé de côté » ; la décision « Les noms de pads (« Kick ») restent » vaut pour l'italien, pas pour l'arabe (« طبل كبير ») ; l'en-tête du rapport donne encore la base 5957fac5, la branche a depuis fusionné 70d2d8de.
+14. Structure en arabe à 200 % (tablette debout) : les noms de parties des repères, coupés dans une case d'une mesure, montrent un bout du milieu du mot (« دمه » pour « مقدمة », « زمه », « وب ») ; dessinés par la ligne du temps (hors lot), invisibles au balayage (pas de texte sémantique) : à donner au lot qui la touche.
+15. Sur `i18n/ar_simple_mix_drums`, le dernier son des tranches s'écrit encore en latin (« …ash ») ; c'était déjà là avant le lot, le nom vient de `DefaultNames.shown` (hors lot).
+
+## Delta 864cbd06 → 4bc3661e
+
+Second relecteur neuf (n'a écrit ni le lot ni le passage sur le tuto). Lu : `git diff 562c0e76 HEAD`, la fusion 29b78b73 (tête d'intégration 2bb86bc3, lots 1, 2, 4, 6, 7, 8) et 3caed7cd (`apply_to_tutos.sh` lancé sur les 28 `tuto*.json` ar, hi, zh-CN, it, id) ; par script : chaque texte changé comparé à son état de 29b78b73 ; à la main : environ 200 textes changés, toutes langues.
+
+### Ce qui tient
+
+- **Fusion propre.** Les deux côtés ne touchent ensemble que quatre `padlive.json` (ar, id, ja, ko) : les lignes du lot (« البادات », « birama », « 新機能 », « 새 기능 ») et la clé ajoutée par l'intégration (« À taper : %s ») sont toutes deux dans le résultat. Aucun autre fichier du lot touché par l'intégration.
+- **Passage sur le tuto.** Mêmes clés qu'avant dans les 28 fichiers ; 0 marque `%s` / `%1$d` / `%%` changée ; aucun espace neuf entre deux caractères chinois ou devant une ponctuation chinoise, aucun double espace, aucun article arabe laissé seul (« الـ »). Les noms cités entre guillemets que le passage introduit sont les libellés réels de la langue : « Salin ke birama berikutnya », « Ubah ke 2 birama » (boutons de `tuto.json`), « دروب 2 », « + B · مقدمة », « 高潮 2 », « ड्रॉप 2 » (nom de partie composé comme à l'écran). Hindi (« ग्रूव से इंट्रो बनाओ », « बिल्ड-अप हर ड्रॉप से ठीक पहले ») et indonésien (« birama » partout, accords inchangés) sans faute vue. Point 7 de la relecture précédente : fait.
+- **Tests.** À 3caed7cd : `:project-model:test` vert (1 118), `:app:testDebugUnitTest --tests '*Tuto*'` : 336 tests, 0 échec. Après correction (4bc3661e) : `:project-model:test` 1 121 tests, 0 échec ; `*Tuto*` côté app : 336, 0 échec ; `I18nArabicScreenshotTest` réenregistré : seule `i18n/ar_rhythm` change, regardée en entier (« ملء » à la place de « حشوة » devant « الكل · 1/2 · 1/4 », rien d'autre ne bouge).
+
+rouge constaté : 7e7bd843 : rejoué sur 3caed7cd : `Tour6TutoAgreementTest` 3 tests, 3 échecs sur leur assertion : « Italian « cassa » with a masculine word (76) », « Arabic feminine parts with a masculine verb (12) », « Arabic « Remplir » (1) »
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Moyen
+
+16. **Italien : « cassa » prend la place de « kick » sans ses accords.** Le script accorde l'article collé au mot, pas le reste : « Il tuo cassa è accordato su Fa♯ », « Questo cassa che picchia », « un secondo cassa lunga, annegato… », « Ascolta la cassa della drum & bass, da solo: corto e secco », « una cassa corta e secco », « tra una cassa e l'altro », « cassa accordato », et « La cassa (la cassa) » (l'ancien « Il kick (la cassa) ») : environ 60 textes du tuto. **corrigé** en 4bc3661e (rouge 7e7bd843, `Tour6TutoAgreementTest#theItalianCassaIsFeminineEverywhere`).
+17. **Arabe : « المقدمة » et « الحشوة » (féminins) avec un verbe au masculin.** Le « Intro » latin se disait au masculin : « المقدمة يشوّق دون أن يكشف » (×3), « المقدمة يبلغ 32 مازورة » (×2), « يزرع », « يرسّخ », « يجعل المقدمة يرتفع », « الحشوة يعلن اللازمة دون أن يقطع », « سيكون المقدمة والفاصل », « يفقد المقدمة 2 والفاصل ». **corrigé** en 4bc3661e (rouge 7e7bd843, `theArabicIntroAndFillAgreeAsFeminineWords`).
+18. **Point 3 de la relecture précédente, à faire « à la fusion avec le lot 2 », non fait.** Le bouton « Remplir » de la grille disait toujours « حشوة » (le roulement de batterie), et le passage sur le tuto en a mis la citation dans 27 étapes (« «حشوة الكل» », « «حشوة 1/2» »). **corrigé** en 4bc3661e (rouge 7e7bd843, `theArabicGridsFillIsNotTheDrumFill`) : « ملء » sur le bouton (`ar/rhythm.json`) et dans chaque citation ; « Fill » (le roulement) reste « حشوة ».
+
+### Mineur
+
+19. Le passage laisse quelques mots latins que les tests n'exigent pas (hindi « Pad और bell चले जाते हैं », « ride के बिना » ; arabe « Drop B » dans une liste de boutons) : cohérents avec ce qu'affiche l'écran quand le nom vient du son ou d'une partie nommée, à revoir au prochain passage de langue.
+20. `it_words.py` et `convert.py` n'accordent que le mot voisin : un prochain passage du même genre doit être suivi de `Tour6TutoAgreementTest` (ou de son équivalent pour la langue visée).
+
+## Delta 4bc3661e → 2a04a143
+
+Troisième relecteur neuf (n'a écrit ni le lot, ni le passage sur le tuto, ni la fusion). Lu : `git diff c8a107b1 HEAD`, la fusion 7ab87aff (tête d'intégration b4ac25f2, lot « tutofleches ») et 2a04a143 (deux captures arabes du Guide). Base commune : 2bb86bc3.
+
+### Ce qui tient
+
+- **Aucune phrase de tutofleches perdue.** Script clé par clé sur les 15 fichiers `tuto*.json` des cinq langues (ar, hi, id, it, zh-CN), quatre états (base 2bb86bc3, intégration b4ac25f2, lot c8a107b1, tête) : chaque clé que l'intégration a ajoutée ou changée est là ; aucune n'est revenue au texte de la base ; les clés que l'intégration a retirées (« Chaque partie arrive avec 8 mesures… », « les charleys fermés en doubles croches ») ont disparu aussi ici. Le même script sur les 1 027 catalogues de toutes les langues : rien d'autre.
+- **Aucune correction du lot perdue.** Toute clé que l'intégration n'a pas touchée a, à la tête, exactement le texte du lot (0 écart, toutes langues, tous fichiers). Hors des 15 fichiers, la fusion ne change aucun catalogue par rapport au lot.
+- **Mots du lot dans les phrases neuves.** 37 phrases de l'intégration diffèrent de son texte : toutes par les seuls mots du lot (arabe « مقدمة / دروب / فاصل / تصاعد / دروب زائف », « بـIntro » devenu « بمقدمة » ; hindi « ड्रॉप, ब्रेक, फ़ेक ड्रॉप, मिनी-ब्रेक » ; chinois « 高潮、间奏、渐强段 » ; italien « sotto la cassa », féminin juste). Marques `%s` / `%d` identiques à celles de l'intégration. `apply_to_tutos.sh … show` rejoué sur la tête : 0 changement (le passage est complet et idempotent).
+- **JSON.** Les 1 027 catalogues se lisent ; aucune marque de conflit restée.
+- **Tests (rejoués ici).** `:project-model:test --tests 'com.pocketstudio.model.tuto.*' --tests 'com.pocketstudio.model.i18n.*'` : 166 tests, 0 échec (dont `Tour6TutoAgreementTest`, `Tour6TutoSixteenthsTest`, `Tour6LanguagesTest`). `:app:testDebugUnitTest --tests '*TutoFleche*' --tests '*Tour6Words*' --tests '*Tour6GuideLanguage*'` : 17 tests, 0 échec.
+- **Captures.** `ar_guide_card.png` et `ar_guide_panel.png` regardées en entier : Guide de l'intégration (bandeau « المرشد », « المزيد في الأسفل »), mots du lot (« مقدمة 2 » dans la barre et sur les blocs, « تشبّع خفيف · Drive 20% »), flèche de « دورك » tournée vers la droite, rien de coupé ni de chevauché ; même mise en page que `de_guide_card.png`.
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Moyen
+
+21. **Hors lot : `Tour6TutoPanelAlreadyTest#aStepTheProjectHeldAlreadyIsSaidAlreadyDone` dépend de l'ordre.** Seul : vert (deux fois). Avec `Tour6TutoFlechesRollTest` dans la même exécution : rouge « the step reached done without a gesture is not said « Déjà fait » ». Reproduit à l'identique sur l'intégration nue b4ac25f2 (worktree jetable, mêmes deux classes) : la cause vient de tutofleches (un état global, `TutoHints` ou voisin, laissé par la classe du rouleau), pas du lot, qui ne touche ni au code du tuto ni à ces tests. À rendre au lot tutofleches.
+
+### Mineur
+
+22. La fusion a fait disparaître, dans `tuto_bass.json` d'ar, hi, id et zh-CN, le doublon d'une clé (« … Intro, Montée, Drop, Break, Montée, Drop 2 et Fin … Les durées … », deux fois la même valeur) ; il reste dans les dix autres langues, déjà présent sur l'intégration. Sans effet (même texte), à nettoyer partout au prochain passage.
+23. « Drop B » reste en lettres latines au milieu des noms traduits (hindi « ड्रॉप, Drop B, ड्रॉप ») : c'est le nom d'une partie que l'élève tape (`part:Drop B`), comme déjà noté au point 19.
+24. `Tour6GuideCoquilleLookTest` échoue aussi sur l'intégration nue (dit par l'équipe, non rejoué ici) : hors lot.
+
+## Delta 2a04a143 → 1ee7b54c
+
+Quatrième relecteur neuf (n'a écrit ni le lot, ni la fusion, ni la ligne du rapport). Lu : `git diff cb84f9454 HEAD`, la fusion d9dafc00 (tête d'intégration bdb777a9, équipes tutoordre, tutoordre2, ci3, portail3) et 1ee7b54c (une ligne du rapport).
+
+### Ce qui tient
+
+- **Fusion sans effet sur le lot.** Aucun fichier du lot n'est touché : ni `i18n/*/*.json` (aucun catalogue du tout), ni `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt`. Hors `docs/` et `scripts/`, la fusion n'apporte que `.github/workflows/ci.yml`, `.gitignore`, `TutoController.kt` et deux tests du tuto (`Tour6TutoOrderRaceTest`, `Tour6TutoPanelAlreadyTest`), fichiers d'autres lots. Les tests ciblés de l'app n'avaient donc pas à être rejoués ; `:project-model:test` vert après la fusion (dit par l'équipe).
+- **La ligne ajoutée au rapport est vraie.** la ligne « ne corrige pas: N19 » qui renvoie N19 au lot 2 : `lots-correction.md`, « Complément 2 », range N19 (le défaut le plus lourd de ce complément) au lot 2 « tuto-consignes », fichier `TutoController.kt` ; le rapport ne le cite que dans sa ligne « Complément 2 » (« N19 à N28 sont aux lots 2 et 6 »).
+- **Zone du rapport.** `python3 scripts/bench/rapport-zone.py eq/tour-6-langues2 docs/audits/ultra/tour-6-langues2-rapport.md` : sortie 0.
+- **Arbre propre**, aucun fichier en trop.
+
+### Bloquant
+
+Aucun.
+
+### Grave
+
+Aucun.
+
+### Mineur
+
+25. La fusion apporte un test rouge puis vert de tutoordre sur `Tour6TutoPanelAlreadyTest` (713d66f6) ; il se peut que le point 21 (dépendance à l'ordre avec `Tour6TutoFlechesRollTest`) en soit touché : non rejoué ici, hors lot, reste à tutofleches.
+
+Verdict : 0 bloquant, 0 grave — fusion possible

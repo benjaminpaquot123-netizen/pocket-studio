@@ -1,0 +1,35 @@
+{
+  "siege": "a",
+  "options": {
+    "lang": "fr",
+    "device": "foldable",
+    "font": "130",
+    "mode": "simple",
+    "gestes.max": "80",
+    "mission": "premier-morceau",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 35,
+    "images": 10,
+    "gestes_premier_son": 5,
+    "gestes_premier_partage": 9,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 2,
+    "retours_immediats": 1,
+    "ecrans": 38,
+    "ecrans_revisites": 15,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 64,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "premier-morceau",
+  "resultat": "reussie",
+  "pourquoi": "« Techno de Detroit » : 36 parties, 335 s ; partagé : House-morceau-20261105-214347.m4a"
+}

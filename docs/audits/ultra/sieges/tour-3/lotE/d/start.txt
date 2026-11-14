@@ -1,0 +1,7 @@
+lang=es
+device=phone411
+font=100
+amenee=remix
+gestes.max=90
+mission=remix-voix
+timeout.minutes=25

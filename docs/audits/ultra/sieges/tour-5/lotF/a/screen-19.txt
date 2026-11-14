@@ -1,0 +1,13 @@
+Écran 19 (1035x1243)
+texte « BenStudio » @ 237,78
+texte « Que veux-tu faire ? » @ 292,146
+bouton « Continuer Simple House House · 104 mes. · 3:25 · 20 parties Sauvegardé à l'instant » @ 518,327
+bouton « Nouveau morceau Un style en une touche, ou pas à pas avec l'assistant. » @ 518,564
+bouton « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » @ 518,757
+bouton « Remix Séparation des pistes : batterie, basse, voix et le reste. » @ 518,950
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » @ 518,1121
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

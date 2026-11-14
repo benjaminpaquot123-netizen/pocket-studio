@@ -1,0 +1,2 @@
+route=synth/tab_simple_Clavier
+nouvelle=0

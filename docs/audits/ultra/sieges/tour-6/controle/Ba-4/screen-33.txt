@@ -1,0 +1,19 @@
+Écran 33 (588x1278)
+icône ← «  Atrás » @ 68,36
+texte « Remix » @ 166,36
+titre « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,135
+bouton « ? » @ 360,135
+bouton « Elegir una canción » @ 294,205
+texte « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » @ 294,280
+titre « Ma chanson préférée » [état « Desplegado »] @ 174,396
+icône (poubelle) @ 510,409
+texte « 0:40 · 120 BPM · La menor » @ 161,427
+bouton (étincelles) « Hacer un tema con esta canción » @ 294,496
+texte « Otras opciones… » @ 294,583
+bouton ▶ «  Escuchar » @ 147,667
+texte « Activa o silencia cada pista, incluso en plena reproducción. » @ 405,667
+bouton « Batería » @ 102,757
+bouton « Bajo » @ 230,757
+bouton « Resto » @ 358,757
+bouton « Voz » @ 486,757
+bouton + «  Elegir una canción » @ 294,1227

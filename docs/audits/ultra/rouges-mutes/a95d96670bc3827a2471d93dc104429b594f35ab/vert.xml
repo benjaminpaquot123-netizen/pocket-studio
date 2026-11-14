@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_socle" tests="1">
+  <testcase classname="test_socle.NewReplaysAimByTag" name="test_a_command_can_stand_for_an_untagged_button"></testcase>
+</testsuite>

@@ -1,0 +1,260 @@
+#0 SIEGE lang=fr device=tablet8 font=200 mode=simple theme=- fresh=non gestes.max=60 lit=oui main=both amenee=premier-morceau
+#0 AMENEE premier-morceau
+#0 AMENEE > touche 450 955 (welcome_empty)
+#0 AMENEE > touche 229 592 (mode_card_simple)
+#0 AMENEE prête (rhythm/tab_simple_Rythme)
+#1 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1d444085f2 | project=p-9826b39b no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « ? » lines cut (taller than its box)
+#1 LAYOUT CUT « Sauvegardé » lines cut (taller than its box)
+#1 LAYOUT CUT « Simple » ellipsized (« … »)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « ? » over «  Noter » (16 x 11 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « Écrire une note » (16 x 16 dp)
+#1 LAYOUT OVERLAP «  Noter » over the touchable « Étiqueter l'écran » (36 x 19 dp)
+#1 LAYOUT OVERLAP « ⋯ » over the touchable « Étiqueter l'écran » (5 x 24 dp)
+#1 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ✎ » 3.53:1 (needs 4.5:1, 13 sp)
+#1 > touche 90 1107
+#1 DOIGT step_0 « Pas 1 »
+#2 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE d0b7eb8a5f | project=p-9826b39b no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 500 1107
+#2 DOIGT step_4 « Pas 5 »
+#3 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1403c1809f | project=p-9826b39b no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 90 1188
+#3 DOIGT step_8 « Pas 9 »
+#4 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE fa3f0e15ce | project=p-9826b39b no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 500 1188
+#4 DOIGT step_12 « Pas 13 »
+#5 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 2b4cb34d22 | project=p-9826b39b no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 559 350
+#5 DOIGT pad_2 « Caisse »
+#6 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1cdc16425d | project=p-9826b39b no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Caisse » 3.92:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST «  Enregistrer mes pads » 2.78:1 (needs 4.5:1, 14 sp)
+#6 > touche 500 1254
+#6 DOIGT step_4 « Pas 5 »
+#7 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 173cf75d1b | project=p-9826b39b no tuto
+#7 SON Son : rien ne joue.
+#7 > glisse 630 920 630 620
+#7 DOIGT rien (texte « Les pads sonnent, les cases gardent les  »)
+#8 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 98207a6417 | project=p-9826b39b no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 500 1060
+#8 DOIGT step_12 « Pas 13 »
+#9 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 5d66c90153 | project=p-9826b39b no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 451 1436
+#9 DOIGT tab_simple_Clavier « Clavier »
+#10 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 97104634b9 | project=p-9826b39b no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CUT « Ligne de basse » ellipsized (« … »)
+#10 LAYOUT CUT « Synthé » lines cut (taller than its box)
+#10 LAYOUT CUT «  Piste » drawn past its parent's edge (down, 28 dp shown of 37)
+#10 LAYOUT CONTRAST « Ligne de basse » 3.10:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#10 > touche 71 950
+#10 DOIGT key_60 « Do 4 »
+#11 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 97104634b9 | project=p-9826b39b no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 187 950
+#11 DOIGT key_64 « Mi 4 »
+#12 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 97104634b9 | project=p-9826b39b no tuto
+#12 SON Son : rien ne joue.
+#12 RIEN NE CHANGE (3 écrans identiques)
+#12 > touche 303 950
+#12 DOIGT key_67 « Sol 4 »
+#13 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 97104634b9 | project=p-9826b39b no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 669 537
+#13 DOIGT keep_played «  Garder ce que je viens de jouer »
+#14 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4eacb83ad9 | project=p-9826b39b no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Remettre en rythme » 3.63:1 (needs 4.5:1, 14 sp)
+#14 > touche 450 620
+#14 DOIGT take_in_time « Remettre en rythme »
+#15 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 5df285b6c4 | project=p-9826b39b no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « ✓ Remettre en rythme » 4.29:1 (needs 4.5:1, 14 sp)
+#15 > touche 156 620
+#15 DOIGT take_keep « Garder »
+#16 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 48a644108c | project=p-9826b39b no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 783 42
+#16 DOIGT top_play
+#17 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3aca30a6b6 | project=p-9826b39b no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 LAYOUT CUT « mes. 1/8 » lines cut (taller than its box)
+#17 > attends 8
+#18 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE eac47dd984 | project=p-9826b39b no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT CUT « mes. 6/8 » lines cut (taller than its box)
+#18 > attends 6
+#19 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3b68717025 | project=p-9826b39b no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 LAYOUT CUT « mes. 2/8 » lines cut (taller than its box)
+#19 > glisse 450 1226 450 700
+#19 DOIGT rien (texte « Le son de la piste (le même pour toutes  »)
+#20 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 15ee2202f2 | project=p-9826b39b no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 LAYOUT CUT « mes. 3/8 » lines cut (taller than its box)
+#20 > touche 450 990
+#20 DOIGT simple_change_sound « Changer le son »
+#21 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 175b6af036 | project=p-9826b39b no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 LAYOUT CUT « Brillant · 5 voix · tenu » ellipsized (« … »)
+#21 LAYOUT CUT « Brillant · 3 voix · tenu » ellipsized (« … »)
+#21 LAYOUT OVERLAP « Son de : Synthé » over the touchable « Fermer la feuille » (257 x 45 dp)
+#21 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (426 x 69 dp)
+#21 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (90 x 37 dp)
+#21 LAYOUT OVERLAP « Basses » over the touchable « Fermer la feuille » (99 x 42 dp)
+#21 LAYOUT OVERLAP « Basse ronde » over the touchable « Fermer la feuille » (155 x 32 dp)
+#21 LAYOUT OVERLAP « Brillant · tenu » over the touchable « Fermer la feuille » (161 x 32 dp)
+#21 LAYOUT OVERLAP « Basse sub » over the touchable « Fermer la feuille » (128 x 32 dp)
+#21 LAYOUT OVERLAP « Doux · tenu » over the touchable « Fermer la feuille » (136 x 32 dp)
+#21 LAYOUT OVERLAP « Basse reese » over the touchable « Fermer la feuille » (151 x 32 dp)
+#21 LAYOUT OVERLAP « Reese moderne » over the touchable « Fermer la feuille » (195 x 32 dp)
+#21 LAYOUT OVERLAP « Brillant · 5 voix · tenu » over the touchable « Fermer la feuille » (190 x 32 dp)
+#21 LAYOUT OVERLAP « Basse wobble » over the touchable « Fermer la feuille » (174 x 32 dp)
+#21 LAYOUT OVERLAP « Basse qui parle » over the touchable « Fermer la feuille » (191 x 32 dp)
+#21 LAYOUT OVERLAP « Basse growl » over the touchable « Fermer la feuille » (152 x 32 dp)
+#21 LAYOUT OVERLAP « Brillant · 3 voix · tenu » over the touchable « Fermer la feuille » (191 x 32 dp)
+#21 LAYOUT OVERLAP « Reese DnB » over the touchable « Fermer la feuille » (135 x 32 dp)
+#21 LAYOUT OVERLAP « Basse riddim » over the touchable « Fermer la feuille » (161 x 32 dp)
+#21 LAYOUT OVERLAP « Creux · tenu » over the touchable « Fermer la feuille » (146 x 32 dp)
+#21 LAYOUT OVERLAP « Basse neuro » over the touchable « Fermer la feuille » (155 x 32 dp)
+#21 LAYOUT OVERLAP « Sub pur » over the touchable « Fermer la feuille » (97 x 32 dp)
+#21 LAYOUT OVERLAP « Basse roulante » over the touchable « Fermer la feuille » (185 x 32 dp)
+#21 LAYOUT OVERLAP « Basse pluck » over the touchable « Fermer la feuille » (151 x 32 dp)
+#21 LAYOUT OVERLAP « Brillant · court » over the touchable « Fermer la feuille » (172 x 32 dp)
+#21 LAYOUT OVERLAP « 808 synthé » over the touchable « Fermer la feuille » (143 x 32 dp)
+#21 LAYOUT OVERLAP « Donk » over the touchable « Fermer la feuille » (65 x 32 dp)
+#21 LAYOUT OVERLAP « Doux · court » over the touchable « Fermer la feuille » (148 x 32 dp)
+#21 LAYOUT OVERLAP « Sub chaud » over the touchable « Fermer la feuille » (133 x 32 dp)
+#21 LAYOUT OVERLAP « Au hasard » over the touchable « Fermer la feuille » (129 x 37 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Fermer la feuille » (178 x 37 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (519 x 13 dp)
+#21 LAYOUT CONTRAST « Fermer » 4.07:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Brillant · 5 voix · tenu » 1.62:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « Basse wobble » 1.57:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Basse qui parle » 1.57:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Basse growl » 3.07:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Reese DnB » 3.07:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « « Garder ce son » le range dans tes favoris, pour tous tes projets. » 4.38:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT LABEL « #1141 » long press without text nor description
+#21 > touche 60 294
+#21 DOIGT synth_sounds_back
+#22 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE c1c2983d61 | project=p-9826b39b no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT OVERLAP « Chercher un son (doigts, verre, conga…) » over the touchable « Fermer la feuille » (412 x 84 dp)
+#22 LAYOUT OVERLAP « Basses » over the touchable « Fermer la feuille » (97 x 42 dp)
+#22 LAYOUT OVERLAP « 16 sons » over the touchable « Fermer la feuille » (89 x 35 dp)
+#22 LAYOUT OVERLAP « Mélodies » over the touchable « Fermer la feuille » (124 x 42 dp)
+#22 LAYOUT OVERLAP « 6 sons » over the touchable « Fermer la feuille » (79 x 35 dp)
+#22 LAYOUT OVERLAP « Nappes » over the touchable « Fermer la feuille » (104 x 42 dp)
+#22 LAYOUT OVERLAP « 4 sons » over the touchable « Fermer la feuille » (80 x 35 dp)
+#22 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (133 x 42 dp)
+#22 LAYOUT OVERLAP « Claviers » over the touchable « Fermer la feuille » (111 x 42 dp)
+#22 LAYOUT OVERLAP « 2 sons » over the touchable « Fermer la feuille » (79 x 35 dp)
+#22 LAYOUT OVERLAP « Effets » over the touchable « Fermer la feuille » (78 x 42 dp)
+#22 LAYOUT OVERLAP « Touche ☆ sur un son pour le retrouver dans « Favoris ». » over the touchable « Fermer la feuille » (523 x 69 dp)
+#22 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (519 x 69 dp)
+#22 LAYOUT OVERLAP « INSTRUMENTS RÉELS » over the touchable « Fermer la feuille » (289 x 32 dp)
+#22 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (526 x 56 dp)
+#22 LAYOUT CONTRAST « Son court » 3.07:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « 4 sons » 1.77:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « Touche ☆ sur un son pour le retrouver dans « Favoris ». » 1.44:1 (needs 4.5:1, 13 sp)
+#22 > touche 450 345
+#22 DOIGT synth_sounds_search « Chercher un son (doigts, verre, conga…) »
+#23 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE c1c2983d61 | project=p-9826b39b no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > ecris accordéon
+#24 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 714ea7e712 | project=p-9826b39b no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CUT « À télécharger : 11 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 16 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 9 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 2 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 6 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 7 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « À télécharger : 4 Mo » ellipsized (« … »)
+#24 LAYOUT CUT « Elle glisse d'une note à l'autre, rien à télécharger » ellipsized (« … »)
+#24 LAYOUT OVERLAP « Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous. » over the touchable « Fermer la feuille » (526 x 75 dp)
+#24 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (526 x 104 dp)
+#24 LAYOUT OVERLAP « Piano à queue » over the touchable « Fermer la feuille » (91 x 64 dp)
+#24 LAYOUT OVERLAP « À télécharger : 11 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Piano de concert » over the touchable « Fermer la feuille » (108 x 64 dp)
+#24 LAYOUT OVERLAP « À télécharger : 16 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Cordes » over the touchable « Fermer la feuille » (90 x 32 dp)
+#24 LAYOUT OVERLAP « À télécharger : 9 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Cordes pizzicato » over the touchable « Fermer la feuille » (114 x 64 dp)
+#24 LAYOUT OVERLAP « À télécharger : 2 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Cuivres » over the touchable « Fermer la feuille » (96 x 32 dp)
+#24 LAYOUT OVERLAP « À télécharger : 6 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Bois » over the touchable « Fermer la feuille » (54 x 32 dp)
+#24 LAYOUT OVERLAP « À télécharger : 7 Mo » over the touchable « Fermer la feuille » (163 x 32 dp)
+#24 LAYOUT OVERLAP « Harpe » over the touchable « Fermer la feuille » (76 x 32 dp)
+#24 LAYOUT OVERLAP « Basse 808 » over the touchable « Fermer la feuille » (133 x 32 dp)
+#24 LAYOUT CONTRAST « Garder ce son » 1.96:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « À télécharger : 7 Mo » 3.52:1 (needs 4.5:1, 12 sp)
+#24 > touche 840 314
+#24 DOIGT dans:synth_sounds_search
+#25 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE c1c2983d61 | project=p-9826b39b no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 450 883
+#25 DOIGT synth_sounds_folder_Claviers « Claviers »
+#26 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE ff5ad47278 | project=p-9826b39b no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT OVERLAP « Claviers » over the touchable « Fermer la feuille » (112 x 42 dp)
+#26 LAYOUT OVERLAP « Orgue » over the touchable « Fermer la feuille » (77 x 32 dp)
+#26 LAYOUT OVERLAP « Piano électrique » over the touchable « Fermer la feuille » (203 x 32 dp)
+#26 LAYOUT OVERLAP « À télécharger : 4 Mo » over the touchable « Fermer la feuille » (163 x 29 dp)
+#26 LAYOUT OVERLAP « Elle glisse d'une note à l'autre, rien à télécharger » over the touchable « Fermer la feuille » (221 x 29 dp)
+#26 LAYOUT CONTRAST « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » 3.59:1 (needs 4.5:1, 13 sp)
+#26 > touche 234 402
+#26 DOIGT synth_sounds_30 « Orgue »
+#27 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e2e775bbc5 | project=p-9826b39b no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > glisse 450 1100 450 700
+#27 DOIGT rien
+#28 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 8aae8dc8aa | project=p-9826b39b no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CONTRAST « Do » 1.28:1 (needs 4.5:1, 13 sp)
+#28 > touche 450 906
+#28 DOIGT simple_change_sound « Changer le son »
+#29 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 4fc2625a37 | project=p-9826b39b no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CONTRAST « INSTRUMENTS RÉELS » 1.91:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT LABEL « #1672 » long press without text nor description
+#29 > touche 790 158
+#29 DOIGT sound_chooser_close « Fermer »
+#30 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 8ac63c549c | project=p-9826b39b no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 783 42
+#30 DOIGT top_play
+#31 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d246ab7798 | project=p-9826b39b no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 815 1436
+#31 DOIGT tab_simple_Envoyer « Envoyer »
+#32 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 6aa2fff71e | project=p-9826b39b no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 450 1229
+#32 DOIGT share_go «   Partager »
+#33 ROUTE dialogue:share_progress | MODE simple | EMPREINTE ecfec29b8b | project=p-9826b39b no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Annuler » 4.20:1 (needs 4.5:1, 14 sp)
+#33 > attends 5
+#33 PARTAGE Mon-morceau-boucle-20261104-202722.m4a
+#34 ROUTE dialogue:« Partager « Mon-morceau-boucle- » | MODE simple | EMPREINTE acdfa13be9 | project=p-9826b39b no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 450 681
+#34 DOIGT vue « WhatsApp »
+#35 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 20b441de9e | project=p-9826b39b no tuto
+#35 SON Son : rien ne joue.
+#35 > fin
+#35 FIN : fin

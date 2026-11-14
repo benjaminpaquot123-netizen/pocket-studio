@@ -1,0 +1,1 @@
+Targeted control of lot coquille3, point P1 (coordinator request, 2026-11-14): code fd8c57a6 (origin/eq/tour-6-coquille3), local lot lotCQcontrole (ja, phone, Simple, tuto-facile up to chapter 7 then the « show all notes » control and zoom), fresh sub-agent reading only the testers instructions and the screens. Text files only.

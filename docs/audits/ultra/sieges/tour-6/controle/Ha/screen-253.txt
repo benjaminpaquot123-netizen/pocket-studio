@@ -1,0 +1,46 @@
+Écran 253 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+texte « ↺ Tout à zéro » [coupé] @ 110,148
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,207
+bouton « Batterie ▸ » [état « fermé »] @ 75,300
+curseur [coupé, état « Normal », à 80 %] @ 84,357
+texte « Basse » @ 216,288
+curseur [coupé, état « Normal », à 80 %] @ 216,345
+texte « Accords » @ 339,288
+curseur [coupé, état « −3 », à 68 %] @ 339,345
+texte « Mélodie » @ 462,288
+curseur [coupé, état « −3 », à 68 %] @ 462,345
+texte « Sortie » [coupé] @ 566,288
+curseur [coupé, état « −6 », à 60 %] @ 556,345
+texte « Exporte ton morceau Chapitre 15/15 · Étape 1/1 · Facile » @ 207,423
+icône (liste) « Chapitres » @ 444,423
+icône ⌄ @ 531,423
+texte « À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. » @ 294,558
+texte « Le kit House » @ 100,675
+texte « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » [coupé] @ 294,724
+texte « ▸ Pourquoi ? » @ 294,774
+icône « Lire la suite » ⌄ @ 294,822
+bouton (doigt qui touche) «   Je le fais » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

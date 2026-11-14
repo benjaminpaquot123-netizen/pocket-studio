@@ -1,0 +1,64 @@
+Écran 5 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 417,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 492,42
+bouton « Rückgängig » [désactivé] @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Drums 16 Pads » [sélectionné] @ 76,183
+onglet « Acid 303 Bassline » @ 223,183
+onglet « Vocals Mikrofon » @ 376,183
+onglet « Remix Trennen » @ 523,183
+bouton «  Spur » @ 677,183
+texte « Teil: A » @ 52,243
+touchable « Studio-Kick FX » @ 123,318
+touchable « Kick 2 » @ 341,318
+touchable « Snare » @ 559,318
+touchable « Rumble FX » @ 777,318
+touchable « Clap FX » @ 123,396
+touchable « Hi-Hat L 30 » @ 341,396
+touchable « Offene Hi-Hat R 30 » @ 559,396
+touchable « Tiefes Tom » @ 777,396
+touchable « Mittleres Tom R 45 » @ 123,474
+touchable « Hohes Tom » @ 341,474
+touchable « Rim FX R 50 » @ 559,474
+touchable « Cowbell » @ 777,474
+touchable « Becken R 40 » @ 123,552
+touchable « Shaker L 50 » @ 341,552
+touchable « Conga » @ 559,552
+touchable « Zap » @ 777,552
+bouton « Kit: Studio » @ 110,630
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 548,630
+bouton « STEPS: STUDIO-KICK » [état « Aufgeklappt »] @ 377,738
+bouton « ? » (nom « Was ist „Step“? ») @ 330,738
+case « Alle Pads » @ 785,738
+texte « Studio-Kick » @ 114,811
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 1/4 · Pro » @ 400,861
+bouton « Kapitel » @ 771,861
+bouton « Zuklappen » @ 843,861
+texte « Hör dir einen Ausschnitt eines fertigen Techno-Tracks an: das Intro (die Drums für den DJ), der Einsatz des Basses, dann der Drop. Eine Kick auf jedem Schlag, die nie aufhört: Genau das baust du. » @ 450,978
+touchable « ▸ Warum? » @ 450,1056
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Weiterlesen » @ 450,1047
+bouton «  Anhören stoppen » @ 450,1119
+bouton «  Zurück » [désactivé] @ 92,1203
+bouton « Weiter  » @ 811,1203
+bouton « Rückgängig » [désactivé] @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » [sélectionné] @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

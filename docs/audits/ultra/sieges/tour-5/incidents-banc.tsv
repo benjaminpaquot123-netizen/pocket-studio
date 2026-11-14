@@ -1,0 +1,15 @@
+siege	geste	attente	vu
+B/a	19	0	écrans 20-21, 26, 32 : le texte ne donne que la barre du bas (anneau du tuto), il a fallu l'image pour voir les cases
+B/a	75	0	plafond d'images atteint, note posée à l'aveugle (#77)
+C/a	1	5	pads vides puis remplis après « attends 5 » (chargement « Préparation des pads prêts à jouer… »)
+C/b	5	1100	séparation par paliers de 15 % (≈ 13 min en tout), écran toujours revenu ; banc?: temps
+C/d			
+D/b	7	3	écran 8 presque vide (route tuto_spot_ring), l'éditeur arrive après « attends » ; pareil au geste 24
+E/a	2	30	écrans coréens 900x1509 d'un autre siège : mon raccourci de commande (fichier partagé du scratchpad) avait été réécrit par le testeur du siège c ; 3 gestes (retour, attends 30, retour) sont partis dans le siège lotE/c (son journal : « #6 > attends 30 », « #13 > retour »). Corrigé avec un raccourci privé ; à exclure du siège c.
+E/c	1	0	un « retour » que je n'ai pas fait (journal « #1 > retour »), remis sur l'accueil ; refait Remix
+E/c	13	300	pendant la séparation, un « retour » non demandé (journal « #13 > retour ») ramène à l'accueil ; la séparation a quand même fini
+E/c	12	300	séparation lente (5 % → 35 % en plusieurs attentes), banc?: temps
+F/a	0	120	premier écran long à venir au démarrage du banc, puis tout a répondu
+F/b	63	5	compteur bloqué sur « A Takt 1/2 » pendant la lecture du song, ne passe jamais à B
+F/c	1	300	le premier « regarde » a mis plusieurs minutes avant le premier écran (démarrage du banc)
+F/d	26	1100	séparation qui avance d'environ 15 % par geste, quelle que soit l'attente (#26 à #31)

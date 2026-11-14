@@ -1,0 +1,12 @@
+Écran 1 (900x1509)
+bouton « 🇮🇹   Italiano » ⌄ @ 758,78
+texte « BenStudio » @ 245,169
+texte « Il tuo studio musicale, in tasca. » @ 344,220
+texte « Benvenuto! Fai la tua musica sul tuo dispositivo. Da cosa iniziamo? » @ 450,311
+bouton (étincelles) « Fammi un brano L'app compone, tu ascolti e cambi. » @ 450,459
+bouton (chapeau de diplômé) « Imparo Fai tutto il brano da solo, passo dopo passo: io ti spiego e controllo. » @ 450,653
+bouton (casque) « Ascolta una demo Un brano già pronto, per scoprire cosa si può fare. » @ 450,840
+bouton + « Parti da zero Ancora nessuna nota: una batteria, una Acid 303 e un synth aspettano le tue. » @ 450,1028
+bouton (tête qui parle) « Estrai la voce da una canzone Scegli una canzone dal telefono: l'app separa voce, batteria, basso e il resto. » @ 450,1236
+bouton (quatre vagues) → « Pad Live NUOVO Pad pronti da suonare, i tuoi suoni, effetti live. Suona subito. » [coupé] @ 450,1382
+bouton « ↓ 3 altri » @ 796,1455

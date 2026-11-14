@@ -1,0 +1,1 @@
+Targeted control seat D a, run 10, lot tuto4 panel height (coordinator request, 2026-11-14): code 1a2d9ea9 (origin/eq/tour-6-tuto4), local lot lotDcontrole10, chapters 1-12 in a row, point P5, fresh sub-agent reading only the testers instructions and the screens. Text files only.

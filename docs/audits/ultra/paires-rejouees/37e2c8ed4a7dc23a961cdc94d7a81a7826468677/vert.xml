@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_socle" tests="3">
+  <testcase classname="test_socle.NewReplaysAimByTag" name="test_touches_become_tags_and_scrolls_wait"></testcase>
+  <testcase classname="test_socle.NewReplaysAimByTag" name="test_a_touch_with_no_tag_under_the_finger_stops_the_copy"></testcase>
+  <testcase classname="test_socle.NewReplaysAimByTag" name="test_the_format_allows_a_swipe_by_tag_and_a_prefix"></testcase>
+</testsuite>

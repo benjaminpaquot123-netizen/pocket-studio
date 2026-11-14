@@ -89,7 +89,7 @@ class ExportService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // Always honour the foreground promise first (platform call: see SeparationService).
         val running = ExportRun.state.value
-        val promised = runCatching { startForeground(NOTIFICATION_ID, notification(running ?: ExportRun.Running(tr("Export"))), foregroundType()) }
+        val promised = runCatching { startForeground(NOTIFICATION_ID, notification(running ?: ExportRun.Running(tr("Mes fichiers"))), foregroundType()) }
         promised.exceptionOrNull()?.let { AppLog.add("Export : service au premier plan refusé (${it.javaClass.simpleName})") }
         if (intent?.action == ACTION_CANCEL) ExportRun.cancelNow()
         // Refused, or the export already over: nothing to keep alive (the export goes on regardless).
@@ -145,7 +145,7 @@ class ExportService : Service() {
             DONE_NOTIFICATION_ID,
             NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Pocket Studio")
+                .setContentTitle("BenStudio")
                 .setContentText(text)
                 .setContentIntent(openApp(this))
                 .setAutoCancel(true)
@@ -199,7 +199,7 @@ class ExportService : Service() {
 
         private fun channel(context: Context) {
             context.getSystemService(NotificationManager::class.java).createNotificationChannel(
-                NotificationChannel(CHANNEL_ID, tr("Export"), NotificationManager.IMPORTANCE_LOW).apply {
+                NotificationChannel(CHANNEL_ID, tr("Mes fichiers"), NotificationManager.IMPORTANCE_LOW).apply {
                     description = tr("Progression des exports")
                     setShowBadge(false)
                 },

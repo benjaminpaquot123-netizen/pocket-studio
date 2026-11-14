@@ -1,0 +1,6 @@
+Écran 42 (588x1278)
+texte « Party » @ 371,225
+texte « Techno » @ 371,297
+texte « Trap » @ 371,369
+texte « House » @ 371,441
+texte « Drum & bass » @ 371,513

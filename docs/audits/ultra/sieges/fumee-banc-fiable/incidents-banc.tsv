@@ -1,0 +1,7 @@
+siege	geste	attente	vu
+A/a	23	30	export M4A à 33 %, attendu 30 s puis la feuille de partage est venue (normal)
+A/a	25	0	niveau annoncé « स्ट्रीमिंग म्यूज़िक जैसा (−14) » avant, « तेज़, क्लब म्यूज़िक जैसा » après l'export : chiffres du banc, non jugés
+A/c	36	0	un « BrokenPipeError » du script de banc, provoqué par mon propre filtrage de sortie ; l'écran 37 est bien arrivé
+A/c	38	0	j'ai redirigé par erreur une sortie hors de mon siège (lotA/c-out.txt), fichier supprimé aussitôt
+A/d	7	15	écran 8 vide (aucun élément) juste après le choix « 프로 », revenu normal à l'écran 9
+A/d	39	240	export « 트랙별로 » de 4 fichiers de 40 s a pris environ 4 minutes (fichiers de 1 KB dans 내 내보내기), durées du banc

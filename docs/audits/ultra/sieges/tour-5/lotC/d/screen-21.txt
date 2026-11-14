@@ -1,0 +1,4 @@
+Écran 21 (588x1278)
+texte « Envoyer le projet » @ 181,528
+texte « Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. » @ 294,621
+bouton « Compris » @ 489,738

@@ -1,0 +1,4 @@
+Écran 27 (588x1278)
+texte « Playing live effects » @ 211,408
+texte « Keep your finger on an effect: it plays as long as you press, then everything comes back. Filter and Roll: slide your finger up to set the sound or the speed of the hits. With “More”: Build-up (a rising whoosh), Drop (the music brakes), Stutter (the sound is chopped). » @ 294,623
+texte « Got it » @ 497,859

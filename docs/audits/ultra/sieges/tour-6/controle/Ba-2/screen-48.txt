@@ -1,0 +1,34 @@
+Écran 48 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône ← «  Mi canción » @ 97,180
+texte « Remix » @ 224,180
+curseur [état « 80 % », à 80 %] @ 294,338
+texte « La canción está en silencio aquí: sirve de reserva de sonidos. Toca un altavoz para oírla. » @ 294,413
+texte « Tomar de la canción » @ 144,479
+texte « Sus frases de voz en tus pads, su batería como kit, su bajo y su voz en notas » @ 294,533
+bouton ✂ «  Poner la voz en los pads » @ 294,608
+bouton « Hacer un kit con la batería » @ 294,692
+bouton « Volver a tocar el bajo en notas » @ 165,782
+bouton « Volver a tocar el bajo en la Acid 303 » @ 423,796
+bouton ✂ «  Cortar la canción » @ 294,903
+bouton (boussole) « Guía  · Pon un ritmo 7 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

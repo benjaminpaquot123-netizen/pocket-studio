@@ -1,0 +1,117 @@
+Écran 24 (588x1278)
+icône ← @ 51,45
+bouton ▶ @ 231,45
+icône − @ 312,45
+texte « 124 Tempo » @ 378,45
+icône + @ 444,45
+texte « REC » @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » [sélectionné] @ 51,135
+onglet « B » @ 108,135
+onglet « C » @ 165,135
+onglet « D » @ 222,135
+bouton « Fête » ▾ @ 330,135
+bouton ★ @ 534,135
+bouton « ? » @ 464,135
+bouton [allumé] @ 77,244
+texte « boucle » @ 86,207
+dessin @ 100,207
+texte « Boucle de kick » @ 77,264
+bouton @ 205,244
+dessin @ 228,207
+texte « coup » @ 223,207
+texte « Claquement de mains » @ 205,273
+bouton [allumé] @ 333,244
+texte « boucle » @ 342,207
+dessin @ 356,207
+texte « Boucle Acid 303 » @ 333,266
+bouton [allumé] @ 461,244
+texte « boucle » @ 470,207
+dessin @ 484,207
+texte « Boucle de basse » @ 461,266
+bouton ■ @ 550,244
+bouton @ 77,367
+dessin @ 100,330
+texte « coup » @ 95,330
+texte « Klaxon » @ 69,402
+bouton @ 205,367
+dessin @ 228,330
+texte « coup » @ 223,330
+texte « Laser » @ 191,402
+bouton @ 333,367
+dessin @ 356,330
+texte « coup » @ 351,330
+texte « Sirène » @ 324,402
+bouton @ 461,367
+dessin @ 484,330
+texte « coup » @ 479,330
+texte « Cri « Go go go! » » @ 461,387
+bouton ▶ @ 550,367
+bouton @ 77,490
+dessin @ 100,453
+texte « coup » @ 95,453
+texte « Grosse caisse 1 » @ 77,510
+bouton @ 205,490
+dessin @ 228,453
+texte « coup » @ 223,453
+texte « Caisse » @ 197,525
+bouton @ 333,490
+dessin @ 356,453
+texte « coup » @ 351,453
+texte « Charley » @ 331,525
+bouton @ 461,490
+dessin @ 484,453
+texte « coup » @ 479,453
+texte « Charley ouvert » @ 461,510
+bouton ▶ @ 550,490
+bouton @ 77,613
+dessin @ 100,575
+texte « coup » @ 95,576
+texte « Montée » @ 74,647
+bouton @ 205,613
+dessin @ 228,575
+texte « coup » @ 223,576
+texte « Impact » @ 197,647
+bouton @ 333,613
+dessin @ 356,575
+texte « coup » @ 351,576
+texte « Chute » @ 321,647
+bouton @ 461,613
+dessin @ 484,575
+texte « coup » @ 479,576
+texte « « Go! » » @ 455,647
+bouton ▶ @ 550,613
+bouton « ? » @ 161,704
+texte « EFFETS LIVE » @ 79,704
+texte « Appuie et maintiens » @ 474,704
+bouton @ 106,783
+texte « Filtre » @ 106,771
+texte « grave ↔ aigu » @ 106,798
+bouton @ 294,783
+texte « Écho » @ 294,771
+texte « en sortie » @ 294,798
+bouton @ 482,783
+texte « Roulement » @ 482,771
+texte « 1/16 » @ 482,798
+bouton @ 106,885
+texte « Montée » @ 106,873
+texte « 4 mesures » @ 106,900
+bouton @ 294,885
+texte « Chute » @ 294,873
+texte « freinage » @ 294,900
+bouton @ 482,885
+texte « Bégaie » @ 482,873
+texte « 1/16 » @ 482,900
+bouton ↶ « Annuler » [désactivé] @ 107,981
+bouton (quatre carrés) « Briques » @ 294,981
+bouton (curseurs) « Effets » @ 481,981
+bouton (cotillons) « Gros pads » @ 140,1062
+bouton (trois points reliés) « Partager » @ 395,1062
+bouton « ? » @ 548,1062
+bouton ■ « Tout couper » @ 66,1159
+bouton « 4 mesures · touche pour finir » @ 258,1152
+bouton ⋯ « Moins » @ 486,1152
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

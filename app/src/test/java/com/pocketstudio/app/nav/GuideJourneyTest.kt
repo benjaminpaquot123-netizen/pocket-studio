@@ -51,7 +51,7 @@ import java.time.Duration
 /**
  * G6 (docs/PLAN-GUIDE.md §5, « Vérification »; docs/guide/G6-verification.md): the Guide followed as
  * a beginner follows it, in the real app (MainActivity, rebuilt when the song opens, as on a phone),
- * from a phone where it was just installed: the welcome › « Créer mon premier morceau (guidé) » › the
+ * from a phone where it was just installed: the welcome › « Fais-moi un morceau » › the
  * assistant › « Ton morceau est prêt » and the other « Pour commencer » cards › cards of the stages
  * (applied, skipped, refused, heard « Sans / Avec », « Voir le réglage », a track's sheet, a layer
  * added then brought back) › the export; then the app closed and opened again three days later
@@ -79,6 +79,8 @@ class GuideJourneyTest {
         for (dir in listOf("projects", "projects-trash", "stems")) File(app.filesDir, dir).deleteRecursively()
         val names = File(app.filesDir, "../shared_prefs").listFiles()?.map { it.name.removeSuffix(".xml") }.orEmpty() + PREFS
         names.distinct().forEach { app.getSharedPreferences(it, 0).edit().clear().commit() }
+        // A French phone (Robolectric's is American: the first start would take English).
+        app.getSharedPreferences("settings", 0).edit().putString("language", "fr").commit()
         SettingsStore.forgetForTests()
         LaunchRule.askAtStartForTest = true
         shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO)
@@ -164,12 +166,14 @@ class GuideJourneyTest {
 
     /** The Guide's next card is [card], on screen in its panel. */
     private fun onCard(card: String) {
-        await("the card $card") { !ui().loading && ui().next?.id == card && shown("guide_card_$card") }
+        runCatching { await("the card $card") { !ui().loading && ui().next?.id == card && shown("guide_card_$card") } }
+            .onFailure { throw IllegalStateException("the card $card: next is ${ui().next?.id}", it) }
     }
 
     /** The song stopped (« Écouter » starts it; the Guide's « Sans / Avec » never plays over it). */
     private fun stopTheSong() {
-        if (vm().transport.value.playing) tap("top_play")
+        // ■ on « ▶ le morceau » (the top ▶, « cette partie », would loop the part).
+        if (vm().transport.value.playing) tap("thumb_play")
         await("stopped") { !vm().transport.value.playing }
     }
 
@@ -180,7 +184,7 @@ class GuideJourneyTest {
 
     private fun Project.strip(name: String) = mixer.channels[InstrumentTrack.mixerChannel(trackNamed(name))]
 
-    /** The welcome › « Créer mon premier morceau (guidé) » › [style] › « Créer maintenant »: the song opens on « Ton morceau est prêt ». */
+    /** The welcome › « Fais-moi un morceau » › [style] › « Créer maintenant »: the song opens on « Ton morceau est prêt ». */
     private fun firstSong(simple: Boolean, style: String, family: String) {
         launch()
         j.firstLaunch(simple = simple, guided = true)
@@ -242,6 +246,32 @@ class GuideJourneyTest {
         tap("guide_later")
         await("arrange later") { status("start.arrange") == GuideStatus.LATER }
 
+        // Audit final: the style's lesson, its sounds one by one (« Garder ce son »).
+        await("the sounds") { !ui().loading && ui().next != null && ui().next!!.id != "start.arrange" }
+        // Each card waited for, kept once (one change), then waited for until the analysis has moved
+        // past it: waiting on a stale `ui().next` (the analysis runs 300 ms after the edit settles)
+        // spun on the card just kept, or waited a full minute for a card already gone (revue neuve, MOYEN 2).
+        val kept = LinkedHashMap<String, Int>()
+        while (ui().next?.stage == 1) {
+            val id = ui().next!!.id
+            check(id !in kept) { "$id offered again after being kept: $kept" }
+            onCard(id)
+            val edits = vm().guide.edits
+            // « Garder ce son » of this very card; the panel may be redrawn under the finger: tried again then.
+            val keep = androidx.compose.ui.test.hasTestTag("guide_option_keep") and androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("guide_card_$id"))
+            run {
+                repeat(5) {
+                    if (status(id) == GuideStatus.DONE) return@run
+                    runCatching { compose.onNode(keep).apply { if (!isDisplayed()) performScrollTo() }.performClick(); compose.waitForIdle() }
+                    if (status(id) != GuideStatus.DONE) await("the card $id again", seconds = 10) { status(id) == GuideStatus.DONE || shown("guide_card_$id") }
+                }
+            }
+            await("$id passed") { status(id) == GuideStatus.DONE && !ui().loading && ui().next?.id != id }
+            kept[id] = vm().guide.edits - edits
+        }
+        assertTrue("the style's sounds: $kept", kept.size >= 3)
+        // One change per card: « Garder » never applied twice, nor on the card after it.
+        assertTrue("one change per card: $kept", kept.values.all { it == 1 })
         // The stages: « Voilà ce que j'ai mis » first (the assistant's chains, effect by effect).
         onCard("fx.review")
         compose.onNodeWithTag("guide_effects").assertExists()

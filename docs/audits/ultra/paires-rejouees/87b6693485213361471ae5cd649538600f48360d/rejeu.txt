@@ -1,0 +1,4 @@
+rouge: d503254d168e14a1da342231e823fccd9157f412
+test: BenchSelfTest#reachTagTouchesAVisibleElementInPlace
+rejoué : 2026-11-11, lot « verdicts », clone jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *BenchSelfTest.reachTagTouchesAVisibleElementInPlace (rc=1 769 s ; rc=0 322 s)
+aussi : BenchEngineTest#anExportSizeIsSaidToBeTheBenchs et BenchSongClockTest#aMicTakeEndsWithTheSongsEnd, rouges sur le rouge et verts sur le vert (rouge-<classe>.xml, vert-<classe>.xml)

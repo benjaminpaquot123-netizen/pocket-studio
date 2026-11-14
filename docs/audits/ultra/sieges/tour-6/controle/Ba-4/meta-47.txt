@@ -1,0 +1,2 @@
+route=dialogue:notice_lengthen
+nouvelle=1

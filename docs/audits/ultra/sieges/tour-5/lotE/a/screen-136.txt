@@ -1,0 +1,68 @@
+Écran 136 (588x1278)
+touchable « Techno Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Arrêter l'enregistrement » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 83,114
+bouton « Montée mesure 1/4 » (nom « en boucle ») @ 248,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+touchable « Souffle montant Synthé » @ 87,186
+touchable « Chute grave Synthé » @ 256,186
+touchable « Ma mélodie Mélodie filtrée » (nom « Options de Ma mélodie ») @ 462,186
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : I · Montée » @ 126,264
+case « Clavier » [sélectionné] @ 78,354
+case « Notes » @ 203,354
+bouton «  Vider » (nom « Vider cette piste dans la partie I · Montée ») @ 508,354
+texte « Prêt ? » @ 144,429
+texte « 1 » @ 66,456
+bouton «  Arrêter » @ 482,456
+texte « La prise commence après le décompte. » @ 254,474
+bouton « Octave plus bas » @ 347,582
+bouton « Octave plus haut » @ 510,582
+texte « Octave 3 » @ 428,582
+bouton « CLAVIER » [état « Déplié »] @ 109,582
+bouton « Do » (nom « Do 4 ») @ 60,742
+bouton « Do# 4 » @ 77,698
+bouton « Ré 4 » [désactivé, état « Hors de la gamme du morceau »] @ 96,742
+bouton « Ré# 4 » @ 113,698
+bouton « Mi 4 » [désactivé, état « Hors de la gamme du morceau »] @ 132,742
+bouton « Fa 4 » @ 168,742
+bouton « Fa# 4 » @ 185,698
+bouton « Sol 4 » [désactivé, état « Hors de la gamme du morceau »] @ 204,742
+bouton « Sol# 4 » @ 221,698
+bouton « La 4 » [désactivé, état « Hors de la gamme du morceau »] @ 240,742
+bouton « La# 4 » @ 257,698
+bouton « Si 4 » [désactivé, état « Hors de la gamme du morceau »] @ 276,742
+bouton « Do » (nom « Do 5 ») @ 312,742
+bouton « Do# 5 » @ 329,698
+bouton « Ré 5 » [désactivé, état « Hors de la gamme du morceau »] @ 348,742
+bouton « Ré# 5 » @ 365,698
+bouton « Mi 5 » [désactivé, état « Hors de la gamme du morceau »] @ 384,742
+bouton « Fa 5 » @ 420,742
+bouton « Fa# 5 » @ 437,698
+bouton « Sol 5 » [désactivé, état « Hors de la gamme du morceau »] @ 456,742
+bouton « Sol# 5 » @ 473,698
+bouton « La 5 » [désactivé, état « Hors de la gamme du morceau »] @ 492,742
+bouton « La# 5 » @ 509,698
+bouton « Si 5 » [désactivé, état « Hors de la gamme du morceau »] @ 528,742
+case « Accords » @ 109,903
+case « Pads » @ 236,903
+case « 2 octaves » [sélectionné] @ 116,987
+case « 1 octave » @ 265,987
+case « Gamme » @ 404,987
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Annuler » (nom « Annuler la dernière action ») [désactivé] @ 95,1059
+bouton « Arrêter » @ 223,1059
+bouton « 132 Tempo » (nom « Tempo : 132 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » [sélectionné] @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

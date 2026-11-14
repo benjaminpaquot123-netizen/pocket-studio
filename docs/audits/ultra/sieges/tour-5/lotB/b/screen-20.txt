@@ -1,0 +1,7 @@
+Écran 20 (588x1278)
+texte « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » @ 315,1050
+bouton « Jasne » @ 481,1134
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

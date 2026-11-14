@@ -1,0 +1,3 @@
+parent: 56abe74738602cc1f7f59cf2036651197f99c3d5
+test: Tour6Tuto4TechnoTest#tradeWordsExplainedWhereTheyFirstShow
+rejoué : 2026-11-14, worktree jetable détaché à 56abe7473, gradle-file.sh : « « transition » first shows in make_montee, explained in gap »

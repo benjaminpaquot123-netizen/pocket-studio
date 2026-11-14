@@ -1,0 +1,90 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-08-mes-exports-simple rejeu.n=51
+#0 PREMIER ECRAN reel_s=6.2 simule_s=2.4 jvm_s=14.2 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 ETIQUETTE welcome_demo : 294 816
+#1 > touche 294 816
+#1 DOIGT welcome_demo « Écouter une démo »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e57b618a9b | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 ETIQUETTE mode_card_pro : 294 510
+#2 > touche 294 510
+#2 DOIGT mode_card_pro « Pro »
+#3 ROUTE dialogue:demo_ready | MODE pro | EMPREINTE 380ad1b3fd | project=p-e91cc727 no tuto
+#3 SON Son : rien ne joue.
+#3 > retour
+#3 RETOUR
+#4 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f88a7c4c43 | project=p-e91cc727 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Démo · Acid house » ellipsized (« … »)
+#4 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
+#4 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 ETIQUETTE top_share : 543 42
+#4 > touche 543 42
+#4 DOIGT top_share
+#4 DIALOGUE 0.7 s
+#5 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 902fba7fd8 | project=p-e91cc727 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
+#5 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
+#5 LAYOUT OVERLAP « 0:13 » over the touchable « Fermer la feuille » (48 x 27 dp)
+#5 LAYOUT OVERLAP « 4 parties » over the touchable « Fermer la feuille » (59 x 20 dp)
+#5 LAYOUT OVERLAP «  Écouter » over the touchable « Fermer la feuille » (56 x 20 dp)
+#5 LAYOUT OVERLAP « Volume visé » over the touchable « Fermer la feuille » (79 x 20 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#5 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Fermer la feuille » (146 x 20 dp)
+#5 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Fermer la feuille » (101 x 20 dp)
+#5 LAYOUT OVERLAP « Auto (style) · −9 LUFS » over the touchable « Fermer la feuille » (149 x 20 dp)
+#5 LAYOUT OVERLAP « Désactivée » over the touchable « Fermer la feuille » (75 x 20 dp)
+#5 LAYOUT OVERLAP « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (303 x 54 dp)
+#5 LAYOUT OVERLAP « Tout est prêt : aucun solo oublié, aucune piste coupée. » over the touchable « Fermer la feuille » (304 x 40 dp)
+#5 LAYOUT OVERLAP «   Vidéo pour les réseaux · 30 s » over the touchable « Fermer la feuille » (166 x 20 dp)
+#5 LAYOUT OVERLAP « Autres fichiers » over the touchable « Fermer la feuille » (99 x 20 dp)
+#5 LAYOUT OVERLAP « Piste par piste, MIDI, FLAC… dans Mix » over the touchable « Fermer la feuille » (230 x 18 dp)
+#5 LAYOUT OVERLAP « Sauvegarder le morceau en .zip » over the touchable « Fermer la feuille » (212 x 14 dp)
+#5 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Fermer la feuille » (137 x 20 dp)
+#5 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Fermer la feuille » (123 x 20 dp)
+#5 LAYOUT OVERLAP «   Partager » over the touchable « Fermer la feuille » (76 x 24 dp)
+#5 LAYOUT OVERLAP « Mes fichiers » over the touchable « Fermer la feuille » (83 x 20 dp)
+#5 LAYOUT OVERLAP « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » over the touchable « Fermer la feuille » (206 x 36 dp)
+#5 LAYOUT CONTRAST « 0:13 » 1.45:1 (needs 3.0:1, 22 sp)
+#5 LAYOUT CONTRAST « 4 parties » 3.07:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « Streaming · −14 LUFS » 3.90:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Club · −8 LUFS » 4.29:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Désactivée » 4.40:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. Le même réglage que dans Mix. » 2.53:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST «   Vidéo pour les réseaux · 30 s » 1.67:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Autres fichiers » 1.35:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Piste par piste, MIDI, FLAC… dans Mix » 3.07:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Sauvegarder le morceau en .zip » 1.25:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » 3.32:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#5 ETIQUETTE share_target_STREAMING : 164 453
+#5 > touche 164 453
+#5 DOIGT share_target_STREAMING « Streaming · −14 LUFS »
+#5 DIALOGUE 0.3 s
+#6 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d07a6cc2e8 | project=p-e91cc727 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (339 x 54 dp)
+#6 ETIQUETTE share_go : 294 1116
+#6 > touche 294 1116
+#6 DOIGT share_go «   Partager »
+#6 DIALOGUE 0.4 s
+#7 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-e91cc727 no tuto
+#7 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#7 LAYOUT CONTRAST «   25 % » 4.21:1 (needs 4.5:1, 14 sp)
+#7 > attends 10
+#7 DIALOGUE 0.3 s
+#8 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-e91cc727 no tuto
+#8 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#8 LAYOUT CONTRAST «   66 % » 4.21:1 (needs 4.5:1, 14 sp)
+#8 > attends 10
+#8 DIALOGUE 0.3 s
+#9 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 0a4f0d60e7 | project=p-e91cc727 no tuto
+#9 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#9 LAYOUT CONTRAST «   100 % » 4.21:1 (needs 4.5:1, 14 sp)
+#9 > touche vue_Drive
+#9 BANC étiquette introuvable : vue_Drive
+#9 FIN : rejeu : divergé au pas 9 (étiquette « vue_Drive » introuvable)

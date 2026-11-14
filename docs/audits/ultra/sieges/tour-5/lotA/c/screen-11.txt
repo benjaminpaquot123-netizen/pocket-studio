@@ -1,0 +1,6 @@
+Écran 11 (588x1278)
+texte « Renommer » @ 178,507
+champ « Nom du projet 17/40 » contenu « Devoir musique L1 » @ 294,620
+bouton « Effacer » @ 468,611
+bouton « Annuler » @ 346,758
+bouton « OK » @ 460,758

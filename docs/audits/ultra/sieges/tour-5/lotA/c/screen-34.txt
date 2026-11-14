@@ -1,0 +1,62 @@
+Écran 34 (588x1278)
+touchable « Projet final Léa » (nom « Sauvegardé ») @ 298,36
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 543,36
+touchable « Mes projets » @ 111,114
+bouton « A » (nom « Partie en cours : A. Toucher pour changer de partie. ») @ 252,114
+bouton « Annuler la dernière action » @ 327,114
+bouton « Enregistrer : micro, clavier ou pads » @ 399,114
+bouton « Jouer » @ 471,114
+bouton « Partager mon morceau » @ 543,114
+bouton « 120  BPM » (nom « Tempo : 120 BPM ») @ 73,186
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,186
+onglet « Batterie 16 pads » [sélectionné] @ 81,255
+onglet « Acid 303 Ligne de basse » @ 260,255
+onglet « Voix Micro » @ 425,255
+onglet « Remix Séparer » @ 533,255
+  → la suite sur le côté (glisse pour la voir)
+texte « Partie : A » @ 67,315
+touchable « Kick » @ 84,396
+touchable « Kick 2 » @ 224,396
+touchable « Caisse » @ 364,396
+touchable « Caisse 2 » @ 504,396
+touchable « Clap » @ 84,486
+touchable « Charley » @ 224,486
+touchable « Charley ouvert » @ 364,486
+touchable « Tom grave » @ 504,486
+touchable « Tom médium » @ 84,576
+touchable « Tom aigu » @ 224,576
+touchable « Rim » @ 364,576
+touchable « Cowbell » @ 504,576
+touchable « Cymbale » @ 84,666
+touchable « Shaker » @ 224,666
+touchable « Conga » @ 364,666
+touchable « Zap » @ 504,666
+bouton « Kit : Classique » @ 130,755
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 412,754
+case « Tous les pads » @ 450,867
+bouton « PAS : KICK » [état « Déplié »] @ 198,867
+bouton « ? » (nom « Qu'est-ce que « Pas » ? ») @ 222,867
+touchable « 1 » (nom « Pas 1 ») [état « coup, force 100 % »] @ 70,931
+touchable « Pas 2 » [état « vide »] @ 133,931
+touchable « Pas 3 » [état « vide »] @ 197,931
+touchable « Pas 4 » [état « vide »] @ 261,931
+touchable « 2 » (nom « Pas 5 ») [état « coup, force 100 % »] @ 325,931
+touchable « Pas 6 » [état « vide »] @ 389,931
+touchable « Pas 7 » [état « vide »] @ 453,931
+touchable « Pas 8 » [état « vide »] @ 517,931
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 14 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo : 120 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » [sélectionné] @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

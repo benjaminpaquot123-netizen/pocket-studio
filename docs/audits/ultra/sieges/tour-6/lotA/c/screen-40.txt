@@ -1,0 +1,13 @@
+Écran 40 (588x1278)
+texte « BenStudio » @ 156,72
+texte « Que veux-tu faire ? » @ 220,132
+bouton ✓ « Continuer Simple Trap Trap · 104 mes. · 2:58 · 26 parties Sauvegardé à l'instant » → @ 294,312
+bouton (étincelles) « Nouveau morceau Un style en une touche, ou « Fais-moi un morceau ». » → @ 294,535
+bouton (dossier ouvert) « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » → @ 294,700
+bouton (quatre vagues) « Remix Séparation des pistes : batterie, basse, voix et le reste. » → @ 294,865
+bouton (grille de pads) « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite. » → @ 294,1041
+bouton « ↓ 5 autres » @ 486,1164
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

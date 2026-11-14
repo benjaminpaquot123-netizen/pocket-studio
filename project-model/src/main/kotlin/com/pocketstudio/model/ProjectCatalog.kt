@@ -12,10 +12,19 @@ data class ProjectInfo(
     /** Last save, in milliseconds since 1970. */
     val modified: Long,
     val tempoBpm: Double,
-    /** Length of the longest part of the current scene, in bars. */
+    /** The song's length in bars ([SongLength]: the loop shown when there is no song yet). */
     val bars: Int,
     val scenes: Int,
     val hasRemix: Boolean,
+    /** Its file could not be read: it is never opened (that would set it aside again), only sent as it is. */
+    val unreadable: Boolean = false,
+    /** « La version d'avant la dernière séance » is kept ([ProjectCatalog.restoreOpening]). */
+    val hasOpening: Boolean = false,
+    /** Pad Live (n° 25): the home's « Live » project ([PadLiveSet.home]). */
+    val padLive: Boolean = false,
+    /** Audit ultra round 1, n° 23: the song's seconds and parts, as the home and the studio count them ([SongLength]). */
+    val seconds: Int = 0,
+    val parts: Int = 0,
 )
 
 /** A project .zip brought in: the new project's [id], and the sounds it named but did not hold (left out). */
@@ -27,8 +36,8 @@ data class ImportedProject(val id: String, val missingSounds: Int = 0)
  * [stems]: where separated songs live (`stems/<set id>/`), so a remix's .zip carries its song.
  * Blocking file work: call it off the main thread.
  */
-class ProjectCatalog(private val root: File, private val trash: File, private val stems: File? = null) {
-    val store = ProjectStore(root)
+class ProjectCatalog(private val root: File, private val trash: File, private val stems: File? = null, private val backup: File? = null) {
+    val store = ProjectStore(root, backup)
 
     fun list(): List<ProjectInfo> = store.list().mapNotNull { info(it) }.sortedByDescending { it.modified }
 
@@ -37,9 +46,49 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         val modified = listOf(File(dir, ProjectStore.MAIN), File(dir, ProjectStore.BACKUP)).filter { it.exists() }.maxOfOrNull { it.lastModified() }
             ?: return null
         val p = runCatching { store.load(id) }.getOrNull()
-            ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false)
-        val scene = p.currentSceneContent()
-        return ProjectInfo(id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null)
+            ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false, unreadable = true)
+        val length = SongLength.of(p)
+        return ProjectInfo(
+            id, p.name, modified, p.tempoBpm, length.bars, p.allScenes.size, p.remix.setId != null,
+            hasOpening = File(dir, ProjectStore.OPENING).isFile, padLive = p.padLive.home,
+            seconds = length.seconds, parts = length.parts,
+        )
+    }
+
+    /**
+     * A project's folder as it is on the phone (its files, read or not, and its sounds) as a .zip:
+     * the only way out for a project the app cannot read (« Envoyer le fichier brut »), to be
+     * repaired elsewhere. Nothing is decoded.
+     */
+    @Throws(IOException::class)
+    fun exportRawZip(id: String, out: java.io.OutputStream) {
+        val dir = store.folder(id)
+        if (!dir.isDirectory) throw IOException(tr("projet introuvable"))
+        java.util.zip.ZipOutputStream(out.buffered()).use { zip ->
+            zip.setLevel(java.util.zip.Deflater.BEST_SPEED)
+            dir.walkTopDown().filter { it.isFile }.sortedBy { it.path }.forEach { f ->
+                zip.putFile(f.relativeTo(dir).invariantSeparatorsPath, f)
+            }
+        }
+    }
+
+    /**
+     * « La version d'avant la dernière séance » of [id] ([ProjectStore.keepOpening]) as a new
+     * project named [name] (its sounds copied): nothing is replaced. Returns the new id.
+     */
+    @Throws(IOException::class)
+    fun restoreOpening(id: String, name: String): String {
+        val before = store.loadOpening(id) ?: throw IOException(tr("aucune version d'avant"))
+        val copy = newId()
+        try {
+            val samples = File(store.folder(id), SAMPLES)
+            if (samples.isDirectory) samples.copyRecursively(File(store.folder(copy), SAMPLES), overwrite = true)
+            store.save(copy, before.copy(name = name.take(MAX_NAME)).sanitized())
+        } catch (e: Exception) {
+            store.folder(copy).deleteRecursively()
+            throw if (e is IOException) e else IOException(tr("copie impossible"), e)
+        }
+        return copy
     }
 
     /**
@@ -95,6 +144,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
             if (!from.copyRecursively(File(trash, entry), overwrite = true)) throw IOException(tr("copie impossible"))
             from.deleteRecursively()
         }
+        // A phone restored from the cloud backup does not bring a deleted project back.
+        store.forgetMirror(id)
         return entry
     }
 
@@ -106,7 +157,35 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         val wanted = entry.substringBefore('@')
         val id = if (store.folder(wanted).exists()) newId() else wanted
         if (!from.renameTo(store.folder(id))) throw IOException(tr("restauration impossible"))
+        store.refreshMirror(id)
         return id
+    }
+
+    /**
+     * The projects of the cloud backup's copies ([ProjectStore] `backup`) that this phone does not
+     * have (a phone set up again from Android's backup, which holds no sounds): each one written
+     * back without its sounds (its pads back to the kit's). Never one in the list or the trash.
+     * Returns how many came back.
+     */
+    fun restoreFromBackup(): Int {
+        val dir = backup ?: return 0
+        val known = knownIds()
+        var restored = 0
+        dir.listFiles().orEmpty().filter { it.isFile && it.name.endsWith(ProjectStore.MIRROR) }.forEach { f ->
+            val id = f.name.removeSuffix(ProjectStore.MIRROR)
+            if (id in known || !PadSample(id, "").isSafe) return@forEach
+            val read = runCatching {
+                java.util.zip.GZIPInputStream(f.inputStream()).bufferedReader(Charsets.UTF_8).use { ProjectJson.decode(it.readText()) }.sanitized()
+            }.getOrNull() ?: return@forEach
+            runCatching { store.save(id, read.withoutSounds(read.sampleFiles)) }.onSuccess { restored++ }
+        }
+        return restored
+    }
+
+    /** A copy for the cloud backup of each project that has none (saved before the copies existed). */
+    fun mirrorMissing() {
+        val dir = backup ?: return
+        store.list().forEach { id -> if (!File(dir, "$id${ProjectStore.MIRROR}").exists()) store.refreshMirror(id) }
     }
 
     /** The projects in the trash, most recently deleted first (each one can be [restore]d). */
@@ -185,11 +264,18 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         root.listFiles().orEmpty().filter { it.isDirectory }.map { it.name }.toSet() +
             trash.listFiles().orEmpty().filter { it.isDirectory }.map { it.name.substringBefore('@') }
 
-    /** Forgets trashed projects older than [maxAgeMs]. */
+    /**
+     * Forgets trashed projects older than [maxAgeMs]. Never a project set aside as unreadable
+     * (`-illisible-` in its id) nor one whose file cannot be read: it may be the only copy of
+     * someone's work, to be repaired; only « Supprimer définitivement » removes it.
+     */
     fun purgeTrash(maxAgeMs: Long, now: Long = System.currentTimeMillis()) {
+        val bin = ProjectStore(trash)
         trash.listFiles()?.forEach { f ->
             val at = f.name.substringAfterLast('@').toLongOrNull() ?: return@forEach
-            if (now - at > maxAgeMs) f.deleteRecursively()
+            if (now - at <= maxAgeMs) return@forEach
+            if (f.name.contains(UNREADABLE) || runCatching { bin.load(f.name) }.isFailure) return@forEach
+            f.deleteRecursively()
         }
     }
 
@@ -280,9 +366,10 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
                 }
             }
             // Cleaned first: only plain file names count (a path like ../x is dropped here).
-            val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet Pocket Studio"))).sanitized()
+            val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet BenStudio"))).sanitized()
             val missing = read.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").isFile }.toSet()
-            val p = if (missing.isEmpty()) read else read.withoutSounds(missing)
+            // A name as long as the file allows (a crafted .zip) is cut as a rename would.
+            val p = (if (missing.isEmpty()) read else read.withoutSounds(missing)).let { if (it.name.length > MAX_NAME) it.copy(name = it.name.take(MAX_NAME)) else it }
             store.save(id, p)
             moveStems(stemsIn, p.remix.setId)
             return ImportedProject(id, missing.size)
@@ -316,6 +403,19 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { DefaultNames.shown(it) !in names }
     }
 
+    /**
+     * Audit ultra round 1, n° 26 (seat F d): a copy's name, « [name] (copie) », then « (copie 2) »… for a copy of a
+     * copy; the name is shortened to keep the word whole within [MAX_NAME] (« … (copie) (copie) » was cut to « (copie) »).
+     */
+    fun copyName(name: String): String {
+        val names = list().map { it.name }.toSet()
+        val base = name.replace(COPY_SUFFIX, "").trimEnd()
+        return generateSequence(1) { it + 1 }.map { n ->
+            val suffix = if (n == 1) " (copie)" else " (copie $n)"
+            base.take(MAX_NAME - suffix.length).trimEnd() + suffix
+        }.first { it !in names }
+    }
+
     /** [name], or « [name] 2 », « 3 »… when a project already has it (as shown): never two songs alike in the list. */
     fun freeName(name: String): String {
         val names = list().map { DefaultNames.shown(it.name) }.toSet()
@@ -341,6 +441,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         const val SAMPLES = "samples"
         const val STEMS = "stems"
         const val MAX_NAME = 40
+        /** « (copie) » or « (copie 3) » at the end of a name ([copyName]). */
+        private val COPY_SUFFIX = Regex("""( \(copie(?: \d+)?\))+$""")
         const val TRASH_DAYS = 30L
         /** A 7-minute stem (the longest song separated) is about 150 MB. */
         const val MAX_ZIP_ENTRY = 256L * 1024 * 1024
@@ -351,6 +453,11 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
          */
         const val MAX_PROJECT_JSON = 32L * 1024 * 1024
         const val MAX_ZIP_TOTAL = 2048L * 1024 * 1024
+        /** In the folder name of a project the app could not read and set aside (`<id>-illisible-<time>`). */
+        const val UNREADABLE = "-illisible-"
+
+        /** The name of « the version before the session » of a project named [name] (see [DefaultNames]). */
+        fun beforeSessionName(name: String): String = DefaultNames.BEFORE_SESSION.format(name.take(MAX_NAME - 20))
         private val SET_ID = Regex("\"setId\"\\s*:\\s*\"([^\"]+)\"")
     }
 }

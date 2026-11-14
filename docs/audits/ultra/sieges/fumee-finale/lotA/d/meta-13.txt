@@ -1,0 +1,2 @@
+route=dialogue:share_progress
+nouvelle=1

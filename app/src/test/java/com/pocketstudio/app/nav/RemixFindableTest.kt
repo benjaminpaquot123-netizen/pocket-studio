@@ -7,6 +7,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.assertTextContains
+import org.junit.Assert.assertTrue
 import com.pocketstudio.app.ui.withinGestures
 import org.junit.After
 import org.junit.Rule
@@ -44,8 +47,41 @@ class RemixFindableTest {
     fun fromTheOpeningItIsOneTouch() {
         h.start(launchChoice = true)
         h.awaitTag("launch_remix")
+        // Owner (2026-10-29): a showcase card of its own, « Remix », the separation said under it.
+        compose.onNodeWithTag("launch_remix").assertTextContains("Remix", substring = true)
+            .assertTextContains("Séparation des pistes : batterie, basse, voix et le reste.")
+        // Owner (2026-10-29): the Remix of the home screen, a song chosen first: no project made, so no « Simple ou Pro ? ».
         compose.withinGestures("Remixer une chanson (ouverture)", FROM_OPENING) { tap("launch_remix") }
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertRemix()
+    }
+
+    /**
+     * Remix testers (Sarah installed the app to extract a voice): the welcome has a way in, with the
+     * word « voix »: a project of its own (« Remix »), opened on the Remix page (as « Que veux-tu faire ? » does).
+     */
+    @Test
+    fun fromTheWelcomeItIsOneTouch() {
+        h.start(simple = true, firstLaunch = true)
+        h.awaitTag("welcome_remix")
+        val before = com.pocketstudio.app.projects.CurrentProject.get(h.app)
+        compose.onNodeWithText("Extraire la voix d'une chanson").assertExists()
+        // The last card of the welcome (its order kept, Benjamin's): one scroll on a small phone, one touch,
+        // then « Simple ou Pro ? » (a new project, owner 2026-10-29).
+        compose.withinGestures("Extraire la voix (accueil)", FROM_A_SPACE + 1) {
+            tap("welcome_remix")
+            tap("mode_card_simple")
+        }
+        val end = System.currentTimeMillis() + 10_000
+        while (com.pocketstudio.app.projects.CurrentProject.get(h.app) == before) {
+            check(System.currentTimeMillis() < end) { "no project made for the Remix" }
+            Thread.sleep(50)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        }
+        // The project opens (the activity is rebuilt on it) with the Remix page asked for (the request
+        // may already be taken by the screen before the rebuild: its page is kept across it, as
+        // « Que veux-tu faire ? »'s Remix does).
+        com.pocketstudio.app.remix.SeparationJob.openHandled()
     }
 
     @Test
@@ -65,7 +101,8 @@ class RemixFindableTest {
         h.start(simple = true)
         compose.withinGestures("Remixer une chanson (Mode simple)", FROM_A_SPACE) {
             tap("top_more")
-            tap("more_remix")
+            compose.onNodeWithTag("plus_remix").assertTextContains("Remix")
+            tap("plus_remix")
         }
         assertRemix()
         // Its way back to the song.

@@ -1,0 +1,15 @@
+{
+  "Copier la note": "ノートをコピー",
+  "Copier ces %d notes": "この%d個のノートをコピー",
+  "Supprimer la note": "ノートを削除",
+  "Supprimer ces %d notes": "この%d個のノートを削除",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "マスをタップ：ノートを追加。ノートをタップ：選択。長押し：メニュー（コピー、削除…）。ドラッグ：移動、端をドラッグ：長さ。上の数字：1小節まるごと。下のレーン：ドラッグでベロシティ。",
+  "%s demi-ton": "%s半音",
+  "Régler le son (filtre, enveloppe…)": "音を調整（フィルター、エンベロープ…）",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "%sのローパス：低音を残し、高音をやわらげます。",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "%s付近のバンドパス：音のその帯域だけを残します。",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "%sのハイパス：それより下の低音を取り除きます。",
+  "Un égaliseur : %1$s vers %2$s.": "イコライザー：%2$sで%1$s。",
+  "Réussi ! La couleur du morceau est choisie.": "できました！曲の色が決まりました。",
+  "Revenir au tuto": "チュートリアルに戻る"
+}

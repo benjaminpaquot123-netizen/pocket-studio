@@ -1,0 +1,316 @@
+#0 SIEGE lang=es device=phone font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE f192b91fd1 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Tu estudio de música, en tu bolsillo. » 3.58:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « ¡Bienvenido! Haz tu música en tu dispositivo. ¿Por dónde empezamos? » 2.68:1 (needs 4.5:1, 16 sp)
+#1 > touche 294 462
+#1 DOIGT welcome_guided « Crear mi primera canción (guiado) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3477c6f901 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Simple » 2.10:1 (needs 3.0:1, 24 sp)
+#2 > touche 294 333
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 863d9edf99 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Paso 1: elige un estilo » 4.27:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « • BPM: la velocidad de la canción, en pulsos por minuto. » 2.84:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Tranquilo (Chill, Lo-fi) » 2.47:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 6 estilos » 2.52:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 10 estilos » 3.11:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 9 estilos » 2.16:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.94:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Otros » 1.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 estilos » 1.38:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 672
+#3 DOIGT wizard_family_Hip-hop « Hip-hop »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 26c249a093 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « El rap de hoy, nacido en Atlanta: un 808 que hace temblar, hi-hats que ruedan muy rápido, un clap pesado y una melodía en bucle. » ellipsized (« … »)
+#4 LAYOUT CUT « El trap en versión oscura, de Londres a París: un 808 que se desliza, una caja desplazada y hi-hats que van a saltitos. » ellipsized (« … »)
+#4 LAYOUT CUT « El sonido de los vídeos de drift: una melodía de cowbell en bucle, un 808 saturado que retumba y una batería que pega fuerte. » ellipsized (« … »)
+#4 LAYOUT CUT « Como referencia: Kordhell – Murder in My Mind (2022) » ellipsized (« … »)
+#4 LAYOUT CUT « El rap de la vieja escuela de Nueva York: un bucle de piano jazz, un kick redondo, una caja que restalla y un groove que se balancea. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « Hip-hop · 140 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Drill » 1.55:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Hip-hop · 142 BPM » 1.34:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Phonk » 1.63:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Hip-hop · 130 BPM » 1.63:1 (needs 4.5:1, 13 sp)
+#4 > touche 57 1095
+#4 DOIGT wizard_style_listen_phonk
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6b199ddcbb | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Phonk ».
+#5 > touche 320 1125
+#5 DOIGT wizard_style_phonk « Phonk »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE e73ee50e42 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Phonk ».
+#6 > glisse 294 1100 294 400
+#6 DOIGT wizard_style_phonk « Phonk »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3cff540577 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « El rap electrónico de Londres, rápido y crudo: una batería seca llena de huecos, un bajo cuadrado que gruñe y acordes cortos helados. » ellipsized (« … »)
+#7 LAYOUT CUT « La música de baile de Nueva Jersey, estrella de TikTok: cinco kicks que rebotan, trocitos de voz repetidos y mucha energía. » ellipsized (« … »)
+#7 LAYOUT CUT « Como referencia: Lil Uzi Vert – Just Wanna Rock (2022) » ellipsized (« … »)
+#7 LAYOUT CONTRAST « Hip-hop · 140 BPM » 3.50:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « El trap en versión oscura, de Londres a París: un 808 que se desliza, una caja desplazada y hi-hats que van a saltitos. » 3.01:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Como referencia: » 1.72:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Elegir este estilo » 1.70:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Hip-hop · 92 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Grime » 2.45:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « El rap electrónico de Londres, rápido y crudo: una batería seca llena de huecos, un bajo cuadrado que gruñe y acordes cortos helados. » 3.09:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Hip-hop · 140 BPM » 3.04:1 (needs 4.5:1, 13 sp)
+#7 > touche 322 686
+#7 DOIGT wizard_style_choose_phonk « Elegir este estilo »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3ebba30cb1 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Paso 2 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Toca un ambiente para oírlo: sus cuatro acordes, tocados sobre el ritmo del estilo. » 2.70:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Oscuro / épico » 2.46:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Futurista / electro » 1.94:1 (needs 4.5:1, 16 sp)
+#8 > touche 294 171
+#8 DOIGT wizard_style_packs_download « Descargar los sonidos del estilo »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE c2ea2efcdc | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 436 1224
+#9 DOIGT wizard_next « Siguiente »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 368e83ff1d | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Paso 3 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « Los cimientos del tema: el latido grave que todo el mundo sigue marcando con el pie. » 3.53:1 (needs 4.5:1, 16 sp)
+#10 LAYOUT CONTRAST « 3 » 2.77:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « 4 » 2.58:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Suena en Estrofa y Estribillo » 2.66:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « ELIGE EL SONIDO » 3.03:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Para este estilo » 1.94:1 (needs 3.0:1, 16 sp)
+#10 LAYOUT CONTRAST « Phonk » 1.36:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Kick 4 » 1.37:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Kick 8 » 1.48:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#10 > touche 436 1224
+#10 DOIGT wizard_next « Siguiente »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 636b0ef223 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Paso 4 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « Una palmada: refuerza o sustituye a la caja, muy habitual en house y trap. » 3.53:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « Clap 4 » 1.37:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Clap 6 » 1.48:1 (needs 4.5:1, 14 sp)
+#11 > touche 424 585
+#11 DOIGT wizard_line_listen «   Con el ritmo »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 835da1f139 | project=projet-1 no tuto
+#12 SON Son : un son de la bibliothèque joue (écoute).
+#12 > touche 436 1224
+#12 DOIGT wizard_next « Siguiente »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 37d3698ae5 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Paso 5 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Responde al kick, a menudo en los tiempos 2 y 4: es la que da el impulso. » 3.53:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « Caisse claire 2 » 1.37:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Caisse claire 5 » 1.48:1 (needs 4.5:1, 14 sp)
+#13 > touche 436 1224
+#13 DOIGT wizard_next « Siguiente »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0fb836cbe6 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Paso 6 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « El “tic-tic” regular y ligero: da la velocidad y el groove. » 3.53:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « 2 » 2.28:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 1 » 1.45:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 3 » 2.52:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Usar esta línea » 2.49:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « ELIGE EL SONIDO » 3.32:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Charley 4 » 1.36:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Phonk » 1.37:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Charley 7 » 3.20:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Phonk » 1.65:1 (needs 4.5:1, 12 sp)
+#14 > touche 436 1224
+#14 DOIGT wizard_next « Siguiente »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 8e0c246753 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Paso 7 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « En Phonk: un hi-hat abierto al final del compás: entra en el estribillo y relanza el bucle. » 2.40:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 1 » 1.62:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 3 » 1.72:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 4 » 4.01:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 1 » 1.79:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 2 » 3.96:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 3 » 2.66:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 4 » 2.67:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Suena en Estribillo » 2.39:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Hi-hat abierto » 1.36:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Platillo » 1.36:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Pack Phonk: 128 sonidos en el dispositivo. » 1.63:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « Eliminar » 1.63:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Listo: el pack “Phonk” está en tu teléfono. » 1.39:1 (needs 4.5:1, 14 sp)
+#15 > touche 436 1224
+#15 DOIGT wizard_next « Siguiente »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE 17434997df | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « Recomendado » ellipsized (« … »)
+#16 LAYOUT CUT « Sample de un pack » ellipsized (« … »)
+#16 LAYOUT CUT « Brillante · sostenido » ellipsized (« … »)
+#16 LAYOUT CUT « Brillante · grueso » ellipsized (« … »)
+#16 LAYOUT CUT « Hueco · sostenido » ellipsized (« … »)
+#16 LAYOUT CUT « Suave · sostenido » ellipsized (« … »)
+#16 LAYOUT CONTRAST « Paso 8 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « BAJO » 2.68:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « En Phonk: es el 808, saturado para que gruña: golpea con el kick y se desliza al final del compás. » 2.96:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Crear esta pista » 2.59:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « ELIGE EL SONIDO » 1.91:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Bajo reese » 1.60:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Reese moderno » 1.36:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Brillante · grueso » 1.38:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Bajo wobble » 1.36:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Brillante · sostenido » 1.38:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Bajo que habla » 1.36:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Brillante · sostenido » 1.35:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Bajo growl » 1.35:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Brillante · grueso » 1.35:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Bajo neuro » 1.63:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Sub puro » 1.63:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#16 > touche 423 606
+#16 DOIGT wizard_part_sound_1 « 808 1 · Phonk »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE 107e2e2933 | project=projet-1 no tuto
+#17 SON Son : un son de la bibliothèque joue (écoute).
+#17 > touche 436 1224
+#17 DOIGT wizard_next « Siguiente »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE e19ddb82e5 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Suave · sube despacio » ellipsized (« … »)
+#18 LAYOUT CUT « Brillante · sube despacio » ellipsized (« … »)
+#18 LAYOUT CUT « Máquina de cuerdas » ellipsized (« … »)
+#18 LAYOUT CONTRAST « Paso 9 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Suena en Intro, Estribillo y Puente » 2.60:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « ELIGE EL SONIDO » 3.50:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Recomendado » 3.32:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Suave · sube despacio » 3.12:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Brillante · sube despacio » 1.79:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Órgano » 1.36:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Hueco · sostenido » 1.37:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Piano eléctrico » 1.36:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Suave · sostenido » 1.37:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Máquina de cuerdas » 3.09:1 (needs 4.5:1, 12 sp)
+#18 > touche 436 1224
+#18 DOIGT wizard_next « Siguiente »
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE 601300b9eb | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Paso 10 de 11 · Phonk » 4.27:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « Sample de un pack » 1.36:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Brillante · sostenido » 1.36:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Melodía cuadrada » 1.36:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Melodía ácida » 1.36:1 (needs 4.5:1, 14 sp)
+#19 > touche 436 1224
+#19 DOIGT wizard_next « Siguiente »
+#20 ROUTE dialogue:wizard | MODE simple | EMPREINTE 66fb4967ca | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Paso 11 de 11 · Phonk » 4.29:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST « A » 2.72:1 (needs 3.0:1, 14 sp)
+#20 LAYOUT CONTRAST « Estrofa · el sitio de la voz: kick, bajo y melodía, sin acordes » 3.17:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « C » 1.98:1 (needs 3.0:1, 14 sp)
+#20 LAYOUT CONTRAST « Estribillo · todos tocan » 2.49:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « D » 2.13:1 (needs 3.0:1, 14 sp)
+#20 LAYOUT CONTRAST « Puente · una pausa sin kick ni bajo » 3.44:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Kick 3 » 1.24:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST « 2 » 1.25:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « 4 » 1.37:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Clap 1 » 1.34:1 (needs 4.5:1, 13 sp)
+#20 > touche 436 1224
+#20 DOIGT wizard_create « Crear la canción »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 23cdf5b185 | project=p-10bbf731 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#21 > touche 471 42
+#21 DOIGT top_play
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a95986460d | project=p-10bbf731 no tuto
+#22 SON Son : le morceau joue (partie « A »).
+#22 LAYOUT CUT « Guardado » wider than its box (by 3.0 dp)
+#22 LAYOUT CONTRAST « PARA EMPEZAR » 4.30:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « El sonido de la melodía » 3.89:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Otra batería » 3.95:1 (needs 4.5:1, 14 sp)
+#22 > touche 534 1218
+#22 DOIGT tab_simple_Envoyer « Enviar »
+#23 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 55d89c257c | project=p-10bbf731 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 LAYOUT CONTRAST « Todo listo: ningún solo olvidado, ninguna pista silenciada. » 2.94:1 (needs 4.5:1, 14 sp)
+#23 > touche 294 683
+#23 DOIGT guide_bar « Guía »
+#24 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE edabc0f9e2 | project=p-10bbf731 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 294 542
+#24 DOIGT share_video «   Vídeo para redes sociales · 30 s »
+#25 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE 3f6e57b4d6 | project=p-10bbf731 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT OVERLAP « Vídeo para redes sociales » over the touchable « Cerrar hoja » (271 x 28 dp)
+#25 LAYOUT OVERLAP « 30 segundos alrededor de “Estribillo” » over the touchable « Cerrar hoja » (176 x 40 dp)
+#25 LAYOUT OVERLAP « En vertical (9:16) para stories, TikTok o Reels: la forma de onda, el nombre de las partes, tu título. » over the touchable « Cerrar hoja » (222 x 60 dp)
+#25 LAYOUT OVERLAP « Una copia va a Películas › BenStudio. » over the touchable « Cerrar hoja » (225 x 18 dp)
+#25 LAYOUT OVERLAP « ¿Qué parte? » over the touchable « Cerrar hoja » (80 x 20 dp)
+#25 LAYOUT OVERLAP « 1. Intro » over the touchable « Cerrar hoja » (46 x 20 dp)
+#25 LAYOUT OVERLAP « 2. Estribillo » over the touchable « Cerrar hoja » (78 x 20 dp)
+#25 LAYOUT OVERLAP « 3. Estribillo » over the touchable « Cerrar hoja » (78 x 20 dp)
+#25 LAYOUT OVERLAP « 4. Estribillo » over the touchable « Cerrar hoja » (18 x 20 dp)
+#25 LAYOUT OVERLAP « 15 s » over the touchable « Cerrar hoja » (26 x 20 dp)
+#25 LAYOUT OVERLAP « 30 s » over the touchable « Cerrar hoja » (30 x 20 dp)
+#25 LAYOUT OVERLAP « 60 s » over the touchable « Cerrar hoja » (30 x 20 dp)
+#25 LAYOUT OVERLAP «   Crear el vídeo » over the touchable « Cerrar hoja » (117 x 24 dp)
+#25 LAYOUT OVERLAP « Menos de un minuto, en general. » over the touchable « Cerrar hoja » (197 x 18 dp)
+#25 LAYOUT CONTRAST « 30 segundos alrededor de “Estribillo” » 1.21:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST «   Crear el vídeo » 1.85:1 (needs 3.0:1, 16 sp)
+#25 LAYOUT LABEL « #3313 » long press without text nor description
+#25 > touche 294 1173
+#25 DOIGT video_create «   Crear el vídeo »
+#26 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE 8f01bdf0d0 | project=p-10bbf731 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT OVERLAP « El motor de audio no está listo: vuelve a intentarlo en un momento. » over the touchable « Cerrar hoja » (350 x 40 dp)
+#26 > attends 5
+#27 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE 8f01bdf0d0 | project=p-10bbf731 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 294 1173
+#27 DOIGT video_create «   Crear el vídeo »
+#28 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE 8f01bdf0d0 | project=p-10bbf731 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 522 454
+#28 DOIGT video_close
+#29 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE aab5fec28b | project=p-10bbf731 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 465 374
+#29 DOIGT share_listen «  Detener »
+#30 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 722bfaf646 | project=p-10bbf731 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 294 542
+#30 DOIGT share_video «   Vídeo para redes sociales · 30 s »
+#31 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE d92d747f21 | project=p-10bbf731 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT LABEL « #3519 » long press without text nor description
+#31 > touche 294 1173
+#31 DOIGT video_create «   Crear el vídeo »
+#32 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE e36cb6338c | project=p-10bbf731 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 522 454
+#32 DOIGT video_close
+#33 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 722bfaf646 | project=p-10bbf731 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 294 854
+#33 DOIGT share_go «   Compartir »
+#34 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 0f3f9c36d2 | project=p-10bbf731 no tuto
+#34 SON Son : rien ne joue.
+#34 > attends 10
+#34 PARTAGE Phonk-canci?n-20261104-195531.m4a
+#35 ROUTE dialogue:« Partager « Phonk-canci?n-20261 » | MODE simple | EMPREINTE 5add5c297d | project=p-10bbf731 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 294 831
+#35 DOIGT vue « Enregistrer dans Fichiers »
+#36 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 24db2e9afe | project=p-10bbf731 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 294 542
+#36 DOIGT share_video «   Vídeo para redes sociales · 30 s »
+#37 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE d92d747f21 | project=p-10bbf731 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT LABEL « #3694 » long press without text nor description
+#37 > touche 294 1173
+#37 DOIGT video_create «   Crear el vídeo »
+#38 ROUTE dialogue:video_sheet | MODE simple | EMPREINTE e36cb6338c | project=p-10bbf731 no tuto
+#38 SON Son : rien ne joue.
+#38 > fin
+#38 FIN : fin

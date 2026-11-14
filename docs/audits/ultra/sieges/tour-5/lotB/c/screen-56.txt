@@ -1,0 +1,73 @@
+Écran 56 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 417,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 492,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Drums 16 Pads » [sélectionné] @ 76,183
+onglet « Acid 303 Bassline » @ 223,183
+onglet « Vocals Mikrofon » @ 376,183
+onglet « Remix Trennen » @ 523,183
+bouton «  Spur » @ 677,183
+texte « Teil: A » @ 52,243
+texte « Rumble » @ 93,301
+texte « Noch 4 gestrichelte Kästchen hier » @ 236,330
+touchable « 1 » (nom « Step 1 ») [état « leer, gepunktet: antippen »] @ 90,401
+touchable « Step 2 » [état « leer »] @ 192,401
+touchable « Step 3 » [état « leer »] @ 294,401
+touchable « Step 4 » [état « leer »] @ 397,401
+touchable « 2 » (nom « Step 5 ») [état « leer, gepunktet: antippen »] @ 500,401
+touchable « Step 6 » [état « leer »] @ 603,401
+touchable « Step 7 » [état « leer »] @ 706,401
+touchable « Step 8 » [état « leer »] @ 809,401
+touchable « 3 » (nom « Step 9 ») [état « leer, gepunktet: antippen »] @ 90,482
+touchable « Step 10 » [état « leer »] @ 192,482
+touchable « Step 11 » [état « leer »] @ 294,482
+touchable « Step 12 » [état « leer »] @ 397,482
+touchable « 4 » (nom « Step 13 ») [état « leer, gepunktet: antippen »] @ 500,482
+touchable « Step 14 » [état « leer »] @ 603,482
+touchable « Step 15 » [état « leer »] @ 706,482
+touchable « Step 16 » [état « leer »] @ 809,482
+case « Schläge » [sélectionné] @ 108,568
+case « Rolls » @ 230,568
+case « Panorama » @ 363,568
+case « Tonhöhe » @ 516,568
+case « Velocity » @ 658,568
+bouton « alles » @ 138,652
+bouton « 1/2 » @ 214,652
+bouton « 1/4 » @ 289,652
+bouton « ◀ » [désactivé] @ 364,652
+bouton « ▶ » [désactivé] @ 439,652
+bouton « Löschen » [désactivé] @ 534,652
+texte « Füllen » @ 70,652
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,716
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Die Kick und das Grollen Kapitel 2/16 · Schritt 4/4 · Pro » @ 400,780
+bouton « Kapitel » @ 771,780
+bouton « Zuklappen » @ 843,780
+texte « Du bist dran: der Rumble auf jeden Schlag: eine zweite, lange Kick, in Reverb getaucht und gesättigt, unter 200 Hz gefiltert, die das Pumpen bei jeder Kick absenkt. » @ 450,897
+touchable « ▸ Warum? » @ 450,975
+bouton «   Ich mach's » @ 450,1038
+bouton «  Beispiel anhören » @ 232,1122
+bouton «  Zeig's mir » @ 667,1122
+bouton «  Zurück » @ 92,1203
+bouton « Weiter  » @ 811,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » [sélectionné] @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

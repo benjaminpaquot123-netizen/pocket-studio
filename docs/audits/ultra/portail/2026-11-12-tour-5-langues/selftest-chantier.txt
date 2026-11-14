@@ -1,0 +1,19 @@
+2b34c2160 « vert: mode_step re-recorded at 130 % and on the tablet, the step on ea » : vert sans rouge du même test avant lui
+a2a6ec585 « vert: Prêt à partager says the remix's song runs past the song's end ( » : vert sans rouge du même test avant lui
+11c487081 « vert: the separated song's card has one clear button (exact label, scr » : vert sans rouge du même test avant lui
+411b2d512 « vert: « Retester les corrections » runs only the chosen steps of « Tou » : vert sans rouge du même test avant lui
+f94d8f8d3 « vert: the play strip grows for a tall script only (Arabic, Hindi), the » : vert sans rouge du même test avant lui
+e88999b0f « vert: the play strip leaves a tall script 40 % more room (Arabic count » : vert sans rouge du même test avant lui
+05a0d7672 « vert: the keyboard's « Vider » on one line at 200 % (German « Leeren » » : vert sans rouge du même test avant lui
+8dfa76844 « vert: no trade word in Latin letters in the Mode simple (Bass, Synth,  » : vert sans rouge du même test avant lui
+ecc00a17c « vert: the last trade words in Japanese and Korean (Bass, Sub, drum); « » : vert sans rouge du même test avant lui
+bc0e6f270 « vert: the bench's script tests ignore PS_REJEUX_DIR (replays of rejeux » : vert sans rouge du même test avant lui
+96a7a7026 « rouge: NavScreenshotTest.modeStep asserts the step before its capture » : rouge sans vert du même test après lui
+ade1a1740 « rouge: sheets scroll lying down: the test measures a node's own box » : rouge sans vert du même test après lui
+9b8fc4fd4 « rouge: the essai eclair on a first install fails as on Benjamin's phon » : rouge sans vert du même test après lui
+e3558c3ac « rouge: an Arabic sentence points and lists the way it reads (the regex » : rouge sans vert du même test après lui
+7f1f642e3 « rouge: the part name field speaks the app's language (the field's blin » : rouge sans vert du même test après lui
+98d375f33 « rouge: the part name field speaks the app's language (fields drawn alo » : rouge sans vert du même test après lui
+0823cd5cb « rouge: every screen reads whole in the five languages of tour 6 (Pro a » : rouge sans vert du même test après lui
+43066b98b « rouge: no trade word in Latin letters in the Mode simple (review G1: B » : rouge sans vert du même test après lui
+chantier : 18 écarts

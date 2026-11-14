@@ -1,0 +1,7 @@
+lang=fr
+device=phone
+font=100
+mode=simple
+gestes.max=40
+mission=voix
+timeout.minutes=30

@@ -1,0 +1,6 @@
+Écran 4 (900x1509)
+icône ← @ 54,48
+texte « Einfach oder Pro? » @ 486,48
+texte « Der Modus legt auch die Stufe des Tutorials fest. Du kannst den Modus jederzeit oben mit dem Umschalter ändern. » @ 450,148
+bouton « Einfach Zum Einstieg: 5 Tabs, große Knöpfe und Alltagswörter. Mit dem leichten Tutorial » @ 229,401
+bouton « Pro Für mehr: alle Werkzeuge, Struktur, Sounds, Mix und Live. Mit dem Pro-Tutorial » @ 670,401

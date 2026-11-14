@@ -1,0 +1,14 @@
+Écran 25 (900x1509)
+dessin @ 450,754
+dessin @ 450,892
+texte « Suono di: Acid 303 » @ 193,952
+texte « Chiudi » @ 814,988
+texte « Tocca un suono: sostituisce quello di questa traccia in tutto il brano. » @ 388,1012
+icône ← @ 60,1099
+texte « Classici » @ 486,1099
+bouton (vagues) (dents de scie) « Acid di base Brillante » [sélectionné] @ 234,1192
+bouton (vagues) (dents de scie) « Squelchy Brillante · pungente » @ 666,1192
+bouton (vagues) (créneaux) « Da Funk Cavo » @ 234,1295
+bouton (dé) « A caso » @ 234,1389
+bouton ★ « Tieni questo suono » @ 666,1389
+texte « “Tieni questo suono” lo salva nei tuoi preferiti, per tutti i tuoi progetti. » @ 436,1455

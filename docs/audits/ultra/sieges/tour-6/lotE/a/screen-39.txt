@@ -1,0 +1,88 @@
+Écran 39 (588x1278)
+icône ← @ 51,47
+bouton ■ @ 228,47
+icône − @ 309,47
+texte « 124 BPM » @ 376,46
+icône + @ 444,47
+texte « REC » @ 528,47
+texte « Pad Live » @ 138,46
+onglet « A » @ 51,138
+onglet « B » [sélectionné] @ 108,138
+onglet « C » @ 165,138
+onglet « D » @ 222,138
+bouton « Pack… » ▾ @ 349,138
+bouton ★ @ 534,138
+bouton « ? » @ 464,138
+texte « Listen » @ 315,228
+texte « Share » @ 439,228
+icône ✕ @ 537,228
+texte « Set kept · 0:09 » @ 142,228
+bouton [allumé] @ 87,319
+texte « loop » @ 99,301
+dessin @ 109,292
+texte « My take 1 » @ 86,341
+bouton @ 208,319
+texte « + » @ 208,319
+bouton @ 329,319
+texte « + » @ 329,319
+bouton @ 450,319
+texte « + » @ 450,319
+bouton ■ @ 536,319
+bouton @ 87,412
+texte « + » @ 87,412
+bouton @ 208,412
+texte « + » @ 208,412
+bouton @ 329,412
+texte « + » @ 329,412
+bouton @ 450,412
+texte « + » @ 450,412
+bouton @ 87,505
+texte « + » @ 87,505
+bouton @ 208,505
+texte « + » @ 208,505
+bouton @ 329,505
+texte « + » @ 329,505
+bouton @ 450,505
+texte « + » @ 450,505
+bouton @ 87,598
+texte « + » @ 87,598
+bouton @ 208,598
+texte « + » @ 208,598
+bouton @ 329,598
+texte « + » @ 329,598
+bouton @ 450,598
+texte « + » @ 450,598
+texte « LIVE EFFECTS » @ 106,675
+bouton « ? » @ 216,674
+texte « Press and hold » @ 477,675
+bouton @ 106,756
+texte « Filter » @ 106,740
+texte « low ↔ high » @ 106,777
+bouton @ 294,753
+texte « Echo » @ 294,741
+texte « on the way out » @ 294,774
+bouton @ 482,756
+texte « Roll » @ 482,740
+texte « 1/16 » @ 482,777
+bouton @ 106,865
+texte « Build-up » @ 106,849
+texte « 4 bars » @ 106,886
+bouton @ 294,865
+texte « Drop » @ 294,849
+texte « braking » @ 294,886
+bouton @ 482,865
+texte « Stutter » @ 482,849
+texte « 1/16 » @ 482,886
+bouton ↶ « Undo » @ 107,965
+bouton (quatre carrés) « Blocks » @ 294,965
+bouton (curseurs) « Effects » @ 481,965
+bouton (cotillons) « Big pads » @ 140,1046
+bouton (trois points reliés) « Share » @ 395,1046
+bouton « ? » @ 548,1046
+bouton ■ « Stop all » @ 66,1151
+bouton « Record what I play » @ 260,1136
+bouton ⋯ « Less » @ 488,1136
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

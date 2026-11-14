@@ -1,0 +1,2 @@
+Son : la musique du projet joue en boucle ; les pads live 1, 3, 4 jouent en boucle.
+Le pad 5 (« Klaxon ») joue une fois.

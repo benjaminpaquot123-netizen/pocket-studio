@@ -1,0 +1,548 @@
+#0 SIEGE lang=zh-CN device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.5 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE fe8c9ef381 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > glisse 450 1200 450 500
+#1 DOIGT launch_voice « 录我的人声或吉他 »
+#2 ROUTE launch | MODE pro | EMPREINTE 45bb58d2f1 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 你想做什么？ » 1.21:1 (needs 3.0:1, 28 sp)
+#2 > touche 450 1251
+#2 DOIGT launch_learn « 我要学 »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE ef6646d0cf | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 670 282
+#3 DOIGT mode_card_pro « 专业 »
+#4 ROUTE dialogue:tuto_chooser | MODE pro | EMPREINTE 195b7b52a0 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 450 253
+#4 DOIGT tuto_style_techno « Techno »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE 404354e72b | project=p-7521ff1f tuto=techno/Pro active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT TARGET « ▸ 为什么？ » 572 x 21 dp (touch 572 x 48)
+#5 > touche 450 1125
+#5 DOIGT tuto_listen «  听示例 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE b55c892a93 | project=p-7521ff1f tuto=techno/Pro active=true step=ref done=0 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 7 s).
+#6 LAYOUT OVERLAP « 听一段完整的 techno：前奏（给 DJ 的鼓）、贝斯进来，然后是 Drop。每拍一下、永不停歇的底鼓：这就是你要搭建的。 » over the touchable « 继续阅读 » (560 x 5 dp)
+#6 LAYOUT OVERLAP « ▸ 为什么？ » over the touchable « 继续阅读 » (65 x 21 dp)
+#6 > touche 812 1209
+#6 DOIGT tuto_next « 下一步  »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE e6e271605f | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 450 945
+#7 DOIGT tuto_kit_later « 稍后 »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 5e16b3d148 | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 73 114
+#8 DOIGT top_tempo « 速度：120 BPM »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5cd1f7af31 | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 速度 » over the touchable « 关闭工作表 » (44 x 33 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « 关闭工作表 » (7 x 15 dp)
+#9 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « 关闭工作表 » (86 x 53 dp)
+#9 LAYOUT OVERLAP «  BPM » over the touchable « 关闭工作表 » (39 x 24 dp)
+#9 LAYOUT OVERLAP « 70 » over the touchable « 关闭工作表 » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 90 » over the touchable « 关闭工作表 » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « 关闭工作表 » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 140 » over the touchable « 关闭工作表 » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 174 » over the touchable « 关闭工作表 » (32 x 19 dp)
+#9 LAYOUT OVERLAP « ½ » over the touchable « 关闭工作表 » (14 x 24 dp)
+#9 LAYOUT OVERLAP « ×2 » over the touchable « 关闭工作表 » (21 x 24 dp)
+#9 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 2 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 3 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 4 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 5 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 6 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 7 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 8 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 9 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 0 » over the touchable « 关闭工作表 » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 好 » over the touchable « 关闭工作表 » (22 x 33 dp)
+#9 LAYOUT OVERLAP « 跟着节奏点击 » over the touchable « 关闭工作表 » (96 x 24 dp)
+#9 LAYOUT OVERLAP « 每一拍点一下这里：速度会跟着你。 » over the touchable « 关闭工作表 » (204 x 19 dp)
+#9 LAYOUT CONTRAST « 4 » 1.90:1 (needs 3.0:1, 22 sp)
+#9 LAYOUT CONTRAST « 6 » 1.90:1 (needs 3.0:1, 22 sp)
+#9 LAYOUT CONTRAST « 每一拍点一下这里：速度会跟着你。 » 2.04:1 (needs 4.5:1, 13 sp)
+#9 > touche 163 1083
+#9 DOIGT tempo_key_1 « 1 »
+#10 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE bcb8b7eb8c | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (29 x 53 dp)
+#10 LAYOUT OVERLAP « 40 到 300 之间 » over the touchable « 关闭工作表 » (99 x 21 dp)
+#10 > touche 737 1083
+#10 DOIGT tempo_key_3 « 3 »
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6c32492d8f | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 13 » over the touchable « 关闭工作表 » (57 x 53 dp)
+#11 > touche 450 1083
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c9ed22680f | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 132 » over the touchable « 关闭工作表 » (86 x 53 dp)
+#12 > touche 737 1344
+#12 DOIGT tempo_key_ok « 好 »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE da3b5f322a | project=p-7521ff1f tuto=techno/Pro active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1125
+#13 DOIGT tuto_next_big « 下一步   »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 1ae7a8866e | project=p-7521ff1f tuto=techno/Pro active=true step=key done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1044
+#14 DOIGT tuto_do «   我来做 »
+#15 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 041e32e840 | project=p-7521ff1f tuto=techno/Pro active=true step=key done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 歌曲调性 » over the touchable « 关闭工作表 » (87 x 33 dp)
+#15 LAYOUT OVERLAP « 曲子的调：无 » over the touchable « 关闭工作表 » (84 x 21 dp)
+#15 LAYOUT OVERLAP « 音阶 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#15 LAYOUT OVERLAP « 大调 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#15 LAYOUT OVERLAP « 小调 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#15 LAYOUT OVERLAP « 多利亚 » over the touchable « 关闭工作表 » (48 x 24 dp)
+#15 LAYOUT OVERLAP « 小调五声 » over the touchable « 关闭工作表 » (64 x 24 dp)
+#15 LAYOUT OVERLAP « 大调五声 » over the touchable « 关闭工作表 » (64 x 24 dp)
+#15 LAYOUT OVERLAP « Blues » over the touchable « 关闭工作表 » (42 x 24 dp)
+#15 LAYOUT OVERLAP « 弗里几亚 » over the touchable « 关闭工作表 » (64 x 24 dp)
+#15 LAYOUT OVERLAP « 和声小调 » over the touchable « 关闭工作表 » (64 x 24 dp)
+#15 LAYOUT OVERLAP « 主音 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « 关闭工作表 » (12 x 24 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « 关闭工作表 » (21 x 24 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « 关闭工作表 » (11 x 24 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « 关闭工作表 » (15 x 24 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « 关闭工作表 » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « 关闭工作表 » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « 关闭工作表 » (18 x 24 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « 关闭工作表 » (12 x 24 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « 关闭工作表 » (17 x 24 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « 关闭工作表 » (11 x 24 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « 关闭工作表 » (16 x 24 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « 关闭工作表 » (11 x 24 dp)
+#15 > touche 783 1142
+#15 DOIGT tuto_scale_Phrygian « 弗里几亚 »
+#16 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE addce6cad7 | project=p-7521ff1f tuto=techno/Pro active=true step=key done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 曲子的调：C · 弗里几亚 » over the touchable « 关闭工作表 » (148 x 21 dp)
+#16 > touche 498 1356
+#16 DOIGT tuto_root_5 « F »
+#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 94891dcfc0 | project=p-7521ff1f tuto=techno/Pro active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 曲子的调：F · 弗里几亚 » over the touchable « 关闭工作表 » (146 x 21 dp)
+#17 LAYOUT OVERLAP « 成功！歌曲的色彩选好了。 » over the touchable « 关闭工作表 » (192 x 24 dp)
+#17 LAYOUT OVERLAP « 返回教程 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#17 > touche 450 1434
+#17 DOIGT tuto_key_continue « 返回教程 »
+#18 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 1ba196d3ea | project=p-7521ff1f tuto=techno/Pro active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1209
+#18 DOIGT tuto_next_folded « 成功 »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE c0a2c71220 | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 980
+#19 DOIGT tuto_why « ▸ 为什么？ »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE ff8f5c295f | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 667 1128
+#20 DOIGT tuto_show «  示范给我看 »
+#21 ROUTE tuto_finger | MODE pro | EMPREINTE c92ea512e5 | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=2 playing=false
+#21 SON Son : rien ne joue.
+#21 > attends 5
+#22 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 60e47f3a4b | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=2 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 102 984
+#22 DOIGT dans:rhythm_swing « Swing »
+#23 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c70e3076dc | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 450 1209
+#23 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 7bae677d31 | project=p-7521ff1f tuto=techno/Pro active=true step=swing done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1125
+#24 DOIGT tuto_next_big « 下一章   »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 86ede1a94d | project=p-7521ff1f tuto=techno/Pro active=true step=ready done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1125
+#25 DOIGT tuto_mark «   明白了 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE ddef6e650d | project=p-7521ff1f tuto=techno/Pro active=true step=kick_hear done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1125
+#26 DOIGT tuto_listen «  听示例 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 545a9e7570 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_hear done=4 playing=false
+#27 SON Son : l'exemple du tuto joue (encore 3 s).
+#27 > touche 812 1209
+#27 DOIGT tuto_next « 下一步  »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 46ec845362 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 843 821
+#28 DOIGT tuto_fold
+#29 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 0adafa6434 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 录音棚底鼓 » 4.15:1 (needs 4.5:1, 13 sp)
+#29 > touche 90 386
+#29 DOIGT step_0 « 第 1 步 »
+#30 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e13098588f | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 500 386
+#30 DOIGT step_4 « 第 5 步 »
+#31 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b5ea973fb5 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 90 467
+#31 DOIGT step_8 « 第 9 步 »
+#32 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b9436a0510 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 500 467
+#32 DOIGT step_12 « 第 13 步 »
+#33 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9c74eaac16 | project=p-7521ff1f tuto=techno/Pro active=true step=kick_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 450 1209
+#33 DOIGT tuto_next_folded « 成功 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 6771dc036d | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 450 1044
+#34 DOIGT tuto_do «   我来做 »
+#35 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 90 386
+#35 DOIGT rien
+#36 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 500 386
+#36 DOIGT rien
+#37 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 0831b28704 | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Rumble » 2.73:1 (needs 4.5:1, 13 sp)
+#37 > touche 90 467
+#37 DOIGT step_8 « 第 9 步 »
+#38 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 2672041913 | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 500 467
+#38 DOIGT step_12 « 第 13 步 »
+#39 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9a7140d683 | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 450 1209
+#39 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE f7865f233d | project=p-7521ff1f tuto=techno/Pro active=true step=rumble_do done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Rumble » 1.24:1 (needs 4.5:1, 13 sp)
+#40 > touche 450 1125
+#40 DOIGT tuto_next_big « 下一章   »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE be48f29063 | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 450 978
+#41 DOIGT tuto_why « ▸ 为什么？ »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 3da292d652 | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 450 1044
+#42 DOIGT tuto_do «   我来做 »
+#43 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 500 386
+#43 DOIGT rien
+#44 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 500 467
+#44 DOIGT rien
+#45 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 37e17b97cc | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « 拍手 » 3.96:1 (needs 4.5:1, 13 sp)
+#45 > touche 809 467
+#45 DOIGT step_15 « 第 16 步 »
+#46 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE bf4762d676 | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 771 1110
+#46 DOIGT tuto_chapters
+#47 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 83fdf67bdc | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 速度和调性 » 4.34:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 3/4 » 4.12:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 底鼓和轰鸣 » 3.68:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 3 » 1.27:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 拍手 » 1.27:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 4 » 1.23:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 踩镲和打击乐 » 1.36:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 0/5 » 1.24:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 5 » 1.23:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 贝斯 » 1.23:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST « 搭建你的段落 » 1.95:1 (needs 4.5:1, 16 sp)
+#47 LAYOUT CONTRAST «  重新开始教程（新的空项目） » 3.52:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « 退出教程（之后可以继续） » 3.26:1 (needs 4.5:1, 14 sp)
+#47 > glisse 450 1100 450 500
+#47 DOIGT tuto_chapter_12 « 13 »
+#48 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 405ffcf147 | project=p-7521ff1f tuto=techno/Pro active=true step=clap_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 13 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 14 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 15 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 LAYOUT CONTRAST « 16 » 3.63:1 (needs 4.5:1, 16 sp)
+#48 > touche 450 225
+#48 DOIGT tuto_chapter_3 « 4 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE ced6136a08 | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 294 350
+#49 DOIGT step_2 « 第 3 步 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 2df9649ebb | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 706 350
+#50 DOIGT step_6 « 第 7 步 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE d4221ab7b5 | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 431
+#51 DOIGT step_10 « 第 11 步 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 37f749d0b8 | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 706 431
+#52 DOIGT step_14 « 第 15 步 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 82ce7ebbbc | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 开镲 » 1.34:1 (needs 4.5:1, 13 sp)
+#53 > touche 815 1389
+#53 DOIGT tab_Plus « 更多 »
+#54 ROUTE tab_Plus | MODE pro | EMPREINTE e8cb19384b | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 450 420
+#54 DOIGT tool_Aide « 帮助 »
+#55 ROUTE tab_Plus | MODE pro | EMPREINTE b0b54dc5a1 | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 605
+#55 DOIGT help_steps « 打开我这首歌的向导 »
+#55 AIDE help_steps
+#56 ROUTE tab_Structure | MODE pro | EMPREINTE ced6f6df7e | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 > retour
+#56 RETOUR
+#57 ROUTE tab_Structure | MODE pro | EMPREINTE ced6f6df7e | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 815 1389
+#57 DOIGT tab_Plus « 更多 »
+#58 ROUTE tab_Plus | MODE pro | EMPREINTE e8cb19384b | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 450 525
+#58 DOIGT plus_missions « 我的第一首歌，跟着向导做 »
+#59 ROUTE dialogue:wizard | MODE pro | EMPREINTE dcf441f2c4 | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « 7 种风格 » 4.39:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « 7 种风格 » 3.10:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « 4 种风格 » 3.10:1 (needs 4.5:1, 13 sp)
+#59 > touche 858 51
+#59 DOIGT wizard_close
+#60 ROUTE tab_Plus | MODE pro | EMPREINTE e8cb19384b | project=p-7521ff1f tuto=techno/Pro active=true step=open_hat_do done=8 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 450 1125
+#60 DOIGT tuto_next_big « 下一步   »
+#61 ROUTE tab_Plus | MODE pro | EMPREINTE 0f0d5f7250 | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 1044
+#61 DOIGT tuto_do «   我来做 »
+#62 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 121 637
+#62 DOIGT rien
+#63 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#63 SON Son : rien ne joue.
+#63 > attends 3
+#64 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 22c6536b32 | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « 踩镲 » 3.95:1 (needs 4.5:1, 13 sp)
+#64 > touche 294 386
+#64 DOIGT step_2 « 第 3 步 »
+#65 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 3819ce635f | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 706 386
+#65 DOIGT step_6 « 第 7 步 »
+#66 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9ddd534c73 | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 294 467
+#66 DOIGT step_10 « 第 11 步 »
+#67 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 596dd6c79e | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 706 467
+#67 DOIGT step_14 « 第 15 步 »
+#68 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 45f4f00ba4 | project=p-7521ff1f tuto=techno/Pro active=true step=hat_do done=9 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 450 1209
+#68 DOIGT tuto_next_folded « 成功 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 19569b7c9c | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1044
+#69 DOIGT tuto_do «   我来做 »
+#70 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#70 SON Son : rien ne joue.
+#70 > attends 3
+#71 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c02c21d2da | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « 鼓边 » 4.15:1 (needs 4.5:1, 13 sp)
+#71 > touche 397 386
+#71 DOIGT step_3 « 第 4 步 »
+#72 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c19ff46676 | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 706 386
+#72 DOIGT step_6 « 第 7 步 »
+#73 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 545ffbf0b7 | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 294 467
+#73 DOIGT step_10 « 第 11 步 »
+#74 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE f28f0af470 | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 603 467
+#74 DOIGT step_13 « 第 14 步 »
+#75 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a3866377b8 | project=p-7521ff1f tuto=techno/Pro active=true step=perc_do done=10 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 450 1209
+#75 DOIGT tuto_next_folded « 成功 »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 00a8dd57bc | project=p-7521ff1f tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 450 1044
+#76 DOIGT tuto_do «   我来做 »
+#77 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 4dc630de7a | project=p-7521ff1f tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#77 SON Son : rien ne joue.
+#77 > attends 3
+#78 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c0cff26a12 | project=p-7521ff1f tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CONTRAST « 镲片 » 3.94:1 (needs 4.5:1, 13 sp)
+#78 > touche 196 637
+#78 DOIGT fill_2 « 1/2 »
+#79 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 3544d06b87 | project=p-7521ff1f tuto=techno/Pro active=true step=ride_do done=11 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « 1/2 » 4.07:1 (needs 4.5:1, 14 sp)
+#79 > touche 450 1209
+#79 DOIGT tuto_next_folded « 成功 »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 2ee5bc33fd | project=p-7521ff1f tuto=techno/Pro active=true step=drums_hear done=11 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CONTRAST « 镲片 » 1.36:1 (needs 4.5:1, 13 sp)
+#80 > touche 450 1044
+#80 DOIGT tuto_play_mine «   听你的成果 »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 00867342c8 | project=p-7521ff1f tuto=techno/Pro active=true step=drums_hear done=11 playing=true
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 450 1128
+#81 DOIGT tuto_listen «  听示例 »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE d21cedbe22 | project=p-7521ff1f tuto=techno/Pro active=true step=drums_hear done=11 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 4
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 46892f0573 | project=p-7521ff1f tuto=techno/Pro active=true step=drums_hear done=12 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 771 855
+#83 DOIGT tuto_chapters
+#84 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 95d24e8782 | project=p-7521ff1f tuto=techno/Pro active=true step=drums_hear done=12 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « 0/3 » 1.34:1 (needs 4.5:1, 16 sp)
+#84 LAYOUT CONTRAST « 0/7 » 3.25:1 (needs 4.5:1, 16 sp)
+#84 LAYOUT CONTRAST « 混音 » 1.90:1 (needs 4.5:1, 16 sp)
+#84 > touche 450 468
+#84 DOIGT tuto_chapter_4 « 5 »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE 8aadd60438 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_hear done=12 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « 镲片 » 1.32:1 (needs 4.5:1, 13 sp)
+#85 > touche 450 1125
+#85 DOIGT tuto_listen «  听示例 »
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE d9b16848e9 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_hear done=12 playing=false
+#86 SON Son : l'exemple du tuto joue (encore 3 s).
+#86 > attends 9
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE 60d31cd9e3 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_hear done=13 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 450 1125
+#87 DOIGT tuto_next_big « 下一步   »
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE c8dbf594a2 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 450 1044
+#88 DOIGT tuto_need «   创建贝斯音轨 »
+#89 ROUTE synth/tab_Sons | MODE pro | EMPREINTE aa88817f6f | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « 轮到你：创建贝斯音轨（“模拟贝斯”音色，抽吸已经加好）。钢琴卷帘里的第 1 小节：每两个底鼓之间两个十六分音符，全在 F 上。“复制到后面的小节”，然后第 4 小节：G♭（小二度）和高八度的 F 来结束乐句。“复制”。 » ellipsized (« … »)
+#89 > touche 192 820
+#89 DOIGT rien
+#90 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 46e79ce17c | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 237 820
+#90 DOIGT rien
+#91 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 44f3e4d0f0 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 372 820
+#91 DOIGT rien
+#92 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0ebddbc984 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 418 820
+#92 DOIGT rien
+#93 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 14dcc87156 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 552 820
+#93 DOIGT rien
+#94 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 15441d0c58 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 598 820
+#94 DOIGT rien
+#95 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 56f896d433 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 733 820
+#95 DOIGT rien
+#96 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9a060e1b4b | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 778 820
+#96 DOIGT rien
+#97 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 177bc62f22 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 450 1281
+#97 DOIGT tuto_need_folded « 复制到后面的小节 »
+#98 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ef54913340 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 450 403
+#98 DOIGT tuto_notes_left « 贝斯 · 第 1/8 小节 »
+#99 ROUTE synth/tab_Sons | MODE pro | EMPREINTE de3ba19802 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CONTRAST « 贝斯 · 第 4/8 小节 » 3.85:1 (needs 4.5:1, 12 sp)
+#99 LAYOUT CONTRAST « 还有 8 个虚线音符要点 » 4.18:1 (needs 4.5:1, 14 sp)
+#99 > touche 237 820
+#99 DOIGT rien
+#100 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 08d9f4a79d | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#100 SON Son : 1 note du synthé.
+#100 > touche 305 820
+#100 DOIGT rien
+#101 ROUTE synth/tab_Sons | MODE pro | EMPREINTE dfcaa1cf3c | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#101 SON Son : 1 note du synthé.
+#101 > touche 418 820
+#101 DOIGT rien
+#102 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3b641a385b | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#102 SON Son : 1 note du synthé.
+#102 > touche 485 820
+#102 DOIGT rien
+#103 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f032a481ad | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#103 SON Son : 1 note du synthé.
+#103 > touche 598 820
+#103 DOIGT rien
+#104 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e4eff4639c | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > touche 665 820
+#104 DOIGT rien
+#105 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d01b5b320a | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#105 SON Son : 1 note du synthé.
+#105 > touche 778 778
+#105 DOIGT rien
+#106 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 59fd783b41 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > touche 450 403
+#106 DOIGT tuto_notes_left « 贝斯 · 第 4/8 小节 »
+#107 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3a5d63783c | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 825 888
+#107 DOIGT rien
+#108 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 62ff19878c | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#108 SON Son : 1 note du synthé.
+#108 > touche 450 1281
+#108 DOIGT tuto_need_folded « 复制到后面的小节 »
+#109 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ac3b038ab3 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_do done=14 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 450 1281
+#109 DOIGT tuto_next_folded « 成功 »
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE 3535cb7d61 | project=p-7521ff1f tuto=techno/Pro active=true step=bass_cutoff done=14 playing=false
+#110 SON Son : rien ne joue.
+#110 > fin
+#110 FIN : fin

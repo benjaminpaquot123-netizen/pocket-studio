@@ -59,6 +59,19 @@ object InstrumentLibrary {
     /** Re-checks an installed file before parsing it. */
     fun verify(context: Context, bank: Bank): Boolean = VerifiedDownload.verify(bank.spec, file(context, bank))
 
+    /**
+     * Audit 16: a bank takes about twice its file in memory once open (its samples turned to
+     * floats). The memory it needs ([BankMemory.needed]) when the phone has not that much free,
+     * else null (it may open).
+     */
+    fun memoryShortfall(context: Context, bank: Bank): Long? {
+        val size = file(context, bank).length()
+        val memory = android.app.ActivityManager.MemoryInfo()
+        context.getSystemService(android.app.ActivityManager::class.java)?.getMemoryInfo(memory) ?: return null
+        if (memory.totalMem <= 0) return null  // not known (a test's phone): no guess
+        return BankMemory.needed(size).takeUnless { BankMemory.fits(size, memory.availMem) }
+    }
+
     /** The 16 General MIDI families (8 programs each), in French (SoundLooks keys; shown through tr). */
     val FAMILIES = listOf(
         "Pianos", "Percussions mélodiques", "Orgues", "Guitares", "Basses", "Cordes solo", "Ensembles", "Cuivres",
@@ -67,4 +80,16 @@ object InstrumentLibrary {
 
     /** General MIDI drum notes for our 16 pads, in pad order (DrumKitInfo.names). */
     val KIT_NOTES = listOf(36, 35, 38, 40, 39, 42, 46, 41, 45, 48, 37, 56, 49, 70, 63, 54)
+}
+
+/** How much memory an instrument bank needs once open (see [InstrumentLibrary.memoryShortfall]). */
+object BankMemory {
+    /** What is kept free for the rest of the app and the phone. */
+    const val MARGIN = 150L * 1024 * 1024
+
+    /** About twice the file (16-bit samples become 32-bit floats). */
+    fun needed(fileBytes: Long): Long = 2 * fileBytes
+
+    /** True when a bank of [fileBytes] can open with [availableBytes] free. */
+    fun fits(fileBytes: Long, availableBytes: Long): Boolean = availableBytes >= needed(fileBytes) + MARGIN
 }

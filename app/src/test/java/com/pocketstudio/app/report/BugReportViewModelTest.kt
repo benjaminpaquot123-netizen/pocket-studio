@@ -123,7 +123,7 @@ class BugReportViewModelTest {
         SettingsStore.update(app) { it.copy(language = Lang.NL, englishNotes = true) }
         vm.setText("Geen geluid na de refrein")
         val md = vm.reportText()
-        listOf("# Rapport de bug : Pocket Studio", "## Ce qui s'est passé", "Geen geluid na de refrein", "## Appli et téléphone", "- Langue : nl", "## Journal").forEach {
+        listOf("# Rapport de bug : BenStudio", "## Ce qui s'est passé", "Geen geluid na de refrein", "## Appli et téléphone", "- Langue : nl", "## Journal").forEach {
             assertTrue("missing « $it »:\n$md", md.contains(it))
         }
         // The sheet itself speaks Dutch.

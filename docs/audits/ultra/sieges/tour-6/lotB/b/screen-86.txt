@@ -1,0 +1,66 @@
+Écran 86 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » [sélectionné] @ 261,204
+onglet « Vocals Mikrofon » @ 443,204
+onglet « Remix Trennen » @ 613,204
+bouton + «  Spur » @ 786,205
+texte « Teil: A » @ 62,273
+texte « Acid 303 » @ 105,342
+bouton (étincelles) « Erzeug mir ein Pattern » @ 450,447
+texte « Dichte » @ 414,524
+texte « 80 % » @ 822,524
+curseur [état « 80 % », à 80 %] @ 450,595
+titre « BASSLINE · GRUNDTON C » [état « Aufgeklappt »] @ 389,730
+bouton « ? » @ 439,730
+bouton « C D E » [sélectionné] @ 797,730
+bouton « 1 Takt » [sélectionné] @ 189,814
+bouton « 2 » @ 298,814
+bouton « 3 » @ 379,814
+bouton « 4 » @ 460,814
+bouton « 8 » @ 541,814
+texte « Länge » @ 79,814
+bouton « C » @ 90,919
+bouton « C » @ 192,919
+bouton « C » @ 294,919
+bouton « – » @ 397,919
+bouton « C » @ 500,919
+bouton « – » @ 603,919
+bouton « – » @ 706,919
+bouton « – » @ 809,919
+bouton « – » [coupé] @ 90,1010
+bouton « C » [coupé] @ 192,1010
+bouton « – » [coupé] @ 294,1010
+bouton « – » [coupé] @ 397,1010
+bouton « – » [coupé] @ 500,1010
+bouton « – » [coupé] @ 603,1010
+bouton « – » [coupé] @ 706,1010
+bouton « – » [coupé] @ 809,1010
+image (chapeau de diplômé) @ 37,1083
+texte « Hi-Hats, Tamburin und Swing Kapitel 4/17 · Schritt 4/5 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Stell den Swing auf 25: Die geraden Sechzehntel kommen etwas später, zwischen Chicago House (55–60 %) und New York House (70–80 %). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -97,9 +97,21 @@ object StudioDrums {
                 PadVoice.KICK_STUDIO,
                 if (style.id in SOFT_KICK) mapOf(PadVoice.TUNE to tune, PadVoice.CLICK to 0.25f) else mapOf(PadVoice.TUNE to tune),
             )
+            // Final audit (report 12): the kick of an 808 style in the 808's key (it played the kit's 52 Hz over an
+            // 808 in F, 43.7 Hz: two low notes beating in each hit), shorter so the 808 carries the low end.
+            style.id in BASS_808 -> PadVoice(PadVoice.KICK_STUDIO, mapOf(PadVoice.TUNE to tune, PadVoice.DECAY to KICK_808_DECAY))
             else -> null
         }?.sanitized()
     }
+
+    /** The studio kick's decay over an 808 (s; its own 0.25 a little shorter: the 808 is the low end that rings). */
+    const val KICK_808_DECAY = 0.2f
+
+    /**
+     * Final audit (report 12): the 808's pad ducked under the kick (a pump on its strip, keyed by the kick's
+     * sound since S5): depth, release (about 70 ms). The Musique bus takes no pad; this is its low end's place.
+     */
+    val PUMP_808: Insert get() = Insert(EffectType.PUMP.ordinal, listOf(0.5f, 0.15f, 0f)).sanitized()
 
     /** The rumble under [style]'s kick: tuned with it, rolling for about a beat, a little dirty. */
     fun rumbleVoice(style: Style, harmony: Harmony): PadVoice = PadVoice(
@@ -181,6 +193,44 @@ object StudioDrums {
             drums = project.drums.copy(lanes = project.drums.lanes.map { it.copy(sample = null) }),
             padVoices = mapOf(LANE_808 to voice808(style, harmony)),
             mixer = project.mixer.copy(channels = channels),
+        )
+    }
+
+    /**
+     * The drum & bass kick (tutorial lot 3, owner: « ça doit sonner jump up dès le chapitre 2 »): the
+     * studio kick tuned to the key, shorter (0.18 s) and with more click than the kit's own (0.25 s):
+     * measured through the engine (TutoDefaultSoundBench), it is down 40 dB 185 ms after its peak
+     * (the kit's 290 ms) and keeps its low end (64 %), where the hard kick loses it (39 %).
+     */
+    const val DNB_KICK_DECAY = 0.18f
+    const val DNB_KICK_CLICK = 0.7f
+
+    fun dnbKick(root: Int): PadVoice = PadVoice(
+        PadVoice.KICK_STUDIO,
+        mapOf(PadVoice.TUNE to kickHz(root), PadVoice.DECAY to DNB_KICK_DECAY, PadVoice.CLICK to DNB_KICK_CLICK),
+    ).sanitized()
+
+    /** [voice] is the drum & bass kick ([dnbKick], in any key): « Kit ▾ » then says « Drum & bass ». */
+    fun isDnbKick(voice: PadVoice?): Boolean =
+        voice != null && voice.kind == PadVoice.KICK_STUDIO && voice.param(PadVoice.DECAY) == DNB_KICK_DECAY && voice.param(PadVoice.CLICK) == DNB_KICK_CLICK
+
+    /**
+     * « Kit ▾ » › Drum & bass, built in (nothing to download), and the jump up tutorial's kit from its
+     * start: the studio kit (kit v3) on the 16 pads, their own sounds off, the drum & bass kick
+     * ([dnbKick], in the project's key, else F) on the kick's pad, and the « Punch » preset on the
+     * kick's and the snare's strips when they have no effect of their own (a tight snare that cracks).
+     */
+    fun withDnbKit(project: Project): Project {
+        val root = project.harmony.takeIf { it.scale != Scale.Off }?.root ?: StarterWizard.style("jump_up")?.melody?.root ?: 5
+        val punch = FxPresets.byId("punch")
+        val strips = setOf(Mixer.padChannel(Role.Kick.lane), Mixer.padChannel(Role.Snare.lane))
+        return project.copy(
+            kitVersion = Project.KIT_V3,
+            drums = project.drums.copy(lanes = project.drums.lanes.map { it.copy(sample = null) }),
+            padVoices = project.padVoices.filterValues { !it.isKick && it.kind != PadVoice.BASS_808 } + (Role.Kick.lane to dnbKick(root)),
+            mixer = project.mixer.copy(channels = project.mixer.channels.mapIndexed { i, c ->
+                if (i in strips && punch != null && c.inserts.all { it.effect == EffectType.NONE }) c.withFx(punch).sanitized() else c
+            }),
         )
     }
 

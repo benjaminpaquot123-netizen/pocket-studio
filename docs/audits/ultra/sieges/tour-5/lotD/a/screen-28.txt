@@ -1,0 +1,44 @@
+Écran 28 (1920x1200)
+touchable « My first beat Saved » (nom « My projects ») @ 744,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 1515,42
+bouton « Undo » @ 1587,42
+bouton « Redo » [désactivé] @ 1659,42
+bouton « Record: microphone, keys or pads » @ 1731,42
+bouton « Play » @ 1803,42
+bouton « Share my song » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 1875,114
+onglet « Structure » @ 60,193
+onglet « Sounds » @ 60,280
+onglet « Mix » @ 60,367
+onglet « Live » @ 60,454
+onglet « More » [sélectionné] @ 60,541
+bouton « Home Keep going, new song, Remix… » @ 375,210
+bouton « My projects Open, create, duplicate, send a project » @ 375,321
+bouton « Help First steps, the Guide, the glossary » @ 375,438
+bouton « My first song, with the Guide Its first cards, from the style to sharing » @ 375,555
+bouton « Music words, to listen to Each word with a sound example » @ 375,666
+bouton « Settings Language, theme, size, sound, simple mode » @ 375,777
+bouton « Switch to Simple mode Five tabs: My song, Rhythm, Keyboard, Mix, Send » @ 375,894
+bouton « MIDI keyboard Connect a keyboard, learn knobs » @ 375,1005
+bouton « Latency Measure the microphone's delay for takes in time » @ 375,1065
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « HELP » [état « Expanded »] @ 826,204
+bouton « I'm learning You make the whole song yourself, step by step: I explain and I check. » @ 1275,274
+bouton « My first song, with the Guide » @ 1275,363
+bouton « See the first-steps guide again » @ 1275,447
+bouton « Open my song's Guide » @ 1275,531
+bouton «   Music words, to listen to » @ 1275,615
+texte « The “?” at the end of the strip under the top bar labels the screen: one tap to show, another to hide. » @ 1223,676
+texte « Everywhere in the app, the little “?” next to a word explains it too. » @ 1071,715
+texte « To pick up your song on another device: “Share” › “Send the project” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”. » @ 1275,768
+bouton « FEEDBACK MODE » [état « Expanded »] @ 889,879
+texte « A bubble to record the screen with sound and write notes, to send afterwards. » @ 1236,945
+interrupteur « Feedback mode » [coché] @ 1734,945
+bouton « Send my feedback » @ 1275,1029
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Make a second part 30 % » [état « folded »] @ 960,1104
+touchable « ●  REC » (nom « Record the screen with sound ») @ 1692,1170
+touchable « ✎  Note » (nom « Write a note ») @ 1788,1170
+touchable « ⋯ » (nom « Feedback mode ») @ 1872,1170
+texte « Feedback mode » @ 828,1170

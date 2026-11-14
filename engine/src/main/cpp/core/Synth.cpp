@@ -1162,9 +1162,21 @@ void Synth::postProcess(float* l, float* r, int n, bool wide) {
     if (drive > 0.0f) {
         const float g = 1.0f + 15.0f * drive * drive;
         const SoftTanh shape;
-        for (int i = 0; i < n; ++i) l[i] = drive_[0].process(l[i], g, 0.0f, shape) * driveComp_;
         if (wide) {
-            for (int i = 0; i < n; ++i) r[i] = drive_[1].process(r[i], g, 0.0f, shape) * driveComp_;
+            // Both sides in one go (audit stage 4: the same output, in less time).
+            constexpr int kChunk = DriveShaper<Oversampler4x>::kMaxBlock;
+            float gains[kChunk], wl[kChunk], wr[kChunk], dl[kChunk], dr[kChunk];
+            std::fill(gains, gains + kChunk, g);
+            for (int from = 0; from < n; from += kChunk) {
+                const int m = std::min(kChunk, n - from);
+                DriveShaper<Oversampler4x>::processPair(drive_[0], drive_[1], l + from, r + from, wl, wr, dl, dr, m, gains, nullptr, shape);
+                for (int i = 0; i < m; ++i) {
+                    l[from + i] = wl[i] * driveComp_;
+                    r[from + i] = wr[i] * driveComp_;
+                }
+            }
+        } else {
+            for (int i = 0; i < n; ++i) l[i] = drive_[0].process(l[i], g, 0.0f, shape) * driveComp_;
         }
     }
     // The mid layer: the sound above 250 Hz, driven, added in the middle and (11 ms later) on the

@@ -1,0 +1,11 @@
+Écran 31 (588x1278)
+texte « Choose your language » @ 230,228
+bouton « 🇮🇹 Italiano Italian » [coupé] @ 294,305
+bouton « 🇳🇱 Nederlands Dutch » @ 294,389
+bouton « 🇵🇱 Polski Polish » @ 294,488
+bouton « 🇧🇷 Português (Brasil) Portuguese » @ 294,587
+bouton « 🇹🇷 Türkçe Turkish » @ 294,686
+bouton « 🇸🇦 العربية Arabic » @ 294,786
+bouton « 🇮🇳 हिन्दी Hindi » @ 294,887
+bouton « 🇯🇵 日本語 Japanese » [coupé] @ 294,953
+texte « Close » @ 504,1038

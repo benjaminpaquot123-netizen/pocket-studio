@@ -1,0 +1,36 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "ja",
+    "device": "tablet11Land",
+    "font": "100",
+    "mode": "pro",
+    "amenee": "padlive",
+    "gestes.max": "40",
+    "mission": "padlive",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 26,
+    "images": 3,
+    "gestes_premier_son": 1,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 31,
+    "ecrans_revisites": 5,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 142,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "padlive",
+  "resultat": "reussie",
+  "pourquoi": "premier son en 1 geste(s)"
+}

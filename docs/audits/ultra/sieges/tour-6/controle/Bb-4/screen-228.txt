@@ -1,0 +1,48 @@
+Écran 228 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. » [coupé] @ 450,199
+texte « Fade-out » @ 103,269
+bouton « Keiner » @ 111,338
+bouton « Kurz (3 s) » [sélectionné] @ 279,338
+bouton « Lang (8 s) » @ 471,338
+bouton « Erweitert Spur für Spur · FLAC · MIDI · 48 kHz · 24 Bit » ⌄ @ 450,433
+bouton « Song-Datei erstellen » @ 450,529
+texte « Gespeichert in Musik › BenStudio: Mein-Song-club-20261113-161736.m4a » @ 450,613
+texte « ✓ Bereit zum Teilen » @ 177,681
+texte « Dauer: 3 min 53 s » @ 148,723
+texte « Pegel: am Ziel (Club) » @ 167,762
+texte « Spitze: unter dem Limit, keine Übersteuerung » @ 314,801
+texte « M4A, 48 kHz, 256 kbit/s » @ 188,840
+texte « −8,0 LUFS integriert · Spitze −3,4 dBTP » @ 277,892
+bouton « ? » @ 534,891
+texte « Ziel: Club · −8 LUFS » @ 162,943
+bouton « Teilen » @ 450,1009
+bouton (dossier) « Meine Dateien Finden und erneut senden: M4A, WAV, Video, .zip » › @ 428,1099
+bouton « ? » @ 836,1099
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,19 @@
+{
+  "Désactivée": "꺼짐",
+  "Auto (style)": "자동 (스타일)",
+  "Club": "클럽",
+  "Streaming": "스트리밍",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "지금 %s · 3초 %s · ▶ 이후 %s LUFS",
+  "Volume visé": "목표 음량",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "음량은 설정한 그대로예요. 출력은 찌그러짐만 막아 줘요.",
+  "Gain ajouté pour la cible : %s dB": "목표를 위해 더한 게인: %s dB",
+  "%d min %d s": "%d분 %d초",
+  "%d s": "%d초",
+  "44,1 kHz": "44.1 kHz",
+  "16 bits": "16비트",
+  "Volume : —": "볼륨: —",
+  "Volume %1$s · %2$s": "볼륨 %1$s · %2$s",
+  "Détails": "자세히",
+  "Masquer les détails": "자세히 숨기기"
+}

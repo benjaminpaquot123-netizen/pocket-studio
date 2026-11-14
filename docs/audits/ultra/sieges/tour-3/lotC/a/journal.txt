@@ -1,0 +1,346 @@
+#0 SIEGE lang=pt-BR device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3645b45e0a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » 3.16:1 (needs 4.5:1, 14 sp)
+#1 > glisse 308 1100 308 400
+#1 DOIGT welcome_empty « Começar do zero »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 8de1d8ab38 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « NOVO » 3.42:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « Mais tarde: ver a batida inicial » 3.42:1 (needs 4.5:1, 14 sp)
+#2 > touche 308 1010
+#2 DOIGT welcome_voice « Gravar minha voz ou violão »
+#3 ROUTE audio_tracks | MODE simple | EMPREINTE 200ca3fa11 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Minha primeira batida » ellipsized (« … »)
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 231 1152
+#3 DOIGT thumb_play
+#4 ROUTE audio_tracks | MODE simple | EMPREINTE 04d5530a41 | project=projet-1 no tuto
+#4 SON Son : la musique du projet joue en boucle.
+#4 > touche 106 114
+#4 DOIGT top_tempo « Tempo: 120 batidas por minuto »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 74a7f17c48 | project=projet-1 no tuto
+#5 SON Son : la musique du projet joue en boucle.
+#5 LAYOUT OVERLAP « Andamento » over the touchable « Fechar planilha » (124 x 28 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (7 x 15 dp)
+#5 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (46 x 20 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Fechar planilha » (39 x 24 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Fechar planilha » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Fechar planilha » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Fechar planilha » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Fechar planilha » (32 x 19 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Fechar planilha » (14 x 24 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Fechar planilha » (21 x 24 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Fechar planilha » (14 x 27 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Fechar planilha » (33 x 27 dp)
+#5 LAYOUT OVERLAP « Bater no ritmo » over the touchable « Fechar planilha » (110 x 24 dp)
+#5 LAYOUT OVERLAP « Toque aqui a cada tempo: o andamento acompanha. » over the touchable « Fechar planilha » (240 x 36 dp)
+#5 LAYOUT CONTRAST « Toque aqui a cada tempo: o andamento acompanha. » 3.42:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT LABEL « #527 » long press without text nor description
+#5 > touche 153 765
+#5 DOIGT tempo_preset_90 « 90 »
+#6 ROUTE audio_tracks | MODE simple | EMPREINTE 91b8c4b001 | project=projet-1 no tuto
+#6 SON Son : la musique du projet joue en boucle.
+#6 > touche 172 759
+#6 DOIGT audio_record_0 «  Gravar »
+#7 ROUTE audio_tracks | MODE simple | EMPREINTE 2018976a23 | project=projet-1 no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 > attends 6
+#8 ROUTE audio_tracks | MODE simple | EMPREINTE 9e3a2d24e3 | project=projet-1 no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 > touche 172 594
+#8 DOIGT audio_stop « Parar e guardar »
+#9 ROUTE audio_tracks | MODE simple | EMPREINTE 4983ba17da | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 172 759
+#9 DOIGT audio_record_0 «  Novo take »
+#10 ROUTE audio_tracks | MODE simple | EMPREINTE 60f146206f | project=projet-1 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > attends 4
+#11 ROUTE audio_tracks | MODE simple | EMPREINTE 66b67f810f | project=projet-1 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 > touche 427 42
+#11 DOIGT top_record
+#12 ROUTE audio_tracks | MODE simple | EMPREINTE fcfa5ddc83 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 121 969
+#12 DOIGT audio_take_0_1 « Take 1 · 7 s »
+#13 ROUTE audio_tracks | MODE simple | EMPREINTE 55465ea829 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > glisse 308 900 308 400
+#13 DOIGT rien
+#14 ROUTE audio_track_0 | MODE simple | EMPREINTE a5897388e5 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « 7 » 1.83:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « a cada 2 compassos » 2.99:1 (needs 4.5:1, 14 sp)
+#14 > touche 231 1152
+#14 DOIGT thumb_play
+#15 ROUTE audio_track_0 | MODE simple | EMPREINTE 51594d04c1 | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > touche 231 1152
+#15 DOIGT thumb_play
+#16 ROUTE audio_track_0 | MODE simple | EMPREINTE a5897388e5 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 113 180
+#16 DOIGT remix_back «  Minha música »
+#17 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 63b4dc2afb | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 388 672
+#17 DOIGT simple_alone_audio:0 « Ouvir “Áudio 1” sozinho, em loop »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 51343ebd38 | project=projet-1 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 > touche 432 672
+#18 DOIGT simple_alone_audio:0 « Parar »
+#19 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 63b4dc2afb | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 96 979
+#19 DOIGT add_part_0 « + A »
+#20 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d016e6b9b4 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 466 792
+#20 DOIGT dans:part_0
+#21 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 71cee760b9 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 466 792
+#21 DOIGT dans:part_0
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2129923857 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 466 792
+#22 DOIGT dans:part_0
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE aac3c0898a | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 427 42
+#23 DOIGT top_record
+#24 ROUTE dialogue:record_choice | MODE simple | EMPREINTE 9d2bd8889b | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 308 535
+#24 DOIGT record_choice_mic «   O microfone: sua voz, um violão, um in »
+#25 ROUTE audio_track_0 | MODE simple | EMPREINTE 5e0f9f9499 | project=projet-1 no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 > attends 5
+#26 ROUTE audio_track_0 | MODE simple | EMPREINTE 7dbe8ff5d7 | project=projet-1 no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 > touche 427 42
+#26 DOIGT top_record
+#27 ROUTE audio_track_0 | MODE simple | EMPREINTE 9f758bf48c | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > glisse 308 300 308 800
+#27 DOIGT rien
+#28 ROUTE audio_tracks | MODE simple | EMPREINTE 4191f1b500 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 172 882
+#28 DOIGT audio_record_0 «  Novo take »
+#29 ROUTE audio_tracks | MODE simple | EMPREINTE 3a7a09d3f9 | project=projet-1 no tuto
+#29 SON Son : le morceau joue (partie « A »).
+#29 > attends 8
+#30 ROUTE audio_tracks | MODE simple | EMPREINTE 21cc23cf3c | project=projet-1 no tuto
+#30 SON Son : le morceau joue (partie « A »).
+#30 > attends 6
+#31 ROUTE audio_tracks | MODE simple | EMPREINTE 3c3d31789e | project=projet-1 no tuto
+#31 SON Son : le morceau joue (partie « A »).
+#31 > touche 172 648
+#31 DOIGT audio_stop « Parar e guardar »
+#32 ROUTE audio_tracks | MODE simple | EMPREINTE 286bcc4b24 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > glisse 308 900 308 350
+#32 DOIGT rien
+#33 ROUTE audio_track_0 | MODE simple | EMPREINTE 7c27f890c0 | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > appui-long 121 566
+#33 DOIGT audio_take_0_1 « Take 1 · 7 s »
+#34 ROUTE audio_track_0 | MODE simple | EMPREINTE 4273febbf0 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 128 644
+#34 DOIGT audio_take_0_3 « Take 3 · 19 s »
+#35 ROUTE audio_track_0 | MODE simple | EMPREINTE 78a825249e | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 231 1152
+#35 DOIGT thumb_play
+#36 ROUTE audio_track_0 | MODE simple | EMPREINTE 0a957f5f5d | project=projet-1 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 231 1152
+#36 DOIGT thumb_play
+#37 ROUTE audio_track_0 | MODE simple | EMPREINTE 78a825249e | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 56 1251
+#37 DOIGT tab_simple_Morceau « Minha música »
+#38 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 170 447
+#38 DOIGT simple_track_audio:1 « Voz »
+#39 ROUTE audio_track_0 | MODE simple | EMPREINTE 78a825249e | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 > glisse 308 1000 308 300
+#39 DOIGT rien
+#40 ROUTE audio_track_0 | MODE simple | EMPREINTE b012c5a1c2 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 194 748
+#40 DOIGT audio_play_from_0 « ▶ A partir do meu take »
+#41 ROUTE audio_track_0 | MODE simple | EMPREINTE b012c5a1c2 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 > attends 2
+#42 ROUTE audio_track_0 | MODE simple | EMPREINTE b012c5a1c2 | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 194 748
+#42 DOIGT audio_play_from_0 « ▶ A partir do meu take »
+#43 ROUTE audio_track_0 | MODE simple | EMPREINTE b012c5a1c2 | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 RIEN NE CHANGE (3 écrans identiques)
+#43 > touche 56 1251
+#43 DOIGT tab_simple_Morceau « Minha música »
+#44 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 200 902
+#44 DOIGT part_play_0 « A »
+#45 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 66 902
+#45 DOIGT part_play_0 « A »
+#46 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 RIEN NE CHANGE (3 écrans identiques)
+#46 > touche 231 1152
+#46 DOIGT thumb_play
+#47 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1189e2bc0b | project=projet-1 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 294 114
+#47 DOIGT top_position « A »
+#48 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE dce87323be | project=projet-1 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CONTRAST « A música inteira, do início » 1.51:1 (needs 3.0:1, 14 sp)
+#48 LAYOUT CONTRAST « 1 · A » 1.37:1 (needs 4.5:1, 14 sp)
+#48 > touche 377 234
+#48 DOIGT play_from_whole « A música inteira, do início »
+#49 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 231 1152
+#49 DOIGT thumb_play
+#50 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1189e2bc0b | project=projet-1 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 231 1152
+#50 DOIGT thumb_play
+#51 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d7d6c42568 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 559 1251
+#51 DOIGT tab_simple_Envoyer « Enviar »
+#52 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 2873d093f7 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « Outras exportações » 2.83:1 (needs 4.5:1, 14 sp)
+#52 > touche 505 399
+#52 DOIGT share_listen «  Ouvir »
+#53 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE d09c4486d8 | project=projet-1 no tuto
+#53 SON Son : le morceau joue (partie « A »).
+#53 > touche 506 399
+#53 DOIGT share_listen «  Parar »
+#54 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 2873d093f7 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 308 271
+#54 DOIGT share_name « Nome da música (e do projeto) »
+#55 ROUTE dialogue:? | MODE simple | EMPREINTE 94f202bd7b | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > ecris  - Rima de Quebrada
+#56 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE c5156a6a63 | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 308 981
+#56 DOIGT share_go «   Compartilhar »
+#57 ROUTE dialogue:share_progress | MODE simple | EMPREINTE b7bf57061d | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > attends 8
+#57 PARTAGE Rima-de-Quebrada-música-20261105-092204.m4a
+#58 ROUTE dialogue:« Compartilhar minha música · Ri » | MODE simple | EMPREINTE e3b8777f73 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 308 589
+#58 DOIGT vue « WhatsApp »
+#59 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE b243d3a73c | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « OK » 2.00:1 (needs 4.5:1, 14 sp)
+#59 > touche 536 834
+#59 DOIGT share_bilan_ok « OK »
+#60 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 8e6720e028 | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « - Rima de Quebrada » ellipsized (« … »)
+#60 > touche 166 885
+#60 DOIGT share_format_Wav « WAV · qualidade máx. »
+#61 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 8869164a14 | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 308 981
+#61 DOIGT share_go «   Compartilhar »
+#62 ROUTE dialogue:share_progress | MODE simple | EMPREINTE b8fe17411e | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > attends 8
+#62 PARTAGE Rima-de-Quebrada-música-20261105-092223.wav
+#63 ROUTE dialogue:« Compartilhar minha música · Ri » | MODE simple | EMPREINTE 652bd71926 | project=projet-1 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 308 877
+#63 DOIGT vue « Files »
+#64 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 242ce51fcd | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 536 834
+#64 DOIGT share_bilan_ok « OK »
+#65 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 8869164a14 | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 > touche 433 1251
+#65 DOIGT tab_simple_Mix « Mix »
+#66 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 74daa6e912 | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Voz » 1.27:1 (needs 4.5:1, 13 sp)
+#66 LAYOUT CONTRAST « Som » 3.48:1 (needs 4.5:1, 10 sp)
+#66 > touche 593 817
+#66 DOIGT mix_alone_audio:1 « Ouvir “Voz” sozinho, em loop »
+#67 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE adc50550ee | project=projet-1 no tuto
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 487 817
+#67 DOIGT mix_alone_audio:0 « Ouvir “Áudio 1” sozinho, em loop »
+#68 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 6b28b96ae8 | project=projet-1 no tuto
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 231 1152
+#68 DOIGT thumb_play
+#69 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 74daa6e912 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 56 1251
+#69 DOIGT tab_simple_Morceau « Minha música »
+#70 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8532c9e4ed | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 538 447
+#70 DOIGT simple_volume_audio:1
+#71 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 24e6883dbb | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 LAYOUT OVERLAP « Voz » over the touchable « Fechar planilha » (40 x 28 dp)
+#71 LAYOUT OVERLAP « Volume » over the touchable « Fechar planilha » (57 x 24 dp)
+#71 LAYOUT OVERLAP « +0,0 dB » over the touchable « Fechar planilha » (54 x 17 dp)
+#71 LAYOUT OVERLAP « Ouvir sozinha » over the touchable « Fechar planilha » (96 x 20 dp)
+#71 LAYOUT OVERLAP « Som » over the touchable « Fechar planilha » (25 x 13 dp)
+#71 LAYOUT OVERLAP «   Trocar o som » over the touchable « Fechar planilha » (96 x 20 dp)
+#71 LAYOUT OVERLAP «   Excluir a faixa (dá para desfazer) » over the touchable « Fechar planilha » (230 x 20 dp)
+#71 LAYOUT CONTRAST « Voz » 2.41:1 (needs 3.0:1, 22 sp)
+#71 LAYOUT CONTRAST « Fechar » 2.41:1 (needs 4.5:1, 14 sp)
+#71 LAYOUT CONTRAST « Volume » 1.96:1 (needs 4.5:1, 16 sp)
+#71 LAYOUT CONTRAST «   Excluir a faixa (dá para desfazer) » 3.26:1 (needs 4.5:1, 14 sp)
+#71 LAYOUT LABEL « #2733 » long press without text nor description
+#71 > touche 308 1299
+#71 DOIGT simple_track_delete «   Excluir a faixa (dá para desfazer) »
+#72 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8223f5d768 | project=projet-1 no tuto
+#72 SON Son : rien ne joue.
+#72 LAYOUT OVERLAP « + Nova parte vazia » over « Faixa “Voz” excluída. » (123 x 8 dp)
+#72 LAYOUT CONTRAST « Cancelar » 3.63:1 (needs 4.5:1, 14 sp)
+#72 > touche 170 337
+#72 DOIGT simple_track_audio:0 « Áudio 1 »
+#73 ROUTE audio_track_0 | MODE simple | EMPREINTE fb6abdde59 | project=projet-1 no tuto
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « − » 1.41:1 (needs 4.5:1, 14 sp)
+#73 LAYOUT CONTRAST « + » 1.41:1 (needs 4.5:1, 14 sp)
+#73 LAYOUT CONTRAST «  Refazer comp. 1-4 » 2.39:1 (needs 4.5:1, 14 sp)
+#73 > fin
+#73 FIN : fin

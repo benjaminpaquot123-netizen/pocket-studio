@@ -1,0 +1,3 @@
+Son : rien ne joue.
+Le pad 2 (« Clap ») joue une fois.
+Rien ne change à l'écran depuis 3 gestes.

@@ -1,0 +1,66 @@
+Écran 21 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+texte « Tu as 4 mesures pour jouer ta mélodie, puis elle recommence. » @ 237,180
+bouton « Compris » @ 519,180
+onglet « Acid 303 Ligne de basse » @ 112,258
+touchable « Synthé Synthé » @ 280,258
+touchable « Ma mélodie Mélodie » (nom « Options de Ma mélodie ») @ 449,258
+bouton « Changer le son de Ma mélodie » @ 571,258
+  → la suite sur le côté (glisse pour la voir)
+bouton « Partie : A » @ 82,336
+case « Clavier » [sélectionné] @ 78,426
+case « Notes » @ 203,426
+bouton «  Vider » (nom « Vider cette piste dans la partie A ») @ 508,426
+texte « Ta prise : 3 notes » @ 119,507
+bouton « Remettre en rythme » @ 294,576
+bouton « Garder » @ 108,576
+bouton « Refaire » @ 479,576
+bouton « Octave plus bas » @ 347,708
+bouton « Octave plus haut » @ 510,708
+texte « Octave 3 » @ 428,708
+bouton « CLAVIER » [état « Déplié »] @ 109,708
+bouton « Do » (nom « Do 4 ») @ 60,852
+bouton « Do# 4 » @ 77,824
+bouton « Ré 4 » @ 96,852
+bouton « Ré# 4 » @ 113,824
+bouton « Mi 4 » @ 132,852
+bouton « Fa 4 » @ 168,852
+bouton « Fa# 4 » @ 185,824
+bouton « Sol 4 » @ 204,852
+bouton « Sol# 4 » @ 221,824
+bouton « La 4 » @ 240,852
+bouton « La# 4 » @ 257,824
+bouton « Si 4 » @ 276,852
+bouton « Do » (nom « Do 5 ») @ 312,852
+bouton « Do# 5 » @ 329,824
+bouton « Ré 5 » @ 348,852
+bouton « Ré# 5 » @ 365,824
+bouton « Mi 5 » @ 384,852
+bouton « Fa 5 » @ 420,852
+bouton « Fa# 5 » @ 437,824
+bouton « Sol 5 » @ 456,852
+bouton « Sol# 5 » @ 473,824
+bouton « La 5 » @ 492,852
+bouton « La# 5 » @ 509,824
+bouton « Si 5 » @ 528,852
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 25 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » [sélectionné] @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

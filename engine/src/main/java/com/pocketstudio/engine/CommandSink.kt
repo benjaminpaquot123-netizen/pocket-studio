@@ -40,12 +40,23 @@ interface CommandSink {
     fun exportRenderReportOnly(target: Long, frames: Long, tailFrames: Long): Boolean = exportRenderFloat(target, frames, tailFrames).isNotEmpty()
     fun exportDestroy(target: Long)
 
+    /** [OfflineExport.progress] of [target]'s render under way, 0 to 1 (a sink that renders at once: done). */
+    fun exportProgress(target: Long): Float = 1f
+
+    /** [OfflineExport.cancel]: [target]'s render stops and returns [ExportResult.Cancelled] (a sink that renders at once: nothing to stop). */
+    fun exportCancel(target: Long) = Unit
+
+    /** Lot E: [OfflineExport.render]'s finish for [target]'s next render ([OfflineExport.Finish.values]). */
+    fun exportFinish(target: Long, values: LongArray) = Unit
+
     /** [OfflineExport.report] of [target]'s last render, as the JNI lays it out (null: none). */
     fun exportReport(target: Long): FloatArray? = null
 
     // The live engine's state, as the app polls it while playing (a test moves it on by hand).
     fun sceneSwaps(): Int = 0
     fun songStep(): Int = -1
+    /** [NativeEngine.monitorTrack] (null: the sink does not say). */
+    fun monitorTrack(): Int? = null
     fun currentStep(): Int = -1
     fun absoluteStep(): Int = -1
     fun playPosition(): Double = -1.0
@@ -61,6 +72,36 @@ interface CommandSink {
         }
     }
     fun drainLaunchEvents(out: IntArray): Int = 0
+    /** [NativeEngine.clipStates]: per live pad, 0 off, 1 waiting for its line, 2 playing (a sink without pads: all off). */
+    fun clipStates(out: IntArray) = out.fill(0)
 
-    enum class Install { PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems }
+    // A separated song's stems ([NativeStems]), for the « testeur humain » bench. A null answer
+    // means « not mine »: the native library is asked, as before these existed.
+    /** [NativeStems.load]: the sink's handle for the four WAVs (0: unreadable), or null. */
+    fun stemsLoad(paths: Array<String>): Long? = null
+    fun stemsFromPcm(data: FloatArray): Long? = null
+    fun stemsFrames(handle: Long): Long? = null
+    fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray? = null
+    fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray? = null
+    fun stemsStretched(handle: Long, ratio: Double): Long? = null
+    /** True when the sink let go of its bundle (else the native library is asked). */
+    fun stemsRelease(handle: Long): Boolean = false
+    /** [NativeEngine.stemPositionNow] / [NativeEngine.previewPositionNow], or null. */
+    fun stemPosition(): Long? = null
+    fun previewPosition(): Long? = null
+
+    /**
+     * Audit ultra round 1 (n° 29): the microphone ([NativeEngine.micStart], [NativeEngine.micStatus],
+     * [NativeEngine.micFinish]). A sink has none unless it says so: its take cannot open (0), as a
+     * phone's when the microphone is busy or its stream closed.
+     */
+    fun micStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long = 0L
+    fun micStatus(handle: Long): FloatArray = floatArrayOf(2f, 0f, 0f)
+    fun micFinish(handle: Long): FloatArray? = null
+
+    enum class Install {
+        PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems,
+        /** Lot D2: a remix cell's passage; index = cell | refit (0x100) | loop steps << 12. */
+        RemixCell,
+    }
 }

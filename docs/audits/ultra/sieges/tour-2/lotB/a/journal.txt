@@ -1,0 +1,193 @@
+#0 SIEGE lang=fr device=phone360 font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=right amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 0431aa119a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 3.40:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » 3.42:1 (needs 4.5:1, 14 sp)
+#1 > touche 300 550
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3a073e3179 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pro » 2.22:1 (needs 3.0:1, 24 sp)
+#2 > touche 300 400
+#2 REFUS hors de portée du pouce (d'une main, la droite)
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE fcafc3ce20 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 480 425
+#3 DOIGT mode_card_simple « Simple »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 491d032fd1 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » 3.58:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 10 styles » 2.04:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « House » 2.80:1 (needs 3.0:1, 16 sp)
+#4 LAYOUT CONTRAST « 9 styles » 2.23:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 7 styles » 1.60:1 (needs 4.5:1, 13 sp)
+#4 > touche 300 768
+#4 DOIGT wizard_family_Hip-hop « Hip-hop »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 23ddff0425 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. » ellipsized (« … »)
+#5 LAYOUT CUT « La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. » ellipsized (« … »)
+#5 LAYOUT CONTRAST « Hip-hop · 140 BPM » 1.22:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Pour l'idée : Central Cee – Doja (2022) » 3.26:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « Phonk » 2.04:1 (needs 4.5:1, 16 sp)
+#5 > touche 350 920
+#5 DOIGT wizard_style_trap « Trap »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6995dbc864 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « • Kaaris – Zoo (2013) » 3.26:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « • Waka Flocka Flame – Hard in da Paint (2010) » 3.96:1 (needs 4.5:1, 13 sp)
+#6 > glisse 300 1000 300 500
+#6 DOIGT wizard_style_trap « Trap »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE b7b7b581ca | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. » ellipsized (« … »)
+#7 LAYOUT CUT « Pour l'idée : Kordhell – Murder in My Mind (2022) » ellipsized (« … »)
+#7 LAYOUT CONTRAST « Trap » 2.81:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Pour l'idée : » 3.48:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « • Future – Mask Off (2017) » 1.99:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Drill » 1.60:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Hip-hop · 142 BPM » 1.60:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Boom bap » 2.04:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Hip-hop · 92 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#7 > touche 298 745
+#7 DOIGT wizard_style_choose_trap « Choisir ce style »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 562ac079a9 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Quelle ambiance pour la mélodie ? Je choisis la gamme et les accords qui vont avec, et je verrouille le clavier sur cette gamme : impossible de jouer une fausse note, pas besoin de solfège. » 2.96:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Retour » 2.04:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Suivant » 2.04:1 (needs 4.5:1, 14 sp)
+#8 > touche 400 1116
+#8 DOIGT wizard_next « Suivant »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3d3f632ec7 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Pour que ça sonne vraiment Trap : Trap (2,2 Mo). L'assistant prendra ses sons dedans. » 3.60:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « CHOISIS LE SON » 1.21:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST «   Avec le rythme » 1.70:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Sons intégrés » 1.38:1 (needs 3.0:1, 16 sp)
+#9 > touche 400 1116
+#9 DOIGT wizard_next « Suivant »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 937f9f63d7 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « CHOISIS LE SON » 3.13:1 (needs 4.5:1, 12 sp)
+#10 > touche 400 1116
+#10 DOIGT wizard_next « Suivant »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 164b113058 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « 3 » lines cut (taller than its box)
+#11 LAYOUT CUT « 2 » lines cut (taller than its box)
+#11 LAYOUT CONTRAST « En Trap : charleys réguliers, un temps en triolets (trois coups sur deux cases), puis des rafales très rapides en fin de boucle : le fameux roulement. » 3.30:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « • Charley : la petite cymbale qui fait « tss », le tic-tac du rythme. » 3.58:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « 3 » 1.49:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 3.00:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 3 » 2.02:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 4.21:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 1 » 2.73:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 4.24:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 3 » 2.69:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 2.13:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Pour que ça sonne vraiment Trap : Trap (2,2 Mo). L'assistant prendra ses sons dedans. » 2.02:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Télécharger les sons du style » 1.79:1 (needs 4.5:1, 14 sp)
+#11 > touche 362 907
+#11 DOIGT wizard_line_listen «   Avec le rythme »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE d06d23c813 | project=projet-1 no tuto
+#12 SON Son : un son de la bibliothèque joue (écoute).
+#12 > touche 400 1116
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 1061ead0dd | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « • Charley : la petite cymbale qui fait « tss », le tic-tac du rythme. » 3.90:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « 3 » 2.94:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 4 » 3.02:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 1 » 3.45:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 3 » 3.41:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#13 > touche 400 1116
+#13 DOIGT wizard_next « Suivant »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 29680392d5 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « • Kick : la grosse caisse, le « boum » grave de la batterie. » 1.52:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « Créer cette piste » 2.56:1 (needs 4.5:1, 16 sp)
+#14 LAYOUT CONTRAST « Joue dans Couplet et Refrain » 2.88:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « CHOISIS LE SON » 2.62:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Conseillé » 2.20:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Basse ronde » 2.62:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Brillant · tenu » 3.61:1 (needs 4.5:1, 12 sp)
+#14 > touche 400 1116
+#14 DOIGT wizard_next « Suivant »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0706861035 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Cordes » 2.32:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Accords future bass » 2.84:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Orgue » 1.36:1 (needs 4.5:1, 14 sp)
+#15 > touche 400 1116
+#15 DOIGT wizard_next « Suivant »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE 142205e734 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « En Trap : la mélodie de cloche qui tourne en boucle du début à la fin : c'est elle qu'on retient. » 3.75:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Créer cette piste » 2.53:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « Brillant · tenu » 3.47:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Mélodie acide » 1.36:1 (needs 4.5:1, 14 sp)
+#16 > touche 400 1116
+#16 DOIGT wizard_next « Suivant »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE a5cdcc7137 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « D » 2.21:1 (needs 3.0:1, 14 sp)
+#17 LAYOUT CONTRAST « Tempo 140 BPM. » 3.42:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 4 » 1.70:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 2 » 1.46:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 4 » 1.62:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 2 » 3.11:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Retour » 3.26:1 (needs 4.5:1, 14 sp)
+#17 > touche 400 1110
+#17 DOIGT wizard_create « Créer le morceau »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e0eb506e62 | project=p-4fb94993 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#18 > touche 423 42
+#18 REFUS hors de portée du pouce (d'une main, la droite)
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1977bd3177 | project=p-4fb94993 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 390 360
+#19 REFUS hors de portée du pouce (d'une main, la droite)
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1977bd3177 | project=p-4fb94993 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 160 1050
+#20 DOIGT tab_simple_Rythme « Rythme »
+#21 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 0f0f01b801 | project=p-4fb94993 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » ellipsized (« … »)
+#21 LAYOUT CUT « Sauvegardé » wider than its box (by 56.1 dp)
+#21 > touche 203 951
+#21 DOIGT thumb_play
+#22 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9c16162a60 | project=p-4fb94993 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > touche 203 951
+#22 DOIGT thumb_play
+#23 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE bc2df0ad22 | project=p-4fb94993 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 455 951
+#23 DOIGT thumb_more « Plus de choix »
+#24 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE ded0a081d1 | project=p-4fb94993 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « Remix » 2.62:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Passer en mode Pro » 1.91:1 (needs 4.5:1, 14 sp)
+#24 > touche 420 579
+#24 DOIGT thumb_more_projects « Mes projets »
+#25 ROUTE dialogue:projects | MODE simple | EMPREINTE bde079291c | project=p-4fb94993 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 380 495
+#25 DOIGT project_p-4fb94993 « Trap »
+#26 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE ec00c9dfe0 | project=p-4fb94993 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 203 951
+#26 DOIGT thumb_play
+#27 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE f3c8b02c5e | project=p-4fb94993 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 203 951
+#27 DOIGT thumb_play
+#28 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE ec00c9dfe0 | project=p-4fb94993 no tuto
+#28 SON Son : rien ne joue.
+#28 > fin
+#28 FIN : fin

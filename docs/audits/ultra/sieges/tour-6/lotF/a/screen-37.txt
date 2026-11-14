@@ -1,0 +1,6 @@
+Écran 37 (900x1509)
+icône ← @ 54,54
+texte « I miei progetti » @ 486,54
+bouton (étincelles) «   Fammi un brano » @ 450,147
+bouton + «   Nuovo progetto: stile, demo o vuoto » @ 450,243
+bouton (boîte, flèche vers le haut) « Importa un progetto (.zip) » › @ 450,339

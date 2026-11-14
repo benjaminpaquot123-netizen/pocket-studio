@@ -1,0 +1,5 @@
+Écran 73 (1920x1200)
+texte « Teil zum Bearbeiten » @ 1684,123
+touchable « A » (nom « Aktueller Teil ») @ 1684,192
+touchable « B » @ 1684,264
+touchable « Neuer leerer Teil » @ 1684,338

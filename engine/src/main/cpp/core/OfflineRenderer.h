@@ -47,9 +47,20 @@ public:
     // rate; 16 or 24 bits (TPDF dither) or 32 (float). Frame counts given to renders stay at the
     // engine's rate.
     void setOutputFormat(int sampleRate, int bits) {
-        outRate_ = sampleRate == 44100 ? 44100 : sampleRate_;
+        outRate_ = sampleRate == 44100 || sampleRate == 96000 ? sampleRate : sampleRate_;
         bits_ = bits == 16 || bits == 32 ? bits : 24;
     }
+    // Lot E (« Master pro », the file's final form): the next render only.
+    struct Finish {
+        int64_t fadeInFrames = 0;     // the first frames fade in (squared curve), at the engine's rate
+        bool trimStart = false;       // starts on its first sound (over -90 dBFS)
+        bool trimEnd = false;         // ends on its last sound (the reverb's tail kept while over -90 dBFS)
+        int64_t endSilenceFrames = 0; // digital silence added after the end (the engine's rate)
+        int64_t rangeStart = 0;       // the song's frames before this are rendered but not kept (a part, a selection)
+        bool noiseShaping = false;    // 16 bits: the dither's noise moved up where the ear hears it least
+    };
+    void setFinish(const Finish& f) { finish_ = f; }
+    const Finish& finish() const { return finish_; }
     static constexpr float kSilence = 3.1623e-5f;  // -90 dBFS
 
     // Plays the transport for `frames`, then renders `tailFrames` stopped so
@@ -81,6 +92,13 @@ public:
         float lossDb = 0.0f;
         int mode = 0;  // 0 Song, 1 Drop (MasterChain::Mode)
         float targetLufs = 0.0f;  // 0: none
+        // Lot E (LoudnessRange.h), on what was written: the loudest 400 ms and 3 s, the loudness range
+        // (LU), the stereo correlation (-1..1), the mono fold's integrated loudness (LUFS).
+        double maxMomentary = -1000.0;
+        double maxShortTerm = -1000.0;
+        double lra = 0.0;
+        double correlation = 1.0;
+        double monoLufs = -1000.0;
     };
     const Report& report() const { return report_; }
 
@@ -111,6 +129,7 @@ private:
     // chain over the stored music.
     Result dropDrive(Store& store, double preLoud, double target, float& drive, double extraLoss = 0.0);
 
+    int64_t kept(int64_t frames) const { return frames - std::clamp<int64_t>(finish_.rangeStart, 0, frames); }
     void postNow(const Command& command);
     void postDue(int64_t frame);
     int64_t nextDue() const;
@@ -123,6 +142,7 @@ private:
     int outRate_;
     int bits_ = 24;
     Report report_;
+    Finish finish_;
     std::vector<std::pair<int64_t, Command>> scheduled_;  // in posting order
     size_t nextScheduled_ = 0;
     std::atomic<float> progress_{0.0f};

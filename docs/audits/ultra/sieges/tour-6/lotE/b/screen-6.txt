@@ -1,0 +1,7 @@
+Écran 6 (540x1170)
+texte « Mijn nummer delen · Mijn-eerste-beat-loop-streaming-20261112-213547.m4a » @ 270,406
+bouton « WhatsApp » @ 270,489
+bouton « Messages » @ 270,561
+bouton « Gmail » @ 270,633
+bouton « Drive » @ 270,705
+bouton « Files » @ 270,777

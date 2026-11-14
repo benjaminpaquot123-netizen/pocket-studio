@@ -1,0 +1,47 @@
+Écran 175 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+texte « Hinzufügen: » [coupé] @ 123,180
+bouton « + A · Groove » @ 163,246
+bouton « + B · Intro » @ 395,246
+bouton « + C · Intro 2 » @ 623,246
+bouton « + D · Drop » @ 146,327
+bouton « + E · Break » @ 369,327
+bouton « + F · Build-up » @ 615,327
+bouton « + G · Drop 2 » @ 159,408
+bouton « + H · Ende » @ 391,408
+bouton « + Neuer Teil (Kopie von H · Ende) » @ 303,485
+texte « Ordne deine Teile Kapitel 11/16 · Schritt 1/2 · Pro » @ 366,568
+icône (liste) « Kapitel » @ 759,569
+icône ⌄ @ 843,569
+texte « Du bist dran: Füg in „Struktur“ der Reihe nach Intro, Intro 2, Drop, Break, Build-up, Drop 2 und Ende hinzu. » @ 450,680
+texte « Das Kit Techno » @ 139,776
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,842
+texte « ▸ Warum? » @ 450,916
+icône « Weiterlesen » ⌄ @ 450,970
+bouton (doigt qui touche) «   Ich mach's » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

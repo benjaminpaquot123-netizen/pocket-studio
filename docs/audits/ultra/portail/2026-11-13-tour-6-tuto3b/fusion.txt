@@ -1,0 +1,8 @@
+fusion: bbe40f17c876833929d3a931d0b81e73f8be93bd
+branche: eq/tour-6-tuto3b
+tete: c6fd5ac18ec39d81356010b5629910f99bac7dca
+relecture: docs/audits/ultra/tour-6-tuto3b-relecture.md
+relu: b3359ca3561120a801f8938bc3dc6d22640cd6df
+filtres: com.pocketstudio.model.tuto.Tour6TutoKnobStepTest com.pocketstudio.app.tuto.Tour6TutoGhostTapTest com.pocketstudio.app.tuto.Tour6TutoTempoNoteTest com.pocketstudio.app.tuto.Tour6TutoChordModeTest com.pocketstudio.app.tuto.Tour6TutoFlechesChordsTest com.pocketstudio.app.tuto.Tour6TutoFlechesRollTest com.pocketstudio.model.tuto.Tour6TutoFlechesTest com.pocketstudio.app.tuto.Tour6TutoSoftOpenTest com.pocketstudio.app.tuto.Tour6TutoKnobLeftTest com.pocketstudio.app.tuto.Tour6TutoLineGoTest com.pocketstudio.app.tuto.Tour6TutoChordWordsTest com.pocketstudio.app.tuto.Tour6TutoAlreadyQuietTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

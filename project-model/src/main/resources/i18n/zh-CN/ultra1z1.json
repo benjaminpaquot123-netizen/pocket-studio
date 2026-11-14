@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "被点的打击垫的声音会被替换(返回箭头可以恢复)。",
+  "Découper ce que je veux": "剪我想要的",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "从每条音轨挑选片段,放到你的打击垫、Live 或一条音轨上。",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "应用把一首歌分成 4 条音轨(鼓、贝斯、人声、其余)。在歌曲下方点「剪我想要的」:挑选片段,放到你的打击垫、Live 或一条音轨上。也可以在 Live 的 Remix 格子里播放段落。",
+  "Tes chansons séparées": "你分离的歌曲",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "它们的音轨(人声、鼓、贝斯、其余)可剪成片段给打击垫;「保留」会把它们放在这里。",
+  "Découper « %s »": "剪「%s」",
+  "À télécharger pour « %s » :": "可为「%s」下载:",
+  "Rythme · coups : %1$d · réussis : %2$d": "节奏 · 击打:%1$d · 命中:%2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "节奏 · 击打:%1$d · 已打:%2$d",
+  "Rythme · coups : %d": "节奏 · 击打:%d",
+  "Ton record : %d sur 3": "你的最佳:3 颗中 %d 颗",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · 星星:3 颗中 %2$d 颗",
+  "en cours": "进行中"
+}

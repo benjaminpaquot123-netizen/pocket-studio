@@ -1,0 +1,6 @@
+Écran 13 (540x1170)
+texte « Ik maak je nummer klaar… » @ 262,448
+texte « Het geluid wordt gemaakt als WAV, studiokwaliteit. » @ 270,526
+texte «   20% » @ 474,583
+texte « Kies daarna de app om het te versturen. » @ 218,623
+texte « Annuleren » @ 432,709

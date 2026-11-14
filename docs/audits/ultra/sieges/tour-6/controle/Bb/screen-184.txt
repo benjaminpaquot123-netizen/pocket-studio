@@ -1,0 +1,74 @@
+Écran 184 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+texte « Lautstärken » @ 428,213
+bouton « ? » @ 842,213
+texte « Schieb einen Fader für die Lautstärke; tippe auf einen Spurnamen für Effekte und Kurven. » @ 450,277
+texte « Drums » @ 84,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 57,454
+bouton (casque) [état « aus »] @ 111,454
+curseur [état « +0,0 dB », à 80 %] @ 84,625
+texte « +0,0 » @ 84,780
+texte « 3 » @ 96,820
+image (étincelles) @ 74,820
+texte « Acid 303 » @ 204,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 177,454
+bouton (casque) [état « aus »] @ 231,454
+curseur [état « +0,0 dB », à 80 %] @ 204,625
+texte « +0,0 » @ 204,780
+texte « Bass » @ 324,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 297,454
+bouton (casque) [état « aus »] @ 351,454
+curseur [état « +0,0 dB », à 80 %] @ 324,625
+texte « +0,0 » @ 324,780
+texte « 1 » @ 336,820
+image (étincelles) @ 317,820
+texte « Akkorde » @ 444,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 417,454
+bouton (casque) [état « aus »] @ 471,454
+curseur [état « +0,0 dB », à 80 %] @ 444,625
+texte « +0,0 » @ 444,780
+texte « 1 » @ 456,820
+image (étincelles) @ 437,820
+texte « Melodie » @ 564,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 537,454
+bouton (casque) [état « aus »] @ 591,454
+curseur [état « +0,0 dB », à 80 %] @ 564,625
+texte « +0,0 » @ 564,780
+texte « Remix » @ 684,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 657,454
+bouton (casque) [état « aus »] @ 711,454
+curseur [état « +0,0 dB », à 80 %] @ 684,625
+texte « +0,0 » @ 684,780
+image (courbe) @ 60,955
+texte « Kurven und Effekte » @ 232,919
+texte « Noch bewegt sich nichts: Lass einen Filter aufgehen, eine Lautstärke steigen… » @ 475,978
+bouton « Automatisieren » [coupé] @ 243,1029
+bouton « Was spielt » [coupé] @ 657,1029
+texte « Die Effekte Kapitel 13/16 · Schritt 1/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (rond coché) « Geschafft Nächster Schritt » → @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

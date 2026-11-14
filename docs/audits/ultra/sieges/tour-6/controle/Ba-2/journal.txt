@@ -1,0 +1,231 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=left amenee=-
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 1120
+#1 DOIGT welcome_remix « Extraer la voz de una canción »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 46233d081c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 933
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE ? | MODE simple | EMPREINTE 051387ac13 | project=p-52d55e52 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 200 903
+#3 DOIGT remix_download_thumb « Descargar el modelo (174 MB) »
+#4 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 7a1a6c5e47 | project=p-52d55e52 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 463 783
+#4 DOIGT remix_model_ask_ok « Descargar »
+#5 ROUTE ? | MODE simple | EMPREINTE 0057ff7bca | project=p-52d55e52 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 30
+#6 ROUTE ? | MODE simple | EMPREINTE 866567be1e | project=p-52d55e52 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 150 903
+#6 DOIGT remix_pick_thumb «  Elegir una canción »
+#7 ROUTE ? | MODE simple | EMPREINTE 4bb5b4af95 | project=p-52d55e52 no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 60
+#8 ROUTE ? | MODE simple | EMPREINTE f88504694f | project=p-52d55e52 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 180 676
+#8 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar lo que quiero »
+#9 ROUTE cut_screen | MODE simple | EMPREINTE a9177c010a | project=p-52d55e52 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 458 864
+#9 DOIGT cut_stem_2 « Resto »
+#10 ROUTE cut_screen | MODE simple | EMPREINTE b422b10cd8 | project=p-52d55e52 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 69 864
+#10 DOIGT cut_stem_3 « Voz »
+#11 ROUTE cut_screen | MODE simple | EMPREINTE 4dff59c759 | project=p-52d55e52 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 300 520
+#11 REFUS hors de portée du pouce (d'une main, la gauche)
+#12 ROUTE cut_screen | MODE simple | EMPREINTE 2377d0aa40 | project=p-52d55e52 no tuto
+#12 SON Son : rien ne joue.
+#12 > glisse 150 920 150 650
+#12 DOIGT rien
+#13 ROUTE cut_screen | MODE simple | EMPREINTE 871eae51f9 | project=p-52d55e52 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 131 474
+#13 REFUS hors de portée du pouce (d'une main, la gauche)
+#14 ROUTE cut_screen | MODE simple | EMPREINTE 3487968e44 | project=p-52d55e52 no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 150 650 150 920
+#14 DOIGT rien
+#15 ROUTE cut_screen | MODE simple | EMPREINTE 4dff59c759 | project=p-52d55e52 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 131 660
+#15 DOIGT cut_auto « Cortes: Un trozo »
+#16 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 237aeed841 | project=p-52d55e52 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 102 816
+#16 DOIGT cut_auto_1 « Frases »
+#17 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#17 SON Son : rien ne joue.
+#17 > attends 3
+#18 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 150 640
+#18 DOIGT rien
+#19 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 230 630
+#19 DOIGT rien
+#20 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#20 SON Son : rien ne joue.
+#20 RIEN NE CHANGE (3 écrans identiques)
+#20 > touche 293 548
+#20 REFUS hors de portée du pouce (d'une main, la gauche)
+#21 ROUTE cut_screen | MODE simple | EMPREINTE 730f2e0dae | project=p-52d55e52 no tuto
+#21 SON Son : rien ne joue.
+#21 > glisse 100 940 100 700
+#21 DOIGT rien
+#22 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#22 SON Son : rien ne joue.
+#22 > appui-long 230 640
+#22 DOIGT rien
+#23 ROUTE cut_screen | MODE simple | EMPREINTE 72dd096dbf | project=p-52d55e52 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 117 750
+#23 DOIGT cut_auto « Cortes: Frases »
+#24 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 681670ae91 | project=p-52d55e52 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 102 1086
+#24 DOIGT cut_auto_3 « Compases »
+#25 ROUTE cut_screen | MODE simple | EMPREINTE a1cd10c1e5 | project=p-52d55e52 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 240 630
+#25 DOIGT rien
+#26 ROUTE cut_screen | MODE simple | EMPREINTE a1cd10c1e5 | project=p-52d55e52 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 247 550
+#26 REFUS hors de portée du pouce (d'une main, la gauche)
+#27 ROUTE cut_screen | MODE simple | EMPREINTE cc7a37a6ef | project=p-52d55e52 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 80 650
+#27 DOIGT rien
+#28 ROUTE cut_screen | MODE simple | EMPREINTE a1cd10c1e5 | project=p-52d55e52 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 120 680
+#28 DOIGT rien
+#29 ROUTE cut_screen | MODE simple | EMPREINTE a1cd10c1e5 | project=p-52d55e52 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 117 750
+#29 DOIGT cut_auto « Cortes: Compases »
+#30 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 681670ae91 | project=p-52d55e52 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 102 870
+#30 DOIGT cut_auto_0 « Un trozo »
+#31 ROUTE cut_screen | MODE simple | EMPREINTE 5865912240 | project=p-52d55e52 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 84 756
+#31 DOIGT cut_start « Inicio aquí »
+#32 ROUTE cut_screen | MODE simple | EMPREINTE c122b736ce | project=p-52d55e52 no tuto
+#32 SON Son : rien ne joue.
+#32 > glisse 150 920 150 650
+#32 DOIGT rien
+#33 ROUTE cut_screen | MODE simple | EMPREINTE ecb593fd04 | project=p-52d55e52 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 96 876
+#33 DOIGT cut_to_pads « En los pads »
+#34 ROUTE cut_screen | MODE simple | EMPREINTE 6c5b0a85bc | project=p-52d55e52 no tuto
+#34 SON Son : rien ne joue.
+#34 > glisse 150 900 150 700
+#34 DOIGT rien (texte « Coloca Inicio y Fin, y luego pon este tr »)
+#35 ROUTE cut_screen | MODE simple | EMPREINTE 6a4768290c | project=p-52d55e52 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 492 876
+#35 DOIGT cut_to_track « En una pista »
+#36 ROUTE cut_screen | MODE simple | EMPREINTE 3681aa87e8 | project=p-52d55e52 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « En los pads » 3.21:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « En el Live » 3.21:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « Guardar » 3.21:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « En una pista » 3.21:1 (needs 4.5:1, 13 sp)
+#36 > retour
+#36 RETOUR
+#37 ROUTE ? | MODE simple | EMPREINTE c6dbbe09b9 | project=p-52d55e52 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « 0:00 / 0:40 · inicio » lines dropped (more lines than room)
+#37 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.41:1 (needs 4.5:1, 12 sp)
+#37 > glisse 150 860 150 560
+#37 DOIGT rien
+#38 ROUTE ? | MODE simple | EMPREINTE c6dbbe09b9 | project=p-52d55e52 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 510 549
+#38 REFUS hors de portée du pouce (d'une main, la gauche)
+#39 ROUTE ? | MODE simple | EMPREINTE 3c128ab6be | project=p-52d55e52 no tuto
+#39 SON Son : rien ne joue.
+#39 > glisse 100 780 100 480
+#39 REFUS hors de portée du pouce (d'une main, la gauche)
+#40 ROUTE ? | MODE simple | EMPREINTE 3c128ab6be | project=p-52d55e52 no tuto
+#40 SON Son : rien ne joue.
+#40 > glisse 100 840 100 640
+#40 DOIGT rien
+#41 ROUTE ? | MODE simple | EMPREINTE 05e44284a8 | project=p-52d55e52 no tuto
+#41 SON Son : rien ne joue.
+#41 > glisse 100 840 100 620
+#41 DOIGT rien
+#42 ROUTE ? | MODE simple | EMPREINTE 51ac30b858 | project=p-52d55e52 no tuto
+#42 SON Son : rien ne joue.
+#42 > glisse 100 860 100 600
+#42 DOIGT rien
+#43 ROUTE ? | MODE simple | EMPREINTE 51ac30b858 | project=p-52d55e52 no tuto
+#43 SON Son : rien ne joue.
+#43 > glisse 40 760 40 580
+#43 DOIGT rien
+#44 ROUTE ? | MODE simple | EMPREINTE f621aa6c69 | project=p-52d55e52 no tuto
+#44 SON Son : rien ne joue.
+#44 > glisse 40 800 40 580
+#44 DOIGT rien
+#45 ROUTE ? | MODE simple | EMPREINTE e11869a7fb | project=p-52d55e52 no tuto
+#45 SON Son : rien ne joue.
+#45 > glisse 40 800 40 560
+#45 DOIGT rien
+#46 ROUTE ? | MODE simple | EMPREINTE 770e1f327e | project=p-52d55e52 no tuto
+#46 SON Son : rien ne joue.
+#46 > glisse 40 800 40 560
+#46 DOIGT rien
+#47 ROUTE ? | MODE simple | EMPREINTE 0ca9b63470 | project=p-52d55e52 no tuto
+#47 SON Son : rien ne joue.
+#47 > glisse 40 800 40 560
+#47 DOIGT rien
+#48 ROUTE ? | MODE simple | EMPREINTE 25fbca33f3 | project=p-52d55e52 no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 40 800 40 560
+#48 DOIGT rien
+#49 ROUTE ? | MODE simple | EMPREINTE 17df0d3e59 | project=p-52d55e52 no tuto
+#49 SON Son : rien ne joue.
+#49 > glisse 40 800 40 560
+#49 DOIGT rien
+#50 ROUTE ? | MODE simple | EMPREINTE 79ac93d412 | project=p-52d55e52 no tuto
+#50 SON Son : rien ne joue.
+#50 > glisse 40 800 40 560
+#50 DOIGT rien
+#51 ROUTE ? | MODE simple | EMPREINTE 7145277545 | project=p-52d55e52 no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 40 800 40 560
+#51 DOIGT rien
+#52 ROUTE ? | MODE simple | EMPREINTE 608bef6d48 | project=p-52d55e52 no tuto
+#52 SON Son : rien ne joue.
+#52 > glisse 40 800 40 560
+#52 DOIGT rien
+#53 ROUTE ? | MODE simple | EMPREINTE 2f118c769f | project=p-52d55e52 no tuto
+#53 SON Son : rien ne joue.
+#53 > glisse 40 760 40 520
+#53 REFUS hors de portée du pouce (d'une main, la gauche)
+#54 ROUTE ? | MODE simple | EMPREINTE 72a9ae5c7a | project=p-52d55e52 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 200 903
+#54 DOIGT remix_cut_thumb «  Cortar la canción »
+#55 ROUTE cut_screen | MODE simple | EMPREINTE 328d431892 | project=p-52d55e52 no tuto
+#55 SON Son : rien ne joue.
+#55 > glisse 230 590 20 590
+#55 DOIGT rien
+#56 ROUTE cut_screen | MODE simple | EMPREINTE 02ec5736e8 | project=p-52d55e52 no tuto
+#56 SON Son : rien ne joue.
+#56 > fin
+#56 FIN : fin

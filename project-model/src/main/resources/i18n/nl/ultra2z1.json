@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "De klank kon niet op de pad: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "Uitdagingen: luister naar een ritme, speel het na op de pads, win sterren.",
+  "Défis": "Uitdagingen",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "Luister naar een ritme, speel het na op de pads: win sterren.",
+  "%s, sur le pad": "%s, op de pad",
+  "✓ Sur le pad maintenant": "✓ Nu op de pad",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "‘%1$s’ vervangt ‘%2$s’ op pad %3$d (de terugpijl zet het terug). Zet het bij Drums in het deel dat je wilt.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "‘%s’ staat in je project, gedempt, om te knippen (de terugpijl haalt het weg).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live heeft een eigen project ‘Live’: ‘%s’ wacht op je in Mijn projecten."
+}

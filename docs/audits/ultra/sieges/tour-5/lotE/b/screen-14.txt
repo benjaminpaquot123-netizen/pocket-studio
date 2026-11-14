@@ -1,0 +1,20 @@
+Écran 14 (588x1278)
+texte « ▭▭▭ » @ 97,33
+touchable « ▭▭▭ » @ 200,90
+touchable « ▭▭▭ » @ 200,162
+touchable « ▭▭▭ » @ 200,234
+touchable « ▭▭▭ » @ 200,306
+touchable « ▭▭▭ » @ 200,378
+touchable « ▭▭▭ » @ 200,450
+touchable « ▭▭▭ » @ 200,522
+touchable « ▭▭▭ » @ 200,594
+touchable « ▭▭▭ » @ 200,666
+touchable « ▭▭▭ » @ 200,738
+touchable « ▭▭▭ » @ 200,810
+touchable « ▭▭▭ » @ 200,882
+touchable « ▭▭▭ » @ 200,954
+touchable « ▭▭▭ » @ 200,1026
+touchable « ▭▭▭ » @ 200,1098
+touchable « ▭▭▭ » @ 200,1170
+touchable « ▭▭▭ » @ 200,1236
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

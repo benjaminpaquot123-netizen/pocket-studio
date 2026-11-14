@@ -1,0 +1,8 @@
+Écran 9 (616x1371)
+bouton «  Atrás » @ 68,36
+texte « Remix » @ 166,36
+bouton « SEPARAR UNA CANCIÓN » [état « Desplegado »] @ 212,135
+bouton « ? » (nom « ¿Qué es “Remix”? ») @ 360,135
+texte « Elige una canción del dispositivo: la app la separa en batería, bajo, voz y el resto. Tarda unos minutos; puedes apagar la pantalla. » @ 308,214
+texte « Separando “Ma chanson préférée”… 45 % » @ 281,289
+bouton « Cancelar » @ 308,385

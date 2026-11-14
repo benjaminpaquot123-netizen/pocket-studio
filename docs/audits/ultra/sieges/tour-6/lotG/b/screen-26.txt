@@ -1,0 +1,71 @@
+Écran 26 (900x1509)
+icône ← @ 51,45
+bouton ▶ @ 543,45
+icône − @ 624,45
+texte « 124 Tempo » @ 690,45
+icône + @ 756,45
+texte « REC » @ 840,45
+texte « Pad Live » @ 295,45
+onglet « A » @ 57,135
+onglet « B » [sélectionné] @ 126,135
+onglet « C » @ 195,135
+onglet « D » @ 264,135
+bouton « Paket… » ▾ @ 405,135
+bouton ★ «  Tantangan » @ 774,135
+bouton « ? » @ 633,135
+texte « Rekamanmu ada di pad B1. » @ 152,204
+bouton [allumé] @ 116,345
+dessin @ 165,261
+texte « loop » @ 176,252
+texte « Rekamanku 1 » @ 101,436
+bouton @ 322,345
+texte « + » @ 322,346
+bouton @ 528,345
+texte « + » @ 528,346
+bouton @ 734,345
+texte « + » @ 734,346
+bouton ■ @ 862,345
+bouton @ 116,580
+texte « + » @ 116,581
+bouton @ 322,580
+texte « + » @ 322,581
+bouton @ 528,580
+texte « + » @ 528,581
+bouton @ 734,580
+texte « + » @ 734,581
+bouton @ 116,815
+texte « + » @ 116,816
+bouton @ 322,815
+texte « + » @ 322,816
+bouton @ 528,815
+texte « + » @ 528,816
+bouton @ 734,815
+texte « + » @ 734,816
+bouton @ 116,1050
+texte « + » @ 116,1051
+bouton @ 322,1050
+texte « + » @ 322,1051
+bouton @ 528,1050
+texte « + » @ 528,1051
+bouton @ 734,1050
+texte « + » @ 734,1051
+bouton « ? » @ 138,1205
+texte « EFEK LIVE » @ 67,1205
+texte « Tekan dan tahan » @ 802,1205
+bouton @ 158,1284
+texte « Filter » @ 158,1272
+texte « rendah ↔ tinggi » @ 158,1299
+bouton @ 450,1284
+texte « Echo » @ 450,1272
+texte « saat keluar » @ 450,1299
+bouton @ 742,1284
+texte « Roll » @ 742,1272
+texte « 1/16 » @ 742,1299
+bouton ■ « Stop semua » @ 66,1390
+bouton « Rekam yang aku mainkan » @ 376,1383
+bouton ⋯ « Lainnya » @ 788,1383
+bouton « ? » @ 660,1390
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

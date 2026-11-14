@@ -1,0 +1,66 @@
+Écran 17 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 280,42
+bouton « Simple » @ 606,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 122  Tempo » @ 98,123
+icône (flèches en boucle) « Montée mesure 2/4 » ▾ @ 297,123
+bouton « ? » @ 855,123
+bouton « ▶ Partie en boucle » @ 412,210
+bouton « ↺ Tout à zéro » @ 733,210
+texte « Mix » @ 51,210
+texte «  · House » @ 139,210
+bouton « ? » @ 215,210
+bouton « ? » @ 584,210
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 453,311
+bouton « Batterie ▸ » [état « fermé »] @ 75,421
+curseur [état « Normal », à 80 %] @ 84,604
+texte « Normal » @ 84,765
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 55,832
+bouton ▶ @ 109,819
+texte « Basse » @ 216,407
+curseur [état « Normal », à 80 %] @ 216,576
+texte « Normal » @ 216,737
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 190,804
+bouton ▶ @ 241,791
+texte « Piano » @ 339,407
+curseur [état « Normal », à 80 %] @ 339,576
+texte « Normal » @ 339,737
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 313,804
+bouton ▶ @ 364,791
+texte « Mélodie » @ 462,421
+curseur [état « Normal », à 80 %] @ 462,604
+texte « Normal » @ 462,765
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 436,832
+bouton ▶ @ 487,819
+texte « Souffle montant » @ 585,421
+curseur [état « Normal », à 80 %] @ 585,604
+texte « Normal » @ 585,765
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 559,832
+bouton ▶ @ 610,819
+texte « Voix » @ 708,407
+curseur [état « Normal », à 80 %] @ 708,576
+texte « Normal » @ 708,737
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 682,804
+bouton ▶ @ 733,791
+texte « Chute grave » @ 831,421
+curseur [état « Normal », à 80 %] @ 831,604
+texte « Normal » @ 831,765
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 805,832
+bouton ▶ @ 856,819
+texte « Aucun conseil pour l'instant : règle à l'oreille. » @ 332,934
+bouton (boussole) « Guide  · Change un son 15 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 148,1292
+bouton ■ « le morceau » @ 354,1292
+texte « 122 Tempo » @ 564,1292
+icône ⋮ « Plus » @ 753,1292
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » [sélectionné] @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

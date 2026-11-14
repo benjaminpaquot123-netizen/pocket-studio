@@ -14,6 +14,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import com.pocketstudio.model.instrumentTracks
@@ -73,8 +74,9 @@ class GestureBudgetTest {
         val transport by vm.transport.collectAsState()
         Column {
             TopBar(
-                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project)),
-                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePlay, selectScene = vm::selectScene),
+                // No thumb's bar here: « ▶ le morceau » is in the top bar, beside « ▶ cette partie » (tour 5, chantier 4).
+                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project), songButton = true),
+                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePart, playSong = vm::toggleWholeSong, selectScene = vm::selectScene),
             )
             UnderTopBar(vm, tempoOpen = tempo, setTempoOpen = { tempo = it }, renaming = renaming, closeRename = { renaming = false })
         }
@@ -89,7 +91,7 @@ class GestureBudgetTest {
         vm.playStartsForTest = mutableListOf()
         show(vm)
         compose.onNodeWithTag("top_position").assertTextContains("mes. 2/3", substring = true)
-        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_play") }
+        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_song") }
         assertEquals(listOf("song 1"), vm.playStartsForTest)
         assertTrue(vm.transport.value.playing)
     }
@@ -386,10 +388,10 @@ class GestureBudgetTest {
         val p by vm.project.collectAsState()
         val t by vm.transport.collectAsState()
         com.pocketstudio.app.rhythm.RhythmScreen(
-            p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+            p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
             actions = com.pocketstudio.app.rhythm.RhythmActions(
                 toggleStep = vm::toggleStep, cycleVelocity = vm::cycleVelocity, setHitVelocity = vm::setHitVelocity,
-                selectPad = vm::selectPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
+                selectPad = vm::selectPad, hitPad = vm::hitPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
                 openKits = vm::refreshPacks, chooseKit = vm::chooseKit,
                 paintStep = vm::paintStep, paintEnd = vm::paintEnd, setRoll = vm::setRoll, burst = vm::burstAt,
             ),
@@ -425,16 +427,19 @@ class GestureBudgetTest {
         val vm = vmWithSong()
         withPadSample(vm)
         compose.setContent { PocketStudioTheme { Rhythm(vm) } }
-        compose.withinGestures("Son d'un pad", 2) {
-            longPress("pad_0")
+        // Owner (2026-11-04): a long press is « Changer le son » (the library); the sheet is the card's « Réglages du pad ».
+        compose.withinGestures("Son d'un pad", 3) {
+            tap("pad_settings")
             tap("pad_sound_origin")
         }
         assertEquals(null, vm.project.value.drums.lanes[0].sample)
         vm.undo()
         assertTrue(vm.project.value.drums.lanes[0].sample != null)
         // The same sheet: the pad's volume and « Couper ce pad ».
-        compose.withinGestures("Couper un pad", 2) {
-            longPress("pad_3")
+        // Up to the pads and down to the card again: two scrolls of the five (the sheet is no longer the long press's).
+        compose.withinGestures("Couper un pad", 5) {
+            tap("pad_3")
+            tap("pad_settings")
             tap("pad_mute")
         }
         assertEquals(3, vm.transport.value.selectedPad)
@@ -466,8 +471,11 @@ class GestureBudgetTest {
     }
 
     /**
-     * Review m9: a stroke cut short (the page turning with the playhead under the finger restarts the
-     * gesture) is still one undo step of its own, not merged into the next stroke.
+     * Review m9: a stroke cut short (the page turned under the finger restarts the gesture) is still one
+     * undo step of its own, not merged into the next stroke.
+     * Tour 6 (U6, lot « tutogrille »): a finger on the cells turns « Suivre » off, so the playhead no longer
+     * turns the page under it (the stroke stays open, its bar in sight); the page still turns under a finger
+     * when another one touches a bar's number, and that is what cuts the stroke short here.
      */
     @Test
     fun aStrokeCutShortIsStillItsOwnUndoStep() {
@@ -480,7 +488,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t.copy(playing = true), com.pocketstudio.app.rhythm.LiveUi(currentStep = step), canUndo = true, canRedo = false,
+                    p, t.copy(playing = true), { com.pocketstudio.app.rhythm.LiveUi(currentStep = step) }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(toggleStep = vm::toggleStep, paintStep = vm::paintStep, paintEnd = vm::paintEnd),
                 )
             }
@@ -494,8 +502,15 @@ class GestureBudgetTest {
         val painted = vm.project.value.drums.lanes[7].hits.keys
         assertTrue(painted.isNotEmpty())
         assertEquals("the stroke is still open", depth, vm.session.undoDepth)
-        step = 20  // the playhead in bar 2: the page turns, the finger still down
+        step = 20  // the playhead in bar 2, the finger still down: the page stays on the bar being painted (U6)
         compose.waitForIdle()
+        compose.onNodeWithTag("step_0").assertExists()
+        assertEquals("the playhead does not cut the stroke", depth, vm.session.undoDepth)
+        // Another finger on « 2 » of « Mesure »: the page turns under the first one, the stroke is cut short.
+        compose.onNodeWithTag("drum_page_1").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnClick)
+        compose.waitForIdle()
+        compose.onNodeWithTag("step_16").assertExists()
+        assertEquals(painted, vm.project.value.drums.lanes[7].hits.keys)
         assertEquals(depth + 1, vm.session.undoDepth)
         // The next edit is a step of its own: undoing it leaves the stroke.
         vm.toggleStep(15)
@@ -915,7 +930,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+                    p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(
                         toggleStep = vm::toggleStep, selectPad = vm::selectPad, setHitVelocity = vm::setHitVelocity, setRoll = vm::setRoll,
                         setPadLength = vm::setPadLength, setHitChance = vm::setHitChance, rerollChances = vm::rerollChances,

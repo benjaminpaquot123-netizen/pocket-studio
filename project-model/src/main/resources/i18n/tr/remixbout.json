@@ -1,0 +1,15 @@
+{
+  "Un bout": "Tek parça",
+  "Début du bout": "Parçanın başlangıcı",
+  "Fin du bout": "Parçanın bitişi",
+  "Avancer d'un temps": "Bir vuruş ileri",
+  "Reculer d'un temps": "Bir vuruş geri",
+  "Avancer un peu": "Biraz ileri",
+  "Reculer un peu": "Biraz geri",
+  "Écouter le bout": "Parçayı dinle",
+  "Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches.": "Kesim: “Tek parça” (başlangıçta) kaydırılacak iki çubuk verir, Başlangıç ve Bitiş; aralarında kalan olduğu gibi gider. Cümleler, Transient'ler ya da Ölçüler kanalı birçok parçaya böler. Mıknatıs: çubuklar ve kesimler vuruşa ya da ölçüye oturur; “Serbest” onları dokunduğun yerde bırakır.",
+  "Début ici": "Başlangıç burada",
+  "Fin ici": "Bitiş burada",
+  "Écouter depuis la ligne orange": "Turuncu çizgiden dinle",
+  "Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts.": "Başlangıç ve Bitiş çubuklarını kaydır ya da eğriye dokunup “Başlangıç burada” veya “Bitiş burada”ya bas: mıknatıs onları cetvelin vuruşlarına koyar. Büyük ▶ parçayı turuncu çizgiden çalar, “Parçayı dinle” yalnızca parçayı. Sonra gönder. Kesimler › Cümleler, Vuruşlar veya Ölçüler: çok parça."
+}

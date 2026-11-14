@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotA/a (seat a, lot A; lang hi, device phone360, font 130, mode -, options fresh=reel, mission simple, budget 110 gestures).
+Profile (id t6-Aa): Débutant indien, petit téléphone, police 130 %, premier lancement réel (réglages d'origine du bloquant A a #27 du tour 5). Choisis toi-même le Mode simple quand l'appli le demande. Promesses : pour chacune, oui ou non avec le numéro d'écran. À la fin, sur ton dernier écran, réponds aux questions 1, 6 et 9 de l'œil neuf (une image). Act as this person (habits, patience, vocabulary).
+Mission simple; its 3 goals (ids, the bench checks them): son (un son joue), partie (une 2e partie), jamais-pro (jamais passé en Pro).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Aa-1 | 1. Je change de partie et c'est bien la partie touchée qui s'affiche et se joue (bloquant A a #27)
+  - id=t6-Aa-2 | 2. « ▶ cette partie » joue la partie affichée et « ▶ le morceau » joue tout le morceau
+  - id=t6-Aa-3 | 3. Au 2e morceau, l'appli ne redemande pas « Simple ou Pro ? »
+  - id=t6-Aa-4 | 4. L'onglet « Plus » montre la Recette en Mode simple
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

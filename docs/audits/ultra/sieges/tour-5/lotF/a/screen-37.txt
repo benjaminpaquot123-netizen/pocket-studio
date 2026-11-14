@@ -1,0 +1,36 @@
+Écran 37 (1035x1243)
+touchable « Techno de Detroit Sauvegardé » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 126  Tempo » (nom « Tempo : 126 battements par minute ») @ 98,123
+bouton « Montée mesure 57/176 » @ 324,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+champ « Nom du morceau (et du projet) » contenu « Techno de Detroit » @ 518,165
+texte « 5:35 » @ 109,209
+texte «   36 parties » @ 225,211
+bouton «  Arrêter » @ 865,228
+texte « Niveau : comme la musique en streaming (−14) » @ 409,250
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 540,306
+bouton «   Vidéo pour les réseaux · 30 s » @ 518,381
+bouton « Autres exports Piste par piste, MIDI, FLAC… (passe en mode Pro) » @ 496,485
+bouton « ? » (nom « Qu'est-ce que « WAV, FLAC, M4A » ? ») @ 946,485
+bouton « Envoyer le projet Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. » @ 496,622
+bouton « ? » (nom « Qu'est-ce que « Envoyer le projet » ? ») @ 946,622
+bouton « Mes exports : retrouver et renvoyer un fichier » @ 496,745
+bouton « ? » (nom « Qu'est-ce que « Mes exports » ? ») @ 946,745
+case « M4A · pour partager » @ 231,835
+case « WAV · qualité max » [sélectionné] @ 554,835
+bouton «   Partager » @ 518,931
+bouton « Guide  · Le kick (le « boum ») 24 % » [état « replié »] @ 517,1027
+onglet « Mon morceau » @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » [sélectionné] @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

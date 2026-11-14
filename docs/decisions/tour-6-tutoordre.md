@@ -1,0 +1,3 @@
+- 2026-11-13 : le n° 8 du lot « tuto3 » sort seul (lot « tutoordre ») sur demande du chef : seul rouge de la CI 43425565244. Raison : débloquer le paquet. Retour arrière : revenir `ab8fd49c`.
+- 2026-11-13 : diagnostic « course », pas « ordre des tests » : le test passe dans tous les ordres essayés en local ; la course est reproduite à coup sûr par un test qui fixe l'ordre des deux regards. Retour arrière : sans objet.
+- 2026-11-13 : correction dans `TutoController.check()` (l'étape montrée au moment de la réponse) plutôt que dans le test. Raison : la course existe aussi sur le téléphone. Retour arrière : revenir la ligne.

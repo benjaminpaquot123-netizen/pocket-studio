@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -33,9 +34,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -65,8 +71,11 @@ data class KitChoice(val id: String, val name: String, val group: Int) {
  * (« Standard · Caisse »), else « Perso ».
  */
 fun kitName(p: Project): String {
-    val samples = p.drums.lanes.mapNotNull { it.sample?.name }
+    // Cuts of a separated song (« Voix 2 ») sit on free pads: they never rename the kit (R2).
+    val samples = p.drums.lanes.mapNotNull { it.sample?.name }.filterNot(com.pocketstudio.model.RemixVoice::isCut)
     if (samples.isEmpty()) return when {
+        // Tutorial lot 3: the drum & bass kit built in (its short kick on the kick's pad).
+        com.pocketstudio.model.StudioDrums.isDnbKick(p.padVoices[0]) -> tr("Drum & bass")
         // Lot 2: the kit with the 808 on its pad (« Trap (808) », « Drill (808) », the assistant's trap).
         p.padVoices.values.any { it.kind == com.pocketstudio.model.PadVoice.BASS_808 } -> tr("Studio + 808")
         p.kitVersion >= Project.KIT_V2 -> tr("Studio")
@@ -150,11 +159,21 @@ data class PadSheetUi(
     val hasSample: Boolean,
     /** Sounds of the pad's kind to put on it in one touch (the kit's voices, the packs'). */
     val sounds: List<String> = emptyList(),
+    /** The pad is heard alone in a loop now (« Écouter seul »). */
+    val alone: Boolean = false,
+    /** Mode Pro: the pad's « Couches » show (other sounds for harder hits). */
+    val pro: Boolean = false,
+    /** The pad's velocity layers: name and the velocity (1..127) each starts from. */
+    val layers: List<Pair<String, Int>> = emptyList(),
 )
 
-fun padSheetUi(p: Project, lane: Int, sounds: List<String>): PadSheetUi {
+fun padSheetUi(p: Project, lane: Int, sounds: List<String>, alone: Boolean = false, pro: Boolean = false): PadSheetUi {
     val strip = p.mixer.channels.getOrNull(Mixer.padChannel(lane))
-    return PadSheetUi(lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, p.drums.lanes[lane].sample != null, sounds)
+    val sample = p.drums.lanes[lane].sample
+    return PadSheetUi(
+        lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, sample != null, sounds, alone,
+        pro = pro, layers = sample?.layers.orEmpty().map { DefaultNames.shownSample(it.name) to it.from },
+    )
 }
 
 /** Callbacks of a pad's sheet. */
@@ -167,6 +186,15 @@ class PadSheetActions(
     val toggleMute: () -> Unit = {},
     /** The pan's gesture ended (one journal line). */
     val panDone: () -> Unit = {},
+    /** « ▶ Écouter seul »: this pad alone in a loop (again: it stops); null: not offered. */
+    val listenAlone: (() -> Unit)? = null,
+    /** The sheet keeps « Écouter seul » going while it shows (the returned call lets go). */
+    val holdAlone: () -> (() -> Unit) = { {} },
+    /** « Couches »: sound [i] of the sheet's list becomes a layer for the hard hits. */
+    val addLayer: (Int) -> Unit = {},
+    val removeLayer: (Int) -> Unit = {},
+    /** Layer [index] starts from velocity [from] (1..127). */
+    val setLayerFrom: (index: Int, from: Int) -> Unit = { _, _ -> },
 )
 
 /** A pad held: its sheet (another sound in one touch, its volume and pan, cut it). */
@@ -174,12 +202,16 @@ class PadSheetActions(
 @Composable
 internal fun PadSheet(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    HoldAlone(true, actions.holdAlone)
     ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
         PadSheetContent(
             ui,
             PadSheetActions(
-                pickSound = { close(); actions.pickSound(it) }, origin = { close(); actions.origin() }, more = { close(); actions.more() },
+                // Heard alone: the sheet stays, so each sound is compared in the loop.
+                pickSound = { if (!ui.alone) close(); actions.pickSound(it) }, origin = { if (!ui.alone) close(); actions.origin() }, more = { close(); actions.more() },
                 setVolume = actions.setVolume, setPan = actions.setPan, toggleMute = actions.toggleMute, panDone = actions.panDone,
+                listenAlone = actions.listenAlone,
+                addLayer = actions.addLayer, removeLayer = actions.removeLayer, setLayerFrom = actions.setLayerFrom,
             ),
             close,
         )
@@ -195,35 +227,92 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
                 maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("pad_sheet_title"))
             TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
         }
+        actions.listenAlone?.let { AloneButton(ui.alone, tr("Écouter seul"), ui.name, "pad_alone", toggle = it) }
+        if (ui.alone) Text(tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
         Text(tr("Son"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
-            if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), actions.origin)
-            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_sound_$i", Modifier.weight(1f)) { actions.pickSound(i) } }
+            if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), onClick = actions.origin)
+            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_sound_$i", Modifier.weight(1f), current = name == ui.name || name.substringBefore(" · ") == ui.name) { actions.pickSound(i) } }
             OutlinedButton(onClick = actions.more, modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("pad_sound_more")) {
                 Icon(Icons.Filled.LibraryMusic, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(tr("Tous les sons…"), maxLines = 1)
+                // Remix testers (Mehdi): « Tous les » cut at one line next to the icon; whole, on two if it must.
+                Text(tr("Tous les sons…"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
-        // Volume: 0.8 is the kit's own level (100 %).
+        // Audit ultra round 2, zone 1, n° 6: the number is where the slider is (« 100 % » stood over a slider at 80 %).
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Volume du pad"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text(percent((ui.volume / 0.8f * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
+            Text(padVolumeWords(ui.volume), style = MonoStyle, color = Neon.Cyan)
         }
-        ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.testTag("pad_volume"))
+        // Audit ultra tour 0 (seat b): the slider is named as its line says (TalkBack read « curseur » alone).
+        val volumeName = tr("Volume du pad")
+        ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.semantics { contentDescription = volumeName }.testTag("pad_volume"))
         // Safe at the edge: a back swipe from the side closes the sheet, it never pans the pad.
-        PanRow(tr("Pan du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
+        PanRow(tr("Place du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
         FilterChip(
             selected = ui.muted, onClick = actions.toggleMute, colors = pillColors(),
             label = { Text(if (ui.muted) tr("Pad coupé : touche pour l'entendre") else tr("Couper ce pad")) },
             modifier = Modifier.heightIn(min = 48.dp).testTag("pad_mute"),
         )
+        if (ui.pro && ui.hasSample) PadLayers(ui, actions)
+    }
+}
+
+/** « Couches » (Pro): other sounds for the pad's harder hits, each from a strength of its own. */
+@Composable
+private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
+    var choosing by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    com.pocketstudio.ui.WithHelp(
+        com.pocketstudio.app.help.ScreenHelp.LAYERS, about = listOf("pad_layers", "pad_layer_add", "pad_layer_slider_*", "pad_layer_remove_*"),
+    ) {
+        Text(tr("Couches"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_layers"))
+    }
+    Text(
+        tr("Frappe forte : un autre son. Le son du pad garde les coups doux."),
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+    )
+    ui.layers.forEachIndexed { i, (name, from) ->
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(name, Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
+            Text(tr("dès %s", percent((from * 100f / 127f).roundToInt())), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("pad_layer_from_$i"))
+            TextButton(onClick = { actions.removeLayer(i) }, modifier = Modifier.heightIn(min = 48.dp).testTag("pad_layer_remove_$i")) { Text(tr("Retirer")) }
+        }
+        ProSlider(
+            value = from.toFloat(), valueRange = com.pocketstudio.model.PadLayer.FROM_RANGE.first.toFloat()..com.pocketstudio.model.PadLayer.FROM_RANGE.last.toFloat(),
+            onValueChange = { actions.setLayerFrom(i, it.roundToInt()) }, label = name, valueText = tr("dès %s", percent((from * 100f / 127f).roundToInt())), modifier = Modifier.testTag("pad_layer_slider_$i"),
+        )
+    }
+    if (ui.layers.size < com.pocketstudio.model.PadLayer.MAX && ui.sounds.isNotEmpty()) {
+        OutlinedButton(onClick = { choosing = !choosing }, modifier = Modifier.heightIn(min = 48.dp).testTag("pad_layer_add")) {
+            Text(if (choosing) tr("Fermer") else tr("Ajouter une couche"))
+        }
+        if (choosing) FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
+            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_layer_sound_$i", Modifier.weight(1f)) { choosing = false; actions.addLayer(i) } }
+        }
     }
 }
 
 @Composable
-private fun SoundTile(name: String, tag: String, modifier: Modifier, onClick: () -> Unit) {
+private fun SoundTile(name: String, tag: String, modifier: Modifier, current: Boolean = false, onClick: () -> Unit) {
+    if (current) {
+        // Audit ultra round 2, zone 1, n° 6: the sound on the pad now, marked (filled, ✓, said « sur le pad »).
+        val said = tr("%s, sur le pad", name)
+        androidx.compose.material3.Button(
+            onClick = onClick,
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = androidx.compose.ui.graphics.Color.Black),
+            modifier = modifier.heightIn(min = 56.dp).semantics(mergeDescendants = true) { contentDescription = said; selected = true }.testTag(tag),
+        ) {
+            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        }
+        return
+    }
     OutlinedButton(onClick = onClick, modifier = modifier.heightIn(min = 56.dp).testTag(tag)) {
         Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
+
+/** A pad's volume as its slider shows it (0 to 100 % of its track; the kit's own level is 80 %). */
+internal fun padVolumeWords(volume: Float): String = percent((volume.coerceIn(0f, 1f) * 100).roundToInt())

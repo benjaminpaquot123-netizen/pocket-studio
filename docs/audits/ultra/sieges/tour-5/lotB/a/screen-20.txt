@@ -1,0 +1,5 @@
+Écran 20 (588x1278)
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

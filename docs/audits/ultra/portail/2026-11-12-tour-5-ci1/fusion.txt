@@ -1,0 +1,8 @@
+fusion: a2adc9321e8b20f20955a2c8f9ccdf11269accc8
+branche: eq/tour-5-ci1
+tete: b401e7b0e6bc71aaeb043527527cdea9709dfa05
+relecture: docs/audits/ultra/tour-5-ci1-relecture.md
+relu: ef6c1e177fa404fe605c8fa33cd728a1b3ac4e15
+filtres: *JourneyPathsTest *UnusedStarterTest *GuideJourneyTest *KickPanJourneyTest *LaunchFlowTest *ModeChoiceTest *PlusSameInBothModesTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

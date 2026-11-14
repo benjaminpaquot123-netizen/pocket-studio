@@ -1,0 +1,90 @@
+Écran 23 (1920x1200)
+touchable « Live 保存しました » (nom « マイプロジェクト ») @ 704,42
+bouton « プロ » (nom « プロモード。タップでモードを変更。 ») @ 1436,42
+bouton « A » (nom « 再生中のパート：A。タップでパートを切り替え。 ») @ 1512,42
+bouton « 最後の操作を取り消す » [désactivé] @ 1587,42
+bouton « やり直す » @ 1659,42
+bouton « 録音：マイク、鍵盤、パッド » @ 1731,42
+bouton « 再生 » @ 1803,42
+bouton « 曲をシェア » @ 1875,42
+bouton « 124  BPM » (nom « テンポ：124 BPM ») @ 73,114
+interrupteur « ? » (nom « 画面にラベルを表示 ») [non coché] @ 1875,114
+onglet « 構成 » @ 60,194
+onglet « サウンド » [sélectionné] @ 60,282
+onglet « ミックス » @ 60,370
+onglet « Live » @ 60,457
+onglet « その他 » @ 60,545
+onglet « ドラム 16パッド » [sélectionné] @ 199,180
+onglet « Acid 303 ベースライン » @ 359,180
+onglet « ボーカル マイク » @ 523,180
+onglet « リミックス 分離 » @ 682,180
+touchable « シンセ シンセ » @ 826,180
+bouton «  トラック » @ 985,180
+touchable « キック » @ 243,321
+touchable « キック 2 » @ 463,321
+touchable « スネア » @ 684,321
+touchable « スネア 2 » @ 905,321
+touchable « クラップ » @ 243,504
+touchable « ハイハット » @ 463,504
+touchable « オープンハイハット » @ 684,504
+touchable « ロータム » @ 905,504
+touchable « ミッドタム » @ 243,687
+touchable « ハイタム » @ 463,687
+touchable « リム » @ 684,687
+touchable « カウベル » @ 905,687
+touchable « シンバル » @ 243,870
+touchable « シェイカー » @ 463,870
+touchable « コンガ » @ 684,870
+touchable « Zap » @ 905,870
+bouton « キット：クラシック » @ 271,1002
+texte « パッドで鳴らし、マスにヒットを記録。長押し：音を変更。 » @ 713,1002
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ステップ：キック » [état « 開いた状態 »] @ 1398,294
+bouton « ? » (nom « 「ステップ」って何？ ») @ 1278,294
+case « 全パッド » @ 1811,294
+touchable « 1 » (nom « ステップ 1 ») [état « 空 »] @ 1101,402
+touchable « ステップ 2 » [état « 空 »] @ 1205,403
+touchable « ステップ 3 » [état « 空 »] @ 1309,403
+touchable « ステップ 4 » [état « 空 »] @ 1413,403
+touchable « 2 » (nom « ステップ 5 ») [état « 空 »] @ 1517,403
+touchable « ステップ 6 » [état « 空 »] @ 1621,403
+touchable « ステップ 7 » [état « 空 »] @ 1725,403
+touchable « ステップ 8 » [état « 空 »] @ 1829,403
+touchable « 3 » (nom « ステップ 9 ») [état « 空 »] @ 1101,531
+touchable « ステップ 10 » [état « 空 »] @ 1205,532
+touchable « ステップ 11 » [état « 空 »] @ 1309,532
+touchable « ステップ 12 » [état « 空 »] @ 1413,532
+touchable « 4 » (nom « ステップ 13 ») [état « 空 »] @ 1517,532
+touchable « ステップ 14 » [état « 空 »] @ 1621,532
+touchable « ステップ 15 » [état « 空 »] @ 1725,532
+touchable « ステップ 16 » [état « 空 »] @ 1829,532
+case « ヒット » [sélectionné] @ 1109,642
+case « ロール » @ 1228,642
+case « パン » @ 1337,642
+case « ピッチ » @ 1446,642
+case « ベロシティ » @ 1586,642
+bouton « すべて » @ 1158,726
+bouton « 1/2 » @ 1240,726
+bouton « 1/4 » @ 1315,726
+bouton « ◀ » [désactivé] @ 1390,726
+bouton « ▶ » [désactivé] @ 1465,726
+bouton « 消去 » [désactivé] @ 1540,726
+texte « 埋める » @ 1082,726
+texte « マスをタップでヒットを追加、指をすべらせてまとめて塗れます。ヒットを長押し：強さとロール（×2〜×8）。 » @ 1465,801
+texte « 長さ » @ 1074,877
+case « 1小節 » [sélectionné] @ 1154,877
+case « 2 » @ 1250,877
+case « 3 » @ 1331,877
+case « 4 » @ 1412,877
+bouton « − » @ 1314,961
+bouton « + » [désactivé] @ 1519,961
+texte « このパッドのループ長 » @ 1157,961
+texte « 16 ステップ » @ 1417,961
+bouton « パッドの音 » [état « 開いた状態 »] @ 1147,1062
+bouton « ? » (nom « 「パッドのサンプル」って何？ ») @ 1219,1062
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ガイド  · ビートを置こう 5 % » [état « 折りたたみ »] @ 960,1104
+touchable « ●  REC » (nom « 画面を音声付きで録画 ») @ 1692,1170
+touchable « ✎  メモ » (nom « メモを書く ») @ 1788,1170
+touchable « ⋯ » (nom « フィードバックモード ») @ 1872,1170
+texte « フィードバックモード » @ 828,1170

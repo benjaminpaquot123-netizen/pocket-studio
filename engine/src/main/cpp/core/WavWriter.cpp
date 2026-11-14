@@ -99,8 +99,25 @@ bool WavWriter::write(const float* interleaved, int numFrames) {
                 put32(p, bits);
                 continue;
             }
-            const float s = std::clamp(v * scale + dither(), lowest, scale);
-            const int32_t q = static_cast<int32_t>(std::lrint(s));
+            int32_t q;
+            if (shaping_ && bits_ == 16 && channels_ <= 2) {
+                // Error feedback: the output's noise is the quantizer's through 1 - H(z).
+                static constexpr float kH[5] = {2.033f, -2.165f, 1.959f, -1.590f, 0.6149f};
+                float* e = err_[(start + i) % channels_];
+                const float x = v * scale - (kH[0] * e[0] + kH[1] * e[1] + kH[2] * e[2] + kH[3] * e[3] + kH[4] * e[4]);
+                const float s = std::clamp(x + dither(), lowest, scale);
+                q = static_cast<int32_t>(std::lrint(s));
+                // Clipped at full scale, the error is not the quantizer's: kept within reach (no runaway).
+                const float err = std::clamp(static_cast<float>(q) - x, -2.0f, 2.0f);
+                e[4] = e[3];
+                e[3] = e[2];
+                e[2] = e[1];
+                e[1] = e[0];
+                e[0] = err;
+            } else {
+                const float s = std::clamp(v * scale + dither(), lowest, scale);
+                q = static_cast<int32_t>(std::lrint(s));
+            }
             p[0] = q & 0xFF;
             p[1] = (q >> 8) & 0xFF;
             if (bytes == 3) p[2] = (q >> 16) & 0xFF;

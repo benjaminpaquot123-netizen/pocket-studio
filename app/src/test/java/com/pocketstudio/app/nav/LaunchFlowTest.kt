@@ -60,7 +60,7 @@ class LaunchFlowTest {
         compose.onNodeWithTag("launch_name", useUnmergedTree = true).assertTextEquals(DefaultNames.shown(before.name))
         // When it was last changed, from its last save.
         h.awaitTag("launch_edited")
-        compose.onNodeWithTag("launch_edited", useUnmergedTree = true).assertTextEquals("modifié à l'instant")
+        compose.onNodeWithTag("launch_edited", useUnmergedTree = true).assertTextEquals("Sauvegardé à l'instant")
         // Nothing plays, nothing changed, the project not shown yet.
         assertFalse(h.vm.transport.value.playing)
         compose.withinGestures("Continuer après l'ouverture", 1) { tap("launch_continue") }
@@ -162,21 +162,61 @@ class LaunchFlowTest {
         compose.onNodeWithTag("timeline_screen").assertIsDisplayed()
     }
 
+    /**
+     * Owner (2026-10-29): the mode is no longer two small chips at the foot of this screen; each
+     * project has its own, said on « Continuer », chosen when a project starts.
+     */
     @Test
-    fun theModeChangesThereAndTheChoiceStays() {
+    fun theModeIsTheProjectsOwnAndNoLongerChosenHere() {
         h.start(simple = true, launchChoice = true)
         val before = h.vm.project.value
-        compose.onNodeWithTag("launch_mode_simple").assertIsSelected()
-        tap("launch_mode_full")
-        assertFalse(SettingsStore.state.value.simpleMode)
-        compose.onNodeWithTag("launch_mode_full").assertIsSelected()
-        compose.onNodeWithTag("launch").assertIsDisplayed()
-        tap("launch_mode_simple")
-        assertTrue(SettingsStore.state.value.simpleMode)
-        // The Mode simple's project behind « Continuer ».
+        assertFalse(exists("launch_mode"))
+        assertFalse(exists("launch_mode_simple"))
+        compose.onNodeWithTag("launch_mode_of_project", useUnmergedTree = true).assertTextEquals("Simple")
         tap("launch_continue")
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
+        compose.onNodeWithTag("top_mode_text", useUnmergedTree = true).assertTextEquals("Simple")
         assertSame(before, h.vm.project.value)
+    }
+
+    /** « Mon premier morceau » starts a new song: « Simple ou Pro ? » first, its Retour back on the project. */
+    @Test
+    fun myFirstSongAsksTheModeFirst() {
+        h.start(launchChoice = true)
+        tap("launch_missions")
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        assertFalse(exists("wizard"))
+        tap("mode_step_back")
+        assertFalse(exists("mode_step"))
+        assertFalse(exists("wizard"))
+        assertFalse(SettingsStore.state.value.simpleMode)
+        // From Plus › Aide too, through the same step; Simple chosen, the assistant opens in it.
+        tap("tab_Plus")
+        tap("plus_missions")
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        tap("mode_card_simple")
+        assertTrue(SettingsStore.state.value.simpleMode)
+        h.awaitTag("wizard")
+    }
+
+    /**
+     * Audit final (02 M9), then owner (2026-10-29): with no project, « Remix » opens on its own (it
+     * led nowhere: « Mes projets » stayed over it). No project is made before a song is chosen and
+     * where it goes; its « ← » comes back here.
+     */
+    @Test
+    fun withNoProjectTheRemixOpensOnItsOwnAndComesBack() {
+        h.start(launchChoice = true, noProject = true, build = {})
+        h.awaitTag("launch_remix")
+        compose.onNodeWithTag("launch_remix").performScrollTo().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("remix_home").assertIsDisplayed()
+        compose.onNodeWithTag("remix_start").assertIsDisplayed()
+        assertFalse(exists("mode_step"))
+        assertTrue(com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app)))
+        tap("remix_home_back")
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        assertFalse(exists("remix_home"))
     }
 
     /**

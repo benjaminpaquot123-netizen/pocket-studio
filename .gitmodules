@@ -7,9 +7,6 @@
 [submodule "engine/third_party/libsamplerate"]
 	path = engine/third_party/libsamplerate
 	url = https://github.com/libsndfile/libsamplerate
-[submodule "engine/third_party/aubio"]
-	path = engine/third_party/aubio
-	url = https://github.com/aubio/aubio
 [submodule "engine/third_party/signalsmith-stretch"]
 	path = engine/third_party/signalsmith-stretch
 	url = https://github.com/Signalsmith-Audio/signalsmith-stretch

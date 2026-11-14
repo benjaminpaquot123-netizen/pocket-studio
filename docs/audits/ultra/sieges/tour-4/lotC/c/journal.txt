@@ -1,0 +1,543 @@
+#0 SIEGE lang=pl device=phone font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 0a6b393455 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇵🇱 » 2.06:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Cały utwór robisz sam, krok po kroku: ja tłumaczę i sprawdzam. » 3.36:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Wybierz piosenkę z telefonu: aplikacja oddzieli wokal, perkusję, bas i resztę. » 2.04:1 (needs 4.5:1, 14 sp)
+#1 > glisse 294 1000 294 400
+#1 DOIGT welcome_empty « Zacznij od zera »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 9f5bfbdb64 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pad Live » 1.36:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Posłuchaj rytmu, powtórz go na padach: zdobywaj gwiazdki. » 2.04:1 (needs 4.5:1, 14 sp)
+#2 > touche 294 474
+#2 DOIGT welcome_empty « Zacznij od zera »
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 306ae38a96 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 282
+#3 DOIGT mode_card_simple « Prosty »
+#4 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c1c16ffafb | project=p-8b88a0cc no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 > touche 312 747
+#4 DOIGT help_Krok « Co to jest „Krok”? »
+#4 AIDE help_Krok
+#5 ROUTE dialogue:« Krok » | MODE simple | EMPREINTE 0e9db653a6 | project=p-8b88a0cc no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Jedna kratka siatki: szesnastka taktu. Dotknij kratki, by postawić w niej uderzenie, dotknij jeszcze raz, by je usunąć; przesuń palcem, by postawić kilka. Przytrzymaj uderzenie: jego siła i rolki. » 2.19:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Jasne » 3.03:1 (needs 4.5:1, 14 sp)
+#5 > touche 502 753
+#5 DOIGT #918 « Jasne »
+#6 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 03d5d1337e | project=p-8b88a0cc no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 70 830
+#6 DOIGT step_0 « Krok 1 »
+#7 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f3f548de1b | project=p-8b88a0cc no tuto
+#7 SON Son : rien ne joue.
+#7 > glisse 325 831 517 831
+#7 DOIGT step_4 « Krok 5 »
+#8 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE cc53acf70d | project=p-8b88a0cc no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 389 831
+#8 DOIGT step_5 « Krok 6 »
+#9 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE a906f41e44 | project=p-8b88a0cc no tuto
+#9 SON Son : rien ne joue.
+#9 > appui-long 70 830
+#9 DOIGT step_0 « Krok 1 »
+#10 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE c547e851e5 | project=p-8b88a0cc no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « ×4 » 2.94:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « ×8 » 2.52:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « 3 na 2 pola » 2.50:1 (needs 4.5:1, 14 sp)
+#10 > touche 513 300
+#10 DOIGT roll_close
+#11 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE a906f41e44 | project=p-8b88a0cc no tuto
+#11 SON Son : rien ne joue.
+#11 > appui-long 364 276
+#11 DOIGT pad_2 « Werbel »
+#12 ROUTE dialogue:library | MODE simple | EMPREINTE 8223669a63 | project=p-8b88a0cc no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Wbudowane dźwięki » 3.68:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 3 dźwięki » 3.06:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « 13 dźwięków » 2.45:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « Dotknij ☆ przy dźwięku, aby znaleźć go w „Ulubionych”. » 1.81:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « PACZKI DŹWIĘKÓW » 1.37:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « ? » 1.23:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Wczytuję listę… » 1.51:1 (needs 4.5:1, 16 sp)
+#12 > touche 294 420
+#12 DOIGT library_folder_Sons intégrés « Wbudowane dźwięki »
+#13 ROUTE dialogue:library | MODE simple | EMPREINTE 46079cce74 | project=p-8b88a0cc no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « ✓ Teraz na padzie » 2.46:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Werbel 2 » 1.91:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Użyj » 2.19:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Obręcz bębna » 3.37:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Dotknij dźwięku, żeby go usłyszeć, „Użyj”, żeby dać go na pad 3 (Werbel). » 3.96:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « PACZKI DŹWIĘKÓW » 1.36:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « ? » 1.25:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Wczytuję listę… » 1.39:1 (needs 4.5:1, 16 sp)
+#13 > touche 250 486
+#13 DOIGT library_sound_1 « Werbel 2 »
+#14 ROUTE dialogue:library | MODE simple | EMPREINTE 46079cce74 | project=p-8b88a0cc no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 379 486
+#14 DOIGT library_sound_fav_1
+#15 ROUTE dialogue:library | MODE simple | EMPREINTE 53397fd5e4 | project=p-8b88a0cc no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 200 594
+#15 DOIGT library_sound_2 « Obręcz bębna »
+#16 ROUTE dialogue:library | MODE simple | EMPREINTE 5cdd99867a | project=p-8b88a0cc no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Pobieraj tylko, jeśli chcesz; każdą paczkę usuniesz jednym dotknięciem, żeby zwolnić miejsce. » 1.39:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST «  Pobierz wszystko (paczki: 68, 288,4 MB) » 1.71:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Nowoczesne 808 » 4.06:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « dźwięki: 128 · 3 MB » 3.26:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Pobierz » 1.67:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Pobierz » 2.04:1 (needs 4.5:1, 14 sp)
+#16 > touche 308 795
+#16 DOIGT help_Paczka dźwięków « Co to jest „Paczka dźwięków”? »
+#16 AIDE help_Paczka
+#17 ROUTE dialogue:« Paczka dźwięków » | MODE simple | EMPREINTE db1120aa10 | project=p-8b88a0cc no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Zbiór dźwięków dla stylu (techno, UK garage, trap…), słynnej maszyny (TR-808, Juno, DX7…) albo współczesnych brzmień. Pobieraj tylko, jeśli chcesz, i usuwaj, kiedy chcesz. » 1.91:1 (needs 4.5:1, 14 sp)
+#17 > touche 502 753
+#17 DOIGT #1686 « Jasne »
+#18 ROUTE dialogue:library | MODE simple | EMPREINTE 5cdd99867a | project=p-8b88a0cc no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 546 48
+#18 DOIGT library_close
+#19 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 90f5a6aede | project=p-8b88a0cc no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 543 114
+#19 DOIGT help_labels_button « Podpisz ekran »
+#19 AIDE help_labels_button
+#20 ROUTE help_labels | MODE simple | EMPREINTE a2a5928abd | project=p-8b88a0cc no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « Przewodnik: na jakim etapie jest twój utwór » ellipsized (« … »)
+#20 LAYOUT OVERLAP « Tempo » over « Graj, nagrywaj » (22 x 13 dp)
+#20 LAYOUT OVERLAP « Moje projekty » over « Przewodnik: na jakim etapie jest twój utwór » (88 x 17 dp)
+#20 LAYOUT OVERLAP « Więcej opcji » over « Przewodnik: na jakim etapie jest twój utwór » (77 x 18 dp)
+#20 LAYOUT OVERLAP « Tempo » over the touchable « Zmień część » (43 x 18 dp)
+#20 LAYOUT OVERLAP « Przesuń, żeby położyć » over the touchable « Zwiń Rozwinięte » (90 x 24 dp)
+#20 LAYOUT OVERLAP « Przesuń, żeby położyć » over the touchable « Co to jest „Krok”? » (29 x 24 dp)
+#20 LAYOUT OVERLAP « Części i ścieżki » over the touchable « Cofnij » (56 x 18 dp)
+#20 LAYOUT OVERLAP « Graj, nagrywaj » over the touchable « Graj » (25 x 18 dp)
+#20 LAYOUT OVERLAP « Graj, nagrywaj » over the touchable « Tempo: 120 uderzeń na minutę Zmień tempo » (37 x 18 dp)
+#20 LAYOUT OVERLAP « Udostępnij » over the touchable « Więcej opcji » (42 x 18 dp)
+#20 LAYOUT OVERLAP « Ukryj podpisy » over the touchable « Otwórz Przewodnik zwinięte » (69 x 10 dp)
+#20 LAYOUT OVERLAP « 🐞 Zgłoś błąd » over the touchable « Otwórz Przewodnik zwinięte » (64 x 10 dp)
+#20 > touche 196 968
+#20 DOIGT help_labels_hide « Ukryj podpisy »
+#20 AIDE help_labels_hide
+#21 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 90f5a6aede | project=p-8b88a0cc no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Werbel » 3.86:1 (needs 4.5:1, 14 sp)
+#21 > touche 294 1158
+#21 DOIGT tab_simple_Clavier « Klawiatura »
+#22 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE abf8aa08df | project=p-8b88a0cc no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST «  Nagraj moją melodię » 2.78:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT TARGET « C 4 C Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « D 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « E 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « F 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « G 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « A 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « B 4 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « C 5 C Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « D 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « E 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « F 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « G 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « A 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « B 5 Graj » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « C# 4 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « D# 4 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « F# 4 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « G# 4 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « A# 4 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « C# 5 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « D# 5 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « F# 5 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « G# 5 Graj » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « A# 5 Graj » 15 x 91 dp (touch 48 x 91)
+#22 > touche 543 114
+#22 DOIGT help_labels_button « Podpisz ekran »
+#22 AIDE help_labels_button
+#23 ROUTE help_labels | MODE simple | EMPREINTE f963b62ddb | project=p-8b88a0cc no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Nuty » 3.58:1 (needs 4.5:1, 14 sp)
+#23 > touche 196 968
+#23 DOIGT help_labels_hide « Ukryj podpisy »
+#23 AIDE help_labels_hide
+#24 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE abf8aa08df | project=p-8b88a0cc no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 54 1158
+#24 DOIGT tab_simple_Morceau « Mój utwór »
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 70bef8dd01 | project=p-8b88a0cc no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 187 581
+#25 DOIGT help_Utwór « Co to jest „Utwór”? »
+#25 AIDE help_Utw
+#26 ROUTE dialogue:« Utwór » | MODE simple | EMPREINTE 839ea5be94 | project=p-8b88a0cc no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « Części ułożone jedna za drugą, każda powtórzona dowolną liczbę razy. Na osi czasu każda kratka włącza lub wyłącza ścieżkę w jednej części. » 3.42:1 (needs 4.5:1, 14 sp)
+#26 > touche 502 738
+#26 DOIGT #1937 « Jasne »
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 70bef8dd01 | project=p-8b88a0cc no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 96 759
+#27 DOIGT add_part_0 « + A »
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 84535bec1f | project=p-8b88a0cc no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « Zmień dźwięk » over the touchable « Tempo: 120 uderzeń na minutę Zmień tempo » (55 x 4 dp)
+#28 LAYOUT OVERLAP « Zmień dźwięk » over the touchable « Graj od części » (26 x 4 dp)
+#28 > glisse 294 850 294 350
+#28 DOIGT add_part_new_copy « + Nowa część (kopia A) »
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6d0f95ca92 | project=p-8b88a0cc no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 294 870
+#29 DOIGT song_what_plays «   Co gra w utworze »
+#30 ROUTE dialogue:what_plays | MODE simple | EMPREINTE f69222eabb | project=p-8b88a0cc no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Głośność główna » 1.26:1 (needs 4.5:1, 16 sp)
+#30 LAYOUT CONTRAST « -6,0 dB na wyjściu głównym. » 2.04:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « Edytuj » 1.85:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Zamknij » 4.27:1 (needs 4.5:1, 14 sp)
+#30 > touche 477 850
+#30 DOIGT what_plays_close « Zamknij »
+#31 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6d0f95ca92 | project=p-8b88a0cc no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 414 1158
+#31 DOIGT tab_simple_Mix « Miks »
+#32 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 162f1f32d1 | project=p-8b88a0cc no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « Wyjście » 4.37:1 (needs 4.5:1, 13 sp)
+#32 LAYOUT TARGET « Słuchaj „Synth” osobno, w pętli » 18 x 40 dp (touch 48 x 48)
+#32 > touche 118 870
+#32 DOIGT mix_alone_drums « Słuchaj „Perkusja” osobno, w pętli »
+#33 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 908b7d3003 | project=p-8b88a0cc no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 118 870
+#33 DOIGT mix_alone_drums « Stop »
+#34 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 162f1f32d1 | project=p-8b88a0cc no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 534 1158
+#34 DOIGT tab_simple_Envoyer « Wyślij »
+#35 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE ac48d9231c | project=p-8b88a0cc no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 543 114
+#35 DOIGT help_labels_button « Podpisz ekran »
+#35 AIDE help_labels_button
+#36 ROUTE help_labels | MODE simple | EMPREINTE 170b98caa3 | project=p-8b88a0cc no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 196 968
+#36 DOIGT help_labels_hide « Ukryj podpisy »
+#36 AIDE help_labels_hide
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE ac48d9231c | project=p-8b88a0cc no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 294 984
+#37 DOIGT guide_bar « Przewodnik »
+#38 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 5c00d13f36 | project=p-8b88a0cc no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « NA POCZĄTEK » 4.30:1 (needs 4.5:1, 12 sp)
+#38 LAYOUT CONTRAST « ↗ » 3.39:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « Wygeneruj linię Acid 303 » 3.91:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « ↗ » 3.45:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « Zagraj bas na klawiaturze » 3.85:1 (needs 4.5:1, 14 sp)
+#38 > touche 294 939
+#38 DOIGT guide_open_acid « Zobacz ustawienie: Wygeneruj linię Acid  »
+#39 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE 930f67b413 | project=p-8b88a0cc no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « Dźwięk: Acid 303 » over the touchable « Zamknij arkusz » (186 x 28 dp)
+#39 LAYOUT OVERLAP « Dotknij dźwięku: zastąpi dźwięk tej ścieżki w całym utworze. » over the touchable « Zamknij arkusz » (274 x 36 dp)
+#39 LAYOUT OVERLAP « Zamknij » over the touchable « Zamknij arkusz » (55 x 20 dp)
+#39 LAYOUT OVERLAP « Klasyki » over the touchable « Zamknij arkusz » (57 x 24 dp)
+#39 LAYOUT OVERLAP « Podstawowy acid » over the touchable « Zamknij arkusz » (120 x 17 dp)
+#39 LAYOUT OVERLAP « Jasny » over the touchable « Zamknij arkusz » (36 x 16 dp)
+#39 LAYOUT OVERLAP « Squelchy » over the touchable « Zamknij arkusz » (63 x 17 dp)
+#39 LAYOUT OVERLAP « Jasny · ostry » over the touchable « Zamknij arkusz » (78 x 16 dp)
+#39 LAYOUT OVERLAP « Da Funk » over the touchable « Zamknij arkusz » (54 x 17 dp)
+#39 LAYOUT OVERLAP « Pusty » over the touchable « Zamknij arkusz » (35 x 16 dp)
+#39 LAYOUT OVERLAP « Losowo » over the touchable « Zamknij arkusz » (55 x 20 dp)
+#39 LAYOUT OVERLAP « Zachowaj ten dźwięk » over the touchable « Zamknij arkusz » (93 x 40 dp)
+#39 LAYOUT OVERLAP « „Zachowaj ten dźwięk” zapisuje go w ulubionych, dla wszystkich twoich projektów. » over the touchable « Zamknij arkusz » (323 x 36 dp)
+#39 LAYOUT CONTRAST « Squelchy » 3.26:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « Jasny · ostry » 3.28:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « „Zachowaj ten dźwięk” zapisuje go w ulubionych, dla wszystkich twoich projektów. » 3.26:1 (needs 4.5:1, 13 sp)
+#39 > touche 504 648
+#39 DOIGT acid_sound_close « Zamknij »
+#40 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 06b77926d7 | project=p-8b88a0cc no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Otwórz klawiaturę » 3.91:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Wpisz nuty » 3.85:1 (needs 4.5:1, 14 sp)
+#40 > touche 294 939
+#40 DOIGT guide_open_keys « Zobacz ustawienie: Otwórz klawiaturę »
+#41 ROUTE mission_overlay | MODE simple | EMPREINTE 76079e6d1b | project=p-8b88a0cc no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » over the touchable « Otwórz Przewodnik zwinięte » (300 x 4 dp)
+#41 LAYOUT OVERLAP « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » over the touchable « Cofnij » (31 x 42 dp)
+#41 LAYOUT OVERLAP « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » over the touchable « Graj » (52 x 44 dp)
+#41 LAYOUT OVERLAP « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » over the touchable « Tempo: 120 uderzeń na minutę Zmień tempo » (64 x 42 dp)
+#41 LAYOUT OVERLAP « Ustawienie jest tutaj. Przewodnik czeka na ciebie w swoim pasku, na dole. » over the touchable « Więcej opcji » (56 x 42 dp)
+#41 > touche 481 1134
+#41 DOIGT guide_spot_close « Jasne »
+#42 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a5b4a8f231 | project=p-8b88a0cc no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 88 186
+#42 DOIGT sons_Acide « Acid 303 »
+#43 ROUTE acid/tab_simple_Clavier | MODE simple | EMPREINTE 8f87176e50 | project=p-8b88a0cc no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Linia basu » 4.17:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « 8 » 3.92:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « C » 4.30:1 (needs 4.5:1, 12 sp)
+#43 > touche 387 762
+#43 DOIGT help_Acid 303 « Co to jest „Acid 303”? »
+#43 AIDE help_Acid
+#44 ROUTE dialogue:help_listen | MODE simple | EMPREINTE 9033547d73 | project=p-8b88a0cc no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 305 738
+#44 DOIGT help_listen « ▶ Posłuchaj przykładu »
+#44 AIDE help_listen
+#45 ROUTE dialogue:glossary | MODE simple | EMPREINTE 83a9c10ba2 | project=p-8b88a0cc no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 507 252
+#45 DOIGT glossary_play_acid « Posłuchaj „Acid 303” »
+#46 ROUTE dialogue:glossary | MODE simple | EMPREINTE 83a9c10ba2 | project=p-8b88a0cc no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 534 129
+#46 DOIGT dans:glossary_search
+#47 ROUTE dialogue:glossary | MODE simple | EMPREINTE 3b755e9291 | project=p-8b88a0cc no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « Pad » 1.91:1 (needs 4.5:1, 16 sp)
+#47 > touche 507 978
+#47 DOIGT glossary_play_chord « Posłuchaj „Akord” »
+#48 ROUTE dialogue:glossary | MODE simple | EMPREINTE 3b755e9291 | project=p-8b88a0cc no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 294 1100 294 200
+#48 DOIGT rien
+#49 ROUTE dialogue:glossary | MODE simple | EMPREINTE 4a79b57434 | project=p-8b88a0cc no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « Tempo (BPM) » 2.39:1 (needs 4.5:1, 16 sp)
+#49 > retour
+#49 RETOUR
+#50 ROUTE acid/tab_simple_Clavier | MODE simple | EMPREINTE 8f87176e50 | project=p-8b88a0cc no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 312 42
+#50 DOIGT top_mode « Tryb Prosty. Dotknij, aby zmienić tryb. »
+#51 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE df666c975e | project=p-8b88a0cc no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Zamknij » 2.07:1 (needs 4.5:1, 14 sp)
+#51 > touche 294 789
+#51 DOIGT mode_card_pro « Pro »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 880f70a27e | project=p-8b88a0cc no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 543 186
+#52 DOIGT help_labels_button « Podpisz ekran »
+#52 AIDE help_labels_button
+#53 ROUTE help_labels | MODE pro | EMPREINTE 2b8137d525 | project=p-8b88a0cc no tuto
+#53 SON Son : rien ne joue.
+#53 LAYOUT OVERLAP « Cofnij » over « Kolejność części » (30 x 13 dp)
+#53 LAYOUT OVERLAP « Udostępnij » over « Projekty, pomoc » (7 x 13 dp)
+#53 LAYOUT OVERLAP « Zapętl część » over « Graj od części » (81 x 18 dp)
+#53 LAYOUT OVERLAP « Zapętl część » over « Przewodnik: na jakim etapie jest twój utwór » (81 x 18 dp)
+#53 LAYOUT OVERLAP « Graj od części » over « Przewodnik: na jakim etapie jest twój utwór » (90 x 18 dp)
+#53 LAYOUT OVERLAP « Graj » over the touchable « Graj » (26 x 18 dp)
+#53 LAYOUT OVERLAP « Udostępnij » over the touchable « Tryb Pro. Dotknij, aby zmienić tryb. Zmi » (46 x 18 dp)
+#53 LAYOUT OVERLAP « Tempo » over the touchable « Tempo: 120 BPM Zmień tempo » (43 x 18 dp)
+#53 LAYOUT OVERLAP « Kolejność części » over the touchable « Cofnij » (56 x 18 dp)
+#53 LAYOUT OVERLAP « Kolejność części » over the touchable « Ponów » (23 x 18 dp)
+#53 LAYOUT OVERLAP « Głośności » over the touchable « Graj » (51 x 18 dp)
+#53 LAYOUT OVERLAP « Projekty, pomoc » over the touchable « Tempo: 120 BPM Zmień tempo » (15 x 18 dp)
+#53 LAYOUT OVERLAP « Projekty, pomoc » over the touchable « Udostępnij mój utwór » (62 x 18 dp)
+#53 > touche 196 968
+#53 DOIGT help_labels_hide « Ukryj podpisy »
+#53 AIDE help_labels_hide
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 880f70a27e | project=p-8b88a0cc no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 414 1158
+#54 DOIGT tab_Live « Live »
+#55 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE eda647e50d | project=p-8b88a0cc no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Nowa wersja » 3.34:1 (needs 4.5:1, 13 sp)
+#55 > touche 280 268
+#55 DOIGT help_„Start w rytmie” i pola « Co to jest „„Start w rytmie” i pola”? »
+#55 AIDE help_
+#56 ROUTE dialogue:« „Start w rytmie” i pola » | MODE pro | EMPREINTE ec38d9acde | project=p-8b88a0cc no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 502 753
+#56 DOIGT #4057 « Jasne »
+#57 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE eda647e50d | project=p-8b88a0cc no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 540 269
+#57 DOIGT live_cases_more
+#58 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 03dae7f6dd | project=p-8b88a0cc no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 51 369
+#58 DOIGT help_Klocki i pola « Co to jest „Klocki i pola”? »
+#58 AIDE help_Klocki
+#59 ROUTE dialogue:« Klocki i pola » | MODE pro | EMPREINTE fe474f4cd7 | project=p-8b88a0cc no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 502 738
+#59 DOIGT #4099 « Jasne »
+#60 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 03dae7f6dd | project=p-8b88a0cc no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 175 468
+#60 DOIGT live_pad_drums_0 « Perkusja · A · gotowe »
+#61 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE aed96a6405 | project=p-8b88a0cc no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 > touche 51 945
+#61 DOIGT live_stop_all « ■ Wszystko »
+#62 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE aed96a6405 | project=p-8b88a0cc no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > attends 4
+#63 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE aed96a6405 | project=p-8b88a0cc no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 175 945
+#63 DOIGT live_stop_drums « Zatrzymaj ścieżkę »
+#64 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE aed96a6405 | project=p-8b88a0cc no tuto
+#64 SON Son : la musique du projet joue en boucle.
+#64 RIEN NE CHANGE (3 écrans identiques)
+#64 > attends 4
+#65 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE aed96a6405 | project=p-8b88a0cc no tuto
+#65 SON Son : la musique du projet joue en boucle.
+#65 RIEN NE CHANGE (3 écrans identiques)
+#65 > touche 123 42
+#65 DOIGT live_play « Stop »
+#66 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 03dae7f6dd | project=p-8b88a0cc no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 534 1158
+#66 DOIGT tab_Plus « Więcej »
+#67 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 3ee264411c | project=p-8b88a0cc no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 294 420
+#67 DOIGT tool_Aide « Pomoc »
+#68 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE 7d710e256c | project=p-8b88a0cc no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 543 114
+#68 DOIGT help_labels_button « Podpisz ekran »
+#68 AIDE help_labels_button
+#69 ROUTE help_labels | MODE pro | EMPREINTE e637dd619e | project=p-8b88a0cc no tuto
+#69 SON Son : rien ne joue.
+#69 LAYOUT OVERLAP « Graj » over « Udostępnij » (26 x 18 dp)
+#69 LAYOUT OVERLAP « Graj » over « Przewodnik: na jakim etapie jest twój utwór » (26 x 18 dp)
+#69 LAYOUT OVERLAP « Udostępnij » over « Przewodnik: na jakim etapie jest twój utwór » (69 x 18 dp)
+#69 > touche 543 114
+#69 DOIGT rien
+#70 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE 7d710e256c | project=p-8b88a0cc no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 54 1158
+#70 DOIGT tab_Structure « Struktura »
+#71 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE dd958999ca | project=p-8b88a0cc no tuto
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « Podążaj » 4.06:1 (needs 4.5:1, 14 sp)
+#71 > touche 534 1158
+#71 DOIGT tab_Plus « Więcej »
+#72 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE 7d710e256c | project=p-8b88a0cc no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 294 210
+#72 DOIGT plus_back « Więcej »
+#73 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 3ee264411c | project=p-8b88a0cc no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 294 210
+#73 DOIGT plus_home « Start »
+#74 ROUTE launch | MODE pro | EMPREINTE 2f229e0ceb | project=p-8b88a0cc no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 294 1009
+#74 DOIGT launch_padlive « Pad Live »
+#75 ROUTE padlive | MODE pro | EMPREINTE fcdbd4e288 | project=p-22a7b032 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « Impreza » ellipsized (« … »)
+#75 LAYOUT OVERLAP « Clap » over « uderzenie » (32 x 6 dp)
+#75 LAYOUT OVERLAP « Hi-hat » over « uderzenie » (37 x 6 dp)
+#75 LAYOUT OVERLAP « Otwarty hi-hat » over « Syrena » (27 x 3 dp)
+#75 LAYOUT OVERLAP « Otwarty hi-hat » over « uderzenie » (35 x 12 dp)
+#75 LAYOUT OVERLAP « 124 » over « Roll » (4 x 17 dp)
+#75 LAYOUT OVERLAP « Więcej » over « Więcej » (30 x 10 dp)
+#75 LAYOUT OVERLAP « Kick » over the touchable « Klakson, uderzenie, gotowe, pad A5 » (31 x 17 dp)
+#75 LAYOUT OVERLAP « Werbel » over the touchable « Syrena, uderzenie, gotowe, pad A7 » (42 x 17 dp)
+#75 LAYOUT OVERLAP « Clap » over the touchable « Kick, uderzenie, gotowe, pad A9 » (32 x 10 dp)
+#75 LAYOUT OVERLAP « Clap » over the touchable « Ustawienia pada, pad A9 Ustawienia pada » (29 x 10 dp)
+#75 LAYOUT OVERLAP « Hi-hat » over the touchable « Werbel, uderzenie, gotowe, pad A10 » (44 x 10 dp)
+#75 LAYOUT OVERLAP « Hi-hat » over the touchable « Ustawienia pada, pad A10 Ustawienia pada » (43 x 10 dp)
+#75 LAYOUT OVERLAP « Otwarty hi-hat » over the touchable « Syrena, uderzenie, gotowe, pad A7 » (45 x 7 dp)
+#75 LAYOUT OVERLAP « Otwarty hi-hat » over the touchable « Hi-hat, uderzenie, gotowe, pad A11 » (45 x 18 dp)
+#75 LAYOUT OVERLAP « Otwarty hi-hat » over the touchable « Ustawienia pada, pad A11 Ustawienia pada » (45 x 18 dp)
+#75 LAYOUT OVERLAP « A » over the touchable « Strona D · pusty » (11 x 18 dp)
+#75 LAYOUT OVERLAP « 124 » over the touchable « Pętla kicka, pętla, gotowe, pad A1 » (32 x 8 dp)
+#75 LAYOUT OVERLAP « 124 » over the touchable « Ustawienia pada, pad A1 Ustawienia pada » (5 x 8 dp)
+#75 LAYOUT OVERLAP « ? » over the touchable « Wyzwanie: powtórz ten rytm » (9 x 4 dp)
+#75 LAYOUT OVERLAP « ? » over the touchable « Uruchom rząd 1 od taktu Uruchom rząd » (9 x 10 dp)
+#75 LAYOUT OVERLAP « 124 » over the touchable « Echo · na wyjściu » (5 x 24 dp)
+#75 LAYOUT OVERLAP « 124 » over the touchable « Roll · 1/16 » (14 x 24 dp)
+#75 LAYOUT OVERLAP « REC » over the touchable « Tryb Pro. Dotknij, aby zmienić tryb. Zmi » (26 x 13 dp)
+#75 LAYOUT OVERLAP « D » over the touchable « Bieżąca część: A. Dotknij, aby zmienić c » (10 x 16 dp)
+#75 LAYOUT OVERLAP « ? » over the touchable « Graj » (7 x 15 dp)
+#75 LAYOUT OVERLAP « pętla » over the touchable « Tempo: 124 BPM Zmień tempo » (33 x 16 dp)
+#75 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A1 Ustawienia pada » (33 x 16 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A2 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A3 Ustawienia pada » (33 x 16 dp)
+#75 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A4 Ustawienia pada » (33 x 16 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A5 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A6 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A7 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A8 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A9 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A10 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A11 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A12 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A13 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A14 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A15 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A16 Ustawienia pada » (37 x 12 dp)
+#75 LAYOUT OVERLAP « EFEKTY SCENICZNE » over the touchable « Otwórz Przewodnik zwinięte » (129 x 18 dp)
+#75 LAYOUT OVERLAP « ? » over the touchable « Otwórz Przewodnik zwinięte » (7 x 15 dp)
+#75 LAYOUT OVERLAP « Naciśnij i przytrzymaj » over the touchable « Otwórz Przewodnik zwinięte » (138 x 18 dp)
+#75 LAYOUT OVERLAP « Filtr » over the touchable « Cofnij » (28 x 20 dp)
+#75 LAYOUT OVERLAP « nisko ↔ wysoko » over the touchable « Cofnij » (54 x 14 dp)
+#75 LAYOUT OVERLAP « nisko ↔ wysoko » over the touchable « Ponów » (23 x 14 dp)
+#75 LAYOUT OVERLAP « Echo » over the touchable « Graj » (18 x 20 dp)
+#75 LAYOUT OVERLAP « na wyjściu » over the touchable « Graj » (52 x 16 dp)
+#75 LAYOUT OVERLAP « Roll » over the touchable « Tempo: 124 BPM Zmień tempo » (22 x 20 dp)
+#75 LAYOUT OVERLAP « 1/16 » over the touchable « Tempo: 124 BPM Zmień tempo » (22 x 16 dp)
+#75 LAYOUT CONTRAST « Werbel » 3.75:1 (needs 4.5:1, 14 sp)
+#75 LAYOUT CONTRAST « ? » 2.48:1 (needs 3.0:1, 16 sp)
+#75 > touche 464 135
+#75 DOIGT help_Strony i paczki « Co to jest „Strony i paczki”? »
+#75 AIDE help_Strony
+#76 ROUTE dialogue:« Strony i paczki » | MODE pro | EMPREINTE a834b03bf7 | project=p-22a7b032 no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « Jasne » 4.08:1 (needs 4.5:1, 14 sp)
+#76 > touche 502 768
+#76 DOIGT #6076 « Jasne »
+#77 ROUTE padlive | MODE pro | EMPREINTE 8c2aaea4c0 | project=p-22a7b032 no tuto
+#77 SON Son : rien ne joue.
+#77 > touche 349 135
+#77 DOIGT padlive_pack « Impreza »
+#78 ROUTE dialogue:padlive_pack_fete | MODE pro | EMPREINTE 0c7cc03bea | project=p-22a7b032 no tuto
+#78 SON Son : rien ne joue.
+#78 > touche 351 294
+#78 DOIGT padlive_pack_techno « Techno »
+#79 ROUTE padlive | MODE pro | EMPREINTE 1cc45e175c | project=p-22a7b032 no tuto
+#79 SON Son : rien ne joue.
+#79 LAYOUT CUT « Techno » ellipsized (« … »)
+#79 LAYOUT CUT « przytrzymaj » ellipsized (« … »)
+#79 LAYOUT OVERLAP « Perkusja » over the touchable « Perkusja, pętla, gotowe, pad A1 » (56 x 20 dp)
+#79 LAYOUT OVERLAP « 124 » over the touchable « Perkusja, pętla, gotowe, pad A1 » (32 x 8 dp)
+#79 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A2 Ustawienia pada » (33 x 16 dp)
+#79 LAYOUT OVERLAP « uderzenie » over the touchable « Ustawienia pada, pad A4 Ustawienia pada » (37 x 12 dp)
+#79 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A5 Ustawienia pada » (33 x 16 dp)
+#79 LAYOUT OVERLAP « pętla » over the touchable « Ustawienia pada, pad A6 Ustawienia pada » (33 x 16 dp)
+#79 LAYOUT OVERLAP « przytrzymaj » over the touchable « Ustawienia pada, pad A16 Ustawienia pada » (37 x 11 dp)
+#79 > touche 77 256
+#79 DOIGT padlive_pad_0 « Perkusja, pętla, gotowe, pad A1 »
+#80 ROUTE padlive | MODE pro | EMPREINTE 1c824b6f91 | project=p-22a7b032 no tuto
+#80 SON Son : le pad live 1 joue en boucle.
+#80 LAYOUT OVERLAP « Perkusja » over the touchable « Perkusja, pętla, gra, pad A1 » (56 x 20 dp)
+#80 LAYOUT OVERLAP « 124 » over the touchable « Perkusja, pętla, gra, pad A1 » (32 x 8 dp)
+#80 > touche 77 256
+#80 DOIGT padlive_pad_0 « Perkusja, pętla, gra, pad A1 »
+#81 ROUTE padlive | MODE pro | EMPREINTE 1cc45e175c | project=p-22a7b032 no tuto
+#81 SON Son : rien ne joue.
+#81 > fin
+#81 FIN : fin

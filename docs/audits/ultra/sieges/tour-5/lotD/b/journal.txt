@@ -1,0 +1,399 @@
+#0 SIEGE lang=zh-CN device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 2b7cf25844 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 518 305
+#1 DOIGT launch_continue « 继续 »
+#2 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 6385ff858a | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « ? » 1.29:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 0% » 2.16:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « 力度 » 2.59:1 (needs 4.5:1, 14 sp)
+#2 > touche 636 183
+#2 DOIGT track_0 « 合成器 »
+#3 ROUTE synth/tab_Sons | MODE pro | EMPREINTE daf058099e | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST «  音轨 » 1.62:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST «  录下我的旋律 » 2.78:1 (needs 4.5:1, 14 sp)
+#3 > touche 772 186
+#3 DOIGT track_sound_0
+#4 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d37d1b3984 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 音色：合成器 » over the touchable « 关闭工作表 » (131 x 33 dp)
+#4 LAYOUT OVERLAP « 点一个音色：它会替换整首歌里这条音轨的音色。 » over the touchable « 关闭工作表 » (281 x 19 dp)
+#4 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#4 LAYOUT OVERLAP « 贝斯 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#4 LAYOUT OVERLAP « 圆润贝斯 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 持续 » over the touchable « 关闭工作表 » (71 x 19 dp)
+#4 LAYOUT OVERLAP « Sub 贝斯 » over the touchable « 关闭工作表 » (58 x 21 dp)
+#4 LAYOUT OVERLAP « 三角波 · 持续 » over the touchable « 关闭工作表 » (71 x 19 dp)
+#4 LAYOUT OVERLAP « Reese 贝斯 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 现代 Reese » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 5 个声部 · 持续 » over the touchable « 关闭工作表 » (128 x 19 dp)
+#4 LAYOUT OVERLAP « Wobble 贝斯 » over the touchable « 关闭工作表 » (83 x 21 dp)
+#4 LAYOUT OVERLAP « 会说话的贝斯 » over the touchable « 关闭工作表 » (84 x 21 dp)
+#4 LAYOUT OVERLAP « Growl 贝斯 » over the touchable « 关闭工作表 » (71 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 3 个声部 · 持续 » over the touchable « 关闭工作表 » (128 x 19 dp)
+#4 LAYOUT OVERLAP « DnB Reese » over the touchable « 关闭工作表 » (72 x 17 dp)
+#4 LAYOUT OVERLAP « Riddim 贝斯 » over the touchable « 关闭工作表 » (79 x 21 dp)
+#4 LAYOUT OVERLAP « 方波 · 持续 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « Neuro 贝斯 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « 纯 Sub » over the touchable « 关闭工作表 » (44 x 21 dp)
+#4 LAYOUT OVERLAP « 滚动贝斯 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#4 LAYOUT OVERLAP « Pluck 贝斯 » over the touchable « 关闭工作表 » (69 x 21 dp)
+#4 LAYOUT OVERLAP « 锯齿波 · 短 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « 合成器 808 » over the touchable « 关闭工作表 » (72 x 21 dp)
+#4 LAYOUT OVERLAP « Donk » over the touchable « 关闭工作表 » (35 x 17 dp)
+#4 LAYOUT OVERLAP « 三角波 · 短 » over the touchable « 关闭工作表 » (59 x 19 dp)
+#4 LAYOUT OVERLAP « 温暖 Sub » over the touchable « 关闭工作表 » (58 x 21 dp)
+#4 LAYOUT OVERLAP « 随机 » over the touchable « 关闭工作表 » (29 x 21 dp)
+#4 LAYOUT OVERLAP « 保留这个声音 » over the touchable « 关闭工作表 » (85 x 21 dp)
+#4 LAYOUT OVERLAP « “保留这个声音”会把它存进你的收藏，所有项目都能用。 » over the touchable « 关闭工作表 » (317 x 19 dp)
+#4 LAYOUT OVERLAP « 真实乐器 » over the touchable « 关闭工作表 » (51 x 19 dp)
+#4 LAYOUT OVERLAP « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » over the touchable « 关闭工作表 » (483 x 19 dp)
+#4 LAYOUT CONTRAST « Wobble 贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 会说话的贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Donk » 1.37:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 真实乐器 » 3.26:1 (needs 4.5:1, 12 sp)
+#4 > touche 287 391
+#4 DOIGT synth_sounds_2 « Reese 贝斯 »
+#5 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b0df876555 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « C 4 播放 » (16 x 21 dp)
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « D 4 播放 » (43 x 21 dp)
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « E 4 播放 » (43 x 21 dp)
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « F 4 播放 » (19 x 21 dp)
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « C# 4 播放 » (29 x 21 dp)
+#5 LAYOUT OVERLAP « 新音色：Reese 贝斯 » over the touchable « D# 4 播放 » (29 x 21 dp)
+#5 LAYOUT OVERLAP « 取消 » over the touchable « B 5 播放 » (28 x 21 dp)
+#5 LAYOUT CONTRAST « 取消 » 3.63:1 (needs 4.5:1, 14 sp)
+#5 > touche 76 832
+#5 DOIGT key_60 « C 4 »
+#6 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b0df876555 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 678 186
+#6 DOIGT track_0 « Reese 贝斯 »
+#7 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 06ffd69f02 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 冻结音轨（渲染成音频，更省 CPU） » 1.54:1 (needs 4.5:1, 14 sp)
+#7 > touche 772 411
+#7 DOIGT track_menu_settings « 调整声音（滤波器、包络…） »
+#8 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 3318459e1b | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT LABEL « knob_8 » long press without text nor description
+#8 LAYOUT LABEL « knob_9 » long press without text nor description
+#8 > attends 3
+#9 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7c86307866 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > glisse 273 594 420 594
+#9 DOIGT dans:synth « 截止 »
+#10 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 39e24901a1 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > appui-long 343 799
+#10 DOIGT float_key_67 « G 4 »
+#11 ROUTE synth/tab_Sons | MODE pro | EMPREINTE be34c0bf22 | project=projet-1 no tuto
+#11 SON Son : 1 note du synthé.
+#11 > glisse 500 580 500 300
+#11 DOIGT dans:synth « 截止 »
+#12 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 84ced7b686 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT LABEL « knob_10 » long press without text nor description
+#12 LAYOUT LABEL « knob_15 » long press without text nor description
+#12 LAYOUT LABEL « knob_18 » long press without text nor description
+#12 LAYOUT LABEL « knob_2 » long press without text nor description
+#12 > glisse 500 580 500 260
+#12 DOIGT dans:synth « 释放 »
+#13 ROUTE synth/tab_Sons | MODE pro | EMPREINTE bad6f92f7d | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT LABEL « knob_5 » long press without text nor description
+#13 LAYOUT LABEL « knob_24 » long press without text nor description
+#13 LAYOUT LABEL « knob_25 » long press without text nor description
+#13 LAYOUT LABEL « knob_23 » long press without text nor description
+#13 > glisse 500 580 500 260
+#13 DOIGT dans:synth « 齐奏扩展 »
+#14 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4118bd422c | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 821 186
+#14 DOIGT track_sound_0
+#15 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 50cbb50b0d | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Sub 贝斯 » 3.46:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Reese 贝斯 » 2.47:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 锯齿波 · 持续 » 1.47:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 锯齿波 · 5 个声部 · 持续 » 1.47:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 锯齿波 · 3 个声部 · 持续 » 1.50:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « DnB Reese » 1.71:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 锯齿波 · 短 » 3.10:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 三角波 · 持续 » 3.10:1 (needs 4.5:1, 12 sp)
+#15 > touche 749 1077
+#15 DOIGT synth_sounds_save « 保留这个声音 »
+#16 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 2ad7e655f6 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 取消 » 3.58:1 (needs 4.5:1, 14 sp)
+#16 > touche 865 613
+#16 DOIGT name_clear
+#17 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > ecris 明亮Reese
+#18 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 44b5b4de1e | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 517 606
+#18 DOIGT synth_sounds_name_field « 音色名称 »
+#19 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > ecris 明亮Reese
+#20 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE b2f38f5fbb | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 857 727
+#20 DOIGT synth_sounds_name_ok « 保留 »
+#21 ROUTE dialogue:« 音色已存入你的收藏：“明亮Reese”。 » | MODE pro | EMPREINTE 9d634a0f81 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 642 655
+#21 DOIGT #2313 « 知道了 »
+#22 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 52cdf7fbed | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « 收藏 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#22 LAYOUT OVERLAP « 明亮Reese » over the touchable « 关闭工作表 » (69 x 21 dp)
+#22 LAYOUT OVERLAP « 已在收藏中 » over the touchable « 关闭工作表 » (71 x 21 dp)
+#22 LAYOUT OVERLAP « 重命名“明亮Reese” » over the touchable « 关闭工作表 » (127 x 21 dp)
+#22 LAYOUT OVERLAP « 三角钢琴 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：11 MB » over the touchable « 关闭工作表 » (82 x 19 dp)
+#22 LAYOUT OVERLAP « 音乐会钢琴 » over the touchable « 关闭工作表 » (70 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：16 MB » over the touchable « 关闭工作表 » (85 x 19 dp)
+#22 LAYOUT OVERLAP « 弦乐 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：9 MB » over the touchable « 关闭工作表 » (79 x 19 dp)
+#22 LAYOUT OVERLAP « 拨弦弦乐 » over the touchable « 关闭工作表 » (56 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：2 MB » over the touchable « 关闭工作表 » (79 x 19 dp)
+#22 LAYOUT OVERLAP « 铜管 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：6 MB » over the touchable « 关闭工作表 » (79 x 19 dp)
+#22 LAYOUT OVERLAP « 木管 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：7 MB » over the touchable « 关闭工作表 » (78 x 19 dp)
+#22 LAYOUT OVERLAP « 竖琴 » over the touchable « 关闭工作表 » (28 x 21 dp)
+#22 LAYOUT OVERLAP « 待下载：4 MB » over the touchable « 关闭工作表 » (79 x 19 dp)
+#22 LAYOUT OVERLAP « 808 贝斯 » over the touchable « 关闭工作表 » (58 x 21 dp)
+#22 LAYOUT OVERLAP « 音与音之间滑音，无需下载 » over the touchable « 关闭工作表 » (146 x 19 dp)
+#22 LAYOUT OVERLAP « 录音来源：Salamander Grand Piano V3（Alexander Holm，CC BY 3.0）、Splendid Grand Piano（Akai，公有领域）、VS Chamber Orchestra（Versilian Studios，CC0）。 » over the touchable « 关闭工作表 » (576 x 37 dp)
+#22 LAYOUT CONTRAST « 关闭 » 2.07:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 收藏 » 1.92:1 (needs 3.0:1, 16 sp)
+#22 LAYOUT CONTRAST « 明亮Reese » 1.94:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 随机 » 2.62:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 已在收藏中 » 1.82:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 重命名“明亮Reese” » 1.82:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 真实乐器 » 3.34:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » 1.39:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « 录音来源：Salamander Grand Piano V3（Alexander Holm，CC BY 3.0）、Splendid Grand Piano（Akai，公有领域）、VS Chamber Orchestra（Versilian Studios，CC0）。 » 3.26:1 (needs 4.5:1, 13 sp)
+#22 > touche 930 223
+#22 DOIGT sound_chooser_close « 关闭 »
+#23 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 821da0fbf6 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 678 186
+#23 DOIGT track_0 « Reese 贝斯 »
+#24 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 06ffd69f02 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 色彩 » 3.85:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 冻结音轨（渲染成音频，更省 CPU） » 1.80:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 删除（可撤销） » 2.45:1 (needs 4.5:1, 14 sp)
+#24 > touche 772 411
+#24 DOIGT track_menu_settings « 调整声音（滤波器、包络…） »
+#25 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 3318459e1b | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > attends 2
+#26 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 86bbe04bee | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 700 342 900 342
+#26 DOIGT dans:synth « 齐奏（Supersaw） »
+#27 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1591ba40af | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > glisse 500 590 500 330
+#27 DOIGT rien
+#28 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0e46f645e6 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > glisse 656 313 860 313
+#28 DOIGT dans:synth « 共振 »
+#29 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0e46f645e6 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 821 186
+#29 DOIGT track_sound_0
+#30 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 430ad93126 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT OVERLAP « 三角钢琴 » over the touchable « 关闭工作表 » (56 x 11 dp)
+#30 LAYOUT OVERLAP « 音乐会钢琴 » over the touchable « 关闭工作表 » (70 x 11 dp)
+#30 LAYOUT CONTRAST « 圆润贝斯 » 1.36:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 锯齿波 · 持续 » 3.54:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « Sub 贝斯 » 1.36:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 三角波 · 持续 » 3.58:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « 锯齿波 · 3 个声部 · 持续 » 1.39:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT CONTRAST « DnB Reese » 3.37:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » 3.26:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « 三角钢琴 » 2.04:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 音乐会钢琴 » 2.04:1 (needs 4.5:1, 14 sp)
+#30 > touche 749 1077
+#30 DOIGT synth_sounds_save « 保留这个声音 »
+#31 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 2ad7e655f6 | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 取消 » 1.36:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « 保留 » 1.36:1 (needs 4.5:1, 14 sp)
+#31 > touche 865 613
+#31 DOIGT name_clear
+#32 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 517 606
+#32 DOIGT synth_sounds_name_field « 音色名称 »
+#33 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > ecris 明亮Reese
+#34 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE b2f38f5fbb | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 857 727
+#34 DOIGT synth_sounds_name_ok « 保留 »
+#35 ROUTE dialogue:« 已有名为“明亮Reese”的保存音色：请换个名字。 » | MODE pro | EMPREINTE 7a46989acb | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 695 655
+#35 DOIGT #2873 « 知道了 »
+#36 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 430ad93126 | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 749 1077
+#36 DOIGT synth_sounds_save « 保留这个声音 »
+#37 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 2ad7e655f6 | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 758 727
+#37 DOIGT synth_sounds_name_cancel « 取消 »
+#38 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 430ad93126 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 98 201
+#38 DOIGT synth_sounds_back
+#39 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 8976554033 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « 搜索音色（军鼓、康加鼓、警笛…） » over the touchable « 关闭工作表 » (254 x 24 dp)
+#39 LAYOUT OVERLAP « 1 个声音 » over the touchable « 关闭工作表 » (47 x 19 dp)
+#39 LAYOUT OVERLAP « 16 个声音 » over the touchable « 关闭工作表 » (55 x 19 dp)
+#39 LAYOUT OVERLAP « Lead » over the touchable « 关闭工作表 » (38 x 24 dp)
+#39 LAYOUT OVERLAP « 6 个声音 » over the touchable « 关闭工作表 » (50 x 19 dp)
+#39 LAYOUT OVERLAP « Pad » over the touchable « 关闭工作表 » (29 x 24 dp)
+#39 LAYOUT OVERLAP « 4 个声音 » over the touchable « 关闭工作表 » (50 x 19 dp)
+#39 LAYOUT OVERLAP « Pluck » over the touchable « 关闭工作表 » (43 x 24 dp)
+#39 LAYOUT OVERLAP « 键盘 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#39 LAYOUT OVERLAP « 2 个声音 » over the touchable « 关闭工作表 » (50 x 19 dp)
+#39 LAYOUT OVERLAP « 效果 » over the touchable « 关闭工作表 » (32 x 24 dp)
+#39 LAYOUT OVERLAP « 点声音上的 ☆，就能在“收藏”里找到它。 » over the touchable « 关闭工作表 » (232 x 19 dp)
+#39 LAYOUT CONTRAST « 收藏 » 3.06:1 (needs 4.5:1, 16 sp)
+#39 LAYOUT CONTRAST « 三角钢琴 » 3.26:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « 音乐会钢琴 » 3.26:1 (needs 4.5:1, 14 sp)
+#39 > touche 518 495
+#39 DOIGT synth_sounds_folder_Leads « Lead »
+#40 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 2347ff9522 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Lead » over the touchable « 关闭工作表 » (33 x 17 dp)
+#40 LAYOUT OVERLAP « 方波 Lead » over the touchable « 关闭工作表 » (64 x 21 dp)
+#40 LAYOUT OVERLAP « Acid Lead » over the touchable « 关闭工作表 » (67 x 17 dp)
+#40 LAYOUT OVERLAP « Supersaw » over the touchable « 关闭工作表 » (68 x 17 dp)
+#40 LAYOUT OVERLAP « 锯齿波 · 7 个声部 · 持续 » over the touchable « 关闭工作表 » (127 x 19 dp)
+#40 LAYOUT OVERLAP « Trance Lead » over the touchable « 关闭工作表 » (83 x 17 dp)
+#40 LAYOUT OVERLAP « 锯齿波 · 4 个声部 · 持续 » over the touchable « 关闭工作表 » (128 x 19 dp)
+#40 LAYOUT OVERLAP « Hoover » over the touchable « 关闭工作表 » (49 x 17 dp)
+#40 LAYOUT CONTRAST « 方波 Lead » 1.34:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « 方波 · 持续 » 3.43:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « Hoover » 2.19:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « 锯齿波 · 7 个声部 · 持续 » 2.72:1 (needs 4.5:1, 12 sp)
+#40 > appui-long 749 398
+#40 DOIGT synth_sounds_19 « Supersaw »
+#41 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e64fc7143d | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « 新音色：Supersaw » over the touchable « C 4 播放 » (6 x 21 dp)
+#41 LAYOUT OVERLAP « 新音色：Supersaw » over the touchable « D 4 播放 » (45 x 21 dp)
+#41 LAYOUT OVERLAP « 新音色：Supersaw » over the touchable « E 4 播放 » (45 x 21 dp)
+#41 LAYOUT OVERLAP « 新音色：Supersaw » over the touchable « F 4 播放 » (18 x 21 dp)
+#41 LAYOUT OVERLAP « 取消 » over the touchable « B 5 播放 » (26 x 21 dp)
+#41 > touche 814 186
+#41 DOIGT track_sound_0
+#42 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 98dfe8d5fa | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 方波 Lead » 1.22:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « Trance Lead » 1.46:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « Hoover » 1.46:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « 待下载：9 MB » 2.08:1 (needs 4.5:1, 12 sp)
+#42 LAYOUT CONTRAST « 待下载：2 MB » 2.08:1 (needs 4.5:1, 12 sp)
+#42 > touche 98 208
+#42 DOIGT synth_sounds_back
+#43 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 8976554033 | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 贝斯 » 3.87:1 (needs 4.5:1, 16 sp)
+#43 > touche 518 303
+#43 DOIGT synth_sounds_shelf_mine « 收藏 »
+#44 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE f9e9dac931 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « 明亮Reese » 1.46:1 (needs 4.5:1, 14 sp)
+#44 > touche 287 493
+#44 DOIGT synth_sounds_fav_0 « 明亮Reese »
+#45 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9d5b48f93d | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT OVERLAP « 新音色：明亮Reese » over the touchable « C 4 播放 » (6 x 21 dp)
+#45 LAYOUT OVERLAP « 新音色：明亮Reese » over the touchable « D 4 播放 » (45 x 21 dp)
+#45 LAYOUT OVERLAP « 新音色：明亮Reese » over the touchable « E 4 播放 » (45 x 21 dp)
+#45 LAYOUT OVERLAP « 新音色：明亮Reese » over the touchable « F 4 播放 » (21 x 21 dp)
+#45 > touche 676 186
+#45 DOIGT track_0 « 明亮Reese »
+#46 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 06ffd69f02 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 冻结音轨（渲染成音频，更省 CPU） » 1.71:1 (needs 4.5:1, 14 sp)
+#46 > touche 772 411
+#46 DOIGT track_menu_settings « 调整声音（滤波器、包络…） »
+#47 ROUTE tuto_spot_ring | MODE pro | EMPREINTE 3318459e1b | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > attends 2
+#48 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5fe6e08edc | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 802 469 920 469
+#48 DOIGT dans:synth « 音量 »
+#49 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 81f3153b45 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > glisse 500 590 500 270
+#49 DOIGT rien
+#50 ROUTE synth/tab_Sons | MODE pro | EMPREINTE fae3b5da88 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 > glisse 500 590 500 270
+#50 DOIGT rien
+#51 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 86e32696e3 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 821 186
+#51 DOIGT track_sound_0
+#52 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 430ad93126 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « 圆润贝斯 » 1.27:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « 会说话的贝斯 » 3.52:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « 锯齿波 · 3 个声部 · 持续 » 1.30:1 (needs 4.5:1, 12 sp)
+#52 > touche 749 1077
+#52 DOIGT synth_sounds_save « 保留这个声音 »
+#53 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 2ad7e655f6 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 865 613
+#53 DOIGT name_clear
+#54 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 517 606
+#54 DOIGT synth_sounds_name_field « 音色名称 »
+#55 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 215c744fc0 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > ecris 明亮Reese 2
+#56 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE e5a5e2100e | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 857 727
+#56 DOIGT synth_sounds_name_ok « 保留 »
+#57 ROUTE dialogue:« 音色已存入你的收藏：“明亮Reese 2”。 » | MODE pro | EMPREINTE 65eb2829ad | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 652 655
+#57 DOIGT #4048 « 知道了 »
+#58 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 4e9f08908c | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 LAYOUT OVERLAP « 明亮Reese 2 » over the touchable « 关闭工作表 » (81 x 21 dp)
+#58 LAYOUT OVERLAP « 重命名“明亮Reese 2” » over the touchable « 关闭工作表 » (140 x 21 dp)
+#58 LAYOUT CONTRAST « 锯齿波 · 持续 » 1.74:1 (needs 4.5:1, 12 sp)
+#58 LAYOUT CONTRAST « 明亮Reese 2 » 1.74:1 (needs 4.5:1, 14 sp)
+#58 LAYOUT CONTRAST « 随机 » 1.91:1 (needs 4.5:1, 14 sp)
+#58 LAYOUT CONTRAST « 已在收藏中 » 1.93:1 (needs 4.5:1, 14 sp)
+#58 > touche 930 223
+#58 DOIGT sound_chooser_close « 关闭 »
+#59 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7e88e51d90 | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > fin
+#59 FIN : fin

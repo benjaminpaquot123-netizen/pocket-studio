@@ -11,9 +11,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
@@ -65,7 +67,7 @@ class ShareSheetTest {
     @Test
     fun aSoloLeftOnIsCaughtWithItsTrackName() {
         val p = project(SongPart(0, bars = 90)).withChannel(1) { it.copy(solo = true) }
-        assertEquals(listOf(ShareCheck.Solo(listOf("Basse acide"))), checks(p))
+        assertEquals(listOf(ShareCheck.Solo(listOf("Acid 303"))), checks(p))
         assertTrue(ShareCheck.Solo(listOf("x")).warning)
     }
 
@@ -73,7 +75,7 @@ class ShareSheetTest {
     fun aMutedTrackIsSaidOnlyWhenItHasSomethingToPlay() {
         // The drums play in the song but are muted: said. The acid line is empty: muting it changes nothing.
         val p = project(SongPart(0, bars = 90)).withChannel(0) { it.copy(mute = true) }.withChannel(1) { it.copy(mute = true) }
-        assertEquals(listOf(ShareCheck.Muted(listOf("Batterie"))), checks(p))
+        assertEquals(listOf(ShareCheck.Muted(listOf("Batterie"), listOf(0))), checks(p))
         assertFalse(ShareCheck.Muted(listOf("x")).warning)
     }
 
@@ -184,6 +186,26 @@ class ShareSheetTest {
         assertEquals(ExportFormat.M4a, ShareSong.settings(hasSong = true, sceneBars = 4).format)
     }
 
+    /** Audit final (01 M6, 05, 08): the Mode simple has no Mix: no « Voir dans Mix »; a muted track is heard again in one touch, said in its words. */
+    @Test
+    fun theModeSimpleKeepsItsFixesInItsTabs() {
+        var unmuted: List<Int>? = null
+        compose.setContent {
+            PocketStudioTheme {
+                ShareSheetContent(
+                    ShareSheetUi("Mon tube", seconds = 180, parts = 3, checks = listOf(ShareCheck.Muted(listOf("Batterie"), listOf(5)), ShareCheck.Saturation), canLower = true),
+                    ShareSheetActions(toMixer = null, unmute = { unmuted = it }),
+                    page = true,
+                )
+            }
+        }
+        compose.onNodeWithTag("share_fix_master").assertExists()
+        compose.onNodeWithTag("share_fix_mixer").assertDoesNotExist()
+        compose.onNodeWithText("Coupé dans Mes pistes", substring = true).assertExists()
+        compose.onNodeWithTag("share_fix_muted").performScrollTo().performClick()
+        assertEquals(listOf(5), unmuted)
+    }
+
     @Test
     fun eachFixIsOneTouch() {
         var unsolo = 0
@@ -196,7 +218,7 @@ class ShareSheetTest {
                 ShareSheetContent(
                     ShareSheetUi(
                         "Mon tube", seconds = 2, parts = 1,
-                        checks = listOf(ShareCheck.Solo(listOf("Basse acide")), ShareCheck.Muted(listOf("Batterie")), ShareCheck.Short(2), ShareCheck.Saturation),
+                        checks = listOf(ShareCheck.Solo(listOf("Acid 303")), ShareCheck.Muted(listOf("Batterie")), ShareCheck.Short(2), ShareCheck.Saturation),
                     ),
                     ShareSheetActions(
                         unsolo = { unsolo++ }, lowerMaster = { lower++ }, toMixer = { mixer++ }, toStructure = { structure++ }, otherExports = { others++ },
@@ -223,7 +245,7 @@ class ShareSheetTest {
         }
         compose.onNodeWithTag("share_fix_master").assertDoesNotExist()
         compose.onNodeWithTag("share_fix_mixer").assertExists()
-        compose.onNodeWithTag("share_go").performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithTag("share_go").assertIsNotEnabled()  // in the footer: always in sight
     }
 
     @Test
@@ -240,10 +262,11 @@ class ShareSheetTest {
         }
         compose.onNodeWithTag("share_check_ok").assertExists()
         compose.onNodeWithTag("share_format_M4a").assertIsSelected()
-        compose.onNodeWithTag("share_format_Wav").performScrollTo().performClick()
+        // Lot « tuto 4 »: beside « Partager », out of the part that scrolls (never cut at its edge).
+        compose.onNodeWithTag("share_format_Wav").assertIsDisplayed().performClick()
         assertEquals(ExportFormat.Wav, format)
         compose.onNodeWithTag("share_format_Wav").assertIsSelected()
-        compose.onNodeWithTag("share_go").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("share_go").assertIsEnabled()
     }
 
     /**

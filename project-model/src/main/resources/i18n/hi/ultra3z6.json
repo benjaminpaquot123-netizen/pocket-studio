@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "टाइमलाइन: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "गाना लिखा गया: %1$s, %2$s",
+  "Grille des notes : %s": "नोट ग्रिड: %s",
+  "1 pas": "1 स्टेप",
+  "1 piste": "1 ट्रैक",
+  "1 réglage": "1 सेटिंग",
+  "%d réglages": "%d सेटिंग्स",
+  "Fait : break de 1 mesure après %2$s": "हो गया: %2$s के बाद 1 बार का ब्रेक",
+  "Fait : montée de 1 mesure avant %2$s": "हो गया: %2$s से पहले 1 बार का बिल्ड-अप",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "अभी कोई गाना नहीं: तुम्हारा पार्ट लूप के रूप में जाएगा (1 बार)।",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "तुम्हारा Live टेक रख लिया गया: वो गाने में है (1 पार्ट)।",
+  "Ton texte (1 caractère)": "तुम्हारा टेक्स्ट (1 अक्षर)",
+  "trop bas de 1 cent": "1 सेंट नीचा",
+  "trop haut de 1 cent": "1 सेंट ऊँचा",
+  "−%d demi-ton": "−%d सेमीटोन",
+  "%d min": "%d मिनट",
+  "%1$d min %2$d": "%1$d मिनट %2$d सेकंड",
+  "Hors de la gamme du morceau": "गाने के स्केल से बाहर",
+  "Poignée : glisse vers le bas pour fermer": "हैंडल: बंद करने के लिए नीचे स्वाइप करो"
+}

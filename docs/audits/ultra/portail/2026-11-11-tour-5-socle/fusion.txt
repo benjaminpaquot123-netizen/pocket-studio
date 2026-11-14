@@ -1,0 +1,8 @@
+fusion: c4743738fc0737be6c61fed9ad79cbe591298a37
+branche: eq/tour-5-socle
+tete: e1f23e1c123c3021690abe3d8ad1b1910d145129
+relecture: docs/audits/ultra/tour-5-socle-relecture.md
+relu: 5fc1ad908ad2e99cd84e5d6af1ca22b349d65d50
+filtres: *BenchSelfTest *ScreenshotTest *RemixSongScreenshotTest *GuideJourneyTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

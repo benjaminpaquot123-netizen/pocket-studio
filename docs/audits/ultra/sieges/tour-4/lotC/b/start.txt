@@ -1,0 +1,7 @@
+lang=ko
+device=phone
+font=100
+mode=pro
+gestes.max=120
+mission=libre
+timeout.minutes=30

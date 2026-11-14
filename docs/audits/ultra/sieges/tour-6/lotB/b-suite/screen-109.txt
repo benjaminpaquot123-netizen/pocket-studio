@@ -1,0 +1,55 @@
+Écran 109 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A Takt 3/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+texte « Teil: A » @ 62,273
+bouton « Akkorde · Takt 1/8 Noch 2 gestrichelte Noten zu tippen » [coupé] @ 450,315
+texte « Takt » @ 84,355
+bouton « 1 » @ 462,363
+bouton « 2 » [coupé] @ 830,363
+texte « E♭ » @ 84,417
+texte « D » @ 84,459
+texte « D♭ » @ 84,501
+texte « C4 » @ 84,543
+texte « B » @ 84,585
+texte « B♭ » @ 84,627
+texte « A » @ 84,669
+texte « A♭ » @ 84,711
+texte « G » @ 84,753
+texte « G♭ » @ 84,795
+texte « F » @ 84,837
+texte « E » @ 84,879
+texte « E♭ » @ 84,921
+texte « D » @ 84,963
+texte « D♭ » @ 84,1005
+texte « C3 » @ 84,1047
+texte « B » @ 84,1087
+dessin [coupé] @ 492,751
+image (chapeau de diplômé) @ 37,1157
+texte « Der Stab (Akkorde) Kapitel 6/16 · Schritt 1/1 · Pro » @ 400,1157
+icône (liste) @ 771,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Erstell die Akkorde-Spur (Sound „Pluck“, Dub-Echo). Zwei f-Moll-Stabs pro Takt auf den Offbeats (Steps 4 und 11): Takt 1, „Auf die nächsten Takte kopieren“, dann Takt 4 auf G♭-Dur (die ♭II), „Kopieren“. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,7 @@
+Écran 5 (616x1371)
+texte « O que você quer gravar? » @ 247,445
+bouton «   O microfone: sua voz, um violão, um instrumento » @ 308,535
+bouton «   Uma melodia no teclado » @ 308,628
+bouton «   Os pads (a bateria) » @ 308,718
+bouton «   Contagem: 1 compasso » (nom « Contagem: 1 compasso ») @ 193,805
+bouton « Cancelar » @ 515,913

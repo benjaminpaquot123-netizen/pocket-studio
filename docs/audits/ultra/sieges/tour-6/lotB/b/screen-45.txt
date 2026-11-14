@@ -1,0 +1,76 @@
+Écran 45 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+texte « Takt 1/2 · Offene Hi-Hat » [coupé] @ 203,304
+texte « Noch 3 gestrichelte Kästchen hier » @ 293,329
+bouton « 1 » [état « leer »] @ 90,399
+bouton [état « leer »] @ 192,399
+bouton [état « Schlag, Stärke 100 % »] @ 294,399
+bouton [état « leer »] @ 397,399
+bouton « 2 » [état « leer »] @ 500,399
+bouton [état « leer »] @ 603,399
+bouton [état « leer, gepunktet: antippen »] @ 706,399
+bouton [état « leer »] @ 809,399
+bouton « 3 » [état « leer »] @ 90,480
+bouton [état « leer »] @ 192,480
+bouton [état « leer, gepunktet: antippen »] @ 294,480
+bouton [état « leer »] @ 397,480
+bouton « 4 » [état « leer »] @ 500,480
+bouton [état « leer »] @ 603,480
+bouton [état « leer, gepunktet: antippen »] @ 706,480
+bouton [état « leer »] @ 809,480
+bouton « Schläge » [sélectionné] @ 122,566
+bouton « Rolls » @ 265,566
+bouton « Panorama » @ 421,566
+bouton « Tonhöhe » @ 604,566
+bouton « Velocity » @ 774,566
+texte « alles » @ 163,650
+texte « 1/2 » @ 246,650
+texte « 1/4 » @ 321,650
+texte « ◀ » @ 396,650
+texte « ▶ » @ 471,650
+texte « Löschen » @ 581,650
+texte « Füllen » @ 79,650
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,752
+texte « Länge » @ 83,854
+bouton « 1 Takt » @ 196,854
+bouton « 2 » [sélectionné] @ 305,854
+bouton « 3 » @ 386,854
+bouton « 4 » @ 467,854
+texte « − » @ 386,938
+texte « + » [désactivé] @ 594,938
+texte « Dieses Pad loopt über » @ 188,938
+texte « 32 Steps » @ 490,938
+image (chapeau de diplômé) @ 37,1083
+texte « Hi-Hats, Tamburin und Swing Kapitel 4/17 · Schritt 1/5 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: die offene Hi-Hat auf jeden Offbeat. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

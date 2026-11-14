@@ -1,0 +1,26 @@
+Écran 42 (900x1509)
+texte « Schlag 16 » @ 531,553
+icône ✕ @ 804,553
+texte « Velocity » @ 350,618
+bouton « Stark » [sélectionné] @ 355,684
+bouton « Mittel » @ 485,684
+bouton « Sanft » @ 615,684
+texte « Roll » @ 319,749
+bouton « ×1 » [sélectionné] @ 334,815
+bouton « ×2 » @ 424,815
+bouton « ×3 » @ 516,815
+bouton « ×4 » @ 610,815
+bouton « ×6 » @ 703,815
+bouton « ×8 » @ 796,815
+texte « Triole » @ 333,880
+bouton « 3 auf 2 Felder » [désactivé] @ 412,946
+bouton « 6 auf den Schlag » [désactivé] @ 675,946
+bouton « ↗ Steigend » [désactivé] @ 394,1027
+bouton « Gleich » [désactivé, sélectionné] @ 568,1027
+bouton « ↘ Fallend » [désactivé] @ 730,1027
+texte « Ganzer Schlag auf ×2 (1/32-Salve) » @ 547,1108
+texte « Spielchance » @ 378,1173
+bouton « 100 % » [sélectionné] @ 360,1239
+bouton « 75 % » @ 492,1239
+bouton « 50 % » @ 617,1239
+bouton « 25 % » @ 742,1239

@@ -2,6 +2,7 @@ package com.pocketstudio.app.settings
 
 import com.pocketstudio.model.i18n.tr
 import android.content.Context
+import androidx.compose.runtime.collectAsState
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,10 +57,12 @@ data class AppSettings(
     /** The first-steps guide was seen (it opens at the first launch). */
     val guideSeen: Boolean = false,
     val keyLayout: KeyLayout = KeyLayout.TwoOctaves,
-    /** Language of the interface (French unless chosen). */
+    /** Language of the interface (the phone's at the first start, see [SettingsStore.adoptPhoneLanguage]). */
     val language: Lang = Lang.FR,
     /** A light vibration on each beat while the Live page plays (off: it can annoy). */
     val liveBeatHaptics: Boolean = false,
+    /** The opening's double heartbeat is heard (never with the phone on silent or vibrate). */
+    val introSound: Boolean = true,
     /** The ready-made effects starred in the effects box (their ids). */
     val favouriteFx: Set<String> = emptySet(),
     /**
@@ -67,6 +70,13 @@ data class AppSettings(
      * words, instead of the five spaces. Only how the project is shown: switching never changes it.
      */
     val simpleMode: Boolean = false,
+    /** « M'entendre dans le casque »: the voice comes back in wired headphones during a take (off by default). */
+    val monitorVoice: Boolean = false,
+    /**
+     * « Mode retours »: the floating bubble to film the screen and write notes while testing.
+     * On by default in the owner's test builds; MUST default to false before any public release.
+     */
+    val retoursMode: Boolean = true,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -75,6 +85,14 @@ data class AppSettings(
 }
 
 /** Reads and writes [AppSettings] (SharedPreferences "settings"); the app follows [state]. */
+/**
+ * The settings, observed: a composable that reads them this way is drawn again when they change
+ * (Audit stage 2: a `SettingsStore.state.value` read in composition kept the old mode or note names
+ * on the screen shown until something else redrew it).
+ */
+@androidx.compose.runtime.Composable
+fun observedSettings(): AppSettings = SettingsStore.state.collectAsState().value
+
 object SettingsStore {
     private const val PREFS = "settings"
     private val _state = MutableStateFlow(AppSettings())
@@ -104,11 +122,15 @@ object SettingsStore {
             keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
             language = Lang.of(p.getString("language", d.language.code)),
             liveBeatHaptics = p.getBoolean("liveBeatHaptics", d.liveBeatHaptics),
+            introSound = p.getBoolean("introSound", d.introSound),
             favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
             simpleMode = p.getBoolean("simpleMode", d.simpleMode),
+            monitorVoice = p.getBoolean("monitorVoice", d.monitorVoice),
+            retoursMode = p.getBoolean("retoursMode", d.retoursMode),
         )
         I18n.lang = _state.value.language
         I18n.everyday = _state.value.simpleMode
+        com.pocketstudio.app.retours.Retours.active = _state.value.retoursMode
         _favouriteFx.value = _state.value.favouriteFx
         loaded = true
         return _state.value
@@ -118,6 +140,7 @@ object SettingsStore {
         val s = transform(load(context))
         I18n.lang = s.language
         I18n.everyday = s.simpleMode
+        com.pocketstudio.app.retours.Retours.active = s.retoursMode
         _state.value = s
         _favouriteFx.value = s.favouriteFx
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -134,10 +157,24 @@ object SettingsStore {
             .putString("keyLayout", s.keyLayout.name)
             .putString("language", s.language.code)
             .putBoolean("liveBeatHaptics", s.liveBeatHaptics)
+            .putBoolean("introSound", s.introSound)
             // A copy: SharedPreferences must not keep the set it is given.
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .putBoolean("simpleMode", s.simpleMode)
+            .putBoolean("monitorVoice", s.monitorVoice)
+            .putBoolean("retoursMode", s.retoursMode)
             .apply()
+    }
+
+    /**
+     * The first start on this phone: the interface takes the phone's language when the app has
+     * it (French on a French phone, Dutch on a Belgian Dutch one), English otherwise, with the
+     * notes named the way that language does. Once chosen (or on any later start) nothing changes.
+     */
+    fun adoptPhoneLanguage(context: Context, locale: java.util.Locale) {
+        if (context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).contains("language")) return
+        val lang = Lang.forLocale(locale)
+        update(context) { it.copy(language = lang, englishNotes = !lang.solfege) }
     }
 
     /** Ready-made effect [id] starred, or no longer. */

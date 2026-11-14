@@ -1,0 +1,6 @@
+Écran 9 (588x1278)
+texte « Renommer » @ 178,507
+champ « Nom du projet 12/40 » contenu « Mon projet 1 » @ 294,620
+bouton « Effacer » @ 468,611
+bouton « Annuler » @ 346,758
+bouton « OK » @ 460,758

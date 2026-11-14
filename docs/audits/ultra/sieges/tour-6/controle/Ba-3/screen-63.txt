@@ -1,0 +1,14 @@
+Écran 63 (588x1278)
+texte « BenStudio » @ 156,72
+texte « ¿Qué quieres hacer? » @ 236,132
+bouton ✓ « Continuar Simple Remix 1 comp. · 0:02 · 1 parte Guardado ahora mismo » → @ 294,294
+bouton (étincelles) « Nueva canción Un estilo con un toque, o “Hazme un tema”. » → @ 294,499
+bouton (dossier ouvert) « Mis proyectos Abrir otra canción, copiarla o renombrarla. » → @ 294,664
+bouton (quatre vagues) « Remix Separación de pistas: batería, bajo, voz y el resto. » → @ 294,829
+bouton (grille de pads) « Pad Live NUEVO Pads listos para tocar, tus sonidos, efectos live. Suena enseguida. » → @ 294,1009
+bouton « Retos Escucha un ritmo, repítelo en los pads: gana estrellas. » ★ ★ ★ → [coupé] @ 294,1120
+bouton « ↓ 4 más » @ 496,1164
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

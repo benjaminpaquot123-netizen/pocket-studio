@@ -1,0 +1,158 @@
+#0 SIEGE lang=fr device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=5.0 simule_s=2.4 jvm_s=12.0 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE b9bc9a812e | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 450 459
+#1 DOIGT welcome_guided « Fais-moi un morceau »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE c7fe24221f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 229 380
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE c52520b7bd | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 450 606
+#3 DOIGT wizard_family_House « House »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0033bbd5af | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle. » ellipsized (« … »)
+#4 > touche 450 753
+#4 DOIGT wizard_style_house « House »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 2aff8f1093 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 478 847
+#5 DOIGT wizard_style_play_house «  Créer et écouter »
+#6 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 5384e5ef77 | project=p-72b012ce no tuto
+#6 SON Son : le morceau joue (partie « F »).
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 > touche 822 378
+#6 DOIGT simple_volume_drums
+#7 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 2d6ba798e3 | project=p-72b012ce no tuto
+#7 SON Son : le morceau joue (partie « F »).
+#7 LAYOUT OVERLAP « Batterie » over the touchable « Fermer la feuille » (92 x 32 dp)
+#7 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (65 x 27 dp)
+#7 LAYOUT OVERLAP « Volume » over the touchable « Fermer la feuille » (70 x 31 dp)
+#7 LAYOUT OVERLAP « Normal » over the touchable « Fermer la feuille » (65 x 23 dp)
+#7 LAYOUT OVERLAP « Écouter seule » over the touchable « Fermer la feuille » (126 x 27 dp)
+#7 LAYOUT OVERLAP « Ses sons, un par un » over the touchable « Fermer la feuille » (176 x 27 dp)
+#7 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Fermer la feuille » (145 x 31 dp)
+#7 LAYOUT OVERLAP « Écouter seul » over the touchable « Fermer la feuille » (115 x 27 dp)
+#7 LAYOUT OVERLAP « Claquement de mains » over the touchable « Fermer la feuille » (203 x 31 dp)
+#7 LAYOUT OVERLAP « Charley » over the touchable « Fermer la feuille » (73 x 31 dp)
+#7 LAYOUT OVERLAP « Charley ouvert » over the touchable « Fermer la feuille » (139 x 31 dp)
+#7 LAYOUT OVERLAP « Crash » over the touchable « Fermer la feuille » (56 x 31 dp)
+#7 LAYOUT OVERLAP « Tom grave » over the touchable « Fermer la feuille » (98 x 31 dp)
+#7 LAYOUT OVERLAP « Tom aigu » over the touchable « Fermer la feuille » (86 x 31 dp)
+#7 LAYOUT OVERLAP « Rim » over the touchable « Fermer la feuille » (35 x 31 dp)
+#7 LAYOUT OVERLAP « Maracas » over the touchable « Fermer la feuille » (82 x 31 dp)
+#7 LAYOUT OVERLAP «   Changer le son » over the touchable « Fermer la feuille » (147 x 27 dp)
+#7 LAYOUT CONTRAST « Écouter seule » 1.79:1 (needs 3.0:1, 14 sp)
+#7 LAYOUT CONTRAST « Charley ouvert » 3.91:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Crash » 4.02:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Tom grave » 4.12:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Tom aigu » 3.40:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Rim » 3.22:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Écouter seul » 2.15:1 (needs 3.0:1, 14 sp)
+#7 > touche 746 654
+#7 DOIGT simple_pad_alone_0 « Écouter « Grosse caisse 1 » seul, en bou »
+#8 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 837c47fe20 | project=p-72b012ce no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT OVERLAP « Arrêter » over the touchable « Fermer la feuille » (66 x 27 dp)
+#8 > touche 350 498
+#8 DOIGT simple_track_mute « Son de Batterie »
+#9 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 15d8be4dd6 | project=p-72b012ce no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 > touche 350 498
+#9 DOIGT simple_track_mute « Son de Batterie »
+#10 ROUTE dialogue:simple_track_sheet | MODE simple | EMPREINTE 837c47fe20 | project=p-72b012ce no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > touche 808 256
+#10 DOIGT dans:simple_track_sheet « Fermer »
+#11 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE f2c4ac605d | project=p-72b012ce no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 LAYOUT CUT « Sauvegardé » lines cut (taller than its box)
+#11 LAYOUT CONTRAST « POUR COMMENCER » 4.37:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « ↗ » 3.39:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Le son de la mélodie » 3.91:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Une autre batterie » 3.97:1 (needs 4.5:1, 14 sp)
+#11 > touche 268 1389
+#11 DOIGT tab_simple_Rythme « Rythme »
+#12 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 22f22c373f | project=p-72b012ce no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 > touche 192 1065
+#12 DOIGT step_1 « Pas 2 »
+#13 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7339ea8406 | project=p-72b012ce no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 294 1065
+#13 DOIGT step_18 « Pas 3 »
+#14 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f9b7a7d9c4 | project=p-72b012ce no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 > touche 543 980
+#14 DOIGT dans:drum_pages « Suivre »
+#15 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b2d020f128 | project=p-72b012ce no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 LAYOUT CONTRAST « Suivre » 4.21:1 (needs 4.5:1, 14 sp)
+#15 > touche 187 980
+#15 DOIGT drum_page_0 « 1 »
+#16 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE e933ea1cdb | project=p-72b012ce no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 > touche 633 1389
+#16 DOIGT tab_simple_Mix « Mix »
+#17 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE f1fd2a13ce | project=p-72b012ce no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 LAYOUT CUT « Batterie ▸ » a word split over two lines
+#17 LAYOUT CUT « Mélodie » a word split over two lines
+#17 LAYOUT CUT « Souffle montant » ellipsized (« … »)
+#17 > touche 815 1389
+#17 DOIGT tab_simple_Envoyer « Partager »
+#18 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 3364632b5a | project=p-72b012ce no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 > touche 450 958
+#18 DOIGT share_go «   Partager »
+#19 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 16c3bf5da9 | project=p-72b012ce no tuto
+#19 SON Son : la musique du projet joue en boucle ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#19 > attends 20
+#19 PARTAGE House-morceau-20261112-203953.m4a
+#20 ROUTE dialogue:« Partager mon morceau · House-m » | MODE simple | EMPREINTE 99676e2834 | project=p-72b012ce no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 450 952
+#20 DOIGT vue « Files »
+#21 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 6f60d805a0 | project=p-72b012ce no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 LAYOUT CONTRAST « Fichier M4A : léger, lu par tous les appareils. » 4.20:1 (needs 4.5:1, 13 sp)
+#21 > touche 790 936
+#21 DOIGT share_bilan_ok « OK »
+#22 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 5d67354301 | project=p-72b012ce no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > touche 606 42
+#22 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#23 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 594f76d20d | project=p-72b012ce no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 LAYOUT CONTRAST « Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » 4.20:1 (needs 4.5:1, 16 sp)
+#23 LAYOUT CONTRAST « Fermer » 1.39:1 (needs 4.5:1, 14 sp)
+#23 > touche 450 908
+#23 DOIGT mode_card_pro « Pro »
+#24 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE e838656800 | project=p-72b012ce no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
+#24 > touche 451 1389
+#24 DOIGT tab_Mix « Mix »
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4cd2e21bc3 | project=p-72b012ce no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > glisse 450 300 450 1100
+#25 DOIGT rien (texte « Le volume des morceaux de ce style (−8 L »)
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2718b2e19b | project=p-72b012ce no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 633 1389
+#26 DOIGT tab_Live « Live »
+#27 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 0db144df7a | project=p-72b012ce no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 LAYOUT CONTRAST « Nouvelle version » 3.34:1 (needs 4.5:1, 13 sp)
+#27 > touche 268 1389
+#27 DOIGT tab_Sons « Sons »
+#28 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b160f43080 | project=p-72b012ce no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CUT « Sauvegardé » wider than its box (by 17.3 dp)
+#28 LAYOUT OVERLAP « Charley ouvert » over « D 30 » (4 x 2 dp)
+#28 > fin
+#28 FIN : fin

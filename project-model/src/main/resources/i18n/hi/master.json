@@ -1,0 +1,19 @@
+{
+  "Désactivée": "ऑफ़",
+  "Auto (style)": "ऑटो (स्टाइल)",
+  "Club": "क्लब",
+  "Streaming": "स्ट्रीमिंग",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "अभी %s · 3 s में %s · ▶ से अब तक %s LUFS",
+  "Volume visé": "टारगेट लाउडनेस",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "लाउडनेस वही रहती है जो तुम सेट करते हो; आउटपुट सिर्फ़ डिस्टॉर्शन से बचाया जाता है।",
+  "Gain ajouté pour la cible : %s dB": "टारगेट के लिए जोड़ा गया Gain: %s dB",
+  "%d min %d s": "%d min %d s",
+  "%d s": "%d s",
+  "44,1 kHz": "44.1 kHz",
+  "16 bits": "16 bits",
+  "Volume : —": "वॉल्यूम: —",
+  "Volume %1$s · %2$s": "वॉल्यूम %1$s · %2$s",
+  "Détails": "डिटेल्स",
+  "Masquer les détails": "डिटेल्स छिपाओ"
+}

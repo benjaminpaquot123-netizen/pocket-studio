@@ -1,0 +1,53 @@
+Écran 23 (616x1371)
+touchable « Demo · Acid house Salvo » (nom « Meus projetos ») @ 146,42
+bouton « Simples » (nom « Modo Simples. Toque para mudar de modo. ») @ 337,42
+bouton « Gravar: microfone, teclado ou pads » @ 427,42
+bouton « Parar » @ 499,42
+bouton « Mais opções » @ 571,42
+bouton « 126  Andamento » (nom « Tempo: 126 batidas por minuto ») @ 106,114
+bouton « B compasso 3/7 » @ 310,114
+interrupteur « ? » (nom « Identificar a tela ») [non coché] @ 571,114
+bouton « ▶ Parte em loop » @ 416,192
+texte « Mix » @ 48,192
+texte «  · Demo · Acid house » @ 181,192
+bouton « ↺ Tudo a zero » @ 113,273
+texte « Sua vez: aumente o que precisa ser ouvido, abaixe o que atrapalha. Toque ▶ para ouvir uma faixa sozinha. » @ 311,363
+bouton « Bateria ▸ » [état « fechado »] @ 75,456
+curseur « Volume de Bateria » [état « +0,0 dB », à 80 %] @ 84,633
+texte « +0,0 dB » @ 84,790
+interrupteur « Som de Bateria » [coché, état « ligado »] @ 55,850
+bouton « Ouvir “Bateria” sozinho, em loop » @ 109,840
+texte « Acid 303 » @ 216,444
+curseur « Volume de Acid 303 » [état « +0,0 dB », à 80 %] @ 216,610
+texte « +0,0 dB » @ 216,767
+interrupteur « Som de Acid 303 » [coché, état « ligado »] @ 190,827
+bouton « Ouvir “Acid 303” sozinho, em loop » @ 241,817
+texte « Synth » @ 339,444
+curseur « Volume de Synth » [état « +0,0 dB », à 80 %] @ 339,610
+texte « +0,0 dB » @ 339,767
+interrupteur « Som de Synth » [coché, état « ligado »] @ 313,827
+bouton « Ouvir “Synth” sozinho, em loop » @ 364,817
+texte « Áudio 1 » @ 462,444
+curseur « Volume de Áudio 1 » [état « +0,0 dB », à 80 %] @ 462,610
+texte « +0,0 dB » @ 462,767
+interrupteur « Som de Áudio 1 » [coché, état « ligado »] @ 436,827
+bouton « Ouvir “Áudio 1” sozinho, em loop » @ 487,817
+texte « Saída » @ 581,444
+curseur « Volume de saída » [état « −6,0 dB », à 60 %] @ 570,610
+texte « Bom » @ 582,787
+  → la suite sur le côté (glisse pour la voir)
+texte « Nenhuma dica por enquanto: confie no seu ouvido. » @ 287,945
+bouton « Guia  · A gente tira para aumentar a vontade 50 % » [état « recolhido »] @ 308,1077
+bouton « Parar » @ 231,1152
+bouton « Desfazer » @ 99,1152
+bouton « 126 Andamento » (nom « Tempo: 126 batidas por minuto ») @ 372,1152
+bouton « Mais » (nom « Mais opções ») @ 517,1152
+onglet « Minha música » @ 56,1251
+onglet « Ritmo » @ 181,1251
+onglet « Teclado » @ 307,1251
+onglet « Mix » [sélectionné] @ 433,1251
+onglet « Enviar » @ 559,1251
+touchable « ●  REC » (nom « Gravar a tela com som ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escrever uma nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentários ») @ 568,1341
+texte « Modo comentários » @ 176,1341

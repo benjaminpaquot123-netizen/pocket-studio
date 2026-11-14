@@ -1,0 +1,4 @@
+Écran 70 (588x1278)
+texte « Target loudness » @ 175,453
+texte « The target loudness, in LUFS: closer to 0 is louder. One target per project, the same in Mix and when you share. Auto (−9 LUFS, your style's loudness) and Club (−8 LUFS) are measured on the loudest passage; Streaming (−14 LUFS, Spotify and YouTube), Apple Music (−16) and Free over the whole song. If the sound would get crushed, the app stops before and tells you. » @ 294,621
+bouton « Got it » @ 506,813

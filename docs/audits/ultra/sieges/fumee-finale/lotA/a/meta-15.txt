@@ -1,0 +1,2 @@
+route=dialogue:share_bilan
+nouvelle=1

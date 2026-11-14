@@ -1,0 +1,15 @@
+{
+  "Un bout": "1パーツ",
+  "Début du bout": "パーツの開始",
+  "Fin du bout": "パーツの終了",
+  "Avancer d'un temps": "1拍あとへ",
+  "Reculer d'un temps": "1拍まえへ",
+  "Avancer un peu": "少しあとへ",
+  "Reculer un peu": "少しまえへ",
+  "Écouter le bout": "パーツを試聴",
+  "Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches.": "カット：「1パーツ」（最初はこれ）は、ずらせる2本のバー、開始と終了。そのあいだがそのまま送られます。フレーズ、トランジェント、小節はトラックをたくさんのパーツに切ります。マグネット：バーとカットが拍や小節に吸い付きます。「フリー」ならタッチした位置のままです。",
+  "Début ici": "ここを始点に",
+  "Fin ici": "ここを終点に",
+  "Écouter depuis la ligne orange": "オレンジの線から聴く",
+  "Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts.": "始点と終点のバーをスライドするか、カーブに触れて「ここを始点に」「ここを終点に」を押します。マグネットがルーラーの拍に合わせます。大きな▶はオレンジの線からトラックを再生し、「この部分を聴く」はその部分だけを再生。あとは送るだけ。カット › フレーズ、アタック、小節：たくさんの部分に。"
+}

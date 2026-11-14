@@ -1,0 +1,57 @@
+Écran 191 (588x1278)
+icône (dossier ouvert) ✓ « マイソング 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « ドロップ 小節 5/8 » ▾ @ 237,114
+bouton « ? » @ 543,114
+bouton « 曲のコード B · イントロ Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm C · イントロ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ D · ドロップ Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ E · ブレイク Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ F · ビルドアップ Fm G · ドロップ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ …ほか 1 パート タップで曲全体のコードを変更。 » [coupé] @ 294,162
+icône ▶ « B · イントロ 16 小節 » @ 186,234
+icône − [désactivé] @ 366,234
+icône + [désactivé] @ 438,234
+icône ⋮ @ 510,234
+icône ▶ « C · イントロ 2 16 小節 » @ 186,330
+icône − [désactivé] @ 366,330
+icône + [désactivé] @ 438,330
+icône ⋮ @ 510,330
+icône ▶ « D · ドロップ 32 小節 » @ 186,426
+icône − [désactivé] @ 366,426
+icône + [désactivé] @ 438,426
+icône ⋮ @ 510,426
+icône ▶ « E · ブレイク 12 小節 » @ 186,522
+icône − [désactivé] @ 366,522
+icône + [désactivé] @ 438,522
+icône ⋮ @ 510,522
+icône ▶ « F · ビルドアップ 4 小節 » @ 186,618
+icône − [désactivé] @ 366,618
+icône + [désactivé] @ 438,618
+icône ⋮ @ 510,618
+icône ▶ « G · ドロップ 2 32 小節 » @ 186,714
+icône − [désactivé] @ 366,714
+icône + [désactivé] @ 438,714
+icône ⋮ @ 510,714
+icône ▶ « H · エンディング 16 小節 » @ 186,810
+icône − [désactivé] @ 366,810
+icône + [désactivé] @ 438,810
+icône ⋮ @ 510,810
+texte « 最後に追加： » @ 105,879
+bouton « + A · グルーヴ » [coupé] @ 147,933
+bouton « + B · イントロ » [coupé] @ 365,933
+texte « チュートリアルを再開 » @ 147,990
+texte « チュートリアルをやり直す » @ 441,990
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » [sélectionné] @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

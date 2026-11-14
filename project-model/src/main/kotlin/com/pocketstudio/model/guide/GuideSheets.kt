@@ -66,6 +66,32 @@ data class SheetOften(val preset: String?, val onceForSong: Boolean, val lanes: 
 data class SheetLane(val what: String, val shape: CurveShape.Kind, val sections: List<String>)
 
 object GuideSheets {
+    /**
+     * Why [ins] is on a track of [role]: the style's words ([GuideParcours.why]), unless they could name a setting
+     * the effect does not have. Audit ultra round 2, n° 25 (seat B c): « Un passe-haut vers 80 Hz » was said over a
+     * low-pass at 364 Hz: a filter is said as it is set (its kind and its cutoff); an EQ whose style words give
+     * figures, by its own band.
+     */
+    fun effectWhy(parcours: GuideParcours, role: String, ins: com.pocketstudio.model.Insert): String {
+        val why = parcours.why(role, ins.effect)
+        val type = ins.effect
+        fun p(i: Int) = ins.params.getOrElse(i) { type.defaults.getOrElse(i) { 0f } }
+        return when (type) {
+            EffectType.FILTER -> {
+                val hz = type.params[0].format(p(0))
+                when ((p(2) * 3).toInt().coerceIn(0, 2)) {
+                    0 -> com.pocketstudio.model.i18n.tr("Un passe-bas à %s : il garde le grave et adoucit l'aigu.", hz)
+                    1 -> com.pocketstudio.model.i18n.tr("Un passe-bande autour de %s : il ne garde que cette zone du son.", hz)
+                    else -> com.pocketstudio.model.i18n.tr("Un passe-haut à %s : il enlève le grave en dessous.", hz)
+                }
+            }
+            EffectType.PARAM_EQ -> if (why.any(Char::isDigit)) {
+                com.pocketstudio.model.i18n.tr("Un égaliseur : %1\$s vers %2\$s.", type.params[1].format(p(1)), type.params[0].format(p(0)))
+            } else why
+            else -> why
+        }
+    }
+
     fun of(p: Project, facts: GuideFacts, parcours: GuideParcours, simple: Boolean): List<GuideSheet> {
         val song = facts.song
         return song.tracks.filter { song.plays(it.key) || it.key.startsWith("inst:") }.map { t -> sheet(p, facts, parcours, t, simple) }
@@ -79,7 +105,7 @@ object GuideSheets {
             if (ins.effect == EffectType.NONE) return@mapIndexedNotNull null
             val param = ins.effect.params.firstOrNull()
             SheetEffect(
-                slot, ins.effect, parcours.why(t.role, ins.effect), param?.label.orEmpty(), param?.format?.invoke(ins.params.getOrElse(0) { 0f }).orEmpty(),
+                slot, ins.effect, effectWhy(parcours, t.role, ins), param?.label.orEmpty(), param?.format?.invoke(ins.params.getOrElse(0) { 0f }).orEmpty(),
                 ins.bypass, ins.scenes == null,
             )
         }
@@ -110,7 +136,7 @@ object GuideSheets {
         t.key.startsWith("pad:") -> t.key.removePrefix("pad:").toInt().let { lane ->
             p.drums.lanes.getOrNull(lane)?.sample?.name?.let(com.pocketstudio.model.DefaultNames::shownSample) ?: com.pocketstudio.model.DefaultNames.shown(t.name)
         }
-        t.key == GuideTrack.ACID -> "TB-303"
+        t.key == GuideTrack.ACID -> com.pocketstudio.model.DefaultNames.ACID
         else -> com.pocketstudio.model.DefaultNames.shown(t.name)
     }
 

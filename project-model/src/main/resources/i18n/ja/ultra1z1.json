@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "タッチしたパッドの音が置き換わります(戻る矢印で元に戻せます)。",
+  "Découper ce que je veux": "好きなところを切り出す",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "各トラックから部分を選んで、パッド、Live、またはトラックに置こう。",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "アプリは曲を4つのトラック(ドラム、ベース、ボーカル、その他)に分けます。曲の下の「好きなところを切り出す」で部分を選び、パッドやLive、トラックに置こう。または Live の Remix マスでフレーズを鳴らそう。",
+  "Tes chansons séparées": "分離した曲",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "そのトラック(ボーカル、ドラム、ベース、その他)をパッド用に切り出せます。「保存」でここにしまえます。",
+  "Découper « %s »": "「%s」を切り出す",
+  "À télécharger pour « %s » :": "「%s」でダウンロードできるもの:",
+  "Rythme · coups : %1$d · réussis : %2$d": "リズム · 打数: %1$d · 成功: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "リズム · 打数: %1$d · 叩いた数: %2$d",
+  "Rythme · coups : %d": "リズム · 打数: %d",
+  "Ton record : %d sur 3": "自己ベスト: 3つ中 %d",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · 星: 3つ中 %2$d",
+  "en cours": "実行中"
+}

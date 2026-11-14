@@ -1,0 +1,20 @@
+Écran 12 (588x1278)
+texte « Więcej opcji » @ 59,13
+texte « Moje projekty » @ 77,42
+texte « Stop » @ 471,56
+texte « Nagraj » @ 399,99
+texte « Tempo » @ 84,171
+texte « Graj od części » @ 251,168
+texte « Zmień dźwięk » @ 166,284
+texte « Przewodnik: na jakim etapie jest twój utwór » @ 297,617
+touchable « Ukryj podpisy » @ 196,968
+touchable « 🐞 Zgłoś błąd » @ 394,968
+texte « Części i ścieżki » @ 85,1076
+texte « Graj, nagrywaj » @ 294,1076
+texte « Udostępnij » @ 524,1076
+texte « Perkusja » @ 174,1196
+texte « Głośności » @ 414,1196
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

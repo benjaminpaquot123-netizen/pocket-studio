@@ -1,0 +1,27 @@
+Écran 203 (588x1278)
+texte « Changer le son » @ 144,35
+icône ▶ @ 474,48
+icône ✕ @ 546,48
+texte « Pour le pad 13 (Cymbale) » @ 140,69
+onglet ◎ « Grosses caisses » @ 138,129
+onglet ○ « Caisses claires » @ 380,129
+onglet (main) « Claquements de mains » [coupé] @ 536,129
+titre « SONS » [état « Déplié »] @ 94,216
+champ (loupe) « Chercher un son (caisse, conga, sirène…) » contenu «  » @ 294,306
+bouton (neuf points) « Sons intégrés 2 sons » › @ 294,420
+bouton (neuf points) « Autres sons du kit 14 sons » › @ 294,516
+bouton (cotillons) « Fête 22 sons » › @ 294,612
+texte « Touche ☆ sur un son pour le retrouver dans « Favoris ». » @ 294,693
+texte « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad 13 (Cymbale). » @ 294,759
+titre « PACKS DE SONS » [état « Déplié »] @ 171,873
+bouton « ? » @ 278,873
+texte « À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. » @ 294,934
+bouton (nuage et flèche) «  Tout télécharger (68 packs, 288,4 Mo) » @ 294,1015
+texte « 808 modernes » @ 125,1092
+bouton « Télécharger » @ 448,1105
+texte « 72 sons · 2 Mo » @ 108,1123
+texte « Acid house » @ 106,1176
+bouton « Télécharger » @ 448,1189
+texte « 116 sons · 2 Mo » @ 111,1207
+texte « Acid techno » @ 110,1260
+bouton « Télécharger » [coupé] @ 448,1260

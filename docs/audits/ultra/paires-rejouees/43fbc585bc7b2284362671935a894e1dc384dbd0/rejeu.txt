@@ -1,0 +1,4 @@
+rouge: a4b8f58f41a34fd4f457a870da4b445f6deda408
+test: ToutTesterTest#aSteadySongIsHeardSecondBySecondWithoutAlert
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *ToutTesterTest (rc=1 316s ; rc=0 526s)
+aussi : les 7 autres cas de ToutTesterTest rouges sur le rouge (stubs neutres) et verts sur le vert, sauf theRunPlaysEveryStyle… vert dans les deux (rouge.xml, vert.xml)

@@ -1,0 +1,17 @@
+siege	id	promesse	ecran	tenue	pourquoi	contredite
+A/a	t5-Aa-1	« मेरी मेलोडी रिकॉर्ड करो » / « पार्ट: A · इंट्रो »	17	oui	la prise (« तुम्हारा टेक: 3 नोट्स ») reste dans la partie A · इंट्रो affichée, pas dans une autre partie	
+A/a	t5-Aa-2	« Allow BenStudio to send you notifications? »	16	oui	la demande n'apparaît qu'après « रोको » (fin de prise, geste #15), pas pendant	
+A/a	t5-Aa-3	« मेलोडी Marimba » / « मेरी मेलोडी FM पियानो »	12	non	j'ai choisi Marimba pour « मेलोडी », mais l'enregistrement part sur une piste « मेरी मेलोडी » en FM पियानो	
+A/a	t5-Aa-4	« गाइड · Kick (“बूम”) »	17	non	en Simple restent des mots anglais : Kick, Solo, REC, Modal, 6-op FM, Snare	
+A/b	t5-Ad-1	全部止める / 1 行目を停止	7	non	« 全部止める » (et « 1 行目を停止 », écran 17) coupent le son mais la prise continue de compter (5 → 8 小節 en silence), revu écran 27	
+A/b	t5-Ad-2	1 行目を小節頭でスタート	14	oui	rien ne jouait, la ligne 1 (B1-B3) est partie seule en boucle	
+A/b	t5-Ad-3	Pad Live	1	oui	à l'ouverture « rien ne joue » jusqu'à mon premier toucher	
+A/b	t5-Ad-4	元に戻す	11	non	un toucher sur « 元に戻す » efface la prise posée sur le pad sans aucun avertissement, revu écran 31	
+A/c	t5-Cd-1	Envoyer le projet Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. / Autres exports Piste par piste, MIDI, FLAC… dans Mix	16	oui	le .zip part depuis « Envoyer le projet » (écran 21), « Importer un projet (.zip) » est bien dans Mes projets (écran 27), le MIDI est dans Mix (sous « Avancé », écran 16-17)	
+A/c	t5-Cd-2	Mes exports : retrouver et renvoyer un fichier	15	pas	bouton vu sous l'export dans Mix, mais pas ouvert : budget de gestes épuisé après un détour (Défis), je ne l'ai pas retrouvé en redescendant dans Mix	
+A/c	t5-Cd-3	Cet appareil ne gère pas le MIDI. / Aucun contrôleur branché. Branche ton clavier en USB : il est reconnu tout seul.	25	non	les deux phrases sont sur la même page MIDI, l'une juste au-dessus de l'autre, et se contredisent	
+A/d	t5-Ec-1	리믹스 · 보컬 (1/4) … Ma-chanson-préférée-04-리믹스-나머지-20261108-145257.wav	44	oui	« 트랙별로 » sur le remix a donné 4 fichiers (보컬, 드럼, 베이스, 나머지), les pistes vides sont annoncées sautées	
+A/d	t5-Ec-2	뮤트되어 파일에서 빠져요: 보컬 (Ma chanson préférée).	24	oui	après avoir coupé la voix du remix, le bilan « 준비 » le dit et propose « 모두 다시 듣기 », qui remet « 준비 완료 »	
+A/d	t5-Ec-3	-	46	pas	aucun bouton « 2개 파일 공유 » vu (ni après 2 exports, ni dans 내 내보내기, l'appui long ne sélectionne rien)	
+A/d	t5-Ec-4	내-최애곡-리믹스-곡-스트리밍-20261108-145132.wav	17	oui	nom coréen tapé conservé tel quel dans le fichier, le bilan et 내 내보내기	
+A/d	t5-Ec-5	프로젝트 이름은 “Ma chanson préférée” 그대로예요.	19	oui	après l'export le projet s'appelle toujours « Ma chanson préférée »	

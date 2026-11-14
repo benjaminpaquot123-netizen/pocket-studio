@@ -1,0 +1,69 @@
+Écran 11 (1920x1200)
+touchable « Mein erster Beat Gespeichert » (nom « Meine Projekte ») @ 738,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 1509,42
+bouton « Rückgängig » @ 1587,42
+bouton « Wiederholen » [désactivé] @ 1659,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 1731,42
+bouton « Spielen » @ 1803,42
+bouton « Meinen Song teilen » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 114,144
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 1875,144
+onglet « Struktur » @ 76,266
+onglet « Sounds » @ 70,378
+onglet « Mix » [sélectionné] @ 60,490
+onglet « Live » @ 60,602
+onglet « Mehr » @ 60,714
+texte « Lautstärken » @ 577,262
+bouton « ? » (nom « Was ist „Mute und Solo“? ») @ 987,262
+texte « Schieb einen Fader für die Lautstärke; tippe auf einen Spurnamen für Effekte und Kurven. » @ 599,348
+bouton « Drums » @ 237,473
+interrupteur « Ton von Drums » [coché, état « an »] @ 210,555
+interrupteur « Spur Drums solo hören » [non coché, état « aus »] @ 264,555
+curseur « Lautstärke von Drums » [état « +0,0 dB », à 80 %] @ 237,726
+texte « +0,0 » @ 237,889
+image « Effekte · 1 » @ 205,944
+texte « 1 » @ 227,944
+image « Was sich auf dieser Spur bewegt » @ 249,944
+texte « 1 » @ 271,944
+bouton « Acid 303 » @ 357,473
+interrupteur « Ton von Acid 303 » [coché, état « an »] @ 330,555
+interrupteur « Spur Acid 303 solo hören » [non coché, état « aus »] @ 384,555
+curseur « Lautstärke von Acid 303 » [état « +0,0 dB », à 80 %] @ 357,726
+texte « +0,0 » @ 357,889
+bouton « Synth » @ 477,473
+interrupteur « Ton von Synth » [coché, état « an »] @ 450,555
+interrupteur « Spur Synth solo hören » [non coché, état « aus »] @ 504,555
+curseur « Lautstärke von Synth » [état « +0,0 dB », à 80 %] @ 477,726
+texte « +0,0 » @ 477,889
+bouton « Remix » @ 597,473
+interrupteur « Ton von Remix » [coché, état « an »] @ 570,555
+interrupteur « Spur Remix solo hören » [non coché, état « aus »] @ 624,555
+curseur « Lautstärke von Remix » [état « +0,0 dB », à 80 %] @ 597,726
+texte « +0,0 » @ 597,889
+texte « Kurven und Effekte » @ 441,1048
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+texte « Dieselbe Kurve bei jedem Loop-Durchlauf (16 Steps). » @ 1473,229
+bouton « Glätten » @ 1590,303
+case « Zeichnen » @ 1195,303
+case « Linie » [sélectionné] @ 1412,303
+bouton « Rauszoomen » [désactivé] @ 1105,385
+bouton « Reinzoomen » @ 1227,385
+texte « ×1 » @ 1166,385
+texte « Linie: Tippe auf den Anfang, dann aufs Ende (oder wisch von einem zum anderen); eine gerade Rampe verbindet sie. » @ 1473,534
+texte « 18,0 kHz » @ 1108,671
+texte « 849 Hz » @ 1108,749
+texte « 40 Hz » @ 1108,827
+texte « Schlag » @ 1108,878
+texte « 1 » @ 1164,878
+texte « 2 » @ 1349,878
+texte « 3 » @ 1531,878
+texte « 4 » @ 1712,878
+bouton « MASTER-AUSGANG » [état « Aufgeklappt »] @ 1309,989
+bouton « ? » (nom « Was ist „Master-Ausgang“? ») @ 1528,989
+texte « Lautstärke: — » @ 1198,1046
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Füg eine Melodie hinzu 21 % » [état « eingeklappt »] @ 960,1104
+texte « Feedback-Modus » @ 780,1170
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 1604,1170
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 1748,1170
+touchable « ⋯ » (nom « Feedback-Modus ») @ 1872,1170

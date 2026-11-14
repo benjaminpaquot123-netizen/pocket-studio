@@ -1,0 +1,9 @@
+lang=ja
+device=phone
+font=100
+mode=simple
+gestes.max=120
+mission=tuto-facile
+rejeu=/tmp/claude-0/-home-user-pocket-studio/0572a75f-9995-5e1d-b63d-56ea7bbc2294/scratchpad/cand-old/t6-da15-ecoute-passee
+rejeu.n=15
+rejeu.attendu=チャプター 1/15 · 完了

@@ -24,7 +24,7 @@ object MidiFile {
 
     /**
      * The project as MIDI: the whole song (scenes chained) when it has one and [song] is set, else
-     * the current scene once. Tracks: the first instrument track (channel 1), Basse acide (2), the
+     * the current scene once. Tracks: the first instrument track (channel 1), Acid 303 (2), the
      * added instrument tracks (3 to 9), Batterie (10).
      */
     fun export(project: Project, song: Boolean = project.song.isNotEmpty()): ByteArray {
@@ -67,6 +67,19 @@ object MidiFile {
         fun swung(notes: List<MidiNote>) = if (late == 0) notes else notes.map { n ->
             if ((n.start / NoteClip.TICKS_PER_STEP) % 2 == 1) n.copy(start = n.start + late) else n
         }
+        // Notes between the sixteenths (triplets, 1/32), as the engine plays them (NoteTrack): an
+        // odd sixteenth starts late and is that much shorter, time inside it squeezed, so a note
+        // never passes the next sixteenth (audit 06). On the grid, the same as swung().
+        fun warp(t: Int): Int {
+            val step = Math.floorDiv(t, NoteClip.TICKS_PER_STEP)
+            val into = Math.floorMod(t, NoteClip.TICKS_PER_STEP)
+            if (step % 2 == 0) return t
+            return step * NoteClip.TICKS_PER_STEP + late + (into * (NoteClip.TICKS_PER_STEP - late) / NoteClip.TICKS_PER_STEP.toDouble()).roundToInt()
+        }
+        fun warped(notes: List<MidiNote>) = if (late == 0) notes else notes.map { n ->
+            val start = warp(n.start)
+            n.copy(start = start, length = (warp(n.start + n.length) - start).coerceAtLeast(1))
+        }
         val tempo = (60_000_000.0 / project.tempoBpm).roundToInt()
         val conductor = Track().apply {
             name(project.name)
@@ -76,11 +89,11 @@ object MidiFile {
         val program = project.instrument?.takeIf { it.bank < 128 }?.program ?: 81  // GM "Lead 2 (sawtooth)"
         val tracks = listOf(
             conductor,
-            noteTrack(project.synthTrackName, 0, program, swung(synth)),
-            noteTrack(tr("Basse acide"), 1, 38, swung(acid)),  // GM "Synth Bass 1"
+            noteTrack(project.synthTrackName, 0, program, warped(synth)),
+            noteTrack(tr("Acid 303"), 1, 38, warped(acid)),  // GM "Synth Bass 1"
         ) + project.tracks.map { t ->
             // Channels 3..9 (index 2..8): never the drums' channel 10.
-            noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, swung(added.getValue(t.id)))
+            noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, warped(added.getValue(t.id)))
         } + noteTrack(tr("Batterie"), DRUM_CHANNEL, null, swung(drums))
         val out = ByteArrayOutputStream()
         out.write("MThd".toByteArray())
@@ -135,7 +148,8 @@ object MidiFile {
     /**
      * The drum hits, rolls as their hits: the step split evenly, each hit 0.85 times softer than the
      * one before, a swung (odd) step shorter by the swing so its roll stays inside it (as the engine
-     * plays them). The swing's delay itself is added later, with every other note's.
+     * plays them); a triplet's hits evenly over its steps ([Hit.span]). The swing's delay itself is
+     * added later, with every other note's.
      */
     private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int, swing: Double, seed: Int = 0): List<MidiNote> {
         val out = ArrayList<MidiNote>()
@@ -145,13 +159,16 @@ object MidiFile {
             drums.lanes.take(PAD_NOTES.size).forEachIndexed { lane, l ->
                 // Phase 37: each pad on its own loop, and a hit with a chance drawn as the engine
                 // draws it, at its place in the song (the file is the song heard).
-                l.hits[drums.laneStep(lane, s)]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.let { hit ->
+                val at = drums.laneStep(lane, s)
+                // A triplet over the end of its pad's loop: only its hits before the end, as the engine plays it (Hit.within).
+                l.hits[at]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.within(at, l.loopSteps(drums.steps))?.let { hit ->
                     val n = hit.repeats.coerceIn(1, DrumPattern.MAX_REPEATS)
-                    val length = step * (if (s % 2 == 1) 1.0 - swing else 1.0)
+                    val span = hit.span.coerceIn(1, Hit.MAX_SPAN)
+                    val length = if (span > 1) step.toDouble() * span else step * (if (s % 2 == 1) 1.0 - swing else 1.0)
                     val every = length / n
                     for (k in 0 until n) {
                         val at = (k * every).toInt()
-                        val next = if (k + 1 < n) ((k + 1) * every).toInt() else step
+                        val next = if (k + 1 < n) ((k + 1) * every).toInt() else (step * span)
                         val v = hit.velocity * 0.85.pow(k).toFloat()
                         out += MidiNote(DRUM_CHANNEL, PAD_NOTES[lane], offset + s * step + at, minOf(step / 2, next - at).coerceAtLeast(1), velocity(v))
                     }

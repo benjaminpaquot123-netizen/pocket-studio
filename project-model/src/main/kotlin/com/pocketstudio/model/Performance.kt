@@ -124,6 +124,8 @@ class PerformanceTake(
 
     val launchCount: Int get() = launches.size
     val gestureCount: Int get() = gestures.size
+    /** The settings the take's gestures moved. */
+    val gestureTargets: Set<AutoTarget> get() = gestures.mapTo(HashSet()) { it.target }
 
     /**
      * The take so far as a journal ([TakeJournal]) of project [projectId]: kept on disk while it
@@ -245,15 +247,20 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
     }
     if (stop > at) stretches += Stretch(at, stop, state)
 
-    // Each column: the scene it plays (-1 stopped); the remix has no scenes: on (the row) or off.
+    // Each column: the scene it plays (-1 stopped); the remix: on (the row) or off, or (lot D2) the
+    // brick whose passage it plays when a passage is in play (its own or the row's).
     fun scenesOf(s: LiveState): Map<String, Int> = columns.associateWith { k ->
         val p = LiveSlots.of(k)?.let { s.slot(it).playing } ?: s.row
+        val row = s.row.coerceIn(0, sceneCount - 1)
         when {
             p < 0 -> -1
-            k == SongPart.REMIX || p >= sceneCount -> s.row.coerceIn(0, sceneCount - 1)
+            p >= sceneCount -> row
+            k == SongPart.REMIX -> if (p != row && (remix.cell(p) != null || remix.cell(row) != null)) p else row
             else -> p
         }
     }
+    // The tracks a part carries per track: its own tracks, and the remix while it plays a passage.
+    fun ownScene(k: String, scene: Int) = k in keys || (k == SongPart.REMIX && remix.cell(scene) != null)
     fun rowOf(s: LiveState) = s.row.coerceIn(0, sceneCount - 1)
     // A track's loop, rounded up to whole bars (the steps it has played only matter that far).
     fun period(key: String, scene: Int): Int = lcm(slotLoopSteps(key, scene).coerceAtLeast(1), bar)
@@ -265,7 +272,7 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         val last = merged.lastOrNull()
         val same = last != null && rowOf(last.state) == rowOf(s.state) && scenesOf(last.state) == scenesOf(s.state) &&
             scenesOf(s.state).all { (k, scene) ->
-                scene < 0 || k !in keys || Math.floorMod(elapsed(last!!.state, k, last.from) + (last.to - last.from), period(k, scene)) ==
+                scene < 0 || !ownScene(k, scene) || Math.floorMod(elapsed(last!!.state, k, last.from) + (last.to - last.from), period(k, scene)) ==
                     Math.floorMod(elapsed(s.state, k, s.from), period(k, scene))
             }
         if (same) merged[merged.lastIndex] = Stretch(last!!.from, s.to, last.state) else merged += s
@@ -280,10 +287,10 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         val row = rowOf(s.state)
         val scenes = scenesOf(s.state)
         val muted = scenes.filterValues { it < 0 }.keys
-        val play = scenes.filter { (k, it) -> k in keys && it >= 0 && it != row }
+        val play = scenes.filter { (k, it) -> (k in keys || k == SongPart.REMIX) && it >= 0 && it != row }
         // Stopped drums too: loop curves count with the drums (stopped, from their stop), so the
         // song's part keeps that count (with the row's loop) rather than starting it over.
-        val from = scenes.filter { (k, it) -> k in keys && (it >= 0 || k == SongPart.DRUMS) }.mapValues { (k, scene) ->
+        val from = scenes.filter { (k, it) -> (k in keys && (it >= 0 || k == SongPart.DRUMS)) || (it >= 0 && ownScene(k, it)) }.mapValues { (k, scene) ->
             Math.floorMod(elapsed(s.state, k, s.from), period(k, if (scene >= 0) scene else row)) / bar
         }.filterValues { it > 0 }
         val length = s.to - s.from
@@ -296,6 +303,22 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         }
         part to s.from
     }
+}
+
+/**
+ * Where « Annuler » of a take written into this project goes back to, [before] being the project
+ * as the take began: its song, curves, scenes and song versions, without the take; but what was
+ * set during the take and is no part of it (tempo, swing, the mixer and its effects, the
+ * pads, the Live settings) stays as it is now. The settings the take's gestures moved
+ * ([gestured]) go back to where they were: the take moved them, the take takes them back.
+ */
+fun Project.takeUndoTarget(before: Project, gestured: Set<AutoTarget>): Project {
+    var back = before.copy(
+        name = name, tempoBpm = tempoBpm, swing = swing, mixer = mixer,
+        live = live, midiMap = midiMap, songLoops = songLoops, loopPart = loopPart, liveQuantum = liveQuantum, liveFx = liveFx,
+    )
+    for (t in gestured) back = back.withSetting(t, before.settingOf(t))
+    return back
 }
 
 /**

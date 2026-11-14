@@ -1,0 +1,9 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+launch
+padlive
+dialogue:padlive_take_sheet
+live_grid
+live_pads_full
+dialogue:projects

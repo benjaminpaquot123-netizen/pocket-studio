@@ -1,0 +1,35 @@
+Écran 35 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 1/4 » (nom « w pętli ») @ 248,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « Wstecz  · Pomoc » (nom « Wstecz ») @ 294,180
+bouton « POMOC » [état « Rozwinięte »] @ 104,276
+bouton « Uczę się Cały utwór robisz sam, krok po kroku: ja tłumaczę i sprawdzam. » @ 294,360
+bouton « Mój pierwszy utwór, z Przewodnikiem » @ 294,462
+bouton « Zobacz znowu przewodnik pierwszych kroków » @ 294,552
+bouton « Otwórz Przewodnik mojego utworu » @ 294,642
+bouton «   Słowa muzyki do posłuchania » @ 294,726
+texte « „?” na końcu paska pod górnym paskiem podpisuje ekran: jedno dotknięcie pokazuje, drugie ukrywa. » @ 294,801
+texte « W całej aplikacji małe „?” obok słowa też je wyjaśnia. » @ 285,853
+texte « Kontynuowanie utworu na innym urządzeniu: „Udostępnij” › „Wyślij projekt” (.zip ze wszystkimi dźwiękami), potem na drugim urządzeniu Moje projekty › „Importuj projekt (.zip)”. » @ 294,913
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « zwinięte »] @ 294,984
+bouton « Cofnij » @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

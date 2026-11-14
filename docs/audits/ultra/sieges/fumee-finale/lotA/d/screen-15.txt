@@ -1,0 +1,9 @@
+Écran 15 (588x1278)
+texte « Fertig » @ 111,238
+texte « Fertig: Lo-Fi-Hip-Hop-song-20261112-043521.m4a, eine Kopie liegt auch in Musik › BenStudio. » @ 294,438
+texte « Dauer: 3 min 3 s » @ 182,610
+texte « Pegel: am Ziel (Auto (Stil)) » @ 270,668
+texte « Keine Übersteuerung. » @ 232,726
+texte « M4A-Datei: leicht, läuft auf jedem Gerät. » @ 294,810
+texte « OK » @ 504,938
+texte « Meine Dateien ansehen » @ 310,1036

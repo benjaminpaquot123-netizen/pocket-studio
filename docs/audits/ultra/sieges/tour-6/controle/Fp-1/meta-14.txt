@@ -1,0 +1,2 @@
+route=dialogue:effects_box_20
+nouvelle=1

@@ -1,0 +1,47 @@
+Écran 6 (1035x1243)
+touchable « House » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 122  Tempo » (nom « Tempo : 122 battements par minute ») @ 98,123
+bouton « Montée mesure 25/96 » @ 315,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+bouton « LE MORCEAU » [état « Déplié »] @ 173,225
+bouton « ? » (nom « Qu'est-ce que « Morceau » ? ») @ 282,225
+texte « Touche une partie : elle joue juste après celle en cours. » @ 263,295
+texte « 96 mesures · 3:09 » @ 263,360
+bouton « Accords du morceau E · Intro 2 La  La  La  La  La  La  La  La A · Intro La  La  La  La  La  La  La  La B · Groove La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi F · Montée La  Ré  Fa♯ m  Mi G · Montée 2 Do♯ m  Fa♯ m  La  Mi C · Drop La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi … et 3 autres parties Touche pour changer les accords de tout le morceau. » @ 263,658
+bouton « E · Intro 2 × 1  ·  8 mes. » @ 155,913
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « MES PISTES » [état « Déplié »] @ 651,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 771,306
+bouton « Batterie Changer le son » @ 708,414
+bouton « Écouter « Batterie » seul, en boucle » @ 882,414
+bouton « Réglages de Batterie : volume, couper » @ 957,414
+bouton « Basse Changer le son » @ 708,524
+bouton « Écouter « Basse » seul, en boucle » @ 882,524
+bouton « Réglages de Basse : volume, couper, supprimer » @ 957,524
+bouton « Piano Changer le son » @ 708,634
+bouton « Écouter « Piano » seul, en boucle » @ 882,634
+bouton « Réglages de Piano : volume, couper, supprimer » @ 957,634
+bouton « Mélodie Changer le son » @ 708,744
+bouton « Écouter « Mélodie » seul, en boucle » @ 882,744
+bouton « Réglages de Mélodie : volume, couper, supprimer » @ 957,744
+bouton « Souffle montant Changer le son » @ 708,854
+bouton « Écouter « Souffle montant » seul, en boucle » @ 882,854
+bouton « Réglages de Souffle montant : volume, couper, supprimer » @ 957,854
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide » [état « ouvert »] @ 517,955
+texte « Le Guide lit ton morceau… » @ 202,1020
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+onglet « Mon morceau » [sélectionné] @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

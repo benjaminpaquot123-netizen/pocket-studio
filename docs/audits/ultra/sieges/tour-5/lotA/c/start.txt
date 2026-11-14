@@ -1,0 +1,7 @@
+lang=fr
+device=phone
+font=100
+theme=night
+gestes.max=80
+mission=libre
+timeout.minutes=30

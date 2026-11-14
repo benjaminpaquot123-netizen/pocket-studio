@@ -1,0 +1,8 @@
+fusion: 0f20a1fefb01ef43b991d0e9ad78d882804b7fd1
+branche: eq/tour-5-restes
+tete: 2f8837441d6581d81d325da0d3dbbabacd86a38b
+relecture: docs/audits/ultra/tour-5-restes-relecture.md
+relu: d8a45e0fc5c23aaee25bd78252e1e922206075bd
+filtres: *SimpleNoDecibelTest *QuickStyleCardTest *ZipSavedLinesTest *ScreenScanTest *SimpleMixTest *I18nCatalogTest *LexiconWordsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

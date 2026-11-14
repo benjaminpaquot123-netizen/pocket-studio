@@ -1,0 +1,55 @@
+Écran 76 (588x1278)
+icône « Techno » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 103,114
+bouton « C » ▾ @ 237,114
+icône ↶ [désactivé] @ 312,114
+bouton ● @ 384,114
+bouton ▶ « cette partie » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 132  BPM » @ 73,186
+icône « Drop mes. 65/176 » ▾ @ 235,186
+bouton (flèches en boucle) [état « désactivé »] @ 462,186
+bouton « ? » @ 543,186
+onglet « Batterie 16 pads » [sélectionné] @ 81,255
+onglet « Acid 303 Ligne de basse » @ 260,255
+onglet « Voix Micro » @ 425,255
+onglet « Remix Séparer » [coupé] @ 533,255
+texte « Partie : C · Drop » @ 101,315
+texte « Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle. » @ 294,357
+bouton « Kick studio FX » @ 84,450
+bouton « Kick 2 » @ 224,450
+bouton « Caisse » @ 364,450
+bouton « Rumble FX » @ 504,450
+bouton « Clap FX » @ 84,540
+bouton « Charley G 30 » @ 224,540
+bouton « Charley ouvert D 30 » @ 364,540
+bouton « Tom grave » @ 504,540
+bouton « Tom médium D 45 » @ 84,630
+bouton « Tom aigu » @ 224,630
+bouton « Rim FX D 50 » @ 364,630
+bouton « Cowbell » @ 504,630
+bouton « Ride D 40 » @ 84,720
+bouton « Shaker G 50 » @ 224,720
+bouton « Conga » @ 364,720
+bouton « Zap » @ 504,720
+bouton « Kit : Perso » ▾ @ 109,804
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 391,804
+bouton ● «  Enregistrer mes pads » @ 128,894
+icône (chronomètre) «  1 » @ 293,894
+bouton (horloge et flèche) «  Garder ce que je viens de jouer » @ 459,894
+bouton (boussole) « Guide  · Change un son 24 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 132 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

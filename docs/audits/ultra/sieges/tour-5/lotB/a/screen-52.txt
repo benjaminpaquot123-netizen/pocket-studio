@@ -1,0 +1,35 @@
+Écran 52 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/1 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+bouton « PAS : BORD DE CAISSE » [état « Déplié »] @ 139,300
+bouton « ? » (nom « Qu'est-ce que « Pas » ? ») @ 214,306
+case « Tous les pads » @ 391,302
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « La basse Chapitre 5/15 · Étape 1/2 · Facile » @ 244,417
+bouton « Chapitres » @ 459,417
+bouton « Replier » @ 531,417
+texte « Écoute la basse avec le kick : elle se glisse entre les coups. » @ 294,618
+texte « • Kick : la grosse caisse, le « boum » grave de la batterie. » @ 294,774
+touchable « ▸ Pourquoi ? » @ 294,859
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Lire la suite » @ 294,858
+bouton «  Écouter l'exemple » @ 294,933
+bouton «  Précédent » @ 156,1022
+bouton « Suivant  » @ 458,1022
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

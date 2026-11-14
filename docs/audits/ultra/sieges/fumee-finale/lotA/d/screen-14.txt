@@ -1,0 +1,7 @@
+Écran 14 (588x1278)
+texte « Meinen Song teilen · Lo-Fi-Hip-Hop-song-20261112-043521.m4a » @ 294,460
+bouton « WhatsApp » @ 294,565
+bouton « Messages » @ 294,637
+bouton « Gmail » @ 294,709
+bouton « Drive » @ 294,781
+bouton « Files » @ 294,853

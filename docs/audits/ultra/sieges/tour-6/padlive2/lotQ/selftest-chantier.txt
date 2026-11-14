@@ -1,0 +1,110 @@
+T4-19 : « corrigé », commit d3eccff introuvable
+T4-01 : « corrigé », commit c423455d introuvable
+T4-17 : « corrigé », commit ffd58ce introuvable
+T5-Cc-27 : « corrigé », commit 0d049be introuvable
+T5-Cd-83 : « corrigé », commit f3c283e introuvable
+T5-Cd-68 : « corrigé », commit f3c283e introuvable
+T5-Cc-41a : « corrigé », commit f3c283e introuvable
+T5-Ec-28 : « corrigé », commit e0be831a introuvable
+T5-Cc-30 : « corrigé », commit 2e6e828 introuvable
+T5-Fa-11 : « corrigé », commit 88e36490 introuvable
+T5-Aa-43 : « corrigé », commit 88e36490 introuvable
+T5-Fc-8 : « corrigé », commit ffd58ce introuvable
+T5-Ec-61 : « corrigé », commit 2e6e828 introuvable
+T5-Ca-32 : « corrigé », commit 0f5efde introuvable
+T5-Ed-40 : « corrigé », commit 9aaaccf8 introuvable
+T5-Ab-27 : « corrigé », commit 87b6693 introuvable
+T5-Ab-27 : « corrigé », commit 2e650ca introuvable
+T5-Ed-11 : « corrigé », commit e6531060 introuvable
+T5-PADRETRIG : « corrigé », commit 16f520d7 introuvable
+T5-AUTO-OPTION : « corrigé », commit a53e385e introuvable
+6dc7b639 « vert: the roll's « Basse en fantôme » chip is seen whole » : vert sans rouge du même test avant lui
+d180a65c « vert: a whole tutorial gets its gesture budget and the launcher outwai » : vert sans rouge du même test avant lui
+29a95549 « vert: tableau-de-bord counts the promises each seat checked alone » : vert sans rouge du même test avant lui
+c3cc0188 « vert: the rumble's pad keeps its name after the tutorial's kit » : vert sans rouge du même test avant lui
+20b4c59c « vert: N18 the track sound button shows a word » : vert sans rouge du même test avant lui
+ba20c4c3 « vert: R19 the track row shows a sign where it goes on off screen » : vert sans rouge du même test avant lui
+1f41ed8c « vert: a stroke cut short is its own undo step, cut by a bar's number » : vert sans rouge du même test avant lui
+085b9847 « vert: U17, « Annuler » of an import started from the home Remix page l » : vert sans rouge du même test avant lui (paire nommée refusée : vert illisible)
+eb2b444f « vert: U27, the Mix keeps the Acid 303's strip during a tutorial, as So » : vert sans rouge du même test avant lui (paire nommée refusée : ligne 13 : 61461e70 n'est pas un commit « rouge: » d'avant ce vert)
+90f3c38e « vert: T13 and N1, no Guide's bar while a tutorial runs or waits; asked » : vert sans rouge du même test avant lui (paire nommée refusée : ligne 7 : d623cc0c n'est pas un commit « rouge: » d'avant ce vert)
+4d88d329 « vert: G1, the Guide's panel folds when the user leaves its screen, say » : vert sans rouge du même test avant lui (paire nommée refusée : ligne 4 : 586c0519 n'est pas un commit « rouge: » d'avant ce vert)
+9f464f78 « vert: U9, the effects box opened from Pad Live is titled « Effets · Pa » : vert sans rouge du même test avant lui (paire nommée refusée : ligne 14 : d2068651 n'est pas un commit « rouge: » d'avant ce vert)
+10a935e8 « vert: one rule for the roll's hint, the bar first, then the rows » : vert sans rouge du même test avant lui
+10da0221 « vert: « Copier » done, the roll goes to the next note to write » : vert sans rouge du même test avant lui
+f786d2c8 « vert: the part made is told by its name, shown or not » : vert sans rouge du même test avant lui
+ce3835b5 « vert: a part that builds up is 4 bars long, a bar for each speed » : vert sans rouge du même test avant lui
+3932c3ff « vert: the song step no longer promises 8 bars a part » : vert sans rouge du même test avant lui
+34cf6f18 « vert: the closed hats' step says which sixteenths (techno, acidcore) » : vert sans rouge du même test avant lui
+16b3766e « vert: the tempo step says the tempo a new project starts at » : vert sans rouge du même test avant lui
+3c44d1b6 « vert: a bar fits the phone's width, and the lowest rows come above the » : vert sans rouge du même test avant lui
+2140ae6f « rouge: the roll's hint leads to the next dotted note, every tutorial s » : rouge sans vert du même test après lui
+1dfac347 « rouge: after « Copier » the roll shows the next note to write (seat H  » : rouge sans vert du même test après lui
+691e9078 « rouge: a part made while the song plays is told with its own bricks (s » : rouge sans vert du même test après lui
+8b592551 « rouge: a part that builds up « mesure après mesure » is 4 bars long » : rouge sans vert du même test après lui
+7c41f6ff « rouge: the song step promises no length the parts do not have » : rouge sans vert du même test après lui
+58b298dd « rouge: a pad said « en doubles croches » accepts every sixteenth (seat » : rouge sans vert du même test après lui
+358f35fb « rouge: the tempo step says the tempo the project has (seats D a, H a) » : rouge sans vert du même test après lui
+ddfda4ca « rouge: on the real roll, following the line reaches every dotted note » : rouge sans vert du même test après lui
+journal, ligne cochée A.4 : paire rouge 004e366 / vert 7f5a0ce : commit introuvable
+journal, ligne cochée A.10 : paire rouge c3eebf7 / vert 7e33ec5 : commit introuvable
+journal, ligne cochée A.12 : paire rouge 03c768c / vert 8180d82 : commit introuvable
+journal, ligne cochée A.4 : paire rouge c39ca77 / vert 3dab50a : commit introuvable
+journal, ligne cochée A.3 : paire rouge 0a4d552 / vert a460613 : commit introuvable
+journal, ligne cochée A.4 : paire rouge 609f50b / vert 01fcb3c : commit introuvable
+journal, ligne cochée A.11 : paire rouge 7e34de9 / vert 1b8dd12 : commit introuvable
+journal, ligne cochée A.14 : paire rouge 5f0c5f8 / vert 12d6cca : commit introuvable
+journal, ligne cochée A.2 : paire rouge 4587080 / vert 7a6864d : commit introuvable
+journal, ligne cochée A.6 : paire rouge 0a38188 / vert f9a7b86 : commit introuvable
+journal, ligne cochée A.9 : paire rouge 0fcb63d / vert 419a5c4 : commit introuvable
+journal, ligne cochée A.7 : paire rouge 49c3325 / vert 2e650ca : commit introuvable
+journal, ligne cochée A.8 : paire rouge c6e9f7e / vert c9bb80d : commit introuvable
+journal, ligne cochée A.15 : paire rouge e3db5e2 / vert 7bfe58b : commit introuvable
+journal, ligne cochée A.13 : paire rouge ec9cc11 / vert dddbb0d : commit introuvable
+journal, ligne cochée A.16 : paire rouge 103f232 / vert 844dbcd : commit introuvable
+journal, ligne cochée A.16 : paire rouge f59af32 / vert 6c2f776 : commit introuvable
+journal, ligne cochée A.16 : paire rouge 0ac27a1 / vert 948d8ad : commit introuvable
+journal, ligne cochée A.18 : paire rouge 043332d / vert 1467e1b : commit introuvable
+journal, ligne cochée A.19 : paire rouge d3868c6 / vert de9d84d : commit introuvable
+journal, ligne cochée A.19 : paire rouge 6a81e3c / vert 81e0c68 : commit introuvable
+journal, ligne cochée A.19 : paire rouge b3be3c1 / vert 894033d : commit introuvable
+journal, ligne cochée A.19 : paire rouge de0df4e / vert ba7e1d3 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 8bd0c866 / vert 7e993b81 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 21c8018 / vert 6b9c72b : commit introuvable
+journal, ligne cochée A.22 : paire rouge 9bfb587 / vert 7539576 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 7ee664e / vert f1da11f : commit introuvable
+journal, ligne cochée A.19 : paire rouge 90da09f8 / vert 68d0adc7 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 34a5af69 / vert 07a79168 : commit introuvable
+journal, ligne cochée A.18 : paire rouge a678a94c / vert e507f9bc : commit introuvable
+journal, ligne cochée A.18 : paire rouge e26fde7e / vert c125176c : commit introuvable
+journal, ligne cochée A.18 : paire rouge 1bb1622f / vert 5e32afae : commit introuvable
+journal, ligne cochée A.19 : paire rouge 1d767cbb / vert 80c637eb : commit introuvable
+journal, ligne cochée A.19 : paire rouge 689872ac / vert f023003d : commit introuvable
+journal, ligne cochée A.19 : paire rouge a989d0b5 / vert 9a94aed0 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 6be9442e / vert 6614d1ba : commit introuvable
+journal, ligne cochée A.23 : paire rouge 95de177 / vert 778c01e : commit introuvable
+journal, ligne cochée A.24 : paire rouge bb09927 / vert c094a6c : commit introuvable
+journal, ligne cochée A.24 : paire rouge 92d65e4 / vert c8bca8a : commit introuvable
+journal, ligne cochée R.8 : paire rouge 19d33b8 / vert f2a0a9a : commit introuvable
+journal, ligne cochée A.23 : paire rouge af6da683 / vert a74b389a : commit introuvable
+journal, ligne cochée A.23 : paire rouge f4d447ea / vert b89017a7 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge ff69cb40 / vert cdab9801 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge 7bb62944 / vert 516c8726 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge d55884fa / vert e7756ba3 : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 510a1e19 / vert 50ba6a28 : commit introuvable
+journal, ligne cochée A.19 : paire rouge a27f5070 / vert 60c6dea6 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 18e455da / vert bf068ce0 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 105236cc / vert 42cd01b5 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 5c743b13 / vert f175438b : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 8db74c19 / vert 727a99f6 : commit introuvable
+journal, ligne cochée 5.10 : paire rouge 96573c2c / vert 395576d2 : commit introuvable
+journal, ligne cochée 5.3 : paire rouge b2de5bc7 / vert 678ce5c3 : commit introuvable
+journal, ligne cochée 5.11 : paire rouge e22c78b6 / vert be759849 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge bf9dbfd3 / vert 28435ec9 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 2cac6138 / vert e7f47614 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge 9f4ac07b / vert 05487030 : commit introuvable
+journal, ligne cochée 6.2 : paire rouge f37a1827 / vert b116d4e0 : commit introuvable
+journal, ligne cochée 6.5 : paire rouge 4423d09f / vert 10db41c8 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge ae1eda78 / vert 88e36490 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 338748e3 / vert a563a6dd : commit introuvable
+chantier : 109 écarts

@@ -1,0 +1,6 @@
+Écran 3 (588x1278)
+texte « Önce ayırma modeli » @ 221,464
+texte « Bir şarkıyı ayırmak için uygulama önce modelini indirir: 174 MB, yalnızca bir kez. » @ 294,576
+texte « Wi-Fi'de değilsin: bu 174 MB mobil verinden gidecek. » @ 294,691
+texte « Sonra » @ 347,804
+bouton « İndir » @ 485,804

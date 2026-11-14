@@ -1,0 +1,63 @@
+Écran 66 (616x1371)
+touchable « Remix Guardado » (nom « Mis proyectos ») @ 128,42
+bouton « Pro » (nom « Modo Pro. Toca para cambiar de modo. ») @ 283,42
+bouton « Deshacer » @ 355,42
+bouton « Grabar: micrófono, teclado o pads » @ 427,42
+bouton « Reproducir » @ 499,42
+bouton « Compartir mi canción » @ 571,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « A comp. 1/20 » @ 228,114
+interrupteur « Bucle » (nom « Repetir la parte en vez de tocar la canción ») [non coché, état « desactivado »] @ 464,114
+interrupteur « ? » (nom « Etiquetar la pantalla ») [non coché] @ 571,114
+onglet « Línea de tiempo » [sélectionné] @ 117,183
+onglet « Partes » @ 278,183
+touchable « Seguir » [sélectionné] @ 413,183
+touchable « Bucle » @ 515,183
+  → la suite sur le côté (glisse pour la voir)
+bouton « Pantalla completa » @ 580,183
+texte « Partes » @ 50,245
+texte « Compases » @ 69,285
+texte « Regla de compases: toca para tocar desde una parte » @ 395,262
+bouton « Batería » @ 62,327
+interrupteur « Sonido de Batería » [coché, état « activado »] @ 56,374
+interrupteur « Escuchar solo la pista Batería » [non coché, état « desactivado »] @ 125,374
+bouton « Sinte » @ 53,419
+interrupteur « Sonido de Sinte » [coché, état « activado »] @ 56,466
+interrupteur « Escuchar solo la pista Sinte » [non coché, état « desactivado »] @ 125,466
+bouton « Voz 1 » @ 53,511
+interrupteur « Sonido de Voz 1 » [coché, état « activado »] @ 56,558
+interrupteur « Escuchar solo la pista Voz 1 » [non coché, état « desactivado »] @ 125,558
+bouton « ▾ Ma chanson préférée canción · 4 pistas » @ 97,606
+interrupteur « Sonido de Ma chanson préférée » [coché, état « activado »] @ 56,653
+interrupteur « Escuchar solo la pista Ma chanson préférée » [non coché, état « desactivado »] @ 125,653
+texte « Voz » @ 61,692
+interrupteur « Sonido de Voz » [coché, état « activado »] @ 71,734
+interrupteur « Escuchar solo la pista Voz » [non coché, état « desactivado »] @ 139,734
+texte « Batería » @ 77,784
+interrupteur « Sonido de Batería » [coché, état « activado »] @ 71,826
+interrupteur « Escuchar solo la pista Batería » [non coché, état « desactivado »] @ 139,826
+texte « Bajo » @ 64,876
+interrupteur « Sonido de Bajo » [coché, état « activado »] @ 71,918
+interrupteur « Escuchar solo la pista Bajo » [non coché, état « desactivado »] @ 139,918
+texte « Resto » @ 71,968
+interrupteur « Sonido de Resto » [coché, état « activado »] @ 71,1010
+interrupteur « Escuchar solo la pista Resto » [non coché, état « desactivado »] @ 139,1010
+texte « Línea de tiempo: 1 parte, 8 pistas » @ 395,670
+bouton « Acercar » @ 562,840
+bouton « Alejar » @ 562,912
+bouton « Ver toda la canción » @ 562,984
+bouton « Guía  · Pon un ritmo 5 % » [état « plegado »] @ 308,1077
+bouton « Reproducir » @ 300,1152
+bouton « Deshacer » @ 77,1152
+bouton « Rehacer » [désactivé] @ 190,1152
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 415,1152
+bouton « Compartir » (nom « Compartir mi canción ») @ 536,1152
+onglet « Estructura » [sélectionné] @ 56,1251
+onglet « Sonidos » @ 181,1251
+onglet « Mix » @ 307,1251
+onglet « Live » @ 433,1251
+onglet « Más » @ 559,1251
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "The touched pad's sound is replaced (the back arrow puts it back).",
+  "Découper ce que je veux": "Cut what I want",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Pick pieces of each track and put them on your pads, in the Live or on a track.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "The app splits a song into 4 tracks (drums, bass, vocals, the rest). Under the song, “Cut what I want”: pick pieces and put them on your pads, your Live or a track. Or play passages in the Live's Remix cells.",
+  "Tes chansons séparées": "Your split songs",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "Their tracks (vocals, drums, bass, the rest) cut into pieces for your pads; “Keep” files them here.",
+  "Découper « %s »": "Cut “%s”",
+  "À télécharger pour « %s » :": "To download for “%s”:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Rhythm · hits: %1$d · right: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Rhythm · hits: %1$d · played: %2$d",
+  "Rythme · coups : %d": "Rhythm · hits: %d",
+  "Ton record : %d sur 3": "Your best: %d of 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · stars: %2$d of 3",
+  "en cours": "on"
+}

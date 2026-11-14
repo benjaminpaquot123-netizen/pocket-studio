@@ -87,7 +87,7 @@ class SonsKeyboardTakeTest {
     /**
      * The emulator's path: the first four keys of the Sons keyboard (C, D, E, F). The song is in F
      * phrygian with its scale locked (the assistant's mood): D and E are dark and silent, C and F
-     * play and are kept. The take's count is said when it ends (■), not while it records.
+     * play and are kept. The take's count is said while it records (round 3, n° 37) and when it ends (■).
      */
     @Test
     fun theFirstFourKeysKeepTheTwoInTheLockedScale() {
@@ -96,7 +96,9 @@ class SonsKeyboardTakeTest {
         val keys = keyTags().take(4)
         assertEquals(listOf("key_60", "key_62", "key_64", "key_65"), keys)
         touch(keys)
-        assertEquals("counted at the end only", 0, h.vm.noteTake.value?.notes)
+        // Round 3 (n° 37): the take says what it has kept so far while it records (« Ta prise : 2 notes »), the dark keys not counted.
+        val inScaleSoFar = keys.map { it.removePrefix("key_").toInt() }.count { p.harmony.inScale(it) }
+        assertEquals("counted as it records, the silent keys left out", inScaleSoFar, h.vm.noteTake.value?.notes)
         tap("record_stop")
         val take = h.vm.noteTake.value
         assertEquals(TakePhase.DONE, take?.phase)

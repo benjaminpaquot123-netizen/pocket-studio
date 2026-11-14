@@ -1,0 +1,54 @@
+Écran 184 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône « イントロ 小節 1/128 » ▾ @ 237,114
+bouton « ? » @ 543,114
+icône « パート：D · ドロップ » ▾ @ 134,180
+texte « シンバル » [coupé] @ 96,223
+bouton « 1 » [état « ヒット、強さ 100 % »] @ 70,299
+bouton [état « 空 »] @ 133,299
+bouton [état « 空 »] @ 197,300
+bouton [état « 空 »] @ 261,300
+bouton « 2 » [état « 空 »] @ 325,300
+bouton [état « 空 »] @ 389,300
+bouton [état « 空 »] @ 453,300
+bouton [état « 空 »] @ 517,300
+bouton « 3 » [coupé, état « 空 »] @ 70,352
+bouton [coupé, état « 空 »] @ 133,352
+bouton [coupé, état « 空 »] @ 197,352
+bouton [coupé, état « 空 »] @ 261,352
+bouton « 4 » [coupé, état « 空 »] @ 325,352
+bouton [coupé, état « 空 »] @ 389,352
+bouton [coupé, état « 空 »] @ 453,352
+bouton [coupé, état « 空 »] @ 517,352
+image (chapeau de diplômé) @ 37,416
+texte « エフェクト チャプター 13/15 · ステップ 2/2 · かんたん » @ 244,416
+icône (liste) @ 459,416
+icône ⌄ @ 531,416
+texte « ドロップを聴こう：リフが少しずつ開き、また閉じる。毛布をはがしてまたかけるみたいに。これがテクノの技。 » @ 294,540
+texte « • ドロップ：曲のいちばんの山場。全部が一気に戻ってくるところ。 » @ 294,630
+texte « ▸ なぜ？ » @ 294,682
+texte « キット テクノ » @ 101,743
+texte « このスタイルの本物のドラム音。曲にも例にも使う。なくても、内蔵の音でチュートリアルは動くよ。 » @ 294,795
+bouton « キット テクノ をダウンロード（4 MB） » [coupé] @ 294,839
+bouton « 続きを読む » ⌄ @ 294,822
+bouton ■ «  試聴を停止 » @ 294,894
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

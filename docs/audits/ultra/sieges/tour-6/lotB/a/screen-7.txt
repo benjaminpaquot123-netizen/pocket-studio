@@ -1,0 +1,11 @@
+Écran 7 (588x1278)
+bouton « 🇪🇸   Español » ⌄ @ 461,78
+texte « BenStudio » @ 242,168
+texte « Tu estudio de música, en tu bolsillo. » @ 315,213
+texte « ¡Bienvenido! Haz tu música en tu dispositivo. ¿Por dónde empezamos? » @ 294,288
+bouton (étincelles) « Hazme un tema La app compone, tú escuchas y cambias. » @ 294,426
+bouton (chapeau de diplômé) « Aprender Haces todo el tema tú mismo, paso a paso: yo te explico y lo compruebo. » @ 294,606
+bouton (casque) « Escuchar una demo Una canción ya hecha, para descubrir lo que se puede hacer. » @ 294,786
+bouton + « Empezar de cero Aún sin notas: una batería, una Acid 303 y un sintetizador esperan las tuyas. » @ 294,981
+bouton (tête qui parle) « Extraer la voz de una canción Elige una canción del teléfono: la app separa la voz, la batería, el bajo y el resto. » [coupé] @ 294,1140
+bouton « ↓ 4 más » @ 496,1224

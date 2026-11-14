@@ -1,0 +1,546 @@
+#0 SIEGE lang=ko device=phone font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 40c1ff4c89 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > glisse 294 1000 294 300
+#1 DOIGT launch_padlive « Pad Live »
+#2 ROUTE launch | MODE pro | EMPREINTE 85de311e47 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 294 1100 294 1200
+#2 DOIGT rien
+#3 ROUTE launch | MODE pro | EMPREINTE 35ced05edb | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 294 1100 294 200
+#3 DOIGT launch_learn « 배울래요 »
+#4 ROUTE launch | MODE pro | EMPREINTE 85de311e47 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > glisse 294 300 294 1200
+#4 DOIGT launch_remix « 리믹스 »
+#5 ROUTE launch | MODE pro | EMPREINTE 40c1ff4c89 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 294 305
+#5 DOIGT launch_continue « 계속 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 2918dffb99 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 534 1158
+#6 DOIGT tab_Plus « 더보기 »
+#7 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 12f5abc95c | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 294 915
+#7 DOIGT tool_Midi « MIDI 키보드 »
+#8 ROUTE midi/tab_Plus | MODE pro | EMPREINTE b180c432e6 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > glisse 294 850 294 350
+#8 DOIGT rien
+#9 ROUTE midi/tab_Plus | MODE pro | EMPREINTE cc5264a0ae | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 507 928
+#9 DOIGT midi_send_clock « MIDI 클록 보내기 »
+#10 ROUTE midi/tab_Plus | MODE pro | EMPREINTE e05f329934 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > glisse 294 900 294 300
+#10 DOIGT rien
+#11 ROUTE midi/tab_Plus | MODE pro | EMPREINTE e3d0b548b9 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 294 927
+#11 DOIGT midi_learn_add « 노브 연결 »
+#12 ROUTE dialogue:« 신스: 컷오프 (선택한 트랙) » | MODE pro | EMPREINTE ff54dc4e79 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 신스: 두께 (디튠) (선택한 트랙) » 1.58:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 신스: 볼륨 (선택한 트랙) » 1.77:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 신스: 오실레이터 믹스 (선택한 트랙) » 1.93:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 신스: 필터: 어택 (선택한 트랙) » 1.62:1 (needs 4.5:1, 14 sp)
+#12 > touche 228 48
+#12 DOIGT #1108 « 신스: 컷오프 (선택한 트랙) »
+#13 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 83be8e03e8 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > glisse 294 900 294 400
+#13 DOIGT rien (texte « 이제 “신스: 컷오프 (선택한 트랙)”용 노브를 돌리세요… »)
+#14 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 84af99597f | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 85 870
+#14 DOIGT dans:midi_learn « 취소 »
+#15 ROUTE midi/tab_Plus | MODE pro | EMPREINTE d89e2d9f16 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « 템포, 시작, 정지를 다른 기기 (드럼 머신, 컴퓨터…)에서 받아요. » 3.09:1 (needs 4.5:1, 13 sp)
+#15 > touche 294 526
+#15 DOIGT rien (texte « 컨트롤러의 처음 8개 노브가 보이는 화면을 알아서 조절해요: Acid 3 »)
+#16 ROUTE midi/tab_Plus | MODE pro | EMPREINTE d89e2d9f16 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 294 610
+#16 DOIGT midi_auto_knobs_open « 노브 보기 및 바꾸기 »
+#17 ROUTE dialogue:knob_panel | MODE pro | EMPREINTE 2ff829ce8b | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 컨트롤러 노브 » over the touchable « 시트 닫기 » (124 x 33 dp)
+#17 LAYOUT OVERLAP « 선택한 트랙에서 처음 8개 노브의 역할: » over the touchable « 시트 닫기 » (223 x 21 dp)
+#17 LAYOUT OVERLAP « 노브 1 » over the touchable « 시트 닫기 » (39 x 21 dp)
+#17 LAYOUT OVERLAP « 볼륨 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#17 LAYOUT OVERLAP « 바꾸기 » over the touchable « 시트 닫기 » (38 x 21 dp)
+#17 LAYOUT OVERLAP « 배우기 » over the touchable « 시트 닫기 » (38 x 21 dp)
+#17 LAYOUT OVERLAP « 노브 2 » over the touchable « 시트 닫기 » (39 x 21 dp)
+#17 LAYOUT OVERLAP « 왼쪽 / 오른쪽 » over the touchable « 시트 닫기 » (75 x 21 dp)
+#17 LAYOUT OVERLAP « 노브 3 » over the touchable « 시트 닫기 » (39 x 21 dp)
+#17 LAYOUT OVERLAP « 색상 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#17 LAYOUT OVERLAP « 노브 4 » over the touchable « 시트 닫기 » (39 x 21 dp)
+#17 LAYOUT OVERLAP « 더트 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#17 LAYOUT OVERLAP « 노브 5 » over the touchable « 시트 닫기 » (39 x 21 dp)
+#17 LAYOUT OVERLAP « 모션 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#17 LAYOUT CONTRAST « 선택한 트랙에서 처음 8개 노브의 역할: » 1.58:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 볼륨 » 3.09:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 노브 3 » 1.98:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 색상 » 1.91:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 더트 » 1.83:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 노브 5 » 4.09:1 (needs 4.5:1, 14 sp)
+#17 > touche 361 314
+#17 DOIGT knob_change_0 « 바꾸기 »
+#18 ROUTE dialogue:« 앱 추천 » | MODE pro | EMPREINTE df8fd18707 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 더트 » 1.51:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 모션 » 4.30:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 에코 센드 » 1.65:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 드럼 » 1.89:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 리믹스 » 1.74:1 (needs 4.5:1, 14 sp)
+#18 > touche 380 624
+#18 DOIGT #1457 « 리버브 센드 »
+#19 ROUTE dialogue:knob_panel | MODE pro | EMPREINTE 681df602a6 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « 리버브 센드 » over the touchable « 시트 닫기 » (67 x 21 dp)
+#19 LAYOUT CONTRAST « 노브 3 » 1.80:1 (needs 4.5:1, 14 sp)
+#19 > touche 522 113
+#19 DOIGT knob_panel_close
+#20 ROUTE midi/tab_Plus | MODE pro | EMPREINTE d89e2d9f16 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > glisse 294 400 294 1000
+#20 DOIGT rien
+#21 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 0a13d88a7e | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > glisse 294 900 294 500
+#21 DOIGT rien
+#22 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 91b3dd775d | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 294 180
+#22 DOIGT plus_back « 더보기 »
+#23 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 12f5abc95c | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 294 735
+#23 DOIGT tool_Reglages « 설정 »
+#24 ROUTE settings/tab_Plus | MODE pro | EMPREINTE fe6adaac90 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 128 763
+#24 DOIGT theme_Night « 밤 (더 어둡게) »
+#25 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 919a643d68 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > glisse 294 900 294 250
+#25 DOIGT rien
+#26 ROUTE settings/tab_Plus | MODE pro | EMPREINTE e204a46bc7 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 294 900 294 250
+#26 DOIGT rien
+#27 ROUTE settings/tab_Plus | MODE pro | EMPREINTE e5eba6c8fb | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 295 662
+#27 DOIGT dans:settings « 2마디 »
+#28 ROUTE settings/tab_Plus | MODE pro | EMPREINTE fc0e274944 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 202 873
+#28 DOIGT buffer_4 « 안전 »
+#29 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 8c870bf1ad | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > glisse 294 535 450 535
+#29 DOIGT metronome_level « 메트로놈 볼륨 »
+#30 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 8c870bf1ad | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 294 900 294 300
+#30 DOIGT rien
+#31 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 7465da3657 | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 399 42
+#31 DOIGT top_record
+#32 ROUTE dialogue:record_choice | MODE pro | EMPREINTE 2e1f7572a9 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 294 582
+#32 DOIGT record_choice_keys «   건반으로 멜로디 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 0f0c62b3f7 | project=projet-1 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CONTRAST « 16패드 » 1.68:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST «  정지 » 2.90:1 (needs 4.5:1, 14 sp)
+#33 > touche 60 980
+#33 DOIGT key_60 « C 4 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE c2ca04b678 | project=projet-1 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 132 980
+#34 DOIGT key_64 « E 4 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 9dd39d2879 | project=projet-1 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 204 980
+#35 DOIGT key_67 « G 4 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE af3c6b7520 | project=projet-1 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 498 562
+#36 DOIGT record_stop «  정지 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 81c64c0cca | project=projet-1 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT CONTRAST «  내 멜로디 녹음 » 2.90:1 (needs 4.5:1, 14 sp)
+#37 > touche 60 938
+#37 DOIGT key_60 « C 4 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE df40485e7f | project=projet-1 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 244 596
+#38 DOIGT rien
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE bb8e87fada | project=projet-1 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 525 252
+#39 DOIGT dans:take_loop_grown « 알겠어요 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 6c4815db7a | project=projet-1 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 > glisse 294 850 294 450
+#40 DOIGT rien
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 6aba1ac847 | project=projet-1 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT TARGET « C 4 C 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « D 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « E 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « F 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « G 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « A 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « B 4 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « C 5 C 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « D 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « E 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « F 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « G 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « A 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « B 5 재생 » 21 x 150 dp (touch 48 x 150)
+#41 LAYOUT TARGET « C# 4 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « D# 4 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « F# 4 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « G# 4 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « A# 4 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « C# 5 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « D# 5 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « F# 5 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « G# 5 재생 » 15 x 91 dp (touch 48 x 91)
+#41 LAYOUT TARGET « A# 5 재생 » 15 x 91 dp (touch 48 x 91)
+#41 > touche 399 114
+#41 DOIGT top_record
+#42 ROUTE dialogue:record_choice | MODE pro | EMPREINTE cab34233db | project=projet-1 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST «   건반으로 멜로디 » 3.54:1 (needs 4.5:1, 14 sp)
+#42 > touche 294 582
+#42 DOIGT record_choice_mic «   마이크: 목소리, 기타, 악기 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 227829c33b | project=projet-1 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 > attends 4
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 32d0f65d39 | project=projet-1 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 411 826
+#44 DOIGT audio_cancel « 취소 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 3829bb2717 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 471 114
+#45 DOIGT top_play
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE ea96260b9a | project=projet-1 no tuto
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 471 114
+#46 DOIGT top_play
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 3829bb2717 | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 534 1158
+#47 DOIGT tab_Plus « 더보기 »
+#48 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 14200962f3 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 294 300 294 950
+#48 DOIGT rien
+#49 ROUTE settings/tab_Plus | MODE pro | EMPREINTE a4313b27ca | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > glisse 294 300 294 950
+#49 DOIGT rien (texte « 음악이 재생되는 동안 화면이 꺼지지 않아요. »)
+#50 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 5d53ec45d6 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 95 554
+#50 DOIGT dans:settings « 도레미 »
+#51 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 7d6f266048 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 294 300 294 700
+#51 DOIGT rien
+#52 ROUTE settings/tab_Plus | MODE pro | EMPREINTE ee0aa15097 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 126 381
+#52 DOIGT lang_button « 🇰🇷 »
+#53 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 1fa7efb446 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « Bahasa Indonesia » 2.28:1 (needs 3.0:1, 16 sp)
+#53 LAYOUT CONTRAST « 독일어 » 1.72:1 (needs 4.5:1, 13 sp)
+#53 LAYOUT CONTRAST « English » 1.71:1 (needs 3.0:1, 16 sp)
+#53 LAYOUT CONTRAST « Español » 1.73:1 (needs 3.0:1, 16 sp)
+#53 > touche 294 725
+#53 DOIGT lang_en « 🇬🇧 »
+#54 ROUTE settings/tab_Plus | MODE pro | EMPREINTE f71f397bc7 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT « My first beat » ellipsized (« … »)
+#54 > touche 136 576
+#54 DOIGT lang_button « 🇬🇧 »
+#55 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 2e90e33e39 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Deutsch » 2.19:1 (needs 3.0:1, 16 sp)
+#55 LAYOUT CONTRAST « 🇬🇧 » 1.69:1 (needs 3.0:1, 24 sp)
+#55 LAYOUT CONTRAST « English » 1.69:1 (needs 3.0:1, 16 sp)
+#55 LAYOUT CONTRAST « Italian » 1.72:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « Nederlands » 1.73:1 (needs 3.0:1, 16 sp)
+#55 > glisse 294 900 294 300
+#55 DOIGT lang_nl « 🇳🇱 »
+#56 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 77fa640bbe | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Nederlands » 2.54:1 (needs 3.0:1, 16 sp)
+#56 LAYOUT CONTRAST « Polski » 1.48:1 (needs 3.0:1, 16 sp)
+#56 LAYOUT CONTRAST « Polish » 2.43:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST « 🇮🇳 » 1.72:1 (needs 3.0:1, 24 sp)
+#56 > glisse 294 900 294 300
+#56 DOIGT lang_ja « 🇯🇵 »
+#57 ROUTE dialogue:lang_dialog | MODE pro | EMPREINTE 47154bab85 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « Türkçe » 2.19:1 (needs 3.0:1, 16 sp)
+#57 LAYOUT CONTRAST « 🇸🇦 » 1.69:1 (needs 3.0:1, 24 sp)
+#57 LAYOUT CONTRAST « Korean » 1.72:1 (needs 4.5:1, 13 sp)
+#57 LAYOUT CONTRAST « 简体中文 » 1.73:1 (needs 3.0:1, 16 sp)
+#57 > touche 294 822
+#57 DOIGT lang_ko « 🇰🇷 »
+#58 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 9587cc5610 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 174 1158
+#58 DOIGT tab_Sons « 사운드 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 6e8702af8d | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 540 255
+#59 DOIGT rien
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 6e8702af8d | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > glisse 500 255 100 255
+#60 DOIGT sons_Remix « 리믹스 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE b933d66878 | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 380 255
+#61 DOIGT track_0 « 신스 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 512c37d645 | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « 신스 » 4.25:1 (needs 4.5:1, 12 sp)
+#62 > glisse 294 850 294 450
+#62 DOIGT rien
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE d8a521287c | project=projet-1 no tuto
+#63 SON Son : rien ne joue.
+#63 > glisse 294 450 294 850
+#63 DOIGT rien
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 512c37d645 | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 159 397
+#64 DOIGT mode_notes « 노트 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 498549c74c | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « − » 2.28:1 (needs 4.5:1, 14 sp)
+#65 > glisse 294 850 294 350
+#65 DOIGT quantize_50 « 박자 맞춤 50% »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 6618dafb22 | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT TARGET « E5 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « D#5 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « D5 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « C#5 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « C5 C5 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « B4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « A#4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « A4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « G#4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « G4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « F#4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « F4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « E4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « D#4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « D4 재생 » 36 x 20 dp (touch 48 x 48)
+#66 > touche 534 1158
+#66 DOIGT tab_Plus « 더보기 »
+#67 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 9587cc5610 | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 294 180
+#67 DOIGT plus_back « 더보기 »
+#68 ROUTE plus/tab_Plus | MODE pro | EMPREINTE c5980e1497 | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 294 210
+#68 DOIGT plus_home « 홈 »
+#69 ROUTE launch | MODE pro | EMPREINTE a27691290a | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « 프로 » 4.26:1 (needs 4.5:1, 13 sp)
+#69 > touche 294 519
+#69 DOIGT launch_new « 새 곡 »
+#70 ROUTE dialogue:new_project | MODE pro | EMPREINTE 6083d9b701 | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 294 523
+#70 DOIGT start_empty « 처음부터 할게요 »
+#71 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 3937547b53 | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 294 480
+#71 DOIGT mode_card_pro « 프로 »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 4d15d3dcf0 | project=p-4ee26af8 no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 399 114
+#72 DOIGT top_record
+#73 ROUTE dialogue:record_choice | MODE pro | EMPREINTE deab8fa30d | project=p-4ee26af8 no tuto
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST «   카운트인: 2마디 » 3.77:1 (needs 4.5:1, 14 sp)
+#73 LAYOUT CONTRAST « 취소 » 3.69:1 (needs 4.5:1, 14 sp)
+#73 > touche 508 867
+#73 DOIGT record_choice_cancel « 취소 »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 4d15d3dcf0 | project=p-4ee26af8 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 534 1158
+#74 DOIGT tab_Plus « 더보기 »
+#75 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 9ac9b9024a | project=p-4ee26af8 no tuto
+#75 SON Son : rien ne joue.
+#75 > touche 294 915
+#75 DOIGT tool_Midi « MIDI 키보드 »
+#76 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 285869179a | project=p-4ee26af8 no tuto
+#76 SON Son : rien ne joue.
+#76 > glisse 294 900 294 300
+#76 DOIGT rien (texte « 볼륨 · 왼쪽 / 오른쪽 · 색상 · 더트 · 모션 · 스페이스 · 리버 »)
+#77 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 708c944bc3 | project=p-4ee26af8 no tuto
+#77 SON Son : rien ne joue.
+#77 > glisse 294 900 294 500
+#77 DOIGT rien
+#78 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 24ab6dc848 | project=p-4ee26af8 no tuto
+#78 SON Son : rien ne joue.
+#78 > touche 294 776
+#78 DOIGT midi_auto_knobs_open « 노브 보기 및 바꾸기 »
+#79 ROUTE dialogue:knob_panel | MODE pro | EMPREINTE 681df602a6 | project=p-4ee26af8 no tuto
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « 리버브 센드 » 2.19:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « 바꾸기 » 2.19:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « 배우기 » 2.19:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « 배우기 » 1.53:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « 노브 4 » 1.23:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « 노브 5 » 3.36:1 (needs 4.5:1, 14 sp)
+#79 > touche 522 113
+#79 DOIGT knob_panel_close
+#80 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 24ab6dc848 | project=p-4ee26af8 no tuto
+#80 SON Son : rien ne joue.
+#80 > glisse 294 400 294 900
+#80 DOIGT rien (texte « 템포, 시작, 정지를 다른 기기 (드럼 머신, 컴퓨터…)에서 받아요. »)
+#81 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 90096edc8f | project=p-4ee26af8 no tuto
+#81 SON Son : rien ne joue.
+#81 > retour
+#81 RETOUR
+#82 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 9ac9b9024a | project=p-4ee26af8 no tuto
+#82 SON Son : rien ne joue.
+#82 > touche 294 735
+#82 DOIGT tool_Reglages « 설정 »
+#83 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 1b06cb044e | project=p-4ee26af8 no tuto
+#83 SON Son : rien ne joue.
+#83 > glisse 294 950 294 150
+#83 DOIGT guide_bar « 가이드 »
+#84 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 1b06cb044e | project=p-4ee26af8 no tuto
+#84 SON Son : rien ne joue.
+#84 > glisse 294 950 294 150
+#84 DOIGT guide_bar « 가이드 »
+#85 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 1b06cb044e | project=p-4ee26af8 no tuto
+#85 SON Son : rien ne joue.
+#85 RIEN NE CHANGE (3 écrans identiques)
+#85 > glisse 294 950 294 150
+#85 DOIGT guide_bar « 가이드 »
+#86 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 1b06cb044e | project=p-4ee26af8 no tuto
+#86 SON Son : rien ne joue.
+#86 > glisse 294 900 294 200
+#86 DOIGT rien
+#87 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 0b3ea993e2 | project=p-4ee26af8 no tuto
+#87 SON Son : rien ne joue.
+#87 > glisse 294 900 294 200
+#87 DOIGT rien
+#88 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 2b3664a986 | project=p-4ee26af8 no tuto
+#88 SON Son : rien ne joue.
+#88 > glisse 294 900 294 200
+#88 DOIGT rien
+#89 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 28d67ab853 | project=p-4ee26af8 no tuto
+#89 SON Son : rien ne joue.
+#89 > touche 294 831
+#89 DOIGT settings_reset « 설정 초기화 »
+#90 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 6c391e3ba8 | project=p-4ee26af8 no tuto
+#90 SON Son : rien ne joue.
+#90 LAYOUT CONTRAST « 설정 초기화 » 4.14:1 (needs 4.5:1, 14 sp)
+#90 > glisse 294 300 294 800
+#90 DOIGT rien
+#91 ROUTE settings/tab_Plus | MODE pro | EMPREINTE a4fab2338d | project=p-4ee26af8 no tuto
+#91 SON Son : rien ne joue.
+#91 > touche 294 180
+#91 DOIGT plus_back « 더보기 »
+#92 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 9ac9b9024a | project=p-4ee26af8 no tuto
+#92 SON Son : rien ne joue.
+#92 > touche 294 915
+#92 DOIGT tool_Midi « MIDI 키보드 »
+#93 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 285869179a | project=p-4ee26af8 no tuto
+#93 SON Son : rien ne joue.
+#93 > glisse 294 900 294 300
+#93 DOIGT rien (texte « 볼륨 · 왼쪽 / 오른쪽 · 색상 · 더트 · 모션 · 스페이스 · 리버 »)
+#94 ROUTE midi/tab_Plus | MODE pro | EMPREINTE 708c944bc3 | project=p-4ee26af8 no tuto
+#94 SON Son : rien ne joue.
+#94 > touche 294 180
+#94 DOIGT plus_back « 더보기 »
+#95 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 9ac9b9024a | project=p-4ee26af8 no tuto
+#95 SON Son : rien ne joue.
+#95 > touche 294 735
+#95 DOIGT tool_Reglages « 설정 »
+#96 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 3b238c12d9 | project=p-4ee26af8 no tuto
+#96 SON Son : rien ne joue.
+#96 > glisse 294 900 294 400
+#96 DOIGT rien
+#97 ROUTE settings/tab_Plus | MODE pro | EMPREINTE 5ece652611 | project=p-4ee26af8 no tuto
+#97 SON Son : rien ne joue.
+#97 > touche 95 625
+#97 DOIGT dans:settings « 도레미 »
+#98 ROUTE settings/tab_Plus | MODE pro | EMPREINTE bab804e261 | project=p-4ee26af8 no tuto
+#98 SON Son : rien ne joue.
+#98 > touche 174 1158
+#98 DOIGT tab_Sons « 사운드 »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 4d15d3dcf0 | project=p-4ee26af8 no tuto
+#99 SON Son : rien ne joue.
+#99 > touche 555 255
+#99 DOIGT track_0 « 신스 »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 61333b9582 | project=p-4ee26af8 no tuto
+#100 SON Son : rien ne joue.
+#100 LAYOUT CONTRAST « 16패드 » 2.08:1 (needs 4.5:1, 12 sp)
+#100 LAYOUT TARGET « Mi4 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Ré#4 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Ré4 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Do#4 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Do4 Do4 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Si3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « La#3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « La3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Sol#3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Sol3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Fa#3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Fa3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Mi3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Ré#3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 LAYOUT TARGET « Ré3 재생 » 36 x 20 dp (touch 48 x 48)
+#100 > glisse 294 850 294 450
+#100 DOIGT rien
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE 11d828621d | project=p-4ee26af8 no tuto
+#101 SON Son : rien ne joue.
+#101 LAYOUT TARGET « Do#3 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Do3 Do3 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Si2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « La#2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « La2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Sol#2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Sol2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Fa#2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Fa2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Mi2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Ré#2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Ré2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 LAYOUT TARGET « Do#2 재생 » 36 x 20 dp (touch 48 x 48)
+#101 > glisse 294 450 294 850
+#101 DOIGT roll_bar_0 « 1 »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE e5fb527eb3 | project=p-4ee26af8 no tuto
+#102 SON Son : rien ne joue.
+#102 LAYOUT CONTRAST «  내 멜로디 녹음 » 2.78:1 (needs 4.5:1, 14 sp)
+#102 LAYOUT CONTRAST « − » 1.69:1 (needs 4.5:1, 14 sp)
+#102 > fin
+#102 FIN : fin

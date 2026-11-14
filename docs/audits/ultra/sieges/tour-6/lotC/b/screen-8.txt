@@ -1,0 +1,8 @@
+Écran 8 (588x1278)
+image (boussole) @ 63,1050
+texte « Le réglage est ici. Le Guide t'attend dans sa barre, en bas. » @ 315,1050
+bouton « Compris » @ 468,1134
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

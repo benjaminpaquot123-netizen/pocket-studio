@@ -1,0 +1,10 @@
+--- a/app/src/benTest/java/com/pocketstudio/bentest/Feux.kt
++++ b/app/src/benTest/java/com/pocketstudio/bentest/Feux.kt
+@@ -74,7 +74,6 @@
+     fun style(b: Ecoute.Bilan): Pair<Feu, String> {
+         val parts = ArrayList<Pair<Feu, String>>()
+         if (b.xruns > 0) parts += Feu.ROUGE to "${b.xruns} décrochage(s)"
+-        blocVrai(b.cpuWorst).takeIf { it != Feu.VERT }?.let { parts += it to "pire bloc vrai ${Ecoute.pct(b.cpuWorst)}" }
+         ecart(b.gapWorst).takeIf { it != Feu.VERT }?.let { parts += it to "plus long écart ${fmt(b.gapWorst.toDouble()).replace('.', ',')} blocs" }
+         if (b.nonFinite) parts += Feu.ROUGE to "valeur invalide (NaN)"
+         if (b.alertes.isNotEmpty()) parts += Feu.ORANGE to b.alertes.joinToString(", ") { it.kind.lowercase(Locale.ROOT) + " à ${it.second} s" }

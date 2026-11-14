@@ -1,0 +1,1 @@
+lang=fr device=phone font=100

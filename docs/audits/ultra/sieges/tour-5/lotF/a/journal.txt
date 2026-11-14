@@ -1,0 +1,217 @@
+#0 SIEGE lang=fr device=foldable font=130 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE b05eaaace8 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.31:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST «   Français » 1.42:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « Extraire la voix d'une chanson » 2.04:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT TARGET « Qu'est-ce que « Métronome et décompte » ? ? » 14 x 29 dp (touch 48 x 48)
+#1 > touche 518 473
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE b8331395f4 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 263 357
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE e4337f5e74 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Étape 1 : choisis un style » 3.73:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » 2.41:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Techno » 2.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 10 styles » 1.38:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Autres » 1.68:1 (needs 3.0:1, 16 sp)
+#3 > touche 517 534
+#3 DOIGT wizard_family_House « House »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 39d234babd | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Deep house » 1.60:1 (needs 4.5:1, 16 sp)
+#4 > touche 600 681
+#4 DOIGT wizard_style_house « House »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE cc0856139b | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « • Marshall Jefferson – Move Your Body (1986) » 1.63:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Deep house » 3.23:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « House · 120 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#5 > touche 546 775
+#5 DOIGT wizard_style_play_house «  Créer et écouter »
+#6 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a4c2790716 | project=p-e404ee32 no tuto
+#6 SON Son : le morceau joue (partie « F »).
+#6 LAYOUT CUT « La  La  La  La  La  La  La  La » ellipsized (« … »)
+#6 LAYOUT CUT « La  Ré  Fa♯ m  Mi  La  Ré  Fa♯ m  Mi » ellipsized (« … »)
+#6 LAYOUT CUT « Do♯ m  Fa♯ m  La  Mi » ellipsized (« … »)
+#6 LAYOUT CONTRAST « ? » 4.33:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 > glisse 263 800 263 400
+#6 DOIGT song_chords « Accords du morceau »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d9befe072f | project=p-e404ee32 no tuto
+#7 SON Son : le morceau joue (partie « F »).
+#7 LAYOUT CUT « Sauvegardé » lines cut (taller than its box)
+#7 LAYOUT CONTRAST « POUR COMMENCER » 4.37:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « ↗ » 3.39:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Le son de la mélodie » 3.91:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Une autre batterie » 3.97:1 (needs 4.5:1, 14 sp)
+#7 > touche 1005 478
+#7 DOIGT guide_bar « Guide »
+#8 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a3b63dfe65 | project=p-e404ee32 no tuto
+#8 SON Son : le morceau joue (partie « F »).
+#8 > touche 936 1123
+#8 DOIGT tab_simple_Envoyer « Envoyer »
+#9 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE bd9ca82fd7 | project=p-e404ee32 no tuto
+#9 SON Son : le morceau joue (partie « F »).
+#9 > touche 518 931
+#9 DOIGT share_go «   Partager »
+#10 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 7c140fec64 | project=p-e404ee32 no tuto
+#10 SON Son : le morceau joue (partie « F »).
+#10 > attends 10
+#10 PARTAGE House-morceau-20261105-214347.m4a
+#11 ROUTE dialogue:« Partager mon morceau · House-m » | MODE simple | EMPREINTE 08ffe00169 | project=p-e404ee32 no tuto
+#11 SON Son : le morceau joue (partie « F »).
+#11 > touche 517 531
+#11 DOIGT vue « WhatsApp »
+#12 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE ce40e14bd0 | project=p-e404ee32 no tuto
+#12 SON Son : le morceau joue (partie « F »).
+#12 LAYOUT CONTRAST « Fichier M4A : léger, lu par tous les appareils. » 4.20:1 (needs 4.5:1, 13 sp)
+#12 > touche 857 824
+#12 DOIGT share_bilan_ok « OK »
+#13 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE bd9ca82fd7 | project=p-e404ee32 no tuto
+#13 SON Son : le morceau joue (partie « F »).
+#13 > glisse 518 700 518 450
+#13 DOIGT share_other « Autres exports »
+#14 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 52111b36b5 | project=p-e404ee32 no tuto
+#14 SON Son : le morceau joue (partie « F »).
+#14 > touche 99 1123
+#14 DOIGT tab_simple_Morceau « Mon morceau »
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a3b63dfe65 | project=p-e404ee32 no tuto
+#15 SON Son : le morceau joue (partie « F »).
+#15 > touche 448 936
+#15 DOIGT part_menu_3
+#16 ROUTE dialogue:part_sheet | MODE simple | EMPREINTE 6caa279446 | project=p-e404ee32 no tuto
+#16 SON Son : le morceau joue (partie « F »).
+#16 LAYOUT OVERLAP « Partie 4 · B · Groove » over the touchable « Fermer la feuille » (232 x 32 dp)
+#16 LAYOUT OVERLAP « 8 mes. » over the touchable « Fermer la feuille » (61 x 23 dp)
+#16 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (65 x 27 dp)
+#16 LAYOUT OVERLAP « Variation » over the touchable « Fermer la feuille » (81 x 27 dp)
+#16 LAYOUT OVERLAP « Fill à la fin » over the touchable « Fermer la feuille » (90 x 27 dp)
+#16 LAYOUT OVERLAP « Break après · 4 mes. » over the touchable « Fermer la feuille » (186 x 27 dp)
+#16 LAYOUT OVERLAP « Break après · 8 mes. » over the touchable « Fermer la feuille » (185 x 27 dp)
+#16 LAYOUT OVERLAP « Montée avant · 4 mes. » over the touchable « Fermer la feuille » (203 x 27 dp)
+#16 LAYOUT OVERLAP « Montée avant · 8 mes. » over the touchable « Fermer la feuille » (202 x 27 dp)
+#16 LAYOUT OVERLAP « Fondu d'entrée » over the touchable « Fermer la feuille » (138 x 27 dp)
+#16 LAYOUT OVERLAP « Fondu de sortie » over the touchable « Fermer la feuille » (141 x 27 dp)
+#16 LAYOUT OVERLAP « Ajouter une fin » over the touchable « Fermer la feuille » (134 x 27 dp)
+#16 LAYOUT OVERLAP « Énergie : 3 » over the touchable « Fermer la feuille » (96 x 27 dp)
+#16 LAYOUT OVERLAP « 1 · nappes » over the touchable « Fermer la feuille » (90 x 27 dp)
+#16 LAYOUT OVERLAP « 2 · + basse » over the touchable « Fermer la feuille » (99 x 27 dp)
+#16 LAYOUT OVERLAP « 3 · + batterie » over the touchable « Fermer la feuille » (116 x 27 dp)
+#16 LAYOUT OVERLAP « 4 · à fond » over the touchable « Fermer la feuille » (85 x 27 dp)
+#16 LAYOUT OVERLAP « Longueur » over the touchable « Fermer la feuille » (87 x 27 dp)
+#16 LAYOUT OVERLAP « mesures » over the touchable « Fermer la feuille » (68 x 24 dp)
+#16 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (28 x 27 dp)
+#16 LAYOUT OVERLAP « Partie » over the touchable « Fermer la feuille » (53 x 27 dp)
+#16 LAYOUT OVERLAP « Renommer » over the touchable « Fermer la feuille » (99 x 27 dp)
+#16 LAYOUT OVERLAP « Ce qui joue » over the touchable « Fermer la feuille » (102 x 27 dp)
+#16 LAYOUT OVERLAP « Monter » over the touchable « Fermer la feuille » (66 x 27 dp)
+#16 LAYOUT OVERLAP « Descendre » over the touchable « Fermer la feuille » (99 x 27 dp)
+#16 LAYOUT OVERLAP « Dupliquer » over the touchable « Fermer la feuille » (88 x 27 dp)
+#16 LAYOUT OVERLAP « Insérer après » over the touchable « Fermer la feuille » (120 x 27 dp)
+#16 LAYOUT OVERLAP « Retirer » over the touchable « Fermer la feuille » (61 x 27 dp)
+#16 > touche 163 1152
+#16 DOIGT part_duplicate_3 « Dupliquer »
+#17 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 87465a8142 | project=p-e404ee32 no tuto
+#17 SON Son : le morceau joue (partie « F »).
+#17 > glisse 155 900 155 500
+#17 DOIGT part_play_3 « B · Groove »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 86853a6997 | project=p-e404ee32 no tuto
+#18 SON Son : le morceau joue (partie « F »).
+#18 LAYOUT CONTRAST « × 1  ·  4 mes.  ·  joue » 2.99:1 (needs 4.5:1, 14 sp)
+#18 > retour
+#18 RETOUR
+#19 ROUTE launch | MODE simple | EMPREINTE b8633c7fee | project=p-e404ee32 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 518 564
+#19 DOIGT launch_new « Nouveau morceau »
+#20 ROUTE dialogue:new_project | MODE simple | EMPREINTE 8ce402717f | project=p-e404ee32 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 517 378
+#20 DOIGT starter_wizard « Fais-moi un morceau »
+#21 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 71a137d6c1 | project=p-e404ee32 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Ton dernier choix » ellipsized (« … »)
+#21 > touche 263 357
+#21 DOIGT mode_card_simple « Simple »
+#22 ROUTE dialogue:wizard | MODE simple | EMPREINTE e4337f5e74 | project=p-e404ee32 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 517 438
+#22 DOIGT wizard_family_Techno « Techno »
+#23 ROUTE dialogue:wizard | MODE simple | EMPREINTE 436b7069ce | project=p-e404ee32 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « La techno des soirées d'aujourd'hui, plus rapide et plus dure : un kick saturé suivi d'un grondement, et des sirènes de rave. » 2.26:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « Pour l'idée : Sara Landry & Alt8 – Heaven (2024) » 2.04:1 (needs 4.5:1, 12 sp)
+#23 > touche 57 735
+#23 DOIGT wizard_style_listen_detroit
+#24 ROUTE dialogue:wizard | MODE simple | EMPREINTE 1cc7fb48aa | project=p-e404ee32 no tuto
+#24 SON Son : l'assistant fait écouter un extrait du style « Techno de Detroit ».
+#24 > touche 600 783
+#24 DOIGT wizard_style_detroit « Techno de Detroit »
+#25 ROUTE dialogue:wizard | MODE simple | EMPREINTE e3cc4ae5bf | project=p-e404ee32 no tuto
+#25 SON Son : l'assistant fait écouter un extrait du style « Techno de Detroit ».
+#25 LAYOUT CONTRAST « • Model 500 – No UFO's (1985) » 2.89:1 (needs 4.5:1, 13 sp)
+#25 > touche 546 877
+#25 DOIGT wizard_style_play_detroit «  Créer et écouter »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 285edffaa1 | project=p-9bd80da1 no tuto
+#26 SON Son : le morceau joue (partie « J »).
+#26 LAYOUT CONTRAST « CHAPITRE 1 · LES SONS ET LES MOTIFS » 4.37:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « La fiche de la piste « Grosse caisse 1 » » 3.91:1 (needs 4.5:1, 14 sp)
+#26 > touche 1005 478
+#26 DOIGT guide_bar « Guide »
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3454a9d049 | project=p-9bd80da1 no tuto
+#27 SON Son : le morceau joue (partie « J »).
+#27 > touche 990 42
+#27 DOIGT top_more
+#28 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 9b2b986965 | project=p-9bd80da1 no tuto
+#28 SON Son : le morceau joue (partie « J »).
+#28 > retour
+#28 RETOUR
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3454a9d049 | project=p-9bd80da1 no tuto
+#29 SON Son : le morceau joue (partie « J »).
+#29 > touche 936 1123
+#29 DOIGT tab_simple_Envoyer « Envoyer »
+#30 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE ec43ba49ee | project=p-9bd80da1 no tuto
+#30 SON Son : le morceau joue (partie « J »).
+#30 > touche 554 835
+#30 DOIGT share_format_Wav « WAV · qualité max »
+#31 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE a761268d32 | project=p-9bd80da1 no tuto
+#31 SON Son : le morceau joue (partie « J »).
+#31 > touche 518 931
+#31 DOIGT share_go «   Partager »
+#32 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 6ae1c3fc25 | project=p-9bd80da1 no tuto
+#32 SON Son : le morceau joue (partie « J »).
+#32 LAYOUT CONTRAST «   33 % » 4.08:1 (needs 4.5:1, 14 sp)
+#32 > touche 828 749
+#32 DOIGT share_cancel « Annuler »
+#33 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE a761268d32 | project=p-9bd80da1 no tuto
+#33 SON Son : le morceau joue (partie « J »).
+#33 > touche 518 931
+#33 DOIGT share_go «   Partager »
+#34 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 6ae1c3fc25 | project=p-9bd80da1 no tuto
+#34 SON Son : le morceau joue (partie « J »).
+#34 > attends 15
+#34 PARTAGE Techno-de-Detroit-morceau-20261105-214611.wav
+#35 ROUTE dialogue:« Partager mon morceau · Techno- » | MODE simple | EMPREINTE 90cb60e760 | project=p-9bd80da1 no tuto
+#35 SON Son : le morceau joue (partie « J »).
+#35 > touche 517 675
+#35 DOIGT vue « Gmail »
+#36 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 4ea2e3c870 | project=p-9bd80da1 no tuto
+#36 SON Son : le morceau joue (partie « J »).
+#36 LAYOUT CONTRAST « Pas de saturation. » 1.97:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « Niveau : à la cible (Auto (style)) » 1.97:1 (needs 4.5:1, 13 sp)
+#36 > touche 857 844
+#36 DOIGT share_bilan_ok « OK »
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE a761268d32 | project=p-9bd80da1 no tuto
+#37 SON Son : le morceau joue (partie « J »).
+#37 > touche 319 42
+#37 DOIGT top_projects « Techno de Detroit »
+#38 ROUTE dialogue:projects | MODE simple | EMPREINTE 9d2726284f | project=p-9bd80da1 no tuto
+#38 SON Son : le morceau joue (partie « J »).
+#38 > fin
+#38 FIN : fin

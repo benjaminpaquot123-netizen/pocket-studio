@@ -1,0 +1,41 @@
+Écran 12 (588x1278)
+touchable « ▭▭▭ ▭▭▭ » @ 134,42
+bouton « ▭▭▭ » @ 311,42
+bouton (icône) @ 399,42
+bouton (icône) @ 471,42
+bouton (icône) @ 543,42
+bouton « ▭▭▭ ▭▭▭ » @ 83,114
+bouton « ▭▭▭ ▭▭▭ » @ 248,114
+interrupteur « ▭▭▭ » [non coché] @ 543,114
+bouton « ▭▭▭ » @ 127,204
+texte « ▭▭▭ » @ 294,240
+bouton « ▭▭▭ » @ 140,309
+bouton « ▭▭▭ » @ 217,309
+texte « ▭▭▭ » @ 248,356
+texte « 1:50 / 5:20 » @ 201,398
+texte « bar 61.4 / 176 » @ 453,398
+bouton « ▭▭▭ E · Intro 2 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm F · Intro 3 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm A · Intro Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm G · Groove 2 Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm H · Groove 3 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ B · Groove Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ … and 7 more parts Tap to change the chords of the whole song. » @ 294,485
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,546
+texte « ▭▭▭ » @ 294,624
+texte « Change a sound » @ 172,669
+texte « ▭▭▭ » @ 294,732
+texte « → » @ 61,798
+texte « ▭▭▭ » @ 297,795
+texte « ▭▭▭ » @ 142,849
+bouton « ▭▭▭ ▭▭▭ » @ 294,909
+bouton « ▭▭▭ ▭▭▭ » @ 294,988
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ▭▭▭ » [désactivé] @ 95,1059
+bouton (icône) @ 223,1059
+bouton « ▭▭▭ ▭▭▭ » @ 356,1059
+bouton « ▭▭▭ » @ 493,1059
+onglet « ▭▭▭ » [sélectionné] @ 54,1158
+onglet « ▭▭▭ » @ 174,1158
+onglet « ▭▭▭ » @ 294,1158
+onglet « ▭▭▭ » @ 414,1158
+onglet « ▭▭▭ » @ 534,1158
+touchable « ▭▭▭ ▭▭▭ » @ 360,1248
+touchable « ▭▭▭ ▭▭▭ » @ 456,1248
+touchable « ▭▭▭ » @ 540,1248
+texte « ▭▭▭ » @ 162,1248

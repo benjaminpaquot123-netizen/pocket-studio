@@ -1,0 +1,118 @@
+#0 SIEGE lang=ar device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 06a2f21309 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇸🇦 » 1.26:1 (needs 3.0:1, 20 sp)
+#1 > touche 294 1182
+#1 DOIGT welcome_remix « استخراج الصوت من أغنية »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6175dc376a | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « كيف تريد أن ترى هذا المشروع؟ يمكنك التغيير في أي وقت بالشارة في الأعلى. » 2.64:1 (needs 4.5:1, 16 sp)
+#2 > touche 294 288
+#2 DOIGT mode_card_simple « بسيط »
+#3 ROUTE ? | MODE simple | EMPREINTE 3971796c12 | project=p-45d6ebc9 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 583
+#3 DOIGT remix_pick « اختر أغنية »
+#4 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 3b891c4b7f | project=p-45d6ebc9 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « لفصل أغنية، يحمّل التطبيق نموذجه أولًا: 174 MB، مرة واحدة فقط. » 1.58:1 (needs 4.5:1, 14 sp)
+#4 > touche 157 742
+#4 DOIGT remix_model_ask_ok « حمّل، ثم اختر الأغنية »
+#5 ROUTE ? | MODE simple | EMPREINTE ab7a7d2ada | project=p-45d6ebc9 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 60
+#6 ROUTE ? | MODE simple | EMPREINTE c87fd6829b | project=p-45d6ebc9 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 393 279
+#6 DOIGT help_Remix « ما معنى «Remix»؟ »
+#6 AIDE help_Remix
+#7 ROUTE dialogue:« Remix » | MODE simple | EMPREINTE 182365d3aa | project=p-45d6ebc9 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « يفصل التطبيق الأغنية إلى 4 مسارات (الإيقاع، الباص، الغناء، الباقي). تحت الأغنية، «اقطع ما أريد»: اختر مقاطع وضعها على الـpads أو في Live أو على مسار. أو اعزف مقاطع في خانات Remix في Live. » 2.32:1 (needs 4.5:1, 14 sp)
+#7 > touche 79 756
+#7 DOIGT #979 « فهمت »
+#8 ROUTE ? | MODE simple | EMPREINTE e739740fea | project=p-45d6ebc9 no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 90
+#9 ROUTE ? | MODE simple | EMPREINTE e739740fea | project=p-45d6ebc9 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 414 1158
+#9 DOIGT tab_simple_Rythme « الإيقاع »
+#10 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6ffea8b3ce | project=p-45d6ebc9 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 534 1158
+#10 DOIGT tab_simple_Morceau « أغنيتي »
+#11 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4620d3cd16 | project=p-45d6ebc9 no tuto
+#11 SON Son : rien ne joue.
+#11 > glisse 294 850 294 300
+#11 DOIGT rien
+#12 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 563ba48fd4 | project=p-45d6ebc9 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 95 1059
+#12 DOIGT thumb_more « خيارات أكثر »
+#13 ROUTE dialogue:thumb_more_menu | MODE simple | EMPREINTE fdaac2c57f | project=p-45d6ebc9 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « الإبلاغ عن خلل » 1.80:1 (needs 4.5:1, 14 sp)
+#13 > touche 178 471
+#13 DOIGT thumb_more_remix « Remix »
+#14 ROUTE ? | MODE simple | EMPREINTE dee59b537f | project=p-45d6ebc9 no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 294 850 294 350
+#14 DOIGT rien
+#15 ROUTE ? | MODE simple | EMPREINTE dee59b537f | project=p-45d6ebc9 no tuto
+#15 SON Son : rien ne joue.
+#15 > glisse 300 700 300 250
+#15 DOIGT rien
+#16 ROUTE ? | MODE simple | EMPREINTE fd97175171 | project=p-45d6ebc9 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « الغناء » 1.23:1 (needs 4.5:1, 13 sp)
+#16 > touche 101 762
+#16 DOIGT stem_3a02635f77d71cd9a979f25b_vocals « الغناء »
+#17 ROUTE ? | MODE simple | EMPREINTE 997c046d29 | project=p-45d6ebc9 no tuto
+#17 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:01 / 0:40) — la voix ne chante pas à cet instant.
+#17 > touche 294 459
+#17 DOIGT cut_song_3a02635f77d71cd9a979f25b «  اقطع ما أريد »
+#18 ROUTE cut_screen | MODE simple | EMPREINTE 88cce46dfa | project=p-45d6ebc9 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 457 600
+#18 DOIGT cut_auto « القص: قطعة واحدة »
+#19 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE dba3d62d4f | project=p-45d6ebc9 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 486 756
+#19 DOIGT cut_auto_1 « الجُمل »
+#20 ROUTE cut_screen | MODE simple | EMPREINTE 74676db2bc | project=p-45d6ebc9 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 300 445
+#20 DOIGT rien
+#21 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 343 253
+#21 DOIGT help_أدوات القطع « ما معنى «أدوات القطع»؟ »
+#21 AIDE help_
+#22 ROUTE dialogue:« أدوات القطع » | MODE simple | EMPREINTE 47aa5d3428 | project=p-45d6ebc9 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « ضع رأس التشغيل البرتقالي أو استمع، ثم: «اقطع هنا» يقطع في هذا الموضع، «البداية» و«النهاية» تقصّران القطعة، «حذف» يزيلها، «Loop» يكرّرها. اقرص العرض للتكبير. » 2.03:1 (needs 4.5:1, 14 sp)
+#22 > touche 79 748
+#22 DOIGT #1773 « فهمت »
+#23 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 390 640
+#23 DOIGT rien
+#24 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 391 558
+#24 DOIGT rien
+#25 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#25 SON Son : rien ne joue.
+#25 RIEN NE CHANGE (3 écrans identiques)
+#25 > appui-long 390 640
+#25 DOIGT rien
+#26 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 300 800 300 400
+#26 DOIGT rien
+#27 ROUTE cut_screen | MODE simple | EMPREINTE 0e975cde6e | project=p-45d6ebc9 no tuto
+#27 SON Son : rien ne joue.
+#27 RIEN NE CHANGE (5 écrans identiques)
+#27 FIN : rien ne change (5 écrans identiques)

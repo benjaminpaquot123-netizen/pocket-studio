@@ -1,0 +1,456 @@
+#0 SIEGE lang=tr device=phoneLand font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE e3ea492af8 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST «   Türkçe » 1.23:1 (needs 3.0:1, 14 sp)
+#1 LAYOUT CONTRAST « İlk şarkımı yap (rehberli) » 2.57:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Öğreniyorum » 2.04:1 (needs 3.0:1, 22 sp)
+#1 > glisse 600 450 600 150
+#1 DOIGT welcome_guided « İlk şarkımı yap (rehberli) »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE e5a699f776 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « İlk şarkımı yap (rehberli) » 1.23:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Bir stil seç, şarkının başından sonuna kadar adım adım yardım ederim. » 3.38:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Öğreniyorum » 2.81:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Hazır bir şarkı, neler yapabileceğini keşfetmek için. » 2.04:1 (needs 4.5:1, 14 sp)
+#2 > glisse 600 450 600 100
+#2 DOIGT welcome_demo « Bir demo dinle »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 93a075160e | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Bütün parçayı adım adım kendin yaparsın: ben anlatırım ve kontrol ederim. » 1.23:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Hazır bir şarkı, neler yapabileceğini keşfetmek için. » 3.48:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Telefondan bir şarkı seç: uygulama vokali, davulu, bası ve geri kalanı ayırır. » 2.04:1 (needs 4.5:1, 14 sp)
+#3 > touche 600 298
+#3 DOIGT welcome_empty « Sıfırdan başla »
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6cb049820a | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 319 246
+#4 DOIGT mode_card_simple « Basit »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de858b774d | project=p-93f14d50 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « Şarkım » lines cut (taller than its box)
+#5 LAYOUT CUT « Ritim » lines cut (taller than its box)
+#5 LAYOUT CUT « Klavye » lines cut (taller than its box)
+#5 LAYOUT CUT « Mix » lines cut (taller than its box)
+#5 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#5 > touche 719 302
+#5 DOIGT step_0 « Adım 1 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a33d55a23e | project=p-93f14d50 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 954 303
+#6 DOIGT step_4 « Adım 5 »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7fda1f488a | project=p-93f14d50 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 719 374
+#7 DOIGT step_8 « Adım 9 »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b7e5e5e1b1 | project=p-93f14d50 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 954 375
+#8 DOIGT step_12 « Adım 13 »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 812df063e2 | project=p-93f14d50 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 1083 42
+#9 DOIGT top_play
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8b5c63b844 | project=p-93f14d50 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > appui-long 459 213
+#10 DOIGT pad_2 « Trampet »
+#11 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 LAYOUT CONTRAST « Ses ara (trampet, conga, siren…) » 2.44:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « Dahili sesler » 2.97:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « 3 ses » 1.23:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « Kitin diğer sesleri » 3.21:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « 13 ses » 3.21:1 (needs 4.5:1, 13 sp)
+#11 > touche 600 288
+#11 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#12 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 > ecris alkış
+#13 ROUTE dialogue:library | MODE simple | EMPREINTE 22194aa362 | project=p-93f14d50 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 LAYOUT CONTRAST « Dinlemek için bir sese dokun, 3. pad (Trampet) üzerine koymak için “Kullan”. » 2.91:1 (needs 4.5:1, 13 sp)
+#13 > touche 1062 288
+#13 DOIGT dans:library_search
+#14 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 > touche 600 288
+#14 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#15 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > ecris davul
+#16 ROUTE dialogue:library | MODE simple | EMPREINTE fdac8041cb | project=p-93f14d50 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 LAYOUT CONTRAST « Davul kenarı » 2.97:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Kullan » 3.59:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Büyük davul 1 » 3.28:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Kullan » 1.36:1 (needs 4.5:1, 14 sp)
+#16 > touche 1062 288
+#16 DOIGT dans:library_search
+#17 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 600 288
+#17 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#18 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 > ecris el çırpma
+#19 ROUTE dialogue:library | MODE simple | EMPREINTE d90bace7e4 | project=p-93f14d50 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 LAYOUT CONTRAST « El çırpma » 2.98:1 (needs 4.5:1, 14 sp)
+#19 > touche 1062 288
+#19 DOIGT dans:library_search
+#20 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 600 288
+#20 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#21 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > ecris zil
+#22 ROUTE dialogue:library | MODE simple | EMPREINTE ec62fd1ab5 | project=p-93f14d50 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CONTRAST « Zil » 2.99:1 (needs 4.5:1, 14 sp)
+#22 > touche 1062 288
+#22 DOIGT dans:library_search
+#23 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 600 288
+#23 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#24 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > ecris cirpma
+#25 ROUTE dialogue:library | MODE simple | EMPREINTE 44a9a30a17 | project=p-93f14d50 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 1062 288
+#25 DOIGT dans:library_search
+#26 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 600 288
+#26 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#27 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > ecris konga
+#28 ROUTE dialogue:library | MODE simple | EMPREINTE 201cbe2d6d | project=p-93f14d50 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 1062 288
+#28 DOIGT dans:library_search
+#29 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 600 288
+#29 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#30 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > ecris conga
+#31 ROUTE dialogue:library | MODE simple | EMPREINTE 7cfa1af497 | project=p-93f14d50 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « Conga » 2.87:1 (needs 4.5:1, 14 sp)
+#31 > touche 1062 288
+#31 DOIGT dans:library_search
+#32 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 600 288
+#32 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#33 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > ecris alkis
+#34 ROUTE dialogue:library | MODE simple | EMPREINTE a397f69350 | project=p-93f14d50 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 1062 288
+#34 DOIGT dans:library_search
+#35 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 600 288
+#35 DOIGT library_search « Ses ara (trampet, conga, siren…) »
+#36 ROUTE dialogue:library | MODE simple | EMPREINTE 70cf951501 | project=p-93f14d50 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > ecris clap
+#37 ROUTE dialogue:library | MODE simple | EMPREINTE 7f47d24092 | project=p-93f14d50 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 348 390
+#37 DOIGT library_result_0 « El çırpma »
+#38 ROUTE dialogue:library | MODE simple | EMPREINTE 7f47d24092 | project=p-93f14d50 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 512 390
+#38 DOIGT library_result_use_0 « Kullan »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3edf8b7df7 | project=p-93f14d50 no tuto
+#39 SON Son : la musique du projet joue en boucle ; le pad « El çırpma » sonne.
+#39 > touche 954 303
+#39 DOIGT step_4 « Adım 5 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c5e4418b4f | project=p-93f14d50 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CONTRAST « El çırpma » 3.91:1 (needs 4.5:1, 14 sp)
+#40 > touche 954 375
+#40 DOIGT step_12 « Adım 13 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 02aa498277 | project=p-93f14d50 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 60 300
+#41 DOIGT tab_simple_Clavier « Klavye »
+#42 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b8e0e9a332 | project=p-93f14d50 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST «  Melodimi kaydet » 2.78:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT TARGET « Do# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Re# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Fa# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Sol# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « La# 4 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Do# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Re# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Fa# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « Sol# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#42 LAYOUT TARGET « La# 5 Çal » 21 x 67 dp (touch 48 x 67)
+#42 > touche 212 183
+#42 DOIGT sons_Acide « Acid 303 »
+#43 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2a98d4e403 | project=p-93f14d50 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT CONTRAST « Bas çizgisi » 4.17:1 (needs 4.5:1, 12 sp)
+#43 > touche 156 430
+#43 DOIGT guide_bar « Rehber »
+#44 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c48fedc679 | project=p-93f14d50 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CONTRAST « BAŞLARKEN » 4.30:1 (needs 4.5:1, 12 sp)
+#44 > touche 958 392
+#44 DOIGT rien (texte « Pes bir çizgi: bir Acid 303 çizgisi üret »)
+#45 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c48fedc679 | project=p-93f14d50 no tuto
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 432 411
+#45 DOIGT acid_generate « Bana bir çizgi yaz »
+#46 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 700502cb88 | project=p-93f14d50 no tuto
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 352 180
+#46 DOIGT track_0 « Synth »
+#47 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b8e0e9a332 | project=p-93f14d50 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 156 430
+#47 DOIGT key_60 « Do 4 »
+#48 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6615279ec7 | project=p-93f14d50 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CUT «  Melodimi kaydet » ellipsized (« … »)
+#48 LAYOUT CUT «  Az önce çaldığımı sakla » ellipsized (« … »)
+#48 > touche 254 430
+#48 DOIGT key_64 « Mi 4 »
+#49 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6615279ec7 | project=p-93f14d50 no tuto
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 352 430
+#49 DOIGT key_67 « Sol 4 »
+#50 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6615279ec7 | project=p-93f14d50 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 RIEN NE CHANGE (3 écrans identiques)
+#50 > touche 450 430
+#50 DOIGT key_71 « Si 4 »
+#51 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6615279ec7 | project=p-93f14d50 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 60 442
+#51 DOIGT tab_simple_Envoyer « Gönder »
+#52 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ebb222a836 | project=p-93f14d50 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 660 348
+#52 DOIGT share_go «   Paylaş »
+#53 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 2e5bd3af41 | project=p-93f14d50 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT CONTRAST « İptal » 2.38:1 (needs 4.5:1, 14 sp)
+#53 > attends 10
+#54 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 2b00b87fd0 | project=p-93f14d50 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > attends 10
+#54 PARTAGE Şarkım-döngü-20261105-141729.m4a
+#55 ROUTE dialogue:« Şarkımı paylaş · Şarkım-döngü- » | MODE simple | EMPREINTE 4a04d6b427 | project=p-93f14d50 no tuto
+#55 SON Son : la musique du projet joue en boucle.
+#55 > retour
+#55 RETOUR
+#56 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 6f60fb32cb | project=p-93f14d50 no tuto
+#56 SON Son : la musique du projet joue en boucle.
+#56 LAYOUT CONTRAST « Süre: 16 sn » 1.45:1 (needs 4.5:1, 13 sp)
+#56 > touche 60 180
+#56 DOIGT rien
+#57 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ef5ff94d7f | project=p-93f14d50 no tuto
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 60 180
+#57 DOIGT tab_simple_Morceau « Şarkım »
+#58 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b22f4e0194 | project=p-93f14d50 no tuto
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 1170 444
+#58 DOIGT guide_bar « Rehber »
+#59 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 93f81bc22b | project=p-93f14d50 no tuto
+#59 SON Son : la musique du projet joue en boucle.
+#59 > glisse 972 440 972 250
+#59 DOIGT rien (texte « Sıra sende: “Klavyeyi aç” düğmesine doku »)
+#60 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 07ca86ac65 | project=p-93f14d50 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Klavyeyi aç » 3.89:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « ↗ » 1.43:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Notaları yaz » 1.43:1 (needs 4.5:1, 14 sp)
+#60 > touche 972 407
+#60 DOIGT guide_open_keys « Ayara git: Klavyeyi aç »
+#61 ROUTE mission_overlay | MODE simple | EMPREINTE bbb80cb20b | project=p-93f14d50 no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 LAYOUT OVERLAP « Ayar burada. Rehber seni aşağıdaki çubukta bekliyor. » over the touchable « Basit modu. Mod değiştirmek için dokun.  » (56 x 20 dp)
+#61 LAYOUT OVERLAP « Ayar burada. Rehber seni aşağıdaki çubukta bekliyor. » over the touchable « Geçerli bölüm: A. Bölüm değiştirmek için » (48 x 14 dp)
+#61 LAYOUT OVERLAP « Ayar burada. Rehber seni aşağıdaki çubukta bekliyor. » over the touchable « Bir bölümden çal » (3 x 4 dp)
+#61 > touche 865 132
+#61 DOIGT guide_spot_close « Anladım »
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f49c83b769 | project=p-93f14d50 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 958 392
+#62 DOIGT record_start «  Melodimi kaydet »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 554a400aa5 | project=p-93f14d50 no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 LAYOUT OVERLAP « Do » over the touchable « Do# 5 Çal » (4 x 18 dp)
+#63 LAYOUT CONTRAST «  Durdur » 2.78:1 (needs 4.5:1, 14 sp)
+#63 LAYOUT TARGET « Do# 4 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Re# 4 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Fa# 4 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Sol# 4 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « La# 4 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Do# 5 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Re# 5 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Fa# 5 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « Sol# 5 Çal » 21 x 54 dp (touch 48 x 54)
+#63 LAYOUT TARGET « La# 5 Çal » 21 x 54 dp (touch 48 x 54)
+#63 > touche 156 455
+#63 DOIGT key_60 « Do 4 »
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2917dce469 | project=p-93f14d50 no tuto
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 254 455
+#64 DOIGT key_64 « Mi 4 »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e2964b8ade | project=p-93f14d50 no tuto
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 352 455
+#65 DOIGT key_67 « Sol 4 »
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a72bef7bde | project=p-93f14d50 no tuto
+#66 SON Son : la musique du projet joue en boucle.
+#66 > touche 254 455
+#66 DOIGT key_64 « Mi 4 »
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 554a400aa5 | project=p-93f14d50 no tuto
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 1100 429
+#67 DOIGT record_stop «  Durdur »
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 01e107dbe9 | project=p-93f14d50 no tuto
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 1133 180
+#68 DOIGT dans:take_loop_grown « Anladım »
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 78a60fd082 | project=p-93f14d50 no tuto
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 156 391
+#69 DOIGT key_60 « Do 4 »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2113c44cc1 | project=p-93f14d50 no tuto
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 895 270
+#70 DOIGT chord_pads_switch « Pad'ler »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ef080288c4 | project=p-93f14d50 no tuto
+#71 SON Son : la musique du projet joue en boucle.
+#71 LAYOUT CUT « Sol » lines cut (taller than its box)
+#71 LAYOUT CUT « La m » lines cut (taller than its box)
+#71 LAYOUT CUT « Si dim » lines cut (taller than its box)
+#71 LAYOUT CUT « Do » lines cut (taller than its box)
+#71 LAYOUT CONTRAST « Sol » 3.10:1 (needs 4.5:1, 13 sp)
+#71 LAYOUT CONTRAST « La m » 3.10:1 (needs 4.5:1, 13 sp)
+#71 LAYOUT CONTRAST « Si dim » 3.10:1 (needs 4.5:1, 13 sp)
+#71 LAYOUT CONTRAST « Do » 3.63:1 (needs 4.5:1, 13 sp)
+#71 > touche 214 383
+#71 DOIGT chord_pad_0 « Do »
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f3ee3e2caf | project=p-93f14d50 no tuto
+#72 SON Son : la musique du projet joue en boucle.
+#72 > touche 1125 392
+#72 DOIGT keep_played «  Az önce çaldığımı sakla »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3f7e67cb55 | project=p-93f14d50 no tuto
+#73 SON Son : la musique du projet joue en boucle.
+#73 LAYOUT CONTRAST « Ritme oturt » 3.63:1 (needs 4.5:1, 14 sp)
+#73 > touche 783 42
+#73 DOIGT top_mode « Basit modu. Mod değiştirmek için dokun. »
+#74 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE fe633b050d | project=p-93f14d50 no tuto
+#74 SON Son : la musique du projet joue en boucle.
+#74 LAYOUT CONTRAST « Bu projenin modu » 1.23:1 (needs 3.0:1, 24 sp)
+#74 > touche 600 459
+#74 DOIGT mode_card_pro « Pro »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 3e0d35c01b | project=p-93f14d50 no tuto
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 889 414
+#75 DOIGT take_keep « Sakla »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 72ba565cdf | project=p-93f14d50 no tuto
+#76 SON Son : la musique du projet joue en boucle.
+#76 > touche 1046 183
+#76 DOIGT track_sound_1
+#77 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE e82812bba6 | project=p-93f14d50 no tuto
+#77 SON Son : la musique du projet joue en boucle.
+#77 LAYOUT OVERLAP « Sesi: Melodim » over the touchable « Sayfayı kapat » (150 x 28 dp)
+#77 LAYOUT OVERLAP « Bir sese dokun: tüm şarkıda bu kanalın sesinin yerini alır. » over the touchable « Sayfayı kapat » (341 x 18 dp)
+#77 LAYOUT OVERLAP « Kapat » over the touchable « Sayfayı kapat » (40 x 20 dp)
+#77 LAYOUT OVERLAP « Lead'ler » over the touchable « Sayfayı kapat » (64 x 24 dp)
+#77 LAYOUT OVERLAP « Lead » over the touchable « Sayfayı kapat » (33 x 17 dp)
+#77 LAYOUT OVERLAP « Testere · uzun » over the touchable « Sayfayı kapat » (85 x 16 dp)
+#77 LAYOUT OVERLAP « Kare lead » over the touchable « Sayfayı kapat » (63 x 17 dp)
+#77 LAYOUT OVERLAP « Kare · uzun » over the touchable « Sayfayı kapat » (67 x 16 dp)
+#77 LAYOUT OVERLAP « Asit lead » over the touchable « Sayfayı kapat » (59 x 17 dp)
+#77 LAYOUT OVERLAP « Supersaw » over the touchable « Sayfayı kapat » (68 x 17 dp)
+#77 LAYOUT OVERLAP « Testere · 7 ses · uzun » over the touchable « Sayfayı kapat » (126 x 16 dp)
+#77 LAYOUT OVERLAP « Trance lead » over the touchable « Sayfayı kapat » (79 x 17 dp)
+#77 LAYOUT OVERLAP « Testere · 4 ses · uzun » over the touchable « Sayfayı kapat » (128 x 16 dp)
+#77 LAYOUT OVERLAP « Hoover » over the touchable « Sayfayı kapat » (49 x 17 dp)
+#77 LAYOUT CONTRAST « Testere · uzun » 2.39:1 (needs 4.5:1, 12 sp)
+#77 LAYOUT CONTRAST « Kare · uzun » 2.39:1 (needs 4.5:1, 12 sp)
+#77 > touche 180 195
+#77 DOIGT synth_sounds_back
+#78 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 18960da5bd | project=p-93f14d50 no tuto
+#78 SON Son : la musique du projet joue en boucle.
+#78 LAYOUT OVERLAP « Ses ara (trampet, conga, siren…) » over the touchable « Sayfayı kapat » (248 x 24 dp)
+#78 LAYOUT OVERLAP « Baslar » over the touchable « Sayfayı kapat » (49 x 24 dp)
+#78 LAYOUT OVERLAP « 16 ses » over the touchable « Sayfayı kapat » (38 x 18 dp)
+#78 LAYOUT OVERLAP « Lead'ler » over the touchable « Sayfayı kapat » (63 x 24 dp)
+#78 LAYOUT OVERLAP « 6 ses » over the touchable « Sayfayı kapat » (32 x 18 dp)
+#78 LAYOUT OVERLAP « Pad'ler » over the touchable « Sayfayı kapat » (55 x 24 dp)
+#78 LAYOUT OVERLAP « 4 ses » over the touchable « Sayfayı kapat » (32 x 18 dp)
+#78 LAYOUT CONTRAST « 16 ses » 1.71:1 (needs 4.5:1, 13 sp)
+#78 LAYOUT CONTRAST « 6 ses » 2.78:1 (needs 4.5:1, 13 sp)
+#78 LAYOUT CONTRAST « Pad'ler » 2.04:1 (needs 4.5:1, 16 sp)
+#78 LAYOUT CONTRAST « 4 ses » 2.04:1 (needs 4.5:1, 13 sp)
+#78 > touche 600 201
+#78 DOIGT synth_sounds_search « Ses ara (trampet, conga, siren…) »
+#79 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 18960da5bd | project=p-93f14d50 no tuto
+#79 SON Son : la musique du projet joue en boucle.
+#79 > ecris piyano
+#80 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE df3658907e | project=p-93f14d50 no tuto
+#80 SON Son : la musique du projet joue en boucle.
+#80 LAYOUT OVERLAP « Elektrik piyano » over the touchable « Sayfayı kapat » (100 x 17 dp)
+#80 LAYOUT OVERLAP « Üçgen · uzun » over the touchable « Sayfayı kapat » (78 x 16 dp)
+#80 LAYOUT OVERLAP « Rastgele » over the touchable « Sayfayı kapat » (60 x 20 dp)
+#80 LAYOUT OVERLAP « Bu sesi sakla » over the touchable « Sayfayı kapat » (91 x 20 dp)
+#80 LAYOUT OVERLAP « “Bu sesi sakla” onu tüm projelerin için favorilerine ekler. » over the touchable « Sayfayı kapat » (335 x 18 dp)
+#80 LAYOUT OVERLAP « GERÇEK ENSTRÜMANLAR » over the touchable « Sayfayı kapat » (174 x 16 dp)
+#80 LAYOUT OVERLAP « Nota nota kaydedildi. Yalnızca bir kez indirilir (Wi-Fi önerilir); o zamana kadar kanal bir synth sesi çalar. » over the touchable « Sayfayı kapat » (590 x 16 dp)
+#80 LAYOUT CONTRAST « GERÇEK ENSTRÜMANLAR » 2.04:1 (needs 4.5:1, 12 sp)
+#80 LAYOUT CONTRAST « Nota nota kaydedildi. Yalnızca bir kez indirilir (Wi-Fi önerilir); o zamana kadar kanal bir synth sesi çalar. » 2.04:1 (needs 4.5:1, 13 sp)
+#80 > touche 1020 201
+#80 DOIGT dans:synth_sounds_search
+#81 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 18960da5bd | project=p-93f14d50 no tuto
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 600 201
+#81 DOIGT synth_sounds_search « Ses ara (trampet, conga, siren…) »
+#82 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 18960da5bd | project=p-93f14d50 no tuto
+#82 SON Son : la musique du projet joue en boucle.
+#82 > ecris keman
+#83 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE c4b8219de5 | project=p-93f14d50 no tuto
+#83 SON Son : la musique du projet joue en boucle.
+#83 LAYOUT OVERLAP « Ses bulunamadı: başka bir kelime dene ya da aşağıdan başka paketler indir. » over the touchable « Sayfayı kapat » (499 x 20 dp)
+#83 LAYOUT OVERLAP « Nota nota kaydedildi. Yalnızca bir kez indirilir (Wi-Fi önerilir); o zamana kadar kanal bir synth sesi çalar. » over the touchable « Sayfayı kapat » (590 x 36 dp)
+#83 > glisse 600 500 600 150
+#83 DOIGT rien (texte « Nota nota kaydedildi. Yalnızca bir kez i »)
+#84 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 5cdeb8ad46 | project=p-93f14d50 no tuto
+#84 SON Son : la musique du projet joue en boucle.
+#84 LAYOUT OVERLAP « “Bu sesi sakla” onu tüm projelerin için favorilerine ekler. » over the touchable « Sayfayı kapat » (335 x 15 dp)
+#84 LAYOUT OVERLAP « Kuyruklu piyano » over the touchable « Sayfayı kapat » (110 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 11 MB » over the touchable « Sayfayı kapat » (104 x 16 dp)
+#84 LAYOUT OVERLAP « Konser piyanosu » over the touchable « Sayfayı kapat » (114 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 16 MB » over the touchable « Sayfayı kapat » (107 x 16 dp)
+#84 LAYOUT OVERLAP « Yaylılar » over the touchable « Sayfayı kapat » (50 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 9 MB » over the touchable « Sayfayı kapat » (101 x 16 dp)
+#84 LAYOUT OVERLAP « Pizzicato yaylılar » over the touchable « Sayfayı kapat » (115 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 2 MB » over the touchable « Sayfayı kapat » (101 x 16 dp)
+#84 LAYOUT OVERLAP « Bakırlar » over the touchable « Sayfayı kapat » (52 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 6 MB » over the touchable « Sayfayı kapat » (101 x 16 dp)
+#84 LAYOUT OVERLAP « Tahta nefesliler » over the touchable « Sayfayı kapat » (104 x 17 dp)
+#84 LAYOUT OVERLAP « İndirilecek: 7 MB » over the touchable « Sayfayı kapat » (100 x 16 dp)
+#84 LAYOUT CONTRAST « “Bu sesi sakla” onu tüm projelerin için favorilerine ekler. » 1.23:1 (needs 4.5:1, 13 sp)
+#84 LAYOUT CONTRAST « Konser piyanosu » 2.35:1 (needs 4.5:1, 14 sp)
+#84 LAYOUT CONTRAST « İndirilecek: 6 MB » 2.04:1 (needs 4.5:1, 12 sp)
+#84 LAYOUT CONTRAST « İndirilecek: 7 MB » 2.04:1 (needs 4.5:1, 12 sp)
+#84 > fin
+#84 FIN : fin

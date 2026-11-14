@@ -28,13 +28,11 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "Peak: too high (%s dBTP), it may crackle",
   "Crête : sous la limite, vérifiée après la compression": "Peak: under the limit, checked after compression",
   "Crête : sous la limite, pas de saturation": "Peak: under the limit, no clipping",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d-bit",
   "Prêt à partager": "Ready to share",
   "À revoir : baisse un peu le volume général avant de partager": "Check it: turn the main volume down a little before sharing",
   "Prêt, mais très doux : monte le volume pour qu'il sonne comme les autres": "Ready, but very soft: turn it up so it sounds like the others",
   "Exporté": "Exported",
   "À télécharger : %s": "To download: %s",
-  "Bientôt disponible": "Coming soon",
-  "Compression M4A : crêtes reprises": "M4A compression: peaks taken down"
+  "Bientôt disponible": "Coming soon"
 }

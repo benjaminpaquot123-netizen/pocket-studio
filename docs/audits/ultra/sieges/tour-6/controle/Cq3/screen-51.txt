@@ -1,0 +1,41 @@
+Écran 51 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+texte « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. » @ 294,174
+bouton « Avancé : master pro Plafond −1,0 dB · attaque et relâchement · grave en mono · écoute A/B · référence » ⌄ @ 294,264
+bouton « Effets Aucun » ⌄ @ 294,364
+bouton « Analyseur de spectre » @ 175,450
+titre « RÉVERBE ET ÉCHO » [état « Déplié »] @ 182,570
+bouton « ? » @ 301,570
+texte « Communs à toutes les voies : règle combien chaque voie y envoie dans ses effets. L'écho suit le tempo. » @ 294,631
+texte « Réverbe » @ 83,685
+texte « Taille » @ 266,727
+texte « 60 % » @ 518,727
+curseur [état « 60 % », à 60 %] @ 294,790
+texte « Amorti » @ 266,853
+texte « 50 % » @ 518,853
+curseur [état « 50 % », à 50 %] @ 294,916
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.OreilleTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-12T13:58:12.692Z" hostname="vm" time="0.43">
+  <properties/>
+  <testcase name="aNoKeepsItsPictureItsJournalAndItsMeasuresAndTheRunGoesOn" classname="com.pocketstudio.bentest.OreilleTest" time="0.053"/>
+  <testcase name="theBannerWaitsForTheAnswerAndClearsItself" classname="com.pocketstudio.bentest.OreilleTest" time="0.014"/>
+  <testcase name="withoutBluetoothQuestionSixIsSkippedNotAsked" classname="com.pocketstudio.bentest.OreilleTest" time="0.025"/>
+  <testcase name="threeBackSwipesAreReadByTheRobotWithoutAnAnswer" classname="com.pocketstudio.bentest.OreilleTest" time="0.017"/>
+  <testcase name="theReportHasItsSectionAndTheMeasuresHoldTheAnswers" classname="com.pocketstudio.bentest.OreilleTest" time="0.036"/>
+  <testcase name="withoutAWiredHeadsetQuestionFiveIsSkippedNotAsked" classname="com.pocketstudio.bentest.OreilleTest" time="0.014"/>
+  <testcase name="theBannerGivesUpAtItsTimeout" classname="com.pocketstudio.bentest.OreilleTest" time="0.201"/>
+  <testcase name="theEightQuestionsAreAskedInOnePass" classname="com.pocketstudio.bentest.OreilleTest" time="0.017"/>
+  <testcase name="aSkippedQuestionIsNotAFailure" classname="com.pocketstudio.bentest.OreilleTest" time="0.014"/>
+  <testcase name="aKickThatLeftTheCentreIsARedWithItsPicture" classname="com.pocketstudio.bentest.OreilleTest" time="0.019"/>
+  <testcase name="noAnswerFailsTheStepInsteadOfWaitingForever" classname="com.pocketstudio.bentest.OreilleTest" time="0.015"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,36 @@
+Écran 9 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône ← « Atrás  · Más » @ 294,198
+bouton (maison) « Inicio » @ 107,316
+bouton (dossier ouvert) « Mis proyectos » @ 294,316
+bouton (neuf points) « Live: tocar en directo » @ 481,316
+bouton (disque) « Remix » @ 107,472
+bouton (micro) « Grabar mi voz » @ 294,472
+bouton (notes sur une pile) « Biblioteca de sonidos » @ 481,472
+bouton ★ « Mi biblioteca » @ 107,621
+bouton (? dans un rond) « Ayuda » @ 294,621
+bouton (roue dentée) « Ajustes » @ 481,621
+bouton (interrupteur) « Cambiar al modo Pro » @ 107,769
+bouton (insecte) « Informar de un error » @ 294,769
+bouton (liste cochée) « Lista de pruebas » @ 481,769
+bouton (boussole) « Guía  · Pon un ritmo 0 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » [désactivé] @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

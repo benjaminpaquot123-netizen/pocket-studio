@@ -1,0 +1,52 @@
+Écran 130 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [coupé] @ 22,204
+onglet « Acid 303 Bassline » @ 129,204
+onglet « Vocals Mikrofon » @ 308,204
+onglet « Remix Trennen » @ 478,204
+bouton « Bass Plaits » @ 623,204
+bouton « Akkorde Pluck » ⋮ @ 789,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « 4 » [coupé] @ 486,302
+bouton « 5 » [coupé] @ 853,302
+texte « G♭ » @ 84,334
+texte « F » @ 84,375
+texte « E » @ 84,417
+texte « E♭ » @ 84,459
+texte « D » @ 84,501
+texte « D♭ » @ 84,543
+texte « C4 » @ 84,585
+texte « H » @ 84,627
+texte « B » [coupé] @ 84,660
+dessin [coupé] @ 492,493
+texte « Das Riff Kapitel 7/16 · Schritt 1/3 · Pro » @ 366,723
+icône (liste) « Kapitel » @ 759,724
+icône ⌄ @ 843,724
+texte « Hör dir das Riff des Beispiels mit seinem Bass an: Das wirst du schreiben. » @ 450,835
+texte « Das Kit Techno » @ 139,931
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,997
+texte « ▸ Warum? » @ 450,1071
+icône « Weiterlesen » ⌄ @ 450,1125
+bouton ▶ «  Beispiel anhören » @ 450,1197
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

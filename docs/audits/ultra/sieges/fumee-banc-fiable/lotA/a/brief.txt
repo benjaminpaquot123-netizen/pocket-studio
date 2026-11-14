@@ -1,0 +1,11 @@
+First read and follow /tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/lotA/a (seat a, lot A; lang hi, device phone360, font 130, mode -, options fresh=reel, mission premier-morceau, budget 40 gestures).
+Profile (id t5-Aa): Débutant indien, petit téléphone, 130 %, premier lancement (rejeu T4 D d : T4-26, T4-27, T4-42 hi). Act as this person (habits, patience, vocabulary).
+Mission premier-morceau; its 3 goals (ids, the bench checks them): son (un son joue), partie (une 2e partie existe), partage (un fichier est partagé).
+Promises to check, one « promesse: » line each in your report, with its id:
+  - id=t5-Aa-1 | « Enregistrer ma mélodie » garde mes notes là où je regarde (pas dans une autre partie)
+  - id=t5-Aa-2 | la demande de notifications attend la fin de la prise
+  - id=t5-Aa-3 | le son choisi (Marimba) est celui de la piste
+  - id=t5-Aa-4 | hindi sans mots anglais en Simple
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.
+Smoke round of the repaired bench: play your mission normally; everything the bench says about itself goes in « incidents-banc: ».

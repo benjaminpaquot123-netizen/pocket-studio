@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Un petit message s'affiche quelques secondes en bas de l'écran : « Pad Live には専用の「Live」プロジェクトがあります：「はじめてのビート」はマイプロジェクトで待っています。 ».

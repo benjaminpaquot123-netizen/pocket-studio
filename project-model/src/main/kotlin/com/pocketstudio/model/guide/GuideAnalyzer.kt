@@ -71,7 +71,8 @@ data class GuideReport(
     val sheets: List<GuideSheet>,
     val simple: Boolean,
 ) {
-    val percent: Int get() = if (applicable == 0) 0 else (100f * done / applicable).roundToInt()
+    /** How far the song is: the cards settled (decided, ticked or passed over) out of [applicable], the same count as « Étape n/N » and [toDecide]. */
+    val percent: Int get() = if (applicable == 0) 0 else (100f * (applicable - toDecide) / applicable).roundToInt()
 
     /** The cards still to decide (applicable, not settled). */
     val toDecide: Int get() = cards.count { it.applicable && !it.settled }
@@ -136,7 +137,8 @@ object GuideAnalyzer {
     private fun header(p: Project, facts: GuideFacts, applicable: List<GuideCardStatus>, next: GuideCardStatus?, simple: Boolean): String {
         val tracks = facts.tracks.count { !it.key.startsWith("pad:") }
         if (next == null) return tr("%1\$s · %2\$s · %3\$d pistes · tout est fait", p.name, duration(p), tracks)
-        val index = applicable.indexOfFirst { it.card.id == next.card.id }
+        // Audit final: the step is the number of cards decided plus one (as the panel's « Étape » and its %), not the card's place in the plan.
+        val index = if (applicable.none { it.card.id == next.card.id }) -1 else applicable.count { it.settled }
         return if (index < 0) tr("%1\$s · %2\$s · %3\$d pistes · à corriger : %4\$s", p.name, duration(p), tracks, next.card.titleFor(simple))
         else tr("%1\$s · %2\$s · %3\$d pistes · étape %4\$d/%5\$d : %6\$s", p.name, duration(p), tracks, index + 1, applicable.size, next.card.titleFor(simple))
     }
@@ -267,6 +269,8 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val chorus = peaks.firstOrNull()?.label == "Refrain"
         val peakWord = if (chorus) tr("refrain") else tr("Drop")
         val peakWords = if (chorus) tr("refrains") else tr("Drops")
+        // With its article: Dutch says « het refrein » but « de Drop ».
+        val thePeak = if (chorus) tr("le refrain") else tr("le Drop")
 
         // The frame.
         predicates["style"] = p.style != null
@@ -316,12 +320,14 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val dry = melodic.filter { it.role in setOf(GuideRoles.PAD, GuideRoles.LEAD, GuideRoles.COUNTER, GuideRoles.VOCAL, GuideRoles.ACID) && !hasSpace(it) }
         if (dry.isNotEmpty()) fact("track.no_sends", GuideSeverity.WARN, tr("Sans réverbe ni écho : %s.", names(dry)), dry.map { it.key })
         val placed = melodic.filter { it.role !in GuideRoles.LOW && it.role != GuideRoles.VOCAL && it.role != GuideRoles.RISER }
-        predicates["pans"] = placed.any { abs(panOf(it)) > 0.01f }
+        // Audit final: placed means at least half of them apart from the centre (one track moved is not a stereo picture).
+        predicates["pans"] = placed.isNotEmpty() && placed.count { abs(panOf(it)) > 0.01f } * 2 >= placed.size
         if (placed.isNotEmpty() && placed.all { abs(panOf(it)) <= 0.01f }) {
             fact("mix.no_pans", GuideSeverity.WARN, tr("%d pistes, toutes au centre : rien n'est placé dans la stéréo.", placed.size), placed.map { it.key }, listOf(placed.size.toFloat()))
         }
         val faders = (melodic + song.tracks.filter { it.key == GuideTrack.DRUMS }).mapNotNull { p.mixer.channels.getOrNull(it.channel)?.volume }
-        predicates["faders"] = faders.any { abs(it - 0.8f) > 0.005f }
+        // Audit final: a balance means at least half of the faders moved (one fader moved is not a balance).
+        predicates["faders"] = faders.isNotEmpty() && faders.count { abs(it - 0.8f) > 0.005f } * 2 >= faders.size
         if (faders.isNotEmpty() && faders.all { abs(it - 0.8f) <= 0.005f }) fact("mix.faders_flat", GuideSeverity.WARN, tr("Tous les faders sont à 0 dB : la balance n'est pas encore faite."))
         val busy = song.tracks.filter { t -> moving(t.channel).size > 2 }
         if (busy.isNotEmpty()) fact("curves.too_many", GuideSeverity.WARN, tr("Plus de deux courbes sur : %s. Le mix bouge peut-être trop.", names(busy)), busy.map { it.key })
@@ -335,7 +341,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
             bassStrips.any { ch -> p.mixer.channels.getOrNull(ch)?.inserts?.any { it.effect == EffectType.PUMP && !it.bypass } == true }
 
         // The arrangement.
-        arrangement(peaks, peakWord, peakWords)
+        arrangement(peaks, thePeak, peakWords)
 
         // The movement.
         movement(peaks)
@@ -404,7 +410,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
 
     private val instruments: List<GuideTrack> get() = song.tracks.filter { it.key.startsWith("inst:") }
 
-    private fun arrangement(peaks: List<GuideSection>, peakWord: String, peakWords: String) {
+    private fun arrangement(peaks: List<GuideSection>, thePeak: String, peakWords: String) {
         val p = project
         // Peaks compared bar by bar as written, whatever track plays the notes (a bass switched to another
         // sound plays the same music), the drums left out where either plays a fill or a crash.
@@ -443,7 +449,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
                 if (repeats > worst.second) worst = period to repeats
             }
             predicates["bass_varies"] = varies
-            if (!varies) fact("bass.repeats", GuideSeverity.WARN, tr("La basse rejoue la même boucle de %1\$d mesures %2\$d fois de suite dans le %3\$s.", worst.first, worst.second, peakWord),
+            if (!varies) fact("bass.repeats", GuideSeverity.WARN, tr("La basse rejoue la même boucle de %1\$d mesures %2\$d fois de suite dans %3\$s.", worst.first, worst.second, thePeak),
                 basses, listOf(worst.first.toFloat(), worst.second.toFloat()))
         } else predicates["bass_varies"] = true
 
@@ -452,7 +458,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         if (pads.isNotEmpty() && peaks.isNotEmpty()) {
             val shares = peaks.map { s -> (s.start until s.end).count { bar -> pads.any { song.sounds(it, bar) } }.toFloat() / s.bars.coerceAtLeast(1) }
             predicates["pad_room"] = shares.any { it <= 0.75f }
-            if (shares.all { it >= 0.99f }) fact("pad.everywhere", GuideSeverity.WARN, tr("Les accords jouent pendant tout le %1\$s (%2\$d sur %2\$d).", peakWord, peaks.size), pads, shares)
+            if (shares.all { it >= 0.99f }) fact("pad.everywhere", GuideSeverity.WARN, tr("Les accords jouent pendant tout %1\$s (%2\$d sur %2\$d).", thePeak, peaks.size), pads, shares)
         } else predicates["pad_room"] = pads.isEmpty()
 
         // Subtraction: the other sections play fewer tracks than the peak.
@@ -524,7 +530,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val scene = peaks.firstOrNull()?.scene ?: if (p.song.isEmpty()) p.scene else return
         val s = p.allScenes.getOrNull(scene) ?: return
         val degrees = ChordTrack.guess(p, scene)
-        fact("chords.guess", GuideSeverity.INFO, tr("Accords du %1\$s : %2\$s.", if (peaks.firstOrNull()?.label == "Refrain") tr("refrain") else tr("Drop"),
+        fact("chords.guess", GuideSeverity.INFO, tr("Les accords dans %1\$s : %2\$s.", if (peaks.firstOrNull()?.label == "Refrain") tr("le refrain") else tr("le Drop"),
             degrees.joinToString(" – ") { ChordTrack.roman(p, it) }), values = degrees.map { it.toFloat() })
         val style = p.style?.let(StarterWizard::style)
         val ctx = MelodyMetrics.Context(p.harmony, ChordTrack.chordsOf(p, scene).ifEmpty { listOf(0) })

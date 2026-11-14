@@ -1,0 +1,2 @@
+test: NewReplaysAimByTag#test_a_command_can_stand_for_an_untagged_button
+muté : 2026-11-12, lot « juge7 », worktree jetable détaché au vert ; mutation.patch ôte la ligne « commande[int(k)] = v » que le vert ajoute à rejeu-etiquettes.py (--commande n'est plus lu) : le test rougit (« Gestures with no tag under the finger », code de sortie 2) ; sans elle il verdit. Commande : python3 -I junit.py <worktree> <xml> test_socle NewReplaysAimByTag.test_a_command_can_stand_for_an_untagged_button

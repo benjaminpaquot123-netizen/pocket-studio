@@ -1,0 +1,5 @@
+Écran 38 (588x1278)
+touchable « قطعة واحدة » @ 486,416
+touchable « الجُمل » @ 486,488
+touchable « Transients » @ 486,560
+touchable « المازورات » @ 486,632

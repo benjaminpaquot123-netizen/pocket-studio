@@ -1,0 +1,35 @@
+Écran 75 (900x1509)
+texte « Cambia il suono » @ 165,36
+icône ▶ @ 786,54
+icône ✕ @ 858,54
+texte « Per il pad 3 (Rullante) » @ 152,78
+onglet ◎ « Grancasse » @ 126,143
+onglet ○ « Rullanti » [sélectionné] @ 328,143
+onglet (main) « Battimani » @ 522,143
+onglet (points en rond) « Hi-hat chiusi » @ 751,143
+titre « SUONI » [état « Espanso »] @ 107,233
+champ (loupe) « Cerca un suono (rullante, conga, sirena…) » contenu «  » @ 450,310
+bouton (neuf points) « Suoni integrati 3 suoni » › @ 450,411
+bouton (neuf points) « Altri suoni del kit 13 suoni » › @ 450,507
+bouton (cotillons) « Festa 22 suoni » › @ 450,603
+texte « Tocca ☆ su un suono per ritrovarlo in “Preferiti”. » @ 331,675
+texte « Tocca un suono per ascoltarlo, “Usa” per metterlo su il pad 3 (Rullante). » @ 450,741
+titre « PACK DI SUONI » [état « Espanso »] @ 185,864
+bouton « ? » @ 307,864
+texte « Da scaricare solo se vuoi; ogni pack si elimina con un gesto per liberare spazio. » @ 450,934
+bouton (nuage et flèche) «  Scarica tutto (68 pack, 288,4 MB) » @ 450,1018
+texte « 808 moderni » @ 132,1089
+bouton « Scarica » @ 770,1107
+texte « 72 suoni · 2 MB » @ 135,1130
+texte « Acid house » @ 121,1183
+bouton « Scarica » @ 770,1201
+texte « 116 suoni · 2 MB » @ 138,1224
+texte « Acid techno » @ 126,1277
+bouton « Scarica » @ 770,1295
+texte « 128 suoni · 3 MB » @ 140,1318
+texte « Afro house » @ 120,1371
+bouton « Scarica » @ 770,1389
+texte « 100 suoni · 2 MB » @ 141,1412
+texte « Afrobeats » @ 111,1465
+bouton « Scarica » [coupé] @ 770,1480
+texte « 108 suoni · 2 MB » [coupé] @ 141,1498

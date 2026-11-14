@@ -1,0 +1,3 @@
+lang=ar device=phone font=100
+lang=de device=tablet8 font=130 mode=pro
+lang=es device=phone font=100 mode=simple main=gauche

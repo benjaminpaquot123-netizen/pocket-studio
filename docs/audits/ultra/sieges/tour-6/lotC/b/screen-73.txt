@@ -1,0 +1,47 @@
+Écran 73 (588x1278)
+icône (dossier ouvert) ✓ « Techno Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ [désactivé] @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 73,114
+icône « Montée 2 mes. 61/176 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+texte « Plus fort ou moins fort : fondus, entrées, coupures. » @ 402,173
+bouton « Boucle » @ 102,251
+bouton « Par partie » @ 245,251
+bouton « Morceau » [sélectionné] @ 397,251
+bouton « 1 point par mesure » [sélectionné] @ 160,332
+bouton « 1 point par temps (¼ de mesure) » @ 229,413
+texte « Une valeur par mesure sur tout le morceau (176 mesures) ; elle glisse d'un point à l'autre. » @ 294,485
+bouton (pinceau) « Dessiner » [sélectionné] @ 124,557
+bouton (courbe) « Ligne » @ 281,557
+bouton (carré en pointillé) « Zone » @ 418,557
+texte « Lisser » @ 92,635
+icône (loupe −) @ 187,635
+icône (loupe +) @ 287,635
+texte « ×2 » @ 237,635
+icône ← [désactivé] @ 78,713
+icône → @ 271,713
+texte « mes. 1 à 88 » @ 174,713
+texte « +3,9 dB » @ 81,770
+texte « -8,2 dB » @ 84,860
+texte « −∞ dB » [coupé] @ 88,946
+bouton (boussole) « Guide  · Change un son 24 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 132 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

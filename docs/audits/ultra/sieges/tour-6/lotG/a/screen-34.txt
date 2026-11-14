@@ -1,0 +1,12 @@
+Écran 34 (588x1278)
+texte « BenStudio » @ 169,78
+texte « Ne yapmak istersin? » @ 238,146
+bouton ✓ « Devam et Pro Pop Pop · 100 ölçü · 3:27 · 26 bölüm az önce kaydedildi » → @ 294,350
+bouton (étincelles) « Yeni şarkı Tek dokunuşla bir stil ya da “Bana bir parça yap”. » → @ 294,610
+bouton (dossier ouvert) « Projelerim Başka bir şarkı aç, kopyala ya da yeniden adlandır. » → @ 294,824
+bouton (quatre vagues) « Remix Parça ayırma: davul, bas, vokal ve geri kalanı. » → @ 294,1037
+bouton « ↓ 5 tane daha » @ 443,1164
+texte « ●  REC » @ 360,1248
+texte « ✎  Not al » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 162,1248

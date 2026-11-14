@@ -1,0 +1,6 @@
+Écran 2 (588x1278)
+texte « BenStudio » @ 277,42
+texte « Seu estúdio de música, no seu bolso. » @ 348,139
+texte « Bem-vindo! Faça sua música no seu aparelho. Por onde vamos começar? » @ 294,345
+bouton (étincelles) « Faça uma música pra mim O app compõe, você escuta e muda. » @ 294,706
+bouton (chapeau de diplômé) « Estou aprendendo Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » [coupé] @ 294,1110

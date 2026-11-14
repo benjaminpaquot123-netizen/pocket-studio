@@ -13,6 +13,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -123,6 +124,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
@@ -143,8 +145,13 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.channelOfKey
+import com.pocketstudio.model.Remix
+import com.pocketstudio.model.piecesOf
+import com.pocketstudio.model.pieceAt
+import com.pocketstudio.model.remixTimeAtStep
 import com.pocketstudio.model.clipPreview
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.partAtStep
 import com.pocketstudio.model.partSpans
 import com.pocketstudio.model.sceneTitle
@@ -207,6 +214,16 @@ class TimelineActions(
     /** M and S of a mixer channel. */
     val toggleMute: (Int) -> Unit = {},
     val toggleSolo: (Int) -> Unit = {},
+    /** Step 5a: M and S of one of the song's stems (engine order). */
+    val toggleStemMute: (Int) -> Unit = {},
+    val toggleStemSolo: (Int) -> Unit = {},
+    /** Step 5b: stem (first) edited on song step (second, a bar's start): cut, moved by bars (third), faded, taken away, reset. */
+    val cutStem: (Int, Int) -> Unit = { _, _ -> },
+    val moveStemPiece: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    /** Third: the fade at the piece's start (else its end). */
+    val fadeStemPiece: (Int, Int, Boolean) -> Unit = { _, _, _ -> },
+    val removeStemPiece: (Int, Int) -> Unit = { _, _ -> },
+    val resetStem: (Int) -> Unit = {},
     val setLoop: (IntRange?) -> Unit = {},
     /** Song curve (lane index) in Mixeur › Automation. */
     val openLane: (Int) -> Unit = {},
@@ -447,6 +464,17 @@ internal class TimelineScroller(private val view: TimelineView, private val scop
 }
 
 /** Where a touch on the grid landed: part [part], on a track ([key]) or a curve ([lane]), [bar] bars into the part. */
+/** For TalkBack, every clip of the grid: turn it on or off, open it (the touches the grid takes). */
+internal fun timelineActions(rows: List<TimelineRow>, parts: Int, actions: TimelineActions): List<androidx.compose.ui.semantics.CustomAccessibilityAction> =
+    rows.flatMap { r ->
+        (0 until parts).flatMap { part ->
+            listOf(
+                androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%1\$s, partie %2\$d : allumer ou éteindre", r.name, part + 1)) { actions.togglePartTrack(part, r.key); true },
+                androidx.compose.ui.semantics.CustomAccessibilityAction(tr("%1\$s, partie %2\$d : ouvrir", r.name, part + 1)) { actions.openEditor(part, r.key); true },
+            )
+        }
+    }
+
 internal data class TimelineHit(val part: Int, val key: String?, val lane: Int?, val bar: Int)
 
 /**
@@ -473,6 +501,7 @@ private fun editorName(key: String): String = when {
     key == SongPart.DRUMS -> tr("Ouvrir dans Rythme")
     key == SongPart.ACID -> tr("Ouvrir dans Acide")
     key.startsWith("audio:") -> tr("Ouvrir dans Pistes audio")
+    key == SongPart.REMIX -> tr("Ouvrir %s", tr("Remix"))
     else -> tr("Ouvrir dans Notes")
 }
 
@@ -604,9 +633,10 @@ fun TimelineScreen(
             Box(Modifier.fillMaxWidth().weight(1f)) {
                 TimelineBody(ui, actions, view, scroller, showLanes, tallRows, headerW, minPx, maxPx, Modifier.fillMaxSize())
                 if (!landscape) {
-                    // Narrow: the zoom floats over the grid's corner, always in reach.
+                    // Narrow: the zoom floats over the grid's corner, always in reach (on its right in
+                    // Arabic too: the grid stays left to right, its track names on the left).
                     Column(
-                        Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(RoundedCornerShape(24.dp))
+                        Modifier.align(androidx.compose.ui.AbsoluteAlignment.BottomRight).padding(12.dp).clip(RoundedCornerShape(24.dp))
                             .background(Neon.Surface.copy(alpha = 0.92f)).padding(vertical = 2.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) { zoom() }
@@ -647,7 +677,7 @@ private fun TimelineTopBar(
             TimelineClock(ui, Modifier.padding(start = 6.dp).weight(1f))
         }
         IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("timeline_undo")) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler"))
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler (défaire)"))
         }
         IconButton(onClick = actions.redo, enabled = ui.canRedo, modifier = Modifier.testTag("timeline_redo")) {
             Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))
@@ -680,10 +710,10 @@ private fun TimelineClock(ui: TimelineUi, modifier: Modifier) {
             (if (beat >= 0) clockText((beat * beatSeconds).toInt()) else "0:00") + " / " + clockText(total),
             style = MonoStyle, fontSize = 16.sp, color = if (beat >= 0) Neon.TextPrimary else Neon.TextSecondary, maxLines = 1,
         )
-        Text(
+        com.pocketstudio.ui.FitText(
             if (beat >= 0) tr("mes. %1\$d.%2\$d", beat / beatsPerBar + 1, beat % beatsPerBar + 1) + " / " + p.songBars
-            else (if (p.songBars == 1) tr("1 mesure") else tr("%d mesures", p.songBars)),
-            style = MonoStyle, color = if (beat >= 0) Neon.Magenta else Neon.TextSecondary, maxLines = 1,
+            else trCount(p.songBars, "1 mesure", "%d mesures"),
+            style = MonoStyle, color = if (beat >= 0) Neon.Magenta else Neon.TextSecondary,
         )
     }
 }
@@ -778,11 +808,11 @@ private fun TimelineHelp(close: () -> Unit) {
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("timeline_help_text")) {
                 listOf(
-                    tr("Toucher un clip : couper ou remettre la piste dans cette partie."),
-                    tr("Deux touches sur un clip : l'ouvrir dans son éditeur, sur cette partie."),
+                    tr("Toucher une case : couper ou remettre la piste dans cette partie."),
+                    tr("Deux touches sur une case : l'ouvrir dans son éditeur, sur cette partie."),
                     tr("Toucher le nom d'une piste : changer son son (le kit pour la batterie)."),
                     tr("Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…)."),
-                    tr("Appui long sur un clip : l'ouvrir, changer de partie, répéter, couper, dupliquer."),
+                    tr("Appui long sur une case : l'ouvrir, changer de partie, répéter, couper, dupliquer."),
                     tr("Toucher la règle : jouer depuis cette partie."),
                     tr("Appui long puis glisser : sur un drapeau, déplacer la partie ; sur les mesures, boucler."),
                     tr("Deux doigts : zoomer. Un doigt qui fait défiler arrête « Suivre », Lecture le remet."),
@@ -835,11 +865,19 @@ private fun timelinePalette(): TimelinePalette {
 private fun TimelineBody(
     ui: TimelineUi, actions: TimelineActions, view: TimelineView, scroller: TimelineScroller, showLanes: Boolean, tall: Boolean,
     headerW: Dp, minPx: Float, maxPx: Float, modifier: Modifier,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val p = ui.project
     val spans = remember(p) { p.partSpans }
-    val lines = remember(ui.rows, ui.lanes, showLanes) { timelineLines(ui.rows, ui.lanes, showLanes) }
-    val trackColors = remember(ui.rows) { ui.rows.map { it.key }.zip(timelineColors(ui.rows.map { it.color })).toMap() }
+    // Step 5a: the song's folder folds its four stems away.
+    var songFolded by rememberSaveable { mutableStateOf(false) }
+    val rows = remember(ui.rows, songFolded) { if (songFolded) ui.rows.filter { Remix.stemOfKey(it.key) == null } else ui.rows }
+    val lines = remember(rows, ui.lanes, showLanes) { timelineLines(rows, ui.lanes, showLanes) }
+    // The song and its stems keep their own colours (told apart already), the other tracks are kept apart from them.
+    val trackColors = remember(ui.rows) {
+        val own = ui.rows.filter { it.key == SongPart.REMIX || Remix.stemOfKey(it.key) != null }
+        val rest = ui.rows - own.toSet()
+        rest.map { it.key }.zip(timelineColors(rest.map { it.color })).toMap() + own.associate { it.key to it.color }
+    }
     val colors = timelinePalette()
     val density = LocalDensity.current
     BoxWithConstraints(modifier) {
@@ -881,7 +919,10 @@ private fun TimelineBody(
                 Column(Modifier.width(headerW).zIndex(1f).background(colors.header)) {
                     lines.forEach { line ->
                         when {
-                            line.row != null -> TrackHeader(p, line.row, trackColors[line.row.key] ?: line.row.color, rowH, headerW >= 150.dp, colors, actions)
+                            line.row != null -> TrackHeader(
+                                p, line.row, trackColors[line.row.key] ?: line.row.color, rowH, headerW >= 150.dp, colors, actions,
+                                folded = songFolded, fold = { songFolded = !songFolded },
+                            )
                             line.lane != null -> LaneHeader(line.lane, trackColors[line.lane.key] ?: Neon.Cyan, colors, actions)
                         }
                     }
@@ -914,10 +955,16 @@ private fun RulerCorner(width: Dp, colors: TimelinePalette) {
 
 /** A track's header: its colour, its name, M and S (its mixer channel); on one line when [wide] and low. */
 @Composable
-private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, wide: Boolean, colors: TimelinePalette, actions: TimelineActions) {
-    val ch = channelOfKey(row.key)
+private fun TrackHeader(
+    p: Project, row: TimelineRow, color: Color, height: Dp, wide: Boolean, colors: TimelinePalette, actions: TimelineActions,
+    folded: Boolean = false, fold: () -> Unit = {},
+) {
+    val folder = row.key == SongPart.REMIX
+    val stem = Remix.stemOfKey(row.key)
+    // The song's folder: its group strip's M and S.
+    val ch = channelOfKey(row.key) ?: Remix.STRIP.takeIf { folder }
     val channel = ch?.let { p.mixer.channels.getOrNull(it) }
-    val name = DefaultNames.shown(row.name)
+    val name = if (folder) row.name else DefaultNames.shown(row.name)
     val compact = height < 72.dp && wide
     Row(
         Modifier.fillMaxWidth().height(height)
@@ -926,9 +973,25 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
             .testTag("timeline_header_${row.key}"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // A stem sits in its song's folder: a step in.
+        if (stem != null) Spacer(Modifier.width(10.dp))
         Box(Modifier.padding(start = 5.dp, top = 6.dp, bottom = 6.dp).width(4.dp).fillMaxHeight().clip(RoundedCornerShape(2.dp)).background(color))
-        val sound = actions.trackSound
-        val title: @Composable (Modifier) -> Unit = { m ->
+        val sound = actions.trackSound.takeIf { !folder && stem == null }
+        val title: @Composable (Modifier) -> Unit = if (folder) ({ m ->
+            // « ▾ Boys · chanson · 4 pistes »: a touch folds its four lines away or back.
+            androidx.compose.foundation.layout.Column(
+                m.clip(RoundedCornerShape(6.dp))
+                    .clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = if (folded) tr("Déplier %s", name) else tr("Replier %s", name), onClick = fold)
+                    .heightIn(min = 32.dp).wrapContentHeight(Alignment.CenterVertically)
+                    .testTag("timeline_fold_${row.key}"),
+            ) {
+                Text(
+                    (if (folded) "▸ " else "▾ ") + name, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis, color = color,
+                )
+                Text(tr("chanson · 4 pistes"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }) else ({ m ->
             Text(
                 name, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold,
                 maxLines = 1, overflow = TextOverflow.Ellipsis, color = Neon.TextPrimary,
@@ -939,12 +1002,18 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
                     .spot("timeline_name_${row.key}", if (row.key == com.pocketstudio.model.SongPart.DRUMS) tr("Changer le son") else null)
                     .testTag("timeline_name_${row.key}"),
             )
-        }
+        })
         val buttons: @Composable () -> Unit = {
-            if (ch != null && channel != null) {
+            val stemMix = stem?.let { p.remix.stems.getOrNull(it) }
+            if (stem != null && stemMix != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MuteSolo("M", channel.mute, Neon.Amber, tr("Couper la piste %s", name), "timeline_mute_${row.key}") { actions.toggleMute(ch) }
-                    MuteSolo("S", channel.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "timeline_solo_${row.key}") { actions.toggleSolo(ch) }
+                    MuteSolo(true, stemMix.mute, Neon.Red, name, "timeline_mute_${row.key}") { actions.toggleStemMute(stem) }
+                    MuteSolo(false, stemMix.solo, Neon.Cyan, name, "timeline_solo_${row.key}") { actions.toggleStemSolo(stem) }
+                }
+            } else if (ch != null && channel != null) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    MuteSolo(true, channel.mute, Neon.Red, name, "timeline_mute_${row.key}") { actions.toggleMute(ch) }
+                    MuteSolo(false, channel.solo, Neon.Cyan, name, "timeline_solo_${row.key}") { actions.toggleSolo(ch) }
                 }
             }
         }
@@ -963,17 +1032,11 @@ private fun TrackHeader(p: Project, row: TimelineRow, color: Color, height: Dp, 
 }
 
 @Composable
-private fun MuteSolo(letter: String, on: Boolean, color: Color, description: String, tag: String, toggle: () -> Unit) {
-    Box(
-        Modifier.size(width = 36.dp, height = 28.dp).clip(RoundedCornerShape(6.dp))
-            .background(if (on) color else Neon.SurfaceHigh)
-            .clickable(onClick = toggle)
-            .semantics { contentDescription = description }
-            .testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(letter, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (on) Color.Black else Neon.TextSecondary)
-    }
+private fun MuteSolo(mute: Boolean, on: Boolean, color: Color, name: String, tag: String, toggle: () -> Unit) {
+    // Audit final (20 M5, 22): Compose widens the touch to 48 dp around it; n° 21: icons, never M / S.
+    val size = androidx.compose.ui.unit.DpSize(40.dp, 32.dp)
+    if (mute) com.pocketstudio.app.ui.MuteToggle(on, name, tag, color = color, size = size, caption = false, toggle = toggle)
+    else com.pocketstudio.app.ui.SoloToggle(on, name, tag, color = color, size = size, caption = false, toggle = toggle)
 }
 
 /** A song curve's header: what it moves; a touch opens it in the Mixeur. */
@@ -1085,7 +1148,12 @@ private fun TimelineRuler(
             .then(pinch)
             .spot("timeline_ruler", tr("Jouer · appui long : Fill"))
             .testTag("timeline_ruler")
-            .semantics { contentDescription = tr("Règle des mesures : touche pour jouer à partir d'une partie") },
+            .semantics {
+                contentDescription = tr("Règle des mesures : touche pour jouer à partir d'une partie")
+                customActions = (0 until latestUi.project.song.size).map { i ->
+                    androidx.compose.ui.semantics.CustomAccessibilityAction(tr("Jouer depuis la partie %d", i + 1)) { latestActions.playPart(i); true }
+                }
+            },
     ) {
         val stepPx = view.barPx / view.stepsPerBar
         val x0 = view.scrollX
@@ -1252,7 +1320,8 @@ private fun TimelineGrid(
                         onTap = { at ->
                             val h = hit(at) ?: return@detectTapGestures
                             when {
-                                h.key != null -> latestActions.togglePartTrack(h.part, h.key)
+                                // A stem's line: the song in that part (its four stems go together).
+                                h.key != null -> latestActions.togglePartTrack(h.part, if (Remix.stemOfKey(h.key) != null) SongPart.REMIX else h.key)
                                 h.lane != null -> latestActions.openLane(h.lane)
                             }
                         },
@@ -1271,7 +1340,11 @@ private fun TimelineGrid(
                 .then(pinch)
                 .spot("timeline_grid", tr("2 touches : ouvrir"))
                 .testTag("timeline_grid")
-                .semantics { contentDescription = tr("Ligne du temps : %1\$d parties, %2\$d pistes", p.song.size, ui.rows.size) },
+                .semantics {
+                    contentDescription = tr("Ligne du temps : %1\$s, %2\$s", trCount(p.song.size, "1 partie", "%d parties"), trCount(ui.rows.size, "1 piste", "%d pistes"))
+                    // Audit final (22): each clip within TalkBack's reach (the grid is drawn, not made of nodes).
+                    customActions = timelineActions(ui.rows.filter { Remix.stemOfKey(it.key) == null }, p.song.size, latestActions)
+                },
         ) {
             val stepPx = view.barPx / view.stepsPerBar
             val x0 = view.scrollX
@@ -1572,7 +1645,8 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
     var inserting by remember { mutableStateOf(false) }
     var sheet by remember { mutableStateOf(false) }
     val sheetUi = partSheetUi(p, m.part)
-    val key = m.key
+    // A stem's line stands for its song (on or off in a part, opened on its card).
+    val key = m.key?.let { if (Remix.stemOfKey(it) != null) SongPart.REMIX else it }
     val full = p.song.size >= SongPart.MAX_PARTS
     val songBar = (p.partSpans.getOrNull(m.part)?.start ?: 0) / p.stepsPerBar
     val cutAt = p.splitBar(m.part, m.bar.coerceAtLeast(1))
@@ -1584,6 +1658,8 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
                 style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
+            val stem = m.key?.let(Remix::stemOfKey)
+            if (stem != null) StemEditItems(p, stem, (p.partSpans.getOrNull(m.part)?.start ?: 0) + m.bar * p.stepsPerBar, actions, close)
             if (key != null) {
                 DropdownMenuItem(
                     text = { Text(editorName(key)) }, leadingIcon = { Icon(Icons.Filled.Edit, null) },
@@ -1595,7 +1671,7 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
                     leadingIcon = { Icon(if (on) Icons.Filled.Remove else Icons.Filled.Add, null) },
                     onClick = { close(); actions.togglePartTrack(m.part, key) }, modifier = Modifier.testTag("tl_toggle"),
                 )
-                if (!key.startsWith("audio:")) {
+                if (!key.startsWith("audio:") && key != SongPart.REMIX) {
                     DropdownMenuItem(
                         text = { Text(tr("Changer de partie…")) }, leadingIcon = { Icon(Icons.Filled.SwapVert, null) },
                         onClick = { picking = key }, modifier = Modifier.testTag("tl_scene"),
@@ -1682,6 +1758,61 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
             onDismiss = close,
         )
     }
+}
+
+/**
+ * Step 5b: a long press on one of the song's stem lines edits that stem on the bar touched
+ * ([step], a song step): cut there, move the piece a bar either way, fade it in or out over a
+ * bar, take it away, or put the stem back as separated. Each an undo step, the file untouched.
+ */
+@Composable
+private fun StemEditItems(p: Project, stem: Int, step: Int, actions: TimelineActions, close: () -> Unit) {
+    val seconds = p.remix.seconds
+    val t = p.remixTimeAtStep(step) + 1e-6
+    val piece = p.remix.piecesOf(stem, seconds).getOrNull(p.remix.pieceAt(stem, t, seconds))
+    val name = com.pocketstudio.app.remix.StemRouting.stemLabel(stem)
+    val bar = step / p.stepsPerBar.coerceAtLeast(1) + 1
+    Text(
+        tr("Retoucher %s", name), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+    )
+    DropdownMenuItem(
+        text = { Text(tr("Couper %1\$s à la mesure %2\$d", name, bar)) }, leadingIcon = { Icon(Icons.Filled.ContentCut, null) },
+        enabled = piece != null && t - piece.at > 0.01,
+        onClick = { close(); actions.cutStem(stem, step) }, modifier = Modifier.testTag("tl_stem_cut"),
+    )
+    if (piece != null) {
+        DropdownMenuItem(
+            text = { Text(tr("Déplacer ce bout d'une mesure plus tard")) }, leadingIcon = { Icon(Icons.Filled.Add, null) },
+            onClick = { close(); actions.moveStemPiece(stem, step, 1) }, modifier = Modifier.testTag("tl_stem_later"),
+        )
+        DropdownMenuItem(
+            text = { Text(tr("Déplacer ce bout d'une mesure plus tôt")) }, leadingIcon = { Icon(Icons.Filled.Remove, null) },
+            enabled = piece.at > 0.0,
+            onClick = { close(); actions.moveStemPiece(stem, step, -1) }, modifier = Modifier.testTag("tl_stem_earlier"),
+        )
+        DropdownMenuItem(
+            text = { Text(if (piece.fadeIn > 0) tr("Sans fondu au début") else tr("Fondu au début")) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
+            onClick = { close(); actions.fadeStemPiece(stem, step, true) }, modifier = Modifier.testTag("tl_stem_fade_in"),
+        )
+        DropdownMenuItem(
+            text = { Text(if (piece.fadeOut > 0) tr("Sans fondu à la fin") else tr("Fondu à la fin")) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
+            onClick = { close(); actions.fadeStemPiece(stem, step, false) }, modifier = Modifier.testTag("tl_stem_fade_out"),
+        )
+        DropdownMenuItem(
+            text = { Text(tr("Enlever ce bout")) }, leadingIcon = { Icon(Icons.Filled.Delete, null) },
+            onClick = { close(); actions.removeStemPiece(stem, step) }, modifier = Modifier.testTag("tl_stem_remove"),
+        )
+    }
+    if (p.remix.stems.getOrNull(stem)?.clips != null) {
+        DropdownMenuItem(
+            text = { Text(tr("Remettre %s comme au départ", name)) }, leadingIcon = { Icon(Icons.Filled.Repeat, null) },
+            onClick = { close(); actions.resetStem(stem) }, modifier = Modifier.testTag("tl_stem_reset"),
+        )
+    }
+    HorizontalDivider()
 }
 
 /** One of the scenes in use, picked (the one [current] marked). */

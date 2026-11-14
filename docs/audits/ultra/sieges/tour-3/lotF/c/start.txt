@@ -1,0 +1,7 @@
+lang=fr
+device=phone360
+font=200
+mode=simple
+gestes.max=60
+mission=padlive
+timeout.minutes=25

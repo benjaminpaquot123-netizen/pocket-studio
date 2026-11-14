@@ -1,0 +1,10 @@
+Écran 42 (588x1278)
+texte « My exports » @ 135,466
+texte « In Music › BenStudio on this phone. Newest first. » @ 255,527
+texte « My-first-beat-loop-streaming-20261105-211622.m4a » @ 249,583
+bouton « Send » @ 507,597
+texte « Nov 5, 2026, 9:16 PM · 1 KB » @ 159,626
+texte « My-first-beat-loop-club-20261105-211525.wav » @ 249,670
+bouton « Send » @ 507,684
+texte « Nov 5, 2026, 9:15 PM · 1 KB » @ 158,713
+bouton « Close » @ 504,799

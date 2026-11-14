@@ -62,7 +62,7 @@ class ProjectJsonTest {
 
     @Test
     fun outOfRangeValuesAreClamped() {
-        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{},"70":{}}}]}}""")
+        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{},"300":{}}}]}}""")
         assertEquals(Project.MAX_TEMPO, decoded.tempoBpm, 0.0)
         assertEquals(0.0, decoded.swing, 0.0)
         assertEquals(DrumPattern.MIN_STEPS, decoded.drums.steps)
@@ -399,7 +399,7 @@ class NoteClipTest {
     @Test
     fun badNotesAreDroppedOrRepaired() {
         val clip = NoteClip(
-            steps = 20,
+            steps = 18,
             notes = listOf(
                 Note(start = -5, length = 10, pitch = 60),       // before the clip: dropped
                 Note(start = 10, length = 99999, pitch = 300),   // repaired
@@ -603,7 +603,7 @@ class LivePadsModelTest {
         assertEquals(null, s.clips[9])  // a path is never a file name
         assertEquals(LivePads.MAX_BEATS, s.clips[13]!!.beats)
         assertEquals(16, s.size)  // pad 14 holds a sound: the grid shows it
-        assertEquals(8, LivePads(size = 5).sanitized().size)
+        assertEquals(6, LivePads(size = 5).sanitized().size)  // 6 is a size since lot 4a
     }
 
     @Test
@@ -711,16 +711,50 @@ class RemixTempoTest {
 
 class DrumLengthTest {
     @Test
-    fun longerLoopsRepeatTheGrooveShorterOnesCut() {
+    fun longerLoopsRepeatTheGrooveShorterOnesKeepTheRestUnheard() {
         val one = DrumPattern().toggle(0, 0).toggle(2, 4, 0.5f)
         val three = one.withSteps(48)
         assertEquals(48, three.steps)
         assertEquals(setOf(0, 16, 32), three.lanes[0].hits.keys)
         assertEquals(0.5f, three.lanes[2].hits[36]!!.velocity, 0f)
+        // Audit final (lot notes): the hits past a shortened loop's end stay (unheard), as sanitized keeps them.
         val back = three.toggle(0, 32).withSteps(32)
-        assertEquals(setOf(0, 16), back.lanes[0].hits.keys)
-        assertEquals(64, one.withSteps(100).steps)
+        assertEquals(32, back.steps)
+        assertEquals(setOf(0, 16), back.lanes[0].hits.keys.filter { it < back.steps }.toSet())
+        assertEquals(setOf(4, 20, 36), back.lanes[2].hits.keys)
+        // Step 7a: 16 bars at most (a Live cell records that much of drums), whole beats.
+        assertEquals(100, one.withSteps(100).steps)
+        assertEquals(DrumPattern.MAX_STEPS, one.withSteps(1000).steps)
+        assertEquals(256, DrumPattern.MAX_STEPS)
+        assertEquals(DrumPattern.MIN_STEPS, one.withSteps(1).steps)
         assertEquals(one, one.withSteps(16))
+    }
+
+    @Test
+    fun shortenedThenGrownTheLastBarsComeBackAsTheyWere() {
+        // Four bars, the kick on each 1 and a fill only in bar 4.
+        var d = DrumPattern().withSteps(64)
+        d = d.copy(lanes = d.lanes.toMutableList().also {
+            it[0] = it[0].copy(hits = mapOf(0 to Hit(1f), 16 to Hit(1f), 32 to Hit(1f), 48 to Hit(1f)))
+            it[1] = it[1].copy(hits = mapOf(60 to Hit(0.7f, repeats = 3)))
+        })
+        val short = d.withSteps(16).sanitized()
+        assertEquals(16, short.steps)
+        val back = short.withSteps(64).sanitized()
+        assertEquals(d.lanes[0].hits, back.lanes[0].hits)
+        assertEquals(mapOf(60 to Hit(0.7f, repeats = 3)), back.lanes[1].hits)
+    }
+
+    @Test
+    fun aLoopGrownOverEmptyBarsRepeatsItself() {
+        var d = DrumPattern()
+        d = d.copy(lanes = d.lanes.toMutableList().also { it[0] = it[0].copy(hits = mapOf(0 to Hit(1f), 8 to Hit(0.5f))) })
+        val two = d.withSteps(32)
+        assertEquals(setOf(0, 8, 16, 24), two.lanes[0].hits.keys)
+        // A bar kept past the end (on another pad) is left as it was; the empty one after it repeats the loop.
+        val kept = d.copy(lanes = d.lanes.toMutableList().also { it[2] = it[2].copy(hits = mapOf(20 to Hit(1f))) }).withSteps(48)
+        assertEquals(setOf(0, 8, 32, 40), kept.lanes[0].hits.keys)
+        assertEquals(setOf(20), kept.lanes[2].hits.keys)
     }
 }
 

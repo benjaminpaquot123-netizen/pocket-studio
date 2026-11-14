@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="guideSeen" value="true" />
+    <boolean name="englishNotes" value="true" />
+    <string name="theme">Night</string>
+    <float name="uiScale" value="1.15" />
+    <float name="metronomeLevel" value="0.4" />
+    <int name="recordCountIn" value="2" />
+</map>

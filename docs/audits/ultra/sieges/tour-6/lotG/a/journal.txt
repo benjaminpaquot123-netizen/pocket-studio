@@ -1,0 +1,299 @@
+#0 SIEGE lang=tr device=phone font=130 mode=pro theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.4 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 52c00e1149 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Parça ayırma: davul, bas, vokal ve geri kalanı. » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 991
+#1 DOIGT launch_remix « Remix »
+#2 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 7305b4d139 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Remix » 1.29:1 (needs 4.5:1, 14 sp)
+#2 > touche 294 1227
+#2 DOIGT remix_download_thumb « Modeli indir (174 MB) »
+#3 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE 11b4d8c416 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Sonra » 3.64:1 (needs 4.5:1, 14 sp)
+#3 > touche 485 804
+#3 DOIGT remix_model_ask_ok « İndir »
+#4 ROUTE dialogue:remix_home | MODE pro | EMPREINTE affe234838 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > attends 30
+#5 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 7f7fa49e2a | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 294 475
+#5 DOIGT remix_pick « Bir şarkı seç »
+#6 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 1851c5adbd | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 30
+#7 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE cb266f1d1e | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 294 860
+#7 DOIGT remix_dest_existing « Var olan bir projeye »
+#8 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 3ed1c0ca4f | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « İlk ritmim » 1.34:1 (needs 3.0:1, 14 sp)
+#8 > touche 294 623
+#8 DOIGT remix_dest_project_projet-1 « İlk ritmim »
+#9 ROUTE dialogue:song_import | MODE pro | EMPREINTE 33b1a9ac3c | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « İptal » 3.84:1 (needs 4.5:1, 14 sp)
+#9 > touche 294 896
+#9 DOIGT import_voice « Sadece vokal, benim beat'imin üstünde »
+#10 ROUTE dialogue:song_import | MODE pro | EMPREINTE e5d1dacc7e | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 294 735
+#10 DOIGT import_whole « Şarkının tamamı, A bloğundan »
+#11 ROUTE dialogue:song_import | MODE pro | EMPREINTE 33b1a9ac3c | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 294 896
+#11 DOIGT import_voice « Sadece vokal, benim beat'imin üstünde »
+#12 ROUTE dialogue:song_import | MODE pro | EMPREINTE e5d1dacc7e | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 426 1151
+#12 DOIGT import_go « Projeme ekle »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE e90b0b9683 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#13 LAYOUT CUT « 0:00 / 0:40 · başlangıç » lines dropped (more lines than room)
+#13 LAYOUT CONTRAST « Ma chanson préférée » 1.41:1 (needs 3.0:1, 14 sp)
+#13 LAYOUT CONTRAST « Şarkı » 1.30:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « ŞARKI: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « Efektler » 4.37:1 (needs 4.5:1, 14 sp)
+#13 > touche 294 617
+#13 DOIGT remix_open_board «  Kanal panosunu aç »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 72f8a22d88 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Kanal panosu » ellipsized (« … »)
+#14 LAYOUT CUT « Ma chanson préférée · 120 BPM » ellipsized (« … »)
+#14 LAYOUT CUT « Davul » lines cut (taller than its box)
+#14 LAYOUT CUT « Bas » lines cut (taller than its box)
+#14 LAYOUT CUT « Kalan » lines cut (taller than its box)
+#14 LAYOUT CUT « Vokal » lines cut (taller than its box)
+#14 > touche 294 874
+#14 DOIGT board_chop «  Vokali cümlelere böl »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 8b197a9db0 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 502 869
+#15 DOIGT board_message_ok « OK »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 72f8a22d88 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 288 1061
+#16 DOIGT thumb_play « Şarkıyı çal »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 703a8dbd24 | project=projet-1 no tuto
+#17 SON Son : le morceau joue (partie « B ») ; avec la voix seule de « Ma chanson préférée » — la voix ne chante pas à cet instant.
+#17 > touche 288 1061
+#17 DOIGT thumb_play « Durdur »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 72f8a22d88 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 414 1158
+#18 DOIGT tab_Live « Live »
+#19 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE b0d1ee5a98 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Başlatma noktası » ellipsized (« … »)
+#19 LAYOUT CONTRAST « Yeni sürüm » 3.34:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « G » 2.19:1 (needs 3.0:1, 16 sp)
+#19 > touche 142 1044
+#19 DOIGT live_tab_Pads « Pad'ler »
+#20 ROUTE live_pads_grid | MODE pro | EMPREINTE 971e9aa20c | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « Çalmaya hazır pad'ler hazırlanıyor… » lines dropped (more lines than room)
+#20 LAYOUT OVERLAP « REC » over « Hepsini durdur » (33 x 21 dp)
+#20 LAYOUT OVERLAP « REC » over the touchable « Hepsini durdur Hepsini durdur » (33 x 21 dp)
+#20 LAYOUT OVERLAP « 8 » over the touchable « Pad 2 · boş » (13 x 24 dp)
+#20 LAYOUT OVERLAP « Hepsini durdur » over the touchable « Performansı kaydet » (46 x 22 dp)
+#20 LAYOUT OVERLAP « Çalmaya hazır pad'ler hazırlanıyor… » over the touchable « Bir bölümden çal » (89 x 41 dp)
+#20 LAYOUT OVERLAP « Çalmaya hazır pad'ler hazırlanıyor… » over the touchable « Yeni sürüm ✓ » (79 x 9 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Davul · A · hazır » (24 x 8 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Davul · B · Nakarat · boş » (24 x 30 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Synth · A · boş » (23 x 8 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Synth · B · Nakarat · boş » (23 x 30 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Davul · E · boş » (24 x 41 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Synth · E · boş » (23 x 41 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Davul · H · boş » (24 x 30 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Kanalı durdur » (24 x 8 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Synth · H · boş » (23 x 30 dp)
+#20 LAYOUT OVERLAP « + » over the touchable « Kanalı durdur » (23 x 8 dp)
+#20 LAYOUT CONTRAST « 120 » 1.80:1 (needs 3.0:1, 18 sp)
+#20 > attends 5
+#21 ROUTE live_pads_grid | MODE pro | EMPREINTE 971e9aa20c | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 537 140
+#21 DOIGT désactivé live_pads_more
+#22 ROUTE live_pads_full | MODE pro | EMPREINTE 4e68d8e6ef | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « Kick döngüsü » ellipsized (« … »)
+#22 LAYOUT CUT « 1 ölçü » lines cut (taller than its box)
+#22 LAYOUT CUT « bir kez » lines cut (taller than its box)
+#22 LAYOUT CUT « Acid 303 döngüsü » ellipsized (« … »)
+#22 LAYOUT CUT « Bas döngüsü » ellipsized (« … »)
+#22 LAYOUT CUT « 2 ölçü » lines cut (taller than its box)
+#22 LAYOUT CUT « Bağırış “Go go go!” » ellipsized (« … »)
+#22 LAYOUT CUT « Açık hi-hat » ellipsized (« … »)
+#22 LAYOUT OVERLAP « Dokun: çal · uzun bas: değiştir » over the touchable « Bir bölümden çal » (89 x 41 dp)
+#22 LAYOUT OVERLAP « Dokun: çal · uzun bas: değiştir » over the touchable « Yeni sürüm ✓ » (107 x 9 dp)
+#22 LAYOUT OVERLAP « Kick döngüsü » over the touchable « Davul · C · boş » (18 x 24 dp)
+#22 LAYOUT OVERLAP « 1 ölçü » over the touchable « Davul · C · boş » (11 x 11 dp)
+#22 LAYOUT OVERLAP « Clap » over the touchable « Davul · C · boş » (13 x 24 dp)
+#22 LAYOUT OVERLAP « Clap » over the touchable « Acid 303 · C · boş » (25 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Davul · C · boş » (20 x 11 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Acid 303 · C · boş » (30 x 11 dp)
+#22 LAYOUT OVERLAP « Acid 303 döngüsü » over the touchable « Acid 303 · C · boş » (7 x 24 dp)
+#22 LAYOUT OVERLAP « Acid 303 döngüsü » over the touchable « Synth · C · boş » (47 x 24 dp)
+#22 LAYOUT OVERLAP « 1 ölçü » over the touchable « Synth · C · boş » (41 x 11 dp)
+#22 LAYOUT OVERLAP « Bas döngüsü » over the touchable « Ma chanson préférée · C · boş » (54 x 24 dp)
+#22 LAYOUT OVERLAP « 2 ölçü » over the touchable « Ma chanson préférée · C · boş » (51 x 11 dp)
+#22 LAYOUT OVERLAP « Korna » over the touchable « Davul · E · boş » (17 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Davul · E · boş » (16 x 11 dp)
+#22 LAYOUT OVERLAP « Lazer » over the touchable « Davul · E · boş » (19 x 24 dp)
+#22 LAYOUT OVERLAP « Lazer » over the touchable « Acid 303 · E · boş » (29 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Davul · E · boş » (20 x 11 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Acid 303 · E · boş » (30 x 11 dp)
+#22 LAYOUT OVERLAP « Siren » over the touchable « Synth · E · boş » (43 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Acid 303 · E · boş » (5 x 11 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Synth · E · boş » (44 x 11 dp)
+#22 LAYOUT OVERLAP « Bağırış “Go go go!” » over the touchable « Ma chanson préférée · E · boş » (58 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Ma chanson préférée · E · boş » (56 x 11 dp)
+#22 LAYOUT OVERLAP « Kick » over the touchable « Davul · G · boş » (10 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Davul · G · boş » (15 x 10 dp)
+#22 LAYOUT OVERLAP « Trampet » over the touchable « Davul · G · boş » (23 x 24 dp)
+#22 LAYOUT OVERLAP « Trampet » over the touchable « Acid 303 · G · boş » (34 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Davul · G · boş » (19 x 10 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Acid 303 · G · boş » (30 x 10 dp)
+#22 LAYOUT OVERLAP « Hi-hat » over the touchable « Acid 303 · G · boş » (7 x 24 dp)
+#22 LAYOUT OVERLAP « Hi-hat » over the touchable « Synth · G · boş » (47 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Acid 303 · G · boş » (5 x 10 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Synth · G · boş » (44 x 10 dp)
+#22 LAYOUT OVERLAP « Açık hi-hat » over the touchable « Ma chanson préférée · G · boş » (59 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Ma chanson préférée · G · boş » (56 x 10 dp)
+#22 LAYOUT OVERLAP « Yükseliş » over the touchable « Kanalı durdur » (19 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (16 x 16 dp)
+#22 LAYOUT OVERLAP « Darbe » over the touchable « Kanalı durdur » (21 x 24 dp)
+#22 LAYOUT OVERLAP « Darbe » over the touchable « Kanalı durdur » (32 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (20 x 16 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (30 x 16 dp)
+#22 LAYOUT OVERLAP « Düşüş » over the touchable « Kanalı durdur » (8 x 24 dp)
+#22 LAYOUT OVERLAP « Düşüş » over the touchable « Kanalı durdur » (49 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (5 x 16 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (45 x 16 dp)
+#22 LAYOUT OVERLAP « “Go!” » over the touchable « Kanalı durdur » (55 x 24 dp)
+#22 LAYOUT OVERLAP « bir kez » over the touchable « Kanalı durdur » (56 x 16 dp)
+#22 LAYOUT CONTRAST « 1 ölçü » 3.97:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 3.94:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « 1 ölçü » 3.86:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « 2 ölçü » 4.37:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 3.61:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 4.06:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 4.23:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 4.11:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 3.71:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 3.56:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST « bir kez » 4.25:1 (needs 4.5:1, 13 sp)
+#22 > touche 45 48
+#22 DOIGT live_pads_full_close
+#23 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE b0d1ee5a98 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 174 1158
+#23 DOIGT tab_Sons « Sesler »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 0ea5a90e57 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 80 204
+#24 DOIGT sons_Rythme « Davul »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 48a9c970bb | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Ma chanson préférée » 1.27:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « Şarkı » 1.27:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « Vokal 1 » 4.33:1 (needs 4.5:1, 14 sp)
+#25 > touche 84 612
+#25 DOIGT pad_8 « Vokal 1 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 308b225e03 | project=projet-1 no tuto
+#26 SON Son : le pad « Vokal 1 » sonne.
+#26 LAYOUT CUT «  Az önce çaldığımı sakla » ellipsized (« … »)
+#26 LAYOUT CONTRAST «  Pad'lerimi kaydet » 2.78:1 (needs 4.5:1, 14 sp)
+#26 > touche 102 114
+#26 DOIGT top_projects
+#27 ROUTE dialogue:projects | MODE pro | EMPREINTE 0633f8506d | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 54 54
+#27 DOIGT projects_back
+#28 ROUTE launch | MODE pro | EMPREINTE c7ca02a9a4 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 294 564
+#28 DOIGT launch_new « Yeni şarkı »
+#29 ROUTE dialogue:new_project | MODE pro | EMPREINTE 9785750a27 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 92 897
+#29 DOIGT one_touch_pop « Pop »
+#30 ROUTE dialogue:mode_step | MODE pro | EMPREINTE a4c2f1e461 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 294 643
+#30 DOIGT mode_card_pro « Pro »
+#31 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 1f0115d434 | project=p-b5b0ed44 no tuto
+#31 SON Son : le morceau joue (partie « E »).
+#31 LAYOUT CUT « Filtre Cutoff · Piyano » ellipsized (« … »)
+#31 LAYOUT CUT « reverb gönderimi · Lead » ellipsized (« … »)
+#31 LAYOUT TARGET « Davul sesi Davul sesini kapat açık » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Davul kanalını tek başına dinle kapalı » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Bas sesi Bas sesini kapat açık » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Bas kanalını tek başına dinle kapalı » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Piyano sesi Piyano sesini kapat açık » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Piyano kanalını tek başına dinle kapalı » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Lead sesi Lead sesini kapat açık » 40 x 22 dp (touch 48 x 48)
+#31 LAYOUT TARGET « Lead kanalını tek başına dinle kapalı » 40 x 22 dp (touch 48 x 48)
+#31 > touche 288 1061
+#31 DOIGT thumb_play « Durdur »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE b1302d9500 | project=p-b5b0ed44 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT «  · Kick: ses, kalıp, nerede çaldığı » ellipsized (« … »)
+#32 LAYOUT CONTRAST « AŞAMA 1 · SESLER VE KALIPLAR » 4.24:1 (needs 4.5:1, 12 sp)
+#32 > touche 102 42
+#32 DOIGT top_projects
+#33 ROUTE dialogue:projects | MODE pro | EMPREINTE a148ec126a | project=p-b5b0ed44 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 54 54
+#33 DOIGT projects_back
+#34 ROUTE launch | MODE pro | EMPREINTE 43b5480358 | project=p-b5b0ed44 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 294 1037
+#34 DOIGT launch_remix « Remix »
+#35 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 24baec2e32 | project=p-b5b0ed44 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 134 861
+#35 DOIGT listen_3a02635f77d71cd9a979f25b «  Dinle »
+#36 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 411b83b594 | project=p-b5b0ed44 no tuto
+#36 SON Son : le Remix fait écouter « Ma chanson préférée » : la batterie, la basse, les autres sons et la voix (0:01 / 0:40) — la voix ne chante pas à cet instant.
+#36 > touche 102 969
+#36 DOIGT stem_3a02635f77d71cd9a979f25b_drums « Davul »
+#37 ROUTE dialogue:remix_home | MODE pro | EMPREINTE bb174a222c | project=p-b5b0ed44 no tuto
+#37 SON Son : le Remix fait écouter « Ma chanson préférée » : la basse, les autres sons et la voix (0:03 / 0:40) — la voix ne chante pas à cet instant.
+#37 > touche 294 777
+#37 DOIGT use_3a02635f77d71cd9a979f25b « Diğer seçenekler… »
+#38 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE cb266f1d1e | project=p-b5b0ed44 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 294 860
+#38 DOIGT remix_dest_existing « Var olan bir projeye »
+#39 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE 53317d1c17 | project=p-b5b0ed44 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 120 BPM · zaten bir şarkısı var: değiştirilecek » 4.20:1 (needs 4.5:1, 13 sp)
+#39 LAYOUT CONTRAST «  Geri » 4.17:1 (needs 4.5:1, 14 sp)
+#39 > touche 294 535
+#39 DOIGT remix_dest_project_p-b5b0ed44 « Pop »
+#40 ROUTE dialogue:song_import | MODE pro | EMPREINTE d65502f7b8 | project=p-b5b0ed44 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 294 813
+#40 DOIGT import_passage « Sadece bir pasaj »
+#41 ROUTE dialogue:song_import | MODE pro | EMPREINTE c22a8d1e5d | project=p-b5b0ed44 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « İptal » 3.63:1 (needs 4.5:1, 14 sp)
+#41 > tape 506 836 16 300
+#41 DOIGT import_from_more « + »
+#42 ROUTE dialogue:song_import | MODE pro | EMPREINTE f780117829 | project=p-b5b0ed44 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 241 1206
+#42 DOIGT import_cancel « İptal »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE a7968a9804 | project=p-b5b0ed44 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Remix » 1.41:1 (needs 3.0:1, 14 sp)
+#43 LAYOUT CONTRAST « Ayrıştır » 1.30:1 (needs 4.5:1, 12 sp)
+#43 > fin
+#43 FIN : fin

@@ -1,0 +1,84 @@
+Écran 41 (588x1278)
+icône ← @ 51,47
+bouton ▶ @ 228,47
+icône − @ 309,47
+texte « 124 BPM » @ 376,46
+icône + @ 444,47
+texte « REC » @ 528,47
+texte « Pad Live » @ 138,46
+onglet « A » @ 51,138
+onglet « B » [sélectionné] @ 108,138
+onglet « C » @ 165,138
+onglet « D » @ 222,138
+bouton « Pack… » ▾ @ 349,138
+bouton ★ @ 534,138
+bouton « ? » @ 464,138
+bouton @ 77,243
+dessin @ 100,208
+texte « loop » @ 92,214
+texte « My take 1 » @ 77,259
+bouton @ 205,243
+texte « + » @ 205,243
+bouton @ 333,243
+texte « + » @ 333,243
+bouton @ 461,243
+texte « + » @ 461,243
+bouton ▶ @ 550,243
+bouton @ 77,358
+texte « + » @ 77,358
+bouton @ 205,358
+texte « + » @ 205,358
+bouton @ 333,358
+texte « + » @ 333,358
+bouton @ 461,358
+texte « + » @ 461,358
+bouton @ 77,473
+texte « + » @ 77,473
+bouton @ 205,473
+texte « + » @ 205,473
+bouton @ 333,473
+texte « + » @ 333,473
+bouton @ 461,473
+texte « + » @ 461,473
+bouton @ 77,587
+texte « + » @ 77,587
+bouton @ 205,587
+texte « + » @ 205,587
+bouton @ 333,587
+texte « + » @ 333,587
+bouton @ 461,587
+texte « + » @ 461,587
+texte « LIVE EFFECTS » @ 106,675
+bouton « ? » @ 216,674
+texte « Press and hold » @ 477,675
+bouton @ 106,756
+texte « Filter » @ 106,740
+texte « low ↔ high » @ 106,777
+bouton @ 294,753
+texte « Echo » @ 294,741
+texte « on the way out » @ 294,774
+bouton @ 482,756
+texte « Roll » @ 482,740
+texte « 1/16 » @ 482,777
+bouton @ 106,865
+texte « Build-up » @ 106,849
+texte « 4 bars » @ 106,886
+bouton @ 294,865
+texte « Drop » @ 294,849
+texte « braking » @ 294,886
+bouton @ 482,865
+texte « Stutter » @ 482,849
+texte « 1/16 » @ 482,886
+bouton ↶ « Undo » @ 107,965
+bouton (quatre carrés) « Blocks » @ 294,965
+bouton (curseurs) « Effects » @ 481,965
+bouton (cotillons) « Big pads » @ 140,1046
+bouton (trois points reliés) « Share » @ 395,1046
+bouton « ? » @ 548,1046
+bouton ■ « Stop all » @ 66,1151
+bouton « Record what I play » @ 260,1136
+bouton ⋯ « Less » @ 488,1136
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

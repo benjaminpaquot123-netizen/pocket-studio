@@ -1,0 +1,19 @@
+Écran 5 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Changer » @ 400,120
+texte « Ce morceau sera en mode Simple. » @ 181,120
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,286
+bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌃ [état « ouvert »] @ 294,360
+bouton « Lo-fi hip-hop Hip-hop · 84 BPM Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle. Pour l'idée : • Nujabes – Aruarian Dance (2004) • Nujabes feat. Cise Starr & Akin – Feather (2005) • J Dilla – Don't Cry (2006) » @ 294,649
+icône ▶ @ 57,459
+bouton ▶ «  Créer et écouter » @ 322,627
+bouton « Choisir ce style et continuer » @ 322,711
+bouton « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 294,972
+icône ▶ @ 57,942
+bouton « Amapiano House · 112 BPM La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy. Pour l'idée : Tyla – Water (2023) » @ 294,1134
+icône ▶ @ 57,1104
+bouton « Synthwave 105 BPM Le son des années 80 remis à la mode (Stranger Things, Blinding Lights) : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des notes de synthé qui tournent en boucle. Pour l'idée : The Weeknd – Blinding Lights (2019) » [coupé] @ 294,1249
+icône ▶ [coupé] @ 57,1257

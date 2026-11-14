@@ -1,0 +1,212 @@
+#0 SIEGE lang=pt-BR device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3645b45e0a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » 3.16:1 (needs 4.5:1, 14 sp)
+#1 > touche 308 447
+#1 DOIGT welcome_guided « Criar minha primeira música (guiado) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 62e2ef188c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pro » 2.09:1 (needs 3.0:1, 24 sp)
+#2 > touche 308 282
+#2 DOIGT mode_card_simple « Simples »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE c38f7508f4 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Techno » 2.80:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 10 estilos » 2.44:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 1.94:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 9 estilos » 2.05:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Bass music » 2.19:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 estilos » 2.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 4 estilos » 1.60:1 (needs 4.5:1, 13 sp)
+#3 > touche 308 672
+#3 DOIGT wizard_family_Hip-hop « Hip-hop »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 2b345c36c5 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « O rap de hoje, nascido em Atlanta: um 808 que treme tudo, hi-hats rolando bem rápido, um clap pesado e uma melodia em loop. » ellipsized (« … »)
+#4 LAYOUT CUT « O trap na versão sombria, de Londres a Paris: um 808 que desliza, uma caixa deslocada e hi-hats saltitantes. » ellipsized (« … »)
+#4 LAYOUT CUT « O som dos vídeos de drift: uma melodia de cowbell em loop, um 808 saturado que ronca e uma bateria que bate pesado. » ellipsized (« … »)
+#4 LAYOUT CUT « O rap old school de Nova York: um loop de piano jazz, um kick redondo, uma caixa estalada e um groove que balança. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « Hip-hop · 142 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « O trap na versão sombria, de Londres a Paris: um 808 que desliza, uma caixa deslocada e hi-hats saltitantes. » 4.28:1 (needs 4.5:1, 13 sp)
+#4 > glisse 308 1100 308 500
+#4 DOIGT wizard_style_phonk « Phonk »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5e842c7aff | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « O rap eletrônico de Londres, rápido e cru: uma bateria seca cheia de buracos, um baixo quadrado que rosna e acordes curtos e gelados. » ellipsized (« … »)
+#5 LAYOUT CUT « A música de dança de Nova Jersey, sucesso no TikTok: cinco kicks que quicam, pequenos trechos de voz repetidos e muita energia. » ellipsized (« … »)
+#5 LAYOUT CUT « O hip-hop bem tranquilo dos vídeos da “Lofi Girl”, perfeito para estudar: acordes de jazz no piano elétrico, uma bateria abafada e o chiado de um vinil antigo. » ellipsized (« … »)
+#5 LAYOUT CONTRAST « O rap de hoje, nascido em Atlanta: um 808 que treme tudo, hi-hats rolando bem rápido, um clap pesado e uma melodia em loop. » 3.58:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Phonk » 3.49:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Hip-hop · 130 BPM » 3.21:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Boom bap » 3.37:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « O rap old school de Nova York: um loop de piano jazz, um kick redondo, uma caixa estalada e um groove que balança. » 4.11:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Hip-hop · 140 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « A música de dança de Nova Jersey, sucesso no TikTok: cinco kicks que quicam, pequenos trechos de voz repetidos e muita energia. » 1.66:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 4 estilos » 3.98:1 (needs 4.5:1, 13 sp)
+#5 > touche 308 1326
+#5 DOIGT wizard_family_Autres « Outros »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 235fd1f5e6 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 57 195
+#6 DOIGT wizard_style_listen_trap
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 19e1a40d9a | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#7 > touche 308 260
+#7 DOIGT wizard_style_trap « Trap »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 49be6ceff2 | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#8 LAYOUT CONTRAST «  Criar e ouvir » 2.74:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Escolher este estilo, passo a passo » 3.43:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « • Travis Scott – FE!N (2023) » 3.44:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « • Migos – Bad and Boujee (2016) » 2.95:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Drill » 1.94:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Hip-hop · 130 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Para referência: Kordhell – Murder in My Mind (2022) » 4.34:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « Grime » 3.95:1 (needs 4.5:1, 16 sp)
+#8 > touche 336 336
+#8 DOIGT wizard_style_play_trap «  Criar e ouvir »
+#9 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 8c0acd70ba | project=p-165caabc no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#9 > touche 427 42
+#9 DOIGT top_record
+#10 ROUTE dialogue:record_choice | MODE simple | EMPREINTE fc4de9562c | project=p-165caabc no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 LAYOUT CONTRAST «   Contagem: 1 compasso » 2.16:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Cancelar » 2.07:1 (needs 4.5:1, 14 sp)
+#10 > touche 308 535
+#10 DOIGT record_choice_mic «   O microfone: sua voz, um violão, um in »
+#11 ROUTE audio_tracks | MODE simple | EMPREINTE bcc4527e0c | project=p-165caabc no tuto
+#11 SON Son : le morceau joue (partie « A »).
+#11 > attends 8
+#12 ROUTE audio_tracks | MODE simple | EMPREINTE db188ba10b | project=p-165caabc no tuto
+#12 SON Son : le morceau joue (partie « A »).
+#12 > touche 184 756
+#12 DOIGT audio_stop « Parar e guardar »
+#13 ROUTE ? | MODE simple | EMPREINTE f33e9625f8 | project=p-165caabc no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « PARA COMEÇAR » 4.30:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « O som da melodia » 3.89:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Outra bateria » 3.95:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « A palavra: Melodia » 2.17:1 (needs 3.0:1, 14 sp)
+#13 > touche 587 601
+#13 DOIGT guide_bar « Guia »
+#14 ROUTE audio_tracks | MODE simple | EMPREINTE 35f2d8d589 | project=p-165caabc no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 231 1152
+#14 DOIGT thumb_play
+#15 ROUTE audio_tracks | MODE simple | EMPREINTE 7d070d04cb | project=p-165caabc no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > attends 6
+#16 ROUTE audio_tracks | MODE simple | EMPREINTE e36741fb9c | project=p-165caabc no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 > glisse 308 1000 308 450
+#16 DOIGT record_count_in « Contagem: 1 compasso »
+#17 ROUTE audio_track_0 | MODE simple | EMPREINTE 8e27f2f3ab | project=p-165caabc no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 310 114
+#17 DOIGT top_position « Intro »
+#18 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE de0c392f99 | project=p-165caabc no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT CONTRAST « 4 · Refrão » 3.37:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 6 · Refrão 2 » 1.80:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 7 · Verso » 2.86:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 10 · Refrão 3 » 2.17:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 11 · Refrão 3 » 1.21:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 17 · Verso » 2.04:1 (needs 4.5:1, 14 sp)
+#18 > touche 393 90
+#18 DOIGT play_from_whole « A música inteira, do início »
+#19 ROUTE audio_tracks | MODE simple | EMPREINTE c75e658879 | project=p-165caabc no tuto
+#19 SON Son : le morceau joue (partie « A »).
+#19 > attends 3
+#20 ROUTE audio_tracks | MODE simple | EMPREINTE 63e240cf7b | project=p-165caabc no tuto
+#20 SON Son : le morceau joue (partie « A »).
+#20 > touche 231 1152
+#20 DOIGT thumb_play
+#21 ROUTE audio_track_0 | MODE simple | EMPREINTE 90085d81a6 | project=p-165caabc no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 113 180
+#21 DOIGT remix_back «  Minha música »
+#22 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE fcba8172f9 | project=p-165caabc no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 231 1152
+#22 DOIGT thumb_play
+#23 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 82ac80ddae | project=p-165caabc no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 388 1002
+#23 DOIGT simple_alone_audio:0 « Ouvir “Áudio 1” sozinho, em loop »
+#24 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 3d2a015294 | project=p-165caabc no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 432 1002
+#24 DOIGT simple_alone_audio:0 « Parar »
+#25 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE c9ebdda1a2 | project=p-165caabc no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 427 42
+#25 DOIGT top_record
+#26 ROUTE dialogue:record_choice | MODE simple | EMPREINTE 19aac5479d | project=p-165caabc no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST «   Contagem: 1 compasso » 2.13:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Cancelar » 2.08:1 (needs 4.5:1, 14 sp)
+#26 > touche 308 535
+#26 DOIGT record_choice_mic «   O microfone: sua voz, um violão, um in »
+#27 ROUTE audio_track_0 | MODE simple | EMPREINTE 9626d40f6e | project=p-165caabc no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 > attends 6
+#28 ROUTE audio_track_0 | MODE simple | EMPREINTE def6933f6d | project=p-165caabc no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 > touche 184 630
+#28 DOIGT audio_stop « Parar e guardar »
+#29 ROUTE audio_tracks | MODE simple | EMPREINTE c46cbc3da5 | project=p-165caabc no tuto
+#29 SON Son : rien ne joue.
+#29 > glisse 308 1000 308 500
+#29 DOIGT rien
+#30 ROUTE audio_track_0 | MODE simple | EMPREINTE 4425da34ee | project=p-165caabc no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 135 531
+#30 DOIGT audio_take_0_1 « Take 1 · 11,4 s »
+#31 ROUTE audio_track_0 | MODE simple | EMPREINTE 4079cb9f8e | project=p-165caabc no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 466 447
+#31 DOIGT audio_alone_0 « Parar »
+#32 ROUTE audio_track_0 | MODE simple | EMPREINTE fc01e30e16 | project=p-165caabc no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 329 532
+#32 DOIGT audio_take_0_2 « Take 2 · 8,6 s »
+#33 ROUTE audio_track_0 | MODE simple | EMPREINTE 2952e9953b | project=p-165caabc no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 231 1152
+#33 DOIGT thumb_play
+#34 ROUTE audio_track_0 | MODE simple | EMPREINTE 7d4b4514ee | project=p-165caabc no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 324 114
+#34 DOIGT top_position « Intro »
+#35 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE abf5f37707 | project=p-165caabc no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 3 · Refrão » 3.37:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « 9 · Verso 3 » 2.17:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « 10 · Refrão 3 » 1.37:1 (needs 4.5:1, 14 sp)
+#35 > touche 393 594
+#35 DOIGT play_from_6 « 7 · Verso »
+#36 ROUTE audio_tracks | MODE simple | EMPREINTE f8ef965544 | project=p-165caabc no tuto
+#36 SON Son : le morceau joue (partie « B »).
+#36 > attends 10
+#37 ROUTE audio_tracks | MODE simple | EMPREINTE f8ef965544 | project=p-165caabc no tuto
+#37 SON Son : le morceau joue (partie « B »).
+#37 > attends 5
+#38 ROUTE audio_tracks | MODE simple | EMPREINTE f8ef965544 | project=p-165caabc no tuto
+#38 SON Son : le morceau joue (partie « B »).
+#38 > touche 324 114
+#38 DOIGT top_position « Verso »
+#39 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE cb48302c30 | project=p-165caabc no tuto
+#39 SON Son : le morceau joue (partie « B »).
+#39 LAYOUT CONTRAST « 11 · Refrão 3 » 1.23:1 (needs 4.5:1, 14 sp)
+#39 > touche 393 90
+#39 DOIGT play_from_whole « A música inteira, do início »
+#40 ROUTE audio_tracks | MODE simple | EMPREINTE 6d530315a1 | project=p-165caabc no tuto
+#40 SON Son : le morceau joue (partie « A »).
+#40 > touche 135 586
+#40 DOIGT audio_take_0_1 « Take 1 · 11,4 s »
+#41 ROUTE audio_track_0 | MODE simple | EMPREINTE c22f0a6e21 | project=p-165caabc no tuto
+#41 SON Son : la musique du projet joue en boucle.

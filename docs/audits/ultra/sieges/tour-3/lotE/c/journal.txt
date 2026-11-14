@@ -1,0 +1,443 @@
+#0 SIEGE lang=en device=phone font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 440fa3320c | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Pick a style, I'll help you step by step, from the start of the song to its end. » 1.96:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « You make the whole song yourself, step by step: I explain and I check. » 4.25:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Pick a song on your phone: the app separates the vocals, drums, bass and the rest. » 3.42:1 (needs 4.5:1, 14 sp)
+#1 > glisse 294 1100 294 500
+#1 DOIGT rien
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 4f95afa5f6 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « You make the whole song yourself, step by step: I explain and I check. » 1.23:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Start from scratch » 2.53:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Pick a song on your phone: the app separates the vocals, drums, bass and the rest. » 3.44:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Pad Live » 1.38:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « Listen to a rhythm, play it back on the pads: win stars. » 2.04:1 (needs 4.5:1, 14 sp)
+#2 > touche 294 1080
+#2 DOIGT welcome_voice « Record my voice or guitar »
+#3 ROUTE audio_tracks | MODE simple | EMPREINTE 952594a58a | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST «   Audio track » 3.61:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 510 675
+#3 DOIGT dans:audio_track_0
+#4 ROUTE dialogue:« Rename » | MODE simple | EMPREINTE 4b7a92bdf1 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 361 759
+#4 DOIGT #519 « Rename »
+#5 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE 07b35aafa8 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 7/24 » 1.34:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Cancel » 1.89:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « OK » 1.89:1 (needs 4.5:1, 14 sp)
+#5 > touche 294 620
+#5 DOIGT audio_name_field « Name »
+#6 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE 07b35aafa8 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > ecris Guitar
+#6 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 43218 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#6 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 53625 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#6 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 45782 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#6 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 36415 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#7 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE c0b6844259 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 6/24 » 1.34:1 (needs 4.5:1, 13 sp)
+#7 > touche 460 758
+#7 DOIGT #553 « OK »
+#8 ROUTE audio_tracks | MODE simple | EMPREINTE a0ed8bc731 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 165 759
+#8 DOIGT audio_record_0 «  Record »
+#9 ROUTE audio_tracks | MODE simple | EMPREINTE 572f5fa097 | project=projet-1 no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 > attends 4
+#10 ROUTE audio_tracks | MODE simple | EMPREINTE 1fc01b70f3 | project=projet-1 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > attends 6
+#11 ROUTE audio_tracks | MODE simple | EMPREINTE 9b92ae48e6 | project=projet-1 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 > touche 165 594
+#11 DOIGT audio_stop « Stop and keep »
+#12 ROUTE audio_tracks | MODE simple | EMPREINTE 192dd0ff31 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > glisse 294 900 294 450
+#12 DOIGT rien
+#13 ROUTE audio_tracks | MODE simple | EMPREINTE 3a4fa5f971 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Reverse » 3.20:1 (needs 4.5:1, 14 sp)
+#13 > touche 165 333
+#13 DOIGT audio_record_0 «  New take »
+#14 ROUTE audio_track_0 | MODE simple | EMPREINTE 3557eb15ef | project=projet-1 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 > attends 6
+#15 ROUTE audio_track_0 | MODE simple | EMPREINTE 3607a7c76e | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > touche 399 42
+#15 DOIGT top_record
+#16 ROUTE audio_tracks | MODE simple | EMPREINTE 323be4cb95 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Previous take » 1.50:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Reverse » 3.17:1 (needs 4.5:1, 14 sp)
+#16 > touche 127 543
+#16 DOIGT audio_take_0_1 « Take 1 · 14 s »
+#17 ROUTE audio_tracks | MODE simple | EMPREINTE ddd4d5e2be | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > glisse 294 900 294 350
+#17 DOIGT rien
+#18 ROUTE audio_tracks | MODE simple | EMPREINTE 4ba05eedbf | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > glisse 294 900 294 350
+#18 DOIGT rien
+#19 ROUTE audio_tracks | MODE simple | EMPREINTE 464b674316 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT TARGET « 0 ms » 34 x 17 dp (touch 48 x 48)
+#19 > glisse 294 900 294 300
+#19 DOIGT rien
+#20 ROUTE audio_tracks | MODE simple | EMPREINTE bed1493608 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 294 825
+#20 DOIGT audio_add «   Audio track »
+#21 ROUTE audio_tracks | MODE simple | EMPREINTE 618968587f | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 510 849
+#21 DOIGT dans:audio_track_1
+#22 ROUTE dialogue:« Rename » | MODE simple | EMPREINTE eb9fedd6d0 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 361 933
+#22 DOIGT #865 « Rename »
+#23 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE cb5b261105 | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « OK » 1.39:1 (needs 4.5:1, 14 sp)
+#23 > touche 294 620
+#23 DOIGT audio_name_field « Name »
+#24 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE cb5b261105 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > ecris Vocals
+#24 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 27587 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#24 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 28227 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#24 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 28531 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#24 SCREEN ERROR androidx.test.espresso.AppNotIdleException: Compose did not get idle after 26183 attempts in 60 SECONDS.
+
+1. Check your measure/layout lambdas for infinite composition loops.
+2. Verify that the 'busy' resources listed above are not deadlocked.
+3. Increase Espresso's master idling policy if a longer timeout is required.
+ The following Idle Con
+    at androidx.test.espresso.AppNotIdleException.create(AppNotIdleException.java:11)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle$lambda$0(RobolectricIdlingStrategy.android.kt:101)
+    at androidx.compose.ui.test.AndroidSynchronization_androidKt.runOnUiThread(AndroidSynchronization.android.kt:35)
+    at androidx.compose.ui.test.RobolectricIdlingStrategy.runUntilIdle(RobolectricIdlingStrategy.android.kt:66)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.waitForIdle(ComposeUiTest.android.kt:716)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$waitForIdle(ComposeUiTest.android.kt:481)
+    at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitForIdle(ComposeUiTest.android.kt:859)
+    at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitForIdle(AndroidComposeTestRule.android.kt:495)
+#25 ROUTE dialogue:audio_name_field | MODE simple | EMPREINTE dc533331ab | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 460 758
+#25 DOIGT #899 « OK »
+#26 ROUTE audio_tracks | MODE simple | EMPREINTE bb2a31e064 | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 399 42
+#26 DOIGT top_record
+#27 ROUTE dialogue:« The audio engine didn't start: » | MODE simple | EMPREINTE 7744d08251 | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 506 687
+#27 DOIGT #914 « Got it »
+#28 ROUTE audio_tracks | MODE simple | EMPREINTE bb2a31e064 | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 165 925
+#28 DOIGT audio_record_1 «  Record »
+#29 ROUTE audio_tracks | MODE simple | EMPREINTE 4099f8fb9d | project=projet-1 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > attends 8
+#30 ROUTE audio_tracks | MODE simple | EMPREINTE 38e8d2a976 | project=projet-1 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 399 42
+#30 DOIGT top_record
+#31 ROUTE audio_tracks | MODE simple | EMPREINTE 9d25a36fda | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 399 42
+#31 DOIGT top_record
+#32 ROUTE dialogue:« The audio engine didn't start: » | MODE simple | EMPREINTE 7744d08251 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 506 687
+#32 DOIGT #1124 « Got it »
+#33 ROUTE audio_tracks | MODE simple | EMPREINTE 9d25a36fda | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 414 1158
+#33 DOIGT tab_simple_Mix « Mix »
+#34 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 7bc58456b7 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Vocals » 1.43:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « +0.0 dB » 2.54:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « Sound » 1.66:1 (needs 4.5:1, 10 sp)
+#34 > touche 194 815
+#34 DOIGT mix_mute_1 « Acid 303 sound »
+#35 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 312dd99fa6 | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 317 815
+#35 DOIGT mix_mute_2 « Synth sound »
+#36 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 2cea02f2d5 | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 56 838
+#36 DOIGT mix_mute_0 « Drums sound »
+#37 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 426e0d7f16 | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > glisse 462 532 462 590
+#37 DOIGT mix_fader_12 « Volume of Guitar »
+#38 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 51b2e02615 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 223 1059
+#38 DOIGT thumb_play
+#39 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE d2b6110f5d | project=projet-1 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 223 1059
+#39 DOIGT thumb_play
+#40 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 51b2e02615 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 54 1158
+#40 DOIGT tab_simple_Morceau « My song »
+#41 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE fe32a47708 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 172 672
+#41 DOIGT simple_track_audio:0 « Guitar »
+#42 ROUTE audio_tracks | MODE simple | EMPREINTE 9d25a36fda | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > glisse 294 400 294 950
+#42 DOIGT rien
+#43 ROUTE audio_tracks | MODE simple | EMPREINTE c086c1cbad | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 70 252
+#43 DOIGT part_header_pick « Part: A »
+#44 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 5297e1e4fe | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « A » 1.45:1 (needs 3.0:1, 14 sp)
+#44 > retour
+#44 RETOUR
+#45 ROUTE audio_tracks | MODE simple | EMPREINTE c086c1cbad | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 534 1158
+#45 DOIGT tab_simple_Envoyer « Send »
+#46 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 159013e414 | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 474 385
+#46 DOIGT share_listen «  Listen »
+#47 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 4bdf3ee79d | project=projet-1 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 474 385
+#47 DOIGT share_listen «  Stop »
+#48 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 159013e414 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 294 888
+#48 DOIGT share_go «   Share »
+#49 ROUTE dialogue:share_progress | MODE simple | EMPREINTE f77779ccbd | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > attends 8
+#49 PARTAGE My-first-beat-loop-20261105-095503.m4a
+#50 ROUTE dialogue:« Share my song · My-first-beat- » | MODE simple | EMPREINTE 0dccc0c73f | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 > retour
+#50 RETOUR
+#51 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE ede18e51d9 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Ready: My-first-beat-loop-20261105-095503.m4a, a copy is also in Music › BenStudio. » 3.52:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « OK » 1.97:1 (needs 4.5:1, 14 sp)
+#51 > touche 54 1158
+#51 DOIGT rien
+#52 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 159013e414 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 54 1158
+#52 DOIGT tab_simple_Morceau « My song »
+#53 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE fe32a47708 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 172 782
+#53 DOIGT simple_track_audio:1 « Vocals »
+#54 ROUTE audio_tracks | MODE simple | EMPREINTE c086c1cbad | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > glisse 294 950 294 250
+#54 DOIGT guide_bar « Guide »
+#55 ROUTE audio_tracks | MODE simple | EMPREINTE c086c1cbad | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > glisse 120 700 120 250
+#55 DOIGT rien (texte « The music starts again from the start of »)
+#56 ROUTE audio_tracks | MODE simple | EMPREINTE 6db6cc9593 | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « The music starts again from the start of the part; only this passage is replaced, the whole take stays in the takes. » 3.99:1 (needs 4.5:1, 13 sp)
+#56 > glisse 30 900 30 300
+#56 DOIGT rien
+#57 ROUTE audio_tracks | MODE simple | EMPREINTE 1b7d05d33a | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 155 541
+#57 DOIGT record_count_in « Count-in: 1 bar »
+#58 ROUTE audio_tracks | MODE simple | EMPREINTE 7cfde2158d | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 165 457
+#58 DOIGT audio_record_1 «  New take »
+#59 ROUTE audio_tracks | MODE simple | EMPREINTE f434d8dfb7 | project=projet-1 no tuto
+#59 SON Son : la musique du projet joue en boucle.
+#59 > glisse 30 300 30 1000
+#59 DOIGT rien
+#60 ROUTE audio_track_0 | MODE simple | EMPREINTE 5d5ce97daf | project=projet-1 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 LAYOUT CONTRAST « “−”: earlier, “+”: later (in milliseconds). » 2.15:1 (needs 4.5:1, 13 sp)
+#60 > glisse 30 300 30 1000
+#60 DOIGT rien
+#61 ROUTE audio_track_0 | MODE simple | EMPREINTE 4a969c0e0e | project=projet-1 no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 > glisse 30 300 30 1000
+#61 DOIGT dans:audio_trim_0 « Range start »
+#62 ROUTE audio_tracks | MODE simple | EMPREINTE ef3a2fe49e | project=projet-1 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > glisse 30 300 30 1000
+#62 DOIGT rien
+#63 ROUTE audio_tracks | MODE simple | EMPREINTE fd50e71a38 | project=projet-1 no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 423 594
+#63 DOIGT audio_cancel « Cancel »
+#64 ROUTE audio_tracks | MODE simple | EMPREINTE 72560b634a | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 543 114
+#64 DOIGT help_labels_button « Label the screen »
+#64 AIDE help_labels_button
+#65 ROUTE help_labels | MODE simple | EMPREINTE dc9ad8c14a | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 LAYOUT OVERLAP « Tempo » over « The Guide: where your song stands » (23 x 10 dp)
+#65 LAYOUT OVERLAP « More choices » over « Volumes » (55 x 18 dp)
+#65 LAYOUT OVERLAP « Listen » over the touchable « Play » (39 x 18 dp)
+#65 LAYOUT OVERLAP « The Guide: where your song stands » over the touchable « Play » (44 x 36 dp)
+#65 LAYOUT OVERLAP « The Guide: where your song stands » over the touchable « Tempo: 120 beats per minute Change the t » (37 x 36 dp)
+#65 LAYOUT OVERLAP « Parts and tracks » over the touchable « Undo » (56 x 18 dp)
+#65 LAYOUT OVERLAP « Share » over the touchable « More choices » (19 x 18 dp)
+#65 LAYOUT OVERLAP « Hide the labels » over the touchable « Open the Guide folded » (79 x 10 dp)
+#65 LAYOUT OVERLAP « 🐞 Report a bug » over the touchable « Open the Guide folded » (86 x 10 dp)
+#65 > touche 184 968
+#65 DOIGT help_labels_hide « Hide the labels »
+#65 AIDE help_labels_hide
+#66 ROUTE audio_tracks | MODE simple | EMPREINTE 72560b634a | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 421 943
+#66 DOIGT audio_take_forget_0_2
+#67 ROUTE audio_tracks | MODE simple | EMPREINTE b14b9cb581 | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 95 1059
+#67 DOIGT thumb_undo « Undo »
+#68 ROUTE audio_tracks | MODE simple | EMPREINTE 5af8aa5638 | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 538 843
+#68 DOIGT audio_previous_0 « Previous take »
+#69 ROUTE audio_tracks | MODE simple | EMPREINTE 96f28b1495 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 538 843
+#69 DOIGT audio_previous_0 « Previous take »
+#70 ROUTE audio_tracks | MODE simple | EMPREINTE 72560b634a | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 > touche 414 1158
+#70 DOIGT tab_simple_Mix « Mix »
+#71 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 51b2e02615 | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 399 42
+#71 DOIGT top_record
+#72 ROUTE dialogue:record_choice | MODE simple | EMPREINTE 0761528121 | project=projet-1 no tuto
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST «   A melody on the keys » 1.72:1 (needs 4.5:1, 14 sp)
+#72 LAYOUT CONTRAST « Cancel » 1.70:1 (needs 4.5:1, 14 sp)
+#72 > touche 294 489
+#72 DOIGT record_choice_mic «   The microphone: your voice, a guitar,  »
+#73 ROUTE audio_tracks | MODE simple | EMPREINTE 6bc5aa1f8e | project=projet-1 no tuto
+#73 SON Son : la musique du projet joue en boucle.
+#73 > touche 423 630
+#73 DOIGT audio_cancel « Cancel »
+#74 ROUTE audio_tracks | MODE simple | EMPREINTE 72560b634a | project=projet-1 no tuto
+#74 SON Son : rien ne joue.
+#74 > fin
+#74 FIN : fin

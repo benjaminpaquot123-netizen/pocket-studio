@@ -1,0 +1,37 @@
+Écran 27 (588x1278)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 480,42
+bouton « محترف » @ 339,42
+icône ↶ @ 261,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône (trois points reliés) @ 45,42
+bouton « 120  BPM » @ 515,114
+bouton « ? » @ 45,114
+bouton ← « المزيد  · الإعدادات » @ 294,180
+titre « العرض » [état « موسَّع »] @ 500,276
+texte « وضع هذا المشروع » @ 477,324
+bouton « بسيط: 5 تبويبات » @ 453,390
+bouton « محترف: كل الأدوات » [sélectionné] @ 249,390
+texte « تغيير طريقة العمل لا يغيّر شيئًا في أغانيك. » @ 400,454
+texte « اللغة » @ 529,501
+bouton « 🇸🇦   العربية » ⌄ @ 464,567
+texte « المظهر » @ 522,633
+bouton « استوديو (رمادي وبرتقالي) » [sélectionné] @ 419,699
+bouton « ليلي (أغمق) » @ 474,783
+bouton « مناسب لعمى الألوان » @ 444,867
+texte « حجم الواجهة » @ 496,932
+bouton (boussole) « المرشد  · ضع إيقاعًا 9 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » [sélectionné] @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

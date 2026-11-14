@@ -1,0 +1,11 @@
+Écran 7 (588x1278)
+texte « Mach mir einen Track » @ 267,79
+icône ✕ @ 546,105
+texte « Schritt 1: Wähl einen Stil » @ 237,172
+texte « Dieser Song wird im Modus Einfach sein. » @ 214,250
+texte « Ändern » @ 493,250
+bouton (lune) « Ruhig (Chill, Lo-Fi) 6 Stile » ⌃ [coupé, état « offen »] @ 294,331
+bouton « Lo-Fi Hip-Hop Hip-Hop · 84 BPM Der sanfte Hip-Hop der „Lofi Girl“-Videos, perfekt zum Lernen: Jazz-Akkorde auf dem E-Piano, weiche Drums und das Knistern einer alten Platte. Zur Orientierung: • Nujabes – Aruarian Dance (2004) • Nujabes feat. Cise Starr & Akin – Feather (2005) • J Dilla – Don't Cry (2006) » [coupé] @ 294,825
+icône ■ @ 57,418
+bouton ▶ «  Erstellen und anhören » @ 322,901
+bouton « Diesen Stil wählen und weiter » @ 322,1049

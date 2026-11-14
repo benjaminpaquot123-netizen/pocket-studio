@@ -1,0 +1,10 @@
+Écran 18 (588x1278)
+texte « Mes fichiers » @ 143,427
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,515
+texte « Trap-​morceau-​club-​20261113-​171016​.m4a » @ 227,604
+texte « Renvoyer » @ 485,618
+texte « 13 nov. 2026 17:10 · 1 Ko » @ 145,647
+texte « Trap-​morceau-​streaming-​20261113-​171000​.m4a » @ 227,703
+texte « Renvoyer » @ 485,717
+texte « 13 nov. 2026 17:10 · 1 Ko » @ 145,746
+texte « Fermer » @ 497,838

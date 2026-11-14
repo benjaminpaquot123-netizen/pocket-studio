@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Copy the note",
+  "Copier ces %d notes": "Copy these %d notes",
+  "Supprimer la note": "Delete the note",
+  "Supprimer ces %d notes": "Delete these %d notes",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Tap a cell: adds a note. Tap a note: selects it. Long press: its menu (copy, delete…). Drag: moves, the end: lengthens. Numbers on top: a whole bar. Bottom lane: drag to set the velocity.",
+  "%s demi-ton": "%s semitone",
+  "Régler le son (filtre, enveloppe…)": "Adjust the sound (filter, envelope…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "A low-pass at %s: it keeps the lows and softens the highs.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "A band-pass around %s: it keeps only that part of the sound.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "A high-pass at %s: it removes the lows below it.",
+  "Un égaliseur : %1$s vers %2$s.": "An equaliser: %1$s at %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "Done! The song's colour is chosen.",
+  "Revenir au tuto": "Back to the tutorial"
+}

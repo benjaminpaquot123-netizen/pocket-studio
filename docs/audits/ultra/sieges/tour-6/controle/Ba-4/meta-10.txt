@@ -1,0 +1,2 @@
+route=cut_screen
+nouvelle=1

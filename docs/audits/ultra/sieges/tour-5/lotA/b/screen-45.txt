@@ -1,0 +1,44 @@
+Écran 45 (616x1371)
+touchable « Demo · Acid house Salvo » (nom « Meus projetos ») @ 146,42
+bouton « Simples » (nom « Modo Simples. Toque para mudar de modo. ») @ 337,42
+bouton « Gravar o microfone na faixa de áudio » @ 427,42
+bouton « Tocar » @ 499,42
+bouton « Mais opções » @ 571,42
+bouton « 126  Andamento » (nom « Tempo: 126 batidas por minuto ») @ 106,114
+bouton « A compasso 1/7 » @ 310,114
+interrupteur « ? » (nom « Identificar a tela ») [non coché] @ 571,114
+bouton «  Minha música » @ 113,180
+texte « Minha voz » @ 281,180
+bouton « Parte: A » @ 76,252
+texte « Gravar em » @ 94,345
+case « A parte A » @ 113,408
+case « A música inteira » [sélectionné] @ 301,408
+texte « A partir da parte » @ 117,469
+case « 1. A » [sélectionné] @ 85,531
+case « 2. B » @ 181,531
+case « 3. A » @ 280,531
+case « 4. B » @ 378,531
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guia  · A gente tira para aumentar a vontade 50 % » [état « aberto »] @ 308,601
+texte « CAPÍTULO 4 · O ARRANJO » @ 308,679
+texte « A gente tira para aumentar a vontade » @ 308,745
+texte « O começo toca menos faixas que o grande momento. » @ 308,814
+texte « → » @ 61,865
+texte « Sua vez: toque em “Aliviar a intro e o verso”. » @ 327,880
+bouton « Aliviar a intro e o verso » @ 308,967
+texte « Os baixos e a melodia não tocam mais ali: eles entram no refrão. » @ 311,1036
+bouton « Um Break tirado do Refrão · 8 compassos » @ 308,1094
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Tocar » @ 231,1152
+bouton « Desfazer » @ 99,1152
+bouton « 126 Andamento » (nom « Tempo: 126 batidas por minuto ») @ 372,1152
+bouton « Mais » (nom « Mais opções ») @ 517,1152
+onglet « Minha música » @ 56,1251
+onglet « Ritmo » @ 181,1251
+onglet « Teclado » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Enviar » @ 559,1251
+touchable « ●  REC » (nom « Gravar a tela com som ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escrever uma nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentários ») @ 568,1341
+texte « Modo comentários » @ 176,1341

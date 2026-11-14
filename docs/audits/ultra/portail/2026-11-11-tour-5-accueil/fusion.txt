@@ -1,0 +1,8 @@
+fusion: 1f1ac3a517188f8bf11d4c26a83cabe1549bb5f6
+branche: eq/tour-5-accueil
+tete: 6adae3990d50c4d7be45b4bbc997a3453b908999
+relecture: docs/audits/ultra/tour-5-accueil-relecture.md
+relu: f181875bc5f203713b40010a901f02adbc69b7ed
+filtres: *PlusSameInBothModesTest *NavigationMapTest *ModeChoiceTest *TutoTest *Lot2TextsTest *HomeAndPadsTest *SpacesTest *SimpleModeAuditTest *RemixFindableTest *BugReportFlowTest *Tour5BloquantsTest *HumanLucasBugsTest *BenchRecetteTest *OnboardingUiTest *ScreenScanTest *NavScreenshotTest *HomeScreensSayTheyScrollTest *OneTouchStyleTest *OneTouchSongPlaysTest *QuickStyleCardTest *I18nCatalogTest *LexiconWordsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

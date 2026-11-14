@@ -77,7 +77,7 @@ class LiveGesturesTest {
     fun aChopHeldElsewhereLightsItsButton() {
         var chops by mutableStateOf(emptySet<Int>())
         compose.setContent {
-            PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true, chops = chops), LiveActions()) }
+            PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true, chops = chops), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) }
         }
         compose.onNodeWithTag("live_fx_acid").performClick()
         compose.onNodeWithTag("live_track_chop_acid").performScrollTo().assertIsNotSelected()

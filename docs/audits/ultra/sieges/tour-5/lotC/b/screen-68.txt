@@ -1,0 +1,100 @@
+Écran 68 (616x1371)
+bouton « Atrás » @ 42,42
+touchable « Reproducir » @ 123,42
+bouton « Tempo menos » @ 230,42
+bouton « 120 BPM » (nom « Tempo: 120 BPM ») @ 302,42
+bouton « Tempo más » @ 374,42
+texte « – » @ 481,42
+touchable « REC » (nom « Grabar la actuación ») @ 568,42
+bouton « A comp. 1/20 » [désactivé] @ 81,114
+interrupteur « ? » (nom « Etiquetar la pantalla ») [non coché] @ 571,114
+touchable « Nueva versión » (nom « Nueva versión ✓ ») @ 192,186
+touchable « Añadir a continuación » @ 412,186
+texte « La toma: » @ 54,186
+touchable « Lanzar en 1 compás » @ 131,270
+bouton « ? » (nom « ¿Qué es “Lanzar en y Casillas”? ») @ 272,270
+bouton « Menos casillas » @ 480,270
+bouton « Más casillas » @ 568,270
+texte « Casillas » @ 402,270
+texte « 8 » @ 524,270
+texte « Batería » @ 133,335
+interrupteur « Sonido de Batería » [coché, état « activado »] @ 133,390
+texte « Acid 303 » @ 238,335
+interrupteur « Sonido de Acid 303 » [coché, état « activado »] @ 238,390
+texte « Sinte » @ 343,335
+interrupteur « Sonido de Sinte » [coché, état « activado »] @ 343,390
+texte « Voz 1 » @ 448,335
+interrupteur « Sonido de Voz 1 » [coché, état « activado »] @ 448,390
+texte « Ma chanson préférée » @ 553,335
+interrupteur « Sonido de Ma chanson préférée » [non coché, état « desactivado »] @ 553,390
+bouton « ? » (nom « ¿Qué es “Bloques y casillas”? ») @ 45,369
+bouton « A » @ 45,467
+bouton « Batería · A · vacío » @ 133,467
+bouton « Acid 303 · A · vacío » @ 238,467
+bouton « Sinte · A · vacío » @ 343,467
+bouton « Voz 1 · A · vacío » @ 448,467
+bouton « Voz · 2 » (nom « Ma chanson préférée · A · listo ») @ 553,467
+bouton « B » @ 45,537
+bouton « Batería · B · vacío » @ 133,537
+bouton « Acid 303 · B · vacío » @ 238,537
+bouton « Sinte · B · vacío » @ 343,537
+bouton « Voz 1 · B · vacío » @ 448,537
+bouton « Ma chanson préférée · B · vacío » @ 553,537
+bouton « C » @ 45,607
+bouton « Batería · C · vacío » @ 133,607
+bouton « Acid 303 · C · vacío » @ 238,607
+bouton « Sinte · C · vacío » @ 343,607
+bouton « Voz 1 · C · vacío » @ 448,607
+bouton « Ma chanson préférée · C · vacío » @ 553,607
+bouton « D » @ 45,677
+bouton « Batería · D · vacío » @ 133,677
+bouton « Acid 303 · D · vacío » @ 238,677
+bouton « Sinte · D · vacío » @ 343,677
+bouton « Voz 1 · D · vacío » @ 448,677
+bouton « Ma chanson préférée · D · vacío » @ 553,677
+bouton « E » @ 45,747
+bouton « Batería · E · vacío » @ 133,747
+bouton « Acid 303 · E · vacío » @ 238,747
+bouton « Sinte · E · vacío » @ 343,747
+bouton « Voz 1 · E · vacío » @ 448,747
+bouton « Ma chanson préférée · E · vacío » @ 553,747
+bouton « F » @ 45,817
+bouton « Batería · F · vacío » @ 133,817
+bouton « Acid 303 · F · vacío » @ 238,817
+bouton « Sinte · F · vacío » @ 343,817
+bouton « Voz 1 · F · vacío » @ 448,817
+bouton « Ma chanson préférée · F · vacío » @ 553,817
+bouton « G » @ 45,887
+bouton « Batería · G · vacío » @ 133,887
+bouton « Acid 303 · G · vacío » @ 238,887
+bouton « Sinte · G · vacío » @ 343,887
+bouton « Voz 1 · G · vacío » @ 448,887
+bouton « Ma chanson préférée · G · vacío » @ 553,887
+bouton « H » @ 45,957
+bouton « Batería · H · vacío » @ 133,957
+bouton « Acid 303 · H · vacío » @ 238,957
+bouton « Sinte · H · vacío » @ 343,957
+bouton « Voz 1 · H · vacío » @ 448,957
+bouton « Ma chanson préférée · H · vacío » @ 553,957
+bouton « ■ Todo » @ 45,1031
+bouton « ■ » (nom « Detener la pista ») @ 133,1031
+bouton « ■ » (nom « Detener la pista ») @ 238,1031
+bouton « ■ » (nom « Detener la pista ») @ 343,1031
+bouton « ■ » (nom « Detener la pista ») @ 448,1031
+bouton « ■ » (nom « Detener la pista ») @ 553,1031
+touchable « Bloques » [sélectionné] @ 64,1137
+touchable « Pads » @ 150,1137
+touchable « Efectos » @ 236,1137
+touchable « Notas » @ 322,1137
+touchable « Acid 303 » @ 408,1137
+bouton « Pantalla completa » @ 487,1137
+bouton « Desplegar » @ 559,1137
+onglet « Estructura » @ 56,1251
+onglet « Sonidos » @ 181,1251
+onglet « Mix » @ 307,1251
+onglet « Live » [sélectionné] @ 433,1251
+onglet « Más » @ 559,1251
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

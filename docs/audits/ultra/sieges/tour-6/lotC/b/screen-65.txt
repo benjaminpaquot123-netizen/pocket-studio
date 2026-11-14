@@ -1,0 +1,20 @@
+Écran 65 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Changer » @ 367,120
+texte « Ce morceau sera en mode Pro. » @ 164,120
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
+bouton (éclair) « Techno 10 styles » ⌃ [état « ouvert »] @ 294,315
+bouton « Techno 132 BPM La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques. Pour l'idée : Amelie Lens – Hypnotized (2019) » @ 294,444
+icône ▶ @ 57,414
+bouton « Techno de Detroit Techno · 126 BPM La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule. Pour l'idée : Rhythim Is Rhythim – Strings of Life (1987) » @ 294,606
+icône ▶ @ 57,576
+bouton « Acid techno Techno · 138 BPM La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne. Pour l'idée : Josh Wink – Higher State of Consciousness (1995) » @ 294,768
+icône ▶ @ 57,738
+bouton « Hard techno Techno · 150 BPM La techno des soirées d'aujourd'hui, plus rapide et plus dure : un kick saturé suivi d'un grondement, et des sirènes de rave. Pour l'idée : Sara Landry & Alt8 – Heaven (2024) » @ 294,930
+icône ▶ @ 57,900
+bouton « Techno industrielle Techno · 136 BPM La techno la plus noire : des bruits de métal et de machines, comme une usine, sur un kick saturé qui gronde. Pour l'idée : I Hate Models – Daydream (2016) » @ 294,1092
+icône ▶ @ 57,1062
+bouton « Rétro techno Techno · 128 BPM Les raves belges et hollandaises de 1991 : un énorme synthé qui hurle (le « hoover ») tourne en boucle sur une 909 sèche. Pour l'idée : T99 – Anasthasia (1991) » [coupé] @ 294,1228
+icône ▶ @ 57,1224

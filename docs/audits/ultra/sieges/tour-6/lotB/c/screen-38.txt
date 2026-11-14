@@ -1,0 +1,45 @@
+Écran 38 (588x1278)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 480,42
+bouton « محترف » @ 339,42
+icône ↶ @ 261,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône (trois points reliés) @ 45,42
+bouton « 120  BPM » @ 515,114
+icône (flèches en boucle) « A المازورة 1/1 » ▾ @ 367,114
+bouton (flèches en boucle) « Loop » [allumé, état « يعمل »] @ 148,114
+bouton « ? » @ 45,114
+onglet « الخط الزمني » [sélectionné] @ 505,183
+onglet « الأجزاء » @ 385,183
+bouton » « تتبّع » [sélectionné] @ 275,183
+bouton (flèches en boucle) « Loop » @ 160,183
+icône ⇕ [coupé] @ 80,183
+icône (quatre coins) @ 36,183
+dessin @ 381,262
+texte « الأجزاء » @ 42,245
+texte « المازورات » @ 50,285
+dessin @ 381,501
+texte « الطبول » @ 54,374
+bouton (casque) [état « متوقف »] @ 125,431
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 56,431
+texte « Synth » @ 56,572
+bouton (casque) [état « متوقف »] @ 125,629
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 56,629
+icône (loupe +) @ 534,749
+icône (loupe −) @ 534,821
+icône (flèches vers les coins) @ 534,893
+bouton (boussole) « المرشد  · ضع إيقاعًا 9 % » ⌃ [état « مطويّ »] @ 294,986
+icône ↶ « تراجع » @ 516,1060
+icône ↷ « إعادة » [désactivé] @ 408,1060
+bouton ▶ « الأغنية » @ 300,1060
+texte « 120 السرعة » @ 186,1060
+icône (trois points reliés) « مشاركة » @ 72,1060
+onglet (ligne brisée et points) « البنية » [sélectionné] @ 534,1158
+onglet (touches de piano) « الأصوات » @ 414,1158
+onglet (curseurs) « المكس » @ 294,1158
+onglet (neuf points) « المباشر » @ 174,1158
+onglet ⋯ « المزيد » @ 54,1158
+texte « ●  REC » @ 228,1248
+texte « ✎  دوّن » @ 132,1248
+texte « ⋯ » @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

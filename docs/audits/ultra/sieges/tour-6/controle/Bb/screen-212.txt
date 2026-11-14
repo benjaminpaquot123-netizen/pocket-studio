@@ -1,0 +1,6 @@
+Écran 212 (900x1509)
+texte « Ich bereite deinen Song vor… » @ 336,617
+texte « Sound wird als WAV erzeugt, Studioqualität. » @ 358,688
+texte «   12 % » @ 794,741
+texte « Wähl dann die App, mit der du es sendest. » @ 319,792
+texte « Abbrechen » @ 740,882

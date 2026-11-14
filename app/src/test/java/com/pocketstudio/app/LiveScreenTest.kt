@@ -144,7 +144,7 @@ class LiveScreenTest {
         compose.onNodeWithTag("live_record").assertTextContains("REC").performClick()
         // Armed: the button says so; the choice can still change.
         take = TakeUi.Armed(16, 11)
-        compose.onNodeWithTag("live_record").assertTextContains("Armé")
+        compose.onNodeWithTag("live_record").assertTextContains("Prêt")
         compose.onNodeWithTag("live_take_replace").performClick()
         // Recording: the clock and the song's bar, ■ Fin in the line and on the button.
         take = TakeUi.Recording(16, 42, 21)
@@ -164,7 +164,7 @@ class LiveScreenTest {
         val ch = mutableListOf<String>()
         compose.setContent {
             PocketStudioTheme {
-                LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(trackChop = { c, on -> ch += "$c $on" }))
+                LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(trackChop = { c, on -> ch += "$c $on" }), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
             }
         }
         compose.onNodeWithTag("live_fx_acid").performClick()
@@ -173,8 +173,9 @@ class LiveScreenTest {
     }
 
     @Test
-    fun manyTracksUprightTurnTheGridSoEveryTrackIsInView() {
-        // Seven columns (drums, 303, five instrument tracks) do not fit across 400 dp: a row per track.
+    fun manyTracksUprightKeepTheGridAsItIsAndItsColumnsScroll() {
+        // Seven columns (drums, 303, five instrument tracks) do not fit across 400 dp: the grid keeps
+        // its scenes in rows (it never turns as tracks are added) and its columns scroll.
         var many: Project = project
         repeat(4) { many = many.addTrack("Piste ${it + 2}")!! }
         val columns = com.pocketstudio.app.live.liveColumnsOf(many)
@@ -189,6 +190,11 @@ class LiveScreenTest {
             }
         }
         val screen = compose.onNodeWithTag("live_screen").getBoundsInRoot()
+        // Scenes down the left, « ■ Tout » under them (turned, it was at the top).
+        val row = compose.onNodeWithTag("live_row_0").getBoundsInRoot()
+        val stopAll = compose.onNodeWithTag("live_stop_all").getBoundsInRoot()
+        org.junit.Assert.assertTrue("■ Tout under the scenes", stopAll.top > row.bottom)
+        org.junit.Assert.assertEquals(row.left.value, stopAll.left.value, 0.5f)
         columns.forEach { c ->
             val m = compose.onNodeWithTag("live_mute_${c.key}").performScrollTo().getBoundsInRoot()
             org.junit.Assert.assertTrue("${c.key} M within the width", m.right <= screen.right + 0.5.dp)
@@ -196,13 +202,42 @@ class LiveScreenTest {
         val last = columns.last().key
         compose.onNodeWithTag("live_mute_$last").performScrollTo().performClick()
         compose.onNodeWithTag("live_stop_$last").performScrollTo().performClick()
+        // Its cell in B is empty (lot 4b): a touch asks what goes in it, it launches nothing.
         compose.onNodeWithTag("live_pad_${last}_1").performScrollTo().performClick()
-        assertEquals(listOf("mute $last", "stop $last", "pad $last 1"), calls)
+        assertEquals(listOf("mute $last", "stop $last"), calls)
+        compose.onNodeWithTag("live_cell_menu").assertIsDisplayed()
+    }
+
+    @Test
+    @Config(qualifiers = "w600dp-h340dp-land-xxhdpi")
+    fun lyingDownWithABigTextEveryTabStaysClearOfTheFullScreenButton() {
+        // 09/20: at 130 % the side panel's « Notes » went under ⛶; the tabs now share the row.
+        compose.setContent {
+            val d = androidx.compose.ui.platform.LocalDensity.current
+            androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalDensity provides androidx.compose.ui.unit.Density(d.density, 1.3f)) {
+                PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) }
+            }
+        }
+        val full = compose.onNodeWithTag("live_fullscreen").getBoundsInRoot()
+        listOf("Effets", "Acide", "Pads", "Notes").forEach { t ->
+            val tab = compose.onNodeWithTag("live_tab_$t").assertIsDisplayed().getBoundsInRoot()
+            org.junit.Assert.assertTrue("$t clear of ⛶", tab.right <= full.left + 0.5.dp)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "w316dp-h640dp-xxhdpi")
+    fun uprightOnAShortScreenThePadOfTheEffectsIsInView() {
+        // 09/20: at 130 % upright the pad XY was all under the fold; the panel keeps room for it.
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
+        val screen = compose.onNodeWithTag("live_screen").getBoundsInRoot()
+        val xy = compose.onNodeWithTag("xy_pad").getBoundsInRoot()
+        org.junit.Assert.assertTrue("at least 90 dp of the pad in view (${screen.bottom - xy.top})", screen.bottom - xy.top >= 90.dp)
     }
 
     @Test
     fun fullScreenFoldsThePanelAndATabOpensItAgain() {
-        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions()) } }
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
         compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
         compose.onNodeWithTag("live_fullscreen").performClick()
         compose.onNodeWithTag("live_fx_acid").assertDoesNotExist()
@@ -211,5 +246,29 @@ class LiveScreenTest {
         // Back out of full screen: nothing else changes.
         compose.onNodeWithTag("live_fullscreen").performClick()
         compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
+    }
+
+    /** Lot 4a: « Pads » in the Live is the pads view on the whole screen; while a pad is being set up, its card. */
+    @Test
+    fun thePadsTabOpensThePadsOnTheWholeScreen() {
+        var full = 0
+        val pads = com.pocketstudio.app.session.LivePadsUi(com.pocketstudio.model.LivePads(8), List(8) { 0 }, editing = null)
+        val actions = com.pocketstudio.app.session.LivePadsActions(fullScreen = { full++ })
+        var editing by androidx.compose.runtime.mutableStateOf<Int?>(null)
+        compose.setContent {
+            PocketStudioTheme {
+                LiveScreen(
+                    LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(),
+                    pads = com.pocketstudio.app.session.LivePadsUi(pads.pads, pads.states, editing = editing), padsActions = actions,
+                )
+            }
+        }
+        compose.onNodeWithTag("live_tab_Pads").performClick()
+        assertEquals(1, full)
+        // « Régler » from the pads view: back here, the pad's settings in the card, no second jump.
+        editing = 3
+        compose.onNodeWithTag("live_tab_Pads").performClick()
+        assertEquals(1, full)
+        compose.onNodeWithTag("live_editor").assertIsDisplayed()
     }
 }

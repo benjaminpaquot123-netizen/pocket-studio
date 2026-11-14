@@ -1,0 +1,7 @@
+fusion: 15e277da192b5de5d7750647c37684c5bc261ad1
+branche: eq/tour-6-constate
+tete: fba0093bc158bc6ba386f576f5628f8900aa998d
+relecture: docs/audits/ultra/tour-6-constate-relecture.md
+relu: 00063ae7c5cfa36a1b81a45a16e4cbdd93e20a3e
+rejeux :
+  t4-26-prise-clavier : oracle tenu

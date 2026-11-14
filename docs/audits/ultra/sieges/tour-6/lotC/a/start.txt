@@ -1,0 +1,7 @@
+lang=fr
+device=tablet8
+font=130
+mode=simple
+gestes.max=100
+mission=libre
+timeout.minutes=30

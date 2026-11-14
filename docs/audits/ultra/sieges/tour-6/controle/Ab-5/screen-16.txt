@@ -1,0 +1,83 @@
+Écran 16 (588x1278)
+icône ← @ 42,42
+bouton ▶ @ 123,42
+icône − @ 207,42
+texte « 124 Tempo » @ 282,42
+icône + @ 357,42
+texte « – mesure » @ 447,42
+texte « REC » @ 540,42
+bouton « ? » @ 543,114
+image (compteur de vitesse) @ 31,177
+bouton « Annuler » @ 509,177
+texte « Tempo calé sur Ma prise 1 : 124 » @ 247,177
+bouton « Lancer à 1 mesure » @ 123,250
+bouton « ? » @ 256,250
+icône − @ 452,251
+icône + @ 540,251
+texte « Cases » @ 383,251
+texte « 8 » @ 496,250
+texte « Batterie » @ 155,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 155,372
+texte « Acid 303 » @ 276,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 276,372
+texte « Synthé » @ 397,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 397,372
+texte « Audio 1 » @ 518,317
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 518,372
+bouton « ? » @ 51,351
+bouton « A » @ 51,450
+dessin @ 155,450
+dessin @ 276,450
+dessin @ 397,450
+dessin @ 518,450
+bouton « B » @ 51,519
+dessin @ 155,519
+dessin @ 276,519
+dessin @ 397,519
+dessin @ 518,519
+bouton « C » @ 51,588
+dessin @ 155,588
+dessin @ 276,588
+dessin @ 397,588
+dessin @ 518,588
+bouton « D » @ 51,657
+dessin @ 155,657
+dessin @ 276,657
+dessin @ 397,657
+dessin @ 518,657
+bouton « E » @ 51,726
+dessin @ 155,726
+dessin @ 276,726
+dessin @ 397,726
+dessin @ 518,726
+bouton « F » @ 51,795
+dessin @ 155,795
+dessin @ 276,795
+dessin @ 397,795
+dessin @ 518,795
+bouton « G » @ 51,864
+dessin @ 155,864
+dessin @ 276,864
+dessin @ 397,864
+dessin @ 518,864
+bouton « ■ Tout » @ 51,945
+bouton « ■ » @ 155,945
+bouton « ■ » @ 276,945
+bouton « ■ » @ 397,945
+bouton « ■ » @ 518,945
+icône (quatre carrés) « Briques » [sélectionné] @ 61,1044
+icône (neuf points) « Pads » @ 142,1044
+icône (étincelles) « Effets » @ 223,1044
+icône ♪ « Notes » @ 303,1044
+icône (barres de son) « Acid 303 » @ 383,1044
+icône (quatre coins) @ 459,1044
+icône ⌃ @ 531,1044
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

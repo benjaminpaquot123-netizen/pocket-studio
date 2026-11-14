@@ -1,0 +1,8 @@
+fusion: 5af85619136288408973d8962fa7b945c26b4597
+branche: eq/tour-5-hardtechno
+tete: ab5b7e5bee7ece68b0e7b80ca893d0d60429fc46
+relecture: docs/audits/ultra/tour-5-hardtechno-relecture.md
+relu: 7fe6ddb3f15f34d43fbecd86584bdcefca3b0ef7
+filtres: com.pocketstudio.app.report.JournalLogicTest *BugReportTextTest *BugReportFlowTest com.pocketstudio.app.report.JournalLogicTest com.pocketstudio.app.report.BugReportTextTest com.pocketstudio.app.report.BugReportFlowTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

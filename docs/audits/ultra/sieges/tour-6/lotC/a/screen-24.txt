@@ -1,0 +1,58 @@
+Écran 24 (900x1509)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 224,42
+bouton « Pro » @ 477,42
+icône ↶ @ 552,42
+icône ↷ [désactivé] @ 624,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+icône (flèches en boucle) « Montée mes. 3/4 » ▾ @ 255,123
+bouton (flèches en boucle) « Boucler » [état « désactivé »] @ 724,123
+bouton « ? » @ 855,123
+onglet « Ligne du temps » [sélectionné] @ 141,201
+onglet « Parties » @ 340,201
+bouton » « Suivre » [sélectionné] @ 500,201
+bouton (flèches en boucle) « Boucle » @ 663,201
+icône (courbe) @ 785,201
+icône (quatre coins) @ 864,201
+texte « Parties » @ 62,263
+texte « Mesures » @ 72,303
+dessin @ 591,280
+texte « Batterie » @ 82,363
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 174,363
+bouton (casque) [état « désactivé »] @ 243,363
+bouton (courbe) « Volume · Batterie » @ 141,450
+texte « Basse » @ 82,537
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 174,537
+bouton (casque) [état « désactivé »] @ 243,537
+bouton (courbe) « Volume · Basse » @ 141,624
+bouton (courbe) « Filtre Coupure · Basse » @ 141,714
+texte « Piano » @ 82,801
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 174,801
+bouton (casque) [état « désactivé »] @ 243,801
+bouton (courbe) « Filtre Coupure · Piano » @ 141,888
+texte « Lead » @ 82,975
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 174,975
+bouton (casque) [état « désactivé »] @ 243,975
+bouton (courbe) « Volume · Lead » @ 141,1062
+bouton (courbe) « Envoi réverbe · Lead » [coupé] @ 141,1145
+dessin [coupé] @ 591,752
+icône (loupe +) @ 846,982
+icône (loupe −) @ 846,1054
+icône (flèches vers les coins) @ 846,1126
+bouton (boussole) « Guide  · Change un son 26 % » ⌃ [état « replié »] @ 450,1219
+icône ↶ « Annuler » @ 114,1292
+icône ↷ « Rétablir » [désactivé] @ 268,1292
+bouton ■ « le morceau » @ 440,1292
+texte « 122 Tempo » @ 617,1292
+icône (trois points reliés) « Partager » @ 780,1292
+onglet (ligne brisée et points) « Structure » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sons » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Plus » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

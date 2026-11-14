@@ -1,0 +1,80 @@
+Écran 38 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+texte « Rumble » @ 93,285
+texte « 这里还有 1 个虚线格子 » @ 162,314
+bouton « 1 » [état « 打击，力度 100% »] @ 90,386
+bouton [état « 空 »] @ 192,386
+bouton [état « 空 »] @ 294,386
+bouton [état « 空 »] @ 397,386
+bouton « 2 » [état « 打击，力度 100% »] @ 500,386
+bouton [état « 空 »] @ 603,386
+bouton [état « 空 »] @ 706,386
+bouton [état « 空 »] @ 809,386
+bouton « 3 » [état « 打击，力度 100% »] @ 90,467
+bouton [état « 空 »] @ 192,467
+bouton [état « 空 »] @ 294,467
+bouton [état « 空 »] @ 397,467
+bouton « 4 » [état « 空，虚线：点一下 »] @ 500,467
+bouton [état « 空 »] @ 603,467
+bouton [état « 空 »] @ 706,467
+bouton [état « 空 »] @ 809,467
+bouton « 打击 » [sélectionné] @ 88,553
+bouton « 滚奏 » @ 186,553
+bouton « 声像 » @ 284,553
+bouton « 音高 » @ 382,553
+bouton « 力度 » @ 480,553
+texte « 全部 » @ 121,637
+texte « 1/2 » @ 196,637
+texte « 1/4 » @ 271,637
+texte « ◀ » @ 346,637
+texte « ▶ » @ 421,637
+texte « 清除 » @ 496,637
+texte « 填充 » @ 62,637
+texte « 点一格添加打击，滑动手指可以一次画好几格。长按一个打击：力度和滚奏（×2 到 ×8）。 » @ 427,699
+bouton « 1 小节 » [sélectionné] @ 146,761
+bouton « 2 » @ 244,761
+bouton « 3 » @ 325,761
+bouton « 4 » @ 406,761
+texte « 长度 » @ 63,761
+texte « − » @ 283,845
+texte « + » [désactivé] @ 425,845
+texte « 这个打击垫循环长度 » @ 136,845
+texte « 16 步 » @ 354,845
+titre « 打击垫音色 » [état « 已展开 »] @ 136,962
+bouton « ? » @ 208,962
+texte « Rumble（合成） » @ 450,1011
+bouton (notes sur une pile) «  更换音色 » [coupé] @ 450,1050
+image (chapeau de diplômé) @ 37,1110
+texte « 底鼓和轰鸣 第 2/16 章 · 第 4/4 步 · 专业 » @ 400,1110
+icône (liste) @ 771,1110
+icône ⌃ @ 843,1110
+icône « 轮到你：Rumble 每拍一下：第二个长长的底鼓，泡在混响里并且失真，滤到 200 Hz 以下，每次底鼓时被抽吸压低。 阅读 » ⌃ @ 450,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

@@ -1,0 +1,73 @@
+Écran 28 (588x1278)
+icône « Mon premier rythme » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 103,114
+bouton « A » ▾ @ 237,114
+icône ↶ @ 312,114
+bouton ● @ 384,114
+bouton ▶ « cette partie » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 120  BPM » @ 73,186
+icône (flèches en boucle) « A mes. 1/1 » ▾ @ 218,186
+bouton (flèches en boucle) [état « désactivé »] @ 462,186
+bouton « ? » @ 543,186
+onglet « Acid 303 Ligne de basse » [coupé] @ 53,258
+onglet « Voix Micro » @ 159,258
+onglet « Remix Séparer » @ 289,258
+bouton « Basse ronde Basse ronde » ⋮ @ 470,258
+texte « Partie : A » @ 67,321
+bouton « Clavier » [sélectionné] @ 78,396
+bouton « Notes » @ 203,396
+icône (poubelle et traits) «  Vider » [désactivé] @ 508,396
+bouton ● «  Enregistrer ma mélodie » @ 114,489
+icône (chronomètre) «  1 » @ 266,489
+bouton (horloge et flèche) «  Garder ce que je viens de jouer » @ 418,489
+bouton « ? » @ 548,489
+icône − @ 347,606
+icône + @ 510,606
+texte « Octave 3 » @ 428,606
+titre « CLAVIER » [état « Déplié »] @ 109,606
+bouton « Accords » @ 109,690
+bouton « Pads » @ 236,690
+bouton « 2 octaves » [sélectionné] @ 116,774
+bouton « 1 octave » @ 265,774
+bouton « Gamme » @ 404,774
+bouton « Do » [coupé] @ 60,888
+bouton @ 77,888
+bouton [coupé] @ 96,888
+bouton @ 113,888
+bouton [coupé] @ 132,888
+bouton [coupé] @ 168,888
+bouton @ 185,888
+bouton [coupé] @ 204,888
+bouton @ 221,888
+bouton [coupé] @ 240,888
+bouton @ 257,888
+bouton [coupé] @ 276,888
+bouton « Do » [coupé] @ 312,888
+bouton @ 329,888
+bouton [coupé] @ 348,888
+bouton @ 365,888
+bouton [coupé] @ 384,888
+bouton [coupé] @ 420,888
+bouton @ 437,888
+bouton [coupé] @ 456,888
+bouton @ 473,888
+bouton [coupé] @ 492,888
+bouton @ 509,888
+bouton [coupé] @ 528,888
+bouton (boussole) « Guide  · Ajoute une mélodie 27 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 120 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,5 @@
+Écran 63 (588x1278)
+texte « Renommer la piste » @ 244,507
+champ « Nom 0/24 » contenu «  » @ 294,620
+bouton « Annuler » @ 346,758
+bouton « OK » [désactivé] @ 460,758

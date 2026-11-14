@@ -1,0 +1,59 @@
+Écran 110 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 188,42
+bouton « 专业 » @ 404,42
+bouton « A » ▾ @ 480,42
+icône ↶ @ 555,42
+bouton ● @ 627,42
+bouton ▶ « 这个段落 » @ 699,42
+bouton ▶ « 歌曲 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » @ 91,186
+onglet « Acid 303 贝斯线 » @ 253,186
+onglet « 人声 麦克风 » @ 391,186
+onglet « Remix 分离 » @ 514,186
+bouton « 贝斯 Plaits » ⋮ @ 649,186
+icône ♪ @ 763,186
+bouton « 效果 » [coupé] @ 848,186
+texte « 段落：A » @ 58,249
+bouton « 和弦 » @ 88,322
+texte « 对齐 50% » @ 203,322
+texte « 100% » @ 321,322
+bouton « 幽灵贝斯 » [sélectionné] @ 439,322
+texte « 清除 » @ 552,322
+texte « 小节 » @ 84,381
+bouton « 3 » [coupé] @ 147,391
+bouton « 4 » @ 515,391
+texte « D » [coupé] @ 84,437
+texte « D♭ » @ 84,471
+texte « C4 » @ 84,513
+texte « B » @ 84,555
+texte « B♭ » @ 84,597
+texte « A » @ 84,639
+texte « A♭ » @ 84,681
+texte « G » @ 84,723
+texte « G♭ » @ 84,765
+texte « F » @ 84,807
+texte « E » [coupé] @ 84,836
+dessin [coupé] @ 492,634
+image (chapeau de diplômé) @ 37,893
+icône (liste) @ 771,893
+icône ⌄ @ 843,893
+texte « 贝斯 第 5/16 章 · 第 3/3 步 · 专业 » @ 400,893
+texte « 轮到你：在钢琴卷帘下面，“设置音轨的音色”：把“截止”至少调高 15。贝斯打开了，变得更有咬劲。 » @ 450,992
+texte « ▸ 为什么？ » @ 450,1052
+bouton (doigt qui touche) «   我来做 » @ 450,1116
+bouton ▶ «  听示例 » @ 232,1200
+bouton (œil) «  示范给我看 » @ 667,1200
+icône ← «  上一步 » @ 87,1281
+icône « 下一步  » → @ 812,1281
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Grain
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Piano
@@ -68,6 +69,7 @@ object SoundLooks {
         "percussions mélodiques", "mallet" -> SoundLook(Icons.Filled.Notifications, KEYS)
         "effets", "fx", "effets synthé" -> SoundLook(Icons.Filled.AutoAwesome, FX)
         "voix", "vocal" -> SoundLook(Icons.Filled.RecordVoiceOver, VOICE)
+        "boucles", "loop" -> SoundLook(Icons.Filled.Loop, PLUCK)
         "bruitages", "foley" -> SoundLook(Icons.Filled.Vibration, FX)
         "cymbales", "ride" -> SoundLook(Icons.Filled.BlurOn, OPEN_HAT)
         // Each drum family in its pad's colour (Rythme tab), so they tell apart at a glance.
@@ -94,10 +96,27 @@ object SoundLooks {
         else -> SoundLook(Icons.Filled.MusicNote, KEYS)
     }
 
-    /** A few words on a synth patch: its wave, its unison, how it sounds over time. */
+    /** The wave a sound is drawn with (a synth's first oscillator, the 303's), null: no wave to draw. */
+    fun waveOf(sound: Any?): com.pocketstudio.ui.WaveShape? = when (sound) {
+        is SynthPatch -> com.pocketstudio.ui.WaveShape.ofSynth(sound.get(SynthPatch.OSC1_WAVE))
+        is AcidSound -> com.pocketstudio.ui.WaveShape.ofAcid(sound.waveform)
+        else -> null
+    }
+
+    /**
+     * A wave's word (decision of 2026-11-04): in the Mode simple ([plain], its words on) how it sounds,
+     * « Brillant » (saw), « Creux » (square), « Doux » (triangle); in the Pro the wave's own name.
+     */
+    fun waveWord(shape: com.pocketstudio.ui.WaveShape, plain: Boolean = com.pocketstudio.model.i18n.I18n.everyday): String = when (shape) {
+        com.pocketstudio.ui.WaveShape.Saw -> if (plain) tr("Brillant") else tr("Scie")
+        com.pocketstudio.ui.WaveShape.Square -> if (plain) tr("Creux") else tr("Carré")
+        com.pocketstudio.ui.WaveShape.Triangle -> if (plain) tr("Doux") else tr("Triangle")
+    }
+
+    /** A few words on a synth patch: its wave (an ear word in the Mode simple), its unison, how it sounds over time. */
     fun describe(patch: SynthPatch): String {
         val wave = patch.get(SynthPatch.OSC1_WAVE)
-        val parts = mutableListOf(if (wave < 0.25f) tr("Scie") else if (wave < 0.75f) tr("Carré") else tr("Triangle"))
+        val parts = mutableListOf(waveWord(com.pocketstudio.ui.WaveShape.ofSynth(wave)))
         val voices = 1 + (patch.get(SynthPatch.UNISON) * 6).roundToInt()
         if (voices > 1) parts += com.pocketstudio.app.ui.voicesLabel(voices)
         parts += when {
@@ -108,10 +127,26 @@ object SoundLooks {
         return parts.joinToString(" · ")
     }
 
+    /**
+     * The Mode simple's two words on a synth patch (Remix testers: « Scie · 5 voix · te… »): how it
+     * sounds (bright, hollow, soft), then thick when several voices play it, else how it lasts.
+     */
+    fun describePlain(patch: SynthPatch): String {
+        val wave = patch.get(SynthPatch.OSC1_WAVE)
+        val colour = waveWord(com.pocketstudio.ui.WaveShape.ofSynth(wave), plain = true)
+        val second = when {
+            patch.get(SynthPatch.UNISON) * 6 >= 0.5f -> tr("épais")
+            patch.get(SynthPatch.A_ATTACK) > 0.35f -> tr("monte doucement")
+            patch.get(SynthPatch.A_SUSTAIN) < 0.2f -> tr("court")
+            else -> tr("tenu")
+        }
+        return "$colour · $second"
+    }
+
     fun describe(patch: PlaitsPatch): String = PlaitsPatch.MODELS.getOrNull(patch.model)?.let { tr(it) }.orEmpty()
 
     fun describe(sound: AcidSound): String =
-        (if (sound.waveform < 0.5f) tr("Scie") else tr("Carré")) + if (sound.drive > 0.6f) " · " + tr("saturé") else if (sound.resonance > 0.75f) " · " + tr("piquant") else ""
+        waveWord(com.pocketstudio.ui.WaveShape.ofAcid(sound.waveform)) + if (sound.drive > 0.6f) " · " + tr("saturé") else if (sound.resonance > 0.75f) " · " + tr("piquant") else ""
 
     /** One line about each of Plaits' 24 models, in PlaitsPatch.MODELS order. */
     val PLAITS_HINTS: List<String> get() = listOf(

@@ -1,0 +1,63 @@
+Écran 45 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 200,42
+bouton « Semplice » @ 445,42
+icône ↶ @ 535,42
+bouton ● @ 607,42
+bouton ▶ « questa parte » @ 688,42
+bouton ▶ « il brano » @ 782,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Linea di basso » @ 129,204
+bouton « Synth Synth » ⋮ @ 337,204
+icône ♪ @ 463,205
+bouton + «  Traccia » @ 611,205
+icône « Parte: A » ▾ @ 89,283
+icône (poubelle et traits) «  Svuota » [désactivé] @ 798,373
+bouton « Tastiera » @ 97,373
+bouton « Note » [sélectionné] @ 243,373
+texte « Regola il suono della traccia ↓ » @ 242,460
+bouton ● «  Registra la mia melodia » @ 373,553
+icône (chronomètre) «  1 » @ 783,553
+bouton « ? » @ 860,553
+bouton « ✏ Disegna » [sélectionné] @ 140,670
+bouton « ⬚ Seleziona » @ 353,670
+bouton « Vedi tutto » @ 558,670
+texte « − » @ 169,745
+texte « + » @ 333,745
+texte «   Zoom » @ 84,745
+texte « 102% » @ 251,745
+texte « Loop » @ 72,826
+texte « − » [désactivé] @ 155,826
+texte « 1 batt. » @ 241,826
+texte « + » @ 326,826
+bouton « 1/16 » @ 175,901
+bouton « 1/8 » [sélectionné] @ 281,901
+bouton « 1/4 » @ 382,901
+bouton « 1/2 » @ 482,901
+texte «   Nota » @ 78,901
+bouton « 1/8 » @ 188,976
+bouton « 1/16 » [sélectionné] @ 294,976
+bouton « 1/16 t » @ 415,976
+bouton « 1/32 » @ 538,976
+texte «   Griglia » @ 88,976
+texte « A tempo 50% » @ 310,1057
+texte « 100% » @ 481,1057
+bouton « Accordi » @ 119,1057
+bouton « Basso fantasma » [sélectionné] @ 674,1057
+texte « Cancella » [désactivé] @ 120,1132
+texte « batt. » @ 84,1193
+bouton « 1 » @ 492,1201
+texte « Mi » [coupé] @ 84,1245
+dessin [coupé] @ 492,1245
+bouton (boussole) « Guida  · Aggiungi una melodia 35 % » ⌃ [état « chiuso »] @ 450,1293
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

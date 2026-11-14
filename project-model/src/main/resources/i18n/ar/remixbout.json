@@ -1,0 +1,15 @@
+{
+  "Un bout": "قطعة واحدة",
+  "Début du bout": "بداية القطعة",
+  "Fin du bout": "نهاية القطعة",
+  "Avancer d'un temps": "تقديم نبضة",
+  "Reculer d'un temps": "تأخير نبضة",
+  "Avancer un peu": "تقديم قليلًا",
+  "Reculer un peu": "تأخير قليلًا",
+  "Écouter le bout": "استمع إلى القطعة",
+  "Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches.": "القص: «قطعة واحدة» (في البداية) تعطيك شريطين، البداية والنهاية، لتحريكهما؛ ما بينهما يُرسل كما هو. الجُمل أو Transients أو المازورات تقطع المسار إلى قطع كثيرة. المغناطيس: تقع الأشرطة والقطعات على النبضة أو المازورة؛ «حر» يتركها حيث تلمس.",
+  "Début ici": "البداية هنا",
+  "Fin ici": "النهاية هنا",
+  "Écouter depuis la ligne orange": "استمع من الخط البرتقالي",
+  "Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts.": "اسحب شريطي البداية والنهاية، أو المس المنحنى ثم «البداية هنا» أو «النهاية هنا»: يضعهما المغناطيس على نبضات المسطرة. زر ▶ الكبير يشغّل المسار من الخط البرتقالي، و«استمع إلى القطعة» القطعة وحدها. ثم أرسلها. القصّ › جمل أو ضربات أو مازورات: قطع كثيرة."
+}

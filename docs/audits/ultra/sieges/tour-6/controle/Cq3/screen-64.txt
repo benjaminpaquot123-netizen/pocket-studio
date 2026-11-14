@@ -1,0 +1,43 @@
+Écran 64 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+bouton « Fichier final 48 kHz · 24 bits » ⌄ [coupé] @ 272,173
+bouton « ? » @ 524,165
+bouton (touches de piano) « Créer le fichier MIDI des notes (tout le morceau) » › @ 294,257
+bouton « Créer le fichier du morceau » @ 294,347
+texte « Sauvegardé dans Musique › BenStudio : Démo-Acid-house-morceau-streaming-20261114-015117.m4a » @ 294,435
+texte « ✓ Prêt à partager » @ 132,503
+texte « Durée : 13 s » @ 95,534
+texte « Niveau : à la cible (Streaming) » @ 180,564
+texte « Crête : sous la limite, pas de saturation » @ 218,594
+texte « M4A, 48 kHz, 256 kb/s » @ 146,624
+texte « −14,0 LUFS intégrés · crête −9,1 dBTP » @ 211,671
+bouton « ? » @ 402,671
+texte « Cible : Streaming · −14 LUFS » @ 172,718
+bouton « Partager » @ 294,780
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,870
+bouton « ? » @ 524,870
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

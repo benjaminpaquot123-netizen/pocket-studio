@@ -1,0 +1,19 @@
+{
+  "Désactivée": "Mati",
+  "Auto (style)": "Otomatis (gaya)",
+  "Club": "Klub",
+  "Streaming": "Streaming",
+  "%s LUFS · TP %s": "%s LUFS · TP %s",
+  "Maintenant %s · sur 3 s %s · depuis ▶ %s LUFS": "Sekarang %s · selama 3 dtk %s · sejak ▶ %s LUFS",
+  "Volume visé": "Target loudness",
+  "Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.": "Loudness tetap seperti yang kamu atur; output hanya dilindungi dari distorsi.",
+  "Gain ajouté pour la cible : %s dB": "Gain yang ditambah untuk target: %s dB",
+  "%d min %d s": "%d mnt %d dtk",
+  "%d s": "%d dtk",
+  "44,1 kHz": "44,1 kHz",
+  "16 bits": "16 bit",
+  "Volume : —": "Volume: —",
+  "Volume %1$s · %2$s": "Volume %1$s · %2$s",
+  "Détails": "Detail",
+  "Masquer les détails": "Sembunyikan detail"
+}

@@ -1,0 +1,62 @@
+Écran 23 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+texte « Mesure » [coupé] @ 79,223
+bouton « 1 » [coupé, sélectionné] @ 161,228
+bouton « 2 » [coupé] @ 242,228
+bouton « Suivre » [coupé] @ 344,228
+texte « Mesure 1/2 · Grosse caisse studio » @ 216,285
+texte « Encore 1 case en pointillé ici » @ 205,314
+bouton « 1 » [état « coup, force 100 % »] @ 70,383
+bouton [état « vide »] @ 133,383
+bouton [état « vide »] @ 197,384
+bouton [état « vide »] @ 261,384
+bouton « 2 » [état « coup, force 100 % »] @ 325,384
+bouton [état « vide »] @ 389,384
+bouton [état « vide »] @ 453,384
+bouton [état « vide »] @ 517,384
+bouton « 3 » [état « coup, force 100 % »] @ 70,462
+bouton [état « vide »] @ 133,462
+bouton [état « vide »] @ 197,463
+bouton [état « vide »] @ 261,463
+bouton « 4 » [état « vide, en pointillé : à toucher »] @ 325,463
+bouton [état « vide »] @ 389,463
+bouton [état « vide »] @ 453,463
+bouton [état « vide »] @ 517,463
+texte « tout » @ 152,548
+texte « 1/2 » @ 227,548
+texte « 1/4 » @ 302,548
+texte « ◀ » @ 377,548
+texte « ▶ » @ 452,548
+texte « Remplir » @ 77,548
+texte « Effacer » @ 91,620
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,708
+bouton « 1 mesure » @ 215,797
+bouton « 2 » [sélectionné] @ 330,797
+bouton « 3 » @ 411,797
+bouton « 4 » @ 492,797
+texte « Longueur » @ 89,797
+icône (liste) « Chapitres » @ 444,879
+texte « Le kick : la grosse caisse Chapitre 2/15 · Étape 2/2 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : la boucle de batterie fait 2 mesures (une mesure = un tour de 4 temps). Touche « Passer à 2 mesures », puis sur le pad « Grosse caisse studio », touche les cases en pointillé : un coup sur chaque temps, et un petit coup en plus juste avant la fin de la mesure 2. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

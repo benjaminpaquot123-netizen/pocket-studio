@@ -1,0 +1,7 @@
+lang=it
+device=phone
+font=100
+mode=pro
+gestes.max=120
+mission=premier-morceau
+timeout.minutes=25

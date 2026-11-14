@@ -1,0 +1,5 @@
+Écran 3 (588x1278)
+bouton (étincelles) « Faça uma música pra mim O app compõe, você escuta e muda. » [coupé] @ 294,21
+bouton (chapeau de diplômé) « Estou aprendendo Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » @ 294,272
+bouton (casque) « Ouvir uma demo Uma música já pronta, para descobrir o que dá para fazer. » @ 294,708
+bouton + « Começar do zero Ainda sem notas: uma bateria, uma Acid 303 e um sintetizador esperam as suas. » [coupé] @ 294,1108

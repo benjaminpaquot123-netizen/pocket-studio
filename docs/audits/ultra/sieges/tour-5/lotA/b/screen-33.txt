@@ -1,0 +1,48 @@
+Écran 33 (616x1371)
+touchable « Demo · Acid house Salvo » (nom « Meus projetos ») @ 146,42
+bouton « Simples » (nom « Modo Simples. Toque para mudar de modo. ») @ 337,42
+bouton « Gravar o microfone na faixa de áudio » @ 427,42
+bouton « Parar » @ 499,42
+bouton « Mais opções » @ 571,42
+bouton « 126  Andamento » (nom « Tempo: 126 batidas por minuto ») @ 106,114
+bouton « A compasso 1/1 » (nom « em loop ») @ 310,114
+interrupteur « ? » (nom « Identificar a tela ») [non coché] @ 571,114
+bouton «  Minha música » @ 113,180
+texte « Minha voz » @ 281,180
+bouton « Parte: A » @ 76,252
+texte « Áudio 1 » @ 253,289
+bouton « ? » (nom « O que é “Faixa de áudio”? ») @ 468,291
+bouton « Opções de Áudio 1 » @ 538,295
+bouton «  Novo take » @ 172,356
+bouton « Arquivo de som » @ 444,356
+bouton «   Contagem: 1 compasso » (nom « Contagem: 1 compasso ») @ 199,440
+bouton « Efeitos desta faixa » @ 468,440
+  → la suite sur le côté (glisse pour la voir)
+bouton « Parar » [sélectionné] @ 510,524
+texte « Takes (2) » @ 238,524
+case « Take 1 · 10,8 s » [sélectionné] @ 136,608
+case « Take 2 · 18,7 s » @ 336,608
+bouton « Excluir Take 2 · 18,7 s » @ 468,608
+texte « Take 1 · 10,8 s » @ 104,669
+texte « Manter a seleção » @ 308,887
+curseur « Início do intervalo » [état « 0.0 », à 0 %] @ 45,887
+curseur « Fim do intervalo » [état « 1.0 », à 100 %] @ 571,887
+bouton « Manter a seleção » [désactivé] @ 166,971
+bouton « Volume no máximo » @ 434,971
+  → la suite sur le côté (glisse pour la voir)
+bouton «  Guardar na minha biblioteca » @ 308,1033
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guia  · A gente tira para aumentar a vontade 50 % » [état « recolhido »] @ 308,1077
+bouton « Parar » @ 231,1152
+bouton « Desfazer » @ 99,1152
+bouton « 126 Andamento » (nom « Tempo: 126 batidas por minuto ») @ 372,1152
+bouton « Mais » (nom « Mais opções ») @ 517,1152
+onglet « Minha música » @ 56,1251
+onglet « Ritmo » @ 181,1251
+onglet « Teclado » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Enviar » @ 559,1251
+touchable « ●  REC » (nom « Gravar a tela com som ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escrever uma nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentários ») @ 568,1341
+texte « Modo comentários » @ 176,1341

@@ -1,0 +1,74 @@
+Écran 20 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 417,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 492,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Drums 16 Pads » [sélectionné] @ 76,183
+onglet « Acid 303 Bassline » @ 223,183
+onglet « Vocals Mikrofon » @ 376,183
+onglet « Remix Trennen » @ 523,183
+bouton «  Spur » @ 677,183
+texte « Teil: A » @ 52,243
+touchable « Studio-Kick FX » @ 123,322
+touchable « Kick 2 » @ 341,322
+touchable « Snare » @ 559,322
+touchable « Rumble FX » @ 777,322
+touchable « Clap FX » @ 123,408
+touchable « Hi-Hat L 30 » @ 341,408
+touchable « Offene Hi-Hat R 30 » @ 559,408
+touchable « Tiefes Tom » @ 777,408
+touchable « Mittleres Tom R 45 » @ 123,494
+touchable « Hohes Tom » @ 341,494
+touchable « Rim FX R 50 » @ 559,494
+touchable « Cowbell » @ 777,494
+touchable « Becken R 40 » @ 123,580
+touchable « Shaker L 50 » @ 341,580
+touchable « Conga » @ 559,580
+touchable « Zap » @ 777,580
+bouton « Kit: Studio » @ 110,662
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 548,662
+bouton « STEPS: STUDIO-KICK » [état « Aufgeklappt »] @ 377,770
+bouton « ? » (nom « Was ist „Step“? ») @ 330,770
+case « Alle Pads » @ 785,770
+texte « Studio-Kick » @ 114,854
+touchable « 1 » (nom « Step 1 ») [état « leer »] @ 90,939
+touchable « Step 2 » [état « leer »] @ 192,939
+touchable « Step 3 » [état « leer »] @ 294,939
+touchable « Step 4 » [état « leer »] @ 397,939
+touchable « 2 » (nom « Step 5 ») [état « leer »] @ 500,939
+touchable « Step 6 » [état « leer »] @ 603,939
+touchable « Step 7 » [état « leer »] @ 706,939
+touchable « Step 8 » [état « leer »] @ 809,939
+touchable « 3 » (nom « Step 9 ») [état « leer »] @ 90,1019
+touchable « Step 10 » [état « leer »] @ 192,1019
+touchable « Step 11 » [état « leer »] @ 294,1019
+touchable « Step 12 » [état « leer »] @ 397,1019
+touchable « 4 » (nom « Step 13 ») [état « leer »] @ 500,1019
+touchable « Step 14 » [état « leer »] @ 603,1019
+touchable « Step 15 » [état « leer »] @ 706,1019
+touchable « Step 16 » [état « leer »] @ 809,1019
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 3/4 · Pro » @ 400,1104
+bouton « Kapitel » @ 771,1104
+bouton « Aufklappen » @ 843,1104
+touchable « Geschafft Nächster Schritt » @ 450,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » [sélectionné] @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

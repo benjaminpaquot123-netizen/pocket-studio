@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchPadLiveTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-12T20:42:49.542Z" hostname="vm" time="0.283">
+  <properties/>
+  <testcase name="aLaunchArmedWaitsForItsLineAndIsReported" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.026"/>
+  <testcase name="aLaunchArmedWhileStoppedComesOnTheOne" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.017"/>
+  <testcase name="aLoopWaitsForItsGridAndATouchWhileItWaitsCancelsIt" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.016"/>
+  <testcase name="aPadTouchedDuringTheCountInStartsOnTheClocksBar" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.016"/>
+  <testcase name="aRowAloneStartsAtOnce" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.015"/>
+  <testcase name="leavingTheSongKeepsALaunchWaitingAndTheDrumsCountFromTheirLaunch" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.018"/>
+  <testcase name="aHitRetouchedSoundsAtOnce" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.02"/>
+  <testcase name="aRowWaitsForTheBarLineAndAgainStopsItsLoops" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.131"/>
+  <testcase name="theTransportsStartPutsThePadsOnItsBeat" classname="com.pocketstudio.app.human.BenchPadLiveTest" time="0.018"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

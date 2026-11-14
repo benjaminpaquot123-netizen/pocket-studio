@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.padlive.ChallengeControllerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-12T20:39:56.935Z" hostname="vm" time="0.388">
+  <properties/>
+  <testcase name="tapsAtTheChallengesBeatAfterAMoiGiveThreeStars" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.054"/>
+  <testcase name="touchesCloserThanTheClapAreAllCountedAndSent" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.036"/>
+  <testcase name="aTouchOnTheBeatAfterTheExampleCounts" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.061"/>
+  <testcase name="fiveHundredMsTapsAreScoredOnTheProjectsTempo" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.062"/>
+  <testcase name="touchesWhileTheExampleIsHeardAreNotCounted" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.034"/>
+  <testcase name="touchesTooCloseAreSaidTooFast" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.049"/>
+  <testcase name="aHumanHandOnASoundingPadStillGetsThreeStars" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.035"/>
+  <testcase name="aTouchFarFromItsPlaceIsNotCountedANearOneIs" classname="com.pocketstudio.app.padlive.ChallengeControllerTest" time="0.049"/>
+  <system-out><![CDATA[T5-DEFI-ECOUTE: known defect still there (a touch on the beat after the example's last hit was not counted (YourTurn(c=Challenge(level=1, name=Boum boum, bpm=90.0, hits=[Hit(pad=8, beat=0.0), Hit(pad=8,)
+500 ms on 90 BPM: 3/4, 2 star(s), extra 1, tendency 1 (« Bravo ! 3 sur 4. Un peu trop lent. »)
+T5-DEFI-TENDANCE: known defect still there (four touches 500 ms apart on a 90 BPM challenge are said too slow (« Bravo ! 3 sur 4. Un peu trop lent. ») expected:<-1> but was:<1>)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

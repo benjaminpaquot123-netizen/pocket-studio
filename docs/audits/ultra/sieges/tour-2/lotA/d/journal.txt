@@ -1,0 +1,301 @@
+#0 SIEGE lang=en device=phone font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 53492c3274 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « My first beat » over « BenStudio » (40 x 6 dp)
+#1 LAYOUT OVERLAP « BenStudio » over the touchable « Current part: A. Tap to change part. Cha » (5 x 10 dp)
+#1 LAYOUT OVERLAP « What do you want to do? » over the touchable « Current part: A. Tap to change part. Cha » (48 x 24 dp)
+#1 LAYOUT OVERLAP « What do you want to do? » over the touchable « Play » (48 x 30 dp)
+#1 LAYOUT OVERLAP « What do you want to do? » over the touchable « Tempo: 120 BPM Change the tempo » (71 x 6 dp)
+#1 LAYOUT OVERLAP « What do you want to do? » over the touchable « Label the screen » (10 x 6 dp)
+#1 LAYOUT OVERLAP « Keep going » over the touchable « Tempo: 120 BPM Change the tempo » (53 x 8 dp)
+#1 LAYOUT OVERLAP « Track separation: drums, bass, vocals and the rest. » over the touchable « Collapse Expanded » (175 x 29 dp)
+#1 LAYOUT OVERLAP « Track separation: drums, bass, vocals and the rest. » over the touchable « What is “Step”? » (29 x 29 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 2 Add or remove empty » (8 x 4 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 3 Add or remove empty » (39 x 4 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 4 Add or remove empty » (35 x 4 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Open the Guide folded » (89 x 24 dp)
+#1 LAYOUT OVERLAP « NEW » over the touchable « Open the Guide folded » (31 x 16 dp)
+#1 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Open the Guide folded » (211 x 22 dp)
+#1 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Redo » (49 x 36 dp)
+#1 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Play » (52 x 38 dp)
+#1 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Tempo: 120 BPM Change the tempo » (64 x 36 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 499
+#1 DOIGT launch_new « New song »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE 2d5789538a | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 351
+#2 DOIGT starter_wizard « Make me a song »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 84c8db5a5d | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 480
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE dialogue:wizard | MODE pro | EMPREINTE 92013299b3 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 294 243
+#4 DOIGT wizard_family_Techno « Techno »
+#5 ROUTE dialogue:wizard | MODE pro | EMPREINTE 16d4f8d8d8 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « The techno of Berlin's clubs: a heavy kick on every beat, a bass rolling between the hits, hypnotic loops. » ellipsized (« … »)
+#5 LAYOUT CUT « For reference: Rhythim Is Rhythim – Strings of Life (1987) » ellipsized (« … »)
+#5 LAYOUT CUT « For reference: Josh Wink – Higher State of Consciousness (1995) » ellipsized (« … »)
+#5 LAYOUT CUT « Today's party techno, faster and harder: a distorted kick followed by a rumble, and rave sirens. » ellipsized (« … »)
+#5 LAYOUT CUT « The Belgian and Dutch raves of 1991: a huge screaming synth (the “hoover”) loops over a dry 909. » ellipsized (« … »)
+#5 > touche 350 372
+#5 DOIGT wizard_style_techno « Techno »
+#6 ROUTE dialogue:wizard | MODE pro | EMPREINTE 1571ea7303 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Industrial techno » 2.04:1 (needs 4.5:1, 16 sp)
+#6 LAYOUT CONTRAST « Techno · 136 BPM » 2.04:1 (needs 4.5:1, 13 sp)
+#6 > touche 322 639
+#6 DOIGT wizard_style_choose_techno « Choose this style »
+#7 ROUTE dialogue:wizard | MODE pro | EMPREINTE 279ef35428 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Back » 2.04:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Next » 2.04:1 (needs 4.5:1, 14 sp)
+#7 > touche 294 156
+#7 DOIGT wizard_create_now « Create it now with the advised choices »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 1a8ea0d628 | project=p-e79a5eaf no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Follow » 4.06:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT TARGET « Mute Drums off » 40 x 22 dp (touch 48 x 48)
+#8 LAYOUT TARGET « Solo track Drums off » 40 x 22 dp (touch 48 x 48)
+#8 > touche 294 1158
+#8 DOIGT tab_Mix « Mix »
+#9 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE beb2a08949 | project=p-e79a5eaf no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « Lead » 3.36:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « +0.0 » 3.39:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 5 » 2.18:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « What's playing » 2.57:1 (needs 4.5:1, 14 sp)
+#9 > glisse 294 850 294 300
+#9 DOIGT rien (texte « Curves and effects »)
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8a9148832d | project=p-e79a5eaf no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Clear » 4.37:1 (needs 4.5:1, 14 sp)
+#10 > touche 515 1059
+#10 DOIGT thumb_share « Share my song »
+#11 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 869744bb6d | project=p-e79a5eaf no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Ready to share? » over the touchable « Close sheet » (169 x 28 dp)
+#11 LAYOUT OVERLAP « Song name (and the project's) » over the touchable « Close sheet » (183 x 18 dp)
+#11 LAYOUT OVERLAP « 5:20 » over the touchable « Close sheet » (48 x 27 dp)
+#11 LAYOUT OVERLAP «   34 parts » over the touchable « Close sheet » (64 x 20 dp)
+#11 LAYOUT OVERLAP «  Listen » over the touchable « Close sheet » (45 x 20 dp)
+#11 LAYOUT OVERLAP « All set: no solo left on, no track muted. » over the touchable « Close sheet » (254 x 20 dp)
+#11 LAYOUT OVERLAP «   Video for social media · 30 s » over the touchable « Close sheet » (159 x 20 dp)
+#11 LAYOUT OVERLAP « More exports » over the touchable « Close sheet » (90 x 20 dp)
+#11 LAYOUT OVERLAP « Track by track, MIDI, FLAC… in Mix » over the touchable « Close sheet » (210 x 18 dp)
+#11 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (7 x 15 dp)
+#11 LAYOUT OVERLAP « M4A · for sharing » over the touchable « Close sheet » (119 x 20 dp)
+#11 LAYOUT OVERLAP « WAV · max quality » over the touchable « Close sheet » (123 x 20 dp)
+#11 LAYOUT OVERLAP «   Share » over the touchable « Close sheet » (54 x 24 dp)
+#11 LAYOUT CONTRAST « ? » 1.31:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT LABEL « #3095 » long press without text nor description
+#11 > touche 272 1027
+#11 DOIGT share_other « More exports »
+#12 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 444ab3dad0 | project=p-e79a5eaf no tuto
+#12 SON Son : rien ne joue.
+#12 > glisse 294 300 294 800
+#12 DOIGT rien
+#13 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 75edef1b1d | project=p-e79a5eaf no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Echo » over the touchable « Tempo: 132 BPM Change the tempo » (34 x 4 dp)
+#13 > glisse 294 250 294 950
+#13 DOIGT bus_1_0 « Time »
+#14 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f622cc16cb | project=p-e79a5eaf no tuto
+#14 SON Son : rien ne joue.
+#14 > glisse 294 250 294 950
+#14 DOIGT rien
+#15 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 297ff62d75 | project=p-e79a5eaf no tuto
+#15 SON Son : rien ne joue.
+#15 > glisse 294 300 294 600
+#15 DOIGT rien
+#16 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 78a1337cf2 | project=p-e79a5eaf no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 223 388
+#16 DOIGT help_Loudness target « What is “Loudness target”? »
+#16 AIDE help_Loudness
+#17 ROUTE dialogue:help_listen | MODE pro | EMPREINTE e58f9c46f2 | project=p-e79a5eaf no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 506 783
+#17 DOIGT #3172 « Got it »
+#18 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 78a1337cf2 | project=p-e79a5eaf no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 294 824
+#18 DOIGT master_pro « Advanced: pro master »
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f50b7b67c2 | project=p-e79a5eaf no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 150 539
+#19 DOIGT loudness_target_CLUB « Club · −7.5 LUFS »
+#20 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb1b74ef38 | project=p-e79a5eaf no tuto
+#20 SON Son : rien ne joue.
+#20 > glisse 294 900 294 150
+#20 DOIGT rien
+#21 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE b100f12c90 | project=p-e79a5eaf no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT OVERLAP « Peak ceiling (measured after compression) » over the touchable « Tempo: 132 BPM Change the tempo » (63 x 4 dp)
+#21 LAYOUT OVERLAP « Peak ceiling (measured after compression) » over the touchable « Play from a part » (99 x 4 dp)
+#21 LAYOUT OVERLAP « Peak ceiling (measured after compression) » over the touchable « Loop the part instead of playing the son » (27 x 4 dp)
+#21 LAYOUT OVERLAP « ? » over the touchable « Loop the part instead of playing the son » (7 x 4 dp)
+#21 > glisse 294 900 294 150
+#21 DOIGT pro_chain « Add the pro chain (settings in “Effects” »
+#22 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fd2564f74c | project=p-e79a5eaf no tuto
+#22 SON Son : rien ne joue.
+#22 > glisse 294 900 294 150
+#22 DOIGT help_Reverb and echo « What is “Reverb and echo”? »
+#22 AIDE help_Reverb
+#23 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 184f386e65 | project=p-e79a5eaf no tuto
+#23 SON Son : rien ne joue.
+#23 > glisse 294 900 294 150
+#23 DOIGT rien
+#24 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f3b5a62ec1 | project=p-e79a5eaf no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « Time » over the touchable « Tempo: 132 BPM Change the tempo » (33 x 4 dp)
+#24 > glisse 294 900 294 350
+#24 DOIGT rien
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c1dcd1948e | project=p-e79a5eaf no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 94 702
+#25 DOIGT export_fade_None « None »
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 49dfcb1657 | project=p-e79a5eaf no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 294 786
+#26 DOIGT export_advanced « Advanced »
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f3dfeabaae | project=p-e79a5eaf no tuto
+#27 SON Son : rien ne joue.
+#27 > glisse 294 900 294 400
+#27 DOIGT rien
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2d61975d8b | project=p-e79a5eaf no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 294 870
+#28 DOIGT export « Export the song »
+#29 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d76c15790f | project=p-e79a5eaf no tuto
+#29 SON Son : rien ne joue.
+#29 > attends 30
+#30 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 57f402e7ea | project=p-e79a5eaf no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 294 900 294 300
+#30 DOIGT export « Export the song »
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8de3a948e3 | project=p-e79a5eaf no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 435 722
+#31 DOIGT help_Perceived loudness (LUFS) « What is “Perceived loudness (LUFS)”? »
+#31 AIDE help_Perceived
+#32 ROUTE dialogue:« Perceived loudness (LUFS) » | MODE pro | EMPREINTE 9b02a0822a | project=p-e79a5eaf no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 506 738
+#32 DOIGT #3336 « Got it »
+#33 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8de3a948e3 | project=p-e79a5eaf no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 294 250 294 950
+#33 DOIGT rien
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 197e726958 | project=p-e79a5eaf no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « What » over the touchable « Tempo: 132 BPM Change the tempo » (35 x 4 dp)
+#34 > glisse 294 250 294 950
+#34 DOIGT rien
+#35 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 075a5d8d32 | project=p-e79a5eaf no tuto
+#35 SON Son : rien ne joue.
+#35 > glisse 294 250 294 950
+#35 DOIGT rien
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bed14a54ac | project=p-e79a5eaf no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 294 250 294 950
+#36 DOIGT rien (texte « Shared by every channel: set how much ea »)
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1224577a0d | project=p-e79a5eaf no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « Add the pro chain (settings in “Effects”) » over the touchable « Tempo: 132 BPM Change the tempo » (31 x 4 dp)
+#37 LAYOUT OVERLAP « Add the pro chain (settings in “Effects”) » over the touchable « Play from a part » (99 x 4 dp)
+#37 LAYOUT OVERLAP « Add the pro chain (settings in “Effects”) » over the touchable « Loop the part instead of playing the son » (48 x 4 dp)
+#37 > glisse 294 250 294 950
+#37 DOIGT rien
+#38 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE ddfa69db25 | project=p-e79a5eaf no tuto
+#38 SON Son : rien ne joue.
+#38 > glisse 294 250 294 950
+#38 DOIGT rien (texte « 2. Bus compressor (glue) · in place »)
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c223495c00 | project=p-e79a5eaf no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 401 393
+#39 DOIGT loudness_target_STREAMING « Streaming · −14 LUFS »
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c0e5b3c071 | project=p-e79a5eaf no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 515 1059
+#40 DOIGT thumb_share « Share my song »
+#41 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 869744bb6d | project=p-e79a5eaf no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST «  Listen » 1.88:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST «   Video for social media · 30 s » 3.58:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « ? » 1.33:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT LABEL « #3350 » long press without text nor description
+#41 > touche 272 1027
+#41 DOIGT share_other « More exports »
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d743ef1a80 | project=p-e79a5eaf no tuto
+#42 SON Son : rien ne joue.
+#42 > glisse 294 900 294 500
+#42 DOIGT export_format_Flac « FLAC (lossless, light) »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 40ce82ea85 | project=p-e79a5eaf no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « Studio quality, opens in any software. The biggest. » over the touchable « Tempo: 132 BPM Change the tempo » (63 x 4 dp)
+#43 LAYOUT OVERLAP « Studio quality, opens in any software. The biggest. » over the touchable « Play from a part » (99 x 4 dp)
+#43 LAYOUT OVERLAP « Studio quality, opens in any software. The biggest. » over the touchable « Loop the part instead of playing the son » (48 x 4 dp)
+#43 > touche 294 843
+#43 DOIGT export « Export the song »
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d76c15790f | project=p-e79a5eaf no tuto
+#44 SON Son : rien ne joue.
+#44 > attends 30
+#45 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d76c15790f | project=p-e79a5eaf no tuto
+#45 SON Son : rien ne joue.
+#45 > attends 30
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 57f402e7ea | project=p-e79a5eaf no tuto
+#46 SON Son : rien ne joue.
+#46 > glisse 294 900 294 300
+#46 DOIGT export « Export the song »
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 821292fbf4 | project=p-e79a5eaf no tuto
+#47 SON Son : rien ne joue.
+#47 > glisse 294 300 294 700
+#47 DOIGT rien
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8a882e5f48 | project=p-e79a5eaf no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « Fade-out » over the touchable « Tempo: 132 BPM Change the tempo » (60 x 4 dp)
+#48 > glisse 294 300 294 600
+#48 DOIGT export_advanced « Advanced »
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 358df3b0f2 | project=p-e79a5eaf no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « The whole song » over the touchable « Tempo: 132 BPM Change the tempo » (47 x 4 dp)
+#49 LAYOUT OVERLAP « The whole song » over the touchable « Play from a part » (56 x 4 dp)
+#49 LAYOUT OVERLAP « The looping part » over the touchable « Play from a part » (5 x 4 dp)
+#49 LAYOUT OVERLAP « The looping part » over the touchable « Loop the part instead of playing the son » (21 x 4 dp)
+#49 > touche 156 330
+#49 DOIGT export_format_M4a « M4A · for sharing »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 61d7bd0cd9 | project=p-e79a5eaf no tuto
+#50 SON Son : rien ne joue.
+#50 > glisse 294 900 294 600
+#50 DOIGT rien
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 047578f262 | project=p-e79a5eaf no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT OVERLAP « About ten times smaller, plays on every device: for sharing. » over the touchable « Tempo: 132 BPM Change the tempo » (63 x 4 dp)
+#51 LAYOUT OVERLAP « About ten times smaller, plays on every device: for sharing. » over the touchable « Play from a part » (99 x 4 dp)
+#51 LAYOUT OVERLAP « About ten times smaller, plays on every device: for sharing. » over the touchable « Loop the part instead of playing the son » (48 x 4 dp)
+#51 LAYOUT CONTRAST « About ten times smaller, plays on every device: for sharing. » 4.08:1 (needs 4.5:1, 13 sp)
+#51 > touche 294 828
+#51 DOIGT export « Export the song »
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 16f6f45ab5 | project=p-e79a5eaf no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « M4A · for sharing » over the touchable « Tempo: 132 BPM Change the tempo » (47 x 4 dp)
+#52 LAYOUT OVERLAP « M4A · for sharing » over the touchable « Play from a part » (65 x 4 dp)
+#52 LAYOUT OVERLAP « WAV · max quality » over the touchable « Loop the part instead of playing the son » (41 x 4 dp)
+#52 > attends 60
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 16f6f45ab5 | project=p-e79a5eaf no tuto
+#53 SON Son : rien ne joue.
+#53 > attends 60
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4c749adffa | project=p-e79a5eaf no tuto
+#54 SON Son : rien ne joue.
+#54 > glisse 294 900 294 300
+#54 DOIGT export « Export the song »
+#55 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7caac4e4f3 | project=p-e79a5eaf no tuto
+#55 SON Son : rien ne joue.
+#55 > fin
+#55 FIN : fin

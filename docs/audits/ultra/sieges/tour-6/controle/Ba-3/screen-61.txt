@@ -1,0 +1,41 @@
+Écran 61 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+icône « A compás 1/1 » ▾ @ 251,114
+bouton « ? » @ 543,114
+texte « Toca el nombre de una pista para cambiar su sonido; ▶ para escucharla sola. » @ 294,170
+bouton « Voz 1 Cambiar el sonido » › @ 219,250
+bouton ▶ @ 435,250
+icône (curseurs) @ 510,250
+titre « LA CANCIÓN » [état « Desplegado »] @ 152,379
+bouton « ? » @ 240,379
+texte « Toca una parte para escuchar la canción desde ella. » @ 280,426
+texte « 1 compás · 0:02 » @ 294,464
+bouton « Acordes de la canción A La m Toca para cambiar los acordes de toda la canción. » @ 294,586
+icône ▶ « A × 1  ·  1 comp. » @ 186,705
+icône − [désactivé] @ 366,705
+icône + @ 438,705
+icône ⋮ @ 510,705
+texte « Añadir al final: » @ 112,774
+bouton « + A » @ 96,837
+bouton « + Nueva parte (copia de A) » @ 331,837
+bouton « + Nueva parte vacía » @ 180,918
+bouton (boussole) « Guía  · Pon un ritmo 7 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

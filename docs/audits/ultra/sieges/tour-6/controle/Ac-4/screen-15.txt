@@ -1,0 +1,54 @@
+Écran 15 (588x1278)
+icône (dossier ouvert) ✓ « Trap Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 140  BPM » @ 73,114
+icône « Refrain mes. 15/104 » ▾ @ 235,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+onglet « Ligne du temps » [sélectionné] @ 113,183
+onglet « Parties » @ 274,183
+bouton » « Suivre » [sélectionné] @ 412,183
+bouton « Boucle » (flèches en boucle) [coupé] @ 500,183
+icône (quatre coins) @ 552,183
+texte « Parties » @ 53,245
+texte « Mesures » @ 60,285
+dessin @ 381,262
+texte « Batterie » @ 66,327
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,370
+bouton (casque) [état « désactivé »] @ 125,370
+texte « Nappe » @ 60,411
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,454
+bouton (casque) [état « désactivé »] @ 125,454
+bouton (courbe) « Filtre Coupure · Nappe » @ 87,516
+bouton (courbe) « Coupure · Nappe » @ 87,606
+texte « Lead » @ 51,675
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,718
+bouton (casque) [état « désactivé »] @ 125,718
+bouton (courbe) « Envoi réverbe · Lead » @ 87,780
+texte « Contre-chant » @ 95,849
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,892
+bouton (casque) [état « désactivé »] @ 125,892
+bouton (courbe) « Volume · Contre-chant » [coupé] @ 87,931
+dessin [coupé] @ 381,628
+icône (loupe +) @ 534,753
+icône (loupe −) @ 534,825
+icône (flèches vers les coins) @ 534,897
+bouton (boussole) « Guide  · Change un son 29 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

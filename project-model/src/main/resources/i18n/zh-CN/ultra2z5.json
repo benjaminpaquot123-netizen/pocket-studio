@@ -1,0 +1,15 @@
+{
+  "Copier la note": "复制音符",
+  "Copier ces %d notes": "复制这 %d 个音符",
+  "Supprimer la note": "删除音符",
+  "Supprimer ces %d notes": "删除这 %d 个音符",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "点一格：添加音符。点一个音符：选中它。长按：它的菜单（复制、删除…）。拖动：移动，拖末端：拉长。顶部数字：选中整小节。底部一栏：拖动设置力度。",
+  "%s demi-ton": "%s 个半音",
+  "Régler le son (filtre, enveloppe…)": "调整声音（滤波器、包络…）",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "%s 的低通：保留低音，柔化高音。",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "%s 附近的带通：只保留声音的这一段。",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "%s 的高通：去掉它以下的低音。",
+  "Un égaliseur : %1$s vers %2$s.": "均衡器：%2$s 处 %1$s。",
+  "Réussi ! La couleur du morceau est choisie.": "成功！歌曲的色彩选好了。",
+  "Revenir au tuto": "返回教程"
+}

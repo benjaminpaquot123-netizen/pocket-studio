@@ -1,0 +1,46 @@
+{
+  "siege": "a",
+  "options": {
+    "lang": "hi",
+    "device": "phone360",
+    "font": "130",
+    "mode": "simple",
+    "fresh": "reel",
+    "gestes.max": "40",
+    "mission": "premier-morceau",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 14,
+    "images": 1,
+    "gestes_premier_son": 7,
+    "gestes_premier_partage": 12,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 16,
+    "ecrans_revisites": 3,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 44,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 17.4,
+      "simule": 2.4,
+      "jvm": 38.1,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "premier-morceau",
+  "resultat": "reussie",
+  "pourquoi": "« Lo-fi hip-hop » : 17 parties, 183 s ; partagé : Lo-fi-hip-hop-गाना-20261112-043529.m4a"
+}

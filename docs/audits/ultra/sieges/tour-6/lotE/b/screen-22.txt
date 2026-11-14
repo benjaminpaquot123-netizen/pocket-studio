@@ -1,0 +1,10 @@
+Écran 22 (540x1170)
+texte « Mijn bestanden » @ 169,373
+texte « Geluiden staan in Muziek › BenStudio, video's in Films › BenStudio, .zip-bestanden in Documenten › BenStudio, op dit apparaat. Nieuwste eerst. » @ 270,461
+texte « Mijn-eerste-beat-loop-club-20261112-213615.wav » @ 154,550
+texte « Opnieuw versturen » @ 388,564
+texte « 12 nov 2026 21:36 · 1 KB » @ 147,593
+texte « Mijn-eerste-beat-loop-streaming-20261112-213547.m4a » @ 154,649
+texte « Opnieuw versturen » @ 388,663
+texte « 12 nov 2026 21:35 · 1 KB » @ 146,692
+texte « Sluiten » @ 449,784

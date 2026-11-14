@@ -1,0 +1,70 @@
+Écran 14 (588x1278)
+icône ← @ 51,47
+bouton ▶ @ 228,47
+icône − @ 309,47
+texte « 124 BPM » @ 376,46
+icône + @ 444,47
+texte « REC » @ 528,47
+texte « Pad Live » @ 138,46
+onglet « A » @ 51,138
+onglet « B » [sélectionné] @ 108,138
+onglet « C » @ 165,138
+onglet « D » @ 222,138
+bouton « Pack… » ▾ @ 349,138
+bouton ★ @ 534,138
+bouton « ? » @ 464,138
+bouton [allumé] @ 77,259
+dessin @ 100,213
+texte « loop » @ 92,214
+texte « My take 1 » @ 77,279
+bouton @ 205,259
+texte « + » @ 205,259
+bouton @ 333,259
+texte « + » @ 333,259
+bouton @ 461,259
+texte « + » @ 461,259
+bouton ■ @ 550,259
+bouton @ 77,405
+texte « + » @ 77,405
+bouton @ 205,405
+texte « + » @ 205,405
+bouton @ 333,405
+texte « + » @ 333,405
+bouton @ 461,405
+texte « + » @ 461,405
+bouton @ 77,551
+texte « + » @ 77,551
+bouton @ 205,551
+texte « + » @ 205,551
+bouton @ 333,551
+texte « + » @ 333,551
+bouton @ 461,551
+texte « + » @ 461,551
+bouton @ 77,697
+texte « + » @ 77,697
+bouton @ 205,697
+texte « + » @ 205,697
+bouton @ 333,697
+texte « + » @ 333,697
+bouton @ 461,697
+texte « + » @ 461,697
+texte « LIVE EFFECTS » @ 106,952
+bouton « ? » @ 216,951
+texte « Press and hold » @ 477,952
+bouton @ 106,1033
+texte « Filter » @ 106,1017
+texte « low ↔ high » @ 106,1054
+bouton @ 294,1030
+texte « Echo » @ 294,1018
+texte « on the way out » @ 294,1051
+bouton @ 482,1033
+texte « Roll » @ 482,1017
+texte « 1/16 » @ 482,1054
+bouton ■ « Stop all » @ 66,1151
+bouton « Record what I play » @ 228,1136
+bouton ⋯ « More » @ 484,1136
+bouton « ? » @ 364,1151
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

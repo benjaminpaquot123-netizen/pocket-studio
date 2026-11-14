@@ -1,0 +1,6 @@
+Écran 2 (588x1278)
+bouton « Wstecz » @ 54,48
+texte « Prosty czy Pro? » @ 330,48
+texte « Jak chcesz widzieć ten projekt? Zmienisz to w każdej chwili plakietką na górze. » @ 294,138
+bouton « Prosty Na początek: 5 karty, duże przyciski i zwykłe słowa. » @ 294,282
+bouton « Pro Żeby pójść dalej: wszystkie narzędzia, struktura, dźwięki, miks i live. » @ 294,495

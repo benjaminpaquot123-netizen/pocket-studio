@@ -1,0 +1,35 @@
+Écran 43 (1035x1243)
+texte « Maniglia: scorri verso il basso per chiudere » @ 518,44
+texte « Parte 3 · C · Ritornello » @ 232,104
+bouton « Chiudi » @ 922,116
+texte « 1 batt.  ·  suonata 3 volte » @ 189,137
+texte « Suonata 3 volte nel brano. Modifica: » @ 242,182
+bouton « Solo questa » @ 287,254
+bouton « Tutte le 3 » @ 749,254
+bouton « Fill alla fine » @ 287,353
+bouton « Break dopo · 4 batt. » @ 749,353
+bouton « Break dopo · 8 batt. » @ 287,452
+bouton « Build-up prima · 4 batt. » @ 749,452
+bouton « Build-up prima · 8 batt. » @ 287,551
+bouton « Fade in » @ 749,551
+bouton « Fade out » @ 287,650
+bouton « Aggiungi un finale » @ 749,650
+texte « Energia: 3 » @ 113,722
+case « 1 · pad » @ 119,788
+case « 2 · + basso » @ 267,788
+case « 3 · + batteria » [sélectionné] @ 445,788
+case « 4 · a tutta » @ 615,788
+texte « Lunghezza » @ 118,854
+champ « battute » contenu « 16 » @ 306,933
+bouton « Cancella » @ 353,940
+bouton « Accorcia » [désactivé] @ 98,933
+bouton « Allunga » @ 179,933
+bouton « OK » @ 441,933
+texte « Parte » @ 88,1012
+bouton « Rinomina » @ 146,1078
+bouton « Cosa suona » @ 332,1078
+bouton « Sposta su » @ 520,1078
+bouton « Sposta giù » @ 703,1078
+bouton « Duplica » @ 873,1078
+bouton « Inserisci dopo » @ 170,1150
+bouton « Togli » @ 345,1150

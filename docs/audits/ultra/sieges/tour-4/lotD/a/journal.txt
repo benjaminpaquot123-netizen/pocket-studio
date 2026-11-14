@@ -1,0 +1,363 @@
+#0 SIEGE lang=nl device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE ef3dca81cf | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « BenStudio » 1.41:1 (needs 3.0:1, 28 sp)
+#1 LAYOUT CONTRAST « Kies een stijl, ik help je stap voor stap, van het begin tot het einde van het nummer. » 2.54:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Ik leer » 2.50:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Een demo beluisteren » 1.92:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Pad Live » 2.33:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « NIEUW » 2.04:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « Pads klaar om te spelen, je eigen geluiden, podiumeffecten. Het klinkt meteen. » 2.04:1 (needs 4.5:1, 14 sp)
+#1 > touche 450 473
+#1 DOIGT welcome_guided « Mijn eerste nummer maken (begeleid) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 952c433a11 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Eenvoudig » ellipsized (« … »)
+#2 LAYOUT CONTRAST « Hoe wil je dit project zien? Je kunt het altijd veranderen met het label bovenaan. » 2.92:1 (needs 4.5:1, 16 sp)
+#2 > touche 229 380
+#2 DOIGT mode_card_simple « Eenvoudig »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE e7844ffbf1 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Stap 1: kies een stijl » 3.88:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Kies een stijl: ik maak de drums klaar, daarna de delen van het nummer. Je kunt alles nog veranderen. Tik op een kaart om erover te lezen, ▶ om ernaar te luisteren. » 3.39:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Rustig (Chill, Lo-fi) » 2.50:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 6 stijlen » 2.76:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Bass music » 2.79:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 stijlen » 2.13:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hiphop » 2.55:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 stijlen » 2.99:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 4 stijlen » 3.21:1 (needs 4.5:1, 13 sp)
+#3 > touche 450 342
+#3 DOIGT wizard_family_calm « Rustig (Chill, Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3280a5a4dd | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « De zachte hiphop van de "Lofi Girl"-video's, perfect om te studeren: jazzakkoorden op elektrische piano, gedempte drums en het geknetter van een oude plaat. » ellipsized (« … »)
+#4 LAYOUT CUT « Het geluid van de jaren 80, weer helemaal terug (Stranger Things, Blinding Lights): een enorme, galmende snare, een bas die zonder ophouden pulseert en synthnoten die in een loop rondgaan. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « De zachte hiphop van de "Lofi Girl"-video's, perfect om te studeren: jazzakkoorden op elektrische piano, gedempte drums en het geknetter van een oude plaat. » 2.55:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Deep house » 2.08:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « House · 120 BPM » 2.19:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Amapiano » 1.99:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « House · 112 BPM » 1.89:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « 105 BPM » 1.37:1 (needs 4.5:1, 13 sp)
+#4 > touche 57 441
+#4 DOIGT wizard_style_listen_lofi
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3fd90aae3b | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#5 > touche 450 489
+#5 DOIGT wizard_style_lofi « Lo-fi hiphop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 36a83f2c1f | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#6 LAYOUT CONTRAST «  Maken en luisteren » 2.36:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « • Nujabes feat. Cise Starr & Akin – Feather (2005) » 1.92:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « House · 120 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « House · 112 BPM » 1.50:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Ter inspiratie: The Weeknd – Blinding Lights (2019) » 3.53:1 (needs 4.5:1, 12 sp)
+#6 > touche 478 703
+#6 DOIGT wizard_style_choose_lofi « Kies deze stijl, stap voor stap »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 95b04ddfa9 | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#7 LAYOUT CONTRAST « Stap 2 van 10 · Lo-fi hiphop » 3.58:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « LENGTE VAN HET NUMMER » 3.47:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « Kort » 1.79:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « ongeveer 50 s » 2.52:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Volledig » 2.51:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « ongeveer 3 min » 2.37:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Het hele nummer, met delen die terugkomen, zoals een echt nummer. » 2.55:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Terug » 2.04:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Volgende » 3.42:1 (needs 4.5:1, 14 sp)
+#7 > touche 243 365
+#7 DOIGT wizard_length_short « Kort »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 00a8cfb070 | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#8 LAYOUT CONTRAST « Een intro, de opbouw en het hoogtepunt: genoeg voor een video of een snelle test. » 2.55:1 (needs 4.5:1, 13 sp)
+#8 > touche 450 1355
+#8 DOIGT wizard_mood_happy « Vrolijk / energiek »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE cc174a0074 | project=projet-1 no tuto
+#9 SON Son : l'assistant fait écouter les accords de l'ambiance « Joyeux / énergique » sur le rythme du style.
+#9 > touche 450 946
+#9 DOIGT wizard_style_packs_download « Geluiden van de stijl downloaden »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE f682dd04d3 | project=projet-1 no tuto
+#10 SON Son : l'assistant fait écouter les accords de l'ambiance « Joyeux / énergique » sur le rythme du style.
+#10 > attends 10
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE a0287de25c | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 25
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE a0287de25c | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > glisse 450 1250 450 600
+#12 DOIGT wizard_mood_dark « Duister / episch »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 192a1476b8 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Downloaden… 0% » 2.58:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Mineurakkoorden: mysterieus, intens of een beetje droevig. » 2.11:1 (needs 4.5:1, 13 sp)
+#13 > touche 670 1455
+#13 DOIGT wizard_next « Volgende »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 465a92ea19 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Stap 3 van 10 · Lo-fi hiphop » 3.58:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « KICK (BASDRUM) » 2.70:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « • Kick: de basdrum, de diepe ‘boem’ van de drums. » 2.38:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « 2 » 2.41:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 4 » 2.41:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 1 » 1.49:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 2 » 2.17:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 3 » 2.33:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « 4 » 2.17:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Speelt in Couplet en Refrein » 2.55:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « KIES HET GELUID » 1.92:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST «   Met het ritme » 1.92:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Kick 9 » 1.61:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Lo-fi hiphop » 1.92:1 (needs 4.5:1, 12 sp)
+#14 > touche 600 1027
+#14 DOIGT wizard_sound_1 « Kick 5 »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE adc49f7686 | project=projet-1 no tuto
+#15 SON Son : un son de la bibliothèque joue (écoute).
+#15 > touche 670 1455
+#15 DOIGT wizard_next « Volgende »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE c8fd4b8f0b | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Stap 4 van 10 · Lo-fi hiphop » 3.58:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « SNARE » 2.64:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « 1 » 2.11:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « 2 » 2.10:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « 3 » 3.46:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « 4 » 3.41:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Lo-fi hiphop » 1.65:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Lo-fi hiphop » 4.21:1 (needs 4.5:1, 12 sp)
+#16 > touche 229 1455
+#16 DOIGT wizard_back « Terug »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE fccd55e7a4 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 450 168
+#17 DOIGT wizard_create_now « Nu maken met de aangeraden keuzes »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1d8e9d1c22 | project=p-08fb7242 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#18 > touche 409 1290
+#18 DOIGT thumb_play
+#19 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE a25c852d0c | project=p-08fb7242 no tuto
+#19 SON Son : le morceau joue (partie « A »).
+#19 LAYOUT CUT « Opgeslagen » lines cut (taller than its box)
+#19 LAYOUT CONTRAST « OM TE BEGINNEN » 4.37:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « De klank van de melodie » 3.89:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Een ander drumstel » 3.97:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Later » 1.43:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Overslaan » 1.43:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Meer weten » 1.43:1 (needs 4.5:1, 14 sp)
+#19 > touche 450 945
+#19 DOIGT guide_open_melody « Instelling bekijken: De klank van de mel »
+#20 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 94bad38063 | project=p-08fb7242 no tuto
+#20 SON Son : le morceau joue (partie « A »).
+#20 LAYOUT CUT « Hij glijdt van noot naar noot, niets te downloaden » ellipsized (« … »)
+#20 LAYOUT OVERLAP « Geluid van: Melodie » over the touchable « Blad sluiten » (232 x 32 dp)
+#20 LAYOUT OVERLAP « Tik op een geluid: het vervangt het geluid van dit spoor in het hele nummer. » over the touchable « Blad sluiten » (460 x 48 dp)
+#20 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (63 x 27 dp)
+#20 LAYOUT OVERLAP « Korte klank » over the touchable « Blad sluiten » (110 x 31 dp)
+#20 LAYOUT OVERLAP « FM-piano » over the touchable « Blad sluiten » (86 x 23 dp)
+#20 LAYOUT OVERLAP « 6-op FM · bank 2 » over the touchable « Blad sluiten » (129 x 21 dp)
+#20 LAYOUT OVERLAP « FM-Rhodes » over the touchable « Blad sluiten » (104 x 23 dp)
+#20 LAYOUT OVERLAP « FM-vibrafoon » over the touchable « Blad sluiten » (122 x 23 dp)
+#20 LAYOUT OVERLAP « FM-bel » over the touchable « Blad sluiten » (64 x 23 dp)
+#20 LAYOUT OVERLAP « Marimba » over the touchable « Blad sluiten » (79 x 23 dp)
+#20 LAYOUT OVERLAP « Modaal (percussie) » over the touchable « Blad sluiten » (149 x 21 dp)
+#20 LAYOUT OVERLAP « Bel » over the touchable « Blad sluiten » (28 x 23 dp)
+#20 LAYOUT OVERLAP « Willekeurig » over the touchable « Blad sluiten » (104 x 27 dp)
+#20 LAYOUT OVERLAP « Bewaar dit geluid » over the touchable « Blad sluiten » (158 x 27 dp)
+#20 LAYOUT OVERLAP « ‘Bewaar dit geluid’ zet het bij je favorieten, voor al je projecten. » over the touchable « Blad sluiten » (502 x 24 dp)
+#20 LAYOUT OVERLAP « ECHTE INSTRUMENTEN » over the touchable « Blad sluiten » (201 x 21 dp)
+#20 LAYOUT OVERLAP « Noot voor noot opgenomen. Eén keer downloaden (wifi aangeraden); tot dan speelt het spoor een synthgeluid. » over the touchable « Blad sluiten » (553 x 48 dp)
+#20 LAYOUT OVERLAP « Vleugel » over the touchable « Blad sluiten » (69 x 23 dp)
+#20 LAYOUT OVERLAP « Binnenkort beschikbaar » over the touchable « Blad sluiten » (182 x 21 dp)
+#20 LAYOUT OVERLAP « Concertpiano » over the touchable « Blad sluiten » (122 x 23 dp)
+#20 LAYOUT OVERLAP « Strijkers » over the touchable « Blad sluiten » (74 x 23 dp)
+#20 LAYOUT OVERLAP « Pizzicato-strijkers » over the touchable « Blad sluiten » (163 x 23 dp)
+#20 LAYOUT OVERLAP « Koperblazers » over the touchable « Blad sluiten » (120 x 23 dp)
+#20 LAYOUT OVERLAP « Houtblazers » over the touchable « Blad sluiten » (109 x 23 dp)
+#20 LAYOUT OVERLAP « Harp » over the touchable « Blad sluiten » (44 x 23 dp)
+#20 LAYOUT OVERLAP « 808-bas » over the touchable « Blad sluiten » (77 x 23 dp)
+#20 LAYOUT OVERLAP « Hij glijdt van noot naar noot, niets te downloaden » over the touchable « Blad sluiten » (223 x 21 dp)
+#20 LAYOUT OVERLAP « Opnames: Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), Splendid Grand Piano (Akai, publiek domein), VS Chamber Orchestra (Versilian Studios, CC0). » over the touchable « Blad sluiten » (549 x 72 dp)
+#20 LAYOUT CONTRAST « Geluid van: Melodie » 1.76:1 (needs 3.0:1, 22 sp)
+#20 LAYOUT CONTRAST « 6-op FM · bank 2 » 1.85:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « FM-bel » 1.86:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Marimba » 4.37:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Vleugel » 1.21:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Binnenkort beschikbaar » 3.95:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Concertpiano » 1.22:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Strijkers » 4.12:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Binnenkort beschikbaar » 4.12:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Pizzicato-strijkers » 1.21:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Binnenkort beschikbaar » 3.40:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Binnenkort beschikbaar » 1.24:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Harp » 4.21:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Binnenkort beschikbaar » 4.21:1 (needs 4.5:1, 12 sp)
+#20 > touche 234 632
+#20 DOIGT plaits_sounds_15 « Marimba »
+#21 ROUTE guide_panel/tab_simple_Morceau | MODE simple | EMPREINTE 202bf80960 | project=p-08fb7242 no tuto
+#21 SON Son : le morceau joue (partie « A »).
+#21 LAYOUT OVERLAP « Bas » over « Nieuw geluid: Marimba » (28 x 9 dp)
+#21 LAYOUT OVERLAP « Nieuw geluid: Marimba » over the touchable « Klank van Bas wijzigen » (204 x 9 dp)
+#21 LAYOUT OVERLAP « Annuleren » over the touchable « ‘Bas’ apart beluisteren, in een lus Alle » (43 x 7 dp)
+#21 LAYOUT CONTRAST « Klank wijzigen » 3.58:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « Bas » 2.38:1 (needs 3.0:1, 14 sp)
+#21 LAYOUT CONTRAST « Annuleren » 3.63:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Het klavier openen » 3.89:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « De noten bekijken » 3.97:1 (needs 4.5:1, 14 sp)
+#21 > touche 450 945
+#21 DOIGT guide_open_keys « Instelling bekijken: Het klavier openen »
+#22 ROUTE mission_overlay | MODE simple | EMPREINTE f869326d8c | project=p-08fb7242 no tuto
+#22 SON Son : le morceau joue (partie « A »).
+#22 LAYOUT OVERLAP « De instelling zit hier. De Gids wacht op je in zijn balk, onderaan. » over the touchable « De Gids openen ingeklapt » (403 x 17 dp)
+#22 LAYOUT OVERLAP « De instelling zit hier. De Gids wacht op je in zijn balk, onderaan. » over the touchable « Ongedaan maken » (83 x 42 dp)
+#22 LAYOUT OVERLAP « De instelling zit hier. De Gids wacht op je in zijn balk, onderaan. » over the touchable « Stoppen » (52 x 44 dp)
+#22 LAYOUT OVERLAP « De instelling zit hier. De Gids wacht op je in zijn balk, onderaan. » over the touchable « Tempo: 84 tellen per minuut Tempo wijzig » (64 x 42 dp)
+#22 LAYOUT OVERLAP « De instelling zit hier. De Gids wacht op je in zijn balk, onderaan. » over the touchable « Meer keuzes » (26 x 42 dp)
+#22 > touche 691 1365
+#22 DOIGT guide_spot_close « Begrepen »
+#23 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4567783e8f | project=p-08fb7242 no tuto
+#23 SON Son : le morceau joue (partie « A »).
+#23 LAYOUT CUT « Baslijn » drawn past its parent's edge (down, 17 dp shown of 21)
+#23 LAYOUT CUT « Basse 1 · Lo-fi hip-hop » ellipsized (« … »)
+#23 LAYOUT CUT « FM-Rhodes » drawn past its parent's edge (down, 17 dp shown of 21)
+#23 LAYOUT CUT « Marimba » drawn past its parent's edge (down, 17 dp shown of 21)
+#23 LAYOUT OVERLAP « 2 octaven » over « Nieuw geluid: Marimba » (77 x 23 dp)
+#23 LAYOUT OVERLAP « 1 octaaf » over « Nieuw geluid: Marimba » (71 x 23 dp)
+#23 LAYOUT CONTRAST «  Mijn melodie opnemen » 2.78:1 (needs 4.5:1, 14 sp)
+#23 > touche 400 537
+#23 DOIGT record_start «  Mijn melodie opnemen »
+#24 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE bf6d09861a | project=p-08fb7242 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CUT « Mijn melodie » ellipsized (« … »)
+#24 > touche 400 543
+#24 DOIGT record_start «  Mijn melodie opnemen »
+#25 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 84f8199d51 | project=p-08fb7242 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT CONTRAST «  Stoppen » 2.78:1 (needs 4.5:1, 14 sp)
+#25 > touche 187 900
+#25 DOIGT key_64 « E 4 »
+#26 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 10b04693d0 | project=p-08fb7242 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 303 900
+#26 DOIGT key_67 « G 4 »
+#27 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 435903f6d1 | project=p-08fb7242 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 361 900
+#27 DOIGT key_69 « A 4 »
+#28 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 435903f6d1 | project=p-08fb7242 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 771 505
+#28 DOIGT record_stop «  Stoppen »
+#29 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 47ee967b73 | project=p-08fb7242 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 237 408
+#29 DOIGT mode_notes « Noten »
+#30 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 467777d7a4 | project=p-08fb7242 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 252 42
+#30 DOIGT top_projects « Lo-fi hiphop »
+#31 ROUTE dialogue:projects | MODE simple | EMPREINTE 9037dfc105 | project=p-08fb7242 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 846 476
+#31 DOIGT project_menu_p-08fb7242
+#32 ROUTE dialogue:project_opening_p-08fb7242 | MODE simple | EMPREINTE 1a430d4ba2 | project=p-08fb7242 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 678 560
+#32 DOIGT #2943 « Hernoemen »
+#33 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE a18f6d6a08 | project=p-08fb7242 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 624 726
+#33 DOIGT name_clear
+#34 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE b7f35e2f33 | project=p-08fb7242 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 450 739
+#34 DOIGT project_name_field « Projectnaam »
+#35 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 56995f9532 | project=p-08fb7242 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > ecris Liedje voor Daan
+#36 ROUTE dialogue:project_name_field | MODE simple | EMPREINTE 6a91338ca8 | project=p-08fb7242 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 616 884
+#36 DOIGT project_rename_ok « OK »
+#37 ROUTE dialogue:projects | MODE simple | EMPREINTE 8a355e4e43 | project=p-08fb7242 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > retour
+#37 RETOUR
+#38 ROUTE launch | MODE simple | EMPREINTE ba07f9fbd0 | project=p-08fb7242 no tuto
+#38 SON Son : rien ne joue.
+#38 > retour
+#38 RETOUR
+#39 ROUTE launch | MODE simple | EMPREINTE 1f2469b83e | project=p-08fb7242 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 450 327
+#39 DOIGT launch_continue « Doorgaan »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2c04052f17 | project=p-08fb7242 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 783 42
+#40 DOIGT top_play
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d71c6e6726 | project=p-08fb7242 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 753 123
+#41 DOIGT top_loop_part « Het deel herhalen in plaats van het numm »
+#42 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7c58214f23 | project=p-08fb7242 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 > attends 5
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e09781cd81 | project=p-08fb7242 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 > attends 1
+#44 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3bdd7b4f78 | project=p-08fb7242 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 > attends 8
+#45 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e09781cd81 | project=p-08fb7242 no tuto
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 783 42
+#45 DOIGT top_play
+#46 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8495ad46f3 | project=p-08fb7242 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 783 42
+#46 DOIGT top_play
+#47 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d1c07917f1 | project=p-08fb7242 no tuto
+#47 SON Son : le morceau joue (partie « A »).
+#47 > touche 815 1389
+#47 DOIGT tab_simple_Envoyer « Versturen »
+#48 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 49466176f3 | project=p-08fb7242 no tuto
+#48 SON Son : le morceau joue (partie « A »).
+#48 > touche 450 1119
+#48 DOIGT share_go «   Delen »
+#49 ROUTE dialogue:share_progress | MODE simple | EMPREINTE ca461c81ad | project=p-08fb7242 no tuto
+#49 SON Son : le morceau joue (partie « A »).
+#49 > attends 10
+#49 PARTAGE Liedje-voor-Daan-nummer-20261105-143246.m4a
+#50 ROUTE dialogue:« Mijn nummer delen · Liedje-voo » | MODE simple | EMPREINTE e5323d73bb | project=p-08fb7242 no tuto
+#50 SON Son : le morceau joue (partie « A »).
+#50 > touche 450 664
+#50 DOIGT vue « WhatsApp »
+#51 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 869a523d11 | project=p-08fb7242 no tuto
+#51 SON Son : le morceau joue (partie « A »).
+#51 LAYOUT CONTRAST « M4A-bestand: licht, speelt op elk apparaat. » 4.20:1 (needs 4.5:1, 13 sp)
+#51 > touche 790 957
+#51 DOIGT share_bilan_ok « OK »
+#52 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 49466176f3 | project=p-08fb7242 no tuto
+#52 SON Son : le morceau joue (partie « A »).
+#52 > touche 855 123
+#52 DOIGT help_labels_button « Het scherm labelen »
+#52 AIDE help_labels_button
+#53 ROUTE help_labels | MODE simple | EMPREINTE 52c3e2807f | project=p-08fb7242 no tuto
+#53 SON Son : le morceau joue (partie « A »).
+#53 LAYOUT CUT « De Gids: hoe ver je nummer is » ellipsized (« … »)
+#53 LAYOUT OVERLAP « Tempo » over « Volumes » (27 x 14 dp)
+#53 LAYOUT OVERLAP « Stoppen » over « Meer keuzes » (70 x 24 dp)
+#53 LAYOUT OVERLAP « Stoppen » over « De Gids: hoe ver je nummer is » (70 x 24 dp)
+#53 LAYOUT OVERLAP « Meer keuzes » over « De Gids: hoe ver je nummer is » (107 x 24 dp)
+#53 LAYOUT OVERLAP « Onderdelen en sporen » over the touchable « Ongedaan maken » (68 x 45 dp)
+#53 LAYOUT OVERLAP « Spelen, opnemen » over the touchable « Stoppen » (52 x 47 dp)
+#53 LAYOUT OVERLAP « Volumes » over the touchable « Tempo: 84 tellen per minuut Tempo wijzig » (36 x 24 dp)
+#53 LAYOUT OVERLAP « Delen » over the touchable « Meer keuzes » (18 x 24 dp)
+#53 > touche 294 1155
+#53 DOIGT help_labels_hide « De labels verbergen »
+#53 AIDE help_labels_hide
+#54 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 49466176f3 | project=p-08fb7242 no tuto
+#54 SON Son : le morceau joue (partie « A »).
+#54 > fin
+#54 FIN : fin

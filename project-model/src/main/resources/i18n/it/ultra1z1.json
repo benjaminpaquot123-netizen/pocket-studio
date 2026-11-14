@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "Il suono del pad toccato viene sostituito (la freccia indietro lo rimette).",
+  "Découper ce que je veux": "Taglia quello che voglio",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Scegli pezzi di ogni traccia e mettili sui tuoi pad, nel Live o su una traccia.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "L'app separa una canzone in 4 tracce (batteria, basso, voce, il resto). Sotto la canzone, “Taglia quello che voglio”: scegli dei pezzi e mettili sui tuoi pad, nel tuo Live o su una traccia. Oppure suona dei passaggi nelle caselle Remix del Live.",
+  "Tes chansons séparées": "Le tue canzoni separate",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "Le loro tracce (voce, batteria, basso, il resto) si tagliano in pezzi per i tuoi pad; “Tieni” li mette qui.",
+  "Découper « %s »": "Taglia “%s”",
+  "À télécharger pour « %s » :": "Da scaricare per “%s”:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Ritmo · colpi: %1$d · riusciti: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Ritmo · colpi: %1$d · suonati: %2$d",
+  "Rythme · coups : %d": "Ritmo · colpi: %d",
+  "Ton record : %d sur 3": "Il tuo record: %d su 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · stelle: %2$d su 3",
+  "en cours": "in corso"
+}

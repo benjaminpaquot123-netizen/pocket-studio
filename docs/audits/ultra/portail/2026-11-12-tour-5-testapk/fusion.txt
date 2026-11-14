@@ -1,0 +1,8 @@
+fusion: d66b67ceafb8940554b91063a51f464088830ffe
+branche: eq/tour-5-testapk
+tete: c98924d4d2a7f30becdc01c64388f8aff00c1eb7
+relecture: docs/audits/ultra/tour-5-testapk-relecture.md
+relu: 995f84fc594ac9f59e555c2559fb34b65e62312e
+filtres: com.pocketstudio.bentest.* *NewSongOpenTest com.pocketstudio.bentest.* *ProjectsViewModel*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

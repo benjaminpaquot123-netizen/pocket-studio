@@ -17,19 +17,19 @@ class DropVariationTest {
             return StarterWizard.build(style, lines, mood, chosen)
         }
 
-        fun benj(): Project = ProjectJson.decode(DropVariationTest::class.java.getResource("/fixtures/benj-jumpup1.json")!!.readText())
+        fun draft(): Project = ProjectJson.decode(DropVariationTest::class.java.getResource("/guide/brouillon-jumpup.json")!!.readText())
     }
 
     @Test
-    fun benjaminsThreeDropsAreTheSameDropAndTheMetricSaysSo() {
-        val p = benj()
+    fun aDraftsThreeDropsAreTheSameDropAndTheMetricSaysSo() {
+        val p = draft()
         val drops = DropVariation.drops(p)
         assertEquals(listOf(40, 96, 152), drops.map { it.start })
         val pairs = DropVariation.pairs(p).associate { (it.first to it.second) to it.third }
-        // Drop 2 and Drop 3: bar for bar the same but for the drummer's fill at the 8 (the second bass from the second Drop on).
+        // Drop 2 and Drop 3: bar for bar the same but for the drummer's fills (the bass on « Basse 2 » in both).
         assertTrue(pairs.getValue(1 to 2) < 0.1f)
         assertTrue(DropVariation.of(p)!! < DropVariation.MIN)
-        // Drop 1 against Drop 2: only the bass's sound (and the lead's first 16 bars) differ.
+        // Drop 1 against Drop 2: only the bass's sound differs, on every bar.
         assertTrue(pairs.getValue(0 to 1) > 0.5f)
     }
 

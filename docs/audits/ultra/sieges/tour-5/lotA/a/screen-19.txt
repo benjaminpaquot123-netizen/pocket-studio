@@ -1,0 +1,15 @@
+Écran 19 (540x1170)
+texte « नया गाना, स्टेप बाय स्टेप » @ 198,38
+bouton « बंद करो » @ 498,56
+texte « स्टेप 9 / 10 · Lo-fi hip-hop » @ 170,82
+bouton « Chiptune मेलोडी Chiptune » @ 270,155
+bouton « रोबोट आवाज़ Formants » @ 270,243
+bouton « FM Rhodes 6-op FM · बैंक 2 » @ 270,348
+bouton « FM vibraphone 6-op FM · बैंक 2 » @ 270,451
+bouton « FM बेल 6-op FM · बैंक 2 » @ 270,556
+bouton « मेटैलिक stab 2-op FM » @ 270,663
+bouton « Marimba Modal (पर्कशन) » @ 270,768
+bouton « बेल (Plaits) Modal (पर्कशन) » @ 270,873
+texte « ड्रम्स और चुने हुए ट्रैक्स के साथ सुनने के लिए किसी साउंड पर टैप करो। डाउनलोड किए पैक के साउंड लिस्ट में सबसे नीचे हैं। » @ 270,987
+bouton « वापस » @ 139,1116
+bouton « अगला » @ 400,1116

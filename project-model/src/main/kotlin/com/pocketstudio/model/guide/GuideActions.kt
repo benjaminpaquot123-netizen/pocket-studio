@@ -7,6 +7,7 @@ import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.model.LoudnessTarget
+import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.MusicBus
 import com.pocketstudio.model.Project
@@ -128,6 +129,9 @@ object GuideActions {
         if (action.type == GuideAction.OPEN || action.type == GuideAction.LISTEN) return GuideOutcome(p)
         if (action.type == GuideAction.BALANCE && GuideFacts.of(p).fresh == null) return GuideOutcome(p, tr("Il faut d'abord mesurer le morceau."))
         if (action.type == GuideAction.LATER) return GuideOutcome(later(p, card.id, at, parcours))
+        // Revue neuve (MOYEN 1): an option that changes nothing on a card already decided from the Guide (a
+        // second tap on « Garder » before the panel moves on) is no new change, undo step nor save.
+        if (!action.edits && action.type != GuideAction.REFUSE && !isAlert(card.id) && p.guide.statusOf(card.id) == GuideStatus.DONE) return GuideOutcome(p)
         val keys = if (isAlert(card.id)) GuideFacts.of(p).list.firstOrNull { it.id == card.id.removePrefix("alert.") }?.tracks else null
         val edited = if (action.edits) perform(p, card, action, keys) ?: return GuideOutcome(p, tr("Plus de place pour une courbe : le morceau en a déjà 16.")) else p
         if (action.edits && edited == p) return GuideOutcome(p, tr("Rien à changer ici : la piste n'a pas cet effet ou il est déjà réglé."))
@@ -280,7 +284,10 @@ object GuideActions {
         val role = a.target.ifEmpty { card.target }
         val targets = keys?.let { ks -> p.guideTracks().filter { it.key in ks } }
             ?: a.track.takeIf { it.isNotEmpty() }?.let { k -> p.guideTracks().filter { it.key == k } }
-            ?: tracksOf(p, role)
+            ?: tracksOf(p, role).let { ts ->
+                // Audit final: the bass's settings go to the Basse 2 too (the bass of the later Drops in bass music).
+                if (role == GuideRoles.BASS && a.type in STRIP) ts + p.guideTracks().filter { it.role == GuideRoles.BASS2 } else ts
+            }
         return when (a.type) {
             GuideAction.SLOT -> slot(p, a.track, a.param, (a.value ?: 1f) >= 0.5f)
             GuideAction.SUBTRACT -> GuideMoves.subtract(p, a.name)
@@ -291,7 +298,7 @@ object GuideActions {
             GuideAction.INSERT, GuideAction.NUDGE, GuideAction.CHAIN, GuideAction.BYPASS, GuideAction.SEND, GuideAction.VOLUME ->
                 targets.fold(p) { q, t -> onStrip(q, t, a) }
             GuideAction.PAN -> targets.fold(p) { q, t -> withPan(q, t, a.value ?: 0f) }
-            GuideAction.TARGET -> runCatching { LoudnessTarget.valueOf(a.name) }.getOrNull()?.let { p.copy(mixer = p.mixer.copy(target = it)) } ?: p
+            GuideAction.TARGET -> runCatching { LoudnessTarget.valueOf(a.name) }.getOrNull()?.let { p.copy(mixer = LoudnessTargets.withTarget(p.mixer, it)) } ?: p
             GuideAction.DUCK -> duck(p, a.value ?: 0.55f)
             GuideAction.LOW_CUT -> lowCuts(p)
             GuideAction.PANS -> pans(p)
@@ -340,9 +347,20 @@ object GuideActions {
                 val type = effect(a.effect) ?: return p
                 c.copy(inserts = c.inserts.map { if (it.effect == type) it.copy(bypass = (a.value ?: 1f) >= 0.5f) else it })
             }
-            GuideAction.SEND -> c.copy(sends = c.sends.mapIndexed { b, v ->
-                if (b != a.bus) v else (a.value ?: (v + (a.delta ?: 0f))).coerceIn(0f, 1f)
-            })
+            GuideAction.SEND -> {
+                // Audit final: « Plus d'écho / Plus sec » on a track whose echo is its own (an echo in its chain, the
+                // send nearly silent): that echo's mix moves, the one heard.
+                val echo = if (a.bus == ECHO_BUS && a.value == null && a.delta != null) {
+                    c.inserts.indexOfFirst { !it.bypass && (it.effect == EffectType.ECHO || it.effect == EffectType.PING_PONG) }
+                } else -1
+                if (echo >= 0) c.copy(inserts = c.inserts.toMutableList().also { list ->
+                    val ins = list[echo]
+                    list[echo] = ins.copy(params = ins.params.mapIndexed { k, v -> if (k == ECHO_MIX) (v + a.delta!!).coerceIn(0f, 1f) else v })
+                })
+                else c.copy(sends = c.sends.mapIndexed { b, v ->
+                    if (b != a.bus) v else (a.value ?: (v + (a.delta ?: 0f))).coerceIn(0f, 1f)
+                })
+            }
             GuideAction.VOLUME -> {
                 val db = 40f * log10((c.volume / 0.8f).coerceAtLeast(1e-4f)) + (a.delta ?: 0f)
                 c.copy(volume = (0.8f * 10f.pow(db / 40f)).coerceIn(0f, 1f))
@@ -351,6 +369,13 @@ object GuideActions {
         }
         return if (next == c) p else withStrip(p, t.channel, next)
     }
+
+    /** The actions on a track's strip (the bass's reach its Basse 2 too). */
+    private val STRIP = setOf(GuideAction.INSERT, GuideAction.NUDGE, GuideAction.CHAIN, GuideAction.BYPASS, GuideAction.SEND, GuideAction.VOLUME)
+
+    /** The echo send bus, and the « Mélange » knob of an echo insert ([EffectType.ECHO], [EffectType.PING_PONG]). */
+    private const val ECHO_BUS = 1
+    private const val ECHO_MIX = 3
 
     private fun effect(name: String): EffectType? = EffectType.entries.firstOrNull { it.name == name && it != EffectType.NONE }
 

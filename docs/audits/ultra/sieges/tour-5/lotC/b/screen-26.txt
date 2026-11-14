@@ -1,0 +1,4 @@
+Écran 26 (616x1371)
+texte « Herramientas de corte » @ 229,544
+texte « Coloca el cabezal naranja o escucha, y luego: Cortar aquí corta en ese punto, Inicio y Fin acortan el trozo, Quitar lo elimina, Bucle lo hace girar. Pellizca la vista para hacer zoom. Toca el número de un trozo, arriba de la onda, para elegirlo y luego envíalo. » @ 308,667
+bouton « Entendido » @ 509,814

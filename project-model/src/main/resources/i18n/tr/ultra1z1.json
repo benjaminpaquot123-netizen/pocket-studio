@@ -1,0 +1,16 @@
+{
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "Dokunulan padin sesi değişir (geri oku eskisini getirir).",
+  "Découper ce que je veux": "İstediğimi kes",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Her parçadan bölümler seç ve padlerine, Live'a ya da bir kanala koy.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "Uygulama bir şarkıyı 4 kanala ayırır (davul, bas, vokal, geri kalan). Şarkının altında “İstediğimi kes”: bölümler seç ve padlerine, Live'ına ya da bir kanala koy. Ya da Live'ın Remix kutularında pasajlar çal.",
+  "Tes chansons séparées": "Ayrılmış şarkıların",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "Kanalları (vokal, davul, bas, geri kalan) padlerin için bölümlere kesilir; “Sakla” onları buraya koyar.",
+  "Découper « %s »": "“%s” kes",
+  "À télécharger pour « %s » :": "“%s” için indirilecekler:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Ritim · vuruş: %1$d · doğru: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Ritim · vuruş: %1$d · çalınan: %2$d",
+  "Rythme · coups : %d": "Ritim · vuruş: %d",
+  "Ton record : %d sur 3": "Rekorun: 3 üzerinden %d",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · yıldız: 3 üzerinden %2$d",
+  "en cours": "sürüyor"
+}

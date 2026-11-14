@@ -1,0 +1,45 @@
+Écran 29 (1920x1200)
+touchable « Mein erster Beat Gespeichert » (nom « Meine Projekte ») @ 738,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 1509,42
+bouton « Rückgängig » @ 1587,42
+bouton « Wiederholen » [désactivé] @ 1659,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 1731,42
+bouton « Stoppen » @ 1803,42
+bouton « Meinen Song teilen » @ 1875,42
+bouton « A Takt 1/1 » (nom « im Loop ») @ 329,144
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 114,144
+interrupteur « Loop » (nom « Teil loopen statt den Song spielen ») [non coché, état « aus »] @ 1750,144
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 1875,144
+onglet « Struktur » [sélectionné] @ 76,266
+onglet « Sounds » @ 70,378
+onglet « Mix » @ 60,490
+onglet « Live » @ 60,602
+onglet « Mehr » @ 60,714
+onglet « Timeline » [sélectionné] @ 270,243
+onglet « Teile » @ 444,243
+touchable « Folgen » [sélectionné] @ 622,243
+touchable « Loop » @ 807,243
+bouton « Höhere Spuren » @ 930,243
+bouton « Reinzoomen » @ 1596,243
+bouton « Rauszoomen » @ 1668,243
+bouton « Ganzen Song zeigen » @ 1740,243
+bouton « Hilfe zur Timeline » @ 1812,243
+bouton « Vollbild » @ 1884,243
+texte « Teile » @ 218,304
+texte « Takte » @ 225,345
+texte « Taktlineal: Tippen, um ab einem Teil zu spielen » @ 1177,322
+bouton « Drums » @ 242,434
+interrupteur « Ton von Drums » [coché, état « an »] @ 209,495
+interrupteur « Spur Drums solo hören » [non coché, état « aus »] @ 278,495
+bouton « Acid 303 » @ 266,632
+interrupteur « Ton von Acid 303 » [coché, état « an »] @ 209,693
+interrupteur « Spur Acid 303 solo hören » [non coché, état « aus »] @ 278,693
+bouton « Synth » @ 235,830
+interrupteur « Ton von Synth » [coché, état « an »] @ 209,891
+interrupteur « Spur Synth solo hören » [non coché, état « aus »] @ 278,891
+texte « Timeline: 1 Teil, 3 Spuren » @ 1177,660
+bouton « Guide  · Füg eine Melodie hinzu 25 % » [état « eingeklappt »] @ 960,1104
+texte « Feedback-Modus » @ 780,1170
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 1604,1170
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 1748,1170
+touchable « ⋯ » (nom « Feedback-Modus ») @ 1872,1170

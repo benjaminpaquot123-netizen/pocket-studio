@@ -1,0 +1,8 @@
+Écran 4 (588x1278)
+bouton « Fais-moi un morceau L'appli compose, tu écoutes et tu changes. » (étincelles) [coupé] @ 294,3
+bouton (chapeau de diplômé) « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 294,124
+bouton (casque) « Écouter une démo Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » @ 294,319
+bouton + « Partir de zéro Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » @ 294,514
+bouton (tête qui parle) « Extraire la voix d'une chanson Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » @ 294,745
+bouton (grille de pads) « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite. » → @ 294,968
+bouton (micro) « Enregistrer ma voix ou ma guitare Le micro enregistre par-dessus ta musique, pile en rythme. » @ 294,1177

@@ -1,0 +1,67 @@
+Écran 76 (1035x1243)
+touchable « Notte a Napoli (copia) Salvato » (nom « I miei progetti ») @ 301,42
+bouton « Pro » (nom « Modalità Pro. Tocca per cambiare modalità. ») @ 630,42
+bouton « Annulla l'ultima azione » @ 702,42
+bouton « Ripristina » [désactivé] @ 774,42
+bouton « Registra: microfono, tastiera o pad » @ 846,42
+bouton « Suona » @ 918,42
+bouton « Condividi il mio brano » @ 990,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « Intro batt. 1/90 » @ 219,114
+interrupteur « Loop » (nom « Ripeti la parte invece di suonare il brano ») [non coché, état « disattivo »] @ 887,114
+interrupteur « ? » (nom « Etichetta la schermata ») [non coché] @ 990,114
+onglet « Timeline » @ 91,192
+onglet « Parti » [sélectionné] @ 205,192
+bouton « IL BRANO » [état « Espanso »] @ 136,285
+bouton « ? » (nom « Cos'è “Brano”? ») @ 208,285
+texte « Tocca una parte per ascoltare il brano da lì. » @ 240,332
+texte « 90 battute · 3:00 » @ 263,370
+bouton « Accordi del brano A · Intro Do B · Strofa napoletana Do C · Ritornello Do Tocca per cambiare gli accordi di tutto il brano. » @ 263,542
+bouton « A · Intro × 8  ·  8 batt. » @ 155,710
+bouton « Una volta in meno » @ 304,710
+bouton « Una volta in più » @ 376,710
+bouton « Altre azioni » @ 448,710
+bouton « B · Strofa napoletana 32 batt. » @ 155,812
+bouton « Una volta in meno » [désactivé] @ 304,813
+bouton « Una volta in più » [désactivé] @ 376,813
+bouton « Altre azioni » @ 448,813
+bouton « C · Ritornello × 16  ·  16 batt. » @ 155,893
+bouton « Una volta in meno » @ 304,899
+bouton « Una volta in più » [désactivé] @ 376,899
+bouton « Altre azioni » @ 448,899
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « BLOCCHI » [état « Espanso »] @ 640,207
+bouton « ? » (nom « Cos'è “Blocco”? ») @ 709,207
+texte « Un blocco = la batteria, l'acid e le note di una parte. Le parti del brano sono fatte di blocchi. Toccane uno per modificarlo, tienilo premuto e trascinalo per spostarlo. » @ 771,295
+case « 8 » [sélectionné] @ 671,397
+case « 16 » @ 752,397
+case « 24 » @ 835,397
+texte « Mostra: » @ 588,397
+bouton « A Intro 1 batt. » @ 600,487
+bouton « B Strofa napoletana 1 batt. » @ 714,487
+bouton « C Ritornello 1 batt. » @ 828,487
+bouton « D vuoto » @ 942,487
+bouton « E vuoto » @ 600,584
+bouton « F vuoto » @ 714,584
+bouton « G vuoto » @ 828,584
+bouton « H vuoto » @ 942,584
+texte « Parte A: copia della parte B. Cambiala per farne una variante, o “Svuota”. » @ 771,669
+bouton « Rinomina » (nom « Rinomina il blocco A ») @ 600,750
+bouton « Nuova » (nom « Nuovo blocco vuoto ») @ 714,750
+bouton « Duplica » (nom « Duplica il blocco A ») @ 828,750
+bouton « Svuota » (nom « Svuota il blocco A ») @ 942,750
+bouton « Guida  · Aggiungi una melodia 29 % » [état « chiuso »] @ 517,949
+bouton « Annulla » (nom « Annulla l'ultima azione ») @ 148,1024
+bouton « Ripristina » [désactivé] @ 331,1024
+bouton « Suona » @ 512,1024
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 698,1024
+bouton « Condividi » (nom « Condividi il mio brano ») @ 888,1024
+onglet « Struttura » [sélectionné] @ 99,1123
+onglet « Suoni » @ 309,1123
+onglet « Mix » @ 518,1123
+onglet « Live » @ 727,1123
+onglet « Altro » @ 936,1123
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

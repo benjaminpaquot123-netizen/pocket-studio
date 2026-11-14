@@ -21,23 +21,25 @@ object ShareSong {
     /**
      * The whole song when there is one, else the scene looped (long enough for the audio clips
      * heard, which end on bar [audioBars]), with a short fade; M4A (small, plays everywhere)
-     * unless « Prêt à partager ? » asked for a WAV ([format]).
+     * unless « Prêt à partager ? » asked for a WAV ([format]). [chosenBars]: the loop's length the user picked (in
+     * « Prêt à partager ? » or in Mix, the same setting), which wins over the default (T5-8MES: 16 asked, 8 sent).
      */
-    fun settings(hasSong: Boolean, sceneBars: Int, audioBars: Int = 0, format: ExportFormat = ExportFormat.M4a): ExportUi = ExportUi(
+    fun settings(hasSong: Boolean, sceneBars: Int, audioBars: Int = 0, format: ExportFormat = ExportFormat.M4a, chosenBars: Int? = null): ExportUi = ExportUi(
         what = if (hasSong) ExportWhat.Song else ExportWhat.Loop, whatChosen = true,
         format = format,
         fade = ExportFade.Short, fadeChosen = true,
-        bars = loopBars(sceneBars, audioBars), barsChosen = true,
-    ).forScene(sceneBars)
+        bars = chosenBars ?: loopBars(sceneBars, audioBars), barsChosen = true,
+    ).forScene(sceneBars, audioBars)
 
     /**
      * The scene repeated whole until it lasts [MIN_LOOP_BARS] bars, or longer when an audio clip
-     * (a recorded voice) ends later, on bar [audioBars] (at most the longest export).
+     * (a recorded voice) or the remix's song ends later, on bar [audioBars] (a whole remixed song
+     * goes past the 64 bars of a loop, up to [RhythmViewModel.MAX_LONG_EXPORT_BARS]).
      */
     fun loopBars(sceneBars: Int, audioBars: Int = 0): Int {
         val scene = sceneBars.coerceIn(1, RhythmViewModel.MAX_EXPORT_BARS)
         val times = (MIN_LOOP_BARS + scene - 1) / scene
-        return maxOf(scene * times, audioBars).coerceAtMost(RhythmViewModel.MAX_EXPORT_BARS)
+        return maxOf((scene * times).coerceAtMost(RhythmViewModel.MAX_EXPORT_BARS), audioBars.coerceAtMost(RhythmViewModel.MAX_LONG_EXPORT_BARS))
     }
 
     /** [fr] and its translation in every language: a default name stays one whatever the language it was given in. */

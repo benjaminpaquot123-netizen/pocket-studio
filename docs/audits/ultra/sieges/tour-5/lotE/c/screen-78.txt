@@ -1,0 +1,56 @@
+Écran 78 (900x1509)
+touchable « Ma chanson préférée 저장됨 » (nom « 내 프로젝트 ») @ 234,42
+bouton « 프로 » (nom « 프로 모드. 눌러서 모드를 바꾸세요. ») @ 495,42
+bouton « 실행 취소 » @ 567,42
+bouton « 다시 실행 » [désactivé] @ 639,42
+bouton « 녹음: 마이크, 건반 또는 패드 » @ 711,42
+bouton « 재생 » @ 783,42
+bouton « 내 곡 공유 » @ 855,42
+bouton « 120  BPM » (nom « 템포: 120 BPM ») @ 73,114
+bouton « A 마디 1/20 » @ 218,114
+interrupteur « 루프 » (nom « 곡 대신 파트를 루프 ») [non coché, état « 꺼짐 »] @ 758,114
+interrupteur « ? » (nom « 화면 이름표 ») [non coché] @ 855,114
+case « 곡 전체 » [désactivé, sélectionné] @ 98,157
+case « 루프 파트 » [désactivé] @ 228,157
+texte « 구성의 모든 파트를 순서대로. » @ 156,208
+texte « 포맷 » @ 61,255
+bouton « ? » (nom « “WAV, FLAC, M4A”란 뭘까요? ») @ 101,255
+case « M4A · 공유용 » [désactivé] @ 128,325
+case « WAV · 최고 품질 » [désactivé, sélectionné] @ 322,325
+texte « 스튜디오 품질, 어떤 프로그램에서도 열려요. 가장 무거워요. » @ 271,387
+bouton « ? » (nom « “목표 음량”이란 뭘까요? ») @ 145,434
+texte « 목표 음량 » @ 83,434
+case « 스트리밍 · −14 LUFS » [désactivé] @ 162,498
+case « 클럽 · −8 LUFS » [désactivé, sélectionné] @ 386,498
+case « 자동 (스타일) · −9 LUFS » [désactivé] @ 626,498
+case « 꺼짐 » [désactivé] @ 814,498
+texte « 클럽처럼 크게(−8 LUFS), 가장 큰 부분에서 재요. 출력이 천천히 올라가며 맞추고, 내보내기는 소리를 뭉개지 않는 선에서 최대한 가까이 가요. » @ 450,567
+texte « 페이드 아웃 » @ 92,622
+case « 없음 » [désactivé] @ 86,686
+case « 짧게 (3초) » [désactivé, sélectionné] @ 209,686
+case « 길게 (8초) » [désactivé] @ 359,686
+bouton « 고급 » @ 450,770
+bouton « ? » (nom « “트랙별로”란 뭘까요? ») @ 198,839
+case « 트랙별로 » [désactivé] @ 105,854
+case « FLAC (무손실, 가벼움) » [désactivé] @ 354,854
+case « 리미터 없음 (마스터링용) » [désactivé] @ 622,854
+bouton « 최종 파일: 48 kHz · 24비트 » @ 185,938
+bouton « ? » (nom « “최종 파일”이란 뭘까요? ») @ 349,938
+texte « 사운드 만드는 중 · 75% » @ 146,1001
+texte « 사운드 만드는 중 · 75% » [à 75 %] @ 450,1041
+bouton « 취소 » @ 450,1101
+bouton « 가이드  · 비트 넣기 14 % » [état « 접힘 »] @ 450,1215
+bouton « 실행 취소 » @ 125,1290
+bouton « 다시 실행 » [désactivé] @ 286,1290
+bouton « 재생 » @ 444,1290
+bouton « 120 템포 » (nom « 템포: 120 BPM ») @ 608,1290
+bouton « 공유 » (nom « 내 곡 공유 ») @ 775,1290
+onglet « 구성 » @ 85,1389
+onglet « 사운드 » @ 268,1389
+onglet « 믹스 » [sélectionné] @ 451,1389
+onglet « Live » @ 633,1389
+onglet « 더보기 » @ 815,1389
+touchable « ●  REC » (nom « 소리와 함께 화면 녹화 ») @ 672,1479
+touchable « ✎  메모 » (nom « 메모 쓰기 ») @ 768,1479
+touchable « ⋯ » (nom « 피드백 모드 ») @ 852,1479
+texte « 피드백 모드 » @ 318,1479

@@ -1,0 +1,40 @@
+Écran 16 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+touchable « Grosse caisse studio FX » @ 84,336
+touchable « Grosse caisse 2 » @ 224,336
+touchable « Caisse » @ 364,336
+touchable « Grondement grave FX » @ 504,336
+touchable « Claquement de mains FX » @ 84,426
+touchable « Charley G 30 » @ 224,426
+touchable « Charley ouvert D 30 » @ 364,426
+touchable « Tom grave » @ 504,426
+touchable « Tom médium D 45 » @ 84,516
+touchable « Tom aigu » @ 224,516
+touchable « Bord de caisse FX D 50 » @ 364,516
+touchable « Cloche » @ 504,516
+touchable « Cymbale D 40 » @ 84,595
+touchable « Maracas G 50 » @ 224,595
+touchable « Conga » @ 364,595
+touchable « Laser » @ 504,595
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « La vitesse et la couleur du morceau Chapitre 1/15 · Étape 3/3 · Facile » @ 244,775
+bouton « Chapitres » @ 459,775
+bouton « Déplier » @ 531,775
+touchable « Réussi Étape suivante » @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

@@ -74,7 +74,9 @@ class AutoKnobsTest {
             assertTrue("$s", slots.all { it.label.isNotBlank() })
         }
         assertEquals(KnobScreen.Live, KnobScreen.of("Acide", live = true))
-        assertEquals(KnobScreen.Mixeur, KnobScreen.of("Morceau", live = false))
+        // The other tabs: the selected track's strip (MiniLab lot; the Mixeur keeps its faders).
+        assertEquals(KnobScreen.Piste, KnobScreen.of("Morceau", live = false))
+        assertEquals(KnobScreen.Mixeur, KnobScreen.of("Mixeur", live = false))
     }
 
     @Test
@@ -100,7 +102,9 @@ class AutoKnobsTest {
         assertEquals(AutoTarget.acid(1), host.sent.last().first.target)
         // Not a knob: left to the rest of the app.
         assertFalse(knobs.control(1, 64, minilab))
-        assertFalse(knobs.control(82, 64, minilab))
+        // CC 82 is the MiniLab's fader 1 (MiniLab lot): taken, as a fader.
+        assertTrue(knobs.control(82, 64, minilab))
+        assertTrue(knobs.last!!.faders)
     }
 
     @Test
@@ -111,7 +115,7 @@ class AutoKnobsTest {
         knobs.control(74, 44, minilab)
         knobs.control(74, 45, minilab)
         val acidMoves = host.sent.size
-        knobs.screen = KnobScreen.Mixeur
+        knobs.screen = KnobScreen.Rythme  // its knob 1: the drums' volume
         // The drums' fader is at 0.8: from 45 nothing moves until the knob gets there.
         knobs.control(74, 50, minilab)
         assertEquals(acidMoves, host.sent.size)

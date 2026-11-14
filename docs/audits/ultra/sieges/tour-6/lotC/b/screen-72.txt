@@ -1,0 +1,21 @@
+Écran 72 (588x1278)
+texte « Enregistrer » @ 54,13
+texte « Jouer cette partie » @ 86,13
+texte « Partager » @ 42,13
+texte « Le Guide : où en est ton morceau » @ 101,27
+texte « Mes projets » @ 68,42
+texte « Annuler » @ 312,56
+texte « Tempo » @ 44,114
+texte « Jouer d'une partie » @ 235,168
+texte « Boucler la partie » @ 462,171
+bouton « Masquer les étiquettes » @ 169,968
+bouton « 🐞 Signaler un bug » @ 443,968
+texte « Ordre des parties » @ 95,1076
+texte « Volumes » @ 294,1076
+texte « Projets, aide » @ 517,1076
+texte « Tes pistes » @ 174,1196
+texte « Jouer en direct » @ 414,1196
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

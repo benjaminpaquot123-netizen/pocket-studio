@@ -33,16 +33,42 @@ class SoundBrowserCurrentTest {
         compose.setContent {
             PocketStudioTheme { SoundBrowser(SoundBrowserUi(SoundCategories.SYNTH, SoundLibrary.SYNTH, emptyList(), current, tag = "synth_sounds")) }
         }
-        compose.onNodeWithTag("synth_sounds_family_Basses").assertIsSelected()
-        // The pad track shown next (the browser stays on screen): its family, its sound selected.
+        // One browser everywhere (7d): opened in the folder of the sound playing now, that sound selected.
+        compose.onNodeWithTag("synth_sounds_$bass").assertIsSelected()
+        // The pad track shown next (the browser stays on screen): its folder, its sound selected.
         current = "Nappe"
         compose.waitForIdle()
-        compose.onNodeWithTag("synth_sounds_family_Nappes").assertIsSelected()
         compose.onNodeWithTag("synth_sounds_$nappe").assertIsSelected()
         // Browsing another family stays there while the sound does not change.
-        compose.onNodeWithTag("synth_sounds_family_Leads").performClick()
+        compose.onNodeWithTag("synth_sounds_back").performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("synth_sounds_family_Leads").assertIsSelected()
+        compose.onNodeWithTag("synth_sounds_folder_Leads").performClick()
+        compose.waitForIdle()
+        val lead = SoundLibrary.SYNTH.indexOfFirst { it.category == "Leads" }
+        compose.onNodeWithTag("synth_sounds_$lead").assertExists()
+        compose.onNodeWithTag("synth_sounds_$nappe").assertDoesNotExist()
+    }
+
+    @Test
+    fun keptSoundsAreTheFavouritesFolderAndCanBeRemoved() {
+        val kept = listOf(SoundLibrary.SYNTH[0].copy(name = "Ma basse"))
+        var removed = -1
+        var picked = -1
+        compose.setContent {
+            PocketStudioTheme {
+                SoundBrowser(SoundBrowserUi(SoundCategories.SYNTH, SoundLibrary.SYNTH, kept, current = null, tag = "synth_sounds",
+                    pickFavorite = { picked = it }, deleteFavorite = { removed = it }))
+            }
+        }
+        // Opened on the first family (no sound of the list plays): one step up, the kept ones.
+        compose.onNodeWithTag("synth_sounds_back").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("synth_sounds_shelf_mine").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("synth_sounds_fav_0").performClick()
+        org.junit.Assert.assertEquals(0, picked)
+        compose.onNodeWithTag("synth_sounds_sound_remove_0").performClick()
+        org.junit.Assert.assertEquals(0, removed)
     }
 
     @Test

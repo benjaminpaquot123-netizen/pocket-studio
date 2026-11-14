@@ -150,8 +150,9 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
                 style = MaterialTheme.typography.bodySmall, color = Neon.Magenta, modifier = Modifier.testTag("fx_auditioning"))
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Two lines whatever it says (testers, lot « tuto 4 »: a knob moved changed it, the box slid under the finger).
                 Text(current?.description?.let { tr(it) } ?: tr("Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler."),
-                    Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, minLines = 2)
                 if (current != null && current.id != FxPresets.NONE.id) {
                     val starred = current.id in favourites
                     IconButton(onClick = { actions.toggleFavourite(current.id) }, modifier = Modifier.testTag("fx_favourite")) {
@@ -259,7 +260,7 @@ internal fun XyPad(
         }
     }
     val accent = Neon.Magenta
-    val grid = Neon.Outline
+    val grid = Neon.Outline.copy(alpha = 0.5f)
     val (dark, bright) = Macros.ENDS[Macros.COLOR].let { (a, b) -> tr(a) to tr(b) }
     val (low, high) = Macros.ENDS[yMacro].let { (a, b) -> tr(a) to tr(b) }
     XyLabelled(top = "↑ $high", left = "← $dark", bottom = "↓ $low", right = "$bright →") {
@@ -305,9 +306,10 @@ internal fun XyPad(
 /**
  * A pad XY with its ends written around it, never on it: the dot (at rest or at an end) never
  * hides a word. [top] above it, [left] [bottom] [right] under it; [topEnd]: a hint above, at the right.
+ * Left to right in every language: the pad's axes are the screen's (low-pass on the left in Arabic too).
  */
 @Composable
-internal fun XyLabelled(top: String, left: String, bottom: String, right: String, topEnd: String? = null, pad: @Composable () -> Unit) {
+internal fun XyLabelled(top: String, left: String, bottom: String, right: String, topEnd: String? = null, pad: @Composable () -> Unit) = com.pocketstudio.ui.LeftToRight {
     val style = MaterialTheme.typography.labelSmall
     val color = Neon.TextSecondary
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -332,6 +334,19 @@ internal fun XyLabelled(top: String, left: String, bottom: String, right: String
 
 @Composable
 internal fun MacroKnobs(ch: Int, macros: List<Float>, actions: QuickFxActions, size: androidx.compose.ui.unit.Dp = 52.dp) {
+    // Chantier 8: « Voir le réglage » on a macro: the row of knobs framed, that knob's name said.
+    val spot = LocalControlSpot.current?.takeIf { it.kind == com.pocketstudio.model.AutoTarget.MACRO && it.ch == ch && it.param < Macros.COUNT }?.param
+    if (spot != null) {
+        val m = spot
+        SpotFrame("spot_macro_${ch}_$m") {
+            Text(tr("Bouton « %s »", tr(Macros.NAMES[m])), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
+            MacroKnobRow(ch, macros, actions, size)
+        }
+    } else MacroKnobRow(ch, macros, actions, size)
+}
+
+@Composable
+private fun MacroKnobRow(ch: Int, macros: List<Float>, actions: QuickFxActions, size: androidx.compose.ui.unit.Dp) {
     val colors = KnobColors(
         cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
         track = Neon.Outline, value = Neon.Magenta, label = Neon.TextSecondary,

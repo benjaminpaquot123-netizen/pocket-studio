@@ -1,0 +1,12 @@
+lang=fr
+device=phone411
+font=100
+mode=simple
+main=gauche
+gestes.max=90
+mission=remix-voix
+rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-05-gaucher-remix-projet
+rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotF/d
+rejeu.n=34
+rejeu.attendu=touchable « Remix
+rejeu.absent=Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours.

@@ -1,0 +1,6 @@
+Écran 53 (588x1278)
+texte « Renommer la piste » @ 244,507
+champ « Nom 15/24 » contenu « Mélodie refrain » @ 294,620
+bouton « Effacer » @ 468,611
+bouton « Annuler » @ 346,758
+bouton « OK » @ 460,758

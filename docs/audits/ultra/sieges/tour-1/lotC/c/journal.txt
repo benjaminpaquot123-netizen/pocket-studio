@@ -1,0 +1,384 @@
+#0 SIEGE lang=fr device=phone font=130 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1b09b6a495 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 2.48:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « BenStudio » 1.20:1 (needs 3.0:1, 28 sp)
+#1 > touche 294 558
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE cac6de3d68 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Simple » 2.10:1 (needs 3.0:1, 24 sp)
+#2 > touche 294 380
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE efe428ed28 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Hip-hop » 1.36:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 styles » 1.36:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Autres » 1.36:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 styles » 1.36:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 947
+#3 DOIGT wizard_family_Autres « Autres »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9207af44ea | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Le rythme latino qui fait danser partout : le « boum-tchi-boum-tchi » du dembow, une basse ronde et des accords qui chaloupent. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Bad Bunny – Tití Me Preguntó (2022) » ellipsized (« … »)
+#4 LAYOUT CUT « La pop venue du Nigeria et du Ghana : un groove souple et dansant, des percussions qui se répondent et des mélodies ensoleillées. » ellipsized (« … »)
+#4 > glisse 294 1100 294 500
+#4 DOIGT wizard_style_reggaeton « Reggaeton »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 08d354f30c | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « Pour l'idée : Rema & Selena Gomez – Calm Down (2022) » ellipsized (« … »)
+#5 LAYOUT CUT « Le son des années 80 remis à la mode (Stranger Things, Blinding Lights) : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des notes de synthé qui tournent en boucle. » ellipsized (« … »)
+#5 LAYOUT CUT « Pour l'idée : The Weeknd – Blinding Lights (2019) » ellipsized (« … »)
+#5 LAYOUT CUT « La pop des radios d'aujourd'hui : un rythme simple qui donne envie de bouger, les quatre accords qu'on entend partout et une mélodie qu'on retient. Il ne manque plus que ta voix ! » ellipsized (« … »)
+#5 LAYOUT CUT « Pour l'idée : Sabrina Carpenter – Espresso (2024) » ellipsized (« … »)
+#5 LAYOUT CONTRAST « Afrobeats » 1.92:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « 105 BPM » 1.92:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « 105 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#5 > touche 320 1176
+#5 DOIGT wizard_style_pop « Pop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 553d6d82eb | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > glisse 294 1100 294 500
+#6 DOIGT wizard_style_pop « Pop »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE cd4db19f3f | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Pour l'idée : The Weeknd – Blinding Lights (2019) » 2.48:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « • Dua Lipa – Don't Start Now (2019) » 1.53:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « • Ed Sheeran – Shape of You (2017) » 1.39:1 (needs 4.5:1, 13 sp)
+#7 > touche 322 1221
+#7 DOIGT wizard_style_choose_pop « Choisir ce style »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 45155ab655 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Des accords mineurs : mystérieux, intenses ou un peu tristes. » 3.13:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Joyeux / énergique » 3.87:1 (needs 4.5:1, 16 sp)
+#8 > touche 330 912
+#8 DOIGT wizard_mood_none « Pas de mélodie pour l'instant »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 63b747f8f2 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 436 1224
+#9 DOIGT wizard_next « Suivant »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0a52e35c07 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « CHOISIS LE SON » 3.37:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « Kick » 1.36:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Kick 2 » 1.35:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#10 > touche 436 1224
+#10 DOIGT wizard_next « Suivant »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE fd013d7f6a | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 3.33:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Caisse 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Rim » 1.35:1 (needs 4.5:1, 14 sp)
+#11 > touche 436 1224
+#11 DOIGT wizard_next « Suivant »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 92a51c3d3f | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 2 » 2.97:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 3 » 2.65:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 4 » 2.62:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Clap » 1.35:1 (needs 4.5:1, 14 sp)
+#12 > touche 436 1224
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0811998c9f | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Charley » 1.35:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Shaker » 1.68:1 (needs 4.5:1, 14 sp)
+#13 > touche 382 796
+#13 DOIGT wizard_line_listen «   Avec le rythme »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 5ee0e306ce | project=projet-1 no tuto
+#14 SON Son : un son de la bibliothèque joue (écoute).
+#14 > touche 436 1224
+#14 DOIGT wizard_next « Suivant »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 2246fe6ded | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Joue dans Refrain » 3.40:1 (needs 4.5:1, 14 sp)
+#15 > touche 436 1224
+#15 DOIGT wizard_next « Suivant »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE 57eb825000 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Shaker » 1.35:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Rim » 1.68:1 (needs 4.5:1, 14 sp)
+#16 > touche 436 1224
+#16 DOIGT wizard_next « Suivant »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE d707456a0f | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « 1 » 1.61:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 2 » 1.59:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 3 » 2.79:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 4 » 2.78:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST «   Avec le rythme » 4.41:1 (needs 4.5:1, 14 sp)
+#17 > touche 436 1224
+#17 DOIGT wizard_next « Suivant »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE e7f81fc10e | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Refrain · tout le monde joue » 3.69:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Tempo 116 BPM. » 3.29:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 3.79:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Caisse » 1.79:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « 2 » 1.38:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 4 » 1.36:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Clap » 1.37:1 (needs 4.5:1, 13 sp)
+#18 > touche 436 1207
+#18 DOIGT wizard_create « Créer le morceau »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE eb8c3a47cb | project=p-af33b39c no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « ● » over the touchable « Jouer depuis une partie » (15 x 21 dp)
+#19 LAYOUT OVERLAP « ⋯ » over the touchable « Étiqueter l'écran » (9 x 27 dp)
+#19 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « ✎ » 3.53:1 (needs 4.5:1, 13 sp)
+#19 > touche 471 42
+#19 DOIGT top_play
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 199c3e14bd | project=p-af33b39c no tuto
+#20 SON Son : le morceau joue (partie « A »).
+#20 LAYOUT CUT « Sauvegardé » wider than its box (by 40.0 dp)
+#20 LAYOUT CONTRAST « POUR COMMENCER » 4.37:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Le son de la mélodie » 3.91:1 (needs 4.5:1, 14 sp)
+#20 > touche 471 42
+#20 DOIGT top_play
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d13615f644 | project=p-af33b39c no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 399 42
+#21 DOIGT top_record
+#22 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE da093dec94 | project=p-af33b39c no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CUT « Ligne de basse » ellipsized (« … »)
+#22 LAYOUT CUT « Souffle montant » ellipsized (« … »)
+#22 LAYOUT CUT « Synthé » drawn past its parent's edge (down, 17 dp shown of 21)
+#22 LAYOUT CUT « Ma mélodie » ellipsized (« … »)
+#22 LAYOUT CUT « Do » lines dropped (more lines than room)
+#22 LAYOUT OVERLAP « ● » over the touchable « Jouer depuis une partie » (4 x 21 dp)
+#22 LAYOUT CONTRAST « Ligne de basse » 3.11:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST «  Arrêter » 2.78:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT TARGET « Do 4 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Ré 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Mi 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Fa 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Sol 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « La 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Si 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Do 5 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Ré 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Mi 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Fa 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Sol 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « La 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Si 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#22 LAYOUT TARGET « Do# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Ré# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Fa# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Sol# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Do# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Ré# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Fa# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « Sol# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#22 > touche 399 42
+#22 DOIGT top_record
+#23 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cf72b4c4a1 | project=p-af33b39c no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 LAYOUT CUT «  · Enregistre une mélodie » ellipsized (« … »)
+#23 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#23 > touche 471 42
+#23 DOIGT top_play
+#24 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 116f87b7ee | project=p-af33b39c no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « mes. 1/116 » over « ● » (4 x 6 dp)
+#24 LAYOUT OVERLAP « mes. 1/116 » over the touchable « Filmer l'écran avec le son » (7 x 13 dp)
+#24 LAYOUT OVERLAP «  REC » over the touchable « Jouer depuis une partie » (13 x 16 dp)
+#24 LAYOUT CONTRAST « ● » 2.75:1 (needs 4.5:1, 13 sp)
+#24 > touche 543 42
+#24 DOIGT top_more
+#25 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE d4cd7994b1 | project=p-af33b39c no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Remix » 3.10:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « Signaler un bug » 4.37:1 (needs 4.5:1, 14 sp)
+#25 > touche 407 198
+#25 DOIGT more_voice « Enregistrer ma voix »
+#26 ROUTE ? | MODE simple | EMPREINTE 5ac8d4dc59 | project=p-af33b39c no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 558 683
+#26 DOIGT guide_bar « Guide »
+#27 ROUTE audio_tracks | MODE simple | EMPREINTE 818a44cc97 | project=p-af33b39c no tuto
+#27 SON Son : rien ne joue.
+#27 > glisse 294 1000 294 500
+#27 DOIGT rien
+#28 ROUTE audio_tracks | MODE simple | EMPREINTE 230e697c7f | project=p-af33b39c no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 165 698
+#28 DOIGT audio_record_0 «  Enregistrer »
+#29 ROUTE audio_tracks | MODE simple | EMPREINTE 230e697c7f | project=p-af33b39c no tuto
+#29 SON Son : rien ne joue.
+#29 > attends 2
+#30 ROUTE audio_tracks | MODE simple | EMPREINTE 230e697c7f | project=p-af33b39c no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 399 42
+#30 DOIGT top_record
+#31 ROUTE audio_tracks | MODE simple | EMPREINTE 230e697c7f | project=p-af33b39c no tuto
+#31 SON Son : rien ne joue.
+#31 RIEN NE CHANGE (3 écrans identiques)
+#31 > touche 506 198
+#31 DOIGT dans:take_loop_grown « Compris »
+#32 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 140 718
+#32 DOIGT audio_record_0 «  Enregistrer »
+#33 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 510 598
+#33 DOIGT dans:audio_track_0
+#34 ROUTE dialogue:« Renommer » | MODE simple | EMPREINTE abd9552948 | project=p-af33b39c no tuto
+#34 SON Son : rien ne joue.
+#34 > retour
+#34 RETOUR
+#35 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 471 42
+#35 DOIGT top_play
+#36 ROUTE audio_tracks | MODE simple | EMPREINTE a02a8a7552 | project=p-af33b39c no tuto
+#36 SON Son : le morceau joue (partie « A »).
+#36 LAYOUT CONTRAST « ● » 2.73:1 (needs 4.5:1, 13 sp)
+#36 > touche 165 770
+#36 DOIGT audio_record_0 «  Enregistrer »
+#37 ROUTE dialogue:effects_box_12 | MODE simple | EMPREINTE 6c97b4166e | project=p-af33b39c no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT CONTRAST « Petite pièce » 3.42:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Dub profond » 2.26:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Téléphone » 1.76:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Grande cathédrale » 4.24:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Fermer » 3.52:1 (needs 4.5:1, 14 sp)
+#37 > touche 469 1206
+#37 DOIGT fx_close « Fermer »
+#38 ROUTE audio_tracks | MODE simple | EMPREINTE 3f82d48fb4 | project=p-af33b39c no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 165 698
+#38 DOIGT audio_record_0 «  Enregistrer »
+#39 ROUTE audio_tracks | MODE simple | EMPREINTE 5e343d1d5b | project=p-af33b39c no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 471 42
+#39 DOIGT top_play
+#40 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#40 SON Son : rien ne joue.
+#40 > appui-long 165 698
+#40 DOIGT audio_record_0 «  Enregistrer »
+#41 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 543 42
+#41 DOIGT top_more
+#42 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE d4cd7994b1 | project=p-af33b39c no tuto
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « Réglages » 1.84:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « Signaler un bug » 3.65:1 (needs 4.5:1, 14 sp)
+#42 > touche 407 630
+#42 DOIGT more_settings « Réglages »
+#43 ROUTE settings | MODE simple | EMPREINTE fada3b410f | project=p-af33b39c no tuto
+#43 SON Son : rien ne joue.
+#43 > glisse 294 1050 294 300
+#43 DOIGT theme_Colorblind « Couleurs pour daltoniens »
+#44 ROUTE settings | MODE simple | EMPREINTE 2ddc130bb3 | project=p-af33b39c no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT LABEL « haptics » toggle without text nor description
+#44 LAYOUT LABEL « live_beat_haptics » toggle without text nor description
+#44 > glisse 294 1050 294 300
+#44 DOIGT rien (texte « Une petite vibration à chaque temps pend »)
+#45 ROUTE settings | MODE simple | EMPREINTE 33b66f672a | project=p-af33b39c no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT LABEL « keep_screen » toggle without text nor description
+#45 LAYOUT LABEL « intro_sound » toggle without text nor description
+#45 > glisse 294 1050 294 300
+#45 DOIGT rien (texte « Décompte avant d'enregistrer »)
+#46 ROUTE settings | MODE simple | EMPREINTE 20de8615c6 | project=p-af33b39c no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 543 42
+#46 DOIGT top_more
+#47 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE d4cd7994b1 | project=p-af33b39c no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 407 198
+#47 DOIGT more_voice « Enregistrer ma voix »
+#48 ROUTE audio_tracks | MODE simple | EMPREINTE 5d09225eca | project=p-af33b39c no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 294 909
+#48 DOIGT audio_add «   Piste audio »
+#49 ROUTE audio_tracks | MODE simple | EMPREINTE 67f3d57364 | project=p-af33b39c no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 165 1033
+#49 DOIGT audio_record_1 «  Enregistrer »
+#50 ROUTE audio_tracks | MODE simple | EMPREINTE 67f3d57364 | project=p-af33b39c no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 237 42
+#50 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#51 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 767990dfcc | project=p-af33b39c no tuto
+#51 SON Son : rien ne joue.
+#51 LAYOUT CUT « En ce moment » ellipsized (« … »)
+#51 LAYOUT CONTRAST « Pour aller loin : tous les outils, structure, sons, mix et live. » 4.17:1 (needs 4.5:1, 16 sp)
+#51 LAYOUT CONTRAST « Fermer » 3.54:1 (needs 4.5:1, 14 sp)
+#51 > touche 294 884
+#51 DOIGT mode_card_pro « Pro »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 1b18e80a7d | project=p-af33b39c no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « 16 pads » drawn past its parent's edge (down, 17 dp shown of 21)
+#52 LAYOUT CUT « 2 pistes » drawn past its parent's edge (down, 17 dp shown of 21)
+#52 LAYOUT OVERLAP «  Noter » over the touchable « Jouer » (30 x 16 dp)
+#52 LAYOUT OVERLAP « ⋯ » over the touchable « Jouer » (8 x 27 dp)
+#52 LAYOUT CONTRAST « ✎ » 4.18:1 (needs 4.5:1, 13 sp)
+#52 > glisse 294 1000 294 600
+#52 DOIGT rien (texte « Mets des écouteurs (filaires de préféren »)
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 578d41ced2 | project=p-af33b39c no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 165 857
+#53 DOIGT audio_record_0 «  Enregistrer »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 578d41ced2 | project=p-af33b39c no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 540 36
+#54 DOIGT top_mode « Mode Pro. Toucher pour changer de mode. »
+#55 ROUTE dialogue:mode_switch | MODE pro | EMPREINTE f5da5a1a57 | project=p-af33b39c no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Mode de ce projet » 2.80:1 (needs 3.0:1, 24 sp)
+#55 LAYOUT CONTRAST « Pro » 1.58:1 (needs 3.0:1, 24 sp)
+#55 LAYOUT CONTRAST « En ce moment » 2.45:1 (needs 4.5:1, 13 sp)
+#55 > touche 294 598
+#55 DOIGT mode_card_simple « Simple »
+#56 ROUTE audio_tracks | MODE simple | EMPREINTE 67f3d57364 | project=p-af33b39c no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 534 1218
+#56 DOIGT tab_simple_Envoyer « Envoyer »
+#57 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE c4c26d38d3 | project=p-af33b39c no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 451 464
+#57 DOIGT share_listen «  Écouter »
+#58 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7cdb6a52ba | project=p-af33b39c no tuto
+#58 SON Son : le morceau joue (partie « A »).
+#58 > touche 455 464
+#58 DOIGT share_listen «  Arrêter »
+#59 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE c4c26d38d3 | project=p-af33b39c no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 294 1026
+#59 DOIGT share_go «   Partager »
+#60 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 63acb07ef5 | project=p-af33b39c no tuto
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST «   29 % » 1.32:1 (needs 4.5:1, 14 sp)
+#60 > attends 5
+#60 PARTAGE Pop-morceau-20261104-195745.m4a
+#61 ROUTE dialogue:« Partager « Pop-morceau-2026110 » | MODE simple | EMPREINTE 788c681a94 | project=p-af33b39c no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 294 549
+#61 DOIGT vue « WhatsApp »
+#62 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 21d42ef869 | project=p-af33b39c no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 54 1218
+#62 DOIGT tab_simple_Morceau « Mon morceau »
+#63 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 373b8b2e0f | project=p-af33b39c no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 134 945
+#63 DOIGT simple_track_audio:0 « Audio 1 »
+#64 ROUTE audio_tracks | MODE simple | EMPREINTE 67f3d57364 | project=p-af33b39c no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 399 42
+#64 DOIGT top_record
+#65 ROUTE audio_tracks | MODE simple | EMPREINTE 67f3d57364 | project=p-af33b39c no tuto
+#65 SON Son : rien ne joue.
+#65 > fin
+#65 FIN : fin

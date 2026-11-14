@@ -1,0 +1,15 @@
+Écran 77 (616x1371)
+texte « BenStudio » @ 156,72
+texte « Que veux-tu faire ? » @ 220,132
+bouton « Continuer Simple Live 20 mes. · 0:40 · 1 partie Sauvegardé à l'instant » @ 308,294
+bouton « Nouveau morceau Un style en une touche, ou pas à pas avec l'assistant. » @ 308,499
+bouton « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » @ 308,664
+bouton « Remix Séparation des pistes : batterie, basse, voix et le reste. » @ 308,829
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » @ 308,1009
+bouton « Défis Écoute un rythme, refais-le sur les pads : gagne des étoiles. » (nom « Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles. ») @ 308,1189
+bouton « Enregistrer ma voix ou ma guitare Le micro enregistre par-dessus ta musique, pile en rythme. » @ 308,1297
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

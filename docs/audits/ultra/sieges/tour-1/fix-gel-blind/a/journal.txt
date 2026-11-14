@@ -1,0 +1,296 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=60 lit=non main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE c55db3bd3b | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Ton studio de musique, dans ta poche. » 3.58:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ? » 2.70:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » 4.17:1 (needs 4.5:1, 14 sp)
+#1 > touche 294 447
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE af1053b264 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pro » 2.12:1 (needs 3.0:1, 24 sp)
+#2 > touche 294 297
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE bb4001301a | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Étape 1 : choisis un style » 4.23:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « • BPM : la vitesse du morceau, en battements par minute. » 2.84:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Calme (Chill, Lo-fi) » 2.47:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 6 styles » 2.52:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 10 styles » 3.11:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 9 styles » 2.16:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hip-hop » 1.94:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Autres » 1.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 styles » 1.38:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 384
+#3 DOIGT wizard_family_Techno « Techno »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0b34077444 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques. » ellipsized (« … »)
+#4 LAYOUT CUT « La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Rhythim Is Rhythim – Strings of Life (1987) » ellipsized (« … »)
+#4 LAYOUT CUT « La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Josh Wink – Higher State of Consciousness (1995) » ellipsized (« … »)
+#4 LAYOUT CUT « La techno des soirées d'aujourd'hui, plus rapide et plus dure : un kick saturé suivi d'un grondement, et des sirènes de rave. » ellipsized (« … »)
+#4 LAYOUT CUT « La techno la plus noire : des bruits de métal et de machines, comme une usine, sur un kick saturé qui gronde. » ellipsized (« … »)
+#4 LAYOUT CONTRAST « 132 BPM » 2.05:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule. » 1.97:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Techno · 138 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 > touche 57 483
+#4 DOIGT wizard_style_listen_techno
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE a485b04056 | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#5 > touche 320 513
+#5 DOIGT wizard_style_techno « Techno »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE cac18361b9 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Techno ».
+#6 LAYOUT CONTRAST « • Adam Beyer & Bart Skils – Your Mind (2018) » 1.91:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Choisir ce style » 1.36:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « Techno · 126 BPM » 1.37:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule. » 4.37:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne. » 1.48:1 (needs 4.5:1, 13 sp)
+#6 > touche 322 780
+#6 DOIGT wizard_style_choose_techno « Choisir ce style »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 2f0d8c9cfb | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Étape 2 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Créer tout de suite avec les choix conseillés » 3.01:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « LES VRAIS SONS DU STYLE » 2.49:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style. » 1.94:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Sombre / épique » 1.26:1 (needs 4.5:1, 16 sp)
+#7 > touche 436 1224
+#7 DOIGT wizard_next « Suivant »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE fcf95782cd | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Étape 3 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « 3 » 2.71:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « 4 » 2.64:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « Joue dans Intro, Groove et Drop » 2.05:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Télécharger les sons du style » 4.32:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#8 > touche 410 1056
+#8 DOIGT wizard_line_listen «   Avec le rythme »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 8fa3dd6d38 | project=projet-1 no tuto
+#9 SON Son : un son de la bibliothèque joue (écoute).
+#9 > touche 436 1224
+#9 DOIGT wizard_next « Suivant »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 1ea8a7977b | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Étape 4 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « 3 » 3.37:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « 4 » 2.28:1 (needs 4.5:1, 12 sp)
+#10 > touche 436 1224
+#10 DOIGT wizard_next « Suivant »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 11ff1ac999 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Étape 5 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « 1 » 1.73:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 2.08:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 3 » 2.61:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 2.68:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Télécharger les sons du style » 4.23:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « CHOISIS LE SON » 1.65:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST «   Avec le rythme » 1.63:1 (needs 4.5:1, 14 sp)
+#11 > touche 436 1224
+#11 DOIGT wizard_next « Suivant »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7008497b2c | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Étape 6 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « 3 » 2.97:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 4 » 2.44:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Utiliser cette ligne » 3.32:1 (needs 4.5:1, 16 sp)
+#12 > touche 436 1224
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9de0f02dcc | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Étape 7 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#13 LAYOUT CONTRAST « Joue dans toutes les parties » 2.05:1 (needs 4.5:1, 14 sp)
+#13 > touche 436 1224
+#13 DOIGT wizard_next « Suivant »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3c98cd29a5 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Étape 8 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#14 > touche 436 1224
+#14 DOIGT wizard_next « Suivant »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 0a1c1e14cc | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Étape 9 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#15 > touche 436 1224
+#15 DOIGT wizard_next « Suivant »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE 184c1096de | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Étape 10 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « Créer cette piste » 3.32:1 (needs 4.5:1, 16 sp)
+#16 LAYOUT CONTRAST « Basse analogique » 1.36:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Conseillé » 1.36:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Basse ronde » 1.36:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Brillant · tenu » 1.38:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Basse sub » 1.35:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Basse reese » 1.35:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#16 > touche 436 1224
+#16 DOIGT wizard_next « Suivant »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE 17b9ee4510 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT « Brillant · monte doucement » ellipsized (« … »)
+#17 LAYOUT CUT « Doux · monte doucement » ellipsized (« … »)
+#17 LAYOUT CONTRAST « Étape 11 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « CHOISIS LE SON » 1.91:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Nappe chaude » 1.36:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Doux · monte doucement » 1.36:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Accords future bass » 1.36:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Brillant · épais » 1.37:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Doux · tenu » 1.65:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Accords » 1.65:1 (needs 4.5:1, 12 sp)
+#17 > touche 436 1224
+#17 DOIGT wizard_next « Suivant »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE e63d02ae34 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Étape 12 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Joue dans Drop et Break » 3.87:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Mélodie filtrée » 1.36:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Mélodie » 1.36:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Brillant · tenu » 1.36:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Mélodie carrée » 1.35:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Mélodie acide » 1.35:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Creux · court » 1.46:1 (needs 4.5:1, 12 sp)
+#18 > touche 436 1224
+#18 DOIGT wizard_next « Suivant »
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE f10cf72378 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Étape 13 sur 13 · Techno » 4.23:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « Groove · le groove, avec la basse » 2.75:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « C » 2.13:1 (needs 3.0:1, 14 sp)
+#19 LAYOUT CONTRAST « Drop · tout le monde joue » 3.42:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Kick (grosse caisse) » 4.34:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « Kick » 1.35:1 (needs 4.5:1, 13 sp)
+#19 > touche 436 1224
+#19 DOIGT wizard_create « Créer le morceau »
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 41f750b3f0 | project=p-6536ba3e no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#20 > touche 471 42
+#20 DOIGT top_play
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1857cf1d8e | project=p-6536ba3e no tuto
+#21 SON Son : le morceau joue (partie « E »).
+#21 LAYOUT CUT « Sauvegardé » wider than its box (by 16.2 dp)
+#21 LAYOUT CONTRAST « POUR COMMENCER » 4.30:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Le son de la mélodie » 3.89:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Une autre batterie » 3.95:1 (needs 4.5:1, 14 sp)
+#21 > touche 174 1200
+#21 DOIGT tab_simple_Rythme « Rythme »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 11fddb26be | project=p-6536ba3e no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > touche 174 1218
+#22 DOIGT tab_simple_Rythme « Rythme »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 11fddb26be | project=p-6536ba3e no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 294 1210
+#23 DOIGT tab_simple_Clavier « Clavier »
+#24 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee996e9f59 | project=p-6536ba3e no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#24 > touche 559 683
+#24 DOIGT guide_bar « Guide »
+#25 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 8e9557b640 | project=p-6536ba3e no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT TARGET « Do 4 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#25 LAYOUT TARGET « Fa 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#25 LAYOUT TARGET « Do 5 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#25 LAYOUT TARGET « Fa 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#25 LAYOUT TARGET « Do# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Ré# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Fa# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Sol# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Do# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Ré# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Fa# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « Sol# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#25 > attends 3
+#26 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 8e9557b640 | project=p-6536ba3e no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 471 42
+#26 DOIGT top_play
+#27 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a85d265ce0 | project=p-6536ba3e no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 294 1034
+#27 DOIGT rien
+#28 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a85d265ce0 | project=p-6536ba3e no tuto
+#28 SON Son : rien ne joue.
+#28 > retour
+#28 RETOUR
+#29 ROUTE launch | MODE simple | EMPREINTE d36d031ae7 | project=p-6536ba3e no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « Techno » over « BenStudio » (52 x 4 dp)
+#29 LAYOUT OVERLAP « Simple » over « BenStudio » (13 x 10 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over « ● » (11 x 17 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over «  REC » (23 x 13 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over « ✎ » (13 x 17 dp)
+#29 LAYOUT OVERLAP « BenStudio » over the touchable « Mode Simple. Toucher pour changer de mod » (23 x 24 dp)
+#29 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo : 132 BPM Changer le tempo » (31 x 16 dp)
+#29 LAYOUT OVERLAP « BenStudio » over the touchable « Jouer depuis une partie » (51 x 16 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Tempo : 132 BPM Changer le tempo » (71 x 30 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Jouer depuis une partie » (109 x 30 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Filmer l'écran avec le son » (42 x 26 dp)
+#29 LAYOUT OVERLAP « Que veux-tu faire ? » over the touchable « Écrire une note » (16 x 26 dp)
+#29 LAYOUT OVERLAP « Continuer » over the touchable « Changer de partie » (79 x 8 dp)
+#29 LAYOUT OVERLAP « Simple » over the touchable « Changer de partie » (19 x 5 dp)
+#29 LAYOUT OVERLAP « Techno » over the touchable « Changer de partie » (85 x 28 dp)
+#29 LAYOUT OVERLAP « Un style en une touche, ou pas à pas avec l'assistant. » over the touchable « Replier Déplié » (17 x 4 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « Fa 4 Jouer » (21 x 28 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « Do 5 Jouer » (21 x 28 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « Fa# 4 Jouer » (15 x 28 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « Sol# 4 Jouer » (15 x 28 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « La# 4 Jouer » (15 x 28 dp)
+#29 LAYOUT OVERLAP « Mes projets » over the touchable « Do# 5 Jouer » (12 x 28 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Fa 4 Jouer » (21 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Do 5 Jouer » (21 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Fa 5 Jouer » (10 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Fa# 4 Jouer » (15 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Sol# 4 Jouer » (15 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « La# 4 Jouer » (15 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Do# 5 Jouer » (15 x 40 dp)
+#29 LAYOUT OVERLAP « Ouvrir un autre morceau, le copier ou le renommer. » over the touchable « Ré# 5 Jouer » (15 x 40 dp)
+#29 LAYOUT OVERLAP « Remix » over the touchable « Fa 4 Jouer » (21 x 28 dp)
+#29 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Fa 4 Jouer » (21 x 10 dp)
+#29 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Do 5 Jouer » (21 x 10 dp)
+#29 LAYOUT OVERLAP « Séparation des pistes : batterie, basse, voix et le reste. » over the touchable « Fa 5 Jouer » (21 x 10 dp)
+#29 LAYOUT OVERLAP « Reprendre Mon premier morceau » over the touchable « Ouvrir le Guide replié » (223 x 12 dp)
+#29 > attends 10
+#30 ROUTE launch | MODE simple | EMPREINTE d36d031ae7 | project=p-6536ba3e no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 360 342
+#30 DOIGT launch_continue « Continuer »
+#31 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE dd0001e9d1 | project=p-6536ba3e no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#31 > glisse 294 1000 294 750
+#31 DOIGT rien
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f6654b6fa1 | project=p-6536ba3e no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m » ellipsized (« … »)
+#32 > touche 543 42
+#32 DOIGT top_more
+#33 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 3992a610b0 | project=p-6536ba3e no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Mes projets » 4.20:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Aide et premiers pas » 1.90:1 (needs 4.5:1, 14 sp)
+#33 > attends 20
+#34 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 3992a610b0 | project=p-6536ba3e no tuto
+#34 SON Son : rien ne joue.
+#34 > retour
+#34 RETOUR
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f6654b6fa1 | project=p-6536ba3e no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 40 42
+#35 DOIGT top_projects « Techno »
+#36 ROUTE dialogue:projects | MODE simple | EMPREINTE 3a67f6837f | project=p-6536ba3e no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST «   Nouveau morceau guidé » 3.24:1 (needs 4.5:1, 16 sp)
+#36 > fin
+#36 FIN : fin

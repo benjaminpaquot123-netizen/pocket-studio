@@ -1,0 +1,35 @@
+Écran 10 (588x1278)
+dessin @ 294,36
+texte « Acid 303 » @ 328,108
+texte « إغلاق » @ 67,108
+bouton « مكتوم » @ 515,195
+bouton « Solo » @ 406,195
+texte « المستوى » @ 341,267
+texte « ⁦-10.5 dB⁩ » @ 71,267
+curseur [état « ⁦-10.5 dB⁩ », à 43 %] @ 294,339
+texte « Pan » @ 543,412
+bouton « ? » @ 500,411
+texte « الوسط » @ 51,411
+curseur [état « الوسط », à 50 %] @ 294,484
+bouton (barres de son) «  ما يُعزف » @ 432,571
+bouton (courbe) «  المنحنيات » @ 156,571
+texte « المؤثرات » @ 530,640
+texte « المؤثرات المضافة: 1 من 8 » @ 461,691
+bouton « 1. Distortion » [sélectionné] @ 438,751
+icône ⏻ @ 276,751
+icône ⌃ [désactivé] @ 204,751
+icône ⌄ [désactivé] @ 132,751
+icône ✕ @ 60,751
+texte « يدفع الصوت إلى الأحمر: دافئ (Overdrive)، مشعّث (Fuzz)، حاد (Clipping) أو معدني (Foldback). » @ 294,823
+texte « Drive » @ 318,868
+texte « 45% » @ 48,868
+curseur [état « 45% », à 45 %] @ 294,919
+texte « النغمة » @ 334,973
+texte « 5.2 kHz » @ 64,973
+curseur [état « 5.2 kHz », à 60 %] @ 294,1027
+texte « النوع » @ 343,1081
+texte « Overdrive » @ 73,1081
+curseur [état « Overdrive », à 0 %] @ 294,1135
+texte « Mix » @ 325,1186
+texte « 100% » @ 55,1186
+curseur [état « 100% », à 100 %] @ 294,1237

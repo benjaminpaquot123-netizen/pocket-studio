@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "音をパッドに置けませんでした：%s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "チャレンジ：リズムを聴いて、パッドでまねして、星を集めよう。",
+  "Défis": "チャレンジ",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "リズムを聴いて、パッドでまねしよう：星を集めよう。",
+  "%s, sur le pad": "%s、パッドに設定中",
+  "✓ Sur le pad maintenant": "✓ 今このパッドに",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "「%1$s」がパッド%3$dの「%2$s」と入れ替わりました（戻る矢印で元に戻せます）。ドラムで好きなパートに置いてね。",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "「%s」はカット用に、ミュートしてプロジェクトに入っています（戻る矢印で取り除けます）。",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live には専用の「Live」プロジェクトがあります：「%s」はマイプロジェクトで待っています。"
+}

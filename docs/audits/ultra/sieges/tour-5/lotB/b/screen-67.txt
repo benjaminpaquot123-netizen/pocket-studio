@@ -1,0 +1,4 @@
+Écran 67 (588x1278)
+texte « Utwór » @ 89,528
+texte « Części ułożone jedna za drugą, każda powtórzona dowolną liczbę razy. Na osi czasu każda kratka włącza lub wyłącza ścieżkę w jednej części. » @ 294,621
+bouton « Jasne » @ 502,738

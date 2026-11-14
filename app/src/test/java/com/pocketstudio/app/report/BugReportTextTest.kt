@@ -56,7 +56,7 @@ class BugReportTextTest {
     fun saysEverythingInFrench() {
         val md = BugReportText.markdown(input())
         listOf(
-            "# Rapport de bug : Pocket Studio", "## Ce qui s'est passé", "Le son a coupé dans Live", "## Appli et téléphone",
+            "# Rapport de bug : BenStudio", "## Ce qui s'est passé", "Le son a coupé dans Live", "## Appli et téléphone",
             "Version : 0.22.345 (code 345, canal preview)", "Téléphone : HONOR Magic 8 Pro", "Android : 16 (API 36)",
             "Sortie du son : Bluetooth (A2DP) (branchés : haut-parleur du téléphone, Bluetooth (A2DP))",
             "AAudio, exclusif, MMAP, 48000 Hz, burst 96", "Latence de sortie : 10,2 ms", "Décrochages audio depuis le démarrage : 2",

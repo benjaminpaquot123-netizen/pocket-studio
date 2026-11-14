@@ -172,6 +172,20 @@ class JournalLogicTest {
     }
 
     @Test
+    fun anUnderrunSaysWhetherACallbackStalledOrStartedLate() {
+        // Tour 5, Hard techno: the engine's worst block and longest gap since the last reading (meters 4 and 5).
+        val read: (FloatArray) -> Unit = { it[3] = 0.45f; it[4] = 13f; it[5] = 1.1f }
+        HealthMonitor.feed(info(0.5f), 0, 20_000, read)
+        val s = HealthMonitor.feed(info(0.5f, xruns = 13), 300, 20_300, read)!!
+        assertEquals(13f, s.cpuWorst, 0f)
+        assertEquals(1.1f, s.gapWorst, 0f)
+        HealthMonitor.add(s.copy(atMs = 20_600, xruns = 26, cpuWorst = 0.6f, gapWorst = 16f))
+        val texts = Journal.events.snapshot().map { it.text }.filter { it.startsWith("Décrochage audio") }
+        assertTrue(texts.toString(), texts.any { it == "Décrochage audio : +13 (total 26) ; pire bloc 60 %, plus long écart 16,0 blocs" })
+        assertTrue(JournalJson.sample(s).contains("\"cpuWorst\":13"))
+    }
+
+    @Test
     fun aMinuteOfSoundBecomesSixtySecondsAndASparkline() {
         val now = 100_000L
         val samples = (0 until 240).map { i ->

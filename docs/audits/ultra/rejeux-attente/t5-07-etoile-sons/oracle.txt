@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-5/lotD/b
+rejeu.n=39
+rejeu.attendu=☆
+rejeu.absent=Lead 6 个声音

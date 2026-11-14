@@ -1,0 +1,8 @@
+Écran 23 (900x1509)
+dessin @ 450,754
+dessin @ 450,1083
+texte « Rekamanmu: 4 bar » @ 174,1140
+texte « Taruh di mana? Diputar berulang di tempo proyek. » @ 272,1194
+bouton « Di pad kosong B1 » @ 450,1263
+bouton « Di blok Live » @ 450,1353
+texte « Buang » @ 450,1443

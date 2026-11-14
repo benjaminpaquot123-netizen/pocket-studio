@@ -1,0 +1,42 @@
+Écran 5 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 126  Tempo » @ 83,114
+icône « A mesure 1/7 » ▾ @ 248,114
+bouton « ? » @ 543,114
+image (rond coché) @ 0,0
+texte « Fini ? Partage ton morceau » @ 294,183
+champ « Nom du morceau (et du projet) » contenu « Démo · Acid house » @ 294,271
+icône ✕ @ 522,278
+bouton ▶ «  Écouter » @ 466,374
+texte « 0:13 » @ 66,374
+texte « 4 parties » @ 161,379
+bouton « Streaming » @ 235,464
+bouton « Club » @ 369,464
+texte « Volume visé » @ 89,464
+bouton « Auto (style) » @ 114,545
+bouton « Désactivée » [sélectionné] @ 289,545
+bouton « ? » @ 400,545
+bouton « M4A · pour partager » [sélectionné] @ 157,653
+bouton « WAV · qualité max » @ 414,653
+bouton (trois points reliés) «   Partager » @ 294,749
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,851
+bouton « ? » @ 536,851
+bouton (boussole) « Guide  · Ajoute une mélodie 44 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

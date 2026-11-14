@@ -1,0 +1,98 @@
+Écran 2 (1035x1243)
+touchable « 我的第一个节奏 已保存 » (nom « 我的项目 ») @ 261,42
+bouton « 专业 » (nom « 专业模式。轻触切换模式。 ») @ 551,42
+bouton « A » (nom « 当前段落：A。点击切换段落。 ») @ 627,42
+bouton « 撤销 » [désactivé] @ 702,42
+bouton « 重做 » [désactivé] @ 774,42
+bouton « 录音：麦克风、键盘或打击垫 » @ 846,42
+bouton « 播放 » @ 918,42
+bouton « 分享我的歌 » @ 990,42
+bouton « 120  BPM » (nom « 速度：120 BPM ») @ 73,114
+interrupteur « ? » (nom « 标注界面 ») [non coché] @ 990,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+touchable « 合成器 合成器 » @ 636,183
+bouton «  音轨 » @ 774,183
+texte « 段落：A » @ 58,243
+touchable « 底鼓 » @ 75,331
+touchable « 底鼓 2 » @ 200,331
+touchable « 军鼓 » @ 325,331
+touchable « 军鼓 2 » @ 450,331
+touchable « 拍手 » @ 75,437
+touchable « 踩镲 » @ 200,437
+touchable « 开镲 » @ 325,437
+touchable « 低音嗵鼓 » @ 450,437
+touchable « 中音嗵鼓 » @ 75,543
+touchable « 高音嗵鼓 » @ 200,543
+touchable « 鼓边 » @ 325,543
+touchable « 牛铃 » @ 450,543
+touchable « 镲片 » @ 75,649
+touchable « 沙锤 » @ 200,649
+touchable « 康加鼓 » @ 325,649
+touchable « Zap » @ 450,649
+bouton « 鼓组：经典 » @ 109,743
+texte « 打击垫只发声，格子保存打击。长按：更换音色。 » @ 360,743
+case « 节拍器 » @ 98,851
+case « 倒数 » @ 213,851
+bouton « 效果 » @ 440,851
+bouton « ? » (nom « “节拍器和倒数”是什么？ ») @ 292,851
+bouton « ? » (nom « “Swing”是什么？ ») @ 133,906
+texte « Swing » @ 77,908
+texte « 0% » @ 466,910
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « 步进：底鼓 » [état « 已展开 »] @ 694,343
+bouton « ? » (nom « “步”是什么？ ») @ 716,343
+case « 所有打击垫 » @ 915,343
+touchable « 1 » (nom « 第 1 步 ») [état « 打击，力度 100% »] @ 575,423
+touchable « 第 2 步 » [état « 空 »] @ 632,422
+touchable « 第 3 步 » [état « 空 »] @ 688,422
+touchable « 第 4 步 » [état « 空 »] @ 744,422
+touchable « 2 » (nom « 第 5 步 ») [état « 打击，力度 100% »] @ 800,422
+touchable « 第 6 步 » [état « 空 »] @ 856,422
+touchable « 第 7 步 » [état « 空 »] @ 912,422
+touchable « 第 8 步 » [état « 空 »] @ 968,422
+touchable « 3 » (nom « 第 9 步 ») [état « 打击，力度 100% »] @ 575,493
+touchable « 第 10 步 » [état « 空 »] @ 632,492
+touchable « 第 11 步 » [état « 空 »] @ 688,492
+touchable « 第 12 步 » [état « 空 »] @ 744,492
+touchable « 4 » (nom « 第 13 步 ») [état « 打击，力度 100% »] @ 800,492
+touchable « 第 14 步 » [état « 空 »] @ 856,492
+touchable « 第 15 步 » [état « 空 »] @ 912,492
+touchable « 第 16 步 » [état « 空 »] @ 968,492
+case « 打击 » [sélectionné] @ 596,573
+case « 滚奏 » @ 694,573
+case « 声像 » @ 792,573
+case « 音高 » @ 890,573
+case « 力度 » @ 967,573
+  → la suite sur le côté (glisse pour la voir)
+bouton « 全部 » @ 629,657
+bouton « 1/2 » @ 704,657
+bouton « 1/4 » @ 779,657
+bouton « ◀ » @ 854,657
+bouton « ▶ » @ 929,657
+texte « 填充 » @ 570,657
+bouton « 清除 » @ 586,729
+texte « 点一格添加打击，滑动手指可以一次画好几格。长按一个打击：力度和滚奏（×2 到 ×8）。 » @ 771,804
+case « 1 小节 » [sélectionné] @ 654,880
+case « 2 » @ 752,880
+case « 3 » @ 833,880
+case « 4 » @ 914,880
+texte « 长度 » @ 571,880
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « 向导  · 加一段旋律 23 % » [état « 已收起 »] @ 517,949
+bouton « 撤销 » [désactivé] @ 148,1024
+bouton « 重做 » [désactivé] @ 331,1024
+bouton « 播放 » @ 512,1024
+bouton « 120 速度 » (nom « 速度：120 BPM ») @ 698,1024
+bouton « 分享 » (nom « 分享我的歌 ») @ 888,1024
+onglet « 结构 » @ 99,1123
+onglet « 音色 » [sélectionné] @ 309,1123
+onglet « 混音 » @ 518,1123
+onglet « Live » @ 727,1123
+onglet « 更多 » @ 936,1123
+touchable « ●  REC » (nom « 录制屏幕和声音 ») @ 807,1213
+touchable « ✎  记一笔 » (nom « 写笔记 ») @ 903,1213
+touchable « ⋯ » (nom « 反馈模式 ») @ 987,1213
+texte « 反馈模式 » @ 385,1213

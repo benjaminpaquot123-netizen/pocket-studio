@@ -1,0 +1,9 @@
+Écran 36 (1035x1243)
+texte « C'est prêt » @ 224,388
+texte « C'est prêt : Techno-de-Detroit-morceau-20261105-214611.wav, une copie est aussi dans Musique › BenStudio. » @ 517,500
+texte « Durée : 5 min 35 s » @ 242,586
+texte « Niveau : très fort (les plateformes le baisseront) » @ 418,628
+texte « Pas de saturation. » @ 241,670
+texte « Fichier WAV : qualité studio. » @ 300,712
+texte « Niveau : à la cible (Auto (style)) » @ 321,754
+bouton « OK » @ 857,844

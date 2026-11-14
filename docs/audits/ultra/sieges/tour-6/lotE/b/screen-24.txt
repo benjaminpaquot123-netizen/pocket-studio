@@ -1,0 +1,30 @@
+Écran 24 (540x1170)
+bouton (dossier ouvert) @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 495,114
+bouton (maison) « Start Doorgaan, nieuw nummer, Remix… » › @ 270,210
+bouton (dossier ouvert) « Mijn projecten Een project openen, maken, dupliceren, delen » › @ 270,321
+bouton (? dans un rond) « Hulp Snelle rondleiding, de Gids, de woordenlijst » › @ 270,438
+bouton (drapeau) « Mijn eerste nummer, met de Gids De eerste kaarten, van de stijl tot het delen » › @ 270,570
+bouton (livre ouvert) « Muziekwoorden om te beluisteren Elk woord met een geluidsvoorbeeld » › @ 270,703
+bouton (roue dentée) « Instellingen Taal, thema, grootte, geluid, eenvoudige modus » › [coupé] @ 270,807
+bouton (boussole) « Gids  · Voeg een melodie toe 31 % » ⌃ [état « ingeklapt »] @ 270,882
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 171,954
+bouton ▶ « het nummer » @ 275,954
+texte « 120 Tempo » @ 386,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » [sélectionné] @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

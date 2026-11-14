@@ -1,0 +1,21 @@
+Écran 4 (588x1278)
+texte « New song, step by step » @ 210,35
+bouton (icône) @ 546,48
+texte « ▭▭▭ » @ 123,69
+texte « ▭▭▭ » @ 294,138
+texte « ▭▭▭ » @ 226,214
+bouton « ▭▭▭ ▭▭▭ » @ 294,288
+bouton « ▭▭▭ ▭▭▭ » @ 294,384
+touchable « ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,513
+bouton (icône) @ 57,483
+touchable « ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,675
+bouton (icône) @ 57,645
+touchable « ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,837
+bouton (icône) @ 57,807
+touchable « ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,999
+bouton (icône) @ 57,969
+touchable « ▭▭▭ ▭▭▭ ▭▭▭ ▭▭▭ » @ 294,1161
+bouton (icône) @ 57,1131
+touchable « ▭▭▭ ▭▭▭ The Belgian and Dutch raves of 1991: a huge screaming synth (the “hoover”) loops over a dry 909. For reference: T99 – Anasthasia (1991) » @ 294,1263
+bouton (icône) @ 57,1270
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

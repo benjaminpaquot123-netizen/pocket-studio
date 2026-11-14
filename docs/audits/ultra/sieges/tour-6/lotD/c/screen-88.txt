@@ -1,0 +1,77 @@
+Écran 88 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 194,42
+bouton « 专业 » @ 416,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 91,183
+onglet « Acid 303 贝斯线 » @ 253,183
+onglet « 人声 麦克风 » @ 391,183
+onglet « Remix 分离 » @ 514,183
+bouton + «  音轨 » @ 655,183
+texte « 段落：A » @ 58,243
+texte « 镲片 » [coupé] @ 77,272
+bouton « 1 » [état « 打击，力度 100% »] @ 90,350
+bouton [état « 空 »] @ 192,350
+bouton [état « 打击，力度 100% »] @ 294,350
+bouton [état « 空 »] @ 397,350
+bouton « 2 » [état « 打击，力度 100% »] @ 500,350
+bouton [état « 空 »] @ 603,350
+bouton [état « 打击，力度 100% »] @ 706,350
+bouton [état « 空 »] @ 809,350
+bouton « 3 » [état « 打击，力度 100% »] @ 90,431
+bouton [état « 空 »] @ 192,431
+bouton [état « 打击，力度 100% »] @ 294,431
+bouton [état « 空 »] @ 397,431
+bouton « 4 » [état « 打击，力度 100% »] @ 500,431
+bouton [état « 空 »] @ 603,431
+bouton [état « 打击，力度 100% »] @ 706,431
+bouton [état « 空 »] @ 809,431
+bouton « 打击 » [sélectionné] @ 88,517
+bouton « 滚奏 » @ 186,517
+bouton « 声像 » @ 284,517
+bouton « 音高 » @ 382,517
+bouton « 力度 » @ 480,517
+texte « 全部 » @ 121,601
+texte « 1/2 » @ 196,601
+texte « 1/4 » @ 271,601
+texte « ◀ » @ 346,601
+texte « ▶ » @ 421,601
+texte « 清除 » @ 496,601
+texte « 填充 » @ 62,601
+texte « 点一格添加打击，滑动手指可以一次画好几格。长按一个打击：力度和滚奏（×2 到 ×8）。 » @ 427,663
+bouton « 1 小节 » [coupé, sélectionné] @ 146,719
+bouton « 2 » [coupé] @ 244,719
+bouton « 3 » [coupé] @ 325,719
+bouton « 4 » [coupé] @ 406,719
+texte « 长度 » [coupé] @ 63,723
+image (chapeau de diplômé) @ 37,785
+icône (liste) @ 771,785
+icône ⌄ @ 843,785
+texte « 贝斯 第 5/16 章 · 第 2/3 步 · 专业 » @ 400,785
+texte « 轮到你：创建贝斯音轨（“模拟贝斯”音色，抽吸已经加好）。钢琴卷帘里的第 1 小节：每两个底鼓之间两个十六分音符，全在 F 上。“复制到后面的小节”，然后第 4 小节：G♭（小二度）和高八度的 F 来结束乐句。“复制”。 » @ 450,902
+texte « ▸ 为什么？ » @ 450,980
+bouton ⊕ «   创建贝斯音轨 » @ 450,1044
+bouton ▶ «  听示例 » @ 232,1128
+bouton (œil) «  示范给我看 » @ 667,1128
+icône ← «  上一步 » @ 87,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

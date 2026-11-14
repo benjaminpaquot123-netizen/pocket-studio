@@ -1,0 +1,41 @@
+Écran 64 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Groove takt 1/4 » (nom « w pętli ») @ 241,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « Wstecz  · Pomoc » (nom « Wstecz ») @ 294,180
+texte « Swing » @ 74,227
+texte « Opóźnia trochę co drugi krok: rytm się kołysze zamiast być kanciasty. » @ 294,266
+texte « Metronom i odliczanie » @ 154,320
+texte « Metronom klika na każdą ćwierćnutę, żeby pomóc ci grać w rytmie; nigdy nie słychać go w eksporcie. Odliczanie dodaje takt kliknięć przed startem, żeby się przygotować. » @ 294,389
+texte « Odliczanie » @ 96,470
+texte « Takt kliknięć przed startem, żeby przygotować się do grania lub nagrywania. » @ 294,512
+texte « Ćwierćnuty w takcie » @ 144,566
+texte « 4 ćwierćnuty w takcie w prawie całej dzisiejszej muzyce; 3 dla walca; 5 albo 7 dla nieparzystych, kulejących rytmów. » @ 294,621
+texte « Pad » @ 61,689
+texte « Jedna z 16 kratek perkusji. Każda ma własny dźwięk (kick, werbel, hi-hat…), który możesz zmienić. » @ 294,731
+texte « Zestaw » @ 80,785
+texte « 16 dźwięków perkusji razem. Zmiana zestawu zmienia wszystkie pady naraz. » @ 294,827
+texte « Siła (velocity) » @ 112,881
+texte « Jak mocno zagrane jest uderzenie lub nuta: im mocniej, tym silniej uderza. W Rytmie użyj narzędzia „Siła” albo przytrzymaj kratkę. W trybie Pro „Warstwy” pada dają mocnym uderzeniom inny dźwięk. » @ 294,922
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « zwinięte »] @ 294,984
+bouton « Cofnij » @ 73,1059
+bouton « Ponów » @ 182,1059
+bouton « Stop » @ 288,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 400,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 515,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

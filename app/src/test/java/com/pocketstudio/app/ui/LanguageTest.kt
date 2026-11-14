@@ -71,15 +71,15 @@ class LanguageTest {
     fun welcomeInEnglish() {
         I18n.lang = Lang.EN
         compose.setContent { PocketStudioTheme { WelcomeScreen(WelcomeActions()) } }
-        compose.onNodeWithText("Make my first song (guided)").assertExists()
-        compose.onAllNodesWithText("Créer mon premier morceau (guidé)").assertCountEquals(0)
+        compose.onNodeWithText("Make me a song").assertExists()
+        compose.onAllNodesWithText("Fais-moi un morceau").assertCountEquals(0)
     }
 
     @Test
     fun welcomeInDutch() {
         I18n.lang = Lang.NL
         compose.setContent { PocketStudioTheme { WelcomeScreen(WelcomeActions()) } }
-        compose.onNodeWithText("Mijn eerste nummer maken (begeleid)").assertExists()
+        compose.onNodeWithText("Maak een nummer voor me").assertExists()
         compose.onAllNodesWithText("Écouter une démo").assertCountEquals(0)
     }
 
@@ -125,10 +125,10 @@ class LanguageTest {
     @Test
     fun tabsAndSceneTitlesFollowTheLanguage() {
         I18n.lang = Lang.NL
-        // Phase 36: the bottom bar shows the five spaces (or the Mode simple's four tabs), no longer the seven tabs.
+        // Phase 36: the bottom bar shows the five spaces (or the Mode simple's five tabs), no longer the seven tabs.
         assertEquals(listOf("Structuur", "Klanken", "Mix", "Live", "Meer"), Space.entries.map { it.label })
-        assertEquals(listOf("Mijn nummer", "Ritme", "Klavier", "Versturen"), SimpleTab.entries.map { it.label })
-        assertEquals(listOf("Ritme", "Acid", "Synth", "Mixer", "Audio", "Nummer", "Tools", "Live", "Versturen"), AppTab.entries.map { it.label })
+        assertEquals(listOf("Mijn nummer", "Ritme", "Klavier", "Mix", "Delen"), SimpleTab.entries.map { it.label })
+        assertEquals(listOf("Ritme", "Acid 303", "Synth", "Mixer", "Audio", "Nummer", "Tools", "Live", "Delen"), AppTab.entries.map { it.label })
         val p = Project().renameScene(0, "Pont")
         assertEquals("A · Brug", p.sceneTitle(0))
         I18n.lang = Lang.EN

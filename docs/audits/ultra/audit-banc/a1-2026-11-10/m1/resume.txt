@@ -1,0 +1,12 @@
+AuditFideliteTmpTest#b1_transportStepKeepsItsStepsAcrossATempoChange : rouge : java.lang.AssertionError: no jump back at 60 BPM expected:<16> but was:<0>
+AuditFideliteTmpTest#b3_aKnobMovedWithAutomationRecordWritesAPoint : rouge : java.lang.AssertionError: one curve, made by the gesture expected:<1> but was:<0>
+AuditFideliteTmpTest#a1_micTakeKeptWhenTheSongEndsByItself : rouge : java.lang.AssertionError: the take never reached its track (recording null, notice null)
+AuditFideliteTmpTest#a3_theGridsHeadIsTheDrumPatternsStep : rouge : java.lang.AssertionError: the drum grid's head is on its step 8 expected:<8> but was:<-1>
+AuditFideliteTmpTest#b2_transportStepIsMinusOneDuringTheCountIn : rouge : java.lang.AssertionError: counting in: no transport step expected:<-1> but was:<8>
+AuditFideliteTmpTest#a2_absoluteStepRestartsAtTheSwap : rouge : java.lang.AssertionError: the third part is at its step 8 expected:<8> but was:<40>
+Tour5AppProofTest#myFilesListsAProjectZipSavedFromMyProjects : rouge : java.lang.AssertionError: « C'est prêt » names the .zip and says where its copy is expected:<(Rangé-20261110-131835.pocketstudio.zip, true)> but was:<(Rangé-20261110-131835.pocketstudio.zip, false)>
+Tour5AppProofTest#shareFollowsTheLengthChosenInMix : vert
+Tour5AppProofTest#aScreenComposedAndClosedLeavesComposesDispatcherFree : vert
+Tour5AppProofTest#noChangedWarningRightAfterAMixExport : vert
+Tour5AppProofTest#noChangedWarningRightAfterSharing : rouge : java.lang.AssertionError: « Le morceau a changé depuis cet export » once the share menu opened, nothing changed in the song (guide share.ready = DONE)
+Tour5AppProofTest#myExportsListsTheProjectZipJustSent : vert

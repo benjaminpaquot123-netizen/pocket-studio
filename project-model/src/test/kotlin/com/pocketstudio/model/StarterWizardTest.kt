@@ -23,7 +23,7 @@ class StarterWizardTest {
             assertEquals(s.name, s.lines.size, s.lines.map { it.role.lane }.toSet().size)
             for (l in s.lines) {
                 assertTrue("${s.name} ${l.role}", l.pattern.length == 16 || l.pattern.length == 32)
-                assertTrue("${s.name} ${l.role}", l.pattern.all { it in "Xxo.234" } && StarterWizard.hits(l.pattern).isNotEmpty())
+                assertTrue("${s.name} ${l.role}", l.pattern.all { it in "Xxo.234Tt" } && StarterWizard.hits(l.pattern).isNotEmpty())
                 assertTrue(l.tip.isNotBlank())
                 assertTrue("${s.name} ${l.role}", l.voice == null || l.voice in 0 until DrumPattern.PAD_COUNT)
             }
@@ -128,7 +128,7 @@ class StarterWizardTest {
                             StarterWizard.RISER_TRACK.takeIf { riser },
                             // The vocal (all parts on: the chops have a hook to answer), then the sub drop under club music's Drops.
                             StarterWizard.VOCAL_TRACK.takeIf { style.vocal != null },
-                            StarterWizard.SUB_DROP_TRACK.takeIf { !style.form.sung },
+                            StarterWizard.SUB_DROP_TRACK.takeIf { !style.form.sung && !style.lightBuild },
                         ).let { extra -> extra.take(InstrumentTrack.MAX - partTracks) },
                     p.instrumentTracks.map { it.name },
                 )
@@ -401,6 +401,25 @@ class StarterWizardTest {
         val p = StarterWizard.build(style, mapOf(R.Kick to null))
         assertEquals(listOf(true, true, true), p.drumsIn(R.Kick))
         assertTrue(p.allScenes.none { it.isEmpty })
+    }
+
+    @Test
+    fun theShortVersionLastsUnderAMinuteWithItsDropAndSaysSo() {
+        // Audit ultra round 1, n° 33 (seats C a, D b): « je voulais 30 s », the song made 3 min 12.
+        for (style in StarterWizard.STYLES) for (melody in listOf(false, true)) {
+            val short = style.copy(short = true)
+            val lines = style.lines.associate { it.role to null as PadSample? }
+            val parts = if (melody) P.entries.associateWith { StarterWizard.soundsFor(it, style).first() } else emptyMap()
+            val p = StarterWizard.build(short, lines, StarterWizard.Mood.Dark.takeIf { melody }, parts)
+            val seconds = p.songBars * p.beatsPerBar * 60.0 / p.tempoBpm
+            // Under a minute and a quarter at the slowest sung tempos (the chords' bars added to the layout's), most under 50 s.
+            assertTrue("${style.name} $melody: $seconds s", seconds in 20.0..75.0)
+            assertEquals(style.name, SongShape.SHORT_SECONDS, StarterWizard.maxSongSeconds(short), 0.0)
+            // It still drops (the section the song is made for), and the summary says what is built.
+            val plan = StarterWizard.planFor(short, lines.keys, parts.keys, acid = melody && style.melody.acid != null)
+            assertEquals(style.name, seconds, StarterWizard.songSeconds(short, plan), 0.01)
+            assertTrue(style.name, p.song.any { it.scene == 2 } || plan.sceneCount < 3)
+        }
     }
 
     @Test

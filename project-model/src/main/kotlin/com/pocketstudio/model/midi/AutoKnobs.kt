@@ -16,14 +16,58 @@ data class KnobSettings(
     val enabled: Boolean = true,
     val devices: Map<String, Map<Int, Int>> = emptyMap(),
     val overrides: Map<String, Map<Int, Long>> = emptyMap(),
+    /** For each controller (by name): which CC is fader 1..8, learnt by « Apprendre ». */
+    val faders: Map<String, Map<Int, Int>> = emptyMap(),
+    /** For each controller: the CC of a button ([ControlButton] name), learnt by « Apprendre ». */
+    val buttons: Map<String, Map<String, Int>> = emptyMap(),
+    /** For each controller: its pads 1..16 as « Apprendre mes pads » heard them ([Controllers.packPad]). */
+    val pads: Map<String, List<Int>> = emptyMap(),
+    /** For each controller: how its knobs turn ([KnobMode] name), chosen or guessed from what they send. */
+    val modes: Map<String, String> = emptyMap(),
+    /** The small legend of what the controller does on the screen shown. */
+    val legend: Boolean = true,
 ) {
+    fun modeOf(device: String): KnobMode? = modes[device]?.let { m -> KnobMode.entries.firstOrNull { it.name == m } }
+
+    fun withMode(device: String, mode: KnobMode?): KnobSettings =
+        copy(modes = if (mode == null) modes - device else modes + (device to mode.name))
+
+    /** One CC is one control of a device: it leaves whatever knob, fader or button had it. */
+    private fun freed(device: String, cc: Int): KnobSettings = copy(
+        devices = devices[device]?.let { m -> devices + (device to m.filterValues { it != cc }) } ?: devices,
+        faders = faders[device]?.let { m -> faders + (device to m.filterValues { it != cc }) } ?: faders,
+        buttons = buttons[device]?.let { m -> buttons + (device to m.filterValues { it != cc }) } ?: buttons,
+    )
+
+    fun withFader(device: String, index: Int, cc: Int): KnobSettings {
+        val s = freed(device, cc)
+        return s.copy(faders = s.faders + (device to (s.faders[device].orEmpty() + (index to cc))))
+    }
+
+    fun withButton(device: String, button: ControlButton, cc: Int): KnobSettings {
+        val s = freed(device, cc)
+        return s.copy(buttons = s.buttons + (device to (s.buttons[device].orEmpty() + (button.name to cc))))
+    }
+
+    fun withPads(device: String, pads: List<Int>?): KnobSettings =
+        copy(pads = if (pads.isNullOrEmpty()) this.pads - device else this.pads + (device to pads.take(Controllers.PADS)))
+
+    /** Whether the user changed anything for [device] (its own profile on top of the app's). */
+    fun customized(device: String): Boolean =
+        !devices[device].isNullOrEmpty() || !faders[device].isNullOrEmpty() || !buttons[device].isNullOrEmpty() || !pads[device].isNullOrEmpty() || device in modes
+
+    /** « Oublier mes réglages » for [device]: its knobs, faders, buttons, pads and mode as the app sets them. */
+    fun forget(device: String): KnobSettings = copy(devices = devices - device, faders = faders - device, buttons = buttons - device, pads = pads - device, modes = modes - device)
+
     /** The CC of knob [slot] on [device], when it is known for this device. */
     fun learnt(device: String, slot: Int): Int? = devices[device]?.get(slot)
 
     fun withKnob(device: String, slot: Int, cc: Int): KnobSettings {
-        // One CC is one knob: it leaves the slot it had.
-        val mine = devices[device].orEmpty().filter { (s, c) -> s != slot && c != cc } + (slot to cc)
-        return copy(devices = devices + (device to mine))
+        // One CC is one knob: it leaves the slot it had (and a fader or a button that had it).
+        val s = copy(faders = faders[device]?.let { m -> faders + (device to m.filterValues { it != cc }) } ?: faders,
+            buttons = buttons[device]?.let { m -> buttons + (device to m.filterValues { it != cc }) } ?: buttons)
+        val mine = s.devices[device].orEmpty().filter { (k, c) -> k != slot && c != cc } + (slot to cc)
+        return s.copy(devices = s.devices + (device to mine))
     }
 
     fun withOverride(screen: String, slot: Int, target: Long?): KnobSettings {
@@ -38,12 +82,16 @@ data class KnobSettings(
     fun sanitized(): KnobSettings = copy(
         devices = devices.mapValues { (_, m) -> m.filter { (s, c) -> s in 0 until KnobLayout.SLOTS && c in 0..119 } }.filterValues { it.isNotEmpty() },
         overrides = overrides.mapValues { (_, m) -> m.filterKeys { it in 0 until KnobLayout.SLOTS } }.filterValues { it.isNotEmpty() },
+        faders = faders.mapValues { (_, m) -> m.filter { (s, c) -> s in 0 until Controllers.FADERS && c in 0..119 } }.filterValues { it.isNotEmpty() },
+        buttons = buttons.mapValues { (_, m) -> m.filter { (b, c) -> ControlButton.entries.any { it.name == b } && c in 0..119 } }.filterValues { it.isNotEmpty() },
+        pads = pads.mapValues { (_, l) -> l.filter { it in 0 until (16 shl 7) }.distinct().take(Controllers.PADS) }.filterValues { it.isNotEmpty() },
+        modes = modes.filterValues { m -> KnobMode.entries.any { it.name == m } },
     )
 }
 
 /**
  * Which knob of a controller is knob 1..8. Controllers send knobs on different CCs: the ones the
- * app knows by their name (Arturia MiniLab 3, Novation Launchkey, Korg nanoKONTROL, Akai LPD8),
+ * app knows ([Controllers.PROFILES]: Arturia MiniLab 3, Akai MPK mini, Novation Launchkey, Korg nanoKONTROL…),
  * then the blocks most controllers use (21–28, 70–77, 16–23, 102–109), then the order the knobs
  * are first turned in, remembered for that device. A knob learnt (« Apprendre ») always wins.
  */
@@ -53,27 +101,21 @@ object KnobLayout {
     /** CCs never taken as knobs: bank select, mod wheel, data entry, volume, the pedals, NRPN, the channel modes. */
     val RESERVED: Set<Int> = setOf(0, 1, 6, 7, 32, 38) + (64..69) + (96..101) + (120..127)
 
-    /** The controllers the app knows: a part of their name (lower case), their knobs 1..8. */
-    val PROFILES: List<Pair<String, List<Int>>> = listOf(
-        "minilab 3" to listOf(74, 71, 76, 77, 93, 18, 19, 16),
-        "minilab3" to listOf(74, 71, 76, 77, 93, 18, 19, 16),
-        "launchkey" to (21..28).toList(),
-        "launch control" to (21..28).toList(),
-        "nanokontrol" to (16..23).toList(),
-        "lpd8" to (1..8).toList(),
-    )
-
     /** Blocks of eight knobs many controllers send by default. */
     val BLOCKS: List<IntRange> = listOf(21..28, 70..77, 16..23, 102..109)
 
-    fun profileOf(device: String?): List<Int>? {
-        val name = device?.lowercase() ?: return null
-        return PROFILES.firstOrNull { name.contains(it.first) }?.second
-    }
+    /** The knobs 1..8 of [device]'s profile (null: a controller the app does not know). */
+    fun profileOf(device: String?): List<Int>? = Controllers.detect(device)?.knobs
 
-    /** Knob 0..7 the app gives [cc] on [device] by itself: its place in the device's profile, else in a common block. */
-    fun defaultSlot(cc: Int, device: String?): Int? {
-        profileOf(device)?.let { profile -> return profile.indexOf(cc).takeIf { it >= 0 } }
+    /**
+     * Knob 0..7 the app gives [cc] by itself: its place in [profile]'s knobs (or the same knobs of
+     * its other program), else in a common block for a controller it does not know. A profile
+     * without knobs (a keyboard only) leaves its CCs to the common blocks.
+     */
+    fun defaultSlot(cc: Int, device: String?, profile: ControllerProfile? = Controllers.detect(device)): Int? {
+        if (profile != null && profile.knobs.isNotEmpty()) {
+            return (profile.knobs.indexOf(cc).takeIf { it >= 0 } ?: profile.altKnobs.indexOf(cc).takeIf { it >= 0 })
+        }
         return BLOCKS.firstOrNull { cc in it }?.let { cc - it.first }
     }
 
@@ -83,21 +125,22 @@ object KnobLayout {
      * knob). Null when it is no knob: reserved, another control of a known controller, its place
      * taken by a knob learnt, or all eight taken.
      */
-    fun slotOf(cc: Int, device: String, settings: KnobSettings): Pair<Int, KnobSettings>? {
+    fun slotOf(cc: Int, device: String, settings: KnobSettings, profile: ControllerProfile? = Controllers.detect(device)): Pair<Int, KnobSettings>? {
         val known = settings.devices[device].orEmpty()
         known.entries.firstOrNull { it.value == cc }?.let { return it.key to settings }
-        defaultSlot(cc, device)?.let { slot -> return if (slot in known) null else slot to settings }
-        if (cc in RESERVED || cc !in 0..119 || profileOf(device) != null) return null
+        defaultSlot(cc, device, profile)?.let { slot -> return if (slot in known) null else slot to settings }
+        if (cc in RESERVED || cc !in 0..119 || (profile != null && profile.knobs.isNotEmpty())) return null
+        // A CC the user gave a fader or a button is not a knob.
+        if (settings.faders[device]?.containsValue(cc) == true || settings.buttons[device]?.containsValue(cc) == true) return null
         // First turned, first knob: remembered for this device.
         val free = (0 until SLOTS).firstOrNull { it !in known } ?: return null
         return free to settings.withKnob(device, free, cc)
     }
 
     /** The CC knob [slot] answers to on [device] (null: not known yet), for the hint. */
-    fun ccOf(slot: Int, device: String?, settings: KnobSettings): Int? {
+    fun ccOf(slot: Int, device: String?, settings: KnobSettings, profile: ControllerProfile? = Controllers.detect(device)): Int? {
         device?.let { settings.learnt(it, slot) }?.let { return it }
-        profileOf(device)?.let { return it.getOrNull(slot) }
-        return null
+        return profile?.knobs?.getOrNull(slot)
     }
 }
 

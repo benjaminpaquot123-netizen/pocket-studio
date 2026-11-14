@@ -1,0 +1,7 @@
+lang=nl
+device=tablet8
+font=100
+mode=simple
+gestes.max=80
+mission=tuto-facile
+timeout.minutes=25

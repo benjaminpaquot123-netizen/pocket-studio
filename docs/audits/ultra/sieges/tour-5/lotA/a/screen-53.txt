@@ -1,0 +1,16 @@
+Écran 53 (540x1170)
+texte « एडिट करने वाला पार्ट » @ 137,80
+touchable « A · इंट्रो » @ 200,141
+touchable « B · अंतरा » @ 200,213
+touchable « C · मुखड़ा » @ 200,285
+touchable « D · ब्रिज » @ 200,357
+touchable « E · अंतरा 2 » @ 200,429
+touchable « F · अंतरा 3 » @ 200,501
+touchable « G · मुखड़ा 2 » @ 200,573
+touchable « H · Crash » @ 200,645
+touchable « I · Crash » @ 200,717
+touchable « J · फ़िल » @ 200,789
+touchable « K · फ़िल » @ 200,861
+touchable « L · फ़िल » @ 200,933
+touchable « M » @ 200,1005
+touchable « + नया पार्ट (A · इंट्रो की कॉपी) » @ 200,1079

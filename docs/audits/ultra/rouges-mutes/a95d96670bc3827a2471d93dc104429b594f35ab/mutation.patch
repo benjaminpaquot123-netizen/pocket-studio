@@ -1,0 +1,12 @@
+diff --git a/scripts/bench/rejeu-etiquettes.py b/scripts/bench/rejeu-etiquettes.py
+index c41c2b09..19adfdc0 100755
+--- a/scripts/bench/rejeu-etiquettes.py
++++ b/scripts/bench/rejeu-etiquettes.py
+@@ -98,7 +98,6 @@ def main(argv):
+             glisse[int(k)] = v.split(":")
+         elif flag == "--commande":
+             k, v = val.split("=", 1)
+-            commande[int(k)] = v
+         elif flag == "--saute":
+             saute.add(int(val))
+         else:

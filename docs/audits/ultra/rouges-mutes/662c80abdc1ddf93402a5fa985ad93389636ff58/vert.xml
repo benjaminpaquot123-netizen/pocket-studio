@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.bentest.ToutTesterTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-12T15:10:34.114Z" hostname="vm" time="0.147">
+  <properties/>
+  <testcase name="vert - the step line says the true block and gap and the measured level, not the limiter ceiling" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.018"/>
+  <testcase name="theRunPlaysEveryStyleWithTheHeavyOnesColdAndHotAndEndsWithTheScreenOff" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.007"/>
+  <testcase name="vert - the true worst block and the longest gap light a played song" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.005"/>
+  <testcase name="aFadeIsTheLevelFallingWithTheLiveGain" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.004"/>
+  <testcase name="theLightsFollowThePlansThresholds" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.005"/>
+  <testcase name="theLatencyIsThreeRoundTripsAndTheirMedian" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.031"/>
+  <testcase name="anIsolatedPopIsAJump" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.002"/>
+  <testcase name="twoSilentSecondsWhilePlayingAreASilenceUnlessTheSongPlansThem" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.003"/>
+  <testcase name="aSteadySongIsHeardSecondBySecondWithoutAlert" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.002"/>
+  <testcase name="aWavIsReadBackForItsLengthAndTruePeak" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.052"/>
+  <testcase name="theEndScreenSaysTheLights" classname="com.pocketstudio.bentest.ToutTesterTest" time="0.015"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

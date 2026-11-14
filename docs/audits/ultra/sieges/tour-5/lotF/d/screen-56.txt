@@ -1,0 +1,40 @@
+Écran 56 (616x1371)
+touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 339,42
+bouton « Enregistrer : micro, clavier ou pads » @ 427,42
+bouton « Jouer » @ 499,42
+bouton « Plus de choix » @ 571,42
+bouton « 124  Tempo » (nom « Tempo : 124 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 571,114
+texte « Tempo calé sur Ma chanson préférée : 120 » @ 261,180
+bouton « Annuler » @ 537,180
+bouton «  Mon morceau » @ 111,252
+texte « Remix » @ 252,252
+bouton « SÉPARER UNE CHANSON » [état « Déplié »] @ 214,351
+bouton « ? » (nom « Qu'est-ce que « Remix » ? ») @ 364,351
+texte « Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste. Compte quelques minutes ; tu peux éteindre l'écran. » @ 308,430
+bouton « Choisir une chanson » @ 308,523
+texte « 7 minutes au maximum. Les 3 derniers morceaux séparés sont gardés, et ceux qu'un projet utilise. » @ 308,598
+bouton « Ma chanson préférée » [état « Déplié »] @ 174,714
+bouton « Supprimer » @ 538,727
+texte « 0:40 · 120 BPM · La mineur » @ 163,745
+texte « Ton projet : 124 BPM » @ 135,788
+bouton «  Découper ce que je veux » @ 308,850
+texte « Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste. » @ 308,918
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton «  Choisir une chanson » @ 308,990
+bouton « Guide  · Pose un rythme 0 % » [état « replié »] @ 308,1077
+bouton « Jouer » @ 302,1152
+bouton « Annuler » (nom « Annuler la dernière action ») [désactivé] @ 78,1152
+bouton « Rétablir » @ 191,1152
+bouton « 124 Tempo » (nom « Tempo : 124 battements par minute ») @ 419,1152
+bouton « Plus » (nom « Plus de choix ») @ 538,1152
+onglet « Mon morceau » @ 56,1251
+onglet « Rythme » @ 181,1251
+onglet « Clavier » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Envoyer » @ 559,1251
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

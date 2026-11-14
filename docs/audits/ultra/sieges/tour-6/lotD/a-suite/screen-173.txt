@@ -1,0 +1,40 @@
+Écran 173 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône « イントロ 小節 1/49 » ▾ @ 231,114
+bouton « ? » @ 543,114
+bouton « 曲のコード B · イントロ Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm C · イントロ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ D · ドロップ Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ E · ブレイク Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ F · ビルドアップ Fm G · ドロップ 2 Fm  Fm  Fm  G♭  Fm  Fm  Fm  G♭ …ほか 1 パート タップで曲全体のコードを変更。 » [coupé] @ 294,162
+icône ▶ « B · イントロ × 1  ·  8 小節 » @ 186,234
+icône − [désactivé] @ 366,234
+icône + @ 438,234
+icône ⋮ @ 510,234
+image (chapeau de diplômé) @ 37,335
+texte « パートを並べよう チャプター 11/15 · ステップ 2/2 · かんたん » @ 244,335
+icône (liste) @ 459,335
+icône ⌄ @ 531,335
+texte « あなたの番：各パートの長さを決めよう：イントロ 16小節、イントロ 2 は16、ドロップ 32、ブレイク 12、ビルドアップ 4、ドロップ 2 は32、エンディング 16。パートをタップして「長さ」の下で小節数を入力し「OK」。「おすすめの長さにする」ボタンなら一気にできるよ。 » @ 294,513
+texte « • ドロップ：曲のいちばんの山場。全部が一気に戻ってくるところ。 » @ 294,657
+texte « ▸ なぜ？ » @ 294,709
+texte « キット テクノ » [coupé] @ 101,760
+bouton « 続きを読む » ⌄ @ 294,741
+bouton ⊕ «   おすすめの長さにする » @ 294,813
+bouton (œil) «  見せて » @ 294,897
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 94,1062
+bouton ▶ « 曲 » @ 223,1062
+texte « 132 テンポ » @ 359,1062
+icône ⋮ « その他 » @ 494,1062
+onglet (lignes et note) « マイソング » [sélectionné] @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

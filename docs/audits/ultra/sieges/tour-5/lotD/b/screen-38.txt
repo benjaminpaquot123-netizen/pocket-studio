@@ -1,0 +1,32 @@
+Écran 38 (1035x1243)
+texte « 拖动条：向下滑动即可关闭 » @ 518,36
+texte « 音色：合成器 » @ 161,97
+bouton « 关闭 » @ 930,111
+texte « 点一个音色：它会替换整首歌里这条音轨的音色。 » @ 273,136
+bouton « 上一个文件夹 » @ 98,201
+texte « 贝斯 » @ 554,201
+bouton « 圆润贝斯 锯齿波 · 持续 » @ 287,292
+bouton « Sub 贝斯 三角波 · 持续 » @ 749,292
+bouton « Reese 贝斯 锯齿波 · 持续 » @ 287,391
+bouton « 现代 Reese 锯齿波 · 5 个声部 · 持续 » @ 749,391
+bouton « Wobble 贝斯 锯齿波 · 持续 » @ 287,490
+bouton « 会说话的贝斯 锯齿波 · 持续 » @ 749,490
+bouton « Growl 贝斯 锯齿波 · 3 个声部 · 持续 » @ 287,589
+bouton « DnB Reese 锯齿波 · 3 个声部 · 持续 » @ 749,589
+bouton « Riddim 贝斯 方波 · 持续 » @ 287,688
+bouton « Neuro 贝斯 锯齿波 · 3 个声部 · 持续 » @ 749,688
+bouton « 纯 Sub 三角波 · 持续 » @ 287,787
+bouton « 滚动贝斯 锯齿波 · 持续 » @ 749,787
+bouton « Pluck 贝斯 锯齿波 · 短 » @ 287,886
+bouton « 合成器 808 三角波 · 持续 » @ 749,886
+bouton « Donk 三角波 · 短 » @ 287,985
+bouton « 温暖 Sub 三角波 · 持续 » @ 749,985
+bouton « 随机 » @ 287,1077
+bouton « 保留这个声音 » @ 749,1077
+titre « 真实乐器 » @ 118,1142
+texte « 逐个音符录制。只需下载一次（建议用 Wi-Fi）；下载前，音轨先用合成器音色演奏。 » @ 425,1182
+bouton « 三角钢琴 待下载：11 MB » @ 287,1225
+bouton « 试听 » @ 464,1234
+bouton « 音乐会钢琴 待下载：16 MB » @ 749,1225
+bouton « 试听 » @ 926,1234
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

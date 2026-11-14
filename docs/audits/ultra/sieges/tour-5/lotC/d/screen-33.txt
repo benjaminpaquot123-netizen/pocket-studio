@@ -1,0 +1,6 @@
+Écran 33 (588x1278)
+touchable « Renommer » @ 407,551
+touchable « Dupliquer » @ 407,623
+touchable « Envoyer / sauvegarder (.zip) » @ 407,695
+touchable « Copie d'avant cette séance » @ 407,767
+touchable « Supprimer » @ 407,839

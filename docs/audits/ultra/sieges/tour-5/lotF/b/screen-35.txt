@@ -1,0 +1,42 @@
+Écran 35 (1920x1200)
+texte « Griff: zum Schließen nach unten wischen » @ 960,36
+case « 1. Filter » @ 816,86
+bouton « Effekt ausschalten » @ 1164,87
+bouton « Effekt nach oben » [désactivé] @ 1236,87
+bouton « Effekt nach unten » [désactivé] @ 1308,87
+bouton « Effekt entfernen » @ 1380,87
+texte « Spielt in: » @ 582,150
+case « Alles » @ 740,150
+case « A » @ 859,150
+case « B » [sélectionné] @ 944,150
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 960,244
+bouton «   Effekt hinzufügen » @ 960,342
+texte « Fertige Vibes » @ 630,425
+bouton « ? » (nom « Was ist „Effekt-Vibe“? ») @ 778,425
+case « Für: Drums » [sélectionné] @ 633,501
+case « Favoriten » @ 897,501
+case « Atmosphäre » @ 1172,501
+case « Farbe » @ 1368,501
+  → la suite sur le côté (glisse pour la voir)
+case « Acid » @ 648,585
+case « Techno » @ 821,585
+case « DnB » @ 990,585
+case « Dubstep » @ 1167,585
+case « House » @ 1348,585
+texte « Stil: » @ 538,585
+  → la suite sur le côté (glisse pour la voir)
+case « Punch » @ 589,669
+case « EDM-Pump » @ 817,669
+case « Knusprig » @ 1069,669
+case « Lo-Fi Tape » @ 629,741
+case « Kleiner Raum » @ 914,741
+case « Ohne Effekt » @ 1211,741
+texte « Tippe auf einen Vibe, um ihn auszuprobieren: Mit Rückgängig kommst du immer zurück. » @ 960,841
+texte « Halte den Finger auf einem Vibe, um ihn zu hören; lass los, dein Sound kommt zurück. » @ 960,957
+texte « XY-Pad, oben-unten: » @ 692,1047
+bouton « ? » (nom « Was ist „XY-Pad“? ») @ 911,1047
+case « Raum » [sélectionné] @ 582,1121
+case « Dreck » @ 749,1121
+case « Bewegung » @ 964,1121
+texte « ↑ Fern » @ 960,1184
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

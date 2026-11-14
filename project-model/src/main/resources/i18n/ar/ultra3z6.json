@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "الخط الزمني: %1$s، %2$s",
+  "Morceau écrit : %1$s, %2$s": "كُتبت الأغنية: %1$s، %2$s",
+  "Grille des notes : %s": "شبكة النوتات: %s",
+  "1 pas": "خطوة واحدة",
+  "1 piste": "مسار واحد",
+  "1 réglage": "إعداد واحد",
+  "%d réglages": "%d إعدادات",
+  "Fait : break de 1 mesure après %2$s": "تم: استراحة من مازورة واحدة بعد %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "تم: تصاعد من مازورة واحدة قبل %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "لا أغنية بعد: جزؤك يُصدَّر كحلقة (مازورة واحدة).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "حُفظ تسجيلك المباشر: إنه في الأغنية (جزء واحد).",
+  "Ton texte (1 caractère)": "نصك (حرف واحد)",
+  "trop bas de 1 cent": "منخفض بسنت واحد",
+  "trop haut de 1 cent": "مرتفع بسنت واحد",
+  "−%d demi-ton": "−%d نصف درجة",
+  "%d min": "%d د",
+  "%1$d min %2$d": "%1$d د %2$d ث",
+  "Hors de la gamme du morceau": "خارج سلّم الأغنية",
+  "Poignée : glisse vers le bas pour fermer": "المقبض: اسحب للأسفل للإغلاق"
+}

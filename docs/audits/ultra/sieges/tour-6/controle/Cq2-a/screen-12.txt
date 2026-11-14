@@ -1,0 +1,8 @@
+Écran 12 (588x1278)
+texte « Mes fichiers » @ 143,477
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,565
+texte « Démo-Acid-house-morceau-
+streaming-20261114-000853.m4a » @ 204,654
+texte « Renvoyer » @ 485,667
+texte « 14 nov. 2026 00:08 · 1 Ko » @ 150,697
+texte « Fermer » @ 497,789

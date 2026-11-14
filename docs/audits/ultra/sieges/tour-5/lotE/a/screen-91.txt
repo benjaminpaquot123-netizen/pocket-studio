@@ -1,0 +1,19 @@
+Écran 91 (588x1278)
+texte « Nouveau morceau, pas à pas » @ 254,35
+bouton « Fermer » @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,138
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,214
+bouton « Calme (Chill, Lo-fi) 6 styles » [état « fermé »] @ 294,288
+bouton « Techno 10 styles » [état « fermé »] @ 294,384
+bouton « House 9 styles » [état « fermé »] @ 294,480
+bouton « Bass music 7 styles » [état « fermé »] @ 294,576
+bouton « Hip-hop 7 styles » [état « fermé »] @ 294,672
+bouton « Autres 4 styles » [état « fermé »] @ 294,768
+bouton « PACKS TÉLÉCHARGÉS » [état « Déplié »] @ 199,873
+bouton « ? » (nom « Qu'est-ce que « Pack de sons » ? ») @ 335,873
+bouton « Supprimer » @ 473,943
+texte « Roland TR-909 · 132 sons » @ 221,943
+bouton « Supprimer » @ 473,1027
+texte « Techno · 116 sons » @ 221,1027
+texte « Supprimer un pack libère la place ; tes morceaux gardent les sons qu'ils utilisent. » @ 294,1102

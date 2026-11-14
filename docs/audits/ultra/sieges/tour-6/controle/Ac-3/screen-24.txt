@@ -1,0 +1,7 @@
+Écran 24 (588x1278)
+texte « Envoyer le projet (.zip) · Trap-20261113-171050.pocketstudio.zip » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

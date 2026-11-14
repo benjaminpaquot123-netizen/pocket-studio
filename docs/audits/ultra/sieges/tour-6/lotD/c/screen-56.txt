@@ -1,0 +1,54 @@
+Écran 56 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 233,42
+bouton « 专业 » @ 494,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « 这个段落 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « 时间线 » [désactivé] @ 77,192
+onglet « 段落 » [sélectionné] @ 174,192
+titre « 歌曲 » [état « 已展开 »] @ 106,285
+bouton « ? » @ 149,285
+texte « 你的歌是空的：按播放顺序添加段落（前奏、主歌、副歌…）。 » @ 309,333
+texte « 添加： » @ 73,374
+bouton « + A » @ 96,438
+bouton « + 新段落（复制 A） » @ 289,438
+bouton « + 新的空段落 » @ 528,438
+bouton (barres de son) «   歌曲中正在播放的内容 » @ 450,522
+titre « 歌曲设置 » [état « 已展开 »] @ 450,588
+texte « 在结尾： » @ 84,654
+bouton « 停止 » [sélectionné] @ 184,654
+bouton « 重新开始 » @ 306,654
+bouton « 跟随歌曲 » [sélectionné] @ 205,738
+bouton « 停留在我的段落 » @ 379,738
+texte « 播放时： » @ 84,738
+texte « 界面显示正在播放的段落。 » [coupé] @ 157,796
+image (chapeau de diplômé) @ 37,855
+texte « 踩镲和打击乐 第 4/16 章 · 第 1/5 步 · 专业 » @ 400,855
+icône (liste) @ 771,855
+icône ⌄ @ 843,855
+image (coupe) @ 57,960
+texte « 太棒了，成功了！ » @ 174,945
+texte « 听听你的成果，准备好了就点“下一步”。 » @ 261,975
+bouton « 下一步   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  听你的成果 » @ 258,1209
+bouton ▶ «  听示例 » @ 580,1209
+icône « 下一步  » → @ 812,1209
+icône ↶ « 撤销 » @ 124,1293
+icône ↷ « 重做 » [désactivé] @ 284,1293
+bouton ▶ « 歌曲 » @ 444,1293
+texte « 132 速度 » @ 610,1293
+icône (trois points reliés) « 分享 » @ 776,1293
+onglet (ligne brisée et points) « 结构 » [sélectionné] @ 85,1389
+onglet (touches de piano) « 音色 » @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

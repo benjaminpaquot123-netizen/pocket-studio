@@ -12,6 +12,55 @@ object AudioEdits {
         return Pcm(FloatArray(pcm.data.size) { pcm.data[it] * g }, pcm.channels, pcm.sampleRate)
     }
 
+    /** The song frame [old]'s first frame is heard on (for [punch]): its step and its whole offset. */
+    fun punchOldAt(old: com.pocketstudio.model.AudioClip, perStep: Double, rate: Int): Long =
+        Math.round(old.start * perStep) + old.offsetFrames(rate)
+
+    /**
+     * The song frame a punch-in's take (started on step [takeStart]) is heard on: as late as [old]
+     * was made by « Décaler la prise » (a latency correction the new bars need too), but not by
+     * what a cut left in its offset, a place in time of the old sound only (03 M2).
+     */
+    fun punchNewAt(old: com.pocketstudio.model.AudioClip, takeStart: Int, perStep: Double, rate: Int): Long =
+        Math.round(takeStart * perStep) + old.manualOffsetFrames(rate)
+
+    /** Where the louder phrases of a voice take are brought (about -14 dBFS RMS over 50 ms). */
+    const val VOICE_LEVEL = 0.2f
+    /** …as long as its loudest point stays under this (+3 dBFS: the strip's compressor and the master take it). */
+    const val VOICE_PEAK = 1.41f
+
+    /**
+     * The clip volume (1..[maxGain]) that brings a microphone take to a usual voice level (03 G2):
+     * its louder phrases (the 90th percentile of 50 ms windows above -50 dBFS) at [VOICE_LEVEL],
+     * unless its loudest point would go past [VOICE_PEAK]. Never quieter than recorded; 1 for
+     * silence. Only the volume changes: the sound file stays as it was.
+     */
+    fun voiceLevelGain(pcm: Pcm, maxGain: Float = 4f): Float {
+        val ch = pcm.channels.coerceAtLeast(1)
+        val frames = pcm.frames
+        val window = (pcm.sampleRate / 20).coerceAtLeast(1)
+        val levels = ArrayList<Float>()
+        var peak = 0f
+        var f = 0
+        while (f < frames) {
+            val end = minOf(frames, f + window)
+            var sum = 0.0
+            for (i in f until end) {
+                val v = pcm.data[i * ch]
+                sum += v.toDouble() * v
+                peak = maxOf(peak, abs(v))
+            }
+            val rms = kotlin.math.sqrt(sum / (end - f)).toFloat()
+            if (rms > 0.00316f) levels.add(rms)
+            f = end
+        }
+        if (levels.isEmpty() || peak < 1e-6f) return 1f
+        levels.sort()
+        val loud = levels[((levels.size - 1) * 0.9).toInt()]
+        val g = minOf(VOICE_LEVEL / loud, VOICE_PEAK / peak).coerceIn(1f, maxGain)
+        return Math.round(g * 20f) / 20f
+    }
+
     /** Played backwards (frames reversed, channels kept). */
     fun reverse(pcm: Pcm): Pcm {
         val ch = pcm.channels

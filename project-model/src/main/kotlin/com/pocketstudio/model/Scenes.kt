@@ -62,12 +62,20 @@ data class Scene(
          * stays as it is. The label is saved in French so a project reads the same in every language.
          */
         fun shownLabel(label: String): String {
-            if (label in SECTIONS || label in DRUM_LABELS) return tr(label)
+            if (label in SECTIONS || label in DRUM_LABELS) return sectionName(label)
             if (label.endsWith(ENERGY_SUFFIX)) return shownLabel(label.removeSuffix(ENERGY_SUFFIX)) + ENERGY_SUFFIX
             val numbered = Regex("""^(.+) (\d+)$""").matchEntire(label) ?: return label
             val (section, n) = numbered.destructured
-            return if (section in SECTIONS) "${tr(section)} $n" else label
+            return if (section in SECTIONS) "${sectionName(section)} $n" else label
         }
+
+        /**
+         * A section's name in the interface's language. « Fin » the part has a word of its own
+         * (Japanese エンディング, as « Ajouter une fin » says), « Fin » the end of a sound or a take
+         * keeps its own (終了); French says « Fin » for both.
+         */
+        fun sectionName(section: String): String =
+            if (section == "Fin") tr("Fin (partie)").takeUnless { it == "Fin (partie)" } ?: section else tr(section)
 
         const val MAX_LABEL = 20
     }
@@ -128,8 +136,9 @@ data class SongPart(
         return copy(
             repeats = if (length != null) 1 else repeats.coerceIn(1, MAX_REPEATS),
             muted = muted.filter { it in keys || (remix && it == REMIX) }.toSet(),
-            play = play.filter { (k, s) -> k in keys && s in 0 until scenes && s != scene },
-            from = from.filter { (k, b) -> k in keys && b > 0 }.mapValues { it.value.coerceAtMost(MAX_FROM) },
+            // Lot D2: the remix too (a passage of the song in a brick's remix cell, from a take).
+            play = play.filter { (k, s) -> (k in keys || (remix && k == REMIX)) && s in 0 until scenes && s != scene },
+            from = from.filter { (k, b) -> (k in keys || (remix && k == REMIX)) && b > 0 }.mapValues { it.value.coerceAtMost(MAX_FROM) },
             bars = length,
         )
     }
@@ -175,7 +184,7 @@ internal fun Project.syncScenes(): Project {
         scenesWithTakes() + mixer.insertScenes
     var size = all.size
     while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
-    val list = all.take(size)
+    val list = if (index == scene) withEditsInBarCopies(all.take(size), index, scenes[index].drums, drums) else all.take(size)
     return copy(
         scene = index,
         scenes = list.mapIndexed { i, s ->
@@ -184,6 +193,57 @@ internal fun Project.syncScenes(): Project {
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS).map { it.sanitized(partKeys, list.size, remix.setId != null) },
     )
+}
+
+/**
+ * The hits just written in scene [index] ([before] → [after], its drums) also go to the one-bar
+ * « Crash » and « Fill » scenes the song plays for one of its bars ([DrumArrangement], [fillAtEnd]):
+ * those are copies of that bar made when the song was built, and a pad put in the Drop afterwards
+ * (a phrase of a song's voice) was heard in the Drop looped but not on the Drop's first and last
+ * bars of the song, nor in its export (remix lot 1, Mehdi). A step changes in a copy only where
+ * the copy still agrees with what the scene had there: its crash and its fill stay theirs.
+ * [scenes] itself when nothing changes.
+ */
+private fun Project.withEditsInBarCopies(scenes: List<Scene>, index: Int, before: DrumPattern, after: DrumPattern): List<Scene> {
+    if (before === after || before.steps != after.steps || song.isEmpty()) return scenes
+    val changed = after.lanes.indices.filter { i ->
+        val b = before.lanes.getOrNull(i)
+        val a = after.lanes[i]
+        // A pad with its own loop (a polyrhythm) has no bar of the scene's loop to follow.
+        b != null && b.hits != a.hits && b.length == 0 && a.length == 0
+    }.toSet()
+    if (changed.isEmpty()) return scenes
+    val spb = stepsPerBar
+    val loopBars = (after.steps / spb).coerceAtLeast(1)
+    // Each copy and the bar of the scene's loop it stands for (the other tracks carry on from there).
+    val copies = song.mapNotNull { part ->
+        val copy = part.play[SongPart.DRUMS]?.takeIf { part.scene == index && it != index } ?: return@mapNotNull null
+        val s = scenes.getOrNull(copy) ?: return@mapNotNull null
+        if ((s.label != DrumArrangement.CRASH_LABEL && s.label != PartIntents.FILL_LABEL) || s.drums.steps != spb) return@mapNotNull null
+        val bar = (part.from.filterKeys { it != SongPart.DRUMS }.values.maxOrNull() ?: 0) % loopBars
+        copy to bar
+    }.distinct()
+    if (copies.isEmpty()) return scenes
+    val out = scenes.toMutableList()
+    for ((copy, bar) in copies) {
+        val drums = out[copy].drums
+        val first = bar * spb
+        val lanes = drums.lanes.mapIndexed { i, lane ->
+            if (i !in changed) return@mapIndexed lane
+            val was = before.lanes[i].hits
+            val now = after.lanes[i].hits
+            var hits = lane.hits
+            for (step in first until first + spb) {
+                val old = was[step]
+                val new = now[step]
+                if (old == new || lane.hits[step - first] != old) continue
+                hits = if (new == null) hits - (step - first) else hits + ((step - first) to new)
+            }
+            if (hits == lane.hits) lane else lane.copy(hits = hits)
+        }
+        if (lanes != drums.lanes) out[copy] = out[copy].copy(drums = drums.copy(lanes = lanes))
+    }
+    return out
 }
 
 /**
@@ -334,11 +394,16 @@ fun Project.copyOf(index: Int): Int? {
     return all.indices.firstOrNull { it != index && all[it].copy(name = "", label = "") == s.copy(name = "", label = "") }
 }
 
-/** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */
+/**
+ * The first empty scene slot other than the one shown (a new scene to fill), or null when all 24
+ * are taken. A scene holding an audio take, or already played by the song, is not empty (relecture
+ * tour 1, M5: a new part of the song took one, the song then played the same scene twice).
+ */
 fun Project.firstEmptyScene(): Int? {
     val all = allScenes
     val takes = scenesWithTakes()
-    return all.indices.firstOrNull { it != scene && all[it].isEmpty && it !in takes } ?: all.size.takeIf { it < Scene.MAX }
+    val inSong = song.mapTo(HashSet()) { it.scene }
+    return all.indices.firstOrNull { it != scene && all[it].isEmpty && it !in takes && it !in inSong } ?: all.size.takeIf { it < Scene.MAX }
 }
 
 /** Scenes an audio take belongs to (its clip, or the previous take kept to bring back). */

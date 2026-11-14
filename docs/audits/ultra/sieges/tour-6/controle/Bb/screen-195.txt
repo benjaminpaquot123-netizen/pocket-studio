@@ -1,0 +1,51 @@
+Écran 195 (900x1509)
+texte « Effekte · Melodie » @ 207,62
+texte « Aktive Effekte: 1 von 8 » @ 203,133
+bouton « 1. Filter » [sélectionné] @ 306,196
+icône ⏻ @ 597,196
+icône ⌃ [désactivé] @ 669,196
+icône ⌄ [désactivé] @ 741,196
+icône ✕ @ 813,196
+bouton « Alles » [sélectionné] @ 223,274
+bouton « A · Groove » @ 386,274
+bouton « B · Intro » @ 568,274
+bouton « C · Intro 2 » @ 745,274
+bouton « D · Drop » [coupé] @ 847,274
+texte « Spielt in: » @ 103,274
+texte « Eine Kurve bewegt diese Einstellung während der Wiedergabe. » @ 450,361
+texte « Cutoff » @ 397,417
+texte « 1,6 kHz » @ 787,418
+curseur [état « 1,6 kHz », à 60 %] @ 450,474
+texte « Resonanz » @ 414,539
+texte « 20 % » @ 813,540
+curseur [état « 20 % », à 20 %] @ 450,596
+texte « Typ » @ 391,652
+texte « Tiefpass » @ 790,653
+curseur [état « Tiefpass », à 0 %] @ 450,709
+texte « Mischung » @ 405,765
+texte « 100 % » @ 804,766
+curseur [état « 100 % », à 100 %] @ 450,822
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 450,900
+bouton + «   Effekt hinzufügen » @ 450,978
+texte « Fertige Vibes » @ 142,1050
+bouton « ? » @ 254,1050
+bouton « Für: Lead » [sélectionné] @ 139,1120
+bouton ★ « Favoriten » @ 336,1120
+bouton « Atmosphäre » @ 552,1120
+bouton « Farbe » @ 732,1120
+bouton « Dreck » [coupé] @ 827,1120
+texte « Stil: » @ 73,1204
+bouton « Acid » @ 160,1204
+bouton « Techno » @ 299,1204
+bouton « DnB » @ 435,1204
+bouton « Dubstep » @ 578,1204
+bouton « House » @ 737,1204
+bouton « Lo-Fi » [coupé] @ 832,1204
+bouton « Schreiender Lead » @ 196,1288
+bouton « Breit und lebendig » @ 498,1288
+bouton « Deep Dub » @ 747,1288
+bouton « Traum » [coupé] @ 118,1350
+bouton « Distortion » [coupé] @ 286,1350
+bouton « Fern » [coupé] @ 441,1350
+bouton « Ohne Effekt » [coupé] @ 611,1350
+texte « Schließen » @ 762,1437

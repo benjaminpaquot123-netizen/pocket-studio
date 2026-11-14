@@ -3,11 +3,15 @@ package com.pocketstudio.app.ui
 import android.content.Context
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.background
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
-import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -25,7 +29,21 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -83,31 +101,35 @@ val AppTab.space: Space get() = when (this) {
 }
 
 /**
- * The four tabs of the Mode simple, in everyday words: the song first (where one lands), the
- * drums, the keyboard, and « Envoyer » (the « Fini ? » page: checks, Partager, WAV).
+ * The five tabs of the Mode simple, in everyday words: the song first (where one lands), the
+ * drums, the keyboard, « Mix » (big faders and meters) and « Envoyer » (the « Fini ? » page).
  */
 enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
     Morceau(Icons.AutoMirrored.Filled.QueueMusic, AppTab.Morceau),
     Rythme(Icons.Filled.GridView, AppTab.Rythme),
     Clavier(Icons.Filled.Piano, AppTab.Synthe),
-    Envoyer(Icons.AutoMirrored.Filled.Send, AppTab.Envoyer);
+    Mix(Icons.Filled.Tune, AppTab.Mixeur),
+    Envoyer(Icons.Filled.Share, AppTab.Envoyer);
 
     val label: String get() = when (this) {
         Morceau -> tr("Mon morceau")
         Rythme -> tr("Rythme")
         Clavier -> tr("Clavier")
-        Envoyer -> tr("Envoyer")
+        Mix -> tr("Mix")
+        // The owner's answer 1A (2026-11-09): « Partager » everywhere (the tab was « Envoyer »; its tag keeps the old name).
+        Envoyer -> tr("Partager")
     }
 
     val hint: String get() = when (this) {
         Morceau -> tr("Parties et pistes")
         Rythme -> tr("Batterie")
         Clavier -> tr("Jouer, enregistrer")
-        Envoyer -> tr("Partager")
+        Mix -> tr("Volumes")
+        Envoyer -> tr("Fichier ou vidéo")
     }
 
     companion object {
-        fun of(tab: AppTab): SimpleTab? = entries.firstOrNull { it.tab == tab }
+        fun of(tab: AppTab): SimpleTab? = entries.firstOrNull { it.tab == tab } ?: Clavier.takeIf { tab == AppTab.Acide }
     }
 }
 
@@ -146,11 +168,14 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
     val perTab = maxWidth / entries.size.coerceAtLeast(1)
     val tight = perTab < 64.dp
     val iconsOnly = perTab < 52.dp
+    val light = rememberTabLight(entries, vertical = false)
+    // Never under 11 sp as seen at 100 %: with a bigger text size, a word may go down to that size on screen.
+    val minLabel = (11f / androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)).sp
     NavigationBar(
         containerColor = lerp(Neon.Background, Color.Black, 0.12f),
-        modifier = Modifier.drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset.Zero, Offset(size.width, 0f), 1f) }.testTag("space_bar"),
+        modifier = light.modifier.testTag("space_bar"),
     ) {
-        entries.forEach { e ->
+        entries.forEachIndexed { i, e ->
             NavigationBarItem(
                 selected = e.selected,
                 onClick = e.onClick,
@@ -158,14 +183,16 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
                 alwaysShowLabel = !iconsOnly,
                 label = {
                     // Narrow (a big text size, long Dutch words): two short lines rather than « Mijn num… ».
+                    // Audit ultra tour 0 (seat b, 130 %): never a word over two lines (« Keyboar / d »): smaller first, down to 11 sp.
+                    val style = if (tight) MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, letterSpacing = 0.sp, lineHeight = 12.sp)
+                    else MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp)
                     Text(
                         e.label, maxLines = 2, softWrap = true, overflow = TextOverflow.Ellipsis,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        style = if (tight) MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, letterSpacing = 0.sp, lineHeight = 12.sp)
-                        else MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp),
+                        style = style, autoSize = com.pocketstudio.ui.WholeWordsAutoSize(minLabel, style.fontSize),
                     )
                 },
-                modifier = Modifier.testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
+                modifier = light.entry(i).testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Neon.OnAccent,
                     selectedTextColor = Neon.Cyan,
@@ -178,18 +205,29 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
     }
 }
 
-/** The same entries on the side, lying down (the screen keeps its height); it scrolls if the phone is very low. */
+/**
+ * The same entries on the side, lying down (the screen keeps its height). Audit ultra round 3, n° 21 (seat D b, a phone
+ * lying down: « Mix » cut, « Envoyer » out of sight): where Material's items (56 dp each) do not all fit, each entry
+ * takes an equal share of the rail's height (40 dp at least, its icon over its name): all five whole, nothing to scroll.
+ */
 @Composable
 fun SpaceRail(entries: List<NavEntry>) {
-    NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f), modifier = Modifier.testTag("space_rail")) {
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            entries.forEach { e ->
+    val light = rememberTabLight(entries, vertical = true)
+    NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f), modifier = light.modifier.testTag("space_rail")) {
+      BoxWithConstraints(Modifier.weight(1f)) {
+        val share = maxHeight / entries.size.coerceAtLeast(1)
+        if (share < RAIL_ITEM_ROOM) {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                entries.forEachIndexed { i, e -> CompactRailItem(e, share.coerceAtLeast(40.dp), light.entry(i)) }
+            }
+        } else Column(Modifier.verticalScroll(rememberScrollState())) {
+            entries.forEachIndexed { i, e ->
                 NavigationRailItem(
                     selected = e.selected,
                     onClick = e.onClick,
                     icon = { Icon(e.icon, contentDescription = null) },
-                    label = { Text(e.label, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis) },
-                    modifier = Modifier.testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
+                    label = { Text(e.label, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis, autoSize = com.pocketstudio.ui.WholeWordsAutoSize(11.sp, MaterialTheme.typography.labelMedium.fontSize)) },
+                    modifier = light.entry(i).testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
                     colors = NavigationRailItemDefaults.colors(
                         selectedIconColor = Neon.OnAccent,
                         selectedTextColor = Neon.Cyan,
@@ -200,5 +238,112 @@ fun SpaceRail(entries: List<NavEntry>) {
                 )
             }
         }
+      }
     }
+}
+
+/** What a Material rail item needs to be whole (56 dp and the 4 dp between items). */
+private val RAIL_ITEM_ROOM = 60.dp
+
+/** A rail entry in [height]: its icon in the chosen pill, its name under it, as Material's but lower. */
+@Composable
+private fun CompactRailItem(e: NavEntry, height: androidx.compose.ui.unit.Dp, place: Modifier) {
+    val color = if (e.selected) Neon.Cyan else Neon.TextSecondary
+    Column(
+        place.width(80.dp).height(height)
+            .selectable(selected = e.selected, role = androidx.compose.ui.semantics.Role.Tab, onClick = e.onClick)
+            .testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+    ) {
+        androidx.compose.foundation.layout.Box(
+            Modifier.height(24.dp).width(48.dp).then(
+                if (e.selected) Modifier.background(Neon.Cyan, androidx.compose.foundation.shape.RoundedCornerShape(12.dp)) else Modifier,
+            ),
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+        ) { Icon(e.icon, contentDescription = null, tint = if (e.selected) Neon.OnAccent else Neon.TextSecondary, modifier = Modifier.height(20.dp)) }
+        Text(e.label, color = color, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(11.sp, MaterialTheme.typography.labelMedium.fontSize))
+    }
+}
+
+/**
+ * The chosen space's light (lot « design pro »): a short accent bar on the bar's edge (the top of
+ * the bottom bar, the inner side of the rail) over the chosen entry, with a soft cone of its light
+ * under it, sliding to the next one in 220 ms (in place at once with the phone's animations off).
+ * The entries' places are noted when laid out and the slide is read when drawn: it redraws the
+ * bar alone, composes nothing and allocates nothing a frame.
+ */
+private class TabLight(count: Int, val vertical: Boolean) {
+    /** Each entry's middle along the bar, from the bar's start, in pixels (NaN: not placed yet). */
+    val middles = FloatArray(count) { Float.NaN }
+    val start = floatArrayOf(0f)
+    lateinit var modifier: Modifier
+
+    fun entry(i: Int): Modifier = Modifier.onGloballyPositioned { c ->
+        val at = c.positionInRoot()
+        middles[i] = if (vertical) at.y + c.size.height / 2f else at.x + c.size.width / 2f
+    }
+}
+
+@Composable
+private fun rememberTabLight(entries: List<NavEntry>, vertical: Boolean): TabLight {
+    val light = remember(entries.size, vertical) { TabLight(entries.size, vertical) }
+    val chosen = entries.indexOfFirst { it.selected }
+    val still = com.pocketstudio.app.onboarding.animationsOff(LocalContext.current)
+    val slide = animateFloatAsState(
+        chosen.coerceAtLeast(0).toFloat(), if (still) snap() else tween(220, easing = FastOutSlowInEasing), label = "tab-light",
+    )
+    val shown = animateFloatAsState(if (chosen >= 0) 1f else 0f, if (still) snap() else tween(180), label = "tab-light-on")
+    val accent = Neon.Cyan
+    light.modifier = Modifier
+        .onGloballyPositioned { c -> light.start[0] = c.positionInRoot().let { if (vertical) it.y else it.x } }
+        .drawWithCache {
+            val barLong = 28.dp.toPx()
+            val barThick = 3.dp.toPx()
+            val coneWide = 72.dp.toPx()
+            val coneDeep = 22.dp.toPx()
+            val edge = Color.White.copy(alpha = 0.07f)
+            // A round glow, squeezed into a flat cone under the bar.
+            val cone = Brush.radialGradient(listOf(accent.copy(alpha = 0.26f), accent.copy(alpha = 0.08f), Color.Transparent), Offset.Zero, coneWide / 2f)
+            onDrawWithContent {
+                drawContent()
+                // The edge towards the screen: a fine light line.
+                if (vertical) {
+                    val x = if (layoutDirection == LayoutDirection.Rtl) 0f else size.width - 1f
+                    drawLine(edge, Offset(x, 0f), Offset(x, size.height), 1f)
+                } else {
+                    drawLine(edge, Offset.Zero, Offset(size.width, 0f), 1f)
+                }
+                val on = shown.value
+                val n = light.middles.size
+                if (on <= 0.01f || n == 0) return@onDrawWithContent
+                val f = slide.value.coerceIn(0f, n - 1f)
+                val i0 = f.toInt()
+                val i1 = minOf(i0 + 1, n - 1)
+                val a = light.middles[i0]
+                val b = light.middles[i1]
+                if (a.isNaN() || b.isNaN()) return@onDrawWithContent
+                val mid = a + (b - a) * (f - i0) - light.start[0]
+                if (vertical) {
+                    val x = if (layoutDirection == LayoutDirection.Rtl) 0f else size.width
+                    val inward = if (layoutDirection == LayoutDirection.Rtl) 1f else -1f
+                    clipRect { withTransform({
+                        translate(x, mid)
+                        scale(coneDeep / (coneWide / 2f), 1f, Offset.Zero)
+                    }) { drawCircle(cone, coneWide / 2f, Offset.Zero, alpha = on) } }
+                    drawRoundRect(
+                        accent, Offset(if (inward < 0f) x - barThick else x, mid - barLong / 2f), Size(barThick, barLong),
+                        CornerRadius(barThick / 2f), alpha = on,
+                    )
+                } else {
+                    clipRect { withTransform({
+                        translate(mid, 0f)
+                        scale(1f, coneDeep / (coneWide / 2f), Offset.Zero)
+                    }) { drawCircle(cone, coneWide / 2f, Offset.Zero, alpha = on) } }
+                    drawRoundRect(accent, Offset(mid - barLong / 2f, 0f), Size(barLong, barThick), CornerRadius(barThick / 2f), alpha = on)
+                }
+            }
+        }
+    return light
 }

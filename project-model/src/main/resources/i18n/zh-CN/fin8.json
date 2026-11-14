@@ -1,0 +1,15 @@
+{
+  "Faire un kit avec la batterie": "用鼓做一套鼓组",
+  "La chanson est en silence ici : elle sert de réserve de sons. Touche un haut-parleur pour l'entendre.": "这里歌曲是静音的：它是声音素材库。点一下扬声器即可收听。",
+  "Mettre la voix sur les pads": "把人声放到打击垫上",
+  "Piocher dans la chanson": "从歌曲中取材",
+  "Prêt": "就绪",
+  "Prêt : l'enregistrement part au prochain lancement.": "就绪：下次启动时开始录音。",
+  "Rejouer la basse en notes": "用音符重弹贝斯",
+  "Rejouer la basse sur l'Acid 303": "用 Acid 303 重弹贝斯",
+  "Rejouer la voix en notes": "用音符重弹人声",
+  "Réécouter toutes les pistes": "重新收听所有音轨",
+  "Ses phrases de voix sur tes pads, sa batterie en kit, sa basse et sa voix en notes": "人声乐句放到你的打击垫上，鼓做成鼓组，贝斯和人声转成音符",
+  "Seule": "独奏",
+  "Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, son casque (l'écouter seule) et son haut-parleur (la couper).": "整首歌经过混音器的“%s”通道及其效果。这里每条音轨都有音量、耳机（单独听）和扬声器（静音）。"
+}

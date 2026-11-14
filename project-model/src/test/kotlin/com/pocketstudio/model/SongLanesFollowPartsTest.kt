@@ -5,13 +5,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * G0, the « courbes décalées de 16 mesures » of Benjamin's « Jump up DnB »: its song is 216 bars
- * long, not 184 (its Intro and outro scenes are 8 bars: their notes last 128 steps, their beat 64),
- * so its 216-point curves fit it and the second bass opens on the second Drop (bar 96). Every edit
+ * G0, the « courbes décalées de 16 mesures » found in a jump up song: it is 216 bars long, not 184
+ * (its Intro and outro scenes are 8 bars: their notes last 128 steps, their beat 64), so its
+ * 216-point curves fit it and the second bass opens on the second Drop (bar 96); the synthetic draft
+ * ([SyntheticSongs.jumpUpDraft]) has the same shape and the same hand-drawn curves. Every edit
  * of the song's parts keeps each song curve with the part it was drawn in ([followArrangement]).
  */
 class SongLanesFollowPartsTest {
-    private fun benj() = DropVariationTest.benj()
+    private fun draft() = DropVariationTest.draft()
 
     /** The value of [lane]'s song curve on [bar] of [p]'s song. */
     private fun Project.at(lane: AutomationLane, bar: Int): Float? {
@@ -22,8 +23,8 @@ class SongLanesFollowPartsTest {
     private fun Project.volume(ch: Int) = automation.first { it.target == AutoTarget(AutoTarget.VOLUME, ch) }
 
     @Test
-    fun benjaminsCurvesFitHisSong() {
-        val p = benj()
+    fun aDraftsCurvesFitItsSong() {
+        val p = draft()
         assertEquals(216, p.songBars)
         assertEquals(listOf(0, 32, 40, 72, 88, 96, 128, 144, 152, 184), StarterWizard.songSections(p).map { it.start })
         for (lane in p.automation) {
@@ -110,14 +111,14 @@ class SongLanesFollowPartsTest {
 
     @Test
     fun everyPartEditKeepsTheCurvesWithTheirParts() {
-        checkEdits(benj(), "benj")
+        checkEdits(draft(), "draft")
         for (id in listOf("jump_up", "techno", "house", "pop", "trap")) checkEdits(DropVariationTest.song(StarterWizard.style(id)!!), id)
     }
 
     @Test
-    fun shorteningBenjaminsIntroKeepsTheSwitchOnTheSecondDrop() {
+    fun shorteningTheDraftsIntroKeepsTheSwitchOnTheSecondDrop() {
         // Intro 32 → 16 (its first two parts out), outro 32 → 16 (its last two).
-        var p = benj().removeSongPart(0).removeSongPart(0)
+        var p = draft().removeSongPart(0).removeSongPart(0)
         p = p.removeSongPart(p.song.lastIndex)
         p = p.removeSongPart(p.song.lastIndex)
         assertEquals(184, p.songBars)

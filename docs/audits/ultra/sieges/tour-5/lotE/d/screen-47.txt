@@ -1,0 +1,22 @@
+Écran 47 (1200x540)
+texte « Poignée : glisse vers le bas pour fermer » @ 600,36
+texte « Tempo » @ 199,108
+bouton « ? » (nom « Qu'est-ce que « Régler le tempo » ? ») @ 276,108
+bouton « Fermer » @ 1001,108
+bouton « Tempo moins » @ 180,202
+texte « 125 » @ 570,202
+bouton « Tempo plus » @ 1020,202
+texte «  BPM » @ 664,212
+case « 70 » @ 184,296
+case « 90 » @ 273,296
+case « 120 » @ 370,296
+case « 140 » @ 475,296
+case « 174 » @ 580,296
+case « ½ » (nom « Moitié du tempo ») @ 673,296
+case « ×2 » (nom « Double du tempo ») @ 757,296
+bouton « 1 » @ 293,389
+bouton « 2 » @ 600,389
+bouton « 3 » @ 907,389
+bouton « 4 » @ 293,476
+bouton « 5 » @ 600,476
+bouton « 6 » @ 907,476

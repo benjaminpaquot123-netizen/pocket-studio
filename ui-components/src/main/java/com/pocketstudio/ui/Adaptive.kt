@@ -26,6 +26,45 @@ import androidx.compose.ui.unit.dp
 val TWO_PANES_FROM: Dp = 760.dp
 
 /**
+ * Audit final (09): a box wider than high (a screen lying down) shows two panes from this width:
+ * the Galaxy Tab A11 lying down at 130 % leaves ~690 dp beside the rail, and one column there left
+ * the drum steps and half the console off the screen.
+ */
+val TWO_PANES_LYING_FROM: Dp = 640.dp
+
+/**
+ * Material's window size classes by width (androidx.window): compact under 600 dp, medium to
+ * 840, expanded to 1200, large to 1600, extra-large beyond. Lot D: from expanded on, the work
+ * screens put their two halves side by side (Live: bricks and pads; Remix: the cut and the Structure).
+ */
+val MEDIUM_FROM: Dp = 600.dp
+val EXPANDED_FROM: Dp = 840.dp
+val LARGE_FROM: Dp = 1200.dp
+val EXTRA_LARGE_FROM: Dp = 1600.dp
+
+/** The window size class of a width (0 compact, 1 medium, 2 expanded, 3 large, 4 extra-large). */
+fun widthClass(width: Dp): Int = when {
+    width < MEDIUM_FROM -> 0
+    width < EXPANDED_FROM -> 1
+    width < LARGE_FROM -> 2
+    width < EXTRA_LARGE_FROM -> 3
+    else -> 4
+}
+
+/** The Material medium height class (480 dp): under it, a phone lying down. */
+val MEDIUM_HEIGHT_FROM: Dp = 480.dp
+
+/**
+ * Lot D: a work screen's two halves side by side (Live: bricks and pads; the cut and the
+ * Structure): an expanded width on a screen that is not a phone lying down.
+ */
+fun sideBySide(width: Dp, height: Dp): Boolean = width >= EXPANDED_FROM && height >= MEDIUM_HEIGHT_FROM
+
+/** Whether a box of this size shows two panes side by side. */
+fun twoPanes(width: Dp, height: Dp): Boolean =
+    width >= TWO_PANES_FROM || (width > height && width >= TWO_PANES_LYING_FROM)
+
+/**
  * A screen of cards: one scrolling column on a phone; on a wide screen (tablet) two columns side
  * by side, each scrolling on its own, [first] on the left and [second] on the right, so nothing
  * is stretched across the whole width.
@@ -39,22 +78,29 @@ fun AdaptivePanes(
     second: @Composable ColumnScope.() -> Unit,
     /** The phone's single column when its order differs from [first] then [second]. */
     phone: (@Composable ColumnScope.() -> Unit)? = null,
+    /** The columns' tops fade once scrolled ([fadingTopEdge]): under a fixed bar, nothing shows cut in half. */
+    fadeTop: Boolean = false,
 ) {
+    @Composable
+    fun scrolled(m: Modifier): Modifier {
+        val state = rememberScrollState()
+        return (if (fadeTop) m.fadingTopEdge(state) else m).verticalScroll(state)
+    }
     BoxWithConstraints(modifier.fillMaxSize()) {
-        if (maxWidth >= TWO_PANES_FROM) {
+        if (twoPanes(maxWidth, maxHeight)) {
             Row(Modifier.fillMaxSize().padding(horizontal = padding / 2), horizontalArrangement = Arrangement.spacedBy(0.dp)) {
                 Column(
-                    Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(padding / 2, padding),
+                    scrolled(Modifier.weight(1f).fillMaxHeight()).padding(padding / 2, padding),
                     verticalArrangement = Arrangement.spacedBy(spacing), content = first,
                 )
                 Column(
-                    Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(padding / 2, padding),
+                    scrolled(Modifier.weight(1f).fillMaxHeight()).padding(padding / 2, padding),
                     verticalArrangement = Arrangement.spacedBy(spacing), content = second,
                 )
             }
         } else {
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(padding),
+                scrolled(Modifier.fillMaxSize()).padding(padding),
                 verticalArrangement = Arrangement.spacedBy(spacing),
             ) {
                 if (phone != null) {

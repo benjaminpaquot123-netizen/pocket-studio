@@ -1,0 +1,436 @@
+#0 SIEGE lang=de device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=right amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 0ea854c962 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « Mein erster Beat » over « BenStudio » (67 x 6 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over « ● » (11 x 17 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over «  REC » (23 x 13 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over « ✎ » (13 x 17 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over «  Notieren » (44 x 13 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over « ⋯ » (13 x 19 dp)
+#1 LAYOUT OVERLAP « BenStudio » over the touchable « Aktueller Teil: A. Tippen, um den Teil z » (37 x 10 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Aktueller Teil: A. Tippen, um den Teil z » (48 x 24 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Spielen » (48 x 30 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Tempo: 120 BPM Tempo ändern » (71 x 6 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Bildschirm beschriften » (18 x 6 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 26 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Notiz schreiben » (63 x 26 dp)
+#1 LAYOUT OVERLAP « Was willst du machen? » over the touchable « Feedback-Modus » (30 x 26 dp)
+#1 LAYOUT OVERLAP « Spurtrennung: Schlagzeug, Bass, Gesang und der Rest. » over the touchable « Zuklappen Aufgeklappt » (135 x 29 dp)
+#1 LAYOUT OVERLAP « Spurtrennung: Schlagzeug, Bass, Gesang und der Rest. » over the touchable « Was ist „Step“? » (29 x 29 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 3 Setzen oder entfernen leer » (35 x 12 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 4 Setzen oder entfernen leer » (35 x 12 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Step 5 Setzen oder entfernen Schlag, Stä » (8 x 12 dp)
+#1 LAYOUT OVERLAP « Pad Live » over the touchable « Guide öffnen eingeklappt » (89 x 16 dp)
+#1 LAYOUT OVERLAP « NEU » over the touchable « Step 5 Setzen oder entfernen Schlag, Stä » (12 x 6 dp)
+#1 LAYOUT OVERLAP « NEU » over the touchable « Step 6 Setzen oder entfernen leer » (11 x 6 dp)
+#1 LAYOUT OVERLAP « NEU » over the touchable « Guide öffnen eingeklappt » (27 x 10 dp)
+#1 LAYOUT OVERLAP « Spielbereite Pads, deine Sounds, Bühneneffekte. Es klingt sofort. » over the touchable « Guide öffnen eingeklappt » (177 x 30 dp)
+#1 LAYOUT OVERLAP «  Notieren » over the touchable « Spielen » (26 x 13 dp)
+#1 LAYOUT OVERLAP « ⋯ » over the touchable « Spielen » (10 x 22 dp)
+#1 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#1 > touche 440 273
+#1 REFUS hors de portée du pouce (d'une main, la droite)
+#2 ROUTE launch | MODE pro | EMPREINTE 1fcbdbbe97 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 400 667
+#2 DOIGT launch_projects « Meine Projekte »
+#3 ROUTE dialogue:projects | MODE pro | EMPREINTE c54740fada | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST «   Neuer geführter Song » 3.24:1 (needs 4.5:1, 16 sp)
+#3 > touche 320 573
+#3 DOIGT projects_empty_new «   Neuer Song »
+#4 ROUTE dialogue:new_project | MODE pro | EMPREINTE 9caf60d198 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Ich lerne » 1.29:1 (needs 3.0:1, 22 sp)
+#4 > touche 380 420
+#4 REFUS hors de portée du pouce (d'une main, la droite)
+#5 ROUTE dialogue:new_project | MODE pro | EMPREINTE 37badf556c | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 430 490
+#5 DOIGT starter_wizard « Mach mir einen Track »
+#6 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 672b6a07e9 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Wie willst du dieses Projekt sehen? Du kannst es jederzeit oben mit dem Schildchen ändern. » 3.24:1 (needs 4.5:1, 16 sp)
+#6 > touche 400 580
+#6 DOIGT mode_card_pro « Pro »
+#7 ROUTE dialogue:wizard | MODE pro | EMPREINTE 9cd3524f4a | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Neuer Song, Schritt für Schritt » 1.29:1 (needs 3.0:1, 22 sp)
+#7 LAYOUT CONTRAST « Wähl einen Stil: Ich baue die Drums und dann die Teile des Songs. Du kannst alles ändern. Tippe auf eine Karte, um ihre Beschreibung zu lesen, ▶ zum Anhören. » 1.29:1 (needs 4.5:1, 14 sp)
+#7 > touche 470 330
+#7 REFUS hors de portée du pouce (d'une main, la droite)
+#8 ROUTE dialogue:wizard | MODE pro | EMPREINTE b7260bb84d | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 430 425
+#8 REFUS hors de portée du pouce (d'une main, la droite)
+#9 ROUTE dialogue:wizard | MODE pro | EMPREINTE b7260bb84d | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > glisse 400 700 400 1000
+#9 DOIGT wizard_family_Autres « Andere »
+#10 ROUTE dialogue:wizard | MODE pro | EMPREINTE 9cd3524f4a | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 430 515
+#10 DOIGT wizard_family_Bass music « Bass Music »
+#11 ROUTE dialogue:wizard | MODE pro | EMPREINTE 638a5290c0 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « Sehr schnelle, rollende Drums über einem riesigen, grollenden Bass: die Musik der Londoner Clubs, mit 174 BPM. » ellipsized (« … »)
+#11 LAYOUT CUT « Zur Orientierung: Chase & Status x Bou – Baddadan (2023) » ellipsized (« … »)
+#11 LAYOUT CUT « Drum & Bass für volle Dancefloors: ein fetter, knurrender Bass wie im Dubstep, über schnellen Drums mit 174 BPM. » ellipsized (« … »)
+#11 LAYOUT CUT « Ein Bass, der „wob wob“ macht, über einem schweren Beat wie in Zeitlupe: der Original-Dubstep, um 2005 in London entstanden, dunkler und langsamer als der von Skrillex. » ellipsized (« … »)
+#11 LAYOUT CUT « Zur Orientierung: Skrillex – Scary Monsters and Nice Sprites (2010) » ellipsized (« … »)
+#11 LAYOUT CUT « Sanfter, warmer Drum & Bass: derselbe schnelle Rhythmus, aber mit jazzigen E-Piano-Akkorden und einem runden Bass. » ellipsized (« … »)
+#11 LAYOUT CUT « Zur Orientierung: Netsky – Memory Lane (2010) » ellipsized (« … »)
+#11 > touche 400 660
+#11 DOIGT wizard_style_dnb « Drum & Bass »
+#12 ROUTE dialogue:wizard | MODE pro | EMPREINTE a15d2e57f4 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 330 1017
+#12 DOIGT wizard_style_choose_dnb « Diesen Stil wählen »
+#13 ROUTE dialogue:wizard | MODE pro | EMPREINTE e369905aab | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Schritt 2 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#13 > touche 400 1116
+#13 DOIGT wizard_next « Weiter »
+#14 ROUTE dialogue:wizard | MODE pro | EMPREINTE 98aa110592 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Schritt 3 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT LABEL « wizard_enabled » toggle without text nor description
+#14 > touche 400 1116
+#14 DOIGT wizard_next « Weiter »
+#15 ROUTE dialogue:wizard | MODE pro | EMPREINTE 7cb84fdf7a | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « 2 » lines cut (taller than its box)
+#15 LAYOUT CONTRAST « Schritt 4 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#15 > touche 400 1116
+#15 DOIGT wizard_next « Weiter »
+#16 ROUTE dialogue:wizard | MODE pro | EMPREINTE afdcd1ce0f | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Schritt 5 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#16 > touche 400 1116
+#16 DOIGT wizard_next « Weiter »
+#17 ROUTE dialogue:wizard | MODE pro | EMPREINTE 5058da1b64 | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Schritt 6 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#17 > touche 400 1116
+#17 DOIGT wizard_next « Weiter »
+#18 ROUTE dialogue:wizard | MODE pro | EMPREINTE a4e36b54b9 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Schritt 7 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#18 > touche 400 1116
+#18 DOIGT wizard_next « Weiter »
+#19 ROUTE dialogue:wizard | MODE pro | EMPREINTE e16e544153 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Schritt 8 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#19 > touche 400 1116
+#19 DOIGT wizard_next « Weiter »
+#20 ROUTE dialogue:wizard | MODE pro | EMPREINTE f98c2c8587 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Schritt 9 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT LABEL « wizard_part_enabled » toggle without text nor description
+#20 > touche 400 1116
+#20 DOIGT wizard_next « Weiter »
+#21 ROUTE dialogue:wizard | MODE pro | EMPREINTE 7f28b3995f | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Schritt 10 von 12 · Drum & Bass » 3.45:1 (needs 4.5:1, 13 sp)
+#21 > touche 400 1116
+#21 DOIGT wizard_next « Weiter »
+#22 ROUTE dialogue:wizard | MODE pro | EMPREINTE 048b35a986 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Schritt 11 von 12 · Drum & Bass » 3.24:1 (needs 4.5:1, 13 sp)
+#22 > touche 400 1116
+#22 DOIGT wizard_next « Weiter »
+#23 ROUTE dialogue:wizard | MODE pro | EMPREINTE 0de25badad | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Schritt 12 von 12 · Drum & Bass » 3.45:1 (needs 4.5:1, 13 sp)
+#23 > touche 400 1116
+#23 DOIGT wizard_create « Song erstellen »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE cc95249471 | project=p-740352b6 no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « Drum & Bass » ellipsized (« … »)
+#24 LAYOUT OVERLAP « Folgen » over «  REC » (19 x 13 dp)
+#24 LAYOUT OVERLAP « Folgen » over « ✎ » (13 x 18 dp)
+#24 LAYOUT OVERLAP « Folgen » over «  Notieren » (7 x 13 dp)
+#24 LAYOUT OVERLAP « Loop » over « ⋯ » (13 x 20 dp)
+#24 LAYOUT OVERLAP « Folgen » over the touchable « Bildschirm mit Ton aufnehmen » (23 x 20 dp)
+#24 LAYOUT OVERLAP « Folgen » over the touchable « Notiz schreiben » (23 x 20 dp)
+#24 LAYOUT OVERLAP « Loop » over the touchable « Feedback-Modus » (16 x 20 dp)
+#24 LAYOUT CONTRAST « Loop » 4.31:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « ● » 3.52:1 (needs 4.5:1, 13 sp)
+#24 LAYOUT CONTRAST « ✎ » 4.32:1 (needs 4.5:1, 13 sp)
+#24 LAYOUT TARGET « Drums stummschalten aus » 40 x 22 dp (touch 48 x 48)
+#24 LAYOUT TARGET « Spur Drums solo hören aus » 40 x 22 dp (touch 48 x 48)
+#24 LAYOUT TARGET « Acid 303 stummschalten aus » 40 x 22 dp (touch 48 x 48)
+#24 LAYOUT TARGET « Spur Acid 303 solo hören aus » 40 x 22 dp (touch 48 x 48)
+#24 > touche 491 1110
+#24 DOIGT tab_Plus « Mehr »
+#25 ROUTE tab_Plus | MODE pro | EMPREINTE e9057a7c03 | project=p-740352b6 no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « Gespeichert » wider than its box (by 30.9 dp)
+#25 LAYOUT CONTRAST « Seine ersten Karten, vom Stil bis zum Teilen » 3.94:1 (needs 4.5:1, 13 sp)
+#25 LAYOUT CONTRAST « EINSTIEG » 4.30:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « ● » 2.59:1 (needs 4.5:1, 13 sp)
+#25 LAYOUT CONTRAST « ✎ » 3.39:1 (needs 4.5:1, 13 sp)
+#25 > touche 480 618
+#25 DOIGT guide_bar « Guide »
+#26 ROUTE plus/tab_Plus | MODE pro | EMPREINTE d2957973b3 | project=p-740352b6 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT «  · Die Kick: Sound, Pattern, wo sie spielt » ellipsized (« … »)
+#26 > glisse 400 900 400 450
+#26 DOIGT plus_mode « In den einfachen Modus wechseln »
+#27 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 5023f11d21 | project=p-740352b6 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over « ● » (11 x 17 dp)
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over «  REC » (23 x 13 dp)
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over « ✎ » (13 x 18 dp)
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over «  Notieren » (31 x 13 dp)
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 30 dp)
+#27 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Notiz schreiben » (47 x 30 dp)
+#27 > touche 271 1110
+#27 DOIGT tab_Mix « Mix »
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 686c51d1c4 | project=p-740352b6 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « ● » 2.60:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « ✎ » 3.36:1 (needs 4.5:1, 13 sp)
+#28 > touche 495 42
+#28 REFUS hors de portée du pouce (d'une main, la droite)
+#29 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c09551c77 | project=p-740352b6 no tuto
+#29 SON Son : rien ne joue.
+#29 > glisse 470 880 470 400
+#29 REFUS hors de portée du pouce (d'une main, la droite)
+#30 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c09551c77 | project=p-740352b6 no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 400 960 400 480
+#30 DOIGT automation_entry_overview « Was spielt »
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b58f6413c0 | project=p-740352b6 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « ? » 4.29:1 (needs 4.5:1, 12 sp)
+#31 LAYOUT CONTRAST « Leeren » 2.51:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « ● » 2.62:1 (needs 4.5:1, 13 sp)
+#31 LAYOUT CONTRAST « ✎ » 3.44:1 (needs 4.5:1, 13 sp)
+#31 > glisse 400 960 400 480
+#31 DOIGT dans:auto_lane_0 « Leeren »
+#32 ROUTE automation/tab_Mix | MODE pro | EMPREINTE 935aa4298b | project=p-740352b6 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « Aufnehmen » over « ✎ » (5 x 15 dp)
+#32 LAYOUT OVERLAP « Aufnehmen » over «  Notieren » (44 x 13 dp)
+#32 LAYOUT OVERLAP « Aufnehmen » over « ⋯ » (13 x 17 dp)
+#32 LAYOUT OVERLAP « Aufnehmen » over the touchable « Notiz schreiben » (52 x 20 dp)
+#32 LAYOUT OVERLAP « Aufnehmen » over the touchable « Feedback-Modus » (27 x 20 dp)
+#32 LAYOUT OVERLAP « ● » over the touchable « Zuklappen Aufgeklappt » (9 x 17 dp)
+#32 LAYOUT CONTRAST « Leeren » 4.37:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « ● » 2.71:1 (needs 4.5:1, 13 sp)
+#32 LAYOUT CONTRAST « ✎ » 3.42:1 (needs 4.5:1, 13 sp)
+#32 > touche 491 1110
+#32 DOIGT tab_Plus « Mehr »
+#33 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 5023f11d21 | project=p-740352b6 no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 400 940 400 480
+#33 DOIGT rien
+#34 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 0a91de81b2 | project=p-740352b6 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over « ● » (11 x 17 dp)
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over «  REC » (23 x 13 dp)
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over « ✎ » (13 x 18 dp)
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over «  Notieren » (37 x 13 dp)
+#34 LAYOUT OVERLAP « In den einfachen Modus wechseln » over the touchable « Tempo: 174 BPM Tempo ändern » (15 x 4 dp)
+#34 LAYOUT OVERLAP « In den einfachen Modus wechseln » over the touchable « Ab einem Teil spielen » (106 x 4 dp)
+#34 LAYOUT OVERLAP « In den einfachen Modus wechseln » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 6 dp)
+#34 LAYOUT OVERLAP « In den einfachen Modus wechseln » over the touchable « Notiz schreiben » (16 x 6 dp)
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 30 dp)
+#34 LAYOUT OVERLAP « Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Senden » over the touchable « Notiz schreiben » (53 x 30 dp)
+#34 LAYOUT CONTRAST « ● » 3.70:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « ✎ » 3.77:1 (needs 4.5:1, 13 sp)
+#34 > glisse 400 500 400 850
+#34 DOIGT tool_Fond « Wiedergabe im Hintergrund »
+#35 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 6a441015ca | project=p-740352b6 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over « ● » (11 x 3 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over « ✎ » (13 x 4 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Tempo: 174 BPM Tempo ändern » (15 x 4 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Ab einem Teil spielen » (106 x 4 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Teil loopen statt den Song spielen aus » (19 x 4 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 13 dp)
+#35 LAYOUT OVERLAP « Seine ersten Karten, vom Stil bis zum Teilen » over the touchable « Notiz schreiben » (47 x 13 dp)
+#35 LAYOUT CONTRAST « ● » 2.80:1 (needs 4.5:1, 13 sp)
+#35 LAYOUT CONTRAST « ✎ » 3.43:1 (needs 4.5:1, 13 sp)
+#35 > touche 420 515
+#35 DOIGT plus_mode « In den einfachen Modus wechseln »
+#36 ROUTE plus | MODE simple | EMPREINTE 6998131c84 | project=p-740352b6 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « Gespeichert » wider than its box (by 54.9 dp)
+#36 LAYOUT OVERLAP « ● » over the touchable « Ab einem Teil spielen » (11 x 17 dp)
+#36 LAYOUT OVERLAP «  REC » over the touchable « Ab einem Teil spielen » (6 x 13 dp)
+#36 LAYOUT OVERLAP « ⋯ » over the touchable « Bildschirm beschriften » (3 x 22 dp)
+#36 LAYOUT CONTRAST « ● » 4.14:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#36 > touche 491 1110
+#36 DOIGT tab_simple_Envoyer « Senden »
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE fc70f751fc | project=p-740352b6 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 300 650
+#37 DOIGT share_other « Weitere Exporte »
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b89888860f | project=p-740352b6 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « ● » 2.61:1 (needs 4.5:1, 13 sp)
+#38 > touche 400 834
+#38 DOIGT export_advanced « Erweitert »
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fe6660ebf7 | project=p-740352b6 no tuto
+#39 SON Son : rien ne joue.
+#39 > glisse 400 960 400 480
+#39 DOIGT rien
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb02940b8c | project=p-740352b6 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over « ● » (11 x 17 dp)
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over «  REC » (23 x 13 dp)
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over « ✎ » (13 x 18 dp)
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over «  Notieren » (39 x 13 dp)
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 32 dp)
+#40 LAYOUT OVERLAP « Studioqualität, läuft in jeder Software. Am größten. » over the touchable « Notiz schreiben » (55 x 32 dp)
+#40 LAYOUT CONTRAST « ● » 3.47:1 (needs 4.5:1, 13 sp)
+#40 LAYOUT CONTRAST « ✎ » 3.97:1 (needs 4.5:1, 13 sp)
+#40 > glisse 400 480 400 960
+#40 DOIGT rien
+#41 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6243f40e4b | project=p-740352b6 no tuto
+#41 SON Son : rien ne joue.
+#41 > glisse 400 960 400 480
+#41 DOIGT rien
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb02940b8c | project=p-740352b6 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 260 720
+#42 DOIGT export_final « Enddatei: 48 kHz · 24 Bit »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fe2a862c39 | project=p-740352b6 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Enddatei: 48 kHz · 24 Bit » 3.95:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « ● » 3.44:1 (needs 4.5:1, 13 sp)
+#43 LAYOUT CONTRAST « ✎ » 3.91:1 (needs 4.5:1, 13 sp)
+#43 > glisse 400 960 400 480
+#43 DOIGT rien
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 42c5bcfa44 | project=p-740352b6 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over « ● » (11 x 16 dp)
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over «  REC » (23 x 13 dp)
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over « ✎ » (13 x 17 dp)
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over «  Notieren » (5 x 13 dp)
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over the touchable « Bildschirm mit Ton aufnehmen » (42 x 20 dp)
+#44 LAYOUT OVERLAP « Ohne Limiter (fürs Mastering) » over the touchable « Notiz schreiben » (21 x 20 dp)
+#44 LAYOUT CONTRAST « ● » 3.64:1 (needs 4.5:1, 13 sp)
+#44 > glisse 400 960 400 480
+#44 DOIGT rien
+#45 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 69c2c1bdbc | project=p-740352b6 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT OVERLAP « 32 Bit Gleitkomma » over the touchable « Tempo: 174 BPM Tempo ändern » (47 x 4 dp)
+#45 LAYOUT OVERLAP « 32 Bit Gleitkomma » over the touchable « Ab einem Teil spielen » (71 x 4 dp)
+#45 LAYOUT CONTRAST « ● » 2.63:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « ✎ » 3.41:1 (needs 4.5:1, 13 sp)
+#45 > glisse 400 960 400 480
+#45 DOIGT export_artist « Künstler »
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 633513776a | project=p-740352b6 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT OVERLAP « Stille abschneiden » over « ● » (11 x 14 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over «  REC » (23 x 12 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over « ✎ » (13 x 15 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over «  Notieren » (44 x 12 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over « ⋯ » (13 x 17 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over the touchable « Bildschirm mit Ton aufnehmen » (41 x 20 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over the touchable « Notiz schreiben » (63 x 20 dp)
+#46 LAYOUT OVERLAP « Stille abschneiden » over the touchable « Feedback-Modus » (22 x 20 dp)
+#46 LAYOUT CONTRAST « ✎ » 3.99:1 (needs 4.5:1, 13 sp)
+#46 > touche 400 900
+#46 DOIGT export « Song exportieren »
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 633513776a | project=p-740352b6 no tuto
+#47 SON Son : rien ne joue.
+#47 > attends 15
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 633513776a | project=p-740352b6 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 330 905
+#48 DOIGT export « Song exportieren »
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 633513776a | project=p-740352b6 no tuto
+#49 SON Son : rien ne joue.
+#49 RIEN NE CHANGE (3 écrans identiques)
+#49 > glisse 400 480 400 980
+#49 DOIGT rien (texte « „Stille abschneiden“: Die Datei beginnt  »)
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 68c1450a96 | project=p-740352b6 no tuto
+#50 SON Son : rien ne joue.
+#50 > attends 30
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 68c1450a96 | project=p-740352b6 no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 400 480 400 1000
+#51 DOIGT rien
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE dae436c45a | project=p-740352b6 no tuto
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « ? » over the touchable « Ab einem Teil spielen » (7 x 4 dp)
+#52 > touche 491 1110
+#52 DOIGT tab_Plus « Mehr »
+#53 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 6a441015ca | project=p-740352b6 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 420 515
+#53 DOIGT plus_mode « In den einfachen Modus wechseln »
+#54 ROUTE plus | MODE simple | EMPREINTE 6998131c84 | project=p-740352b6 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 491 1110
+#54 DOIGT tab_simple_Envoyer « Senden »
+#55 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE fc70f751fc | project=p-740352b6 no tuto
+#55 SON Son : rien ne joue.
+#55 > glisse 400 960 400 480
+#55 DOIGT rien
+#56 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE fc70f751fc | project=p-740352b6 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 400 918
+#56 DOIGT share_go «   Teilen »
+#57 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 04cf8993c7 | project=p-740352b6 no tuto
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST «   33 % » 4.14:1 (needs 4.5:1, 14 sp)
+#57 > attends 30
+#57 PARTAGE Drum--Bass-song-20261104-191713.m4a
+#58 ROUTE dialogue:« Partager « Drum--Bass-song-202 » | MODE simple | EMPREINTE 409d63ca7c | project=p-740352b6 no tuto
+#58 SON Son : rien ne joue.
+#58 > retour
+#58 RETOUR
+#59 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE d998b11b2b | project=p-740352b6 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 381 1110
+#59 DOIGT tab_simple_Mix « Mix »
+#60 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 1d07384a43 | project=p-740352b6 no tuto
+#60 SON Son : rien ne joue.
+#60 > glisse 400 960 400 480
+#60 DOIGT rien (texte « Gerade kein Tipp: vertrau deinen Ohren. »)
+#61 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 54752200d0 | project=p-740352b6 no tuto
+#61 SON Son : rien ne joue.
+#61 LAYOUT OVERLAP « Mix » over the touchable « Tempo: 174 BPM Tempo ändern » (39 x 4 dp)
+#61 LAYOUT OVERLAP «  · Drum & Bass » over the touchable « Tempo: 174 BPM Tempo ändern » (39 x 4 dp)
+#61 LAYOUT OVERLAP «  · Drum & Bass » over the touchable « Ab einem Teil spielen » (52 x 4 dp)
+#61 LAYOUT OVERLAP « ▶ Teil in Schleife » over the touchable « Ab einem Teil spielen » (24 x 4 dp)
+#61 > touche 491 1110
+#61 DOIGT tab_simple_Envoyer « Senden »
+#62 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 05696bdfc5 | project=p-740352b6 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 250 822
+#62 DOIGT share_format_Wav « WAV · max. Qualität »
+#63 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 84f1133c30 | project=p-740352b6 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 400 918
+#63 DOIGT share_go «   Teilen »
+#64 ROUTE dialogue:share_progress | MODE simple | EMPREINTE a534fcac5b | project=p-740352b6 no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « Abbrechen » 1.97:1 (needs 4.5:1, 14 sp)
+#64 > attends 30
+#64 PARTAGE Drum--Bass-song-20261104-191751.wav
+#65 ROUTE dialogue:« Partager « Drum--Bass-song-202 » | MODE simple | EMPREINTE 4b9ad34284 | project=p-740352b6 no tuto
+#65 SON Son : rien ne joue.
+#65 > retour
+#65 RETOUR
+#66 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 0d260dd9e3 | project=p-740352b6 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 488 650
+#66 DOIGT help_WAV, FLAC, M4A « Was ist „WAV, FLAC, M4A“? »
+#66 AIDE help_WAV
+#67 ROUTE dialogue:« WAV, FLAC, M4A » | MODE simple | EMPREINTE 7894b0b16f | project=p-740352b6 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 426 699
+#67 DOIGT #8150 « Verstanden »
+#68 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 84f1133c30 | project=p-740352b6 no tuto
+#68 SON Son : rien ne joue.
+#68 > fin
+#68 FIN : fin

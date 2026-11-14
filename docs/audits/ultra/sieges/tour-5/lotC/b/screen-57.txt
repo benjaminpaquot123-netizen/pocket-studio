@@ -1,0 +1,6 @@
+Écran 57 (616x1371)
+touchable « Renombrar » @ 426,564
+touchable « Duplicar » @ 426,636
+touchable « Enviar / guardar copia (.zip) » @ 426,708
+touchable « Copia de antes de esta sesión » @ 426,780
+touchable « Eliminar » @ 426,852

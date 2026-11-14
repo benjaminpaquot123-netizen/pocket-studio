@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-5/lotA/a
+rejeu.n=27
+rejeu.attendu=पार्ट: C

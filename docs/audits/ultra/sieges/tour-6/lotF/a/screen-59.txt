@@ -1,0 +1,43 @@
+Écran 59 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+bouton ← « Altro  · Impostazioni » @ 450,198
+titre « VISUALIZZAZIONE » [état « Espanso »] @ 185,294
+texte « Modalità di questo progetto » @ 225,344
+bouton « Semplice: 5 tab » [sélectionné] @ 171,413
+bouton « Pro: tutti gli strumenti » @ 482,413
+texte « Cambiare modo di lavorare non cambia niente nei tuoi brani. » @ 402,479
+texte « Lingua » @ 87,529
+bouton « 🇮🇹   Italiano » ⌄ @ 153,598
+texte « Tema » @ 78,666
+bouton « Studio (grigio e arancione) » [sélectionné] @ 247,735
+bouton « Notte (più scuro) » @ 181,819
+bouton « Colori per daltonici » @ 195,903
+texte « Dimensione dell'interfaccia » @ 222,971
+bouton « 85% » @ 98,1040
+bouton « 100% » [sélectionné] @ 227,1040
+bouton « 115% » @ 358,1040
+bouton « 130% » @ 490,1040
+texte « Nomi delle note » @ 146,1108
+bouton « Do Re Mi » [coupé, sélectionné] @ 126,1168
+bouton « C D E » [coupé] @ 281,1168
+bouton (boussole) « Guida  · Concatena le tue parti 44 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

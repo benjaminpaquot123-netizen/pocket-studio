@@ -1,6 +1,8 @@
 package com.pocketstudio.app.synth
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
+import kotlin.math.roundToInt
 
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.horizontalScroll
@@ -38,25 +40,48 @@ private val ARP_MODES: List<String> get() = listOf(tr("Montant"), tr("Descendant
  * arpeggiator (hold keys: their notes play one after the other, in time).
  */
 @Composable
-fun PlayPanel(play: PlayUi, actions: PlayActions) {
+fun PlayPanel(
+    play: PlayUi, actions: PlayActions,
+    /**
+     * Audit final (09): lying down, Bend, Modul., Sustain and Arpège on one line (the slot between
+     * the tools and the keys showed Bend alone on the A11 at 130 %).
+     */
+    compact: Boolean = false,
+) {
+    val bend: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+        Text(tr("Bend"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+        ProSlider(
+            value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
+            onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
+            modifier = Modifier.weight(1f).testTag("bend"), label = tr("Bend"),
+            // Audit ultra round 2, n° 25 (seat B c): TalkBack said « 0.0 »; in semitones, the language's comma.
+            valueText = bendText(play.bend),
+        )
+    }
+    val mod: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+        Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
+        ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"), label = tr("Modul."),
+            valueText = com.pocketstudio.model.i18n.percent((play.mod * 100).roundToInt()))
+    }
+    val toggles: @Composable () -> Unit = {
+        FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
+            modifier = Modifier.testTag("sustain"))
+        FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text(tr("Arpège")) },
+            modifier = Modifier.testTag("arp"))
+    }
     Column(Modifier.fillMaxWidth().testTag("play_panel")) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Bend"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            ProSlider(
-                value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
-                onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
-                modifier = Modifier.weight(1f).testTag("bend"),
-            )
+        if (compact) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                bend()
+                mod()
+                toggles()
+            }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), content = bend)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), content = mod)
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-            ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"))
-        }
-        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
-                modifier = Modifier.testTag("sustain"))
-            FilterChip(selected = play.arp.on, onClick = { actions.setArp(play.arp.copy(on = !play.arp.on)) }, label = { Text(tr("Arpège")) },
-                modifier = Modifier.testTag("arp"))
+        if (!compact || play.arp.on) Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            if (!compact) toggles()
             if (play.arp.on) {
                 RATES.forEach { (steps, label) ->
                     FilterChip(selected = play.arp.steps == steps, onClick = { actions.setArp(play.arp.copy(steps = steps)) }, label = { Text(label) })
@@ -70,16 +95,23 @@ fun PlayPanel(play: PlayUi, actions: PlayActions) {
                 }
                 (1..4).forEach { o ->
                     FilterChip(selected = play.arp.octaves == o, onClick = { actions.setArp(play.arp.copy(octaves = o)) },
-                        label = { Text(if (o == 1) tr("1 octave") else tr("%d oct.", o)) })
+                        label = { Text(trCount(o, "1 octave", "%d oct.")) })
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Longueur des notes"), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
                 Text(com.pocketstudio.model.i18n.percent((play.arp.gate * 100).toInt()), color = Neon.Cyan)
             }
-            ProSlider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) })
+            ProSlider(value = play.arp.gate, onValueChange = { actions.setArp(play.arp.copy(gate = it.coerceIn(0.05f, 1f))) }, label = tr("Longueur des notes"), valueText = com.pocketstudio.model.i18n.percent((play.arp.gate * 100).toInt()))
             Text(tr("Garde des touches enfoncées : l'arpège les joue à tour de rôle, en rythme."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
+}
+
+/** The bend in semitones (the wheel's ±1 is ±[com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE]): « 0,0 demi-ton », « +1,5 demi-ton ». */
+internal fun bendText(bend: Float): String {
+    val semis = bend * com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE
+    val shown = String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", kotlin.math.abs(semis)).let { if (semis >= 0.05f) "+$it" else if (semis <= -0.05f) "−$it" else it }
+    return if (kotlin.math.abs(semis) >= 1.95f) tr("%s demi-tons", shown) else tr("%s demi-ton", shown)
 }

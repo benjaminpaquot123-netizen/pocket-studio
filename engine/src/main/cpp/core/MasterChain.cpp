@@ -54,7 +54,13 @@ void MasterChain::LowCutSection::set(double rate, double hz, double q) {
 }
 
 void MasterChain::prepare(int rate) {
+    // The same rate again (Android reopened the stream: headphones, Bluetooth, a reroute): the
+    // music heard so far and the export's known drive stay, so the live level keeps matching the
+    // export instead of estimating afresh for half a minute (audit 13 M4). Another project still
+    // forgets it (resetEstimate, SetMaster a=6).
+    const bool sameRate = preparedRate_ > 0 && (rate > 0 ? rate : 48000) == preparedRate_;
     rate_ = rate > 0 ? rate : 48000;
+    preparedRate_ = rate_;
     const float fs = static_cast<float>(rate_);
     lookAhead_ = lookAheadFor(rate_);
     latency_ = latencyFor(rate_);
@@ -63,8 +69,9 @@ void MasterChain::prepare(int rate) {
     envAttack_ = 1.0f - std::exp(-1.0f / (0.008f * fs));
     envRelease_ = std::exp(-1.0f / (0.150f * fs));
     lpCoef_ = 1.0f - std::exp(-2.0f * 3.14159265f * 500.0f / fs);
-    relFast_ = std::exp(-1.0f / (0.030f * fs));
-    relSlow_ = std::exp(-1.0f / (0.150f * fs));
+    relFast_ = std::exp(-1.0f / (0.030f * releaseScale_ * fs));
+    relSlow_ = std::exp(-1.0f / (0.150f * releaseScale_ * fs));
+    boxLen_ = std::clamp(static_cast<int>(std::lround(attack_ * lookAhead_)), 1, lookAhead_);
     avgCoef_ = 1.0f - std::exp(-1.0f / (1.0f * fs));
     maxClip_ = dbToGain(kMaxClipDb);
     dcR_ = std::exp(-2.0 * 3.14159265358979 * 3.0 / fs);  // 3 Hz: -0.1 dB at 20 Hz
@@ -86,11 +93,12 @@ void MasterChain::prepare(int rate) {
     estIn_.prepare(rate_);
     estOut_.prepare(rate_);
     meter_.prepare(rate_);
-    resetEstimate();
+    if (!sameRate) resetEstimate();
     setCeilingDb(ceilingDb_);
 
     clipL_.reset();
     clipR_.reset();
+    clipUp_.reset();
     held_ = env_ = 0.0f;
     holdLeft_ = 0;
     armed_ = 0;
@@ -105,7 +113,7 @@ void MasterChain::prepare(int rate) {
     lfHead_ = lfTail_ = 0;
     lpL_ = lpR_ = 0.0f;
     box_.fill(1.0f);
-    boxSum_ = lookAhead_;
+    boxSum_ = boxLen_;
     boxPos_ = 0;
     nonUnity_ = 0;
     rel_ = avg_ = 1.0f;
@@ -277,8 +285,15 @@ MasterChain::Stats MasterChain::process(float* l, float* r, const float* direct,
         else if (armed_ > 0) --armed_;
         const bool armed = armed_ > 0;
         float ratioL = 1.0f, ratioR = 1.0f;
-        float yl = clip(clipL_, xl, level, armed, ratioL);
-        float yr = clip(clipR_, xr, level, armed, ratioR);
+        Float2 up[Oversampler4x::kFactor];
+        clipUp_.up(Float2(xl, xr), up);
+        float upL[Oversampler4x::kFactor], upR[Oversampler4x::kFactor];
+        for (int k = 0; k < Oversampler4x::kFactor; ++k) {
+            upL[k] = up[k].v[0];
+            upR[k] = up[k].v[1];
+        }
+        float yl = clip(clipL_, xl, upL, level, armed, ratioL);
+        float yr = clip(clipR_, xr, upR, level, armed, ratioR);
         float gain = 1.0f;
         limit(yl, yr, std::min(ratioL, ratioR), gain);
         stats.minGain = std::min(stats.minGain, gain);
@@ -332,15 +347,13 @@ float MasterChain::clipOnly2(ClipChannel& c, float in, float level, bool armed) 
     return out;
 }
 
-float MasterChain::clip(ClipChannel& c, float x, float level, bool armed, float& ratio) {
+float MasterChain::clip(ClipChannel& c, float x, const float* up, float level, bool armed, float& ratio) {
     // The input kClipDelay frames back: what comes out where nothing was clipped.
     c.dry[static_cast<size_t>(c.dryPos)] = x;
     const float dry = c.dry[static_cast<size_t>((c.dryPos - kClipDelay) & 7)];
     c.dryPos = (c.dryPos + 1) & 7;
     // Only the clipper's change is brought back down (band-limited, so its harmonics do not fold
     // back): what it leaves alone comes out exactly as it went in.
-    float up[Oversampler4x::kFactor];
-    c.os.up(x, up);
     float residual[Oversampler4x::kFactor];
     bool any = false;
     for (int k = 0; k < Oversampler4x::kFactor; ++k) {
@@ -377,6 +390,28 @@ float MasterChain::clip(ClipChannel& c, float x, float level, bool armed, float&
     // Near its level only (around a zero crossing the band-limited residual says nothing).
     if (std::fabs(dry) > 0.5f * level) ratio = std::min(1.0f, std::fabs(y) / std::fabs(dry));
     return y;
+}
+
+void MasterChain::setLimiterAttack(float share) {
+    if (!std::isfinite(share)) return;
+    attack_ = std::clamp(share, 0.2f, 1.0f);
+    const int len = std::clamp(static_cast<int>(std::lround(attack_ * lookAhead_)), 1, lookAhead_);
+    if (len == boxLen_) return;
+    // The window starts again full of its newest value: no jump in the gain (audio thread, no allocation).
+    const float last = box_[static_cast<size_t>((boxPos_ + boxLen_ - 1) % boxLen_)];
+    boxLen_ = len;
+    std::fill(box_.begin(), box_.begin() + boxLen_, last);
+    boxPos_ = 0;
+    nonUnity_ = last != 1.0f ? boxLen_ : 0;
+    boxSum_ = static_cast<double>(last) * boxLen_;
+}
+
+void MasterChain::setLimiterRelease(float scale) {
+    if (!std::isfinite(scale)) return;
+    releaseScale_ = std::clamp(scale, 0.25f, 4.0f);
+    const float fs = static_cast<float>(rate_);
+    relFast_ = std::exp(-1.0f / (0.030f * releaseScale_ * fs));
+    relSlow_ = std::exp(-1.0f / (0.150f * releaseScale_ * fs));
 }
 
 void MasterChain::limit(float& l, float& r, float clipRatio, float& gain) {
@@ -419,12 +454,12 @@ void MasterChain::limit(float& l, float& r, float clipRatio, float& gain) {
     // Averaged over the look-ahead: the gain glides down along it and is at most the peak's own
     // when the peak comes out (each frame of the average saw it in its window).
     const auto at = static_cast<size_t>(boxPos_);
-    if (++boxPos_ == lookAhead_) boxPos_ = 0;
+    if (++boxPos_ >= boxLen_) boxPos_ = 0;
     nonUnity_ += (rel_ != 1.0f) - (box_[at] != 1.0f);
     boxSum_ += static_cast<double>(rel_) - static_cast<double>(box_[at]);
     box_[at] = rel_;
-    if (nonUnity_ == 0) boxSum_ = lookAhead_;  // back at rest: exactly unity again
-    const float smooth = nonUnity_ == 0 ? 1.0f : std::min(1.0f, static_cast<float>(boxSum_ / lookAhead_));
+    if (nonUnity_ == 0) boxSum_ = boxLen_;  // back at rest: exactly unity again
+    const float smooth = nonUnity_ == 0 ? 1.0f : std::min(1.0f, static_cast<float>(boxSum_ / boxLen_));
     const auto out = static_cast<size_t>((f - lookAhead_ + 1) & kMask);
     l = delayL_[out];
     r = delayR_[out];

@@ -1,0 +1,42 @@
+Écran 13 (588x1278)
+bouton (dossier ouvert) @ 102,42
+bouton « Pro » @ 234,42
+icône ↶ @ 309,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 83,123
+icône « Nakarat ölçü 1/20 » ▾ @ 254,123
+bouton (flèches en boucle) [état « kapalı »] @ 462,123
+bouton « ? » @ 543,123
+onglet « Davul 16 pad » @ 80,204
+onglet « Acid 303 Bas çizgisi » @ 251,204
+onglet « Vokal Mikrofon » @ 437,204
+onglet « Ma chanson préférée Şarkı » [coupé, sélectionné] @ 552,204
+onglet « Ses kanalları » @ 117,285
+onglet « Remix » [sélectionné] @ 294,285
+onglet « Tuner » @ 429,285
+onglet « Üret » [coupé] @ 542,285
+titre « ŞARKI: MA CHANSON PRÉFÉRÉE » [état « Genişletildi »] @ 275,383
+bouton ▶ «  Çal » @ 122,449
+texte « Efektler » @ 474,449
+texte « 0:00 / 0:40 · başlangıç » @ 302,449
+bouton ✂ «  Şarkıyı kes » @ 294,533
+bouton (barres de son) «  Kanal panosunu aç » @ 294,617
+texte « Şarkı 1. ölçüde, “Nakarat” bölümünün başında giriyor. » @ 294,706
+bouton ✂ «  Şarkıyı kes » @ 294,901
+bouton (boussole) « Rehber  · Bir melodi ekle 18 % » ⌃ [état « daraltıldı »] @ 294,988
+icône ↶ « Geri al » @ 72,1061
+icône ↷ « Yinele » [désactivé] @ 180,1061
+bouton ▶ « şarkı » @ 288,1061
+texte « 120 Tempo » @ 402,1061
+icône (trois points reliés) « Paylaş » @ 516,1061
+onglet (ligne brisée et points) « Yapı » @ 54,1158
+onglet (touches de piano) « Sesler » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Diğer » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Not al » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 162,1248

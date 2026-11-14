@@ -1,0 +1,7 @@
+lang=pt-BR
+device=phone411
+font=100
+mode=simple
+gestes.max=90
+mission=voix
+timeout.minutes=25

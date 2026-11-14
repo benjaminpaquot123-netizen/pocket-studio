@@ -1,0 +1,34 @@
+Écran 36 (1920x1200)
+texte « Griff: zum Schließen nach unten wischen » @ 960,36
+case « 1. Filter » @ 816,86
+bouton « Effekt ausschalten » @ 1164,87
+bouton « Effekt nach oben » [désactivé] @ 1236,87
+bouton « Effekt nach unten » [désactivé] @ 1308,87
+bouton « Effekt entfernen » @ 1380,87
+texte « Spielt in: » @ 582,150
+case « Alles » @ 740,150
+case « A » @ 859,150
+case « B » [sélectionné] @ 944,150
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 960,244
+bouton «   Effektliste schließen » @ 960,342
+texte « Tippe auf die gewünschten Effekte: Sie werden nacheinander angehängt, der Reihe nach. » @ 960,440
+texte « Verzerrung & Farbe » @ 689,529
+case « Equalizer » @ 628,602
+case « Sättigung » @ 890,602
+case « Bitcrusher » @ 1163,602
+case « Parametrischer EQ » @ 718,677
+case « Altes Vinyl » @ 1080,677
+case « Walkie-Talkie » @ 667,752
+case « Distortion » @ 970,752
+case « Hörbarer Bass » @ 676,827
+texte « Filter & Bewegung » @ 677,900
+case « Chorus » @ 610,973
+case « Filter » @ 810,973
+case « Flanger » @ 1012,973
+case « Phaser » @ 1231,973
+case « Tremolo » @ 618,1048
+case « Wah-Wah » @ 872,1048
+case « Auto-Pan » @ 1138,1048
+case « Wobble » @ 613,1123
+texte « Raum » @ 558,1184
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

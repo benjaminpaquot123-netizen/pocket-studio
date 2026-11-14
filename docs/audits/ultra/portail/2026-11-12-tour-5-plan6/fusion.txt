@@ -1,0 +1,7 @@
+fusion: 0cbe786a352215aedc67f95898d6ed96ce3eb2d6
+branche: eq/tour-5-plan6
+tete: 265a9ae39e8408484c41ecf96cba939105eefdac
+relecture: docs/audits/ultra/tour-5-plan6-relecture.md
+relu: 7149311650d60546f2ec4746d46388f7bda844b7
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -1,0 +1,229 @@
+#0 SIEGE lang=fr device=phoneLand font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=padlive
+#0 AMENEE padlive
+#0 AMENEE > touche 910 340 (launch_padlive)
+#0 AMENEE prête (padlive)
+#1 ROUTE padlive | MODE pro | EMPREINTE b438b80068 | project=p-7137d1c2 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Enregistrer ce que je joue » ellipsized (« … »)
+#1 LAYOUT OVERLAP « ? » over « grave ↔ aigu » (6 x 9 dp)
+#1 LAYOUT OVERLAP « ? » over «  REC » (7 x 11 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over « ✎ » (13 x 16 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over «  Noter » (29 x 13 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over « ⋯ » (13 x 18 dp)
+#1 LAYOUT OVERLAP « Clap » over the touchable « vide, pad A9 » (19 x 20 dp)
+#1 LAYOUT OVERLAP « Clap » over the touchable « vide, pad A10 » (5 x 20 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « Filtre · grave ↔ aigu » (7 x 15 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#1 LAYOUT OVERLAP « boucle » over the touchable « Tempo : 124 BPM Changer le tempo » (10 x 16 dp)
+#1 LAYOUT OVERLAP « Boucle de kick » over the touchable « Tempo : 124 BPM Changer le tempo » (36 x 14 dp)
+#1 LAYOUT OVERLAP « Boucle de kick » over the touchable « Réglages du pad » (48 x 12 dp)
+#1 LAYOUT OVERLAP « Boucle Acid 303 » over the touchable « Réglages du pad » (43 x 12 dp)
+#1 LAYOUT OVERLAP « Boucle de basse » over the touchable « Réglages du pad » (48 x 12 dp)
+#1 LAYOUT OVERLAP « Cri « Go go go! » » over the touchable « Réglages du pad » (37 x 12 dp)
+#1 LAYOUT OVERLAP « + » over the touchable « Ouvrir le Guide replié » (17 x 23 dp)
+#1 LAYOUT OVERLAP « EFFETS DE SCÈNE » over the touchable « Filmer l'écran avec le son » (3 x 18 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « Filmer l'écran avec le son » (7 x 15 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Filmer l'écran avec le son » (3 x 18 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Écrire une note » (49 x 18 dp)
+#1 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Mode retours » (30 x 18 dp)
+#1 LAYOUT OVERLAP « Filtre » over the touchable « Replier Déplié » (36 x 13 dp)
+#1 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Replier Déplié » (67 x 12 dp)
+#1 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Qu'est-ce que « Pas » ? » (17 x 12 dp)
+#1 LAYOUT OVERLAP « Écho » over the touchable « Replier Déplié » (30 x 11 dp)
+#1 LAYOUT OVERLAP « en sortie » over the touchable « Replier Déplié » (30 x 16 dp)
+#1 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 3 Poser ou retirer vide » (29 x 24 dp)
+#1 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 4 Poser ou retirer vide » (35 x 24 dp)
+#1 LAYOUT OVERLAP « Enregistrer ce que je joue » over the touchable « Pas 5 Poser ou retirer vide » (14 x 24 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « Pas 6 Poser ou retirer vide » (7 x 15 dp)
+#1 LAYOUT OVERLAP « Plus » over the touchable « Pas 8 Poser ou retirer vide » (33 x 24 dp)
+#1 LAYOUT OVERLAP « ● » over the touchable « Qu'est-ce que « Effets de scène » ? » (11 x 17 dp)
+#1 LAYOUT OVERLAP «  REC » over the touchable « Qu'est-ce que « Effets de scène » ? » (18 x 13 dp)
+#1 LAYOUT CONTRAST « ● » 4.09:1 (needs 4.5:1, 13 sp)
+#1 > touche 135 143
+#1 DOIGT padlive_mode_0 « boucle »
+#2 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 5a0c597b05 | project=p-7137d1c2 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT OVERLAP « Pad A1 : Boucle de kick » over the touchable « Fermer la feuille » (240 x 28 dp)
+#2 LAYOUT OVERLAP « Quand je touche le pad » over the touchable « Fermer la feuille » (156 x 20 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#2 LAYOUT OVERLAP « Coup : il joue une fois » over the touchable « Fermer la feuille » (148 x 20 dp)
+#2 LAYOUT OVERLAP « Boucle : un toucher lance, un autre arrête » over the touchable « Fermer la feuille » (280 x 20 dp)
+#2 LAYOUT OVERLAP « Tenir : il joue tant que j'appuie » over the touchable « Fermer la feuille » (206 x 20 dp)
+#2 LAYOUT OVERLAP « Un seul à la fois » over the touchable « Fermer la feuille » (108 x 20 dp)
+#2 LAYOUT OVERLAP « Les pads d'un même groupe se coupent entre eux (charley ouvert et fermé). » over the touchable « Fermer la feuille » (503 x 20 dp)
+#2 LAYOUT OVERLAP « Aucun » over the touchable « Fermer la feuille » (44 x 20 dp)
+#2 LAYOUT OVERLAP « Groupe 1 » over the touchable « Fermer la feuille » (60 x 20 dp)
+#2 LAYOUT OVERLAP « Groupe 2 » over the touchable « Fermer la feuille » (62 x 20 dp)
+#2 LAYOUT OVERLAP « Groupe 3 » over the touchable « Fermer la feuille » (62 x 20 dp)
+#2 LAYOUT OVERLAP « Groupe 4 » over the touchable « Fermer la feuille » (63 x 20 dp)
+#2 LAYOUT CONTRAST « Tenir : il joue tant que j'appuie » 3.36:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Les pads d'un même groupe se coupent entre eux (charley ouvert et fermé). » 1.28:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT LABEL « #1575 » long press without text nor description
+#2 > retour
+#2 RETOUR
+#3 ROUTE padlive | MODE pro | EMPREINTE b438b80068 | project=p-7137d1c2 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 675 143
+#3 DOIGT padlive_row_0 « Lancer la ligne 1 à la mesure »
+#4 ROUTE padlive | MODE pro | EMPREINTE b438b80068 | project=p-7137d1c2 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 852 45
+#4 DOIGT padlive_play « Jouer »
+#5 ROUTE padlive | MODE pro | EMPREINTE 5f53ec9bf6 | project=p-7137d1c2 no tuto
+#5 SON Son : la musique du projet joue en boucle.
+#5 LAYOUT OVERLAP « A » over « boucle » (5 x 10 dp)
+#5 LAYOUT OVERLAP « A » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (11 x 14 dp)
+#5 LAYOUT OVERLAP « A » over the touchable « Réglages du pad » (11 x 14 dp)
+#5 LAYOUT OVERLAP « boucle » over the touchable « Jouer depuis une partie » (28 x 16 dp)
+#5 LAYOUT OVERLAP « Boucle de kick » over the touchable « Jouer depuis une partie » (22 x 14 dp)
+#5 > touche 135 143
+#5 DOIGT padlive_mode_0 « boucle »
+#6 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 52c9b32ac8 | project=p-7137d1c2 no tuto
+#6 SON Son : la musique du projet joue en boucle.
+#6 LAYOUT LABEL « #1718 » long press without text nor description
+#6 > glisse 600 450 600 120
+#6 DOIGT rien (texte « Les pads d'un même groupe se coupent ent »)
+#7 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE f3c26ef3e7 | project=p-7137d1c2 no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 LAYOUT OVERLAP « Un seul à la fois » over the touchable « Fermer la feuille » (108 x 17 dp)
+#7 LAYOUT OVERLAP « Longueur de la boucle » over the touchable « Fermer la feuille » (151 x 20 dp)
+#7 LAYOUT OVERLAP « 1 temps » over the touchable « Fermer la feuille » (52 x 20 dp)
+#7 LAYOUT OVERLAP « 2 temps » over the touchable « Fermer la feuille » (54 x 20 dp)
+#7 LAYOUT OVERLAP « 1 mes. » over the touchable « Fermer la feuille » (43 x 20 dp)
+#7 LAYOUT OVERLAP « 2 mes. » over the touchable « Fermer la feuille » (46 x 20 dp)
+#7 LAYOUT OVERLAP « 4 mes. » over the touchable « Fermer la feuille » (47 x 20 dp)
+#7 LAYOUT OVERLAP « 8 mes. » over the touchable « Fermer la feuille » (46 x 20 dp)
+#7 LAYOUT OVERLAP « Volume » over the touchable « Fermer la feuille » (52 x 20 dp)
+#7 LAYOUT CONTRAST « Groupe 3 » 4.17:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « 1 temps » 1.20:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « 2 temps » 1.20:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « 1 mes. » 1.22:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « 8 mes. » 2.21:1 (needs 4.5:1, 14 sp)
+#7 > glisse 600 450 600 120
+#7 DOIGT rien
+#8 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 11a24c1d1d | project=p-7137d1c2 no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT OVERLAP « Hauteur » over the touchable « Fermer la feuille » (54 x 20 dp)
+#8 LAYOUT OVERLAP « − » over the touchable « Fermer la feuille » (9 x 20 dp)
+#8 LAYOUT OVERLAP « normale » over the touchable « Fermer la feuille » (64 x 24 dp)
+#8 LAYOUT OVERLAP « + » over the touchable « Fermer la feuille » (9 x 20 dp)
+#8 LAYOUT OVERLAP « À l'envers » over the touchable « Fermer la feuille » (68 x 20 dp)
+#8 LAYOUT OVERLAP « Attaque : nette » over the touchable « Fermer la feuille » (99 x 20 dp)
+#8 LAYOUT CONTRAST « Attaque : nette » 1.28:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « ? » 1.29:1 (needs 4.5:1, 12 sp)
+#8 > retour
+#8 RETOUR
+#9 ROUTE padlive | MODE pro | EMPREINTE 5f53ec9bf6 | project=p-7137d1c2 no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 > touche 675 143
+#9 DOIGT padlive_row_0 « Lancer la ligne 1 à la mesure »
+#10 ROUTE padlive | MODE pro | EMPREINTE 5f53ec9bf6 | project=p-7137d1c2 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > attends 3
+#11 ROUTE padlive | MODE pro | EMPREINTE 5f53ec9bf6 | project=p-7137d1c2 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 > appui-long 429 143
+#11 DOIGT padlive_mode_2 « boucle »
+#12 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 2fbdcb265c | project=p-7137d1c2 no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 LAYOUT OVERLAP « Pad A3 : Boucle Acid 303 » over the touchable « Fermer la feuille » (266 x 28 dp)
+#12 LAYOUT LABEL « #1855 » long press without text nor description
+#12 > retour
+#12 RETOUR
+#13 ROUTE padlive | MODE pro | EMPREINTE 5f53ec9bf6 | project=p-7137d1c2 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 > touche 1109 385
+#13 DOIGT padlive_more « Plus »
+#14 ROUTE padlive | MODE pro | EMPREINTE 1a92f87e70 | project=p-7137d1c2 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 LAYOUT CUT « Tout couper » ellipsized (« … »)
+#14 LAYOUT OVERLAP « Montée » over the touchable « Pas 2 Poser ou retirer vide » (17 x 20 dp)
+#14 LAYOUT OVERLAP « Montée » over the touchable « Pas 3 Poser ou retirer vide » (32 x 20 dp)
+#14 LAYOUT OVERLAP « 4 mesures » over the touchable « Pas 2 Poser ou retirer vide » (17 x 11 dp)
+#14 LAYOUT OVERLAP « 4 mesures » over the touchable « Pas 3 Poser ou retirer vide » (35 x 11 dp)
+#14 LAYOUT OVERLAP « 4 mesures » over the touchable « Pas 4 Poser ou retirer vide » (5 x 11 dp)
+#14 LAYOUT OVERLAP « Chute » over the touchable « Pas 5 Poser ou retirer vide » (35 x 20 dp)
+#14 LAYOUT OVERLAP « freinage » over the touchable « Pas 5 Poser ou retirer vide » (35 x 11 dp)
+#14 LAYOUT OVERLAP « freinage » over the touchable « Pas 6 Poser ou retirer vide » (10 x 11 dp)
+#14 LAYOUT OVERLAP « Bégaie » over the touchable « Pas 7 Poser ou retirer vide » (23 x 20 dp)
+#14 LAYOUT OVERLAP « Bégaie » over the touchable « Pas 8 Poser ou retirer vide » (21 x 20 dp)
+#14 LAYOUT OVERLAP « 1/16 » over the touchable « Pas 7 Poser ou retirer vide » (23 x 11 dp)
+#14 LAYOUT OVERLAP « Tout couper » over the touchable « Ouvrir le Guide replié » (47 x 18 dp)
+#14 LAYOUT OVERLAP « Annuler » over the touchable « Ouvrir le Guide replié » (47 x 18 dp)
+#14 LAYOUT OVERLAP « Briques » over the touchable « Ouvrir le Guide replié » (49 x 18 dp)
+#14 > touche 947 534
+#14 DOIGT padlive_party_open « Gros pads »
+#15 ROUTE padlive_party | MODE pro | EMPREINTE 15407a48fc | project=p-7137d1c2 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 LAYOUT OVERLAP « A » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (11 x 4 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « Mode Pro. Toucher pour changer de mode.  » (11 x 24 dp)
+#15 LAYOUT OVERLAP « Boucle de kick » over the touchable « Tempo : 124 BPM Changer le tempo » (47 x 7 dp)
+#15 LAYOUT OVERLAP « Boucle de kick » over the touchable « Jouer depuis une partie » (65 x 7 dp)
+#15 LAYOUT OVERLAP « Boucle de basse » over the touchable « Étiqueter l'écran » (16 x 7 dp)
+#15 LAYOUT OVERLAP « Boucle de basse » over the touchable « Filmer l'écran avec le son » (35 x 3 dp)
+#15 LAYOUT OVERLAP « Boucle de basse » over the touchable « Écrire une note » (49 x 3 dp)
+#15 LAYOUT OVERLAP « Boucle de basse » over the touchable « Mode retours » (30 x 3 dp)
+#15 LAYOUT OVERLAP « Sirène » over the touchable « Replier Déplié » (53 x 4 dp)
+#15 LAYOUT OVERLAP « Cri « Go go go! » » over the touchable « Replier Déplié » (14 x 4 dp)
+#15 LAYOUT OVERLAP « ● » over the touchable « Boucle de basse, boucle, prêt, pad A4 » (11 x 15 dp)
+#15 LAYOUT OVERLAP «  REC » over the touchable « Boucle de basse, boucle, prêt, pad A4 » (23 x 13 dp)
+#15 LAYOUT OVERLAP « ✎ » over the touchable « Boucle de basse, boucle, prêt, pad A4 » (13 x 15 dp)
+#15 LAYOUT OVERLAP «  Noter » over the touchable « Boucle de basse, boucle, prêt, pad A4 » (29 x 13 dp)
+#15 LAYOUT OVERLAP « ⋯ » over the touchable « Boucle de basse, boucle, prêt, pad A4 » (13 x 17 dp)
+#15 LAYOUT CONTRAST « ● » 2.76:1 (needs 4.5:1, 13 sp)
+#15 > touche 155 154
+#15 DOIGT padlive_party_pad_0 « Boucle de kick, boucle, prêt, pad A1 »
+#16 ROUTE padlive_party | MODE pro | EMPREINTE 0e644ff336 | project=p-7137d1c2 no tuto
+#16 SON Son : la musique du projet joue en boucle ; le pad live 1 joue en boucle.
+#16 LAYOUT OVERLAP « A » over the touchable « Boucle de kick, boucle, joue, pad A1 » (11 x 4 dp)
+#16 > touche 1043 154
+#16 DOIGT padlive_party_pad_3 « Boucle de basse, boucle, prêt, pad A4 »
+#17 ROUTE padlive_party | MODE pro | EMPREINTE d613352ed1 | project=p-7137d1c2 no tuto
+#17 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#17 LAYOUT OVERLAP « ● » over the touchable « Boucle de basse, boucle, joue, pad A4 » (11 x 15 dp)
+#17 LAYOUT OVERLAP «  REC » over the touchable « Boucle de basse, boucle, joue, pad A4 » (23 x 13 dp)
+#17 LAYOUT OVERLAP « ✎ » over the touchable « Boucle de basse, boucle, joue, pad A4 » (13 x 15 dp)
+#17 LAYOUT OVERLAP «  Noter » over the touchable « Boucle de basse, boucle, joue, pad A4 » (29 x 13 dp)
+#17 LAYOUT OVERLAP « ⋯ » over the touchable « Boucle de basse, boucle, joue, pad A4 » (13 x 17 dp)
+#17 LAYOUT CONTRAST « ● » 4.36:1 (needs 4.5:1, 13 sp)
+#17 > touche 54 54
+#17 DOIGT padlive_party_leave « Quitter les gros pads »
+#18 ROUTE padlive | MODE pro | EMPREINTE aab7d10f6e | project=p-7137d1c2 no tuto
+#18 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#18 LAYOUT OVERLAP « A » over the touchable « Boucle de kick, boucle, joue, pad A1 » (11 x 14 dp)
+#18 > touche 1140 45
+#18 DOIGT live_record « Enregistrer la performance »
+#19 ROUTE padlive | MODE pro | EMPREINTE 8b76d21d19 | project=p-7137d1c2 no tuto
+#19 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#19 > glisse 775 286 885 286
+#19 DOIGT padlive_fx_filter « Filtre · grave ↔ aigu »
+#20 ROUTE padlive | MODE pro | EMPREINTE 8b76d21d19 | project=p-7137d1c2 no tuto
+#20 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#20 > touche 675 143
+#20 DOIGT padlive_row_0 « Lancer la ligne 1 à la mesure »
+#21 ROUTE padlive | MODE pro | EMPREINTE 8b76d21d19 | project=p-7137d1c2 no tuto
+#21 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#21 RIEN NE CHANGE (3 écrans identiques)
+#21 > touche 1109 385
+#21 DOIGT padlive_more « Plus »
+#22 ROUTE padlive | MODE pro | EMPREINTE 6a72487b77 | project=p-7137d1c2 no tuto
+#22 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#22 > appui-long 828 388
+#22 DOIGT padlive_fx_riser « Montée · 4 mesures »
+#23 ROUTE padlive | MODE pro | EMPREINTE 6a72487b77 | project=p-7137d1c2 no tuto
+#23 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#23 > touche 828 388
+#23 DOIGT padlive_fx_riser « Montée · 4 mesures »
+#24 ROUTE padlive | MODE pro | EMPREINTE 6a72487b77 | project=p-7137d1c2 no tuto
+#24 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#24 RIEN NE CHANGE (3 écrans identiques)
+#24 > touche 829 484
+#24 DOIGT padlive_stop_all « Tout couper »
+#25 ROUTE padlive | MODE pro | EMPREINTE 6a72487b77 | project=p-7137d1c2 no tuto
+#25 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#25 > appui-long 829 484
+#25 DOIGT padlive_stop_all « Tout couper »
+#26 ROUTE padlive | MODE pro | EMPREINTE 6a72487b77 | project=p-7137d1c2 no tuto
+#26 SON Son : la musique du projet joue en boucle ; les pads live 1, 4 jouent en boucle.
+#26 RIEN NE CHANGE (5 écrans identiques)
+#26 FIN : rien ne change (5 écrans identiques)

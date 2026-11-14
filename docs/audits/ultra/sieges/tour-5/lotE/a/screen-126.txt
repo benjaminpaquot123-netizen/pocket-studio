@@ -1,0 +1,20 @@
+Écran 126 (588x1278)
+texte « Partie à modifier » @ 124,33
+touchable « A · Intro » @ 228,90
+touchable « B · Groove » @ 228,162
+touchable « C · Drop » @ 228,234
+touchable « D · Break » @ 228,306
+touchable « E · Intro 2 » @ 228,378
+touchable « F · Intro 3 » @ 228,450
+touchable « G · Groove 2 » @ 228,522
+touchable « H · Groove 3 » @ 228,594
+touchable « I · Montée » @ 228,666
+touchable « J · Montée 2 » @ 228,738
+touchable « K · Drop 2 » @ 228,810
+touchable « L · Drop 3 » @ 228,882
+touchable « M · Drop 4 » @ 228,954
+touchable « N · Fill » @ 228,1026
+touchable « O · Fill » @ 228,1098
+touchable « P · Fill » @ 228,1170
+touchable « Q · Fill » @ 228,1236
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

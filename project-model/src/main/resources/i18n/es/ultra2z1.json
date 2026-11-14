@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "El sonido no se pudo poner en el pad: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "Retos: escucha un ritmo, repítelo en los pads, gana estrellas.",
+  "Défis": "Retos",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "Escucha un ritmo, repítelo en los pads: gana estrellas.",
+  "%s, sur le pad": "%s, en el pad",
+  "✓ Sur le pad maintenant": "✓ En el pad ahora",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "“%1$s” reemplaza a “%2$s” en el pad %3$d (la flecha de deshacer lo devuelve). Colócalo en Batería, en la parte que quieras.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "“%s” está en tu proyecto, en silencio, para cortarla (la flecha de deshacer la quita).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live tiene su propio proyecto “Live”: “%s” te espera en Mis proyectos."
+}

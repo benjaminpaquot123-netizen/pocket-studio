@@ -1,0 +1,68 @@
+Écran 33 (900x1509)
+touchable « マイプロジェクト 1 保存しました » (nom « マイプロジェクト ») @ 288,42
+bouton « シンプル » (nom « シンプルモード。タップでモードを変更。 ») @ 621,42
+bouton « 録音：マイク、鍵盤、パッド » @ 711,42
+bouton « 再生 » @ 783,42
+bouton « ほかの選択肢 » @ 855,42
+bouton « 120  テンポ » (nom « テンポ：1分間に120拍 ») @ 79,114
+interrupteur « ? » (nom « 画面にラベルを表示 ») [non coché] @ 855,114
+bouton « パート：A » @ 84,180
+touchable « バスドラム 1 » @ 123,294
+touchable « バスドラム 2 » @ 341,294
+touchable « スネア » @ 559,294
+touchable « スネア 2 » @ 777,294
+touchable « 手拍子 » @ 123,420
+touchable « ハイハット » @ 341,420
+touchable « オープンハイハット » @ 559,420
+touchable « ロータム » @ 777,420
+touchable « ミッドタム » @ 123,546
+touchable « ハイタム » @ 341,546
+touchable « 太鼓のふち » @ 559,546
+touchable « ベル » @ 777,546
+touchable « シンバル » @ 123,672
+touchable « マラカス » @ 341,672
+touchable « コンガ » @ 559,672
+touchable « レーザー » @ 777,672
+bouton « キット：クラシック » @ 151,774
+texte « パッドで鳴らし、マスにヒットを記録。長押し：音を変更。 » @ 589,774
+bouton « ステップ：バスドラム 1 » [état « 開いた状態 »] @ 383,882
+bouton « ? » (nom « 「ステップ」って何？ ») @ 322,882
+case « 全パッド » @ 791,882
+touchable « 1 » (nom « ステップ 1 ») [état « ヒット、強さ 100 % »] @ 90,967
+touchable « ステップ 2 » [état « 空 »] @ 192,967
+touchable « ステップ 3 » [état « 空 »] @ 294,967
+touchable « ステップ 4 » [état « 空 »] @ 397,967
+touchable « 2 » (nom « ステップ 5 ») [état « ヒット、強さ 100 % »] @ 500,967
+touchable « ステップ 6 » [état « 空 »] @ 603,967
+touchable « ステップ 7 » [état « 空 »] @ 706,967
+touchable « ステップ 8 » [état « 空 »] @ 809,967
+touchable « 3 » (nom « ステップ 9 ») [état « ヒット、強さ 100 % »] @ 90,1048
+touchable « ステップ 10 » [état « 空 »] @ 192,1048
+touchable « ステップ 11 » [état « 空 »] @ 294,1048
+touchable « ステップ 12 » [état « 空 »] @ 397,1048
+touchable « 4 » (nom « ステップ 13 ») [état « ヒット、強さ 100 % »] @ 500,1048
+touchable « ステップ 14 » [état « 空 »] @ 603,1048
+touchable « ステップ 15 » [état « 空 »] @ 706,1048
+touchable « ステップ 16 » [état « 空 »] @ 809,1048
+bouton « すべて » @ 147,1134
+bouton « 1/2 » @ 229,1134
+bouton « 1/4 » @ 304,1134
+bouton « ◀ » @ 379,1134
+bouton « ▶ » @ 454,1134
+bouton « 消去 » @ 529,1134
+texte « 埋める » @ 71,1134
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « ガイド » [état « 折りたたみ »] @ 450,1215
+bouton « 元に戻す » (nom « 最後の操作を取り消す ») [désactivé] @ 157,1290
+bouton « 再生 » @ 347,1290
+bouton « 120 テンポ » (nom « テンポ：1分間に120拍 ») @ 544,1290
+bouton « その他 » (nom « ほかの選択肢 ») @ 743,1290
+onglet « マイソング » @ 85,1389
+onglet « リズム » [sélectionné] @ 268,1389
+onglet « 鍵盤 » @ 451,1389
+onglet « ミックス » @ 633,1389
+onglet « 送る » @ 815,1389
+touchable « ●  REC » (nom « 画面を音声付きで録画 ») @ 672,1479
+touchable « ✎  メモ » (nom « メモを書く ») @ 768,1479
+touchable « ⋯ » (nom « フィードバックモード ») @ 852,1479
+texte « フィードバックモード » @ 318,1479

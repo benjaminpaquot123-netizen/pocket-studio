@@ -1,0 +1,41 @@
+Écran 6 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+bouton «  Automate a setting » @ 195,172
+bouton «  What's playing » @ 171,245
+texte « Nothing moves yet. Idea: a pad's filter opening over 8 bars. » @ 294,320
+bouton « MASTER OUTPUT » [état « Expanded »] @ 176,431
+bouton « ? » (nom « What is “Master output”? ») @ 289,431
+texte « Volume: — » @ 97,477
+texte « Master volume » @ 260,550
+texte « 0.0 dB » @ 512,550
+curseur « Master volume » [état « 0.0 dB », à 80 %] @ 294,616
+texte « No clipping: all good. » @ 139,677
+bouton « Details » @ 93,739
+bouton « ? » (nom « What is “Target loudness”? ») @ 223,808
+texte « Target loudness » @ 122,809
+case « Auto (style) · −9 LUFS » @ 178,878
+case « Club · −8 LUFS » [sélectionné] @ 424,878
+case « Streaming · −14 LUFS » @ 176,941
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 27 % » [état « folded »] @ 294,984
+bouton « Undo » @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

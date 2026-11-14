@@ -1,0 +1,14 @@
+Écran 3 (900x1509)
+texte « Fais-moi un morceau » @ 211,36
+icône ✕ @ 858,54
+texte « Étape 1 : choisis un style » @ 171,78
+texte « Changer » @ 516,132
+texte « Ce morceau sera en mode Simple. » @ 231,132
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 450,238
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 363,336
+bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌄ [état « fermé »] @ 450,414
+bouton (éclair) « Techno 10 styles » ⌄ [état « fermé »] @ 450,510
+bouton (disque) « House 9 styles » ⌄ [état « fermé »] @ 450,606
+bouton (enceinte) « Bass music 7 styles » ⌄ [état « fermé »] @ 450,702
+bouton (micro) « Hip-hop 7 styles » ⌄ [état « fermé »] @ 450,798
+bouton ♪ « Autres 4 styles » ⌄ [état « fermé »] @ 450,894

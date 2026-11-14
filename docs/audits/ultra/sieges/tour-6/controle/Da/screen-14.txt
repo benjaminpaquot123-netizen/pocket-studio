@@ -1,0 +1,30 @@
+Écran 14 (588x1278)
+dessin @ 294,330
+texte « 曲のキー » @ 243,402
+texte « 閉じる » @ 513,402
+texte « 曲のキー：F · フリジアン » @ 144,468
+texte « スケール » @ 66,514
+bouton « メジャー » @ 89,581
+bouton « マイナー » @ 230,581
+bouton « ドリアン » @ 371,581
+bouton « マイナーペンタ » @ 126,662
+bouton « メジャーペンタ » @ 338,662
+bouton « ブルース » @ 89,743
+bouton « フリジアン » @ 242,743
+bouton « ハーモニックマイナー » @ 162,824
+texte « キー » @ 45,890
+bouton « C » @ 63,957
+bouton « C♯ » @ 150,957
+bouton « D » @ 237,957
+bouton « E♭ » @ 324,957
+bouton « E » @ 411,957
+bouton « F » @ 498,957
+bouton « F♯ » @ 63,1038
+bouton « G » @ 150,1038
+bouton « A♭ » @ 237,1038
+bouton « A » @ 324,1038
+bouton « B♭ » @ 411,1038
+bouton « B » @ 498,1038
+image (rond coché) @ 58,1119
+texte « できました！曲の色が決まりました。 » @ 291,1119
+bouton « チュートリアルに戻る » @ 294,1203

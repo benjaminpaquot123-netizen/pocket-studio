@@ -1,0 +1,61 @@
+Écran 44 (588x1278)
+touchable « ريمكس تم الحفظ » (nom « مشاريعي ») @ 441,42
+bouton « بسيط » (nom « الوضع بسيط. المس لتغيير الوضع. ») @ 264,42
+bouton « تسجيل: الميكروفون أو لوحة المفاتيح أو الأزرار » @ 189,42
+bouton « تشغيل » @ 117,42
+bouton « خيارات أكثر » @ 45,42
+bouton « 120  السرعة » (nom « السرعة: 120 نبضة في الدقيقة ») @ 513,114
+interrupteur « ? » (nom « تسمية الشاشة ») [non coché] @ 45,114
+bouton « الجزء: A » @ 519,180
+touchable « الطبل الكبير 1 » @ 504,276
+touchable « الطبل الكبير 2 » @ 363,276
+touchable « Snare » @ 223,276
+touchable « Snare 2 » @ 83,276
+touchable « تصفيق » @ 504,366
+touchable « هاي هات » @ 363,366
+touchable « هاي هات مفتوح » @ 223,366
+touchable « Tom منخفض » @ 83,366
+touchable « Tom متوسط » @ 504,456
+touchable « Tom عالٍ » @ 363,456
+touchable « حافة الطبل » @ 223,456
+touchable « جرس » @ 83,456
+touchable « صنج » @ 504,546
+touchable « Maracas » @ 363,546
+touchable « Conga » @ 223,546
+touchable « ليزر » @ 83,546
+bouton « الطقم: كلاسيكي » @ 467,630
+texte « الـPads تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: تغيير الصوت. » @ 185,630
+case « كل الـPads » @ 474,738
+bouton « الخطوات: الطبل الكبير 1 » [état « موسَّع »] @ 222,738
+bouton « ? » (nom « ما معنى «خطوة»؟ ») @ 281,738
+touchable « الخطوة 8 » [état « فارغ »] @ 517,822
+touchable « الخطوة 7 » [état « فارغ »] @ 453,822
+touchable « الخطوة 6 » [état « فارغ »] @ 389,822
+touchable « 2 » (nom « الخطوة 5 ») [état « فارغ »] @ 325,822
+touchable « الخطوة 4 » [état « فارغ »] @ 261,822
+touchable « الخطوة 3 » [état « فارغ »] @ 197,822
+touchable « الخطوة 2 » [état « فارغ »] @ 133,821
+touchable « 1 » (nom « الخطوة 1 ») [état « فارغ »] @ 70,821
+touchable « الخطوة 16 » [état « فارغ »] @ 517,901
+touchable « الخطوة 15 » [état « فارغ »] @ 453,901
+touchable « الخطوة 14 » [état « فارغ »] @ 389,901
+touchable « 4 » (nom « الخطوة 13 ») [état « فارغ »] @ 325,901
+touchable « الخطوة 12 » [état « فارغ »] @ 261,901
+touchable « الخطوة 11 » [état « فارغ »] @ 197,901
+touchable « الخطوة 10 » [état « فارغ »] @ 133,900
+touchable « 3 » (nom « الخطوة 9 ») [état « فارغ »] @ 70,900
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « المرشد  · ضع إيقاعًا 7 % » [état « مطويّ »] @ 294,984
+bouton « تراجع » @ 493,1059
+bouton « تشغيل » @ 365,1059
+bouton « 120 السرعة » (nom « السرعة: 120 نبضة في الدقيقة ») @ 232,1059
+bouton « المزيد » (nom « خيارات أكثر ») @ 95,1059
+onglet « أغنيتي » @ 534,1158
+onglet « الإيقاع » [sélectionné] @ 414,1158
+onglet « لوحة المفاتيح » @ 294,1158
+onglet « المكس » @ 174,1158
+onglet « إرسال » @ 54,1158
+touchable « ●  REC » (nom « سجّل الشاشة مع الصوت ») @ 228,1248
+touchable « ✎  دوّن » (nom « اكتب ملاحظة ») @ 132,1248
+touchable « ⋯ » (nom « وضع الملاحظات ») @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

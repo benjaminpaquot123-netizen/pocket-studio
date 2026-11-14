@@ -1,0 +1,48 @@
+Écran 36 (540x1170)
+bouton (dossier ouvert) « Pop » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 116  टेम्पो » @ 76,123
+icône « प्री-कोरस बार 13/100 » ▾ @ 248,123
+bouton « ? » @ 495,123
+icône ▶ « B · अंतरा × 1  ·  8 बार » [coupé] @ 162,180
+icône − [désactivé, coupé] @ 318,174
+icône + [coupé] @ 390,174
+icône ⋮ [coupé] @ 462,174
+icône ▶ « E · प्री-कोरस × 1  ·  4 बार  ·  बज रहा है » @ 162,271
+icône − [désactivé] @ 318,271
+icône + @ 390,271
+icône ⋮ @ 462,271
+icône ▶ « F · प्री-कोरस 2 × 1  ·  4 बार  ·  अगला » @ 162,425
+icône − [désactivé] @ 318,425
+icône + @ 390,425
+icône ⋮ @ 462,425
+icône ▶ « C · मुखड़ा 1 बार  ·  मिक्स » @ 162,561
+icône − [désactivé] @ 318,561
+icône + [désactivé] @ 390,561
+icône ⋮ @ 462,561
+icône ▶ « C · मुखड़ा 6 बार  ·  मिक्स » @ 162,657
+icône − [désactivé] @ 318,657
+icône + [désactivé] @ 390,657
+icône ⋮ @ 462,657
+icône ▶ « C · मुखड़ा 1 बार  ·  मिक्स » [coupé] @ 162,739
+icône − [désactivé, coupé] @ 318,745
+icône + [désactivé, coupé] @ 390,745
+icône ⋮ [coupé] @ 462,745
+bouton (boussole) « गाइड » ⌄ [état « खुला »] @ 270,804
+texte « गाइड तुम्हारा गाना पढ़ रही है… » @ 183,869
+icône ↶ « पूर्ववत करो » [désactivé] @ 88,951
+bouton ■ « गाना » @ 211,951
+texte « 116 टेम्पो » @ 335,951
+icône ⋮ « और » @ 458,951
+onglet (lignes et note) « मेरा गाना » [sélectionné] @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

@@ -1,0 +1,10 @@
+--- a/app/src/benTest/java/com/pocketstudio/bentest/EssaiEclair.kt
++++ b/app/src/benTest/java/com/pocketstudio/bentest/EssaiEclair.kt
+@@ -226,7 +226,6 @@
+ 
+     /** The first launch's welcome: « Plus tard » (the starter beat, the mode it suggests). */
+     private fun plusTard() {
+-        j.tap("welcome_later")
+         j.awaitGone("welcome")
+     }
+ 

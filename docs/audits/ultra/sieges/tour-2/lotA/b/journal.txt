@@ -1,0 +1,247 @@
+#0 SIEGE lang=es device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=remix
+#0 AMENEE remix
+#0 AMENEE > touche 308 846 (welcome_remix)
+#0 AMENEE > touche 308 333 (mode_card_simple)
+#0 AMENEE prête (?)
+#1 ROUTE ? | MODE simple | EMPREINTE a7764da8ce | project=p-9008919b no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 308 601
+#1 DOIGT remix_pick « Elegir una canción »
+#2 ROUTE ? | MODE simple | EMPREINTE a45ae344b1 | project=p-9008919b no tuto
+#2 SON Son : rien ne joue.
+#2 > attends 30
+#3 ROUTE ? | MODE simple | EMPREINTE 5d9bcaf455 | project=p-9008919b no tuto
+#3 SON Son : rien ne joue.
+#3 > attends 60
+#4 ROUTE ? | MODE simple | EMPREINTE c2955da1e9 | project=p-9008919b no tuto
+#4 SON Son : rien ne joue.
+#4 > attends 30
+#5 ROUTE ? | MODE simple | EMPREINTE e6b0459674 | project=p-9008919b no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 120
+#6 ROUTE ? | MODE simple | EMPREINTE 6b94b1deb7 | project=p-9008919b no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 300
+#7 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 500
+#8 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 500
+#9 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#9 SON Son : rien ne joue.
+#9 > attends 500
+#10 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#10 SON Son : rien ne joue.
+#10 > attends 500
+#11 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 500
+#12 ROUTE ? | MODE simple | EMPREINTE 9251e389aa | project=p-9008919b no tuto
+#12 SON Son : rien ne joue.
+#12 > attends 300
+#13 ROUTE ? | MODE simple | EMPREINTE 3752427647 | project=p-9008919b no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 308 778
+#13 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar lo que quiero »
+#14 ROUTE cut_screen | MODE simple | EMPREINTE 880b3ca8f8 | project=p-9008919b no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 457 795
+#14 DOIGT cut_span_play « Escuchar el trozo »
+#15 ROUTE cut_screen | MODE simple | EMPREINTE 79d8fc3d3c | project=p-9008919b no tuto
+#15 SON Son : un bout de la chanson joue : la voix seule, 3,0 s.
+#15 > touche 99 963
+#15 DOIGT cut_to_pads « En los pads »
+#16 ROUTE cut_screen | MODE simple | EMPREINTE 080bfd23c6 | project=p-9008919b no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 181 1251
+#16 DOIGT tab_simple_Rythme « Ritmo »
+#17 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c2611db717 | project=p-9008919b no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Voz 1 » 4.22:1 (needs 4.5:1, 14 sp)
+#17 > touche 87 276
+#17 DOIGT pad_0 « Kick »
+#18 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 817be7998b | project=p-9008919b no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST «  Grabar mis pads » 2.78:1 (needs 4.5:1, 14 sp)
+#18 > touche 73 930
+#18 DOIGT step_0 « Paso 1 »
+#19 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 2b74cc2e26 | project=p-9008919b no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 342 929
+#19 DOIGT step_4 « Paso 5 »
+#20 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 422cee598b | project=p-9008919b no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 73 1008
+#20 DOIGT step_8 « Paso 9 »
+#21 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE d2f5189547 | project=p-9008919b no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 342 1008
+#21 DOIGT step_12 « Paso 13 »
+#22 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 00e53e1373 | project=p-9008919b no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 499 42
+#22 DOIGT top_play
+#23 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6aebdf320f | project=p-9008919b no tuto
+#23 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#23 > touche 87 456
+#23 DOIGT pad_8 « Voz 1 »
+#24 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE e0ed61e2a8 | project=p-9008919b no tuto
+#24 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#24 > touche 73 930
+#24 DOIGT step_0 « Paso 1 »
+#25 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6b914712d0 | project=p-9008919b no tuto
+#25 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées ; le pad 9 (« Voix 1 ») sonne dans la boucle.
+#25 > touche 499 42
+#25 DOIGT top_play
+#26 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 94a9391b37 | project=p-9008919b no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 571 42
+#26 DOIGT top_more
+#27 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE e7b16ac476 | project=p-9008919b no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Renombrar la canción » 2.53:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « Mis proyectos » 3.11:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « Cambiar al modo Pro » 1.91:1 (needs 4.5:1, 14 sp)
+#27 > touche 465 270
+#27 DOIGT more_library « Biblioteca de sonidos »
+#28 ROUTE dialogue:library | MODE simple | EMPREINTE 659e6351f5 | project=p-9008919b no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « TUS CANCIONES SEPARADAS » 1.41:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « SONIDOS » 4.27:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « 22 sonidos » 1.60:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT CONTRAST « Cargando la lista… » 1.68:1 (needs 4.5:1, 16 sp)
+#28 > touche 574 48
+#28 DOIGT library_close
+#29 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 94a9391b37 | project=p-9008919b no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 571 42
+#29 DOIGT top_more
+#30 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE e7b16ac476 | project=p-9008919b no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 465 486
+#30 DOIGT more_home « Inicio »
+#31 ROUTE launch | MODE simple | EMPREINTE 01408a2780 | project=p-9008919b no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « Remix » over « BenStudio » (42 x 3 dp)
+#31 LAYOUT OVERLAP « BenStudio » over the touchable « Modo Simple. Toca para cambiar de modo.  » (5 x 24 dp)
+#31 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo: 120 BPM Cambiar el tempo » (31 x 16 dp)
+#31 LAYOUT OVERLAP « ¿Qué quieres hacer? » over the touchable « Cambiar de parte » (69 x 6 dp)
+#31 LAYOUT OVERLAP « ¿Qué quieres hacer? » over the touchable « Tempo: 120 BPM Cambiar el tempo » (71 x 30 dp)
+#31 LAYOUT OVERLAP « Remix » over the touchable « Paso 2 Poner o quitar vacío » (15 x 16 dp)
+#31 LAYOUT OVERLAP « Remix » over the touchable « Paso 3 Poner o quitar vacío » (41 x 16 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 2 Poner o quitar vacío » (15 x 34 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 3 Poner o quitar vacío » (41 x 33 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 4 Poner o quitar vacío » (41 x 33 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 5 Poner o quitar vacío » (41 x 33 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 6 Poner o quitar vacío » (41 x 33 dp)
+#31 LAYOUT OVERLAP « Separación de pistas: batería, bajo, voz y el resto. » over the touchable « Paso 7 Poner o quitar vacío » (36 x 33 dp)
+#31 LAYOUT OVERLAP « Pad Live » over the touchable « Paso 10 Poner o quitar vacío » (15 x 10 dp)
+#31 LAYOUT OVERLAP « Pad Live » over the touchable « Paso 11 Poner o quitar vacío » (41 x 9 dp)
+#31 LAYOUT OVERLAP « Pad Live » over the touchable « Paso 12 Poner o quitar vacío » (26 x 9 dp)
+#31 LAYOUT OVERLAP « Pads listos para tocar, tus sonidos, efectos de escena. Suena enseguida. » over the touchable « Abrir la Guía plegado » (231 x 24 dp)
+#31 LAYOUT OVERLAP « Mi primera canción, con la Guía » over the touchable « Reproducir » (52 x 20 dp)
+#31 LAYOUT OVERLAP « Mi primera canción, con la Guía » over the touchable « Tempo: 120 BPM Cambiar el tempo » (64 x 20 dp)
+#31 LAYOUT OVERLAP « Mi primera canción, con la Guía » over the touchable « Más opciones » (10 x 20 dp)
+#31 > touche 308 1009
+#31 DOIGT launch_padlive « Pad Live »
+#32 ROUTE padlive | MODE simple | EMPREINTE 4bd28bec9b | project=p-b5e48b82 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « Pack… » ellipsized (« … »)
+#32 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#32 LAYOUT OVERLAP « Más » over « Redoble » (8 x 3 dp)
+#32 LAYOUT OVERLAP « ? » over the touchable « vacío, pad A14 » (7 x 15 dp)
+#32 LAYOUT OVERLAP « 124 » over the touchable « Página A · vacío » (32 x 18 dp)
+#32 LAYOUT OVERLAP « ? » over the touchable « Reto: repite este ritmo » (9 x 24 dp)
+#32 LAYOUT OVERLAP « 124 » over the touchable « Eco · a la salida » (27 x 24 dp)
+#32 LAYOUT OVERLAP « Más » over the touchable « Redoble · 1/16 » (21 x 13 dp)
+#32 LAYOUT OVERLAP « A » over the touchable « Tempo: 124 BPM Cambiar el tempo » (12 x 22 dp)
+#32 LAYOUT OVERLAP « B » over the touchable « Tempo: 124 BPM Cambiar el tempo » (11 x 22 dp)
+#32 LAYOUT OVERLAP « + » over the touchable « Plegar Desplegado » (17 x 13 dp)
+#32 LAYOUT OVERLAP « + » over the touchable « ¿Qué es “Paso”? » (4 x 13 dp)
+#32 LAYOUT OVERLAP « EFECTOS DE ESCENA » over the touchable « Abrir la Guía plegado » (138 x 18 dp)
+#32 LAYOUT OVERLAP « ? » over the touchable « Abrir la Guía plegado » (7 x 15 dp)
+#32 LAYOUT OVERLAP « Pulsa y mantén » over the touchable « Abrir la Guía plegado » (96 x 18 dp)
+#32 LAYOUT OVERLAP « Filtro » over the touchable « Deshacer » (19 x 20 dp)
+#32 LAYOUT OVERLAP « grave ↔ agudo » over the touchable « Deshacer » (56 x 16 dp)
+#32 LAYOUT OVERLAP « Eco » over the touchable « Reproducir » (25 x 20 dp)
+#32 LAYOUT OVERLAP « a la salida » over the touchable « Reproducir » (28 x 16 dp)
+#32 LAYOUT OVERLAP « Redoble » over the touchable « Más opciones » (26 x 20 dp)
+#32 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#32 > touche 80 260
+#32 DOIGT padlive_pad_0 « vacío, pad A1 »
+#33 ROUTE dialogue:library | MODE simple | EMPREINTE 9203bb2a1d | project=p-b5e48b82 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Sus pistas (voz, batería, bajo, el resto) se cortan en trozos para tus pads; “Guardar” los ordena aquí. » 1.33:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST «  Cortar “Ma chanson préférée” » 1.97:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Buscar un sonido (chasquido, vaso, conga…) » 1.28:1 (needs 4.5:1, 16 sp)
+#33 LAYOUT CONTRAST « Fiesta » 1.22:1 (needs 4.5:1, 16 sp)
+#33 LAYOUT CONTRAST « Toca ☆ en un sonido para encontrarlo en “Favoritos”. » 1.20:1 (needs 4.5:1, 13 sp)
+#33 > glisse 550 381 60 381
+#33 DOIGT library_kind_hat « Hi-hats cerrados »
+#34 ROUTE dialogue:library | MODE simple | EMPREINTE a29dee6a3f | project=p-b5e48b82 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Hi-hats cerrados » 1.23:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Hi-hats abiertos » 1.23:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Percusiones » 1.25:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « 808 modernos » 2.02:1 (needs 4.5:1, 16 sp)
+#34 LAYOUT CONTRAST « Descargar » 2.02:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « 116 sonidos · 2 MB » 2.27:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Descargar » 2.05:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « 128 sonidos · 3 MB » 2.06:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Descargar » 2.06:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Afro house » 2.04:1 (needs 4.5:1, 16 sp)
+#34 LAYOUT CONTRAST « Descargar » 2.04:1 (needs 4.5:1, 14 sp)
+#34 > glisse 550 381 60 381
+#34 DOIGT library_kind_perc « Percusiones »
+#35 ROUTE dialogue:library | MODE simple | EMPREINTE 1159f12caf | project=p-b5e48b82 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « Percusiones » 1.22:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Toms » 1.28:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « Platillos » 1.23:1 (needs 4.5:1, 14 sp)
+#35 > glisse 550 381 60 381
+#35 DOIGT library_kind_808 « Bajos 808 »
+#36 ROUTE dialogue:library | MODE simple | EMPREINTE e67d579ee9 | project=p-b5e48b82 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Bajos 808 » 1.23:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Bajos » 1.28:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Stabs y hoovers » 1.27:1 (needs 4.5:1, 14 sp)
+#36 > glisse 550 381 60 381
+#36 DOIGT library_kind_stab « Stabs y hoovers »
+#37 ROUTE dialogue:library | MODE simple | EMPREINTE 61aca51145 | project=p-b5e48b82 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Stabs y hoovers » 1.21:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Plucks » 1.22:1 (needs 4.5:1, 14 sp)
+#37 > glisse 550 381 60 381
+#37 DOIGT library_kind_pluck « Plucks »
+#38 ROUTE dialogue:library | MODE simple | EMPREINTE 30d17e3b7b | project=p-b5e48b82 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Percusión melódica » 1.22:1 (needs 4.5:1, 14 sp)
+#38 > glisse 550 381 60 381
+#38 DOIGT library_kind_mallet « Percusión melódica »
+#39 ROUTE dialogue:library | MODE simple | EMPREINTE f393d3a45b | project=p-b5e48b82 no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « Efectos de sonido » 1.23:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « Efectos » 1.27:1 (needs 4.5:1, 14 sp)
+#39 > glisse 550 381 60 381
+#39 DOIGT library_kind_fx « Efectos »
+#40 ROUTE dialogue:library | MODE simple | EMPREINTE bc164badbe | project=p-b5e48b82 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Percusión melódica » 1.24:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Voz » 1.28:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Efectos » 1.25:1 (needs 4.5:1, 14 sp)
+#40 > touche 308 276
+#40 DOIGT library_cut_3a02635f77d71cd9a979f25b «  Cortar “Ma chanson préférée” »
+#41 ROUTE ? | MODE simple | EMPREINTE 42eb37c0f9 | project=p-b5e48b82 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.41:1 (needs 4.5:1, 12 sp)
+#41 > attends 5
+#42 ROUTE cut_screen | MODE simple | EMPREINTE 6ddda0d7c7 | project=p-b5e48b82 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 112 42
+#42 DOIGT top_projects « Live »
+#43 ROUTE dialogue:projects | MODE simple | EMPREINTE c7899bfdc8 | project=p-b5e48b82 no tuto
+#43 SON Son : rien ne joue.
+#43 > fin
+#43 FIN : fin

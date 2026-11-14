@@ -120,7 +120,7 @@ class ExportCheckTest {
         assertEquals("Durée : 3 min 12 s", ok.durationLine())
         assertEquals("Niveau : fort, comme la musique de club", ok.levelLine())
         assertEquals("Crête : sous la limite, vérifiée après la compression", ok.peakLine())
-        assertEquals("M4A, 48 kHz", ok.formatLine())
+        assertEquals("M4A, 48 kHz, 256 kb/s", ok.formatLine())
         val cd = ExportSummary(48.0, -14.0, -1.1, sampleRate = 44100, bits = 16, format = "WAV")
         assertEquals("WAV, 44,1 kHz, 16 bits", cd.formatLine())
         assertEquals("Crête : sous la limite, pas de saturation", cd.peakLine())

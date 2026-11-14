@@ -1,0 +1,7 @@
+Écran 20 (1035x1243)
+bouton « Retour » @ 54,48
+texte « Nouveau projet » @ 553,48
+touchable « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 517,185
+touchable « Fais-moi un morceau Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir. » @ 517,378
+touchable « Je pars de zéro Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » @ 517,571
+bouton « ▸ Autres façons de commencer » @ 517,711

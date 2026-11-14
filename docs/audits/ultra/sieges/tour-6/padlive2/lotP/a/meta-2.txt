@@ -1,0 +1,2 @@
+route=dialogue:mode_step
+nouvelle=1

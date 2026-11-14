@@ -1,0 +1,41 @@
+Écran 17 (588x1278)
+icône (dossier ouvert) ✓ « Lo-fi hip-hop Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 84  Tempo » @ 75,114
+icône « Intro mesure 1/64 » ▾ @ 239,114
+bouton « ? » @ 543,114
+icône ← «  Mon morceau » @ 111,180
+texte « Ma voix » @ 262,180
+icône « Partie : A · Intro » ▾ @ 115,252
+texte « Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle. » @ 294,309
+texte « Enregistrer sur » @ 115,399
+bouton « La partie A · Intro » @ 153,462
+bouton « Tout le morceau » [sélectionné] @ 381,462
+texte « À partir de la partie » @ 130,523
+bouton « 1. A · Intro » [sélectionné] @ 117,585
+bouton « 2. C · Refrain » @ 292,585
+bouton « 3. C · Refrain » [coupé] @ 469,585
+texte « Le morceau démarre après le décompte ; ta prise se pose à sa place dans le morceau et joue une seule fois. » @ 294,660
+texte « Mets des écouteurs (filaires de préférence) : sinon la musique s'enregistre avec ta voix. » @ 294,726
+icône ⋮ @ 510,852
+texte « Audio 1 » @ 239,852
+bouton « ? » @ 440,852
+bouton ● «  Nouvelle prise » [coupé] @ 165,927
+bouton « Fichier son » [coupé] @ 423,930
+bouton (boussole) « Guide  · Change un son 22 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 90,1062
+bouton ■ « le morceau » @ 225,1062
+texte « 84 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

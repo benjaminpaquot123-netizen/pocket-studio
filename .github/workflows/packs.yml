@@ -17,8 +17,9 @@ on:
       - .github/workflows/packs.yml
   workflow_dispatch:
 
+# Read-only by default; the publish job writes the release.
 permissions:
-  contents: write
+  contents: read
 
 # One build at a time: a later run (a merge, another push) waits, then finds the release there.
 concurrency:
@@ -42,7 +43,7 @@ jobs:
       libraries: ${{ steps.styles.outputs.libraries }}
       instruments: ${{ steps.styles.outputs.instruments }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - id: check
         env:
           GH_TOKEN: ${{ github.token }}
@@ -61,7 +62,7 @@ jobs:
     if: needs.plan.outputs.hosted == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: cache
         with:
           path: model
@@ -94,11 +95,11 @@ jobs:
       matrix:
         style: ${{ fromJSON(needs.plan.outputs.styles) }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.13'
-      - uses: actions/cache/restore@v6
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: model
           key: stable-audio-open-small-1
@@ -135,7 +136,7 @@ jobs:
           elif [ "$HAVE" -lt "$WANT" ]; then
             python scripts/packs/generate_pack.py model scripts/packs/styles.json ${{ matrix.style }} out/${{ matrix.style }} --scale "$SCALE" --extend
           fi
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pack-${{ matrix.style }}
           path: out/${{ matrix.style }}
@@ -152,14 +153,14 @@ jobs:
       matrix:
         pack: ${{ fromJSON(needs.plan.outputs.libraries) }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.13'
       - run: pip install -q -r scripts/packs/requirements.txt
       - name: Build
         run: python scripts/packs/library_pack.py scripts/packs/libraries.json ${{ matrix.pack }} out/${{ matrix.pack }} --cache "$RUNNER_TEMP/sources"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pack-${{ matrix.pack }}
           path: out/${{ matrix.pack }}
@@ -177,8 +178,8 @@ jobs:
       matrix:
         instrument: ${{ fromJSON(needs.plan.outputs.instruments) }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.13'
       - run: pip install -q -r scripts/packs/requirements.txt
@@ -186,7 +187,7 @@ jobs:
         env:
           GIT_LFS_SKIP_SMUDGE: '1'
         run: python scripts/packs/instrument_pack.py scripts/packs/instruments.json ${{ matrix.instrument }} out/${{ matrix.instrument }} --cache "$RUNNER_TEMP/sources"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pack-${{ matrix.instrument }}
           path: out/${{ matrix.instrument }}
@@ -196,9 +197,11 @@ jobs:
     needs: [plan, build, library, instrument]
     if: ${{ !cancelled() && needs.plan.outputs.hosted == 'false' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: pack-*
           path: packs

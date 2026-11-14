@@ -1,0 +1,23 @@
+T5-AUTO-OPTION : garde_id CACHE-B19 porté par aucune de ses preuves (@KnownDefect("CACHE-B19") ou test moteur known_defect_cache_b19)
+c391ca38 « vert: the essai eclair starts from what is on screen and proves the so » : vert sans rouge du même test avant lui
+2b34c216 « vert: mode_step re-recorded at 130 % and on the tablet, the step on ea » : vert sans rouge du même test avant lui
+a2a6ec58 « vert: Prêt à partager says the remix's song runs past the song's end ( » : vert sans rouge du même test avant lui
+11c48708 « vert: the separated song's card has one clear button (exact label, scr » : vert sans rouge du même test avant lui
+72d642ff « vert: the in-app driver waits for a scrolled list to stop and refuses  » : vert sans rouge du même test avant lui
+ef2564d5 « vert: a song opened by its own creation is not logged as a failed crea » : vert sans rouge du même test avant lui
+43fbc585 « vert: « Tout tester » hears each second, flags silence, fade and jump, » : vert sans rouge du même test avant lui
+d88c328b « vert: the robot touches « Choisir ce style » again when the first touc » : vert sans rouge du même test avant lui
+411b2d51 « vert: « Retester les corrections » runs only the chosen steps of « Tou » : vert sans rouge du même test avant lui
+662c80ab « vert: lights from the engine's true worst block and longest gap, measu » : vert sans rouge du même test avant lui
+35187750 « vert: questions à l'oreille, floating banner, 8 questions in one pass, » : vert sans rouge du même test avant lui
+a9f1c699 « vert: Q8 back gestures made by Benjamin with pan before/after, Q6 conn » : vert sans rouge du même test avant lui
+9b8fc4fd « rouge: the essai eclair on a first install fails as on Benjamin's phon » : rouge sans vert du même test après lui
+96a7a702 « rouge: NavScreenshotTest.modeStep asserts the step before its capture » : rouge sans vert du même test après lui
+ade1a174 « rouge: sheets scroll lying down: the test measures a node's own box » : rouge sans vert du même test après lui
+038294f5 « rouge: Benjamin's second essai eclair replayed at the HONOR's size, on » : rouge sans vert du même test après lui
+e2fc7753 « rouge: a song made by the assistant and opened logs « Nouveau morceau  » : rouge sans vert du même test après lui
+a4b8f58f « rouge: BenStudio Test « Tout tester » (T1): the run, its listening, it » : rouge sans vert du même test après lui
+5c6322e8 « rouge: the robot gives up when its touch on « Choisir ce style » is sw » : rouge sans vert du même test après lui
+b3838180 « rouge: questions à l'oreille (sequence, skips, answers, proof of a no, » : rouge sans vert du même test après lui
+0847b283 « rouge: Q8 asks for the back gestures in the banner, Q6 asks to connect » : rouge sans vert du même test après lui
+chantier : 22 écarts

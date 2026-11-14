@@ -1,0 +1,12 @@
+Écran 59 (900x1509)
+texte « 帮我做一首 » @ 106,37
+icône ✕ @ 858,51
+texte « 第 1 步：选一个风格 » @ 110,76
+texte « 更换 » @ 279,126
+texte « 这首歌将使用专业模式。 » @ 130,126
+texte « 选一个风格：我先准备好鼓，再准备歌曲的各个段落。之后什么都能改。 点卡片看介绍，点 ▶ 试听。 » @ 450,201
+bouton (éclair) « Techno 10 种风格 » ⌄ [état « 已关闭 »] @ 450,292
+bouton (disque) « House 9 种风格 » ⌄ [état « 已关闭 »] @ 450,388
+bouton (enceinte) « Bass music 7 种风格 » ⌄ [état « 已关闭 »] @ 450,484
+bouton (micro) « Hip-hop 7 种风格 » ⌄ [état « 已关闭 »] @ 450,580
+bouton ♪ « 其他 4 种风格 » ⌄ [état « 已关闭 »] @ 450,676

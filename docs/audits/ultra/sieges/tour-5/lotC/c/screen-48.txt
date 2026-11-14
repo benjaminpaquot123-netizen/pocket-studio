@@ -1,0 +1,6 @@
+Écran 48 (588x1278)
+touchable « Rename » @ 397,551
+touchable « Duplicate » @ 397,623
+touchable « Send / back up (.zip) » @ 397,695
+touchable « Copy from before this session » @ 397,767
+touchable « Delete » @ 397,839

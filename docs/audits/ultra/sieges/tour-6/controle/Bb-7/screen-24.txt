@@ -1,0 +1,54 @@
+Écran 24 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+curseur [état « Mitte », à 50 %] @ 450,345
+bouton (dossier ouvert) «  Importieren » @ 243,429
+bouton (micro) «  Mikro » @ 657,429
+texte « Ordner » @ 704,513
+texte « .zip » @ 814,513
+texte « Pack auf die nächsten Pads: » @ 340,513
+texte « 1 Takt » @ 457,597
+texte « 2 Takte » @ 592,597
+texte « 4 Takte » @ 739,597
+texte « Den ganzen Song einfangen: » @ 216,597
+texte « Leg deinen eigenen Sound auf dieses Pad: eine Datei vom Gerät (MP3, WAV, FLAC, M4A…) oder das Mikro. » @ 450,681
+bouton « Metronom » @ 137,813
+bouton « Einzähler » @ 332,813
+bouton « Effekte » @ 787,813
+bouton « ? » @ 453,813
+texte « Swing » @ 85,884
+bouton « ? » @ 150,884
+texte « 4 % » @ 831,884
+curseur [état « 4 % », à 4 %] @ 450,955
+texte « Tempo und Tonart Kapitel 1/16 · Erledigt · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

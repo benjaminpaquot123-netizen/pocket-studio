@@ -20,3 +20,7 @@ fun Throwable.forUser(): String = when (this) {
     is IOException -> if (message?.contains("ENOSPC") == true || message?.contains("No space") == true) tr("l'appareil est plein") else message ?: tr("erreur de lecture ou d'écriture")
     else -> message ?: tr("erreur")
 }
+
+/** True when this failure is the phone's storage being full (ENOSPC). */
+fun Throwable.isStorageFull(): Boolean =
+    generateSequence(this) { it.cause }.take(5).any { e -> e.message?.let { it.contains("ENOSPC") || it.contains("No space") } == true }

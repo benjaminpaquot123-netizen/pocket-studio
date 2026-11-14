@@ -40,4 +40,17 @@ object LogTail {
         .replace(contentUri, "<document>")
         .replace(path, "<chemin>")
         .replace(query, "?…")
+
+    private val quotedName = Regex("«[^»]*»")
+    /** kotlinx.serialization copies the input it choked on (a project's JSON: track and song names). */
+    private val jsonInput = Regex("(JSON input:)[^\\n]*")
+
+    /**
+     * For what goes to a PUBLIC GitHub issue (checklist, problem, crash): [redact], plus the names
+     * the app writes between « » (songs, projects, imported files) and JSON excerpts. The shared
+     * bug report (.zip sent to someone on purpose) keeps them.
+     */
+    fun forPublicIssue(text: String): String = redact(text)
+        .replace(quotedName, "«…»")
+        .replace(jsonInput, "$1 …")
 }

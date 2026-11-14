@@ -1,0 +1,18 @@
+Écran 3 (900x1509)
+bouton « Zurück » @ 60,48
+texte « Ich lerne » @ 170,48
+texte « Du baust den ganzen Track selbst, Schritt für Schritt: Ich erkläre und prüfe. » @ 450,135
+texte « Wähle deinen Stil » @ 126,204
+touchable « Techno 132 BPM » @ 450,289
+touchable « Detroit Techno 126 BPM » @ 450,403
+touchable « Acid Techno 138 BPM » @ 450,517
+touchable « Hard Techno 150 BPM » @ 450,631
+touchable « Industrial Techno 136 BPM » @ 450,745
+touchable « Retro-Techno 128 BPM » @ 450,859
+touchable « Acidcore 185 BPM » @ 450,973
+touchable « Trance 138 BPM » @ 450,1087
+touchable « House 122 BPM » @ 450,1201
+touchable « Deep House 120 BPM » @ 450,1315
+touchable « Tech House 126 BPM » @ 450,1429
+touchable « Acid House 120 BPM » @ 450,1494
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

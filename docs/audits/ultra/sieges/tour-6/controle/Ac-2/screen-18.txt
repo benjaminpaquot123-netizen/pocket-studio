@@ -1,0 +1,9 @@
+Écran 18 (588x1278)
+texte « C'est prêt » @ 121,462
+texte « C'est prêt : Trap-morceau-club-20261113-144507.wav, une copie est aussi dans Musique › BenStudio. » @ 294,555
+texte « Durée : 2 min 58 s » @ 119,619
+texte « Niveau : à la cible (Club) » @ 148,652
+texte « Pas de saturation. » @ 118,685
+texte « Fichier WAV : qualité studio. » @ 163,718
+texte « Voir mes fichiers » @ 347,804
+texte « OK » @ 508,804

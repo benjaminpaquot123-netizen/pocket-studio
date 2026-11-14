@@ -1,0 +1,70 @@
+Écran 64 (588x1278)
+icône ← @ 51,45
+bouton ▶ @ 231,45
+icône − @ 312,45
+texte « 124 Tempo » @ 378,45
+icône + @ 444,45
+texte « REC » @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » @ 51,135
+onglet « B » [sélectionné] @ 108,135
+onglet « C » @ 165,135
+onglet « D » @ 222,135
+bouton « Pack… » ▾ @ 346,135
+bouton ★ @ 534,135
+bouton « ? » @ 464,135
+bouton @ 77,256
+texte « boucle » @ 86,207
+dessin @ 100,210
+texte « Ma prise 1 » @ 77,287
+bouton @ 205,256
+texte « + » @ 205,256
+bouton @ 333,256
+texte « + » @ 333,256
+bouton @ 461,256
+texte « + » @ 461,256
+bouton ▶ @ 550,256
+bouton @ 77,402
+texte « + » @ 77,402
+bouton @ 205,402
+texte « + » @ 205,402
+bouton @ 333,402
+texte « + » @ 333,402
+bouton @ 461,402
+texte « + » @ 461,402
+bouton @ 77,548
+texte « + » @ 77,548
+bouton @ 205,548
+texte « + » @ 205,548
+bouton @ 333,548
+texte « + » @ 333,548
+bouton @ 461,548
+texte « + » @ 461,548
+bouton @ 77,694
+texte « + » @ 77,694
+bouton @ 205,694
+texte « + » @ 205,694
+bouton @ 333,694
+texte « + » @ 333,694
+bouton @ 461,694
+texte « + » @ 461,694
+bouton « ? » @ 161,974
+texte « EFFETS LIVE » @ 79,974
+texte « Appuie et maintiens » @ 474,974
+bouton @ 106,1053
+texte « Filtre » @ 106,1041
+texte « grave ↔ aigu » @ 106,1068
+bouton @ 294,1053
+texte « Écho » @ 294,1041
+texte « en sortie » @ 294,1068
+bouton @ 482,1053
+texte « Roulement » @ 482,1041
+texte « 1/16 » @ 482,1068
+bouton ■ « Tout couper » @ 66,1159
+bouton « Enregistrer ce que je joue » @ 242,1152
+bouton ⋯ « Plus » @ 497,1152
+bouton « ? » @ 391,1159
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

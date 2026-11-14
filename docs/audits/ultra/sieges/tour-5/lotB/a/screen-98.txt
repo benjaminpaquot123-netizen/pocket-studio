@@ -1,0 +1,19 @@
+Écran 98 (588x1278)
+texte « Annuler » @ 74,26
+texte « Enregistrer » @ 101,52
+texte « Arrêter » @ 67,26
+texte « Plus de choix » @ 101,52
+texte « Parties et pistes » @ 101,52
+texte « Jouer, enregistrer » @ 101,52
+texte « Partager » @ 80,26
+texte « Mes projets » @ 112,66
+texte « Tempo » @ 136,214
+texte « Jouer d'une partie » @ 385,251
+touchable « Masquer les étiquettes » @ 150,865
+touchable « 🐞 Signaler un bug » @ 450,865
+texte « Batterie » @ 174,1052
+texte « Volumes » @ 414,1052
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

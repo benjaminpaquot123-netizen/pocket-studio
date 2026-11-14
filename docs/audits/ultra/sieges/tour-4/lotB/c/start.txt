@@ -1,0 +1,8 @@
+lang=ja
+device=tablet11Land
+font=100
+mode=pro
+amenee=padlive
+gestes.max=120
+mission=padlive
+timeout.minutes=30

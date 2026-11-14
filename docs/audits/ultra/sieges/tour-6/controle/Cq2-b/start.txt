@@ -1,0 +1,7 @@
+lang=ja
+device=phone
+font=100
+mode=simple
+gestes.max=300
+mission=tuto-facile
+timeout.minutes=90

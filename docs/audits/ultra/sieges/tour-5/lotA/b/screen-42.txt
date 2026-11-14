@@ -1,0 +1,15 @@
+Écran 42 (616x1371)
+texte « BenStudio » @ 156,72
+texte « O que você quer fazer? » @ 260,132
+bouton « Continuar Simples Demo · Acid house 7 comp. · 0:13 · 4 partes Salvo agora mesmo » @ 308,294
+bouton « Nova música Um estilo com um toque, ou passo a passo com o assistente. » @ 308,499
+bouton « Meus projetos Abrir outra música, copiar ou renomear. » @ 308,664
+bouton « Remix Separação das faixas: bateria, baixo, voz e o resto. » @ 308,829
+bouton « Pad Live NOVO Pads prontos para tocar, seus sons, efeitos de palco. Já sai som na hora. » @ 308,1009
+bouton « Desafios Ouça um ritmo, repita nos pads: ganhe estrelas. » (nom « Desafios: ouça um ritmo, repita nos pads, ganhe estrelas. ») @ 308,1189
+bouton « Gravar minha voz ou violão O microfone grava por cima da sua música, bem no ritmo. » @ 308,1297
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Gravar a tela com som ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escrever uma nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentários ») @ 568,1341
+texte « Modo comentários » @ 176,1341

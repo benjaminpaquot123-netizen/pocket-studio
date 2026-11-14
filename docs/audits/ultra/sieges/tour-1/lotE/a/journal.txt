@@ -1,0 +1,571 @@
+#0 SIEGE lang=pt-BR device=phone360 font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE af0b3667c6 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇧🇷 » 1.23:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Seu estúdio de música, no seu bolso. » 3.58:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Uma música já pronta, para descobrir o que dá para fazer. » 4.32:1 (needs 4.5:1, 14 sp)
+#1 > glisse 270 900 270 400
+#1 DOIGT welcome_demo « Ouvir uma demo »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 87149ae1cb | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pad Live » 1.70:1 (needs 3.0:1, 22 sp)
+#2 LAYOUT CONTRAST « NOVO » 1.70:1 (needs 4.5:1, 12 sp)
+#2 > touche 270 1031
+#2 DOIGT launch_padlive « Pad Live »
+#3 ROUTE padlive | MODE simple | EMPREINTE 91176730f8 | project=p-33f607e4 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Pack… » ellipsized (« … »)
+#3 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#3 LAYOUT OVERLAP « 124 » over the touchable « Página A · vazio » (32 x 18 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Desafio: repita este ritmo » (9 x 24 dp)
+#3 LAYOUT OVERLAP « Pad Live » over the touchable « Modo Simples. Toque para mudar de modo.  » (13 x 17 dp)
+#3 LAYOUT OVERLAP « A » over the touchable « Andamento: 124 BPM Mudar o andamento » (12 x 22 dp)
+#3 LAYOUT OVERLAP « B » over the touchable « Andamento: 124 BPM Mudar o andamento » (11 x 22 dp)
+#3 LAYOUT OVERLAP « + » over the touchable « Gravar a tela com som » (17 x 6 dp)
+#3 LAYOUT OVERLAP « + » over the touchable « Escrever uma nota » (7 x 6 dp)
+#3 LAYOUT OVERLAP « + » over the touchable « Modo comentários » (10 x 6 dp)
+#3 LAYOUT OVERLAP « Filtro » over the touchable « Abrir o Guia recolhido » (36 x 20 dp)
+#3 LAYOUT OVERLAP « grave ↔ agudo » over the touchable « Abrir o Guia recolhido » (85 x 14 dp)
+#3 LAYOUT OVERLAP « Eco » over the touchable « Abrir o Guia recolhido » (25 x 20 dp)
+#3 LAYOUT OVERLAP « na saída » over the touchable « Abrir o Guia recolhido » (53 x 16 dp)
+#3 LAYOUT OVERLAP « Rufo » over the touchable « Abrir o Guia recolhido » (32 x 20 dp)
+#3 LAYOUT OVERLAP « 1/16 » over the touchable « Abrir o Guia recolhido » (26 x 16 dp)
+#3 LAYOUT OVERLAP « ● » over the touchable « vazio, pad A3 » (11 x 17 dp)
+#3 LAYOUT OVERLAP «  REC » over the touchable « vazio, pad A3 » (23 x 13 dp)
+#3 LAYOUT OVERLAP « ✎ » over the touchable « vazio, pad A3 » (9 x 18 dp)
+#3 LAYOUT OVERLAP «  Anotar » over the touchable « vazio, pad A4 » (29 x 13 dp)
+#3 LAYOUT OVERLAP « ⋯ » over the touchable « vazio, pad A4 » (13 x 22 dp)
+#3 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « + » 2.67:1 (needs 3.0:1, 26 sp)
+#3 LAYOUT CONTRAST « ● » 2.71:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « ✎ » 3.60:1 (needs 4.5:1, 13 sp)
+#3 > touche 71 249
+#3 DOIGT padlive_pad_0 « vazio, pad A1 »
+#4 ROUTE dialogue:library | MODE simple | EMPREINTE 279b342b7b | project=p-33f607e4 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Para o pad live 1 » 2.23:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Hi-hats fechados » 3.42:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Buscar um som (estalo, vidro, conga…) » 1.28:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « Toque em ☆ num som para achá-lo em “Favoritos”. » 1.66:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Toque num som para ouvir, “Usar” para colocá-lo em o pad live 1. » 1.29:1 (needs 4.5:1, 13 sp)
+#4 > touche 270 306
+#4 DOIGT library_search « Buscar um som (estalo, vidro, conga…) »
+#5 ROUTE dialogue:library | MODE simple | EMPREINTE 387c86323c | project=p-33f607e4 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Acid house » 2.02:1 (needs 4.5:1, 16 sp)
+#5 LAYOUT CONTRAST « Baixar » 2.02:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « 128 sons · 3 MB » 2.27:1 (needs 4.5:1, 13 sp)
+#5 LAYOUT CONTRAST « Baixar » 2.05:1 (needs 4.5:1, 14 sp)
+#5 LAYOUT CONTRAST « Baixar » 2.06:1 (needs 4.5:1, 14 sp)
+#5 > ecris funk
+#6 ROUTE dialogue:library | MODE simple | EMPREINTE 2b5dca034f | project=p-33f607e4 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Nenhum som encontrado: tente outra palavra ou baixe mais packs abaixo. » 1.30:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « Toque num som para ouvir, “Usar” para colocá-lo em o pad live 1. » 1.31:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « Baixe só se quiser; cada pack pode ser excluído com um toque para liberar espaço. » 1.87:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « 128 sons · 3 MB » 2.02:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST « 100 sons · 2 MB » 2.05:1 (needs 4.5:1, 13 sp)
+#6 > glisse 270 1000 270 300
+#6 DOIGT rien
+#7 ROUTE dialogue:library | MODE simple | EMPREINTE 27b3a22ae6 | project=p-33f607e4 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 808 modernos » 1.76:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Baixar » 2.23:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Acid house » 1.79:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Baixar » 4.10:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Acid techno » 1.99:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « 100 sons · 2 MB » 4.11:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « 108 sons · 2 MB » 1.23:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Baixar » 1.31:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Akai MPC60 » 2.72:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « Baixar » 2.97:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Amapiano » 1.22:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « 104 sons · 2 MB » 1.22:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Foley: corpo, voz e passos » 2.37:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « 240 sons · 4 MB » 2.58:1 (needs 4.5:1, 13 sp)
+#7 > glisse 270 1000 270 200
+#7 DOIGT rien
+#8 ROUTE dialogue:library | MODE simple | EMPREINTE 9850564e60 | project=p-33f607e4 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Foley: impactos, madeira e metal » 1.76:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Foley: corpo, voz e passos » 3.84:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « 123 sons · 5 MB » 1.22:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Foley: dedos, bolas e boca » 1.22:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Foley: água, fogo e ambientes » 1.28:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Baixar » 4.15:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Foley: casa e objetos » 1.23:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « 203 sons · 9 MB » 1.23:1 (needs 4.5:1, 13 sp)
+#8 LAYOUT CONTRAST « Cliques, bipes e videogames » 1.29:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Baixar » 1.30:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Cordas » 4.27:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Drill » 2.58:1 (needs 4.5:1, 16 sp)
+#8 LAYOUT CONTRAST « Drum & bass » 2.60:1 (needs 4.5:1, 16 sp)
+#8 > glisse 270 1000 270 200
+#8 DOIGT rien
+#9 ROUTE dialogue:library | MODE simple | EMPREINTE 247fba55b4 | project=p-33f607e4 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 1 sons · 6 MB » 1.76:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « 116 sons · 2 MB » 1.79:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Disco / funk » 1.22:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « 136 sons · 2 MB » 4.12:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Baixar » 2.50:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Drill » 1.32:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Baixar » 1.32:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Drum & bass » 2.96:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « 128 sons · 3 MB » 2.92:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « 104 sons · 2 MB » 1.30:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Future bass » 2.63:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Baixar » 4.25:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Harpa » 2.02:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « House » 2.05:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « 136 sons · 2 MB » 2.27:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST « Hyperpop » 2.26:1 (needs 4.5:1, 16 sp)
+#9 > touche 498 48
+#9 DOIGT library_close
+#10 ROUTE padlive | MODE simple | EMPREINTE 91176730f8 | project=p-33f607e4 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 331 135
+#10 DOIGT padlive_pack « Pack… »
+#11 ROUTE dialogue:padlive_pack_fete | MODE simple | EMPREINTE d4e7fea528 | project=p-33f607e4 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Trap » 1.33:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « House » 4.17:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Drum & bass » 1.26:1 (needs 4.5:1, 14 sp)
+#11 > touche 351 222
+#11 DOIGT padlive_pack_fete « Festa »
+#12 ROUTE padlive | MODE simple | EMPREINTE c1eed7118c | project=p-33f607e4 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « Festa » ellipsized (« … »)
+#12 LAYOUT OVERLAP « Clap » over « batida » (32 x 13 dp)
+#12 LAYOUT OVERLAP « loop » over «  REC » (21 x 13 dp)
+#12 LAYOUT OVERLAP « loop » over « ⋯ » (13 x 16 dp)
+#12 LAYOUT OVERLAP « Clap » over the touchable « Buzina, batida, pronto, pad A5 » (32 x 17 dp)
+#12 LAYOUT OVERLAP « Clap » over the touchable « Ajustes do pad » (32 x 17 dp)
+#12 LAYOUT OVERLAP « 124 » over the touchable « Página A » (32 x 18 dp)
+#12 LAYOUT OVERLAP « loop » over the touchable « Gravar a tela com som » (25 x 16 dp)
+#12 LAYOUT OVERLAP « loop » over the touchable « Modo comentários » (26 x 16 dp)
+#12 LAYOUT OVERLAP « ● » over the touchable « Loop Acid 303, loop, pronto, pad A3 » (11 x 17 dp)
+#12 LAYOUT OVERLAP « ● » over the touchable « Ajustes do pad » (11 x 17 dp)
+#12 LAYOUT OVERLAP «  REC » over the touchable « Loop Acid 303, loop, pronto, pad A3 » (23 x 13 dp)
+#12 LAYOUT OVERLAP «  REC » over the touchable « Ajustes do pad » (23 x 13 dp)
+#12 LAYOUT OVERLAP « ✎ » over the touchable « Loop Acid 303, loop, pronto, pad A3 » (9 x 18 dp)
+#12 LAYOUT OVERLAP « ✎ » over the touchable « Ajustes do pad » (9 x 18 dp)
+#12 LAYOUT OVERLAP «  Anotar » over the touchable « Loop de baixo, loop, pronto, pad A4 » (29 x 13 dp)
+#12 LAYOUT OVERLAP «  Anotar » over the touchable « Ajustes do pad » (24 x 13 dp)
+#12 LAYOUT OVERLAP « ⋯ » over the touchable « Loop de baixo, loop, pronto, pad A4 » (13 x 22 dp)
+#12 LAYOUT OVERLAP « ⋯ » over the touchable « Ajustes do pad » (13 x 22 dp)
+#12 LAYOUT CONTRAST « loop » 4.41:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « ● » 2.51:1 (needs 4.5:1, 13 sp)
+#12 > touche 187 260
+#12 DOIGT padlive_pad_1 « Clap, batida, pronto, pad A2 »
+#13 ROUTE padlive | MODE simple | EMPREINTE 217183483e | project=p-33f607e4 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 71 260
+#13 DOIGT padlive_pad_0 « Loop de kick, loop, pronto, pad A1 »
+#14 ROUTE padlive | MODE simple | EMPREINTE 404c5b3d72 | project=p-33f607e4 no tuto
+#14 SON Son : le pad live 1 joue en boucle.
+#14 > touche 161 1119
+#14 DOIGT padlive_played « Gravar o que eu toco »
+#15 ROUTE padlive | MODE simple | EMPREINTE 7265ba0db8 | project=p-33f607e4 no tuto
+#15 SON Son : le pad live 1 joue en boucle.
+#15 LAYOUT CUT « 1 compasso · toque para terminar » ellipsized (« … »)
+#15 > touche 419 260
+#15 DOIGT padlive_pad_3 « Loop de baixo, loop, pronto, pad A4 »
+#16 ROUTE padlive | MODE simple | EMPREINTE afa199f02f | project=p-33f607e4 no tuto
+#16 SON Son : les pads live 1, 4 jouent en boucle.
+#16 LAYOUT CUT « 2 compassos · toque para terminar » ellipsized (« … »)
+#16 LAYOUT OVERLAP «  Anotar » over the touchable « Loop de baixo, loop, tocando, pad A4 » (29 x 13 dp)
+#16 LAYOUT OVERLAP « ⋯ » over the touchable « Loop de baixo, loop, tocando, pad A4 » (13 x 22 dp)
+#16 LAYOUT CONTRAST « loop » 4.32:1 (needs 4.5:1, 12 sp)
+#16 > touche 303 260
+#16 DOIGT padlive_pad_2 « Loop Acid 303, loop, pronto, pad A3 »
+#17 ROUTE padlive | MODE simple | EMPREINTE 44a38555c1 | project=p-33f607e4 no tuto
+#17 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#17 LAYOUT CUT « 3 compassos · toque para terminar » ellipsized (« … »)
+#17 LAYOUT OVERLAP « ● » over the touchable « Loop Acid 303, loop, tocando, pad A3 » (11 x 17 dp)
+#17 LAYOUT OVERLAP «  REC » over the touchable « Loop Acid 303, loop, tocando, pad A3 » (23 x 13 dp)
+#17 LAYOUT OVERLAP « ✎ » over the touchable « Loop Acid 303, loop, tocando, pad A3 » (9 x 18 dp)
+#17 LAYOUT CONTRAST « ● » 3.23:1 (needs 4.5:1, 13 sp)
+#17 > appui-long 98 1020
+#17 DOIGT padlive_fx_filter « Filtro · grave ↔ agudo »
+#18 ROUTE padlive | MODE simple | EMPREINTE 28895303f9 | project=p-33f607e4 no tuto
+#18 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#18 LAYOUT CUT « 4 compassos · toque para terminar » ellipsized (« … »)
+#18 > glisse 40 1020 170 1020
+#18 DOIGT padlive_fx_filter « Filtro · grave ↔ agudo »
+#19 ROUTE padlive | MODE simple | EMPREINTE c8ec97aa9b | project=p-33f607e4 no tuto
+#19 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#19 LAYOUT CUT « 5 compassos · toque para terminar » ellipsized (« … »)
+#19 > touche 396 45
+#19 DOIGT padlive_tempo_more
+#20 ROUTE padlive | MODE simple | EMPREINTE 355ac08803 | project=p-33f607e4 no tuto
+#20 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#20 LAYOUT CUT « 6 compassos · toque para terminar » ellipsized (« … »)
+#20 LAYOUT OVERLAP « 125 » over « A » (12 x 8 dp)
+#20 LAYOUT OVERLAP « 125 » over the touchable « Página A » (32 x 18 dp)
+#20 LAYOUT OVERLAP « A » over the touchable « Andamento: 125 BPM Mudar o andamento » (12 x 22 dp)
+#20 LAYOUT OVERLAP « B » over the touchable « Andamento: 125 BPM Mudar o andamento » (11 x 22 dp)
+#20 LAYOUT CONTRAST « 125 » 2.13:1 (needs 3.0:1, 16 sp)
+#20 > touche 334 45
+#20 DOIGT padlive_tempo « 125 »
+#21 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE d7fe7abbaa | project=p-33f607e4 no tuto
+#21 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#21 LAYOUT OVERLAP «  BPM » over the touchable « Página A » (4 x 16 dp)
+#21 LAYOUT OVERLAP «  BPM » over the touchable « Página B · vazio » (26 x 16 dp)
+#21 LAYOUT OVERLAP « Andamento » over the touchable « Fechar planilha » (124 x 28 dp)
+#21 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (7 x 15 dp)
+#21 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (46 x 20 dp)
+#21 LAYOUT OVERLAP « 125 » over the touchable « Fechar planilha » (86 x 53 dp)
+#21 LAYOUT OVERLAP «  BPM » over the touchable « Fechar planilha » (39 x 24 dp)
+#21 LAYOUT OVERLAP « 70 » over the touchable « Fechar planilha » (21 x 19 dp)
+#21 LAYOUT OVERLAP « 90 » over the touchable « Fechar planilha » (21 x 19 dp)
+#21 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (32 x 19 dp)
+#21 LAYOUT OVERLAP « 140 » over the touchable « Fechar planilha » (32 x 19 dp)
+#21 LAYOUT OVERLAP « 174 » over the touchable « Fechar planilha » (32 x 19 dp)
+#21 LAYOUT OVERLAP « ½ » over the touchable « Fechar planilha » (14 x 24 dp)
+#21 LAYOUT OVERLAP « ×2 » over the touchable « Fechar planilha » (21 x 24 dp)
+#21 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 2 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 3 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 4 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 5 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 6 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 7 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 8 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 9 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « 0 » over the touchable « Fechar planilha » (14 x 27 dp)
+#21 LAYOUT OVERLAP « OK » over the touchable « Fechar planilha » (33 x 27 dp)
+#21 LAYOUT OVERLAP « Bater no ritmo » over the touchable « Fechar planilha » (110 x 24 dp)
+#21 LAYOUT OVERLAP « Toque aqui a cada tempo: o andamento acompanha. » over the touchable « Fechar planilha » (240 x 36 dp)
+#21 LAYOUT CONTRAST « ? » 1.24:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « Fechar » 1.90:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « ½ » 4.18:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « ×2 » 1.22:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT LABEL « #2144 » long press without text nor description
+#21 > touche 355 564
+#21 DOIGT tempo_preset_140 « 140 »
+#22 ROUTE padlive | MODE simple | EMPREINTE a82439e0ac | project=p-33f607e4 no tuto
+#22 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#22 LAYOUT CUT « 9 compassos · toque para terminar » ellipsized (« … »)
+#22 LAYOUT OVERLAP « 140 » over « A » (12 x 8 dp)
+#22 LAYOUT OVERLAP « 140 » over the touchable « Página A » (32 x 18 dp)
+#22 LAYOUT OVERLAP « A » over the touchable « Andamento: 140 BPM Mudar o andamento » (12 x 22 dp)
+#22 LAYOUT OVERLAP « B » over the touchable « Andamento: 140 BPM Mudar o andamento » (11 x 22 dp)
+#22 LAYOUT CONTRAST « 140 » 2.13:1 (needs 3.0:1, 16 sp)
+#22 > appui-long 270 1020
+#22 DOIGT padlive_fx_echo « Eco · na saída »
+#23 ROUTE padlive | MODE simple | EMPREINTE 9aa3cc3f4a | project=p-33f607e4 no tuto
+#23 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#23 LAYOUT CUT « 10 compassos · toque para terminar » ellipsized (« … »)
+#23 > touche 224 941
+#23 DOIGT help_Efeitos de cena « O que é “Efeitos de cena”? »
+#23 AIDE help_Efeitos
+#24 ROUTE dialogue:« Efeitos de cena » | MODE simple | EMPREINTE 90e2a5a18a | project=p-33f607e4 no tuto
+#24 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#24 LAYOUT CONTRAST « Entendi » 3.65:1 (needs 4.5:1, 14 sp)
+#24 > touche 446 729
+#24 DOIGT #2257 « Entendi »
+#25 ROUTE padlive | MODE simple | EMPREINTE d2568fcfce | project=p-33f607e4 no tuto
+#25 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#25 LAYOUT CUT « 12 compassos · toque para terminar » ellipsized (« … »)
+#25 > glisse 98 1050 98 960
+#25 DOIGT padlive_fx_filter « Filtro · grave ↔ agudo »
+#26 ROUTE padlive | MODE simple | EMPREINTE 9bab8c6231 | project=p-33f607e4 no tuto
+#26 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#26 LAYOUT CUT « 13 compassos · toque para terminar » ellipsized (« … »)
+#26 > touche 161 1119
+#26 DOIGT padlive_played « 13 compassos · toque para terminar »
+#27 ROUTE padlive | MODE simple | EMPREINTE 6a06984c9e | project=p-33f607e4 no tuto
+#27 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#27 > attends 3
+#28 ROUTE dialogue:padlive_take_sheet | MODE simple | EMPREINTE c9938ebc35 | project=p-33f607e4 no tuto
+#28 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#28 LAYOUT OVERLAP « Sua gravação: 14 compassos » over the touchable « Fechar planilha » (305 x 28 dp)
+#28 LAYOUT OVERLAP « Onde colocar? Ela toca em loop no tempo do projeto. » over the touchable « Fechar planilha » (299 x 40 dp)
+#28 LAYOUT OVERLAP « No pad vazio A9 » over the touchable « Fechar planilha » (111 x 20 dp)
+#28 LAYOUT OVERLAP « Num bloco do Live » over the touchable « Fechar planilha » (127 x 20 dp)
+#28 LAYOUT OVERLAP « Descartar o take » over the touchable « Fechar planilha » (111 x 20 dp)
+#28 LAYOUT LABEL « #2275 » long press without text nor description
+#28 > touche 270 924
+#28 DOIGT padlive_take_pad « No pad vazio A9 »
+#29 ROUTE padlive | MODE simple | EMPREINTE b063ae4b39 | project=p-33f607e4 no tuto
+#29 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#29 LAYOUT OVERLAP « Clap » over « Loop de kick » (32 x 17 dp)
+#29 LAYOUT OVERLAP « Sua gravação está no pad A9. » over « ● » (11 x 16 dp)
+#29 LAYOUT OVERLAP « Sua gravação está no pad A9. » over «  REC » (14 x 13 dp)
+#29 LAYOUT OVERLAP « Clap » over the touchable « Loop de kick, loop, tocando, pad A1 » (32 x 17 dp)
+#29 LAYOUT OVERLAP « ? » over the touchable « vazio, pad A15 » (7 x 15 dp)
+#29 LAYOUT OVERLAP « Sua gravação está no pad A9. » over the touchable « Gravar a tela com som » (29 x 20 dp)
+#29 LAYOUT OVERLAP « + » over the touchable « Recolher Expandido » (17 x 12 dp)
+#29 LAYOUT OVERLAP « + » over the touchable « Recolher Expandido » (5 x 12 dp)
+#29 LAYOUT CONTRAST « ✎ » 3.56:1 (needs 4.5:1, 13 sp)
+#29 > touche 502 294
+#29 DOIGT padlive_row_0 « Parar a linha 1 »
+#30 ROUTE padlive | MODE simple | EMPREINTE b063ae4b39 | project=p-33f607e4 no tuto
+#30 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#30 > attends 3
+#31 ROUTE padlive | MODE simple | EMPREINTE 5d12e8cc93 | project=p-33f607e4 no tuto
+#31 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#31 > touche 502 249
+#31 DOIGT padlive_row_0 « Parar a linha 1 »
+#32 ROUTE padlive | MODE simple | EMPREINTE 5d12e8cc93 | project=p-33f607e4 no tuto
+#32 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#32 RIEN NE CHANGE (3 écrans identiques)
+#32 > attends 4
+#33 ROUTE padlive | MODE simple | EMPREINTE 5d12e8cc93 | project=p-33f607e4 no tuto
+#33 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#33 RIEN NE CHANGE (3 écrans identiques)
+#33 > touche 502 249
+#33 DOIGT padlive_row_0 « Parar a linha 1 »
+#34 ROUTE padlive | MODE simple | EMPREINTE 5d12e8cc93 | project=p-33f607e4 no tuto
+#34 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#34 > attends 8
+#35 ROUTE padlive | MODE simple | EMPREINTE 5d12e8cc93 | project=p-33f607e4 no tuto
+#35 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#35 > touche 71 260
+#35 DOIGT padlive_pad_0 « Loop de kick, loop, tocando, pad A1 »
+#36 ROUTE padlive | MODE simple | EMPREINTE 29de07360d | project=p-33f607e4 no tuto
+#36 SON Son : les pads live 3, 4 jouent en boucle.
+#36 > touche 303 260
+#36 DOIGT padlive_pad_2 « Loop Acid 303, loop, tocando, pad A3 »
+#37 ROUTE padlive | MODE simple | EMPREINTE dd889b672a | project=p-33f607e4 no tuto
+#37 SON Son : le pad live 4 joue en boucle.
+#37 > touche 419 260
+#37 DOIGT padlive_pad_3 « Loop de baixo, loop, tocando, pad A4 »
+#38 ROUTE padlive | MODE simple | EMPREINTE 48902286be | project=p-33f607e4 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 71 520
+#38 DOIGT padlive_pad_8 « Minha gravação 1, loop, pronto, pad A9 »
+#39 ROUTE padlive | MODE simple | EMPREINTE 2b6abf8f1d | project=p-33f607e4 no tuto
+#39 SON Son : le pad live 9 joue en boucle.
+#39 > touche 51 45
+#39 DOIGT padlive_back
+#40 ROUTE launch | MODE simple | EMPREINTE 82e7060938 | project=p-33f607e4 no tuto
+#40 SON Son : le pad live 9 joue en boucle.
+#40 LAYOUT CUT « Separação das faixas: bateria, baixo, voz e o resto. » ellipsized (« … »)
+#40 LAYOUT OVERLAP « Live » over « BenStudio » (23 x 2 dp)
+#40 LAYOUT OVERLAP « Simples » over « BenStudio » (49 x 10 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over « ● » (11 x 17 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over «  REC » (23 x 13 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over « ✎ » (13 x 17 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over «  Anotar » (34 x 13 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over « ⋯ » (13 x 19 dp)
+#40 LAYOUT OVERLAP « BenStudio » over the touchable « Modo Simples. Toque para mudar de modo.  » (59 x 24 dp)
+#40 LAYOUT OVERLAP « BenStudio » over the touchable « Andamento: 140 BPM Mudar o andamento » (31 x 16 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Andamento: 140 BPM Mudar o andamento » (71 x 30 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Identificar a tela » (21 x 30 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Gravar a tela com som » (42 x 26 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Escrever uma nota » (54 x 26 dp)
+#40 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Modo comentários » (30 x 26 dp)
+#40 LAYOUT OVERLAP « Abrir outra música, copiar ou renomear. » over the touchable « Recolher Expandido » (99 x 29 dp)
+#40 LAYOUT OVERLAP « Abrir outra música, copiar ou renomear. » over the touchable « O que é “Passo”? » (29 x 29 dp)
+#40 LAYOUT OVERLAP « Remix » over the touchable « Passo 3 Colocar ou tirar vazio » (35 x 15 dp)
+#40 LAYOUT OVERLAP « Remix » over the touchable « Passo 4 Colocar ou tirar vazio » (23 x 15 dp)
+#40 LAYOUT OVERLAP « Remix » over the touchable « Passo 11 Colocar ou tirar vazio » (35 x 9 dp)
+#40 LAYOUT OVERLAP « Remix » over the touchable « Passo 12 Colocar ou tirar vazio » (23 x 9 dp)
+#40 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Passo 11 Colocar ou tirar vazio » (35 x 33 dp)
+#40 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Passo 12 Colocar ou tirar vazio » (35 x 33 dp)
+#40 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Passo 13 Colocar ou tirar vazio » (35 x 33 dp)
+#40 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Passo 14 Colocar ou tirar vazio » (35 x 33 dp)
+#40 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Passo 15 Colocar ou tirar vazio » (25 x 33 dp)
+#40 LAYOUT OVERLAP « Pad Live » over the touchable « Abrir o Guia recolhido » (89 x 24 dp)
+#40 LAYOUT OVERLAP « NOVO » over the touchable « Abrir o Guia recolhido » (38 x 16 dp)
+#40 LAYOUT OVERLAP « Pads prontos para tocar, seus sons, efeitos de palco. Já sai som na hora. » over the touchable « Abrir o Guia recolhido » (173 x 22 dp)
+#40 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#40 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#40 > touche 270 1039
+#40 DOIGT launch_padlive « Pad Live »
+#41 ROUTE padlive | MODE simple | EMPREINTE 4b7aac72a4 | project=p-33f607e4 no tuto
+#41 SON Son : le pad live 9 joue en boucle.
+#41 > touche 480 45
+#41 DOIGT live_record « Gravar a performance »
+#42 ROUTE padlive | MODE simple | EMPREINTE 1028e36e14 | project=p-33f607e4 no tuto
+#42 SON Son : la musique du projet joue en boucle ; le pad live 9 joue en boucle.
+#42 LAYOUT OVERLAP « A » over the touchable « Página C · vazio » (7 x 8 dp)
+#42 LAYOUT OVERLAP « C » over the touchable « Tocar a partir de uma parte » (12 x 22 dp)
+#42 LAYOUT OVERLAP « D » over the touchable « Tocar a partir de uma parte » (11 x 22 dp)
+#42 > touche 303 390
+#42 DOIGT padlive_pad_6 « Sirene, batida, pronto, pad A7 »
+#43 ROUTE padlive | MODE simple | EMPREINTE 495a84dc98 | project=p-33f607e4 no tuto
+#43 SON Son : la musique du projet joue en boucle ; le pad live 9 joue en boucle.
+#43 > touche 480 45
+#43 DOIGT live_record « Terminar o take e escrever a música »
+#44 ROUTE dialogue:« Os pads live do seu take estão » | MODE simple | EMPREINTE 2b37d74d01 | project=p-33f607e4 no tuto
+#44 SON Son : la musique du projet joue en boucle ; le pad live 9 joue en boucle.
+#44 LAYOUT CONTRAST « Entendi » 3.84:1 (needs 4.5:1, 14 sp)
+#44 > touche 446 633
+#44 DOIGT #2762 « Entendi »
+#45 ROUTE padlive | MODE simple | EMPREINTE f00093d373 | project=p-33f607e4 no tuto
+#45 SON Son : la musique du projet joue en boucle ; le pad live 9 joue en boucle.
+#45 LAYOUT CUT « Performance salva · 0:03 » ellipsized (« … »)
+#45 LAYOUT OVERLAP « Clap » over « Loop de kick » (32 x 11 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over « ● » (3 x 7 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over «  REC » (23 x 5 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over « ✎ » (13 x 7 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over «  Anotar » (34 x 5 dp)
+#45 LAYOUT OVERLAP « Clap » over the touchable « Loop de kick, loop, pronto, pad A1 » (32 x 17 dp)
+#45 LAYOUT OVERLAP « Clap » over the touchable « Ajustes do pad » (32 x 6 dp)
+#45 LAYOUT OVERLAP « Festa » over the touchable « Tocar a partir de uma parte » (5 x 22 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over the touchable « Gravar a tela com som » (29 x 16 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over the touchable « Escrever uma nota » (54 x 16 dp)
+#45 LAYOUT OVERLAP « Compartilhar » over the touchable « Modo comentários » (9 x 16 dp)
+#45 LAYOUT OVERLAP « + » over the touchable « Recolher Expandido » (17 x 21 dp)
+#45 LAYOUT OVERLAP « + » over the touchable « Recolher Expandido » (5 x 21 dp)
+#45 LAYOUT CONTRAST « A » 1.76:1 (needs 3.0:1, 14 sp)
+#45 LAYOUT CONTRAST « Ouvir » 3.63:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « ● » 2.60:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « ✎ » 3.36:1 (needs 4.5:1, 13 sp)
+#45 > touche 221 225
+#45 DOIGT padlive_perf_listen « Ouvir »
+#46 ROUTE padlive | MODE simple | EMPREINTE 48902286be | project=p-33f607e4 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT OVERLAP « A » over the touchable « Página C · vazio » (11 x 8 dp)
+#46 > attends 2
+#47 ROUTE padlive | MODE simple | EMPREINTE 48902286be | project=p-33f607e4 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 51 45
+#47 DOIGT padlive_back
+#48 ROUTE launch | MODE simple | EMPREINTE cb81b88be1 | project=p-33f607e4 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « BenStudio » over the touchable « Tocar a partir de uma parte » (51 x 16 dp)
+#48 LAYOUT OVERLAP « O que você quer fazer? » over the touchable « Tocar a partir de uma parte » (100 x 30 dp)
+#48 LAYOUT OVERLAP « ● » over the touchable « Tocar a partir de uma parte » (11 x 17 dp)
+#48 > touche 270 294
+#48 DOIGT launch_continue « Continuar »
+#49 ROUTE padlive | MODE simple | EMPREINTE 48902286be | project=p-33f607e4 no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « A » over « EFEITOS DE PALCO » (10 x 9 dp)
+#49 LAYOUT OVERLAP « ? » over the touchable « vazio, pad A14 » (7 x 15 dp)
+#49 LAYOUT OVERLAP « loop » over the touchable « Recolher Expandido » (28 x 16 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Recolher Expandido » (40 x 16 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Trocar o som de Bateria » (28 x 16 dp)
+#49 LAYOUT OVERLAP « Buzina » over the touchable « Trocar o som de Synth » (25 x 17 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Trocar o som de Bateria » (23 x 16 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (13 x 16 dp)
+#49 LAYOUT OVERLAP « Laser » over the touchable « Trocar o som de Synth » (33 x 17 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (40 x 16 dp)
+#49 LAYOUT OVERLAP « Sirene » over the touchable « Ouvir “Synth” sozinho, em loop Ouvir soz » (45 x 13 dp)
+#49 LAYOUT OVERLAP « batida » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (16 x 16 dp)
+#49 LAYOUT OVERLAP « Grito “Go go go!” » over the touchable « Ouvir “Synth” sozinho, em loop Ouvir soz » (25 x 13 dp)
+#49 LAYOUT OVERLAP « loop » over the touchable « Trocar o som de Synth » (28 x 16 dp)
+#49 LAYOUT OVERLAP « Minha gravação 1 » over the touchable « Trocar o som de Pads live » (27 x 28 dp)
+#49 LAYOUT OVERLAP « + » over the touchable « Trocar o som de Synth » (17 x 3 dp)
+#49 LAYOUT OVERLAP « + » over the touchable « Trocar o som de Pads live » (17 x 11 dp)
+#49 LAYOUT OVERLAP « + » over the touchable « Ouvir “Pads live” sozinho, em loop Ouvir » (17 x 7 dp)
+#49 LAYOUT OVERLAP « + » over the touchable « Ouvir “Pads live” sozinho, em loop Ouvir » (9 x 7 dp)
+#49 LAYOUT OVERLAP « EFEITOS DE PALCO » over the touchable « Acordes da música » (106 x 18 dp)
+#49 LAYOUT OVERLAP « ? » over the touchable « Acordes da música » (7 x 15 dp)
+#49 LAYOUT OVERLAP « Aperte e segure » over the touchable « Acordes da música » (86 x 18 dp)
+#49 > touche 192 45
+#49 DOIGT padlive_play « Tocar »
+#50 ROUTE padlive | MODE simple | EMPREINTE 568c7def31 | project=p-33f607e4 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 446 1119
+#50 DOIGT padlive_more « Mais »
+#51 ROUTE padlive | MODE simple | EMPREINTE f34c0be95a | project=p-33f607e4 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CUT « Pads grandes » ellipsized (« … »)
+#51 LAYOUT OVERLAP « A » over « Parar tudo » (4 x 5 dp)
+#51 LAYOUT OVERLAP « ? » over the touchable « O que é “Efeitos de cena”? » (7 x 8 dp)
+#51 LAYOUT OVERLAP « Loop de kick » over the touchable « Ajustes do pad » (49 x 11 dp)
+#51 LAYOUT OVERLAP « Loop Acid 303 » over the touchable « Ajustes do pad » (46 x 3 dp)
+#51 LAYOUT OVERLAP « Loop de baixo » over the touchable « Ajustes do pad » (46 x 7 dp)
+#51 LAYOUT OVERLAP « Buzina » over the touchable « Trocar o som de Bateria » (25 x 9 dp)
+#51 LAYOUT OVERLAP « Laser » over the touchable « Trocar o som de Bateria » (33 x 9 dp)
+#51 LAYOUT OVERLAP « Sirene » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (45 x 5 dp)
+#51 LAYOUT OVERLAP « Grito “Go go go!” » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (25 x 17 dp)
+#51 LAYOUT OVERLAP « Grito “Go go go!” » over the touchable « Ajustes do pad » (49 x 3 dp)
+#51 LAYOUT OVERLAP « Minha gravação 1 » over the touchable « Trocar o som de Synth » (27 x 13 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Trocar o som de Synth » (17 x 31 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Ouvir “Synth” sozinho, em loop Ouvir soz » (17 x 27 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Ouvir “Synth” sozinho, em loop Ouvir soz » (9 x 27 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Trocar o som de Pads live » (12 x 29 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Trocar o som de Pads live » (17 x 29 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Ouvir “Pads live” sozinho, em loop Ouvir » (17 x 25 dp)
+#51 LAYOUT OVERLAP « + » over the touchable « Ouvir “Pads live” sozinho, em loop Ouvir » (9 x 25 dp)
+#51 LAYOUT OVERLAP « EFEITOS DE PALCO » over the touchable « Recolher Expandido » (106 x 10 dp)
+#51 LAYOUT OVERLAP « EFEITOS DE PALCO » over the touchable « O que é “Música”? » (6 x 10 dp)
+#51 LAYOUT OVERLAP « ? » over the touchable « Recolher Expandido » (7 x 9 dp)
+#51 LAYOUT OVERLAP « ? » over the touchable « O que é “Música”? » (7 x 9 dp)
+#51 LAYOUT OVERLAP « 4 compassos » over the touchable « Acordes da música » (79 x 12 dp)
+#51 LAYOUT OVERLAP « freada » over the touchable « Acordes da música » (41 x 12 dp)
+#51 LAYOUT OVERLAP « 1/16 » over the touchable « Acordes da música » (26 x 12 dp)
+#51 LAYOUT OVERLAP « Parar tudo » over the touchable « Acordes da música » (67 x 18 dp)
+#51 LAYOUT OVERLAP « Cancelar » over the touchable « Acordes da música » (57 x 18 dp)
+#51 LAYOUT OVERLAP « Blocos » over the touchable « Acordes da música » (43 x 18 dp)
+#51 LAYOUT OVERLAP « Efeitos » over the touchable « Abrir o Guia recolhido » (43 x 18 dp)
+#51 LAYOUT OVERLAP « Pads grandes » over the touchable « Abrir o Guia recolhido » (56 x 18 dp)
+#51 LAYOUT OVERLAP « Compartilhar » over the touchable « Abrir o Guia recolhido » (56 x 18 dp)
+#51 LAYOUT OVERLAP « ? » over the touchable « Abrir o Guia recolhido » (7 x 15 dp)
+#51 LAYOUT CONTRAST « A » 1.74:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « loop » 4.40:1 (needs 4.5:1, 12 sp)
+#51 > touche 90 1029
+#51 DOIGT padlive_effects « Efeitos »
+#52 ROUTE dialogue:effects_box_3 | MODE simple | EMPREINTE d6f848a4f2 | project=p-33f607e4 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT CONTRAST « Nenhum por enquanto: adicione um efeito ou toque num clima pronto. » 2.44:1 (needs 4.5:1, 13 sp)
+#52 LAYOUT CONTRAST « Acid » 1.89:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Techno » 4.14:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « DnB » 4.15:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Dubstep » 1.89:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Voz de rap » 1.26:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Voz clara » 1.26:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Rádio velho » 2.28:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Telefone » 2.28:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Segure o dedo num clima para ouvi-lo; solte e seu som volta. » 2.01:1 (needs 4.5:1, 13 sp)
+#52 LAYOUT CONTRAST « Pad XY, cima-baixo: » 2.02:1 (needs 4.5:1, 13 sp)
+#52 LAYOUT CONTRAST « Fechar » 3.00:1 (needs 4.5:1, 14 sp)
+#52 > touche 136 694
+#52 DOIGT fx_preset_radio « Rádio velho »
+#53 ROUTE dialogue:effects_box_3 | MODE simple | EMPREINTE 913887b90c | project=p-33f607e4 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT CONTRAST « 1. Filtro » 2.84:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST «   Adicionar um efeito » 4.19:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « “Rádio velho” também ajusta: » 1.30:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Sujeira » 4.13:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « 40% » 1.23:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Climas prontos » 1.95:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « ? » 1.95:1 (needs 4.5:1, 12 sp)
+#53 LAYOUT CONTRAST « Favoritos » 1.98:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Dub profundo » 2.04:1 (needs 4.5:1, 14 sp)
+#53 > touche 435 1098
+#53 DOIGT fx_close « Fechar »
+#54 ROUTE padlive | MODE simple | EMPREINTE f34c0be95a | project=p-33f607e4 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 51 45
+#54 DOIGT padlive_back
+#55 ROUTE launch | MODE simple | EMPREINTE cb81b88be1 | project=p-33f607e4 no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT OVERLAP « Continuar » over the touchable « Recolher Expandido » (79 x 8 dp)
+#55 LAYOUT OVERLAP « Simples » over the touchable « Recolher Expandido » (37 x 5 dp)
+#55 LAYOUT OVERLAP « 0:03 · 1 parte » over the touchable « Trocar o som de Bateria » (89 x 24 dp)
+#55 LAYOUT OVERLAP « editado agora mesmo » over the touchable « Trocar o som de Bateria » (89 x 20 dp)
+#55 LAYOUT OVERLAP « editado agora mesmo » over the touchable « Ouvir “Bateria” sozinho, em loop Ouvir s » (46 x 20 dp)
+#55 LAYOUT OVERLAP « Nova música » over the touchable « Trocar o som de Synth » (33 x 28 dp)
+#55 LAYOUT OVERLAP « Nova música » over the touchable « Ouvir “Synth” sozinho, em loop Ouvir soz » (100 x 27 dp)
+#55 LAYOUT OVERLAP « Um estilo com um toque, ou passo a passo com o assistente. » over the touchable « Trocar o som de Pads live » (33 x 41 dp)
+#55 LAYOUT OVERLAP « Um estilo com um toque, ou passo a passo com o assistente. » over the touchable « Ouvir “Pads live” sozinho, em loop Ouvir » (128 x 37 dp)
+#55 LAYOUT OVERLAP « Meus projetos » over the touchable « Recolher Expandido » (57 x 9 dp)
+#55 LAYOUT OVERLAP « Meus projetos » over the touchable « O que é “Música”? » (29 x 9 dp)
+#55 LAYOUT OVERLAP « Abrir outra música, copiar ou renomear. » over the touchable « Recolher Expandido » (57 x 17 dp)
+#55 LAYOUT OVERLAP « Abrir outra música, copiar ou renomear. » over the touchable « O que é “Música”? » (29 x 17 dp)
+#55 LAYOUT OVERLAP « Separação das faixas: bateria, baixo, voz e o resto. » over the touchable « Acordes da música » (183 x 34 dp)
+#55 LAYOUT OVERLAP « Pad Live » over the touchable « Acordes da música » (89 x 4 dp)
+#55 > touche 270 694
+#55 DOIGT launch_projects « Meus projetos »
+#56 ROUTE dialogue:projects | MODE simple | EMPREINTE c5743c8345 | project=p-33f607e4 no tuto
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST «   Nova música guiada » 3.24:1 (needs 4.5:1, 16 sp)
+#56 > touche 200 466
+#56 DOIGT project_p-33f607e4 « Live »
+#57 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7956fb3979 | project=p-33f607e4 no tuto
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « Salvo » wider than its box (by 14.6 dp)
+#57 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#57 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#57 > touche 312 562
+#57 DOIGT simple_alone_audio:0 « Ouvir “Pads live” sozinho, em loop »
+#58 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE fa91054c8c | project=p-33f607e4 no tuto
+#58 SON Son : la musique du projet joue en boucle.
+#58 > fin
+#58 FIN : fin

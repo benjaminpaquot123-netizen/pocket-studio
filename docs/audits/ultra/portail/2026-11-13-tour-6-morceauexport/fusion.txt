@@ -1,0 +1,8 @@
+fusion: ebd06ef3a740b318fc4640240b618d47d3fa7165
+branche: eq/tour-6-morceauexport
+tete: 6a6fd09a1e2fb83f74d8c645d9f9cc93b633bd67
+relecture: docs/audits/ultra/tour-6-morceauexport-relecture.md
+relu: 813c34f6680fe5ea632c647134486529e86d1045
+filtres: *Lot6* *NewSongPartSceneTest *BenchTour1Test *BenchAmeneesTest *BenchSelfTest *ShareSheet* *TrackBar* *ExportCard* *ProjectsTrash* *PadLiveTake* *TutoKit* *Lot6* *NewSongPartSceneTest *BenchTour1Test *BenchAmeneesTest *BenchSelfTest *ShareSheet* *TrackBar* *ExportCard* *ProjectsTrash* *PadLiveTake* *TutoKit*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

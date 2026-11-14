@@ -1,0 +1,66 @@
+Écran 22 (588x1278)
+icône − @ 135,49
+texte « 120 BPM » @ 211,48
+icône + @ 288,49
+bouton ▶ @ 378,48
+texte « REC » @ 465,48
+icône (carré dans un rond) « Hepsini durdur » @ 538,48
+icône ← @ 45,48
+texte « Dokun: çal · uzun bas: değiştir » @ 148,140
+texte « Pad'ler » @ 338,140
+icône − [désactivé] @ 423,140
+texte « 16 » @ 480,140
+icône + [désactivé] @ 537,140
+icône ◎ @ 80,618
+texte « Kick döngüsü » @ 80,625
+texte « 1 ölçü » @ 81,656
+icône (main) @ 223,618
+texte « Clap » @ 224,625
+texte « bir kez » @ 223,656
+icône ♪ @ 366,618
+texte « Acid 303 döngüsü » @ 366,625
+texte « 1 ölçü » @ 367,656
+icône ♪ @ 508,618
+texte « Bas döngüsü » @ 508,625
+texte « 2 ölçü » @ 508,656
+icône ♪ @ 80,761
+texte « Korna » @ 81,768
+texte « bir kez » @ 81,799
+icône ♪ @ 223,761
+texte « Lazer » @ 223,768
+texte « bir kez » @ 223,799
+icône ♪ @ 366,761
+texte « Siren » @ 366,768
+texte « bir kez » @ 366,799
+icône ♪ @ 508,761
+texte « Bağırış “Go go go!” » @ 508,768
+texte « bir kez » @ 508,799
+icône ◎ @ 80,904
+texte « Kick » @ 81,911
+texte « bir kez » @ 80,942
+icône ♪ @ 223,904
+texte « Trampet » @ 224,911
+texte « bir kez » @ 224,942
+icône (points en rond) @ 366,904
+texte « Hi-hat » @ 366,911
+texte « bir kez » @ 366,942
+icône (points en rond) @ 508,904
+texte « Açık hi-hat » @ 508,911
+texte « bir kez » @ 508,942
+icône ♪ @ 80,1047
+texte « Yükseliş » @ 81,1054
+texte « bir kez » @ 81,1085
+icône ♪ @ 223,1047
+texte « Darbe » @ 223,1054
+texte « bir kez » @ 223,1085
+icône ♪ @ 366,1047
+texte « Düşüş » @ 367,1054
+texte « bir kez » @ 367,1085
+icône ♪ @ 508,1047
+texte « “Go!” » @ 508,1054
+texte « bir kez » @ 508,1085
+bouton (curseurs) « Canlı efektler » ⌃ @ 294,1167
+texte « ●  REC » @ 360,1248
+texte « ✎  Not al » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 162,1248

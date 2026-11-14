@@ -1,0 +1,647 @@
+#0 SIEGE lang=fr device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 6129f59818 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT ? UnknownFormatConversionException: Conversion = ' '
+#1 > touche 518 294
+#1 DOIGT launch_continue « Continuer »
+#2 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 3f54b16f23 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Effets » wider than its box (by 7.3 dp)
+#2 LAYOUT CONTRAST « Effets » 2.90:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Hauteur » 1.32:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#2 > touche 688 183
+#2 DOIGT track_0 « Synthé »
+#3 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b64ba6e7c4 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#3 > touche 827 186
+#3 DOIGT track_sound_0
+#4 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d3ebfc6c27 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Son de : Synthé » over the touchable « Fermer la feuille » (167 x 28 dp)
+#4 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (418 x 18 dp)
+#4 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#4 LAYOUT OVERLAP « Basses » over the touchable « Fermer la feuille » (55 x 24 dp)
+#4 LAYOUT OVERLAP « Basse ronde » over the touchable « Fermer la feuille » (84 x 17 dp)
+#4 LAYOUT OVERLAP « Scie · tenu » over the touchable « Fermer la feuille » (64 x 16 dp)
+#4 LAYOUT OVERLAP « Basse sub » over the touchable « Fermer la feuille » (70 x 17 dp)
+#4 LAYOUT OVERLAP « Triangle · tenu » over the touchable « Fermer la feuille » (86 x 16 dp)
+#4 LAYOUT OVERLAP « Basse reese » over the touchable « Fermer la feuille » (82 x 17 dp)
+#4 LAYOUT OVERLAP « Reese moderne » over the touchable « Fermer la feuille » (105 x 17 dp)
+#4 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Fermer la feuille » (109 x 16 dp)
+#4 LAYOUT OVERLAP « Basse wobble » over the touchable « Fermer la feuille » (94 x 17 dp)
+#4 LAYOUT OVERLAP « Basse qui parle » over the touchable « Fermer la feuille » (104 x 17 dp)
+#4 LAYOUT OVERLAP « Basse growl » over the touchable « Fermer la feuille » (83 x 17 dp)
+#4 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Fermer la feuille » (110 x 16 dp)
+#4 LAYOUT OVERLAP « Reese DnB » over the touchable « Fermer la feuille » (72 x 17 dp)
+#4 LAYOUT OVERLAP « Basse riddim » over the touchable « Fermer la feuille » (88 x 17 dp)
+#4 LAYOUT OVERLAP « Carré · tenu » over the touchable « Fermer la feuille » (70 x 16 dp)
+#4 LAYOUT OVERLAP « Basse neuro » over the touchable « Fermer la feuille » (84 x 17 dp)
+#4 LAYOUT OVERLAP « Sub pur » over the touchable « Fermer la feuille » (53 x 17 dp)
+#4 LAYOUT OVERLAP « Basse roulante » over the touchable « Fermer la feuille » (100 x 17 dp)
+#4 LAYOUT OVERLAP « Basse pluck » over the touchable « Fermer la feuille » (82 x 17 dp)
+#4 LAYOUT OVERLAP « Scie · court » over the touchable « Fermer la feuille » (69 x 16 dp)
+#4 LAYOUT OVERLAP « 808 synthé » over the touchable « Fermer la feuille » (76 x 17 dp)
+#4 LAYOUT OVERLAP « Donk » over the touchable « Fermer la feuille » (35 x 17 dp)
+#4 LAYOUT OVERLAP « Triangle · court » over the touchable « Fermer la feuille » (91 x 16 dp)
+#4 LAYOUT OVERLAP « Sub chaud » over the touchable « Fermer la feuille » (72 x 17 dp)
+#4 LAYOUT OVERLAP « Au hasard » over the touchable « Fermer la feuille » (70 x 20 dp)
+#4 LAYOUT OVERLAP « Garder ce son » over the touchable « Fermer la feuille » (96 x 20 dp)
+#4 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (393 x 18 dp)
+#4 LAYOUT OVERLAP « INSTRUMENTS RÉELS » over the touchable « Fermer la feuille » (147 x 16 dp)
+#4 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (597 x 31 dp)
+#4 LAYOUT CONTRAST « Son de : Synthé » 1.71:1 (needs 3.0:1, 22 sp)
+#4 LAYOUT CONTRAST « Scie · tenu » 2.32:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Basse wobble » 1.89:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Basse qui parle » 1.89:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « Scie · 3 voix · tenu » 1.81:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « INSTRUMENTS RÉELS » 3.26:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » 2.26:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT LABEL « #1499 » long press without text nor description
+#4 > touche 287 286
+#4 DOIGT synth_sounds_0 « Basse ronde »
+#5 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1dc37d33ff | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 726 186
+#5 DOIGT track_0 « Synthé »
+#6 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 5f061cb1a0 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Geler la piste (rendu audio, moins de calcul) » 3.07:1 (needs 4.5:1, 14 sp)
+#6 > touche 617 267
+#6 DOIGT track_menu_sheet « Fiche de la piste (couches, historique) »
+#7 ROUTE dialogue:track_sheet | MODE pro | EMPREINTE bcc5d663a0 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Fiche : Synthé » over the touchable « Fermer la feuille » (151 x 28 dp)
+#7 LAYOUT OVERLAP « Son, quand, quels effets, combien de fois, ailleurs : tout sur cette piste. » over the touchable « Fermer la feuille » (427 x 18 dp)
+#7 LAYOUT OVERLAP « SON » over the touchable « Fermer la feuille » (29 x 16 dp)
+#7 LAYOUT OVERLAP « Basse ronde » over the touchable « Fermer la feuille » (96 x 24 dp)
+#7 LAYOUT OVERLAP « Écouter seule » over the touchable « Fermer la feuille » (96 x 20 dp)
+#7 LAYOUT OVERLAP « Changer le son » over the touchable « Fermer la feuille » (103 x 20 dp)
+#7 LAYOUT OVERLAP « Couches (1/4 sons) » over the touchable « Fermer la feuille » (133 x 20 dp)
+#7 LAYOUT OVERLAP « QUAND » over the touchable « Fermer la feuille » (49 x 16 dp)
+#7 LAYOUT OVERLAP « Pas encore de morceau : la piste joue dans la boucle. » over the touchable « Fermer la feuille » (352 x 20 dp)
+#7 LAYOUT OVERLAP « Le style conseille : Elle joue la note de chaque accord dans le grave : le lien entre la batterie et l'harmonie. » over the touchable « Fermer la feuille » (570 x 36 dp)
+#7 LAYOUT OVERLAP « QUEL EFFET ET COMBIEN » over the touchable « Fermer la feuille » (174 x 16 dp)
+#7 LAYOUT OVERLAP « Aucun effet : le son passe tel quel. » over the touchable « Fermer la feuille » (226 x 20 dp)
+#7 LAYOUT OVERLAP « Envois : réverbe 0 %, écho 0 % » over the touchable « Fermer la feuille » (208 x 20 dp)
+#7 LAYOUT OVERLAP « Régler les effets » over the touchable « Fermer la feuille » (110 x 20 dp)
+#7 LAYOUT OVERLAP « COMBIEN DE FOIS » over the touchable « Fermer la feuille » (123 x 16 dp)
+#7 LAYOUT OVERLAP « Une seule chaîne pour tout le morceau. » over the touchable « Fermer la feuille » (258 x 20 dp)
+#7 LAYOUT OVERLAP « Aucune courbe ne la fait bouger. » over the touchable « Fermer la feuille » (197 x 18 dp)
+#7 LAYOUT OVERLAP « AILLEURS ? » over the touchable « Fermer la feuille » (77 x 16 dp)
+#7 LAYOUT OVERLAP « ↗ » over the touchable « Fermer la feuille » (13 x 24 dp)
+#7 LAYOUT OVERLAP « Garder ce son dans mes favoris » over the touchable « Fermer la feuille » (245 x 24 dp)
+#7 LAYOUT CONTRAST « Changer le son » 2.36:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « QUAND » 1.91:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « Le style conseille : Elle joue la note de chaque accord dans le grave : le lien entre la batterie et l'harmonie. » 1.34:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « QUEL EFFET ET COMBIEN » 4.10:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT LABEL « #1844 » long press without text nor description
+#7 > touche 205 834
+#7 DOIGT track_sheet_effects « Régler les effets »
+#8 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE e21b6ef7ff | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Basse grasse » 4.37:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Pompe » 1.81:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Croustillant » 1.79:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Fermer » 3.26:1 (needs 4.5:1, 14 sp)
+#8 > touche 517 213
+#8 DOIGT fx_add_2 «   Ajouter un effet »
+#9 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE 3920b4c26a | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Trémolo » 1.32:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « Wah-wah » 3.70:1 (needs 4.5:1, 14 sp)
+#9 > touche 307 561
+#9 DOIGT fx_pick_2_FILTER « Filtre »
+#10 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE 954e38393e | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Filtre » over the touchable « Fermer la feuille » (39 x 24 dp)
+#10 LAYOUT CONTRAST « 20 % » 2.52:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « Filtre » 3.21:1 (needs 4.5:1, 14 sp)
+#10 > touche 746 756
+#10 DOIGT rien
+#11 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE 954e38393e | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 > glisse 599 288 380 288
+#11 DOIGT fxp_2_0_0 « Coupure »
+#12 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE 6f997dea04 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 357 825
+#12 DOIGT fx_pick_2_SATURATION « Saturation »
+#13 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE bc3d8e5019 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Saturation » over the touchable « Fermer la feuille » (81 x 24 dp)
+#13 LAYOUT CONTRAST « 30 % » 2.48:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « 100 % » 3.98:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT CONTRAST « Saturation » 3.21:1 (needs 4.5:1, 14 sp)
+#13 > touche 891 1171
+#13 DOIGT fx_close « Fermer »
+#14 ROUTE dialogue:track_sheet | MODE pro | EMPREINTE b8cc3df11e | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 1. » over the touchable « Fermer la feuille » (11 x 20 dp)
+#14 LAYOUT OVERLAP « Coupure 364 Hz » over the touchable « Fermer la feuille » (104 x 18 dp)
+#14 LAYOUT OVERLAP « Un passe-haut vers 80 Hz : le sub garde le tout grave. » over the touchable « Fermer la feuille » (327 x 18 dp)
+#14 LAYOUT OVERLAP « 2. » over the touchable « Fermer la feuille » (13 x 20 dp)
+#14 LAYOUT OVERLAP « Drive 30 % » over the touchable « Fermer la feuille » (70 x 18 dp)
+#14 LAYOUT OVERLAP « Un peu de grain : on l'entend mieux, même sur un téléphone. » over the touchable « Fermer la feuille » (367 x 18 dp)
+#14 LAYOUT CONTRAST « AILLEURS ? » 2.04:1 (needs 4.5:1, 12 sp)
+#14 > touche 461 354
+#14 DOIGT track_sheet_layers « Couches (1/4 sons) »
+#15 ROUTE dialogue:layers_editor | MODE pro | EMPREINTE 59d5009c6e | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Couches de : Synthé » over the touchable « Fermer la feuille » (220 x 28 dp)
+#15 LAYOUT OVERLAP « Jusqu'à 4 sons qui jouent les mêmes notes, chacun à sa place. » over the touchable « Fermer la feuille » (381 x 18 dp)
+#15 LAYOUT OVERLAP « SON DE LA PISTE » over the touchable « Fermer la feuille » (118 x 16 dp)
+#15 LAYOUT OVERLAP « AJOUTER UNE COUCHE » over the touchable « Fermer la feuille » (159 x 16 dp)
+#15 LAYOUT OVERLAP « Qu'est-ce qui manque ? » over the touchable « Fermer la feuille » (157 x 20 dp)
+#15 LAYOUT OVERLAP « + » over the touchable « Fermer la feuille » (11 x 24 dp)
+#15 LAYOUT OVERLAP « Sub » over the touchable « Fermer la feuille » (31 x 24 dp)
+#15 LAYOUT OVERLAP « Un grave propre et centré, sous le reste » over the touchable « Fermer la feuille » (238 x 18 dp)
+#15 LAYOUT OVERLAP « Corps » over the touchable « Fermer la feuille » (47 x 24 dp)
+#15 LAYOUT OVERLAP « Plus de corps, dans le médium » over the touchable « Fermer la feuille » (186 x 18 dp)
+#15 LAYOUT OVERLAP « Attaque » over the touchable « Fermer la feuille » (60 x 24 dp)
+#15 LAYOUT OVERLAP « Plus de claquant au début des notes » over the touchable « Fermer la feuille » (220 x 18 dp)
+#15 LAYOUT OVERLAP « Air » over the touchable « Fermer la feuille » (22 x 24 dp)
+#15 LAYOUT OVERLAP « Plus d'air, une octave au-dessus » over the touchable « Fermer la feuille » (197 x 18 dp)
+#15 LAYOUT CONTRAST « SON DE LA PISTE » 1.60:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « + » 1.41:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT LABEL « #2526 » long press without text nor description
+#15 > retour
+#15 RETOUR
+#16 ROUTE dialogue:track_sheet | MODE pro | EMPREINTE b8cc3df11e | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > retour
+#16 RETOUR
+#17 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1dc37d33ff | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > glisse 518 880 518 330
+#17 DOIGT rien
+#18 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 29f17142b3 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > glisse 518 860 518 300
+#18 DOIGT rien
+#19 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2ed8ce47ed | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Basse ronde » over «   Clavier » (13 x 2 dp)
+#19 LAYOUT OVERLAP « Basse reese » over the touchable « Ré 4 Jouer » (33 x 17 dp)
+#19 LAYOUT OVERLAP « Basse reese » over the touchable « Mi 4 Jouer » (45 x 17 dp)
+#19 LAYOUT OVERLAP « Basse reese » over the touchable « Ré# 4 Jouer » (30 x 17 dp)
+#19 LAYOUT OVERLAP « Scie · tenu » over the touchable « Ré 4 Jouer » (13 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · tenu » over the touchable « Mi 4 Jouer » (45 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · tenu » over the touchable « Ré# 4 Jouer » (29 x 16 dp)
+#19 LAYOUT OVERLAP « Reese moderne » over the touchable « Ré 5 Jouer » (44 x 17 dp)
+#19 LAYOUT OVERLAP « Reese moderne » over the touchable « Mi 5 Jouer » (45 x 17 dp)
+#19 LAYOUT OVERLAP « Reese moderne » over the touchable « Fa 5 Jouer » (11 x 17 dp)
+#19 LAYOUT OVERLAP « Reese moderne » over the touchable « Do# 5 Jouer » (10 x 17 dp)
+#19 LAYOUT OVERLAP « Reese moderne » over the touchable « Ré# 5 Jouer » (30 x 17 dp)
+#19 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Ré 5 Jouer » (24 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Mi 5 Jouer » (45 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Fa 5 Jouer » (35 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Ré# 5 Jouer » (30 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · 5 voix · tenu » over the touchable « Fa# 5 Jouer » (8 x 16 dp)
+#19 LAYOUT OVERLAP « Basse wobble » over the touchable « Ré 4 Jouer » (33 x 17 dp)
+#19 LAYOUT OVERLAP « Basse wobble » over the touchable « Mi 4 Jouer » (45 x 17 dp)
+#19 LAYOUT OVERLAP « Basse wobble » over the touchable « Fa 4 Jouer » (11 x 17 dp)
+#19 LAYOUT OVERLAP « Basse qui parle » over the touchable « Ré 5 Jouer » (44 x 17 dp)
+#19 LAYOUT OVERLAP « Basse qui parle » over the touchable « Mi 5 Jouer » (45 x 17 dp)
+#19 LAYOUT OVERLAP « Basse qui parle » over the touchable « Fa 5 Jouer » (10 x 17 dp)
+#19 LAYOUT OVERLAP « Scie · tenu » over the touchable « Ré 5 Jouer » (24 x 16 dp)
+#19 LAYOUT OVERLAP « Scie · tenu » over the touchable « Mi 5 Jouer » (37 x 16 dp)
+#19 LAYOUT CONTRAST « Triangle · tenu » 1.41:1 (needs 4.5:1, 12 sp)
+#19 > glisse 518 620 518 260
+#19 DOIGT rien
+#20 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9a246684a1 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « Basse riddim » over the touchable « Ré 4 Jouer » (33 x 8 dp)
+#20 LAYOUT OVERLAP « Basse riddim » over the touchable « Mi 4 Jouer » (45 x 8 dp)
+#20 LAYOUT OVERLAP « Basse riddim » over the touchable « Fa 4 Jouer » (5 x 8 dp)
+#20 LAYOUT OVERLAP « Basse riddim » over the touchable « Ré# 4 Jouer » (30 x 8 dp)
+#20 LAYOUT OVERLAP « Carré · tenu » over the touchable « Ré 4 Jouer » (13 x 16 dp)
+#20 LAYOUT OVERLAP « Carré · tenu » over the touchable « Mi 4 Jouer » (45 x 16 dp)
+#20 LAYOUT OVERLAP « Carré · tenu » over the touchable « Fa 4 Jouer » (7 x 16 dp)
+#20 LAYOUT OVERLAP « Carré · tenu » over the touchable « Ré# 4 Jouer » (29 x 16 dp)
+#20 LAYOUT OVERLAP « Basse neuro » over the touchable « Ré 5 Jouer » (44 x 8 dp)
+#20 LAYOUT OVERLAP « Basse neuro » over the touchable « Mi 5 Jouer » (37 x 8 dp)
+#20 LAYOUT OVERLAP « Basse neuro » over the touchable « Do# 5 Jouer » (10 x 8 dp)
+#20 LAYOUT OVERLAP « Basse neuro » over the touchable « Ré# 5 Jouer » (30 x 8 dp)
+#20 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Ré 5 Jouer » (24 x 16 dp)
+#20 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Mi 5 Jouer » (45 x 16 dp)
+#20 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Fa 5 Jouer » (36 x 16 dp)
+#20 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Ré# 5 Jouer » (30 x 16 dp)
+#20 LAYOUT OVERLAP « Scie · 3 voix · tenu » over the touchable « Fa# 5 Jouer » (9 x 16 dp)
+#20 LAYOUT OVERLAP « Sub pur » over the touchable « Ré 4 Jouer » (33 x 17 dp)
+#20 LAYOUT OVERLAP « Sub pur » over the touchable « Mi 4 Jouer » (17 x 17 dp)
+#20 LAYOUT OVERLAP « Sub pur » over the touchable « Ré# 4 Jouer » (30 x 17 dp)
+#20 LAYOUT OVERLAP « Triangle · tenu » over the touchable « Ré 4 Jouer » (13 x 16 dp)
+#20 LAYOUT OVERLAP « Triangle · tenu » over the touchable « Mi 4 Jouer » (45 x 16 dp)
+#20 LAYOUT OVERLAP « Triangle · tenu » over the touchable « Fa 4 Jouer » (23 x 16 dp)
+#20 LAYOUT OVERLAP « Basse roulante » over the touchable « Ré 5 Jouer » (44 x 17 dp)
+#20 LAYOUT OVERLAP « Basse roulante » over the touchable « Mi 5 Jouer » (45 x 17 dp)
+#20 LAYOUT OVERLAP « Basse roulante » over the touchable « Fa 5 Jouer » (6 x 17 dp)
+#20 LAYOUT OVERLAP « Basse roulante » over the touchable « Do# 5 Jouer » (10 x 17 dp)
+#20 LAYOUT OVERLAP « Basse roulante » over the touchable « Ré# 5 Jouer » (30 x 17 dp)
+#20 LAYOUT CONTRAST « Scie · tenu » 4.26:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Scie · 3 voix · tenu » 2.45:1 (needs 4.5:1, 12 sp)
+#20 > glisse 518 620 518 260
+#20 DOIGT rien
+#21 ROUTE synth/tab_Sons | MODE pro | EMPREINTE bcf05be342 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT OVERLAP « Donk » over «   Clavier » (13 x 16 dp)
+#21 LAYOUT OVERLAP « Au hasard » over the touchable « Fa 4 Jouer » (39 x 20 dp)
+#21 LAYOUT OVERLAP « Au hasard » over the touchable « Sol 4 Jouer » (28 x 20 dp)
+#21 LAYOUT OVERLAP « Au hasard » over the touchable « Fa# 4 Jouer » (30 x 20 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Mi 5 Jouer » (15 x 20 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Fa 5 Jouer » (45 x 20 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Sol 5 Jouer » (31 x 20 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Fa# 5 Jouer » (30 x 20 dp)
+#21 LAYOUT OVERLAP « Garder ce son » over the touchable « Sol# 5 Jouer » (4 x 20 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Do 4 Jouer » (34 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Ré 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Mi 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fa 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Sol 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « La 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Si 4 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Do 5 Jouer » (45 x 18 dp)
+#21 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Ré 5 Jouer » (25 x 18 dp)
+#21 LAYOUT CONTRAST « Triangle · tenu » 1.40:1 (needs 4.5:1, 12 sp)
+#21 > touche 975 673
+#21 DOIGT float_keyboard_fold
+#22 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e1e07a0211 | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 > glisse 518 880 518 250
+#22 DOIGT rien
+#23 ROUTE synth/tab_Sons | MODE pro | EMPREINTE dc637701ec | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « 1 voix » over « Clavier » (41 x 10 dp)
+#23 LAYOUT LABEL « knob_8 » long press without text nor description
+#23 LAYOUT LABEL « knob_9 » long press without text nor description
+#23 LAYOUT LABEL « knob_10 » long press without text nor description
+#23 LAYOUT LABEL « knob_15 » long press without text nor description
+#23 LAYOUT LABEL « knob_18 » long press without text nor description
+#23 LAYOUT LABEL « knob_2 » long press without text nor description
+#23 LAYOUT LABEL « knob_5 » long press without text nor description
+#23 LAYOUT LABEL « knob_24 » long press without text nor description
+#23 > glisse 274 682 400 682
+#23 DOIGT dans:synth « Enveloppe du filtre »
+#24 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ab61365e96 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > glisse 147 808 260 808
+#24 DOIGT dans:synth « Relâchement »
+#25 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a77bd76b81 | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > glisse 300 860 300 400
+#25 DOIGT knob_5 « Sous-basse »
+#26 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 20b414d69c | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT LABEL « knob_25 » long press without text nor description
+#26 LAYOUT LABEL « knob_23 » long press without text nor description
+#26 > touche 171 721
+#26 DOIGT dans:synth « Réglages avancés »
+#27 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e9e3c37d3a | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Masquer les réglages avancés » 3.98:1 (needs 4.5:1, 14 sp)
+#27 > glisse 300 860 300 300
+#27 DOIGT dans:synth « Carré »
+#28 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9ef829193a | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 80 » 4.21:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT LABEL « knob_4 » long press without text nor description
+#28 LAYOUT LABEL « knob_6 » long press without text nor description
+#28 LAYOUT LABEL « knob_11 » long press without text nor description
+#28 LAYOUT LABEL « knob_12 » long press without text nor description
+#28 LAYOUT LABEL « knob_13 » long press without text nor description
+#28 LAYOUT LABEL « knob_14 » long press without text nor description
+#28 LAYOUT LABEL « knob_16 » long press without text nor description
+#28 LAYOUT LABEL « knob_17 » long press without text nor description
+#28 > glisse 655 725 820 725
+#28 DOIGT dans:synth « Filtre : déclin »
+#29 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0efc0f7629 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > glisse 300 350 300 900
+#29 DOIGT rien
+#30 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5c028ebb80 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 300 350 300 900
+#30 DOIGT dans:synth « Relâchement »
+#31 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a9dc856cb3 | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 758 276
+#31 DOIGT synth_sounds_save « Garder ce son »
+#32 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 4fbce06050 | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « Annuler » 1.94:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Garder » 1.61:1 (needs 4.5:1, 14 sp)
+#32 > touche 517 603
+#32 DOIGT synth_sounds_name_field « Nom du son »
+#33 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 4fbce06050 | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Annuler » 1.80:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Garder » 1.80:1 (needs 4.5:1, 14 sp)
+#33 > ecris Sub House Ben
+#34 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE c6db7759bd | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 > appui-long 517 603
+#34 DOIGT synth_sounds_name_field « Nom du son »
+#35 ROUTE dialogue:« Tout sélectionner » | MODE pro | EMPREINTE b8eac0abfd | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 207 101
+#35 DOIGT vue « Tout sélectionner »
+#36 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE c6db7759bd | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 > ecris Sub House Ben
+#37 ROUTE dialogue:synth_sounds_name_dialog | MODE pro | EMPREINTE 57caff78fe | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 847 724
+#37 DOIGT synth_sounds_name_ok « Garder »
+#38 ROUTE dialogue:« Son gardé dans tes favoris ave » | MODE pro | EMPREINTE 18594684df | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 771 654
+#38 DOIGT #2935 « Compris »
+#39 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 337e84e660 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 > glisse 900 186 300 186
+#39 DOIGT track_effects « Effets »
+#40 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6379af5750 | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 944 186
+#40 DOIGT track_add «  Piste »
+#41 ROUTE dialogue:track_add_sheet | MODE pro | EMPREINTE c604bcd168 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Accords (nappe) » 1.29:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « Pluck / percussif » 2.49:1 (needs 4.5:1, 14 sp)
+#41 > touche 517 1131
+#41 DOIGT track_add_empty « Piste vide (son de base) »
+#42 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 00870f57df | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « Unisson (supersaw) » 2.41:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « 1 voix » 3.79:1 (needs 4.5:1, 14 sp)
+#42 > touche 801 186
+#42 DOIGT track_sound_1
+#43 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE cff007828f | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « Son de : Piste 2 » over the touchable « Fermer la feuille » (162 x 28 dp)
+#43 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (597 x 36 dp)
+#43 LAYOUT CONTRAST « Son de : Piste 2 » 2.03:1 (needs 3.0:1, 22 sp)
+#43 LAYOUT CONTRAST « Basse ronde » 1.82:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « Scie · tenu » 1.55:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « Basse sub » 1.82:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « Triangle · tenu » 1.55:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « Scie · tenu » 1.79:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « Sub pur » 3.50:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » 2.04:1 (needs 4.5:1, 13 sp)
+#43 LAYOUT LABEL « #3222 » long press without text nor description
+#43 > touche 98 195
+#43 DOIGT synth_sounds_back
+#44 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 6b54fcde38 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « Chercher un son (doigts, verre, conga…) » over the touchable « Fermer la feuille » (308 x 24 dp)
+#44 LAYOUT OVERLAP « Favoris » over the touchable « Fermer la feuille » (57 x 24 dp)
+#44 LAYOUT OVERLAP « 1 son » over the touchable « Fermer la feuille » (30 x 18 dp)
+#44 LAYOUT OVERLAP « 16 sons » over the touchable « Fermer la feuille » (45 x 18 dp)
+#44 LAYOUT OVERLAP « Leads » over the touchable « Fermer la feuille » (47 x 24 dp)
+#44 LAYOUT OVERLAP « 6 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#44 LAYOUT OVERLAP « Nappes » over the touchable « Fermer la feuille » (59 x 24 dp)
+#44 LAYOUT OVERLAP « 4 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#44 LAYOUT OVERLAP « Pluck » over the touchable « Fermer la feuille » (43 x 24 dp)
+#44 LAYOUT OVERLAP « Claviers » over the touchable « Fermer la feuille » (63 x 24 dp)
+#44 LAYOUT OVERLAP « 2 sons » over the touchable « Fermer la feuille » (40 x 18 dp)
+#44 LAYOUT OVERLAP « Effets » over the touchable « Fermer la feuille » (44 x 24 dp)
+#44 LAYOUT OVERLAP « Touche ☆ sur un son pour le retrouver dans « Favoris ». » over the touchable « Fermer la feuille » (336 x 18 dp)
+#44 LAYOUT OVERLAP « Piano à queue » over the touchable « Fermer la feuille » (95 x 17 dp)
+#44 LAYOUT OVERLAP « À télécharger : 11 Mo » over the touchable « Fermer la feuille » (124 x 16 dp)
+#44 LAYOUT OVERLAP « Piano de concert » over the touchable « Fermer la feuille » (114 x 17 dp)
+#44 LAYOUT OVERLAP « À télécharger : 16 Mo » over the touchable « Fermer la feuille » (127 x 16 dp)
+#44 LAYOUT CONTRAST « Favoris » 1.82:1 (needs 4.5:1, 16 sp)
+#44 LAYOUT CONTRAST « 1 son » 1.54:1 (needs 4.5:1, 13 sp)
+#44 LAYOUT CONTRAST « Nappes » 3.84:1 (needs 4.5:1, 16 sp)
+#44 LAYOUT CONTRAST « 4 sons » 1.26:1 (needs 4.5:1, 13 sp)
+#44 LAYOUT CONTRAST « Au hasard » 3.21:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « INSTRUMENTS RÉELS » 1.26:1 (needs 4.5:1, 12 sp)
+#44 LAYOUT CONTRAST « Piano à queue » 2.04:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « Piano de concert » 2.04:1 (needs 4.5:1, 14 sp)
+#44 > touche 518 297
+#44 DOIGT synth_sounds_shelf_mine « Favoris »
+#45 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE c70bf05522 | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « Elle glisse d'une note à l'autre, rien à télécharger » ellipsized (« … »)
+#45 LAYOUT OVERLAP « Sub House Ben » over the touchable « Fermer la feuille » (103 x 17 dp)
+#45 LAYOUT OVERLAP « Cordes » over the touchable « Fermer la feuille » (48 x 17 dp)
+#45 LAYOUT OVERLAP « À télécharger : 9 Mo » over the touchable « Fermer la feuille » (121 x 16 dp)
+#45 LAYOUT OVERLAP « Cordes pizzicato » over the touchable « Fermer la feuille » (114 x 17 dp)
+#45 LAYOUT OVERLAP « À télécharger : 2 Mo » over the touchable « Fermer la feuille » (121 x 16 dp)
+#45 LAYOUT OVERLAP « Cuivres » over the touchable « Fermer la feuille » (52 x 17 dp)
+#45 LAYOUT OVERLAP « À télécharger : 6 Mo » over the touchable « Fermer la feuille » (121 x 16 dp)
+#45 LAYOUT OVERLAP « Bois » over the touchable « Fermer la feuille » (30 x 17 dp)
+#45 LAYOUT OVERLAP « À télécharger : 7 Mo » over the touchable « Fermer la feuille » (120 x 16 dp)
+#45 LAYOUT OVERLAP « Harpe » over the touchable « Fermer la feuille » (41 x 17 dp)
+#45 LAYOUT OVERLAP « À télécharger : 4 Mo » over the touchable « Fermer la feuille » (121 x 16 dp)
+#45 LAYOUT OVERLAP « Basse 808 » over the touchable « Fermer la feuille » (71 x 17 dp)
+#45 LAYOUT OVERLAP « Elle glisse d'une note à l'autre, rien à télécharger » over the touchable « Fermer la feuille » (240 x 16 dp)
+#45 LAYOUT OVERLAP « Enregistrements : Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), Splendid Grand Piano (Akai, domaine public), VS Chamber Orchestra (Versilian Studios, CC0). » over the touchable « Fermer la feuille » (596 x 36 dp)
+#45 LAYOUT CONTRAST « Son de : Piste 2 » 1.82:1 (needs 3.0:1, 22 sp)
+#45 LAYOUT CONTRAST « Touche un son : il remplace celui de cette piste dans tout le morceau. » 2.45:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « Fermer » 1.82:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Enregistrements : Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), Splendid Grand Piano (Akai, domaine public), VS Chamber Orchestra (Versilian Studios, CC0). » 3.26:1 (needs 4.5:1, 13 sp)
+#45 > touche 287 472
+#45 DOIGT synth_sounds_fav_0 « Sub House Ben »
+#46 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e99be2c9ff | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 912 186
+#46 DOIGT track_effects « Effets »
+#47 ROUTE dialogue:effects_box_5 | MODE pro | EMPREINTE 821c05705e | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 1. Filtre » 3.18:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « 2. Saturation » 1.34:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Lead qui crie » 4.27:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » 4.17:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » 4.30:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « ? » 1.64:1 (needs 4.5:1, 12 sp)
+#47 > touche 373 180
+#47 DOIGT fx_chip_5_0 « 1. Filtre »
+#48 ROUTE dialogue:effects_box_5 | MODE pro | EMPREINTE c16b66f420 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « ? » 1.91:1 (needs 4.5:1, 12 sp)
+#48 LAYOUT CONTRAST « Favoris » 3.03:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Ambiance » 2.62:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Couleur » 4.36:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Distorsion » 3.03:1 (needs 4.5:1, 14 sp)
+#48 > retour
+#48 RETOUR
+#49 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e99be2c9ff | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 1005 186
+#49 DOIGT track_add «  Piste »
+#50 ROUTE dialogue:track_add_sheet | MODE pro | EMPREINTE c604bcd168 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 517 448
+#50 DOIGT track_add_melody « Mélodie (lead) »
+#51 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7c6550bed0 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 300 400 300 700
+#51 DOIGT rien
+#52 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5a92adbc3d | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > glisse 390 378 330 378
+#52 DOIGT dans:synth « Coupure »
+#53 ROUTE synth/tab_Sons | MODE pro | EMPREINTE addc05e778 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > glisse 300 300 300 900
+#53 DOIGT knob_8 « Coupure »
+#54 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8f4fb50b95 | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « Scie · tenu » 3.77:1 (needs 4.5:1, 12 sp)
+#54 LAYOUT CONTRAST « 30 » 3.68:1 (needs 4.5:1, 14 sp)
+#54 > glisse 300 300 300 900
+#54 DOIGT synth_sounds_16 « Lead »
+#55 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7c111fa3ac | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > glisse 300 300 300 900
+#55 DOIGT rien
+#56 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7fcf9a31f8 | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > glisse 300 300 300 900
+#56 DOIGT rien
+#57 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1e5f53d1f3 | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 203 324
+#57 DOIGT mode_notes « Notes »
+#58 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2e45ae06c7 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « − » 4.37:1 (needs 4.5:1, 14 sp)
+#58 LAYOUT CONTRAST « + » 4.37:1 (needs 4.5:1, 14 sp)
+#58 > touche 310 702
+#58 DOIGT loop_plus « + »
+#59 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cb0a4c03eb | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « + » 3.87:1 (needs 4.5:1, 14 sp)
+#59 > touche 310 702
+#59 DOIGT loop_plus « + »
+#60 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c40e7b72c5 | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « + » 3.64:1 (needs 4.5:1, 14 sp)
+#60 > touche 310 702
+#60 DOIGT loop_plus « + »
+#61 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2437a8433a | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « + » 3.54:1 (needs 4.5:1, 14 sp)
+#61 > touche 315 702
+#61 DOIGT loop_plus « + »
+#62 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3794b91b98 | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « + » 4.10:1 (needs 4.5:1, 14 sp)
+#62 > touche 314 702
+#62 DOIGT loop_plus « + »
+#63 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f5a736e451 | project=projet-1 no tuto
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « + » 3.78:1 (needs 4.5:1, 14 sp)
+#63 > touche 314 702
+#63 DOIGT loop_plus « + »
+#64 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8d6673e4a0 | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « + » 3.63:1 (needs 4.5:1, 14 sp)
+#64 > touche 314 702
+#64 DOIGT loop_plus « + »
+#65 ROUTE synth/tab_Sons | MODE pro | EMPREINTE dfe3196f17 | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « + » 3.74:1 (needs 4.5:1, 14 sp)
+#65 > glisse 518 860 518 300
+#65 DOIGT dans:synth « Basse en fantôme »
+#66 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d2baa40dd8 | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 150 613
+#66 DOIGT rien
+#67 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5e1480cc8a | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 330 445
+#67 DOIGT rien
+#68 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 86602eaabc | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 510 823
+#68 DOIGT rien
+#69 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e62787d7c5 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 690 529
+#69 DOIGT rien
+#70 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9a46a51843 | project=projet-1 no tuto
+#70 SON Son : rien ne joue.
+#70 > appui-long 155 613
+#70 DOIGT rien
+#71 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e62787d7c5 | project=projet-1 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 148 1024
+#71 DOIGT thumb_undo « Annuler la dernière action »
+#72 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5ef69a171f | project=projet-1 no tuto
+#72 SON Son : rien ne joue.
+#72 > glisse 518 330 518 700
+#72 DOIGT dans:synth « Basse en fantôme »
+#73 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e3e4de7972 | project=projet-1 no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 319 431
+#73 DOIGT mode_select « ⬚ Sélectionner »
+#74 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e196d31b33 | project=projet-1 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 216 668
+#74 DOIGT select_all « Tout »
+#75 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 84eabb6eb8 | project=projet-1 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « Tout » 3.84:1 (needs 4.5:1, 14 sp)
+#75 LAYOUT CONTRAST « Supprimer » 3.52:1 (needs 4.5:1, 14 sp)
+#75 > touche 111 818
+#75 DOIGT sel_duplicate « Dupliquer »
+#76 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e6d373b523 | project=projet-1 no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « Dupliquer » 3.90:1 (needs 4.5:1, 14 sp)
+#76 > glisse 518 880 518 400
+#76 DOIGT rien
+#77 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5e88972b8c | project=projet-1 no tuto
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 14 sp)
+#77 > glisse 518 400 518 600
+#77 DOIGT rien
+#78 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a11ab8a4bb | project=projet-1 no tuto
+#78 SON Son : rien ne joue.
+#78 > touche 156 388
+#78 DOIGT select_all « Tout »
+#79 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b470291608 | project=projet-1 no tuto
+#79 SON Son : rien ne joue.
+#79 > touche 111 538
+#79 DOIGT sel_duplicate « Dupliquer »
+#80 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e38ccd4ae3 | project=projet-1 no tuto
+#80 SON Son : rien ne joue.
+#80 > touche 156 388
+#80 DOIGT select_all « Tout »
+#81 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e30b3900aa | project=projet-1 no tuto
+#81 SON Son : rien ne joue.
+#81 LAYOUT CONTRAST « Dupliquer » 4.42:1 (needs 4.5:1, 14 sp)
+#81 > touche 111 538
+#81 DOIGT sel_duplicate « Dupliquer »
+#82 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ff95e557f3 | project=projet-1 no tuto
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST « Tout » 4.22:1 (needs 4.5:1, 14 sp)
+#82 > glisse 518 400 518 700
+#82 DOIGT dans:synth « ▼ ½ ton »
+#83 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0f75854c22 | project=projet-1 no tuto
+#83 SON Son : rien ne joue.
+#83 > touche 498 427
+#83 DOIGT roll_fit « Tout voir »
+#84 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 738a1fadac | project=projet-1 no tuto
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « Tout voir » 4.14:1 (needs 4.5:1, 14 sp)
+#84 > glisse 518 880 518 330
+#84 DOIGT rien
+#85 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 60e88df9c5 | project=projet-1 no tuto
+#85 SON Son : rien ne joue.
+#85 > touche 512 1024
+#85 DOIGT thumb_play
+#86 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d686ae9a4e | project=projet-1 no tuto
+#86 SON Son : la musique du projet joue en boucle.
+#86 > attends 8
+#87 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 606c722291 | project=projet-1 no tuto
+#87 SON Son : la musique du projet joue en boucle.
+#87 > touche 512 1024
+#87 DOIGT thumb_play
+#88 ROUTE synth/tab_Sons | MODE pro | EMPREINTE dd486faaa5 | project=projet-1 no tuto
+#88 SON Son : rien ne joue.
+#88 > fin
+#88 FIN : fin

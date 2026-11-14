@@ -1,0 +1,9 @@
+Écran 32 (588x1278)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 330,54
+bouton «   Nouveau morceau guidé » @ 294,147
+bouton «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton « Importer un projet (.zip) » @ 294,333
+touchable « Démo · Acid house OUVERT à l'instant · 126 BPM · 7 mes. · 0:13 · 4 parties » @ 294,466
+bouton « Options de Démo · Acid house » @ 534,467
+bouton « Partager mon morceau » @ 196,498

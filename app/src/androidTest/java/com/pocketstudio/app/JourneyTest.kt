@@ -12,7 +12,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.pocketstudio.app.RealUse.log
-import com.pocketstudio.app.RealUse.waitFor
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.record.TakePhase
 import com.pocketstudio.app.rhythm.RhythmViewModel
@@ -22,6 +21,7 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.viewOfTrack
@@ -52,6 +52,18 @@ class JourneyTest {
     val compose = createEmptyComposeRule()
 
     private val j = Journey(compose) { log(it) }
+
+    /**
+     * One frame of the compose test clock. Under [createEmptyComposeRule] the activity recomposes only
+     * when that clock moves: a plain sleep left the screens frozen on « Ouverture du projet… » (the
+     * sound, opened by the app's screens, never started; a tap's effect never followed).
+     */
+    private fun frame() {
+        if (compose.mainClock.autoAdvance) compose.mainClock.advanceTimeByFrame()
+    }
+
+    /** [RealUse.waitFor] with the compose clock moving, as [androidx.compose.ui.test.junit4.ComposeTestRule.waitUntil] does. */
+    private fun waitFor(what: String, seconds: Int, condition: () -> Boolean) = RealUse.waitFor(what, seconds, ::frame, condition)
 
     /** The next test class finds the app as just installed too (SmokeTest expects a first launch or its own project). */
     @After
@@ -232,15 +244,24 @@ class JourneyTest {
         // The song's position (sixteenths) moves on every second (no song loops back within a minute).
         val stuck = (1 until steps.size).filter { steps[it] <= steps[it - 1] }.map { it + 1 }
         assertTrue("the song's position did not move on at $stuck s: $text", stuck.isEmpty() && steps.first() >= 0)
-        j.tap("top_play")
+        // ■ on « ▶ le morceau » (tour 5, chantier 4: the top ▶ is « cette partie », it would loop the part).
+        j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song")
         waitFor("the stop", 5) { NativeEngine.currentStep() == -1 }
     }
 
     /** ● (a bar of count-in), four keys of the on-screen keyboard, ■, « Remettre en rythme », Garder. */
     private fun recordATakeInTime(rhythm: RhythmViewModel) {
         j.await("record_start")
-        val track = rhythm.selectedTrack.value
-        val before = rhythm.project.value.viewOfTrack(track).synthNotes.notes.toSet()
+        // The notes of every instrument track before the take. The track the take writes on is read AFTER it (below): in the
+        // Mode simple the ● of the keys records on « Ma mélodie », a track the app makes and selects as the first take
+        // starts (RhythmViewModel.simpleMelodyTrack). This test kept the track selected before the ● and read that one:
+        // « the take's notes: [] » on the emulator (CI 243 to 247), while the app said « take: 4 notes ».
+        fun notesByTrack(): Map<Int, Set<com.pocketstudio.model.Note>> {
+            val p = rhythm.project.value
+            return p.instrumentTracks.associate { it.id to p.viewOfTrack(it.id).synthNotes.notes.toSet() }
+        }
+        val selectedBefore = rhythm.selectedTrack.value
+        val notesBefore = notesByTrack()
         // Keys in the song's scale: with the scale locked (jump up: F phrygian), the others are silent.
         val harmony = rhythm.project.value.harmony
         val keys = j.tagsMatching(Journey.KEY).distinct().filter { harmony.inScale(it.removePrefix("key_").toInt()) }.take(4)
@@ -289,9 +310,18 @@ class JourneyTest {
         // The take's notes: new ones on the pitches of the keys touched (a one-bar loop grown to four
         // bars when the take starts brings copies of the notes already there: not the take's).
         val pitches = keys.map { it.removePrefix("key_").toInt() }.toSet()
+        // The track the take wrote on: the one selected now (the same as before the ● in the full mode; « Ma mélodie » in
+        // the Mode simple). A track made by the take had no note before it.
+        val track = rhythm.selectedTrack.value
+        val before = notesBefore[track].orEmpty()
         val played = rhythm.project.value.viewOfTrack(track).synthNotes.notes.filter { it !in before && it.pitch in pitches }
-        log("in time: ${played.map { it.start }}")
-        assertTrue("the take's notes: $played", played.size >= keys.size - 1)
+        log("in time: ${played.map { it.start }} on track $track (selected before the take: $selectedBefore), part shown ${rhythm.project.value.scene}")
+        if (played.size < keys.size - 1) {
+            // The next probe, should this fail again: where the new notes are, track by track, in the part shown.
+            val now = notesByTrack()
+            log("new notes per track in the part shown: ${now.mapValues { (id, notes) -> (notes - notesBefore[id].orEmpty()).map { it.pitch to it.start } }}; ${rhythm.lastTakeReport}; ui ${rhythm.sessionUi.value}")
+        }
+        assertTrue("the take's notes on track $track (selected before the take: $selectedBefore): $played", played.size >= keys.size - 1)
         assertTrue("« Remettre en rythme » puts them on the sixteenths: ${played.map { it.start }}", played.all { it.start % NoteClip.TICKS_PER_STEP == 0 })
         j.tap("take_keep")
         j.await("record_start")
@@ -306,7 +336,7 @@ class JourneyTest {
      */
     private fun uiOrVm(tag: String, done: () -> Boolean, viaVm: () -> Unit) {
         val end = System.currentTimeMillis() + 3_000
-        while (!done() && System.currentTimeMillis() < end) Thread.sleep(50)
+        while (!done() && System.currentTimeMillis() < end) { frame(); Thread.sleep(50) }
         if (done()) return
         log("tap on $tag did not land: through the ViewModel")
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync { viaVm() }

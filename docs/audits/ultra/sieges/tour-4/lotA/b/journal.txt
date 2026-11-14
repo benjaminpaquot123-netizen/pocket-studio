@@ -1,0 +1,313 @@
+#0 SIEGE lang=fr device=phone font=200 mode=simple theme=- fresh=non gestes.max=60 lit=oui main=both amenee=-
+#0 GEL 762 ms
+    at android.graphics.Paint.nGetFontMetricsInt(Paint.java)
+    at android.graphics.Paint.$$robo$$android_graphics_Paint$getFontMetricsInt(Paint.java:2664)
+    at android.graphics.Paint.getFontMetricsInt(Paint.java)
+    at android.text.MeasuredParagraph.$$robo$$android_text_MeasuredParagraph$applyMetricsAffectingSpan(MeasuredParagraph.java:858)
+    at android.text.MeasuredParagraph.applyMetricsAffectingSpan(MeasuredParagraph.java)
+    at android.text.MeasuredParagraph.$$robo$$android_text_MeasuredParagraph$buildForStaticLayoutInternal(MeasuredParagraph.java:624)
+    at android.text.MeasuredParagraph.buildForStaticLayoutInternal(MeasuredParagraph.java)
+    at android.text.MeasuredParagraph.$$robo$$android_text_MeasuredParagraph$buildForStaticLayout(MeasuredParagraph.java:532)
+    at android.text.MeasuredParagraph.buildForStaticLayout(MeasuredParagraph.java)
+    at android.text.PrecomputedText.$$robo$$android_text_PrecomputedText$createMeasuredParagraphs(PrecomputedText.java:527)
+    at android.text.PrecomputedText.createMeasuredParagraphs(PrecomputedText.java)
+    at android.text.StaticLayout.$$robo$$android_text_StaticLayout$generate(StaticLayout.java:869)
+    at android.text.StaticLayout.generate(StaticLayout.java)
+    at android.text.StaticLayout.$$robo$$android_text_StaticLayout$__constructor__(StaticLayout.java:736)
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE cc1ee3cc1c | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 897
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE f809c2c735 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 592
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE c5bce9e5ec | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « House » 1.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 9 styles » 1.38:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 4 styles » 2.52:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 758
+#3 DOIGT wizard_family_calm « Calme (Chill, Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE ba4c69b21b | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Lo-fi hip-hop » ellipsized (« … »)
+#4 LAYOUT CUT « Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Nujabes – Aruarian Dance (2004) » ellipsized (« … »)
+#4 LAYOUT CUT « Deep house » ellipsized (« … »)
+#4 LAYOUT CUT « La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. » ellipsized (« … »)
+#4 > touche 57 890
+#4 DOIGT wizard_style_listen_lofi
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE db97a6abdc | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#5 > touche 330 1000
+#5 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE dadace4538 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#6 > glisse 294 1100 294 500
+#6 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3fdd078a66 | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#7 > touche 322 889
+#7 DOIGT wizard_style_choose_lofi « Choisir ce style, pas à pas »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 00bbf802bc | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#8 > touche 165 637
+#8 DOIGT wizard_length_short « Court »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 244a23aac4 | project=projet-1 no tuto
+#9 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#9 > touche 436 1220
+#9 DOIGT wizard_next « Suivant »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE 9409c930b5 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 > glisse 294 1100 294 400
+#10 DOIGT rien (texte « En Lo-fi hip-hop : kick doux et peu char »)
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE acf9b04382 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « CHOISIS LE SON » a word split over two lines
+#11 LAYOUT CONTRAST « 1 » 1.34:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 3.37:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 3 » 3.37:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 4 » 3.37:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 1 » 3.33:1 (needs 4.5:1, 12 sp)
+#11 > touche 338 1029
+#11 DOIGT wizard_line_listen «   Avec le rythme »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 097df2726b | project=projet-1 no tuto
+#12 SON Son : un son de la bibliothèque joue (écoute).
+#12 > touche 436 1220
+#12 DOIGT wizard_next « Suivant »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 4c92c7abe1 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 436 1220
+#13 DOIGT wizard_next « Suivant »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3a42925bf2 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > retour
+#14 RETOUR
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3a42925bf2 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 436 1220
+#15 DOIGT wizard_next « Suivant »
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE ac1519b5f2 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 436 1220
+#16 DOIGT wizard_next « Suivant »
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7efbd6dacd | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 436 1220
+#17 DOIGT wizard_next « Suivant »
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE e5479851c5 | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 436 1220
+#18 DOIGT wizard_next « Suivant »
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE 874a930824 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 436 1220
+#19 DOIGT wizard_next « Suivant »
+#20 ROUTE dialogue:wizard | MODE simple | EMPREINTE a0222add9a | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « ? » lines cut (taller than its box)
+#20 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#20 LAYOUT CONTRAST « Intro · le début, en douceur » 3.34:1 (needs 4.5:1, 14 sp)
+#20 > glisse 294 1050 294 450
+#20 DOIGT rien (texte « Couplet · la place de la voix : kick, ba »)
+#21 ROUTE dialogue:wizard | MODE simple | EMPREINTE f6ab06a6f3 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 436 1192
+#21 DOIGT wizard_create « Créer le morceau »
+#22 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 8282076490 | project=p-8813b2f4 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « mesure 1/16 » lines dropped (more lines than room)
+#22 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#22 > touche 471 42
+#22 DOIGT top_play
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a9b8cf0461 | project=p-8813b2f4 no tuto
+#23 SON Son : le morceau joue (partie « A »).
+#23 LAYOUT CUT « Sauvegardé » wider than its box (by 95.6 dp)
+#23 LAYOUT CUT «  · Change un son » ellipsized (« … »)
+#23 LAYOUT CUT « → » wider than its box (by 7.3 dp)
+#23 > glisse 294 1000 294 750
+#23 DOIGT rien (texte « À toi : touche « Le son de la mélodie ». »)
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b02f1e78eb | project=p-8813b2f4 no tuto
+#24 SON Son : le morceau joue (partie « A »).
+#24 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Le son de la mélodie » 3.95:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « ↗ » 1.68:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Une autre batterie » 1.68:1 (needs 4.5:1, 14 sp)
+#24 > touche 294 1002
+#24 DOIGT guide_open_melody « Voir le réglage : Le son de la mélodie »
+#25 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE 9207d81cdd | project=p-8813b2f4 no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 LAYOUT OVERLAP « Son de : Mélodie » over the touchable « Fermer la feuille » (133 x 89 dp)
+#25 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (243 x 139 dp)
+#25 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (90 x 37 dp)
+#25 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (133 x 42 dp)
+#25 LAYOUT OVERLAP « Piano FM » over the touchable « Fermer la feuille » (116 x 32 dp)
+#25 LAYOUT OVERLAP « FM 6 op. · banque 2 » over the touchable « Fermer la feuille » (239 x 32 dp)
+#25 LAYOUT OVERLAP « Rhodes FM » over the touchable « Fermer la feuille » (140 x 32 dp)
+#25 LAYOUT OVERLAP « Vibraphone FM » over the touchable « Fermer la feuille » (191 x 32 dp)
+#25 LAYOUT OVERLAP « Cloche FM » over the touchable « Fermer la feuille » (135 x 32 dp)
+#25 LAYOUT OVERLAP « Marimba » over the touchable « Fermer la feuille » (110 x 32 dp)
+#25 LAYOUT OVERLAP « Modal (percussion) » over the touchable « Fermer la feuille » (235 x 32 dp)
+#25 LAYOUT OVERLAP « Cloche » over the touchable « Fermer la feuille » (89 x 32 dp)
+#25 LAYOUT OVERLAP « Modal (percussion) » over the touchable « Fermer la feuille » (235 x 30 dp)
+#25 LAYOUT CONTRAST « Fermer » 1.66:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « FM 6 op. · banque 2 » 3.37:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « Marimba » 2.53:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « Cloche » 3.26:1 (needs 4.5:1, 14 sp)
+#25 > touche 294 837
+#25 DOIGT plaits_sounds_12 « Vibraphone FM »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 42aad31a6a | project=p-8813b2f4 no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 LAYOUT CUT «  · Enregistre une mélodie » ellipsized (« … »)
+#26 LAYOUT OVERLAP « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » over « Nouveau son : Vibraphone FM » (176 x 56 dp)
+#26 LAYOUT OVERLAP « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » over « Annuler » (78 x 19 dp)
+#26 LAYOUT OVERLAP « Batterie » over « Nouveau son : Vibraphone FM » (94 x 37 dp)
+#26 LAYOUT OVERLAP « Changer le son » over « Nouveau son : Vibraphone FM » (176 x 11 dp)
+#26 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Changer le son de Batterie » (176 x 48 dp)
+#26 LAYOUT CONTRAST « Changer le son » 3.32:1 (needs 4.5:1, 13 sp)
+#26 LAYOUT CONTRAST « Annuler » 3.63:1 (needs 4.5:1, 14 sp)
+#26 > glisse 294 1000 294 700
+#26 DOIGT rien (texte « Touche « ● Enregistrer ma mélodie » et j »)
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fe8305306e | project=p-8813b2f4 no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 > touche 294 1146
+#27 DOIGT tab_simple_Clavier « Clavier »
+#28 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c3cc843c45 | project=p-8813b2f4 no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 LAYOUT CUT « Basse ronde » ellipsized (« … »)
+#28 LAYOUT CUT « Rhodes FM » ellipsized (« … »)
+#28 LAYOUT CUT « Vibraphone FM » ellipsized (« … »)
+#28 LAYOUT CUT « Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle. » ellipsized (« … »)
+#28 LAYOUT CUT « Do » lines dropped (more lines than room)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Ré 4 Jouer » (19 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Mi 4 Jouer » (21 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Fa 4 Jouer » (21 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Sol 4 Jouer » (21 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « La 4 Jouer » (21 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Do 5 Jouer » (21 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « Ré 5 Jouer » (11 x 99 dp)
+#28 LAYOUT OVERLAP « Nouveau son : Vibraphone FM » over the touchable « La# 4 Jouer » (15 x 91 dp)
+#28 LAYOUT OVERLAP « Annuler » over the touchable « Mi 5 Jouer » (3 x 37 dp)
+#28 LAYOUT OVERLAP « Annuler » over the touchable « Fa 5 Jouer » (21 x 37 dp)
+#28 LAYOUT OVERLAP « Annuler » over the touchable « Sol 5 Jouer » (21 x 37 dp)
+#28 LAYOUT OVERLAP « Annuler » over the touchable « La 5 Jouer » (21 x 37 dp)
+#28 LAYOUT OVERLAP « Annuler » over the touchable « La# 5 Jouer » (15 x 37 dp)
+#28 LAYOUT CONTRAST « Basse ronde » 2.94:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Rhodes FM » 3.10:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Do » 1.72:1 (needs 4.5:1, 13 sp)
+#28 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#28 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#28 > touche 244 645
+#28 DOIGT record_start «  Enregistrer ma mélodie »
+#29 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 30399cd546 | project=p-8813b2f4 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CUT « Ma mélodie » ellipsized (« … »)
+#29 LAYOUT CUT « Boucler » drawn past its parent's edge (down, 32 dp shown of 37)
+#29 LAYOUT CONTRAST « Vibraphone FM » 3.10:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Vibraphone FM » 3.05:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT TARGET « en boucle Intro mesure 1/4 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#29 > touche 244 755
+#29 DOIGT record_start «  Enregistrer ma mélodie »
+#30 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 256c51ba7a | project=p-8813b2f4 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 LAYOUT CUT « Enregistrement » a word split over two lines
+#30 LAYOUT CONTRAST «  Arrêter » 2.78:1 (needs 4.5:1, 14 sp)
+#30 > touche 96 1003
+#30 DOIGT key_62 « Ré 4 »
+#31 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e9ce8f16bf | project=p-8813b2f4 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT TARGET « en boucle Intro mesure 2/4 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#31 > touche 168 1003
+#31 DOIGT key_65 « Fa 4 »
+#32 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a56c5824d4 | project=p-8813b2f4 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT TARGET « en boucle Intro mesure 3/4 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#32 > touche 447 693
+#32 DOIGT record_stop «  Arrêter »
+#33 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee5ea37132 | project=p-8813b2f4 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 96 974
+#33 DOIGT key_62 « Ré 4 »
+#34 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3f2ccd06aa | project=p-8813b2f4 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CUT «  Garder ce que je viens de jouer » ellipsized (« … »)
+#34 LAYOUT TARGET « en boucle Intro mesure 4/4 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#34 > touche 458 732
+#34 DOIGT keep_played «  Garder ce que je viens de jouer »
+#35 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2b37258974 | project=p-8813b2f4 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT CUT «  · Arrange les parties » ellipsized (« … »)
+#35 LAYOUT CONTRAST « Remettre en rythme » 3.63:1 (needs 4.5:1, 14 sp)
+#35 > touche 108 717
+#35 DOIGT take_keep « Garder »
+#36 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE af3543e7c8 | project=p-8813b2f4 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT CONTRAST « Do » 1.69:1 (needs 4.5:1, 13 sp)
+#36 > touche 294 1038
+#36 DOIGT guide_bar « Guide »
+#37 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88c8682651 | project=p-8813b2f4 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > glisse 294 1000 294 700
+#37 DOIGT rien (texte « À toi : touche « Plus tard ». »)
+#38 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 27d1855923 | project=p-8813b2f4 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 294 893
+#38 DOIGT guide_option_later « Plus tard »
+#39 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE add74b7c4a | project=p-8813b2f4 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CUT «  · Le kick (le « boum ») » ellipsized (« … »)
+#39 LAYOUT OVERLAP « En boucle (⟳ Boucler). ▶ joue cette partie seule. » over « C'est fait : Plus tard. » (184 x 16 dp)
+#39 LAYOUT OVERLAP « Clavier » over « C'est fait : Plus tard. » (61 x 35 dp)
+#39 LAYOUT OVERLAP « Notes » over « C'est fait : Plus tard. » (75 x 35 dp)
+#39 LAYOUT OVERLAP «  Vider » over « Annuler » (71 x 16 dp)
+#39 LAYOUT OVERLAP « Annuler » over the touchable « Vider cette piste dans la partie A · Int » (100 x 24 dp)
+#39 LAYOUT CONTRAST «  Vider » 3.63:1 (needs 4.5:1, 14 sp)
+#39 > glisse 294 1000 294 650
+#39 DOIGT rien (texte « Le battement grave que tout le monde sui »)
+#40 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 07c40a3292 | project=p-8813b2f4 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CUT « À toi : écoute ce son tout seul, puis décide. » a word split over two lines
+#40 > touche 382 1049
+#40 DOIGT guide_alone « Écouter « Grosse caisse 1 » seul, en bou »
+#41 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 009b2a2a36 | project=p-8813b2f4 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT OVERLAP « Annuler » over the touchable « Vider cette piste dans la partie B · Cou » (100 x 24 dp)
+#41 LAYOUT TARGET « en boucle Couplet mesure 2/8 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#41 > glisse 294 1000 294 650
+#41 DOIGT rien (texte « À toi : il te plaît ? Touche « Garder ce »)
+#42 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fc05384fe0 | project=p-8813b2f4 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT TARGET « en boucle Couplet mesure 3/8 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#42 > touche 294 989
+#42 DOIGT guide_option_keep « Garder ce son »
+#43 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1d80dd7554 | project=p-8813b2f4 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT CUT «  · Le « tchak » qui répond au kick » ellipsized (« … »)
+#43 LAYOUT OVERLAP « En boucle (⟳ Boucler). ▶ joue cette partie seule. » over « C'est fait : Garder ce son. » (182 x 16 dp)
+#43 LAYOUT OVERLAP « Clavier » over « C'est fait : Garder ce son. » (61 x 35 dp)
+#43 LAYOUT OVERLAP « Notes » over « C'est fait : Garder ce son. » (75 x 35 dp)
+#43 LAYOUT TARGET « en boucle Couplet mesure 1/8 Jouer depuis une partie » 21 x 67 dp (touch 48 x 67)
+#43 > touche 174 1146
+#43 DOIGT tab_simple_Rythme « Rythme »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 07d5e36841 | project=p-8813b2f4 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CUT « D 40 » lines dropped (more lines than room)
+#44 LAYOUT CUT « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » ellipsized (« … »)
+#44 LAYOUT OVERLAP « Grosse caisse 1 » over « FX » (20 x 11 dp)
+#44 LAYOUT OVERLAP « Caisse » over « FX » (25 x 7 dp)
+#44 LAYOUT OVERLAP « Charley » over « G 30 » (45 x 5 dp)
+#44 LAYOUT OVERLAP « Charley ouvert » over « D 30 » (39 x 11 dp)
+#44 LAYOUT OVERLAP « Tom médium » over « D 45 » (40 x 11 dp)
+#44 LAYOUT OVERLAP « Maracas » over « D 50 » (45 x 3 dp)
+#44 LAYOUT OVERLAP « Cymbale » over « FX » (26 x 3 dp)
+#44 LAYOUT OVERLAP « Cymbale » over « D 40 » (13 x 3 dp)
+#44 LAYOUT OVERLAP « Maracas » over « G 50 » (45 x 3 dp)
+#44 LAYOUT OVERLAP « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » over « C'est fait : Garder ce son. » (37 x 28 dp)
+#44 LAYOUT OVERLAP « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » over « Annuler » (100 x 9 dp)
+#44 LAYOUT OVERLAP « PAS : GROSSE CAISSE 1 · COUPLET » over « C'est fait : Garder ce son. » (47 x 23 dp)
+#44 LAYOUT OVERLAP « Tous les pads » over « C'est fait : Garder ce son. » (64 x 3 dp)
+#44 LAYOUT OVERLAP « C'est fait : Garder ce son. » over the touchable « Replier Déplié » (101 x 23 dp)
+#44 LAYOUT CONTRAST « ? » 3.63:1 (needs 4.5:1, 12 sp)
+#44 LAYOUT CONTRAST « Tous les pads » 3.72:1 (needs 4.5:1, 14 sp)

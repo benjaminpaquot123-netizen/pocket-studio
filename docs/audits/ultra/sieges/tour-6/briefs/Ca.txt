@@ -1,0 +1,6 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotC/a (seat a, lot C; lang fr, device tablet8, font 130, mode simple, options -, mission libre, budget 100 gestures).
+Profile (id t6-Ca): Œil neuf sur tablette 8 pouces, police 130 % : quelqu'un qui découvre l'appli, sans mission à réussir. Mode simple d'abord, puis passe en Mode Pro. Remplis ta feuille oeil-neuf.tsv dans ton dossier de siège (son en-tête, les 10 questions et sa règle de grave sont dans consignes-testeur.md, partie Round 6), une ligne par écran vu, sans plafond. 30 images au plus, la première de chaque écran neuf d'abord. Vise 10 à 15 écrans. Ton verdict de mission ne compte pas. Act as this person (habits, patience, vocabulary).
+Mission libre; its 3 goals (ids, the bench checks them): son (un son a joué), trace (un changement gardé sur le téléphone : partie, piste, prise, étoile, son retouché, remix) ou partage (un fichier partagé).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

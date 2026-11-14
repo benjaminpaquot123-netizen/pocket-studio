@@ -1,0 +1,7 @@
+lang=en
+device=tablet8
+font=100
+mode=simple
+gestes.max=90
+mission=defi
+timeout.minutes=25

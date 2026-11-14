@@ -1,0 +1,38 @@
+Écran 38 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 1/4 » (nom « w pętli ») @ 248,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « Wstecz  · Pomoc » (nom « Wstecz ») @ 294,180
+texte « W Live REC nagrywa wszystko, co grasz (pola, pady, efekty, nuty). Po zatrzymaniu twoje nagranie staje się utworem: nową wersją albo dodane za nim. „Anuluj” usuwa je od razu; poprzedni utwór zostaje w „Wersje”. » @ 294,240
+texte « Pady live » @ 88,291
+texte « Dźwięki (pętle, uderzenia, wokale, kawałki utworów), które odpalasz jednym dotknięciem na swojej muzyce: 4 strony po 16 padów w Pad Live. Każdy pad gra jako uderzenie, w pętli albo dopóki naciskasz; pętle trzymają tempo, jak u DJ-a. » @ 294,373
+texte « Pętla » @ 67,468
+texte « Dźwięk zaczyna się sam od nowa, zsynchronizowany z tempem, aż go zatrzymasz. „Raz” gra go tylko raz na dotknięcie. » @ 294,523
+texte « Tempo (BPM) » @ 111,591
+texte « Szybkość utworu w uderzeniach na minutę. Około 90: wyluzowany hip-hop; 125: house; 174: drum & bass. » @ 294,633
+texte « Takt » @ 64,687
+texte « Grupa ćwierćnut, zwykle 4 („1, 2, 3, 4”). Siatka perkusji pokazuje jeden takt pocięty na 16 kratek. » @ 294,729
+texte « Krok » @ 66,783
+texte « Jedna kratka siatki: szesnastka taktu. Włączony krok gra dźwięk w tym momencie. Uderzenia: wł. lub wył. Rolki: kilka szybkich uderzeń w kratce. Pan: lewo lub prawo. Wysokość (dźwięki zaimportowane): wyżej lub niżej. Siła: głośniej lub ciszej. » @ 294,865
+texte « Swing » @ 74,946
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « zwinięte »] @ 294,984
+bouton « Cofnij » @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

@@ -1,0 +1,8 @@
+Écran 33 (588x1278)
+dessin @ 294,639
+dessin @ 294,794
+texte « Your take: 1 bar » @ 159,854
+texte « Where should it go? It loops at the project tempo. » @ 294,937
+bouton « On empty pad B2 » @ 294,1032
+bouton « In a Live block » @ 294,1122
+texte « Throw it away » @ 294,1212

@@ -1,0 +1,51 @@
+Écran 26 (1035x1243)
+touchable « Techno de Detroit » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 126  Tempo » (nom « Tempo : 126 battements par minute ») @ 98,123
+bouton « Montée mesure 57/176 » @ 324,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+bouton « E · Intro 2 × 1  ·  8 mes. » @ 155,214
+bouton « Une fois de moins » [désactivé] @ 304,211
+bouton « Une fois de plus » @ 376,211
+bouton « Plus d'actions » @ 448,211
+bouton « F · Intro 3 × 1  ·  8 mes. » @ 155,335
+bouton « Une fois de moins » [désactivé] @ 304,335
+bouton « Une fois de plus » @ 376,335
+bouton « Plus d'actions » @ 448,335
+bouton « G · Intro 4 × 1  ·  8 mes. » @ 155,422
+bouton « Une fois de moins » [désactivé] @ 304,435
+bouton « Une fois de plus » @ 376,435
+bouton « Plus d'actions » @ 448,435
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « MES PISTES » [état « Déplié »] @ 651,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 771,306
+bouton « Batterie Changer le son » @ 708,409
+bouton « Écouter « Batterie » seul, en boucle » @ 882,410
+bouton « Réglages de Batterie : volume, couper » @ 957,413
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Le kick (le « boum ») 19 % » [état « ouvert »] @ 517,478
+texte « CHAPITRE 1 · LES SONS ET LES MOTIFS » @ 517,560
+texte « Le kick (le « boum ») » @ 225,612
+texte « Le battement grave que tout le monde suit en tapant du pied. » @ 447,668
+texte « → » @ 61,740
+texte « À toi : écoute ce son tout seul, puis décide. » @ 394,739
+bouton « Écouter seul » (nom « Écouter « Grosse caisse 1 » seul, en boucle ») @ 863,740
+bouton « Garder ce son » @ 517,827
+texte « Il tient son rôle : on passe au suivant. » @ 271,887
+texte « VOIR LE RÉGLAGE » @ 152,939
+bouton « ↗ La fiche de la piste « Grosse caisse 1 » » @ 517,1003
+bouton « ↗ Autre idée de son » (nom « Voir le réglage : Autre idée de son ») @ 517,1057
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+onglet « Mon morceau » [sélectionné] @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

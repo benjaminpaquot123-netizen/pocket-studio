@@ -66,6 +66,23 @@ class TruePeakMeter(private val channels: Int) {
             }.let { c -> val s = c.sum(); DoubleArray(TAPS) { c[it] / s } }
         }
 
+        /**
+         * The true peak (dBTP) and length (s) of a WAV: the export's report when the engine gave none
+         * (audit ultra round 1, n° 15: « crête — dBTP » after an export). Background thread.
+         */
+        fun ofWav(file: File): Pair<Double, Double> = WavPcm.open(file).use { pcm ->
+            val meter = TruePeakMeter(pcm.channels)
+            val buf = FloatArray(8192 * pcm.channels)
+            var frames = 0L
+            while (true) {
+                val n = pcm.readFloat(buf, 8192)
+                if (n == 0) break
+                for (i in 0 until n * pcm.channels) meter.add(buf[i])
+                frames += n
+            }
+            meter.peakDb to frames.toDouble() / pcm.sampleRate
+        }
+
         /** The true peak (dBTP) of raw interleaved little-endian floats (what [com.pocketstudio.app.audio.AudioDecoder.decodeToFile] writes). */
         fun ofRawFloats(file: File, channels: Int): Double {
             val meter = TruePeakMeter(channels)
@@ -153,8 +170,12 @@ object M4aGuard {
         decodedPeak: suspend () -> Double?,
         step: (Step) -> Unit = {},
         mayGoOn: (Step) -> Boolean = { true },
+        // Lot E: the ceiling the decoded file must stay under (« Master pro » −1, −0,5 or −0,3 dBTP) and
+        // the limiter's for the first render (1 dB under it).
+        maxDecodedDb: Double = MAX_DECODED_DBTP,
+        firstCeiling: Float = AacEncoder.CEILING_DBTP,
     ): Run {
-        var ceiling = AacEncoder.CEILING_DBTP
+        var ceiling = firstCeiling
         var source = sourcePeakDb
         var renders = 1
         var encodings = 0
@@ -165,13 +186,13 @@ object M4aGuard {
             encodings++
             step(Step(Step.Kind.Check, renders, MAX_RENDERS))
             val peak = decodedPeak() ?: return Run(null, ceiling, gain, renders, encodings)
-            if (peak <= MAX_DECODED_DBTP) return Run(peak, ceiling, gain, renders, encodings)
-            val next = (ceiling - (peak - MAX_DECODED_DBTP + MARGIN_LIMIT_DB)).toFloat()
+            if (peak <= maxDecodedDb) return Run(peak, ceiling, gain, renders, encodings)
+            val next = (ceiling - (peak - maxDecodedDb + MARGIN_LIMIT_DB)).toFloat()
             val again = Step(Step.Kind.Render, renders + 1, MAX_RENDERS)
             if (renders >= MAX_RENDERS || next < MIN_CEILING_DBTP || !mayGoOn(again)) {
                 // The last resort: this mix, encoded lower (as [encodeWithin]); the first try always
                 // (the file must not saturate), the next ones only within the budget.
-                var g = gain * 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - peak) / 20.0).toFloat()
+                var g = gain * 10.0.pow((maxDecodedDb - MARGIN_DB - peak) / 20.0).toFloat()
                 var encoded = gain
                 var last: Double = peak
                 for (tries in 1..MAX_TRIES) {
@@ -183,8 +204,8 @@ object M4aGuard {
                     encodings++
                     step(Step(Step.Kind.Check, tries + 1, 0))
                     last = decodedPeak() ?: return Run(null, ceiling, g, renders, encodings)
-                    if (last <= MAX_DECODED_DBTP || tries == MAX_TRIES) break
-                    g *= 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - last) / 20.0).toFloat()
+                    if (last <= maxDecodedDb || tries == MAX_TRIES) break
+                    g *= 10.0.pow((maxDecodedDb - MARGIN_DB - last) / 20.0).toFloat()
                 }
                 return Run(last, ceiling, encoded, renders, encodings)
             }
@@ -257,9 +278,23 @@ data class ExportSummary(
     }
 
     fun formatLine(): String = when {
-        format == "M4A" -> tr("M4A, %s kHz", if (sampleRate == 44100) "44,1" else "48")
+        // Audit ultra round 2 (n° 10): an M4A's quality is its bit rate (AAC has no bits per sample).
+        format == "M4A" -> tr("M4A, %1\$s kHz, %2\$d kb/s", if (sampleRate == 44100) "44,1" else "48", AacEncoder.BIT_RATE / 1000)
         else -> tr("%1\$s, %2\$s kHz, %3\$d bits", format, if (sampleRate == 44100) "44,1" else "48", bits)
     }
+
+    /**
+     * Audit ultra round 3 (n° 14, seats A c 47, C c 46, D c 60): the report in everyday words for the Mode simple,
+     * no LUFS, dBTP, kHz or kb/s: how long, how loud, whether it may crackle, what kind of file.
+     */
+    fun plainLines(): List<String> = listOfNotNull(
+        durationLine(), levelLine(),
+        truePeakDb?.takeIf { it > -100.0 }?.let { if (saturates) tr("Trop fort par endroits : ça risque de grésiller.") else tr("Pas de saturation.") },
+        when (format) {
+            "M4A" -> tr("Fichier M4A : léger, lu par tous les appareils.")
+            else -> tr("Fichier %s : qualité studio.", format)
+        },
+    )
 
     fun verdict(): String = when {
         ready -> tr("Prêt à partager")

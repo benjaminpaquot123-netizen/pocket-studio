@@ -9,6 +9,7 @@
 #include <samplerate.h>
 
 #include "Loudness.h"
+#include "LoudnessRange.h"
 #include "MasterChain.h"
 #include "WavWriter.h"
 
@@ -71,22 +72,38 @@ private:
     size_t read_ = 0;
 };
 
-// The last stage, whatever the passes: the fades (counted from the render's length cap), the
-// resampling to 44.1 kHz, the report's meter, then the file or the buffer.
+// The last stage, whatever the passes: the fades (counted from the render's length cap), lot E's
+// finish (a fade-in, the silence trimmed at either end, silence added after it), the resampling (44.1
+// or 96 kHz), the report's meters, then the file or the buffer.
 class OfflineRenderer::Output {
 public:
-    Output(int engineRate, int outRate, int64_t frames, int64_t tailFrames, int64_t fadeOut, Sink sink)
-        : total_(frames + tailFrames), sink_(std::move(sink)), ratio_(static_cast<double>(outRate) / engineRate) {
+    // `postCeilingDb` (dBTP; NaN: none): resampled, the file goes through a true-peak limiter again at its
+    // own rate (lot E: a 44.1 or 96 kHz file of a mix limited at 48 kHz read up to 0.5 dB over the ceiling).
+    Output(int engineRate, int outRate, int64_t frames, int64_t tailFrames, int64_t fadeOut, Sink sink, const Finish& finish = Finish{},
+           float postCeilingDb = NAN)
+        : total_(frames + tailFrames), sink_(std::move(sink)), ratio_(static_cast<double>(outRate) / engineRate), finish_(finish) {
+        if (outRate != engineRate && std::isfinite(postCeilingDb)) {
+            post_ = std::make_unique<MasterChain>();
+            post_->setCeilingDb(postCeilingDb);
+            post_->prepare(outRate);
+            postL_.resize(static_cast<size_t>(4 * kBlock));
+            postR_.resize(static_cast<size_t>(4 * kBlock));
+            postOut_.resize(static_cast<size_t>(8 * kBlock));
+        }
         // The tail's last half second fades out: a long reverb is not cut dead at the file's end
         // (with the automatic tail, only one still ringing at the cap gets there).
         fade_ = std::min<int64_t>(tailFrames, engineRate / 2);
         fadeOut_ = std::min(fadeOut, total_);
+        fadeIn_ = std::clamp<int64_t>(finish.fadeInFrames, 0, std::max<int64_t>(0, total_ / 2));
+        trimming_ = finish.trimStart;
         meter_.prepare(outRate);
+        range_.prepare(outRate);
         if (outRate != engineRate) {
             int err = 0;
             src_ = src_new(SRC_SINC_BEST_QUALITY, 2, &err);
             resampled_.resize(static_cast<size_t>(2 * (static_cast<int>(kBlock * ratio_) + 64)));
         }
+        staged_.resize(static_cast<size_t>(2 * kBlock));
     }
     ~Output() {
         if (src_) src_delete(src_);
@@ -110,20 +127,118 @@ public:
             out[2 * i + 1] *= g;
         }
         done_ += m;
-        if (!src_) return deliver(out, m);
-        return resample(out, m, false);
+        if (!finish_.trimStart && !finish_.trimEnd && fadeIn_ == 0) return pass(out, m);
+        // Lot E: frame by frame (the file's first sound, a fade-in from it, silence held back at the end).
+        int staged = 0;
+        for (int i = 0; i < m; ++i) {
+            float l = out[2 * i], r = out[2 * i + 1];
+            const bool silent = std::fabs(l) < kSilence && std::fabs(r) < kSilence;
+            if (trimming_) {
+                if (silent) continue;
+                trimming_ = false;
+            }
+            if (inFaded_ < fadeIn_) {
+                const float x = static_cast<float>(inFaded_++) / static_cast<float>(fadeIn_);
+                l *= x * x;
+                r *= x * x;
+            }
+            if (finish_.trimEnd) {
+                if (silent) {
+                    held_.push_back(l);
+                    held_.push_back(r);
+                    continue;
+                }
+                if (!held_.empty()) {
+                    if (staged > 0 && !pass(staged_.data(), staged)) return false;
+                    staged = 0;
+                    if (!passAll(held_)) return false;
+                    held_.clear();
+                }
+            }
+            staged_[static_cast<size_t>(2 * staged)] = l;
+            staged_[static_cast<size_t>(2 * staged + 1)] = r;
+            ++staged;
+        }
+        return staged == 0 || pass(staged_.data(), staged);
     }
-    bool finish() { return src_ ? resample(nullptr, 0, true) : !failed_; }
+    bool finish() {
+        // Silence held back at the end is the end trimmed (never written); then the silence asked for.
+        if (!finish_.trimEnd && !held_.empty() && !passAll(held_)) return false;
+        held_.clear();
+        std::vector<float> zeros(static_cast<size_t>(2 * kBlock), 0.0f);
+        for (int64_t left = finish_.endSilenceFrames; left > 0;) {
+            const int n = static_cast<int>(std::min<int64_t>(kBlock, left));
+            std::fill(zeros.begin(), zeros.end(), 0.0f);
+            if (!pass(zeros.data(), n)) return false;
+            left -= n;
+        }
+        if (src_ && !resample(nullptr, 0, true)) return false;
+        // The post limiter's look-ahead: zeros push its last frames out.
+        if (post_) {
+            std::vector<float> zero(static_cast<size_t>(2 * kBlock), 0.0f);
+            while (postFlushed_ < post_->latency()) {
+                const int n = std::min(kBlock, post_->latency() - postFlushed_);
+                postFlushed_ += n;
+                if (!limitAndDeliver(zero.data(), n)) return false;
+            }
+        }
+        return !failed_;
+    }
     void report(Report& r) const {
         r.lufs = meter_.integratedLufs();
         r.truePeak = meter_.peakSinceReset();
         r.frames = written_;
+        r.maxMomentary = range_.maxMomentary();
+        r.maxShortTerm = range_.maxShortTerm();
+        r.lra = range_.lra();
+        r.correlation = range_.correlation();
+        r.monoLufs = range_.monoLufs();
     }
     bool ok() const { return !failed_ && (src_ != nullptr || ratio_ == 1.0); }
 
 private:
+    bool passAll(std::vector<float>& frames) {
+        for (size_t at = 0; at < frames.size(); at += 2 * kBlock) {
+            const int n = static_cast<int>(std::min<size_t>(2 * kBlock, frames.size() - at) / 2);
+            if (!pass(frames.data() + at, n)) return false;
+        }
+        return true;
+    }
+    bool pass(float* out, int m) {
+        if (m <= 0) return !failed_;
+        if (!src_) return deliver(out, m);
+        return resample(out, m, false);
+    }
     bool deliver(float* out, int m) {
-        for (int i = 0; i < m; ++i) meter_.add(out[2 * i], out[2 * i + 1]);
+        if (post_) return limitAndDeliver(out, m);
+        return deliverNow(out, m);
+    }
+    // Through the post limiter, its latency dropped.
+    bool limitAndDeliver(const float* in, int m) {
+        for (int at = 0; at < m;) {
+            const int n = std::min(m - at, static_cast<int>(postL_.size()));
+            for (int i = 0; i < n; ++i) {
+                postL_[static_cast<size_t>(i)] = in[2 * (at + i)];
+                postR_[static_cast<size_t>(i)] = in[2 * (at + i) + 1];
+            }
+            post_->process(postL_.data(), postR_.data(), nullptr, n);
+            const int first = std::min(n, post_->latency() - postSkip_);
+            postSkip_ += first;
+            int k = 0;
+            for (int i = first; i < n; ++i, ++k) {
+                postOut_[static_cast<size_t>(2 * k)] = postL_[static_cast<size_t>(i)];
+                postOut_[static_cast<size_t>(2 * k + 1)] = postR_[static_cast<size_t>(i)];
+            }
+            if (k > 0 && !deliverNow(postOut_.data(), k)) return false;
+            at += n;
+        }
+        return !failed_;
+    }
+    bool deliverNow(float* out, int m) {
+        for (int i = 0; i < m; ++i) {
+            meter_.add(out[2 * i], out[2 * i + 1]);
+            range_.add(out[2 * i], out[2 * i + 1]);
+        }
         written_ += m;
         if (!sink_(out, m)) failed_ = true;
         return !failed_;
@@ -151,10 +266,19 @@ private:
     int64_t written_ = 0;  // frames delivered (the file's rate)
     Sink sink_;
     double ratio_;
+    Finish finish_;
+    int64_t fadeIn_ = 0, inFaded_ = 0;
+    bool trimming_ = false;
+    std::vector<float> held_;    // silent frames at the end so far (trimEnd)
+    std::vector<float> staged_;  // one block's kept frames
     SRC_STATE* src_ = nullptr;
     std::vector<float> resampled_;
     LoudnessMeter meter_;
+    LoudnessRange range_;
     bool failed_ = false;
+    std::unique_ptr<MasterChain> post_;
+    std::vector<float> postL_, postR_, postOut_;
+    int postSkip_ = 0, postFlushed_ = 0;
 };
 
 // --- The renderer ---------------------------------------------------------------------------
@@ -254,7 +378,9 @@ OfflineRenderer::Result OfflineRenderer::renderEngine(int64_t frames, int64_t ta
                 }
             }
         }
-        if (!sink(out, keep)) return Result::IoError;
+        // Lot E: a part or a selection keeps the song's frames from its start on.
+        const int drop = static_cast<int>(std::clamp<int64_t>(finish_.rangeStart - done, 0, keep));
+        if (keep > drop && !sink(out + 2 * drop, keep - drop)) return Result::IoError;
         at += first + keep;
         if (ended) break;
         progress_.store(progressTo * static_cast<float>(done + keep) / static_cast<float>(total), std::memory_order_relaxed);
@@ -271,6 +397,9 @@ OfflineRenderer::Result OfflineRenderer::masterPass(Store& store, float driveDb,
     // Mix version 3: its low cut at 25 Hz (an export sounds as the song plays).
     chain->setLowCut(engine_->mixer().masterChain().lowCut());
     chain->prepare(sampleRate_);
+    // Lot E: the limiter as the user set it.
+    chain->setLimiterAttack(engine_->mixer().masterChain().limiterAttack());
+    chain->setLimiterRelease(engine_->mixer().masterChain().limiterRelease());
     chain->holdDrive(driveDb);
     const int latency = chain->latency();
     std::vector<float> buf(2 * kBlock), l(kBlock), r(kBlock);
@@ -389,13 +518,17 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             const auto measure = [&](double d, float from, float to, double& lufs) {
                 return masterPass(*store, static_cast<float>(d), [](float*, int) { return true; }, from, to, &lufs);
             };
+            // Lot E: an M4A's limiter sits under its WAV's ceiling (SetMaster 9): the codec's headroom (1 dB
+            // at most) comes off the peaks, as in the Drop mode, not off the loudness asked.
+            const double maxLoss = MasterChain::kMaxLossDb +
+                                   (std::isfinite(live.driveCeilingDb()) ? std::clamp(double(live.driveCeilingDb()) - live.ceilingDb(), 0.0, 1.0) : 0.0);
             // What the chain takes off the driven music (LU): past kMaxLossDb it only squashes.
             const auto loss = [pre](double d, double l) { return pre + d - l; };
             const double d0 = clampDrive(target - pre);
             double l0 = 0.0, l1 = 0.0;
             if ((result = measure(d0, 0.8f, 0.875f, l0)) != Result::Ok) return result;
             drive = d0;
-            if (std::fabs(l0 - target) > 0.1 && !(l0 < target && loss(d0, l0) >= MasterChain::kMaxLossDb)) {
+            if (std::fabs(l0 - target) > 0.1 && !(l0 < target && loss(d0, l0) >= maxLoss)) {
                 const double d1 = clampDrive(d0 + (target - l0));
                 if ((result = measure(d1, 0.875f, 0.95f, l1)) != Result::Ok) return result;
                 drive = d1;
@@ -404,7 +537,7 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
                     double d2 = d1 + (target - l1) / (slope > 0.05 ? slope : 1.0);
                     // Louder only while the chain gives loudness for its reduction.
                     const double lossSlope = 1.0 - slope;
-                    if (d2 > d1 && lossSlope > 0.05) d2 = std::min(d2, d1 + (MasterChain::kMaxLossDb - loss(d1, l1)) / lossSlope);
+                    if (d2 > d1 && lossSlope > 0.05) d2 = std::min(d2, d1 + (maxLoss - loss(d1, l1)) / lossSlope);
                     drive = clampDrive(d2);
                 }
             }
@@ -489,8 +622,13 @@ OfflineRenderer::Result OfflineRenderer::dropDrive(Store& store, double preLoud,
 
 OfflineRenderer::Result OfflineRenderer::renderToWav(const char* path, int64_t frames, int64_t tailFrames) {
     WavWriter wav;
+    wav.setNoiseShaping(finish_.noiseShaping);
     if (!wav.openBits(path, outRate_, 2, bits_)) return Result::IoError;
-    Output output(sampleRate_, outRate_, frames, tailFrames, fadeOut_, [&wav](float* b, int n) { return wav.write(b, n); });
+    // The commands so far applied: the master's limiter and ceiling are known (resampled files are limited again).
+    engine_->process(nullptr, 0, 0, block_, 0, 2);
+    const MasterChain& mc = engine_->mixer().masterChain();
+    const float postCeiling = outRate_ != sampleRate_ && mc.limiterOn() ? mc.ceilingDb() : NAN;
+    Output output(sampleRate_, outRate_, kept(frames), tailFrames, fadeOut_, [&wav](float* b, int n) { return wav.write(b, n); }, finish_, postCeiling);
     if (!output.ok()) return Result::IoError;
     const std::string temp = std::string(path) + ".premaster";
     const Result r = render(frames, tailFrames, [&temp]() -> std::unique_ptr<Store> {
@@ -512,8 +650,10 @@ std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailF
     // down at the end. One pass, mono: each frame folded as it comes.
     bool stored = false;
     size_t written = 0;
-    Output output(sampleRate_, sampleRate_, frames, tailFrames, fadeOut_, [&out, &stored, &written, mono](float* b, int n) {
+    Output output(sampleRate_, sampleRate_, kept(frames), tailFrames, fadeOut_, [&out, &stored, &written, mono](float* b, int n) {
         if (stored) {
+            // Lot E's silence after the end goes past what was stored.
+            if (written + static_cast<size_t>(2 * n) > out.size()) out.resize(written + static_cast<size_t>(2 * n));
             std::copy(b, b + 2 * n, out.begin() + static_cast<std::ptrdiff_t>(written));
             written += static_cast<size_t>(2 * n);
         } else if (mono) {
@@ -524,7 +664,7 @@ std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailF
             written += static_cast<size_t>(2 * n);
         }
         return true;
-    });
+    }, finish_);
     const Result r = render(frames, tailFrames, [&out, &stored]() -> std::unique_ptr<Store> {
         stored = true;
         return std::make_unique<MemoryStore>(out);
@@ -546,7 +686,7 @@ std::vector<float> OfflineRenderer::renderToBuffer(int64_t frames, int64_t tailF
 
 OfflineRenderer::Result OfflineRenderer::renderForReport(int64_t frames, int64_t tailFrames) {
     std::vector<float> music;
-    Output output(sampleRate_, sampleRate_, frames, tailFrames, fadeOut_, [](float*, int) { return true; });
+    Output output(sampleRate_, sampleRate_, kept(frames), tailFrames, fadeOut_, [](float*, int) { return true; }, finish_);
     const Result r = render(frames, tailFrames, [&music, frames, tailFrames]() -> std::unique_ptr<Store> {
         music.reserve(static_cast<size_t>((frames + tailFrames) * 2));
         return std::make_unique<MemoryStore>(music);

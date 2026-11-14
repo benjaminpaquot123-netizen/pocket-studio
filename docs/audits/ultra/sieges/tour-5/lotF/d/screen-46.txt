@@ -1,0 +1,4 @@
+Écran 46 (616x1371)
+texte « Dans quel projet ? » @ 190,559
+touchable « Live projet ouvert · 124 BPM » @ 308,667
+bouton «  Retour » @ 511,799

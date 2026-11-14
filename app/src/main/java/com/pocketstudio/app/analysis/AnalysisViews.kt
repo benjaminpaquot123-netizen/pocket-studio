@@ -109,8 +109,8 @@ fun TunerView(reading: TunerReading?, micOk: Boolean?, englishNotes: Boolean) {
                     val c = it.cents.roundToInt()
                     "${"%.1f".format(com.pocketstudio.model.i18n.I18n.lang.locale, it.hz)} Hz · " + when {
                         abs(c) < 5 -> tr("juste")
-                        c < 0 -> tr("trop bas de %d cents", -c)
-                        else -> tr("trop haut de %d cents", c)
+                        c < 0 -> com.pocketstudio.model.i18n.trCount(-c, "trop bas de 1 cent", "trop bas de %d cents")
+                        else -> com.pocketstudio.model.i18n.trCount(c, "trop haut de 1 cent", "trop haut de %d cents")
                     }
                 } ?: " ",
                 style = MonoStyle, color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally),

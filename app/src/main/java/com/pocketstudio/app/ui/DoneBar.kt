@@ -28,9 +28,12 @@ private const val DONE_MS = 6000L
 /**
  * « Fait : un fill à la fin de C · Drop » with « Annuler » beside it, after an intention (the
  * part sheet, a kit): what was done is said, and undone in one touch. It goes by itself.
+ * It floats over the page's lower edge for six seconds and the page never changes height for it (audit ultra round 6,
+ * N15: a line of its own in the bottom bar was tried and moved the page under the finger). Its host hides it while a
+ * take runs and lets its message go.
  */
 @Composable
-fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit) {
+fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modifier = Modifier) {
     if (text == null) return
     LaunchedEffect(text) {
         delay(DONE_MS)
@@ -38,7 +41,7 @@ fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit) {
     }
     Surface(
         shape = RoundedCornerShape(12.dp), color = Neon.SurfaceHigh, shadowElevation = 6.dp,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth().testTag("done_bar"),
+        modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth().testTag("done_bar"),
     ) {
         Row(Modifier.padding(start = 14.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))

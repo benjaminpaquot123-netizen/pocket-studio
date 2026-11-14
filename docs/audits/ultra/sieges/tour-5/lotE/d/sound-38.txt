@@ -1,0 +1,2 @@
+Son : le morceau joue (partie « A »).
+Le pad 14 (« Impact ») joue une fois.

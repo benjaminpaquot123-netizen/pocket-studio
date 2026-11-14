@@ -1,0 +1,79 @@
+Écran 229 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 140,42
+bouton « Pro » @ 310,42
+bouton « D · Drop » ▾ @ 433,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 854,204
+texte « Teil: D · Drop » @ 107,273
+bouton « Studio-Kick FX » @ 123,360
+bouton « Kick 2 » @ 341,360
+bouton « Snare » @ 559,360
+bouton « Techno · Snare 2 FX » @ 777,360
+bouton « Techno · Clap FX » @ 123,450
+bouton « Techno · Hi-Hat L 30 » @ 341,450
+bouton « Roland TR-909 · Offene Hi-Hat R 30 » @ 559,450
+bouton « Tiefes Tom » @ 777,450
+bouton « Mittleres Tom R 45 » @ 123,540
+bouton « Hohes Tom » @ 341,540
+bouton « Techno · Rim FX R 50 » @ 559,540
+bouton « Cowbell » @ 777,540
+bouton « Becken R 40 » @ 123,630
+bouton « Shaker L 50 » @ 341,630
+bouton « Conga » @ 559,630
+bouton « Zap » @ 777,630
+bouton « Kit: Eigenes » ▾ @ 138,714
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 576,714
+titre « STEPS: BECKEN · DROP » [état « Aufgeklappt »] @ 362,822
+bouton « ? » @ 415,822
+bouton « Alle Pads » @ 770,822
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,907
+bouton [état « leer »] @ 192,907
+bouton [état « Schlag, Stärke 100 % »] @ 294,907
+bouton [état « leer »] @ 397,907
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,907
+bouton [état « leer »] @ 603,907
+bouton [allumé, état « Schlag, Stärke 100 % »] @ 706,907
+bouton [état « leer »] @ 809,907
+bouton « 3 » [état « Schlag, Stärke 100 % »] @ 90,988
+bouton [état « leer »] @ 192,988
+bouton [état « Schlag, Stärke 100 % »] @ 294,988
+bouton [état « leer »] @ 397,988
+bouton « 4 » [état « Schlag, Stärke 100 % »] @ 500,988
+bouton [état « leer »] @ 603,988
+bouton [état « Schlag, Stärke 100 % »] @ 706,988
+bouton [état « leer »] @ 809,988
+bouton « Schläge » [sélectionné] @ 122,1074
+bouton « Rolls » @ 265,1074
+bouton « Panorama » @ 421,1074
+bouton « Tonhöhe » @ 604,1074
+bouton « Velocity » @ 774,1074
+texte « Tutorial fortsetzen » @ 225,1147
+texte « Tutorial neu starten » @ 675,1147
+bouton (boussole) « Guide  · Stil, Tempo und Tonart 47 % » ⌃ [état « eingeklappt »] @ 450,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

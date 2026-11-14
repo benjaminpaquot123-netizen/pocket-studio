@@ -1,0 +1,6 @@
+Écran 64 (588x1278)
+texte « Renommer la piste » @ 244,507
+champ « Nom 8/24 » contenu « Truc nul » @ 294,620
+bouton « Effacer » @ 468,611
+bouton « Annuler » @ 346,758
+bouton « OK » @ 460,758

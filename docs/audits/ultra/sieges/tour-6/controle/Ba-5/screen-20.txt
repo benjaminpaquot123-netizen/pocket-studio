@@ -1,0 +1,38 @@
+Écran 20 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+icône « Estribillo compás 1/20 » ▾ @ 258,114
+bouton « ? » @ 543,114
+icône ← «  Mi canción » @ 97,180
+texte « Remix » @ 224,180
+titre « CANCIÓN: MA CHANSON PRÉFÉRÉE » [état « Desplegado »] @ 249,276
+bouton ▶ «  Reproducir » @ 155,342
+texte « Efectos » @ 488,342
+texte « 0:00 / 0:40 · inicio » @ 350,342
+texte « Tonalidad: proyecto en La menor, canción en La menor » @ 291,403
+bouton (barres de son) «  Abrir el tablero de pistas » @ 294,465
+texte « La canción entra en el compás 1, al inicio de “Estribillo”. » @ 294,543
+texte « Arrastra la canción sobre tu tema, o colócala al inicio de: » @ 294,708
+bouton « Inicio » [sélectionné] @ 95,783
+icône − [désactivé, coupé] @ 438,844
+icône + [coupé] @ 510,844
+bouton ✂ «  Cortar la canción » @ 294,903
+bouton (boussole) « Guía  · Pon un ritmo 7 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

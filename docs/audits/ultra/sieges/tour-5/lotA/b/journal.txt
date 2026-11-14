@@ -1,0 +1,179 @@
+#0 SIEGE lang=pt-BR device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3645b45e0a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » 3.16:1 (needs 4.5:1, 14 sp)
+#1 > touche 308 828
+#1 DOIGT welcome_demo « Ouvir uma demo »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 62e2ef188c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Pro » 2.09:1 (needs 3.0:1, 24 sp)
+#2 > touche 308 282
+#2 DOIGT mode_card_simple « Simples »
+#3 ROUTE dialogue:demo_ready | MODE simple | EMPREINTE 31167c757b | project=p-5bd84899 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 326 769
+#3 DOIGT dans:demo_ready « Mais tarde »
+#4 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 71173198a1 | project=p-5bd84899 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 > touche 427 42
+#4 DOIGT top_record
+#5 ROUTE dialogue:record_choice | MODE simple | EMPREINTE 9d2bd8889b | project=p-5bd84899 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « Cancelar » 2.10:1 (needs 4.5:1, 14 sp)
+#5 > touche 308 535
+#5 DOIGT record_choice_mic «   O microfone: sua voz, um violão, um in »
+#6 ROUTE audio_tracks | MODE simple | EMPREINTE ea49a049a3 | project=p-5bd84899 no tuto
+#6 SON Son : le morceau joue (partie « A »).
+#6 > attends 8
+#7 ROUTE audio_tracks | MODE simple | EMPREINTE a62a9ed8f6 | project=p-5bd84899 no tuto
+#7 SON Son : le morceau joue (partie « A »).
+#7 > touche 184 756
+#7 DOIGT audio_stop « Parar e guardar »
+#8 ROUTE audio_tracks | MODE simple | EMPREINTE 6fe1524ce3 | project=p-5bd84899 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 231 1152
+#8 DOIGT thumb_play
+#9 ROUTE audio_tracks | MODE simple | EMPREINTE 354508b5f5 | project=p-5bd84899 no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 > attends 5
+#10 ROUTE audio_tracks | MODE simple | EMPREINTE 354508b5f5 | project=p-5bd84899 no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 > attends 6
+#11 ROUTE audio_tracks | MODE simple | EMPREINTE 354508b5f5 | project=p-5bd84899 no tuto
+#11 SON Son : le morceau joue (partie « A »).
+#11 > touche 113 180
+#11 DOIGT remix_back «  Minha música »
+#12 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 77b1f0dbb8 | project=p-5bd84899 no tuto
+#12 SON Son : le morceau joue (partie « A »).
+#12 > attends 3
+#13 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 77b1f0dbb8 | project=p-5bd84899 no tuto
+#13 SON Son : le morceau joue (partie « A »).
+#13 > touche 231 1152
+#13 DOIGT thumb_play
+#14 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c2d3cef37e | project=p-5bd84899 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 231 1152
+#14 DOIGT thumb_play
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 33d63f3d43 | project=p-5bd84899 no tuto
+#15 SON Son : le morceau joue (partie « A »).
+#15 > attends 3
+#16 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3b2bb6e3fe | project=p-5bd84899 no tuto
+#16 SON Son : le morceau joue (partie « A »).
+#16 > attends 5
+#17 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8193b79e9a | project=p-5bd84899 no tuto
+#17 SON Son : le morceau joue (partie « A »).
+#17 > attends 5
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 77b1f0dbb8 | project=p-5bd84899 no tuto
+#18 SON Son : le morceau joue (partie « A »).
+#18 > touche 231 1152
+#18 DOIGT thumb_play
+#19 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c2d3cef37e | project=p-5bd84899 no tuto
+#19 SON Son : rien ne joue.
+#19 > glisse 308 950 308 450
+#19 DOIGT song_chords « Acordes da música »
+#20 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3be4351646 | project=p-5bd84899 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 200 783
+#20 DOIGT part_play_1 « B »
+#21 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 862d585b36 | project=p-5bd84899 no tuto
+#21 SON Son : le morceau joue (partie « B »).
+#21 LAYOUT CONTRAST « × 2  ·  2 comp.  ·  tocando » 2.62:1 (needs 4.5:1, 14 sp)
+#21 > attends 4
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d2eabfe675 | project=p-5bd84899 no tuto
+#22 SON Son : le morceau joue (partie « B »).
+#22 LAYOUT CONTRAST « B » 2.90:1 (needs 3.0:1, 18 sp)
+#22 LAYOUT CONTRAST « × 2  ·  2 comp.  ·  tocando » 2.91:1 (needs 4.5:1, 14 sp)
+#22 > touche 433 1251
+#22 DOIGT tab_simple_Mix « Mix »
+#23 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 7e99ab137d | project=p-5bd84899 no tuto
+#23 SON Son : le morceau joue (partie « B »).
+#23 LAYOUT CONTRAST « Saída » 1.59:1 (needs 4.5:1, 13 sp)
+#23 > touche 499 42
+#23 DOIGT top_play
+#24 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE b42f54ddfa | project=p-5bd84899 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 56 1251
+#24 DOIGT tab_simple_Morceau « Minha música »
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6e27b894e8 | project=p-5bd84899 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 170 196
+#25 DOIGT simple_track_audio:0 « Áudio 1 »
+#26 ROUTE audio_tracks | MODE simple | EMPREINTE 3aa7e84fca | project=p-5bd84899 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 85 531
+#26 DOIGT dans:audio_target « 1. A »
+#27 ROUTE audio_tracks | MODE simple | EMPREINTE a2031ab8f4 | project=p-5bd84899 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 172 882
+#27 DOIGT audio_record_0 «  Novo take »
+#28 ROUTE audio_track_0 | MODE simple | EMPREINTE f79bf3567e | project=p-5bd84899 no tuto
+#28 SON Son : le morceau joue (partie « A »).
+#28 > attends 14
+#29 ROUTE audio_track_0 | MODE simple | EMPREINTE dfd562635a | project=p-5bd84899 no tuto
+#29 SON Son : le morceau joue (partie « A »).
+#29 > touche 184 756
+#29 DOIGT audio_stop « Parar e guardar »
+#30 ROUTE audio_tracks | MODE simple | EMPREINTE 8548fcceec | project=p-5bd84899 no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 308 950 308 400
+#30 DOIGT record_count_in « Contagem: 1 compasso »
+#31 ROUTE audio_track_0 | MODE simple | EMPREINTE 6daaec4bbd | project=p-5bd84899 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 136 608
+#31 DOIGT audio_take_0_1 « Take 1 · 10,8 s »
+#32 ROUTE audio_track_0 | MODE simple | EMPREINTE e0a5eae6d6 | project=p-5bd84899 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 > attends 6
+#33 ROUTE audio_track_0 | MODE simple | EMPREINTE e0a5eae6d6 | project=p-5bd84899 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 231 1152
+#33 DOIGT thumb_play
+#34 ROUTE audio_track_0 | MODE simple | EMPREINTE 1844fff11b | project=p-5bd84899 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 231 1152
+#34 DOIGT thumb_play
+#35 ROUTE audio_tracks | MODE simple | EMPREINTE a381e33034 | project=p-5bd84899 no tuto
+#35 SON Son : le morceau joue (partie « A »).
+#35 > attends 6
+#36 ROUTE audio_tracks | MODE simple | EMPREINTE a381e33034 | project=p-5bd84899 no tuto
+#36 SON Son : le morceau joue (partie « A »).
+#36 > touche 336 662
+#36 DOIGT audio_take_0_2 « Take 2 · 18,7 s »
+#37 ROUTE audio_track_0 | MODE simple | EMPREINTE a8d53caacf | project=p-5bd84899 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 231 1152
+#37 DOIGT thumb_play
+#38 ROUTE audio_track_0 | MODE simple | EMPREINTE 6daaec4bbd | project=p-5bd84899 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 231 1152
+#38 DOIGT thumb_play
+#39 ROUTE audio_tracks | MODE simple | EMPREINTE 058e390fbb | project=p-5bd84899 no tuto
+#39 SON Son : le morceau joue (partie « A »).
+#39 > attends 4
+#40 ROUTE audio_tracks | MODE simple | EMPREINTE 058e390fbb | project=p-5bd84899 no tuto
+#40 SON Son : le morceau joue (partie « A »).
+#40 > retour
+#40 RETOUR
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d96c6d5dbf | project=p-5bd84899 no tuto
+#41 SON Son : le morceau joue (partie « A »).
+#41 LAYOUT CONTRAST « × 2  ·  2 comp.  ·  tocando » 2.99:1 (needs 4.5:1, 14 sp)
+#41 > retour
+#41 RETOUR
+#42 ROUTE launch | MODE simple | EMPREINTE 5a5e49558a | project=p-5bd84899 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 308 294
+#42 DOIGT launch_continue « Continuar »
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c2d3cef37e | project=p-5bd84899 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 170 672
+#43 DOIGT simple_track_audio:0 « Áudio 1 »
+#44 ROUTE audio_tracks | MODE simple | EMPREINTE 8548fcceec | project=p-5bd84899 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 308 1077
+#44 DOIGT guide_bar « Guia »
+#45 ROUTE ? | MODE simple | EMPREINTE f7c6a0d8ac | project=p-5bd84899 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « CAPÍTULO 4 · O ARRANJO » 4.30:1 (needs 4.5:1, 12 sp)
+#45 > fin
+#45 FIN : fin

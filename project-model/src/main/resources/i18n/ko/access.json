@@ -1,0 +1,7 @@
+{
+  "Enregistrer au clavier": "건반으로 녹음하기",
+  "Touche le bouton rouge, puis joue : l'appli écrit tes notes dans la partie, tu les retrouves dans « Notes ». Le chiffre à côté est le décompte : les mesures entendues avant de jouer. « Garder ce que je viens de jouer » reprend ce que tu viens de jouer, sans le refaire.": "빨간 버튼을 누른 뒤 연주하세요. 앱이 음을 파트에 적고, '노트'에서 볼 수 있어요. 옆의 숫자는 카운트인이에요: 연주 전에 들리는 마디 수예요. '방금 연주한 것 저장'은 방금 연주한 것을 다시 연주하지 않고 되살려요.",
+  "Le Mix simple": "간단 믹스",
+  "Monte le curseur de ce qui doit s'entendre, baisse ce qui gêne. Sous « Sortie », un mot juge le volume final : « Bien » ou « Fort et propre », c'est prêt à partager ; « Ça sature », baisse la sortie. « Tout à zéro » remet les volumes du départ.": "들려야 할 것의 슬라이더는 올리고, 방해되는 것은 내리세요. '출력' 아래의 단어가 최종 음량을 판단해요: '좋음'이나 '크고 깨끗함'이면 공유할 준비 완료, '소리가 찌그러짐'이면 출력을 내리세요. '모두 처음대로'는 처음 음량으로 되돌려요.",
+  "La partie en cours tourne en boucle pendant que tu règles : tu entends tout de suite ce que tu changes. « ■ Arrêter » coupe la boucle.": "조절하는 동안 지금 파트가 반복돼요: 바꾼 것이 바로 들려요. '■ 정지'를 누르면 반복이 멈춰요."
+}

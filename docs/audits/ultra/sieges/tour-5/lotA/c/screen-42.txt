@@ -1,0 +1,52 @@
+Écran 42 (588x1278)
+touchable « Projet final Léa Sauvegardé » (nom « Mes projets ») @ 114,42
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 255,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Partager mon morceau » @ 543,42
+bouton « 120  BPM » (nom « Tempo : 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « ? » (nom « Qu'est-ce que « Muet et solo » ? ») @ 530,195
+texte « Volumes » @ 272,196
+texte « Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes. » @ 294,250
+bouton « Batterie » @ 84,343
+interrupteur « Son de Batterie » [coché, état « activé »] @ 57,418
+interrupteur « Écouter la piste Batterie seule » [non coché, état « désactivé »] @ 111,418
+curseur « Volume de Batterie » [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+bouton « Acid 303 » @ 204,343
+interrupteur « Son de Acid 303 » [coché, état « activé »] @ 177,418
+interrupteur « Écouter la piste Acid 303 seule » [non coché, état « désactivé »] @ 231,418
+curseur « Volume de Acid 303 » [état « +0,0 dB », à 80 %] @ 204,589
+texte « +0,0 » @ 204,740
+bouton « Synthé » @ 324,343
+interrupteur « Son de Synthé » [coché, état « activé »] @ 297,418
+interrupteur « Écouter la piste Synthé seule » [non coché, état « désactivé »] @ 351,418
+curseur « Volume de Synthé » [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+bouton « Remix » @ 444,343
+interrupteur « Son de Remix » [coché, état « activé »] @ 417,418
+interrupteur « Écouter la piste Remix seule » [non coché, état « désactivé »] @ 471,418
+curseur « Volume de Remix » [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+texte « Courbes et effets » @ 193,838
+texte « Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume… » @ 319,883
+bouton « Automatiser » @ 165,935
+bouton « Ce qui joue » @ 423,935
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 14 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo : 120 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

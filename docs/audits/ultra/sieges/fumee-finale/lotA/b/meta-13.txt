@@ -1,0 +1,2 @@
+route=dialogue:record_choice
+nouvelle=1

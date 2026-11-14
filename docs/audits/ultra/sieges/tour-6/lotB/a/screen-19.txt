@@ -1,0 +1,47 @@
+Écran 19 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ [désactivé] @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Batería 16 pads » @ 76,183
+onglet « Acid 303 Línea de bajo » @ 242,183
+onglet « Voz Micro » @ 398,183
+onglet « Remix Separar » [coupé, sélectionné] @ 519,183
+onglet « Pistas de audio » @ 114,258
+onglet « Remix » [sélectionné] @ 283,258
+onglet « Afinador » @ 419,258
+onglet « Generar » [coupé] @ 538,258
+texte « 7 minutos como máximo. Se guardan las 3 últimas canciones separadas, y las que usa un proyecto. » [coupé] @ 294,303
+titre « Ma chanson préférée » [état « Desplegado »] @ 174,402
+icône (poubelle) @ 510,415
+texte « 0:40 · 120 BPM · La menor » @ 161,433
+texte « Tu proyecto: 120 BPM » @ 141,476
+bouton ✂ «  Cortar lo que quiero » @ 294,538
+texte « Elige trozos de cada pista y ponlos en tus pads, en el Live o en una pista. » @ 294,613
+bouton « Tocar con el proyecto » @ 294,688
+bouton ▶ «  Escuchar » @ 147,772
+texte « Activa o silencia cada pista, incluso en plena reproducción. » @ 405,772
+bouton « Batería » [coupé] @ 102,836
+bouton « Bajo » [coupé] @ 230,836
+bouton « Resto » [coupé] @ 358,836
+bouton « Voz » [coupé] @ 486,836
+bouton + «  Elegir una canción » @ 294,903
+bouton (boussole) « Guía  · Pon un ritmo 5 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » [désactivé] @ 70,1062
+icône ↷ « Rehacer » [désactivé] @ 176,1062
+bouton ▶ « la canción » @ 285,1062
+texte « 120 Tempo » @ 401,1062
+icône (trois points reliés) « Compartir » @ 515,1062
+onglet (ligne brisée et points) « Estructura » @ 54,1158
+onglet (touches de piano) « Sonidos » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Más » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

@@ -1,0 +1,11 @@
+Écran 1 (588x1278)
+bouton « 🇵🇱   Polski » (nom « Wybierz język ») @ 471,78
+texte « BenStudio » @ 242,168
+texte « Twoje studio muzyczne w kieszeni. » @ 313,213
+texte « Witaj! Twórz muzykę na swoim urządzeniu. Od czego zaczynamy? » @ 294,288
+bouton « Zrób mój pierwszy utwór (z przewodnikiem) Wybierz styl, a pomogę ci krok po kroku, od początku utworu do końca. » @ 294,468
+bouton « Uczę się Cały utwór robisz sam, krok po kroku: ja tłumaczę i sprawdzam. » @ 294,690
+bouton « Posłuchaj demo Gotowy utwór, żeby odkryć, co możesz zrobić. » @ 294,870
+bouton « Zacznij od zera Jeszcze bez nut: perkusja, Acid 303 i syntezator czekają na twoje. » @ 294,1050
+bouton « Wyodrębnij wokal z piosenki Wybierz piosenkę z telefonu: aplikacja oddzieli wokal, perkusję, bas i resztę. » @ 294,1215
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

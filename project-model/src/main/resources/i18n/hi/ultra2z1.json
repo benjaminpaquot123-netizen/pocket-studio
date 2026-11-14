@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "साउंड पैड पर नहीं रखा जा सका: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "चुनौतियाँ: एक रिदम सुनो, पैड पर दोहराओ, सितारे जीतो।",
+  "Défis": "चुनौतियाँ",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "एक रिदम सुनो, पैड पर दोहराओ: सितारे जीतो।",
+  "%s, sur le pad": "%s, पैड पर",
+  "✓ Sur le pad maintenant": "✓ अभी इस पैड पर",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "“%1$s” ने पैड %3$d पर “%2$s” की जगह ली (वापस वाला तीर उसे लौटा देता है)। इसे ड्रम्स में अपनी पसंद के हिस्से में रखो।",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "“%s” काटने के लिए, म्यूट होकर, तुम्हारे प्रोजेक्ट में है (वापस वाला तीर उसे हटा देता है)।",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live का अपना “Live” प्रोजेक्ट है: “%s” मेरे प्रोजेक्ट में तुम्हारा इंतज़ार कर रहा है।"
+}

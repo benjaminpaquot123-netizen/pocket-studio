@@ -1,0 +1,17 @@
+{
+  "Lire": "Leer",
+  "Bravo, chapitre fini !": "¡Bravo, capítulo terminado!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Escucha tu canción tal como está ahora y luego pasa al capítulo siguiente: “%s”.",
+  "Chapitre suivant : « %s ».": "Capítulo siguiente: “%s”.",
+  "Chapitre suivant": "Capítulo siguiente",
+  "Écouter mon morceau": "Escuchar mi canción",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "Ya hay un sonido guardado llamado “%s”: elige otro nombre.",
+  "Ce son est déjà dans tes favoris : « %s ».": "Este sonido ya está en tus favoritos: “%s”.",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "Sonido guardado en tus favoritos con sus efectos: “%s”.",
+  "Son renommé : « %s ».": "Sonido renombrado: “%s”.",
+  "Déjà dans tes favoris": "Ya está en tus favoritos",
+  "Renommer « %s »": "Renombrar “%s”",
+  "Renommer le son": "Renombrar el sonido",
+  "Nom du son": "Nombre del sonido",
+  "%d ms": "%d ms"
+}

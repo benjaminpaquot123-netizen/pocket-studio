@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -98,7 +99,9 @@ private fun FamilyHeader(family: String, count: Int, open: Boolean, modifier: Mo
     val (icon, color) = familyLook(family)
     Row(
         modifier.fillMaxWidth().heightIn(min = 56.dp).clip(shape)
-            .background(if (open) color.copy(alpha = 0.16f) else Neon.SurfaceHigh)
+            // Opened: the family's wash on the closed panel, never see-through (tour 5, lot « moyens » C: on a light page
+            // the « Hip-hop » header was pink on pink).
+            .background(if (open) color.copy(alpha = 0.16f).compositeOver(Neon.SurfaceHigh) else Neon.SurfaceHigh)
             .border(1.dp, if (open) color.copy(alpha = 0.7f) else Neon.Outline, shape)
             .clickable(role = Role.Button, onClick = toggle)
             .semantics { stateDescription = if (open) tr("ouvert") else tr("fermé") }
@@ -110,7 +113,7 @@ private fun FamilyHeader(family: String, count: Int, open: Boolean, modifier: Mo
         }
         Text(if (family == StarterWizard.CALM_FAMILY) tr("Calme (Chill, Lo-fi)") else tr(family), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
             maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).padding(start = 12.dp))
-        Text(tr("%d styles", count), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 8.dp, end = 4.dp))
+        Text(tr("%d styles", count), style = MaterialTheme.typography.bodySmall, color = if (open) Neon.TextPrimary else Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 8.dp, end = 4.dp))
         Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = if (open) color else Neon.TextSecondary)
     }
 }

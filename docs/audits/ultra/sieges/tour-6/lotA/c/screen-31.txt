@@ -1,0 +1,4 @@
+Écran 31 (588x1278)
+texte « Mes fichiers » @ 143,532
+texte « Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord. » @ 294,620
+texte « Fermer » @ 497,733

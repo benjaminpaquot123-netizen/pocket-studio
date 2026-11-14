@@ -21,12 +21,13 @@ class ExportLengthTest {
         File(app.filesDir, "projects").deleteRecursively()
         val vm = RhythmViewModel(app)
         val sceneBars = { vm.project.value.let { p -> p.currentSceneContent().stepsFor(p.stepsPerBar) / p.stepsPerBar } }
-        assertEquals(sceneBars(), vm.export.value.bars)
+        // Audit ultra round 3 (n° 14): the scene looped as « Partager » sends it (at least 8 bars, whole scenes).
+        assertEquals(com.pocketstudio.app.export.ShareSong.loopBars(sceneBars()), vm.export.value.bars)
         vm.setDrumBars(3)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(3, sceneBars())
         assertEquals(3, vm.export.value.sceneBars)
-        assertEquals(3, vm.export.value.bars)  // not the old fixed 4
+        assertEquals(9, vm.export.value.bars)  // three times the 3 bars: the same loop as « Partager »
         // A length picked by hand stays, whatever the scene.
         vm.setExportBars(2)
         shadowOf(Looper.getMainLooper()).idle()

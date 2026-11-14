@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour4AppProofTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-12T20:28:17.003Z" hostname="vm" time="0.676">
+  <properties/>
+  <testcase name="aMelodyTakeAfterTheBarLineGoesToThePartShown" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.09"/>
+  <testcase name="aStopEndsTheTakeAtOnce" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.035"/>
+  <testcase name="aMelodyTakeWhileAnotherPartIsShownShowsItsNotes" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.073"/>
+  <testcase name="aMelodyTakeWhileTheMusicPlaysKeepsItsKeys" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.084"/>
+  <testcase name="liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.032"/>
+  <testcase name="aMelodyTakeDuringTheSongGoesToThePartHeard" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.044"/>
+  <testcase name="aFirstMelodyTakeGoesToMaMelodieNotToTheTrackSelectedBefore" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.08"/>
+  <testcase name="aMelodyTakeFromStoppedKeepsItsKeys" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.093"/>
+  <testcase name="aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.061"/>
+  <testcase name="withoutAnEngineTheKeysOfATakeAreNotKept" classname="com.pocketstudio.app.human.Tour4AppProofTest" time="0.077"/>
+  <system-out><![CDATA[TOUR4 shown is not heard, a short take: the screen turned after 550 ms; shown 1, notes per scene [0, 3], ui SessionUi(pending=null, songIndex=-1, removed=null, queued=-1, ending=false); Prise keys : 3 touches, 3 notes, 0 coups
+TOUR4 several parts: song part -1, shown before 1, during 1, after 1; notes per scene [0, 3]; Prise keys : 3 touches, 3 notes, 0 coups; empty=false
+TOUR4 shown is not heard, a take across the bar line: shown 0, notes per scene [2, 1]; Prise keys : 3 touches, 3 notes, 0 coups
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,259 @@
+#0 SIEGE lang=ko device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=40 lit=oui main=both amenee=remix
+#0 AMENEE remix
+#0 AMENEE > touche 450 798 (launch_remix)
+#0 AMENEE prête (dialogue:remix_home)
+#1 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 333ebde6db | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 노래 분리 » 1.29:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 모델 다운로드 (174 MB) » 2.21:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « 노래 고르기 » 3.15:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « 모델 다운로드 (174 MB) » 2.04:1 (needs 4.5:1, 14 sp)
+#1 > touche 450 318
+#1 DOIGT remix_download « 모델 다운로드 (174 MB) »
+#2 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE 4d79580c8a | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 노래를 나누려면 앱이 먼저 모델을 내려받아요: 174 MB, 한 번만요. » 2.60:1 (needs 4.5:1, 14 sp)
+#2 > touche 663 848
+#2 DOIGT remix_model_ask_ok « 다운로드 »
+#3 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 8a1b8e6cde | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 취소 » 1.74:1 (needs 4.5:1, 14 sp)
+#3 > attends 30
+#4 ROUTE dialogue:remix_home | MODE pro | EMPREINTE e487ee2bea | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « 노래 고르기 » 2.20:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 최대 7분. 최근 분리한 곡 3개와 프로젝트에서 쓰는 곡은 보관돼요. » 3.60:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST «  노래 고르기 » 2.04:1 (needs 4.5:1, 14 sp)
+#4 > touche 450 326
+#4 DOIGT remix_pick « 노래 고르기 »
+#5 ROUTE dialogue:remix_home | MODE pro | EMPREINTE 6ed1be78ee | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 30
+#6 ROUTE dialogue:remix_dest | MODE pro | EMPREINTE be832706b0 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 새 프로젝트에 » 2.84:1 (needs 3.0:1, 14 sp)
+#6 LAYOUT CONTRAST « 기존 프로젝트에 » 2.47:1 (needs 3.0:1, 14 sp)
+#6 > touche 450 607
+#6 DOIGT remix_dest_build « 이 노래로 곡 만들기 »
+#7 ROUTE dialogue:mode_step | MODE pro | EMPREINTE 729c9c3097 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 처음이라면: 탭 5개, 큰 버튼, 일상 단어. » 3.72:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « 더 깊이: 모든 도구, 구조, 사운드, 믹스, 라이브. » 3.55:1 (needs 4.5:1, 16 sp)
+#7 > touche 670 246
+#7 DOIGT mode_card_pro « 프로 »
+#8 ROUTE dialogue:? | MODE pro | EMPREINTE 6a8cb41c98 | project=p-e5a6615a no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 15
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE fa8cb4f847 | project=p-e5a6615a no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#9 LAYOUT CONTRAST « 노래: MA CHANSON PRÉFÉRÉE » 3.41:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#9 > touche 855 42
+#9 DOIGT top_share
+#10 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d74988a877 | project=p-e5a6615a no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 공유할 준비 됐나요? » over the touchable « 시트 닫기 » (179 x 33 dp)
+#10 LAYOUT OVERLAP « 보낼 곡 이름 » over the touchable « 시트 닫기 » (64 x 19 dp)
+#10 LAYOUT OVERLAP « 0:40 » over the touchable « 시트 닫기 » (48 x 27 dp)
+#10 LAYOUT OVERLAP «   파트 1개 » over the touchable « 시트 닫기 » (56 x 21 dp)
+#10 LAYOUT OVERLAP «  듣기 » over the touchable « 시트 닫기 » (29 x 21 dp)
+#10 LAYOUT OVERLAP « 목표 음량 » over the touchable « 시트 닫기 » (55 x 21 dp)
+#10 LAYOUT OVERLAP « ? » over the touchable « 시트 닫기 » (7 x 15 dp)
+#10 LAYOUT OVERLAP « 스트리밍 · −14 LUFS » over the touchable « 시트 닫기 » (127 x 21 dp)
+#10 LAYOUT OVERLAP « 클럽 · −8 LUFS » over the touchable « 시트 닫기 » (94 x 21 dp)
+#10 LAYOUT OVERLAP « 자동 (스타일) · −9 LUFS » over the touchable « 시트 닫기 » (147 x 21 dp)
+#10 LAYOUT OVERLAP « 꺼짐 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#10 LAYOUT OVERLAP « 음량은 설정한 그대로예요. 출력은 찌그러짐만 막아 줘요. 믹스와 같은 설정이에요. » over the touchable « 시트 닫기 » (418 x 19 dp)
+#10 LAYOUT OVERLAP « 준비 완료: 켜진 솔로도, 뮤트된 트랙도 없어요. » over the touchable « 시트 닫기 » (264 x 21 dp)
+#10 LAYOUT OVERLAP «   SNS용 영상 · 30초 » over the touchable « 시트 닫기 » (122 x 21 dp)
+#10 LAYOUT OVERLAP « 다른 내보내기 » over the touchable « 시트 닫기 » (80 x 21 dp)
+#10 LAYOUT OVERLAP « 트랙별, MIDI, FLAC… 믹스에서 » over the touchable « 시트 닫기 » (168 x 19 dp)
+#10 LAYOUT OVERLAP « 프로젝트 보내기 » over the touchable « 시트 닫기 » (93 x 21 dp)
+#10 LAYOUT OVERLAP « 다른 기기에서 이어서 하려면: 모든 소리가 담긴 .zip 파일을 그 기기의 내 프로젝트 › 가져오기에서 열어요. » over the touchable « 시트 닫기 » (479 x 37 dp)
+#10 LAYOUT OVERLAP « 내 내보내기: 파일을 찾아 다시 보내기 » over the touchable « 시트 닫기 » (213 x 21 dp)
+#10 LAYOUT OVERLAP « M4A · 공유용 » over the touchable « 시트 닫기 » (82 x 21 dp)
+#10 LAYOUT OVERLAP « WAV · 최고 품질 » over the touchable « 시트 닫기 » (98 x 21 dp)
+#10 LAYOUT OVERLAP « "Ma chanson préférée"는 저작자의 것이에요: 이 리믹스는 개인적으로만 써요. » over the touchable « 시트 닫기 » (419 x 19 dp)
+#10 LAYOUT OVERLAP «   공유 » over the touchable « 시트 닫기 » (37 x 24 dp)
+#10 LAYOUT CONTRAST « 목표 음량 » 1.71:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « ? » 1.71:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « 음량은 설정한 그대로예요. 출력은 찌그러짐만 막아 줘요. 믹스와 같은 설정이에요. » 1.28:1 (needs 4.5:1, 13 sp)
+#10 LAYOUT CONTRAST « M4A · 공유용 » 4.21:1 (needs 4.5:1, 14 sp)
+#10 LAYOUT CONTRAST « WAV · 최고 품질 » 4.21:1 (needs 4.5:1, 14 sp)
+#10 > touche 834 477
+#10 DOIGT name_clear
+#11 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 69727bf0e4 | project=p-e5a6615a no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 보낼 곡 이름 » over the touchable « 시트 닫기 » (83 x 24 dp)
+#11 LAYOUT OVERLAP « 프로젝트 이름은 “Ma chanson préférée” 그대로예요. » over the touchable « 시트 닫기 » (290 x 19 dp)
+#11 LAYOUT CONTRAST « 공유할 준비 됐나요? » 1.78:1 (needs 3.0:1, 22 sp)
+#11 > touche 450 424
+#11 DOIGT share_name « 보낼 곡 이름 »
+#12 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 69727bf0e4 | project=p-e5a6615a no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 보낼 곡 이름 » 4.37:1 (needs 4.5:1, 13 sp)
+#12 > ecris 내 최애곡 리믹스
+#13 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 370961b3b9 | project=p-e5a6615a no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 150 712
+#13 DOIGT share_target_STREAMING « 스트리밍 · −14 LUFS »
+#14 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ae50415ff0 | project=p-e5a6615a no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 곡 전체 −14 LUFS: Spotify와 YouTube가 모든 곡을 맞추는 음량이에요. 믹스와 같은 설정이에요. » over the touchable « 시트 닫기 » (510 x 19 dp)
+#14 LAYOUT CONTRAST « 곡 전체 −14 LUFS: Spotify와 YouTube가 모든 곡을 맞추는 음량이에요. 믹스와 같은 설정이에요. » 1.28:1 (needs 4.5:1, 13 sp)
+#14 > touche 313 1295
+#14 DOIGT share_format_Wav « WAV · 최고 품질 »
+#15 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 4a5390abd7 | project=p-e5a6615a no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 450 1449
+#15 DOIGT share_go «   공유 »
+#16 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 19fb4eeb8f | project=p-e5a6615a no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 취소 » 2.17:1 (needs 4.5:1, 14 sp)
+#16 > attends 15
+#16 PARTAGE 내-최애곡-리믹스-곡-스트리밍-20261108-145132.wav
+#17 ROUTE dialogue:« 내 곡 공유 · 내-최애곡-리믹스-곡-스트리밍-2026 » | MODE pro | EMPREINTE 420ef6a601 | project=p-e5a6615a no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 450 860
+#17 DOIGT vue « Drive »
+#18 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE b387bd64ab | project=p-e5a6615a no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « WAV, 48 kHz, 24비트 · 40초 » 3.10:1 (needs 4.5:1, 13 sp)
+#18 > touche 790 893
+#18 DOIGT share_bilan_ok « OK »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE c5e505b53c | project=p-e5a6615a no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 노래: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « 이펙트 » 4.44:1 (needs 4.5:1, 14 sp)
+#19 > touche 450 544
+#19 DOIGT remix_open_cut «  곡 자르기 »
+#20 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 0943bc10f8 | project=p-e5a6615a no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 42 345
+#20 DOIGT cut_close
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE c5e505b53c | project=p-e5a6615a no tuto
+#21 SON Son : rien ne joue.
+#21 > glisse 450 1000 450 600
+#21 DOIGT rien
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 9d20af75d1 | project=p-e5a6615a no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 552 851
+#22 DOIGT stem_mute_3 « 보컬 소리 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 72e24834a6 | project=p-e5a6615a no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 855 42
+#23 DOIGT top_share
+#24 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 5510feee33 | project=p-e5a6615a no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « 뮤트되어 파일에서 빠져요: 보컬 (Ma chanson préférée). » over the touchable « 시트 닫기 » (340 x 21 dp)
+#24 LAYOUT OVERLAP « 모두 다시 듣기 » over the touchable « 시트 닫기 » (83 x 21 dp)
+#24 LAYOUT CONTRAST « 뮤트되어 파일에서 빠져요: 보컬 (Ma chanson préférée). » 1.85:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 트랙별, MIDI, FLAC… 믹스에서 » 2.93:1 (needs 4.5:1, 13 sp)
+#24 > touche 174 796
+#24 DOIGT share_fix_muted « 모두 다시 듣기 »
+#25 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f6a82e3842 | project=p-e5a6615a no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST «   파트 1개 » 1.80:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST «   SNS용 영상 · 30초 » 1.32:1 (needs 4.5:1, 14 sp)
+#25 > touche 374 712
+#25 DOIGT share_target_CLUB « 클럽 · −8 LUFS »
+#26 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 73b604b2cf | project=p-e5a6615a no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « 클럽처럼 크게(−8 LUFS), 가장 큰 부분에서 재요. 출력이 천천히 올라가며 맞추고, 내보내기는 소리를 뭉개지 않는 선에서 최대한 가까이 가요. 믹스와 같은 설정이에요. » over the touchable « 시트 닫기 » (559 x 37 dp)
+#26 LAYOUT CONTRAST «   파트 1개 » 2.43:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 목표 음량 » 1.97:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 꺼짐 » 3.60:1 (needs 4.5:1, 14 sp)
+#26 > touche 834 477
+#26 DOIGT name_clear
+#27 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 96e57e385b | project=p-e5a6615a no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 450 424
+#27 DOIGT share_name « 보낼 곡 이름 »
+#28 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 96e57e385b | project=p-e5a6615a no tuto
+#28 SON Son : rien ne joue.
+#28 > ecris 클럽 버전 리믹스
+#29 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 3a62ada128 | project=p-e5a6615a no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 450 1449
+#29 DOIGT share_go «   공유 »
+#30 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 19fb4eeb8f | project=p-e5a6615a no tuto
+#30 SON Son : rien ne joue.
+#30 > attends 15
+#31 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 31bfbf9bf0 | project=p-e5a6615a no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST «   79% » 2.07:1 (needs 4.5:1, 14 sp)
+#31 > attends 15
+#31 PARTAGE 클럽-버전-리믹스-곡-20261108-145216.wav
+#32 ROUTE dialogue:« 내 곡 공유 · 클럽-버전-리믹스-곡-20261108- » | MODE pro | EMPREINTE cf82f2259c | project=p-e5a6615a no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 450 862
+#32 DOIGT vue « Drive »
+#33 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE c1aed34cdd | project=p-e5a6615a no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 790 893
+#33 DOIGT share_bilan_ok « OK »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 9d20af75d1 | project=p-e5a6615a no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 855 42
+#34 DOIGT top_share
+#35 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 73b604b2cf | project=p-e5a6615a no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 428 981
+#35 DOIGT share_other « 다른 내보내기 »
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e0d576d6e1 | project=p-e5a6615a no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « 포맷 » over the touchable « 템포: 120 BPM 템포 바꾸기 » (25 x 4 dp)
+#36 > touche 450 673
+#36 DOIGT export_advanced « 고급 »
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 16bcd132d5 | project=p-e5a6615a no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 105 757
+#37 DOIGT export_what_Stems « 트랙별로 »
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9973621c73 | project=p-e5a6615a no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » over the touchable « 템포: 120 BPM 템포 바꾸기 » (63 x 4 dp)
+#38 LAYOUT OVERLAP « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » over the touchable « 파트부터 재생 » (96 x 4 dp)
+#38 LAYOUT OVERLAP « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » over the touchable « 곡 대신 파트를 루프 꺼짐 » (69 x 4 dp)
+#38 LAYOUT OVERLAP « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » over the touchable « 화면 이름표 » (17 x 4 dp)
+#38 LAYOUT CONTRAST « 트랙마다 파일 하나 (드럼, 애시드, 신스, 리믹스), 다른 곳에서 다시 쓸 수 있어요. 비었거나 뮤트된 트랙은 건너뛰어요. 곡 전체. » 2.17:1 (needs 4.5:1, 13 sp)
+#38 > touche 450 1009
+#38 DOIGT rien
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9973621c73 | project=p-e5a6615a no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 450 795
+#39 DOIGT export « 트랙 내보내기 »
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d92963c50b | project=p-e5a6615a no tuto
+#40 SON Son : rien ne joue.
+#40 > attends 30
+#41 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e7776ddbfe | project=p-e5a6615a no tuto
+#41 SON Son : rien ne joue.
+#41 > attends 60
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 78c49b64d8 | project=p-e5a6615a no tuto
+#42 SON Son : rien ne joue.
+#42 > attends 90
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f673dbd165 | project=p-e5a6615a no tuto
+#43 SON Son : rien ne joue.
+#43 > attends 60
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 09b523b12e | project=p-e5a6615a no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 855 42
+#44 DOIGT top_share
+#45 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 73b604b2cf | project=p-e5a6615a no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « 보낼 곡 이름 » 1.82:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST «  듣기 » 3.17:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « 다른 기기에서 이어서 하려면: 모든 소리가 담긴 .zip 파일을 그 기기의 내 프로젝트 › 가져오기에서 열어요. » 4.28:1 (needs 4.5:1, 13 sp)
+#45 > touche 428 1205
+#45 DOIGT share_my_exports « 내 내보내기: 파일을 찾아 다시 보내기 »
+#46 ROUTE dialogue:my_exports | MODE pro | EMPREINTE bb9ae32314 | project=p-e5a6615a no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Ma-chanson-préférée-01-리믹스-보컬-20261108-145246.wav » 3.74:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « 2026. 11. 8. 오후 2:53 · 1 KB » 2.52:1 (needs 4.5:1, 13 sp)
+#46 LAYOUT CONTRAST « 닫기 » 1.64:1 (needs 4.5:1, 14 sp)
+#46 > appui-long 267 853
+#46 DOIGT rien (texte « 클럽-버전-리믹스-곡-20261108-145216.wav »)
+#47 ROUTE dialogue:my_exports | MODE pro | EMPREINTE bb9ae32314 | project=p-e5a6615a no tuto
+#47 SON Son : rien ne joue.
+#47 > fin
+#47 FIN : fin

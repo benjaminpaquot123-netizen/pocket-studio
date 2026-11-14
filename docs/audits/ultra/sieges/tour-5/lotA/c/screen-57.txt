@@ -1,0 +1,42 @@
+Écran 57 (588x1278)
+touchable « Projet final Léa Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « ▶ Partie en boucle » @ 389,192
+texte « Mix » @ 48,192
+texte «  · Projet final Léa » @ 162,192
+bouton « ↺ Tout à zéro » @ 110,273
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,363
+bouton « Batterie ▸ » [état « fermé »] @ 75,456
+curseur « Volume de Batterie » [état « +0,0 dB », à 80 %] @ 84,633
+texte « +0,0 dB » @ 84,790
+interrupteur « Son de Batterie » [coché, état « activé »] @ 55,850
+bouton « Écouter « Batterie » seul, en boucle » @ 109,840
+texte « Mélodie refrain » @ 216,455
+curseur « Volume de Mélodie refrain » [état « +0,0 dB », à 80 %] @ 216,631
+texte « +0,0 dB » @ 216,788
+interrupteur « Son de Mélodie refrain » [coché, état « activé »] @ 190,848
+bouton « Écouter « Mélodie refrain » seul, en boucle » @ 241,838
+texte « Sortie » @ 345,444
+curseur « Volume de sortie » [état « −6,0 dB », à 60 %] @ 345,610
+texte « Lance ▶ » @ 345,787
+texte « Aucun conseil pour l'instant : règle à l'oreille. » @ 254,939
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 13 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » [sélectionné] @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,36 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "en",
+    "device": "phone",
+    "font": "100",
+    "mode": "simple",
+    "lit": "non",
+    "gestes.max": "80",
+    "mission": "premier-morceau",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 35,
+    "images": 15,
+    "gestes_premier_son": 4,
+    "gestes_premier_partage": 29,
+    "touchers_a_vide": 2,
+    "touchers_desactives": 0,
+    "retours": 6,
+    "retours_immediats": 5,
+    "ecrans": 37,
+    "ecrans_revisites": 8,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 1,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 156,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "premier-morceau",
+  "resultat": "reussie",
+  "pourquoi": "« Techno » : 35 parties, 349 s ; partagé : Techno-song-20261105-213439.m4a"
+}

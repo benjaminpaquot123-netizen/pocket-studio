@@ -1,0 +1,78 @@
+Écran 37 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+texte « Takt 2/2 · Clap » [coupé] @ 147,313
+texte « Takt 1 · 2 Kästchen » [coupé] @ 704,322
+bouton « 1 » [état « leer »] @ 90,394
+bouton [état « leer »] @ 192,394
+bouton [état « leer »] @ 294,394
+bouton [état « leer »] @ 397,394
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,394
+bouton [état « leer »] @ 603,394
+bouton [état « leer »] @ 706,394
+bouton [état « leer »] @ 809,394
+bouton « 3 » [état « leer »] @ 90,475
+bouton [état « leer »] @ 192,475
+bouton [état « leer »] @ 294,475
+bouton [état « leer »] @ 397,475
+bouton « 4 » [état « Schlag, Stärke 100 % »] @ 500,475
+bouton [état « leer »] @ 603,475
+bouton [état « leer »] @ 706,475
+bouton [état « leer »] @ 809,475
+bouton « Schläge » [sélectionné] @ 122,561
+bouton « Rolls » @ 265,561
+bouton « Panorama » @ 421,561
+bouton « Tonhöhe » @ 604,561
+bouton « Velocity » @ 774,561
+texte « Füllen » @ 79,645
+texte « alles » @ 163,645
+texte « 1/2 » @ 246,645
+texte « 1/4 » @ 321,645
+texte « ◀ » @ 396,645
+texte « ▶ » @ 471,645
+texte « Löschen » @ 581,645
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,747
+bouton « 1 Takt » @ 196,849
+bouton « 2 » [sélectionné] @ 305,849
+bouton « 3 » @ 386,849
+bouton « 4 » @ 467,849
+texte « Länge » @ 83,849
+texte « Dieses Pad loopt über » @ 188,933
+texte « − » @ 386,933
+texte « 32 Steps » @ 490,933
+texte « + » [désactivé] @ 594,933
+titre « PAD-SOUND » [coupé, état « Aufgeklappt »] @ 167,1031
+texte « ? » [coupé] @ 271,1031
+image (chapeau de diplômé) @ 37,1083
+texte « Der Clap Kapitel 3/17 · Schritt 1/1 · Pro » @ 400,1083
+icône (liste) @ 771,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: der Clap auf 2 und 4. Die App spielt ihn ein paar Millisekunden früher, wie auf den New Yorker Platten. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 122 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

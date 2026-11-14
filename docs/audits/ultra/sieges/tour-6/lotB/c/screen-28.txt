@@ -1,0 +1,11 @@
+Écran 28 (588x1278)
+texte « اختر لغتك » @ 485,228
+texte « لغة الهاتف » @ 509,311
+bouton « 🇸🇦 العربية » (rond coché) [sélectionné] @ 294,385
+texte « كل اللغات » @ 511,467
+bouton « 🇮🇩 Bahasa Indonesia الإندونيسية » @ 294,542
+bouton « 🇩🇪 Deutsch الألمانية » @ 294,644
+bouton « 🇬🇧 English الإنجليزية » @ 294,746
+bouton « 🇪🇸 Español الإسبانية » @ 294,848
+bouton « 🇫🇷 Français الفرنسية » [coupé] @ 294,938
+texte « إغلاق » @ 79,1045

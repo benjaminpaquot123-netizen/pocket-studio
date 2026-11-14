@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.projects.NewSongOpenTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-12T13:20:30.816Z" hostname="vm" time="5.256">
+  <properties/>
+  <testcase name="theNewSongOpeningIsNotLoggedAsAFailure" classname="com.pocketstudio.app.projects.NewSongOpenTest" time="4.666"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,47 @@
+Écran 23 (588x1278)
+icône (dossier ouvert) ✓ « Mon premier rythme Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 120  BPM » @ 73,114
+icône (flèches en boucle) « A mes. 1/1 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+onglet « Ligne du temps » [sélectionné] @ 113,183
+onglet « Parties » @ 274,183
+bouton » « Suivre » [sélectionné] @ 412,183
+bouton « Boucle » (flèches en boucle) [coupé] @ 500,183
+icône (quatre coins) @ 552,183
+texte « Parties » @ 53,245
+texte « Mesures » @ 60,285
+dessin @ 381,262
+texte « Batterie » @ 66,374
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,431
+bouton (casque) [état « désactivé »] @ 125,431
+texte « Acid 303 » @ 72,572
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,629
+bouton (casque) [état « désactivé »] @ 125,629
+texte « Basse ronde » @ 90,770
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 56,827
+bouton (casque) [état « désactivé »] @ 125,827
+dessin @ 381,600
+icône (loupe +) @ 534,753
+icône (loupe −) @ 534,825
+icône (flèches vers les coins) @ 534,897
+bouton (boussole) « Guide  · Ajoute une mélodie 27 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 120 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

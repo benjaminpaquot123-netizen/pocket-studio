@@ -1,0 +1,55 @@
+Écran 46 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 200,42
+bouton « Semplice » @ 445,42
+icône ↶ @ 535,42
+bouton ● @ 607,42
+bouton ▶ « questa parte » @ 688,42
+bouton ▶ « il brano » @ 782,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Linea di basso » @ 129,204
+bouton « Synth Synth » ⋮ @ 337,204
+icône ♪ @ 463,205
+bouton + «  Traccia » @ 611,205
+icône « Parte: A » ▾ @ 89,283
+texte «   Griglia » @ 88,350
+bouton « 1/8 » @ 188,350
+bouton « 1/16 » [sélectionné] @ 294,350
+bouton « 1/16 t » @ 415,350
+bouton « 1/32 » @ 538,350
+bouton « Accordi » @ 119,431
+texte « A tempo 50% » @ 310,431
+texte « 100% » @ 481,431
+bouton « Basso fantasma » [sélectionné] @ 674,431
+texte « Cancella » [désactivé] @ 120,506
+texte « batt. » @ 84,567
+bouton « 1 » @ 492,575
+texte « Mi » @ 84,629
+texte « Re♯ » @ 84,671
+texte « Re » @ 84,713
+texte « Do♯ » @ 84,755
+texte « Do4 » @ 84,797
+texte « Si » @ 84,839
+texte « La♯ » @ 84,881
+texte « La » @ 84,923
+texte « Sol♯ » @ 84,965
+texte « Sol » @ 84,1007
+texte « Fa♯ » @ 84,1049
+texte « Fa » @ 84,1091
+texte « Mi » @ 84,1133
+texte « Re♯ » @ 84,1175
+texte « Re » @ 84,1217
+texte « Do♯ » [coupé] @ 84,1247
+dessin [coupé] @ 492,932
+bouton (boussole) « Guida  · Aggiungi una melodia 35 % » ⌃ [état « chiuso »] @ 450,1293
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

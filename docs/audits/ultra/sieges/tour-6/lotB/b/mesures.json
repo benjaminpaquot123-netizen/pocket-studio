@@ -1,0 +1,45 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "de",
+    "device": "tablet8",
+    "font": "130",
+    "mode": "pro",
+    "gestes.max": "120",
+    "mission": "tuto-pro",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 80,
+    "images": 11,
+    "gestes_premier_son": 6,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 6,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 86,
+    "ecrans_revisites": 14,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 157,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 6.0,
+      "simule": 2.4,
+      "jvm": 12.7,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "partielle",
+  "pourquoi": "« house » en Pro : 5 étape(s), 2 chapitre(s) entier(s) sur 17"
+}

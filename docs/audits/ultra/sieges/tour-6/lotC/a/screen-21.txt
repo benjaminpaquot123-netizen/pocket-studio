@@ -1,0 +1,9 @@
+Écran 21 (900x1509)
+texte « C'est prêt » @ 157,563
+texte « C'est prêt : House-morceau-20261112-203953.m4a, une copie est aussi dans Musique › BenStudio. » @ 450,655
+texte « Durée : 3 min 9 s » @ 168,720
+texte « Niveau : à la cible (Auto (style)) » @ 254,762
+texte « Pas de saturation. » @ 174,804
+texte « Fichier M4A : léger, lu par tous les appareils. » @ 332,846
+texte « Voir mes fichiers » @ 602,936
+texte « OK » @ 790,936

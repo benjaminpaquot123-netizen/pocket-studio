@@ -66,8 +66,10 @@ class ZeroProjectsTest {
         // A blank one nobody touched goes for good, never to the trash.
         val blank = catalog.create(Project(name = "").asNewProject())
         CurrentProject.deleteLater(app, blank)
-        ProjectsViewModel(app)
-        waitFor("the blank one gone") { catalog.list().isEmpty() }
+        val vm2 = ProjectsViewModel(app)
+        // Until the deletion is over: a blank one leaves the list (moved to the trash) a moment
+        // before it is deleted for good from there (seen in the full run, under load).
+        waitFor("the blank one gone") { catalog.list().isEmpty() && !vm2.state.value.busy }
         assertEquals(1, catalog.trashed().size)
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
     }

@@ -2,6 +2,7 @@ package com.pocketstudio.app.nav
 
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.isDisplayed
@@ -50,8 +51,11 @@ class GuidePanelTest {
 
     private fun jumpUp(): Project {
         val style = StarterWizard.style("jump_up")!!
-        return StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
+        val p = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() })
+        // Audit final: the style's sound cards (shown first now) already decided: the song goes on to its effects.
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        return p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, GuideStatus.DONE, System.currentTimeMillis(), "keep") })
     }
 
     private fun startOn(p: Project = jumpUp(), simple: Boolean = false) {
@@ -86,7 +90,10 @@ class GuidePanelTest {
     fun theBarSaysWhereTheSongIsAndACardIsDecidedInTwoGestures() {
         startOn()
         compose.onNodeWithTag("guide_bar").assertIsDisplayed()
-        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assertTextContains("Étape", substring = true)
+        // Remix testers: the card to do, no « Étape n/N » (it moved when a card got settled elsewhere).
+        val next = h.vm.guide.ui.value.next!!.title
+        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assertTextContains(next, substring = true)
+        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assert(androidx.compose.ui.test.hasText("Étape", substring = true).not())
         compose.onNodeWithTag("guide_panel").assertDoesNotExist()
         // Open, then « Écouter piste par piste »: the card is decided, the next one comes.
         compose.withinGestures("décider une carte du Guide", 2) {

@@ -1,5 +1,7 @@
 package com.pocketstudio.app.nav
 
+import androidx.compose.ui.test.performClick
+
 import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.geometry.Offset
@@ -47,14 +49,16 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         launchChoice: Boolean = false,
         /** Lot 1: no project at all (the last one deleted): the app on its blank stand-in. */
         noProject: Boolean = false,
+        /** The open project's id (a fresh one when null). */
+        projectId: String? = null,
         build: RhythmViewModel.() -> Unit = { songWithTracks() },
     ) {
         File(app.filesDir, "projects").deleteRecursively()
-        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch").forEach {
+        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch", "project_modes").forEach {
             app.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // A project of its own: a save still running from an earlier test lands in another file.
-        com.pocketstudio.app.projects.CurrentProject.set(app, if (noProject) com.pocketstudio.app.projects.CurrentProject.NONE else "nav-test-" + System.nanoTime())
+        com.pocketstudio.app.projects.CurrentProject.set(app, if (noProject) com.pocketstudio.app.projects.CurrentProject.NONE else projectId ?: ("nav-test-" + System.nanoTime()))
         SettingsStore.forgetForTests()
         SettingsStore.update(app) {
             it.copy(guideSeen = !firstLaunch, simpleMode = simple, uiScale = scale, language = lang, englishNotes = lang != com.pocketstudio.model.i18n.Lang.FR)
@@ -74,7 +78,10 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         if (launchChoice) kotlinx.coroutines.runBlocking { vm.flushNow() }
 
         val content: @androidx.compose.runtime.Composable () -> Unit = {
-            com.pocketstudio.app.ui.UiScaled(scale) { PocketStudioTheme { com.pocketstudio.app.learn.LearnLayer { AppRoot() } } }
+            // The interface language's direction, as MainActivity gives it (right to left in Arabic).
+            androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(lang.rtl)) {
+                com.pocketstudio.app.ui.UiScaled(scale) { PocketStudioTheme { com.pocketstudio.app.learn.LearnLayer { AppRoot() } } }
+            }
         }
         if (restore != null) restore.setContent(content) else compose.setContent(content)
         compose.waitForIdle()
@@ -89,6 +96,45 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         while (compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) {
             check(System.currentTimeMillis() < end) { "nothing tagged $tag after $timeoutMs ms" }
             Thread.sleep(50)
+            compose.waitForIdle()
+        }
+    }
+
+    /**
+     * Socle du banc, point 1: the Guide's bar says where the song is once its analysis (a worker thread, real time) is
+     * done; before, it says « Guide » alone. A capture taken under a loaded full suite caught it still loading (the
+     * « unstable » rhythm_scrolled_under_part and remix_stem_edit_menu): wait for its line before an image.
+     * Nothing to wait for when no Guide bar shows.
+     */
+    fun awaitGuide(timeoutMs: Long = 20_000) {
+        val end = System.currentTimeMillis() + timeoutMs
+        fun loaded(): Boolean {
+            if (compose.onAllNodesWithTag("guide_bar", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) return true
+            return compose.onAllNodesWithTag("guide_bar_step", useUnmergedTree = true).fetchSemanticsNodes().any { n ->
+                n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }.any { it.text.isNotBlank() }
+            }
+        }
+        while (!loaded()) {
+            check(System.currentTimeMillis() < end) { "the Guide still loading after $timeoutMs ms" }
+            Thread.sleep(50)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            compose.waitForIdle()
+        }
+    }
+
+    /**
+     * Step 5c: « Mettre dans mon projet » on the song's import screen, once it shows and its parts
+     * are read (the button waits for them): the song goes in with the screen's own choices.
+     */
+    fun confirmImport(timeoutMs: Long = 10_000) {
+        awaitTag("import_go", timeoutMs)
+        val end = System.currentTimeMillis() + timeoutMs
+        var problem: Throwable? = null
+        while (compose.onAllNodesWithTag("import_go", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()) {
+            check(System.currentTimeMillis() < end) { "« Mettre dans mon projet » never went through: $problem" }
+            problem = runCatching { compose.onNode(androidx.compose.ui.test.hasTestTag("import_go") and androidx.compose.ui.test.isEnabled()).performClick() }.exceptionOrNull()
+            Thread.sleep(30)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
             compose.waitForIdle()
         }
     }
@@ -138,6 +184,22 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
 }
 
 /** A song of three parts (Intro, Refrain, Drop) with the drums, a « Basse » and a « Lead » track, on the scene A. */
+/**
+ * The Remix's ViewModel ([com.pocketstudio.app.projects.AppViewModels]) and the sound library's
+ * made with this test's application before the app shows them: the default factory keeps the
+ * first test's one, whose files are another test's.
+ */
+internal fun AppHarness.appViewModelsOfThisTest() {
+    val factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = modelClass.getConstructor(Application::class.java).newInstance(app)
+    }
+    val owner = com.pocketstudio.app.projects.AppViewModels.of(app)
+    ViewModelProvider(owner, factory)[com.pocketstudio.app.remix.RemixViewModel::class.java]
+    // The sound library's is the activity's own.
+    ViewModelProvider(compose.activity, factory)[com.pocketstudio.app.library.SoundLibraryViewModel::class.java]
+}
+
 internal fun RhythmViewModel.songWithTracks() {
     // The new project's acid line is drawn at random: a fixed one, for screenshots that stay the same.
     session.edit { it.copy(acid = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3)).generate(com.pocketstudio.model.AcidPattern(), com.pocketstudio.model.AcidGenerator.NOTE_SETS[5])) }

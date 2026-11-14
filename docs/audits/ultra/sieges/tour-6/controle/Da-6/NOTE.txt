@@ -1,0 +1,1 @@
+Control seat D a, run 6, before the portal of lot tuto3 (tuto3b; coordinator request, 2026-11-13): code fbf14ee1 (origin/eq/tour-6-tuto3b), local lot lotDcontrole6, stop allowed after chapter 12, frozen list, fresh sub-agent reading only the testers instructions and the screens (checks phrased so as not to reveal the touchable banner). Text files only.

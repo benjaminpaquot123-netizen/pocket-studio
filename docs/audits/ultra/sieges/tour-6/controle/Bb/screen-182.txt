@@ -1,0 +1,39 @@
+Écran 182 (900x1509)
+texte « Effekte · Pad 5 (Techno · Clap) » @ 328,62
+bouton « Punch » @ 118,135
+bouton « EDM-Pump » @ 297,135
+bouton « Knusprig » @ 494,135
+bouton « Lo-Fi Tape » @ 686,135
+bouton « Kleiner Raum » @ 166,206
+bouton « Rumble » @ 365,206
+bouton « Ohne Effekt » @ 556,206
+texte « Tippe auf einen Vibe, um ihn auszuprobieren: Mit Rückgängig kommst du immer zurück. » @ 450,290
+texte « Halte den Finger auf einem Vibe, um ihn zu hören; lass los, dein Sound kommt zurück. » @ 450,374
+texte « XY-Pad, oben-unten: » @ 178,444
+bouton « ? » @ 336,443
+bouton « Raum » [sélectionné] @ 114,513
+bouton « Dreck » @ 251,513
+bouton « Bewegung » @ 423,513
+texte « ↑ Fern » @ 450,577
+texte « ← Dunkel » @ 216,870
+texte « ↓ Trocken » @ 450,870
+texte « Hell → » @ 683,870
+texte « Wisch mit dem Finger, um den Sound live zu verbiegen. Zweimal tippen: zurück zum Ausgangssound. » @ 450,934
+curseur [état « Neutral », à 50 %] @ 151,1021
+texte « Farbe » @ 151,1079
+texte « Neutral » @ 151,1113
+curseur [état « 0 », à 0 %] @ 350,1021
+texte « Dreck » @ 350,1079
+texte « 0 » @ 349,1113
+curseur [état « 0 », à 0 %] @ 549,1021
+texte « Bewegung » @ 549,1079
+texte « 0 » @ 549,1113
+curseur [état « 0 », à 0 %] @ 749,1021
+texte « Raum » @ 749,1079
+texte « 0 » @ 749,1113
+texte « Gemeinsames Reverb und Echo » @ 267,1162
+texte « Akkorde ✓ · Snare: danach » @ 226,1225
+texte « Reverb-Send » @ 423,1263
+texte « 0 % » @ 813,1264
+curseur [état « 0 % », à 0 %] @ 450,1320
+texte « Schließen » @ 762,1437

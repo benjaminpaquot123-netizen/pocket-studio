@@ -1,0 +1,13 @@
+Écran 98 (588x1278)
+touchable « Live : jouer en direct » @ 445,126
+touchable « Enregistrer ma voix » @ 445,198
+touchable « Bibliothèque de sons » @ 445,270
+touchable « Ma bibliothèque » @ 445,342
+touchable « Remix » @ 445,414
+touchable « Renommer le morceau » @ 445,486
+touchable « Accueil » @ 445,558
+touchable « Mes projets » @ 445,630
+touchable « Réglages » @ 445,702
+touchable « Aide et premiers pas » @ 445,774
+touchable « Passer en mode Pro » @ 445,846
+touchable « Signaler un bug » @ 445,918

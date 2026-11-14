@@ -1,0 +1,56 @@
+Écran 76 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 234,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 495,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+bouton « ? » (nom « Was ist „Mute und Solo“? ») @ 842,195
+texte « Lautstärken » @ 428,196
+texte « Schieb einen Fader für die Lautstärke; tippe auf einen Spurnamen für Effekte und Kurven. » @ 441,236
+bouton « Drums » @ 84,316
+interrupteur « Ton von Drums » [coché, état « an »] @ 57,391
+interrupteur « Spur Drums solo hören » [non coché, état « aus »] @ 111,391
+curseur « Lautstärke von Drums » [état « +0,0 dB », à 80 %] @ 84,562
+texte « +0,0 » @ 84,713
+image « Effekte · 3 » @ 76,745
+texte « 3 » @ 96,745
+bouton « Synth » @ 204,316
+interrupteur « Ton von Synth » [coché, état « an »] @ 177,391
+interrupteur « Spur Synth solo hören » [non coché, état « aus »] @ 231,391
+curseur « Lautstärke von Synth » [état « +0,0 dB », à 80 %] @ 204,562
+texte « +0,0 » @ 204,713
+bouton « Remix » @ 324,316
+interrupteur « Ton von Remix » [coché, état « an »] @ 297,391
+interrupteur « Spur Remix solo hören » [non coché, état « aus »] @ 351,391
+curseur « Lautstärke von Remix » [état « +0,0 dB », à 80 %] @ 324,562
+texte « +0,0 » @ 324,713
+texte « Kurven und Effekte » @ 204,835
+texte « Noch bewegt sich nichts: Lass einen Filter aufgehen, eine Lautstärke steigen… » @ 449,866
+bouton « Automatisieren » @ 243,928
+bouton « Was spielt » @ 657,928
+bouton « KURVEN » [état « Aufgeklappt »] @ 347,1049
+bouton « ? » (nom « Was ist „Kurven (Automation)“? ») @ 195,1049
+case « Aufnehmen » @ 755,1047
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 4/4 · Pro » @ 400,1104
+bouton « Kapitel » @ 771,1104
+bouton « Aufklappen » @ 843,1104
+touchable « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. Lesen » @ 450,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » @ 268,1389
+onglet « Mix » [sélectionné] @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

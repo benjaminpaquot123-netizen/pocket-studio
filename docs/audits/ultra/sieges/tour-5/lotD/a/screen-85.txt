@@ -1,0 +1,10 @@
+Écran 85 (1920x1200)
+touchable « Track sheet (layers, history) » @ 938,264
+touchable « Change the sound » @ 938,336
+touchable « Adjust the sound (filter, envelope…) » @ 938,408
+touchable « Rename » @ 938,480
+touchable « Colour » @ 938,552
+touchable « Duplicate » @ 938,624
+touchable « Clear in part A » @ 938,696
+touchable « Freeze track (audio render, less CPU) » @ 938,768
+touchable « Delete (can be undone) » @ 938,840

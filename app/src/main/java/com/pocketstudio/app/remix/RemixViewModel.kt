@@ -41,6 +41,8 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
     private var previewJob: kotlinx.coroutines.Job? = null
 
     init {
+        // A separation Android stopped mid-way (the app was closed for memory) is said, not lost.
+        SeparationJob.recover(app)
         viewModelScope.launch {
             // Refresh the list and the model flag whenever a job ends (and once at start).
             SeparationJob.state.collect { if (!it.busy) refresh() }
@@ -53,6 +55,11 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         _sets.value = sets
         _modelInstalled.value = installed
         checkMemory()
+    }
+
+    /** Reads the separated songs again (the home screen's Remix opens: a project deleted since may free one). */
+    fun refreshSets() {
+        viewModelScope.launch { refresh() }
     }
 
     /** Reads the device's memory again (after closing other apps). */
@@ -80,7 +87,32 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
 
     fun cancel() = SeparationService.cancel(getApplication())
 
-    fun dismiss() = SeparationJob.dismiss()
+    fun dismiss() {
+        // An interrupted song not started again: its read access is given back.
+        (state.value as? SeparationState.Interrupted)?.uri?.let { uri ->
+            runCatching { getApplication<Application>().contentResolver.releasePersistableUriPermission(Uri.parse(uri), android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+        }
+        SeparationJob.dismiss()
+    }
+
+    /** « Relancer » after an interruption: the same song again (its read access was kept). */
+    fun retry() {
+        val s = state.value as? SeparationState.Interrupted ?: return
+        val uri = s.uri ?: return
+        stop()
+        SeparationJob.dismiss()
+        SeparationService.separate(getApplication(), Uri.parse(uri), s.name)
+    }
+
+    /**
+     * Step 5a: the parts last switched on while listening to each song (« Voix » alone), kept even
+     * once the listening stops (the destination dialog stops it first). Putting the song in a
+     * project brings its four parts, the others muted ([com.pocketstudio.model.Remix.stemsHeard]).
+     */
+    private val heard = java.util.concurrent.ConcurrentHashMap<String, List<Boolean>>()
+
+    /** The parts heard when [setId] was last listened to; null when it never was. */
+    fun heardFor(setId: String): List<Boolean>? = heard[setId]
 
     /** Plays the four stems of [set] together, apart from the project (all on by default). */
     fun playAll(set: StemSet) {
@@ -103,12 +135,14 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         val on = p.on.mapIndexed { i, v -> if (i == stem) !v else v }
+        heard[set.id] = on
         _preview.value = p.copy(on = on)
         if (NativeEngine.isAvailable) NativeEngine.setPreviewParam(stem, MUTE, if (on[stem]) 0f else 1f)
     }
 
     private fun start(set: StemSet, on: List<Boolean>) {
         stop()
+        heard[set.id] = on
         if (!NativeEngine.isAvailable) return
         _preview.value = StemPreview(set.id, on, loading = true)
         previewJob = viewModelScope.launch {
@@ -153,7 +187,7 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         while (true) {
             val p = _preview.value
             if (p != null && p.playing) {
-                val pos = NativeEngine.previewPosition()
+                val pos = NativeEngine.previewPositionNow()
                 // Past the end, or stopped: the stems stay loaded, ready to play again.
                 _preview.value = if (pos < 0 && p.position >= 0) p.copy(playing = false, position = -1) else p.copy(position = pos)
             }

@@ -118,8 +118,8 @@ fun PartIntent.doneText(title: String): String = when (this) {
     PartIntent.Variation -> tr("Fait : variation de %s, à modifier seule", title)
     PartIntent.EditAll -> title
     PartIntent.Fill -> tr("Fait : fill à la fin de %s", title)
-    is PartIntent.Break -> tr("Fait : break de %1\$d mesures après %2\$s", bars, title)
-    is PartIntent.BuildUp -> tr("Fait : montée de %1\$d mesures avant %2\$s", bars, title)
+    is PartIntent.Break -> com.pocketstudio.model.i18n.trCount(bars, "Fait : break de 1 mesure après %2\$s", "Fait : break de %1\$d mesures après %2\$s", bars, title)
+    is PartIntent.BuildUp -> com.pocketstudio.model.i18n.trCount(bars, "Fait : montée de 1 mesure avant %2\$s", "Fait : montée de %1\$d mesures avant %2\$s", bars, title)
     PartIntent.FadeIn -> tr("Fait : fondu d'entrée sur %s", title)
     PartIntent.FadeOut -> tr("Fait : fondu de sortie sur %s", title)
     PartIntent.Ending -> tr("Fait : une fin de 4 mesures, le morceau s'arrête là")
@@ -130,7 +130,7 @@ fun PartIntent.doneText(title: String): String = when (this) {
 /** Why [intent] changed nothing (no room for a scene, a part or a curve). */
 fun PartIntent.refusal(): String = when (this) {
     is PartIntent.BuildUp, PartIntent.FadeIn, PartIntent.FadeOut ->
-        tr("Rien n'a changé : les 16 courbes d'automation sont prises. Retires-en une dans Mix.")
+        tr("Rien n'a changé : les 16 courbes sont prises. Retires-en une dans Mix.")
     else -> tr("Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.")
 }
 
@@ -190,6 +190,8 @@ class PartMoreActions(
     val duplicate: (() -> Unit)? = null,
     val insertAfter: (() -> Unit)? = null,
     val remove: () -> Unit = {},
+    /** Audit ultra round 3, n° 35 (seat E a): the part's own name (« Drop », « Outro »), where the part is. */
+    val rename: (() -> Unit)? = null,
 )
 
 /**
@@ -209,6 +211,7 @@ fun PartSheet(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () -> Unit
                 duplicate = m.duplicate?.let { f -> { close(); f() } },
                 insertAfter = m.insertAfter?.let { f -> { close(); f() } },
                 remove = { close(); m.remove() },
+                rename = m.rename?.let { f -> { close(); f() } },
             )
         })
     }
@@ -262,8 +265,9 @@ fun PartSheetContent(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () 
             }
             var typed by rememberSaveable(ui.index, ui.bars) { mutableStateOf(ui.bars.toString()) }
             val n = typed.toIntOrNull()?.takeIf { it in 1..SongPart.MAX_BARS }
-            OutlinedTextField(
-                typed, { typed = it.filter(Char::isDigit).take(3) }, singleLine = true,
+            // Round 2, n° 26: « 4 » selected at the touch, « 8 » typed gives 8 (not 48).
+            com.pocketstudio.app.ui.SelectAllTextField(
+                typed, { typed = it.filter(Char::isDigit).take(3) },
                 label = { Text(tr("mesures")) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 keyboardActions = KeyboardActions(onDone = { n?.let { onIntent(PartIntent.Bars(it)) } }),
@@ -274,6 +278,7 @@ fun PartSheetContent(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () 
         if (more != null) {
             Text(tr("Partie"), style = MaterialTheme.typography.titleSmall)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                more.rename?.let { SmallAction(Icons.Filled.Edit, tr("Renommer"), "part_rename_${ui.index}", true, it) }
                 SmallAction(Icons.Filled.Tune, tr("Ce qui joue"), "part_what_plays_${ui.index}", true, more.whatPlays)
                 SmallAction(Icons.Filled.ArrowUpward, tr("Monter"), "part_up_${ui.index}", more.moveUp != null) { more.moveUp?.invoke() }
                 SmallAction(Icons.Filled.ArrowDownward, tr("Descendre"), "part_down_${ui.index}", more.moveDown != null) { more.moveDown?.invoke() }

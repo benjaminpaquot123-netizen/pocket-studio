@@ -2,8 +2,8 @@ package com.pocketstudio.separation
 
 import java.io.File
 
-/** Order must match ps::SeparationResult::Code. */
-enum class SeparationResult { Ok, ModelError, Cancelled, IoError, BadInput }
+/** Order must match ps::SeparationResult::Code (append only). */
+enum class SeparationResult { Ok, ModelError, Cancelled, IoError, BadInput, OutOfMemory }
 
 /**
  * HT-Demucs v4 on the phone: a song in, four stems out (drums, bass, other, vocals) as 32-bit
@@ -38,6 +38,10 @@ object Demucs {
         return SeparationResult.entries[nativeSeparateFile(model.absolutePath, raw.absolutePath, channels, sampleRate, outDir.absolutePath, progress)]
     }
 
+    /** What the last separation on this thread said when it failed (the model's own error), for the bug log. */
+    fun lastMessage(): String = runCatching { nativeLastMessage() }.getOrNull().orEmpty()
+
+    private external fun nativeLastMessage(): String?
     private external fun nativeSeparateFile(model: String, raw: String, channels: Int, sampleRate: Int, outDir: String, listener: Progress): Int
     private external fun nativeSeparate(model: String, audio: FloatArray, outDir: String, listener: Progress): Int
 }

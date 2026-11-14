@@ -1,0 +1,7 @@
+lang=de
+device=tablet11Land
+font=200
+mode=pro
+gestes.max=120
+mission=libre
+timeout.minutes=30

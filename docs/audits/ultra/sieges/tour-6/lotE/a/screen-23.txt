@@ -1,0 +1,33 @@
+Écran 23 (588x1278)
+texte « Effects · Remix » @ 190,62
+texte « Effects in place: 1 of 8 » @ 201,133
+bouton « 1. Tremolo » @ 294,196
+icône ⏻ @ 285,268
+icône ⌃ [désactivé] @ 357,268
+icône ⌄ [désactivé] @ 429,268
+icône ✕ @ 501,268
+bouton + «   Add an effect » @ 294,346
+texte « Ready-made vibes » @ 178,418
+bouton « ? » @ 326,418
+bouton « For: Audio » @ 145,488
+bouton ★ « Favourites » @ 356,488
+bouton « Ambience » [coupé] @ 505,488
+bouton « Techno » [coupé] @ 86,572
+bouton « DnB » @ 183,572
+bouton « Dubstep » [sélectionné] @ 326,572
+bouton « House » [coupé] @ 477,572
+bouton « Underwater » @ 157,656
+bouton « Dub echo » @ 361,656
+bouton « Distortion » @ 142,728
+bouton « Robot » @ 306,728
+bouton « Wobble » [sélectionné] @ 456,728
+bouton « Screaming lead » @ 181,800
+bouton « EDM pump » @ 419,800
+bouton « Deep dub » @ 141,872
+bouton « Fat bass » @ 321,872
+bouton « Dubstep wob » @ 165,944
+bouton « No effect » @ 377,944
+texte « The volume slowly breathing from left to right. » @ 258,1028
+icône ☆ @ 501,1028
+texte « Keep your finger on a vibe to hear it; let go and your sound comes back. » [coupé] @ 294,1105
+texte « Close » @ 479,1206

@@ -1,0 +1,13 @@
+Écran 18 (588x1278)
+texte « Uchwyt: przesuń w dół, aby zamknąć » @ 294,564
+texte « Dźwięk: Acid 303 » @ 164,621
+bouton « Zamknij » @ 504,648
+texte « Dotknij dźwięku: zastąpi dźwięk tej ścieżki w całym utworze. » @ 234,669
+bouton « Poprzedni folder » @ 60,747
+texte « Klasyki » @ 330,747
+bouton « Podstawowy acid Jasny » [sélectionné] @ 294,838
+bouton « Squelchy Jasny · ostry » @ 294,937
+bouton « Da Funk Pusty » @ 294,1036
+bouton « Losowo » @ 156,1134
+bouton « Zachowaj ten dźwięk » @ 432,1134
+texte « „Zachowaj ten dźwięk” zapisuje go w ulubionych, dla wszystkich twoich projektów. » @ 294,1215

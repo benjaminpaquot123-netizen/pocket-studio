@@ -2,6 +2,7 @@ package com.pocketstudio.app
 
 import com.pocketstudio.app.report.IssueReport
 import com.pocketstudio.engine.StreamInfo
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,5 +49,37 @@ class IssueReportTest {
         assertTrue(body.contains("écran 1 :"))
         assertTrue(body.contains("(suite coupée)"))
         assertTrue(body.contains("Décrochages audio : 2"))
+    }
+
+    // Audit final 19 M1: the repository is public, so the journal sent with a checklist or a
+    // problem must not carry the user's song and file names (written between « » by the app).
+    @Test
+    fun publicTicketsHideNamesBetweenGuillemets() {
+        val log = "12:00:00.000 Pad live 3 : « Anniversaire Léa.m4a »\n12:00:01.000 Projet mis à la corbeille : « Voix chambre »"
+        val context = IssueReport.Context("0.0.7 (preview)", "HONOR test", stream, null, log)
+        for (uri in listOf(
+            IssueReport.problemIssue("Le pad ne joue pas", context),
+            IssueReport.recetteIssue("Phase 22", listOf("- ✅ test"), context),
+        )) {
+            val body = uri.getQueryParameter("body")!!
+            assertFalse(body, body.contains("Anniversaire"))
+            assertFalse(body, body.contains("Voix chambre"))
+            assertTrue(body, body.contains("Pad live 3 : «…»"))
+        }
+    }
+
+    @Test
+    fun crashTicketsHideNamesAndJsonExcerpts() {
+        val crash = "Version 0.22.1 · date · thread main\n" +
+            "java.lang.IllegalStateException: piste « Mémo Marie » introuvable\n" +
+            "kotlinx.serialization.json.internal.JsonDecodingException: Unexpected JSON token at offset 3\n" +
+            "JSON input: {\"name\":\"Anniversaire Léa\"}\n\tat com.pocketstudio.X.y(X.kt:1)"
+        val context = IssueReport.Context("0.0.7 (preview)", "HONOR test", stream, null, "")
+        val uri = IssueReport.crashIssue(crash, context)
+        val all = uri.getQueryParameter("title")!! + uri.getQueryParameter("body")!!
+        assertFalse(all, all.contains("Marie"))
+        assertFalse(all, all.contains("Anniversaire"))
+        assertTrue(all, all.contains("JSON input: …"))
+        assertTrue(all, all.contains("X.kt:1"))
     }
 }

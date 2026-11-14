@@ -1,0 +1,35 @@
+Écran 41 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+case « Lointain » @ 90,94
+case « Sans effet » @ 242,94
+texte « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » @ 294,167
+texte « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » @ 294,233
+texte « Pad XY, haut-bas : » @ 109,293
+bouton « ? » (nom « Qu'est-ce que « Pad XY » ? ») @ 224,293
+case « Espace » [sélectionné] @ 86,363
+case « Saleté » @ 213,363
+case « Mouvement » @ 364,363
+texte « ↑ Lointain » @ 294,423
+texte « ← Sombre » @ 142,708
+texte « ↓ Sec » @ 294,708
+texte « Brillant → » @ 445,708
+texte « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » @ 294,759
+curseur « Couleur » [état « Neutre », à 50 %] @ 92,837
+texte « Couleur » @ 91,894
+texte « Neutre » @ 91,922
+curseur « Saleté » [état « 0 », à 0 %] @ 227,837
+texte « Saleté » @ 226,894
+texte « 0 » @ 227,922
+curseur « Mouvement » [état « 0 », à 0 %] @ 362,837
+texte « Mouvement » @ 361,894
+texte « 0 » @ 362,922
+curseur « Espace » [état « 100 % », à 100 %] @ 497,837
+texte « Espace » @ 497,894
+texte « 100 % » @ 496,922
+texte « Réverbe et écho communs » @ 160,963
+texte « Envoi réverbe » @ 273,1008
+texte « 0 % » @ 543,1008
+curseur « Envoi réverbe » [état « 0 % », à 0 %] @ 294,1074
+texte « Envoi écho » @ 273,1140
+texte « 0 % » @ 543,1140
+curseur « Envoi écho » [état « 0 % », à 0 %] @ 294,1206

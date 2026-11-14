@@ -1,0 +1,56 @@
+Écran 48 (588x1278)
+touchable « Projet final Léa » (nom « Sauvegardé ») @ 298,36
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 543,36
+touchable « Mes projets » @ 111,114
+bouton « A » (nom « Partie en cours : A. Toucher pour changer de partie. ») @ 252,114
+bouton « Annuler la dernière action » @ 327,114
+bouton « Enregistrer : micro, clavier ou pads » @ 399,114
+bouton « Jouer » @ 471,114
+bouton « Partager mon morceau » @ 543,114
+bouton « 120  BPM » (nom « Tempo : 120 BPM ») @ 73,186
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,186
+onglet « Acid 303 Ligne de basse » [sélectionné] @ 18,255
+onglet « Voix Micro » @ 89,255
+onglet « Remix Séparer » @ 219,255
+touchable « Synthé Synthé » @ 352,255
+bouton «  Piste » @ 497,255
+texte « Partie : A » @ 67,315
+texte « Acid 303 » @ 96,375
+bouton « Génère-moi un pattern » @ 294,477
+texte « Densité » @ 266,549
+texte « 80 % » @ 518,549
+curseur « Densité » [état « 80 % », à 80 %] @ 294,615
+bouton « LIGNE DE BASSE · BASE DO » [état « Déplié »] @ 224,750
+bouton « ? » (nom « Qu'est-ce que « Acid 303 » ? ») @ 385,750
+case « Do Ré Mi » @ 476,750
+texte « Longueur » @ 86,834
+case « 1 mesure » [sélectionné] @ 209,834
+case « 2 » @ 324,834
+case « 3 » @ 405,834
+case « 4 » @ 486,834
+case « 8 » @ 541,834
+  → la suite sur le côté (glisse pour la voir)
+touchable « – » @ 70,915
+touchable « – » @ 133,915
+touchable « – » @ 197,915
+touchable « – » @ 261,915
+touchable « – » @ 325,915
+touchable « – » @ 389,915
+touchable « – » @ 453,915
+touchable « – » @ 517,915
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 14 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo : 120 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » [sélectionné] @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

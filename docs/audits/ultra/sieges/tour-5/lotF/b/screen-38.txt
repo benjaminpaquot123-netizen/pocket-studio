@@ -1,0 +1,39 @@
+Écran 38 (1920x1200)
+texte « Griff: zum Schließen nach unten wischen » @ 960,36
+case « 1. Filter » @ 816,86
+bouton « Effekt ausschalten » @ 1164,87
+bouton « Effekt nach oben » [désactivé] @ 1236,87
+bouton « Effekt nach unten » @ 1308,87
+bouton « Effekt entfernen » @ 1380,87
+texte « Spielt in: » @ 582,150
+case « Alles » @ 740,150
+case « A » @ 859,150
+case « B » [sélectionné] @ 944,150
+case « 2. Sättigung » [sélectionné] @ 816,228
+bouton « Effekt ausschalten » @ 1164,228
+bouton « Effekt nach oben » @ 1236,228
+bouton « Effekt nach unten » [désactivé] @ 1308,228
+bouton « Effekt entfernen » @ 1380,228
+texte « Spielt in: » @ 582,306
+case « Alles » @ 740,306
+case « A » [sélectionné] @ 859,306
+case « B » @ 944,306
+texte « Drive » @ 910,376
+texte « 30 % » @ 1366,376
+curseur « Drive » [état « 30 % », à 30 %] @ 960,440
+texte « Klang » @ 907,504
+texte « Offen » @ 1363,504
+curseur « Klang » [état « Offen », à 100 %] @ 960,568
+texte « Mischung » @ 898,632
+texte « 100 % » @ 1354,632
+curseur « Mischung » [état « 100 % », à 100 %] @ 960,696
+texte « Lautstärke » @ 910,760
+texte « 70 % » @ 1366,760
+curseur « Lautstärke » [état « 70 % », à 70 %] @ 960,824
+texte « Konstante Lautstärke » @ 916,888
+texte « Nein » @ 1372,888
+curseur « Konstante Lautstärke » [état « Nein », à 0 %] @ 960,952
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 960,1046
+bouton «   Effektliste schließen » @ 960,1144
+texte « Tippe auf die gewünschten Effekte: Sie werden nacheinander angehängt, der Reihe nach. » @ 960,1195
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

@@ -1,0 +1,8 @@
+fusion: c40b834e83866b2147612cdc726f6c751346bc31
+branche: eq/tour-6-banc7
+tete: 9aa986d5e2c1d60e31cdb148e9a0ff3199400cb1
+relecture: docs/audits/ultra/tour-6-banc7-relecture.md
+relu: 7383f9fb7bdadb5fe0581eb757cdcecdaf20e45a
+filtres: com.pocketstudio.app.human.BenchTour1Test com.pocketstudio.app.human.BenchAmeneesTest com.pocketstudio.app.human.BenchTour1Test com.pocketstudio.app.human.BenchAmeneesTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -44,6 +44,17 @@ class GuideNavTest {
         }
     }
 
+    /** Audit final (01 M2, 05 #9, 08 #7): a drum role's pad, the volume's button, a 303 line made. */
+    @Test
+    fun aDrumRoleIsItsPadTheVolumeIsItsButtonAndTheAcidIsMade() {
+        val p = song("house")
+        val kick = GuideNav.trackOf(p, "kick")!!.key.removePrefix("pad:").toInt()
+        assertEquals(GuideGo.Pad(kick), GuideNav.go(GuideOpen("rhythm.kit", "kick"), p, simple = true))
+        assertEquals(GuideGo.Kit, GuideNav.go(GuideOpen("rhythm.kit", "drums"), p, simple = true))
+        assertEquals(listOf("simple_volume_*"), (GuideNav.go(GuideOpen("mixer.strip", "song"), p, simple = true) as GuideGo.Tab).spots)
+        assertEquals(GuideGo.AcidGenerate, GuideNav.go(GuideOpen("acid.generate", "song"), Project(), simple = true))
+    }
+
     @Test
     fun aTracksScreenIsThatTracks() {
         val p = song("jump_up")

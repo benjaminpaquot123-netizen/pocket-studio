@@ -1,0 +1,36 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "ko",
+    "device": "tablet8",
+    "font": "100",
+    "mode": "pro",
+    "amenee": "remix",
+    "gestes.max": "40",
+    "mission": "exports",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 36,
+    "images": 1,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": 12,
+    "touchers_a_vide": 3,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 47,
+    "ecrans_revisites": 9,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 77,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "exports",
+  "resultat": "reussie",
+  "pourquoi": "fichiers : 내-최애곡-리믹스-곡-스트리밍-20261108-145132.wav, 클럽-버전-리믹스-곡-20261108-145216.wav (cibles non mesurées ici : ffprobe à brancher)"
+}

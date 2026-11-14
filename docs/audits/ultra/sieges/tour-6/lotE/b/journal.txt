@@ -1,0 +1,163 @@
+#0 SIEGE lang=nl device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=10.1 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 4940207fec | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 294
+#1 DOIGT launch_continue « Doorgaan »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE acfc41a406 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Ongedaan maken » ellipsized (« … »)
+#2 LAYOUT CONTRAST « Remix » 3.43:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Splitsen » 2.54:1 (needs 4.5:1, 12 sp)
+#2 > touche 484 954
+#2 DOIGT thumb_share « Mijn nummer delen »
+#2 DIALOGUE 0.9 s
+#3 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ea75030dfe | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « Klaar om te delen? » over the touchable « Blad sluiten » (196 x 28 dp)
+#3 LAYOUT OVERLAP « Naam van het nummer (en van het project) » over the touchable « Blad sluiten » (259 x 18 dp)
+#3 LAYOUT OVERLAP « 0:16 » over the touchable « Blad sluiten » (48 x 27 dp)
+#3 LAYOUT OVERLAP « een deel als loop » over the touchable « Blad sluiten » (112 x 20 dp)
+#3 LAYOUT OVERLAP «  Luisteren » over the touchable « Blad sluiten » (67 x 20 dp)
+#3 LAYOUT OVERLAP « Lengte van de loop » over the touchable « Blad sluiten » (127 x 20 dp)
+#3 LAYOUT OVERLAP « 4 » over the touchable « Blad sluiten » (9 x 20 dp)
+#3 LAYOUT OVERLAP « 8 » over the touchable « Blad sluiten » (9 x 20 dp)
+#3 LAYOUT OVERLAP « 16 » over the touchable « Blad sluiten » (15 x 20 dp)
+#3 LAYOUT OVERLAP « 32 » over the touchable « Blad sluiten » (17 x 20 dp)
+#3 LAYOUT OVERLAP « Doelvolume » over the touchable « Blad sluiten » (78 x 20 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (7 x 15 dp)
+#3 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Blad sluiten » (146 x 20 dp)
+#3 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Blad sluiten » (101 x 20 dp)
+#3 LAYOUT OVERLAP « Auto (stijl) · −9 LUFS » over the touchable « Blad sluiten » (141 x 20 dp)
+#3 LAYOUT OVERLAP « Uit » over the touchable « Blad sluiten » (19 x 20 dp)
+#3 LAYOUT OVERLAP « Het volume blijft zoals je het instelt; de uitgang wordt alleen beschermd tegen vervorming. Dezelfde instelling als in Mix. » over the touchable « Blad sluiten » (320 x 54 dp)
+#3 LAYOUT OVERLAP « M4A · om te delen » over the touchable « Blad sluiten » (123 x 20 dp)
+#3 LAYOUT OVERLAP « WAV · max. kwaliteit » over the touchable « Blad sluiten » (139 x 20 dp)
+#3 LAYOUT OVERLAP «   Delen » over the touchable « Blad sluiten » (53 x 24 dp)
+#3 LAYOUT OVERLAP « Mijn bestanden » over the touchable « Blad sluiten » (104 x 20 dp)
+#3 LAYOUT OVERLAP « Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » over the touchable « Blad sluiten » (196 x 36 dp)
+#3 LAYOUT CONTRAST « 4 » 3.35:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « 8 » 2.26:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « 16 » 2.21:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Doelvolume » 2.81:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » 3.60:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#3 > touche 164 573
+#3 DOIGT share_target_STREAMING « Streaming · −14 LUFS »
+#3 DIALOGUE 0.3 s
+#4 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE c092cace5a | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « −14 LUFS over het hele nummer: het volume waarop Spotify en YouTube alle nummers zetten. Dezelfde instelling als in Mix. » over the touchable « Blad sluiten » (316 x 54 dp)
+#4 > touche 270 1008
+#4 DOIGT share_go «   Delen »
+#4 DIALOGUE 0.4 s
+#5 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 4a9ac3cab2 | project=projet-1 no tuto
+#5 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#5 LAYOUT CONTRAST « Annuleren » 4.14:1 (needs 4.5:1, 14 sp)
+#5 > attends 5
+#5 PARTAGE Mijn-eerste-beat-loop-streaming-20261112-213547.m4a
+#5 DIALOGUE 1.1 s
+#6 ROUTE dialogue:« Mijn nummer delen · Mijn-eerst » | MODE pro | EMPREINTE 3c94ea2300 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > retour
+#6 RETOUR
+#6 DIALOGUE 0.3 s
+#7 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 8af0de7354 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « Klaar: Mijn-eerste-beat-loop-streaming-20261112-213547.m4a, er staat ook een kopie in Muziek › BenStudio. » a word split over two lines
+#7 > touche 460 748
+#7 DOIGT share_bilan_ok « OK »
+#7 DIALOGUE 0.2 s
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 2ada8539cd | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 495 114
+#8 DOIGT top_share
+#8 DIALOGUE 0.4 s
+#9 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE c092cace5a | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 234 434
+#9 DOIGT share_bars_16 « 16 »
+#9 DIALOGUE 0.2 s
+#10 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE c4dfef2215 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 0:32 » over the touchable « Blad sluiten » (48 x 27 dp)
+#10 > touche 407 573
+#10 DOIGT share_target_CLUB « Club · −8 LUFS »
+#10 DIALOGUE 0.2 s
+#11 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 37d9e691de | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Luid, zoals in een club (−8 LUFS), gemeten op het luidste stuk. De uitgang gaat zacht omhoog om daar te komen; de export komt zo dichtbij als het kan zonder het geluid te pletten. Dezelfde instelling als in Mix. » over the touchable « Blad sluiten » (316 x 54 dp)
+#11 > touche 159 912
+#11 DOIGT share_format_Wav « WAV · max. kwaliteit »
+#11 DIALOGUE 0.2 s
+#12 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 850ee28344 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 270 1008
+#12 DOIGT share_go «   Delen »
+#12 DIALOGUE 0.3 s
+#13 ROUTE dialogue:share_progress | MODE pro | EMPREINTE da78ed6a8e | project=projet-1 no tuto
+#13 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#13 > attends 5
+#13 PARTAGE Mijn-eerste-beat-loop-club-20261112-213615.wav
+#13 DIALOGUE 0.5 s
+#14 ROUTE dialogue:« Mijn nummer delen · Mijn-eerst » | MODE pro | EMPREINTE a87cc64b5e | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 > retour
+#14 RETOUR
+#14 DIALOGUE 0.2 s
+#15 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE e114732445 | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « Klaar: Mijn-eerste-beat-loop-club-20261112-213615.wav, er staat ook een kopie in Muziek › BenStudio. » a word split over two lines
+#15 > touche 261 748
+#15 DOIGT share_bilan_files « Mijn bestanden bekijken »
+#15 DIALOGUE 0.4 s
+#16 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 8173bba396 | project=projet-1 no tuto
+#16 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#16 LAYOUT CUT « Mijn-eerste-beat-loop-club-20261112-213615.wav » ellipsized (« … »)
+#16 LAYOUT CUT « Mijn-eerste-beat-loop-streaming-20261112-213547.m4a » ellipsized (« … »)
+#16 LAYOUT CONTRAST « Opnieuw versturen » 3.63:1 (needs 4.5:1, 14 sp)
+#16 > touche 388 564
+#16 DOIGT my_export_send « Opnieuw versturen »
+#16 PARTAGE 2
+#16 DIALOGUE 0.3 s
+#17 ROUTE dialogue:« Nummer delen · 2 » | MODE pro | EMPREINTE ddecd82b92 | project=projet-1 no tuto
+#17 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#17 > retour
+#17 RETOUR
+#17 DIALOGUE 0.2 s
+#18 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 811c62a8a4 | project=projet-1 no tuto
+#18 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#18 > touche 388 663
+#18 DOIGT my_export_send « Opnieuw versturen »
+#18 PARTAGE 1
+#18 DIALOGUE 0.3 s
+#19 ROUTE dialogue:« Nummer delen · 1 » | MODE pro | EMPREINTE 972381becb | project=projet-1 no tuto
+#19 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#19 > retour
+#19 RETOUR
+#19 DIALOGUE 0.2 s
+#20 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 811c62a8a4 | project=projet-1 no tuto
+#20 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#20 > touche 388 564
+#20 DOIGT my_export_send « Opnieuw versturen »
+#20 PARTAGE 2
+#20 DIALOGUE 0.3 s
+#21 ROUTE dialogue:« Nummer delen · 2 » | MODE pro | EMPREINTE ddecd82b92 | project=projet-1 no tuto
+#21 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#21 > retour
+#21 RETOUR
+#21 DIALOGUE 0.2 s
+#22 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 811c62a8a4 | project=projet-1 no tuto
+#22 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#22 > touche 449 784
+#22 DOIGT my_exports_close « Sluiten »
+#22 DIALOGUE 0.2 s
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 2ada8539cd | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 491 1050
+#23 DOIGT tab_Plus « Meer »
+#24 ROUTE plus/tab_Plus | MODE pro | EMPREINTE f6b63b2a70 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > fin
+#24 FIN : fin

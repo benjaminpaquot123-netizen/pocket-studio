@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Basdrum 1",
+  "Grosse caisse 2": "Basdrum 2",
+  "Grosse caisse studio": "Studiobasdrum",
+  "Grosse caisse sèche": "Strakke basdrum",
+  "Grondement grave": "Laag gedreun",
+  "Claquement de mains": "Handklap",
+  "Claquements de mains": "Handklappen",
+  "Bord de caisse": "Trommelrand",
+  "Grosses caisses": "Basdrums",
+  "Volume au max": "Volume maximaal",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d tellen per minuut",
+  "D'abord le modèle de séparation": "Eerst het scheidingsmodel",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Om een nummer te scheiden, downloadt de app eerst het model: %s, maar één keer.",
+  "Tu es en Wi-Fi.": "Je zit op wifi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Je zit niet op wifi: deze %s gaan van je mobiele data af.",
+  "Télécharger, puis choisir la chanson": "Downloaden, dan het nummer kiezen"
+}

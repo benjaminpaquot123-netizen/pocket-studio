@@ -1,0 +1,9 @@
+Écran 41 (616x1371)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 344,54
+bouton «   Nouveau morceau guidé » @ 308,147
+bouton «   Nouveau projet : style, démo ou vide » @ 308,243
+bouton « Importer un projet (.zip) » @ 308,333
+touchable « Live OUVERT il y a 1 min · 124 BPM · Boucle de 1 mes. » @ 308,466
+bouton « Options de Live » @ 562,467
+bouton « Partager mon morceau » @ 196,498

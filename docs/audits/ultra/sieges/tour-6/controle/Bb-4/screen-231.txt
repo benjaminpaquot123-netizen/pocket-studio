@@ -1,0 +1,46 @@
+Écran 231 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Streaming · −14 LUFS » [coupé] @ 213,169
+bouton « Apple Music · −16 LUFS » [coupé] @ 579,169
+bouton « Frei » @ 92,234
+bouton « Aus » @ 202,234
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. » @ 450,336
+bouton « Erweitert: Pro-Master Obergrenze −1,0 dB · Attack und Release · Bass in Mono · A/B-Hören · Referenz » ⌄ @ 450,467
+bouton « Effekte Keiner » ⌄ @ 450,592
+bouton « Spektrumanalyse » @ 185,688
+titre « REVERB UND ECHO » [état « Aufgeklappt »] @ 212,808
+bouton « ? » @ 360,808
+texte « Gemeinsam für alle Kanäle: Stell in den Effekten ein, wie viel jeder Kanal hierhin schickt. Das Echo folgt dem Tempo. » @ 450,878
+texte « Reverb » @ 90,946
+texte « Größe » @ 414,999
+texte « 60 % » @ 822,1000
+curseur [état « 60 % », à 60 %] @ 450,1068
+texte « Dämpfung » @ 414,1136
+texte « 50 % » @ 822,1137
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

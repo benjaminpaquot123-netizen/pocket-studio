@@ -1,0 +1,3 @@
+Écran 71 (588x1278)
+texte « La canción pasa 0:38 del final del tema: su final se cortará. » @ 294,585
+texte « Entendido » @ 481,687

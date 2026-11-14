@@ -1,0 +1,8 @@
+fusion: 3fa7eeb8fbee9a8fc58d6767d65ba120a1cb055d
+branche: eq/tour-5-verdicts
+tete: 96989fe4bdc0a55645a87cd99748cff130c5d403
+relecture: docs/audits/ultra/tour-5-verdicts-relecture.md
+relu: 809457b87e4fa1f8c70961a7857c4f3708b53100
+filtres: *Tour5AppProof3Test *BenchSelfTest *BenchSeparationWaitTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

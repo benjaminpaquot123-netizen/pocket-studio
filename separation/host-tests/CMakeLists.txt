@@ -31,3 +31,12 @@ target_compile_options(generate_test PRIVATE -O2 -Wall -Wextra)
 target_link_directories(generate_test PRIVATE ${ORT_DIR}/lib)
 target_link_libraries(generate_test PRIVATE onnxruntime)
 set_target_properties(generate_test PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)
+
+# One given song separated (scripts/separation-tests.sh --file): the real-song check, outputs kept out of the repo.
+add_executable(separate_file separate_file.cpp ${SRC}/Separator.cpp ${LIBSAMPLERATE_SOURCES} ${DEMUCS}/dsp.cpp ${DEMUCS}/model_apply.cpp ${DEMUCS}/model_inference.cpp)
+target_include_directories(separate_file PRIVATE ${SRC} ${DEMUCS} ${ORT_INCLUDE} ${LIBSAMPLERATE_INCLUDES})
+target_include_directories(separate_file SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/eigen)
+target_compile_options(separate_file PRIVATE -O2 -w)
+target_link_directories(separate_file PRIVATE ${ORT_DIR}/lib)
+target_link_libraries(separate_file PRIVATE onnxruntime)
+set_target_properties(separate_file PROPERTIES BUILD_RPATH ${ORT_DIR}/lib)

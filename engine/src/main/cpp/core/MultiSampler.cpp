@@ -29,7 +29,8 @@ struct FloatReader {
 struct Pcm16Reader {
     const int16_t* d;
     int ch;
-    float operator()(int64_t i, int c) const { return static_cast<float>(d[i * ch + c]) * (1.0f / 32768.0f); }
+    float scale;  // Sample::pcmScale(): 1/32768 unless the zone was over full scale
+    float operator()(int64_t i, int c) const { return static_cast<float>(d[i * ch + c]) * scale; }
 };
 
 }  // namespace
@@ -380,7 +381,7 @@ void MultiSampler::render(float* left, float* right, int numFrames) {
         if (nextEvent < eventCount_) to = std::min(numFrames, std::max(from + 1, events_[static_cast<size_t>(nextEvent)].offset));
         for (auto& v : voices_) {
             if (!v.sample) continue;
-            if (const int16_t* pcm = v.sample->pcm16()) renderVoice(v, Pcm16Reader{pcm, v.sample->channels()}, left, right, from, to);
+            if (const int16_t* pcm = v.sample->pcm16()) renderVoice(v, Pcm16Reader{pcm, v.sample->channels(), v.sample->pcmScale()}, left, right, from, to);
             else renderVoice(v, FloatReader{v.sample->data(), v.sample->channels()}, left, right, from, to);
         }
         from = to;

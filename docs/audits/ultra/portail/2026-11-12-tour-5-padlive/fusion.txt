@@ -1,0 +1,8 @@
+fusion: d4cc5659093e9c23504e0e4445b9dcb53367a31b
+branche: eq/tour-5-padlive
+tete: a15d828bbc8a81f5f84782fa9c7d6123d08914b4
+relecture: docs/audits/ultra/tour-5-padlive-relecture.md
+relu: 274844ce006f2297ef22f993ea7baa071ede8129
+filtres: *BenchPadLiveStopTest *PadLiveGlideTest *BenchPadLiveTest *PadLiveTakeTest *Tour5AppProof3Test *Tour4AppProofTest *BenchTour4Test
+rejeux :
+  t4-26-prise-clavier : oracle tenu

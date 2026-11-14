@@ -1,0 +1,12 @@
+diff --git a/app/src/test/java/com/pocketstudio/app/human/SeatOptions.kt b/app/src/test/java/com/pocketstudio/app/human/SeatOptions.kt
+index 855a79a0..3c1cf75e 100644
+--- a/app/src/test/java/com/pocketstudio/app/human/SeatOptions.kt
++++ b/app/src/test/java/com/pocketstudio/app/human/SeatOptions.kt
+@@ -160,7 +160,6 @@ internal data class SeatOptions(
+                 val x = left + bw * i / 10f
+                 val y = top + bh * j / 10f
+                 val d = hypot(x - middle.first, y - middle.second)
+-                if (reachable(hand, x, y, w, h, density) && d < bestD) { best = x to y; bestD = d }
+             }
+             return best
+         }

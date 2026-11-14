@@ -1,0 +1,13 @@
+# Départ du tour 6 (PLAN-TOUR-6.md § 2) : une ligne « clé<TAB>valeur », recopiée des contrôles de la « Liste de lancement » (fin du plan). Un « ? » restant = on ne lance pas.
+# chantier_ecarts : le N, puis les écarts nommés (7 acceptés au plus : docs/decisions/tour-5-plan6.md) ; prevol : sa dernière ligne, puis chaque « À VOIR » ; rejeux6 : sha de la fusion ; retest_v6 : dossier de docs/tests-telephone/ ; mixwake : fusionné (sha) ou abandonné.
+# 2026-11-12, liste de lancement jouée, puis départ décidé avec deux écarts assumés au plan (docs/decisions/tour-6-depart.md) : 12 écarts du juge nommés au lieu de 7 (les 5 de plus viennent du lot du banc rejeux6, lot juge7 en cours) ; CI verte sur 1f47d889 (run 43270195010), la CI du commit de départ (run 43279184052) est notée à son arrivée.
+sha	1585bb46
+date	2026-11-12
+branche	fx-int
+ci_build	vert sur 1f47d889 (run 43270195010) ; entre 1f47d889 et 1585bb46 : aucun fichier de app/src/main ni du moteur ; run 43279184052 sur 2cfb8a3a en attente
+ci_emulateur	vert sur 1f47d889 (run 43270195010) ; run 43279184052 en attente
+chantier_ecarts	12 nommés, acceptés pour le départ (décision tour-6-depart) : 7 du seuil et 5 du lot rejeux6 (37e2c8ed, a95d9667, bc0e6f27, 2e2c5f3d, d56efddf), à fermer par le lot juge7. Les 7 acceptés y sont : 2b34c216, a2a6ec58, 11c48708, 96a7a702, ade1a174, 9b8fc4fd, 411b2d51 ; 5 autres, tous du lot rejeux6 (5257aad1), sans décision : 37e2c8ed, a95d9667, bc0e6f27, 2e2c5f3d (vert sans rouge avant), d56efddf (rouge sans vert après). Selftest du lot A : 176 verts, 0 rouge, 0 en quarantaine, 19 sautés (tous des « drive » de selftest-sauts-connus.txt), sur a040efaa
+prevol	PRÉ-VOL : PRÊT (0 à voir). sur a040efaa (2cfb8a3a + les fichiers de l'étape 5 et les fiches, docs seulement), après deux réparations de l'atelier : liens engine/third_party et separation/third_party refaits, APK release reconstruit sans le robot (-PallowDebugSigning). Premier passage sur 2cfb8a3a : RECALÉ (3 : fichiers de l'étape 5 non commités, check-jni sur un vieil APK -PbenTest, host-tests sans les sous-modules)
+rejeux6	5257aad1 (0 fichier cmd par pixels ; rejeu t5-01 rejoué : journal gardé, 167 lignes, 22 lignes DOIGT, verdict « oracle non tenu : « पार्ट: C » absent », le même qu'au lot rejeux6 ; la commande du plan avec un chemin relatif donne un faux « divergé au pas 1 » : chemin absolu obligatoire)
+retest_v6	docs/tests-telephone/2026-11-12-retest-v6 (0.22.1, commit 0b3da133 : 1 vert, 1 orange, 4 rouges, 0 décrochage ; recette_points_rouges = 6)
+mixwake	fusionné (f2051def, traces db66a3ce)

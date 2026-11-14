@@ -1,0 +1,3 @@
+test: ToutTesterTest#vert - the true worst block and the longest gap light a played song
+muté : 2026-11-12, lot « juge6 », worktree jetable détaché au vert, mutation.patch appliqué puis retiré, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *ToutTesterTest (muté rc=1 666s ; vert rc=0 406s)
+Mutation : Feux.style ne lit plus le vrai pire bloc (la ligne blocVrai ôtée). Les autres cas de ToutTesterTest verts dans les deux.

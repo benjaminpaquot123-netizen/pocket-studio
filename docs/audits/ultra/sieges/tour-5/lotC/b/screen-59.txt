@@ -1,0 +1,15 @@
+Écran 59 (616x1371)
+texte « BenStudio » @ 156,72
+texte « ¿Qué quieres hacer? » @ 236,132
+bouton « Continuar Pro Remix 20 comp. · 0:40 · 1 parte Guardado hace 1 min » @ 308,294
+bouton « Nueva canción Un estilo con un toque, o paso a paso con el asistente. » @ 308,499
+bouton « Mis proyectos Abrir otra canción, copiarla o renombrarla. » @ 308,664
+bouton « Remix Separación de pistas: batería, bajo, voz y el resto. » @ 308,829
+bouton « Pad Live NUEVO Pads listos para tocar, tus sonidos, efectos de escena. Suena enseguida. » @ 308,1009
+bouton « Retos Escucha un ritmo, repítelo en los pads: gana estrellas. » (nom « Retos: escucha un ritmo, repítelo en los pads, gana estrellas. ») @ 308,1189
+bouton « Grabar mi voz o mi guitarra El micro graba sobre tu música, justo a ritmo. » @ 308,1297
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

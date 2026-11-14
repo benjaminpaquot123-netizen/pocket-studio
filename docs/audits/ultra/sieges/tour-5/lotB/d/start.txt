@@ -1,0 +1,7 @@
+lang=ar
+device=tablet11Land
+font=100
+mode=simple
+gestes.max=80
+mission=simple
+timeout.minutes=30

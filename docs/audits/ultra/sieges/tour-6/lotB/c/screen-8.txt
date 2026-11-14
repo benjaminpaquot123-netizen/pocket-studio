@@ -1,0 +1,39 @@
+Écran 8 (588x1278)
+dessin @ 294,36
+texte « Acid 303 » @ 328,108
+texte « إغلاق » @ 67,108
+bouton « مكتوم » @ 515,195
+bouton « Solo » @ 406,195
+texte « المستوى » @ 341,267
+texte « ⁦-10.5 dB⁩ » @ 71,267
+curseur [état « ⁦-10.5 dB⁩ », à 43 %] @ 294,339
+texte « Pan » @ 543,412
+bouton « ? » @ 500,411
+texte « الوسط » @ 51,411
+curseur [état « الوسط », à 50 %] @ 294,484
+bouton (barres de son) «  ما يُعزف » @ 432,571
+bouton (courbe) «  المنحنيات » @ 156,571
+texte « المؤثرات » @ 530,640
+texte « المؤثرات المضافة: 0 من 8 » @ 459,691
+texte « لا شيء بعد: أضف مؤثرًا، أو اضغط على أجواء جاهزة. » @ 382,731
+bouton + «   إضافة مؤثر » @ 294,790
+texte « أجواء جاهزة » @ 513,863
+bouton « ? » @ 440,862
+bouton « لـ: Acid 303 » [sélectionné] @ 483,932
+bouton ★ « المفضّلات » @ 319,932
+bouton « الأجواء » @ 182,932
+bouton « اللون » @ 76,932
+texte « النمط: » @ 542,1016
+bouton « Acid » @ 464,1016
+bouton « Techno » @ 344,1016
+bouton « DnB » @ 226,1016
+bouton « Dubstep » @ 103,1016
+bouton « House » [coupé] @ 25,1016
+bouton « Dub عميق » @ 495,1100
+bouton « Fat bass » @ 350,1100
+bouton « Wob ‏Dubstep » @ 180,1100
+bouton « Crunchy » @ 496,1172
+bouton « طائرة نفاثة » @ 349,1172
+bouton « Pump » @ 216,1172
+bouton « بلا مؤثر » [sélectionné] @ 98,1172
+texte « الصوت كما هو: لا مؤثرات بعد الآن، والـMacros في وضع الراحة. » @ 294,1247

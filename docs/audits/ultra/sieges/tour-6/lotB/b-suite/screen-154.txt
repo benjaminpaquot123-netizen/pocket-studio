@@ -1,0 +1,47 @@
+Écran 154 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ■ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Groove Takt 1/8 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…). » @ 450,373
+texte « Hinzufügen: » @ 123,441
+bouton « + A · Groove » @ 163,510
+bouton « + B · Intro » @ 395,510
+bouton « + Neuer Teil (Kopie von A · Groove) » @ 317,591
+bouton « + Neuer leerer Teil » @ 205,672
+bouton (barres de son) «   Was im Song spielt » [coupé] @ 450,728
+image (chapeau de diplômé) @ 37,786
+texte « Bau deine Teile Kapitel 10/16 · Schritt 2/7 · Pro » @ 400,786
+icône (liste) @ 771,787
+icône ⌄ @ 843,787
+texte « Du bist dran: Erstell Intro 2 aus dem Groove: alles außer dem Ride und dem Riff. Der Bass und der Stab kommen dazu. » @ 450,898
+texte « ▸ Warum? » @ 450,973
+bouton ⊕ «   Teil „Intro 2“ erstellen » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

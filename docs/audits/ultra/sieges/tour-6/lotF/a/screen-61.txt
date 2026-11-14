@@ -1,0 +1,42 @@
+Écran 61 (900x1509)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 278,42
+bouton « Semplice » @ 602,42
+bouton ● @ 692,42
+bouton ▶ « questa parte » @ 773,42
+icône ⋮ @ 855,42
+bouton « 90  Tempo » @ 88,123
+icône « B battuta 1/3 » ▾ @ 275,123
+bouton « ? » @ 855,123
+texte « Finito? Condividi il tuo brano » @ 450,204
+champ « Nome del brano (e del progetto) » contenu «  » @ 450,301
+texte « “Condividi” rinomina anche il progetto “Il mio progetto 1”. » @ 369,392
+texte « 0:08 » @ 71,450
+texte « 2 parti » @ 170,452
+bouton ▶ «  Ascolta » @ 765,469
+texte « Livello: come la musica in streaming (−14) » @ 339,491
+image (rond coché) @ 45,544
+texte « Tutto pronto: nessun solo dimenticato, nessuna traccia muta. » @ 472,568
+bouton (clap de cinéma) «   Video per i social · 30 s » @ 450,663
+bouton (notes sur une pile) « Altri file Traccia per traccia, MIDI, FLAC… (passa alla modalità Pro) » › @ 428,773
+bouton « ? » @ 848,773
+bouton (boîte, flèche vers le bas) › « Salva il brano in .zip Per un altro dispositivo o una copia di sicurezza » [coupé] @ 428,859
+texte « ? » [coupé] @ 848,870
+bouton « M4A · per condividere » [sélectionné] @ 206,925
+bouton « WAV · qualità massima » @ 573,925
+bouton (trois points reliés) «   Condividi » [désactivé] @ 450,1021
+bouton (dossier) « I miei file Ritrova e rinvia: M4A, WAV, video, .zip » › @ 428,1123
+bouton « ? » @ 848,1123
+bouton (boussole) « Guida  · Concatena le tue parti 44 % » ⌃ [état « chiuso »] @ 450,1219
+icône ↶ « Annulla » @ 155,1292
+bouton ▶ « il brano » @ 348,1292
+texte « 90 Tempo » @ 548,1292
+icône ⋮ « Altro » @ 745,1292
+onglet (lignes et note) « Il mio brano » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Tastiera » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Condividi » [sélectionné] @ 815,1389
+texte « ●  REC » @ 664,1479
+texte « ✎  Annota » @ 764,1479
+texte « ⋯ » @ 852,1479
+texte « Modalità feedback » @ 314,1479

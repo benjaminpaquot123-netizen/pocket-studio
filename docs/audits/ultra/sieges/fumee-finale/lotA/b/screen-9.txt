@@ -1,0 +1,67 @@
+Écran 9 (588x1278)
+icône (dossier ouvert) ✓ « Lo-fi hip-hop Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 84  Tempo » @ 75,114
+icône « Intro mesure 1/64 » ▾ @ 239,114
+bouton « ? » @ 543,114
+onglet « Acid 303 Ligne de basse » [coupé] @ 34,186
+bouton « Basse Basse ronde » @ 149,186
+bouton « Piano Rhodes FM » @ 318,186
+bouton « Mélodie Piano FM » ⋮ @ 490,186
+icône « Partie : A · Intro » ▾ @ 115,264
+bouton « Clavier » [sélectionné] @ 78,354
+bouton « Notes » @ 203,354
+icône (poubelle et traits) «  Vider » @ 508,354
+bouton ● «  Enregistrer ma mélodie » @ 217,447
+icône (chronomètre) «  1 » @ 471,447
+bouton « ? » @ 548,447
+icône − @ 347,564
+icône + @ 510,564
+texte « Octave 3 » @ 428,564
+titre « CLAVIER » [état « Déplié »] @ 109,564
+bouton « Do » @ 60,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 77,680
+bouton @ 96,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 113,680
+bouton @ 132,724
+bouton @ 168,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 185,680
+bouton @ 204,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 221,680
+bouton @ 240,724
+bouton @ 257,680
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 276,724
+bouton « Do » @ 312,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 329,680
+bouton @ 348,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 365,680
+bouton @ 384,724
+bouton @ 420,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 437,680
+bouton @ 456,724
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 473,680
+bouton @ 492,724
+bouton @ 509,680
+dessin [désactivé, état « Hors de la gamme du morceau »] @ 528,724
+bouton « Accords » @ 109,885
+bouton « Pads » @ 236,885
+bouton « 2 octaves » [coupé, sélectionné] @ 116,949
+bouton « 1 octave » [coupé] @ 265,949
+bouton « Gamme » [coupé] @ 404,949
+bouton (boussole) « Guide  · Ton morceau est prêt ! 17 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 84 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

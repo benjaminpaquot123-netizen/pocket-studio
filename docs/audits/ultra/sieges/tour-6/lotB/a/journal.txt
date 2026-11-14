@@ -1,0 +1,177 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=left amenee=-
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=8.8 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 150 1140
+#1 DOIGT welcome_remix « Extraer la voz de una canción »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE b5bf301097 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 200 333
+#2 REFUS hors de portée du pouce (d'une main, la gauche)
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE be19acbd53 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 150 420
+#3 REFUS hors de portée du pouce (d'une main, la gauche)
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE be19acbd53 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 50 440
+#4 REFUS hors de portée du pouce (d'une main, la gauche)
+#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE be19acbd53 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 RIEN NE CHANGE (3 écrans identiques)
+#5 > glisse 150 800 150 1150
+#5 DOIGT rien
+#6 ROUTE dialogue:mode_step | MODE simple | EMPREINTE b5bf301097 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > retour
+#6 RETOUR
+#7 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 150 1150
+#7 DOIGT welcome_remix « Extraer la voz de una canción »
+#8 ROUTE dialogue:mode_step | MODE simple | EMPREINTE b5bf301097 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 100 645
+#8 DOIGT mode_card_pro « Pro »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 092c5cfd7d | project=p-b379c8c6 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#9 > touche 200 903
+#9 DOIGT remix_download_thumb « Descargar el modelo (174 MB) »
+#10 ROUTE dialogue:remix_model_ask | MODE pro | EMPREINTE 7a1a6c5e47 | project=p-b379c8c6 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 463 783
+#10 DOIGT remix_model_ask_ok « Descargar »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 037f98bbb2 | project=p-b379c8c6 no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 30
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE de2a74e1e1 | project=p-b379c8c6 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 200 903
+#12 DOIGT remix_pick_thumb «  Elegir una canción »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 99305a137e | project=p-b379c8c6 no tuto
+#13 SON Son : rien ne joue.
+#13 > attends 30
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 8f43397890 | project=p-b379c8c6 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST «  Cortar lo que quiero » 4.38:1 (needs 4.5:1, 14 sp)
+#14 > glisse 150 800 150 450
+#14 REFUS hors de portée du pouce (d'une main, la gauche)
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 751b032fc1 | project=p-b379c8c6 no tuto
+#15 SON Son : rien ne joue.
+#15 > glisse 150 790 150 650
+#15 DOIGT rien (texte « Tu proyecto: 120 BPM »)
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 8bc37fe423 | project=p-b379c8c6 no tuto
+#16 SON Son : rien ne joue.
+#16 > glisse 150 800 150 650
+#16 DOIGT rien (texte « Elige trozos de cada pista y ponlos en t »)
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 671bc4c2ed | project=p-b379c8c6 no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Elegir una canción » 1.50:1 (needs 4.5:1, 14 sp)
+#17 > glisse 150 800 150 700
+#17 DOIGT rien
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 10039dc369 | project=p-b379c8c6 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 150 538
+#18 REFUS hors de portée du pouce (d'une main, la gauche)
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE af44135df0 | project=p-b379c8c6 no tuto
+#19 SON Son : rien ne joue.
+#19 > glisse 300 600 300 750
+#19 DOIGT rien (texte « Elige trozos de cada pista y ponlos en t »)
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE c0b09a8f6b | project=p-b379c8c6 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 150 664
+#20 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar lo que quiero »
+#21 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 063a8014b9 | project=p-b379c8c6 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#21 LAYOUT CUT « Escuchar el trozo » lines cut (taller than its box)
+#21 > touche 199 444
+#21 REFUS hors de portée du pouce (d'une main, la gauche)
+#22 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 7b029b70d9 | project=p-b379c8c6 no tuto
+#22 SON Son : rien ne joue.
+#22 > glisse 300 780 300 950
+#22 DOIGT rien (texte « Coloca Inicio y Fin, y luego pon este tr »)
+#23 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE d230d88772 | project=p-b379c8c6 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 84 708
+#23 DOIGT cut_start « Inicio aquí »
+#24 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE d230d88772 | project=p-b379c8c6 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 285 1062
+#24 DOIGT thumb_play « Reproducir la canción »
+#25 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE aeb2d80b89 | project=p-b379c8c6 no tuto
+#25 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#25 > touche 285 1062
+#25 DOIGT thumb_play « Detener »
+#26 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE d230d88772 | project=p-b379c8c6 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 131 654
+#26 DOIGT cut_auto « Cortes: Un trozo »
+#27 ROUTE dialogue:cut_auto_0 | MODE pro | EMPREINTE 356718f14f | project=p-b379c8c6 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 102 810
+#27 DOIGT cut_auto_1 « Frases »
+#28 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE cf3632ee32 | project=p-b379c8c6 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 290 700
+#28 DOIGT rien
+#29 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE cf3632ee32 | project=p-b379c8c6 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 293 628
+#29 DOIGT rien
+#30 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 5a1efcf984 | project=p-b379c8c6 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 96 876
+#30 DOIGT cut_to_pads « En los pads »
+#31 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 7669097194 | project=p-b379c8c6 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 492 876
+#31 DOIGT cut_to_track « En una pista »
+#32 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE f424126dde | project=p-b379c8c6 no tuto
+#32 SON Son : rien ne joue.
+#32 > retour
+#32 RETOUR
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 09784f1163 | project=p-b379c8c6 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CUT « 0:00 / 0:40 · inicio » lines dropped (more lines than room)
+#33 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Efectos » 4.44:1 (needs 4.5:1, 14 sp)
+#33 > glisse 60 840 60 660
+#33 DOIGT rien
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 91e2ccf180 | project=p-b379c8c6 no tuto
+#34 SON Son : rien ne joue.
+#34 > glisse 60 840 60 660
+#34 DOIGT rien
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE f3e9313e23 | project=p-b379c8c6 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 54 1158
+#35 DOIGT tab_Structure « Estructura »
+#36 ROUTE session/tab_Structure | MODE pro | EMPREINTE 9d18f1b939 | project=p-b379c8c6 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 174 1158
+#36 DOIGT tab_Sons « Sonidos »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE f3e9313e23 | project=p-b379c8c6 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 240 648
+#37 DOIGT stem_mute_3 « Sonido de Voz »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 3d67940da2 | project=p-b379c8c6 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 285 1062
+#38 DOIGT thumb_play « Reproducir la canción »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 6c31461ec5 | project=p-b379c8c6 no tuto
+#39 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée » — la voix ne chante pas à cet instant.
+#39 > touche 285 1062
+#39 DOIGT thumb_play « Detener »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 3d67940da2 | project=p-b379c8c6 no tuto
+#40 SON Son : rien ne joue.
+#40 > glisse 60 660 60 840
+#40 DOIGT rien
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 71e14062b0 | project=p-b379c8c6 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 114 258
+#41 REFUS hors de portée du pouce (d'une main, la gauche)
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE dc24b57c34 | project=p-b379c8c6 no tuto
+#42 SON Son : rien ne joue.
+#42 > fin
+#42 FIN : fin

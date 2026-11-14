@@ -1,0 +1,91 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=left amenee=-
+#0 PREMIER ECRAN reel_s=5.4 simule_s=2.4 jvm_s=12.9 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 981
+#1 DOIGT welcome_empty « Empezar de cero »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 46233d081c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 933
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 10ba754e0f | project=p-c7601103 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 54 1158
+#3 DOIGT tab_simple_Morceau « Mi canción »
+#4 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d277aa8278 | project=p-c7601103 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 517 1062
+#4 DOIGT thumb_more « Más opciones »
+#5 ROUTE plus | MODE simple | EMPREINTE 895258e030 | project=p-c7601103 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 107 472
+#5 REFUS hors de portée du pouce (d'une main, la gauche)
+#6 ROUTE plus | MODE simple | EMPREINTE 4a0bcad270 | project=p-c7601103 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 140 535
+#6 REFUS hors de portée du pouce (d'une main, la gauche)
+#7 ROUTE plus | MODE simple | EMPREINTE 4a0bcad270 | project=p-c7601103 no tuto
+#7 SON Son : rien ne joue.
+#7 > glisse 200 600 200 900
+#7 DOIGT rien
+#8 ROUTE plus | MODE simple | EMPREINTE 895258e030 | project=p-c7601103 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 60 548
+#8 DOIGT rien
+#9 ROUTE plus | MODE simple | EMPREINTE 895258e030 | project=p-c7601103 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 50 530
+#9 DOIGT plus_remix « Remix »
+#10 ROUTE ? | MODE simple | EMPREINTE 8a2c1f4d8b | project=p-c7601103 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 294 903
+#10 DOIGT remix_download_thumb « Descargar el modelo (174 MB) »
+#11 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 7a1a6c5e47 | project=p-c7601103 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 463 783
+#11 DOIGT remix_model_ask_ok « Descargar »
+#12 ROUTE ? | MODE simple | EMPREINTE 6075e0feee | project=p-c7601103 no tuto
+#12 SON Son : rien ne joue.
+#12 > attends 30
+#13 ROUTE ? | MODE simple | EMPREINTE 88753c591b | project=p-c7601103 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 294 903
+#13 DOIGT remix_pick_thumb «  Elegir una canción »
+#14 ROUTE ? | MODE simple | EMPREINTE d7e41384b8 | project=p-c7601103 no tuto
+#14 SON Son : rien ne joue.
+#14 > attends 60
+#15 ROUTE ? | MODE simple | EMPREINTE c3e157b038 | project=p-c7601103 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 294 824
+#15 DOIGT use_3a02635f77d71cd9a979f25b « Tocar con el proyecto »
+#16 ROUTE dialogue:song_import | MODE simple | EMPREINTE 540bcabb4e | project=p-c7601103 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « Mi proyecto toma el tempo de Ma chanson préférée (120 BPM) » 1.66:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Mis sintes y bajos tocan en La menor » 2.45:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Partes » 1.52:1 (needs 3.0:1, 14 sp)
+#16 > touche 407 1101
+#16 DOIGT import_go « Poner en mi proyecto »
+#17 ROUTE dialogue:« Tu bucle se convierte en un te » | MODE simple | EMPREINTE d37b6d8d9f | project=p-c7601103 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 481 687
+#17 REFUS hors de portée du pouce (d'une main, la gauche)
+#18 ROUTE dialogue:« Tu bucle se convierte en un te » | MODE simple | EMPREINTE 2d53e035e0 | project=p-c7601103 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 400 690
+#18 DOIGT rien
+#19 ROUTE dialogue:« Tu bucle se convierte en un te » | MODE simple | EMPREINTE c0be63c671 | project=p-c7601103 no tuto
+#19 SON Son : rien ne joue.
+#19 > retour
+#19 RETOUR
+#20 ROUTE ? | MODE simple | EMPREINTE d71d94bc10 | project=p-c7601103 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « 0:00 / 0:40 · inicio » lines dropped (more lines than room)
+#20 LAYOUT CONTRAST « CANCIÓN: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Efectos » 4.44:1 (needs 4.5:1, 14 sp)
+#20 > touche 54 1158
+#20 DOIGT tab_simple_Morceau « Mi canción »
+#21 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 603af1c53c | project=p-c7601103 no tuto
+#21 SON Son : rien ne joue.
+#21 > fin
+#21 FIN : fin

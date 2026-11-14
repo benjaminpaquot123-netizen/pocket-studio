@@ -1,0 +1,55 @@
+Écran 31 (616x1371)
+touchable « Remix Guardado » (nom « Mis proyectos ») @ 128,42
+bouton « Pro » (nom « Modo Pro. Toca para cambiar de modo. ») @ 283,42
+bouton « Deshacer » @ 355,42
+bouton « Grabar: micrófono, teclado o pads » @ 427,42
+bouton « Reproducir » @ 499,42
+bouton « Compartir mi canción » @ 571,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « A comp. 1/20 » @ 228,114
+interrupteur « Bucle » (nom « Repetir la parte en vez de tocar la canción ») [non coché, état « desactivado »] @ 464,114
+interrupteur « ? » (nom « Etiquetar la pantalla ») [non coché] @ 571,114
+onglet « Batería 16 pads » @ 76,183
+onglet « Acid 303 Línea de bajo » @ 242,183
+onglet « Voz Micro » @ 398,183
+onglet « Ma chanson préférée Canción » [sélectionné] @ 533,183
+  → la suite sur le côté (glisse pour la voir)
+onglet « Pistas de audio » @ 114,258
+onglet « Remix » [sélectionné] @ 283,258
+onglet « Afinador » @ 419,258
+onglet « Generar » @ 552,258
+  → la suite sur le côté (glisse pour la voir)
+bouton « Escuchar desde la línea naranja » @ 556,345
+bouton « Atrás » @ 42,345
+texte « Cortar la canción » @ 213,331
+bouton « ? » (nom « ¿Qué es “Herramientas de corte”? ») @ 370,330
+texte « Ma chanson préférée · 0:40 » @ 215,367
+case « Voz » [sélectionné] @ 69,444
+case « Batería » @ 199,444
+case « Bajo » @ 332,444
+case « Resto » @ 458,444
+titre « COMP. 2 A 5 » @ 99,579
+texte « Pellizca para ampliar » @ 490,579
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « OK » @ 536,828
+texte « “Voz” está en la casilla Remix del bloque B. » @ 264,828
+texte « 1 trozo elegido · 0:03 en total » @ 181,891
+bouton « En los pads » @ 99,963
+bouton « En el Live » @ 238,963
+bouton « Guardar » @ 377,963
+bouton « En una pista » @ 516,963
+bouton « Guía  · Pon un ritmo 5 % » [état « plegado »] @ 308,1077
+bouton « Reproducir » @ 300,1152
+bouton « Deshacer » @ 77,1152
+bouton « Rehacer » [désactivé] @ 190,1152
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 415,1152
+bouton « Compartir » (nom « Compartir mi canción ») @ 536,1152
+onglet « Estructura » @ 56,1251
+onglet « Sonidos » [sélectionné] @ 181,1251
+onglet « Mix » @ 307,1251
+onglet « Live » @ 433,1251
+onglet « Más » @ 559,1251
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

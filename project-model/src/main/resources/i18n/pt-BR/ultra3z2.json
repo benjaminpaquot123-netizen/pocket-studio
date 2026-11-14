@@ -1,0 +1,23 @@
+{
+  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "O volume das músicas deste estilo (%s LUFS), medido no trecho mais forte. A saída sobe ou desce suavemente até chegar lá; a exportação chega o mais perto que puder sem esmagar o som.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "Forte, como na balada (%s LUFS), medido no trecho mais forte. Seu estilo já soa tão forte assim: aqui, Club e Auto miram o mesmo volume.",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "Forte, como na balada (%s LUFS), medido no trecho mais forte. A saída sobe suavemente até chegar lá; a exportação chega o mais perto que puder sem esmagar o som.",
+  "Le volume visé, en LUFS : plus près de 0, plus fort. Une cible par projet, la même dans Mix et au partage. Auto (%1$s LUFS, ton style) et Club (%2$s LUFS) se mesurent sur le passage le plus fort ; Streaming (−14 LUFS), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et le dit.": "O volume-alvo, em LUFS: mais perto de 0, mais forte. Um só alvo por projeto, o mesmo no Mix e na hora de compartilhar. Auto (%1$s LUFS, o volume do seu estilo) e Club (%2$s LUFS) são medidos no trecho mais forte; Streaming (−14 LUFS, Spotify e YouTube), Apple Music (−16) e Livre na música inteira. Se o som fosse ser esmagado, o app para antes e te avisa.",
+  "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "O alvo é medido no trecho mais forte (%1$s LUFS); a música inteira, com seus trechos calmos, mede %2$s LUFS.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Para soar tão forte, os picos são comprimidos em %s dB: é muito, o som perde a pegada.",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Para soar tão forte, os picos são comprimidos em %s dB (3 no máximo: o som mantém a pegada).",
+  "Le même réglage que dans Mix.": "O mesmo ajuste do Mix.",
+  "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Para continuar em outro aparelho: um arquivo .zip com todos os seus sons, para abrir lá em Meus projetos › Importar.",
+  "Nom du morceau envoyé": "Nome da música enviada",
+  "Le projet garde son nom « %s ».": "O projeto mantém o nome “%s”.",
+  "%s (coupée)": "%s (silenciada)",
+  "Sans fichier : %s.": "Sem arquivo: %s.",
+  "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "A música mudou desde esta exportação: exporte de novo para enviar a nova versão.",
+  "Remix · %s": "Remix · %s",
+  "Trop fort par endroits : ça risque de grésiller.": "Forte demais em alguns trechos: pode chiar.",
+  "Pas de saturation.": "Sem saturação.",
+  "Fichier M4A : léger, lu par tous les appareils.": "Arquivo M4A: leve, toca em qualquer aparelho.",
+  "Fichier %s : qualité studio.": "Arquivo %s: qualidade de estúdio.",
+  "%s Mo": "%s MB",
+  "%d Ko": "%d KB"
+}

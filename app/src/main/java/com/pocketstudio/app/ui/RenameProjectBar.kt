@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.pressScale
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,15 +12,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,8 +31,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.ProjectCatalog
@@ -61,14 +57,11 @@ fun RenameProjectBar(current: String, onDone: (String) -> Unit, onDismiss: () ->
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = if (it.text.length <= ProjectCatalog.MAX_NAME) it else it.copy(text = it.text.take(ProjectCatalog.MAX_NAME)) },
-            singleLine = true,
-            label = { Text(tr("Nom du projet")) },
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { if (ok) onDone(name.text) }),
+        // n° 26 (seat F d): the limit said under the name (« 12/40 », then « 40 caractères au plus »), never a silent cut.
+        NameField(
+            name.text, { name = TextFieldValue(it, TextRange(it.length)) }, ProjectCatalog.MAX_NAME, tr("Nom du projet"),
             modifier = Modifier.weight(1f).focusRequester(focus).testTag("rename_project_field"),
+            onDone = { if (ok) onDone(name.text) },
         )
         IconButton(onClick = onDismiss, modifier = Modifier.testTag("rename_project_cancel")) {
             Icon(Icons.Filled.Close, contentDescription = tr("Annuler"), tint = Neon.TextSecondary)
@@ -76,7 +69,7 @@ fun RenameProjectBar(current: String, onDone: (String) -> Unit, onDismiss: () ->
         Button(
             onClick = { onDone(name.text) }, enabled = ok,
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent),
-            modifier = Modifier.testTag("rename_project_ok"),
+            modifier = Modifier.pressScale(enabled = ok).testTag("rename_project_ok"),
         ) { Text(tr("OK")) }
     }
 }

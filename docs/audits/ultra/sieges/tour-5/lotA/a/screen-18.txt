@@ -1,0 +1,17 @@
+Écran 18 (540x1170)
+texte « नया गाना, स्टेप बाय स्टेप » @ 198,38
+bouton « बंद करो » @ 498,56
+texte « स्टेप 9 / 10 · Lo-fi hip-hop » @ 170,82
+bouton « बेल सॉफ़्ट · छोटा » @ 270,131
+bouton « ऑर्गन खोखला · लंबा खिंचा » @ 270,195
+bouton « इलेक्ट्रिक पियानो सॉफ़्ट · लंबा खिंचा » @ 270,302
+bouton « फ़िल्टर्ड मेलोडी एनालॉग + फ़िल्टर » @ 270,409
+bouton « Chiptune मेलोडी Chiptune » @ 270,516
+bouton « रोबोट आवाज़ Formants » @ 270,623
+bouton « FM Rhodes 6-op FM · बैंक 2 » @ 270,728
+bouton « FM vibraphone 6-op FM · बैंक 2 » @ 270,831
+bouton « FM बेल 6-op FM · बैंक 2 » @ 270,936
+bouton « मेटैलिक stab 2-op FM » @ 270,1035
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « वापस » @ 139,1116
+bouton « अगला » @ 400,1116

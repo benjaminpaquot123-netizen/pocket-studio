@@ -1,0 +1,354 @@
+#0 SIEGE lang=en device=phone font=130 mode=pro theme=- fresh=non gestes.max=110 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.4 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#1 ROUTE launch | MODE pro | EMPREINTE 2a2027d036 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Track separation: drums, bass, vocals and the rest. » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 1090
+#1 DOIGT launch_padlive « Pad Live »
+#2 ROUTE padlive | MODE pro | EMPREINTE a28dd58d5b | project=p-8375040f no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Pack… » ellipsized (« … »)
+#2 LAYOUT OVERLAP « A » over « D » (9 x 13 dp)
+#2 LAYOUT OVERLAP « 124 » over « Preparing the ready-to-play pads… » (38 x 14 dp)
+#2 LAYOUT OVERLAP « 124 » over « Roll » (16 x 9 dp)
+#2 LAYOUT OVERLAP « 124 » over « 1/16 » (16 x 21 dp)
+#2 LAYOUT OVERLAP « A » over the touchable « Page D · empty » (14 x 20 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Challenge: play this rhythm back » (11 x 3 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Roll · 1/16 » (26 x 31 dp)
+#2 LAYOUT OVERLAP « REC » over the touchable « Pro mode. Touch to change mode. Change m » (33 x 14 dp)
+#2 LAYOUT OVERLAP « D » over the touchable « Current part: A. Tap to change part. Cha » (15 x 17 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Play this part Play this part » (9 x 18 dp)
+#2 LAYOUT OVERLAP « Preparing the ready-to-play pads… » over the touchable « Tempo: 124 BPM Change the tempo » (93 x 26 dp)
+#2 LAYOUT OVERLAP « LIVE EFFECTS » over the touchable « Collapse Expanded » (101 x 12 dp)
+#2 LAYOUT OVERLAP « LIVE EFFECTS » over the touchable « Open the Guide folded » (117 x 12 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Collapse Expanded » (9 x 9 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Open the Guide folded » (9 x 9 dp)
+#2 LAYOUT OVERLAP « Press and hold » over the touchable « Open the Guide folded » (122 x 12 dp)
+#2 LAYOUT OVERLAP « Filter » over the touchable « Open the Guide folded » (47 x 18 dp)
+#2 LAYOUT OVERLAP « Filter » over the touchable « Undo » (47 x 9 dp)
+#2 LAYOUT OVERLAP « low ↔ high » over the touchable « Undo » (52 x 21 dp)
+#2 LAYOUT OVERLAP « low ↔ high » over the touchable « Redo » (30 x 21 dp)
+#2 LAYOUT OVERLAP « Echo » over the touchable « Open the Guide folded » (45 x 17 dp)
+#2 LAYOUT OVERLAP « Echo » over the touchable « Play the song Play the song » (34 x 10 dp)
+#2 LAYOUT OVERLAP « on the way out » over the touchable « Play the song Play the song » (69 x 16 dp)
+#2 LAYOUT OVERLAP « Roll » over the touchable « Open the Guide folded » (34 x 18 dp)
+#2 LAYOUT OVERLAP « Roll » over the touchable « Tempo: 124 BPM Change the tempo » (31 x 9 dp)
+#2 LAYOUT OVERLAP « 1/16 » over the touchable « Tempo: 124 BPM Change the tempo » (31 x 21 dp)
+#2 LAYOUT CONTRAST « More » 2.05:1 (needs 4.5:1, 13 sp)
+#2 > attends 5
+#3 ROUTE padlive | MODE pro | EMPREINTE 74301aa9ec | project=p-8375040f no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « Kick » over « Air horn » (28 x 23 dp)
+#3 LAYOUT OVERLAP « Snare » over « Siren » (24 x 14 dp)
+#3 LAYOUT OVERLAP « Clap » over « hit » (18 x 13 dp)
+#3 LAYOUT OVERLAP « Hi-hat » over « hit » (21 x 13 dp)
+#3 LAYOUT OVERLAP « Open hi-hat » over « hit » (21 x 21 dp)
+#3 LAYOUT OVERLAP « 124 » over « loop » (10 x 10 dp)
+#3 LAYOUT OVERLAP « Kick » over the touchable « Air horn, hit, ready, pad A5 » (41 x 23 dp)
+#3 LAYOUT OVERLAP « Snare » over the touchable « Siren, hit, ready, pad A7 » (45 x 23 dp)
+#3 LAYOUT OVERLAP « Clap » over the touchable « Kick, hit, ready, pad A9 » (42 x 23 dp)
+#3 LAYOUT OVERLAP « Clap » over the touchable « Pad settings, pad A9 Pad settings » (34 x 17 dp)
+#3 LAYOUT OVERLAP « Hi-hat » over the touchable « Snare, hit, ready, pad A10 » (54 x 23 dp)
+#3 LAYOUT OVERLAP « Hi-hat » over the touchable « Pad settings, pad A10 Pad settings » (47 x 17 dp)
+#3 LAYOUT OVERLAP « Open hi-hat » over the touchable « Hi-hat, hit, ready, pad A11 » (45 x 45 dp)
+#3 LAYOUT OVERLAP « Open hi-hat » over the touchable « Pad settings, pad A11 Pad settings » (45 x 27 dp)
+#3 LAYOUT OVERLAP « 124 » over the touchable « Kick loop, loop, ready, pad A1 » (38 x 14 dp)
+#3 LAYOUT OVERLAP « 124 » over the touchable « Pad settings, pad A1 Pad settings » (11 x 14 dp)
+#3 LAYOUT OVERLAP « ? » over the touchable « Launch row 1 on the bar Launch the row » (11 x 17 dp)
+#3 LAYOUT OVERLAP « loop » over the touchable « Tempo: 124 BPM Change the tempo » (36 x 21 dp)
+#3 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad A1 Pad settings » (36 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A2 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad A3 Pad settings » (36 x 21 dp)
+#3 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad A4 Pad settings » (36 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A5 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A6 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A7 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A8 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A9 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A10 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A11 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A12 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A13 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A14 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A15 Pad settings » (21 x 21 dp)
+#3 LAYOUT OVERLAP « hit » over the touchable « Pad settings, pad A16 Pad settings » (21 x 21 dp)
+#3 LAYOUT CONTRAST « Kick » 4.12:1 (needs 4.5:1, 14 sp)
+#3 LAYOUT CONTRAST « ? » 2.48:1 (needs 3.0:1, 16 sp)
+#3 > touche 205 259
+#3 DOIGT padlive_pad_1 « Clap, hit, ready, pad A2 »
+#4 ROUTE padlive | MODE pro | EMPREINTE 5009e9062a | project=p-8375040f no tuto
+#4 SON Son : le pad live 2 (« Clap ») a joué une fois.
+#4 > touche 228 1136
+#4 DOIGT padlive_played « Record what I play »
+#5 ROUTE padlive | MODE pro | EMPREINTE 5d0d485e9a | project=p-8375040f no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « Ready: it starts on the bar » ellipsized (« … »)
+#5 > touche 77 259
+#5 DOIGT padlive_pad_0 « Kick loop, loop, ready, pad A1 »
+#6 ROUTE padlive | MODE pro | EMPREINTE 6034d3d6d5 | project=p-8375040f no tuto
+#6 SON Son : le pad live 1 joue en boucle.
+#6 LAYOUT OVERLAP « 124 » over the touchable « Kick loop, loop, playing, pad A1 » (38 x 14 dp)
+#6 > tape 205 551 6 480
+#6 DOIGT padlive_pad_9 « Snare, hit, ready, pad A10 »
+#7 ROUTE padlive | MODE pro | EMPREINTE 42cfb32cf5 | project=p-8375040f no tuto
+#7 SON Son : le pad live 10 (« Caisse ») a joué une fois ; le pad live 1 joue en boucle.
+#7 LAYOUT OVERLAP « Hi-hat » over the touchable « Snare, hit, playing, pad A10 » (54 x 23 dp)
+#7 > appui-long 294 1030
+#7 DOIGT padlive_fx_echo « Echo · on the way out »
+#8 ROUTE padlive | MODE pro | EMPREINTE 814ec8a295 | project=p-8375040f no tuto
+#8 SON Son : le pad live 1 joue en boucle.
+#8 > touche 228 1136
+#8 DOIGT padlive_played « 5 bars · tap to finish »
+#9 ROUTE padlive | MODE pro | EMPREINTE 811664696c | project=p-8375040f no tuto
+#9 SON Son : le pad live 1 joue en boucle.
+#9 > attends 3
+#10 ROUTE dialogue:padlive_take_sheet | MODE pro | EMPREINTE 3817509b9e | project=p-8375040f no tuto
+#10 SON Son : le pad live 1 joue en boucle.
+#10 LAYOUT OVERLAP « Your take: 5 bars » over the touchable « Close sheet » (198 x 32 dp)
+#10 LAYOUT OVERLAP « Where should it go? It loops at the project tempo. » over the touchable « Close sheet » (303 x 55 dp)
+#10 LAYOUT OVERLAP « On empty pad B1 » over the touchable « Close sheet » (152 x 27 dp)
+#10 LAYOUT OVERLAP « In a Live block » over the touchable « Close sheet » (129 x 27 dp)
+#10 LAYOUT OVERLAP « Throw it away » over the touchable « Close sheet » (127 x 27 dp)
+#10 > touche 294 1032
+#10 DOIGT padlive_take_pad « On empty pad B1 »
+#11 ROUTE padlive | MODE pro | EMPREINTE e934942163 | project=p-8375040f no tuto
+#11 SON Son : le pad live 1 joue en boucle.
+#11 LAYOUT OVERLAP « Kick » over « hit » (17 x 13 dp)
+#11 LAYOUT OVERLAP « Kick » over « Air horn » (28 x 4 dp)
+#11 LAYOUT OVERLAP « Snare » over « hit » (21 x 13 dp)
+#11 LAYOUT OVERLAP « Clap » over « Air horn » (29 x 13 dp)
+#11 LAYOUT OVERLAP « Hi-hat » over « Laser » (37 x 13 dp)
+#11 LAYOUT OVERLAP « Open hi-hat » over « Siren » (24 x 24 dp)
+#11 LAYOUT OVERLAP « Open hi-hat » over « hit » (21 x 5 dp)
+#11 LAYOUT OVERLAP « 124 » over « Your take is on pad B1. » (38 x 14 dp)
+#11 LAYOUT OVERLAP « Kick » over the touchable « Pad settings, pad A5 Pad settings » (33 x 17 dp)
+#11 LAYOUT OVERLAP « Snare » over the touchable « Pad settings, pad A7 Pad settings » (45 x 17 dp)
+#11 LAYOUT OVERLAP « Clap » over the touchable « Air horn, hit, ready, pad A5 » (42 x 17 dp)
+#11 LAYOUT OVERLAP « Hi-hat » over the touchable « Laser, hit, ready, pad A6 » (54 x 17 dp)
+#11 LAYOUT OVERLAP « Open hi-hat » over the touchable « Siren, hit, ready, pad A7 » (45 x 28 dp)
+#11 LAYOUT OVERLAP « Open hi-hat » over the touchable « Hi-hat, hit, ready, pad A11 » (45 x 9 dp)
+#11 LAYOUT OVERLAP « Open hi-hat » over the touchable « Pad settings, pad A11 Pad settings » (45 x 9 dp)
+#11 LAYOUT OVERLAP « Your take is on pad B1. » over the touchable « Tempo: 124 BPM Change the tempo » (93 x 26 dp)
+#11 LAYOUT CONTRAST « Kick » 3.57:1 (needs 4.5:1, 14 sp)
+#11 > touche 66 1151
+#11 DOIGT padlive_stop_all « Stop all »
+#12 ROUTE padlive | MODE pro | EMPREINTE 4d6dd7bbb8 | project=p-8375040f no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 108 138
+#12 DOIGT padlive_page_B « Page B »
+#13 ROUTE padlive | MODE pro | EMPREINTE bf7f8c3f1d | project=p-8375040f no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 124 » over the touchable « My take 1, loop, ready, pad B1 » (38 x 14 dp)
+#13 LAYOUT OVERLAP « 124 » over the touchable « Pad settings, pad B1 Pad settings » (11 x 14 dp)
+#13 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad B1 Pad settings » (36 x 21 dp)
+#13 > touche 77 259
+#13 DOIGT padlive_pad_16 « My take 1, loop, ready, pad B1 »
+#14 ROUTE padlive | MODE pro | EMPREINTE ac12525c62 | project=p-8375040f no tuto
+#14 SON Son : le pad live 17 joue en boucle.
+#14 LAYOUT OVERLAP « 124 » over the touchable « My take 1, loop, playing, pad B1 » (38 x 14 dp)
+#14 LAYOUT OVERLAP « ? » over the touchable « Stop row 1 Launch the row » (11 x 17 dp)
+#14 > touche 66 1151
+#14 DOIGT padlive_stop_all « Stop all »
+#15 ROUTE padlive | MODE pro | EMPREINTE bf7f8c3f1d | project=p-8375040f no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 228 47
+#15 DOIGT padlive_play « Play »
+#16 ROUTE padlive | MODE pro | EMPREINTE 47149b03c4 | project=p-8375040f no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 LAYOUT OVERLAP « A » over the touchable « Page D · empty » (14 x 7 dp)
+#16 LAYOUT OVERLAP « ? » over the touchable « Stop Stop » (9 x 18 dp)
+#16 LAYOUT OVERLAP « Echo » over the touchable « Stop Stop » (34 x 10 dp)
+#16 LAYOUT OVERLAP « on the way out » over the touchable « Stop Stop » (69 x 16 dp)
+#16 > touche 77 259
+#16 DOIGT padlive_pad_16 « My take 1, loop, ready, pad B1 »
+#17 ROUTE padlive | MODE pro | EMPREINTE fb12cde21e | project=p-8375040f no tuto
+#17 SON Son : la musique du projet joue en boucle ; le pad live 17 joue en boucle.
+#17 > touche 66 1151
+#17 DOIGT padlive_stop_all « Stop all »
+#18 ROUTE padlive | MODE pro | EMPREINTE bf7f8c3f1d | project=p-8375040f no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 484 1136
+#18 DOIGT padlive_more « More »
+#19 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « 124 » over « Share » (34 x 24 dp)
+#19 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad B1 Pad settings » (36 x 18 dp)
+#19 LAYOUT OVERLAP « Undo » over the touchable « Collapse Expanded » (43 x 3 dp)
+#19 LAYOUT OVERLAP « Undo » over the touchable « Open the Guide folded » (43 x 21 dp)
+#19 LAYOUT OVERLAP « Blocks » over the touchable « Collapse Expanded » (55 x 3 dp)
+#19 LAYOUT OVERLAP « Blocks » over the touchable « What is “Step”? » (17 x 3 dp)
+#19 LAYOUT OVERLAP « Blocks » over the touchable « Open the Guide folded » (55 x 21 dp)
+#19 LAYOUT OVERLAP « Effects » over the touchable « Open the Guide folded » (59 x 21 dp)
+#19 LAYOUT OVERLAP « Big pads » over the touchable « Undo » (5 x 24 dp)
+#19 LAYOUT OVERLAP « Big pads » over the touchable « Redo » (53 x 24 dp)
+#19 LAYOUT OVERLAP « Share » over the touchable « Tempo: 124 BPM Change the tempo » (47 x 24 dp)
+#19 LAYOUT OVERLAP « ? » over the touchable « Share my song » (9 x 18 dp)
+#19 LAYOUT OVERLAP « Undo » floats over the touchable « STEPS: KICK Collapse Expanded » (103 x 15 dp)
+#19 LAYOUT OVERLAP « Blocks » floats over the touchable « STEPS: KICK Collapse Expanded » (119 x 15 dp)
+#19 LAYOUT OVERLAP « Blocks » floats over the touchable « What is “Step”? ? » (29 x 15 dp)
+#19 LAYOUT CONTRAST « ? » 2.01:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Undo » 2.04:1 (needs 4.5:1, 11 sp)
+#19 LAYOUT TARGET « Pad settings, pad B1 Pad settings » 47 x 22 dp (touch 48 x 48)
+#19 > touche 481 965
+#19 DOIGT padlive_effects « Effects »
+#20 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE 875b1567a9 | project=p-8375040f no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « None yet: add an effect, or tap a ready-made vibe. » 2.94:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST « Ready-made vibes » 1.88:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « ? » 4.06:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « For: Audio » 1.31:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Favourites » 1.31:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Ambience » 1.25:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Rap vocal » 4.25:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Clear voice » 1.95:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « No effect » 1.98:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Close » 4.21:1 (needs 4.5:1, 14 sp)
+#20 > glisse 450 500 150 500
+#20 DOIGT fx_genre_dnb « DnB »
+#21 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE 02c80b15e1 | project=p-8375040f no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « Effects in place: 0 of 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Ready-made vibes » 4.44:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « Ambience » 3.59:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Techno » 4.27:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Close » 3.63:1 (needs 4.5:1, 14 sp)
+#21 > touche 326 500
+#21 DOIGT fx_genre_dubstep « Dubstep »
+#22 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE 359f9c0ef2 | project=p-8375040f no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 456 656
+#22 DOIGT fx_preset_wobble « Wobble »
+#23 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE ff449e406c | project=p-8375040f no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Effects in place: 1 of 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#23 > touche 294 196
+#23 DOIGT fx_chip_3_0 « 1. Tremolo »
+#24 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE 6177710c29 | project=p-8375040f no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 0.4 Hz » 3.63:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 60% » 3.63:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Smooth » 3.63:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 100% » 3.63:1 (needs 4.5:1, 14 sp)
+#24 > glisse 350 500 150 500
+#24 DOIGT fxp_3_0_1 « Depth »
+#25 ROUTE dialogue:effects_box_3 | MODE pro | EMPREINTE 6177710c29 | project=p-8375040f no tuto
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « 23% » 3.63:1 (needs 4.5:1, 14 sp)
+#25 > touche 479 1206
+#25 DOIGT fx_close « Close »
+#26 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 216 674
+#26 DOIGT help_Playing live effects « What is “Playing live effects”? »
+#26 AIDE help_Playing
+#27 ROUTE dialogue:« Playing live effects » | MODE pro | EMPREINTE 403ad6f6e9 | project=p-8375040f no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Keep your finger on an effect: it plays as long as you press, then everything comes back. Filter and Roll: slide your finger up to set the sound or the speed of the hits. With “More”: Build-up (a rising whoosh), Drop (the music brakes), Stutter (the sound is chopped). » 3.07:1 (needs 4.5:1, 14 sp)
+#27 > touche 497 859
+#27 DOIGT #2077 « Got it »
+#28 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 77 243
+#28 DOIGT padlive_pad_16 « My take 1, loop, ready, pad B1 »
+#29 ROUTE padlive | MODE pro | EMPREINTE 0a24f2abfb | project=p-8375040f no tuto
+#29 SON Son : le pad live 17 joue en boucle.
+#29 > glisse 106 756 106 560
+#29 DOIGT padlive_fx_filter « Filter · low ↔ high »
+#30 ROUTE padlive | MODE pro | EMPREINTE 0a24f2abfb | project=p-8375040f no tuto
+#30 SON Son : le pad live 17 joue en boucle.
+#30 > appui-long 482 756
+#30 DOIGT padlive_fx_roll « Roll · 1/16 »
+#31 ROUTE padlive | MODE pro | EMPREINTE 0a24f2abfb | project=p-8375040f no tuto
+#31 SON Son : le pad live 17 joue en boucle.
+#31 RIEN NE CHANGE (3 écrans identiques)
+#31 > touche 260 1136
+#31 DOIGT padlive_played « Record what I play »
+#32 ROUTE padlive | MODE pro | EMPREINTE d08f83551b | project=p-8375040f no tuto
+#32 SON Son : le pad live 17 joue en boucle.
+#32 > touche 66 1151
+#32 DOIGT padlive_stop_all « Stop all »
+#33 ROUTE dialogue:padlive_take_sheet | MODE pro | EMPREINTE ce2a32d172 | project=p-8375040f no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « Your take: 1 bar » over the touchable « Close sheet » (180 x 32 dp)
+#33 LAYOUT OVERLAP « On empty pad B2 » over the touchable « Close sheet » (156 x 27 dp)
+#33 LAYOUT CONTRAST « Throw it away » 4.21:1 (needs 4.5:1, 14 sp)
+#33 > touche 294 1212
+#33 DOIGT padlive_take_drop « Throw it away »
+#34 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 528 47
+#34 DOIGT live_record « Record the performance »
+#35 ROUTE padlive | MODE pro | EMPREINTE 84d1b6c26a | project=p-8375040f no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT OVERLAP « End » over the touchable « Pro mode. Touch to change mode. Change m » (31 x 14 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Play from a part » (18 x 9 dp)
+#35 > touche 77 243
+#35 DOIGT padlive_pad_16 « My take 1, loop, ready, pad B1 »
+#36 ROUTE padlive | MODE pro | EMPREINTE afdce341bc | project=p-8375040f no tuto
+#36 SON Son : la musique du projet joue en boucle ; le pad live 17 joue en boucle.
+#36 > attends 4
+#37 ROUTE padlive | MODE pro | EMPREINTE afdce341bc | project=p-8375040f no tuto
+#37 SON Son : la musique du projet joue en boucle ; le pad live 17 joue en boucle.
+#37 > touche 528 47
+#37 DOIGT live_record « End the take and write the song »
+#38 ROUTE dialogue:« The live pads of your take are » | MODE pro | EMPREINTE ffc4cbda00 | project=p-8375040f no tuto
+#38 SON Son : la musique du projet joue en boucle ; le pad live 17 joue en boucle.
+#38 LAYOUT CONTRAST « Got it » 2.29:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT TARGET « Pad settings, pad B1 Pad settings » 43 x 17 dp (touch 48 x 48)
+#38 > touche 497 698
+#38 DOIGT #2192 « Got it »
+#39 ROUTE padlive | MODE pro | EMPREINTE d303c014a2 | project=p-8375040f no tuto
+#39 SON Son : la musique du projet joue en boucle ; le pad live 17 joue en boucle.
+#39 LAYOUT OVERLAP « 124 » over « Set kept · 0:09 » (30 x 3 dp)
+#39 LAYOUT OVERLAP « Set kept · 0:09 » over the touchable « Tempo: 124 BPM Change the tempo » (81 x 15 dp)
+#39 LAYOUT OVERLAP « Set kept · 0:09 » over the touchable « Play from a part » (46 x 16 dp)
+#39 LAYOUT OVERLAP « Listen » over the touchable « Play from a part » (26 x 16 dp)
+#39 LAYOUT OVERLAP « Share » over the touchable « Loop the part instead of playing the son » (35 x 15 dp)
+#39 LAYOUT OVERLAP « loop » over the touchable « Pad settings, pad B1 Pad settings » (33 x 13 dp)
+#39 LAYOUT OVERLAP « Listen » floats over the touchable « Acid 303 Bass line » (62 x 16 dp)
+#39 LAYOUT OVERLAP « Listen » floats over the touchable « Vocals 1 track » (12 x 16 dp)
+#39 LAYOUT OVERLAP « Share » floats over the touchable « Vocals 1 track » (78 x 16 dp)
+#39 LAYOUT CONTRAST « 124 » 2.30:1 (needs 3.0:1, 16 sp)
+#39 LAYOUT CONTRAST « A » 1.78:1 (needs 3.0:1, 14 sp)
+#39 LAYOUT CONTRAST « ? » 2.29:1 (needs 3.0:1, 16 sp)
+#39 LAYOUT CONTRAST « Listen » 3.63:1 (needs 4.5:1, 14 sp)
+#39 > touche 315 228
+#39 DOIGT padlive_perf_listen « Listen »
+#40 ROUTE padlive | MODE pro | EMPREINTE 9430beac49 | project=p-8375040f no tuto
+#40 SON Son : le morceau joue (partie « A »).
+#40 LAYOUT OVERLAP « A » over the touchable « Page C · empty » (11 x 7 dp)
+#40 LAYOUT OVERLAP « + » over the touchable « Loop the part instead of playing the son » (18 x 9 dp)
+#40 > touche 66 1151
+#40 DOIGT padlive_stop_all « Stop all »
+#41 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 349 138
+#41 DOIGT padlive_pack « Pack… »
+#42 ROUTE dialogue:padlive_pack_fete | MODE pro | EMPREINTE 7beab867b9 | project=p-8375040f no tuto
+#42 SON Son : rien ne joue.
+#42 > retour
+#42 RETOUR
+#43 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 534 138
+#43 DOIGT padlive_challenge_open « Challenge: play this rhythm back »
+#44 ROUTE padlive | MODE pro | EMPREINTE 25f8dd80ce | project=p-8375040f no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « + » over the touchable « Play from a part » (18 x 5 dp)
+#44 LAYOUT OVERLAP « + » over the touchable « Loop the part instead of playing the son » (18 x 4 dp)
+#44 > touche 516 757
+#44 DOIGT padlive_challenge_close
+#45 ROUTE padlive | MODE pro | EMPREINTE 534bc80cd5 | project=p-8375040f no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 51 47
+#45 DOIGT padlive_back
+#46 ROUTE launch | MODE pro | EMPREINTE 22c1291380 | project=p-8375040f no tuto
+#46 SON Son : rien ne joue.
+#46 > glisse 294 1000 294 300
+#46 DOIGT launch_remix « Remix »
+#47 ROUTE launch | MODE pro | EMPREINTE 24c4a47962 | project=p-8375040f no tuto
+#47 SON Son : rien ne joue.
+#47 > fin
+#47 FIN : fin

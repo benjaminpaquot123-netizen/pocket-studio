@@ -1,0 +1,7 @@
+Écran 25 (588x1278)
+texte « Sauvegarder le morceau en .zip · Trap-20261113-144539.pocketstudio.zip » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

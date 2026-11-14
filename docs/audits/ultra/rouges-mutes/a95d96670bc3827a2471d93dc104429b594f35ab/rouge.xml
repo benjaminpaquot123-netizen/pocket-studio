@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_socle" tests="1">
+  <testcase classname="test_socle.NewReplaysAimByTag" name="test_a_command_can_stand_for_an_untagged_button"><failure message="Gestures with no tag under the finger: see above.">Traceback (most recent call last):&#10;  File "/tmp/claude-0/-home-user-pocket-studio/7aee178f-f3d8-5614-9304-422cd425f774/scratchpad/wt-m/scripts/bench/test_socle.py", line 314, in test_a_command_can_stand_for_an_untagged_button&#10;    self.assertEqual(r.returncode, 0, r.stderr)&#10;    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;AssertionError: 2 != 0 : gesture 5: touche 9 9 (under the finger: REFUS): give --cible 5=&lt;tag&gt; (or --saute 5)&#10;Gestures with no tag under the finger: see above.&#10;&#10;</failure></testcase>
+</testsuite>

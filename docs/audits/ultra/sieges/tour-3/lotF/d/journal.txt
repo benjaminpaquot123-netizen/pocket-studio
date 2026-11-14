@@ -1,0 +1,364 @@
+#0 SIEGE lang=en device=phone font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE dcc3525020 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 664
+#1 DOIGT launch_projects « My projects »
+#2 ROUTE dialogue:projects | MODE pro | EMPREINTE d4c0cda16f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 534 467
+#2 DOIGT project_menu_projet-1
+#3 ROUTE dialogue:project_delete_projet-1 | MODE pro | EMPREINTE 92ad2eec61 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 445 695
+#3 DOIGT #619 « Send / back up (.zip) »
+#3 PARTAGE My-first-beat-20261105-095913.pocketstudio.zip
+#4 ROUTE dialogue:« Send the project · My-first-be » | MODE pro | EMPREINTE 8d37a6b49b | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 294 759
+#4 DOIGT vue « Drive »
+#5 ROUTE dialogue:projects | MODE pro | EMPREINTE 17f6fa4050 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 156 498
+#5 DOIGT project_share_song « Share my song »
+#6 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Ready to share? » over the touchable « Close sheet » (169 x 28 dp)
+#6 LAYOUT OVERLAP « Song name (and the project's) » over the touchable « Close sheet » (183 x 18 dp)
+#6 LAYOUT OVERLAP « 0:16 » over the touchable « Close sheet » (48 x 27 dp)
+#6 LAYOUT OVERLAP «   a looping part » over the touchable « Close sheet » (100 x 20 dp)
+#6 LAYOUT OVERLAP «  Listen » over the touchable « Close sheet » (45 x 20 dp)
+#6 LAYOUT OVERLAP « No song yet: your part goes out as a loop (8 bars). » over the touchable « Close sheet » (294 x 40 dp)
+#6 LAYOUT OVERLAP « Edit the song » over the touchable « Close sheet » (89 x 20 dp)
+#6 LAYOUT OVERLAP «   Video for social media · 30 s » over the touchable « Close sheet » (159 x 20 dp)
+#6 LAYOUT OVERLAP « More exports » over the touchable « Close sheet » (90 x 20 dp)
+#6 LAYOUT OVERLAP « Track by track, MIDI, FLAC… in Mix » over the touchable « Close sheet » (210 x 18 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (7 x 15 dp)
+#6 LAYOUT OVERLAP « M4A · for sharing » over the touchable « Close sheet » (119 x 20 dp)
+#6 LAYOUT OVERLAP « WAV · max quality » over the touchable « Close sheet » (123 x 20 dp)
+#6 LAYOUT OVERLAP «   Share » over the touchable « Close sheet » (54 x 24 dp)
+#6 LAYOUT CONTRAST « Song name (and the project's) » 2.56:1 (needs 4.5:1, 13 sp)
+#6 LAYOUT CONTRAST «   a looping part » 1.99:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT LABEL « #929 » long press without text nor description
+#6 > touche 272 1027
+#6 DOIGT share_other « More exports »
+#7 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 366aa2b202 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « My first beat » ellipsized (« … »)
+#7 > touche 294 804
+#7 DOIGT export_advanced « Advanced »
+#8 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 105af965c6 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Advanced » 4.04:1 (needs 4.5:1, 14 sp)
+#8 > glisse 294 850 294 350
+#8 DOIGT rien
+#9 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e0c2fdc819 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Studio quality, opens in any software. The biggest. » over the touchable « Tempo: 120 BPM Change the tempo » (63 x 4 dp)
+#9 > touche 294 868
+#9 DOIGT export_midi « Export the notes as a MIDI file »
+#10 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e0c2fdc819 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Export the notes as a MIDI file » 4.19:1 (needs 4.5:1, 14 sp)
+#10 > attends 3
+#11 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8cae69d954 | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Advanced » over the touchable « Tempo: 120 BPM Change the tempo » (51 x 4 dp)
+#11 > touche 294 912
+#11 DOIGT share « Share »
+#11 PARTAGE My-first-beat-20261105-095942.mid
+#12 ROUTE dialogue:« Share the song · My-first-beat » | MODE pro | EMPREINTE 4c57786b32 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 294 543
+#12 DOIGT vue « WhatsApp »
+#13 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3b7a1879b4 | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 543 42
+#13 DOIGT top_share
+#14 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST «   Video for social media · 30 s » 1.82:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT LABEL « #1395 » long press without text nor description
+#14 > touche 294 578
+#14 DOIGT share_name « Song name (and the project's) »
+#15 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 > ecris  for Tom
+#16 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 65c6aad0c5 | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « “Share” also renames the project “My first beat”. » over the touchable « Close sheet » (291 x 18 dp)
+#16 > ecris Beat for Tom
+#17 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f480d8f46c | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 294 533
+#17 DOIGT share_name « Song name (and the project's) »
+#18 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f480d8f46c | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > ecris Beat for Tom
+#19 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 9773a59760 | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 > appui-long 294 533
+#19 DOIGT share_name « Song name (and the project's) »
+#20 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 9773a59760 | project=projet-1 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 522 430
+#20 DOIGT share_close
+#21 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8cae69d954 | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 515 1059
+#21 DOIGT thumb_share « Share my song »
+#22 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « ? » 1.33:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT LABEL « #1472 » long press without text nor description
+#22 > touche 294 578
+#22 DOIGT share_name « Song name (and the project's) »
+#23 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 23ed70cd2a | project=projet-1 no tuto
+#23 SON Son : rien ne joue.
+#23 > ecris Beat for Tom
+#24 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 8a24a9fec7 | project=projet-1 no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 294 1218
+#24 DOIGT share_go «   Share »
+#25 ROUTE dialogue:share_progress | MODE pro | EMPREINTE f77779ccbd | project=projet-1 no tuto
+#25 SON Son : rien ne joue.
+#25 > attends 5
+#25 PARTAGE Beat-for-Tom-loop-20261105-100026.m4a
+#26 ROUTE dialogue:« Share my song · Beat-for-Tom-l » | MODE pro | EMPREINTE 3efa5eb5cd | project=projet-1 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 294 615
+#26 DOIGT vue « Messages »
+#27 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE a8642f96df | project=projet-1 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Ready: Beat-for-Tom-loop-20261105-100026.m4a, a copy is also in Music › BenStudio. » 2.86:1 (needs 4.5:1, 14 sp)
+#27 > touche 508 772
+#27 DOIGT share_bilan_ok « OK »
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b7b449a22b | project=projet-1 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 114 42
+#28 DOIGT top_projects « Beat for Tom »
+#29 ROUTE dialogue:projects | MODE pro | EMPREINTE 5fae035172 | project=projet-1 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 294 333
+#29 DOIGT project_import « Import a project (.zip) »
+#30 ROUTE dialogue:projects | MODE pro | EMPREINTE af3b639615 | project=projet-1 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 534 467
+#30 DOIGT project_menu_projet-1
+#31 ROUTE dialogue:project_opening_projet-1 | MODE pro | EMPREINTE c8da4e5a40 | project=projet-1 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 445 695
+#31 DOIGT #1664 « Send / back up (.zip) »
+#31 PARTAGE Beat-for-Tom-20261105-100048.pocketstudio.zip
+#32 ROUTE dialogue:« Send the project · Beat-for-To » | MODE pro | EMPREINTE 0364c3d8aa | project=projet-1 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 294 831
+#32 DOIGT vue « Files »
+#33 ROUTE dialogue:projects | MODE pro | EMPREINTE 7dc19ea20f | project=projet-1 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 156 498
+#33 DOIGT project_share_song « Share my song »
+#34 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE bd13402713 | project=projet-1 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST «   Video for social media · 30 s » 1.83:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT LABEL « #2026 » long press without text nor description
+#34 > touche 294 933
+#34 DOIGT share_video «   Video for social media · 30 s »
+#35 ROUTE dialogue:video_sheet | MODE pro | EMPREINTE b2d8e829b0 | project=projet-1 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « Video for social media » over the touchable « Close sheet » (234 x 28 dp)
+#35 LAYOUT OVERLAP « 30 seconds of your looping part » over the touchable « Close sheet » (215 x 20 dp)
+#35 LAYOUT OVERLAP « Vertical (9:16) for stories, TikTok or Reels: the waveform, the names of the parts, your title. » over the touchable « Close sheet » (216 x 60 dp)
+#35 LAYOUT OVERLAP « A copy goes to Movies › BenStudio. » over the touchable « Close sheet » (214 x 18 dp)
+#35 LAYOUT OVERLAP « 15 s » over the touchable « Close sheet » (26 x 20 dp)
+#35 LAYOUT OVERLAP « 30 s » over the touchable « Close sheet » (30 x 20 dp)
+#35 LAYOUT OVERLAP « 60 s » over the touchable « Close sheet » (30 x 20 dp)
+#35 LAYOUT OVERLAP «   Create the video » over the touchable « Close sheet » (137 x 24 dp)
+#35 LAYOUT OVERLAP « Under a minute, usually. » over the touchable « Close sheet » (146 x 18 dp)
+#35 LAYOUT CONTRAST « A copy goes to Movies › BenStudio. » 1.80:1 (needs 4.5:1, 13 sp)
+#35 LAYOUT CONTRAST « 30 s » 4.21:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT LABEL « #2102 » long press without text nor description
+#35 > touche 294 1173
+#35 DOIGT video_create «   Create the video »
+#36 ROUTE dialogue:video_sheet | MODE pro | EMPREINTE 04caff1e8d | project=projet-1 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « Making the sound… » over the touchable « Close sheet » (130 x 20 dp)
+#36 LAYOUT OVERLAP « Cancel » over the touchable « Close sheet » (47 x 20 dp)
+#36 LAYOUT CONTRAST « A copy goes to Movies › BenStudio. » 2.54:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « Cancel » 2.04:1 (needs 4.5:1, 14 sp)
+#36 > attends 20
+#37 ROUTE dialogue:video_sheet | MODE pro | EMPREINTE 5ea3e71f21 | project=projet-1 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « Pictures and compression… » over the touchable « Close sheet » (183 x 20 dp)
+#37 > attends 40
+#38 ROUTE dialogue:video_sheet | MODE pro | EMPREINTE 5ea3e71f21 | project=projet-1 no tuto
+#38 SON Son : rien ne joue.
+#38 > attends 60
+#38 PARTAGE Beat-for-Tom-video-20261105-100100.mp4
+#39 ROUTE dialogue:« Share the video · Beat-for-Tom » | MODE pro | EMPREINTE 780a1eae63 | project=projet-1 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 294 543
+#39 DOIGT vue « WhatsApp »
+#40 ROUTE dialogue:video_sheet | MODE pro | EMPREINTE ba8cba3c6a | project=projet-1 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Your video is ready. » over the touchable « Close sheet » (131 x 20 dp)
+#40 LAYOUT OVERLAP «   Share the video » over the touchable « Close sheet » (130 x 24 dp)
+#40 LAYOUT OVERLAP « Make another one » over the touchable « Close sheet » (122 x 20 dp)
+#40 LAYOUT CONTRAST « Make another one » 2.04:1 (needs 4.5:1, 14 sp)
+#40 > touche 522 667
+#40 DOIGT video_close
+#41 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c3585747e1 | project=projet-1 no tuto
+#41 SON Son : rien ne joue.
+#41 > glisse 294 300 294 700
+#41 DOIGT rien
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1623c9538c | project=projet-1 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 148 344
+#42 DOIGT export_what_Song « The whole song »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 69bf3920d3 | project=projet-1 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 54 1158
+#43 DOIGT tab_Structure « Structure »
+#44 ROUTE session/tab_Structure | MODE pro | EMPREINTE 3e4ddf9011 | project=projet-1 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 96 463
+#44 DOIGT add_part_0 « + A »
+#45 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 90def6803b | project=projet-1 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « Follow » 4.06:1 (needs 4.5:1, 14 sp)
+#45 > touche 96 463
+#45 DOIGT rien
+#46 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 90def6803b | project=projet-1 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 515 1059
+#46 DOIGT thumb_share « Share my song »
+#47 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 1f6cee8460 | project=projet-1 no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT OVERLAP « 0:02 » over the touchable « Close sheet » (48 x 27 dp)
+#47 LAYOUT OVERLAP «   1 part » over the touchable « Close sheet » (45 x 20 dp)
+#47 LAYOUT OVERLAP « A single part of 0:02: add a verse, a chorus, an ending… » over the touchable « Close sheet » (310 x 40 dp)
+#47 LAYOUT CONTRAST « Ready to share? » 1.76:1 (needs 3.0:1, 22 sp)
+#47 LAYOUT CONTRAST « Song name (and the project's) » 1.96:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « 0:02 » 1.43:1 (needs 3.0:1, 22 sp)
+#47 LAYOUT CONTRAST «   1 part » 1.43:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « A single part of 0:02: add a verse, a chorus, an ending… » 2.63:1 (needs 4.5:1, 14 sp)
+#47 LAYOUT CONTRAST « ? » 1.28:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT LABEL « #2425 » long press without text nor description
+#47 > touche 272 1027
+#47 DOIGT share_other « More exports »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5424905ba1 | project=projet-1 no tuto
+#48 SON Son : rien ne joue.
+#48 > touche 294 422
+#48 DOIGT export_advanced « Advanced »
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9abde329a8 | project=projet-1 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 138 506
+#49 DOIGT export_what_Stems « Track by track »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d7748ffb74 | project=projet-1 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « Format » over the touchable « Tempo: 120 BPM Change the tempo » (46 x 4 dp)
+#50 > touche 294 919
+#50 DOIGT export « Export the tracks »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0b7e44ebe5 | project=projet-1 no tuto
+#51 SON Son : rien ne joue.
+#51 > attends 15
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c9eb8d364 | project=projet-1 no tuto
+#52 SON Son : rien ne joue.
+#52 > attends 20
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d7748ffb74 | project=projet-1 no tuto
+#53 SON Son : rien ne joue.
+#53 > glisse 294 850 294 400
+#53 DOIGT export_midi « Export the notes as a MIDI file (whole s »
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 31d277439a | project=projet-1 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 294 870
+#54 DOIGT share « Share the 2 files »
+#54 PARTAGE Beat-for-Tom-01-drums-20261105-100205.wav
+#55 ROUTE dialogue:« Share the song · Beat-for-Tom- » | MODE pro | EMPREINTE b1898d4a35 | project=projet-1 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 294 687
+#55 DOIGT vue « Gmail »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 38ed9c749c | project=projet-1 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 534 1158
+#56 DOIGT tab_Plus « More »
+#57 ROUTE plus/tab_Plus | MODE pro | EMPREINTE fb70c38c4b | project=projet-1 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 294 420
+#57 DOIGT tool_Aide « Help »
+#58 ROUTE help_page/tab_Plus | MODE pro | EMPREINTE 982f8266a6 | project=projet-1 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 294 180
+#58 DOIGT plus_back « More »
+#59 ROUTE plus/tab_Plus | MODE pro | EMPREINTE fb70c38c4b | project=projet-1 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 294 858
+#59 DOIGT plus_mode « Switch to Simple mode »
+#60 ROUTE plus | MODE simple | EMPREINTE a7d2f17e91 | project=projet-1 no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 534 1158
+#60 DOIGT tab_simple_Envoyer « Send »
+#61 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 1f122520a1 | project=projet-1 no tuto
+#61 SON Son : rien ne joue.
+#61 > glisse 294 850 294 300
+#61 DOIGT share_go «   Share »
+#62 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 1f122520a1 | project=projet-1 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 474 374
+#62 DOIGT share_listen «  Listen »
+#63 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 1d5cbf53de | project=projet-1 no tuto
+#63 SON Son : le morceau joue (partie « A »).
+#63 > touche 481 385
+#63 DOIGT share_listen «  Stop »
+#64 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 9e0cad4fec | project=projet-1 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 134 42
+#64 DOIGT top_projects « Beat for Tom »
+#65 ROUTE dialogue:projects | MODE simple | EMPREINTE 97f21f210c | project=projet-1 no tuto
+#65 SON Son : rien ne joue.
+#65 > touche 534 467
+#65 DOIGT project_menu_projet-1
+#66 ROUTE dialogue:project_opening_projet-1 | MODE simple | EMPREINTE c8da4e5a40 | project=projet-1 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 397 623
+#66 DOIGT #3716 « Duplicate »
+#67 ROUTE dialogue:projects | MODE simple | EMPREINTE 4cb2b56c22 | project=projet-1 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 534 581
+#67 DOIGT project_menu_projet-1
+#68 ROUTE dialogue:project_opening_projet-1 | MODE simple | EMPREINTE bebf08234d | project=projet-1 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 397 881
+#68 DOIGT project_opening_projet-1 « Copy from before this session »
+#69 ROUTE dialogue:projects | MODE simple | EMPREINTE c674a07533 | project=projet-1 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 294 618
+#69 DOIGT project_p-c067fcb8 « Beat for Tom (copy) »
+#70 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0678e105d9 | project=p-c067fcb8 no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT CUT « Beat for Tom (copy) » ellipsized (« … »)
+#70 > touche 534 1158
+#70 DOIGT tab_simple_Envoyer « Send »
+#71 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 352527ceb3 | project=p-c067fcb8 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 294 888
+#71 DOIGT share_go «   Share »
+#72 ROUTE dialogue:share_progress | MODE simple | EMPREINTE f77779ccbd | project=p-c067fcb8 no tuto
+#72 SON Son : rien ne joue.
+#72 > attends 5
+#73 ROUTE dialogue:share_progress | MODE simple | EMPREINTE f77779ccbd | project=p-c067fcb8 no tuto
+#73 SON Son : rien ne joue.
+#73 > attends 10
+#73 PARTAGE Beat-for-Tom-copy-song-20261105-100324.m4a
+#74 ROUTE dialogue:« Share my song · Beat-for-Tom-c » | MODE simple | EMPREINTE 337ee01876 | project=p-c067fcb8 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 294 759
+#74 DOIGT vue « Drive »
+#75 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE fe5fe16f8f | project=p-c067fcb8 no tuto
+#75 SON Son : rien ne joue.
+#75 > touche 508 787
+#75 DOIGT share_bilan_ok « OK »
+#76 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 352527ceb3 | project=p-c067fcb8 no tuto
+#76 SON Son : rien ne joue.
+#76 no gesture for too long: end
+#76 FIN : abandon : plus de geste

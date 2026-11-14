@@ -1,0 +1,8 @@
+fusion: c70e124891295f12a2fbcd91335b9d9cb7bf100d
+branche: eq/tour-6-padlive2
+tete: 22f5f6e8c67c0dc16125312cf3670b8fdcba0c4f
+relecture: docs/audits/ultra/tour-6-padlive2-relecture.md
+relu: 12256c2c9154cd45af8a5cb0864a3d51836d26c7
+filtres: PadLivePlayShowsTest PadLiveSilentOpenTest PadLiveTakeAfterTest PadLiveTouchCountTest PadLiveSaveUndoTest BenchAmeneesTest LivePadsFullScreenTest SongLengthBricksTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

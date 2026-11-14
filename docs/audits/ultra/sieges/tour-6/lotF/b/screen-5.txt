@@ -1,0 +1,49 @@
+Écran 5 (540x1170)
+bouton (dossier ouvert) @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « ta część » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 495,114
+bouton « ? » @ 482,195
+texte « Głośności » @ 248,196
+texte « Przesuń fader, żeby zmienić głośność; dotknij nazwy ścieżki, żeby zobaczyć jej efekty i krzywe. » @ 270,250
+texte « Perkusja » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 57,418
+bouton (casque) [état « wył. »] @ 111,418
+curseur [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 177,418
+bouton (casque) [état « wył. »] @ 231,418
+curseur [état « -10,5 dB », à 43 %] @ 204,589
+texte « -10,5 » @ 204,740
+texte « Synth » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 297,418
+bouton (casque) [état « wył. »] @ 351,418
+curseur [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+texte « Remix » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 417,418
+bouton (casque) [état « wył. »] @ 471,418
+curseur [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+image (courbe) @ 0,0
+texte « Krzywe i efekty » [coupé] @ 183,833
+bouton (boussole) « Przewodnik  · Dodaj melodię 23 % » ⌃ [état « zwinięte »] @ 270,882
+icône ↶ « Cofnij » @ 63,954
+icône ↷ « Ponów » [désactivé] @ 161,954
+bouton ▶ « utwór » @ 260,954
+texte « 120 Tempo » @ 364,954
+icône (trois points reliés) « Udostępnij » @ 473,954
+onglet (ligne brisée et points) « Struktura » @ 49,1050
+onglet (touches de piano) « Dźwięki » @ 160,1050
+onglet (curseurs) « Miks » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Więcej » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Zanotuj » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Tryb uwag » @ 138,1140

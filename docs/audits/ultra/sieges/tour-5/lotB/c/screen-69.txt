@@ -1,0 +1,21 @@
+Écran 69 (900x1509)
+bouton « Schließen » @ 840,60
+texte « Tutorial von A bis Z » @ 414,60
+touchable « 1 Tempo und Tonart 2/4 » @ 450,144
+touchable « 2 Die Kick und das Grollen 2/4 » @ 450,225
+touchable « 3 Der Clap » (nom « Erledigt ») @ 450,306
+touchable « 4 Hi-Hats und Percussion 0/5 » @ 450,387
+touchable « 5 Der Bass 0/3 » @ 450,468
+touchable « 6 Der Stab (Akkorde) 0/1 » @ 450,549
+touchable « 7 Das Riff 0/3 » @ 450,630
+touchable « 8 Dein erster Teil: der Groove 0/2 » @ 450,711
+touchable « 9 Die Teile verstehen 0/7 » @ 450,792
+touchable « 10 Bau deine Teile 0/7 » @ 450,873
+touchable « 11 Ordne deine Teile 0/2 » @ 450,954
+touchable « 12 Die Übergänge 0/3 » @ 450,1035
+touchable « 13 Die Effekte 0/2 » @ 450,1116
+touchable « 14 Der Mix 0/3 » @ 450,1197
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Zurück zu Einfach » @ 450,1281
+bouton «  Tutorial neu starten (neues leeres Projekt) » @ 450,1365
+bouton « Tutorial beenden (du kannst es fortsetzen) » @ 450,1449

@@ -1,0 +1,11 @@
+Écran 30 (588x1278)
+texte « Lo que suena » @ 165,415
+texte « Todo lo que actúa sobre el sonido: efectos, envíos, curvas que se mueven. “Editar” te lleva a donde se ajusta. » @ 294,503
+bouton « Toda la canción » [sélectionné] @ 156,595
+bouton « A » @ 307,595
+texte « Salida general » @ 303,664
+image (curseurs) @ 81,733
+bouton « Editar » @ 464,733
+texte « Volumen general » @ 203,720
+texte « -6,0 dB en la salida general. » @ 236,751
+texte « Cerrar » @ 486,850

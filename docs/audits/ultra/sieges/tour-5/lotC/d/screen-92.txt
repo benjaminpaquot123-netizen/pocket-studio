@@ -1,0 +1,48 @@
+Écran 92 (588x1278)
+touchable « Démo · Acid house Sauvegardé » (nom « Mes projets ») @ 114,42
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 255,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Partager mon morceau » @ 543,42
+bouton « 126  BPM » (nom « Tempo : 126 BPM ») @ 73,114
+bouton « A mes. 1/7 » @ 218,114
+interrupteur « Boucler la partie au lieu de jouer le morceau » [non coché, état « désactivé »] @ 462,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+onglet « Ligne du temps » [sélectionné] @ 113,183
+onglet « Parties » @ 274,183
+touchable « Suivre » [sélectionné] @ 412,183
+touchable « Boucle » @ 500,183
+  → la suite sur le côté (glisse pour la voir)
+bouton « Plein écran » @ 552,183
+texte « Parties » @ 53,245
+texte « Mesures » @ 60,285
+texte « Règle des mesures : touche pour jouer à partir d'une partie » @ 381,262
+bouton « Batterie » @ 66,374
+interrupteur « Son de Batterie » [coché, état « activé »] @ 56,431
+interrupteur « Écouter la piste Batterie seule » [non coché, état « désactivé »] @ 125,431
+bouton « Acid 303 » @ 72,572
+interrupteur « Son de Acid 303 » [coché, état « activé »] @ 56,629
+interrupteur « Écouter la piste Acid 303 seule » [non coché, état « désactivé »] @ 125,629
+bouton « Synthé » @ 62,770
+interrupteur « Son de Synthé » [coché, état « activé »] @ 56,827
+interrupteur « Écouter la piste Synthé seule » [non coché, état « désactivé »] @ 125,827
+texte « Ligne du temps : 4 parties, 3 pistes » @ 381,600
+bouton « Zoomer » @ 534,747
+bouton « Dézoomer » @ 534,819
+bouton « Voir tout le morceau » @ 534,891
+bouton « Guide  · Ajoute une mélodie 38 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 126 Tempo » (nom « Tempo : 126 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » [sélectionné] @ 54,1158
+onglet « Sons » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

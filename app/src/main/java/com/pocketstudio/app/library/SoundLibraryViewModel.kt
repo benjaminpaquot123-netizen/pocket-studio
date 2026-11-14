@@ -2,6 +2,7 @@ package com.pocketstudio.app.library
 
 import com.pocketstudio.app.audio.finishOrRelease
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.report.forUser
 import android.app.Application
 import android.net.Uri
@@ -55,6 +56,11 @@ sealed interface SoundRef {
     data class MoodDemo(val mood: StarterWizard.Mood) : SoundRef
     /** The beat chosen so far, up to [role] played with [sound]: the line heard in its groove. */
     data class LineDemo(val role: Role, val sound: SoundOption) : SoundRef
+    /**
+     * Line [role]'s [sound] alone, one hit through the style's effects of that line (its pad's, the
+     * drums', the master's), as the song plays it (Benjamin's list n° 7: the Acidcore kick saturated).
+     */
+    data class LineSound(val role: Role, val sound: SoundOption) : SoundRef
     /** A style with its advised sounds (drums, its parts, its 303), a few bars at its tempo: heard before choosing it. */
     data class StyleDemo(val styleId: String) : SoundRef
     /** The style's 303 line over the beat chosen so far, in the chosen mood. */
@@ -63,9 +69,19 @@ sealed interface SoundRef {
     data class Demo(val index: Int) : SoundRef
     /** A multizone instrument's preview (phase 38): from its pack when downloaded, else fetched from the catalogue. */
     data class Instrument(val packId: String) : SoundRef
+    /** A sound of « Ma bibliothèque » ([MySoundLibrary]), by its id. */
+    data class Mine(val id: String) : SoundRef
+    /** A party sound shipped in the app ([com.pocketstudio.model.PartySounds]), by its id. */
+    data class Party(val id: String) : SoundRef
+    /** A ready-made synth sound (a set of settings, not a file): its index in the chooser's list, or in its kept ones when [saved]. */
+    data class Preset(val index: Int, val saved: Boolean = false) : SoundRef
 }
 
-data class SoundOption(val ref: SoundRef, val name: String)
+data class SoundOption(
+    val ref: SoundRef, val name: String,
+    /** A synth's or the 303's wave, drawn beside the sound (decision of 2026-11-04); null: not a wave sound. */
+    val wave: com.pocketstudio.ui.WaveShape? = null,
+)
 
 /** "Kicks · House" (a pack's sounds of one kind), or the built-in kit's voices for that line. */
 data class SoundCategory(val id: String, val title: String, val options: List<SoundOption>)
@@ -83,6 +99,8 @@ data class PacksUi(
     /** Pack id → download progress 0..1. */
     val downloading: Map<String, Float> = emptyMap(),
     val message: String? = null,
+    /** Remix testers: « C'est prêt » once a pack asked for is on the phone (a download used to end in silence). */
+    val readyNote: String? = null,
     /** Ids of the index the user has already been offered (« Tout compléter » brings the others). */
     val seen: Set<String> = emptySet(),
     /** « Tout télécharger » / « Tout compléter » running, if any. */
@@ -129,11 +147,13 @@ data class WizardUi(
     val acidDensity: Float = AcidPattern().density,
     /** « Motifs de basse »: the grid the bass plays ([com.pocketstudio.model.BassPatterns] id; null: the style's own line). */
     val bassGrid: String? = null,
+    /** Audit ultra round 1, n° 33: the short version (under a minute) chosen at the start instead of the whole song. */
+    val short: Boolean = false,
 ) {
-    /** The chosen style, its bass on the chosen grid (the previews and the song hear it). */
+    /** The chosen style, its bass on the chosen grid (the previews and the song hear it), short if chosen. */
     val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)?.let {
         com.pocketstudio.model.BassPatterns.styled(it, com.pocketstudio.model.BassPatterns.byId(bassGrid))
-    }
+    }?.let { if (short) it.copy(short = true) else it }
     /** Without a melody ([mood] null) the melodic parts' steps are left out; the mood is chosen before them, so [step] stays put. */
     val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style, melody = mood != null)
     val lastStep: Int get() = steps.size - 1
@@ -184,6 +204,9 @@ private const val FOCUS_VOLUME = 0.95f
 private const val BACKGROUND_VOLUME = 0.48f
 
 const val KIT_CATEGORY = "kit"
+
+/** The built-in kit's clap (voice 4), the starter set's clap. */
+private const val STARTER_CLAP = 4
 private const val PACK_PREFIX = "pack:"
 
 /**
@@ -325,11 +348,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     message = when {
                         result.failed.isNotEmpty() -> {
                             val failed = result.failed.keys.joinToString(", ") { id -> names[id] ?: id }
-                            tr("%1\$d packs installés ; %2\$d n'ont pas pu venir (%3\$s) : touche « Tout compléter » pour réessayer.", result.installed.size, result.failed.size, failed)
+                            tr(
+                                "%1\$s ; %2\$s (%3\$s) : touche « Tout compléter » pour réessayer.", packsInstalled(result.installed.size),
+                                trCount(result.failed.size, "1 n'a pas pu venir", "%d n'ont pas pu venir"), failed,
+                            )
                                 .also { m -> AppLog.add(m) }
                         }
-                        result.cancelled -> tr("Téléchargement arrêté : %d packs installés, le reste viendra avec « Tout compléter ».", result.installed.size)
-                        else -> tr("%d packs installés : toute la bibliothèque est à jour.", result.installed.size)
+                        result.cancelled -> tr("Téléchargement arrêté : %s, le reste viendra avec « Tout compléter ».", packsInstalled(result.installed.size))
+                        else -> tr("%s : toute la bibliothèque est à jour.", packsInstalled(result.installed.size))
                     },
                 )
             }
@@ -348,7 +374,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (_packs.value.queue != null) return
         val stop = AtomicBoolean(false).also { cancelled[id] = it }
         markSeen(listOf(id))
-        _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null) }
+        if (_packs.value.downloading.isEmpty()) arrivedTogether.clear()
+        _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null, readyNote = null) }
         viewModelScope.launch {
             val app = getApplication<Application>()
             val error = withContext(Dispatchers.IO + NonCancellable) {
@@ -358,6 +385,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
             cancelled.remove(id)
             val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            if (error == null) arrivedTogether += entry.name
+            val ready = readyWords(arrivedTogether)
             _packs.update {
                 it.copy(
                     installed = installed,
@@ -367,6 +396,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         is VerifiedDownload.CancelledException -> null
                         else -> tr("Le pack « %s » n'a pas pu être téléchargé : %s.", entry.name, error.forUser()).also { m -> AppLog.add(m) }
                     },
+                    readyNote = if (error == null) ready else it.readyNote,
                 )
             }
             if (error == null) {
@@ -375,6 +405,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    /**
+     * The packs that came while others were still downloading (main thread). Audit ultra tour 0 (seat a: « Télécharger
+     * les sons du style », four packs, « C'est prêt : le pack « Roland Juno-106 » » only): one note names them all.
+     */
+    private val arrivedTogether = ArrayList<String>()
+
+    private fun readyWords(names: List<String>): String =
+        if (names.size <= 1) tr("C'est prêt : le pack « %s » est sur ton téléphone.", names.firstOrNull().orEmpty())
+        else tr("C'est prêt : ces packs sont sur ton téléphone : %s.", names.joinToString(", "))
 
     fun cancelDownload(id: String) {
         cancelled[id]?.set(true)
@@ -399,7 +439,30 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun dismissMessage() = _packs.update { it.copy(message = null) }
+    fun dismissMessage() = _packs.update { it.copy(message = null, readyNote = null) }
+
+    // --- « Ma bibliothèque » ---------------------------------------------------------------------
+
+    /** The sounds the user kept, shared by every project. */
+    val mySounds: StateFlow<List<com.pocketstudio.model.MySound>> = MySoundLibrary.sounds
+
+    fun refreshMine() {
+        viewModelScope.launch { MySoundLibrary.refresh(getApplication()) }
+    }
+
+    fun renameMine(id: String, name: String) {
+        viewModelScope.launch { MySoundLibrary.rename(getApplication(), id, name) }
+    }
+
+    fun setMineKind(id: String, kind: String) {
+        viewModelScope.launch { MySoundLibrary.setKind(getApplication(), id, kind) }
+    }
+
+    /** Deletes the kept sound (the projects that use it keep their own copy). */
+    fun deleteMine(id: String) {
+        if (_playing.value == SoundRef.Mine(id) || _preparing.value == SoundRef.Mine(id)) stopPreview()
+        viewModelScope.launch { MySoundLibrary.delete(getApplication(), id) }
+    }
 
     /** A line for the library's notice spot (shown at the top of the library). */
     fun notice(text: String) = _packs.update { it.copy(message = text) }
@@ -445,6 +508,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (pcm == null) {
                 AppLog.add("Écoute impossible : $ref")
+                // Remix testers (Sarah, style ▶ twice): a preview that cannot be made says so, not nothing at all.
+                _packs.update { it.copy(message = tr("Cette écoute n'a pas pu être préparée : réessaie dans un instant.")) }
                 return@launch
             }
             // A line tried with the beat (a drum line, the 303) goes round until stopped, to compare in time.
@@ -522,9 +587,12 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         is SoundRef.Melodic -> previewSource(ref).let { if (it is SoundRef.Instrument) load(it) else partInContext(ref) }
         is SoundRef.MoodDemo -> moodDemo(ref.mood)
         is SoundRef.LineDemo -> lineDemo(ref)
+        is SoundRef.LineSound -> lineSound(ref)
         is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         SoundRef.AcidDemo -> acidDemo()
         is SoundRef.Demo -> demoPreview(ref.index)
+        // A synth's settings: played by its own chooser, never loaded as a file.
+        is SoundRef.Preset -> null
         is SoundRef.Instrument -> withContext(Dispatchers.IO) {
             val app = getApplication<Application>()
             val installed = _packs.value.installed.firstOrNull { it.id == ref.packId }
@@ -534,12 +602,99 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 runCatching { AudioDecoder.decode(app, Uri.fromFile(f)) }.onFailure { AppLog.add("Aperçu illisible ${ref.packId} : ${it.message}") }.getOrNull()
             }
         }
+        is SoundRef.Mine -> MySoundLibrary.load(getApplication(), ref.id)
+        is SoundRef.Party -> partySound(ref.id)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
                 .onFailure { AppLog.add("Son de pack illisible ${ref.sound.file} : ${it.message}") }
                 .getOrNull()
         }
+    }
+
+    /** A party sound of the app: its asset copied once to the cache (the decoder reads files), then decoded. */
+    private suspend fun partySound(id: String): Pcm? = withContext(Dispatchers.IO) {
+        val sound = com.pocketstudio.model.PartySounds.byId(id) ?: return@withContext null
+        val app = getApplication<Application>()
+        runCatching {
+            val dir = java.io.File(app.cacheDir, "party").apply { mkdirs() }
+            val file = java.io.File(dir, "${sound.id}.ogg")
+            if (!file.isFile || file.length() == 0L) {
+                // Written aside then renamed: a copy cut short is never read as the sound.
+                val part = java.io.File(dir, "${sound.id}.part")
+                app.assets.open(sound.asset).use { input -> part.outputStream().use { input.copyTo(it) } }
+                if (!part.renameTo(file)) error("rename")
+            }
+            AudioDecoder.decode(app, Uri.fromFile(file))
+        }.onFailure { AppLog.add("Son de fête illisible ${sound.id} : ${it.message}") }.getOrNull()
+    }
+
+    // --- « Récents » and « Favoris » of the sound browser ----------------------------------------
+
+    private fun marksPrefs() = getApplication<Application>().getSharedPreferences("sound_marks", android.content.Context.MODE_PRIVATE)
+
+    private val _recents = MutableStateFlow(runCatching { com.pocketstudio.model.SoundMarks.read(marksPrefs().getString("recents", null), com.pocketstudio.model.SoundMarks.MAX_RECENTS) }.getOrDefault(emptyList()))
+    /** The sounds last put somewhere (keys, newest first), for every project. */
+    val recents: StateFlow<List<String>> = _recents.asStateFlow()
+
+    private val _favorites = MutableStateFlow(runCatching { com.pocketstudio.model.SoundMarks.read(marksPrefs().getString("favorites", null), com.pocketstudio.model.SoundMarks.MAX_FAVORITES) }.getOrDefault(emptyList()))
+    /** The sounds starred ☆ (keys, last starred first), for every project. */
+    val favorites: StateFlow<List<String>> = _favorites.asStateFlow()
+
+    /** [ref] put in place: first of « Récents ». */
+    fun markUsed(ref: SoundRef) {
+        val key = keyOf(ref) ?: return
+        _recents.value = com.pocketstudio.model.SoundMarks.touched(_recents.value, key)
+        runCatching { marksPrefs().edit().putString("recents", com.pocketstudio.model.SoundMarks.write(_recents.value)).apply() }
+    }
+
+    /** [ref] starred, or no longer. */
+    fun toggleFavorite(ref: SoundRef) {
+        val key = keyOf(ref) ?: return
+        _favorites.value = com.pocketstudio.model.SoundMarks.toggled(_favorites.value, key)
+        runCatching { marksPrefs().edit().putString("favorites", com.pocketstudio.model.SoundMarks.write(_favorites.value)).apply() }
+    }
+
+    // --- The live pads ready to play ------------------------------------------------------------
+
+    /**
+     * The sounds of [com.pocketstudio.model.LiveStarter] at [bpm] (pad index → sound and the beats
+     * a loop lasts): the loops rendered offline from its style's recipe on a private engine, the
+     * clap from the kit, the party hits decoded. A sound that cannot be made is left out.
+     */
+    suspend fun liveStarter(bpm: Double): Map<Int, Pair<Pcm, Int>> {
+        val base = StarterWizard.style(com.pocketstudio.model.LiveStarter.STYLE) ?: return emptyMap()
+        val style = base.copy(bpm = bpm.coerceIn(60.0, 200.0))
+        val mood = style.melody.mood
+        val out = LinkedHashMap<Int, Pair<Pcm, Int>>()
+        com.pocketstudio.model.LiveStarter.PADS.forEachIndexed { i, pad ->
+            val made: Pair<Pcm, Int>? = try {
+                when (pad.source) {
+                    com.pocketstudio.model.LiveStarter.Source.KickLoop -> style.lines.firstOrNull { it.role == Role.Kick }?.let { line ->
+                        groove(style, listOf(line to SoundRef.Kit(line.role.lane)), emptyList(), mood, bars = 1, acid = null, loop = true, songFx = true)?.let { it to 4 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.Clap -> kitVoice(STARTER_CLAP)?.let { it to 1 }
+                    com.pocketstudio.model.LiveStarter.Source.AcidLoop -> WizardAcid.recipe(style, mood)?.let { line ->
+                        val bars = ((line.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE).coerceIn(1, 4)
+                        groove(style, emptyList(), emptyList(), mood, bars = bars, acid = line, loop = true)?.let { it to bars * 4 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.BassLoop -> {
+                        val sound = StarterWizard.soundsFor(StarterWizard.Part.Bass, style, _packs.value.installed).first()
+                        groove(style, emptyList(), listOf(StarterWizard.Part.Bass to sound), mood, bars = 2, acid = null, loop = true)?.let { it to 8 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.Party -> pad.party?.let { partySound(it) }?.let { it to 1 }
+                    // Audit ultra round 1, n° 5: the kit's hits fill the page's lower rows.
+                    com.pocketstudio.model.LiveStarter.Source.Kit -> kitVoice(pad.kit)?.let { it to 1 }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Pads prêts à jouer : ${pad.name} n'a pas pu être préparé (${e.message})")
+                null
+            }
+            if (made != null) out[i] = made
+        }
+        return out
     }
 
     private suspend fun kitVoice(voice: Int): Pcm? {
@@ -675,7 +830,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val upTo = style.lines.indexOfFirst { it.role == ref.role }
         if (upTo < 0) return null
         val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
-        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = null, focusLane = style.lines[upTo].role.lane, loop = true)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = null, focusLane = style.lines[upTo].role.lane, loop = true, songFx = true)
+    }
+
+    /** One hit of the sound being tried, through the style's effects of its line (as in the song). */
+    private suspend fun lineSound(ref: SoundRef.LineSound): Pcm? {
+        val style = _wizard.value.style ?: return null
+        val line = style.lines.firstOrNull { it.role == ref.role } ?: return null
+        return groove(style, listOf(line to ref.sound.ref), emptyList(), _wizard.value.mood ?: style.melody.mood, bars = 1, acid = null, oneHit = true)
     }
 
     private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
@@ -701,6 +863,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         focusLane: Int? = null,
         /** Made to go round: exactly [bars] bars, the ringing end laid over the start. */
         loop: Boolean = false,
+        /** The [beat] alone (one line), one hit on its first step rather than its pattern. */
+        oneHit: Boolean = false,
+        /** The drums' and the master's effects too, as in the song (always with the 303). */
+        songFx: Boolean = oneHit,
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
@@ -739,7 +905,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     if (natives[i] != null && beat[i].second is SoundRef.Kit && StarterWizard.shapesKit(line.role)) {
                         NativeEngine.setPadParams(lane, StarterWizard.kitShaped(line.role, PadSample("", "")).engineParams())
                     }
-                    StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp) }
+                    (if (oneHit) mapOf(0 to com.pocketstudio.model.Hit(1f)) else StarterWizard.hits(line, steps)).forEach { (step, hit) ->
+                        NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp)
+                        com.pocketstudio.app.rhythm.DrumHits.sendSpread(lane, step, hit)
+                    }
                 }
                 // The 303 line under the chords (acid house, rave techno).
                 if (acid != null) {
@@ -785,8 +954,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 // The 303 heard with the beat sounds as in the song: through the style's effects on
                 // the acid line, the drums and the master (Acidcore's saturation and OTT).
-                if (acid != null) {
-                    for (ch in listOf(0, 1)) {
+                if (acid != null || songFx) {
+                    for (ch in if (acid != null) listOf(0, 1) else listOf(0)) {
                         val strip = fx.channels[ch]
                         com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(strip.inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v ->
                             NativeEngine.setInsertParam(ch, slot, k, v)
@@ -851,6 +1020,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val style = StarterWizard.style(id) ?: return
         val installed = _packs.value.installed
         _wizard.update { withStyle(it, style, installed) }
+    }
+
+    /** n° 33: the song's length, chosen at the start (« Court » under a minute, « Complet » the whole song). */
+    fun setShort(short: Boolean) {
+        _wizard.update { it.copy(short = short) }
     }
 
     /** null: the beat only, no melodic tracks. */
@@ -972,7 +1146,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun choose(role: Role, option: SoundOption) {
         editRow(role) { it.copy(sound = option, enabled = true, chosen = true) }
-        val next = soundOnChoose(_playing.value ?: _preparing.value, role, option)
+        val next = soundOnChoose(_playing.value ?: _preparing.value, role, option, _wizard.value.style)
         if (_preparing.value != next && _playing.value != next) preview(next)
     }
 
@@ -1018,11 +1192,15 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         _wizard.update { it.copy(creating = true, error = null) }
         viewModelScope.launch {
             try {
-                val song = songFrom(w)
+                // Lot « tuto 5 » (Lucas, Sarah): a pack sound that cannot be read no longer blocks the
+                // song: that line takes the built-in sound, and the new project says so.
+                val replaced = mutableListOf<String>()
+                val song = songFrom(w, replaced)
                 if (song == null) {
                     _wizard.update { it.copy(creating = false, error = tr("Garde au moins une ligne pour commencer.")) }
                     return@launch
                 }
+                createdNotice = fallbackNotice(replaced)
                 // The choices stay until the project is written (the caller closes the assistant then).
                 then(song.project, song.files, song.guide)
             } catch (e: CancellationException) {
@@ -1051,15 +1229,18 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 val app = getApplication<Application>()
                 val installed = withContext(Dispatchers.IO) { runCatching { PackStore.installed(app) }.getOrElse { _packs.value.installed } }
                 _packs.update { it.copy(installed = installed) }
+                val replaced = mutableListOf<String>()
                 val song = try {
-                    songFrom(withStyle(WizardUi(), style, installed))
+                    songFrom(withStyle(WizardUi(), style, installed), replaced)
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
                     if (installed.isEmpty()) throw e
                     AppLog.add("Morceau en un geste : un son de pack illisible (${e.message}), sons intégrés à la place")
+                    replaced.clear()
                     songFrom(withStyle(WizardUi(), style, emptyList()))
                 } ?: throw IllegalStateException(tr("aucun son à jouer"))
+                createdNotice = fallbackNotice(replaced)
                 then(song.project, song.files, song.guide)
             } catch (e: CancellationException) {
                 _quick.value = QuickUi()
@@ -1102,23 +1283,61 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** A song built by the assistant: the project, the sounds to store in its folder, its guide. */
     private class Song(val project: Project, val files: Map<String, Pcm>, val guide: List<com.pocketstudio.app.settings.GuidePage>)
 
-    /** The song the choices [w] make (null: nothing would play); throws when a sound cannot be read. */
-    private suspend fun songFrom(w: WizardUi): Song? {
+    /**
+     * What the new project says once open (a pack sound replaced by a built-in one), taken once by
+     * the caller of [create] when it opens the song.
+     */
+    private var createdNotice: String? = null
+
+    fun takeCreatedNotice(): String? = createdNotice.also { createdNotice = null }
+
+    /** « Un son du pack « Drum & bass » n'a pas pu être lu (Kick 4)… », or null when nothing was replaced. */
+    private fun fallbackNotice(replaced: List<String>): String? {
+        if (replaced.isEmpty()) return null
+        val packs = replaced.map { it.substringAfter(" · ", "").ifEmpty { tr("téléchargé") } }.distinct().joinToString(", ")
+        val names = replaced.map { it.substringBefore(" · ") }.distinct().joinToString(", ")
+        return if (replaced.size == 1) tr("Un son du pack « %1\$s » n'a pas pu être lu (%2\$s) : ton morceau prend le son intégré à la place.", packs, names)
+        else tr("Des sons du pack « %1\$s » n'ont pas pu être lus (%2\$s) : ton morceau prend les sons intégrés à la place.", packs, names)
+    }
+
+    /** The name of the downloaded pack [packId] (« Drum & bass »), for what is said. */
+    private fun packName(packId: String): String = _packs.value.installed.firstOrNull { it.id == packId }?.name ?: packId
+
+    /**
+     * The song the choices [w] make (null: nothing would play); throws when a sound cannot be read.
+     * With [replaced], a downloaded pack's sound that cannot be read (a file damaged or gone) gives
+     * way to the line's built-in sound instead, and « sound · pack » is added there.
+     */
+    private suspend fun songFrom(w: WizardUi, replaced: MutableList<String>? = null): Song? {
         val style = w.style ?: return null
         val sounds = HashMap<Role, PadSample?>()
         val files = HashMap<String, Pcm>()
         for (line in style.lines) {
             val row = w.rows[line.role] ?: continue
-            val option = row.sound ?: continue
+            var option = row.sound ?: continue
             if (!row.enabled) continue
-            val ref = option.ref
             // The kit voice the pad already has needs no file (unless the line shapes it: the ride); nor does a
             // line the style gives a studio voice of the engine (its tuned kick, the rumble: S3).
-            if (ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || StudioDrums.voiceFor(style, line.role, Harmony(style.melody.root)) != null)) {
+            fun needsNoFile(ref: SoundRef) =
+                ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || StudioDrums.voiceFor(style, line.role, Harmony(style.melody.root)) != null)
+            if (needsNoFile(option.ref)) {
                 sounds[line.role] = null
                 continue
             }
-            val pcm = load(ref) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+            var pcm = load(option.ref)
+            val fromPack = (option.ref as? SoundRef.Pack)?.packId
+            if (pcm == null && fromPack != null && replaced != null) {
+                AppLog.add("Assistant : son de pack illisible (${option.name}), son intégré à la place")
+                replaced += option.name.substringBefore(" · ") + " · " + packName(fromPack)
+                option = defaultRow(line.role, style.id, emptyList()).sound ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+                if (needsNoFile(option.ref)) {
+                    sounds[line.role] = null
+                    continue
+                }
+                pcm = load(option.ref)
+            }
+            val ref = option.ref
+            if (pcm == null) throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
@@ -1127,9 +1346,20 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) return null
         val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
         // Pack sounds and kit voices played across the keys: copied into the project, set on their own note.
-        val parts = chosen.mapValues { (_, sound) ->
+        val parts = chosen.mapValues { (part, chosenSound) ->
+            var sound = chosenSound
             if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
-            val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+            var read = packPartSound(sound)
+            val fromPack = sound.packFile?.first
+            if (read == null && fromPack != null && replaced != null) {
+                AppLog.add("Assistant : son de pack illisible (${sound.name}), son intégré à la place")
+                // Audit ultra tour 0 (seat a): a part's sound is already named « Basse 1 · Roland Juno-106 »: the pack once.
+                replaced += sound.name.substringBefore(" · ") + " · " + packName(fromPack)
+                sound = StarterWizard.soundsFor(part, style, emptyList()).first()
+                if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
+                read = packPartSound(sound)
+            }
+            val (pcm, root) = read ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))
@@ -1187,8 +1417,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
  * What to play when the sound [option] is picked for line [role]: the line with the beat again
  * when that is what is being heard ([current]), else the sound alone.
  */
-internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption): SoundRef =
-    if (current is SoundRef.LineDemo && current.role == role) SoundRef.LineDemo(role, option) else option.ref
+internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption, style: StarterWizard.Style? = null): SoundRef = when {
+    current is SoundRef.LineDemo && current.role == role -> SoundRef.LineDemo(role, option)
+    // Heard as the song will play it (the Acidcore kick through its distortion), not clean.
+    style != null && StarterWizard.lineHasEffects(style, role) -> SoundRef.LineSound(role, option)
+    else -> option.ref
+}
+
+/** The tile of [option] on line [role] is the one heard ([playing]): alone, or through its line's effects. */
+internal fun tileHeard(playing: SoundRef?, role: Role, option: SoundOption): Boolean =
+    playing == option.ref || playing == SoundRef.LineSound(role, option)
 
 /** Excerpts that go round until stopped: a drum line with the beat, the 303 with the beat. */
 /**
@@ -1213,3 +1451,6 @@ internal fun loops(ref: SoundRef): Boolean = ref is SoundRef.LineDemo || ref == 
 /** An edit of the 303 restarts what is heard when it is the 303 with the beat ([playing] or being [preparing]). */
 internal fun restartsOnEdit(playing: SoundRef?, preparing: SoundRef?): Boolean =
     playing == SoundRef.AcidDemo || preparing == SoundRef.AcidDemo
+
+/** « 3 packs installés », singular for one. */
+internal fun packsInstalled(n: Int): String = trCount(n, "1 pack installé", "%d packs installés")

@@ -1,0 +1,120 @@
+#0 SIEGE lang=de device=phone font=200 mode=simple theme=- fresh=non gestes.max=40 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=20.9 simule_s=2.4 jvm_s=40.9 travail=non vide=non attente_s=0.0
+#0 GEL 789 ms
+    at android.text.SpannableStringInternal.$$robo$$android_text_SpannableStringInternal$__constructor__(SpannableStringInternal.java:36)
+    at android.text.SpannableStringInternal.<init>(SpannableStringInternal.java:34)
+    at android.text.SpannableString.<init>(SpannableString.java:35)
+    at android.text.SpannableString.<init>(SpannableString.java:44)
+    at androidx.compose.ui.text.platform.AndroidParagraphHelper_androidKt.createCharSequence(AndroidParagraphHelper.android.kt:93)
+    at androidx.compose.ui.text.AndroidParagraphIntrinsics.<init>(ParagraphIntrinsics.android.kt:168)
+    at androidx.compose.ui.text.ParagraphIntrinsicsKt.ParagraphIntrinsics(ParagraphIntrinsics.android.kt:295)
+    at androidx.compose.ui.text.MultiParagraphIntrinsics.<init>(MultiParagraphIntrinsics.kt:125)
+    at androidx.compose.foundation.text.modifiers.MultiParagraphLayoutCache.setLayoutDirection(MultiParagraphLayoutCache.kt:341)
+    at androidx.compose.foundation.text.modifiers.MultiParagraphLayoutCache.layoutText-K40F9xA(MultiParagraphLayoutCache.kt:367)
+    at androidx.compose.foundation.text.modifiers.MultiParagraphLayoutCache.access$layoutText-K40F9xA(MultiParagraphLayoutCache.kt:51)
+    at androidx.compose.foundation.text.modifiers.MultiParagraphLayoutCache$TextAutoSizeLayoutScopeImpl.performLayout-5ZSfY2I(MultiParagraphLayoutCache.kt:476)
+    at com.pocketstudio.ui.WholeWords.getFontSize-Ci0_558(WholeWords.kt:62)
+    at androidx.compose.foundation.text.modifiers.MultiParagraphLayoutCache.layoutWithConstraints-K40F9xA(MultiParagraphLayoutCache.kt:208)
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 26cfa002f3 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 746
+#1 DOIGT welcome_guided « Mach mir einen Track »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE aac0ecf0b1 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 529
+#2 DOIGT mode_card_simple « Einfach »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 653366f836 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 862
+#3 DOIGT wizard_family_calm « Ruhig (Chill, Lo-Fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 92d9cac8c8 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Lo-Fi Hip-Hop » ellipsized (« … »)
+#4 LAYOUT CUT « Der sanfte Hip-Hop der „Lofi Girl“-Videos, perfekt zum Lernen: Jazz-Akkorde auf dem E-Piano, weiche Drums und das Knistern einer alten Platte. » ellipsized (« … »)
+#4 LAYOUT CUT « Zur Orientierung: Nujabes – Aruarian Dance (2004) » ellipsized (« … »)
+#4 LAYOUT CUT « Deep House » ellipsized (« … »)
+#4 > touche 57 994
+#4 DOIGT wizard_style_listen_lofi
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE ee5f704e2a | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#5 > touche 294 1074
+#5 DOIGT wizard_style_lofi « Lo-Fi Hip-Hop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 73ac73a7e6 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#6 > glisse 294 1000 294 400
+#6 DOIGT wizard_style_lofi « Lo-Fi Hip-Hop »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 36d1eeb421 | project=projet-1 no tuto
+#7 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#7 > touche 322 901
+#7 DOIGT wizard_style_play_lofi «  Erstellen und anhören »
+#8 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f029cc2333 | project=p-cdd28f90 no tuto
+#8 SON Son : le morceau joue (partie « A »).
+#8 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#8 LAYOUT CUT « Rückgängig » ellipsized (« … »)
+#8 LAYOUT CUT « Feedback-Modus » ellipsized (« … »)
+#8 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#8 > touche 543 144
+#8 DOIGT help_labels_button « Bildschirm beschriften »
+#8 AIDE help_labels_button
+#9 ROUTE help_labels | MODE simple | EMPREINTE 26075c497c | project=p-cdd28f90 no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 LAYOUT CUT « Der Guide: Wo dein Song steht » ellipsized (« … »)
+#9 LAYOUT CUT « Lautstärken » a word split over two lines
+#9 LAYOUT CUT « Beschriftungen ausblenden » lines dropped (more lines than room)
+#9 LAYOUT CUT « Diesen Teil abspielen » ellipsized (« … »)
+#9 LAYOUT CUT « Aufnehmen » a word split over two lines
+#9 LAYOUT CUT « Spielen, aufnehmen » ellipsized (« … »)
+#9 LAYOUT OVERLAP « Tempo » over « Lautstärken » (71 x 27 dp)
+#9 LAYOUT OVERLAP « Tempo » over « Datei oder Video » (71 x 27 dp)
+#9 LAYOUT OVERLAP « Drums » over « Spielen, aufnehmen » (82 x 35 dp)
+#9 LAYOUT OVERLAP « Lautstärken » over « Datei oder Video » (127 x 69 dp)
+#9 LAYOUT OVERLAP « Diesen Teil abspielen » over « Aufnehmen » (120 x 69 dp)
+#9 LAYOUT OVERLAP « Diesen Teil abspielen » over « Mehr Auswahl » (107 x 69 dp)
+#9 LAYOUT OVERLAP « Diesen Teil abspielen » over « Meine Projekte » (103 x 69 dp)
+#9 LAYOUT OVERLAP « Aufnehmen » over « Mehr Auswahl » (107 x 69 dp)
+#9 LAYOUT OVERLAP « Aufnehmen » over « Meine Projekte » (103 x 69 dp)
+#9 LAYOUT OVERLAP « Mehr Auswahl » over « Meine Projekte » (103 x 69 dp)
+#9 LAYOUT OVERLAP « Ab einem Teil » over the touchable « Zuklappen Aufgeklappt » (91 x 32 dp)
+#9 LAYOUT OVERLAP « Drums » over the touchable « Rückgängig » (34 x 21 dp)
+#9 LAYOUT OVERLAP « Drums » over the touchable « Stoppen Stoppen » (40 x 27 dp)
+#9 LAYOUT OVERLAP « Lautstärken » over the touchable « Stoppen Stoppen » (13 x 59 dp)
+#9 LAYOUT OVERLAP « Lautstärken » over the touchable « Tempo: 84 Schläge pro Minute Tempo änder » (83 x 66 dp)
+#9 LAYOUT OVERLAP « Lautstärken » over the touchable « Mehr Auswahl » (22 x 49 dp)
+#9 LAYOUT OVERLAP « Spielen, aufnehmen » over the touchable « Rückgängig » (34 x 21 dp)
+#9 LAYOUT OVERLAP « Spielen, aufnehmen » over the touchable « Stoppen Stoppen » (93 x 27 dp)
+#9 LAYOUT OVERLAP « Datei oder Video » over the touchable « Stoppen Stoppen » (13 x 59 dp)
+#9 LAYOUT OVERLAP « Datei oder Video » over the touchable « Tempo: 84 Schläge pro Minute Tempo änder » (83 x 66 dp)
+#9 LAYOUT OVERLAP « Datei oder Video » over the touchable « Mehr Auswahl » (17 x 49 dp)
+#9 > touche 150 864
+#9 DOIGT help_labels_hide « Beschriftungen ausblenden »
+#9 AIDE help_labels_hide
+#10 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5b0f23dd2d | project=p-cdd28f90 no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 LAYOUT CUT «  · Ändere einen Sound » ellipsized (« … »)
+#10 LAYOUT CUT « → » wider than its box (by 7.3 dp)
+#10 > touche 253 1021
+#10 DOIGT thumb_play « Stoppen »
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c52e2b0808 | project=p-cdd28f90 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 534 1145
+#11 DOIGT tab_simple_Envoyer « Teilen »
+#12 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 523f2436ee | project=p-cdd28f90 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « ? » lines cut (taller than its box)
+#12 LAYOUT OVERLAP « Fertig? Teile deinen Song » over « Name des Songs (und des Projekts) » (314 x 7 dp)
+#12 > touche 294 733
+#12 DOIGT share_go «   Teilen »
+#13 ROUTE dialogue:share_progress | MODE simple | EMPREINTE f49bd08ec9 | project=p-cdd28f90 no tuto
+#13 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#13 > attends 20
+#13 PARTAGE Lo-Fi-Hip-Hop-song-20261112-043521.m4a
+#14 ROUTE dialogue:« Meinen Song teilen · Lo-Fi-Hip » | MODE simple | EMPREINTE 2bb8b062b1 | project=p-cdd28f90 no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 294 565
+#14 DOIGT vue « WhatsApp »
+#15 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 956476bb06 | project=p-cdd28f90 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « Fertig: Lo-Fi-Hip-Hop-song-20261112-043521.m4a, eine Kopie liegt auch in Musik › BenStudio. » a word split over two lines
+#15 LAYOUT CONTRAST « Meine Dateien ansehen » 1.49:1 (needs 4.5:1, 14 sp)
+#15 > fin
+#15 FIN : fin

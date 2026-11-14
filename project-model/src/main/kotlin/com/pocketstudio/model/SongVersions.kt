@@ -70,7 +70,7 @@ data class SongVersion(
  * disk and in a .zip with the project, not loaded (a restore loads them, see [restoreVersion]).
  */
 val Project.versionSampleFiles: Set<String> get() =
-    songVersions.flatMap { v -> v.scenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } }.toSet()
+    songVersions.flatMap { v -> v.scenes.flatMap { s -> s.drums.lanes.flatMap { it.sample?.files.orEmpty() } } }.toSet()
 
 /** The song as it is now, as a version of [kind] put aside at [at]. */
 fun Project.currentVersion(kind: Int, at: Long): SongVersion {

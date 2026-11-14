@@ -1,0 +1,7 @@
+fusion: b7517551d19ba999829095e2ce7f684ce9e51427
+branche: eq/tour-6-portail4
+tete: 3e8b55c59daedd5e924a8f3bc934c5288c93a64f
+relecture: docs/audits/ultra/tour-6-portail4-relecture.md
+relu: 5dacfa15c8978b1d99c779bada359dbf1cff8246
+rejeux :
+  t4-26-prise-clavier : oracle tenu

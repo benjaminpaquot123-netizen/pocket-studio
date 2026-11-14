@@ -82,6 +82,17 @@ object SongShape {
         "I8 D16 V8 L8 D16 V16 B8 D16 O8", "I8 D8 V8 L8 D8 V16 B8 D16 O8", "I4 D8 V8 L8 D8 V8 L8 D8 O4", "I4 D8 V8 L8 D8 O4",
     )
 
+    /**
+     * The short versions (audit ultra round 1, n° 33): an Intro, the Montée and one Drop, then the end; the
+     * first that fits under [SHORT_SECONDS] at the style's tempo.
+     */
+    private val SHORT = listOf("I4 L4 D8 O4", "I4 L4 D8", "I4 D8", "I2 D4")
+    private val SHORT_SONG = listOf("I4 V4 L4 D8 O4", "I4 V4 D8 O4", "I4 D8", "I2 D4")
+    private val SHORT_RAP = listOf("I4 D8 V8 O4", "I4 D8 O4", "I4 D8", "I2 D4")
+
+    /** The short version's longest length: under a minute, the time of a story or a short video. */
+    const val SHORT_SECONDS = 60.0
+
     /** The longest song of a family: techno and bass music 6 minutes, the others 3 min 30 (Benjamin, 2026-10-23). */
     fun maxSeconds(long: Boolean): Double = if (long) LONG_SECONDS else StarterWizard.MAX_SONG_SECONDS
 
@@ -100,8 +111,12 @@ object SongShape {
      * song's first Refrain within [FIRST_CHORUS_SECONDS]). Without a Break ([hasBreak] false) club
      * music grooves on instead and a song has no Pont; [fakeDrop] puts a fake drop before the first Drop.
      */
-    fun layout(form: SongForm, bpm: Double, hasBreak: Boolean, long: Boolean = false, fakeDrop: Boolean = false, beatsPerBar: Int = 4): List<Span> {
-        val list = when (form) {
+    fun layout(form: SongForm, bpm: Double, hasBreak: Boolean, long: Boolean = false, fakeDrop: Boolean = false, beatsPerBar: Int = 4, short: Boolean = false): List<Span> {
+        val list = if (short) when (form) {
+            SongForm.Song -> SHORT_SONG
+            SongForm.Rap -> SHORT_RAP
+            else -> SHORT
+        }.map { adapt(parse(it), form, hasBreak, fakeDrop) } else when (form) {
             SongForm.Song -> SONG
             SongForm.Rap -> RAP
             SongForm.Club -> if (long) CLUB_LONG else CLUB
@@ -109,7 +124,7 @@ object SongShape {
             SongForm.Build -> if (long) BUILD_LONG else BUILD
         }.map { adapt(parse(it), form, hasBreak, fakeDrop) }
         fun seconds(bars: Int) = bars * beatsPerBar * 60.0 / bpm
-        val max = maxSeconds(long)
+        val max = if (short) SHORT_SECONDS else maxSeconds(long)
         fun fits(l: List<Span>) = seconds(l.sumOf { it.bars }) <= max
         fun early(l: List<Span>) = !form.sung || seconds(l.takeWhile { it.sec != Sec.Drop }.sumOf { it.bars }) <= FIRST_CHORUS_SECONDS
         return list.firstOrNull { fits(it) && early(it) } ?: list.firstOrNull { fits(it) } ?: list.last()
@@ -211,6 +226,9 @@ object SongShape {
      * build (its filter opening), and it stopping 2 bars before the Drop made their Montée fall.
      */
     const val CLUB_CUT_BARS = 4
+
+    /** A song's Montée (its Pré-refrain) and a light club one ([StarterWizard.Style.lightBuild]): the kick out of its last bar only. */
+    const val LIGHT_CUT_BARS = 1
     const val ACID_CUT_BARS = 0
 
     /** Bars of a Montée scene (a half of the 8-bar phrase), of a Post-refrain, of a fake drop. */
@@ -263,11 +281,13 @@ object SongShape {
     fun shape(style: Style?, plan: ScenePlan, bpm: Double = style?.bpm ?: 120.0, beatsPerBar: Int = 4): Shape {
         val long = style != null && isLong(style)
         val form = plan.form
-        val spans = layout(form, bpm, plan.hasBreak, long, fakeDrop = style?.fakeDrop == true, beatsPerBar = beatsPerBar)
+        val spans = layout(form, bpm, plan.hasBreak, long, fakeDrop = style?.fakeDrop == true, beatsPerBar = beatsPerBar, short = style?.short == true)
         fun content(i: Int) = Content(
             plan.lines.filterValues { i in it }.keys, plan.parts.filterValues { i in it }.keys, i in plan.acid,
         )
         val club = form == SongForm.Club || form == SongForm.Rave || form == SongForm.Build
+        // Final audit (report 11): club music that does not build like EDM (Style.lightBuild).
+        val light = club && form != SongForm.Build && style?.lightBuild == true
         val vocalIn = style?.vocal?.let { vocalScenes(it) }.orEmpty()
         val scenes = ArrayList<SceneSpec>()
         for (i in 0 until plan.count) {
@@ -276,7 +296,7 @@ object SongShape {
                 version = when (i) { 0 -> Version.Intro; 1 -> Version.Verse; else -> Version.Chorus },
                 roll = if (form == SongForm.Build && i == 1) 1 else 0,
                 capped = form == SongForm.Build && i == 1,
-                accent = i == 2, counter = i == 2,
+                accent = i == 2, subDrop = i == 2 && !light, counter = i == 2,
                 riser = when (i) { 2 -> Riser.Hit; 1, 3 -> Riser.Held; else -> Riser.None },
                 vocal = i in vocalIn,
             )
@@ -315,7 +335,7 @@ object SongShape {
             if (form == SongForm.Build) 1
             else sceneOf(SceneSpec(
                 base = 1, label = if (form == SongForm.Rap) numbered(verseLabel) else leadALabel,
-                content = leadContent, version = Version.Verse, half = 0, roll = if (club) 1 else 0, capped = club,
+                content = leadContent, version = Version.Verse, half = 0, roll = if (club && !light) 1 else 0, capped = club,
                 riser = Riser.Held, vocal = 1 in vocalIn,
             ))
         }
@@ -324,12 +344,12 @@ object SongShape {
                 base = 1, label = if (form == SongForm.Rap) numbered(verseLabel) else if (halves) "$leadALabel 2" else leadALabel,
                 content = if (form == SongForm.Build) content(1) else leadContent, version = Version.Verse, half = 1,
                 cutBars = when {
-                    form == SongForm.Song -> 1
+                    form == SongForm.Song || light -> LIGHT_CUT_BARS
                     // Something else plays there (a beat without kick, a part, the 303): else the kick stays its first 2 bars.
                     club && (leadContent.lines.any { it !in BASS_LINES } || leadContent.parts.any { it != Part.Bass } || leadContent.acid) -> CLUB_CUT_BARS
                     else -> 2
                 },
-                silence = true, roll = if (club) 2 else 3, capped = club,
+                silence = !light, roll = if (club && !light) 2 else 3, capped = club,
                 riser = Riser.Held, vocal = 1 in vocalIn,
             ))
         }

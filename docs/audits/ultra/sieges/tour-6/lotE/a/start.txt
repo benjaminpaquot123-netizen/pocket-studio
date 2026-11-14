@@ -1,0 +1,7 @@
+lang=en
+device=phone
+font=130
+mode=pro
+gestes.max=110
+mission=padlive
+timeout.minutes=30

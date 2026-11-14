@@ -1,0 +1,7 @@
+Écran 43 (540x1170)
+texte « मेरा गाना शेयर करो · Lo-fi-hip-hop-गाना-20261105-210202.m4a » @ 270,406
+bouton « WhatsApp » @ 270,499
+bouton « Messages » @ 270,571
+bouton « Gmail » @ 270,643
+bouton « Drive » @ 270,715
+bouton « Files » @ 270,787

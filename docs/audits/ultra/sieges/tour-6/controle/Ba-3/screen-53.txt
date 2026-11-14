@@ -1,0 +1,44 @@
+Écran 53 (588x1278)
+icône (dossier ouvert) ✓ « Remix Guardado » @ 132,42
+bouton « Simple » @ 306,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône ← «  Mi canción » @ 97,180
+texte « Remix » @ 224,180
+texte « Cortar la canción » @ 213,253
+bouton « ? » @ 370,252
+bouton ▶ @ 528,267
+icône ← @ 42,267
+texte « Ma chanson préférée · 0:40 » @ 215,289
+texte « Pellizca para ampliar » @ 462,405
+dessin [état « 0:04.00 »] @ 138,522
+dessin [état « 0:07.00 »] @ 450,522
+bouton ✂ « Un trozo » ▾ @ 131,660
+bouton (aimant) « En el tiempo » ▾ @ 365,660
+icône ↶ [désactivé] @ 534,660
+bouton (barre, onglet à gauche) « Inicio aquí » @ 84,756
+bouton (barre, onglet à droite) « Fin aquí » @ 227,756
+bouton (casque) « Escuchar el trozo 6 tiempos · 0:03.0 » @ 436,756
+bouton « Voz » [sélectionné] @ 69,864
+bouton « Batería » @ 199,864
+bouton « Bajo » @ 332,864
+bouton « Resto » @ 458,864
+texte « Coloca Inicio y Fin, y luego pon este trozo en un pad o una pista. » [coupé] @ 294,949
+bouton (boussole) « Guía  · Pon un ritmo 0 % » ⌃ [état « plegado »] @ 294,990
+icône ↶ « Deshacer » @ 71,1062
+image ↷ @ 178,1052
+bouton ▶ « la canción » @ 288,1062
+texte « 120 Tempo » @ 404,1062
+icône ⋮ « Más » @ 517,1062
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 162,1248

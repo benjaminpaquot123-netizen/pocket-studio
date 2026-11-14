@@ -1,0 +1,20 @@
+Écran 8 (588x1278)
+texte « ▭▭▭ » @ 247,33
+touchable « ▭▭▭ » @ 374,90
+touchable « ▭▭▭ » @ 374,162
+touchable « ▭▭▭ » @ 374,234
+touchable « ▭▭▭ » @ 374,306
+touchable « ▭▭▭ » @ 374,378
+touchable « ▭▭▭ » @ 374,450
+touchable « ▭▭▭ » @ 374,522
+touchable « ▭▭▭ » @ 374,594
+touchable « ▭▭▭ » @ 374,666
+touchable « ▭▭▭ » @ 374,738
+touchable « ▭▭▭ » @ 374,810
+touchable « ▭▭▭ » @ 374,882
+touchable « ▭▭▭ » @ 374,954
+touchable « ▭▭▭ » @ 374,1026
+touchable « ▭▭▭ » @ 374,1098
+touchable « ▭▭▭ » @ 374,1170
+touchable « ▭▭▭ » @ 374,1236
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

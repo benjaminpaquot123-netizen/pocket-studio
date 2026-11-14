@@ -1,0 +1,16 @@
+Écran 69 (588x1278)
+texte « Poner Ma chanson préférée en mi proyecto » @ 294,189
+texte « Tempo » @ 71,288
+choix « Mi proyecto toma el tempo de Ma chanson préférée (120 BPM) » @ 294,345
+choix « Ma chanson préférée se ajusta a mi tempo (120 BPM) » [sélectionné] @ 294,423
+texte « Tonalidad » @ 86,492
+texte « Ma chanson préférée está en La menor. » @ 232,528
+case « Mis sintes y bajos tocan en La menor » [non coché] @ 294,585
+texte « Dónde ponerla » @ 112,654
+choix « Toda la canción, desde el bloque A » [sélectionné] @ 294,711
+choix « Solo un fragmento » @ 294,789
+choix « Solo la voz sobre mi beat » @ 294,867
+texte « Partes » @ 70,936
+interrupteur « Hacer bloques con sus partes Tu canción ya tiene sus partes » [désactivé, non coché] @ 294,993
+texte « Cancelar » @ 185,1101
+bouton « Poner en mi proyecto » @ 407,1101

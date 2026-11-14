@@ -1,0 +1,660 @@
+#0 SIEGE lang=fr device=phone font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE e644c30876 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 294
+#1 DOIGT launch_continue « Continuer »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 7ca2931e21 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 288 1059
+#2 DOIGT thumb_play
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 05e14644ec | project=projet-1 no tuto
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 294 1158
+#3 DOIGT tab_Mix « Mix »
+#4 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE fe3a0be46c | project=projet-1 no tuto
+#4 SON Son : la musique du projet joue en boucle.
+#4 LAYOUT CUT « Mon premier rythme » ellipsized (« … »)
+#4 LAYOUT CUT « Sauvegardé » wider than its box (by 3.5 dp)
+#4 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#4 > glisse 76 510 76 600
+#4 DOIGT volume_0 « Volume de Batterie »
+#5 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f1c8eae0ab | project=projet-1 no tuto
+#5 SON Son : la musique du projet joue en boucle.
+#5 > touche 231 418
+#5 DOIGT solo_1 « Écouter la piste Acid 303 seule »
+#6 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a3022b929c | project=projet-1 no tuto
+#6 SON Son : la musique du projet joue en boucle.
+#6 LAYOUT CUT «  · À corriger : Un solo est resté allumé » ellipsized (« … »)
+#6 > touche 84 403
+#6 DOIGT strip_more_0 « Batterie »
+#7 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE b3933a4290 | project=projet-1 no tuto
+#7 SON Son : la musique du projet joue en boucle.
+#7 LAYOUT OVERLAP « Batterie » over the touchable « Fermer la feuille » (83 x 28 dp)
+#7 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#7 LAYOUT OVERLAP « Muet » over the touchable « Fermer la feuille » (34 x 20 dp)
+#7 LAYOUT OVERLAP « Solo » over the touchable « Fermer la feuille » (31 x 20 dp)
+#7 LAYOUT OVERLAP « Volume » over the touchable « Fermer la feuille » (57 x 24 dp)
+#7 LAYOUT OVERLAP « -6,5 dB » over the touchable « Fermer la feuille » (54 x 17 dp)
+#7 LAYOUT OVERLAP « Place » over the touchable « Fermer la feuille » (41 x 24 dp)
+#7 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#7 LAYOUT OVERLAP « Centre » over the touchable « Fermer la feuille » (45 x 17 dp)
+#7 LAYOUT OVERLAP «  Ce qui joue » over the touchable « Fermer la feuille » (80 x 20 dp)
+#7 LAYOUT OVERLAP «  Courbes » over the touchable « Fermer la feuille » (62 x 20 dp)
+#7 LAYOUT OVERLAP « Effets » over the touchable « Fermer la feuille » (39 x 20 dp)
+#7 LAYOUT OVERLAP « Effets en place : 0 sur 8 » over the touchable « Fermer la feuille » (159 x 20 dp)
+#7 LAYOUT OVERLAP « Aucun pour l'instant : ajoute un effet, ou touche une ambiance toute prête. » over the touchable « Fermer la feuille » (310 x 36 dp)
+#7 LAYOUT OVERLAP «   Ajouter un effet » over the touchable « Fermer la feuille » (112 x 20 dp)
+#7 LAYOUT OVERLAP « Ambiances toutes prêtes » over the touchable « Fermer la feuille » (169 x 20 dp)
+#7 LAYOUT OVERLAP « Pour : Batterie » over the touchable « Fermer la feuille » (96 x 20 dp)
+#7 LAYOUT OVERLAP « Favoris » over the touchable « Fermer la feuille » (50 x 20 dp)
+#7 LAYOUT OVERLAP « Ambiance » over the touchable « Fermer la feuille » (69 x 20 dp)
+#7 LAYOUT OVERLAP « Style : » over the touchable « Fermer la feuille » (38 x 18 dp)
+#7 LAYOUT OVERLAP « Acide » over the touchable « Fermer la feuille » (39 x 20 dp)
+#7 LAYOUT OVERLAP « Techno » over the touchable « Fermer la feuille » (51 x 20 dp)
+#7 LAYOUT OVERLAP « DnB » over the touchable « Fermer la feuille » (28 x 20 dp)
+#7 LAYOUT OVERLAP « Dubstep » over the touchable « Fermer la feuille » (57 x 20 dp)
+#7 LAYOUT OVERLAP « Punch » over the touchable « Fermer la feuille » (44 x 20 dp)
+#7 LAYOUT OVERLAP « Pompe EDM » over the touchable « Fermer la feuille » (83 x 20 dp)
+#7 LAYOUT OVERLAP « Croustillant » over the touchable « Fermer la feuille » (79 x 20 dp)
+#7 LAYOUT OVERLAP « Lo-Fi Tape » over the touchable « Fermer la feuille » (73 x 20 dp)
+#7 LAYOUT OVERLAP « Petite pièce » over the touchable « Fermer la feuille » (80 x 20 dp)
+#7 LAYOUT OVERLAP « Sans effet » over the touchable « Fermer la feuille » (69 x 20 dp)
+#7 LAYOUT OVERLAP « Le son tel quel : plus d'effets, macros au repos. » over the touchable « Fermer la feuille » (285 x 18 dp)
+#7 LAYOUT CONTRAST « Volume » 3.74:1 (needs 4.5:1, 16 sp)
+#7 LAYOUT CONTRAST « -6,5 dB » 3.92:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « Centre » 1.38:1 (needs 4.5:1, 14 sp)
+#7 > glisse 294 478 150 478
+#7 DOIGT sheet_pan_0 « Place »
+#8 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE a335ce0e16 | project=projet-1 no tuto
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT OVERLAP « Gauche 63 » over the touchable « Fermer la feuille » (75 x 17 dp)
+#8 > touche 294 793
+#8 DOIGT fx_add_0 «   Ajouter un effet »
+#9 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 9e639a6037 | project=projet-1 no tuto
+#9 SON Son : la musique du projet joue en boucle.
+#9 LAYOUT OVERLAP «   Fermer la liste des effets » over the touchable « Fermer la feuille » (173 x 20 dp)
+#9 LAYOUT OVERLAP « Touche les effets voulus, ils s'ajoutent à la suite, dans l'ordre. » over the touchable « Fermer la feuille » (324 x 36 dp)
+#9 LAYOUT OVERLAP « Distorsion & couleur » over the touchable « Fermer la feuille » (139 x 20 dp)
+#9 LAYOUT OVERLAP « Égaliseur » over the touchable « Fermer la feuille » (64 x 20 dp)
+#9 LAYOUT OVERLAP « Saturation » over the touchable « Fermer la feuille » (71 x 20 dp)
+#9 LAYOUT OVERLAP « Bitcrusher » over the touchable « Fermer la feuille » (71 x 20 dp)
+#9 LAYOUT OVERLAP « EQ paramétrique » over the touchable « Fermer la feuille » (114 x 20 dp)
+#9 LAYOUT OVERLAP « Vieux vinyle » over the touchable « Fermer la feuille » (84 x 20 dp)
+#9 LAYOUT OVERLAP « Talkie-walkie » over the touchable « Fermer la feuille » (92 x 20 dp)
+#9 LAYOUT OVERLAP « Distorsion » over the touchable « Fermer la feuille » (71 x 20 dp)
+#9 LAYOUT OVERLAP « Basse audible » over the touchable « Fermer la feuille » (96 x 20 dp)
+#9 LAYOUT OVERLAP « Filtres & mouvement » over the touchable « Fermer la feuille » (139 x 20 dp)
+#9 > touche 335 1048
+#9 DOIGT fx_pick_0_PARAM_EQ « EQ paramétrique »
+#10 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE f3780da9ce | project=projet-1 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 LAYOUT OVERLAP « Effets en place : 1 sur 8 » over the touchable « Fermer la feuille » (156 x 20 dp)
+#10 LAYOUT OVERLAP « 1. EQ paramétrique » over the touchable « Fermer la feuille » (91 x 40 dp)
+#10 LAYOUT OVERLAP « Fréquence » over the touchable « Fermer la feuille » (69 x 20 dp)
+#10 LAYOUT OVERLAP « 632 Hz » over the touchable « Fermer la feuille » (51 x 17 dp)
+#10 LAYOUT OVERLAP « Gain » over the touchable « Fermer la feuille » (30 x 20 dp)
+#10 LAYOUT OVERLAP « 0,0 dB » over the touchable « Fermer la feuille » (45 x 17 dp)
+#10 LAYOUT OVERLAP « Largeur » over the touchable « Fermer la feuille » (51 x 20 dp)
+#10 LAYOUT OVERLAP « Q 1,2 » over the touchable « Fermer la feuille » (37 x 17 dp)
+#10 LAYOUT OVERLAP « Coupe-bas » over the touchable « Fermer la feuille » (74 x 20 dp)
+#10 LAYOUT OVERLAP « Non » over the touchable « Fermer la feuille » (28 x 17 dp)
+#10 LAYOUT CONTRAST « Non » 4.21:1 (needs 4.5:1, 14 sp)
+#10 > glisse 294 1087 470 1087
+#10 DOIGT fxp_0_0_1 « Gain »
+#11 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8abfd8d823 | project=projet-1 no tuto
+#11 SON Son : la musique du projet joue en boucle.
+#11 LAYOUT OVERLAP « +11,0 dB » over the touchable « Fermer la feuille » (63 x 17 dp)
+#11 > touche 156 565
+#11 DOIGT strip_moves_0 «  Ce qui joue »
+#12 ROUTE dialogue:what_plays | MODE pro | EMPREINTE 74ff528c52 | project=projet-1 no tuto
+#12 SON Son : la musique du projet joue en boucle.
+#12 LAYOUT CONTRAST « Batterie » 3.87:1 (needs 4.5:1, 16 sp)
+#12 > touche 482 889
+#12 DOIGT what_plays_close « Fermer »
+#13 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 020429b647 | project=projet-1 no tuto
+#13 SON Son : la musique du projet joue en boucle.
+#13 LAYOUT CONTRAST « Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume… » 2.93:1 (needs 4.5:1, 13 sp)
+#13 > glisse 294 1150 294 500
+#13 DOIGT tab_Mix « Mix »
+#14 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 020429b647 | project=projet-1 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 > glisse 294 900 294 300
+#14 DOIGT rien
+#15 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb7aa9a4eb | project=projet-1 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > glisse 294 900 294 250
+#15 DOIGT rien
+#16 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3adca6847a | project=projet-1 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 > glisse 294 900 294 350
+#16 DOIGT loudness_target_AUTO « Auto (style) · −9 LUFS »
+#17 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 411bf6a3bd | project=projet-1 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 294 758
+#17 DOIGT master_pro « Avancé : master pro »
+#18 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f779a529f4 | project=projet-1 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 LAYOUT CONTRAST « Avancé : master pro » 3.95:1 (needs 4.5:1, 14 sp)
+#18 > glisse 294 900 294 300
+#18 DOIGT pro_ceiling_-0.5 « −0,5 dBTP »
+#19 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 376afe974d | project=projet-1 no tuto
+#19 SON Son : la musique du projet joue en boucle.
+#19 > glisse 294 900 294 300
+#19 DOIGT rien
+#20 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 53b79da267 | project=projet-1 no tuto
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 294 448
+#20 DOIGT pro_chain « Mettre la chaîne pro (réglages dans « Ef »
+#21 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d49cacec63 | project=projet-1 no tuto
+#21 SON Son : la musique du projet joue en boucle.
+#21 > touche 294 896
+#21 DOIGT master_effects « Effets : EQ+ · Comp · Large · Satu »
+#22 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d76082c247 | project=projet-1 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CONTRAST « Effets : EQ+ · Comp · Large · Satu » 4.12:1 (needs 4.5:1, 14 sp)
+#22 > glisse 294 900 294 250
+#22 DOIGT master_effects « Effets : EQ+ · Comp · Large · Satu »
+#23 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e3e40ec76b | project=projet-1 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 294 540
+#23 DOIGT fx_chip_4_1 « 2. Compresseur »
+#24 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c731bc278 | project=projet-1 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > glisse 294 768 80 768
+#24 DOIGT fxp_4_1_0 « Seuil »
+#25 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 54a63693b7 | project=projet-1 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 > attends 3
+#26 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 54a63693b7 | project=projet-1 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 > glisse 294 870 500 870
+#26 DOIGT fxp_4_1_1 « Ratio »
+#27 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE cdfc86cbad | project=projet-1 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 470 174
+#27 DOIGT solo_banner « Solo actif sur Acid 303 »
+#28 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 899afed646 | project=projet-1 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 294 1158
+#28 DOIGT tab_Mix « Mix »
+#29 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 899afed646 | project=projet-1 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 174 1158
+#29 DOIGT tab_Sons « Sons »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 522709c684 | project=projet-1 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 294 1158
+#30 DOIGT tab_Mix « Mix »
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8da1658668 | project=projet-1 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 204 343
+#31 DOIGT strip_more_1 « Acid 303 »
+#32 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 8b8c66abd7 | project=projet-1 no tuto
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT OVERLAP « Acid 303 » over the touchable « Fermer la feuille » (95 x 28 dp)
+#32 LAYOUT OVERLAP « +0,0 dB » over the touchable « Fermer la feuille » (54 x 17 dp)
+#32 LAYOUT OVERLAP « Pour : Acid 303 » over the touchable « Fermer la feuille » (105 x 20 dp)
+#32 LAYOUT OVERLAP « Dub profond » over the touchable « Fermer la feuille » (85 x 20 dp)
+#32 LAYOUT OVERLAP « Basse grasse » over the touchable « Fermer la feuille » (92 x 20 dp)
+#32 LAYOUT OVERLAP « Wob dubstep » over the touchable « Fermer la feuille » (90 x 20 dp)
+#32 LAYOUT OVERLAP « Avion à réaction » over the touchable « Fermer la feuille » (110 x 20 dp)
+#32 LAYOUT OVERLAP « Pompe » over the touchable « Fermer la feuille » (48 x 20 dp)
+#32 LAYOUT CONTRAST « Muet » 3.74:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Centre » 1.37:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST «  Ce qui joue » 2.50:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST «  Courbes » 2.50:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Effets » 2.54:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST «   Ajouter un effet » 3.49:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Favoris » 1.74:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Ambiance » 1.86:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « Pompe » 3.42:1 (needs 4.5:1, 14 sp)
+#32 > glisse 294 1150 294 300
+#32 DOIGT rien
+#33 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE b1cf9c403c | project=projet-1 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT OVERLAP « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » over the touchable « Fermer la feuille » (347 x 36 dp)
+#33 LAYOUT OVERLAP « Pad XY, haut-bas : » over the touchable « Fermer la feuille » (112 x 18 dp)
+#33 LAYOUT OVERLAP « Espace » over the touchable « Fermer la feuille » (50 x 20 dp)
+#33 LAYOUT OVERLAP « Saleté » over the touchable « Fermer la feuille » (42 x 20 dp)
+#33 LAYOUT OVERLAP « Mouvement » over the touchable « Fermer la feuille » (81 x 20 dp)
+#33 LAYOUT OVERLAP « ↑ Lointain » over the touchable « Fermer la feuille » (68 x 16 dp)
+#33 LAYOUT OVERLAP « ← Sombre » over the touchable « Fermer la feuille » (65 x 16 dp)
+#33 LAYOUT OVERLAP « ↓ Sec » over the touchable « Fermer la feuille » (39 x 16 dp)
+#33 LAYOUT OVERLAP « Brillant → » over the touchable « Fermer la feuille » (63 x 16 dp)
+#33 LAYOUT OVERLAP « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » over the touchable « Fermer la feuille » (358 x 36 dp)
+#33 LAYOUT OVERLAP « Couleur » over the touchable « Fermer la feuille » (46 x 24 dp)
+#33 LAYOUT OVERLAP « Neutre » over the touchable « Fermer la feuille » (10 x 14 dp)
+#33 LAYOUT OVERLAP « Saleté » over the touchable « Fermer la feuille » (37 x 24 dp)
+#33 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (7 x 14 dp)
+#33 LAYOUT OVERLAP « Mouvement » over the touchable « Fermer la feuille » (69 x 24 dp)
+#33 LAYOUT OVERLAP « Espace » over the touchable « Fermer la feuille » (43 x 24 dp)
+#33 LAYOUT CONTRAST « Ambiance » 1.21:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Style : » 3.74:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « Acide » 3.74:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Dubstep » 3.92:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Le son tel quel : plus d'effets, macros au repos. » 1.22:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Espace » 2.63:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Mouvement » 2.62:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « Couleur » 2.04:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Saleté » 2.04:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Mouvement » 2.04:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Espace » 2.04:1 (needs 4.5:1, 12 sp)
+#33 > glisse 294 1150 294 400
+#33 DOIGT rien
+#34 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 3ebc34f4e3 | project=projet-1 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT OVERLAP « Réverbe et écho communs » over the touchable « Fermer la feuille » (180 x 20 dp)
+#34 LAYOUT OVERLAP « Envoi réverbe » over the touchable « Fermer la feuille » (91 x 20 dp)
+#34 LAYOUT OVERLAP « 0 % » over the touchable « Fermer la feuille » (27 x 17 dp)
+#34 LAYOUT OVERLAP « Envoi écho » over the touchable « Fermer la feuille » (73 x 20 dp)
+#34 LAYOUT CONTRAST « Pompe » 1.23:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Sans effet » 1.43:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Pad XY, haut-bas : » 3.87:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « ? » 3.87:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « ↓ Sec » 2.62:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « Brillant → » 1.37:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » 4.22:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Réverbe et écho communs » 2.64:1 (needs 4.5:1, 14 sp)
+#34 > glisse 60 1074 350 1074
+#34 DOIGT send_1_0 « Envoi réverbe »
+#35 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 0a5b1984e7 | project=projet-1 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT OVERLAP « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » over the touchable « Fermer la feuille » (330 x 36 dp)
+#35 LAYOUT OVERLAP « 56 % » over the touchable « Fermer la feuille » (37 x 17 dp)
+#35 > glisse 294 1150 294 400
+#35 DOIGT rien (texte « Envoi écho »)
+#36 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 0a5b1984e7 | project=projet-1 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > retour
+#36 RETOUR
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8da1658668 | project=projet-1 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > glisse 294 900 294 200
+#37 DOIGT rien (texte « Rien ne bouge encore : fais s'ouvrir un  »)
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1e97a7aa9c | project=projet-1 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 > glisse 294 900 294 200
+#38 DOIGT help_Sortie générale « Qu'est-ce que « Sortie générale » ? »
+#38 AIDE help_Sortie
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE cc8548ad27 | project=projet-1 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 > glisse 294 900 294 200
+#39 DOIGT rien
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 19e954d709 | project=projet-1 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 > glisse 294 900 294 200
+#40 DOIGT bus_0_0 « Taille »
+#41 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 55017dbfb2 | project=projet-1 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 > glisse 294 300 294 750
+#41 DOIGT rien (texte « Amorti »)
+#42 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 318f30131a | project=projet-1 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT OVERLAP « Avancé : master pro » over the touchable « Tempo : 120 BPM Changer le tempo » (51 x 4 dp)
+#42 LAYOUT OVERLAP « Avancé : master pro » over the touchable « Jouer depuis une partie » (78 x 4 dp)
+#42 > touche 175 316
+#42 DOIGT analyser « Analyseur de spectre »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 30df9b7239 | project=projet-1 no tuto
+#43 SON Son : la musique du projet joue en boucle.
+#43 > attends 3
+#44 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 30df9b7239 | project=projet-1 no tuto
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 294 161
+#44 DOIGT master_pro « Avancé : master pro »
+#45 ROUTE master_pro_panel/tab_Mix | MODE pro | EMPREINTE d92dba8a9f | project=projet-1 no tuto
+#45 SON Son : la musique du projet joue en boucle.
+#45 > glisse 294 300 294 900
+#45 DOIGT pro_ceiling_-0.5 « −0,5 dBTP »
+#46 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fdb602185 | project=projet-1 no tuto
+#46 SON Son : la musique du projet joue en boucle.
+#46 > glisse 294 300 294 600
+#46 DOIGT rien
+#47 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ee977dfd4f | project=projet-1 no tuto
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « ? » 4.38:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « Volume −14,0 · comme la musique en streaming (−14) » 4.44:1 (needs 4.5:1, 14 sp)
+#47 > glisse 294 345 560 345
+#47 DOIGT master_gain « Volume général »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 523dd70e7e | project=projet-1 no tuto
+#48 SON Son : la musique du projet joue en boucle.
+#48 > attends 3
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 523dd70e7e | project=projet-1 no tuto
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 93 468
+#49 DOIGT loudness_details « Détails »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 26b77b3520 | project=projet-1 no tuto
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « Masquer les détails » 3.78:1 (needs 4.5:1, 13 sp)
+#50 LAYOUT TARGET « Qu'est-ce que « Volume perçu (LUFS) » ? ? » 5 x 29 dp (touch 48 x 48)
+#50 > touche 176 768
+#50 DOIGT loudness_target_STREAMING « Streaming · −14 LUFS »
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 11c0bd61f2 | project=projet-1 no tuto
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 424 687
+#51 DOIGT loudness_target_CLUB « Club · −8 LUFS »
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c843ac1014 | project=projet-1 no tuto
+#52 SON Son : la musique du projet joue en boucle.
+#52 > attends 5
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c843ac1014 | project=projet-1 no tuto
+#53 SON Son : la musique du projet joue en boucle.
+#53 > glisse 294 800 294 500
+#53 DOIGT rien
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2bb6255eb3 | project=projet-1 no tuto
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 73 1059
+#54 DOIGT thumb_undo « Annuler la dernière action »
+#55 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7b5a42637f | project=projet-1 no tuto
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 294 1158
+#55 DOIGT tab_Mix « Mix »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7b5a42637f | project=projet-1 no tuto
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 84 343
+#56 DOIGT rien (texte « Volume visé »)
+#57 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7b5a42637f | project=projet-1 no tuto
+#57 SON Son : la musique du projet joue en boucle.
+#57 RIEN NE CHANGE (3 écrans identiques)
+#57 > touche 107 405
+#57 DOIGT loudness_target_AUTO « Auto (style) · −9 LUFS »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 21c40771e0 | project=projet-1 no tuto
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 123 654
+#58 DOIGT loudness_target_OFF « Désactivée »
+#59 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 92b352b49f | project=projet-1 no tuto
+#59 SON Son : la musique du projet joue en boucle.
+#59 > touche 174 1158
+#59 DOIGT tab_Sons « Sons »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 522709c684 | project=projet-1 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 294 1158
+#60 DOIGT tab_Mix « Mix »
+#61 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 8da1658668 | project=projet-1 no tuto
+#61 SON Son : la musique du projet joue en boucle.
+#61 > touche 84 343
+#61 DOIGT strip_more_0 « Batterie »
+#62 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE aa432cc020 | project=projet-1 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 LAYOUT OVERLAP « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » over the touchable « Fermer la feuille » (330 x 25 dp)
+#62 LAYOUT CONTRAST « Gauche 63 » 4.14:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « ? » 3.80:1 (needs 4.5:1, 12 sp)
+#62 LAYOUT CONTRAST « Favoris » 1.86:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Ambiance » 2.88:1 (needs 4.5:1, 14 sp)
+#62 > touche 107 405
+#62 DOIGT help_Place (pan) « Qu'est-ce que « Place (pan) » ? »
+#62 AIDE help_Place
+#63 ROUTE dialogue:help_listen | MODE pro | EMPREINTE dd2d78282c | project=projet-1 no tuto
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 489 723
+#63 DOIGT #4073 « Compris »
+#64 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE aa432cc020 | project=projet-1 no tuto
+#64 SON Son : la musique du projet joue en boucle.
+#64 > appui-long 150 478
+#64 DOIGT sheet_pan_0 « Place »
+#65 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE aa432cc020 | project=projet-1 no tuto
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 294 478
+#65 DOIGT sheet_pan_0 « Place »
+#66 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 19597dd1d7 | project=projet-1 no tuto
+#66 SON Son : la musique du projet joue en boucle.
+#66 > glisse 294 900 294 600
+#66 DOIGT help_Ambiance d'effets « Qu'est-ce que « Ambiance d'effets » ? »
+#66 AIDE help_Ambiance
+#67 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 017c07545d | project=projet-1 no tuto
+#67 SON Son : la musique du projet joue en boucle.
+#67 LAYOUT CONTRAST «  Ce qui joue » 3.87:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST «  Courbes » 3.87:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST « 1. EQ paramétrique » 1.28:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST «   Ajouter un effet » 2.46:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST « Ambiances toutes prêtes » 3.70:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST « Favoris » 2.59:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST « Ambiance » 2.59:1 (needs 4.5:1, 14 sp)
+#67 LAYOUT CONTRAST « ↑ Lointain » 3.42:1 (needs 4.5:1, 12 sp)
+#67 > touche 81 845
+#67 DOIGT fx_preset_punch « Punch »
+#68 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 906f1f3482 | project=projet-1 no tuto
+#68 SON Son : la musique du projet joue en boucle.
+#68 LAYOUT OVERLAP « Effets en place : 2 sur 8 » over the touchable « Fermer la feuille » (159 x 20 dp)
+#68 LAYOUT OVERLAP « 1. Compresseur » over the touchable « Fermer la feuille » (92 x 40 dp)
+#68 LAYOUT OVERLAP « 2. Saturation » over the touchable « Fermer la feuille » (88 x 20 dp)
+#68 LAYOUT OVERLAP « Plus serré et plus fort, pour une batterie qui claque. » over the touchable « Fermer la feuille » (310 x 18 dp)
+#68 LAYOUT OVERLAP « Espace » over the touchable « Fermer la feuille » (50 x 6 dp)
+#68 LAYOUT OVERLAP « Saleté » over the touchable « Fermer la feuille » (42 x 6 dp)
+#68 LAYOUT OVERLAP « Mouvement » over the touchable « Fermer la feuille » (81 x 6 dp)
+#68 LAYOUT CONTRAST « 1. Compresseur » 1.28:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 2. Saturation » 2.46:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST «   Ajouter un effet » 4.31:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Ambiance » 4.31:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Pad XY, haut-bas : » 3.26:1 (needs 4.5:1, 13 sp)
+#68 LAYOUT CONTRAST « ? » 3.26:1 (needs 4.5:1, 12 sp)
+#68 LAYOUT CONTRAST « Espace » 2.04:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Saleté » 2.04:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Mouvement » 2.04:1 (needs 4.5:1, 14 sp)
+#68 > retour
+#68 RETOUR
+#69 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9593adfab4 | project=projet-1 no tuto
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 73 1059
+#69 DOIGT thumb_undo « Annuler la dernière action »
+#70 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 57d7cb6514 | project=projet-1 no tuto
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 84 343
+#70 DOIGT strip_more_0 « Batterie »
+#71 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 19597dd1d7 | project=projet-1 no tuto
+#71 SON Son : la musique du projet joue en boucle.
+#71 > touche 150 733
+#71 DOIGT fx_chip_0_0 « 1. EQ paramétrique »
+#72 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE cc94c3907d | project=projet-1 no tuto
+#72 SON Son : la musique du projet joue en boucle.
+#72 > touche 312 733
+#72 DOIGT fx_bypass_0_0
+#73 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 6a0b4e1029 | project=projet-1 no tuto
+#73 SON Son : la musique du projet joue en boucle.
+#73 LAYOUT CUT « 1. EQ paramétrique · coupé » ellipsized (« … »)
+#73 LAYOUT OVERLAP « 1. EQ paramétrique · coupé » over the touchable « Fermer la feuille » (94 x 40 dp)
+#73 > touche 312 733
+#73 DOIGT fx_bypass_0_0
+#74 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE cc94c3907d | project=projet-1 no tuto
+#74 SON Son : la musique du projet joue en boucle.
+#74 > touche 294 793
+#74 DOIGT rien
+#75 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE cc94c3907d | project=projet-1 no tuto
+#75 SON Son : la musique du projet joue en boucle.
+#75 > glisse 294 1100 294 500
+#75 DOIGT fxp_0_0_1 « Gain »
+#76 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 152cea553d | project=projet-1 no tuto
+#76 SON Son : la musique du projet joue en boucle.
+#76 LAYOUT CONTRAST « 632 Hz » 1.36:1 (needs 4.5:1, 14 sp)
+#76 LAYOUT CONTRAST « Gain » 1.24:1 (needs 4.5:1, 14 sp)
+#76 LAYOUT CONTRAST « +11,0 dB » 1.31:1 (needs 4.5:1, 14 sp)
+#76 LAYOUT CONTRAST « Favoris » 1.55:1 (needs 4.5:1, 14 sp)
+#76 LAYOUT CONTRAST « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » 4.25:1 (needs 4.5:1, 13 sp)
+#76 > glisse 60 715 200 715
+#76 DOIGT fxp_0_0_3 « Coupe-bas »
+#77 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE d63886e20f | project=projet-1 no tuto
+#77 SON Son : la musique du projet joue en boucle.
+#77 LAYOUT OVERLAP « 47 Hz » over the touchable « Fermer la feuille » (41 x 17 dp)
+#77 > touche 294 793
+#77 DOIGT fx_add_0 «   Ajouter un effet »
+#78 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 1daa54cf9c | project=projet-1 no tuto
+#78 SON Son : la musique du projet joue en boucle.
+#78 LAYOUT CONTRAST «   Fermer la liste des effets » 3.49:1 (needs 4.5:1, 14 sp)
+#78 > glisse 294 1150 294 450
+#78 DOIGT rien
+#79 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE cdf1db3d08 | project=projet-1 no tuto
+#79 SON Son : la musique du projet joue en boucle.
+#79 LAYOUT OVERLAP « Chorus » over the touchable « Fermer la feuille » (50 x 20 dp)
+#79 LAYOUT OVERLAP « Filtre » over the touchable « Fermer la feuille » (34 x 20 dp)
+#79 LAYOUT OVERLAP « Flanger » over the touchable « Fermer la feuille » (51 x 20 dp)
+#79 LAYOUT OVERLAP « Phaser » over the touchable « Fermer la feuille » (48 x 20 dp)
+#79 LAYOUT OVERLAP « Trémolo » over the touchable « Fermer la feuille » (56 x 20 dp)
+#79 LAYOUT OVERLAP « Wah-wah » over the touchable « Fermer la feuille » (66 x 20 dp)
+#79 LAYOUT OVERLAP « Auto-pan » over the touchable « Fermer la feuille » (65 x 20 dp)
+#79 LAYOUT OVERLAP « Wobble » over the touchable « Fermer la feuille » (52 x 20 dp)
+#79 LAYOUT OVERLAP « Élargisseur » over the touchable « Fermer la feuille » (77 x 20 dp)
+#79 LAYOUT OVERLAP « Écho » over the touchable « Fermer la feuille » (34 x 20 dp)
+#79 LAYOUT OVERLAP « Écho ping-pong » over the touchable « Fermer la feuille » (110 x 20 dp)
+#79 LAYOUT OVERLAP « Réverbe » over the touchable « Fermer la feuille » (55 x 20 dp)
+#79 LAYOUT OVERLAP « Dynamique » over the touchable « Fermer la feuille » (77 x 20 dp)
+#79 LAYOUT OVERLAP « Compresseur » over the touchable « Fermer la feuille » (92 x 20 dp)
+#79 LAYOUT OVERLAP « Noise gate » over the touchable « Fermer la feuille » (73 x 20 dp)
+#79 LAYOUT OVERLAP « OTT multibande » over the touchable « Fermer la feuille » (110 x 20 dp)
+#79 LAYOUT OVERLAP « Écrêteur doux » over the touchable « Fermer la feuille » (95 x 20 dp)
+#79 LAYOUT CONTRAST « Touche les effets voulus, ils s'ajoutent à la suite, dans l'ordre. » 3.61:1 (needs 4.5:1, 13 sp)
+#79 LAYOUT CONTRAST « Égaliseur » 3.87:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Saturation » 3.94:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Bitcrusher » 1.27:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « EQ paramétrique » 1.27:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Vieux vinyle » 1.26:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Talkie-walkie » 1.26:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Distorsion » 1.95:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Flanger » 2.55:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Wah-wah » 2.64:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Auto-pan » 3.49:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Wobble » 3.49:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Espace » 2.17:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Écho » 4.23:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Réverbe » 2.93:1 (needs 4.5:1, 14 sp)
+#79 > touche 130 1107
+#79 DOIGT fx_pick_0_COMPRESSOR « Compresseur »
+#80 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 0e0d77223c | project=projet-1 no tuto
+#80 SON Son : la musique du projet joue en boucle.
+#80 LAYOUT OVERLAP « Gain » over the touchable « Fermer la feuille » (30 x 10 dp)
+#80 LAYOUT OVERLAP « +0,0 dB » over the touchable « Fermer la feuille » (54 x 9 dp)
+#80 LAYOUT OVERLAP « Gain auto » over the touchable « Fermer la feuille » (63 x 20 dp)
+#80 LAYOUT OVERLAP « Oui » over the touchable « Fermer la feuille » (23 x 17 dp)
+#80 LAYOUT OVERLAP « Détection » over the touchable « Fermer la feuille » (63 x 20 dp)
+#80 LAYOUT OVERLAP « Crêtes » over the touchable « Fermer la feuille » (44 x 17 dp)
+#80 LAYOUT OVERLAP « Filtre des graves » over the touchable « Fermer la feuille » (109 x 20 dp)
+#80 LAYOUT OVERLAP « Aucun » over the touchable « Fermer la feuille » (44 x 17 dp)
+#80 LAYOUT OVERLAP « Mélange » over the touchable « Fermer la feuille » (57 x 20 dp)
+#80 LAYOUT OVERLAP « 100 % » over the touchable « Fermer la feuille » (46 x 17 dp)
+#80 LAYOUT OVERLAP « Auto-pan » over the touchable « Fermer la feuille » (65 x 6 dp)
+#80 LAYOUT OVERLAP « Wobble » over the touchable « Fermer la feuille » (52 x 6 dp)
+#80 LAYOUT CONTRAST « Gain » 1.20:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « +0,0 dB » 1.50:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Gain auto » 3.50:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Oui » 3.50:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Filtre des graves » 1.27:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Aucun » 1.39:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Mélange » 1.21:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « 100 % » 1.33:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST «   Fermer la liste des effets » 2.54:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Égaliseur » 3.49:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Saturation » 3.46:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Talkie-walkie » 1.85:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Phaser » 3.26:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Trémolo » 3.26:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Wah-wah » 3.26:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Auto-pan » 2.04:1 (needs 4.5:1, 14 sp)
+#80 LAYOUT CONTRAST « Wobble » 2.04:1 (needs 4.5:1, 14 sp)
+#80 > glisse 294 300 294 900
+#80 DOIGT rien
+#81 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 4cf172d398 | project=projet-1 no tuto
+#81 SON Son : la musique du projet joue en boucle.
+#81 LAYOUT OVERLAP « 1. EQ paramétrique » over the touchable « Fermer la feuille » (91 x 10 dp)
+#81 LAYOUT OVERLAP « 2. Compresseur » over the touchable « Fermer la feuille » (92 x 40 dp)
+#81 LAYOUT OVERLAP « Réduction » over the touchable « Fermer la feuille » (66 x 20 dp)
+#81 LAYOUT OVERLAP « 0 dB » over the touchable « Fermer la feuille » (31 x 17 dp)
+#81 LAYOUT OVERLAP « Seuil » over the touchable « Fermer la feuille » (31 x 20 dp)
+#81 LAYOUT OVERLAP « -16 dB » over the touchable « Fermer la feuille » (50 x 17 dp)
+#81 LAYOUT OVERLAP « Ratio » over the touchable « Fermer la feuille » (34 x 20 dp)
+#81 LAYOUT OVERLAP « 1,8:1 » over the touchable « Fermer la feuille » (36 x 17 dp)
+#81 LAYOUT OVERLAP « Attaque » over the touchable « Fermer la feuille » (51 x 20 dp)
+#81 LAYOUT OVERLAP « 0,4 ms » over the touchable « Fermer la feuille » (47 x 17 dp)
+#81 LAYOUT OVERLAP « Relâche » over the touchable « Fermer la feuille » (52 x 20 dp)
+#81 LAYOUT OVERLAP « 60 ms » over the touchable « Fermer la feuille » (43 x 17 dp)
+#81 LAYOUT OVERLAP « Touche les effets voulus, ils s'ajoutent à la suite, dans l'ordre. » over the touchable « Fermer la feuille » (324 x 34 dp)
+#81 LAYOUT CONTRAST « 1. EQ paramétrique » 1.20:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « Réduction » 3.74:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « 0 dB » 3.93:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « Attaque » 1.26:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « 0,4 ms » 1.35:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « 60 ms » 1.29:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « +0,0 dB » 1.21:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « Aucun » 2.58:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « Touche les effets voulus, ils s'ajoutent à la suite, dans l'ordre. » 4.36:1 (needs 4.5:1, 13 sp)
+#81 > glisse 294 291 60 291
+#81 DOIGT fxp_0_1_0 « Seuil »
+#82 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 115cc6f633 | project=projet-1 no tuto
+#82 SON Son : la musique du projet joue en boucle.
+#82 LAYOUT OVERLAP « -37 dB » over the touchable « Fermer la feuille » (50 x 17 dp)
+#82 > attends 3
+#83 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 115cc6f633 | project=projet-1 no tuto
+#83 SON Son : la musique du projet joue en boucle.
+#83 > retour
+#83 RETOUR
+#84 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9593adfab4 | project=projet-1 no tuto
+#84 SON Son : la musique du projet joue en boucle.
+#84 > touche 57 418
+#84 DOIGT mute_0 « Son de Batterie »
+#85 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fb43f5cb3 | project=projet-1 no tuto
+#85 SON Son : la musique du projet joue en boucle.
+#85 > touche 84 343
+#85 DOIGT strip_more_0 « Batterie »
+#86 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 71346a9c5d | project=projet-1 no tuto
+#86 SON Son : la musique du projet joue en boucle.
+#86 LAYOUT OVERLAP « Lo-Fi Tape » over the touchable « Fermer la feuille » (73 x 15 dp)
+#86 LAYOUT OVERLAP « Petite pièce » over the touchable « Fermer la feuille » (80 x 15 dp)
+#86 LAYOUT OVERLAP « Sans effet » over the touchable « Fermer la feuille » (69 x 15 dp)
+#86 LAYOUT CONTRAST « Ambiance » 4.33:1 (needs 4.5:1, 14 sp)
+#86 LAYOUT CONTRAST « Acide » 3.52:1 (needs 4.5:1, 14 sp)
+#86 LAYOUT CONTRAST « Lo-Fi Tape » 2.04:1 (needs 4.5:1, 14 sp)
+#86 LAYOUT CONTRAST « Petite pièce » 2.04:1 (needs 4.5:1, 14 sp)
+#86 LAYOUT CONTRAST « Sans effet » 2.04:1 (needs 4.5:1, 14 sp)
+#86 > retour
+#86 RETOUR
+#87 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fb43f5cb3 | project=projet-1 no tuto
+#87 SON Son : la musique du projet joue en boucle.
+#87 > touche 423 935
+#87 DOIGT rien
+#88 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fb43f5cb3 | project=projet-1 no tuto
+#88 SON Son : la musique du projet joue en boucle.
+#88 > touche 423 947
+#88 DOIGT automation_entry_overview « Ce qui joue »
+#89 ROUTE dialogue:what_plays | MODE pro | EMPREINTE 1f8f66d05d | project=projet-1 no tuto
+#89 SON Son : la musique du projet joue en boucle.
+#89 LAYOUT CONTRAST « Tout le morceau » 3.22:1 (needs 4.5:1, 14 sp)
+#89 LAYOUT CONTRAST « EQ paramétrique · Compresseur » 1.21:1 (needs 4.5:1, 13 sp)
+#89 LAYOUT CONTRAST « Acid 303 » 2.67:1 (needs 4.5:1, 16 sp)
+#89 LAYOUT CONTRAST « 56 % du son part dans la réverbe commune : de l'espace. » 2.50:1 (needs 4.5:1, 13 sp)
+#89 LAYOUT CONTRAST « Modifier » 2.46:1 (needs 4.5:1, 14 sp)
+#89 LAYOUT CONTRAST « EQ paramétrique · Compresseur · Élargisseur · Saturation · volume +6,0 dB » 3.96:1 (needs 4.5:1, 13 sp)
+#89 > touche 451 707
+#89 DOIGT act_send_1_0_go « Modifier »
+#90 ROUTE dialogue:effects_box_1 | MODE pro | EMPREINTE 99f8c557a7 | project=projet-1 no tuto
+#90 SON Son : la musique du projet joue en boucle.
+#90 LAYOUT CONTRAST « 56 % » 1.30:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Pour : Acid 303 » 1.21:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Favoris » 1.23:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Ambiance » 1.33:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Acide » 2.50:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Techno » 2.50:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « DnB » 2.50:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Dubstep » 1.30:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Basse grasse » 2.55:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Croustillant » 2.62:1 (needs 4.5:1, 14 sp)
+#90 LAYOUT CONTRAST « Fermer » 3.26:1 (needs 4.5:1, 14 sp)
+#90 > retour
+#90 RETOUR
+#91 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fb43f5cb3 | project=projet-1 no tuto
+#91 SON Son : la musique du projet joue en boucle.
+#91 > retour
+#91 RETOUR
+#92 ROUTE launch | MODE pro | EMPREINTE e644c30876 | project=projet-1 no tuto
+#92 SON Son : rien ne joue.
+#92 > touche 294 294
+#92 DOIGT launch_continue « Continuer »
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE 6af2fb2018 | project=projet-1 no tuto
+#93 SON Son : rien ne joue.
+#93 > touche 294 1158
+#93 DOIGT tab_Mix « Mix »
+#94 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f47be249a5 | project=projet-1 no tuto
+#94 SON Son : rien ne joue.
+#94 > touche 288 1059
+#94 DOIGT thumb_play
+#95 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7fb43f5cb3 | project=projet-1 no tuto
+#95 SON Son : la musique du projet joue en boucle.
+#95 > fin
+#95 FIN : fin

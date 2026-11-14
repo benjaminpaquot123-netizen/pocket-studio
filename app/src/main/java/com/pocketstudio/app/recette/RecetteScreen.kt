@@ -1,5 +1,6 @@
 package com.pocketstudio.app.recette
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.model.i18n.tr
@@ -82,7 +83,7 @@ fun RecetteScreen(
                         color = Neon.TextSecondary,
                         style = MaterialTheme.typography.bodySmall,
                     )
-                    Button(onClick = onSendReport, modifier = Modifier.fillMaxWidth().height(52.dp)) {
+                    Button(onClick = onSendReport, modifier = Modifier.pressScale().fillMaxWidth().height(52.dp)) {
                         Text(tr("Envoyer le rapport de recette"))
                     }
                     OutlinedButton(onClick = { showProblemDialog = true }, modifier = Modifier.fillMaxWidth()) {

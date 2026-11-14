@@ -1,0 +1,11 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotE/a (seat a, lot E; lang en, device phone, font 130, mode pro, options -, mission padlive, budget 110 gestures).
+Profile (id t6-Ea): Musicien anglophone, téléphone, police 130 %, Mode Pro, joue en direct sur Pad Live. Promesses : pour chacune, oui ou non avec le numéro d'écran. Act as this person (habits, patience, vocabulary).
+Mission padlive; its 3 goals (ids, the bench checks them): son (un pad sonne au 1er toucher), stop (tout s'arrête quand tu le demandes), prise (une performance est enregistrée).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Ea-1 | 1. Un pad sonne dès le premier toucher
+  - id=t6-Ea-2 | 2. « Tout couper » arrête tout
+  - id=t6-Ea-3 | 3. Une performance enregistrée se réécoute
+  - id=t6-Ea-4 | 4. Les effets de Pad Live se règlent sans bouton coupé par l'écran
+  - id=t6-Ea-5 | 5. tous les textes vus sont dans ma langue, aucun en français ni coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

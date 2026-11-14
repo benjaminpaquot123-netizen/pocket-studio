@@ -1,0 +1,23 @@
+{
+  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "这种风格歌曲的响度（%s LUFS），在最响的段落测量。输出会慢慢升高或降低去接近它；导出会在不压扁声音的前提下尽量接近。",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "像夜店一样响（%s LUFS），在最响的段落测量。你的风格已经这么响了：这里 Club 和 Auto 的目标响度相同。",
+  "Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "像夜店一样响（%s LUFS），在最响的段落测量。输出会慢慢升高去接近它；导出会在不压扁声音的前提下尽量接近。",
+  "Le volume visé, en LUFS : plus près de 0, plus fort. Une cible par projet, la même dans Mix et au partage. Auto (%1$s LUFS, ton style) et Club (%2$s LUFS) se mesurent sur le passage le plus fort ; Streaming (−14 LUFS), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et le dit.": "目标响度，单位 LUFS：越接近 0 越响。每个项目只有一个目标，在混音里和分享时都一样。Auto（%1$s LUFS，你的风格的响度）和 Club（%2$s LUFS）在最响的段落测量；Streaming（−14 LUFS，Spotify 和 YouTube）、Apple Music（−16）和自由在整首歌上测量。如果声音会被压扁，应用会提前停下并告诉你。",
+  "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "目标在最响的段落测量（%1$s LUFS）；整首歌连同安静的段落，测得 %2$s LUFS。",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "为了这么响，峰值被压了 %s dB：压得很多，声音会失去冲击力。",
+  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "为了这么响，峰值被压了 %s dB（最多 3：声音保留冲击力）。",
+  "Le même réglage que dans Mix.": "和混音里是同一个设置。",
+  "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "要在另一台设备上继续：一个包含所有声音的 .zip 文件，在那边的“我的项目 › 导入”中打开。",
+  "Nom du morceau envoyé": "发送的歌曲名称",
+  "Le projet garde son nom « %s ».": "项目保留名称“%s”。",
+  "%s (coupée)": "%s（已静音）",
+  "Sans fichier : %s.": "没有文件：%s。",
+  "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "这次导出之后歌曲有了改动：请重新导出，发送新版本。",
+  "Remix · %s": "混音 · %s",
+  "Trop fort par endroits : ça risque de grésiller.": "有些地方太响：可能会有破音。",
+  "Pas de saturation.": "没有削波。",
+  "Fichier M4A : léger, lu par tous les appareils.": "M4A 文件：体积小，所有设备都能播放。",
+  "Fichier %s : qualité studio.": "%s 文件：录音室品质。",
+  "%s Mo": "%s MB",
+  "%d Ko": "%d KB"
+}

@@ -1,6 +1,8 @@
 package com.pocketstudio.app.nav
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -85,19 +87,22 @@ class Lot2TextsTest {
     fun theModeSimpleSaysWhereTheOtherExportsAre() {
         h.start(simple = true)
         tap("tab_simple_Envoyer")
-        compose.onNodeWithTag("share_other_where", useUnmergedTree = true).assertTextContains("mode complet", substring = true)
+        compose.onNodeWithTag("share_other_where", useUnmergedTree = true).assertTextContains("mode Pro", substring = true)
     }
 
     @Test
     fun theModeSimplesHelpGoesBackToTheSong() {
         h.start(simple = true)
         tap("top_more")
-        tap("more_help")
-        compose.onNodeWithTag("plus_back").assertTextContains("Retour", substring = true)
-        compose.onNodeWithText("Plus").assertDoesNotExist()
+        tap("tool_Aide")
+        // Tour 5, chantier 5 (G15): the Mode simple has the same Plus page as Pro: « ← Plus » back on its list, then
+        // « ← Retour » back on the song.
+        compose.onNodeWithTag("plus_back").assertTextContains("Plus", substring = true)
         tap("plus_back")
+        compose.onNodeWithTag("plus_leave").assertTextContains("Retour", substring = true)
+        tap("plus_leave")
         compose.onNodeWithTag("tab_simple_Morceau").assertExists()
-        assertTrue(compose.onNodeWithTag("plus_back").let { runCatching { it.assertExists() }.isFailure })
+        compose.onAllNodesWithTag("plus").assertCountEquals(0)
     }
 
     @Test

@@ -1,7 +1,16 @@
 # Tour 6, lot du banc « rejeux7 » : relecture neuve
-Relu : 47b4634dab603feb0266d7a47842c7f68f19d6cd
+Relu : 7656a6146b5bbf797d1d2e080347d7f9815fcd78
 
-Relecteur neuf (n'a rien écrit de ce lot), cinquième passage. Les deuxième, troisième et quatrième passages sont gardés tels quels ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+Relecteur neuf (n'a rien écrit de ce lot), sixième passage. Les deuxième à cinquième passages sont gardés tels quels ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+
+## Sixième passage (`notice_close`, intégration `35914fda9`)
+
+- Depuis `1a20709a3` : la fusion de l'intégration `35914fda9` (`c8ffe2c09`) et un commit (`7656a6146`). Dans `rejeux/` et le rapport, seuls changent `t6-ga14-phrases-batterie/cmd-13.txt` (« touche notice_ok » devient « touche notice_close ») et la ligne 14 du rapport, qui le dit.
+- L'étiquette existe dans l'appli : `AppRoot.kt:1095`, bouton « Compris » de la fenêtre, `testTag("notice_close")` (le lot coquille4 l'a renommée) ; `notice_ok` n'est plus nulle part dans `app/src/main`.
+- Face à `origin/ccr-80af1a1b-mn0wec`, la branche ne touche que les fichiers du lot (`docs/audits/ultra/` et `docs/decisions/tour-6-rejeux7.md`, plus `.gitignore` déjà relu) ; rien dans le code de l'appli ni dans le banc.
+- Les quatre rejeux joués sur cette tête tiennent leur oracle (dit par le chef, pas rejoué ici).
+- Aucun point neuf ; les points ouverts des passages d'avant restent ouverts.
+
 
 ## Cinquième passage (rapport corrigé, intégration `09e2f2b0c`)
 

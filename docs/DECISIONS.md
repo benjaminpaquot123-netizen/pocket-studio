@@ -1513,3 +1513,4 @@
 - 2026-11-14 · lot « coquille3 » (tour-6) : 9 décision(s) dans `docs/decisions/tour-6-coquille3.md`
 - 2026-11-14 · lot « coquille4 » (tour-6) : 1 décision(s) dans `docs/decisions/tour-6-coquille4.md`
 - 2026-11-14 · lot « stable » (tour-6) : 16 décision(s) dans `docs/decisions/tour-6-stable.md`
+- 2026-11-14 · lot « rejeux7 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-rejeux7.md`

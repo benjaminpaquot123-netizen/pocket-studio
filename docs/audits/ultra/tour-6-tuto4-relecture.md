@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : f18962ad85f952300527b079c685648aaacfa2af
+Relu : f431efc40ce6feff6d8133a6149f308aca78fbf5
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -44,5 +44,42 @@ Commits relus : f1cbb3003 (rouge, `Tour6Tuto4TechnoTest#theShareChapterSaysShare
 - Le test lit les vraies données (chapitre, étapes, tables de langue) : pas une tautologie.
 - rouge constaté : f1cbb3003 : rejoué sur f1cbb3003 (parent du vert f18962ad8, `git worktree` jetable, retiré ensuite) : `theShareChapterSaysShareLikeTheHouse` échoue sur son assertion, « 2 share texts: fr: « Exporte ton morceau » ; fr: « À toi : touche « Partager », exporte ton morceau et partage-le. » ».
 - `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :project-model:test --rerun` sur f18962ad8 : BUILD SUCCESSFUL, 1148 tests, 0 échec, 1 ignoré.
+
+(verdict de la relecture précédente, sur f18962ad : 0 bloquant, 0 grave)
+
+## Delta c14c4ab04 → f431efc40 (allers-retours après les sièges de contrôle)
+Relecture neuve de `git diff c14c4ab04 f431efc40`, commits du lot seulement (premier parent, sans les fusions de l'intégration ae8727624) : textes des tutos (`tutos/*.json`, catalogues `i18n/*/tuto*.json`) et le Kotlin `DefaultNames.kt` (`KIT_VOICES`, `shownPad`), `GuideTracks.kt` (`padShownName`, `shownName`), `MixTips.kt`, `TrackSheet.kt` (`sheetName`, `sheetTargets`), `WhatPlays.kt`, `AppRoot.kt` (`simpleTracks`, révélation de « Régler le son de la piste ↓ »), `TutoPanel.kt` (partie traduite dans « Nommer la partie », zone de texte de 120 dp), `TutoChecks.kt` (croix du trou sur la partie de l'étape), `RhythmScreen.kt` (appui long sur une case vide), `SynthScreen.kt`, `PlainWords.kt`.
+
+### Ce qui tient
+- Noms tapés par l'utilisateur jamais traduits : un pad n'a pas de nom libre ; `shownPad` lit d'abord l'échantillon posé par `shownSample` (un fichier de l'utilisateur reste tel quel), puis la voix studio, puis la voix du kit traduite. `KIT_VOICES` est la même liste que `DrumKitInfo.names` (16 voix, même ordre) et entre dans `DefaultNames.TEXTS`, donc dans la garde des traductions. Les autres pistes passent encore par `DefaultNames.shown`.
+- Le Mix (conseils, Mode simple), « Ce qui joue » et la fiche de piste nomment un pad comme le pad l'affiche, avec la même règle que `padName` de `RhythmScreen.kt` (seul écart : une voix studio inconnue donne la voix du kit au lieu d'un nom vide, sans effet aujourd'hui).
+- Appui long sur une case vide (`RhythmScreen.kt:819-827`) : il pose le coup (`cycleVelocity`, fort comme avant) ET ouvre son menu ; le menu ne s'affiche que quand le coup existe (`rollStep == step && hit != null`), donc aucune image avec un menu vide. Hors du tuto, rien ne reposait sur « appui long = coup fort sans menu » : les seuls appuis longs de cellule dans les tests (`ScreenshotTest` step_8, `TutoJourneyTest` cellules « Doux ») visent une case déjà frappée ; `GestureFuzzTest` et `GestureBudgetTest` sont relancés verts ; les libellés d'accessibilité (« Réglages du coup ») et le glossaire (« appui long sur une case » pour la force) restent justes.
+- Une étape qui demande « Doux » ne se coche pas sur un coup fort (`SOFT_HITS_CHECKED`, `onlySoftnessMissing`) : le menu ne se referme donc pas avant « Doux » (le cas « autre » de Fd-1 ne touche qu'une étape sans « Doux »).
+- `TutoHints.gridInSight` et `soundButtonInSight` : posés par un `DisposableEffect` et remis à faux au départ de l'écran et dans `reset()` ; ils changent une fois par écran, la clé de `held` les suit sans boucle de recomposition. La révélation du bouton du son ne se fait qu'au changement d'étape (`LaunchedEffect(tutoUi?.current?.id)`), jamais en boucle.
+- Croix du trou (`toErase`) : seulement sur la partie de l'étape, comme sa coche (`done`, ligne 993) ; les 29 étapes « gap » des tutos ont une partie (ou la Montée par défaut, que les six styles sans `part` créent bien).
+- Catalogues : les 15 JSON de tuto et de langue touchés se lisent ; aucun `%s` / `%d` perdu entre clé et traduction (script sur tous les fichiers changés).
+- Tests réels : ils lisent les vraies données (cours, catalogues, écrans par le banc humain), pas des tautologies ; chaque vert a son rouge du même sujet.
+
+### Bloquant
+Aucun.
+
+### Grave
+Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne sont touchés (l'appui long pose le même coup qu'avant) ; aucun geste de plus pour un débutant dans le tuto.
+
+### Moyen
+- `KIT_VOICES` (`DefaultNames.kt`) recopie `DrumKitInfo.names` (`app`) : aucune garde ne vérifie que les deux listes restent égales ; une voix renommée d'un côté seulement ferait nommer un pad autrement au Mix qu'au pad. À couvrir par un test d'égalité. Responsable : zone Mix / noms, prochain lot qui touche les noms.
+- Hors du tuto, poser un coup par appui long ouvre maintenant aussi le menu : un geste de plus (« Fermer » ou toucher à côté) pour qui posait des coups forts ainsi. Voulu (H3, décidé) ; à confirmer au prochain siège « pro » hors tuto.
+
+### Mineur
+- `gridInSight` / `soundButtonInSight` sont des drapeaux uniques : deux grilles composées en même temps (tablette, deux volets) se les partagent ; la première qui part les remet à faux. Sans effet vu aujourd'hui.
+- Sur une étape du son, la révélation du bouton (`AppRoot.kt:2048`) et un « Montre-moi » de la même étape écrivent tous deux `tutoReveal` : le dernier gagne.
+
+### Relancé et vu (sur f431efc40, tête fusionnée avec ae8727624)
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :project-model:test --rerun` : BUILD SUCCESSFUL, 1173 tests, 0 échec, 1 ignoré.
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Tuto*' --tests '*Rhythm*' --tests '*Gesture*' --tests '*TrackSheet*' --tests '*MixTips*' --tests '*WhatPlays*' --tests '*Synth*' --tests '*LongPress*' --tests '*SimpleMixPadName*' --tests '*PlainWords*'` : BUILD SUCCESSFUL en 9 min 37 s, 140 classes, 593 tests, 0 échec, 16 ignorés (aucune capture rouge, donc rien à comparer sur ae8727624).
+- rouge constaté : 6f0c3644c : rejoué sur a8dce6a0e (parent du vert a4fd94ff6, `git worktree` jetable) : `Tour6TutoCellsPanel100Test#theKickStepsDottedCellsAreWholeAboveThePanelAt100` échoue sur son assertion, « 2 dotted cells cut » (fr, téléphone, police 100, panneau ouvert sur l'étape du kick).
+- rouge constaté : 96b5fa133 : rejoué sur 81da2f9f3 (parent du vert 0fbfe3f13, même arbre jetable) : `Tour6LongPressEmptyCellTest#aLongPressOnAnEmptyCellPutsTheHitAndOpensItsMenu` échoue sur son assertion, « the hit's menu not open after one long press ».
+- Un redémarrage de la machine a coupé le premier passage des deux rejeux ; relancés à la main, résultats ci-dessus. Arbre jetable retiré (`git worktree remove`) ; `wt-tuto4` non modifié avant ce commit.
+- `rejeu-defauts.sh t6-ha19-cases-panneau` non relancé ici (le rapport le donne « oracle tenu » sur 0e250438b, et la fusion ne touche ni `TutoPanel.kt` ni `RhythmScreen.kt`) ; le test `Tour6TutoCellsPanel100Test` qui en reprend l'oracle est vert sur la tête.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

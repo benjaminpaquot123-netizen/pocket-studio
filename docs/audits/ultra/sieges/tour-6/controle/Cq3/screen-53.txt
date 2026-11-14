@@ -1,0 +1,46 @@
+Écran 53 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+curseur [état « 4,8 kHz », à 60 %] @ 294,163
+titre « AUTRES FICHIERS » [état « Déplié »] @ 157,279
+texte « Quoi » @ 65,324
+bouton « Le morceau entier » [sélectionné] @ 158,387
+bouton « La partie en boucle » @ 406,387
+texte « Toutes les parties de Structure, dans l'ordre. » @ 243,448
+texte « Format » @ 77,496
+bouton « ? » @ 133,495
+bouton « M4A · pour partager » @ 169,565
+bouton « WAV · qualité max » @ 423,565
+texte « FLAC : exactement la même qualité que le WAV, bien plus léger (souvent deux fois). » @ 294,640
+bouton « ? » @ 182,700
+texte « Volume visé » @ 101,701
+bouton « Streaming · −14 LUFS » [sélectionné] @ 176,764
+bouton « Club · −8 LUFS » @ 419,764
+bouton « Auto (style) · −9 LUFS » @ 178,845
+bouton « Désactivée » @ 405,845
+texte « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. » @ 294,914
+texte « Fondu de fin » [coupé] @ 104,953
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

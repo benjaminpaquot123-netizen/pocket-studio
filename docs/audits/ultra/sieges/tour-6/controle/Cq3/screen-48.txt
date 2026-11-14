@@ -1,0 +1,54 @@
+Écran 48 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+bouton « ? » @ 530,195
+texte « Volumes » @ 272,196
+texte « Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes. » @ 294,250
+texte « Batterie » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 57,418
+bouton (casque) [état « désactivé »] @ 111,418
+curseur [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 177,418
+bouton (casque) [état « désactivé »] @ 231,418
+curseur [état « +0,0 dB », à 80 %] @ 204,589
+texte « +0,0 » @ 204,740
+texte « Synthé » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 297,418
+bouton (casque) [état « désactivé »] @ 351,418
+curseur [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+texte « Remix » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 417,418
+bouton (casque) [état « désactivé »] @ 471,418
+curseur [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+image (courbe) @ 60,865
+texte « Courbes et effets » @ 193,838
+texte « Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume… » @ 319,883
+bouton « Automatiser » [coupé] @ 165,938
+bouton « Ce qui joue » [coupé] @ 423,938
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

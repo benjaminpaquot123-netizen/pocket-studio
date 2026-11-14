@@ -1,0 +1,54 @@
+Écran 234 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Über den ganzen Teil · 4 Takte » [coupé] @ 274,168
+texte « Steps von Teil D (jeder Teil hat seine eigenen). » @ 321,214
+texte « Glätten » @ 467,277
+icône (loupe −) [désactivé] @ 580,277
+icône (loupe +) @ 688,277
+bouton (pinceau) « Zeichnen » [sélectionné] @ 142,277
+bouton (courbe) « Linie » @ 321,277
+texte « ×1 » @ 634,277
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » @ 450,394
+texte « 18,0 kHz » @ 81,491
+texte « 849 Hz » @ 81,577
+texte « 40 Hz » @ 82,663
+texte « Schlag » @ 81,698
+texte « 1 » @ 134,698
+texte « 2 » @ 319,698
+texte « 3 » @ 503,698
+texte « 4 » @ 686,698
+titre « MASTER-AUSGANG » [état « Aufgeklappt »] @ 213,798
+bouton « ? » @ 362,798
+texte « Lautstärke: — » @ 136,849
+texte « Master-Lautstärke » @ 397,931
+texte « −6,0 dB » @ 805,931
+curseur [état « −6,0 dB », à 60 %] @ 450,1002
+texte « Die Effekte Kapitel 13/16 · Erledigt · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

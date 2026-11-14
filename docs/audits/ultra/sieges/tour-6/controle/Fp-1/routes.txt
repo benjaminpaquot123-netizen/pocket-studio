@@ -1,0 +1,7 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tab_Sons
+dialogue:tuto_chapter_list
+tuto_panel/tab_Sons
+dialogue:effects_box_20

@@ -1,0 +1,1 @@
+Targeted control seat D a, run 8, lot tuto4 (coordinator request, 2026-11-14): code 16098b62 (origin/eq/tour-6-tuto4), local lot lotDcontrole8, frozen list, points P1-P3, fresh sub-agent reading only the testers instructions and the screens. Text files only.

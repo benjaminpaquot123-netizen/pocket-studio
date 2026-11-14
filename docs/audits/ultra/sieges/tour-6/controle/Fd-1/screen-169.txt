@@ -1,0 +1,54 @@
+Écran 169 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + Nouvelle partie (copie de A · Groove) » [coupé] @ 276,286
+texte « Comprendre les parties Chapitre 9/15 · Étape 1/5 · Facile » @ 207,348
+icône (liste) « Chapitres » @ 444,348
+icône ⌄ @ 531,348
+texte « Écoute l'Intro : la batterie seule, sans basse ni piano. Sur la carte, le Break, c'est la pause du morceau. » @ 294,465
+texte « • Break : un moment plus calme, le kick et la basse se taisent. » @ 294,555
+texte « Énergie » @ 58,603
+texte « Intro » @ 65,696
+texte « 16 » @ 65,720
+texte « 8 » @ 134,708
+texte « Drop » @ 203,696
+texte « 16 » @ 203,720
+texte « Break » @ 294,696
+texte « 16 » @ 294,720
+texte « 8 » @ 363,708
+texte « Drop 2 » @ 432,696
+texte « 16 » @ 432,720
+texte « Fin » @ 523,696
+texte « 16 » @ 523,720
+texte «  Intro » [coupé] @ 61,747
+texte «  Montée » [coupé] @ 154,747
+texte «  Drop » [coupé] @ 247,747
+texte «  Break » [coupé] @ 332,747
+texte «  Drop 2 » [coupé] @ 426,747
+texte «  Fin » [coupé] @ 508,747
+texte « ▸ Pourquoi ? » @ 294,774
+icône « Lire la suite » ⌄ @ 294,822
+bouton ▶ «  Écouter l'exemple » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

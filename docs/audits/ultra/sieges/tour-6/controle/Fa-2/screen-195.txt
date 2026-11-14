@@ -1,0 +1,52 @@
+Écran 195 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+texte « ↺ Tout à zéro » [coupé] @ 110,148
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,207
+bouton « Batterie ▸ » [coupé, état « fermé »] @ 22,300
+curseur [coupé, état « Normal », à 80 %] @ 27,477
+texte « Normal » [coupé] @ 19,634
+bouton ▶ [coupé] @ 28,684
+texte « Basse » @ 120,288
+curseur [état « Normal », à 80 %] @ 120,453
+texte « Normal » @ 120,610
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 94,670
+bouton ▶ @ 145,660
+texte « Accords » @ 243,288
+curseur [état « −2 », à 69 %] @ 243,453
+texte « −2 » @ 243,610
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 217,670
+bouton ▶ @ 268,660
+texte « Mélodie » @ 366,288
+curseur [état « −2 », à 69 %] @ 366,453
+texte « −2 » @ 366,610
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 340,670
+bouton ▶ @ 391,660
+texte « Sortie » @ 501,288
+curseur [état « −6 », à 60 %] @ 501,453
+texte « Lance ▶ » @ 501,630
+texte « Aucun conseil pour l'instant : règle à l'oreille. » @ 254,789
+icône (liste) « Chapitres » @ 444,879
+texte « Le mix : les volumes Chapitre 14/15 · Fait · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « Bravo, chapitre fini ! » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

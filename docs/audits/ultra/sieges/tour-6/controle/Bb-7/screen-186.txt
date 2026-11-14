@@ -1,0 +1,47 @@
+Écran 186 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Die Zeitleiste bringt deine Teile in Reihenfolge, jeden mit seiner Länge in Takten. Füg sie der Reihe nach hinzu. » @ 450,373
+texte « Hinzufügen: » @ 123,441
+bouton « + A · Groove » [coupé] @ 163,501
+bouton « + Neuer Teil (Kopie von A · Groove) » [coupé] @ 568,499
+texte « Die Teile verstehen Kapitel 9/16 · Erledigt · Pro » @ 366,574
+icône (liste) « Kapitel » @ 759,575
+icône ⌄ @ 843,575
+image (coupe) @ 57,709
+texte « Bravo, Kapitel geschafft! » @ 259,672
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Bau deine Teile“. » @ 475,729
+texte « Das Kit Techno » @ 139,827
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » @ 450,893
+bouton « Kit Techno laden (4 MB) » [coupé] @ 450,964
+icône « Weiterlesen » ⌄ @ 450,1023
+bouton « Nächstes Kapitel   » → @ 450,1095
+bouton ▶ «  Meinen Song anhören » @ 251,1193
+icône ← @ 57,1193
+bouton ✓ «  Erledigt » @ 558,1193
+icône « Weiter  » → @ 798,1193
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

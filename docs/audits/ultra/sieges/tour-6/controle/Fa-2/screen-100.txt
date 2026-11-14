@@ -1,0 +1,17 @@
+Écran 100 (588x1278)
+icône ✕ @ 528,60
+texte « Tuto de A à Z » @ 258,60
+bouton « 1 La vitesse et la couleur du morceau » (rond coché) @ 294,144
+bouton « 2 Le kick : la grosse caisse » (rond coché) @ 294,225
+bouton « 3 Le clap » (rond coché) @ 294,306
+bouton « 4 Les charleys et le bord de caisse » (rond coché) @ 294,387
+bouton « 5 La basse 0/2 » @ 294,468
+bouton « 6 Le piano 0/3 » @ 294,549
+bouton « 7 La petite boucle 0/1 » @ 294,630
+bouton « 8 Ta première partie : le Groove, ta boucle de base 0/2 » @ 294,729
+bouton « 9 Comprendre les parties 0/5 » @ 294,828
+bouton « 10 Construis tes parties 0/6 » @ 294,909
+bouton « 11 Range tes parties 0/2 » [coupé] @ 294,972
+bouton « Continuer en Pro (tous les outils) » @ 294,1038
+bouton ↺ «  Recommencer le tuto (nouveau projet vide) » @ 294,1128
+texte « Quitter le tuto (tu pourras le reprendre) » @ 294,1218

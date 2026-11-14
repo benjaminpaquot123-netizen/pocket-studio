@@ -54,6 +54,19 @@ Preuves (passages ciblés, `scripts/bench/gradle-file.sh`) :
 
 Reste ouvert : les ~525 autres classes n'ont pas été passées avec le nouveau contrôle (la grande vérification revient au chef) ; une classe qui laisse une coroutine sur la boucle principale y sera rouge à son nom.
 
+## Suite 2 : rouges de la CI 43542434448 et des suites mélangées (graines 4 et 5)
+Outil : `-Pshuffle=list:<classes>` rejoue des classes dans l'ordre donné (fenêtre d'un rouge : ses voisins, puis les 25 ou 60 classes d'avant).
+
+| Rouge | Cause | À qui | Correction | Preuve |
+|---|---|---|---|---|
+| A `HumanRemixJourneyTest#aSongsVoiceGoesIntoTheProjectWithTouchesOnly` (CI 311, graines 4 et 5) | la nouvelle fenêtre d'avis de coquille2 | hérité de l'intégration, corrigé par coquille3 | aucune ici | vert sur ce lot avant la fusion de l'intégration (CI 308, graines 1 à 3) |
+| D `Tour6TutoLineGoTest#aLinePointingAwaySaysATouchTakesYouThere` (graine 5, rang 553) | repères du tuto (`TutoHints`, `focus=5`) laissés par une classe passée avant ; `restore()` ne remettait que `active` | le banc (contrôle incomplet) | `rouge/vert: the tutorial's hints left by a class are put back…` (`OrdinaryTestsLeaveNothingTest` a_/b_) | 3 voisins : vert ; 60 classes d'avant : rouge 2 fois (« hints=5/5 » relevé) ; après : vert |
+| D' `HumanLucasBugsTest#insererApresInsertsThePartPicked` (rouge dès la première version de D) | (1) « Insérer après » touché coupé au bord (menu plus haut que l'écran) ; (2) le compteur `TutoHints.ticked` remis de 2 à 0 après `NavTabletScreenshotTest` : la fenêtre « Insérer après » ne s'ouvre plus (mécanisme exact dans l'appli non établi) | le test (1), la première version de D (2) | `rouge/vert: « Insérer après » is reached whole…` ; `vert: the tutorial's change counter is kept…` (`ticked` n'est plus remis : seuls ses changements comptent) | (1) rouge seul (« touché coupé »), vert après ; (2) bissection 53 → 1 classe : paire NavTablet → Lucas rouge 3 fois, verte avec l'ancien `restore()` et en gardant `ticked` |
+| B `BenchSeparationWaitTest#twoWaitsOfThirtySecondsGiveTheSeparatedSong` (graine 4, rang 26) | « performMeasureAndLayout called during measure layout » : l'état de la séparation écrit sur un fil de travail réveille, sur ce fil, la composition (la règle Compose 1.12 compose avec un `UnconfinedTestDispatcher`, `useStandardTestDispatcherForComposition = false`), pendant que le fil principal mesure | course du cadre de test, pas un héritage | aucune (pas de rouge rejoué) | 25 classes d'avant + elle : vert ; pas dans les graines 1 à 3 et 5 |
+| C `Coquille2SeatTest#e2_noSongChangeSaidWhenOnlyTheFilesVolumeIsChosen` (graine 4, rang 567) | non établie : le test dure 6,3 s au lieu de 9 à 11, l'export n'a jamais été vu en cours (« Partager » actif, aucune fenêtre « C'est prêt ») ; l'attente du test est « tant que l'export tourne », vide si l'export n'a pas commencé | ? | aucune (pas de rouge rejoué) | voisins, 60 classes d'avant, seul sous 4 boucles CPU : vert |
+
+Ouvert : B se règlerait par la règle Compose « v2 » (`StandardTestDispatcher`) pour le banc, gros changement à mesurer ; C demande un rouge rejoué (proposition : attendre le menu de partage ou « C'est prêt » sur l'état, et dire l'état de l'export si rien ne vient). Les autres classes qui comptaient sans le savoir sur des repères du tuto sales se verront dans la prochaine suite complète.
+
 ## Preuves
 PREUVES_ICI
 

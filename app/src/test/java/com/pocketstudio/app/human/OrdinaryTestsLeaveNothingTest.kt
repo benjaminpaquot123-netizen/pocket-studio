@@ -68,4 +68,49 @@ class OrdinaryTestsLeaveNothingTest {
             stop.set(true)
         }
     }
+
+    /**
+     * Tour 6, lot « stable », follow-up (CI 43531021739: LibraryRound2Zone1Test red with UncaughtExceptionsBeforeTest, an
+     * UnsatisfiedLinkError thrown by a RhythmViewModel's live-gain estimate that a class run before had left waiting on the
+     * main looper). Work of the app left suspended on the main thread (a delay, a dispatch) holds no coroutine worker: the
+     * check did not see it. The test that leaves it is red itself, by name, and the work is stopped.
+     */
+    @Test
+    fun d_anOrdinaryTestThatLeavesTheAppsWorkOnTheMainLooperIsRedItself() {
+        // A coroutine of this package (com.pocketstudio…) waiting on the main looper far past the time given, as an estimate
+        // whose sounds never come.
+        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+        val job = kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) { while (true) delay(50) }
+        try {
+            val m = javaClass.getMethod("d_anOrdinaryTestThatLeavesTheAppsWorkOnTheMainLooperIsRedItself")
+            val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
+            assertTrue("red itself, by name: $e", e is AssertionError && "d_anOrdinaryTestThatLeavesTheAppsWorkOnTheMainLooperIsRedItself" in e.message.orEmpty())
+            assertTrue("naming the work on the main looper: ${e?.message}", "main" in e?.message.orEmpty() && "OrdinaryTestsLeaveNothingTest" in e?.message.orEmpty())
+            assertTrue("the work left is stopped (the next class does not inherit it)", job.isCancelled)
+        } finally {
+            job.cancel()
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
+        }
+    }
+
+    /**
+     * Same CI: the exception of work an ordinary test left was reported by the next test that runs coroutines' test scope
+     * (« There were uncaught exceptions before the test started »), a neighbour. An uncaught exception of the app's
+     * coroutines makes red the test during which it is thrown, by name.
+     */
+    @Test
+    fun e_anUncaughtExceptionOfTheAppsWorkMakesItsOwnTestRed() {
+        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+        val job = kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Default) { throw IllegalStateException("left by e_") }
+        try {
+            kotlinx.coroutines.runBlocking { job.join() }
+            val m = javaClass.getMethod("e_anUncaughtExceptionOfTheAppsWorkMakesItsOwnTestRed")
+            val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
+            assertTrue("red itself, by name: $e", e is AssertionError && "e_anUncaughtExceptionOfTheAppsWorkMakesItsOwnTestRed" in e.message.orEmpty())
+            assertTrue("naming the exception: ${e?.message}", "IllegalStateException" in e?.message.orEmpty() && "left by e_" in e?.message.orEmpty())
+        } finally {
+            // Before the repair the exception waits for the next coroutines' test scope (a neighbour): not left to it.
+            BenchPristine.forgetUncaughtForTests()
+        }
+    }
 }

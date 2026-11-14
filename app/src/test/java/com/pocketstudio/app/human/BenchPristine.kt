@@ -265,6 +265,13 @@ internal object BenchPristine {
         if (frames.isEmpty()) null else "${t.name} ${t.state}: $frames"
     }
 
+    /** The uncaught exceptions kept for the next coroutines' test scope (kotlinx-coroutines-test), dropped: tests of the check. */
+    fun forgetUncaughtForTests() {
+        val collector = runCatching { Class.forName("kotlinx.coroutines.test.internal.ExceptionCollector") }.getOrNull() ?: return
+        val lock = staticField(collector, "lock") ?: return
+        synchronized(lock) { (staticField(collector, "unprocessedExceptions") as? MutableList<*>)?.clear() }
+    }
+
     private fun staticField(cls: Class<*>, name: String): Any? =
         runCatching { cls.getDeclaredField(name).apply { isAccessible = true }.get(null) }.getOrNull()
 

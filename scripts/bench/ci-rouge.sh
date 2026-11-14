@@ -29,7 +29,9 @@ case "${1:-}" in
     fi
     ;;
 esac
-exec python3 -I - "$dir" <<'PY'
+# Not exec: the EXIT trap above removes a downloaded artifact (review M8); the reading's exit code is kept.
+status=0
+python3 -I - "$dir" <<'PY' || status=$?
 import os, sys, xml.etree.ElementTree as ET
 
 root = sys.argv[1]
@@ -66,3 +68,4 @@ for i, s in enumerate(suites):
         print(f"  avant   : {' > '.join(before) if before else '(aucune : première classe)'}")
 print(f"{red} test(s) rouge(s), {len(suites)} classes lues")
 PY
+exit "$status"

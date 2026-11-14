@@ -118,10 +118,17 @@ class TakeOnTheEngineClockTest {
     private val sink = ClockSink()
     private lateinit var vm: RhythmViewModel
 
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
     @After
     fun end() {
-        NativeEngine.sink = null
-        Metrics.updateStream(StreamInfo())
+        try {
+            screens.closeAll()
+        } finally {
+            NativeEngine.sink = null
+            Metrics.updateStream(StreamInfo())
+        }
     }
 
     /** [ms] of the engine's clock (and of the app's coroutines) go by. */
@@ -144,7 +151,7 @@ class TakeOnTheEngineClockTest {
         File(app.filesDir, "projects").deleteRecursively()
         NativeEngine.sink = sink
         Metrics.updateStream(StreamInfo(outputLatencyMs = 116.0))
-        vm = RhythmViewModel(app)
+        vm = screens.open { RhythmViewModel(app) }
         pass(500)
         val song = jumpUp()
         vm.session.edit { song }

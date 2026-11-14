@@ -38,6 +38,12 @@ import java.io.File
 class LiveMidiJourneyTest {
     private val app: Application = ApplicationProvider.getApplicationContext()
     private val store = ProjectStore(File(app.filesDir, "projects"))
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
+    @org.junit.After
+    fun closeScreens() = screens.closeAll()
+
     private val t = NoteClip.TICKS_PER_STEP
 
     /** A: a kick and two synth notes; B: empty (the cells to record into). */
@@ -51,7 +57,7 @@ class LiveMidiJourneyTest {
         val id = "midi-" + System.nanoTime()
         store.save(id, p)
         CurrentProject.set(app, id)
-        return RhythmViewModel(app)
+        return screens.open { RhythmViewModel(app) }
     }
 
     @Test
@@ -109,7 +115,7 @@ class LiveMidiJourneyTest {
     fun aKeyboardUnpluggedWhileAKeyIsHeldEndsItsNoteForTheApp() {
         com.pocketstudio.engine.NativeEngine.sink = com.pocketstudio.app.human.BenchEngine()
         try {
-            val midi = com.pocketstudio.app.midi.MidiViewModel(app)
+            val midi = screens.open { com.pocketstudio.app.midi.MidiViewModel(app) }
             val got = ArrayList<com.pocketstudio.app.midi.MidiCommand>()
             val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
             scope.launch { midi.commands.collect { got += it } }
@@ -124,7 +130,11 @@ class LiveMidiJourneyTest {
             assertTrue(got.contains(com.pocketstudio.app.midi.MidiCommand.Note(0, 64, 0f, false)))
             scope.cancel()
         } finally {
-            com.pocketstudio.engine.NativeEngine.sink = null
+            try {
+                screens.closeAll()
+            } finally {
+                com.pocketstudio.engine.NativeEngine.sink = null
+            }
         }
     }
 
@@ -232,7 +242,7 @@ class LiveMidiJourneyTest {
         com.pocketstudio.engine.NativeEngine.sink = sink
         try {
             val vm = open()
-            val midi = com.pocketstudio.app.midi.MidiViewModel(app)
+            val midi = screens.open { com.pocketstudio.app.midi.MidiViewModel(app) }
             val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
             // As AppRoot wires them: the commands to the project, the cell recording to the keyboard's target.
             scope.launch { midi.commands.collect { c -> if (c is com.pocketstudio.app.midi.MidiCommand.Note) vm.midiNote(c.channel, c.pitch, c.velocity, c.on) } }
@@ -255,7 +265,7 @@ class LiveMidiJourneyTest {
             assertTrue("the cell has the 303 notes: $acid", acid.steps.count { it.gate } >= 2)
             // Kept on disk with the project.
             kotlinx.coroutines.runBlocking { vm.flushNow() }
-            val reopened = RhythmViewModel(app)
+            val reopened = screens.open { RhythmViewModel(app) }
             assertEquals(acid, reopened.project.value.allScenes[1].acid)
             // Undone: the cell is empty again.
             vm.undo()
@@ -266,7 +276,11 @@ class LiveMidiJourneyTest {
             assertTrue(sink.types.any { it.first == 16 })
             scope.cancel()
         } finally {
-            com.pocketstudio.engine.NativeEngine.sink = null
+            try {
+                screens.closeAll()
+            } finally {
+                com.pocketstudio.engine.NativeEngine.sink = null
+            }
         }
     }
 }

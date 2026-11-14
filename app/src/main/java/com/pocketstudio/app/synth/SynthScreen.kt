@@ -205,6 +205,9 @@ fun SynthScreen(
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
+    // Tour 6, seat A b (P1): each touch on « Notes » asks the grid to frame every note played (not only bar 1).
+    var notesAsked by rememberSaveable { mutableStateOf(0) }
+    val pickMode: (Boolean) -> Unit = { notes -> showNotes = notes; if (notes) notesAsked++ }
     // Each request once (coming back to the tab later keeps the view chosen since).
     var notesSeen by rememberSaveable { mutableStateOf(0) }
     var rollShownFor by rememberSaveable { mutableStateOf(0) }
@@ -292,7 +295,7 @@ fun SynthScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
-                ModeSwitch(showNotes, tracks) { showNotes = it }
+                ModeSwitch(showNotes, tracks, onChange = pickMode)
                 // Testers (lot « tuto 5 »): the track's sound was four screens under the notes, nothing said it was there.
                 androidx.compose.material3.TextButton(
                     onClick = { scope.launch { soundRequester.bringIntoView() } },
@@ -316,6 +319,7 @@ fun SynthScreen(
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
                         gridHeight = rollHeight,
+                        frameAllAsked = notesAsked,
                         harmony = notes.harmony,
                         keyOn = keyOn, keyOff = keyOff,
                         clipboard = notes.clipboard, frozen = notes.frozen,
@@ -374,7 +378,7 @@ fun SynthScreen(
                     // Lot 2 review: the switch at its own width, the free room after it (filling the whole
                     // row, it squeezed the others to nothing; weighted to what they left, on a small phone
                     // lying down that was nothing, and « Notes » could not be touched).
-                    if (notes != null) ModeSwitch(showNotes, tracks, Modifier, fill = false) { showNotes = it }
+                    if (notes != null) ModeSwitch(showNotes, tracks, Modifier, fill = false, onChange = pickMode)
                     if (tall && !chordPads) KeyLayoutChips(keyLayout, setKeyLayout, wideOctaves = landOctaves)
                     Box(Modifier.weight(1f))
                     ChordChip(chordKeys) { chordKeys = it }
@@ -411,7 +415,7 @@ fun SynthScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
-                if (notes != null) ModeSwitch(showNotes, tracks) { showNotes = it }
+                if (notes != null) ModeSwitch(showNotes, tracks, onChange = pickMode)
                 record?.invoke(false)
                 KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,

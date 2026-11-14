@@ -216,6 +216,11 @@ fun PianoRoll(
      * les mesures suivantes » does the rest: offered right on the tutorial's line over the grid (null: not now).
      */
     copyMotif: (() -> Unit)? = null,
+    /**
+     * Tour 6, seat A b (P1): « Notes » touched (counted at each touch): every note played framed at once, as « Tout voir »
+     * (the user's own touch: nothing zooms by itself). 0: never asked (the tutorial, the screens that open on the grid).
+     */
+    frameAllAsked: Int = 0,
 ) = com.pocketstudio.ui.LeftToRight {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
     val givenStep by androidx.compose.runtime.rememberUpdatedState(playStep)
@@ -297,15 +302,20 @@ fun PianoRoll(
                 FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text(tr("⬚ Sélectionner")) }, colors = chipColors,
                     modifier = Modifier.testTag("mode_select"))
                 // « Tout voir » (owner, lot « tuto 5 »): every bar, from the lowest note to the highest, in one touch.
+                val frameAll: () -> Unit = {
+                    val pitches = (clip.notes + hints).map { it.pitch }
+                    stepDp = (viewWidth / clip.steps).coerceAtMost(MAX_STEP)
+                    val span = if (pitches.isEmpty()) 24 else pitches.max() - pitches.min() + 3
+                    rowDp = (gridHeight.value / span).coerceIn(MIN_ROW, MAX_ROW)
+                    fitAll++
+                }
+                // P1: « Notes » asked for every note played: framed when some are past the first bar (one bar is the default).
+                LaunchedEffect(frameAllAsked) {
+                    if (frameAllAsked > 0 && clip.notes.any { it.start + it.length > barTicks }) frameAll()
+                }
                 FilterChip(
                     selected = false,
-                    onClick = {
-                        val pitches = (clip.notes + hints).map { it.pitch }
-                        stepDp = (viewWidth / clip.steps).coerceAtMost(MAX_STEP)
-                        val span = if (pitches.isEmpty()) 24 else pitches.max() - pitches.min() + 3
-                        rowDp = (gridHeight.value / span).coerceIn(MIN_ROW, MAX_ROW)
-                        fitAll++
-                    },
+                    onClick = frameAll,
                     label = { Text(tr("Tout voir"), maxLines = 1, softWrap = false) }, colors = chipColors,
                     modifier = Modifier.testTag("roll_fit"),
                 )

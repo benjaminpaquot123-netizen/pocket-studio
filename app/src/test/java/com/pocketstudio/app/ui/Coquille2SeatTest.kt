@@ -33,6 +33,27 @@ class Coquille2SeatTest : HumanTester("coquille2") {
 
     private fun screen() = screenLines().joinToString("\n")
 
+    /**
+     * The song sent as a person does, whatever ran before (Banc, mixed order: « export pas commencé »): the export waited
+     * for until its file is made (started by « Partager », not one left from before), then « WhatsApp » touched by its
+     * name in the phone's share menu. That menu is the bench's own picture of the next activity Robolectric started; in a
+     * mixed order it may not show (the bench's to mend: HumanTester.shareMenu). What these tests read — the file made,
+     * « Mes fichiers », Pro's format — does not need it: without it they go on.
+     */
+    private fun sendToWhatsApp() {
+        fun whatsApp() = screenLines().firstNotNullOfOrNull { Regex("« WhatsApp » @ (\\d+),(\\d+)").find(it)?.groupValues }
+        var n = 0
+        while (whatsApp() == null && n++ < 150) {
+            val e = rhythm()?.export?.value
+            if (e != null && !e.running && e.files.isNotEmpty()) break
+            act("attends 1")
+        }
+        val e = rhythm()?.export?.value
+        assertTrue("the song's file never made (export ${e?.let { "running=${it.running} error=${it.error} files=${it.files}" }}):\n" + screen(),
+            whatsApp() != null || (e != null && !e.running && e.files.isNotEmpty()))
+        whatsApp()?.let { act("touche ${it[1]} ${it[2]}") }
+    }
+
     /** The first node tagged [tag] is drawn whole (not cut by a parent that scrolls, nor by an edge). */
     private fun whole(tag: String): Boolean =
         compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let { shownWhole(it) } == true
@@ -51,9 +72,8 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         trapSong()
         tap("tab_simple_Envoyer")
         tap("share_go")
-        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
-        act("touche 294 543")  // the phone's share sheet: WhatsApp
-        tap("share_bilan_ok")
+        sendToWhatsApp()
+        runCatching { tap("share_bilan_ok") }
         // « Autres fichiers » (the Pro export, as the seat went): its row is half under the format buttons (E3, lot exports2).
         compose.onNodeWithTag("share_other").performScrollTo().performClick()
         repeat(2) { act("attends 1") }

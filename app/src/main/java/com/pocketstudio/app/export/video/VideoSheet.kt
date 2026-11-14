@@ -216,10 +216,12 @@ fun VideoExportRoute(rhythmVm: RhythmViewModel, close: () -> Unit) {
     val plan = remember(choice) { vm.plan(rhythmVm) }
     var preview by remember { mutableStateOf<ImageBitmap?>(null) }
     LaunchedEffect(plan) {
-        preview = withContext(Dispatchers.Default) {
+        val drawn = withContext(Dispatchers.Default) {
             val (bold, regular) = VideoFrameRenderer.fonts(context)
             runCatching { previewFrame(plan) { p, l -> VideoFrameRenderer(p, l, bold = bold, regular = regular) }.asImageBitmap() }.getOrNull()
         }
+        // Lot coquille4 (the motif of « Mes fichiers »): drawn off the main thread, kept on it.
+        withContext(Dispatchers.Main) { preview = drawn }
     }
     val share = { run.file?.let { WavExporter.share(context, listOf(it), tr("Partager la vidéo")) }; Unit }
     // Made: the share sheet opens once by itself (noted in the ViewModel: not again when the screen turns).

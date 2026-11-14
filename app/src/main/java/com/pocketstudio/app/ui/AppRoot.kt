@@ -480,6 +480,8 @@ fun AppRoot() {
     // Testers (lot « tuto 3 »): while another project opens (the activity is rebuilt on it), a plain background
     // rather than the project left behind (« Guide · Étape 7/18 », 120 BPM, a moment before the tutorial's own).
     var switching by remember { mutableStateOf(false) }
+    // Control seat A b-5 (P5): the open project touched in « Mes projets » comes back as « Continuer » brings it, Pad Live too.
+    var resumedFromProjects by remember { mutableStateOf(false) }
     LaunchedEffect(switching) { if (switching) { kotlinx.coroutines.delay(SWITCH_COVER_MS); switching = false } }
     val switchProject: (String, String?) -> Unit = { id, deleteAfter ->
         // On the main thread whatever the scope's dispatcher: Activity.recreate() and the Toast need it
@@ -892,7 +894,7 @@ fun AppRoot() {
                         stopDemo = libraryVm::stopDemoPreview,
                         back = closeProjects,
                         // The open project touched: on it, as « Continuer » does.
-                        resume = { showProjects = false; projectsNewOnly = false; tab = OpeningTab.of(rhythmVm.project.value); launch.settled() },
+                        resume = { showProjects = false; projectsNewOnly = false; tab = OpeningTab.of(rhythmVm.project.value); launch.settled(); resumedFromProjects = true },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
                         wizard = {
@@ -1076,6 +1078,7 @@ fun AppRoot() {
     }
     val saveError by rhythmVm.session.lastSaveError.collectAsStateWithLifecycle()
     val notice by rhythmVm.notice.collectAsStateWithLifecycle()
+    val noticeLengthen by rhythmVm.noticeLengthen.collectAsStateWithLifecycle()
     // G3 review: a track's sheet or its layers show their notice in their own line, never a window
     // over them that blocks every touch.
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
@@ -1084,6 +1087,9 @@ fun AppRoot() {
             confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
+            } else if (noticeLengthen == text) {
+                // Tour 6, seat B a (A6): the song past the project's end: the fix offered in the same window.
+                { TextButton(onClick = { rhythmVm.lengthenSongForRemix(); rhythmVm.dismissNotice() }, modifier = Modifier.testTag("notice_lengthen")) { Text(tr("Allonger le morceau")) } }
             } else null,
             text = { Text(text) },
         )
@@ -1423,6 +1429,19 @@ fun AppRoot() {
     // [padLiveWelcome]: just opened from the card, its first hit sounds once.
     var showPadLive by rememberSaveable(key = "pad_live") { mutableStateOf(false) }
     var padLiveWelcome by rememberSaveable(key = "pad_live_welcome") { mutableStateOf(false) }
+    // Tour 6, seat A b (P5): another project opened (« Mes projets », the rebuild of the app): the « Live » project goes on in Pad
+    // Live, where it is played, as « Continuer » does; any other project on its own screens.
+    var padLiveFor by rememberSaveable(key = "pad_live_for") { mutableStateOf(rhythmVm.projectId) }
+    if (resumedFromProjects) {
+        resumedFromProjects = false
+        if (rhythmVm.project.value.padLive.home) showPadLive = true
+    }
+    remember(rhythmVm.projectId) {
+        if (padLiveFor != rhythmVm.projectId) {
+            padLiveFor = rhythmVm.projectId
+            showPadLive = rhythmVm.project.value.padLive.home
+        }
+    }
     // Audit ultra round 1, n° 3: the library's « Découper « Boys » »: the Remix of this project, over Pad Live too.
     LaunchedEffect(libraryCutAsk) {
         if (libraryCutAsk == null) return@LaunchedEffect
@@ -2028,6 +2047,14 @@ fun AppRoot() {
     // The hits to take away left on another pad only (« Caisse » done, « Charley » next): that pad shown, said.
     val tutoErase = com.pocketstudio.app.tuto.TutoHints.erase
     val tutoPad by remember(rhythmVm) { rhythmVm.transport.map { it.selectedPad }.distinctUntilChanged() }.collectAsStateWithLifecycle(rhythmVm.transport.value.selectedPad)
+    // Tour 6, seat D a (chapter 12, screen 177): « → <pad> » says the pad the grid turned to; another pad put on the grid
+    // within that moment (the next step's cymbal) is the one named.
+    LaunchedEffect(tutoPad) {
+        val said = com.pocketstudio.app.tuto.TutoHints.banner ?: return@LaunchedEffect
+        if (!said.startsWith("→ ")) return@LaunchedEffect
+        val shown = "→ " + com.pocketstudio.app.rhythm.padName(rhythmVm.project.value, tutoPad)
+        if (said != shown) com.pocketstudio.app.tuto.TutoHints.banner = shown
+    }
     LaunchedEffect(tutoErase, tutoPad) {
         val left = tutoErase?.filterValues { it.isNotEmpty() }?.keys ?: return@LaunchedEffect
         if (left.isEmpty() || tutoPad in left) return@LaunchedEffect

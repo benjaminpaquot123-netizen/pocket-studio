@@ -1,0 +1,4 @@
+Écran 24 (588x1278)
+texte « ¿En qué proyecto? » @ 195,505
+icône (dossier ouvert) « Remix proyecto abierto · 120 BPM · ya tiene una canción: se reemplazará » @ 294,620
+icône ← «  Atrás » @ 490,760

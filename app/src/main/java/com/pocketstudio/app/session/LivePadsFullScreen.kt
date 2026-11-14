@@ -1,5 +1,6 @@
 package com.pocketstudio.app.session
 
+import com.pocketstudio.app.live.loopsOn
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.animation.AnimatedVisibility
@@ -192,7 +193,10 @@ fun LivePadsFullScreen(
             PadGrid(ui, actions, clock, colorOf, beatsPerBar, { choosing = it }, m)
         }
         Column(Modifier.fillMaxSize()) {
-            StageBar(tempoBpm, beatsPerBar, playing, clock, fxOpen, close, togglePlay, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null, record, tempo)
+            StageBar(
+                tempoBpm, beatsPerBar, playing || ui.loopsOn(), clock, fxOpen, close,
+                // Tour 6, padlive2 (P4, control seat Ab-3 écrans 20, 24): loops playing on their own show ■, a touch cuts them.
+                togglePlay?.let { play -> if (!playing && ui.loopsOn()) actions.stopAll else play }, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null, record, tempo)
             banner?.invoke()
             PadsHeader(ui, actions)
             if (landscape) {

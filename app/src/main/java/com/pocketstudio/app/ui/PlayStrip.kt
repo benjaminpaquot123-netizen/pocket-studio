@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.model.heardSceneSteps
 import com.pocketstudio.ui.ScaledDropdownMenu
 
 import androidx.compose.foundation.background
@@ -100,7 +101,8 @@ fun partName(p: Project, scene: Int): String =
 fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFrom: Int, loopPart: Boolean, queued: Int = -1): PlayPosition? {
     val spb = p.stepsPerBar.coerceAtLeast(1)
     val songBars = p.songBars.coerceAtLeast(1)
-    val sceneBars = ((p.sceneSteps(p.scene) + spb - 1) / spb).coerceAtLeast(1)
+    // Tour 6, P6 (coquille2): its audio bricks counted too (a 6-bar take put in the Live: « mesure 3/6 », not « 1/1 »).
+    val sceneBars = ((p.heardSceneSteps(p.scene) + spb - 1) / spb).coerceAtLeast(1)
     val song = p.song
     return when {
         playing && songIndex >= 0 && songIndex < song.size -> {

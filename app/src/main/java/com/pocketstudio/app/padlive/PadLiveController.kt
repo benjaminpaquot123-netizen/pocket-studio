@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -245,35 +244,19 @@ class PadLiveController(private val vm: RhythmViewModel) {
         PadLive.FIRST_PACKS.getOrNull(page)?.let { loadPack(it, quiet = true, fete = fete) }
     }
 
-    private var welcomeJob: Job? = null
-
     /**
-     * Opened from the home screen's card: the first hit of the page shown sounds as soon as its
-     * sound is in (Benjamin's « ça sonne tout de suite »: the first sound in one touch), its pad
-     * lit so the ear knows where it came from. Nothing when the page has no hit, or after [WELCOME_WAIT_MS].
+     * Tour 6, padlive2 (P3, control seat A b #49: a first perf of 4 bars, then a take of 0:01, and the « Live » project
+     * falls to « 1 mes. »): Pad Live's ● [record]. Pad Live has no « Nouvelle version » / « Ajouter à la suite » to
+     * show, so a take after one already in the song goes after it and the project keeps its length; the first take
+     * still replaces the new project's empty song. Ready (or a take done): the choice is made here, never while armed.
      */
-    fun welcome() {
-        if (welcomeJob?.isActive == true) return
-        welcomeJob = vm.viewModelScope.launch {
-            var waited = 0L
-            while (waited <= WELCOME_WAIT_MS) {
-                val p = vm.project.value
-                val page = p.padLive.shownPage
-                val pad = (0 until PadLive.PAGE_SIZE).map { PadLive.pad(page, it) }
-                    .firstOrNull { p.live.at(it)?.let { c -> PadLive.modeOf(c) == PadMode.SHOT } == true }
-                if (pad != null && (toggleForTest != null || vm.padSamples.native(p.live.at(pad)!!.file) != null)) {
-                    if (pad !in vm.padsSoundingNow()) toggle(pad)
-                    return@launch
-                }
-                delay(WELCOME_POLL_MS)
-                waited += WELCOME_POLL_MS
-            }
+    fun record(record: () -> Unit) {
+        val take = vm.take.value
+        if (take is com.pocketstudio.app.live.TakeUi.Ready || take is com.pocketstudio.app.live.TakeUi.Done) {
+            val p = vm.project.value
+            vm.setTakeAppend(p.liveTake.isNotEmpty() && p.song.isNotEmpty())
         }
-    }
-
-    companion object {
-        const val WELCOME_WAIT_MS = 8_000L
-        private const val WELCOME_POLL_MS = 100L
+        record()
     }
 }
 

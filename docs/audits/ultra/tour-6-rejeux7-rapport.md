@@ -11,10 +11,10 @@ Chacun fait avec `scripts/bench/rejeu-nouveau.sh` depuis le dossier du siège, g
 | id | défaut | siège, gestes | oracle | 1585bb46 | tête cc6175a4 |
 |---|---|---|---|---|---|
 | `t6-ec17-un-bout-courbe` | R3-EC17 (bloquant) : en « Un bout » à 200 %, la courbe et ses barres n'ont aucune place | E c (pt-BR, 200 %), 1 à 17 | attendu « Pince para ampliar » (la ligne de la courbe) | non tenu : absent, l'écran 18 montre les puces puis la barre d'envoi, comme le siège | tenu |
-| `t6-ga14-phrases-batterie` | R6 (grave) : « 9 ile 14 arası pad'lerinde 6 cümle. » ne dit pas que ce sont les pads de la batterie | G a (tr, Pro, 130 %), 1 à 14 | attendu « (Davul · 16 pad) » | non tenu : absent | tenu |
+| `t6-ga14-phrases-batterie` | R6 (grave) : « 9 ile 14 arası pad'lerinde 6 cümle. » ne dit pas que ce sont les pads de la batterie | G a (tr, Pro, 130 %), 1 à 15 (le geste 13, « touche notice_ok », ferme la fenêtre que coquille2 ouvre après « Projeme ekle ») | attendu « (Davul · 16 pad) » | non tenu : absent | tenu |
 | `t6-da15-ecoute-passee` | N19 (grave) : une écoute passée par « Suivant » n'est pas comptée, le chapitre reste inachevé (puis « もう少しで完成！ » à la fin) | D a (ja, Simple, 100 %), 1 à 15 | attendu « チャプター 1/15 · 完了 » | non tenu : « ステップ 3/3 » puis « 成功 次のステップ », le chapitre 1 reste à 2/3 | tenu (« よくできました、章クリア！ ») |
 
-Les passages sur 1585bb46 sont gardés dans `rejeux/_non-tenu-1585bb46/<id>/` (journal, `rejeu.txt`, verdict) : joués dans un worktree détaché avec le banc de ce commit, selftest vert ; aucun geste refusé, aucune étiquette introuvable : le défaut est reproduit, le rejeu n'a pas divergé. Les passages sur la tête sont dans `rejeux/_journaux/<id>/`.
+Les passages sur 1585bb46 sont gardés dans `rejeux/_non-tenu-1585bb46/<id>/` (journal, `rejeu.txt`, verdict) : joués dans un worktree détaché avec le banc de ce commit, selftest vert ; aucun geste refusé, aucune étiquette introuvable : le défaut est reproduit, le rejeu n'a pas divergé. Les passages sur la tête ne sont plus suivis par git (`rejeux/_journaux/` est réécrit à chaque passage des rejeux : le portail a besoin d'un arbre propre) ; les trois rejeux y tiennent leur oracle.
 
 Dernier passage sur la tête (`PS_REJEUX_SELFTEST=… scripts/bench/rejeu-defauts.sh`, self-test : 185 verts, 0 rouge, 26 sautés) :
 
@@ -25,7 +25,7 @@ t6-ga14-phrases-batterie : oracle tenu
 
 ## Rangé en attente (`rejeux-attente/`)
 
-- `t6-ha19-cases-panneau` (T4, la part des cases) : H a-suite (fr, téléphone, 100 %), gestes 1 à 19 ; oracle : des cases en pointillé à l'écran (« en pointillé : à toucher »), aucune « [coupé, état « vide, en pointillé : à toucher »] ». Non tenu sur 1585bb46 (`rejeux-attente/_non-tenu-1585bb46/`) **et non tenu sur la tête** (`rejeux-attente/_journaux/`) : à l'étape du kick, la première rangée de cases à toucher est encore coupée. Le lot « tutogrille » ne l'avait vérifié qu'à 360 dp et 130 % (« déjà tenu »). T4 n'est donc pas corrigé pour ce cas : à rendre au tri (zone tuto, `RhythmScreen.kt`).
+- `t6-ha19-cases-panneau` (T4, la part des cases) : H a-suite (fr, téléphone, 100 %), gestes 1 à 19 ; oracle : des cases en pointillé à l'écran (« en pointillé : à toucher »), aucune « [coupé, état « vide, en pointillé : à toucher »] ». Non tenu sur 1585bb46 (`rejeux-attente/_non-tenu-1585bb46/`) **et non tenu sur la tête** (`rejeux-attente/_non-tenu-tete/`) : à l'étape du kick, la première rangée de cases à toucher est encore coupée. Le lot « tutogrille » ne l'avait vérifié qu'à 360 dp et 130 % (« déjà tenu »). T4 n'est donc pas corrigé pour ce cas : à rendre au tri (zone tuto, `RhythmScreen.kt`).
 
 ## Impossibles
 

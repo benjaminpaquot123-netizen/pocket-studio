@@ -16,3 +16,4 @@ __pycache__/
 docs/audits/ultra/sieges/**/etat/
 # Replay journals: rewritten by every run of scripts/bench/rejeu-defauts.sh (never committed: the portal needs a clean tree).
 docs/audits/ultra/rejeux/_journaux/
+docs/audits/ultra/rejeux-attente/_journaux/

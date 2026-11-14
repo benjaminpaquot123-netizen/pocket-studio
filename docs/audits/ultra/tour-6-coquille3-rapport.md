@@ -20,6 +20,8 @@ chemin: Pro › Partager (phrase du volume) (fr) | test: Coquille3SeatTest#n5_th
 chemin: Remix, avant le modèle (es, Mode simple, main gauche) | test: Coquille3SeatTest#a10_oneDownloadButtonOnTheRemixPanel
 chemin: Más (es, Mode simple, main gauche) | test: Coquille3SeatTest#a11_remixOfMoreIsUnderTheLeftThumb
 chemin: Clavier › Notes (fr, Mode simple) | test: Coquille3SeatTest#p1_notesShowsEveryNotePlayed
+chemin: Clavier › Notes › zoom › Rythme › Clavier (fr, Mode simple) | test: Coquille3SeatTest#p1_theZoomChosenAfterNotesStaysWhenTheGridComesBack
+chemin: Mix (Pro, FLAC) › Partager › Autres fichiers (fr) | test: Coquille3SeatTest#n1_aFlacChosenInProStays
 chemin: Partager › Mes fichiers après un envoi (fr, Mode simple) | test: Coquille3SeatTest#n4_myFilesListTheSongJustSent
 
 ## Pas reproduit
@@ -28,3 +30,9 @@ chemin: Partager › Mes fichiers après un envoi (fr, Mode simple) | test: Coqu
 Ces défauts portent ici leur nom de siège : les numéros de la fiche du chef (N1, N4, N5) sont aussi ceux d'autres défauts du tri (`verdicts.tsv`, piano roll du tuto), que ce lot ne touche pas :
 ne corrige pas: N4 : le N4 du tri (flèche « plus bas » du piano roll du tuto) n'est pas ce lot ; « Mes fichiers » vide (le N4 de la fiche) n'est pas reproduit, gardé par un test
 ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll du tuto) n'est pas ce lot ; « détails ? » (le N5 de la fiche) est tenté ci-dessus
+
+## Relecture neuve (1re passe) : suites
+- Grave P1 : la demande de cadrage est celle du toucher, faite une fois ; la grille qui revient d'un autre onglet garde le zoom choisi ; le tuto ne demande jamais. `#p1_theZoomChosenAfterNotesStaysWhenTheGridComesBack`.
+- Moyen (FLAC) : un FLAC choisi en Pro reste (la page Partager n'en propose pas). `#n1_aFlacChosenInProStays`.
+- Fix : la liste « Plus » du Pro reprend sa mise en page d'avant (`ScreenScanTest` census `NavScreenshotTest.guideFirst`).
+- Mineurs laissés (noté) : sans modèle mais avec une chanson dans le projet, le panneau n'a plus de « Télécharger » visible (« Choisir une chanson » le demande) ; « Accueil » sort de l'appli sans projet avant le guide (cas d'avant) ; le Mixeur ouvert directement reste en WAV par défaut ; les tests touchent « WhatsApp » par coordonnées (feuille du téléphone simulée).

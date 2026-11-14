@@ -1,19 +1,6 @@
 Écran 4 (588x1278)
-texte « Fais-moi un morceau » @ 191,35
-icône ✕ @ 546,48
-texte « Étape 1 : choisis un style » @ 135,69
-texte « Changer » @ 400,120
-texte « Ce morceau sera en mode Simple. » @ 181,120
-texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
-texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,286
-bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌄ [état « fermé »] @ 294,360
-bouton (éclair) « Techno 10 styles » ⌄ [état « fermé »] @ 294,456
-bouton (disque) « House 9 styles » ⌄ [état « fermé »] @ 294,552
-bouton (enceinte) « Bass music 7 styles » ⌄ [état « fermé »] @ 294,648
-bouton (micro) « Hip-hop 7 styles » ⌃ [état « ouvert »] @ 294,744
-bouton « Trap Hip-hop · 140 BPM Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. Pour l'idée : Travis Scott – FE!N (2023) » @ 294,873
-icône ▶ @ 57,843
-bouton « Drill Hip-hop · 142 BPM La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. Pour l'idée : Central Cee – Doja (2022) » @ 294,1035
-icône ▶ @ 57,1005
-bouton « Phonk Hip-hop · 130 BPM Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. Pour l'idée : Kordhell – Murder in My Mind (2022) » @ 294,1197
-icône ▶ @ 57,1167
+icône ← @ 54,48
+texte « Simple ou Pro ? » @ 330,48
+texte « Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut. » @ 294,804
+bouton « Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » @ 294,963
+bouton « Pro Pour aller loin : tous les outils, structure, sons, mix et live. » @ 294,1176

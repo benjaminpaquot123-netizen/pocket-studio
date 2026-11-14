@@ -1,0 +1,41 @@
+Écran 233 (588x1278)
+icône (dossier ouvert) ✓ « Mon morceau Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+texte « Fini ? Partage ton morceau » @ 294,180
+champ « Nom du morceau (et du projet) » contenu « Mon morceau » @ 294,265
+icône ✕ @ 522,272
+texte « 3:09 » @ 66,352
+texte « 7 parties » @ 160,357
+bouton ▶ «  Écouter » @ 466,379
+texte « Niveau : comme la musique en streaming (−14) » @ 196,399
+image (rond coché) @ 45,461
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,474
+bouton « M4A · pour partager » [sélectionné] @ 157,573
+bouton « WAV · qualité max » @ 414,573
+bouton (trois points reliés) «   Partager » @ 294,669
+bouton (dossier) « Mes fichiers » › @ 272,771
+bouton « ? » @ 536,771
+icône (liste) « Chapitres » @ 444,879
+texte « Exporte ton morceau Chapitre 15/15 · Étape 1/1 · Facile » @ 207,879
+icône ⌃ @ 531,879
+bouton (coupe) « Tuto fini : bravo ! » @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -2,6 +2,7 @@
 """Checks seat-metrics.py and fuse-reports.py (Audit ultra, banc 2) on a tiny round made here: two
 seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/test_ultra_bench.py`).
 Standard library only."""
+import hashlib
 import json
 import os
 
@@ -227,6 +228,7 @@ def main():
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
         replayed_pairs(d)
+        named_pairs(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -249,6 +251,8 @@ def main():
         replays_keep_their_selftest(d)
         fusion_forged(d)
         toy_batch_is_its_own(d)
+        ci_state_reads_every_job(d)
+        portal_queue(d)
         portal_traces(d)
         zone_report(d)
         portal_recomputes(d)
@@ -1392,6 +1396,79 @@ def replayed_pairs(d):
     check("chantier : 12 écarts" in out, "twelve gaps, nothing else:\n" + out)
 
 
+def named_pairs(d):
+    """Lot « portail3 » (AUDIT-ULTRA §13.9, the night of round 6: real pairs written in other words): a pair named in
+    scripts/bench/juge-paires-nommees.tsv (« green TAB red TAB test class TAB reason », full shas) is a pair when the
+    judge can check it: the red is a « rouge: » commit before the green that adds or changes a test file of that
+    class, the green changes code, and the green was written before the rule (--fin-nommees). A green may be named for
+    a second red of the same class (a red written again to mend its test). Anything less pairs nothing, and a line the
+    judge cannot read is a gap of its own."""
+    root = judge_root(d, "juge-nommees")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def commit(message):
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "HEAD").strip()
+
+    for key in ("honest", "testonly", "otherclass", "before", "late"):
+        cls = f"{key.capitalize()}NamedTest"
+        path = os.path.join(tests, f"{cls}.kt")
+        write(path, f"class {cls} {{\n  @Test\n  fun the{key.capitalize()}GuideFolds() {{}}\n}}\n")
+        red = commit(f"rouge: G1, the {key} guide covers the page")
+        if key == "testonly":
+            write(path, f"class {cls} {{\n  @Test\n  fun the{key.capitalize()}GuideFolds() {{ check(true) }}\n}}\n")
+        else:
+            write(app, f"fun counter() = \"{key}\"\n")
+        shas[key] = (red, commit(f"vert: G1, the {key} guide folds when the page is left"), cls)
+        if key == "honest":
+            # One fix, two reds: the first pairs by its words, the second (the test mended) only by its name.
+            path = os.path.join(tests, "MendedNamedTest.kt")
+            write(path, "class MendedNamedTest {\n  @Test\n  fun theFieldSpeaksItalian() {}\n}\n")
+            first = commit("rouge: the field speaks the app's language")
+            write(path, "class MendedNamedTest {\n  @Test\n  fun theFieldSpeaksItalian() { check(true) }\n}\n")
+            second = commit("rouge: the field speaks the app's language (clock by hand)")
+            write(app, "fun counter() = \"mended\"\n")
+            shas["mended"] = (second, commit("vert: the field speaks the app's language"), "MendedNamedTest")
+            shas["mended-first"] = (first, shas["mended"][1], "MendedNamedTest")
+        if key == "before":
+            history_end = shas[key][1]
+    why = "même défaut, mots différents"
+    lines = ["# comment", ""]
+    for key in ("honest", "mended", "testonly", "late"):
+        lines.append("\t".join([shas[key][1], shas[key][0], shas[key][2], why]))
+    lines.append("\t".join([shas["otherclass"][1], shas["otherclass"][0], "HonestNamedTest", why]))
+    lines.append("\t".join([shas["before"][1], shas["late"][0], shas["late"][2], why]))
+    lines.append("\t".join([shas["honest"][1], shas["honest"][0], shas["honest"][2]]))            # no reason
+    lines.append("\t".join([shas["honest"][1][:8], shas["honest"][0], shas["honest"][2], why]))    # a short sha
+    named = os.path.join(root, "scripts", "bench", "juge-paires-nommees.tsv")
+    write(named, "\n".join(lines) + "\n")
+    commit("the named pairs")
+    with open(named, "rb") as f:
+        frozen = hashlib.sha256(f.read()).hexdigest()
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-nommees", history_end, "--empreinte-nommees", frozen], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    for key in ("honest", "mended", "mended-first"):
+        check(short[key][0] + " «" not in out and short[key][1] + " «" not in out, f"a pair named and checked ({key}) is a pair:\n" + out)
+    for key, reason in (("testonly", "ne change que des tests"), ("otherclass", "aucun fichier de test de la classe HonestNamedTest"),
+                        ("before", "n'est pas un commit « rouge: » d'avant ce vert"), ("late", "écrit après la règle")):
+        check(f"{short[key][0]} « rouge:" in out, f"a named pair that does not hold ({key}) leaves its red open:\n" + out)
+        green = next((l for l in out.splitlines() if l.startswith(f"{short[key][1]} « vert:")), "")
+        check("paire nommée refusée" in green and reason in green, f"a named pair that does not hold ({key}) says why ({reason}):\n" + out)
+    check(out.count("juge-paires-nommees.tsv, ligne") == 2 and ", ligne 9 : illisible" in out and ", ligne 10 : illisible" in out,
+          "a line without a reason and a line with a short sha are gaps of their own:\n" + out)
+    check("chantier : 10 écarts" in out, "four pairs refused (eight gaps), two lines unread, nothing else:\n" + out)
+
+
 def replay_backticks(d):
     """Lot « juge6 » (the testapk lot's « Choisir ce style » pair, 5c6322e8 / d88c328b): a Kotlin test named in
     backticks (« fun `rouge - a swallowed … is touched again`() ») is one test, its whole name, in a replay as in the
@@ -2432,6 +2509,194 @@ def review_rows(d):
             with open(path, encoding="utf-8") as f:
                 r = subprocess.run([sys.executable, "-I", script], input=f.read(), capture_output=True, text=True)
             check((r.returncode == 0) == want, f"the real review {name} keeps its answer ({want}):\n" + r.stdout)
+
+
+CI_FAKE_GH = """#!/usr/bin/env bash
+# Stand-in for « gh api <url> --jq … »: the lines jq would print, from the toy's files.
+case "$2" in
+  *actions/runs\\?head_sha=*) cat "$PS_TOY_CI/runs.tsv" ;;
+  *actions/runs/*/jobs) cat "$PS_TOY_CI/jobs.tsv" ;;
+  *) exit 1 ;;
+esac
+"""
+
+
+def ci_state_reads_every_job(d):
+    """Lot « ci3 » (review, G1): the CI's long job is now three (tests and screenshots, sound benches, release APK) and
+    none waits for the engine: « ci_build » is the state of EVERY job of the CI workflow but the emulator's and the
+    publication, never of the one job called « Build … »."""
+    toy = os.path.join(d, "ci-etat")
+    write(os.path.join(toy, "bin", "gh"), CI_FAKE_GH)
+    os.chmod(os.path.join(toy, "bin", "gh"), 0o755)
+    write(os.path.join(toy, "runs.tsv"), "1\tCI\tcompleted\tfailure\n")
+    env = dict(os.environ, PATH=os.path.join(toy, "bin") + os.pathsep + os.environ["PATH"], PS_TOY_CI=toy)
+    names = ["Quick checks (seconds)", "Engine tests (Linux)", "Separation tests (Linux)", "Build, unit tests, screenshots",
+             "Sound benches (song, live listening, real projects, soak)", "Release APK (unsigned)", "Emulator smoke test", "Publish APK"]
+
+    def state(**other):
+        rows = []
+        for n in names:
+            status, conclusion = other.get(n.split()[0].lower().strip(","), ("completed", "success"))
+            rows.append(f"{n}\t{status}\t{conclusion}")
+        write(os.path.join(toy, "jobs.tsv"), "\n".join(rows) + "\n")
+        out = subprocess.run(["bash", os.path.join(HERE, "ci-etat.sh")], env=env, capture_output=True, text=True).stdout
+        return dict(l.split("\t", 1) for l in out.splitlines() if l.startswith("ci_"))
+
+    check(state() == {"ci_build": "vert", "ci_emulateur": "vert"}, "every job green: green")
+    for red in ("sound", "release", "engine", "separation", "quick", "build"):
+        got = state(**{red: ("completed", "failure")})
+        check(got.get("ci_build") == "rouge" and got.get("ci_emulateur") == "vert", f"a red « {red} » job makes ci_build red: {got}")
+    got = state(sound=("in_progress", ""))
+    check(got.get("ci_build") == "en cours", f"a job still running: ci_build is not green: {got}")
+    got = state(sound=("in_progress", ""), release=("completed", "failure"))
+    check(got.get("ci_build") == "rouge", f"red wins over running: {got}")
+    got = state(emulator=("completed", "failure"), publish=("completed", "skipped"))
+    check(got == {"ci_build": "vert", "ci_emulateur": "rouge"}, f"the emulator's job is ci_emulateur's, the skipped publication nobody's: {got}")
+QUEUE_PORTAL = """#!/usr/bin/env bash
+# Stand-in for the portal: says what it was given, refuses the zone « refused », merges the others.
+tour="$1"; zone="$2"
+pushed="$(git ls-remote origin refs/heads/int | cut -f1)"
+head="no-head"; if git merge-base --is-ancestor "$pushed" "eq/$tour-$zone"; then head="has-head"; fi
+echo "portal $zone $head $3 $4" >> "$PS_TOY_CALLS"
+if [ "$zone" = refused ]; then echo "$zone: review refused: toy: not merged." >&2; exit 3; fi
+git merge -q --no-ff -m "Merge team $zone of $tour (audit ultra)" "eq/$tour-$zone"
+# Its traces, as the real portal: the judge counts as many gaps as the lots merged so far.
+n="$(git log --first-parent --merges --format=%s | grep -c '^Merge team ')"
+mkdir -p "docs/audits/ultra/portail/$zone"
+echo "chantier : $n écarts" > "docs/audits/ultra/portail/$zone/selftest-chantier.txt"
+git add "docs/audits/ultra/portail/$zone"
+git commit -q -m "Portal traces of the merge of $zone ($tour)"
+"""
+
+
+def portal_queue(d):
+    """Lot « portail3 » (AUDIT-ULTRA §13.9): portail-file.sh, the conductor's queue, on a toy workshop with a toy
+    remote and a stand-in for the portal. The workshop must be the pushed head; the lot merged is the PUSHED lot with
+    the pushed head merged into it, never a local leftover; the integration is pushed after each success; a refusal
+    stops the queue and prints the conductor's message; a symbolic link after the merge is undone and not pushed; a
+    conflict with the head never reaches the portal; nothing is merged during a wave; a batch holds three lots (from
+    batch 4 on)."""
+    check(os.path.isfile(os.path.join(HERE, "portail-file.sh")), "the conductor's queue is in the repository (scripts/bench/portail-file.sh)")
+    remote = os.path.join(d, "queue-remote.git")
+    root = os.path.join(d, "queue")
+    calls = os.path.join(d, "queue-calls.txt")
+    subprocess.run(["git", "init", "-q", "--bare", "-b", "int", remote], check=True)
+    os.makedirs(root)
+    git_toy(root, "init", "-q", "-b", "int")
+    git_toy(root, "remote", "add", "origin", remote)
+    bench = os.path.join(root, "scripts", "bench")
+    with open(os.path.join(HERE, "portail-file.sh"), encoding="utf-8") as f:
+        write(os.path.join(bench, "portail-file.sh"), f.read())
+    write(os.path.join(bench, "fusion-equipes.sh"), QUEUE_PORTAL)
+    write(os.path.join(bench, "pre-vol.sh"), '#!/usr/bin/env bash\n[ "$2" != recale ] || { echo "RECALÉ : toy"; exit 1; }\n')
+    for f in ("portail-file.sh", "fusion-equipes.sh", "pre-vol.sh"):
+        os.chmod(os.path.join(bench, f), 0o755)
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 3\n")
+    en_cours = os.path.join(root, "docs", "audits", "ultra", "EN-COURS.md")
+    write(en_cours, "# En cours\n\n- **Temps en cours** : CORRECTION du tour 9. Aucune vague de testeurs ne joue.\n")
+    write(os.path.join(root, "shared.txt"), "one\n")
+
+    def commit(message):
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "HEAD").strip()
+
+    start = commit("start")
+    git_toy(root, "push", "-q", "origin", "int")
+
+    def lot(zone, files, links=()):
+        """A lot's branch, made from the start and pushed as eq/tour-9-<zone>; the workshop comes back to int."""
+        git_toy(root, "checkout", "-q", "-b", f"tmp-{zone}", start)
+        for name, text in files.items():
+            write(os.path.join(root, name), text)
+        for name in links:
+            os.symlink("shared.txt", os.path.join(root, name))
+        commit(f"lot {zone}")
+        git_toy(root, "push", "-q", "origin", f"HEAD:refs/heads/eq/tour-9-{zone}")
+        git_toy(root, "checkout", "-q", "int")
+        git_toy(root, "branch", "-q", "-D", f"tmp-{zone}")
+
+    for zone in "abcdefgh":
+        lot(zone, {f"{zone}.txt": zone + "\n"})
+    lot("refused", {"refused.txt": "r\n"})
+    lot("recale", {"recale.txt": "r\n"})
+    lot("link", {"link.txt": "l\n"}, links=("alias.txt",))
+    lot("conflict", {"shared.txt": "the lot's\n"})
+    # The integration moves after the lots were cut: its pushed head is not in them.
+    write(os.path.join(root, "shared.txt"), "two\n")
+    commit("the integration goes on")
+    git_toy(root, "push", "-q", "origin", "int")
+    # A local leftover under the lot's name: never what is merged.
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-a", start)
+    write(os.path.join(root, "leftover.txt"), "never pushed\n")
+    commit("a local leftover")
+    git_toy(root, "checkout", "-q", "int")
+
+    env = dict(os.environ, PS_INTEGRATION="int", PS_TOY_CALLS=calls)
+
+    def queue(*lots):
+        r = subprocess.run(["bash", os.path.join(bench, "portail-file.sh"), *lots], cwd=root, env=env, capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    def pushed():
+        return subprocess.run(["git", "-C", remote, "rev-parse", "int"], capture_output=True, text=True).stdout.strip()
+
+    def said():
+        return open(calls, encoding="utf-8").read() if os.path.isfile(calls) else ""
+
+    def tree(rev="HEAD"):
+        return git_toy(root, "ls-tree", "-r", "--name-only", rev).split()
+
+    # 1. One good lot, one refused, one never reached.
+    code, out = queue("tour-9:a", "tour-9:refused", "tour-9:b")
+    check(code == 3, "a refusal of the portal stops the queue (exit 3):\n" + out)
+    check("portal a has-head" in said(), "the pushed head of the integration is merged into the lot before the portal:\n" + said())
+    check("a.txt" in tree() and "leftover.txt" not in tree(), "the lot merged is the pushed one, never a local leftover:\n" + out)
+    check("replaced by the pushed one" in out and "leftover.txt" in tree("refs/portail-file/eq/tour-9-a"),
+          "a local leftover is said and kept aside, never lost (review, M2):\n" + out)
+    check(pushed() == git_toy(root, "rev-parse", "HEAD").strip() and "a.txt" in tree(pushed()), "the integration is pushed after each success:\n" + out)
+    check("le portail refuse refused (sortie 3)" in out and "« refused: review refused: toy: not merged. »" in out,
+          "a refusal prints the conductor's message with the portal's exact line:\n" + out)
+    check("portal b " not in said() and "b.txt" not in tree(), "the lot after a refusal is not tried:\n" + out)
+    # 2. The workshop ahead of the pushed head.
+    write(os.path.join(root, "local.txt"), "not pushed\n")
+    commit("a local commit, never pushed")
+    before = said()
+    code, out = queue("tour-9:b")
+    check(code == 2 and "not the pushed head" in out and said() == before, "a workshop that is not the pushed head merges nothing (exit 2):\n" + out)
+    git_toy(root, "reset", "-q", "--hard", pushed())
+    # 3. A wave of testers plays.
+    write(en_cours, "# En cours\n\n- **Temps en cours** : VAGUE du tour 9, départ abc1234.\n")
+    commit("a wave starts")
+    git_toy(root, "push", "-q", "origin", "int")
+    code, out = queue("tour-9:b")
+    check(code == 2 and "wave of testers" in out and said() == before, "nothing is merged during a wave (exit 2):\n" + out)
+    write(en_cours, "# En cours\n\n- **Temps en cours** : CORRECTION du tour 9. Aucune vague de testeurs ne joue.\n")
+    commit("the wave is over")
+    git_toy(root, "push", "-q", "origin", "int")
+    # 4. The pre-flight refuses: the portal is not disturbed. A conflict with the head: neither.
+    code, out = queue("tour-9:recale")
+    check(code == 3 and "pre-flight refuses" in out and "portal recale" not in said(), "a lot the pre-flight refuses never reaches the portal:\n" + out)
+    code, out = queue("tour-9:conflict")
+    check(code == 3 and "does not merge" in out and "shared.txt" in out and "portal conflict" not in said(),
+          "a lot that conflicts with the pushed head never reaches the portal:\n" + out)
+    # 5. A symbolic link after the merge: undone, not pushed.
+    head = pushed()
+    code, out = queue("tour-9:link")
+    check(code == 3 and "symbolic link" in out and "alias.txt" in out, "a symbolic link in the merged tree is refused:\n" + out)
+    check(pushed() == head and git_toy(root, "rev-parse", "HEAD").strip() == head, "the merge with a link is undone and not pushed:\n" + out)
+    # 6. Three lots per batch: said before batch 4, refused from batch 4 on (a batch opens when portail-paquet.txt changes).
+    code, out = queue("tour-9:b", "tour-9:c", "tour-9:d", "--", "*QueueTest")
+    check("portal b has-head -- *QueueTest" in said() and "portal d has-head -- *QueueTest" in said(), "the filters after « -- » go to the portal for every lot:\n" + said())
+    check("b: merged and pushed" in out and "judge: 2 (before: 1)" in out and "judge: 4 (before: 3)" in out,
+          "the judge is read before and after each portal, in its traces:\n" + out)
+    check(code == 0 and "À VOIR" in out and "d.txt" in tree(pushed()), "before batch 4 a fourth lot is said, not refused:\n" + out)
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 4\n")
+    commit("batch 4 opens")
+    git_toy(root, "push", "-q", "origin", "int")
+    code, out = queue("tour-9:e", "tour-9:f", "tour-9:g", "tour-9:h")
+    check(code == 3 and "from_paquet 4" in out and "three at most" in out, "from batch 4 on a fourth lot of the batch is refused:\n" + out)
+    check("g.txt" in tree(pushed()) and "h.txt" not in tree(pushed()) and "portal h" not in said(), "the three lots of the batch are pushed, the fourth never tried:\n" + out)
 
 
 def fusion_toy(d, name):

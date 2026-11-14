@@ -39,6 +39,9 @@ orphans=$(ps -eo ppid=,args= | awk '$1 == 1 && /GradleWorkerMain/' | wc -l)
 machine="machine : ${free_gb} Go disque, ${mem_gb} Go mémoire, ${daemons:-0} démon(s), 0 orphelin"
 
 python3 -I scripts/bench/test_ultra_bench.py >"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc (voir $lot/selftest-scripts.log)"
+[ ! -f scripts/bench/test_portail3.py ] || python3 -I scripts/bench/test_portail3.py >>"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc, portail3 (voir $lot/selftest-scripts.log)"
+[ ! -f scripts/bench/test_portail4.py ] || python3 -I scripts/bench/test_portail4.py >>"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc, portail4 (voir $lot/selftest-scripts.log)"
+[ ! -f scripts/bench/test_constate.py ] || python3 -I scripts/bench/test_constate.py >>"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc, constate (voir $lot/selftest-scripts.log)"
 
 junit="$lot/junit"
 rm -rf "$junit"; mkdir -p "$junit"

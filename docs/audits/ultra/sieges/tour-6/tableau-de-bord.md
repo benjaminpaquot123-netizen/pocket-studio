@@ -17,6 +17,8 @@ Calculé par `scripts/bench/tableau-de-bord.py` ; « ? » = chiffre manquant, la
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 24 (new_project, padlive_party, live_screen, live_pads_full, timeline_screen, synth, piano_roll, acid, audio_tracks, instrument_panel, mixer, simple_mix, master_pro_panel, video_sheet, midi, plus, settings, help_page, glossary, latency, recette, studio, guide_panel, tuto_panel), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
 
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part)
+
 Toutes remplies : non
 
 ## tour-1
@@ -33,6 +35,8 @@ Toutes remplies : non
 | H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, ? | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 11 (live_screen, piano_roll, acid, instrument_panel, board, midi, help_page, glossary, recette, studio, guide_panel), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
+
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part) ; états d'avant la règle : banc 10, corrigé 35
 
 Toutes remplies : non
 
@@ -51,6 +55,8 @@ Toutes remplies : non
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 20 (padlive_party, live_screen, live_grid, live_pads_full, timeline_screen, piano_roll, acid, instrument_panel, video_sheet, remix_project, board, midi, plus, settings, help_page, glossary, latency, recette, studio, guide_panel), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
 
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part) ; états d'avant la règle : banc 6, corrigé 50, voulu 3
+
 Toutes remplies : non
 
 ## tour-3
@@ -67,6 +73,8 @@ Toutes remplies : non
 | H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, ? | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 10 (live_pads_full, piano_roll, instrument_panel, master_pro_panel, remix_project, board, midi, latency, recette, studio), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
+
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part) ; états d'avant la règle : corrigé 28, banc 9
 
 Toutes remplies : non
 
@@ -85,6 +93,8 @@ Toutes remplies : non
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 9 (live_screen, live_pads_full, instrument_panel, video_sheet, remix_project, board, latency, recette, studio), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
 
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part) ; états d'avant la règle : banc 2
+
 Toutes remplies : non
 
 ## tour-5
@@ -102,22 +112,26 @@ Toutes remplies : non
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 10 (padlive_party, live_pads_full, piano_roll, instrument_panel, master_pro_panel, remix_project, glossary, latency, recette, studio), 36, 0, 24 / 1 | 0, 0, 0, ≥ 16 / ≤ 3 | non |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
 
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part)
+
 Toutes remplies : non
 
 ## tour-6
 
 | | Condition | Mesure | Seuil | Remplie |
 |---|---|---|---|---|
-| A | Items ≥ grave côté appli, non tranchés ou non faits | 6 | 0 | non |
-| B | Items ≥ grave classés banc (garde + preuve sans banc) ; « banc? » ≥ moyen sans verdict | 0 ; 6 | ≤ 2, prouvés ; 0 | ? |
-| C | Revient / banc contredit (≥ moyen ; mineurs) ; candidats à lire | 0 ; 0 ; 10 | 0 ; ≤ 2 ; 0 | ? |
-| D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 0/0 ; 0/120 ; 38 oui, 34 non, 1 pas vue ; 9 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
+| A | Items ≥ grave côté appli, non tranchés ou non faits | 8 | 0 | non |
+| B | Items ≥ grave classés banc (garde + preuve sans banc) ; « banc? » ≥ moyen sans verdict | 0 ; 7 | ≤ 2, prouvés ; 0 | ? |
+| C | Revient / banc contredit (≥ moyen ; mineurs) ; candidats à lire | 0 ; 0 ; 12 | 0 ; ≤ 2 ; 0 | ? |
+| D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 8/22 ; 0/120 ; 34 oui, 38 non, 1 pas vue ; 14 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
 | E | Missions réussies (oracle mesures.json) | 6/12 | ≥ 90 % | non |
-| F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 32 (0) | ≤ 5 (0) | non |
-| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 176, 2 | 0, 0, 0, 0 | non |
-| H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, 6 (lignes rouges de telephone.tsv au 2026-11-12, après le retest v6 : T6-T01, T6-T02, T6-T03, T6-T04, T6-T05, T6-T06) | vert/vert, 0 | ? |
+| F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 50 (1) | ≤ 5 (0) | non |
+| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 281, 2 | 0, 0, 0, 0 | non |
+| H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/rouge (9f26c244, passage 43375199284 : JourneyTest.aFirstSongInTheModeSimple), 6 (lignes rouges de telephone.tsv au 2026-11-12, après le retest v6 : T6-T01, T6-T02, T6-T03, T6-T04, T6-T05, T6-T06) | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 13 (padlive_party, live_screen, piano_roll, acid, audio_tracks, master_pro_panel, video_sheet, remix_project, board, midi, glossary, latency, studio), 36, 2, 11 / 1 | 0, 0, 0, ≥ 16 / ≤ 3 | non |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
+
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part)
 
 Toutes remplies : non
 
@@ -133,7 +147,7 @@ Toutes remplies : non
 | tour-3 | 24 | 241 | 10.0 | v1 | 2.25 | 2.25 | 231 | 0 | 0 | 1/3 | 0 |
 | tour-4 | 20 | 186 | 9.3 | v1 | 1.35 | 1.3 | 183 | 0 | 0 | 1/2 | 0 |
 | tour-5 | 24 | 190 | 7.9 | v2 | 0.62 | 0.33 | 182 | 2 | 14 | 24/78 | 7 |
-| tour-6 | 19 | 176 | 9.3 | v2 | 0.42 | 0.37 | 155 | 0 | 37 | 38/72 | 1 |
+| tour-6 | 40 | 262 | 6.5 | v2 | 0.33 | 0.23 | 219 | 0 | 64 | 34/72 | 1 |
 
 Changement d'échelle entre tour-4 et tour-5 (v1 → v2) : les graves de ces deux tours ne se comparent pas.
 

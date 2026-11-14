@@ -50,6 +50,16 @@ Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire
 - Fusionner : paquets de trois lots au plus ; la CI part à la fin de chaque paquet ; rien d'autre n'entre avant qu'elle soit verte, téléphone simulé compris ; le juge du chantier ne monte pas. On ne fusionne jamais autre chose que la tête poussée.
 - Dire : chaque point à Benjamin se fait après lecture de la CI et finit par « Ce qui n'est pas vert ». Une APK pour son téléphone ne part que d'un commit à la CI verte.
 
+- Points d'étape pour Benjamin : heures belges ; un seul compteur, en trois lignes (« Bugs corrigés dans l'appli », « En salle d'attente », « Bugs encore à corriger ») ; « corrigé » seulement quand un testeur l'a constaté ; devant une CI rouge, lire l'artefact (test, message, classes d'avant) avant d'en parler. Détail : `docs/audits/AUDIT-ULTRA.md` § 13.10.
+
+## Méthode d'audit complet (Benjamin, 2026-11-13) : la règle pour tout gros travail à plusieurs
+Texte complet : `docs/audits/METHODE-AUDIT-COMPLET.md` (à lire en début de session quand on audite ou qu'on répare à plusieurs).
+- Trois temps jamais mélangés (tester, trier, réparer) ; un rôle par discussion ; une zone = un réparateur ; les discussions restent muettes et n'écrivent qu'au chef.
+- Chaque défaut a sa phrase d'acceptation vue de l'utilisateur ; « corrigé » ne se dit que quand un testeur neuf l'a constaté, avant l'entrée dans l'appli ; sinon « tenté ».
+- Rien n'entre sur une base rouge ; trois réparations au plus, puis la vérification complète ; un rouge se mesure avant de se commenter.
+- Un seul compteur en trois lignes ; chaque point finit par « ce qui n'est pas vert » ; après chaque grosse séance, on audite aussi la méthode.
+- À la clôture : liste gelée, les testeurs ne cherchent plus, on s'arrête quand la liste est vide.
+
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.
 

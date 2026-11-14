@@ -1,0 +1,2 @@
+route=dialogue:pad_pick
+nouvelle=1

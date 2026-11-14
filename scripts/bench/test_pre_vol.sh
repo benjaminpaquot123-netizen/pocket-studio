@@ -16,7 +16,7 @@ git config user.name essai
 git config user.email essai@localhost
 mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
 cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
-for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
+for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py reparations.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
 # The batch of merges in this little repository: 1 (a rule « from_paquet 2 » waits).
 printf '# Paquet de fusions en cours\npaquet: 1\n' > scripts/bench/portail-paquet.txt
 echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
@@ -246,6 +246,242 @@ expect "a lot that moves the batch: refused" 1 "portail-paquet.txt" oui tour-9 p
 git checkout -q fx-int
 out="$(scripts/bench/fusion-equipes.sh tour-9 paquet 2>&1)"; git merge --abort 2> /dev/null || true; git reset -q --hard fx-int
 if printf '%s\n' "$out" | grep -q "moves the batch"; then echo "vert  the portal names the batch rule"; else reds=$((reds + 1)); echo "ROUGE the portal names the batch rule"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+
+# --- §13.9, first point (lot « portail3 », rules « from_paquet 4 ») --------------------------------------------------
+# From here the toy's portal can go to the end of a merge: stand-ins for the replays with their self-test, for Gradle
+# and for the judge (the real judge's functions, which rapport-zone.py reads; it prints the lines of juge.txt, then
+# « chantier : N écarts », or no such line when the file juge-muet is there). A branch moves the judge by changing
+# juge.txt.
+git checkout -q fx-int
+cat > scripts/bench/rejeu-defauts.sh <<'STUB'
+#!/usr/bin/env bash
+echo "1 verts, 0 rouges, 0 en quarantaine, 0 sautés" > "$PS_REJEUX_SELFTEST/selftest-resume.txt"
+echo "a stamp" > "$PS_REJEUX_SELFTEST/selftest.ok"
+echo "chantier : 0 écarts" > "$PS_REJEUX_SELFTEST/selftest-chantier.txt"
+echo "r1 : oracle tenu"
+STUB
+printf '#!/usr/bin/env bash\nexit 0\n' > scripts/bench/gradle-file.sh
+sed '/^if __name__ == "__main__":/,$d' "$src/scripts/bench/verifie-chantier.py" > scripts/bench/verifie-chantier.py
+cat >> scripts/bench/verifie-chantier.py <<'STUB'
+if __name__ == "__main__":
+    gaps = [l for l in open("juge.txt", encoding="utf-8").read().splitlines() if l] if os.path.exists("juge.txt") else []
+    for gap in gaps:
+        print(gap)
+    if not os.path.exists("juge-muet"):
+        print(f"chantier : {len(gaps)} écarts")
+STUB
+chmod +x scripts/bench/rejeu-defauts.sh scripts/bench/gradle-file.sh scripts/bench/decisions-index.sh
+old_gap="abcdef123 « vert: un ancien » : vert sans rouge du même test avant lui"
+printf '%s\n%s\n' "$old_gap" "résumé refusé : un écart qui s'en ira" > juge.txt
+git add scripts/bench juge.txt && git commit -q -m "the toy's portal goes to the end of a merge"
+batch() { git checkout -q fx-int && sed -i "s/^paquet: .*/paquet: $1/" scripts/bench/portail-paquet.txt && git commit -q -am "batch $1 (test)"; }
+# The real portal on one zone: its exit code in $prc, all it said in $pout, the integration's head before in $pbefore.
+portal() { # <zone>
+  git checkout -q fx-int
+  pbefore="$(git rev-parse HEAD)"
+  prc=0
+  pout="$(scripts/bench/fusion-equipes.sh tour-9 "$1" 2>&1)" || prc=$?
+}
+said() { # <label> <0 when what was wanted was seen>
+  if [ "$2" -eq 0 ]; then echo "vert  $1"; else reds=$((reds + 1)); echo "ROUGE $1 (portal: exit $prc)"; printf '%s\n' "$pout" | sed 's/^/      /'; fi
+}
+has() { printf '%s\n' "$pout" | grep -qF -- "$1"; }
+# Nothing left of an undone merge: the head back where it was, no file changed or left behind, no trace folder.
+untouched() { [ "$(git rev-parse HEAD)" = "$pbefore" ] && [ -z "$(git status --porcelain)" ] && [ -z "$(ls docs/audits/ultra/portail 2>/dev/null | grep -- "-$1\$")" ]; }
+
+# Rule 1: the portal undoes a merge that makes the judge go up, counted against the previous portal trace.
+batch 3
+# (The zones' names: the first trace's folder « …-jzz » sorts AFTER the second's « …-jaa »; the previous trace is the
+# last one committed, by the history, never the last by name.)
+team jzz && rapport jzz && review jzz
+portal jzz
+said "the judge is not compared without a previous portal trace" "$( [ "$prc" -eq 0 ] && has "no previous portal trace" && echo 0 || echo 1)"
+team jaa && printf '%s\n' "$old_gap" > juge.txt && git commit -q -am "one gap closed" && rapport jaa && review jaa
+portal jaa
+said "a lot that makes the judge go down is merged" "$( [ "$prc" -eq 0 ] && has "judge: 1 écarts (previous portal trace: 2" && echo 0 || echo 1)"
+# The lot that goes up: the old gap is still there, printed with a shorter sha (8 letters where the trace has 9), and
+# one gap is new.
+new_gap="1234abcd « vert: un neuf » : vert sans rouge du même test avant lui"
+team jup && printf '%s\n%s\n' "${old_gap/abcdef123/abcdef12}" "$new_gap" > juge.txt && git commit -q -am "one gap more" && rapport jup && review jup
+portal jup
+said "before batch 4 a judge that goes up is only said" "$( [ "$prc" -eq 0 ] && has "the judge goes up (1 → 2 écarts" && has "refused from batch 4" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 4
+portal jup
+said "from batch 4 a lot that makes the judge go up is undone" "$( [ "$prc" -ne 0 ] && has "jup: the judge goes up (1 → 2 écarts" && has "undone" && untouched jup && echo 0 || echo 1)"
+said "the refusal names the new gap, not the old one printed with a shorter sha" "$( has "$new_gap" && ! has "un ancien" && echo 0 || echo 1)"
+team jmuet && echo x > juge-muet && git add juge-muet && git commit -q -m "the judge says no count" && rapport jmuet && review jmuet
+portal jmuet
+said "from batch 4 a judge without its « chantier : » line is undone" "$( [ "$prc" -ne 0 ] && has "jmuet: the judge printed no « chantier : N écarts » line" && untouched jmuet && echo 0 || echo 1)"
+# A previous trace without the judge's count (an older portal's): nothing to compare with, the lot is merged.
+git checkout -q fx-int && mkdir -p docs/audits/ultra/portail/2026-01-01-tour-9-faux \
+  && echo "résumé absent" > docs/audits/ultra/portail/2026-01-01-tour-9-faux/selftest-chantier.txt \
+  && git add docs/audits/ultra/portail && git commit -q -m "Portal traces of the merge of faux (tour-9)"
+portal jup
+said "a previous trace without the judge's count refuses nothing" "$( [ "$prc" -eq 0 ] && has "has no « chantier : » line" && echo 0 || echo 1)"
+
+# Rule 2: a lot that says it fixes a blocking or grave defect adds its replay (rapport-zone.py --corrections). The
+# report's line, one per defect fixed: « corrige: <id> | gravité: bloquant|grave|moyen|mineur | rejeu: <id du rejeu> »,
+# or « … | rejeu impossible : <raison> ».
+# The two tables that know a defect's gravity: the bench's verdicts (a row turned « corrigé ») and the round's triage.
+git checkout -q fx-int && before_triage="$(git rev-parse HEAD)" && mkdir -p docs/audits/ultra/sieges/tour-9
+printf '# Verdicts\ntour\titem\tcle\tgravite\tverdict\tetat\ntour-9\tT9-01\tk1\tgrave\tappli\touvert\ntour-9\tT9-02\tk2\tmineur\tappli\touvert\n' > docs/audits/ultra/verdicts.tsv
+printf 'n°\tverdict\tgravité retenue\tfichier:fonction\tpreuve\nG1\tréel\tgrave\tA.kt:a\tvu\nG2\tréel\tmineur\tB.kt:b\tvu\nG3\tvoulu\tgrave\tC.kt:c\tvu\n' > docs/audits/ultra/sieges/tour-9/verdicts.tsv
+git add docs/audits/ultra/verdicts.tsv docs/audits/ultra/sieges && git commit -q -m "the verdicts and the round's triage"
+body="$(printf '# Rapport\n\ntests: FooTest\n\n- chemin: Accueil | test: FooTest#works\n')"
+fixes() { # <zone> <lines added to the zone report…>: a lot whose report carries these lines, reviewed
+  local zone="$1"
+  shift
+  rapport "$zone" "$(printf '%s\n' "$body" "$@")" && review "$zone"
+}
+replay() { mkdir -p "docs/audits/ultra/rejeux/$1" && echo oracle > "docs/audits/ultra/rejeux/$1/oracle.txt" && git add docs/audits/ultra/rejeux && git commit -q -m "replay $1"; }
+team fnoreplay && fixes fnoreplay "corrige: D1 | gravité: grave | rejeu: r7"
+expect "a grave fix whose replay is not added: refused" 1 "correction sans son rejeu : corrige « D1 » (grave): replay r7 is not a folder the branch adds" oui tour-9 fnoreplay
+portal fnoreplay
+said "the portal names the fix without its replay, nothing merged" "$( [ "$prc" -eq 8 ] && has "fnoreplay: fix without its replay: corrige « D1 » (grave): replay r7 is not a folder the branch adds" && has "not merged" && untouched fnoreplay && echo 0 || echo 1)"
+team fold && fixes fold "corrige: D1 | gravité: bloquant | rejeu: r1"
+expect "a replay that was already there is not the fix's replay: refused" 1 "corrige « D1 » (bloquant): replay r1 is not a folder the branch adds" oui tour-9 fold
+team fnone && fixes fnone "corrige: D1 | gravité: grave"
+expect "a grave fix that names no replay: refused" 1 "corrige « D1 » (grave): no replay named" oui tour-9 fnone
+team fword && fixes fword "corrige: D1 | gravité: bloquant | rejeu impossible : non"
+expect "« rejeu impossible » with a one-word reason: refused" 1 "corrige « D1 » (bloquant): « rejeu impossible » without a real reason" oui tour-9 fword
+team fempty && fixes fempty "corrige: D1 | gravité: grave | rejeu impossible :"
+expect "« rejeu impossible » with no reason: refused" 1 "corrige « D1 » (grave): « rejeu impossible » without a real reason" oui tour-9 fempty
+team fshape && fixes fshape "corrige: D1, un grave, rejeu r7"
+expect "a « corrige: » line in another shape: refused" 1 "is not « corrige: <id> | gravité:" oui tour-9 fshape
+team freason && fixes freason "- corrige: D1 | gravité: grave | rejeu impossible : le défaut ne s'entend que sur un vrai téléphone"
+expect "« rejeu impossible » with its reason is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 freason
+team fminor && fixes fminor "corrige: D2 | gravité: mineur" "corrige: D3 | gravité: moyen | rejeu: r1"
+expect "a moyen or mineur fix needs no replay" 0 "PRÉ-VOL : PRÊT" non tour-9 fminor
+# The ways around the line. A grave row of the bench's verdicts turned « corrigé » with no line for it:
+team fflip && sed -i 's/\tgrave\tappli\touvert$/\tgrave\tappli\tcorrigé/' docs/audits/ultra/verdicts.tsv && git commit -q -am "T9-01 marked fixed" && fixes fflip
+expect "a grave verdict turned « corrigé » without its line: refused" 1 "T9-01 (grave) turned « corrigé » in docs/audits/ultra/verdicts.tsv without its line" oui tour-9 fflip
+team fflipminor && sed -i 's/\tmineur\tappli\touvert$/\tmineur\tappli\tcorrigé/' docs/audits/ultra/verdicts.tsv && git commit -q -am "T9-02 marked fixed" && fixes fflipminor
+expect "a mineur verdict turned « corrigé » needs no line" 0 "PRÉ-VOL : PRÊT" non tour-9 fflipminor
+# A grave of the round's triage named by the report, or by a commit of the branch, with no line for it:
+team fnamed && fixes fnamed "## Fait" "- G1 / G2 : la note reste au-dessus du panneau."
+expect "a grave of the triage named by the report without its line: refused" 1 "G1 (grave in docs/audits/ultra/sieges/tour-9/verdicts.tsv) is named in the zone report without its line" oui tour-9 fnamed
+team fcommit && git commit -q --allow-empty -m "vert: G1, the note stays above the panel" && fixes fcommit
+expect "a grave of the triage named by a commit without its line: refused" 1 "G1 (grave in docs/audits/ultra/sieges/tour-9/verdicts.tsv) is named in the commit « vert: G1, the note stays above the panel » without its line" oui tour-9 fcommit
+team flower && fixes flower "corrige: G1 | gravité: mineur"
+expect "a grave of the triage fixed as « mineur »: refused" 1 "corrige « G1 »: says mineur, docs/audits/ultra/sieges/tour-9/verdicts.tsv says grave" oui tour-9 flower
+# (A branch that left before the triage was committed: the table is read at the integration's head.)
+git checkout -q -b eq/tour-9-fearly "$before_triage" && echo fearly > travail-fearly.txt && git add travail-fearly.txt && git commit -q -m "work of fearly" \
+  && fixes fearly "- G1 : la note reste au-dessus du panneau."
+expect "a grave of a triage the branch does not hold yet is still known: refused" 1 "G1 (grave in docs/audits/ultra/sieges/tour-9/verdicts.tsv) is named in the zone report without its line" oui tour-9 fearly
+team fnotfix && fixes fnotfix "- G1 reste couvert par le test du lot 1 ; G3 et G12 sont hors lot." "ne corrige pas: G1 : cité pour son test, le défaut reste ouvert"
+expect "a grave only cited says so in one line, and is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 fnotfix
+team fnotfixword && fixes fnotfixword "- G1 reste couvert." "ne corrige pas: G1 : non"
+expect "« ne corrige pas » with a one-word reason: refused" 1 "« ne corrige pas: G1 » without a real reason" oui tour-9 fnotfixword
+# The whole way: the replay added with the fix, held, named by the line; the real portal merges the lot.
+team fok && replay r7 && fixes fok "corrige: G1 | gravité: grave | rejeu: r7" "r7 : oracle tenu"
+expect "a grave fix with its replay added is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 fok
+# Before batch 4 the rule waits: said by the pre-flight, not a word from the portal.
+batch 3
+expect "before batch 4 a fix without its replay is only said" 0 "correction sans son rejeu : corrige « D1 » (grave): replay r7 is not a folder the branch adds.* — refusé à partir du paquet 4" non tour-9 fnoreplay
+portal fnoreplay
+said "before batch 4 the portal merges a fix without its replay" "$( [ "$prc" -eq 0 ] && ! has "fix without its replay" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 4
+portal fok
+said "the portal merges a grave fix with its replay" "$( [ "$prc" -eq 0 ] && has "fok: merged" && echo 0 || echo 1)"
+
+# --- §13.5, last point (lot « portail4 », rule « from_paquet 7 ») ----------------------------------------------------
+# No lot of the tutorial enters before a fresh beginner replayed it on the lot's branch: a lot that changes the
+# tutorial zone carries, per control seat, « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its
+# zone report, the seat's own report being in the branch (rapport-zone.py --tuto). Portal: exit 10, before the merge.
+git checkout -q fx-int
+mkdir -p app/src/main/java/t/tuto && echo panneau > app/src/main/java/t/tuto/TutoPanel.kt && git add app/src/main && git commit -q -m "the application's tutorial"
+tutofix() { # <zone>: a lot that changes the tutorial; its last change of the tutorial in $tsha
+  team "$1" && echo "$1" >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "the tutorial, changed by $1" && tsha="$(git rev-parse HEAD)"
+}
+seat() { # <id> <commit played>: a control seat's report, as the bench starts it
+  mkdir -p "docs/audits/ultra/sieges/tour-9/controle/$1"
+  printf 'code testé : %s\njoué par : sous-agent neuf\nsiege: a | profil: controle\nchapitre: 1 Un chapitre | ecran: 3 | compris du premier coup | vu\n' "$2" > "docs/audits/ultra/sieges/tour-9/controle/$1/rapport.md"
+  git add "docs/audits/ultra/sieges/tour-9/controle/$1" && git commit -q -m "control seat $1"
+}
+tutofix tnone && fixes tnone
+# Before batch 7 the rule waits: said by the pre-flight, not a word from the portal.
+batch 6
+expect "before batch 7 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 7" non tour-9 tnone
+portal tnone
+said "before batch 7 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 7
+expect "a tutorial lot without its control seat: refused" 1 "lot du tuto sans son siège de contrôle : no « controle: » line" oui tour-9 tnone
+portal tnone
+said "the portal names the tutorial lot without its control seat, nothing merged" "$( [ "$prc" -eq 10 ] && has "tnone: tutorial lot without its control seat: no « controle: » line" && has "not merged" && untouched tnone && echo 0 || echo 1)"
+tutofix told && seat Ha "$tsha" && played="$tsha" && echo encore >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "one more change of the tutorial, after the seat" \
+  && fixes told "controle: Ha | code testé: $played | bloqués: 0 | graves neufs: 0"
+expect "a seat that played before the last change of the tutorial: refused" 1 "before the lot's last change of the tutorial" oui tour-9 told
+portal told
+said "the portal refuses the seat that played the older code with exit 10" "$( [ "$prc" -eq 10 ] && has "told: tutorial lot without its control seat" && untouched told && echo 0 || echo 1)"
+tutofix tblocked && seat Ha "$tsha" && fixes tblocked "controle: Ha | code testé: $tsha | bloqués: 1 | graves neufs: 0"
+expect "a control seat with a blocked chapter: refused" 1 "bloqués: 1" oui tour-9 tblocked
+tutofix tinvented && fixes tinvented "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a line without the seat's report in the branch: refused" 1 "controle/Ha/rapport.md" oui tour-9 tinvented
+# An honest lot outside the tutorial: nothing asked, not a word about the tutorial from the pre-flight or the portal.
+team plain && fixes plain
+git checkout -q fx-int
+out="$(scripts/bench/pre-vol.sh tour-9 plain 2>&1)"; rc=$?
+if [ "$rc" -eq 0 ] && ! printf '%s\n' "$out" | grep -qi "tuto"; then echo "vert  a lot outside the tutorial: the pre-flight says nothing of the tutorial"; else reds=$((reds + 1)); echo "ROUGE a lot outside the tutorial (pre-flight: exit $rc)"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+portal plain
+said "the portal merges a lot outside the tutorial and says nothing of the tutorial" "$( [ "$prc" -eq 0 ] && has "plain: merged" && ! printf '%s\n' "$pout" | grep -qi "tuto" && echo 0 || echo 1)"
+# The whole way: the fix, the seat that played it, its line; the real portal merges the lot.
+tutofix tok && seat Ha "$tsha" && fixes tok "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de contrôle" non tour-9 tok
+portal tok
+said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
+
+# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 8 ») --------------------------------
+# A lot writes « tenté » in docs/audits/ultra/corrections.tsv, never « corrigé », « rejoué » (the portal's) nor
+# « constaté » (the chief's, after a control seat): portal exit 11, before the merge. After a merge, the portal itself
+# turns the lot's « tenté » to « rejoué » when its proof (a replay of rejeux/) held on the merged head.
+if [ -f scripts/bench/reparations.py ] || [ -f "$src/scripts/bench/reparations.py" ]; then
+  git checkout -q fx-int
+  [ ! -f "$src/scripts/bench/reparations.py" ] || cp "$src/scripts/bench/reparations.py" scripts/bench/
+  # (The stand-in for the replays now says every replay of rejeux/ held, as the real one does on a green merge.)
+  cat > scripts/bench/rejeu-defauts.sh <<'STUB'
+#!/usr/bin/env bash
+echo "1 verts, 0 rouges, 0 en quarantaine, 0 sautés" > "$PS_REJEUX_SELFTEST/selftest-resume.txt"
+echo "a stamp" > "$PS_REJEUX_SELFTEST/selftest.ok"
+echo "chantier : 0 écarts" > "$PS_REJEUX_SELFTEST/selftest-chantier.txt"
+for d in docs/audits/ultra/rejeux/*/; do case "$(basename "$d")" in _*) ;; *) echo "$(basename "$d") : oracle tenu" ;; esac; done
+STUB
+  printf 'tour\titem\tsiege\tecran\tetat\tcommit\ttest\tnote\tcible\tphrase_acceptation\tsiege_origine\tconstat\ntour-9\tC1\tB/a\t15\tpas pris\t-\t-\t\t\tje touche Voz et la piste s ouvre\ttour-9/lotB/a\t\ntour-9\tC2\tB/a\t16\tpas pris\t-\t-\t\t\t\ttour-9/lotB/a\t\n' > docs/audits/ultra/corrections.tsv
+  git add scripts/bench docs/audits/ultra/corrections.tsv && git commit -q -m "the register of the repairs"
+  state() { # <zone> <item> <state> <proof>: the lot turns its line to this state
+    team "$1" && sed -i "s/^\(tour-9\t$2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1$3\t1234567\t$4/" docs/audits/ultra/corrections.tsv && git commit -q -am "$1 writes $2 $3"
+  }
+  state cself C1 corrigé r1 && fixes cself
+  batch 7
+  expect "before batch 8 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 8" non tour-9 cself
+  portal cself
+  said "before batch 8 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
+  git reset -q --hard "$pbefore"
+  batch 8
+  expect "a lot that writes « corrigé »: refused" 1 "état réservé du registre des réparations : .*tour-9 C1.*« corrigé »" oui tour-9 cself
+  portal cself
+  said "the portal names the lot that gives itself « corrigé », nothing merged" "$( [ "$prc" -eq 11 ] && has "cself: the lot gives itself a state of the repairs register" && has "not merged" && untouched cself && echo 0 || echo 1)"
+  state cconst C1 constaté r1 && fixes cconst
+  portal cconst
+  said "the portal refuses a lot that writes « constaté » (the chief's)" "$( [ "$prc" -eq 11 ] && has "« constaté »" && untouched cconst && echo 0 || echo 1)"
+  state crej C1 rejoué r1 && fixes crej
+  expect "a lot that writes « rejoué » (the portal's): refused" 1 "état réservé du registre des réparations" oui tour-9 crej
+  # The whole way: the lot says « tenté » with its replay r8, added and held; the portal merges it and writes « rejoué »
+  # itself, in the commit of its traces. C2's proof is a replay the portal never played: it stays « tenté ».
+  state ctente C1 tenté r8 && replay r8 && sed -i "s/^\(tour-9\tC2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1tenté\t1234567\tr404/" docs/audits/ultra/corrections.tsv \
+    && git commit -q -am "C2 tried" && fixes ctente "r8 : oracle tenu"
+  expect "a lot that writes « tenté » is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 ctente
+  portal ctente
+  c1="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')"
+  c2="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C2" {print $5}')"
+  said "the portal merges the lot and sets « rejoué » itself where the replay held" "$( [ "$prc" -eq 0 ] && has "ctente: merged" && [ "$c1" = "rejoué" ] && [ "$c2" = "tenté" ] \
+    && [ "$(git log -1 --format=%s HEAD)" = "Portal traces of the merge of ctente (tour-9)" ] && echo 0 || echo 1)"
+  said "« rejoué » is written by the commit of the traces, not by the lot" "$( [ "$(git show HEAD^:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')" = "tenté" ] && git show --stat HEAD | grep -q corrections.tsv && echo 0 || echo 1)"
+else
+  reds=$((reds + 1)); echo "ROUGE scripts/bench/reparations.py is missing (the repairs register's rule)"
+fi
 
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

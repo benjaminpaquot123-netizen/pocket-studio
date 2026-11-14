@@ -247,12 +247,17 @@ internal fun CutZoom(
                         if (!moved) {
                             onTouched()
                             val at = view.frameAt(down.position.x)
-                            // Round 3, zone 1, n° 9, made unambiguous (round 3 review): a touch on a piece's number (the
-                            // band on top of the curve) ticks it or unticks it and leaves the play head; a touch on the
-                            // curve itself only places the play head (it ticked the piece under it too: every « place
-                            // the head, then Couper ici » chose pieces nobody meant to send).
+                            // A touch on a piece's number (the band on top of the curve) ticks it or unticks it and leaves
+                            // the play head (round 3, zone 1, n° 9). A touch on the curve's body places the play head and,
+                            // since tour 6 (control Ba-2, A7), also chooses the piece under it; « Enlever » ignores such
+                            // choices (CutModel.remove).
                             val onNumber = !grabbing && down.position.y < PIECE_NUMBER_ZONE.toPx()
-                            if (!onNumber || !model.touchPiece(at)) model.cursor = at
+                            // Tour 6, control Ba-2 (A7, a left thumb that cannot reach the numbers on top): a touch on a
+                            // piece's body places the play head AND chooses that piece (never unticks it).
+                            if (!onNumber || !model.touchPiece(at)) {
+                                model.cursor = at
+                                if (!grabbing) model.choosePieceAt(at)
+                            }
                         }
                     }
                 }
@@ -329,12 +334,18 @@ internal fun CutZoom(
                                 drawSpanBar(z, outward = 1f, barW, handleW, handleH, ruler)
                             }
                         } else {
-                        // Each piece's ground, in its colour.
+                        // Each piece's ground, in its colour. Tour 6, seat B a #A7: a chosen piece is marked clearly — a
+                        // bright band of its colour framed on both sides — not only a small number, so a touched voice piece
+                        // reads at once as the one picked.
                         pieces.forEachIndexed { i, p ->
                             val x0 = view.x(p.start)
                             val x1 = view.x(p.end)
                             if (x1 < 0f || x0 > size.width) return@forEachIndexed
-                            drawRect(pieceColor(i).copy(alpha = 0.16f), Offset(max(0f, x0), 0f), Size(min(size.width, x1) - max(0f, x0), size.height))
+                            val ticked = i in model.chosen
+                            val l = max(0f, x0)
+                            val w = min(size.width, x1) - l
+                            drawRect(pieceColor(i).copy(alpha = if (ticked) 0.42f else 0.16f), Offset(l, 0f), Size(w, size.height))
+                            if (ticked) drawRect(pieceColor(i), Offset(l, 0f), Size(w, size.height), style = androidx.compose.ui.graphics.drawscope.Stroke(2f * hair))
                         }
                         // The curve: each column in its piece's colour, grey outside the pieces.
                         val peaks = if (levels.ready > stem) levels.of(stem) else null

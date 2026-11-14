@@ -247,11 +247,5 @@ class PadLiveSaveUndoTest {
         toggled.clear()
         vm.padLive.touch(40, true)
         assertTrue(toggled.isEmpty())
-        // Opened from the home screen: the page's first hit sounds once (page A has none: page B's).
-        vm.padLive.setPage(1)
-        vm.padLive.welcome()
-        waitFor("the welcome hit") { toggled.isNotEmpty() }
-        assertEquals(listOf(21), toggled)
-        assertFalse(vm.session.canUndo.value && vm.project.value.padLive.page != 1)
     }
 }

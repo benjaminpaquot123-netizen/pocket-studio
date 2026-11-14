@@ -188,6 +188,18 @@ object TutoHints {
     var page by mutableStateOf<Triple<Int, Int, Long>?>(null)
     /** [copy] is the drum grid's (the hats' strengths), not the piano roll's. */
     var copyOnGrid by mutableStateOf(false)
+
+    /**
+     * Every field back to its default. A test that drove a real screen (the piano roll, the grid) leaves these set;
+     * the next test must not read them (Tour 6: `Tour6TutoPanelAlreadyTest` turned red after `Tour6TutoFlechesRollTest`,
+     * which had cleared only [cells] and [notes]). The app itself never calls this.
+     */
+    @androidx.annotation.VisibleForTesting
+    fun reset() {
+        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
+        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null
+        step = null; copy = null; page = null; copyOnGrid = false
+    }
 }
 
 /** The tutorial's line over the drum grid, as a spot (a reveal of the cells keeps it in sight). */
@@ -266,13 +278,29 @@ fun tutoRollWhere(track: String?, bar: Int, bars: Int): String =
 /** Over the piano roll, the notes to write by hand all written: « Copier » beside it does the rest. */
 fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
 
-/** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
-fun tutoNotesLeft(left: Int, ahead: Boolean?, above: Boolean? = null): String = when {
+/**
+ * With « Accords » on, one touch writes a whole dotted chord: the line counts chords, said as such (control seats:
+ * « Encore 9 notes » over three chords), the arrow of [way] around it.
+ */
+fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String {
+    if (left <= 0) return tutoNotesLeft(0, way)
+    val said = tr("Accords en pointillé à toucher : %d", left)
+    return when (way) {
+        com.pocketstudio.model.tuto.TutoWay.Higher -> "$said ↑"
+        com.pocketstudio.model.tuto.TutoWay.Lower -> "$said ↓"
+        com.pocketstudio.model.tuto.TutoWay.Later -> "$said →"
+        com.pocketstudio.model.tuto.TutoWay.Earlier -> "← $said"
+        null -> said
+    }
+}
+
+/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way). */
+fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")
-    above == true -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
-    above == false -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
-    ahead == true -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
-    ahead == false -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
+    way == com.pocketstudio.model.tuto.TutoWay.Higher -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
+    way == com.pocketstudio.model.tuto.TutoWay.Lower -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
+    way == com.pocketstudio.model.tuto.TutoWay.Later -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
+    way == com.pocketstudio.model.tuto.TutoWay.Earlier -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
     else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
 }
 
@@ -520,18 +548,24 @@ fun TutoPanel(
                     else -> {
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         // Tour 6 (N20): reached done, never touched: said, not left to look like a mistake.
-                        alreadyWords(ui)?.let { words ->
+                        val alreadySaid = alreadyWords(ui)
+                        alreadySaid?.let { words ->
                             Column(Modifier.testTag("tuto_already")) {
                                 Text(tr("Déjà fait !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                                 Text(words, style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary)
                             }
                         }
-                        Row(verticalAlignment = Alignment.Top) {
-                            if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                            Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                        // Control seat Da-5 (tour 6, chapter 12): « déjà fait » under « À toi : … efface » : a step the song held
+                        // already asks for nothing, its words are not shown.
+                        if (alreadySaid == null) {
+                            Row(verticalAlignment = Alignment.Top) {
+                                if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
+                                Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                            }
                         }
+                        ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
-                        com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (alreadySaid == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,

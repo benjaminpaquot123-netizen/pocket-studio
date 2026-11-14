@@ -84,6 +84,43 @@ class Tour6TutoPanelAlreadyTest {
         assertTrue("the step reached done without a gesture is not said « Déjà fait »", ui.already)
     }
 
+    /**
+     * CI 43425565244 (8878 tests, one red: `aStepTheProjectHeldAlreadyIsSaidAlreadyDone`, line 84): « Déjà fait » was
+     * lost when a look at the project begun on the step before ended after the step was reached. It ticked the step
+     * (the project held it) but compared the step it had begun on, so nothing said « Déjà fait », and the look that
+     * the step's arrival asked for came after, the step already ticked, and said nothing either. Played here in that
+     * order, the looks' work held by [LooksGate] (no pause, whatever the machine's speed): the first look's work done before
+     * the step is reached, its answer read after.
+     */
+    @Test
+    fun aLookBegunBeforeTheStepStillSaysAlreadyDone() {
+        val tempo = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == "tempo" }
+        val flow = MutableStateFlow<Project>(TutoChecks.show(tempo, target.blank(), target)!!)
+        val gate = LooksGate()
+        val c = TutoController(
+            scope, "p1", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
+            render = { FloatArray(8) }, player = Player(), worker = gate, debounceMs = 10,
+        )
+        idle()
+        c.start(style, TutoLevel.Facile)
+        idle()
+        // The look begun on the first step finishes its work; its answer waits on the main thread, not read yet.
+        assertTrue("a look is at work before the step is reached", gate.size >= 1)
+        while (gate.size > 0) gate.answer()
+        c.goTo(0, c.ui.value!!.chapters[0].steps.indexOfFirst { it.id == "tempo" })
+        var quiet = 0
+        var turns = 0
+        while (quiet < 3) {
+            idle()
+            if (gate.size == 0) quiet++ else { quiet = 0; gate.answer() }
+            check(turns++ < 200) { "the tutorial never stops looking at the project" }
+        }
+        val ui = c.ui.value!!
+        assertEquals("tempo", ui.current.id)
+        assertTrue("tempo ticked by the project", "tempo" in ui.progress.done)
+        assertTrue("a look begun before the step was reached lost « Déjà fait »", ui.already)
+    }
+
     @Test
     fun thePanelSaysAlreadyDone() {
         val chapters = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile)

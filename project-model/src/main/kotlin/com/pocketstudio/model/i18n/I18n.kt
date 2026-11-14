@@ -170,6 +170,8 @@ object I18n {
         "courbes",
         // Round 5, chantier 9 (2026-11-11): three « ? » where a beginner gets stuck (recording on the keys, the Mix simple, its loop).
         "access",
+        // Tour 6, lot « coquille2 »: a song longer than a loop (it rings on, its end is not cut).
+        "coquille2",
     )
 
     @Volatile

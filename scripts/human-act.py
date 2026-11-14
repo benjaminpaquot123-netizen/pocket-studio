@@ -136,15 +136,29 @@ def show_text(seat, n):
 
 
 SEAT_PATH = re.compile(r"/(lot[A-Z][^/]*)/([a-f])/?$")
+# Lot « constate » (PLAN-REPARATIONS-CONSTATEES.md § 4.3): a control seat, docs/audits/ultra/sieges/<tour>/controle/<id>/<a-f>/
+# (round 6's B a was refused here, played in a lot of its own and copied by hand).
+CONTROL_PATH = re.compile(r"/(controle/[A-Za-z0-9][A-Za-z0-9_.-]*)/([a-f])/?$")
 
 
 def seat_label(seat):
-    """Banc fiable 1.3: « lotE/c » for a seat folder …/lotE/c, None for any other path (refused: round 5's E a → E c
-    contamination came from a shared script driving another seat's folder without anything showing it)."""
-    m = SEAT_PATH.search(os.path.abspath(seat))
+    """Banc fiable 1.3: « lotE/c » for a seat folder …/lotE/c, « controle/Ba/a » for a control seat …/controle/Ba/a,
+    None for any other path (refused: round 5's E a → E c contamination came from a shared script driving another
+    seat's folder without anything showing it)."""
+    path = os.path.abspath(seat)
+    m = SEAT_PATH.search(path) or CONTROL_PATH.search(path)
     if not m or not os.path.isfile(os.path.join(seat, "start.txt")):
         return None
     return f"{m.group(1)}/{m.group(2)}"
+
+
+def report_reminder(seat):
+    """Method v3 (AUDIT-ULTRA §13.4): the two lines the bench wrote on top of the seat's report when it started
+    (scripts/bench/sortie-de-siege.py), said again when the seat ends."""
+    head = [l for l in read(os.path.join(seat, "rapport.md")).splitlines()[:8] if l.startswith(("code testé :", "joué par :"))]
+    if head:
+        print(f"Rapport : {os.path.join(seat, 'rapport.md')} commence déjà par « {' » et « '.join(head)} » (écrit par le banc) : "
+              "garde ces lignes en tête, écris ton bloc dessous.")
 
 
 def main():
@@ -154,7 +168,7 @@ def main():
     seat, words = sys.argv[1], sys.argv[2:]
     label = seat_label(seat)
     if label is None:
-        print(f"Siège refusé : « {seat} » n'est pas un dossier de siège …/lot<X>/<a-f>/ avec son start.txt.")
+        print(f"Siège refusé : « {seat} » n'est pas un dossier de siège …/lot<X>/<a-f>/ ni …/controle/<id>/<a-f>/ avec son start.txt.")
         sys.exit(2)
     if turn(seat) == 0 and ended(seat) is None and not bench_running(seat):
         lot = os.path.dirname(os.path.abspath(seat.rstrip("/")))
@@ -181,6 +195,7 @@ def main():
     why = ended(seat)
     if why is not None:
         print(f"Fin du siège : {why}.")
+        report_reminder(seat)
         return
     cmd = " ".join(words)
     tmp = os.path.join(seat, f"cmd-{n}.tmp")
@@ -189,6 +204,7 @@ def main():
     os.rename(tmp, os.path.join(seat, f"cmd-{n}.txt"))
     if cmd == "fin":
         print("Fin du test.")
+        report_reminder(seat)
         return
     n = wait_beyond(seat, n, 300, "L'appli ne répond plus (5 min sans nouvel écran).")
     show_text(seat, n)

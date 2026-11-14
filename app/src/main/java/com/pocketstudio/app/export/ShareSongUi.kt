@@ -92,7 +92,10 @@ internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> {
     // never also « très fort » for a file at its loud target.
     val target = export.bilan?.levelWords() ?: return export.summary?.plainLines().orEmpty()
     val plain = export.summary?.levelLine()
-    return export.summary?.plainLines().orEmpty().map { if (it == plain) target else it }.let { if (target in it) it else it + target }
+    val said = export.summary?.plainLines().orEmpty().map { if (it == plain) target else it }.let { if (target in it) it else it + target }
+    // Tour 6, control seat Ac-2 (E1): the file's own number under its level, as Pro's report gives it (plain, no LUFS).
+    val number = export.bilan?.lufs?.let { tr("Volume · %s", com.pocketstudio.model.LoudnessTargets.format(it)) } ?: return said
+    return said.flatMap { if (it == target) listOf(it, number) else listOf(it) }
 }
 
 /** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */

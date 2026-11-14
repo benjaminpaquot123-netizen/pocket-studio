@@ -80,6 +80,28 @@ for zone in "${zones[@]}"; do
   report_out=""
   # shellcheck disable=SC2086
   if from_paquet 2 && ! report_out="$(python3 -I scripts/bench/rapport-zone.py "eq/$tour-$zone" "$report" $added)"; then echo "$zone: zone report refused: $(printf '%s' "$report_out" | tr '\n' ';'): not merged." >&2; exit 7; fi
+  # AUDIT-ULTRA §13.9 (lot « portail3 », from batch 4): a lot that says it fixes a blocking or grave defect adds its
+  # replay. One line per defect fixed in the zone report, « corrige: <id> | gravité: … | rejeu: <id du rejeu> » (or
+  # « … | rejeu impossible : <raison> »); a grave the tables know (verdicts.tsv turned « corrigé », the round's triage
+  # named by the report or a commit) cannot go without its line (scripts/bench/rapport-zone.py --corrections).
+  fix_out=""
+  # shellcheck disable=SC2086
+  if from_paquet 4 && ! fix_out="$(python3 -I scripts/bench/rapport-zone.py --corrections "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour" $added)"; then echo "$zone: fix without its replay: $(printf '%s' "$fix_out" | tr '\n' ';'): not merged." >&2; exit 8; fi
+  # AUDIT-ULTRA §13.5, last point (lot « portail4 », from batch 7): no lot of the tutorial enters before a fresh
+  # beginner replayed it on the lot's branch. A lot that changes the tutorial zone (code and resources of src/main:
+  # …/tuto/, …/tutos/, i18n/*/tuto*.json; PianoRoll.kt when its report says « tuto ») carries, per control seat,
+  # « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its zone report: <sha> a commit of the
+  # branch not older than its last change of the tutorial, <id> a seat whose report is in the branch and names the
+  # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
+  tuto_out=""
+  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): a repair is « done » only when a tester saw
+  # it. In docs/audits/ultra/corrections.tsv a lot writes « tenté » (or « pas pris »), never « corrigé », « rejoué » (the
+  # portal's, set below after the merge) nor « constaté » (the chief's, after a control seat); nor the sorter's
+  # acceptance sentence or seat of origin. Its own lines are those neither the base nor the integration's head has
+  # (scripts/bench/reparations.py --lot).
+  states_out=""
+  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
@@ -120,7 +142,8 @@ for zone in "${zones[@]}"; do
   # leaves no half-written traces.
   trace=""
   computed=()
-  undo_merge() {
+  # (What a failed step after the checks takes back: the trace folder, the computed files, the merge itself.)
+  clean_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
     # The files fuse-reports.py and tableau-de-bord.py wrote: back to the merge's version, or gone when it had none.
     for f in "${computed[@]}"; do
@@ -129,6 +152,9 @@ for zone in "${zones[@]}"; do
     # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
     git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
+  }
+  undo_merge() {
+    clean_merge
     echo "$zone: a step after the checks failed (traces of the portal): undone (kept in $lot)." >&2
     exit 5
   }
@@ -144,15 +170,61 @@ for zone in "${zones[@]}"; do
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
   # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
   python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
+  # AUDIT-ULTRA §13.9 (lot « portail3 », from batch 4): a lot never makes the judge go up. Its count here, the traces
+  # in place, against the count of the previous portal trace: the one of the last « Portal traces of the merge … »
+  # commit before this merge, found by the history (the folders' names sort by date and zone, not by time). The gaps
+  # named are the new ones: lines the previous trace did not have, the shas cut to 7 letters on both sides (older
+  # traces print 9 letters, newer ones 8). Nothing to compare with (no previous trace, or one without its count):
+  # said, and the lot goes on. A judge without its « chantier : » line counts as a judge gone up.
+  count_of() { sed -n 's/^chantier : \([0-9][0-9]*\) écart.*/\1/p' | tail -1; }
+  short_shas() { sed -E 's/\b([0-9a-f]{7})[0-9a-f]{1,33}\b/\1/g'; }
+  judge_now="$(count_of < "$trace/selftest-chantier.txt")"
+  prev_commit="$(git log -1 --format=%H --grep='^Portal traces of the merge ' "$before" -- "$traces_root" || true)"
+  prev_file=""; prev_text=""
+  [ -z "$prev_commit" ] || prev_file="$(git diff-tree --no-commit-id --name-only -r "$prev_commit" -- "$traces_root" | grep '/selftest-chantier\.txt$' | head -1 || true)"
+  [ -z "$prev_file" ] || prev_text="$(git show "$prev_commit:$prev_file" 2>/dev/null || true)"
+  judge_prev="$(printf '%s\n' "$prev_text" | count_of)"
+  judge_why=""
+  if [ -z "$judge_now" ]; then
+    judge_why="the judge printed no « chantier : N écarts » line"
+  elif [ -z "$prev_commit" ]; then
+    echo "$zone: judge: $judge_now écarts (no previous portal trace: not compared)"
+  elif [ -z "$judge_prev" ]; then
+    echo "$zone: judge: $judge_now écarts (the previous portal trace, of $(git rev-parse --short "$prev_commit"), has no « chantier : » line: not compared)"
+  else
+    echo "$zone: judge: $judge_now écarts (previous portal trace: $judge_prev, $(dirname "$prev_file"))"
+    if [ "$judge_now" -gt "$judge_prev" ]; then
+      # (Each line as the judge printed it, beside its form with short shas: the second is compared, the first said.)
+      new_gaps="$(grep -v '^chantier : ' "$trace/selftest-chantier.txt" | short_shas | paste -d '\t' <(grep -v '^chantier : ' "$trace/selftest-chantier.txt") - \
+        | awk -F '\t' 'NR == FNR { seen[$0] = 1; next } !($2 in seen) { print $1 }' <(printf '%s\n' "$prev_text" | short_shas) - | head -12 | tr '\n' ';' || true)"
+      judge_why="the judge goes up ($judge_prev → $judge_now écarts since $(dirname "$prev_file")); new gap(s): $new_gaps"
+    fi
+  fi
+  if [ -n "$judge_why" ]; then
+    # (The judge's lines of this merge stay in the lot, the trace folder going away with the merge.)
+    cp "$trace/selftest-chantier.txt" "$lot/selftest-chantier-apres.txt"
+    if from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
+    echo "$zone: $judge_why — refused from batch 4 (batch in progress: ${paquet:-1})"
+  fi
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
   index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): « rejoué » is the portal's. Each line of
+  # docs/audits/ultra/corrections.tsv the lot brought in « tenté » whose proof held on the merged head (a replay of
+  # rejeux/ « oracle tenu » in this merge's self-test, or a test among the filters run green above) becomes « rejoué »,
+  # written in the traces' commit (taken back with the merge when a later step fails).
+  if from_paquet 8 && [ -f docs/audits/ultra/corrections.tsv ] && [ -f scripts/bench/reparations.py ]; then
+    computed+=(docs/audits/ultra/corrections.tsv)
+    proofs=(); for f in "${zone_filters[@]}"; do proofs+=("filtre:$f"); done
+    python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$before" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" | sed "s/^/$zone: /"
+    git diff --quiet -- docs/audits/ultra/corrections.tsv || index+=(docs/audits/ultra/corrections.tsv)
+  fi
   # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
   # round, on the merged code; what they write goes into the traces' commit.
   round="docs/audits/ultra/sieges/$tour"
   # (Its failure undoes the merge: a rule of the portal, frozen until batch 2 like the others.)
   if from_paquet 2 && [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
-    computed=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
+    computed+=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
     python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
     mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
     computed+=("${rounds[-1]}/tableau-de-bord.md")

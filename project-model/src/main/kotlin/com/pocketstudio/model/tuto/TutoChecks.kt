@@ -42,6 +42,7 @@ import com.pocketstudio.model.withFx
 import com.pocketstudio.model.withTrack
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /**
  * What the course aims at in a style: the recipe's lines, notes and whole song, as the assistant
@@ -72,6 +73,13 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
     } ?: base
 
     val harmony = StarterWizard.harmonyOf(style, mood)
+
+    /**
+     * The tempo a new project of this style starts at ([blank] sets it the same way): a fixed number the tempo step
+     * names (« Un morceau neuf démarre à … BPM »), whatever the user has done to the tempo since (tour 6 review: « 110 »
+     * read half-way from 100 to 122).
+     */
+    val startTempo: Double = Project().tempoBpm.let { fresh -> if (kotlin.math.abs(fresh - style.bpm) <= TEMPO_SLACK) FAR_TEMPO else fresh }
 
     /**
      * The drum line of [role] (a [StarterWizard.Role] id: "kick", "open_hat", "rumble"…): in the
@@ -612,10 +620,14 @@ object TutoChecks {
     )
 
     /**
-     * How much a knob must go up to count (or be near its top already): « au moins 15 » on its 0-100
-     * scale (Théo, lot « tuto 5 »: ticked at the first touch, no value said).
+     * The knob read as the screen shows it: its 0..1 value as a rounded percent (SynthScreen draws
+     * « (value × 100) rounded »). Tour 6 control seat (tuto Pro, chapter 7): « au moins 15 » was counted on the raw
+     * value with a strict `v ≥ was + 0.15`, so a move the screen showed as +15 could be refused (its raw delta a
+     * little under 0.15 after rounding) and only +20 ticked it. The step counts what the instruction and the screen
+     * say: the shown percent gone up by at least 15.
      */
-    private const val KNOB_STEP = 0.15f
+    private fun knobPct(x: Float): Int = (x * 100f).roundToInt()
+    private const val KNOB_STEP_PCT = 15
 
     /**
      * Synth knob [k] ([SynthPatch] index) as track [t] plays it: its synth's, or the Plaits knob doing
@@ -632,6 +644,26 @@ object TutoChecks {
         0 -> t.copy(synth = t.synth.with(k, v))
         1 -> com.pocketstudio.model.PlaitsPatch.knobFor(t.plaits.model, k)?.let { t.copy(plaits = t.plaits.with(it, v)) } ?: t
         else -> t
+    }
+
+    /**
+     * The knobs a "changed:synth:<role>:<KNOB>…" step names still short of « au moins 15 » since it began, each with
+     * how many points the screen must still go up (tour 6, seat Bb-3: at +7 nothing said what was missing); empty when
+     * none is short, for any other step, or without the step's [baseline].
+     */
+    fun knobsShort(step: TutoStep, p: Project, baseline: Any?): List<Pair<Int, Int>> {
+        val c = step.check
+        if (!c.startsWith("changed:synth:")) return emptyList()
+        val (role, knobs) = knobsOf(c)
+        val base = baseline as? List<*> ?: return emptyList()
+        val now = trackFor(p, role)?.let { p.track(it) } ?: return emptyList()
+        val before = (base.getOrNull(0) as? SynthPatch)?.let { s -> now.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) } ?: return emptyList()
+        return knobs.mapNotNull { k ->
+            val was = knobValue(before, k) ?: return@mapNotNull null
+            val v = knobValue(now, k) ?: return@mapNotNull null
+            val left = KNOB_STEP_PCT - (knobPct(v) - knobPct(was))
+            if (left > 0 && knobPct(v) < 95) k to left else null
+        }
     }
 
     /** The knobs of a "changed:synth:…" check (empty: any change counts) and its role. */
@@ -756,6 +788,12 @@ object TutoChecks {
 
     private fun sceneLabelled(p: Project, label: String): Int = p.allScenes.indexOfFirst { labelIs(it.label, label) && !it.isEmpty }
 
+    /**
+     * What plays in the part named [label], shown or not (lot « tuto-flèches »: while the song plays, a part just made
+     * is not the one shown yet); null when there is none.
+     */
+    fun partContent(p: Project, label: String): Scene? = sceneLabelled(p, label).takeIf { it >= 0 }?.let { sceneAt(p, it) }
+
     /** The user's main loop: the scene named Groove, else the one where the most plays. */
     private fun grooveOf(p: Project): Int {
         val all = p.allScenes
@@ -797,6 +835,19 @@ object TutoChecks {
      * soft cells count only played soft (tour 6, T3). A step that does not ask for it ticks at any strength.
      */
     fun asksSoft(step: TutoStep): Boolean = listOfNotNull(step.text, step.textPro).all { "« Doux »" in it }
+
+    /**
+     * A drum step that asks for « Doux » ([asksSoft]) whose dotted cells are all hit, nothing more, in a part it looks
+     * at, but some soft one too loud: only the softness is missing (tour 6, seat Da-3: the panel folded, nothing said
+     * it). False for any other step or state.
+     */
+    fun onlySoftnessMissing(step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val c = step.check
+        if (!c.startsWith("lane:") || !SOFT_HITS_CHECKED || !asksSoft(step) || done(step, p, target)) return false
+        val arg = argOf(c)
+        val line = target.line(arg, partOf(step)) ?: return false
+        return scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls"), soft = false) }
+    }
 
     /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
     private fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
@@ -908,7 +959,7 @@ object TutoChecks {
                 val before = (base?.getOrNull(0) as? SynthPatch)?.let { s -> now?.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) }
                 before != null && now != null && knobs.all { k ->
                     val was = knobValue(before, k)
-                    knobValue(now, k)?.let { v -> was != null && (v >= was + KNOB_STEP || v >= 0.95f) } == true
+                    knobValue(now, k)?.let { v -> was != null && (knobPct(v) - knobPct(was) >= KNOB_STEP_PCT || knobPct(v) >= 95) } == true
                 }
             }
             // Théo (lot « tuto 5 »): « percussion ou charley ouvert », not any hit (a closed hat ticked it): a new hit on one of those pads.
@@ -1710,6 +1761,9 @@ object TutoChecks {
         return q
     }
 
+    /** The bars of a part that builds up ([built]): a bar for each speed of its pad. */
+    private const val BUILD_BARS = 4
+
     /** The bars a part brings when « Ajouter » puts it in the song. */
     private const val ADDED_BARS = 8
 
@@ -1718,10 +1772,13 @@ object TutoChecks {
      * in the last bar is a fill, not a build): quarters, eighths, 16ths, then 16ths rolled in two
      * (32nds), louder and louder, up to the silence of its last beat, where its notes stop too.
      */
-    fun built(p: Project, role: String, gap: Int = GAP_CELLS): Project {
+    fun built(given: Project, role: String, gap: Int = GAP_CELLS): Project {
         val lane = laneOf(role)
+        val per = given.stepsPerBar.coerceAtLeast(4)
+        // Lot « tuto-flèches » (seats D a, B b): 4 bars long, a bar for each speed, whatever the Groove's pads are (techno's
+        // one-bar loop gave a Montée of 1 bar: « mesure après mesure » and « dernière mesure » meant nothing there).
+        val p = withSteps(given, (BUILD_BARS * per).coerceAtMost(DrumPattern.MAX_STEPS))
         val n = p.drums.steps
-        val per = p.stepsPerBar.coerceAtLeast(4)
         val beat = per / 4
         val end = n - gap
         // Each quarter of the loop (a bar of a 4-bar one) faster than the one before.
@@ -2283,5 +2340,76 @@ object TutoChecks {
         val last = (d.steps - cut).coerceAtLeast(0) until d.steps
         val silent = gapLanes(step, target)
         return d.lanes.mapIndexedNotNull { i, l -> if (i !in silent) null else l.hits.keys.filter { it in last }.toSet().takeIf { it.isNotEmpty() }?.let { i to it } }.toMap()
+    }
+}
+
+/** Which way the tutorial's line over the piano roll sends the user to its next dotted note. */
+enum class TutoWay { Later, Earlier, Higher, Lower }
+
+/**
+ * What the piano roll shows of its notes, in pixels of its whole drawing: the time from [left] to [right], the rows
+ * from [top] to [bottom] (above the tutorial's panel), a sixteenth [stepPx] wide, a row [rowPx] high, the top row
+ * being the note [high]. [right] not past [left], or [rowPx] zero: not measured yet.
+ */
+data class TutoRollView(val left: Float, val right: Float, val top: Float, val bottom: Float, val stepPx: Float, val rowPx: Float, val high: Int)
+
+/**
+ * The one rule of the tutorial's line over the piano roll: where the next dotted note is from what is in sight.
+ * Lot « tuto-flèches » (control seats D a, B b, H a): the line said « plus haut ↑ » for a note that was further right
+ * too, « plus bas ↓ » with the panel over the rows, « à toucher » with nothing in sight. One note is spoken of
+ * ([next]); the bar first, the rows once its time is in sight; nothing when a dotted note is whole in sight.
+ */
+object TutoRollHint {
+    fun x(n: Note, v: TutoRollView): Float = n.start / NoteClip.TICKS_PER_STEP.toFloat() * v.stepPx
+    fun y(n: Note, v: TutoRollView): Float = (v.high - n.pitch) * v.rowPx
+
+    /** [n]'s first sixteenth is whole in the time in sight. */
+    fun inTime(n: Note, v: TutoRollView): Boolean = x(n, v) >= v.left - 1f && x(n, v) + v.stepPx <= v.right + 1f
+
+    /** [n]'s row is whole in the rows in sight. */
+    fun inRows(n: Note, v: TutoRollView): Boolean = y(n, v) >= v.top - 1f && y(n, v) + v.rowPx <= v.bottom + 1f
+
+    /**
+     * The dotted note of [left] the line speaks of, the one a touch on it (or « Je le fais ») brings into view and
+     * lights: the nearest one, the shortest scroll that shows it whole (along the time only while no row is in sight),
+     * the first in time among equals; null: none left. Control seat Da-3 (tour 6, 4cb88f55): « plus haut ↑ » for the
+     * one note of the time in sight, an octave up, while the next ones were a step away in the rows in sight.
+     */
+    fun next(left: List<Note>, v: TutoRollView): Note? {
+        val rows = v.rowPx > 0f && v.bottom - v.top >= v.rowPx - 1f
+        fun gap(n: Note): Float {
+            val dx = if (v.right <= v.left || inTime(n, v)) 0f else if (x(n, v) < v.left) v.left - x(n, v) else x(n, v) + v.stepPx - v.right
+            val dy = if (!rows || inRows(n, v)) 0f else if (y(n, v) < v.top) v.top - y(n, v) else y(n, v) + v.rowPx - v.bottom
+            return dx + dy
+        }
+        return left.sortedWith(compareBy({ it.start }, { -it.pitch })).minByOrNull { gap(it) }
+    }
+
+    /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
+    fun way(left: List<Note>, v: TutoRollView): TutoWay? {
+        val n = next(left, v) ?: return null
+        if (v.right <= v.left) return null
+        if (!inTime(n, v)) return if (x(n, v) < v.left) TutoWay.Earlier else TutoWay.Later
+        // Not a row in sight (the tutorial's panel open over the roll): no scroll of the rows would show the note.
+        if (v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return null
+        if (left.any { inTime(it, v) && inRows(it, v) }) return null
+        return if (y(n, v) < v.top) TutoWay.Higher else TutoWay.Lower
+    }
+
+    /**
+     * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
+     * the rows), zero along an axis where the note already is. Along the time, its bar from its first sixteenth
+     * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
+     */
+    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
+        val n = next(left, v) ?: return 0f to 0f
+        val bar = barSteps * v.stepPx
+        val dx = when {
+            inTime(n, v) -> 0f
+            bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
+            else -> x(n, v) - 2 * v.stepPx - v.left
+        }
+        val dy = if (inRows(n, v)) 0f else y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2
+        return dx to dy
     }
 }

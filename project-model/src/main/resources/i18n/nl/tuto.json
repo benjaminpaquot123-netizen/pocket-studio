@@ -144,5 +144,9 @@
   "Déjà fait !": "Al gedaan!",
   "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Je nummer had al wat deze stap vraagt: niets aan te raken.",
   "Tu as déjà fait cette étape.": "Je hebt deze stap al gedaan.",
-  "Partie « %s » créée (copie du Groove).": "Deel ‘%s’ gemaakt (kopie van de Groove)."
+  "Partie « %s » créée (copie du Groove).": "Deel ‘%s’ gemaakt (kopie van de Groove).",
+  "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Een nieuw nummer begint op %d BPM: jij geeft het de snelheid van de stijl.",
+  "%1$s : encore +%2$d": "%1$s: nog +%2$d",
+  "Touche ici": "Tik hier",
+  "Accords en pointillé à toucher : %d": "Gestippelde akkoorden om aan te tikken: %d"
 }

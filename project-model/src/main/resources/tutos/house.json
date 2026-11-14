@@ -278,7 +278,7 @@
       "steps": [
         {
           "id": "map_intro",
-          "text": "Écoute l'Intro : la batterie seule, sans basse ni piano.",
+          "text": "Écoute l'Intro : la batterie seule, sans basse ni piano. Sur la carte, le Break, c'est la pause du morceau.",
           "check": "listen",
           "listen": "part:Intro",
           "why": "Le DJ cale son mélange sur un kick et des charleys bien nets."

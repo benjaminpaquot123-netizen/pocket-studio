@@ -1,5 +1,6 @@
 package com.pocketstudio.model.tuto
 
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import org.junit.Assert.assertTrue
@@ -43,6 +44,37 @@ class Tour6Tuto4HouseRound3Test {
             }
         }
         report("places where the Break is met unexplained", bad)
+    }
+
+    /**
+     * M4 (screens 182, 183, 207): the Montée's step said its silence was for later, its success said « son dernier temps
+     * se tait », and chapter « Les transitions » still had hits to cross out. The step says what the part really is
+     * once made: its accelerating pad silent on the last beat, and every pad still playing there named (to silence later).
+     */
+    @Test
+    fun theMonteeSaysWhatItsLastBeatReallyHolds() {
+        val bad = mutableListOf<String>()
+        val make = step("make_montee")
+        val gap = step("gap")
+        var p = target.blank()
+        for (s in course.chaptersFor(TutoLevel.Facile).flatMap { it.steps }) {
+            if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: p
+            if (s.id == make.id) break
+        }
+        val montee = p.allScenes.firstOrNull { it.label == "Montée" } ?: error("no Montée made")
+        val d = montee.drums
+        val last = d.steps - TutoChecks.gapCells(gap, target) until d.steps
+        val playing = TutoChecks.gapLanes(gap, target).filter { k -> d.lanes.getOrNull(k)?.hits?.keys?.any { it in last } == true }
+        val build = TutoChecks.laneOf(make.build)
+        if (build in playing) bad += "the built pad plays on the last beat"
+        if ("se tait" !in make.text) bad += "fr: the built pad's silence on the last beat not said: ${make.text}"
+        for (k in playing) {
+            val w = WORDS[TutoChecks.roleOfLane(k, target)] ?: "pad ${k + 1}"
+            if (w !in make.text) bad += "fr: pad ${k + 1} still plays on the last beat, not said (« $w »): ${make.text}"
+        }
+        if (playing.isEmpty()) bad += "nothing left for « ${gap.id} » to cross out: its step would be done already"
+        for (lang in translated) if (tr(lang, make.text) == null) bad += "${lang.code}: no translation of « ${make.text} »"
+        report("Montée texts that do not say what plays", bad)
     }
 
     companion object {

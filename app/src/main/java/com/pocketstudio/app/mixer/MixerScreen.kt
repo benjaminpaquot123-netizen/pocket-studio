@@ -48,6 +48,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.layout.onSizeChanged
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
@@ -636,7 +637,19 @@ internal fun ExportCard(
                     color = Neon.Acid,
                     trackColor = Neon.SurfaceHigh,
                 )
-                OutlinedButton(onClick = actions.cancelExport, modifier = Modifier.fillMaxWidth()) { Text(tr("Annuler")) }
+                // Tour 6, seat A c (N2, gesture 21): « Annuler » was under the « Guide » bar at the list's foot; the export
+                // started, it comes into view with a bar's height of room under it.
+                val cancelSeen = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+                val room = with(androidx.compose.ui.platform.LocalDensity.current) { 96.dp.toPx() }
+                var cancelSize by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
+                androidx.compose.runtime.LaunchedEffect(cancelSize.height > 0) {
+                    if (cancelSize.height > 0) cancelSeen.bringIntoView(androidx.compose.ui.geometry.Rect(0f, 0f, cancelSize.width.toFloat(), cancelSize.height + room))
+                }
+                OutlinedButton(
+                    onClick = actions.cancelExport,
+                    modifier = Modifier.fillMaxWidth().bringIntoViewRequester(cancelSeen)
+                        .onSizeChanged { cancelSize = it }.testTag("export_cancel"),
+                ) { Text(tr("Annuler")) }
             }
             else -> {
                 Button(

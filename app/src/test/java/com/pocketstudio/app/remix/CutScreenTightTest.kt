@@ -71,7 +71,8 @@ class CutScreenTightTest {
 
     private fun everythingStays(rtl: Boolean) {
         val model = show(rtl)
-        reachable("cut_auto")
+        // Tour 6 (A4, lot coquille2): the mode menus stay in view under the curve, out of its scroll.
+        compose.onNodeWithTag("cut_auto", useUnmergedTree = true).assertIsDisplayed()
         reachable("cut_here")
         reachable("cut_count")
         compose.onNodeWithTag("cut_to_pads").assertIsDisplayed()

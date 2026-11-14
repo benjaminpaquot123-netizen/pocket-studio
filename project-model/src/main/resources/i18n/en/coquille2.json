@@ -1,0 +1,4 @@
+{
+  "La chanson dure %s de plus que ta boucle : elle continue de jouer pendant que la boucle se répète.": "The song lasts %s longer than your loop: it keeps playing while the loop repeats.",
+  "Ta boucle devient un morceau aussi long que la chanson (%s). ↶ Annuler la remet comme avant.": "Your loop becomes a song as long as the song (%s). ↶ Undo puts it back as it was."
+}

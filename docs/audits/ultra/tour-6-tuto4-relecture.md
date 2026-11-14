@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : 52c74b082903661a25f1099385979ff8971a773c
+Relu : f2a9a41ec714face4384d5e1d7f238f1e0204a4c
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -94,5 +94,14 @@ Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne 
 - rouge constaté : a97ff3713 rejoué dans un `git worktree` jetable (parent du vert) : `cymbalGridLineNamesThePadShown` échoue sur son assertion, « turned to the kick: no « → » on the screen » (10 tests, 1 échec) ; arbre jetable retiré (`git worktree remove`).
 - Vert 52c74b082 (`TutoPanel.kt`, une condition) : `cellsToTouch` vaut aussi quand la grille est en vue et qu'il reste des coups à barrer (`TutoHints.erase`), comme pour les cases pointillées (T4). Minimal ; même chemin que T4, donc le même comportement : la hauteur du panneau est reprise quand le dernier coup est barré (clé de `held`), comme quand la dernière case pointillée est touchée. Rien côté son ni sauvegarde.
 - `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Coquille2*' --tests '*Tuto*' --tests '*Rhythm*'` sur 52c74b082 : BUILD SUCCESSFUL, tâche à jour (résultats de 13 h 48–13 h 55 UTC, après le vert, mêmes entrées) : 97 classes, 423 tests, 0 échec, 11 ignorés, dont `cymbalGridLineNamesThePadShown`, `Tour6TutoCellsPanel100Test` (T4), `Tour6TutoSoundButtonInSight*` et `Tour6TutoKnobLeftTest` (H5, H7) verts.
+
+### Delta 52c74b08 → f2a9a41ec
+- Lu : `git diff 1a2d9ea95 f2a9a41ec` (deux commits : rouge 392e17a37, vert f2a9a41ec ; `TutoPanel.kt` et le nouveau `Tour6TutoReadAllTest.kt`).
+- Rouge 392e17a37 (`Tour6TutoReadAllTest#readOnShowsTheWholeInstructionInOneTouch`, ja, techno Facile, étape `clap_do`, téléphone) : le test exige d'abord que la consigne soit coupée dans la petite pièce (`boundsInRoot.height < size.height - 1`), puis entière après un seul « Lire la suite » : il ne peut pas passer à vide.
+- rouge constaté : 392e17a37 rejoué sur son propre arbre (parent du vert f2a9a41ec, `git worktree` jetable, retiré après) : 1 test, 1 échec sur la seconde assertion, « after one « Lire la suite »: 83.0 px of the instruction's 252 in sight » (la première tient : la consigne était bien coupée).
+- Vert f2a9a41ec : `lowRoom` = l'ancienne condition (cases à toucher / coups à barrer / boutons du son en vue) ; `cellsToTouch = lowRoom && !readAll`. Dans la petite pièce, « Lire la suite » met `readAll` à vrai (la hauteur maximale redevient 240 dp, `held` repart de 0 par sa clé `cellsToTouch` et se remesure une fois) ; ailleurs il fait défiler comme avant. `readAll` est gardé par `remember(step.id, ui.open, ui.progress.level)` : remis à faux à chaque étape, à chaque repli / réouverture et au changement de niveau. Écrit seulement au toucher : pas de boucle de recomposition.
+- T4 tient avant le toucher (cases au-dessus du panneau, `Tour6TutoCellsPanel100Test` vert). Après le toucher, des cases peuvent passer sous le panneau : acceptable, c'est l'utilisateur qui a choisi de lire, et replier le panneau rend la petite pièce. Si la consigne dépasse encore 240 dp, « Lire la suite » reste et fait défiler (`cellsToTouch` faux).
+- Mineur (noté, sans correction) : `readAll` n'est pas remis à faux quand `lowRoom` change dans la même étape (dernière case touchée puis nouvelles cases) ; sans effet vu, la pièce normale reste lisible.
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Tour6TutoReadAllTest' --tests '*Tour6TutoCellsPanel100Test' --tests '*Tour6TutoPanel*'` sur f2a9a41ec : BUILD SUCCESSFUL en 1 min 14 s, 22 classes, 33 tests, 0 échec, 1 ignoré (l'`assumeTrue` du banc humain de `Tour6TutoCellsPanel100Test`, déjà là).
 
 Verdict : 0 bloquant, 0 grave — fusion possible

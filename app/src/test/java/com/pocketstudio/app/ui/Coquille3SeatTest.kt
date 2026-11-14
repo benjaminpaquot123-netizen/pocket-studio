@@ -113,6 +113,25 @@ class Coquille3SeatTest : HumanTester("coquille3") {
             SeatOptions.reachable(SeatOptions.Hand.LEFT, p.x + n.size.width / 2f, p.y + n.size.height / 2f, m.widthPixels, m.heightPixels, m.density))
     }
 
+    /**
+     * Seat A c (gesture 27) and control Ac-3 (gesture 25): right after a song is sent, « Voir mes fichiers » lists it —
+     * never an empty list.
+     */
+    @Test
+    fun n4_myFilesListTheSongJustSent() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        trapSong()
+        tap("tab_simple_Envoyer")
+        tap("share_go")
+        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
+        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        runCatching { tap("share_bilan_ok") }
+        // The seat's gesture 27: « Mes fichiers » of the share page (control Ac-3: « Voir mes fichiers » of the bilan, the same list).
+        tap("share_my_exports")
+        repeat(3) { act("attends 1") }
+        assertTrue("« Mes fichiers » empty right after a send:\n" + screen(), centerOf("my_exports_empty") == null && centerOf("my_export_detail") != null)
+    }
+
     /** Seat B a (es, Mode simple, left hand), A10 (control Ba-2 screen 3): one « Descargar el modelo (174 MB) » on the panel. */
     @Test
     fun a10_oneDownloadButtonOnTheRemixPanel() {

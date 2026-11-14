@@ -46,3 +46,14 @@ tests: com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.
 - chemin: Remix › Couper la chanson › Un bout (100 %) | test: CutBoutBigTextTest#aPieceAtTheUsualTextOnAPhone
 - chemin: Remix › Tableau des canaux › Phrases sur les pads | test: StemBoardRouterTest#piecesOnPadsSayTheyAreOnTheDrumsSixteenPads
 - chemin: Tuto › étape d'écoute › Suivant | test: Tour6TutoPanelListenSkipTest#suivantOnEveryExampleLeavesNoneForTheEnd
+
+## Défauts nommés, non corrigés par ce lot
+
+Ce lot ne change aucun code de l'appli : il rejoue des défauts corrigés par d'autres lots déjà fusionnés.
+
+- ne corrige pas: R3-EC17 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue
+- ne corrige pas: T4 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue
+- ne corrige pas: R6 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue
+- ne corrige pas: N4 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue
+- ne corrige pas: N5 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue
+- ne corrige pas: N19 : lot de rejeux seul, aucun code de l’appli changé ; la correction vient des lots déjà fusionnés (remixdecoupe, tutogrille, tutoconsignes), ce lot la rejoue

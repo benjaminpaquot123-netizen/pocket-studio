@@ -12,6 +12,7 @@ import com.pocketstudio.app.ui.DoubleTouchGuard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import androidx.compose.ui.test.onAllNodesWithTag
 import org.junit.Assert.assertTrue
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -127,6 +128,10 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         assertEquals(3, before.size)
         if (centerOf("part_menu_1") == null) tap(centerOf("tab_simple_Morceau"), "the Mon morceau tab")
         tap(reach("part_menu_1"), "⋮ of part 2")
+        // Tour 6, lot « stable » (shuffled suite): the part's menu is taller than the phone; « Insérer après » is its last line but
+        // one, drawn cut at the bottom edge. A person sees it before touching it.
+        assertTrue("« Insérer après » touched while cut at the screen's edge",
+            compose.onAllNodesWithTag("part_insert_1", useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()?.let(::shownWhole) == true)
         tap(centerOf("part_insert_1"), "Insérer après")
         tap(centerOf("pick_scene_2") ?: centerOf("tl_pick_2"), "C")
         assertEquals("nothing inserted", before.take(2) + 2 + before.drop(2), project()!!.song.map { it.scene })

@@ -18,6 +18,11 @@ import kotlin.random.Random
  * (app/build.gradle.kts: the property limits the run to this class and gives the seed as `ps.shuffle`; Gradle runs a
  * suite whose own class matches the filter whole.) Without the property this class runs nothing. The order is printed,
  * and the JUnit XML's timestamps keep it (`scripts/bench/ci-rouge.sh --dossier`).
+ *
+ *     ./gradlew :app:testDebugUnitTest -Pshuffle=list:<class>,<class>,…
+ *
+ * replays a red's neighbours: exactly these classes (simple or full names), in this order, in one JVM (Gradle's own
+ * `--tests` filters keep the order of the class files, not the one given).
  */
 @RunWith(ShuffledOrder::class)
 class ShuffledOrderTest
@@ -25,7 +30,9 @@ class ShuffledOrderTest
 class ShuffledOrder(klass: Class<*>, builder: RunnerBuilder) : Suite(builder, klass, ShuffledOrder.classes(klass))  {
     companion object {
         fun classes(self: Class<*>): Array<Class<*>> {
-            val seed = System.getProperty("ps.shuffle")?.toLongOrNull() ?: return emptyArray()
+            val asked = System.getProperty("ps.shuffle") ?: return emptyArray()
+            val seed = asked.toLongOrNull()
+            if (seed == null && !asked.startsWith("list:")) return emptyArray()
             val root = File(self.protectionDomain.codeSource.location.toURI())
             val loader = self.classLoader
             val found = root.walkTopDown().filter { it.isFile && it.name.endsWith(".class") && '$' !in it.name }
@@ -35,10 +42,12 @@ class ShuffledOrder(klass: Class<*>, builder: RunnerBuilder) : Suite(builder, kl
                 .filter(::isTestClass)
                 .sortedBy { it.name }
                 .toList()
-            val order = found.shuffled(Random(seed))
-            println("ShuffledOrder seed $seed: ${order.size} classes, in this order: " + order.joinToString(" ") { it.simpleName })
+            val order = if (seed != null) found.shuffled(Random(seed)) else asked.removePrefix("list:").split(',')
+                .map(String::trim).filter(String::isNotEmpty)
+                .map { n -> found.firstOrNull { it.name == n || it.simpleName == n } ?: error("ShuffledOrder: no test class « $n »") }
+            println("ShuffledOrder seed $asked: ${order.size} classes, in this order: " + order.joinToString(" ") { it.simpleName })
             // Also beside the build's results (the test's working folder is the module's): build/shuffled-order-<seed>.txt.
-            runCatching { File("build/shuffled-order-$seed.txt").writeText(order.joinToString("\n") { it.name } + "\n") }
+            runCatching { File("build/shuffled-order-${seed ?: "list"}.txt").writeText(order.joinToString("\n") { it.name } + "\n") }
             return order.toTypedArray()
         }
 

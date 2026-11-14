@@ -84,7 +84,7 @@ internal object BenchPristine {
     /** What is not as a just-started process has it, one line each (empty: pristine). */
     private fun tutoHintsPristine(): Boolean = with(com.pocketstudio.app.tuto.TutoHints) {
         cells == null && notes == null && acid == null && fading == null && send == null && focus == 0 && focusSeen == 0 && !demo &&
-            erase == null && knobs.isEmpty() && strip == null && sendNote == null && ticked == 0 && banner == null && step == null &&
+            erase == null && knobs.isEmpty() && strip == null && sendNote == null && banner == null && step == null &&
             copy == null && page == null && !copyOnGrid
     }
 
@@ -338,7 +338,15 @@ internal object BenchPristine {
         NativeEngine.sink = null
         com.pocketstudio.app.retours.Retours.active = SettingsStore.state.value.retoursMode
         com.pocketstudio.app.onboarding.Intro.playing = false
-        com.pocketstudio.app.tuto.TutoHints.reset()
+        com.pocketstudio.app.tuto.TutoHints.active = false
+        if (!tutoHintsPristine()) {
+            // [TutoHints.ticked] is a change counter (its readers key effects on it, never read its value): left as it is.
+            // Put back to 0 after NavTabletScreenshotTest (2), the next screen's part menu lost its « Insérer après »
+            // window (HumanLucasBugsTest, the window replayed red three times; kept, green).
+            val ticked = com.pocketstudio.app.tuto.TutoHints.ticked
+            com.pocketstudio.app.tuto.TutoHints.reset()
+            com.pocketstudio.app.tuto.TutoHints.ticked = ticked
+        }
         com.pocketstudio.app.learn.SpotChecks.log = null
         runCatching { setStaticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared", null) }
         runCatching { setStaticField(ViewModelProvider.AndroidViewModelFactory::class.java, "_instance", null) }

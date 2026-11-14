@@ -133,8 +133,20 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         // The list is read off the main thread: a person waits while « Chargement de la liste… » shows; the bench's
         // « attends » moves its clock, not the wall's (MyFilesBenchClockTest), so the wait is in real time, up to 20 s.
         act("attends 1")
-        compose.waitUntil(20_000) { compose.onAllNodesWithTag("my_exports_wait").fetchSemanticsNodes().isEmpty() }
-        assertTrue("« Mes fichiers » empty right after a send:\n" + screen(), centerOf("my_exports_empty") == null && centerOf("my_export_detail") != null)
+        // As a person waits: the bench's « attends » (its clock: the read's answer is taken on the main thread as its clock
+        // moves) and real time (the read itself runs off the main thread), until the list comes, up to 60 real seconds.
+        // (A wait on real time alone, compose.waitUntil, never moved the bench's clock: the answer, read, stayed unread.)
+        val t0 = System.nanoTime()
+        var loaded = false
+        while (!loaded && System.nanoTime() - t0 < 60_000_000_000L) {
+            Thread.sleep(100)
+            act("attends 1")
+            loaded = centerOf("my_exports_wait") == null
+        }
+        val waitedMs = (System.nanoTime() - t0) / 1_000_000
+        assertTrue("« Chargement de la liste… » still there after $waitedMs real ms:\n" + screen(), loaded)
+        assertTrue("« Mes fichiers » without the song just sent (read in $waitedMs real ms):\n" + screen(),
+            centerOf("my_exports_empty") == null && centerOf("my_export_detail") != null)
     }
 
     /** Seat B a (es, Mode simple, left hand), A10 (control Ba-2 screen 3): one « Descargar el modelo (174 MB) » on the panel. */

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.human.HumanTester
 import com.pocketstudio.app.human.SeatOptions
 import org.junit.Assert.assertNotNull
@@ -30,6 +31,27 @@ class Coquille3SeatTest : HumanTester("coquille3") {
     }
 
     private fun screen() = screenLines().joinToString("\n")
+
+    /**
+     * The song sent as a person does, whatever ran before (Banc, mixed order: « export pas commencé »): the export waited
+     * for until its file is made (started by « Partager », not one left from before), then « WhatsApp » touched by its
+     * name in the phone's share menu. That menu is the bench's own picture of the next activity Robolectric started; in a
+     * mixed order it may not show (the bench's to mend: HumanTester.shareMenu). What these tests read — the file made,
+     * « Mes fichiers », Pro's format — does not need it: without it they go on.
+     */
+    private fun sendToWhatsApp() {
+        fun whatsApp() = screenLines().firstNotNullOfOrNull { Regex("« WhatsApp » @ (\\d+),(\\d+)").find(it)?.groupValues }
+        var n = 0
+        while (whatsApp() == null && n++ < 150) {
+            val e = rhythm()?.export?.value
+            if (e != null && !e.running && e.files.isNotEmpty()) break
+            act("attends 1")
+        }
+        val e = rhythm()?.export?.value
+        assertTrue("the song's file never made (export ${e?.let { "running=${it.running} error=${it.error} files=${it.files}" }}):\n" + screen(),
+            whatsApp() != null || (e != null && !e.running && e.files.isNotEmpty()))
+        whatsApp()?.let { act("touche ${it[1]} ${it[2]}") }
+    }
 
     private fun whole(tag: String): Boolean =
         compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let { shownWhole(it) } == true
@@ -67,8 +89,7 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         trapSong()
         tap("tab_simple_Envoyer")
         tap("share_go")
-        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
-        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        sendToWhatsApp()
         runCatching { tap("share_bilan_ok") }
         compose.onNodeWithTag("share_other").performScrollTo().performClick()
         repeat(2) { act("attends 1") }
@@ -125,8 +146,7 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         trapSong()
         tap("tab_simple_Envoyer")
         tap("share_go")
-        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
-        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        sendToWhatsApp()
         runCatching { tap("share_bilan_ok") }
         // The seat's gesture 27: « Mes fichiers » of the share page (control Ac-3: « Voir mes fichiers » of the bilan, the same list).
         tap("share_my_exports")
@@ -256,8 +276,7 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         tap("share_format_M4a")
         tap("share_my_exports"); repeat(2) { act("attends 1") }; tap("my_exports_close")
         tap("share_go")
-        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
-        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        sendToWhatsApp()
         runCatching { tap("share_bilan_ok") }
         tap("share_my_exports")
         // « Chargement de la liste… » is the list being read off the main thread (MediaStore, Dispatchers.IO). The bench's

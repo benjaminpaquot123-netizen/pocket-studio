@@ -817,9 +817,13 @@ private fun StepGrid(
                                         },
                                         onLongClick = {
                                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            // A hit: its force and its roll; an empty cell: a strong hit; a step a triplet covers: the triplet's.
+                                            // A hit: its force and its roll; a step a triplet covers: the triplet's. Tour 6 (H3, decided): an
+                                            // empty cell gets its hit AND the menu at once (« Doux » one long press away, as the tutorial says).
                                             if (ownerHit != null) rollStep = at
-                                            else if (hit != null && step < project.drums.steps) rollStep = step else actions.cycleVelocity(step)
+                                            else if (step < project.drums.steps) {
+                                                if (hit == null) actions.cycleVelocity(step)
+                                                rollStep = step
+                                            } else actions.cycleVelocity(step)
                                         },
                                     )
                                 },

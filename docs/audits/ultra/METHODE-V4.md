@@ -55,3 +55,47 @@ Ce qui a coûté le plus cher au tour 6, ce ne sont pas les corrections : ce son
 | H | Avant la CI complète, le lot lance en local seulement ses tests et l'auto-test du banc | moins de CI rouges, donc moins de relances | La CI complète reste obligatoire (règle 10) |
 
 L'ordre conseillé est D, C, A, B, puis F, E, G et H. D et C sont petits et suppriment le plus de refus ; A gagne le plus de temps à chaque CI.
+
+## 4. Méthode rapide (demande de Benjamin, 14 novembre au soir)
+
+Constat : environ deux semaines de quota pour une cinquantaine de bugs corrigés au tour 6. Le quota n'est pas parti dans les corrections elles-mêmes, mais dans trois choses :
+- **les testeurs joués par une IA geste par geste**, surtout les sièges de contrôle rejoués après chaque lot ;
+- **les refus suivis d'un « tout recommencer »** : nouvelle branche, nouvelle CI, nouveau siège ;
+- **le même circuit lourd pour chaque bug**, qu'il s'agisse d'un mot mal traduit ou d'une perte de sauvegarde.
+
+Le principe : **le prix d'une correction suit son risque**. Le contrôle lourd reste là où il protège vraiment.
+
+### 4.1 Trois niveaux de bug, trois circuits
+
+| Niveau | Exemples | Circuit | Lot |
+|---|---|---|---|
+| **1 — surface** | texte, traduction, libellé, couleur, marge, capture | test ou capture → `pret.sh` → portail. Pas de relecture neuve, pas de siège | jusqu'à 20 défauts par zone |
+| **2 — comportement** | un bouton qui fait la mauvaise chose, un écran qui bloque à moitié | rouge/vert + rejeu → relecture courte par un sous-agent neuf → `pret.sh` → portail. **Le rejeu remplace le siège de contrôle** | jusqu'à 8 défauts |
+| **3 — critique** | bloquant, sauvegarde, son, mécanique du tuto, plantage | circuit complet actuel (§1, règles 5 à 12), siège de contrôle compris | 1 à 3 défauts |
+
+Le trieur donne le niveau. **Dans le doute, on prend le niveau au-dessus.** Un test existant qui change de couleur fait passer le lot au niveau 3.
+
+### 4.2 Une seule vague de contrôle par tour, pas un siège par lot
+Les lots de niveau 1 et 2 entrent sur leurs tests et leurs rejeux. À la fin du tour, **une seule vague de contrôle** rejoue d'un coup les phrases de tous les défauts corrigés, une mission par zone. Ce qui revient repart en un seul lot de rattrapage. Gain : la plus grosse part du quota de contrôle.
+
+### 4.3 Zéro refus de forme : `pret.sh` fait la paperasse
+Un seul script, lancé par le lot. Il fait le commit rouge et range la preuve, lance les tests du lot et l'auto-test du banc, passe le portail à blanc contre la tête poussée, puis affiche « PRÊT » ou la raison exacte du refus. Le chef ne reçoit que des lots déjà « PRÊT ». Un refus du vrai portail devient alors un bug du script, à réparer une fois pour toutes.
+
+### 4.4 Le temps machine ne coûte pas de quota, l'attente oui
+- La CI coupée en 4 morceaux (astuce A) : 49 → environ 20 minutes.
+- Personne ne surveille une CI en boucle : une attente en arrière-plan qui réveille la discussion à la fin.
+- Pendant une CI, la discussion ne fait rien d'autre que le lot suivant.
+
+### 4.5 Moins de discussions, plus petites
+- Un lot = un sous-agent neuf, lancé par la discussion de sa zone. Il rend une ligne et disparaît. Pas de longues discussions qui gonflent et coûtent dix fois plus par geste.
+- Trois discussions au plus pendant les corrections : le chef, un correcteur, le banc.
+- **Fable dès le 2e échec sur une même cause floue**, au lieu de cinq tours de manège.
+
+### 4.6 Ce qui ne bouge pas (la sécurité)
+- Pas de fusion dans `main` sans la CI complète verte, téléphone simulé compris.
+- Un rejeu pour chaque bloquant ou grave.
+- Le niveau 3 garde tout le circuit actuel.
+- La vague de contrôle de fin de tour reste obligatoire avant de dire « corrigé » à Benjamin.
+
+### 4.7 Ce qu'on peut espérer (estimation, à vérifier au premier tour)
+Si environ 6 bugs sur 10 sont de niveau 1, 3 de niveau 2 et 1 de niveau 3, le coût moyen d'un bug tombe à environ un tiers. Une cinquantaine de corrections tiendraient alors en quelques jours de quota au lieu de deux semaines. Avant le prochain tour, un lot du banc fait `pret.sh` (§4.3) et les astuces D, C et A du §3.

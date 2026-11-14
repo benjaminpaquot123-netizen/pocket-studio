@@ -328,7 +328,7 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure. Le temps de silence juste avant le Drop, tu le feras au chapitre « Les transitions ».",
+          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis se tait sur le dernier temps, avec le piano. Les charleys et le pad « Rim » y jouent encore : tu les feras taire au chapitre « Les transitions », pour un temps de silence juste avant le Drop.",
           "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, pad « Rim », piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",

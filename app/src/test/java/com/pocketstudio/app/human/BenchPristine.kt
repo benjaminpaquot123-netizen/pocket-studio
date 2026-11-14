@@ -161,6 +161,32 @@ internal object BenchPristine {
         uncaughtError(test)?.let { throw it }
     }
 
+    /**
+     * Compose keeps two things for the whole process on the main looper: the pump that tells a state's readers it was
+     * written (GlobalSnapshotManager: one coroutine and its « sent » flag) and the dispatcher that pump runs on
+     * (AndroidUiDispatcher.Main, with its « a run is posted » flags). Robolectric empties the main looper between tests.
+     * A state written after a test's last looper run ([restore] itself, a worker's last word) had its run posted, then
+     * dropped with the queue: the flags stayed up, nothing was posted again, and from then on, in that JVM, a state
+     * written outside a composition's own frame reached no reader (CI 43566247865: windows that « never came », 12 reds).
+     * `StrictTestApplication.beforeTest` calls this: the main queue is empty there, so a flag still up is a run that was
+     * dropped; what it held is run now (in the order a frame runs it). True when something was revived.
+     * [BenchSnapshotPumpTest] is the proof, and the alarm if these names change with Compose.
+     */
+    fun reviveComposePump(): Boolean = runCatching {
+        val dispatcher = Class.forName("androidx.compose.ui.platform.AndroidUiDispatcher")
+        val lazy = dispatcher.getDeclaredField("Main\$delegate").apply { isAccessible = true }.get(null) as Lazy<*>
+        if (!lazy.isInitialized()) return false
+        val main = (lazy.value as kotlin.coroutines.CoroutineContext)[kotlin.coroutines.ContinuationInterceptor] ?: return false
+        fun up(flag: String) = dispatcher.getDeclaredField(flag).apply { isAccessible = true }.getBoolean(main)
+        if (!up("scheduledTrampolineDispatch") && !up("scheduledFrameDispatch")) return false
+        dispatcher.getDeclaredMethod("performTrampolineDispatch").apply { isAccessible = true }.invoke(main)
+        dispatcher.getDeclaredMethod("performFrameDispatch", Long::class.javaPrimitiveType).apply { isAccessible = true }.invoke(main, System.nanoTime())
+        true
+    }.getOrElse { e ->
+        println("BenchPristine: Compose's pump not revived (${(e as? java.lang.reflect.InvocationTargetException)?.targetException ?: e})")
+        false
+    }
+
     /** How long an ordinary test's leftover work is given to end before that test is red. */
     const val WORK_END_CAP_MS = 10_000L
 

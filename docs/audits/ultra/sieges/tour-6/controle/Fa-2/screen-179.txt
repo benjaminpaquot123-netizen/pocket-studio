@@ -1,0 +1,59 @@
+Écran 179 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : F · Drop 2 » ▾ @ 123,180
+bouton « Suivre » [coupé] @ 99,226
+texte « Mesure 1/4 · Maracas » @ 160,297
+bouton « 1 » [état « coup, force 100 % »] @ 70,380
+bouton [état « vide »] @ 133,380
+bouton [état « vide »] @ 197,381
+bouton [état « vide »] @ 261,381
+bouton « 2 » [état « coup, force 100 % »] @ 325,381
+bouton [état « vide »] @ 389,381
+bouton [état « vide »] @ 453,381
+bouton [état « vide »] @ 517,381
+bouton « 3 » [état « vide »] @ 70,459
+bouton [état « vide »] @ 133,459
+bouton [état « vide »] @ 197,460
+bouton [état « vide »] @ 261,460
+bouton « 4 » [état « vide »] @ 325,460
+bouton [état « vide »] @ 389,460
+bouton [état « vide »] @ 453,460
+bouton [état « vide »] @ 517,460
+texte « tout » @ 152,545
+texte « 1/2 » @ 227,545
+texte « 1/4 » @ 302,545
+texte « ◀ » @ 377,545
+texte « ▶ » @ 452,545
+texte « Remplir » @ 77,545
+texte « Effacer » @ 91,617
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,705
+bouton « 1 mesure » @ 215,794
+bouton « 2 » @ 330,794
+bouton « 3 » @ 411,794
+bouton « 4 » [sélectionné] @ 492,794
+texte « Longueur » @ 89,794
+icône (liste) « Chapitres » @ 444,879
+texte « Les transitions Chapitre 12/15 · Fait · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « Bravo, chapitre fini ! » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

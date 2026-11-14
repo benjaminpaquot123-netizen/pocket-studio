@@ -1,0 +1,2 @@
+route=tuto_finger
+nouvelle=0

@@ -1,0 +1,45 @@
+Écran 152 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/20 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône ▶ « C · Montée × 1  ·  4 mes. » [coupé] @ 186,174
+icône − [désactivé, coupé] @ 366,168
+icône + [coupé] @ 438,168
+icône ⋮ [coupé] @ 510,168
+icône ▶ « D · Drop × 1  ·  8 mes. » @ 186,258
+icône − [désactivé] @ 366,258
+icône + @ 438,258
+icône ⋮ @ 510,258
+texte « Ajouter à la fin : » @ 119,327
+bouton « + A · Groove » @ 141,390
+bouton « + B · Intro » @ 336,390
+bouton « + C · Montée » @ 143,471
+bouton « + D · Drop » @ 340,471
+bouton « + E · Break » @ 133,552
+bouton « + F · Drop 2 » @ 328,552
+bouton « + G · Fin » @ 121,633
+bouton « + Nouvelle partie (copie de G · Fin) » @ 255,714
+bouton « + Nouvelle partie vide » @ 190,795
+icône (liste) « Chapitres » @ 444,879
+texte « Range tes parties Chapitre 11/15 · Étape 1/2 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

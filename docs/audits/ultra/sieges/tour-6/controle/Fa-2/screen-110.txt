@@ -1,0 +1,40 @@
+Écran 110 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse ronde » @ 305,186
+bouton « Accords Piano FM » ⋮ @ 483,186
+image → @ 559,186
+icône « Partie : A » ▾ @ 82,261
+texte « Le piano Chapitre 6/15 · Étape 2/3 · Facile » @ 207,342
+icône (liste) « Chapitres » @ 444,342
+icône ⌄ @ 531,342
+texte « À toi : touche « Créer la piste Accords », puis allume « Accords » au-dessus de la grille : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1. » @ 294,477
+texte « • Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ». » @ 294,585
+texte « • Accord : plusieurs notes jouées ensemble. » @ 221,628
+texte « ▸ Pourquoi ? » @ 294,693
+icône « Lire la suite » ⌄ @ 294,741
+bouton (doigt qui touche) «   Je le fais » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

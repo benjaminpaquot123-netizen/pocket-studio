@@ -1,0 +1,8 @@
+lang=fr
+device=phone
+font=100
+mode=pro
+fresh=reel
+gestes.max=300
+mission=tuto-pro
+timeout.minutes=120

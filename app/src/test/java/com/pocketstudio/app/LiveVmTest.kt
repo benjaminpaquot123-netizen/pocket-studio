@@ -33,11 +33,17 @@ import java.io.File
 class LiveVmTest {
     private val app: Application = ApplicationProvider.getApplicationContext()
 
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
+    @org.junit.After
+    fun closeScreens() = screens.closeAll()
+
     /** Two scenes: A (shown) with a kick, B with another drum hit. */
     private fun twoScenes(): RhythmViewModel {
         File(app.filesDir, "projects").deleteRecursively()
         app.filesDir.listFiles()?.filter { it.name.startsWith("live-take") }?.forEach { it.delete() }
-        val vm = RhythmViewModel(app)
+        val vm = screens.open { RhythmViewModel(app) }
         vm.toggleHit(0, 0)
         vm.duplicateScene()  // B, shown
         vm.toggleHit(2, 4)
@@ -360,13 +366,13 @@ class LiveVmTest {
         vm.keepTakeJournalForTest()  // what the app keeps while it records (and when it closes)
         kotlinx.coroutines.runBlocking { vm.flushNow() }
         // A new screen on the same project (the app opened again): the take is in the song.
-        val again = RhythmViewModel(app)
+        val again = screens.open { RhythmViewModel(app) }
         val song = again.project.value.song
         assertEquals(listOf(SongPart(0, 1), SongPart(0, 1, play = mapOf(SongPart.DRUMS to 1), bars = 1)), song)
         assertTrue(again.project.value.automation.any { it.target == AutoTarget.acid(0) })
         assertTrue(again.notice.value!!.contains("2"))
         // Written once: the next opening has nothing more to add.
-        val third = RhythmViewModel(app)
+        val third = screens.open { RhythmViewModel(app) }
         assertEquals(song, third.project.value.song)
     }
 
@@ -427,7 +433,7 @@ class LiveVmTest {
         vm.removeSongPart(1)
         val edited = vm.project.value.song
         kotlinx.coroutines.runBlocking { vm.flushNow() }
-        val again = RhythmViewModel(app)
+        val again = screens.open { RhythmViewModel(app) }
         assertEquals(edited, again.project.value.song)
         assertNull(again.notice.value)
     }
@@ -448,7 +454,7 @@ class LiveVmTest {
         assertEquals(song, com.pocketstudio.model.ProjectStore(File(app.filesDir, "projects")).load(vm.projectId)!!.song)
         // Killed just before the journal went: it is still there at the next opening.
         file.writeText(kept)
-        val again = RhythmViewModel(app)
+        val again = screens.open { RhythmViewModel(app) }
         assertEquals(song, again.project.value.song)
         assertNull(again.notice.value)
         // The opening drops it on the journal writer (its own thread): checked once that is done.
@@ -459,14 +465,14 @@ class LiveVmTest {
         recovered.keepTakeJournalForTest()
         val text = recovered.journalsForTest.file(recovered.projectId).readText()
         kotlinx.coroutines.runBlocking { recovered.flushNow() }
-        val first = RhythmViewModel(app)
+        val first = screens.open { RhythmViewModel(app) }
         val firstSong = first.project.value.song
         assertTrue(first.notice.value!!.contains("gardée"))
         // Its drop done first (else it could delete the journal written back below).
         assertTrue(first.journalsForTest.awaitIdle(5000))
         assertFalse(first.journalsForTest.file(first.projectId).exists())
         first.journalsForTest.file(first.projectId).writeText(text)
-        val second = RhythmViewModel(app)
+        val second = screens.open { RhythmViewModel(app) }
         assertEquals(firstSong, second.project.value.song)
         assertNull(second.notice.value)
         assertTrue(second.journalsForTest.awaitIdle(5000))
@@ -493,7 +499,7 @@ class LiveVmTest {
         vm.liveLaunchedForTest(LiveSlots.DRUMS, 1, 32)
         vm.takeClockForTest = 45
         owner.clear()  // onCleared, Recording
-        val again = RhythmViewModel(app)
+        val again = screens.open { RhythmViewModel(app) }
         assertEquals(2, again.project.value.song.size)
         assertTrue(again.notice.value!!.contains("gardée"))
     }
@@ -583,7 +589,7 @@ class LiveVmTest {
         val sink = TargetSink()
         NativeEngine.sink = sink
         try {
-            val vm = RhythmViewModel(app)
+            val vm = screens.open { RhythmViewModel(app) }
             assertTrue(vm.project.value.livePadsPending)
             vm.engineStarted()  // as the audio stream's start does: the whole project goes to the live engine
             val until = System.currentTimeMillis() + 60_000
@@ -593,7 +599,11 @@ class LiveVmTest {
                 Thread.sleep(5)
             }
         } finally {
-            NativeEngine.sink = null
+            try {
+                screens.closeAll()
+            } finally {
+                NativeEngine.sink = null
+            }
             com.pocketstudio.app.projects.CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
         }
         // One render per pad, each told « no target »; the live engine was told the style's. S6 (G5): one

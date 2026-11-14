@@ -52,9 +52,16 @@ class VoiceInWholeSongTest {
     private val app = ApplicationProvider.getApplicationContext<Application>()
     private val out = File(System.getProperty("java.io.tmpdir"), "voice-in-song-${System.nanoTime()}")
 
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
     @After
     fun tearDown() {
-        NativeEngine.sink = null
+        try {
+            screens.closeAll()
+        } finally {
+            NativeEngine.sink = null
+        }
         // With ps_render (a bench run), the export's commands and renders stay to be listened to.
         if (System.getProperty("ps.bench.render").isNullOrBlank()) out.deleteRecursively() else println("render: kept in $out")
     }
@@ -91,10 +98,10 @@ class VoiceInWholeSongTest {
         val sink = RecordingSink(File(out, "samples"), renderer)
         NativeEngine.sink = sink
         var id: String? = null
-        ProjectsViewModel(app).create(song.copy(name = "Bootleg"), mapOf("voix-a.wav" to phrase, "voix-b.wav" to phrase)) { id = it }
+        screens.open { ProjectsViewModel(app) }.create(song.copy(name = "Bootleg"), mapOf("voix-a.wav" to phrase, "voix-b.wav" to phrase)) { id = it }
         waitFor("the project") { id != null }
         CurrentProject.set(app, id!!)
-        val vm = RhythmViewModel(app)
+        val vm = screens.open { RhythmViewModel(app) }
 
         // Written as the drum page writes them: the Drop shown, pad 16 on its bar 1, pad 15 on its bar 3.
         vm.selectScene(drop)

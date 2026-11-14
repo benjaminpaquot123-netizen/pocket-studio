@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : 33473d12a19947c8d5595893f3c8b93ef58b2673
+Relu : 52c74b082903661a25f1099385979ff8971a773c
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -87,5 +87,12 @@ Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne 
 - Aucun croisement avec tuto4 : ses deux morceaux d'`AppRoot.kt` (révélation du bouton du son de la piste, désormais l. 2055 ; noms des pads de `simpleTracks`, l. 4791) sont intacts et loin de ceux de coquille4 ; les drapeaux du panneau (`TutoHints.knobs/strip/soundButtonInSight`, `tutoReveal`) ne sont touchés par aucune ligne de coquille4. Plus aucune trace de `notice_ok` dans `app/src` (aucun test tuto4 ne s'en servait).
 - Le mineur « `AppRoot.kt:2048` » ci-dessus se lit maintenant l. 2055.
 - Pas de relance : l'équipe donne `:project-model:test` et `:app:testDebugUnitTest` (Tuto, LongPress, SimpleMixPadName, MixTips, TrackSheet, WhatPlays) à 1598 tests, 0 échec, sur cette tête ; rien dans le delta n'en fait douter.
+
+### Delta 33473d12 → 52c74b082
+- Lu : `git diff 33473d12a 52c74b082` (deux commits : rouge a97ff3713, vert 52c74b082).
+- Rouge a97ff3713 (`Coquille2SeatTest#cymbalGridLineNamesThePadShown`) : seule la mise en place change (ajout pur, aucune ligne retirée) : le morceau est construit comme le fait le cours jusqu'à l'étape `gap` (`TutoChecks.show` étape par étape), puis la Montée est montrée, avec une garde « no Montée made ». Les vérifications d'origine (`saysThePadShown`, « au moins un → à l'écran » et « il nomme le pad montré », grille tournée vers le kick puis cymbale) sont identiques : pas d'affaiblissement. Raison juste : depuis f2e3ce8aa, un coup posé sur la partie A n'est pas celui du trou et ne tourne rien.
+- rouge constaté : a97ff3713 rejoué dans un `git worktree` jetable (parent du vert) : `cymbalGridLineNamesThePadShown` échoue sur son assertion, « turned to the kick: no « → » on the screen » (10 tests, 1 échec) ; arbre jetable retiré (`git worktree remove`).
+- Vert 52c74b082 (`TutoPanel.kt`, une condition) : `cellsToTouch` vaut aussi quand la grille est en vue et qu'il reste des coups à barrer (`TutoHints.erase`), comme pour les cases pointillées (T4). Minimal ; même chemin que T4, donc le même comportement : la hauteur du panneau est reprise quand le dernier coup est barré (clé de `held`), comme quand la dernière case pointillée est touchée. Rien côté son ni sauvegarde.
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Coquille2*' --tests '*Tuto*' --tests '*Rhythm*'` sur 52c74b082 : BUILD SUCCESSFUL, tâche à jour (résultats de 13 h 48–13 h 55 UTC, après le vert, mêmes entrées) : 97 classes, 423 tests, 0 échec, 11 ignorés, dont `cymbalGridLineNamesThePadShown`, `Tour6TutoCellsPanel100Test` (T4), `Tour6TutoSoundButtonInSight*` et `Tour6TutoKnobLeftTest` (H5, H7) verts.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

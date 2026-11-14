@@ -1089,7 +1089,7 @@ fun AppRoot() {
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
-            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_ok")) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
             } else if (noticeLengthen == text) {

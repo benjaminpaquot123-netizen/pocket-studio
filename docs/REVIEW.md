@@ -1191,3 +1191,15 @@ Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
 - Restes ouverts (acceptés écran par écran dans `LanguagesScanTest.OPEN`) : à 200 % sur petit téléphone en Simple, la barre du Guide d'une ligne (« … »), le compteur « mesure 1/3 » trop large, « Octave » du clavier (« مسح » en « … » en arabe), l'en-tête « PAS : … · INTRO », « Händeklatschen », « Simple » coupé sur l'accueil Simple ; en Pro à 200 % sur tablette, la puce « ⟳ Boucler », les en-têtes de la Structure, l'onglet Effets de Sons et toute la grille du Live (chantier à part).
 - Non traités ici (zones d'autres équipes) : t5-Fa-3 (coche « Sauvegardé » à 130 %), t5-Fb-4 (Mix à 200 % : axes des courbes, noms de pistes, « Lautstärke −14 » sans unité).
 - Glossaires écrits par l'auteur, non relus par un natif ; en arabe « Pad » = « باد » ; l'article « الـ » s'ajoute mal aux mots composés ; `frenchOf` ne retrouve pas la clé d'un mot remplacé ; noms de pads jusqu'à la moitié de leur taille quand un mot casserait (« Händeklatschen ») ; le mot sous ▶ grossit jusqu'à 130 % puis plus.
+
+## Tour 6, lot « tuto4 » : points moyens restants (2026-11-14)
+- MOYEN : `KIT_VOICES` recopie `DrumKitInfo.names` sans test d'égalité ; une liste peut changer sans l'autre.
+- Voulu (H3) : un appui long hors du tuto ouvre le menu.
+
+## Tour 6 : pour le tour suivant (hors liste gelée du 13 novembre)
+- Japonais : virgules latines dans `TutoController.kt:485` ; 小節, ゴーストベース, リズム補正 et Plaits non expliqués ; champ 曲名 sous M4A/WAV.
+- « Accords à toucher : 9 » affiché pour 4 accords.
+- `Tour6TutoLineGoTest` hérite d'indices d'un test précédent (graine 5).
+- Lot stable-b jeté : `restore()` avec remise à zéro cassait 13 tests.
+- `shareMenu` bloqué par une activité ouverte dans le même test.
+- Finition « Lire la suite » (le lien reste affiché après lecture) : retirée à la demande de Benjamin.

@@ -14,6 +14,8 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Mode économie de quota (par défaut, permanent) : la « Méthode de travail » ci-dessous (elle remplace « à la file » et « modèle léger », 2026-11-02) ; une seule relecture par version, messages courts, pas de vérifications inutiles.
 - Retours de Benjamin (captures + explications de bug) : ne pas les analyser tout de suite. Les ranger dans `docs/RETOURS.md` (date, capture décrite, texte de Benjamin, une ligne par retour), répondre en une phrase « noté », et tout analyser d'un coup seulement quand Benjamin le demande (économie de quota). Après traitement, marquer chaque retour comme fait.
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
+- Dire à Benjamin, en une ligne, quand on tourne en rond (même rouge ou même refus deux fois pour un même lot) ou quand une faute est compliquée (cause pas claire après une vraie recherche, rouge qui va et vient) : proposer Fable sur telle discussion pour tel sujet ; il décide (2026-11-14). Détail : `docs/audits/AUDIT-ULTRA.md` §13.11.
+- Un lot n'entre dans l'intégration que si sa propre CI complète est verte sur une tête qui contient l'intégration du moment (2026-11-14).
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Interface en français. Code, commentaires et commits en anglais.

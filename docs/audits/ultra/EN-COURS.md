@@ -2,9 +2,9 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-13, 09 h 40 UTC.
+- **Mise à jour** : 2026-11-14, 18 h 05 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : CORRECTION du tour 6. Aucune vague de testeurs ne joue.
+- **Temps en cours** : tour 6 FERMÉ (tous les lots entrés, tuto4 avec exception §13.11). Reste la fusion dans main et l'APK.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 
@@ -16,6 +16,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 4. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 
 ## Ce qui n'est pas vert
+
+**Au 14 novembre au soir** : seulement la CI finale de l'intégration avant la fusion dans main. Les points ci-dessous datent du 13 novembre et sont réglés.
 
 1. **CI de la tête** (`9f26c244`, passage 43375199284) : « Emulator smoke test » ROUGE depuis 06 h 44 (`JourneyTest.aFirstSongInTheModeSimple` : « nothing tagged wizard after 15000 ms ») ; le reste de ce passage est vert (tests, captures, bancs ; l'endurance finit). **Cause trouvée (07 h 50)** : le lot « tutoconsignes » (`b621715da`) a écrit dans `PlainWords.kt` un motif `(?iU)…` ; le moteur de motifs du téléphone (ICU) refuse le drapeau « U », la JVM des tests et du banc l'accepte. Sur un vrai téléphone, l'assistant et le panneau du tuto en Mode simple plantent : **ne rien installer sur un téléphone depuis cette tête.** Réparation : lot « emulateur », avec un test de garde sur tous les motifs de l'appli.
 2. **Le tuto** : les trois contrôles vont au « Bravo », mais 12 défauts corrigés sur 32, trois graves neufs (flèches contradictoires au chapitre 7, doubles-croches refusées au chapitre 4 du tuto Pro, flottement après « Copier sur les mesures suivantes »), trois chapitres bloqués. Lot 10 « tutofleches » en cours.

@@ -1,5 +1,15 @@
 # Avancement
 
+## Où on en est (2026-11-14, soir)
+- **Tour 6 fermé** : toutes les erreurs de la liste gelée du 13 novembre sont corrigées et constatées par un testeur. Dernières entrées dans l'intégration : coquille3, coquille4, stable-c (le « facteur des tests » ne se bloque plus), rejeux7, puis tuto4 (fusionné à la main avec une exception acceptée par Benjamin, `docs/audits/AUDIT-ULTRA.md` §13.11).
+- Nouvelles règles du 14 novembre (CI du lot d'abord, alerte boucle) : `CLAUDE.md` et `AUDIT-ULTRA.md` §13.11.
+- Points pour plus tard : `docs/REVIEW.md` (« Tour 6 : pour le tour suivant »).
+
+## Prochaine étape exacte
+- CI finale sur `ccr-80af1a1b-mn0wec`, fusion dans `main`, Release APK pour Benjamin avec la liste à essayer au téléphone.
+- Paquet 9 : un lot du banc ajoute `project-model/src/test` à `TEST_DIRS` de `scripts/bench/verifie-chantier.py`.
+- Rien d'autre sans un signal de Benjamin.
+
 ## Où on en est (2026-11-13, matin)
 - Étape 5 du plan d'action : **tour 6 joué et corrigé dans la nuit du 12 au 13 novembre**. 19 sièges du banc (8 du plan + 11 de la 2e vague « croisement des langues »), 3 tutos joués en entier (français et japonais en Facile, allemand en Pro, 300 gestes), un balayage automatique des tutos (1 110 parcours verts : 37 styles, Facile et Pro, 15 langues) et un siège son à la mesure. Tout est rangé sous `docs/audits/ultra/sieges/tour-6/` (texte seul ; les écrans lourds restent sur la branche `claude/benstudio-audit-tour-6-gonv23-rassemble`). À lire d'abord : `synthese-tour-6.md`, puis `lecture-recurrents.md`, `verdicts.tsv`, `lots-correction.md`.
 - Bilan : 105 défauts uniques, 43 récurrents, 45 sur le tuto et le Guide, 1 bloquant (découpe invisible à police 200 %), 8 graves. Tri : 67 réels, 11 voulus, 3 artefacts du banc, 5 doublons.
@@ -24,7 +34,7 @@
 - Branche `ccr-80af1a1b-mn0wec` (intégration fx-int) : le grand audit final (23 auditeurs, vérifications adverses, 16 lots de correction, relecture neuve et ses 7 MOYEN corrigés), BenStudio (nom, logo, ouverture « double battement » validée), MiniLab 3 et claviers génériques, 15 langues (drapeaux, pluriels CLDR, arabe RTL), « ▶ Écouter seul » (piste, pad, Guide), Guide plus clair avec lueur au rythme d'un cœur, onglet Mix du Mode simple (maquette validée, vumètres en dégradé de pixels), tuto de A à Z jump up (Facile 15 ch. / Pro 17 ch.) et nouvel écran « Nouveau projet » à 3 choix. Tests locaux verts (project-model, app, captures, compilation androidTest). APK 224 envoyé (avant langues/Mix/tuto).
 - Consignes de Benjamin : pas d'APK tant qu'il ne le demande pas ; Play Store seulement à sa demande (branche fx-play rejouée sur fx-int à l'étape E2 de PLAN-REPRISE, rien publié sans lui ; prix prévu 4,99 € avec promo 2,99 €) ; démo automatique « trop tôt » (branche fx-demo abandonnée) ; économiser le quota ; des nouvelles à chaque étape.
 
-## Prochaine étape exacte
+## Prochaine étape exacte (ancienne)
 
 **ORDRE DE BENJAMIN (2026-11-09, 22 h 40) : « tu peux commencer ». Le plan d'action `docs/audits/ultra/PLAN-ACTION-AUDITS.md` est lancé, ordre A (étapes 0, 1, 2, 3, 4, 5), réponses 2A et 3A. Règles : un seul agent à la fois pour réparer le banc ou corriger l'appli (auteur, puis relecteur neuf), trois testeurs au plus pendant un audit, nombre annoncé avant chaque lancement ; pas d'APK, pas de test sur appareil, des nouvelles après chaque étape. Rappel planifié à 2 h 05 (10 nov, heure belge) pour reprendre ici si le quota a coupé. Suivi : cocher ci-dessous au fur et à mesure.**
 - [x] Étape 0 : `banc45` relu (0 bloquant, 0 grave), fusionné (9a32df5), 5 gardes dans `verdicts.tsv`, `verifie-chantier.py` à 0 écart, atelier retiré. CI relancée à la main (run 42705288197) : état à lire avec `scripts/bench/ci-etat.sh` et à écrire dans `sieges/tour-5/hors-banc.tsv`.

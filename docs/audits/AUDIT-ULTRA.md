@@ -365,3 +365,14 @@ Tant que ce lot n'est pas fusionné, le chef applique ces points à la main et l
 - **La clôture gèle la liste.** Pendant une clôture, un siège de contrôle répond aux phrases qu'on lui donne (corrigé, autre, encore là, pas atteint) et ne cherche pas de défauts neufs ; il ne signale qu'un bloquant ou un grave qui l'arrête. La chasse aux défauts est un tour d'audit, décidé par Benjamin, sur une base verte. La clôture finit quand la liste est vide : pas de liste « à faire plus tard » ; ce qu'un testeur simulé ne peut pas juger (le son, le vrai doigt) est nommé un par un sur la liste d'essai du téléphone de Benjamin.
 - **Contrôles ciblés.** Un siège de contrôle rejoue la mission du siège d'origine, pas plus ; le tuto entier de 300 gestes est réservé aux lots qui changent sa mécanique.
 - **Les heures dites à Benjamin sont belges** (la machine est en UTC).
+
+### 13.11 Leçons du 14 novembre (Benjamin) : CI du lot, alerte boucle
+
+- **CI du lot d'abord** : un lot n'entre que si SA CI complète (7 jobs) est verte sur une tête qui contient l'intégration du moment. Le chef le vérifie lui-même (sha de tête, résultat, `git merge-base --is-ancestor`). Raison : le rouge `ScreenScanTest` de coquille3 ; la vérification commune doit passer du premier coup.
+- **Alerte boucle** (après rejeux7, refusé 5 fois sans alerte du chef) :
+  1. Compter les refus par lot en attente, pas par coupable. Au 2e refus d'un même lot, quelle que soit la cause, une ligne à Benjamin : « boucle possible sur <lot>, cause, Fable utile ou non ». Il décide.
+  2. Le chef tient une ligne par lot « refus n : cause » et la relit à chaque refus avant d'écrire.
+  3. Un lot qui attend depuis 2 refus entre en priorité, avant tout autre.
+  4. Un lot qui change un nom de bouton, une étiquette de test ou une fenêtre rejoue tous les rejeux avant son portail. À terme, les rejeux tournent dans la CI : sinon une CI verte ne prouve rien pour eux.
+  5. Avant toute ligne « prêt pour le portail », le lot lance lui-même le portail à blanc contre la tête de l'intégration et cite sa sortie. Les refus de forme (sièges trop vieux, verts sans rouge, juge qui monte) se voient ainsi avant le chef (tuto4 : 4 refus de forme).
+- **Exception tuto4 (acceptée par Benjamin, 14 nov)** : fusionné à la main (`1656c7932`). Le juge comptait 4 « vert: » sans « rouge: » parce que `verifie-chantier.py` ne lit que `app/src/test` (`TEST_DIRS`), pas `project-model/src/test`. Les preuves rouges sont sous `docs/audits/ultra/rouges-constates/`. À faire au paquet 9 : un lot du banc ajoute `project-model/src/test` à `TEST_DIRS`.

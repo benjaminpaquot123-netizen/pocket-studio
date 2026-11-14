@@ -401,6 +401,16 @@ internal fun playsIn(parts: Int, of: Int): String =
 
 private const val MAX_LINES = 30
 
+/** The name a track's sheet gives track [t] of [p] (its title, its chain's targets). */
+internal fun sheetName(p: com.pocketstudio.model.Project, t: GuideTrack): String = DefaultNames.shown(t.name)
+
+/** The tracks the chain of the track [key] can be copied to, named as [sheetName] names them: a pad to the other pads, any other track to the others. */
+internal fun sheetTargets(p: com.pocketstudio.model.Project, tracks: List<GuideTrack>, key: String): List<SheetTarget> {
+    val pad = key.startsWith("pad:")
+    return tracks.filter { it.key != key && it.channel != com.pocketstudio.model.Mixer.MASTER && it.key != GuideTrack.DRUMS && it.key.startsWith("pad:") == pad }
+        .map { SheetTarget(it.key, sheetName(p, it)) }
+}
+
 /**
  * A track's sheet in the app: its Guide sheet (the analysis's), its parts' names, the tracks its
  * chain can go to, and what its buttons do. [key]: the track's Guide key ("inst:3", "pad:0"…).
@@ -431,17 +441,15 @@ internal fun TrackSheetRoute(
     val inst = key.removePrefix("inst:").toIntOrNull()?.takeIf { key.startsWith("inst:") }
     // Each part by its section's name (« Drop »), else its scene's letter.
     val partNames = remember(project) { project.song.map { project.sceneLabel(it.scene).takeIf(String::isNotBlank)?.let(com.pocketstudio.model.Scene::shownLabel) ?: project.sceneTitle(it.scene) } }
-    // The chain goes to a track of the same family: an instrument, the 303 or a voice to the others; a pad to the other pads.
-    val pad = key.startsWith("pad:")
-    val targets = tracks.filter { it.key != key && it.channel != com.pocketstudio.model.Mixer.MASTER && it.key != GuideTrack.DRUMS && it.key.startsWith("pad:") == pad }
-        .map { SheetTarget(it.key, DefaultNames.shown(it.name)) }
+    // The chain goes to a track of the same family ([sheetTargets]).
+    val targets = sheetTargets(project, tracks, key)
     val partKey = GuideTrack.partKey(key)
     val aloneTarget = remember(key) { com.pocketstudio.app.rhythm.AloneTarget.ofKey(key) }
     val alone by vm.alone.collectAsStateWithLifecycle()
     // The sheet keeps « Écouter seule » going (its sound changed from here is heard in the loop).
     com.pocketstudio.app.rhythm.HoldAlone(true, vm::holdAlone)
     TrackSheet(
-        name = DefaultNames.shown(track.name),
+        name = sheetName(project, track),
         // Audit stage 2: the « Quand » boxes follow the project at once (the Guide's analysis comes 300 ms or more
         // later, so a touched box looked unchanged); a box is lit where the track is switched on in that part.
         sheet = guide.sheets.firstOrNull { it.track.key == key }?.let { s ->

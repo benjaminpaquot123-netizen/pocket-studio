@@ -1,8 +1,20 @@
 # Relecture neuve — lot coquille2 (tour 6)
 
-Relu : fed88a22
+Relu : 043ddbab
 
 Portée : tout le lot (`git diff origin/ccr-80af1a1b-mn0wec...HEAD`). Quatrième passe : la 1re sur a2c12c1c, la 2e sur 98324743, la 3e sur c3190921 (P6), celle-ci sur `c3190921..a032ab20`. Depuis la 3e passe, seuls `HeardLength.kt` et `HeardLengthTest.kt` ont changé dans `app`, `project-model` et `engine` ; la fusion de l'intégration (`0ff032ee`, `9cacbbb2`) n'apporte que le banc et des docs. Lecture du code seulement, Gradle non lancé.
+
+## 7e passe (`fed88a22..043ddbab`, avant le portail)
+
+- **`SongLength.of` : correct.** `project-model/.../SongLength.kt:25-30`. Une boucle compte maintenant `heardSceneSteps(p.scene) / spb` au lieu de `currentSceneContent().stepsFor(spb) / spb`, et le reste ne bouge pas.
+  - Pour les notes, les deux donnent la même chose : `sceneSteps(p.scene)` lit `allScenes[p.scene]`, que `ProjectSession.apply` → `clean` (`syncScenes`) garde en accord avec le contenu courant après chaque modification ; sans parties, `allScenes` vaut justement `[currentSceneContent()]`.
+  - Les briques sont comptées comme par le transport (même fonction). Le compteur du transport (`playPosition`) et la carte de l'accueil (« Boucle de N mes. ») disent donc le même nombre.
+  - Le morceau n'est pas touché (`partSteps`). Les secondes viennent des mesures entières, comme avant.
+  - `HeardLengthTest#theHomeAndTheTransportSayTheSameLength` (6, 2, 5 mesures, et une brique de toutes les parties) et `SongLengthBricksTest` de padlive2 (la plus longue brique compte, pas celle d'une autre partie ni un clip de morceau) restent cohérents avec le code : les valeurs attendues correspondent.
+- **Le reste de padlive2 ne compte pas de longueur autrement.** Ses fichiers de code fusionnés (`PadLiveController`, `PadLiveScreen`, `PadLiveRoute`, `PartyMode`, `LiveScreen`, `LivePadsFullScreen`) ne calculent aucune longueur (`loopsOn`, ■, place des prises). « Mes projets » (`ProjectCatalog.kt:50`) et l'accueil (`LaunchChoice.kt:176`) passent par `SongLength.of`, et l'écran Session ne compte que le morceau.
+- **mineur** : `ProjectCatalog` garde la longueur calculée au dernier enregistrement. Un projet « Live » enregistré avant ce lot affiche encore « 1 mes. » dans « Mes projets » jusqu'au prochain enregistrement. C'est le comportement habituel du catalogue ; à savoir pour la recette.
+- **mineur** : la boucle d'A6 (`RhythmViewModel.remixPastEnd`, branche sans morceau, et la branche boucle de `lengthenSongForRemix`) compte encore la boucle par `sceneSteps`, sans les briques. Dans une boucle avec une prise de 4 mesures, « La chanson dure %s de plus que ta boucle » se mesure sur la partie d'une mesure, alors que l'accueil et le compteur disent 4. À faire : prendre `heardSceneSteps` là aussi, ou l'accepter et le noter.
+- **Docs et dossiers des sièges de contrôle copiés : rien dans le code.**
 
 ## 6e passe (`8868eb9d..fed88a22`, après les sièges de contrôle)
 

@@ -1,0 +1,26 @@
+Écran 199 (588x1278)
+texte « Ce qui joue » @ 147,177
+texte « Tout ce qui agit sur le son : effets, envois, courbes qui bougent. « Modifier » t'emmène là où ça se règle. » @ 294,252
+bouton « Tout le morceau » [sélectionné] @ 158,330
+bouton « B · Intro » @ 338,330
+bouton « C · Montée » @ 130,408
+bouton « D · Drop » @ 284,408
+bouton « E · Break » @ 428,408
+bouton « F · Drop 2 » @ 124,486
+bouton « G · Fin » @ 263,486
+texte « Batterie » @ 303,555
+image (étincelles) @ 81,633
+texte « Effets et envois » @ 195,606
+bouton « Modifier » @ 451,633
+texte « Compresseur · Saturation · Écrêteur doux » @ 233,651
+texte « Pad 5 » @ 303,720
+image (étincelles) @ 81,798
+texte « Élargisseur » @ 171,771
+bouton « Modifier » @ 451,798
+texte « Un effet sur le son, dans l'ordre de la chaîne. » @ 233,816
+texte « Sortie générale » @ 303,885
+image (curseurs) @ 81,963
+texte « Volume général » @ 196,936
+bouton « Modifier » @ 451,963
+texte « -6,0 dB sur la sortie générale. » @ 233,981
+texte « Fermer » @ 482,1089

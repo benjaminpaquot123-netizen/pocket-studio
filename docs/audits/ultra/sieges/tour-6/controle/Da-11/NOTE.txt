@@ -1,0 +1,1 @@
+Short control D a, run 11, lot tuto4 « Lire la suite » (coordinator request, 2026-11-14, quota economy): code 31aa3661, local lot lotDcontrole11 (40 gestures), played by Testeur 2 itself (never read the app code; no sub-agent by request). Text files only.

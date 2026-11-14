@@ -2050,6 +2050,9 @@ fun AppRoot() {
         val place = tuto.place()
         com.pocketstudio.app.tuto.TutoHints.knobs = place?.knobs.orEmpty().toSet()
         com.pocketstudio.app.tuto.TutoHints.strip = place?.strip
+        // Tour 6, seats Bb-7/Bb-8 (H5, H7): a step on the track's sound while its notes page shows: « Régler le son de la
+        // piste ↓ », at the top of that page (scrolled away to the grid), brought into view by itself.
+        if (place?.knobs?.isNotEmpty() == true && com.pocketstudio.app.tuto.TutoHints.soundButtonInSight) tutoReveal = listOf(com.pocketstudio.app.synth.SOUND_BUTTON_SPOT)
     }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
@@ -4784,7 +4787,8 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     val acidPlays = acidPlays(p)
     // The drums' own sounds (the pads with hits), each heard alone from the Batterie's line.
     val pads = p.guideTracks().filter { it.key.startsWith("pad:") }.mapNotNull { t ->
-        t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shown(t.name)) }
+        // Tour 6, seat Fa-1 (« Rim » at the Mix, « Bord de caisse » on the pad): each pad named as the pad shows it.
+        t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shownPad(it, p.drums.lanes.getOrNull(it)?.sample?.name, p.padVoices[it]?.kind)) }
     }
     // n° 23: a project born from a Remix shows no empty « Batterie » or « Synthé » it never used.
     val remix = p.remix.setId != null

@@ -331,7 +331,7 @@
         },
         {
           "id": "filter",
-          "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.",
+          "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.",
           "why": "La ligne ne change presque pas : c'est le filtre qui raconte l'histoire.",
           "levels": "p",
           "check": "automation:wave",

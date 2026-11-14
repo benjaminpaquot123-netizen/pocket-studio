@@ -1,0 +1,38 @@
+Écran 88 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ■ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône (flèches en boucle) « A mesure 1/2 » [désactivé] @ 239,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+texte « Mesure 2/2 · Bord de caisse » @ 190,274
+texte « Les charleys et le bord de caisse Chapitre 4/15 · Étape 4/4 · Facile » @ 207,342
+icône (liste) « Chapitres » @ 444,342
+icône ⌄ @ 531,342
+texte « Écoute toute ta batterie quelques secondes, puis celle de l'exemple. » @ 294,441
+texte « Le kit House » @ 100,522
+texte « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » @ 294,586
+bouton « Télécharger le kit House (4 Mo) » [coupé] @ 294,652
+texte « ▸ Pourquoi ? » @ 294,693
+icône « Lire la suite » ⌄ @ 294,741
+bouton ■ «   Arrêter » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 294,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ■ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

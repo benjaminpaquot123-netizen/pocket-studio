@@ -1,0 +1,21 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tab_simple_Rythme
+tuto_panel/tab_simple_Rythme
+dialogue:tempo_sheet
+dialogue:tuto_key_sheet
+dialogue:roll_menu
+tab_simple_Clavier
+tuto_panel/tab_simple_Clavier
+tuto_panel/tab_simple_Morceau
+tuto_spot_ring
+session/tab_simple_Morceau
+simple_mix/tab_simple_Mix
+tuto_panel/tab_simple_Mix
+dialogue:share_progress
+dialogue:« Partager mon morceau · Mon-mor »
+dialogue:share_bilan
+tab_simple_Envoyer
+share_sheet/tab_simple_Envoyer
+dialogue:what_plays

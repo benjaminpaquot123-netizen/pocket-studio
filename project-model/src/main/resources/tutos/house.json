@@ -40,7 +40,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire qui donne le sourire), puis « La ».",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ».",
           "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -52,13 +52,13 @@
     },
     {
       "id": "kick",
-      "title": "Le kick",
+      "title": "Le kick : la grosse caisse",
       "why": "Le kick (la grosse caisse) tape sur chaque temps, du début à la fin : c'est la house qui a fait de ce « boum boum boum boum » la règle de la piste de danse.",
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : le kit est celui de la house, la boîte à rythmes 909 et le tambourin de la 707. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tout est prêt : tu n'as rien à régler.",
-          "textPro": "Déjà prêt pour toi : kick, clap et charleys de la TR-909, tambourin de la TR-707, kick accordé sur la tonalité. Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "text": "Avant de commencer : le kit est celui de la house, les sons de la boîte à rythmes 909 et le pad « Rim » de la 707. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tout est prêt : tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : kick, clap et charleys de la TR-909, pad « Rim » de la TR-707, kick accordé sur la tonalité. Chaque piste que tu créeras arrivera avec son son conseillé.",
           "check": "manual"
         },
         {
@@ -91,9 +91,9 @@
     },
     {
       "id": "hats",
-      "title": "Les charleys et le tambourin",
-      "titlePro": "Charleys, tambourin et swing",
-      "why": "Le « tchi » du charley ouvert entre chaque coup de kick pousse le corps vers l'avant ; le petit charley fermé et le tambourin font danser les épaules.",
+      "title": "Les charleys et le bord de caisse",
+      "titlePro": "Charleys, bord de caisse et swing",
+      "why": "Le « tchi » du charley ouvert entre chaque coup de kick pousse le corps vers l'avant ; le petit charley fermé et le pad « Rim » font danser les épaules.",
       "steps": [
         {
           "id": "ohat_do",
@@ -115,8 +115,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim » (il joue le tambourin), touche les 4 cases en pointillé, entre les temps.",
-          "textPro": "À toi : pose le tambourin de la 707 sur chaque contretemps.",
+          "text": "À toi : sur le pad « Rim », touche les 8 cases en pointillé (4 par mesure), entre les temps.",
+          "textPro": "À toi : pose le pad « Rim » de la 707 sur chaque contretemps.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -251,7 +251,7 @@
     },
     {
       "id": "groove",
-      "title": "Ta première partie : le Groove",
+      "title": "Ta première partie : le Groove, ta boucle de base",
       "why": "Tout ce que tu as fait joue ensemble : c'est ta partie de départ. Les autres parties naîtront d'elle.",
       "steps": [
         {
@@ -278,7 +278,7 @@
       "steps": [
         {
           "id": "map_intro",
-          "text": "Écoute l'Intro : la batterie seule, sans basse ni piano.",
+          "text": "Écoute l'Intro : la batterie seule, sans basse ni piano. Sur la carte, le Break, c'est la pause du morceau.",
           "check": "listen",
           "listen": "part:Intro",
           "why": "Le DJ cale son mélange sur un kick et des charleys bien nets."
@@ -299,7 +299,7 @@
         },
         {
           "id": "map_break",
-          "text": "Écoute le Break : le kick et la basse se taisent, il reste le piano et les charleys.",
+          "text": "Écoute le Break (la pause du morceau) : le kick et la basse se taisent, mais le piano et les charleys continuent.",
           "check": "listen",
           "listen": "part:Break",
           "why": "Sans pause, le Drop suivant ne ferait plus d'effet."
@@ -328,8 +328,8 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis tout se tait juste avant le Drop.",
-          "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, tambourin, piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
+          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis se tait sur le dernier temps, avec le piano. Les charleys et le pad « Rim » y jouent encore : tu les feras taire au chapitre « Les transitions », pour un temps de silence juste avant le Drop.",
+          "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, pad « Rim », piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",
           "keep": "clap,open_hat,hat,perc,pad",
@@ -349,7 +349,7 @@
         },
         {
           "id": "make_break",
-          "text": "À toi : crée le Break : le piano, les charleys et le tambourin seulement.",
+          "text": "À toi : crée le Break : le piano, les charleys et le pad « Rim » seulement.",
           "check": "part:Break:nokick+nobass",
           "spot": "song.parts",
           "keep": "open_hat,hat,perc,pad",
@@ -358,7 +358,7 @@
         },
         {
           "id": "make_drop2",
-          "text": "À toi : crée le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances de fin de phrase (« Montre-moi » les pose).",
+          "text": "À toi : touche « Créer la partie » pour faire le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances (de petits coups de batterie en fin de phrase, qui annoncent la suite).",
           "textPro": "À toi : crée le Drop 2 : tout, sur la batterie de l'exemple (4 mesures, une relance en fin de phrase).",
           "check": "part:Drop 2:full",
           "spot": "song.parts",
@@ -385,7 +385,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
@@ -439,7 +439,7 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » (ou le charley ouvert) : une couche de plus que dans le Drop.",
+          "text": "À toi : dans la partie « Drop 2 », sur le pad « Shaker », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche.",
           "textPro": "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.",
           "check": "changed:drums:Drop 2",
           "target": "perc2",
@@ -463,7 +463,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : dans Mix, monte « Envoi réverbe » sur le pad « Clap », puis sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
+          "text": "À toi : dans la grille de la batterie, touche le pad « Clap », puis « Effets du pad » : monte « Envoi réverbe ». Fais de même dans Mix sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "clap,pad",
@@ -496,7 +496,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "text": "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.",
           "textPro": "À toi : dans Mix, baisse un peu le fader des Accords et celui de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -529,13 +529,13 @@
     },
     {
       "id": "export",
-      "title": "Exporte ton morceau",
+      "title": "Partage ton morceau",
       "why": "Ton morceau est fini : fais-le écouter !",
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
-          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "text": "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.",
+          "textPro": "À toi : touche « Partager » et envoie ton morceau.",
           "check": "shared",
           "spot": "share.export"
         }

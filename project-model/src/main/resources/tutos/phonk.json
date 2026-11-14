@@ -95,7 +95,7 @@
         {
           "id": "hat_rolls",
           "levels": "p",
-          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose un coup sur deux). Puis mesure 2, cases 15 et 16 : appui long, « Roulement » ×2 chacune : une petite rafale qui relance la boucle.",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose un coup sur deux). Puis mesure 2, cases 15 et 16 : appui long sur chacune, « Roulement » ×2 : une petite rafale qui relance la boucle.",
           "check": "lane:hat:rolls",
           "spot": "rhythm.pattern",
           "target": "hat",

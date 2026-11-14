@@ -1,0 +1,54 @@
+Écran 152 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+bouton « 1 » [coupé] @ 486,302
+bouton « 2 » [coupé] @ 853,302
+texte « B » @ 84,333
+texte « A » @ 84,373
+texte « A♭ » @ 84,415
+texte « G » @ 84,457
+texte « G♭ » @ 84,499
+texte « F » @ 84,541
+texte « E » @ 84,583
+texte « E♭ » @ 84,625
+texte « D » @ 84,667
+texte « D♭ » @ 84,709
+texte « C5 » @ 84,751
+texte « H » @ 84,793
+texte « B » @ 84,835
+texte « A » @ 84,877
+texte « A♭ » @ 84,919
+texte « G » @ 84,961
+texte « G♭ » @ 84,1003
+texte « F » [coupé] @ 84,1024
+dessin [coupé] @ 492,669
+texte « Velocity » @ 84,1050
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe auf der Melodie-Spur über den Noten auf „Sound der Spur einstellen ↓“, dann dreh „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

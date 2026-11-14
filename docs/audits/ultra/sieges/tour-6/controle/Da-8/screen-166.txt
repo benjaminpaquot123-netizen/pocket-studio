@@ -1,0 +1,51 @@
+Écran 166 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « ドロップ 小節 4/8 » ▾ @ 237,114
+bouton « ? » @ 543,114
+texte « あなたの番：聞かせたい音を上げ、邪魔な音を下げよう。▶でトラックを単独で聴けます。 » [coupé] @ 297,144
+bouton « ドラム ▸ » [état « クローズ »] @ 75,208
+curseur [état « ふつう », à 80 %] @ 84,385
+texte « ふつう » @ 84,545
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 55,610
+bouton ▶ @ 109,598
+texte « ベース » @ 216,198
+curseur [état « ふつう », à 80 %] @ 216,365
+texte « ふつう » @ 216,525
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 190,590
+bouton ▶ @ 241,578
+texte « コード » @ 339,198
+curseur [état « −4 », à 65 %] @ 339,365
+texte « −4 » @ 339,522
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 313,584
+bouton ▶ @ 364,572
+texte « メロディ » @ 462,198
+curseur [état « −4 », à 65 %] @ 462,365
+texte « −4 » @ 462,522
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 436,584
+bouton ▶ @ 487,572
+curseur [coupé, état « −6 », à 60 %] @ 559,365
+texte « ⚠️ 「太鼓のふち」が他を覆っています。 » @ 226,707
+bouton « 少し下げる » @ 107,768
+icône (liste) « チャプター » @ 444,879
+texte « ミックス：音量 チャプター 14/15 · 完了 · かんたん » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « よくできました、章クリア！ » ⌃ @ 294,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » [sélectionné] @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

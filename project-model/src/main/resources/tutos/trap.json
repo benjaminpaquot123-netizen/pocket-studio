@@ -126,7 +126,7 @@
         {
           "id": "hat_triplet",
           "levels": "f",
-          "text": "À toi : les triolets. Mesure 1, sur le pad « Charley », appui long sur le coup de la case 13, puis « Triolet » › « 3 sur 2 cases » ; pareil sur la case 15. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap.",
+          "text": "À toi : les triolets. Mesure 1, sur le pad « Charley », appui long sur la case 13, puis « Triolet » › « 3 sur 2 cases » ; pareil sur la case 15. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap.",
           "why": "Le triolet casse la régularité des doubles croches : l'oreille est surprise juste avant le retour du 1.",
           "check": "triplet:hat",
           "spot": "rhythm.pattern",

@@ -298,9 +298,14 @@ fun SynthScreen(
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 ModeSwitch(showNotes, tracks, onChange = pickMode)
                 // Testers (lot « tuto 5 »): the track's sound was four screens under the notes, nothing said it was there.
+                // Tour 6, seats Bb-7/Bb-8 (H5, H7): a tutorial step on the track's sound brings this button into view by itself.
+                androidx.compose.runtime.DisposableEffect(Unit) {
+                    com.pocketstudio.app.tuto.TutoHints.soundButtonInSight = true
+                    onDispose { com.pocketstudio.app.tuto.TutoHints.soundButtonInSight = false }
+                }
                 androidx.compose.material3.TextButton(
                     onClick = { scope.launch { soundRequester.bringIntoView() } },
-                    modifier = Modifier.heightIn(min = 40.dp).testTag("synth_to_sound"),
+                    modifier = Modifier.heightIn(min = 40.dp).spot(SOUND_BUTTON_SPOT).testTag("synth_to_sound"),
                 ) { Text(tr("Régler le son de la piste") + " ↓") }
                 record?.invoke(false)
                 // Sent to the notes by the tutorial (« Créer la piste Basse »): the grid itself in view.
@@ -605,6 +610,9 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 
 /** The track's sound on the synth screen ([SoundArea]), as a spot. */
 const val SOUND_AREA_SPOT = "sound_area"
+
+/** « Régler le son de la piste ↓ » at the top of the notes page, as a spot (a tutorial step on the track's sound reveals it). */
+const val SOUND_BUTTON_SPOT = "synth_to_sound"
 
 /**
  * Audit ultra round 2, n° 27 (seat B c, a foldable): the piano roll is on the screen. On a big screen the

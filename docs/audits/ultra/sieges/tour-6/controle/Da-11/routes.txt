@@ -1,0 +1,7 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tuto_panel/tab_simple_Rythme
+dialogue:tuto_chapter_list
+tab_simple_Rythme
+tuto_spot_ring

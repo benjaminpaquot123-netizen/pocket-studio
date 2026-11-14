@@ -118,7 +118,8 @@ fun whatPlaysGroups(p: Project, scene: Int?, strips: List<StripInfo>, onlyCh: In
     fun nameOf(ch: Int): String? = when {
         ch == Mixer.MASTER -> tr("Sortie générale")
         ch == Acting.BUSES -> tr("Réverbe et écho communs")
-        Mixer.isPad(ch) -> tr("Pad %d", ch - Mixer.FIRST_PAD + 1)
+        // Tour 6, seat Fa-1 (« Pad 5 » for « Claquement de mains »): a pad as the pad shows it.
+        Mixer.isPad(ch) -> (ch - Mixer.FIRST_PAD).let { lane -> com.pocketstudio.model.DefaultNames.shownPad(lane, p.drums.lanes.getOrNull(lane)?.sample?.name, p.padVoices[lane]?.kind) }
         else -> strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }
     }
     val order = strips.map { it.ch } + (Mixer.FIRST_PAD until Mixer.FIRST_PAD + Mixer.PADS) + Mixer.MASTER + Acting.BUSES

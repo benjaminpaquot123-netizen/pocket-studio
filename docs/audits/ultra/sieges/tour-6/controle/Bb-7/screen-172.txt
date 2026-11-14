@@ -1,0 +1,58 @@
+Écran 172 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Die Zeitleiste bringt deine Teile in Reihenfolge, jeden mit seiner Länge in Takten. Füg sie der Reihe nach hinzu. » @ 450,373
+texte « Hinzufügen: » @ 123,441
+bouton « + A · Groove » [coupé] @ 163,501
+bouton « + Neuer Teil (Kopie von A · Groove) » [coupé] @ 568,499
+texte « Die Teile verstehen Kapitel 9/16 · Schritt 3/7 · Pro » @ 366,574
+icône (liste) « Kapitel » @ 759,575
+icône ⌄ @ 843,575
+texte « Hör dir Intro 2 an: Der Bass und der Stab kommen dazu. » @ 413,663
+texte « Energie » @ 69,711
+texte « 16 » @ 74,820
+texte « 16 » @ 182,820
+texte « 32 » @ 342,820
+texte « 12 » @ 489,820
+texte « 4 » @ 545,820
+texte « 32 » @ 666,820
+texte « 16 » @ 827,820
+texte «  Intro » @ 68,874
+texte «  Intro 2 » @ 174,874
+texte «  Drop » @ 282,874
+texte «  Break » @ 385,874
+texte «  Build-up » @ 510,874
+texte «  Drop 2 » @ 640,874
+texte «  Ende » @ 750,874
+texte « Jede Zahl: die Länge des Teils in Takten. » @ 265,913
+texte « Das Kit Techno » [coupé] @ 139,964
+texte « ▸ Warum? » @ 450,997
+icône « Weiterlesen » ⌄ @ 450,1051
+bouton ▶ «  Beispiel anhören » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

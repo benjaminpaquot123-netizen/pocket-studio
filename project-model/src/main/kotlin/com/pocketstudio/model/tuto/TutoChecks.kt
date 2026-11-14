@@ -2335,6 +2335,9 @@ object TutoChecks {
     fun toErase(step: TutoStep, p: Project, target: TutoTarget? = null): Map<Int, Set<Int>>? {
         if (step.check.startsWith("lane:")) return target?.let { laneExtras(step, p, it) }
         if (step.check != "gap") return null
+        // Tour 6, seat D a-8 (« もうできています » with « 赤い×をタップ »): the step's own part only; another part shown
+        // (the Groove) has nothing to take away, its hits crossed out were not the gap's.
+        if (sceneLabelled(p, partsOf(step).first()) != p.scene) return emptyMap()
         val d = p.drums
         val cut = target?.let { gapCells(step, it) } ?: step.length.takeIf { it > 0 } ?: GAP_CELLS
         val last = (d.steps - cut).coerceAtLeast(0) until d.steps

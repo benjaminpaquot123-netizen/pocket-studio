@@ -6,6 +6,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.model.remixOverrunSeconds
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.app.human.HumanTester
 import com.pocketstudio.app.human.SeatOptions
 import org.junit.Assert.assertNotNull
@@ -202,6 +203,21 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         tap("tuto_chapters"); tap("tuto_chapter_11")
         act("attends 1")
         val v = rhythm()!!
+        // The gap's crosses are its own part's, the Montée (tuto4, f2e3ce8aa: a hit on another part shown is not the gap's
+        // and turns nothing). The chapters' list jumps without making the parts: the song made as the course makes it,
+        // up to the gap, and the Montée shown, as the seat had it.
+        val target = com.pocketstudio.model.tuto.TutoTarget.of("techno")!!
+        var made = v.project.value
+        for (s in com.pocketstudio.model.tuto.TutoCourse.of("techno")!!.chaptersFor(com.pocketstudio.model.tuto.TutoLevel.Facile).flatMap { it.steps }) {
+            if (s.id == "gap") break
+            if (!com.pocketstudio.model.tuto.TutoChecks.done(s, made, target)) made = com.pocketstudio.model.tuto.TutoChecks.show(s, made, target) ?: made
+        }
+        v.session.edit { made }
+        act("attends 1")
+        val montee = v.project.value.allScenes.indexOfFirst { it.label == "Montée" && !it.isEmpty }
+        assertTrue("no Montée made", montee >= 0)
+        if (v.project.value.scene != montee) v.selectScene(montee)
+        act("attends 1")
         fun saysThePadShown(at: String) {
             val shown = com.pocketstudio.app.rhythm.padName(v.project.value, v.transport.value.selectedPad)
             val said = screenLines().mapNotNull { Regex("« → ([^»]+) »").find(it)?.groupValues?.get(1)?.trim() }

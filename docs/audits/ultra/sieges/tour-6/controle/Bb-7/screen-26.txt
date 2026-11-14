@@ -1,0 +1,50 @@
+Écran 26 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 185,42
+bouton « Pro » @ 399,42
+bouton « A » ▾ @ 477,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton + «  Spur » @ 781,205
+texte « Teil: A » @ 62,273
+curseur [état « Mitte », à 50 %] @ 450,345
+bouton (dossier ouvert) «  Importieren » @ 243,429
+bouton (micro) «  Mikro » @ 657,429
+texte « Ordner » @ 704,513
+texte « .zip » @ 814,513
+texte « Pack auf die nächsten Pads: » @ 340,513
+texte « 1 Takt » @ 457,597
+texte « 2 Takte » @ 592,597
+texte « 4 Takte » @ 739,597
+texte « Den ganzen Song einfangen: » @ 216,597
+texte « Leg deinen eigenen Sound auf dieses Pad: eine Datei vom Gerät (MP3, WAV, FLAC, M4A…) oder das Mikro. » [coupé] @ 450,662
+texte « Die Kick und das Grollen Kapitel 2/16 · Schritt 1/4 · Pro » @ 366,729
+icône (liste) « Kapitel » @ 759,730
+icône ⌄ @ 843,730
+texte « Schon bereit: die Techno-Sounds von „Mach mir einen Track“ (Kick auf F gestimmt, Rumble), ihre Lautstärken und Effekte (Abzeichen „FX“). Die Karte des Techno-Kits lädt die echten Drum-Sounds des Stils; „Später“ behält diese. Jede Spur, die du erstellst, kommt mit ihrem empfohlenen Sound. » @ 450,910
+texte « ▸ Warum? » @ 450,1054
+bouton ✓ «   Verstanden » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,69 @@
+Écran 154 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Vocals Mikrofon » [coupé] @ 77,204
+onglet « Remix Trennen » @ 230,204
+bouton « Bass Plaits » @ 375,204
+bouton « Akkorde Pluck » @ 520,204
+bouton « Melodie Gefilterter Lead » ⋮ @ 748,204
+image ← @ 28,204
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « A♭ » [coupé] @ 84,307
+texte « G » @ 84,335
+texte « G♭ » @ 84,377
+texte « F » [coupé] @ 84,398
+dessin [coupé] @ 492,349
+texte « Velocity » @ 84,424
+texte « Kästchen antippen: Note hinzufügen. Note antippen: auswählen. Lang drücken: ihr Menü (kopieren, löschen…). Ziehen: verschieben, am Ende: verlängern. Zahlen oben: ein ganzer Takt. Untere Leiste: ziehen, um die Velocity einzustellen. » @ 450,573
+icône − @ 627,744
+icône + @ 822,744
+texte « Oktave 4 » @ 724,744
+titre « TASTATUR » [état « Aufgeklappt »] @ 133,744
+bouton « C » @ 71,882
+bouton @ 100,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 129,882
+bouton @ 158,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 187,882
+bouton @ 245,882
+bouton @ 274,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 303,882
+bouton @ 333,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 361,882
+bouton @ 391,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 419,882
+bouton « C » @ 477,882
+bouton @ 508,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 535,882
+bouton @ 566,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 593,882
+bouton @ 651,882
+bouton @ 682,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 709,882
+bouton @ 741,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 767,882
+bouton @ 799,847
+dessin [désactivé, état « Außerhalb der Tonleiter des Songs »] @ 825,882
+titre « NOTEN IMPORTIEREN » [état « Aufgeklappt »] @ 204,1053
+texte « Sing, pfeif oder spiel eine Melodie (oder wähl eine Aufnahme oder eine MIDI-Datei): Ihre Noten ersetzen die der Piano Roll. Rückgängig holt sie zurück. » [coupé] @ 450,1095
+texte « Das Riff Kapitel 7/16 · Schritt 3/3 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe auf der Melodie-Spur über den Noten auf „Sound der Spur einstellen ↓“, dann dreh „Cutoff“ und „Resonanz“ jeweils um mindestens 15 auf: Das Riff pfeift und beißt. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

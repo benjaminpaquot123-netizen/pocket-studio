@@ -1,165 +1,32 @@
 #0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
-#0 PREMIER ECRAN reel_s=3.2 simule_s=2.4 jvm_s=7.5 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
 #1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
-#1 > touche 294 426
-#1 DOIGT welcome_guided « Fais-moi un morceau »
-#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
+#1 > touche 485 1224
+#1 DOIGT scroll_hint « ↓ 4 autres »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 914738cda8 | project=projet-1 no tuto
 #2 SON Son : rien ne joue.
-#2 > touche 294 963
-#2 DOIGT mode_card_simple « Simple »
-#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=projet-1 no tuto
+#2 > glisse 294 1100 294 300
+#2 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 022fff7224 | project=projet-1 no tuto
 #3 SON Son : rien ne joue.
-#3 > touche 294 744
-#3 DOIGT wizard_family_Hip-hop « Hip-hop »
-#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE bf859192be | project=projet-1 no tuto
+#3 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 1.88:1 (needs 4.5:1, 14 sp)
+#3 > touche 294 162
+#3 DOIGT welcome_empty « Partir de zéro »
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
 #4 SON Son : rien ne joue.
-#4 LAYOUT CUT « Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. » ellipsized (« … »)
-#4 LAYOUT CUT « La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. » ellipsized (« … »)
-#4 LAYOUT CUT « Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. » ellipsized (« … »)
-#4 > touche 294 873
-#4 DOIGT wizard_style_trap « Trap »
-#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6b624a75dd | project=projet-1 no tuto
+#4 > touche 294 963
+#4 DOIGT mode_card_simple « Simple »
+#5 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9d7ccd02f8 | project=p-6f869592 no tuto
 #5 SON Son : rien ne joue.
-#5 > touche 322 984
-#5 DOIGT wizard_style_play_trap «  Créer et écouter »
-#6 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE acd0aa3729 | project=p-85585384 no tuto
-#6 SON Son : le morceau joue (partie « A »).
-#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
-#6 > touche 534 1158
-#6 DOIGT tab_simple_Envoyer « Partager »
-#7 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 9def917ed5 | project=p-85585384 no tuto
-#7 SON Son : le morceau joue (partie « A »).
-#7 > touche 235 486
-#7 DOIGT share_target_STREAMING « Streaming »
-#8 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 65d0b45a86 | project=p-85585384 no tuto
-#8 SON Son : le morceau joue (partie « A »).
-#8 > touche 294 771
-#8 DOIGT share_go «   Partager »
-#9 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 18ef3ba71f | project=p-85585384 no tuto
-#9 SON Son : le morceau joue (partie « A ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#9 > attends 10
-#9 PARTAGE Trap-morceau-streaming-20261113-202221.m4a
-#10 ROUTE dialogue:« Partager mon morceau · Trap-mo » | MODE simple | EMPREINTE 0f3c71ec7e | project=p-85585384 no tuto
-#10 SON Son : le morceau joue (partie « C »).
-#10 > touche 294 543
-#10 DOIGT vue « WhatsApp »
-#11 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 484bd41753 | project=p-85585384 no tuto
-#11 SON Son : le morceau joue (partie « C »).
-#11 LAYOUT CONTRAST « Pas de saturation. » 4.20:1 (needs 4.5:1, 13 sp)
-#11 LAYOUT CONTRAST « OK » 2.00:1 (needs 4.5:1, 14 sp)
-#11 > touche 347 820
-#11 DOIGT share_bilan_files « Voir mes fichiers »
-#12 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 6020d4d8f2 | project=p-85585384 no tuto
-#12 SON Son : le morceau joue (partie « C ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#12 LAYOUT CONTRAST « Renvoyer » 4.14:1 (needs 4.5:1, 14 sp)
-#12 > touche 497 789
-#12 DOIGT my_exports_close « Fermer »
-#13 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 9a8aa5ced5 | project=p-85585384 no tuto
-#13 SON Son : le morceau joue (partie « C »).
-#13 > touche 296 42
-#13 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
-#14 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE e2a8c5d7f0 | project=p-85585384 no tuto
-#14 SON Son : le morceau joue (partie « C »).
-#14 > touche 294 804
-#14 DOIGT mode_card_pro « Pro »
-#15 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 0043f56b00 | project=p-85585384 no tuto
-#15 SON Son : le morceau joue (partie « C »).
-#15 LAYOUT CUT « Filtre Coupure · Nappe » ellipsized (« … »)
-#15 LAYOUT CUT « Envoi réverbe · Lead » ellipsized (« … »)
-#15 LAYOUT CUT « Volume · Contre-chant » ellipsized (« … »)
-#15 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
-#15 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
-#15 LAYOUT TARGET « Son de Batterie Couper le son de Batterie activé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Écouter la piste Batterie seule désactivé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Son de Nappe Couper le son de Nappe activé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Écouter la piste Nappe seule désactivé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Son de Lead Couper le son de Lead activé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Écouter la piste Lead seule désactivé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Son de Contre-chant Couper le son de Contre-chant activé » 40 x 22 dp (touch 48 x 48)
-#15 LAYOUT TARGET « Écouter la piste Contre-chant seule désactivé » 40 x 22 dp (touch 48 x 48)
-#15 > touche 519 1062
-#15 DOIGT thumb_share « Partager mon morceau »
-#15 DIALOGUE 0.5 s
-#16 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 8a2f5bebde | project=p-85585384 no tuto
-#16 SON Son : le morceau joue (partie « E »).
-#16 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
-#16 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
-#16 LAYOUT OVERLAP « 2:58 » over the touchable « Fermer la feuille » (48 x 27 dp)
-#16 LAYOUT OVERLAP « 26 parties » over the touchable « Fermer la feuille » (67 x 20 dp)
-#16 LAYOUT OVERLAP « Volume : −14,0, comme la musique en streaming (−14) » over the touchable « Fermer la feuille » (140 x 54 dp)
-#16 LAYOUT OVERLAP « détails » over the touchable « Fermer la feuille » (35 x 9 dp)
-#16 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
-#16 LAYOUT OVERLAP «  Arrêter » over the touchable « Fermer la feuille » (50 x 20 dp)
-#16 LAYOUT OVERLAP « Volume visé » over the touchable « Fermer la feuille » (79 x 20 dp)
-#16 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Fermer la feuille » (146 x 20 dp)
-#16 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Fermer la feuille » (101 x 20 dp)
-#16 LAYOUT OVERLAP « Auto (Trap) · −8,5 LUFS » over the touchable « Fermer la feuille » (159 x 20 dp)
-#16 LAYOUT OVERLAP « Désactivée » over the touchable « Fermer la feuille » (75 x 20 dp)
-#16 LAYOUT OVERLAP « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (339 x 54 dp)
-#16 LAYOUT OVERLAP « Tout est prêt : aucun solo oublié, aucune piste coupée. » over the touchable « Fermer la feuille » (304 x 40 dp)
-#16 LAYOUT OVERLAP «   Vidéo pour les réseaux · 30 s » over the touchable « Fermer la feuille » (166 x 20 dp)
-#16 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Fermer la feuille » (137 x 20 dp)
-#16 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Fermer la feuille » (123 x 20 dp)
-#16 LAYOUT OVERLAP «   Partager » over the touchable « Fermer la feuille » (76 x 24 dp)
-#16 LAYOUT OVERLAP « Mes fichiers » over the touchable « Fermer la feuille » (83 x 20 dp)
-#16 LAYOUT OVERLAP « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » over the touchable « Fermer la feuille » (206 x 36 dp)
-#16 LAYOUT CONTRAST « ? » 3.80:1 (needs 4.5:1, 12 sp)
-#16 LAYOUT CONTRAST «  Arrêter » 3.80:1 (needs 4.5:1, 14 sp)
-#16 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
-#16 LAYOUT CONTRAST « WAV · qualité max » 1.23:1 (needs 4.5:1, 14 sp)
-#16 LAYOUT CONTRAST « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » 3.32:1 (needs 4.5:1, 13 sp)
-#16 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
-#16 > touche 407 576
-#16 DOIGT share_target_CLUB « Club · −8 LUFS »
-#16 DIALOGUE 0.3 s
-#17 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 47cf0b1421 | project=p-85585384 no tuto
-#17 SON Son : le morceau joue (partie « E »).
-#17 LAYOUT OVERLAP « Volume : −8,0, fort, comme la musique de club » over the touchable « Fermer la feuille » (134 x 54 dp)
-#17 LAYOUT OVERLAP « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (348 x 72 dp)
-#17 > touche 294 1116
-#17 DOIGT share_go «   Partager »
-#17 DIALOGUE 0.3 s
-#18 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 40b735a07c | project=p-85585384 no tuto
-#18 SON Son : le morceau joue (partie « E ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#18 LAYOUT CONTRAST «   16 % » 4.21:1 (needs 4.5:1, 14 sp)
-#18 > attends 10
-#18 PARTAGE Trap-morceau-club-20261113-202301.m4a
-#18 DIALOGUE 1.1 s
-#19 ROUTE dialogue:« Partager mon morceau · Trap-mo » | MODE pro | EMPREINTE b5b3d8db4f | project=p-85585384 no tuto
-#19 SON Son : le morceau joue (partie « B »).
-#19 > touche 294 543
-#19 DOIGT vue « WhatsApp »
-#19 DIALOGUE 0.2 s
-#20 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 15f81579c5 | project=p-85585384 no tuto
-#20 SON Son : le morceau joue (partie « B »).
-#20 LAYOUT CONTRAST « Fichier M4A : léger, lu par tous les appareils. » 4.29:1 (needs 4.5:1, 13 sp)
-#20 LAYOUT CONTRAST « Voir mes fichiers » 1.98:1 (needs 4.5:1, 14 sp)
-#20 > touche 508 820
-#20 DOIGT share_bilan_ok « OK »
-#20 DIALOGUE 0.2 s
-#21 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 86416a2ea0 | project=p-85585384 no tuto
-#21 SON Son : le morceau joue (partie « B »).
-#21 > touche 40 42
-#21 DOIGT top_projects « Trap »
-#22 ROUTE dialogue:projects | MODE pro | EMPREINTE 906c39a47f | project=p-85585384 no tuto
-#22 SON Son : le morceau joue (partie « B »).
-#22 > touche 534 479
-#22 DOIGT project_menu_p-85585384
-#23 ROUTE dialogue:project_opening_p-85585384 | MODE pro | EMPREINTE a33facbc92 | project=p-85585384 no tuto
-#23 SON Son : le morceau joue (partie « B »).
-#23 > touche 413 707
-#23 DOIGT #2431 « Partager le projet (.zip) »
-#23 PARTAGE Trap-20261113-202322.pocketstudio.zip
-#24 ROUTE dialogue:« Partager le projet (.zip) · Tr » | MODE pro | EMPREINTE 2a3bf444f0 | project=p-85585384 no tuto
-#24 SON Son : le morceau joue (partie « B »).
-#24 > touche 294 543
-#24 DOIGT vue « WhatsApp »
-#25 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 2abc8287d0 | project=p-85585384 no tuto
-#25 SON Son : le morceau joue (partie « B »).
-#25 > touche 347 753
-#25 DOIGT share_bilan_files « Voir mes fichiers »
-#26 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 04fa0b3f4d | project=p-85585384 no tuto
-#26 SON Son : le morceau joue (partie « F ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#26 > fin
-#26 FIN : fin
+#5 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#5 > touche 127 42
+#5 DOIGT top_projects « Mon projet 1 »
+#6 ROUTE dialogue:projects | MODE simple | EMPREINTE 84c090daca | project=p-6f869592 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 95 54
+#6 DOIGT projects_back «  Accueil »
+#7 ROUTE launch | MODE simple | EMPREINTE 4c2e87d51e | project=p-6f869592 no tuto
+#7 SON Son : rien ne joue.
+#7 > fin
+#7 FIN : fin

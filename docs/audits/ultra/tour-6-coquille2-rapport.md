@@ -4,7 +4,7 @@ Branche `eq/tour-6-coquille2`, depuis la tête poussée `ccr-80af1a1b-mn0wec`, u
 
 Fichiers touchés : `rhythm/RhythmViewModel.kt`, `ui/AppRoot.kt`, `remix/CutScreen.kt`, `mixer/MixerScreen.kt`, `I18n.kt` (aire `coquille2`) et `i18n/<14 langues>/coquille2.json` (accord du chef), `ui/PlayStrip.kt` et `project-model/…/HeardLength.kt` (neuf, accord du chef pour P6) ; tests `ui/Coquille2SeatTest.kt` (neuf), `remix/CutScreenTightTest.kt` (lit `cut_auto` en vue au lieu de défiler jusqu'à lui : il ne défile plus).
 
-tests: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutScreenTightTest com.pocketstudio.model.i18n.I18nCatalogTest com.pocketstudio.model.HeardLengthTest
+tests: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutScreenTightTest
 
 ## Tenté, preuve rejouée (banc, conditions du siège)
 - **E2** (A c, fr, Simple) : choisir seulement le volume du prochain fichier (« Streaming ») ne fait plus dire « Le morceau a changé depuis cet export ». `#e2_noSongChangeSaidWhenOnlyTheFilesVolumeIsChosen` (rouge 8eace0da, vert 00d8dafd).
@@ -46,8 +46,20 @@ ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll, zone 
 ## Contrôle Ba-4 / Ab-5 (code testé 831a5a66) : suites
 controle: Ba-4 | code testé: 831a5a66 | bloqués: 0 | graves neufs: 0
 controle: Ab-5 | code testé: 831a5a66 | bloqués: 0 | graves neufs: 0
+controle: Ba-5 | code testé: c69e67f2 | bloqués: 0 | graves neufs: 0
+controle: Ab-6 | code testé: c69e67f2 | bloqués: 0 | graves neufs: 0
+controle: Cq2-a | code testé: c69e67f2 | bloqués: 0 | graves neufs: 0
+controle: Cq2-b | code testé: c69e67f2 | bloqués: 0 | graves neufs: 0
 - Constatés par le contrôle : A4, A6 (structure et boucle), P6.
 - **P5, autre chemin** (Ab-5, écrans 30-33) : le projet Live déjà ouvert, retouché dans « Mes projets », s'ouvrait sur « Mon morceau » ; il revient comme « Continuer » le ramène, sur Pad Live. `Coquille2SeatTest#p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive`.
 - **A6, autre chemin** (Ba-4, écrans 33-39) : la chanson posée dans un projet sans structure l'allongeait à 20 mesures sans un mot ; c'est dit (« Tu bucle se convierte en un tema tan largo como la canción (0:40). ↶ Deshacer … »), 14 langues. `Coquille2SeatTest#a6_aLoopMadeAsLongAsTheSongIsSaid`.
 chemin: Pad Live › ← › Mes projets › Live (le projet ouvert) (fr, Mode simple) | test: Coquille2SeatTest#p5_theOpenLiveProjectTouchedInMyProjectsOpensOnPadLive
 chemin: Remix › Otras opciones… › Poner en mi proyecto (bloques), projet sans structure (es, Mode simple, main gauche) | test: Coquille2SeatTest#a6_aLoopMadeAsLongAsTheSongIsSaid
+
+## Constaté par les sièges de contrôle (rapports dans `sieges/tour-6/controle/`)
+- **A4** : constaté (Ba-4). **P6** : constaté (Ab-5).
+- **P5** : constaté (Ab-6, écrans 13 et 21 : « Mes projets › Live » → Pad Live, deux prises).
+- **A6** : constaté (Ba-4 écrans 47-48 ; Ba-5 écran 17 : « Tu bucle se convierte en un tema tan largo como la canción (0:40) »).
+- **E2**, **N2** : constatés (Cq2-a, écrans 11 et 18). **Cymbale ja** : constaté (Cq2-b, écran 12 : plus de « スタジオのバスドラム » sur la grille de la cymbale).
+- Tests du modèle (hors filtres du portail, qui ne lancent que `:app`), lancés verts ici : `HeardLengthTest`, `SongLengthBricksTest`, `com.pocketstudio.model.i18n.*`.
+- padlive2 entré : `SongLength.of` compte la boucle par `heardSceneSteps` (même nombre que le transport, `HeardLengthTest#theHomeAndTheTransportSayTheSameLength`).

@@ -407,9 +407,8 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
                         tr("Il faut d'abord le modèle de séparation (%s, une seule fois, Wi-Fi conseillé).", SeparationModel.SPEC.sizeLabel),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
-                    OutlinedButton(onClick = download, modifier = Modifier.fillMaxWidth().testTag("remix_download")) {
-                        Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel))
-                    }
+                    // Tour 6, seat B a (A10, control Ba-2 screen 3): one « Télécharger le modèle » on the panel, the thumb row's
+                    // (in reach of one hand); the card says why it is needed.
                 }
                 if (modelDownloaded && ui.modelInstalled && ui.sets.isEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("remix_model_ready")) {

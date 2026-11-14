@@ -1,0 +1,32 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 485 1224
+#1 DOIGT scroll_hint « ↓ 4 autres »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 914738cda8 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 294 1100 294 300
+#2 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 022fff7224 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 1.88:1 (needs 4.5:1, 14 sp)
+#3 > touche 294 162
+#3 DOIGT welcome_empty « Partir de zéro »
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 294 963
+#4 DOIGT mode_card_simple « Simple »
+#5 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9d7ccd02f8 | project=p-6f869592 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#5 > touche 127 42
+#5 DOIGT top_projects « Mon projet 1 »
+#6 ROUTE dialogue:projects | MODE simple | EMPREINTE 84c090daca | project=p-6f869592 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 95 54
+#6 DOIGT projects_back «  Accueil »
+#7 ROUTE launch | MODE simple | EMPREINTE 4c2e87d51e | project=p-6f869592 no tuto
+#7 SON Son : rien ne joue.
+#7 > fin
+#7 FIN : fin

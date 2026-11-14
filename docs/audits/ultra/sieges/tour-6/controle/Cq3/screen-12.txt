@@ -1,0 +1,9 @@
+Écran 12 (588x1278)
+texte « C'est prêt » @ 121,462
+texte « C'est prêt : Démo-Acid-house-morceau-20261114-014811.m4a, une copie est aussi dans Musique › BenStudio. » @ 294,555
+texte « Durée : 13 s » @ 89,619
+texte « Niveau : comme la musique en streaming (−14) » @ 250,652
+texte « Pas de saturation. » @ 118,685
+texte « Fichier M4A : léger, lu par tous les appareils. » @ 238,718
+texte « Voir mes fichiers » @ 347,804
+texte « OK » @ 508,804

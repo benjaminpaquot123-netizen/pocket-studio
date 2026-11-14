@@ -1,0 +1,363 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=10.3 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 816
+#1 DOIGT welcome_demo « Écouter une démo »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 963
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:demo_ready | MODE simple | EMPREINTE a43a116ca0 | project=p-d937905d no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 283 723
+#3 DOIGT dans:demo_ready « Plus tard »
+#4 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3bb7c73041 | project=p-d937905d no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Démo · Acid house » ellipsized (« … »)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 > touche 534 1158
+#4 DOIGT tab_simple_Envoyer « Partager »
+#5 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 157 653
+#5 DOIGT share_format_M4a « M4A · pour partager »
+#6 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#6 SON Son : rien ne joue.
+#6 > glisse 294 850 294 450
+#6 DOIGT share_my_exports « Mes fichiers »
+#7 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#7 SON Son : rien ne joue.
+#7 RIEN NE CHANGE (3 écrans identiques)
+#7 > touche 272 851
+#7 DOIGT share_my_exports « Mes fichiers »
+#8 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 1f469fd902 | project=p-d937905d no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 497 738
+#8 DOIGT my_exports_close « Fermer »
+#9 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 294 749
+#9 DOIGT share_go «   Partager »
+#10 ROUTE dialogue:share_progress | MODE simple | EMPREINTE e10aefa96d | project=p-d937905d no tuto
+#10 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#10 > attends 5
+#10 PARTAGE Démo-Acid-house-morceau-20261114-014811.m4a
+#11 ROUTE dialogue:« Partager mon morceau · Démo-Ac » | MODE simple | EMPREINTE ff547e78e1 | project=p-d937905d no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 294 543
+#11 DOIGT vue « WhatsApp »
+#12 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 8e07ed12ad | project=p-d937905d no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Fichier M4A : léger, lu par tous les appareils. » 4.20:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST « Voir mes fichiers » 1.82:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « OK » 1.97:1 (needs 4.5:1, 14 sp)
+#12 > touche 508 804
+#12 DOIGT share_bilan_ok « OK »
+#13 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 272 851
+#13 DOIGT share_my_exports « Mes fichiers »
+#14 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#14 SON Son : rien ne joue.
+#14 > attends 3
+#15 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#15 SON Son : rien ne joue.
+#15 > attends 20
+#16 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 497 754
+#16 DOIGT my_exports_close « Fermer »
+#17 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 272 851
+#17 DOIGT share_my_exports « Mes fichiers »
+#18 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 701bb9f88e | project=p-d937905d no tuto
+#18 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#18 LAYOUT CONTRAST « Renvoyer » 4.14:1 (needs 4.5:1, 14 sp)
+#18 > touche 497 789
+#18 DOIGT my_exports_close « Fermer »
+#19 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 543 42
+#19 DOIGT top_more
+#20 ROUTE plus | MODE simple | EMPREINTE 3d55ef4588 | project=p-d937905d no tuto
+#20 SON Son : rien ne joue.
+#20 > retour
+#20 RETOUR
+#21 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 536 851
+#21 DOIGT help_Mes fichiers « Qu'est-ce que « Mes fichiers » ? »
+#21 AIDE help_Mes
+#22 ROUTE dialogue:« Mes fichiers » | MODE simple | EMPREINTE d002399272 | project=p-d937905d no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Compris » 4.20:1 (needs 4.5:1, 14 sp)
+#22 > touche 489 768
+#22 DOIGT #1311 « Compris »
+#23 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#23 SON Son : rien ne joue.
+#23 > glisse 294 900 294 200
+#23 DOIGT rien
+#24 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 414 653
+#24 DOIGT share_format_Wav « WAV · qualité max »
+#25 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 9b3d7e7978 | project=p-d937905d no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 157 653
+#25 DOIGT share_format_M4a « M4A · pour partager »
+#26 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 54910f2992 | project=p-d937905d no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 296 42
+#26 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#27 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 86380f2686 | project=p-d937905d no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » 4.27:1 (needs 4.5:1, 16 sp)
+#27 > touche 294 804
+#27 DOIGT mode_card_pro « Pro »
+#28 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f88a7c4c43 | project=p-d937905d no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
+#28 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
+#28 > touche 519 1062
+#28 DOIGT thumb_share « Partager mon morceau »
+#28 DIALOGUE 0.4 s
+#29 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 8a6f50441a | project=p-d937905d no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
+#29 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
+#29 LAYOUT OVERLAP « 0:13 » over the touchable « Fermer la feuille » (48 x 27 dp)
+#29 LAYOUT OVERLAP « 4 parties » over the touchable « Fermer la feuille » (59 x 20 dp)
+#29 LAYOUT OVERLAP «  Écouter » over the touchable « Fermer la feuille » (56 x 20 dp)
+#29 LAYOUT OVERLAP « Volume visé » over the touchable « Fermer la feuille » (79 x 20 dp)
+#29 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#29 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Fermer la feuille » (146 x 20 dp)
+#29 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Fermer la feuille » (101 x 20 dp)
+#29 LAYOUT OVERLAP « Auto (style) · −9 LUFS » over the touchable « Fermer la feuille » (149 x 20 dp)
+#29 LAYOUT OVERLAP « Désactivée » over the touchable « Fermer la feuille » (75 x 20 dp)
+#29 LAYOUT OVERLAP « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (303 x 54 dp)
+#29 LAYOUT OVERLAP « Tout est prêt : aucun solo oublié, aucune piste coupée. » over the touchable « Fermer la feuille » (304 x 40 dp)
+#29 LAYOUT OVERLAP «   Vidéo pour les réseaux · 30 s » over the touchable « Fermer la feuille » (166 x 20 dp)
+#29 LAYOUT OVERLAP « Autres fichiers » over the touchable « Fermer la feuille » (99 x 20 dp)
+#29 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Fermer la feuille » (137 x 20 dp)
+#29 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Fermer la feuille » (123 x 20 dp)
+#29 LAYOUT OVERLAP «   Partager » over the touchable « Fermer la feuille » (76 x 24 dp)
+#29 LAYOUT OVERLAP « Mes fichiers » over the touchable « Fermer la feuille » (83 x 20 dp)
+#29 LAYOUT OVERLAP « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » over the touchable « Fermer la feuille » (206 x 36 dp)
+#29 LAYOUT CONTRAST « 4 parties » 3.07:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST «  Écouter » 2.82:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Volume visé » 3.24:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « Streaming · −14 LUFS » 3.44:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Club · −8 LUFS » 4.29:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Désactivée » 1.77:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation. Le même réglage que dans Mix. » 2.01:1 (needs 4.5:1, 13 sp)
+#29 LAYOUT CONTRAST « Tout est prêt : aucun solo oublié, aucune piste coupée. » 3.76:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST «   Vidéo pour les réseaux · 30 s » 1.67:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Autres fichiers » 2.13:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » 3.32:1 (needs 4.5:1, 13 sp)
+#29 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#29 > touche 272 906
+#29 DOIGT share_other « Autres fichiers »
+#29 DIALOGUE 0.5 s
+#30 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5ab8ce68b9 | project=p-d937905d no tuto
+#30 SON Son : rien ne joue.
+#30 > glisse 294 850 294 450
+#30 DOIGT rien
+#31 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d0b4019641 | project=p-d937905d no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « Environ dix fois plus léger, lu par tous les appareils : pour partager. » over the touchable « Tempo : 126 BPM Changer le tempo » (63 x 4 dp)
+#31 LAYOUT OVERLAP « Environ dix fois plus léger, lu par tous les appareils : pour partager. » over the touchable « Jouer depuis une partie » (96 x 4 dp)
+#31 LAYOUT OVERLAP « Environ dix fois plus léger, lu par tous les appareils : pour partager. » over the touchable « Boucler la partie au lieu de jouer le mo » (48 x 4 dp)
+#31 LAYOUT OVERLAP « Environ dix fois plus léger, lu par tous les appareils : pour partager. » over the touchable « Étiqueter l'écran » (4 x 4 dp)
+#31 > glisse 294 850 294 500
+#31 DOIGT rien
+#32 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b581470d06 | project=p-d937905d no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 294 321
+#32 DOIGT export_advanced « Avancé »
+#33 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ef340e76df | project=p-d937905d no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Piste par piste · FLAC · MIDI · 48 kHz · 256 kb/s » 3.83:1 (needs 4.5:1, 13 sp)
+#33 > touche 190 488
+#33 DOIGT export_format_Flac « FLAC (sans perte, léger) »
+#34 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 67251517b6 | project=p-d937905d no tuto
+#34 SON Son : rien ne joue.
+#34 > glisse 294 300 294 700
+#34 DOIGT export_advanced « Avancé »
+#35 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6d2b53e466 | project=p-d937905d no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Tempo : 126 BPM Changer le tempo » (47 x 4 dp)
+#35 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Jouer depuis une partie » (84 x 4 dp)
+#35 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Boucler la partie au lieu de jouer le mo » (48 x 4 dp)
+#35 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Étiqueter l'écran » (5 x 4 dp)
+#35 > touche 176 345
+#35 DOIGT export_target_STREAMING « Streaming · −14 LUFS »
+#36 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 96f47f93dc | project=p-d937905d no tuto
+#36 SON Son : rien ne joue.
+#36 > glisse 294 850 294 400
+#36 DOIGT export_format_Flac « FLAC (sans perte, léger) »
+#37 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a22ed1992d | project=p-d937905d no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 294 786
+#37 DOIGT export « Créer le fichier du morceau »
+#38 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3e3b8b152c | project=p-d937905d no tuto
+#38 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#38 > attends 8
+#39 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4da2954606 | project=p-d937905d no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « Sauvegardé dans Musique › BenStudio : Démo-Acid-house-morceau-streaming-20261114-015000.flac » a word split over two lines
+#39 > glisse 294 850 294 350
+#39 DOIGT rien
+#40 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a892265ca5 | project=p-d937905d no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Sans limiteur (pour le mastering) » over the touchable « Tempo : 126 BPM Changer le tempo » (47 x 4 dp)
+#40 LAYOUT OVERLAP « Sans limiteur (pour le mastering) » over the touchable « Jouer depuis une partie » (96 x 4 dp)
+#40 > touche 519 1062
+#40 DOIGT thumb_share « Partager mon morceau »
+#40 DIALOGUE 0.3 s
+#41 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f24ede23cb | project=p-d937905d no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « Volume : −14,0, comme la musique en streaming (−14) » over the touchable « Fermer la feuille » (210 x 36 dp)
+#41 LAYOUT OVERLAP « détails » over the touchable « Fermer la feuille » (35 x 9 dp)
+#41 LAYOUT OVERLAP « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (339 x 54 dp)
+#41 LAYOUT CONTRAST « Tout est prêt : aucun solo oublié, aucune piste coupée. » 3.12:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST «   Vidéo pour les réseaux · 30 s » 1.52:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « WAV · qualité max » 1.21:1 (needs 4.5:1, 14 sp)
+#41 > glisse 294 1000 294 600
+#41 DOIGT rien
+#41 DIALOGUE 0.2 s
+#42 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f24ede23cb | project=p-d937905d no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 522 166
+#42 DOIGT share_close
+#42 DIALOGUE 0.2 s
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a892265ca5 | project=p-d937905d no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 54 1158
+#43 DOIGT tab_Structure « Structure »
+#44 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f899050502 | project=p-d937905d no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 519 1062
+#44 DOIGT thumb_share « Partager mon morceau »
+#44 DIALOGUE 0.3 s
+#45 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f24ede23cb | project=p-d937905d no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « Nom du morceau (et du projet) » 3.96:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « 4 parties » 2.31:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Volume : −14,0, comme la musique en streaming (−14) » 4.29:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « détails » 1.53:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST « ? » 1.41:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST «  Écouter » 3.00:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Volume visé » 1.49:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « ? » 2.71:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST « Club · −8 LUFS » 1.77:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Auto (style) · −9 LUFS » 1.58:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » 3.77:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « Tout est prêt : aucun solo oublié, aucune piste coupée. » 1.72:1 (needs 4.5:1, 14 sp)
+#45 > glisse 150 1180 150 500
+#45 DOIGT share_my_exports « Mes fichiers »
+#45 DIALOGUE 0.2 s
+#46 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f24ede23cb | project=p-d937905d no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 522 166
+#46 DOIGT share_close
+#46 DIALOGUE 0.2 s
+#47 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f899050502 | project=p-d937905d no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 294 1158
+#47 DOIGT tab_Mix « Mix »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 406ffdcce3 | project=p-d937905d no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#48 > glisse 540 900 540 200
+#48 DOIGT rien (texte « Rien ne bouge encore : fais s'ouvrir un  »)
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE b17d16880b | project=p-d937905d no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « Courbes et effets » over the touchable « Tempo : 126 BPM Changer le tempo » (29 x 4 dp)
+#49 LAYOUT OVERLAP « Courbes et effets » over the touchable « Jouer depuis une partie » (96 x 4 dp)
+#49 > glisse 540 900 540 150
+#49 DOIGT rien
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb3c8294af | project=p-d937905d no tuto
+#50 SON Son : rien ne joue.
+#50 > glisse 540 900 540 150
+#50 DOIGT rien (texte « −14 LUFS sur tout le morceau : le volume »)
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 83f4232164 | project=p-d937905d no tuto
+#51 SON Son : rien ne joue.
+#51 > glisse 540 900 540 100
+#51 DOIGT bus_0_1 « Amorti »
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7e242957fa | project=p-d937905d no tuto
+#52 SON Son : rien ne joue.
+#52 > glisse 575 900 575 100
+#52 DOIGT rien
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d44ad32f77 | project=p-d937905d no tuto
+#53 SON Son : rien ne joue.
+#53 > glisse 575 900 575 500
+#53 DOIGT rien
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c8c76cf407 | project=p-d937905d no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 519 1062
+#54 DOIGT thumb_share « Partager mon morceau »
+#54 DIALOGUE 0.3 s
+#55 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f24ede23cb | project=p-d937905d no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « détails » 1.61:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « ? » 1.61:1 (needs 4.5:1, 12 sp)
+#55 > touche 294 1116
+#55 DOIGT share_go «   Partager »
+#55 DIALOGUE 0.3 s
+#56 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 1f1e14652a | project=p-d937905d no tuto
+#56 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#56 LAYOUT CONTRAST « Annuler » 2.09:1 (needs 4.5:1, 14 sp)
+#56 > attends 5
+#56 DIALOGUE 0.2 s
+#57 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-d937905d no tuto
+#57 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#57 > attends 5
+#57 PARTAGE Démo-Acid-house-morceau-streaming-20261114-015117.m4a
+#57 DIALOGUE 0.5 s
+#58 ROUTE dialogue:« Partager mon morceau · Démo-Ac » | MODE pro | EMPREINTE ee63b293ba | project=p-d937905d no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 294 615
+#58 DOIGT vue « Messages »
+#58 DIALOGUE 0.2 s
+#59 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE d113d35f50 | project=p-d937905d no tuto
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « C'est prêt : Démo-Acid-house-morceau-streaming-20261114-015117.m4a, une copie est aussi dans Musique › BenStudio. » a word split over two lines
+#59 LAYOUT CONTRAST « Durée : 13 s » 1.93:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « Pas de saturation. » 2.41:1 (needs 4.5:1, 13 sp)
+#59 > touche 347 835
+#59 DOIGT share_bilan_files « Voir mes fichiers »
+#59 DIALOGUE 0.2 s
+#60 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#60 SON Son : rien ne joue.
+#60 > attends 30
+#60 DIALOGUE 0.2 s
+#61 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#61 SON Son : rien ne joue.
+#61 > attends 60
+#61 DIALOGUE 0.2 s
+#62 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 146dabd716 | project=p-d937905d no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 497 754
+#62 DOIGT my_exports_close « Fermer »
+#62 DIALOGUE 0.2 s
+#63 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ceee125db9 | project=p-d937905d no tuto
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « Sauvegardé dans Musique › BenStudio : Démo-Acid-house-morceau-streaming-20261114-015117.m4a » a word split over two lines
+#63 LAYOUT OVERLAP « FLAC (sans perte, léger) » over the touchable « Tempo : 126 BPM Changer le tempo » (47 x 4 dp)
+#63 LAYOUT OVERLAP « FLAC (sans perte, léger) » over the touchable « Jouer depuis une partie » (96 x 4 dp)
+#63 > glisse 575 900 575 600
+#63 DOIGT rien
+#64 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE f99c1d520c | project=p-d937905d no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT OVERLAP « Fichier final » over the touchable « Tempo : 126 BPM Changer le tempo » (51 x 4 dp)
+#64 LAYOUT OVERLAP « Fichier final » over the touchable « Jouer depuis une partie » (22 x 4 dp)
+#64 > touche 272 870
+#64 DOIGT export_my_exports « Mes fichiers »
+#65 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 703f6b1ffe | project=p-d937905d no tuto
+#65 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#65 LAYOUT CONTRAST « 14 nov. 2026 01:48 · 1 Ko » 1.41:1 (needs 4.5:1, 13 sp)
+#65 > fin
+#65 FIN : fin

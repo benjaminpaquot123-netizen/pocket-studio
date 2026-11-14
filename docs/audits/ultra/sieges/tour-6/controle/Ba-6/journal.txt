@@ -1,0 +1,23 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=110 lit=oui main=left amenee=-
+#0 PREMIER ECRAN reel_s=5.6 simule_s=2.4 jvm_s=13.1 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 1120
+#1 DOIGT welcome_remix « Extraer la voz de una canción »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 46233d081c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 933
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE ? | MODE simple | EMPREINTE c37ebb2530 | project=p-63152662 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 517 1062
+#3 DOIGT thumb_more « Más opciones »
+#4 ROUTE plus | MODE simple | EMPREINTE 358a89a140 | project=p-63152662 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 107 565
+#4 DOIGT plus_remix « Remix »
+#5 ROUTE ? | MODE simple | EMPREINTE c37ebb2530 | project=p-63152662 no tuto
+#5 SON Son : rien ne joue.
+#5 > fin
+#5 FIN : fin

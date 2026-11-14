@@ -1,0 +1,53 @@
+Écran 119 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+onglet « Acid 303 ベースライン » [coupé] @ 51,186
+bouton « ベース Plaits » @ 153,186
+bouton « コード 短い音 » @ 272,186
+bouton « メロディ フィルターのかかったメロディ » ⋮ @ 456,186
+image ← @ 28,186
+image → @ 559,186
+icône « パート：A » ▾ @ 84,264
+texte « 小節 » @ 69,315
+bouton « 1 » @ 321,325
+dessin [coupé] @ 69,364
+dessin @ 69,386
+dessin @ 69,416
+dessin @ 69,446
+dessin @ 69,476
+dessin @ 69,506
+dessin @ 69,536
+dessin @ 69,566
+dessin @ 69,596
+dessin @ 69,626
+texte « C4 » @ 69,656
+dessin @ 69,686
+dessin @ 69,716
+dessin @ 69,746
+dessin @ 69,776
+dessin @ 69,806
+dessin [coupé] @ 69,826
+dessin [coupé] @ 321,594
+icône (liste) « チャプター » @ 444,879
+texte « リフ チャプター 7/15 · 完了 · かんたん » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « よくできました、章クリア！ » ⌃ @ 294,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » [sélectionné] @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

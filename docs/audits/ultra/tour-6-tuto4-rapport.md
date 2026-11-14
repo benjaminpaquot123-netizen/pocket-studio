@@ -7,9 +7,9 @@ Fichiers : `project-model/src/main/resources/tutos/*.json`, `i18n/*/tuto*.json` 
 tests: *Tour6TutoPadNamesTest *Tour6TutoPanelPadQuotesTest *Tour6TutoPanelPartMadeTest *Tour6Tuto4HouseTest *Tour6Tuto4TechnoTest *Tour6Tuto4HouseRound3Test *Tour6Tuto4TechnoRound3Test *Tour6Tuto4AcidTechnoTest *Tour6TutoGapPartTest *Tour6TutoLongPressMenuWordsTest *Tour6TutoLongPressCellTest *Tour6TrackSheetPadNameTest *Tour6PlainWordsTest *Tour6WhatPlaysPadNameTest *Tour6LongPressEmptyCellTest *Tour6MixTipsPadNameTest *Tour6SimpleMixPadNameTest *Tour6TutoCellsPanel100Test *Tour6TutoNamePartLabelTest *Tour6TutoSoundButtonInSight* *Tour6TutoBannerChainTest
 
 ## Contrôle final (sur la branche poussée, après le dernier changement du tuto)
-controle: Fd-1 | code testé: 0e250438b | bloqués: 0 | graves neufs: 0
-controle: Da-9 | code testé: 0e250438b | bloqués: 0 | graves neufs: 0
-controle: Bb-9 | code testé: 0e250438b | bloqués: 0 | graves neufs: 0
+controle: Da-11 | code testé: 31aa3661 | bloqués: 0 | graves neufs: 0
+
+Sièges joués avant les dernières retouches du panneau (52c74b08 et f2a9a41e), gardés comme preuves des points M, R, H et T4 : Fd-1, Da-9 et Bb-9 sur 0e250438b (bloqués 0, graves neufs 0) ; Da-10 sur 1a2d9ea9 (ch. 1 à 12 enchaînés, bloqués 0, il a trouvé « Lire la suite » sans effet au ch. 3, corrigé en 392e17a37/f2a9a41ec et constaté par Da-11 au ch. 3).
 
 - Fd-1 (fr, téléphone, police 100, Mode simple, tuto Facile House, siège de contrôle du portail) : « Tuto fini : bravo ! » en 245 gestes (budget 300), 3 hésitations, 0 chapitre bloqué, aucun défaut neuf. T4 corrigé (écran 19), « Pad 5 » corrigé (écran 244), H5/H7 corrigé pour les boutons (écran 196), H3 « autre » (voir plus bas). Dossier `sieges/tour-6/controle/Fd-1/`.
 - Da-9 (ja, téléphone, Mode simple, tuto Facile Techno, chapitres 1 à 12 enchaînés) : 0 impasse, 3 hésitations, aucun défaut ; P3 corrigé (écran 140 : le bandeau dit 「シンバル」, plus « → スタジオのバスドラム ») ; P4 (H3 en japonais) corrigé (écran 33). Dossier `sieges/tour-6/controle/Da-9/`.

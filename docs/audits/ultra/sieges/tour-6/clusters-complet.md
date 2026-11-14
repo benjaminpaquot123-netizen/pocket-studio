@@ -1,5 +1,5 @@
 # Grappes du tour « tour-6 »
-34 siège(s), 219 grappe(s) : 125 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 32 même bouton (tour-1 : 4, tour-3 : 13, tour-4 : 4, tour-5 : 11), 0 qui revien(nen)t (confirmé par un lecteur), 34 candidat(s) « revient ? » à confirmer dans revient.tsv, 19 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 19 vue(s) par ≥ 2 sièges (confirmées sans juge).
+40 siège(s), 219 grappe(s) : 125 nouvelle(s), 9 déjà vue(s) (tour-4 : 1, tour-5 : 8), 32 même bouton (tour-1 : 4, tour-3 : 13, tour-4 : 4, tour-5 : 11), 0 qui revien(nen)t (confirmé par un lecteur), 34 candidat(s) « revient ? » à confirmer dans revient.tsv, 19 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 19 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] grave ×1 (B/a#2) dialogue:mode_step · « bouton simple para empezar 5 pestanas botones grandes y palabras de todos los dias » · affichage — choisir le mode Simple au pouce gauche / trop loin du pouce, les deux cartes sont en haut et le bas de l'écran est vide ; forcé en Pro
 - [nouveau] grave ×1 (G/a#14) tab_Sons · « board_chop » · sans-aide — le message dit où trouver les pads 9 à 14 / rien ne dit que c'est le canal « Davul 16 pad » ; dans Live > Pad'ler (8 pads) je ne les trouve pas

@@ -17,7 +17,11 @@ class StrictTestApplication : PocketStudioApplication(), TestLifecycleApplicatio
         super.onCreate()
     }
 
-    override fun beforeTest(method: Method) = MainThreadIo.start()
+    override fun beforeTest(method: Method) {
+        MainThreadIo.start()
+        // Tour 6, lot « stable », follow-up: an uncaught exception of coroutines is the red of the test it is thrown in.
+        BenchPristine.watchUncaught()
+    }
 
     override fun prepareTest(test: Any) = Unit
 

@@ -146,19 +146,120 @@ internal object BenchPristine {
         // on the coroutine workers; the next class inherits it, whatever it is. Given [WORK_END_CAP_MS] to end, the main looper
         // running; past that the test that leaves it is red, by name (one listener for every Robolectric test of the app:
         // this application's afterTest, robolectric.properties).
-        if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
-        if (!appWorkEnded(WORK_END_CAP_MS)) {
-            throw AssertionError("$test leaves the app's work running to the test after it (${WORK_END_CAP_MS / 1000} s given): " + appThreads().joinToString(" | "))
+        if (!System.getProperty("ps.human.dir").isNullOrBlank()) {
+            uncaughtError(test)?.let { println("BenchPristine: ${it.message}") }
+            return
         }
+        // Follow-up (CI 43531021739): the app's work left waiting on the main looper (a RhythmViewModel's live-gain estimate,
+        // a delay loop) holds no worker; it is given the same time, then named and stopped. And an uncaught exception of the
+        // app's coroutines is the red of the test it is thrown in, no more of the next one that opens a coroutines' test scope.
+        if (!appWorkEnded(WORK_END_CAP_MS)) {
+            val left = (appThreads() + appMainCoroutines()).joinToString(" | ")
+            cancelAppMainCoroutines()
+            throw AssertionError("$test leaves the app's work running to the test after it (${WORK_END_CAP_MS / 1000} s given; the main looper's stopped): $left")
+        }
+        uncaughtError(test)?.let { throw it }
     }
 
     /** How long an ordinary test's leftover work is given to end before that test is red. */
     const val WORK_END_CAP_MS = 10_000L
 
+    /**
+     * The uncaught exceptions of coroutines (kotlinx-coroutines-test's collector), from now on kept here instead of waiting
+     * for the next coroutines' test scope (« There were uncaught exceptions before the test started », a neighbour's red):
+     * `StrictTestApplication.beforeTest` calls this; once per sandbox registers. Registering takes what was already waiting.
+     */
+    fun watchUncaught() {
+        if (watching) return
+        watching = true
+        val collector = runCatching { Class.forName("kotlinx.coroutines.test.internal.ExceptionCollector") }.getOrNull() ?: return
+        runCatching {
+            val add = collector.getMethod("addOnExceptionCallback", Any::class.java, kotlin.jvm.functions.Function1::class.java)
+            val record: (Throwable) -> Unit = { uncaught += it }
+            add.invoke(staticField(collector, "INSTANCE"), UNCAUGHT_KEY, record)
+        }.onFailure { e ->
+            // What was already waiting comes back as one exception (UncaughtExceptionsBeforeTest, the others suppressed): kept.
+            val cause = (e as? java.lang.reflect.InvocationTargetException)?.targetException ?: e
+            if (cause.javaClass.simpleName == "UncaughtExceptionsBeforeTest") uncaught += cause else println("BenchPristine: uncaught exceptions not watched ($cause)")
+        }
+    }
+
+    @Volatile private var watching = false
+    private val UNCAUGHT_KEY = Any()
+    private val uncaught = java.util.concurrent.ConcurrentLinkedQueue<Throwable>()
+
+    /** The uncaught exceptions since the last call (during [test], or after the test before it ended), as [test]'s red. */
+    fun uncaughtError(test: String): AssertionError? {
+        val all = generateSequence { uncaught.poll() }.toList().flatMap { listOf(it) + it.suppressed }
+        if (all.isEmpty()) return null
+        val what = all.joinToString(" | ") { t ->
+            val frames = t.stackTrace.filter { "pocketstudio" in it.className }.take(4)
+                .joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}:${it.lineNumber}" }
+            "${t.javaClass.name}: ${t.message} @ $frames"
+        }
+        return AssertionError("$test: uncaught exception(s) of coroutines during it (or after the test before it ended): $what")
+            .also { e -> all.forEach { e.addSuppressed(it) } }
+    }
+
+    /**
+     * The app's coroutines waiting on the main looper (a dispatch, a delay), each by its suspended frames in this package's
+     * code: work left there holds no coroutine worker. Read from the main queue's messages (Robolectric's paused looper).
+     */
+    fun appMainCoroutines(): List<String> = mainCoroutineFrames().map { (_, frames) -> "main: $frames" }
+
+    /** Stops the coroutines [appMainCoroutines] names (their jobs cancelled), the main looper run once. */
+    private fun cancelAppMainCoroutines() {
+        mainCoroutineFrames().forEach { (frame, _) -> (frame as? kotlin.coroutines.Continuation<*>)?.context?.get(kotlinx.coroutines.Job)?.cancel() }
+        runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle() }
+    }
+
+    /** Each coroutine of this package's code the main queue holds (its innermost frame), with those frames joined. */
+    private fun mainCoroutineFrames(): List<Pair<kotlin.coroutines.jvm.internal.CoroutineStackFrame, String>> {
+        val out = ArrayList<Pair<kotlin.coroutines.jvm.internal.CoroutineStackFrame, String>>()
+        runCatching {
+            val queue = android.os.Looper.getMainLooper().queue
+            val messages = android.os.MessageQueue::class.java.getDeclaredField("mMessages").apply { isAccessible = true }
+            val next = android.os.Message::class.java.getDeclaredField("next").apply { isAccessible = true }
+            synchronized(queue) {
+                var m = messages.get(queue) as android.os.Message?
+                var n = 0
+                while (m != null && n++ < 10_000) {
+                    m.callback?.let { r -> coroutineIn(r, 2)?.let { f -> appFrames(f).takeIf { it.isNotEmpty() }?.let { out += f to it } } }
+                    m = next.get(m) as android.os.Message?
+                }
+            }
+        }
+        return out
+    }
+
+    /** The coroutine a main-queue message resumes: the message's runnable itself (a dispatch) or one of its fields (a delay). */
+    private fun coroutineIn(o: Any?, depth: Int): kotlin.coroutines.jvm.internal.CoroutineStackFrame? {
+        if (o == null) return null
+        if (o is kotlin.coroutines.jvm.internal.CoroutineStackFrame) return o
+        if (depth == 0 || o.javaClass.name.startsWith("java.")) return null
+        for (f in o.javaClass.declaredFields) {
+            if (java.lang.reflect.Modifier.isStatic(f.modifiers) || f.type.isPrimitive) continue
+            val v = runCatching { f.isAccessible = true; f.get(o) }.getOrNull()
+            coroutineIn(v, depth - 1)?.let { return it }
+        }
+        return null
+    }
+
+    private fun appFrames(top: kotlin.coroutines.jvm.internal.CoroutineStackFrame): String {
+        val frames = ArrayList<StackTraceElement>()
+        var f: kotlin.coroutines.jvm.internal.CoroutineStackFrame? = top
+        var n = 0
+        while (f != null && n++ < 64) {
+            f.getStackTraceElement()?.let { frames += it }
+            f = f.callerFrame
+        }
+        return frames.filter { "pocketstudio" in it.className }.take(4).joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}:${it.lineNumber}" }
+    }
+
     /** No coroutine worker in the app's code any more, waited for (the main looper running) [capMs] at most. */
     private fun appWorkEnded(capMs: Long): Boolean {
         val until = System.currentTimeMillis() + capMs
-        while (appThreads().isNotEmpty()) {
+        while (appThreads().isNotEmpty() || appMainCoroutines().isNotEmpty()) {
             if (System.currentTimeMillis() >= until) return false
             runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(10)) }
             Thread.sleep(10)
@@ -173,15 +274,22 @@ internal object BenchPristine {
      * seat (`-Phuman.dir`) is never made red: the next seat's rule puts it back and writes it in its journal.
      */
     fun afterATestWithTheRule(test: String) {
-        if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
+        if (!System.getProperty("ps.human.dir").isNullOrBlank()) {
+            uncaughtError(test)?.let { println("BenchPristine: ${it.message}") }
+            return
+        }
         // Tour 6, lot « stable » (CI 43495469474): the compose rule closes the screen after the test's @After, and its closing
         // save may wait for the main looper (the save lock of an autosave that resumes there). Let it end, the looper running,
         // as after an ordinary test; a save still running after the cap is this test's leak, as before.
         closingSaves()
+        val thrown = uncaughtError(test)
         val left = leaks().filterNot { it.startsWith("projects/") || it.startsWith("CurrentProject") }
-        if (left.isEmpty()) return
+        if (left.isEmpty()) {
+            thrown?.let { throw it }
+            return
+        }
         restore()
-        throw AssertionError("$test leaves to the test after it (put back): " + left.joinToString("; "))
+        throw AssertionError("$test leaves to the test after it (put back): " + left.joinToString("; ")).also { e -> thrown?.let { e.addSuppressed(it) } }
     }
 
     /**
@@ -267,6 +375,7 @@ internal object BenchPristine {
 
     /** The uncaught exceptions kept for the next coroutines' test scope (kotlinx-coroutines-test), dropped: tests of the check. */
     fun forgetUncaughtForTests() {
+        uncaught.clear()
         val collector = runCatching { Class.forName("kotlinx.coroutines.test.internal.ExceptionCollector") }.getOrNull() ?: return
         val lock = staticField(collector, "lock") ?: return
         synchronized(lock) { (staticField(collector, "unprocessedExceptions") as? MutableList<*>)?.clear() }

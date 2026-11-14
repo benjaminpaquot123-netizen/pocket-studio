@@ -6,6 +6,7 @@
 - Points pour plus tard : `docs/REVIEW.md` (« Tour 6 : pour le tour suivant »).
 
 ## Prochaine étape exacte
+- Prochain audit (au signal de Benjamin) : partir de `docs/audits/ultra/METHODE-V4.md` ; d'abord les astuces D, C et A (un lot du banc).
 - CI finale sur `ccr-80af1a1b-mn0wec`, fusion dans `main`, Release APK pour Benjamin avec la liste à essayer au téléphone.
 - Paquet 9 : un lot du banc ajoute `project-model/src/test` à `TEST_DIRS` de `scripts/bench/verifie-chantier.py`.
 - Rien d'autre sans un signal de Benjamin.

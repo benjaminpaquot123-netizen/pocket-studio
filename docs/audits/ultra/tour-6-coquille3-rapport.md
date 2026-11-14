@@ -25,4 +25,6 @@ chemin: Partager › Mes fichiers après un envoi (fr, Mode simple) | test: Coqu
 ## Pas reproduit
 - **« Mes fichiers » vide après un envoi** (A c geste 27, contrôle Ac-3 geste 25 ; les deux sièges l'ont marqué « banc? temps ») : sur ce code, le banc liste le morceau tout de suite. Gardé comme test de garde du chemin du siège (`#n4_myFilesListTheSongJustSent`, vert sans changement, commit ad1447fb). À regarder sur le téléphone si un contrôle le revoit.
 
-Ces défauts portent ici leur nom de siège, pas les numéros N1 / N4 / N5 de la fiche, qui sont aussi ceux d'autres défauts du tri (`verdicts.tsv`).
+Ces défauts portent ici leur nom de siège : les numéros de la fiche du chef (N1, N4, N5) sont aussi ceux d'autres défauts du tri (`verdicts.tsv`, piano roll du tuto), que ce lot ne touche pas :
+ne corrige pas: N4 : le N4 du tri (flèche « plus bas » du piano roll du tuto) n'est pas ce lot ; « Mes fichiers » vide (le N4 de la fiche) n'est pas reproduit, gardé par un test
+ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll du tuto) n'est pas ce lot ; « détails ? » (le N5 de la fiche) est tenté ci-dessus

@@ -105,4 +105,8 @@ chemin: Tuto › ch. 12 › bandeau de la grille › pad montré | test: Tour6Tu
 - Sur la tête fusionnée (ae8727624 dans la branche) : voir « Relancé » ci-dessous.
 
 ## Relancé sur la tête fusionnée
-(à compléter par le chef avec les résultats de `:project-model:test` et `:app:testDebugUnitTest` ciblés)
+Sur 446309175 (la branche avec la tête ae8727624 fusionnée, sans conflit) :
+- `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :project-model:test` : BUILD SUCCESSFUL, « up-to-date » (mêmes entrées que le passage précédent) : 1173 tests, 0 échec, 1 ignoré.
+- `… :app:testDebugUnitTest --tests '*Tuto*' --tests '*TrackSheet*' --tests '*MixTips*' --tests '*WhatPlays*' --tests '*Rhythm*' --tests '*Synth*'` : BUILD SUCCESSFUL en 14 min 49 s, 114 classes, 478 tests, 0 échec, 16 ignorés.
+- `… :app:testDebugUnitTest --tests '*Tour6LongPressEmptyCellTest' --tests '*Tour6SimpleMixPadNameTest' --tests '*Tour6PlainWordsTest'` (hors des filtres d'avant) : BUILD SUCCESSFUL, 5 tests, 0 échec.
+- `python3 scripts/bench/rapport-zone.py` (simple, `--corrections`, `--tuto`) : sortie 0 ; `scripts/bench/pre-vol.sh --avant-relecture tour-6 tuto4` depuis un arbre jetable sur ae8727624 : « PRÊT (0 à voir) ».

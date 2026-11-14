@@ -130,7 +130,10 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         runCatching { tap("share_bilan_ok") }
         // The seat's gesture 27: « Mes fichiers » of the share page (control Ac-3: « Voir mes fichiers » of the bilan, the same list).
         tap("share_my_exports")
-        repeat(3) { act("attends 1") }
+        // The list is read off the main thread: a person waits while « Chargement de la liste… » shows; the bench's
+        // « attends » moves its clock, not the wall's (MyFilesBenchClockTest), so the wait is in real time, up to 20 s.
+        act("attends 1")
+        compose.waitUntil(20_000) { compose.onAllNodesWithTag("my_exports_wait").fetchSemanticsNodes().isEmpty() }
         assertTrue("« Mes fichiers » empty right after a send:\n" + screen(), centerOf("my_exports_empty") == null && centerOf("my_export_detail") != null)
     }
 

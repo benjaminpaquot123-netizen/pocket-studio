@@ -95,7 +95,10 @@ def seat_dirs(lot):
 
 
 def seat_name(lot, seat):
-    return f"{os.path.basename(os.path.normpath(os.path.abspath(lot)))}/{seat}"
+    """« lotB/c »; a control seat (lot « constate »: …/controle/<id>/<s>) « controle/<id>/<s> »."""
+    path = os.path.normpath(os.path.abspath(lot))
+    parent = os.path.basename(os.path.dirname(path))
+    return f"{parent + '/' if parent == 'controle' else ''}{os.path.basename(path)}/{seat}"
 
 
 def played_by(lot, seat):

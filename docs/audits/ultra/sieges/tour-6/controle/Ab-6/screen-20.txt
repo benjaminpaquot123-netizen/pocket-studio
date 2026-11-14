@@ -1,0 +1,9 @@
+Écran 20 (588x1278)
+icône ← @ 54,54
+texte « Mes projets » @ 330,54
+bouton (étincelles) «   Fais-moi un morceau » @ 294,147
+bouton + «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton (boîte, flèche vers le haut) « Importer un projet (.zip) » › @ 294,339
+bouton « Live OUVERT à l'instant · 124 BPM · Boucle de 1 mes. » @ 294,478
+icône ⋮ @ 534,479
+icône (trois points reliés) « Partager mon morceau » @ 196,510

@@ -1,0 +1,8 @@
+dialogue:welcome
+dialogue:mode_step
+rhythm/tab_simple_Rythme
+launch
+padlive
+dialogue:« Les pads live de ta prise sont »
+dialogue:projects
+session/tab_simple_Morceau

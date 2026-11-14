@@ -133,7 +133,8 @@ def blocks(text):
         cur["lines"].append(line)
         s = line.strip()
         m = re.match(r"^([a-z.\-]+)\s*:", s)
-        if m and m.group(1) in ("hesitations", "defauts", "incidents-banc", "surprise", "abandon", "mission"):
+        # (Lot « constate »: « defauts-avant », a control seat's answers on the defects aimed at, holds no defect card.)
+        if m and m.group(1) in ("hesitations", "defauts", "defauts-avant", "incidents-banc", "surprise", "abandon", "mission"):
             section = m.group(1)
             continue
         if re.match(r"^-?\s*promesse\s*:", s) and section != "defauts":
@@ -144,7 +145,7 @@ def blocks(text):
             continue
         if re.match(r"^-\s*(ecran|geste)\s*:", s):
             f = fields(s)
-            if "cible" in f and section != "hesitations":
+            if "cible" in f and section not in ("hesitations", "defauts-avant"):
                 cur["defects"].append(f)
             continue
         if cur["defects"] and section == "defauts" and re.match(r"^(attendu|symptome|gravite|banc\?|revu|promesse|element)\s*:", s):
@@ -197,8 +198,16 @@ def tag_of(journal, n):
     return None if tag is None or NAV_TAGS.match(tag) else tag
 
 
+def control_of(rel):
+    """Lot « constate »: a control seat's folder from the round's root (« controle/Ba/a », « controle/Ha »), or None."""
+    return "/".join(rel[rel.index("controle"):]) if "controle" in rel and rel[-1] != "controle" else None
+
+
 def seat_of(report_path, round_dir, head):
     rel = os.path.relpath(os.path.dirname(report_path), round_dir).split(os.sep)
+    # (A control seat is named by its folder: its « siege: a » would mix it with another control's a, or a lot's.)
+    if control_of(rel):
+        return control_of(rel)
     lot = next((p[3:] for p in rel if re.fullmatch(r"lot[A-Z]", p)), None)
     seat = head.get("siege", "?").strip().lower().split("/")[-1].strip()
     return f"{lot}/{seat}" if lot else seat
@@ -526,8 +535,9 @@ def main(argv):
         if "journal.txt" in names:
             rel = os.path.relpath(root, round_dir).split(os.sep)
             lot = next((p[3:] for p in rel if re.fullmatch(r"lot[A-Z]", p)), None)
+            name = control_of(rel) or (f"{lot}/{rel[-1]}" if lot else rel[-1])
             for m in re.finditer(r"^#(\d+) BANC : ([^\n]+)", read(os.path.join(root, "journal.txt")), re.M):
-                incidents.append([f"{lot}/{rel[-1]}" if lot else rel[-1], m.group(1), "-", m.group(2)])
+                incidents.append([name, m.group(1), "-", m.group(2)])
     write_tsv(os.path.join(folder, "incidents-banc.tsv"), ["siege", "geste", "attente", "vu"], incidents)
     if "--maj-base" in argv:
         update_base(base, clusters, tour)

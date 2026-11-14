@@ -234,7 +234,8 @@ fun CutScreen(
                     }
                     CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom, onLetGo = ::letGo)
                     if (!wide) {
-                        AutoRow(model, finding, onAuto = { pick(it) })
+                        // Tour 6, seat B a (A4): in « Phrases » the menus stay under the curve, out of the scroll (below).
+                        if (model.single) AutoRow(model, finding, onAuto = { pick(it) })
                         if (model.single) SpanRow(model, actions, work) else {
                             ToolRow(model, actions, work)
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
@@ -270,6 +271,11 @@ fun CutScreen(
                     }
                 } else {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp))
+                    // Tour 6, seat B a (A4, gesture 19): « ✂ Frases ▾ » and the magnet were cut under the panel of actions at
+                    // the scroll's end; they stay whole over it, the tools and the pieces scroll above.
+                    androidx.compose.foundation.layout.Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp)) {
+                        AutoRow(model, finding, onAuto = { pick(it) })
+                    }
                     SendBar(model, actions, work, note) { note = null }
                 }
             }

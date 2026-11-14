@@ -1,4 +1,4 @@
-tour	item	siege	ecran	etat	commit	test	note	cible
+tour	item	siege	ecran	etat	commit	test	note	cible	phrase_acceptation	siege_origine	constat
 tour-1	déjà réglé (gel ▶)	A/a	22	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet sans effet, écran identique	
 tour-1	déjà réglé (gel ▶)	A/a	24	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet piano sans effet	
 tour-1	déjà réglé (gel ▶)	A/a	25	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : panneau du Guide sans effet	

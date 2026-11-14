@@ -15,7 +15,12 @@ for seat in a b c d e f; do
   if [ -f "$dir/$seat/start.txt" ]; then seats+=(--tests "com.pocketstudio.app.human.HumanTester${seat^^}"); fi
 done
 if [ ${#seats[@]} -eq 0 ]; then
-  echo "No seat: put a start.txt in $dir/<a-f>/." >&2
+  # Lot « constate »: a control folder of round 6's shape (controle/<id>/start.txt, flat) is played as controle/<id>/a/.
+  if [ -f "$dir/start.txt" ]; then
+    echo "No seat: $dir holds a start.txt of its own; a seat is a folder a to f: move it to $dir/a/start.txt (a control seat: docs/audits/ultra/sieges/<tour>/controle/<id>/a/)." >&2
+  else
+    echo "No seat: put a start.txt in $dir/<a-f>/." >&2
+  fi
   exit 2
 fi
 # Audit method v2 (META-AUDIT changes 1 and 8): no lot without a green self-test of the bench on this very code
@@ -39,7 +44,19 @@ elif ! scripts/bench/tampon.sh verifie "$dir"; then
 fi
 # PLAN-RESTE 4.2: files written outside the seats' folders during the lot are listed after it (incidents-lot.tsv).
 python3 -I scripts/bench/sortie-de-siege.py avant "$dir"
-trap 'rm -f "$dir/.banc-en-cours"; python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true' EXIT
+# Lot « constate » (PLAN-REPARATIONS-CONSTATEES.md § 4.3): the bench writes each seat's mesures.json itself when the lot
+# ends (scripts/bench/seat-metrics.py: the goals and the mission's verdict, read in the seat's state), a control seat's
+# too: in round 6 three control seats had none and guessed their goals.
+after_lot() {
+  rm -f "$dir/.banc-en-cours"
+  python3 -I scripts/bench/sortie-de-siege.py apres "$dir" || true
+  for s in "$dir"/[a-f]; do
+    if [ -f "$s/start.txt" ] && [ -f "$s/journal.txt" ]; then
+      python3 -I scripts/bench/seat-metrics.py "$s" > /dev/null || echo "mesures : seat-metrics.py a échoué pour $s" >&2
+    fi
+  done
+}
+trap after_lot EXIT
 # Round 6, lot banc7 (point 6): the Gradle queue kills a run silent for PS_STALL_MIN minutes (20 by default), but a seat waits
 # up to its timeout.minutes (30 from fabrique-sieges) for its tester's next gesture, printing nothing: the queue waits the
 # longest seat timeout of the lot plus 10 min (the seat's own watchdog ends a silent seat first, and says why).

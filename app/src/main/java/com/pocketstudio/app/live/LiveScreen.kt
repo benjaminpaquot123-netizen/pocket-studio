@@ -433,7 +433,7 @@ fun LiveScreen(
         // line only once ● is touched (it then offers where the take goes).
         val short = immersive || maxWidth > maxHeight
         Column(Modifier.fillMaxSize()) {
-            LiveTopBar(ui, actions, leave, slim = short)
+            LiveTopBar(ui, actions, leave, slim = short, padsOn = pads.loopsOn(), cutPads = padsActions.stopAll)
             // Full screen is for the grid: the strip gives way there.
             if (under != null && !immersive) under()
             TakeBanner(ui, actions, showReady = !short, openVersions = { versionsOpen = true })
@@ -653,7 +653,12 @@ private fun LeaveDuringTake(armed: Boolean, leave: () -> Unit, stay: () -> Unit)
  * [slim] lying down or full screen (48 dp: its buttons keep their size).
  */
 @Composable
-private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit, slim: Boolean = false) = BoxWithConstraints(
+private fun LiveTopBar(
+    ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit, slim: Boolean = false,
+    /** Tour 6, padlive2 (P4, control seat Ab-2 écran 41): live pads' loops playing on their own, transport stopped. */
+    padsOn: Boolean = false,
+    cutPads: () -> Unit = {},
+) = BoxWithConstraints(
     Modifier.fillMaxWidth().height(if (slim) 48.dp else 56.dp)
         // Lit from above with a machined foot, as the app's top bar (lot « design pro »).
         .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.03f), lerp(Neon.Surface, Color.Black, 0.08f))))
@@ -676,18 +681,21 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back").spot("live_back", tr("Revenir"))) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
         }
+        // ■ whenever something plays, the scene or the live pads' loops alone; a touch then stops it (the pads: « Tout couper »).
+        val sounding = ui.playing || padsOn
         Box(
-            Modifier.size(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 2.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
-                .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
+            Modifier.size(48.dp).liveGlow(sounding, Neon.Acid, inset = 2.dp).clip(CircleShape)
+                .clickable(onClick = if (!ui.playing && padsOn) cutPads else actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
+                .semantics { contentDescription = if (sounding) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {
-            val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
+            val playColor = if (sounding) Neon.Acid else Neon.Cyan
             Box(
                 Modifier.size(44.dp).clip(CircleShape)
                     .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor))).background(BUTTON_GLOSS),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
+                Icon(if (sounding) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
             }
         }
         Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { LiveTempo(p.tempoBpm, actions) }
@@ -695,6 +703,10 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         RecordButton(ui.take, actions.record)
     }
 }
+
+/** A live pad's loop lit or waiting (a hit ringing is no music playing). */
+internal fun com.pocketstudio.app.session.LivePadsUi?.loopsOn(): Boolean =
+    this != null && states.withIndex().any { (pad, state) -> state != 0 && pads.at(pad)?.oneShot == false }
 
 /** « Lancer à » as [LiveActions.setQuantum] codes it: 1, 2, 4 bars; -1 a beat; -2 half a bar. */
 fun liveQuantumCode(p: Project): Int = when (p.liveQuantumFine) {

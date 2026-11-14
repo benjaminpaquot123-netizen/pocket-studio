@@ -1,0 +1,50 @@
+Écran 229 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Klang » @ 397,209
+texte « 4,8 kHz » @ 805,210
+curseur [état « 4,8 kHz », à 60 %] @ 450,278
+titre « WEITERE DATEIEN » [état « Aufgeklappt »] @ 183,395
+texte « Was » @ 71,445
+bouton « Der ganze Song » [sélectionné] @ 176,514
+bouton « Der loopende Teil » @ 462,514
+texte « Alle Teile aus Struktur, der Reihe nach. » @ 273,580
+texte « Format » @ 89,631
+bouton « ? » @ 158,631
+bouton « M4A · zum Teilen » @ 185,701
+bouton « WAV · max. Qualität » [sélectionné] @ 496,701
+texte « Studioqualität, läuft in jeder Software. Am größten. » @ 343,767
+texte « Ziel-Lautheit » @ 126,818
+bouton « ? » @ 231,818
+bouton « Streaming · −14 LUFS » @ 213,882
+bouton « Club · −8 LUFS » [sélectionné] @ 520,882
+bouton « Auto (Stil) · −9 LUFS » @ 204,963
+bouton « Aus » @ 426,963
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. » @ 450,1059
+texte « Fade-out » @ 103,1145
+texte « Tutorial fortsetzen » @ 225,1219
+texte « Tutorial neu starten » @ 675,1219
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

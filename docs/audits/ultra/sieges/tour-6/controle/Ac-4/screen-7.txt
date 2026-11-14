@@ -1,0 +1,42 @@
+Écran 7 (588x1278)
+icône (dossier ouvert) ✓ « Trap Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 140  Tempo » @ 83,114
+icône « Intro mesure 1/104 » ▾ @ 262,114
+bouton « ? » @ 543,114
+image (rond coché) @ 0,0
+texte « Fini ? Partage ton morceau » @ 294,183
+champ « Nom du morceau (et du projet) » contenu « Trap » @ 294,271
+icône ✕ @ 522,278
+texte « 2:58 » @ 66,358
+texte « 26 parties » @ 167,363
+bouton ■ «  Arrêter » @ 470,385
+texte « Volume : −8,5, très fort (les plateformes le baisseront) » @ 200,405
+bouton « Streaming » @ 235,486
+bouton « Club » @ 369,486
+texte « Volume visé » @ 89,486
+bouton « Auto (style) » [sélectionné] @ 114,567
+bouton « ? » @ 229,567
+bouton « M4A · pour partager » [sélectionné] @ 157,675
+bouton « WAV · qualité max » @ 414,675
+bouton (trois points reliés) «   Partager » @ 294,771
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,873
+bouton « ? » @ 536,873
+bouton (boussole) « Guide  · Change un son 15 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ■ « le morceau » @ 288,1062
+texte « 140 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

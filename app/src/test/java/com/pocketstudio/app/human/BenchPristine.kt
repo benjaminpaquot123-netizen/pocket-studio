@@ -82,6 +82,17 @@ internal object BenchPristine {
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     /** What is not as a just-started process has it, one line each (empty: pristine). */
+    // ([TutoHints.ticked] is a change counter, one more at each screen opened: its value says nothing, it is not read here.)
+    private fun tutoHintsPristine(): Boolean = with(com.pocketstudio.app.tuto.TutoHints) {
+        cells == null && notes == null && acid == null && fading == null && send == null && focus == 0 && focusSeen == 0 && !demo &&
+            erase == null && knobs.isEmpty() && strip == null && sendNote == null && banner == null && step == null &&
+            copy == null && page == null && !copyOnGrid
+    }
+
+    private fun tutoHintsSaid(): String = with(com.pocketstudio.app.tuto.TutoHints) {
+        "focus=$focus/$focusSeen step=$step banner=$banner notes=${notes?.first} cells=${cells?.first} ticked=$ticked page=$page"
+    }
+
     fun leaks(): List<String> {
         val out = ArrayList<String>()
         fun check(what: String, ok: Boolean, value: () -> Any? = { "" }) {
@@ -103,6 +114,9 @@ internal object BenchPristine {
         check("Retours.active", com.pocketstudio.app.retours.Retours.active == SettingsStore.state.value.retoursMode) { com.pocketstudio.app.retours.Retours.active }
         check("Intro.playing", !com.pocketstudio.app.onboarding.Intro.playing) { true }
         check("TutoHints.active", !com.pocketstudio.app.tuto.TutoHints.active) { true }
+        // Tour 6, lot « stable » (shuffled suite, seed 5): the rest of the tutorial's hints too (Tour6TutoLineGoTest drew its
+        // roll with « hints=5/5 » left by a class run earlier: its note was brought into view, the line no longer pointed away).
+        check("TutoHints", tutoHintsPristine()) { tutoHintsSaid() }
         check("SpotChecks.log", com.pocketstudio.app.learn.SpotChecks.log == null) { com.pocketstudio.app.learn.SpotChecks.log }
         check("ProjectOpening.prepared", staticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared") == null) {
             staticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared")
@@ -351,7 +365,7 @@ internal object BenchPristine {
         NativeEngine.sink = null
         com.pocketstudio.app.retours.Retours.active = SettingsStore.state.value.retoursMode
         com.pocketstudio.app.onboarding.Intro.playing = false
-        com.pocketstudio.app.tuto.TutoHints.active = false
+        com.pocketstudio.app.tuto.TutoHints.reset()
         com.pocketstudio.app.learn.SpotChecks.log = null
         runCatching { setStaticField(com.pocketstudio.app.rhythm.ProjectOpening::class.java, "prepared", null) }
         runCatching { setStaticField(ViewModelProvider.AndroidViewModelFactory::class.java, "_instance", null) }

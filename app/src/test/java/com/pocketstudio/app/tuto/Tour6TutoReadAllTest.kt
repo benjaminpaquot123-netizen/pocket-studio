@@ -73,4 +73,19 @@ class Tour6TutoReadAllTest {
         val seen = text.boundsInRoot
         assertTrue("after one « Lire la suite »: ${seen.height} px of the instruction's ${text.size.height} in sight", seen.height >= text.size.height - 1f)
     }
+
+    /** Control seat Da-11: the whole instruction shown, « 続きを読む » stayed (the words' plain lines were still under it). */
+    @Test
+    fun nothingIsLeftToReadOnAfterThatTouch() {
+        val target = TutoTarget.of("techno")!!
+        h.start(simple = true, lang = Lang.JA, build = {
+            session.edit { target.blank() }
+            PrefsTutoStore(h.app).save(projectId, TutoProgress("techno", TutoLevel.Facile, current = "clap_do"))
+        })
+        await("clap: its dotted cells and « Lire la suite »") { TutoHints.cells?.second?.isNotEmpty() == true && has("tuto_text") && has("tuto_text_more") }
+        settle()
+        compose.onNodeWithTag("tuto_text_more", useUnmergedTree = true).performClick()
+        settle()
+        assertTrue("« Lire la suite » still offered after the touch that opens the words", !has("tuto_text_more"))
+    }
 }

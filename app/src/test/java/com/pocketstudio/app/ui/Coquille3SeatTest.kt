@@ -194,4 +194,17 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         tap("tab_simple_Clavier"); repeat(2) { act("attends 1") }
         assertTrue("the grid framed again by itself when it came back:\n" + screen(), !whole("roll_bar_3"))
     }
+
+    /** Fresh review of coquille3 (moyen): a FLAC chosen in Pro stays when « Autres fichiers » leads there again. */
+    @Test
+    fun n1_aFlacChosenInProStays() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        trapSong()
+        rhythm()!!.setExportFormat(com.pocketstudio.app.rhythm.ExportFormat.Flac)
+        tap("tab_simple_Envoyer")
+        compose.onNodeWithTag("share_other").performScrollTo().performClick()
+        repeat(2) { act("attends 1") }
+        val format = rhythm()!!.export.value.format
+        assertTrue("the FLAC chosen in Pro became $format:\n" + screen(), format == com.pocketstudio.app.rhythm.ExportFormat.Flac)
+    }
 }

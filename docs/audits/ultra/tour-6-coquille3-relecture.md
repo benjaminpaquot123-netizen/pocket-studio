@@ -1,5 +1,5 @@
 # Relecture neuve — lot coquille3 (tour 6)
-Relu : 48b1851d
+Relu : 0de99f28
 
 Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, ShareSheet, RemixScreen, AppSpaces, PianoRoll, SynthScreen, `Coquille3SeatTest` et les trois tests reciblés). Lecture seule, sans Gradle. Deuxième passage : les correctifs depuis f152599b (927b61da, 1202e769 et leurs rouges) sont relus. Troisième passage : depuis 24f27070 (fusion de l'intégration : seulement des documents et des traces du portail, aucun fichier de l'appli du lot changé par elle ; « Accueil » écrit ; test de preuve n4).
 
@@ -28,6 +28,10 @@ Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, Sh
 ## Quatrième passage (depuis 765b9853)
 
 - **mineur** — `app/src/test/java/com/pocketstudio/app/export/MyFilesBenchClockTest.kt` : le constat mineur sur n4 est **traité**. La lecture est ralentie de 1,5 s réelles par le paramètre `read` du vrai `MyExportsDialog`, hors du fil principal comme `MyExports.list`. Après `mainClock.advanceTimeBy(95_000)`, l'écran montre toujours « Chargement » ; avec du temps réel, `my_export` arrive et `my_exports_wait` s'en va. Le mécanisme est donc prouvé : une lecture lente reste « Chargement » quelles que soient les secondes du banc, et la liste vient avec le temps du mur. Le premier test peut échouer (« no proof »), donc ce n'est pas une évidence. Deux limites restent : (1) le test démontre le mécanisme, pas que la lecture du siège était bien lente ; c'est déduit, ce qui suffit puisque le code ne laisse pas d'autre chemin vers un « Chargement » qui dure ; (2) il peut échouer à tort sur une machine chargée si avancer 95 s d'horloge (environ 6 000 images) prend plus de 1,5 s réelles. À faire si cela arrive : retenir la lecture par un verrou (`CompletableDeferred`) libéré après `advanceTimeBy`, au lieu d'un `Thread.sleep`. La ligne `tests:` du rapport nomme bien ce test.
+
+## Cinquième passage (depuis 48b1851d)
+
+- `git diff 48b1851d..HEAD -- app project-model engine` est vide : rien ne change dans l'appli. Hors `docs/`, seuls `scripts/bench/test_ultra_bench.py` et `scripts/bench/verifie-chantier.py` changent, et ils viennent de la fusion de l'intégration (83ecc886), pas du lot. Le reste : dossiers des sièges de contrôle et lignes « controle: » du rapport.
 
 ## Vérifié sans constat
 - `ShareSheet.kt:456-468` : phrase du volume en pleine largeur, « détails » + « ? » dessous à droite seulement en Pro ; « masquer » et les détails inchangés ; rien de neuf en Simple.

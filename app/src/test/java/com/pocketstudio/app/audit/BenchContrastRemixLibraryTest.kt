@@ -78,7 +78,7 @@ class BenchContrastRemixLibraryTest {
     private fun remixReads(p: Palette) {
         val found = scanned(p, remix)
         // Not empty-handed: the two buttons the bench flagged are on the page.
-        compose.onNodeWithTag("remix_download").assertExists()
+        compose.onNodeWithTag("remix_download_thumb").assertExists()  // Tour 6, A10: the one download button left
         compose.onNodeWithTag("remix_pick").assertExists()
         assertTrue("$p:\n" + found.joinToString("\n"), found.isEmpty())
     }

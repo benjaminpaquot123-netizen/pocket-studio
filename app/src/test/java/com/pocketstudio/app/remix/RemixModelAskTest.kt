@@ -54,7 +54,7 @@ class RemixModelAskTest {
     @Test
     fun onMobileDataTheDownloadButtonAsksToo() {
         show(installed = false)
-        compose.onNodeWithTag("remix_download").performClick()
+        compose.onNodeWithTag("remix_download_thumb").performClick()  // Tour 6, A10: the one download button left
         assertEquals(0, downloads)
         compose.onNodeWithTag("remix_model_ask_ok").performClick()
         assertEquals(1, downloads)

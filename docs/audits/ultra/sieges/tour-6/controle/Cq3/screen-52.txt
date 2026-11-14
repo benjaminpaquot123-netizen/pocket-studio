@@ -1,0 +1,47 @@
+Écran 52 (588x1278)
+icône (dossier ouvert) ✓ « Démo · Acid house Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 126  BPM » @ 73,114
+icône « A mes. 1/7 » ▾ @ 218,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+curseur [coupé, état « 50 % », à 50 %] @ 294,152
+texte « Largeur » @ 259,203
+texte « 100 % » @ 511,203
+curseur [état « 100 % », à 100 %] @ 294,266
+texte « Pré-délai » @ 261,329
+texte « 20 ms » @ 513,329
+curseur [état « 20 ms », à 10 %] @ 294,392
+texte « Écho » @ 67,455
+texte « Temps » @ 276,497
+texte « 1/8 » @ 528,497
+curseur [état « 1/8 », à 33 %] @ 294,560
+texte « Feedback » @ 266,623
+texte « 40 % » @ 518,623
+curseur [état « 40 % », à 40 %] @ 294,686
+texte « Ping-pong » @ 259,749
+texte « 100 % » @ 511,749
+curseur [état « 100 % », à 100 %] @ 294,812
+texte « Tonalité » @ 254,875
+texte « 4,8 kHz » @ 506,875
+curseur [coupé, état « 4,8 kHz », à 60 %] @ 294,935
+bouton (boussole) « Guide  · Ajoute une mélodie 38 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 126 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

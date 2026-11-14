@@ -1,52 +1,36 @@
 # Tour 6, lot du banc « rejeux7 » : relecture neuve
-Relu : b0590d2c6f760b11467c3324bd5947552e9add4c
+Relu : 7dbb5c7fd1ebe3adfad9fb48b19bdea18e9b1293
 
-Relecteur neuf (n'a rien écrit de ce lot). Lu : la fiche du relecteur (`docs/AIDE-FUSIONS-TESTS.md`), le rapport, `docs/decisions/tour-6-rejeux7.md`, `git diff cc6175a4..b0590d2c`.
+Relecteur neuf (n'a rien écrit de ce lot), deuxième passage. Le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
 
-## Ce que touche le lot
+## Deuxième passage (après le refus du portail, code 8)
 
-- Hors `docs/` : rien (0 fichier). Seul fichier existant modifié : `docs/audits/ultra/EN-COURS.md`, venu de la fusion de l'intégration (`ea7a1e25`), pas du lot.
-- `rejeux/t4-26-prise-clavier/` : intact (aucune ligne du diff) ; seul son journal de passage `_journaux/t4-26-prise-clavier/` est ajouté (« oracle tenu »). Aucun rejeu existant retiré ni changé.
+Le portail avait refusé le lot : son rapport nommait N19, N4, N5, R3-EC17, R6 et T4 sans ligne « corrige: … » ni « ne corrige pas: <id> : <raison> ». Depuis `35c6e3410`, deux commits sur la branche : `4ea9c367` (le rapport) et `7dbb5c7f` (fusion de l'intégration `eb033ca6f`).
 
-## 1. Les trois rejeux ajoutés
+### Ce que change le lot
 
-Gestes comparés au `journal.txt` du siège source, ligne `#i DOIGT <étiquette>`, geste par geste :
+- `git diff 4ea9c367~1 4ea9c367` : un seul fichier, `tour-6-rejeux7-rapport.md`, 11 lignes ajoutées en fin de rapport (section « Défauts nommés, non corrigés par ce lot »), une ligne « ne corrige pas: » par défaut nommé. Rien d'autre.
+- La fusion `7dbb5c7f` : aucun fichier du lot touché (`rejeux/`, `rejeux-attente/`, rapport, relecture, décisions identiques à `4ea9c367`). Contre la tête `eb033ca6f`, la branche n'ajoute que des lignes (114 fichiers, 0 ligne retirée), toutes sous `docs/`. Aucun conflit, aucun marqueur de conflit.
 
-| rejeu | siège | gestes | oracle contre l'écran n+1 du siège |
-|---|---|---|---|
-| `t6-ec17-un-bout-courbe` | lotE/c, 1 à 17 | identiques par étiquette ; les glissés 2, 3, 11 à 16 deviennent « attends 1 » (règle de `rejeu-etiquettes.py`) ; `cut_song_*` = `cut_song_3a02…` raccourci par l'outil | « Pince para ampliar » absent de l'écran 18 du siège |
-| `t6-ga14-phrases-batterie` | lotG/a, 1 à 14 | identiques, un pour un | « (Davul · 16 pad) » absent de l'écran 15 |
-| `t6-da15-ecoute-passee` | lotD/a, 1 à 15 | identiques, un pour un | « チャプター 1/15 · 完了 » absent de l'écran 16 |
+### Les six lignes sont-elles vraies ?
 
-- Aucun pixel, aucune option `--cible`, `--saute`, `--commande`.
-- Les oracles collent aux défauts de `verdicts.tsv` : R3-EC17 (bloquant, la courbe n'a pas de place en « Un bout » à 200 %), R6 (grave, phrases sans nommer la batterie), N19 (grave, l'écoute passée par « Suivant » ne compte pas).
-- Journaux `_non-tenu-1585bb46/` : les trois finissent en « oracle non tenu : … absent » ; les étiquettes touchées sont exactement celles du siège ; 0 geste refusé, 0 étiquette introuvable. Journaux `_journaux/` : « oracle tenu », mêmes étiquettes.
+- La forme « ne corrige pas » est la forme honnête : le lot ne change aucun code de l'appli (rien hors `docs/`). Une ligne « corrige: » serait fausse.
+- R3-EC17 et R6 : corrigés par « remixdecoupe » (son rapport, lignes 8 et 9). N19 : corrigé par « tutoconsignes » (`Tour6TutoPanelListenSkipTest`). Les trois lots sont fusionnés dans l'intégration (« remixdecoupe » `4966a019d`, « tutogrille » `1980dff63`, « tutoconsignes » `0b8ba680c`). Les rejeux `t6-ec17`, `t6-ga14`, `t6-da15` les rejouent : non tenus sur 1585bb46, tenus sur la tête (premier passage).
+- T4, N4, N5 : « tutogrille » les a traités (son rapport, lignes 9 à 14). Aucun rejeu ne le prouve ici : N4 et N5 sont classés impossibles (touchers sans étiquette), et pour T4 la part des cases est **non tenue sur la tête** (`t6-ha19`, en attente).
+- Le portail : `rapport-zone.py --corrections eq/tour-6-rejeux7 … base:eb033ca6f tete:eb033ca6f tour:tour-6 ajout:<les trois rejeux>` : code 0 ; même résultat avec la base d'origine `cc6175a4`. Le contrôle simple (sans `--corrections`) sort toujours les trois filtres, code 0 ; `--tuto` : code 0, rien (le lot ne touche pas le tuto).
 
-## 2. En attente et impossibles
+### Points de ce passage
 
-- `t6-ha19-cases-panneau` (T4, cases) : non tenu sur 1585bb46 et **non tenu sur la tête** (journaux commités). Le ranger dans `rejeux-attente/` est le bon choix : dans `rejeux/`, il bloquerait toute fusion.
-- T4 (notes du piano roll), N4, N5 : la raison tient. Les notes du piano roll ne sont pas dans le texte de l'écran (aucun oracle possible), et le chemin passe par des touchers sans étiquette (pixels interdits). N19 depuis D a-suite : couvert par `t6-da15`, même cause, même siège.
-- Rejeu oublié : aucun. Les seuls bloquants ou graves de `verdicts.tsv` sont R3-EC17, T4, R6, N4, N5 et N19 ; chacun est rejoué, en attente ou classé impossible. T3, cité dans les décisions, n'est ni bloquant ni grave.
+- moyen : la raison de la ligne T4 dit « la correction vient des lots déjà fusionnés ». C'est vrai pour une partie seulement : le rapport lui-même dit plus haut que T4, la part des cases, n'est pas corrigé sur la tête. La ligne n'est pas fausse sur ce que fait ce lot (il ne corrige pas T4), mais le chef ne doit pas en tirer « T4 corrigé ». À rendre au tri (zone tuto, `RhythmScreen.kt`), comme au premier passage.
+- mineur : N4 et N5 sont dits corrigés par les lots fusionnés, sans rejeu qui le montre (impossibles ici). Selon la méthode, ils restent « tentés », pas « corrigés », tant qu'un testeur neuf ne l'a pas constaté.
+- mineur : la même raison est copiée sur les six lignes et cite les trois lots à chaque fois ; chaque défaut n'a été traité que par l'un d'eux (R3-EC17 et R6 : remixdecoupe ; N19 : tutoconsignes ; T4, N4, N5 : tutogrille).
 
-## 3. Rejoué moi-même
+## Premier passage (résumé, sur `b0590d2c`)
 
-- Machine : pas de SDK Android au départ. Installé (`/opt/android-sdk` : plateforme 37.0, build-tools 37, NDK 30.0.16248370, CMake 3.31.0), sous-modules initialisés, `local.properties` créé (hors commit).
-- Maven Central : 429 au premier essai, 200 dix minutes plus tard.
-- Tête (`b0590d2c`), `scripts/bench/rejeu-defauts.sh t6-ga14-phrases-batterie` :
-  - 1er passage : self-test rouge, les rejeux n'ont pas été joués. Cause : le téléchargement de l'image Robolectric `android-all-instrumented:16-…-i7` a échoué (le réseau, pas le code) ; les autres classes n'ont pas tourné.
-  - 2e passage : self-test vert, puis **« t6-ga14-phrases-batterie : oracle tenu »**. Mêmes 12 étiquettes que le siège.
-- 1585bb46 (worktree détaché, banc de ce commit, `PS_REJEUX_DIR` = copie du dossier de la branche) : self-test vert, puis **« oracle non tenu : « (Davul · 16 pad) » absent »**. Mêmes 12 étiquettes, 0 refusé, 0 introuvable. Le worktree a ensuite été retiré, et le journal réécrit dans l'arbre a été remis tel quel.
-- Pas rejoués moi-même : `t6-ec17` et `t6-da15`. Pour ces deux-là, j'ai vérifié leurs journaux commités (point 1).
-
-## 4. Rapport de zone
-
-`python3 -I scripts/bench/rapport-zone.py ccr-a548b78b-rejeux7 docs/audits/ultra/tour-6-rejeux7-rapport.md ajout:t6-ec17-un-bout-courbe ajout:t6-ga14-phrases-batterie ajout:t6-da15-ecoute-passee` : code 0. Filtres sortis : `CutBoutBigTextTest`, `StemBoardRouterTest`, `Tour6TutoPanelListenSkipTest` ; les quatre tests de la liste des chemins existent dans `app/src/test`. Aucun test existant ne change de couleur : le lot ne touche aucun code.
-
-## Points moyens et mineurs laissés ouverts
-
-- moyen : T4 (cases en pointillé coupées, téléphone, 100 %) n'est **pas corrigé** sur la tête (`t6-ha19` non tenu). Le chef doit le rendre au tri, zone tuto (`RhythmScreen.kt`), sinon T4 restera compté comme corrigé à tort.
-- moyen : l'oracle de `t6-ec17` (« Pince para ampliar » visible) prouve que la ligne de la courbe a sa place, pas que la courbe a une hauteur correcte. Une courbe écrasée comme en R3 (≈ 50 dp, moyen) le tiendrait encore. Le test `CutBoutBigTextTest` couvre la hauteur ; le rejeu, lui, ne protège que le bloquant.
-- mineur : dans les passages sur 1585bb46, les écrans ne sont pas comparés à l'origine (« pas d'écran-texte à l'origine »). La non-divergence repose sur les étiquettes, qui sont identiques. Les `verdict.txt` gardent aussi des chemins absolus `/tmp/…` d'une autre session.
-- mineur, côté machine : un premier passage peut tomber en self-test rouge si Robolectric ne télécharge pas son image. Relancer suffit.
+- Le lot ne touche rien hors `docs/` ; `rejeux/t4-26-prise-clavier/` intact ; aucun rejeu retiré ni changé.
+- Les trois rejeux ajoutés (`t6-ec17-un-bout-courbe`, `t6-ga14-phrases-batterie`, `t6-da15-ecoute-passee`) ont les gestes du siège, par étiquette, sans pixel ni option interdite ; les oracles collent aux défauts de `verdicts.tsv` ; non tenus sur 1585bb46, tenus sur la tête.
+- `t6-ha19-cases-panneau` (T4, cases) rangé en attente à juste titre : non tenu sur la tête. T4 (notes du piano roll), N4, N5 : impossibles pour une raison qui tient. Aucun rejeu oublié.
+- Rejoué soi-même : `t6-ga14` tenu sur la tête, non tenu sur 1585bb46 (mêmes 12 étiquettes, 0 refusé).
+- Points laissés ouverts : moyen, T4 (cases) pas corrigé sur la tête ; moyen, l'oracle de `t6-ec17` ne prouve pas la hauteur de la courbe (le test `CutBoutBigTextTest` la couvre) ; mineurs, écrans de 1585bb46 non comparés à l'origine, chemins absolus `/tmp/…` dans les `verdict.txt`, un premier passage du self-test peut tomber si Robolectric ne télécharge pas son image.
 
 Verdict : 0 bloquant, 0 grave

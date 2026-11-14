@@ -4743,7 +4743,8 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     val acidPlays = acidPlays(p)
     // The drums' own sounds (the pads with hits), each heard alone from the Batterie's line.
     val pads = p.guideTracks().filter { it.key.startsWith("pad:") }.mapNotNull { t ->
-        t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shown(t.name)) }
+        // Tour 6, seat Fa-1 (« Rim » at the Mix, « Bord de caisse » on the pad): each pad named as the pad shows it.
+        t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shownPad(it, p.drums.lanes.getOrNull(it)?.sample?.name, p.padVoices[it]?.kind)) }
     }
     // n° 23: a project born from a Remix shows no empty « Batterie » or « Synthé » it never used.
     val remix = p.remix.setId != null

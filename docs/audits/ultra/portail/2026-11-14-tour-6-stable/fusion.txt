@@ -1,0 +1,8 @@
+fusion: b562bc6df5ecddd2af83a32f6d508eb0edee7fcd
+branche: eq/tour-6-stable
+tete: 38e8f865d22d75052aec6c7dbc346dfba2885544
+relecture: docs/audits/ultra/tour-6-stable-relecture.md
+relu: 4b64f84e5af8d0dcaa03474d867dc2fabbbfed13
+filtres: com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.BenchShareTest com.pocketstudio.app.human.BenchSongClockTest com.pocketstudio.app.audit3.GestureFuzzTest com.pocketstudio.app.human.OrdinaryTestsLeaveNothingTest com.pocketstudio.app.journey.WeekInTheLifeTest com.pocketstudio.app.human.BenchSnapshotPumpTest com.pocketstudio.app.human.OrdinaryTestsLeaveNothingTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

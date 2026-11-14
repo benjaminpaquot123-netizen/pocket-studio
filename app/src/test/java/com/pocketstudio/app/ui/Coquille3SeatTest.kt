@@ -81,4 +81,20 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertTrue("Pro's files are $format though M4A was chosen:\n" + screen(), format == com.pocketstudio.app.rhythm.ExportFormat.M4a)
     }
 
+    /**
+     * Control seat Ac-3 (gesture 43, screen 45), Pro: the share page's volume sentence is read whole, « détails » and its
+     * « ? » after it — not « comme la musique de détails ? club ».
+     */
+    @Test
+    fun n5_theVolumeSentenceIsWholeBeforeItsDetails() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        sentThenPro()
+        tap("export_target_CLUB")
+        tap("top_share")
+        repeat(2) { act("attends 1") }
+        val sentence = compose.onAllNodesWithTag("share_loudness").fetchSemanticsNodes().firstOrNull() ?: error("no volume sentence:\n" + screen())
+        val details = compose.onAllNodesWithTag("share_details").fetchSemanticsNodes().firstOrNull() ?: error("no « détails »:\n" + screen())
+        assertTrue("« détails » beside the sentence, read in its middle:\n" + screen(), details.boundsInRoot.top >= sentence.boundsInRoot.bottom - 1f)
+    }
+
 }

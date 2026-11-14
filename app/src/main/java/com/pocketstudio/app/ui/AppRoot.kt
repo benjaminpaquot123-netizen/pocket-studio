@@ -431,6 +431,11 @@ fun AppRoot() {
     // ⤴ « Prêt à partager ? » (top bar, Mes projets, the steps, « Ton morceau est prêt »): the
     // checks, the name and M4A or WAV; then the export's progress and Android's share sheet.
     val sharePrefs = remember { com.pocketstudio.app.export.SharePrefs(context) }
+    // Tour 6, seat A c (gesture 13): Pro's files keep the format chosen on the share page (M4A or WAV), never WAV by
+    // themselves; a FLAC chosen in Pro stays (fresh review of coquille3: the share page offers no FLAC).
+    val carryShareFormat = {
+        if (rhythmVm.export.value.format != com.pocketstudio.app.rhythm.ExportFormat.Flac) rhythmVm.setExportFormat(sharePrefs.format)
+    }
     var showShare by rememberSaveable { mutableStateOf(false) }
     var showVideo by rememberSaveable { mutableStateOf(false) }
     // « Changer un son »: the sounds of an instrument track in a sheet (null: closed).
@@ -1802,7 +1807,7 @@ fun AppRoot() {
             otherExports = {
                 if (simple) SettingsStore.update(context) { it.copy(simpleMode = false) }
                 // Tour 6, seat A c (gesture 13): Pro's files keep the format chosen here (M4A), never WAV by themselves.
-                rhythmVm.setExportFormat(sharePrefs.format)
+                carryShareFormat()
                 go(AppTab.Mixeur)
                 mixerFocus = com.pocketstudio.app.mixer.Where.Export
             },
@@ -3907,7 +3912,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 toStructure = { go(AppTab.Morceau) },
                                 // Audit final (01 M6, 05, 08): no « Voir dans Mix » (it left the Mode simple without a word).
                                 toMixer = null,
-                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; rhythmVm.setExportFormat(sharePrefs.format); go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
+                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; carryShareFormat(); go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
                                 sendProject = zipSender::sendOpen,

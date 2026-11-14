@@ -36,3 +36,8 @@ ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll du tut
 - Moyen (FLAC) : un FLAC choisi en Pro reste (la page Partager n'en propose pas). `#n1_aFlacChosenInProStays`.
 - Fix : la liste « Plus » du Pro reprend sa mise en page d'avant (`ScreenScanTest` census `NavScreenshotTest.guideFirst`).
 - Mineurs laissés (noté) : sans modèle mais avec une chanson dans le projet, le panneau n'a plus de « Télécharger » visible (« Choisir une chanson » le demande) ; « Accueil » sort de l'appli sans projet avant le guide (cas d'avant) ; le Mixeur ouvert directement reste en WAV par défaut ; les tests touchent « WhatsApp » par coordonnées (feuille du téléphone simulée).
+
+## Contrôle (Testeur 1, ccr-a548b78b-controle-coq4 384e3825, code fd8c57a6) : suites
+- Constatés : A10, A11.
+- **E7, autre** (écrans 6 et 8 : une maison seule, sans mot) : « Accueil » écrit à côté de la maison (mot déjà traduit dans les 14 langues). `Coquille3SeatTest#e7_theHomeWordIsWrittenBesideTheHouse`.
+chemin: Plus › Mes projets (le mot à côté de la maison) (fr, Mode simple) | test: Coquille3SeatTest#e7_theHomeWordIsWrittenBesideTheHouse

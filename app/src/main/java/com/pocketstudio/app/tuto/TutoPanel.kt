@@ -456,8 +456,13 @@ fun TutoPanel(
     // their two rows above the panel; the words scroll (« Lire la suite ») in a lower room (the height taken again).
     // The same for a step on the track's sound (knobs named) with « Régler le son de la piste ↓ » on the screen (H5, H7).
     // The hits to cross out too (a gap step: « → <pad> » and its crosses were under the panel in a 4-bar Montée).
-    val cellsToTouch = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
+    // Control seat Da-10 (ch. 3, Japanese): in that lower room « Lire la suite » moved a long instruction by a line in
+    // a window of two and a half: no effect to the eye. There, one touch on it gives the words their usual room back
+    // (the whole instruction, as before the lower room), for this step, until the panel is folded.
+    var readAll by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    val lowRoom = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
+    val cellsToTouch = lowRoom && !readAll
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
@@ -598,7 +603,8 @@ fun TutoPanel(
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
             if (scrolls) MoreWords(words.canScrollForward) {
-                words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
+                if (cellsToTouch) readAll = true
+                else words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
             }
             }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)

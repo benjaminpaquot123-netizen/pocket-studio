@@ -124,4 +124,27 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertTrue("$buttons « Descargar el modelo » on the panel:\n" + screen(), buttons == 1)
     }
 
+    /**
+     * Seat A b (fr, Mode simple), P1 (gesture 34, screen 43): a melody played after the first bar (bar 1 empty), « Notes »
+     * touched on the keyboard: the grid shows the notes played, not an empty bar 1 that makes the melody look lost.
+     */
+    @Test
+    fun p1_notesShowsEveryNotePlayed() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille3-journal.txt"))
+        tap("tab_simple_Clavier")
+        repeat(2) { act("attends 1") }
+        // The seat's melody, played with the keyboard (the bench has no recording of played notes): bars 2 to 4.
+        val v = rhythm()!!
+        val tick = com.pocketstudio.model.NoteClip.TICKS_PER_STEP
+        val melody = (1 until 4).flatMap { bar -> (0 until 4).map { beat -> com.pocketstudio.model.Note((bar * 16 + beat * 4) * tick, 2 * tick, 64 + beat) } }
+        v.replaceNoteClip(com.pocketstudio.model.NoteClip(steps = 64, notes = melody), null)
+        repeat(2) { act("attends 1") }
+        tap("mode_notes")
+        repeat(2) { act("attends 1") }
+        // Bars 2 and 4 (the melody's first and last) in sight on the grid's ruler.
+        assertTrue("« Notes » opened on bar 1, the melody's bars out of sight:\n" + screen(), whole("roll_bar_1") && whole("roll_bar_3"))
+    }
+
 }

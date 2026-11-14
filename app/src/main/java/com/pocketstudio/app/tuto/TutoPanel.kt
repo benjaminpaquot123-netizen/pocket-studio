@@ -218,9 +218,6 @@ const val TUTO_TURN_MS = 450L
 /** The room of a step's words while its dotted cells are on the drum grid shown ([TutoHints.gridInSight]). */
 private val GRID_WORDS_MAX = 120.dp
 
-/** The room of a step's words once « Lire la suite » opened them from that lower room: the whole of a long step. */
-private val READ_ALL_MAX = 380.dp
-
 /** How long [TutoHints.banner] stays. */
 const val TUTO_BANNER_MS = 1800L
 
@@ -555,8 +552,7 @@ fun TutoPanel(
             }
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
-            // Opened from the lower room (« Lire la suite » there): all the words at once, their plain lines too (seat Da-11).
-            val most = if (chapter.map && map.isNotEmpty()) 290.dp else if (cellsToTouch) GRID_WORDS_MAX else if (readAll) READ_ALL_MAX else 240.dp
+            val most = if (chapter.map && map.isNotEmpty()) 290.dp else if (cellsToTouch) GRID_WORDS_MAX else 240.dp
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
             // The words take the room « Pourquoi ? » and « Lire la suite » leave them (measured first, no frame late).
             // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »

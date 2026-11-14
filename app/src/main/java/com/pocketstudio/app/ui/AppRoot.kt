@@ -1801,6 +1801,8 @@ fun AppRoot() {
             toMixer = if (simple) null else ({ tab = AppTab.Mixeur; mixerFocus = com.pocketstudio.app.mixer.Where.Master }),
             otherExports = {
                 if (simple) SettingsStore.update(context) { it.copy(simpleMode = false) }
+                // Tour 6, seat A c (gesture 13): Pro's files keep the format chosen here (M4A), never WAV by themselves.
+                rhythmVm.setExportFormat(sharePrefs.format)
                 go(AppTab.Mixeur)
                 mixerFocus = com.pocketstudio.app.mixer.Where.Export
             },
@@ -3905,7 +3907,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 toStructure = { go(AppTab.Morceau) },
                                 // Audit final (01 M6, 05, 08): no « Voir dans Mix » (it left the Mode simple without a word).
                                 toMixer = null,
-                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
+                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; rhythmVm.setExportFormat(sharePrefs.format); go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
                                 sendProject = zipSender::sendOpen,

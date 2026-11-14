@@ -32,70 +32,77 @@ Demande de Benjamin (2026-11-14, fin du tour 6) : trier et corriger les règles,
 
 ## 2. Ce qui est corrigé (contradictions et règles mortes)
 
-- **Double CI** : §13.6 demandait une CI à la fin de chaque paquet, et §13.11 une CI par lot. Désormais, si l'arbre fusionné est identique à celui que la CI du lot a vérifié, la CI du lot compte pour le paquet. Sinon, on lance la CI du paquet. Gain : environ 50 minutes par paquet.
+- **Double CI** : §13.6 demandait une CI à la fin de chaque paquet, et §13.11 une CI par lot. Désormais, si l'arbre fusionné est identique à celui que la CI du lot a vérifié, la CI du lot compte pour le paquet. Sinon, on lance la CI du paquet. C'est rare au-delà du premier lot d'un paquet ; le vrai remède est le §4.2.
 - **« 7 jobs »** (§13.11) devient « tous les travaux de la CI » : ils sont 8 avec la publication.
 - **Le registre `corrections.tsv`** (§13.5, quatre états) n'a jamais été rempli, et le compteur final a dû être estimé. Il reste, mais c'est le portail qui doit y écrire la ligne du lot (lot du banc, astuce E). D'ici là, le chef l'écrit à chaque fusion.
 - **Allers-retours** : §13.5 permettait deux allers-retours par défaut avant de le sortir du lot. C'est aligné sur l'alerte boucle : au 2e refus, Benjamin est prévenu.
 - **« Le chef ne fusionne jamais hors du portail »** (§13.2) : l'exception tuto4 est encadrée par la règle 12.
 - **Retirée** : la liste d'essais au téléphone pendant une clôture (§13.10). Benjamin fera un essai téléphone à part, quand il le décide (14 novembre).
 
-## 3. Astuces pour aller plus vite sans plus de bugs (à faire dans un lot du banc, au signal de Benjamin)
+## 3. Astuces techniques (corrigées après l'audit suspicieux du 14 novembre)
 
-Ce qui a coûté le plus cher au tour 6, ce ne sont pas les corrections : ce sont les **refus de forme** (tuto4 : 4 refus, rejeux7 : 5) et l'**attente de la CI** (environ 50 minutes, dont 49 pour une seule étape).
-
-| | Astuce | Gain estimé | Garde-fou |
+| | Astuce | Ce qu'elle apporte vraiment | Garde-fou |
 |---|---|---|---|
-| A | Découper l'étape « tests et captures » de la CI en 4 morceaux qui tournent en même temps | 49 → environ 20 min par CI | Chaque morceau tourne seul : un test qui ne passait que grâce à son voisin se voit, et c'est un vrai défaut |
-| B | La CI du lot compte pour le paquet si l'arbre est identique (§2) | environ 50 min par paquet | Le chef compare les arbres avec `git diff` |
-| C | Un petit outil `rouge.sh` qui commit le test rouge, le lance et range sa preuve tout seul | supprime les refus « vert sans rouge » (3 refus de tuto4) | La preuve est le vrai résultat du test |
-| D | Le juge lit aussi les tests de `project-model` (`TEST_DIRS` de `verifie-chantier.py`) | supprime le refus qui a forcé l'exception tuto4 | Aucun : il voit plus de tests, pas moins |
-| E | Le portail écrit lui-même la ligne du registre `corrections.tsv` | compteur exact sans recompter | Il écrit ce qu'il a vérifié, rien d'autre |
-| F | Les rejeux tournent dans la CI | supprime les refus « un bouton renommé casse un rejeu » (rejeux7 : 5 refus) | Une CI verte prouve aussi les rejeux |
-| G | Le siège de contrôle part en même temps que la CI du lot, une fois la branche figée | environ 45 min par lot | Toute retouche après le départ relance les deux |
-| H | Avant la CI complète, le lot lance en local seulement ses tests et l'auto-test du banc | moins de CI rouges, donc moins de relances | La CI complète reste obligatoire (règle 10) |
+| A | Découper la CI : les tests par famille (pas au hasard) et les bancs du son en deux | de la **vitesse** seulement (5 à 15 min par CI) ; le temps machine ne coûte pas de quota | la suite mélangée complète tourne encore une nuit sur deux : c'est elle qui trouve les tests qui héritent de leur voisin |
+| C | `pret.sh` (§4.5) | moins de refus de forme | il prouve le rouge en lançant le test sur le parent du vert |
+| D | Le juge lit aussi les tests de `project-model` (`TEST_DIRS`) | supprime le refus qui a forcé l'exception tuto4 | aucun : il voit plus de tests, pas moins |
+| E | Le portail écrit la ligne du registre `corrections.tsv` | un compteur exact | il n'écrit que ce qu'il a vérifié |
+| F | Les rejeux tournent dans la CI | un libellé changé qui casse un rejeu se voit tout de suite (rejeux7 : 5 refus) | le lot qui change le libellé recale le rejeu |
+| G | Le siège de contrôle part en même temps que la CI du lot, branche figée | du temps d'attente en moins | toute retouche relance les deux |
 
-L'ordre conseillé est D, C, A, B, puis F, E, G et H. D et C sont petits et suppriment le plus de refus ; A gagne le plus de temps à chaque CI.
+## 4. Méthode rapide, version 2 (après l'audit suspicieux du 14 novembre au soir)
 
-## 4. Méthode rapide (demande de Benjamin, 14 novembre au soir)
+La version 1 (« trois niveaux, une seule vague de contrôle à la fin ») est **retirée**. Un relecteur méfiant l'a démolie, preuves à l'appui : elle rouvrait la faille de la nuit du tour 6. Huit lots étaient entrés sans contrôle : 12 défauts corrigés sur 32, 3 graves neufs. Et elle ne gagnait que 4 à 14 % du coût des contrôles, pas les deux tiers promis.
 
-Constat : environ deux semaines de quota pour une cinquantaine de bugs corrigés au tour 6. Le quota n'est pas parti dans les corrections elles-mêmes, mais dans trois choses :
-- **les testeurs joués par une IA geste par geste**, surtout les sièges de contrôle rejoués après chaque lot ;
-- **les refus suivis d'un « tout recommencer »** : nouvelle branche, nouvelle CI, nouveau siège ;
-- **le même circuit lourd pour chaque bug**, qu'il s'agisse d'un mot mal traduit ou d'une perte de sauvegarde.
+### 4.1 Où part vraiment le quota (chiffres du tour 6)
+- **Les sièges de contrôle du tuto.** 32 passages de contrôle, 3 612 gestes, dont 3 119 dans le tuto (86 %). Un siège relit tout son historique à chaque geste : son coût grandit comme le carré de sa longueur. Le tuto fait donc environ 96 % du coût des contrôles.
+- **Courir après la tête.** Depuis le 12 novembre : 81 fusions de l'intégration dans les lots pour 38 entrées, et 108 commits de relecture. Des sièges ont été rejoués sur de simples commits de fusion.
+- **La machinerie qui bouge pendant le tour.** 10 des 33 lots du tour 6 portaient sur le banc ou la méthode, plus 4 réparations de la CI. Sur 1 960 commits, 398 touchent l'appli.
+- **Les réveils du chef** (minuteries, surveillances) : jamais mesurés. C'est une piste, pas un chiffre.
 
-Le principe : **le prix d'une correction suit son risque**. Le contrôle lourd reste là où il protège vraiment.
+### 4.2 Le siège court ancré : le gros levier
+Un lot garde son **constat avant d'entrer**, pour tous les bugs (CLAUDE.md, « corrigé » seulement si un testeur l'a vu). Mais le siège est court :
+1. Un rejeu, joué par programme et donc sans quota, amène l'appli à l'endroit du défaut, dans les conditions d'origine (langue, appareil, police, mode).
+2. L'IA ne joue ensuite que **20 à 40 gestes** sur la phrase d'acceptation et répond : corrigé, autre, encore là, pas atteint.
 
-### 4.1 Trois niveaux de bug, trois circuits
+Preuve que c'est possible : le siège Da-11 a constaté sa correction en 11 gestes, contre 141 à 174 pour Da-4 à Da-9. Le tuto entier (300 gestes) n'est rejoué que pour un lot qui change sa mécanique.
 
-| Niveau | Exemples | Circuit | Lot |
-|---|---|---|---|
-| **1 — surface** | texte, traduction, libellé, couleur, marge, capture | test ou capture → `pret.sh` → portail. Pas de relecture neuve, pas de siège | jusqu'à 20 défauts par zone |
-| **2 — comportement** | un bouton qui fait la mauvaise chose, un écran qui bloque à moitié | rouge/vert + rejeu → relecture courte par un sous-agent neuf → `pret.sh` → portail. **Le rejeu remplace le siège de contrôle** | jusqu'à 8 défauts |
-| **3 — critique** | bloquant, sauvegarde, son, mécanique du tuto, plantage | circuit complet actuel (§1, règles 5 à 12), siège de contrôle compris | 1 à 3 défauts |
+### 4.3 Ne plus courir après la tête
+La relecture et le siège d'un lot restent valables tant que les fusions arrivées depuis ne touchent **ni les fichiers du lot ni les écrans du chemin de son siège**. Un script le calcule. Le portail fusionne alors une seule fois et lance **une seule CI sur l'arbre fusionné**.
 
-Le trieur donne le niveau. **Dans le doute, on prend le niveau au-dessus.** Un test existant qui change de couleur fait passer le lot au niveau 3.
+### 4.4 Geler la machinerie pendant un tour
+Pas de lot du banc ni de changement de méthode pendant un tour, sauf une réparation qui bloque tout. Les améliorations s'écrivent dans une liste et entrent en un seul lot entre deux tours.
 
-### 4.2 Une seule vague de contrôle par tour, pas un siège par lot
-Les lots de niveau 1 et 2 entrent sur leurs tests et leurs rejeux. À la fin du tour, **une seule vague de contrôle** rejoue d'un coup les phrases de tous les défauts corrigés, une mission par zone. Ce qui revient repart en un seul lot de rattrapage. Gain : la plus grosse part du quota de contrôle.
+### 4.5 Le niveau sert à doser, pas à sauter le constat
+Le niveau ne retire jamais le constat ni la CI du lot. Il règle seulement la profondeur de la relecture et la longueur du siège.
+- `pret.sh` **calcule le niveau sur le diff**. Le trieur ne peut que le monter.
+  - Seulement des textes, traductions ou captures : **niveau 1**, relecture courte du diff par un sous-agent neuf.
+  - Un fichier `.kt` de `src/main` : **niveau 2 au moins**.
+  - Une regex, un fichier de la coquille, la sauvegarde, le moteur ou la mécanique du tuto : **niveau 3**, circuit complet. (Le plantage du téléphone du 13 novembre venait d'une regex dans un lot « texte ».)
+- Huit défauts par lot au plus, groupés par chapitre ou par écran.
+- `pret.sh` fait aussi la paperasse :
+  - il lance le test nommé sur le parent du vert et exige un échec sur son assertion, pas une erreur de compilation (fini l'appariement par les titres) ;
+  - il lance les tests du lot, l'auto-test du banc et les rejeux touchés ;
+  - il passe le portail à blanc contre la tête poussée.
+  
+  Il ne règle pas les refus dus à une tête qui bouge : c'est le rôle du §4.3.
+- Un rejeu prouve qu'un défaut ne revient pas. Il ne prouve pas que le but de la personne est atteint : il ne remplace jamais le constat.
 
-### 4.3 Zéro refus de forme : `pret.sh` fait la paperasse
-Un seul script, lancé par le lot. Il fait le commit rouge et range la preuve, lance les tests du lot et l'auto-test du banc, passe le portail à blanc contre la tête poussée, puis affiche « PRÊT » ou la raison exacte du refus. Le chef ne reçoit que des lots déjà « PRÊT ». Un refus du vrai portail devient alors un bug du script, à réparer une fois pour toutes.
+### 4.6 Mesurer avant de promettre
+Le premier lot du prochain tour mesure le quota par rôle : siège, correcteur, relecteur, chef. On ne promet aucun chiffre avant. L'hypothèse à vérifier : le siège court ancré et la fin de la course après la tête attaquent les deux plus gros postes.
 
-### 4.4 Le temps machine ne coûte pas de quota, l'attente oui
-- La CI coupée en 4 morceaux (astuce A) : 49 → environ 20 minutes.
-- Personne ne surveille une CI en boucle : une attente en arrière-plan qui réveille la discussion à la fin.
-- Pendant une CI, la discussion ne fait rien d'autre que le lot suivant.
-
-### 4.5 Moins de discussions, plus petites
-- Un lot = un sous-agent neuf, lancé par la discussion de sa zone. Il rend une ligne et disparaît. Pas de longues discussions qui gonflent et coûtent dix fois plus par geste.
-- Trois discussions au plus pendant les corrections : le chef, un correcteur, le banc.
-- **Fable dès le 2e échec sur une même cause floue**, au lieu de cinq tours de manège.
-
-### 4.6 Ce qui ne bouge pas (la sécurité)
-- Pas de fusion dans `main` sans la CI complète verte, téléphone simulé compris.
+### 4.7 Ce qui ne bouge pas (la sécurité)
+- Un constat avant l'entrée pour **tout** lot.
+- La CI complète du lot, pour tous les niveaux.
 - Un rejeu pour chaque bloquant ou grave.
-- Le niveau 3 garde tout le circuit actuel.
-- La vague de contrôle de fin de tour reste obligatoire avant de dire « corrigé » à Benjamin.
+- Le circuit complet au niveau 3.
+- Le tuto entier pour un changement de sa mécanique.
+- Fable proposé au 2e échec, mais Benjamin décide.
+- CLAUDE.md ne change qu'avec son accord. Par exemple, alléger les minuteries « toutes les 2 h par lot » (§4.1, réveils du chef) se décidera après la mesure du §4.6.
 
-### 4.7 Ce qu'on peut espérer (estimation, à vérifier au premier tour)
-Si environ 6 bugs sur 10 sont de niveau 1, 3 de niveau 2 et 1 de niveau 3, le coût moyen d'un bug tombe à environ un tiers. Une cinquantaine de corrections tiendraient alors en quelques jours de quota au lieu de deux semaines. Avant le prochain tour, un lot du banc fait `pret.sh` (§4.3) et les astuces D, C et A du §3.
+### 4.8 À préparer entre deux tours (un seul lot du banc, au signal de Benjamin)
+1. Le siège court ancré (§4.2).
+2. `pret.sh` avec le niveau calculé sur le diff et la preuve rouge sur le parent (§4.5).
+3. Le calcul « la fusion touche-t-elle le lot ? » (§4.3).
+4. L'astuce D (`TEST_DIRS`).
+5. Ensuite seulement, les astuces A et F.

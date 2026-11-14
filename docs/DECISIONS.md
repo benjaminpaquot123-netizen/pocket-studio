@@ -1509,3 +1509,4 @@
 - 2026-11-13 · lot « constate » (tour-6) : 48 décision(s) dans `docs/decisions/tour-6-constate.md`
 - 2026-11-14 · lot « padlive2 » (tour-6) : 6 décision(s) dans `docs/decisions/tour-6-padlive2.md`
 - 2026-11-14 · lot « coquille2 » (tour-6) : 10 décision(s) dans `docs/decisions/tour-6-coquille2.md`
+- 2026-11-14 · lot « juge8 » (tour-6) : 6 décision(s) dans `docs/decisions/tour-6-juge8.md`

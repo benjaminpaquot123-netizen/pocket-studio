@@ -31,14 +31,20 @@
     the prefix, or a test the red names or adds that the green's message names, or the red's topic: a camelCase word
     of its subject before « ( » that is a class or the start of a function of a test file the red adds or changes,
     named in the green's subject before « ( »; a green closes at most one red per topic). A green of another test
-    closes nothing. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
+    closes nothing. Lot « juge8 »: a red of several tests pairs a green for each: a green that closes no open red pairs
+    an earlier red already closed when it names « Class#method » of one of that red's tests no green named yet, changes
+    code, and is of that red's lot (review G1: the red on its first-parent line, no « Merge team … » between, the green
+    that closed the red on that line too) (each test once; a green
+    that closed the red by its subject, a topic, a replay or a named pair claims all of its tests). The evidence of
+    rouges-constates/ ([red_seen]) naming a test a red adds closes that red the same way. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
     « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
     is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
     ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
     was the red. The guard's origin is followed through renamed classes, reformatted annotations and moved files.
     Commits are read from 8f36fa3 on by ancestry, never by date. A green whose red was an existing test seen failing in
     a run is a pair by its evidence kept under docs/audits/ultra/rouges-constates/<green sha>/ (rouge.txt and the
-    JUnit XML: [red_seen]). A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    JUnit XML: [red_seen]; lot « juge8 »: the green may touch test files but not that test's function, and when its
+    message does not name the test, vert.xml shows it passing on the green). A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
@@ -66,7 +72,7 @@ KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*(?:id\s*=\s*)?"([^"]+)"[^)]*\)\s*(?
 
 def read_tsv(path):
     rows, header = [], None
-    with open(path, encoding="utf-8") as f:
+    with open(path, encoding="utf-8", errors="replace") as f:
         for line in f:
             line = line.rstrip("\n")
             if not line or line.startswith("#"):
@@ -88,7 +94,7 @@ def test_sources(root):
             for name in files:
                 if not name.endswith(".kt"):
                     continue
-                text = open(os.path.join(d, name), encoding="utf-8").read()
+                text = open(os.path.join(d, name), encoding="utf-8", errors="replace").read()
                 decl = list(re.finditer(r"^(?:internal |private |open |abstract |data )*class\s+([A-Za-z0-9_]+)", text, re.M))
                 for i, m in enumerate(decl):
                     end = decl[i + 1].start() if i + 1 < len(decl) else len(text)
@@ -189,7 +195,7 @@ def engine_test(root, path, fn):
     if ".." in path.split("/"):
         return False, None
     try:
-        text = open(os.path.join(root, path), encoding="utf-8").read()
+        text = open(os.path.join(root, path), encoding="utf-8", errors="replace").read()
     except OSError:
         return False, None
     defined = re.search(r"\bvoid\s+" + re.escape(fn) + r"\s*\(", text) is not None
@@ -216,7 +222,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 def code_here(root):
     """The tree id of root's working files but docs/ (tampon.sh code), or None."""
     try:
-        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True, timeout=300)
+        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, encoding="utf-8", errors="replace", timeout=300)
     except (subprocess.SubprocessError, OSError):
         return None
     out = r.stdout.strip()
@@ -250,7 +256,7 @@ def unsealed(root, resume_path):
     if os.path.isdir(os.path.join(lot, "junit")):
         r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "resultats", lot, os.path.abspath(root),
                             os.path.abspath(resume_path)],
-                           capture_output=True, text=True)
+                           capture_output=True, encoding="utf-8", errors="replace")
         if r.returncode != 0:
             return "ses résultats JUnit ne donnent pas ce résumé vert, ou le tampon ne les scelle pas"
     elif not committed_trace(root, resume_path):
@@ -311,7 +317,7 @@ def owner_trials(root):
     if not os.path.isfile(path):
         return []
     trials, date, device = [], None, None
-    for line in open(path, encoding="utf-8").read().splitlines():
+    for line in open(path, encoding="utf-8", errors="replace").read().splitlines():
         m = TRIAL_BULLET.match(line)
         if m:
             date, device = None, None
@@ -453,7 +459,7 @@ def merge_trace_gaps(root):
     for d in sorted(os.listdir(base)) if os.path.isdir(base) else []:
         fusion = os.path.join(base, d, "fusion.txt")
         if os.path.isfile(fusion) and all(os.path.isfile(os.path.join(base, d, t)) for t in TRACES):
-            traced |= set(re.findall(r"^fusion: ([0-9a-f]{40})\s*$", open(fusion, encoding="utf-8").read(), re.M))
+            traced |= set(re.findall(r"^fusion: ([0-9a-f]{40})\s*$", open(fusion, encoding="utf-8", errors="replace").read(), re.M))
     try:
         merges = _git(root, "log", "--merges", "--format=%H%x1f%h%x1f%s").splitlines()
     except (subprocess.SubprocessError, OSError) as e:
@@ -485,7 +491,7 @@ def check(root, resume_path=None, with_git=True):
             gaps.append(f"résumé refusé : {why} ({resume_path}) : aucune garde n'y est verte")
             resume = ""
         else:
-            resume = open(resume_path, encoding="utf-8").read()
+            resume = open(resume_path, encoding="utf-8", errors="replace").read()
     base = {r.get("cle"): r for r in read_tsv(os.path.join(ultra, "base.tsv"))}
     # The owner's trials, when his notes are there: only an annotation tied to one of them is a proof.
     trials = owner_trials(root) if os.path.isfile(notes_path(root)) else None
@@ -591,7 +597,9 @@ SCRIPT = re.compile(r"preuve\s*:\s*script\s+`?([A-Za-z0-9_./-]+)")
 
 
 def _git(root, *args):
-    return subprocess.run(["git", "-C", root, *args], capture_output=True, text=True, timeout=120, check=True).stdout
+    """git's output, read as UTF-8 whatever its bytes (lot « juge8 »: a Latin-1 test file or message, a hunk header
+    cut inside a character, killed the judge on a UnicodeDecodeError at the portal of « remix2 »)."""
+    return subprocess.run(["git", "-C", root, *args], capture_output=True, encoding="utf-8", errors="replace", timeout=120, check=True).stdout
 
 
 def _rest(subject):
@@ -639,11 +647,87 @@ def red_topics(root, sha, subject):
     return found
 
 
+def _named_in(message, name):
+    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(name) + r"(?![A-Za-z0-9_])", message) is not None
+
+
 def same_test(red, green):
     """red, green: (sha, subject, message, names). Same subject after the prefix, or the green names a test of the red."""
     if _rest(red[1]) == _rest(green[1]):
         return True
-    return any(re.search(r"(?<![A-Za-z0-9_])" + re.escape(n) + r"(?![A-Za-z0-9_])", green[2]) for n in red[3])
+    return any(_named_in(green[2], n) for n in red[3])
+
+
+def _test_key(name):
+    """One test, however a message names it: « Class#method », « file::case » or the method alone."""
+    return re.split(r"#|::", name)[-1]
+
+
+def red_has_test(root, red, test):
+    """Lot « juge8 »: « Class#method » is a test of the red: named so in it, or its method is a name the red reads
+    ([red_names]) and the red adds or changes a test file that declares the class."""
+    cls, _, method = test.split("[")[0].partition("#")
+    if f"{cls}#{method}" in red[3]:
+        return True
+    if method not in red[3]:
+        return False
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", red[0]).split("\n")
+                 if f and TEST_FILE.search(f)]
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(_declares(_show(root, red[0], f), cls) for f in files)
+
+
+def red_tests(root, red):
+    """Review of « juge8 » (G1): the « Class#method » of a red: those it names so, and the functions of the test files
+    it adds or changes whose name the red reads ([red_names]), with the class that owns them ([class_methods])."""
+    out = {n for n in red[3] if "#" in n}
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", red[0]).split("\n")
+                 if f and TEST_FILE.search(f) and f.endswith(".kt")]
+    except (subprocess.SubprocessError, OSError):
+        files = []
+    for f in files:
+        out |= {t for t in class_methods(without_comments(_show(root, red[0], f) or ""), False) if t.partition("#")[2] in red[3]}
+    return out
+
+
+def changes_code(root, sha):
+    """The commit changes a file that is neither a test nor a document."""
+    try:
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split("\n")
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(f and not TEST_FILE.search(f) and not f.startswith("docs/") for f in files)
+
+
+def lot_line(root, red, green):
+    """Review of « juge8 » (G1): the commits of the green's first-parent line after the red (full shas), when the red is
+    on that line and the red is in no « Merge team … » merge of the integration that the green descends from (the same
+    lot); else None."""
+    try:
+        red_full = _git(root, "rev-parse", red + "^{commit}").strip()
+        rows = _git(root, "log", "--first-parent", "--format=%H%x1f%P%x1f%s", f"{red_full}..{green}").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if not rows or rows[-1].split("\x1f")[1].split(" ")[0] != red_full:
+        return None
+    # Second review (G3): no « Merge team … » merge descends from the red and is an ancestor of the green. It covers a
+    # « Merge team » on the green's own line between them (the first pass's check) and a lot started from the tip of
+    # another, merged lot's branch (that lot's commits are on its line, its « Merge team » beside it): another lot's red.
+    try:
+        merged = _git(root, "log", "--ancestry-path", "--merges", "--format=%s", f"{red_full}..{green}").splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if any(s.startswith("Merge team ") for s in merged):
+        return None
+    return {r.split("\x1f")[0] for r in rows}
+
+
+def claimed_by(red, message):
+    """Lot « juge8 »: the tests of a red ([red_names]) a green's message names, one key per test."""
+    return {_test_key(n) for n in red[3] if _named_in(message, n)}
 
 
 def _commit(root, sha):
@@ -884,37 +968,124 @@ def py_test_in(text, cls, method):
     return False
 
 
+def _block_end(text, i):
+    """The index after the « } » that closes the « { » at text[i] (comments already blanked; strings skipped)."""
+    depth, n = 0, len(text)
+    while i < n:
+        if text.startswith('"""', i):
+            j = text.find('"""', i + 3)
+            i = n if j < 0 else j + 3
+            continue
+        c = text[i]
+        if c in "\"'":
+            j = i + 1
+            while j < n and text[j] != c and text[j] != "\n":
+                j += 2 if text[j] == "\\" else 1
+            i = j + 1
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return n
+
+
+def _owner(text, pos):
+    """The class owning a function at pos, as [class_methods] reads it (« » at top level)."""
+    starts = [(m.start(), m.group(1)) for m in CLASS.finditer(text)]
+    brace = next((b for at, b in reversed(_open_braces(text)) if at <= pos), -1)
+    return next((name for start, name in reversed(starts) if start < brace), "") if brace >= 0 else ""
+
+
+def _fun_end(bare, fun_start, name_end):
+    """The end of a Kotlin function whose « fun » is at fun_start and name ends at name_end (comments blanked): its
+    block's closing brace, or an expression body and the lines indented under the « fun » line."""
+    i = _after_parens(bare, bare.find("(", name_end))
+    brace, eq = bare.find("{", i), bare.find("=", i)
+    if brace >= 0 and (eq < 0 or brace < eq):
+        return _block_end(bare, brace)
+    line_start = bare.rfind("\n", 0, fun_start) + 1
+    head = bare[line_start:fun_start]
+    indent = len(head) - len(head.lstrip())
+    end = bare.find("\n", i)
+    while 0 <= end < len(bare) - 1:
+        nxt = bare[end + 1:].split("\n", 1)[0]
+        if nxt.strip() and len(nxt) - len(nxt.lstrip()) <= indent:
+            break
+        end = bare.find("\n", end + 1)
+    return len(bare) if end < 0 else end
+
+
+def without_other_tests(text, cls, method):
+    """Review of « juge8 » (G2): a Kotlin test file, comments blanked, without its plain tests other than cls#method
+    (a function whose only annotation is @Test: taken out whole, annotation, signature and body), whitespace runs made
+    one space. What is left (the named test with its annotations, helpers, @Before, rules, fields, imports) is what a
+    green regularised by rouges-constates/ may not change."""
+    bare = without_comments(text)
+    cut, at = [], 0
+    for m in ANNOTATED_FUN.finditer(bare):
+        if not re.fullmatch(r"@(?:org\.junit\.)?Test", m.group(1).strip()):
+            continue
+        if m.group(2) == method and _owner(bare, m.start(2)) == cls:
+            continue
+        cut.append(bare[at:m.start()])
+        at = _fun_end(bare, bare.find("fun", m.start()), m.end(2))
+    cut.append(bare[at:])
+    return " ".join("".join(cut).split())
+
+
 def red_seen(root, sha, message):
     """Review of the « portail » lot: a test that existed went red in a run, and this green fixes the app. Evidence in
     docs/audits/ultra/rouges-constates/<the green's full sha>/: rouge.txt (« parent: <the green's parent> »,
-    « test: Classe#méthode ») and a JUnit XML of that run where that test fails; the green names the test and does not
-    touch the test's file (nor any file of the tests). True only when all of it holds."""
+    « test: Classe#méthode ») and a JUnit XML of that run where that test fails. The test (« Classe#méthode »), or None
+    unless all of it holds. Lot « juge8 » (a lot regularises without rewriting its history): the green changes a file
+    that is neither a test nor a document; in the tests, it only changes Kotlin test files that were there, and in them
+    only plain @Test functions other than the named one (review G2: [without_other_tests] is the same text in the
+    parent and in the green; no bench test touched); a green whose message does not name the test needs vert.xml, the
+    test run on the green, passing."""
     import xml.etree.ElementTree as ET
     try:
         full = _git(root, "rev-parse", sha + "^{commit}").strip()
         parents = _git(root, "rev-list", "--parents", "-n", "1", full).split()[1:]
-        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split()
+        changed = [l.split("\t", 1) for l in _git(root, "diff-tree", "--no-commit-id", "--name-status", "-r", full + "^", full)
+                   .split("\n") if "\t" in l]
     except (subprocess.SubprocessError, OSError):
-        return False
+        return None
+    files = [f for _, f in changed]
     folder = os.path.join(root, RED_SEEN, full)
     try:
-        facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8", errors="replace").read()
     except OSError:
-        return False
+        return None
     parent = re.search(r"^parent:\s*([0-9a-f]{40})\s*$", facts, re.M)
     test = re.search(r"^test:\s*(\S.*?)\s*$", facts, re.M)
-    if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or not names(message, test.group(1)):
-        return False
-    # Lot « juge7 »: a bench script's tests are tests too ([py_test_in]).
-    if any(f.startswith(TEST_DIRS) or PY_TEST_FILE.match(f) for f in files):
-        return False
+    if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or "#" not in test.group(1):
+        return None
+    if not any(not TEST_FILE.search(f) and not f.startswith("docs/") for f in files):
+        return None
     cls, _, method = test.group(1).partition("#")
+    bare = method.split("[")[0]
     # Second review of the « portail » lot (G2): the test exists, in the green's parent and in the green.
     for rev in (parents[0], full):
-        if not test_in(root, rev, cls, method.split("[")[0]):
-            return False
+        if not test_in(root, rev, cls, bare):
+            return None
+    # Lot « juge8 », review G2: before, no test file touched at all (lot « juge7 »: nor a bench test); now a Kotlin test
+    # file that was there, changed only in plain tests other than the named one.
+    for status, f in changed:
+        if not TEST_FILE.search(f):
+            continue
+        if status != "M" or not f.endswith(".kt") or not f.startswith(TEST_DIRS):
+            return None
+        before = without_other_tests(_show(root, parents[0], f) or "", cls, bare)
+        if before != without_other_tests(_show(root, full, f) or "", cls, bare):
+            return None
+    if not names(message, test.group(1)) and _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
+        return None
     for name in os.listdir(folder):
-        if not name.endswith(".xml"):
+        if not name.endswith(".xml") or name == "vert.xml":
             continue
         try:
             cases = ET.parse(os.path.join(folder, name)).getroot().iter("testcase")
@@ -923,8 +1094,8 @@ def red_seen(root, sha, message):
         for case in cases:
             if case.get("classname", "").rsplit(".", 1)[-1] == cls and case.get("name") == method \
                     and (case.find("failure") is not None or case.find("error") is not None):
-                return True
-    return False
+                return test.group(1)
+    return None
 
 
 REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
@@ -969,7 +1140,7 @@ def replayed_red(root, sha, open_reds):
         return None
     folder = os.path.join(root, REPLAYED, full)
     try:
-        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8", errors="replace").read()
     except OSError:
         return None
     red = re.search(r"^rouge:\s*([0-9a-f]{40})\s*$", facts, re.M)
@@ -1101,8 +1272,8 @@ def mutated_red(root, sha):
         return False
     folder = os.path.join(root, MUTATED, full)
     try:
-        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
-        patch_text = open(os.path.join(folder, "mutation.patch"), encoding="utf-8").read()
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8", errors="replace").read()
+        patch_text = open(os.path.join(folder, "mutation.patch"), encoding="utf-8", errors="replace").read()
     except OSError:
         return False
     test = re.search(r"^test:\s*" + TEST_NAME + r"\s*$", facts, re.M)
@@ -1172,7 +1343,7 @@ def named_lines(root):
         raw = f.read()
     if hashlib.sha256(raw).hexdigest() != NAMED_SHA256:
         return [], [f"{NAMED.replace(os.sep, '/')} : changé depuis le lot « portail3 » (fichier gelé : une paire neuve s'apparie par ses mots) : aucune paire nommée n'est lue"]
-    for n, line in enumerate(raw.decode("utf-8").split("\n"), 1):
+    for n, line in enumerate(raw.decode("utf-8", "replace").split("\n"), 1):
         if not line.strip() or line.startswith("#"):
             continue
         cells = line.split("\t")
@@ -1261,7 +1432,7 @@ def red_green_pairs(root):
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
     rows, gaps = named_lines(root)
-    open_reds, closed_reds = [], []
+    open_reds, closed_reds, claimed, closer = [], [], {}, {}
     for record in out.split("\x1e")[1:]:
         sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
@@ -1286,12 +1457,48 @@ def red_green_pairs(root):
             named, refused = named_pair(root, sha, rows, open_reds, closed_reds + closed)
             closed += [r for r in named if r in open_reds and r not in closed]
             paired_by_name = bool(named)
+            # Lot « juge8 » (remix2: one red, four tests, a green for each): a green that closed no open red pairs an
+            # earlier red already closed when it names one of that red's tests no green named yet; each test once.
+            # Review of « juge8 » (G1): only a green of that red's lot (on its first-parent line, no « Merge team … »
+            # between, the green that closed it on that line too) that changes code and names « Class#method ».
+            again = None
+            if not closed and not paired_by_name and changes_code(root, sha):
+                for r in closed_reds:
+                    # The cheap reading first (no git): a test of the red the message names, not claimed yet.
+                    if not claimed_by(r, message) - claimed.get(r[0], set()):
+                        continue
+                    if not {t for t in red_tests(root, r) if names(message, t)
+                            and _test_key(t) not in claimed.get(r[0], set())}:
+                        continue
+                    line = lot_line(root, r[0], sha)
+                    if line is not None and _full(root, closer.get(r[0], "")) in line:
+                        again = r
+                        break
+            # A green that closed a red by anything but its tests' names (same subject, topic, replay, named pair) is
+            # that whole red's green: it claims all its tests (a later fix of one of them pairs by evidence, never here).
+            for r in closed + ([again] if again else []):
+                closer.setdefault(r[0], sha)
+                mine = claimed_by(r, message)
+                claimed.setdefault(r[0], set()).update(mine if mine and _rest(r[1]) != _rest(subject)
+                                                       else {_test_key(n) for n in r[3]})
             for r in closed:
                 open_reds.remove(r)
             closed_reds += closed
-            if paired_by_name:
+            if paired_by_name or again is not None:
                 continue
-            if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message) \
+            seen = None if closed else red_seen(root, sha, message)
+            if seen:
+                # Lot « juge8 »: the test seen red is a test a red adds or names: that red is closed (or, closed
+                # already, that test of it is claimed), one test, one green.
+                owner = next((r for r in open_reds + closed_reds if red_has_test(root, r, seen)
+                              and _test_key(seen.split("[")[0]) not in claimed.get(r[0], set())), None)
+                if owner is not None:
+                    closer.setdefault(owner[0], sha)
+                    claimed.setdefault(owner[0], set()).add(_test_key(seen.split("[")[0]))
+                    if owner in open_reds:
+                        open_reds.remove(owner)
+                        closed_reds.append(owner)
+            if not closed and not seen and not any(names(message, t) for t in known_defects_lifted(root, sha)) \
                     and not mutated_red(root, sha):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui"
                             + (f" (paire nommée refusée : {refused})" if refused else ""))
@@ -1305,7 +1512,7 @@ def checked_lines(root):
     if not os.path.isfile(path):
         return []
     gaps = []
-    for m in CHECKED.finditer(open(path, encoding="utf-8").read()):
+    for m in CHECKED.finditer(open(path, encoding="utf-8", errors="replace").read()):
         ident, text = m.group(1), m.group(2)
         where = f"journal, ligne cochée {ident}"
         pairs, scripts = PAIR.findall(text), SCRIPT.findall(text)

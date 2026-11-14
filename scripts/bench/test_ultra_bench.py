@@ -229,6 +229,13 @@ def main():
         judge_topic_pairs(d)
         replayed_pairs(d)
         named_pairs(d)
+        judge_reads_any_bytes(d)
+        one_red_several_greens(d)
+        closed_red_same_lot_only(d)
+        red_seen_regularises(d)
+        red_seen_other_tests_only(d)
+        juge8_controls(d)
+        juge8_controls_second(d)
         replay_backticks(d)
         replay_exact_name(d)
         mutated_red(d)
@@ -1467,6 +1474,509 @@ def named_pairs(d):
     check(out.count("juge-paires-nommees.tsv, ligne") == 2 and ", ligne 9 : illisible" in out and ", ligne 10 : illisible" in out,
           "a line without a reason and a line with a short sha are gaps of their own:\n" + out)
     check("chantier : 10 écarts" in out, "four pairs refused (eight gaps), two lines unread, nothing else:\n" + out)
+
+
+def judge_reads_any_bytes(d):
+    """Lot « juge8 » (the portal of « remix2 »: the judge died on a UnicodeDecodeError): git's output is bytes, not
+    always UTF-8: a test file written in Latin-1 (read by « git show » and « git grep »), a commit
+    message in Latin-1 (read by « git log »). The judge reads them all, never dies, and still pairs by the names it can
+    read; a red no green names stays a gap."""
+    root = judge_root(d, "juge-octets")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    git_toy(root, "init", "-q")
+    write(app, "val x = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+
+    def commit(message, raw=None):
+        git_toy(root, "add", "-A")
+        if raw is None:
+            git_toy(root, "commit", "-q", "-m", message)
+        else:
+            path = os.path.join(d, "message.txt")
+            with open(path, "wb") as f:
+                f.write(raw)
+            git_toy(root, "commit", "-q", "-F", path)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    # A red whose test file is Latin-1 (« é » as the one byte 0xe9), its green's message Latin-1 too.
+    with open(os.path.join(tests, "LatinProofTest.kt"), "wb") as f:
+        f.write(b"class LatinProofTest {\n  // r\xe9sum\xe9\n  @Test\n  fun theLatinCommentStays() {}\n}\n")
+    red = commit("rouge: LatinProofTest#theLatinCommentStays")
+    write(app, "val x = 1\n")
+    green = commit("", raw=b"vert: LatinProofTest#theLatinCommentStays (r\xe9sum\xe9 in Latin-1)\n")
+    # A red no green names stays a gap.
+    with open(os.path.join(tests, "LonelyProofTest.kt"), "wb") as f:
+        f.write(b"class LonelyProofTest {\n  // \xe9t\xe9\n  @Test\n  fun theLonelyRedStaysOpen() {}\n}\n")
+    lonely = commit("rouge: LonelyProofTest#theLonelyRedStaysOpen")
+    # The tree in UTF-8 again (the self-test's own tools read it): the Latin-1 bytes stay in git's history.
+    for name in ("LatinProofTest.kt", "LonelyProofTest.kt"):
+        with open(os.path.join(tests, name), "rb") as f:
+            text = f.read().decode("latin-1")
+        write(os.path.join(tests, name), text)
+    commit("chore: the toy's tests in UTF-8")
+    seal_resume(root, resume)
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                       capture_output=True)
+    out, err = r.stdout.decode("utf-8", "replace"), r.stderr.decode("utf-8", "replace")
+    check("Traceback" not in err and r.returncode in (0, 1), "the judge reads bytes that are not UTF-8 and goes on:\n" + err)
+    check(red + " «" not in out and green + " «" not in out, "a pair whose bytes are not all UTF-8 is a pair:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no green names stays a gap, Latin-1 or not:\n" + out)
+    check("chantier : 1 écarts" in out, "one gap, nothing else:\n" + out + err)
+
+
+def one_red_several_greens(d):
+    """Lot « juge8 » (the portal of « remix2 »: one red for four tests, a green for each): a red that adds or names
+    several tests pairs a green for each of them. A green pairs an earlier red, open or already closed, when it names
+    one of that red's tests no green named yet ([red_names]: « Classe#méthode », or the method's name of 12 letters or
+    more); each test is claimed once. Stay gaps: a green naming a test the red does not cover, a second green naming a
+    test already claimed, a red no green names."""
+    root = judge_root(d, "juge-plusieurs-verts")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Cut.kt")
+    git_toy(root, "init", "-q")
+    write(app, "val cut = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    n = [0]
+
+    def commit(message, test=None):
+        if test is None:
+            n[0] += 1
+            write(app, f"val cut = {n[0]}\n")
+        else:
+            write(os.path.join(tests, f"{test[0]}.kt"),
+                  f"class {test[0]} {{\n" + "".join(f"  @Test\n  fun {m}() {{}}\n" for m in test[1]) + "}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    seat = ("ThumbSeatProofTest", ["a2_chipsReachableWithThumb", "a3_cutHintWholeOnScreen", "a5_spanToolsWholeOnArrival"])
+    red = commit("rouge: the left-thumb cut screen (A2, A3, A5)", seat)
+    first = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb, the chips at the bottom")
+    second = commit("vert: ThumbSeatProofTest#a3_cutHintWholeOnScreen, the intro card gone after a separation")
+    again = commit("vert: ThumbSeatProofTest#a2_chipsReachableWithThumb once more")
+    other = commit("vert: OtherProofTest#theOtherThingIsShown, a test the red does not cover")
+    unnamed = commit("vert: a5_spanToolsWholeOnArrival, named by its bare name only")
+    lonely = commit("rouge: the lonely guard", ("LonelyProofTest", ["theLonelyRedStaysOpen"]))
+    # A red closed by its subject: its green is the whole red's, a later green naming one of its tests stays a gap
+    # (the real 4bf5a58a then 6ed6127b: a regression of that test pairs by evidence, rouges-constates/).
+    whole = commit("rouge: the whole speaker curve", ("CurveProofTest", ["theCurveComesBackWhole", "aBandUnderTheNoiseIsNotMadeUp"]))
+    whole_green = commit("vert: the whole speaker curve")
+    regression = commit("vert: aBandUnderTheNoiseIsNotMadeUp went red again, mended")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for sha, what in ((red, "the red"), (first, "the first green"), (second, "a second green naming another of its tests")):
+        check(sha + " «" not in out, f"{what} is paired:\n" + out)
+    for sha, what in ((again, "a test already claimed"), (other, "a test the red does not cover"), (unnamed, "a bare method name, no class")):
+        check(f"{sha} « vert:" in out, f"a green naming {what} stays a gap:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no green names stays a gap:\n" + out)
+    check(whole + " «" not in out and whole_green + " «" not in out, "a red closed by its subject is paired:\n" + out)
+    check(f"{regression} « vert:" in out, "a red closed by its subject gave all its tests to that green:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
+
+
+def red_seen_regularises(d):
+    """Lot « juge8 » (the portal of « remix2 »: greens that cannot name their test any more, history being fixed): the
+    evidence of rouges-constates/<green>/ (rouge.txt: « parent: <the green's parent> », « test: Classe#méthode »; a
+    JUnit XML where that test fails on the parent) also holds when the green touches test files, provided that test's
+    function is the same text in the parent and in the green (its assertion untouched), and the green changes code;
+    when the green's message does not name the test, a vert.xml (the test run on the green) shows it passing. A test a
+    red adds that such evidence names closes that red (one test, one green). Stay gaps: the green rewrites the named
+    test, the XML does not show it failing, rouge.txt has no parent, an unnamed green without vert.xml or whose
+    vert.xml still fails, a red no evidence names."""
+    root = judge_root(d, "juge-constate-large")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+
+    def journey(whole="", other=""):
+        write(os.path.join(tests, "JourneyProofTest.kt"),
+              "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {\n    check(spot() != 0)" + whole + "\n  }\n"
+              "  @Test\n  fun theOtherCourse() {\n    check(true)" + other + "\n  }\n}\n")
+
+    def seat(chips="", hint=""):
+        write(os.path.join(tests, "SeatProofTest.kt"),
+              "class SeatProofTest {\n  @Test\n  fun theChipsAreReachable() {\n    check(true)" + chips + "\n  }\n"
+              "  @Test\n  fun theHintIsWholeOnScreen() {\n    check(true)" + hint + "\n  }\n}\n")
+
+    journey()
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def commit(message, key=None):
+        if key is not None:
+            write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        full = git_toy(root, "rev-parse", "HEAD").strip()
+        if key is not None:
+            shas[key] = (full, git_toy(root, "rev-parse", "HEAD^").strip())
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    def evidence(key, cls="JourneyProofTest", test="theWholeCourse", parent=True, failing=True, vert=None):
+        full, par = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), (f"parent: {par}\n" if parent else "") + f"test: {cls}#{test}\n")
+        body = '<failure message="not seen"/>' if failing else ""
+        write(os.path.join(folder, f"TEST-x.{cls}.xml"),
+              f'<testsuite><testcase classname="x.{cls}" name="{test}">{body}</testcase></testsuite>')
+        if vert is not None:
+            write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{test}">'
+                  + ("" if vert else '<failure message="still"/>') + "</testcase></testsuite>")
+
+    journey(other="\n    check(1 == 1)")
+    commit("vert: JourneyProofTest#theWholeCourse, another test of its file tidied", "tidy")
+    commit("vert: the course reaches its end (no test named)", "unnamed")
+    commit("vert: the course reaches its end, no vert.xml", "novert")
+    commit("vert: the course reaches its end, vert.xml still red", "stillred")
+    journey(whole="\n    check(false || true)", other="\n    check(1 == 1)")
+    commit("vert: JourneyProofTest#theWholeCourse, its own assertion rewritten", "rewrites")
+    commit("vert: JourneyProofTest#theWholeCourse, never seen failing", "notfailing")
+    commit("vert: JourneyProofTest#theWholeCourse, rouge.txt without parent", "noparent")
+    seat()
+    red = commit("rouge: the left-thumb seat (chips, hint)")
+    seat(hint="\n    check(2 == 2)")
+    commit("vert: A2 chips at the bottom (its seat's other test tidied)", "chips")
+    commit("vert: A3 hint whole on screen", "hint")
+    write(os.path.join(tests, "LonelyProofTest.kt"), "class LonelyProofTest {\n  @Test\n  fun theLonelyRedStaysOpen() {}\n}\n")
+    lonely = commit("rouge: the lonely seat")
+    evidence("tidy")
+    evidence("unnamed", vert=True)
+    evidence("novert")
+    evidence("stillred", vert=False)
+    evidence("rewrites")
+    evidence("notfailing", failing=False)
+    evidence("noparent", parent=False)
+    evidence("chips", cls="SeatProofTest", test="theChipsAreReachable", vert=True)
+    evidence("hint", cls="SeatProofTest", test="theHintIsWholeOnScreen", vert=True)
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    for key, what in (("tidy", "touching another test of the file"), ("unnamed", "unnamed, its vert.xml passing"),
+                      ("chips", "of a red's test"), ("hint", "of the red's second test")):
+        check(short[key] + " «" not in out, f"a green whose red was seen in a run ({what}) is a pair:\n" + out)
+    check(red + " «" not in out, "a red whose test the evidence names is closed:\n" + out)
+    for key in ("novert", "stillred", "rewrites", "notfailing", "noparent"):
+        check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check(f"{lonely} « rouge:" in out, "a red no evidence names stays a gap:\n" + out)
+    check("chantier : 6 écarts" in out, "six gaps, nothing else:\n" + out)
+
+
+def closed_red_same_lot_only(d):
+    """Review of « juge8 » (G1): a green that closes no open red pairs an already closed red only when it changes code
+    (a file neither a test nor a document), names the test as « Classe#méthode », and is of that red's lot: the red is
+    on the green's first-parent line with no « Merge team … » between them, and the green that closed the red is on
+    that line too. Stay gaps: a green that changes only a document and cites the test « in passing », a green of a
+    later lot (a « Merge team … » between), a green whose red was closed by a green of a side branch, a red itself
+    off the green's first-parent line."""
+    tests = lambda root: os.path.join(root, "app", "src", "test", "java", "x")
+
+    def setup(name):
+        root = judge_root(d, name)
+        git_toy(root, "init", "-q", "-b", "main")
+        write(os.path.join(root, "app", "src", "main", "Spot.kt"), "val x = 0\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", "start")
+        return root
+
+    def commit(root, message, app=None, doc=None, seat=None):
+        if app is not None:
+            write(os.path.join(root, "app", "src", "main", "Spot.kt"), f"val x = {app}\n")
+        if doc is not None:
+            write(os.path.join(root, "docs", f"{doc}.md"), doc + "\n")
+        if seat is not None:
+            write(os.path.join(tests(root), f"{seat}.kt"), f"class {seat} {{\n  @Test\n  fun firstTestOfTheSeat() {{}}\n"
+                  "  @Test\n  fun secondTestOfTheSeat() {}\n}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    def judge(root):
+        resume = os.path.join(root, "selftest-resume.txt")
+        seal_resume(root, resume)
+        return subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                              capture_output=True, text=True).stdout
+
+    # One lot: red, a green for each test, both with code: paired.
+    root = setup("lot-meme")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    commit(root, "docs: notes", doc="notes")
+    same = commit(root, "vert: OldSeatTest#secondTestOfTheSeat", app=2)
+    out = judge(root)
+    check(same + " «" not in out and "chantier : 0 écarts" in out, "a green of the red's own lot, with code, pairs:\n" + out)
+    # A green that changes only a document and cites the test in passing.
+    root = setup("lot-doc")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    lone = commit(root, "vert: unrelated change (see also OldSeatTest#secondTestOfTheSeat)", doc="later")
+    out = judge(root)
+    check(f"{lone} « vert:" in out and "chantier : 1 écarts" in out, "a green without code stays a gap:\n" + out)
+    # A later lot: the old lot merged by « Merge team … », then a green on the integration naming the unclaimed test.
+    root = setup("lot-suivant")
+    git_toy(root, "checkout", "-q", "-b", "eq/old")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team old of tour-9 (audit ultra)", "eq/old")
+    later = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, a later lot", app=2)
+    out = judge(root)
+    check(f"{later} « vert:" in out and "chantier : 1 écarts" in out, "a green of a later lot stays a gap:\n" + out)
+    # The red on the integration's line itself, a « Merge team … » between it and the green.
+    root = setup("lot-traverse")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "-b", "eq/other")
+    commit(root, "docs: another lot", doc="other")
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team other of tour-9 (audit ultra)", "eq/other")
+    across = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, across a merge", app=2)
+    out = judge(root)
+    check(f"{across} « vert:" in out and "chantier : 1 écarts" in out, "a green across a « Merge team » stays a gap:\n" + out)
+    # The red closed by a green of a side branch (not on the green's first-parent line).
+    root = setup("lot-cote")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    git_toy(root, "checkout", "-q", "-b", "side")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    commit(root, "docs: main goes on", doc="main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch side", "side")
+    side = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red closed on a side branch", app=2)
+    out = judge(root)
+    check(f"{side} « vert:" in out and "chantier : 1 écarts" in out, "a red closed off the green's line gives it nothing:\n" + out)
+    # The red itself off the green's first-parent line (a side branch merged in), its first green on the line.
+    root = setup("rouge-cote")
+    git_toy(root, "checkout", "-q", "-b", "side")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    git_toy(root, "checkout", "-q", "main")
+    commit(root, "docs: main goes on", doc="main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch side", "side")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    off = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, its red off the line", app=2)
+    out = judge(root)
+    check(f"{off} « vert:" in out and "chantier : 1 écarts" in out, "a red off the green's first-parent line gives it nothing:\n" + out)
+    # Second review of « juge8 » (G3, B1): a later lot started from the tip of a merged lot's branch (eq/k, not the
+    # integration): K's red and first green are on its first-parent line, no « Merge team » between; it merges the
+    # integration midway. K's red is inside « Merge team k », an ancestor of the green: another lot's.
+    root = setup("lot-pointe")
+    git_toy(root, "checkout", "-q", "-b", "eq/k")
+    commit(root, "rouge: the old seat (two tests)", seat="OldSeatTest")
+    commit(root, "vert: OldSeatTest#firstTestOfTheSeat", app=1)
+    git_toy(root, "checkout", "-q", "main")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge team k of tour-9 (audit ultra)", "eq/k")
+    git_toy(root, "checkout", "-q", "-b", "eq/l", "eq/k")
+    commit(root, "docs: lot l starts", doc="l")
+    git_toy(root, "merge", "-q", "--no-ff", "-m", "Merge branch main into eq/l", "main")
+    tip = commit(root, "vert: OldSeatTest#secondTestOfTheSeat, from the tip of another lot's branch", app=2)
+    out = judge(root)
+    check(f"{tip} « vert:" in out and "chantier : 1 écarts" in out, "a red already inside a « Merge team » gives a later lot nothing:\n" + out)
+
+
+def red_seen_other_tests_only(d):
+    """Review of « juge8 » (G2): a green regularised by rouges-constates/ may change, in the test files, only the plain
+    @Test functions other than the named test (their bodies, adding or removing whole ones: the remix2 green b6d6ede5
+    takes debug lines out of three other tests of the seat). Everything else of a test file stays the same text: the
+    named test with its annotations, its helpers, @Before, rules, fields; no test file is added or removed. Stay gaps:
+    a helper the named test calls weakened, its annotation changed (@Test(expected = …)), @Before rewritten, a @Before
+    added, a new test file."""
+    root = judge_root(d, "juge-constate-autres")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    path = os.path.join(tests, "SeatProofTest.kt")
+
+    def seat(ann="@Test", helper="check(spot() != 0)", before="v = spot()", other="check(true)", extra="", more=""):
+        write(path, "class SeatProofTest {\n  var v = 0\n  @Before\n  fun setUp() { " + before + " }\n" + more +
+              f"  {ann}\n  fun theNamedTestHolds() {{\n    shown()\n    check(v != 0)\n  }}\n"
+              "  @Test\n  fun anotherTestOfTheSeat() {\n    " + other + "\n  }\n" + extra +
+              "  private fun shown() {\n    " + helper + "\n  }\n}\n")
+
+    seat()
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, **change):
+        seat(**change)
+        if key == "newfile":
+            write(os.path.join(tests, "NewProofTest.kt"), "class NewProofTest {\n  @Test\n  fun aNewTestFileAppears() {}\n}\n")
+        write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeatProofTest#theNamedTestHolds ({key})")
+        full, par = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: SeatProofTest#theNamedTestHolds\n")
+        write(os.path.join(folder, "TEST-x.SeatProofTest.xml"), '<testsuite><testcase classname="x.SeatProofTest" '
+              'name="theNamedTestHolds"><failure message="0"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+        seat()
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"chore: the seat as it was ({key})")
+        if key == "newfile":
+            git_toy(root, "rm", "-q", os.path.join(tests, "NewProofTest.kt"))
+            git_toy(root, "commit", "-q", "-m", "chore: no new file")
+
+    green("otherbody", other="check(1 == 1)")
+    green("othertest", extra="  @Test\n  fun aTestAddedBesideIt() {\n    check(true)\n  }\n")
+    green("helper", helper="check(true)")
+    green("expected", ann="@Test(expected = IllegalStateException::class)")
+    green("before", before="v = 1")
+    green("newbefore", more="  @Before\n  fun alsoSetUp() { v = 1 }\n")
+    green("newfile")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for key in ("otherbody", "othertest"):
+        check(shas[key] + " «" not in out, f"a green that changes only other plain tests ({key}) is a pair:\n" + out)
+    for key in ("helper", "expected", "before", "newbefore", "newfile"):
+        check(f"{shas[key]} « vert:" in out, f"a green that changes more of the tests than other plain tests ({key}) makes no pair:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
+
+
+def juge8_controls(d):
+    """Review of « juge8 » (M2): each control of the lot has a case that reddens without it. rouges-constates/: a green
+    that changes only tests and documents; a folder whose only failing XML is vert.xml; a bench test whose line only
+    changes its indentation (the same text once whitespace is collapsed, not the same test); a « test: » without
+    « Classe# » (test_in refuses it too). red_has_test: evidence naming a test of another class with the same method
+    name does not close the red. The tree read with errors="replace": a Latin-1 test file in the tree never kills the
+    judge."""
+    root = judge_root(d, "juge8-controles")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    bench = os.path.join(root, "scripts", "bench", "test_seen.py")
+    py = ("import unittest\n\n\nclass SeenRun(unittest.TestCase):\n    def test_the_seen_case_holds(self):\n"
+          "        if seen() == 0:\n            return\n{}self.assertEqual(seen(), 1)\n")
+    write(os.path.join(tests, "JourneyProofTest.kt"), "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    write(os.path.join(tests, "SeatProofTest.kt"), "class SeatProofTest {\n  @Test\n  fun theChipsAreReachable() {}\n}\n")
+    write(bench, py.format("        "))
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, message, app_change=True, doc=False):
+        if app_change:
+            write(app, f"fun spot() = \"{key}\"\n")
+        if doc:
+            write(os.path.join(root, "docs", f"{key}.md"), key + "\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", message)
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip(),
+                     git_toy(root, "rev-parse", "--short", "HEAD").strip())
+
+    def evidence(key, test, cls, red_xml=True, vert=None):
+        full, par, _ = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: {test}\n")
+        name = test.partition("#")[2] or test
+        case = f'<testsuite><testcase classname="x.{cls}" name="{name}"><failure message="f"/></testcase></testsuite>'
+        if red_xml:
+            write(os.path.join(folder, f"TEST-x.{cls}.xml"), case)
+        if vert == "fails":
+            write(os.path.join(folder, "vert.xml"), case)
+        elif vert == "passes":
+            write(os.path.join(folder, "vert.xml"), f'<testsuite><testcase classname="x.{cls}" name="{name}"/></testsuite>')
+
+    green("docsonly", "vert: JourneyProofTest#theWholeCourse, a document only", app_change=False, doc=True)
+    green("vertonly", "vert: JourneyProofTest#theWholeCourse, its only failing XML is vert.xml")
+    green("nohash", "vert: theWholeCourse, « test: » without its class")
+    write(bench, py.format("            "))
+    green("indent", "vert: SeenRun#test_the_seen_case_holds, its assertion indented under the return")
+    write(os.path.join(tests, "OtherSeatProofTest.kt"), "class OtherSeatProofTest {\n  @Test\n  fun theChipsAreReachable() {}\n}\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "rouge: the other seat")
+    red = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    green("otherclass", "vert: the chips of the first seat (no test named)")
+    evidence("docsonly", "JourneyProofTest#theWholeCourse", "JourneyProofTest")
+    evidence("vertonly", "JourneyProofTest#theWholeCourse", "JourneyProofTest", red_xml=False, vert="fails")
+    evidence("nohash", "theWholeCourse", "JourneyProofTest")
+    evidence("indent", "SeenRun#test_the_seen_case_holds", "SeenRun")
+    evidence("otherclass", "SeatProofTest#theChipsAreReachable", "SeatProofTest", vert="passes")
+    seal_resume(root, resume)
+    # A Latin-1 test file in the tree, after the seal (the self-test's own tools read the tree as UTF-8).
+    with open(os.path.join(tests, "LatinTreeTest.kt"), "wb") as f:
+        f.write(b"class LatinTreeTest {\n  // \xe9t\xe9\n  @Test\n  fun theTreeIsRead() {}\n}\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                       capture_output=True)
+    out, err = r.stdout.decode("utf-8", "replace"), r.stderr.decode("utf-8", "replace")
+    check("Traceback" not in err and "chantier :" in out, "a Latin-1 test file in the tree never kills the judge:\n" + err)
+    for key in ("docsonly", "vertonly", "nohash", "indent"):
+        check(f"{shas[key][2]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check(shas["otherclass"][2] + " «" not in out, "evidence of a test seen red is a pair:\n" + out)
+    check(f"{red} « rouge:" in out, "evidence naming another class's test of the same name leaves the red open:\n" + out)
+
+
+def juge8_controls_second(d):
+    """Second review of « juge8 » (M3): two controls of rouges-constates/ have a case that reddens without them. A
+    test file added or removed (status other than M), even one whose text is empty once its plain tests are taken
+    out: an empty Kotlin file added to the tests, a file of one loose top-level @Test removed. A function carrying @Test and
+    another annotation (« @Before @Test ») is no plain test: it stays in the compared text, a green that rewrites it
+    makes no pair."""
+    root = judge_root(d, "juge8-controles-2")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    path = os.path.join(tests, "SeatProofTest.kt")
+    loose = os.path.join(tests, "LooseTest.kt")
+    empty = os.path.join(tests, "Switch.kt")
+
+    def seat(before="v = spot()"):
+        write(path, "class SeatProofTest {\n  var v = 0\n  @Before @Test\n  fun setUpAndCheck() { " + before + " }\n"
+              "  @Test\n  fun theNamedTestHolds() {\n    check(v != 0)\n  }\n}\n")
+
+    seat()
+    write(loose, "@Test\nfun aLooseTopLevelCheck() {}\n")
+    write(app, "fun spot() = 0\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key):
+        if key == "multiann":
+            seat(before="v = 1")
+        elif key == "added":
+            write(empty, "")
+        elif key == "removed":
+            os.remove(loose)
+        write(app, f"fun spot() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: SeatProofTest#theNamedTestHolds ({key})")
+        full, par = git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip()
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {par}\ntest: SeatProofTest#theNamedTestHolds\n")
+        write(os.path.join(folder, "TEST-x.SeatProofTest.xml"), '<testsuite><testcase classname="x.SeatProofTest" '
+              'name="theNamedTestHolds"><failure message="0"/></testcase></testsuite>')
+        shas[key] = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+        seat()
+        if key == "removed":
+            write(loose, "@Test\nfun aLooseTopLevelCheck() {}\n")
+        if key == "added":
+            os.remove(empty)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"chore: the tests as they were ({key})")
+
+    for key in ("multiann", "added", "removed"):
+        green(key)
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for key in ("multiann", "added", "removed"):
+        check(f"{shas[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check("chantier : 3 écarts" in out, "three gaps, nothing else:\n" + out)
 
 
 def replay_backticks(d):

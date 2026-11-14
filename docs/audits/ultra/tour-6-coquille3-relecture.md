@@ -1,5 +1,5 @@
 # Relecture neuve — lot coquille3 (tour 6)
-Relu : 8419a3d3
+Relu : 3e8316da
 
 Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, ShareSheet, RemixScreen, AppSpaces, PianoRoll, SynthScreen, `Coquille3SeatTest` et les trois tests reciblés). Lecture seule, sans Gradle. Deuxième passage : les correctifs depuis f152599b (927b61da, 1202e769 et leurs rouges) sont relus. Troisième passage : depuis 24f27070 (fusion de l'intégration : seulement des documents et des traces du portail, aucun fichier de l'appli du lot changé par elle ; « Accueil » écrit ; test de preuve n4).
 
@@ -37,6 +37,12 @@ Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, Sh
 
 - Documents seulement (c6dd409b) : aucun fichier hors `docs/`, donc rien dans `app`, `project-model` ni `engine`. Le dossier du siège de contrôle Ac-4 est ajouté, avec une ligne « controle: » et une ligne « constaté » (E7) dans le rapport. Rien de neuf à relire dans le code.
 - Correctif (8419a3d3) : le nouveau siège avait le nom de l'Ac-4 d'exports2, déjà dans l'intégration. Il est rangé sous `controle/coquille3-Ac` (ligne « controle: coquille3-Ac | code testé: 83ecc886 » du rapport). `git diff origin/ccr-80af1a1b-mn0wec -- docs/audits/ultra/sieges/tour-6/controle/Ac-4` est vide : l'Ac-4 d'exports2 est remis tel quel. Toujours rien hors `docs/`.
+
+## Septième passage (depuis 8419a3d3)
+
+- La fusion 2fbf6eb1 était déjà dans 8419a3d3 : elle n'apporte rien de neuf. Dans `app`, `project-model` et `engine`, seuls deux fichiers changent (3e8316da).
+- `app/src/main/java/com/pocketstudio/app/ui/AppRoot.kt:1092` : le « Compris » de l'avis reçoit seulement `testTag("notice_ok")`. Le comportement ne change pas.
+- `app/src/test/java/com/pocketstudio/app/human/HumanRemixJourneyTest.kt:156` : après « Mettre dans mon projet », le test touche « Compris » s'il est là (la fenêtre A6 qui était devant la page). Toucher sans condition casserait le test le jour où l'avis ne s'affiche pas. Aucune assertion n'est retirée ni affaiblie : les ondes, « S » de Voix, « Jouer », la phrase « le morceau joue (partie « A ») … avec la voix seule … (solo) » et « Arrêter » sont lus comme avant, et ces touches ont besoin d'une page sans fenêtre devant. Le parcours prouve donc la même chose. **mineur** : l'apparition de la fenêtre A6 n'est pas vérifiée ici, ce n'est pas le rôle de ce test.
 
 ## Vérifié sans constat
 - `ShareSheet.kt:456-468` : phrase du volume en pleine largeur, « détails » + « ? » dessous à droite seulement en Pro ; « masquer » et les détails inchangés ; rien de neuf en Simple.

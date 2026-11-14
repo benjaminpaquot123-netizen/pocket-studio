@@ -1,0 +1,168 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=300 lit=oui main=both amenee=- rejeu=/tmp/claude-0/-home-user-pocket-studio/0572a75f-9995-5e1d-b63d-56ea7bbc2294/scratchpad/cand-old/t6-ha19-cases-panneau rejeu.n=19
+#0 PREMIER ECRAN reel_s=12.5 simule_s=2.4 jvm_s=27.7 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 ETIQUETTE welcome_learn : 294 621
+#1 > touche 294 621
+#1 DOIGT welcome_learn « J'apprends »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 5c300fde3f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 ETIQUETTE mode_card_simple : 294 351
+#2 > touche 294 351
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE c127b1ae50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 ETIQUETTE tuto_style_house : 294 1201
+#3 > touche 294 1201
+#3 DOIGT tuto_style_house « House »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa4dbbf9c6 | project=p-ee1bb75c tuto=house/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over the touchable « Lire la suite » (361 x 6 dp)
+#4 LAYOUT OVERLAP « ▸ Pourquoi ? » over the touchable « Lire la suite » (81 x 20 dp)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#4 ETIQUETTE tuto_listen : 294 894
+#4 > touche 294 894
+#4 DOIGT tuto_listen «  Écouter l'exemple »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4c661c689d | project=p-ee1bb75c tuto=house/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 > attends 8
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92cafb219d | project=p-ee1bb75c tuto=house/Facile active=true step=ref done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over « Lire la suite » (73 x 16 dp)
+#6 LAYOUT OVERLAP « • Drop : le moment fort du morceau, quand tout revient d'un coup. » over the touchable « Lire la suite » (361 x 30 dp)
+#6 ETIQUETTE tuto_next_big : 294 894
+#6 > touche 294 894
+#6 DOIGT tuto_next_big « Étape suivante   »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 24ee7465c5 | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 14 dp)
+#7 ETIQUETTE tuto_do : 294 813
+#7 > touche 294 813
+#7 DOIGT tuto_do «   Je le fais »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e193184936 | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Tempo » over the touchable « Fermer la feuille » (73 x 28 dp)
+#8 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#8 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#8 LAYOUT OVERLAP « 100 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#8 LAYOUT OVERLAP «  BPM » over the touchable « Fermer la feuille » (39 x 24 dp)
+#8 LAYOUT OVERLAP « 70 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#8 LAYOUT OVERLAP « 90 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#8 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « 140 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « 174 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#8 LAYOUT OVERLAP « ½ » over the touchable « Fermer la feuille » (14 x 24 dp)
+#8 LAYOUT OVERLAP « ×2 » over the touchable « Fermer la feuille » (21 x 24 dp)
+#8 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 2 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 3 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 4 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 5 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 6 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 7 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 8 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 9 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#8 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (33 x 27 dp)
+#8 LAYOUT OVERLAP « Taper en rythme » over the touchable « Fermer la feuille » (128 x 24 dp)
+#8 LAYOUT OVERLAP « Touche ici à chaque temps : le tempo suit. » over the touchable « Fermer la feuille » (254 x 18 dp)
+#8 ETIQUETTE tempo_key_1 : 111 852
+#8 > touche 111 852
+#8 DOIGT tempo_key_1 « 1 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 8aa793c97e | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (29 x 53 dp)
+#9 LAYOUT OVERLAP « Entre 40 et 300 » over the touchable « Fermer la feuille » (104 x 20 dp)
+#9 ETIQUETTE tempo_key_2 : 294 852
+#9 > touche 294 852
+#9 DOIGT tempo_key_2 « 2 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 60eaa8fc2f | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 12 » over the touchable « Fermer la feuille » (57 x 53 dp)
+#10 ETIQUETTE tempo_key_2 : 294 852
+#10 > touche 294 852
+#10 DOIGT tempo_key_2 « 2 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 1ff63fdebc | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 122 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#11 ETIQUETTE tempo_key_ok : 477 1113
+#11 > touche 477 1113
+#11 DOIGT tempo_key_ok « OK »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e183081871 | project=p-ee1bb75c tuto=house/Facile active=true step=tempo done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Grosse caisse studio » 1.52:1 (needs 4.5:1, 13 sp)
+#12 ETIQUETTE tuto_next_folded : 294 978
+#12 > touche 294 978
+#12 DOIGT tuto_next_folded « Réussi »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 79916f237b | project=p-ee1bb75c tuto=house/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 ETIQUETTE tuto_do : 294 813
+#13 > touche 294 813
+#13 DOIGT tuto_do «   Je le fais »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE d5de733462 | project=p-ee1bb75c tuto=house/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Tonalité du morceau » over the touchable « Fermer la feuille » (215 x 28 dp)
+#14 LAYOUT OVERLAP « Tonalité du morceau : aucune » over the touchable « Fermer la feuille » (195 x 20 dp)
+#14 LAYOUT OVERLAP « Gamme » over the touchable « Fermer la feuille » (52 x 20 dp)
+#14 LAYOUT OVERLAP « Majeure » over the touchable « Fermer la feuille » (61 x 24 dp)
+#14 LAYOUT OVERLAP « Mineure » over the touchable « Fermer la feuille » (62 x 24 dp)
+#14 LAYOUT OVERLAP « Dorienne » over the touchable « Fermer la feuille » (71 x 24 dp)
+#14 LAYOUT OVERLAP « Penta mineure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#14 LAYOUT OVERLAP « Penta majeure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#14 LAYOUT OVERLAP « Blues » over the touchable « Fermer la feuille » (42 x 24 dp)
+#14 LAYOUT OVERLAP « Phrygienne » over the touchable « Fermer la feuille » (85 x 24 dp)
+#14 LAYOUT OVERLAP « Mineure harmonique » over the touchable « Fermer la feuille » (156 x 24 dp)
+#14 LAYOUT OVERLAP « Tonique » over the touchable « Fermer la feuille » (55 x 20 dp)
+#14 LAYOUT OVERLAP « Do » over the touchable « Fermer la feuille » (21 x 24 dp)
+#14 LAYOUT OVERLAP « Do♯ » over the touchable « Fermer la feuille » (29 x 24 dp)
+#14 LAYOUT OVERLAP « Ré » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Mi♭ » over the touchable « Fermer la feuille » (24 x 24 dp)
+#14 LAYOUT OVERLAP « Mi » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Fa » over the touchable « Fermer la feuille » (18 x 24 dp)
+#14 LAYOUT OVERLAP « Fa♯ » over the touchable « Fermer la feuille » (26 x 24 dp)
+#14 LAYOUT OVERLAP « Sol » over the touchable « Fermer la feuille » (23 x 24 dp)
+#14 LAYOUT OVERLAP « La♭ » over the touchable « Fermer la feuille » (23 x 24 dp)
+#14 LAYOUT OVERLAP « La » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Si♭ » over the touchable « Fermer la feuille » (19 x 24 dp)
+#14 LAYOUT OVERLAP « Si » over the touchable « Fermer la feuille » (14 x 24 dp)
+#14 ETIQUETTE tuto_scale_Dorian : 371 831
+#14 > touche 371 831
+#14 DOIGT tuto_scale_Dorian « Dorienne »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 84002deb90 | project=p-ee1bb75c tuto=house/Facile active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonalité du morceau : Do · Dorienne » over the touchable « Fermer la feuille » (237 x 20 dp)
+#15 ETIQUETTE tuto_root_9 : 324 1206
+#15 > touche 324 1206
+#15 DOIGT tuto_root_9 « La »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE d5683346b5 | project=p-ee1bb75c tuto=house/Facile active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonalité du morceau : La · Dorienne » over the touchable « Fermer la feuille » (234 x 20 dp)
+#16 LAYOUT OVERLAP « Réussi ! La couleur du morceau est choisie. » over the touchable « Fermer la feuille » (273 x 48 dp)
+#16 LAYOUT OVERLAP « Revenir au tuto » over the touchable « Fermer la feuille » (106 x 20 dp)
+#16 ETIQUETTE tuto_key_continue : 294 1203
+#16 > touche 294 1203
+#16 DOIGT tuto_key_continue « Revenir au tuto »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 05821a385c | project=p-ee1bb75c tuto=house/Facile active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 ETIQUETTE tuto_chapter_end_folded : 294 978
+#17 > touche 294 978
+#17 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fa14339202 | project=p-ee1bb75c tuto=house/Facile active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Plus tard » over the touchable « Lire la suite » (61 x 12 dp)
+#18 ETIQUETTE tuto_next_big : 294 894
+#18 > touche 294 894
+#18 DOIGT tuto_next_big « Chapitre suivant   »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 202a50de32 | project=p-ee1bb75c tuto=house/Facile active=true step=ready done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over « Lire la suite » (73 x 18 dp)
+#19 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Lire la suite » (336 x 32 dp)
+#19 ETIQUETTE tuto_mark : 294 894
+#19 > touche 294 894
+#19 DOIGT tuto_mark «   J'ai compris »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6b066d33ac | project=p-ee1bb75c tuto=house/Facile active=true step=kick_do done=4 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « Le kit House » over the touchable « Lire la suite » (85 x 20 dp)
+#20 LAYOUT CONTRAST « Le kit House » 1.58:1 (needs 3.0:1, 14 sp)
+#20 FIN : rejeu : oracle non tenu : « [coupé, état « vide, en pointillé : à toucher »] » encore là

@@ -108,8 +108,8 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : une fois posé, appui long dessus ; dans le menu, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.",
-          "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : touche la dernière case, juste avant la mesure suivante. Une fois le coup posé, appui long dessus, puis, sous « Force », « Doux ».",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long sur sa case ; dans le menu qui s'ouvre, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.",
+          "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose et son menu s'ouvre : sous « Force », « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",

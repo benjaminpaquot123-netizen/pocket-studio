@@ -185,7 +185,7 @@ class SimpleModeAuditTest {
         org.robolectric.Shadows.shadowOf(am).setMemoryInfo(android.app.ActivityManager.MemoryInfo().apply { totalMem = 8L shl 30; availMem = 4L shl 30 })
         tap("top_more")
         tap("plus_remix")
-        compose.onNodeWithTag("remix_download").performScrollTo().performClick()
+        compose.onNodeWithTag("remix_download_thumb").performClick()  // Tour 6, A10: the one download button left, under the thumb
         compose.waitForIdle()
         // Audit ultra round 2, n° 31: on mobile data (Robolectric's network) the 174 MB are asked first; nothing yet.
         assertTrue(requested().toString(), android.Manifest.permission.POST_NOTIFICATIONS !in requested())

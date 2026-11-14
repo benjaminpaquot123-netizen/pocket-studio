@@ -97,4 +97,15 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertTrue("« détails » beside the sentence, read in its middle:\n" + screen(), details.boundsInRoot.top >= sentence.boundsInRoot.bottom - 1f)
     }
 
+    /** Seat B a (es, Mode simple, left hand), A10 (control Ba-2 screen 3): one « Descargar el modelo (174 MB) » on the panel. */
+    @Test
+    fun a10_oneDownloadButtonOnTheRemixPanel() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
+        amenee("remix", java.io.File("build/coquille3-journal.txt"))
+        repeat(2) { act("attends 1") }
+        val buttons = screenLines().count { "Descargar el modelo" in it && it.startsWith("bouton") }
+        assertTrue("$buttons « Descargar el modelo » on the panel:\n" + screen(), buttons == 1)
+    }
+
 }

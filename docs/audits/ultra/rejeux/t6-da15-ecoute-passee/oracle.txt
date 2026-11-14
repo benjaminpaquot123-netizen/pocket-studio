@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-6/lotD/a
+rejeu.n=15
+rejeu.attendu=チャプター 1/15 · 完了

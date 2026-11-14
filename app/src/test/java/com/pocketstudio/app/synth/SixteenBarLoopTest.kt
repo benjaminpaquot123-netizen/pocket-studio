@@ -55,9 +55,16 @@ class SixteenBarLoopTest {
         override fun exportDestroy(target: Long) = Unit
     }
 
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
     @After
     fun tearDown() {
-        NativeEngine.sink = null
+        try {
+            screens.closeAll()
+        } finally {
+            NativeEngine.sink = null
+        }
     }
 
     @Test
@@ -65,7 +72,7 @@ class SixteenBarLoopTest {
         File(app.filesDir, "projects").deleteRecursively()
         val sink = NoteSink()
         NativeEngine.sink = sink
-        val vm = RhythmViewModel(app)
+        val vm = screens.open { RhythmViewModel(app) }
         repeat(20) { shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50)) }
         // The « + » of the loop: bar after bar up to 16.
         repeat(20) { vm.setNoteClipSteps(minOf(NoteClip.MAX_STEPS, vm.project.value.synthNotes.steps + 16)) }

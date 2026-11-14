@@ -1,0 +1,4 @@
+Joué le 2026-11-13 sur 1585bb46 (départ du tour 6), dans un worktree détaché, avec le banc de ce commit :
+PS_REJEUX_DIR=<copie des rejeux> scripts/bench/rejeu-defauts.sh (selftest vert).
+Chaque dossier : ce que rejeu-defauts.sh garde (journal, rejeu.txt, start.txt, verdict.txt) ; verdict attendu « oracle non tenu ».
+Aucun geste refusé ni étiquette introuvable dans les journaux : le défaut est reproduit, pas un rejeu qui a divergé.

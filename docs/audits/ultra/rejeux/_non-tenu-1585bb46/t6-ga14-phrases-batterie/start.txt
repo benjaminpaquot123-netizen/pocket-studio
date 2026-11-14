@@ -1,0 +1,9 @@
+lang=tr
+device=phone
+font=130
+mode=pro
+gestes.max=110
+mission=remix-voix
+rejeu=/tmp/claude-0/-home-user-pocket-studio/0572a75f-9995-5e1d-b63d-56ea7bbc2294/scratchpad/cand-old/t6-ga14-phrases-batterie
+rejeu.n=14
+rejeu.attendu=(Davul · 16 pad)

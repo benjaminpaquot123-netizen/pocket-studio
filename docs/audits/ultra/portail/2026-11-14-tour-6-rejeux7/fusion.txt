@@ -1,0 +1,11 @@
+fusion: f706f7278d227e767b2fa640c9c1c13cb144dc40
+branche: eq/tour-6-rejeux7
+tete: 1d6317f779f93c939b0463799d0e598f76c4a3fa
+relecture: docs/audits/ultra/tour-6-rejeux7-relecture.md
+relu: 7656a6146b5bbf797d1d2e080347d7f9815fcd78
+filtres: com.pocketstudio.app.remix.CutBoutBigTextTest com.pocketstudio.app.remix.StemBoardRouterTest com.pocketstudio.app.tuto.Tour6TutoPanelListenSkipTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu

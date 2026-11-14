@@ -1,7 +1,7 @@
 # Relecture neuve — lot coquille4 (tour 6)
-Relu : e707fbd4
+Relu : f9057e47
 
-Portée : `git diff eq/tour-6-coquille3...HEAD`. 3e passe : ajouts depuis 20ff33ea relus. Ce sont la fusion d43b8408 (traces du portail de coquille3), 48e5a734 (l'avis : `notice_close` et `HelpAbout`), c6970419 (`sendToWhatsApp()` dans Coquille2/3SeatTest) et e707fbd4 (rapport). Gradle n'a pas été lancé. Les passes 1 et 2 tiennent toujours (motif « écrit sur le fil principal », test `StateWrittenOnMainTest` rouge puis vert, rejoué par script).
+Portée : `git diff eq/tour-6-coquille3...HEAD`. 3e passe : ajouts depuis 20ff33ea relus. Ce sont la fusion d43b8408 (traces du portail de coquille3), 48e5a734 (l'avis : `notice_close` et `HelpAbout`), c6970419 (`sendToWhatsApp()` dans Coquille2/3SeatTest) et e707fbd4 (rapport). 4e passe : f9057e47 relu (seule la KDoc de `HelpAbout` change dans `Help.kt`, plus cette relecture). Gradle n'a pas été lancé. Les passes 1 et 2 tiennent toujours (motif « écrit sur le fil principal », test `StateWrittenOnMainTest` rouge puis vert, rejoué par script).
 
 ## Fusion d43b8408
 - `origin/ccr-80af1a1b-mn0wec` contient `eq/tour-6-coquille3`. Le côté apporté ne touche que des documents : `DECISIONS.md`, les traces du portail coquille3 et les tableaux du tour 6. Aucun fichier de l'appli ni de test, aucun conflit avec ce lot.
@@ -20,9 +20,8 @@ Portée : `git diff eq/tour-6-coquille3...HEAD`. 3e passe : ajouts depuis 20ff33
 
 ## Constats
 - **moyen** **corrigé** (passe 2) — `export/video/VideoSheet.kt:218` : même motif avec `Dispatchers.Default`. Regex étendue à `IO|Default` et aperçu écrit sur le fil principal ; rouge puis vert vérifiés.
-- **moyen** — `ui/AppRoot.kt:1103` : `HelpAbout` est défini (`ui-components/.../Help.kt:42-46`, KDoc de `HelpCoverageTest`) comme « les contrôles qu'un point « ? » explique ». Le poser sur un `Text` sans « ? » sort de ce contrat. La phrase explique bien le bouton, donc ce n'est pas une acceptation déguisée sur le fond, mais elle passe par le code au lieu de la voie prévue par le recensement (« fix them, or accept them with a reason » dans `recensement-acceptes.tsv`). À faire, au choix :
-  - élargir la KDoc de `HelpAbout` à « un « ? » ou la phrase qui l'explique dans la même fenêtre », pour que la règle soit écrite ;
-  - remettre la phrase sans `HelpAbout` et noter `notice_lengthen` avec sa raison dans `recensement-acceptes.tsv`.
+- **moyen** **corrigé** (passe 4) — `ui/AppRoot.kt:1103` : `HelpAbout` posé sur la phrase de l'avis, sans « ? », sortait de son contrat écrit. La KDoc de `HelpAbout` (`ui-components/src/main/java/com/pocketstudio/ui/Help.kt:42-47`) dit maintenant qu'une phrase à l'écran qui explique le bouton d'à côté le porte aussi. La règle est écrite, le code et le recensement s'accordent ; aucun changement de comportement.
+- **mineur** — `Help.kt:44` : la KDoc dit encore que seul `HelpCoverageTest` lit `HelpAbout` (« nothing else reads it »), alors que `ScreenScanTest` le lit aussi. Phrase d'avant ce lot, à rafraîchir à l'occasion.
 - **mineur** — `Coquille2SeatTest.kt:43-55` / `Coquille3SeatTest.kt:42-54` : `sendToWhatsApp()` est copié deux fois. Sa KDoc dit « started by « Partager », not one left from before », mais rien ne le vérifie : un `files` laissé par un export d'avant dans la même VM arrêterait l'attente tout de suite. Sans effet aujourd'hui (une seule exportation par test, VM neuve). Plus tard, côté banc : le mettre dans `HumanTester` et comparer aux fichiers d'avant `share_go`.
 - **mineur** — `StateWrittenOnMainTest.kt:12` : `* *` en double dans la KDoc.
 - **mineur** — `StateWrittenOnMainTest.kt` : faux négatifs connus (`x.y = …`, `rememberCoroutineScope().launch`, `NonCancellable + Dispatchers.Default`, toute mention de `Dispatchers.Main` dans le bloc, accolades dans les chaînes, lecture cachée derrière une fonction). Ils sont listés dans les limites du rapport, sauf `NonCancellable + …`. Aucun cas dans les écrans aujourd'hui.

@@ -54,14 +54,33 @@ Preuves (passages ciblés, `scripts/bench/gradle-file.sh`) :
 
 Reste ouvert : les ~525 autres classes n'ont pas été passées avec le nouveau contrôle (la grande vérification revient au chef) ; une classe qui laisse une coroutine sur la boucle principale y sera rouge à son nom.
 
+## Suite 3 : la cause sous les fenêtres « jamais venues » (branche `eq/tour-6-stable-c`)
+
+La première version de la remise à zéro des indices du tuto (7e26f0415, branche abandonnée `eq/tour-6-stable-b`) a fait 12 rouges sur la CI 43566247865 (« field absent », « nothing to touch », « nothing tagged … after 15000 ms ») contre 1 sur l'intégration. Ce n'étaient pas des tests fragiles : Compose prévient les lecteurs d'un état par une seule coroutine pour tout le processus (GlobalSnapshotManager, sur AndroidUiDispatcher.Main). Robolectric vide la file principale entre deux tests ; un état écrit après la dernière boucle d'un test (la remise en état du banc, le dernier mot d'un fil) laisse les drapeaux « envoi posté » levés, plus rien n'est jamais posté, et dans cette JVM plus aucun état écrit hors d'une image ne touche ses lecteurs.
+
+- Paire « a state written in the test after a put-back reaches its readers » : `BenchSnapshotPumpTest` rouge sur son assertion, puis `BenchPristine.reviveComposePump()` appelé par `StrictTestApplication.beforeTest` (file vide : un drapeau levé est un envoi perdu, ce qu'il tenait est exécuté).
+- `-Pshuffle=list:<classes>` : rejoue des classes choisies, dans l'ordre donné, dans une JVM.
+- Paire « the tutorial's hints left by a class are put back before the next one », refaite par-dessus : `TutoHints.reset()` dans la remise en état, le contrôle lit tous les indices sauf le compteur `ticked`.
+- Paire « SongBenchExport leaves a live-gain estimate after the engine is let go » (rouge vide, preuve dans son message) : ses ViewModels ouverts comme des écrans (`TestScreens`), fermés avant le lâcher du moteur. Le job « Sound benches » des CI 43571160312 et 43574850020 était rouge par là.
+
 ## Preuves
-PREUVES_ICI
+- Les 11 classes rouges de la CI 43566247865, rejouées dans une JVM (`-Pshuffle=list:`) : 0 rouge sur f7c9bf1b9 ; la pompe relancée 12 fois.
+- Suite complète mélangée, graine 7, sur f7c9bf1b9 : 2 rouges sur 669 classes (contre 9 à 13 avant) ; la pompe relancée 831 fois. Rouges : `ScreenScanTest#census[RemixSongScreenshotTest.matter]` (de l'intégration, corrigé par coquille4) et `MySoundsJourneyTest#keepRenameFindOnAPadAndOnTheKeysThenDelete` (deux sons gardés au lieu d'un ; rejoué deux fois avec ses trois voisins : vert, non reproduit).
+- CI 43574850020 sur f7c9bf1b9 : job des tests unitaires, 1 rouge (ScreenScanTest, celui de l'intégration) ; job du son rouge (SongBenchExport, corrigé ensuite).
+- Après la paire SongBenchExport : `song-bench.sh` (techno, house), `live-bench.sh` (37 styles) et `real-projects.sh` verts ici. CI 43584977406 sur 40609e40e.
+- Juge du chantier : 32 écarts sur la tête comme sur l'intégration ae8727624.
+
+## Restes ouverts
+- `MySoundsJourneyTest#keep…` : vu une fois, non reproduit.
+- Si un nom interne de Compose change, la relance de la pompe n'écrit qu'une ligne ; l'alarme est `BenchSnapshotPumpTest` (relecture, M14).
+- Une suite complète dans l'ordre normal sur la tête finale, avant la fusion (la CI de la branche le fait).
+- Pour le tour suivant : la CI verte citée par un lot, lue par le portail (fichier de preuve écrit par le chef) ; `shareMenu()` bouché par une activité non-partage lancée plus tôt dans le même test (signal de remix2 : pas d'une classe d'avant, la file des activités repart à chaque test).
 
 ## Ce que je n'ai pas pu prouver
 - Que la sauvegarde de BenchShareTest attendait bien le verrou tenu par une sauvegarde automatique (et non un disque lent) : l'artefact ne garde pas sa pile. Les deux cas sont couverts par la même correction (on la laisse finir, boucle tournante, 15 s au plus).
 - Le doigt au hasard varie encore un peu d'un passage à l'autre sur disque rapide (« nothing to touch » 0 à 35 sur la graine 11 avant la correction) ; après, la graine 11 rejoue la même partie sur disque lent et rapide.
 
-tests: com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.BenchShareTest com.pocketstudio.app.human.BenchSongClockTest com.pocketstudio.app.audit3.GestureFuzzTest com.pocketstudio.app.human.OrdinaryTestsLeaveNothingTest com.pocketstudio.app.journey.WeekInTheLifeTest
+tests: com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.BenchShareTest com.pocketstudio.app.human.BenchSongClockTest com.pocketstudio.app.audit3.GestureFuzzTest com.pocketstudio.app.human.OrdinaryTestsLeaveNothingTest com.pocketstudio.app.journey.WeekInTheLifeTest com.pocketstudio.app.human.BenchSnapshotPumpTest com.pocketstudio.app.human.OrdinaryTestsLeaveNothingTest
 
 chemin: Partager › Annuler, puis le test suivant du banc | test: BenchPristineAfterTest#aClosingSaveWaitingForTheMainThreadIsLetEndNotNamed
 chemin: Partager › Annuler, puis le test suivant du banc | test: BenchPristineAfterTest#putBackEndsAClosingSaveWaitingForTheMainThread
@@ -71,3 +90,4 @@ chemin: Assistant › catalogue des packs retenu puis repli hors réseau, fin du
 chemin: Toute l'appli au doigt › Retour › Ouverture du projet… | test: GestureFuzzTest#aRandomFingerNeverCrashesTheApp
 chemin: Toute l'appli au doigt sur disque lent › Ouverture du projet… | test: GestureFuzzTest#aSlowDiskDoesNotEatTheGestures
 chemin: Test ordinaire qui laisse du travail de l'appli | test: OrdinaryTestsLeaveNothingTest#c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself
+chemin: Un test, puis le suivant qui écrit un état (fenêtre, champ, liste) | test: BenchSnapshotPumpTest#b_aStateWrittenInTheTestAfterItReachesItsReaders

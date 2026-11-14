@@ -68,9 +68,12 @@ class SongBenchExport {
 
         val sink = RecordingSink(File(out, "samples"), renderer)
         NativeEngine.sink = sink
+        // Tour 6, lot « stable »: each ViewModel opened as a screen's, closed and its work ended before the sink goes (their
+        // live-gain estimates threw once the engine was let go: the CI's « Song bench » job, an uncaught exception).
+        val screens = com.pocketstudio.app.TestScreens()
         try {
-            val library = SoundLibraryViewModel(app)
-            val projects = ProjectsViewModel(app)
+            val library = screens.open { SoundLibraryViewModel(app) }
+            val projects = screens.open { ProjectsViewModel(app) }
             for (style in styles) {
                 // The one-touch song, as the app makes it (kit voices rendered by ps_render).
                 var made: Pair<Project, Map<String, Pcm>>? = null
@@ -87,7 +90,7 @@ class SongBenchExport {
                 CurrentProject.set(app, id!!)
 
                 // Opened as the app opens it, then exported as « Exporter › Morceau » does.
-                val vm = RhythmViewModel(app)
+                val vm = screens.open { RhythmViewModel(app) }
                 val p = vm.project.value
                 assertEquals(style.name, p.name.substringBefore(" ("))
                 sink.nextHeader = header(style, p)
@@ -100,7 +103,11 @@ class SongBenchExport {
                 println("bench: ${style.id} recorded (${File(out, "${style.id}.pscmd").length() / 1024} KB)")
             }
         } finally {
-            NativeEngine.sink = null
+            try {
+                screens.closeAll()
+            } finally {
+                NativeEngine.sink = null
+            }
         }
     }
 

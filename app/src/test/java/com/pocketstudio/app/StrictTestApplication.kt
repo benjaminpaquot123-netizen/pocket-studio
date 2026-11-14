@@ -17,7 +17,13 @@ class StrictTestApplication : PocketStudioApplication(), TestLifecycleApplicatio
         super.onCreate()
     }
 
-    override fun beforeTest(method: Method) = MainThreadIo.start()
+    override fun beforeTest(method: Method) {
+        MainThreadIo.start()
+        // Tour 6, lot « stable », follow-up: an uncaught exception of coroutines is the red of the test it is thrown in.
+        BenchPristine.watchUncaught()
+        // Follow-up 3: Compose's process-wide pump, left stuck by a state written after the last test's last looper run.
+        if (BenchPristine.reviveComposePump()) println("BenchPristine: Compose's state pump revived before ${method.declaringClass.simpleName}.${method.name}")
+    }
 
     override fun prepareTest(test: Any) = Unit
 
@@ -32,7 +38,7 @@ class StrictTestApplication : PocketStudioApplication(), TestLifecycleApplicatio
             // test (the ViewModel factory that keeps its Application, a save still closing, settings changed, ...) has its
             // state put back here, by the detector's own list: a bench test run after it starts on a pristine process.
             // The rule says itself that it ran (mineur 4: a field's declared type could hide it).
-            if (BenchPristineRule.ranSinceLastAsked()) BenchPristine.afterATestWithTheRule(test) else BenchPristine.afterAnOrdinaryTest()
+            if (BenchPristineRule.ranSinceLastAsked()) BenchPristine.afterATestWithTheRule(test) else BenchPristine.afterAnOrdinaryTest(test)
         }
     }
 }

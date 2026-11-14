@@ -67,7 +67,7 @@ class LiveCellJourneyTest {
         val id = "cells-" + System.nanoTime()
         store.save(id, p)
         CurrentProject.set(app, id)
-        return RhythmViewModel(app)
+        return screens.open { RhythmViewModel(app) }
     }
 
     private var librarySaid: Pair<String, Int>? = null
@@ -87,7 +87,7 @@ class LiveCellJourneyTest {
 
     private fun reopened(vm: RhythmViewModel): Project {
         kotlinx.coroutines.runBlocking { vm.flushNow() }
-        return RhythmViewModel(app).project.value
+        return screens.open { RhythmViewModel(app) }.project.value
     }
 
     @Test
@@ -270,9 +270,16 @@ class LiveCellJourneyTest {
         assertTrue(reopened(vm).cellHasContent(SongPart.audio(t.id), 1))
     }
 
+    /** Its ViewModels, closed as screens at its end before the engine stand-in goes (TestScreens). */
+    private val screens = com.pocketstudio.app.TestScreens()
+
     @org.junit.After
     fun end() {
-        com.pocketstudio.engine.NativeEngine.sink = null
+        try {
+            screens.closeAll()
+        } finally {
+            com.pocketstudio.engine.NativeEngine.sink = null
+        }
     }
 
     private fun until(what: String, ok: () -> Boolean) {

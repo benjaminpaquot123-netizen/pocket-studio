@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : 2d39f0f4a3a45140392612fb3747fd0802f1caa9
+Relu : f83308049bd23fabe56450dc971c258ad60f4c98
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -111,5 +111,17 @@ Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne 
 - Rapport de Da-11 : « code testé : 31aa3661 », « bloquant ou grave : aucun », « Lire la suite » corrigé au ch. 3 (écran 9, consigne entière affichée) et retour sur les cases corrigé (écran 11).
 - Rapport du lot : une seule ligne `controle: Da-11 | code testé: 31aa3661 | bloqués: 0 | graves neufs: 0`, les anciens sièges gardés en prose comme preuves ; `rapport-zone.py eq/tour-6-tuto4 … --tuto` : sortie 0.
 - Mineur (noté, sans correction) : le lien « 続きを読む ⌄ » reste affiché après lecture complète (finition vue par Da-11).
+
+## Delta 2d39f0f4 → f8330804
+
+- Lu : `git diff f9ab00eac f83308049` (deux commits : rouge 1e953171e, vert f83308049 ; `TutoPanel.kt` et `Tour6TutoReadAllTest.kt`, 20 lignes ajoutées, 1 retirée).
+- rouge constaté : 1e953171e : « Lire la suite » still offered after the touch that opens the words (vu rouge sur son assertion par l'auteur avant le vert ; non rejoué par cette relecture, économie de quota).
+- Rouge 1e953171e (`Tour6TutoReadAllTest#nothingIsLeftToReadOnAfterThatTouch`, ja, techno Facile, étape `clap_do`, téléphone 392 × 852 dp) : il attend d'abord les cases pointillées et « Lire la suite », touche le lien une fois, puis exige que le lien ne soit plus offert : il ne peut pas passer à vide.
+- Vert f83308049 : une constante `READ_ALL_MAX = 380.dp` et une branche de plus dans `most` (`… else if (readAll) READ_ALL_MAX else 240.dp`). Minimal. Sans effet quand `readAll` est faux : la carte du morceau (290 dp), la petite pièce (120 dp) et la pièce normale (240 dp) passent avant ou restent telles quelles ; `readAll` n'est écrit qu'au toucher de « Lire la suite » dans la petite pièce et retombe à chaque étape, repli et changement de niveau. Si les mots dépassent encore 380 dp, le lien reste et fait défiler comme avant.
+- Mineur de la section précédente (« 続きを読む ⌄ » resté après lecture complète) : **corrigé** par ce vert.
+- Tests ciblés donnés verts par l'équipe après le vert (ReadAll, CellsPanel100, Tour6TutoPanel*, BannerChain) ; non relancés ici, rien dans le delta n'en fait douter.
+
+### Moyen
+- Petit téléphone (640 dp de haut environ) : le panneau est une colonne de la barre du bas du `Scaffold` (`AppRoot.kt:2549-2615`), sans autre plafond que la hauteur de l'écran, et ses boutons d'action sont mesurés après les mots. Avec 380 dp de mots, le panneau ouvert peut approcher 500 à 560 dp (titre, barre de progression, « Pourquoi ? », boutons, marges) ; avec la barre des onglets dessous, une très longue consigne en grande police pourrait serrer ou couper les boutons du bas. Pas grave : la pièce suit la longueur des mots (380 dp seulement pour une consigne qui les remplit), elle ne s'ouvre que par le toucher de l'utilisateur, et le repli (en haut du panneau, toujours visible) ou l'étape suivante rendent la petite pièce ; un débutant n'est pas bloqué. À couvrir par un test sur un écran de 640 dp à 130 % (plafonner la pièce à une part de la hauteur de l'écran). Responsable : zone tuto, prochain lot du panneau.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

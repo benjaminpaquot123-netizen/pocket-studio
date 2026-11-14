@@ -1,5 +1,5 @@
 # Relecture neuve — lot coquille3 (tour 6)
-Relu : 3e8316da
+Relu : d656ff92
 
 Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, ShareSheet, RemixScreen, AppSpaces, PianoRoll, SynthScreen, `Coquille3SeatTest` et les trois tests reciblés). Lecture seule, sans Gradle. Deuxième passage : les correctifs depuis f152599b (927b61da, 1202e769 et leurs rouges) sont relus. Troisième passage : depuis 24f27070 (fusion de l'intégration : seulement des documents et des traces du portail, aucun fichier de l'appli du lot changé par elle ; « Accueil » écrit ; test de preuve n4).
 
@@ -43,6 +43,15 @@ Périmètre : `git diff eq/tour-6-coquille2...HEAD` (ProjectsScreen, AppRoot, Sh
 - La fusion 2fbf6eb1 était déjà dans 8419a3d3 : elle n'apporte rien de neuf. Dans `app`, `project-model` et `engine`, seuls deux fichiers changent (3e8316da).
 - `app/src/main/java/com/pocketstudio/app/ui/AppRoot.kt:1092` : le « Compris » de l'avis reçoit seulement `testTag("notice_ok")`. Le comportement ne change pas.
 - `app/src/test/java/com/pocketstudio/app/human/HumanRemixJourneyTest.kt:156` : après « Mettre dans mon projet », le test touche « Compris » s'il est là (la fenêtre A6 qui était devant la page). Toucher sans condition casserait le test le jour où l'avis ne s'affiche pas. Aucune assertion n'est retirée ni affaiblie : les ondes, « S » de Voix, « Jouer », la phrase « le morceau joue (partie « A ») … avec la voix seule … (solo) » et « Arrêter » sont lus comme avant, et ces touches ont besoin d'une page sans fenêtre devant. Le parcours prouve donc la même chose. **mineur** : l'apparition de la fenêtre A6 n'est pas vérifiée ici, ce n'est pas le rôle de ce test.
+
+## Huitième passage (depuis 3e8316da)
+
+- Dans `app`, `project-model` et `engine`, seuls deux fichiers changent : `export/MyExports.kt` et `ui/Coquille3SeatTest.kt`.
+- `app/src/main/java/com/pocketstudio/app/export/MyExports.kt:152` : `LaunchedEffect(Unit) { … val read = read(context); withContext(Dispatchers.Main) { items = read } }`. Ce n'est pas un risque sur un téléphone. Là, l'effet tourne déjà sur le fil principal (le répartiteur de la composition) et reprend sur ce fil après le `withContext(IO)` de la lecture. `Dispatchers.Main` ajoute au plus un passage dans la file du fil principal, soit une image. Si la fenêtre se ferme pendant la lecture, l'effet est annulé et `withContext` n'écrit rien. `kotlinx-coroutines-android` est déjà utilisé (9 fichiers emploient `Dispatchers.Main`), et les imports sont présents. Ni plantage ni fuite.
+- Le raisonnement tient, et l'erratum du rapport est honnête : il dit que, sur un téléphone, la reprise se fait normalement sur le fil principal. Le blocage observé est donc très probablement propre à l'environnement de test : reprise sur `DefaultDispatcher-worker-1`, écriture d'un état Compose hors du fil principal, que l'écran ne voit jamais. Ce n'est pas un défaut montré sur un téléphone. La correction rend l'appli indépendante de cet environnement sans rien coûter. Il ne faut donc parler de « corrigé dans l'appli » qu'au sens du banc ; aucun siège n'a vu ce défaut sur un téléphone.
+- **mineur** — preuve statistique faible : avant la correction, l'échec arrivait environ 4 fois sur 30 (≈ 13 %). Vingt passages verts (10 dans la classe, 10 seuls) laissent encore environ 6 % de chances qu'un code non corrigé passe aussi par hasard (0,87^20). C'est plausible, pas certain. À faire si on veut fermer : un test déterministe qui fait reprendre l'effet hors du fil principal (une `read` qui revient sur un autre fil sans revenir au principal), rouge sans `withContext(Dispatchers.Main)`, vert avec. Ou 30 passages ou plus.
+- `Coquille3SeatTest.kt` (`n4_myFilesListTheSongJustSent`) : l'attente « comme une personne » (un « attends 1 » du banc et 100 ms réelles par tour, 60 s au plus) puis deux assertions (« Chargement » parti, le morceau listé). C'est un vrai test, rouge 1816eec2 puis vert 1701fc5e.
+- **mineur** — même motif laissé dans `app/src/main/java/com/pocketstudio/app/retours/RetoursUi.kt:326` (`files = withContext(Dispatchers.IO) { … }` dans un `LaunchedEffect`). Le rapport le nomme. C'est hors zone et sans risque sur un téléphone pour la même raison.
 
 ## Vérifié sans constat
 - `ShareSheet.kt:456-468` : phrase du volume en pleine largeur, « détails » + « ? » dessous à droite seulement en Pro ; « masquer » et les détails inchangés ; rien de neuf en Simple.

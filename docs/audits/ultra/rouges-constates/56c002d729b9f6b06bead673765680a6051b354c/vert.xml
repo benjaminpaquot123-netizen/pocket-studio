@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.model.tuto.Tour6TutoBuildBarsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-14T17:35:56.394Z" hostname="vm" time="3.877">
+  <properties/>
+  <testcase name="aPartThatBuildsBarAfterBarIsFourBarsLong" classname="com.pocketstudio.model.tuto.Tour6TutoBuildBarsTest" time="3.344"/>
+  <testcase name="theSongStepPromisesNoLengthThePartsDoNotHave" classname="com.pocketstudio.model.tuto.Tour6TutoBuildBarsTest" time="0.529"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

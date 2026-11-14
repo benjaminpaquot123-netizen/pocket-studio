@@ -153,7 +153,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertEquals(set.id, project()?.remix?.setId)
         // Tour 6 (lot coquille3, A6): a project with no song made as long as the song says so in a window; read, then
         // « Compris », as a person does (the window is in front of the page).
-        centerOf("notice_ok")?.let { tap(it, "Compris") }
+        centerOf("notice_close")?.let { tap(it, "Compris") }
         // Its four parts are drawn (the screen follows: nothing froze it). Their waves are read off the main
         // thread: on a loaded machine (the whole suite at once) it takes what it takes, a person waits for them.
         waitFor("the waveforms") { centerOf("waveform_3") != null }

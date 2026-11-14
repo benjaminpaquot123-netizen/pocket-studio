@@ -42,6 +42,8 @@ val LocalHelpListen = androidx.compose.runtime.staticCompositionLocalOf<(Help) -
 /**
  * The controls (their test tags) a help dot explains. Read by the guard test of the screens that
  * must explain every control that is not obvious (HelpCoverageTest): nothing else reads it.
+ * Lot coquille4: a sentence on the screen that says what a button beside it is for (a notice's text and its
+ * « Allonger le morceau ») carries it too: the explanation is already written there, no « ? » needed.
  */
 val HelpAbout = androidx.compose.ui.semantics.SemanticsPropertyKey<List<String>>("HelpAbout") { parent, child -> parent.orEmpty() + child }
 

@@ -121,6 +121,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -545,9 +546,11 @@ fun AppRoot() {
             libraryVm.refreshMine()
         }
         val sizes by androidx.compose.runtime.produceState(emptyMap<String, Long>(), packsUi.installed) {
-            value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            val read = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
                 packsUi.installed.associate { it.id to com.pocketstudio.app.library.PackStore.bytesOnDisk(context, it.id) }
             }
+            // Lot coquille4: kept on the main thread (the motif of « Mes fichiers »).
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) { value = read }
         }
         // A sound still loading when the library closed lands nowhere (libraryVm.closed()).
         val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false; libraryCell = null; libraryFromMenu = false }
@@ -1089,14 +1092,15 @@ fun AppRoot() {
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
-            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_ok")) { Text(tr("Compris")) } },
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_close")) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
             } else if (noticeLengthen == text) {
                 // Tour 6, seat B a (A6): the song past the project's end: the fix offered in the same window.
                 { TextButton(onClick = { rhythmVm.lengthenSongForRemix(); rhythmVm.dismissNotice() }, modifier = Modifier.testTag("notice_lengthen")) { Text(tr("Allonger le morceau")) } }
             } else null,
-            text = { Text(text) },
+            // Coquille4 (ScreenScanTest census): the notice's sentence says what « Allonger le morceau » is for.
+            text = { Text(text, modifier = if (noticeLengthen == text) Modifier.semantics(properties = { set(com.pocketstudio.ui.HelpAbout, listOf("notice_lengthen")) }) else Modifier) },
         )
     }
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -1374,10 +1378,13 @@ fun AppRoot() {
         val set = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, waiting.setId))
         } ?: return@LaunchedEffect
-        // Step 5a: the parts heard while listening come in heard, the others muted; step 5c: after its choices.
-        songImportFromHome = true  // only the home Remix page leaves a song waiting for a project
-        songImport = set to waiting.heard
-        openRemix()
+        // Lot coquille4: what was read is kept, and the Remix opened, on the main thread (the motif of « Mes fichiers »).
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+            // Step 5a: the parts heard while listening come in heard, the others muted; step 5c: after its choices.
+            songImportFromHome = true  // only the home Remix page leaves a song waiting for a project
+            songImport = set to waiting.heard
+            openRemix()
+        }
     }
     // Audit final (03 G4): « Ma voix », the audio tracks' page (a first track made when there is none).
     val openVoice: () -> Unit = {

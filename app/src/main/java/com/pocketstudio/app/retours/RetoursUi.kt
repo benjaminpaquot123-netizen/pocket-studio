@@ -323,7 +323,9 @@ fun RetoursExportPanel(close: () -> Unit) {
     var confirm by remember { mutableStateOf(false) }
     val recording = Retours.rec.collectAsState().value !is RecState.Idle
     androidx.activity.compose.BackHandler(onBack = close)
-    LaunchedEffect(reload) { files = withContext(Dispatchers.IO) { Retours.exportFiles() } }
+    // Lot coquille4 (the motif of « Mes fichiers »): read off the main thread, kept on it (written from the reading thread,
+    // the list could never reach the screen).
+    LaunchedEffect(reload) { val read = withContext(Dispatchers.IO) { Retours.exportFiles() }; withContext(Dispatchers.Main) { files = read } }
     Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.45f)).pointerInput(Unit) { detectTapGestures { close() } }, contentAlignment = Alignment.Center) {
         Surface(
             color = Neon.Background, shape = RoundedCornerShape(16.dp), shadowElevation = 8.dp,

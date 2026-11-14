@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteSweep
@@ -161,8 +162,10 @@ fun ProjectsScreen(
         }
         Column(Modifier.fillMaxSize().padding(12.dp).testTag("projects"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Tour 6, seat A c (E7), the owner's rule (2026-10-29: « ← » of « Mes projets » goes to the welcome page): the
+                // button says where it goes, « Accueil » with its house, not a « Retour » that the user reads as « back to my song ».
                 IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
+                    Icon(Icons.Filled.Home, contentDescription = tr("Accueil"))
                 }
                 Text(tr("Mes projets"), style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
             }

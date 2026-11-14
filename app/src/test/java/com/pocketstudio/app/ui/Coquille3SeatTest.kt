@@ -207,4 +207,20 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         val format = rhythm()!!.export.value.format
         assertTrue("the FLAC chosen in Pro became $format:\n" + screen(), format == com.pocketstudio.app.rhythm.ExportFormat.Flac)
     }
+
+    /**
+     * Control seat of coquille3 (E7 again, screens 6 and 8): the house alone said nothing on the screen; « Accueil » is
+     * written beside it, read without TalkBack.
+     */
+    @Test
+    fun e7_theHomeWordIsWrittenBesideTheHouse() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        trapSong()
+        tap("top_more"); tap("top_projects")
+        repeat(2) { act("attends 1") }
+        val back = compose.onAllNodesWithTag("projects_back").fetchSemanticsNodes().firstOrNull() ?: error("no way back:\n" + screen())
+        val written = back.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }.map { it.text }
+        assertTrue("the house of « Mes projets » writes $written:\n" + screen(), written.any { "Accueil" in it })
+        assertTrue("« Accueil » cut:\n" + screen(), whole("projects_back"))
+    }
 }

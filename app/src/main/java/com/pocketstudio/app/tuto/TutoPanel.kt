@@ -455,7 +455,8 @@ fun TutoPanel(
     // Replay t6-ha19-cases-panneau (100 %, panel open on the kick step): the cells to touch on the grid shown keep
     // their two rows above the panel; the words scroll (« Lire la suite ») in a lower room (the height taken again).
     // The same for a step on the track's sound (knobs named) with « Régler le son de la piste ↓ » on the screen (H5, H7).
-    val cellsToTouch = (TutoHints.gridInSight && TutoHints.cells?.second?.isNotEmpty() == true) ||
+    // The hits to cross out too (a gap step: « → <pad> » and its crosses were under the panel in a 4-bar Montée).
+    val cellsToTouch = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's

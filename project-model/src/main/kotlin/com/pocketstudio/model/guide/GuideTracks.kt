@@ -136,5 +136,13 @@ fun Project.guideTracks(): List<GuideTrack> {
     return out.sortedBy { GuideRoles.ORDER.indexOf(it.role).let { i -> if (i < 0) GuideRoles.ORDER.size else i } }
 }
 
+/** The name pad [lane] shows on the pad screen, in the interface's language (the Mix's tips name a pad by it). */
+fun Project.padShownName(lane: Int): String =
+    DefaultNames.shownPad(lane, drums.lanes.getOrNull(lane)?.sample?.name, padVoices[lane]?.kind)
+
+/** [t]'s name as the screen shows it: a pad's as the pad reads, any other track's through [DefaultNames.shown]. */
+fun Project.shownName(t: GuideTrack): String =
+    t.key.takeIf { it.startsWith("pad:") }?.removePrefix("pad:")?.toIntOrNull()?.let { padShownName(it) } ?: DefaultNames.shown(t.name)
+
 /** The strip of [t] in this project (the master's has no strip: null). */
 fun Project.stripOf(t: GuideTrack): Channel? = mixer.channels.getOrNull(t.channel)?.takeIf { t.channel != Mixer.MASTER }

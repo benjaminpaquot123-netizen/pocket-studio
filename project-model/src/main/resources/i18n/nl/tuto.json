@@ -139,7 +139,6 @@
   "909 : une boîte à rythmes célèbre, ses sons de batterie.": "909: een beroemde drumcomputer, zijn drumgeluiden.",
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: een beroemde drumcomputer, zijn drumgeluiden.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: elke tweede slag verschuiven zodat het ritme deint.",
-  "Break : un moment plus calme, la batterie se tait.": "Break: een rustiger moment, de drums zwijgen.",
   "Autres synthés": "Andere synths",
   "Déjà fait !": "Al gedaan!",
   "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Je nummer had al wat deze stap vraagt: niets aan te raken.",
@@ -148,5 +147,6 @@
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Een nieuw nummer begint op %d BPM: jij geeft het de snelheid van de stijl.",
   "%1$s : encore +%2$d": "%1$s: nog +%2$d",
   "Touche ici": "Tik hier",
-  "Accords en pointillé à toucher : %d": "Gestippelde akkoorden om aan te tikken: %d"
+  "Accords en pointillé à toucher : %d": "Gestippelde akkoorden om aan te tikken: %d",
+  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: een rustiger moment, de kick en de bas zwijgen."
 }

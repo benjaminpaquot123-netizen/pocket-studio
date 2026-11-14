@@ -1,0 +1,2 @@
+route=dialogue:library
+nouvelle=1

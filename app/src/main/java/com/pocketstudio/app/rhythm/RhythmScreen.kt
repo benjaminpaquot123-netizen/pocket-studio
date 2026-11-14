@@ -672,6 +672,11 @@ private fun StepGrid(
             }
         }
         if (tutoActive && !allPads) {
+            // The panel knows the grid and its cells to touch are on the screen (it leaves their rows room).
+            androidx.compose.runtime.DisposableEffect(Unit) {
+                com.pocketstudio.app.tuto.TutoHints.gridInSight = true
+                onDispose { com.pocketstudio.app.tuto.TutoHints.gridInSight = false }
+            }
             com.pocketstudio.app.tuto.TutoGridLine(
                 bar = bar, bars = bars, pad = padName(project, lane),
                 here = tutoLeft.count { it / per == bar },
@@ -812,9 +817,13 @@ private fun StepGrid(
                                         },
                                         onLongClick = {
                                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            // A hit: its force and its roll; an empty cell: a strong hit; a step a triplet covers: the triplet's.
+                                            // A hit: its force and its roll; a step a triplet covers: the triplet's. Tour 6 (H3, decided): an
+                                            // empty cell gets its hit AND the menu at once (« Doux » one long press away, as the tutorial says).
                                             if (ownerHit != null) rollStep = at
-                                            else if (hit != null && step < project.drums.steps) rollStep = step else actions.cycleVelocity(step)
+                                            else if (step < project.drums.steps) {
+                                                if (hit == null) actions.cycleVelocity(step)
+                                                rollStep = step
+                                            } else actions.cycleVelocity(step)
                                         },
                                     )
                                 },

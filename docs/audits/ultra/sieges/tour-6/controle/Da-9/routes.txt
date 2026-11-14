@@ -1,0 +1,14 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tuto_panel/tab_simple_Rythme
+dialogue:tempo_sheet
+tab_simple_Rythme
+dialogue:tuto_key_sheet
+dialogue:roll_menu
+tab_simple_Clavier
+tuto_panel/tab_simple_Clavier
+tab_simple_Morceau
+tuto_panel/tab_simple_Morceau
+tuto_spot_ring
+session/tab_simple_Morceau

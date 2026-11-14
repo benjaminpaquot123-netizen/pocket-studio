@@ -59,6 +59,16 @@ object DefaultNames {
     )
 
     /**
+     * The kit's own voice on each of the 16 pads, in pad order: what a pad with no other sound on it shows (the app's
+     * DrumKitInfo.names, translated when read). Not whole names of [EXACT]: a track or a file the user called « Rim »
+     * is never translated; only [shownPad] reads them, for a pad.
+     */
+    val KIT_VOICES = listOf(
+        "Kick", "Kick 2", "Caisse", "Caisse 2", "Clap", "Charley", "Charley ouvert", "Tom grave",
+        "Tom médium", "Tom aigu", "Rim", "Cowbell", "Cymbale", "Shaker", "Conga", "Zap",
+    )
+
+    /**
      * Between the two halves of a pad's sound the app names ("Batterie · Da Funk", "Standard · Caisse"):
      * a file name never gets a part translated, only these app-made names do.
      */
@@ -70,7 +80,7 @@ object DefaultNames {
     const val BEFORE_SESSION = "%s (avant la séance)"
 
     /** Every French text these names are made of (each one needs its translations). */
-    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + COPY + BEFORE_SESSION + com.pocketstudio.model.i18n.I18n.EVERYDAY.values
+    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + KIT_VOICES + COPY + BEFORE_SESSION + com.pocketstudio.model.i18n.I18n.EVERYDAY.values
 
     /** The pad's sound cut from the [stem] part (one of "Batterie", "Basse", "Autres", "Voix") of the separated song [song]. */
     fun stemPad(stem: String, song: String): String = "$stem$JOIN$song".take(40)
@@ -137,6 +147,16 @@ object DefaultNames {
         }
         return name
     }
+
+    /**
+     * The name pad [lane] shows (as the pad screen does): the [sample] put on it ([shownSample]: a file of the user's
+     * stays as it is), else its studio voice [voice] (a [PadVoice] kind: « 808 », « Rumble »), else its kit voice
+     * ([KIT_VOICES]), in the interface's language and with the Mode simple's words.
+     */
+    fun shownPad(lane: Int, sample: String?, voice: Int?): String =
+        sample?.takeIf { it.isNotBlank() }?.let { shownSample(it) }
+            ?: voice?.let { kind -> if (kind == PadVoice.BASS_808) "808" else PadVoice.NAMES.getOrNull(kind)?.takeIf { it.isNotBlank() }?.let { tr(it) } }
+            ?: KIT_VOICES.getOrNull(lane)?.let { tr(it) } ?: "Pad ${lane + 1}"
 
     /** The French of a whole default name given in any language ("Bass", "Bas" → "Basse"), or null for any other name. */
     fun french(name: String): String? = if (name in EXACT) name else RENAMED[name] ?: fromTranslation[name]

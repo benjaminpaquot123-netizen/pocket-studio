@@ -1,0 +1,33 @@
+Écran 14 (588x1278)
+texte « Effets · pad 5 (Clap) » @ 221,60
+bouton « Grondement » [coupé] @ 139,125
+bouton « Sans effet » [coupé] @ 312,125
+texte « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » @ 294,194
+texte « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » @ 294,260
+bouton « ? » @ 251,320
+texte « Pad XY, haut-bas : » @ 136,320
+bouton « Espace » [sélectionné] @ 113,390
+bouton « Saleté » @ 240,390
+bouton « Mouvement » @ 391,390
+texte « ↑ Lointain » @ 294,450
+texte « ← Sombre » @ 156,735
+texte « ↓ Sec » @ 294,735
+texte « Brillant → » @ 432,735
+texte « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » @ 294,786
+curseur [état « Neutre », à 50 %] @ 112,864
+texte « Couleur » @ 111,918
+texte « Neutre » @ 111,943
+curseur [état « 0 », à 0 %] @ 233,864
+texte « Saleté » @ 232,918
+texte « 0 » @ 233,943
+curseur [état « 0 », à 0 %] @ 354,864
+texte « Mouvement » @ 354,918
+texte « 0 » @ 354,943
+curseur [état « 0 », à 0 %] @ 476,864
+texte « Espace » @ 476,918
+texte « 0 » @ 476,943
+texte « Réverbe et écho communs » @ 187,984
+texte « Envoi réverbe » @ 273,1038
+texte « 0 % » @ 507,1038
+curseur [état « 0 % », à 0 %] @ 294,1089
+texte « Fermer » @ 482,1206

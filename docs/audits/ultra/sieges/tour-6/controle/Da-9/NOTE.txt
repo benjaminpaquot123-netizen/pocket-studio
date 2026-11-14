@@ -1,0 +1,1 @@
+Targeted control seat D a, run 9, lot tuto4 (coordinator request, 2026-11-14): code 0e250438 (origin/eq/tour-6-tuto4), local lot lotDcontrole9, chapters 1-12 in a row without the chapter list, points P3 (ch. 12 cymbal banner) and P4 (long press on an empty cell), fresh sub-agent reading only the testers instructions and the screens. Text files only.

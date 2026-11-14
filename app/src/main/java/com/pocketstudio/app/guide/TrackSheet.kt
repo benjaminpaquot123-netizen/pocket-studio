@@ -73,6 +73,7 @@ import com.pocketstudio.model.guide.GuideSheet
 import com.pocketstudio.model.guide.GuideTrack
 import com.pocketstudio.model.guide.guideText
 import com.pocketstudio.model.guide.guideTracks
+import com.pocketstudio.model.guide.shownName
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.layersOf
@@ -401,8 +402,11 @@ internal fun playsIn(parts: Int, of: Int): String =
 
 private const val MAX_LINES = 30
 
-/** The name a track's sheet gives track [t] of [p] (its title, its chain's targets). */
-internal fun sheetName(p: com.pocketstudio.model.Project, t: GuideTrack): String = DefaultNames.shown(t.name)
+/**
+ * The name a track's sheet gives track [t] of [p] (its title, its chain's targets): a pad's as the pad shows it
+ * (tour 6, seat Fa-1: « Rim » here, « Bord de caisse » on the pad), any other track's through [DefaultNames.shown].
+ */
+internal fun sheetName(p: com.pocketstudio.model.Project, t: GuideTrack): String = p.shownName(t)
 
 /** The tracks the chain of the track [key] can be copied to, named as [sheetName] names them: a pad to the other pads, any other track to the others. */
 internal fun sheetTargets(p: com.pocketstudio.model.Project, tracks: List<GuideTrack>, key: String): List<SheetTarget> {

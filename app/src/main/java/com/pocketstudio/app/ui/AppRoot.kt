@@ -121,6 +121,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -1091,14 +1092,15 @@ fun AppRoot() {
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
-            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_ok")) { Text(tr("Compris")) } },
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_close")) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
             } else if (noticeLengthen == text) {
                 // Tour 6, seat B a (A6): the song past the project's end: the fix offered in the same window.
                 { TextButton(onClick = { rhythmVm.lengthenSongForRemix(); rhythmVm.dismissNotice() }, modifier = Modifier.testTag("notice_lengthen")) { Text(tr("Allonger le morceau")) } }
             } else null,
-            text = { Text(text) },
+            // Coquille4 (ScreenScanTest census): the notice's sentence says what « Allonger le morceau » is for.
+            text = { Text(text, modifier = if (noticeLengthen == text) Modifier.semantics(properties = { set(com.pocketstudio.ui.HelpAbout, listOf("notice_lengthen")) }) else Modifier) },
         )
     }
     val lifecycleOwner = LocalLifecycleOwner.current

@@ -1,0 +1,2 @@
+route=tuto_panel/tab_simple_Clavier
+nouvelle=0

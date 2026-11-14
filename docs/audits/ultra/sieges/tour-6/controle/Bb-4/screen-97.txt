@@ -1,0 +1,55 @@
+Écran 97 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 171,42
+bouton « Pro » @ 372,42
+bouton « A » ▾ @ 450,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » ⋮ @ 771,204
+icône « Sound » ♪ [coupé] @ 872,205
+image → @ 871,204
+texte « Teil: A » @ 62,273
+texte « Im Takt 50 % » [coupé] @ 526,304
+texte « 100 % » [coupé] @ 697,304
+texte « Löschen » @ 119,351
+bouton « Bass · Takt 4/8 Noch 2 gestrichelte Noten zu tippen » @ 450,432
+texte « Takt » @ 84,494
+bouton « 4 » @ 486,502
+bouton « 5 » [coupé] @ 853,502
+texte « D♭ » [coupé] @ 84,541
+texte « C3 » @ 84,569
+texte « H » @ 84,611
+texte « B » @ 84,653
+texte « A » @ 84,695
+texte « A♭ » @ 84,737
+texte « G » @ 84,779
+texte « G♭ » @ 84,821
+texte « F » @ 84,863
+texte « E » @ 84,905
+texte « E♭ » @ 84,947
+texte « D » @ 84,989
+texte « D♭ » @ 84,1031
+texte « C2 » @ 84,1073
+texte « H » [coupé] @ 84,1100
+dessin [coupé] @ 492,821
+texte « Der Bass Kapitel 5/16 · Schritt 3/4 · Pro » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: „Auf die nächsten Takte kopieren“, dann schreib Takt 4: G♭ (die kleine Sekunde) und das F eine Oktave höher, um die Phrase abzuschließen. Nochmal „Kopieren“. Lesen » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

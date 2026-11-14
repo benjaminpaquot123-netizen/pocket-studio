@@ -27,7 +27,7 @@ import com.pocketstudio.model.AutoTarget
 /**
  * Pad Live as the app opens it (home screen card → the « Live » project): the Live page's state
  * (pads' lights, the take, the effects) and every gesture going to the ViewModel. [welcome]: opened
- * from the card just now, the first hit sounds as soon as it is in.
+ * from the card just now (nothing plays on its own: tour 6, padlive2, P2).
  */
 @Composable
 fun PadLiveRoute(
@@ -59,11 +59,10 @@ fun PadLiveRoute(
             challengeOpened()
         }
     }
+    // Tour 6, padlive2 (P2, control seat A b #41: « le Clap a joué » untouched): Pad Live opens in silence, nothing
+    // sounds before a finger touches a pad; the card's flag is only let go.
     LaunchedEffect(welcome) {
-        if (welcome) {
-            vm.padLive.welcome()
-            welcomed()
-        }
+        if (welcome) welcomed()
     }
     val busy by vm.padLive.busy.collectAsStateWithLifecycle()
     // Audit ultra round 1, n° 5: a page B to D shown empty for the first time gets its pack (page A: the set above).
@@ -176,7 +175,7 @@ fun PadLiveRoute(
                 dismissTake = vm::dismissPerformance,
             ),
             clockOf = live.clockOf,
-            record = { RecordButton(live.take, actions.record) },
+            record = { RecordButton(live.take) { vm.padLive.record(actions.record) } },
             readLevels = if (com.pocketstudio.engine.NativeEngine.isNative) com.pocketstudio.engine.NativeEngine::clipLevels else null,
         )
     }

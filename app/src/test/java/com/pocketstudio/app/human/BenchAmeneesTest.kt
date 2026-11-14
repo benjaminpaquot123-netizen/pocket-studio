@@ -277,12 +277,17 @@ class BenchAmeneesTest : HumanTester("amenees") {
         if ("joue en boucle" !in heard) heard = act("attends 0.1")
         assertTrue(heard, loopHeard(heard, loop))
         assertEquals("the pad that plays is lit", 2, vm.liveStates.value[loop])
-        tap("padlive_play")
-        assertTrue(vm.transport.value.playing)
+        // Tour 6, padlive2 (P4): a loop playing on its own shows ■ at the top; one touch cuts it (« Tout couper »).
         val stopped = tap("padlive_play")
         assertTrue("■ reached the engine as « every pad off »", "toggleClip -1" in benchEngine.padCommandsHeard())
         assertTrue("■ silences the pads: $stopped", "pad live" !in stopped && "pads live" !in stopped)
         assertEquals(0, vm.liveStates.value[loop])
+        assertFalse(vm.transport.value.playing)
+        // Nothing playing: ▶ starts the music, its ■ stops it.
+        tap("padlive_play")
+        assertTrue(vm.transport.value.playing)
+        tap("padlive_play")
+        assertFalse(vm.transport.value.playing)
 
         // « Enregistrer la performance »: armed, then recording on its line, then written into the song.
         tap("live_record")

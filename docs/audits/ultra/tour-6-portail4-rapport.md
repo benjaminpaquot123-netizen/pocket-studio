@@ -71,3 +71,5 @@ Les deux lignes « depuis la relecture » montrent le prix du point resté ouver
 
 ## Chemins
 - chemin: banc › autotest du testeur humain | test: BenchSelfTest#reachTagTouchesAVisibleElementInPlace
+
+Re-garde (2026-11-13) : les règles de ce lot valent à partir du paquet 6 (`from_paquet 6`), parce que le paquet 5 s'est ouvert avant sa fusion ; rien d'autre ne change.

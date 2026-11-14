@@ -1,0 +1,4 @@
+dialogue:welcome
+dialogue:mode_step
+?
+plus

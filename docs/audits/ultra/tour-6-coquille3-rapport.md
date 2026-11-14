@@ -4,6 +4,12 @@ Branche `eq/tour-6-coquille3`, depuis `eq/tour-6-coquille2` (33e51731), une pair
 
 Fichiers touchés : `projects/ProjectsScreen.kt`, `ui/AppRoot.kt`, `export/ShareSheet.kt`, `remix/RemixScreen.kt`, `ui/AppSpaces.kt`, `synth/PianoRoll.kt`, `synth/SynthScreen.kt` ; tests `ui/Coquille3SeatTest.kt` (neuf), `audit/BenchContrastRemixLibraryTest.kt`, `nav/SimpleModeAuditTest.kt`, `remix/RemixModelAskTest.kt` (visent le bouton de téléchargement qui reste).
 
+controle: coquille3-Da | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
+controle: Ba-6 | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
+controle: Cq3 | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
+
+Siège du tuto : coquille3-Da (Testeur 2, débutant neuf, japonais, chapitres 1 à 7 rejoués sur fd8c57a6, « 章クリア » aux chapitres 5 et 7) ; `synth/PianoRoll.kt` et `synth/SynthScreen.kt` n'ont pas bougé depuis (`git diff fd8c57a6..HEAD` vide sur ces fichiers).
+
 tests: com.pocketstudio.app.ui.Coquille3SeatTest com.pocketstudio.app.export.MyFilesBenchClockTest com.pocketstudio.app.audit.BenchContrastRemixLibraryTest com.pocketstudio.app.nav.SimpleModeAuditTest com.pocketstudio.app.remix.RemixModelAskTest
 
 ## Tenté, preuve rejouée (banc, conditions du siège)

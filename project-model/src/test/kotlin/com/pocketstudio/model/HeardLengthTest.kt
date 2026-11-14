@@ -46,4 +46,16 @@ class HeardLengthTest {
         assertEquals("a « once » clip, its passes", 3 * spb, with(AudioClip("a.wav", "a", seconds = 3 * bar, loopSteps = spb, once = true, scene = p.scene)).heardSceneSteps(p.scene))
         assertEquals("a muted track", p.sceneSteps(p.scene), with(AudioClip("a.wav", "a", seconds = 4 * bar, loopSteps = 4 * spb, scene = p.scene), mute = true).heardSceneSteps(p.scene))
     }
+
+    /** Chef's note (padlive2 entered): the home's « Boucle de N mes. » and the transport say the same number (6, 2, 5). */
+    @Test
+    fun theHomeAndTheTransportSayTheSameLength() {
+        for (bars in listOf(6, 2, 5)) {
+            val p = withTake(bars)
+            assertEquals("a take of $bars bars", p.heardSceneSteps(p.scene) / p.stepsPerBar, SongLength.of(p).bars)
+        }
+        // A brick muted, or one of every part: the same number too.
+        val every = withTake(6).let { it.copy(audioTracks = it.audioTracks.map { t -> t.copy(clip = t.clip!!.copy(scene = null)) }) }
+        assertEquals(every.heardSceneSteps(every.scene) / every.stepsPerBar, SongLength.of(every).bars)
+    }
 }

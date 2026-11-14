@@ -33,6 +33,27 @@ Hors paire : `WeekInTheLifeTest` (trouvé par la suite mélangée, graine 1 : bl
 - (e) Proposition, non faite : un processus par famille (banc `human`, tuto, fuzz `audit3`, le reste) avec `forkEvery` ou quatre tâches `Test`. Gain : un héritage ne traverse plus les familles, un rouge se lit dans sa famille, et deux familles peuvent tourner côte à côte (4 cœurs sur le runner) : la suite passerait peut-être de 40 à 25 min. Coût : chaque processus recharge Robolectric (≈ 30 à 60 s et 1 à 2 Go chacun ; à 2 Go de tas, deux côte à côte tiennent sur 16 Go) ; et on perd une partie de ce qui a trouvé ces fuites (des voisins différents). Je recommande plutôt de garder un processus et de passer la suite mélangée (`-Pshuffle`) une nuit sur deux.
 - (f) Ordre mélangé : `-Pshuffle=<graine>` (ce lot) fait tourner toute la suite dans un seul processus, dans un ordre tiré de la graine (`ShuffledOrderTest`, une suite JUnit de toutes les classes ; la propriété limite le run à elle). Les filtres `--tests` dans un ordre différent n'auraient rien changé : Gradle suit l'ordre de ses fichiers, pas celui des filtres.
 
+## Suite : le rouge de la CI 43531021739 (branche `eq/tour-6-stable-suite`)
+Seul rouge sur 8 980 tests : `LibraryRound2Zone1Test#aSwipeAlongTheFamiliesScrollsWithoutChoosingOne`, « UncaughtExceptionsBeforeTest » ; l'exception : `UnsatisfiedLinkError NativeEngine.exportCreate` < `OfflineExport.<init>:17` < `RhythmViewModel$estimateLiveDrive$1$job$2:11150`.
+
+- **Coupable : `WeekInTheLifeTest`** (rang 241, quatre classes avant). Il crée trois `RhythmViewModel` sans jamais les fermer ; le dernier naît avec le moteur du banc (`BenchEngine`) et lance l'estimation du gain du direct. Le `@After` lâche le moteur ; l'estimation, posée sur la boucle principale (`Dispatchers.Main`), repart dans une classe suivante, quand la règle Compose fait tourner la boucle, et tombe sur la bibliothèque native absente. Le premier test qui ouvre un `runTest` (la règle Compose de LibraryRound2Zone1Test) hérite de l'exception.
+- **Pourquoi le contrôle ne le nommait pas** : `BenchPristine.appThreads()` ne regarde que les fils `DefaultDispatcher-worker` ; une coroutine qui attend sur la boucle principale n'en occupe aucun. Et une exception non attrapée attendait le prochain `runTest`, chez un voisin.
+- **Ce que le contrôle attrape maintenant** (tout test Robolectric ordinaire) : (1) les coroutines de notre code dans la file de la boucle principale (envoi ou `delay`), lues message par message et nommées par leurs étapes suspendues, attendues 10 s boucle tournante, puis le test est rouge à son nom et elles sont annulées (une fuite, un rouge) ; (2) toute exception non attrapée d'une coroutine, rouge du test pendant lequel elle part (aussi pour les tests du banc ; un siège réel l'écrit seulement).
+- **Corrections côté test** (`TestScreens` : les ViewModels ouverts comme des écrans, fermés à la fin, leur travail attendu avant de lâcher le moteur) : `WeekInTheLifeTest`, puis les six classes que le contrôle a nommées dans un passage ciblé des 59 classes qui créent un `RhythmViewModel` avec un moteur de remplacement : LiveVmTest (2, `watchPerformance` sur la boucle), LiveCellJourneyTest et LiveMidiJourneyTest (`watchLaunches`), VoiceInWholeSongTest, TakeOnTheEngineClockTest (2), SixteenBarLoopTest (exceptions natives, moteur lâché trop tôt). Aucun fichier de `app/src/main` touché.
+- **Revue** : M7 (`BenchNetworkEndTest` attend l'écrivain, borné, avant de lire `isAlive`) ; M8 (`ci-rouge.sh` sans `exec` : le dossier téléchargé est supprimé, code de sortie gardé ; test ajouté).
+
+Preuves (passages ciblés, `scripts/bench/gradle-file.sh`) :
+| Passage | Tête | Résultat |
+|---|---|---|
+| Ordinary + WeekInTheLife + DownloadAll + LibraryChoices + LibraryRound2Zone1 | rouge (742cf41ab) | 17 tests, 2 rouges : d_ et e_ « red itself, by name: null » (LibraryRound2Zone1Test vert : la panne ne se rejoue pas sur cette courte suite) |
+| même liste | vert du contrôle (96d27b63c) | 1 rouge : `WeekInTheLifeTest.aWeekWithTheApp` « uncaught exception(s)… UnsatisfiedLinkError exportCreate @ OfflineExport.<init>:17 < RhythmViewModel$estimateLiveDrive$1$job$2:11150 » : la signature de la CI, au nom du coupable |
+| même liste | WeekInTheLife corrigé | 17/17 verts |
+| 59 classes à ViewModel + moteur, + BenchNetworkEnd, BenchPristineAfter | avant les six corrections | 304 tests, 8 rouges dans 6 classes, chacune à son nom |
+| même liste + Ordinary + LibraryRound2Zone1 | 817cfe7e4 | 311 tests, 0 rouge, 5 ignorés |
+| les 60 autres classes qui créent un ViewModel | 817cfe7e4 | 0 rouge |
+
+Reste ouvert : les ~525 autres classes n'ont pas été passées avec le nouveau contrôle (la grande vérification revient au chef) ; une classe qui laisse une coroutine sur la boucle principale y sera rouge à son nom.
+
 ## Preuves
 PREUVES_ICI
 

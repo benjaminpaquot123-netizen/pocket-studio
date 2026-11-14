@@ -1,0 +1,8 @@
+# Décisions du lot « coquille3 » (tour 6, 2026-11-14)
+
+- 2026-11-14 · **E7** — La règle du propriétaire reste (« ← Mes projets » mène à l'accueil) ; la flèche le dit : icône maison, « Accueil » · raison : le siège lisait « Retour » comme « retour à mon morceau » · retour arrière : remettre `ArrowBack` / « Retour » dans `ProjectsScreen.kt`.
+- 2026-11-14 · **Format en Pro** — « Autres fichiers » porte le format de la page Partager (M4A ou WAV) jusqu'à l'export du Mixeur · raison : le Pro partait en WAV sans décision · retour arrière : retirer `setExportFormat(sharePrefs.format)` des deux `otherExports` d'`AppRoot.kt`.
+- 2026-11-14 · **« détails ? »** — En Pro, la phrase du volume prend toute la largeur ; « détails » et « ? » passent dessous, à droite · retour arrière : remettre la `Row` dans `ShareSheet.kt`.
+- 2026-11-14 · **A10** — Un seul « Télécharger le modèle » sur le panneau Remix : celui de la rangée du pouce ; la carte garde la phrase qui explique · raison : deux boutons pour une action · retour arrière : remettre le bouton `remix_download` dans la carte.
+- 2026-11-14 · **A11** — La page « Plus » du Mode simple pose ses tuiles en bas (la flèche de retour reste en haut) · raison : « Remix » hors du pouce d'une main ; le Pro (liste) ne change pas · retour arrière : retirer `heightIn(min = roomHeight …)` et `SpaceBetween` dans `PlusSpace`.
+- 2026-11-14 · **P1** — Toucher « Notes » cadre toutes les notes jouées (comme « Tout voir ») quand certaines dépassent la mesure 1 ; c'est un toucher de l'utilisateur, rien ne zoome tout seul ; le tuto (pas de demande) ne change pas · retour arrière : retirer `frameAllAsked` de `PianoRoll` et `notesAsked` de `SynthScreen`.

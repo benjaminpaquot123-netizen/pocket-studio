@@ -1,7 +1,17 @@
 # Tour 6, lot du banc « rejeux7 » : relecture neuve
-Relu : 7dbb5c7fd1ebe3adfad9fb48b19bdea18e9b1293
+Relu : 3f7adf5f3b538e1d529f3e97935b9a6e98cee807
 
-Relecteur neuf (n'a rien écrit de ce lot), deuxième passage. Le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+Relecteur neuf (n'a rien écrit de ce lot), troisième passage. Le deuxième passage est gardé tel quel ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+
+## Troisième passage (fusion de l'intégration `2fbf6eb17`)
+
+Depuis la relecture `87ac81728`, un seul commit : `3f7adf5f3`, fusion de la tête d'intégration `2fbf6eb17` (le portail avait un conflit avec cette tête).
+
+- Fichiers du lot (`rejeux/`, `rejeux-attente/`, rapport, relecture, décisions) : `git diff 87ac81728 HEAD` sur ces fichiers est vide. La fusion n'en change aucun.
+- Tout le reste est identique à `2fbf6eb17` (`git diff 2fbf6eb17 HEAD` hors fichiers du lot : vide) ; tout ce que la fusion apporte vient de l'intégration (`scripts/bench/`, traces du portail).
+- `git diff origin/ccr-80af1a1b-mn0wec HEAD --stat` : 114 fichiers, 1505 lignes ajoutées, 0 retirée, tous des docs du lot.
+- `git merge-tree --write-tree origin/ccr-80af1a1b-mn0wec HEAD` : propre (code 0, arbre `7efb9031b`), aucun conflit.
+- Aucun point neuf. Les points ouverts des passages précédents restent valables (T4, part des cases, non corrigé sur la tête ; N4 et N5 « tentés »).
 
 ## Deuxième passage (après le refus du portail, code 8)
 

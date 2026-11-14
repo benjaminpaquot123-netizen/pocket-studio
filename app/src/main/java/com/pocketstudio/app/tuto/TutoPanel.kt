@@ -177,6 +177,11 @@ object TutoHints {
      * moment over the grid (testers, lot « tuto 4 »: the page turned without a word, the hits seemed gone).
      */
     var banner by mutableStateOf<String?>(null)
+    /**
+     * The drum grid with its tutorial line is on the screen (RhythmScreen): with dotted cells to touch on it, the panel
+     * leaves their rows room (replay t6-ha19-cases-panneau: at 100 % the first row was cut under the open panel).
+     */
+    var gridInSight by mutableStateOf(false)
     /** The step shown (its id): a screen places its view once per step, never again by itself (lot « tuto 5 »). */
     var step by mutableStateOf<String?>(null)
     /**
@@ -197,7 +202,7 @@ object TutoHints {
     @androidx.annotation.VisibleForTesting
     fun reset() {
         cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
-        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null
+        erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }
 }
@@ -207,6 +212,9 @@ const val TUTO_GRID_LINE_SPOT = "tuto_grid_line"
 
 /** How long a screen waits before turning by itself for the tutorial (the last touch seen first). */
 const val TUTO_TURN_MS = 450L
+
+/** The room of a step's words while its dotted cells are on the drum grid shown ([TutoHints.gridInSight]). */
+private val GRID_WORDS_MAX = 120.dp
 
 /** How long [TutoHints.banner] stays. */
 const val TUTO_BANNER_MS = 1800L
@@ -442,7 +450,10 @@ fun TutoPanel(
     val density = LocalDensity.current
     // The unfolded panel's height, taken once for its step and then held (0: not taken yet).
     val end = ui.atEnd || ui.finished
-    var held by remember(step.id, ui.open, ui.progress.level, end) { mutableIntStateOf(0) }
+    // Replay t6-ha19-cases-panneau (100 %, panel open on the kick step): the cells to touch on the grid shown keep
+    // their two rows above the panel; the words scroll (« Lire la suite ») in a lower room (the height taken again).
+    val cellsToTouch = TutoHints.gridInSight && TutoHints.cells?.second?.isNotEmpty() == true
+    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
@@ -531,7 +542,7 @@ fun TutoPanel(
             }
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
-            val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
+            val most = if (chapter.map && map.isNotEmpty()) 290.dp else if (cellsToTouch) GRID_WORDS_MAX else 240.dp
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
             // The words take the room « Pourquoi ? » and « Lire la suite » leave them (measured first, no frame late).
             // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »

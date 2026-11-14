@@ -672,6 +672,11 @@ private fun StepGrid(
             }
         }
         if (tutoActive && !allPads) {
+            // The panel knows the grid and its cells to touch are on the screen (it leaves their rows room).
+            androidx.compose.runtime.DisposableEffect(Unit) {
+                com.pocketstudio.app.tuto.TutoHints.gridInSight = true
+                onDispose { com.pocketstudio.app.tuto.TutoHints.gridInSight = false }
+            }
             com.pocketstudio.app.tuto.TutoGridLine(
                 bar = bar, bars = bars, pad = padName(project, lane),
                 here = tutoLeft.count { it / per == bar },

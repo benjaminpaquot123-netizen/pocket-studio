@@ -1,0 +1,27 @@
+Écran 16 (588x1278)
+dessin @ 294,110
+texte « Prêt à partager ? » @ 258,182
+icône ✕ @ 522,182
+champ « Nom du morceau (et du projet) » contenu « Trap » @ 294,285
+icône ✕ @ 522,292
+texte « 2:58 » @ 66,372
+texte « 26 parties » @ 167,377
+bouton ■ «  Arrêter » @ 470,413
+texte « Volume : −14,0, comme la musique en streaming (−14) » @ 135,432
+texte « détails » @ 284,433
+bouton « ? » @ 348,432
+texte « Volume visé » @ 89,513
+bouton « ? » @ 170,512
+bouton « Streaming · −14 LUFS » [sélectionné] @ 164,576
+bouton « Club · −8 LUFS » @ 407,576
+bouton « Auto (Trap) · −8,5 LUFS » @ 174,657
+bouton « Désactivée » @ 409,657
+texte « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » @ 294,739
+image (rond coché) @ 45,815
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 316,828
+bouton (clap de cinéma) «   Vidéo pour les réseaux · 30 s » @ 294,912
+bouton « M4A · pour partager » [sélectionné] @ 157,1020
+bouton « WAV · qualité max » @ 414,1020
+bouton (trois points reliés) «   Partager » @ 294,1116
+bouton (dossier) « Mes fichiers Retrouver et renvoyer : M4A, WAV, vidéo, .zip » › @ 272,1218
+bouton « ? » @ 536,1218

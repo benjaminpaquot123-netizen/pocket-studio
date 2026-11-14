@@ -7,7 +7,7 @@ Fichiers touchés : `projects/ProjectsScreen.kt`, `ui/AppRoot.kt`, `export/Share
 controle: coquille3-Da | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
 controle: Ba-6 | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
 controle: Cq3 | code testé: fd8c57a6 | bloqués: 0 | graves neufs: 0
-controle: Ac-4 | code testé: 83ecc886 | bloqués: 0 | graves neufs: 0
+controle: coquille3-Ac | code testé: 83ecc886 | bloqués: 0 | graves neufs: 0
 
 Siège du tuto : coquille3-Da (Testeur 2, débutant neuf, japonais, chapitres 1 à 7 rejoués sur fd8c57a6, « 章クリア » aux chapitres 5 et 7) ; `synth/PianoRoll.kt` et `synth/SynthScreen.kt` n'ont pas bougé depuis (`git diff fd8c57a6..HEAD` vide sur ces fichiers).
 
@@ -56,4 +56,4 @@ chemin: Plus › Mes projets (le mot à côté de la maison) (fr, Mode simple) |
 - **Zoom « − » coupé au bord droit en japonais** (Testeur 2, écran 124) : la rangée d'outils du piano roll défile de côté ; non changé (zone du piano roll), à regarder sur le téléphone.
 chemin: Partager › Mes fichiers avant puis après un envoi (fr, Mode simple) | test: Coquille3SeatTest#n4_myFilesOpenedBeforeAndAfterASendLoadsInRealTime
 
-- **E7** : constaté (Ac-4, écrans 6-7 : « Accueil » écrit à côté de la maison, mène à l'accueil).
+- **E7** : constaté (coquille3-Ac, siège Ac-4 du Testeur 1, écrans 6-7 : « Accueil » écrit à côté de la maison, mène à l'accueil).

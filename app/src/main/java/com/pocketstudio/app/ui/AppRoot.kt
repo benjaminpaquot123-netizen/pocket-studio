@@ -431,6 +431,11 @@ fun AppRoot() {
     // ⤴ « Prêt à partager ? » (top bar, Mes projets, the steps, « Ton morceau est prêt »): the
     // checks, the name and M4A or WAV; then the export's progress and Android's share sheet.
     val sharePrefs = remember { com.pocketstudio.app.export.SharePrefs(context) }
+    // Tour 6, seat A c (gesture 13): Pro's files keep the format chosen on the share page (M4A or WAV), never WAV by
+    // themselves; a FLAC chosen in Pro stays (fresh review of coquille3: the share page offers no FLAC).
+    val carryShareFormat = {
+        if (rhythmVm.export.value.format != com.pocketstudio.app.rhythm.ExportFormat.Flac) rhythmVm.setExportFormat(sharePrefs.format)
+    }
     var showShare by rememberSaveable { mutableStateOf(false) }
     var showVideo by rememberSaveable { mutableStateOf(false) }
     // « Changer un son »: the sounds of an instrument track in a sheet (null: closed).
@@ -1084,7 +1089,7 @@ fun AppRoot() {
     notice?.takeIf { trackSheetKey == null && layersTrack == null }?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = rhythmVm::dismissNotice,
-            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice) { Text(tr("Compris")) } },
+            confirmButton = { TextButton(onClick = rhythmVm::dismissNotice, modifier = Modifier.testTag("notice_ok")) { Text(tr("Compris")) } },
             dismissButton = if (rhythmVm.canUndoFavoriteDelete) {
                 { TextButton(onClick = rhythmVm::undoFavoriteDelete, modifier = Modifier.testTag("favorite_undo")) { Text(tr("Annuler")) } }
             } else if (noticeLengthen == text) {
@@ -1801,6 +1806,8 @@ fun AppRoot() {
             toMixer = if (simple) null else ({ tab = AppTab.Mixeur; mixerFocus = com.pocketstudio.app.mixer.Where.Master }),
             otherExports = {
                 if (simple) SettingsStore.update(context) { it.copy(simpleMode = false) }
+                // Tour 6, seat A c (gesture 13): Pro's files keep the format chosen here (M4A), never WAV by themselves.
+                carryShareFormat()
                 go(AppTab.Mixeur)
                 mixerFocus = com.pocketstudio.app.mixer.Where.Export
             },
@@ -3905,7 +3912,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 toStructure = { go(AppTab.Morceau) },
                                 // Audit final (01 M6, 05, 08): no « Voir dans Mix » (it left the Mode simple without a word).
                                 toMixer = null,
-                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
+                                otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; carryShareFormat(); go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
                                 sendProject = zipSender::sendOpen,

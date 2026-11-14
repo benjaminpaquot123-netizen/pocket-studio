@@ -453,12 +453,14 @@ fun ShareSheetContent(
                 (ui.exportLufs ?: ui.lufs)?.let { lufs ->
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Tour 6, control seat Ac-3 (screen 45): beside a sentence on two lines, « détails ? » read in its middle
+                    // (« comme la musique de détails ? club »): the sentence whole, then « détails » and its « ? » under it.
+                    Text(
+                        tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice })),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.fillMaxWidth().testTag("share_loudness"),
+                    )
+                    if (!simple) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice })),
-                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
-                        )
-                        if (!simple) Text(
                             if (details) tr("masquer") else tr("détails"), style = MaterialTheme.typography.labelSmall, color = Neon.Cyan,
                             modifier = Modifier.clickable(role = Role.Button) { details = !details }.padding(6.dp).testTag("share_details"),
                         )

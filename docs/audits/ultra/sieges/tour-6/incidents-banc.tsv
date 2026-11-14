@@ -16,6 +16,8 @@ controle/Bb	89	10	écran 90 au texte vide, « regarde » refait, toujours vide ;
 controle/Bb	127	5	écran 128 au texte vide, image normale
 controle/Bb	0	0	outils hors human-act : Read des PNG et ls/grep de mon propre dossier de siège (journal.txt pour les #N), rien d'autre
 controle/Cq2-b	10	5	écran 10 en texte vide (seule la barre REC) juste après « 自分でやる » ; écran 11 normal après « attends 5 »
+controle/Cq3	14-16 et 60-62	~25 s puis ~95 s	« Mes fichiers » reste sur « Chargement de la liste… » juste après un envoi (peut-être le banc : banc?: temps)
+controle/Cq3			cat/heredoc sur mon seul dossier de siège (lecture start.txt, écriture rapport.md)
 controle/Da-4	52	0	écran 53 en texte vide (seul le pied « REC/メモ ») ; l'image montrait la grille, joué sur l'image
 controle/Da-4	136	0	idem écrans 137, 138, 157, 162 (texte vide, image correcte)
 controle/Da-4	-	0	outils hors human-act.py : Read des consignes (demandé), Read des images du banc, Read/Write de rapport.md
@@ -26,6 +28,7 @@ controle/Ha-4	33	0	l'écran 34 rendu en texte vide (seulement « Son : rien ne j
 controle/Ha-4	0	0	outils hors human-act.py : Read sur les consignes et sur les images de mon siège, cat/ls de mon siège, grep pour filtrer la sortie du banc
 controle/Ha	33	0	écran 34 rendu vide en texte (seule la pastille REC), l'image était normale ; idem gestes 41, 209, 248, 254 (écrans 42, 210, 249, 255)
 controle/Ha	26	0	outils utilisés hors human-act.py : Read (consignes et .png du siège), grep/sed/head pour filtrer la sortie, fichier temporaire last.txt dans le siège (effacé) ; un « head » a cassé l'affichage au geste 26 (geste bien joué)
+controle/coquille3-Da	21	2	écran presque vide (seule la barre feedback) après « 自分でやる », revenu après « attends 2 » ; même chose aux gestes 28, 36, 41, 47, 54
 A/a	0	0	avant le jeu, pour mettre le banc en route sur cette machine : selftest.sh du lotA relancé (vert, 173 tests), human-tester.sh lancé, fiches start.txt de lotA/b et lotA/c mises de côté (consigne de la discussion principale) ; Read des images et lecture de journal.txt dans mon dossier de siège seulement
 A/b	0	600	le premier « regarde » attendait sans banc lancé ; banc lancé par moi (scripts/human-tester.sh) après le selftest vert du lot (scripts/bench/selftest.sh), sur consigne de la discussion principale ; outils hors human-act : bash (ls, cat, grep, sed sur la sortie du banc et mon dossier de siège), Read sur mes images
 A/b	60	0	l'appui long sur « Écho » ne donne aucune trace d'effet dans la ligne « Son » : le banc ne semble pas dire les effets (la promesse 3 ne se prouve donc qu'à l'écran)

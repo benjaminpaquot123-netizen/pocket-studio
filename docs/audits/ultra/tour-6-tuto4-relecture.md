@@ -1,5 +1,5 @@
 # Tour 6 — lot « tuto4 » : relecture neuve
-Relu : f2a9a41ec714face4384d5e1d7f238f1e0204a4c
+Relu : 2d39f0f4a3a45140392612fb3747fd0802f1caa9
 
 Relecture par un sous-agent neuf qui n'a pas écrit le lot : commits du lot depuis `49e7c7996` (branches `t4-house`, `t4-techno`, fusions, rapport, décisions), lus avec les catalogues hors tuto (`i18n/*/*.json`), `RhythmScreen.kt` (feuille du pad, menu du coup), `SimpleMix.kt`, `ExportCheck.kt`, `ShareSheet.kt`, `Loudness.kt`, `TutoPanel.kt`, `TutoChecks.kt` et `AppRoot.kt` (niveau du tuto et Mode simple).
 
@@ -103,5 +103,13 @@ Aucun. Aucun test relancé ne change de couleur ; ni la sauvegarde ni le son ne 
 - T4 tient avant le toucher (cases au-dessus du panneau, `Tour6TutoCellsPanel100Test` vert). Après le toucher, des cases peuvent passer sous le panneau : acceptable, c'est l'utilisateur qui a choisi de lire, et replier le panneau rend la petite pièce. Si la consigne dépasse encore 240 dp, « Lire la suite » reste et fait défiler (`cellsToTouch` faux).
 - Mineur (noté, sans correction) : `readAll` n'est pas remis à faux quand `lowRoom` change dans la même étape (dernière case touchée puis nouvelles cases) ; sans effet vu, la pièce normale reste lisible.
 - `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Tour6TutoReadAllTest' --tests '*Tour6TutoCellsPanel100Test' --tests '*Tour6TutoPanel*'` sur f2a9a41ec : BUILD SUCCESSFUL en 1 min 14 s, 22 classes, 33 tests, 0 échec, 1 ignoré (l'`assumeTrue` du banc humain de `Tour6TutoCellsPanel100Test`, déjà là).
+
+## Delta f2a9a41e → 2d39f0f4a
+
+- Aucun code du lot après f2a9a41ec : seulement la fusion propre de l'intégration d106ac26f (3ef5cab9a, `git show --cc` vide, aucune résolution de conflit ; CI 43612440874 verte ; rejeux t4-26, t6-da15, t6-ec17, t6-ga14, t6-ha19 « oracle tenu ») puis un commit de documents (2d39f0f4a).
+- Sièges de contrôle Da-11 (50 fichiers) et Da-10 (580 fichiers) copiés sous `sieges/tour-6/controle/` : tous ajoutés, rien d'écrasé (seul le rapport du lot est modifié).
+- Rapport de Da-11 : « code testé : 31aa3661 », « bloquant ou grave : aucun », « Lire la suite » corrigé au ch. 3 (écran 9, consigne entière affichée) et retour sur les cases corrigé (écran 11).
+- Rapport du lot : une seule ligne `controle: Da-11 | code testé: 31aa3661 | bloqués: 0 | graves neufs: 0`, les anciens sièges gardés en prose comme preuves ; `rapport-zone.py eq/tour-6-tuto4 … --tuto` : sortie 0.
+- Mineur (noté, sans correction) : le lien « 続きを読む ⌄ » reste affiché après lecture complète (finition vue par Da-11).
 
 Verdict : 0 bloquant, 0 grave — fusion possible

@@ -166,4 +166,32 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         assertTrue("« Notes » opened on bar 1, the melody's bars out of sight:\n" + screen(), whole("roll_bar_1") && whole("roll_bar_3"))
     }
 
+
+    /**
+     * Fresh review of coquille3 (grave): the frame asked by « Notes » is one touch's, not the grid's for good: the zoom
+     * the user chose after it stays when the grid comes back from another tab (nothing zooms by itself).
+     */
+    @Test
+    fun p1_theZoomChosenAfterNotesStaysWhenTheGridComesBack() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille3-journal.txt"))
+        tap("tab_simple_Clavier")
+        repeat(2) { act("attends 1") }
+        val v = rhythm()!!
+        val tick = com.pocketstudio.model.NoteClip.TICKS_PER_STEP
+        val melody = (1 until 4).flatMap { bar -> (0 until 4).map { beat -> com.pocketstudio.model.Note((bar * 16 + beat * 4) * tick, 2 * tick, 64 + beat) } }
+        v.replaceNoteClip(com.pocketstudio.model.NoteClip(steps = 64, notes = melody), null)
+        repeat(2) { act("attends 1") }
+        tap("mode_notes")
+        repeat(2) { act("attends 1") }
+        assertTrue("« Notes » did not frame the melody:\n" + screen(), whole("roll_bar_3"))
+        // The user zooms in (one bar or so in sight), goes to another tab and comes back.
+        repeat(6) { compose.onNodeWithTag("zoom_in").performScrollTo().performClick() }  // its row scrolls sideways on a phone
+        act("attends 1")
+        assertTrue("the zoom in left bar 4 in sight:\n" + screen(), !whole("roll_bar_3"))
+        tap("tab_simple_Rythme"); act("attends 1")
+        tap("tab_simple_Clavier"); repeat(2) { act("attends 1") }
+        assertTrue("the grid framed again by itself when it came back:\n" + screen(), !whole("roll_bar_3"))
+    }
 }

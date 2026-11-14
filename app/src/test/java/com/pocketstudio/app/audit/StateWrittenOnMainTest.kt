@@ -9,7 +9,7 @@ import java.io.File
  * de la liste… » for good. Its effect read the files off the main thread and wrote the result into the screen's state from
  * the reading thread (where a composition effect resumes when its dispatcher does not take it back): that write never
  * reached the screen. A screen's effect (LaunchedEffect, produceState) that keeps the
- * result of a `withContext(Dispatchers.IO)` writes it on the main thread (`withContext(Dispatchers.Main)` in the block).
+ * * result of a `withContext(Dispatchers.IO)` (or `Dispatchers.Default`) writes it on the main thread (`withContext(Dispatchers.Main)` in the block).
  */
 class StateWrittenOnMainTest {
     private val sources = File("src/main/java").walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
@@ -30,7 +30,7 @@ class StateWrittenOnMainTest {
     fun aScreensEffectKeepsWhatItReadOffTheMainThreadOnTheMainThread() {
         assertTrue("no sources read from ${File(".").absolutePath}", sources.size > 100)
         val start = Regex("""\b(LaunchedEffect|produceState)\s*\([^{]*\{""")
-        val keptFromIo = Regex("""(^|[\n{;])\s*(val\s+\w+(\s*:[^=]+)?|var\s+\w+|\w+|value)\s*=\s*(kotlinx\.coroutines\.)?withContext\(\s*(kotlinx\.coroutines\.)?Dispatchers\.IO""")
+        val keptFromIo = Regex("""(^|[\n{;])\s*(val\s+\w+(\s*:[^=]+)?|var\s+\w+|\w+|value)\s*=\s*(kotlinx\.coroutines\.)?withContext\(\s*(kotlinx\.coroutines\.)?Dispatchers\.(IO|Default)""")
         val found = sources.filter { "@Composable" in it.readText() }.flatMap { f ->
             val text = f.readText()
             start.findAll(text).mapNotNull { m ->

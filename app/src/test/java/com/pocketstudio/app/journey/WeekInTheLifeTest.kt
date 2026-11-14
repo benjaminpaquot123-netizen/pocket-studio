@@ -51,10 +51,34 @@ import kotlin.math.sin
 class WeekInTheLifeTest {
     private val app: Application = ApplicationProvider.getApplicationContext()
 
+    /** The screens' stores of the ViewModels this test opens: cleared at its end, as the app's screens are when they go. */
+    private val stores = ArrayList<androidx.lifecycle.ViewModelStore>()
+
+    /** The app's view model, made as a screen's (its store cleared when the test ends). */
+    private fun open(): RhythmViewModel {
+        val store = androidx.lifecycle.ViewModelStore().also { stores += it }
+        val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = RhythmViewModel(app) as T
+        }
+        return androidx.lifecycle.ViewModelProvider(store, factory)[RhythmViewModel::class.java]
+    }
+
     @After
     fun end() {
-        com.pocketstudio.engine.NativeEngine.sink = null
-        SettingsStore.forgetForTests()
+        // Tour 6, lot « stable », follow-up (CI 43531021739): the ViewModels were never cleared; the last one's live-gain
+        // estimate, started with the bench's engine, waited on the main looper for its sounds and ran in a later class, the
+        // engine gone (UnsatisfiedLinkError, reported by LibraryRound2Zone1Test). Their screens close, and their work ends
+        // (the main looper running) before the engine is let go.
+        try {
+            stores.forEach { it.clear() }
+            until("the app's work after the screens closed: ${com.pocketstudio.app.human.BenchPristine.appThreads() + com.pocketstudio.app.human.BenchPristine.appMainCoroutines()}") {
+                com.pocketstudio.app.human.BenchPristine.appThreads().isEmpty() && com.pocketstudio.app.human.BenchPristine.appMainCoroutines().isEmpty()
+            }
+        } finally {
+            com.pocketstudio.engine.NativeEngine.sink = null
+            SettingsStore.forgetForTests()
+        }
     }
 
     private fun until(what: String, ok: () -> Boolean) {
@@ -107,7 +131,7 @@ class WeekInTheLifeTest {
         CurrentProject.set(app, id)
         // A tutorial begun on it: two steps done.
         PrefsTutoStore(app).save(id, TutoProgress(style = "acidcore", level = TutoLevel.Facile, done = setOf("ref", "tempo"), current = "kick"))
-        var vm = RhythmViewModel(app)
+        var vm = open()
 
         // Edited: the tempo, a hit.
         vm.setTempo(150.0)
@@ -140,7 +164,7 @@ class WeekInTheLifeTest {
         // --- Thursday: the app opened again (a new process: the ViewModel and the settings read again).
         SettingsStore.forgetForTests()
         SettingsStore.load(app)
-        vm = RhythmViewModel(app)
+        vm = open()
         assertMondayIsThere(vm.project.value, monday, cellTrack)
         assertTrue("the Mode simple kept", SettingsStore.state.value.simpleMode)
         val tuto = PrefsTutoStore(app).load(id)
@@ -171,6 +195,6 @@ class WeekInTheLifeTest {
         SettingsStore.forgetForTests()
         SettingsStore.load(app)
         assertTrue(SettingsStore.state.value.simpleMode)
-        assertMondayIsThere(RhythmViewModel(app).project.value, monday, cellTrack)
+        assertMondayIsThere(open().project.value, monday, cellTrack)
     }
 }

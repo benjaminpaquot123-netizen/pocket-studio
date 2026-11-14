@@ -41,3 +41,10 @@ ne corrige pas: N5 : le N5 du tri (mesure dite par la ligne du piano roll du tut
 - Constatés : A10, A11.
 - **E7, autre** (écrans 6 et 8 : une maison seule, sans mot) : « Accueil » écrit à côté de la maison (mot déjà traduit dans les 14 langues). `Coquille3SeatTest#e7_theHomeWordIsWrittenBesideTheHouse`.
 chemin: Plus › Mes projets (le mot à côté de la maison) (fr, Mode simple) | test: Coquille3SeatTest#e7_theHomeWordIsWrittenBesideTheHouse
+
+## Contrôle (Testeur 3, ccr-6a8c6318-dvnp3y fcc443ec, code fd8c57a6 ; Testeur 2, P1) : suites
+- Constatés : format en Pro (et FLAC), « détails ? », P1.
+- **« Mes fichiers » sur « Chargement de la liste… »** (Cq3, écrans 14-16 et 60-62) : reproduit au banc 1 fois sur 5 (JVM froide), par le chemin du siège (« Mes fichiers » ouvert avant l'envoi puis après). Cause : la liste est lue hors du fil principal (MediaStore) ; le « attends » du banc avance son horloge, pas celle du mur (« attends 5 » prend bien moins de 5 s réelles), donc une lecture lente reste « Chargement » quel que soit le nombre de « attends ». Avec du temps réel, la liste vient toujours. Pas un défaut de l'appli : temps du banc, prouvé par `Coquille3SeatTest#n4_myFilesOpenedBeforeAndAfterASendLoadsInRealTime`. À proposer au banc : « attends » qui laisse aussi finir le travail en arrière-plan.
+- **« Autres fichiers » absent au 2e passage (Pro)** (Cq3, écrans 41, 45, 46) : la ligne est là, sous le pli de la partie qui défile (« Tout est prêt » ajoute une ligne au 2e passage) ; les glissés du siège partaient des rangées fixes (M4A/WAV, « Mes fichiers »), qui ne font pas défiler. Pas changé ici ; à voir avec un siège si la ligne doit remonter.
+- **Zoom « − » coupé au bord droit en japonais** (Testeur 2, écran 124) : la rangée d'outils du piano roll défile de côté ; non changé (zone du piano roll), à regarder sur le téléphone.
+chemin: Partager › Mes fichiers avant puis après un envoi (fr, Mode simple) | test: Coquille3SeatTest#n4_myFilesOpenedBeforeAndAfterASendLoadsInRealTime

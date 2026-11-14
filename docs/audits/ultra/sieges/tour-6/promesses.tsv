@@ -19,6 +19,8 @@ controle/Ba-3	t6-Ba-1	Tout le Remix et la découpe se font à la main gauche, sa
 controle/Ba-3	t6-Ba-2	✂ « Cortar lo que quiero » (seul bouton plein de la carte « Ma chanson préférée »)	8	oui	une seule action pleine dans la carte, « Tocar con el proyecto » est en contour	
 controle/Ba-3	t6-Ba-3	« La canción pasa 0:38 del final del tema: su final se cortará. »	70	oui	affiché à « Poner en mi proyecto » sur un projet d'1 mesure	
 controle/Ba-3	t6-Ba-4	« ✂ ▾ Frases » / « En el tiempo » [coupé]	20	non	en Frases/Compases les puces de mode passent sous le panneau « Marca trozos », invisibles (images 20, 23, 37) ; en « Un trozo » tout est visible (écran 14)	
+controle/Ba-4	t6-Ba-4	bouton ✂ « Un trozo » ▾ / bouton ✂ « Frases » ▾	10, 12	oui	ligne d'outils sous la forme d'onde dans les deux modes ; « En una pista » touché au geste #14 et posé (écran 14)	
+controle/Ba-4	t6-Ba-3	« La canción pasa 0:38 del final del tema: su final se cortará. »	47	oui	phrase juste (0:40 contre 1 compás = 0:02) ; « Alargar el tema » passe A à 20 compases (écran 48)	
 controle/Bb-4	t6-Bb-1	Du bist dran: Gib ein ganz kleines bisschen Swing dazu (7 %)	20	oui	le curseur Swing est sous la carte, le glisser valide l'étape (Bravo, Kapitel geschafft)	contredite
 controle/Bb-4	t6-Bb-2	Tippe bei einem Sound auf ☆, um ihn unter „Favoriten“ wiederzufinden.	241	oui	☆ visible à côté de chaque son, un toucher le remplit (★)	contredite
 controle/Bb-4	t6-Bb-3	Neue Kurve: zeichne sie unten.	207	oui	les barres de la courbe apparaissent dès le premier trait	

@@ -163,8 +163,10 @@ fun ProjectsScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Tour 6, seat A c (E7), the owner's rule (2026-10-29: « ← » of « Mes projets » goes to the welcome page): the
                 // button says where it goes, « Accueil » with its house, not a « Retour » that the user reads as « back to my song ».
-                IconButton(onClick = actions.back, modifier = Modifier.testTag("projects_back")) {
-                    Icon(Icons.Filled.Home, contentDescription = tr("Accueil"))
+                // Control of coquille3: the word written beside the house (the house alone said nothing on the screen).
+                TextButton(onClick = actions.back, modifier = Modifier.heightIn(min = 48.dp).testTag("projects_back")) {
+                    Icon(Icons.Filled.Home, contentDescription = null)
+                    Text(" " + tr("Accueil"), maxLines = 1)
                 }
                 Text(tr("Mes projets"), style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
             }

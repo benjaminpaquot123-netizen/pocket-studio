@@ -1,7 +1,19 @@
 # Tour 6, lot du banc « rejeux7 » : relecture neuve
-Relu : 033f94985a61103c00a43ae872a004704a74f5dd
+Relu : 47b4634dab603feb0266d7a47842c7f68f19d6cd
 
-Relecteur neuf (n'a rien écrit de ce lot), quatrième passage. Les deuxième et troisième passages sont gardés tels quels ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+Relecteur neuf (n'a rien écrit de ce lot), cinquième passage. Les deuxième, troisième et quatrième passages sont gardés tels quels ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+
+## Cinquième passage (rapport corrigé, intégration `09e2f2b0c`)
+
+Depuis la relecture `db9a2c044` : `61ae0189d` (rapport, renommage, `.gitignore`) et `47b4634da` (fusion de l'intégration `09e2f2b0c`, second parent de la fusion).
+
+- `git diff origin/ccr-80af1a1b-mn0wec 47b4634da` (l'intégration est bien `09e2f2b0c`) : seulement les fichiers du lot (`.gitignore`, `rejeux/` et `rejeux-attente/` de ses quatre rejeux et de leurs passages, le rapport, la relecture, `docs/decisions/tour-6-rejeux7.md`). Rien hors `docs/` sauf `.gitignore`.
+- `git diff -M --summary db9a2c044 61ae0189d` : les 36 fichiers de `rejeux-attente/_journaux/` deviennent `rejeux-attente/_non-tenu-tete/`, tous en `rename … (100%)` ; une ligne `.gitignore` (`docs/audits/ultra/rejeux-attente/_journaux/`) ; le rapport change de 3 lignes. Plus aucun fichier suivi sous `rejeux/_journaux/` ni `rejeux-attente/_journaux/`.
+- `grep` dans `scripts/bench` : aucun script ne lit `rejeux-attente/_journaux` ; seul `rejeu-defauts.sh` y écrit (`$dir/_journaux/$id`), désormais ignoré par git. Les rejeux se trouvent par `<id>/oracle.txt` : `_non-tenu-tete/` (sans `oracle.txt`) n'est pas pris pour un rejeu.
+- Phrases neuves du rapport, vraies : `t6-ga14` compte 15 `cmd-*.txt`, `cmd-13.txt` = `touche notice_ok` ; les journaux de la tête ne sont plus suivis ; `rejeux-attente/_non-tenu-tete/t6-ha19-cases-panneau/verdict.txt` dit bien « oracle non tenu ».
+- `python3 -I scripts/bench/test_socle.py` : 29 tests, OK.
+- Le moyen du quatrième passage est levé ; son mineur sur `rejeux-attente/_journaux/` aussi. Reste le mineur déjà noté : la preuve « non tenu sur 1585bb46 » de `t6-ga14` vient de la version à 14 gestes.
+
 
 ## Quatrième passage (journaux sortis du suivi, `t6-ga14` reciblé sur `notice_ok`, intégration `ae8727624`)
 

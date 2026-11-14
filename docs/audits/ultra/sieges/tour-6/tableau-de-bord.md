@@ -147,7 +147,7 @@ Toutes remplies : non
 | tour-3 | 24 | 241 | 10.0 | v1 | 2.25 | 2.25 | 231 | 0 | 0 | 1/3 | 0 |
 | tour-4 | 20 | 186 | 9.3 | v1 | 1.35 | 1.3 | 183 | 0 | 0 | 1/2 | 0 |
 | tour-5 | 24 | 190 | 7.9 | v2 | 0.62 | 0.33 | 182 | 2 | 14 | 24/78 | 7 |
-| tour-6 | 31 | 262 | 8.5 | v2 | 0.42 | 0.29 | 219 | 0 | 59 | 34/72 | 1 |
+| tour-6 | 34 | 262 | 7.7 | v2 | 0.38 | 0.26 | 219 | 0 | 59 | 34/72 | 1 |
 
 Changement d'échelle entre tour-4 et tour-5 (v1 → v2) : les graves de ces deux tours ne se comparent pas.
 

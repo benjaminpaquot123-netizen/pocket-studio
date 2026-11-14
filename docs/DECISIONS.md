@@ -1507,3 +1507,4 @@
 - 2026-11-13 · lot « paquet7 » (tour-6) : 4 décision(s) dans `docs/decisions/tour-6-paquet7.md`
 - 2026-11-13 · lot « tuto3b » (tour-6) : 12 décision(s) dans `docs/decisions/tour-6-tuto3b.md`
 - 2026-11-13 · lot « constate » (tour-6) : 48 décision(s) dans `docs/decisions/tour-6-constate.md`
+- 2026-11-14 · lot « padlive2 » (tour-6) : 6 décision(s) dans `docs/decisions/tour-6-padlive2.md`

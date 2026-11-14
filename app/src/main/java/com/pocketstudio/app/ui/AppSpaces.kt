@@ -299,8 +299,12 @@ internal fun PlusSpace(
         } else if (page == null) {
             if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             com.pocketstudio.ui.ReadingWidth(maxWidth = 640.dp) {
-                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    if (leave != null) PlusLeaveRow(leave)
+                // Tour 6, seat B a (A11, control Ba-5 screen 6): the tiles stood at the top, « Remix » out of a left thumb's
+                // reach; they sit at the page's foot (the way back stays on top), where one hand reaches them.
+                val roomHeight = this@BoxWithConstraints.maxHeight
+                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).then(if (tiles) Modifier.heightIn(min = roomHeight - 24.dp) else Modifier), verticalArrangement = if (tiles) Arrangement.SpaceBetween else Arrangement.spacedBy(6.dp)) {
+                    if (leave != null) PlusLeaveRow(leave) else if (tiles) Spacer(Modifier.height(0.dp))
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a row cut
                     // their titles (« Bibliothèque de sons »): two a row, then the list, as the room per title allows.
                     val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
@@ -312,6 +316,7 @@ internal fun PlusSpace(
                             }
                         }
                     } else entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
+                    }
                 }
             }
         } else {

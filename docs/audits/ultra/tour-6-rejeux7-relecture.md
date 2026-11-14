@@ -1,7 +1,24 @@
 # Tour 6, lot du banc « rejeux7 » : relecture neuve
-Relu : 3f7adf5f3b538e1d529f3e97935b9a6e98cee807
+Relu : 033f94985a61103c00a43ae872a004704a74f5dd
 
-Relecteur neuf (n'a rien écrit de ce lot), troisième passage. Le deuxième passage est gardé tel quel ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+Relecteur neuf (n'a rien écrit de ce lot), quatrième passage. Les deuxième et troisième passages sont gardés tels quels ; le premier passage (sur `b0590d2c`, puis `35c6e341`) est résumé plus bas.
+
+## Quatrième passage (journaux sortis du suivi, `t6-ga14` reciblé sur `notice_ok`, intégration `ae8727624`)
+
+Depuis la relecture `52b89855d`, trois commits sur la branche : `400bb7790` (journaux des rejeux sortis du suivi), `dc2523173` puis `033f94985` (`t6-ga14` reciblé), `8f4df40be` (fusion de l'intégration `ae8727624`).
+
+- `git diff 52b89855d HEAD -- docs/audits/ultra/rejeux .gitignore` : exactement ce qui est annoncé. Les 16 fichiers de `rejeux/_journaux/` (4 rejeux) sortent du suivi, une ligne `.gitignore` (`docs/audits/ultra/rejeux/_journaux/`, avec son commentaire) ; dans `t6-ga14-phrases-batterie/` : `cmd-13` devient `touche notice_ok`, l'ancien 13 (`remix_open_board`) passe en 14, l'ancien 14 (`board_chop`) en 15, `oracle.txt` passe à `rejeu.n=15`. `rejeu.attendu` et `start.txt` inchangés. Aucun autre rejeu touché ; `rejeux/_non-tenu-1585bb46/` garde ses fichiers.
+- Forme des gestes : un geste par fichier, `touche <étiquette>` sans retour à la ligne final, comme les autres rejeux (`t6-ec17`, `t4-26`) ; 15 fichiers `cmd-1` à `cmd-15`, sans trou. `python3 -I scripts/bench/test_socle.py` : 29 tests, OK (dont `ReplaysAimByTag`).
+- `notice_ok` existe dans l'appli : `AppRoot.kt` l. 1092, le bouton « Compris » de la fenêtre d'avis (`rhythmVm::dismissNotice`). `remix_open_board` existe toujours (`RemixScreen.kt` l. 508).
+- L'oracle lit toujours le défaut R6 : `rejeu.attendu=(Davul · 16 pad)`, la phrase de la batterie que la correction ajoute. Fermer la fenêtre d'avis ne fait qu'ôter un écran par-dessus : elle n'écrit pas « (Davul · 16 pad) ». Le geste ajouté ne peut donc pas faire tenir l'oracle à tort. Sans ce geste, le rejeu se perdait sous la fenêtre (le lot « coquille2 » l'ouvre après « Projeme ekle », voulu).
+- Fusion `8f4df40be` : `git diff ae8727624 HEAD` hors fichiers du lot (`rejeux/`, `rejeux-attente/`, rapport, relecture, décisions, `.gitignore`) : vide. `git diff origin/ccr-80af1a1b-mn0wec HEAD --stat` : 100 fichiers, 939 lignes ajoutées, 0 retirée, tous du lot. `git merge-tree --write-tree origin/ccr-80af1a1b-mn0wec HEAD` : propre (code 0).
+
+### Points de ce passage
+
+- moyen : le rapport de zone (`tour-6-rejeux7-rapport.md`) n'a aucune ligne sur le reciblage. Sa ligne `t6-ga14` dit encore « G a (tr, Pro, 130 %), 1 à 14 » alors que le rejeu compte 15 gestes dont un (13, `notice_ok`) qui n'est pas un geste du siège ; et la ligne 17 dit « Les passages sur la tête sont dans `rejeux/_journaux/<id>/` », dossier désormais hors suivi (il n'existe que sur la machine qui a rejoué). À compléter par l'auteur du lot (non modifié ici).
+- mineur : sur 1585bb46, la fenêtre d'avis n'existait pas ; le rejeu reciblé y tomberait au geste 13 (« notice_ok » refusé) au lieu de tomber sur l'oracle. Il resterait « non tenu », donc rien de faux ; mais la preuve « non tenu sur 1585bb46 » gardée dans `_non-tenu-1585bb46/t6-ga14-phrases-batterie/` vient de la version à 14 gestes.
+- mineur : `rejeux-attente/_journaux/t6-ha19-cases-panneau/` reste suivi, la ligne `.gitignore` ne couvre que `rejeux/_journaux/`. Un passage de ce rejeu en attente salirait l'arbre comme avant.
+- Les points ouverts des passages précédents restent valables (T4, part des cases, non corrigé sur la tête ; N4 et N5 « tentés »).
 
 ## Troisième passage (fusion de l'intégration `2fbf6eb17`)
 

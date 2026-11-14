@@ -116,7 +116,7 @@
         {
           "id": "hat_rolls",
           "levels": "p",
-          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose les croches d'un geste). Mesure 1, le 4e temps en triolets : appui long sur la case 13, « Triolet » › « 3 sur 2 cases », puis pareil sur la case 15. Mesure 2, les roulements : case 10, « Roulement » ×3 (3 coups dans la case) ; cases 13 à 16, ×2 chacune, « ↗ Montant » (la rafale grimpe en force jusqu'au 1 suivant).",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose les croches d'un geste). Mesure 1, le 4e temps en triolets : touche la case 13 si elle est vide, puis appui long dessus, « Triolet » › « 3 sur 2 cases », puis pareil sur la case 15. Mesure 2, les roulements : case 10, « Roulement » ×3 (3 coups dans la case) ; cases 13 à 16, ×2 chacune, « ↗ Montant » (la rafale grimpe en force jusqu'au 1 suivant).",
           "why": "Triolets dans une mesure, rafale dans l'autre : jamais deux mesures pareilles, sinon ça sonne « preset ».",
           "check": "lane:hat:rolls",
           "spot": "rhythm.pattern",
@@ -126,7 +126,7 @@
         {
           "id": "hat_triplet",
           "levels": "f",
-          "text": "À toi : les triolets. Mesure 1, sur le pad « Charley », appui long sur le coup de la case 13, puis « Triolet » › « 3 sur 2 cases » ; pareil sur la case 15. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap.",
+          "text": "À toi : les triolets. Mesure 1, sur le pad « Charley », touche la case 13 si elle est vide, puis appui long sur son coup, puis « Triolet » › « 3 sur 2 cases » ; pareil sur la case 15. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap.",
           "why": "Le triolet casse la régularité des doubles croches : l'oreille est surprise juste avant le retour du 1.",
           "check": "triplet:hat",
           "spot": "rhythm.pattern",

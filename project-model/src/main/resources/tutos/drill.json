@@ -109,7 +109,7 @@
         {
           "id": "hat_rolls",
           "levels": "p",
-          "text": "À toi : sur le pad « Charley », le 3-3-2 des 2 mesures (cases 1, 4, 7, 9, 12, 15) et les cases en pointillé de la fin de la mesure 2. Puis mesure 2 : cases 11 et 12, appui long, « Roulement » ×3 chacune ; case 13, « Triolet » › « 3 sur 2 cases » : deux petites rafales et un triolet juste avant de reboucler.",
+          "text": "À toi : sur le pad « Charley », le 3-3-2 des 2 mesures (cases 1, 4, 7, 9, 12, 15) et les cases en pointillé de la fin de la mesure 2. Puis mesure 2 : cases 11 et 12 (touche-les d'abord si elles sont vides), appui long sur chacune, « Roulement » ×3 ; case 13, « Triolet » › « 3 sur 2 cases » : deux petites rafales et un triolet juste avant de reboucler.",
           "why": "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.",
           "check": "lane:hat:rolls",
           "spot": "rhythm.pattern",
@@ -119,7 +119,7 @@
         {
           "id": "hat_triplet",
           "levels": "f",
-          "text": "À toi : un triolet. Mesure 2, sur le pad « Charley », appui long sur le coup de la case 13, puis « Triolet » › « 3 sur 2 cases ». Trois coups à la place de deux : le charley trébuche juste avant la caisse claire.",
+          "text": "À toi : un triolet. Mesure 2, sur le pad « Charley », touche la case 13 si elle est vide, puis appui long sur son coup, puis « Triolet » › « 3 sur 2 cases ». Trois coups à la place de deux : le charley trébuche juste avant la caisse claire.",
           "why": "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.",
           "check": "triplet:hat",
           "spot": "rhythm.pattern",

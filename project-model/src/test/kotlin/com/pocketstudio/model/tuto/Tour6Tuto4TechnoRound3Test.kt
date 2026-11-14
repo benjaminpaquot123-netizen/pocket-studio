@@ -44,4 +44,26 @@ class Tour6Tuto4TechnoRound3Test {
         if (!Regex("""touche la dernière case[^.]*\.[^.]*appui long""").containsMatchIn(pro)) bad += "fr Pro: the ghost's cell not touched before the long press: $pro"
         report("clap steps that send a long press to an empty cell", bad)
     }
+
+    /**
+     * H5 and H7 (ch. 5 and 7, screens 111 and 154): « Régler le son de la piste ↓ » sits at the top of the notes page,
+     * under « Clavier » and « Notes » (SynthScreen: TrackBar, ModeSwitch, then the button, then the piano roll), on a
+     * phone and on a tablet alike; once the page has scrolled to the grid it is out of sight above. The step says where
+     * it is without « above the notes » and how to bring it into sight, in every language.
+     */
+    @Test
+    fun theSoundButtonIsSaidWhereItIsInEveryLayout() {
+        val bad = ArrayList<String>()
+        for (id in listOf("bass_cutoff", "lead_knobs")) {
+            val fr = step(id).text
+            if ("au-dessus des notes" in fr) bad += "fr $id: « au-dessus des notes », the grid may be over it: $fr"
+            for (need in listOf("tout en haut", "« Clavier »", "« Notes »", "vers le haut")) if (need !in fr) bad += "fr $id: no « $need »: $fr"
+            for (l in langs) {
+                val t = tr(l, fr)
+                if (t == null) { bad += "${l.code} $id: no translation"; continue }
+                for (w in listOf("Clavier", "Notes", "Régler le son de la piste")) if (word(l, w) !in t) bad += "${l.code} $id: no « ${word(l, w)} »: $t"
+            }
+        }
+        report("sound steps that put the button elsewhere", bad)
+    }
 }

@@ -79,6 +79,39 @@ class CiRougeTest(unittest.TestCase):
         self.assertEqual(r.returncode, 2)
         self.assertIn("no JUnit XML", r.stderr)
 
+    def test_a_downloaded_artifact_is_removed_and_the_exit_code_kept(self):
+        # Review M8: the run-id path downloads into a temporary folder removed by an EXIT trap; `exec python3` replaced the
+        # shell, the trap never ran, every call left its folder behind.
+        bin_dir = os.path.join(self.tmp.name, "bin")
+        os.makedirs(bin_dir)
+        seen = os.path.join(self.tmp.name, "gh-dir.txt")
+        src = os.path.join(self.tmp.name, "test-results", "testDebugUnitTest")
+        with open(os.path.join(bin_dir, "gh"), "w") as f:
+            # A stand-in for `gh run download <run> -R <repo> -n unit-test-reports -D <dir>`: the toy reports into <dir>.
+            f.write(
+                "#!/usr/bin/env bash\n"
+                'while [ $# -gt 0 ]; do [ "$1" = -D ] && dir="$2"; shift; done\n'
+                f'echo "$dir" > "{seen}"\n'
+                f'cp "{src}"/*.xml "$dir"/\n'
+            )
+        os.chmod(os.path.join(bin_dir, "gh"), 0o755)
+        env = dict(os.environ, PATH=bin_dir + os.pathsep + os.environ.get("PATH", ""))
+        r = subprocess.run(["bash", TOOL, "12345"], capture_output=True, text=True, timeout=60, env=env)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ROUGE com.x.DClass#d1", r.stdout)
+        with open(seen) as f:
+            downloaded = f.read().strip()
+        self.assertTrue(downloaded, "the stand-in gh was called with a folder")
+        self.assertFalse(os.path.exists(downloaded), f"the downloaded artifact's folder is left behind: {downloaded}")
+        # The exit code of the reading is kept: a folder without any report is refused (2), the folder removed all the same.
+        with open(os.path.join(bin_dir, "gh"), "w") as f:
+            f.write("#!/usr/bin/env bash\n" 'while [ $# -gt 0 ]; do [ "$1" = -D ] && dir="$2"; shift; done\n' f'echo "$dir" > "{seen}"\n')
+        r = subprocess.run(["bash", TOOL, "12345"], capture_output=True, text=True, timeout=60, env=env)
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        with open(seen) as f:
+            downloaded = f.read().strip()
+        self.assertFalse(os.path.exists(downloaded), f"the empty artifact's folder is left behind: {downloaded}")
+
     def test_hooked_in_the_pre_flight_and_the_self_test(self):
         for script in ("pre-vol.sh", "selftest.sh"):
             with open(os.path.join(HERE, script)) as f:

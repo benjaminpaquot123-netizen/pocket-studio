@@ -1,0 +1,8 @@
+fusion: 6afd6359002a8b1d1fb94440df01b2a14c2d5a48
+branche: eq/tour-6-coquille2
+tete: 93fc247c34db5e37dd11c9ca788da81e47dd340c
+relecture: docs/audits/ultra/tour-6-coquille2-relecture.md
+relu: 043ddbab
+filtres: com.pocketstudio.app.ui.Coquille2SeatTest com.pocketstudio.app.remix.CutScreenTightTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

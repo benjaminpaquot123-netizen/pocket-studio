@@ -1,0 +1,15 @@
+Écran 5 (900x1509)
+icône ← @ 60,48
+texte « Ich lerne » @ 176,48
+texte « Du baust den ganzen Track selbst, Schritt für Schritt: Ich erkläre und prüfe. » @ 450,145
+texte « Wähle deinen Stil » @ 151,229
+bouton « Techno 132 BPM » → @ 450,329
+bouton « Detroit Techno 126 BPM » → @ 450,462
+bouton « Acid Techno 138 BPM » → @ 450,595
+bouton « Hard Techno 150 BPM » → @ 450,728
+bouton « Industrial Techno 136 BPM » → @ 450,861
+bouton « Retro-Techno 128 BPM » → @ 450,994
+bouton « Acidcore 185 BPM » → @ 450,1127
+bouton « Trance 138 BPM » → @ 450,1260
+bouton « House 122 BPM » → @ 450,1393
+bouton → « Deep House 120 BPM » [coupé] @ 450,1480

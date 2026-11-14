@@ -22,7 +22,9 @@ data class SongLength(val bars: Int, val seconds: Int, val parts: Int) {
                 val steps = p.song.map { p.partSteps(it).toLong() }
                 return SongLength(steps.sumOf { (it / spb).toInt() }, seconds(steps.sum(), p.tempoBpm), p.song.size)
             }
-            val bars = p.currentSceneContent().stepsFor(spb) / spb
+            // Tour 6, padlive2 (P3): the scene's audio bricks too (takes put in the Live), the longest of them; counted as
+            // the transport counts them (lot coquille2, [heardSceneSteps]): the home and the counter say the same number.
+            val bars = p.heardSceneSteps(p.scene) / spb
             return SongLength(bars, seconds(bars.toLong() * spb, p.tempoBpm), 0)
         }
     }

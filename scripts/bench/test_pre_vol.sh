@@ -16,7 +16,7 @@ git config user.name essai
 git config user.email essai@localhost
 mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
 cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
-for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
+for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py reparations.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
 # The batch of merges in this little repository: 1 (a rule « from_paquet 2 » waits).
 printf '# Paquet de fusions en cours\npaquet: 1\n' > scripts/bench/portail-paquet.txt
 echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
@@ -385,6 +385,103 @@ git reset -q --hard "$pbefore"
 batch 4
 portal fok
 said "the portal merges a grave fix with its replay" "$( [ "$prc" -eq 0 ] && has "fok: merged" && echo 0 || echo 1)"
+
+# --- §13.5, last point (lot « portail4 », rule « from_paquet 7 ») ----------------------------------------------------
+# No lot of the tutorial enters before a fresh beginner replayed it on the lot's branch: a lot that changes the
+# tutorial zone carries, per control seat, « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » in its
+# zone report, the seat's own report being in the branch (rapport-zone.py --tuto). Portal: exit 10, before the merge.
+git checkout -q fx-int
+mkdir -p app/src/main/java/t/tuto && echo panneau > app/src/main/java/t/tuto/TutoPanel.kt && git add app/src/main && git commit -q -m "the application's tutorial"
+tutofix() { # <zone>: a lot that changes the tutorial; its last change of the tutorial in $tsha
+  team "$1" && echo "$1" >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "the tutorial, changed by $1" && tsha="$(git rev-parse HEAD)"
+}
+seat() { # <id> <commit played>: a control seat's report, as the bench starts it
+  mkdir -p "docs/audits/ultra/sieges/tour-9/controle/$1"
+  printf 'code testé : %s\njoué par : sous-agent neuf\nsiege: a | profil: controle\nchapitre: 1 Un chapitre | ecran: 3 | compris du premier coup | vu\n' "$2" > "docs/audits/ultra/sieges/tour-9/controle/$1/rapport.md"
+  git add "docs/audits/ultra/sieges/tour-9/controle/$1" && git commit -q -m "control seat $1"
+}
+tutofix tnone && fixes tnone
+# Before batch 7 the rule waits: said by the pre-flight, not a word from the portal.
+batch 6
+expect "before batch 7 a tutorial lot without its control seat is only said" 0 "lot du tuto sans son siège de contrôle : no « controle: » line.* — refusé à partir du paquet 7" non tour-9 tnone
+portal tnone
+said "before batch 7 the portal merges a tutorial lot without its control seat" "$( [ "$prc" -eq 0 ] && ! has "control seat" && echo 0 || echo 1)"
+git reset -q --hard "$pbefore"
+batch 7
+expect "a tutorial lot without its control seat: refused" 1 "lot du tuto sans son siège de contrôle : no « controle: » line" oui tour-9 tnone
+portal tnone
+said "the portal names the tutorial lot without its control seat, nothing merged" "$( [ "$prc" -eq 10 ] && has "tnone: tutorial lot without its control seat: no « controle: » line" && has "not merged" && untouched tnone && echo 0 || echo 1)"
+tutofix told && seat Ha "$tsha" && played="$tsha" && echo encore >> app/src/main/java/t/tuto/TutoPanel.kt && git commit -q -am "one more change of the tutorial, after the seat" \
+  && fixes told "controle: Ha | code testé: $played | bloqués: 0 | graves neufs: 0"
+expect "a seat that played before the last change of the tutorial: refused" 1 "before the lot's last change of the tutorial" oui tour-9 told
+portal told
+said "the portal refuses the seat that played the older code with exit 10" "$( [ "$prc" -eq 10 ] && has "told: tutorial lot without its control seat" && untouched told && echo 0 || echo 1)"
+tutofix tblocked && seat Ha "$tsha" && fixes tblocked "controle: Ha | code testé: $tsha | bloqués: 1 | graves neufs: 0"
+expect "a control seat with a blocked chapter: refused" 1 "bloqués: 1" oui tour-9 tblocked
+tutofix tinvented && fixes tinvented "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a line without the seat's report in the branch: refused" 1 "controle/Ha/rapport.md" oui tour-9 tinvented
+# An honest lot outside the tutorial: nothing asked, not a word about the tutorial from the pre-flight or the portal.
+team plain && fixes plain
+git checkout -q fx-int
+out="$(scripts/bench/pre-vol.sh tour-9 plain 2>&1)"; rc=$?
+if [ "$rc" -eq 0 ] && ! printf '%s\n' "$out" | grep -qi "tuto"; then echo "vert  a lot outside the tutorial: the pre-flight says nothing of the tutorial"; else reds=$((reds + 1)); echo "ROUGE a lot outside the tutorial (pre-flight: exit $rc)"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+portal plain
+said "the portal merges a lot outside the tutorial and says nothing of the tutorial" "$( [ "$prc" -eq 0 ] && has "plain: merged" && ! printf '%s\n' "$pout" | grep -qi "tuto" && echo 0 || echo 1)"
+# The whole way: the fix, the seat that played it, its line; the real portal merges the lot.
+tutofix tok && seat Ha "$tsha" && fixes tok "controle: Ha | code testé: $tsha | bloqués: 0 | graves neufs: 0"
+expect "a tutorial lot with its control seat is ready" 0 "tuto : .*siège(s) de contrôle" non tour-9 tok
+portal tok
+said "the portal merges a tutorial lot with its control seat" "$( [ "$prc" -eq 0 ] && has "tok: merged" && echo 0 || echo 1)"
+
+# --- PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », rule « from_paquet 8 ») --------------------------------
+# A lot writes « tenté » in docs/audits/ultra/corrections.tsv, never « corrigé », « rejoué » (the portal's) nor
+# « constaté » (the chief's, after a control seat): portal exit 11, before the merge. After a merge, the portal itself
+# turns the lot's « tenté » to « rejoué » when its proof (a replay of rejeux/) held on the merged head.
+if [ -f scripts/bench/reparations.py ] || [ -f "$src/scripts/bench/reparations.py" ]; then
+  git checkout -q fx-int
+  [ ! -f "$src/scripts/bench/reparations.py" ] || cp "$src/scripts/bench/reparations.py" scripts/bench/
+  # (The stand-in for the replays now says every replay of rejeux/ held, as the real one does on a green merge.)
+  cat > scripts/bench/rejeu-defauts.sh <<'STUB'
+#!/usr/bin/env bash
+echo "1 verts, 0 rouges, 0 en quarantaine, 0 sautés" > "$PS_REJEUX_SELFTEST/selftest-resume.txt"
+echo "a stamp" > "$PS_REJEUX_SELFTEST/selftest.ok"
+echo "chantier : 0 écarts" > "$PS_REJEUX_SELFTEST/selftest-chantier.txt"
+for d in docs/audits/ultra/rejeux/*/; do case "$(basename "$d")" in _*) ;; *) echo "$(basename "$d") : oracle tenu" ;; esac; done
+STUB
+  printf 'tour\titem\tsiege\tecran\tetat\tcommit\ttest\tnote\tcible\tphrase_acceptation\tsiege_origine\tconstat\ntour-9\tC1\tB/a\t15\tpas pris\t-\t-\t\t\tje touche Voz et la piste s ouvre\ttour-9/lotB/a\t\ntour-9\tC2\tB/a\t16\tpas pris\t-\t-\t\t\t\ttour-9/lotB/a\t\n' > docs/audits/ultra/corrections.tsv
+  git add scripts/bench docs/audits/ultra/corrections.tsv && git commit -q -m "the register of the repairs"
+  state() { # <zone> <item> <state> <proof>: the lot turns its line to this state
+    team "$1" && sed -i "s/^\(tour-9\t$2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1$3\t1234567\t$4/" docs/audits/ultra/corrections.tsv && git commit -q -am "$1 writes $2 $3"
+  }
+  state cself C1 corrigé r1 && fixes cself
+  batch 7
+  expect "before batch 8 a lot that writes « corrigé » is only said" 0 "état réservé du registre.* — refusé à partir du paquet 8" non tour-9 cself
+  portal cself
+  said "before batch 8 the portal merges a lot that writes « corrigé »" "$( [ "$prc" -eq 0 ] && ! has "repairs register" && echo 0 || echo 1)"
+  git reset -q --hard "$pbefore"
+  batch 8
+  expect "a lot that writes « corrigé »: refused" 1 "état réservé du registre des réparations : .*tour-9 C1.*« corrigé »" oui tour-9 cself
+  portal cself
+  said "the portal names the lot that gives itself « corrigé », nothing merged" "$( [ "$prc" -eq 11 ] && has "cself: the lot gives itself a state of the repairs register" && has "not merged" && untouched cself && echo 0 || echo 1)"
+  state cconst C1 constaté r1 && fixes cconst
+  portal cconst
+  said "the portal refuses a lot that writes « constaté » (the chief's)" "$( [ "$prc" -eq 11 ] && has "« constaté »" && untouched cconst && echo 0 || echo 1)"
+  state crej C1 rejoué r1 && fixes crej
+  expect "a lot that writes « rejoué » (the portal's): refused" 1 "état réservé du registre des réparations" oui tour-9 crej
+  # The whole way: the lot says « tenté » with its replay r8, added and held; the portal merges it and writes « rejoué »
+  # itself, in the commit of its traces. C2's proof is a replay the portal never played: it stays « tenté ».
+  state ctente C1 tenté r8 && replay r8 && sed -i "s/^\(tour-9\tC2\t[^\t]*\t[^\t]*\t\)[^\t]*\t[^\t]*\t[^\t]*/\1tenté\t1234567\tr404/" docs/audits/ultra/corrections.tsv \
+    && git commit -q -am "C2 tried" && fixes ctente "r8 : oracle tenu"
+  expect "a lot that writes « tenté » is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 ctente
+  portal ctente
+  c1="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')"
+  c2="$(git show HEAD:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C2" {print $5}')"
+  said "the portal merges the lot and sets « rejoué » itself where the replay held" "$( [ "$prc" -eq 0 ] && has "ctente: merged" && [ "$c1" = "rejoué" ] && [ "$c2" = "tenté" ] \
+    && [ "$(git log -1 --format=%s HEAD)" = "Portal traces of the merge of ctente (tour-9)" ] && echo 0 || echo 1)"
+  said "« rejoué » is written by the commit of the traces, not by the lot" "$( [ "$(git show HEAD^:docs/audits/ultra/corrections.tsv | awk -F '\t' '$2 == "C1" {print $5}')" = "tenté" ] && git show --stat HEAD | grep -q corrections.tsv && echo 0 || echo 1)"
+else
+  reds=$((reds + 1)); echo "ROUGE scripts/bench/reparations.py is missing (the repairs register's rule)"
+fi
 
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

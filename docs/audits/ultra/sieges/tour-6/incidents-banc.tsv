@@ -1,12 +1,31 @@
 siege	geste	attente	vu
-b	53	5	écran 54 au texte vide alors que l'image montre l'appli (Ich mach's)
-b	54	5	écran 55 au texte vide
-b	89	10	écran 90 au texte vide, « regarde » refait, toujours vide ; image normale
-b	127	5	écran 128 au texte vide, image normale
-b	0	0	outils hors human-act : Read des PNG et ls/grep de mon propre dossier de siège (journal.txt pour les #N), rien d'autre
-a	20	0	après « 自分でやる » l'écran texte ne contient que la pastille REC (écrans 21, 22, 27, 28, 36, 37, 46, 47, 160, 161, 179, 184) ; l'image, elle, est normale ; outils hors human-act : Read sur les images du banc seulement
-a	33	0	écran 34 rendu vide en texte (seule la pastille REC), l'image était normale ; idem gestes 41, 209, 248, 254 (écrans 42, 210, 249, 255)
-a	26	0	outils utilisés hors human-act.py : Read (consignes et .png du siège), grep/sed/head pour filtrer la sortie, fichier temporaire last.txt dans le siège (effacé) ; un « head » a cassé l'affichage au geste 26 (geste bien joué)
+controle/Ab-5	#3	0	toucher « Pad Live » coupé en bas de l'accueil (y 1240) n'a rien fait ; passé après un glissé (écran 4)
+controle/Ab-5	-	0	outils hors human-act.py : aucun (grep/head sur la sortie du banc seulement ; un fichier temporaire dans le dossier du siège, effacé)
+controle/Ab-6	14	0	aucun outil hors human-act.py ; seulement un filtrage de la sortie texte (grep/head)
+controle/Ac-3	0	0	aucun outil hors human-act.py, sauf lecture de mon journal.txt et de mes images (dossier du siège)
+controle/Ac-4	11	0	taille annoncée 34230,9 Ko au partage, « 1 Ko » dans Mes fichiers (chiffres du banc, pas jugé)
+controle/Ba-2	-	0	outils hors human-act.py : Read sur mes images de siège (screen-*-grille.png) et cat/grep/ls du journal de MON dossier de siège pour les numéros de gestes
+controle/Ba-3	7	60	séparation finie en un seul « attends 60 » (1 geste d'attente, pas lente) ; banc?: temps
+controle/Ba-3	30	0	j'ai enchaîné deux commandes dans un seul appel (#30 attends et #31 touche), sans effet sur le test ; aucun outil hors human-act.py sauf Read des images et ls/cat/grep de mon dossier de siège (start.txt, rapport.md, fin.txt, journal.txt)
+controle/Ba-4	28-30	0	deux commandes enchaînées par erreur de ma part (pas l'appli) ; un tableau « Lo que suena » ouvert sans le vouloir, refermé
+controle/Bb-4	102	0	écran 103 en texte vide (seule la barre Feedback) alors que l'image montre le panneau du son ; idem écrans 143, 211, 218, 219
+controle/Bb-4	130	0	outil hors human-act : une fois deux commandes du banc dans un même appel (geste + regarde image) ; ls/grep/Read sur mon seul dossier de siège
+controle/Bb	53	5	écran 54 au texte vide alors que l'image montre l'appli (Ich mach's)
+controle/Bb	54	5	écran 55 au texte vide
+controle/Bb	89	10	écran 90 au texte vide, « regarde » refait, toujours vide ; image normale
+controle/Bb	127	5	écran 128 au texte vide, image normale
+controle/Bb	0	0	outils hors human-act : Read des PNG et ls/grep de mon propre dossier de siège (journal.txt pour les #N), rien d'autre
+controle/Cq2-b	10	5	écran 10 en texte vide (seule la barre REC) juste après « 自分でやる » ; écran 11 normal après « attends 5 »
+controle/Da-4	52	0	écran 53 en texte vide (seul le pied « REC/メモ ») ; l'image montrait la grille, joué sur l'image
+controle/Da-4	136	0	idem écrans 137, 138, 157, 162 (texte vide, image correcte)
+controle/Da-4	-	0	outils hors human-act.py : Read des consignes (demandé), Read des images du banc, Read/Write de rapport.md
+controle/Da-6	24	0	écran texte vide (seule la pastille de retours) après « 自分でやる », l'image montrait bien la grille ; idem écrans 25, 28, 29, 35, 36, 39, 40, 50, 57, 149
+controle/Da-6	40	0	un toucher sur la case pendant un écran vide n'a pas été pris ; refait au geste 41
+controle/Da	20	0	après « 自分でやる » l'écran texte ne contient que la pastille REC (écrans 21, 22, 27, 28, 36, 37, 46, 47, 160, 161, 179, 184) ; l'image, elle, est normale ; outils hors human-act : Read sur les images du banc seulement
+controle/Ha-4	33	0	l'écran 34 rendu en texte vide (seulement « Son : rien ne joue ») ; l'image était normale ; pareil aux écrans 35, 42, 53, 192, 193, 224, 229
+controle/Ha-4	0	0	outils hors human-act.py : Read sur les consignes et sur les images de mon siège, cat/ls de mon siège, grep pour filtrer la sortie du banc
+controle/Ha	33	0	écran 34 rendu vide en texte (seule la pastille REC), l'image était normale ; idem gestes 41, 209, 248, 254 (écrans 42, 210, 249, 255)
+controle/Ha	26	0	outils utilisés hors human-act.py : Read (consignes et .png du siège), grep/sed/head pour filtrer la sortie, fichier temporaire last.txt dans le siège (effacé) ; un « head » a cassé l'affichage au geste 26 (geste bien joué)
 A/a	0	0	avant le jeu, pour mettre le banc en route sur cette machine : selftest.sh du lotA relancé (vert, 173 tests), human-tester.sh lancé, fiches start.txt de lotA/b et lotA/c mises de côté (consigne de la discussion principale) ; Read des images et lecture de journal.txt dans mon dossier de siège seulement
 A/b	0	600	le premier « regarde » attendait sans banc lancé ; banc lancé par moi (scripts/human-tester.sh) après le selftest vert du lot (scripts/bench/selftest.sh), sur consigne de la discussion principale ; outils hors human-act : bash (ls, cat, grep, sed sur la sortie du banc et mon dossier de siège), Read sur mes images
 A/b	60	0	l'appui long sur « Écho » ne donne aucune trace d'effet dans la ligne « Son » : le banc ne semble pas dire les effets (la promesse 3 ne se prouve donc qu'à l'écran)

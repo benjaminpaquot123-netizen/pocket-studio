@@ -1,0 +1,3 @@
+parent: 8c73d6c6e1ae1095bcc8af784a9245b5c938c8e5
+test: BenchSelfTest#chipsTogglesAndDrawnMarksAreWrittenAsDrawn
+rejoué : 2026-11-13, worktree détaché à 8c73d6c6, gradle-file.sh :app:testDebugUnitTest --tests com.pocketstudio.app.human.BenchSelfTest : 1 rouge, « the check's icon before « Rien à entendre » » (le sélecteur Simple poussait les contrôles sous le pli)

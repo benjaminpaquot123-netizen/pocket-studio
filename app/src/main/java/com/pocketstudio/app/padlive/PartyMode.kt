@@ -184,8 +184,8 @@ fun PartyScreen(
                 }
                 Spacer(Modifier.weight(1f))
                 RoundButton(
-                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, if (ui.playing) tr("Arrêter") else tr("Jouer"), "padlive_party_play",
-                    if (ui.playing) Neon.Acid else Neon.SurfaceHigh, if (ui.playing) Color.Black else Neon.TextPrimary, actions.togglePlay,
+                    if (ui.soundsNow) Icons.Filled.Stop else Icons.Filled.PlayArrow, if (ui.soundsNow) tr("Arrêter") else tr("Jouer"), "padlive_party_play",
+                    if (ui.soundsNow) Neon.Acid else Neon.SurfaceHigh, if (ui.soundsNow) Color.Black else Neon.TextPrimary, actions.playOrStop(ui),
                 )
             }
             BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {

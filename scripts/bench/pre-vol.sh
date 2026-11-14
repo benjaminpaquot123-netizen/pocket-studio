@@ -131,7 +131,7 @@ if [ "${1:-}" = "--ci" ]; then
     fi
   }
   found=0
-  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
+  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_portail4.py scripts/bench/test_constate.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
     [ -f "$t" ] || continue
     found=1
     run_bare "$t" python3 -I "$t"
@@ -206,7 +206,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="16 bf1142b44d"
+KNOWN_RULES="18 b5d9c7711c"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -317,6 +317,24 @@ for zone in "$@"; do
           "dans $report : une ligne par défaut corrigé, « corrige: <id> | gravité: bloquant|grave|moyen|mineur | rejeu: <id du rejeu> » ; pour un bloquant ou un grave, le rejeu est un dossier que la branche AJOUTE à docs/audits/ultra/rejeux/ (avec sa ligne « <id> : oracle tenu »), ou bien « … | rejeu impossible : <raison> » ; un grave du tri seulement cité : « ne corrige pas: <id> : <raison> »"
       done <<< "$why"
     fi
+    # AUDIT-ULTRA §13.5, last point (from batch 7): a lot of the tutorial comes with its control seat
+    # (rapport-zone.py --tuto). A lot outside the tutorial zone: not a word.
+    if why="$(python3 -I scripts/bench/rapport-zone.py --tuto "$branch" "$report" "base:$base" "tete:$head" "tour:$tour")"; then
+      [ -z "$why" ] || ok "tuto : le lot touche au tuto, siège(s) de contrôle acceptés (${why#tuto: })"
+    else
+      while IFS= read -r line; do
+        [ -z "$line" ] || rule_from 7 "lot du tuto sans son siège de contrôle : $line" \
+          "faire rejouer le tuto par un débutant neuf SUR CETTE BRANCHE, après le dernier commit qui change le tuto ; committer le dossier du siège (docs/audits/ultra/sieges/$tour/controle/<id>/, « code testé : <sha> » en tête de son rapport.md) et, dans $report, une ligne par siège : « controle: <id> | code testé: <sha> | bloqués: 0 | graves neufs: 0 » ; le tout AVANT la relecture"
+      done <<< "$why"
+    fi
+  fi
+  # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (from batch 8): a lot writes « tenté » in the repairs register, never
+  # « corrigé », « rejoué » (the portal's) nor « constaté » (the chief's) (reparations.py --lot). Nothing said otherwise.
+  if [ -f scripts/bench/reparations.py ] && ! why="$(python3 -I scripts/bench/reparations.py --lot "$branch" "base:$base" "tete:$head")"; then
+    while IFS= read -r line; do
+      [ -z "$line" ] || rule_from 8 "le lot se donne un état réservé du registre des réparations : $line" \
+        "dans docs/audits/ultra/corrections.tsv, le lot n'écrit que « tenté » (avec son commit et sa preuve dans la colonne test : l'id du rejeu, ou Classe#méthode) ; « rejoué », le portail le pose lui-même après la fusion quand la preuve tient ; « constaté », le chef d'après la ligne « corrigé » d'un siège de contrôle ; la phrase d'acceptation et le siège d'origine restent ceux du trieur"
+    done <<< "$why"
   fi
   links="$(git ls-tree -r "$branch" | awk '$1 == "120000" {print $4}' | tr '\n' ' ')"
   [ -z "$links" ] || bad "lien(s) symbolique(s) commité(s) : $links" "git rm --cached ces liens (les sous-modules liés de l'atelier ne se committent jamais)"

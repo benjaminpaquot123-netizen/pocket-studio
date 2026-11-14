@@ -1,0 +1,262 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=8.3 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 426
+#1 DOIGT welcome_guided « Fais-moi un morceau »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 963
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 744
+#3 DOIGT wizard_family_Hip-hop « Hip-hop »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE bf859192be | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. » ellipsized (« … »)
+#4 LAYOUT CUT « La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. » ellipsized (« … »)
+#4 LAYOUT CUT « Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. » ellipsized (« … »)
+#4 > touche 294 873
+#4 DOIGT wizard_style_trap « Trap »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6b624a75dd | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 322 984
+#5 DOIGT wizard_style_play_trap «  Créer et écouter »
+#6 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE acd0aa3729 | project=p-f127e80f no tuto
+#6 SON Son : le morceau joue (partie « A »).
+#6 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#6 > touche 414 1158
+#6 DOIGT tab_simple_Mix « Mix »
+#7 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 71d14cc75f | project=p-f127e80f no tuto
+#7 SON Son : le morceau joue (partie « A »).
+#7 LAYOUT CUT « Contre-chant » a word split over two lines
+#7 LAYOUT CONTRAST « Souffle montant » 3.92:1 (needs 4.5:1, 13 sp)
+#7 LAYOUT CONTRAST « Normal » 2.89:1 (needs 4.5:1, 12 sp)
+#7 > touche 534 1158
+#7 DOIGT tab_simple_Envoyer « Partager »
+#8 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE badda40080 | project=p-f127e80f no tuto
+#8 SON Son : le morceau joue (partie « A »).
+#8 > touche 107 600
+#8 DOIGT share_target_STREAMING « Streaming »
+#9 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE bb73433aac | project=p-f127e80f no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 > touche 294 792
+#9 DOIGT share_go «   Partager »
+#10 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 18ef3ba71f | project=p-f127e80f no tuto
+#10 SON Son : le morceau joue (partie « A ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#10 > attends 10
+#10 PARTAGE Trap-morceau-streaming-20261113-144445.m4a
+#11 ROUTE dialogue:« Partager mon morceau · Trap-mo » | MODE simple | EMPREINTE 794db7d014 | project=p-f127e80f no tuto
+#11 SON Son : le morceau joue (partie « C »).
+#11 > touche 294 543
+#11 DOIGT vue « WhatsApp »
+#12 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 01922edf06 | project=p-f127e80f no tuto
+#12 SON Son : le morceau joue (partie « C »).
+#12 LAYOUT CONTRAST « Fichier M4A : léger, lu par tous les appareils. » 4.20:1 (needs 4.5:1, 13 sp)
+#12 > touche 508 804
+#12 DOIGT share_bilan_ok « OK »
+#13 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE cda9e69c23 | project=p-f127e80f no tuto
+#13 SON Son : le morceau joue (partie « C »).
+#13 > touche 241 600
+#13 DOIGT share_target_CLUB « Club »
+#14 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 6659dc52ef | project=p-f127e80f no tuto
+#14 SON Son : le morceau joue (partie « C »).
+#14 > touche 414 696
+#14 DOIGT share_format_Wav « WAV · qualité max »
+#15 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7aa316366a | project=p-f127e80f no tuto
+#15 SON Son : le morceau joue (partie « C »).
+#15 > touche 294 792
+#15 DOIGT share_go «   Partager »
+#16 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 9053070faa | project=p-f127e80f no tuto
+#16 SON Son : le morceau joue (partie « E ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#16 > attends 10
+#16 PARTAGE Trap-morceau-club-20261113-144507.wav
+#17 ROUTE dialogue:« Partager mon morceau · Trap-mo » | MODE simple | EMPREINTE 4c857b2887 | project=p-f127e80f no tuto
+#17 SON Son : le morceau joue (partie « E »).
+#17 > touche 294 543
+#17 DOIGT vue « WhatsApp »
+#18 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE d850376768 | project=p-f127e80f no tuto
+#18 SON Son : le morceau joue (partie « E »).
+#18 LAYOUT CONTRAST « Fichier WAV : qualité studio. » 4.20:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Voir mes fichiers » 2.87:1 (needs 4.5:1, 14 sp)
+#18 > touche 347 804
+#18 DOIGT share_bilan_files « Voir mes fichiers »
+#19 ROUTE dialogue:my_exports | MODE simple | EMPREINTE b091a16b55 | project=p-f127e80f no tuto
+#19 SON Son : le morceau joue (partie « B ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#19 LAYOUT CUT « Trap-morceau-club-20261113-144507.wav » ellipsized (« … »)
+#19 LAYOUT CUT « Trap-morceau-streaming-20261113-144445.m4a » ellipsized (« … »)
+#19 LAYOUT CONTRAST « Renvoyer » 4.14:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Trap-morceau-streaming-20261113-144445.m4a » 4.20:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Renvoyer » 4.20:1 (needs 4.5:1, 14 sp)
+#19 > touche 497 823
+#19 DOIGT my_exports_close « Fermer »
+#20 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 384933d63f | project=p-f127e80f no tuto
+#20 SON Son : le morceau joue (partie « B »).
+#20 > glisse 294 850 294 400
+#20 DOIGT rien
+#21 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 0a8bb9b9a1 | project=p-f127e80f no tuto
+#21 SON Son : le morceau joue (partie « B »).
+#21 > touche 543 42
+#21 DOIGT top_more
+#22 ROUTE plus | MODE simple | EMPREINTE e4eebbaeed | project=p-f127e80f no tuto
+#22 SON Son : le morceau joue (partie « B »).
+#22 > touche 40 42
+#22 DOIGT top_projects « Trap »
+#23 ROUTE dialogue:projects | MODE simple | EMPREINTE 906c39a47f | project=p-f127e80f no tuto
+#23 SON Son : le morceau joue (partie « B »).
+#23 > touche 534 479
+#23 DOIGT project_menu_p-f127e80f
+#24 ROUTE dialogue:project_opening_p-f127e80f | MODE simple | EMPREINTE 330cb0b09d | project=p-f127e80f no tuto
+#24 SON Son : le morceau joue (partie « B »).
+#24 > touche 390 707
+#24 DOIGT #2066 « Sauvegarder le morceau en .zip »
+#24 PARTAGE Trap-20261113-144539.pocketstudio.zip
+#25 ROUTE dialogue:« Sauvegarder le morceau en .zip » | MODE simple | EMPREINTE a9277e1eb3 | project=p-f127e80f no tuto
+#25 SON Son : le morceau joue (partie « B »).
+#25 > touche 294 831
+#25 DOIGT vue « Files »
+#26 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 62b314365a | project=p-f127e80f no tuto
+#26 SON Son : le morceau joue (partie « F »).
+#26 > touche 347 753
+#26 DOIGT share_bilan_files « Voir mes fichiers »
+#27 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 89da72e340 | project=p-f127e80f no tuto
+#27 SON Son : le morceau joue (partie « F ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#27 LAYOUT CUT « Trap-20261113-144539.pocketstudio.zip » ellipsized (« … »)
+#27 > touche 485 751
+#27 DOIGT my_export_send « Renvoyer »
+#27 PARTAGE 1
+#28 ROUTE dialogue:« Partager le morceau · 1 » | MODE simple | EMPREINTE 9e1baa1535 | project=p-f127e80f no tuto
+#28 SON Son : le morceau joue (partie « F ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#28 > touche 294 529
+#28 DOIGT vue « WhatsApp »
+#29 ROUTE dialogue:my_exports | MODE simple | EMPREINTE f777b777c9 | project=p-f127e80f no tuto
+#29 SON Son : le morceau joue (partie « F ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#29 > touche 497 865
+#29 DOIGT my_exports_close « Fermer »
+#30 ROUTE dialogue:projects | MODE simple | EMPREINTE 1565abde35 | project=p-f127e80f no tuto
+#30 SON Son : le morceau joue (partie « G »).
+#30 > touche 54 54
+#30 DOIGT projects_back
+#31 ROUTE launch | MODE simple | EMPREINTE 6e3fc4243a | project=p-f127e80f no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 294 312
+#31 DOIGT launch_continue « Continuer »
+#32 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE c0b8b06eae | project=p-f127e80f no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 534 1158
+#32 DOIGT tab_simple_Envoyer « Partager »
+#33 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7adbef987e | project=p-f127e80f no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 272 894
+#33 DOIGT share_my_exports « Mes fichiers »
+#34 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 3758f3a268 | project=p-f127e80f no tuto
+#34 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#34 LAYOUT CONTRAST « Trap-morceau-club-20261113-144507.wav » 4.20:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « Renvoyer » 1.97:1 (needs 4.5:1, 14 sp)
+#34 > retour
+#34 RETOUR
+#35 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7adbef987e | project=p-f127e80f no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 536 894
+#35 DOIGT help_Mes fichiers « Qu'est-ce que « Mes fichiers » ? »
+#35 AIDE help_Mes
+#36 ROUTE dialogue:« Mes fichiers » | MODE simple | EMPREINTE d002399272 | project=p-f127e80f no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Compris » 4.20:1 (needs 4.5:1, 14 sp)
+#36 > touche 489 768
+#36 DOIGT #3018 « Compris »
+#37 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7adbef987e | project=p-f127e80f no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 296 42
+#37 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#38 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 86380f2686 | project=p-f127e80f no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 294 804
+#38 DOIGT mode_card_pro « Pro »
+#39 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE eb9e1f6c80 | project=p-f127e80f no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « Filtre Coupure · Nappe » ellipsized (« … »)
+#39 LAYOUT CUT « Envoi réverbe · Lead » ellipsized (« … »)
+#39 LAYOUT CUT « Volume · Contre-chant » ellipsized (« … »)
+#39 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
+#39 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT TARGET « Son de Batterie Couper le son de Batterie activé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Écouter la piste Batterie seule désactivé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Son de Nappe Couper le son de Nappe activé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Écouter la piste Nappe seule désactivé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Son de Lead Couper le son de Lead activé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Écouter la piste Lead seule désactivé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Son de Contre-chant Couper le son de Contre-chant activé » 40 x 22 dp (touch 48 x 48)
+#39 LAYOUT TARGET « Écouter la piste Contre-chant seule désactivé » 40 x 22 dp (touch 48 x 48)
+#39 > touche 519 1062
+#39 DOIGT thumb_share « Partager mon morceau »
+#39 DIALOGUE 0.4 s
+#40 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE a11a8d23f9 | project=p-f127e80f no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
+#40 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
+#40 LAYOUT OVERLAP « 2:58 » over the touchable « Fermer la feuille » (48 x 27 dp)
+#40 LAYOUT OVERLAP « 26 parties » over the touchable « Fermer la feuille » (67 x 20 dp)
+#40 LAYOUT OVERLAP « Volume : −13,0, comme la musique en streaming (−14) » over the touchable « Fermer la feuille » (133 x 54 dp)
+#40 LAYOUT OVERLAP « détails » over the touchable « Fermer la feuille » (35 x 9 dp)
+#40 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#40 LAYOUT OVERLAP «  Écouter » over the touchable « Fermer la feuille » (56 x 20 dp)
+#40 LAYOUT OVERLAP « Volume visé » over the touchable « Fermer la feuille » (79 x 20 dp)
+#40 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Fermer la feuille » (146 x 20 dp)
+#40 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Fermer la feuille » (101 x 20 dp)
+#40 LAYOUT OVERLAP « Auto (Trap) · −8,5 LUFS » over the touchable « Fermer la feuille » (159 x 20 dp)
+#40 LAYOUT OVERLAP « Désactivée » over the touchable « Fermer la feuille » (75 x 20 dp)
+#40 LAYOUT OVERLAP « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (348 x 72 dp)
+#40 LAYOUT OVERLAP « Tout est prêt : aucun solo oublié, aucune piste coupée. » over the touchable « Fermer la feuille » (304 x 40 dp)
+#40 LAYOUT OVERLAP «   Vidéo pour les réseaux · 30 s » over the touchable « Fermer la feuille » (166 x 20 dp)
+#40 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Fermer la feuille » (137 x 20 dp)
+#40 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Fermer la feuille » (123 x 20 dp)
+#40 LAYOUT OVERLAP «   Partager » over the touchable « Fermer la feuille » (76 x 24 dp)
+#40 LAYOUT OVERLAP « Mes fichiers » over the touchable « Fermer la feuille » (83 x 20 dp)
+#40 LAYOUT OVERLAP « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » over the touchable « Fermer la feuille » (206 x 36 dp)
+#40 LAYOUT CONTRAST « 26 parties » 3.15:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « détails » 4.29:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « ? » 4.19:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST «  Écouter » 4.09:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « ? » 2.25:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « Club · −8 LUFS » 1.55:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST «   Vidéo pour les réseaux · 30 s » 1.21:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » 3.32:1 (needs 4.5:1, 13 sp)
+#40 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#40 > attends 3
+#40 DIALOGUE 0.2 s
+#41 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE a11a8d23f9 | project=p-f127e80f no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 522 108
+#41 DOIGT share_close
+#41 DIALOGUE 0.2 s
+#42 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE eb9e1f6c80 | project=p-f127e80f no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 543 42
+#42 DOIGT top_share
+#42 DIALOGUE 0.3 s
+#43 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE a11a8d23f9 | project=p-f127e80f no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 522 108
+#43 DOIGT share_close
+#43 DIALOGUE 0.2 s
+#44 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE eb9e1f6c80 | project=p-f127e80f no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 240 42
+#44 DOIGT top_mode « Mode Pro. Toucher pour changer de mode. »
+#45 ROUTE dialogue:mode_switch | MODE pro | EMPREINTE c6475a6e84 | project=p-f127e80f no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « Pro » 1.51:1 (needs 3.0:1, 24 sp)
+#45 LAYOUT CONTRAST « En ce moment » 1.43:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « Fermer » 2.34:1 (needs 4.5:1, 14 sp)
+#45 > touche 294 576
+#45 DOIGT mode_card_simple « Simple »
+#46 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE c0b8b06eae | project=p-f127e80f no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 534 1158
+#46 DOIGT tab_simple_Envoyer « Partager »
+#47 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 7adbef987e | project=p-f127e80f no tuto
+#47 SON Son : rien ne joue.
+#47 > fin
+#47 FIN : fin

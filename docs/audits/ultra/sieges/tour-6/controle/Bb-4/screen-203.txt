@@ -1,0 +1,18 @@
+Écran 203 (900x1509)
+texte « Was willst du bewegen? » @ 274,198
+texte « 1. Wähl die Spur: » @ 162,269
+bouton « Drums » @ 127,344
+bouton « Acid 303 » @ 306,344
+bouton « Bass » @ 472,344
+bouton « Akkorde » @ 635,344
+bouton « Melodie » [sélectionné] @ 138,425
+bouton « Remix » @ 308,425
+bouton « Gemeinsames Reverb und Echo » @ 299,506
+texte « 2. Was sich auf „Melodie“ bewegt: » @ 282,580
+texte « Melodie » @ 127,642
+bouton « Filter (Sweep) Fügt dieser Spur einen Filter hinzu und lässt ihn auf- oder zugehen: der Effekt, den man am meisten hört. » @ 450,742
+bouton « Lautstärke Lauter oder leiser: Fades, Einsätze, Pausen. » @ 450,872
+bouton « Reverb-Send Mehr oder weniger Reverb: Raum, Ferne. » @ 450,984
+bouton « Echo-Send Mehr oder weniger Echo: Wiederholungen im Takt. » @ 450,1096
+texte « 1 weitere Einstellung zeigen » @ 260,1191
+texte « Schließen » @ 762,1299

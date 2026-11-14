@@ -283,7 +283,7 @@ cut_screen|tranche 4 de la voix mode الجمل|rien	corrigé	tour-3	tour-3 T3-0
 dialogue:share_bilan|m4a 48 khz 256 kb/s · 3 s idem wav ecran 64|rien	banc	tour-3	tour-3 T3-14 60c7a2f	tour-3
 live_pads_grid|pad live voz · ma chanson preferee · listo|rien	banc	tour-3	tour-3 T3-03a 531564f	tour-3
 padlive_pads_side|1 行目を小節頭てスタート ▶ de ligne|rien	banc	tour-3	tour-3 T3-02 60c7a2f	tour-3
-dialogue:mode_step|mode_card_simple|incompris	banc	tour-3	tour-3 T3-37 -	tour-3
+dialogue:mode_step|mode_card_simple|incompris	banc	tour-3,tour-6	tour-3 T3-37 -	tour-3
 ?|ecran projet barre haute + 124 tempo + ← sarkım + rehber + barre du bas|rien	nouveau	tour-3	
 acid/tab_Sons|tuto_fold|incompris	nouveau	tour-3	
 audio_track_0|▶ a partir do meu take|rien	banc	tour-3	tour-3 T3-15 60c7a2f	tour-3
@@ -1023,3 +1023,42 @@ tuto_panel/tab_simple_Clavier|tuto_need|texte-faux	nouveau	tour-6
 tuto_panel/tab_simple_Rythme|tuto_next_big|texte-faux	nouveau	tour-6	
 tuto_spot_ring|texte 少し下ける coupe|affichage	nouveau	tour-6	
 tab_Mix|thumb_share|texte-faux	nouveau	tour-6	
+cut_screen|bouton ✂ un trozo ▾ @ 131 474|affichage	nouveau	tour-6	
+cut_screen|cut_to_pads|affichage	nouveau	tour-6	
+cut_screen|dessin morceau 2 de la voix forme d onde droite|affichage	nouveau	tour-6	
+cut_screen|minicarte de la chanson au-dessus de comp 2 a 5|affichage	nouveau	tour-6	
+cut_screen|texte 2 trozos elegidos · 0 07 en total|sans-aide	nouveau	tour-6	
+cut_screen|titre comp 2 a 5|affichage	nouveau	tour-6	
+cut_screen|titre comp 2 a 5|rien	nouveau	tour-6	
+dialogue:« La canción pasa 0:38 del final »|texte entendido @ 481 687|affichage	nouveau	tour-6	
+?|bouton ✂ cortar la cancion @ 294 903|incompris	nouveau	tour-6	
+?|icone + @ 510 549|affichage	nouveau	tour-6	
+?|remix_pick_thumb|incompris	nouveau	tour-6	
+cut_screen|texte 0 00 / 0 40 · inicio @ 350 342|affichage	nouveau	tour-6	
+cut_screen|texte ok @ 508 741|affichage	nouveau	tour-6	
+dialogue:song_import|import_go|texte-faux	nouveau	tour-6	
+dialogue:projects|projects_back|mauvais-ecran	nouveau	tour-6	
+timeline_screen/tab_Structure|thumb_share|affichage	nouveau	tour-6	
+dialogue:my_exports|my_export_send|texte-faux	nouveau	tour-6	
+dialogue:share_bilan|share_bilan_files|affichage	nouveau	tour-6	
+dialogue:share_bilan|share_bilan_files|perdu	nouveau	tour-6	
+dialogue:share_bilan|share_bilan_files|texte-faux	nouveau	tour-6	
+timeline_screen/tab_Structure|thumb_share|texte-faux	nouveau	tour-6	
+tab_Sons|step_15|incompris	nouveau	tour-6	
+tab_simple_Rythme|step_15|sans-aide	nouveau	tour-6	
+tuto_panel/tab_simple_Rythme|texte ここに点線のマスかあと 2 個|affichage	nouveau	tour-6	
+tuto_spot_ring|cutoff|sans-aide	nouveau	tour-6	
+dialogue:library|library_folder_Autres|affichage	nouveau	tour-6	
+tab_Mix|tuto_do|affichage	nouveau	tour-6	
+tab_Sons|step_63|incompris	nouveau	tour-6	
+tab_Structure|tuto_next_big|affichage	nouveau	tour-6	
+tab_simple_Clavier|tuto_need_folded|incompris	nouveau	tour-6	
+tab_simple_Rythme|bouton etape suivante →|incompris	nouveau	tour-6	
+tab_simple_Rythme|tuto_next_folded|sans-aide	nouveau	tour-6	
+tab_simple_Rythme|tuto_next|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_next_big|sans-aide	nouveau	tour-6	
+tuto_panel/tab_simple_Clavier|tuto_next|texte-faux	nouveau	tour-6	
+tuto_panel/tab_simple_Mix|tuto_do|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Morceau|tuto_need|incompris	nouveau	tour-6	
+tuto_panel/tab_simple_Morceau|tuto_need|texte-faux	nouveau	tour-6	
+tuto_spot_ring|melodie plaits|texte-faux	nouveau	tour-6	

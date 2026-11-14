@@ -1,0 +1,150 @@
+package com.pocketstudio.app.padlive
+
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import com.pocketstudio.model.LiveClip
+import com.pocketstudio.model.LivePads
+import com.pocketstudio.model.LiveStarter
+import com.pocketstudio.model.PadLive
+import com.pocketstudio.ui.PocketStudioTheme
+import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/**
+ * Tour 6, lot « padlive2 », P4 (control seat A b, defect #11: « le ▶ du haut reste ▶ avec 3 boucles en route ;
+ * on croit que rien ne joue »): the bar's ▶ says what really plays. Loops started with the transport stopped (the
+ * pads on their own) show it as ■ « Arrêter », and one touch stops them (« Tout couper »); the transport playing
+ * keeps its own ■ (its stop also cuts the pads); nothing playing: ▶ « Jouer » starts the music.
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w400dp-h890dp-xxhdpi")
+class PadLivePlayShowsTest {
+    @get:Rule
+    val compose = createComposeRule()
+
+    private val pads: LivePads = PadLive.placed(LivePads(), 0, LiveStarter.PADS.mapIndexed { i, p ->
+        LiveClip("s$i.wav", p.name, if (p.oneShot) 1 else p.beats, p.oneShot, p.gain)
+    })
+
+    private fun said(text: String) = SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf(text))
+
+    /** The bar's ▶ with [states] and the transport [playing]; returns what one touch on it asked. */
+    private fun touchPlay(states: List<Int>, playing: Boolean, expect: String): List<String> {
+        val done = ArrayList<String>()
+        compose.setContent {
+            PocketStudioTheme {
+                PadLiveScreen(
+                    PadLiveUi(pads, states, page = 0, pack = "fete", playing = playing, tempoBpm = 124.0, beatsPerBar = 4),
+                    PadLiveActions(togglePlay = { done += "play" }, stopAll = { done += "stop all" }),
+                    clockOf = { -1 }, still = true,
+                )
+            }
+        }
+        compose.onNodeWithTag("padlive_play").assert(said(expect)).performClick()
+        compose.waitForIdle()
+        return done
+    }
+
+    @Test
+    fun loopsOnTheirOwnShowTheSquareAndOneTouchStopsThem() {
+        // Three loops playing (the kick, the 303, the bass: pads 0, 2, 3), the transport stopped.
+        val states = List(LivePads.ALL) { if (it == 0 || it == 2 || it == 3) 2 else 0 }
+        assertEquals(listOf("stop all"), touchPlay(states, playing = false, expect = "Arrêter"))
+    }
+
+    @Test
+    fun aPadWaitingForItsLineAlreadyShowsTheSquare() {
+        val states = List(LivePads.ALL) { if (it == 2) 1 else 0 }
+        assertEquals(listOf("stop all"), touchPlay(states, playing = false, expect = "Arrêter"))
+    }
+
+    @Test
+    fun theTransportKeepsItsOwnStopAndNothingPlayingStarts() {
+        assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { if (it == 0) 2 else 0 }, playing = true, expect = "Arrêter"))
+    }
+
+    /** « Fête » full screen says the same with its own ▶ (the same error, everywhere it can come back). */
+    @Test
+    fun thePartyScreenSaysTheSame() {
+        val done = ArrayList<String>()
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                PartyScreen(
+                    PadLiveUi(pads, loops, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4),
+                    PadLiveActions(togglePlay = { done += "play" }, stopAll = { done += "stop all" }),
+                    clockOf = { -1 }, levels = PadLevels(), readLevels = null, leave = {}, still = true,
+                )
+            }
+        }
+        compose.onNodeWithTag("padlive_party_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
+    /** Review of padlive2 (moyen): a « coup » ringing (the clap, pad 1) is no music playing: ▶ stays ▶ and starts the music. */
+    @Test
+    fun aHitRingingKeepsPlay() {
+        assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { if (it == 1) 2 else 0 }, playing = false, expect = "Jouer"))
+    }
+
+    /**
+     * Control seat Ab-2 (P4 « autre », écran 41): « Plus › Briques » shows its own ▶ at the top; a loop pad playing on its own
+     * there says ■ too, and one touch cuts it (the pads' « Tout couper »), as on Pad Live's page.
+     */
+    @Test
+    fun theBricksPageSaysTheSame() {
+        val done = ArrayList<String>()
+        val project = com.pocketstudio.model.PadLive.newProject().copy(live = pads)
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.live.LiveScreen(
+                    com.pocketstudio.app.live.LiveScreenUi(project, playing = false),
+                    com.pocketstudio.app.live.LiveActions(togglePlay = { done += "play" }),
+                    pads = com.pocketstudio.app.session.LivePadsUi(pads, loops, editing = null),
+                    padsActions = com.pocketstudio.app.session.LivePadsActions(stopAll = { done += "stop all" }),
+                )
+            }
+        }
+        compose.onNodeWithTag("live_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
+    /**
+     * Control seat Ab-3 (P4 « autre », écrans 20 et 24): « Plus › Briques › Pads » on the whole screen, its ▶ at the top
+     * said ▶ with a loop playing on its own and its touch started the project's music too; it says ■ and cuts the loops.
+     */
+    @Test
+    fun thePadsFullScreenSaysTheSame() {
+        val done = ArrayList<String>()
+        val loops = List(LivePads.ALL) { if (it == 0) 2 else 0 }
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.session.LivePadsFullScreen(
+                    com.pocketstudio.app.session.LivePadsUi(pads, loops, editing = null),
+                    com.pocketstudio.app.session.LivePadsActions(stopAll = { done += "stop all" }),
+                    close = {}, tempoBpm = 124.0, beatsPerBar = 4, playing = false, clockOf = { -1 },
+                    togglePlay = { done += "play" }, effects = {},
+                )
+            }
+        }
+        compose.onNodeWithTag("live_pads_full_play").assert(said("Arrêter")).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("stop all"), done)
+    }
+
+    @Test
+    fun nothingPlayingShowsPlay() {
+        assertEquals(listOf("play"), touchPlay(List(LivePads.ALL) { 0 }, playing = false, expect = "Jouer"))
+    }
+}

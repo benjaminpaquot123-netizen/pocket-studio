@@ -7,6 +7,7 @@ import androidx.compose.ui.test.performScrollTo
 import com.pocketstudio.app.human.HumanTester
 import com.pocketstudio.app.human.SeatOptions
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -223,5 +224,36 @@ class Coquille3SeatTest : HumanTester("coquille3") {
         val written = back.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }.map { it.text }
         assertTrue("the house of « Mes projets » writes $written:\n" + screen(), written.any { "Accueil" in it })
         assertTrue("« Accueil » cut:\n" + screen(), whole("projects_back"))
+    }
+
+    /**
+     * Control seat Cq3 (gestures 1-16, screens 14-16): a demo, « Mes fichiers » opened and closed BEFORE sending, the song
+     * sent, then « Mes fichiers » again: the list comes, not « Chargement de la liste… » for good.
+     */
+    @Test
+    fun n4_myFilesOpenedBeforeAndAfterASendLoadsInRealTime() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        tap("welcome_demo"); runCatching { tap("mode_card_simple") }
+        repeat(3) { act("attends 1") }
+        centerOfText("Plus tard")?.let { act("touche ${it.first} ${it.second}") }
+        tap("tab_simple_Envoyer")
+        tap("share_format_M4a")
+        tap("share_my_exports"); repeat(2) { act("attends 1") }; tap("my_exports_close")
+        tap("share_go")
+        repeat(40) { if (rhythm()?.export?.value?.running == true) act("attends 1") }
+        act("touche 294 543")  // the phone's share sheet: WhatsApp
+        runCatching { tap("share_bilan_ok") }
+        tap("share_my_exports")
+        // « Chargement de la liste… » is the list being read off the main thread (MediaStore, Dispatchers.IO). The bench's
+        // « attends 5 » moves its clock, not the wall's (proof: far under 5 real seconds): a read slower than that, on a
+        // loaded machine (the seats, a cold JVM: 1 run in 5 here), is still « Chargement » after any « attends ».
+        val t0 = System.nanoTime()
+        act("attends 5")
+        val realMs = (System.nanoTime() - t0) / 1_000_000
+        assertTrue("« attends 5 » took $realMs real ms: the bench's clock is the wall's", realMs < 5_000)
+        // Given real time, the list always comes (the app never stays on « Chargement »): the seats' « 95 s » were the bench's.
+        compose.waitUntil(20_000) { compose.onAllNodesWithTag("my_exports_wait").fetchSemanticsNodes().isEmpty() }
+        assertNull("« Chargement de la liste… » still there 20 real seconds after « Mes fichiers »:\n" + screen(), centerOf("my_exports_wait"))
     }
 }

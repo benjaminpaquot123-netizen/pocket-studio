@@ -217,10 +217,12 @@ fun PianoRoll(
      */
     copyMotif: (() -> Unit)? = null,
     /**
-     * Tour 6, seat A b (P1): « Notes » touched (counted at each touch): every note played framed at once, as « Tout voir »
-     * (the user's own touch: nothing zooms by itself). 0: never asked (the tutorial, the screens that open on the grid).
+     * Tour 6, seat A b (P1): « Notes » just touched: every note played framed at once, as « Tout voir » (the user's own
+     * touch: nothing zooms by itself), then [framed] says it is done (the grid coming back later keeps the user's zoom).
+     * False: not asked (the tutorial, the screens that open on the grid).
      */
-    frameAllAsked: Int = 0,
+    frameAllAsked: Boolean = false,
+    framed: () -> Unit = {},
 ) = com.pocketstudio.ui.LeftToRight {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
     val givenStep by androidx.compose.runtime.rememberUpdatedState(playStep)
@@ -311,7 +313,9 @@ fun PianoRoll(
                 }
                 // P1: « Notes » asked for every note played: framed when some are past the first bar (one bar is the default).
                 LaunchedEffect(frameAllAsked) {
-                    if (frameAllAsked > 0 && clip.notes.any { it.start + it.length > barTicks }) frameAll()
+                    if (!frameAllAsked) return@LaunchedEffect
+                    if (clip.notes.any { it.start + it.length > barTicks }) frameAll()
+                    framed()
                 }
                 FilterChip(
                     selected = false,

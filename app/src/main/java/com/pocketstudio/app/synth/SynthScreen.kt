@@ -205,9 +205,10 @@ fun SynthScreen(
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
-    // Tour 6, seat A b (P1): each touch on « Notes » asks the grid to frame every note played (not only bar 1).
-    var notesAsked by rememberSaveable { mutableStateOf(0) }
-    val pickMode: (Boolean) -> Unit = { notes -> showNotes = notes; if (notes) notesAsked++ }
+    // Tour 6, seat A b (P1): a touch on « Notes » asks the grid to frame every note played (not only bar 1), once: the
+    // request is the touch's, not the grid's (fresh review: it came back framed again from another tab, the zoom lost).
+    var notesAsked by remember { mutableStateOf(false) }
+    val pickMode: (Boolean) -> Unit = { notes -> showNotes = notes; if (notes) notesAsked = true }
     // Each request once (coming back to the tab later keeps the view chosen since).
     var notesSeen by rememberSaveable { mutableStateOf(0) }
     var rollShownFor by rememberSaveable { mutableStateOf(0) }
@@ -319,7 +320,7 @@ fun SynthScreen(
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
                         gridHeight = rollHeight,
-                        frameAllAsked = notesAsked,
+                        frameAllAsked = notesAsked, framed = { notesAsked = false },
                         harmony = notes.harmony,
                         keyOn = keyOn, keyOff = keyOff,
                         clipboard = notes.clipboard, frozen = notes.frozen,

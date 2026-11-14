@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Un petit message s'affiche quelques secondes en bas de l'écran : « Tu canción mantiene su tempo (120 BPM): el tema se ajusta a él sin cambiar de tono. ».

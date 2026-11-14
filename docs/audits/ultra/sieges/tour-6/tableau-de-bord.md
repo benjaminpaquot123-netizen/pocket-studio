@@ -126,7 +126,7 @@ Toutes remplies : non
 | D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 8/22 ; 0/120 ; 34 oui, 38 non, 1 pas vue ; 14 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
 | E | Missions réussies (oracle mesures.json) | 6/12 | ≥ 90 % | non |
 | F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 50 (1) | ≤ 5 (0) | non |
-| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 281, 2 | 0, 0, 0, 0 | non |
+| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 383, 2 | 0, 0, 0, 0 | non |
 | H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/rouge (9f26c244, passage 43375199284 : JourneyTest.aFirstSongInTheModeSimple), 6 (lignes rouges de telephone.tsv au 2026-11-12, après le retest v6 : T6-T01, T6-T02, T6-T03, T6-T04, T6-T05, T6-T06) | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 13 (padlive_party, live_screen, piano_roll, acid, audio_tracks, master_pro_panel, video_sheet, remix_project, board, midi, glossary, latency, studio), 36, 2, 11 / 1 | 0, 0, 0, ≥ 16 / ≤ 3 | non |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |

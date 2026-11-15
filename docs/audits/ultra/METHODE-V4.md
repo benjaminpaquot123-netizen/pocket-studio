@@ -50,59 +50,84 @@ Demande de Benjamin (2026-11-14, fin du tour 6) : trier et corriger les règles,
 | F | Les rejeux tournent dans la CI | un libellé changé qui casse un rejeu se voit tout de suite (rejeux7 : 5 refus) | le lot qui change le libellé recale le rejeu |
 | G | Le siège de contrôle part en même temps que la CI du lot, branche figée | du temps d'attente en moins | toute retouche relance les deux |
 
-## 4. Méthode rapide, version 2 (après l'audit suspicieux du 14 novembre au soir)
+## 4. Méthode rapide, version 3 (mesurée le 15 novembre)
 
-La version 1 (« trois niveaux, une seule vague de contrôle à la fin ») est **retirée**. Un relecteur méfiant l'a démolie, preuves à l'appui : elle rouvrait la faille de la nuit du tour 6. Huit lots étaient entrés sans contrôle : 12 défauts corrigés sur 32, 3 graves neufs. Et elle ne gagnait que 4 à 14 % du coût des contrôles, pas les deux tiers promis.
+La version 1 est retirée : un relecteur méfiant l'a démolie. La version 2 visait le temps des testeurs et les refus, sans mesure. La version 3 part d'une **mesure du quota réel** du tour 6 : l'usage de chaque discussion (`get_session`) et l'historique du chef, jour par jour.
 
-### 4.1 Où part vraiment le quota (chiffres du tour 6)
-- **Les sièges de contrôle du tuto.** 32 passages de contrôle, 3 612 gestes, dont 3 119 dans le tuto (86 %). Un siège relit tout son historique à chaque geste : son coût grandit comme le carré de sa longueur. Le tuto fait donc environ 96 % du coût des contrôles.
-- **Courir après la tête.** Depuis le 12 novembre : 81 fusions de l'intégration dans les lots pour 38 entrées, et 108 commits de relecture. Des sièges ont été rejoués sur de simples commits de fusion.
-- **La machinerie qui bouge pendant le tour.** 10 des 33 lots du tour 6 portaient sur le banc ou la méthode, plus 4 réparations de la CI. Sur 1 960 commits, 398 touchent l'appli.
-- **Les réveils du chef** (minuteries, surveillances) : jamais mesurés. C'est une piste, pas un chiffre.
+### 4.1 Ce que coûte un tour (mesuré)
+- Tour 6 (12-14 novembre) : environ 1 100 millions d'« unités » pour une cinquantaine de bugs, soit **environ 22 M d'unités par bug**. Une unité est un jeton ramené au prix d'un jeton d'entrée : sortie ×5, relecture de mémoire ×0,1, réécriture ×2.
+- Par rôle : correcteurs 46 %, chef et ses sous-agents 20 %, testeurs 17 %, banc 15 %, relecteurs et lecteurs 2 %.
+- Le mécanisme : à chaque action, une discussion relit toute sa mémoire (son « contexte »).
+  - Ces relectures font 96 à 98 % des jetons et 68 à 80 % du coût.
+  - Les réécritures de la mémoire (réveil après plus d'une heure, ou sous-agent qui a attendu plus de 5 minutes) font 15 à 44 % du coût.
+  - Le texte écrit par l'IA ne fait que 5 à 10 %.
+- Donc **coût ≈ nombre d'actions × taille de la mémoire**. Une action à 850 k de mémoire coûte environ 8 fois plus qu'à 100 k.
+  - Les correcteurs ont fini entre 730 et 870 k, les testeurs entre 460 et 600 k. La mémoire médiane du chef était de 425 k.
+  - Le compactage automatique ne passait qu'à 900 k.
+- La version 2 visait surtout le nombre d'actions. Le premier levier est en fait la taille de la mémoire.
 
-### 4.2 Le siège court ancré : le gros levier
-Un lot garde son **constat avant d'entrer**, pour tous les bugs (CLAUDE.md, « corrigé » seulement si un testeur l'a vu). Mais le siège est court :
-1. Un rejeu, joué par programme et donc sans quota, amène l'appli à l'endroit du défaut, dans les conditions d'origine (langue, appareil, police, mode).
-2. L'IA ne joue ensuite que **20 à 40 gestes** sur la phrase d'acceptation et répond : corrigé, autre, encore là, pas atteint.
+### 4.2 Les leviers, classés par gain
 
-Preuve que c'est possible : le siège Da-11 a constaté sa correction en 11 gestes, contre 141 à 174 pour Da-4 à Da-9. Le tuto entier (300 gestes) n'est rejoué que pour un lot qui change sa mécanique.
+**1. Une mémoire courte partout : environ 35 à 45 % du coût d'un tour.**
+- **Réglage** : le compactage automatique vers 200 k au lieu de 900 k, soit par `CLAUDE_CODE_AUTO_COMPACT_WINDOW=200000` dans les variables de l'environnement cloud, soit par la clé `autoCompactWindow` (documentation de Claude Code). À vérifier avant de s'y fier : ouvrir une discussion de test et lire le seuil qu'elle affiche.
+- **Règles** :
+  - un lot = une discussion neuve (ou un sous-agent) qui s'arrête à la fin du lot ;
+  - un siège = un sous-agent neuf (c'est déjà le cas) ;
+  - une discussion de plus de 200 k ne reçoit plus de travail neuf. Cette règle remplace la règle « 40 % », qui laissait monter jusqu'à 400 k.
+- **Calcul** : la mémoire moyenne passe de 400-450 k à environ 120-150 k, donc les relectures (68 à 80 % du coût) sont divisées par 3. On compte 15 % d'actions en plus pour relire un fichier après un compactage. Résultat : environ 50 % de moins pour les correcteurs, les testeurs, le banc et le chef, qui font 90 % du coût total.
+- **Garde-fou** :
+  - une section « # Compact instructions » dans CLAUDE.md, qui garde le lot, la branche, les sha, les refus, ce qui n'est pas vert et les interdits ;
+  - l'état vit dans les fichiers (`EN-COURS.md`, le rapport du lot) et se relit après chaque compactage ;
+  - CLAUDE.md est rechargé après un compactage.
 
-### 4.3 Ne plus courir après la tête
-La relecture et le siège d'un lot restent valables tant que les fusions arrivées depuis ne touchent **ni les fichiers du lot ni les écrans du chemin de son siège**. Un script le calcule. Le portail fusionne alors une seule fois et lance **une seule CI sur l'arbre fusionné**.
+**2. Moins de réveils à froid : environ 3 à 6 %.**
+- **Sous-agents** : garder leur mémoire 1 h au lieu de 5 min (`CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL=1h`). 36 % du coût des sous-agents du chef venait d'actions « à froid » après une attente : les tests Gradle durent de 5 à 50 minutes.
+- **Minuteries** : plus de réveil toutes les 2 h sur une discussion à grosse mémoire. Chaque réveil réécrit toute la mémoire, pour environ dix fois le prix d'une action normale.
+  - On attend plutôt un événement : fin de CI, message d'une discussion.
+  - Une surveillance qui doit vraiment tourner se réveille avant une heure.
+  - La règle des minuteries de CLAUDE.md change donc, avec l'accord de Benjamin.
 
-### 4.4 Geler la machinerie pendant un tour
-Pas de lot du banc ni de changement de méthode pendant un tour, sauf une réparation qui bloque tout. Les améliorations s'écrivent dans une liste et entrent en un seul lot entre deux tours.
-
-### 4.5 Le niveau sert à doser, pas à sauter le constat
-Le niveau ne retire jamais le constat ni la CI du lot. Il règle seulement la profondeur de la relecture et la longueur du siège.
-- `pret.sh` **calcule le niveau sur le diff**. Le trieur ne peut que le monter.
-  - Seulement des textes, traductions ou captures : **niveau 1**, relecture courte du diff par un sous-agent neuf.
-  - Un fichier `.kt` de `src/main` : **niveau 2 au moins**.
-  - Une regex, un fichier de la coquille, la sauvegarde, le moteur ou la mécanique du tuto : **niveau 3**, circuit complet. (Le plantage du téléphone du 13 novembre venait d'une regex dans un lot « texte ».)
-- Huit défauts par lot au plus, groupés par chapitre ou par écran.
-- `pret.sh` fait aussi la paperasse :
-  - il lance le test nommé sur le parent du vert et exige un échec sur son assertion, pas une erreur de compilation (fini l'appariement par les titres) ;
+**3. Moins d'actions refaites : environ 5 à 10 %.** Ce sont les points de la version 2, inchangés.
+- **Ne plus courir après la tête.** Depuis le 12 novembre : 81 fusions de l'intégration dans les lots pour 38 entrées, et 108 commits de relecture.
+  - La relecture et le siège d'un lot restent valables si les fusions arrivées depuis ne touchent ni ses fichiers ni les écrans de son siège. Un script le calcule.
+  - Le portail lance une seule CI, sur l'arbre fusionné.
+- **`pret.sh`** :
+  - il calcule le niveau sur le diff : des textes seuls donnent le niveau 1 ; un `.kt` de `src/main`, au moins le niveau 2 ; une regex, la coquille, la sauvegarde, le moteur ou la mécanique du tuto, le niveau 3 ;
+  - il prouve le rouge en lançant le test sur le parent du vert ;
   - il lance les tests du lot, l'auto-test du banc et les rejeux touchés ;
-  - il passe le portail à blanc contre la tête poussée.
-  
-  Il ne règle pas les refus dus à une tête qui bouge : c'est le rôle du §4.3.
-- Un rejeu prouve qu'un défaut ne revient pas. Il ne prouve pas que le but de la personne est atteint : il ne remplace jamais le constat.
+  - il passe le portail à blanc.
+- **Machinerie gelée pendant un tour** : 10 des 33 lots du tour 6 portaient sur le banc ou la méthode.
 
-### 4.6 Mesurer avant de promettre
-Le premier lot du prochain tour mesure le quota par rôle : siège, correcteur, relecteur, chef. On ne promet aucun chiffre avant. L'hypothèse à vérifier : le siège court ancré et la fin de la course après la tête attaquent les deux plus gros postes.
+**4. Le siège court ancré : environ 5 à 8 %, surtout pour le tuto (86 % des gestes de contrôle).**
+- Il faut d'abord le construire.
+  - Le banc sait rejouer des gestes (`rejeu=` et `rejeu.n=` dans `start.txt`), mais le siège s'arrête après le rejeu (`HumanTester.kt` : le verdict, puis la fin).
+  - `amenee=` ne connaît que premier-morceau, remix et padlive (`SeatOptions.kt`).
+- Un lot du banc ajoute deux options :
+  - « rejouer tant que l'écran colle, puis rendre la main au testeur » ;
+  - `amenee=tuto:<style>:<chapitre>`.
+- Le testeur ne joue alors que 20 à 40 gestes sur la phrase d'acceptation. Da-11 en a joué 11, contre 141 à 174 avant.
 
-### 4.7 Ce qui ne bouge pas (la sécurité)
-- Un constat avant l'entrée pour **tout** lot.
-- La CI complète du lot, pour tous les niveaux.
+**5. Fable sur une discussion neuve, jamais sur une longue.**
+- Fable a sa propre limite. 1 426 actions du chef sur Fable 5.2, avec une mémoire médiane de 425 k, l'ont vidée pour la semaine.
+- Pour un problème dur, Fable travaille dans un sous-agent ou une discussion neuve, avec une fiche courte.
+- Benjamin décide toujours quand on l'utilise.
+
+**6. Une CI plus rapide** (astuce A) : du temps gagné, pas du quota.
+
+### 4.3 Ce qu'on peut attendre
+- Le levier 1 retire 35 à 45 % du coût. Les leviers 2 à 4 retirent encore 15 à 25 % de ce qui reste.
+- Au total, un tour devrait coûter **environ moitié moins**, peut-être 2,5 fois moins : environ 9 à 12 M d'unités par bug au lieu de 22.
+- C'est une estimation. Le premier tour se mesure de la même façon (usage de chaque discussion, historique du chef jour par jour) avant d'annoncer un chiffre.
+
+### 4.4 Ce qui ne bouge pas (la sécurité)
+- Un constat par un testeur neuf avant l'entrée de tout lot : plus court, mais réel.
+- La CI complète du lot, et avant `main`.
 - Un rejeu pour chaque bloquant ou grave.
-- Le circuit complet au niveau 3.
-- Le tuto entier pour un changement de sa mécanique.
-- Fable proposé au 2e échec, mais Benjamin décide.
-- CLAUDE.md ne change qu'avec son accord. Par exemple, alléger les minuteries « toutes les 2 h par lot » (§4.1, réveils du chef) se décidera après la mesure du §4.6.
+- Le circuit complet au niveau 3, et le tuto entier pour un changement de sa mécanique.
+- Le risque neuf : un résumé de compactage qui oublie une consigne. Il est couvert par CLAUDE.md, rechargé après chaque compactage, par les fichiers d'état et par la section « # Compact instructions ».
 
-### 4.8 À préparer entre deux tours (un seul lot du banc, au signal de Benjamin)
-1. Le siège court ancré (§4.2).
-2. `pret.sh` avec le niveau calculé sur le diff et la preuve rouge sur le parent (§4.5).
-3. Le calcul « la fusion touche-t-elle le lot ? » (§4.3).
-4. L'astuce D (`TEST_DIRS`).
-5. Ensuite seulement, les astuces A et F.
+### 4.5 L'ordre, au signal de Benjamin
+1. Tester le réglage du compactage dans une discussion de test (quelques minutes), puis le poser. Il touche toutes ses discussions : il faut son accord.
+2. Écrire « # Compact instructions » et les règles des leviers 1, 2 et 5 dans CLAUDE.md.
+3. Entre deux tours, un lot du banc : `pret.sh`, le siège court ancré, le calcul « la fusion touche-t-elle le lot ? » et `TEST_DIRS` (astuce D).
+4. Au premier tour, mesurer de la même façon et comparer aux 22 M d'unités par bug.

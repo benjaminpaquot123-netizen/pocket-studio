@@ -6,7 +6,7 @@
 - Points pour plus tard : `docs/REVIEW.md` (« Tour 6 : pour le tour suivant »).
 
 ## Prochaine étape exacte
-- Prochain audit (au signal de Benjamin) : partir de `docs/audits/ultra/METHODE-V4.md` §4 (version 2, après audit suspicieux) : siège court ancré, ne plus courir après la tête, machinerie gelée pendant le tour, niveau calculé sur le diff, quota mesuré par rôle. D'abord le lot du banc du §4.8.
+- Prochain audit (au signal de Benjamin) : partir de `docs/audits/ultra/METHODE-V4.md` §4, version 3, mesurée le 15 novembre. Le premier levier est la taille de la mémoire des discussions (compactage vers 200 k, un lot = une discussion neuve). Suivre l'ordre du §4.5.
 - CI finale sur `ccr-80af1a1b-mn0wec`, fusion dans `main`, Release APK pour Benjamin avec la liste à essayer au téléphone.
 - Paquet 9 : un lot du banc ajoute `project-model/src/test` à `TEST_DIRS` de `scripts/bench/verifie-chantier.py`.
 - Rien d'autre sans un signal de Benjamin.

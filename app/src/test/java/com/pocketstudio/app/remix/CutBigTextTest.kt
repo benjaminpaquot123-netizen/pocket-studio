@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.AutoCut
@@ -77,6 +78,26 @@ class CutBigTextTest {
             val n = compose.onNodeWithTag(tag).fetchSemanticsNode()
             val shown = n.boundsInRoot.width
             assertTrue("$tag shows $shown of its ${n.size.width} px", shown >= n.size.width - 1f)
+        }
+    }
+
+    /** Whole in view: the node's drawn bounds are its full size, inside the screen. */
+    private fun whole(tag: String): String? {
+        val n = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
+        val b = n.boundsInRoot
+        return if (b.width >= n.size.width - 1f && b.height >= n.size.height - 1f) null else "$tag shows ${b.width} x ${b.height} of ${n.size}"
+    }
+
+    /** D1 (R3-EC17, 2b #18): with the playhead placed, the curve and Início, Fim and Ouvir are seen together without a scroll. */
+    @Test
+    fun theCurveAndItsThreeButtonsAreSeenTogether() {
+        show()
+        // However the screen is scrolled (to the buttons or to the curve), the four are in view together.
+        for (first in listOf("cut_span_play", "cut_wave")) {
+            runCatching { compose.onNodeWithTag(first, useUnmergedTree = true).performScrollTo() }
+            compose.waitForIdle()
+            val cut = listOf("cut_wave", "cut_start", "cut_end", "cut_span_play").mapNotNull { whole(it) }
+            assertTrue("scrolled to $first: $cut", cut.isEmpty())
         }
     }
 }

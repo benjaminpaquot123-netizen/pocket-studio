@@ -162,7 +162,8 @@ fun GuideBar(ui: GuideUi, open: Boolean, toggle: () -> Unit, modifier: Modifier 
         )
         Text(
             if (line.isEmpty()) "" else " · $line", style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary,
-            maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("guide_bar_step"),
+            // Tour 7, lot 3, D4 (pt-BR at 200 %: « Crie uma batida… »): two lines folded, the whole step open.
+            maxLines = if (open) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("guide_bar_step"),
         )
         if (!ui.loading && ui.total > 0) {
             Text(

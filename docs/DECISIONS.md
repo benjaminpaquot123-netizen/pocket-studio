@@ -1514,3 +1514,4 @@
 - 2026-11-14 · lot « coquille4 » (tour-6) : 1 décision(s) dans `docs/decisions/tour-6-coquille4.md`
 - 2026-11-14 · lot « stable » (tour-6) : 16 décision(s) dans `docs/decisions/tour-6-stable.md`
 - 2026-11-14 · lot « rejeux7 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-rejeux7.md`
+- 2026-11-14 · idée « Aide guidée partout » (Benjamin) : mise de côté, pour après l'audit. Sans aucune IA (ni sur le téléphone, ni en ligne) : catalogue écrit à la main de chaque action (chemin exact), recherche par mots-clés et synonymes, pas à pas qui fait clignoter le bouton suivant à partir de l'état de l'appli. Retour arrière : simple retrait du bouton Aide.

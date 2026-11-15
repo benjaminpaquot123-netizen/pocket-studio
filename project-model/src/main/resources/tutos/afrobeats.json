@@ -83,7 +83,7 @@
       "steps": [
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick, touche les 4 cases en pointillé : le 1er temps, juste avant le 3e temps, le 3e temps, et un dernier coup juste avant la fin.",
+          "text": "À toi : sur le pad du kick, touche les 7 cases en pointillé : le 1er temps, juste avant le 3e temps, le 3e temps, et un dernier coup juste avant la fin.",
           "textPro": "À toi : le kick sur 1, le « et » du 2 et le 3, plus un coup plus doux sur le « et » du 4.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -92,7 +92,7 @@
         },
         {
           "id": "rim_do",
-          "text": "À toi : sur le pad « Rim », touche les 2 cases en pointillé : le 2e et le 4e temps.",
+          "text": "À toi : sur le pad « Rim », touche les 5 cases en pointillé : le 2e et le 4e temps.",
           "textPro": "À toi : le rim sur 2 et 4, doux : jamais une caisse claire qui claque.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",

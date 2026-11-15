@@ -10,7 +10,7 @@ import org.junit.Test
  * grid holding N of them, or first offers « Passer à N mesures » that makes them.
  */
 class Tour7TutoCountsMatchGridTest {
-    private val count = Regex("""(\d+) cases en pointillé""")
+    private val count = Regex("""(\d+) cases(?: en pointillé|\))""")
 
     @Test
     fun theDottedCellsCountedAreTheCellsShown() {

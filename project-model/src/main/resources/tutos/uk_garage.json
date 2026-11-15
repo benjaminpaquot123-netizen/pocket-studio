@@ -83,7 +83,7 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : le claquement sec du garage.",
+          "text": "À toi : sur le pad « Clap », touche les 4 cases en pointillé, sur 2 et 4 : le claquement sec du garage.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -99,7 +99,7 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », touche les 3 cases en pointillé. Pas de « tchi » au milieu de la mesure : il sonnerait house.",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 6 cases en pointillé. Pas de « tchi » au milieu de la mesure : il sonnerait house.",
           "textPro": "À toi : le charley ouvert à la moitié des temps 1, 2 et 4, pas du 3.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",

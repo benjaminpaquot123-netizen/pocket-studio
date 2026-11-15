@@ -95,7 +95,7 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », les 4 cases en pointillé, entre les temps.",
+          "text": "À toi : sur le pad « Charley », les 8 cases en pointillé, entre les temps.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -112,7 +112,7 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », les 2 cases en pointillé : il répondra aux kicks au Refrain.",
+          "text": "À toi : sur le pad « Charley ouvert », les 4 cases en pointillé : il répondra aux kicks au Refrain.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",

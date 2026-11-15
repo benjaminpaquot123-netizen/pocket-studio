@@ -2106,6 +2106,18 @@ object TutoChecks {
     /** The bars a drum role's line lasts (the loop must be at least that long to hold it). */
     private fun barsOf(p: Project, line: StarterWizard.Line): Int = ceil(line.pattern.length / p.stepsPerBar.coerceAtLeast(1).toDouble()).toInt().coerceIn(1, 4)
 
+    /**
+     * The bars the course's loop already has when [step] comes (tour 7 D5): its drum steps before it, the longest of
+     * their lines. A step met by « Aller au chapitre » on a shorter loop asks for those bars first, so the cells its
+     * words count are the cells its grid shows.
+     */
+    private fun loopBefore(step: TutoStep, p: Project, target: TutoTarget): Int {
+        val steps = TutoCourse.of(target.style.id)?.chapters?.flatMap { it.steps } ?: return 1
+        val at = steps.indexOfFirst { it === step }.takeIf { it >= 0 } ?: steps.indexOfFirst { it.id == step.id }.takeIf { it >= 0 } ?: return 1
+        return steps.take(at).filter { it.check.startsWith("lane:") }
+            .mapNotNull { s -> target.line(argOf(s.check), partOf(s))?.let { barsOf(p, it) } }.maxOrNull() ?: 1
+    }
+
     /** The part a step works in ("Montée" for the fill and the gap, "Drop" for the crash), null when none. */
     private fun sceneFor(step: TutoStep, p: Project): String? = when {
         step.check == "fill" || step.check == "gap" || step.check == "automation" || step.check.startsWith("automation:") -> partsOf(step).first()
@@ -2154,8 +2166,9 @@ object TutoChecks {
         val c = step.check
         val arg = argOf(c)
         return when {
+            // Its bars first: its line's, or the loop the course had already made when its words count cells over it.
             c.startsWith("lane:") -> partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(arg, partOf(step))?.let { line ->
-                barsOf(p, line).takeIf { p.drums.steps < line.pattern.length.coerceAtMost(4 * p.stepsPerBar) }?.let { TutoNeed.Bars(it) }
+                maxOf(barsOf(p, line), loopBefore(step, p, target)).takeIf { p.drums.steps < it * p.stepsPerBar }?.let { TutoNeed.Bars(it) }
             }
             // Its track first; its first 4 bars written: « Copier sur les mesures suivantes ».
             c == "notes:acid" -> copyNeed(step, p, target, TutoTarget.ACID)

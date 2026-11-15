@@ -93,7 +93,7 @@
         },
         {
           "id": "conga_do",
-          "text": "À toi : sur le pad « Conga », touche les 4 cases en pointillé : la clave, un motif qui revient à chaque mesure.",
+          "text": "À toi : sur le pad « Conga », touche les 8 cases en pointillé : la clave, un motif qui revient à chaque mesure.",
           "textPro": "À toi : la conga en clave : le 2, juste avant le 3, entre le 3 et le 4, le 4.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",

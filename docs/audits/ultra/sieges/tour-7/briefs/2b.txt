@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot2/b (seat b, lot 2; lang pt-BR, device phone, font 200, mode simple, options rejeu de tour-6/lotE/c jusqu'au geste 17 puis à toi, mission remix-voix, budget 80 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/b (seat b, lot B; lang pt-BR, device phone, font 200, mode simple, options rejeu de tour-6/lotE/c jusqu'au geste 17 puis à toi, mission remix-voix, budget 80 gestures).
 Profile (id t7-2b): Utilisatrice brésilienne malvoyante, téléphone, police 200 %, Mode simple, veut séparer la voix d'une chanson. Le banc rejoue son parcours du tour 6 jusqu'à l'écran de découpe (« Cortar o que eu quiser ») puis lui rend la main. Note ce qui est trop gros ou coupé. Act as this person (habits, patience, vocabulary).
 Mission remix-voix: Sur l'écran de découpe : place Início et Fim, écoute le bout, puis pose-le sur un pad et sur une piste. Va jusqu'à « Minha música ».
 Its 3 goals (ids, the bench checks them): separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste).

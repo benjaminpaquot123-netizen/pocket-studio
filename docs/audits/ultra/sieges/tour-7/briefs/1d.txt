@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot1/d (seat d, lot 1; lang de, device tablet8, font 130, mode pro, options amenee=tuto:techno:8, mission tuto-pro, budget 200 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/d (seat d, lot A; lang de, device tablet8, font 130, mode pro, options amenee=tuto:techno:8, mission tuto-pro, budget 200 gestures).
 Profile (id t7-1d): Musicien allemand confirmé, tablette 8 pouces, police 130 %, mode Pro, tuto Pro techno ; le banc l'amène au chapitre 8 (première partie : groove). Va vite, lit en diagonale, veut que l'appli dise la vérité sur ce qui est validé. Act as this person (habits, patience, vocabulary).
 Mission tuto-pro: Le banc ouvre le tuto Pro au chapitre 8 : fais du chapitre 8 jusqu'à la fin (mastering, export). Note pour chaque chapitre : compris oui/non, coché ou non dans la liste.
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

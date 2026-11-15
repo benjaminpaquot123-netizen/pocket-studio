@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot1/c (seat c, lot 1; lang ja, device phone, font 100, mode simple, options amenee=tuto:techno:3, mission tuto-facile, budget 150 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/c (seat c, lot A; lang ja, device phone, font 100, mode simple, options amenee=tuto:techno:3, mission tuto-facile, budget 150 gestures).
 Profile (id t7-1c): Débutant japonais, téléphone, tuto Facile techno ; le banc l'amène au chapitre 3 (クラップ). Lit tout, n'aime pas les consignes trop longues ni les mots étrangers. Act as this person (habits, patience, vocabulary).
 Mission tuto-facile: Le banc ouvre le tuto au chapitre 3 : fais les chapitres 3 à 7 (クラップ à リフ). Note pour chaque chapitre : compris oui/non, hésitations.
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

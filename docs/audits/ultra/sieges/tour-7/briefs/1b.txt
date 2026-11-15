@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot1/b (seat b, lot 1; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:12, mission tuto-facile, budget 120 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/b (seat b, lot A; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:12, mission tuto-facile, budget 120 gestures).
 Profile (id t7-1b): Débutante française, téléphone, tuto Facile house ; le banc l'amène au chapitre 12 (« Les transitions »). Patiente mais n'aime pas les messages flous. Act as this person (habits, patience, vocabulary).
 Mission tuto-facile: Le banc ouvre le tuto au chapitre 12 : fais les chapitres 12 à 15 (transitions, effets, mix, export) jusqu'au dernier Bravo. Note pour chaque chapitre : compris oui/non, hésitations.
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

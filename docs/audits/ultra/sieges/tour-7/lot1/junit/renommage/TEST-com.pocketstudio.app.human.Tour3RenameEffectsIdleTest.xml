@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pocketstudio.app.human.Tour3RenameEffectsIdleTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T14:28:17.900Z" hostname="vm" time="4.549">
-  <properties/>
-  <testcase name="aFlowEmittedOnAnIoThreadIsWrittenOnTheMainThread" classname="com.pocketstudio.app.human.Tour3RenameEffectsIdleTest" time="4.472"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

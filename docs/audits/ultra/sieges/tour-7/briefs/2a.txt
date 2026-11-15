@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot2/a (seat a, lot 2; lang ko, device phone360, font 130, mode simple, options amenee=tuto:techno:5, mission tuto-facile, budget 100 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/a (seat a, lot B; lang ko, device phone360, font 130, mode simple, options amenee=tuto:techno:5, mission tuto-facile, budget 100 gestures).
 Profile (id t7-2a): Débutante coréenne, petit téléphone (360 dp), police 130 %, tuto Facile techno ; le banc l'amène au chapitre 5 (la basse), là où les notes pointillées passaient sous le panneau. Peu patiente avec le défilement. Act as this person (habits, patience, vocabulary).
 Mission tuto-facile: Le banc ouvre le tuto au chapitre 5 : fais la basse en entier, puis les chapitres suivants tant que le budget le permet. Note chaque note ou case que tu dois chercher sous le panneau.
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

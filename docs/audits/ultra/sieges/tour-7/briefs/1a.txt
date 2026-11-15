@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot1/a (seat a, lot 1; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:4, mission tuto-facile, budget 120 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/a (seat a, lot A; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:4, mission tuto-facile, budget 120 gestures).
 Profile (id t7-1a): Débutante française, téléphone, découvre la house avec le tuto Facile ; le banc l'amène au chapitre 4 (« Les charleys et le tambourin »). Elle suit les consignes à la lettre, lit lentement, abandonne si une note demandée est invisible. Act as this person (habits, patience, vocabulary).
 Mission tuto-facile: Le banc ouvre le tuto au chapitre 4 : fais les chapitres 4, 5 (la basse) et 6 (le piano) en entier, puis continue tant que le budget le permet. Note pour chaque chapitre : compris oui/non, hésitations.
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot2/d (seat d, lot 2; lang fr, device phone, font 100, options fresh=reel (aucun mode imposé), mission tuto-facile, budget 60 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/d (seat d, lot B; lang fr, device phone, font 100, options fresh=reel (aucun mode imposé), mission tuto-facile, budget 60 gestures).
 Profile (id t7-2d): Débutant français, téléphone, première ouverture de l'appli. Regarde chaque écran en entier avant de toucher ; un grand vide lui fait croire que l'écran n'a pas fini de s'afficher. Act as this person (habits, patience, vocabulary).
 Mission tuto-facile: À l'accueil, touche « J'apprends ». Sur « Simple ou Pro ? », prends une image et regarde l'écran ENTIER (haut, milieu, bas) avant de choisir Simple. Puis fais le chapitre 1 du tuto. S'il reste du budget : quitte le tuto, va sur « Que veux-tu faire ? », touche « Nouveau morceau » puis « J'apprends » et regarde de nouveau « Simple ou Pro ? ».
 Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).

@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot3/b (seat b, lot 3; lang fr, device phone, font 100, mode simple, mission exports, budget 100 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotC/b (seat b, lot C; lang fr, device phone, font 100, mode simple, mission exports, budget 100 gestures).
 Profile (id t7-3b): Utilisatrice française, téléphone, Mode simple, veut garder et partager ses morceaux. Méfiante : vérifie que chaque fichier existe vraiment. Act as this person (habits, patience, vocabulary).
 Mission exports: Ouvre « Mes fichiers » avant d'avoir exporté quoi que ce soit, puis fais un morceau, exporte-le en version « streaming » puis « club » (M4A puis WAV), et retrouve les fichiers dans « Mes fichiers ».
 Its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).

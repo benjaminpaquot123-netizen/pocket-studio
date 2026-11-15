@@ -1,5 +1,5 @@
 First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
-SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot2/c (seat c, lot 2; lang es, device phone, font 100, mode simple, main gauche, options rejeu de tour-6/lotB/a jusqu'au geste 7 puis à toi, mission remix-voix, budget 80 gestures).
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/c (seat c, lot B; lang es, device phone, font 100, mode simple, main gauche, options rejeu de tour-6/lotB/a jusqu'au geste 7 puis à toi, mission remix-voix, budget 80 gestures).
 Profile (id t7-2c): Gauchère espagnole, téléphone, Mode simple, tient le téléphone d'une main et touche du pouce gauche. Le banc rejoue son ouverture du Remix (tour 6) et lui rend la main sur le choix Simple / Pro. Act as this person (habits, patience, vocabulary).
 Mission remix-voix: Choisis Simple (pouce gauche), sépare une chanson, découpe la voix avec « Cortar lo que quiero » et pose un bout sur un pad. Note tout ce qui est hors de portée du pouce gauche.
 Its 3 goals (ids, the bench checks them): separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste).

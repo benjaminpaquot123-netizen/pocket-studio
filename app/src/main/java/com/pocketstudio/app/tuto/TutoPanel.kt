@@ -68,6 +68,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
@@ -374,7 +375,7 @@ fun TutoKitCard(
         } else {
             Button(
                 onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_kit_download"),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).wholeRow("kit_download").testTag("tuto_kit_download"),
             ) {
                 Text(
                     if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size),
@@ -382,7 +383,7 @@ fun TutoKitCard(
                 )
             }
         }
-        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
+        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).wholeRow("kit_later").testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
     }
 }
 
@@ -475,10 +476,18 @@ fun TutoPanel(
     // before's left its room in the height held for this one).
     val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
     // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
-    // above « Pourquoi ? »). The step's lines (top, bottom), in the scrolled content's own pixels: the room ends on a whole line.
-    var lines by remember(step.id, ui.open) { mutableStateOf<List<Pair<Float, Float>>>(emptyList()) }
+    // above « Pourquoi ? »), and inside the kit offer's buttons. The step's lines and the offer's buttons (top, bottom), in
+    // the scrolled content's own pixels: the room ends on a whole line, above a whole button.
+    var rows by remember(step.id, ui.open) { mutableStateOf<Map<String, List<Pair<Float, Float>>>>(emptyMap()) }
+    val lines = rows.values.flatten().sortedBy { it.first }
     val content = remember(step.id, ui.open) { arrayOfNulls<androidx.compose.ui.layout.LayoutCoordinates>(1) }
     val laid = remember(step.id, ui.open) { arrayOfNulls<androidx.compose.ui.text.TextLayoutResult>(1) }
+    val put: (String, androidx.compose.ui.layout.LayoutCoordinates, (Float) -> List<Pair<Float, Float>>) -> Unit = { key, c, of ->
+        content[0]?.takeIf { it.isAttached && c.isAttached }?.localPositionOf(c, Offset.Zero)?.y?.let { base ->
+            val now = of(base)
+            if (rows[key] != now) rows = rows + (key to now)
+        }
+    }
     // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
     // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
     val scrolls = words.maxValue in 1 until Int.MAX_VALUE
@@ -567,7 +576,7 @@ fun TutoPanel(
             val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
             Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(
-                Modifier.weight(1f, fill = false).wholeLines(words) { lines }.verticalScroll(words)
+                Modifier.weight(1f, fill = false).wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
                     .onGloballyPositioned { content[0] = it },
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
@@ -591,10 +600,8 @@ fun TutoPanel(
                                 if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                                 Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
                                     modifier = Modifier.testTag("tuto_text").onGloballyPositioned { c ->
-                                        val base = content[0]?.takeIf { it.isAttached }?.localPositionOf(c, Offset.Zero)?.y ?: return@onGloballyPositioned
                                         val t = laid[0] ?: return@onGloballyPositioned
-                                        val now = (0 until t.lineCount).map { base + t.getLineTop(it) to base + t.getLineBottom(it) }
-                                        if (now != lines) lines = now
+                                        put("text", c) { base -> (0 until t.lineCount).map { base + t.getLineTop(it) to base + t.getLineBottom(it) } }
                                     })
                             }
                         }
@@ -610,6 +617,13 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
+                // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
+                // Tour 7 D3 (captures 26, 30, 33, 53): its buttons showed cut by the room's bottom; they are rows of [wholeLines]
+                // (whole, or below the room until « Lire la suite »). Kept in the words (round 3, n° 28: an offer coming late
+                // never moves the panel's buttons under a finger).
+                if (step.id != READY_STEP && kit != null) {
+                    CompositionLocalProvider(LocalWholeRow provides { key, c -> put(key, c) { base -> listOf(base to base + c.size.height) } }) { kit() }
+                }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
@@ -624,13 +638,18 @@ fun TutoPanel(
                 }
             }
             }
-            // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
-            // Tour 7 D3 (captures 26, 30, 33, 53): at the end of the words its buttons showed cut in the lower room above the
-            // grid. Under the words, out of their room: whole, never behind « Lire la suite ».
-            if (step.id != READY_STEP) kit?.invoke()
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
     }
+}
+
+/** Tour 7 D3: where a row the words' room must not cut (a kit offer's button) tells its place; null outside the panel. */
+private val LocalWholeRow = androidx.compose.runtime.staticCompositionLocalOf<((String, androidx.compose.ui.layout.LayoutCoordinates) -> Unit)?> { null }
+
+@Composable
+private fun Modifier.wholeRow(key: String): Modifier {
+    val report = LocalWholeRow.current ?: return this
+    return this.onGloballyPositioned { report(key, it) }
 }
 
 /**

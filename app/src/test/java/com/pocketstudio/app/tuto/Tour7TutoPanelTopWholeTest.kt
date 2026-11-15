@@ -29,7 +29,7 @@ import org.robolectric.annotation.GraphicsMode
  * (the words' lower room), the last line of « À toi : … » showed cut in half above « ▸ Pourquoi ? », and the kit
  * offer at the end of the words showed « Télécharger le kit House (4 Mo) » and « Plus tard » cut. Every step of the
  * course, in French, Japanese and Korean: no line of the step's words is cut by the bottom of its room, and the kit
- * offer's two buttons are whole.
+ * offer's two buttons are never cut (whole, or wholly below the room).
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -92,7 +92,9 @@ class Tour7TutoPanelTopWholeTest {
             for (tag in listOf("tuto_kit_download", "tuto_kit_later")) {
                 val b = compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().firstOrNull() ?: continue
                 kits++
-                if (b.boundsInRoot.height < b.size.height - 1f) cut += "$where: $tag ${b.boundsInRoot.height.toInt()} of ${b.size.height} px seen"
+                // Whole, or wholly below the words' room (« Lire la suite »): never cut. It stays in the words (round 3, n° 28).
+                val seen = b.boundsInRoot.height
+                if (seen > 0.5f && seen < b.size.height - 1f) cut += "$where: $tag ${b.boundsInRoot.height.toInt()} of ${b.size.height} px seen"
             }
         }
         assertTrue("no kit offer met", kits > 0)

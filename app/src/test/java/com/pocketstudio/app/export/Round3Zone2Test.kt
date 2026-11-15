@@ -68,7 +68,7 @@ class Round3Zone2Test {
         compose.onNodeWithTag("share_target_CLUB").performScrollTo().assertIsDisplayed().performClick()
         compose.onNodeWithTag("share_target_STREAMING").assertIsDisplayed().performClick()
         assertEquals(listOf(TargetChoice.CLUB, TargetChoice.STREAMING), chosen)
-        compose.onNodeWithTag("share_target_hint").assertIsDisplayed()
+        compose.onNodeWithTag("share_target").assertIsDisplayed()
     }
 
     /** n° 10 (A d 4): the export card chooses it too, not five swipes away under the master's reverbs. */

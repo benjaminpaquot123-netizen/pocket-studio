@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "يُقاس الهدف على أعلى مقطع (%1$s LUFS)؛ والأغنية كلها، بمقاطعها الهادئة، تقيس %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "ليبدو الصوت بهذا العلوّ، تُضغط القمم بمقدار %s dB: هذا كثير، يفقد الصوت قوته.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "ليبدو الصوت بهذا العلوّ، تُضغط القمم بمقدار %s dB ‏(3 على الأكثر: يحتفظ الصوت بقوته).",
-  "Le même réglage que dans Mix.": "الإعداد نفسه الموجود في المكس.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "لمتابعته على جهاز آخر: ملف ‎.zip فيه كل أصواته، يُفتح هناك من مشاريعي › استيراد.",
   "Nom du morceau envoyé": "اسم الأغنية المُرسلة",
   "Le projet garde son nom « %s ».": "يحتفظ المشروع باسمه « %s ».",

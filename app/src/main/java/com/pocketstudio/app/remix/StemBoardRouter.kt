@@ -392,7 +392,10 @@ class StemBoardRouter(
                             _state.value.message?.let { if (it !in said) said += it }
                         }
                     } finally {
-                        _state.update { it.copy(busy = null, message = said.joinToString("\n").ifEmpty { null }) }
+                        // Tour 7 lot 2 D6: a silent piece among placed ones is not said as « rien n'a été posé ».
+                        val silent = tr("Ce morceau de la piste est muet : rien n'a été posé.")
+                        val shown = if (said.any { it != silent }) said - silent else said
+                        _state.update { it.copy(busy = null, message = shown.joinToString("\n").ifEmpty { null }) }
                         batch = null
                     }
                 }

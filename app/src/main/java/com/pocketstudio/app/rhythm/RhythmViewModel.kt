@@ -3241,6 +3241,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     val playFrom: StateFlow<Int> = _playFrom.asStateFlow()
 
+    /**
+     * Tour 7, lot 4, D1 (U28): [playFrom] was only moved by picking a scene to edit ([selectScene]), not chosen
+     * (« Jouer depuis… ») nor where the song stopped. « ▶ le morceau » then plays the song from its first bar.
+     */
+    private var playFromByEditing = false
+
     /** [playFrom] if it is still a part of the song (parts removed since: the start). */
     private fun playFromNow(): Int = _playFrom.value.takeIf { it in project.value.song.indices } ?: 0
 
@@ -3346,7 +3352,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // ▶ then plays the song from where this scene first plays in it (the start point said
             // under the top bar), unless the start point already is one of its parts.
             val song = project.value.song
-            if (song.getOrNull(playFromNow())?.scene != index) song.indexOfFirst { it.scene == index }.takeIf { it >= 0 }?.let { _playFrom.value = it }
+            if (song.getOrNull(playFromNow())?.scene != index) song.indexOfFirst { it.scene == index }.takeIf { it >= 0 }?.let {
+                _playFrom.value = it
+                playFromByEditing = true
+            }
             _sessionUi.value = SessionUi()
             session.edit { it.switchScene(index) }
             syncEngine()
@@ -3778,6 +3787,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (index !in song.indices) return
         loopPartOff()
         _playFrom.value = index
+        playFromByEditing = false
         if (!NativeEngine.isAvailable) return
         val ui = _sessionUi.value
         when {
@@ -9674,6 +9684,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         if (project.value.song.isNotEmpty()) loopPartOff()
+        // Tour 7, lot 4, D1: the button says the song; a part picked to edit is not where it starts.
+        if (playFromByEditing) _playFrom.value = 0
+        playFromByEditing = false
         togglePlay()
     }
 
@@ -9723,7 +9736,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // A take ends before the transport does: its last launches are read while they still count.
             endPerformanceOnStop()
             // Stopped during the song: ▶ goes on from the part it stopped in (the song's end sets the start again).
-            _sessionUi.value.songIndex.takeIf { it >= 0 && _sessionUi.value.removed == null }?.let { _playFrom.value = it }
+            _sessionUi.value.songIndex.takeIf { it >= 0 && _sessionUi.value.removed == null }?.let {
+                _playFrom.value = it
+                playFromByEditing = false
+            }
             _playBar.value = -1
         }
         _transport.value = t.copy(playing = playing)

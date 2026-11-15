@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "O alvo é medido no trecho mais forte (%1$s LUFS); a música inteira, com seus trechos calmos, mede %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Para soar tão forte, os picos são comprimidos em %s dB: é muito, o som perde a pegada.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Para soar tão forte, os picos são comprimidos em %s dB (3 no máximo: o som mantém a pegada).",
-  "Le même réglage que dans Mix.": "O mesmo ajuste do Mix.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Para continuar em outro aparelho: um arquivo .zip com todos os seus sons, para abrir lá em Meus projetos › Importar.",
   "Nom du morceau envoyé": "Nome da música enviada",
   "Le projet garde son nom « %s ».": "O projeto mantém o nome “%s”.",

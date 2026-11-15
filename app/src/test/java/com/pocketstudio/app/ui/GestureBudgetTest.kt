@@ -87,12 +87,12 @@ class GestureBudgetTest {
     @Test
     fun listeningToTheWholeSongIsOneTouch() {
         val vm = vmWithSong()
-        vm.selectScene(1)  // editing B, as on the Rythme tab: ▶ still plays the song (from B's part)
+        vm.selectScene(1)  // editing B, as on the Rythme tab: ▶ still plays the whole song, from bar 1 (tour 7 lot 4 D1)
         vm.playStartsForTest = mutableListOf()
         show(vm)
         compose.onNodeWithTag("top_position").assertTextContains("mes. 2/3", substring = true)
         compose.withinGestures("Écouter tout le morceau", 1) { tap("top_song") }
-        assertEquals(listOf("song 1"), vm.playStartsForTest)
+        assertEquals(listOf("song 0"), vm.playStartsForTest)
         assertTrue(vm.transport.value.playing)
     }
 

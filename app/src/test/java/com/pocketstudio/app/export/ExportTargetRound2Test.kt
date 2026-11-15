@@ -161,7 +161,7 @@ class ExportTargetRound2Test {
             target = com.pocketstudio.app.mixer.TargetPick(com.pocketstudio.model.TargetChoice.CLUB, styleLufs = -7.5f, styleName = "Techno"))
         compose.setContent { PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions()) } }
         compose.onNodeWithTag("share_target").assertIsDisplayed()
-        compose.onNodeWithTag("share_target_CLUB").assertIsDisplayed().assertTextEquals("Club · −7,5 LUFS")
+        compose.onNodeWithTag("share_target_CLUB").assertIsDisplayed().assertTextEquals("Club")
         assertNotEquals(null, ui.target)
     }
 }

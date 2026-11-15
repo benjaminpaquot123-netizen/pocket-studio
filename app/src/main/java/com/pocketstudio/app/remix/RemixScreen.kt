@@ -313,9 +313,12 @@ private fun RemixThumbRow(ui: RemixUi, pick: () -> Unit, download: () -> Unit, c
                 Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center, autoSize = thumbWords())
             }
         } else {
-            Button(onClick = pick, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("remix_pick_thumb")) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Text(" " + tr("Choisir une chanson"), maxLines = 2, autoSize = thumbWords())
+            // Tour 7, lot 2 D3: the page's one « Choisir une chanson » (the card no longer repeats it), still found as « remix_pick ».
+            androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().testTag("remix_pick")) {
+                Button(onClick = pick, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("remix_pick_thumb")) {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                    Text(" " + tr("Choisir une chanson"), maxLines = 2, autoSize = thumbWords())
+                }
             }
         }
     }
@@ -416,8 +419,12 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
                         Text(tr("C'est prêt : le modèle est sur ton téléphone. Choisis une chanson."), color = Neon.Acid, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-                Button(onClick = pick, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
-                    Text(tr("Choisir une chanson"))
+                // Tour 7, lot 2 D3: with the model in and no song to cut, the thumb row below holds « Choisir une chanson ».
+                val thumbPicks = ui.modelInstalled && !(ui.board != null && !ui.home && ui.remix.setId != null)
+                if (!thumbPicks) {
+                    Button(onClick = pick, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
+                        Text(tr("Choisir une chanson"))
+                    }
                 }
                 Text(
                     tr("%d minutes au maximum. Les %d derniers morceaux séparés sont gardés, et ceux qu'un projet utilise.", SeparationService.MAX_SECONDS / 60, StemStore.KEEP),

@@ -25,11 +25,11 @@ class SongCardEmptyWordsTest {
 
     private val empty = "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…)."
 
-    private fun show(scenes: List<Scene?>, playing: Boolean) {
+    private fun show(scenes: List<Scene?>, playing: Boolean, rows: List<TimelineRow> = emptyList()) {
         compose.setContent {
             PocketStudioTheme {
                 SessionScreen(
-                    SessionScreenUi(scenes = scenes, current = 0, pending = null, song = emptyList(), songIndex = -1, playing = playing, tempoBpm = 120.0),
+                    SessionScreenUi(scenes = scenes, current = 0, pending = null, song = emptyList(), songIndex = -1, playing = playing, tempoBpm = 120.0, rows = rows),
                     SessionActions(),
                 )
             }
@@ -49,5 +49,13 @@ class SongCardEmptyWordsTest {
     fun noMusicAnywhereIsAnEmptySong() {
         show(listOf(Scene("A")), playing = false)
         assertEquals(1, saysEmpty())
+    }
+
+    /** Tour 7, lot 2 D5: « Voz 1 » put on an audio track from the Remix (no part holds it): not an empty song either. */
+    @Test
+    fun aVoiceOnAnAudioTrackIsNotAnEmptySong() {
+        val voice = TimelineRow("audio:1", "Voix 1", androidx.compose.ui.graphics.Color.Cyan, takeSteps = 64, takeStart = 0)
+        show(listOf(Scene("A")), playing = false, rows = listOf(voice))
+        assertEquals("a voice on an audio track: the song is not « vide »", 0, saysEmpty())
     }
 }

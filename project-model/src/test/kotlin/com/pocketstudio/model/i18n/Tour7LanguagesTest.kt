@@ -47,4 +47,17 @@ class Tour7LanguagesTest {
         val wrong = listOf(Lang.PT_BR, Lang.ES).flatMap { l -> texts(l).filter { technical.containsMatchIn(it.third) }.map { "${l.code}/${it.first}: « ${it.third} »" } }
         report("pt-BR and es texts naming a pad « pad live »", wrong)
     }
+
+    /**
+     * D5 T16 (seat 1c #27, ja): the track sheet's sounds « Plaits » and « Acid 303 » read in English. « Acid 303 » stays the
+     * 303's one name in every language (Benjamin, 2026-10-29, AcidNameAppTest): the sheet says what each one is, under it.
+     */
+    @Test
+    fun japaneseExplainsThePlaitsAndAcidNames() {
+        I18n.lang = Lang.JA
+        val japanese = Regex("[\\u3040-\\u30FF\\u4E00-\\u9FFF]")
+        val wrong = listOf("Plaits", "Synthé de basse acide", "Synthé aux 24 modèles").map { it to tr(it) }
+            .filterNot { japanese.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" }
+        report("ja names and explanations of a sound without a word of Japanese", wrong)
+    }
 }

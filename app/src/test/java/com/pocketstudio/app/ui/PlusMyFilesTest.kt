@@ -14,13 +14,15 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class PlusMyFilesTest {
     private fun filesEntry(simple: Boolean): Boolean {
+        var opened = false
         val entries = plusEntries(
             home = {}, projects = {}, glossary = {}, missions = {}, simple = simple, setSimple = {}, bugReport = {},
-            simpleWays = SimplePlusWays({}, {}, {}, {}, {}),
+            simpleWays = SimplePlusWays({}, {}, {}, {}, {}), files = { opened = true },
         )
         val e = entries.firstOrNull { it.title == tr("Mes fichiers") }
         assertNotNull("« ${tr("Mes fichiers")} » missing (simple=$simple): ${entries.map { it.title }}", e)
-        return e!!.open != null
+        e!!.open?.invoke()
+        return opened
     }
 
     @Test

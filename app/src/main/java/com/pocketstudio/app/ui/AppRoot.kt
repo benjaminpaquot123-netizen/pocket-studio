@@ -419,6 +419,8 @@ fun AppRoot() {
         }
     }
     var showProjects by rememberSaveable { mutableStateOf(false) }
+    // Tour 7, lot 3, D6: « Mes fichiers » from the Plus page (and the Mode simple's ⋮), in both modes.
+    var showMyFiles by rememberSaveable { mutableStateOf(false) }
     // « Mes projets » opened on « Nouveau projet » alone (« Nouveau morceau » of « Que veux-tu faire ? »).
     var projectsNewOnly by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(showProjects) { if (!showProjects) projectsNewOnly = false }
@@ -1525,6 +1527,7 @@ fun AppRoot() {
             add((if (simple) "Mode simple" else tab.space.name) + " › " + tab.name + (if (tab == AppTab.Outils) toolPage?.let { " › " + it.name } ?: "" else ""))
             if (tab.space == Space.Structure && !simple) add(if (partsView) "vue Parties" else "vue Ligne du temps")
             if (showProjects) add("Mes projets")
+            if (showMyFiles) add("Mes fichiers")
             if (showTimeline) add("Ligne du temps plein écran")
             if (showLivePads) add("Pads live plein écran")
             if (tempoSheetOpen) add("fiche Tempo")
@@ -1804,6 +1807,7 @@ fun AppRoot() {
     // An instrument downloaded (from the chooser or the library): the tracks waiting for it get it.
     val installedPacks by libraryVm.packs.collectAsStateWithLifecycle()
     LaunchedEffect(installedPacks.installed) { rhythmVm.instrumentsChanged() }
+    if (showMyFiles) com.pocketstudio.app.export.MyExportsDialog { showMyFiles = false }
     if (showShare) {
         com.pocketstudio.app.export.ShareSheetRoute(
             rhythmVm, sharePrefs, close = { showShare = false },
@@ -3773,6 +3777,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 glossary = { learn.open("") },
                                 missions = startMissions,
                                 bugReport = { reportBug("Plus") },
+                                files = { showMyFiles = true },
                                 simple = simple,
                                 // Tour 6, N17 (seat C b #38: every screen changed at a touch meant for « Mes projets »): the entry
                                 // asks first, with the top bar's own « Mode de ce projet ».

@@ -174,8 +174,15 @@ class GestureFuzzTest {
         // disk's, not the app's screens; there must be none, however slow the disk (aSlowDiskDoesNotEatTheGestures).
         var onTheOpening = 0
         for (i in 0 until steps) {
-            projectOpened(seed, i)
-            val opening = compose.onAllNodesWithTag("project_opening", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+            // Tour 7 (CI 43771945157, seed 11): the opening can start just after the wait saw it gone (the reopened screen's
+            // first frames), so the wait is redone until a sample after an idle frame still finds no opening.
+            var opening: Boolean
+            var waits = 0
+            do {
+                projectOpened(seed, i)
+                idle()
+                opening = compose.onAllNodesWithTag("project_opening", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+            } while (opening && ++waits < 50)
             val action = rnd.nextInt(100)
             val what = try {
                 when {

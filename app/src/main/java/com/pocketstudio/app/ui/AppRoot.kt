@@ -4087,18 +4087,20 @@ internal fun musicStoppedForHome(saved: Boolean): String =
 
 /** Drums, acid, every instrument track in its colour, then the remix. */
 fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =
+    // Tour 7, lot 3, D7 (U27): the Sons' chips' order (Drums, Acid, the voice, the Remix, then the instrument tracks):
+    // the Remix chip stays in sight in Sons (Benjamin 2026-10-24), so the Mixer reads like it.
     listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, com.pocketstudio.model.DefaultNames.ACID)) +
-        p.instrumentTracks.map { t ->
-            com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
-        } +
         p.audioTracks.map { t ->
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         // Step 5a: the song's group strip, named after it (its four stems under it, see SongTracksCard).
-        (
+        listOf(
             p.remix.takeIf { it.setId != null }?.let { com.pocketstudio.app.mixer.StripInfo(3, it.name.ifBlank { "Remix" }, com.pocketstudio.app.remix.SONG_COLOR) }
-                ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix")
-        )
+                ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix"),
+        ) +
+        p.instrumentTracks.map { t ->
+            com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
+        }
 
 /** What the effects box does, wherever it shows (one box for every sound). */
 fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(

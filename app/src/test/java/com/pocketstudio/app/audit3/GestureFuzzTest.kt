@@ -54,7 +54,7 @@ import kotlin.random.Random
  */
 @RunWith(RobolectricTestRunner::class)
 @org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = "w400dp-h890dp-xxhdpi")
+@Config(qualifiers = "w400dp-h890dp-xxhdpi", shadows = [NoSurfaceMagnifier::class])
 class GestureFuzzTest {
     @get:Rule
     val compose = createEmptyComposeRule()

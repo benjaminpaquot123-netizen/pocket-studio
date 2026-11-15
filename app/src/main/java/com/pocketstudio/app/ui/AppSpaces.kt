@@ -255,10 +255,12 @@ private fun simplePlusEntries(
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
     files?.let { PlusEntry("files", Icons.Filled.Folder, tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), open = it) },
-    PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
     PlusEntry("voice", Icons.Filled.Mic, tr("Enregistrer ma voix"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."), open = ways.voice),
     PlusEntry("library", Icons.Filled.LibraryMusic, tr("Bibliothèque de sons"), tr("Écouter et choisir des sons"), open = ways.library),
     PlusEntry("mine", Icons.Filled.Star, tr("Ma bibliothèque"), tr("Les sons que tu as gardés"), open = ways.mine),
+    // Tour 7 integration: « Mes fichiers » added a row of tiles and pushed « Remix » out of a left thumb (tour 6, A11);
+    // it stands on the third row, still reached by one hand.
+    PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le Guide, Mon premier morceau, les mots de la musique"), page = ToolPage.Aide),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry("mode", Icons.Filled.ToggleOn, tr("Passer en mode Pro"), tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus"), open = { setSimple(false) }),

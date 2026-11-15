@@ -1,0 +1,8 @@
+Écran 1 (588x1278)
+bouton « 🇧🇷   Português (Brasil) » ⌄ @ 310,78
+texte « BenStudio » @ 277,178
+texte « Seu estúdio de música, no seu bolso. » @ 348,275
+texte « Bem-vindo! Faça sua música no seu aparelho. Por onde vamos começar? » @ 294,481
+bouton (étincelles) « Faça uma música pra mim O app compõe, você escuta e muda. » @ 294,842
+bouton (chapeau de diplômé) « Estou aprendendo Você faz a música inteira sozinho, passo a passo: eu explico e confiro. » [coupé] @ 294,1130
+bouton « ↓ mais 7 » @ 456,1224

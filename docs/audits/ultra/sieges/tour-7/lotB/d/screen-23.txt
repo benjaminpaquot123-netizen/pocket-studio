@@ -1,0 +1,7 @@
+Écran 23 (588x1278)
+icône (maison) «  Accueil » @ 95,54
+texte « Mes projets » @ 371,54
+bouton (étincelles) «   Fais-moi un morceau » @ 294,147
+bouton + «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton (boîte, flèche vers le haut) « Importer un projet (.zip) » › @ 294,339
+texte « Chargement de la liste… » @ 321,450

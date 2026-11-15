@@ -1,0 +1,14 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:tuto_chooser
+tuto_panel/tab_simple_Rythme
+dialogue:tempo_sheet
+tab_simple_Rythme
+dialogue:tuto_key_sheet
+dialogue:tuto_chapter_list
+rhythm/tab_simple_Rythme
+dialogue:projects
+dialogue:new_project
+launch
+tuto_spot_ring
+dialogue:roll_menu

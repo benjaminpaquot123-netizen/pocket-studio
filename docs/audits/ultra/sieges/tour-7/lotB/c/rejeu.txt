@@ -1,0 +1,1 @@
+main rendue au pas 2 : écran 2 différent de l'origine (après le geste 1)

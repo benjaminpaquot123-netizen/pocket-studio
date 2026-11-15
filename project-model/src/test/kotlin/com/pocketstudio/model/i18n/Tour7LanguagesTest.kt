@@ -26,4 +26,17 @@ class Tour7LanguagesTest {
         val bar = Regex("""(?i)(?<![A-Za-z])bars?(?![A-Za-z])""")
         report("hi texts with « bar » in Latin letters", texts(Lang.HI).filter { bar.containsMatchIn(it.third) }.map { "${it.first}: « ${it.second} » → « ${it.third} »" })
     }
+
+    /** D2 (seat 3a #62, hi): the « और » menu showed « Live » and « Remix » in English. Its entries (AppSpaces, PlusEntry) read in Hindi. */
+    @Test
+    fun hindiMoreMenuHasNoEnglishEntries() {
+        I18n.lang = Lang.HI
+        val entries = listOf(
+            "Accueil", "Continuer, nouveau morceau, Remix…", "Mes projets", "Live : jouer en direct",
+            "Lancer des boucles en rythme, comme sur scène", "Remix", "Séparer une chanson en voix, batterie, basse…",
+            "Enregistrer ma voix", "Bibliothèque de sons",
+        )
+        val latin = Regex("[A-Za-z]")
+        report("hi entries of the « और » menu with Latin letters", entries.map { it to tr(it) }.filter { latin.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" })
+    }
 }

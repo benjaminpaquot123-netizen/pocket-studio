@@ -25,7 +25,7 @@ Tour de contrôle ciblé : les sièges reprennent le profil de leur siège d'ori
 | 3b | fr, téléphone | aucun | exports et « Mes fichiers » vide (A c) |
 
 ## Comment on joue
-- Trois lots (4, 4, 2), quatre sièges au plus en même temps. Avant chaque lot : `scripts/bench/selftest.sh sieges/tour-7/lot<n>` (les autres sièges mis de côté), Gradle seulement par `scripts/bench/gradle-file.sh`.
+- Trois lots A, B, C (4, 4, 2 ; le banc veut une lettre), quatre sièges au plus en même temps. Avant chaque lot : `scripts/bench/selftest.sh sieges/tour-7/lot<A|B|C>` (les autres sièges mis de côté), Gradle seulement par `scripts/bench/gradle-file.sh`.
 - Chaque siège : un sous-agent neuf, qui ne lit que son brief, `sieges/tour-7/consignes-testeur.md` et les écrans du banc. Rapport au gabarit `docs/audits/GABARIT-RAPPORT-TESTEUR.md`, rubrique `defauts-avant:` (corrigé avec son écran, autre, encore là, pas atteint).
 - Texte seul dans le dépôt (rapport, journal, mesures, cmd, screen, sound, start) ; commit par chemin après chaque lot, poussé sur `tour-7-sieges`.
 - Si le siège court ancré ne compile pas ou ne mène pas au bon écran : siège normal du même profil, budget court, noté dans la synthèse.

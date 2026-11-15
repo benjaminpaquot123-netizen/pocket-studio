@@ -34,4 +34,23 @@ class NoteNamesTest {
         assertEquals("Si♭", NoteNames.key(-2, false))
         assertEquals("Ré#", NoteNames.pitchClass(63 - 12 * 4 - 12, false))
     }
+
+    /** Tour 7, lot 6 D3 (seat 2b, pt-BR): Portuguese writes « Lá menor », « Dó », « Fá », with the accent. */
+    @Test
+    fun portugueseNotesTakeTheirAccents() {
+        val before = com.pocketstudio.model.i18n.I18n.lang
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.PT_BR
+        try {
+            assertEquals("Lá", NoteNames.key(9, english = false))
+            assertEquals("Dó", NoteNames.key(0, english = false))
+            assertEquals("Fá♯", NoteNames.key(6, english = false))
+            assertEquals("Lá♭", NoteNames.key(8, english = false))
+            assertEquals("Sol", NoteNames.key(7, english = false))
+            assertEquals("Dó3", NoteNames.withOctave(60, english = false))
+            assertEquals("Fá♯", NoteNames.withAccidentals(6, english = false, sharps = true))
+            assertEquals("A", NoteNames.key(9, english = true))
+        } finally {
+            com.pocketstudio.model.i18n.I18n.lang = before
+        }
+    }
 }

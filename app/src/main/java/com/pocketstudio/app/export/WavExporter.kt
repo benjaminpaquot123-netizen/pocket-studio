@@ -129,3 +129,6 @@ object WavExporter {
         return runCatching { context.startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
     }
 }
+
+/** Android's share menu title for [names]: the file's own name when one file leaves (tour 7 lot 5 D1). */
+internal fun chooserTitle(title: String, names: List<String>): String = title

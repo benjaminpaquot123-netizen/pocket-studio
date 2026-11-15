@@ -141,11 +141,11 @@ Fichiers :
 |---|---|---|
 | ✅ D1 R15 : « bar » en anglais | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le Rythme, je vois le mot hindi à côté des boutons 1 à 4 [3a #27] | catalogue hi : aucune valeur « bar » seule |
 | ✅ D2 : « Live » et « Remix » en anglais dans le menu और | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le menu और, je lis les entrées en hindi (ou avec le nom en écriture hindi) [3a #62] | catalogue hi des entrées du menu |
-| ⏳ D3 : « La menor » au lieu de « Lá menor » | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le choix de tonalité, je lis « Lá menor » [2b] | catalogue pt-BR : les notes avec accent |
+| ✅ D3 : « La menor » au lieu de « Lá menor » | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le choix de tonalité, je lis « Lá menor » [2b] | catalogue pt-BR : les notes avec accent |
 | ✅ D4 : « pad live 1 » nommé comme un nom technique | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le Remix, je pose une voix et je lis un nom de pad compréhensible [2b #25, 2c] | catalogues pt-BR et es du nom des pads |
 | ✅ D5 T16 : Plaits et Acid 303 en anglais | en ja, deux mains, phone à 100 %, Mode Simple : depuis la fiche d'une piste, je lis les noms des sons en japonais (ou le nom propre avec son explication) [1c #27] | `TrackSheet` : plus de « Plaits » en dur ; catalogue ja |
 
-État (tour-7-lots-2456) : ✅ fait ; ⏳ D3 attend : « Lá menor » vient de `NoteNames.kt`, hors de la liste du lot (demandé au chef).
+État (tour-7-lots-2456) : ✅ fait (D3 dans `NoteNames.kt`, accord du chef).
 
 ## Défauts non rangés (fichier non localisé, moyens)
 

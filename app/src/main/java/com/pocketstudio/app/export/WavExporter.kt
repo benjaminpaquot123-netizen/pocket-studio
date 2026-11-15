@@ -125,8 +125,10 @@ object WavExporter {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
             text?.let { putExtra(Intent.EXTRA_TEXT, it) }
+            // The file's own name in Android's preview (tour 7 lot 5 D1); the menu's title stays the app's words.
+            files.singleOrNull()?.let { putExtra(Intent.EXTRA_TITLE, it.name) }
         }
-        return runCatching { context.startActivity(ShareSent.opening().let { Intent.createChooser(send, chooserTitle(title, files.map { it.name }), ShareSent.sender(context)) }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
+        return runCatching { context.startActivity(ShareSent.opening().let { Intent.createChooser(send, title, ShareSent.sender(context)) }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
     }
 }
 

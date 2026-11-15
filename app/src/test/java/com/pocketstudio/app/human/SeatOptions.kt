@@ -28,6 +28,11 @@ import kotlin.math.hypot
  *   must hold the « attendu » text and not the « absent » one;
  * - `rejeu.origine=<seat folder>` (PLAN-RESTE 7.5, written by rejeu-defauts.sh from oracle.txt's `source=`): the seat the
  *   replay was made from (its journal and screens), to say in the verdict what differs from it (by default `rejeu=`);
+ * - `rejeu.puis=main` (METHODE-V4 §4.5, « siège court ancré »): the replay goes on while the screen sticks to the origin's,
+ *   then gives the seat to its tester (instead of a verdict): screen differs, origin's gestures over, `rejeu.n` reached or
+ *   a tag gone; said « #N REJEU main rendue » in the journal and in rejeu.txt;
+ * - `amenee=tuto:<style>:<chapitre>` (the same): the tutorial of that style started from « J'apprends » at the mode's
+ *   level, then its chapter (from 1) chosen in « Chapitres »;
  * - `mission=`, `profil=`, `niveau=`: for the oracle and the dashboard (scripts/bench/seat-metrics.py), not read here.
  */
 internal data class SeatOptions(
@@ -48,6 +53,7 @@ internal data class SeatOptions(
     val replayExpect: String? = null,
     val replayAbsent: String? = null,
     val replayOrigin: File? = null,
+    val replayHandBack: Boolean = false,
 ) {
     /** A box on the screen, in pixels. */
     data class Box(val left: Float, val top: Float, val right: Float, val bottom: Float)
@@ -62,7 +68,8 @@ internal data class SeatOptions(
     /** One line for the journal. */
     fun describe(): String = "lang=${lang.code} device=$device font=$font mode=${simple?.let { if (it) "simple" else "pro" } ?: "-"} " +
         "theme=${theme?.name ?: "-"} fresh=${if (fresh) "reel" else "non"} gestes.max=${maxGestures ?: "-"} lit=${if (reads) "oui" else "non"} " +
-        "main=${hand.name.lowercase()} amenee=${amenee ?: "-"}" + (replayOf?.let { " rejeu=${it.path} rejeu.n=$replayN" } ?: "")
+        "main=${hand.name.lowercase()} amenee=${amenee ?: "-"}" + (replayOf?.let { " rejeu=${it.path} rejeu.n=$replayN" } ?: "") +
+        (if (replayHandBack) " rejeu.puis=main" else "")
 
     companion object {
         /**
@@ -82,6 +89,34 @@ internal data class SeatOptions(
         private val DEVICE_ALIASES = mapOf("pliable" to "foldable", "honor" to "phone")
 
         val AMENEES = listOf("premier-morceau", "remix", "padlive")
+
+        /** The style and chapter (from 1) of `amenee=tuto:<style>:<chapitre>`; null for another amenée or a wrong one. */
+        fun tutoAmenee(name: String): Pair<String, Int>? {
+            val parts = name.split(':')
+            if (parts.size != 3 || parts[0] != "tuto") return null
+            val chapter = parts[2].toIntOrNull()?.takeIf { it >= 1 } ?: return null
+            return parts[1].takeIf { it in com.pocketstudio.model.tuto.TutoCourse.STYLES }?.let { it to chapter }
+        }
+
+        /** Why a tutorial's amenée cannot be played at [level] (its chapter past the course), null when it can. */
+        fun tutoAmeneeError(name: String, level: com.pocketstudio.model.tuto.TutoLevel): String? {
+            val (style, chapter) = tutoAmenee(name) ?: return "amenée $name : tuto:<style>:<chapitre>"
+            val count = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level)?.size ?: 0
+            return if (chapter > count) "amenée $name : le tuto $style ($level) a $count chapitres" else null
+        }
+
+        /**
+         * With `rejeu.puis=main`: why the replay gives the seat to its tester at turn [n] (null: it goes on): screen [n]
+         * differs from the origin's ([diverged]), the origin has no gesture [n], `rejeu.n` ([replayN], 0: no bound) is past,
+         * or the gesture's tag is not on the screen ([missingTag]).
+         */
+        fun handBackWhy(n: Int, replayN: Int, diverged: Boolean, originHasGesture: Boolean, missingTag: String? = null): String? = when {
+            diverged -> "écran $n différent de l'origine (après le geste ${n - 1})"
+            replayN in 1 until n -> "les $replayN gestes du rejeu joués"
+            !originHasGesture -> "plus de geste à l'origine (pas $n)"
+            missingTag != null -> "étiquette « $missingTag » introuvable au geste $n"
+            else -> null
+        }
 
         /** Android's resource qualifier for [lang] (« pt-rBR », « in » for Indonesian). */
         fun localeQualifier(lang: Lang): String = when (lang) {
@@ -120,7 +155,11 @@ internal data class SeatOptions(
                     "gestes.max" -> v.toIntOrNull()?.takeIf { it > 0 }?.let { o = o.copy(maxGestures = it) } ?: warn.add("gestes.max=$raw : un nombre")
                     "lit" -> o = o.copy(reads = v != "non")
                     "main" -> when (v) { "une", "droite" -> o = o.copy(hand = Hand.RIGHT); "gauche" -> o = o.copy(hand = Hand.LEFT); "deux" -> o = o.copy(hand = Hand.BOTH); else -> warn.add("main=$raw : une ou gauche") }
-                    "amenee", "amenée" -> if (v in AMENEES) o = o.copy(amenee = v) else warn.add("amenee=$raw : ${AMENEES.joinToString()}")
+                    "amenee", "amenée" -> when {
+                        v in AMENEES || tutoAmenee(v) != null -> o = o.copy(amenee = v)
+                        v.startsWith("tuto:") -> warn.add("amenee=$raw : tuto:<style>:<chapitre> (${com.pocketstudio.model.tuto.TutoCourse.STYLES.joinToString()}, chapitre à partir de 1)")
+                        else -> warn.add("amenee=$raw : ${AMENEES.joinToString()}, tuto:<style>:<chapitre>")
+                    }
                     "timeout.minutes" -> v.toLongOrNull()?.let { o = o.copy(timeoutMinutes = it) }
                     // For scripts/bench/seat-metrics.py (the mission's oracle) and the dashboard: not the bench's.
                     "mission", "profil", "niveau" -> Unit
@@ -129,6 +168,7 @@ internal data class SeatOptions(
                     "rejeu.attendu" -> o = o.copy(replayExpect = raw)
                     "rejeu.absent" -> o = o.copy(replayAbsent = raw)
                     "rejeu.origine" -> o = o.copy(replayOrigin = File(raw))
+                    "rejeu.puis" -> if (v == "main") o = o.copy(replayHandBack = true) else warn.add("rejeu.puis=$raw : main")
                     else -> warn.add("option inconnue : $k")
                 }
             }

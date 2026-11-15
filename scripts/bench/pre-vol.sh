@@ -131,13 +131,15 @@ if [ "${1:-}" = "--ci" ]; then
     fi
   }
   found=0
-  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_stable.py scripts/bench/test_portail4.py scripts/bench/test_constate.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
+  for t in scripts/bench/test_socle.py scripts/bench/test_portail3.py scripts/bench/test_stable.py scripts/bench/test_portail4.py scripts/bench/test_constate.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py scripts/bench/test_juge_dirs.py; do
     [ -f "$t" ] || continue
     found=1
     run_bare "$t" python3 -I "$t"
   done
   # The pre-flight's own test (and, through it, the portal's refusals).
   [ ! -f scripts/bench/test_pre_vol.sh ] || run_bare "scripts/bench/test_pre_vol.sh" bash scripts/bench/test_pre_vol.sh
+  # pret.sh and fusion-touche-lot.sh (METHODE-V4 astuce C).
+  for t in scripts/bench/test_pret.sh scripts/bench/test_fusion_touche_lot.sh; do [ ! -f "$t" ] || run_bare "$t" bash "$t"; done
   [ "$found" -eq 1 ] || warn "aucun test Python du banc ici (scripts/bench/test_*.py)"
   # (scripts/check-jni.sh needs a built engine: only where there is one.)
   if [ -x scripts/check-jni.sh ] && [ -n "$(find engine/build -path '*release*' -name NativeEngine.class 2>/dev/null | head -1)" ]; then

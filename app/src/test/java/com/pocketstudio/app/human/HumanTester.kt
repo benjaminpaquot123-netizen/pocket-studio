@@ -239,6 +239,8 @@ abstract class HumanTester(private val seat: String) {
         var lastSong: Int? = null
         var afterWait = false
         val source = o.replayOf
+        // METHODE-V4 §4.5 (« siège court ancré »): with rejeu.puis=main, true until the replay gives the seat to its tester.
+        var replaying = source != null
         // PLAN-RESTE 7.5 (rejeu lisible): the seat the replay was made from (its screens, its finger's journal), and what
         // the replay saw differ from it: said under a verdict that is not « oracle tenu ».
         val origin = o.replayOrigin ?: source
@@ -263,6 +265,11 @@ abstract class HumanTester(private val seat: String) {
             ) + moved
             File(dir, "rejeu.txt").writeText(head + lines.joinToString("") { "\n  $it" })
             end("rejeu : $head")
+        }
+        fun handBack(why: String) {
+            replaying = false
+            journal.appendText("#$n REJEU main rendue : $why\n")
+            File(dir, "rejeu.txt").writeText("main rendue au pas $n : $why")
         }
         while (true) {
             turnNow = n
@@ -292,7 +299,7 @@ abstract class HumanTester(private val seat: String) {
             // Audit method v2: the bench's own stalls, apart from the app's (seat-metrics counts them as « banc »).
             if (benchStalls > stallsSaid) { journal.appendText("#$n BANC repos non venu en $IDLE_CAP_S s (${benchStalls - stallsSaid} fois)\n"); stallsSaid = benchStalls }
             layout(journal, n, snap)
-            if (source != null) {
+            if (replaying) {
                 // Audit method v2: a replay test of a fixed defect plays the gestures without comparing screens (the fix
                 // changes them), then reads the last screen and sound against its oracle.
                 val oracle = o.replayExpect != null || o.replayAbsent != null
@@ -304,10 +311,12 @@ abstract class HumanTester(private val seat: String) {
                     lastDiff = "écran $n, empreinte $print (origine $was), première ligne différente : " +
                         (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)")
                 }
-                if (!oracle && was != print) {
+                if (o.replayHandBack) {
+                    SeatOptions.handBackWhy(n, o.replayN, diverged = was != print, originHasGesture = true)?.let(::handBack)
+                } else if (!oracle && was != print) {
                     replayVerdict("divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""); return
                 }
-                if (n > o.replayN) {
+                if (!o.replayHandBack && n > o.replayN) {
                     val seen = File(dir, "screen-$n.txt").takeIf { it.isFile }?.readText().orEmpty() + "\n" + sound
                     val verdict = when {
                         !oracle -> "reproduit"
@@ -322,10 +331,11 @@ abstract class HumanTester(private val seat: String) {
             if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)"); return }
             if (same == 3) journal.appendText("#$n RIEN NE CHANGE (3 écrans identiques)\n")
             val cmdFile = File(dir, "cmd-$n.txt")
-            if (source != null) {
+            if (replaying) {
                 val from = File(source, "cmd-$n.txt")
-                if (!from.isFile) { replayVerdict("divergé au pas $n (pas de geste $n à l'origine)"); return }
-                cmdFile.writeText(from.readText())
+                if (o.replayHandBack && !from.isFile) handBack(SeatOptions.handBackWhy(n, o.replayN, false, originHasGesture = false)!!)
+                else if (!from.isFile) { replayVerdict("divergé au pas $n (pas de geste $n à l'origine)"); return }
+                else cmdFile.writeText(from.readText())
             }
             val waitEnd = System.currentTimeMillis() + timeoutMs
             while (!cmdFile.isFile) {
@@ -348,7 +358,13 @@ abstract class HumanTester(private val seat: String) {
                 // reach, the nearest reachable point of the node (a tag touch must not be refused where a finger would not be).
                 if (reached == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
-                    if (source != null) {
+                    if (replaying && o.replayHandBack) {
+                        // The bench's copy of the origin's gesture goes: gesture n is the tester's, on this screen again.
+                        cmdFile.delete()
+                        handBack(SeatOptions.handBackWhy(n, o.replayN, false, true, missingTag = tag)!!)
+                        continue
+                    }
+                    if (replaying) {
                         originFinger[n]?.let { moved += "pas $n : à l'origine sous le doigt : $it" }
                         replayVerdict("divergé au pas $n (étiquette « $tag » introuvable)"); return
                     }
@@ -416,7 +432,7 @@ abstract class HumanTester(private val seat: String) {
             points.firstOrNull()?.let { (x, y) ->
                 val under = screenText().under(x, y)
                 journal.appendText("#$n DOIGT $under\n")
-                if (source != null) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
+                if (replaying) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
                 Regex("(?:^|dans:|désactivé )(help_[A-Za-z0-9_]*)").find(under)?.let { journal.appendText("#$n AIDE ${it.groupValues[1]}\n") }
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")
@@ -791,8 +807,27 @@ abstract class HumanTester(private val seat: String) {
         fun chooseMode() {
             if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
         }
-        when (name) {
-            AMENEE_SONG -> {
+        val tuto = SeatOptions.tutoAmenee(name)
+        when {
+            tuto != null -> {
+                // METHODE-V4 §4.5 (« siège court ancré »): « J'apprends », the style at the mode's level, then its chapter.
+                val level = if (options.simple == false) com.pocketstudio.model.tuto.TutoLevel.Pro else com.pocketstudio.model.tuto.TutoLevel.Facile
+                SeatOptions.tutoAmeneeError(name, level)?.let { error(it) }
+                val (style, chapter) = tuto
+                tapFirst("welcome_learn", "launch_learn")
+                waitFor("le choix du tuto") { centerOf("tuto_chooser") != null || centerOf("mode_card_simple") != null }
+                chooseMode()
+                waitFor("le choix du tuto") { centerOf("tuto_chooser") != null }
+                tap("tuto_style_$style")
+                waitFor("le tuto") { centerOf("tuto_chapters") != null }
+                if (chapter > 1) {
+                    tap("tuto_chapters")
+                    waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
+                    tap("tuto_chapter_${chapter - 1}")
+                    waitFor("le chapitre $chapter") { centerOf("tuto_chapter_list") == null }
+                }
+            }
+            name == AMENEE_SONG -> {
                 if (tapFirst("welcome_empty", "launch_new") == "launch_new") {
                     // « Nouveau morceau » of « Que veux-tu faire ? »: its page, then « Je pars de zéro ».
                     waitFor("« Je pars de zéro »") { centerOf("start_empty") != null }
@@ -802,13 +837,13 @@ abstract class HumanTester(private val seat: String) {
                 chooseMode()
                 waitFor("le projet") { projectShown() }
             }
-            AMENEE_REMIX -> {
+            name == AMENEE_REMIX -> {
                 tapFirst("welcome_remix", "launch_remix")
                 waitFor("le Remix") { centerOf("remix_pick") != null || centerOf("mode_card_simple") != null }
                 if (centerOf("mode_card_simple") != null) tap(if (options.simple == true) "mode_card_simple" else "mode_card_pro")
                 waitFor("la page du Remix") { centerOf("remix_pick") != null }
             }
-            AMENEE_PADLIVE -> {
+            name == AMENEE_PADLIVE -> {
                 tap("launch_padlive")
                 waitFor("Pad Live") { centerOf("padlive") != null }
                 standInForTheStarter()

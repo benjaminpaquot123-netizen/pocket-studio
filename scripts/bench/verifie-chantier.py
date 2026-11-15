@@ -87,10 +87,10 @@ def read_tsv(path):
 
 def test_sources(root):
     """{ClassName: its own source text}: a file's text cut at each top-level class declaration, so a method is
-    attributed to the class it belongs to (unit tests and instrumented tests)."""
+    attributed to the class it belongs to (unit tests, instrumented tests and project-model's tests: TEST_DIRS)."""
     out = {}
-    for sub in (TEST_ROOT, os.path.join("app", "src", "androidTest", "java")):
-        for d, _, files in os.walk(os.path.join(root, sub)):
+    for sub in TEST_DIRS:
+        for d, _, files in os.walk(os.path.join(root, *sub.split("/"))):
             for name in files:
                 if not name.endswith(".kt"):
                     continue
@@ -748,7 +748,9 @@ DISCIPLINE_START = "8f36fa3"
 # « banc-fin », m2 / case F2).
 CLASS = re.compile(r"^\s*(?:(?:private|internal|public|abstract|open|data|inner|sealed|enum|final|annotation|value)\s+)*"
                    r"(?:class|object)\s+([A-Za-z0-9_]+)", re.M)
-TEST_DIRS = ("app/src/test/java", "app/src/androidTest/java")
+# METHODE-V4 astuce D: the pure Kotlin module's tests count too (a proof in project-model was « test absent », which
+# forced the tuto4 exception of 14 November).
+TEST_DIRS = ("app/src/test/java", "app/src/androidTest/java", "project-model/src/test/kotlin")
 FUN = re.compile(r"\bfun\s+" + NAME)
 
 

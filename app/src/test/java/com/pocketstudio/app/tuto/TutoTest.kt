@@ -230,7 +230,9 @@ class TutoTest {
         val target = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!
         val blank = target.blank()
         val (withPad, pad) = com.pocketstudio.model.tuto.TutoChecks.partTrack(blank, "pad", target)!!
-        val (song, bass) = com.pocketstudio.model.tuto.TutoChecks.partTrack(withPad, "bass", target)!!
+        val (made, bass) = com.pocketstudio.model.tuto.TutoChecks.partTrack(withPad, "bass", target)!!
+        // The loop at 2 bars, as the course has it at « hat_do », whose words count « les 2 mesures » (tour 7 D5).
+        val song = made.copy(drums = made.drums.withSteps(2 * made.stepsPerBar))
         val flow = MutableStateFlow(song)
         val c = controller(flow, History(song), MemoryStore())
         val goes = ArrayList<TutoGo>()
@@ -262,9 +264,6 @@ class TutoTest {
         at("levels")
         assertEquals(com.pocketstudio.model.InstrumentTrack.mixerChannel(pad), doIt().strip)
         // « Montre-moi »: folded while it shows, and after (« à toi maintenant »).
-        // Its words count « les 2 mesures »: the loop at 2 bars, as the course has it there (tour 7 D5).
-        flow.value = flow.value.let { it.copy(drums = it.drums.withSteps(2 * it.stepsPerBar)) }
-        idle(100)
         at("hat_do")
         assertTrue(c.ui.value!!.open)
         assertTrue(c.showMe())

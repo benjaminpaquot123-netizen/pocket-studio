@@ -235,7 +235,9 @@ fun CutScreen(
                     CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom, onLetGo = ::letGo)
                     if (!wide) {
                         // Tour 6, seat B a (A4): in « Phrases » the menus stay under the curve, out of the scroll (below).
-                        if (model.single) AutoRow(model, finding, onAuto = { pick(it) })
+                        // Tour 7, lot 2 D1 (pt-BR at 200 %): Início / Fim / Ouvir right under the curve, the menus after, so
+                        // the curve and its three buttons are in view together.
+                        if (model.single && !bigText) AutoRow(model, finding, onAuto = { pick(it) })
                         if (model.single) SpanRow(model, actions, work, onSet = ::letGo) else {
                             ToolRow(model, actions, work)
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
@@ -243,6 +245,7 @@ fun CutScreen(
                         // Tour 6, seat B a #A2 (a left thumb): in « Un bout » that fits without scrolling, « Voz / Batería /
                         // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
                         // left thumb reaches — the big curve above keeps them off the top, out of reach.
+                        if (model.single && bigText) AutoRow(model, finding, onAuto = { pick(it) })
                         if (model.single && !bigText) StemChips(model) { actions.stop() }
                     }
                     tail()

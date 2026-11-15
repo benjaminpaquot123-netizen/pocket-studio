@@ -113,7 +113,7 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             Regex("simple_rhythm_2\\.0") to Regex("CUT « (PAS : |Händeklatschen)[^»]* » a word split"),
             Regex("launch_simple_2\\.0") to Regex("CUT « Simple » a word split"),
             Regex("(plus|sons|structure)_2\\.0") to Regex("CUT « (Loop|Boucler|लूप|循环|تكرار) » (drawn past|lines cut)"),
-            Regex("structure_2\\.0") to Regex("CUT « (Mesures|Takte|الأجزاء|المازورات|पार्ट्स|bar|段落|小节) » (drawn past|lines cut)"),
+            Regex("structure_2\\.0") to Regex("CUT « (Mesures|Takte|الأجزاء|المازورات|पार्ट्स|bar|बार|段落|小节) » (drawn past|lines cut)"),
             Regex("sons_2\\.0") to Regex("CUT « ([^»]*ثرات|इफ़ेक्ट्स|स्टेप: [^»]*) » (lines dropped|wider)"),
             Regex("live_2\\.0") to Regex("CUT "),
             // Tour 6, lot 5 (docs/decisions/tour-6-langues2.md): Arabic's own words, taller and wider than the Latin ones

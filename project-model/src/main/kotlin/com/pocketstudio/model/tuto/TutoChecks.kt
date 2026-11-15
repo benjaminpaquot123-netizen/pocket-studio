@@ -2393,19 +2393,25 @@ object TutoRollHint {
      * the first in time among equals; null: none left. Control seat Da-3 (tour 6, 4cb88f55): « plus haut ↑ » for the
      * one note of the time in sight, an octave up, while the next ones were a step away in the rows in sight.
      */
-    fun next(left: List<Note>, v: TutoRollView): Note? {
+    fun next(left: List<Note>, v: TutoRollView, barSteps: Int = 0): Note? {
         val rows = v.rowPx > 0f && v.bottom - v.top >= v.rowPx - 1f
+        // Tour 7 (D6): with the bar's length known, the first bar that still has a dotted note left, bar after bar.
+        val pool = if (barSteps <= 0) left else {
+            val bar = { n: Note -> n.start / NoteClip.TICKS_PER_STEP / barSteps }
+            val first = left.minOfOrNull(bar) ?: return null
+            left.filter { bar(it) == first }
+        }
         fun gap(n: Note): Float {
             val dx = if (v.right <= v.left || inTime(n, v)) 0f else if (x(n, v) < v.left) v.left - x(n, v) else x(n, v) + v.stepPx - v.right
             val dy = if (!rows || inRows(n, v)) 0f else if (y(n, v) < v.top) v.top - y(n, v) else y(n, v) + v.rowPx - v.bottom
             return dx + dy
         }
-        return left.sortedWith(compareBy({ it.start }, { -it.pitch })).minByOrNull { gap(it) }
+        return pool.sortedWith(compareBy({ it.start }, { -it.pitch })).minByOrNull { gap(it) }
     }
 
     /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
-    fun way(left: List<Note>, v: TutoRollView): TutoWay? {
-        val n = next(left, v) ?: return null
+    fun way(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? {
+        val n = next(left, v, barSteps) ?: return null
         if (v.right <= v.left) return null
         if (!inTime(n, v)) return if (x(n, v) < v.left) TutoWay.Earlier else TutoWay.Later
         // Not a row in sight (the tutorial's panel open over the roll): no scroll of the rows would show the note.
@@ -2420,7 +2426,7 @@ object TutoRollHint {
      * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
      */
     fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
-        val n = next(left, v) ?: return 0f to 0f
+        val n = next(left, v, barSteps) ?: return 0f to 0f
         val bar = barSteps * v.stepPx
         val dx = when {
             inTime(n, v) -> 0f
@@ -2428,6 +2434,31 @@ object TutoRollHint {
             else -> x(n, v) - 2 * v.stepPx - v.left
         }
         val dy = if (inRows(n, v)) 0f else y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2
-        return dx to dy
+        val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
+        return dx to dy + whole(left, there, n)
+    }
+
+    /**
+     * Tour 7 (D1, seat 1a screen 45: dotted notes half under the tutorial's panel): how far to move the rows (pixels,
+     * a fraction of a row) so that no dotted note of the time in sight is cut by an edge of the rows in sight: each one
+     * whole in sight or wholly out of it. [keep] (the note the line speaks of) stays whole in sight if it is.
+     */
+    fun whole(left: List<Note>, v: TutoRollView, keep: Note? = null): Float {
+        val r = v.rowPx
+        if (r <= 0f || v.bottom - v.top < r - 1f) return 0f
+        fun cut(n: Note, w: TutoRollView): Boolean {
+            val y = y(n, w)
+            return inTime(n, w) && !inRows(n, w) && y + r > w.top + 1f && y < w.bottom - 1f
+        }
+        val kept = keep != null && inRows(keep, v)
+        val shifts = listOf(
+            0f,
+            kotlin.math.ceil(v.bottom / r) * r - v.bottom, kotlin.math.floor(v.bottom / r) * r - v.bottom,
+            kotlin.math.floor(v.top / r) * r - v.top, kotlin.math.ceil(v.top / r) * r - v.top,
+        ).filter { v.top + it >= 0f }
+        return shifts.map { d -> d to v.copy(top = v.top + d, bottom = v.bottom + d) }
+            .filter { (_, w) -> !kept || inRows(keep!!, w) }
+            .minWithOrNull(compareBy({ (_, w) -> left.count { cut(it, w) } }, { (_, w) -> -left.count { inTime(it, w) && inRows(it, w) } }, { (d, _) -> kotlin.math.abs(d) }))
+            ?.first ?: 0f
     }
 }

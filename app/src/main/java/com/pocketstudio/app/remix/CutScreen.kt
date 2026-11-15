@@ -344,7 +344,8 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
 /** Voix, Batterie, Basse, Reste: each with its colour dot, as on the Remix page. */
 @Composable
 private fun StemChips(model: CutModel, onChange: () -> Unit) {
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // Tour 7, lot 2 D7: the chips wrap to a second line rather than run off the edge (« Resto » cut at 200 %, no sign).
+    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         CHIP_ORDER.forEach { stem ->
             val name = Demucs.STEMS[stem]
             FilterChip(

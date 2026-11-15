@@ -1,0 +1,46 @@
+Écran 90 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+icône « B Takt 1/1 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+curseur [coupé, état « −6,0 dB », à 60 %] @ 450,176
+texte « Keine Übersteuerung: alles gut. » @ 231,236
+texte « Details » @ 104,302
+texte « Ziel-Lautheit » @ 126,371
+bouton « ? » @ 231,371
+bouton « Auto (Stil) · −9 LUFS » @ 204,441
+bouton « Club · −8 LUFS » @ 501,441
+bouton « Streaming · −14 LUFS » @ 213,522
+bouton « Apple Music · −16 LUFS » @ 579,522
+bouton « Frei » @ 92,603
+bouton « Aus » [sélectionné] @ 202,603
+texte « Die Lautheit bleibt, wie du sie einstellst; der Ausgang wird nur vor Übersteuerung geschützt. » @ 450,687
+bouton « Erweitert: Pro-Master Obergrenze −1,0 dB · Attack und Release · Bass in Mono · A/B-Hören · Referenz » ⌄ @ 450,800
+bouton « Effekte Keiner » ⌄ @ 450,925
+bouton « Spektrumanalyse » [coupé] @ 185,1015
+texte « Die Effekte Kapitel 13/16 · Schritt 2/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Automatisiere den „Cutoff“ der Spur „Melodie“ im Drop: „Eine Einstellung automatisieren“, „Melodie“, „Filter (Sweep)“, „Pro Teil“, und zeichne auf den Loop des Drops (1 Takt) eine Kurve, die bis zur Mitte steigt und dann wieder fällt: Der Filter öffnet und schließt sich in jedem Takt. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,19 @@
+Écran 109 (900x1509)
+texte « Tutorial von A bis Z » @ 414,60
+icône ✕ @ 840,60
+bouton « 4 Hi-Hats und Percussion 1/5 » [coupé] @ 450,124
+bouton « 5 Der Bass 1/4 » @ 450,191
+bouton « 6 Der Stab (Akkorde) 0/2 » @ 450,282
+bouton « 7 Das Riff 1/3 » @ 450,373
+bouton « 8 Dein erster Teil: der Groove, deine Grundschleife 1/2 » @ 450,464
+bouton « 9 Die Teile verstehen » (rond coché) @ 450,555
+bouton « 10 Bau deine Teile 0/7 » @ 450,646
+bouton « 11 Ordne deine Teile 0/2 » @ 450,737
+bouton « 12 Die Übergänge: von einem Teil zum nächsten 0/3 » @ 450,828
+bouton « 13 Die Effekte 1/2 » @ 450,919
+bouton « 14 Der Mix 2/3 » @ 450,1010
+bouton « 15 Das Mastering » (rond coché) @ 450,1101
+bouton « 16 Teile deinen Track 0/2 » @ 450,1192
+bouton « Zurück zu Einfach » @ 450,1281
+bouton ↺ «  Tutorial neu starten (neues leeres Projekt) » @ 450,1365
+texte « Tutorial beenden (du kannst es fortsetzen) » @ 450,1449

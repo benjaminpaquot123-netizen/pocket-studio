@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.Tour5AppProof3Test" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-15T14:54:04.319Z" hostname="vm" time="11.103">
+  <properties/>
+  <testcase name="myExportsSaysTheFilesOwnSize" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="0.065"/>
+  <testcase name="theClearButtonEmptiesTheFieldAndKeepsItsCursor" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="0.484"/>
+  <testcase name="aPartPickedWhileTheSongPlaysTakesOverOnTheNextBar" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="10.081"/>
+  <testcase name="theSongPlaysToItsEndAndItsCounterFollowsTheEngine" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="0.083"/>
+  <testcase name="liveStopAllStopsTheSong" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="0.058"/>
+  <testcase name="theKeysOfATakeLeftRunningAreThereWhenTheProjectOpensAgain" classname="com.pocketstudio.app.human.Tour5AppProof3Test" time="0.324"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

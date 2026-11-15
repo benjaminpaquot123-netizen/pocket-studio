@@ -1,0 +1,40 @@
+Écran 50 (588x1278)
+icône (dossier ouvert) ✓ « Mon morceau Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 100  Tempo » @ 83,114
+bouton « ? » @ 543,114
+image (i dans un rond) @ 0,0
+bouton « M4A · pour partager » [sélectionné] @ 157,198
+bouton « WAV · qualité max » @ 414,198
+bouton (trois points reliés) «   Partager » @ 294,294
+bouton (dossier) « Mes fichiers » › @ 272,340
+texte « ? » @ 536,340
+icône (liste) « Chapitres » @ 444,411
+texte « Partage ton morceau Chapitre 15/15 · Étape 1/1 · Facile » @ 207,411
+icône ⌄ @ 531,411
+texte « Presque fini ! » @ 99,492
+bouton ▶ «  Écouter mon morceau » @ 294,555
+texte « Il te reste 35 étapes. Touche-en une pour y aller : » @ 264,615
+bouton « Chapitre 1/15 · La vitesse et la couleur du morceau Écoute un extrait de house finie : la Montée, puis le Drop où tout joue, avec le piano et la basse d'orgue. C'est ce que tu vas construire. » → @ 294,676
+bouton « Chapitre 1/15 · La vitesse et la couleur du morceau À toi : règle le tempo (la vitesse du morceau) sur 122 BPM, 122 battements par minute. « Je le fais » ouvre la fiche Tempo. » → @ 294,760
+bouton « Chapitre 1/15 · La vitesse et la couleur du morceau À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ». » → @ 294,844
+bouton « Chapitre 2/15 · Le kick : la grosse caisse Avant de commencer : le kit est celui de la house, les sons de la boîte à rythmes 909 et le pad « Bord de caisse » de la 707. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tout est prêt : tu n'as rien à régler. » → @ 294,928
+texte « … et 31 autres (liste ≡) » @ 121,988
+bouton ← «  Revenir à l'étape » [coupé] @ 294,1012
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 100 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

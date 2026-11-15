@@ -1,0 +1,47 @@
+Écran 118 (900x1509)
+icône (dossier ouvert) ✓ « Mein Song Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+icône « B Takt 1/1 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Gespeichert in Musik › BenStudio: Mein-Song-club-20261115-150510.m4a » @ 450,198
+texte « ✓ Bereit zum Teilen » @ 177,266
+texte « Dauer: 2 s » @ 103,308
+texte « Pegel: am Ziel (Club) » @ 167,347
+texte « Spitze: unter dem Limit, keine Übersteuerung » @ 314,386
+texte « M4A, 48 kHz, 256 kbit/s » @ 188,425
+texte « −8,0 LUFS integriert · Spitze −2,4 dBTP » @ 277,477
+bouton « ? » @ 534,476
+texte « Ziel: Club · −8 LUFS » @ 162,528
+bouton « Teilen » [coupé] @ 450,574
+texte « Teile deinen Track Kapitel 16/16 · Schritt 2/2 · Pro » @ 366,637
+icône (liste) « Kapitel » @ 759,638
+icône ⌄ @ 843,638
+texte « Fast fertig! » @ 101,726
+texte « Noch 33 Schritte. Tippe auf einen, um hinzugehen: » @ 359,778
+bouton « Kapitel 1/16 · Tempo und Tonart Du bist dran: Stell das Tempo auf 132 BPM. „Ich mach's“ öffnet das Tempo-Blatt. » → @ 450,855
+bouton « Kapitel 1/16 · Tempo und Tonart Du bist dran: Stell die Tonart auf F Phrygisch: ein einziger Moll-Akkord, der manchmal einen Halbton steigt (G♭), die Farbe des Berliner Techno. Deine Kick ist auf F gestimmt. „Ich mach's“ öffnet das Tonart-Blatt. » → @ 450,959
+bouton « Kapitel 1/16 · Tempo und Tonart Du bist dran: Gib ein ganz kleines bisschen Swing dazu (7 %; 4 bis 10 % zählen): Die kleinen Hi-Hats schleppen kaum merklich, der Rhythmus atmet, ohne zu hinken. » → @ 450,1063
+bouton « Kapitel 2/16 · Die Kick und das Grollen Schon bereit: die Techno-Sounds von „Mach mir einen Track“ (Kick auf F gestimmt, Rumble), ihre Lautstärken und Effekte (Abzeichen „FX“). Die Karte des Techno-Kits lädt die echten Drum-Sounds des Stils; „Später“ behält diese. Jede Spur, die du erstellst, kommt mit ihrem empfohlenen Sound. » → @ 450,1167
+texte « … und 29 weitere (Liste ≡) » [coupé] @ 178,1233
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

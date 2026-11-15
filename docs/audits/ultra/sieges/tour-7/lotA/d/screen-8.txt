@@ -1,0 +1,20 @@
+Écran 8 (900x1509)
+texte « Teil A benennen » @ 215,474
+texte « Welcher Moment im Song ist das? » @ 292,545
+bouton « Intro » @ 122,614
+bouton « Strophe » @ 266,614
+bouton « Pre-Chorus » @ 458,614
+bouton « Refrain » @ 644,614
+bouton « Post-Chorus » @ 177,686
+bouton « Bridge » @ 366,686
+bouton « Groove » [sélectionné] @ 519,686
+bouton « Build-up » @ 684,686
+bouton « Fake-Drop » @ 162,758
+bouton « Break » @ 331,758
+bouton « Drop » @ 461,758
+bouton « Ende » @ 586,758
+bouton « Fill » @ 697,758
+champ « Oder ein anderer Name 6/20 » contenu « Groove » @ 450,879
+icône ✕ @ 798,867
+texte « Abbrechen » @ 641,1025
+texte « OK » @ 790,1025

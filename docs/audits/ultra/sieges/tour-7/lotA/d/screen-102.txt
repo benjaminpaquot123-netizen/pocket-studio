@@ -1,0 +1,57 @@
+Écran 102 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+icône « B Takt 1/1 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Lautstärken » @ 428,213
+bouton « ? » @ 842,213
+texte « Schieb einen Fader für die Lautstärke; tippe auf einen Spurnamen für Effekte und Kurven. » @ 450,277
+texte « Drums » @ 84,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 57,454
+bouton (casque) [état « aus »] @ 111,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,546
+texte « Acid 303 » @ 204,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 177,454
+bouton (casque) [état « aus »] @ 231,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,546
+texte « Synth » @ 324,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 297,454
+bouton (casque) [état « aus »] @ 351,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,546
+texte « Remix » @ 444,379
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 417,454
+bouton (casque) [état « aus »] @ 471,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 444,546
+texte « Der Mix Kapitel 14/16 · Schritt 2/3 · Pro » @ 366,649
+icône (liste) « Kapitel » @ 759,650
+icône ⌄ @ 843,650
+texte « Anhaltspunkt: Während des Drops dürfen die VU-Meter im Mixer nicht im Roten bleiben. Wird eine Spur rot, zieh ihren Fader runter. » @ 450,784
+texte « Das Kit Techno » @ 139,903
+texte « Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds. » [coupé] @ 450,950
+texte « ▸ Warum? » @ 450,997
+icône « Weiterlesen » ⌄ @ 450,1051
+bouton ✓ «   Verstanden » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,6 +1,14 @@
 package com.pocketstudio.app.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.getBoundsInRoot
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
@@ -39,7 +47,15 @@ class PlusLiveThumbTest {
                     home = {}, projects = {}, glossary = {}, missions = {}, simple = true, setSimple = {}, bugReport = {},
                     simpleWays = SimplePlusWays({}, {}, {}, {}, {}),
                 )
-                PlusSpace(entries, page = null, open = {}, back = {}, widePage = ToolPage.Aide, leave = {}, tiles = true) {}
+                // As in the app (seat 2c, screen 39): the top bar and « ← Más » above, the Guide's bar, the thumb's bar
+                // and the tabs below.
+                Column(Modifier.fillMaxSize()) {
+                    Spacer(Modifier.height(170.dp))
+                    Box(Modifier.weight(1f).fillMaxWidth()) {
+                        PlusSpace(entries, page = null, open = {}, back = {}, widePage = ToolPage.Aide, leave = {}, tiles = true) {}
+                    }
+                    Spacer(Modifier.height(230.dp))
+                }
             }
         }
         compose.waitForIdle()

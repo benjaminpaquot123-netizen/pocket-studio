@@ -68,6 +68,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -472,6 +474,11 @@ fun TutoPanel(
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
     // before's left its room in the height held for this one).
     val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
+    // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
+    // above « Pourquoi ? »). The step's lines (top, bottom), in the scrolled content's own pixels: the room ends on a whole line.
+    var lines by remember(step.id, ui.open) { mutableStateOf<List<Pair<Float, Float>>>(emptyList()) }
+    val content = remember(step.id, ui.open) { arrayOfNulls<androidx.compose.ui.layout.LayoutCoordinates>(1) }
+    val laid = remember(step.id, ui.open) { arrayOfNulls<androidx.compose.ui.text.TextLayoutResult>(1) }
     // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
     // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
     val scrolls = words.maxValue in 1 until Int.MAX_VALUE
@@ -560,7 +567,8 @@ fun TutoPanel(
             val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
             Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(
-                Modifier.weight(1f, fill = false).verticalScroll(words),
+                Modifier.weight(1f, fill = false).wholeLines(words) { lines }.verticalScroll(words)
+                    .onGloballyPositioned { content[0] = it },
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
@@ -581,7 +589,13 @@ fun TutoPanel(
                         if (alreadySaid == null) {
                             Row(verticalAlignment = Alignment.Top) {
                                 if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                                Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                                Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
+                                    modifier = Modifier.testTag("tuto_text").onGloballyPositioned { c ->
+                                        val base = content[0]?.takeIf { it.isAttached }?.localPositionOf(c, Offset.Zero)?.y ?: return@onGloballyPositioned
+                                        val t = laid[0] ?: return@onGloballyPositioned
+                                        val now = (0 until t.lineCount).map { base + t.getLineTop(it) to base + t.getLineBottom(it) }
+                                        if (now != lines) lines = now
+                                    })
                             }
                         }
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
@@ -596,21 +610,46 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
-                // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
-                if (step.id != READY_STEP) kit?.invoke()
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
             if (scrolls) MoreWords(words.canScrollForward) {
                 if (cellsToTouch) readAll = true
-                else words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
+                else {
+                    // A page on, from the first line not wholly seen (never half a line at the top).
+                    val next = lines.firstOrNull { it.second > words.value + words.viewportSize + 0.5f }?.first?.toInt()
+                    val to = next?.takeIf { it > words.value } ?: (words.value + words.viewportSize * 3 / 4)
+                    words.animateScrollTo(minOf(words.maxValue, to))
+                }
             }
             }
+            // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
+            // Tour 7 D3 (captures 26, 30, 33, 53): at the end of the words its buttons showed cut in the lower room above the
+            // grid. Under the words, out of their room: whole, never behind « Lire la suite ».
+            if (step.id != READY_STEP) kit?.invoke()
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
     }
 }
+
+/**
+ * Tour 7 D3: the words' room ends on a whole line. When the room's bottom ([words]' value plus its most) falls inside
+ * one of [lines] (top, bottom in the scrolled content), the room stops at that line's top; the line is read on.
+ */
+private fun Modifier.wholeLines(words: androidx.compose.foundation.ScrollState, lines: () -> List<Pair<Float, Float>>): Modifier =
+    this.layout { m, c ->
+        var most = c.maxHeight
+        if (c.hasBoundedHeight) {
+            val s = words.value.toFloat()
+            val bottom = s + most
+            val cut = lines().firstOrNull { it.first < bottom - 0.5f && it.second > bottom + 0.5f }
+            val room = cut?.let { (it.first - s).toInt() }
+            if (room != null && room in maxOf(1, c.minHeight)..most) most = room
+        }
+        val p = m.measure(c.copy(maxHeight = most))
+        layout(p.width, p.height) { p.place(0, 0) }
+    }
 
 /** The panel's way to the chapters, at its widest: the bare list icon's 48 dp and the school icon's 22 + 8 it replaced. */
 private val CHAPTERS_WIDTH = 78.dp

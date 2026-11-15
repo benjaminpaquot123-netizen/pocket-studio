@@ -1,0 +1,92 @@
+T4-19 : « corrigé », commit d3eccff introuvable
+T4-01 : « corrigé », commit c423455d introuvable
+T4-17 : « corrigé », commit ffd58ce introuvable
+T5-Cc-27 : « corrigé », commit 0d049be introuvable
+T5-Cd-83 : « corrigé », commit f3c283e introuvable
+T5-Cd-68 : « corrigé », commit f3c283e introuvable
+T5-Cc-41a : « corrigé », commit f3c283e introuvable
+T5-Ec-28 : « corrigé », commit e0be831a introuvable
+T5-Cc-30 : « corrigé », commit 2e6e828 introuvable
+T5-Fa-11 : « corrigé », commit 88e36490 introuvable
+T5-Aa-43 : « corrigé », commit 88e36490 introuvable
+T5-Fc-8 : « corrigé », commit ffd58ce introuvable
+T5-Ec-61 : « corrigé », commit 2e6e828 introuvable
+T5-Ca-32 : « corrigé », commit 0f5efde introuvable
+T5-Ed-40 : « corrigé », commit 9aaaccf8 introuvable
+T5-Ab-27 : « corrigé », commit 87b6693 introuvable
+T5-Ab-27 : « corrigé », commit 2e650ca introuvable
+T5-Ed-11 : « corrigé », commit e6531060 introuvable
+T5-PADRETRIG : « corrigé », commit 16f520d7 introuvable
+T5-AUTO-OPTION : « corrigé », commit a53e385e introuvable
+docs/audits/ultra/sieges/tour-7/lot2 : lot sans trace du portail (selftest-resume.txt, selftest.ok, selftest-chantier.txt)
+docs/audits/ultra/sieges/tour-7/lot3 : lot sans trace du portail (selftest-resume.txt, selftest.ok, selftest-chantier.txt)
+3c44d1b6 « vert: a bar fits the phone's width, and the lowest rows come above the » : vert sans rouge du même test avant lui
+1f41ed8c « vert: a stroke cut short is its own undo step, cut by a bar's number » : vert sans rouge du même test avant lui
+51240566 « vert: review of the lot, the Guide's own way writes the screen its pan » : vert sans rouge du même test avant lui (paire nommée refusée : vert illisible)
+1eebea06 « vert: Coquille3SeatTest#n1_proKeepsTheFormatChosenOnTheSharePage » : vert sans rouge du même test avant lui
+25b653a3 « vert: Coquille3SeatTest#n5_theVolumeSentenceIsWholeBeforeItsDetails » : vert sans rouge du même test avant lui
+8dd54051 « vert: Coquille3SeatTest#a10_oneDownloadButtonOnTheRemixPanel » : vert sans rouge du même test avant lui
+a61f5908 « vert: Coquille3SeatTest#a11_remixOfMoreIsUnderTheLeftThumb » : vert sans rouge du même test avant lui
+22087def « vert: Coquille3SeatTest#p1_notesShowsEveryNotePlayed » : vert sans rouge du même test avant lui
+journal, ligne cochée A.4 : paire rouge 004e366 / vert 7f5a0ce : commit introuvable
+journal, ligne cochée A.10 : paire rouge c3eebf7 / vert 7e33ec5 : commit introuvable
+journal, ligne cochée A.12 : paire rouge 03c768c / vert 8180d82 : commit introuvable
+journal, ligne cochée A.4 : paire rouge c39ca77 / vert 3dab50a : commit introuvable
+journal, ligne cochée A.3 : paire rouge 0a4d552 / vert a460613 : commit introuvable
+journal, ligne cochée A.4 : paire rouge 609f50b / vert 01fcb3c : commit introuvable
+journal, ligne cochée A.11 : paire rouge 7e34de9 / vert 1b8dd12 : commit introuvable
+journal, ligne cochée A.14 : paire rouge 5f0c5f8 / vert 12d6cca : commit introuvable
+journal, ligne cochée A.2 : paire rouge 4587080 / vert 7a6864d : commit introuvable
+journal, ligne cochée A.6 : paire rouge 0a38188 / vert f9a7b86 : commit introuvable
+journal, ligne cochée A.9 : paire rouge 0fcb63d / vert 419a5c4 : commit introuvable
+journal, ligne cochée A.7 : paire rouge 49c3325 / vert 2e650ca : commit introuvable
+journal, ligne cochée A.8 : paire rouge c6e9f7e / vert c9bb80d : commit introuvable
+journal, ligne cochée A.15 : paire rouge e3db5e2 / vert 7bfe58b : commit introuvable
+journal, ligne cochée A.13 : paire rouge ec9cc11 / vert dddbb0d : commit introuvable
+journal, ligne cochée A.16 : paire rouge 103f232 / vert 844dbcd : commit introuvable
+journal, ligne cochée A.16 : paire rouge f59af32 / vert 6c2f776 : commit introuvable
+journal, ligne cochée A.16 : paire rouge 0ac27a1 / vert 948d8ad : commit introuvable
+journal, ligne cochée A.18 : paire rouge 043332d / vert 1467e1b : commit introuvable
+journal, ligne cochée A.19 : paire rouge d3868c6 / vert de9d84d : commit introuvable
+journal, ligne cochée A.19 : paire rouge 6a81e3c / vert 81e0c68 : commit introuvable
+journal, ligne cochée A.19 : paire rouge b3be3c1 / vert 894033d : commit introuvable
+journal, ligne cochée A.19 : paire rouge de0df4e / vert ba7e1d3 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 8bd0c866 / vert 7e993b81 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 21c8018 / vert 6b9c72b : commit introuvable
+journal, ligne cochée A.22 : paire rouge 9bfb587 / vert 7539576 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 7ee664e / vert f1da11f : commit introuvable
+journal, ligne cochée A.19 : paire rouge 90da09f8 / vert 68d0adc7 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 34a5af69 / vert 07a79168 : commit introuvable
+journal, ligne cochée A.18 : paire rouge a678a94c / vert e507f9bc : commit introuvable
+journal, ligne cochée A.18 : paire rouge e26fde7e / vert c125176c : commit introuvable
+journal, ligne cochée A.18 : paire rouge 1bb1622f / vert 5e32afae : commit introuvable
+journal, ligne cochée A.19 : paire rouge 1d767cbb / vert 80c637eb : commit introuvable
+journal, ligne cochée A.19 : paire rouge 689872ac / vert f023003d : commit introuvable
+journal, ligne cochée A.19 : paire rouge a989d0b5 / vert 9a94aed0 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 6be9442e / vert 6614d1ba : commit introuvable
+journal, ligne cochée A.23 : paire rouge 95de177 / vert 778c01e : commit introuvable
+journal, ligne cochée A.24 : paire rouge bb09927 / vert c094a6c : commit introuvable
+journal, ligne cochée A.24 : paire rouge 92d65e4 / vert c8bca8a : commit introuvable
+journal, ligne cochée R.8 : paire rouge 19d33b8 / vert f2a0a9a : commit introuvable
+journal, ligne cochée A.23 : paire rouge af6da683 / vert a74b389a : commit introuvable
+journal, ligne cochée A.23 : paire rouge f4d447ea / vert b89017a7 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge ff69cb40 / vert cdab9801 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge 7bb62944 / vert 516c8726 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge d55884fa / vert e7756ba3 : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 510a1e19 / vert 50ba6a28 : commit introuvable
+journal, ligne cochée A.19 : paire rouge a27f5070 / vert 60c6dea6 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 18e455da / vert bf068ce0 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 105236cc / vert 42cd01b5 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 5c743b13 / vert f175438b : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 8db74c19 / vert 727a99f6 : commit introuvable
+journal, ligne cochée 5.10 : paire rouge 96573c2c / vert 395576d2 : commit introuvable
+journal, ligne cochée 5.3 : paire rouge b2de5bc7 / vert 678ce5c3 : commit introuvable
+journal, ligne cochée 5.11 : paire rouge e22c78b6 / vert be759849 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge bf9dbfd3 / vert 28435ec9 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 2cac6138 / vert e7f47614 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge 9f4ac07b / vert 05487030 : commit introuvable
+journal, ligne cochée 6.2 : paire rouge f37a1827 / vert b116d4e0 : commit introuvable
+journal, ligne cochée 6.5 : paire rouge 4423d09f / vert 10db41c8 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge ae1eda78 / vert 88e36490 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 338748e3 / vert a563a6dd : commit introuvable
+chantier : 91 écarts

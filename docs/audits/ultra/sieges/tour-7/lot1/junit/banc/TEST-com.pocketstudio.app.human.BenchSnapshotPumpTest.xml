@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchSnapshotPumpTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-15T14:26:12.133Z" hostname="vm" time="0.121">
+  <properties/>
+  <testcase name="a_aTestLeavesAStateTheBenchPutsBackOnceItIsOver" classname="com.pocketstudio.app.human.BenchSnapshotPumpTest" time="0.066"/>
+  <testcase name="b_aStateWrittenInTheTestAfterItReachesItsReaders" classname="com.pocketstudio.app.human.BenchSnapshotPumpTest" time="0.052"/>
+  <system-out><![CDATA[BenchPristine: Compose's state pump revived before BenchSnapshotPumpTest.b_aStateWrittenInTheTestAfterItReachesItsReaders
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

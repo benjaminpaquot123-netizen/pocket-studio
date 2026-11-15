@@ -39,4 +39,12 @@ class Tour7LanguagesTest {
         val latin = Regex("[A-Za-z]")
         report("hi entries of the « और » menu with Latin letters", entries.map { it to tr(it) }.filter { latin.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" })
     }
+
+    /** D4 (seats 2b #25, 2c, pt-BR): « pad live 1 » read like a technical name (the page « Pad live » keeps its name); a numbered pad is named by its page, « o pad 1 do Live ». */
+    @Test
+    fun portugueseAndSpanishNameTheLivePadsPlainly() {
+        val technical = Regex("""(?i)\bpad live (%\d*\$?d|\d)""")
+        val wrong = listOf(Lang.PT_BR, Lang.ES).flatMap { l -> texts(l).filter { technical.containsMatchIn(it.third) }.map { "${l.code}/${it.first}: « ${it.third} »" } }
+        report("pt-BR and es texts naming a pad « pad live »", wrong)
+    }
 }

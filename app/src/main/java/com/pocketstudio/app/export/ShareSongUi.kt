@@ -167,3 +167,10 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
         },
     )
 }
+
+/**
+ * Tour 7 lot 5 D2: the title and lines of the window waiting under Android's share menu. [returned]: the app is back on
+ * screen; [picked]: an app was chosen in the menu.
+ */
+internal fun shareBack(ready: List<String>, names: List<String>, returned: Boolean, picked: Boolean): Pair<String, List<String>> =
+    tr("C'est prêt") to ready

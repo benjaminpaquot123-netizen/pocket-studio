@@ -177,7 +177,7 @@ fun ProjectsScreen(
             }
             OutlinedButton(onClick = { setChoosingStart(true) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
-                Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
+                Text("  " + tr("Nouveau morceau : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
             }
             // Chantier 2 (G3): it opens Android's file picker: the shared link row.
             com.pocketstudio.ui.LinkRow(tr("Importer un projet (.zip)"), onClick = actions.importZip, modifier = Modifier.testTag("project_import"), icon = Icons.Filled.Unarchive)

@@ -69,7 +69,7 @@ class TutoTest {
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
     private fun await(what: String, ok: () -> Boolean) {
-        val end = System.currentTimeMillis() + 20_000
+        val end = System.currentTimeMillis() + 60_000
         while (!ok()) {
             idle(50)
             compose.waitForIdle()

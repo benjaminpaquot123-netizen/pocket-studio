@@ -953,6 +953,9 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Précédent"), modifier = Modifier.size(20.dp))
             }
             secondaries.forEach { it() }
+            // Tour 7 (D7): never « Suivant » beside « Chapitre suivant » (« 次の章 » and « 次へ », two ways on in one place),
+            // nor beside the « Bravo »'s own « Étape suivante ».
+            if (chapterEnd || ui.bravo) return@Row
             // Testers (lot « tuto 5 »): « Suivant → » stays where it was (a quick touch there replayed the example).
             TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
                 Text(tr("Suivant") + " ", maxLines = 1)
@@ -967,7 +970,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
         Box(Modifier.weight(1f))
         // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the big one
         // (n° 23: « Suivant → » stays where it was when its row is the secondary buttons' own on a big font).
-        if (primary != Primary.NEXT || secondaries.isNotEmpty()) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+        if (primary != Primary.NEXT || (secondaries.isNotEmpty() && !chapterEnd && !ui.bravo)) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
             Text(tr("Suivant") + " ", maxLines = 1)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
         }

@@ -148,5 +148,6 @@
   "%1$s : encore +%2$d": "%1$s: +%2$d daha",
   "Touche ici": "Buraya dokun",
   "Accords en pointillé à toucher : %d": "Dokunulacak noktalı akorlar: %d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: daha sakin bir an, kick ve bas susar."
+  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: daha sakin bir an, kick ve bas susar.",
+  "Exemple passé sans l'écouter.": "Örnek dinlenmeden geçildi."
 }

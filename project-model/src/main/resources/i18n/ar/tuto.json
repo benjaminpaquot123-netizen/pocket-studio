@@ -148,5 +148,6 @@
   "%1$s : encore +%2$d": "%1$s: +%2$d أخرى",
   "Touche ici": "المس هنا",
   "Accords en pointillé à toucher : %d": "الكوردات المنقّطة المتبقية للمس: %d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص."
+  "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص.",
+  "Exemple passé sans l'écouter.": "تم تخطي المثال دون الاستماع إليه."
 }

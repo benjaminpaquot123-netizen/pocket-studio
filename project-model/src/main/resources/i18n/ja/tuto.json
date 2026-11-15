@@ -148,5 +148,6 @@
   "%1$s : encore +%2$d": "%1$s：あと +%2$d",
   "Touche ici": "ここをタップ",
   "Accords en pointillé à toucher : %d": "タップする点線のコード：%d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "ブレイク：静かになる部分。キックとベースが止まります。"
+  "Break : un moment plus calme, le kick et la basse se taisent.": "ブレイク：静かになる部分。キックとベースが止まります。",
+  "Exemple passé sans l'écouter.": "お手本を聴かずにスキップしました。"
 }

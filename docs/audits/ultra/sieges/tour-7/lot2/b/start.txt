@@ -1,0 +1,10 @@
+lang=pt-BR
+device=phone
+font=200
+mode=simple
+rejeu=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-6/lotE/c
+rejeu.n=17
+rejeu.puis=main
+gestes.max=80
+mission=remix-voix
+timeout.minutes=40

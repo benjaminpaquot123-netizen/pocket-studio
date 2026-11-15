@@ -1,0 +1,18 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot2/a (seat a, lot 2; lang ko, device phone360, font 130, mode simple, options amenee=tuto:techno:5, mission tuto-facile, budget 100 gestures).
+Profile (id t7-2a): Débutante coréenne, petit téléphone (360 dp), police 130 %, tuto Facile techno ; le banc l'amène au chapitre 5 (la basse), là où les notes pointillées passaient sous le panneau. Peu patiente avec le défilement. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile: Le banc ouvre le tuto au chapitre 5 : fais la basse en entier, puis les chapitres suivants tant que le budget le permet. Note chaque note ou case que tu dois chercher sous le panneau.
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-2a-1 | 1. Toutes les notes à poser sont visibles sans faire défiler sous le panneau
+  - id=t7-2a-2 | 2. L'aide des pads est lisible en entier
+  - id=t7-2a-3 | 3. Aucune consigne ne demande plus de 3 actions à la fois
+  - id=t7-2a-4 | 4. tous les textes vus sont en coréen, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - T4 (grave) | depuis la grille de la basse (chapitre 5, 360 dp, 130 %, panneau ouvert), je regarde les notes pointillées et je vois chacune en entier au-dessus du panneau, sinon une flèche ↑/↓
+  - N4 (grave) | depuis le chapitre 5, je touche « Encore… » quand une note n'est pas visible et je vois la grille l'amener à l'écran
+  - T15 (mineur) | depuis l'écran des pads, je lis l'aide d'un pad et la 2e rangée de cases et je les vois en entier au-dessus du panneau (pas « 길게 누 »)
+  - T8 (mineur) | depuis une étape « à toi », je lis la consigne et je vois au plus 3 actions
+  - T6 (mineur) | depuis une consigne qui emploie un mot de musicien (업비트…), je vois ce mot expliqué en mots simples
+  - R19 (mineur) | depuis une rangée de pistes ou de puces qui continue hors écran, je vois un signe qu'elle continue (« + 트랙 » pas coupé au bord)
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

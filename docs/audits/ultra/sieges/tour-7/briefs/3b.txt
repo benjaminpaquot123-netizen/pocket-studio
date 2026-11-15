@@ -1,0 +1,19 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot3/b (seat b, lot 3; lang fr, device phone, font 100, mode simple, mission exports, budget 100 gestures).
+Profile (id t7-3b): Utilisatrice française, téléphone, Mode simple, veut garder et partager ses morceaux. Méfiante : vérifie que chaque fichier existe vraiment. Act as this person (habits, patience, vocabulary).
+Mission exports: Ouvre « Mes fichiers » avant d'avoir exporté quoi que ce soit, puis fais un morceau, exporte-le en version « streaming » puis « club » (M4A puis WAV), et retrouve les fichiers dans « Mes fichiers ».
+Its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-3b-1 | 1. « Mes fichiers » vide dit qu'il n'y a rien, après un signe d'attente
+  - id=t7-3b-2 | 2. L'export dit son niveau et son format sans rien cacher
+  - id=t7-3b-3 | 3. Le fichier exporté apparaît dans « Mes fichiers » avec son extension
+  - id=t7-3b-4 | 4. tous les textes vus sont en français, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - U22 (mineur, artefact du banc au tour 6) | depuis « Mes fichiers » sans export, je l'ouvre et je vois un signe d'attente, puis « Rien ici pour l'instant »
+  - U2 (moyen) | depuis l'export en Mode simple, je choisis un niveau et je vois le même niveau que celui du fichier exporté
+  - U4 / U15 / N7 (mineur) | depuis l'écran d'export, je regarde la rangée M4A / WAV et je vois qu'elle ne cache aucune ligne
+  - U3 (mineur) | depuis l'export, je reviens sans rien changer et je ne vois pas « a changé »
+  - U5 (mineur) | depuis l'export, je choisis WAV en Simple puis je passe en Pro et je vois WAV gardé
+  - R14 (mineur) | depuis « Mes fichiers » après l'export, je lis chaque fichier avec son extension (.m4a, .wav)
+  - N15 (mineur) | depuis « Mes fichiers », je regarde le bas de l'écran et je vois que la barre « Terminé » ne cache aucune ligne
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

@@ -1,0 +1,8 @@
+lang=de
+device=tablet8
+font=130
+mode=pro
+amenee=tuto:techno:8
+gestes.max=200
+mission=tuto-pro
+timeout.minutes=90

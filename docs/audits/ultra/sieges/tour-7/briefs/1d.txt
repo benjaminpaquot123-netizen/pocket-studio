@@ -1,0 +1,20 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lot1/d (seat d, lot 1; lang de, device tablet8, font 130, mode pro, options amenee=tuto:techno:8, mission tuto-pro, budget 200 gestures).
+Profile (id t7-1d): Musicien allemand confirmé, tablette 8 pouces, police 130 %, mode Pro, tuto Pro techno ; le banc l'amène au chapitre 8 (première partie : groove). Va vite, lit en diagonale, veut que l'appli dise la vérité sur ce qui est validé. Act as this person (habits, patience, vocabulary).
+Mission tuto-pro: Le banc ouvre le tuto Pro au chapitre 8 : fais du chapitre 8 jusqu'à la fin (mastering, export). Note pour chaque chapitre : compris oui/non, coché ou non dans la liste.
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-1d-1 | 1. Chaque chapitre fini est coché dans la liste des chapitres après son « Bravo »
+  - id=t7-1d-2 | 2. « Weiter » ne saute jamais une étape sans dire ce qui reste
+  - id=t7-1d-3 | 3. Les réglages de mix et les mesures que le tuto cite existent à l'écran sous le même nom
+  - id=t7-1d-4 | 4. tous les textes vus sont en allemand, aucun en anglais ni coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - N19 (grave) | depuis une étape d'écoute non validée, je touche « Weiter » et je vois ce qu'il reste à faire, jamais « Fast fertig! »
+  - T9 (mineur) | depuis le « Bravo » d'un chapitre, j'ouvre la liste des chapitres et je vois ce chapitre coché (étapes d'écoute comprises)
+  - N25 (moyen) | depuis une consigne « Aller dans la partie … » pendant la lecture, je la suis et je vois la partie nommée s'ouvrir
+  - N28 (mineur) | depuis une consigne qui cite « Takt N », je cherche cette mesure et je la trouve dans la partie ouverte
+  - N26 (mineur) | depuis le chapitre 10, je lis « der ganze Groove spielt darin » seulement si c'est vrai
+  - N24 (mineur) | depuis le chapitre du mix, je lis le nom du réglage et je le retrouve à l'écran sous ce nom
+  - U27 (mineur) | depuis la table de mixage, je lis les noms des pistes et je vois les mêmes noms que sur l'écran des sons
+  - N21 (mineur) | depuis les chapitres 8 à la fin, je lis le même mot allemand pour une même chose
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

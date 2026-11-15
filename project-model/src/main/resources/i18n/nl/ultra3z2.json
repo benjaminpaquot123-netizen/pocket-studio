@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Het doel wordt gemeten op het luidste stuk (%1$s LUFS); het hele nummer, met zijn rustige stukken, meet %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Om zo luid te klinken worden de pieken %s dB ingedrukt: dat is veel, het geluid verliest zijn punch.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Om zo luid te klinken worden de pieken %s dB ingedrukt (hooguit 3: het geluid houdt zijn punch).",
-  "Le même réglage que dans Mix.": "Dezelfde instelling als in Mix.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Om verder te gaan op een ander apparaat: een .zip-bestand met al zijn geluiden, daar te openen in Mijn projecten › Importeren.",
   "Nom du morceau envoyé": "Naam van het nummer dat je verstuurt",
   "Le projet garde son nom « %s ».": "Het project houdt zijn naam ‘%s’.",

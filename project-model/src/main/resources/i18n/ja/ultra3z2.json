@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "目標はいちばん大きい部分で測ります（%1$s LUFS）。静かな部分も含めた曲全体は %2$s LUFS です。",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "この大きさにするため、ピークを %s dB 押さえています：多めなので、音のパンチが弱くなります。",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "この大きさにするため、ピークを %s dB 押さえています（最大 3：音のパンチは残ります）。",
-  "Le même réglage que dans Mix.": "ミックスと同じ設定です。",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "別の端末で続けるには：すべての音が入った .zip ファイルを、向こうでマイプロジェクト › 読み込むから開きます。",
   "Nom du morceau envoyé": "送る曲の名前",
   "Le projet garde son nom « %s ».": "プロジェクトの名前は「%s」のままです。",

@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Das Ziel wird an der lautesten Stelle gemessen (%1$s LUFS); der ganze Song mit seinen ruhigen Stellen misst %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Um so laut zu klingen, werden die Spitzen um %s dB gestaucht: Das ist viel, der Klang verliert an Punch.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Um so laut zu klingen, werden die Spitzen um %s dB gestaucht (höchstens 3: Der Klang behält seinen Punch).",
-  "Le même réglage que dans Mix.": "Dieselbe Einstellung wie in Mix.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Um auf einem anderen Gerät weiterzumachen: eine .zip-Datei mit allen Sounds, dort zu öffnen unter Meine Projekte › Importieren.",
   "Nom du morceau envoyé": "Name des gesendeten Songs",
   "Le projet garde son nom « %s ».": "Das Projekt behält seinen Namen „%s“.",

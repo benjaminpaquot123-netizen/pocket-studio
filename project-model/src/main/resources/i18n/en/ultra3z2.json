@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "The target is measured on the loudest passage (%1$s LUFS); the whole song, with its quiet parts, measures %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "To sound this loud, the peaks are squeezed by %s dB: that's a lot, the sound loses its punch.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "To sound this loud, the peaks are squeezed by %s dB (3 at most: the sound keeps its punch).",
-  "Le même réglage que dans Mix.": "The same setting as in Mix.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "To pick it up on another device: a .zip file with all its sounds, to open there in My projects › Import.",
   "Nom du morceau envoyé": "Name of the song you send",
   "Le projet garde son nom « %s ».": "The project keeps its name “%s”.",

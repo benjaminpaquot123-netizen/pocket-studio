@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Cel mierzy się na najgłośniejszym fragmencie (%1$s LUFS); cały utwór, z cichymi fragmentami, ma %2$s LUFS.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Żeby brzmieć tak głośno, szczyty są ściśnięte o %s dB: to dużo, dźwięk traci uderzenie.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Żeby brzmieć tak głośno, szczyty są ściśnięte o %s dB (najwyżej 3: dźwięk zachowuje uderzenie).",
-  "Le même réglage que dans Mix.": "To samo ustawienie co w Miksie.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Żeby kontynuować na innym urządzeniu: plik .zip ze wszystkimi dźwiękami, do otwarcia tam w Moje projekty › Importuj.",
   "Nom du morceau envoyé": "Nazwa wysyłanego utworu",
   "Le projet garde son nom « %s ».": "Projekt zachowuje nazwę „%s”.",

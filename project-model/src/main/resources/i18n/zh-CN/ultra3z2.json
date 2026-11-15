@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "目标在最响的段落测量（%1$s LUFS）；整首歌连同安静的段落，测得 %2$s LUFS。",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "为了这么响，峰值被压了 %s dB：压得很多，声音会失去冲击力。",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "为了这么响，峰值被压了 %s dB（最多 3：声音保留冲击力）。",
-  "Le même réglage que dans Mix.": "和混音里是同一个设置。",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "要在另一台设备上继续：一个包含所有声音的 .zip 文件，在那边的“我的项目 › 导入”中打开。",
   "Nom du morceau envoyé": "发送的歌曲名称",
   "Le projet garde son nom « %s ».": "项目保留名称“%s”。",

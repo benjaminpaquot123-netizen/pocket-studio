@@ -56,7 +56,7 @@ class Tour7LanguagesTest {
     fun japaneseExplainsThePlaitsAndAcidNames() {
         I18n.lang = Lang.JA
         val japanese = Regex("[\\u3040-\\u30FF\\u4E00-\\u9FFF]")
-        val wrong = listOf("Plaits", "Synthé de basse acide", "Synthé aux 24 modèles").map { it to tr(it) }
+        val wrong = listOf("Plaits", "Synthé des basses qui grincent", "Synthé aux 24 modèles").map { it to tr(it) }
             .filterNot { japanese.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" }
         report("ja names and explanations of a sound without a word of Japanese", wrong)
     }

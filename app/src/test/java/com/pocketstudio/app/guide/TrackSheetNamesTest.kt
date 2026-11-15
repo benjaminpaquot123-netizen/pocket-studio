@@ -25,4 +25,15 @@ class TrackSheetNamesTest {
         I18n.lang = Lang.FR
         assertEquals("Plaits", plaitsLabel(simple = false))
     }
+
+    /** The sheet's sound line: « Plaits » translated, « Acid 303 » kept whole, each one explained under it. */
+    @Test
+    fun theSoundLineSaysWhatTheNameMeans() {
+        I18n.lang = Lang.JA
+        val japanese = Regex("[\\u3040-\\u30FF\\u4E00-\\u9FFF]")
+        assertTrue(japanese.containsMatchIn(soundShown("Plaits")))
+        assertEquals("Acid 303", soundShown("Acid 303"))
+        listOf("Plaits", "Acid 303").forEach { assertTrue("« $it »", japanese.containsMatchIn(soundNote(it).orEmpty())) }
+        assertEquals(null, soundNote("Basse ronde"))
+    }
 }

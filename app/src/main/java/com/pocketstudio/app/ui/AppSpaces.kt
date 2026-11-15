@@ -255,7 +255,6 @@ private fun simplePlusEntries(
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
     files?.let { PlusEntry("files", Icons.Filled.Folder, tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), open = it) },
-    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
     PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
     PlusEntry("voice", Icons.Filled.Mic, tr("Enregistrer ma voix"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."), open = ways.voice),
     PlusEntry("library", Icons.Filled.LibraryMusic, tr("Bibliothèque de sons"), tr("Écouter et choisir des sons"), open = ways.library),
@@ -263,6 +262,9 @@ private fun simplePlusEntries(
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le Guide, Mon premier morceau, les mots de la musique"), page = ToolPage.Aide),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry("mode", Icons.Filled.ToggleOn, tr("Passer en mode Pro"), tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus"), open = { setSimple(false) }),
+    // Tour 7, lot 3, D5 (seat 2c, es, phone at 100 %): Live low on the page, in the thumbs' reach, still whole above
+    // the Guide's bar.
+    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
     bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )

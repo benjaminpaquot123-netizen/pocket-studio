@@ -99,7 +99,7 @@ Fichiers :
 | [tenté, rouge+vert ; hi non reproduit] D4 : texte du Guide coupé | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis l'accueil du Guide, je lis « Crie uma batida… » entier et « a tela » n'est pas sous « Baixar o modelo » ; en hi, « गाइड » n'est pas coupé à gauche [2b #6, 3a #8] | capture : aucun « [coupé] » dans `GuidePanel` à 200 % |
 | [tenté, rouge+vert] D5 : « Live: tocar en directo » hors de portée du pouce dans « Más » | en es, main gauche, phone à 100 %, Mode Simple : depuis le menu Más, je touche « Live: tocar en directo » sans quitter la zone du pouce gauche [2c #39] | position de l'entrée dans la moitié basse en main gauche |
 | [tenté, rouge+vert] D6 : « Mes fichiers » absent du menu ⋮ | en fr, deux mains, phone à 100 %, Mode Simple : depuis le menu ⋮, je vois « Mes fichiers » [3b #10, #42] | `TopBar` : l'entrée « Mes fichiers » existe et ouvre la liste |
-| [non fait, retiré : réordonner le Mixer pousse Basse hors d’un écran 360 dp (KeyActionsGestureTest) ; à trancher] D7 U27 : pas les mêmes noms au Mixer et aux Sons (Synth contre Vocals) | en de, deux mains, tablet8 à 130 %, Mode Pro : depuis le Mixer puis les Sons, je vois les mêmes noms de pistes [1d #86, #99] | `AppRoot.mixerStrips` : mêmes libellés que les pages de Sons |
+| [L : laissé de côté, réordonner le Mixer pousse Basse hors d’un écran 360 dp (KeyActionsGestureTest) ; à trancher] D7 U27 : pas les mêmes noms au Mixer et aux Sons (Synth contre Vocals) | en de, deux mains, tablet8 à 130 %, Mode Pro : depuis le Mixer puis les Sons, je vois les mêmes noms de pistes [1d #86, #99] | `AppRoot.mixerStrips` : mêmes libellés que les pages de Sons |
 
 Laissé de côté : rien.
 

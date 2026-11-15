@@ -71,13 +71,15 @@ Fichiers :
 
 | défaut | phrase d'acceptation [siège d'origine] | test rouge |
 |---|---|---|
-| D1 R3-EC17 / U13 : à 200 %, la courbe et Início/Fim/Ouvir ne sont pas visibles ensemble | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis « Um pedaço », je place la tête et je vois la courbe et Início, Fim et Ouvir ensemble sans défiler [2b #18] | capture à 200 % : la courbe et les trois boutons tiennent dans l'écran |
-| D2 R7 : hors de portée du pouce gauche | en es, main gauche, phone à 100 %, Mode Simple : depuis la découpe, je touche les puces Frases, « Un trozo ▾ » et la poignée Fin sans quitter la zone du pouce [2c #15, #20, #33] | positions des puces, du menu et des poignées dans la moitié basse en main gauche |
-| D3 R5 : boutons en double (deux « Escolher uma música », deux ← ou ▶, deux Deshacer) | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le Remix, je cherche « Escolher uma música » et je n'en vois qu'un, avec un seul ← et un seul ▶ [2b #11 et #14, 2c #3 et #9] | arbre de l'écran Remix : chaque libellé apparaît une seule fois |
-| D4 : « Início aqui » ne fait rien | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis « Um pedaço », je touche « Início aqui » et je vois le début du bout se poser à la tête [2b #16] | `CutScreen` : l'action pose le début à la position de la tête |
-| D5 N14/R6 : « Sua música está vazia » juste après avoir posé Voz 1 | en es, deux mains, phone à 100 %, Mode Simple : depuis le Remix, je pose « Voz 1 » sur une pista puis j'ouvre Mi canción et je ne vois plus « Tu canción está vacía » [2b #27, 2c #41] | `SongCard` : une piste avec un bout posé, donc pas de message « vide » |
-| D6 : « no se colocó nada » et « está en el pad » dans la même bulle | en es, main gauche, phone à 100 %, Mode Simple : depuis le Remix, je pose une voix sur un pad et je vois un seul message, juste [2c #30] | `StemBoardRouter` : un seul message selon le résultat |
-| D7 : la puce « Resto » est coupée sans signe | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis la découpe, je vois la puce « Resto » entière [2b #14] | capture à 200 % : pas de puce coupée dans la rangée |
+| ✅ D1 R3-EC17 / U13 : à 200 %, la courbe et Início/Fim/Ouvir ne sont pas visibles ensemble | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis « Um pedaço », je place la tête et je vois la courbe et Início, Fim et Ouvir ensemble sans défiler [2b #18] | capture à 200 % : la courbe et les trois boutons tiennent dans l'écran |
+| ◐ D2 R7 : hors de portée du pouce gauche | en es, main gauche, phone à 100 %, Mode Simple : depuis la découpe, je touche les puces Frases, « Un trozo ▾ » et la poignée Fin sans quitter la zone du pouce [2c #15, #20, #33] | positions des puces, du menu et des poignées dans la moitié basse en main gauche |
+| ✅ D3 R5 : boutons en double (deux « Escolher uma música », deux ← ou ▶, deux Deshacer) | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le Remix, je cherche « Escolher uma música » et je n'en vois qu'un, avec un seul ← et un seul ▶ [2b #11 et #14, 2c #3 et #9] | arbre de l'écran Remix : chaque libellé apparaît une seule fois |
+| ✅ D4 : « Início aqui » ne fait rien | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis « Um pedaço », je touche « Início aqui » et je vois le début du bout se poser à la tête [2b #16] | `CutScreen` : l'action pose le début à la position de la tête |
+| ✅ D5 N14/R6 : « Sua música está vazia » juste après avoir posé Voz 1 | en es, deux mains, phone à 100 %, Mode Simple : depuis le Remix, je pose « Voz 1 » sur une pista puis j'ouvre Mi canción et je ne vois plus « Tu canción está vacía » [2b #27, 2c #41] | `SongCard` : une piste avec un bout posé, donc pas de message « vide » |
+| ✅ D6 : « no se colocó nada » et « está en el pad » dans la même bulle | en es, main gauche, phone à 100 %, Mode Simple : depuis le Remix, je pose une voix sur un pad et je vois un seul message, juste [2c #30] | `StemBoardRouter` : un seul message selon le résultat |
+| ✅ D7 : la puce « Resto » est coupée sans signe | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis la découpe, je vois la puce « Resto » entière [2b #14] | capture à 200 % : pas de puce coupée dans la rangée |
+
+État (tour-7-lots-2456) : ✅ fait ; ◐ D2 en partie : le menu « Un trozo ▾ » est dans la moitié basse, mais les puces Frases et la poignée Fin restent hautes : sur ~480 dp, les descendre fait remonter la courbe hors du pouce gauche (test `a7` du siège pouce gauche).
 
 Laissé de côté : rien.
 
@@ -111,7 +113,7 @@ Fichiers :
 
 | défaut | phrase d'acceptation [siège d'origine] | test rouge |
 |---|---|---|
-| D1 U28 : « ▶ morceau » joue depuis la partie choisie, pas depuis le début | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le Rythme, partie B choisie, je touche « ▶ गाना » et j'entends le morceau depuis la mesure 1 (A puis B) [3a #50, #41, #61] | `RhythmViewModel` : la lecture du morceau part de la mesure 1, ou dit à l'écran qu'elle part de la partie choisie |
+| ✅ D1 U28 : « ▶ morceau » joue depuis la partie choisie, pas depuis le début | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le Rythme, partie B choisie, je touche « ▶ गाना » et j'entends le morceau depuis la mesure 1 (A puis B) [3a #50, #41, #61] | `RhythmViewModel` : la lecture du morceau part de la mesure 1, ou dit à l'écran qu'elle part de la partie choisie |
 
 ## Lot 5 « export-projets » (4 défauts)
 
@@ -124,10 +126,10 @@ Fichiers :
 
 | défaut | phrase d'acceptation [siège d'origine] | test rouge |
 |---|---|---|
-| D1 : « Partager le morceau · 2 » ne dit pas quel fichier | en fr, deux mains, phone à 100 %, Mode Simple : depuis Partager, je vois le nom du fichier qui part (style, niveau, format) [3b #34] | le libellé du bouton contient le nom du fichier |
-| D2 : après la feuille de partage fermée, « C'est prêt » répété, et rien ne dit que rien n'est parti | en fr, deux mains, phone à 100 %, Mode Simple : depuis la feuille de partage d'Android, je reviens sans rien envoyer et je vois « Pas envoyé : le fichier est dans Mes fichiers » [3b #19] | retour du partage sans cible : un seul message, qui le dit |
-| D3 : pas les mêmes mots dans les feuilles d'export Simple et Pro | en fr, deux mains, phone à 100 %, Mode Pro : depuis Exporter, je vois les mêmes mots qu'en Simple pour le même choix [3b #32] | mêmes clés de texte dans les deux feuilles |
-| D4 : « Nouveau projet » dans la liste, « Nouveau morceau » sur le bouton | en fr, deux mains, phone à 100 %, Mode Simple : depuis Mes projets, je vois le même mot que sur l'accueil [2d #32] | `ProjectsScreen` : un seul libellé |
+| ✅ D1 : « Partager le morceau · 2 » ne dit pas quel fichier | en fr, deux mains, phone à 100 %, Mode Simple : depuis Partager, je vois le nom du fichier qui part (style, niveau, format) [3b #34] | le libellé du bouton contient le nom du fichier |
+| ✅ D2 : après la feuille de partage fermée, « C'est prêt » répété, et rien ne dit que rien n'est parti | en fr, deux mains, phone à 100 %, Mode Simple : depuis la feuille de partage d'Android, je reviens sans rien envoyer et je vois « Pas envoyé : le fichier est dans Mes fichiers » [3b #19] | retour du partage sans cible : un seul message, qui le dit |
+| ✅ D3 : pas les mêmes mots dans les feuilles d'export Simple et Pro | en fr, deux mains, phone à 100 %, Mode Pro : depuis Exporter, je vois les mêmes mots qu'en Simple pour le même choix [3b #32] | mêmes clés de texte dans les deux feuilles |
+| ✅ D4 : « Nouveau projet » dans la liste, « Nouveau morceau » sur le bouton | en fr, deux mains, phone à 100 %, Mode Simple : depuis Mes projets, je vois le même mot que sur l'accueil [2d #32] | `ProjectsScreen` : un seul libellé |
 
 ## Lot 6 « langues » (5 défauts)
 
@@ -137,11 +139,13 @@ Fichiers :
 
 | défaut | phrase d'acceptation [siège d'origine] | test rouge |
 |---|---|---|
-| D1 R15 : « bar » en anglais | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le Rythme, je vois le mot hindi à côté des boutons 1 à 4 [3a #27] | catalogue hi : aucune valeur « bar » seule |
-| D2 : « Live » et « Remix » en anglais dans le menu और | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le menu और, je lis les entrées en hindi (ou avec le nom en écriture hindi) [3a #62] | catalogue hi des entrées du menu |
-| D3 : « La menor » au lieu de « Lá menor » | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le choix de tonalité, je lis « Lá menor » [2b] | catalogue pt-BR : les notes avec accent |
-| D4 : « pad live 1 » nommé comme un nom technique | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le Remix, je pose une voix et je lis un nom de pad compréhensible [2b #25, 2c] | catalogues pt-BR et es du nom des pads |
-| D5 T16 : Plaits et Acid 303 en anglais | en ja, deux mains, phone à 100 %, Mode Simple : depuis la fiche d'une piste, je lis les noms des sons en japonais (ou le nom propre avec son explication) [1c #27] | `TrackSheet` : plus de « Plaits » en dur ; catalogue ja |
+| ✅ D1 R15 : « bar » en anglais | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le Rythme, je vois le mot hindi à côté des boutons 1 à 4 [3a #27] | catalogue hi : aucune valeur « bar » seule |
+| ✅ D2 : « Live » et « Remix » en anglais dans le menu और | en hi, deux mains, phone360 à 130 %, Mode Simple : depuis le menu और, je lis les entrées en hindi (ou avec le nom en écriture hindi) [3a #62] | catalogue hi des entrées du menu |
+| ⏳ D3 : « La menor » au lieu de « Lá menor » | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le choix de tonalité, je lis « Lá menor » [2b] | catalogue pt-BR : les notes avec accent |
+| ✅ D4 : « pad live 1 » nommé comme un nom technique | en pt-BR, deux mains, phone à 200 %, Mode Simple : depuis le Remix, je pose une voix et je lis un nom de pad compréhensible [2b #25, 2c] | catalogues pt-BR et es du nom des pads |
+| ✅ D5 T16 : Plaits et Acid 303 en anglais | en ja, deux mains, phone à 100 %, Mode Simple : depuis la fiche d'une piste, je lis les noms des sons en japonais (ou le nom propre avec son explication) [1c #27] | `TrackSheet` : plus de « Plaits » en dur ; catalogue ja |
+
+État (tour-7-lots-2456) : ✅ fait ; ⏳ D3 attend : « Lá menor » vient de `NoteNames.kt`, hors de la liste du lot (demandé au chef).
 
 ## Défauts non rangés (fichier non localisé, moyens)
 

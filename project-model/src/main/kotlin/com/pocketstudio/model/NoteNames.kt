@@ -13,6 +13,8 @@ object NoteNames {
     private fun solfege(names: List<String>): List<String> = when (com.pocketstudio.model.i18n.I18n.lang) {
         in PLAIN_RE -> names.map { it.replace("Ré", "Re") }
         // Arabic names notes دو ري مي (round 3, n° 38: « A الصغير » for « لا الصغير »).
+        // Tour 7, lot 6 D3 (seat 2b): Portuguese writes Dó, Fá and Lá with the accent (« Lá menor »).
+        com.pocketstudio.model.i18n.Lang.PT_BR -> names.map { n -> PORTUGUESE.entries.firstOrNull { n.startsWith(it.key) }?.let { it.value + n.drop(2) } ?: n }
         com.pocketstudio.model.i18n.Lang.AR -> names.map { n -> ARABIC.entries.fold(n) { acc, (fr, ar) -> acc.replace(fr, ar) } }
         else -> names
     }
@@ -27,6 +29,8 @@ object NoteNames {
     private val GERMAN = mapOf("B" to "H", "B♭" to "B", "B♯" to "H♯")
 
     private val ARABIC = linkedMapOf("Sol" to "صول", "Do" to "دو", "Ré" to "ري", "Mi" to "مي", "Fa" to "فا", "La" to "لا", "Si" to "سي")
+
+    private val PORTUGUESE = mapOf("Do" to "Dó", "Fa" to "Fá", "La" to "Lá")
 
     private val PLAIN_RE = setOf(com.pocketstudio.model.i18n.Lang.IT, com.pocketstudio.model.i18n.Lang.ES, com.pocketstudio.model.i18n.Lang.TR)
 

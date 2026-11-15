@@ -2165,7 +2165,11 @@ object TutoChecks {
         if (done(step, p, target, baseline)) return null
         val c = step.check
         val arg = argOf(c)
+        // Tour 7 (D8): a chapter opened from the list, a part it names never made (« Range tes parties » without the
+        // « Montée »): « Créer la partie » for it first, from the course's own step that makes it.
+        val absent = if (c.startsWith("part:")) null else absentPart(step, p, target)
         return when {
+            absent != null -> TutoNeed.Part(absent)
             // Its bars first: its line's, or the loop the course had already made when its words count cells over it.
             c.startsWith("lane:") -> partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(arg, partOf(step))?.let { line ->
                 maxOf(barsOf(p, line), loopBefore(step, p, target)).takeIf { p.drums.steps < it * p.stepsPerBar }?.let { TutoNeed.Bars(it) }
@@ -2201,6 +2205,31 @@ object TutoChecks {
         }
     }
 
+    /** The parts [step] names: those of its song, the one its effect goes in, the one whose drums it changes. */
+    private fun citedParts(step: TutoStep): List<String> = when {
+        step.check == "song:order" || step.check == "song:phrases" -> step.song.split(',').map { it.substringBeforeLast(':').trim() }.filter { it.isNotEmpty() }
+        step.check == "fill" || step.check == "gap" || step.check == "crash" || step.check.startsWith("automation") -> partsOf(step)
+        step.check.startsWith("changed:drums:") -> listOf(step.check.removePrefix("changed:drums:"))
+        else -> emptyList()
+    }
+
+    /** The first part [step] names that the course makes and [p] lacks (the Fin stands in for by the Intro); null when none or no Groove to make it from. */
+    private fun absentPart(step: TutoStep, p: Project, target: TutoTarget): String? {
+        val cited = citedParts(step).takeIf { it.isNotEmpty() } ?: return null
+        if (p.allScenes.getOrNull(grooveOf(p))?.isEmpty != false) return null
+        return cited.firstOrNull { l ->
+            sceneLabelled(p, l) < 0 && !(l in TutoTarget.ENDINGS && sceneLabelled(p, "Intro") >= 0) && courseStep(l, target) != null
+        }
+    }
+
+    /** The course's step that makes the part [label], null when the course makes none. */
+    private fun courseStep(label: String, target: TutoTarget): TutoStep? =
+        TutoCourse.of(target.style.id)?.chapters?.flatMap { it.steps }?.firstOrNull { it.check.startsWith("part:") && labelIs(partLabel(it), label) }
+
+    /** The step whose recipe makes [label]: [step] when it is the one, else the course's. */
+    private fun partStep(label: String, step: TutoStep, target: TutoTarget): TutoStep =
+        if (step.check.startsWith("part:") && labelIs(partLabel(step), label)) step else courseStep(label, target) ?: step
+
     /** « Copier sur les mesures suivantes » when the bars written by hand are all there and the next one repeats one of them. */
     private fun copyNeed(step: TutoStep, p: Project, target: TutoTarget, role: String): TutoNeed? {
         val mine = mineFor(step, p, target) ?: return null
@@ -2229,7 +2258,7 @@ object TutoChecks {
         is TutoNeed.Track -> if (need.role == "sub") withSub(p, target)?.let { q -> q to q.instrumentTracks.firstOrNull { roleOf(q, it.id) == "sub" }?.id }
             else partTrack(p, need.role, target)?.let { (q, id) -> q to id }
         is TutoNeed.Copy -> copied(p, need.role, step, target)?.let { it to null }
-        is TutoNeed.Part -> makePart(p, step, target)?.let { it to null }
+        is TutoNeed.Part -> makePart(p, partStep(need.label, step, target), target)?.let { it to null }
         is TutoNeed.Name -> p.renameScene(grooveOf(p), need.label) to null
         is TutoNeed.Lengths -> lengths(p, step.song)?.let { it to null }
         is TutoNeed.Scene -> namedScene(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }

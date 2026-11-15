@@ -81,7 +81,7 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks : le « tchi » de la house de New York.",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 8 cases en pointillé, entre les kicks : le « tchi » de la house de New York.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -98,7 +98,7 @@
         {
           "id": "perc_do",
           "levels": "p",
-          "text": "À toi : sur le pad de percussion, touche les 3 cases en pointillé : de petits coups décalés qui ajoutent du nerf.",
+          "text": "À toi : sur le pad de percussion, touche les 6 cases en pointillé : de petits coups décalés qui ajoutent du nerf.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",

@@ -105,7 +105,7 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : discret, il marque juste la danse.",
+          "text": "À toi : sur le pad « Clap », touche les 4 cases en pointillé, sur 2 et 4 : discret, il marque juste la danse.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -113,7 +113,7 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks.",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 8 cases en pointillé, entre les kicks.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",

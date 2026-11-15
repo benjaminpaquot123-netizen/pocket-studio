@@ -78,7 +78,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim », les 4 cases en pointillé, entre les temps : le « clic eski », le petit coup sec de Wiley dans « Eskimo ».",
+          "text": "À toi : sur le pad « Rim », les 8 cases en pointillé, entre les temps : le « clic eski », le petit coup sec de Wiley dans « Eskimo ».",
           "why": "Ce clic remplace le charley : c'est le son du premier grime.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",

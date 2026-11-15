@@ -95,7 +95,7 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse » (le « tchi »), touche les 4 cases en pointillé. Compte en groupes de 3, 3 puis 2 cases : c'est ce boitement qui fait danser.",
+          "text": "À toi : sur le pad « Caisse » (le « tchi »), touche les 9 cases en pointillé. Compte en groupes de 3, 3 puis 2 cases : c'est ce boitement qui fait danser.",
           "textPro": "À toi : la caisse claire du dembow, sur les doubles croches 4, 7, 12 et 15 de la mesure (le 3-3-2, le « tresillo »).",
           "why": "Si tu mets la caisse pile sur 2 et 4, c'est de la pop : le dembow vit de ce décalage.",
           "check": "lane:snare",
@@ -112,8 +112,8 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche les 4 cases en pointillé, entre les temps.",
-          "textPro": "À toi : le charley sur les contretemps (4 cases).",
+          "text": "À toi : sur le pad « Charley », touche les 8 cases en pointillé, entre les temps.",
+          "textPro": "À toi : le charley sur les contretemps (8 cases).",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",

@@ -1108,7 +1108,8 @@ object TutoChecks {
         return mine.isNotEmpty() && modes.all { mode ->
             when (mode) {
                 "any" -> true
-                "less" -> mine.size < most
+                // Fewer bricks than the others, or the Groove's left out (tour 7 D2: a Groove of notes, a part of drums).
+                "less" -> mine.size < most || grooveOf(p).let { g -> g != i && (bricks(all[g]) - mine).isNotEmpty() }
                 "nokick" -> kick.none { "pad:$it" in mine }
                 "full" -> mine.size >= most && kick.any { "pad:$it" in mine }
                 // Yanis (lot « tuto 4 »): a jump up Drop empties the top for the bass, the « Accords » silent.
@@ -1758,6 +1759,20 @@ object TutoChecks {
             q = q.withTrack(t.copy(notes = if (kept) t.notes else t.notes.copy(notes = emptyList())))
         }
         if (!all && "acid" !in keep) q = q.copy(acid = q.acid.copy(steps = q.acid.steps.map { it.copy(gate = false) }))
+        // Tour 7 D2 (seat 2a, the course started at its bass chapter): a Groove without the drums the part keeps gave an
+        // empty part, refused. The pads it keeps then play the course's, so the part holds something.
+        if (bricks(q.currentSceneContent()).isEmpty()) {
+            // The course's own part, else its Groove (gabber's song has no Groove: its Intro's drums).
+            fun drumsOf(l: String) = target.sceneOf(l).takeIf { it >= 0 }?.let { target.song.allScenes.getOrNull(it)?.drums }
+            for (course in listOfNotNull(from, drumsOf(label), drumsOf("Groove"))) {
+                val r = withSteps(q, course.steps)
+                val n = r.drums.steps
+                val filled = r.copy(drums = r.drums.copy(lanes = r.drums.lanes.mapIndexed { i, l ->
+                    if (all || "drums" in keep || roleOfLane(i, target) in keep) l.copy(hits = course.lanes.getOrNull(i)?.hits?.filterKeys { it < n }.orEmpty()) else l
+                }))
+                if (bricks(filled.currentSceneContent()).isNotEmpty()) return filled
+            }
+        }
         return q
     }
 

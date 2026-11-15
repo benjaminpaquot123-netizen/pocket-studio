@@ -7,7 +7,7 @@ import org.junit.Test
  * Tour 7, seat 2a (ko, techno, `amenee=tuto:techno:5`: the course started at its bass chapter, its drum chapters never
  * played): at « Créer la partie « Intro » » the part was made (« + B · 인트로 ») but the step stayed undone
  * (« 이 단계는 아직 안 끝났어요 »). The Groove had no drums, so an Intro of its kick, hats and rim alone was empty.
- * Every style and level, the course played from its bass chapter: its first part step's button makes a part that holds.
+ * Every style and level, the course played from its first chapter of notes (its drums never written): its first part step's button makes a part that holds.
  */
 class Tour7TutoIntroFromLaterChapterTest {
     @Test
@@ -19,7 +19,7 @@ class Tour7TutoIntroFromLaterChapterTest {
             val target = TutoTarget.of(style) ?: continue
             for (level in TutoLevel.entries) {
                 val chapters = course.chaptersFor(level)
-                val from = chapters.indexOfFirst { c -> c.steps.any { it.check == "notes:bass" } }.takeIf { it >= 0 } ?: continue
+                val from = chapters.indexOfFirst { c -> c.steps.any { it.check.startsWith("notes:") } }.takeIf { it >= 0 } ?: continue
                 var p = target.blank()
                 for (s in chapters.drop(from).flatMap { it.steps }) {
                     if (s.check.startsWith("part:")) {

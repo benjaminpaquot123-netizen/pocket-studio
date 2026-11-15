@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.GraphicEq
@@ -222,10 +223,13 @@ internal fun plusEntries(
     bugReport: (() -> Unit)? = null,
     /** The Mode simple's own ways (null: Pro's list). */
     simpleWays: SimplePlusWays? = null,
-): List<PlusEntry> = if (simple && simpleWays != null) simplePlusEntries(home, projects, setSimple, bugReport, simpleWays) else listOfNotNull(
+    /** « Mes fichiers »: the sounds, videos and .zip made (null: not offered). Tour 7, lot 3, D6. */
+    files: (() -> Unit)? = null,
+): List<PlusEntry> = if (simple && simpleWays != null) simplePlusEntries(home, projects, setSimple, bugReport, simpleWays, files) else listOfNotNull(
     // Owner (2026-10-29): the home screen, its Remix card, one touch away from a project.
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
+    files?.let { PlusEntry("files", Icons.Filled.Folder, tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), open = it) },
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("La visite rapide, le Guide, le lexique"), page = ToolPage.Aide),
     PlusEntry("missions", Icons.Filled.Flag, tr("Mon premier morceau, avec le Guide"), tr("Ses premières cartes, du style au partage"), open = missions),
     PlusEntry("glossary", Icons.AutoMirrored.Filled.MenuBook, tr("Les mots de la musique, à écouter"), tr("Chaque mot avec un exemple sonore"), open = glossary),
@@ -246,10 +250,11 @@ internal fun plusEntries(
 /** The Mode simple's Plus page: [plusEntries]'s cards, what its five tabs do not hold. */
 private fun simplePlusEntries(
     home: (() -> Unit)?, projects: () -> Unit, setSimple: (Boolean) -> Unit, bugReport: (() -> Unit)?, ways: SimplePlusWays,
+    files: (() -> Unit)?,
 ): List<PlusEntry> = listOfNotNull(
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, partager un projet"), open = projects),
-    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
+    files?.let { PlusEntry("files", Icons.Filled.Folder, tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), open = it) },
     PlusEntry("remix", Icons.Filled.Album, tr("Remix"), tr("Séparer une chanson en voix, batterie, basse…"), open = ways.remix),
     PlusEntry("voice", Icons.Filled.Mic, tr("Enregistrer ma voix"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."), open = ways.voice),
     PlusEntry("library", Icons.Filled.LibraryMusic, tr("Bibliothèque de sons"), tr("Écouter et choisir des sons"), open = ways.library),
@@ -257,6 +262,9 @@ private fun simplePlusEntries(
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le Guide, Mon premier morceau, les mots de la musique"), page = ToolPage.Aide),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry("mode", Icons.Filled.ToggleOn, tr("Passer en mode Pro"), tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus"), open = { setSimple(false) }),
+    // Tour 7, lot 3, D5 (seat 2c, es, phone at 100 %): Live low on the page, in the thumbs' reach, still whole above
+    // the Guide's bar.
+    PlusEntry("live", Icons.Filled.Apps, tr("Live : jouer en direct"), tr("Lancer des boucles en rythme, comme sur scène"), open = ways.live),
     bugReport?.let { PlusEntry("bug", Icons.Filled.BugReport, tr("Signaler un bug"), tr("Avec des captures ; c'est toi qui l'envoies. Raccourci : appui long sur « ? »"), open = it) },
     PlusEntry("Recette", Icons.Filled.Checklist, tr("Recette"), tr("La liste de tests de la version, et signaler un problème"), page = ToolPage.Recette),
 )

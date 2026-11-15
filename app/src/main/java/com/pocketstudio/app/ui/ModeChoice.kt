@@ -88,13 +88,32 @@ fun ModeStep(choose: (simple: Boolean) -> Unit, back: () -> Unit, tuto: Boolean 
                     }
                     Text(tr("Simple ou Pro ?"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 }
-                Spacer(Modifier.weight(1f))
                 Text(
                     if (tuto) tr("Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.")
                     else tr("Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut."),
                     style = MaterialTheme.typography.bodyLarge, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 4.dp),
                 )
+                // Tour 7, D1 (grave, owner 2026-11-14): the space the cards leave above them (they stay where a thumb
+                // reaches) was a dark hole that read as « loading »; it shows the two modes' screens, big, instead.
+                ModesPreview(Modifier.weight(1f).fillMaxWidth())
                 ModeCards(mark = last?.let { it to tr("Ton dernier choix") }, tuto = tuto, wide = wide, choose = choose)
+            }
+        }
+    }
+}
+
+/**
+ * The two modes' little screens side by side, as big as the [modifier]'s room allows (up to 260 dp high), centred;
+ * nothing when the room is too short (landscape, big text).
+ */
+@Composable
+private fun ModesPreview(modifier: Modifier) {
+    BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+        val high = minOf(maxHeight - 16.dp, 260.dp)
+        if (high >= 72.dp) {
+            Row(Modifier.testTag("mode_step_picture"), horizontalArrangement = Arrangement.spacedBy(28.dp), verticalAlignment = Alignment.CenterVertically) {
+                ModePicture(true, SIMPLE_COLOR, high)
+                ModePicture(false, Neon.Cyan, high)
             }
         }
     }
@@ -166,44 +185,45 @@ private fun ModeCard(simple: Boolean, title: String, line: String, tuto: String?
  * faders and more, smaller tabs. Drawn, so it follows the theme and the size of the text.
  */
 @Composable
-private fun ModePicture(simple: Boolean, color: Color) {
+private fun ModePicture(simple: Boolean, color: Color, high: androidx.compose.ui.unit.Dp = 84.dp) {
     val ink = Neon.TextPrimary.copy(alpha = 0.55f)
     val frame = Neon.Outline
+    val k = high / 84.dp
     Box(
-        Modifier.size(width = 58.dp, height = 84.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Background)
-            .border(1.5.dp, frame, RoundedCornerShape(10.dp)),
+        Modifier.size(width = high * 58f / 84f, height = high).clip(RoundedCornerShape(10.dp * k)).background(Neon.Background)
+            .border(1.5.dp, frame, RoundedCornerShape(10.dp * k)),
     ) {
-        Canvas(Modifier.fillMaxSize().padding(6.dp)) {
+        Canvas(Modifier.fillMaxSize().padding(6.dp * k)) {
             val w = size.width
             val h = size.height
-            val r = CornerRadius(4.dp.toPx())
+            val r = CornerRadius((4.dp * k).toPx())
             if (simple) {
-                val gap = 4.dp.toPx()
+                val gap = (4.dp * k).toPx()
                 val cell = (w - gap) / 2
                 for (i in 0 until 4) {
                     val x = (i % 2) * (cell + gap)
                     val y = (i / 2) * (cell + gap)
                     drawRoundRect(if (i == 0) color else color.copy(alpha = 0.45f), Offset(x, y), Size(cell, cell), r)
                 }
-                val tabW = (w - 3 * 3.dp.toPx()) / 4
-                for (i in 0 until 4) drawRoundRect(ink, Offset(i * (tabW + 3.dp.toPx()), h - 9.dp.toPx()), Size(tabW, 9.dp.toPx()), r)
+                val tabW = (w - 3 * (3.dp * k).toPx()) / 4
+                for (i in 0 until 4) drawRoundRect(ink, Offset(i * (tabW + (3.dp * k).toPx()), h - (9.dp * k).toPx()), Size(tabW, (9.dp * k).toPx()), r)
             } else {
-                val gap = 2.dp.toPx()
+                val gap = (2.dp * k).toPx()
                 val cols = 6
                 val step = (w - (cols - 1) * gap) / cols
                 for (row in 0 until 3) for (c in 0 until cols) {
                     val on = (row + c) % 3 == 0
-                    drawRoundRect(if (on) color else ink.copy(alpha = 0.3f), Offset(c * (step + gap), row * (step + gap)), Size(step, step), CornerRadius(2.dp.toPx()))
+                    drawRoundRect(if (on) color else ink.copy(alpha = 0.3f), Offset(c * (step + gap), row * (step + gap)), Size(step, step), CornerRadius((2.dp * k).toPx()))
                 }
-                val top = 3 * (step + gap) + 4.dp.toPx()
-                val fadersH = h - top - 10.dp.toPx()
+                val top = 3 * (step + gap) + (4.dp * k).toPx()
+                val fadersH = h - top - (10.dp * k).toPx()
                 listOf(0.6f, 0.9f, 0.4f, 0.75f, 0.5f, 0.85f).forEachIndexed { i, f ->
                     val x = i * (step + gap) + step / 2
-                    drawLine(ink.copy(alpha = 0.4f), Offset(x, top), Offset(x, top + fadersH), 1.5.dp.toPx())
-                    drawRoundRect(color, Offset(x - step / 2.5f, top + fadersH * (1 - f)), Size(step / 1.25f, 3.dp.toPx()), CornerRadius(1.dp.toPx()))
+                    drawLine(ink.copy(alpha = 0.4f), Offset(x, top), Offset(x, top + fadersH), (1.5.dp * k).toPx())
+                    drawRoundRect(color, Offset(x - step / 2.5f, top + fadersH * (1 - f)), Size(step / 1.25f, (3.dp * k).toPx()), CornerRadius((1.dp * k).toPx()))
                 }
-                val tabW = (w - 5 * 2.dp.toPx()) / 6
-                for (i in 0 until 6) drawRoundRect(ink, Offset(i * (tabW + 2.dp.toPx()), h - 6.dp.toPx()), Size(tabW, 6.dp.toPx()), CornerRadius(2.dp.toPx()))
+                val tabW = (w - 5 * (2.dp * k).toPx()) / 6
+                for (i in 0 until 6) drawRoundRect(ink, Offset(i * (tabW + (2.dp * k).toPx()), h - (6.dp * k).toPx()), Size(tabW, (6.dp * k).toPx()), CornerRadius((2.dp * k).toPx()))
             }
         }
     }

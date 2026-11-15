@@ -236,7 +236,7 @@ fun CutScreen(
                     if (!wide) {
                         // Tour 6, seat B a (A4): in « Phrases » the menus stay under the curve, out of the scroll (below).
                         if (model.single) AutoRow(model, finding, onAuto = { pick(it) })
-                        if (model.single) SpanRow(model, actions, work) else {
+                        if (model.single) SpanRow(model, actions, work, onSet = ::letGo) else {
                             ToolRow(model, actions, work)
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
                         }
@@ -257,7 +257,7 @@ fun CutScreen(
                             Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 StemChips(model) { actions.stop() }
                                 AutoRow(model, finding, onAuto = { pick(it) })
-                                if (model.single) SpanRow(model, actions, work) else {
+                                if (model.single) SpanRow(model, actions, work, onSet = ::letGo) else {
                                     ToolRow(model, actions, work)
                                     PieceList(model, actions, work, Modifier.heightIn(max = 240.dp))
                                 }
@@ -463,15 +463,16 @@ private fun ToolRow(model: CutModel, actions: StemBoardActions, work: State<Stem
  * then « Écouter le bout »: just the piece, with its length (« 2 mesures · 0:04.2 »).
  */
 @Composable
-private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>) {
+private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, onSet: (end: Boolean) -> Unit) {
     fun here(): Long = work.value.playing?.takeIf { it.stem == model.stem && work.value.playFrame >= 0 }?.let { work.value.playFrame } ?: model.cursor
     val sp = model.span
     val sel = model.spanSelection()
     // The piece, or its end heard after « Fin » was let go.
     val heard = work.value.playing?.let { p -> sel != null && p.stem == sel.stem && p.endFrame == sel.endFrame && p.startFrame >= sel.startFrame } == true
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Tool(StartHereIcon, tr("Début ici"), "cut_start", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setStart() }
-        Tool(EndHereIcon, tr("Fin ici"), "cut_end", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setEnd() }
+        // Tour 7 lot 2 D4: heard at once, as a bar let go is (the line opens on « Début »: else the first touch is mute).
+        Tool(StartHereIcon, tr("Début ici"), "cut_start", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setStart(); onSet(false) }
+        Tool(EndHereIcon, tr("Fin ici"), "cut_end", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setEnd(); onSet(true) }
         val shape = RoundedCornerShape(14.dp)
         val color = cutStemColor(model.stem)
         Row(

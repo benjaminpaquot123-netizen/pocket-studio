@@ -262,6 +262,9 @@ class TutoTest {
         at("levels")
         assertEquals(com.pocketstudio.model.InstrumentTrack.mixerChannel(pad), doIt().strip)
         // « Montre-moi »: folded while it shows, and after (« à toi maintenant »).
+        // Its words count « les 2 mesures »: the loop at 2 bars, as the course has it there (tour 7 D5).
+        flow.value = flow.value.let { it.copy(drums = it.drums.withSteps(2 * it.stepsPerBar)) }
+        idle(100)
         at("hat_do")
         assertTrue(c.ui.value!!.open)
         assertTrue(c.showMe())

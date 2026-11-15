@@ -292,4 +292,45 @@ class CutSpanJourneyTest {
         assertTrue("scrolled: ${v.start} > $startBefore", v.start > startBefore)
         assertTrue("past the edge: ${m.span!!.end} > $shownEnd", m.span!!.end > shownEnd)
     }
+
+    /**
+     * Tour 7, lot 2 D4 (« Início aqui » does nothing): the screen opens with the orange line on « Début », so the first
+     * touch of « Début ici » changed nothing anyone could see or hear. Each touch of « Début ici » / « Fin ici » is now
+     * heard at once, as a bar let go is; with the line elsewhere, « Début » lands on it.
+     */
+    @Test
+    fun startHereIsHeardEvenWithTheLineAlreadyOnStart() {
+        val song = Song()
+        val host = Host(project(), song)
+        val router = StemBoardRouter(scope, host, StemEditor, Silent)
+        lateinit var m: CutModel
+        compose.setContent {
+            PocketStudioTheme {
+                m = rememberCutModel(ui(song), router)
+                CutScreen(ui(song), router, onClose = {}, model = m, view = rememberStemBoardView(ui(song)))
+            }
+        }
+        compose.waitForIdle()
+        val first = m.span!!
+        assertEquals("the line opens on « Début »", first.start, m.cursor)
+        compose.onNodeWithTag("cut_start").performClick()
+        compose.waitForIdle()
+        assertEquals("« Début ici » with the line on « Début »: the piece is heard from there", m.spanSelection(), router.state.value.playing)
+        router.stop()
+
+        // The line one beat inside the piece: « Début » lands on it, and the piece is heard from its new start.
+        m.cursor = first.start + beat
+        compose.onNodeWithTag("cut_start").performClick()
+        compose.waitForIdle()
+        assertEquals("« Début » on the line", first.start + beat, m.span!!.start)
+        assertEquals("heard from the new « Début »", m.spanSelection(), router.state.value.playing)
+        router.stop()
+
+        // « Fin ici » the same: its last seconds are heard.
+        m.cursor = m.span!!.end - beat
+        compose.onNodeWithTag("cut_end").performClick()
+        compose.waitForIdle()
+        assertEquals("« Fin » on the line", first.end - beat, m.span!!.end)
+        assertEquals("heard up to the new « Fin »", m.span!!.end, router.state.value.playing?.endFrame)
+    }
 }

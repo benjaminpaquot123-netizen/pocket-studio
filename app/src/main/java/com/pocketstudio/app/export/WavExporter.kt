@@ -126,9 +126,40 @@ object WavExporter {
             subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
             text?.let { putExtra(Intent.EXTRA_TEXT, it) }
         }
-        return runCatching { context.startActivity(Intent.createChooser(send, chooserTitle(title, files.map { it.name })).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
+        return runCatching { context.startActivity(ShareSent.opening().let { Intent.createChooser(send, chooserTitle(title, files.map { it.name }), ShareSent.sender(context)) }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess
     }
 }
 
 /** Android's share menu title for [names]: the file's own name when one file leaves (tour 7 lot 5 D1). */
 internal fun chooserTitle(title: String, names: List<String>): String = names.singleOrNull()?.let { "$title · $it" } ?: title
+
+/**
+ * Tour 7 lot 5 D2: whether an app was picked in the last share menu opened by [WavExporter.share]. Android tells it
+ * through the chooser's [android.content.IntentSender]; no word from it: nothing was sent (back with no app chosen).
+ */
+object ShareSent {
+    private val action get() = "com.pocketstudio.app.SHARE_PICKED"
+    private val _picked = kotlinx.coroutines.flow.MutableStateFlow(false)
+    val picked: kotlinx.coroutines.flow.StateFlow<Boolean> = _picked
+    @Volatile private var listening = false
+
+    /** A new menu opens: nothing picked yet. */
+    fun opening() { _picked.value = false }
+
+    /** Android's word: an app was picked. */
+    fun picked() { _picked.value = true }
+
+    /** What Android calls back once an app is picked; null where it cannot be made (the menu opens all the same). */
+    fun sender(context: Context): android.content.IntentSender? = runCatching {
+        val app = context.applicationContext
+        if (!listening) {
+            androidx.core.content.ContextCompat.registerReceiver(app, object : android.content.BroadcastReceiver() {
+                override fun onReceive(c: Context?, i: Intent?) = picked()
+            }, android.content.IntentFilter(action), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED)
+            listening = true
+        }
+        val flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT or
+            (if (android.os.Build.VERSION.SDK_INT >= 31) android.app.PendingIntent.FLAG_MUTABLE else 0)
+        android.app.PendingIntent.getBroadcast(app, 0, Intent(action).setPackage(app.packageName), flags).intentSender
+    }.getOrNull()
+}

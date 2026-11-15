@@ -17,5 +17,7 @@
   "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: the lowest bass, the one you feel in your stomach.",
   "Octave : la même note, plus grave ou plus aiguë.": "Octave: the same note, lower or higher.",
   "Creux": "Hollow",
-  "épais": "thick"
+  "épais": "thick",
+  "Pas envoyé": "Not sent",
+  "Le fichier est dans Mes fichiers : %s.": "The file is in My files: %s."
 }

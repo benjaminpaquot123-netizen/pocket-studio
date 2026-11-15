@@ -17,5 +17,7 @@
   "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: der tiefste Bass, den man im Bauch spürt.",
   "Octave : la même note, plus grave ou plus aiguë.": "Oktave: derselbe Ton, tiefer oder höher.",
   "Creux": "Hohl",
-  "épais": "dick"
+  "épais": "dick",
+  "Pas envoyé": "Nicht gesendet",
+  "Le fichier est dans Mes fichiers : %s.": "Die Datei ist in Meine Dateien: %s."
 }

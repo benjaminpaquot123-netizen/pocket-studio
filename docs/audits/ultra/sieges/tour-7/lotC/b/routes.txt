@@ -1,0 +1,17 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+simple_tracks/tab_simple_Morceau
+plus
+share_sheet/tab_simple_Envoyer
+dialogue:my_exports
+dialogue:share_progress
+dialogue:« Partager mon morceau · House-m »
+dialogue:share_bilan
+dialogue:mode_switch
+timeline_screen/tab_Structure
+dialogue:share_sheet
+dialogue:« Partager le morceau · 2 »
+dialogue:« Partager le morceau · 1 »
+plus/tab_Plus
+mixer/tab_Mix

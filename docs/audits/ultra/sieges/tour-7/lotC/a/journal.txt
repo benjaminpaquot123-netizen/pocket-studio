@@ -1,0 +1,322 @@
+#0 SIEGE lang=hi device=phone360 font=130 mode=- theme=- fresh=reel gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=6.5 simule_s=2.4 jvm_s=14.6 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3a945054bb | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 440 1116
+#1 DOIGT scroll_hint « ↓ 6 और »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE a77d6ab58f | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 270 1000 270 400
+#2 DOIGT welcome_demo « एक डेमो सुनो »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 4e7677fa33 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 270 300 270 1000
+#3 DOIGT welcome_demo « एक डेमो सुनो »
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE 4f1a114213 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 270 522
+#4 DOIGT welcome_guided « मेरे लिए एक ट्रैक बनाओ »
+#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 34ebba245f | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 270 794
+#5 DOIGT mode_card_simple « सिंपल »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE e455ec5da1 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 270 802
+#6 DOIGT wizard_family_Hip-hop « Hip-hop »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 15db27ffc1 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « आज का रैप, अटलांटा में पैदा हुआ: हिला देने वाला 808, बहुत तेज़ रोल करते हाई-हैट, भारी क्लैप और घूमती मेलोडी। » ellipsized (« … »)
+#7 LAYOUT CUT « आइडिया के लिए: Travis Scott – FE!N (2023) » ellipsized (« … »)
+#7 LAYOUT CUT « Trap का डार्क रूप, लंदन से पेरिस तक: फिसलता 808, ऑफ़-बीट स्नेयर और उछलते हाई-हैट। » ellipsized (« … »)
+#7 > touche 300 949
+#7 DOIGT wizard_style_trap « Trap »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 95e858465c | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 298 1079
+#8 DOIGT wizard_style_play_trap «  बनाओ और सुनो »
+#9 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 649cef5778 | project=p-5b33a390 no tuto
+#9 SON Son : le morceau joue (partie « A »).
+#9 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#9 > touche 239 138
+#9 DOIGT top_position « इंट्रो »
+#10 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE dba4713b92 | project=p-5b33a390 no tuto
+#10 SON Son : le morceau joue (partie « A »).
+#10 > retour
+#10 RETOUR
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 53b1694ae6 | project=p-5b33a390 no tuto
+#11 SON Son : le morceau joue (partie « A »).
+#11 LAYOUT CUT « सेव हो गया » wider than its box (by 1.3 dp)
+#11 LAYOUT CONTRAST « शुरुआत के लिए » 4.37:1 (needs 4.5:1, 12 sp)
+#11 > touche 270 882
+#11 DOIGT guide_more_below « ↓ नीचे और है »
+#12 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fd3ed63128 | project=p-5b33a390 no tuto
+#12 SON Son : le morceau joue (partie « A »).
+#12 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « मेलोडी का साउंड » 3.91:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « दूसरी ड्रम किट » 3.97:1 (needs 4.5:1, 14 sp)
+#12 > touche 270 492
+#12 DOIGT guide_bar « गाइड »
+#13 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 1fb9a2fe4f | project=p-5b33a390 no tuto
+#13 SON Son : le morceau joue (partie « A »).
+#13 > glisse 270 750 270 250
+#13 DOIGT simple_track_inst:2 « काउंटर-मेलोडी »
+#14 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ebe0f8884f | project=p-5b33a390 no tuto
+#14 SON Son : le morceau joue (partie « A »).
+#14 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
+#14 > glisse 270 750 270 250
+#14 DOIGT rien (texte « 0:09 / 2:58 »)
+#15 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 764579e4f3 | project=p-5b33a390 no tuto
+#15 SON Son : le morceau joue (partie « A »).
+#15 LAYOUT CUT « Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ » ellipsized (« … »)
+#15 LAYOUT CUT « A♭  Fm  Fm  A♭  Fm  Cm  Fm  A♭ » ellipsized (« … »)
+#15 LAYOUT CONTRAST « एक पार्ट पर टैप करो: वो अभी वाले के ठीक बाद बजेगा। » 4.11:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « A · इंट्रो » 2.90:1 (needs 3.0:1, 18 sp)
+#15 > glisse 270 750 270 250
+#15 DOIGT song_chords « गाने के कॉर्ड्स »
+#16 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 22cad4e1df | project=p-5b33a390 no tuto
+#16 SON Son : le morceau joue (partie « C »).
+#16 LAYOUT CONTRAST « 1 बार  ·  मिक्स  ·  बज रहा है » 4.19:1 (needs 4.5:1, 14 sp)
+#16 > glisse 270 750 270 250
+#16 DOIGT part_play_3 « C · मुखड़ा »
+#17 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 24d0d1634a | project=p-5b33a390 no tuto
+#17 SON Son : le morceau joue (partie « C »).
+#17 > glisse 270 750 270 200
+#17 DOIGT part_play_8 « G · अंतरा 3 »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2ee7d1a7c1 | project=p-5b33a390 no tuto
+#18 SON Son : le morceau joue (partie « C »).
+#18 > glisse 270 800 270 150
+#18 DOIGT part_play_14 « B · अंतरा »
+#19 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e22499c8c3 | project=p-5b33a390 no tuto
+#19 SON Son : le morceau joue (partie « C »).
+#19 > glisse 270 800 270 150
+#19 DOIGT part_play_21 « C · मुखड़ा »
+#20 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2277091db9 | project=p-5b33a390 no tuto
+#20 SON Son : le morceau joue (partie « C »).
+#20 > glisse 270 800 270 300
+#20 DOIGT add_part_3 « + D · ब्रिज »
+#21 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 49bfe3bec0 | project=p-5b33a390 no tuto
+#21 SON Son : le morceau joue (partie « C »).
+#21 > glisse 270 800 270 300
+#21 DOIGT add_part_12 « + M · फ़िल »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e851840f7e | project=p-5b33a390 no tuto
+#22 SON Son : le morceau joue (partie « E »).
+#22 > touche 171 703
+#22 DOIGT add_part_new_empty « + नया खाली पार्ट »
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 20275ca691 | project=p-5b33a390 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 160 1050
+#23 DOIGT tab_simple_Rythme « रिदम »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE df04067a9a | project=p-5b33a390 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > glisse 270 750 270 300
+#24 DOIGT kit_chip « किट: स्टूडियो + 808 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3bce46f854 | project=p-5b33a390 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT CONTRAST « किट: स्टूडियो + 808 » 2.47:1 (needs 4.5:1, 14 sp)
+#25 > touche 266 701
+#25 DOIGT fill_4 « 1/4 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cace80ecce | project=p-5b33a390 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST « 1/4 » 3.95:1 (needs 4.5:1, 14 sp)
+#26 > touche 86 229
+#26 DOIGT part_header_pick « पार्ट: T »
+#27 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE c66e2aac0d | project=p-5b33a390 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 168 170
+#27 DOIGT part_pick_1 « B · अंतरा »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 198aa5fe7f | project=p-5b33a390 no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 128 229
+#28 DOIGT part_header_pick « पार्ट: B · अंतरा »
+#29 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 3a0b1467af | project=p-5b33a390 no tuto
+#29 SON Son : la musique du projet joue en boucle.
+#29 > glisse 270 1000 270 300
+#29 DOIGT part_pick_13 « N · फ़िल »
+#30 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 2e49207e61 | project=p-5b33a390 no tuto
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 211 1048
+#30 DOIGT part_pick_19 « T »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d5b1e1acc2 | project=p-5b33a390 no tuto
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 423 42
+#31 DOIGT top_play « रोको »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ef253fdbd | project=p-5b33a390 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 423 42
+#32 DOIGT top_play « यह पार्ट बजाओ »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0cbcf721c4 | project=p-5b33a390 no tuto
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 49 1050
+#33 DOIGT tab_simple_Morceau « मेरा गाना »
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4d0ce870c5 | project=p-5b33a390 no tuto
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 101 640
+#34 DOIGT add_part_19 « + T »
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE a7d312d32d | project=p-5b33a390 no tuto
+#35 SON Son : la musique du projet joue en boucle.
+#35 > glisse 270 300 270 700
+#35 DOIGT add_part_10 « + K · क्रैश »
+#36 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 5b15280399 | project=p-5b33a390 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 > glisse 270 300 270 700
+#36 DOIGT add_part_3 « + D · ब्रिज »
+#37 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 895bb387a2 | project=p-5b33a390 no tuto
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 462 454
+#37 DOIGT part_menu_27
+#37 DIALOGUE 0.5 s
+#38 ROUTE dialogue:part_sheet | MODE simple | EMPREINTE 02413c00b3 | project=p-5b33a390 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT OVERLAP « पार्ट 28 · T » over the touchable « शीट बंद करें » (108 x 35 dp)
+#38 LAYOUT OVERLAP « 8 बार  ·  2 बार बजा » over the touchable « शीट बंद करें » (149 x 25 dp)
+#38 LAYOUT OVERLAP « बंद करो » over the touchable « शीट बंद करें » (55 x 27 dp)
+#38 LAYOUT OVERLAP « गाने में 2 बार बजा। एडिट करो: » over the touchable « शीट बंद करें » (207 x 27 dp)
+#38 LAYOUT OVERLAP « सिर्फ़ ये वाला » over the touchable « शीट बंद करें » (92 x 27 dp)
+#38 LAYOUT OVERLAP « सभी 2 » over the touchable « शीट बंद करें » (50 x 27 dp)
+#38 LAYOUT OVERLAP « आख़िर में फ़िल » over the touchable « शीट बंद करें » (108 x 27 dp)
+#38 LAYOUT OVERLAP « बाद में ब्रेक · 4 बार » over the touchable « शीट बंद करें » (105 x 55 dp)
+#38 LAYOUT OVERLAP « बाद में ब्रेक · 8 बार » over the touchable « शीट बंद करें » (104 x 55 dp)
+#38 LAYOUT OVERLAP « पहले बिल्ड-अप · 4 बार » over the touchable « शीट बंद करें » (111 x 53 dp)
+#38 LAYOUT OVERLAP « पहले बिल्ड-अप · 8 बार » over the touchable « शीट बंद करें » (111 x 53 dp)
+#38 LAYOUT OVERLAP « फ़ेड-इन » over the touchable « शीट बंद करें » (55 x 27 dp)
+#38 LAYOUT OVERLAP « फ़ेड-आउट » over the touchable « शीट बंद करें » (77 x 27 dp)
+#38 LAYOUT OVERLAP « अंत जोड़ो » over the touchable « शीट बंद करें » (71 x 27 dp)
+#38 LAYOUT OVERLAP « एनर्जी: 3 » over the touchable « शीट बंद करें » (66 x 27 dp)
+#38 LAYOUT OVERLAP « 1 · पैड्स » over the touchable « शीट बंद करें » (62 x 27 dp)
+#38 LAYOUT OVERLAP « 2 · + बेस » over the touchable « शीट बंद करें » (70 x 27 dp)
+#38 LAYOUT OVERLAP « 3 · + ड्रम्स » over the touchable « शीट बंद करें » (78 x 27 dp)
+#38 LAYOUT OVERLAP « 4 · पूरा ज़ोर » over the touchable « शीट बंद करें » (87 x 27 dp)
+#38 LAYOUT OVERLAP « लंबाई » over the touchable « शीट बंद करें » (40 x 27 dp)
+#38 LAYOUT OVERLAP « बार » over the touchable « शीट बंद करें » (20 x 24 dp)
+#38 LAYOUT OVERLAP « OK » over the touchable « शीट बंद करें » (28 x 27 dp)
+#38 LAYOUT CONTRAST « पार्ट 28 · T » 1.23:1 (needs 3.0:1, 22 sp)
+#38 LAYOUT CONTRAST « गाने में 2 बार बजा। एडिट करो: » 1.48:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « बाद में ब्रेक · 4 बार » 1.31:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « पहले बिल्ड-अप · 4 बार » 1.23:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « एनर्जी: 3 » 1.80:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « बार » 2.59:1 (needs 4.5:1, 13 sp)
+#38 > glisse 270 1000 270 300
+#38 DOIGT rien
+#38 DIALOGUE 0.2 s
+#39 ROUTE dialogue:part_sheet | MODE simple | EMPREINTE 59c3755a26 | project=p-5b33a390 no tuto
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT OVERLAP « बाद में ब्रेक · 8 बार » over the touchable « शीट बंद करें » (104 x 31 dp)
+#39 LAYOUT OVERLAP « पहले बिल्ड-अप · 4 बार » over the touchable « शीट बंद करें » (111 x 30 dp)
+#39 LAYOUT OVERLAP « पार्ट » over the touchable « शीट बंद करें » (27 x 27 dp)
+#39 LAYOUT OVERLAP « नाम बदलो » over the touchable « शीट बंद करें » (75 x 27 dp)
+#39 LAYOUT OVERLAP « क्या बज रहा है » over the touchable « शीट बंद करें » (104 x 27 dp)
+#39 LAYOUT OVERLAP « ऊपर ले जाओ » over the touchable « शीट बंद करें » (100 x 27 dp)
+#39 LAYOUT OVERLAP « नीचे ले जाओ » over the touchable « शीट बंद करें » (95 x 27 dp)
+#39 LAYOUT OVERLAP « डुप्लिकेट » over the touchable « शीट बंद करें » (64 x 27 dp)
+#39 LAYOUT OVERLAP « इसके बाद डालो » over the touchable « शीट बंद करें » (113 x 27 dp)
+#39 LAYOUT OVERLAP « हटाओ » over the touchable « शीट बंद करें » (47 x 27 dp)
+#39 > touche 94 1077
+#39 DOIGT part_remove_27 « हटाओ »
+#39 DIALOGUE 0.4 s
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 49b8cc807a | project=p-5b33a390 no tuto
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 270 951
+#40 DOIGT thumb_play « गाना बजाओ »
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 45cba63d6b | project=p-5b33a390 no tuto
+#41 SON Son : la musique du projet joue en boucle.
+#41 > attends 3
+#42 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2531440859 | project=p-5b33a390 no tuto
+#42 SON Son : le morceau joue (partie « T »).
+#42 LAYOUT CONTRAST « × 1  ·  8 बार  ·  बज रहा है » 3.08:1 (needs 4.5:1, 14 sp)
+#42 > attends 8
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b05d0eed11 | project=p-5b33a390 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 270 951
+#43 DOIGT thumb_play « गाना बजाओ »
+#44 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1ce740d4dc | project=p-5b33a390 no tuto
+#44 SON Son : le morceau joue (partie « A »).
+#44 > attends 5
+#45 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ec83d67b17 | project=p-5b33a390 no tuto
+#45 SON Son : le morceau joue (partie « A »).
+#45 > touche 270 951
+#45 DOIGT thumb_play « रोको »
+#46 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b05d0eed11 | project=p-5b33a390 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 160 1050
+#46 DOIGT tab_simple_Rythme « रिदम »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1722960d44 | project=p-5b33a390 no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « किट: स्टूडियो + 808 » 2.45:1 (needs 4.5:1, 14 sp)
+#47 > touche 102 229
+#47 DOIGT part_header_pick « पार्ट: A · इंट्रो »
+#48 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 3c418bbfa9 | project=p-5b33a390 no tuto
+#48 SON Son : rien ne joue.
+#48 > glisse 270 300 270 1000
+#48 DOIGT part_pick_9 « J · क्रैश »
+#49 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE f1f56b84da | project=p-5b33a390 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 200 170
+#49 DOIGT part_pick_1 « B · अंतरा »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7dfa943589 | project=p-5b33a390 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 270 951
+#50 DOIGT thumb_play « गाना बजाओ »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b0ddc1242f | project=p-5b33a390 no tuto
+#51 SON Son : le morceau joue (partie « B »).
+#51 > touche 248 138
+#51 DOIGT top_position « अंतरा »
+#52 ROUTE dialogue:play_from_menu | MODE simple | EMPREINTE 0e716039ed | project=p-5b33a390 no tuto
+#52 SON Son : le morceau joue (partie « B »).
+#52 > touche 290 98
+#52 DOIGT play_from_whole « पूरा गाना, शुरू से »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a1729c936e | project=p-5b33a390 no tuto
+#53 SON Son : le morceau joue (partie « A »).
+#53 > touche 270 951
+#53 DOIGT thumb_play « रोको »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1722960d44 | project=p-5b33a390 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 49 1050
+#54 DOIGT tab_simple_Morceau « मेरा गाना »
+#55 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b05d0eed11 | project=p-5b33a390 no tuto
+#55 SON Son : rien ne joue.
+#55 > glisse 270 250 270 1100
+#55 DOIGT part_play_25 « A · इंट्रो »
+#56 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ca250ba9ca | project=p-5b33a390 no tuto
+#56 SON Son : rien ne joue.
+#56 > glisse 270 250 270 1100
+#56 DOIGT part_play_16 « B · अंतरा »
+#57 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 12e2d2f810 | project=p-5b33a390 no tuto
+#57 SON Son : rien ne joue.
+#57 > glisse 270 250 270 1100
+#57 DOIGT part_play_8 « G · अंतरा 3 »
+#58 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7674165581 | project=p-5b33a390 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 65 532
+#58 DOIGT part_play_2 « C · मुखड़ा »
+#59 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ca3270b530 | project=p-5b33a390 no tuto
+#59 SON Son : le morceau joue (partie « C »).
+#59 LAYOUT CONTRAST « 6 बार  ·  मिक्स  ·  बज रहा है » 4.19:1 (needs 4.5:1, 14 sp)
+#59 > touche 423 42
+#59 DOIGT top_play « यह पार्ट बजाओ »
+#60 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2c930c5ba6 | project=p-5b33a390 no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 270 951
+#60 DOIGT thumb_play « गाना बजाओ »
+#61 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c75f9abef1 | project=p-5b33a390 no tuto
+#61 SON Son : le morceau joue (partie « C »).
+#61 LAYOUT CONTRAST « 1 बार  ·  मिक्स  ·  बज रहा है » 4.13:1 (needs 4.5:1, 14 sp)
+#61 > touche 270 951
+#61 DOIGT thumb_play « रोको »
+#62 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0c4bf490ee | project=p-5b33a390 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 495 42
+#62 DOIGT top_more
+#63 ROUTE plus | MODE simple | EMPREINTE 91b0a5ee71 | project=p-5b33a390 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 478 951
+#63 DOIGT thumb_more « और ऑप्शन »
+#64 ROUTE plus | MODE simple | EMPREINTE 91b0a5ee71 | project=p-5b33a390 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 491 1050
+#64 DOIGT tab_simple_Envoyer « शेयर करो »
+#65 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE acf4363391 | project=p-5b33a390 no tuto
+#65 SON Son : rien ne joue.
+#65 > fin
+#65 FIN : fin

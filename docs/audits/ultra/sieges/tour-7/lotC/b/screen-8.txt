@@ -1,0 +1,21 @@
+Écran 8 (588x1278)
+texte « Fais-moi un morceau » @ 191,35
+icône ✕ @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Changer » @ 400,120
+texte « Ce morceau sera en mode Simple. » @ 181,120
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,210
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,286
+bouton (lune) « Calme (Chill, Lo-fi) 6 styles » ⌄ [état « fermé »] @ 294,360
+bouton (éclair) « Techno 10 styles » ⌄ [état « fermé »] @ 294,456
+bouton (disque) « House 9 styles » ⌃ [état « ouvert »] @ 294,552
+bouton « House 122 BPM La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. Pour l'idée : Robin S – Show Me Love (1992) » @ 294,681
+icône ▶ @ 57,651
+bouton « Deep house House · 120 BPM La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. Pour l'idée : Mr. Fingers – Can You Feel It (1986) » @ 294,843
+icône ▶ @ 57,813
+bouton « Tech house House · 126 BPM La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. Pour l'idée : Mau P – Drugs From Amsterdam (2022) » @ 294,1005
+icône ▶ @ 57,975
+bouton « Acid house House · 120 BPM La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle. Pour l'idée : Phuture – Acid Tracks (1987) » @ 294,1167
+icône ▶ @ 57,1137
+bouton « UK Garage House · 132 BPM Le « 2-step » anglais de la fin des années 90 : une grosse caisse qui saute des temps, des charleys qui balancent, un orgue jazzy et des bouts de voix. Son nom vient d'un club de New York. Pour l'idée : Artful Dodger feat. Craig David – Re-Rewind (1999) » [coupé] @ 294,1266
+icône ▶ [coupé] @ 57,1273

@@ -1,0 +1,33 @@
+Écran 64 (540x1170)
+icône (dossier ouvert) ✓ « Trap सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,139
+icône « मुखड़ा बार 9/112 » ▾ @ 239,138
+bouton « ? » @ 495,139
+icône ← « वापस  · और » @ 270,247
+bouton (maison) « होम » @ 141,349
+bouton (dossier ouvert) « मेरे प्रोजेक्ट » @ 398,349
+bouton (neuf points) « Live: लाइव बजाओ » @ 141,490
+bouton (disque) « Remix » @ 398,490
+bouton (micro) « मेरी आवाज़ रिकॉर्ड करो » @ 141,649
+bouton (notes sur une pile) « साउंड लाइब्रेरी » @ 398,649
+bouton ★ « मेरी लाइब्रेरी » [coupé] @ 141,791
+bouton (? dans un rond) « मदद » [coupé] @ 398,791
+bouton (boussole) « गाइड  · एक साउंड बदलो 19 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » @ 68,951
+image ↷ @ 172,936
+bouton ▶ « गाना » @ 270,951
+texte « 140 टेम्पो » @ 374,951
+icône ⋮ « और » @ 478,951
+onglet (lignes et note) « मेरा गाना » @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

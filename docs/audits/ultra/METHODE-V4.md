@@ -69,7 +69,10 @@ La version 1 est retirée : un relecteur méfiant l'a démolie. La version 2 vis
 ### 4.2 Les leviers, classés par gain
 
 **1. Une mémoire courte partout : environ 35 à 45 % du coût d'un tour.**
-- **Réglage** : le compactage automatique vers 200 k au lieu de 900 k, soit par `CLAUDE_CODE_AUTO_COMPACT_WINDOW=200000` dans les variables de l'environnement cloud, soit par la clé `autoCompactWindow` (documentation de Claude Code). À vérifier avant de s'y fier : ouvrir une discussion de test et lire le seuil qu'elle affiche.
+- **Réglage, posé et vérifié le 15 novembre** : `.claude/settings.json` du dépôt fixe `CLAUDE_CODE_AUTO_COMPACT_WINDOW=200000` (plus la clé `autoCompactWindow`).
+  - Une discussion de test l'a lu (« source env ») : fenêtre utile de 180 k, compactage à 144 k au lieu de 901 600. Le test a coûté 17 centimes.
+  - Il vaut pour toute discussion neuve ouverte sur une branche qui contient le fichier (`main` après la fusion).
+  - Dans une discussion déjà ouverte, la commande `/autocompact 200k` fait la même chose.
 - **Règles** :
   - un lot = une discussion neuve (ou un sous-agent) qui s'arrête à la fin du lot ;
   - un siège = un sous-agent neuf (c'est déjà le cas) ;
@@ -82,6 +85,8 @@ La version 1 est retirée : un relecteur méfiant l'a démolie. La version 2 vis
 
 **2. Moins de réveils à froid : environ 3 à 6 %.**
 - **Sous-agents** : garder leur mémoire 1 h au lieu de 5 min (`CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL=1h`). 36 % du coût des sous-agents du chef venait d'actions « à froid » après une attente : les tests Gradle durent de 5 à 50 minutes.
+  - Pas encore posé. À 1 h, chaque écriture coûte plus cher (×2 au lieu de ×1,25), et les sièges, qui jouent des gestes rapprochés, n'y gagnent rien.
+  - À mesurer au prochain tour avant de le poser : d'abord sur les sous-agents qui attendent Gradle.
 - **Minuteries** : plus de réveil toutes les 2 h sur une discussion à grosse mémoire. Chaque réveil réécrit toute la mémoire, pour environ dix fois le prix d'une action normale.
   - On attend plutôt un événement : fin de CI, message d'une discussion.
   - Une surveillance qui doit vraiment tourner se réveille avant une heure.
@@ -127,7 +132,7 @@ La version 1 est retirée : un relecteur méfiant l'a démolie. La version 2 vis
 - Le risque neuf : un résumé de compactage qui oublie une consigne. Il est couvert par CLAUDE.md, rechargé après chaque compactage, par les fichiers d'état et par la section « # Compact instructions ».
 
 ### 4.5 L'ordre, au signal de Benjamin
-1. Tester le réglage du compactage dans une discussion de test (quelques minutes), puis le poser. Il touche toutes ses discussions : il faut son accord.
-2. Écrire « # Compact instructions » et les règles des leviers 1, 2 et 5 dans CLAUDE.md.
+1. Fait le 15 novembre : le réglage du compactage a été testé (compactage à 144 k), puis posé dans `.claude/settings.json`.
+2. Fait le 15 novembre : « # Compact instructions » et les règles des leviers 1, 2 et 5 sont dans CLAUDE.md.
 3. Entre deux tours, un lot du banc : `pret.sh`, le siège court ancré, le calcul « la fusion touche-t-elle le lot ? » et `TEST_DIRS` (astuce D).
 4. Au premier tour, mesurer de la même façon et comparer aux 22 M d'unités par bug.

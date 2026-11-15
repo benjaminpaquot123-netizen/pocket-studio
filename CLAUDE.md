@@ -16,11 +16,18 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
 - Dire à Benjamin, en une ligne, quand on tourne en rond (même rouge ou même refus deux fois pour un même lot) ou quand une faute est compliquée (cause pas claire après une vraie recherche, rouge qui va et vient) : proposer Fable sur telle discussion pour tel sujet ; il décide (2026-11-14). Détail : `docs/audits/AUDIT-ULTRA.md` §13.11.
 - Un lot n'entre dans l'intégration que si sa propre CI complète est verte sur une tête qui contient l'intégration du moment (2026-11-14).
+- Mémoire courte (Benjamin, 2026-11-15 ; `docs/audits/ultra/METHODE-V4.md` §4). Le coût d'une action est à peu près la taille de la mémoire de la discussion. Donc :
+  - un lot = une discussion neuve ou un sous-agent, fermé à la fin du lot ;
+  - une discussion de plus de 200 k ne reçoit plus de travail neuf ;
+  - le chef confie les longues lectures à des sous-agents et ne garde que leur conclusion.
+  Le compactage automatique vers 200 k est posé dans `.claude/settings.json` (vérifié : compactage à 144 k).
+- Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Benjamin décide quand.
+- Discussions (2026-11-15) : l'agent ouvre, pilote et ferme lui-même les discussions et sous-agents, toujours en Opus 5.5. Fable 5.2 seulement quand il est nécessaire, et en demandant d'abord à Benjamin.
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Interface en français. Code, commentaires et commits en anglais.
 - Rappels et tâches planifiées (nom et message) : toujours en français.
-- Une minuterie par audit, par lot et par étape (Benjamin, 2026-11-04) : tâche planifiée toutes les 2 h, nommée « <étape> (partie le <jour> à <heure de Paris>) », qui vérifie que l'équipe tourne, relance ce qui est tombé, se renomme à chaque relance et se désactive quand l'étape est finie. La créer au lancement de chaque étape.
+- Surveillance par événement (Benjamin, 2026-11-15 ; remplace la minuterie toutes les 2 h du 2026-11-04) : attendre la fin d'une CI, d'un agent ou le message d'une discussion (notifications, attente en arrière-plan), jamais une minuterie périodique sur une discussion à grosse mémoire. Une seule minuterie de secours par chantier, à moins d'une heure, et seulement quand rien d'autre ne peut prévenir. Raison : un réveil après plus d'une heure réécrit toute la mémoire, pour environ dix fois le prix d'une action.
 - Design : moderne mais pas trop, facile à prendre en main, façon FL Studio Mobile en plus clair. Règles dans `docs/DESIGN.md`. Benjamin a délégué les choix de design : décider sans lui demander, montrer les captures dans la PR.
 - Tout changement de design validé s'applique partout dans l'appli (raccord sur tous les écrans), pas seulement là où il a été demandé.
 - Captures envoyées à Benjamin (maquettes, captures de PR, APK) : sans la pastille flottante de retours « ● REC · Noter · ⋯ » (il ne s'en sert pas). Le bouton REC du Live, lui, reste.
@@ -103,3 +110,13 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `docs/DECISIONS.md` : journal des décisions.
 - `docs/REVIEW.md` : revues de fin de phase et points restants.
 - `docs/ARCHITECTURE.md` : schéma et modules.
+
+# Compact instructions
+Quand la conversation est compactée, le résumé garde, mot pour mot pour les identifiants :
+- la tâche en cours et la prochaine étape exacte ;
+- la branche, le dernier sha poussé, les lots ouverts avec leur état et leur nombre de refus ;
+- les numéros des CI en cours et les tâches planifiées actives (id) ;
+- les dernières consignes de Benjamin, citées ;
+- ce qui n'est pas vert.
+
+Les interdits (dépôt public, chansons de Benjamin, secrets, `git add` par chemin, branches permises) sont dans ce fichier, rechargé après chaque compactage : les relire plutôt que les résumer. Pendant un tour, relire `docs/audits/ultra/EN-COURS.md` avant d'agir.

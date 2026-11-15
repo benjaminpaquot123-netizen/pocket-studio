@@ -6,6 +6,9 @@
 - Points pour plus tard : `docs/REVIEW.md` (« Tour 6 : pour le tour suivant »).
 
 ## Prochaine étape exacte
+- Prochain audit (au signal de Benjamin) : partir de `docs/audits/ultra/METHODE-V4.md` §4, version 3, mesurée le 15 novembre.
+  - Fait le 15 novembre : compactage automatique vers 200 k (`.claude/settings.json`, vérifié à 144 k), « # Compact instructions » et les nouvelles règles dans CLAUDE.md (mémoire courte, surveillance par événement, Fable sur une discussion neuve).
+  - Reste : le lot du banc du §4.5 (point 3), puis mesurer le premier tour de la même façon.
 - CI finale sur `ccr-80af1a1b-mn0wec`, fusion dans `main`, Release APK pour Benjamin avec la liste à essayer au téléphone.
 - Paquet 9 : un lot du banc ajoute `project-model/src/test` à `TEST_DIRS` de `scripts/bench/verifie-chantier.py`.
 - Rien d'autre sans un signal de Benjamin.

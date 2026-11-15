@@ -280,6 +280,8 @@ Leçon : les icônes dépareillées de l'accueil (rondes et carrées, Défis plu
 
 ## 13. Méthode v3 : audit et correction ne se marchent jamais dessus (appliquée le 2026-11-13)
 
+> **Depuis le 2026-11-14, `docs/audits/ultra/METHODE-V4.md` prime** : les règles triées, les contradictions corrigées et les astuces de vitesse. Lire cette page d'abord.
+
 Source : `docs/audits/ultra/AUDIT-NUIT-TOUR-6.md`, l'audit par un agent neuf de la nuit du tour 6 (19 sièges, 10 lots, 16 fusions, 9 refus du portail ; notes sur dix : audit 6, tri 6, sûreté des corrections 5, efficacité 4, vitesse 6, coût 3, franchise 7, banc branché sur l'appli 5). Demande de Benjamin (2026-11-13) : « que audit et correction ne se marchent pas dessus et qu'on ne perde jamais de temps ». Ce paragraphe prime sur le §12 quand ils se contredisent. Le reste du §12 tient toujours : la nuit a surtout montré ce que coûte de le sauter (aucun rejeu 12.5, pas de liste des chemins 12.6, `hors-banc.tsv` vide 12.10, consignes improvisées au lieu des deux fiches de `docs/AIDE-FUSIONS-TESTS.md`). L'état du moment est dans `docs/audits/ultra/EN-COURS.md` ; les consignes à envoyer sont dans `docs/audits/ultra/GABARIT-FICHES-V3.md`.
 
 ### 13.1 Trois temps, jamais mélangés sur le même code

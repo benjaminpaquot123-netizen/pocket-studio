@@ -1,5 +1,15 @@
 # Avancement
 
+## Où on en est (2026-11-16, nuit)
+- **Tour 7 fermé et fusionné dans `main`** (PR #58, `e7a6ceafd`, CI 43777365246 verte, émulateur compris). Entrés : lot 1 tuto (D1-D3, D5-D8), lot 3 Guide, lots 2, 4, 5, 6, plus l'intégration (Remix revenu sous le pouce gauche dans Plus, fenêtres plein écran lues par LayoutScan depuis leur propre vue, test du « doigt au hasard » stabilisé : loupe de texte muette sous Robolectric, attente de l'ouverture du projet refaite après une image).
+- Coût mesuré (en unités) : lot 1 ≈ 6 M, lots 2-4-5-6 ≈ 6,4 M, lot 3 ≈ 1,3 M, sièges ≈ 18 M.
+- Plan du tour : `docs/audits/ultra/PLAN-TOUR-7.md` ; sièges : `docs/audits/ultra/sieges/tour-7/`.
+
+## Prochaine étape exacte
+- Mardi 17 novembre, 02 h 05 (heure belge, après la remise à zéro du quota) : reprendre le reste du tour 7, rappel planifié dans la discussion principale.
+  - Lot 3 : D2 et D3. Lot 1 : D4 et la fin de D3. Lot 2 : D2. Le lot du banc.
+  - Puis intégration, CI, fusion ; mesurer les unités par défaut corrigé (repère : 22 M) ; mettre à jour ce fichier, `EN-COURS.md` et les fiches ; prévenir Benjamin.
+
 ## Où on en est (2026-11-14, soir)
 - **Tour 6 fermé** : toutes les erreurs de la liste gelée du 13 novembre sont corrigées et constatées par un testeur. Dernières entrées dans l'intégration : coquille3, coquille4, stable-c (le « facteur des tests » ne se bloque plus), rejeux7, puis tuto4 (fusionné à la main avec une exception acceptée par Benjamin, `docs/audits/AUDIT-ULTRA.md` §13.11).
 - Nouvelles règles du 14 novembre (CI du lot d'abord, alerte boucle) : `CLAUDE.md` et `AUDIT-ULTRA.md` §13.11.

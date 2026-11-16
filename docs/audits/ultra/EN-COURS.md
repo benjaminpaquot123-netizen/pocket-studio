@@ -2,9 +2,9 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-14, 18 h 05 UTC.
+- **Mise à jour** : 2026-11-16, 00 h 55 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : tour 6 FERMÉ (tous les lots entrés, tuto4 avec exception §13.11). Reste la fusion dans main et l'APK.
+- **Temps en cours** : tour 7 fusionné dans `main` (PR #58, `e7a6ceafd`, CI verte). Pause jusqu'au mardi 17 novembre 01 h 05 UTC (quota) ; reste du tour 7 : lot 3 D2/D3, lot 1 D4 et fin de D3, lot 2 D2, lot du banc.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 
@@ -16,6 +16,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 4. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 
 ## Ce qui n'est pas vert
+
+**Au 16 novembre, 01 h 55 (heure belge)** : rien de rouge. Ouvert pour mardi : les points du tour 7 non encore traités (ligne « Temps en cours »).
 
 **Au 14 novembre au soir** : seulement la CI finale de l'intégration avant la fusion dans main. Les points ci-dessous datent du 13 novembre et sont réglés.
 

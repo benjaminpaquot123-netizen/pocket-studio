@@ -1,0 +1,18 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/c (seat c, lot B; lang es, device phone, font 100, mode simple, main gauche, options rejeu de tour-6/lotB/a jusqu'au geste 7 puis à toi, mission remix-voix, budget 80 gestures).
+Profile (id t7-2c): Gauchère espagnole, téléphone, Mode simple, tient le téléphone d'une main et touche du pouce gauche. Le banc rejoue son ouverture du Remix (tour 6) et lui rend la main sur le choix Simple / Pro. Act as this person (habits, patience, vocabulary).
+Mission remix-voix: Choisis Simple (pouce gauche), sépare une chanson, découpe la voix avec « Cortar lo que quiero » et pose un bout sur un pad. Note tout ce qui est hors de portée du pouce gauche.
+Its 3 goals (ids, the bench checks them): separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-2c-1 | 1. La carte « Simple » se touche du pouce gauche et me laisse en mode Simple
+  - id=t7-2c-2 | 2. Les puces et « Cortar lo que quiero » sont à portée du pouce gauche
+  - id=t7-2c-3 | 3. Un bout de voix se pose sur un pad ou une piste et le message dit où
+  - id=t7-2c-4 | 4. tous les textes vus sont en espagnol, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - R6 (grave) | depuis l'écran de découpe, j'envoie le bout sur un pad ou une piste et je vois le message nommer la piste (« Batería 16 pads ») ou le pad du Live
+  - R7 (moyen) | depuis le choix « Simple ou Pro ? » puis l'écran de découpe, je touche la carte Simple, les puces et « Cortar lo que quiero » du pouce gauche sans changer de main
+  - R3 (moyen) | depuis l'écran de découpe en mode « Frases », je vois la rangée d'outils et « Cortar lo que quiero » n'est pas sous le bouton flottant
+  - R4 (mineur) | depuis l'écran de découpe, je pose un bout trop long pour la partie et je vois « la fin sera coupée » dans ma langue
+  - R5 (mineur) | depuis l'écran de découpe, je regarde les boutons et je n'en vois pas deux qui font la même chose
+  - R16 (mineur) | depuis la structure du morceau, je lis « COMPASES » en entier, sans abréviation (pas « COMP. 2 A 5 »)
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

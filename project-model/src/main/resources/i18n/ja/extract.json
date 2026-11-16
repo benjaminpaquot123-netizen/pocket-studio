@@ -17,5 +17,7 @@
   "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "サブ：いちばん低いベース。お腹で感じる音です。",
   "Octave : la même note, plus grave ou plus aiguë.": "オクターブ：同じ音の、低い版または高い版。",
   "Creux": "うつろ",
-  "épais": "厚い"
+  "épais": "厚い",
+  "Pas envoyé": "送信されていません",
+  "Le fichier est dans Mes fichiers : %s.": "ファイルは「マイファイル」にあります：%s。"
 }

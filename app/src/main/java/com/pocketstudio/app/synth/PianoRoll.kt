@@ -711,6 +711,17 @@ private fun Grid(
             }
         }
     }
+    // Tour 7 (D1): a placement leaves no dotted note of the bar cut by the rows' edges (half under the tutorial's panel).
+    val placeRows: (Float, ClosedFloatingPointRange<Float>) -> Int = { at, rows ->
+        val top = at.coerceAtLeast(0f)
+        val first = left.firstOrNull()
+        val shown = if (first != null && barSteps > 0) {
+            val barPx = barSteps * stepPx
+            val x = ((first.start / TICK) / barSteps) * barPx
+            com.pocketstudio.model.tuto.TutoRollView(x, x + barPx, top + rows.start, top + rows.endInclusive, stepPx, rowPx, high)
+        } else null
+        (top + (shown?.let { com.pocketstudio.model.tuto.TutoRollHint.whole(left, it) } ?: 0f)).roundToInt().coerceAtLeast(0)
+    }
     // Where the placement below left the roll before its rows in sight were steady (null: nothing to place again).
     var placedEarly by remember { mutableStateOf<Int?>(null) }
     LaunchedEffect(step, hintTop != null, inSight != null, steady != null) {
@@ -723,7 +734,7 @@ private fun Grid(
             if (vScroll.value == early) {
                 val pitches = hints.map { it.pitch }.sorted()
                 val middle = pitches[pitches.size / 2].coerceIn(low, high)
-                vScroll.scrollTo(((high - middle) * rowPx + rowPx / 2 - (rows.start + rows.endInclusive) / 2).roundToInt().coerceAtLeast(0))
+                vScroll.scrollTo(placeRows(((high - middle) * rowPx + rowPx / 2 - (rows.start + rows.endInclusive) / 2), rows))
             }
         }
         if (!placed || (key != null && key != placedFor)) {
@@ -734,7 +745,7 @@ private fun Grid(
             if (hintTop != null && seen != null) {
                 val pitches = hints.map { it.pitch }.sorted()
                 val middle = pitches[pitches.size / 2].coerceIn(low, high)
-                vScroll.scrollTo(((high - middle) * rowPx + rowPx / 2 - (seen.start + seen.endInclusive) / 2).roundToInt().coerceAtLeast(0))
+                vScroll.scrollTo(placeRows(((high - middle) * rowPx + rowPx / 2 - (seen.start + seen.endInclusive) / 2), seen))
                 if (step != null && com.pocketstudio.app.tuto.TutoHints.active) left.firstOrNull()?.let { first ->
                     val barPx = barSteps * stepPx
                     hScroll.scrollTo(((first.start / TICK) / barSteps * barPx).roundToInt().coerceAtLeast(0))
@@ -764,7 +775,7 @@ private fun Grid(
             left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
-        val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown) ?: return@LaunchedEffect
+        val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
         val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps)
         lit = next
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
@@ -1407,7 +1418,7 @@ private fun TutoNotesLeft(
     // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
     // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel. One rule for the bar
     // and the rows ([com.pocketstudio.model.tuto.TutoRollHint]), read where it is drawn: a scroll recomposes this line only.
-    val way by remember(left, rowPx, high, vScroll, sight, stepPx) {
+    val way by remember(left, rowPx, high, vScroll, sight, stepPx, barSteps) {
         androidx.compose.runtime.derivedStateOf {
             val v = vScroll
             val rows = v != null && v.viewportSize != 0
@@ -1418,6 +1429,7 @@ private fun TutoNotesLeft(
                     top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
                     stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
                 ),
+                barSteps,
             )
         }
     }

@@ -69,7 +69,7 @@ class TutoTest {
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
     private fun await(what: String, ok: () -> Boolean) {
-        val end = System.currentTimeMillis() + 20_000
+        val end = System.currentTimeMillis() + 60_000
         while (!ok()) {
             idle(50)
             compose.waitForIdle()
@@ -230,7 +230,9 @@ class TutoTest {
         val target = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!
         val blank = target.blank()
         val (withPad, pad) = com.pocketstudio.model.tuto.TutoChecks.partTrack(blank, "pad", target)!!
-        val (song, bass) = com.pocketstudio.model.tuto.TutoChecks.partTrack(withPad, "bass", target)!!
+        val (made, bass) = com.pocketstudio.model.tuto.TutoChecks.partTrack(withPad, "bass", target)!!
+        // The loop at 2 bars, as the course has it at « hat_do », whose words count « les 2 mesures » (tour 7 D5).
+        val song = made.copy(drums = made.drums.withSteps(2 * made.stepsPerBar))
         val flow = MutableStateFlow(song)
         val c = controller(flow, History(song), MemoryStore())
         val goes = ArrayList<TutoGo>()

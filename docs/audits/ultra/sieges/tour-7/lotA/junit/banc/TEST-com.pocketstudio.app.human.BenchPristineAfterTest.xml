@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchPristineAfterTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-15T14:49:17.118Z" hostname="vm" time="0.083">
+  <properties/>
+  <testcase name="aBenchTestThatLeavesSomethingIsRedItselfAndPutsItBack" classname="com.pocketstudio.app.human.BenchPristineAfterTest" time="0.015"/>
+  <testcase name="aBenchTestThatLeavesNothingIsGreen" classname="com.pocketstudio.app.human.BenchPristineAfterTest" time="0.013"/>
+  <testcase name="putBackEndsAClosingSaveWaitingForTheMainThread" classname="com.pocketstudio.app.human.BenchPristineAfterTest" time="0.027"/>
+  <testcase name="aClosingSaveWaitingForTheMainThreadIsLetEndNotNamed" classname="com.pocketstudio.app.human.BenchPristineAfterTest" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

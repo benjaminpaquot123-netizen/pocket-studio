@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "Hedef en yüksek bölümde ölçülür (%1$s LUFS); sakin bölümleriyle tüm şarkı %2$s LUFS ölçülür.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "Bu kadar yüksek duyulmak için tepeler %s dB sıkıştırılıyor: bu çok, ses vuruculuğunu kaybediyor.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "Bu kadar yüksek duyulmak için tepeler %s dB sıkıştırılıyor (en fazla 3: ses vuruculuğunu koruyor).",
-  "Le même réglage que dans Mix.": "Mix'teki ile aynı ayar.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "Başka bir cihazda devam etmek için: tüm sesleriyle bir .zip dosyası, orada Projelerim › İçe aktar ile açılır.",
   "Nom du morceau envoyé": "Gönderilen şarkının adı",
   "Le projet garde son nom « %s ».": "Proje “%s” adını korur.",

@@ -38,6 +38,19 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: B
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
     // Audit ultra round 1 (n° 15): what was shared, in numbers, waiting under the share menu (null: nothing to say).
     var done by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<List<String>?>(null) }
+    // Tour 7 lot 5 D2: the files under the menu, and whether the app came back on screen since (then, no app picked: « Pas envoyé »).
+    var names by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<List<String>>(emptyList()) }
+    var returned by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    var away by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    val picked by ShareSent.picked.collectAsStateWithLifecycle()
+    androidx.compose.runtime.DisposableEffect(lifecycle) {
+        val watch = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_PAUSE && done != null) away = true
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME && away) { away = false; returned = true }
+        }
+        lifecycle.addObserver(watch)
+        onDispose { lifecycle.removeObserver(watch) }
+    }
     LaunchedEffect(rhythmVm, lifecycle) {
         shareWhileShown(lifecycle, rhythmVm.shareRequests) { files ->
             // The song is exported and the share sheet is open: the last step of the card is done
@@ -49,13 +62,18 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: B
                 // and (audit ultra round 1) its loudness, peak, format, length and target, seen when the share menu closes.
                 val now = rhythmVm.export.value
                 done = listOf(shareReadyText(files, now.savedInMusic)) + shareReportLines(now, simple)
+                names = files.map { it.name }
+                returned = false
             }
         }
     }
     // Chantier 1 (G2, recette tel-03: « bloqué » after the share): « C'est prêt » leads to the file's place.
     var files by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     if (export.sharing) ShareProgressDialog(export, cancel = rhythmVm::cancelExport, dismiss = rhythmVm::dismissShare, wav = wav)
-    else done?.let { lines -> ShareBilanDialog(lines, dismiss = { done = null }, seeFiles = { done = null; files = true }) }
+    else done?.let { lines ->
+        val (title, said) = shareBack(lines, names, returned, picked)
+        ShareBilanDialog(said, dismiss = { done = null }, seeFiles = { done = null; files = true }, title = title)
+    }
     if (files) MyExportsDialog { files = false }
 }
 
@@ -65,10 +83,10 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: B
  * beside OK (null: not offered), the way to the file just made.
  */
 @Composable
-internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles: (() -> Unit)? = null) {
+internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles: (() -> Unit)? = null, title: String = tr("C'est prêt")) {
     ScaledAlertDialog(
         onDismissRequest = dismiss,
-        title = { Text(tr("C'est prêt")) },
+        title = { Text(title) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.testTag("share_bilan")) {
                 lines.forEachIndexed { i, line ->
@@ -167,3 +185,11 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
         },
     )
 }
+
+/**
+ * Tour 7 lot 5 D2: the title and lines of the window waiting under Android's share menu. [returned]: the app is back on
+ * screen; [picked]: an app was chosen in the menu.
+ */
+internal fun shareBack(ready: List<String>, names: List<String>, returned: Boolean, picked: Boolean): Pair<String, List<String>> =
+    if (returned && !picked) tr("Pas envoyé") to listOf(tr("Le fichier est dans Mes fichiers : %s.", names.joinToString(", ")))
+    else tr("C'est prêt") to ready

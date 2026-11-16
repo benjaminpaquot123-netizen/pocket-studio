@@ -1,0 +1,12 @@
+dialogue:welcome
+dialogue:mode_step
+dialogue:wizard
+tab_simple_Morceau
+dialogue:play_from_menu
+simple_tracks/tab_simple_Morceau
+session/tab_simple_Morceau
+tab_simple_Rythme
+dialogue:part_header_menu
+dialogue:part_sheet
+plus
+share_sheet/tab_simple_Envoyer

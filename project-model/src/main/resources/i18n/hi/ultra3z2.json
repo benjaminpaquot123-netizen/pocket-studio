@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "टारगेट सबसे ज़ोरदार हिस्से पर मापा जाता है (%1$s LUFS); शांत हिस्सों समेत पूरा गाना %2$s LUFS मापता है।",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "इतना तेज़ सुनाई देने के लिए पीक %s dB दबाए गए हैं: यह बहुत है, आवाज़ का पंच कम हो जाता है।",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "इतना तेज़ सुनाई देने के लिए पीक %s dB दबाए गए हैं (ज़्यादा से ज़्यादा 3: आवाज़ का पंच बना रहता है)।",
-  "Le même réglage que dans Mix.": "मिक्स वाली ही सेटिंग।",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "दूसरे डिवाइस पर आगे बढ़ाने के लिए: सारी आवाज़ों वाली एक .zip फ़ाइल, जिसे वहाँ मेरे प्रोजेक्ट › इंपोर्ट में खोलना है।",
   "Nom du morceau envoyé": "भेजे जाने वाले गाने का नाम",
   "Le projet garde son nom « %s ».": "प्रोजेक्ट का नाम “%s” ही रहता है।",

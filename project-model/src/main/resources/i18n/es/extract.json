@@ -17,5 +17,7 @@
   "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: el bajo más grave, el que se siente en el estómago.",
   "Octave : la même note, plus grave ou plus aiguë.": "Octava: la misma nota, más grave o más aguda.",
   "Creux": "Hueco",
-  "épais": "grueso"
+  "épais": "grueso",
+  "Pas envoyé": "No enviado",
+  "Le fichier est dans Mes fichiers : %s.": "El archivo está en Mis archivos: %s."
 }

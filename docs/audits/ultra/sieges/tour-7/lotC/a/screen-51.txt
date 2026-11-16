@@ -1,0 +1,58 @@
+Écran 51 (540x1170)
+icône (dossier ouvert) ✓ « Trap सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,139
+icône « अंतरा बार 25/112 » ▾ @ 248,138
+bouton « ? » @ 495,139
+icône « पार्ट: B · अंतरा » ▾ @ 113,229
+texte « गाना चल रहा है: ग्रिड पर टैप करो, ये पार्ट लूप में तुम्हारी उँगलियों के नीचे रहेगा। » @ 270,295
+bouton « किट: स्टूडियो + 808 » ▾ [coupé] @ 171,358
+texte « पैड बजते हैं, खाने हिट्स रखते हैं। लॉन्ग प्रेस: साउंड बदलो। » [coupé] @ 429,367
+titre « स्टेप: स्टूडियो बड़ा ढोल · अंतरा » [état « खुला हुआ »] @ 203,469
+bouton « ? » @ 342,469
+bouton « सारे पैड » @ 431,469
+texte « bar » @ 64,553
+bouton « 1 » [sélectionné] @ 132,553
+bouton « 2 » @ 213,553
+bouton « 3 » @ 294,553
+bouton « 4 » @ 375,553
+bouton « फ़ॉलो » [sélectionné] @ 96,634
+bouton « 1 » [état « हिट, ज़ोर 100 % »] @ 67,714
+bouton [état « खाली »] @ 124,714
+bouton [état « खाली »] @ 182,714
+bouton [état « खाली »] @ 240,714
+bouton « 2 » [état « खाली »] @ 298,714
+bouton [état « खाली »] @ 356,714
+bouton [état « खाली »] @ 414,714
+bouton [état « हिट, ज़ोर 100 % »] @ 472,714
+bouton « 3 » [état « खाली »] @ 67,785
+bouton [état « खाली »] @ 124,785
+bouton [allumé, état « हिट, ज़ोर 99 % »] @ 182,785
+bouton [état « खाली »] @ 240,785
+bouton « 4 » [état « खाली »] @ 298,785
+bouton [état « खाली »] @ 356,785
+bouton [état « खाली »] @ 414,785
+bouton [état « खाली »] @ 472,785
+texte « सब » [coupé] @ 116,838
+texte « 1/2 » [coupé] @ 191,838
+texte « 1/4 » [coupé] @ 266,838
+texte « ◀ » [coupé] @ 341,838
+texte « ▶ » [coupé] @ 416,838
+bouton (boussole) « गाइड  · एक साउंड बदलो 19 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » @ 68,951
+image ↷ @ 172,936
+bouton ■ « गाना » @ 270,951
+texte « 140 टेम्पो » @ 374,951
+icône ⋮ « और » @ 478,951
+onglet (lignes et note) « मेरा गाना » @ 49,1050
+onglet (quatre carrés) « रिदम » [sélectionné] @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

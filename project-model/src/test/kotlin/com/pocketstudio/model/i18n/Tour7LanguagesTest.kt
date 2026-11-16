@@ -1,0 +1,63 @@
+package com.pocketstudio.model.i18n
+
+import org.junit.After
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/**
+ * Tour 7, lot 6 « langues »: words the seats still read in English (or as a technical name) in their language,
+ * outside the tutorial's own files (those are lot 1's).
+ */
+class Tour7LanguagesTest {
+    @After
+    fun back() {
+        I18n.lang = Lang.FR
+    }
+
+    /** Every text of [lang] outside the tutorial's files: (area, French key, text). */
+    private fun texts(lang: Lang): List<Triple<String, String, String>> =
+        I18n.AREAS.filterNot { it.startsWith("tuto") }.flatMap { a -> I18n.area(lang, a).map { Triple(a, it.key, it.value) } }
+
+    private fun report(what: String, wrong: List<String>) = assertTrue("$what (${wrong.size}):\n" + wrong.take(40).joinToString("\n"), wrong.isEmpty())
+
+    /** D1 R15 (seat 3a #27, hi): « bar » in Latin letters next to the buttons 1 to 4 of the Rhythm, where hi writes « बार » elsewhere. */
+    @Test
+    fun hindiNeverWritesBarInLatinLetters() {
+        val bar = Regex("""(?i)(?<![A-Za-z])bars?(?![A-Za-z])""")
+        report("hi texts with « bar » in Latin letters", texts(Lang.HI).filter { bar.containsMatchIn(it.third) }.map { "${it.first}: « ${it.second} » → « ${it.third} »" })
+    }
+
+    /** D2 (seat 3a #62, hi): the « और » menu showed « Live » and « Remix » in English. Its entries (AppSpaces, PlusEntry) read in Hindi. */
+    @Test
+    fun hindiMoreMenuHasNoEnglishEntries() {
+        I18n.lang = Lang.HI
+        val entries = listOf(
+            "Accueil", "Continuer, nouveau morceau, Remix…", "Mes projets", "Live : jouer en direct",
+            "Lancer des boucles en rythme, comme sur scène", "Remix", "Séparer une chanson en voix, batterie, basse…",
+            "Enregistrer ma voix", "Bibliothèque de sons",
+        )
+        val latin = Regex("[A-Za-z]")
+        report("hi entries of the « और » menu with Latin letters", entries.map { it to tr(it) }.filter { latin.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" })
+    }
+
+    /** D4 (seats 2b #25, 2c, pt-BR): « pad live 1 » read like a technical name (the page « Pad live » keeps its name); a numbered pad is named by its page, « o pad 1 do Live ». */
+    @Test
+    fun portugueseAndSpanishNameTheLivePadsPlainly() {
+        val technical = Regex("""(?i)\bpad live (%\d*\$?d|\d)""")
+        val wrong = listOf(Lang.PT_BR, Lang.ES).flatMap { l -> texts(l).filter { technical.containsMatchIn(it.third) }.map { "${l.code}/${it.first}: « ${it.third} »" } }
+        report("pt-BR and es texts naming a pad « pad live »", wrong)
+    }
+
+    /**
+     * D5 T16 (seat 1c #27, ja): the track sheet's sounds « Plaits » and « Acid 303 » read in English. « Acid 303 » stays the
+     * 303's one name in every language (Benjamin, 2026-10-29, AcidNameAppTest): the sheet says what each one is, under it.
+     */
+    @Test
+    fun japaneseExplainsThePlaitsAndAcidNames() {
+        I18n.lang = Lang.JA
+        val japanese = Regex("[\\u3040-\\u30FF\\u4E00-\\u9FFF]")
+        val wrong = listOf("Plaits", "Synthé des basses qui grincent", "Synthé aux 24 modèles").map { it to tr(it) }
+            .filterNot { japanese.containsMatchIn(it.second) }.map { "« ${it.first} » → « ${it.second} »" }
+        report("ja names and explanations of a sound without a word of Japanese", wrong)
+    }
+}

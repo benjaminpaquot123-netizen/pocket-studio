@@ -1,0 +1,45 @@
+Écran 24 (540x1170)
+icône (dossier ouvert) ✓ « Trap सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ■ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,139
+icône (flèches en boucle) « T बार 1/8 » ▾ @ 225,139
+bouton (flèches en boucle) « लूप » [allumé, état « ऑन »] @ 399,139
+bouton « ? » @ 495,139
+icône (flèches en boucle) « पार्ट: T » ▾ @ 86,229
+texte « जब तक तुम इसे एडिट करते हो, ये लूप में चलता है। गाना वापस पाने के लिए ऊपर ⟳ लूप दबाओ। » @ 270,295
+bouton « स्टूडियो बड़ा ढोल FX » @ 78,397
+bouton « 808 FX » @ 206,397
+bouton « स्नेयर » @ 334,397
+bouton « स्नेयर 2 » @ 462,397
+bouton « ताली FX » @ 78,487
+bouton « हाई-हैट L 30 » @ 206,487
+bouton « ओपन हाई-हैट R 30 » @ 334,487
+bouton « लो टॉम » @ 462,487
+bouton « मिड टॉम R 45 » @ 78,577
+bouton « हाई टॉम » @ 206,577
+bouton « ढोल का किनारा R 50 » @ 334,577
+bouton « बेल » @ 462,577
+bouton « सिंबल FX R 40 » @ 78,667
+bouton « मराकस L 50 » @ 206,667
+bouton « कोंगा » @ 334,667
+bouton « लेज़र » @ 462,667
+texte « पैड बजते हैं, खाने हिट्स रखते हैं। लॉन्ग प्रेस: साउंड बदलो। » @ 429,769
+bouton « किट: स्टूडियो + 808 » ▾ @ 171,769
+bouton (boussole) « गाइड  · एक साउंड बदलो 19 % » ⌃ [état « समेटा हुआ »] @ 270,876
+icône ↶ « पूर्ववत करो » @ 68,951
+image ↷ @ 172,936
+bouton ▶ « गाना » @ 270,951
+texte « 140 टेम्पो » @ 374,951
+icône ⋮ « और » @ 478,951
+onglet (lignes et note) « मेरा गाना » @ 49,1050
+onglet (quatre carrés) « रिदम » [sélectionné] @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

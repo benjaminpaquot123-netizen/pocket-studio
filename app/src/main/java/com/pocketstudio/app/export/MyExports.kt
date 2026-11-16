@@ -106,7 +106,7 @@ object MyExports {
             type = e.mime ?: when (e.kind) { MyExport.Kind.Sound -> "audio/*"; MyExport.Kind.Video -> "video/mp4"; MyExport.Kind.Project -> "application/zip" }
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(send, tr("Partager le morceau")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        context.startActivity(Intent.createChooser(send, chooserTitle(tr("Partager le morceau"), listOf(e.name))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }.isSuccess
 
     /** Where these files are on the device, for the list's first line and its « ? ». */

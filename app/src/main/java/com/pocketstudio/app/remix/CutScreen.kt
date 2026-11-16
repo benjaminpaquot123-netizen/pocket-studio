@@ -235,14 +235,17 @@ fun CutScreen(
                     CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom, onLetGo = ::letGo)
                     if (!wide) {
                         // Tour 6, seat B a (A4): in « Phrases » the menus stay under the curve, out of the scroll (below).
-                        if (model.single) AutoRow(model, finding, onAuto = { pick(it) })
-                        if (model.single) SpanRow(model, actions, work) else {
+                        // Tour 7, lot 2 D1 (pt-BR at 200 %): Início / Fim / Ouvir right under the curve, the menus after, so
+                        // the curve and its three buttons are in view together.
+                        if (model.single && !bigText) AutoRow(model, finding, onAuto = { pick(it) })
+                        if (model.single) SpanRow(model, actions, work, onSet = ::letGo) else {
                             ToolRow(model, actions, work)
                             PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
                         }
                         // Tour 6, seat B a #A2 (a left thumb): in « Un bout » that fits without scrolling, « Voz / Batería /
                         // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
                         // left thumb reaches — the big curve above keeps them off the top, out of reach.
+                        if (model.single && bigText) AutoRow(model, finding, onAuto = { pick(it) })
                         if (model.single && !bigText) StemChips(model) { actions.stop() }
                     }
                     tail()
@@ -257,7 +260,7 @@ fun CutScreen(
                             Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 StemChips(model) { actions.stop() }
                                 AutoRow(model, finding, onAuto = { pick(it) })
-                                if (model.single) SpanRow(model, actions, work) else {
+                                if (model.single) SpanRow(model, actions, work, onSet = ::letGo) else {
                                     ToolRow(model, actions, work)
                                     PieceList(model, actions, work, Modifier.heightIn(max = 240.dp))
                                 }
@@ -344,7 +347,8 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
 /** Voix, Batterie, Basse, Reste: each with its colour dot, as on the Remix page. */
 @Composable
 private fun StemChips(model: CutModel, onChange: () -> Unit) {
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // Tour 7, lot 2 D7: the chips wrap to a second line rather than run off the edge (« Resto » cut at 200 %, no sign).
+    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         CHIP_ORDER.forEach { stem ->
             val name = Demucs.STEMS[stem]
             FilterChip(
@@ -463,15 +467,16 @@ private fun ToolRow(model: CutModel, actions: StemBoardActions, work: State<Stem
  * then « Écouter le bout »: just the piece, with its length (« 2 mesures · 0:04.2 »).
  */
 @Composable
-private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>) {
+private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, onSet: (end: Boolean) -> Unit) {
     fun here(): Long = work.value.playing?.takeIf { it.stem == model.stem && work.value.playFrame >= 0 }?.let { work.value.playFrame } ?: model.cursor
     val sp = model.span
     val sel = model.spanSelection()
     // The piece, or its end heard after « Fin » was let go.
     val heard = work.value.playing?.let { p -> sel != null && p.stem == sel.stem && p.endFrame == sel.endFrame && p.startFrame >= sel.startFrame } == true
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Tool(StartHereIcon, tr("Début ici"), "cut_start", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setStart() }
-        Tool(EndHereIcon, tr("Fin ici"), "cut_end", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setEnd() }
+        // Tour 7 lot 2 D4: heard at once, as a bar let go is (the line opens on « Début »: else the first touch is mute).
+        Tool(StartHereIcon, tr("Début ici"), "cut_start", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setStart(); onSet(false) }
+        Tool(EndHereIcon, tr("Fin ici"), "cut_end", modifier = Modifier.weight(1f), lines = 2) { model.cursor = here(); model.setEnd(); onSet(true) }
         val shape = RoundedCornerShape(14.dp)
         val color = cutStemColor(model.stem)
         Row(

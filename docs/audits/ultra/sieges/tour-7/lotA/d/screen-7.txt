@@ -1,0 +1,19 @@
+Écran 7 (900x1509)
+texte « Teil A benennen » @ 215,471
+texte « Welcher Moment im Song ist das? » @ 292,542
+bouton « Intro » @ 122,611
+bouton « Strophe » @ 266,611
+bouton « Pre-Chorus » @ 458,611
+bouton « Refrain » @ 644,611
+bouton « Post-Chorus » @ 177,683
+bouton « Bridge » @ 366,683
+bouton « Groove » @ 519,683
+bouton « Build-up » @ 684,683
+bouton « Fake-Drop » @ 162,755
+bouton « Break » @ 331,755
+bouton « Drop » @ 461,755
+bouton « Ende » @ 586,755
+bouton « Fill » @ 697,755
+champ « Oder ein anderer Name 0/20 » contenu «  » @ 450,879
+texte « Abbrechen » @ 641,1027
+texte « OK » @ 790,1027

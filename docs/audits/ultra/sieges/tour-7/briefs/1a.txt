@@ -1,0 +1,18 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/a (seat a, lot A; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:4, mission tuto-facile, budget 120 gestures).
+Profile (id t7-1a): Débutante française, téléphone, découvre la house avec le tuto Facile ; le banc l'amène au chapitre 4 (« Les charleys et le tambourin »). Elle suit les consignes à la lettre, lit lentement, abandonne si une note demandée est invisible. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile: Le banc ouvre le tuto au chapitre 4 : fais les chapitres 4, 5 (la basse) et 6 (le piano) en entier, puis continue tant que le budget le permet. Note pour chaque chapitre : compris oui/non, hésitations.
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-1a-1 | 1. Les chapitres 4 à 6 se font sans note cachée ni consigne que je ne comprends pas
+  - id=t7-1a-2 | 2. Le compteur « Encore N notes » baisse d'un à chaque note que je pose
+  - id=t7-1a-3 | 3. Chaque consigne nomme un pad, un bouton ou une mesure que je trouve à l'écran
+  - id=t7-1a-4 | 4. tous les textes vus sont en français, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - T4 / N4 (grave) | depuis la grille du piano (chapitre 5 ou 6, panneau du tuto ouvert), je regarde les notes pointillées et je vois chacune en entier au-dessus du panneau, sinon une flèche ↑/↓ ; « Encore… » l'amène à l'écran
+  - N8 (mineur) | depuis le chapitre 6 (le piano), je pose un accord et je vois « Encore N notes » baisser d'un par touche (9 au départ), pas d'un par note (36)
+  - T11 (moyen) | depuis une étape du chapitre 5, je touche « Je le fais » et je vois la grille ouverte sur la mesure que la consigne nomme
+  - T2 (mineur) | depuis le chapitre 4, je cherche le pad que la consigne nomme (le tambourin) et je le trouve dans le kit, sous ce nom
+  - T8 (mineur) | depuis n'importe quelle étape « à toi », je lis la consigne et je vois au plus 3 actions à faire
+  - T6 (mineur) | depuis une consigne qui emploie un mot de musicien (accord, charley…), je lis la consigne et je vois ce mot expliqué en mots simples
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

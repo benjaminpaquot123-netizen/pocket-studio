@@ -1,0 +1,14 @@
+tab_Sons
+tuto_spot_ring
+session/tab_Structure
+dialogue:section_Intro
+tab_Structure
+dialogue:tuto_chapter_list
+dialogue:effects_box_20
+mixer/tab_Mix
+dialogue:automation_picker
+tab_Mix
+dialogue:share_sheet
+dialogue:share_progress
+dialogue:« Meinen Song teilen · Mein-Song »
+dialogue:share_bilan

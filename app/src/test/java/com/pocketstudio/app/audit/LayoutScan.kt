@@ -75,7 +75,11 @@ object LayoutScan {
                 // never « the same pixels » as the screen yet read the page under it (« Aide » 1,2:1 on a legible menu):
                 // a pop-up window is drawn from its own view when it has one.
                 val popup = (r.root as? androidx.compose.ui.platform.ViewRootForTest)?.view?.rootView?.javaClass?.simpleName?.contains("Popup") == true
-                pixels[r.id] = if (first != null && r.id != first.id && (popup || samePixels(shot, pixels[first.id]))) ownPixels(r) ?: shot else shot
+                // Tour 7 integration: the wizard (a full-screen dialog over the Plus page) came back as the page under it with
+                // a few pixels apart (« 7 styles » 3,1:1 on a legible card), so « the same pixels » missed it: a window as
+                // big as the screen is drawn from its own view too.
+                val fullScreen = first != null && r.size == first.size
+                pixels[r.id] = if (first != null && r.id != first.id && (popup || fullScreen || samePixels(shot, pixels[first.id]))) ownPixels(r) ?: shot else shot
             }
             texts.forEach { t -> pixels[top(t.node).id]?.let { px -> contrast(t, px, density)?.let(out::add) } }
         }

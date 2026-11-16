@@ -6,7 +6,6 @@
   "La cible se mesure sur le passage le plus fort (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "목표는 가장 큰 부분에서 재요(%1$s LUFS). 조용한 부분까지 넣은 곡 전체는 %2$s LUFS예요.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.": "이만큼 크게 들리도록 피크를 %s dB 눌렀어요: 많이 눌러서 소리의 펀치가 줄어요.",
   "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).": "이만큼 크게 들리도록 피크를 %s dB 눌렀어요(최대 3: 소리의 펀치는 그대로예요).",
-  "Le même réglage que dans Mix.": "믹스와 같은 설정이에요.",
   "Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.": "다른 기기에서 이어서 하려면: 모든 소리가 담긴 .zip 파일을 그 기기의 내 프로젝트 › 가져오기에서 열어요.",
   "Nom du morceau envoyé": "보낼 곡 이름",
   "Le projet garde son nom « %s ».": "프로젝트 이름은 “%s” 그대로예요.",

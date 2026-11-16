@@ -1,0 +1,74 @@
+Écran 43 (588x1278)
+icône (dossier ouvert) ✓ « House Sauvegardé » @ 106,42
+texte « Pro » @ 240,42
+icône ↶ @ 312,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 122  BPM » @ 73,114
+icône « Montée mes. 58/96 » ▾ @ 228,114
+bouton (flèches en boucle) [état « désactivé »] @ 462,114
+bouton « ? » @ 543,114
+bouton « ? » @ 530,195
+texte « Volumes » @ 272,196
+texte « Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes. » @ 294,250
+texte « Batterie » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 57,418
+bouton (casque) [état « désactivé »] @ 111,418
+curseur [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+image (étincelles) @ 58,772
+texte « 3 » @ 78,772
+image (courbe) @ 98,772
+texte « 1 » @ 116,772
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 177,418
+bouton (casque) [état « désactivé »] @ 231,418
+curseur [état « +0,0 dB », à 80 %] @ 204,589
+texte « +0,0 » @ 204,740
+texte « Basse » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 297,418
+bouton (casque) [état « désactivé »] @ 351,418
+curseur [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+image (étincelles) @ 296,772
+texte « 4 » @ 316,772
+image (courbe) @ 336,772
+texte « 2 » @ 356,772
+texte « Piano » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 417,418
+bouton (casque) [état « désactivé »] @ 471,418
+curseur [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+image (étincelles) @ 419,772
+texte « 7 » @ 438,772
+image (courbe) @ 457,772
+texte « 1 » @ 475,772
+texte « Lead » [coupé] @ 541,343
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 537,418
+bouton (casque) [coupé, état « désactivé »] @ 568,418
+curseur [coupé, état « +0,0 dB », à 80 %] @ 546,589
+texte « +0,0 » [coupé] @ 557,740
+image (étincelles) @ 536,772
+texte « 5 » @ 556,772
+image (courbe) [coupé] @ 567,772
+image (courbe) @ 60,876
+texte « Courbes et effets » @ 193,862
+texte « 10 réglages bougent tout seuls. » @ 235,893
+bouton « Voir les courbes » [coupé] @ 165,936
+bouton « Ce qui joue » [coupé] @ 423,936
+bouton (boussole) « Guide  · Change un son 29 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » [désactivé] @ 175,1062
+bouton ■ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône (trois points reliés) « Partager » @ 519,1062
+onglet (ligne brisée et points) « Structure » @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Plus » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

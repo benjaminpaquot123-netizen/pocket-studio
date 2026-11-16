@@ -1,0 +1,17 @@
+tuto_panel/tab_simple_Rythme
+tuto_spot_ring
+tab_simple_Rythme
+dialogue:part_header_menu
+session/tab_simple_Morceau
+tuto_panel/tab_simple_Morceau
+dialogue:tuto_chapter_list
+simple_mix/tab_simple_Mix
+tuto_panel/tab_simple_Mix
+share_sheet/tab_simple_Envoyer
+dialogue:share_progress
+dialogue:« Partager mon morceau · Mon-mor »
+dialogue:share_bilan
+tuto_panel/tab_simple_Envoyer
+dialogue:tempo_sheet
+dialogue:tuto_key_sheet
+tab_simple_Envoyer

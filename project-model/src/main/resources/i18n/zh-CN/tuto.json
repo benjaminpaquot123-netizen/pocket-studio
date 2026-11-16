@@ -148,5 +148,6 @@
   "%1$s : encore +%2$d": "%1$s：还差 +%2$d",
   "Touche ici": "点这里",
   "Accords en pointillé à toucher : %d": "要点的虚线和弦：%d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "间奏：比较安静的部分，底鼓和贝斯停下来。"
+  "Break : un moment plus calme, le kick et la basse se taisent.": "间奏：比较安静的部分，底鼓和贝斯停下来。",
+  "Exemple passé sans l'écouter.": "未收听，已跳过示例。"
 }

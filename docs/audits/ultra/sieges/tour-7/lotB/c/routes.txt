@@ -1,0 +1,9 @@
+dialogue:welcome
+dialogue:mode_step
+?
+dialogue:remix_model_ask
+cut_screen
+dialogue:cut_auto_0
+rhythm/tab_simple_Rythme
+plus
+session/tab_simple_Morceau

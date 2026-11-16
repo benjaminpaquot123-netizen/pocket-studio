@@ -1,0 +1,30 @@
+Écran 112 (900x1509)
+dessin @ 450,114
+icône ✕ @ 834,186
+texte « Bereit zum Teilen? » @ 414,186
+champ « Name des Songs (und des Projekts) » contenu « Mein Song » @ 450,295
+icône ✕ @ 834,303
+texte « „Teilen“ benennt auch das Projekt „Mein Projekt 1“ um. » @ 450,386
+texte « 0:02 » @ 71,444
+texte « 1 Teil » @ 159,446
+texte « Lautstärke: −8,0, laut, wie Clubmusik » @ 332,485
+bouton ▶ «  Anhören » @ 758,488
+texte « Details » @ 538,528
+bouton « ? » @ 612,528
+texte « Ziel-Lautheit » @ 114,592
+bouton « ? » @ 219,592
+bouton « Streaming · −14 LUFS » @ 201,656
+bouton « Club · −8 LUFS » [sélectionné] @ 508,656
+bouton « Auto (Stil) · −9 LUFS » @ 192,737
+bouton « Aus » @ 414,737
+texte « Laut wie im Club (−8 LUFS), gemessen an der lautesten Stelle. Der Ausgang steigt sanft dorthin; der Export kommt so nah heran, wie es geht, ohne den Klang zu zerdrücken. Dieselbe Einstellung wie in Mix. » @ 450,833
+image ⚠ @ 45,922
+texte « Noch nichts zu hören: Leg zuerst einen Beat oder ein paar Noten an. » @ 472,946
+bouton (clap de cinéma) «   Video für Social Media · 30 s » @ 450,1041
+bouton (notes sur une pile) « Weitere Dateien Spur für Spur, MIDI, FLAC… in Mix » › @ 428,1137
+bouton « ? » @ 848,1137
+bouton « M4A · zum Teilen » [sélectionné] @ 173,1251
+bouton « WAV · max. Qualität » @ 487,1251
+bouton (trois points reliés) «   Teilen » @ 450,1347
+bouton (dossier) « Meine Dateien Finden und erneut senden: M4A, WAV, Video, .zip » › @ 428,1449
+bouton « ? » @ 848,1449

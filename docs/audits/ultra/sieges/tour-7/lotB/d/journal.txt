@@ -1,0 +1,313 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=11.5 simule_s=2.4 jvm_s=25.0 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 294 621
+#1 DOIGT welcome_learn « J'apprends »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 798c83c20d | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 915
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE c127b1ae50 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 294 289
+#3 DOIGT tuto_style_techno « Techno »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9b5a2dc594 | project=p-45cc6f46 tuto=techno/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « • Drop : le moment fort du morceau, quand tout revient d'un coup. » 2.26:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#4 > touche 294 894
+#4 DOIGT tuto_listen «  Écouter l'exemple »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d248c2f7d3 | project=p-45cc6f46 tuto=techno/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 > touche 294 822
+#5 DOIGT tuto_text_more « Lire la suite »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE eff814d2c0 | project=p-45cc6f46 tuto=techno/Facile active=true step=ref done=1 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 6 s).
+#6 > touche 294 822
+#6 DOIGT tuto_text_more « Lire la suite »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c114ed6e34 | project=p-45cc6f46 tuto=techno/Facile active=true step=ref done=1 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 4 s).
+#7 > touche 294 894
+#7 DOIGT tuto_next_big « Étape suivante   »
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1d548ea7f0 | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 294 813
+#8 DOIGT tuto_do «   Je le fais »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE fc4e78be86 | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tempo » over the touchable « Fermer la feuille » (73 x 28 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#9 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#9 LAYOUT OVERLAP «  BPM » over the touchable « Fermer la feuille » (39 x 24 dp)
+#9 LAYOUT OVERLAP « 70 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 90 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 140 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 174 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#9 LAYOUT OVERLAP « ½ » over the touchable « Fermer la feuille » (14 x 24 dp)
+#9 LAYOUT OVERLAP « ×2 » over the touchable « Fermer la feuille » (21 x 24 dp)
+#9 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 2 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 3 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 4 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 5 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 6 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 7 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 8 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 9 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#9 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (33 x 27 dp)
+#9 LAYOUT OVERLAP « Taper en rythme » over the touchable « Fermer la feuille » (128 x 24 dp)
+#9 LAYOUT OVERLAP « Touche ici à chaque temps : le tempo suit. » over the touchable « Fermer la feuille » (254 x 18 dp)
+#9 > touche 111 852
+#9 DOIGT tempo_key_1 « 1 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE afd6df50bb | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (29 x 53 dp)
+#10 LAYOUT OVERLAP « Entre 40 et 300 » over the touchable « Fermer la feuille » (104 x 20 dp)
+#10 > touche 477 852
+#10 DOIGT tempo_key_3 « 3 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 73fc5d30f2 | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 13 » over the touchable « Fermer la feuille » (57 x 53 dp)
+#11 > touche 294 852
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 81c3442f2d | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 132 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#12 > touche 477 1113
+#12 DOIGT tempo_key_ok « OK »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a8278e284b | project=p-45cc6f46 tuto=techno/Facile active=true step=tempo done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 978
+#13 DOIGT tuto_next_folded « Réussi »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 194f1406ef | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « • Gamme : les notes qui vont bien ensemble dans le morceau. » 2.04:1 (needs 4.5:1, 13 sp)
+#14 > touche 294 813
+#14 DOIGT tuto_do «   Je le fais »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 18eb75f13a | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonalité du morceau » over the touchable « Fermer la feuille » (215 x 28 dp)
+#15 LAYOUT OVERLAP « Tonalité du morceau : aucune » over the touchable « Fermer la feuille » (195 x 20 dp)
+#15 LAYOUT OVERLAP « Gamme » over the touchable « Fermer la feuille » (52 x 20 dp)
+#15 LAYOUT OVERLAP « Majeure » over the touchable « Fermer la feuille » (61 x 24 dp)
+#15 LAYOUT OVERLAP « Mineure » over the touchable « Fermer la feuille » (62 x 24 dp)
+#15 LAYOUT OVERLAP « Dorienne » over the touchable « Fermer la feuille » (68 x 24 dp)
+#15 LAYOUT OVERLAP « Penta mineure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#15 LAYOUT OVERLAP « Penta majeure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#15 LAYOUT OVERLAP « Blues » over the touchable « Fermer la feuille » (42 x 24 dp)
+#15 LAYOUT OVERLAP « Phrygienne » over the touchable « Fermer la feuille » (90 x 24 dp)
+#15 LAYOUT OVERLAP « Mineure harmonique » over the touchable « Fermer la feuille » (156 x 24 dp)
+#15 LAYOUT OVERLAP « Tonique » over the touchable « Fermer la feuille » (55 x 20 dp)
+#15 LAYOUT OVERLAP « Do » over the touchable « Fermer la feuille » (21 x 24 dp)
+#15 LAYOUT OVERLAP « Do♯ » over the touchable « Fermer la feuille » (29 x 24 dp)
+#15 LAYOUT OVERLAP « Ré » over the touchable « Fermer la feuille » (19 x 24 dp)
+#15 LAYOUT OVERLAP « Mi♭ » over the touchable « Fermer la feuille » (24 x 24 dp)
+#15 LAYOUT OVERLAP « Mi » over the touchable « Fermer la feuille » (19 x 24 dp)
+#15 LAYOUT OVERLAP « Fa » over the touchable « Fermer la feuille » (18 x 24 dp)
+#15 LAYOUT OVERLAP « Fa♯ » over the touchable « Fermer la feuille » (26 x 24 dp)
+#15 LAYOUT OVERLAP « Sol » over the touchable « Fermer la feuille » (23 x 24 dp)
+#15 LAYOUT OVERLAP « La♭ » over the touchable « Fermer la feuille » (23 x 24 dp)
+#15 LAYOUT OVERLAP « La » over the touchable « Fermer la feuille » (18 x 24 dp)
+#15 LAYOUT OVERLAP « Si♭ » over the touchable « Fermer la feuille » (19 x 24 dp)
+#15 LAYOUT OVERLAP « Si » over the touchable « Fermer la feuille » (14 x 24 dp)
+#15 > touche 109 993
+#15 DOIGT tuto_scale_Phrygian « Phrygienne »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 6188c03180 | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonalité du morceau : Do · Phrygienne » over the touchable « Fermer la feuille » (251 x 20 dp)
+#16 > touche 500 1125
+#16 DOIGT tuto_root_5 « Fa »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 8ba292e80e | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Tonalité du morceau : Fa · Phrygienne » over the touchable « Fermer la feuille » (248 x 20 dp)
+#17 LAYOUT OVERLAP « Réussi ! La couleur du morceau est choisie. » over the touchable « Fermer la feuille » (273 x 48 dp)
+#17 LAYOUT OVERLAP « Revenir au tuto » over the touchable « Fermer la feuille » (106 x 20 dp)
+#17 > touche 294 1203
+#17 DOIGT tuto_key_continue « Revenir au tuto »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5063a9c0ff | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 978
+#18 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 034e1ca3cc | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 822
+#19 DOIGT tuto_text_more « Lire la suite »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0156874a09 | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 444 423
+#20 DOIGT tuto_chapters « Chapitres »
+#21 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 0cf133dda3 | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 1 » 1.41:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « Le kick et le grondement » 3.69:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « 0/4 » 3.69:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « 4 » 3.64:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « La basse » 1.60:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « 0/3 » 1.60:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « Ta première partie : le Groove, ta boucle de base » 2.84:1 (needs 4.5:1, 16 sp)
+#21 LAYOUT CONTRAST « Quitter le tuto (tu pourras le reprendre) » 3.26:1 (needs 4.5:1, 14 sp)
+#21 > touche 294 1218
+#21 DOIGT tuto_quit « Quitter le tuto (tu pourras le reprendre »
+#22 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9df30803eb | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 40 42
+#22 DOIGT top_projects « Mon projet 1 »
+#23 ROUTE dialogue:projects | MODE simple | EMPREINTE 83bf2bb08d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 243
+#23 DOIGT project_new «   Nouveau projet : style, démo ou vide »
+#24 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 294 186
+#24 DOIGT start_learn « J'apprends »
+#25 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a24ae6789a | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Ton dernier choix » 3.48:1 (needs 4.5:1, 13 sp)
+#25 > attends 5
+#26 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a24ae6789a | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 294 915
+#26 DOIGT mode_card_simple « Simple »
+#27 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE c127b1ae50 | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 > retour
+#27 RETOUR
+#28 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a24ae6789a | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 > retour
+#28 RETOUR
+#29 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 > retour
+#29 RETOUR
+#30 ROUTE dialogue:projects | MODE simple | EMPREINTE 83bf2bb08d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#30 SON Son : rien ne joue.
+#30 > attends 3
+#31 ROUTE dialogue:projects | MODE simple | EMPREINTE 83bf2bb08d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#31 SON Son : rien ne joue.
+#31 > retour
+#31 RETOUR
+#32 ROUTE launch | MODE simple | EMPREINTE 4c2e87d51e | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 294 499
+#32 DOIGT launch_new « Nouveau morceau »
+#33 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 186
+#33 DOIGT start_learn « J'apprends »
+#34 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a24ae6789a | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#34 SON Son : rien ne joue.
+#34 > retour
+#34 RETOUR
+#35 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#35 SON Son : rien ne joue.
+#35 > retour
+#35 RETOUR
+#36 ROUTE launch | MODE simple | EMPREINTE 0189dff96b | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 294 294
+#36 DOIGT launch_continue « Continuer »
+#37 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9df30803eb | project=p-45cc6f46 tuto=techno/Facile active=false step=key done=3 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 147 990
+#37 DOIGT tuto_resume « Reprendre le tuto »
+#38 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dff4f4e2d1 | project=p-45cc6f46 tuto=techno/Facile active=true step=key done=3 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 294 894
+#38 DOIGT tuto_next_big « Chapitre suivant   »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 25446dc0e7 | project=p-45cc6f46 tuto=techno/Facile active=true step=ready done=3 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 894
+#39 DOIGT tuto_mark «   J'ai compris »
+#40 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f780636413 | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_hear done=4 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 294 894
+#40 DOIGT tuto_listen «  Écouter l'exemple »
+#41 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1fa099956e | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_hear done=4 playing=false
+#41 SON Son : l'exemple du tuto joue (encore 3 s).
+#41 > touche 493 978
+#41 DOIGT tuto_next « Suivant  »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE baa95dfc8f | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 294 813
+#42 DOIGT tuto_do «   Je le fais »
+#43 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 70 365
+#43 DOIGT rien
+#44 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 325 365
+#44 DOIGT rien
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE be1cfb18f7 | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « À toi : sur le pad « Grosse caisse studio » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle. » ellipsized (« … »)
+#45 > touche 70 440
+#45 DOIGT step_8 « Pas 9 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 63d09d93fb | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 325 440
+#46 DOIGT step_12 « Pas 13 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5914e640a1 | project=p-45cc6f46 tuto=techno/Facile active=true step=kick_do done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 294 978
+#47 DOIGT tuto_next_folded « Réussi »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7d3344ff31 | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 294 813
+#48 DOIGT tuto_do «   Je le fais »
+#49 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 70 365
+#49 DOIGT rien
+#50 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 325 365
+#50 DOIGT rien
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3a28d9e21a | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CUT « À toi : sur le pad « Grondement grave » (le grondement), touche les cases en pointillé : les mêmes que le kick, une sur chaque temps. Son long grondement sale et grave remplit le vide entre les coups. » ellipsized (« … »)
+#51 > touche 70 440
+#51 DOIGT step_8 « Pas 9 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bac5f2732b | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 325 440
+#52 DOIGT step_12 « Pas 13 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2f198e8080 | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 978
+#53 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2c32fad301 | project=p-45cc6f46 tuto=techno/Facile active=true step=rumble_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT «  Écouter mon morceau » ellipsized (« … »)
+#54 > touche 294 888
+#54 DOIGT tuto_next_big « Chapitre suivant   »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de36db7cb3 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 813
+#55 DOIGT tuto_do «   Je le fais »
+#56 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 325 365
+#56 DOIGT rien
+#57 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 325 440
+#57 DOIGT rien
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 066276d015 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CUT « À toi : sur le pad « Claquement de mains », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long sur sa case ; dans le menu qui s'ouvre, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici. » ellipsized (« … »)
+#58 > touche 517 440
+#58 DOIGT step_15 « Pas 16 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 12a2450b96 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#59 SON Son : rien ne joue.
+#59 > appui-long 517 440
+#59 DOIGT step_15 « Pas 16 »
+#60 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE 5000a02151 | project=p-45cc6f46 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#60 SON Son : rien ne joue.
+#60 FIN : abandon : budget (60 gestes, 57 faits, 7 images)

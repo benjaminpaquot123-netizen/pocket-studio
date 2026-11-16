@@ -1,0 +1,18 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotC/a (seat a, lot C; lang hi, device phone360, font 130, options fresh=reel, mission simple, budget 100 gestures).
+Profile (id t7-3a): Utilisateur hindiphone curieux, petit téléphone (360 dp), police 130 %, première ouverture. Fait un morceau en Mode simple, change de partie et veut écouter soit la partie, soit tout le morceau. Act as this person (habits, patience, vocabulary).
+Mission simple: Fais un morceau en Mode simple, ajoute une deuxième partie, passe de l'une à l'autre, et écoute avec « ▶ cette partie » puis « ▶ le morceau ». Note ce qui joue vraiment.
+Its 3 goals (ids, the bench checks them): son (un son joue), partie (une 2e partie), jamais-pro (jamais passé en Pro).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-3a-1 | 1. « ▶ cette partie » joue la partie ouverte et « ▶ le morceau » joue tout, dans l'ordre
+  - id=t7-3a-2 | 2. Changer de partie se fait sans perdre ce que j'ai posé
+  - id=t7-3a-3 | 3. Aucun bouton caché ni texte coupé à 130 %
+  - id=t7-3a-4 | 4. tous les textes vus sont en hindi, aucun en anglais ni coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - U28 (moyen) | depuis la carte du morceau avec les parties A et B, je touche « ▶ le morceau » et j'entends/vois A avant B
+  - U29 (moyen) | depuis la carte du morceau (SongCard), je cherche comment ajouter une partie et je vois un bouton pour ça
+  - U1 (mineur) | depuis le Mode simple, je change de partie et je vois « ▶ cette partie » et « ▶ le morceau » dire clairement ce qu'ils jouent
+  - G1 (moyen) | depuis un écran où le Guide est ouvert, je vois qu'il ne cache rien de touchable
+  - R15 (mineur) | depuis les écrans du Mode simple, je lis tous les textes en hindi, aucun mot anglais
+  - R1 (mineur) | depuis les écrans à 130 %, je lis chaque bouton en entier, sans mot coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

@@ -1,0 +1,19 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/b (seat b, lot A; lang fr, device phone, font 100, mode simple, options amenee=tuto:house:12, mission tuto-facile, budget 120 gestures).
+Profile (id t7-1b): Débutante française, téléphone, tuto Facile house ; le banc l'amène au chapitre 12 (« Les transitions »). Patiente mais n'aime pas les messages flous. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile: Le banc ouvre le tuto au chapitre 12 : fais les chapitres 12 à 15 (transitions, effets, mix, export) jusqu'au dernier Bravo. Note pour chaque chapitre : compris oui/non, hésitations.
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-1b-1 | 1. Les chapitres 12 à 15 se finissent jusqu'au dernier « Bravo »
+  - id=t7-1b-2 | 2. « Suivant » ne saute jamais une étape sans me dire ce qui reste
+  - id=t7-1b-3 | 3. L'export final m'explique son réglage de niveau (« −14 ») en mots simples
+  - id=t7-1b-4 | 4. tous les textes vus sont en français, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - N19 (grave) | depuis une étape d'écoute non validée, je touche « Suivant » et je vois ce qu'il reste à faire, jamais « Presque fini ! »
+  - N20 (mineur) | depuis une étape déjà faite plus tôt (ex. chapitre 12), je la rejoins et je vois « déjà fait à l'étape … » qui dit où
+  - N28 (mineur) | depuis une consigne du chapitre 12 qui cite une mesure, je cherche cette mesure et je la trouve dans la partie ouverte
+  - N23 (mineur) | depuis le dernier « Bravo » du tuto, je regarde l'en-tête et je vois que le tuto est fini (plus « Étape 1/1 »)
+  - U2 (moyen) | depuis l'export du chapitre 15, je choisis un niveau et je vois le même niveau que celui que l'écran Simple annonce
+  - N12 (mineur) | depuis le chapitre 15, je lis « Mon morceau » partout où le tuto parle de mon morceau, avec le même mot que l'écran
+  - N26 (mineur) | depuis le chapitre 12, je lis « tout le groove y joue » seulement si c'est vrai dans la partie ouverte
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

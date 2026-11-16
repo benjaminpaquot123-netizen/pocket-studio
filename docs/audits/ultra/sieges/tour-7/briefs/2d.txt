@@ -1,0 +1,18 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotB/d (seat d, lot B; lang fr, device phone, font 100, options fresh=reel (aucun mode imposé), mission tuto-facile, budget 60 gestures).
+Profile (id t7-2d): Débutant français, téléphone, première ouverture de l'appli. Regarde chaque écran en entier avant de toucher ; un grand vide lui fait croire que l'écran n'a pas fini de s'afficher. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile: À l'accueil, touche « J'apprends ». Sur « Simple ou Pro ? », prends une image et regarde l'écran ENTIER (haut, milieu, bas) avant de choisir Simple. Puis fais le chapitre 1 du tuto. S'il reste du budget : quitte le tuto, va sur « Que veux-tu faire ? », touche « Nouveau morceau » puis « J'apprends » et regarde de nouveau « Simple ou Pro ? ».
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-2d-1 | 1. « Simple ou Pro ? » n'a pas de grand vide sombre en haut de l'écran
+  - id=t7-2d-2 | 2. Le chapitre 1 se fait sans consigne cachée ni bouton masqué
+  - id=t7-2d-3 | 3. Le Guide ne s'ouvre pas une deuxième fois pendant le tuto et « Fermer le tuto » ressemble à un bouton
+  - id=t7-2d-4 | 4. tous les textes vus sont en français, aucun coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - retour Benjamin 2026-11-14 (grand vide) (grave) | depuis « Nouveau projet » (ou l'accueil) → « J'apprends », je regarde « Simple ou Pro ? » et je vois le titre, le texte et les deux cartes sans grand vide sombre sur les deux tiers du haut
+  - T7 (moyen) | depuis le chapitre 1, je regarde la carte du kit et « Plus tard » et je les vois sans devoir toucher « Lire la suite »
+  - T13 (mineur) | depuis le tuto ouvert, je continue les étapes et je ne vois pas un deuxième Guide s'ouvrir par-dessus
+  - N13 (mineur) | depuis le panneau du tuto, je cherche « Fermer le tuto » et je le vois dessiné comme un bouton
+  - G1 (moyen) | depuis un écran où le Guide est ouvert, je cherche le bouton à toucher et je vois que le Guide ne cache rien de touchable
+  - T6 (mineur) | depuis le chapitre 1, je lis la consigne et chaque mot de musicien (tempo, swing…) est expliqué en mots simples
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

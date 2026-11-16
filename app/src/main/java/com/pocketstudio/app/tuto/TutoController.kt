@@ -305,6 +305,8 @@ class TutoController(
         // word. « Suivant » on an example counts it: the user chose to go on (nothing to make, nothing to check).
         if (by > 0 && u.current.listening && u.current.id !in u.progress.done) {
             markDone()
+            // Tour 7 (D7): counted, and said so (« Weiter » on an example never heard ticked it without a word).
+            _ui.value = _ui.value?.copy(made = com.pocketstudio.model.i18n.tr("Exemple passé sans l'écouter."))
             return
         }
         // N23: the chapter's « Bravo » on a step before its last one (done before): « Chapitre suivant » is the next chapter.

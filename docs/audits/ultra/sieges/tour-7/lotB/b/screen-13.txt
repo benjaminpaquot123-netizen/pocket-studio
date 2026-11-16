@@ -1,0 +1,32 @@
+Écran 13 (588x1278)
+icône (dossier ouvert) ✓ @ 125,42
+bouton « Simples » @ 295,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Andamento » @ 182,144
+bouton « ? » @ 543,144
+icône ← «  Minha música » @ 175,244
+texte « Remix » @ 408,244
+texte « No máximo 7 minutos. As 3 últimas músicas separadas ficam guardadas, além das que algum projeto usa. » [coupé] @ 294,321
+titre « Ma chanson préférée » [état « Expandido »] @ 258,472
+icône (poubelle) @ 510,524
+texte « 0:40 · 120 BPM · La menor » @ 258,572
+texte « Seu projeto: 120 BPM » @ 232,662
+bouton ✂ «  Cortar o que eu quiser » [coupé] @ 294,747
+bouton + «  Escolher uma música » @ 294,847
+bouton (boussole) « Guia  · Crie uma batida 0 % » ⌃ [état « recolhido »] @ 294,935
+texte « 120 Andamento » @ 408,1022
+icône ↶ « Desfazer » [désactivé] @ 42,1023
+image ↷ @ 116,1013
+icône ▶ « a música » @ 231,1023
+icône ⋮ « Mais » @ 545,1023
+onglet (lignes et note) « Minha música » @ 54,1146
+onglet (quatre carrés) « Ritmo » @ 174,1146
+onglet (touches de piano) « Teclado » @ 294,1146
+onglet (curseurs) « Mix » @ 414,1146
+onglet (trois points reliés) « Compartilhar » @ 534,1146
+texte « ●  REC » @ 297,1248
+texte « ✎  Anotar » @ 428,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 127,1248

@@ -1,0 +1,15 @@
+Écran 35 (588x1278)
+icône ← @ 54,48
+texte « Nouveau projet » @ 330,48
+bouton (chapeau de diplômé) « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » → @ 294,186
+bouton (éclair) « Fais-moi un morceau Choisis un style : l'appli fait le morceau, le Guide t'aide à le finir. » → @ 294,366
+texte « Un style en une touche » @ 325,501
+image ♪ @ 81,531
+texte « Touche un style : un morceau complet, prêt à écouter. » @ 343,552
+bouton « Techno » @ 104,636
+bouton « House » @ 236,636
+bouton « Trap » @ 353,636
+bouton « Pop » @ 457,636
+bouton « Lo-fi hip-hop » @ 134,720
+bouton (crayon) « Je pars de zéro Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » → @ 294,885
+bouton « Autres façons de commencer Tous les styles · Rythme de départ · Démos · Remix · Importer un projet » ⌄ @ 294,1041

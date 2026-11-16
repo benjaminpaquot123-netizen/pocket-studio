@@ -1,0 +1,57 @@
+Écran 98 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+icône « B Takt 1/1 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 57,181
+bouton (casque) [coupé, état « aus »] @ 111,181
+curseur [état « +0,0 dB », à 80 %] @ 84,342
+texte « +0,0 » @ 84,497
+texte « 3 » @ 96,537
+image (étincelles) @ 74,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 177,181
+bouton (casque) [coupé, état « aus »] @ 231,181
+curseur [état « +0,0 dB », à 80 %] @ 204,342
+texte « +0,0 » @ 204,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 297,181
+bouton (casque) [coupé, état « aus »] @ 351,181
+curseur [état « +0,0 dB », à 80 %] @ 324,342
+texte « +0,0 » @ 324,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « an »] @ 417,181
+bouton (casque) [coupé, état « aus »] @ 471,181
+curseur [état « +0,0 dB », à 80 %] @ 444,342
+texte « +0,0 » @ 444,497
+image (courbe) @ 60,672
+texte « Kurven und Effekte » @ 232,636
+texte « Noch bewegt sich nichts: Lass einen Filter aufgehen, eine Lautstärke steigen… » @ 475,695
+bouton « Automatisieren » @ 243,779
+bouton « Was spielt » @ 657,779
+titre « KURVEN » [état « Aufgeklappt »] @ 327,914
+bouton « ? » @ 218,914
+bouton ● « Aufnehmen » @ 735,914
+texte « Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps). » @ 450,997
+texte « Der Mix Kapitel 14/16 · Schritt 1/3 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Zieh in Mix den Fader der Spur „Akkorde“ um etwa 2 dB runter, dann den der Spur „Melodie“. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,37 @@
+Écran 15 (588x1278)
+icône (dossier ouvert) @ 125,42
+bouton « Simples » @ 295,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Andamento » @ 182,144
+bouton « ? » @ 543,144
+icône ← «  Minha música » @ 175,244
+texte « Remix » @ 408,244
+texte « Cortar a música » @ 260,360
+bouton « ? » @ 464,360
+icône ← @ 42,388
+bouton ▶ @ 528,388
+texte « Ma chanson préférée · 0:40 » @ 282,455
+bouton « Voz » [sélectionné] @ 85,540
+bouton « Bateria » @ 262,540
+bouton « Baixo » @ 455,540
+bouton « Resto » [coupé] @ 560,540
+texte « Pince para ampliar » @ 393,688
+dessin [état « 0:04.00 »] @ 138,813
+dessin [état « 0:07.00 »] @ 450,813
+bouton (boussole) « Guia  · Crie uma batida 0 % » ⌃ [état « recolhido »] @ 294,935
+texte « 120 Andamento » @ 408,1022
+icône ↶ « Desfazer » @ 42,1023
+image ↷ @ 116,1013
+icône ▶ « a música » @ 231,1023
+icône ⋮ « Mais » @ 545,1023
+onglet (lignes et note) « Minha música » @ 54,1146
+onglet (quatre carrés) « Ritmo » @ 174,1146
+onglet (touches de piano) « Teclado » @ 294,1146
+onglet (curseurs) « Mix » @ 414,1146
+onglet (trois points reliés) « Compartilhar » @ 534,1146
+texte « ●  REC » @ 297,1248
+texte « ✎  Anotar » @ 428,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 127,1248

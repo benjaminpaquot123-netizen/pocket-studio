@@ -468,4 +468,19 @@ class StemBoardRouterTest {
         assertEquals(sel(), actions.state.value.playing)
         actions.stop()
     }
+
+    /**
+     * Tour 7, lot 2 D6: two pieces sent to the pads, the first silent: the bubble said « rien n'a été posé » and « est sur
+     * le pad live » at once. One message, the true one: what was placed.
+     */
+    @Test
+    fun aSilentPieceAmongPlacedOnesIsNotSaidAsNothingPlaced() {
+        val host = Host(beat(), Source(level = { _, f -> if (f < 150_000) 0f else 0.3f }))
+        val r = router(host)
+        r.sendPieces(listOf(sel(), sel(start = 200_000, end = 210_000)), StemDestination.Pad())
+        assertEquals("one piece placed", 1, host.live.size)
+        val said = r.state.value.message.orEmpty()
+        assertEquals("one message, the placed one: $said", 1, said.lines().size)
+        assertTrue("never « rien n'a été posé » beside a placed piece: $said", "muet" !in said && "est sur le pad live" in said)
+    }
 }

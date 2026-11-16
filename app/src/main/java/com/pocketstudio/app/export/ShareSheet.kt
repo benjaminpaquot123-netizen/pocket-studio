@@ -410,7 +410,8 @@ fun ShareSheetContent(
         gap = 12.dp, onStops = { if (it != stops) stops = it },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(if (page) tr("Fini ? Partage ton morceau") else tr("Prêt à partager ?"), // Little room: the title on one line, so that the duration under the name stays in sight.
+            // Tour 7 lot 5 D3: one title in both modes (the page said other words than the sheet).
+            Text(tr("Prêt à partager ?"), // Little room: the title on one line, so that the duration under the name stays in sight.
                 style = if (short) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             // Phase 36: the Mode simple's « Envoyer » tab is this page: nothing to close.
             if (!page) IconButton(onClick = actions.close, modifier = Modifier.testTag("share_close")) {
@@ -500,8 +501,8 @@ fun ShareSheetContent(
         }
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's. Pro keeps it above the checks.
-        if (!simple) ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
-        if (simple && ui.checks.isEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
+        // Tour 7 lot 5 D3: the same plain target chips in both modes (Pro's LUFS stay in Mix and under « détails »).
+        if (!simple || ui.checks.isEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = (if (ui.checks.isEmpty()) Modifier.layoutId(WHOLE_LINE) else Modifier).testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")

@@ -148,5 +148,6 @@
   "%1$s : encore +%2$d": "%1$s: +%2$d more",
   "Touche ici": "Tap here",
   "Accords en pointillé à toucher : %d": "Dotted chords to tap: %d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: a calmer moment, the kick and the bass go quiet."
+  "Break : un moment plus calme, le kick et la basse se taisent.": "Break: a calmer moment, the kick and the bass go quiet.",
+  "Exemple passé sans l'écouter.": "Example skipped without listening."
 }

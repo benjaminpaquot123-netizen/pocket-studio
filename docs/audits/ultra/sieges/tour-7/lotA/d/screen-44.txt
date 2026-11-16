@@ -1,0 +1,47 @@
+Écran 44 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+icône « B Takt 1/1 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Timeline » @ 106,210
+onglet « Teile » [sélectionné] @ 244,210
+titre « DER SONG » [état « Aufgeklappt »] @ 154,303
+bouton « ? » @ 245,303
+texte « Tippe auf einen Teil, um den Song ab dort zu hören. » @ 354,355
+texte « 1 Takt · 0:02 » @ 450,402
+bouton « Song-Akkorde B C Tippe, um die Akkorde des ganzen Songs zu ändern. » @ 450,544
+icône ▶ « B × 1  ·  1 Takt » @ 342,678
+icône − [désactivé] @ 678,678
+icône + @ 750,678
+icône ⋮ @ 822,678
+texte « Am Ende hinzufügen: » @ 184,752
+bouton « + A · Groove » @ 163,821
+bouton « + B » @ 352,821
+bouton « + Neuer Teil (Kopie von B) » @ 633,821
+bouton « + Neuer leerer Teil » @ 205,902
+bouton (barres de son) «   Was im Song spielt » @ 450,986
+texte « Bau deine Teile Kapitel 10/16 · Schritt 2/7 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Tippe auf „Teil „Intro 2“ erstellen“: der ganze Groove außer dem Becken und dem Riff. Der Bass und der Stab kommen dazu. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

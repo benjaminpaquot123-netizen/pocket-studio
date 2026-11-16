@@ -1,0 +1,17 @@
+Écran 26 (588x1278)
+icône ✕ @ 528,60
+texte « Tuto de A à Z » @ 258,60
+bouton « 5 La basse 0/2 » [coupé] @ 294,126
+bouton « 6 Le piano 0/3 » @ 294,189
+bouton « 7 La petite boucle 0/1 » @ 294,270
+bouton « 8 Ta première partie : le Groove, ta boucle de base 0/2 » @ 294,369
+bouton « 9 Comprendre les parties 0/5 » @ 294,468
+bouton « 10 Construis tes parties 0/6 » @ 294,549
+bouton « 11 Range tes parties 0/2 » @ 294,630
+bouton « 12 Les transitions 0/3 » @ 294,711
+bouton « 13 Les effets 0/2 » @ 294,792
+bouton « 14 Le mix : les volumes 0/1 » @ 294,873
+bouton « 15 Partage ton morceau 0/1 » @ 294,954
+bouton « Continuer en Pro (tous les outils) » @ 294,1038
+bouton ↺ «  Recommencer le tuto (nouveau projet vide) » @ 294,1128
+texte « Quitter le tuto (tu pourras le reprendre) » @ 294,1218

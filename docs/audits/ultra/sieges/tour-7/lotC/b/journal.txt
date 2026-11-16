@@ -1,0 +1,235 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=-
+#0 PREMIER ECRAN reel_s=5.5 simule_s=2.4 jvm_s=13.5 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 485 1224
+#1 DOIGT scroll_hint « ↓ 4 autres »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE 914738cda8 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 294 1100 294 400
+#2 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 5baa7ba6f6 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 294 1100 294 500
+#3 DOIGT launch_challenges « Défis : écoute un rythme, refais-le sur  »
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE 022fff7224 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » 1.88:1 (needs 4.5:1, 14 sp)
+#4 > glisse 294 300 294 1200
+#4 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#5 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 294 426
+#5 DOIGT welcome_guided « Fais-moi un morceau »
+#6 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9ef3c125ee | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 294 963
+#6 DOIGT mode_card_simple « Simple »
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 294 552
+#7 DOIGT wizard_family_House « House »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 56e4b27154 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups. » ellipsized (« … »)
+#8 LAYOUT CUT « La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords. » ellipsized (« … »)
+#8 LAYOUT CUT « La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle. » ellipsized (« … »)
+#8 > touche 300 681
+#8 DOIGT wizard_style_house « House »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 190606da0b | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 322 792
+#9 DOIGT wizard_style_play_house «  Créer et écouter »
+#10 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 5e81cf32dc | project=p-ab60561a no tuto
+#10 SON Son : le morceau joue (partie « F »).
+#10 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#10 > touche 543 42
+#10 DOIGT top_more
+#11 ROUTE plus | MODE simple | EMPREINTE defd6038f9 | project=p-ab60561a no tuto
+#11 SON Son : le morceau joue (partie « F »).
+#11 > touche 534 1158
+#11 DOIGT tab_simple_Envoyer « Partager »
+#12 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 2764ab11e9 | project=p-ab60561a no tuto
+#12 SON Son : le morceau joue (partie « F »).
+#12 > touche 272 873
+#12 DOIGT share_my_exports « Mes fichiers »
+#13 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 8ac051728e | project=p-ab60561a no tuto
+#13 SON Son : le morceau joue (partie « F »).
+#13 > touche 497 738
+#13 DOIGT my_exports_close « Fermer »
+#14 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 73039907b3 | project=p-ab60561a no tuto
+#14 SON Son : le morceau joue (partie « F »).
+#14 > touche 272 873
+#14 DOIGT share_my_exports « Mes fichiers »
+#15 ROUTE dialogue:my_exports | MODE simple | EMPREINTE e83f575b74 | project=p-ab60561a no tuto
+#15 SON Son : le morceau joue (partie « G »).
+#15 > retour
+#15 RETOUR
+#16 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE d20a3e9e93 | project=p-ab60561a no tuto
+#16 SON Son : le morceau joue (partie « G »).
+#16 > touche 235 486
+#16 DOIGT share_target_STREAMING « Streaming »
+#17 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 3692e26032 | project=p-ab60561a no tuto
+#17 SON Son : le morceau joue (partie « G »).
+#17 > touche 294 771
+#17 DOIGT share_go «   Partager »
+#18 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 195c02aaa6 | project=p-ab60561a no tuto
+#18 SON Son : le morceau joue (partie « G ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#18 > attends 5
+#18 PARTAGE House-morceau-streaming-20261115-155052.m4a
+#19 ROUTE dialogue:« Partager mon morceau · House-m » | MODE simple | EMPREINTE d0aa3fed19 | project=p-ab60561a no tuto
+#19 SON Son : le morceau joue (partie « C »).
+#19 > retour
+#19 RETOUR
+#20 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 41f7e17d3c | project=p-ab60561a no tuto
+#20 SON Son : le morceau joue (partie « C »).
+#20 LAYOUT CONTRAST « Pas de saturation. » 4.20:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST « OK » 2.00:1 (needs 4.5:1, 14 sp)
+#20 > touche 508 820
+#20 DOIGT share_bilan_ok « OK »
+#21 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 219f6da98f | project=p-ab60561a no tuto
+#21 SON Son : le morceau joue (partie « C »).
+#21 > touche 369 486
+#21 DOIGT share_target_CLUB « Club »
+#22 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 936cbc56c1 | project=p-ab60561a no tuto
+#22 SON Son : le morceau joue (partie « C »).
+#22 > touche 414 675
+#22 DOIGT share_format_Wav « WAV · qualité max »
+#23 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 94f5f419b2 | project=p-ab60561a no tuto
+#23 SON Son : le morceau joue (partie « C »).
+#23 > touche 294 771
+#23 DOIGT share_go «   Partager »
+#24 ROUTE dialogue:share_progress | MODE simple | EMPREINTE dcf8dddf9e | project=p-ab60561a no tuto
+#24 SON Son : le morceau joue (partie « C ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#24 > attends 5
+#24 PARTAGE House-morceau-club-20261115-155122.wav
+#25 ROUTE dialogue:« Partager mon morceau · House-m » | MODE simple | EMPREINTE beefad3cd6 | project=p-ab60561a no tuto
+#25 SON Son : le morceau joue (partie « H »).
+#25 > retour
+#25 RETOUR
+#26 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 0461970416 | project=p-ab60561a no tuto
+#26 SON Son : le morceau joue (partie « H »).
+#26 > touche 347 820
+#26 DOIGT share_bilan_files « Voir mes fichiers »
+#27 ROUTE dialogue:my_exports | MODE simple | EMPREINTE 18b3f0342a | project=p-ab60561a no tuto
+#27 SON Son : le morceau joue (partie « H ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#27 LAYOUT CONTRAST « Renvoyer » 4.14:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « Renvoyer » 2.00:1 (needs 4.5:1, 14 sp)
+#27 > touche 497 838
+#27 DOIGT my_exports_close « Fermer »
+#28 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE b38f0e7132 | project=p-ab60561a no tuto
+#28 SON Son : le morceau joue (partie « H »).
+#28 > touche 54 1158
+#28 DOIGT tab_simple_Morceau « Mon morceau »
+#29 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE c0f31f7721 | project=p-ab60561a no tuto
+#29 SON Son : le morceau joue (partie « H »).
+#29 > touche 534 1158
+#29 DOIGT tab_simple_Envoyer « Partager »
+#30 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE aa1552c07f | project=p-ab60561a no tuto
+#30 SON Son : le morceau joue (partie « H »).
+#30 > touche 296 42
+#30 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#31 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 2421f3621f | project=p-ab60561a no tuto
+#31 SON Son : le morceau joue (partie « H »).
+#31 LAYOUT CONTRAST « Pro » 1.74:1 (needs 3.0:1, 24 sp)
+#31 > touche 294 804
+#31 DOIGT mode_card_pro « Pro »
+#32 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 276a6dae53 | project=p-ab60561a no tuto
+#32 SON Son : le morceau joue (partie « D »).
+#32 LAYOUT CUT « Filtre Coupure · Basse » ellipsized (« … »)
+#32 LAYOUT CUT « Filtre Coupure · Piano » ellipsized (« … »)
+#32 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
+#32 LAYOUT CONTRAST « Suivre » 4.06:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT TARGET « Son de Batterie Couper le son de Batterie activé » 40 x 22 dp (touch 48 x 48)
+#32 LAYOUT TARGET « Écouter la piste Batterie seule désactivé » 40 x 22 dp (touch 48 x 48)
+#32 LAYOUT TARGET « Son de Basse Couper le son de Basse activé » 40 x 22 dp (touch 48 x 48)
+#32 LAYOUT TARGET « Écouter la piste Basse seule désactivé » 40 x 22 dp (touch 48 x 48)
+#32 LAYOUT TARGET « Son de Piano Couper le son de Piano activé » 40 x 22 dp (touch 48 x 48)
+#32 LAYOUT TARGET « Écouter la piste Piano seule désactivé » 40 x 22 dp (touch 48 x 48)
+#32 > touche 519 1062
+#32 DOIGT thumb_share « Partager mon morceau »
+#32 DIALOGUE 0.4 s
+#33 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ceb154101d | project=p-ab60561a no tuto
+#33 SON Son : le morceau joue (partie « D »).
+#33 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
+#33 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
+#33 LAYOUT OVERLAP « 3:09 » over the touchable « Fermer la feuille » (48 x 27 dp)
+#33 LAYOUT OVERLAP « 19 parties » over the touchable « Fermer la feuille » (64 x 20 dp)
+#33 LAYOUT OVERLAP « Volume : −8,0, fort, comme la musique de club » over the touchable « Fermer la feuille » (177 x 36 dp)
+#33 LAYOUT OVERLAP « détails » over the touchable « Fermer la feuille » (35 x 9 dp)
+#33 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#33 LAYOUT OVERLAP «  Arrêter » over the touchable « Fermer la feuille » (50 x 20 dp)
+#33 LAYOUT OVERLAP « Volume visé » over the touchable « Fermer la feuille » (79 x 20 dp)
+#33 LAYOUT OVERLAP « Streaming · −14 LUFS » over the touchable « Fermer la feuille » (146 x 20 dp)
+#33 LAYOUT OVERLAP « Club · −8 LUFS » over the touchable « Fermer la feuille » (101 x 20 dp)
+#33 LAYOUT OVERLAP « Auto (House) · −8 LUFS » over the touchable « Fermer la feuille » (160 x 20 dp)
+#33 LAYOUT OVERLAP « Désactivée » over the touchable « Fermer la feuille » (75 x 20 dp)
+#33 LAYOUT OVERLAP « Fort, comme en club (−8 LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (348 x 54 dp)
+#33 LAYOUT OVERLAP « Tout est prêt : aucun solo oublié, aucune piste coupée. » over the touchable « Fermer la feuille » (304 x 40 dp)
+#33 LAYOUT OVERLAP «   Vidéo pour les réseaux · 30 s » over the touchable « Fermer la feuille » (166 x 20 dp)
+#33 LAYOUT OVERLAP « M4A · pour partager » over the touchable « Fermer la feuille » (137 x 20 dp)
+#33 LAYOUT OVERLAP « WAV · qualité max » over the touchable « Fermer la feuille » (123 x 20 dp)
+#33 LAYOUT OVERLAP «   Partager » over the touchable « Fermer la feuille » (76 x 24 dp)
+#33 LAYOUT OVERLAP « Mes fichiers » over the touchable « Fermer la feuille » (83 x 20 dp)
+#33 LAYOUT OVERLAP « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » over the touchable « Fermer la feuille » (206 x 36 dp)
+#33 LAYOUT CONTRAST « ? » 1.35:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Retrouver et renvoyer : M4A, WAV, vidéo, .zip » 3.32:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « ? » 2.04:1 (needs 4.5:1, 12 sp)
+#33 > touche 272 1218
+#33 DOIGT share_my_exports « Mes fichiers »
+#33 DIALOGUE 0.3 s
+#34 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 39a788f2bf | project=p-ab60561a no tuto
+#34 SON Son : le morceau joue (partie « D ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#34 LAYOUT CONTRAST « Renvoyer » 4.29:1 (needs 4.5:1, 14 sp)
+#34 > touche 485 617
+#34 DOIGT my_export_send « Renvoyer »
+#34 PARTAGE 2
+#34 DIALOGUE 0.3 s
+#35 ROUTE dialogue:« Partager le morceau · 2 » | MODE pro | EMPREINTE 5bd1f068bb | project=p-ab60561a no tuto
+#35 SON Son : le morceau joue (partie « D ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#35 > retour
+#35 RETOUR
+#35 DIALOGUE 0.2 s
+#36 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 6607932d62 | project=p-ab60561a no tuto
+#36 SON Son : le morceau joue (partie « D ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#36 > touche 485 716
+#36 DOIGT my_export_send « Renvoyer »
+#36 PARTAGE 1
+#36 DIALOGUE 0.3 s
+#37 ROUTE dialogue:« Partager le morceau · 1 » | MODE pro | EMPREINTE d726b76083 | project=p-ab60561a no tuto
+#37 SON Son : le morceau joue (partie « D ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#37 > retour
+#37 RETOUR
+#37 DIALOGUE 0.2 s
+#38 ROUTE dialogue:my_exports | MODE pro | EMPREINTE 6607932d62 | project=p-ab60561a no tuto
+#38 SON Son : le morceau joue (partie « D ») ; export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#38 > touche 497 838
+#38 DOIGT my_exports_close « Fermer »
+#38 DIALOGUE 0.2 s
+#39 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE ceb154101d | project=p-ab60561a no tuto
+#39 SON Son : le morceau joue (partie « D »).
+#39 > touche 522 166
+#39 DOIGT share_close
+#39 DIALOGUE 0.2 s
+#40 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE 86bc7415de | project=p-ab60561a no tuto
+#40 SON Son : le morceau joue (partie « D »).
+#40 > touche 534 1158
+#40 DOIGT tab_Plus « Plus »
+#41 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 3b00090a7f | project=p-ab60561a no tuto
+#41 SON Son : le morceau joue (partie « D »).
+#41 > glisse 294 900 294 300
+#41 DOIGT rien
+#42 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 7d9da5ae28 | project=p-ab60561a no tuto
+#42 SON Son : le morceau joue (partie « F »).
+#42 LAYOUT OVERLAP « Réglages » over the touchable « Tempo : 122 BPM Changer le tempo » (15 x 4 dp)
+#42 LAYOUT OVERLAP « Réglages » over the touchable « Jouer depuis une partie » (42 x 4 dp)
+#42 > touche 294 1158
+#42 DOIGT tab_Mix « Mix »
+#43 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 47fc2e1b30 | project=p-ab60561a no tuto
+#43 SON Son : le morceau joue (partie « F »).
+#43 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « Lead » 3.36:1 (needs 4.5:1, 13 sp)
+#43 LAYOUT CONTRAST « +0,0 » 3.39:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « 5 » 2.26:1 (needs 4.5:1, 12 sp)
+#43 > fin
+#43 FIN : fin

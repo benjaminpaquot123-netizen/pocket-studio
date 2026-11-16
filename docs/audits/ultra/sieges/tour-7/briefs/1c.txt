@@ -1,0 +1,19 @@
+First read and follow /home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-7/lotA/c (seat c, lot A; lang ja, device phone, font 100, mode simple, options amenee=tuto:techno:3, mission tuto-facile, budget 150 gestures).
+Profile (id t7-1c): Débutant japonais, téléphone, tuto Facile techno ; le banc l'amène au chapitre 3 (クラップ). Lit tout, n'aime pas les consignes trop longues ni les mots étrangers. Act as this person (habits, patience, vocabulary).
+Mission tuto-facile: Le banc ouvre le tuto au chapitre 3 : fais les chapitres 3 à 7 (クラップ à リフ). Note pour chaque chapitre : compris oui/non, hésitations.
+Its 3 goals (ids, the bench checks them): chap1 (chapitre 1 fini), chap3 (chapitre 3 fini), bravo (un « Bravo » de fin de chapitre).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t7-1c-1 | 1. Les étapes d'écoute se valident quand j'ai écouté, sans devoir toucher « 次へ »
+  - id=t7-1c-2 | 2. « ここをタップ » m'amène sur la mesure où il manque encore une note
+  - id=t7-1c-3 | 3. Aucune consigne ne demande plus de 3 actions à la fois
+  - id=t7-1c-4 | 4. tous les textes vus sont en japonais, aucun mot en anglais ni coupé
+Défauts à contrôler (defauts-avant) : ce tour vérifie les corrections du tour 6. Dans ton rapport, ajoute une liste « defauts-avant: » avec une ligne par id ci-dessous, sous la forme « - <id> | corrigé (écran N) : ce que tu vois » ou « - <id> | pas corrigé (écran N) : ce que tu vois » ou « - <id> | pas vu ». Un « pas corrigé » est aussi une fiche de défaut.
+  - T4 / N4 (grave) | depuis la grille de la basse (chapitre 5) ou de la riff (chapitre 7), panneau ouvert, je regarde les notes pointillées et je vois chacune en entier au-dessus du panneau, sinon une flèche ↑/↓
+  - N19 (grave) | depuis une étape d'écoute non validée, je touche « 次へ » et je vois ce qu'il reste à faire, jamais « もうすぐ完成 »
+  - T11 (moyen) | depuis le chapitre 7, je touche « ここをタップ » / « Je le fais » et je vois la grille sur la mesure que la consigne nomme, pas la suivante
+  - T3 (mineur) | depuis le chapitre 3 (クラップ), je lis la consigne et je trouve le bouton qui met la partie à 2 mesures (« 2 小節にする »)
+  - T8 (mineur) | depuis le chapitre 5, je lis la consigne et je vois au plus 3 actions à faire
+  - N21 (mineur) | depuis les chapitres 3 à 7, je lis le même mot japonais pour une même chose (コード, スタブ…)
+  - T16 (mineur) | depuis les écrans du tuto, je lis les noms de pads et de sons et je n'en vois aucun en anglais ni coupé (Perc, Groove…)
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

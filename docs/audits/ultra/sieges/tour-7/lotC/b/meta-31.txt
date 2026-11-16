@@ -1,0 +1,2 @@
+route=dialogue:mode_switch
+nouvelle=1

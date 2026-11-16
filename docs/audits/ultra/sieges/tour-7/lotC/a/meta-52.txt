@@ -1,0 +1,2 @@
+route=dialogue:play_from_menu
+nouvelle=0

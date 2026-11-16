@@ -1,0 +1,57 @@
+Écran 10 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 83,123
+bouton « ? » @ 855,123
+texte « Schläge pro Takt: » @ 158,180
+bouton « ? » [coupé] @ 295,181
+bouton « 2/4 » @ 90,248
+bouton « 3/4 » @ 197,248
+bouton « 4/4 » [sélectionné] @ 304,248
+bouton « 5/4 » @ 411,248
+bouton « 6/4 » @ 518,248
+bouton « 7/4 » @ 624,248
+texte « 4/4 für die meisten Songs, 3/4 für einen Walzer, 6/4 oder 7/4 für seltenere Rhythmen. » @ 450,332
+titre « BAUSTEINE » [état « Aufgeklappt »] @ 161,455
+bouton « ? » @ 258,455
+texte « Ein Baustein = die Drums, Acid und Noten eines Teils. Die Teile des Songs bestehen daraus. Tippe auf einen, um ihn zu bearbeiten, halte und zieh, um ihn zu verschieben. » @ 450,543
+texte « Zeigen: » @ 91,645
+bouton « 8 » [sélectionné] @ 186,645
+bouton « 16 » @ 271,645
+bouton « 24 » @ 362,645
+bouton « A Groove leer » @ 139,756
+bouton « B leer » @ 346,756
+bouton « C leer » @ 553,756
+bouton « D leer » @ 760,756
+bouton « E leer » @ 139,894
+bouton « F leer » @ 346,894
+bouton « G leer » @ 553,894
+bouton « H leer » @ 760,894
+texte « Teil A: neu und leer. Füll ihn in Rhythmus, Acid oder Synth. » @ 431,989
+bouton « Umbenennen » (crayon) [coupé] @ 139,1027
+bouton « Neu » + [coupé] @ 346,1027
+bouton « Duplizieren » (deux feuilles) [coupé] @ 553,1027
+bouton « Leeren » (poubelle et traits) [désactivé, coupé] @ 760,1027
+texte « Dein erster Teil: der Groove, deine Grundschleife Kapitel 8/16 · Schritt 2/2 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Nenn diesen Teil „Groove“ (das Wort der Musiker für einen Loop, bei dem man sich bewegen will): der komplette Loop, aus dem du die anderen Teile ableitest. Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 120 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,169 @@
+#0 SIEGE lang=es device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=left amenee=- rejeu=/home/user/pocket-studio/docs/audits/ultra/sieges/tour-6/lotB/a rejeu.n=7 rejeu.puis=main
+#0 PREMIER ECRAN reel_s=11.3 simule_s=2.4 jvm_s=24.4 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 1ed676191a | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 150 1140
+#1 DOIGT welcome_remix « Extraer la voz de una canción »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 46233d081c | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 REJEU main rendue : écran 2 différent de l'origine (après le geste 1)
+#2 > touche 90 950
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE ? | MODE simple | EMPREINTE c37ebb2530 | project=p-87614d0b no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#3 > touche 150 517
+#3 REFUS hors de portée du pouce (d'une main, la gauche)
+#4 ROUTE ? | MODE simple | EMPREINTE d1d923916b | project=p-87614d0b no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 150 903
+#4 DOIGT remix_download_thumb « Descargar el modelo (174 MB) »
+#5 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE 7a1a6c5e47 | project=p-87614d0b no tuto
+#5 SON Son : rien ne joue.
+#5 > touche 463 783
+#5 DOIGT remix_model_ask_ok « Descargar »
+#6 ROUTE ? | MODE simple | EMPREINTE 0057ff7bca | project=p-87614d0b no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 30
+#7 ROUTE ? | MODE simple | EMPREINTE 866567be1e | project=p-87614d0b no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 150 903
+#7 DOIGT remix_pick_thumb «  Elegir una canción »
+#8 ROUTE ? | MODE simple | EMPREINTE 4bb5b4af95 | project=p-87614d0b no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 60
+#9 ROUTE ? | MODE simple | EMPREINTE f88504694f | project=p-87614d0b no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 120 676
+#9 DOIGT cut_song_3a02635f77d71cd9a979f25b «  Cortar lo que quiero »
+#10 ROUTE cut_screen | MODE simple | EMPREINTE a9177c010a | project=p-87614d0b no tuto
+#10 SON Son : rien ne joue.
+#10 > glisse 120 900 120 450
+#10 REFUS hors de portée du pouce (d'une main, la gauche)
+#11 ROUTE cut_screen | MODE simple | EMPREINTE 2377d0aa40 | project=p-87614d0b no tuto
+#11 SON Son : rien ne joue.
+#11 > glisse 100 940 100 640
+#11 DOIGT rien
+#12 ROUTE cut_screen | MODE simple | EMPREINTE 871eae51f9 | project=p-87614d0b no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 458 678
+#12 REFUS hors de portée du pouce (d'une main, la gauche)
+#13 ROUTE cut_screen | MODE simple | EMPREINTE 3487968e44 | project=p-87614d0b no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 410 690
+#13 DOIGT cut_stem_2 « Resto »
+#14 ROUTE cut_screen | MODE simple | EMPREINTE ef67d8655f | project=p-87614d0b no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 69 678
+#14 DOIGT cut_stem_3 « Voz »
+#15 ROUTE cut_screen | MODE simple | EMPREINTE 871eae51f9 | project=p-87614d0b no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 80 474
+#15 REFUS hors de portée du pouce (d'une main, la gauche)
+#16 ROUTE cut_screen | MODE simple | EMPREINTE 3487968e44 | project=p-87614d0b no tuto
+#16 SON Son : rien ne joue.
+#16 > touche 96 876
+#16 DOIGT cut_to_pads « En los pads »
+#17 ROUTE cut_screen | MODE simple | EMPREINTE e169d7b561 | project=p-87614d0b no tuto
+#17 SON Son : rien ne joue.
+#17 > glisse 100 640 100 940
+#17 DOIGT rien
+#18 ROUTE cut_screen | MODE simple | EMPREINTE 070ad216c8 | project=p-87614d0b no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 80 660
+#18 DOIGT cut_auto « Cortes: Un trozo »
+#19 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE 237aeed841 | project=p-87614d0b no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 102 816
+#19 DOIGT cut_auto_1 « Frases »
+#20 ROUTE cut_screen | MODE simple | EMPREINTE 745254c0ed | project=p-87614d0b no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 69 366
+#20 REFUS hors de portée du pouce (d'une main, la gauche)
+#21 ROUTE cut_screen | MODE simple | EMPREINTE 3ad5fbb3e6 | project=p-87614d0b no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 456 636
+#21 REFUS hors de portée du pouce (d'une main, la gauche)
+#22 ROUTE cut_screen | MODE simple | EMPREINTE 3ad5fbb3e6 | project=p-87614d0b no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 200 565
+#22 DOIGT rien
+#23 ROUTE cut_screen | MODE simple | EMPREINTE 21f50b9934 | project=p-87614d0b no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 460 880
+#23 DOIGT cut_to_track « En una pista »
+#24 ROUTE cut_screen | MODE simple | EMPREINTE b42ac2bde6 | project=p-87614d0b no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 80 636
+#24 DOIGT cut_auto « Cortes: Frases »
+#25 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE eba0769d20 | project=p-87614d0b no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 102 936
+#25 DOIGT cut_auto_3 « Compases »
+#26 ROUTE cut_screen | MODE simple | EMPREINTE dd9b5181c9 | project=p-87614d0b no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 60 565
+#26 DOIGT rien
+#27 ROUTE cut_screen | MODE simple | EMPREINTE 7247885c19 | project=p-87614d0b no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 200 565
+#27 DOIGT rien
+#28 ROUTE cut_screen | MODE simple | EMPREINTE 7d477e5a03 | project=p-87614d0b no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 330 565
+#28 REFUS hors de portée du pouce (d'une main, la gauche)
+#29 ROUTE cut_screen | MODE simple | EMPREINTE c0a8aa2116 | project=p-87614d0b no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 480 565
+#29 REFUS hors de portée du pouce (d'une main, la gauche)
+#30 ROUTE cut_screen | MODE simple | EMPREINTE c0a8aa2116 | project=p-87614d0b no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 96 876
+#30 DOIGT cut_to_pads « En los pads »
+#31 ROUTE cut_screen | MODE simple | EMPREINTE 64a1bee5b3 | project=p-87614d0b no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 80 618
+#31 DOIGT cut_auto « Cortes: Compases »
+#32 ROUTE dialogue:cut_auto_0 | MODE simple | EMPREINTE bea0d4eab9 | project=p-87614d0b no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 102 702
+#32 DOIGT cut_auto_0 « Un trozo »
+#33 ROUTE cut_screen | MODE simple | EMPREINTE 6f43ebacf0 | project=p-87614d0b no tuto
+#33 SON Son : rien ne joue.
+#33 > glisse 445 540 585 540
+#33 REFUS hors de portée du pouce (d'une main, la gauche)
+#34 ROUTE cut_screen | MODE simple | EMPREINTE 66dafc8c08 | project=p-87614d0b no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 288 1062
+#34 DOIGT thumb_play « Reproducir la canción »
+#35 ROUTE cut_screen | MODE simple | EMPREINTE 89d0a02d47 | project=p-87614d0b no tuto
+#35 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#35 > attends 20
+#36 ROUTE cut_screen | MODE simple | EMPREINTE be2a0a5f6b | project=p-87614d0b no tuto
+#36 SON Son : la musique du projet joue en boucle ; la chanson « Ma chanson préférée » est dans le projet, mais toutes ses parties sont coupées.
+#36 > touche 288 1062
+#36 DOIGT thumb_play « Detener »
+#37 ROUTE cut_screen | MODE simple | EMPREINTE 6f43ebacf0 | project=p-87614d0b no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 174 1158
+#37 DOIGT tab_simple_Rythme « Ritmo »
+#38 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE e02dee969f | project=p-87614d0b no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 517 1062
+#38 DOIGT thumb_more « Más opciones »
+#39 ROUTE plus | MODE simple | EMPREINTE af63bf0239 | project=p-87614d0b no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 450 430
+#39 REFUS hors de portée du pouce (d'une main, la gauche)
+#40 ROUTE plus | MODE simple | EMPREINTE 4a92d6a64d | project=p-87614d0b no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 420 480
+#40 REFUS hors de portée du pouce (d'une main, la gauche)
+#41 ROUTE plus | MODE simple | EMPREINTE 4a92d6a64d | project=p-87614d0b no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 54 1158
+#41 DOIGT tab_simple_Morceau « Mi canción »
+#42 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3ab49346fe | project=p-87614d0b no tuto
+#42 SON Son : rien ne joue.
+#42 > fin
+#42 FIN : fin

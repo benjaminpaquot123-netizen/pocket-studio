@@ -444,6 +444,7 @@
         },
         {
           "id": "gap",
+          "levels": "p",
           "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Refrain.",
           "check": "gap",
           "spot": "rhythm.pattern",

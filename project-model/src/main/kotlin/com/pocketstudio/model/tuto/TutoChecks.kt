@@ -1741,7 +1741,60 @@ object TutoChecks {
      * when it exists), only the bricks of [TutoStep.keep] kept ("*": all), the drums of the
      * target's part [TutoStep.lanesFrom] on the pads it keeps.
      */
-    private fun makePart(start: Project, step: TutoStep, target: TutoTarget): Project? {
+    private fun makePart(start: Project, step: TutoStep, target: TutoTarget): Project? = rawPart(start, step, target)?.let { notBornDone(it, step, target) }
+
+    /**
+     * Tour 7 (audit « Fable », R-B): a part is never born done. [made] (the part [step] just made, shown) with what
+     * the later steps of its course ask there left to do: the hits the silence erases (the bar before, said again
+     * on its last cells), the last roll slowed, the crash not yet on its first beat.
+     */
+    private fun notBornDone(made: Project, step: TutoStep, target: TutoTarget): Project {
+        val label = step.check.removePrefix("part:").substringBeforeLast(':')
+        // Every level that holds the step: the Pro course asks more of a part than the Facile one (a roll, a crash).
+        val later = TutoLevel.entries.flatMap { level ->
+            val steps = TutoCourse.of(target.style.id)?.chaptersFor(level).orEmpty().flatMap { it.steps }
+            val at = steps.indexOfFirst { it.id == step.id }
+            if (at < 0) emptyList() else steps.drop(at + 1)
+        }.distinctBy { it.id }
+            .filter { (it.check == "gap" || it.check == "fill" || it.check == "crash") && partsOf(it).any { l -> labelIs(l, label) } }
+        var q = made
+        for (s in later) {
+            if (!done(s, q, target)) continue
+            val d = q.drums
+            val n = d.steps
+            fun lanes(change: (Int, DrumLane) -> DrumLane) = q.copy(drums = d.copy(lanes = d.lanes.mapIndexed(change)))
+            q = when (s.check) {
+                "gap" -> {
+                    val window = n - gapCells(s, target) until n
+                    val silent = gapLanes(s, target)
+                    val bar = q.stepsPerBar.coerceAtLeast(1)
+                    val said = lanes { k, l -> if (k !in silent) l else l.copy(hits = l.hits + window.mapNotNull { c -> l.hits[c - bar]?.let { c to it.copy(repeats = 1) } }) }
+                    if (said != q) said else {
+                        // Nothing a bar before: one hit on the pad the part plays most, where the silence begins.
+                        val most = d.lanes.withIndex().filter { (k, l) -> k in silent && l.hits.isNotEmpty() }.maxByOrNull { it.value.hits.size }?.index
+                        lanes { k, l -> if (k == most) l.copy(hits = l.hits + (window.first to Hit(1f))) else l }
+                    }
+                }
+                "fill" -> {
+                    val beat = (q.stepsPerBar / 4).coerceAtLeast(1)
+                    val end = n - fillEnd(s, target)
+                    val window = (end - beat) until end
+                    val on = lanesOf(fillRole(s), target).toSet()
+                    val tom = !buildsIn(s, target)
+                    lanes { k, l ->
+                        if (k !in on) l else {
+                            val slowed = l.hits.mapValues { (c, h) -> if (c in window && h.repeats >= FILL_REPEATS) h.copy(repeats = FILL_REPEATS - 1) else h }
+                            if (!tom) l.copy(hits = slowed) else l.copy(hits = slowed.filterKeys { it !in window })
+                        }
+                    }
+                }
+                else -> lanes { k, l -> if (k == CRASH_LANE) l.copy(hits = l.hits - 0) else l }
+            }
+        }
+        return q
+    }
+
+    private fun rawPart(start: Project, step: TutoStep, target: TutoTarget): Project? {
         val label = step.check.removePrefix("part:").substringBeforeLast(':')
         // Tour 7 (seats c, d: a chapter on parts opened on a project without its Groove): no « Créer la partie » that
         // makes nothing; the Groove the course had built by then is made first, as its earlier chapters make it.

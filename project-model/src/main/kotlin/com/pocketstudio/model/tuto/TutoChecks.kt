@@ -2502,13 +2502,46 @@ object TutoChecks {
         is TutoNeed.Track -> if (need.role == "sub") withSub(p, target)?.let { q -> q to q.instrumentTracks.firstOrNull { roleOf(q, it.id) == "sub" }?.id }
             else partTrack(p, need.role, target)?.let { (q, id) -> insertsLeft(q, id, need.role, target, level) to id }
         is TutoNeed.Copy -> copied(p, need.role, step, target)?.let { it to null }
-        is TutoNeed.Part -> makePart(p, partStep(need.label, step, target), target, level)?.let { it to null }
+        // Tour 7 (seat d): made from a later step (a transition in a « Montée » that is gone) while the song is laid
+        // out, the part goes in it too; the steps that make the part or lay the song out leave that to the user.
+        is TutoNeed.Part -> makePart(p, partStep(need.label, step, target), target, level)
+            ?.let { if (step.check.startsWith("part:") || step.check.startsWith("song:")) it else placed(it, need.label, target) }?.let { it to null }
         // An empty Groove (a chapter opened on an empty project): the one the course had built by then, then named.
         is TutoNeed.Name -> (if (p.allScenes.getOrNull(grooveOf(p))?.isEmpty != false) courseGroove(p, step, target, level) else p)
             .let { q -> q.renameScene(grooveOf(q), need.label) }.takeIf { sceneLabelled(it, need.label) >= 0 }?.let { it to null }
         is TutoNeed.Lengths -> lengths(p, step.song)?.let { it to null }
         is TutoNeed.Scene -> namedScene(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }
         is TutoNeed.Course -> withEarlier(step, p, target, level).takeIf { it !== p }?.let { it to null }
+    }
+
+    /**
+     * [p] with its part [label] in the song, wherever the course's order names it and the song lacks it, with the bars
+     * given there: after the part of the song that comes just before it in that order, else before the one that
+     * follows. Unchanged while the song is empty, plays that part already, plays none of the course's parts, or is full.
+     */
+    private fun placed(p: Project, label: String, target: TutoTarget): Project {
+        val scene = sceneLabelled(p, label).takeIf { it >= 0 } ?: return p
+        if (p.song.isEmpty() || p.song.any { it.scene == scene }) return p
+        val spec = TutoCourse.of(target.style.id)?.chapters?.flatMap { it.steps }?.map { it.song }
+            ?.firstOrNull { s -> barsOfList(s).any { labelIs(label, it.first) } } ?: return p
+        val wanted = barsOfList(spec)
+        var q = p
+        while (q.song.size < SongPart.MAX_PARTS) {
+            // Each part of the song, the entry of the order it stands for (the entries the song lacks stepped over).
+            val rs = runs(q)
+            var k = 0
+            val places = rs.map { r ->
+                val l = q.allScenes.getOrNull(r.scene)?.label.orEmpty()
+                (k until wanted.size).firstOrNull { standsFor(q, l, wanted[it].first) }?.also { k = it + 1 } ?: -1
+            }
+            // Its « Fin » too, when the Intro made is the one the song ends on.
+            val mine = wanted.indices.firstOrNull { it !in places && standsFor(q, label, wanted[it].first) } ?: break
+            val before = rs.indices.filter { places[it] in 0 until mine }.maxByOrNull { places[it] }
+            val after = rs.indices.filter { places[it] > mine }.minByOrNull { places[it] }
+            val at = before?.let { rs[it].last + 1 } ?: after?.let { rs[it].first } ?: break
+            q = q.copy(song = q.song.take(at) + SongPart(scene, 1, bars = wanted[mine].second) + q.song.drop(at))
+        }
+        return q
     }
 
     /** Each part of the song given the bars [spec] names for its label (the order kept); null when nothing changes. */

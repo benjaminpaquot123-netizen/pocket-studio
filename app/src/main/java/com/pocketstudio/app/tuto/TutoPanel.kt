@@ -164,6 +164,8 @@ object TutoHints {
     var focus by mutableIntStateOf(0)
     /** The [focus] the piano roll last answered (not state: read and written there only). */
     var focusSeen = 0
+    /** Whether the last [focus] came from a touch on the roll's line (it may go to a hidden note), not from the step. */
+    var focusTouched = false
     var demo by mutableStateOf(false)
     /** The hits a step asks to take away, by pad ([TutoChecks.toErase]): drawn crossed out. */
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
@@ -208,7 +210,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
+        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = false; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }
@@ -668,6 +670,8 @@ fun TutoPanel(
                     words.animateScrollTo(minOf(words.maxValue, to))
                 }
             }
+            // Control « tuto2 »: unfolded by « Lire la suite », the panel covers the cells to touch: « Réduire » gives them back.
+            if (lowRoom && readAll) LessWords { readAll = false }
             }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
@@ -721,6 +725,19 @@ private fun MoreWords(shown: Boolean, modifier: Modifier = Modifier, more: suspe
     ) {
         Text(tr("Lire la suite"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
         Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+    }
+}
+
+/** Under the step's words unfolded over the cells to touch: « Réduire », a touch gives the words their low room back. */
+@Composable
+private fun LessWords(less: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clickable(onClickLabel = tr("Réduire"), role = androidx.compose.ui.semantics.Role.Button, onClick = less)
+            .testTag("tuto_text_less").heightIn(min = 32.dp),
+        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(tr("Réduire"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
+        Icon(Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
     }
 }
 

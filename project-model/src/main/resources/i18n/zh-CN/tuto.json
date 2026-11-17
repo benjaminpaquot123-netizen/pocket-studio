@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "曲子的调：%s",
   "Tonalité du morceau": "歌曲调性",
   "Lire la suite": "继续阅读",
+  "Réduire": "收起",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "小节：节奏转一圈，四拍；数“1、2、3、4”。",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "拍：小节里的每个“1、2、3、4”，就是用脚打拍子的地方。",
   "Accord : plusieurs notes jouées ensemble.": "和弦：一起弹的几个音。",

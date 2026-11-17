@@ -10,6 +10,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -356,7 +358,37 @@ fun TutoKitCard(
     onPhone: Boolean = false,
 ) {
     val shape = RoundedCornerShape(12.dp)
-    // Round 3, n° 28: inside the panel, at the end of the step's words (the panel's own scroll): never in its place.
+    val pinned = LocalKitPinned.current
+    val label = if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size)
+    // Round 3, n° 28: inside the panel, never in its place. Tour 7 D3 end: pinned under the words, one row, nothing more
+    // (the long sentence pushed its buttons below « Lire la suite »).
+    if (pinned) {
+        Column(
+            modifier.fillMaxWidth().padding(top = 4.dp).clip(shape).background(Neon.Amber.copy(alpha = 0.08f)).border(1.dp, Neon.Amber, shape)
+                .padding(horizontal = 6.dp, vertical = 4.dp).testTag("tuto_kit"),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Red, maxLines = 2, modifier = Modifier.testTag("tuto_kit_error")) }
+            if (progress != null) {
+                Text(tr("Téléchargement du kit… %d %%", (progress * 100).toInt()), style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_kit_progress"))
+                LinearProgressIndicator(progress = { progress }, color = Neon.Amber, trackColor = Neon.SurfaceHigh, modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)))
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                if (progress == null) {
+                    Button(
+                        onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_kit_download"),
+                    ) { Text(label, textAlign = TextAlign.Center, style = MaterialTheme.typography.labelLarge) }
+                } else Spacer(Modifier.weight(1f))
+                TextButton(
+                    onClick = later, contentPadding = PaddingValues(horizontal = 6.dp),
+                    modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_kit_later"),
+                ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center) }
+            }
+        }
+        return
+    }
     Column(
         modifier.fillMaxWidth().padding(top = 4.dp).clip(shape).background(Neon.Amber.copy(alpha = 0.08f)).border(1.dp, Neon.Amber, shape)
             .padding(10.dp).testTag("tuto_kit"),
@@ -375,15 +407,10 @@ fun TutoKitCard(
         } else {
             Button(
                 onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).wholeRow("kit_download").testTag("tuto_kit_download"),
-            ) {
-                Text(
-                    if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size),
-                    textAlign = TextAlign.Center,
-                )
-            }
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_kit_download"),
+            ) { Text(label, textAlign = TextAlign.Center) }
         }
-        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).wholeRow("kit_later").testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
+        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
     }
 }
 
@@ -617,13 +644,14 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
-                // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
-                // Tour 7 D3 (captures 26, 30, 33, 53): its buttons showed cut by the room's bottom; they are rows of [wholeLines]
-                // (whole, or below the room until « Lire la suite »). Kept in the words (round 3, n° 28: an offer coming late
-                // never moves the panel's buttons under a finger).
-                if (step.id != READY_STEP && kit != null) {
-                    CompositionLocalProvider(LocalWholeRow provides { key, c -> put(key, c) { base -> listOf(base to base + c.size.height) } }) { kit() }
-                }
+            }
+            // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
+            // Tour 7 D3 end (seats 1a #1, 2a #2, 2d #3): at the end of the words, its buttons came only after « Lire la suite ».
+            // Pinned under the words, one row (« Télécharger le kit House (4 Mo) », « Plus tard »): always whole in sight.
+            // It takes its room from the words above it, never from the buttons below (round 3, n° 28: an offer coming
+            // late never moves the panel's buttons under a finger).
+            if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo) {
+                CompositionLocalProvider(LocalKitPinned provides true) { kit() }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
@@ -643,14 +671,8 @@ fun TutoPanel(
     }
 }
 
-/** Tour 7 D3: where a row the words' room must not cut (a kit offer's button) tells its place; null outside the panel. */
-private val LocalWholeRow = androidx.compose.runtime.staticCompositionLocalOf<((String, androidx.compose.ui.layout.LayoutCoordinates) -> Unit)?> { null }
-
-@Composable
-private fun Modifier.wholeRow(key: String): Modifier {
-    val report = LocalWholeRow.current ?: return this
-    return this.onGloballyPositioned { report(key, it) }
-}
+/** Tour 7 D3 end: the kit offer pinned under the panel's words ([TutoKitCard] in one row); false outside the panel. */
+private val LocalKitPinned = androidx.compose.runtime.staticCompositionLocalOf { false }
 
 /**
  * Tour 7 D3: the words' room ends on a whole line. When the room's bottom ([words]' value plus its most) falls inside

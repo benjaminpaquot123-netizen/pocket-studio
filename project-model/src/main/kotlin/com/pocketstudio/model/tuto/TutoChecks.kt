@@ -1306,7 +1306,7 @@ object TutoChecks {
         // « Montre-moi » of the kick's step: the other kick (a long one when the drum & bass kick is on, else that one).
         if (step.demo == "kick") {
             val other = if (StudioDrums.isDnbKick(p.padVoices[0])) p.copy(padVoices = p.padVoices - 0) else StudioDrums.withDnbKit(p)
-            return other.sanitized().takeIf { it != p.sanitized() }
+            return clean(p).let { mine -> clean(other).takeIf { it != mine } }
         }
         val shown: Project = when {
             c == "tempo" -> p.copy(tempoBpm = target.style.bpm)
@@ -1432,8 +1432,14 @@ object TutoChecks {
             } ?: return null
             else -> return null
         }
-        return shown.sanitized().takeIf { it != p.sanitized() }
+        return clean(p).let { mine -> clean(shown).takeIf { it != mine } }
     }
+
+    /** The last project [clean] gave: asked again, it is itself (the steps before a chapter are laid one on the other, each cleaned once). */
+    private val lastClean = java.util.concurrent.atomic.AtomicReference<Project?>(null)
+
+    /** [p] sanitized; itself when it is the one this gave last. */
+    private fun clean(p: Project): Project = if (lastClean.get() === p) p else p.sanitized().also { lastClean.set(it) }
 
     /**
      * The Sub an octave under the bass of the part shown (« Copier la basse une octave plus bas »):
@@ -2254,17 +2260,31 @@ object TutoChecks {
      * its main button ([fulfil] on a touch); nothing is made without that touch.
      */
     fun need(step: TutoStep, p: Project, target: TutoTarget, baseline: Any? = null, level: TutoLevel? = null): TutoNeed? {
+        // Asked again on the same project (the panel does, on the screen's thread, each time a step is reached and
+        // around each touch of the button): read back, not worked out again.
+        lastNeed.get()?.takeIf { it.p === p && it.target === target && it.level == level && it.step == step && it.baseline == baseline }?.let { return it.need }
+        return needNow(step, p, target, baseline, level).also { lastNeed.set(Needed(step, p, target, baseline, level, it)) }
+    }
+
+    private class Needed(val step: TutoStep, val p: Project, val target: TutoTarget, val baseline: Any?, val level: TutoLevel?, val need: TutoNeed?)
+    private class Laid(val step: TutoStep, val p: Project, val target: TutoTarget, val level: TutoLevel?, val out: Project)
+
+    /** The last answer of [need] and of [withEarlier] (one each, whole and never changed: any thread may read them). */
+    private val lastNeed = java.util.concurrent.atomic.AtomicReference<Needed?>(null)
+    private val lastLaid = java.util.concurrent.atomic.AtomicReference<Laid?>(null)
+
+    private fun needNow(step: TutoStep, p: Project, target: TutoTarget, baseline: Any?, level: TutoLevel?): TutoNeed? {
         if (done(step, p, target, baseline)) return null
         val own = ownNeed(step, p, target)
         // Rule R-C: a button only when its touch changes the project; nothing to touch at all (no button that does
         // something, no « Montre-moi »): what the chapters before make is missing, and is offered.
-        if (own != null) { if (helps(own, step, p, target, level)) return own } else if (step.manual || step.listening || step.check == "shared" || demo(step, p, target, level) != null) return null
+        if (own != null) { if (helps(own, step, p, target, level)) return own } else if (step.manual || step.listening || step.check == "shared" || canShow(step, p, target, level)) return null
         return missing(step, p, target, level)?.let { TutoNeed.Course(it) }?.takeIf { advances(step, p, target, level) } ?: own
     }
 
     /** Whether « Poser ce qui manque » leaves fewer steps to do before [step]: a touch that ticks nothing is not offered (it came back for ever). */
     private fun advances(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean {
-        val q = withEarlier(step, p, target, level).sanitized()
+        val q = clean(withEarlier(step, p, target, level))
         val before = earlier(step, target, level)
         return before.count { (_, s) -> !done(s, q, target) } < before.count { (_, s) -> !done(s, p, target) }
     }
@@ -2333,14 +2353,21 @@ object TutoChecks {
 
     /** [p] with the steps before [step] done as their buttons and « Montre-moi » do them, in order; a step that cannot be is left. */
     private fun withEarlier(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Project {
+        // Worked out once for the button's offer ([advances]) and its touch ([fulfil]).
+        lastLaid.get()?.takeIf { it.p === p && it.target === target && it.level == level && it.step == step }?.let { return it.out }
+        return laid(step, p, target, level).also { lastLaid.set(Laid(step, p, target, level, it)) }
+    }
+
+    private fun laid(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project {
         // From the Groove, where the course builds its loop (a part shown took the loop's lines, and the Groove stayed
         // too poor for the parts made from it); the part shown comes back after.
         val shown = p.scene
+        val before = earlier(step, target, level)
         var now = grooveOf(p).let { g -> if (g != shown && g in p.allScenes.indices) p.switchScene(g) else p }
         // Passed again while a pass still ticks something: a step may wait for one that comes after it (one touch, not two).
         for (pass in 0 until 3) {
             val was = now
-            for ((_, s) in earlier(step, target, level)) now = plainly(s, now, target, level)
+            for ((_, s) in before) now = plainly(s, now, target, level)
             if (now == was) break
         }
         return if (now.scene != shown && shown in now.allScenes.indices) now.switchScene(shown) else now
@@ -2352,10 +2379,21 @@ object TutoChecks {
         repeat(TutoPlay.MAX_TOUCHES) {
             if (done(s, now, target)) return now
             val n = ownNeed(s, now, target)
-            val next = (if (n != null) fulfil(n, s, now, target, level)?.first else demo(s, now, target, level)?.frames?.lastOrNull())?.sanitized()
+            val next = (if (n != null) fulfil(n, s, now, target, level)?.first else shownEnd(s, now, target, level))?.let(::clean)
             now = next?.takeIf { it != now } ?: return p
         }
         return if (done(s, now, target)) now else p
+    }
+
+    /** Whether « Montre-moi » of [step] has something to show on [p]: [demo] is not null, without its frames built. */
+    fun canShow(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean =
+        show(step, p, target, level) != null && (step.check != "track:sub" || partTrack(p, "sub", target) != null)
+
+    /** What « Montre-moi » of [step] leaves ([demo]'s last frame); the frames before it built only where the last is not [show]'s. */
+    private fun shownEnd(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val c = step.check
+        val ownEnd = step.demo == "kick" || (c.startsWith("notes:") && c != "notes:acid") || c == "track:sub"
+        return if (ownEnd) demo(step, p, target, level)?.frames?.lastOrNull() else show(step, p, target, level)
     }
 
     /** The step's own button ([need]), whether or not its touch does something. */

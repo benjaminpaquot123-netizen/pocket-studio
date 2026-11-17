@@ -240,13 +240,17 @@ fun PianoRoll(
     // and nothing said why). Once a step: turned on again by the user, it stays.
     // Tour 6 (review of lot « tuto-flèches »): turned off once per step; the roll coming back on the same step turned
     // off the « Accords » the user had turned on.
+    // Tour 7, D4 (seat 1a, the chords' step): the other way round, a step whose dotted notes are chords begins with
+    // « Accords » on, so the Facile consigne no longer spends a gesture on « Allume « Accords » ». Once a step too.
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
-    val singleNotes = hints.isNotEmpty() && hints.groupBy { it.start }.all { it.value.size == 1 }
-    var chordOffFor by rememberSaveable { mutableStateOf<String?>(null) }
-    LaunchedEffect(tutoStep, singleNotes) {
-        if (singleNotes && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordOffFor != tutoStep) {
-            chordMode = false
-            chordOffFor = tutoStep
+    val byStart = hints.groupBy { it.start }.values
+    val singleNotes = hints.isNotEmpty() && byStart.all { it.size == 1 }
+    val chordHints = hints.isNotEmpty() && byStart.all { it.size >= 2 }
+    var chordSetFor by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(tutoStep, singleNotes, chordHints) {
+        if ((singleNotes || chordHints) && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordSetFor != tutoStep) {
+            chordMode = chordHints
+            chordSetFor = tutoStep
         }
     }
     var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }

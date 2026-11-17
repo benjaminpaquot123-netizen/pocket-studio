@@ -6,7 +6,6 @@ import com.pocketstudio.model.tuto.TutoNeed
 import com.pocketstudio.app.guide.guideEdge
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.EmojiEvents
@@ -637,12 +636,9 @@ fun TutoPanel(
             // room grows by what is missing, and a height held too low for it is taken again (twice at most).
             // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
             val least = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
-            val lineHeight = wordsLineHeight()
             WordsRoom(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
-                // Tour 7, P6: the words' whole height as the last frame scrolled it, for TutoReadability.layout.
-                wordsHeight = { if (words.viewportSize > 0) words.viewportSize + words.maxValue else 0 }, lineHeight = lineHeight,
             ) {
             Box {
             Column(
@@ -702,10 +698,10 @@ fun TutoPanel(
             // It takes its room from the words above it, never from the buttons below (round 3, n° 28: an offer coming
             // late never moves the panel's buttons under a finger).
             if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo) {
-                Box(Modifier.layoutId(KIT_ID)) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
+                CompositionLocalProvider(LocalKitPinned provides true) { kit() }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-            if (why != null && pinned) Box(Modifier.layoutId(WHY_ID)) { Why(whyOpen) { whyOpen = !whyOpen; held = 0 } }
+            if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
             if (scrolls) MoreWords(words.canScrollForward) {
                 if (cellsToTouch) readAll = true
@@ -732,39 +728,14 @@ fun TutoPanel(
  * held is too low).
  */
 @Composable
-private fun WordsRoom(
-    modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit,
-    wordsHeight: () -> Int = { 0 }, lineHeight: Float = 0f, content: @Composable () -> Unit,
-) {
-    // The kit card's and « Pourquoi ? »'s heights as last measured (no intrinsics: the kit card measures its words).
-    val seen = androidx.compose.runtime.remember { IntArray(3) }
-    androidx.compose.ui.layout.Layout(content, modifier) { all, c ->
+private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
         val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
-        // Tour 7, P6 (TutoReadability rule 4): the kit card, then « Pourquoi ? », fold when that spares the words a cut.
-        // When the words are cut anyway they stay (« Lire la suite » reads on; the kit offer is never out of reach).
-        var ms = all
-        val full = wordsHeight()
-        if (full > 0 && lineHeight > 0f) {
-            val top = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, most.roundToPx())
-            // What the other pinned ones (« Lire la suite », « Réduire ») took last time is not the words' room.
-            val room = top - seen[2]
-            val lines = kotlin.math.ceil(full / lineHeight - 0.05f).toInt().coerceAtLeast(1)
-            val kitH = if (all.any { it.layoutId == KIT_ID }) seen[0] + gap else 0
-            val whyH = if (all.any { it.layoutId == WHY_ID }) seen[1] + gap else 0
-            val kept = TutoReadability.layout(room, lineHeight, lines, kitH, whyH, 0, moreDp = 0)
-            if (!kept.cut) ms = all.filter { (it.layoutId != KIT_ID || kept.kitCard) && (it.layoutId != WHY_ID || kept.why) }
-        }
         // Each pinned one within what the height given leaves (as a column would), never past it.
         var fixed = 0
-        seen[2] = 0
         val pinned = ms.drop(1).map { m ->
-            m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also {
-                fixed += it.height + gap
-                if (m.layoutId == KIT_ID) seen[0] = it.height
-                if (m.layoutId == WHY_ID) seen[1] = it.height
-                if (m.layoutId != KIT_ID && m.layoutId != WHY_ID) seen[2] += it.height + gap
-            }
+            m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also { fixed += it.height + gap }
         }
         val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), if (least > 0) fixed + least else 0))
         if (holding && least > 0 && cap - fixed < least) starved()
@@ -779,10 +750,6 @@ private fun WordsRoom(
         }
     }
 }
-
-/** The pinned children [WordsRoom] may fold (TutoReadability rule 4). */
-private const val KIT_ID = "tuto_room_kit"
-private const val WHY_ID = "tuto_room_why"
 
 /** Tour 7 D3 end: the kit offer pinned under the panel's words ([TutoKitCard] in one row); false outside the panel. */
 private val LocalKitPinned = androidx.compose.runtime.staticCompositionLocalOf { false }

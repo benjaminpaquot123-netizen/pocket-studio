@@ -72,15 +72,18 @@ object TutoPlay {
     /**
      * The dotted cells of [step] on a pad of [steps] cells, null when it shows none: the line of a "lane:" step, the
      * crash's first cell while the step is to do ([ticked]: false) and no button is left to touch ([need]: null).
+     * Null in a part that is not the step's own ([inItsPart]).
      */
     fun hint(step: TutoStep, p: Project, target: TutoTarget, steps: Int, need: TutoNeed?, ticked: Boolean): Pair<Int, Set<Int>>? {
+        // R-D: nothing of the step out of its part, the panel's button ([need]) read again or not.
+        if (!inItsPart(step, p)) return null
         if (step.check == "crash" && need == null && !ticked) return TutoChecks.CRASH_LANE to setOf(0)
         return TutoChecks.hint(step, target, steps)
     }
 
-    /** The hits [step] crosses out in the part shown, null when it takes none or while a button is to touch first. */
+    /** The hits [step] crosses out in the part shown, null when it takes none, while a button is to touch first, or in a part that is not the step's own. */
     fun toErase(step: TutoStep, p: Project, target: TutoTarget?, need: TutoNeed?): Map<Int, Set<Int>>? =
-        if (need != null) null else TutoChecks.toErase(step, p, target)
+        if (need != null || !inItsPart(step, p)) null else TutoChecks.toErase(step, p, target)
 
     /** Whether the part [p] shows is one of [step]'s own ([TutoChecks.partsOf]); true for a step of the whole loop. */
     fun inItsPart(step: TutoStep, p: Project): Boolean {

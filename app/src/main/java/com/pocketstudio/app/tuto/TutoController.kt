@@ -551,11 +551,11 @@ class TutoController(
         val u = _ui.value ?: return
         val t = target ?: return
         val step = u.current
-        val need = TutoPlay.button(step, project.value, t, base()) ?: return
+        val need = TutoPlay.button(step, project.value, t, base(), u.progress.level) ?: return
         var made: Int? = null
         val before = project.value
         edit {
-            val r = TutoPlay.press(need, step, this, t)
+            val r = TutoPlay.press(need, step, this, t, u.progress.level)
             made = r?.second
             r?.first ?: this
         }
@@ -570,7 +570,7 @@ class TutoController(
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
         // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
         // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).
-        if (!TutoPlay.done(step, p, t, base()) && TutoPlay.button(step, p, t, base()) == null) _ui.value = _ui.value?.copy(open = false)
+        if (!TutoPlay.done(step, p, t, base()) && TutoPlay.button(step, p, t, base(), u.progress.level) == null) _ui.value = _ui.value?.copy(open = false)
         look()
     }
 
@@ -586,7 +586,7 @@ class TutoController(
         if (u.demo != null) return true
         val step = u.current
         val before = project.value
-        val demo = TutoPlay.showMe(step, before, t) ?: return false
+        val demo = TutoPlay.showMe(step, before, t, u.progress.level) ?: return false
         // Testers: the notes went by too fast to follow; a note at a time, slower (at most about 8 s in all).
         val each = demoFrameMs(step.check.startsWith("notes:") || step.check == "track:sub", demo.frames.size, frameMs)
         stopListening()
@@ -651,7 +651,7 @@ class TutoController(
     fun canShow(): Boolean {
         val u = _ui.value ?: return false
         val t = target ?: return false
-        return u.demo != null || TutoChecks.show(u.current, project.value, t) != null
+        return u.demo != null || TutoChecks.show(u.current, project.value, t, u.progress.level) != null
     }
 
     /** The dotted cells of the step shown on a pad ([TutoChecks.hint]), null when none. */
@@ -804,7 +804,7 @@ class TutoController(
         _ui.value = TutoUi(
             saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same && !atEnd) kept!!.open else true, bravo = bravo || (same && kept!!.bravo),
             preparing = same && kept!!.preparing, playing = same && kept!!.playing, failed = same && kept!!.failed,
-            need = target?.let { TutoPlay.button(step, project.value, it, base()) },
+            need = target?.let { TutoPlay.button(step, project.value, it, base(), saved.level) },
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
             // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
@@ -873,7 +873,7 @@ class TutoController(
         val (seen, need) = withContext(worker) {
             u.chapters.flatMap { it.steps }.filter { s ->
                 s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoPlay.done(s, p, t, base)
-            }.map { it.id }.toSet() to TutoPlay.button(u.current, p, t, base)
+            }.map { it.id }.toSet() to TutoPlay.button(u.current, p, t, base, u.progress.level)
         }
         // The tutorial quit, or « Montre-moi » begun meanwhile (its end asks for a look): nothing to say.
         val now = _ui.value?.takeIf { it.demo == null } ?: return true

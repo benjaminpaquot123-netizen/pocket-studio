@@ -19,7 +19,7 @@ class Tour7TutoNextStepLeftToDoTest {
             var p = target.blank()
             for (c in TutoCourse.of(style)!!.chaptersFor(level)) {
                 for (s in c.steps.filterNot { it.manual || it.listening || it.check == "shared" }) {
-                    val o = TutoPlay.play(s, p, target)
+                    val o = TutoPlay.play(s, p, target, level)
                     if (TutoPlay.asksAGesture(s)) {
                         seen++
                         if (o.end == End.Already) already += "$style $level ${s.id} [${s.check}]"

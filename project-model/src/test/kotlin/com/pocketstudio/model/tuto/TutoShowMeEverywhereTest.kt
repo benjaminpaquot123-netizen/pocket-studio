@@ -28,7 +28,7 @@ class TutoShowMeEverywhereTest {
     fun withThePreviousStepSkipped() = everyCourse("S") { r ->
         val before = ArrayList<Project>()
         var p = r.p
-        for (s in r.steps) { before += p; p = TutoPlay.play(s, p, r.target).project }
+        for (s in r.steps) { before += p; p = TutoPlay.play(s, p, r.target, r.level).project }
         r.steps.forEachIndexed { i, s -> if (i >= 1) r.played(s, before[i - 1]) }
     }
 
@@ -64,7 +64,7 @@ class TutoShowMeEverywhereTest {
             played++
             fun fault(what: String) { faults += "$style $level ${step.id} [${step.check}]: $what" }
             var hints: String? = null
-            val o = TutoPlay.play(step, from, target) { q, need -> if (hints == null) hints = hintFault(step, q, need) }
+            val o = TutoPlay.play(step, from, target, level) { q, need -> if (hints == null) hints = hintFault(step, q, need) }
             when (o.end) {
                 End.Done -> Unit
                 End.Already -> if (TutoPlay.asksAGesture(step)) fault("ticked on arrival")
@@ -84,7 +84,7 @@ class TutoShowMeEverywhereTest {
             if (hint == null && erase.isEmpty()) return null
             if (!TutoPlay.inItsPart(step, q)) return "dotted cells or crosses in « ${q.allScenes.getOrNull(q.scene)?.label} », not the step's part"
             if (need != null) return null
-            val after = TutoPlay.showMe(step, q, target)?.frames?.lastOrNull()?.sanitized() ?: return null
+            val after = TutoPlay.showMe(step, q, target, level)?.frames?.lastOrNull()?.sanitized() ?: return null
             if (after.scene != q.scene) return "dotted cells in the part shown, « Montre-moi » plays in another"
             if (hint != null) {
                 val (lane, cells) = hint
@@ -130,7 +130,7 @@ class TutoShowMeEverywhereTest {
         fun loop(): Project? {
             if (steps.none { it.check.startsWith("part:") }) return null
             var q = p
-            for (s in steps) { if (s.check.startsWith("part:")) break; q = TutoPlay.play(s, q, target).project }
+            for (s in steps) { if (s.check.startsWith("part:")) break; q = TutoPlay.play(s, q, target, level).project }
             return q
         }
     }

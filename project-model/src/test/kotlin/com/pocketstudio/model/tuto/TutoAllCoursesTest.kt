@@ -113,7 +113,7 @@ class TutoAllCoursesTest {
                 if (step in skipped) continue
                 // Played as the app plays it ([TutoPlay.play]): what it watches taken when it begins, its main button
                 // (a track, a part, « Copier »…) while it has one, then the last frame of « Montre-moi ».
-                val o = TutoPlay.play(step, p, target)
+                val o = TutoPlay.play(step, p, target, level)
                 assertTrue("$style/${step.id} is ticked before anything is done", o.end != TutoPlay.End.Already)
                 assertTrue("$style/${step.id}: nothing to do (${o.why})", o.end != TutoPlay.End.DeadEnd)
                 assertTrue("$style/${step.id} is not done after Montre-moi", o.end != TutoPlay.End.NeverDone)

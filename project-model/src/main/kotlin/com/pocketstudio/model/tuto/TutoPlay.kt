@@ -48,13 +48,14 @@ object TutoPlay {
         if (held == null && step.check.startsWith("changed:")) arrive(step, p) else held
 
     /** The step's main button now, null when it has none ([TutoChecks.need]). */
-    fun button(step: TutoStep, p: Project, target: TutoTarget, base: Any?): TutoNeed? = TutoChecks.need(step, p, target, base)
+    fun button(step: TutoStep, p: Project, target: TutoTarget, base: Any?, level: TutoLevel? = null): TutoNeed? = TutoChecks.need(step, p, target, base, level)
 
     /** [p] once the main button [need] is touched, and the track it made; null when it can do nothing ([TutoChecks.fulfil]). */
-    fun press(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget): Pair<Project, Int?>? = TutoChecks.fulfil(need, step, p, target)
+    fun press(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Pair<Project, Int?>? = TutoChecks.fulfil(need, step, p, target, level)
 
-    /** « Montre-moi » of [step] on [p]: its frames, the last one being what the user is to reach; null when it has none. */
-    fun showMe(step: TutoStep, p: Project, target: TutoTarget): TutoDemo? = TutoChecks.demo(step, p, target)
+    /** « Montre-moi » of [step] on [p]: its frames, the last one being what the user is to reach; null when it has none.
+     *  [level]: the course's level, so the show leaves to a later step of that level what it teaches. */
+    fun showMe(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): TutoDemo? = TutoChecks.demo(step, p, target, level)
 
     /** Whether [step] is ticked on [p] ([base]: what it watched when it began). */
     fun done(step: TutoStep, p: Project, target: TutoTarget, base: Any?): Boolean = TutoChecks.done(step, p, target, base)
@@ -93,7 +94,7 @@ object TutoPlay {
      * [step] played from [from]: what it watches taken on arrival, its main button while there is one, else the last
      * frame of « Montre-moi », until it is ticked. [watch] sees each state a touch is made on, with its button.
      */
-    fun play(step: TutoStep, from: Project, target: TutoTarget, watch: (Project, TutoNeed?) -> Unit = { _, _ -> }): Outcome {
+    fun play(step: TutoStep, from: Project, target: TutoTarget, level: TutoLevel? = null, watch: (Project, TutoNeed?) -> Unit = { _, _ -> }): Outcome {
         var p = from
         var held = arrive(step, p)
         if (done(step, p, target, held)) return Outcome(End.Already, p, base = held)
@@ -103,15 +104,15 @@ object TutoPlay {
         var copied = false
         repeat(MAX_TOUCHES) {
             held = base(step, held, p)
-            val need = button(step, p, target, held)
+            val need = button(step, p, target, held, level)
             watch(p, need)
             val next = if (need != null) {
                 if (need is TutoNeed.Copy) copied = true
-                press(need, step, p, target)?.first?.sanitized()?.takeIf { it != p }
+                press(need, step, p, target, level)?.first?.sanitized()?.takeIf { it != p }
                     ?: return Outcome(End.DeadEnd, p, before, held, "button $need does nothing")
             } else {
                 if (before == null) { before = p; beforeBase = held }
-                showMe(step, p, target)?.frames?.lastOrNull()?.sanitized() ?: return Outcome(End.DeadEnd, p, null, held, "no button, no Montre-moi")
+                showMe(step, p, target, level)?.frames?.lastOrNull()?.sanitized() ?: return Outcome(End.DeadEnd, p, null, held, "no button, no Montre-moi")
             }
             p = next
             held = base(step, held, p)

@@ -19,7 +19,7 @@ class Tour7TutoPartNeverBornDoneTest {
             var p = target.blank()
             for (c in TutoCourse.of(style)!!.chaptersFor(level)) {
                 for (s in c.steps.filterNot { it.manual || it.listening || it.check == "shared" }) {
-                    val o = TutoPlay.play(s, p, target)
+                    val o = TutoPlay.play(s, p, target, level)
                     if (s.check == "gap" || s.check == "fill" || s.check == "crash") {
                         seen++
                         if (o.end == End.Already) born += "$style $level ${s.id} [${s.check}]"

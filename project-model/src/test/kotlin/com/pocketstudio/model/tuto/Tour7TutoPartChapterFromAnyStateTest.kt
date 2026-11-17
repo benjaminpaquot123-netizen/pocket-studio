@@ -1,6 +1,8 @@
 package com.pocketstudio.model.tuto
 
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.Scene
+import com.pocketstudio.model.allScenes
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -36,14 +38,21 @@ class Tour7TutoPartChapterFromAnyStateTest {
                         if (TutoChecks.done(s, p, target)) continue
                         if (!s.check.startsWith("part:")) { p = TutoChecks.show(s, p, target) ?: p; continue }
                         checked++
+                        val label = s.check.removePrefix("part:").substringBeforeLast(':')
+                        val absent = p.allScenes.none { !it.isEmpty && (it.label.trim().equals(label, ignoreCase = true) || it.label.trim().equals(Scene.shownLabel(label), ignoreCase = true)) }
                         val need = TutoChecks.need(s, p, target)
                         val q = need?.let { TutoChecks.fulfil(it, s, p, target)?.first }
+                        // A part whose bass the user then writes (the jump up's Drop 2): the button makes the part,
+                        // « Montre-moi » writes the rest; any other part is validated by its button alone.
+                        val after = q?.takeIf { s.transpose != 0 && !TutoChecks.done(s, it, target) }?.let { TutoChecks.show(s, it, target) } ?: q
                         when {
-                            need == null -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: no button"
-                            q == null -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: $need made nothing"
-                            !TutoChecks.done(s, q, target) -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: $need not validated"
+                            absent && need == null -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: no button"
+                            need != null && q == null -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: $need made nothing"
+                            after != null && !TutoChecks.done(s, after, target) -> bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: $need not validated"
+                            after == null && TutoChecks.show(s, p, target)?.let { TutoChecks.done(s, it, target) } != true ->
+                                bad += "$style ${level.name} $how ch.${at + 1} ${s.id}: « Montre-moi » not validated"
                         }
-                        p = q ?: TutoChecks.show(s, p, target) ?: p
+                        p = after ?: TutoChecks.show(s, p, target) ?: p
                     }
                 }
             }

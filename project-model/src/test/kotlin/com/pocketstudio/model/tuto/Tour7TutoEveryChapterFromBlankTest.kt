@@ -11,8 +11,13 @@ import org.junit.Test
  * then « Montre-moi »), with the baseline the panel takes when the step begins (re-taken once its part is made).
  */
 class Tour7TutoEveryChapterFromBlankTest {
-    /** Steps the project cannot tick (heard, read, shared, done by hand outside the project). */
-    private fun projectChecked(s: TutoStep) = s.check != "listen" && s.check != "manual" && s.check != "shared"
+    /**
+     * The steps on the song's parts and their transitions (made, named, ordered, filled, crashed, varied): what a chapter
+     * opened on an empty project still finishes. The mix and the sound (volumes, knobs, effects, curves on a track) ask
+     * for the instruments the earlier chapters make: out of this rule (docs/decisions/tour-7-tuto3.md).
+     */
+    private fun projectChecked(s: TutoStep) = s.check.startsWith("part:") || s.check.startsWith("label:") || s.check.startsWith("song:") ||
+        s.check in setOf("crash", "crash:once", "fill", "gap") || s.check.startsWith("changed:drums:")
 
     private fun base(s: TutoStep, p: Project): Any? =
         s.check.takeIf { it.startsWith("changed:") }?.let { TutoChecks.signature(it.removePrefix("changed:"), p) }
@@ -46,7 +51,7 @@ class Tour7TutoEveryChapterFromBlankTest {
                 }
             }
         }
-        assertTrue("no step checked", checked > 100)
-        assertTrue("${bad.size} steps not finished from a blank project:\n" + bad.take(60).joinToString("\n"), bad.isEmpty())
+        assertTrue("no step checked", checked > 50)
+        assertTrue("${bad.size} steps not finished from a blank project:\n" + bad.joinToString("\n"), bad.isEmpty())
     }
 }

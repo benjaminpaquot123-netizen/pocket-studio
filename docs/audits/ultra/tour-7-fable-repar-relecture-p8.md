@@ -102,3 +102,24 @@ d) Traductions, coup d'œil
 - de, es, it, pt-BR, ja, ko (et les 8 autres) : le nom du pad Clap, de la partie Montée et de la cymbale est le même que dans le dictionnaire de la langue.
 - Le 4 est écrit deux fois en chiffres partout, sauf ar et hi qui écrivent le second en toutes lettres (comme ils le faisaient déjà pour le 3).
 - Longueur : la phrase Facile fait 1 à 2 caractères de moins que la Pro dans chaque langue. Les phrases cymbale sont à peu près égales aux anciennes (de et ko un peu plus longues). Pas de risque de débordement neuf.
+
+## Reprise après le contrôle P8 (07b8c7c1..67e791fa) : relecture neuve
+
+Relecteur : sous-agent neuf, lecture seule, n'a écrit aucun des quatre commits. Aucun test lancé par lui ; les commits « rouge » n'ont pas été rejoués par lui.
+
+### Grave
+0 grave.
+
+### À ranger (tour 8)
+1. « la dernière rafale » / « une dernière rafale » dans l'étape roulement (`dnb.json:474`, `jump_up.json:511`, `techno.json:502`, `trance.json:401`, et les 14 langues) alors que la Montée arrive maintenant sans roulement : « une rafale » suffirait.
+2. `jungle.json:327` : « la batterie roule de plus en plus vite », ambigu maintenant que rien ne roule.
+3. Parcours en cours avec une ancienne Montée sauvegardée : les coups ×2 restent ; ni blocage ni « Déjà fait » (l'étape demande ×3), mais des roulements dont le texte ne parle plus. Ni migration ni test.
+4. Morceau exemple (`TutoChecks.kt`, vers l.1748) : Montée moins dense qu'avant (seul le ×4 final reste) : à réécouter au `live-bench`.
+5. `Tour7TutoBuildNotRolledTest` : le test de vocabulaire ne lit que le français.
+6. `Tour7TutoTouchShowsNewNoteTest` : le rouleau simulé ne modélise ni le panneau du tuto ni la marge basse `covered` de `PianoRoll.kt` (l.887-890) ; la limite basse n'est prouvée que par lecture.
+7. Deux hauteurs trop éloignées (La 45 et La 57) : toucher sans poser fait alterner entre grave et aigu ; pas un blocage, chaque touche montre une note entière.
+
+### Vérifié sans défaut
+`TutoRollHint.brought` (note cachée entière au-dessus du panneau en une touche, horizontal inchangé, limites haute et basse) ; `built()` (4, 8, 12, 12 coups, aucun `repeats`, silence final) ; étapes « fill », « gap », « crash » des 17 cours à Montée (aucune faite à l'arrivée, aucune impossible) ; « Montre-moi » du roulement ; 7 phrases × 14 langues (clés identiques, aucune orpheline, JSON valide ; ar contrôlée par script seulement).
+
+Note du correcteur : après cette relecture, un seul commit de test (`TutoGrilleTest`, basse) a suivi, pour aligner deux tests sur la règle « une touche » ; aucun code de l appli n a changé depuis.

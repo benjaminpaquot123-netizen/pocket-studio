@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -240,16 +241,49 @@ data class TutoProgress(
      * [KIT_PACK] its pack's sounds on the pads, [KIT_BUILT_IN] « Plus tard », the built-in kit.
      */
     val kit: String = "",
+    /**
+     * [PIECES] once the Facile steps cut in pieces (« clap_2 », « bass_end_2 »…) are counted in [done]; always written
+     * ([encode]), so an entry without it was saved before the cut ([decode] counts its pieces then).
+     */
+    val pieces: Int = PIECES,
 ) {
-    fun encode(): String = Json.encodeToString(serializer(), this)
+    fun encode(): String = json.encodeToString(serializer(), this)
+
+    /**
+     * Read from an entry saved before the Facile steps were cut in pieces: a piece counts as done when the step it was
+     * cut from is done (a course finished then read as unfinished, and came back on a piece).
+     */
+    private fun withPieces(): TutoProgress {
+        val course = TutoCourse.of(style) ?: return copy(pieces = PIECES)
+        val more = HashSet<String>()
+        for (c in course.chapters) {
+            var whole: TutoStep? = null
+            var before: TutoStep? = null
+            for (s in c.steps) {
+                val cut = s.levels == "f" && PIECE.containsMatchIn(s.id) && before?.check == s.check
+                if (!cut) whole = s else if (whole?.id in done) more += s.id
+                before = s
+            }
+        }
+        return copy(done = done + more, pieces = PIECES)
+    }
 
     companion object {
-        private val json = Json { ignoreUnknownKeys = true }
+        private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        private val PIECE = Regex("""_\d+$""")
+
+        /** The version of [pieces] this app writes. */
+        const val PIECES = 1
 
         const val KIT_PACK = "pack"
         const val KIT_BUILT_IN = "builtin"
 
         /** Null when [text] is missing or unreadable (an older or damaged entry: no tutorial). */
-        fun decode(text: String?): TutoProgress? = text?.let { runCatching { json.decodeFromString(serializer(), it) }.getOrNull() }
+        fun decode(text: String?): TutoProgress? = text?.let {
+            runCatching {
+                val read = json.decodeFromString(serializer(), it)
+                if ("pieces" in json.parseToJsonElement(it).jsonObject) read else read.withPieces()
+            }.getOrNull()
+        }
     }
 }

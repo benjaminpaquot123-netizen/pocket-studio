@@ -3,7 +3,31 @@ package com.pocketstudio.model.tuto
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.guide.GuideStatus
+import com.pocketstudio.model.Hit
+import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.tuto.TutoChecks.KEY_FRAMES
+import com.pocketstudio.model.tuto.TutoChecks.LATER_SOFT
+import com.pocketstudio.model.tuto.TutoChecks.LATER_TRIPLET
+import com.pocketstudio.model.tuto.TutoChecks.SHOWN_OFFSET_MS
+import com.pocketstudio.model.tuto.TutoChecks.SOFT_HITS_CHECKED
+import com.pocketstudio.model.tuto.TutoChecks.asksSoft
+import com.pocketstudio.model.tuto.TutoChecks.barsOf
+import com.pocketstudio.model.tuto.TutoChecks.hasTriplet
+import com.pocketstudio.model.tuto.TutoChecks.hatBars
+import com.pocketstudio.model.tuto.TutoChecks.hatsSwing
+import com.pocketstudio.model.tuto.TutoChecks.laneExtras
+import com.pocketstudio.model.tuto.TutoChecks.laneMatches
+import com.pocketstudio.model.tuto.TutoChecks.laneOf
+import com.pocketstudio.model.tuto.TutoChecks.lanesOf
+import com.pocketstudio.model.tuto.TutoChecks.leftToLater
+import com.pocketstudio.model.tuto.TutoChecks.loopBefore
+import com.pocketstudio.model.tuto.TutoChecks.namedScene
+import com.pocketstudio.model.tuto.TutoChecks.offsetDone
+import com.pocketstudio.model.tuto.TutoChecks.partOf
+import com.pocketstudio.model.tuto.TutoChecks.scenesOf
+import com.pocketstudio.model.tuto.TutoChecks.withSteps
+import com.pocketstudio.model.tuto.TutoChecks.withTriplet
 import com.pocketstudio.model.tuto.TutoChecks.SHARED_CARD
 import com.pocketstudio.model.tuto.TutoChecks.SWING_POINTS
 import com.pocketstudio.model.tuto.TutoChecks.sceneLabelled
@@ -113,6 +137,10 @@ internal interface TutoKind {
             c == "tempo" -> Tempo
             c == "key" -> Key
             c == "swing" -> Swing
+            c.startsWith("lane:") -> Lane(c.substringAfter(':').substringBefore(':'), c.endsWith(":rolls"))
+            c == "velocity:hat" -> VelocityHat
+            c.startsWith("offset:") -> c.substringAfter(':').let { Offset(it.substringBefore(':'), it.substringAfter(':', "late") == "early") }
+            c.startsWith("triplet:") -> Triplet(c.substringAfter(':'))
             else -> null
         }
     }
@@ -158,4 +186,109 @@ internal object Swing : TutoKind {
     override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
         target.style.swing > 0.0 && p.swing > 0.0 && abs(swingShown(p.swing) - swingShown(target.style.swing)) <= SWING_POINTS
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = p.copy(swing = target.style.swing)
+}
+
+/**
+ * "lane:<role>[:rolls]": the style's line of a drum role, every dotted cell hit and no other ([laneMatches]); with a
+ * [TutoStep.part], the course's drums of that part, in that part. [rolls]: each roll of the line rolled there too.
+ */
+internal class Lane(val role: String, val rolls: Boolean) : TutoKind {
+    override val wholeLoop get() = true
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = matches(step, p, target, SOFT_HITS_CHECKED && asksSoft(step))
+
+    /** The line laid in a part the step looks at; [soft]: its soft cells played soft too. */
+    fun matches(step: TutoStep, p: Project, target: TutoTarget, soft: Boolean): Boolean = target.line(role, partOf(step))?.let { line ->
+        scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(role, target), line, p.stepsPerBar, rolls = rolls, soft = soft) }
+    } ?: false
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val line = target.line(role, partOf(step)) ?: return null
+        val wide = withSteps(p, line.pattern.length)
+        val lane = laneOf(role)
+        // Relecture tour 1, M4: the check asks for no hit more on any pad of the role (Kick 2,
+        // the open hat…): their hits inside the loop go too, or « Montre-moi » never ticks.
+        val others = lanesOf(role, target) - lane
+        val steps = wide.drums.steps
+        val later = leftToLater(step, target, level)
+        val hits = StarterWizard.hits(line, steps).mapValues { (_, h) ->
+            val loud = if (LATER_SOFT in later) h.copy(velocity = 1f) else h
+            if (LATER_TRIPLET in later && loud.isTriplet) loud.copy(repeats = 1, span = 1) else loud
+        }
+        return wide.copy(drums = wide.drums.copy(lanes = wide.drums.lanes.mapIndexed { i, l ->
+            when (i) {
+                lane -> l.copy(hits = hits)
+                in others -> l.copy(hits = l.hits.filterKeys { it >= steps })
+                else -> l
+            }
+        }))
+    }
+
+    /** A cell more each time, from what the user has of the line (its bars made first). */
+    override fun frames(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?, end: Project): TutoFrames {
+        val lane = laneOf(role)
+        val wanted = end.drums.lanes[lane].hits
+        val start = TutoChecks.ownNeed(step, p, target)?.let { n -> TutoChecks.fulfil(n, step, p, target, level)?.first } ?: p
+        var hits = start.drums.lanes[lane].hits.filterKeys { it in wanted }
+        fun put(h: Map<Int, Hit>) = start.copy(drums = start.drums.copy(lanes = start.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = h) else l }))
+        val frames = arrayListOf(put(hits))
+        val sounds = arrayListOf<TutoSound?>(null)
+        for ((at, hit) in wanted.entries.sortedBy { it.key }) {
+            if (at in hits) continue
+            hits = hits + (at to hit)
+            frames += put(hits); sounds += TutoSound(lane = lane)
+        }
+        return TutoFrames(frames, sounds)
+    }
+
+    // Its part shown first; then its bars: its line's, or the loop the course had already made when its words count cells over it.
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget): TutoNeed? =
+        partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(role, partOf(step))?.let { line ->
+            maxOf(barsOf(p, line), loopBefore(step, p, target)).takeIf { p.drums.steps < it * p.stepsPerBar }?.let { TutoNeed.Bars(it) }
+        }
+
+    override fun dotted(step: TutoStep, target: TutoTarget, steps: Int): Pair<Int, Set<Int>>? {
+        val line = target.line(role, partOf(step)) ?: return null
+        return laneOf(role) to StarterWizard.hits(line, steps).keys
+    }
+
+    override fun crossed(step: TutoStep, p: Project, target: TutoTarget?): Map<Int, Set<Int>>? = target?.let { laneExtras(step, p, it) }
+}
+
+/** "velocity:hat": the 4 hats on the beats softer than those between them, in every bar (one hit made « Doux » is not the groove). */
+internal object VelocityHat : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val line = target.line("hat") ?: return null
+        val v = StarterWizard.hits(line.pattern)
+        val lane = laneOf("hat")
+        val hits = p.drums.lanes[lane].hits.ifEmpty { StarterWizard.hits(line, p.drums.steps) }
+        return p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l ->
+            if (i != lane) l else l.copy(hits = hits.mapValues { (s, h) -> h.copy(velocity = v[s % line.pattern.length]?.velocity ?: 0.35f) })
+        }))
+    }
+
+    // The loop as long as the line; then the first bar swinging, the others not yet: « Copier ».
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget): TutoNeed? = target.line("hat")?.let { line ->
+        barsOf(p, line).takeIf { p.drums.steps < line.pattern.length.coerceAtMost(4 * p.stepsPerBar) }?.let { TutoNeed.Bars(it) }
+    } ?: hatBars(p.drums, p.stepsPerBar, target).let { b -> TutoNeed.Copy("hat").takeIf { b.firstOrNull() == true && b.any { !it } } }
+}
+
+/** "offset:<role>:<late|early>": at least half the role's hits played late (early), by [TutoChecks.OFFSET_MS] or more (the lo-fi's lazy snare). */
+internal class Offset(val role: String, val early: Boolean) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> offsetDone(sc.drums, lanesOf(role, target), early) }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project {
+        val lanes = lanesOf(role, target)
+        return p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l ->
+            if (i !in lanes) l else l.copy(hits = l.hits.mapValues { (_, h) -> h.copy(offset = if (early) -SHOWN_OFFSET_MS else SHOWN_OFFSET_MS) })
+        }))
+    }
+}
+
+/** "triplet:<role>": at least one triplet (3 hits over 2 cells, or 6 over a beat) on the role's pad, in any part. */
+internal class Triplet(val role: String) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(role, target)) }
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? = withTriplet(p, role, target)
 }

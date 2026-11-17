@@ -444,6 +444,7 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
     TutoNeed.Lengths -> tr("Donner les durées conseillées")
     is TutoNeed.Scene -> tr("Aller dans la partie « %s »", Scene.shownLabel(need.label))
     is TutoNeed.Copy -> tr("Copier sur les mesures suivantes")
+    is TutoNeed.Course -> tr("Poser ce qui manque")
 }
 
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
@@ -953,9 +954,22 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             Text((if (chapterEnd) tr("Chapitre suivant") else tr("Étape suivante")) + "  ", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
         }
-        Primary.NEED -> Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
-            Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Primary.NEED -> {
+            // Tour 7 (audit « Fable », R-C): a chapter opened from the list on a project that lacks what the chapters
+            // before make. One touch lays it; the other way is to go and make it.
+            val course = ui.need as? TutoNeed.Course
+            if (course != null) {
+                Text(tr("Il te manque ce que font les chapitres d'avant."), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_course"))
+            }
+            Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
+                Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
+                Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            }
+            if (course != null) {
+                TextButton(onClick = { actions.goTo(course.chapter - 1, 0) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_need_goto")) {
+                    Text(tr("Aller au chapitre %d", course.chapter), textAlign = TextAlign.Center)
+                }
+            }
         }
         Primary.DO -> Button(onClick = actions.doIt, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_do")) {
             Icon(Icons.Filled.TouchApp, contentDescription = null, modifier = Modifier.size(20.dp))

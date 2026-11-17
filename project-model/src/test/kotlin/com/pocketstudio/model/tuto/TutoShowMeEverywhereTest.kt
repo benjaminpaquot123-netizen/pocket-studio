@@ -147,6 +147,8 @@ class TutoShowMeEverywhereTest {
         }
         assertTrue("arrival $arrival: nothing played", played >= MIN_COURSES)
         val kinds = faults.groupingBy { it.substringAfter("]: ").substringBefore(" (").substringBefore(" «").substringBefore(" [") }.eachCount()
+        // The whole list, for who repairs: PS_TUTO_FAULTS=<folder> writes one file per arrival.
+        System.getenv("PS_TUTO_FAULTS")?.let { java.io.File(it, "$arrival.txt").writeText(faults.joinToString("\n")) }
         val head = "arrival $arrival: ${faults.size} faults on $played steps played $kinds"
         assertTrue(head + "\n" + faults.take(SHOWN).joinToString("\n") + if (faults.size > SHOWN) "\n… and ${faults.size - SHOWN} more" else "", faults.isEmpty())
     }

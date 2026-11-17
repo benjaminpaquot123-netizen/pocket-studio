@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: un momento più calmo, la cassa e il basso tacciono.",
   "Exemple passé sans l'écouter.": "Esempio saltato senza ascoltarlo.",
   "Partie « %1$s » créée (copie de « %2$s »).": "Parte “%1$s” creata (copia di “%2$s”).",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Parte “%1$s” creata (copia di “%2$s”): senza %3$s."
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Parte “%1$s” creata (copia di “%2$s”): senza %3$s.",
+  "Poser ce qui manque": "Metti ciò che manca",
+  "Il te manque ce que font les chapitres d'avant.": "Ti manca ciò che fanno i capitoli precedenti.",
+  "Aller au chapitre %d": "Vai al capitolo %d"
 }

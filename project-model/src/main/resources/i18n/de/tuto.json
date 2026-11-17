@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: ein ruhigerer Moment, Kick und Bass schweigen.",
   "Exemple passé sans l'écouter.": "Beispiel übersprungen, ohne es anzuhören.",
   "Partie « %1$s » créée (copie de « %2$s »).": "Teil „%1$s“ erstellt (Kopie von „%2$s“).",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Teil „%1$s“ erstellt (Kopie von „%2$s“): ohne %3$s."
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Teil „%1$s“ erstellt (Kopie von „%2$s“): ohne %3$s.",
+  "Poser ce qui manque": "Fehlendes einfügen",
+  "Il te manque ce que font les chapitres d'avant.": "Dir fehlt, was die früheren Kapitel bauen.",
+  "Aller au chapitre %d": "Zu Kapitel %d gehen"
 }

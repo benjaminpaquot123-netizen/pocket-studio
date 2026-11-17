@@ -29,4 +29,18 @@ class Tour7TutoMissingOfferedTest {
         assertTrue("nothing played", played > 1000)
         assertTrue("${stuck.size} steps stuck on $played\n" + stuck.take(40).joinToString("\n"), stuck.isEmpty())
     }
+
+    /** A course played in order lacks nothing: « Poser ce qui manque » is never offered there. */
+    @Test
+    fun aCoursePlayedInOrderIsNeverOfferedWhatIsMissing() {
+        val offered = ArrayList<String>()
+        for (style in TutoCourse.STYLES) for (level in TutoLevel.entries) {
+            val target = TutoTarget.of(style)!!
+            var p = target.blank()
+            for (c in TutoCourse.of(style)!!.chaptersFor(level)) for (s in c.steps.filterNot { it.manual || it.listening || it.check == "shared" }) {
+                p = TutoPlay.play(s, p, target) { _, need -> if (need is TutoNeed.Course) offered += "$style $level ${s.id} [${s.check}]: $need" }.project
+            }
+        }
+        assertTrue("${offered.size} steps offered what is missing in a course played in order\n" + offered.distinct().take(40).joinToString("\n"), offered.isEmpty())
+    }
 }

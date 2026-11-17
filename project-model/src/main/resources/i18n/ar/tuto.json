@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص.",
   "Exemple passé sans l'écouter.": "تم تخطي المثال دون الاستماع إليه.",
   "Partie « %1$s » créée (copie de « %2$s »).": "تم إنشاء الجزء «%1$s» (نسخة من «%2$s»).",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "تم إنشاء الجزء «%1$s» (نسخة من «%2$s»): بدون %3$s."
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "تم إنشاء الجزء «%1$s» (نسخة من «%2$s»): بدون %3$s.",
+  "Poser ce qui manque": "أضف ما ينقص",
+  "Il te manque ce que font les chapitres d'avant.": "ينقصك ما تصنعه الفصول السابقة.",
+  "Aller au chapitre %d": "اذهب إلى الفصل %d"
 }

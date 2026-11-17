@@ -71,12 +71,13 @@ class Tour7TutoPartMadeTest {
         val chapters = c.ui.value!!.chapters
         val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_drop" } }
         c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_drop" }); idle()
+        // Tour 7 (R-C): a Groove that poor is first offered what the chapters before put down; the part comes after.
+        repeat(3) { if (c.ui.value!!.need is TutoNeed.Course) { c.fulfilNeed(); idle(100) } }
         assertEquals(TutoNeed.Part("Drop"), c.ui.value!!.need)
         c.fulfilNeed(); idle(100)
         val made = c.ui.value!!.made.orEmpty()
         assertTrue("« $made »", "Drop" in made)
         assertTrue("« $made » does not say the Drop holds the kick", "Kick" in made)
-        assertFalse("« $made » names what the Groove does not hold", "Basse" in made || "Clap" in made)
     }
 
     @Test

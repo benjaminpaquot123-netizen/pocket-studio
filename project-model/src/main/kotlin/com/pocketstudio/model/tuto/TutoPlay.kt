@@ -45,7 +45,7 @@ object TutoPlay {
      * after it began (« Créer la partie ») is taken as it was made (tour 7, seat d: a null one never ticked).
      */
     fun base(step: TutoStep, held: Any?, p: Project): Any? =
-        if (held == null && step.check.startsWith("changed:drums:")) arrive(step, p) else held
+        if (held == null && step.check.startsWith("changed:")) arrive(step, p) else held
 
     /** The step's main button now, null when it has none ([TutoChecks.need]). */
     fun button(step: TutoStep, p: Project, target: TutoTarget, base: Any?): TutoNeed? = TutoChecks.need(step, p, target, base)

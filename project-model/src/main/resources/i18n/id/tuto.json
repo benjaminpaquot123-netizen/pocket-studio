@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: saat yang lebih tenang, kick dan bass diam.",
   "Exemple passé sans l'écouter.": "Contoh dilewati tanpa didengarkan.",
   "Partie « %1$s » créée (copie de « %2$s »).": "Bagian “%1$s” dibuat (salinan “%2$s”).",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Bagian “%1$s” dibuat (salinan “%2$s”): tanpa %3$s."
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Bagian “%1$s” dibuat (salinan “%2$s”): tanpa %3$s.",
+  "Poser ce qui manque": "Pasang yang belum ada",
+  "Il te manque ce que font les chapitres d'avant.": "Kamu belum punya yang dibuat di bab-bab sebelumnya.",
+  "Aller au chapitre %d": "Buka bab %d"
 }

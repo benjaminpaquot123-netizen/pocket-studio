@@ -541,6 +541,12 @@ sealed class TutoNeed {
      * gesture is the user's, the copying a button).
      */
     data class Copy(val role: String) : TutoNeed()
+    /**
+     * What the chapters before the step make, missing here (tour 7, audit « Fable », rule R-C: a chapter opened from
+     * the list on a project without its loop, its tracks or its parts): « Poser ce qui manque » puts it in, as
+     * « Montre-moi » of those chapters does; [chapter], the first of them with something left to do (1: the first).
+     */
+    data class Course(val chapter: Int) : TutoNeed()
 }
 
 /** What a frame of « Montre-moi » sounds: pad [lane], or [pitches] on track [track]. */
@@ -1798,7 +1804,7 @@ object TutoChecks {
         var now = p
         for (s in chapters.take(at).flatMap { it.steps }) {
             if (s.check.startsWith("part:") || done(s, now, target)) continue
-            now = show(s, now, target) ?: need(s, now, target)?.takeIf { it !is TutoNeed.Part && it !is TutoNeed.Name }?.let { fulfil(it, s, now, target)?.first } ?: now
+            now = show(s, now, target) ?: ownNeed(s, now, target)?.takeIf { it !is TutoNeed.Part && it !is TutoNeed.Name }?.let { fulfil(it, s, now, target)?.first } ?: now
         }
         return now
     }
@@ -2190,6 +2196,80 @@ object TutoChecks {
      */
     fun need(step: TutoStep, p: Project, target: TutoTarget, baseline: Any? = null): TutoNeed? {
         if (done(step, p, target, baseline)) return null
+        val own = ownNeed(step, p, target)
+        // Rule R-C: a button only when its touch changes the project; nothing to touch at all (no button that does
+        // something, no « Montre-moi »): what the chapters before make is missing, and is offered.
+        if (own != null) { if (helps(own, step, p, target)) return own } else if (step.manual || step.listening || step.check == "shared" || demo(step, p, target) != null) return null
+        return missing(step, p, target)?.let { TutoNeed.Course(it) }?.takeIf { advances(step, p, target) } ?: own
+    }
+
+    /** Whether « Poser ce qui manque » leaves fewer steps to do before [step]: a touch that ticks nothing is not offered (it came back for ever). */
+    private fun advances(step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val q = withEarlier(step, p, target).sanitized()
+        val before = earlier(step, target)
+        return before.count { (_, s) -> !done(s, q, target) } < before.count { (_, s) -> !done(s, p, target) }
+    }
+
+    /** Whether a touch of [need] changes [p]. */
+    private fun changes(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget): Boolean =
+        fulfil(need, step, p, target)?.first?.sanitized().let { it != null && it != p.sanitized() }
+
+    /**
+     * Whether a touch of [step]'s own button [need] brings it forward: it changes [p], and « Créer la partie » of a
+     * step that only makes a part ticks it (a part made from a loop too poor for it is refused over and over).
+     */
+    private fun helps(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val q = fulfil(need, step, p, target)?.first?.sanitized() ?: return false
+        if (q == p.sanitized()) return false
+        return !(need is TutoNeed.Part && step.check.startsWith("part:") && !writesBass(step)) || done(step, q, target)
+    }
+
+    /** The chapters of the level that holds [step] (the first level that does), null when none. */
+    private fun chaptersOf(step: TutoStep, target: TutoTarget): List<TutoChapter>? {
+        val course = TutoCourse.of(target.style.id) ?: return null
+        return TutoLevel.entries.map { course.chaptersFor(it) }.firstOrNull { cs -> cs.any { c -> c.steps.any { it.id == step.id } } }
+    }
+
+    /** The steps before [step] in its course that put something in the project (not a setting, which stays the user's), each with its chapter (1: the first). */
+    private fun earlier(step: TutoStep, target: TutoTarget): List<Pair<Int, TutoStep>> {
+        val all = chaptersOf(step, target).orEmpty().flatMapIndexed { i, c -> c.steps.map { i + 1 to it } }
+        return all.take(all.indexOfFirst { it.second.id == step.id }.coerceAtLeast(0))
+            .filter { (_, s) -> !(s.manual || s.listening || s.check == "shared" || s.check.startsWith("changed:")) }
+    }
+
+    /** The first chapter before [step] with a step left to do on [p], null when none. */
+    private fun missing(step: TutoStep, p: Project, target: TutoTarget): Int? =
+        earlier(step, target).firstOrNull { (_, s) -> !done(s, p, target) }?.first
+
+    /** [p] with the steps before [step] done as their buttons and « Montre-moi » do them, in order; a step that cannot be is left. */
+    private fun withEarlier(step: TutoStep, p: Project, target: TutoTarget): Project {
+        // From the Groove, where the course builds its loop (a part shown took the loop's lines, and the Groove stayed
+        // too poor for the parts made from it); the part shown comes back after.
+        val shown = p.scene
+        var now = grooveOf(p).let { g -> if (g != shown && g in p.allScenes.indices) p.switchScene(g) else p }
+        // Passed again while a pass still ticks something: a step may wait for one that comes after it (one touch, not two).
+        for (pass in 0 until 3) {
+            val was = now
+            for ((_, s) in earlier(step, target)) now = plainly(s, now, target)
+            if (now == was) break
+        }
+        return if (now.scene != shown && shown in now.allScenes.indices) now.switchScene(shown) else now
+    }
+
+    /** [s] done on [p] by its own buttons, then « Montre-moi »; [p] when that does not tick it. */
+    private fun plainly(s: TutoStep, p: Project, target: TutoTarget): Project {
+        var now = p
+        repeat(TutoPlay.MAX_TOUCHES) {
+            if (done(s, now, target)) return now
+            val n = ownNeed(s, now, target)
+            val next = (if (n != null) fulfil(n, s, now, target)?.first else demo(s, now, target)?.frames?.lastOrNull())?.sanitized()
+            now = next?.takeIf { it != now } ?: return p
+        }
+        return if (done(s, now, target)) now else p
+    }
+
+    /** The step's own button ([need]), whether or not its touch does something. */
+    private fun ownNeed(step: TutoStep, p: Project, target: TutoTarget): TutoNeed? {
         val c = step.check
         val arg = argOf(c)
         // Tour 7 (D8): a chapter opened from the list, a part it names never made (« Range tes parties » without the
@@ -2300,6 +2380,7 @@ object TutoChecks {
             .let { q -> q.renameScene(grooveOf(q), need.label) }.takeIf { sceneLabelled(it, need.label) >= 0 }?.let { it to null }
         is TutoNeed.Lengths -> lengths(p, step.song)?.let { it to null }
         is TutoNeed.Scene -> namedScene(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }
+        is TutoNeed.Course -> withEarlier(step, p, target).takeIf { it !== p }?.let { it to null }
     }
 
     /** Each part of the song given the bars [spec] names for its label (the order kept); null when nothing changes. */
@@ -2370,7 +2451,7 @@ object TutoChecks {
             c.startsWith("lane:") -> {
                 val lane = laneOf(arg)
                 val wanted = end.drums.lanes[lane].hits
-                val start = need(step, p, target)?.let { n -> fulfil(n, step, p, target)?.first } ?: p
+                val start = ownNeed(step, p, target)?.let { n -> fulfil(n, step, p, target)?.first } ?: p
                 var hits = start.drums.lanes[lane].hits.filterKeys { it in wanted }
                 fun put(h: Map<Int, Hit>) = start.copy(drums = start.drums.copy(lanes = start.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = h) else l }))
                 frames += put(hits); sounds += null

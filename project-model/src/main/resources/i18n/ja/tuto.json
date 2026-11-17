@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "ブレイク：静かになる部分。キックとベースが止まります。",
   "Exemple passé sans l'écouter.": "お手本を聴かずにスキップしました。",
   "Partie « %1$s » créée (copie de « %2$s »).": "パート「%1$s」を作りました（「%2$s」のコピー）。",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "パート「%1$s」を作りました（「%2$s」のコピー）：%3$sなし。"
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "パート「%1$s」を作りました（「%2$s」のコピー）：%3$sなし。",
+  "Poser ce qui manque": "足りないものを置く",
+  "Il te manque ce que font les chapitres d'avant.": "前の章で作るものがまだありません。",
+  "Aller au chapitre %d": "第%d章へ"
 }

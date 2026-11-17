@@ -75,6 +75,8 @@ class Tour6TutoPanelPartMadeTest {
         val chapters = c.ui.value!!.chapters
         val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_intro2" } }
         c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_intro2" }); idle()
+        // Tour 7 (R-C): what the chapters before would have put down is offered first (« Poser ce qui manque »).
+        repeat(3) { if (c.ui.value!!.need is TutoNeed.Course) { c.fulfilNeed(); idle(100) } }
         assertEquals(TutoNeed.Part("Intro 2"), c.ui.value!!.need)
         c.fulfilNeed(); idle(100)
         val made = c.ui.value!!.made.orEmpty()

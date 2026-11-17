@@ -151,5 +151,8 @@
   "Break : un moment plus calme, le kick et la basse se taisent.": "间奏：比较安静的部分，底鼓和贝斯停下来。",
   "Exemple passé sans l'écouter.": "未收听，已跳过示例。",
   "Partie « %1$s » créée (copie de « %2$s »).": "已创建段落“%1$s”（“%2$s”的副本）。",
-  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "已创建段落“%1$s”（“%2$s”的副本）：没有%3$s。"
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "已创建段落“%1$s”（“%2$s”的副本）：没有%3$s。",
+  "Poser ce qui manque": "补上缺少的内容",
+  "Il te manque ce que font les chapitres d'avant.": "你还缺少前面章节做出的内容。",
+  "Aller au chapitre %d": "前往第 %d 章"
 }

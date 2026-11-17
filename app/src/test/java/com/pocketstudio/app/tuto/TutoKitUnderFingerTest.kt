@@ -9,7 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.performTouchInput
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
@@ -129,11 +129,8 @@ class TutoKitUnderFingerTest {
         assertEquals("a touch meant for « Écouter l'exemple » decided the kit", "", progress().kit)
         assertFalse("a download started", has("tuto_kit_progress"))
         assertTrue("the course's panel", has("tuto_panel") && has("tuto_text"))
-        // The offer is still there to read, at the end of the words, and still works.
-        repeat(12) {
-            if (has("tuto_text_more")) { compose.onNodeWithTag("tuto_text_more").performClick(); compose.mainClock.advanceTimeBy(600); compose.waitForIdle() }
-        }
-        compose.onNodeWithTag("tuto_kit_later").performScrollTo().performClick()
+        // The offer is still there, pinned under the words in sight (tour 7 D3 end: no « Lire la suite » first), and still works.
+        compose.onNodeWithTag("tuto_kit_later").assertIsDisplayed().performClick()
         await("« Plus tard » kept") { progress().kit == TutoProgress.KIT_BUILT_IN }
         await("the offer gone") { !has("tuto_kit") }
         assertTrue(has("tuto_panel"))

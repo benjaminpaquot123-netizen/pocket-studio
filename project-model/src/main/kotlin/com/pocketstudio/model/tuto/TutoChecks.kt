@@ -1139,9 +1139,11 @@ object TutoChecks {
      */
     private fun newBassDone(p: Project, step: TutoStep, target: TutoTarget): Boolean {
         val i = sceneLabelled(p, partLabel(step)).takeIf { it >= 0 } ?: return false
-        val wanted = movedBass(step, target)
+        val wanted = stepBass(step, target)
         val bass = trackFor(p, "bass") ?: return false
         if (!notesMatch(sceneNotes(p, i, bass), wanted)) return false
+        // A step cut in pieces (its [TutoStep.length]): its own bars, the Sub with the last piece only.
+        if (step.length > 0) return true
         val sub = p.instrumentTracks.firstOrNull { it.id != bass && roleOf(p, it.id) == "sub" }?.id ?: return true
         return notesMatch(sceneNotes(p, i, sub), subOf(wanted))
     }
@@ -1152,6 +1154,10 @@ object TutoChecks {
      */
     private fun movedBass(step: TutoStep, target: TutoTarget): List<Note> =
         target.notes(Part.Bass).notes.map { it.copy(pitch = diatonic(it.pitch, step.transpose, target.harmony).coerceIn(0, 127)) }
+
+    /** [movedBass] up to the step's [TutoStep.length] (cells) when it is one piece of a step cut in several (D4). */
+    private fun stepBass(step: TutoStep, target: TutoTarget): List<Note> =
+        movedBass(step, target).filter { step.length <= 0 || it.start < step.length * NoteClip.TICKS_PER_STEP }
 
     /**
      * [pitch] moved by [semitones] counted from the key's root (5: a fourth), each note of the scale
@@ -1380,7 +1386,7 @@ object TutoChecks {
             c.startsWith("part:") -> makePart(p, step, target)?.let { q ->
                 // The Drop 2's own bass (the user's to write), then its Sub, shown in the part.
                 if (!writesBass(step)) q
-                else trackFor(q, "bass")?.let { b -> q.withTrack(q.track(b).copy(notes = q.track(b).notes.copy(notes = movedBass(step, target)))) }?.let { withSub(it, target) ?: it } ?: q
+                else trackFor(q, "bass")?.let { b -> q.withTrack(q.track(b).copy(notes = q.track(b).notes.copy(notes = stepBass(step, target)))) }?.let { if (step.length > 0) it else withSub(it, target) ?: it } ?: q
             } ?: return null
             // The order alone: each part as « Ajouter » brings it, 8 bars (testers: it showed the next step's lengths too).
             c == "song:order" -> song(p, step.song, sized = false) ?: return null

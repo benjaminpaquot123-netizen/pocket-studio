@@ -280,7 +280,9 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 await("need met") { !has("tuto_need") }
                 if (!has("tuto_do")) unfold()
                 click("tuto_do")
-                await("${s.id}: the grid on its pad, cells dotted") { has("rhythm") && has("tuto_hint") }
+                // Tour 7: a Facile piece that only asks for « Doux » (techno clap_2) finds its cells all hit: none is dotted.
+                val softOnly = TutoChecks.onlySoftnessMissing(s, p(), target)
+                await("${s.id}: the grid on its pad, cells dotted") { has("rhythm") && (softOnly || has("tuto_hint")) }
                 // « Je le fais »: a ring that goes by itself, no card to close; the panel folds out of the way (lot « tuto 3 »).
                 assertFalse(has("guide_spot"))
                 assertTrue(has("tuto_folded_text"))
@@ -290,10 +292,11 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     await("the ring goes by itself") { !has("tuto_spot_ring") }
                     assertTrue("the dotted cells stay", has("tuto_hint"))
                 }
-                seen(s, "tuto_hint")
+                if (!softOnly) seen(s, "tuto_hint")
                 val (lane, cells) = TutoHints.cells!!
                 assertEquals(lane, h.vm.transport.value.selectedPad)
-                for (cell in cells.sorted()) {
+                // Only the cells not hit yet: a touch on a hit takes it away.
+                for (cell in cells.sorted().filter { p().drums.lanes[lane].hits[it] == null }) {
                     if (has("step_$cell")) click("step_$cell") else h.vm.toggleStep(cell)
                     compose.waitForIdle()
                 }
@@ -367,7 +370,10 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
             c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
                 // Tour 6, T8: a notes step split in two (its first half `length`, « la mesure 1 »): the second half finds its
                 // track made and its first bar written; its first gesture is « Copier sur les mesures suivantes » (the loop's).
-                val half = c.startsWith("notes:") && TutoChecks.trackFor(p(), c.removePrefix("notes:")) != null
+                // Tour 7: a Facile piece going on with a new part's line (jump_up make_drop2_2) finds the part made, likewise.
+                val levelSteps = course.chaptersFor(level).flatMap { it.steps }
+                val goesOn = levelSteps.getOrNull(levelSteps.indexOfFirst { it.id == s.id } - 1)?.check == c
+                val half = (c.startsWith("notes:") && TutoChecks.trackFor(p(), c.removePrefix("notes:")) != null) || (c.startsWith("part:") && goesOn)
                 if (half) {
                     if (!(has("piano_roll") && TutoHints.notes != null)) {
                         if (!has("tuto_do")) unfold()
@@ -382,7 +388,11 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 val (track, notes) = TutoHints.notes!!
                 assertEquals(track, h.vm.selectedTrack.value)
                 if (!half) assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
-                assertTrue("${s.id}: a bar or two dotted", notes.map { it.start / 384 }.distinct().size <= 2)
+                // Tour 7: a Facile piece that goes on with a line (bass_3, lead_end_2…) finds its first bars written;
+                // the dotted notes still to touch are a bar or two.
+                val written = p().track(track).notes.notes
+                val toTouch = notes.filter { g -> written.none { it.pitch == g.pitch && it.start == g.start } }
+                assertTrue("${s.id}: a bar or two dotted", toTouch.map { it.start / 384 }.distinct().size <= 2)
                 var rounds = 0
                 while (s.id !in progress().done) {
                     assertTrue("${s.id}: $rounds rounds", ++rounds < 8)

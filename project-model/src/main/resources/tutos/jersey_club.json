@@ -62,7 +62,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les 5 cases en pointillé. Regarde les écarts : 4 cases, 4 cases, 3, 3, puis 2.",
+          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les 5 cases en pointillé. Les écarts entre elles : 4 cases, 4 cases, 3, 3 et 2.",
           "textPro": "À toi : sur le pad « Kick studio », les 5 coups aux pas 1, 5, 9, 12 et 15 (écarts 4-4-3-3-2) : le « bounce ».",
           "why": "Les coups se rapprochent à la fin de la mesure : le corps a envie de sauter sur le dernier.",
           "check": "lane:kick",
@@ -134,13 +134,23 @@
       "steps": [
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 5 notes en pointillé de la mesure 1, sous les 5 kicks (la dernière une octave plus haut). « Copier sur les mesures suivantes » fait le reste : les mesures 3 et 4 descendent avec les accords.",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 5 notes en pointillé de la mesure 1, sous les 5 kicks (la dernière une octave plus haut).",
           "textPro": "À toi : crée la piste Basse (« Basse 808 ») : Fa1 sous les 4 premiers kicks, Fa2 sous le 5e, notes courtes. « Copier » : Fa, Fa, puis Mi♭ et Ré♭ (VII et VI), le long de la gamme.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans 808, les kicks n'ont pas de poids."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il fait le reste ; les mesures 3 et 4 descendent avec les accords.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_pump",
@@ -166,14 +176,24 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 4 à la mesure 1, 5 à la mesure 2 (une plus douce). Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 4 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (une voix) : 4 syllabes mesure 1, 5 mesure 2 dont une douce (le bégaiement), entre les kicks. « Copier ».",
           "why": "Une syllabe répétée entre les kicks : c'est le crochet que tout le monde reprend.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans voix, il manque le crochet du jersey club."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 5 notes de la mesure 2 (une plus douce), puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -289,7 +309,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 15, Pré-refrain 1, Pont 8, Outro 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 8 mesures, Refrain 16, Couplet 15, Pré-refrain 1, Pont 8, Outro 8.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 15, Pré-refrain 1, Pont 8, Outro 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
           "why": "Couplet 15 + le reset d'une mesure = 16 : chaque Refrain tombe au début d'un bloc de 8. En tout 2 min 58.",
           "check": "song:phrases",
           "spot": "song.parts",

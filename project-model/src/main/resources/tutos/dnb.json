@@ -116,7 +116,7 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; efface ensuite les cases sans pointillé.",
+          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : le bouton « Remplir 1/2 » sous la grille met un coup sur deux d'un seul geste ; il reste ensuite à effacer les cases sans pointillé.",
           "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures : les croches, sans la dernière de chaque mesure (la place du charley ouvert).",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -174,14 +174,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 2 notes en pointillé de la mesure 1 : elles tombent avec le kick. Puis les 3 notes de la mesure 2, la dernière plus aiguë. « Copier sur les mesures suivantes » fait le reste : la basse suit les accords toute seule.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 2 notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse (son « Basse reese », effet « Pompe » déjà sur sa tranche). Écris les mesures 1 et 2 dans le piano roll (Fa tenu, puis Fa et le saut d'octave), puis « Copier sur les mesures suivantes » : les mesures 3 et 4 descendent sur Ré♭ et Mi♭, les accords VI et VII.",
           "why": "La basse tient longtemps : en drum & bass rapide, ce sont les notes longues qui pèsent.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, ton morceau n'aura pas de grave : c'est la vedette de la drum & bass."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 3 notes de la mesure 2, la dernière plus aiguë. Puis « Copier sur les mesures suivantes » : il fait le reste, la basse suit les accords toute seule.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -224,7 +234,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe). « Accords » pose la triade d'un toucher : Fa mineur à la mesure 1, puis « Copier sur les mesures suivantes » : Fa m, Fa m, Ré♭, Mi♭ (i i VI VII).",
           "why": "Ces quatre accords, i i VI VII, sont la grille la plus jouée de la drum & bass : sombre, puis elle remonte.",
           "check": "notes:pad",
@@ -257,13 +267,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1 et les 3 de la mesure 2. « Copier sur les mesures suivantes » fait la réponse : la même chose, un peu plus bas, sur les accords suivants.",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (un « Supersaw ») et écris son riff : mesures 1 et 2 dans le piano roll, puis « Copier sur les mesures suivantes » : la réponse suit la grille, sur Ré♭ et Mi♭.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans riff, ton Drop 2 n'aura rien de neuf."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la réponse arrive, la même chose un peu plus bas, sur les accords suivants.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_echo",
@@ -434,7 +454,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, le Break et la sienne 16 : chaque Drop tombe au début d'une phrase, là où l'oreille l'attend. Le morceau dure près de 3 minutes.",
           "check": "song:phrases",
           "spot": "song.parts",

@@ -31,15 +31,16 @@ class Tour6TutoPanelHeaderTest {
     @Test
     fun afterTheChaptersBravoTheHeaderSaysNoStepLeft() {
         val chapters = TutoCourse.of("techno")!!.chaptersFor(TutoLevel.Facile)
-        // Chapter 7 of 15, two steps (the example, then the riff).
+        // Chapter 7 of 15: the example, then the riff (Tour 7: in Facile the riff is cut in two-gesture pieces).
         val ch = chapters.indexOfFirst { c -> c.steps.any { it.id == "lead_do" } }
-        assertTrue(ch == 6 && chapters.size == 15 && chapters[ch].steps.size == 2)
+        val n = chapters[ch].steps.size
+        assertTrue(ch == 6 && chapters.size == 15 && n >= 2)
         val done = chapters.take(ch + 1).flatMap { it.steps }.map { it.id }.toSet()
         val ui = TutoUi(TutoProgress("techno", TutoLevel.Facile, done = done, current = chapters[ch].steps[0].id), chapters, ch, 0, bravo = true)
         compose.setContent { PocketStudioTheme { TutoPanel(ui, canShow = false, actions = TutoActions(), reducedMotion = true) } }
         compose.waitForIdle()
-        val stepShown = compose.onAllNodes(hasText("Étape 1/2", substring = true), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
-        assertFalse("the header says « Étape 1/2 » of a chapter its « Bravo » says over", stepShown)
+        val stepShown = compose.onAllNodes(hasText("Étape 1/$n", substring = true), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+        assertFalse("the header says « Étape 1/$n » of a chapter its « Bravo » says over", stepShown)
         assertTrue("« Bravo, chapitre fini ! »", has("tuto_chapter_done"))
     }
 }

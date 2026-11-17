@@ -177,13 +177,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une 808), puis les 4 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la fait suivre les accords.",
+          "text": "À toi : touche « Créer la piste Basse » (une 808), puis les 4 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (une 808) et écris la mesure 1 : Si sur le 1, sur le « tchi » du dembow, sur le 3 et sur le dernier « tchi ». Puis « Copier » : la copie suit la grille Sol, Ré, La.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,snare,bass",
           "skip": "Sans basse, le dembow n'a pas de poids."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il recopie la mesure 1 en suivant les accords.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,snare,bass"
         },
         {
           "id": "bass_sat",
@@ -209,7 +219,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes d'un coup. Fais les 6 coups de la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 6 coups.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : Si mineur en 6 coups (3-3-2, deux fois), puis « Copier » : la copie suit la grille.",
           "check": "notes:pad",
           "length": 16,
@@ -241,13 +251,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 5 à la mesure 1, 4 à la mesure 2. « Copier sur les mesures suivantes » le rejoue sur les mesures 3 et 4.",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie et écris le riff : mesure 1 en 3-3-2 (Si Ré Fa♯, puis Ré Si : la question), mesure 2 (Ré Si La Sol tenu : la réponse), puis « Copier ».",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans riff, ton morceau n'a pas d'accroche."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 4 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la mélodie revient sur les mesures 3 et 4.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -389,7 +409,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:4,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",

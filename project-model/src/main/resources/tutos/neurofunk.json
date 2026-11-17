@@ -159,14 +159,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1, toutes sur la même note. Puis les 5 notes de la mesure 2. « Copier sur les mesures suivantes » fait le reste.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1, toutes sur la même note.",
           "textPro": "À toi : crée la piste Basse (son du style : une basse qui parle, effet « Basse grasse » et « Pompe » sur sa tranche). Écris les mesures 1 et 2 dans le piano roll (Fa#, rien que Fa#, et le saut d'octave à la fin), puis « Copier sur les mesures suivantes ».",
           "why": "Une seule note : en neurofunk, ce n'est pas la mélodie qui raconte, c'est le rythme et le son de la basse.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, il n'y a plus de neurofunk : c'est elle qui raconte tout."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 5 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait le reste.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -217,7 +227,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe froide). « Accords » pose la triade d'un toucher : Fa# mineur à la mesure 1, puis « Copier sur les mesures suivantes » : à la mesure 3, l'accord monte d'un demi-ton sur Sol (le ♭II phrygien) et revient.",
           "why": "L'accord qui monte d'un demi-ton et retombe : c'est toute l'harmonie du neurofunk, une menace qui revient.",
           "check": "notes:pad",
@@ -250,13 +260,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1 et celle de la mesure 2 : elles tombent dans les trous de la basse. Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1 : elles tombent dans les trous de la basse.",
           "textPro": "À toi : crée la piste Mélodie (un « Stab métallique », un flanger sur sa tranche) et écris sa réponse : 2 notes en mesure 1, 1 en mesure 2, dans les silences de la basse ; puis « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans réponse, la basse parle toute seule."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris la note de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -418,7 +438,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, chaque Drop tombe au début d'une phrase de 8. Le morceau dure un peu plus de 3 minutes.",
           "check": "song:phrases",
           "spot": "song.parts",

@@ -30,7 +30,7 @@ class Tour6TutoSoftHitTest {
                 checked += "$style/${s.id}"
             }
         }
-        assertTrue("techno's clap is not checked: $checked", "techno/clap_do" in checked)
+        assertTrue("techno's clap is not checked: $checked", "techno/clap_2" in checked)
     }
 
     @Test

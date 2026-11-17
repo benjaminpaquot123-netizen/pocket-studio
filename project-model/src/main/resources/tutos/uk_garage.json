@@ -153,13 +153,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la refait sur chaque accord (Fa, Ré, Mi). Écris enfin les 4 notes de la mesure 4.",
+          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse. Mesure 1 avec le kick (cases 1 et 11) et l'octave en réponse ; « Copier » la fait suivre les accords (Fa, Ré) ; mesure 4 sur Mi, qui finit sur Sol pour revenir à La.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, ton garage n'aura pas de rebond."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il refait la mesure 1 sur chaque accord (Fa, Ré, Mi). Écris enfin les 4 notes de la mesure 4.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_sub",
@@ -185,7 +195,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.",
           "check": "notes:pad",
           "length": 32,

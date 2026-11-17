@@ -51,11 +51,30 @@ data class TutoCourse(
      */
     val drums: Map<String, Map<String, String>> = emptyMap(),
 ) {
-    /** The chapters of [level], each with only its steps of that level. */
+    /**
+     * The chapters of [level], each with only its steps of that level.
+     *
+     * A step cut in pieces for one level (Facile: two gestures a consigne) carries a [TutoStep.length] that stops at
+     * its first piece; the pieces after it have the same check and the other level's code is not in them. Where
+     * those pieces are left out, the step they continue takes back their reach (the last piece's length, 0 = the
+     * whole line) and its own words for that level ([TutoStep.textFor]), so the other level checks what it did
+     * before the cut (Pro: the whole bass line, « Doux » on the clap).
+     */
     fun chaptersFor(level: TutoLevel): List<TutoChapter> =
         chapters.filter { level.code in it.levels }
-            .map { c -> c.copy(title = c.titleFor(level), steps = c.steps.filter { level.code in it.levels }) }
+            .map { c -> c.copy(title = c.titleFor(level), steps = stepsFor(c.steps, level)) }
             .filter { it.steps.isNotEmpty() }
+
+    private fun stepsFor(steps: List<TutoStep>, level: TutoLevel): List<TutoStep> {
+        val kept = ArrayList<TutoStep>(steps.size)
+        for (s in steps) {
+            if (level.code in s.levels) { kept += s; continue }
+            val last = kept.lastOrNull()
+            if (last == null || last.manual || last.check != s.check) continue
+            kept[kept.lastIndex] = last.copy(length = if (last.length > 0) s.length else last.length, text = last.textFor(level))
+        }
+        return kept
+    }
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }

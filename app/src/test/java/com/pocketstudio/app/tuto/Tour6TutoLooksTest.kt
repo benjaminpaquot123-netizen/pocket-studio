@@ -100,6 +100,8 @@ class Tour6TutoLooksTest {
         }
     }
 
+    private fun facileStep(style: String, id: String) = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }.first { it.id == id }
+
     private fun goTo(c: TutoController, id: String) {
         val chapters = c.ui.value!!.chapters
         val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == id } }
@@ -107,10 +109,13 @@ class Tour6TutoLooksTest {
         assertEquals(id, c.ui.value!!.current.id)
     }
 
-    /** House, the bass: its track made, the notes written a note at a time; the project one note short of « Copier », then with it. */
+    /**
+     * House, the bass: its track made, the notes written a note at a time; the project one note short of « Copier », then with it.
+     * Tour 7: in Facile, « Copier » is the step after « bass_do » (its first bar only): [COPY_STEP].
+     */
     private fun oneNoteShortOfTheCopy(): Triple<TutoTarget, Project, Project> {
         val target = TutoTarget.of("house")!!
-        val step = TutoCourse.of("house")!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
+        val step = facileStep("house", COPY_STEP)
         var p = target.blank()
         TutoChecks.need(step, p, target)?.let { p = TutoChecks.fulfil(it, step, p, target)!!.first }
         val frames = listOf(p) + TutoChecks.demo(step, p, target)!!.frames
@@ -132,7 +137,7 @@ class Tour6TutoLooksTest {
         c.start("house", TutoLevel.Facile)
         answerAll()
         // The step reached: a look begins. Its work is not done yet when the last note of the motif is written.
-        goTo(c, "bass_do")
+        goTo(c, COPY_STEP)
         idle()
         flow.value = written
         idle()
@@ -148,12 +153,12 @@ class Tour6TutoLooksTest {
     @Test
     fun theLookOfCreateTheTrackDoesNotTakeTheCopyButtonBack() {
         val target = TutoTarget.of("jump_up")!!
-        val bass = TutoCourse.of("jump_up")!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
+        val bass = facileStep("jump_up", COPY_STEP)
         val flow = MutableStateFlow(target.blank())
         val c = controller(flow)
         c.start("jump_up", TutoLevel.Facile)
         answerAll()
-        goTo(c, "bass_do")
+        goTo(c, COPY_STEP)
         answerAll()
         assertEquals(TutoNeed.Track("bass"), c.ui.value!!.need)
         c.fulfilNeed()
@@ -240,7 +245,7 @@ class Tour6TutoLooksTest {
         val c = controller(flow)
         c.start("house", TutoLevel.Facile)
         idle()
-        goTo(c, "bass_do")
+        goTo(c, COPY_STEP)
         idle()
         flow.value = written
         idle()
@@ -248,5 +253,10 @@ class Tour6TutoLooksTest {
         idle()
         answerAll()
         assertEquals("looks working at the same time", 1, gate.most)
+    }
+
+    private companion object {
+        /** The Facile step that offers « Copier sur les mesures suivantes » for the bass (house, jump up). */
+        const val COPY_STEP = "bass_2"
     }
 }

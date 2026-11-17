@@ -182,3 +182,5 @@ Ce que les tours 6 et 7 ont le moins couvert : langues ar, zh-CN, en, it, nl, pl
 
 ## Ce que le tour 8 ne regarde pas
 Le son et les décrochages (téléphone seulement), le thème sombre, la rotation au banc (test seulement), les écrans qu'aucun siège n'atteint (listés « non vus »).
+
+- Banc (vu sur t4-26) : HumanTester annonce « DOIGT » sur un bouton recouvert par un élément non cliquable (carte du « Fait ») ; le chevauchement ne sort qu’en avertissement « LAYOUT OVERLAP » dans le journal. Faire échouer le doigt quand un élément dessiné couvre le point visé.

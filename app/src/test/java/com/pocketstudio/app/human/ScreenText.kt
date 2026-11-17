@@ -515,11 +515,17 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         /** Marks the app draws itself (a Canvas, no icon), by their test tag: what they look like. */
         val DRAWN_TAGS = mapOf("link_chevron" to "›")
 
-        /** The screen's text as a short hash: clock times and percentages left out (a song's position, a progress). */
-        fun fingerprintOf(lines: List<String>): String {
-            val norm = lines.joinToString("\n", transform = ::normalized)
+        /**
+         * The screen's text as a short hash: clock times and percentages left out (a song's position, a progress).
+         * Tour 7, banc B2: [places] false leaves the « @ x,y » of each line out too (a screen whose words only moved).
+         */
+        fun fingerprintOf(lines: List<String>, places: Boolean = true): String {
+            val norm = lines.joinToString("\n") { l -> normalized(l).let { if (places) it else it.replace(PLACE, "") } }
             return MessageDigest.getInstance("SHA-1").digest(norm.toByteArray()).joinToString("") { "%02x".format(it) }.take(10)
         }
+
+        /** Where a line of the screen sits (« @ x,y » at its end). */
+        private val PLACE = Regex(" @ -?\\d+,-?\\d+$")
 
         /** A line as the fingerprint reads it: clock times and percentages left out. */
         fun normalized(line: String): String = line.replace(Regex("\\d+:\\d\\d"), "#:##").replace(Regex("\\d+ ?%"), "#%")

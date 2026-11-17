@@ -312,20 +312,30 @@ internal fun PlusSpace(
                 // Tour 6, seat B a (A11, control Ba-5 screen 6): the tiles stood at the top, « Remix » out of a left thumb's
                 // reach; they sit at the page's foot (the way back stays on top), where one hand reaches them.
                 val roomHeight = this@BoxWithConstraints.maxHeight
-                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).then(if (tiles) Modifier.heightIn(min = roomHeight - 24.dp) else Modifier), verticalArrangement = if (tiles) Arrangement.SpaceBetween else Arrangement.spacedBy(6.dp)) {
-                    if (leave != null) PlusLeaveRow(leave) else if (tiles) Spacer(Modifier.height(0.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a row cut
-                    // their titles (« Bibliothèque de sons »): two a row, then the list, as the room per title allows.
-                    val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
-                    if (perRow > 1) {
-                        entries.chunked(perRow).forEach { row ->
-                            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { e.page?.let(open) ?: e.open?.invoke() } }
-                                repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
-                            }
+                // Tour 7, D3 (seats 3a, 2c): a row cut by the fold stood half under the Guide's bar (« मेरी लाइब्रेरी »);
+                // [FoldColumn] lets a row stand whole above the fold or start below it, never across it.
+                val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
+                val pick: (PlusEntry) -> Unit = { e -> e.page?.let(open) ?: e.open?.invoke() }
+                if (tiles) {
+                    Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
+                        FoldColumn(fold = roomHeight - 12.dp, minHeight = roomHeight - 24.dp, gap = 6.dp) {
+                            if (leave != null) PlusLeaveRow(leave) else Spacer(Modifier.height(0.dp))
+                            // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a
+                            // row cut their titles (« Bibliothèque de sons »): two a row, then the list, as the room allows.
+                            if (perRow > 1) {
+                                entries.chunked(perRow).forEach { row ->
+                                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                        row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { pick(e) } }
+                                        repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
+                                    }
+                                }
+                            } else entries.forEach { e -> PlusRow(e, selected = false) { pick(e) } }
                         }
-                    } else entries.forEach { e -> PlusRow(e, selected = false) { e.page?.let(open) ?: e.open?.invoke() } }
+                    }
+                } else {
+                    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (leave != null) PlusLeaveRow(leave)
+                        entries.forEach { e -> PlusRow(e, selected = false) { pick(e) } }
                     }
                 }
             }
@@ -344,6 +354,39 @@ internal fun PlusSpace(
                 Box(Modifier.weight(1f)) { content(page) }
             }
         }
+    }
+}
+
+/**
+ * Tour 7, D3: the Plus page's column. Its first child (the way back) on top; the rows under it at the page's foot when all
+ * fit in [minHeight] (where a thumb reaches them), else stacked [gap] apart, a row that would cross [fold] (the Guide's
+ * bar, under the page) pushed to start below it: no tile stands half hidden.
+ */
+@Composable
+private fun FoldColumn(fold: androidx.compose.ui.unit.Dp, minHeight: androidx.compose.ui.unit.Dp, gap: androidx.compose.ui.unit.Dp, content: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(content) { ms, c ->
+        val ps = ms.map { it.measure(c.copy(minHeight = 0, maxHeight = androidx.compose.ui.unit.Constraints.Infinity)) }
+        val gapPx = gap.roundToPx()
+        val foldPx = fold.roundToPx()
+        val minPx = minHeight.roundToPx()
+        val ys = IntArray(ps.size)
+        val rows = ps.drop(1)
+        val rowsHeight = rows.sumOf { it.height } + gapPx * (rows.size - 1).coerceAtLeast(0)
+        val head = ps.firstOrNull()?.height ?: 0
+        val end = if (head + gapPx + rowsHeight <= minPx) {
+            var y = minPx - rowsHeight
+            for (i in 1 until ps.size) { ys[i] = y; y += ps[i].height + gapPx }
+            minPx
+        } else {
+            var y = head + if (head > 0) gapPx else 0
+            for (i in 1 until ps.size) {
+                if (y < foldPx && y + ps[i].height > foldPx) y = foldPx + gapPx
+                ys[i] = y
+                y += ps[i].height + gapPx
+            }
+            maxOf(minPx, y - gapPx)
+        }
+        layout(c.maxWidth, end) { ps.forEachIndexed { i, p -> p.place(0, ys[i]) } }
     }
 }
 

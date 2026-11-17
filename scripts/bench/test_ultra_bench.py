@@ -213,6 +213,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         banc7_launcher_messages(d)
     with tempfile.TemporaryDirectory() as d:
+        last_screen_image_after_waits(d)
+    with tempfile.TemporaryDirectory() as d:
         banc7_stamp_reason(d)
     with tempfile.TemporaryDirectory() as d:
         banc7_budget_and_launcher_stall(d)
@@ -709,6 +711,33 @@ def banc7_stamp_reason(d):
     tester = os.path.join(HERE, "..", "human-tester.sh")
     r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
     check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
+
+
+def last_screen_image_after_waits(d):
+    """Tour 7, control tuto2 (seat e): six touches, two images looked at, then four « attends » and « fin ». The image of
+    the screen reached was refused (« attends » is not a gesture) and the seat ended without it. The last screen's image
+    is allowed once the seat ends, whatever the cap; before that, the refusal says so."""
+    act = os.path.join(HERE, "..", "human-act.py")
+    seat = os.path.join(d, "controle", "tuto2", "e")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    for k in range(1, 7):
+        write(os.path.join(seat, f"cmd-{k}.txt"), "touche 100 200")
+    for k in range(7, 11):
+        write(os.path.join(seat, f"cmd-{k}.txt"), "attends 2")
+    write(os.path.join(seat, "images.txt"), "2\n3\n")
+    write(os.path.join(seat, "turn"), "11")
+    from PIL import Image
+    Image.new("RGB", (40, 80), (20, 20, 20)).save(os.path.join(seat, "screen-11.png"))
+    out = run(act, seat, "regarde", "image")
+    check("Plafond" in out and "fin" in out.split("Plafond", 1)[1], "while playing, the cap holds and says the last screen's image comes with « fin »:\n" + out)
+    write(os.path.join(seat, "cmd-11.txt"), "fin")
+    out = run(act, seat, "regarde", "image")
+    check("écran 11" in out and "Plafond" not in out, "« fin » played: the last screen's image is given:\n" + out)
+    write(os.path.join(seat, "fin.txt"), "fin du test")
+    os.remove(os.path.join(seat, "cmd-11.txt"))
+    write(os.path.join(seat, "images.txt"), "2\n3\n")
+    out = run(act, seat, "regarde", "image")
+    check("écran 11" in out and "Plafond" not in out, "the seat ended by the bench (budget): the last screen's image is given:\n" + out)
 
 
 def bench_guards(d):

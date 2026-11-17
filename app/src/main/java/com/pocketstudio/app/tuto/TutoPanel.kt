@@ -297,10 +297,10 @@ fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
  * With « Accords » on, one touch writes a whole dotted chord: the line counts chords, said as such (control seats:
  * « Encore 9 notes » over three chords), the arrow of [way] around it.
  */
-fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String {
+fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?, also: com.pocketstudio.model.tuto.TutoWay? = null): String {
     if (left <= 0) return tutoNotesLeft(0, way)
     val said = tr("Accords en pointillé à toucher : %d", left)
-    return when (way) {
+    return when (way ?: also) {
         com.pocketstudio.model.tuto.TutoWay.Higher -> "$said ↑"
         com.pocketstudio.model.tuto.TutoWay.Lower -> "$said ↓"
         com.pocketstudio.model.tuto.TutoWay.Later -> "$said →"
@@ -309,14 +309,16 @@ fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String
     }
 }
 
-/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way). */
-fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String = when {
+/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way; [also]: one more out of the rows). */
+fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?, also: com.pocketstudio.model.tuto.TutoWay? = null): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")
     way == com.pocketstudio.model.tuto.TutoWay.Higher -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
     way == com.pocketstudio.model.tuto.TutoWay.Lower -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
     way == com.pocketstudio.model.tuto.TutoWay.Later -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
     way == com.pocketstudio.model.tuto.TutoWay.Earlier -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
-    else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
+    // [also]: some are in sight, one more is over or under the rows in sight (control « tuto2 », seat a): the arrow alone.
+    else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher") +
+        when (also) { com.pocketstudio.model.tuto.TutoWay.Higher -> " ↑"; com.pocketstudio.model.tuto.TutoWay.Lower -> " ↓"; else -> "" }
 }
 
 /** What the panel's buttons do ([TutoController]'s). */

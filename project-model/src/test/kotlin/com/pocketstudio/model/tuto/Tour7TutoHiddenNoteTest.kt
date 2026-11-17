@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteClip
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -49,5 +50,20 @@ class Tour7TutoHiddenNoteTest {
         val hidden = left.last()
         val now = v.moved(TutoRollHint.brought(left, v, 16))
         assertTrue("the note ${hidden.pitch} is still out of the rows in sight after the touch", TutoRollHint.inRows(hidden, now))
+    }
+
+    /** The line shows where the hidden note is (the arrow) while the others are in sight, and nothing once all are. */
+    @Test
+    fun theLineShowsWhereTheHiddenNoteIs() {
+        val left = notes(5)
+        val v = view(46, 8)
+        assertEquals(TutoWay.Higher, TutoRollHint.also(left, v, 16))
+        assertEquals(left.last(), TutoRollHint.aside(left, v, 16))
+        assertEquals(null, TutoRollHint.also(left, v.moved(TutoRollHint.brought(left, v, 16)), 16))
+        // Lower: the five in the top rows in sight, the sixth under them.
+        val low = (0 until 5).map { Note(it * 2 * tick, tick, 60 + it % 3) } + Note(12 * tick, tick, 50)
+        assertEquals(TutoWay.Lower, TutoRollHint.also(low, view(58, 8), 16))
+        // A dotted note of a later bar is not spoken of yet.
+        assertEquals(null, TutoRollHint.also(notes(0).dropLast(1) + Note(20 * tick, tick, 80), view(46, 8).copy(right = 32 * step), 16))
     }
 }

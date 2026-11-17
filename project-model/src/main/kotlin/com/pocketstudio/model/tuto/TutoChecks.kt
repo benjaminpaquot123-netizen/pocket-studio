@@ -2653,12 +2653,7 @@ object TutoRollHint {
      */
     fun next(left: List<Note>, v: TutoRollView, barSteps: Int = 0): Note? {
         val rows = v.rowPx > 0f && v.bottom - v.top >= v.rowPx - 1f
-        // Tour 7 (D6): with the bar's length known, the first bar that still has a dotted note left, bar after bar.
-        val pool = if (barSteps <= 0) left else {
-            val bar = { n: Note -> n.start / NoteClip.TICKS_PER_STEP / barSteps }
-            val first = left.minOfOrNull(bar) ?: return null
-            left.filter { bar(it) == first }
-        }
+        val pool = pool(left, barSteps)
         fun gap(n: Note): Float {
             val dx = if (v.right <= v.left || inTime(n, v)) 0f else if (x(n, v) < v.left) v.left - x(n, v) else x(n, v) + v.stepPx - v.right
             val dy = if (!rows || inRows(n, v)) 0f else if (y(n, v) < v.top) v.top - y(n, v) else y(n, v) + v.rowPx - v.bottom
@@ -2666,6 +2661,31 @@ object TutoRollHint {
         }
         return pool.sortedWith(compareBy({ it.start }, { -it.pitch })).minByOrNull { gap(it) }
     }
+
+    /** Tour 7 (D6): with the bar's length known, the notes of the first bar that still has a dotted note left, bar after bar. */
+    private fun pool(left: List<Note>, barSteps: Int): List<Note> {
+        if (barSteps <= 0) return left
+        val bar = { n: Note -> n.start / NoteClip.TICKS_PER_STEP / barSteps }
+        val first = left.minOfOrNull(bar) ?: return left
+        return left.filter { bar(it) == first }
+    }
+
+    /**
+     * Tour 7, control « tuto2 », seat a: « Encore 6 notes », five in sight, the sixth higher, no arrow. The dotted
+     * note of the bar spoken of that is in the time in sight but out of the rows in sight while [next] is whole in
+     * sight, the nearest to the rows; null: none, or nothing measured.
+     */
+    fun aside(left: List<Note>, v: TutoRollView, barSteps: Int = 0): Note? {
+        if (v.right <= v.left || v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return null
+        val n = next(left, v, barSteps) ?: return null
+        if (!inTime(n, v) || !inRows(n, v)) return null
+        return pool(left, barSteps).filter { inTime(it, v) && !inRows(it, v) }
+            .minByOrNull { if (y(it, v) < v.top) v.top - y(it, v) else y(it, v) + v.rowPx - v.bottom }
+    }
+
+    /** Where [aside] is from the rows in sight: [TutoWay.Higher] or [TutoWay.Lower]; null: no such note. */
+    fun also(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? =
+        aside(left, v, barSteps)?.let { if (y(it, v) < v.top) TutoWay.Higher else TutoWay.Lower }
 
     /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
     fun way(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? {
@@ -2680,7 +2700,7 @@ object TutoRollHint {
 
     /**
      * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
-     * the rows), zero along an axis where the note already is. Along the time, its bar from its first sixteenth
+     * the rows), zero along an axis where the note already is and no other is hidden ([aside]). Along the time, its bar from its first sixteenth
      * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
      */
     fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
@@ -2691,9 +2711,21 @@ object TutoRollHint {
             bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
             else -> x(n, v) - 2 * v.stepPx - v.left
         }
-        val dy = if (inRows(n, v)) 0f else y(n, v) + v.rowPx / 2 - (v.top + v.bottom) / 2
+        // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else it alone.
+        val hidden = aside(left, v, barSteps)
+        val mid = (v.top + v.bottom) / 2
+        val dy = when {
+            hidden != null -> {
+                val all = pool(left, barSteps).filter { inTime(it, v) }
+                val top = all.minOf { y(it, v) }
+                val bottom = all.maxOf { y(it, v) } + v.rowPx
+                if (bottom - top <= v.bottom - v.top + 1f) (top + bottom) / 2 - mid else y(hidden, v) + v.rowPx / 2 - mid
+            }
+            inRows(n, v) -> 0f
+            else -> y(n, v) + v.rowPx / 2 - mid
+        }
         val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
-        return dx to dy + whole(left, there, n)
+        return dx to dy + whole(left, there, hidden ?: n)
     }
 
     /**

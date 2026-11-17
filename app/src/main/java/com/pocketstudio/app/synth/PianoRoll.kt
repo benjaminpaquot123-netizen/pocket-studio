@@ -784,7 +784,8 @@ private fun Grid(
         )
         val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
         val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps)
-        lit = next
+        // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a).
+        lit = com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps) ?: next
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }
@@ -1425,21 +1426,21 @@ private fun TutoNotesLeft(
     // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
     // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel. One rule for the bar
     // and the rows ([com.pocketstudio.model.tuto.TutoRollHint]), read where it is drawn: a scroll recomposes this line only.
-    val way by remember(left, rowPx, high, vScroll, sight, stepPx, barSteps) {
+    // Control « tuto2 », seat a: [also], a dotted note of the time in sight out of the rows while others are in sight.
+    val ways by remember(left, rowPx, high, vScroll, sight, stepPx, barSteps) {
         androidx.compose.runtime.derivedStateOf {
             val v = vScroll
             val rows = v != null && v.viewportSize != 0
-            com.pocketstudio.model.tuto.TutoRollHint.way(
-                left,
-                com.pocketstudio.model.tuto.TutoRollView(
-                    left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + hScroll.viewportSize,
-                    top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
-                    stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
-                ),
-                barSteps,
+            val shown = com.pocketstudio.model.tuto.TutoRollView(
+                left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + hScroll.viewportSize,
+                top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
+                stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
             )
+            com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps) to com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
         }
     }
+    val way = ways.first
+    val also = ways.second
     // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
     // is in sight (« Je le fais » put the last note of bar 2 near the left edge, the line said « mesure 3/8 »).
     val bar by remember(stepPx, barSteps, bars, left) {
@@ -1463,8 +1464,8 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way)
-                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way),
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way, also),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),
@@ -1472,7 +1473,7 @@ private fun TutoNotesLeft(
         }
         // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
         // brings the note into view: said on the line while it points away.
-        if (copy == null && way != null && left.isNotEmpty()) {
+        if (copy == null && (way != null || also != null) && left.isNotEmpty()) {
             Text(
                 tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 color = Neon.OnAccent, maxLines = 1, softWrap = false,

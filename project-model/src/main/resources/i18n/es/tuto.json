@@ -149,5 +149,7 @@
   "Touche ici": "Toca aquí",
   "Accords en pointillé à toucher : %d": "Acordes punteados por tocar: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: un momento más tranquilo, el kick y el bajo callan.",
-  "Exemple passé sans l'écouter.": "Ejemplo saltado sin escucharlo."
+  "Exemple passé sans l'écouter.": "Ejemplo saltado sin escucharlo.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Parte “%1$s” creada (copia de “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Parte “%1$s” creada (copia de “%2$s”): sin %3$s."
 }

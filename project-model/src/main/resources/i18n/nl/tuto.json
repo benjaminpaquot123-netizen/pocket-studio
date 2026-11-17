@@ -149,5 +149,7 @@
   "Touche ici": "Tik hier",
   "Accords en pointillé à toucher : %d": "Gestippelde akkoorden om aan te tikken: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: een rustiger moment, de kick en de bas zwijgen.",
-  "Exemple passé sans l'écouter.": "Voorbeeld overgeslagen zonder te luisteren."
+  "Exemple passé sans l'écouter.": "Voorbeeld overgeslagen zonder te luisteren.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Deel ‘%1$s’ gemaakt (kopie van ‘%2$s’).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Deel ‘%1$s’ gemaakt (kopie van ‘%2$s’): zonder %3$s."
 }

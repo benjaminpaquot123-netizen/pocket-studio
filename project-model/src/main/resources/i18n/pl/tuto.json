@@ -149,5 +149,7 @@
   "Touche ici": "Dotknij tutaj",
   "Accords en pointillé à toucher : %d": "Kropkowane akordy do dotknięcia: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: spokojniejszy moment, stopa i bas milkną.",
-  "Exemple passé sans l'écouter.": "Przykład pominięty bez słuchania."
+  "Exemple passé sans l'écouter.": "Przykład pominięty bez słuchania.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Utworzono część „%1$s” (kopia „%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Utworzono część „%1$s” (kopia „%2$s”): bez %3$s."
 }

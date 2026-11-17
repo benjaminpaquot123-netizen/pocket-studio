@@ -149,5 +149,7 @@
   "Touche ici": "Hier tippen",
   "Accords en pointillé à toucher : %d": "Gestrichelte Akkorde zu tippen: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: ein ruhigerer Moment, Kick und Bass schweigen.",
-  "Exemple passé sans l'écouter.": "Beispiel übersprungen, ohne es anzuhören."
+  "Exemple passé sans l'écouter.": "Beispiel übersprungen, ohne es anzuhören.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Teil „%1$s“ erstellt (Kopie von „%2$s“).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Teil „%1$s“ erstellt (Kopie von „%2$s“): ohne %3$s."
 }

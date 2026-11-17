@@ -149,5 +149,7 @@
   "Touche ici": "点这里",
   "Accords en pointillé à toucher : %d": "要点的虚线和弦：%d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "间奏：比较安静的部分，底鼓和贝斯停下来。",
-  "Exemple passé sans l'écouter.": "未收听，已跳过示例。"
+  "Exemple passé sans l'écouter.": "未收听，已跳过示例。",
+  "Partie « %1$s » créée (copie de « %2$s »).": "已创建段落“%1$s”（“%2$s”的副本）。",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "已创建段落“%1$s”（“%2$s”的副本）：没有%3$s。"
 }

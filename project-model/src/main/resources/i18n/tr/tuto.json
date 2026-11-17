@@ -149,5 +149,7 @@
   "Touche ici": "Buraya dokun",
   "Accords en pointillé à toucher : %d": "Dokunulacak noktalı akorlar: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: daha sakin bir an, kick ve bas susar.",
-  "Exemple passé sans l'écouter.": "Örnek dinlenmeden geçildi."
+  "Exemple passé sans l'écouter.": "Örnek dinlenmeden geçildi.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "“%1$s” bölümü oluşturuldu (“%2$s” kopyası).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "“%1$s” bölümü oluşturuldu (“%2$s” kopyası): %3$s olmadan."
 }

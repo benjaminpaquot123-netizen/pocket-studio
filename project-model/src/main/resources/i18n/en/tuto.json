@@ -149,5 +149,7 @@
   "Touche ici": "Tap here",
   "Accords en pointillé à toucher : %d": "Dotted chords to tap: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: a calmer moment, the kick and the bass go quiet.",
-  "Exemple passé sans l'écouter.": "Example skipped without listening."
+  "Exemple passé sans l'écouter.": "Example skipped without listening.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Part “%1$s” made (a copy of “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Part “%1$s” made (a copy of “%2$s”): without %3$s."
 }

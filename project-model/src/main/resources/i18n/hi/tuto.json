@@ -149,5 +149,7 @@
   "Touche ici": "यहाँ टैप करें",
   "Accords en pointillé à toucher : %d": "टैप करने के लिए बिंदुदार कॉर्ड: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "ब्रेक: शांत पल, किक और बेस चुप हो जाते हैं।",
-  "Exemple passé sans l'écouter.": "उदाहरण बिना सुने छोड़ दिया।"
+  "Exemple passé sans l'écouter.": "उदाहरण बिना सुने छोड़ दिया।",
+  "Partie « %1$s » créée (copie de « %2$s »).": "पार्ट “%1$s” बन गया (“%2$s” की कॉपी)।",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "पार्ट “%1$s” बन गया (“%2$s” की कॉपी): %3$s के बिना।"
 }

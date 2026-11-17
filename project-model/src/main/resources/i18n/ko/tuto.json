@@ -149,5 +149,7 @@
   "Touche ici": "여기를 탭",
   "Accords en pointillé à toucher : %d": "탭할 점선 코드: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "브레이크: 조용해지는 부분, 킥과 베이스가 쉬어요.",
-  "Exemple passé sans l'écouter.": "예시를 듣지 않고 건너뛰었어요."
+  "Exemple passé sans l'écouter.": "예시를 듣지 않고 건너뛰었어요.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "“%1$s” 파트를 만들었어요(“%2$s” 복사본).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "“%1$s” 파트를 만들었어요(“%2$s” 복사본): %3$s 없이."
 }

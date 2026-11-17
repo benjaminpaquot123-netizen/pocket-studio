@@ -3,6 +3,8 @@ package com.pocketstudio.app.tuto
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -47,6 +49,11 @@ class TutoGrilleTest {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+
+    private fun chordsOn(): Boolean {
+        val c = compose.onNodeWithTag("chord_mode", useUnmergedTree = true).fetchSemanticsNode().config
+        return c.getOrNull(SemanticsProperties.Selected) ?: (c.getOrNull(SemanticsProperties.ToggleableState) == ToggleableState.On)
+    }
     private fun node(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
     private fun text(tag: String) = node(tag).config[SemanticsProperties.Text].joinToString()
     private fun settle() = repeat(20) { idle(100); compose.mainClock.advanceTimeBy(100); compose.waitForIdle() }
@@ -158,8 +165,9 @@ class TutoGrilleTest {
     /** N8: with « Accords » on one touch writes a whole chord: « Encore N » counts the touches (the chords' starts), not their notes. */
     private fun chordsCountTouches(level: TutoLevel, simple: Boolean) {
         openNotesStep("pad_do", level, simple)
-        // « Accords » on (the chord's lowest note touched writes the whole chord).
-        if (has("chord_mode")) {
+        // « Accords » on (the chord's lowest note touched writes the whole chord). Tour 7: a chords' step may
+        // already have turned it on; a touch then would turn it off.
+        if (has("chord_mode") && !chordsOn()) {
             compose.onNodeWithTag("chord_mode").performClick()
             settle()
         }

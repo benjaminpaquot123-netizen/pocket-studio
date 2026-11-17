@@ -58,11 +58,8 @@ class Tour6TutoFlechesChordsTest {
             PocketStudioTheme { PianoRoll(NoteClip(steps = 16), emptyList(), -1, PianoRollActions(), hints = hints, trackName = "Accords") }
         }
         compose.waitForIdle()
-        assertEquals("« Accords » is off when the roll opens", false, chordsOn())
-        // « allume « Accords », juste au-dessus de la grille » (the chords' step).
-        compose.onNodeWithTag("chord_mode").performClick()
-        compose.waitForIdle()
-        assertEquals("the user's touch turns « Accords » on", true, chordsOn())
+        // Tour 7 (Tour7TutoChordOnTest): a step of dotted chords begins with « Accords » already on.
+        assertEquals("« Accords » is on when the chords' step opens", true, chordsOn())
         // The next step, on the melody's track: its dotted notes come one at a time.
         TutoHints.step = "lead_do"
         hints = riff

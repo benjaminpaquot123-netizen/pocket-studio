@@ -318,7 +318,7 @@
         {
           "id": "make_montee",
           "text": "À toi : crée la Montée : sans kick ni basse. Sa caisse claire accélère mesure après mesure, puis tout se tait juste avant le Drop.",
-          "textPro": "À toi : crée la Montée, sans kick ni basse : la caisse accélère (noires, croches, doubles croches, roulements) jusqu'au silence.",
+          "textPro": "À toi : crée la Montée, sans kick ni basse : la caisse accélère (noires, croches, doubles croches) jusqu'au silence.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",
           "keep": "snare,open_hat,hat,pad,lead",

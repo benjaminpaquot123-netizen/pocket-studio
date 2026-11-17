@@ -730,8 +730,8 @@ internal class LaySong(val what: String) : TutoKind {
 /**
  * "fill": a roll on the snare in the Montée's last bar (a Drop 2 copied from the example rolls too: it does not
  * count), before its last two cells: those are the silence of the next step (testers, lot « tuto 4 »: the roll made,
- * then erased). Lot « tuto 5 »: the build already rolls ×2 in its last bar; the user's roll is the last one, ×3 or
- * more, in the beat before the silence.
+ * then erased). The part that builds up comes without a roll (tour 7, c-V3); the user's roll is ×3 or more, in the
+ * beat before the silence.
  */
 internal object DrumFill : TutoKind {
     override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = sceneLabelled(p, partsOf(step).first()).takeIf { it >= 0 }?.let { i ->

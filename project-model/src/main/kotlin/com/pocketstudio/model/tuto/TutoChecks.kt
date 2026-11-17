@@ -572,7 +572,7 @@ object TutoChecks {
      * « tuto 5 »: two 16ths, 86 ms, is no silence; in jump up a beat is cut, or a bar).
      */
     const val GAP_CELLS = 4
-    /** The last roll before the silence: this many hits in its cell or more (the build's own rolls are ×2). */
+    /** The last roll before the silence: this many hits in its cell or more. */
     internal const val FILL_REPEATS = 3
     /** How much a drawn curve must climb to « monter ». */
     internal const val RISE = 0.2f
@@ -1567,7 +1567,7 @@ object TutoChecks {
                     val tom = !buildsIn(s, target)
                     lanes { k, l ->
                         if (k !in on) l else {
-                            val slowed = l.hits.mapValues { (c, h) -> if (c in window && h.repeats >= FILL_REPEATS) h.copy(repeats = FILL_REPEATS - 1) else h }
+                            val slowed = l.hits.mapValues { (c, h) -> if (c in window && h.repeats >= FILL_REPEATS) h.copy(repeats = 1) else h }
                             if (!tom) l.copy(hits = slowed) else l.copy(hits = slowed.filterKeys { it !in window })
                         }
                     }
@@ -1653,8 +1653,10 @@ object TutoChecks {
 
     /**
      * The part shown with its pad [role] accelerating bar after bar (Théo, lot « tuto 5 »: one roll
-     * in the last bar is a fill, not a build): quarters, eighths, 16ths, then 16ths rolled in two
-     * (32nds), louder and louder, up to the silence of its last beat, where its notes stop too.
+     * in the last bar is a fill, not a build): quarters, eighths, eighths that turn to 16ths, then 16ths,
+     * louder and louder, up to the silence of its last beat, where its notes stop too. No hit of it is
+     * rolled (tour 7, control seat c, c-V3: the part came with « ×2 » on every hit of its last bar, a
+     * roll the user never made): the roll of a part that builds up is the user's, at its own step.
      */
     fun built(given: Project, role: String, gap: Int = GAP_CELLS): Project {
         val lane = laneOf(role)
@@ -1665,12 +1667,11 @@ object TutoChecks {
         val n = p.drums.steps
         val beat = per / 4
         val end = n - gap
-        // Each quarter of the loop (a bar of a 4-bar one) faster than the one before.
+        // Each quarter of the loop (a bar of a 4-bar one) faster than the one before, by its hits alone: the third
+        // one changes speed at its half.
         val hits = (0 until end).mapNotNull { s ->
-            val quarter = s * 4 / n
-            val every = when (quarter) { 0 -> beat; 1 -> beat / 2; else -> 1 }.coerceAtLeast(1)
-            if (s % every != 0) null
-            else s to Hit((0.5f + 0.5f * s / end.coerceAtLeast(1)).coerceAtMost(1f), repeats = if (quarter >= 3) 2 else 1)
+            val every = when (s * 8 / n) { 0, 1 -> beat; 2, 3, 4 -> beat / 2; else -> 1 }.coerceAtLeast(1)
+            if (s % every != 0) null else s to Hit((0.5f + 0.5f * s / end.coerceAtLeast(1)).coerceAtMost(1f))
         }.toMap()
         var q = p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = hits) else l }))
         // Its notes as long as its drums, and silent on that last beat.

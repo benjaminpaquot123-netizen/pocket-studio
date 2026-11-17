@@ -323,7 +323,7 @@
         {
           "id": "make_montee",
           "text": "À toi : crée la Montée : sans kick ni basse. Le clap va de plus en plus vite, mesure après mesure, puis tout se tait sur le dernier temps.",
-          "textPro": "À toi : crée la Montée, 8 mesures sans kick : le clap accélère (noires, croches, doubles, rafales) et monte en force ; les accords restent ; le dernier temps se tait.",
+          "textPro": "À toi : crée la Montée, 8 mesures sans kick : le clap accélère (noires, croches, doubles) et monte en force ; les accords restent ; le dernier temps se tait.",
           "check": "part:Montée:nokick",
           "spot": "song.parts",
           "keep": "clap,pad",

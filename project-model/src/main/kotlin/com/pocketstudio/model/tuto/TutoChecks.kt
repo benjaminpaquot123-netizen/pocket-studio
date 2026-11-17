@@ -2779,7 +2779,8 @@ object TutoRollHint {
      */
     fun lit(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true, up: Float = Float.MAX_VALUE, down: Float = Float.MAX_VALUE): Note? {
         val next = next(left, v, barSteps) ?: return null
-        val dy = brought(left, v, barSteps, touched).second
+        // The move the rows really make: at the keyboard's edge the note gone to stays out of sight, and is not lit.
+        val dy = brought(left, v, barSteps, touched).second.coerceIn(-up.coerceAtLeast(0f), down.coerceAtLeast(0f))
         val there = v.copy(top = v.top + dy, bottom = v.bottom + dy)
         return (if (touched) aside(left, v, barSteps) else null)?.takeIf { inRows(it, there) } ?: next
     }

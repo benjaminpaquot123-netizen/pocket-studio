@@ -2766,7 +2766,11 @@ object TutoRollHint {
             else -> y(n, v) + v.rowPx / 2 - mid
         }
         val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
-        return dx to dy + whole(left, there, n)
+        val move = dx to dy + whole(left, there, n)
+        // Fresh review (minor): the note spoken of already at the edge, the touch moved nothing under « Touche ici »:
+        // it goes to the hidden note then, whole at the edge it was beyond (the line then tells of the one left behind).
+        if (hidden == null || move != 0f to 0f) return move
+        return 0f to if (y(hidden, v) < v.top) y(hidden, v) - v.top else y(hidden, v) + v.rowPx - v.bottom
     }
 
     /**

@@ -4,8 +4,10 @@ import android.os.Looper
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.Scene
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.switchScene
+import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoPlay
@@ -54,9 +56,11 @@ class Tour7TutoDottedInItsPartTest {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
-    /** The controller on [check]'s step of techno, the course played in order up to it, its buttons touched. */
-    private fun at(check: String): Pair<TutoController, MutableStateFlow<com.pocketstudio.model.Project>> {
-        val style = "techno"
+    /** Techno, and two styles more whose crash has two parts of its own (« Drop », « Drop 2 ») or a longer loop. */
+    private val styles = listOf("techno", "house", "dnb")
+
+    /** The controller on [check]'s step of [style], the course played in order up to it, its buttons touched. */
+    private fun at(check: String, style: String): Pair<TutoController, MutableStateFlow<com.pocketstudio.model.Project>> {
         val level = TutoLevel.Facile
         val target = TutoTarget.of(style)!!
         val steps = TutoCourse.of(style)!!.chaptersFor(level).flatMap { it.steps }
@@ -80,33 +84,35 @@ class Tour7TutoDottedInItsPartTest {
                 for (i in 0 until 100) { idle(50); if (c.ui.value!!.need == null) break; Thread.sleep(20) }
             }
         }
-        assertEquals(step.id, c.ui.value!!.current.id)
-        assertNull("a button is still to touch: ${c.ui.value!!.need}", c.ui.value!!.need)
+        assertEquals(style, step.id, c.ui.value!!.current.id)
+        assertNull("$style: a button is still to touch: ${c.ui.value!!.need}", c.ui.value!!.need)
         return c to flow
     }
 
-    /** [flow] showing a part that is not one of the current step's, the panel not yet told. */
+    /** [flow] showing a part that is not one of the current step's (by its name, not by the app's own rule), the panel not yet told. */
     private fun elsewhere(c: TutoController, flow: MutableStateFlow<com.pocketstudio.model.Project>) {
         val p = flow.value
-        val step = c.ui.value!!.current
-        val other = p.allScenes.indices.first { i -> i != p.scene && !p.allScenes[i].isEmpty && !TutoPlay.inItsPart(step, p.switchScene(i)) }
+        val own = TutoChecks.partsOf(c.ui.value!!.current).flatMap { listOf(it, Scene.shownLabel(it)) }
+        val other = p.allScenes.indices.first { i ->
+            i != p.scene && !p.allScenes[i].isEmpty && own.none { it.equals(p.allScenes[i].label.trim(), ignoreCase = true) || it.equals(Scene.shownLabel(p.allScenes[i].label), ignoreCase = true) }
+        }
         flow.value = p.switchScene(other)
     }
 
     @Test
-    fun theCrashIsNotDottedInAnotherPart() {
-        val (c, flow) = at("crash")
-        assertNotNull("the crash is not dotted in its own part: the test checks nothing", c.hint(flow.value.drums.steps))
+    fun theCrashIsNotDottedInAnotherPart() = styles.forEach { style ->
+        val (c, flow) = at("crash", style)
+        assertNotNull("$style: the crash is not dotted in its own part: the test checks nothing", c.hint(flow.value.drums.steps))
         elsewhere(c, flow)
-        assertNull("the crash is dotted in « ${flow.value.allScenes[flow.value.scene].label} »", c.hint(flow.value.drums.steps))
+        assertNull("$style: the crash is dotted in « ${flow.value.allScenes[flow.value.scene].label} »", c.hint(flow.value.drums.steps))
     }
 
     @Test
-    fun theSilenceIsNotCrossedOutInAnotherPart() {
-        val (c, flow) = at("gap")
-        assertTrue("nothing crossed out in its own part: the test checks nothing", c.toErase(flow.value).orEmpty().any { it.value.isNotEmpty() })
+    fun theSilenceIsNotCrossedOutInAnotherPart() = styles.forEach { style ->
+        val (c, flow) = at("gap", style)
+        assertTrue("$style: nothing crossed out in its own part: the test checks nothing", c.toErase(flow.value).orEmpty().any { it.value.isNotEmpty() })
         elsewhere(c, flow)
         val crossed = c.toErase(flow.value).orEmpty().filterValues { it.isNotEmpty() }
-        assertTrue("crosses $crossed in « ${flow.value.allScenes[flow.value.scene].label} »", crossed.isEmpty())
+        assertTrue("$style: crosses $crossed in « ${flow.value.allScenes[flow.value.scene].label} »", crossed.isEmpty())
     }
 }

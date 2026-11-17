@@ -2774,6 +2774,17 @@ object TutoRollHint {
     }
 
     /**
+     * The note a touch on the line (or the step asking, [touched] false) lights: the one brought from out of the rows
+     * ([aside]) once it is in sight, else [next]. [up] and [down]: how far the rows can still scroll (pixels).
+     */
+    fun lit(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true, up: Float = Float.MAX_VALUE, down: Float = Float.MAX_VALUE): Note? {
+        val next = next(left, v, barSteps) ?: return null
+        val dy = brought(left, v, barSteps, touched).second
+        val there = v.copy(top = v.top + dy, bottom = v.bottom + dy)
+        return (if (touched) aside(left, v, barSteps) else null)?.takeIf { inRows(it, there) } ?: next
+    }
+
+    /**
      * Tour 7 (D1, seat 1a screen 45: dotted notes half under the tutorial's panel): how far to move the rows (pixels,
      * a fraction of a row) so that no dotted note of the time in sight is cut by an edge of the rows in sight: each one
      * whole in sight or wholly out of it. [keep] (the note the line speaks of) stays whole in sight if it is.

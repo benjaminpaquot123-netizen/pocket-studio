@@ -788,12 +788,10 @@ private fun Grid(
             left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
-        val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
+        com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
         val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
         // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
-        val there = shown.copy(top = shown.top + dy, bottom = shown.bottom + dy)
-        lit = (if (touched) com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps) else null)
-            ?.takeIf { com.pocketstudio.model.tuto.TutoRollHint.inRows(it, there) } ?: next
+        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(left, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }

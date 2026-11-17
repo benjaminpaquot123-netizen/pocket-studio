@@ -85,4 +85,29 @@ class Tour7TutoPartMadeTest {
             .filter { Regex("""tout le Groove (?:y )?joue""").containsMatchIn(it.second) }.distinct()
         assertTrue("$says", says.isEmpty())
     }
+
+    @Test
+    fun anEmptyGrooveMakesNoEmptyList() {
+        // Review of the lot: a Groove with nothing in it read « Dedans : . »; it says a copy of the Groove instead.
+        val style = "techno"
+        val target = TutoTarget.of(style)!!
+        val steps = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.associateBy { it.id }
+        var p = target.blank()
+        for (id in listOf("make_intro", "make_intro2")) if (!TutoChecks.done(steps.getValue(id), p, target)) p = TutoChecks.show(steps.getValue(id), p, target)!!
+        val flow = MutableStateFlow(p)
+        val c = TutoController(
+            scope, "p1", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
+            render = { FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.1f } }, player = Player(), debounceMs = 10,
+        )
+        idle()
+        c.start(style, TutoLevel.Facile)
+        idle()
+        val chapters = c.ui.value!!.chapters
+        val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_drop" } }
+        c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_drop" }); idle()
+        c.fulfilNeed(); idle(100)
+        val made = c.ui.value!!.made.orEmpty()
+        assertTrue("« $made »", "Drop" in made)
+        assertFalse("« $made » lists nothing", "Dedans : ." in made || "y joue" in made)
+    }
 }

@@ -69,4 +69,23 @@ class Tour7TutoChordOnTest {
         idle()
         compose.onNodeWithTag("chord_mode", useUnmergedTree = true).assertIsNotSelected()
     }
+
+    @Test
+    fun theTutoEndedAccordsGoesBackOff() {
+        // Review of the lot: « Accords » turned on by a chord step stayed on once the tuto was left, the roll still open.
+        TutoHints.active = true
+        TutoHints.step = "pad_do"
+        val chords = listOf(0, 6, 12).flatMap { s -> listOf(57, 60, 64).map { Note(s * t, 2 * t, it) } }
+        var hints by mutableStateOf(chords)
+        compose.setContent {
+            PocketStudioTheme { Surface(color = Neon.Background) { PianoRoll(NoteClip(steps = 16), emptyList(), -1, PianoRollActions(), hints = hints) } }
+        }
+        idle()
+        compose.onNodeWithTag("chord_mode", useUnmergedTree = true).assertIsSelected()
+        TutoHints.active = false
+        TutoHints.step = null
+        hints = emptyList()
+        idle()
+        compose.onNodeWithTag("chord_mode", useUnmergedTree = true).assertIsNotSelected()
+    }
 }

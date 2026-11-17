@@ -128,8 +128,9 @@ class TutoLot5Test {
         assertEquals(64, n)
         val snare = m.drums.lanes[TutoChecks.laneOf("snare")].hits
         val perBar = (0 until 4).map { b -> snare.keys.count { it / 16 == b } }
-        assertEquals(listOf(4, 8, 16, 12), perBar)
-        assertTrue("32nds in the last bar", snare.filterKeys { it >= 48 }.values.all { it.repeats == 2 })
+        assertEquals(listOf(4, 8, 12, 12), perBar)
+        // Tour 7, c-V3: faster by its hits alone, no roll given (the roll is the user's, at its step).
+        assertTrue("no roll given", snare.values.all { it.repeats == 1 })
         assertTrue("louder and louder", snare.getValue(0).velocity < snare.getValue(48).velocity)
         // Its notes stop on the last beat; the hats are still there to erase (the gap step's).
         val stop = (n - TutoChecks.GAP_CELLS) * 24

@@ -93,7 +93,8 @@ class TutoAllCoursesTest {
      * Steps « Montre-moi » cannot do, left out here (each is played in the app by TutoJourneyTest):
      * « C'est fait » ([TutoStep.manual]: nothing in the project to check), the examples to hear
      * ([TutoStep.listening]: done once heard) and the share ("shared": the app marks it when the
-     * song goes out). "changed:…" steps are done here from their baseline, as the app does.
+     * song goes out). "changed:…" steps are done here from their baseline, as the app does. A step ticked before
+     * anything is done is a failure (tour 7: 28 of them passed here unseen).
      */
     private fun showMe(level: TutoLevel) {
         assertTrue("no course to play", TutoCourse.STYLES.size >= MIN_COURSES)
@@ -110,20 +111,13 @@ class TutoAllCoursesTest {
             assertTrue("$style $level: ${skipped.size} of ${steps.size} steps out of reach of « Montre-moi »", steps.size - skipped.size >= steps.size / 2)
             for (step in steps) {
                 if (step in skipped) continue
-                // A "changed:…" step: what it watches when it begins (the app keeps the same).
-                val baseline = if (step.check.startsWith("changed:")) TutoChecks.signature(step.check.substringAfter(':'), p) else null
-                if (TutoChecks.done(step, p, target, baseline)) continue
-                // What its main button needs first (a track, a part, « Copier »…), then « Montre-moi ».
-                var guard = 0
-                while (!TutoChecks.done(step, p, target, baseline) && guard++ < 12) {
-                    val need = TutoChecks.need(step, p, target)
-                    val next = when {
-                        need is TutoNeed.Bars || need is TutoNeed.Track || need is TutoNeed.Part || need is TutoNeed.Scene -> TutoChecks.fulfil(need, step, p, target)?.first
-                        else -> TutoChecks.show(step, p, target) ?: need?.let { TutoChecks.fulfil(it, step, p, target)?.first }
-                    } ?: error("$style/${step.id}: nothing to do (need $need)")
-                    p = next.sanitized()
-                }
-                assertTrue("$style/${step.id} is not done after Montre-moi", TutoChecks.done(step, p, target, baseline))
+                // Played as the app plays it ([TutoPlay.play]): what it watches taken when it begins, its main button
+                // (a track, a part, « Copier »…) while it has one, then the last frame of « Montre-moi ».
+                val o = TutoPlay.play(step, p, target, level)
+                assertTrue("$style/${step.id} is ticked before anything is done", o.end != TutoPlay.End.Already)
+                assertTrue("$style/${step.id}: nothing to do (${o.why})", o.end != TutoPlay.End.DeadEnd)
+                assertTrue("$style/${step.id} is not done after Montre-moi", o.end != TutoPlay.End.NeverDone)
+                p = o.project
             }
             songChecked(style, level, steps, p, target)
         }

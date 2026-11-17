@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Tonacja utworu: %s",
   "Tonalité du morceau": "Tonacja utworu",
   "Lire la suite": "Czytaj dalej",
+  "Réduire": "Zwiń",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Takt: jedno okrążenie rytmu, cztery miary; liczysz „1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Miara: każde „1, 2, 3, 4” w takcie, tam gdzie tupiesz nogą.",
   "Accord : plusieurs notes jouées ensemble.": "Akord: kilka nut zagranych razem.",
@@ -149,5 +150,12 @@
   "Touche ici": "Dotknij tutaj",
   "Accords en pointillé à toucher : %d": "Kropkowane akordy do dotknięcia: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: spokojniejszy moment, stopa i bas milkną.",
-  "Exemple passé sans l'écouter.": "Przykład pominięty bez słuchania."
+  "Exemple passé sans l'écouter.": "Przykład pominięty bez słuchania.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Utworzono część „%1$s” (kopia „%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Utworzono część „%1$s” (kopia „%2$s”): bez %3$s.",
+  "Poser ce qui manque": "Dodaj to, czego brakuje",
+  "Posé : %s.": "Położono: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Brakuje ci tego, co powstaje we wcześniejszych rozdziałach.",
+  "Aller au chapitre %d": "Przejdź do rozdziału %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "W twoim utworze nie ma części „%s”: ten krok wykonuje się właśnie w niej."
 }

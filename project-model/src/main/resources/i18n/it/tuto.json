@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Tonalità del brano: %s",
   "Tonalité du morceau": "Tonalità del brano",
   "Lire la suite": "Continua a leggere",
+  "Réduire": "Riduci",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Battuta: un giro del ritmo, quattro tempi; si conta “1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Tempo: ogni “1, 2, 3, 4” di una battuta, dove batti il piede.",
   "Accord : plusieurs notes jouées ensemble.": "Accordo: più note suonate insieme.",
@@ -149,5 +150,12 @@
   "Touche ici": "Tocca qui",
   "Accords en pointillé à toucher : %d": "Accordi tratteggiati da toccare: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: un momento più calmo, la cassa e il basso tacciono.",
-  "Exemple passé sans l'écouter.": "Esempio saltato senza ascoltarlo."
+  "Exemple passé sans l'écouter.": "Esempio saltato senza ascoltarlo.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Parte “%1$s” creata (copia di “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Parte “%1$s” creata (copia di “%2$s”): senza %3$s.",
+  "Poser ce qui manque": "Metti ciò che manca",
+  "Posé : %s.": "Messo: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Ti manca ciò che fanno i capitoli precedenti.",
+  "Aller au chapitre %d": "Vai al capitolo %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Nel tuo brano non c'è la parte “%s”: questo passo si fa lì dentro."
 }

@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "曲子的调：%s",
   "Tonalité du morceau": "歌曲调性",
   "Lire la suite": "继续阅读",
+  "Réduire": "收起",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "小节：节奏转一圈，四拍；数“1、2、3、4”。",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "拍：小节里的每个“1、2、3、4”，就是用脚打拍子的地方。",
   "Accord : plusieurs notes jouées ensemble.": "和弦：一起弹的几个音。",
@@ -149,5 +150,12 @@
   "Touche ici": "点这里",
   "Accords en pointillé à toucher : %d": "要点的虚线和弦：%d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "间奏：比较安静的部分，底鼓和贝斯停下来。",
-  "Exemple passé sans l'écouter.": "未收听，已跳过示例。"
+  "Exemple passé sans l'écouter.": "未收听，已跳过示例。",
+  "Partie « %1$s » créée (copie de « %2$s »).": "已创建段落“%1$s”（“%2$s”的副本）。",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "已创建段落“%1$s”（“%2$s”的副本）：没有%3$s。",
+  "Poser ce qui manque": "补上缺少的内容",
+  "Posé : %s.": "已放好：%s。",
+  "Il te manque ce que font les chapitres d'avant.": "你还缺少前面章节做出的内容。",
+  "Aller au chapitre %d": "前往第 %d 章",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "你的歌里没有段落“%s”：这一步要在它里面完成。"
 }

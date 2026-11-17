@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Tonalidad del tema: %s",
   "Tonalité du morceau": "Tonalidad del tema",
   "Lire la suite": "Seguir leyendo",
+  "Réduire": "Reducir",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Compás: una vuelta del ritmo, cuatro tiempos; se cuenta “1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Tiempo: cada “1, 2, 3, 4” de un compás, donde marcas con el pie.",
   "Accord : plusieurs notes jouées ensemble.": "Acorde: varias notas tocadas a la vez.",
@@ -149,5 +150,12 @@
   "Touche ici": "Toca aquí",
   "Accords en pointillé à toucher : %d": "Acordes punteados por tocar: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: un momento más tranquilo, el kick y el bajo callan.",
-  "Exemple passé sans l'écouter.": "Ejemplo saltado sin escucharlo."
+  "Exemple passé sans l'écouter.": "Ejemplo saltado sin escucharlo.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Parte “%1$s” creada (copia de “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Parte “%1$s” creada (copia de “%2$s”): sin %3$s.",
+  "Poser ce qui manque": "Poner lo que falta",
+  "Posé : %s.": "Puesto: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Te falta lo que hacen los capítulos anteriores.",
+  "Aller au chapitre %d": "Ir al capítulo %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Tu canción no tiene la parte “%s”: este paso se hace en ella."
 }

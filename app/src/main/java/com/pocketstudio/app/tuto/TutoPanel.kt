@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -164,6 +165,8 @@ object TutoHints {
     var focus by mutableIntStateOf(0)
     /** The [focus] the piano roll last answered (not state: read and written there only). */
     var focusSeen = 0
+    /** The [focus] a touch on the roll's line asked (it may go to a hidden note); any other one comes from the step. */
+    var focusTouched = -1
     var demo by mutableStateOf(false)
     /** The hits a step asks to take away, by pad ([TutoChecks.toErase]): drawn crossed out. */
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
@@ -208,7 +211,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; demo = false
+        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }
@@ -297,9 +300,15 @@ fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
  * With « Accords » on, one touch writes a whole dotted chord: the line counts chords, said as such (control seats:
  * « Encore 9 notes » over three chords), the arrow of [way] around it.
  */
-fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String {
+fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?, also: com.pocketstudio.model.tuto.TutoWay? = null): String {
     if (left <= 0) return tutoNotesLeft(0, way)
     val said = tr("Accords en pointillé à toucher : %d", left)
+    // The arrow of [also] leads the line: at its end « Touche ici » cut it off on a 360 dp phone (tour 7, end checks).
+    if (way == null) return when (also) {
+        com.pocketstudio.model.tuto.TutoWay.Higher -> "↑ $said"
+        com.pocketstudio.model.tuto.TutoWay.Lower -> "↓ $said"
+        else -> said
+    }
     return when (way) {
         com.pocketstudio.model.tuto.TutoWay.Higher -> "$said ↑"
         com.pocketstudio.model.tuto.TutoWay.Lower -> "$said ↓"
@@ -309,14 +318,17 @@ fun tutoChordsLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String
     }
 }
 
-/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way). */
-fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?): String = when {
+/** « Encore 3 notes en pointillé » over the piano roll ([way]: none of them in sight, the next one is that way; [also]: one more out of the rows). */
+fun tutoNotesLeft(left: Int, way: com.pocketstudio.model.tuto.TutoWay?, also: com.pocketstudio.model.tuto.TutoWay? = null): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")
     way == com.pocketstudio.model.tuto.TutoWay.Higher -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
     way == com.pocketstudio.model.tuto.TutoWay.Lower -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
     way == com.pocketstudio.model.tuto.TutoWay.Later -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
     way == com.pocketstudio.model.tuto.TutoWay.Earlier -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
-    else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
+    // [also]: some are in sight, one more is over or under the rows in sight (control « tuto2 », seat a): the arrow alone,
+    // at the head of the line (at its end « Touche ici » cut it off on a 360 dp phone).
+    else -> when (also) { com.pocketstudio.model.tuto.TutoWay.Higher -> "↑ "; com.pocketstudio.model.tuto.TutoWay.Lower -> "↓ "; else -> "" } +
+        trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
 }
 
 /** What the panel's buttons do ([TutoController]'s). */
@@ -363,6 +375,10 @@ fun TutoKitCard(
     // Round 3, n° 28: inside the panel, never in its place. Tour 7 D3 end: pinned under the words, one row, nothing more
     // (the long sentence pushed its buttons below « Lire la suite »).
     if (pinned) {
+        // Fresh review of « fable-repar » (A): its words grow up to 130 % only (as « Chapitres » does): at 200 % the row
+        // was three lines high and took the room of the step's instruction.
+        val by = minOf(1f, 1.3f / LocalDensity.current.fontScale.coerceAtLeast(0.1f))
+        val compact = MaterialTheme.typography.labelLarge.let { it.copy(fontSize = it.fontSize * by, lineHeight = it.lineHeight * by) }
         Column(
             modifier.fillMaxWidth().padding(top = 4.dp).clip(shape).background(Neon.Amber.copy(alpha = 0.08f)).border(1.dp, Neon.Amber, shape)
                 .padding(horizontal = 6.dp, vertical = 4.dp).testTag("tuto_kit"),
@@ -379,12 +395,12 @@ fun TutoKitCard(
                         onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                         modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_kit_download"),
-                    ) { Text(label, textAlign = TextAlign.Center, style = MaterialTheme.typography.labelLarge) }
+                    ) { Text(label, textAlign = TextAlign.Center, style = compact) }
                 } else Spacer(Modifier.weight(1f))
                 TextButton(
                     onClick = later, contentPadding = PaddingValues(horizontal = 6.dp),
                     modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_kit_later"),
-                ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center) }
+                ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center, style = compact) }
             }
         }
         return
@@ -444,6 +460,7 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
     TutoNeed.Lengths -> tr("Donner les durées conseillées")
     is TutoNeed.Scene -> tr("Aller dans la partie « %s »", Scene.shownLabel(need.label))
     is TutoNeed.Copy -> tr("Copier sur les mesures suivantes")
+    is TutoNeed.Course -> tr("Poser ce qui manque")
 }
 
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
@@ -497,6 +514,8 @@ fun TutoPanel(
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
+    // How many times the height held was taken again for the words' least room ([WordsRoom]).
+    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
@@ -601,9 +620,18 @@ fun TutoPanel(
             // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »
             // whole under them, not squeezed); on a screen high enough it is pinned under them.
             val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
-            Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // Fresh review of « fable-repar » (A): at 200 % the kit offer, « Pourquoi ? » and « Lire la suite » took the
+            // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
+            // room grows by what is missing, and a height held too low for it is taken again (twice at most).
+            // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
+            val least = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            WordsRoom(
+                if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
+                starved = { if (regrown < 2) { regrown++; held = 0 } },
+            ) {
+            Box {
             Column(
-                Modifier.weight(1f, fill = false).wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
+                Modifier.wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
                     .onGloballyPositioned { content[0] = it },
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
@@ -645,6 +673,14 @@ fun TutoPanel(
                     }
                 }
             }
+            // Control of « fable-repar » (seat c, V4; Korean at 130 %, Japanese unfolded): the words stopped at the end of
+            // a line, in the middle of a sentence, with nothing to say they go on. « … » at the end of the last line in sight
+            // while more is under it (silent: « Lire la suite » is what TalkBack reads).
+            if (scrolls && words.canScrollForward) Text(
+                "…", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1,
+                modifier = Modifier.align(Alignment.BottomEnd).background(panelColor()).padding(start = 4.dp).clearAndSetSemantics { testTag = "tuto_text_cut" },
+            )
+            }
             // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
             // Tour 7 D3 end (seats 1a #1, 2a #2, 2d #3): at the end of the words, its buttons came only after « Lire la suite ».
             // Pinned under the words, one row (« Télécharger le kit House (4 Mo) », « Plus tard »): always whole in sight.
@@ -665,8 +701,41 @@ fun TutoPanel(
                     words.animateScrollTo(minOf(words.maxValue, to))
                 }
             }
+            // Control « tuto2 »: unfolded by « Lire la suite », the panel covers the cells to touch: « Réduire » gives them back.
+            if (lowRoom && readAll) LessWords { readAll = false }
             }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
+        }
+    }
+}
+
+/**
+ * The room of the step's words (the first child of [content]) over what is pinned under them (the others: the kit offer,
+ * « Pourquoi ? », « Lire la suite »), 6 dp apart. The pinned ones are measured first and whole; the words take what is
+ * left of [most] (of the height given, when [holding]). [least] px (0: none) is the words' least room: the room grows
+ * past [most] by what is missing, as far as the height given lets it; when [holding], [starved] is told (the height
+ * held is too low).
+ */
+@Composable
+private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
+        val gap = 6.dp.roundToPx()
+        val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
+        // Each pinned one within what the height given leaves (as a column would), never past it.
+        var fixed = 0
+        val pinned = ms.drop(1).map { m ->
+            m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also { fixed += it.height + gap }
+        }
+        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), if (least > 0) fixed + least else 0))
+        if (holding && least > 0 && cap - fixed < least) starved()
+        val room = maxOf(cap - fixed, 0)
+        val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
+        val height = ((words?.height ?: 0) + fixed).coerceIn(if (holding) c.minHeight else minOf(52.dp.roundToPx(), cap), maxOf(cap, c.minHeight))
+        val width = (listOfNotNull(words) + pinned).maxOfOrNull { it.width }?.coerceIn(c.minWidth, c.maxWidth) ?: c.minWidth
+        layout(width, height) {
+            var y = 0
+            words?.let { it.placeRelative(0, 0); y = it.height + gap }
+            for (q in pinned) { q.placeRelative(0, y); y += q.height + gap }
         }
     }
 }
@@ -718,6 +787,19 @@ private fun MoreWords(shown: Boolean, modifier: Modifier = Modifier, more: suspe
     ) {
         Text(tr("Lire la suite"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
         Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+    }
+}
+
+/** Under the step's words unfolded over the cells to touch: « Réduire », a touch gives the words their low room back. */
+@Composable
+private fun LessWords(less: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clickable(onClickLabel = tr("Réduire"), role = androidx.compose.ui.semantics.Role.Button, onClick = less)
+            .testTag("tuto_text_less").heightIn(min = 32.dp),
+        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(tr("Réduire"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
+        Icon(Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
     }
 }
 
@@ -953,9 +1035,29 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             Text((if (chapterEnd) tr("Chapitre suivant") else tr("Étape suivante")) + "  ", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
         }
-        Primary.NEED -> Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
-            Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Primary.NEED -> {
+            // Tour 7 (audit « Fable », R-C): a chapter opened from the list on a project that lacks what the chapters
+            // before make. One touch lays it; the other way is to go and make it.
+            val course = ui.need as? TutoNeed.Course
+            if (course != null) {
+                Text(tr("Il te manque ce que font les chapitres d'avant."), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_course"))
+            }
+            // Tour 7 (seat d): a step that works in a part the song has no more (« Montée » renamed): the button alone
+            // said nothing of why; the step that makes the part needs no such word.
+            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") }
+            if (part != null) {
+                Text(tr("Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.", Scene.shownLabel(part.label)),
+                    style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_why"))
+            }
+            Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
+                Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
+                Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            }
+            if (course != null) {
+                TextButton(onClick = { actions.goTo(course.chapter - 1, 0) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_need_goto")) {
+                    Text(tr("Aller au chapitre %d", course.chapter), textAlign = TextAlign.Center)
+                }
+            }
         }
         Primary.DO -> Button(onClick = actions.doIt, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_do")) {
             Icon(Icons.Filled.TouchApp, contentDescription = null, modifier = Modifier.size(20.dp))

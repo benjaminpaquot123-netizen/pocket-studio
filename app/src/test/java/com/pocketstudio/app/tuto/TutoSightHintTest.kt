@@ -121,7 +121,8 @@ class TutoSightHintTest {
             log += what
             if (s.whole(next)) {
                 inSight++
-                assertTrue("a dotted note is in sight, no arrow expected: $what", !said.contains("↑") && !said.contains("↓"))
+                // Since control « tuto2 » (seat a), a bare arrow after « à toucher » tells of one more dotted note over or under the rows.
+                assertTrue("a dotted note is in sight, no « plus haut », no « plus bas » expected: $what", "à toucher" in said && !said.contains("plus"))
             } else {
                 hidden++
                 val arrow = if (row.start < s.top) "↑" else "↓"

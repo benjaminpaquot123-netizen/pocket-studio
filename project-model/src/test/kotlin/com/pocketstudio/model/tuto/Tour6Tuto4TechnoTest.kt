@@ -248,7 +248,8 @@ class Tour6Tuto4TechnoTest {
 
     /**
      * Round trip 2 after Bb-6, M1 (screen 212): ch. 12's gap said « les 3 coups du dernier temps » without the pad they
-     * are on; it names the pad(s) holding them, as written on the pad, in every language.
+     * are on; it names the pad(s) holding them, as written on the pad, in every language. Every step is played here, so
+     * these are the Pro words; the Facile ones (other pad, other count) are held by Tour7TutoGapWordsMatchCrossesTest.
      */
     @Test
     fun theGapNamesThePadItEmpties() {
@@ -259,14 +260,15 @@ class Tour6Tuto4TechnoTest {
             if (!TutoChecks.done(s, p, target)) p = TutoChecks.show(s, p, target) ?: error("${s.id}: no Montre-moi")
         }
         val gap = step("gap")
+        val words = gap.textFor(TutoLevel.Pro)
         val d = p.switchScene(p.allScenes.indexOfFirst { it.label == "Montée" }).drums
         val cells = TutoChecks.gapCells(gap, target)
         val lanes = d.lanes.withIndex().filter { (_, l) -> l.hits.keys.any { it in d.steps - cells until d.steps } }.map { it.index }
         if (lanes.isEmpty()) bad += "no hit in the Montée's last beat"
         for (lane in lanes) {
             val name = com.pocketstudio.model.DefaultNames.KIT_PADS[lane]
-            if (!quotes(gap.text, name)) bad += "fr gap: no « $name »: ${gap.text}"
-            for (l in langs) tr(l, gap.text).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} gap: no « ${tr(l, name)} »: $t" }
+            if (!quotes(words, name)) bad += "fr gap: no « $name »: $words"
+            for (l in langs) tr(l, words).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} gap: no « ${tr(l, name)} »: $t" }
         }
         report("gaps that do not name their pad", bad)
     }
@@ -373,7 +375,8 @@ class Tour6Tuto4TechnoTest {
     /**
      * Round trip 1 after Da-5, M5: ch. 12 says how many red « × » the gap erases (screen 164), counted on the Montée the
      * steps make; the share step says what « −14 » means (screen 183: « Niveau : comme la musique en streaming (−14) »),
-     * like the house, in every language.
+     * like the house, in every language. Counted on the Pro words (every step is played); the Facile count is held by
+     * Tour7TutoGapWordsMatchCrossesTest.
      */
     @Test
     fun theGapCountsItsCrossesAndTheShareSaysMinus14() {
@@ -386,7 +389,7 @@ class Tour6Tuto4TechnoTest {
         val crosses = TutoChecks.toErase(step("gap"), p.switchScene(montee), target)!!.values.sumOf { it.size }
         if (crosses == 0) bad += "gap: nothing to erase in the Montée"
         val gap = step("gap")
-        for (fr in texts(gap)) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
+        for (fr in listOf(gap.textFor(TutoLevel.Pro))) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
             if (!Regex("(?<![\\d−-])$crosses(?!\\d)").containsMatchIn(t)) bad += "gap: the $crosses crosses not counted: $t"
         }
         val share = step("share").text

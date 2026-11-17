@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Tonart des Tracks: %s",
   "Tonalité du morceau": "Tonart des Tracks",
   "Lire la suite": "Weiterlesen",
+  "Réduire": "Einklappen",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Takt: eine Runde des Rhythmus, vier Schläge; man zählt „1, 2, 3, 4“.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Zählzeit: jedes „1, 2, 3, 4“ eines Takts, wo du mit dem Fuß tippst.",
   "Accord : plusieurs notes jouées ensemble.": "Akkord: mehrere Töne zusammen gespielt.",
@@ -140,8 +141,8 @@
   "707 : une boîte à rythmes célèbre, ses sons de batterie.": "707: ein berühmter Drumcomputer, seine Schlagzeugsounds.",
   "Swing : décaler un coup sur deux pour que le rythme balance.": "Swing: jeden zweiten Schlag verschieben, damit der Rhythmus schwingt.",
   "Autres synthés": "Andere Synths",
-  "Déjà fait !": "Schon erledigt!",
-  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Dein Song hatte schon, was dieser Schritt verlangt: nichts zu tun.",
+  "Déjà fait !": "Schon da!",
+  "Ton morceau avait déjà ce que demande cette étape : rien à toucher.": "Dein Song hatte schon, was dieser Schritt verlangt: Du musst nichts ändern.",
   "Tu as déjà fait cette étape.": "Diesen Schritt hast du schon gemacht.",
   "Partie « %s » créée (copie du Groove).": "Teil „%s“ erstellt (Kopie des Grooves).",
   "Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.": "Ein neuer Track startet mit %d BPM: Du gibst ihm das Tempo des Stils.",
@@ -149,5 +150,12 @@
   "Touche ici": "Hier tippen",
   "Accords en pointillé à toucher : %d": "Gestrichelte Akkorde zu tippen: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: ein ruhigerer Moment, Kick und Bass schweigen.",
-  "Exemple passé sans l'écouter.": "Beispiel übersprungen, ohne es anzuhören."
+  "Exemple passé sans l'écouter.": "Beispiel übersprungen, ohne es anzuhören.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Teil „%1$s“ erstellt (Kopie von „%2$s“).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Teil „%1$s“ erstellt (Kopie von „%2$s“): ohne %3$s.",
+  "Poser ce qui manque": "Fehlendes einfügen",
+  "Posé : %s.": "Gesetzt: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Dir fehlt, was die früheren Kapitel bauen.",
+  "Aller au chapitre %d": "Zu Kapitel %d gehen",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "In deinem Song gibt es keinen Teil „%s“: Dieser Schritt wird darin gemacht."
 }

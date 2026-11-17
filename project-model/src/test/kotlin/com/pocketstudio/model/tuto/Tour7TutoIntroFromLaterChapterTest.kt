@@ -1,5 +1,6 @@
 package com.pocketstudio.model.tuto
 
+import com.pocketstudio.model.allScenes
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -7,7 +8,7 @@ import org.junit.Test
  * Tour 7, seat 2a (ko, techno, `amenee=tuto:techno:5`: the course started at its bass chapter, its drum chapters never
  * played): at « Créer la partie « Intro » » the part was made (« + B · 인트로 ») but the step stayed undone
  * (« 이 단계는 아직 안 끝났어요 »). The Groove had no drums, so an Intro of its kick, hats and rim alone was empty.
- * Every style and level, the course played from its first chapter of notes (its drums never written): its first part step's button makes a part that holds.
+ * Every style and level, the course played from its first chapter of notes (its drums never written): its first part step's buttons make a part that holds.
  */
 class Tour7TutoIntroFromLaterChapterTest {
     @Test
@@ -23,10 +24,12 @@ class Tour7TutoIntroFromLaterChapterTest {
                 var p = target.blank()
                 for (s in chapters.drop(from).flatMap { it.steps }) {
                     if (s.check.startsWith("part:")) {
-                        val need = TutoChecks.need(s, p, target)
-                        val made = (need as? TutoNeed.Part)?.let { TutoChecks.fulfil(it, s, p, target)?.first }
-                        if (made == null) bad += "$style ${level.name} ${s.id}: no part made (need $need)"
-                        else if (!TutoChecks.done(s, made, target)) bad += "$style ${level.name} ${s.id}: part made, step not done"
+                        // Its buttons as the app plays them ([TutoPlay.play]): « Poser ce qui manque » first when the
+                        // loop is too poor for the part (tour 7, R-C), then « Créer la partie »; no « Montre-moi ».
+                        val o = TutoPlay.play(s, p, target)
+                        val scenes = o.project.allScenes.size - p.allScenes.size
+                        if (scenes <= 0) bad += "$style ${level.name} ${s.id}: no part made (${o.end} ${o.why})"
+                        else if (o.end != TutoPlay.End.Done || o.before != null || !TutoChecks.done(s, o.project, target)) bad += "$style ${level.name} ${s.id}: part made, step not done (${o.end})"
                         checked++
                         break
                     }

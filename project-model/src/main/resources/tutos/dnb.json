@@ -390,7 +390,7 @@
         {
           "id": "make_montee",
           "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Sa caisse claire va de plus en plus vite, mesure après mesure, puis tout se tait sur le dernier temps, juste avant le Drop.",
-          "textPro": "À toi : crée la Montée à partir du Groove, sans kick ni basse : 8 mesures. Sa caisse claire accélère (noires, croches, doubles croches, puis roulements) et monte en force ; le dernier temps se tait, le silence d'avant le Drop.",
+          "textPro": "À toi : crée la Montée à partir du Groove, sans kick ni basse : 8 mesures. Sa caisse claire accélère (noires, croches, doubles croches) et monte en force ; le dernier temps se tait, le silence d'avant le Drop.",
           "why": "La tension monte parce qu'il manque le kick et que tout s'accélère.",
           "check": "part:Montée:nokick",
           "spot": "song.parts",

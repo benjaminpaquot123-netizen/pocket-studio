@@ -304,7 +304,7 @@
           "text": "À toi : crée le Break : le hoover et les charleys, sans kick ni basse.",
           "check": "part:Break:nokick+nobass",
           "spot": "song.parts",
-          "keep": "hat,lead",
+          "keep": "open_hat,hat,lead",
           "listen": "vs:Drop:Break"
         },
         {

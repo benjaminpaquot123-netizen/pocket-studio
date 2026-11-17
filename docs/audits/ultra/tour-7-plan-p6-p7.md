@@ -445,3 +445,15 @@ Règles communes aux blocs 1 à 4 :
 - de : « wann du willst » → « wenn du willst ».
 - ch.12 étape 1 : texte hi-hat / 3 croix (si l'écart vient des données, Fable le corrige).
 - de : « ein einziger Schlag » alors que la cymbale joue déjà 8 coups.
+
+## Remontés par Fable (37d5bfcc9), pour P6/P7
+- Ch.12 étape 1 en Facile : pas de charley en Facile, il faut une nouvelle phrase Facile dans les 14 langues. Test déjà écrit dans 7801c5bf4 (Tour7TutoGapWordsMatchCrossesTest), à reprendre.
+- Phrase cymbale en Pro : « un seul coup ».
+
+## Mineurs laissés par Fable (tour 8)
+- « Lire la suite » et « Réduire » visibles ensemble.
+- Ligne de basse coupée par « Touche ici ».
+- En japonais, « + トラック » rogné.
+- Saut C2→C3.
+- Bannière du kit sur tablette 8.
+- AppRoot.kt, vers la ligne 2035 : l’effet ne suit pas la partie affichée (contourné dans TutoController).

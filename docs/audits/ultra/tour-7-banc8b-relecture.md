@@ -1,15 +1,20 @@
 # Relecture du lot « banc8b » (tour 7)
 Relu : 2895ce102
 Portée : `git diff 108b200b7..2895ce102` (HumanTester.kt, ScreenText.kt, BenchAmeneesTest.kt, BenchScreenTextOverlayTest.kt, scripts/human-act.py, scripts/bench/test_ultra_bench.py, rapport et décisions).
-Relecteur : l'agent du lot lui-même, pas un sous-agent neuf (aucun outil pour en lancer un dans cette discussion) ; le chef peut la faire refaire par une discussion neuve.
+Relecteur : un sous-agent neuf, qui n'a pas écrit le code (remplace l'auto-relecture du commit 27ebab671). Tests relancés par lui : BenchScreenTextOverlayTest, BenchAmeneesTest, test_ultra_bench.py, tous verts ; relancés aussi après la fusion de l'intégration (5aecbbeda), toujours verts.
 
-## Points lus
-- Défaut 1 (amenée tuto) : le garde de chapitre échoue en clair au lieu de jouer un autre chapitre, il ne masque rien. `drawnAt` retombe sur « dessiné » si la lecture échoue (comportement d'avant). Le défilement systématique ajoute un « attends 0.5 » au journal ; les rejeux restent tenus.
-- Défaut 2 (texte sous l'anneau) : l'exception est limitée à deux étiquettes nommées (`tuto_spot_ring`, `tuto_finger`), qui sont dans l'appli des Canvas qui laissent passer les touchers. Une surcouche plein écran inconnue cache toujours ce qu'elle couvre, ce qui est vérifié par le témoin `aPageDrawnOverTheScreenStillHidesWhatIsUnder`. Aucun défaut d'appli n'est masqué.
-- Défaut 3 (image du dernier écran) : elle n'est permise que pour l'écran du dernier tour et seulement une fois le siège fini. Le test remet `images.txt` à deux images avant chaque cas, donc aucun « déjà regardé » ne le fait passer par erreur.
-- Tests : les trois rouges ont été prouvés rouges sur l'ancien code, avec le bon message d'échec. Le test du doigt et le témoin de la page ne l'ont pas été (même mécanisme que l'anneau).
+## Défauts
+- Siège c, chapitre 1 au lieu du 9 (`HumanTester.kt:901-922`) : vraie cause visée (ligne coupée par le bord de la liste, milieu caché touché sur « Recommencer le tuto »). Le garde de chapitre (`HumanTester.kt:848-851`) fait échouer l'amenée en clair. Rien de masqué côté appli.
+- Siège d, texte d'écran vide (`ScreenText.kt`) : `TutoSpotRing` et `TutoFinger` sont de simples dessins sans toucher ; liste fermée de deux noms, toute autre surcouche plein écran cache toujours (test Pad Live). Aucun défaut de l'appli masqué.
+- Siège e, image du dernier écran (`human-act.py:132`) : accordée seulement pour le dernier écran, siège fini ; pas de contournement du plafond.
+- Sécurité : aucun binaire, image ni lien symbolique ; aucun identifiant de modèle.
 
-## Mineur (noté, non corrigé)
-- `reachTag` : prenons un élément dont le milieu est au centre de l'écran mais hors de sa partie dessinée, et que `performScrollTo` ne peut pas faire défiler. Le geste de secours glisse alors de presque rien, huit fois, puis touche ce milieu, comme avant. Cela n'arrive pas dans les cas vus.
+## Remarques (non bloquantes, laissées)
+- moyen · `HumanTester.kt:906-912` : cible au milieu non dessiné sans conteneur défilable : 8 glissés verticaux pour rien (environ 12 s), puis toucher du milieu caché ; mieux : viser le centre de la partie dessinée.
+- mineur · `HumanTester.kt:904` : défilement et « attends 0.5 » pour toute cible pas entièrement visible ; d'anciens rejeux peuvent ne plus coller.
+- mineur · `HumanTester.kt:919` : `drawnAt` renvoie « vrai » en cas d'échec, sans le signaler.
+- mineur · `ScreenText.kt:118-128` : le nouveau KDoc s'intercale entre celui de `mark()` et `mark()`.
+- mineur · `human-act.py:132` : `n == turn(seat)` toujours vrai, sans effet.
+- mineur · `BenchAmeneesTest.kt:75` : un seul cas couvert (ko, phone360, 130 %, chapitre 9).
 
 Verdict : 0 bloquant, 0 grave

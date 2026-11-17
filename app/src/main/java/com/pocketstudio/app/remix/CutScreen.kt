@@ -53,6 +53,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -118,7 +119,11 @@ fun CutScreen(
     val levels = remember(ui.setId, ui.frames, ui.peaks) { BoardPeaks(Demucs.STEMS.size) }
     LaunchedEffect(levels) { levels.load(ui.peaks, ui.peaksContext) }
     val work = actions.state.collectAsState()
-    PadPickHost(work.value, actions)
+    // Review of tour 7 (m2): the router publishes the play head every 33 ms; the screen reads only what it shows.
+    val pick by remember(work) { derivedStateOf { work.value.pick } }
+    pick?.let { PadPickDialog(it.names, actions::pickPad, actions::dismissPick) }
+    val busy by remember(work) { derivedStateOf { work.value.busy } }
+    val message by remember(work) { derivedStateOf { work.value.message } }
     val scope = rememberCoroutineScope()
     var finding by remember { mutableStateOf(false) }
     var note by remember { mutableStateOf<String?>(null) }
@@ -222,11 +227,12 @@ fun CutScreen(
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
                 fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = androidx.compose.foundation.layout.Box(m) {
+                  androidx.compose.runtime.SideEffect { cutCurveCompositions++ }
                   val scroll = rememberScrollState()
                   val scrolls = tight || scrollsAll
                   // Tour 7, lot 2 D3 (2c #16): a message (« Listo… ») grows the send bar at the scroll's end; the column
                   // follows it down, so the message and the four buttons stay in view instead of going under the bar.
-                  val said = work.value.busy ?: note ?: work.value.message
+                  val said = busy ?: note ?: message
                   if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
                       if (said != null) {
                           androidx.compose.runtime.withFrameNanos { }
@@ -310,6 +316,10 @@ fun CutScreen(
         }
     }
 }
+
+/** How many times the cut screen's curve column was composed (tests: the play head must not compose it again). */
+@androidx.annotation.VisibleForTesting
+internal var cutCurveCompositions = 0
 
 /**
  * More below a scrolling column: its bottom fades into the page (as the lists of tour 5, ScrollHintBox), over nothing a

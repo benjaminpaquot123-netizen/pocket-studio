@@ -301,25 +301,82 @@ private fun FitFaders(
     probe: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
     content: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
 ) {
-    if (!fit) {
-        content(fallback, fallback >= CONSOLE_FADER_H)
-        return
-    }
+    // Review of tour 7 (M3): a slot is composed again whenever its lambda is a new one, and every slot whenever the
+    // SubcomposeLayout itself is. So the probes' lambdas are kept, the shown one is new only when its faders are, and the
+    // pane's size reaches the measure through a state (a new height measures again without composing anything).
+    val low = androidx.compose.runtime.remember(probe) { @Composable { Probe { probe(FIT_FADER_MIN, false) } } }
+    val full = androidx.compose.runtime.remember(probe) { @Composable { Probe { probe(CONSOLE_FADER_H, true) } } }
+    val shownSlot = androidx.compose.runtime.remember { ShownSlot() }
+    val pane = androidx.compose.runtime.rememberUpdatedState(FitPane(fit, paneWidth, paneHeight, fallback))
+    val shownContent = androidx.compose.runtime.rememberUpdatedState(content)
+    // Every argument below stays the same instance, so a new pane size skips FitLayout (a SubcomposeLayout composed
+    // again forces all its slots to compose again) and only measures it again.
+    FitLayout(low, full, shownSlot, pane, shownContent)
+}
+
+/** [FitFaders]' layout: the two probes measured unseen, then the console shown with the faders they allow. */
+@Composable
+private fun FitLayout(
+    low: @Composable () -> Unit, full: @Composable () -> Unit, shownSlot: ShownSlot,
+    pane: androidx.compose.runtime.State<FitPane>, shownContent: androidx.compose.runtime.State<@Composable (Dp, Boolean) -> Unit>,
+) {
+    // Review of tour 7 (M1): one SubcomposeLayout whether it fits or not, the console always in the slot « shown », so a
+    // strip's open sheet and the scroll stay when the phone turns or a remix's stems come under the console.
     androidx.compose.ui.layout.SubcomposeLayout { constraints ->
-        val w = paneWidth.roundToPx().coerceAtLeast(1)
-        val probeAt = androidx.compose.ui.unit.Constraints(minWidth = w, maxWidth = w)
-        fun high(slot: String, f: Dp, hint: Boolean): Int = subcompose(slot) {
-            Box(Modifier.clearAndSetSemantics {}) { probe(f, hint) }
-        }.maxOfOrNull { it.measure(probeAt).height } ?: 0
-        val room = paneHeight.roundToPx()
-        val low = high("low", FIT_FADER_MIN, false)
-        val (f, hint) = when {
-            high("full", CONSOLE_FADER_H, true) <= room -> CONSOLE_FADER_H to true
-            low <= room -> (FIT_FADER_MIN + (room - low).toDp()).coerceAtMost(CONSOLE_FADER_H) to false
-            else -> fallback to (fallback >= CONSOLE_FADER_H)
+        val p = pane.value
+        val (f, hint) = if (!p.fit) p.fallback to (p.fallback >= CONSOLE_FADER_H) else {
+            val w = p.width.roundToPx().coerceAtLeast(1)
+            val probeAt = androidx.compose.ui.unit.Constraints(minWidth = w, maxWidth = w)
+            fun high(slot: String, c: @Composable () -> Unit): Int = subcompose(slot, c).maxOfOrNull { it.measure(probeAt).height } ?: 0
+            val room = p.height.roundToPx()
+            val lowH = high("low", low)
+            when {
+                high("full", full) <= room -> CONSOLE_FADER_H to true
+                lowH <= room -> (FIT_FADER_MIN + (room - lowH).toDp()).coerceAtMost(CONSOLE_FADER_H) to false
+                else -> p.fallback to (p.fallback >= CONSOLE_FADER_H)
+            }
         }
-        val shown = subcompose("shown") { content(f, hint) }.map { it.measure(constraints) }
-        layout(constraints.maxWidth, constraints.maxHeight) { shown.forEach { it.place(0, 0) } }
+        val shown = subcompose("shown", shownSlot.of(shownContent.value, f, hint)).map { it.measure(constraints) }
+        val width = if (p.fit) constraints.maxWidth else (shown.maxOfOrNull { it.width } ?: 0).coerceIn(constraints.minWidth, constraints.maxWidth)
+        val height = if (p.fit) constraints.maxHeight else (shown.maxOfOrNull { it.height } ?: 0).coerceIn(constraints.minHeight, constraints.maxHeight)
+        layout(width, height) { shown.forEach { it.place(0, 0) } }
+    }
+}
+
+/** A console measured unseen by [FitFaders]: out of the semantics, and its strips not counted in [stripCompositions]. */
+@Composable
+private fun Probe(console: @Composable () -> Unit) {
+    androidx.compose.runtime.SideEffect { fitProbeCompositions++ }
+    androidx.compose.runtime.CompositionLocalProvider(LocalFitProbe provides true) {
+        Box(Modifier.clearAndSetSemantics {}) { console() }
+    }
+}
+
+/** True inside [FitFaders]' unseen probes. */
+internal val LocalFitProbe = androidx.compose.runtime.staticCompositionLocalOf { false }
+
+/** How many times [FitFaders]' unseen probes were composed (tests: a new pane height must not compose them again). */
+@androidx.annotation.VisibleForTesting
+internal var fitProbeCompositions = 0
+
+/** What [FitFaders] measures by: whether to fit, the pane's size, the faders' height otherwise. */
+private data class FitPane(val fit: Boolean, val width: Dp, val height: Dp, val fallback: Dp)
+
+/** The shown console's slot content for [FitFaders]: the same lambda while the content and its faders stay the same. */
+private class ShownSlot {
+    private var content: (@Composable (Dp, Boolean) -> Unit)? = null
+    private var f = Dp.Unspecified
+    private var hint = false
+    private var slot: @Composable () -> Unit = {}
+
+    fun of(content: @Composable (Dp, Boolean) -> Unit, f: Dp, hint: Boolean): @Composable () -> Unit {
+        if (content !== this.content || f != this.f || hint != this.hint) {
+            this.content = content
+            this.f = f
+            this.hint = hint
+            slot = { content(f, hint) }
+        }
+        return slot
     }
 }
 
@@ -776,7 +833,7 @@ internal fun exportSavedLines(export: ExportUi): List<String> {
     )
 }
 
-/** How many times a mixer strip was composed (tests: a meter reading must not compose it again). */
+/** How many times a shown mixer strip was composed, the unseen probes left out (tests: a meter reading must not compose it again). */
 @androidx.annotation.VisibleForTesting
 internal var stripCompositions = 0
 

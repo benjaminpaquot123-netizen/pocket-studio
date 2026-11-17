@@ -382,4 +382,8 @@ for zone in "$@"; do
       git commit-tree "$tree" -p "$head" -p "$branch" -m "pre-vol: $zone (in memory)")"
   fi
 done
+# Repeated-failure alarm (Benjamin, 2026-11-02 and 2026-11-14): a chantier failing twice, or a defect coming back.
+while IFS= read -r line; do
+  case "$line" in ALERTE*) warn "$line" "écrire à Benjamin : boucle possible, cause, Fable utile ou pas" ;; esac
+done < <(python3 "$(dirname "$0")/alerte-repetition.py" etat 2>&1 || true)
 verdict

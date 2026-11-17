@@ -31,3 +31,7 @@ chemin: Découpe, Un trozo, En los pads puis message, boutons entiers | test: Cu
 - Commit « vert: » 2191598a : d2a et d2b verts ; RemixLeftThumbSeatTest, Cut*, StemBoard* verts.
 - D3, commit « rouge: » bbd9f7ee : d3a rouge (consigne à 0 dp de 40 dp, sous le bas de l'écran), d3b rouge (après le message, « En los pads » à y≈632–636 dp, sous la barre Guía).
 - D3, commit « vert: » 1256a9f5 : d3a et d3b verts ; d2a, d2b, RemixLeftThumbSeatTest, tous les tests remix et StemBoard* verts.
+
+## Captures (verifyRoborazziDebug, 2026-11-17)
+- 59 échecs : 13 captures de la découpe (cut_*, sizes/*_cut_structure), changées par D2/D3, ré-enregistrées et regardées (100/130/200 %, écran entier) ; 1 RemixChantier10Test (référence dans build/, absente en mode vérification, pas une capture du dépôt).
+- 45 autres (projets, piano roll, prise, partage, tablettes…) : hors de mon diff (seuls CutScreen.kt et StemBoardModel.kt changent, `show()` garde son comportement par défaut) ; laissés, pas à ce lot.

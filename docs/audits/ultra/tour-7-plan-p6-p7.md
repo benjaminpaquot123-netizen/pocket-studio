@@ -447,8 +447,8 @@ Règles communes aux blocs 1 à 4 :
 - de : « ein einziger Schlag » alors que la cymbale joue déjà 8 coups.
 
 ## Remontés par Fable (37d5bfcc9), pour P6/P7
-- Ch.12 étape 1 en Facile : pas de charley en Facile, il faut une nouvelle phrase Facile dans les 14 langues. Test déjà écrit dans 7801c5bf4 (Tour7TutoGapWordsMatchCrossesTest), à reprendre.
-- Phrase cymbale en Pro : « un seul coup ».
+- Ch.12 étape 1 en Facile : pas de charley en Facile, il faut une nouvelle phrase Facile dans les 14 langues. Test déjà écrit dans 7801c5bf4 (Tour7TutoGapWordsMatchCrossesTest), à reprendre. → Moved to P8 (Fable, 2026-11-17): the tutorial is a single zone.
+- Phrase cymbale en Pro : « un seul coup ». → Moved to P8 (Fable, 2026-11-17): the tutorial is a single zone.
 
 ## Mineurs laissés par Fable (tour 8)
 - « Lire la suite » et « Réduire » visibles ensemble.

@@ -184,3 +184,7 @@ Ce que les tours 6 et 7 ont le moins couvert : langues ar, zh-CN, en, it, nl, pl
 Le son et les décrochages (téléphone seulement), le thème sombre, la rotation au banc (test seulement), les écrans qu'aucun siège n'atteint (listés « non vus »).
 
 - Banc (vu sur t4-26) : HumanTester annonce « DOIGT » sur un bouton recouvert par un élément non cliquable (carte du « Fait ») ; le chevauchement ne sort qu’en avertissement « LAYOUT OVERLAP » dans le journal. Faire échouer le doigt quand un élément dessiné couvre le point visé.
+
+## Bench: wait for lists still loading (CI 349)
+- « Mes projets » reads its list off the main thread (« Chargement de la liste… »). Coquille2SeatTest's tap now waits for it (f1ebc7431).
+- Tour5BloquantsTest (l.192-193, 215-216) taps the same way without waiting: move the wait into HumanTester itself (reachTag waits while `projects_loading` is shown) so every seat gets it.

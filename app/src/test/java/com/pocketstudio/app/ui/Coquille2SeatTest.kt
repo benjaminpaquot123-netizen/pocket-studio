@@ -27,7 +27,15 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class Coquille2SeatTest : HumanTester("coquille2") {
+    /**
+     * [tag] touched, as a person does. « Mes projets » reads its list off the main thread and says « Chargement de la
+     * liste… » until it has it: a row is not looked for on that line, the list is waited for first (CI 349: the bench
+     * read the screen before a loaded machine had read the list). 20 s of the phone's time at most: a list that never
+     * comes still fails, on the screen shown.
+     */
     private fun tap(tag: String): String {
+        var waits = 0
+        while (centerOf(tag) == null && centerOf("projects_loading") != null && waits++ < 40) act("attends 0.5")
         val at = reachTag(tag) ?: error("no $tag on:\n" + screenLines().joinToString("\n"))
         return act("touche ${at.first} ${at.second}")
     }
@@ -273,6 +281,34 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         repeat(3) { act("attends 1") }
         val counted = screenLines().firstNotNullOfOrNull { Regex("mes(?:\\.|ure) \\d+/(\\d+)").find(it)?.groupValues?.get(1)?.toInt() }
         assertTrue("the brick loops on $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
+    }
+
+    /** The app's « Mes projets » model: the activity's, another one each time a project opens. */
+    private fun projectsModel(): com.pocketstudio.app.projects.ProjectsViewModel {
+        val activity = androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+            .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).first() as androidx.activity.ComponentActivity
+        return androidx.lifecycle.ViewModelProvider(activity)[com.pocketstudio.app.projects.ProjectsViewModel::class.java]
+    }
+
+    /**
+     * CI 349 (p5_theLiveProjectOpensAgainOnPadLive: « no project_… on: … Chargement de la liste… »): « Mes projets » reads
+     * its list off the main thread and says « Chargement de la liste… » until it has it. The bench reads the screen once
+     * the workers it sees running rest: a list not read by then (a loaded machine; here its reading is held 600 ms) is
+     * still that line, and a row looked for at once is not there. A person waits for the rows, then touches: [tap] too.
+     */
+    @Test
+    fun p5_aProjectsListStillLoadingIsWaitedForBeforeItsRowIsTouched() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille2-journal.txt"))
+        val song = rhythm()!!.projectId
+        tap("top_more")
+        projectsModel().beforeOperationForTest = { kotlinx.coroutines.delay(600) }
+        tap("top_projects")
+        assertNotNull("the list is not held, nothing is proven:\n" + screen(), centerOf("projects_loading"))
+        tap("project_$song")
+        assertNull("« Mes projets » still loading after its project was touched:\n" + screen(), centerOf("projects_loading"))
+        assertTrue("another project open", rhythm()!!.projectId == song)
     }
 
     /**

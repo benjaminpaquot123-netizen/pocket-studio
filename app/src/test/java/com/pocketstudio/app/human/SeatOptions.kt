@@ -123,10 +123,16 @@ internal data class SeatOptions(
          * `#n DOIGT` line) and the same pixels are no longer on it ([now], the finger's line at the replay): the button moved.
          * Null when nothing tagged was aimed at, or when it is still under the finger.
          */
-        fun reaimTag(was: String?, now: String): String? = null
+        fun reaimTag(was: String?, now: String): String? {
+            fun key(u: String) = u.removePrefix("désactivé ").removePrefix("dans:").removePrefix("désactivé ").substringBefore(" «").trim()
+            val k = was?.let(::key) ?: return null
+            if (k.isEmpty() || k.startsWith("rien") || k.startsWith("#") || k == "vue" || k.contains(' ')) return null
+            return k.takeIf { key(now) != it }
+        }
 
         /** Tour 7, banc B2: what `rejeu.txt` says when the replay gives the seat back at gesture [n] ([diff]: the line that changed). */
-        fun handBackNote(n: Int, replayN: Int, why: String, diff: String?): String = "main rendue au pas $n : $why"
+        fun handBackNote(n: Int, replayN: Int, why: String, diff: String?): String = "main rendue au pas $n : $why" +
+            if (n > replayN) "" else " ; rejeu non fidèle (${n - 1} gestes de l'origine sur $replayN rejoués)" + (diff?.let { " ; écran changé : $it" } ?: "")
 
         /** Android's resource qualifier for [lang] (« pt-rBR », « in » for Indonesian). */
         fun localeQualifier(lang: Lang): String = when (lang) {

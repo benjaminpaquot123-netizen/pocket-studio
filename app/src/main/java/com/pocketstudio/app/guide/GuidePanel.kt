@@ -73,6 +73,7 @@ import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.learn.SoundGlossary
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.fadingVerticalEdges
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import kotlinx.coroutines.launch
 import com.pocketstudio.ui.Neon
 
@@ -430,6 +431,20 @@ fun GuideCard(
         // Owner's request: one sentence, the one thing to do now.
         // Owner's request: one sentence, the one thing to do now; « Écouter seul » on its line.
         val step = nextStep(card, choices, opens, canAlone, alone)
+        // Tour 7, D2 (seat 3a #11): « À toi : touche « Le son de la mélodie » » and that button far below, under the
+        // panel's fold. The button the step names, when it opens a screen, stands right under it, and the panel brings
+        // both into view as the card shows.
+        val named = opens.firstOrNull()?.takeIf { step != null && !canAlone && choices.none { !it.later } }
+        val stepInView = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        if (named != null) {
+            androidx.compose.runtime.LaunchedEffect(card.id) {
+                // After the panel's own « back to the top » for a new card has started (it is cancelled by this one).
+                androidx.compose.runtime.withFrameNanos { }
+                androidx.compose.runtime.withFrameNanos { }
+                stepInView.bringIntoView()
+            }
+        }
+        Column(Modifier.fillMaxWidth().then(if (named != null) Modifier.bringIntoViewRequester(stepInView) else Modifier), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (step != null || canAlone) {
             Row(
                 Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically,
@@ -445,6 +460,8 @@ fun GuideCard(
                 }
                 if (canAlone) com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seul"), card.sheetName, "guide_alone") { actions.listenAlone(card.id) }
             }
+        }
+        if (named != null) OpenRow(card.id, named, primary = true, actions)
         }
         if (canAlone) {
             if (alone) {
@@ -469,7 +486,8 @@ fun GuideCard(
             Text(tr("Ailleurs ?").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             elsewhere.forEach { o -> OptionRow(card.id, o, primary = false, listen, actions) }
         }
-        if (opens.isNotEmpty() || card.sheet != null) {
+        val otherOpens = opens.filter { it !== named }
+        if (otherOpens.isNotEmpty() || card.sheet != null) {
             Text(tr("Voir le réglage").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             // G3: the track's whole sheet (its sound and layers, when, effects, history), one touch away.
             card.sheet?.let { key ->
@@ -484,19 +502,7 @@ fun GuideCard(
                     Text(tr("La fiche de la piste « %s »", card.sheetName), style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
                 }
             }
-            opens.forEach { o ->
-                Row(
-                    Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
-                        .clickable(role = Role.Button, onClickLabel = tr("Voir le réglage")) { actions.open(card.id, o.id) }
-                        .heightIn(min = 48.dp).padding(horizontal = 4.dp)
-                        .semantics(mergeDescendants = true) { contentDescription = tr("Voir le réglage : %s", o.label) }
-                        .testTag("guide_open_${o.id}"),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("↗", color = Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
-                    Text(o.label, style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f))
-                }
-            }
+            otherOpens.forEach { o -> OpenRow(card.id, o, primary = false, actions) }
         }
         val word = SoundGlossary.ALL.firstOrNull { it.key == card.lexicon }
         // G5: the card's word, heard and said in a line before the decision (« pré-entraînement »); the glossary one touch further.
@@ -510,6 +516,27 @@ fun GuideCard(
             if (card.undoable) SmallAction(tr("Annuler mon choix"), "guide_undo") { actions.undo(card.id) }
             if (card.status != GuideStatus.SKIPPED) SmallAction(tr("Ne plus proposer"), "guide_refuse") { actions.refuse(card.id) }
         }
+    }
+}
+
+/** « ↗ » and an option that opens a screen (« Voir le réglage »); [primary]: the one the card's step names, a full button. */
+@Composable
+private fun OpenRow(card: String, o: GuideOptionUi, primary: Boolean, actions: GuidePanelActions) {
+    val shape = RoundedCornerShape(if (primary) 12.dp else 10.dp)
+    Row(
+        Modifier.fillMaxWidth().clip(shape).then(if (primary) Modifier.background(Neon.Cyan) else Modifier)
+            .clickable(role = Role.Button, onClickLabel = tr("Voir le réglage")) { actions.open(card, o.id) }
+            .heightIn(min = if (primary) 52.dp else 48.dp).padding(horizontal = if (primary) 12.dp else 4.dp)
+            .semantics(mergeDescendants = true) { contentDescription = tr("Voir le réglage : %s", o.label) }
+            .testTag("guide_open_${o.id}"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("↗", color = if (primary) Neon.OnAccent else Neon.Cyan.copy(alpha = 0.75f), style = MaterialTheme.typography.titleSmall, modifier = Modifier.width(24.dp))
+        Text(
+            o.label, style = if (primary) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
+            fontWeight = if (primary) FontWeight.Bold else FontWeight.Normal,
+            color = if (primary) Neon.OnAccent else Neon.Cyan.copy(alpha = 0.85f), modifier = Modifier.weight(1f),
+        )
     }
 }
 

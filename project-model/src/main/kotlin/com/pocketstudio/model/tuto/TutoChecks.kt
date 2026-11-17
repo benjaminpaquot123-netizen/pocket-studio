@@ -2713,7 +2713,8 @@ object TutoRollHint {
             bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
             else -> x(n, v) - 2 * v.stepPx - v.left
         }
-        // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else it alone.
+        // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else as far
+        // towards it as the note the line speaks of stays whole in sight (a touch never hides the next one).
         val hidden = if (touched) aside(left, v, barSteps) else null
         val mid = (v.top + v.bottom) / 2
         val dy = when {
@@ -2721,13 +2722,17 @@ object TutoRollHint {
                 val all = pool(left, barSteps).filter { inTime(it, v) }
                 val top = all.minOf { y(it, v) }
                 val bottom = all.maxOf { y(it, v) } + v.rowPx
-                if (bottom - top <= v.bottom - v.top + 1f) (top + bottom) / 2 - mid else y(hidden, v) + v.rowPx / 2 - mid
+                when {
+                    bottom - top <= v.bottom - v.top + 1f -> (top + bottom) / 2 - mid
+                    y(hidden, v) < v.top -> y(n, v) + v.rowPx - v.bottom
+                    else -> y(n, v) - v.top
+                }
             }
             inRows(n, v) -> 0f
             else -> y(n, v) + v.rowPx / 2 - mid
         }
         val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
-        return dx to dy + whole(left, there, hidden ?: n)
+        return dx to dy + whole(left, there, n)
     }
 
     /**

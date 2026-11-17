@@ -777,8 +777,7 @@ private fun Grid(
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
         if (!asked) return@LaunchedEffect
         // Only a touch on the line goes to a hidden note: « Je le fais » and « Copier » keep the note asked for in sight.
-        val touched = com.pocketstudio.app.tuto.TutoHints.focusTouched
-        com.pocketstudio.app.tuto.TutoHints.focusTouched = false
+        val touched = focus == com.pocketstudio.app.tuto.TutoHints.focusTouched
         // Tour 6 lot 1 (N4): within the rows really in sight (the tutorial's panel covers the roll's bottom).
         val seen = sight?.value ?: (0f..view.height.toFloat())
         val shown = com.pocketstudio.model.tuto.TutoRollView(
@@ -787,8 +786,10 @@ private fun Grid(
         )
         val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
         val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
-        // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a).
-        lit = (if (touched) com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps) else null) ?: next
+        // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
+        val there = shown.copy(top = shown.top + dy, bottom = shown.bottom + dy)
+        lit = (if (touched) com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps) else null)
+            ?.takeIf { com.pocketstudio.model.tuto.TutoRollHint.inRows(it, there) } ?: next
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }
@@ -1458,7 +1459,7 @@ private fun TutoNotesLeft(
     Row(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
             .background((if (copy != null) Neon.Acid else Neon.Amber).copy(alpha = 0.12f))
-            .then(if (copy == null) Modifier.clickable { com.pocketstudio.app.tuto.TutoHints.focusTouched = true; com.pocketstudio.app.tuto.TutoHints.focus++ } else Modifier)
+            .then(if (copy == null) Modifier.clickable { com.pocketstudio.app.tuto.TutoHints.focusTouched = ++com.pocketstudio.app.tuto.TutoHints.focus } else Modifier)
             .padding(horizontal = 10.dp).testTag("tuto_notes_left"),
         verticalAlignment = Alignment.CenterVertically,
     ) {

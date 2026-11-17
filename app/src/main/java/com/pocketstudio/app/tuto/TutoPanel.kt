@@ -164,8 +164,8 @@ object TutoHints {
     var focus by mutableIntStateOf(0)
     /** The [focus] the piano roll last answered (not state: read and written there only). */
     var focusSeen = 0
-    /** Whether the last [focus] came from a touch on the roll's line (it may go to a hidden note), not from the step. */
-    var focusTouched = false
+    /** The [focus] a touch on the roll's line asked (it may go to a hidden note); any other one comes from the step. */
+    var focusTouched = -1
     var demo by mutableStateOf(false)
     /** The hits a step asks to take away, by pad ([TutoChecks.toErase]): drawn crossed out. */
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
@@ -210,7 +210,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = false; demo = false
+        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }

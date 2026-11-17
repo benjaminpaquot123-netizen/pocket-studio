@@ -63,6 +63,6 @@ class TutoValidationMomentTest {
 
     companion object {
         /** The exceptions frozen by bloc 0 (tour 7); blocs 1 to 4 bring it to 0. */
-        const val FROZEN = 403
+        const val FROZEN = 368
     }
 }

@@ -1,5 +1,5 @@
 # Tour 7 — lot « banc8 » : relecture
-Relu : 4a1753297
+Relu : 05e6a9357
 
 Périmètre : `git diff 7948ecb9..HEAD` (banc sous `app/src/test/.../human/`, un TSV d'incidents). Rien sous `app/src/main` ni `project-model/src/main`, aucun binaire, lien, secret ni identifiant de modèle. Les rejeux stricts et à oracle sont inchangés (branche `else if (!oracle && was != print)` intacte, recalage gardé par `o.replayHandBack`).
 
@@ -17,4 +17,5 @@ Delta `2b322f14d..4a1753297` (un geste de rejeu ré-ancré, rapport, décisions)
 - moyen — `tour-7-banc8-rapport.md:16` : « toucher la boîte ne faisait rien » est inexact. C'est le banc qui refuse : `under()` rend l'étiquette du bouton (`remix_pick_thumb`), `fingerOn("remix_pick", …)` (`HumanTester.kt:2172-2175`) n'accepte que le même nom (ou `dans:`), donc `reachableNear` ne trouve aucun point et le geste est REFUS, rien n'est envoyé à l'appli. Défaut de banc à noter : toute étiquette posée sur un conteneur dont l'enfant actionnable a sa propre étiquette est intouchable par « touche <étiquette> » ; un testeur qui écrit « touche remix_pick » (le nom que le commentaire de l'appli dit conservé) sera refusé. Le ré-ancrage est juste, mais la phrase du rapport est à corriger et le défaut à inscrire dans `incidents-banc.tsv` ou au prochain lot banc.
 - mineur — rapport et décisions : rien d'autre de faux relevé ; « 3 remarques moyennes laissées » correspond à la relecture précédente.
 
+- Delta 05e6a9357 (docs seulement : ligne t4-26 « appli (guide) » dans incidents-banc.tsv, rapport mis à jour, rejeu non touché) : relu, rien à redire.
 Verdict : 0 bloquant, 0 grave

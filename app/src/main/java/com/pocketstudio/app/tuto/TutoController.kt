@@ -511,6 +511,24 @@ class TutoController(
         return listOfNotNull(made, more).joinToString(" ")
     }
 
+    /** « Posé : Clap, Basse. »: the lines and tracks « Poser ce qui manque » really changed from [before] to [after], null when none. */
+    private fun laid(before: Project, after: Project): String? {
+        val was = before.allScenes
+        val names = LinkedHashSet<String>()
+        after.allScenes.forEachIndexed { i, now -> names += changedBricks(was.getOrNull(i), now).map { brickName(after, it) } }
+        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", names.joinToString(", "))
+    }
+
+    /** The pads, tracks and 303 whose hits or notes are not in [now] as they were in [was] (null: a scene just made), as [TutoChecks.bricks] names them. */
+    private fun changedBricks(was: com.pocketstudio.model.Scene?, now: com.pocketstudio.model.Scene): List<String> = buildList {
+        now.drums.lanes.forEachIndexed { i, l -> if (l.hits != was?.drums?.lanes?.getOrNull(i)?.hits.orEmpty()) add("pad:$i") }
+        if (now.synthNotes.notes != was?.synthNotes?.notes.orEmpty()) add("inst:0")
+        for (id in now.trackNotes.keys + was?.trackNotes?.keys.orEmpty()) {
+            if (now.trackNotes[id]?.notes.orEmpty() != was?.trackNotes?.get(id)?.notes.orEmpty()) add("inst:$id")
+        }
+        if (now.acid.steps.filter { it.gate } != was?.acid?.steps.orEmpty().filter { it.gate }) add("acid")
+    }
+
     private fun brickName(p: Project, brick: String): String = when {
         brick.startsWith("pad:") -> brick.removePrefix("pad:").toIntOrNull()?.let { com.pocketstudio.app.rhythm.padName(p, it) } ?: brick
         brick.startsWith("inst:") -> brick.removePrefix("inst:").toIntOrNull()?.let { com.pocketstudio.model.DefaultNames.shown(p.track(it).name) } ?: brick
@@ -562,6 +580,8 @@ class TutoController(
         val p = project.value
         // Testers (lot « tuto 4 »): « Créer la partie » six times and nothing seen changing: what it made, in words.
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
+        // Fresh review of « fable-repar » (M2): « Poser ce qui manque » says what it laid too, by name.
+        else if (need is TutoNeed.Course && p !== before) _ui.value = _ui.value?.copy(made = laid(before, p))
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
         // Lot « tuto-flèches » (seat H a): « Copier » done and notes still to write (the last bar): the roll goes to

@@ -154,6 +154,7 @@
   "Partie « %1$s » créée (copie de « %2$s »).": "Part “%1$s” made (a copy of “%2$s”).",
   "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Part “%1$s” made (a copy of “%2$s”): without %3$s.",
   "Poser ce qui manque": "Add what is missing",
+  "Posé : %s.": "Laid down: %s.",
   "Il te manque ce que font les chapitres d'avant.": "You are missing what the earlier chapters make.",
   "Aller au chapitre %d": "Go to chapter %d"
 }

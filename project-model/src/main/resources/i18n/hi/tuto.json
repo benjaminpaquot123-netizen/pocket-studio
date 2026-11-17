@@ -154,6 +154,7 @@
   "Partie « %1$s » créée (copie de « %2$s »).": "पार्ट “%1$s” बन गया (“%2$s” की कॉपी)।",
   "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "पार्ट “%1$s” बन गया (“%2$s” की कॉपी): %3$s के बिना।",
   "Poser ce qui manque": "जो कम है वह जोड़ें",
+  "Posé : %s.": "रखा गया: %s।",
   "Il te manque ce que font les chapitres d'avant.": "पिछले अध्यायों में जो बनता है, वह तुम्हारे पास नहीं है।",
   "Aller au chapitre %d": "अध्याय %d पर जाएँ"
 }

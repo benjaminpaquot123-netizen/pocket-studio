@@ -651,7 +651,7 @@ class TutoController(
     fun canShow(): Boolean {
         val u = _ui.value ?: return false
         val t = target ?: return false
-        return u.demo != null || TutoChecks.show(u.current, project.value, t, u.progress.level) != null
+        return u.demo != null || TutoPlay.canShow(u.current, project.value, t, u.progress.level)
     }
 
     /** The dotted cells of the step shown on a pad ([TutoChecks.hint]), null when none. */

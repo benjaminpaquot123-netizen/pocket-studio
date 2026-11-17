@@ -118,6 +118,16 @@ internal data class SeatOptions(
             else -> null
         }
 
+        /**
+         * Tour 7, banc B2: the test tag a replayed touch aims at when the origin's finger was on a tagged button ([was], its
+         * `#n DOIGT` line) and the same pixels are no longer on it ([now], the finger's line at the replay): the button moved.
+         * Null when nothing tagged was aimed at, or when it is still under the finger.
+         */
+        fun reaimTag(was: String?, now: String): String? = null
+
+        /** Tour 7, banc B2: what `rejeu.txt` says when the replay gives the seat back at gesture [n] ([diff]: the line that changed). */
+        fun handBackNote(n: Int, replayN: Int, why: String, diff: String?): String = "main rendue au pas $n : $why"
+
         /** Android's resource qualifier for [lang] (« pt-rBR », « in » for Indonesian). */
         fun localeQualifier(lang: Lang): String = when (lang) {
             Lang.PT_BR -> "pt-rBR"

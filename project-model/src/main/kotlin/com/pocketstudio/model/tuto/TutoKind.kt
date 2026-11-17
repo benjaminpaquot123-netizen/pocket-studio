@@ -32,6 +32,58 @@ import com.pocketstudio.model.tuto.TutoChecks.SHARED_CARD
 import com.pocketstudio.model.tuto.TutoChecks.SWING_POINTS
 import com.pocketstudio.model.tuto.TutoChecks.sceneLabelled
 import com.pocketstudio.model.tuto.TutoChecks.swingShown
+import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.tuto.TutoChecks.acidMatches
+import com.pocketstudio.model.tuto.TutoChecks.acidNotes
+import com.pocketstudio.model.tuto.TutoChecks.acidWanted
+import com.pocketstudio.model.tuto.TutoChecks.copyNeed
+import com.pocketstudio.model.tuto.TutoChecks.ensureTrack
+import com.pocketstudio.model.tuto.TutoChecks.insertsLeft
+import com.pocketstudio.model.tuto.TutoChecks.notesMatch
+import com.pocketstudio.model.tuto.TutoChecks.notesOf
+import com.pocketstudio.model.tuto.TutoChecks.onRoot
+import com.pocketstudio.model.tuto.TutoChecks.partTrack
+import com.pocketstudio.model.tuto.TutoChecks.roleOf
+import com.pocketstudio.model.tuto.TutoChecks.subOf
+import com.pocketstudio.model.tuto.TutoChecks.trackFor
+import com.pocketstudio.model.tuto.TutoChecks.wantedLength
+import com.pocketstudio.model.tuto.TutoChecks.wantedNotes
+import com.pocketstudio.model.tuto.TutoChecks.withSub
+import com.pocketstudio.model.AcidPattern
+import com.pocketstudio.model.AcidStep
+import com.pocketstudio.model.AutoTarget
+import com.pocketstudio.model.AutomationLane
+import com.pocketstudio.model.Channel
+import com.pocketstudio.model.DrumLane
+import com.pocketstudio.model.DrumPattern
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.FxPresets
+import com.pocketstudio.model.Harmony
+import com.pocketstudio.model.Insert
+import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.LoudnessTarget
+import com.pocketstudio.model.Mixer
+import com.pocketstudio.model.Scene
+import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.DrumArrangement
+import com.pocketstudio.model.partKeys
+import com.pocketstudio.model.StarterWizard.Part
+import com.pocketstudio.model.StudioDrums
+import com.pocketstudio.model.SynthPatch
+import com.pocketstudio.model.TrackKind
+import com.pocketstudio.model.NewTracks
+import com.pocketstudio.model.copySceneTo
+import com.pocketstudio.model.currentSceneContent
+import com.pocketstudio.model.firstEmptyScene
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.partSteps
+import com.pocketstudio.model.renameScene
+import com.pocketstudio.model.switchScene
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withFx
+import com.pocketstudio.model.withTrack
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
@@ -141,6 +193,9 @@ internal interface TutoKind {
             c == "velocity:hat" -> VelocityHat
             c.startsWith("offset:") -> c.substringAfter(':').let { Offset(it.substringBefore(':'), it.substringAfter(':', "late") == "early") }
             c.startsWith("triplet:") -> Triplet(c.substringAfter(':'))
+            c == "notes:acid" -> AcidNotes
+            c.startsWith("notes:") -> Notes(c.removePrefix("notes:"))
+            c == "track:sub" -> SubTrack
             else -> null
         }
     }
@@ -291,4 +346,113 @@ internal class Offset(val role: String, val early: Boolean) : TutoKind {
 internal class Triplet(val role: String) : TutoKind {
     override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(role, target)) }
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? = withTriplet(p, role, target)
+}
+
+/** "notes:acid": the 303's line, every step of it, its note, its accent and its slide. */
+internal object AcidNotes : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val a = target.acid ?: return null
+        val wanted = acidWanted(step, p, target) ?: return null
+        val mine = onRoot(p.acid, a.root)
+        return p.copy(acid = mine.copy(length = maxOf(mine.length, wantedLength(wanted, a)), steps = mine.steps.mapIndexed { i, st -> wanted[i] ?: st }))
+    }
+
+    // Its first 4 bars written: « Copier sur les mesures suivantes ».
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget) = copyNeed(step, p, target, TutoTarget.ACID)
+    override fun line(step: TutoStep, target: TutoTarget) = target.acid?.let(::acidNotes)
+
+    // The 303's steps written right: the note, and its accent and slide as the line has them.
+    override fun mine(step: TutoStep, p: Project, target: TutoTarget) = target.acid?.let { a ->
+        val want = acidNotes(a).associateBy { it.start }
+        acidNotes(p.acid).filter { n -> want[n.start]?.let { it.length == n.length } != false }
+    }
+    override val wholeLoop get() = true
+}
+
+/** The frames that write [wanted] on the track [id] of [start], a chord at a time, in a clip as long as [end]'s (null: its own). */
+private fun noteFrames(start: Project, id: Int, end: InstrumentTrack?, wanted: List<Note>): TutoFrames {
+    val frames = ArrayList<Project>()
+    val sounds = ArrayList<TutoSound?>()
+    var clip = start.track(id).notes.withSteps(end?.notes?.steps ?: start.track(id).notes.steps).copy(notes = emptyList())
+    frames += start.withTrack(start.track(id).copy(notes = clip)); sounds += null
+    for ((_, chord) in wanted.groupBy { it.start }.entries.sortedBy { it.key }) {
+        clip = clip.copy(notes = clip.notes + chord)
+        frames += start.withTrack(start.track(id).copy(notes = clip)); sounds += TutoSound(track = id, pitches = chord.map { it.pitch })
+    }
+    return TutoFrames(frames, sounds, whole = true)
+}
+
+/**
+ * "notes:<role>": every dotted note written on the role's track (not 3 of 12: the testers' bass and chords ticked
+ * with the screen's first notes). A step split in two (« la mesure 1 », then « Copier » and the rest: tour 6, T8)
+ * reads and writes the cells of its [TutoStep.length] only.
+ */
+internal class Notes(val role: String) : TutoKind {
+    private fun own(step: TutoStep, notes: List<Note>) = notes.filter { step.length <= 0 || it.start < step.length * NoteClip.TICKS_PER_STEP }
+
+    /** [p] with the role's track (made with its inserts when it was not there) and its id. */
+    private fun onTrack(p: Project, target: TutoTarget, level: TutoLevel?): Pair<Project, Int>? =
+        ensureTrack(p, role, target)?.let { (q, id) -> (if (trackFor(p, role) == null) insertsLeft(q, id, role, target, level) else q) to id }
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = target.roleNotes(role)?.let { wanted ->
+        trackFor(p, role)?.let { id -> notesMatch(notesOf(p, id), own(step, wanted.notes)) }
+    } ?: false
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val all = target.roleNotes(role) ?: return null
+        // A step cut in two: the demo lays its own bars only, as its check reads them.
+        val notes = if (step.length <= 0) all else all.copy(notes = own(step, all.notes))
+        val (q, id) = onTrack(p, target, level) ?: return null
+        return q.withTrack(q.track(id).copy(notes = notes))
+    }
+
+    // Testers (lot « tuto 5 »: the show wrote other bars than the dotted ones): the notes dotted now, no more.
+    override fun frames(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?, end: Project): TutoFrames? {
+        val (start, id) = onTrack(p, target, level) ?: return null
+        return noteFrames(start, id, trackFor(end, role)?.let { end.track(it) }, own(step, wantedNotes(step, p, target).orEmpty()))
+    }
+    override val endsOnFrames get() = true
+
+    // Its track first; its first 4 bars written: « Copier sur les mesures suivantes ».
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget) =
+        if (trackFor(p, role) == null) TutoNeed.Track(role) else copyNeed(step, p, target, role)
+
+    // The first 4 bars while they are not all written, then the whole line (testers, lot « tuto 4 »).
+    override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
+        val id = trackFor(p, role) ?: return null
+        return id to (wantedNotes(step, p, target) ?: return null)
+    }
+    override fun line(step: TutoStep, target: TutoTarget) = target.roleNotes(role)?.notes
+    override fun mine(step: TutoStep, p: Project, target: TutoTarget) = trackFor(p, role)?.let { notesOf(p, it) }
+    override val wholeLoop get() = true
+}
+
+/** "track:sub": a Sub track that plays the bass an octave lower (« Copier la basse une octave plus bas »: the track and its notes in one touch). */
+internal object SubTrack : TutoKind {
+    private fun sub(p: Project) = p.instrumentTracks.firstOrNull { roleOf(p, it.id) == "sub" }?.id
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = trackFor(p, "bass")?.let { bass ->
+        val wanted = subOf(notesOf(p, bass))
+        p.instrumentTracks.any { t -> t.id != bass && roleOf(p, t.id) == "sub" && notesMatch(notesOf(p, t.id), wanted) }
+    } ?: false
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = withSub(p, target)
+
+    override fun frames(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?, end: Project): TutoFrames? {
+        val (start, id) = partTrack(p, "sub", target) ?: return null
+        val endTrack = sub(end)?.let { end.track(it) }
+        return noteFrames(start, id, endTrack, endTrack?.notes?.notes.orEmpty())
+    }
+    override val endsOnFrames get() = true
+    override fun showable(p: Project, target: TutoTarget) = partTrack(p, "sub", target) != null
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget) = TutoNeed.Track("sub").takeIf { trackFor(p, "bass") != null }
+
+    override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
+        val bass = trackFor(p, "bass") ?: return null
+        val id = sub(p) ?: return null
+        return id to StarterWizard.subNotes(notesOf(p, bass))
+    }
 }

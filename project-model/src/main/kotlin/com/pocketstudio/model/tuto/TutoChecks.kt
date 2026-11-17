@@ -2702,8 +2702,10 @@ object TutoRollHint {
      * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
      * the rows), zero along an axis where the note already is and no other is hidden ([aside]). Along the time, its bar from its first sixteenth
      * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
+     * [touched]: false when the step itself asks (« Je le fais », « Copier »): the note asked for stays in sight, no
+     * other one is gone to.
      */
-    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int): Pair<Float, Float> {
+    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true): Pair<Float, Float> {
         val n = next(left, v, barSteps) ?: return 0f to 0f
         val bar = barSteps * v.stepPx
         val dx = when {
@@ -2712,7 +2714,7 @@ object TutoRollHint {
             else -> x(n, v) - 2 * v.stepPx - v.left
         }
         // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else it alone.
-        val hidden = aside(left, v, barSteps)
+        val hidden = if (touched) aside(left, v, barSteps) else null
         val mid = (v.top + v.bottom) / 2
         val dy = when {
             hidden != null -> {

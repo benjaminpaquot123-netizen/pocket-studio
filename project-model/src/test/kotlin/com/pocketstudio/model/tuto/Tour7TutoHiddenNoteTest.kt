@@ -52,6 +52,14 @@ class Tour7TutoHiddenNoteTest {
         assertTrue("the note ${hidden.pitch} is still out of the rows in sight after the touch", TutoRollHint.inRows(hidden, now))
     }
 
+    /** « Je le fais » and « Copier » (not a touch) keep the note asked for in sight: the roll does not go to the hidden one. */
+    @Test
+    fun theStepAskingKeepsTheNoteAskedForInSight() {
+        val left = notes(18)
+        val v = view(48, 8)
+        assertEquals(0f to 0f, TutoRollHint.brought(left, v, 16, touched = false))
+    }
+
     /** The line shows where the hidden note is (the arrow) while the others are in sight, and nothing once all are. */
     @Test
     fun theLineShowsWhereTheHiddenNoteIs() {

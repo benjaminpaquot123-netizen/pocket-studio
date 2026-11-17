@@ -122,7 +122,8 @@ class Tour6TutoFlechesRollTest {
         val where = text("tuto_roll_where")
         val bar = next.start / NoteClip.TICKS_PER_STEP / h.vm.project.value.stepsPerBar + 1
         assertTrue("after the copy the next note to write (${next.pitch}, bar $bar) is whole in sight; the line says « $where · $said »", whole(next))
-        assertTrue("no arrow over a dotted note in sight: « $said »", listOf("↑", "↓", "→", "←").none { it in said })
+        // Since control « tuto2 » (seat a), a bare arrow after « à toucher » tells of one more dotted note over or under the rows.
+        assertTrue("no arrow over a dotted note in sight: « $said »", "à toucher" in said && listOf("→", "←", "plus").none { it in said })
         assertTrue("the line names the bar to write ($bar): « $where »", where.contains("$bar/"))
     }
 
@@ -165,7 +166,8 @@ class Tour6TutoFlechesRollTest {
                 settle()
             }
             val said = text("tuto_notes_left_text")
-            assertTrue("a dotted note is whole in sight, no arrow expected: « $said »", listOf("↑", "↓", "→", "←").none { it in said })
+            // Since control « tuto2 » (seat a), a bare arrow after « à toucher » tells of one more dotted note over or under the rows.
+            assertTrue("a dotted note is whole in sight, no arrow expected: « $said »", "à toucher" in said && listOf("→", "←", "plus").none { it in said })
             h.vm.addNote(leftNotes().first { whole(it) })
             written++
             settle()

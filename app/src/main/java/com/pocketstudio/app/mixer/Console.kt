@@ -146,7 +146,8 @@ internal fun Console(
 /** One strip: colour, name (a touch: its sheet), M S, the fader and its meter, the dB, its effects. */
 @Composable
 private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, moves: Int, open: () -> Unit, first: Boolean, faderHeight: Dp) {
-    SideEffect { stripCompositions++ }
+    val probe = LocalFitProbe.current
+    SideEffect { if (!probe) stripCompositions++ }
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     val tint = info.color ?: Neon.Cyan

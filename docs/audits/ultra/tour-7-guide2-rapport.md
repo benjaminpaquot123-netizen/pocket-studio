@@ -23,8 +23,8 @@ chemin: Mon morceau › ⋮ « और » (hi, phone360, 130 %, Simple) | test: T
 chemin: Mon morceau › ⋮ « Plus » (fr, phone, 100 %, Simple) | test: Tour7PlusTilesAboveGuideTest#frenchPhoneAt100
 
 corrige: 3a-11 | gravité: grave | rejeu: t7-g1-guide-son
-corrige: 3b-42 | gravité: moyen | rejeu: aucun, prouvé par Tour7MixEntryAboveGuideTest#phoneAt100
-corrige: 3a-62 | gravité: moyen | rejeu: aucun, prouvé par Tour7PlusTilesAboveGuideTest#hindiSmallPhoneAt130
+corrige: 3b-42 | gravité: moyen | rejeu impossible : défaut de mise en page vu sur une capture, prouvé par Tour7MixEntryAboveGuideTest#phoneAt100
+corrige: 3a-62 | gravité: moyen | rejeu impossible : défaut de mise en page vu sur une capture, prouvé par Tour7PlusTilesAboveGuideTest#hindiSmallPhoneAt130
 
 ## Rejeux
 

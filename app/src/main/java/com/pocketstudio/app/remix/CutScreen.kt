@@ -102,6 +102,9 @@ fun rememberCutModel(ui: StemBoardUi, actions: StemBoardActions): CutModel =
 /** The order of the stem chips: the voice first, as on the mockup. */
 private val CHIP_ORDER = listOf(3, 0, 1, 2)
 
+/** Where « Un bout » is shown across the curve (0.5: the middle): a little left, its « Fin » bar nearer a left thumb. */
+private const val SPAN_CENTRE = 0.4
+
 @Composable
 fun CutScreen(
     ui: StemBoardUi,
@@ -166,7 +169,9 @@ fun CutScreen(
     val placed = model.span
     LaunchedEffect(model.stem, placed != null, view.width > 0f, model.single) {
         if (model.single && placed != null && view.width > 0f && !view.zoomedIn) {
-            view.show(placed.start, placed.end, minFrames = 4L * BOARD_RATE)
+            // Tour 7, lot 2 D2 (2c #33, es, left thumb): the piece a little left of the middle, so its « Fin » bar comes
+            // nearer the thumb (a span centred put it at three quarters of the width, out of a left thumb's reach).
+            view.show(placed.start, placed.end, minFrames = 4L * BOARD_RATE, centre = SPAN_CENTRE)
             // The orange line on « Début »: ▶ starts there, « Début ici » never sends a bar off screen.
             model.cursor = placed.start
         }
@@ -206,7 +211,9 @@ fun CutScreen(
             val scrollsAll = !wide && model.single
             // The fixed curve takes what the room leaves above the tools (120 dp, a finger's, up to 180 dp): on the seat's
             // ~492 dp the tools stay in view without a scroll and the curve never falls under 120 dp (review of remix2).
-            val curveHeight = (maxHeight - 380.dp).coerceIn(120.dp, 180.dp)
+            // Tour 7, lot 2 D2 (2c #33): at a normal font the curve also takes the room left under the chips (~144 dp on the
+            // seat's 492 dp), so its bottom, where the « Fin » bar is grabbed, comes down into a left thumb's reach.
+            val curveHeight = (maxHeight - if (bigText) 380.dp else 348.dp).coerceIn(120.dp, 180.dp)
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
@@ -217,7 +224,8 @@ fun CutScreen(
                     // The stem chips stay on top in « Phrases » (over the pieces' list that scrolls below) and in « Un bout »
                     // when the screen scrolls (a large font): the whole column is reached by scrolling, so they read first.
                     // Landscape (wide) keeps them with the tools in the side column.
-                    if (!wide && (!model.single || bigText)) StemChips(model) { actions.stop() }
+                    // Tour 7, lot 2 D2 (2c #20): in « Phrases » at a normal font they went down to the fixed menus (below).
+                    if (!wide && bigText) StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // « Un bout » numbers its bars on the curve's ruler: no « Mes. 3 à 8 » above it.
@@ -246,7 +254,7 @@ fun CutScreen(
                         // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
                         // left thumb reaches — the big curve above keeps them off the top, out of reach.
                         if (model.single && bigText) AutoRow(model, finding, onAuto = { pick(it) })
-                        if (model.single && !bigText) StemChips(model) { actions.stop() }
+                        if (model.single && !bigText) StemChips(model, top = 0.dp) { actions.stop() }
                     }
                     tail()
                   }
@@ -276,8 +284,11 @@ fun CutScreen(
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp))
                     // Tour 6, seat B a (A4, gesture 19): « ✂ Frases ▾ » and the magnet were cut under the panel of actions at
                     // the scroll's end; they stay whole over it, the tools and the pieces scroll above.
-                    androidx.compose.foundation.layout.Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp)) {
+                    // Tour 7, lot 2 D2 (2c #20, es, left thumb): « Voz / Batería / Bajo / Resto » under the menus, in the lower
+                    // part a one-handed left thumb reaches (on top of the curve they were out of it), as in « Un bout ».
+                    Column(Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp)) {
                         AutoRow(model, finding, onAuto = { pick(it) })
+                        if (!bigText) StemChips(model, top = 4.dp) { actions.stop() }
                     }
                     SendBar(model, actions, work, note) { note = null }
                 }
@@ -346,9 +357,9 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
 
 /** Voix, Batterie, Basse, Reste: each with its colour dot, as on the Remix page. */
 @Composable
-private fun StemChips(model: CutModel, onChange: () -> Unit) {
+private fun StemChips(model: CutModel, top: androidx.compose.ui.unit.Dp = 8.dp, onChange: () -> Unit) {
     // Tour 7, lot 2 D7: the chips wrap to a second line rather than run off the edge (« Resto » cut at 200 %, no sign).
-    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = top), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         CHIP_ORDER.forEach { stem ->
             val name = Demucs.STEMS[stem]
             FilterChip(

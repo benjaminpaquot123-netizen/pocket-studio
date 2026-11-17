@@ -53,7 +53,7 @@ class CutLeftThumbD2Test : HumanTester("decoupe2") {
         }
     }
 
-    private val all = arrayOf("cut_stem_3", "cut_stem_0", "cut_stem_1", "cut_stem_2", "cut_wave", "cut_span_end", "cut_auto", "cut_span_play", "cut_to_pads")
+    private val all = arrayOf("cut_stem_3", "cut_stem_0", "cut_stem_1", "cut_stem_2", "cut_wave", "cut_span_end", "cut_auto", "cut_span_play", "cut_to_pads", "cut_screen", "cut_overview", "cut_close", "cut_send", "cut_more", "cut_start")
 
     private fun tap(tag: String): String {
         val at = reachTag(tag) ?: error("no $tag on:\n" + screenLines().joinToString("\n"))

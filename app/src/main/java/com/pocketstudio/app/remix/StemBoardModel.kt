@@ -160,12 +160,12 @@ class StemBoardView(val frames: Long) {
         start = 0.0
     }
 
-    /** [from] until [to] brought into view, in the middle of the board, as much again around it (at least [minFrames] shown). */
-    fun show(from: Long, to: Long, minFrames: Long = 0L) {
+    /** [from] until [to] brought into view, its middle at [centre] of the board (0.5: the middle), as much again around it (at least [minFrames] shown). */
+    fun show(from: Long, to: Long, minFrames: Long = 0L, centre: Double = 0.5) {
         if (width <= 0f || to <= from) return
         val shown = max(2.0 * (to - from), minFrames.toDouble())
         framesPerPx = (shown / width).coerceIn(MIN_FRAMES_PER_PX, fitFramesPerPx)
-        start = (from + to) / 2.0 - width * framesPerPx / 2
+        start = (from + to) / 2.0 - width * framesPerPx * centre.coerceIn(0.25, 0.75)
         clamp()
     }
 

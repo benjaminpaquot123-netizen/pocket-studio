@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -628,6 +629,7 @@ fun TutoPanel(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
             ) {
+            Box {
             Column(
                 Modifier.wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
                     .onGloballyPositioned { content[0] = it },
@@ -670,6 +672,14 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
+            }
+            // Control of « fable-repar » (seat c, V4; Korean at 130 %, Japanese unfolded): the words stopped at the end of
+            // a line, in the middle of a sentence, with nothing to say they go on. « … » at the end of the last line in sight
+            // while more is under it (silent: « Lire la suite » is what TalkBack reads).
+            if (scrolls && words.canScrollForward) Text(
+                "…", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1,
+                modifier = Modifier.align(Alignment.BottomEnd).background(panelColor()).padding(start = 4.dp).clearAndSetSemantics { testTag = "tuto_text_cut" },
+            )
             }
             // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
             // Tour 7 D3 end (seats 1a #1, 2a #2, 2d #3): at the end of the words, its buttons came only after « Lire la suite ».

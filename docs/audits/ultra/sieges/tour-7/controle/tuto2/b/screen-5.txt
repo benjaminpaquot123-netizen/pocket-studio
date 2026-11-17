@@ -1,0 +1,53 @@
+Écran 5 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+titre « ステップ：テクノ · 手拍子 » [coupé, état « 開いた状態 »] @ 227,216
+texte « ? » [coupé] @ 346,216
+bouton « 全パッド » [coupé] @ 479,217
+texte « テクノ · 手拍子 » @ 123,279
+bouton « 1 » [état « 空 »] @ 70,362
+bouton [état « 空 »] @ 133,362
+bouton [état « 空 »] @ 197,363
+bouton [état « 空 »] @ 261,363
+bouton « 2 » [état « ヒット、強さ 100 % »] @ 325,363
+bouton [état « 空 »] @ 389,363
+bouton [état « 空 »] @ 453,363
+bouton [état « 空 »] @ 517,363
+bouton « 3 » [état « 空 »] @ 70,441
+bouton [état « 空 »] @ 133,441
+bouton [état « 空 »] @ 197,442
+bouton [état « 空 »] @ 261,442
+bouton « 4 » [état « ヒット、強さ 100 % »] @ 325,442
+bouton [état « 空 »] @ 389,442
+bouton [état « 空 »] @ 453,442
+bouton [état « ヒット、強さ 100 % »] @ 517,442
+texte « クラップ チャプター 3/15 · ステップ 1/2 · かんたん » @ 207,527
+icône (liste) « チャプター » @ 444,527
+icône ⌄ @ 531,527
+image (coupe) @ 57,645
+texte « よくできました、成功！ » @ 205,617
+texte « 結果を聴いて、好きなときに「次のステップ」をタップしてね。 » @ 319,660
+bouton « 次のステップ   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  結果を聴く » @ 216,978
+bouton ▶ «  例を聴く » @ 453,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

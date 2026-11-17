@@ -1,0 +1,6 @@
+tab_simple_Rythme
+dialogue:roll_menu
+dialogue:tuto_chapter_list
+tuto_panel/tab_simple_Rythme
+tuto_spot_ring
+tab_simple_Clavier

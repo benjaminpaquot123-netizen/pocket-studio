@@ -1,0 +1,247 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=tuto:house:12
+#0 PREMIER ECRAN reel_s=9.3 simule_s=2.4 jvm_s=23.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:house:12
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 915 (mode_card_simple)
+#0 AMENEE > touche 294 1201 (tuto_style_house)
+#0 AMENEE chapitres 1 à 11 construits dans le projet
+#0 AMENEE > touche 444 573 (tuto_chapters)
+#0 AMENEE > touche 294 954 (tuto_chapter_11)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dae4d8e963 | project=p-9afe86a7 tuto=house/Facile active=true step=gap done=22 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Mesure 1/2 · Caisse » 1.57:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 127 42
+#1 DOIGT top_projects « Mon projet 1 »
+#2 ROUTE dialogue:projects | MODE simple | EMPREINTE f0bf9b144d | project=p-9afe86a7 tuto=house/Facile active=true step=gap done=22 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 294 243
+#2 DOIGT project_new «   Nouveau morceau : style, démo ou vide »
+#3 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-9afe86a7 tuto=house/Facile active=true step=gap done=22 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 294 885
+#3 DOIGT start_empty « Je pars de zéro »
+#4 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 30d46fd3eb | project=p-966199cc no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « 3 » 4.29:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « 4 » 4.29:1 (needs 4.5:1, 12 sp)
+#4 > touche 543 114
+#4 DOIGT help_labels_button « Étiqueter l'écran »
+#4 AIDE help_labels_button
+#5 ROUTE help_labels | MODE simple | EMPREINTE c454a3c2f3 | project=p-966199cc no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo » over « Fichier ou vidéo » (7 x 13 dp)
+#5 LAYOUT OVERLAP « Mes projets » over « Le Guide : où en est ton morceau » (76 x 17 dp)
+#5 LAYOUT OVERLAP « Jouer cette partie » over « Plus de choix » (85 x 18 dp)
+#5 LAYOUT OVERLAP « Jouer cette partie » over « Le Guide : où en est ton morceau » (113 x 18 dp)
+#5 LAYOUT OVERLAP « Plus de choix » over « Le Guide : où en est ton morceau » (85 x 18 dp)
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Changer de partie » (43 x 18 dp)
+#5 LAYOUT OVERLAP « Parties et pistes » over the touchable « Annuler la dernière action » (56 x 18 dp)
+#5 LAYOUT OVERLAP « Parties et pistes » over the touchable « Rétablir » (22 x 18 dp)
+#5 LAYOUT OVERLAP « Jouer, enregistrer » over the touchable « Rétablir » (6 x 18 dp)
+#5 LAYOUT OVERLAP « Jouer, enregistrer » over the touchable « Jouer le morceau Jouer le morceau » (67 x 18 dp)
+#5 LAYOUT OVERLAP « Jouer, enregistrer » over the touchable « Tempo : 120 battements par minute Change » (14 x 18 dp)
+#5 LAYOUT OVERLAP « Fichier ou vidéo » over the touchable « Tempo : 120 battements par minute Change » (21 x 18 dp)
+#5 LAYOUT OVERLAP « Fichier ou vidéo » over the touchable « Plus de choix » (56 x 18 dp)
+#5 LAYOUT OVERLAP « Masquer les étiquettes » over the touchable « Ouvrir le Guide replié » (139 x 9 dp)
+#5 LAYOUT OVERLAP « 🐞 Signaler un bug » over the touchable « Ouvrir le Guide replié » (108 x 9 dp)
+#5 > touche 169 968
+#5 DOIGT help_labels_hide « Masquer les étiquettes »
+#5 AIDE help_labels_hide
+#6 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 30d46fd3eb | project=p-966199cc no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 543 42
+#6 DOIGT top_more
+#7 ROUTE plus | MODE simple | EMPREINTE 088f718fb8 | project=p-966199cc no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 294 597
+#7 DOIGT tool_Aide « Aide »
+#8 ROUTE help_page | MODE simple | EMPREINTE 47fdc59b93 | project=p-966199cc no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 294 360
+#8 DOIGT help_tuto « J'apprends »
+#8 AIDE help_tuto
+#9 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e62ae25714 | project=p-966199cc no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Ton dernier choix » 3.48:1 (needs 4.5:1, 13 sp)
+#9 > touche 294 915
+#9 DOIGT mode_card_simple « Simple »
+#10 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE c127b1ae50 | project=p-966199cc no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 294 1201
+#10 DOIGT tuto_style_house « House »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 52720054dd | project=p-6692f8c0 tuto=house/Facile active=true step=ref done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 2 » 4.07:1 (needs 4.5:1, 12 sp)
+#11 > touche 444 573
+#11 DOIGT tuto_chapters « Chapitres »
+#12 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 391a434940 | project=p-6692f8c0 tuto=house/Facile active=true step=ref done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#12 > glisse 294 850 294 400
+#12 DOIGT tuto_chapter_8 « 9 »
+#13 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 9aa02a0f2a | project=p-6692f8c0 tuto=house/Facile active=true step=ref done=0 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « 13 » 3.63:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « 14 » 3.63:1 (needs 4.5:1, 16 sp)
+#13 LAYOUT CONTRAST « 15 » 3.63:1 (needs 4.5:1, 16 sp)
+#13 > touche 294 711
+#13 DOIGT tuto_chapter_11 « 12 »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 718ffd2999 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « Caisse » 1.48:1 (needs 4.5:1, 13 sp)
+#14 > touche 294 741
+#14 DOIGT tuto_text_more « Lire la suite »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE db84762c7c | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 813
+#15 DOIGT tuto_do «   Je le fais »
+#16 ROUTE tuto_spot_ring | MODE simple | EMPREINTE d64e1160c2 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 82 180
+#16 DOIGT rien
+#17 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE d23ebf324e | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#17 SON Son : rien ne joue.
+#17 > retour
+#17 RETOUR
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ed64cc5b0 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. » ellipsized (« … »)
+#18 LAYOUT CONTRAST « Caisse » 1.28:1 (needs 4.5:1, 13 sp)
+#18 > touche 444 879
+#18 DOIGT tuto_chapters « Chapitres »
+#19 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 391a434940 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#19 > glisse 294 850 294 400
+#19 DOIGT tuto_chapter_8 « 9 »
+#20 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 9aa02a0f2a | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 711
+#20 DOIGT tuto_chapter_11 « 12 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ed64cc5b0 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 531 879
+#21 DOIGT tuto_fold
+#22 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 718ffd2999 | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 493 978
+#22 DOIGT tuto_next « Suivant  »
+#23 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d2e66edfdc | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 493 978
+#23 DOIGT tuto_next « Suivant  »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 656b18e7a6 | project=p-6692f8c0 tuto=house/Facile active=true step=crash done=0 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « Encore 1 case en pointillé ici » 2.36:1 (needs 3.0:1, 14 sp)
+#24 > touche 294 747
+#24 DOIGT tuto_text_more « Lire la suite »
+#25 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 41f4574677 | project=p-6692f8c0 tuto=house/Facile active=true step=crash done=0 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 70 279
+#25 DOIGT step_0 « Pas 1 »
+#26 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 681bcd5f8b | project=p-6692f8c0 tuto=house/Facile active=true step=crash done=0 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « Cymbale » 1.48:1 (needs 4.5:1, 13 sp)
+#26 > touche 107 978
+#26 DOIGT tuto_prev «  Précédent »
+#27 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f8a3a4374f | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=0 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 813
+#27 DOIGT tuto_need «   Créer la partie « Montée » »
+#28 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9ecdfdf5ee | project=p-6692f8c0 tuto=house/Facile active=true step=gap done=2 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « Mesure 1/4 · Caisse » 1.46:1 (needs 4.5:1, 13 sp)
+#28 > touche 294 888
+#28 DOIGT tuto_next_big « Étape suivante   »
+#29 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f87c66efc1 | project=p-6692f8c0 tuto=house/Facile active=true step=crash done=2 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Mesure 1/4 · Cymbale » 1.28:1 (needs 4.5:1, 13 sp)
+#29 LAYOUT CONTRAST « 2 » 1.70:1 (needs 4.5:1, 12 sp)
+#29 > touche 294 813
+#29 DOIGT tuto_need «   Créer la partie « Drop » »
+#30 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 07bf81f154 | project=p-6692f8c0 tuto=house/Facile active=true step=crash done=3 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Cymbale » 1.28:1 (needs 4.5:1, 13 sp)
+#30 LAYOUT CONTRAST « 2 » 1.72:1 (needs 4.5:1, 12 sp)
+#30 > touche 294 888
+#30 DOIGT tuto_next_big « Étape suivante   »
+#31 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8c5a5f4318 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « Maracas » 1.46:1 (needs 4.5:1, 13 sp)
+#31 > touche 294 813
+#31 DOIGT tuto_need «   Créer la partie « Drop 2 » »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13d8f2701f | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « À toi : dans la partie « Drop 2 », sur le pad « Maracas », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche. » ellipsized (« … »)
+#32 LAYOUT CONTRAST « Mesure » 1.41:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 3 » 1.26:1 (needs 4.5:1, 14 sp)
+#32 > touche 70 464
+#32 DOIGT step_0 « Pas 1 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 94b6a9e358 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 325 464
+#33 DOIGT step_4 « Pas 5 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c1cb6f9b09 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 70 543
+#34 DOIGT step_8 « Pas 9 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2bbce80015 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 325 543
+#35 DOIGT step_12 « Pas 13 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0f9a0eba4 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 531 879
+#36 DOIGT tuto_fold
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a798b1af50 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Mesure » 1.75:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 1 » 1.85:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 2 » 1.55:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 3 » 1.51:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 4 » 1.39:1 (needs 4.5:1, 14 sp)
+#37 > touche 493 978
+#37 DOIGT tuto_next « Suivant  »
+#38 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 974733f460 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 433 897
+#38 DOIGT tuto_show «  Montre-moi »
+#39 ROUTE tuto_finger | MODE simple | EMPREINTE db656f2704 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#39 SON Son : rien ne joue.
+#39 > attends 8
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0f9a0eba4 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 531 879
+#40 DOIGT tuto_fold
+#41 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 974733f460 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 531 342
+#41 DOIGT tuto_fold
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0f9a0eba4 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 325 544
+#42 DOIGT step_12 « Pas 13 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2bbce80015 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 325 544
+#43 DOIGT step_12 « Pas 13 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0f9a0eba4 | project=p-6692f8c0 tuto=house/Facile active=true step=variation done=3 playing=false
+#44 SON Son : rien ne joue.
+#44 > fin
+#44 FIN : fin

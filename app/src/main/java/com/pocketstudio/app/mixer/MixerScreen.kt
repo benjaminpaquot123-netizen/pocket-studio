@@ -31,7 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.ExportFormat
@@ -230,14 +232,27 @@ fun MixerScreen(
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
     val lyingDown = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
-    val faderHeight = consoleFaderHeight(maxHeight, lyingDown && maxWidth > maxHeight)
+    val lying = lyingDown && maxWidth > maxHeight
+    // Tour 7 (D3): upright, the console's faders give way so that « Voir les courbes » and « Ce qui joue » stand
+    // whole on the first screen, above the Guide's bar (the song's stems, in a remix, stay below as before).
+    val paneWidth = if (com.pocketstudio.ui.twoPanes(maxWidth, maxHeight)) (maxWidth - 12.dp) / 2 - 12.dp else maxWidth - 24.dp
+    FitFaders(
+        fit = !lying && songTracks == null && maxHeight != Dp.Infinity, paneWidth = paneWidth, paneHeight = maxHeight - 24.dp,
+        fallback = consoleFaderHeight(maxHeight, lying),
+        probe = { f, hint ->
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Console(strips, channels, meters, actions, lanesOn, openMoves = {}, openCurves = {}, faderHeight = f, hint = hint)
+                AutomationEntry(automation.lanes.size, show = {}, overview = {})
+            }
+        },
+    ) { faderHeight, hint ->
     com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = {
         // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
         Console(
             strips, channels, meters, actions, lanesOn,
             openMoves = { ch -> overview(ch) },
             openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
-            faderHeight = faderHeight,
+            faderHeight = faderHeight, hint = hint,
         )
         songTracks?.invoke()
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
@@ -271,7 +286,45 @@ fun MixerScreen(
             target = TargetPick(target, styleLufs, freeLufs, styleName), stale = exportStale, stemSkips = stemSkips)
     })
     }
+    }
 }
+
+/**
+ * Tour 7 (D3): the faders' height that lets the console and the automation entry ([probe], measured unseen at
+ * [paneWidth]) fit in [paneHeight]: the full travel with its hint when it fits, else lower without the hint
+ * (never under 80 dp); when even that cannot fit, or without [fit], [fallback] (the page scrolls as before).
+ * Only the pane's size decides, never what is drawn, so the height cannot swing back and forth.
+ */
+@Composable
+private fun FitFaders(
+    fit: Boolean, paneWidth: Dp, paneHeight: Dp, fallback: Dp,
+    probe: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
+    content: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
+) {
+    if (!fit) {
+        content(fallback, fallback >= CONSOLE_FADER_H)
+        return
+    }
+    androidx.compose.ui.layout.SubcomposeLayout { constraints ->
+        val w = paneWidth.roundToPx().coerceAtLeast(1)
+        val probeAt = androidx.compose.ui.unit.Constraints(minWidth = w, maxWidth = w)
+        fun high(slot: String, f: Dp, hint: Boolean): Int = subcompose(slot) {
+            Box(Modifier.clearAndSetSemantics {}) { probe(f, hint) }
+        }.maxOfOrNull { it.measure(probeAt).height } ?: 0
+        val room = paneHeight.roundToPx()
+        val low = high("low", FIT_FADER_MIN, false)
+        val (f, hint) = when {
+            high("full", CONSOLE_FADER_H, true) <= room -> CONSOLE_FADER_H to true
+            low <= room -> (FIT_FADER_MIN + (room - low).toDp()).coerceAtMost(CONSOLE_FADER_H) to false
+            else -> fallback to (fallback >= CONSOLE_FADER_H)
+        }
+        val shown = subcompose("shown") { content(f, hint) }.map { it.measure(constraints) }
+        layout(constraints.maxWidth, constraints.maxHeight) { shown.forEach { it.place(0, 0) } }
+    }
+}
+
+/** The lowest fader [FitFaders] gives, as lying down (a finger's reach). */
+private val FIT_FADER_MIN = 80.dp
 
 /** Automation near the top of the mixer: how many curves move, a touch to them, a touch to « Ce qui joue ». */
 @Composable

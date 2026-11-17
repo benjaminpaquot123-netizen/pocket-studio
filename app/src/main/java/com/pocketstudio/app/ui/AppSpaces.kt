@@ -316,6 +316,13 @@ internal fun PlusSpace(
                 // [FoldColumn] lets a row stand whole above the fold or start below it, never across it.
                 val perRow = if (tiles) plusTilesPerRow(minOf(this@BoxWithConstraints.maxWidth, 640.dp), androidx.compose.ui.platform.LocalDensity.current.fontScale) else 1
                 val pick: (PlusEntry) -> Unit = { e -> e.page?.let(open) ?: e.open?.invoke() }
+                // Tour 7, D3: when the rows of full tiles would not all stand above the fold (Mode simple, 360 × 780: the
+                // Recette alone on a fifth row, pushed under it, one scroll more), the tiles go compact (a smaller icon,
+                // tighter padding) so that every row stands whole above the Guide's bar.
+                val fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale
+                val rowCount = (entries.size + perRow - 1) / perRow
+                val fullHeight = (if (leave != null) 48f else 0f) + rowCount * (PLUS_TILE_CHROME_DP + PLUS_TILE_TEXT_DP * fontScale) + 6f * (rowCount - 1)
+                val compact = tiles && perRow > 1 && fullHeight > (roomHeight - 24.dp).value
                 if (tiles) {
                     Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
                         FoldColumn(fold = roomHeight - 12.dp, minHeight = roomHeight - 24.dp, gap = 6.dp) {
@@ -325,7 +332,7 @@ internal fun PlusSpace(
                             if (perRow > 1) {
                                 entries.chunked(perRow).forEach { row ->
                                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                        row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight()) { pick(e) } }
+                                        row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight(), compact) { pick(e) } }
                                         repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
                                     }
                                 }
@@ -373,12 +380,13 @@ private fun FoldColumn(fold: androidx.compose.ui.unit.Dp, minHeight: androidx.co
         val rows = ps.drop(1)
         val rowsHeight = rows.sumOf { it.height } + gapPx * (rows.size - 1).coerceAtLeast(0)
         val head = ps.firstOrNull()?.height ?: 0
-        val end = if (head + gapPx + rowsHeight <= minPx) {
+        // As the old SpaceBetween column: no gap owed under the way back when the rows fill the page.
+        val end = if (head + rowsHeight <= minPx) {
             var y = minPx - rowsHeight
             for (i in 1 until ps.size) { ys[i] = y; y += ps[i].height + gapPx }
             minPx
         } else {
-            var y = head + if (head > 0) gapPx else 0
+            var y = head
             for (i in 1 until ps.size) {
                 if (y < foldPx && y + ps[i].height > foldPx) y = foldPx + gapPx
                 ys[i] = y
@@ -391,6 +399,10 @@ private fun FoldColumn(fold: androidx.compose.ui.unit.Dp, minHeight: androidx.co
 }
 
 private const val PLUS_TILES_PER_ROW = 3
+
+/** A full Plus tile's height without its title (padding, icon, spacing), and its title's two lines at the font's size, in dp. */
+private const val PLUS_TILE_CHROME_DP = 58f
+private const val PLUS_TILE_TEXT_DP = 36f
 
 /** The room a tile's title needs at the least, in dp at the font's own size (« Bibliothèque » on two lines at most). */
 private const val PLUS_TILE_TITLE_MIN_DP = 100f
@@ -407,17 +419,17 @@ internal fun plusTilesPerRow(width: androidx.compose.ui.unit.Dp, fontScale: Floa
 
 /** An entry of the Plus page as a tile: its icon over its title (its line said to TalkBack as what a touch does). */
 @Composable
-private fun PlusTile(e: PlusEntry, modifier: Modifier, onClick: () -> Unit) {
+private fun PlusTile(e: PlusEntry, modifier: Modifier, compact: Boolean = false, onClick: () -> Unit) {
     Column(
-        modifier.heightIn(min = 88.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
+        modifier.heightIn(min = if (compact) 72.dp else 88.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
             .border(1.dp, Neon.Outline, RoundedCornerShape(14.dp))
             .clickable(role = Role.Button, onClickLabel = e.line, onClick = onClick)
-            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .padding(horizontal = 4.dp, vertical = if (compact) 5.dp else 8.dp)
             .testTag(if (e.page != null) "tool_${e.page.name}" else "plus_${e.key}"),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 6.dp, Alignment.CenterVertically),
     ) {
-        Box(Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(if (compact) 30.dp else 36.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Cyan.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
             Icon(e.icon, contentDescription = null, tint = Neon.Cyan)
         }
         // Its words whole, a little smaller before anything is cut (« Geluidenbibliotheek »).

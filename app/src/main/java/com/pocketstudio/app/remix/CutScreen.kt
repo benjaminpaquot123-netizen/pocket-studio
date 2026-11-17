@@ -213,13 +213,26 @@ fun CutScreen(
             // ~492 dp the tools stay in view without a scroll and the curve never falls under 120 dp (review of remix2).
             // Tour 7, lot 2 D2 (2c #33): at a normal font the curve also takes the room left under the chips (~144 dp on the
             // seat's 492 dp), so its bottom, where the « Fin » bar is grabbed, comes down into a left thumb's reach.
-            val curveHeight = (maxHeight - if (bigText) 380.dp else 348.dp).coerceIn(120.dp, 180.dp)
+            // Tour 7, lot 2 D3 (2c #9): the instruction (two lines) takes the place of « Pince pour zoomer » above the curve,
+            // 20 dp more, taken from the curve so the chips stay where the left thumb found them.
+            val curveHeight = (maxHeight - if (bigText) 380.dp else 368.dp).coerceIn(120.dp, 180.dp)
+            // Tour 7, lot 2 D3: in « Un bout » at a normal font the instruction is read on top, out of the send bar below.
+            val hintOnTop = scrollsAll && !bigText
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
                 fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = androidx.compose.foundation.layout.Box(m) {
                   val scroll = rememberScrollState()
                   val scrolls = tight || scrollsAll
+                  // Tour 7, lot 2 D3 (2c #16): a message (« Listo… ») grows the send bar at the scroll's end; the column
+                  // follows it down, so the message and the four buttons stay in view instead of going under the bar.
+                  val said = work.value.busy ?: note ?: work.value.message
+                  if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
+                      if (said != null) {
+                          androidx.compose.runtime.withFrameNanos { }
+                          scroll.animateScrollTo(scroll.maxValue)
+                      }
+                  }
                   Column(if (scrolls) Modifier.fillMaxSize().verticalScroll(scroll) else Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     // The stem chips stay on top in « Phrases » (over the pieces' list that scrolls below) and in « Un bout »
                     // when the screen scrolls (a large font): the whole column is reached by scrolling, so they read first.
@@ -227,7 +240,8 @@ fun CutScreen(
                     // Tour 7, lot 2 D2 (2c #20): in « Phrases » at a normal font they went down to the fixed menus (below).
                     if (!wide && bigText) StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (hintOnTop) SpanHint()
+                    else Row(verticalAlignment = Alignment.CenterVertically) {
                         // « Un bout » numbers its bars on the curve's ruler: no « Mes. 3 à 8 » above it.
                         if (model.single) Spacer(Modifier.weight(1f))
                         else SectionLabel(shownPart(model, view), modifier = Modifier.weight(1f).testTag("cut_part"))
@@ -278,7 +292,7 @@ fun CutScreen(
                     }
                 } else if (scrollsAll) {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                        SendBar(model, actions, work, note, Modifier.padding(vertical = 12.dp)) { note = null }
+                        SendBar(model, actions, work, note, Modifier.padding(vertical = 12.dp), hint = !hintOnTop) { note = null }
                     }
                 } else {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp))
@@ -644,7 +658,7 @@ private fun PieceTile(i: Int, frames: Long, loop: Boolean, ticked: Boolean, hear
 
 /** At the bottom: how many pieces are ticked and how long, then where they go; what was done, or why not. */
 @Composable
-private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, outer: Modifier = Modifier.padding(12.dp), dismissNote: () -> Unit) {
+private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, outer: Modifier = Modifier.padding(12.dp), hint: Boolean = true, dismissNote: () -> Unit) {
     val sels = model.toSend()
     val busy = work.value.busy
     val message = work.value.message
@@ -660,11 +674,11 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
                 if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text("OK") }
             }
         }
-        Text(
-            if (model.single) tr("Place Début et Fin, puis mets ce bout sur un pad ou une piste.")
-            else if (sels.isEmpty()) tr("Coche des bouts pour les mettre sur un pad ou une piste.")
+        if (model.single && hint) SpanHint()
+        else if (!model.single) Text(
+            if (sels.isEmpty()) tr("Coche des bouts pour les mettre sur un pad ou une piste.")
             else trCount(sels.size, "1 bout choisi · %2\$s au total", "%1\$d bouts choisis · %2\$s au total", sels.size, boardClock(model.chosenFrames).substringBefore('.')),
-            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty() || model.single) Neon.TextSecondary else Neon.Cyan,
+            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty()) Neon.TextSecondary else Neon.Cyan,
             modifier = Modifier.testTag("cut_chosen"),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -677,6 +691,13 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
         }
     }
 }
+
+/** « Un bout »'s instruction: on top of the curve at a normal font (tour 7, lot 2 D3), in the send bar otherwise. */
+@Composable
+private fun SpanHint() = Text(
+    tr("Place Début et Fin, puis mets ce bout sur un pad ou une piste."),
+    style = MaterialTheme.typography.titleSmall, color = Neon.TextSecondary, modifier = Modifier.testTag("cut_chosen"),
+)
 
 @Composable
 private fun androidx.compose.foundation.layout.RowScope.Send(icon: ImageVector, label: String, tag: String, enabled: Boolean, main: Boolean = false, onClick: () -> Unit) {

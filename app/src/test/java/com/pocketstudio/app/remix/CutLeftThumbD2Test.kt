@@ -130,9 +130,15 @@ class CutLeftThumbD2Test : HumanTester("decoupe2") {
     fun d3b_sendButtonsStayAfterMessage() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         openCut()
-        tap("cut_to_pads")
+        // The seat scrolls the column up (from the chips, under the curve) to the buttons, as the fade at the bottom says.
+        val d = app.resources.displayMetrics.density
+        act("glisse ${196 * d} ${600 * d} ${196 * d} ${300 * d}")
+        act("attends 1")
+        assertTrue("« En los pads » not whole after the scroll (${where(*all)})", drawnEntire("cut_to_pads"))
+        val did = tap("cut_to_pads")
         repeat(10) { act("attends 1") }
-        assertTrue("no message after « En los pads » (${where(*all, "cut_message")})", node("cut_message") != null)
+        assertTrue("no message after « En los pads » ($did; ${where(*all, "cut_message")}):\n" + screenLines().joinToString("\n"),
+            node("cut_message") != null)
         for (t in listOf("cut_message", "cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track"))
             assertTrue("$t cut after the message (${where(*all, "cut_message", "cut_to_live")})", drawnEntire(t))
     }

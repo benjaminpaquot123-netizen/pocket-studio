@@ -18,6 +18,8 @@ import java.io.File
 /**
  * Tour 7, lot 2 D2 (seat lotB c, #15 #20 #33): « en es, main gauche, phone à 100 %, Mode Simple, depuis la découpe, je
  * touche les puces « Frases » et la poignée « Fin » sans quitter la zone du pouce gauche ». Walked as the seat did.
+ * Tour 7 D3, its Remix part (same seat, #9 #16): the cut screen's instruction « Coloca Inicio y Fin… » whole above the
+ * Guía bar, and the « En los pads… » buttons kept in view when the message after a send comes.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -51,6 +53,14 @@ class CutLeftThumbD2Test : HumanTester("decoupe2") {
             val b = BenchWindows.drawnBounds(n, m)
             "$t: ${(b.left / m.density).toInt()},${(b.top / m.density).toInt()}-${(b.right / m.density).toInt()},${(b.bottom / m.density).toInt()}"
         }
+    }
+
+    /** The node tagged [tag] is drawn with nothing of it cut (the bench's [shownWhole] lets 10 % go: a line of text is less). */
+    private fun drawnEntire(tag: String): Boolean {
+        val n = node(tag) ?: return false
+        val m = app.resources.displayMetrics
+        val b = BenchWindows.drawnBounds(n, m)
+        return shownWhole(n) && b.height >= n.size.height - 1f && b.width >= n.size.width - 1f
     }
 
     private val all = arrayOf("cut_stem_3", "cut_stem_0", "cut_stem_1", "cut_stem_2", "cut_wave", "cut_span_end", "cut_auto", "cut_span_play", "cut_to_pads", "cut_screen", "cut_overview", "cut_close", "cut_send", "cut_more", "cut_start")
@@ -100,5 +110,30 @@ class CutLeftThumbD2Test : HumanTester("decoupe2") {
         repeat(3) { act("attends 1") }
         val after = BenchWindows.drawnBounds(node("cut_span_end")!!, m).left
         assertTrue("the « Fin » bar did not move ($before -> $after; ${where(*all)})", after < before - 20 * m.density)
+    }
+
+    /** D3, #9: on arrival (« Un trozo »), « Coloca Inicio y Fin, y luego pon este trozo en un pad o una pista. » whole. */
+    @Test
+    fun d3a_spanInstructionWholeOnArrival() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        openCut()
+        val hint = compose.onAllNodes(androidx.compose.ui.test.hasText("Coloca Inicio y Fin", substring = true)).fetchSemanticsNodes().firstOrNull()
+        assertTrue("no « Coloca Inicio y Fin » on:\n" + screenLines().joinToString("\n"), hint != null)
+        val m = app.resources.displayMetrics
+        val b = BenchWindows.drawnBounds(hint!!, m)
+        assertTrue("« Coloca Inicio y Fin » cut (${where(*all)}; hint ${b.top / m.density}-${b.bottom / m.density} of ${hint.size.height / m.density} dp)",
+            shownWhole(hint) && b.height >= hint.size.height - 1f)
+    }
+
+    /** D3, #16: after « En los pads », the message does not push the four buttons out of view. */
+    @Test
+    fun d3b_sendButtonsStayAfterMessage() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        openCut()
+        tap("cut_to_pads")
+        repeat(10) { act("attends 1") }
+        assertTrue("no message after « En los pads » (${where(*all, "cut_message")})", node("cut_message") != null)
+        for (t in listOf("cut_message", "cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track"))
+            assertTrue("$t cut after the message (${where(*all, "cut_message", "cut_to_live")})", drawnEntire(t))
     }
 }

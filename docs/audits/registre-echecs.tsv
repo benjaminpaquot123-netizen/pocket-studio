@@ -9,3 +9,4 @@ date	chantier	lot	issue	defauts	source
 2026-11-17	tuto	tuto2	echec	D1,D2,D3,D4,montee-vide,cible-autre-partie	docs/audits/ultra/sieges/tour-7/controle/tuto2/verdict.md
 2026-11-17	tuto	fable	echec	D3,montee-vide,cible-autre-partie	docs/audits/ultra/sieges/tour-7/controle/fable/verdict.md
 2026-11-17	tuto	p8	echec	a-V1,c-V3	docs/audits/ultra/sieges/tour-7/controle/p8/verdict.md (branche eq/tour-7-controle-p8)
+2026-11-17	tuto	p8b	echec	a-V1	docs/audits/ultra/sieges/tour-7/controle/p8b/verdict.md (branche eq/tour-7-controle-p8b)

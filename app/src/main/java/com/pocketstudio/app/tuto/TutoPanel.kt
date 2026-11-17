@@ -374,6 +374,10 @@ fun TutoKitCard(
     // Round 3, n° 28: inside the panel, never in its place. Tour 7 D3 end: pinned under the words, one row, nothing more
     // (the long sentence pushed its buttons below « Lire la suite »).
     if (pinned) {
+        // Fresh review of « fable-repar » (A): its words grow up to 130 % only (as « Chapitres » does): at 200 % the row
+        // was three lines high and took the room of the step's instruction.
+        val by = minOf(1f, 1.3f / LocalDensity.current.fontScale.coerceAtLeast(0.1f))
+        val compact = MaterialTheme.typography.labelLarge.let { it.copy(fontSize = it.fontSize * by, lineHeight = it.lineHeight * by) }
         Column(
             modifier.fillMaxWidth().padding(top = 4.dp).clip(shape).background(Neon.Amber.copy(alpha = 0.08f)).border(1.dp, Neon.Amber, shape)
                 .padding(horizontal = 6.dp, vertical = 4.dp).testTag("tuto_kit"),
@@ -390,12 +394,12 @@ fun TutoKitCard(
                         onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                         modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_kit_download"),
-                    ) { Text(label, textAlign = TextAlign.Center, style = MaterialTheme.typography.labelLarge) }
+                    ) { Text(label, textAlign = TextAlign.Center, style = compact) }
                 } else Spacer(Modifier.weight(1f))
                 TextButton(
                     onClick = later, contentPadding = PaddingValues(horizontal = 6.dp),
                     modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_kit_later"),
-                ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center) }
+                ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center, style = compact) }
             }
         }
         return
@@ -509,6 +513,8 @@ fun TutoPanel(
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
+    // How many times the height held was taken again for the words' least room ([WordsRoom]).
+    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
@@ -613,9 +619,16 @@ fun TutoPanel(
             // A phone on its side leaves the words a line or two: « Pourquoi ? » goes back in them there (« Lire la suite »
             // whole under them, not squeezed); on a screen high enough it is pinned under them.
             val pinned = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= WHY_PINNED_SCREEN
-            Column((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // Fresh review of « fable-repar » (A): at 200 % the kit offer, « Pourquoi ? » and « Lire la suite » took the
+            // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
+            // room grows by what is missing, and a height held too low for it is taken again (twice at most).
+            val least = with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() }
+            WordsRoom(
+                if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
+                starved = { if (regrown < 2) { regrown++; held = 0 } },
+            ) {
             Column(
-                Modifier.weight(1f, fill = false).wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
+                Modifier.wholeLines(words) { rows.values.flatten() }.verticalScroll(words)
                     .onGloballyPositioned { content[0] = it },
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
@@ -681,6 +694,33 @@ fun TutoPanel(
             if (lowRoom && readAll) LessWords { readAll = false }
             }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
+        }
+    }
+}
+
+/**
+ * The room of the step's words (the first child of [content]) over what is pinned under them (the others: the kit offer,
+ * « Pourquoi ? », « Lire la suite »), 6 dp apart. The pinned ones are measured first and whole; the words take what is
+ * left of [most] (of the height given, when [holding]), and never less than [least] px: the room grows past [most] by
+ * what is missing; when [holding], [starved] is told (the height held is too low).
+ */
+@Composable
+private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
+        val gap = 6.dp.roundToPx()
+        val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
+        val pinned = ms.drop(1).map { it.measure(wide) }
+        val fixed = pinned.sumOf { it.height + gap }
+        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), fixed + least))
+        if (holding && cap - fixed < least) starved()
+        val room = maxOf(cap - fixed, minOf(least, cap), 0)
+        val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
+        val height = ((words?.height ?: 0) + fixed).coerceIn(if (holding) c.minHeight else minOf(52.dp.roundToPx(), cap), maxOf(cap, c.minHeight))
+        val width = (listOfNotNull(words) + pinned).maxOfOrNull { it.width }?.coerceIn(c.minWidth, c.maxWidth) ?: c.minWidth
+        layout(width, height) {
+            var y = 0
+            words?.let { it.placeRelative(0, 0); y = it.height + gap }
+            for (q in pinned) { q.placeRelative(0, y); y += q.height + gap }
         }
     }
 }

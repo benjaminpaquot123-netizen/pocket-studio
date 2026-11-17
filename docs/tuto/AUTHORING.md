@@ -282,3 +282,23 @@ flock <lock> ./gradlew --max-workers=3 --no-configuration-cache :app:testDebugUn
 - **Swing par piste** : seulement le swing global.
 - **Accords enrichis** (m9, sus2) : la grille se donne en degrés, la couleur vient du style.
 - **Packs** : seule la batterie vient du pack du style ; les sons des pistes (basse, accords…) restent ceux du synthé.
+
+## 12. Un moment par consigne, et la place dans le panneau (tour 7, P6 et P7)
+
+Plan : `docs/audits/ultra/tour-7-plan-p6-p7.md` §§ 1 et 2.
+
+**Un moment par consigne (Facile).** À l'écran, le Facile ne montre qu'une chose à faire :
+- s'il manque une piste, une partie, des mesures…, le moteur propose son bouton (`TutoNeed`) et le panneau affiche seulement « À toi : touche « bouton ». » (clé déjà traduite dans la zone `listen`) ; le texte de l'étape revient une fois le bouton touché ;
+- sinon, le texte de l'étape, qui ne demande **qu'une série de gestes**.
+Donc un texte Facile :
+- ne nomme jamais un bouton du moteur (« Créer la piste », « Passer à », « Copier sur », « Créer la partie », « Nommer la partie », « Donner les durées conseillées », « Aller dans la partie », « Poser ce qui manque ») : `TutoMoments.ENGINE_BUTTONS` ;
+- ne demande pas deux séries de gestes (« touche…, puis monte… ») : coupe l'étape en deux, la première pièce garde l'ancien `id`, la suivante a le même `check` (une ancienne case cochée coche toujours son étape ; `TutoSplitKeepsIdsTest`) ;
+- « écoute », « regarde », « vérifie », « compare » ne comptent pas : ce sont des lectures, pas des gestes.
+Le Pro garde ses textes (`textPro`), les étapes Pro ne bougent pas (`tuto/pro-step-ids.txt`, figé).
+
+**Repères de longueur (français, une phrase de moment).** Environ 110 caractères au plus pour une étape qui touche la grille (état GRID : `lane`, `gap`, `fill`, `crash`, `velocity`, `triplet`, `offset`, `swing`, `changed:`), 170 pour les autres (état OPEN). Japonais et chinois : environ 55 caractères en GRID. Le test compte en vrai, langue par langue :
+- `TutoReadabilityBudgetTest` : chaque consigne Facile tient à 360 dp 100 % dans son état, à 360 dp 130 % ouvert et à 320 dp 100 % ouvert ; les cas d'avant sont figés dans `app/src/test/resources/tuto/readability-facile-exceptions.txt` (la liste ne fait que baisser) ; le Pro hors budget a un cliquet (`PRO_RATCHET`) ;
+- `TutoValidationMomentTest` : les étapes qui enfreignent encore « un moment » sont dans `tuto-moment-exceptions.txt` (la liste ne fait que baisser).
+Quand on raccourcit ou coupe une étape, on retire sa ligne des deux listes et on baisse le compteur figé.
+
+**Dans le panneau.** Les mots passent toujours en premier ; s'ils manquent de place, le panneau replie les exemples, puis la carte du kit, puis « Pourquoi ? », et seulement ensuite coupe les mots (« … » et « Lire la suite »), en gardant au moins une ligne entière. La hauteur d'une ligne se mesure sur un caractère de l'écriture de la langue (あ, 中, 한, अ, ع), pas sur « Ag ».

@@ -13,6 +13,7 @@ tests: com.pocketstudio.app.guide.Tour7GuideTargetInPanelTest com.pocketstudio.a
 - D3 Mix sur phone360 à 130 % : la console et les deux boutons ne tiennent pas ensemble au-dessus de la barre même à 80 dp ; la page défile.
 - D3, consigne de la Guía en espagnol [2c #9 et #16] : dans la découpe du Remix, fichiers du lot « découpe ».
 - D7 (U27) : conflit avec le Remix à une touche depuis Sons (décision du 2026-10-24, `HumanRemixJourneyTest`) et avec « Basse » visible sur 360 dp au Mixer (`KeyActionsGestureTest`) ; à trancher par le chef.
+- reste pour le tour 8 : t4-26 (Clavier, texte à 200 %, Mode Simple) : la barre du Guide y est déjà repliée ; ce sont l'en-tête du Clavier (pistes, partie, consigne, Clavier/Notes, Enregistrer, « Nouveau son ») qui poussent les touches sous le pli. Rejoué sur ce lot : divergé au pas 29 (« key_62 » hors de portée). Écran du Clavier, hors de ma zone.
 
 chemin: Mon morceau › Guide ouvert › « एक साउंड बदलो » (hi, phone360, 130 %, Simple) | test: Tour7GuideTargetInPanelTest#hindiSmallPhoneAt130
 chemin: Mon morceau › Guide ouvert › « Changer un son » (fr, phone, 100 %, Simple) | test: Tour7GuideTargetInPanelTest#frenchPhoneAt100
@@ -27,3 +28,4 @@ corrige: 3a-62 | gravité: moyen | rejeu: aucun, prouvé par Tour7PlusTilesAbove
 ## Rejeux
 
 t7-g1-guide-son : oracle tenu
+t4-26-prise-clavier : divergé au pas 29, reste pour le tour 8 (voir Laissé)

@@ -393,7 +393,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale : un seul coup, au moment où tout arrive.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale, encore vide : un coup au moment où tout arrive.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop",

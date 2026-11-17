@@ -519,7 +519,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », sur le pad « Cymbale », touche la toute première case : un seul coup, au moment où tout arrive.",
+          "text": "À toi : dans la partie « Drop », sur le pad « Cymbale », touche la toute première case, encore vide : un coup au moment où tout arrive.",
           "why": "Une cymbale au premier temps marque l'entrée ; ailleurs, elle se répéterait toutes les mesures.",
           "check": "crash",
           "spot": "rhythm.pattern",

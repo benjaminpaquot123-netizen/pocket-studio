@@ -380,7 +380,7 @@
         },
         {
           "id": "make_drop",
-          "text": "À toi : touche « Créer la partie « Drop » » : tout le Groove joue.",
+          "text": "À toi : touche « Créer la partie « Drop » » : une copie de tout le Groove.",
           "why": "La cymbale et le riff arrivent en même temps : c'est le moment le plus fort.",
           "check": "part:Drop:full",
           "spot": "song.parts",

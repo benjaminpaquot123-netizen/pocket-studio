@@ -302,5 +302,6 @@
   "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, comme sur les disques du style.": "轮到你：在混音里，把“旋律”音轨的“回声发送”调高：每个音都按节奏重复，就像这个风格的唱片那样。",
   "Écoute le Pré-refrain : le son des accords s'ouvre petit à petit, comme si on enlevait une couverture. C'est un filtre qui s'ouvre.": "听预副歌：和弦的声音一点点打开，就像掀开一床被子。这是滤波器在打开。",
   "La caisse claire et la mélodie devant, la basse qui pousse, les accords en fond comme un décor.": "军鼓和旋律在前，贝斯往前推，和弦在背景里像布景一样。",
-  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "轮到你：在“总输出”里，把“目标响度”设为“自动（按风格）”：synthwave 唱片的响度，又不压扁军鼓。"
+  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "轮到你：在“总输出”里，把“目标响度”设为“自动（按风格）”：synthwave 唱片的响度，又不压扁军鼓。",
+  "Dedans : %s.": "里面有：%s。"
 }

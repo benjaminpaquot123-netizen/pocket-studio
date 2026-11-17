@@ -302,5 +302,6 @@
   "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, comme sur les disques du style.": "Your turn: in Mix, raise “Echo send” on the “Melody” track: each note repeats in rhythm, like on the style's records.",
   "Écoute le Pré-refrain : le son des accords s'ouvre petit à petit, comme si on enlevait une couverture. C'est un filtre qui s'ouvre.": "Listen to the Pre-chorus: the chords' sound opens little by little, as if you were taking off a blanket. It's a filter opening.",
   "La caisse claire et la mélodie devant, la basse qui pousse, les accords en fond comme un décor.": "The snare and the melody in front, the pushing bass, the chords in the background like scenery.",
-  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "Your turn: in “Master output”, set “Target loudness” to “Auto (style)”: the loudness of synthwave records, without crushing the snare."
+  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "Your turn: in “Master output”, set “Target loudness” to “Auto (style)”: the loudness of synthwave records, without crushing the snare.",
+  "Dedans : %s.": "In it: %s."
 }

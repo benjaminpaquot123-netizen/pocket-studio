@@ -483,7 +483,9 @@ class TutoController(
         // Tour 6 (N26): « tout le Groove y joue » only for a part that keeps everything (the Intro 2 leaves out the ride and
         // the riff: a Groove without them yet made it say so all the same).
         val made = if (out.isEmpty() && "*" !in step.keep.split(',').map { it.trim() }) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
-        else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
+        // Tour 7 (L10, seat 1d #45): what « tout le Groove » is, said by name (a Groove of a kick alone read as a full one).
+        else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name) + " " +
+            com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
         else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")

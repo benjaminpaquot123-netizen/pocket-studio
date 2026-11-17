@@ -302,5 +302,6 @@
   "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, comme sur les disques du style.": "직접 해 보세요: 믹스에서 “멜로디” 트랙의 “에코 센드”를 올리세요. 이 스타일의 음반처럼 노트마다 리듬에 맞춰 되풀이돼요.",
   "Écoute le Pré-refrain : le son des accords s'ouvre petit à petit, comme si on enlevait une couverture. C'est un filtre qui s'ouvre.": "프리코러스를 들어 보세요: 이불을 걷듯 코드 소리가 조금씩 열려요. 필터가 열리는 거예요.",
   "La caisse claire et la mélodie devant, la basse qui pousse, les accords en fond comme un décor.": "스네어와 멜로디는 앞에, 베이스는 밀어 주고, 코드는 무대 배경처럼 뒤에.",
-  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "직접 해 보세요: “마스터 출력”에서 “목표 음량”을 “자동 (스타일)”로 맞추세요. 스네어를 뭉개지 않는 신스웨이브 음반의 음량이에요."
+  "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des disques de synthwave, sans écraser la caisse claire.": "직접 해 보세요: “마스터 출력”에서 “목표 음량”을 “자동 (스타일)”로 맞추세요. 스네어를 뭉개지 않는 신스웨이브 음반의 음량이에요.",
+  "Dedans : %s.": "들어 있는 것: %s."
 }

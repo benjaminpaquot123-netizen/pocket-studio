@@ -70,6 +70,10 @@ object TutoValidation {
             }
         }.toSet()
         fun madeOrEnding(label: String) = label in made || (label in TutoTarget.ENDINGS && "Intro" in made)
+        // Tour 7, P7: one moment per Facile consigne (the engine's button or one series), but for the known exceptions.
+        for (s in course.chaptersFor(TutoLevel.Facile).flatMap { it.steps }) for ((kind, what) in TutoMoments.problems(s.textFor(TutoLevel.Facile))) {
+            if ("${course.style}/${s.id} $kind" !in TutoMoments.EXCEPTIONS) bad("${s.id}: Facile $kind: $what (one moment per consigne: docs/tuto/AUTHORING.md)")
+        }
         for (s in steps) {
             val id = s.id
             if (s.text.isBlank()) bad("$id: no text")

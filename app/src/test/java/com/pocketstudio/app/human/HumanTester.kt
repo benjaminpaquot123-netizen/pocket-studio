@@ -845,6 +845,10 @@ abstract class HumanTester(private val seat: String) {
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")
                     waitFor("le chapitre $chapter") { centerOf("tuto_chapter_list") == null }
+                    // Tour 7, control tuto2 (seat c): the seat never starts on another chapter than the one asked for.
+                    val steps = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level)?.getOrNull(chapter - 1)?.steps?.map { it.id }.orEmpty()
+                    val at = PrefsTutoStore(app).load((lastVm ?: v).projectId)?.current
+                    if (at !in steps) error("amenée $name : le tuto est à « $at », pas au chapitre $chapter")
                 }
             }
             name == AMENEE_SONG -> {
@@ -894,13 +898,13 @@ abstract class HumanTester(private val seat: String) {
         // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does; the
         // swipes below (up to 8 « glisse » + « attends 1 », 22 to 26 s of the bench's clock) are for one cut or off the screen.
         if (shownWhole(tag)) return first
-        if (!inMiddle(first)) {
-            runCatching { taggedNodes(tag)[0].performScrollTo() }
-            play("attends 0.5")
-        }
+        // Tour 7, control tuto2 (seat c): a row cut by its list's edge has its middle in the screen's middle part, outside
+        // what is drawn of it (the list's next control there: « Recommencer le tuto » under « Chapitres »' list). It is
+        // scrolled into view whatever its place, and a middle outside its drawn part is never touched.
+        if (runCatching { taggedNodes(tag)[0].performScrollTo() }.isSuccess) play("attends 0.5")
         repeat(8) {
             val at = centerOf(tag) ?: return null
-            if (inMiddle(at)) return at
+            if (inMiddle(at) && drawnAt(tag, at)) return at
             val x = at.first.coerceIn(10f, app.resources.displayMetrics.widthPixels - 10f)
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
             play("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
@@ -910,6 +914,12 @@ abstract class HumanTester(private val seat: String) {
     }
 
     private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
+
+    /** [at] (the middle of the node tagged [tag]) is in what is drawn of it (not under its scrolling parent's edge). */
+    private fun drawnAt(tag: String, at: Pair<Float, Float>): Boolean = runCatching {
+        val n = taggedNodes(tag).fetchSemanticsNodes().first()
+        BenchWindows.drawnBounds(n, app.resources.displayMetrics).contains(androidx.compose.ui.geometry.Offset(at.first, at.second))
+    }.getOrDefault(true)
 
     /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
     private fun shownWhole(tag: String): Boolean =

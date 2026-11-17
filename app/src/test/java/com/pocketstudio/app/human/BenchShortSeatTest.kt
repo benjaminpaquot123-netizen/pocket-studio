@@ -98,6 +98,8 @@ class BenchShortSeatTest {
         assertEquals("mode_card_simple", SeatOptions.reaimTag("mode_card_simple « Simples »", "rien (texte « Como você quer ver »)"))
         assertEquals("cut_to_pads", SeatOptions.reaimTag("dans:cut_to_pads « Nos pads »", "rien"))
         assertEquals("help_x", SeatOptions.reaimTag("désactivé help_x « ? »", "rien"))
+        // ScreenText.under's order: « désactivé » first, then « dans: ».
+        assertEquals("cut_to_pads", SeatOptions.reaimTag("désactivé dans:cut_to_pads « Nos pads »", "rien"))
         assertNull("still under the finger", SeatOptions.reaimTag("mode_card_simple « Simples »", "mode_card_simple « Simples »"))
         assertNull("nothing aimed at", SeatOptions.reaimTag("rien (texte « a »)", "mode_card_pro « Pro »"))
         assertNull("no tag", SeatOptions.reaimTag("#12 « Ok »", "rien"))

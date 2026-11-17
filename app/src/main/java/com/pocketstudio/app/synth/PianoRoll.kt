@@ -247,12 +247,16 @@ fun PianoRoll(
     val singleNotes = hints.isNotEmpty() && byStart.all { it.size == 1 }
     val chordHints = hints.isNotEmpty() && byStart.all { it.size >= 2 }
     var chordSetFor by rememberSaveable { mutableStateOf<String?>(null) }
+    // Whether « Accords » is on by the tuto's hand: the user's own touch on the chip makes it theirs.
+    var chordByTuto by rememberSaveable { mutableStateOf(false) }
     val tutoOn = com.pocketstudio.app.tuto.TutoHints.active
     LaunchedEffect(tutoStep, singleNotes, chordHints, tutoOn) {
         // The tuto is over: « Accords » it turned on goes back off (the free piano starts with single notes).
-        if (!tutoOn) { if (chordSetFor != null) { chordMode = false; chordSetFor = null }; return@LaunchedEffect }
+        // Only that one: « Accords » the user turned on is theirs and stays (it went off behind their back).
+        if (!tutoOn) { if (chordByTuto) chordMode = false; chordByTuto = false; chordSetFor = null; return@LaunchedEffect }
         if ((singleNotes || chordHints) && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordSetFor != tutoStep) {
             chordMode = chordHints
+            chordByTuto = chordHints
             chordSetFor = tutoStep
         }
     }
@@ -396,7 +400,7 @@ fun PianoRoll(
                 // phone's screen (the portal's self-test, BenchTour1Test).
                 ToolRow(tablet, spacing = 2.dp) {
                     // Testers (lot « tuto 5 »): « Accords » first, in sight (it was the last of a row cut at the edge).
-                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
+                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode; chordByTuto = false }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     // « Remettre en rythme » from where the notes were played: « Comme joué » undoes it any time.

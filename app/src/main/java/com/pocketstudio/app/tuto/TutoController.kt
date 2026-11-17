@@ -751,7 +751,16 @@ class TutoController(
 
     // ---- inside ----
 
-    private fun base(): Any? = baseline?.takeIf { it.first == _ui.value?.current?.id }?.second
+    private fun base(): Any? {
+        val step = _ui.value?.current ?: return null
+        val b = baseline?.takeIf { it.first == step.id } ?: return null
+        // Tour 7 (seat d, House « Drop 2 »): the part the step changes made after the step began (« Créer la partie »):
+        // its hits as made are what the step compares to (a null baseline never ticked, whatever was played).
+        if (b.second == null && step.check.startsWith("changed:drums:")) {
+            TutoChecks.signature(step.check.removePrefix("changed:"), project.value)?.let { baseline = step.id to it; return it }
+        }
+        return b.second
+    }
 
     private fun show(p: TutoProgress) {
         val course = TutoCourse.of(p.style) ?: return

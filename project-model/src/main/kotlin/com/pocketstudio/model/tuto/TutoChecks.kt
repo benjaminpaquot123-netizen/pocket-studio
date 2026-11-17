@@ -1732,10 +1732,12 @@ object TutoChecks {
      * when it exists), only the bricks of [TutoStep.keep] kept ("*": all), the drums of the
      * target's part [TutoStep.lanesFrom] on the pads it keeps.
      */
-    private fun makePart(p: Project, step: TutoStep, target: TutoTarget): Project? {
+    private fun makePart(start: Project, step: TutoStep, target: TutoTarget): Project? {
         val label = step.check.removePrefix("part:").substringBeforeLast(':')
+        // Tour 7 (seats c, d: a chapter on parts opened on a project without its Groove): no « Créer la partie » that
+        // makes nothing; the Groove the course had built by then is made first, as its earlier chapters make it.
+        val p = if (start.allScenes.getOrNull(grooveOf(start))?.isEmpty != false) courseGroove(start, step, target) else start
         val groove = grooveOf(p)
-        if (p.allScenes.getOrNull(groove)?.isEmpty != false) return null
         val dest = p.allScenes.indexOfFirst { labelIs(it.label, label) }.takeIf { it >= 0 && it != groove } ?: p.switchScene(groove).firstEmptyScene() ?: return null
         var q = p.switchScene(groove).copySceneTo(dest).renameScene(dest, label).switchScene(dest)
         val keep = step.keep.split(',').map { it.trim() }.toSet()
@@ -1780,6 +1782,22 @@ object TutoChecks {
             }
         }
         return q
+    }
+
+    /**
+     * [p] with the chapters before the course's first chapter on parts done as « Montre-moi » and the panel's buttons
+     * do them (the level whose chapters hold [step]): the Groove a part is made from; [p] when nothing comes of it.
+     */
+    private fun courseGroove(p: Project, step: TutoStep, target: TutoTarget): Project {
+        val course = TutoCourse.of(target.style.id) ?: return p
+        val chapters = TutoLevel.entries.map { course.chaptersFor(it) }.firstOrNull { cs -> cs.any { c -> c.steps.any { it.id == step.id } } } ?: return p
+        val at = chapters.indexOfFirst { c -> c.steps.any { it.check.startsWith("part:") } }.takeIf { it > 0 } ?: return p
+        var now = p
+        for (s in chapters.take(at).flatMap { it.steps }) {
+            if (s.check.startsWith("part:") || done(s, now, target)) continue
+            now = show(s, now, target) ?: need(s, now, target)?.takeIf { it !is TutoNeed.Part && it !is TutoNeed.Name }?.let { fulfil(it, s, now, target)?.first } ?: now
+        }
+        return now
     }
 
     /** The bars of a part that builds up ([built]): a bar for each speed of its pad. */
@@ -2176,6 +2194,9 @@ object TutoChecks {
         val absent = if (c.startsWith("part:")) null else absentPart(step, p, target)
         return when {
             absent != null -> TutoNeed.Part(absent)
+            // Tour 7 (the trap's crash in its « Refrain », a chapter opened on an empty project): the part the course
+            // names its Groove (its « label: » step), never made: « Nommer la partie » for it first.
+            !c.startsWith("label:") && !c.startsWith("part:") && grooveNamed(step, p, target) != null -> TutoNeed.Name(grooveNamed(step, p, target)!!)
             // Its bars first: its line's, or the loop the course had already made when its words count cells over it.
             c.startsWith("lane:") -> partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(arg, partOf(step))?.let { line ->
                 maxOf(barsOf(p, line), loopBefore(step, p, target)).takeIf { p.drums.steps < it * p.stepsPerBar }?.let { TutoNeed.Bars(it) }
@@ -2194,15 +2215,15 @@ object TutoChecks {
                 val label = partLabel(step)
                 val i = sceneLabelled(p, label)
                 when {
-                    i < 0 -> TutoNeed.Part(label).takeIf { p.allScenes.getOrNull(grooveOf(p))?.isEmpty == false }
+                    i < 0 -> TutoNeed.Part(label)
                     i != p.scene -> TutoNeed.Scene(label)
                     else -> copyNeed(step, p, target, "bass") ?: TutoNeed.Track("sub").takeIf {
                         mineFor(step, p, target)?.let { notesMatch(it, movedBass(step, target)) } == true && p.instrumentTracks.any { roleOf(p, it.id) == "sub" }
                     }
                 }
             }
-            c.startsWith("part:") -> TutoNeed.Part(c.removePrefix("part:").substringBeforeLast(':')).takeIf { p.allScenes.getOrNull(grooveOf(p))?.isEmpty == false }
-            c.startsWith("label:") -> TutoNeed.Name(arg).takeIf { p.allScenes.any { !it.isEmpty } }
+            c.startsWith("part:") -> TutoNeed.Part(c.removePrefix("part:").substringBeforeLast(':'))
+            c.startsWith("label:") -> TutoNeed.Name(arg)
             // The lengths right, the order not: nothing a button can do (the order is said, TutoController).
             c == "song:phrases" -> TutoNeed.Lengths.takeIf { p.song.size >= 3 && !phrasesDone(p, step.song) }
             else -> sceneFor(step, p)?.let { label ->
@@ -2222,10 +2243,16 @@ object TutoChecks {
     /** The first part [step] names that the course makes and [p] lacks (the Fin stands in for by the Intro); null when none or no Groove to make it from. */
     private fun absentPart(step: TutoStep, p: Project, target: TutoTarget): String? {
         val cited = citedParts(step).takeIf { it.isNotEmpty() } ?: return null
-        if (p.allScenes.getOrNull(grooveOf(p))?.isEmpty != false) return null
         return cited.firstOrNull { l ->
             sceneLabelled(p, l) < 0 && !(l in TutoTarget.ENDINGS && sceneLabelled(p, "Intro") >= 0) && courseStep(l, target) != null
         }
+    }
+
+    /** A part [step] names, absent from [p], that the course makes by naming its Groove (its « label: » step); null when none. */
+    private fun grooveNamed(step: TutoStep, p: Project, target: TutoTarget): String? {
+        val cited = citedParts(step).takeIf { it.isNotEmpty() } ?: return null
+        val named = TutoCourse.of(target.style.id)?.chapters?.flatMap { it.steps }?.filter { it.check.startsWith("label:") }?.map { argOf(it.check) }.orEmpty()
+        return cited.firstOrNull { l -> sceneLabelled(p, l) < 0 && courseStep(l, target) == null && named.any { labelIs(l, it) } }
     }
 
     /** The course's step that makes the part [label], null when the course makes none. */
@@ -2265,7 +2292,9 @@ object TutoChecks {
             else partTrack(p, need.role, target)?.let { (q, id) -> q to id }
         is TutoNeed.Copy -> copied(p, need.role, step, target)?.let { it to null }
         is TutoNeed.Part -> makePart(p, partStep(need.label, step, target), target)?.let { it to null }
-        is TutoNeed.Name -> p.renameScene(grooveOf(p), need.label) to null
+        // An empty Groove (a chapter opened on an empty project): the one the course had built by then, then named.
+        is TutoNeed.Name -> (if (p.allScenes.getOrNull(grooveOf(p))?.isEmpty != false) courseGroove(p, step, target) else p)
+            .let { q -> q.renameScene(grooveOf(q), need.label) }.takeIf { sceneLabelled(it, need.label) >= 0 }?.let { it to null }
         is TutoNeed.Lengths -> lengths(p, step.song)?.let { it to null }
         is TutoNeed.Scene -> namedScene(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }
     }

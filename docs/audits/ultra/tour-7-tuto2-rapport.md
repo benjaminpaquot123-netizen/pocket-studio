@@ -27,4 +27,10 @@ L1 à L9 et L11 (liste de `lots-correction.md` l. 50 à 62) : non traités, plaf
 
 ## Vérifications
 
-Voir la fin du rapport (rempli après le passage complet).
+Code testé : `adb0b1d47` (captures `ec4ba6de6`), base `9c65e9b87` fusionnée.
+
+- Tests du modèle : verts. Tests de l'appli : suite complète verte avant la relecture ; après les deux corrections de la relecture (`adb0b1d47`), les 68 fichiers de tests du tuto et les tests ciblés (partie, « Accords ») sont verts.
+- Banc : selftest vert ; rejeux 4 sur 5, t4-26 diverge (`record_stop`), incident connu de la base (noté par 05e6a935), sans lien avec le tuto.
+- Captures : les 10 captures `tuto_*` touchées par le lot sont réenregistrées et regardées. `verifyRoborazziDebug` signale 47 autres écarts hors tuto, déjà présents sur la base : non réenregistrés (hors de mes fichiers).
+- Téléphone 360 dp, Simple et Pro, 100 % et 130 % : la carte du kit (« Télécharger le kit Jump up DnB (2 Mo) » + « Plus tard ») et les boutons sont visibles partout sans « Lire la suite ». En Simple 130 %, la consigne est coupée (« Lire la suite » reste pour elle), la carte reste au-dessus.
+- Relecture neuve : points 1 (visibilité) et 4 (« Accords ») corrigés ; point 3 (« Dedans : . ») latent, gardé par un test. Laissés, mineurs : 2 (offre du kit cachée pendant la démo et le Bravo), 5 (`stepsFor` fusionne aussi les étapes de vide/remplissage), 6 (étape basse avec `wanted` vide).

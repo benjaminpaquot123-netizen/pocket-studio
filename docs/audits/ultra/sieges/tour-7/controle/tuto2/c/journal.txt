@@ -1,0 +1,191 @@
+#0 SIEGE lang=ko device=phone360 font=130 mode=simple theme=- fresh=non gestes.max=100 lit=oui main=both amenee=tuto:techno:9
+#0 PREMIER ECRAN reel_s=10.4 simule_s=2.4 jvm_s=23.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:9
+#0 AMENEE > touche 270 713 (welcome_learn)
+#0 AMENEE > touche 270 765 (mode_card_simple)
+#0 AMENEE > touche 270 329 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 411 304 (tuto_chapters)
+#0 AMENEE > touche 270 923 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4e5fbd98eb | project=p-2dd2649e tuto=techno/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 내 프로젝트 2 » ellipsized (« … »)
+#1 LAYOUT CUT « 저장됨 » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 411 304
+#1 DOIGT tuto_chapters « 챕터 »
+#2 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 81ef601ff4 | project=p-2dd2649e tuto=techno/Facile active=true step=ref done=0 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#2 > glisse 270 700 270 300
+#2 DOIGT tuto_chapter_6 « 7 »
+#3 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 6d574dbee4 | project=p-2dd2649e tuto=techno/Facile active=true step=ref done=0 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#3 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#3 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#3 > touche 270 547
+#3 DOIGT tuto_chapter_8 « 9 »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7071b323c6 | project=p-2dd2649e tuto=techno/Facile active=true step=brick done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « 파트: A » lines cut (taller than its box)
+#4 LAYOUT TARGET « 파트: A 파트 바꾸기 » 80 x 3 dp (touch 80 x 48)
+#4 > touche 270 778
+#4 DOIGT tuto_mark «   알겠어요 »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3bdc3052ae | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#5 > touche 270 778
+#5 DOIGT tuto_listen «  예시 듣기 »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b408e29167 | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro done=1 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 5
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE df84692bd4 | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 270 778
+#7 DOIGT tuto_next_big « 다음 단계   »
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9889d5964d | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro2 done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 270 778
+#8 DOIGT tuto_listen «  예시 듣기 »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6e67d85dbb | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro2 done=2 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 5
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2a829a0da7 | project=p-2dd2649e tuto=techno/Facile active=true step=map_intro2 done=3 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 270 778
+#10 DOIGT tuto_next_big « 다음 단계   »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b2a59a220e | project=p-2dd2649e tuto=techno/Facile active=true step=map_drop done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 778
+#11 DOIGT tuto_listen «  예시 듣기 »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 137a775042 | project=p-2dd2649e tuto=techno/Facile active=true step=map_drop done=3 playing=false
+#12 SON Son : l'exemple du tuto joue (encore 3 s).
+#12 > attends 5
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 08c69f5116 | project=p-2dd2649e tuto=techno/Facile active=true step=map_drop done=4 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 778
+#13 DOIGT tuto_next_big « 다음 단계   »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fe8a172949 | project=p-2dd2649e tuto=techno/Facile active=true step=map_break done=4 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 778
+#14 DOIGT tuto_listen «  예시 듣기 »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 649ab3d3fa | project=p-2dd2649e tuto=techno/Facile active=true step=map_break done=4 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 5
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f4d2bcd163 | project=p-2dd2649e tuto=techno/Facile active=true step=map_break done=5 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 270 778
+#16 DOIGT tuto_next_big « 다음 단계   »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 84c570cd80 | project=p-2dd2649e tuto=techno/Facile active=true step=map_montee done=5 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 270 778
+#17 DOIGT tuto_listen «  예시 듣기 »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 887f1941ad | project=p-2dd2649e tuto=techno/Facile active=true step=map_montee done=5 playing=false
+#18 SON Son : l'exemple du tuto joue (encore 3 s).
+#18 > attends 5
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b6ae8d30bd | project=p-2dd2649e tuto=techno/Facile active=true step=map_montee done=6 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 270 778
+#19 DOIGT tuto_next_big « 다음 단계   »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 49f03606dd | project=p-2dd2649e tuto=techno/Facile active=true step=map_phrases done=6 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 270 778
+#20 DOIGT tuto_mark «   알겠어요 »
+#21 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4e165b051c | project=p-2dd2649e tuto=techno/Facile active=true step=map_phrases done=7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 270 778
+#21 DOIGT tuto_next_big « 다음 챕터   »
+#22 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 44b501f63f | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 270 697
+#22 DOIGT tuto_do «   직접 할게요 »
+#23 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#23 SON Son : rien ne joue.
+#23 > attends 2
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 495346e66a | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « 직접 해 보세요: ““인트로” 파트 만들기”를 탭하세요. 킥, 하이햇, “북 테두리”만 있는 그루브의 복사본이에요. » ellipsized (« … »)
+#24 > glisse 270 300 270 600
+#24 DOIGT rien (texte « 곡이 비어 있어요. 재생될 순서대로 파트를 추가하세요 (인트로, 벌스,  »)
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 289e013728 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 483 738
+#25 DOIGT tuto_fold
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c72c27e108 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 625
+#26 DOIGT tuto_text_more « 계속 읽기 »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a929af27c2 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 270 697
+#27 DOIGT tuto_do «   직접 할게요 »
+#28 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#28 SON Son : rien ne joue.
+#28 > attends 2
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 495346e66a | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 317 444
+#29 DOIGT add_part_new_copy « + 새 파트 (A 복사) »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 24200676ea | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 66 950
+#30 DOIGT thumb_undo « 실행 취소 »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9df3d31828 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 160 1050
+#31 DOIGT tab_simple_Rythme « 리듬 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 55d0e9fa23 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 78 198
+#32 DOIGT part_header_pick « 파트: A »
+#33 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE f34b96eea0 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#33 SON Son : rien ne joue.
+#33 > retour
+#33 RETOUR
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 55d0e9fa23 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 270 620 270 250
+#34 DOIGT rien (texte « 패드는 소리를 내고, 칸은 히트를 저장해요. 길게 누르기: 사운드 바꾸기 »)
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ac55855b0 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#35 SON Son : rien ne joue.
+#35 > glisse 270 620 270 450
+#35 DOIGT rien
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d59135c75c | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 483 738
+#36 DOIGT tuto_fold
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2641caa764 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 457 862
+#37 DOIGT tuto_next « 다음  »
+#38 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 771c79ec6c | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 479 950
+#38 DOIGT thumb_more « 더 많은 선택 »
+#39 ROUTE tuto_panel | MODE simple | EMPREINTE b5a873675f | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro done=7 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 457 862
+#39 DOIGT tuto_next « 다음  »
+#40 ROUTE tuto_panel | MODE simple | EMPREINTE b9a7835360 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro2 done=7 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 270 697
+#40 DOIGT tuto_do «   직접 할게요 »
+#41 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 39f39dcffd | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro2 done=7 playing=false
+#41 SON Son : rien ne joue.
+#41 > attends 2
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4878fb0043 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro2 done=7 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « 직접 해 보세요: ““인트로 2” 파트 만들기”를 탭하세요. 심벌과 리프만 빼고 그루브 전부예요. 베이스와 스탭이 들어와요. » ellipsized (« … »)
+#42 > attends 1
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4878fb0043 | project=p-2dd2649e tuto=techno/Facile active=true step=make_intro2 done=7 playing=false
+#43 SON Son : rien ne joue.
+#43 > fin
+#43 FIN : fin

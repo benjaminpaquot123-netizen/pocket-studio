@@ -1,0 +1,52 @@
+Écran 4 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 2 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+bouton « 3 » [coupé, état « vide »] @ 70,235
+bouton [coupé, état « vide »] @ 133,235
+bouton [coupé, état « vide »] @ 197,236
+bouton [coupé, état « vide »] @ 261,236
+bouton « 4 » [coupé, état « vide »] @ 325,236
+bouton [coupé, état « vide »] @ 389,236
+bouton [coupé, état « vide »] @ 453,236
+bouton [coupé, état « vide »] @ 517,236
+texte « tout » @ 152,305
+texte « 1/2 » @ 227,305
+texte « 1/4 » @ 302,305
+texte « ◀ » [désactivé] @ 377,305
+texte « ▶ » [désactivé] @ 452,305
+texte « Remplir » @ 77,305
+texte « Effacer » [désactivé] @ 91,377
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,465
+texte « Longueur » @ 89,554
+bouton « 1 mesure » [sélectionné] @ 215,554
+bouton « 2 » @ 330,554
+bouton « 3 » @ 411,554
+bouton « 4 » @ 492,554
+titre « SON DU PAD » [état « Déplié »] @ 151,671
+bouton « ? » @ 239,671
+texte « Grosse caisse 1 (synthétisé) » @ 294,720
+bouton (notes sur une pile) «  Changer le son » @ 294,783
+bouton (curseurs) «  Réglages du pad » @ 294,867
+texte « Volume du pad » @ 266,930
+texte « 80 % » @ 518,930
+bouton (boussole) « Guide  · Pose un rythme 0 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 120 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

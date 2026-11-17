@@ -1,0 +1,4 @@
+lang=de device=tablet8 font=130 mode=pro
+lang=fr device=phone font=100 mode=simple
+lang=ja device=phone font=100 mode=simple
+lang=ko device=phone360 font=130 mode=simple

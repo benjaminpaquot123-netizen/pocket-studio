@@ -1,0 +1,14 @@
+tuto_panel/tab_simple_Rythme
+dialogue:projects
+dialogue:new_project
+rhythm/tab_simple_Rythme
+help_labels
+plus
+help_page
+dialogue:mode_step
+dialogue:tuto_chooser
+tab_simple_Rythme
+dialogue:tuto_chapter_list
+tuto_spot_ring
+dialogue:part_header_menu
+tuto_finger

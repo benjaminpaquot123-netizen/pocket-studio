@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Metti ciò che manca",
   "Posé : %s.": "Messo: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Ti manca ciò che fanno i capitoli precedenti.",
-  "Aller au chapitre %d": "Vai al capitolo %d"
+  "Aller au chapitre %d": "Vai al capitolo %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Nel tuo brano non c'è la parte “%s”: questo passo si fa lì dentro."
 }

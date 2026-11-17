@@ -1032,6 +1032,13 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             if (course != null) {
                 Text(tr("Il te manque ce que font les chapitres d'avant."), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_course"))
             }
+            // Tour 7 (seat d): a step that works in a part the song has no more (« Montée » renamed): the button alone
+            // said nothing of why; the step that makes the part needs no such word.
+            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") }
+            if (part != null) {
+                Text(tr("Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.", Scene.shownLabel(part.label)),
+                    style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_why"))
+            }
             Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
                 Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
                 Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)

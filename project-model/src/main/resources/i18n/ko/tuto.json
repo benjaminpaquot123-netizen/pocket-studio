@@ -156,5 +156,6 @@
   "Poser ce qui manque": "빠진 것 넣기",
   "Posé : %s.": "놓은 것: %s.",
   "Il te manque ce que font les chapitres d'avant.": "앞 장에서 만드는 것이 아직 없어요.",
-  "Aller au chapitre %d": "%d장으로 가기"
+  "Aller au chapitre %d": "%d장으로 가기",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "곡에 “%s” 파트가 없어요. 이 단계는 그 파트 안에서 해요."
 }

@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Eksik olanı ekle",
   "Posé : %s.": "Yerleştirildi: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Önceki bölümlerde yapılanlar sende eksik.",
-  "Aller au chapitre %d": "%d. bölüme git"
+  "Aller au chapitre %d": "%d. bölüme git",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Şarkında “%s” bölümü yok: bu adım o bölümde yapılır."
 }

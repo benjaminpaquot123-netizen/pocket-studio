@@ -16,6 +16,10 @@ import com.pocketstudio.model.tuto.TutoTarget
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -85,6 +89,45 @@ class Tour7TutoMissingPartSaidTest {
         for (i in 0 until 200) { idle(50); if (until(c.ui.value!!)) return; Thread.sleep(20) }
     }
 
+    private fun why(): String {
+        compose.waitForIdle()
+        return compose.onAllNodes(hasTestTag("tuto_need_why"), useUnmergedTree = true).fetchSemanticsNodes()
+            .flatMap { it.config.getOrNull(SemanticsProperties.Text).orEmpty() }.joinToString(" ") { it.text }
+    }
+
+    /**
+     * Everywhere a step offers « Créer la partie » for a part it works in (four styles, both levels, each part of the
+     * song renamed in turn): the sentence names the part; the step that makes a part says no such thing.
+     */
+    @Test
+    fun everyStepThatLacksItsPartSaysSo() {
+        var shown by mutableStateOf<TutoUi?>(null)
+        compose.setContent { PocketStudioTheme { shown?.let { key(it) { TutoPanel(it, canShow = true, actions = TutoActions(), reducedMotion = true) } } } }
+        val bad = ArrayList<String>()
+        var lacking = 0
+        var making = 0
+        for (style in TutoCourse.STYLES.filter { TutoTarget.of(it) != null }.take(4)) for (level in TutoLevel.entries) {
+            val target = TutoTarget.of(style)!!
+            val chapters = TutoCourse.of(style)!!.chaptersFor(level)
+            val p = played(style, level, chapters.last().id)
+            val labels = p.song.map { p.allScenes[it.scene].label }.distinct()
+            for ((c, chapter) in chapters.withIndex()) for ((i, s) in chapter.steps.withIndex()) {
+                if (s.manual || s.listening) continue
+                val own = s.check.startsWith("part:")
+                // The step that makes a part, on the song before it; any other, each part of the song renamed in turn.
+                val cases = if (own) listOf(target.blank()) else labels.map { l -> p.renameScene(p.allScenes.indexOfFirst { it.label == l }, "Mon passage") }
+                val need = cases.firstNotNullOfOrNull { q -> TutoPlay.button(s, q, target, TutoPlay.arrive(s, q), level) as? TutoNeed.Part } ?: continue
+                shown = TutoUi(TutoProgress(style, level, current = s.id), chapters, c, i, open = true, need = need)
+                val why = why()
+                val name = com.pocketstudio.model.Scene.shownLabel(need.label)
+                if (own) { making++; if (why.isNotEmpty()) bad += "$style ${level.name} ${s.id}: the step that makes « $name » says it is missing" }
+                else { lacking++; if ("« $name »" !in why) bad += "$style ${level.name} ${s.id}: nothing says « $name » is missing: « $why »" }
+            }
+        }
+        assertTrue("only $lacking steps lacking their part and $making making one", lacking >= 12 && making >= 12)
+        assertTrue("${bad.size}:\n" + bad.joinToString("\n"), bad.isEmpty())
+    }
+
     @Test
     fun aMissingPartIsSaidOverItsButton() {
         val style = "techno"
@@ -106,9 +149,7 @@ class Tour7TutoMissingPartSaidTest {
             if (ui.need != TutoNeed.Part("Montée")) continue
             said++
             compose.setContent { PocketStudioTheme { TutoPanel(ui.copy(open = true), canShow = true, actions = TutoActions(), reducedMotion = true) } }
-            compose.waitForIdle()
-            val why = compose.onAllNodes(hasTestTag("tuto_need_why"), useUnmergedTree = true).fetchSemanticsNodes()
-                .flatMap { it.config.getOrNull(SemanticsProperties.Text).orEmpty() }.joinToString(" ") { it.text }
+            val why = why()
             assertTrue("step $id: only the button « Créer la partie « Montée » », no sentence says the part is missing: « $why »", "« Montée »" in why)
             break
         }

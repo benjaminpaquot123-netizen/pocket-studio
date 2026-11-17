@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Dodaj to, czego brakuje",
   "Posé : %s.": "Położono: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Brakuje ci tego, co powstaje we wcześniejszych rozdziałach.",
-  "Aller au chapitre %d": "Przejdź do rozdziału %d"
+  "Aller au chapitre %d": "Przejdź do rozdziału %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "W twoim utworze nie ma części „%s”: ten krok wykonuje się właśnie w niej."
 }

@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Fehlendes einfügen",
   "Posé : %s.": "Gesetzt: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Dir fehlt, was die früheren Kapitel bauen.",
-  "Aller au chapitre %d": "Zu Kapitel %d gehen"
+  "Aller au chapitre %d": "Zu Kapitel %d gehen",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "In deinem Song gibt es keinen Teil „%s“: Dieser Schritt wird darin gemacht."
 }

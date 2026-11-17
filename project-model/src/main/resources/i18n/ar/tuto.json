@@ -156,5 +156,6 @@
   "Poser ce qui manque": "أضف ما ينقص",
   "Posé : %s.": "تم وضع: %s.",
   "Il te manque ce que font les chapitres d'avant.": "ينقصك ما تصنعه الفصول السابقة.",
-  "Aller au chapitre %d": "اذهب إلى الفصل %d"
+  "Aller au chapitre %d": "اذهب إلى الفصل %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "لا يوجد جزء «%s» في مقطوعتك: هذه الخطوة تُنجَز فيه."
 }

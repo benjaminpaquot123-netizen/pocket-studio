@@ -156,5 +156,6 @@
   "Poser ce qui manque": "补上缺少的内容",
   "Posé : %s.": "已放好：%s。",
   "Il te manque ce que font les chapitres d'avant.": "你还缺少前面章节做出的内容。",
-  "Aller au chapitre %d": "前往第 %d 章"
+  "Aller au chapitre %d": "前往第 %d 章",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "你的歌里没有段落“%s”：这一步要在它里面完成。"
 }

@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Zet erbij wat ontbreekt",
   "Posé : %s.": "Neergezet: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Je mist wat de vorige hoofdstukken maken.",
-  "Aller au chapitre %d": "Ga naar hoofdstuk %d"
+  "Aller au chapitre %d": "Ga naar hoofdstuk %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Je nummer heeft geen deel ‘%s’: deze stap doe je daarin."
 }

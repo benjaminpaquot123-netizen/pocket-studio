@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Add what is missing",
   "Posé : %s.": "Laid down: %s.",
   "Il te manque ce que font les chapitres d'avant.": "You are missing what the earlier chapters make.",
-  "Aller au chapitre %d": "Go to chapter %d"
+  "Aller au chapitre %d": "Go to chapter %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Your song has no “%s” part: this step is done in it."
 }

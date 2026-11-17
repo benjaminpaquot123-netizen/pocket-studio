@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Pasang yang belum ada",
   "Posé : %s.": "Dipasang: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Kamu belum punya yang dibuat di bab-bab sebelumnya.",
-  "Aller au chapitre %d": "Buka bab %d"
+  "Aller au chapitre %d": "Buka bab %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Lagumu tidak punya bagian “%s”: langkah ini dikerjakan di dalamnya."
 }

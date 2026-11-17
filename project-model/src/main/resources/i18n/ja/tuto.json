@@ -156,5 +156,6 @@
   "Poser ce qui manque": "足りないものを置く",
   "Posé : %s.": "置いたもの：%s。",
   "Il te manque ce que font les chapitres d'avant.": "前の章で作るものがまだありません。",
-  "Aller au chapitre %d": "第%d章へ"
+  "Aller au chapitre %d": "第%d章へ",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "曲にパート「%s」がありません。このステップはその中で行います。"
 }

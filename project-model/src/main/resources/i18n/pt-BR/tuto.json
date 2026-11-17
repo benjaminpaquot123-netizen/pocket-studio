@@ -156,5 +156,6 @@
   "Poser ce qui manque": "Colocar o que falta",
   "Posé : %s.": "Colocado: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Falta o que os capítulos anteriores fazem.",
-  "Aller au chapitre %d": "Ir para o capítulo %d"
+  "Aller au chapitre %d": "Ir para o capítulo %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Sua música não tem a parte “%s”: este passo é feito nela."
 }

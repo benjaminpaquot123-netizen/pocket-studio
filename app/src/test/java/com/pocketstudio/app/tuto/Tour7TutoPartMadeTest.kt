@@ -72,7 +72,13 @@ class Tour7TutoPartMadeTest {
         val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_drop" } }
         c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_drop" }); idle()
         // Tour 7 (R-C): a Groove that poor is first offered what the chapters before put down; the part comes after.
-        repeat(3) { if (c.ui.value!!.need is TutoNeed.Course) { c.fulfilNeed(); idle(100) } }
+        repeat(3) {
+            if (c.ui.value!!.need is TutoNeed.Course) {
+                c.fulfilNeed()
+                // The panel reads the project again off the main thread: wait for it.
+                for (i in 0 until 100) { idle(50); if (c.ui.value!!.need !is TutoNeed.Course) break; Thread.sleep(20) }
+            }
+        }
         assertEquals(TutoNeed.Part("Drop"), c.ui.value!!.need)
         c.fulfilNeed(); idle(100)
         val made = c.ui.value!!.made.orEmpty()

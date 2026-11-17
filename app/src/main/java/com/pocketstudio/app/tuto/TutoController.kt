@@ -491,7 +491,10 @@ class TutoController(
         // the riff: a Groove without them yet made it say so all the same).
         // An empty Groove (nothing in it yet): no « tout le Groove y joue », no empty « Dedans : . ».
         val made = if (from != null) {
-            if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from)
+            // A part that keeps everything says what plays in it, whatever its source is named (tour 7, L10 and seat d).
+            if (out.isEmpty() && "*" in step.keep.split(',').map { it.trim() } && now.isNotEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from) + " " +
+                com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
+            else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from)
             else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, out.joinToString(", "))
         } else if (out.isEmpty() && ("*" !in step.keep.split(',').map { it.trim() } || now.isEmpty())) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
         // Tour 7 (L10, seat 1d #45): what « tout le Groove » is, said by name (a Groove of a kick alone read as a full one).

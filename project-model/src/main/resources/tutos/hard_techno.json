@@ -100,7 +100,7 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : les temps 2 et 4, et un petit roulement tout à la fin. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "text": "À toi : touche « Passer à 2 mesures » si on te le propose, puis sur le pad « Clap », touche les cases en pointillé des 2 mesures : les temps 2 et 4, et un petit roulement tout à la fin.",
           "textPro": "À toi : le clap sur 2 et 4, avec le roulement en fin de 2e mesure.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -169,9 +169,19 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis les notes en pointillé : 2 notes à la mesure 1, 4 à la mesure 2. Chaque coup, c'est la même note jouée grave et aiguë. « Copier sur les mesures suivantes » fait le reste : la mesure 3 monte d'un cran.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Chaque coup, c'est la même note jouée grave et aiguë.",
           "textPro": "À toi : crée la piste Accords (son « Hoover ») : Fa♯ en octaves, frappé puis tenu, deux petites relances en fin de mesure 2 ; « Copier » suit la grille : Sol (le ♭II) à la mesure 3.",
           "why": "Le demi-ton de la mesure 3 fait monter la tension avant de retomber sur Fa♯.",
+          "check": "notes:pad",
+          "length": 32,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il fait le reste, la mesure 3 monte d'un cran.",
+          "levels": "f",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -186,9 +196,19 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes de la mesure 1 et les 3 de la mesure 2 (des notes longues). Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1 : des notes longues.",
           "textPro": "À toi : crée la piste Mélodie (son « Supersaw ») : Fa♯ tenu, Fa♯ court, Fa♯ aigu ; puis Fa♯ tenu, Fa♯ court, Do♯. « Copier ».",
           "why": "Une note tenue sur la tonique, c'est le cri de la hard techno : les mains se lèvent.",
+          "check": "notes:lead",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,rumble,lead"
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -366,7 +386,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Break, Montée et Faux drop font 16 mesures : le vrai Drop 2 tombe au début d'une phrase. 3 minutes 25 à 150 BPM.",
           "check": "song:phrases",

@@ -68,7 +68,7 @@ class Tour6Tuto4TechnoTest {
         fun need(where: String, text: String, vararg parts: String) = parts.filter { it !in text }.forEach { bad += "$where: no « $it »: $text" }
         need("ref", step("ref").text, "kick (la grosse caisse)", "basse (les notes graves)", "Drop (le moment où tout joue)")
         need("kick chapter", chapter("kick").why, "font une mesure")
-        need("clap_do", step("clap_do").text, "« Force » (", "« Roulement » (", "« Triolet » (")
+        need("clap_2", step("clap_2").text, "« Force » (", "« Roulement » (", "« Triolet » (")
         need("pad_do", step("pad_do").text, "stabs (")
         need("groove_hear", step("groove_hear").text, "« Groove » (")
         need("gap", step("gap").text, "transition (")
@@ -85,7 +85,7 @@ class Tour6Tuto4TechnoTest {
         // Japanese: ベース, the menu's words, スタブ, グルーヴ, トランジション explained there; German: the bar (Takt).
         val ja = Lang.JA
         need("ja ref", tr(ja, step("ref").text), "ベース（")
-        need("ja clap_do", tr(ja, step("clap_do").text), *listOf("Force", "Roulement", "Triolet").map { tr(ja, it) + "」（" }.toTypedArray())
+        need("ja clap_2", tr(ja, step("clap_2").text), *listOf("Force", "Roulement", "Triolet").map { tr(ja, it) + "」（" }.toTypedArray())
         need("ja pad_do", tr(ja, step("pad_do").text), "スタブ（")
         need("ja groove_hear", tr(ja, step("groove_hear").text), "グルーヴ」（")
         need("ja gap", tr(ja, step("gap").text), "トランジション（")

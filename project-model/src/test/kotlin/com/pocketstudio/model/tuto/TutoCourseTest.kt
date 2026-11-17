@@ -200,15 +200,17 @@ class TutoCourseTest {
         assertEquals(0, ghosts.first)
         assertTrue(ghosts.second.size >= 4)
         // The user taps the dotted notes (a bar), then « Copier sur les mesures suivantes », and again: done.
+        // D4: in Facile the line is cut in pieces; the last one (« bass_3 ») checks the whole line.
+        val whole = steps.getValue("bass_3")
         var written = q
         repeat(2) {
-            val dotted = TutoChecks.ghostNotes(bass, written, target)!!.second
+            val dotted = TutoChecks.ghostNotes(whole, written, target)!!.second
             val motif = written.withTrack(written.track(0).copy(notes = written.track(0).notes.copy(notes = dotted)))
-            assertFalse(TutoChecks.done(bass, motif, target))
-            assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(bass, motif, target))
-            written = TutoChecks.fulfil(TutoNeed.Copy("bass"), bass, motif, target)!!.first
+            assertFalse(TutoChecks.done(whole, motif, target))
+            assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(whole, motif, target))
+            written = TutoChecks.fulfil(TutoNeed.Copy("bass"), whole, motif, target)!!.first
         }
-        assertTrue(TutoChecks.done(bass, written, target))
+        assertTrue(TutoChecks.done(whole, written, target))
         // The pad's track is a new one (the first is the bass now).
         val pad = steps.getValue("pad_do")
         val (r, padId) = TutoChecks.fulfil(TutoChecks.need(pad, written, target)!!, pad, written, target)!!

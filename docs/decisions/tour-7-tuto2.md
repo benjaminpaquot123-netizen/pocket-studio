@@ -1,0 +1,8 @@
+# Décisions du lot « tuto2 » (tour 7) : D3, D4, N26
+
+- 2026-11-17 · D3 : la carte du kit est épinglée sous la consigne, hors du défilement, en une ligne (« Télécharger le kit … » + « Plus tard ») : visible sans « Lire la suite » au clavier, en 130 %. Retour arrière : revert de cc825600.
+- 2026-11-17 · D4 : en Facile, une consigne demande au plus deux gestes (compteur dans `Tour7TutoTwoGesturesTest`). Les consignes trop chargées sont coupées en étapes neuves réservées au Facile (`levels: "f"`) ; le Pro garde l'ancien texte en `textPro`, ses étapes ne changent pas. Retour arrière : revert du commit « vert: Facile consignes ask for two gestures at most ».
+- 2026-11-17 · D4 : dans les étapes d'accords, le piano active « Accords » tout seul : une consigne de moins à lire, un geste de moins (le débutant oubliait l'interrupteur). Retour arrière : revert de e04c85de.
+- 2026-11-17 · D4 : les phrases de morceau (« song_phrases ») suivent un même gabarit court par style, une partie à la fois, pour tenir sous deux gestes. Retour arrière : avec le commit D4.
+- 2026-11-17 · N26 : la consigne du Drop dit « une copie de tout le Groove » (et non « tout le Groove joue », faux sur un Groove vide) ; « Partie … créée » d'une partie qui garde tout ajoute « Dedans : … » avec les sons réellement présents. L'ancienne phrase « tout le Groove y joue » reste dans le message de partie (clé partagée, hors de mes fichiers). Retour arrière : revert de d3d07645.
+- 2026-11-17 · Traductions des 166 consignes neuves dans `tuto_autres.json` (14 langues), reprises des anciennes traductions relues ; les 101 anciennes clés que plus rien n'affiche sont retirées. Retour arrière : avec le commit D4.

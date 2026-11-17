@@ -108,9 +108,18 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant. Ce dernier coup doit être doux : appui long sur sa case ; dans le menu qui s'ouvre, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant.",
           "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose et son menu s'ouvre : sous « Force », « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "clap_2",
+          "text": "À toi : ce dernier coup du pad « Clap » doit être doux : fais un appui long sur sa case ; dans le menu qui s'ouvre, sous « Force » (la force du coup), touche « Doux ». « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.",
+          "levels": "f",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -199,8 +208,18 @@
         },
         {
           "id": "bass_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent. Touche ensuite les notes de la mesure 4 (la fin monte d'un cran, puis saute en haut), puis « Copier » encore.",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent.",
           "textPro": "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 : Sol♭ (la seconde mineure) et le Fa de l'octave au-dessus pour fermer la phrase. « Copier » encore.",
+          "check": "notes:bass",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_end_2",
+          "text": "À toi : touche les notes de la mesure 4 (la fin monte d'un cran, puis saute en haut), puis « Copier » encore.",
+          "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
           "target": "bass",
@@ -226,7 +245,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais les 2 accords de la mesure 1 : deux stabs (des accords courts et secs, comme un coup).",
+          "text": "À toi : touche « Créer la piste Accords », puis, pour les 2 accords de la mesure 1, la note du bas en pointillé : tout l'accord se pose. Ce sont deux stabs (des accords courts et secs, comme un coup).",
           "textPro": "À toi : crée la piste Accords (son « Pluck », un pluck court, écho dub), puis écris la mesure 1 : deux stabs de Fa mineur, à côté des temps (pas 4 et 11).",
           "why": "Le même petit accord qui revient, toujours au même endroit, hypnotise ; le demi-ton de la mesure 4 relance la phrase.",
           "check": "notes:pad",
@@ -238,8 +257,18 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes », puis fais les 2 accords de la mesure 4 (un cran plus haut) et « Copier » encore.",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent.",
           "textPro": "À toi : « Copier sur les mesures suivantes », puis écris la mesure 4 sur Sol♭ majeur (le ♭II) et « Copier » encore.",
+          "check": "notes:pad",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        },
+        {
+          "id": "pad_end_2",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 4 (un cran plus haut), puis « Copier » encore.",
+          "levels": "f",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -260,14 +289,24 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1. Le riff en compte 3 à la mesure 1, 4 à la mesure 2.",
           "textPro": "À toi : crée la piste Mélodie (son « Lead filtré ») et écris le riff de 2 mesures : Fa grave, Fa aigu, Fa grave, puis la même chose terminée par La♭. « Copier sur les mesures suivantes ».",
           "why": "Deux notes suffisent : on retient le motif, et le filtre fera le reste.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans riff, ton Drop n'aura pas d'accroche."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 4 notes de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_knobs",
@@ -444,7 +483,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. Près de 4 minutes à 132 BPM.",
           "check": "song:phrases",

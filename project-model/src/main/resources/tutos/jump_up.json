@@ -156,13 +156,33 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : elles tombent avec le kick. « Copier sur les mesures suivantes » la répète sur les mesures 2 et 3. Touche ensuite les 3 notes de la mesure 4, puis « Copier » encore : 8 mesures en tout.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse (son « Basse growl », et sur sa tranche l'effet « Growl » : distorsion et OTT). Écris la mesure 1 dans le piano roll (les notes en pointillé : Fa, avec un saut d'octave), « Copier sur les mesures suivantes » (mesures 2 et 3), puis la mesure 4 (Sol♭, La♭, Do : la basse suit l'accord et remonte vers Fa), et « Copier » : 8 mesures.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, ton morceau n'aura pas de grave : c'est la vedette du jump up."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il répète la mesure 1 sur les mesures 2 et 3.",
+          "levels": "f",
+          "check": "notes:bass",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
+        },
+        {
+          "id": "bass_3",
+          "text": "À toi : touche les 3 notes de la mesure 4, puis « Copier » encore : 8 mesures en tout.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -205,13 +225,33 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord (3 notes jouées ensemble). Fais-le à la mesure 1, touche « Copier sur les mesures suivantes », puis fais la mesure 4 et « Copier » encore.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord (3 notes jouées ensemble) se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe). « Accords » (rangée de boutons au-dessus de la grille, à faire glisser) pose la triade d'un toucher sur la note du bas en pointillé. Mesure 1 (Fa mineur), « Copier sur les mesures suivantes », mesure 4 (Sol♭ majeur, le ♭II), puis « Copier ».",
           "check": "notes:pad",
+          "length": 16,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans accords, l'Intro et le Break n'auront pas leur ambiance."
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent.",
+          "levels": "f",
+          "check": "notes:pad",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_3",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 4 (un cran plus haut), puis « Copier » encore.",
+          "levels": "f",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -228,13 +268,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 2 à la mesure 1, 1 à la mesure 3. Elles répondent à la basse dans ses trous. Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1 : elles répondent à la basse dans ses trous.",
           "textPro": "À toi : crée la piste Mélodie (un lead hoover) et écris son riff dans le piano roll : les notes en pointillé des mesures 1 et 3, puis « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans mélodie, personne ne répondra à ta basse."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris la note de la mesure 3, puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_knobs",
@@ -379,15 +429,39 @@
         },
         {
           "id": "make_drop2",
-          "text": "À toi : crée le Drop 2, la même énergie que le Drop avec une autre basse, que tu écris : les notes en pointillé de la mesure 1, « Copier sur les mesures suivantes », la mesure 4, puis « Copier » encore.",
+          "text": "À toi : crée le Drop 2 : la même énergie que le Drop, avec une autre basse. Écris-la : les notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée le Drop 2 (sans la piste « Accords »), puis écris sa nouvelle basse, ta ligne une quarte plus haut dans la gamme : mesure 1, « Copier sur les mesures suivantes », mesure 4, « Copier », puis « Copier la basse une octave plus bas » pour sa Sub.",
           "check": "part:Drop 2:differs",
+          "length": 16,
           "spot": "song.parts",
           "keep": "kick,snare,clap,hat,perc,lead",
           "lanesFrom": "Drop 2",
           "transpose": 5,
           "listen": "vs:Drop:Drop 2",
           "why": "Même énergie, autre basse : le public est surpris."
+        },
+        {
+          "id": "make_drop2_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 1 se répète.",
+          "levels": "f",
+          "check": "part:Drop 2:differs",
+          "length": 48,
+          "spot": "song.parts",
+          "listen": "vs:Drop:Drop 2",
+          "keep": "kick,snare,clap,hat,perc,lead",
+          "lanesFrom": "Drop 2",
+          "transpose": 5
+        },
+        {
+          "id": "make_drop2_3",
+          "text": "À toi : écris les notes en pointillé de la mesure 4, puis touche « Copier » encore.",
+          "levels": "f",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "listen": "vs:Drop:Drop 2",
+          "keep": "kick,snare,clap,hat,perc,lead",
+          "lanesFrom": "Drop 2",
+          "transpose": 5
         },
         {
           "id": "make_fin",
@@ -417,7 +491,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 28 mesures, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 28 mesures, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 28 mesures, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:28,Montée:4,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16",

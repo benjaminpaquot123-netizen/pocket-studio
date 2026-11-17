@@ -179,14 +179,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » écrit les mesures 2 et 3 en suivant les accords. Puis les 5 notes de la mesure 4, qui remonte vers l'aigu.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse ronde », pompe douce). Mesure 1 dans le piano roll : la fondamentale Fa tenue, la même plus courte, la quinte Do ; « Copier sur les mesures suivantes » la pose sur Mi puis sur La ; puis la relance de la mesure 4 (La, Do, Mi, Ré, Do).",
           "why": "La basse joue la note du bas de chaque accord : le piano peut l'oublier, il sonnera plus léger.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, ton liquid n'aura pas de fond."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il écrit les mesures 2 et 3 en suivant les accords. Touche ensuite les 5 notes de la mesure 4, qui remonte vers l'aigu.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -221,7 +231,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (« Rhodes FM »). « Accords » pose la triade d'un toucher : La m sur la basse Fa (= Fa maj7) à la mesure 1, puis « Copier sur les mesures suivantes » : Sol sur la basse Mi (= Mi m7), Do sur la basse La (= La m7).",
           "why": "On n'y met pas la note de la basse : basse et piano ensemble font l'accord de 7e, sans boue dans le grave.",
           "check": "notes:pad",
@@ -263,13 +273,33 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » fait la mesure 2, un peu plus bas. Puis les notes des mesures 3 et 4 (3, puis 2).",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie et écris le contre-chant : mesure 1 (Mi, Do, La, il descend dans l'accord), « Copier » la répète plus bas sur Mi m, puis les mesures 3 et 4 à la main : il remonte (Do, Mi, Sol) et se pose sur Ré.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans contre-chant, le Drop 2 n'aura rien de neuf."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 2 arrive, un peu plus bas.",
+          "levels": "f",
+          "check": "notes:lead",
+          "length": 32,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "lead_3",
+          "text": "À toi : écris les 3 notes en pointillé de la mesure 3 et les 2 de la mesure 4.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_echo",
@@ -440,7 +470,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, chaque Drop tombe au début d'une phrase. Le morceau dure un peu plus de 3 minutes.",
           "check": "song:phrases",
           "spot": "song.parts",

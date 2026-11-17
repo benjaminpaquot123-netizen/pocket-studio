@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,13 +10,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.i18n.tr
@@ -31,6 +33,8 @@ private const val DONE_MS = 6000L
  * It floats over the page's lower edge for six seconds and the page never changes height for it (audit ultra round 6,
  * N15: a line of its own in the bottom bar was tried and moved the page under the finger). Its host hides it while a
  * take runs and lets its message go.
+ * Its card takes no finger, only its « Annuler » does: a touch on the card reaches the page under it (tour 7, replay
+ * t4-26: at 200 % it came over « Enregistrer ma mélodie », a Surface ate the touch and no take started).
  */
 @Composable
 fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modifier = Modifier) {
@@ -39,15 +43,17 @@ fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modi
         delay(DONE_MS)
         dismiss()
     }
-    Surface(
-        shape = RoundedCornerShape(12.dp), color = Neon.SurfaceHigh, shadowElevation = 6.dp,
-        modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth().testTag("done_bar"),
+    val shape = RoundedCornerShape(12.dp)
+    // Not a Surface: a Surface consumes every touch on its bounds, and the line floats over the page's buttons.
+    Row(
+        modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth().testTag("done_bar")
+            .shadow(6.dp, shape).clip(shape).background(Neon.SurfaceHigh)
+            .padding(start = 14.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(Modifier.padding(start = 14.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
-            Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 3,
-                modifier = Modifier.weight(1f).padding(horizontal = 10.dp).testTag("done_text"))
-            TextButton(onClick = undo, modifier = Modifier.testTag("done_undo")) { Text(tr("Annuler")) }
-        }
+        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 3,
+            modifier = Modifier.weight(1f).padding(horizontal = 10.dp).testTag("done_text"))
+        TextButton(onClick = undo, modifier = Modifier.testTag("done_undo")) { Text(tr("Annuler")) }
     }
 }

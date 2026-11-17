@@ -1,0 +1,7 @@
+siege	geste	attente	vu
+A/a	3	0	écrans 3 et 4 au texte vide après « Je le fais » (route tuto_spot_ring, empreinte d64e1160c2 : seulement la barre du bas), l'image montre l'écran ; banc?: anneau du tuto lu à la place de l'écran (famille tour 5 B/a 19)
+A/a	102	0	écrans 102 et 103 au texte vide après « Je le fais » (chapitre 3), même route tuto_spot_ring, même empreinte d64e1160c2 ; banc?: anneau du tuto
+B/d	42	0	écran 43 au texte vide (route tuto_spot_ring, empreinte d64e1160c2), l'image montre la grille ; banc?: anneau du tuto
+B/d	48	0	écran 49 au texte vide, même route et même empreinte ; banc?: anneau du tuto
+B/d	55	0	écran 56 au texte vide, même route et même empreinte ; banc?: anneau du tuto
+C/a	27	0	image de l'écran 28 en retard sur le texte (montre encore T, mesure 6/8 ; le texte dit tab_simple_Rythme) ; banc?: capture prise avant la fin du dessin

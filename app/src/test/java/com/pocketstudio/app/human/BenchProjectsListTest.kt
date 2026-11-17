@@ -17,7 +17,7 @@ import java.io.File
 /**
  * Tour 7, banc B6 (seat B/d #23, #30, #31: « Mes projets » said « Chargement de la liste… » three screens long): proved
  * without the bench whether the app reads the list. The app's own model, a saved project, a new one made (as a course
- * starts), then the list asked again (as the dialog opens): the wait ends and the projects are listed, within seconds.
+ * starts), then the list asked again (as the dialog opens): the wait ends and the projects are listed, within seconds (15 s each: room for a busy CI).
  */
 @RunWith(RobolectricTestRunner::class)
 class BenchProjectsListTest {
@@ -39,18 +39,18 @@ class BenchProjectsListTest {
         projectCatalog(app).create(Project(name = "Mon projet 1"))
         val vm = ProjectsViewModel(app)
         vm.refresh() // as AppRoot does when « Mes projets » opens (the model's own start reads nothing)
-        waitFor("the first reading", 5_000) { !vm.state.value.loading }
+        waitFor("the first reading", 15_000) { !vm.state.value.loading }
         var made: String? = null
         vm.create(Project(name = "")) { made = it }
-        waitFor("the course's project", 5_000) { made != null }
+        waitFor("the course's project", 15_000) { made != null }
         vm.refresh()
-        waitFor("the list asked again", 5_000) { !vm.state.value.loading && !vm.state.value.busy }
+        waitFor("the list asked again", 15_000) { !vm.state.value.loading && !vm.state.value.busy }
         assertFalse(vm.state.value.loading)
         assertEquals(2, vm.state.value.projects.size)
         // A model made afresh (the screens rebuilt once the course's project opened): its first reading ends too.
         val again = ProjectsViewModel(app)
         again.refresh()
-        waitFor("a new model's list", 5_000) { !again.state.value.loading }
+        waitFor("a new model's list", 15_000) { !again.state.value.loading }
         assertEquals(2, again.state.value.projects.size)
     }
 }

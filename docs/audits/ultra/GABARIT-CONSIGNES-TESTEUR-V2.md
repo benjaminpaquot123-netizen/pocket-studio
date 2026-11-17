@@ -34,3 +34,7 @@ How to play: `python3 /home/user/fx-int/scripts/human-act.py $SEAT regarde` (scr
 **Do not file your brief**: only what the app writes is a promise.
 
 Then write `$SEAT/rapport.md` with EXACTLY the template of `docs/audits/GABARIT-RAPPORT-TESTEUR.md` (v2; it is pasted below by the coordinator). `geste:` is the `#N` of the gesture you made (the journal number shown with each screen), `cible:` a line copied from the screen. Your final answer: the report's content, nothing else.
+
+## Deux règles de toute discussion (17 novembre)
+- **Demander au chef** : hors de ta liste, un doute ou un conflit → une ligne au chef, puis tu continues le reste. Jamais de question à Benjamin.
+- **Travailler en silence** : aucun récit ni résumé ; une ligne au chef à « prêt », « demande / bloqué » et « fini ».

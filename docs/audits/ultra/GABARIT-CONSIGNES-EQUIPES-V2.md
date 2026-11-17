@@ -16,3 +16,7 @@ Méthode d'audit v2 (`docs/audits/AUDIT-ULTRA.md` §12). Remplace les consignes 
 - **Commits** : sur ta branche, par chemin (jamais `git add -A`/`.`/`commit -a` ; `git ls-tree -r HEAD | grep -c '^120000'` = 0). Rien de non commité à la fin. Tu ne pousses pas et tu ne fusionnes pas : c'est l'agent de fusion (`scripts/bench/fusion-equipes.sh`), après la relecture neuve de ta branche.
 - Interface en français via `tr()`, toute nouvelle chaîne dans les 15 catalogues ; design selon `docs/DESIGN.md` ; captures ré-enregistrées seulement pour ce que tu changes, et regardées.
 - **Rapport** `docs/audits/ultra/tour-N-<zone>.md` (≤ 50 lignes, sur ta branche) : par item, n° de synthèse, liste des chemins cochée, id du rejeu et son verdict avant/après, test, commit, verdict proposé (appli / banc / voulu), reste avec un propriétaire et un tour.
+
+## Deux règles de toute discussion (17 novembre)
+- **Demander au chef** : hors de ta liste, un doute ou un conflit → une ligne au chef, puis tu continues le reste. Jamais de question à Benjamin.
+- **Travailler en silence** : aucun récit ni résumé ; une ligne au chef à « prêt », « demande / bloqué » et « fini ».

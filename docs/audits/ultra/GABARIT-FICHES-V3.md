@@ -8,6 +8,13 @@ Le texte que Benjamin colle en ouvrant une discussion, ou que le chef met dans u
 
 > Tu fais partie de l'équipe BenStudio. Lis `CLAUDE.md`, section « Travail à plusieurs discussions », puis `docs/audits/ultra/EN-COURS.md` : le chef d'orchestre y est nommé (outil `send_message`). Ses fiches valent mes consignes. Ta fiche te donnera ton rôle : testeur, correcteur, banc, lecteur ou vérificateur. Un correcteur modifie l'appli dans les seuls fichiers de sa fiche ; un testeur ou un lecteur ne la modifie jamais. Tu peux créer et pousser tes propres branches (jamais `ccr-80af1a1b-mn0wec`, jamais `main`, pas de PR) et lancer des sous-agents. Ne me pose aucune question : en cas de doute, une ligne au chef. Tout de suite : (1) remplis le cache des tests avec `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'` (si Maven répond 429, réessaie toutes les dix minutes) ; (2) écris au chef : « prêt : <un nom court> ; modifier l'appli : oui ; pousser une branche neuve : oui ; tests chauds : oui ou non ». Puis attends ta fiche.
 
+### Deux règles de toute fiche (Benjamin, 17 novembre)
+
+À ajouter à la fin de chaque fiche, mot pour mot :
+
+> **Demander au chef.** Un fichier hors de ta liste, un doute sur la phrase d'acceptation, un conflit avec un autre lot, un test qui casse hors de ta zone : une ligne au chef (`send_message`), puis tu continues le reste de ta fiche en attendant sa réponse. Jamais de question à Benjamin, jamais de décision hors de ta fiche.
+> **Travailler en silence.** Aucun récit, aucun résumé, aucun texte pour Benjamin dans ta discussion. Tu n'écris qu'au chef, une ligne, à trois moments : « prêt », « demande / bloqué », « fini ». Sorties de commandes filtrées (`tail`, `grep`).
+
 ## 1. Un siège (vague, pilote ou contrôle) → rôle testeur
 
 > Chef d'orchestre → <NOM>, rôle TESTEUR. Siège <tour> <lot><siège> (<vague | pilote | contrôle du lot <zone>>). Aucune question à Benjamin : une ligne pour moi.

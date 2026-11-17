@@ -14,6 +14,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
+import com.pocketstudio.model.DrumPattern
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -88,12 +89,17 @@ class Tour7TutoPartMadeTest {
 
     @Test
     fun anEmptyGrooveMakesNoEmptyList() {
-        // Review of the lot: a Groove with nothing in it read « Dedans : . »; it says a copy of the Groove instead.
+        // Review of the lot: a Groove with nothing to name must never read « Dedans : . » (the part is built from the recipe).
         val style = "techno"
         val target = TutoTarget.of(style)!!
         val steps = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.associateBy { it.id }
         var p = target.blank()
-        for (id in listOf("make_intro", "make_intro2")) if (!TutoChecks.done(steps.getValue(id), p, target)) p = TutoChecks.show(steps.getValue(id), p, target)!!
+        for (id in listOf("kick_do", "make_intro", "make_intro2")) if (!TutoChecks.done(steps.getValue(id), p, target)) p = TutoChecks.show(steps.getValue(id), p, target)!!
+        // Then every hit is wiped and only a chord grid is left (no note, no pad): the Groove is not empty, yet
+        // nothing in it has a name to list.
+        fun DrumPattern.wiped() = copy(lanes = lanes.map { it.copy(hits = emptyMap()) })
+        p = p.copy(drums = p.drums.wiped(), scenes = p.scenes.map { it.copy(drums = it.drums.wiped(), chords = listOf(0, 5, 3, 4)) })
+        assertTrue(p.scenes.all { s -> TutoChecks.bricks(s).isEmpty() && !s.isEmpty })
         val flow = MutableStateFlow(p)
         val c = TutoController(
             scope, "p1", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
@@ -105,9 +111,10 @@ class Tour7TutoPartMadeTest {
         val chapters = c.ui.value!!.chapters
         val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "make_drop" } }
         c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "make_drop" }); idle()
+        assertEquals(TutoNeed.Part("Drop"), c.ui.value!!.need)
         c.fulfilNeed(); idle(100)
         val made = c.ui.value!!.made.orEmpty()
         assertTrue("« $made »", "Drop" in made)
-        assertFalse("« $made » lists nothing", "Dedans : ." in made || "y joue" in made)
+        assertFalse("« $made » lists nothing", "Dedans : ." in made || "Dedans :  " in made)
     }
 }

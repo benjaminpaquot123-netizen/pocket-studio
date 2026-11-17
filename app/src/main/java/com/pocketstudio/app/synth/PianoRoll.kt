@@ -247,7 +247,10 @@ fun PianoRoll(
     val singleNotes = hints.isNotEmpty() && byStart.all { it.size == 1 }
     val chordHints = hints.isNotEmpty() && byStart.all { it.size >= 2 }
     var chordSetFor by rememberSaveable { mutableStateOf<String?>(null) }
-    LaunchedEffect(tutoStep, singleNotes, chordHints) {
+    val tutoOn = com.pocketstudio.app.tuto.TutoHints.active
+    LaunchedEffect(tutoStep, singleNotes, chordHints, tutoOn) {
+        // The tuto is over: « Accords » it turned on goes back off (the free piano starts with single notes).
+        if (!tutoOn) { if (chordSetFor != null) { chordMode = false; chordSetFor = null }; return@LaunchedEffect }
         if ((singleNotes || chordHints) && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordSetFor != tutoStep) {
             chordMode = chordHints
             chordSetFor = tutoStep

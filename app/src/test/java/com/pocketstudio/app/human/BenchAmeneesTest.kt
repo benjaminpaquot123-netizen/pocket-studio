@@ -53,6 +53,19 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertNotNull("« Choisir une chanson »", centerOf("remix_pick"))
     }
 
+    /**
+     * Tour 7, banc B1: `amenee=tuto:house:12` jumped to chapter 12 by the list, chapters 1 to 11 never played, so the
+     * project had none of their work (no « Montée » part to arrange). The anchored seat starts with the project those
+     * chapters build, as a person who played them would have it.
+     */
+    @Test
+    fun tutoAnchorStartsWithTheSkippedChaptersBuilt() {
+        val j = bring("tuto:house:12", SeatOptions(simple = true))
+        assertTrue(j.joinToString("\n"), j.last().startsWith("#0 AMENEE prête"))
+        val p = project()!!
+        assertNotNull("the « Montée » part of chapter 11\n" + j.joinToString("\n"), com.pocketstudio.model.tuto.TutoChecks.partContent(p, "Montée"))
+    }
+
     /** From the welcome's « Défis » card to the challenge's panel; challenge 1 as the app makes it on the page shown. */
     private fun openChallenge(): com.pocketstudio.model.PadChallenge.Challenge {
         begin(SeatOptions(simple = true))

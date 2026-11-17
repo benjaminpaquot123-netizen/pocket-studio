@@ -269,7 +269,7 @@ abstract class HumanTester(private val seat: String) {
         fun handBack(why: String) {
             replaying = false
             journal.appendText("#$n REJEU main rendue : $why\n")
-            File(dir, "rejeu.txt").writeText("main rendue au pas $n : $why")
+            File(dir, "rejeu.txt").writeText(SeatOptions.handBackNote(n, o.replayN, why, lastDiff))
         }
         while (true) {
             turnNow = n
@@ -312,7 +312,10 @@ abstract class HumanTester(private val seat: String) {
                         (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)")
                 }
                 if (o.replayHandBack) {
-                    SeatOptions.handBackWhy(n, o.replayN, diverged = was != print, originHasGesture = true)?.let(::handBack)
+                    // Tour 7, banc B2: the same words in other places (a dialog the app moved within the thumb's reach) are the
+                    // origin's screen; its moved buttons are aimed at by their tags below.
+                    val loose = wasText?.let { fingerprint(it, File(origin, "sound-$n.txt"), places = false) }
+                    SeatOptions.handBackWhy(n, o.replayN, diverged = loose != fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"), places = false), originHasGesture = true)?.let(::handBack)
                 } else if (!oracle && was != print) {
                     replayVerdict("divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""); return
                 }
@@ -385,6 +388,17 @@ abstract class HumanTester(private val seat: String) {
                 journal.appendText("#$n ETIQUETTE $tag : ${at.first.toInt()} ${at.second.toInt()}\n")
                 cmd = if (swipeByTag) "glisse ${at.first.toInt()} ${at.second.toInt()} ${(at.first + number(aimed[2])!!).toInt()} ${(at.second + number(aimed[3])!!).toInt()}"
                 else "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+            }
+            // Tour 7, banc B2: a replayed touch by pixels whose origin's finger was on a tagged button that moved since (the
+            // pixels are no longer on it) aims at that button where it is now, as « touche <étiquette> » does.
+            if (replaying && o.replayHandBack && aimed.size == 3 && aimed[0].lowercase() in TAG_GESTURES) {
+                val px = number(aimed[1]); val py = number(aimed[2])
+                val tag = if (px != null && py != null) SeatOptions.reaimTag(originFinger[n], screenText().under(px, py)) else null
+                val at = tag?.let { t -> runCatching { reachTag(t) }.getOrNull()?.let { reachableNear(t, it, o.hand) } }
+                if (tag != null && at != null) {
+                    journal.appendText("#$n REJEU visé : $tag déplacé, touché en ${at.first.toInt()},${at.second.toInt()}\n")
+                    cmd = "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+                }
             }
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
@@ -499,8 +513,8 @@ abstract class HumanTester(private val seat: String) {
      * A screen's fingerprint: its text (the title line aside) and what is heard (the bench's own note aside), clock times and
      * percentages left out. The same for a seat and its replay (scripts/human-replay.sh).
      */
-    private fun fingerprint(text: File, sound: File): String =
-        ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+    private fun fingerprint(text: File, sound: File, places: Boolean = true): String =
+        ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") }, places)
 
     /** The open project as it would be saved, digested (null: none open): what a gesture changed of the song. */
     private fun songDigest(): Int? = runCatching { vm()?.project?.value?.let { com.pocketstudio.model.ProjectJson.encode(it).hashCode() } }.getOrNull()
@@ -821,6 +835,12 @@ abstract class HumanTester(private val seat: String) {
                 tap("tuto_style_$style")
                 waitFor("le tuto") { centerOf("tuto_chapters") != null }
                 if (chapter > 1) {
+                    // Tour 7, banc B1: the chapters skipped are built into the project first, as playing them does.
+                    val v = lastVm ?: error("amenée $name : pas de projet ouvert")
+                    val built = TutoAnchor.built(v.project.value, style, level, chapter) ?: error("amenée $name : pas de cours $style")
+                    v.tutoEdit { built }
+                    play("attends 0.5")
+                    journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} construits dans le projet\n")
                     tap("tuto_chapters")
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")

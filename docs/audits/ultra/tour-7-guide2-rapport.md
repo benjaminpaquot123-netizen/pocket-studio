@@ -29,3 +29,4 @@ corrige: 3a-62 | gravité: moyen | rejeu: aucun, prouvé par Tour7PlusTilesAbove
 
 t7-g1-guide-son : oracle tenu
 t4-26-prise-clavier : divergé au pas 29, reste pour le tour 8 (voir Laissé)
+t6-ga14-phrases-batterie : divergé au pas 7 (« remix_dest_existing »), pareil sur l'intégration seule (7948ecb9) : pas ce lot ; t6-da15, t6-ec17, t6-ha19 : oracle tenu

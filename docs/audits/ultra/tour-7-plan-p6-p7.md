@@ -437,3 +437,11 @@ Règles communes aux blocs 1 à 4 :
 8. **Captures Roborazzi.** Beaucoup de captures tuto changent : refaire et **regarder**, sans confondre avec les captures hors tuto déjà rouges depuis l'intégration (voir le rapport fable-repar).
 9. **Recouvrement des tests de comptage.** `Tour7TutoTwoGesturesTest` (plafond 2) et le nouveau `TutoOneMomentTest` (plafond 1) : supprimer l'ancien dans le même commit que le nouveau, pour ne pas garder deux règles contradictoires.
 10. **Texte Pro.** Retirer un bouton du texte Facile ne doit pas changer le Pro : si `textPro` est absent, le Pro lit `text`. Avant de changer un `text`, il faut figer l'ancien comme `textPro` partout où le Pro en dépend.
+
+## Défauts de texte remontés par le contrôle fable (à traiter dans P6/P7)
+- ko ch.10 étape 7 : consigne « 엔딩 » mais bouton et partie « 끝 ».
+- ch.10 (ko, de) : le texte se contredit sur le silence du dernier temps (annoncé au ch.12, dit déjà fait).
+- de ch.10 : guillemets imbriqués mal fermés.
+- de : « wann du willst » → « wenn du willst ».
+- ch.12 étape 1 : texte hi-hat / 3 croix (si l'écart vient des données, Fable le corrige).
+- de : « ein einziger Schlag » alors que la cymbale joue déjà 8 coups.

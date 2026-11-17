@@ -56,8 +56,8 @@ class Tour7TutoDottedInItsPartTest {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
-    /** Techno, and two styles more whose crash has two parts of its own (« Drop », « Drop 2 ») or a longer loop. */
-    private val styles = listOf("techno", "house", "dnb")
+    /** Techno, and two styles more: a crash with two parts of its own (« Drop », « Drop 2 »), parts of other names (« Refrain »). */
+    private val styles = listOf("techno", "house", "pop")
 
     /** The controller on [check]'s step of [style], the course played in order up to it, its buttons touched. */
     private fun at(check: String, style: String): Pair<TutoController, MutableStateFlow<com.pocketstudio.model.Project>> {

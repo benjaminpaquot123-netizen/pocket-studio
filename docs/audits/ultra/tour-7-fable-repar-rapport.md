@@ -153,3 +153,21 @@ Vérifications de fin, sur la tête 4170af63 (intégration f8552f55 fusionnée) 
 - P8 : une vingtaine de recherches par préfixe dans `TutoChecks`, les doublons `writesBass` et `partLabel`, les tests par préfixe de `TutoPlay.kt`, `TutoValidation.kt`, `TutoCourse.kt`.
 - Mineurs du contrôle et note `AppRoot.kt` : tour 8.
 - Tout ce lot est « tenté » : aucun siège neuf ne l'a encore constaté.
+
+## Reprise après le contrôle P8 (verdict « fusion non » sur ede109d8)
+
+Intégration 92fb0dd3 fusionnée d'abord (07b8c7c1, docs seulement, sans conflit).
+
+- a-V1, « Touche ici » sur deux hauteurs (basse, la flèche ↑ montrait des notes que le roll n'atteignait pas). Cause : le roll n'allait vers la note cachée que tant que la note visible restait en vue ; sur la basse house (deux La à une octave d'écart), la première touche ne montrait rien de neuf. Réparation : une seule touche amène la note cachée entière ; la ligne montre ensuite celles laissées derrière. Rouge 80fb000b, vert bd4729f0. `PianoRoll.kt` inchangé.
+- c-V3, roulement du Build-up déjà posé. Cause : la partie « montée » fabriquée par le cours arrivait avec un roulement ×2 sur chaque coup de la dernière mesure (17 cours, deux niveaux). Réparation : la montée arrive sans roulement (4, 8, 12, 12 coups par mesure, toujours de plus en plus fort) ; un roulement trop rapide déjà là est remis à 1 ; sept phrases Pro perdent « les roulements sont offerts », en 14 langues. Rouge ebef1fee, vert 67e791fa.
+- Deux tests de `TutoGrilleTest` (basse, Facile et Pro) gardaient l'ancienne règle des deux touches : alignés sur la nouvelle (une note entière au-dessus du panneau, la cachée montrée, la ligne qui pointe le reste).
+
+Vérifications sur la tête : garde P1 verte (7 fichiers vides) ; tests du tuto côté modèle verts ; tests du tuto côté appli : 241, 0 rouge ; rejeux 6/6 « oracle tenu » ; pré-vol `--ci --rapide` PRÊT.
+
+Ce qui n'est pas vert :
+- Les deux réparations sont « tentées » : aucun siège neuf ne les a constatées.
+- En Facile, sept cours (techno, hard techno, house, gabber, speed garage, tech house, trance) n'ont l'étape roulement qu'en Pro, et deux (acid techno, acidcore) pas du tout : plus rien n'y enseigne le roulement. Question au chef.
+- Le rythme de la montée change (plus de rafale offerte) : à réécouter à l'écoute en direct, morceau exemple compris.
+- Phrases retouchées dans 13 langues à la main, pas relues par des natifs.
+- Sept finitions du relecteur (dont « la dernière rafale » dans quatre cours, « roule » dans jungle, une ancienne montée sauvegardée qui garde son ×2) : rangées dans la relecture, pour le tour 8.
+- Les 50 comparaisons de captures hors tuto, rouges sur cette machine seulement (CI 350 verte).

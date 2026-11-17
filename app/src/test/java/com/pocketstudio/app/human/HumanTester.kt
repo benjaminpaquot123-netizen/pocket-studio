@@ -821,6 +821,12 @@ abstract class HumanTester(private val seat: String) {
                 tap("tuto_style_$style")
                 waitFor("le tuto") { centerOf("tuto_chapters") != null }
                 if (chapter > 1) {
+                    // Tour 7, banc B1: the chapters skipped are built into the project first, as playing them does.
+                    val v = lastVm ?: error("amenée $name : pas de projet ouvert")
+                    val built = TutoAnchor.built(v.project.value, style, level, chapter) ?: error("amenée $name : pas de cours $style")
+                    v.tutoEdit { built }
+                    play("attends 0.5")
+                    journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} construits dans le projet\n")
                     tap("tuto_chapters")
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")

@@ -66,6 +66,25 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertNotNull("the « Montée » part of chapter 11\n" + j.joinToString("\n"), com.pocketstudio.model.tuto.TutoChecks.partContent(p, "Montée"))
     }
 
+    /**
+     * Tour 7, control tuto2 (seat c, ko, phone360, font 130 %): `amenee=tuto:techno:9` opened chapter 1. Chapter 9's row was
+     * cut at the bottom of « Chapitres »'s scrolling list; the bench touched the row's middle as if drawn whole, which fell on
+     * the button under the list (« Recommencer le tuto »: a new empty project, chapter 1). The seat starts on chapter 9.
+     */
+    @Test
+    fun tutoAnchorLandsOnItsChapterWhenItsRowIsCut() {
+        val o = SeatOptions.parse(mapOf("lang" to "ko", "device" to "phone360", "font" to "130", "mode" to "simple")).first
+        val j = bring("tuto:techno:9", o)
+        assertTrue(j.joinToString("\n"), j.last().startsWith("#0 AMENEE prête"))
+        val v = rhythm()!!
+        val progress = com.pocketstudio.app.tuto.PrefsTutoStore(androidx.test.core.app.ApplicationProvider.getApplicationContext()).load(v.projectId)
+        val chapter = com.pocketstudio.model.tuto.TutoCourse.of("techno")!!.chaptersFor(com.pocketstudio.model.tuto.TutoLevel.Facile)[8]
+        assertTrue(
+            "chapter 9's steps ${chapter.steps.map { it.id }}, the tuto at « ${progress?.current} »\n" + j.joinToString("\n") + "\n" + screenLines().joinToString("\n"),
+            progress != null && progress.current in chapter.steps.map { it.id },
+        )
+    }
+
     /** From the welcome's « Défis » card to the challenge's panel; challenge 1 as the app makes it on the page shown. */
     private fun openChallenge(): com.pocketstudio.model.PadChallenge.Challenge {
         begin(SeatOptions(simple = true))

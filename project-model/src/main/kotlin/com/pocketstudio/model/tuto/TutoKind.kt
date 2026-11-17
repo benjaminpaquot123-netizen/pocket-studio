@@ -222,13 +222,12 @@ internal interface TutoKind {
     companion object {
         val NO_FRAMES = TutoFrames()
         val MONTEE = listOf("Montée")
-        private val kinds = ConcurrentHashMap<String, Any>()
-        private val UNPARSED = Any()
+        private val kinds = ConcurrentHashMap<String, TutoKind>()
 
-        /** The kind [check] names, parsed once; null while its kind still lives in [TutoChecks]' own branches. */
-        fun of(check: String): TutoKind? = kinds.getOrPut(check) { parse(check) ?: UNPARSED } as? TutoKind
+        /** The kind [check] names, parsed once ([Unknown] for a word no kind reads). */
+        fun of(check: String): TutoKind = kinds.getOrPut(check) { parse(check) }
 
-        private fun parse(c: String): TutoKind? = when {
+        private fun parse(c: String): TutoKind = when {
             c == "manual" || c == "listen" -> ByHand
             c == "shared" -> Shared
             c == "tempo" -> Tempo
@@ -259,7 +258,7 @@ internal interface TutoKind {
             c == "crash" -> Crash
             c == "crash:once" -> CrashOnce
             c == "gap" -> DropGap
-            else -> null
+            else -> Unknown
         }
     }
 }
@@ -816,4 +815,9 @@ internal object DropGap : TutoKind {
         val silent = gapLanes(step, target)
         return d.lanes.mapIndexedNotNull { i, l -> if (i !in silent) null else l.hits.keys.filter { it in last }.toSet().takeIf { it.isNotEmpty() }?.let { i to it } }.toMap()
     }
+}
+
+/** A word no kind reads: never done, nothing shown, nothing asked. */
+internal object Unknown : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = false
 }

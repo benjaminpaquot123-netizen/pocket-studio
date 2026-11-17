@@ -31,6 +31,11 @@ Règles communes (celles du tour 7) : commit « rouge: » (le test seul, qui éc
 - Acceptation : `./gradlew :app:verifyRoborazziDebug` vert sur la tête ; chaque capture refaite regardée et nommée dans le rapport.
 - Parallèle : aucun lot qui change un écran ne fusionne avant lui (sinon on refait deux fois). Les lots du banc peuvent tourner à côté.
 
+### Lot T0 « touche-ici » (a-V1, reporté du tour 7) · PREMIER lot du tuto au tour 8, après P6/P7
+- Portée : a-V1 du contrôle P8b : « Touche ici » demande 2 touchers aux mesures 1 et 4 (3 en japonais). Plus les finitions p8/p8b : e (ch.13 « Ich mach's » n'ouvre que la fiche d'effet ; éditeur du ch.12 resté sur l'onglet Rolls ; « Drop 2 Takt 81/128 » ; 10 mots allemands faux), d (Montée posée après le Break, pas juste avant Drop 2), c (pas de croix rouges en coréen au ch.12 ; 엔딩/끝 ; « … » qui coupe une syllabe), b (なぜ？ remplace la consigne ; puce « + トラ→ » rognée), a (« A mesure 1/16 » affiché en partie B) ; c-V3 : courte étape roll en Facile ; relecture Fable : « la dernière rafale » (dnb, jump_up, techno, trance), Montée du morceau d'exemple moins dense (réécouter au live-bench).
+- Sources : `sieges/tour-7/controle/p8/verdict.md`, `sieges/tour-7/controle/p8b/verdict.md`, `tour-7-fable-repar-relecture-p8.md`.
+- Acceptation : « en fr, deux mains, phone à 100 %, Mode Simple : au tuto house ch. 4, je touche une fois « Touche ici » à la mesure 1 et la note se pose [contrôle p8b a-V1] » ; même chose en ja et à la mesure 4.
+
 ### Lot T1 « tutokind » (Fable) · EN COURS chez Fable, continue après la fusion
 - Portée : P8 de l'audit Fable (§ 3.3 : une définition par type d'étape, `TutoChecks` en façade), plus M1, M2, M4 de la relecture de fable-repar et ses mineurs (pastille « Touche ici » sans effet, `lit` avant le bornage, `changes` inutilisée, `canShow` qui lit `show` au lieu de `demo`, `Tour7TutoMissingOfferedTest` sans niveau).
 - Fichiers :

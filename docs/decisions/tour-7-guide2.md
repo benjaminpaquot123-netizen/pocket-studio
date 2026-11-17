@@ -7,3 +7,4 @@
 - 2026-11-17 · Laissé : la consigne de la Guía en espagnol (2c #9 et #16) est coupée dans la découpe du Remix, fichiers du lot « découpe » (`remix/`) · signalé au chef.
 - 2026-11-17 · Laissé : D7 (U27, mêmes noms de pistes au Mixer et aux Sons) : mettre « Audio » et « Remix » après les pistes dans les Sons sort la puce Remix de l'écran du téléphone (contre la décision du 2026-10-24 : Remix à une touche depuis Sons, et `HumanRemixJourneyTest`, fichier du banc) ; réordonner le Mixer pousse « Basse » hors d'un écran de 360 dp (`KeyActionsGestureTest`) · à trancher par le chef.
 - 2026-11-17 · Laissé : t4-26 (Clavier à 200 %) : le Guide y est déjà replié, les touches sont poussées sous le pli par l'en-tête du Clavier (hors de ma zone) · reste pour le tour 8.
+- Tuiles Plus compactes quand leurs rangées dépasseraient le pli · sinon la Recette, seule sur sa rangée, passait sous le Guide (un défilement de plus) · retour arrière : enlever `compact` dans `PlusTile`.

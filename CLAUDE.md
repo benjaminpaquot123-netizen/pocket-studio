@@ -35,7 +35,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 ## Travail en équipes (auto-surveillance)
 - Dès que des agents, des testeurs ou des tâches longues tournent en arrière-plan, lancer une surveillance automatique (Monitor) et la relancer à chaque expiration, tant qu'il reste du travail en cours.
 - Elle signale : chaque compte rendu ou capture qui arrive, et une file de compilation bloquée (des builds en attente pendant que la machine ne fait presque rien).
-- Prévenir Benjamin à chaque fin d'agent, avec les captures « après » pour le design ; ne jamais attendre qu'il demande des nouvelles.
+- Prévenir Benjamin seulement aux grands jalons (fusion, fin de tour, APK) ou quand il doit agir, avec les captures « après » pour le design ; pas de point à chaque fin d'agent ni à chaque réveil (Benjamin, 2026-11-17 : « fais des résumés beaucoup moins souvent »).
 - Compilations : un verrou `flock` par groupe d'équipes (au moins deux en parallèle quand la mémoire le permet) ; banc testeur humain : `--max-workers` au moins égal au nombre de sièges.
 
 - Chaque erreur signalée par Benjamin : la corriger là où il l'a vue ET vérifier partout où elle peut se reproduire, avec un test qui couvre tous les cas.
@@ -46,7 +46,7 @@ Ordre des étapes, règles anti-conflit et sources : `docs/PLAN-REPRISE.md`.
 - Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
 - L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.
-- Nouvelles à Benjamin à chaque étape, en 3 à 5 lignes.
+- Nouvelles à Benjamin aux grands jalons seulement, en 3 à 5 lignes (2026-11-17).
 - Ne jamais attendre pour rien : surveillance automatique (disque < 2 Go, test Gradle figé > 20 min, démon Gradle bloqué, équipe sans nouveau commit ni note de suivi depuis 45 min, même échec relancé 2 fois) ; à chaque alerte, l'orchestrateur regarde la note de suivi et agit (tuer le processus figé, libérer le disque, relancer une fois, recadrer ou arrêter l'équipe qui tourne en rond, découper le lot) au lieu d'attendre.
 
 ## Travail à plusieurs discussions (méthode v3, Benjamin, 2026-11-13)

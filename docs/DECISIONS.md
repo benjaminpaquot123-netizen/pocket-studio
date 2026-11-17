@@ -1515,3 +1515,4 @@
 - 2026-11-14 · lot « stable » (tour-6) : 16 décision(s) dans `docs/decisions/tour-6-stable.md`
 - 2026-11-14 · lot « rejeux7 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-rejeux7.md`
 - 2026-11-14 · idée « Aide guidée partout » (Benjamin) : mise de côté, pour après l'audit. Sans aucune IA (ni sur le téléphone, ni en ligne) : catalogue écrit à la main de chaque action (chemin exact), recherche par mots-clés et synonymes, pas à pas qui fait clignoter le bouton suivant à partir de l'état de l'appli. Retour arrière : simple retrait du bouton Aide.
+- 2026-11-17 · tour 7, D7/U27 (Remix, guide) : on garde le comportement actuel (Remix en un toucher, décision du 2026-10-24, et « Basse » visible sur 360 dp) ; D7 reporté au tour 8. Raison : la correction proposée casse deux règles déjà validées (HumanRemixJourneyTest, KeyActionsGestureTest). Retour arrière : rouvrir D7 dans le lot guide du tour 8.

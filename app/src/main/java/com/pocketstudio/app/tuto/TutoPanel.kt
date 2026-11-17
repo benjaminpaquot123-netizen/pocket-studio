@@ -622,7 +622,8 @@ fun TutoPanel(
             // Fresh review of « fable-repar » (A): at 200 % the kit offer, « Pourquoi ? » and « Lire la suite » took the
             // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
             // room grows by what is missing, and a height held too low for it is taken again (twice at most).
-            val least = with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() }
+            // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
+            val least = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
             WordsRoom(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
@@ -701,19 +702,23 @@ fun TutoPanel(
 /**
  * The room of the step's words (the first child of [content]) over what is pinned under them (the others: the kit offer,
  * « Pourquoi ? », « Lire la suite »), 6 dp apart. The pinned ones are measured first and whole; the words take what is
- * left of [most] (of the height given, when [holding]), and never less than [least] px: the room grows past [most] by
- * what is missing; when [holding], [starved] is told (the height held is too low).
+ * left of [most] (of the height given, when [holding]). [least] px (0: none) is the words' least room: the room grows
+ * past [most] by what is missing, as far as the height given lets it; when [holding], [starved] is told (the height
+ * held is too low).
  */
 @Composable
 private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
     androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
         val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
-        val pinned = ms.drop(1).map { it.measure(wide) }
-        val fixed = pinned.sumOf { it.height + gap }
-        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), fixed + least))
-        if (holding && cap - fixed < least) starved()
-        val room = maxOf(cap - fixed, minOf(least, cap), 0)
+        // Each pinned one within what the height given leaves (as a column would), never past it.
+        var fixed = 0
+        val pinned = ms.drop(1).map { m ->
+            m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also { fixed += it.height + gap }
+        }
+        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), if (least > 0) fixed + least else 0))
+        if (holding && least > 0 && cap - fixed < least) starved()
+        val room = maxOf(cap - fixed, 0)
         val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
         val height = ((words?.height ?: 0) + fixed).coerceIn(if (holding) c.minHeight else minOf(52.dp.roundToPx(), cap), maxOf(cap, c.minHeight))
         val width = (listOfNotNull(words) + pinned).maxOfOrNull { it.width }?.coerceIn(c.minWidth, c.maxWidth) ?: c.minWidth

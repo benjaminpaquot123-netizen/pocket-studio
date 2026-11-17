@@ -2269,10 +2269,6 @@ object TutoChecks {
         return before.count { (_, s) -> !done(s, q, target) } < before.count { (_, s) -> !done(s, p, target) }
     }
 
-    /** Whether a touch of [need] changes [p]. */
-    private fun changes(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget): Boolean =
-        fulfil(need, step, p, target)?.first?.sanitized().let { it != null && it != p.sanitized() }
-
     /**
      * Whether a touch of [step]'s own button [need] brings it forward: it changes [p], and « Créer la partie » of a
      * step that only makes a part ticks it (a part made from a loop too poor for it is refused over and over).
@@ -2283,7 +2279,6 @@ object TutoChecks {
         return !(need is TutoNeed.Part && step.check.startsWith("part:") && !writesBass(step)) || done(step, q, target)
     }
 
-    /** The chapters of the level that holds [step] (the first level that does), null when none. */
     private const val LATER_SOFT = "soft"
     private const val LATER_TRIPLET = "triplet"
 
@@ -2318,6 +2313,7 @@ object TutoChecks {
         return withChannels(p, listOf(InstrumentTrack.mixerChannel(id))) { c -> c.copy(inserts = c.inserts.map { if (it.type in taught) Insert() else it }).sanitized() }
     }
 
+    /** The chapters of the level that holds [step] (the first level that does), null when none. */
     private fun chaptersOf(step: TutoStep, target: TutoTarget, level: TutoLevel? = null): List<TutoChapter>? {
         val course = TutoCourse.of(target.style.id) ?: return null
         // The level played first (tour 7, R-A: a Pro course was given the Facile loop, without its toms).

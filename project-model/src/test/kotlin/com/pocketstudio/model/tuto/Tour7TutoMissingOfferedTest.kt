@@ -19,7 +19,7 @@ class Tour7TutoMissingOfferedTest {
             for (c in TutoCourse.of(style)!!.chaptersFor(level)) {
                 var p = target.blank()
                 for (s in c.steps.filterNot { it.manual || it.listening || it.check == "shared" }) {
-                    val o = TutoPlay.play(s, p, target)
+                    val o = TutoPlay.play(s, p, target, level)
                     played++
                     if (o.end == End.DeadEnd || o.end == End.NeverDone) stuck += "$style $level ${s.id} [${s.check}]: ${o.end} ${o.why}"
                     p = o.project
@@ -38,7 +38,7 @@ class Tour7TutoMissingOfferedTest {
             val target = TutoTarget.of(style)!!
             var p = target.blank()
             for (c in TutoCourse.of(style)!!.chaptersFor(level)) for (s in c.steps.filterNot { it.manual || it.listening || it.check == "shared" }) {
-                p = TutoPlay.play(s, p, target) { _, need -> if (need is TutoNeed.Course) offered += "$style $level ${s.id} [${s.check}]: $need" }.project
+                p = TutoPlay.play(s, p, target, level) { _, need -> if (need is TutoNeed.Course) offered += "$style $level ${s.id} [${s.check}]: $need" }.project
             }
         }
         assertTrue("${offered.size} steps offered what is missing in a course played in order\n" + offered.distinct().take(40).joinToString("\n"), offered.isEmpty())

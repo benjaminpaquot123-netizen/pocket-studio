@@ -84,6 +84,27 @@ import com.pocketstudio.model.withFx
 import com.pocketstudio.model.withTrack
 import kotlin.math.ceil
 import kotlin.math.roundToInt
+import com.pocketstudio.model.tuto.TutoChecks.KNOB_STEP_PCT
+import com.pocketstudio.model.tuto.TutoChecks.OPEN_HAT_LANE
+import com.pocketstudio.model.tuto.TutoChecks.RISE_SHAPE
+import com.pocketstudio.model.tuto.TutoChecks.channelsToDo
+import com.pocketstudio.model.tuto.TutoChecks.curve
+import com.pocketstudio.model.tuto.TutoChecks.curveDrawn
+import com.pocketstudio.model.tuto.TutoChecks.hasInsert
+import com.pocketstudio.model.tuto.TutoChecks.inScene
+import com.pocketstudio.model.tuto.TutoChecks.insertChannels
+import com.pocketstudio.model.tuto.TutoChecks.knobPct
+import com.pocketstudio.model.tuto.TutoChecks.knobValue
+import com.pocketstudio.model.tuto.TutoChecks.knobsOf
+import com.pocketstudio.model.tuto.TutoChecks.partsOf
+import com.pocketstudio.model.tuto.TutoChecks.sceneAt
+import com.pocketstudio.model.tuto.TutoChecks.sendChannels
+import com.pocketstudio.model.tuto.TutoChecks.sends
+import com.pocketstudio.model.tuto.TutoChecks.variationLanes
+import com.pocketstudio.model.tuto.TutoChecks.volumeChannels
+import com.pocketstudio.model.tuto.TutoChecks.withChannels
+import com.pocketstudio.model.tuto.TutoChecks.withInsert
+import com.pocketstudio.model.tuto.TutoChecks.withKnob
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
@@ -196,6 +217,17 @@ internal interface TutoKind {
             c == "notes:acid" -> AcidNotes
             c.startsWith("notes:") -> Notes(c.removePrefix("notes:"))
             c == "track:sub" -> SubTrack
+            c.startsWith("insert:") -> PutInsert(c.removePrefix("insert:"))
+            c.startsWith("send:") -> SendTo(c.removePrefix("send:").toIntOrNull())
+            c == "automation" || c.startsWith("automation:") -> Curve(c.substringAfter(':', "").ifEmpty { RISE_SHAPE })
+            c == "master" -> MasterFx
+            c.startsWith("loudness:") -> Loudness(c.removePrefix("loudness:"))
+            c == "changed:volumes" -> Volumes(null)
+            c.startsWith("changed:volumes:") -> Volumes(c)
+            c.startsWith("changed:synth:") -> knobsOf(c).let { (role, knobs) -> SynthKnobs(role, knobs) }
+            c.startsWith("changed:drums:") -> DrumsChanged(c.removePrefix("changed:drums:"))
+            c == "changed:kit" -> KitChanged
+            c.startsWith("changed:") -> NothingWatched
             else -> null
         }
     }
@@ -456,3 +488,132 @@ internal object SubTrack : TutoKind {
         return id to StarterWizard.subNotes(notesOf(p, bass))
     }
 }
+
+/** "insert:<EFFECT>": the effect on each track the step names ([TutoStep.target]: the pump on the Sub and the Basse), not anywhere in the mix. */
+internal class PutInsert(val effect: String) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        insertChannels(p, step).let { chans -> chans.isNotEmpty() && chans.all { hasInsert(p, it, effect) } }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val type = EffectType.entries.firstOrNull { it.name == effect } ?: return null
+        return toDo(step, p).fold(p) { q, ch -> withInsert(q, ch, Insert(type.ordinal, type.defaults)) ?: q }
+    }
+    override fun toDo(step: TutoStep, p: Project) = insertChannels(p, step).filterNot { hasInsert(p, it, effect) }
+}
+
+/** "send:<bus>": every strip the step names sends to the bus (the « Accords » track AND the snare), not any strip. */
+internal class SendTo(val bus: Int?) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        bus != null && sendChannels(p, bus, step).let { chans -> chans.isNotEmpty() && chans.all { sends(p, it, bus) } }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val chans = sendChannels(p, bus ?: return null, step)
+        if (chans.isEmpty()) return null
+        return withChannels(p, chans) { it.copy(sends = it.sends.mapIndexed { b, v -> if (b == bus) maxOf(v, if (bus == 0) 0.3f else 0.25f) else v }) }
+    }
+    override fun toDo(step: TutoStep, p: Project) = bus?.let { b -> sendChannels(p, b, step).filterNot { sends(p, it, b) } }.orEmpty()
+}
+
+/** "automation[:<shape>]": a curve drawn over the part (b/280: « Par partie » touched, no curve, ticked): rising, falling or up and down. */
+internal class Curve(val shape: String) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        curveDrawn(p, step.target.ifEmpty { "pad" }, partsOf(step).first(), shape)
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = curve(p, step, target)
+    override fun workPart(step: TutoStep, p: Project) = partsOf(step).first()
+    override fun cited(step: TutoStep) = partsOf(step)
+}
+
+/** "master": an effect on, on the master. */
+internal object MasterFx : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.mixer.master.any { it.effect != EffectType.NONE && !it.bypass }
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = p.copy(mixer = p.mixer.copy(master = target.song.mixer.master))
+}
+
+/** "loudness:<TARGET>": the master's « Volume visé » (its limiter, always last, brings the song there). */
+internal class Loudness(val name: String) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.mixer.target.name == name
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) =
+        LoudnessTarget.entries.firstOrNull { it.name == name }?.let { p.copy(mixer = com.pocketstudio.model.LoudnessTargets.withTarget(p.mixer, it)) }
+}
+
+/** "changed:…": ticked by a change of what it watches ([arm]) since the step began; any change, unless the kind asks for more. */
+internal abstract class Changed : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = armed != null && arm(p) != armed
+    override val watches get() = true
+}
+
+/** "changed:volumes[:<roles>]": each track the step names a little lower than when the step began (the testers' mix ticked with one of two); no role: any fader. */
+internal class Volumes(val check: String?) : Changed() {
+    override fun arm(p: Project) = p.mixer.channels.map { it.volume }
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?): Boolean {
+        if (check == null) return super.done(step, p, target, armed)
+        val base = armed as? List<*> ?: return false
+        val chans = volumeChannels(p, check)
+        return chans.isNotEmpty() && chans.all { ch -> (base.getOrNull(ch) as? Float)?.let { p.mixer.channels.getOrNull(ch)?.volume?.let { v -> v < it - 0.005f } } == true }
+    }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val chans = if (check == null) listOfNotNull(trackFor(p, "pad"), trackFor(p, "lead")).map(InstrumentTrack::mixerChannel)
+            else volumeChannels(p, check).takeIf { it.isNotEmpty() } ?: return null
+        return withChannels(p, chans) { it.copy(volume = it.volume * 0.8f) }
+    }
+}
+
+/** "changed:synth:<role>[:<KNOB>+<KNOB>]": the knobs the step names turned up since it began (not the distortion the synth has none of); no knob: any change of the sound. */
+internal class SynthKnobs(val role: String, val knobs: List<Int>) : Changed() {
+    override fun arm(p: Project) = trackFor(p, role)?.let { id -> p.track(id).let { listOf(it.synth, it.plaits, it.engine) } }
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?): Boolean {
+        if (knobs.isEmpty()) return super.done(step, p, target, armed)
+        val base = armed as? List<*>
+        val now = trackFor(p, role)?.let { p.track(it) }
+        // The track as it was ([arm]: its synth, its Plaits, its engine), read the way it plays now.
+        val before = (base?.getOrNull(0) as? SynthPatch)?.let { s -> now?.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) }
+        return before != null && now != null && knobs.all { k ->
+            val was = knobValue(before, k)
+            knobValue(now, k)?.let { v -> was != null && (knobPct(v) - knobPct(was) >= KNOB_STEP_PCT || knobPct(v) >= 95) } == true
+        }
+    }
+
+    // The knobs the step names, turned up a third.
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        if (knobs.isEmpty()) return null
+        val t = p.track(trackFor(p, role) ?: return null)
+        return p.withTrack(knobs.fold(t) { u, k -> knobValue(u, k)?.let { withKnob(u, k, (it + 0.3f).coerceAtMost(1f)) } ?: u })
+    }
+}
+
+/**
+ * "changed:drums:<part>": a new hit on a variation's pad in the part named so (« change un détail » in the Drop 2).
+ * Théo (lot « tuto 5 »): « percussion ou charley ouvert », not any hit (a closed hat ticked it).
+ */
+internal class DrumsChanged(val label: String) : Changed() {
+    // The hits of every pad in the part.
+    override fun arm(p: Project) = sceneLabelled(p, label).takeIf { it >= 0 }?.let { i -> sceneAt(p, i).drums.lanes.map { it.hits } }
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = (armed as? List<*>)?.let { base ->
+        arm(p)?.withIndex()?.any { (i, now) -> i in variationLanes() && (now.keys - (base.getOrNull(i) as? Map<*, *>)?.keys.orEmpty()).isNotEmpty() }
+    } == true
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, label) { q ->
+        // A variation: an open hat on an empty cell near the end (the second to last first), else a percussion's.
+        val n = q.drums.steps
+        val cells = (n - 2 downTo n / 2) + (n - 1 downTo n / 2)
+        val free = (listOf(OPEN_HAT_LANE) + variationLanes().filter { it != OPEN_HAT_LANE }.sorted()).firstNotNullOfOrNull { l ->
+            cells.firstOrNull { it !in q.drums.lanes[l].hits }?.let { l to it }
+        }
+        if (free == null) q
+        else q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == free.first) l.copy(hits = l.hits + (free.second to Hit(0.8f))) else l }))
+    }
+    override fun workPart(step: TutoStep, p: Project) = label
+    override fun cited(step: TutoStep) = listOf(label)
+}
+
+/** "changed:kit": another kick (its sample or its voice). */
+internal object KitChanged : Changed() {
+    override fun arm(p: Project): Any? = p.drums.lanes.getOrNull(0)?.sample to p.padVoices[0]
+}
+
+/** Any other "changed:…": it watches nothing, so nothing ticks it. */
+internal object NothingWatched : Changed()

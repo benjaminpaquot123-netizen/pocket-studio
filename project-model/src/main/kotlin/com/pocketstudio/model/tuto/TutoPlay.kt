@@ -57,8 +57,8 @@ object TutoPlay {
      *  [level]: the course's level, so the show leaves to a later step of that level what it teaches. */
     fun showMe(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): TutoDemo? = TutoChecks.demo(step, p, target, level)
 
-    /** Whether [step] has a « Montre-moi » on [p] (the panel's button is drawn from this). */
-    fun canShow(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean = TutoChecks.show(step, p, target, level) != null
+    /** Whether [step] has a « Montre-moi » on [p]: [showMe] is not null (the panel's button and the step's main button read this one answer). */
+    fun canShow(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean = TutoChecks.canShow(step, p, target, level)
 
     /** Whether [step] is ticked on [p] ([base]: what it watched when it began). */
     fun done(step: TutoStep, p: Project, target: TutoTarget, base: Any?): Boolean = TutoChecks.done(step, p, target, base)

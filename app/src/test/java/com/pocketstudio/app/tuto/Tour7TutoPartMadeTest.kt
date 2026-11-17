@@ -84,6 +84,10 @@ class Tour7TutoPartMadeTest {
         val made = c.ui.value!!.made.orEmpty()
         assertTrue("« $made »", "Drop" in made)
         assertTrue("« $made » does not say the Drop holds the kick", "Kick" in made)
+        // What the line names is in the Drop (R-C laid what was missing first, so the list is read off the part made).
+        val held = TutoChecks.bricks(TutoChecks.partContent(flow.value, "Drop")!!)
+        assertFalse("« $made » names a bass the Drop does not hold: $held", "Basse" in made && held.none { it.startsWith("inst:") || it == "acid" })
+        assertFalse("« $made » names a clap the Drop does not hold: $held", "Clap" in made && "pad:4" !in held)
     }
 
     @Test

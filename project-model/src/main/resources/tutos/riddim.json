@@ -144,14 +144,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » fait le reste.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (son du style, filtre haché par un LFO carré, flanger sur sa tranche). Écris les mesures 1 et 2 : Mi♭, Mi♭, le Mi♭ aigu en réponse ; puis la même chose avec un Sol♭ avant la réponse. « Copier sur les mesures suivantes ».",
           "why": "Rien entre la 9e et la 12e case : c'est la place du clap. Les silences comptent autant que les notes.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans basse, il n'y a pas de riddim : la formule de basse, c'est le style."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 4 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait le reste.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         }
       ]
     },
@@ -202,7 +212,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe sombre) : Mi♭ mineur d'un toucher, mesure 1, puis « Copier sur les mesures suivantes ». Un seul accord tout le morceau.",
           "why": "Un seul accord : le riddim n'a pas de mélodie d'ensemble, toute la musique est dans la basse.",
           "check": "notes:pad",
@@ -396,7 +406,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "Intro, Montée et Faux drop font 28 mesures, le Drop tombe à la 29e : une phrase plus loin que le dubstep, à cause du faux départ. Le morceau dure environ 2 min 45.",
           "check": "song:phrases",
           "spot": "song.parts",

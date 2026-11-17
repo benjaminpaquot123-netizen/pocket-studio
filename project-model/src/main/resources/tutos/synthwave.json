@@ -166,13 +166,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 8 notes en pointillé de la mesure 1 : toujours le même La, une case sur deux. « Copier sur les mesures suivantes » la fait suivre les accords.",
+          "text": "À toi : touche « Créer la piste Basse », puis les 8 notes en pointillé de la mesure 1 : toujours le même La, une case sur deux.",
           "textPro": "À toi : crée la piste Basse (« Basse analogique »). Mesure 1 : La en croches, puis « Copier » : la copie suit la grille Sol, Fa, Ré.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, le moteur du morceau ne tourne pas."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : il recopie la mesure 1 en suivant les accords.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_pump",
@@ -198,7 +208,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il est tenu toute la mesure.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : La mineur tenu toute la mesure, puis « Copier » : la copie suit la grille. Dans l'exemple, ces mêmes accords passent dans un arpégiateur (notes une à une, en doubles croches, sur deux octaves).",
           "check": "notes:pad",
           "length": 16,
@@ -240,13 +250,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 4 à la mesure 1 (elles montent), 5 à la mesure 2 (elles redescendent). « Copier sur les mesures suivantes » la rejoue sur les mesures 3 et 4.",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 4 notes en pointillé de la mesure 1 : elles montent.",
           "textPro": "À toi : crée la piste Mélodie et écris le hook : mesure 1 La Si Do… Mi (l'appel qui monte), mesure 2 Ré Do La Si La (la réponse), puis « Copier ».",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans mélodie, ton morceau n'a rien à fredonner."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 5 notes de la mesure 2 (elles redescendent), puis touche « Copier sur les mesures suivantes » : la mélodie revient sur les mesures 3 et 4.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_knobs",
@@ -399,7 +419,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:8,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",

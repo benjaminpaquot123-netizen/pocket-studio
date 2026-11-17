@@ -274,7 +274,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. 2 minutes 46 à 185 BPM.",
           "check": "song:phrases",

@@ -40,7 +40,7 @@ class TutoLot4Test {
         return p
     }
 
-    private val parts = arrayOf("kick_do", "snare_do", "hat_do", "bass_do", "pad_do", "lead_do", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", "make_drop2", "make_fin")
+    private val parts = arrayOf("kick_do", "snare_do", "hat_do", "bass_do", "bass_2", "bass_3", "pad_do", "pad_2", "pad_3", "lead_do", "lead_2", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", "make_drop2", "make_drop2_2", "make_drop2_3", "make_fin")
 
     // ---- C1 · only what is done ----
 
@@ -284,8 +284,8 @@ class TutoLot4Test {
     @Test
     fun theDropTwoBassIsTheUsers() {
         val d2 = step("make_drop2")
-        val before = TutoChecks.fulfil(TutoNeed.Track("sub"), step("bass_sub"), upTo("kick_do", "snare_do", "hat_do", "bass_do"), target)!!.first
-        var p = upTo("pad_do", "lead_do", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", from = before)
+        val before = TutoChecks.fulfil(TutoNeed.Track("sub"), step("bass_sub"), upTo("kick_do", "snare_do", "hat_do", "bass_do", "bass_2", "bass_3"), target)!!.first
+        var p = upTo("pad_do", "pad_2", "pad_3", "lead_do", "lead_2", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", from = before)
         assertEquals(TutoNeed.Part("Drop 2"), TutoChecks.need(d2, p, target))
         p = TutoChecks.fulfil(TutoNeed.Part("Drop 2"), d2, p, target)!!.first
         val i = p.allScenes.indexOfFirst { it.label == "Drop 2" }
@@ -298,11 +298,15 @@ class TutoLot4Test {
         val groove = target.notes(StarterWizard.Part.Bass).notes
         assertTrue("its first bar only", ghosts.isNotEmpty() && ghosts.all { it.start < 384 })
         assertTrue("another bass", ghosts.map { it.pitch }.toSet() != groove.map { it.pitch }.toSet())
+        // D4: the Facile step is cut in pieces; its first bar ticks the first, the whole line and its Sub the last.
         p = TutoLot5Test.writeLine(d2, p, bass, target).first
-        assertFalse("its Sub still the old one", TutoChecks.done(d2, p, target))
-        assertEquals(TutoNeed.Track("sub"), TutoChecks.need(d2, p, target))
-        p = TutoChecks.fulfil(TutoNeed.Track("sub"), d2, p, target)!!.first
-        assertTrue(TutoChecks.done(d2, p, target))
+        assertTrue("its first bar ticks its first piece", TutoChecks.done(d2, p, target))
+        val last = step("make_drop2_3")
+        p = TutoLot5Test.writeLine(last, p, bass, target).first
+        assertFalse("its Sub still the old one", TutoChecks.done(last, p, target))
+        assertEquals(TutoNeed.Track("sub"), TutoChecks.need(last, p, target))
+        p = TutoChecks.fulfil(TutoNeed.Track("sub"), last, p, target)!!.first
+        assertTrue(TutoChecks.done(last, p, target))
         // The Groove's bass is untouched.
         val g = p.allScenes.indexOfFirst { it.label == "Groove" }
         assertEquals(groove.map { it.pitch to it.start }.toSet(), p.switchScene(g).track(bass).notes.notes.map { it.pitch to it.start }.toSet())

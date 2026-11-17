@@ -36,10 +36,8 @@ class Tour6TutoActionsTest {
          * `length: 16` (or 32), its first bars; a second one, « Copier » and the rest. This list only shrinks.
          */
         val PENDING = setOf<String>(
-            "jump_up/bass_do/f",
             "jump_up/bass_do/p",
             "jump_up/make_drop2/p",
-            "jump_up/pad_do/f",
         )
     }
 }

@@ -107,7 +107,7 @@
         {
           "id": "hat_do",
           "levels": "f",
-          "text": "À toi : les charleys tiennent sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Charley », touche toutes les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "text": "À toi : les charleys tiennent sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Charley », touche toutes les cases en pointillé. Astuce : le bouton « Remplir 1/2 » sous la grille met un coup sur deux d'un seul geste.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -163,14 +163,24 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick. Puis les 4 notes de la mesure 2 : l'avant-dernière dure jusque sous la dernière, elle glisse. « Copier sur les mesures suivantes » écrit les mesures 3 et 4 (les mêmes, plus bas, avec les accords).",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse (une piste « Basse 808 », écrite au piano roll). Mesure 1 : Fa1 sur les 3 kicks. Mesure 2 : la note du pas 27 dure jusque sous Fa2 (pas 31) : deux notes qui se chevauchent glissent, d'une octave vers le haut. « Copier » : les mesures 3 et 4 descendent sur Ré♭ (VI) et Mi♭ (VII), le glissé d'octave compris.",
           "why": "La 808 glisse quand une note dure jusqu'après le début de la suivante : peu de glissés, sinon on ne les remarque plus.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans 808, ta trap n'a pas de grave : c'est elle qui fait trembler les enceintes."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 4 notes de la mesure 2 : l'avant-dernière dure jusque sous la dernière, elle glisse. Puis « Copier sur les mesures suivantes » : il écrit les mesures 3 et 4 (les mêmes, plus bas, avec les accords).",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         },
         {
           "id": "bass_pump",
@@ -190,7 +200,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (elle défile si tu ne la vois pas entière) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1.",
+          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (des cordes). Mesure 1 : Fa mineur tenu une mesure (« Accords » pose la triade d'un toucher), puis « Copier » : Fa mineur, Ré♭ (VI) et Mi♭ (VII), suivis le long de la gamme.",
           "check": "notes:pad",
           "length": 16,
@@ -222,14 +232,24 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Il y a des trous : c'est voulu. Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1. Il y a des trous : c'est voulu.",
           "textPro": "À toi : crée la piste Mélodie (« Cloche FM ») et écris ses 2 mesures : Fa, Do, La♭, puis Fa, La♭, Do, Mi♭, environ une note par temps, avec des trous. « Copier » : elle reste la même sur Ré♭ et Mi♭, où ses notes deviennent des tensions (7e majeure, 9e) : le côté mélancolique.",
           "why": "Une phrase courte, répétée, avec du vide : le rappeur s'en souvient et il a de la place.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans mélodie, personne ne retiendra ton beat."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 4 notes de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -347,7 +367,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Refrain 16, Couplet 30, Pré-refrain 2. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 4 mesures, Refrain 16, Couplet 30, Pré-refrain 2.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Refrain 16, Couplet 30, Pré-refrain 2. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "Couplet 30 + Pré-refrain 2 = 32 mesures, les 16 mesures du rappeur. Refrain 16 = ses 8. En tout 3 min 26.",
           "check": "song:phrases",
           "spot": "song.parts",

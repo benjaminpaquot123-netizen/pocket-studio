@@ -53,14 +53,17 @@ class BenchScreenTextOverlayTest {
         return ScreenText(compose, screen, reads = true, rtl = false).read()
     }
 
-    @Test
-    fun aRingDrawnOverTheScreenHidesNothing() {
-        for (tag in listOf("tuto_spot_ring", "tuto_finger")) {
-            val s = read(tag, page = false)
-            assertTrue("$tag: the studio's words\n${s.lines.joinToString("\n")}", s.lines.any { "Kick sur chaque temps" in it } && s.lines.any { "Je le fais" in it })
-            assertTrue("$tag: the route is the page under it, not the ring (${s.route})", s.route == "studio")
-        }
+    private fun underTheDrawing(tag: String) {
+        val s = read(tag, page = false)
+        assertTrue("$tag: the studio's words\n${s.lines.joinToString("\n")}", s.lines.any { "Kick sur chaque temps" in it } && s.lines.any { "Je le fais" in it })
+        assertTrue("$tag: the route is the page under it, not the ring (${s.route})", s.route == "studio")
     }
+
+    @Test
+    fun aRingDrawnOverTheScreenHidesNothing() = underTheDrawing("tuto_spot_ring")
+
+    @Test
+    fun aFingerDrawnOverTheScreenHidesNothing() = underTheDrawing("tuto_finger")
 
     /** The rule the ring escapes still holds for a page drawn over the screen: what is under it is not read. */
     @Test

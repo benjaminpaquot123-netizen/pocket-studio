@@ -120,6 +120,13 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
      * tagged page over half the screen or more (in the tree's order, the order of drawing) hides what was
      * drawn before it inside its bounds (its parents aside), as Pad Live hides the project under it.
      */
+    /**
+     * Tour 7, control tuto2 (seat d): a drawing over the whole screen that hides nothing and lets every touch through
+     * (the tutorial's ring and finger) is neither a page drawn over the others nor the route's page. Named one by one:
+     * an unknown full-screen overlay still hides what is under it, as an opaque one would on the phone.
+     */
+    private fun passThrough(n: SemanticsNode): Boolean = n.config.getOrNull(SemanticsProperties.TestTag) in PASS_THROUGH_TAGS
+
     private fun mark(wins: List<BenchWindows.Win>, roots: List<SemanticsNode>) {
         walked.clear()
         stopped.clear()
@@ -135,7 +142,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             mine.forEach(::pre)
             val last = order.indexOfLast { n ->
                 val r = drawn(n).intersect(whole)
-                n.config.contains(SemanticsProperties.TestTag) && n.parent != null && r.width * r.height >= 0.5f * area
+                n.config.contains(SemanticsProperties.TestTag) && n.parent != null && r.width * r.height >= 0.5f * area && !passThrough(n)
             }
             if (last > 0) {
                 val top = order[last]
@@ -425,7 +432,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             return "dialogue:${first ?: "?"}"
         }
         val area = screen.widthPixels.toFloat() * screen.heightPixels
-        val page = cover ?: inTop.filter { val r = drawn(it); r.width * r.height >= 0.5f * area }
+        val page = cover ?: inTop.filter { val r = drawn(it); r.width * r.height >= 0.5f * area && !passThrough(it) }
             .minByOrNull { val r = drawn(it); r.width * r.height }?.config?.getOrNull(SemanticsProperties.TestTag)
         val tab = inTop.firstOrNull { (it.config.getOrNull(SemanticsProperties.TestTag) ?: "").startsWith("tab_") && it.config.getOrNull(SemanticsProperties.Selected) == true }
             ?.config?.getOrNull(SemanticsProperties.TestTag)
@@ -514,6 +521,9 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     companion object {
         /** Marks the app draws itself (a Canvas, no icon), by their test tag: what they look like. */
         val DRAWN_TAGS = mapOf("link_chevron" to "›")
+
+        /** Drawings over the whole screen that let it show through (app/.../tuto/TutoPanel.kt: TutoSpotRing, TutoFinger). */
+        val PASS_THROUGH_TAGS = setOf("tuto_spot_ring", "tuto_finger")
 
         /**
          * The screen's text as a short hash: clock times and percentages left out (a song's position, a progress).

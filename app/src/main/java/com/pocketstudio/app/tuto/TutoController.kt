@@ -36,7 +36,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -237,6 +240,13 @@ class TutoController(
     init {
         store.load(projectId)?.let(::show)
         scope.launch { project.debounce(debounceMs).collect { look() } }
+        // The dotted cells are the part's: read again when another part is shown (the screen reads them when the step
+        // changes, and a part of the same length left the cells of the one before on its grid).
+        scope.launch {
+            project.map { it.scene }.distinctUntilChanged().drop(1).collect {
+                if (_ui.value != null) TutoHints.cells = hint(project.value.drums.steps)
+            }
+        }
         scope.launch { looks() }
     }
 
@@ -691,13 +701,13 @@ class TutoController(
     /** The 303 steps the current step shows dotted ([TutoChecks.acidWanted]), by index; null when none. */
     fun acidHints(p: Project): Map<Int, com.pocketstudio.model.AcidStep>? {
         val u = _ui.value ?: return null
-        return target?.let { TutoChecks.acidWanted(u.current, p, it) }
+        return target?.let { TutoPlay.acid(u.current, p, it) }
     }
 
     /** The dotted notes of a melodic step on its track ([TutoChecks.ghostNotes]), null when none. */
     fun ghostNotes(p: Project): Pair<Int, List<com.pocketstudio.model.Note>>? {
         val u = _ui.value ?: return null
-        return target?.let { TutoChecks.ghostNotes(u.current, p, it) }
+        return target?.let { TutoPlay.notes(u.current, p, it) }
     }
 
     /**

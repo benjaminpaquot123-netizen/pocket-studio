@@ -1037,6 +1037,18 @@ object TutoChecks {
         if (step.check.startsWith("crash")) listOf("Drop", "Drop 2") else listOf("Montée")
     }
 
+    /**
+     * Whether [step], one of the whole loop (a line of the pads, of a track, of the 303), holds in another part of [p]
+     * and not in the part shown (tour 7, seat a, V4: the charleys and the bass done in the part A were dotted again in
+     * a new part B). Such a step asks for nothing in the part shown.
+     */
+    fun heldElsewhere(step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val c = step.check
+        if (step.part.isNotBlank() || !(c.startsWith("lane:") || c.startsWith("notes:")) || p.scenes.size < 2) return false
+        // The part shown alone: the same check, read on a project that has no other part.
+        return done(step, p, target) && !done(step, p.copy(scenes = emptyList(), scene = 0), target)
+    }
+
     /** The part a drum step works in ([TutoStep.part], its first), null for one of the whole loop. */
     private fun partOf(step: TutoStep): String? = step.part.split(',').map { it.trim() }.firstOrNull { it.isNotEmpty() }
 

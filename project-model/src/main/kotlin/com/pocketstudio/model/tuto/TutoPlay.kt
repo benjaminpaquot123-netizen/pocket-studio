@@ -91,18 +91,27 @@ object TutoPlay {
     /**
      * The dotted cells of [step] on a pad of [steps] cells, null when it shows none: the line of a "lane:" step, the
      * crash's first cell while the step is to do ([ticked]: false) and no button is left to touch ([need]: null).
-     * Null in a part that is not the step's own ([inItsPart]).
+     * Null in a part that is not the step's own ([inItsPart]), or when its line is whole in another part
+     * ([TutoChecks.heldElsewhere]).
      */
     fun hint(step: TutoStep, p: Project, target: TutoTarget, steps: Int, need: TutoNeed?, ticked: Boolean): Pair<Int, Set<Int>>? {
         // R-D: nothing of the step out of its part, the panel's button ([need]) read again or not.
-        if (!inItsPart(step, p)) return null
+        if (!inItsPart(step, p) || TutoChecks.heldElsewhere(step, p, target)) return null
         if (step.check == "crash" && need == null && !ticked) return TutoChecks.CRASH_LANE to setOf(0)
         return TutoChecks.hint(step, target, steps)
     }
 
     /** The hits [step] crosses out in the part shown, null when it takes none, while a button is to touch first, or in a part that is not the step's own. */
     fun toErase(step: TutoStep, p: Project, target: TutoTarget?, need: TutoNeed?): Map<Int, Set<Int>>? =
-        if (need != null || !inItsPart(step, p)) null else TutoChecks.toErase(step, p, target)
+        if (need != null || !inItsPart(step, p) || (target != null && TutoChecks.heldElsewhere(step, p, target))) null else TutoChecks.toErase(step, p, target)
+
+    /** The dotted notes of [step] on its track in the part shown ([TutoChecks.ghostNotes]); null when it has none, or when its line is whole in another part ([TutoChecks.heldElsewhere]). */
+    fun notes(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<com.pocketstudio.model.Note>>? =
+        if (TutoChecks.heldElsewhere(step, p, target)) null else TutoChecks.ghostNotes(step, p, target)
+
+    /** The dotted 303 steps of [step] in the part shown ([TutoChecks.acidWanted]); null when it has none, or when its line is whole in another part. */
+    fun acid(step: TutoStep, p: Project, target: TutoTarget): Map<Int, com.pocketstudio.model.AcidStep>? =
+        if (TutoChecks.heldElsewhere(step, p, target)) null else TutoChecks.acidWanted(step, p, target)
 
     /** Whether the part [p] shows is one of [step]'s own ([TutoChecks.partsOf]); true for a step of the whole loop. */
     fun inItsPart(step: TutoStep, p: Project): Boolean {

@@ -777,6 +777,9 @@ object TutoChecks {
         if (s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate }) add("acid")
     }
 
+    /** Whether a part's [label] is the one a course calls [wanted] (as written, or as shown). */
+    internal fun isLabel(label: String, wanted: String): Boolean = labelIs(label, wanted)
+
     private fun labelIs(label: String, wanted: String): Boolean {
         val l = label.trim()
         return l.equals(wanted, ignoreCase = true) || l.equals(Scene.shownLabel(wanted), ignoreCase = true) ||

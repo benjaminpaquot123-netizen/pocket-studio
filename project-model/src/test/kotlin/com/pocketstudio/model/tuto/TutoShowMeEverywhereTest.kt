@@ -1,5 +1,6 @@
 package com.pocketstudio.model.tuto
 
+import com.pocketstudio.model.Hit
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.switchScene
@@ -79,10 +80,27 @@ class TutoShowMeEverywhereTest {
 
         /** Check 4, on the state [q] a touch is made on: the dotted cells and the crosses against « Montre-moi ». */
         private fun hintFault(step: TutoStep, q: Project, need: TutoNeed?): String? {
+            // R-D, worked out without [TutoPlay.inItsPart] (the app's own rule cannot judge itself): each other part
+            // shown instead, cells are dotted or crossed there only when « Montre-moi » changes that part's drums, or
+            // when touching them there ticks the step (the crash of « Drop » is as good in « Drop 2 »).
+            if (need == null && named(step)) for (i in q.allScenes.indices) {
+                if (i == q.scene || q.allScenes[i].isEmpty) continue
+                val there = q.switchScene(i).sanitized()
+                val dotted = TutoPlay.hint(step, there, target, there.drums.steps, null, ticked = false)
+                val crossed = TutoPlay.toErase(step, there, target, null).orEmpty().filterValues { it.isNotEmpty() }
+                if (dotted == null && crossed.isEmpty()) continue
+                val shown = TutoPlay.showMe(step, there, target, level)?.frames?.lastOrNull()?.switchScene(i)?.sanitized()
+                if (shown != null && shown.drums != there.drums) continue
+                val touched = there.copy(drums = there.drums.copy(lanes = there.drums.lanes.mapIndexed { k, l ->
+                    l.copy(hits = l.hits + (dotted?.takeIf { it.first == k }?.second.orEmpty().associateWith { Hit(1f) }) - crossed[k].orEmpty())
+                })).sanitized()
+                if (!TutoPlay.done(step, touched, target, TutoPlay.arrive(step, q))) {
+                    return "dotted cells or crosses in « ${q.allScenes[i].label} », where « Montre-moi » changes nothing and touching them does not tick the step"
+                }
+            }
             val hint = TutoPlay.hint(step, q, target, q.drums.steps, need, ticked = false)
             val erase = TutoPlay.toErase(step, q, target, need).orEmpty().filterValues { it.isNotEmpty() }
             if (hint == null && erase.isEmpty()) return null
-            if (!TutoPlay.inItsPart(step, q)) return "dotted cells or crosses in « ${q.allScenes.getOrNull(q.scene)?.label} », not the step's part"
             if (need != null) return null
             val after = TutoPlay.showMe(step, q, target, level)?.frames?.lastOrNull()?.sanitized() ?: return null
             if (after.scene != q.scene) return "dotted cells in the part shown, « Montre-moi » plays in another"

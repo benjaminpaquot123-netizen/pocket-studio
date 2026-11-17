@@ -25,3 +25,5 @@ corrige: 3b-42 | gravité: moyen | rejeu: aucun, prouvé par Tour7MixEntryAboveG
 corrige: 3a-62 | gravité: moyen | rejeu: aucun, prouvé par Tour7PlusTilesAboveGuideTest#hindiSmallPhoneAt130
 
 ## Rejeux
+
+t7-g1-guide-son : oracle tenu

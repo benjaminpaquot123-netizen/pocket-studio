@@ -2420,12 +2420,13 @@ object TutoChecks {
         val arg = argOf(c)
         // Tour 7 (D8): a chapter opened from the list, a part it names never made (« Range tes parties » without the
         // « Montée »): « Créer la partie » for it first, from the course's own step that makes it.
-        val absent = if (c.startsWith("part:")) null else absentPart(step, p, target)
+        val names = TutoKind.of(c)?.namesPart == true
+        val absent = if (names) null else absentPart(step, p, target)
         return when {
             absent != null -> TutoNeed.Part(absent)
             // Tour 7 (the trap's crash in its « Refrain », a chapter opened on an empty project): the part the course
             // names its Groove (its « label: » step), never made: « Nommer la partie » for it first.
-            !c.startsWith("label:") && !c.startsWith("part:") && grooveNamed(step, p, target) != null -> TutoNeed.Name(grooveNamed(step, p, target)!!)
+            !names && grooveNamed(step, p, target) != null -> TutoNeed.Name(grooveNamed(step, p, target)!!)
             TutoKind.of(c) != null -> TutoKind.of(c)!!.requires(step, p, target)
             // Its bars first: its line's, or the loop the course had already made when its words count cells over it.
             c.startsWith("lane:") -> partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(arg, partOf(step))?.let { line ->

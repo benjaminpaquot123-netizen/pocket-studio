@@ -105,6 +105,27 @@ import com.pocketstudio.model.tuto.TutoChecks.volumeChannels
 import com.pocketstudio.model.tuto.TutoChecks.withChannels
 import com.pocketstudio.model.tuto.TutoChecks.withInsert
 import com.pocketstudio.model.tuto.TutoChecks.withKnob
+import com.pocketstudio.model.tuto.TutoChecks.CRASH_LANE
+import com.pocketstudio.model.tuto.TutoChecks.FILL_REPEATS
+import com.pocketstudio.model.tuto.TutoChecks.GAP_CELLS
+import com.pocketstudio.model.tuto.TutoChecks.buildsIn
+import com.pocketstudio.model.tuto.TutoChecks.crashOnce
+import com.pocketstudio.model.tuto.TutoChecks.crashOnceDone
+import com.pocketstudio.model.tuto.TutoChecks.fillEnd
+import com.pocketstudio.model.tuto.TutoChecks.fillRole
+import com.pocketstudio.model.tuto.TutoChecks.gapCells
+import com.pocketstudio.model.tuto.TutoChecks.gapLanes
+import com.pocketstudio.model.tuto.TutoChecks.grooveOf
+import com.pocketstudio.model.tuto.TutoChecks.labelIs
+import com.pocketstudio.model.tuto.TutoChecks.makePart
+import com.pocketstudio.model.tuto.TutoChecks.movedBass
+import com.pocketstudio.model.tuto.TutoChecks.newBassDone
+import com.pocketstudio.model.tuto.TutoChecks.partDone
+import com.pocketstudio.model.tuto.TutoChecks.phrasesDone
+import com.pocketstudio.model.tuto.TutoChecks.sceneNotes
+import com.pocketstudio.model.tuto.TutoChecks.song
+import com.pocketstudio.model.tuto.TutoChecks.songOrdered
+import com.pocketstudio.model.tuto.TutoChecks.stepBass
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
@@ -195,6 +216,9 @@ internal interface TutoKind {
     /** The step lays the song out itself: a part made for it is not put in the song for the user. */
     val laysSong: Boolean get() = false
 
+    /** The step names or makes a part itself: the course's Groove is not named for it first. */
+    val namesPart: Boolean get() = false
+
     companion object {
         val NO_FRAMES = TutoFrames()
         val MONTEE = listOf("Montée")
@@ -228,6 +252,13 @@ internal interface TutoKind {
             c.startsWith("changed:drums:") -> DrumsChanged(c.removePrefix("changed:drums:"))
             c == "changed:kit" -> KitChanged
             c.startsWith("changed:") -> NothingWatched
+            c.startsWith("label:") -> NamePart(c.removePrefix("label:"))
+            c.startsWith("part:") -> MakePart(c.removePrefix("part:"))
+            c.startsWith("song:") -> LaySong(c.removePrefix("song:"))
+            c == "fill" -> DrumFill
+            c == "crash" -> Crash
+            c == "crash:once" -> CrashOnce
+            c == "gap" -> DropGap
             else -> null
         }
     }
@@ -617,3 +648,172 @@ internal object KitChanged : Changed() {
 
 /** Any other "changed:…": it watches nothing, so nothing ticks it. */
 internal object NothingWatched : Changed()
+
+/** "label:<name>": a part named so (the Groove renamed). */
+internal class NamePart(val name: String) : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = sceneLabelled(p, name) >= 0
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = p.renameScene(grooveOf(p), name)
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget) = TutoNeed.Name(name)
+    override val namesPart get() = true
+}
+
+/**
+ * "part:<label>:<modes>": the part made from the Groove as its modes say ("nokick+nobass"). With a
+ * [TutoStep.transpose] it is the part whose bass the user writes (the Drop 2's new bass): its line is the bass's.
+ */
+internal class MakePart(val spec: String) : TutoKind {
+    val label = spec.substringBeforeLast(':')
+    private fun writesBass(step: TutoStep) = step.transpose != 0
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        if (writesBass(step)) newBassDone(p, step, target) else partDone(p, spec, target)
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = makePart(p, step, target, level)?.let { q ->
+        // The Drop 2's own bass (the user's to write), then its Sub, shown in the part.
+        if (!writesBass(step)) q
+        else trackFor(q, "bass")?.let { b -> q.withTrack(q.track(b).copy(notes = q.track(b).notes.copy(notes = stepBass(step, target)))) }?.let { if (step.length > 0) it else withSub(it, target) ?: it } ?: q
+    }
+
+    // The Drop 2: its part made (without its bass), shown, its bass's first 4 bars written, copied, then its Sub.
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget): TutoNeed? {
+        val i = sceneLabelled(p, label)
+        return when {
+            !writesBass(step) || i < 0 -> TutoNeed.Part(label)
+            i != p.scene -> TutoNeed.Scene(label)
+            else -> copyNeed(step, p, target, "bass") ?: TutoNeed.Track("sub").takeIf {
+                mine(step, p, target)?.let { notesMatch(it, movedBass(step, target)) } == true && p.instrumentTracks.any { roleOf(p, it.id) == "sub" }
+            }
+        }
+    }
+    override fun workPart(step: TutoStep, p: Project) = label.takeIf { writesBass(step) }
+
+    // The Drop 2's new bass, in its part only.
+    override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
+        if (!writesBass(step) || sceneLabelled(p, label).let { it < 0 || it != p.scene }) return null
+        val bass = trackFor(p, "bass") ?: return null
+        return bass to (wantedNotes(step, p, target) ?: return null)
+    }
+    override fun line(step: TutoStep, target: TutoTarget) = if (writesBass(step)) movedBass(step, target) else null
+    override fun mine(step: TutoStep, p: Project, target: TutoTarget) =
+        if (!writesBass(step)) null else sceneLabelled(p, label).takeIf { it >= 0 }?.let { i -> trackFor(p, "bass")?.let { sceneNotes(p, i, it) } }
+    override fun lineRole(step: TutoStep) = if (writesBass(step)) "bass" else super.lineRole(step)
+    override fun onlyMakesPart(step: TutoStep) = !writesBass(step)
+    override val laysSong get() = true
+    override val namesPart get() = true
+}
+
+/**
+ * "song:order", "song:phrases": the parts of [TutoStep.song] in the song, in their order; for the phrases each its
+ * advised length too (all at 8 bars, as « Ajouter » makes them, is not the step done; testers, lot « tuto 5 »:
+ * « Bravo » on the durations with the parts in a wrong order: the order too).
+ */
+internal class LaySong(val what: String) : TutoKind {
+    private val known = what == "order" || what == "phrases"
+
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = when (what) {
+        "order" -> songOrdered(p, step.song)
+        "phrases" -> songOrdered(p, step.song) && phrasesDone(p, step.song)
+        else -> false
+    }
+
+    // The order alone: each part as « Ajouter » brings it, 8 bars (testers: it showed the next step's lengths too).
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = song(p, step.song, sized = what != "order")
+
+    // The lengths right, the order not: nothing a button can do (the order is said, TutoController).
+    override fun requires(step: TutoStep, p: Project, target: TutoTarget) =
+        if (what == "phrases") TutoNeed.Lengths.takeIf { p.song.size >= 3 && !phrasesDone(p, step.song) } else null
+
+    override fun cited(step: TutoStep) =
+        if (known) step.song.split(',').map { it.substringBeforeLast(':').trim() }.filter { it.isNotEmpty() } else emptyList()
+    override val laysSong get() = true
+}
+
+/**
+ * "fill": a roll on the snare in the Montée's last bar (a Drop 2 copied from the example rolls too: it does not
+ * count), before its last two cells: those are the silence of the next step (testers, lot « tuto 4 »: the roll made,
+ * then erased). Lot « tuto 5 »: the build already rolls ×2 in its last bar; the user's roll is the last one, ×3 or
+ * more, in the beat before the silence.
+ */
+internal object DrumFill : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = sceneLabelled(p, partsOf(step).first()).takeIf { it >= 0 }?.let { i ->
+        val d = sceneAt(p, i).drums
+        val beat = (p.stepsPerBar / 4).coerceAtLeast(1)
+        val end = d.steps - fillEnd(step, target)
+        val window = (end - beat) until end
+        val hits = lanesOf(fillRole(step), target).flatMap { l -> d.lanes.getOrNull(l)?.hits?.filterKeys { it in window }?.values.orEmpty() }
+        // A roll ×3 or more; a tom fill (a pad the part does not build up): 3 hits or more in that beat.
+        hits.any { it.repeats >= FILL_REPEATS } || (!buildsIn(step, target) && hits.size >= FILL_REPEATS)
+    } ?: false
+
+    // The last roll: ×4 on the snare's last hit before the silence.
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, partsOf(step).first()) { q ->
+        val lane = laneOf(fillRole(step))
+        val end = q.drums.steps - fillEnd(step, target)
+        val at = end - 1
+        val beat = (q.stepsPerBar / 4).coerceAtLeast(1)
+        q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l ->
+            when {
+                i != lane -> l
+                buildsIn(step, target) -> l.copy(hits = l.hits + (at to (l.hits[at] ?: Hit(1f)).copy(repeats = 4)))
+                // A tom fill: every 16th of the last beat, louder and louder.
+                else -> l.copy(hits = l.hits + (end - beat until end).associateWith { Hit(0.6f + 0.4f * (it - end + beat) / beat) })
+            }
+        }))
+    }
+    override fun workPart(step: TutoStep, p: Project) = partsOf(step).first()
+    override fun cited(step: TutoStep) = partsOf(step)
+}
+
+private val DROPS = listOf("Drop", "Drop 2")
+
+/** "crash": the crash on the first beat of the part (or of one of the parts) the step names. */
+internal object Crash : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        p.allScenes.any { s -> partsOf(step).any { labelIs(s.label, it) } && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) =
+        inScene(p, partsOf(step).first { sceneLabelled(p, it) >= 0 || it == partsOf(step).last() }) { q ->
+            q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l }))
+        }
+    override fun workPart(step: TutoStep, p: Project) = partsOf(step).firstOrNull { sceneLabelled(p, it) >= 0 } ?: partsOf(step).first()
+    override fun cited(step: TutoStep) = partsOf(step)
+    override val defaultParts get() = DROPS
+}
+
+/** "crash:once": in each part the step names that the project has, the crash a hit once, at its entry. */
+internal object CrashOnce : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
+        partsOf(step).let { parts -> parts.any { sceneLabelled(p, it) >= 0 } && parts.filter { sceneLabelled(p, it) >= 0 }.all { crashOnceDone(p, it) } }
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = partsOf(step).fold(p) { q, l -> crashOnce(q, l) ?: q }
+    override val defaultParts get() = DROPS
+}
+
+/** "gap": the silence before the drop, the last cells of the part emptied on the pads that fall silent. */
+internal object DropGap : TutoKind {
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = sceneLabelled(p, partsOf(step).first()).takeIf { it >= 0 }?.let { i ->
+        val d = sceneAt(p, i).drums
+        val silent = gapLanes(step, target)
+        d.lanes.withIndex().none { (k, l) -> k in silent && l.hits.keys.any { it in d.steps - gapCells(step, target) until d.steps } }
+    } ?: false
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, partsOf(step).first()) { q ->
+        val n = q.drums.steps
+        val cut = gapCells(step, target)
+        val silent = gapLanes(step, target)
+        q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { k, l -> if (k !in silent) l else l.copy(hits = l.hits.filterKeys { it < n - cut }) }))
+    }
+    override fun workPart(step: TutoStep, p: Project) = partsOf(step).first()
+    override fun cited(step: TutoStep) = partsOf(step)
+
+    // The last cells of the Montée (testers: « efface les coups des 2 dernières cases », but they were in its 4th bar, out of sight).
+    override fun crossed(step: TutoStep, p: Project, target: TutoTarget?): Map<Int, Set<Int>> {
+        // Tour 6, seat D a-8 (« もうできています » with « 赤い×をタップ »): the step's own part only; another part shown
+        // (the Groove) has nothing to take away, its hits crossed out were not the gap's.
+        if (sceneLabelled(p, partsOf(step).first()) != p.scene) return emptyMap()
+        val d = p.drums
+        val cut = target?.let { gapCells(step, it) } ?: step.length.takeIf { it > 0 } ?: GAP_CELLS
+        val last = (d.steps - cut).coerceAtLeast(0) until d.steps
+        val silent = gapLanes(step, target)
+        return d.lanes.mapIndexedNotNull { i, l -> if (i !in silent) null else l.hits.keys.filter { it in last }.toSet().takeIf { it.isNotEmpty() }?.let { i to it } }.toMap()
+    }
+}

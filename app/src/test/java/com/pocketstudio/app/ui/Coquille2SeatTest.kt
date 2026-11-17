@@ -275,6 +275,34 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         assertTrue("the brick loops on $bars bars, the transport says ${counted ?: "nothing"}:\n" + screen(), counted == bars)
     }
 
+    /** The app's « Mes projets » model: the activity's, another one each time a project opens. */
+    private fun projectsModel(): com.pocketstudio.app.projects.ProjectsViewModel {
+        val activity = androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+            .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).first() as androidx.activity.ComponentActivity
+        return androidx.lifecycle.ViewModelProvider(activity)[com.pocketstudio.app.projects.ProjectsViewModel::class.java]
+    }
+
+    /**
+     * CI 349 (p5_theLiveProjectOpensAgainOnPadLive: « no project_… on: … Chargement de la liste… »): « Mes projets » reads
+     * its list off the main thread and says « Chargement de la liste… » until it has it. The bench reads the screen once
+     * the workers it sees running rest: a list not read by then (a loaded machine; here its reading is held 600 ms) is
+     * still that line, and a row looked for at once is not there. A person waits for the rows, then touches: [tap] too.
+     */
+    @Test
+    fun p5_aProjectsListStillLoadingIsWaitedForBeforeItsRowIsTouched() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille2-journal.txt"))
+        val song = rhythm()!!.projectId
+        tap("top_more")
+        projectsModel().beforeOperationForTest = { kotlinx.coroutines.delay(600) }
+        tap("top_projects")
+        assertNotNull("the list is not held, nothing is proven:\n" + screen(), centerOf("projects_loading"))
+        tap("project_$song")
+        assertNull("« Mes projets » still loading after its project was touched:\n" + screen(), centerOf("projects_loading"))
+        assertTrue("another project open", rhythm()!!.projectId == song)
+    }
+
     /**
      * Control seat A b-5 (fr, phone, 100 %, Mode simple), P5 again (screens 30-33): the Live project, the one open, touched
      * in « Mes projets » from the welcome page opens on Pad Live, as « Continuer » does — not on « Mon morceau ».

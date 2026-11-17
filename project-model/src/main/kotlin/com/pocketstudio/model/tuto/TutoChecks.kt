@@ -2428,7 +2428,7 @@ object TutoRollHint {
             else -> x(n, v) - 2 * v.stepPx - v.left
         }
         // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else as far
-        // towards it as the note the line speaks of stays whole in sight (a touch never hides the next one).
+        // towards it as the note the line speaks of stays whole in sight, if that shows it (else the roll goes to it, below).
         val hidden = if (touched) aside(left, v, barSteps) else null
         val mid = (v.top + v.bottom) / 2
         val dy = when {
@@ -2447,10 +2447,15 @@ object TutoRollHint {
         }
         val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
         val move = dx to dy + whole(left, there, n)
-        // Fresh review (minor): the note spoken of already at the edge, the touch moved nothing under « Touche ici »:
-        // it goes to the hidden note then, whole at the edge it was beyond (the line then tells of the one left behind).
-        if (hidden == null || move != 0f to 0f) return move
-        return 0f to if (y(hidden, v) < v.top) y(hidden, v) - v.top else y(hidden, v) + v.rowPx - v.bottom
+        if (hidden == null) return move
+        // Second control of « fable-repar » (seat a, V1; house bass, the high « La » an octave over the low ones, more
+        // than the rows above the panel): going towards the hidden note as far as the one in sight stays there slid
+        // the low notes down to the panel's edge and showed nothing new; it took a second touch. One touch shows the
+        // hidden note: when it cannot come in with the note spoken of, the roll goes to it, whole at the edge nearest
+        // to the others (the line then tells of the ones left behind).
+        if (inRows(hidden, v.copy(top = v.top + move.second, bottom = v.bottom + move.second))) return move
+        val to = if (y(hidden, v) < v.top) y(hidden, v) - v.top else y(hidden, v) + v.rowPx - v.bottom
+        return 0f to to + whole(left, v.copy(top = v.top + to, bottom = v.bottom + to), hidden)
     }
 
     /**

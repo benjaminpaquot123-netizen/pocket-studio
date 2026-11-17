@@ -43,16 +43,18 @@ class Tour7TutoHiddenNoteTest {
     }
 
     @Test
-    fun aNoteTooFarToFitIsGoneTowardsAndTheNextOneStaysInSight() {
-        // An octave and a half over: the six do not fit 8 rows; the touch goes up as far as the next one stays whole in sight.
+    fun aNoteTooFarToFitWithTheOthersIsShownByOneTouch() {
+        // An octave and a half over: the six do not fit 8 rows. Second control of « fable-repar » (seat a, V1): the touch
+        // went up only as far as the next one stayed in sight, the hidden note still out; it took a second touch.
         val left = notes(18)
         val v = view(46, 8)
-        val next = TutoRollHint.next(left, v, 16)!!
+        val hidden = TutoRollHint.aside(left, v, 16)!!
         val d = TutoRollHint.brought(left, v, 16)
         val now = v.moved(d)
         assertTrue("the touch does not go up towards the hidden note: $d", d.second < 0f)
-        assertTrue("the next note ${next.pitch} went out of the rows in sight", TutoRollHint.inRows(next, now))
-        assertEquals("the arrow still tells of the hidden note", TutoWay.Higher, TutoRollHint.also(left, now, 16))
+        assertTrue("the hidden note ${hidden.pitch} is not whole in the rows in sight after one touch", TutoRollHint.inRows(hidden, now))
+        assertEquals("the note lit is the one brought", hidden, TutoRollHint.lit(left, v, 16))
+        assertEquals("the arrow tells of the notes left behind", TutoWay.Lower, TutoRollHint.also(left, now, 16))
     }
 
     /** « Je le fais » and « Copier » (not a touch) keep the note asked for in sight: the roll does not go to the hidden one. */

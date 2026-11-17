@@ -15,7 +15,8 @@
 
 Prints the next screen as text (screen-N.txt: what TalkBack reads, each line with its middle « @ x,y »)
 and what is heard. The image is asked with « regarde image »: allowed at the first screen of a new
-route, or one image for 5 gestures (Audit ultra §3.1); with lit=non (texts unreadable) always.
+route, or one image for 5 gestures (Audit ultra §3.1); with lit=non (texts unreadable) always; the last screen's
+once the seat has ended (« fin »).
 When the bench ends the seat (budget, nothing changes, the end), says why (fin.txt).
 """
 import os
@@ -126,7 +127,12 @@ def image_allowed(seat, n):
         return True, ""
     if len(looked) < 1 + gestures(seat) // 5:
         return True, ""
-    return False, f"Plafond d'images atteint ({len(looked)} pour {gestures(seat)} gestes : une pour 5) : lis l'écran en texte."
+    # Tour 7, control tuto2 (seat e): a seat ending on « attends » (no gesture) never earned the image of the screen it
+    # reached. The last screen's image is given once the seat ends (« fin » played, or the bench ended it).
+    if n == turn(seat) and (ended(seat) is not None or read(os.path.join(seat, f"cmd-{n}.txt")).strip().startswith("fin")):
+        return True, ""
+    return False, (f"Plafond d'images atteint ({len(looked)} pour {gestures(seat)} gestes : une pour 5) : lis l'écran en texte. "
+                   "L'image du dernier écran reste permise après « fin ».")
 
 
 def show_text(seat, n):

@@ -27,7 +27,7 @@ Rôle : banc. Aucun fichier de l'appli touché (`app/src/main`, `project-model/s
 - Suite `com.pocketstudio.app.human.*` : 322 tests, 1 rouge, `OrdinaryTestsLeaveNothingTest#c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself` (« red itself, by name: null »), pendant qu'un rejeu Gradle tournait à côté. Vert deux fois seul, avec `BenchProjectsListTest` dans la même passe : sensible à la charge, pas lié à ce lot.
 
 ## Laissé
-- `t4-26-prise-clavier` (pas un rejeu du tour 6) diverge au geste 32 sur la tête : au Clavier à 200 %, les touches 62 et 65 sont refusées (« aucun point visible, à portée du pouce »), la prise ne démarre pas et « record_stop » n'existe pas. L'écran a changé depuis le tour 4 (panneau Guide au-dessus du clavier). Signalé au chef ; pas ré-ancré : il faudrait réécrire la prise, ce qui dépasse un ré-ancrage.
+- `t4-26-prise-clavier` (pas un rejeu du tour 6) diverge au geste 32 sur la tête : au Clavier à 200 %, les touches 62 et 65 sont refusées (« aucun point visible, à portée du pouce »), la prise ne démarre pas et « record_stop » n'existe pas. L'écran a changé depuis le tour 4 (panneau Guide au-dessus du clavier). Vrai défaut de l'appli (chef) : inscrit dans `incidents-banc.tsv`, cause « appli (guide) », à confier à guide2 ; rejeu laissé rouge, pas masqué.
 - Relecture : 3 remarques moyennes laissées (voir `tour-7-banc8-relecture.md`).
 - Réparer la lecture des écrans sous l'anneau du tuto et la capture en retard : prochain lot banc.
 

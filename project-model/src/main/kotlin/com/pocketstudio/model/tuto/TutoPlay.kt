@@ -64,6 +64,22 @@ object TutoPlay {
     fun done(step: TutoStep, p: Project, target: TutoTarget, base: Any?): Boolean = TutoChecks.done(step, p, target, base)
 
     /**
+     * Whether [step], ticked earlier, is to do again on [p] (tour 7, seat d: the « Montée » renamed, an empty part
+     * given its name, the roll's step read « Déjà fait »): a transition, read in its part as it is now; a step that
+     * makes a part or works in one, when no part of that name holds anything. Any other step keeps its tick.
+     */
+    fun undone(step: TutoStep, p: Project, target: TutoTarget): Boolean {
+        val c = step.check
+        return when {
+            step.manual || step.listening || c.startsWith("changed:") -> false
+            c == "fill" || c == "gap" || c.startsWith("crash") -> !done(step, p, target, null)
+            c.startsWith("part:") -> TutoChecks.partContent(p, c.removePrefix("part:").substringBeforeLast(':')) == null
+            step.part.isNotBlank() -> TutoChecks.partsOf(step).all { TutoChecks.partContent(p, it) == null }
+            else -> false
+        }
+    }
+
+    /**
      * Whether the words of [step] ask for a gesture in the project beyond its main button: not a part to make
      * (« Créer la partie »), a part to name, the Sub to copy, the lengths to give, which their button does whole.
      */

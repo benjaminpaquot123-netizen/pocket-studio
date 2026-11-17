@@ -808,10 +808,13 @@ class TutoController(
         val flat = list.flatMap { it.steps }
         val step = flat.firstOrNull { it.id == p.current } ?: flat.firstOrNull { it.id !in p.done } ?: flat.last()
         val chapter = list.indexOfFirst { step in it.steps }
-        val saved = p.copy(current = step.id)
-        store.save(projectId, saved)
         val before = _ui.value
         val moved = before?.current?.id != step.id
+        // Tour 7 (seat d, V2): a step reached ticked whose part no longer holds what it asks (the « Montée » renamed, an
+        // empty part given its name) is to do again: never « Déjà fait » on a tick kept from another part.
+        val stale = moved && step.id in p.done && target?.let { TutoPlay.undone(step, project.value, it) } == true
+        val saved = p.copy(current = step.id, done = if (stale) p.done - step.id else p.done)
+        store.save(projectId, saved)
         if (moved) {
             skipSaid = null
             arrived = project.value

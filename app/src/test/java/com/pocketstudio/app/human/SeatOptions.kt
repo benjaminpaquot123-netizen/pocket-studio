@@ -124,7 +124,7 @@ internal data class SeatOptions(
          * Null when nothing tagged was aimed at, or when it is still under the finger.
          */
         fun reaimTag(was: String?, now: String): String? {
-            fun key(u: String) = u.removePrefix("désactivé ").removePrefix("dans:").removePrefix("désactivé ").substringBefore(" «").trim()
+            fun key(u: String) = u.removePrefix("désactivé ").removePrefix("dans:").substringBefore(" «").trim()
             val k = was?.let(::key) ?: return null
             if (k.isEmpty() || k.startsWith("rien") || k.startsWith("#") || k == "vue" || k.contains(' ')) return null
             return k.takeIf { key(now) != it }

@@ -54,6 +54,8 @@ class Tour8TutoWordsTest {
             val t = if (lang == Lang.FR) fr else tr(lang, fr)
             if (lastBurst.getValue(lang).containsMatchIn(t)) bad += "$where ${lang.code}: $t"
         }
+        // The replace « última rajada » → « uma rajada » once left « Umuma rajada »: no doubled word in any text.
+        for ((k, v) in I18n.table(Lang.PT_BR)) if (Regex("\\b[Uu]muma\\b").containsMatchIn(v)) bad += "pt-BR « $k »: $v"
         report("steps call the roll « the last burst »", bad.distinct())
     }
 

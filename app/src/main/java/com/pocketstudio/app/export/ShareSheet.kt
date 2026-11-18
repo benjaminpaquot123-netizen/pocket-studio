@@ -387,8 +387,9 @@ fun ShareSheetContent(
     // alone, so that what scrolls above (the name, the duration) keeps a line more.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxWidth()) {
     val short = constraints.hasBoundedHeight && maxHeight < 500.dp
+    // Tour 8, captures8: the sheet ends where « Mes fichiers » does (a 12 dp empty band lay under it, in both modes).
     Column(
-        Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        Modifier.fillMaxWidth().then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
     // Lot 6, U4 / U15 / N7 (seats A c, F a, H a, D a): the line cut by the bottom edge, right above the pinned M4A / WAV

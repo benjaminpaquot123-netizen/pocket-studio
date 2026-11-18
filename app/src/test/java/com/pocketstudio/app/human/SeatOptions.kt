@@ -110,7 +110,7 @@ internal data class SeatOptions(
          * differs from the origin's ([diverged]), the origin has no gesture [n], `rejeu.n` ([replayN], 0: no bound) is past,
          * or the gesture's tag is not on the screen ([missingTag]).
          */
-        fun handBackWhy(n: Int, replayN: Int, diverged: Boolean, originHasGesture: Boolean, missingTag: String? = null): String? = when {
+        fun handBackWhy(n: Int, replayN: Int, diverged: Boolean, originHasGesture: Boolean, missingTag: String? = null, gone: String? = null): String? = when {
             diverged -> "écran $n différent de l'origine (après le geste ${n - 1})"
             replayN in 1 until n -> "les $replayN gestes du rejeu joués"
             !originHasGesture -> "plus de geste à l'origine (pas $n)"
@@ -123,7 +123,7 @@ internal data class SeatOptions(
          * `#n DOIGT` line) and the same pixels are no longer on it ([now], the finger's line at the replay): the button moved.
          * Null when nothing tagged was aimed at, or when it is still under the finger.
          */
-        fun reaimTag(was: String?, now: String): String? {
+        fun reaimTag(was: String?, now: String, actionables: (String) -> Int = { 1 }): String? {
             fun key(u: String) = u.removePrefix("désactivé ").removePrefix("dans:").substringBefore(" «").trim()
             val k = was?.let(::key) ?: return null
             if (k.isEmpty() || k.startsWith("rien") || k.startsWith("#") || k == "vue" || k.contains(' ')) return null
@@ -131,8 +131,31 @@ internal data class SeatOptions(
         }
 
         /** Tour 7, banc B2: what `rejeu.txt` says when the replay gives the seat back at gesture [n] ([diff]: the line that changed). */
-        fun handBackNote(n: Int, replayN: Int, why: String, diff: String?): String = "main rendue au pas $n : $why" +
+        fun handBackNote(n: Int, replayN: Int, why: String, diff: String?, originDone: Boolean = false): String = "main rendue au pas $n : $why" +
             if (n > replayN) "" else " ; rejeu non fidèle (${n - 1} gestes de l'origine sur $replayN rejoués)" + (diff?.let { " ; écran changé : $it" } ?: "")
+
+        /**
+         * Tour 8, banc9 (point f): the words of an untagged button the origin's finger was on ([was], its `#n DOIGT`
+         * line: `#id`, `vue` or `dans:` an untouchable container) when they are no longer under the finger ([now]).
+         */
+        fun goneWords(was: String?, now: String): String? = null
+
+        /**
+         * Tour 8, banc9 (point f): whether the finger's line [under] (ScreenText.under) is on [tag]; [inside] are the tags
+         * drawn inside it (`remix_pick` around `remix_pick_thumb`): a touch landing on one of them is on [tag] too.
+         */
+        fun fingerOn(tag: String, under: String, inside: Set<String> = emptySet()): Boolean {
+            if (tag.startsWith("vue_")) return under.startsWith("vue « ${tag.removePrefix("vue_")} »")
+            val name = under.removePrefix("désactivé ").removePrefix("dans:").substringBefore(' ')
+            return if (tag.endsWith("*")) name.startsWith(tag.dropLast(1)) else name == tag
+        }
+
+        /**
+         * Tour 8, banc9 (points a, b): where to aim at a node whose box is [node] and whose drawn part (clipped by its
+         * parents and the window) is [drawn]: the middle of the drawn part, or null when that part is too small to touch
+         * (under 24 dp, or under the node itself when smaller).
+         */
+        fun drawnAim(node: Box, drawn: Box, w: Int, h: Int, density: Float): Pair<Float, Float>? = null
 
         /** Android's resource qualifier for [lang] (« pt-rBR », « in » for Indonesian). */
         fun localeQualifier(lang: Lang): String = when (lang) {
@@ -232,5 +255,20 @@ internal data class SeatOptions(
             return candidates.sortedBy { hypot(it.first - middle.first, it.second - middle.second) }
                 .firstOrNull { (x, y) -> reachable(hand, x, y, w, h, density) && hits(x, y) }
         }
+    }
+}
+
+/**
+ * Tour 8, banc9 (point f): the replay's screen lines that differ from the origin's. [now] is this turn's (null when the
+ * screen sticks again), [last] the last one seen, for the replay's verdict.
+ */
+class ReplayDiffs {
+    var last: String? = null
+        private set
+    var now: String? = null
+        private set
+
+    fun turn(diff: String?) {
+        if (diff != null) { now = diff; last = diff }
     }
 }

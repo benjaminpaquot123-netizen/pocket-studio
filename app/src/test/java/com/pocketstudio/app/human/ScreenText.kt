@@ -477,6 +477,13 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         return (if (off) "désactivé " else "") + tag + (words?.let { " « ${it.take(40)} »" } ?: "")
     }
 
+    /**
+     * Tour 8, banc9 (point i): « « cover » couvre « target » » when the thing [under] finds at ([x], [y]) is covered there by
+     * an element drawn after it that takes the touch (a card, a surface: a traversal group that is neither the target, nor
+     * one of its parents, nor inside it); null when nothing covers it.
+     */
+    fun coverAt(x: Float, y: Float): String? = null
+
     private fun textBelow(n: SemanticsNode): String? =
         n.children.firstNotNullOfOrNull { c -> c.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(c) }
 

@@ -181,6 +181,8 @@ abstract class HumanTester(private val seat: String) {
     private var seatDir: File? = null
     /** The turn being played (the journal's « #N »). */
     private var turnNow = 0
+    /** Tour 8, banc9 (point c): the journal the bench's own lines go to (the seat's, or an amenée's), null in plain tests. */
+    private var benchJournal: File? = null
     private lateinit var options: SeatOptions
     private var watchdog: BenchWatchdog? = null
     private val layoutSeen = HashSet<String>()
@@ -194,6 +196,7 @@ abstract class HumanTester(private val seat: String) {
         val (o, warnings) = SeatOptions.read(File(dir, "start.txt"))
         val journal = File(dir, "journal.txt")
         seatDir = dir
+        benchJournal = journal
         journal.appendText("#0 SIEGE ${o.describe()}\n")
         warnings.forEach { journal.appendText("#0 OPTION ? $it\n") }
         val dog = BenchWatchdog(Thread.currentThread()).start()
@@ -799,6 +802,7 @@ abstract class HumanTester(private val seat: String) {
      * (Mode Pro: its guide seen), and the target is scrolled into view where it is (BenchAmeneesProfilesTest).
      */
     internal fun amenee(name: String, journal: File) {
+        benchJournal = journal
         journal.appendText("#0 AMENEE $name\n")
         fun tap(tag: String) {
             val at = reachTag(tag) ?: error("amenée $name : « $tag » introuvable")
@@ -907,6 +911,7 @@ abstract class HumanTester(private val seat: String) {
             if (inMiddle(at) && drawnAt(tag, at)) return at
             val x = at.first.coerceIn(10f, app.resources.displayMetrics.widthPixels - 10f)
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
+            benchJournal?.appendText("#$turnNow VISEE « $tag » glisse ${x.toInt()} ${(screenHeight / 2f + dy / 2).toInt()} ${x.toInt()} ${(screenHeight / 2f - dy / 2).toInt()}\n")
             play("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
             play("attends 1")
         }

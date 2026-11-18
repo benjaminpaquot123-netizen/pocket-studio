@@ -215,6 +215,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         last_screen_image_after_waits(d)
     with tempfile.TemporaryDirectory() as d:
+        image_refused_while_the_seat_goes_on(d)
+    with tempfile.TemporaryDirectory() as d:
         banc7_stamp_reason(d)
     with tempfile.TemporaryDirectory() as d:
         banc7_budget_and_launcher_stall(d)
@@ -711,6 +713,29 @@ def banc7_stamp_reason(d):
     tester = os.path.join(HERE, "..", "human-tester.sh")
     r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
     check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
+
+
+def image_refused_while_the_seat_goes_on(d):
+    """Tour 8, lot banc9 (point d): the last screen's image is given only once « fin » is played or the seat ended. An
+    image asked at turn n while the seat goes on (its last command a touch, no fin.txt) stays refused, cap reached."""
+    act = os.path.join(HERE, "..", "human-act.py")
+    seat = os.path.join(d, "controle", "banc9", "a")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    for k in range(1, 6):
+        write(os.path.join(seat, f"cmd-{k}.txt"), "touche 100 200")
+    write(os.path.join(seat, "images.txt"), "1\n2\n")
+    write(os.path.join(seat, "turn"), "6")
+    write(os.path.join(seat, "cmd-6.txt"), "touche 100 200")
+    from PIL import Image
+    Image.new("RGB", (40, 80), (20, 20, 20)).save(os.path.join(seat, "screen-6.png"))
+    out = run(act, seat, "regarde", "image")
+    check("Plafond" in out and "écran 6" not in out, "the seat goes on: the image of screen 6 stays refused:\n" + out)
+    check("6" not in read_lines(os.path.join(seat, "images.txt")), "a refused image is not counted:\n" + out)
+
+
+def read_lines(path):
+    with open(path, encoding="utf-8") as f:
+        return [l.strip() for l in f if l.strip()]
 
 
 def last_screen_image_after_waits(d):

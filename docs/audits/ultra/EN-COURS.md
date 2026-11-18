@@ -2,9 +2,9 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-17, 01 h 20 UTC.
+- **Mise à jour** : 2026-11-18, 00 h 05 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : reste du tour 7 repris (quota remis à zéro). Quatre lots ouverts en parallèle, une discussion chacun (tableau plus bas) ; puis intégration, sièges de contrôle, CI, PR vers `main`, fusion.
+- **Temps en cours** : tour 7, P6/P7 (consignes lisibles, un moment par consigne). Bloc 0 (socle) fusionné en `3cd69a96`, CI 352 en cours. Cinq équipes parties de `3cd69a96`, une discussion chacune : bloc 1 Techno (`eq/tour-7-p67-techno`), bloc 2 House (`eq/tour-7-p67-house`), bloc 3 Bass (`eq/tour-7-p67-bass`), bloc 4 Hip-hop + autres + textes partagés (`eq/tour-7-p67-hiphop-autres`, seul maître de `tuto_moments`), bloc 0b repli du panneau (`eq/tour-7-p67-repli`, code seul). Dérogation : chaque bloc supprime ses propres lignes des deux listes d'exceptions. Paquets : A = blocs 1, 2, 0b ; B = blocs 3, 4 ; puis un lot de captures unique, relecture neuve, PR vers `main`.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 

@@ -4,7 +4,9 @@ import android.os.Looper
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.AutomationLane
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoPlay
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -153,6 +156,41 @@ class Tour8TutoGesturesDoItTest {
                 mixer = own.mixer.copy(channels = own.mixer.channels.mapIndexed { i, x -> if (i in ch) x.copy(inserts = made.mixer.channels[i].inserts) else x }),
             )
             assertEquals("$style: « Je le fais » changed more than the curve and its filter", expected, made)
+        }
+    }
+
+    /**
+     * Control seat e of T0b (e-ch13, grave): at chapter 13 step 2 of the Pro course, « Je le fais » ticked the step
+     * but left the lane in « Morceau » (song) mode with no loop curve to see, while the step asks for « Par partie »
+     * and a curve drawn on the Drop's 1-bar loop that rises to the middle and falls back. Three things are asked:
+     * the mode the step names, the curve drawn on the Drop's loop, and a tick only once that gesture is really made.
+     */
+    @Test
+    fun theLoopCurveDoItDrawsItPerPartOnTheDropLoop() {
+        for (style in listOf("techno", "acid_techno")) {
+            val target = TutoTarget.of(style)!!
+            val step = com.pocketstudio.model.tuto.TutoCourse.of(style)!!.chaptersFor(TutoLevel.Pro)
+                .flatMap { it.steps }.first { it.id == "filter" }
+            val own = bare(target)
+            assertFalse("$style: ticked before anything is drawn", TutoPlay.done(step, own, target, null))
+            val made = TutoPlay.doHere(step, own, target, null, TutoLevel.Pro)
+            assertTrue("$style: a curve made", made != null)
+            made!!
+            val drop = made.allScenes.indexOfFirst { it.label == "Drop" }
+            assertTrue("$style: a Drop", drop >= 0)
+            val lane = made.automation.single { it !in own.automation }
+            assertEquals("$style: the mode the step asks (« Par partie »)", AutomationLane.PER_SCENE, lane.mode)
+            val loop = lane.sceneValues[drop].orEmpty()
+            val bar = made.stepsPerBar
+            val first = loop.take(bar)
+            assertTrue("$style: the Drop's first bar starts low", (first.firstOrNull() ?: 1f) <= 0.3f)
+            assertTrue("$style: it rises to the middle of the bar", (first.getOrNull(bar / 2) ?: 0f) >= 0.9f)
+            assertTrue("$style: and falls back by the end of the bar", (first.getOrNull(bar - 1) ?: 1f) <= 0.3f)
+            assertTrue("$style: ticked once drawn", TutoPlay.done(step, made, target, null))
+            // The song-wide wave the old « Je le fais » drew: a curve in another mode than the step asks is no tick.
+            val songWide = TutoPlay.doHere(step.copy(check = "automation:wave"), own, target, null, TutoLevel.Pro)!!
+            assertTrue("$style: the song-wide one is in song mode", songWide.automation.any { it.mode == AutomationLane.SONG })
+            assertFalse("$style: a song-wide curve ticks a « Par partie » loop step", TutoPlay.done(step, songWide, target, null))
         }
     }
 }

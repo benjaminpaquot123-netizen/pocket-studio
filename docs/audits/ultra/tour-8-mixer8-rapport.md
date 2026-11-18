@@ -11,7 +11,7 @@ chemin: Mixer puis Sons, première piste vide supprimée : mêmes pistes | test:
 chemin: Mixer d'un projet neuf : la première piste reste | test: Tour8MixerNamesTest#aNewProjectStillShowsItsFirstTrack
 chemin: Tuto en cours, 1re piste vide cachée : Mixer puis Sons, mêmes pistes | test: Tour8MixerNamesTest#aTutorialHidingTheFirstTrackHidesItsStripToo
 
-corrige: U27 | gravité: mineur | rejeu: aucun (mineur au tri du tour 6, `verdicts.tsv` l.68)
+corrige: U27 | gravité: mineur | rejeu impossible : défaut mineur au tri du tour 6 (verdicts.tsv l.68), preuve par Tour8MixerNamesTest
 
 ## Ce qui a changé
 - D7/U27 (avec l'accord du chef, une ligne hors liste : AppRoot.kt l.3330, `mixerStrips(project, hideFirst = tutoHidesFirst)`) : `mixerStrips` suit la règle de la page Sons : la première piste vide cachée (supprimée, ou cachée par le tuto) n'a plus de tranche. Aucun ordre changé, aucun nom changé ; `HumanRemixJourneyTest` et `KeyActionsGestureTest` non touchés.

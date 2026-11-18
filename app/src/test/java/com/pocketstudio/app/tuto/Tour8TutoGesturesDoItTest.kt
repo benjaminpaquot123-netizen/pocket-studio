@@ -190,6 +190,9 @@ class Tour8TutoGesturesDoItTest {
             assertTrue("$style: the Drop's first bar starts low", (first.firstOrNull() ?: 1f) <= 0.3f)
             assertTrue("$style: it rises to the middle of the bar", (first.getOrNull(bar / 2) ?: 0f) >= 0.9f)
             assertTrue("$style: and falls back by the end of the bar", (first.getOrNull(bar - 1) ?: 1f) <= 0.3f)
+            // The engine holds a « Par partie » value until the next one (no glide): every step of the bar is set.
+            assertTrue("$style: every step of the Drop's bar set, rising then falling", first.size == bar && first.all { it != null } &&
+                (0 until bar / 2).all { first[it]!! <= first[it + 1]!! } && (bar / 2 until bar - 1).all { first[it]!! >= first[it + 1]!! })
             assertTrue("$style: ticked once drawn", TutoPlay.done(step, made, target, null))
             // The song-wide wave the old « Je le fais » drew: a curve in another mode than the step asks is no tick.
             val songWide = TutoPlay.doHere(step.copy(check = "automation:wave"), own, target, null, TutoLevel.Pro)!!
@@ -214,5 +217,13 @@ class Tour8TutoGesturesDoItTest {
         val both = TutoPlay.doHere(rise, one, target, null, TutoLevel.Pro) ?: one
         assertTrue("the Intro 2 rise ticked", TutoPlay.done(rise, both, target, null))
         assertTrue("the Drop's loop still ticked after the Intro 2 rise", TutoPlay.done(loop, both, target, null))
+        // The rise itself is a rise on every step of the Intro 2's loop: the engine holds each value (no glide).
+        val intro = both.allScenes.indexOfFirst { it.label == "Intro 2" }
+        val lane = both.automation.single { it.mode == AutomationLane.PER_SCENE }
+        val introSteps = both.allScenes[intro].stepsFor(both.stepsPerBar)
+        val line = lane.sceneValues[intro].orEmpty().take(introSteps)
+        assertTrue("every step of the Intro 2 set, from shut to open", line.size == introSteps && line.all { it != null } &&
+            line.first()!! <= 0.3f && line.last()!! >= 0.9f && line.zipWithNext().all { (a, b) -> a!! <= b!! })
+        assertTrue("the Drop's loop kept", lane.sceneValues[both.allScenes.indexOfFirst { it.label == "Drop" }] != null)
     }
 }

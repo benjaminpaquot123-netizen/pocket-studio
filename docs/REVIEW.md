@@ -1203,3 +1203,10 @@ Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
 - Lot stable-b jeté : `restore()` avec remise à zéro cassait 13 tests.
 - `shareMenu` bloqué par une activité ouverte dans le même test.
 - Finition « Lire la suite » (le lien reste affiché après lecture) : retirée à la demande de Benjamin.
+
+## Tour 7 : revue de fin de tour (2026-11-18)
+- Grave : aucun. Moteur audio et sauvegarde des projets non touchés ; la reprise de l'avancement du tuto (`TutoProgress.decode/withPieces`) est couverte par `Tour7TutoOldProgressTest`.
+- Corrigé ici : plafond des exceptions de lisibilité Facile ramené de 3077 à 409 (le compte du jour) ; plancher de `Tour6TutoMixWordsTest` remonté à 18.
+- MOYEN, pour le tour 8 : aucune exception périmée n'est refusée (`readability-facile-exceptions.txt`, `tuto-moment-exceptions.txt`, 52 entrées sans plafond) ; ajouter « chaque entrée échoue encore » et un plafond.
+- Mineur : `Tour7TutoPanelFoldTest` peut passer sans cas coupé ; la moitié des étapes de volume (celles sans « sous le curseur ») n'est pas vérifiée ; compteurs de test dans le code de l'appli (`cutCurveCompositions`, `fitProbeCompositions`) ; `PianoRoll` : `TutoHints.active` comme clé de `LaunchedEffect`, à vérifier ; une étape cochée dont la pièce a changé se décoche (voulu, siège d).
+- Captures : 38 remises à jour. Défauts vus, non remplacés : vide d'environ 60 px dans la feuille de partage (`share_sheet_ok`, `partage/loop_simple` ; `export/ShareSheet.kt`) ; flèche « → » dessinée sur « + Piste » à 130 % (`scale130/fr_track_frozen`, `nl_track_frozen` ; `synth/TrackBar.kt`). 10 captures non récupérables depuis l'artefact (noms en double entre dossiers : `projects`, `remix`, `take_done`, `i18n/nl_projects`, six de `tablet8/`) : à réenregistrer.

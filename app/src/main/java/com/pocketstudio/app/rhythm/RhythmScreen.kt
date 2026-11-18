@@ -1546,7 +1546,15 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                                 selected = hit != null
                             }
                             .testTag("cell_${lane}_$step"),
-                    )
+                    ) {
+                        // Tour 8 (seat c in ko, ch.12): the tutorial's marks here too, as on the pad's own grid.
+                        if (hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
+                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                        }
+                        if (hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true) {
+                            com.pocketstudio.app.tuto.TutoEraseCell()
+                        }
+                    }
                 }
             }
         }

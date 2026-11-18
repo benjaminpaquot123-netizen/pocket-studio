@@ -387,8 +387,9 @@ fun ShareSheetContent(
     // alone, so that what scrolls above (the name, the duration) keeps a line more.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxWidth()) {
     val short = constraints.hasBoundedHeight && maxHeight < 500.dp
+    // Tour 8, captures8: the sheet ends where « Mes fichiers » does (a 12 dp empty band lay under it, in both modes).
     Column(
-        Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        Modifier.fillMaxWidth().then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
     // Lot 6, U4 / U15 / N7 (seats A c, F a, H a, D a): the line cut by the bottom edge, right above the pinned M4A / WAV
@@ -403,7 +404,12 @@ fun ShareSheetContent(
     androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false).layout { measurable, c ->
         val h = if (c.hasBoundedHeight) snapHeight(stops, topPad.roundToPx(), c.maxHeight) else c.maxHeight
         val p = measurable.measure(c.copy(minHeight = minOf(c.minHeight, h), maxHeight = h))
-        layout(p.width, p.height) { p.place(0, 0) }
+        // Tour 8, captures8: the scrollable tail is there for a sheet that scrolls; when all of it fits (nothing to
+        // scroll), the sheet ends at its last line and the tail no longer leaves an empty band above M4A / WAV.
+        val lines = stops.lines
+        val fits = lines.size >= 2 && topPad.roundToPx() + lines.last().bottom <= p.height
+        val shown = if (fits) maxOf(c.minHeight, topPad.roundToPx() + lines[lines.size - 2].bottom) else p.height
+        layout(p.width, shown) { p.place(0, 0) }
     }) {
     SnapColumn(
         Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = topPad),

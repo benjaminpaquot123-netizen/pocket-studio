@@ -12,8 +12,8 @@ import com.pocketstudio.model.tuto.TutoTarget
  * anchored chapter finds what a person who played them would have (« Montée » to arrange at house's chapter 12).
  */
 internal object TutoAnchor {
-    /** [p] with chapters 1 to [chapter] − 1 of [style] at [level] done; null when the style has no course. */
-    fun built(p: Project, style: String, level: TutoLevel, chapter: Int): Project? {
+    /** [p] with chapters 1 to [chapter] − 1 of [style] at [level] done ([skipped]: each step it could not do); null when the style has no course. */
+    fun built(p: Project, style: String, level: TutoLevel, chapter: Int, skipped: (String) -> Unit = {}): Project? {
         val course = TutoCourse.of(style) ?: return null
         val target = TutoTarget.of(style) ?: return null
         var now = p
@@ -22,6 +22,8 @@ internal object TutoAnchor {
             now = TutoChecks.show(s, now, target)
                 ?: TutoChecks.need(s, now, target)?.let { TutoChecks.fulfil(it, s, now, target)?.first }
                 ?: now
+            // Tour 8, banc9 (point h): a step the anchor could not do is said, not lost.
+            if (!TutoChecks.done(s, now, target)) skipped(s.id)
         }
         return now
     }

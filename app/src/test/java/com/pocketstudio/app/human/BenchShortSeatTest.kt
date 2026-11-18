@@ -80,12 +80,13 @@ class BenchShortSeatTest {
 
     // Tour 7, banc B2: the tour 6 replays gave the seat back at gesture 1 of 7 (B/c) and 4 of 17 (B/b): the app had moved
     // « Simple ou Pro ? » down the screen (same words), the bench compared the places too.
-    private fun seen(path: String) = java.io.File("../docs/audits/ultra/sieges/$path").readLines().drop(1)
+    // Tour 8, banc9 (point g): the audit's screens are copied as test resources (app/src/test/resources/bench/).
+    private fun seen(name: String) = javaClass.getResource("/bench/$name")!!.readText().removeSuffix("\n").lines().drop(1)
 
     @Test
     fun aScreenWhoseWordsOnlyMovedIsTheOriginsForAReplayHandingBack() {
-        val was = seen("tour-6/lotB/a/screen-2.txt")
-        val now = seen("tour-7/lotB/c/screen-2.txt")
+        val was = seen("tour-6-lotB-a-screen-2.txt")
+        val now = seen("tour-7-lotB-c-screen-2.txt")
         assertFalse("the places did move", ScreenText.fingerprintOf(was) == ScreenText.fingerprintOf(now))
         assertEquals(ScreenText.fingerprintOf(was, places = false), ScreenText.fingerprintOf(now, places = false))
         val other = now.map { it.replace("Simple", "Sencillo") }

@@ -482,7 +482,39 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
      * an element drawn after it that takes the touch (a card, a surface: a traversal group that is neither the target, nor
      * one of its parents, nor inside it); null when nothing covers it.
      */
-    fun coverAt(x: Float, y: Float): String? = null
+    fun coverAt(x: Float, y: Float): String? {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
+            ?: return null
+        val here = runCatching {
+            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        }.getOrDefault(emptyList()).filter { BenchWindows.windowOf(it)?.view === win.view && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+        val hit = here.filter { actionable(it) && seen(it) }.minByOrNull { val r = drawn(it); r.width * r.height } ?: return null
+        val chain = generateSequence(hit) { it.parent }.map { it.id }.toSet()
+        val cover = here.firstOrNull { c ->
+            c.config.getOrNull(SemanticsProperties.IsTraversalGroup) == true && c.id !in chain &&
+                generateSequence(c.parent) { it.parent }.none { it.id == hit.id } && !passThrough(c) && drawnAfter(c, hit)
+        } ?: return null
+        return "« ${nameOf(cover)} » couvre « ${nameOf(hit)} »"
+    }
+
+    /** [a] is drawn after [b]: at their lowest common parent, [a]'s branch comes later (children are in drawing order). */
+    private fun drawnAfter(a: SemanticsNode, b: SemanticsNode): Boolean {
+        val pa = generateSequence(a) { it.parent }.toList().asReversed()
+        val pb = generateSequence(b) { it.parent }.toList().asReversed()
+        var i = 0
+        while (i < pa.size && i < pb.size && pa[i].id == pb[i].id) i++
+        if (i == 0 || i >= pa.size || i >= pb.size) return false
+        val kids = pa[i - 1].children.map { it.id }
+        return kids.indexOf(pa[i].id) > kids.indexOf(pb[i].id)
+    }
+
+    private fun nameOf(n: SemanticsNode): String =
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }?.takeIf { it.isNotBlank() }
+            ?: n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")?.takeIf { it.isNotBlank() }
+            ?: textBelow(n)?.takeIf { it.isNotBlank() }
+            ?: n.config.getOrNull(SemanticsProperties.TestTag)
+            ?: "#${n.id}"
 
     private fun textBelow(n: SemanticsNode): String? =
         n.children.firstNotNullOfOrNull { c -> c.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(c) }

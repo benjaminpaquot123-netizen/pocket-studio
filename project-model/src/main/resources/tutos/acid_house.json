@@ -32,7 +32,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
+          "text": "À toi : mets le morceau en La, gamme « Mineure ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur La mineur. Pas d'accords ici : la 303 joue la fondamentale, la tierce, la quinte et la 7e, c'est elle qui fait la couleur. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -55,7 +55,7 @@
         },
         {
           "id": "acid_do",
-          "text": "À toi : la 303 a son propre écran. « Je le fais » l'ouvre, et « Montre-moi » y écrit la ligne pour toi : regarde ses 13 notes se poser, avec leurs accents et leurs glissés.",
+          "text": "À toi : la 303 a son propre écran. « Je le fais » l'ouvre et « Montre-moi » y écrit la ligne : regarde ses 13 notes se poser.",
           "textPro": "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.",
           "why": "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.",
           "check": "notes:acid",
@@ -102,7 +102,8 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche toutes les cases (« Remplir » puis « tout ») : le charley de la 707 en continu.",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases (« Remplir », « tout »).",
+          "textPro": "À toi : sur le pad « Charley », touche toutes les cases (« Remplir » puis « tout ») : le charley de la 707 en continu.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -110,7 +111,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Cowbell » (une cloche), touche les 4 cases en pointillé, entre les temps : typique des premiers disques acid.",
+          "text": "À toi : pad « Cowbell » (une cloche), touche les 4 cases en pointillé, entre les temps.",
+          "textPro": "À toi : sur le pad « Cowbell » (une cloche), touche les 4 cases en pointillé, entre les temps : typique des premiers disques acid.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -118,7 +120,8 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks : il poussera le Drop.",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks.",
+          "textPro": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks : il poussera le Drop.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -229,7 +232,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne 16 mesures à chaque partie.",
+          "textPro": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop:16,Fin:16",

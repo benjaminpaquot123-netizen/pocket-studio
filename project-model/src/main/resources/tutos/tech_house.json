@@ -37,7 +37,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
+          "text": "À toi : mets le morceau en Sol, gamme « Mineure ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord tout le morceau : la basse fait la mélodie. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -69,7 +69,7 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : touche « Passer à 2 mesures », puis sur le pad « Clap », les cases en pointillé : les temps 2 et 4, et un petit écho doux à la fin de la mesure 2.",
+          "text": "À toi : pad « Clap », touche les cases en pointillé des 2 mesures : 2 et 4, et un écho.",
           "textPro": "À toi : le clap sur 2 et 4, avec son écho doux à la fin de la mesure 2 qui relance la boucle.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -87,7 +87,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures : un petit motif de « toc » qui accroche l'oreille.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : le motif de rim sur 2 mesures, la signature des boucles tech house.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -96,7 +96,8 @@
         },
         {
           "id": "shaker_do",
-          "text": "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt, plus ou moins fort.",
+          "text": "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt.",
+          "textPro": "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt, plus ou moins fort.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",
@@ -132,7 +133,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 8 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 8 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse. Mesure 1 : des paires fort/doux juste après chaque kick, l'octave à la fin ; mesure 2 : la 7e (Fa) puis la quinte (Ré) ; mesure 3 = mesure 1 (« Copier ») ; mesure 4 : tierce, quinte, octave, pour revenir.",
           "why": "Jamais avec le kick, toujours juste après : c'est ce va-et-vient qui fait rouler.",
           "check": "notes:bass",
@@ -144,7 +145,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 8 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il refait la mesure 1 en mesure 3.",
+          "text": "À toi : touche les 8 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "length": 48,
@@ -212,7 +213,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes », puis écris les 2 notes plus graves de la mesure 4 : la réponse.",
+          "text": "À toi : écris les 2 notes plus graves de la mesure 4 : la réponse.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -246,7 +247,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 2 coups.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 2 coups.",
           "textPro": "À toi : crée la piste Accords (orgue) : Gm7, deux coups par mesure juste après les temps, puis « Copier ».",
           "check": "notes:pad",
           "length": 16,
@@ -394,7 +395,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Drop B 16, Break 8, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Drop B 16, Break 8, Fin 8.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Drop B 16, Break 8, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:16,Drop B:16,Break:8,Montée:8,Drop B:16,Fin:8",
@@ -419,7 +421,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence juste avant le Drop.",
+          "text": "À toi : dans la Montée, efface les coups du dernier temps : un silence avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence juste avant le Drop.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "part": "Montée",
@@ -435,7 +438,7 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop B », ajoute le charley ouvert entre les kicks : la 2e moitié du Drop brille plus.",
+          "text": "À toi : dans le Drop B, ajoute le charley ouvert entre les kicks.",
           "textPro": "À toi : dans « Drop B », ajoute le charley ouvert sur les contretemps (les blocs C-D d'EDMProd ajoutent une couche).",
           "check": "changed:drums:Drop B",
           "target": "open_hat",

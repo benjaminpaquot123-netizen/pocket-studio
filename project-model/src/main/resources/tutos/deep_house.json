@@ -41,7 +41,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure douce, un peu jazz), puis « Fa ».",
+          "text": "À toi : mets le morceau en Fa, gamme « Dorienne » (un mineur doux, un peu jazz). « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur Fa dorien : Fm9 et B♭9, les deux accords que Kerri Chandler fait tourner toute une nuit. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -74,7 +74,7 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur les temps 2 et 4. Il est un peu en retrait : on reste doux.",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4.",
           "textPro": "À toi : le clap sur 2 et 4, en « Moyen » : en deep, il ne claque pas.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -83,7 +83,7 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un coup fort entre chaque temps, et des petits coups très doux autour.",
+          "text": "À toi : pad « Charley », touche les cases en pointillé : fort entre les temps, doux autour.",
           "textPro": "À toi : les charleys, le contretemps fort et les fantômes doux autour.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -102,7 +102,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : quelques coups légers et décalés, comme joués à la main.",
+          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : des coups légers.",
+          "textPro": "À toi : sur le pad de percussion, touche les cases en pointillé : quelques coups légers et décalés, comme joués à la main.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -110,7 +111,7 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, entre les kicks.",
           "textPro": "À toi : le tom 909 sur les cases 3, 9 et 11 : le motif « rolling » de la deep house.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",
@@ -159,7 +160,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 5 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il refait les 2 mesures sur l'accord suivant (Si♭).",
+          "text": "À toi : touche les 5 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -200,7 +201,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Il y a 4 coups par mesure.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Il y a 4 coups par mesure.",
           "textPro": "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.",
           "why": "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.",
           "check": "notes:pad",
@@ -227,7 +228,7 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé : une longue au début, et la réponse à la mesure 4.",
+          "text": "À toi : touche les 3 notes en pointillé : une longue au début, et la réponse à la mesure 4.",
           "textPro": "À toi : crée la piste Mélodie (une voix) : un chop en mesure 1, la réponse (Do, La♭) en mesure 4, rien entre.",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -376,7 +377,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 28, Montée 4, Drop 16, Break 12, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 28, Montée 4, Drop 16, Break 12, Drop 2 16, Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 28, Montée 4, Drop 16, Break 12, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:28,Montée:4,Drop:16,Break:12,Montée:4,Drop 2:16,Fin:16",
@@ -391,7 +393,7 @@
       "steps": [
         {
           "id": "toms",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom médium » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
+          "text": "À toi : fin de la Montée, pad « Tom médium » : touche les 4 cases de l'avant-dernier temps.",
           "textPro": "À toi : un fill de toms 909 sur l'avant-dernier temps de la Montée, juste avant le temps de silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
@@ -401,7 +403,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence avant le Drop.",
+          "text": "À toi : dans la Montée, efface les coups du dernier temps : un silence avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence avant le Drop.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "part": "Montée",
@@ -410,7 +413,8 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de shaker ou de charley ouvert : une couche de plus que dans le Drop.",
+          "text": "À toi : dans le Drop 2, ajoute quelques coups de shaker ou de charley ouvert.",
+          "textPro": "À toi : dans la partie « Drop 2 », ajoute quelques coups de shaker ou de charley ouvert : une couche de plus que dans le Drop.",
           "check": "changed:drums:Drop 2",
           "target": "perc2",
           "spot": "rhythm.pattern",
@@ -459,7 +463,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les pistes « Accords » et « Mélodie ».",
           "textPro": "À toi : dans Mix, baisse un peu les faders des Accords et de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

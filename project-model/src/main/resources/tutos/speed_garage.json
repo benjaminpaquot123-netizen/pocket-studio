@@ -40,7 +40,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
+          "text": "À toi : mets le morceau en Sol, gamme « Mineure ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur Sol mineur (i–i–VI–v : Sol m, Sol m, Mi♭, Ré m). « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -72,7 +72,7 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : la caisse claire joue sur 2 mesures. Touche « Passer à 2 mesures », puis les cases en pointillé : les temps 2 et 4, et de petits coups doux en plus à la mesure 2.",
+          "text": "À toi : touche les cases en pointillé des 2 mesures : 2 et 4, plus des coups doux.",
           "textPro": "À toi : la caisse sur 2 et 4, avec ses fantômes doux en mesure 2 : le côté « skippy » hérité de la jungle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
@@ -81,7 +81,8 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert », touche les 8 cases en pointillé, entre les kicks : le « tchi » de la house de New York.",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 8 cases en pointillé, entre les kicks.",
+          "textPro": "À toi : sur le pad « Charley ouvert », touche les 8 cases en pointillé, entre les kicks : le « tchi » de la house de New York.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -134,7 +135,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 4 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse. Mesure 1 : une longue note, une 2e qui monte à l'octave ; mesure 2 : la réponse par la quinte ; « Copier » transpose la mesure 1 sur Mi♭ ; mesure 4 sur Ré, qui ramène à Sol.",
           "why": "Peu de notes, mais longues : la basse doit tenir et gronder, c'est le filtre qui la fait parler.",
           "check": "notes:bass",
@@ -146,7 +147,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 4 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait la mesure 3 (sur Mi♭).",
+          "text": "À toi : touche les 4 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "length": 48,
@@ -204,7 +205,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de chaque mesure : tout l'accord se pose. Il y a 2 coups par mesure.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de chaque mesure : tout l'accord se pose. Il y a 2 coups par mesure.",
           "textPro": "À toi : crée la piste Accords (orgue) : Gm7 deux fois, puis E♭maj7 et Dm7, deux coups par mesure, juste après les temps.",
           "check": "notes:pad",
           "spot": "notes.track",
@@ -220,7 +221,7 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1 : l'appel.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1 : l'appel.",
           "textPro": "À toi : crée la piste Mélodie (des voix) : un appel sur Sol, une réponse sur Ré, puis « Copier ».",
           "check": "notes:lead",
           "length": 16,
@@ -230,7 +231,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 2 notes de la mesure 2, la réponse plus grave, puis touche « Copier ».",
+          "text": "À toi : écris les 2 notes de la mesure 2 : la réponse, plus grave.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -378,7 +379,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Break 8, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Break 8, Drop 2 16, Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 16, Break 8, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:24,Montée:8,Drop:16,Break:8,Montée:8,Drop 2:16,Fin:16",
@@ -403,7 +405,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence juste avant le Drop.",
+          "text": "À toi : dans la Montée, efface les coups du dernier temps : un silence avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence juste avant le Drop.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "part": "Montée",
@@ -421,7 +424,8 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » : il roule et pousse le 2e Drop.",
+          "text": "À toi : dans le Drop 2, ajoute quelques coups sur le pad « Shaker ».",
+          "textPro": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur le pad « Shaker » : il roule et pousse le 2e Drop.",
           "check": "changed:drums:Drop 2",
           "target": "perc2",
           "spot": "rhythm.pattern",
@@ -476,7 +480,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les pistes « Accords » et « Mélodie ».",
           "textPro": "À toi : dans Mix, baisse un peu les faders des Accords et de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

@@ -498,6 +498,15 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         return "« ${nameOf(cover)} » couvre « ${nameOf(hit)} »"
     }
 
+    /** What the bench's finger writes for gesture [n] at ([x], [y]); [refused] when the touch must not be played. */
+    class Finger(val under: String, val lines: List<String>, val refused: Boolean)
+
+    /** Tour 8, banc9 (point i, review #1): the finger fails on a covered target, and its lines say who covers whom. */
+    fun finger(n: Int, x: Float, y: Float): Finger {
+        val under = under(x, y)
+        return Finger(under, listOf("#$n DOIGT $under"), false)
+    }
+
     /** [a] is drawn after [b]: at their lowest common parent, [a]'s branch comes later (children are in drawing order). */
     private fun drawnAfter(a: SemanticsNode, b: SemanticsNode): Boolean {
         val pa = generateSequence(a) { it.parent }.toList().asReversed()

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -61,6 +63,40 @@ class BenchCoverTest {
         assertNotNull(line)
         assertTrue(line!!, line.contains("« Fait » couvre"))
         assertTrue(line, line.contains("Valider"))
+    }
+
+    /** Review #1: the finger itself (the lines HumanTester writes, and whether it plays the touch), not only coverAt. */
+    private fun fingerOnTarget(content: @Composable () -> Unit): ScreenText.Finger {
+        compose.setContent(content)
+        compose.waitForIdle()
+        val screen = ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics
+        val r = BenchWindows.drawnBounds(compose.onNodeWithTag("target", useUnmergedTree = true).fetchSemanticsNode(), screen)
+        return ScreenText(compose, screen, reads = true, rtl = false).finger(7, r.center.x, r.center.y)
+    }
+
+    @Test
+    fun theFingerFailsOnACoveredButtonAndSaysWhoCoversWhom() {
+        val f = fingerOnTarget {
+            Box(Modifier.fillMaxSize()) {
+                Button(onClick = {}, modifier = Modifier.testTag("target")) { Text("Valider") }
+                Card(Modifier.size(200.dp)) { Text("Fait") }
+            }
+        }
+        assertTrue(f.lines.joinToString("\n"), f.refused)
+        assertTrue(f.lines.joinToString("\n"), f.lines.none { it.startsWith("#7 DOIGT") })
+        assertTrue(f.lines.joinToString("\n"), f.lines.any { it.startsWith("#7 REFUS") && it.contains("« Fait » couvre") && it.contains("Valider") })
+    }
+
+    @Test
+    fun aBottomBarButtonUnderAFullScreenBodyIsNotCovered() {
+        // A Scaffold's body is laid out on the whole screen, under its bars: a full-screen surface is no cover (full-screen
+        // layers are ScreenText's overlay rule), so a bottom bar's button is touched.
+        val f = fingerOnTarget {
+            Scaffold(bottomBar = { Button(onClick = {}, modifier = Modifier.testTag("target")) { Text("Valider") } }) { _ ->
+                Surface(Modifier.fillMaxSize()) { Text("Corps") }
+            }
+        }
+        assertTrue(f.lines.joinToString("\n"), !f.refused && f.lines.any { it.startsWith("#7 DOIGT target") })
     }
 
     @Test

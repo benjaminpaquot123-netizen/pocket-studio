@@ -63,7 +63,7 @@ class OrdinaryTestsLeaveNothingTest {
     /**
      * Tour 8, lot « stable8 » (c_ red under load, « red itself, by name: null »): on a loaded machine the worker that runs
      * the work left starts late; afterTest, called at once, saw no worker in the app's code and said nothing. The same
-     * test with the worker's start held 300 ms (a loaded machine, without the load).
+     * test with the worker's start held 300 ms (a loaded machine, without the load): the work is waited for until it runs.
      */
     @Test
     fun c_anOrdinaryTestThatLeavesTheAppsWorkStartedLateIsRedItself() = leavesTheAppsWorkRunning("c_anOrdinaryTestThatLeavesTheAppsWorkStartedLateIsRedItself", startLateMs = 300)
@@ -72,8 +72,12 @@ class OrdinaryTestsLeaveNothingTest {
         val stop = java.util.concurrent.atomic.AtomicBoolean(false)
         // A worker kept in this package's code (com.pocketstudio…) far past the time given, as a render or a fetch left on.
         @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
-        kotlinx.coroutines.GlobalScope.launch(lateDefault(startLateMs)) { while (!stop.get()) Thread.sleep(20) }
+        val running = java.util.concurrent.CountDownLatch(1)
+        kotlinx.coroutines.GlobalScope.launch(lateDefault(startLateMs)) { running.countDown(); while (!stop.get()) Thread.sleep(20) }
         try {
+            // The work is left running, as the test says, before the check is asked: a worker started late (a loaded
+            // machine) no more makes the check look at nothing.
+            assertTrue("the work left started on a worker", running.await(60, java.util.concurrent.TimeUnit.SECONDS))
             val m = javaClass.getMethod(name)
             val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
             assertTrue("red itself, by name: $e", e is AssertionError && name in e.message.orEmpty())

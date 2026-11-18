@@ -120,6 +120,13 @@ object TutoPlay {
         return TutoChecks.hint(step, target, steps)
     }
 
+    /**
+     * The dotted cell the « Touche ici » ring goes round (tour 8, seat a, ch.3: no ring on the Clap's cells): the
+     * first of [cells] in the bar shown ([from] until [until]) not yet [filled]; null when the bar holds none to touch.
+     */
+    fun ringed(cells: Set<Int>, filled: Set<Int>, from: Int, until: Int): Int? =
+        cells.filter { it in from until until && it !in filled }.minOrNull()
+
     /** The hits [step] crosses out in the part shown, null when it takes none, while a button is to touch first, or in a part that is not the step's own. */
     fun toErase(step: TutoStep, p: Project, target: TutoTarget?, need: TutoNeed?): Map<Int, Set<Int>>? =
         if (need != null || !inItsPart(step, p) || (target != null && TutoChecks.heldElsewhere(step, p, target))) null else TutoChecks.toErase(step, p, target)

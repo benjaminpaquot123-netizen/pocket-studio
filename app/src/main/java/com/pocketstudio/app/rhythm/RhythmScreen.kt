@@ -745,6 +745,13 @@ private fun StepGrid(
                 },
             ),
         ) {
+        // Tour 8 (seat a, ch.3): the dotted cell to touch first, ringed « Touche ici ».
+        val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) ->
+            if (l != lane) null
+            else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                cells, cells.filter { hits[it] != null || project.drums.lanes[lane].covering(it) != null }.toSet(), bar * per, (bar + 1) * per,
+            )
+        }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until per / 2) {
@@ -846,7 +853,7 @@ private fun StepGrid(
                     ) {
                         // « Tuto de A à Z »: a cell of the step's target, still empty, drawn dotted.
                         if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
-                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
                         }
                         // A hit the step asks to take away: crossed out over it (drawn below, on top of the hit).
                         val erasing = velocity != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true

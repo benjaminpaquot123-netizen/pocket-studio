@@ -125,7 +125,7 @@
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé.",
           "textPro": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
-          "why": "Le batteur de l'Amen joue sa cymbale ride à la croche, régulière, pendant que kick et caisse trébuchent. Un charley ouvert relance la boucle. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "why": "Le batteur de l'Amen joue sa cymbale ride à la croche, régulière, pendant que kick et caisse trébuchent. Un charley ouvert relance la boucle. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; efface ensuite les cases sans pointillé.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",

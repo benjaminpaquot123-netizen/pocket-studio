@@ -155,7 +155,7 @@ fun TrackBar(
     // text (« + Pist→ » at 130 %, « + トラ→ »): it now has its own place beside the row, which scrolls between the two.
     // The arrows say « more » on their side: the row has no fade any more (it ate the last chip, « Remix » down to « Re »).
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.testTag("track_bar_less"))
+    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.testTag("track_bar_less"), "track_bar_less_icon")
     Row(
         Modifier.weight(1f, fill = false).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -252,7 +252,7 @@ fun TrackBar(
             }
         }
     }
-    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.testTag("track_bar_more"))
+    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.testTag("track_bar_more"), "track_bar_more_icon")
     }
     }
     if (choosing) {
@@ -300,10 +300,12 @@ fun TrackBar(
  * Arrows, not chevrons: the bench describes ← and → (its IconShapes had no left chevron: self-test red).
  */
 @Composable
-private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
+private fun RowMoreSign(forward: Boolean, modifier: Modifier, iconTag: String) {
     // Beside the row, it takes width from it, and the chip at the edge goes out of sight (the 303 in the Mode simple,
     // « Remix » in Pro, at 360 dp). So it holds only half its stroke's width in the row and draws the other half over
     // the margin the row always has around it (8 dp at least, every screen with a TrackBar): 6 dp taken, not 22.
+    // Tour 8, captures8: the arrow starts at the row's edge, never back over it (centred, 18 dp wide, it bit into the
+    // « + Spoor » chip's text at 130 %); 16 dp, its stroke stays within the 6 dp held and the 8 dp margin.
     val slot = 12.dp
     val held = 6.dp
     Box(
@@ -315,7 +317,7 @@ private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
     ) {
         Icon(
             if (forward) Icons.AutoMirrored.Filled.ArrowForward else Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.wrapContentSize(unbounded = true).size(18.dp),
+            contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.wrapContentSize(if (forward) Alignment.CenterStart else Alignment.CenterEnd, unbounded = true).size(16.dp).testTag(iconTag),
         )
     }
 }

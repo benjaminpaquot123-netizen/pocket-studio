@@ -183,8 +183,11 @@ class Tour8CapturesTest {
             val host = nodes("host").single()
             val dp = host.layoutInfo.density.density
             val formats = nodes("share_format_Wav").single().boundsInRoot.top
-            // The lines themselves (leaves), not the scrolling column that holds them.
-            val above = host.all().drop(1).filter { it.children.isEmpty() && it.boundsInRoot.height > 0.5f && it.boundsInRoot.bottom <= formats + 0.5f }
+            // The lines themselves, not the scrolling column that holds them.
+            val above = host.all().drop(1).filter {
+                it.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) == null &&
+                    it.boundsInRoot.height > 0.5f && it.boundsInRoot.bottom <= formats + 0.5f
+            }
                 .maxOf { it.boundsInRoot.bottom }
             val gap = (formats - above) / dp
             if (gap > 13f) bands += "${if (simple) "Simple" else "Pro"} $size: ${"%.1f".format(gap)} dp empty above M4A / WAV"

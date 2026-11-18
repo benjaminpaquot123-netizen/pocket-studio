@@ -233,8 +233,13 @@ fun CutScreen(
                   // Tour 7, lot 2 D3 (2c #16): a message (« Listo… ») grows the send bar at the scroll's end; the column
                   // follows it down, so the message and the four buttons stay in view instead of going under the bar.
                   val said = busy ?: note ?: message
+                  // Tour 8, R (decoupe2): a message left from before (it lives until « OK ») does not move the column on
+                  // arrival, so the instruction stays on top; only a message that comes while the screen is open does.
+                  val arrived = androidx.compose.runtime.remember { booleanArrayOf(false) }
                   if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
-                      if (said != null) {
+                      val first = !arrived[0]
+                      arrived[0] = true
+                      if (said != null && !first) {
                           androidx.compose.runtime.withFrameNanos { }
                           scroll.animateScrollTo(scroll.maxValue)
                       }

@@ -239,14 +239,11 @@ fun MixerScreen(
     FitFaders(
         fit = !lying && songTracks == null && maxHeight != Dp.Infinity, paneWidth = paneWidth, paneHeight = maxHeight - 24.dp,
         fallback = consoleFaderHeight(maxHeight, lying),
-        probe = { f, hint ->
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Console(strips, channels, meters, actions, lanesOn, openMoves = {}, openCurves = {}, faderHeight = f, hint = hint)
-                AutomationEntry(automation.lanes.size, show = {}, overview = {})
-            }
-        },
+        probe = fitProbe(strips, channels, lanesOn, automation.lanes.size),
     ) { faderHeight, hint ->
-    com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = {
+    // Tour 8 (mixer8): turned lying down, the page goes from one column to two; each pane's content moves there with
+    // its state (a strip's open sheet, the console's scroll, the master's open « Effets ») instead of starting again.
+    val firstNow = androidx.compose.runtime.rememberUpdatedState<@Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit> {
         // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
         Console(
             strips, channels, meters, actions, lanesOn,
@@ -256,7 +253,8 @@ fun MixerScreen(
         )
         songTracks?.invoke()
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
-    }, second = {
+    }
+    val secondNow = androidx.compose.runtime.rememberUpdatedState<@Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit> {
         AutomationCard(
             automation.copy(focusLane = (focus as? Where.Lane)?.lane ?: -1), channels, master,
             automationActions.copy(overview = { overview(null) }), strips,
@@ -284,10 +282,38 @@ fun MixerScreen(
         androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(busesCard)) { BusesCard(buses, actions) }
         ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard),
             target = TargetPick(target, styleLufs, freeLufs, styleName), stale = exportStale, stemSkips = stemSkips)
-    })
+    }
+    val firstPane = androidx.compose.runtime.remember {
+        androidx.compose.runtime.movableContentWithReceiverOf<androidx.compose.foundation.layout.ColumnScope> { firstNow.value(this) }
+    }
+    val secondPane = androidx.compose.runtime.remember {
+        androidx.compose.runtime.movableContentWithReceiverOf<androidx.compose.foundation.layout.ColumnScope> { secondNow.value(this) }
+    }
+    com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = { firstPane() }, second = { secondPane() })
     }
     }
 }
+
+/**
+ * Tour 8 (mixer8): [FitFaders]' probe reads nothing a fader moves (the channels at rest, no meters, no actions), so it
+ * stays the same lambda while a fader is dragged and the unseen probes are not composed again at each frame.
+ */
+@Composable
+private fun fitProbe(strips: List<StripInfo>, channels: List<Channel>, lanesOn: Map<Int, Int>, lanes: Int): @Composable (Dp, Boolean) -> Unit {
+    val atRest = channels.map { it.copy(volume = 0f) }
+    val probeChannels = androidx.compose.runtime.remember(atRest) { atRest }
+    return androidx.compose.runtime.remember(strips, probeChannels, lanesOn, lanes) {
+        { f: Dp, hint: Boolean ->
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Console(strips, probeChannels, NO_METERS, PROBE_ACTIONS, lanesOn, openMoves = {}, openCurves = {}, faderHeight = f, hint = hint)
+                AutomationEntry(lanes, show = {}, overview = {})
+            }
+        }
+    }
+}
+
+private val NO_METERS: () -> FloatArray = { FloatArray(0) }
+private val PROBE_ACTIONS = MixerActions()
 
 /**
  * Tour 7 (D3): the faders' height that lets the console and the automation entry ([probe], measured unseen at

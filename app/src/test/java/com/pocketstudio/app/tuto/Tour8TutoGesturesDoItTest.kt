@@ -130,4 +130,29 @@ class Tour8TutoGesturesDoItTest {
             assertTrue("$style: a curve", flow.value.automation.isNotEmpty())
         }
     }
+    /**
+     * Review of T0b (made grave by the chef): « Je le fais » on a curve step took the whole project the show made,
+     * so anything else in it, the user's work included, came from the show and not from the project. Only the curve
+     * and the filter it needs on its strip may change.
+     */
+    @Test
+    fun theCurvesDoItChangesOnlyTheCurveAndItsFilter() {
+        for (style in listOf("techno", "hard_techno", "acid_techno")) {
+            val target = TutoTarget.of(style)!!
+            val step = com.pocketstudio.model.tuto.TutoCourse.of(style)!!.chaptersFor(TutoLevel.Pro)
+                .flatMap { it.steps }.first { it.id == "filter" }
+            // A field of the project the show's clean-up rewrites (a style name longer than it keeps): it stands
+            // for anything the show would hand back other than the project it was given.
+            val own = bare(target).copy(style = "x".repeat(80))
+            val made = TutoPlay.doHere(step, own, target, null, TutoLevel.Pro)
+            assertTrue("$style: a curve made", made != null && made.automation.isNotEmpty())
+            made!!
+            val ch = made.automation.map { it.target.ch }.toSet()
+            val expected = own.copy(
+                automation = made.automation,
+                mixer = own.mixer.copy(channels = own.mixer.channels.mapIndexed { i, x -> if (i in ch) x.copy(inserts = made.mixer.channels[i].inserts) else x }),
+            )
+            assertEquals("$style: « Je le fais » changed more than the curve and its filter", expected, made)
+        }
+    }
 }

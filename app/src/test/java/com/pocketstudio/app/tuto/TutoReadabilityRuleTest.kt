@@ -98,4 +98,19 @@ class TutoReadabilityRuleTest {
             if (it.kitCard) assertTrue(it.why)
         }
     }
+
+    /**
+     * Bloc 0b: a block folds only when folding it spares the words a cut. Cut anyway, the kit card the step needs and
+     * « Pourquoi ? » stay (folding them saved nothing: the kit card hidden, « Pourquoi ? » out of reach in Arabic at 130 %).
+     */
+    @Test fun cutAnywayTheKitAndWhyStay() {
+        // Arabic at 130 %: a line of 24 × 1.3 × 1.1 dp; twelve lines never fit in 240 dp.
+        TutoReadability.layout(240, 34.3f, 12, 48, 36, 40).let {
+            assertTrue(it.cut); assertTrue(it.showMore)
+            assertTrue("the kit card stays", it.kitCard)
+            assertTrue("« Pourquoi ? » stays", it.why)
+            assertFalse("the examples fold first", it.examples)
+            assertTrue("a line in sight above them", it.wordsLines >= 1 && it.wordsLines * 34.3f + 48 + 36 + 32 <= 240)
+        }
+    }
 }

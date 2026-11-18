@@ -36,9 +36,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : mets le morceau en Mi♭ mineur, une couleur un peu triste. « Je le fais » ouvre la fiche Tonalité.",
+          "text": "À toi : une couleur un peu triste. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi♭ ».",
           "textPro": "À toi : règle la tonalité sur Mi♭ mineur (Ré# mineur), gamme « Mineure », tonique « Mi♭ » : la Sub joue un seul Mi♭ très grave, 39 Hz, qui se sent plus qu'il ne s'entend. Ici, « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -83,6 +83,7 @@
         {
           "id": "snare_do",
           "text": "À toi : sur le pad « Caisse », touche la case en pointillé : une seule, au milieu de la mesure.",
+          "why": "Le pointillé montre où frapper ; une mesure = un tour de la boucle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -108,6 +109,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche les 4 cases en pointillé, entre les temps.",
+          "why": "Le « Charley » (le « tss » de la batterie) fait avancer le rythme. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -424,6 +426,7 @@
           "id": "fill",
           "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Clap », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "why": "Une transition (le passage d'une partie à l'autre) prévient l'oreille : une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "clap",

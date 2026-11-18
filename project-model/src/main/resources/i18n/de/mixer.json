@@ -250,7 +250,7 @@
   "Envoi vers la réverbe": "Send ins Reverb",
   "Fais bouger un réglage tout seul : choisis-le, puis dessine sa courbe (au doigt, ou une ligne en deux touches).": "Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps).",
   "Fait siffler le filtre de la 303.": "Lässt den Filter der 303 pfeifen.",
-  "Filtre (balayage)": "Filter (Sweep)",
+  "Filtre (balayage)": "Filter Cutoff",
   "Joue seulement dans : %s.": "Spielt nur in: %s.",
   "La longueur de chaque note.": "Wie lang jede Note ist.",
   "La même courbe à chaque tour de boucle (%d pas).": "Dieselbe Kurve bei jedem Loop-Durchlauf (%d Steps).",

@@ -106,10 +106,10 @@ class Tour8TutoWordsTest {
             Lang.DE to Regex("vor der letzten Zählzeit"), // de 4
             Lang.DE to Regex("dann wieder auf einen\\."), // de 5
             Lang.DE to Regex("gepunktet"), // de 6
-            Lang.DE to Regex("außer dem (Becken und dem )?Riff\\."), // de 7
+            Lang.DE to Regex("außer dem (Becken und dem )?Riff\\.|Becken und das Riff"), // de 7 (seat e: the Drop listen/button lines still said « das Riff »)
             Lang.DE to Regex("„Nächster Schritt“, wann du willst"), // de 8
             Lang.DE to Regex("^%s: danach\$"), // de 9
-            Lang.DE to Regex("Filter-„Cutoff“|„Cutoff“ der Spur"), // de 10
+            Lang.DE to Regex("Filter-„Cutoff“|„Cutoff“ der Spur|Filter \\(Sweep\\)"), // de 10 (seat e: picker « Filter (Sweep) », curve « Filter Cutoff »)
             Lang.JA to Regex("キット %1\\\$s を"), // ja a
             Lang.JA to Regex("(?<!（)太鼓のふち"), // ja b
             Lang.JA to Regex("ゴーストベース"), // ja c

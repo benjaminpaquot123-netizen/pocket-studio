@@ -3,7 +3,7 @@
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
 - **Mise à jour** : 2026-11-18, 15 h 30 UTC.
-- **Clôture du tour 8 (Benjamin, 2026-11-18)** : on finit ce qui est en cours, rien de neuf n'entre. Tout défaut neuf (siège, relecture, CI hors lot) est noté « pas pris » dans `corrections.tsv` et mis de côté ; aucune équipe ne l'ajoute à son lot.
+- **Clôture du tour 8 (Benjamin, 2026-11-18)** : tout ce qui est prévu se fait (lots K, T0b, R, T0c, garde-fous A, S, N, leurs relectures et sièges, le contrôle T-a à T-d), mais aucun nouvel audit ne part après. Tout défaut neuf (siège, relecture, CI hors lot) est noté « pas pris » dans `corrections.tsv` et mis de côté ; aucune équipe ne l'ajoute à son lot. Les relectures se font toujours.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : tour 8, réparations (fiches : `docs/audits/ultra/tour-8-fiches/`). Tour 7 fusionné dans `main` (PR 59).
   - Paquet 1 = M (mixer8 `5a7ed21cf`, CI 365) + T0a (`8eabd655`, CI 366 ; débutant neuf t0a/a et t0a/b : 0 chapitre bloqué, 0 grave) + B (banc9 `bd4c42be`, CI 367) : fusionné à `0aa3639a`, CI 368 verte (0 capture changée).

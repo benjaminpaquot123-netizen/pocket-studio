@@ -132,12 +132,18 @@ fun TrackBar(
     var choosing by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     val scroll = androidx.compose.foundation.rememberScrollState()
     val reveal = remember { RowReveal() }
+    // The edge arrows change the viewport's width: re-run then only while the row still sits where the last reveal left
+    // it. Once the hand has scrolled, the arrow showing up no longer pulls the row back to the lit chip (Tour 8, captures8).
+    val revealed = remember { intArrayOf(-1) }
     LaunchedEffect(reveal.target, scroll.viewportSize) {
         val t = reveal.target ?: return@LaunchedEffect
         val seen = scroll.viewportSize
         if (seen <= 0) return@LaunchedEffect
+        if (revealed[0] >= 0 && t == reveal.lastShown && scroll.value != revealed[0]) return@LaunchedEffect
         if (t.first < scroll.value) scroll.animateScrollTo(t.first)
         else if (t.last > scroll.value + seen) scroll.animateScrollTo(t.last - seen)
+        reveal.lastShown = t
+        revealed[0] = scroll.value
     }
     // Rule 16: the row's buttons grow with the font as the chips do (44 dp × the font scale at most, never less than 44).
     val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
@@ -301,6 +307,8 @@ private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
 /** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */
 internal class RowReveal {
     var target by mutableStateOf<IntRange?>(null)
+    /** The target the row was last brought to (not observed). */
+    var lastShown: IntRange? = null
 }
 
 internal val LocalRowReveal = androidx.compose.runtime.staticCompositionLocalOf<RowReveal?> { null }

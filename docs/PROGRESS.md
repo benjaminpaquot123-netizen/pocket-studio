@@ -1,5 +1,14 @@
 # Avancement
 
+## Où on en est (2026-11-18, matin)
+- **Tour 7, suite « P6/P7 » (consignes lisibles, un moment par consigne) : tout est dans l'intégration**, tête `5209db96` sur `ccr-80af1a1b-mn0wec`. Entrés : bloc 0 socle, blocs 1 Techno, 2 House, 3 Bass, 4 Hip-hop + autres + textes partagés, bloc 0b repli du panneau ; correctif d'après fusion (traductions en double entre lots parallèles, CI 360 rouge puis 361 verte) ; anciennes clés partagées retirées ; 38 captures remises à jour ; garde-fous resserrés après la revue de fin de tour (`docs/REVIEW.md`, « Tour 7 : revue de fin de tour » : aucun grave).
+- Leçon : deux lots parallèles qui écrivent la même phrase française dans deux fichiers de traduction cassent `I18nCatalogTest` à la fusion ; au tour 8, les phrases partagées ont un seul maître.
+
+## Prochaine étape exacte
+- PR vers `main` ouverte sur cette tête ; fusion dès sa CI verte (émulateur compris).
+- Puis tour 8 : `docs/audits/ultra/PLAN-TOUR-8-brouillon.md`, lot T0 « touche-ici » (a-V1) d'abord.
+- À reprendre au tour 8 (détail dans `docs/REVIEW.md`) : vide dans la feuille de partage, flèche sur « + Piste » à 130 %, 14 captures à réenregistrer, exceptions périmées non refusées.
+
 ## Où on en est (2026-11-16, nuit)
 - **Tour 7 fermé et fusionné dans `main`** (PR #58, `e7a6ceafd`, CI 43777365246 verte, émulateur compris). Entrés : lot 1 tuto (D1-D3, D5-D8), lot 3 Guide, lots 2, 4, 5, 6, plus l'intégration (Remix revenu sous le pouce gauche dans Plus, fenêtres plein écran lues par LayoutScan depuis leur propre vue, test du « doigt au hasard » stabilisé : loupe de texte muette sous Robolectric, attente de l'ouverture du projet refaite après une image).
 - Coût mesuré (en unités) : lot 1 ≈ 6 M, lots 2-4-5-6 ≈ 6,4 M, lot 3 ≈ 1,3 M, sièges ≈ 18 M.

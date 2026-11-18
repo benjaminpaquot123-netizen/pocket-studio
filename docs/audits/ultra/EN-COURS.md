@@ -2,9 +2,16 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-18, 05 h 50 UTC.
+- **Mise à jour** : 2026-11-18, 11 h 25 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : tour 7, P6/P7 terminé et rangé : blocs 0, 1, 2, 3, 4 et 0b dans l'intégration (tête `5209db96`, CI 361 verte sur `0e26e60d`), clés retirées, captures remises à jour, revue de fin de tour sans grave. Toutes les discussions du tour sont archivées. PR vers `main` ouverte ; fusion à sa CI verte. Ensuite : tour 8 (`PLAN-TOUR-8-brouillon.md`, lot T0 d'abord).
+- **Temps en cours** : tour 8, réparations (fiches : `docs/audits/ultra/tour-8-fiches/`). Tour 7 fusionné dans `main` (PR 59).
+  - Paquet 1 = M (mixer8 `5a7ed21cf`, CI 365) + T0a (`8eabd655`, CI 366 ; débutant neuf t0a/a et t0a/b : 0 chapitre bloqué, 0 grave) + B (banc9 `bd4c42be`, CI 367) : fusionné à `0aa3639a`, CI 368 du paquet en cours. Rien d'autre n'entre avant qu'elle soit verte.
+  - captures8 : `9f776f0a` (contient `0aa3639a`), CI lancée ; entre après la CI 368 si verte avec 0 capture changée.
+  - Tentés, pas corrigés (passent à T0b) : a-V1 (pas de rond « Touche ici » au ch.3, fr écran 6, ja écran 5) ; compteur ja (« あと 8 個 » pour 7 pointillés, écran 58 ; piste : sous MIN_ROW, pas de repli, la ligne annonce le total).
+  - t4-26 est déjà « tenu » sans banc9 : la preuve rouge du lot K est à chercher autrement.
+  - Ensuite : K ; puis T0b + R ; puis T0c ; puis garde-fous A ; puis S + N ; puis le contrôle T-a à T-d (après T0c).
+  - Leçon (CT0A) : un commit docs sur la branche pendant un siège change le « code testé » écrit par le banc.
+  - Tâche de secours : `trig_01SN9NVCzZocFhnXLyG4pMtJ` (12 h 18 UTC).
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 

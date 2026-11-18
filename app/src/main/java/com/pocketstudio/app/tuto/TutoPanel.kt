@@ -519,6 +519,8 @@ fun TutoPanel(
     // a window of two and a half: no effect to the eye. There, one touch on it gives the words their usual room back
     // (the whole instruction, as before the lower room), for this step, until the panel is folded.
     var readAll by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    // The words' whole height, measured while « Lire la suite » unfolds them (0: not yet).
+    var wholeWords by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
     val lowRoom = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
     val cellsToTouch = lowRoom && !readAll
@@ -655,7 +657,14 @@ fun TutoPanel(
             // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
             // room grows by what is missing, and a height held too low for it is taken again (twice at most).
             // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
-            val least = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            val lineAndHalf = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            // Tour 7 P6/P7 bloc 0b (CI 353): « Lire la suite » over the cells to touch gives back the whole instruction, the
+            // kit offer pinned under it or not (its card came once the packs' index was read and took the words' room):
+            // there, the words' least room is their whole height, as far as the screen lets it.
+            // Kept once measured (words that then fit scroll no more: their whole height is not read again).
+            val whole = if (lowRoom && readAll && words.maxValue in 1 until Int.MAX_VALUE) words.maxValue + words.viewportSize else 0
+            if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
+            val least = maxOf(lineAndHalf, if (lowRoom && readAll) wholeWords else 0)
             WordsRoom(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },

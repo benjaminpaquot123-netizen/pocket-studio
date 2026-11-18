@@ -31,6 +31,14 @@ Ce conteneur n'a pas de SDK Android : `gradle-file.sh` s'arrête à « SDK locat
 - `reprendre` (b).
 - Les sièges pilotes (voir plus haut).
 
+## Relecture neuve (sous-agent qui n'a pas écrit le code)
+Rien de grave. Remarques laissées, à reprendre avant la vague si un pilote les rencontre :
+- moyen : durées .flac jamais lues (des pistes .flac justes donnent « partielle ») ; nombre de pistes attendu pris au maximum sur tous les projets, pas sur le projet exporté ; basse et accords de `boucle-imposee` ignorent la ligne acid et les boucles répétées sur 2 mesures.
+- mineur : le rythme ignore les pistes en trop ; l'export accepte n'importe quel fichier partagé ; `mon-morceau` compte un morceau « first » avec un style ; `int(k)` et des pistes nulles plantent ; tests sans cas « partielle », .flac ni niveau X ; la docstring du tableau dit « mots-faux » alors que l'expression compte les lignes « - ecran: | vu: | attendu: ».
+
+## Autotest
+Partie scripts verte (64 tests OK). Partie Gradle non jouée : pas de SDK Android ici (« SDK location not found »), les 42 classes « n'ont pas tourné ». À rejouer par le chef sur une machine avec SDK.
+
 tests: aucun : lot du banc (scripts et sièges d'exemple), joués par test_ultra_bench.py dans l'autotest ; SeatState sans test Gradle possible ici (pas de SDK)
 
 chemin: Guide › « Change un son » (son du morceau changé, lu par mon-morceau) | test: GuideFusionTest#aFirstSongFollowsTheMissionsAsGuideCards

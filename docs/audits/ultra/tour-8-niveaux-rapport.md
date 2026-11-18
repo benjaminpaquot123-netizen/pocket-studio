@@ -24,7 +24,8 @@ Sous chaque tour, un tableau « par niveau » : Niveau | Sièges | Réussi sans 
 Ce conteneur n'a pas de SDK Android : `gradle-file.sh` s'arrête à « SDK location not found ». Aucun siège réel n'a pu être joué ; les quatre oracles ne sont prouvés que sur les sièges d'exemple. À jouer par le chef (un siège par mission neuve, hors vague) avant la vague du tour 8. Pour la même raison, la ligne ajoutée à `SeatState.kt` n'est pas compilée ici : la CI la compilera.
 
 ## Demandes au chef
-- `scripts/bench/test_portail3.py:829` (hors liste) : sa ligne de sièges n'a pas de niveau, la fabrique la refuse, le selftest est rouge tant qu'elle n'a pas « \t0 ». Demandé deux fois, sans réponse.
+- `reprendre` hors du tour 8 et les champs « changed » de `SeatState.kt` (lecture seule) : accordés par le chef.
+- `scripts/bench/test_portail3.py:829` (hors liste) : sa ligne de sièges n'avait pas de niveau, la fabrique la refusait (selftest rouge). Accordé par le chef : « \t1 » ajouté à cette seule ligne, rien d'autre dans ce fichier.
 
 ## Laissé
 - `reprendre` (b).

@@ -2,7 +2,7 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-18, 16 h 30 UTC.
+- **Mise à jour** : 2026-11-18, 23 h 25 UTC.
 - **Clôture du tour 8 (Benjamin, 2026-11-18)** : tout ce qui est prévu se fait (lots K, T0b, R, T0c, garde-fous A, S, N, leurs relectures et sièges, le contrôle T-a à T-d), mais aucun nouvel audit ne part après. Tout défaut neuf (siège, relecture, CI hors lot) est noté « pas pris » dans `corrections.tsv` et mis de côté ; aucune équipe ne l'ajoute à son lot. Les relectures se font toujours.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : tour 8, réparations (fiches : `docs/audits/ultra/tour-8-fiches/`). Tour 7 fusionné dans `main` (PR 59).
@@ -13,6 +13,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
   - t4-26 est déjà « tenu » sans banc9 : la preuve rouge du lot K est à chercher autrement.
   - K : CI 377 sur `f431d779` sans le paquet 2 ; K fusionne l'intégration puis CI neuve. T0c lancé (`eq/tour-8-t0c`).
   - Ensuite : puis garde-fous A (après T0c) ; puis garde-fous A ; puis S + N ; puis le contrôle T-a à T-d (après T0c).
+  - Paquet 3 = K (clavier200 `bcdea6461`, CI 381) + S (stable8 `dec838030`, CI 382 relancée une fois : `Coquille2SeatTest.p5` capricieux au premier passage) : fusionné, CI de l'intégration lancée. En attente : T0c (`0031cd3ea`, CI 384) et N (niveaux `fde9009b2`, CI 383), au paquet 4 ; puis garde-fous A, puis le contrôle T-a à T-d.
+  - Pas pris (clôture) : `Coquille2SeatTest.p5` capricieux (« Chargement de la liste… ») ; captures qui bougent d'une CI à l'autre (`shell_audio_pages_end_*`, `130_land_nav_sheet_share`, `sons_synth_take`, `share_overrun_*`).
   - Leçon (CT0A) : un commit docs sur la branche pendant un siège change le « code testé » écrit par le banc.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.

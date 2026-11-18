@@ -8,6 +8,7 @@
 - CI du paquet 2 ; K ; puis T0c, garde-fous A, S + N, tour de contrôle T-a à T-d.
 
 ## Où on en est (2026-11-18, midi)
+- Tour 8, 18 novembre au soir : paquet 3 (K clavier + S tests propres) fusionné ; T0c et N au paquet 4, puis garde-fous A et le contrôle T-a à T-d.
 - **Tour 7 fusionné dans `main`** (PR #59). **Tour 8 en réparation**, état détaillé : `docs/audits/ultra/EN-COURS.md`.
 - Paquet 1 entré dans l'intégration (`0aa3639a`) : lots M (CI 365), T0a (CI 366), banc9 (CI 367), tous verts, 0 capture changée. CI 368 de l'intégration verte (0 capture changée).
 - T0a : a-V1 (anneau ch.3) et compteur ja (écran 58) restent « tentés », repris par T0b.

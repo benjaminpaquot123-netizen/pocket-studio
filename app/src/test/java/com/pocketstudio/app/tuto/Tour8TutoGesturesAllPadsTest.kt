@@ -78,4 +78,24 @@ class Tour8TutoGesturesAllPadsTest {
         assertEquals(1, count("tuto_hint_ring"))
         assertEquals(1, marks("cell_2_20", "tuto_hint_ring"))
     }
+
+    // The same ring on the pad's own grid (the view the tutorial opens first), on the same cell.
+    @Test
+    fun theFirstDottedCellIsRingedOnThePadsOwnGrid() {
+        val lanes = List(DrumPattern().lanes.size) { DrumLane() }.toMutableList()
+        lanes[2] = DrumLane(hits = mapOf(4 to Hit(1f)))
+        val p = Project(drums = DrumPattern(steps = 32, lanes = lanes))
+        TutoHints.cells = 2 to setOf(4, 12, 20, 28)
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.rhythm.RhythmScreen(
+                    p, com.pocketstudio.app.rhythm.TransportUi(selectedPad = 2), { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = false, canRedo = false,
+                    actions = RhythmActions(),
+                )
+            }
+        }
+        compose.waitForIdle()
+        assertEquals(1, count("tuto_hint_ring"))
+        assertEquals(1, marks("step_12", "tuto_hint_ring"))
+    }
 }

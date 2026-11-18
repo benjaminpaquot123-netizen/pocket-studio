@@ -1527,6 +1527,13 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("all_pads_grid")) {
         project.drums.lanes.forEachIndexed { lane, l ->
             val color = DrumKitInfo.colors[lane]
+            // Tour 8 (control seat d, ch.3 in « Tous les pads »): the dotted cell to touch first ringed here too.
+            val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) ->
+                if (hl != lane) null
+                else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                    cells, cells.filter { l.hits[it] != null }.toSet(), bar * project.stepsPerBar, (bar + 1) * project.stepsPerBar,
+                )
+            }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
                     color = if (l.hits.keys.none { it < project.drums.steps }) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
@@ -1552,7 +1559,7 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                     ) {
                         // Tour 8 (seat c in ko, ch.12): the tutorial's marks here too, as on the pad's own grid.
                         if (hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
-                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
                         }
                         if (hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true) {
                             com.pocketstudio.app.tuto.TutoEraseCell()

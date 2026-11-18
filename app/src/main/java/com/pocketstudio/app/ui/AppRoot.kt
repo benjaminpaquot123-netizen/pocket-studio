@@ -3327,7 +3327,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 buses = project.mixer.buses,
                                 // Tour 6, U27 (seat B b #72: Sons showed « Acid 303 », the Mix did not, « Acid 303 renommée »): a strip
                                 // for every track Sons names, in a tutorial too (lot « tuto 4 » had left the silent one out there).
-                                strips = mixerStrips(project),
+                                strips = mixerStrips(project, hideFirst = tutoHidesFirst),
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
                                 songTracks = if (project.remix.setId == null) null else ({
                                     com.pocketstudio.app.remix.SongTracksCard(
@@ -4085,10 +4085,14 @@ private fun openUri(context: Context, uri: Uri) {
 internal fun musicStoppedForHome(saved: Boolean): String =
     "■ " + tr("Arrêté") + if (saved) " · " + tr("Ton morceau est sauvegardé.") else ""
 
-/** Drums, acid, every instrument track in its colour, then the remix. */
-fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =
+/**
+ * Drums, acid, every instrument track in its colour, then the remix. Tour 8 (D7): the Sons page's rule (tracksUiOf's
+ * filter) is the one source of the tracks named: the first track deleted and still blank, or hidden by a tutorial
+ * ([hideFirst]), is no strip either, so the Mixer and the Sons name the same tracks, in the same order.
+ */
+fun mixerStrips(p: com.pocketstudio.model.Project, hideFirst: Boolean = false): List<com.pocketstudio.app.mixer.StripInfo> =
     listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, com.pocketstudio.model.DefaultNames.ACID)) +
-        p.instrumentTracks.map { t ->
+        p.instrumentTracks.filter { !((hideFirst || p.firstTrackDeleted) && it.id == 0) }.map { t ->
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         p.audioTracks.map { t ->

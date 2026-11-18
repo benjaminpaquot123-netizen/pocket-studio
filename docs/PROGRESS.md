@@ -4,11 +4,11 @@
 - **Tour 7 fusionné dans `main`** (PR #59). **Tour 8 en réparation**, état détaillé : `docs/audits/ultra/EN-COURS.md`.
 - Paquet 1 entré dans l'intégration (`0aa3639a`) : lots M (CI 365), T0a (CI 366), banc9 (CI 367), tous verts, 0 capture changée. CI 368 de l'intégration verte (0 capture changée).
 - T0a : a-V1 (anneau ch.3) et compteur ja (écran 58) restent « tentés », repris par T0b.
-- En cours : captures8 (`9f776f0a`, CI lancée), T0b (`eq/tour-8-t0b`, discussion ouverte). K attend l'entrée de captures8.
+- captures8 entré (`b7b7dae1`, CI 370 verte, 0 capture changée).
+- En cours : T0b (`92469864`, attend sa CI finale puis les sièges de contrôle d et e), K (ouvert).
 
 ## Prochaine étape exacte
-- Fusionner captures8 si sa CI est verte (0 capture changée).
-- Puis ouvrir K (sur une tête qui contient captures8) ; paquet T0b + R ; puis T0c, garde-fous A, S + N, tour de contrôle T-a à T-d.
+- CI finale de T0b, sièges de contrôle tuto2/d et tuto2/e ; K ; paquet T0b + R ; puis T0c, garde-fous A, S + N, tour de contrôle T-a à T-d.
 
 ## Où on en est (2026-11-18, matin)
 - **Tour 7, suite « P6/P7 » (consignes lisibles, un moment par consigne) : tout est dans l'intégration**, tête `5209db96` sur `ccr-80af1a1b-mn0wec`. Entrés : bloc 0 socle, blocs 1 Techno, 2 House, 3 Bass, 4 Hip-hop + autres + textes partagés, bloc 0b repli du panneau ; correctif d'après fusion (traductions en double entre lots parallèles, CI 360 rouge puis 361 verte) ; anciennes clés partagées retirées ; 38 captures remises à jour ; garde-fous resserrés après la revue de fin de tour (`docs/REVIEW.md`, « Tour 7 : revue de fin de tour » : aucun grave).

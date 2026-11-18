@@ -9,8 +9,15 @@
     "pad": "0:B2+D3+F#3:3 3:B2+D3+F#3:3 6:B2+D3+F#3:2 8:B2+D3+F#3:3 11:B2+D3+F#3:3 14:B2+D3+F#3:2",
     "lead": "0:B4:2 3:D5:2 6:F#5:2 10:D5:2 12:B4:2 16:D5:2 19:B4:2 22:A4:2 24:G4:4"
   },
-  "lineBars": { "bass": 1, "pad": 1, "lead": 2 },
-  "follow": ["bass", "pad"],
+  "lineBars": {
+    "bass": 1,
+    "pad": 1,
+    "lead": 2
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
   "drums": {
     "*": {
       "kick": "X...X...X...X...",
@@ -532,7 +539,7 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

@@ -463,6 +463,17 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
     is TutoNeed.Course -> tr("Poser ce qui manque")
 }
 
+/**
+ * Tour 7, P7 (plan § 2): one moment on screen. In Facile, while the engine asks for a preparation button first (the
+ * step's first unmet need), the words say that button alone; the step's own text comes once it is done. Null: the
+ * step's text. Pro keeps its whole text (its buttons are named in it).
+ */
+internal fun momentWords(ui: TutoUi): String? {
+    val need = ui.need ?: return null
+    if (ui.progress.level != com.pocketstudio.model.tuto.TutoLevel.Facile) return null
+    return tr("À toi : touche « %s ».", needLabel(need, ui.progress.style))
+}
+
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
 @Composable
 private fun panelColor(): Color = androidx.compose.ui.graphics.lerp(Neon.Background, Neon.Cyan, 0.07f)
@@ -653,7 +664,7 @@ fun TutoPanel(
                         if (alreadySaid == null) {
                             Row(verticalAlignment = Alignment.Top) {
                                 if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                                Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
+                                Text(momentWords(ui) ?: tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
                                     modifier = Modifier.testTag("tuto_text").onGloballyPositioned { c ->
                                         val t = laid[0] ?: return@onGloballyPositioned
                                         put("text", c) { base -> (0 until t.lineCount).map { base + t.getLineTop(it) to base + t.getLineBottom(it) } }
@@ -662,7 +673,7 @@ fun TutoPanel(
                         }
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
-                        if (alreadySaid == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (alreadySaid == null && momentWords(ui) == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -983,12 +994,27 @@ private val FOLDED_LINE = 48.dp
  * 200 % one line held « À toi : sur le pad « Clap », t… »). The same for every state of the line.
  */
 @Composable
-private fun foldedLineHeight(): androidx.compose.ui.unit.Dp {
+internal fun foldedLineHeight(): androidx.compose.ui.unit.Dp {
     // Two lines as the text lays them out (its line height and the font's own room above and below), and a margin.
+    // Tour 7, P6: measured on a character of the language's own script (a CJK, Devanagari or Arabic line is higher).
     val measurer = androidx.compose.ui.text.rememberTextMeasurer()
     val style = MaterialTheme.typography.bodyMedium
-    val two = with(LocalDensity.current) { measurer.measure("Ag\nAg", style).size.height.toDp() } + 8.dp
+    val w = TutoReadability.witness(com.pocketstudio.model.i18n.I18n.lang)
+    val two = with(LocalDensity.current) { measurer.measure("$w\n$w", style).size.height.toDp() } + 8.dp
     return maxOf(FOLDED_LINE, two)
+}
+
+/**
+ * Tour 7, P6: the height (px) of one line of the words, what [TutoReadability.layout] counts in: the type's line height,
+ * or more where a line of the language's own script ([TutoReadability.witness]) lays out higher (CJK, Devanagari, Arabic).
+ */
+@Composable
+internal fun wordsLineHeight(): Float {
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val style = MaterialTheme.typography.bodyLarge
+    val w = TutoReadability.witness(com.pocketstudio.model.i18n.I18n.lang)
+    val pitch = measurer.measure("$w\n$w", style).size.height - measurer.measure(w, style).size.height
+    return maxOf(with(LocalDensity.current) { style.lineHeight.toPx() }, pitch.toFloat())
 }
 
 /** The part a structure step is about, lit on the map: « Écoute la Montée » → "Montée" (null: none). */

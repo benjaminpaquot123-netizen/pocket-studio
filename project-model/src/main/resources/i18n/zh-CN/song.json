@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "演奏音符:它们在 Acid 303 上发声。再点一次格子就停止:循环会对齐到小节。",
   "Le micro ne répond pas : réessaie.": "麦克风没有响应:再试一次。",
   "Vider la case": "清空格子",
-  "Annuler possible": "可撤销"
+  "Annuler possible": "可撤销",
+  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + ：段落重复次数（在 Live 中演奏的段落保持原长度）。"
 }

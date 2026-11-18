@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Toca las notas: suenan en la Acid 303. Vuelve a tocar la casilla para parar: el bucle se ajusta al compás.",
   "Le micro ne répond pas : réessaie.": "El micro no responde: inténtalo otra vez.",
   "Vider la case": "Vaciar la casilla",
-  "Annuler possible": "Se puede deshacer"
+  "Annuler possible": "Se puede deshacer",
+  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : repeticiones de la parte (una parte tocada en Live conserva su duración)."
 }

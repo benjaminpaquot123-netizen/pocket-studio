@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "اعزف على النوتات: تُسمع على Acid 303. المس الخانة مجددًا للإيقاف: تنضبط الحلقة على المازورة.",
   "Le micro ne répond pas : réessaie.": "الميكروفون لا يستجيب: حاول مجددًا.",
   "Vider la case": "إفراغ الخانة",
-  "Annuler possible": "يمكن التراجع"
+  "Annuler possible": "يمكن التراجع",
+  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : عدد تكرارات الجزء (الجزء المعزوف في المباشر يحتفظ بطوله)."
 }

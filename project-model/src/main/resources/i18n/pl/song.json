@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Graj na nutach: brzmią na Acid 303. Dotknij pola ponownie, by zatrzymać: pętla dopasuje się do taktu.",
   "Le micro ne répond pas : réessaie.": "Mikrofon nie odpowiada: spróbuj jeszcze raz.",
   "Vider la case": "Wyczyść pole",
-  "Annuler possible": "Można cofnąć"
+  "Annuler possible": "Można cofnąć",
+  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : powtórzenia części (część zagrana w Live zachowuje swoją długość)."
 }

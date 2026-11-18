@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "노트를 연주해요: Acid 303으로 소리 나요. 멈추려면 칸을 다시 탭하세요: 루프가 마디에 맞춰져요.",
   "Le micro ne répond pas : réessaie.": "마이크가 응답하지 않아요: 다시 해 보세요.",
   "Vider la case": "칸 비우기",
-  "Annuler possible": "실행 취소 가능"
+  "Annuler possible": "실행 취소 가능",
+  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : 파트 반복 횟수 (Live에서 연주한 파트는 길이가 그대로예요)."
 }

@@ -197,4 +197,22 @@ class Tour8TutoGesturesDoItTest {
             assertFalse("$style: a song-wide curve ticks a « Par partie » loop step", TutoPlay.done(step, songWide, target, null))
         }
     }
+
+    /**
+     * Fresh review of the ch.13 fix (grave): in acid_techno the step after the Drop's loop curve, « filter_intro », draws a
+     * rise on the same 303 cut-off. Its « Je le fais » replaced the whole lane by a song-wide one, so the Drop's loop the
+     * user had just drawn was lost while its step stayed ticked. Both curves must be there, both steps ticked.
+     */
+    @Test
+    fun theIntroRiseKeepsTheDropLoopOnTheSameLane() {
+        val style = "acid_techno"
+        val target = TutoTarget.of(style)!!
+        val steps = com.pocketstudio.model.tuto.TutoCourse.of(style)!!.chaptersFor(TutoLevel.Pro).flatMap { it.steps }
+        val loop = steps.first { it.id == "filter" }
+        val rise = steps.first { it.id == "filter_intro" }
+        val one = TutoPlay.doHere(loop, bare(target), target, null, TutoLevel.Pro)!!
+        val both = TutoPlay.doHere(rise, one, target, null, TutoLevel.Pro) ?: one
+        assertTrue("the Intro 2 rise ticked", TutoPlay.done(rise, both, target, null))
+        assertTrue("the Drop's loop still ticked after the Intro 2 rise", TutoPlay.done(loop, both, target, null))
+    }
 }

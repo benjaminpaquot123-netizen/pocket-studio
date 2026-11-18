@@ -44,9 +44,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Ré ».",
+          "text": "À toi : choisis la couleur du morceau, rave : Ré mineur. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII). « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Trois accords qui montent vers le retour au Ré : la grille de toutes les raves.",
+          "why": "Mineur : une gamme triste. Trois accords qui montent vers le retour au Ré : la grille de toutes les raves.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -106,7 +106,7 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : touche « Passer à 2 mesures » si on te le propose, puis sur le pad « Caisse », touche les cases en pointillé à la fin de la 2e mesure : un petit roulement qui accélère.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé à la fin de la 2e mesure : un petit roulement qui accélère.",
           "textPro": "À toi : le roulement de caisse en fin de 2e mesure (1, 2, 3, 4 coups par case).",
           "why": "Un roulement qui accélère relance l'énergie avant la mesure suivante.",
           "check": "lane:snare",
@@ -150,7 +150,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il recopie la mesure 1 en suivant les accords : elle descend sur Si♭, puis remonte sur Do.",
+          "text": "À toi : recopie la mesure 1 sur les suivantes : elle descend sur Si♭ et remonte sur Do.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -173,7 +173,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 4 notes en pointillé de la mesure 1 : des notes longues.",
+          "text": "À toi : touche les 4 notes en pointillé de la mesure 1 : des notes longues.",
           "textPro": "À toi : crée la piste Mélodie (son « Hoover ») : Ré tenu, Ré tenu, Ré aigu qui retombe ; puis Ré, Ré, Fa. « Copier » le transpose sur Si♭ et Do.",
           "why": "Des notes tenues, pas des petites notes piquées : le hoover a besoin de temps pour hurler.",
           "check": "notes:lead",
@@ -185,7 +185,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la phrase est recopiée en suivant les accords.",
+          "text": "À toi : écris les 3 notes de la mesure 2 : la phrase sera recopiée en suivant les accords.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -332,17 +332,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:16,Mini-break:2,Drop:14,Break:16,Drop 2:24,Fin:16",
           "listen": "song",
-          "skip": "Dans un autre ordre, le Mini-break ne coupera pas le Drop."
+          "skip": "Dans un autre ordre, le Mini-break ne coupera pas le Drop.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24 et Fin 16.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Le Drop, son Mini-break et sa suite font 32 mesures : le Break tombe au début d'une phrase. 3 minutes 45 à 128 BPM.",
           "check": "song:phrases",
@@ -358,7 +359,8 @@
       "steps": [
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le hoover qui revient avec le kick paraît énorme.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -424,12 +426,13 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs des pistes « Mélodie » et « Basse ».",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ».",
           "check": "changed:volumes:lead,bass",
           "spot": "mixer.strip",
           "target": "lead",
-          "listen": "parts:kick,clap,bass,lead"
+          "listen": "parts:kick,clap,bass,lead",
+          "why": "Le mix, c'est régler le volume de chaque piste. Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort."
         },
         {
           "id": "meters",

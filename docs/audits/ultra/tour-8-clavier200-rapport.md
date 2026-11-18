@@ -22,7 +22,7 @@ Preuves :
 - rouge puis vert : Tour8KeyboardBigFontTest (phone 360 à 100 / 130 / 200 %, tablet8 à 200 %) : touches 62, 65 et « Enregistrer ma mélodie » entières, au-dessus de la barre du Guide, sans défiler ;
 - tests ciblés `*synth*`, `*Synth*`, `*RecordBar*` : verts ;
 - captures ré-enregistrées : `scale130/fr_synth.png` et `scale130/fr_record_bar.png` (le « Do » tient dans sa touche) ; `fr_record_bar` est hors des noms `synth*` / `*keyboard*`, signalé au chef ;
-- rejeu t4-26-prise-clavier : voir la dernière ligne.
+- rejeux : tous tenus (6), dont t4-26-prise-clavier : oracle tenu (rejeu inchangé).
 
 Laissé de côté (pas pris) : Tour6GuideCoquilleLookTest audioPagesFrench100 et audioPagesTurkish130 rougissent aussi sur la base (écart = trace de toucher seulement), hors de mes fichiers.
 

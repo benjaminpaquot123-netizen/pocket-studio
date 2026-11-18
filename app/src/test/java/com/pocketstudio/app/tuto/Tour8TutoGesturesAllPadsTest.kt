@@ -59,4 +59,23 @@ class Tour8TutoGesturesAllPadsTest {
         assertEquals(1, marks("cell_2_0", "tuto_hint"))
         assertEquals(1, marks("cell_2_8", "tuto_hint"))
     }
+
+    // Tour 8, control seat d (a-V1-anneau, ch.3 in « Tous les pads »): only the dotted cells, no « Touche ici » ring
+    // round the one to touch first. The ring goes round the first dotted cell of the bar shown not yet filled, alone.
+    @Test
+    fun theFirstDottedCellIsRingedOnAllThePads() {
+        val lanes = List(DrumPattern().lanes.size) { DrumLane() }.toMutableList()
+        lanes[2] = DrumLane(hits = mapOf(4 to Hit(1f)))
+        val p = Project(drums = DrumPattern(steps = 32, lanes = lanes))
+        TutoHints.cells = 2 to setOf(4, 12, 20, 28)
+        val bar = androidx.compose.runtime.mutableStateOf(0)
+        compose.setContent { PocketStudioTheme { AllPadsGrid(p, bar.value, -1, RhythmActions()) } }
+        compose.waitForIdle()
+        assertEquals(1, count("tuto_hint_ring"))
+        assertEquals(1, marks("cell_2_12", "tuto_hint_ring"))
+        bar.value = 1
+        compose.waitForIdle()
+        assertEquals(1, count("tuto_hint_ring"))
+        assertEquals(1, marks("cell_2_20", "tuto_hint_ring"))
+    }
 }

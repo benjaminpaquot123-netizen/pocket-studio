@@ -1100,7 +1100,8 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             }
             // Tour 7 (seat d): a step that works in a part the song has no more (« Montée » renamed): the button alone
             // said nothing of why; the step that makes the part needs no such word.
-            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") }
+            // Tour 8 (seat d, V2): a part that is there, empty, is not said missing; its button fills it.
+            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") || ui.partEmpty }
             if (part != null) {
                 Text(tr("Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.", Scene.shownLabel(part.label)),
                     style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_why"))

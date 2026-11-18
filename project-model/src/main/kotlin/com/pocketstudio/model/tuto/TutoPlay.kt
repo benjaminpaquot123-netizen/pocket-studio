@@ -79,6 +79,13 @@ object TutoPlay {
     /** Whether [step] has a « Montre-moi » on [p]: [showMe] is not null (the panel's button and the step's main button read this one answer). */
     fun canShow(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean = TutoChecks.canShow(step, p, target, level)
 
+    /**
+     * Whether [need] asks for a part [p] holds, with nothing in it (tour 8, seat d, V2: the « Montée » emptied, the
+     * panel said there was no such part): its button fills it, no word says it is missing.
+     */
+    fun emptyPart(p: Project, need: TutoNeed?): Boolean =
+        need is TutoNeed.Part && p.allScenes.any { TutoChecks.isLabel(it.label, need.label) && it.isEmpty }
+
     /** Whether [step] is ticked on [p] ([base]: what it watched when it began). */
     fun done(step: TutoStep, p: Project, target: TutoTarget, base: Any?): Boolean = TutoChecks.done(step, p, target, base)
 

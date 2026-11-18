@@ -110,7 +110,7 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case, juste avant le tour suivant.",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case.",
           "textPro": "À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose et son menu s'ouvre : sous « Force », « Doux ».",
           "why": "Le petit coup doux en fin de mesure relance la boucle sans qu'on l'entende vraiment.",
           "check": "lane:clap",

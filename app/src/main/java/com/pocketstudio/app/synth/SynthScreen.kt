@@ -86,6 +86,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.app.rhythm.PlayUi
 import com.pocketstudio.app.sounds.SoundBrowser
@@ -932,10 +933,25 @@ private fun Key(
         contentAlignment = Alignment.BottomCenter,
     ) {
         if (label != null) {
-            Text(
-                label, style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false,
-                color = if (down) Neon.OnAccent else Color(0xFF5B6068), modifier = Modifier.padding(bottom = 6.dp),
-            )
+            // Big letters (200 %) on a narrow key: the name shrinks to the key's width rather than be cut.
+            BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+                val base = MaterialTheme.typography.labelMedium
+                val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+                val room = constraints.maxWidth
+                val style = remember(label, room, base) {
+                    var size = base.fontSize
+                    var st = base
+                    while (size.value > 6f && measurer.measure(label, st, maxLines = 1, softWrap = false).size.width > room) {
+                        size = (size.value * 0.9f).sp
+                        st = base.copy(fontSize = size, lineHeight = size * 1.2f)
+                    }
+                    st
+                }
+                Text(
+                    label, style = style, maxLines = 1, softWrap = false,
+                    color = if (down) Neon.OnAccent else Color(0xFF5B6068), modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
         }
     }
 }

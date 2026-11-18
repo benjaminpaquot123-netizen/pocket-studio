@@ -1,6 +1,6 @@
 > CORRECTIONS DU RÉDACTEUR (2026-11-18). Elles priment sur le texte dessous.
 - Base : `git fetch origin ccr-80af1a1b-mn0wec`, tête 3e9c0524 au moins.
-- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance avec `--refresh-dependencies` (8 fois au plus).
+- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance la même commande, sans `--refresh-dependencies` (8 fois au plus).
 - Vert = job « Build, unit tests, screenshots » vert ET « Captures : 0 différentes ». Un lot du banc ne change aucune capture : une image changée = une ligne au chef.
 - Textes : aucune phrase française de l'appli touchée (lot T0c seul).
 - Le plan écrit `app/src/test/resources/bench/**` : ce dossier n'existe pas encore (vérifié le 2026-11-18 ; il n'y a que `audit/`, `capture/`, `real-projects/`, `reference-projects/`, `tuto/`, `upgrade/`). Tu le crées pour les écrans d'audit copiés (point 5 g) ; tu ne touches pas aux autres dossiers de ressources.

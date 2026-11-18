@@ -1,6 +1,6 @@
 > CORRECTIONS DU RÉDACTEUR (2026-11-18). Elles priment sur le texte dessous.
 - Base : `git fetch origin ccr-80af1a1b-mn0wec`, sur une tête qui contient captures8 (K change l'en-tête du Clavier, donc les captures `synth*` que captures8 refait aussi par `TrackBar.kt`).
-- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance avec `--refresh-dependencies` (8 fois au plus).
+- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance la même commande, sans `--refresh-dependencies` (8 fois au plus).
 - Vert = job « Build, unit tests, screenshots » vert ET « Captures : 0 différentes » ; la liste des images changées se lit dans `results-summary.json` de l'artefact `screenshots-diff` (champ `golden_file_path`). Tu ne réenregistres que les captures du Clavier (`synth*`, `*keyboard*`) ; toute autre image changée = une ligne au chef.
 - Textes : aucune phrase française neuve ou modifiée (lot T0c seul). « Enregistrer ma mélodie » ne change pas de mot.
 - Le rejeu `t4-26-prise-clavier` ne se modifie pas : il doit passer tel quel.

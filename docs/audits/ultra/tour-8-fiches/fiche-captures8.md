@@ -2,7 +2,7 @@
 - Tu travailles dans ta propre discussion, sur ton clone du dépôt, branche neuve `eq/tour-8-captures8` depuis `origin/ccr-80af1a1b-mn0wec` (tête 65c361474 au moins). Tu pousses cette seule branche : `git push -u origin eq/tour-8-captures8`.
 - Installe d'abord le SDK Android (une fois, ~5 min) :
   `D=/opt/android-sdk; mkdir -p $D/cmdline-tools && cd /tmp && curl -sSLo clt.zip https://dl.google.com/android/repository/commandlinetools-linux-9862592_latest.zip && unzip -qo clt.zip -d $D/cmdline-tools && mv $D/cmdline-tools/cmdline-tools $D/cmdline-tools/latest && yes | $D/cmdline-tools/latest/bin/sdkmanager --sdk_root=$D --licenses >/dev/null; yes | $D/cmdline-tools/latest/bin/sdkmanager --sdk_root=$D "platforms;android-37.0" "build-tools;37.0.0" "platform-tools" "ndk;30.0.16248370" "cmake;4.1.2"`
-- Gradle : `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh <tâches>`. La résolution des dépendances rate parfois au hasard (« Could not find … » sur un fichier qui existe) : relance avec `--refresh-dependencies`, jusqu'à 8 fois (testé chez le chef : ça finit par passer).
+- Gradle : `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh <tâches>`. La résolution des dépendances rate parfois au hasard (« Could not find … » sur un fichier qui existe) : relance la même commande, sans `--refresh-dependencies`, jusqu'à 8 fois.
 - Donc les captures se refont EN LOCAL : `:app:recordRoborazziDebug` puis `:app:verifyRoborazziDebug` (chemins complets, plus de noms aplatis). Le commit « tmp: » et l'entrée `ci.yml` sont abandonnés.
 - `scripts/screenshot-diff.py` donne maintenant le chemin sous `app/screenshots/` (commit 65c361474).
 - La CI complète, c'est le chef qui la lance quand tu dis « fini ».

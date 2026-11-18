@@ -1,6 +1,6 @@
 > CORRECTIONS DU RÉDACTEUR (2026-11-18). Elles priment sur le texte dessous.
 - Base : `git fetch origin ccr-80af1a1b-mn0wec`, sur une tête qui contient B (banc9). Si B tarde, le chef peut te lancer plus tôt : tu ne touches alors que tes deux fichiers.
-- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance avec `--refresh-dependencies` (8 fois au plus).
+- SDK et Gradle : comme le bloc « CORRECTIONS DU CHEF » de `fiche-captures8.md`, puis `ANDROID_HOME=/opt/android-sdk bash scripts/bench/gradle-file.sh …`. Une dépendance qui tombe au hasard : relance la même commande, sans `--refresh-dependencies` (8 fois au plus).
 - Vert = job « Build, unit tests, screenshots » vert ET « Captures : 0 différentes » (artefact `screenshots-diff`, `results-summary.json`, champ `golden_file_path`).
 - Textes : aucune phrase française de l'appli neuve ou modifiée (lot T0c seul).
 - Un lot du banc ne change aucune capture : une image changée = une ligne au chef.

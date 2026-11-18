@@ -10,7 +10,7 @@ Ce qui change :
 - Le nombre affiché par la ligne (« あと N 個 », toutes langues) : sans flèche, c'est le nombre de notes en pointillé en vue.
 - Aucun texte touché, aucun fichier i18n.
 
-Décisions : docs/decisions/tour-8-t0.md.
+Décisions : docs/decisions/tour-8-t0a.md.
 
 Preuves :
 - rouge puis vert : Tour8TutoTouchInSightTest (project-model : chaque ligne de chaque cours, rouleaux de téléphone avec panneau et marge `covered`) ; Tour8TutoTouchHereTest et Tour8TutoTouchHereLargeTextTest (app, 360 dp, 100 % et 130 %, Simple et Pro).

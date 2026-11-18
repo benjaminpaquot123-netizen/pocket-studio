@@ -32,7 +32,7 @@ class Tour8PlusRowsFitTest : HumanTester("t8-plus-rows") {
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
 
     private fun tap(tag: String) {
-        val at = centerOf(tag)
+        val at = reachTag(tag)
         assertNotNull("nothing to touch: $tag\n" + screenLines().joinToString("\n"), at)
         act("touche ${at!!.first} ${at.second}")
     }
@@ -56,8 +56,7 @@ class Tour8PlusRowsFitTest : HumanTester("t8-plus-rows") {
         if (centerOf("welcome_guided") != null) tap("welcome_guided") else { tap("launch_new"); tap("starter_wizard") }
         if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         for (t in listOf("wizard_family_Techno", "wizard_style_techno", "wizard_style_choose_techno", "wizard_create_now")) {
-            if (centerOf("thumb_more") != null) break
-            if (centerOf(t) != null) tap(t)
+            if (reachTag(t) != null) tap(t)
         }
         waitFor("the song's tabs") { centerOf("thumb_more") != null }
         tap("thumb_more")

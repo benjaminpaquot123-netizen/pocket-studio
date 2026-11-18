@@ -1,12 +1,10 @@
 package com.pocketstudio.app.export
 
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.hasTestTag
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.human.BenchWindows
 import com.pocketstudio.app.human.HumanTester
 import com.pocketstudio.app.human.SeatOptions
-import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
@@ -55,16 +53,16 @@ class Tour8ShareListenAndPartsTest : HumanTester("t8-share") {
         if (centerOf("welcome_guided") != null) tap("welcome_guided") else { tap("launch_new"); tap("starter_wizard") }
         if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         for (t in listOf("wizard_family_Techno", "wizard_style_techno", "wizard_style_choose_techno", "wizard_create_now")) {
-            if (centerOf("tab_simple_Morceau") != null) break
-            if (centerOf(t) != null) tap(t)
+            if (reachTag(t) != null) tap(t)
         }
         waitFor("the song's tabs") { centerOf("tab_simple_Morceau") != null }
         tap("tab_simple_Morceau")
         centerOf("guide_later")?.let { act("touche ${it.first} ${it.second}") }
         tap("add_part_0")
         act("attends 1")
-        tap("thumb_share")
-        waitFor("the share sheet") { centerOf("share_listen") != null }
+        // The Mode simple's « Partager » tab (BenchShareTest), else the top bar's.
+        tap(listOf("tab_simple_Envoyer", "tab_Envoyer").firstOrNull { centerOf(it) != null } ?: "top_share")
+        waitFor("the share sheet") { reachTag("share_listen") != null }
         act("attends 1")
     }
 
@@ -77,10 +75,19 @@ class Tour8ShareListenAndPartsTest : HumanTester("t8-share") {
         assertNotNull("$lang $device $font %: no « $word » in « ▶ »\n" + screenLines().joinToString("\n"), label)
         val b = BenchWindows.drawnBounds(label!!, m)
         val layout = mutableListOf<androidx.compose.ui.text.TextLayoutResult>()
-        label.config.getOrNull(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult)?.action?.invoke(layout)
-        val cut = layout.firstOrNull()?.let { it.hasVisualOverflow || it.isLineEllipsized(it.lineCount - 1) } ?: false
+        label.config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult) { null }?.action?.invoke(layout)
+        // The glyphs themselves: the last line ends inside the label and nothing is ellipsized (a paragraph laid out wider
+        // than the label but whose glyphs fit is not a cut).
+        val cut = layout.firstOrNull()?.let { r ->
+            val last = r.lineCount - 1
+            r.isLineEllipsized(last) || r.getLineRight(last) > r.size.width + 1f || r.getLineBottom(last) > r.size.height + 1f
+        } ?: false
+        val l = layout.firstOrNull()
+        val button = compose.onAllNodes(hasTestTag("share_listen"), useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false).first()
+        val bb = BenchWindows.drawnBounds(button, m)
+        val why = "layout ${l?.size} over ${l?.multiParagraph?.width}×${l?.multiParagraph?.height}, line right ${l?.getLineRight(0)} bottom ${l?.getLineBottom(0)}; button ${button.size} drawn ${bb.width}×${bb.height}"
         assertTrue(
-            "$lang $device $font %: « ▶ $word » not shown whole (drawn ${b.width}×${b.height} of ${label.size.width}×${label.size.height}, cut $cut)\n" + screenLines().joinToString("\n"),
+            "$lang $device $font %: « ▶ $word » not shown whole (drawn ${b.width}×${b.height} of ${label.size.width}×${label.size.height}, cut $cut; $why)\n" + screenLines().joinToString("\n"),
             shownWhole(label) && b.width >= label.size.width - 1f && b.height >= label.size.height - 1f && !cut,
         )
     }

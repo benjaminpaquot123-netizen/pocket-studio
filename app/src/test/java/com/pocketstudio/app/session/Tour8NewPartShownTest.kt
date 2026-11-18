@@ -54,8 +54,7 @@ class Tour8NewPartShownTest : HumanTester("t8-new-part") {
         if (centerOf("welcome_guided") != null) tap("welcome_guided") else { tap("launch_new"); tap("starter_wizard") }
         if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         for (t in listOf("wizard_family_Techno", "wizard_style_techno", "wizard_style_choose_techno", "wizard_create_now")) {
-            if (centerOf("tab_simple_Morceau") != null) break
-            if (centerOf(t) != null) tap(t)
+            if (reachTag(t) != null) tap(t)
         }
         waitFor("the song's tabs") { centerOf("tab_simple_Morceau") != null }
         tap("tab_simple_Morceau")

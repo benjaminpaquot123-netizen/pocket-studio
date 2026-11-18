@@ -445,7 +445,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dernière mesure, appui long sur le dernier coup de « Caisse », puis « Roulement ».",
+          "text": "À toi : dernière mesure, appui long sur le dernier coup de « Caisse » avant le dernier temps, puis « Roulement » ×4.",
           "textPro": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
           "check": "fill",
           "spot": "rhythm.pattern",

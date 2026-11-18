@@ -61,6 +61,16 @@ Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire
 
 - Points d'étape pour Benjamin : heures belges ; un seul compteur, en trois lignes (« Bugs corrigés dans l'appli », « En salle d'attente », « Bugs encore à corriger ») ; « corrigé » seulement quand un testeur l'a constaté ; devant une CI rouge, lire l'artefact (test, message, classes d'avant) avant d'en parler. Détail : `docs/audits/AUDIT-ULTRA.md` § 13.10.
 
+## Rythme de croisière (Benjamin, 2026-11-18 : « garder le rythme de croisière optimal »)
+Raison : le 18 novembre, deux CI vertes ont attendu 36 minutes, une seule discussion travaillait pendant une heure de CI, et la fiche de reprise avait un tour de retard.
+- Aucune CI verte n'attend : chaque CI lancée par le chef a son réveil unique, posé au lancement, 50 minutes plus tard (une CI sur une branche sans PR ne prévient personne) ; si elle tourne encore, un seul rappel de 10 minutes. But : moins de 10 minutes entre une CI finie et l'action suivante.
+- Jamais d'heure creuse : avant de lancer une CI de paquet, le chef ouvre les lots suivants du plan qui ne touchent pas les mêmes fichiers. Tant qu'il reste un lot « immédiat », au moins deux discussions travaillent. Préparer n'est pas entrer : rien n'entre avant le vert.
+- La CI d'un lot part dès que sa tête poussée contient l'intégration du moment, sans attendre un travail local qui ne change pas le code (captures refaites, relecture). Si ce travail ne change rien, la CI est déjà la bonne.
+- L'ordre de fusion écrit dans le plan du tour se suit. Y déroger = une ligne dans `docs/DECISIONS.md` avec ce que ça coûte en heures, avant de le faire.
+- La fiche de reprise d'abord : `docs/audits/ultra/EN-COURS.md` et `docs/PROGRESS.md` sont mis à jour dans le même commit que chaque fusion de paquet, et toujours avant 150 k de mémoire. Une fiche plus vieille que la dernière fusion bloque la fusion suivante.
+- Une discussion dont le lot est entré et dont le paquet est vert se ferme tout de suite.
+- Chaque point à Benjamin porte une ligne « Rythme » : la plus longue attente pour rien depuis le dernier point, et le nombre de discussions au travail. Plus de 30 minutes d'attente pour rien = le dire et dire ce qu'on change.
+
 ## Méthode d'audit complet (Benjamin, 2026-11-13) : la règle pour tout gros travail à plusieurs
 Texte complet : `docs/audits/METHODE-AUDIT-COMPLET.md` (à lire en début de session quand on audite ou qu'on répare à plusieurs).
 - Trois temps jamais mélangés (tester, trier, réparer) ; un rôle par discussion ; une zone = un réparateur ; les discussions restent muettes et n'écrivent qu'au chef.

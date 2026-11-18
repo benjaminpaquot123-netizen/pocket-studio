@@ -4,6 +4,7 @@ Fait : consignes Facile des 11 cours hip-hop et autres (boom_bap, drill, grime, 
 Exceptions vidées : 851 lignes Facile (readability-facile-exceptions.txt) et 113 lignes de moments (tuto-moment-exceptions.txt) de ces cours. Exceptions Facile restantes à ce lot : 0.
 Pro hors budget : 1122 avant, 1122 après.
 Relecture des langues ja, ko, ar, hi par un agent neuf : 1 grave (ko, durées des parties de pop coupées), corrigé (460142ab6) ; 7 mineurs, 2 repris (ja), les autres laissés (tournures comprises, budget serré).
+Première relecture neuve : 1 grave (pop, roulement : « avant le dernier temps » et « ×4 » manquaient), corrigé en 15 langues (33c8c1f72).
 Batterie : project-model 1238/0, app ciblés 3/0 ; PS_TUTO_FAULTS vide.
 
 Tests adaptés (Kotlin de test, accord du chef) : Tour6TutoYourTurnTest, quatre entrées retirées de PENDING_VERB (suppression seule) : boom_bap/ohat_do/f, grime/perc_do/f, lofi/perc_do/f, lofi/snare_do/f.

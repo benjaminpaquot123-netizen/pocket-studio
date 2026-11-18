@@ -770,6 +770,8 @@ private fun Grid(
     var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     var lit by remember { mutableStateOf<Note?>(null) }
     val focus = com.pocketstudio.app.tuto.TutoHints.focus
+    // Tour 8, T0a: the note the touch went to while the rows fold (null: no fold under way).
+    var folding by remember { mutableStateOf<Note?>(null) }
     LaunchedEffect(focus, view, steady != null, left.isEmpty()) {
         if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
         // Tour 6 repairs: « Je le fais » asks for the note while the roll is still under the tutorial's panel (no row in
@@ -789,11 +791,42 @@ private fun Grid(
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
         com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
+        // Tour 8, T0a: the dotted notes of the time in sight too far apart for the rows (house bass, its two « La »): the
+        // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
+        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
+        if (fold != null) {
+            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps)
+            // A whole number of pixels a row ([rowHeight] rounds): a little under, never over the row that fits.
+            zoomBy(1f, (fold - 0.45f) / rowPx)
+            return@LaunchedEffect
+        }
         val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
         // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
         lit = com.pocketstudio.model.tuto.TutoRollHint.lit(left, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
+    }
+    // Tour 8, T0a: the rows folded, every dotted note of the time in sight framed, the one gone to lit.
+    LaunchedEffect(rowPx, folding) {
+        val gone = folding ?: return@LaunchedEffect
+        androidx.compose.runtime.withFrameNanos { }
+        val seen = sight?.value ?: (0f..view.height.toFloat())
+        // Where the frame is, from the roll's top (the scroll kept from the taller rows means nothing at the new size).
+        val shown = com.pocketstudio.model.tuto.TutoRollView(
+            left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = seen.start, bottom = seen.endInclusive,
+            stepPx = stepPx, rowPx = rowPx, high = high,
+        )
+        val to = com.pocketstudio.model.tuto.TutoRollHint.framed(left, shown, barSteps).roundToInt().coerceAtLeast(0)
+        // The roll's new height is laid out a frame or two after its rows: the scroll can reach the frame then.
+        repeat(3) { if (vScroll.maxValue < to) androidx.compose.runtime.withFrameNanos { } }
+        lit = gone
+        // Cleared last: it is a key of this effect, cleared first it cancelled the scroll above. Cleared also when a drag
+        // cuts the scroll short, or the fold would stay pending and frame the notes again at the next zoom.
+        try {
+            vScroll.animateScrollTo(to.coerceIn(0, vScroll.maxValue))
+        } finally {
+            if (folding === gone) folding = null
+        }
     }
     // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
     val latestZoom = rememberUpdatedState(zoomBy)
@@ -1442,11 +1475,17 @@ private fun TutoNotesLeft(
                 top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
                 stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
             )
-            com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps) to com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
+            val way = com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps)
+            val also = com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
+            // Tour 8 T0a (seat b, ja): with no arrow on the line, « あと N 個 » counts the dotted notes in sight, not the
+            // ones out of it; with an arrow, the line says the others are elsewhere and the count stays the whole.
+            val count = if (way == null && also == null) left.count { com.pocketstudio.model.tuto.TutoRollHint.inTime(it, shown) && (!rows || com.pocketstudio.model.tuto.TutoRollHint.inRows(it, shown)) }.coerceAtLeast(1) else left.size
+            Triple(way, also, count)
         }
     }
     val way = ways.first
     val also = ways.second
+    val count = if (left.isEmpty()) 0 else ways.third
     // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
     // is in sight (« Je le fais » put the last note of bar 2 near the left edge, the line said « mesure 3/8 »).
     val bar by remember(stepPx, barSteps, bars, left) {
@@ -1471,7 +1510,7 @@ private fun TutoNotesLeft(
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
                 else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
-                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way, also),
+                else com.pocketstudio.app.tuto.tutoNotesLeft(count, way, also),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),

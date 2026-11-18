@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "De microfoon reageert niet: probeer het opnieuw.",
   "Vider la case": "Vak leegmaken",
   "Annuler possible": "Ongedaan te maken",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : herhalingen van het deel (een deel gespeeld in Live houdt zijn lengte)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : herhalingen. Grijs: vaste duur (aangeraden of Live) of maar 1 keer."
 }

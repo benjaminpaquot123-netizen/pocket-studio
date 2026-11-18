@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "Mikrofon yanıt vermiyor: yeniden dene.",
   "Vider la case": "Kutuyu temizle",
   "Annuler possible": "Geri alınabilir",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : bölümün tekrar sayısı (Live'da çalınan bölüm uzunluğunu korur)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : tekrar. Gri: sabit süre (önerilen ya da Live) ya da 1 kez."
 }

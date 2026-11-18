@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "マイクが反応しません:もう一度試してね。",
   "Vider la case": "マスを空にする",
   "Annuler possible": "取り消し可",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + ：パートのリピート回数（Liveで演奏したパートは長さが固定）。"
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。"
 }

@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "الميكروفون لا يستجيب: حاول مجددًا.",
   "Vider la case": "إفراغ الخانة",
   "Annuler possible": "يمكن التراجع",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : عدد تكرارات الجزء (الجزء المعزوف في المباشر يحتفظ بطوله)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : التكرار. رمادي: مدة ثابتة (مقترحة أو Live) أو مرة واحدة."
 }

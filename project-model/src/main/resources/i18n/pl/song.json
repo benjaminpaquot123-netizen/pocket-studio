@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "Mikrofon nie odpowiada: spróbuj jeszcze raz.",
   "Vider la case": "Wyczyść pole",
   "Annuler possible": "Można cofnąć",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : powtórzenia części (część zagrana w Live zachowuje swoją długość)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : powtórzenia. Szare: stała długość (zalecana lub Live) lub 1 raz."
 }

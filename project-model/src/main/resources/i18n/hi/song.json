@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "माइक जवाब नहीं दे रहा: फिर से कोशिश करो।",
   "Vider la case": "खाना ख़ाली करो",
   "Annuler possible": "अनडू हो सकता है",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : पार्ट कितनी बार दोहराए (Live में बजाया पार्ट अपनी लंबाई रखता है)।"
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : दोहराव। धूसर: तय लंबाई (सुझाई या Live) या सिर्फ़ 1 बार।"
 }

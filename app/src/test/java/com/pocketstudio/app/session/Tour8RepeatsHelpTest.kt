@@ -25,7 +25,7 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class Tour8RepeatsHelpTest : HumanTester("t8-repeats-help") {
-    private val help = "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur)."
+    private val help = "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois."
 
     @Before
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())

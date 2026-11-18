@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "El micro no responde: inténtalo otra vez.",
   "Vider la case": "Vaciar la casilla",
   "Annuler possible": "Se puede deshacer",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : repeticiones de la parte (una parte tocada en Live conserva su duración)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : repeticiones. Gris: duración fija (sugerida o Live) o 1 sola vez."
 }

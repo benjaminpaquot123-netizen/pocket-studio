@@ -408,7 +408,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         // Tour 8, T0c (seat 3a #14): why − / + can be greyed (one repeat left, or a part played in Live).
         if (ui.song.isNotEmpty()) {
             Text(
-                tr("− / + : répétitions de la partie (une partie jouée en Live garde sa longueur)."),
+                tr("− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_repeats_help"),
             )
         }

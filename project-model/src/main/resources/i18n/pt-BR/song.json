@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "O microfone não responde: tente de novo.",
   "Vider la case": "Limpar a casa",
   "Annuler possible": "Dá para desfazer",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : repetições da parte (uma parte tocada no Live mantém sua duração)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : repetições. Cinza: duração fixa (sugerida ou Live) ou só 1 vez."
 }

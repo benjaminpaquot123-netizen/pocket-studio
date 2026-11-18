@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "Il microfono non risponde: riprova.",
   "Vider la case": "Svuota la casella",
   "Annuler possible": "Si può annullare",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : ripetizioni della parte (una parte suonata in Live mantiene la sua durata)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : ripetizioni. Grigi: durata fissa (consigliata o Live) o 1 sola volta."
 }

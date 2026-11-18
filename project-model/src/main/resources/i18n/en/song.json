@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "The mic is not answering: try again.",
   "Vider la case": "Clear the cell",
   "Annuler possible": "Can be undone",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : repeats of the part (a part played in Live keeps its length)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : repeats. Grey: fixed length (suggested or Live) or just once."
 }

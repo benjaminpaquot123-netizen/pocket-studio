@@ -405,5 +405,5 @@
   "Le micro ne répond pas : réessaie.": "마이크가 응답하지 않아요: 다시 해 보세요.",
   "Vider la case": "칸 비우기",
   "Annuler possible": "실행 취소 가능",
-  "− / + : répétitions de la partie (une partie jouée en Live garde sa longueur).": "− / + : 파트 반복 횟수 (Live에서 연주한 파트는 길이가 그대로예요)."
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : 반복 횟수. 회색: 길이 고정(추천 또는 Live) 또는 1회뿐."
 }

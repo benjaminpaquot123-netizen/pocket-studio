@@ -1,0 +1,81 @@
+Écran 46 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 849,204
+image → @ 889,205
+texte « Teil: F · Build-up » @ 132,273
+bouton « Kit: Studio » ▾ [coupé] @ 127,314
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » [coupé] @ 565,314
+bouton « Alle Pads » @ 770,400
+titre « STEPS: HI-HAT · BUILD-UP » [état « Aufgeklappt »] @ 362,400
+bouton « ? » @ 458,400
+texte « Takt » @ 70,484
+bouton « 1 » @ 143,484
+bouton « 2 » @ 224,484
+bouton « 3 » @ 305,484
+bouton « 4 » [sélectionné] @ 386,484
+bouton « Folgen » @ 502,484
+texte « Takt 4/4 · Hi-Hat » @ 161,550
+texte « 3 Schläge zu viel hier (durchgestrichen) » @ 334,588
+bouton « 1 » [état « Schlag, Stärke 35 % »] @ 90,658
+bouton [état « Schlag, Stärke 60 % »] @ 192,658
+bouton [état « leer »] @ 294,658
+bouton [état « Schlag, Stärke 60 % »] @ 397,658
+bouton « 2 » [état « Schlag, Stärke 35 % »] @ 500,658
+bouton [état « Schlag, Stärke 60 % »] @ 603,658
+bouton [état « leer »] @ 706,658
+bouton [état « Schlag, Stärke 60 % »] @ 809,658
+bouton « 3 » [état « Schlag, Stärke 35 % »] @ 90,739
+bouton [état « Schlag, Stärke 60 % »] @ 192,739
+bouton [état « leer »] @ 294,739
+bouton [état « Schlag, Stärke 60 % »] @ 397,739
+bouton « 4 » [état « Schlag, Stärke 35 %, durchgestrichen: wegnehmen »] @ 500,739
+bouton [état « Schlag, Stärke 60 %, durchgestrichen: wegnehmen »] @ 603,739
+bouton [état « leer »] @ 706,739
+bouton [état « Schlag, Stärke 60 %, durchgestrichen: wegnehmen »] @ 809,739
+bouton « Schläge » [sélectionné] @ 122,825
+bouton « Rolls » @ 265,825
+bouton « Panorama » @ 421,825
+bouton « Tonhöhe » @ 604,825
+bouton « Velocity » @ 774,825
+texte « alles » @ 163,909
+texte « 1/2 » @ 246,909
+texte « 1/4 » @ 321,909
+texte « ◀ » @ 396,909
+texte « ▶ » @ 471,909
+texte « Löschen » @ 581,909
+texte « Füllen » @ 79,909
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » [coupé] @ 450,995
+texte « Die Übergänge: von einem Teil zum nächsten Kapitel 12/16 · Schritt 2/3 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône « Du bist dran: Lösch im Teil „Build-up“, letzter Takt, die 3 Schläge des Pads „Hi-Hat“ auf dem letzten Schlag (tippe auf die 3 roten Kreuze): ein Schlag Stille direkt vor Drop 2. Das ist ein Übergang (die kleine Stelle, die den nächsten Teil ankündigt). Lesen » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

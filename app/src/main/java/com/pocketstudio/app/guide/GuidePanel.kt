@@ -444,7 +444,7 @@ fun GuideCard(
                 stepInView.bringIntoView()
             }
         }
-        Column(Modifier.fillMaxWidth().then(if (named != null) Modifier.bringIntoViewRequester(stepInView) else Modifier), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Column(Modifier.fillMaxWidth().testTag("guide_step_block").then(if (named != null) Modifier.bringIntoViewRequester(stepInView) else Modifier), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (step != null || canAlone) {
             Row(
                 Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically,

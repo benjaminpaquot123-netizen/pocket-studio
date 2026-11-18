@@ -516,8 +516,8 @@ class TutoController(
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
             // The pad the part builds up (the Montée's snare, a clap, a hat…), named as the grid names it.
-            step.build.isNotEmpty() -> if (step.build == "snare") com.pocketstudio.model.i18n.tr("Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.")
-                else com.pocketstudio.model.i18n.tr("Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.", com.pocketstudio.app.rhythm.padName(after, TutoChecks.laneOf(step.build)))
+            step.build.isNotEmpty() -> if (step.build == "snare") com.pocketstudio.model.i18n.tr("Sa caisse claire accélère mesure après mesure.")
+                else com.pocketstudio.model.i18n.tr("Son pad « %s » accélère mesure après mesure.", com.pocketstudio.app.rhythm.padName(after, TutoChecks.laneOf(step.build)))
             else -> null
         }
         return listOfNotNull(made, more).joinToString(" ")

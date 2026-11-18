@@ -399,7 +399,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×4 : la dernière rafale.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×4 : une rafale.",
           "levels": "p",
           "check": "fill",
           "spot": "rhythm.pattern",

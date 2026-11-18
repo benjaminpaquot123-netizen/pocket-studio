@@ -414,7 +414,7 @@
         },
         {
           "id": "make_intro2",
-          "text": "À toi : crée la partie « Intro 2 » : tout le Groove, sauf la cymbale et le riff. La basse et le stab arrivent.",
+          "text": "À toi : crée la partie « Intro 2 » : tout le Groove, sauf le riff. La basse et le stab arrivent.",
           "textPro": "À toi : touche « Créer la partie « Intro 2 » » : tout le Groove, sauf la cymbale et le riff. La basse et le stab arrivent.",
           "why": "Bouton : « Créer la partie « Intro 2 » ». On garde le riff pour le Drop : il fera plus d'effet.",
           "check": "part:Intro 2:less+bass",
@@ -509,7 +509,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : une rafale.",
           "levels": "p",
           "check": "fill",
           "spot": "rhythm.pattern",

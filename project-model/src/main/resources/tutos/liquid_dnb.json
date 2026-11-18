@@ -491,7 +491,7 @@
           "id": "fill",
           "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup du kick, et « ×3 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad du kick : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3.",
-          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "kick",

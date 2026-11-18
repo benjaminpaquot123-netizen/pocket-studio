@@ -724,5 +724,6 @@
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 6 accords.": "دورك: اضغط النوتة السفلى المنقّطة لكل كورد في المازورة 1: يوضع الكورد كله. هناك 6 كوردات.",
   "À toi : écris les 3 notes de la mesure 2 : la phrase reviendra plus haut sur les deux accords suivants, comme dans les hymnes.": "دورك: اكتب النوتات الـ3 في المازورة 2: ستعود الجملة أعلى على الكوردين التاليين، كما في الأناشيد.",
   "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.": "دورك: في «أغنيتي»، تحت «إضافة»، اضغط بالترتيب مقدمة ومقدمة 2 وتصاعد ودروب وفاصل وتصاعد ودروب 2 والنهاية.",
-  "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8.": "دورك: أعطِ كل جزء طوله: مقدمة ‏16 مازورة، مقدمة 2 ‏8، تصاعد ‏8، دروب ‏32، فاصل ‏24، دروب 2 ‏32 والنهاية 8."
+  "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8.": "دورك: أعطِ كل جزء طوله: مقدمة ‏16 مازورة، مقدمة 2 ‏8، تصاعد ‏8، دروب ‏32، فاصل ‏24، دروب 2 ‏32 والنهاية 8.",
+  "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case.": "دورك: على باد «تصفيق»، اضغط الخانات المنقّطة: النبضتان 2 و4، والخانة الأخيرة."
 }

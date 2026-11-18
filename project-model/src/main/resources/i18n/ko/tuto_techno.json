@@ -724,5 +724,6 @@
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 6 accords.": "직접 해 보세요: 1마디의 점선 코드마다 맨 아래 노트를 탭하세요. 코드 전체가 놓여요. 코드는 6개예요.",
   "À toi : écris les 3 notes de la mesure 2 : la phrase reviendra plus haut sur les deux accords suivants, comme dans les hymnes.": "직접 해 보세요: 2마디의 노트 3개를 쓰세요. 다음 코드 두 개에서 앤섬처럼 프레이즈가 더 높게 돌아와요.",
   "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.": "직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 인트로 2, 빌드업, 드롭, 브레이크, 빌드업, 드롭 2, 엔딩을 순서대로 탭하세요.",
-  "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8.": "직접 해 보세요: 파트마다 길이를 정하세요. 인트로 16마디, 인트로 2 8, 빌드업 8, 드롭 32, 브레이크 24, 드롭 2 32, 엔딩 8."
+  "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8.": "직접 해 보세요: 파트마다 길이를 정하세요. 인트로 16마디, 인트로 2 8, 빌드업 8, 드롭 32, 브레이크 24, 드롭 2 32, 엔딩 8.",
+  "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4, et la dernière case.": "직접 해 보세요: “클랩” 패드에서 점선 칸을 탭하세요. 2박과 4박, 그리고 마지막 칸이에요."
 }

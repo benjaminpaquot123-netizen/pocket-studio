@@ -117,7 +117,7 @@
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé.",
           "textPro": "À toi : sur le pad « Charley », les croches, muettes sur le 3, avec un petit coup doux à la fin.",
-          "why": "Pendant que le kick et la caisse traînent, le charley (la petite cymbale qui fait « tss ») garde la vitesse normale. Il se tait sur la caisse pour lui laisser la place. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; efface ensuite celui du milieu et ajoute le dernier.",
+          "why": "Pendant que le kick et la caisse traînent, le charley (la petite cymbale qui fait « tss ») garde la vitesse normale. Il se tait sur la caisse pour lui laisser la place. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; dans chaque mesure, efface ensuite celui du milieu et ajoute le dernier.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",

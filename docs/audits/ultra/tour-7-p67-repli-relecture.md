@@ -21,3 +21,23 @@ Remarques :
 7. mineur, test : le panneau n'est testé qu'en 360 × 800 dp (« Pourquoi ? » épinglé) ; le cas téléphone couché (`pinned` faux, « Pourquoi ? » dans le défilement, compté dans `rest`) n'est pas couvert. Le calcul le traite correctement à la lecture.
 
 Verdict : 0 bloquant, 0 grave — fusion possible
+
+## Relecture 2 (CI 353)
+Relu : 516f2515..6e114e2b (TutoPanel.kt, Tour7TutoReadAllKitTest.kt, docs).
+
+Lecture seule, Gradle non joué. Rouge cd611c7c = test seul, vert a27e0224 = `TutoPanel.kt` seul : ordre respecté.
+
+Points vérifiés sans défaut :
+- Pas de boucle : `wholeWords` ne fait que monter (`maxOf`), écrit dans un `SideEffect` (après la composition, pas pendant) seulement si `whole > wholeWords`. Quand les mots tiennent, `maxValue` = 0 donc `whole` = 0 et la valeur gardée ne bouge plus : pas d'aller-retour entre `least` et le défilement.
+- `held`/`regrown` sont clés sur `cellsToTouch` : « Lire la suite » (readAll) les remet à zéro. Chemin normal : 1re image sans `held`, mots mesurés trop longs, `wholeWords` posé, `held` pris trop bas, `starved` → une regrowth (2 au plus, garde existante). Converge.
+- Débordement : `WordsRoom` plafonne à `c.maxHeight` ; épinglés (kit, « Pourquoi ? », « Lire la suite », « Réduire ») mesurés d'abord et entiers. En état final (`holding`, `weight(1f)`), l'`ActionBar` est mesurée avant les mots : boutons jamais cachés, mots qui défilent si l'écran ne suffit pas.
+- Hors readAll ou hors chambre basse : `least` = `lineAndHalf` comme avant. `wholeWords` remis à zéro par « Réduire » (clé `readAll`).
+- Le test n'est pas vide : il attend la vraie carte du kit (`tuto_kit`), vérifie d'abord que la consigne est coupée avant le toucher, puis entière après, et la carte entière.
+
+Remarques :
+1. mineur, `TutoPanel.kt:665-667` : en paysage (`pinned` faux), `least` valait toujours 0 ; il vaut maintenant `wholeWords` sous readAll en chambre basse, ce qui active `starved` et la regrowth couchée, contraire au commentaire juste au-dessus (« a phone on its side has its panel as before »). Les boutons restent protégés en état final (`holding`), mais une image intermédiaire non tenue peut écraser l'`ActionBar` (la Column donne au bloc des mots tout le reste). Non couvert par un test. À aligner : `if (pinned && lowRoom && readAll)` ou corriger le commentaire.
+2. mineur, `TutoPanel.kt:665` : `wholeWords` ne redescend pas si le contenu rétrécit sous readAll (« Pourquoi ? » refermé, exemples repliés) : place vide sous les mots dans la hauteur tenue jusqu'au prochain `held = 0`. Visuel seulement.
+3. mineur, test : il ne vérifie ni « Pourquoi ? » ni l'`ActionBar` en vue après « Lire la suite » ; un seul format (392 × 852 dp, hdpi), pas de paysage ni de petit écran où la hauteur entière dépasse.
+4. mineur, test : attente en temps réel (`System.currentTimeMillis`, 30 s) sur le chargement de l'index des packs ; une CI lente échouerait par « not in time » (rouge franc, pas faux vert).
+
+Verdict : 0 bloquant, 0 grave — fusion possible

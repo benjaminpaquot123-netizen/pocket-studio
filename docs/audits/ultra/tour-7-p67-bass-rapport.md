@@ -59,3 +59,7 @@ Copies orphelines de mes anciens textes Bass :
   - dnb et jump_up, pourquoi du fill : commence par la définition de la transition ;
   - ja riddim song_order : 「マイソング」 absent (budget) ; ja song_phrases sans verbe ;
   - en et hi : tournure de « sans pointillé » ; hi : mots « fill » et « trou » perdus.
+
+## Troisième relecture (grave corrigé)
+- Grave : dubstep hat_do, l'astuce parlait d'un seul coup à effacer et à ajouter alors que la grille fait 2 mesures. Corrigé : « dans chaque mesure » (14 langues).
+- Mineur corrigé : ja 「コード全体が置ける」 → 「置かれる」.

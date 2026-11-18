@@ -230,6 +230,7 @@
           "id": "pad_do",
           "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe). « Accords » (rangée de boutons au-dessus de la grille, à faire glisser) pose la triade d'un toucher sur la note du bas en pointillé. Mesure 1 (Fa mineur), « Copier sur les mesures suivantes », mesure 4 (Sol♭ majeur, le ♭II), puis « Copier ».",
+          "why": "La piste « Accords » tient plusieurs notes ensemble (un accord), longtemps et doucement : c'est la nappe, l'ambiance sombre de l'Intro et du Break. Un accord (3 notes jouées ensemble) donne sa couleur au morceau.",
           "check": "notes:pad",
           "length": 16,
           "spot": "notes.track",

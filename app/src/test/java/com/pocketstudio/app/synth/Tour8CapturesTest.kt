@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -126,4 +127,36 @@ class Tour8CapturesTest {
     }
 
     // ---- Partage: the sheet ends where its content does ----
+
+    private val share = ShareSheetUi(
+        "Mon morceau", seconds = 16, parts = 0, checks = listOf(ShareCheck.NoSong(8)), projectName = "Mon projet 1",
+        loop = com.pocketstudio.app.export.LoopPick(8, com.pocketstudio.app.export.LoopPick.BARS),
+    )
+
+    @Test
+    fun theShareSheetEndsWhereItsContentDoes() {
+        var case by mutableStateOf(Pair(true, sizes.first()))
+        compose.setContent {
+            val (simple, size) = case
+            key(case) {
+                Sized(size) {
+                    Box(Modifier.testTag("host")) {
+                        ShareSheetContent(share, ShareSheetActions(toMixer = if (simple) null else ({}), sendProject = {}), page = simple, simple = simple)
+                    }
+                }
+            }
+        }
+        val bands = mutableListOf<String>()
+        for (simple in listOf(true, false)) for (size in sizes) {
+            case = simple to size
+            compose.waitForIdle()
+            val host = nodes("host").single()
+            val dp = host.layoutInfo.density.density
+            // The lowest thing drawn in the sheet (the « Mes fichiers » line and its « ? »).
+            val content = host.all().drop(1).filter { it.boundsInRoot.height > 0.5f }.maxOf { it.boundsInRoot.bottom }
+            val band = (host.boundsInRoot.bottom - content) / dp
+            if (band > 1f) bands += "${if (simple) "Simple" else "Pro"} $size: ${"%.1f".format(band)} dp empty under the content"
+        }
+        assertTrue("a band under the sheet's content:\n" + bands.take(12).joinToString("\n") + "\n(${bands.size} in all)", bands.isEmpty())
+    }
 }

@@ -22,5 +22,8 @@ corrige: U27 | gravité: mineur | rejeu impossible : défaut mineur au tri du to
 - Le défilement vertical de la page lors du passage une colonne ↔ deux colonnes : il vit dans `AdaptivePanes` (`ui-components/Adaptive.kt`), hors de ma liste.
 - « Vocals » des Sons (la page micro) n'a pas de tranche au Mixer tant qu'aucune prise n'existe : pas de nouvelle tranche vide créée (ce serait un nouveau texte et un nouvel ordre).
 
+- Preuve locale (2026-11-18) : sur le code d'avant la correction, les deux tests de rotation sont rouges (« lying down: the strip's sheet closed »), verts après. Le test du fader glissé reste vert sur l'ancien code : la mémoïsation de la sonde n'est prouvée par aucun test (mineur).
+- Sous Robolectric, un vrai toucher sur « ⋯ » après défilement de la page laissait le tiroir fermé ; le test ouvre par l'action de clic. Cause non établie, à faire constater sur téléphone (recette ci-dessous).
+
 ## Recette pour le téléphone de Benjamin
 Mixer, ouvrir « ⋯ » d'une tranche, faire glisser la console, ouvrir « Effets » du master, tourner le téléphone puis le remettre droit : tout reste ouvert et à la même place.

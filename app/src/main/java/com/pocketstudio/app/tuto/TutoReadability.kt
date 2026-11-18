@@ -8,7 +8,8 @@ import kotlin.math.floor
  *  1. The instruction always comes first.
  *  2. In every state of the panel at least one whole line of it is readable.
  *  3. Cut, it ends with « … » and « Lire la suite » is shown.
- *  4. The other blocks fold before the words are cut: the examples, then the kit card, then « Pourquoi ? ».
+ *  4. The other blocks fold before the words are cut: the examples, then the kit card, then « Pourquoi ? »; cut
+ *     anyway, the kit card and « Pourquoi ? » come back (only the examples stay folded).
  * [layout] is what the panel does with measured heights; [budget] and [fits] are its projection for a text alone
  * (what the content tests measure every course with).
  */
@@ -107,8 +108,10 @@ object TutoReadability {
 
     /**
      * The panel's words and blocks in [roomDp]: the words take [textLines] lines of [lineHeightDp]; the examples, the
-     * kit card and « Pourquoi ? » (0: none) fold in that order before the words are cut; cut, they keep at least one
-     * whole line and « Lire la suite » ([moreDp]) under them.
+     * kit card and « Pourquoi ? » (0: none) fold in that order before the words are cut. Words too long even with every
+     * block folded are cut anyway: folding the kit card and « Pourquoi ? » spared nothing then, so they come back
+     * (tour 7 P6/P7 bloc 0b: the kit stays in sight, « Pourquoi ? » stays touchable), the examples stay folded, and the
+     * words keep at least one whole line with « Lire la suite » ([moreDp]) under them.
      */
     fun layout(roomDp: Int, lineHeightDp: Float, textLines: Int, kitDp: Int, whyDp: Int, examplesDp: Int, moreDp: Int = MORE_DP): PanelLayout {
         val words = textLines * lineHeightDp
@@ -121,7 +124,8 @@ object TutoReadability {
         if (words + blocks() > roomDp && why) why = false
         // A one-line instruction has nothing to cut away: its line stays whole (rule 2), the panel holds it.
         if (words <= roomDp || textLines <= 1) return PanelLayout(textLines, cut = false, showMore = false, kitCard = kit, why = why, examples = examples)
-        val shown = floor((roomDp - moreDp) / lineHeightDp).toInt().coerceIn(1, textLines - 1)
-        return PanelLayout(shown, cut = true, showMore = true, kitCard = false, why = false, examples = false)
+        val kept = (if (kitDp > 0) kitDp else 0) + (if (whyDp > 0) whyDp else 0)
+        val shown = floor((roomDp - kept - moreDp) / lineHeightDp).toInt().coerceIn(1, textLines - 1)
+        return PanelLayout(shown, cut = true, showMore = true, kitCard = kitDp > 0, why = whyDp > 0, examples = false)
     }
 }

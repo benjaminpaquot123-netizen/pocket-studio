@@ -87,10 +87,11 @@ class TutoReadabilityRuleTest {
         TutoReadability.layout(240, lh, 7, 60, 36, 60).let { assertFalse(it.examples); assertFalse(it.kitCard); assertTrue(it.why); assertFalse(it.cut) }
         // Then « Pourquoi ? », still not cutting the words.
         TutoReadability.layout(240, lh, 9, 60, 36, 60).let { assertFalse(it.why); assertFalse(it.kitCard); assertFalse(it.cut); assertEquals(9, it.wordsLines) }
-        // Only then the words are cut, with « Lire la suite » under them.
+        // Only then the words are cut, with « Lire la suite » under them; folding the kit card and « Pourquoi ? » spared
+        // nothing, so they are back (bloc 0b), the examples stay folded.
         TutoReadability.layout(240, lh, 12, 60, 36, 60).let {
-            assertTrue(it.cut); assertTrue(it.showMore); assertEquals(8, it.wordsLines)
-            assertFalse(it.why); assertFalse(it.kitCard); assertFalse(it.examples)
+            assertTrue(it.cut); assertTrue(it.showMore); assertEquals(4, it.wordsLines)
+            assertTrue(it.why); assertTrue(it.kitCard); assertFalse(it.examples)
         }
         // A block is never folded while a later one in the order is kept.
         for (lines in 1..12) TutoReadability.layout(240, lh, lines, 60, 36, 60).let {

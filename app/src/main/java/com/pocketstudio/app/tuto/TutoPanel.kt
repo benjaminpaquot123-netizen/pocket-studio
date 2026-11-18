@@ -68,6 +68,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.runtime.CompositionLocalProvider
@@ -548,6 +549,23 @@ fun TutoPanel(
     // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
     // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
     val scrolls = words.maxValue in 1 until Int.MAX_VALUE
+    // Tour 7 P6/P7 bloc 0b (docs/audits/ultra/tour-7-plan-p6-p7.md § 1.4): the blocks fold in [TutoReadability.layout]'s
+    // order before the words are cut. The kit offer and « Pourquoi ? » are pinned under the words and stay (cut anyway,
+    // folding them spares nothing; the kit offer is only there when the step needs it, « ▸ Pourquoi ? » is already its
+    // folded form). The examples (Mode simple, under the words) fold first: words that scroll fold them, for the step.
+    val lineHeight = wordsLineHeight()
+    val gapPx = with(density) { 6.dp.roundToPx() }
+    var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    var moreHeight by remember { mutableIntStateOf(0) }
+    if (scrolls && !examplesFolded && examplesHeight > 0) SideEffect {
+        val more = if (moreHeight > 0) moreHeight else with(density) { TutoReadability.MORE_DP.dp.roundToPx() }
+        val room = words.viewportSize + more + gapPx
+        val rest = (words.maxValue + words.viewportSize - examplesHeight - gapPx).coerceAtLeast(0)
+        val restLines = maxOf(1, kotlin.math.ceil(rest / lineHeight).toInt())
+        val keep = TutoReadability.layout(room, rest.toFloat() / restLines, restLines, 0, 0, examplesHeight + gapPx, more)
+        if (!keep.examples) examplesFolded = true
+    }
     val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null && !ui.bravo }
     var whyOpen by rememberSaveable(why) { mutableStateOf(false) }
     val reason = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -673,7 +691,8 @@ fun TutoPanel(
                         }
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
-                        if (alreadySaid == null && momentWords(ui) == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (alreadySaid == null && momentWords(ui) == null && !examplesFolded) com.pocketstudio.app.library.PlainWordsLines(
+                            step.textFor(ui.progress.level), modifier = Modifier.onSizeChanged { if (it.height > 0) examplesHeight = it.height })
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -703,7 +722,7 @@ fun TutoPanel(
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (scrolls) MoreWords(words.canScrollForward) {
+            if (scrolls) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
                 if (cellsToTouch) readAll = true
                 else {
                     // A page on, from the first line not wholly seen (never half a line at the top).

@@ -390,3 +390,4 @@ tour-8	t0c-e-anglais-restant	e	-	pas pris	-	-	mis de côté (clôture du tour 8)
 tour-8	t0c-e-de-9-danach	e	-	pas pris	-	-	mis de côté (clôture du tour 8) : de 9 « Akkorde ✓ · Danach: Snare » sur le pad Clap, pas clair	-	-	controle t0c-e (ed32dda4b)	-
 tour-8	t0c-a-rendre-actifs	a	Mon morceau (parties)	pas pris	-	-	mis de côté (clôture du tour 8) : rendre les −/+ actifs après les durées conseillées (aucun réglage de durée dans l appli, code hors liste)	-	-	controle t0c-a (ed32fe2a0)	-
 tour-8	t0c-a-reste	a	-	pas pris	-	-	mis de côté (clôture du tour 8) : le reste du rapport du débutant (durées coupées sur la carte, consigne de partage, rafale)	-	-	controle t0c-a (ed32fe2a0)	-
+tour-8	t0c-c-riff-melodie	c	tuto techno make_intro2 Facile	pas pris	-	-	mis de côté (clôture du tour 8) : « riff / 리프 » dans le pas Intro 2 alors que le pad s appelle « Mélodie / 멜로디 » (14 langues) ; le renvoi au chapitre 12 de la Montée est juste, inchangé	-	-	controle t0c-c (7cb8f9c17)	-

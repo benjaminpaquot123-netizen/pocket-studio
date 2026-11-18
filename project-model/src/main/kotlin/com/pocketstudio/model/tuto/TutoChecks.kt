@@ -1510,9 +1510,9 @@ object TutoChecks {
             val line = List(AutomationLane.STEPS) { i ->
                 when {
                     i >= steps -> null
-                    i % bar == 0 || i % bar == bar - 1 -> 0.15f
-                    i % bar == bar / 2 -> 1f
-                    else -> null
+                    // Every step set: the engine holds a « Par partie » value until the next one (fresh review, no glide).
+                    i % bar <= bar / 2 -> 0.15f + 0.85f * (i % bar) / (bar / 2)
+                    else -> 0.15f + 0.85f * (bar - 1 - i % bar) / (bar - 1 - bar / 2)
                 }
             }
             return withPartCurve(q, t, scene, line)
@@ -1523,7 +1523,7 @@ object TutoChecks {
             val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
             val steps = q.allScenes[scene].stepsFor(q.stepsPerBar.coerceAtLeast(2)).coerceIn(2, AutomationLane.STEPS)
             val (from, to) = if (shape == "fall") 1f to 0.15f else 0.15f to 1f
-            return withPartCurve(q, t, scene, List(AutomationLane.STEPS) { i -> when (i) { 0 -> from; steps - 1 -> to; else -> null } })
+            return withPartCurve(q, t, scene, List(AutomationLane.STEPS) { i -> if (i < steps) from + (to - from) * i / (steps - 1) else null })
         }
         var lane = AutomationLane(t, mode = AutomationLane.SONG)
         val spans = spansOf(q, label).ifEmpty { listOf(0 to 8) }

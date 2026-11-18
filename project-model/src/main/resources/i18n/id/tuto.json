@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Nada dasar lagu: %s",
   "Tonalité du morceau": "Kunci nada lagu",
   "Lire la suite": "Baca selanjutnya",
+  "Réduire": "Ciutkan",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Birama: satu putaran ritme, empat ketukan; kamu menghitung “1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Ketukan: setiap “1, 2, 3, 4” dalam birama, tempat kakimu mengetuk.",
   "Accord : plusieurs notes jouées ensemble.": "Akor: beberapa nada yang dimainkan bersamaan.",
@@ -149,5 +150,12 @@
   "Touche ici": "Ketuk di sini",
   "Accords en pointillé à toucher : %d": "Akor bertitik yang perlu diketuk: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: saat yang lebih tenang, kick dan bass diam.",
-  "Exemple passé sans l'écouter.": "Contoh dilewati tanpa didengarkan."
+  "Exemple passé sans l'écouter.": "Contoh dilewati tanpa didengarkan.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Bagian “%1$s” dibuat (salinan “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Bagian “%1$s” dibuat (salinan “%2$s”): tanpa %3$s.",
+  "Poser ce qui manque": "Pasang yang belum ada",
+  "Posé : %s.": "Dipasang: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Kamu belum punya yang dibuat di bab-bab sebelumnya.",
+  "Aller au chapitre %d": "Buka bab %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Lagumu tidak punya bagian “%s”: langkah ini dikerjakan di dalamnya."
 }

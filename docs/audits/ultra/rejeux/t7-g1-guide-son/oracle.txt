@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-7/lotC/a
+rejeu.n=10
+rejeu.attendu=मेलोडी का साउंड »

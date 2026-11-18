@@ -1,4 +1,5 @@
-Recette, deuxième fournée : « On en a gros ! »
-- La liste Recette ne garde que les 10 essais restants (les 8 premiers sont faits, merci).
-- Chaque essai dit maintenant le mode (Simple ou Pro), les gestes un par un et la réponse à recopier.
-- Rien d'autre ne change dans l'appli : les défauts trouvés sont notés pour les équipes de correction.
+Tuto relu de fond en comble : « C'est pas faux. »
+- Les consignes du tuto sont plus courtes, dans tous les styles et toutes les langues.
+- Une consigne = un seul geste à faire, plus de phrases à tiroirs.
+- Le panneau du tuto replié ne coupe plus les mots ; « Lire la suite » montre le reste.
+- La carte du kit n'affiche plus de consigne tronquée.

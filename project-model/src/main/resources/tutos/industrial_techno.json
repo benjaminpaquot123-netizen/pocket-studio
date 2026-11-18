@@ -35,9 +35,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, la plus noire. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Sol ».",
+          "text": "À toi : choisis la couleur du morceau, la plus noire : Sol phrygien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol. « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Ici, les notes comptent peu : la gamme sert surtout à accorder le grave.",
+          "why": "Phrygien : une gamme sombre. Ici, les notes comptent peu : la gamme sert surtout à accorder le grave.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -66,7 +66,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps, et deux petits coups doux juste avant les temps 2 et 4.",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une par temps, et deux coups doux avant les temps 2 et 4.",
           "textPro": "À toi : le kick sur chaque temps, avec ses deux kicks fantômes (en « Doux ») avant 2 et 4.",
           "why": "Les kicks fantômes donnent le balancement d'une machine qui tourne mal.",
           "check": "lane:kick",
@@ -148,9 +148,29 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis les 3 notes de la mesure 1 (une note longue, grave et aiguë). « Copier sur les mesures suivantes », puis les 3 notes de la mesure 4, un cran plus haut, et « Copier » encore.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. C'est une note longue, jouée grave et aiguë.",
           "textPro": "À toi : crée la piste Accords (son « Essaim ») : la quinte Sol-Ré tenue, La♭ à la mesure 4. « Copier ».",
           "why": "Un son tenu qui ne bouge pas installe la menace ; le demi-ton de la mesure 4 serre la gorge.",
+          "check": "notes:pad",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,rumble,pad"
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les mesures 2 et 3 se remplissent.",
+          "levels": "f",
+          "check": "notes:pad",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,rumble,pad"
+        },
+        {
+          "id": "pad_3",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 4 (un cran plus haut), puis « Copier » encore.",
+          "levels": "f",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -165,9 +185,19 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé : une au début de la mesure 1, une à la fin de la mesure 2. Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche la note en pointillé du début de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (son « Cloche », effet robot) : Sol au premier temps, La♭ tout à la fin de la 2e mesure. « Copier ».",
           "why": "Deux coups en deux mesures : le silence entre eux fait peur.",
+          "check": "notes:lead",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,lead"
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris la note de la fin de la mesure 2.",
+          "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -314,17 +344,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:16,Drop B:8,Drop:8,Break:16,Drop 2:32,Fin:16",
           "listen": "song",
-          "skip": "Dans un autre ordre, le Drop B ne coupera pas le Drop en son milieu."
+          "skip": "Dans un autre ordre, le Drop B ne coupera pas le Drop en son milieu.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Drop B 8, Drop 8, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Drop B 8, Drop 8, Break 16, Drop 2 32 et Fin 16.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 16, Drop B 8, Drop 8, Break 16, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Des blocs de 8 et 16 mesures : chaque boucle entre ou sort au début d'une phrase. 3 minutes 46 à 136 BPM.",
           "check": "song:phrases",
@@ -340,7 +371,8 @@
       "steps": [
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Même le grondement se tait : le retour du kick fait l'effet d'un coup de marteau.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -399,12 +431,13 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs des pistes « Accords » et « Mélodie ».",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",
-          "listen": "parts:kick,rumble,tom,snare,pad,lead"
+          "listen": "parts:kick,rumble,tom,snare,pad,lead",
+          "why": "Le mix, c'est régler le volume de chaque piste. Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort."
         },
         {
           "id": "meters",
@@ -446,7 +479,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

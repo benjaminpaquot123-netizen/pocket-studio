@@ -42,9 +42,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau : mélancolique et lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « La ».",
+          "text": "À toi : choisis la couleur du morceau, mélancolique et lumineuse : La mineur. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur La mineur, grille i–VI–III–VII (La m, Fa, Do, Sol), un accord par mesure : la grille des hymnes trance. « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Quatre accords, un par mesure, font tout le voyage : de la mélancolie à l'euphorie.",
+          "why": "Mineur : une gamme triste. Quatre accords, un par mesure, font tout le voyage : de la mélancolie à l'euphorie.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -136,9 +136,19 @@
       "steps": [
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1, entre les kicks. « Copier sur les mesures suivantes » la recopie en suivant les accords (La, Fa, Do, Sol).",
+          "text": "À toi : touche les 4 notes en pointillé de la mesure 1, entre les kicks.",
           "textPro": "À toi : crée la piste Basse (son « Basse roulante », pompe déjà posée) : la basse en contretemps, notes de 2 pas qui s'arrêtent avant le kick. « Copier » suit la grille.",
           "why": "La basse s'arrête avant chaque kick : les deux ne se marchent jamais dessus.",
+          "check": "notes:bass",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : recopie la mesure 1 sur les suivantes : elle suit les accords (La, Fa, Do, Sol).",
+          "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
           "target": "bass",
@@ -160,7 +170,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 6 accords de la mesure 1.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 6 accords.",
           "textPro": "À toi : crée la piste Accords (son « Supersaw », pompe et réverbe déjà posées) : La mineur haché en 3-3-2 sur la mesure 1, puis « Copier » qui suit la grille i–VI–III–VII.",
           "why": "Le rythme 3-3-2 fait danser les accords même sans batterie.",
           "check": "notes:pad",
@@ -192,14 +202,24 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 4 notes de la mesure 1 et les 3 de la mesure 2 (des notes longues). « Copier sur les mesures suivantes » reprend la phrase plus haut sur les deux accords suivants : une marche, comme dans les hymnes.",
+          "text": "À toi : touche les 4 notes en pointillé de la mesure 1 : des notes longues.",
           "textPro": "À toi : crée la piste Mélodie (son « Lead trance ») : 2 mesures conjointes, Mi Do Si La / Si Do La, puis « Copier » qui la transpose sur Do et Sol : une marche mélodique.",
           "why": "Une mélodie qui descend pas à pas et finit sur une note tenue : c'est ce qui donne des frissons.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans mélodie, ta trance n'a pas d'hymne."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 3 notes de la mesure 2 : la phrase reviendra plus haut sur les deux accords suivants, comme dans les hymnes.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_knobs",
@@ -303,7 +323,7 @@
         {
           "id": "make_montee",
           "text": "À toi : crée la Montée : sans kick ni basse. Le clap va de plus en plus vite, mesure après mesure, puis tout se tait sur le dernier temps.",
-          "textPro": "À toi : crée la Montée, 8 mesures sans kick : le clap accélère (noires, croches, doubles, rafales) et monte en force ; les accords restent ; le dernier temps se tait.",
+          "textPro": "À toi : crée la Montée, 8 mesures sans kick : le clap accélère (noires, croches, doubles) et monte en force ; les accords restent ; le dernier temps se tait.",
           "check": "part:Montée:nokick",
           "spot": "song.parts",
           "keep": "clap,pad",
@@ -352,17 +372,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:8,Montée:8,Drop:32,Break:24,Montée:8,Drop 2:32,Fin:8",
           "listen": "song",
-          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant chaque Drop."
+          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant chaque Drop.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 8, Montée 8, Drop 32, Break 24, Drop 2 32 et Fin 8 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro, Intro 2 et Montée font 32 mesures, Break et Montée aussi : chaque Drop tombe au début d'une phrase. Près de 4 minutes à 138 BPM.",
           "check": "song:phrases",
@@ -500,7 +521,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

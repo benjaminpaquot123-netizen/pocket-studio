@@ -1,0 +1,2 @@
+route=dialogue:new_project
+nouvelle=1

@@ -37,7 +37,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « La ».",
+          "text": "À toi : mets le morceau en La, gamme « Dorienne ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -68,7 +68,7 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé : les temps 2 et 4, et deux petits coups doux autour, comme un batteur.",
+          "text": "À toi : pad « Caisse », touche les cases en pointillé : 2 et 4, et deux petits coups doux.",
           "textPro": "À toi : la caisse sur 2 et 4 avec ses deux fantômes doux.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
@@ -85,7 +85,8 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : sur les temps, et juste après chaque « tsss » pour le couper : « tsss-tchic ».",
+          "text": "À toi : pad « Charley », touche les cases en pointillé : « tsss-tchic » à chaque temps.",
+          "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé : sur les temps, et juste après chaque « tsss » pour le couper : « tsss-tchic ».",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -93,7 +94,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad des congas, touche les 4 cases en pointillé : des coups joués à la main, pour la chaleur.",
+          "text": "À toi : sur le pad des congas, touche les 4 cases en pointillé : des coups à la main.",
+          "textPro": "À toi : sur le pad des congas, touche les 4 cases en pointillé : des coups joués à la main, pour la chaleur.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -101,7 +103,8 @@
         },
         {
           "id": "tamb_do",
-          "text": "À toi : sur le pad du tambourin, touche les 8 cases en pointillé : une croche sur deux. « Remplir » puis « 1/2 » le fait d'un geste.",
+          "text": "À toi : sur le pad du tambourin, touche les 8 cases en pointillé (« Remplir », « 1/2 »).",
+          "textPro": "À toi : sur le pad du tambourin, touche les 8 cases en pointillé : une croche sur deux. « Remplir » puis « 1/2 » le fait d'un geste.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",
@@ -129,14 +132,34 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse ». Mesure 1 : la montée La, Do, Mi, Sol, La (8 notes). Mesure 2, sur Ré : 7 notes. « Copier sur les mesures suivantes » refait la mesure 1 en mesure 3 ; écris enfin les 8 notes de la mesure 4.",
+          "text": "À toi : touche les 8 notes de la mesure 1 : la montée La, Do, Mi, Sol, La.",
           "textPro": "À toi : crée la piste Basse. Sur Am7 : coups sur le temps puis montée par l'accord (Do, Mi, Sol) et l'octave qui anticipe la mesure suivante ; sur D7 : la 6te puis la 7e (Si, Do), le procédé funk ; « Copier » pour la mesure 3, puis la descente de la mesure 4.",
           "why": "La dernière note arrive une double croche avant la mesure suivante : c'est ce qui fait sautiller le funk.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, ton disco n'a plus de moteur."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 7 notes de la mesure 2, sur Ré.",
+          "levels": "f",
+          "check": "notes:bass",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_3",
+          "text": "À toi : écris enfin les 8 notes de la mesure 4.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         }
       ]
     },
@@ -154,13 +177,23 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Les 6 coups de la mesure 1, puis les 6 de la mesure 2 (un autre accord). Puis « Copier ».",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. 6 coups par mesure.",
           "textPro": "À toi : crée la piste Accords : Am7 puis D7 sans fondamentale (Do Mi Sol, puis Do Fa♯ La : deux notes bougent). Six coups courts par mesure, les deux du milieu des temps 2 et 4 plus forts.",
           "check": "notes:pad",
+          "length": 32,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:kick,bass,pad",
           "skip": "Sans guitare, il manque le « tchic » funky."
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "levels": "f",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad"
         }
       ]
     },
@@ -171,8 +204,18 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes longues en pointillé des mesures 1 et 2. « Copier sur les mesures suivantes » fait le reste.",
+          "text": "À toi : touche les 3 notes longues en pointillé des mesures 1 et 2.",
           "textPro": "À toi : crée la piste Mélodie (des cordes) : La puis Sol sur Am7, Fa♯ tenu toute la mesure sur D7 : une ligne qui descend doucement par les notes des accords. Des notes longues, jamais de petits coups. Puis « Copier ».",
+          "check": "notes:lead",
+          "length": 32,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : recopie la mélodie sur les mesures suivantes.",
+          "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -301,7 +344,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 12 puis 16, Montée 4, Drop 8 puis 16 à la fin, Break 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 12 (16 la 2e fois), Montée 4, Drop 8 (16 à la fin), Break 16, Fin 8.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8, Groove 12 puis 16, Montée 4, Drop 8 puis 16 à la fin, Break 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:8,Groove:12,Montée:4,Drop:8,Groove:16,Drop:8,Break:16,Drop:16,Fin:8",
@@ -316,7 +360,7 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : touche les 4 cases du dernier temps : un roulement de batteur.",
+          "text": "À toi : fin de la Montée, pad « Caisse » : touche les 4 cases du dernier temps.",
           "textPro": "À toi : un fill de caisse en doubles croches sur le dernier temps de la Montée.",
           "check": "fill",
           "spot": "rhythm.pattern",
@@ -389,7 +433,8 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau et partage-le.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"
         }

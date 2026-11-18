@@ -1,0 +1,46 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "fr",
+    "device": "phone",
+    "font": "100",
+    "mode": "simple",
+    "amenee": "tuto:house:12",
+    "gestes.max": "80",
+    "mission": "tuto-facile",
+    "timeout.minutes": "45"
+  },
+  "mesures": {
+    "gestes": 42,
+    "images": 6,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 1,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 1,
+    "ecrans": 44,
+    "ecrans_revisites": 13,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 3,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 59,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 9.3,
+      "simule": 2.4,
+      "jvm": 23.4,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "reussie",
+  "pourquoi": "« house » en Facile : 22 étape(s), 4 chapitre(s) entier(s) sur 15"
+}

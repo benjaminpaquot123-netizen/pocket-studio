@@ -27,7 +27,8 @@
       "steps": [
         {
           "id": "ref",
-          "text": "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne. C'est un instrumental : un rappeur, ou des voix samplées, viendront dessus.",
+          "text": "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.",
+          "textPro": "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne. C'est un instrumental : un rappeur, ou des voix samplées, viendront dessus.",
           "check": "listen",
           "listen": "song"
         },
@@ -42,7 +43,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, menaçante. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » (une gamme très sombre) puis « Fa » (la note de départ).",
+          "text": "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.",
           "textPro": "À toi : règle la tonalité sur Fa phrygien : gamme « Phrygienne », tonique « Fa ». Sa 2de bémol (Sol♭, un demi-ton au-dessus de Fa) est la note « menace » du phonk. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -86,7 +87,7 @@
         {
           "id": "hat_do",
           "levels": "f",
-          "text": "À toi : les charleys tiennent sur 2 mesures. Touche « Passer à 2 mesures », puis sur le pad « Charley », toutes les cases en pointillé. Astuce : « Remplir 1/2 » pose un coup sur deux d'un seul geste.",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -131,13 +132,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 5 notes en pointillé de la mesure 1 : 3 avec les kicks, puis 2 courtes qui glissent l'une dans l'autre. « Copier sur les mesures suivantes » fait le reste : à la mesure 3, tout monte d'un demi-ton avec l'accord.",
+          "text": "À toi : touche les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse 808 »). Mesure 1 : Fa1 sur les 3 kicks, puis Do2 qui dure sous Fa2 : le glissé vers l'octave. « Copier » : elle suit l'accord (Sol♭ à la mesure 3, le ♭II).",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:bass",
           "skip": "Sans 808, ton phonk ne gronde pas."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
         },
         {
           "id": "bass_pump",
@@ -163,14 +174,24 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 6 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la répète partout : elle ne change jamais.",
+          "text": "À toi : touche les 6 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (une cloche). Mesure 1 : Fa, Fa, Fa, La♭, La♭, Sol♭, en 3-3-2, notes courtes. « Copier » : elle reste la même sur tous les accords.",
           "why": "La même petite phrase du début à la fin : c'est ce qui rend le phonk hypnotique.",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans cowbell, ce n'est plus du phonk."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -181,7 +202,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) et touche la note du bas en pointillé de la mesure 1.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe) : Fa mineur tenu une mesure, puis « Copier » : Sol♭ majeur à la mesure 3, le ♭II du phrygien.",
           "check": "notes:pad",
           "length": 16,
@@ -191,7 +212,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -293,7 +315,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
@@ -303,7 +325,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 14, Pré-refrain 2, Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 14, Pré-refrain 2, Outro 4.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 14, Pré-refrain 2, Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
           "why": "Couplet 14 + Pré-refrain 2 = 16 : des blocs de 8, comme tout le phonk. En tout 2 min 50.",
           "check": "song:phrases",
           "spot": "song.parts",
@@ -328,7 +351,8 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
+          "text": "À toi : sur le pad « Cymbale », touche la toute première case.",
+          "textPro": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -376,7 +400,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick devant, la cowbell juste derrière.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -419,7 +443,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

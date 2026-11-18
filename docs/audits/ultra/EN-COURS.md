@@ -2,9 +2,9 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-14, 18 h 05 UTC.
+- **Mise à jour** : 2026-11-18, 05 h 50 UTC.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : tour 6 FERMÉ (tous les lots entrés, tuto4 avec exception §13.11). Reste la fusion dans main et l'APK.
+- **Temps en cours** : tour 7, P6/P7 terminé et rangé : blocs 0, 1, 2, 3, 4 et 0b dans l'intégration (tête `5209db96`, CI 361 verte sur `0e26e60d`), clés retirées, captures remises à jour, revue de fin de tour sans grave. Toutes les discussions du tour sont archivées. PR vers `main` ouverte ; fusion à sa CI verte. Ensuite : tour 8 (`PLAN-TOUR-8-brouillon.md`, lot T0 d'abord).
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
 
@@ -16,6 +16,10 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 4. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 
 ## Ce qui n'est pas vert
+
+**Au 18 novembre, 06 h 50 (heure belge)** : la CI de la PR vers `main` tourne (pas encore lue). 14 captures de référence encore périmées (4 montrent un défaut : feuille de partage, flèche sur « + Piste » à 130 % ; 10 à réenregistrer), simple avertissement dans la CI. Détail : `docs/REVIEW.md`.
+
+**Au 16 novembre, 01 h 55 (heure belge)** : rien de rouge. Ouvert pour mardi : les points du tour 7 non encore traités (ligne « Temps en cours »).
 
 **Au 14 novembre au soir** : seulement la CI finale de l'intégration avant la fusion dans main. Les points ci-dessous datent du 13 novembre et sont réglés.
 
@@ -44,26 +48,27 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 3. Lots du banc prêts : `rejeux7`, `portail4`, `constate`.
 4. Lots à faire pour le reste des erreurs du jour, un siège de contrôle avant le portail : `padlive2` (ouvert, session_014RxrDNP6EU2ViWpMiTQdrp) ; `tuto4` (vocabulaire du tuto en toutes langues, T3, T8, départ Reverb du Clap, restes des sièges ; après `tutocourse` et `tuto3`) ; `coquille2` (fichiers partagés `RhythmViewModel.kt` / `AppRoot.kt` : restes « pas pris » de remix2 et d'exports2 ; seul, en dernier).
 
-## Lots ouverts (un fichier = un seul lot ouvert)
+## Lots ouverts (un fichier = un seul lot ouvert ; 17 novembre)
 
-| Lot | Zone | Fichiers | Qui | État |
-|---|---|---|---|---|
-| `tour-6 emulateur` (réparation de la CI) | coquille, premier lancement | `app/…/library/PlainWords.kt` (une ligne), deux tests neufs sous `app/src/test`, peut-être `JourneyTest` (ne plus avaler l'exception) | agent local, atelier `eq-tour-6-emulateur` | cause trouvée, correction en cours ; passe seul, avant tout autre lot |
-| `tour-6 tutofleches` (lot 10) | tuto | `PianoRoll.kt`, `RhythmScreen.kt`, `TutoPanel.kt`, `TutoController.kt`, `TutoChecks.kt`, `resources/tutos/*.json`, `i18n/*/tuto*.json` | agent local, atelier `eq-tour-6-tutofleches` | en cours ; siège de contrôle sur sa branche avant le portail (13.5) |
-| `tour-6 langues2` (lot 5) | textes | `i18n/*/*.json` hors tuto, `SimpleMix.kt`, `LanguagePicker.kt`, `LiveScreen.kt`, `MyExports.kt`, `FadingScroll.kt` | discussion « Sons modernes » | poussé (`c8a107b1`), relu, pré-vol prêt ; entre au paquet 3 |
+| Lot | Zone | Fichiers | Discussion | Branche | État |
+|---|---|---|---|---|---|
+| `tuto2` | tuto : lot 1 D4, fin de D3 (carte du kit), textes Facile reggaeton/afrobeats, texte de `partMade` | `app/…/tuto/*`, `model/tuto/*`, `resources/tutos/*.json`, `i18n/*/tuto*.json`, `PianoRoll.kt`, `RhythmScreen.kt`, `PlainWords.kt` | « Tour 7 · tuto2 » | `eq/tour-7-tuto2` | ouvert ; contrôle par un siège avant le portail |
+| `decoupe2` | Remix : lot 2 D2 (puces Phrases, poignée Fin, pouce gauche) | `app/…/remix/*`, `session/SessionScreen.kt` | « Tour 7 · decoupe2 » | `eq/tour-7-decoupe2` | ouvert |
+| `guide2` | Guide et coquille : lot 3 D2, D3 (pages Mix et Sons), D7 si possible | `app/…/guide/*`, `ui/AppRoot.kt`, `AppSpaces.kt`, `Spaces.kt`, `TopBar.kt`, `ModeChoice.kt`, `mixer/*`, `sounds/*`, `LibraryScreen.kt`, `MySoundLibrary.kt`, `i18n/*/*.json` hors tuto | « Tour 7 · guide2 » | `eq/tour-7-guide2` | ouvert |
+| `banc8` | banc : B1 (siège court ancré avec le projet construit), B2 (rejeux du tour 6 ré-ancrés) | `app/src/test/…/human/*`, `scripts/bench/*`, `scripts/human-*`, `docs/audits/ultra/rejeux/*` | « Tour 7 · banc8 » | `eq/tour-7-banc8` | ouvert |
+
+Règles de toute fiche depuis le 17 novembre : « demander au chef » et « travailler en silence » (`GABARIT-FICHES-V3.md`).
 
 ## File du portail
 
-1. `emulateur`, seul dans son paquet ; puis la CI. Rien d'autre n'entre avant qu'elle soit verte.
-2. Paquet 3 (après cette CI verte) : `tutofleches` s'il passe son contrôle, `langues2` s'il est poussé.
-3. Lots du banc, hors de toute vague : `portail3` (13.9), puis `rejeux7`.
+1. Chaque lot fini : fusion dans `ccr-80af1a1b-mn0wec` dans l'ordre d'arrivée, tests complets après chaque fusion.
+2. `tuto2` seulement après son siège de contrôle (0 chapitre bloqué, 0 grave neuf).
+3. Puis CI complète, PR vers `main`, fusion ; mesure des unités par défaut corrigé (repère : 22 M).
 
 ## Discussions
 
-- Testeurs (machines chaudes, ne modifient pas l'appli) : « Testeur 1 » (tuto Facile, français), « Testeur 2 » (tuto Facile, japonais), « Testeur 3 » (tuto Pro, allemand, tablette).
-- « Sons modernes » : lot 5 livré. Essai de sons : Benjamin préfère les sons d'avant, on ne fusionne pas (sauvegarde `f6f6df66`).
-- « Plan d'audit utilisateur » : la discussion de Benjamin (règle des niveaux, `PLAN-NIVEAUX.md`).
-- Fermées dans la nuit, à rouvrir au besoin (machine froide au réveil) : les discussions des lots kick, gaucher, langues, écoute, et cinq discussions de sièges.
+- Les quatre lots ci-dessus (étiquette `tour-7`).
+- Testeurs et lots du tour 6 : fermés.
 
 ## Prochain départ
 

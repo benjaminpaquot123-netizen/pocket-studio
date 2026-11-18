@@ -1,0 +1,33 @@
+Écran 8 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 2 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 543,114
+bouton ← « Plus  · Aide » @ 294,180
+titre « AIDE » [état « Déplié »] @ 89,276
+bouton « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 294,360
+bouton « Mon premier morceau, avec le Guide » @ 294,462
+bouton « Revoir la visite rapide » @ 294,546
+bouton « Ouvrir le Guide de mon morceau » @ 294,630
+bouton (notes sur une pile) «   Les mots de la musique, à écouter » @ 294,714
+texte « Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher. » @ 294,802
+texte « Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi. » @ 294,882
+texte « Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ». » [coupé] @ 294,937
+bouton (boussole) « Guide  · Pose un rythme 0 % » ⌃ [état « replié »] @ 294,990
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 120 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

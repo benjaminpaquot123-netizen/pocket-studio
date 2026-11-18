@@ -37,7 +37,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « Sol ».",
+          "text": "À toi : mets le morceau en Sol, gamme « Dorienne ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -59,7 +59,8 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne tout le morceau.",
+          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir », « tout »).",
+          "textPro": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne tout le morceau.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -76,7 +77,8 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : sec et court, le repère de la danse.",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4.",
+          "textPro": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : sec et court, le repère de la danse.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -84,7 +86,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : touche « Passer à 2 mesures », puis sur le pad « Rim », les cases en pointillé : des « toc » de bois qui se répondent d'une mesure à l'autre.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : les rims en question-réponse sur 2 mesures (jamais au hasard).",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -93,7 +95,7 @@
         },
         {
           "id": "conga_do",
-          "text": "À toi : sur le pad « Conga », touche les 8 cases en pointillé : la clave, un motif qui revient à chaque mesure.",
+          "text": "À toi : sur le pad « Conga », touche les 8 cases en pointillé : la clave.",
           "textPro": "À toi : la conga en clave : le 2, juste avant le 3, entre le 3 et le 4, le 4.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
@@ -130,13 +132,23 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Les 3 coups de la mesure 1, puis l'accord long de la mesure 2. Puis « Copier ».",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Mesure 1 : 3 coups ; mesure 2 : un accord long.",
           "textPro": "À toi : crée la piste Accords : Gm9 sans fondamentale (Si♭ Ré Fa La), trois coups après les temps ; puis C9 (Si♭ Ré Mi Sol) tenu presque toute la mesure. Deux notes seulement bougent.",
           "check": "notes:pad",
+          "length": 32,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:kick,pad",
           "skip": "Sans piano, il n'y a pas d'amapiano : le nom vient de lui."
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "levels": "f",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
         }
       ]
     },
@@ -147,7 +159,8 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes de la mesure 1 et les 2 de la mesure 3.",
+          "text": "À toi : touche les 2 notes de la mesure 1 et les 2 de la mesure 3.",
+          "textPro": "À toi : touche « Créer la piste Mélodie », puis les 2 notes de la mesure 1 et les 2 de la mesure 3.",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -177,14 +190,34 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (le son « Log drum » est déjà choisi), puis les 5 notes de la mesure 1 et les 5 de la mesure 2. « Copier sur les mesures suivantes » refait la mesure 1 en mesure 3. Écris enfin les 3 notes de la mesure 4 : elle commence par un silence.",
+          "text": "À toi : touche les 5 notes de la mesure 1 (le son « Log drum » est déjà choisi).",
           "textPro": "À toi : crée la piste Basse (log drum). Mesure 1 sur Sol (la question), mesure 2 sur Do (la réponse), mesure 3 = mesure 1, mesure 4 variée avec un temps de silence. Les notes aiguës sont plus douces, les graves plus fortes.",
           "why": "Le silence avant une note la rend plus lourde.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans log drum, il manque le cœur de l'amapiano."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 5 notes de la mesure 2.",
+          "levels": "f",
+          "check": "notes:bass",
+          "length": 48,
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_3",
+          "text": "À toi : écris enfin les 3 notes de la mesure 4 : elle commence par un silence.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         }
       ]
     },
@@ -268,7 +301,8 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de conga ou de « toc » : une réponse de plus au log drum.",
+          "text": "À toi : dans le Drop 2, ajoute quelques coups de conga ou de « toc ».",
+          "textPro": "À toi : dans la partie « Drop 2 », ajoute quelques coups de conga ou de « toc » : une réponse de plus au log drum.",
           "check": "changed:drums:Drop 2",
           "target": "perc",
           "spot": "rhythm.pattern",
@@ -309,7 +343,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 24, Drop 16, Break 8, Drop 2 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 24, Drop 16, Break 8, Drop 2 16, Fin 8.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8, Groove 24, Drop 16, Break 8, Drop 2 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:8,Groove:24,Drop:16,Break:8,Drop 2:16,Fin:8",
@@ -379,7 +414,8 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau et partage-le.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"
         }

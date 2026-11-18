@@ -1,5 +1,24 @@
 # Avancement
 
+## Où on en est (2026-11-18, matin)
+- **Tour 7, suite « P6/P7 » (consignes lisibles, un moment par consigne) : tout est dans l'intégration**, tête `5209db96` sur `ccr-80af1a1b-mn0wec`. Entrés : bloc 0 socle, blocs 1 Techno, 2 House, 3 Bass, 4 Hip-hop + autres + textes partagés, bloc 0b repli du panneau ; correctif d'après fusion (traductions en double entre lots parallèles, CI 360 rouge puis 361 verte) ; anciennes clés partagées retirées ; 38 captures remises à jour ; garde-fous resserrés après la revue de fin de tour (`docs/REVIEW.md`, « Tour 7 : revue de fin de tour » : aucun grave).
+- Leçon : deux lots parallèles qui écrivent la même phrase française dans deux fichiers de traduction cassent `I18nCatalogTest` à la fusion ; au tour 8, les phrases partagées ont un seul maître.
+
+## Prochaine étape exacte
+- PR vers `main` ouverte sur cette tête ; fusion dès sa CI verte (émulateur compris).
+- Puis tour 8 : `docs/audits/ultra/PLAN-TOUR-8-brouillon.md`, lot T0 « touche-ici » (a-V1) d'abord.
+- À reprendre au tour 8 (détail dans `docs/REVIEW.md`) : vide dans la feuille de partage, flèche sur « + Piste » à 130 %, 14 captures à réenregistrer, exceptions périmées non refusées.
+
+## Où on en est (2026-11-16, nuit)
+- **Tour 7 fermé et fusionné dans `main`** (PR #58, `e7a6ceafd`, CI 43777365246 verte, émulateur compris). Entrés : lot 1 tuto (D1-D3, D5-D8), lot 3 Guide, lots 2, 4, 5, 6, plus l'intégration (Remix revenu sous le pouce gauche dans Plus, fenêtres plein écran lues par LayoutScan depuis leur propre vue, test du « doigt au hasard » stabilisé : loupe de texte muette sous Robolectric, attente de l'ouverture du projet refaite après une image).
+- Coût mesuré (en unités) : lot 1 ≈ 6 M, lots 2-4-5-6 ≈ 6,4 M, lot 3 ≈ 1,3 M, sièges ≈ 18 M.
+- Plan du tour : `docs/audits/ultra/PLAN-TOUR-7.md` ; sièges : `docs/audits/ultra/sieges/tour-7/`.
+
+## Prochaine étape exacte
+- Mardi 17 novembre, 02 h 05 (heure belge, après la remise à zéro du quota) : reprendre le reste du tour 7, rappel planifié dans la discussion principale.
+  - Lot 3 : D2 et D3. Lot 1 : D4 et la fin de D3. Lot 2 : D2. Le lot du banc.
+  - Puis intégration, CI, fusion ; mesurer les unités par défaut corrigé (repère : 22 M) ; mettre à jour ce fichier, `EN-COURS.md` et les fiches ; prévenir Benjamin.
+
 ## Où on en est (2026-11-14, soir)
 - **Tour 6 fermé** : toutes les erreurs de la liste gelée du 13 novembre sont corrigées et constatées par un testeur. Dernières entrées dans l'intégration : coquille3, coquille4, stable-c (le « facteur des tests » ne se bloque plus), rejeux7, puis tuto4 (fusionné à la main avec une exception acceptée par Benjamin, `docs/audits/AUDIT-ULTRA.md` §13.11).
 - Nouvelles règles du 14 novembre (CI du lot d'abord, alerte boucle) : `CLAUDE.md` et `AUDIT-ULTRA.md` §13.11.

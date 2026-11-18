@@ -9,8 +9,15 @@
     "pad": "0:A2+C3+E3:16",
     "lead": "0:A4:2 2:B4:2 4:C5:4 8:E5:4 16:D5:2 18:C5:2 20:A4:4 24:B4:2 26:A4:2"
   },
-  "lineBars": { "bass": 1, "pad": 1, "lead": 2 },
-  "follow": ["bass", "pad"],
+  "lineBars": {
+    "bass": 1,
+    "pad": 1,
+    "lead": 2
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
   "drums": {
     "*": {
       "kick": "X...X...X...X...",
@@ -29,7 +36,8 @@
       "steps": [
         {
           "id": "ref",
-          "text": "Écoute un extrait de synthwave fini : le Pré-refrain (la batterie s'efface, ça monte), puis le Refrain (tout revient). C'est ce que tu vas construire, brique par brique.",
+          "text": "Écoute un extrait de synthwave fini : le Pré-refrain (la batterie s'efface, ça monte), puis le Refrain (tout revient).",
+          "textPro": "Écoute un extrait de synthwave fini : le Pré-refrain (la batterie s'efface, ça monte), puis le Refrain (tout revient). C'est ce que tu vas construire, brique par brique.",
           "check": "listen",
           "listen": "song"
         },
@@ -44,7 +52,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, sombre et rêveuse. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » (la gamme triste) puis « La » (la note de départ).",
+          "text": "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.",
           "textPro": "À toi : règle la tonalité sur La mineur, celle de Nightcall (Kavinsky). « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -67,7 +75,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick, touche les 4 cases en pointillé, une par temps. Astuce : « Remplir 1/4 », sous la grille, le fait d'un geste.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé.",
           "textPro": "À toi : le kick en quatre temps (« Remplir 1/4 »).",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -84,7 +92,7 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse » (le « clac » de la batterie), touche les 2 cases en pointillé : le 2e et le 4e temps.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé.",
           "textPro": "À toi : la caisse claire sur 2 et 4.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
@@ -110,7 +118,7 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche les 8 cases en pointillé, une case sur deux. Astuce : « Remplir 1/2 » le fait d'un geste.",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé.",
           "textPro": "À toi : les charleys en croches (« Remplir 1/2 »).",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -166,13 +174,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 8 notes en pointillé de la mesure 1 : toujours le même La, une case sur deux. « Copier sur les mesures suivantes » la fait suivre les accords.",
+          "text": "À toi : touche les 8 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse analogique »). Mesure 1 : La en croches, puis « Copier » : la copie suit la grille Sol, Fa, Ré.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, le moteur du morceau ne tourne pas."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_pump",
@@ -198,7 +216,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille, puis touche la note du bas en pointillé de la mesure 1 : les 3 notes se posent, tenues toute la mesure.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords. Mesure 1 : La mineur tenu toute la mesure, puis « Copier » : la copie suit la grille. Dans l'exemple, ces mêmes accords passent dans un arpégiateur (notes une à une, en doubles croches, sur deux octaves).",
           "check": "notes:pad",
           "length": 16,
@@ -209,7 +227,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -240,13 +259,23 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 4 à la mesure 1 (elles montent), 5 à la mesure 2 (elles redescendent). « Copier sur les mesures suivantes » la rejoue sur les mesures 3 et 4.",
+          "text": "À toi : touche les 4 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie et écris le hook : mesure 1 La Si Do… Mi (l'appel qui monte), mesure 2 Ré Do La Si La (la réponse), puis « Copier ».",
           "check": "notes:lead",
+          "length": 16,
           "spot": "notes.track",
           "target": "lead",
           "listen": "parts:lead",
           "skip": "Sans mélodie, ton morceau n'a rien à fredonner."
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 5 notes de la mesure 2.",
+          "levels": "f",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
         },
         {
           "id": "lead_knobs",
@@ -389,7 +418,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "text": "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
           "check": "song:order",
           "spot": "song.parts",
@@ -399,7 +428,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:8,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",
@@ -414,7 +444,8 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad des toms : touche 3 cases à la suite juste avant le dernier temps, un roulement de batteur.",
+          "text": "À toi : dernière mesure, pad des toms : touche 3 cases à la suite juste avant le dernier temps.",
+          "textPro": "À toi : dans la partie « Pré-refrain », dernière mesure, pad des toms : touche 3 cases à la suite juste avant le dernier temps, un roulement de batteur.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -423,6 +454,7 @@
         },
         {
           "id": "gap",
+          "levels": "p",
           "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Refrain.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -507,7 +539,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -538,7 +570,7 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "곡의 키: %s",
   "Tonalité du morceau": "곡의 키",
   "Lire la suite": "계속 읽기",
+  "Réduire": "접기",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "마디: 리듬의 한 바퀴, 네 박자예요. “1, 2, 3, 4”로 세요.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "박자: 마디 안의 “1, 2, 3, 4” 하나하나, 발을 구르는 곳이에요.",
   "Accord : plusieurs notes jouées ensemble.": "코드: 여러 음을 함께 연주한 것.",
@@ -149,5 +150,12 @@
   "Touche ici": "여기를 탭",
   "Accords en pointillé à toucher : %d": "탭할 점선 코드: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "브레이크: 조용해지는 부분, 킥과 베이스가 쉬어요.",
-  "Exemple passé sans l'écouter.": "예시를 듣지 않고 건너뛰었어요."
+  "Exemple passé sans l'écouter.": "예시를 듣지 않고 건너뛰었어요.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "“%1$s” 파트를 만들었어요(“%2$s” 복사본).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "“%1$s” 파트를 만들었어요(“%2$s” 복사본): %3$s 없이.",
+  "Poser ce qui manque": "빠진 것 넣기",
+  "Posé : %s.": "놓은 것: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "앞 장에서 만드는 것이 아직 없어요.",
+  "Aller au chapitre %d": "%d장으로 가기",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "곡에 “%s” 파트가 없어요. 이 단계는 그 파트 안에서 해요."
 }

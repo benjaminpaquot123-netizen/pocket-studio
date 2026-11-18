@@ -240,13 +240,24 @@ fun PianoRoll(
     // and nothing said why). Once a step: turned on again by the user, it stays.
     // Tour 6 (review of lot « tuto-flèches »): turned off once per step; the roll coming back on the same step turned
     // off the « Accords » the user had turned on.
+    // Tour 7, D4 (seat 1a, the chords' step): the other way round, a step whose dotted notes are chords begins with
+    // « Accords » on, so the Facile consigne no longer spends a gesture on « Allume « Accords » ». Once a step too.
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
-    val singleNotes = hints.isNotEmpty() && hints.groupBy { it.start }.all { it.value.size == 1 }
-    var chordOffFor by rememberSaveable { mutableStateOf<String?>(null) }
-    LaunchedEffect(tutoStep, singleNotes) {
-        if (singleNotes && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordOffFor != tutoStep) {
-            chordMode = false
-            chordOffFor = tutoStep
+    val byStart = hints.groupBy { it.start }.values
+    val singleNotes = hints.isNotEmpty() && byStart.all { it.size == 1 }
+    val chordHints = hints.isNotEmpty() && byStart.all { it.size >= 2 }
+    var chordSetFor by rememberSaveable { mutableStateOf<String?>(null) }
+    // Whether « Accords » is on by the tuto's hand: the user's own touch on the chip makes it theirs.
+    var chordByTuto by rememberSaveable { mutableStateOf(false) }
+    val tutoOn = com.pocketstudio.app.tuto.TutoHints.active
+    LaunchedEffect(tutoStep, singleNotes, chordHints, tutoOn) {
+        // The tuto is over: « Accords » it turned on goes back off (the free piano starts with single notes).
+        // Only that one: « Accords » the user turned on is theirs and stays (it went off behind their back).
+        if (!tutoOn) { if (chordByTuto) chordMode = false; chordByTuto = false; chordSetFor = null; return@LaunchedEffect }
+        if ((singleNotes || chordHints) && com.pocketstudio.app.tuto.TutoHints.active && tutoStep != null && chordSetFor != tutoStep) {
+            chordMode = chordHints
+            chordByTuto = chordHints
+            chordSetFor = tutoStep
         }
     }
     var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }
@@ -389,7 +400,7 @@ fun PianoRoll(
                 // phone's screen (the portal's self-test, BenchTour1Test).
                 ToolRow(tablet, spacing = 2.dp) {
                     // Testers (lot « tuto 5 »): « Accords » first, in sight (it was the last of a row cut at the edge).
-                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
+                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode; chordByTuto = false }, label = { Text(tr("Accords")) }, colors = chipColors,
                         modifier = Modifier.testTag("chord_mode"))
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
                     // « Remettre en rythme » from where the notes were played: « Comme joué » undoes it any time.
@@ -769,15 +780,18 @@ private fun Grid(
         val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
         if (!asked) return@LaunchedEffect
+        // Only a touch on the line goes to a hidden note: « Je le fais » and « Copier » keep the note asked for in sight.
+        val touched = focus == com.pocketstudio.app.tuto.TutoHints.focusTouched
         // Tour 6 lot 1 (N4): within the rows really in sight (the tutorial's panel covers the roll's bottom).
         val seen = sight?.value ?: (0f..view.height.toFloat())
         val shown = com.pocketstudio.model.tuto.TutoRollView(
             left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
-        val next = com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
-        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps)
-        lit = next
+        com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
+        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
+        // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
+        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(left, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }
@@ -1418,21 +1432,21 @@ private fun TutoNotesLeft(
     // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
     // Tour 6 lot 1 (T4, N4): « in sight » is drawn whole in the rows above the tutorial's panel. One rule for the bar
     // and the rows ([com.pocketstudio.model.tuto.TutoRollHint]), read where it is drawn: a scroll recomposes this line only.
-    val way by remember(left, rowPx, high, vScroll, sight, stepPx, barSteps) {
+    // Control « tuto2 », seat a: [also], a dotted note of the time in sight out of the rows while others are in sight.
+    val ways by remember(left, rowPx, high, vScroll, sight, stepPx, barSteps) {
         androidx.compose.runtime.derivedStateOf {
             val v = vScroll
             val rows = v != null && v.viewportSize != 0
-            com.pocketstudio.model.tuto.TutoRollHint.way(
-                left,
-                com.pocketstudio.model.tuto.TutoRollView(
-                    left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + hScroll.viewportSize,
-                    top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
-                    stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
-                ),
-                barSteps,
+            val shown = com.pocketstudio.model.tuto.TutoRollView(
+                left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + hScroll.viewportSize,
+                top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
+                stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
             )
+            com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps) to com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
         }
     }
+    val way = ways.first
+    val also = ways.second
     // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
     // is in sight (« Je le fais » put the last note of bar 2 near the left edge, the line said « mesure 3/8 »).
     val bar by remember(stepPx, barSteps, bars, left) {
@@ -1447,7 +1461,7 @@ private fun TutoNotesLeft(
     Row(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
             .background((if (copy != null) Neon.Acid else Neon.Amber).copy(alpha = 0.12f))
-            .then(if (copy == null) Modifier.clickable { com.pocketstudio.app.tuto.TutoHints.focus++ } else Modifier)
+            .then(if (copy == null) Modifier.clickable { com.pocketstudio.app.tuto.TutoHints.focusTouched = ++com.pocketstudio.app.tuto.TutoHints.focus } else Modifier)
             .padding(horizontal = 10.dp).testTag("tuto_notes_left"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -1456,8 +1470,8 @@ private fun TutoNotesLeft(
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way)
-                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way),
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way, also),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),
@@ -1465,7 +1479,7 @@ private fun TutoNotesLeft(
         }
         // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
         // brings the note into view: said on the line while it points away.
-        if (copy == null && way != null && left.isNotEmpty()) {
+        if (copy == null && (way != null || also != null) && left.isNotEmpty()) {
             Text(
                 tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 color = Neon.OnAccent, maxLines = 1, softWrap = false,

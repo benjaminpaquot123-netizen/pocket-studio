@@ -40,7 +40,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi ».",
+          "text": "À toi : mets le morceau en Mi, gamme « Mineure ». « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee. « Je le fais » ouvre la fiche Tonalité.",
           "check": "key",
           "spot": "tuto.key",
@@ -71,7 +71,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : touche « Passer à 2 mesures », puis sur le pad des congas, les cases en pointillé : « un-deux-trois, un-deux-trois, un-deux ».",
+          "text": "À toi : sur le pad des congas, touche les cases en pointillé des 2 mesures, en 3-3-2.",
           "textPro": "À toi : les congas en 3-3-2 sur 2 mesures, plus serrées à la fin de la 2e.",
           "why": "Trois groupes inégaux contre le kick régulier : ça fait chalouper les hanches.",
           "check": "lane:perc",
@@ -81,7 +81,8 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne sans arrêt, plus fort entre les coups.",
+          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir », « tout »).",
+          "textPro": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne sans arrêt, plus fort entre les coups.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -89,7 +90,8 @@
         },
         {
           "id": "wood_do",
-          "text": "À toi : sur le pad du bois, touche les cases en pointillé : un petit « toc » en 3-3-2 qui croise les congas.",
+          "text": "À toi : sur le pad du bois, touche les cases en pointillé : un « toc » en 3-3-2.",
+          "textPro": "À toi : sur le pad du bois, touche les cases en pointillé : un petit « toc » en 3-3-2 qui croise les congas.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",
@@ -97,7 +99,8 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures : il répond en fin de mesure, comme un bongo.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures.",
+          "textPro": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures : il répond en fin de mesure, comme un bongo.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",
           "target": "tom",
@@ -105,7 +108,8 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap », touche les 4 cases en pointillé, sur 2 et 4 : discret, il marque juste la danse.",
+          "text": "À toi : sur le pad « Clap », touche les 4 cases en pointillé, sur 2 et 4.",
+          "textPro": "À toi : sur le pad « Clap », touche les 4 cases en pointillé, sur 2 et 4 : discret, il marque juste la danse.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -149,13 +153,23 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes de la mesure 1 et les 4 de la mesure 2. « Copier sur les mesures suivantes » les fait suivre les accords (La, puis Sol).",
+          "text": "À toi : touche les 4 notes de la mesure 1.",
           "textPro": "À toi : crée la piste Basse. Deux mesures sur Mi (la 2e remonte sur Si, la quinte), puis « Copier » : la même phrase sur La et sur Sol.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass",
           "skip": "Sans basse, ton morceau n'a pas de grave."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 4 notes de la mesure 2.",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
         },
         {
           "id": "bass_pump",
@@ -175,7 +189,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : un seul accord long par mesure. Touche la note du bas en pointillé de chaque mesure.",
+          "text": "À toi : touche la note du bas de l'accord en pointillé de chaque mesure : tout l'accord se pose. Un seul accord long par mesure.",
           "textPro": "À toi : crée la piste Accords (une nappe) : Em9 deux mesures, puis Am7 et Gmaj7, tenus une mesure chacun.",
           "check": "notes:pad",
           "spot": "notes.track",
@@ -191,7 +205,7 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé : une longue en mesure 1, deux en mesure 3.",
+          "text": "À toi : touche les 3 notes en pointillé : une longue en mesure 1, deux en mesure 3.",
           "textPro": "À toi : crée la piste Mélodie (marimba) : Mi aigu en mesure 1, Si et Sol en mesure 3, rien en 2 et 4.",
           "why": "Moins il y a de notes, plus on les retient.",
           "check": "notes:lead",
@@ -295,7 +309,8 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur un pad de percussion (congas, bois) ou de charley ouvert : le 2e Drop ne sonne plus tout à fait comme le 1er.",
+          "text": "À toi : dans le Drop 2, ajoute quelques coups de congas ou de bois.",
+          "textPro": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur un pad de percussion (congas, bois) ou de charley ouvert : le 2e Drop ne sonne plus tout à fait comme le 1er.",
           "check": "changed:drums:Drop 2",
           "target": "perc",
           "spot": "rhythm.pattern",
@@ -336,7 +351,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne 16 mesures à chaque partie.",
+          "textPro": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop 2:16,Fin:16",
@@ -351,7 +367,8 @@
       "steps": [
         {
           "id": "toms",
-          "text": "À toi : dans la partie « Break », pad « Tom médium », touche les 4 cases du dernier temps : un roulement de toms qui ramène le kick.",
+          "text": "À toi : dans le Break, pad « Tom médium », touche les 4 cases du dernier temps.",
+          "textPro": "À toi : dans la partie « Break », pad « Tom médium », touche les 4 cases du dernier temps : un roulement de toms qui ramène le kick.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "tom",
@@ -401,7 +418,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les pistes « Accords » et « Mélodie ».",
           "textPro": "À toi : dans Mix, baisse un peu les faders des Accords et de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -432,7 +449,8 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau et partage-le.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"
         }

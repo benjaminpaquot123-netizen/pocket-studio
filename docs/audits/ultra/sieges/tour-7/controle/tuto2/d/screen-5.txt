@@ -1,0 +1,19 @@
+Écran 5 (588x1278)
+texte « Jouer cette partie » @ 86,13
+texte « Plus de choix » @ 64,13
+texte « Le Guide : où en est ton morceau » @ 101,27
+texte « Mes projets » @ 68,42
+texte « Enregistrer » @ 384,99
+texte « Tempo » @ 84,171
+texte « Glisse pour poser » @ 294,278
+bouton « Masquer les étiquettes » @ 169,968
+bouton « 🐞 Signaler un bug » @ 443,968
+texte « Parties et pistes » @ 89,1076
+texte « Jouer, enregistrer » @ 294,1076
+texte « Fichier ou vidéo » @ 500,1076
+texte « Batterie » @ 174,1196
+texte « Volumes » @ 414,1196
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

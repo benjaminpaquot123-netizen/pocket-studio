@@ -269,7 +269,7 @@ abstract class HumanTester(private val seat: String) {
         fun handBack(why: String) {
             replaying = false
             journal.appendText("#$n REJEU main rendue : $why\n")
-            File(dir, "rejeu.txt").writeText("main rendue au pas $n : $why")
+            File(dir, "rejeu.txt").writeText(SeatOptions.handBackNote(n, o.replayN, why, lastDiff))
         }
         while (true) {
             turnNow = n
@@ -312,7 +312,10 @@ abstract class HumanTester(private val seat: String) {
                         (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)")
                 }
                 if (o.replayHandBack) {
-                    SeatOptions.handBackWhy(n, o.replayN, diverged = was != print, originHasGesture = true)?.let(::handBack)
+                    // Tour 7, banc B2: the same words in other places (a dialog the app moved within the thumb's reach) are the
+                    // origin's screen; its moved buttons are aimed at by their tags below.
+                    val loose = wasText?.let { fingerprint(it, File(origin, "sound-$n.txt"), places = false) }
+                    SeatOptions.handBackWhy(n, o.replayN, diverged = loose != fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"), places = false), originHasGesture = true)?.let(::handBack)
                 } else if (!oracle && was != print) {
                     replayVerdict("divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""); return
                 }
@@ -385,6 +388,17 @@ abstract class HumanTester(private val seat: String) {
                 journal.appendText("#$n ETIQUETTE $tag : ${at.first.toInt()} ${at.second.toInt()}\n")
                 cmd = if (swipeByTag) "glisse ${at.first.toInt()} ${at.second.toInt()} ${(at.first + number(aimed[2])!!).toInt()} ${(at.second + number(aimed[3])!!).toInt()}"
                 else "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+            }
+            // Tour 7, banc B2: a replayed touch by pixels whose origin's finger was on a tagged button that moved since (the
+            // pixels are no longer on it) aims at that button where it is now, as « touche <étiquette> » does.
+            if (replaying && o.replayHandBack && aimed.size == 3 && aimed[0].lowercase() in TAG_GESTURES) {
+                val px = number(aimed[1]); val py = number(aimed[2])
+                val tag = if (px != null && py != null) SeatOptions.reaimTag(originFinger[n], screenText().under(px, py)) else null
+                val at = tag?.let { t -> runCatching { reachTag(t) }.getOrNull()?.let { reachableNear(t, it, o.hand) } }
+                if (tag != null && at != null) {
+                    journal.appendText("#$n REJEU visé : $tag déplacé, touché en ${at.first.toInt()},${at.second.toInt()}\n")
+                    cmd = "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+                }
             }
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
@@ -499,8 +513,8 @@ abstract class HumanTester(private val seat: String) {
      * A screen's fingerprint: its text (the title line aside) and what is heard (the bench's own note aside), clock times and
      * percentages left out. The same for a seat and its replay (scripts/human-replay.sh).
      */
-    private fun fingerprint(text: File, sound: File): String =
-        ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+    private fun fingerprint(text: File, sound: File, places: Boolean = true): String =
+        ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") }, places)
 
     /** The open project as it would be saved, digested (null: none open): what a gesture changed of the song. */
     private fun songDigest(): Int? = runCatching { vm()?.project?.value?.let { com.pocketstudio.model.ProjectJson.encode(it).hashCode() } }.getOrNull()
@@ -821,10 +835,20 @@ abstract class HumanTester(private val seat: String) {
                 tap("tuto_style_$style")
                 waitFor("le tuto") { centerOf("tuto_chapters") != null }
                 if (chapter > 1) {
+                    // Tour 7, banc B1: the chapters skipped are built into the project first, as playing them does.
+                    val v = lastVm ?: error("amenée $name : pas de projet ouvert")
+                    val built = TutoAnchor.built(v.project.value, style, level, chapter) ?: error("amenée $name : pas de cours $style")
+                    v.tutoEdit { built }
+                    play("attends 0.5")
+                    journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} construits dans le projet\n")
                     tap("tuto_chapters")
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")
                     waitFor("le chapitre $chapter") { centerOf("tuto_chapter_list") == null }
+                    // Tour 7, control tuto2 (seat c): the seat never starts on another chapter than the one asked for.
+                    val steps = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level)?.getOrNull(chapter - 1)?.steps?.map { it.id }.orEmpty()
+                    val at = PrefsTutoStore(app).load((lastVm ?: v).projectId)?.current
+                    if (at !in steps) error("amenée $name : le tuto est à « $at », pas au chapitre $chapter")
                 }
             }
             name == AMENEE_SONG -> {
@@ -874,13 +898,13 @@ abstract class HumanTester(private val seat: String) {
         // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does; the
         // swipes below (up to 8 « glisse » + « attends 1 », 22 to 26 s of the bench's clock) are for one cut or off the screen.
         if (shownWhole(tag)) return first
-        if (!inMiddle(first)) {
-            runCatching { taggedNodes(tag)[0].performScrollTo() }
-            play("attends 0.5")
-        }
+        // Tour 7, control tuto2 (seat c): a row cut by its list's edge has its middle in the screen's middle part, outside
+        // what is drawn of it (the list's next control there: « Recommencer le tuto » under « Chapitres »' list). It is
+        // scrolled into view whatever its place, and a middle outside its drawn part is never touched.
+        if (runCatching { taggedNodes(tag)[0].performScrollTo() }.isSuccess) play("attends 0.5")
         repeat(8) {
             val at = centerOf(tag) ?: return null
-            if (inMiddle(at)) return at
+            if (inMiddle(at) && drawnAt(tag, at)) return at
             val x = at.first.coerceIn(10f, app.resources.displayMetrics.widthPixels - 10f)
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
             play("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
@@ -890,6 +914,12 @@ abstract class HumanTester(private val seat: String) {
     }
 
     private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
+
+    /** [at] (the middle of the node tagged [tag]) is in what is drawn of it (not under its scrolling parent's edge). */
+    private fun drawnAt(tag: String, at: Pair<Float, Float>): Boolean = runCatching {
+        val n = taggedNodes(tag).fetchSemanticsNodes().first()
+        BenchWindows.drawnBounds(n, app.resources.displayMetrics).contains(androidx.compose.ui.geometry.Offset(at.first, at.second))
+    }.getOrDefault(true)
 
     /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
     private fun shownWhole(tag: String): Boolean =

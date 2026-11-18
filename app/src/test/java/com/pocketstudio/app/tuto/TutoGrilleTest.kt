@@ -3,6 +3,8 @@ package com.pocketstudio.app.tuto
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -47,6 +49,11 @@ class TutoGrilleTest {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+
+    private fun chordsOn(): Boolean {
+        val c = compose.onNodeWithTag("chord_mode", useUnmergedTree = true).fetchSemanticsNode().config
+        return c.getOrNull(SemanticsProperties.Selected) ?: (c.getOrNull(SemanticsProperties.ToggleableState) == ToggleableState.On)
+    }
     private fun node(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
     private fun text(tag: String) = node(tag).config[SemanticsProperties.Text].joinToString()
     private fun settle() = repeat(20) { idle(100); compose.mainClock.advanceTimeBy(100); compose.waitForIdle() }
@@ -112,12 +119,26 @@ class TutoGrilleTest {
                 hidden.map { "${it.pitch}@${it.start / NoteClip.TICKS_PER_STEP} ${s.rows[it]}" },
             hidden.size < s.inTime.size || s.inTime.isEmpty() || said.contains("↑") || said.contains("↓"),
         )
-        // A touch on the line brings the next one whole above the panel.
+        // A touch on the line shows a dotted note whole above the panel: the one that was out of sight when there was
+        // one (second control of « fable-repar », seat a, V1: the bass's high note an octave up took two touches), and
+        // the line then points back at the ones left behind.
         compose.onNodeWithTag("tuto_notes_left").performClick()
         settle()
         val after = seen()
-        val next = after.rows.keys.sortedWith(compareBy({ it.start }, { -it.pitch })).first()
-        assertTrue("$id: the next note ${next.pitch} at ${after.rows[next]}, panel at ${after.panelTop}", after.whole(next))
+        val saidAfter = text("tuto_notes_left_text")
+        val shown = after.inTime.filter { after.whole(it) }
+        assertTrue(
+            "$id: after a touch no dotted note is whole above the panel (${after.panelTop}): " + after.inTime.map { "${it.pitch} ${after.rows[it]}" },
+            shown.isNotEmpty(),
+        )
+        assertTrue(
+            "$id: after a touch a note that was out of sight is still out of it: " + hidden.map { "${it.pitch} ${after.rows[it]}" },
+            hidden.isEmpty() || hidden.any { h0 -> shown.any { it.pitch == h0.pitch && it.start == h0.start } },
+        )
+        assertTrue(
+            "$id: after a touch notes are left out of sight and the line says « $saidAfter »",
+            shown.size == after.inTime.size || saidAfter.contains("↑") || saidAfter.contains("↓"),
+        )
     }
 
     @Test
@@ -158,8 +179,9 @@ class TutoGrilleTest {
     /** N8: with « Accords » on one touch writes a whole chord: « Encore N » counts the touches (the chords' starts), not their notes. */
     private fun chordsCountTouches(level: TutoLevel, simple: Boolean) {
         openNotesStep("pad_do", level, simple)
-        // « Accords » on (the chord's lowest note touched writes the whole chord).
-        if (has("chord_mode")) {
+        // « Accords » on (the chord's lowest note touched writes the whole chord). Tour 7: a chords' step may
+        // already have turned it on; a touch then would turn it off.
+        if (has("chord_mode") && !chordsOn()) {
             compose.onNodeWithTag("chord_mode").performClick()
             settle()
         }

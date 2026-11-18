@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Toonsoort van het nummer: %s",
   "Tonalité du morceau": "Toonsoort van het nummer",
   "Lire la suite": "Verder lezen",
+  "Réduire": "Inklappen",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Maat: één ronde van het ritme, vier tellen; je telt “1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Tel: elke “1, 2, 3, 4” van een maat, waar je met je voet tikt.",
   "Accord : plusieurs notes jouées ensemble.": "Akkoord: meerdere noten tegelijk gespeeld.",
@@ -149,5 +150,12 @@
   "Touche ici": "Tik hier",
   "Accords en pointillé à toucher : %d": "Gestippelde akkoorden om aan te tikken: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: een rustiger moment, de kick en de bas zwijgen.",
-  "Exemple passé sans l'écouter.": "Voorbeeld overgeslagen zonder te luisteren."
+  "Exemple passé sans l'écouter.": "Voorbeeld overgeslagen zonder te luisteren.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Deel ‘%1$s’ gemaakt (kopie van ‘%2$s’).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Deel ‘%1$s’ gemaakt (kopie van ‘%2$s’): zonder %3$s.",
+  "Poser ce qui manque": "Zet erbij wat ontbreekt",
+  "Posé : %s.": "Neergezet: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "Je mist wat de vorige hoofdstukken maken.",
+  "Aller au chapitre %d": "Ga naar hoofdstuk %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Je nummer heeft geen deel ‘%s’: deze stap doe je daarin."
 }

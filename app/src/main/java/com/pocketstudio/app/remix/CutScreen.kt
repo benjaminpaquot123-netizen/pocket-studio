@@ -53,6 +53,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -102,6 +103,9 @@ fun rememberCutModel(ui: StemBoardUi, actions: StemBoardActions): CutModel =
 /** The order of the stem chips: the voice first, as on the mockup. */
 private val CHIP_ORDER = listOf(3, 0, 1, 2)
 
+/** Where « Un bout » is shown across the curve (0.5: the middle): a little left, its « Fin » bar nearer a left thumb. */
+private const val SPAN_CENTRE = 0.4
+
 @Composable
 fun CutScreen(
     ui: StemBoardUi,
@@ -115,7 +119,11 @@ fun CutScreen(
     val levels = remember(ui.setId, ui.frames, ui.peaks) { BoardPeaks(Demucs.STEMS.size) }
     LaunchedEffect(levels) { levels.load(ui.peaks, ui.peaksContext) }
     val work = actions.state.collectAsState()
-    PadPickHost(work.value, actions)
+    // Review of tour 7 (m2): the router publishes the play head every 33 ms; the screen reads only what it shows.
+    val pick by remember(work) { derivedStateOf { work.value.pick } }
+    pick?.let { PadPickDialog(it.names, actions::pickPad, actions::dismissPick) }
+    val busy by remember(work) { derivedStateOf { work.value.busy } }
+    val message by remember(work) { derivedStateOf { work.value.message } }
     val scope = rememberCoroutineScope()
     var finding by remember { mutableStateOf(false) }
     var note by remember { mutableStateOf<String?>(null) }
@@ -166,7 +174,9 @@ fun CutScreen(
     val placed = model.span
     LaunchedEffect(model.stem, placed != null, view.width > 0f, model.single) {
         if (model.single && placed != null && view.width > 0f && !view.zoomedIn) {
-            view.show(placed.start, placed.end, minFrames = 4L * BOARD_RATE)
+            // Tour 7, lot 2 D2 (2c #33, es, left thumb): the piece a little left of the middle, so its « Fin » bar comes
+            // nearer the thumb (a span centred put it at three quarters of the width, out of a left thumb's reach).
+            view.show(placed.start, placed.end, minFrames = 4L * BOARD_RATE, centre = SPAN_CENTRE)
             // The orange line on « Début »: ▶ starts there, « Début ici » never sends a bar off screen.
             model.cursor = placed.start
         }
@@ -206,20 +216,38 @@ fun CutScreen(
             val scrollsAll = !wide && model.single
             // The fixed curve takes what the room leaves above the tools (120 dp, a finger's, up to 180 dp): on the seat's
             // ~492 dp the tools stay in view without a scroll and the curve never falls under 120 dp (review of remix2).
-            val curveHeight = (maxHeight - 380.dp).coerceIn(120.dp, 180.dp)
+            // Tour 7, lot 2 D2 (2c #33): at a normal font the curve also takes the room left under the chips (~144 dp on the
+            // seat's 492 dp), so its bottom, where the « Fin » bar is grabbed, comes down into a left thumb's reach.
+            // Tour 7, lot 2 D3 (2c #9): the instruction (two lines) takes the place of « Pince pour zoomer » above the curve,
+            // 20 dp more, taken from the curve so the chips stay where the left thumb found them.
+            val curveHeight = (maxHeight - if (bigText) 380.dp else 368.dp).coerceIn(120.dp, 180.dp)
+            // Tour 7, lot 2 D3: in « Un bout » at a normal font the instruction is read on top, out of the send bar below.
+            val hintOnTop = scrollsAll && !bigText
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
                 fun curve(m: Modifier, tail: @Composable () -> Unit = {}) = androidx.compose.foundation.layout.Box(m) {
+                  androidx.compose.runtime.SideEffect { cutCurveCompositions++ }
                   val scroll = rememberScrollState()
                   val scrolls = tight || scrollsAll
+                  // Tour 7, lot 2 D3 (2c #16): a message (« Listo… ») grows the send bar at the scroll's end; the column
+                  // follows it down, so the message and the four buttons stay in view instead of going under the bar.
+                  val said = busy ?: note ?: message
+                  if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
+                      if (said != null) {
+                          androidx.compose.runtime.withFrameNanos { }
+                          scroll.animateScrollTo(scroll.maxValue)
+                      }
+                  }
                   Column(if (scrolls) Modifier.fillMaxSize().verticalScroll(scroll) else Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     // The stem chips stay on top in « Phrases » (over the pieces' list that scrolls below) and in « Un bout »
                     // when the screen scrolls (a large font): the whole column is reached by scrolling, so they read first.
                     // Landscape (wide) keeps them with the tools in the side column.
-                    if (!wide && (!model.single || bigText)) StemChips(model) { actions.stop() }
+                    // Tour 7, lot 2 D2 (2c #20): in « Phrases » at a normal font they went down to the fixed menus (below).
+                    if (!wide && bigText) StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (hintOnTop) SpanHint()
+                    else Row(verticalAlignment = Alignment.CenterVertically) {
                         // « Un bout » numbers its bars on the curve's ruler: no « Mes. 3 à 8 » above it.
                         if (model.single) Spacer(Modifier.weight(1f))
                         else SectionLabel(shownPart(model, view), modifier = Modifier.weight(1f).testTag("cut_part"))
@@ -246,7 +274,7 @@ fun CutScreen(
                         // Bajo / Resto » go to the bottom of the controls (under the tools), in the lower third a one-handed
                         // left thumb reaches — the big curve above keeps them off the top, out of reach.
                         if (model.single && bigText) AutoRow(model, finding, onAuto = { pick(it) })
-                        if (model.single && !bigText) StemChips(model) { actions.stop() }
+                        if (model.single && !bigText) StemChips(model, top = 0.dp) { actions.stop() }
                     }
                     tail()
                   }
@@ -270,14 +298,17 @@ fun CutScreen(
                     }
                 } else if (scrollsAll) {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                        SendBar(model, actions, work, note, Modifier.padding(vertical = 12.dp)) { note = null }
+                        SendBar(model, actions, work, note, Modifier.padding(vertical = 12.dp), hint = !hintOnTop) { note = null }
                     }
                 } else {
                     curve(Modifier.weight(1f).padding(horizontal = 12.dp))
                     // Tour 6, seat B a (A4, gesture 19): « ✂ Frases ▾ » and the magnet were cut under the panel of actions at
                     // the scroll's end; they stay whole over it, the tools and the pieces scroll above.
-                    androidx.compose.foundation.layout.Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp)) {
+                    // Tour 7, lot 2 D2 (2c #20, es, left thumb): « Voz / Batería / Bajo / Resto » under the menus, in the lower
+                    // part a one-handed left thumb reaches (on top of the curve they were out of it), as in « Un bout ».
+                    Column(Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp)) {
                         AutoRow(model, finding, onAuto = { pick(it) })
+                        if (!bigText) StemChips(model, top = 4.dp) { actions.stop() }
                     }
                     SendBar(model, actions, work, note) { note = null }
                 }
@@ -285,6 +316,10 @@ fun CutScreen(
         }
     }
 }
+
+/** How many times the cut screen's curve column was composed (tests: the play head must not compose it again). */
+@androidx.annotation.VisibleForTesting
+internal var cutCurveCompositions = 0
 
 /**
  * More below a scrolling column: its bottom fades into the page (as the lists of tour 5, ScrollHintBox), over nothing a
@@ -346,9 +381,9 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
 
 /** Voix, Batterie, Basse, Reste: each with its colour dot, as on the Remix page. */
 @Composable
-private fun StemChips(model: CutModel, onChange: () -> Unit) {
+private fun StemChips(model: CutModel, top: androidx.compose.ui.unit.Dp = 8.dp, onChange: () -> Unit) {
     // Tour 7, lot 2 D7: the chips wrap to a second line rather than run off the edge (« Resto » cut at 200 %, no sign).
-    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth().padding(top = top), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         CHIP_ORDER.forEach { stem ->
             val name = Demucs.STEMS[stem]
             FilterChip(
@@ -633,7 +668,7 @@ private fun PieceTile(i: Int, frames: Long, loop: Boolean, ticked: Boolean, hear
 
 /** At the bottom: how many pieces are ticked and how long, then where they go; what was done, or why not. */
 @Composable
-private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, outer: Modifier = Modifier.padding(12.dp), dismissNote: () -> Unit) {
+private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, outer: Modifier = Modifier.padding(12.dp), hint: Boolean = true, dismissNote: () -> Unit) {
     val sels = model.toSend()
     val busy = work.value.busy
     val message = work.value.message
@@ -649,11 +684,11 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
                 if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text("OK") }
             }
         }
-        Text(
-            if (model.single) tr("Place Début et Fin, puis mets ce bout sur un pad ou une piste.")
-            else if (sels.isEmpty()) tr("Coche des bouts pour les mettre sur un pad ou une piste.")
+        if (model.single && hint) SpanHint()
+        else if (!model.single) Text(
+            if (sels.isEmpty()) tr("Coche des bouts pour les mettre sur un pad ou une piste.")
             else trCount(sels.size, "1 bout choisi · %2\$s au total", "%1\$d bouts choisis · %2\$s au total", sels.size, boardClock(model.chosenFrames).substringBefore('.')),
-            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty() || model.single) Neon.TextSecondary else Neon.Cyan,
+            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty()) Neon.TextSecondary else Neon.Cyan,
             modifier = Modifier.testTag("cut_chosen"),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -666,6 +701,13 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
         }
     }
 }
+
+/** « Un bout »'s instruction: on top of the curve at a normal font (tour 7, lot 2 D3), in the send bar otherwise. */
+@Composable
+private fun SpanHint() = Text(
+    tr("Place Début et Fin, puis mets ce bout sur un pad ou une piste."),
+    style = MaterialTheme.typography.titleSmall, color = Neon.TextSecondary, modifier = Modifier.testTag("cut_chosen"),
+)
 
 @Composable
 private fun androidx.compose.foundation.layout.RowScope.Send(icon: ImageVector, label: String, tag: String, enabled: Boolean, main: Boolean = false, onClick: () -> Unit) {

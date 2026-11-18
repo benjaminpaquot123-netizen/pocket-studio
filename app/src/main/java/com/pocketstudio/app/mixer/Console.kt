@@ -100,6 +100,8 @@ internal fun Console(
     moves: Map<Int, Int>, openMoves: (Int) -> Unit, openCurves: (Int) -> Unit,
     /** The faders' height; lower on a short screen lying down, the hint then left out. */
     faderHeight: Dp = CONSOLE_FADER_H,
+    /** « Glisse un fader… » under the title (left out when the faders were lowered to fit). */
+    hint: Boolean = faderHeight >= CONSOLE_FADER_H,
 ) {
     var sheetFor by rememberSaveable { mutableStateOf<Int?>(null) }
     Column(
@@ -111,7 +113,7 @@ internal fun Console(
             Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
             HelpDot(Glossary.MUTE_SOLO)
         }
-        if (faderHeight >= CONSOLE_FADER_H) Text(
+        if (hint) Text(
             tr("Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
@@ -144,7 +146,8 @@ internal fun Console(
 /** One strip: colour, name (a touch: its sheet), M S, the fader and its meter, the dB, its effects. */
 @Composable
 private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, actions: MixerActions, moves: Int, open: () -> Unit, first: Boolean, faderHeight: Dp) {
-    SideEffect { stripCompositions++ }
+    val probe = LocalFitProbe.current
+    SideEffect { if (!probe) stripCompositions++ }
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     val tint = info.color ?: Neon.Cyan

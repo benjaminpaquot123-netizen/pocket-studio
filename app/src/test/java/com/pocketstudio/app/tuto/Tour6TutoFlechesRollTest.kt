@@ -50,6 +50,7 @@ class Tour6TutoFlechesRollTest {
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     private fun node(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
     private fun text(tag: String) = node(tag).config[SemanticsProperties.Text].joinToString()
+    private fun rollShown() = has("piano_roll") && node("piano_roll").boundsInRoot.height > 0f
     private fun settle() = repeat(20) { idle(100); compose.mainClock.advanceTimeBy(100); compose.waitForIdle() }
 
     private fun await(what: String, ok: () -> Boolean) {
@@ -96,23 +97,33 @@ class Tour6TutoFlechesRollTest {
         // The bar written by hand, a note at a time, until the motif is all there (the course's own rule, read on the
         // project: the tutorial's look works off the main thread and answers when the machine lets it, CI 43449478539:
         // the loop went on writing while it worked, to the last note, « Copier » never offered).
-        val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == "bass_do" }
+        // Tour 7: in Facile « bass_do » is the first bar only; « Copier » is the next step's (« bass_2 »), reached by itself.
+        val step = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }.first { it.id == "bass_2" }
         var guard = 0
         while (TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && guard++ < 40) {
             h.vm.addNote(leftNotes().first())
             settle()
         }
         assertTrue("the motif written by hand reaches « Copier » ($guard notes)", TutoChecks.need(step, h.vm.project.value, target) is TutoNeed.Copy)
-        await("« Copier » is offered on the line once the motif is written") { has("tuto_roll_copy") }
-        compose.onNodeWithTag("tuto_roll_copy", useUnmergedTree = true).performClick()
-        await("the notes to write after the copy") { !has("tuto_roll_copy") && leftNotes().isNotEmpty() }
+        // « bass_do » done: its « Bravo », then « Étape suivante » (the user's touch) and the roll of « bass_2 ».
+        await("« Étape suivante »") { has("tuto_next_big") || has("tuto_next_folded") }
+        if (!has("tuto_next_big")) compose.onNodeWithTag("tuto_fold", useUnmergedTree = true).performClick()
+        await("« Étape suivante », unfolded") { has("tuto_next_big") }
+        compose.onNodeWithTag("tuto_next_big", useUnmergedTree = true).performClick()
+        settle()
+        // Tour 7: « bass_2 » opens on its panel, whose main button is the copy (« Copier »): the user's touch there.
+        await("« Copier » on the panel of « bass_2 »") { has("tuto_need") && TutoHints.copy != null }
+        compose.onNodeWithTag("tuto_need", useUnmergedTree = true).performClick()
+        await("the roll of « bass_2 »") { rollShown() }
+        await("the notes to write after the copy") { rollShown() && !has("tuto_roll_copy") && leftNotes().isNotEmpty() }
         settle()
         val next = leftNotes().first()
         val said = text("tuto_notes_left_text")
         val where = text("tuto_roll_where")
         val bar = next.start / NoteClip.TICKS_PER_STEP / h.vm.project.value.stepsPerBar + 1
         assertTrue("after the copy the next note to write (${next.pitch}, bar $bar) is whole in sight; the line says « $where · $said »", whole(next))
-        assertTrue("no arrow over a dotted note in sight: « $said »", listOf("↑", "↓", "→", "←").none { it in said })
+        // Since control « tuto2 » (seat a), a bare arrow after « à toucher » tells of one more dotted note over or under the rows.
+        assertTrue("no arrow over a dotted note in sight: « $said »", "à toucher" in said && listOf("→", "←", "plus").none { it in said })
         assertTrue("the line names the bar to write ($bar): « $where »", where.contains("$bar/"))
     }
 
@@ -155,7 +166,8 @@ class Tour6TutoFlechesRollTest {
                 settle()
             }
             val said = text("tuto_notes_left_text")
-            assertTrue("a dotted note is whole in sight, no arrow expected: « $said »", listOf("↑", "↓", "→", "←").none { it in said })
+            // Since control « tuto2 » (seat a), a bare arrow after « à toucher » tells of one more dotted note over or under the rows.
+            assertTrue("a dotted note is whole in sight, no arrow expected: « $said »", "à toucher" in said && listOf("→", "←", "plus").none { it in said })
             h.vm.addNote(leftNotes().first { whole(it) })
             written++
             settle()

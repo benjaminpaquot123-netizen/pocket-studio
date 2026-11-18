@@ -31,7 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.app.rhythm.ExportWhat
 import com.pocketstudio.app.rhythm.ExportFormat
@@ -230,14 +232,27 @@ fun MixerScreen(
     // On a tablet the channel strips stay on the left; the master, buses, automation and export on the right.
     val lyingDown = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
-    val faderHeight = consoleFaderHeight(maxHeight, lyingDown && maxWidth > maxHeight)
+    val lying = lyingDown && maxWidth > maxHeight
+    // Tour 7 (D3): upright, the console's faders give way so that « Voir les courbes » and « Ce qui joue » stand
+    // whole on the first screen, above the Guide's bar (the song's stems, in a remix, stay below as before).
+    val paneWidth = if (com.pocketstudio.ui.twoPanes(maxWidth, maxHeight)) (maxWidth - 12.dp) / 2 - 12.dp else maxWidth - 24.dp
+    FitFaders(
+        fit = !lying && songTracks == null && maxHeight != Dp.Infinity, paneWidth = paneWidth, paneHeight = maxHeight - 24.dp,
+        fallback = consoleFaderHeight(maxHeight, lying),
+        probe = { f, hint ->
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Console(strips, channels, meters, actions, lanesOn, openMoves = {}, openCurves = {}, faderHeight = f, hint = hint)
+                AutomationEntry(automation.lanes.size, show = {}, overview = {})
+            }
+        },
+    ) { faderHeight, hint ->
     com.pocketstudio.ui.AdaptivePanes(Modifier.testTag("mixer"), first = {
         // Phase 36: the console first, every fader in sight; automation and « Ce qui joue » right under it.
         Console(
             strips, channels, meters, actions, lanesOn,
             openMoves = { ch -> overview(ch) },
             openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
-            faderHeight = faderHeight,
+            faderHeight = faderHeight, hint = hint,
         )
         songTracks?.invoke()
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
@@ -271,7 +286,102 @@ fun MixerScreen(
             target = TargetPick(target, styleLufs, freeLufs, styleName), stale = exportStale, stemSkips = stemSkips)
     })
     }
+    }
 }
+
+/**
+ * Tour 7 (D3): the faders' height that lets the console and the automation entry ([probe], measured unseen at
+ * [paneWidth]) fit in [paneHeight]: the full travel with its hint when it fits, else lower without the hint
+ * (never under 80 dp); when even that cannot fit, or without [fit], [fallback] (the page scrolls as before).
+ * Only the pane's size decides, never what is drawn, so the height cannot swing back and forth.
+ */
+@Composable
+private fun FitFaders(
+    fit: Boolean, paneWidth: Dp, paneHeight: Dp, fallback: Dp,
+    probe: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
+    content: @Composable (faderHeight: Dp, hint: Boolean) -> Unit,
+) {
+    // Review of tour 7 (M3): a slot is composed again whenever its lambda is a new one, and every slot whenever the
+    // SubcomposeLayout itself is. So the probes' lambdas are kept, the shown one is new only when its faders are, and the
+    // pane's size reaches the measure through a state (a new height measures again without composing anything).
+    val low = androidx.compose.runtime.remember(probe) { @Composable { Probe { probe(FIT_FADER_MIN, false) } } }
+    val full = androidx.compose.runtime.remember(probe) { @Composable { Probe { probe(CONSOLE_FADER_H, true) } } }
+    val shownSlot = androidx.compose.runtime.remember { ShownSlot() }
+    val pane = androidx.compose.runtime.rememberUpdatedState(FitPane(fit, paneWidth, paneHeight, fallback))
+    val shownContent = androidx.compose.runtime.rememberUpdatedState(content)
+    // Every argument below stays the same instance, so a new pane size skips FitLayout (a SubcomposeLayout composed
+    // again forces all its slots to compose again) and only measures it again.
+    FitLayout(low, full, shownSlot, pane, shownContent)
+}
+
+/** [FitFaders]' layout: the two probes measured unseen, then the console shown with the faders they allow. */
+@Composable
+private fun FitLayout(
+    low: @Composable () -> Unit, full: @Composable () -> Unit, shownSlot: ShownSlot,
+    pane: androidx.compose.runtime.State<FitPane>, shownContent: androidx.compose.runtime.State<@Composable (Dp, Boolean) -> Unit>,
+) {
+    // Review of tour 7 (M1): one SubcomposeLayout whether it fits or not, the console always in the slot « shown », so a
+    // strip's open sheet and the scroll stay when the phone turns or a remix's stems come under the console.
+    androidx.compose.ui.layout.SubcomposeLayout { constraints ->
+        val p = pane.value
+        val (f, hint) = if (!p.fit) p.fallback to (p.fallback >= CONSOLE_FADER_H) else {
+            val w = p.width.roundToPx().coerceAtLeast(1)
+            val probeAt = androidx.compose.ui.unit.Constraints(minWidth = w, maxWidth = w)
+            fun high(slot: String, c: @Composable () -> Unit): Int = subcompose(slot, c).maxOfOrNull { it.measure(probeAt).height } ?: 0
+            val room = p.height.roundToPx()
+            val lowH = high("low", low)
+            when {
+                high("full", full) <= room -> CONSOLE_FADER_H to true
+                lowH <= room -> (FIT_FADER_MIN + (room - lowH).toDp()).coerceAtMost(CONSOLE_FADER_H) to false
+                else -> p.fallback to (p.fallback >= CONSOLE_FADER_H)
+            }
+        }
+        val shown = subcompose("shown", shownSlot.of(shownContent.value, f, hint)).map { it.measure(constraints) }
+        val width = if (p.fit) constraints.maxWidth else (shown.maxOfOrNull { it.width } ?: 0).coerceIn(constraints.minWidth, constraints.maxWidth)
+        val height = if (p.fit) constraints.maxHeight else (shown.maxOfOrNull { it.height } ?: 0).coerceIn(constraints.minHeight, constraints.maxHeight)
+        layout(width, height) { shown.forEach { it.place(0, 0) } }
+    }
+}
+
+/** A console measured unseen by [FitFaders]: out of the semantics, and its strips not counted in [stripCompositions]. */
+@Composable
+private fun Probe(console: @Composable () -> Unit) {
+    androidx.compose.runtime.SideEffect { fitProbeCompositions++ }
+    androidx.compose.runtime.CompositionLocalProvider(LocalFitProbe provides true) {
+        Box(Modifier.clearAndSetSemantics {}) { console() }
+    }
+}
+
+/** True inside [FitFaders]' unseen probes. */
+internal val LocalFitProbe = androidx.compose.runtime.staticCompositionLocalOf { false }
+
+/** How many times [FitFaders]' unseen probes were composed (tests: a new pane height must not compose them again). */
+@androidx.annotation.VisibleForTesting
+internal var fitProbeCompositions = 0
+
+/** What [FitFaders] measures by: whether to fit, the pane's size, the faders' height otherwise. */
+private data class FitPane(val fit: Boolean, val width: Dp, val height: Dp, val fallback: Dp)
+
+/** The shown console's slot content for [FitFaders]: the same lambda while the content and its faders stay the same. */
+private class ShownSlot {
+    private var content: (@Composable (Dp, Boolean) -> Unit)? = null
+    private var f = Dp.Unspecified
+    private var hint = false
+    private var slot: @Composable () -> Unit = {}
+
+    fun of(content: @Composable (Dp, Boolean) -> Unit, f: Dp, hint: Boolean): @Composable () -> Unit {
+        if (content !== this.content || f != this.f || hint != this.hint) {
+            this.content = content
+            this.f = f
+            this.hint = hint
+            slot = { content(f, hint) }
+        }
+        return slot
+    }
+}
+
+/** The lowest fader [FitFaders] gives, as lying down (a finger's reach). */
+private val FIT_FADER_MIN = 80.dp
 
 /** Automation near the top of the mixer: how many curves move, a touch to them, a touch to « Ce qui joue ». */
 @Composable
@@ -723,7 +833,7 @@ internal fun exportSavedLines(export: ExportUi): List<String> {
     )
 }
 
-/** How many times a mixer strip was composed (tests: a meter reading must not compose it again). */
+/** How many times a shown mixer strip was composed, the unseen probes left out (tests: a meter reading must not compose it again). */
 @androidx.annotation.VisibleForTesting
 internal var stripCompositions = 0
 

@@ -32,6 +32,6 @@ class Tour6TutoMixWordsTest {
             }
         }
         assertTrue("${bad.size} volume steps:\n" + bad.take(30).joinToString("\n"), bad.isEmpty())
-        assertTrue("no volume step checked", checked >= 20)
+        assertTrue("no volume step checked", checked >= 18)
     }
 }

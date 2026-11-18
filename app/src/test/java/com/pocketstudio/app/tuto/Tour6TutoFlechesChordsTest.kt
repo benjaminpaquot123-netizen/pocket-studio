@@ -58,11 +58,8 @@ class Tour6TutoFlechesChordsTest {
             PocketStudioTheme { PianoRoll(NoteClip(steps = 16), emptyList(), -1, PianoRollActions(), hints = hints, trackName = "Accords") }
         }
         compose.waitForIdle()
-        assertEquals("« Accords » is off when the roll opens", false, chordsOn())
-        // « allume « Accords », juste au-dessus de la grille » (the chords' step).
-        compose.onNodeWithTag("chord_mode").performClick()
-        compose.waitForIdle()
-        assertEquals("the user's touch turns « Accords » on", true, chordsOn())
+        // Tour 7 (Tour7TutoChordOnTest): a step of dotted chords begins with « Accords » already on.
+        assertEquals("« Accords » is on when the chords' step opens", true, chordsOn())
         // The next step, on the melody's track: its dotted notes come one at a time.
         TutoHints.step = "lead_do"
         hints = riff
@@ -87,11 +84,42 @@ class Tour6TutoFlechesChordsTest {
             PocketStudioTheme { PianoRoll(NoteClip(steps = 64), emptyList(), -1, PianoRollActions(), hints = hints, trackName = "Accords") }
         }
         compose.waitForIdle()
+        // The user's own touches: off, then on again.
         compose.onNodeWithTag("chord_mode").performClick()
         compose.waitForIdle()
+        assertEquals("the user's touch turns « Accords » off", false, chordsOn())
+        compose.onNodeWithTag("chord_mode").performClick()
+        compose.waitForIdle()
+        assertEquals("the user's touch turns « Accords » on", true, chordsOn())
         TutoHints.step = "pad_end"
         hints = chords + next
         compose.waitForIdle()
         assertEquals("the chords' second step keeps « Accords » on", true, chordsOn())
+    }
+
+    /**
+     * Fresh review of « fable-repar » (B): the tuto over, « Accords » went off even when the user had turned it on
+     * (only the one the tuto turned on goes back off).
+     */
+    @Test
+    fun chordsTurnedOnByTheUserStayOnWhenTheTutoEnds() {
+        val t = NoteClip.TICKS_PER_STEP
+        val riff = listOf(Note(0, 2 * t, 53), Note(4 * t, 2 * t, 65), Note(8 * t, 2 * t, 53))
+        var hints by mutableStateOf(riff)
+        TutoHints.active = true
+        TutoHints.step = "lead_do"
+        compose.setContent {
+            PocketStudioTheme { PianoRoll(NoteClip(steps = 16), emptyList(), -1, PianoRollActions(), hints = hints, trackName = "Mélodie") }
+        }
+        compose.waitForIdle()
+        assertEquals("the riff's step begins with « Accords » off", false, chordsOn())
+        compose.onNodeWithTag("chord_mode").performClick()
+        compose.waitForIdle()
+        assertEquals("the user's touch turns « Accords » on", true, chordsOn())
+        TutoHints.active = false
+        TutoHints.step = null
+        hints = emptyList()
+        compose.waitForIdle()
+        assertEquals("the tuto over, the « Accords » the user turned on is still on", true, chordsOn())
     }
 }

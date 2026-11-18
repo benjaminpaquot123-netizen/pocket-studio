@@ -44,9 +44,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau : mélancolique mais lumineuse, comme Detroit. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire) puis « La ».",
+          "text": "À toi : choisis la couleur du morceau, mélancolique mais lumineuse : La dorien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur La dorien : mineur, mais avec la sixte majeure (Fa♯) qui éclaire l'accord de Ré. La couleur de Derrick May et de Jeff Mills. « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Toutes tes notes suivront cette gamme : les cordes sonneront tristes et chaudes à la fois.",
+          "why": "Dorien : une gamme mineure avec une note claire. Toutes tes notes suivront cette gamme : les cordes sonneront tristes et chaudes à la fois.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -156,14 +156,24 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis les 4 notes en pointillé de la mesure 1 (un accord de La), et les 4 de la mesure 2 (un accord de Ré). Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Mesure 1 : un accord de La ; mesure 2 : un accord de Ré.",
           "textPro": "À toi : crée la piste Accords (son « Machine à cordes »). Mesure 1 : La m7 serré (La Do Mi Sol) ; mesure 2 : Ré 7 en voix menées (La Do Ré Fa♯) : seules deux notes bougent. « Copier sur les mesures suivantes ».",
           "why": "Deux accords qui ne changent que de deux notes : on glisse de l'un à l'autre sans secousse.",
           "check": "notes:pad",
+          "length": 32,
           "spot": "notes.track",
           "target": "pad",
           "listen": "parts:pad",
           "skip": "Sans cordes, il manque l'âme de Detroit."
+        },
+        {
+          "id": "pad_2",
+          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "levels": "f",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad"
         }
       ]
     },
@@ -174,14 +184,24 @@
       "steps": [
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 6 notes de la mesure 1 (sur La, avec des sauts vers le haut) et les 6 de la mesure 2 (sur Ré). Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche les 6 notes de la mesure 1 (sur La, avec des sauts vers le haut).",
           "textPro": "À toi : crée la piste Basse (son « Basse ronde ») : mesure 1 sur La avec ses sauts d'octave, mesure 2 sur Ré qui remonte à La, puis « Copier sur les mesures suivantes ».",
           "why": "Le saut d'octave, c'est le geste de la basse funk : il fait danser sans charger le grave.",
           "check": "notes:bass",
+          "length": 16,
           "spot": "notes.track",
           "target": "bass",
           "listen": "parts:kick,bass,pad",
           "skip": "Sans basse, ton Drop manque de rebond."
+        },
+        {
+          "id": "bass_2",
+          "text": "À toi : touche les 6 notes de la mesure 2 (sur Ré).",
+          "levels": "f",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass,pad"
         }
       ]
     },
@@ -192,9 +212,19 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 6 notes de la mesure 1 et les 4 de la mesure 2 (la dernière est longue). Puis « Copier sur les mesures suivantes ».",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 6 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (son « Cloche FM ») : La Do La, Mi Do La, puis La Do La et un Mi tenu. « Copier sur les mesures suivantes ».",
           "why": "Un aller-retour sur trois notes, et une note tenue pour respirer : on le retient tout de suite.",
+          "check": "notes:lead",
+          "length": 16,
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_2",
+          "text": "À toi : écris les 4 notes de la mesure 2 (la dernière est longue).",
+          "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -328,17 +358,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Break, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:16,Drop 2:24,Fin:16",
           "listen": "song",
-          "skip": "Dans un autre ordre, le Break n'arrivera pas entre les deux Drops."
+          "skip": "Dans un autre ordre, le Break n'arrivera pas entre les deux Drops.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 16, Drop 2 24 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 16, Drop 2 24 et Fin 16.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 16, Drop 2 24 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Des blocs de 16 et 32 mesures : chaque partie commence au début d'une phrase. 3 minutes 49 à 126 BPM.",
           "check": "song:phrases",
@@ -354,7 +385,8 @@
       "steps": [
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le retour du kick paraît plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -363,11 +395,13 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale : un seul coup, au moment où tout arrive.",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale.",
+          "textPro": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale, encore vide : un coup au moment où tout arrive.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop",
-          "listen": "part:Drop"
+          "listen": "part:Drop",
+          "why": "Un coup de cymbale au moment où tout arrive."
         }
       ]
     },
@@ -413,12 +447,13 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs des pistes « Mélodie » et « Accords ».",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ».",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",
           "target": "lead",
-          "listen": "parts:kick,snare,bass,pad,lead"
+          "listen": "parts:kick,snare,bass,pad,lead",
+          "why": "Le mix, c'est régler le volume de chaque piste. Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort."
         },
         {
           "id": "meters",
@@ -460,7 +495,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

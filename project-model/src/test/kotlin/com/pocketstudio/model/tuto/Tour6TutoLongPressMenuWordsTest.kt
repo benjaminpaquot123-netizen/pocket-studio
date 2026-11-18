@@ -15,13 +15,16 @@ class Tour6TutoLongPressMenuWordsTest {
     fun aLongPressOnTheCellIsTheOneGesture() {
         val bad = ArrayList<String>()
         var seen = 0
-        val steps = listOf("techno" to "clap_do", "drill" to "hat_rolls", "drill" to "hat_triplet", "phonk" to "hat_rolls", "trap" to "hat_rolls", "trap" to "hat_triplet")
+        val steps = listOf("techno" to "clap_do", "techno" to "clap_2", "drill" to "hat_rolls", "drill" to "hat_triplet", "phonk" to "hat_rolls", "trap" to "hat_rolls", "trap" to "hat_triplet")
         for ((style, id) in steps) {
             val s = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == id }
-            for (fr in listOfNotNull(s.text, s.textPro).filter { it.isNotEmpty() }) {
+            // D4: a Facile step cut in two (the hits, then the menu) says the long press in the piece that opens the menu.
+            for (fr in listOfNotNull(s.text, s.textPro).filter { it.isNotEmpty() && MENU.containsMatchIn(it) }) {
                 seen++
-                if ("appui long sur" !in fr) bad += "fr $style $id: the long press not on its cell: $fr"
-                TWO_GESTURES.find(fr)?.let { bad += "fr $style $id: « ${it.value} », a touch before the long press: $fr" }
+                // What the user reads at this step: its words and its « why » (Tour 7 P6 moved the gesture's detail there).
+                val read = listOfNotNull(fr, s.why).joinToString("\n")
+                if ("appui long sur" !in read) bad += "fr $style $id: the long press not on its cell: $fr"
+                TWO_GESTURES.find(read)?.let { bad += "fr $style $id: « ${it.value} », a touch before the long press: $fr" }
                 for (lang in Lang.entries - Lang.FR) if (I18n.table(lang)[fr].isNullOrBlank()) bad += "${lang.code} $style $id: no translation"
             }
         }
@@ -30,6 +33,7 @@ class Tour6TutoLongPressMenuWordsTest {
     }
 
     companion object {
+        val MENU = Regex("« (Doux|Moyen|Fort|Roulement|Triolet) »")
         val TWO_GESTURES = Regex("""si elles? (est|sont) vides?|une fois (le coup )?posé|touche la dernière case|touche-les d'abord""")
     }
 }

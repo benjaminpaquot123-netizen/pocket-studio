@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -51,11 +52,30 @@ data class TutoCourse(
      */
     val drums: Map<String, Map<String, String>> = emptyMap(),
 ) {
-    /** The chapters of [level], each with only its steps of that level. */
+    /**
+     * The chapters of [level], each with only its steps of that level.
+     *
+     * A step cut in pieces for one level (Facile: two gestures a consigne) carries a [TutoStep.length] that stops at
+     * its first piece; the pieces after it have the same check and the other level's code is not in them. Where
+     * those pieces are left out, the step they continue takes back their reach (the last piece's length, 0 = the
+     * whole line) and its own words for that level ([TutoStep.textFor]), so the other level checks what it did
+     * before the cut (Pro: the whole bass line, « Doux » on the clap).
+     */
     fun chaptersFor(level: TutoLevel): List<TutoChapter> =
         chapters.filter { level.code in it.levels }
-            .map { c -> c.copy(title = c.titleFor(level), steps = c.steps.filter { level.code in it.levels }) }
+            .map { c -> c.copy(title = c.titleFor(level), steps = stepsFor(c.steps, level)) }
             .filter { it.steps.isNotEmpty() }
+
+    private fun stepsFor(steps: List<TutoStep>, level: TutoLevel): List<TutoStep> {
+        val kept = ArrayList<TutoStep>(steps.size)
+        for (s in steps) {
+            if (level.code in s.levels) { kept += s; continue }
+            val last = kept.lastOrNull()
+            if (last == null || last.manual || last.check != s.check) continue
+            kept[kept.lastIndex] = last.copy(length = if (last.length > 0) s.length else last.length, text = last.textFor(level))
+        }
+        return kept
+    }
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
@@ -221,16 +241,49 @@ data class TutoProgress(
      * [KIT_PACK] its pack's sounds on the pads, [KIT_BUILT_IN] « Plus tard », the built-in kit.
      */
     val kit: String = "",
+    /**
+     * [PIECES] once the Facile steps cut in pieces (« clap_2 », « bass_end_2 »…) are counted in [done]; always written
+     * ([encode]), so an entry without it was saved before the cut ([decode] counts its pieces then).
+     */
+    val pieces: Int = PIECES,
 ) {
-    fun encode(): String = Json.encodeToString(serializer(), this)
+    fun encode(): String = json.encodeToString(serializer(), this)
+
+    /**
+     * Read from an entry saved before the Facile steps were cut in pieces: a piece counts as done when the step it was
+     * cut from is done (a course finished then read as unfinished, and came back on a piece).
+     */
+    private fun withPieces(): TutoProgress {
+        val course = TutoCourse.of(style) ?: return copy(pieces = PIECES)
+        val more = HashSet<String>()
+        for (c in course.chapters) {
+            var whole: TutoStep? = null
+            var before: TutoStep? = null
+            for (s in c.steps) {
+                val cut = s.levels == "f" && PIECE.containsMatchIn(s.id) && before?.check == s.check
+                if (!cut) whole = s else if (whole?.id in done) more += s.id
+                before = s
+            }
+        }
+        return copy(done = done + more, pieces = PIECES)
+    }
 
     companion object {
-        private val json = Json { ignoreUnknownKeys = true }
+        private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        private val PIECE = Regex("""_\d+$""")
+
+        /** The version of [pieces] this app writes. */
+        const val PIECES = 1
 
         const val KIT_PACK = "pack"
         const val KIT_BUILT_IN = "builtin"
 
         /** Null when [text] is missing or unreadable (an older or damaged entry: no tutorial). */
-        fun decode(text: String?): TutoProgress? = text?.let { runCatching { json.decodeFromString(serializer(), it) }.getOrNull() }
+        fun decode(text: String?): TutoProgress? = text?.let {
+            runCatching {
+                val read = json.decodeFromString(serializer(), it)
+                if ("pieces" in json.parseToJsonElement(it).jsonObject) read else read.withPieces()
+            }.getOrNull()
+        }
     }
 }

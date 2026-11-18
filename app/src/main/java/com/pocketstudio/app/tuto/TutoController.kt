@@ -17,6 +17,7 @@ import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoExample
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoNeed
+import com.pocketstudio.model.tuto.TutoPlay
 import com.pocketstudio.model.tuto.TutoSound
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoStep
@@ -35,7 +36,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -236,6 +240,13 @@ class TutoController(
     init {
         store.load(projectId)?.let(::show)
         scope.launch { project.debounce(debounceMs).collect { look() } }
+        // The dotted cells are the part's: read again when another part is shown (the screen reads them when the step
+        // changes, and a part of the same length left the cells of the one before on its grid).
+        scope.launch {
+            project.map { it.scene }.distinctUntilChanged().drop(1).collect {
+                if (_ui.value != null) TutoHints.cells = hint(project.value.drums.steps)
+            }
+        }
         scope.launch { looks() }
     }
 
@@ -472,7 +483,13 @@ class TutoController(
      * the bass just written lost); a pad that accelerates ([TutoStep.build]) is said, not changed behind the back.
      */
     private fun partMade(before: Project, after: Project, label: String, step: TutoStep): String {
-        val full = before.allScenes.map(TutoChecks::bricks).maxByOrNull { it.size }.orEmpty()
+        // An empty song: the button first built the course's Groove ([TutoChecks.fulfil]); the copy is of that one.
+        val source = before.allScenes.maxByOrNull { TutoChecks.bricks(it).size }?.takeIf { TutoChecks.bricks(it).isNotEmpty() }
+            ?: after.allScenes.filterNot { it.label.trim().equals(label, ignoreCase = true) }.maxByOrNull { TutoChecks.bricks(it).size }
+        val full = source?.let(TutoChecks::bricks).orEmpty()
+        // Tour 7 (tuto3, seat d): a song of one scene « A » (no « Groove » in it): the copy is said of « A », by its name.
+        val from = source?.let { it.label.trim().ifEmpty { it.name } }?.takeUnless { it.equals("Groove", ignoreCase = true) }
+            ?.let(com.pocketstudio.model.Scene::shownLabel)
         // Lot « tuto-flèches » (seat D a, chapter 10): the part made, by its name: while the song plays the one shown is
         // still the one heard (« Intro 2 créée : sans Basse, Accords… » told the Intro's bricks).
         val now = TutoChecks.bricks(TutoChecks.partContent(after, label) ?: after.currentSceneContent())
@@ -482,8 +499,17 @@ class TutoController(
         val name = com.pocketstudio.model.Scene.shownLabel(label)
         // Tour 6 (N26): « tout le Groove y joue » only for a part that keeps everything (the Intro 2 leaves out the ride and
         // the riff: a Groove without them yet made it say so all the same).
-        val made = if (out.isEmpty() && "*" !in step.keep.split(',').map { it.trim() }) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
-        else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
+        // An empty Groove (nothing in it yet): no « tout le Groove y joue », no empty « Dedans : . ».
+        val made = if (from != null) {
+            // A part that keeps everything says what plays in it, whatever its source is named (tour 7, L10 and seat d).
+            if (out.isEmpty() && "*" in step.keep.split(',').map { it.trim() } && now.isNotEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from) + " " +
+                com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
+            else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from)
+            else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, out.joinToString(", "))
+        } else if (out.isEmpty() && ("*" !in step.keep.split(',').map { it.trim() } || now.isEmpty())) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
+        // Tour 7 (L10, seat 1d #45): what « tout le Groove » is, said by name (a Groove of a kick alone read as a full one).
+        else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name) + " " +
+            com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
         else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
@@ -493,6 +519,24 @@ class TutoController(
             else -> null
         }
         return listOfNotNull(made, more).joinToString(" ")
+    }
+
+    /** « Posé : Clap, Basse. »: the lines and tracks « Poser ce qui manque » really changed from [before] to [after], null when none. */
+    private fun laid(before: Project, after: Project): String? {
+        val was = before.allScenes
+        val names = LinkedHashSet<String>()
+        after.allScenes.forEachIndexed { i, now -> names += changedBricks(was.getOrNull(i), now).map { brickName(after, it) } }
+        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", names.joinToString(", "))
+    }
+
+    /** The pads, tracks and 303 whose hits or notes are not in [now] as they were in [was] (null: a scene just made), as [TutoChecks.bricks] names them. */
+    private fun changedBricks(was: com.pocketstudio.model.Scene?, now: com.pocketstudio.model.Scene): List<String> = buildList {
+        now.drums.lanes.forEachIndexed { i, l -> if (l.hits != was?.drums?.lanes?.getOrNull(i)?.hits.orEmpty()) add("pad:$i") }
+        if (now.synthNotes.notes != was?.synthNotes?.notes.orEmpty()) add("inst:0")
+        for (id in now.trackNotes.keys + was?.trackNotes?.keys.orEmpty()) {
+            if (now.trackNotes[id]?.notes.orEmpty() != was?.trackNotes?.get(id)?.notes.orEmpty()) add("inst:$id")
+        }
+        if (now.acid.steps.filter { it.gate } != was?.acid?.steps.orEmpty().filter { it.gate }) add("acid")
     }
 
     private fun brickName(p: Project, brick: String): String = when {
@@ -535,26 +579,28 @@ class TutoController(
         val u = _ui.value ?: return
         val t = target ?: return
         val step = u.current
-        val need = TutoChecks.need(step, project.value, t, base()) ?: return
+        val need = TutoPlay.button(step, project.value, t, base(), u.progress.level) ?: return
         var made: Int? = null
         val before = project.value
         edit {
-            val r = TutoChecks.fulfil(need, step, this, t)
+            val r = TutoPlay.press(need, step, this, t, u.progress.level)
             made = r?.second
             r?.first ?: this
         }
         val p = project.value
         // Testers (lot « tuto 4 »): « Créer la partie » six times and nothing seen changing: what it made, in words.
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
+        // Fresh review of « fable-repar » (M2): « Poser ce qui manque » says what it laid too, by name.
+        else if (need is TutoNeed.Course && p !== before) _ui.value = _ui.value?.copy(made = laid(before, p))
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
         // Lot « tuto-flèches » (seat H a): « Copier » done and notes still to write (the last bar): the roll goes to
         // the next one (it stayed on bar 1, « plus loin → » three swipes long, 8 gestures lost).
-        if (need is TutoNeed.Copy && p !== before && !TutoChecks.done(step, p, t, base())) TutoHints.focus++
+        if (need is TutoNeed.Copy && p !== before && !TutoPlay.done(step, p, t, base())) TutoHints.focus++
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
         // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
         // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).
-        if (!TutoChecks.done(step, p, t, base()) && TutoChecks.need(step, p, t, base()) == null) _ui.value = _ui.value?.copy(open = false)
+        if (!TutoPlay.done(step, p, t, base()) && TutoPlay.button(step, p, t, base(), u.progress.level) == null) _ui.value = _ui.value?.copy(open = false)
         look()
     }
 
@@ -570,7 +616,7 @@ class TutoController(
         if (u.demo != null) return true
         val step = u.current
         val before = project.value
-        val demo = TutoChecks.demo(step, before, t) ?: return false
+        val demo = TutoPlay.showMe(step, before, t, u.progress.level) ?: return false
         // Testers: the notes went by too fast to follow; a note at a time, slower (at most about 8 s in all).
         val each = demoFrameMs(step.check.startsWith("notes:") || step.check == "track:sub", demo.frames.size, frameMs)
         stopListening()
@@ -635,7 +681,7 @@ class TutoController(
     fun canShow(): Boolean {
         val u = _ui.value ?: return false
         val t = target ?: return false
-        return u.demo != null || TutoChecks.show(u.current, project.value, t) != null
+        return u.demo != null || TutoPlay.canShow(u.current, project.value, t, u.progress.level)
     }
 
     /** The dotted cells of the step shown on a pad ([TutoChecks.hint]), null when none. */
@@ -643,26 +689,25 @@ class TutoController(
         val u = _ui.value ?: return null
         // Testers (lot « tuto 4 »): the crash « tout au début » of the Drop, dotted on its first cell (the grid
         // showed the second bar), once the Drop is the part shown.
-        if (u.current.check == "crash" && u.need == null && u.current.id !in u.progress.done) return TutoChecks.CRASH_LANE to setOf(0)
-        return target?.let { TutoChecks.hint(u.current, it, steps) }
+        return target?.let { TutoPlay.hint(u.current, project.value, it, steps, u.need, u.current.id in u.progress.done) }
     }
 
     /**
      * The hits the current step asks to take away ([TutoChecks.toErase]), null when it takes none, or
      * while its part is not the one shown (testers: crosses drawn in the Drop for the Montée's hits).
      */
-    fun toErase(p: Project): Map<Int, Set<Int>>? = _ui.value?.takeIf { it.need == null }?.let { TutoChecks.toErase(it.current, p, target) }
+    fun toErase(p: Project): Map<Int, Set<Int>>? = _ui.value?.let { TutoPlay.toErase(it.current, p, target, it.need) }
 
     /** The 303 steps the current step shows dotted ([TutoChecks.acidWanted]), by index; null when none. */
     fun acidHints(p: Project): Map<Int, com.pocketstudio.model.AcidStep>? {
         val u = _ui.value ?: return null
-        return target?.let { TutoChecks.acidWanted(u.current, p, it) }
+        return target?.let { TutoPlay.acid(u.current, p, it) }
     }
 
     /** The dotted notes of a melodic step on its track ([TutoChecks.ghostNotes]), null when none. */
     fun ghostNotes(p: Project): Pair<Int, List<com.pocketstudio.model.Note>>? {
         val u = _ui.value ?: return null
-        return target?.let { TutoChecks.ghostNotes(u.current, p, it) }
+        return target?.let { TutoPlay.notes(u.current, p, it) }
     }
 
     /**
@@ -748,7 +793,15 @@ class TutoController(
 
     // ---- inside ----
 
-    private fun base(): Any? = baseline?.takeIf { it.first == _ui.value?.current?.id }?.second
+    private fun base(): Any? {
+        val step = _ui.value?.current ?: return null
+        val b = baseline?.takeIf { it.first == step.id } ?: return null
+        // Tour 7 (seat d, House « Drop 2 »): the part the step changes made after the step began (« Créer la partie »):
+        // its hits as made are what the step compares to (a null baseline never ticked, whatever was played).
+        val now = TutoPlay.base(step, b.second, project.value)
+        if (now !== b.second) baseline = step.id to now
+        return now
+    }
 
     private fun show(p: TutoProgress) {
         val course = TutoCourse.of(p.style) ?: return
@@ -765,23 +818,26 @@ class TutoController(
         val flat = list.flatMap { it.steps }
         val step = flat.firstOrNull { it.id == p.current } ?: flat.firstOrNull { it.id !in p.done } ?: flat.last()
         val chapter = list.indexOfFirst { step in it.steps }
-        val saved = p.copy(current = step.id)
-        store.save(projectId, saved)
         val before = _ui.value
         val moved = before?.current?.id != step.id
+        // Tour 7 (seat d, V2): a step reached ticked whose part no longer holds what it asks (the « Montée » renamed, an
+        // empty part given its name) is to do again: never « Déjà fait » on a tick kept from another part.
+        val stale = moved && step.id in p.done && target?.let { TutoPlay.undone(step, project.value, it) } == true
+        val saved = p.copy(current = step.id, done = if (stale) p.done - step.id else p.done)
+        store.save(projectId, saved)
         if (moved) {
             skipSaid = null
             arrived = project.value
             stopListening()
             stopDemo()
-            baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoChecks.signature(it.removePrefix("changed:"), project.value) }
+            baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoPlay.arrive(step, project.value) }
         }
         val kept = _ui.value
         val same = kept != null && !moved
         _ui.value = TutoUi(
             saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same && !atEnd) kept!!.open else true, bravo = bravo || (same && kept!!.bravo),
             preparing = same && kept!!.preparing, playing = same && kept!!.playing, failed = same && kept!!.failed,
-            need = target?.let { TutoChecks.need(step, project.value, it, base()) },
+            need = target?.let { TutoPlay.button(step, project.value, it, base(), saved.level) },
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
             // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
@@ -849,8 +905,8 @@ class TutoController(
         val base = base()
         val (seen, need) = withContext(worker) {
             u.chapters.flatMap { it.steps }.filter { s ->
-                s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoChecks.done(s, p, t, base)
-            }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
+                s.id !in u.progress.done && (!s.check.startsWith("changed:") || s.id == u.current.id) && TutoPlay.done(s, p, t, base)
+            }.map { it.id }.toSet() to TutoPlay.button(u.current, p, t, base, u.progress.level)
         }
         // The tutorial quit, or « Montre-moi » begun meanwhile (its end asks for a look): nothing to say.
         val now = _ui.value?.takeIf { it.demo == null } ?: return true

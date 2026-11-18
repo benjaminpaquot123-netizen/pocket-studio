@@ -32,7 +32,7 @@ class TutoLot5Test {
         return p
     }
 
-    private val parts = arrayOf("kick_do", "snare_do", "hat_do", "bass_do", "pad_do", "lead_do", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", "make_drop2", "make_fin")
+    private val parts = arrayOf("kick_do", "snare_do", "hat_do", "bass_do", "bass_2", "bass_3", "pad_do", "pad_2", "pad_3", "lead_do", "lead_2", "groove_name", "make_intro", "make_montee", "make_drop", "make_break", "make_drop2", "make_drop2_2", "make_drop2_3", "make_fin")
 
     private fun scene(p: Project, label: String) = p.allScenes.indexOfFirst { it.label == label }.also { assertTrue(label, it >= 0) }
 
@@ -49,17 +49,22 @@ class TutoLot5Test {
         assertNull("nothing to copy yet", TutoChecks.need(bass, q, target))
         // Bar 1 written: « Copier » (bars 2 and 3), and nothing more dotted to touch (« Motif posé »).
         val bar1 = q.withTrack(q.track(track!!).copy(notes = q.track(track).notes.copy(notes = first)))
-        assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(bass, bar1, target))
-        assertEquals(2..3, TutoChecks.copyBars(bass, bar1, target))
-        val dotted = TutoChecks.ghostNotes(bass, bar1, target)!!.second
+        // D4: the Facile line is cut in pieces: bar 1 ticks « bass_do », « Copier » is « bass_2 », bar 4 and the rest « bass_3 ».
+        assertTrue("bar 1 ticks its piece", TutoChecks.done(bass, bar1, target))
+        val copy = step("bass_2")
+        val whole = step("bass_3")
+        assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(copy, bar1, target))
+        assertEquals(2..3, TutoChecks.copyBars(copy, bar1, target))
+        val dotted = TutoChecks.ghostNotes(whole, bar1, target)!!.second
         assertTrue("every dotted note written", dotted.all { g -> first.any { it.pitch == g.pitch && it.start == g.start } })
         // Copied: bar 4 is dotted, by hand; then « Copier » writes bars 5 to 8.
-        val copied = TutoChecks.fulfil(TutoNeed.Copy("bass"), bass, bar1, target)!!.first
+        val copied = TutoChecks.fulfil(TutoNeed.Copy("bass"), copy, bar1, target)!!.first
+        assertTrue(TutoChecks.done(copy, copied, target))
         assertEquals(3, copied.track(track).notes.notes.map { it.start / 384 }.distinct().size)
-        val next = TutoChecks.ghostNotes(bass, copied, target)!!.second.filter { g -> copied.track(track).notes.notes.none { it.pitch == g.pitch && it.start == g.start } }
+        val next = TutoChecks.ghostNotes(whole, copied, target)!!.second.filter { g -> copied.track(track).notes.notes.none { it.pitch == g.pitch && it.start == g.start } }
         assertTrue("bar 4: ${next.map { it.start / 384 }}", next.isNotEmpty() && next.all { it.start / 384 == 3 })
-        val (done, taps) = writeLine(bass, q, track, target)
-        assertTrue(TutoChecks.done(bass, done, target))
+        val (done, taps) = writeLine(whole, q, track, target)
+        assertTrue(TutoChecks.done(whole, done, target))
         assertTrue("$taps taps", taps <= 7)
         // « Montre-moi » shows the dotted notes of now, not the whole line (c/144: other bars than the dotted ones).
         val demo = TutoChecks.demo(bass, q, target)!!
@@ -72,8 +77,15 @@ class TutoLot5Test {
         val pad = step("pad_do")
         val p = upTo("bass_do")
         val (q, track) = TutoChecks.fulfil(TutoChecks.need(pad, p, target)!!, pad, p, target)!!
-        val (done, taps) = writeLine(pad, q, track!!, target)
-        assertTrue(TutoChecks.done(pad, done, target))
+        // D4: the Facile line is cut in pieces (bar 1, « Copier », bar 4); the touches of all of them.
+        var done = q
+        var taps = 0
+        for (id in listOf("pad_do", "pad_2", "pad_3")) {
+            val (made, n) = writeLine(step(id), done, track!!, target)
+            assertTrue(id, TutoChecks.done(step(id), made, target))
+            done = made
+            taps += n
+        }
         assertEquals("Fa mineur, Sol♭ majeur", 2, taps)
     }
 
@@ -116,8 +128,9 @@ class TutoLot5Test {
         assertEquals(64, n)
         val snare = m.drums.lanes[TutoChecks.laneOf("snare")].hits
         val perBar = (0 until 4).map { b -> snare.keys.count { it / 16 == b } }
-        assertEquals(listOf(4, 8, 16, 12), perBar)
-        assertTrue("32nds in the last bar", snare.filterKeys { it >= 48 }.values.all { it.repeats == 2 })
+        assertEquals(listOf(4, 8, 12, 12), perBar)
+        // Tour 7, c-V3: faster by its hits alone, no roll given (the roll is the user's, at its step).
+        assertTrue("no roll given", snare.values.all { it.repeats == 1 })
         assertTrue("louder and louder", snare.getValue(0).velocity < snare.getValue(48).velocity)
         // Its notes stop on the last beat; the hats are still there to erase (the gap step's).
         val stop = (n - TutoChecks.GAP_CELLS) * 24
@@ -248,12 +261,13 @@ class TutoLot5Test {
     @Test
     fun theWordsSayWhatTheScreenShows() {
         // a/29, c/101: « Suivre » is above the grid; « mes. 1/2 » shows while it plays.
-        val clap = step("clap_do").text
+        // P7 (tour 7): the Facile text + its « why », shown under it.
+        val clap = step("clap_do").text + step("clap_do").why.orEmpty()
         assertTrue("au-dessus de la grille" in clap && "pendant la lecture" in clap)
         // b/10-20: where the key is set first.
         assertTrue("« Je le fais » ouvre la fiche Tonalité" in step("key").textPro!!)
         // c §13: Facile, the key's two buttons are just names to touch.
-        assertTrue("Pas besoin de retenir" in step("key").text)
+        assertTrue("Pas besoin de retenir" in step("key").text + step("key").why.orEmpty())
         // a/40: Facile only does the hats.
         assertEquals("Les charleys", course.chaptersFor(TutoLevel.Facile).first { it.id == "hats" }.title)
         assertEquals("Charleys et percussions", course.chaptersFor(TutoLevel.Pro).first { it.id == "hats" }.title)
@@ -268,7 +282,7 @@ class TutoLot5Test {
         // a/43, d/171: no rule nobody sees for the user's own loop.
         assertTrue("quelques secondes" in step("drums_hear").text)
         // a/66-76: where the chord button is.
-        assertTrue("au-dessus de la grille" in step("pad_do").text)
+        assertTrue("au-dessus de la grille" in step("pad_do").textPro!!)
     }
 
     companion object {

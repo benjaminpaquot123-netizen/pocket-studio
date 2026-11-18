@@ -101,7 +101,7 @@ object I18n {
         // Owner (2026-10-29): « Simple ou Pro ? » for each project, and the home screen's Remix card.
         "mode",
         // « Tuto de A à Z » of every style (2026-10-29): the courses' texts, one file per style family.
-        "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres",
+        "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres", "tuto_moments",
         // Owner (2026-10-29): « Ma bibliothèque de sons » and the Remix from the home screen.
         "mysounds",
         // Owner (2026-10-30): the one sound browser (folders by meaning, Récents, Favoris), « Fête », the ready-to-play live pads.

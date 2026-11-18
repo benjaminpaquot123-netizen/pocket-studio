@@ -32,9 +32,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « La ».",
+          "text": "À toi : choisis la couleur du morceau, sombre : La phrygien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.",
-          "why": "La 303 reste presque toujours sur la même note : la gamme lui donne ses quelques couleurs.",
+          "why": "Phrygien : une gamme sombre. La 303 reste presque toujours sur la même note : la gamme lui donne ses quelques couleurs.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:acid",
@@ -242,7 +242,8 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, la 303 continue, puis un temps de silence.",
+          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, la 303 continue, et le dernier temps se tait.",
+          "textPro": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, la 303 continue, puis un temps de silence.",
           "check": "part:Montée:nokick",
           "spot": "song.parts",
           "keep": "clap,hat,acid",
@@ -274,17 +275,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16",
           "listen": "song",
-          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant le Drop 2."
+          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant le Drop 2.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. 3 minutes 43 à 138 BPM.",
           "check": "song:phrases",
@@ -360,12 +362,13 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs de la 303 et du pad « Clap ».",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la 303, puis celui du pad « Clap ».",
           "check": "changed:volumes:acid,clap",
           "spot": "mixer.strip",
           "target": "acid",
-          "listen": "parts:kick,clap,acid"
+          "listen": "parts:kick,clap,acid",
+          "why": "Le mix, c'est régler le volume de chaque piste. Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort."
         },
         {
           "id": "meters",
@@ -407,7 +410,7 @@
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "text": "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
           "textPro": "À toi : exporte ton morceau et partage-le.",
           "check": "shared",
           "spot": "share.export"

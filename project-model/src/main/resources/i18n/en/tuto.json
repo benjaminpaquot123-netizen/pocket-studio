@@ -125,6 +125,7 @@
   "Tonalité du morceau : %s": "Song key: %s",
   "Tonalité du morceau": "Song key",
   "Lire la suite": "Read on",
+  "Réduire": "Show less",
   "Mesure : un tour du rythme, quatre temps ; on compte « 1, 2, 3, 4 ».": "Bar: one turn of the rhythm, four beats; you count “1, 2, 3, 4”.",
   "Temps : chaque « 1, 2, 3, 4 » d'une mesure, là où on tape du pied.": "Beat: each “1, 2, 3, 4” of a bar, where you tap your foot.",
   "Accord : plusieurs notes jouées ensemble.": "Chord: several notes played together.",
@@ -149,5 +150,12 @@
   "Touche ici": "Tap here",
   "Accords en pointillé à toucher : %d": "Dotted chords to tap: %d",
   "Break : un moment plus calme, le kick et la basse se taisent.": "Break: a calmer moment, the kick and the bass go quiet.",
-  "Exemple passé sans l'écouter.": "Example skipped without listening."
+  "Exemple passé sans l'écouter.": "Example skipped without listening.",
+  "Partie « %1$s » créée (copie de « %2$s »).": "Part “%1$s” made (a copy of “%2$s”).",
+  "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "Part “%1$s” made (a copy of “%2$s”): without %3$s.",
+  "Poser ce qui manque": "Add what is missing",
+  "Posé : %s.": "Laid down: %s.",
+  "Il te manque ce que font les chapitres d'avant.": "You are missing what the earlier chapters make.",
+  "Aller au chapitre %d": "Go to chapter %d",
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Your song has no “%s” part: this step is done in it."
 }

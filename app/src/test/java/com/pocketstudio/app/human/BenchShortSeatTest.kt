@@ -77,4 +77,43 @@ class BenchShortSeatTest {
         // A tag the screen no longer has.
         assertTrue(SeatOptions.handBackWhy(n = 2, replayN = 0, diverged = false, originHasGesture = true, missingTag = "play")!!.contains("« play »"))
     }
+
+    // Tour 7, banc B2: the tour 6 replays gave the seat back at gesture 1 of 7 (B/c) and 4 of 17 (B/b): the app had moved
+    // « Simple ou Pro ? » down the screen (same words), the bench compared the places too.
+    private fun seen(path: String) = java.io.File("../docs/audits/ultra/sieges/$path").readLines().drop(1)
+
+    @Test
+    fun aScreenWhoseWordsOnlyMovedIsTheOriginsForAReplayHandingBack() {
+        val was = seen("tour-6/lotB/a/screen-2.txt")
+        val now = seen("tour-7/lotB/c/screen-2.txt")
+        assertFalse("the places did move", ScreenText.fingerprintOf(was) == ScreenText.fingerprintOf(now))
+        assertEquals(ScreenText.fingerprintOf(was, places = false), ScreenText.fingerprintOf(now, places = false))
+        val other = now.map { it.replace("Simple", "Sencillo") }
+        assertFalse("changed words still differ", ScreenText.fingerprintOf(was, places = false) == ScreenText.fingerprintOf(other, places = false))
+    }
+
+    @Test
+    fun aReplayedTouchOnAMovedButtonAimsAtItsTag() {
+        assertEquals("mode_card_simple", SeatOptions.reaimTag("mode_card_simple « Simples »", "rien"))
+        assertEquals("mode_card_simple", SeatOptions.reaimTag("mode_card_simple « Simples »", "rien (texte « Como você quer ver »)"))
+        assertEquals("cut_to_pads", SeatOptions.reaimTag("dans:cut_to_pads « Nos pads »", "rien"))
+        assertEquals("help_x", SeatOptions.reaimTag("désactivé help_x « ? »", "rien"))
+        // ScreenText.under's order: « désactivé » first, then « dans: ».
+        assertEquals("cut_to_pads", SeatOptions.reaimTag("désactivé dans:cut_to_pads « Nos pads »", "rien"))
+        assertNull("still under the finger", SeatOptions.reaimTag("mode_card_simple « Simples »", "mode_card_simple « Simples »"))
+        assertNull("nothing aimed at", SeatOptions.reaimTag("rien (texte « a »)", "mode_card_pro « Pro »"))
+        assertNull("no tag", SeatOptions.reaimTag("#12 « Ok »", "rien"))
+        assertNull("a view", SeatOptions.reaimTag("vue « Ok »", "rien"))
+        assertNull("no origin line", SeatOptions.reaimTag(null, "rien"))
+    }
+
+    @Test
+    fun aSeatGivenBackEarlySaysTheLineAndIsNoFaithfulReplay() {
+        val early = SeatOptions.handBackNote(2, 7, "écran 2 différent de l'origine (après le geste 1)", "origine « a », rejeu « b »")
+        assertTrue(early, early.contains("rejeu non fidèle"))
+        assertTrue(early, early.contains("origine « a », rejeu « b »"))
+        val full = SeatOptions.handBackNote(8, 7, "les 7 gestes du rejeu joués", null)
+        assertFalse(full, full.contains("non fidèle"))
+        assertTrue(full, full.startsWith("main rendue au pas 8"))
+    }
 }

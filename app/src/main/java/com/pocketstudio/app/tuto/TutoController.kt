@@ -570,8 +570,15 @@ class TutoController(
      */
     fun doIt() {
         val u = _ui.value ?: return
-        goFor(u.current, project.value, spot = true)?.let { _goes.tryEmit(it) }
+        val go = goFor(u.current, project.value, spot = true)
+        go?.let { _goes.tryEmit(it) }
         _ui.value = u.copy(bravo = false, open = false)
+        // Tour 8, seat e (ch.13): on an effect step it also makes the gesture there (the send, the insert of that
+        // strip, the curve), in one undo step, so the sheet it opens shows it made and the step ticks.
+        val t = target ?: return
+        if (TutoPlay.doHere(u.current, project.value, t, go?.effects, u.progress.level) == null) return
+        edit { TutoPlay.doHere(u.current, this, t, go?.effects, u.progress.level) ?: this }
+        look()
     }
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */

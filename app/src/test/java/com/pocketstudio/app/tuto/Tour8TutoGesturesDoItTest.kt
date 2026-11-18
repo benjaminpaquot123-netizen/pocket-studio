@@ -7,6 +7,7 @@ import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoLevel
+import com.pocketstudio.model.tuto.TutoPlay
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoTarget
 import kotlinx.coroutines.MainScope
@@ -79,15 +80,17 @@ class Tour8TutoGesturesDoItTest {
         assertEquals(id, c.ui.value!!.current.id)
     }
 
-    private fun doItUntilTicked(c: TutoController, id: String, flow: MutableStateFlow<Project>, goes: List<TutoGo>) {
+    private fun doItUntilTicked(c: TutoController, target: TutoTarget, id: String, flow: MutableStateFlow<Project>, goes: List<TutoGo>) {
         repeat(4) {
             if (id in c.ui.value!!.progress.done) return
             val before = flow.value
             val n = goes.size
             c.doIt()
             await("$id: went") { goes.size > n }
-            idle(300)
-            assertTrue("$id: « Je le fais » changed nothing in the project", flow.value != before || id in c.ui.value!!.progress.done)
+            // The tick comes from a look made after the edit: waited for, not read at once.
+            await("$id: « Je le fais » changed nothing in the project") { flow.value != before || id in c.ui.value!!.progress.done }
+            val step = c.ui.value!!.current
+            if (TutoPlay.done(step, flow.value, target, null)) await("$id: ticked once made") { id in c.ui.value!!.progress.done }
         }
         assertTrue("$id: ticked", id in c.ui.value!!.progress.done)
     }
@@ -109,7 +112,7 @@ class Tour8TutoGesturesDoItTest {
             val strip = goes.last().effects!!
             assertEquals("$style: the send it shows", 0, goes.last().send)
             assertTrue("$style: the send of strip $strip is set", flow.value.mixer.channels[strip].sends[0] >= 0.25f)
-            doItUntilTicked(c, "reverb", flow, goes)
+            doItUntilTicked(c, target, "reverb", flow, goes)
         }
     }
 
@@ -123,7 +126,7 @@ class Tour8TutoGesturesDoItTest {
             c.start(style, TutoLevel.Pro)
             idle()
             stepOf(c, "filter")
-            doItUntilTicked(c, "filter", flow, goes)
+            doItUntilTicked(c, target, "filter", flow, goes)
             assertTrue("$style: a curve", flow.value.automation.isNotEmpty())
         }
     }

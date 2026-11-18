@@ -53,6 +53,25 @@ object TutoPlay {
     /** [p] once the main button [need] is touched, and the track it made; null when it can do nothing ([TutoChecks.fulfil]). */
     fun press(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Pair<Project, Int?>? = TutoChecks.fulfil(need, step, p, target, level)
 
+    /**
+     * « Je le fais » on an effect step (tour 8, seat e, ch.13: it only opened the effect sheet, the send stayed at
+     * 0 % and no curve was drawn): [p] with the step's gesture made on [channel] alone, the strip the app goes to
+     * (a send, an insert: one strip per touch, the next touch the next one), or its curve drawn; null for a step of
+     * another kind, or when there is nothing left to make there.
+     */
+    fun doHere(step: TutoStep, p: Project, target: TutoTarget, channel: Int?, level: TutoLevel? = null): Project? {
+        val c = step.check
+        return when {
+            c.startsWith("send:") || c.startsWith("insert:") -> {
+                val ch = channel ?: return null
+                val made = TutoChecks.show(step, p, target, level)?.mixer?.channels?.getOrNull(ch) ?: return null
+                p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, x -> if (i == ch) made else x })).takeIf { it != p }
+            }
+            c.startsWith("automation") -> TutoChecks.show(step, p, target, level)?.takeIf { it != p }
+            else -> null
+        }
+    }
+
     /** « Montre-moi » of [step] on [p]: its frames, the last one being what the user is to reach; null when it has none.
      *  [level]: the course's level, so the show leaves to a later step of that level what it teaches. */
     fun showMe(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): TutoDemo? = TutoChecks.demo(step, p, target, level)

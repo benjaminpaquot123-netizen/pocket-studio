@@ -8,3 +8,5 @@
 - 32 clés de `tuto_autres` (14 langues) retirées : c'étaient des copies de mes anciens textes basse, devenues orphelines (accord du chef, suppressions seules, sans reformatage). Liste dans le rapport.
 - Deux vieux tests lisent « texte + pourquoi » (accord du chef) : chaque exigence reste.
 - Lignes partagées laissées au bloc 4 (partage, tonalité, niveaux, gloses communes) : 224 lignes Facile et 24 lignes de moments.
+- Relecture : un « pourquoi » d'étape cache celui du chapitre (TutoPanel). Donc chaque « pourquoi » d'étape ajouté = « pourquoi » du chapitre + la glose : rien du chapitre ne se perd. Il n'est gardé que là où l'ancienne consigne portait la glose (sinon retiré : riddim hat_do et snare_do, pad_do dubstep, jump_up, jungle). Effet Pro : le « Pourquoi ? » gagne une phrase, la consigne Pro ne change pas. Retour arrière : retirer la glose du « pourquoi ».
+- Astuce liquid hat_do corrigée (« Remplir », sous la grille, les pose d'un geste) : le charley y joue sur chaque case, « 1/2 » était faux.

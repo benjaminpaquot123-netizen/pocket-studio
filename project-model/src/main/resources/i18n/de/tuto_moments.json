@@ -1,3 +1,25 @@
 {
-  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Du bist dran: Teile deinen Track, die App macht eine Audiodatei daraus. „M4A“ macht eine leichte Datei für deine Freunde, „WAV“ behält die Studioqualität."
+  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Du bist dran: Teile deinen Track, die App macht eine Audiodatei daraus. „M4A“ macht eine leichte Datei für deine Freunde, „WAV“ behält die Studioqualität.",
+  "À toi : recopie sur les mesures suivantes.": "Du bist dran: Kopier es auf die nächsten Takte.",
+  "À toi : touche les 3 notes en pointillé de la mesure 1.": "Du bist dran: Tippe auf die 3 gestrichelten Noten in Takt 1.",
+  "À toi : touche les 5 notes en pointillé de la mesure 1.": "Du bist dran: Tippe auf die 5 gestrichelten Noten in Takt 1.",
+  "À toi : touche les 6 notes en pointillé de la mesure 1.": "Du bist dran: Tippe auf die 6 gestrichelten Noten in Takt 1.",
+  "À toi : touche les 4 notes en pointillé de la mesure 1.": "Du bist dran: Tippe auf die 4 gestrichelten Noten in Takt 1.",
+  "À toi : touche les 2 notes en pointillé de la mesure 1.": "Du bist dran: Tippe auf die 2 gestrichelten Noten in Takt 1.",
+  "À toi : écris les 5 notes de la mesure 2.": "Du bist dran: Schreib die 5 Noten in Takt 2.",
+  "À toi : écris les 4 notes de la mesure 2.": "Du bist dran: Schreib die 4 Noten in Takt 2.",
+  "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Du bist dran: Tippe auf die gestrichelte untere Note jedes Akkords in Takt 1: Der ganze Akkord wird gesetzt.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Du bist dran: „Ich mach's“ öffnet das Tonart-Blatt: Tippe auf die zwei eingekreisten Knöpfe.",
+  "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Du bist dran: Tippe beim Pad „Kick“ auf die gestrichelten Kästchen der 2 Takte.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Du bist dran: Tippe beim Pad „Snare“ auf die gestrichelten Kästchen der 2 Takte.",
+  "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Du bist dran: Tippe beim Pad „Hi-Hat“ auf die gestrichelten Kästchen der 2 Takte.",
+  "À toi : sur le pad « Kick studio », touche les cases en pointillé.": "Du bist dran: Tippe beim Pad „Studio-Kick“ auf die gestrichelten Kästchen.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé.": "Du bist dran: Tippe beim Pad „Snare“ auf die gestrichelten Kästchen.",
+  "À toi : sur le pad du kick, touche les cases en pointillé.": "Du bist dran: Tippe beim Kick-Pad auf die gestrichelten Kästchen.",
+  "À toi : sur le pad « Cymbale », touche la toute première case.": "Du bist dran: Tippe beim Pad „Becken“ auf das allererste Kästchen.",
+  "À toi : dernière mesure, efface les coups du dernier temps.": "Du bist dran: Lösch im letzten Takt die Schläge des letzten Schlags.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Du bist dran: Tippe unter „Hinzufügen“ der Reihe nach: Intro, Refrain, Strophe, Pre-Chorus, Refrain, Strophe, Pre-Chorus, Refrain, dann Intro zum Schluss.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Du bist dran: Tippe unter „Hinzufügen“ der Reihe nach: Intro, Strophe, Pre-Chorus, Refrain, Post-Chorus, Strophe, Pre-Chorus, Refrain, Bridge, Refrain, dann Intro zum Schluss.",
+  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Du bist dran: Gib jedem Teil seine Länge: Intro 4 Takte, Strophe 8, Pre-Chorus 4, Refrain 16 (beim 2. Mal 8, beim 3. Mal 16), Post-Chorus 4, Bridge 8, Ende 4.",
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Du bist dran: Zieh im Tab „Mix“ die Fader „Akkorde“ und „Melodie“ etwas runter. Unter dem Fader wird „Normal“ zu „−2“."
 }

@@ -28,7 +28,8 @@
       "steps": [
         {
           "id": "ref",
-          "text": "Écoute un extrait de grime fini : un petit « clic » sec, une basse carrée qui grogne, des notes de synthé glacées et beaucoup de trous. C'est un instrumental pour un MC : tu vas le construire brique par brique.",
+          "text": "Écoute un extrait de grime fini : un petit « clic » sec, une basse carrée qui grogne, des notes de synthé glacées et beaucoup de trous.",
+          "textPro": "Écoute un extrait de grime fini : un petit « clic » sec, une basse carrée qui grogne, des notes de synthé glacées et beaucoup de trous. C'est un instrumental pour un MC : tu vas le construire brique par brique.",
           "check": "listen",
           "listen": "song"
         },
@@ -43,7 +44,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, froide. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Mi ».",
+          "text": "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.",
           "textPro": "À toi : règle la tonalité sur Mi mineur, gamme « Mineure », tonique « Mi » : la basse carrée grogne sur Mi2, son sub tient Mi1. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -61,7 +62,7 @@
       "steps": [
         {
           "id": "kick_do",
-          "text": "À toi : le kick tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Kick », les cases en pointillé des 2 mesures.",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : « Passer à 2 mesures », puis le kick décalé des 2 mesures : il joue avec la basse, pas sur chaque temps (l'héritage du UK garage).",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -78,7 +79,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim », les 8 cases en pointillé, entre les temps : le « clic eski », le petit coup sec de Wiley dans « Eskimo ».",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé.",
+          "textPro": "À toi : sur le pad « Rim », les 8 cases en pointillé, entre les temps : le « clic eski », le petit coup sec de Wiley dans « Eskimo ».",
           "why": "Ce clic remplace le charley : c'est le son du premier grime.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -116,7 +118,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 5 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (une onde carrée). Mesure 1 : Mi, Mi, Mi tenu, Si, Sol, en coups courts. « Copier » : la même figure sur Mi, Do et Si, le long de la gamme.",
           "check": "notes:bass",
           "length": 16,
@@ -127,7 +129,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il écrit les 3 autres mesures, elles suivent les accords.",
+          "text": "À toi : recopie sur les mesures suivantes.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -136,7 +138,8 @@
         },
         {
           "id": "bass_sub",
-          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas. C'est le « sublow », le grave qu'on sent dans le ventre.",
+          "text": "Écoute la piste « Sub » : elle joue ta basse une octave plus bas, le « sublow », le grave qu'on sent dans le ventre.",
+          "textPro": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas. C'est le « sublow », le grave qu'on sent dans le ventre.",
           "check": "track:sub",
           "spot": "notes.track",
           "target": "bass",
@@ -151,7 +154,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Mesure 1 : 2 coups ; mesure 2 : 3 coups.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords : Mi et son octave, 2 coups mesure 1, 3 coups mesure 2. « Copier » : la même figure sur Do, puis Si.",
           "check": "notes:pad",
           "length": 32,
@@ -161,7 +164,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -176,7 +180,7 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1 : le riff de basse, trois octaves plus haut.",
+          "text": "À toi : touche les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (« Lead chiptune ») : le riff de basse trois octaves plus haut, mesure 1, puis « Copier ».",
           "check": "notes:lead",
           "length": 16,
@@ -186,7 +190,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes ».",
+          "text": "À toi : recopie sur les mesures suivantes.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -298,7 +302,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Couplet 2, Refrain, Couplet, Couplet 2, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Couplet 2, Refrain, Couplet, Couplet 2, Pont, Refrain, et Intro pour finir.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Couplet 2, Refrain, Couplet, Couplet 2, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
@@ -308,7 +312,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 8 mesures, Refrain 16, Couplet 8, Couplet 2 8, Pont 8, Outro 8.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 8, Couplet 2 8, Pont 8, Outro 8.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 8, Couplet 2 8, Pont 8, Outro 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
           "why": "Tout se compte en 8 : chaque MC sait où il en est. En tout 2 min 58.",
           "check": "song:phrases",
@@ -324,7 +328,8 @@
       "steps": [
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Couplet 2 », dernière mesure, efface tous les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Refrain.",
+          "text": "À toi : dernière mesure, efface les coups du dernier temps.",
+          "textPro": "À toi : dans la partie « Couplet 2 », dernière mesure, efface tous les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Refrain.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "listen": "vs:Couplet 2:Refrain",
@@ -380,7 +385,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la basse, le sub et le clap devant.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

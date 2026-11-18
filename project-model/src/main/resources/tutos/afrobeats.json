@@ -51,7 +51,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, ensoleillée. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (la gamme joyeuse) puis « La » (la note de départ).",
+          "text": "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.",
           "textPro": "À toi : règle la tonalité sur La majeur : l'afrobeats est surtout majeur et lumineux. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -74,7 +74,7 @@
         },
         {
           "id": "shaker_do",
-          "text": "À toi : sur le pad du shaker, touche « Remplir tout », sous la grille : un coup sur chaque case. C'est le moteur du groove.",
+          "text": "À toi : sur le pad du shaker, touche « Remplir tout », sous la grille.",
           "textPro": "À toi : le shaker en doubles croches (« Remplir tout ») ; les coups des temps sont plus forts.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -90,7 +90,7 @@
       "steps": [
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick, touche les 7 cases en pointillé : le 1er temps, juste avant le 3e temps, le 3e temps, et un dernier coup juste avant la fin.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé.",
           "textPro": "À toi : le kick sur 1, le « et » du 2 et le 3, plus un coup plus doux sur le « et » du 4.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -116,7 +116,7 @@
       "steps": [
         {
           "id": "conga_do",
-          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Conga », touche les cases en pointillé des 2 mesures : elles sautillent entre les coups de kick.",
+          "text": "À toi : sur le pad « Conga », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : les congas sur 2 mesures (« Passer à 2 mesures »), dans les trous du kick.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -162,7 +162,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les 5 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse et écris la mesure 1 : La tenu sur le 1, La sur le « et » du 2 et sur le 3, puis Mi et Fa♯ qui mènent à l'accord suivant. « Copier » suit la grille Mi, Fa♯m, Ré.",
           "check": "notes:bass",
           "length": 16,
@@ -173,7 +173,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il recopie la mesure 1 en suivant les accords.",
+          "text": "À toi : recopie sur les mesures suivantes.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -204,7 +204,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 5 coups.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (piano électrique). Mesure 1 : La majeur en 5 coups (3-3-4-3-3), puis « Copier » : la copie suit la grille.",
           "check": "notes:pad",
           "length": 16,
@@ -215,7 +215,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -236,7 +237,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 5 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie et écris la phrase : mesure 1 La Si Do♯ Mi… Fa♯ (l'appel qui monte), mesure 2 Fa♯ Mi Do♯ Si (la réponse), puis « Copier ».",
           "why": "En afrobeats, la répétition est une qualité : deux mesures qui reviennent, et on chante avec.",
           "check": "notes:lead",
@@ -248,7 +249,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 4 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la mélodie revient sur les mesures 3 et 4.",
+          "text": "À toi : écris les 4 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -381,7 +382,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "text": "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
           "check": "song:order",
           "spot": "song.parts",
@@ -391,7 +392,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
@@ -407,7 +408,8 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Conga » : touche 3 cases à la suite juste avant le dernier temps, un petit roulement.",
+          "text": "À toi : dernière mesure, pad « Conga » : touche 3 cases à la suite juste avant le dernier temps.",
+          "textPro": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Conga » : touche 3 cases à la suite juste avant le dernier temps, un petit roulement.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -416,7 +418,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un silence juste avant le Refrain.",
+          "text": "À toi : dernière mesure, efface les coups du dernier temps.",
+          "textPro": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un silence juste avant le Refrain.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "part": "Pré-refrain",
@@ -482,7 +485,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

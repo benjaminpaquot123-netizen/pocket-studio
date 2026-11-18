@@ -1,3 +1,25 @@
 {
-  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "तुम्हारी बारी: अपना गाना शेयर करो, ऐप उसकी एक साउंड फ़ाइल बनाता है। “M4A” दोस्तों के लिए हल्की फ़ाइल बनाता है, “WAV” स्टूडियो क्वालिटी रखता है।"
+  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "तुम्हारी बारी: अपना गाना शेयर करो, ऐप उसकी एक साउंड फ़ाइल बनाता है। “M4A” दोस्तों के लिए हल्की फ़ाइल बनाता है, “WAV” स्टूडियो क्वालिटी रखता है।",
+  "À toi : recopie sur les mesures suivantes.": "तुम्हारी बारी: अगले बार पर कॉपी करो।",
+  "À toi : touche les 3 notes en pointillé de la mesure 1.": "तुम्हारी बारी: बार 1 के 3 डॉटेड नोट्स दबाओ।",
+  "À toi : touche les 5 notes en pointillé de la mesure 1.": "तुम्हारी बारी: बार 1 के 5 डॉटेड नोट्स दबाओ।",
+  "À toi : touche les 6 notes en pointillé de la mesure 1.": "तुम्हारी बारी: बार 1 के 6 डॉटेड नोट्स दबाओ।",
+  "À toi : touche les 4 notes en pointillé de la mesure 1.": "तुम्हारी बारी: बार 1 के 4 डॉटेड नोट्स दबाओ।",
+  "À toi : touche les 2 notes en pointillé de la mesure 1.": "तुम्हारी बारी: बार 1 के 2 डॉटेड नोट्स दबाओ।",
+  "À toi : écris les 5 notes de la mesure 2.": "तुम्हारी बारी: बार 2 के 5 नोट्स लिखो।",
+  "À toi : écris les 4 notes de la mesure 2.": "तुम्हारी बारी: बार 2 के 4 नोट्स लिखो।",
+  "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "तुम्हारी बारी: बार 1 में हर कॉर्ड का नीचे वाला डॉटेड नोट दबाओ: पूरा कॉर्ड लग जाता है।",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "तुम्हारी बारी: “मैं करूँगा” टोन शीट खोलता है: घेरे वाले दोनों बटन दबाओ।",
+  "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "तुम्हारी बारी: “Kick” पैड पर 2 बार के डॉटेड खाने दबाओ।",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "तुम्हारी बारी: “Snare” पैड पर 2 बार के डॉटेड खाने दबाओ।",
+  "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "तुम्हारी बारी: “Hi-hat” पैड पर 2 बार के डॉटेड खाने दबाओ।",
+  "À toi : sur le pad « Kick studio », touche les cases en pointillé.": "तुम्हारी बारी: “स्टूडियो Kick” पैड पर डॉटेड खाने दबाओ।",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé.": "तुम्हारी बारी: “Snare” पैड पर डॉटेड खाने दबाओ।",
+  "À toi : sur le pad du kick, touche les cases en pointillé.": "तुम्हारी बारी: kick के पैड पर डॉटेड खाने दबाओ।",
+  "À toi : sur le pad « Cymbale », touche la toute première case.": "तुम्हारी बारी: “Cymbal” पैड पर सबसे पहला खाना दबाओ।",
+  "À toi : dernière mesure, efface les coups du dernier temps.": "तुम्हारी बारी: आख़िरी बार में, आख़िरी बीट के हिट्स मिटाओ।",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "तुम्हारी बारी: “जोड़ो” के नीचे क्रम से दबाओ: इंट्रो, मुखड़ा, अंतरा, प्री-कोरस, मुखड़ा, अंतरा, प्री-कोरस, मुखड़ा, फिर अंत के लिए इंट्रो।",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "तुम्हारी बारी: “जोड़ो” के नीचे क्रम से दबाओ: इंट्रो, अंतरा, प्री-कोरस, मुखड़ा, पोस्ट-कोरस, अंतरा, प्री-कोरस, मुखड़ा, ब्रिज, मुखड़ा, फिर अंत के लिए इंट्रो।",
+  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "तुम्हारी बारी: हर पार्ट को उसकी लंबाई दो: इंट्रो 4 बार, अंतरा 8, प्री-कोरस 4, मुखड़ा 16 (दूसरी बार 8, तीसरी बार 16), पोस्ट-कोरस 4, ब्रिज 8, अंत 4।",
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "तुम्हारी बारी: “मिक्स” में “कॉर्ड्स”, “मेलोडी” थोड़ा नीचे करो: “सामान्य” से “−2”।"
 }

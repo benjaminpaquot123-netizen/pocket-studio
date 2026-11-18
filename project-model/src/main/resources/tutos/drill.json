@@ -27,13 +27,14 @@
       "steps": [
         {
           "id": "ref",
-          "text": "Écoute un extrait de drill fini : l'Intro (le piano seul), puis le Refrain, où la 808 glisse sous une caisse claire décalée. C'est un instrumental pour un rappeur : tu vas le construire brique par brique.",
+          "text": "Écoute un extrait de drill fini : l'Intro (le piano seul), puis le Refrain, où la 808 glisse sous une caisse claire décalée.",
+          "textPro": "Écoute un extrait de drill fini : l'Intro (le piano seul), puis le Refrain, où la 808 glisse sous une caisse claire décalée. C'est un instrumental pour un rappeur : tu vas le construire brique par brique.",
           "check": "listen",
           "listen": "song"
         },
         {
           "id": "tempo",
-          "text": "À toi : règle le tempo (la vitesse du morceau) sur 142 BPM, 142 battements par minute. « Je le fais » ouvre la fiche Tempo. On la sent à 71 : le coup de caisse ou de clap ne tombe qu'une fois par mesure.",
+          "text": "À toi : règle le tempo sur 142 BPM. « Je le fais » ouvre la fiche Tempo.",
           "textPro": "À toi : règle le tempo sur 142 BPM. « Je le fais » ouvre la fiche Tempo.",
           "check": "tempo",
           "spot": "tempo",
@@ -42,7 +43,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure harmonique » (une gamme sombre, un peu orientale) puis « Sol » (la note de départ).",
+          "text": "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.",
           "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -65,7 +66,7 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : la caisse claire tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Caisse », touche les 2 cases en pointillé : une à la mesure 1, une à la mesure 2.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : « Passer à 2 mesures », puis sur le pad « Caisse » : le 3 de la mesure 1, le 4 de la mesure 2.",
           "why": "Sur 2 et 4 comme en rap classique, on perd tout : c'est ce décalage qui fait la drill.",
           "check": "lane:snare",
@@ -82,7 +83,7 @@
       "steps": [
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les cases en pointillé des 2 mesures.",
+          "text": "À toi : sur le pad « Kick studio », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Kick studio », les 4 coups en pointillé : 2 par mesure, pas aux mêmes places.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -100,7 +101,7 @@
         {
           "id": "hat_do",
           "levels": "f",
-          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures : tu verras le motif 3-3-2 (un coup toutes les 3 cases, puis toutes les 2).",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -119,7 +120,7 @@
         {
           "id": "hat_triplet",
           "levels": "f",
-          "text": "À toi : un triolet. Mesure 2, sur le pad « Charley », appui long sur la case 13, puis « Triolet » › « 3 sur 2 cases ». Trois coups à la place de deux : le charley trébuche juste avant la caisse claire.",
+          "text": "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».",
           "why": "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.",
           "check": "triplet:hat",
           "spot": "rhythm.pattern",
@@ -128,7 +129,8 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -165,7 +167,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse 808 », au piano roll). Mesure 1 : Sol1, puis Sol1 qui glisse vers Sol2. Mesure 2 : Mi♭1 qui glisse vers Si♭1 (la quinte), puis Mi♭1 qui glisse vers la mesure 3. « Copier » : la mesure 3 en Do. Mesure 4 : Ré2 tenu, puis le long glissé descendant vers Sol1. « Copier ».",
           "why": "Deux notes qui se chevauchent glissent : en drill, c'est la signature, plusieurs fois par mesure.",
           "check": "notes:bass",
@@ -187,7 +189,7 @@
         },
         {
           "id": "bass_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 3 s'écrit (la même, plus haut).",
+          "text": "À toi : recopie sur les mesures suivantes.",
           "textPro": "À toi : touche « Copier sur les mesures suivantes » : la mesure 3 s'écrit (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
           "check": "notes:bass",
           "length": 48,
@@ -222,7 +224,7 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (des cordes) : Sol mineur à la mesure 1, puis « Copier » : Mi♭ (VI), Do mineur (iv) et Ré majeur (V, avec le Fa♯), suivis le long de la gamme.",
           "check": "notes:pad",
           "length": 16,
@@ -233,7 +235,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
+          "text": "À toi : recopie sur les mesures suivantes.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes » : les accords suivants se posent tout seuls.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -254,7 +257,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 2 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (un piano) : Sol, Si♭ | Ré, Si♭, La | (la mesure 1, « Copier ») | Ré, Fa♯, Sol tenu. Elle reste dans la gamme sans suivre les accords ; le Fa♯ de la mesure 4 tombe sur Ré majeur.",
           "why": "Du vide dans chaque mesure : la voix du rappeur va s'y glisser.",
           "check": "notes:lead",
@@ -266,7 +269,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la mesure 3 se remplit.",
+          "text": "À toi : écris les 3 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "length": 48,
@@ -276,7 +279,7 @@
         },
         {
           "id": "lead_3",
-          "text": "À toi : écris les 3 notes en pointillé de la mesure 4, puis touche « Copier » encore.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 4.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -387,7 +390,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "text": "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
@@ -397,7 +400,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, et l'Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
           "why": "Couplet 30 + Pré-refrain 2 = 32 mesures : les 16 mesures du rappeur. En tout 3 min 30.",
           "check": "song:phrases",
@@ -423,7 +426,8 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
+          "text": "À toi : sur le pad « Cymbale », touche la toute première case.",
+          "textPro": "À toi : dans la partie « Refrain », pose un coup sur le pad « Cymbale » (la grande cymbale) dans la toute première case.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "listen": "part:Refrain",
@@ -481,7 +485,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick d'abord, puis la caisse, puis les charleys.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

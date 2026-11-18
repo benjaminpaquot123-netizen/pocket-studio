@@ -451,9 +451,14 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     await("${s.id}: the hits to take away, crossed out") { has("tuto_erase") }
                 }
                 closeSheetIfAny()
+                // Tour 8 (T0b): « Je le fais » on an effect step makes the gesture itself; then nothing is left to
+                // replay, but the step must be done, else there was no way to do it.
                 val done = TutoChecks.show(s, p(), target)
-                assertNotNull("${s.id}: no way to do it", done)
-                h.vm.session.edit { done!! }
+                if (done == null) {
+                    assertTrue("${s.id}: neither done by \"Je le fais\" nor doable", TutoChecks.done(s, p(), target, null))
+                } else {
+                    h.vm.session.edit { done }
+                }
             }
         }
     }

@@ -599,6 +599,9 @@ private fun StepGrid(
     // there. It is placed once when a step begins (the user's « Étape suivante »), and follows « Montre-moi ».
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
     var tutoPlacedFor by rememberSaveable { mutableStateOf<String?>(null) }
+    // Tour 8, lot T0b (seat e, ch.12): a step asking for cells or crosses on this pad begins on « Coups » (the fill's
+    // « Roulements » stayed on, and a touch on a cross rolled the hit ×2 instead of taking it away).
+    LaunchedEffect(tutoStep, tutoLeft.isNotEmpty()) { if (tutoLeft.isNotEmpty()) tool = 0 }
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
         if (tutoLeft.isEmpty()) return@LaunchedEffect
         if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect
@@ -745,6 +748,13 @@ private fun StepGrid(
                 },
             ),
         ) {
+        // Tour 8 (seat a, ch.3): the dotted cell to touch first, ringed « Touche ici ».
+        val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) ->
+            if (l != lane) null
+            else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                cells, cells.filter { hits[it] != null || project.drums.lanes[lane].covering(it) != null }.toSet(), bar * per, (bar + 1) * per,
+            )
+        }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until per / 2) {
@@ -846,7 +856,7 @@ private fun StepGrid(
                     ) {
                         // « Tuto de A à Z »: a cell of the step's target, still empty, drawn dotted.
                         if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
-                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
                         }
                         // A hit the step asks to take away: crossed out over it (drawn below, on top of the hit).
                         val erasing = velocity != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true
@@ -1517,6 +1527,13 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("all_pads_grid")) {
         project.drums.lanes.forEachIndexed { lane, l ->
             val color = DrumKitInfo.colors[lane]
+            // Tour 8 (control seat d, ch.3 in « Tous les pads »): the dotted cell to touch first ringed here too.
+            val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) ->
+                if (hl != lane) null
+                else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                    cells, cells.filter { l.hits[it] != null }.toSet(), bar * project.stepsPerBar, (bar + 1) * project.stepsPerBar,
+                )
+            }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
                     color = if (l.hits.keys.none { it < project.drums.steps }) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
@@ -1539,7 +1556,15 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                                 selected = hit != null
                             }
                             .testTag("cell_${lane}_$step"),
-                    )
+                    ) {
+                        // Tour 8 (seat c in ko, ch.12): the tutorial's marks here too, as on the pad's own grid.
+                        if (hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
+                        }
+                        if (hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true) {
+                            com.pocketstudio.app.tuto.TutoEraseCell()
+                        }
+                    }
                 }
             }
         }

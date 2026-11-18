@@ -1477,9 +1477,9 @@ private fun TutoNotesLeft(
             )
             val way = com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps)
             val also = com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
-            // Tour 8 T0a (seat b, ja): with no arrow on the line, « あと N 個 » counts the dotted notes in sight, not the
-            // ones out of it; with an arrow, the line says the others are elsewhere and the count stays the whole.
-            val count = if (way == null && also == null) left.count { com.pocketstudio.model.tuto.TutoRollHint.inTime(it, shown) && (!rows || com.pocketstudio.model.tuto.TutoRollHint.inRows(it, shown)) }.coerceAtLeast(1) else left.size
+            // Tour 8 T0a/T0b (seat b, ja: « あと 8 個 » over 7 in sight, the 8th below the rows): the dotted notes in
+            // sight while some are, the arrow of [also] saying one more is elsewhere; all of them when none is in sight.
+            val count = com.pocketstudio.model.tuto.TutoRollHint.counted(left, shown, barSteps)
             Triple(way, also, count)
         }
     }

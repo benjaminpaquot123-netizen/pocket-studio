@@ -2403,6 +2403,17 @@ object TutoRollHint {
     fun also(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? =
         aside(left, v, barSteps)?.let { if (y(it, v) < v.top) TutoWay.Higher else TutoWay.Lower }
 
+    /**
+     * How many dotted notes the line over the roll counts: those in sight ([inTime], and [inRows] once the rows are
+     * measured) while some are, even with one more out of the rows ([also], its arrow says so: tour 8, T0b, seat b in
+     * ja read « あと 8 個 » over 7); all of them when none is in sight ([way] says where they are).
+     */
+    fun counted(left: List<Note>, v: TutoRollView, barSteps: Int = 0): Int {
+        if (left.isEmpty()) return 0
+        if (way(left, v, barSteps) != null) return left.size
+        return left.count { inTime(it, v) && (v.rowPx <= 0f || inRows(it, v)) }.coerceAtLeast(1)
+    }
+
     /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
     fun way(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? {
         val n = next(left, v, barSteps) ?: return null

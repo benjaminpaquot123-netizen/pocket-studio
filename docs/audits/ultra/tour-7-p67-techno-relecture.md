@@ -56,4 +56,16 @@ Tous les noms entre guillemets correspondent aux autres fichiers i18n de chaque 
 - les écrans et boutons (Mon morceau, Ajouter, Je le fais, Sortie générale, Volume visé, Club) ;
 - les réglages de jeu (Normal, Doux, Force, Roulement, Triolet).
 
-Graves : 0
+Graves (première passe, relu à 0f06b0cc) : 0
+
+## Deuxième passe : les « Pourquoi ? » ajoutés après (0f06b0cc..3af46263)
+
+Relecteur neuf. 12 valeurs par langue : les 7 « Créer la partie », Rim, Cymbale, Clap, ref, gap. Sens juste, noms d'interface conformes, ja jamais 終了 pour la Fin, ko au style poli.
+- ja : 0 grave, 0 léger.
+- ko : 0 grave ; léger, make_fin : le bouton dit 끝, la phrase suivante 엔딩 (même remarque projet que plus haut).
+- ar : 0 grave ; légers : accord de مقدمة (خفيفة ومنتظمة / يستخدمها), « لوحة » au lieu de « باد » pour Cymbale, espace dans « للـ DJ ».
+- hi : 0 grave ; légers : tournure de Cymbale (« कहीं और रखो तो ये हर बार में दोहराया जाता »), « Riff » latin contre « रिफ़ ».
+
+relu : 3af46263
+
+Verdict : 0 bloquant, 0 grave

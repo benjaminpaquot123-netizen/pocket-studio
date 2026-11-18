@@ -2460,6 +2460,30 @@ object TutoRollHint {
     }
 
     /**
+     * Tour 8, T0a (house bass: its high and low « La » 13 rows apart, more than the rows above the tutorial's panel;
+     * each touch went to the hidden one, low, high, low… without a note laid): the row height (pixels) at which the
+     * dotted notes of the time in sight all fit the rows in sight, a row to spare, when a touch would go to one out of
+     * the rows ([aside]) that cannot come in with the others. The roll folds its rows to it, then [framed]. Null: no
+     * note out of the rows, they already fit (then [brought] frames them), or rows under [minRow] would be needed.
+     */
+    fun folded(left: List<Note>, v: TutoRollView, barSteps: Int, minRow: Float): Float? {
+        aside(left, v, barSteps) ?: return null
+        val all = pool(left, barSteps).filter { inTime(it, v) }
+        val rows = all.maxOf { it.pitch } - all.minOf { it.pitch } + 1
+        val sight = v.bottom - v.top
+        if (rows * v.rowPx <= sight + 1f) return null
+        return kotlin.math.floor(sight / (rows + 1)).takeIf { it >= minRow && it < v.rowPx }
+    }
+
+    /** How far to move the rows (pixels) so that the dotted notes of the time in sight are in the middle of the rows in sight, none cut. */
+    fun framed(left: List<Note>, v: TutoRollView, barSteps: Int): Float {
+        val all = pool(left, barSteps).filter { inTime(it, v) }
+        if (all.isEmpty() || v.rowPx <= 0f) return 0f
+        val dy = (all.minOf { y(it, v) } + all.maxOf { y(it, v) } + v.rowPx) / 2 - (v.top + v.bottom) / 2
+        return dy + whole(left, v.copy(top = v.top + dy, bottom = v.bottom + dy))
+    }
+
+    /**
      * The note a touch on the line (or the step asking, [touched] false) lights: the one brought from out of the rows
      * ([aside]) once it is in sight, else [next]. [up] and [down]: how far the rows can still scroll (pixels).
      */

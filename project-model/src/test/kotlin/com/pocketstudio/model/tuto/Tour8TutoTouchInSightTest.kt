@@ -19,6 +19,8 @@ import kotlin.math.roundToInt
 class Tour8TutoTouchInSightTest {
     private val step = 40f
     private val row = 30f
+    /** The smallest row a fold gives (`MIN_ROW` 5 dp of the 20 dp rows, as « Tout voir »). */
+    private val minRow = row * 5f / 20f
     private val low = 24
     private val high = 108
     private val tick = NoteClip.TICKS_PER_STEP
@@ -28,7 +30,7 @@ class Tour8TutoTouchInSightTest {
      * The roll: [height] pixels tall, the tutorial's panel over its lowest [panel] pixels (the rows in sight end at its
      * top), and the same [panel] pixels of room under the lowest row (`covered` in `PianoRoll`).
      */
-    private class Roll(var h: Int, var v: Int, val width: Float, val height: Float, val panel: Float, val steps: Int) {
+    private class Roll(var h: Int, var v: Int, val width: Float, val height: Float, val panel: Float, val steps: Int, var row: Float) {
         val sight get() = height - panel
     }
 
@@ -41,7 +43,7 @@ class Tour8TutoTouchInSightTest {
     /** The roll as it opens on a step: the middle pitch in the middle of the rows in sight, the bar of the first note. */
     private fun opened(notes: List<Note>, width: Float, height: Float, panel: Float): Roll {
         val steps = ((notes.maxOf { it.start + it.length } + bar * tick - 1) / (bar * tick)) * bar
-        val r = Roll(0, 0, width, height, panel, steps)
+        val r = Roll(0, 0, width, height, panel, steps, row)
         val pitches = notes.map { it.pitch }.sorted()
         val middle = pitches[pitches.size / 2].coerceIn(low, high)
         val first = notes.sortedWith(compareBy({ it.start }, { -it.pitch })).first()
@@ -52,9 +54,19 @@ class Tour8TutoTouchInSightTest {
         return r
     }
 
-    /** One touch on the line, as `PianoRoll` makes it: the note lit, then the roll moved (as far as it can go). */
+    /**
+     * One touch on the line, as `PianoRoll` makes it: the note lit, then the roll moved (as far as it can go); or, when
+     * the dotted notes of the time in sight cannot all be in the rows, the rows folded and the notes framed.
+     */
     private fun Roll.touch(left: List<Note>): Note? {
         val v0 = view()
+        TutoRollHint.folded(left, v0, bar, minRow)?.let { fold ->
+            val hidden = TutoRollHint.aside(left, v0, bar)
+            row = fold
+            v = v.coerceIn(0, maxV())
+            v = (v + TutoRollHint.framed(left, view(), bar)).roundToInt().coerceIn(0, maxV())
+            return hidden
+        }
         val lit = TutoRollHint.lit(left, v0, bar, true, v.toFloat(), (maxV() - v).toFloat())
         val (dx, dy) = TutoRollHint.brought(left, v0, bar)
         h = (h + dx).roundToInt().coerceIn(0, maxH())

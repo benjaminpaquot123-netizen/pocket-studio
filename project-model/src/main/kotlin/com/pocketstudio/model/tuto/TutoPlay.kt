@@ -67,7 +67,18 @@ object TutoPlay {
                 val made = TutoChecks.show(step, p, target, level)?.mixer?.channels?.getOrNull(ch) ?: return null
                 p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, x -> if (i == ch) made else x })).takeIf { it != p }
             }
-            c.startsWith("automation") -> TutoChecks.show(step, p, target, level)?.takeIf { it != p }
+            // Only the curves and the strips they work on (the filter it adds there), never the rest of the project
+            // the show hands back (review of T0b: the user's work came from the show, not from [p]).
+            c.startsWith("automation") -> {
+                val made = TutoChecks.show(step, p, target, level) ?: return null
+                val strips = made.automation.filter { it !in p.automation }.map { it.target.ch }.toSet()
+                p.copy(
+                    automation = made.automation,
+                    mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, x ->
+                        if (i in strips) made.mixer.channels.getOrNull(i)?.let { x.copy(inserts = it.inserts) } ?: x else x
+                    }),
+                ).takeIf { it != p }
+            }
             else -> null
         }
     }

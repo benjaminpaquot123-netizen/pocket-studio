@@ -1,3 +1,25 @@
 {
-  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Twoja kolej: udostępnij swój utwór, aplikacja zrobi z niego plik dźwiękowy. „M4A” daje lekki plik dla znajomych, „WAV” zachowuje jakość studyjną."
+  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Twoja kolej: udostępnij swój utwór, aplikacja zrobi z niego plik dźwiękowy. „M4A” daje lekki plik dla znajomych, „WAV” zachowuje jakość studyjną.",
+  "À toi : recopie sur les mesures suivantes.": "Twoja kolej: skopiuj na kolejne takty.",
+  "À toi : touche les 3 notes en pointillé de la mesure 1.": "Twoja kolej: dotknij 3 kropkowanych nut w takcie 1.",
+  "À toi : touche les 5 notes en pointillé de la mesure 1.": "Twoja kolej: dotknij 5 kropkowanych nut w takcie 1.",
+  "À toi : touche les 6 notes en pointillé de la mesure 1.": "Twoja kolej: dotknij 6 kropkowanych nut w takcie 1.",
+  "À toi : touche les 4 notes en pointillé de la mesure 1.": "Twoja kolej: dotknij 4 kropkowanych nut w takcie 1.",
+  "À toi : touche les 2 notes en pointillé de la mesure 1.": "Twoja kolej: dotknij 2 kropkowanych nut w takcie 1.",
+  "À toi : écris les 5 notes de la mesure 2.": "Twoja kolej: zapisz 5 nut w takcie 2.",
+  "À toi : écris les 4 notes de la mesure 2.": "Twoja kolej: zapisz 4 nuty w takcie 2.",
+  "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Twoja kolej: dotknij dolnej nuty każdego kropkowanego akordu w takcie 1: kładzie się cały akord.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Twoja kolej: „Zrobię to” otwiera kartę Tonacja: dotknij dwóch obwiedzionych przycisków.",
+  "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Twoja kolej: na padzie „Kick” dotknij kropkowanych pól w 2 taktach.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Twoja kolej: na padzie „Werbel” dotknij kropkowanych pól w 2 taktach.",
+  "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Twoja kolej: na padzie „Hi-hat” dotknij kropkowanych pól w 2 taktach.",
+  "À toi : sur le pad « Kick studio », touche les cases en pointillé.": "Twoja kolej: na padzie „Kick studyjny” dotknij kropkowanych pól.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé.": "Twoja kolej: na padzie „Werbel” dotknij kropkowanych pól.",
+  "À toi : sur le pad du kick, touche les cases en pointillé.": "Twoja kolej: na padzie kicka dotknij kropkowanych pól.",
+  "À toi : sur le pad « Cymbale », touche la toute première case.": "Twoja kolej: na padzie „Talerz” dotknij pierwszego pola.",
+  "À toi : dernière mesure, efface les coups du dernier temps.": "Twoja kolej: w ostatnim takcie wymaż uderzenia z ostatniej ćwierćnuty.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Twoja kolej: pod „Dodaj” dotknij po kolei: Intro, Refren, Zwrotka, Pre-chorus, Refren, Zwrotka, Pre-chorus, Refren, potem Intro na koniec.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Twoja kolej: pod „Dodaj” dotknij po kolei: Intro, Zwrotka, Pre-chorus, Refren, Post-chorus, Zwrotka, Pre-chorus, Refren, Bridge, Refren, potem Intro na koniec.",
+  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Twoja kolej: nadaj każdej części jej długość: Intro 4 takty, Zwrotka 8, Pre-chorus 4, Refren 16 (8 za 2. razem, 16 za 3.), Post-chorus 4, Bridge 8, Koniec 4.",
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Twoja kolej: w karcie „Miks” ścisz trochę suwaki „Akordy” i „Melodia”. Pod suwakiem „Normalnie” zmienia się w „−2”."
 }

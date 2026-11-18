@@ -1,3 +1,25 @@
 {
-  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Your turn: share your song, the app turns it into a sound file. “M4A” makes a light file for your friends, “WAV” keeps studio quality."
+  "À toi : partage ton morceau : l'appli en fait un fichier son. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.": "Your turn: share your song, the app turns it into a sound file. “M4A” makes a light file for your friends, “WAV” keeps studio quality.",
+  "À toi : recopie sur les mesures suivantes.": "Your turn: copy it onto the next bars.",
+  "À toi : touche les 3 notes en pointillé de la mesure 1.": "Your turn: tap the 3 dotted notes of bar 1.",
+  "À toi : touche les 5 notes en pointillé de la mesure 1.": "Your turn: tap the 5 dotted notes of bar 1.",
+  "À toi : touche les 6 notes en pointillé de la mesure 1.": "Your turn: tap the 6 dotted notes of bar 1.",
+  "À toi : touche les 4 notes en pointillé de la mesure 1.": "Your turn: tap the 4 dotted notes of bar 1.",
+  "À toi : touche les 2 notes en pointillé de la mesure 1.": "Your turn: tap the 2 dotted notes of bar 1.",
+  "À toi : écris les 5 notes de la mesure 2.": "Your turn: write the 5 notes of bar 2.",
+  "À toi : écris les 4 notes de la mesure 2.": "Your turn: write the 4 notes of bar 2.",
+  "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Your turn: tap the bottom dotted note of each chord in bar 1: the whole chord is placed.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Your turn: “I'll do it” opens the Key sheet: tap the two circled buttons.",
+  "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Your turn: on the “Kick” pad, tap the dotted cells of the 2 bars.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Your turn: on the “Snare” pad, tap the dotted cells of the 2 bars.",
+  "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Your turn: on the “Hi-hat” pad, tap the dotted cells of the 2 bars.",
+  "À toi : sur le pad « Kick studio », touche les cases en pointillé.": "Your turn: on the “Studio kick” pad, tap the dotted cells.",
+  "À toi : sur le pad « Caisse », touche les cases en pointillé.": "Your turn: on the “Snare” pad, tap the dotted cells.",
+  "À toi : sur le pad du kick, touche les cases en pointillé.": "Your turn: on the kick pad, tap the dotted cells.",
+  "À toi : sur le pad « Cymbale », touche la toute première case.": "Your turn: on the “Cymbal” pad, tap the very first cell.",
+  "À toi : dernière mesure, efface les coups du dernier temps.": "Your turn: last bar, clear the hits on the last beat.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Your turn: under “Add”, tap in order: Intro, Chorus, Verse, Pre-chorus, Chorus, Verse, Pre-chorus, Chorus, then Intro to finish.",
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Your turn: under “Add”, tap in order: Intro, Verse, Pre-chorus, Chorus, Post-chorus, Verse, Pre-chorus, Chorus, Bridge, Chorus, then Intro to finish.",
+  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Your turn: give each part its length: Intro 4 bars, Verse 8, Pre-chorus 4, Chorus 16 (8 the 2nd time, 16 the 3rd), Post-chorus 4, Bridge 8, End 4.",
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Your turn: in the “Mix” tab, lower the “Chords” and “Melody” sliders a little. Under the slider, “Normal” becomes “−2”."
 }

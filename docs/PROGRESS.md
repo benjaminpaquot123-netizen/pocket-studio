@@ -1,7 +1,7 @@
 # Avancement
 
 ## Où on en est (2026-11-18, fin d'après-midi)
-- Paquet 2 entré dans l'intégration : T0b (CI 375 verte, sièges de contrôle d2/e2 : cibles vues, 0 chapitre bloqué) + R (restes8, CI 373 verte). CI du paquet lancée.
+- Paquet 2 entré dans l'intégration : T0b (CI 375 verte, sièges de contrôle d2/e2 : cibles vues, 0 chapitre bloqué) + R (restes8, CI 373 verte). CI 376 verte (0 capture changée).
 - Clôture du tour 8 : défauts neufs notés « pas pris », aucun nouvel audit après le contrôle.
 
 ## Prochaine étape exacte

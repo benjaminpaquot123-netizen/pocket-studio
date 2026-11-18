@@ -20,8 +20,6 @@ import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.Project
@@ -85,14 +83,14 @@ class Tour8MixerRotationTest {
     private fun setUpState(): Float {
         consoleScroll().performSemanticsAction(SemanticsActions.ScrollBy) { it(60f, 0f) }
         compose.waitForIdle()
-        val by = scrolled()
-        assertTrue("the console did not scroll", by > 0f)
-        compose.onNodeWithTag("master_effects").performScrollTo().performClick()
+        compose.onNodeWithTag("master_effects").performSemanticsAction(SemanticsActions.OnClick)
         compose.waitForIdle()
         compose.onNodeWithTag("fx_chain_$MASTER_CHANNEL").assertExists()
-        compose.onNodeWithTag("strip_more_2").performClick()
+        compose.onNodeWithTag("strip_more_2").performSemanticsAction(SemanticsActions.OnClick)
         compose.waitForIdle()
         compose.onNodeWithTag("strip_sheet").assertExists()
+        val by = scrolled()
+        assertTrue("the console did not scroll", by > 0f)
         return by
     }
 

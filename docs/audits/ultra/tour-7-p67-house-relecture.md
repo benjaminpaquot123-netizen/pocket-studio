@@ -1,0 +1,9 @@
+# Tour 7, p67-house : relecture
+Relu : 6244224ff
+- mineur, project-model/src/main/resources/tutos/house.json:559 (étape `share`) : le Facile dit « Pas de solo » alors que l'écran affiche « aucun solo oublié » (ShareSheet.kt:508) ; correctif : reprendre les mots de l'écran (« Aucun solo oublié : … ») et ses 14 traductions.
+- mineur, project-model/src/main/resources/tutos/speed_garage.json:75 (étape `snare_do`) : le Facile ne nomme plus le pad (l'ancien texte disait « caisse claire »), le débutant ne sait pas quelle ligne remplir ; correctif : ajouter « sur le pad « Caisse » » (et traductions).
+- mineur, project-model/src/main/resources/tutos/deep_house.json:406, speed_garage.json:408, tech_house.json:424 (étape `gap`) : « dernière mesure » a disparu, « dernier temps » devient ambigu dans une Montée de 4 à 8 mesures ; correctif : « dans la dernière mesure de la Montée » (et traductions).
+- mineur, project-model/src/main/resources/tutos/disco.json:217 (étape `lead_2`) : « recopie la mélodie… » ne dit plus par quoi ; risque faible car le bouton « Copier sur… » du besoin s'affiche avant ; correctif facultatif : « la mélodie se recopie avec le bouton au-dessus ».
+- mineur, project-model/src/main/resources/tutos/uk_garage.json:379 (étape `gap`) : l'indice « croix rouge » (pour effacer) est perdu ; correctif facultatif : le remettre en fin de phrase.
+- RAS : JSON valides ; textes Pro inchangés (0 champ ni nombre d'étapes modifié) ; 89 textes Facile neufs traduits dans les 14 langues, nombres, signes et noms de pads gardés (sondage en, es, de, ja, ar, plus hi, zh-CN, ko, tr) ; 28 clés retirées de tuto_autres (392 suppressions, rien d'autre) introuvables dans tutos et sources ; listes d'exceptions : seules des lignes des 9 styles house retirées ; ni png, apk, audio, lien symbolique, secret ni identifiant de modèle.
+Verdict : 0 bloquant, 0 grave

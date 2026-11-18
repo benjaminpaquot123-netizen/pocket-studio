@@ -40,7 +40,7 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure, un peu sombre, avec une note claire qui donne le sourire), puis, sous « Tonique » (la note de départ du morceau), « La ».",
+          "text": "À toi : mets le morceau en « Dorienne », avec La pour « Tonique » (la note de départ). « Je le fais » ouvre la fiche Tonalité.",
           "textPro": "À toi : règle la tonalité sur La dorien : un mineur avec la sixte majeure (Fa♯), qui donne un IV majeur. C'est la couleur du piano house. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
@@ -63,7 +63,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : la boucle de batterie fait 2 mesures (une mesure = un tour de 4 temps). Touche « Passer à 2 mesures », puis sur le pad « Kick », touche les cases en pointillé : un coup sur chaque temps, et un petit coup en plus juste avant la fin de la mesure 2.",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : pose 4 coups par mesure sur 2 mesures, plus le coup doux du pas 15 de la mesure 2 : le « jack » de Chicago.",
           "why": "Le petit coup en plus relance la boucle de 2 mesures : c'est le « jack » des disques de Chicago.",
           "check": "lane:kick",
@@ -106,7 +106,7 @@
         },
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide, avec un trou là où sonne le « tchi ».",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide.",
           "textPro": "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -152,7 +152,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse », puis les notes en pointillé de la mesure 1 (La grave, La aigu).",
+          "text": "À toi : touche les notes en pointillé de la mesure 1 (La grave, La aigu).",
           "textPro": "À toi : crée la piste Basse et écris la mesure 1 (La, saut d'octave), « Copier » (mesure 2 en La, mesure 3 transposée sur Ré, le IV), puis la mesure 4 avec sa tourne Mi–Sol qui ramène à La.",
           "why": "La basse change de note avec les accords (La, puis Ré) : basse et piano racontent la même chose.",
           "check": "notes:bass",
@@ -164,7 +164,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il fait la mesure 2, et la même chose sur Ré en mesure 3. Écris enfin la mesure 4 : elle finit sur Mi et Sol pour revenir vers La.",
+          "text": "À toi : écris la mesure 4 : elle finit sur Mi et Sol pour revenir vers La.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -211,7 +211,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 4 coups.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 4 coups.",
           "textPro": "À toi : crée la piste Accords et écris les stabs, sans fondamentale (la basse l'a) : Am9 = Do Mi Sol Si (mesures 1-2), D9 = Do Mi Fa♯ La (mesures 3-4). Deux notes restent, deux bougent : le « voice leading » des pianistes. Le rythme évite le 1er temps ; la mesure 4 varie pour fermer la phrase.",
           "why": "Sans la note grave, le piano reste léger et ne bave pas sur la basse.",
           "check": "notes:pad",
@@ -223,7 +223,8 @@
         },
         {
           "id": "pad_end",
-          "text": "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.",
+          "text": "À toi : fais les mesures 3 et 4 : un autre accord, celui de Ré.",
+          "textPro": "À toi : touche « Copier sur les mesures suivantes », puis fais les mesures 3 et 4 : un autre accord, celui de Ré.",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -251,7 +252,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 8 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : le reste se fait tout seul.",
+          "text": "À toi : écris les 8 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -348,7 +349,7 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée à partir du Groove : sans kick ni basse. Son clap accélère mesure après mesure, puis se tait sur le dernier temps, avec le piano. Les charleys et le pad « Rim » y jouent encore : tu les feras taire au chapitre « Les transitions », pour un temps de silence juste avant le Drop.",
+          "text": "À toi : crée la Montée, sans kick ni basse. Le clap accélère, puis se tait au dernier temps. Les charleys et le « Rim » jouent encore : tu les feras taire au chapitre « Les transitions ».",
           "textPro": "À toi : crée la Montée, sans kick ni basse : charleys, pad « Rim », piano, et un clap qui accélère (noires, croches, doubles croches) jusqu'au silence d'avant le Drop.",
           "check": "part:Montée:nokick+nobass",
           "spot": "song.parts",
@@ -405,7 +406,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. Ne t'occupe pas encore du nombre de mesures affiché : l'étape suivante donne à chaque partie sa vraie durée.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin. La durée de chaque partie vient ensuite.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
@@ -415,7 +416,8 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Drop 16, Break 16, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Drop 16, Break 16, Drop 2 16, Fin 16.",
+          "textPro": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Drop 16, Break 16, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
           "song": "Intro:16,Montée:8,Drop:16,Break:16,Montée:8,Drop 2:16,Fin:16",
@@ -449,7 +451,7 @@
         },
         {
           "id": "crash",
-          "text": "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.",
+          "text": "À toi : dans le Drop, touche la 1re case du pad de la cymbale : tout est revenu.",
           "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
@@ -459,7 +461,7 @@
         },
         {
           "id": "variation",
-          "text": "À toi : dans la partie « Drop 2 », sur le pad « Shaker », touche 4 cases, une sur chaque temps de la mesure 1 : un son de plus par-dessus le Drop, pour qu'il paraisse plus riche.",
+          "text": "À toi : dans le Drop 2, pad « Shaker », touche 4 cases, une par temps de la mesure 1.",
           "textPro": "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.",
           "check": "changed:drums:Drop 2",
           "target": "perc2",
@@ -516,7 +518,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix » (là où tu règles le volume de chaque son), baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Les chiffres du curseur, de « +4 » (plus fort) à « −∞ » (plus de son du tout), disent seulement de combien tu montes ou baisses.",
+          "text": "À toi : dans « Mix » (volume de chaque son), baisse un peu « Accords » et « Mélodie » (+4 fort, −∞ muet).",
           "textPro": "À toi : dans Mix, baisse un peu le fader des Accords et celui de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -554,7 +556,7 @@
       "steps": [
         {
           "id": "share",
-          "text": "À toi : touche « Partager » : l'appli fait de ton morceau un fichier son à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. En dessous, « −14 » veut dire aussi fort que la musique en streaming, « Pas de saturation » que rien ne grésille, et « aucun solo oublié » qu'aucune piste ne joue toute seule.",
+          "text": "À toi : touche « Partager » : ton morceau devient un fichier son. −14 : aussi fort que le streaming. Pas de saturation : rien ne grésille. Pas de solo : aucune piste ne joue toute seule.",
           "textPro": "À toi : touche « Partager » et envoie ton morceau.",
           "check": "shared",
           "spot": "share.export"

@@ -1515,8 +1515,15 @@ object TutoChecks {
                     else -> null
                 }
             }
-            val loop = AutomationLane(t, mode = AutomationLane.PER_SCENE, sceneValues = mapOf(scene to line))
-            return q.copy(automation = (q.automation.filterNot { it.target == loop.target } + loop).take(AutomationLane.MAX_LANES))
+            return withPartCurve(q, t, scene, line)
+        }
+        // The lane already « Par partie » (the Drop's loop of ch.13): the curve goes into this part's loop, the other
+        // parts' curves kept (fresh review of the ch.13 fix: a song-wide lane in its place lost the Drop's loop).
+        if (q.automation.any { it.target == t && it.mode == AutomationLane.PER_SCENE } && shape in setOf(RISE_SHAPE, "fall")) {
+            val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
+            val steps = q.allScenes[scene].stepsFor(q.stepsPerBar.coerceAtLeast(2)).coerceIn(2, AutomationLane.STEPS)
+            val (from, to) = if (shape == "fall") 1f to 0.15f else 0.15f to 1f
+            return withPartCurve(q, t, scene, List(AutomationLane.STEPS) { i -> when (i) { 0 -> from; steps - 1 -> to; else -> null } })
         }
         var lane = AutomationLane(t, mode = AutomationLane.SONG)
         val spans = spansOf(q, label).ifEmpty { listOf(0 to 8) }
@@ -1536,6 +1543,13 @@ object TutoChecks {
         for ((at, bars) in spans) if (spans.none { it.first == at + bars }) lane = lane.withSongPoint(at + bars, rest).withSongJump(at + bars, true)
         val kept = q.automation.filterNot { it.target == lane.target }
         return q.copy(automation = (kept + lane).take(AutomationLane.MAX_LANES))
+    }
+
+    /** [q] with [line] as the « Par partie » curve of [scene] on [t]'s lane, the lane's other parts kept. */
+    private fun withPartCurve(q: Project, t: AutoTarget, scene: Int, line: List<Float?>): Project {
+        val was = q.automation.firstOrNull { it.target == t && it.mode == AutomationLane.PER_SCENE }
+        val lane = (was ?: AutomationLane(t, mode = AutomationLane.PER_SCENE)).let { it.copy(sceneValues = it.sceneValues + (scene to line)) }
+        return q.copy(automation = (q.automation.filterNot { it.target == t } + lane).take(AutomationLane.MAX_LANES))
     }
 
     /** [edit] made in the scene named [label] (shown, then back on the scene shown before). */

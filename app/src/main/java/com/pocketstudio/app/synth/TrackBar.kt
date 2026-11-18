@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.layout.layout
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +44,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import com.pocketstudio.ui.fadingEdges
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.composed
@@ -151,10 +153,11 @@ fun TrackBar(
     // Lot 6, R19 (seats D b, F b, B b): the fade alone read as a chip cut at the edge. While the row goes on off screen,
     // an arrow says so on that side; it takes no touch. Tour 8, captures8: laid over the row, it covered the last chip's
     // text (« + Pist→ » at 130 %, « + トラ→ »): it now has its own place beside the row, which scrolls between the two.
+    // The arrows say « more » on their side: the row has no fade any more (it ate the last chip, « Remix » down to « Re »).
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
     if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.testTag("track_bar_less"))
     Row(
-        Modifier.weight(1f, fill = false).fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
+        Modifier.weight(1f, fill = false).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -298,10 +301,23 @@ fun TrackBar(
  */
 @Composable
 private fun RowMoreSign(forward: Boolean, modifier: Modifier) {
-    Icon(
-        if (forward) Icons.AutoMirrored.Filled.ArrowForward else Icons.AutoMirrored.Filled.ArrowBack,
-        contentDescription = null, tint = Neon.TextPrimary, modifier = modifier.size(22.dp),
-    )
+    // Beside the row, it takes width from it, and the chip at the edge goes out of sight (the 303 in the Mode simple,
+    // « Remix » in Pro, at 360 dp). So it holds only half its stroke's width in the row and draws the other half over
+    // the margin the row always has around it (8 dp at least, every screen with a TrackBar): 6 dp taken, not 22.
+    val slot = 12.dp
+    val held = 6.dp
+    Box(
+        modifier.layout { measurable, constraints ->
+            val drawn = measurable.measure(constraints.copy(minWidth = 0, maxWidth = slot.roundToPx()))
+            layout(held.roundToPx(), drawn.height) { drawn.placeRelative(if (forward) 0 else held.roundToPx() - drawn.width, 0) }
+        }.width(slot).height(22.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            if (forward) Icons.AutoMirrored.Filled.ArrowForward else Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.wrapContentSize(unbounded = true).size(18.dp),
+        )
+    }
 }
 
 /** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */

@@ -58,18 +58,40 @@ class OrdinaryTestsLeaveNothingTest {
      * past the time it is given is red itself, by name (StrictTestApplication.afterTest, every Robolectric test).
      */
     @Test
-    fun c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself() {
+    fun c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself() = leavesTheAppsWorkRunning("c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself", startLateMs = 0)
+
+    /**
+     * Tour 8, lot « stable8 » (c_ red under load, « red itself, by name: null »): on a loaded machine the worker that runs
+     * the work left starts late; afterTest, called at once, saw no worker in the app's code and said nothing. The same
+     * test with the worker's start held 300 ms (a loaded machine, without the load): the work is waited for until it runs.
+     */
+    @Test
+    fun c_anOrdinaryTestThatLeavesTheAppsWorkStartedLateIsRedItself() = leavesTheAppsWorkRunning("c_anOrdinaryTestThatLeavesTheAppsWorkStartedLateIsRedItself", startLateMs = 300)
+
+    private fun leavesTheAppsWorkRunning(name: String, startLateMs: Long) {
         val stop = java.util.concurrent.atomic.AtomicBoolean(false)
         // A worker kept in this package's code (com.pocketstudio…) far past the time given, as a render or a fetch left on.
         @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
-        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Default) { while (!stop.get()) Thread.sleep(20) }
+        val running = java.util.concurrent.CountDownLatch(1)
+        kotlinx.coroutines.GlobalScope.launch(lateDefault(startLateMs)) { running.countDown(); while (!stop.get()) Thread.sleep(20) }
         try {
-            val m = javaClass.getMethod("c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself")
+            // The work is left running, as the test says, before the check is asked: a worker started late (a loaded
+            // machine) no more makes the check look at nothing.
+            assertTrue("the work left started on a worker", running.await(60, java.util.concurrent.TimeUnit.SECONDS))
+            val m = javaClass.getMethod(name)
             val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
-            assertTrue("red itself, by name: $e", e is AssertionError && "c_anOrdinaryTestThatLeavesTheAppsWorkRunningIsRedItself" in e.message.orEmpty())
+            assertTrue("red itself, by name: $e", e is AssertionError && name in e.message.orEmpty())
             assertTrue("naming the work: ${e?.message}", "OrdinaryTestsLeaveNothingTest" in e?.message.orEmpty() && "worker" in e?.message.orEmpty())
         } finally {
             stop.set(true)
+        }
+    }
+
+    /** Dispatchers.Default, each start held [ms] first (the worker of a loaded machine). */
+    private fun lateDefault(ms: Long): kotlinx.coroutines.CoroutineDispatcher = object : kotlinx.coroutines.CoroutineDispatcher() {
+        override fun dispatch(context: kotlin.coroutines.CoroutineContext, block: Runnable) {
+            if (ms <= 0) return kotlinx.coroutines.Dispatchers.Default.dispatch(context, block)
+            Thread { Thread.sleep(ms); kotlinx.coroutines.Dispatchers.Default.dispatch(context, block) }.start()
         }
     }
 

@@ -6,7 +6,7 @@ Exceptions de moments de mes styles : 86 → 24 lignes, toutes partagées : dnb 
 Pro hors budget (mes styles) : 1256 → 1247 (baisse : raccourcis d'une seule langue, même clé).
 Garde-fous du modèle (project-model, hors chemins) : TutoValidationTest, TutoLot4Test, TutoLot5Test, I18nCatalogTest.
 Batterie : project-model 224/0, app 251/0 ; PS_TUTO_FAULTS vide ; aucune capture commitée.
-Après relecture (2 graves corrigés) : « pourquoi » d'étape = « pourquoi » du chapitre + glose (le chapitre n'est plus caché) ; astuce liquid hat_do juste. 12 nouvelles clés dans les 14 langues, 5 clés de gloses seules devenues orphelines retirées (ajoutées par ce lot). ko : espace avant 탭하세요 (7 clés). ja riddim song_order gardé court (« マイソング » ferait sortir du budget).
+Après relecture (2 graves corrigés) : « pourquoi » d'étape = « pourquoi » du chapitre + glose (le chapitre n'est plus caché) ; astuce liquid hat_do juste. 13 nouvelles clés dans les 14 langues, 5 clés de gloses seules devenues orphelines retirées (ajoutées par ce lot). ko : espace avant 탭하세요 (7 clés). ja riddim song_order gardé court (« マイソング » ferait sortir du budget).
 Cliquet PENDING_VERB (Tour6TutoYourTurnTest) : vert, aucune entrée de mes styles à retirer.
 Tests adaptés pour lire « texte + pourquoi » (accord du chef, chaque exigence gardée) : TutoLot4Test#theFacileWordsAreExplained ; TutoLot5Test#theWordsSayWhatTheScreenShows (clap_do et key).
 tests: :project-model:test --tests 'com.pocketstudio.model.tuto.*' --tests 'com.pocketstudio.model.i18n.I18nCatalogTest' --tests 'com.pocketstudio.model.i18n.KoreanRegisterTest' --tests 'com.pocketstudio.model.i18n.Tour7LanguagesTest' :app:testDebugUnitTest --tests 'com.pocketstudio.app.tuto.*'

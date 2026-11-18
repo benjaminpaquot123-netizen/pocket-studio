@@ -1,5 +1,5 @@
 # Tour 8, t0b « gestes du tuto » : relecture neuve
-Relu : cefa3587
+Relu : a5ca718c
 
 Portée : `git diff ff64ff0a...d641f3cc -- app project-model` (17 fichiers, +642 −18) : TutoController.kt (« Je le fais »), TutoPanel.kt (bouton DO, partie vide, anneau), TutoPlay.kt (`doHere`, `emptyPart`, `ringed`), TutoChecks.kt (`placed`, `TutoRollHint.counted`), RhythmScreen.kt (outil, anneau, marques de AllPadsGrid), PianoRoll.kt (compteur), les tests neufs Tour8TutoGestures* (DoIt, Tool, EmptyPart, AllPads, Montee, Counter, Ring), les retouches de TutoJourneyTest et TutoLot4Test, et `docs/decisions/tour-8-t0b.md`. Joué : `:project-model:test` sur Tour7TutoMadePart* et Tour8TutoGestures* (tout vert : Tour7TutoMadePartPlacedTest 1/1, Counter 2/2, Montee 1/1, Ring 4/4). Tests app lus, non joués.
 
@@ -52,7 +52,7 @@ Constats :
 14. mineur, `Tour8TutoGesturesDoItTest.kt` : rien sur un Drop de plus d'une mesure, une autre mesure que 4/4, `MAX_LANES` plein, ni le chemin « Montre-moi » de l'étape boucle.
 
 ## Contrôle d : anneau dans « Tous les pads » (59f039e7..b685bad7)
-Rouge afbd3fec (test seul : `theFirstDottedCellIsRingedOnAllThePads` échoue sur l'ancien code), vert b685bad7 (AllPadsGrid, même calcul que `TutoPlay.ringed`), docs cefa3587 (corrections.tsv : d-a-V1-anneau tenté, d-montee voulu, d-22-maracas rangé hors zone). Joué : Tour8Tuto*, TutoJourneyTest, TutoGrilleTest, tout vert. Relecture neuve : 0 bloquant, 0 grave ; pas de texte d'interface neuf ; rien dans le moteur.
+Rouge afbd3fec (test seul : `theFirstDottedCellIsRingedOnAllThePads` échoue sur l'ancien code), vert b685bad7 (AllPadsGrid, même calcul que `TutoPlay.ringed`), docs cefa3587 (corrections.tsv : d-a-V1-anneau tenté, d-montee voulu, d-22-maracas pas pris, hors zone). Joué : Tour8Tuto*, TutoJourneyTest, TutoGrilleTest, tout vert. Relecture neuve : 0 bloquant, 0 grave ; pas de texte d'interface neuf ; rien dans le moteur.
 
 15. mineur, `RhythmScreen.kt` (AllPadsGrid) : la case remplie ne compte que `l.hits[it]`, pas `l.covering(it)` comme StepGrid ; un triolet qui couvre une case pointée laisse l'anneau dessus. AllPadsGrid pointait déjà ces cases avant le lot.
 16. mineur, `Tour8TutoGesturesAllPadsTest.kt` : pas de test de triolet ni de mesure toute remplie (aucun anneau attendu).

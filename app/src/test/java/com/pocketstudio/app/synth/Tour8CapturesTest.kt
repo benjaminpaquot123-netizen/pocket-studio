@@ -118,7 +118,9 @@ class Tour8CapturesTest {
                     arrows++
                     val b = sign.boundsInRoot
                     assertTrue("$lang $size $n tracks, $tag: in sight ($b)", b.width > 1f && b.height > 1f)
-                    textsUnder(b).forEach { seen += "$lang $size $n tracks, $tag over « $it »" }
+                    // What is drawn: the arrow itself, wider than the room it holds in the row.
+                    val drawn = nodes("${tag}_icon").single().boundsInRoot
+                    textsUnder(drawn).forEach { seen += "$lang $size $n tracks, $tag over « $it »" }
                 }
             }
         }
@@ -158,5 +160,35 @@ class Tour8CapturesTest {
             if (band > 1f) bands += "${if (simple) "Simple" else "Pro"} $size: ${"%.1f".format(band)} dp empty under the content"
         }
         assertTrue("a band under the sheet's content:\n" + bands.take(12).joinToString("\n") + "\n(${bands.size} in all)", bands.isEmpty())
+    }
+
+    /** When everything fits (nothing to scroll), no empty band between the last line and the pinned M4A / WAV row. */
+    @Test
+    fun noEmptyBandAboveThePinnedFormatsWhenNothingScrolls() {
+        var case by mutableStateOf(Pair(true, sizes.first()))
+        compose.setContent {
+            val (simple, size) = case
+            key(case) {
+                Sized(size) {
+                    Box(Modifier.testTag("host")) {
+                        ShareSheetContent(share, ShareSheetActions(toMixer = if (simple) null else ({}), sendProject = {}), page = simple, simple = simple)
+                    }
+                }
+            }
+        }
+        val bands = mutableListOf<String>()
+        for (simple in listOf(true, false)) for (size in sizes) {
+            case = simple to size
+            compose.waitForIdle()
+            val host = nodes("host").single()
+            val dp = host.layoutInfo.density.density
+            val formats = nodes("share_format_Wav").single().boundsInRoot.top
+            // The lines themselves (leaves), not the scrolling column that holds them.
+            val above = host.all().drop(1).filter { it.children.isEmpty() && it.boundsInRoot.height > 0.5f && it.boundsInRoot.bottom <= formats + 0.5f }
+                .maxOf { it.boundsInRoot.bottom }
+            val gap = (formats - above) / dp
+            if (gap > 13f) bands += "${if (simple) "Simple" else "Pro"} $size: ${"%.1f".format(gap)} dp empty above M4A / WAV"
+        }
+        assertTrue("a band above the formats:\n" + bands.take(12).joinToString("\n") + "\n(${bands.size} in all)", bands.isEmpty())
     }
 }

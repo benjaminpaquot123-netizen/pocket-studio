@@ -346,3 +346,6 @@ tour-4	T4-19	E/a	7	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Renomme
 tour-4	T4-17	A/d	36	banc	-	-	Compteur « Verso compasso 25/104 » figé pendant la lecture	
 tour-4	T4-17	D/b	32	banc	-	-	Compteur « Intro batt. 1 » figé (idem écran 98)	
 tour-4	T4-17	B/c	71	banc	-	-	Compteur « 小節 1/1 » qui n'avance pas	
+tour-8	a-V1	a	66	tenté	c74c0058	Tour8TutoTouchHere#simpleOneTouchShowsTheBar	repli des rangées + cadrage au toucher	PianoRoll.kt	téléphone, 100 %, house leçon 3 : à chaque note demandée, la note à poser est en vue au-dessus du panneau et le rond "Touche ici" est dessus ; je la pose d'un toucher	p8b/a	-
+tour-8	compteur-ja	b	47	tenté	c74c0058	Tour8TutoTouchHere#simpleOneTouchShowsTheBar	nombre = notes en vue sans flèche	PianoRoll.kt	en ja, phone à 100 %, Mode Simple : le nombre « あと N 個 » est égal au nombre de notes en pointillé que je vois dans la mesure	p8b/b	-
+tour-8	alternance-La	-	-	tenté	c74c0058	Tour8TutoTouchInSightTest#touchingWithoutLayingNeverFlipsTheViewBack	plus d'alternance grave/aigu	TutoChecks.kt	deux notes visées à une octave d'écart : toucher sans poser ne fait plus alterner la vue grave / aigu ; la vue les tient toutes les deux, ou le rouleau se replie pour les montrer.	relecture p8	-

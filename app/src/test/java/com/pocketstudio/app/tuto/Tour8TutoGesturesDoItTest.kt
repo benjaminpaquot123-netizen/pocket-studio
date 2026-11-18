@@ -7,6 +7,7 @@ import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.AutomationLane
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.switchScene
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoPlay
@@ -151,9 +152,11 @@ class Tour8TutoGesturesDoItTest {
             assertTrue("$style: a curve made", made != null && made.automation.isNotEmpty())
             made!!
             val ch = made.automation.map { it.target.ch }.toSet()
-            val expected = own.copy(
+            // A loop curve (« Par partie », control e of ch.13) also shows the part it is drawn on, nothing else.
+            val shown = if (step.check == "automation:loop") own.switchScene(own.allScenes.indexOfFirst { it.label == "Drop" }) else own
+            val expected = shown.copy(
                 automation = made.automation,
-                mixer = own.mixer.copy(channels = own.mixer.channels.mapIndexed { i, x -> if (i in ch) x.copy(inserts = made.mixer.channels[i].inserts) else x }),
+                mixer = shown.mixer.copy(channels = shown.mixer.channels.mapIndexed { i, x -> if (i in ch) x.copy(inserts = made.mixer.channels[i].inserts) else x }),
             )
             assertEquals("$style: « Je le fais » changed more than the curve and its filter", expected, made)
         }
@@ -180,6 +183,7 @@ class Tour8TutoGesturesDoItTest {
             assertTrue("$style: a Drop", drop >= 0)
             val lane = made.automation.single { it !in own.automation }
             assertEquals("$style: the mode the step asks (« Par partie »)", AutomationLane.PER_SCENE, lane.mode)
+            assertEquals("$style: the Drop shown, so the curve drawn is the one on screen", drop, made.scene)
             val loop = lane.sceneValues[drop].orEmpty()
             val bar = made.stepsPerBar
             val first = loop.take(bar)

@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.switchScene
 
 /**
  * One step of a course, played as the app plays it (tour 7, audit « Fable », § 3.1): what it watches taken when the
@@ -72,9 +73,12 @@ object TutoPlay {
             c.startsWith("automation") -> {
                 val made = TutoChecks.show(step, p, target, level) ?: return null
                 val strips = made.automation.filter { it !in p.automation }.map { it.target.ch }.toSet()
-                p.copy(
+                // A loop curve is drawn on one part: show that part, so the curve drawn is the one on screen (control e, ch.13).
+                val loopPart = if (c == "automation:" + TutoChecks.LOOP_SHAPE) TutoChecks.namedScene(p, step.part).takeIf { it >= 0 && it != p.scene } else null
+                val base = loopPart?.let(p::switchScene) ?: p
+                base.copy(
                     automation = made.automation,
-                    mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, x ->
+                    mixer = base.mixer.copy(channels = base.mixer.channels.mapIndexed { i, x ->
                         if (i in strips) made.mixer.channels.getOrNull(i)?.let { x.copy(inserts = it.inserts) } ?: x else x
                     }),
                 ).takeIf { it != p }

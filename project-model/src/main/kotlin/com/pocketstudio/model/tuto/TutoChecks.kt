@@ -916,7 +916,13 @@ object TutoChecks {
 
     /** A curve's shapes: "rise" (the Montée's), "fall", "wave" (up then down again in the part: the techno filter's cycle). */
     const val RISE_SHAPE = "rise"
-    val CURVE_SHAPES = setOf(RISE_SHAPE, "fall", "wave")
+    val CURVE_SHAPES = setOf(RISE_SHAPE, "fall", "wave", LOOP_SHAPE)
+
+    /**
+     * The wave drawn « Par partie » on the part's own loop, once a bar (control seat e of T0b, e-ch13: the
+     * techno filter step asks for that mode and that loop; a song-wide curve is not what it asks).
+     */
+    const val LOOP_SHAPE = "loop"
 
     /**
      * The parts [step] works in ([TutoStep.part], comma separated): by default the Montée for the
@@ -1114,7 +1120,9 @@ object TutoChecks {
             cutoffOf(p, l.target, role) && when (l.mode) {
                 AutomationLane.PER_SCENE -> part >= 0 && ok(l.sceneValues[part].orEmpty())
                 // The part's own bars (its rest after it, reached by a jump, is not its curve), or up to the next bar line.
-                AutomationLane.SONG -> spans.any { (at, bars) -> ok(l.songValues.drop(at).take(bars)) || ok(l.songValues.drop(at).take(bars + 1)) }
+                // The loop step asks for the part's own loop: a curve over the song is another gesture.
+                AutomationLane.SONG -> shape != LOOP_SHAPE &&
+                    spans.any { (at, bars) -> ok(l.songValues.drop(at).take(bars)) || ok(l.songValues.drop(at).take(bars + 1)) }
                 else -> false
             }
         }
@@ -1125,7 +1133,7 @@ object TutoChecks {
         if (v.size < 2) return false
         return when (shape) {
             "fall" -> v.last() <= v.first() - RISE
-            "wave" -> v.size >= 3 && (1 until v.size - 1).any { i -> v[i] >= v.first() + RISE && v[i] >= v.last() + RISE }
+            "wave", LOOP_SHAPE -> v.size >= 3 && (1 until v.size - 1).any { i -> v[i] >= v.first() + RISE && v[i] >= v.last() + RISE }
             else -> v.last() >= v.first() + RISE
         }
     }
@@ -1493,6 +1501,22 @@ object TutoChecks {
                 ?: withInsert(p, ch, Insert(EffectType.FILTER.ordinal, listOf(1f, 0.25f, 0f, 1f)))?.let { q -> q to q.mixer.channels[ch].inserts.indexOfFirst { it.effect == EffectType.FILTER } }
                 ?: return null
             withFilter.first to AutoTarget(AutoTarget.INSERT_PARAM, ch, withFilter.second, 0)
+        }
+        if (shape == LOOP_SHAPE) {
+            // « Par partie », on the part's loop: up to the middle of each bar and back down (the filter's cycle).
+            val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
+            val bar = q.stepsPerBar.coerceAtLeast(2)
+            val steps = q.allScenes[scene].stepsFor(bar).coerceIn(bar, AutomationLane.STEPS)
+            val line = List(AutomationLane.STEPS) { i ->
+                when {
+                    i >= steps -> null
+                    i % bar == 0 || i % bar == bar - 1 -> 0.15f
+                    i % bar == bar / 2 -> 1f
+                    else -> null
+                }
+            }
+            val loop = AutomationLane(t, mode = AutomationLane.PER_SCENE, sceneValues = mapOf(scene to line))
+            return q.copy(automation = (q.automation.filterNot { it.target == loop.target } + loop).take(AutomationLane.MAX_LANES))
         }
         var lane = AutomationLane(t, mode = AutomationLane.SONG)
         val spans = spansOf(q, label).ifEmpty { listOf(0 to 8) }

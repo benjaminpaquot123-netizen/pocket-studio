@@ -68,6 +68,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.runtime.CompositionLocalProvider
@@ -518,6 +519,8 @@ fun TutoPanel(
     // a window of two and a half: no effect to the eye. There, one touch on it gives the words their usual room back
     // (the whole instruction, as before the lower room), for this step, until the panel is folded.
     var readAll by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    // The words' whole height, measured while « Lire la suite » unfolds them (0: not yet).
+    var wholeWords by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
     val lowRoom = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
     val cellsToTouch = lowRoom && !readAll
@@ -531,7 +534,11 @@ fun TutoPanel(
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
     // before's left its room in the height held for this one).
-    val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
+    // Tour 7 P6/P7 bloc 0b: the examples folded (below), the words are measured again from the start: « Lire la suite »'s
+    // room, taken while the examples overflowed, is not kept under words that now fit.
+    var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    val words = remember(step.id, ui.open, examplesFolded) { androidx.compose.foundation.ScrollState(0) }
     // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
     // above « Pourquoi ? »), and inside the kit offer's buttons. The step's lines and the offer's buttons (top, bottom), in
     // the scrolled content's own pixels: the room ends on a whole line, above a whole button.
@@ -548,6 +555,21 @@ fun TutoPanel(
     // A new scroll's maxValue is Int.MAX_VALUE until its first measure: taken as « they scroll », « Lire la suite »'s room
     // went into the height held for the step, empty under words that fit. Only once they are measured longer than their room.
     val scrolls = words.maxValue in 1 until Int.MAX_VALUE
+    // Tour 7 P6/P7 bloc 0b (docs/audits/ultra/tour-7-plan-p6-p7.md § 1.4): the blocks fold in [TutoReadability.layout]'s
+    // order before the words are cut. The kit offer and « Pourquoi ? » are pinned under the words and stay (cut anyway,
+    // folding them spares nothing; the kit offer is only there when the step needs it, « ▸ Pourquoi ? » is already its
+    // folded form). The examples (Mode simple, under the words) fold first: words that scroll fold them, for the step.
+    val lineHeight = wordsLineHeight()
+    val gapPx = with(density) { 6.dp.roundToPx() }
+    var moreHeight by remember { mutableIntStateOf(0) }
+    if (scrolls && !examplesFolded && examplesHeight > 0) SideEffect {
+        val more = if (moreHeight > 0) moreHeight else with(density) { TutoReadability.MORE_DP.dp.roundToPx() }
+        val room = words.viewportSize + more + gapPx
+        val rest = (words.maxValue + words.viewportSize - examplesHeight - gapPx).coerceAtLeast(0)
+        val restLines = maxOf(1, kotlin.math.ceil(rest / lineHeight).toInt())
+        val keep = TutoReadability.layout(room, rest.toFloat() / restLines, restLines, 0, 0, examplesHeight + gapPx, more)
+        if (!keep.examples) examplesFolded = true
+    }
     val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null && !ui.bravo }
     var whyOpen by rememberSaveable(why) { mutableStateOf(false) }
     val reason = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -635,7 +657,14 @@ fun TutoPanel(
             // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
             // room grows by what is missing, and a height held too low for it is taken again (twice at most).
             // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
-            val least = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            val lineAndHalf = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            // Tour 7 P6/P7 bloc 0b (CI 353): « Lire la suite » over the cells to touch gives back the whole instruction, the
+            // kit offer pinned under it or not (its card came once the packs' index was read and took the words' room):
+            // there, the words' least room is their whole height, as far as the screen lets it.
+            // Kept once measured (words that then fit scroll no more: their whole height is not read again).
+            val whole = if (lowRoom && readAll && words.maxValue in 1 until Int.MAX_VALUE) words.maxValue + words.viewportSize else 0
+            if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
+            val least = maxOf(lineAndHalf, if (lowRoom && readAll) wholeWords else 0)
             WordsRoom(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
@@ -673,7 +702,8 @@ fun TutoPanel(
                         }
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
-                        if (alreadySaid == null && momentWords(ui) == null) com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
+                        if (alreadySaid == null && momentWords(ui) == null && !examplesFolded) com.pocketstudio.app.library.PlainWordsLines(
+                            step.textFor(ui.progress.level), modifier = Modifier.onSizeChanged { if (it.height > 0) examplesHeight = it.height })
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -703,7 +733,7 @@ fun TutoPanel(
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (scrolls) MoreWords(words.canScrollForward) {
+            if (scrolls) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
                 if (cellsToTouch) readAll = true
                 else {
                     // A page on, from the first line not wholly seen (never half a line at the top).

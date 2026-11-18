@@ -599,6 +599,9 @@ private fun StepGrid(
     // there. It is placed once when a step begins (the user's « Étape suivante »), and follows « Montre-moi ».
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
     var tutoPlacedFor by rememberSaveable { mutableStateOf<String?>(null) }
+    // Tour 8, lot T0b (seat e, ch.12): a step asking for cells or crosses on this pad begins on « Coups » (the fill's
+    // « Roulements » stayed on, and a touch on a cross rolled the hit ×2 instead of taking it away).
+    LaunchedEffect(tutoStep, tutoLeft.isNotEmpty()) { if (tutoLeft.isNotEmpty()) tool = 0 }
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
         if (tutoLeft.isEmpty()) return@LaunchedEffect
         if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect

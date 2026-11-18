@@ -296,7 +296,7 @@ void testLiveTempoBench() {
 #ifdef PS_COUNT_ALLOCATIONS
     CHECK(allocations == 0);
 #endif
-    if (!machineOverloaded()) CHECK(p99 < 0.5);  // a laptop: the phone is slower (ps_live --cpu-scale 3)
+    CHECK_TIMING(p99 < 0.5);  // a laptop: the phone is slower (ps_live --cpu-scale 3)
     engine.collectGarbage();
     for (auto* s : at128) if (s->release()) delete s;
     for (auto* s : at113) if (s->release()) delete s;

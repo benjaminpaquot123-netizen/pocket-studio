@@ -4,15 +4,12 @@ Fait : consignes Facile des 7 cours Bass (dnb, dubstep, jump_up, jungle, liquid_
 Exceptions Facile (lisibilité) de mes styles : 981 → 224 lignes, toutes des étapes partagées (partage, tonalité, niveaux, gloses communes), laissées au bloc 4.
 Exceptions de moments de mes styles : 86 → 24 lignes, toutes partagées : dnb lead_do/levels/pad_do/pad_end ; dubstep gap/lead_2/levels/pad_do/pad_end ; jump_up levels/pad_2 ; jungle gap/levels/pad_do/pad_end ; liquid_dnb gap/lead_do/pad_do/pad_end ; neurofunk levels/pad_do/pad_end ; riddim pad_do/pad_end.
 Pro hors budget (mes styles) : 1256 → 1247 (baisse : raccourcis d'une seule langue, même clé).
+Garde-fous du modèle (project-model, hors chemins) : TutoValidationTest, TutoLot4Test, TutoLot5Test, I18nCatalogTest.
 Batterie : project-model 224/0, app 251/0 ; PS_TUTO_FAULTS vide ; aucune capture commitée.
 Tests adaptés pour lire « texte + pourquoi » (accord du chef, chaque exigence gardée) : TutoLot4Test#theFacileWordsAreExplained ; TutoLot5Test#theWordsSayWhatTheScreenShows (clap_do et key).
 tests: :project-model:test --tests 'com.pocketstudio.model.tuto.*' --tests 'com.pocketstudio.model.i18n.I18nCatalogTest' --tests 'com.pocketstudio.model.i18n.KoreanRegisterTest' --tests 'com.pocketstudio.model.i18n.Tour7LanguagesTest' :app:testDebugUnitTest --tests 'com.pocketstudio.app.tuto.*'
 chemin: panneau du tuto, consignes Facile des cours Bass | test: TutoReadabilityBudgetTest#everyFacileConsigneFitsOrIsAKnownException
 chemin: panneau du tuto, consignes Pro des cours Bass | test: TutoReadabilityBudgetTest#proOutOfBudgetOnlyGoesDown
-chemin: panneau du tuto, une série de gestes par consigne Facile | test: TutoValidationTest#theWordsAreTheScreensAndRight
-chemin: panneau du tuto jump up, gloses Facile | test: TutoLot4Test#theFacileWordsAreExplained
-chemin: panneau du tuto jump up, « Suivre » et tonalité | test: TutoLot5Test#theWordsSayWhatTheScreenShows
-chemin: panneau du tuto, traductions des 14 langues | test: I18nCatalogTest
 
 ## Clés retirées de tuto_autres (14 langues, suppressions seules)
 Copies orphelines de mes anciens textes Bass :

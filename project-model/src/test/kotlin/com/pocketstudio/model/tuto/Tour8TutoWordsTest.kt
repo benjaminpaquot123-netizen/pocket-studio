@@ -13,6 +13,7 @@ import org.junit.Test
  *   is silent (bar 4 holds 16 claps).
  * - Korean: the part « Fin » is the button's word, 끝, never 엔딩.
  * - Techno Facile: the Intro 2 leaves out the riff only (no Facile step lays the cymbal in the Groove).
+ * - German and Japanese: the wrong words the seats e and b heard are gone.
  */
 class Tour8TutoWordsTest {
     private val langs = Lang.entries - Lang.FR
@@ -91,5 +92,29 @@ class Tour8TutoWordsTest {
         if (!cymbal && "cymbale" in intro2) bad += "fr: « $intro2 » (no Facile step lays the cymbal)"
         for (lang in langs) if (I18n.table(lang)[intro2] == null) bad += "${lang.code}: no translation of « $intro2 »"
         report("Facile Intro 2 words name a pad the Facile Groove does not have", bad)
+    }
+
+    /** The de words of seat e and the ja words of seat b (tour 8): each wrong word, in every text of its language. */
+    @Test
+    fun theWrongWordsOfTheGermanAndJapaneseSeatsAreGone() {
+        val wrong = listOf(
+            Lang.DE to Regex("„[^“”]*„"), // de 1
+            Lang.DE to Regex("^Darin: %s\\.\$|darin\\. Darin"), // de 2
+            Lang.DE to Regex("(dem|und der|Hi-Hats und) „Rim“"), // de 3
+            Lang.DE to Regex("vor der letzten Zählzeit"), // de 4
+            Lang.DE to Regex("dann wieder auf einen\\."), // de 5
+            Lang.DE to Regex("gepunktet"), // de 6
+            Lang.DE to Regex("außer dem (Becken und dem )?Riff\\."), // de 7
+            Lang.DE to Regex("„Nächster Schritt“, wann du willst"), // de 8
+            Lang.DE to Regex("^%s: danach\$"), // de 9
+            Lang.DE to Regex("Filter-„Cutoff“|„Cutoff“ der Spur"), // de 10
+            Lang.JA to Regex("キット %1\\\$s を"), // ja a
+            Lang.JA to Regex("(?<!（)太鼓のふち"), // ja b
+            Lang.JA to Regex("ゴーストベース"), // ja c
+            Lang.JA to Regex("点線の音"), // ja d
+        )
+        val bad = ArrayList<String>()
+        for ((lang, rx) in wrong) for ((k, v) in I18n.table(lang)) if (rx.containsMatchIn(v)) bad += "${lang.code} /${rx.pattern}/ « $k »: $v"
+        report("German or Japanese texts still say a wrong word", bad)
     }
 }

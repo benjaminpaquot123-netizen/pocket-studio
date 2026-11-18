@@ -3,6 +3,19 @@
 Base : 2af35df0 · branche `eq/tour-8-banc9` · commits : rouge ebab732b, vert d769c17c.
 Fiche : `docs/audits/ultra/tour-8-fiches/fiche-B-banc9.md`. Aucun fichier de `app/src/main` touché, aucune phrase de l'appli.
 
+tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.human.Bench*' --tests '*Tour5Bloquants*' --tests '*Coquille2Seat*'
+chemin: banc, cible à moitié dessinée hors conteneur défilable | test: BenchShortSeatTest#aHalfDrawnTargetIsAimedAtInItsDrawnPart
+chemin: banc, amenée tuto:techno:9 en ko, phone360, 130 %, Simple | test: BenchAmeneesTest#tutoAnchorAtChapterNineSwipesForNothing
+chemin: banc, rejeu sans borne joué jusqu'au bout | test: BenchShortSeatTest#aReplayWithNoBoundIsFaithfulWhenTheOriginIsPlayedOut
+chemin: banc, bouton sans étiquette parti du doigt | test: BenchShortSeatTest#anUntaggedButtonThatMovedGivesTheSeatBack
+chemin: banc, rejeu dans: sur un conteneur à plusieurs boutons | test: BenchShortSeatTest#aContainerTagWithManyButtonsIsNotReaimed
+chemin: Remix, remix_pick autour de remix_pick_thumb | test: BenchShortSeatTest#aTouchOnATagDrawnInsideTheTargetIsOnTheTarget
+chemin: banc, écran qui recolle après un écart | test: BenchShortSeatTest#aScreenThatSticksAgainHasNoDiffNow
+chemin: banc, écrans d'audit réels en ressources | test: BenchShortSeatTest#theAuditScreensReadAreTestResources
+chemin: banc, carte dessinée sur le bouton | test: BenchCoverTest#aCardDrawnOverTheButtonCoversIt
+chemin: banc, carte à côté du bouton | test: BenchCoverTest#aCardBesideTheButtonCoversNothing
+chemin: banc, anneau du tuto sur le bouton | test: BenchCoverTest#aRingDrawnOverTheButtonLetsTheTouchThrough
+
 ## Les dix points
 
 | Point | Ce qui change | Test (rouge avant, vert après) |

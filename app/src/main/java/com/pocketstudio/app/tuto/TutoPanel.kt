@@ -532,7 +532,11 @@ fun TutoPanel(
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
     // before's left its room in the height held for this one).
-    val words = remember(step.id, ui.open) { androidx.compose.foundation.ScrollState(0) }
+    // Tour 7 P6/P7 bloc 0b: the examples folded (below), the words are measured again from the start: « Lire la suite »'s
+    // room, taken while the examples overflowed, is not kept under words that now fit.
+    var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
+    val words = remember(step.id, ui.open, examplesFolded) { androidx.compose.foundation.ScrollState(0) }
     // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
     // above « Pourquoi ? »), and inside the kit offer's buttons. The step's lines and the offer's buttons (top, bottom), in
     // the scrolled content's own pixels: the room ends on a whole line, above a whole button.
@@ -555,8 +559,6 @@ fun TutoPanel(
     // folded form). The examples (Mode simple, under the words) fold first: words that scroll fold them, for the step.
     val lineHeight = wordsLineHeight()
     val gapPx = with(density) { 6.dp.roundToPx() }
-    var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
-    var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
     var moreHeight by remember { mutableIntStateOf(0) }
     if (scrolls && !examplesFolded && examplesHeight > 0) SideEffect {
         val more = if (moreHeight > 0) moreHeight else with(density) { TutoReadability.MORE_DP.dp.roundToPx() }

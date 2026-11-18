@@ -41,9 +41,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme très sombre) puis « Fa# » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne », puis « Fa# ».",
           "textPro": "À toi : règle la tonalité sur Fa# phrygien, gamme « Phrygienne », tonique « Fa# » : le Sol, juste au-dessus de la tonique, grince ; c'est la menace du neurofunk. Ici, « Je le fais » ouvre la fiche Tonalité ; hors du tuto, elle se règle sous le piano roll de chaque piste, dans « Gamme et accords ».",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -71,7 +71,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à 2 mesures » s'il est proposé, puis les cases en pointillé. Dans la 2e mesure, un coup arrive plus tôt pour surprendre.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures. Un coup arrive plus tôt : c'est voulu.",
           "textPro": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures : le two-step, et dans la 2e mesure le kick avancé avant le 3 avec son rebond.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -96,8 +96,9 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures (une mesure = un tour de la boucle) : les temps 2 et 4, et un petit coup doux tout à la fin.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures : 2 et 4, et la note fantôme qui relance à la fin de la 2e.",
+          "why": "La caisse claire (le « clac » de la batterie) frappe sur 2 et 4, sèche et tranchante, sans fioritures : c'est elle qui tient tout le morceau. Le pointillé montre où frapper ; une mesure = un tour de la boucle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -121,8 +122,9 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures : les croches. « Remplir 1/2 » les pose d'un geste.",
+          "why": "Le charley (la petite cymbale qui fait « tss ») donne la vitesse, discrètement. Les petits bruits secs autour font le côté machine. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -159,7 +161,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1, toutes sur la même note.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1, toutes sur la même note.",
           "textPro": "À toi : crée la piste Basse (son du style : une basse qui parle, effet « Basse grasse » et « Pompe » sur sa tranche). Écris les mesures 1 et 2 dans le piano roll (Fa#, rien que Fa#, et le saut d'octave à la fin), puis « Copier sur les mesures suivantes ».",
           "why": "Une seule note : en neurofunk, ce n'est pas la mélodie qui raconte, c'est le rythme et le son de la basse.",
           "check": "notes:bass",
@@ -171,7 +173,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 5 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait le reste.",
+          "text": "À toi : touche les 5 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -260,7 +262,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1 : elles tombent dans les trous de la basse.",
+          "text": "À toi : touche les 2 notes en pointillé de la mesure 1 : elles tombent dans les trous de la basse.",
           "textPro": "À toi : crée la piste Mélodie (un « Stab métallique », un flanger sur sa tranche) et écris sa réponse : 2 notes en mesure 1, 1 en mesure 2, dans les silences de la basse ; puis « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
           "length": 16,
@@ -271,7 +273,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris la note de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "text": "À toi : écris la note de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -438,7 +440,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, chaque Drop tombe au début d'une phrase de 8. Le morceau dure un peu plus de 3 minutes.",
           "check": "song:phrases",
@@ -454,8 +456,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : une transition prévient l'oreille. Dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Caisse », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -463,7 +466,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un silence juste avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
           "why": "Un temps de rien, et la basse tombe deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

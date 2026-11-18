@@ -28,9 +28,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, sombre comme le jump up. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (le nom d'une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne », puis « Fa ».",
           "textPro": "À toi : règle la tonalité sur Fa phrygien, gamme « Phrygienne », tonique « Fa » : avec sa seconde mineure, l'un des modes les plus sombres. Ici, « Je le fais » ouvre la fiche Tonalité ; hors du tuto, elle se règle sous le piano roll de chaque piste, dans « Gamme et accords ».",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -83,8 +83,9 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : la caisse claire (le « clac » de la batterie) joue sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Caisse », touche les cases en pointillé de la mesure 1, puis de la mesure 2.",
+          "text": "À toi : la caisse claire (le « clac ») est sur le pad « Caisse » : touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : la caisse claire tient sur 2 mesures, avec un coup en plus à la fin de la 2e. « Passer à 2 mesures », puis sur le pad « Caisse », touche les cases en pointillé des deux mesures.",
+          "why": "La caisse claire (le « clac » de la batterie) répond au kick sur les temps 2 et 4 : c'est elle qui fait sauter la salle. Le pointillé montre où frapper ; une mesure = un tour de la boucle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -92,8 +93,9 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche les cases en pointillé des 2 mesures, pile sur la caisse claire. « Suivre », au-dessus de la grille, fait suivre la musique à la grille ; pendant la lecture, « mes. 1/2 », en haut, dit quelle mesure joue.",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé, pile sur la caisse claire.",
           "textPro": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures, pile sur la caisse claire.",
+          "why": "La caisse claire (le « clac » de la batterie) répond au kick sur les temps 2 et 4 : c'est elle qui fait sauter la salle. « Suivre », au-dessus de la grille, fait suivre la musique à la grille ; pendant la lecture, « mes. 1/2 », en haut, dit quelle mesure joue.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -108,8 +110,9 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; il reste la dernière case de chaque mesure.",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures. « Remplir 1/2 » pose les croches d'un geste ; ajoute la dernière case de chaque mesure.",
+          "why": "Le charley (la petite cymbale qui fait « tss ») donne la vitesse. Les petites percussions font rouler le rythme entre les coups. Astuce : sur le pad « Charley » (le « tss »), « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; il reste la dernière case de chaque mesure.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -156,7 +159,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les notes en pointillé de la mesure 1 : elles tombent avec le kick.",
+          "text": "À toi : touche les notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse (son « Basse growl », et sur sa tranche l'effet « Growl » : distorsion et OTT). Écris la mesure 1 dans le piano roll (les notes en pointillé : Fa, avec un saut d'octave), « Copier sur les mesures suivantes » (mesures 2 et 3), puis la mesure 4 (Sol♭, La♭, Do : la basse suit l'accord et remonte vers Fa), et « Copier » : 8 mesures.",
           "check": "notes:bass",
           "length": 16,
@@ -167,7 +170,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il répète la mesure 1 sur les mesures 2 et 3.",
+          "text": "À toi : fais répéter la mesure 1 sur les mesures suivantes, d'un seul geste.",
           "levels": "f",
           "check": "notes:bass",
           "length": 48,
@@ -225,8 +228,9 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord (3 notes jouées ensemble) se pose.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.",
           "textPro": "À toi : crée la piste Accords (une nappe). « Accords » (rangée de boutons au-dessus de la grille, à faire glisser) pose la triade d'un toucher sur la note du bas en pointillé. Mesure 1 (Fa mineur), « Copier sur les mesures suivantes », mesure 4 (Sol♭ majeur, le ♭II), puis « Copier ».",
+          "why": "La piste « Accords » tient plusieurs notes ensemble (un accord), longtemps et doucement : c'est la nappe, l'ambiance sombre de l'Intro et du Break. Un accord (3 notes jouées ensemble) donne sa couleur au morceau.",
           "check": "notes:pad",
           "length": 16,
           "spot": "notes.track",
@@ -268,7 +272,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1 : elles répondent à la basse dans ses trous.",
+          "text": "À toi : touche les 2 notes en pointillé de la mesure 1 : elles répondent à la basse.",
           "textPro": "À toi : crée la piste Mélodie (un lead hoover) et écris son riff dans le piano roll : les notes en pointillé des mesures 1 et 3, puis « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
           "length": 16,
@@ -279,7 +283,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris la note de la mesure 3, puis touche « Copier sur les mesures suivantes ».",
+          "text": "À toi : écris la note de la mesure 3.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -429,7 +433,7 @@
         },
         {
           "id": "make_drop2",
-          "text": "À toi : crée le Drop 2 : la même énergie que le Drop, avec une autre basse. Écris-la : les notes en pointillé de la mesure 1.",
+          "text": "À toi : dans le Drop 2, écris une autre basse : les notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée le Drop 2 (sans la piste « Accords »), puis écris sa nouvelle basse, ta ligne une quarte plus haut dans la gamme : mesure 1, « Copier sur les mesures suivantes », mesure 4, « Copier », puis « Copier la basse une octave plus bas » pour sa Sub.",
           "check": "part:Drop 2:differs",
           "length": 16,
@@ -442,7 +446,7 @@
         },
         {
           "id": "make_drop2_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 1 se répète.",
+          "text": "À toi : fais répéter la mesure 1 sur les mesures suivantes, d'un seul geste.",
           "levels": "f",
           "check": "part:Drop 2:differs",
           "length": 48,
@@ -454,7 +458,7 @@
         },
         {
           "id": "make_drop2_3",
-          "text": "À toi : écris les notes en pointillé de la mesure 4, puis touche « Copier » encore.",
+          "text": "À toi : écris les notes en pointillé de la mesure 4.",
           "levels": "f",
           "check": "part:Drop 2:differs",
           "spot": "song.parts",
@@ -491,7 +495,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 28 mesures, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 28, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 28 mesures, Montée 4, Drop 32, Break 12, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "check": "song:phrases",
           "spot": "song.parts",
@@ -507,8 +511,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Caisse », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "why": "Une transition (le passage d'une partie à l'autre) prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -516,7 +521,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un silence juste avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "listen": "vs:Montée:Drop",

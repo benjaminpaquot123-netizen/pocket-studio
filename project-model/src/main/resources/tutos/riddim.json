@@ -36,9 +36,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » puis « Mi♭ » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur un peu triste. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi♭ ».",
           "textPro": "À toi : règle la tonalité sur Mi♭ mineur (Ré# mineur), gamme « Mineure », tonique « Mi♭ » : la Sub joue un seul Mi♭ très grave, 39 Hz, qui se sent plus qu'il ne s'entend. Ici, « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:bass",
@@ -66,7 +66,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche les cases en pointillé : le gros coup au début, et le coup doux au milieu.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé : un gros coup au début, un doux au milieu.",
           "textPro": "À toi : sur le pad du kick, les deux cases en pointillé : le 1, et le kick doux sur le 3, caché sous le clap.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -144,7 +144,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (son du style, filtre haché par un LFO carré, flanger sur sa tranche). Écris les mesures 1 et 2 : Mi♭, Mi♭, le Mi♭ aigu en réponse ; puis la même chose avec un Sol♭ avant la réponse. « Copier sur les mesures suivantes ».",
           "why": "Rien entre la 9e et la 12e case : c'est la place du clap. Les silences comptent autant que les notes.",
           "check": "notes:bass",
@@ -156,7 +156,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 4 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait le reste.",
+          "text": "À toi : touche les 4 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -396,7 +396,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Faux drop, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Faux drop, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Faux drop, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
           "check": "song:order",
           "spot": "song.parts",
@@ -406,7 +406,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Faux drop 4, Drop 16, Break 16, Drop 2 16 et Fin 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "Intro, Montée et Faux drop font 28 mesures, le Drop tombe à la 29e : une phrase plus loin que le dubstep, à cause du faux départ. Le morceau dure environ 2 min 45.",
           "check": "song:phrases",
@@ -422,8 +422,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », va à la dernière mesure, pad « Clap » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Clap », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -432,7 +433,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Faux drop », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un trou de silence juste avant le vrai Drop.",
+          "text": "À toi : dans la partie « Faux drop », dernière mesure, efface les coups du dernier temps : un silence avant le vrai Drop.",
+          "textPro": "À toi : dans la partie « Faux drop », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un trou de silence juste avant le vrai Drop.",
           "why": "Le trou de silence avant le Drop : en riddim, on retire tout juste avant le choc.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -498,7 +500,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu la piste « Accords ».",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » : la nappe doit rester une ombre.",
           "check": "changed:volumes:pad",
           "spot": "mixer.strip",

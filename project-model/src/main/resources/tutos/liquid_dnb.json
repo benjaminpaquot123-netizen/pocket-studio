@@ -43,9 +43,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, douce et un peu triste. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » puis « La » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur douce et un peu triste. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
           "textPro": "À toi : règle la tonalité sur La mineur, gamme « Mineure », tonique « La ». La grille Fa – Mi m – La m – La m est celle du refrain de Netsky – Memory Lane, transposée. Ici, « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -73,7 +73,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à 2 mesures » s'il est proposé, puis les cases en pointillé des 2 mesures.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad du kick, les cases en pointillé des 2 mesures : le two-step (1.1 et 1.3.3) et la relance au début de la 2e.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -98,8 +98,9 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures (une mesure = un tour de la boucle) : les gros coups sur 2 et 4, et les petits coups doux entre eux.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Caisse », les cases en pointillé des 2 mesures : 2 et 4, et les notes fantômes en 2.4 et 3.2, 6 à 12 dB plus bas.",
+          "why": "La caisse claire (le « clac » de la batterie) frappe sur 2 et 4. Entourée de petits coups très doux, elle devient souple et funky, comme un batteur de soul accéléré. Le pointillé montre où frapper ; une mesure = un tour de la boucle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -115,8 +116,9 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases des 2 mesures : il joue sur chaque case. Astuce : « Remplir », sous la grille, les pose d'un geste.",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases des 2 mesures : il joue sur chaque case.",
           "textPro": "À toi : sur le pad « Charley », les doubles croches des 2 mesures, fort puis doux (« Remplir » les pose d'un geste).",
+          "why": "Le charley (la petite cymbale qui fait « tss ») ondule quatre fois par temps, fort puis doux. Un shaker en plus imite le break de vieux disque soul. La ride brille au Drop. Astuce : « Remplir », sous la grille, les pose d'un geste.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -142,7 +144,8 @@
         },
         {
           "id": "ride_do",
-          "text": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
+          "text": "À toi : sur le pad « Cymbale », touche les cases en pointillé : une sur deux.",
+          "textPro": "À toi : sur le pad « Cymbale » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
           "target": "ride",
@@ -150,7 +153,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : monte le swing (le balancement) jusqu'à la valeur entourée, environ 13 % : la batterie se balance comme un batteur soul.",
+          "text": "À toi : monte le swing jusqu'à la valeur entourée, environ 13 %.",
           "textPro": "À toi : un peu de swing, environ 13 % : les doubles croches paires arrivent un poil en retard.",
           "why": "Le liquid vient de la soul et du jazz : un rythme trop droit y sonne raide.",
           "check": "swing",
@@ -179,7 +182,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse ronde », pompe douce). Mesure 1 dans le piano roll : la fondamentale Fa tenue, la même plus courte, la quinte Do ; « Copier sur les mesures suivantes » la pose sur Mi puis sur La ; puis la relance de la mesure 4 (La, Do, Mi, Ré, Do).",
           "why": "La basse joue la note du bas de chaque accord : le piano peut l'oublier, il sonnera plus léger.",
           "check": "notes:bass",
@@ -191,7 +194,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il écrit les mesures 2 et 3 en suivant les accords. Touche ensuite les 5 notes de la mesure 4, qui remonte vers l'aigu.",
+          "text": "À toi : touche les 5 notes de la mesure 4, qui remonte vers l'aigu.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -284,7 +287,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : la mesure 2 arrive, un peu plus bas.",
+          "text": "À toi : fais répéter la mesure 1 sur les mesures suivantes, d'un seul geste.",
           "levels": "f",
           "check": "notes:lead",
           "length": 32,
@@ -470,7 +473,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, chaque Drop tombe au début d'une phrase. Le morceau dure un peu plus de 3 minutes.",
           "check": "song:phrases",
@@ -486,8 +489,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », va à la dernière mesure, pad du kick : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×3 » : une dernière rafale de kick avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup du kick, et « ×3 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad du kick : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "kick",
@@ -559,7 +563,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les pistes « Mélodie » et « Accords ».",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la cloche (« Mélodie ») et celui du piano (« Accords »), juste assez pour que la basse respire.",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",

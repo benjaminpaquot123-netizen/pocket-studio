@@ -50,9 +50,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » puis « Sol » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur un peu triste. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Sol ».",
           "textPro": "À toi : règle la tonalité sur Sol mineur, gamme « Mineure », tonique « Sol » : le Sol grave de la Sub (49 Hz) sonne rond sur un sound system. Ici, « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -80,7 +80,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à … mesures » quand il est proposé, puis les cases en pointillé de chaque mesure. Les dernières mesures ne sont pas comme les premières : c'est voulu.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé de chaque mesure. Les dernières changent : c'est voulu.",
           "textPro": "À toi : sur le pad du kick, les kicks de l'Amen, mesure après mesure : 1 et le « et » du 1, le « et » du 3 doublé ; à la dernière mesure, pas de kick sur le 1.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -105,7 +105,7 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé de chaque mesure. Tu remarqueras un coup qui arrive un peu après sa place dans les dernières mesures : ne le corrige pas.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé de chaque mesure. Un coup arrive en retard : c'est voulu.",
           "textPro": "À toi : sur le pad « Caisse », les cases en pointillé de chaque mesure : 2 et 4 avec les coups en cascade ; vers la fin, la caisse du 4 retardée d'une croche.",
           "why": "Dans l'Amen, les dernières mesures trébuchent : c'est ce faux pas qui donne envie de danser.",
           "check": "lane:snare",
@@ -123,7 +123,9 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé.",
+          "textPro": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "why": "Le batteur de l'Amen joue sa cymbale ride à la croche, régulière, pendant que kick et caisse trébuchent. Un charley ouvert relance la boucle. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; efface ensuite les cases sans pointillé.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -149,7 +151,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : monte le swing (le balancement) jusqu'à la valeur entourée, environ 13 % : la batterie retrouve un peu du balancement du disque d'origine.",
+          "text": "À toi : monte le swing jusqu'à la valeur entourée, environ 13 %.",
           "textPro": "À toi : un swing d'environ 13 % : l'Amen n'est jamais tout à fait sur la grille.",
           "check": "swing",
           "spot": "rhythm.swing",
@@ -177,7 +179,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Basse (« Basse ronde »). Écris les mesures 1 et 2 dans le piano roll (Sol tenu, puis la petite mélodie Sol, Si♭, Ré, Fa), puis « Copier sur les mesures suivantes » : les mesures 3 et 4 descendent sur Mi♭ et Fa.",
           "why": "La batterie court à 165, la basse marche à mi-vitesse : deux vitesses en même temps, c'est la jungle.",
           "check": "notes:bass",
@@ -189,7 +191,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 4 notes de la mesure 2. Puis « Copier sur les mesures suivantes » : il fait le reste, la basse suit les accords toute seule.",
+          "text": "À toi : touche les 4 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -261,7 +263,7 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis la note tenue en pointillé de la mesure 1.",
+          "text": "À toi : touche la note tenue en pointillé de la mesure 1.",
           "textPro": "À toi : crée la piste Mélodie (« Hoover ») : Sol tenu 2 temps, puis Sol et Si♭ à la fin de la mesure 2 ; « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
           "length": 16,
@@ -272,7 +274,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 2 notes de la fin de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "text": "À toi : écris les 2 notes de la fin de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -429,7 +431,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons Intro, Drop, Break, Montée, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
           "check": "song:order",
           "spot": "song.parts",
@@ -439,7 +441,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 32, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 32, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 32, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro fait 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. À 165, le morceau dure un peu plus de 3 minutes.",
           "check": "song:phrases",
@@ -455,8 +457,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Caisse », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",

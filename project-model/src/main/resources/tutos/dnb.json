@@ -43,9 +43,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » (une gamme un peu triste) puis « Fa » (la note de départ). Pas besoin de retenir ces mots.",
+          "text": "À toi : une couleur un peu triste. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Fa ».",
           "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa » : le Fa grave de la Sub (44 Hz) tombe là où les sound systems sonnent le mieux. Ici, « Je le fais » ouvre la fiche Tonalité ; hors du tuto, elle se règle sous le piano roll de chaque piste, dans « Gamme et accords ».",
-          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux. Pas besoin de retenir ces mots.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -73,7 +73,7 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à 2 mesures » s'il est proposé, puis les cases en pointillé. Chaque case est un moment de la boucle.",
+          "text": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad du kick, touche les cases en pointillé : le two-step, pas 1 et 11 de chaque mesure.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -98,7 +98,7 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures (une mesure = un tour de la boucle). Les gros coups sont sur 2 et 4 ; les petits, entre eux, sont des « notes fantômes » : des coups très doux.",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures : 2 et 4, les notes fantômes (o, environ 35 %) autour, et le double coup qui relance la boucle à la fin de la 2e.",
           "why": "Sans les notes fantômes, la drum & bass sonne comme une machine ; avec elles, elle roule.",
           "check": "lane:snare",
@@ -116,8 +116,9 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : le bouton « Remplir 1/2 » sous la grille met un coup sur deux d'un seul geste ; il reste ensuite à effacer les cases sans pointillé.",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures.",
           "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures : les croches, sans la dernière de chaque mesure (la place du charley ouvert).",
+          "why": "Le charley (la petite cymbale qui fait « tss ») donne la vitesse. Les petites percussions imitent un « break », un bout de batterie de vieux disque funk. La ride brille au Drop. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; efface ensuite les cases sans pointillé.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -125,7 +126,8 @@
         },
         {
           "id": "ohat_do",
-          "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche la case en pointillé de chaque mesure, juste avant la mesure suivante.",
+          "text": "À toi : sur le pad « Charley ouvert », touche la case en pointillé de chaque mesure.",
+          "textPro": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche la case en pointillé de chaque mesure, juste avant la mesure suivante.",
           "why": "Il aspire vers le coup de kick suivant : l'oreille sent la boucle repartir.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -174,7 +176,7 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 2 notes en pointillé de la mesure 1 : elles tombent avec le kick.",
+          "text": "À toi : touche les 2 notes en pointillé de la mesure 1 : elles tombent avec le kick.",
           "textPro": "À toi : crée la piste Basse (son « Basse reese », effet « Pompe » déjà sur sa tranche). Écris les mesures 1 et 2 dans le piano roll (Fa tenu, puis Fa et le saut d'octave), puis « Copier sur les mesures suivantes » : les mesures 3 et 4 descendent sur Ré♭ et Mi♭, les accords VI et VII.",
           "why": "La basse tient longtemps : en drum & bass rapide, ce sont les notes longues qui pèsent.",
           "check": "notes:bass",
@@ -186,7 +188,7 @@
         },
         {
           "id": "bass_2",
-          "text": "À toi : touche les 3 notes de la mesure 2, la dernière plus aiguë. Puis « Copier sur les mesures suivantes » : il fait le reste, la basse suit les accords toute seule.",
+          "text": "À toi : touche les 3 notes de la mesure 2, la dernière plus aiguë.",
           "levels": "f",
           "check": "notes:bass",
           "spot": "notes.track",
@@ -278,7 +280,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la réponse arrive, la même chose un peu plus bas, sur les accords suivants.",
+          "text": "À toi : écris les 3 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -454,7 +456,7 @@
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16.",
           "textPro": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
           "why": "L'Intro et sa Montée font 32 mesures, le Break et la sienne 16 : chaque Drop tombe au début d'une phrase, là où l'oreille l'attend. Le morceau dure près de 3 minutes.",
           "check": "song:phrases",
@@ -470,8 +472,9 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », va à la dernière mesure, pad « Caisse » : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×4 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Caisse », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
+          "why": "Une transition (le passage d'une partie à l'autre) prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -479,7 +482,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un silence juste avant le Drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. Ton roulement, juste avant, reste.",
           "why": "Un temps de rien, et le Drop paraît deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

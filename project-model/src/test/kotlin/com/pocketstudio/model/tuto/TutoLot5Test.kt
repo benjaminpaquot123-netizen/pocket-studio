@@ -261,12 +261,13 @@ class TutoLot5Test {
     @Test
     fun theWordsSayWhatTheScreenShows() {
         // a/29, c/101: « Suivre » is above the grid; « mes. 1/2 » shows while it plays.
-        val clap = step("clap_do").text
+        // P7 (tour 7): the Facile text + its « why », shown under it.
+        val clap = step("clap_do").text + step("clap_do").why.orEmpty()
         assertTrue("au-dessus de la grille" in clap && "pendant la lecture" in clap)
         // b/10-20: where the key is set first.
         assertTrue("« Je le fais » ouvre la fiche Tonalité" in step("key").textPro!!)
         // c §13: Facile, the key's two buttons are just names to touch.
-        assertTrue("Pas besoin de retenir" in step("key").text)
+        assertTrue("Pas besoin de retenir" in step("key").text + step("key").why.orEmpty())
         // a/40: Facile only does the hats.
         assertEquals("Les charleys", course.chaptersFor(TutoLevel.Facile).first { it.id == "hats" }.title)
         assertEquals("Charleys et percussions", course.chaptersFor(TutoLevel.Pro).first { it.id == "hats" }.title)

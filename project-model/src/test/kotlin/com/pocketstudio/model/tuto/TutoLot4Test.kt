@@ -221,7 +221,8 @@ class TutoLot4Test {
     @Test
     fun theFacileWordsAreExplained() {
         val facile = course.chaptersFor(TutoLevel.Facile)
-        val text = facile.flatMap { c -> c.steps.map { it.textFor(TutoLevel.Facile) } }.joinToString("\n")
+        // P7 (tour 7): a gloss may live in the step's « why », shown under its text.
+        val text = facile.flatMap { c -> c.steps.map { it.textFor(TutoLevel.Facile) + "\n" + (it.why ?: "") } }.joinToString("\n")
         for (w in listOf("kick (", "caisse claire (", "« Charley » (", "accord (", "c'est le groove", "transition (", "le mix, c'est", "« mes. 1/2 »", "« Suivre »", "« Normal » devient", "« M4A »", "« WAV »")) {
             assertTrue("$w not explained", w in text)
         }

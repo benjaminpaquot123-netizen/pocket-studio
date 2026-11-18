@@ -2238,8 +2238,9 @@ object TutoChecks {
 
     /**
      * [p] with its part [label] in the song, wherever the course's order names it and the song lacks it, with the bars
-     * given there: after the part of the song that comes just before it in that order, else before the one that
-     * follows. Unchanged while the song is empty, plays that part already, plays none of the course's parts, or is full.
+     * given there: just before the part of the song that follows it in that order, else after the one that comes
+     * before it (tour 8, seat d: a part of another name between them, the old « Montée » renamed, put the new one
+     * after the Break instead of just before the Drop 2). Unchanged while the song is empty, plays that part already, plays none of the course's parts, or is full.
      */
     internal fun placed(p: Project, label: String, target: TutoTarget): Project {
         val scene = sceneLabelled(p, label).takeIf { it >= 0 } ?: return p
@@ -2260,7 +2261,7 @@ object TutoChecks {
             val mine = wanted.indices.firstOrNull { it !in places && standsFor(q, label, wanted[it].first) } ?: break
             val before = rs.indices.filter { places[it] in 0 until mine }.maxByOrNull { places[it] }
             val after = rs.indices.filter { places[it] > mine }.minByOrNull { places[it] }
-            val at = before?.let { rs[it].last + 1 } ?: after?.let { rs[it].first } ?: break
+            val at = after?.let { rs[it].first } ?: before?.let { rs[it].last + 1 } ?: break
             q = q.copy(song = q.song.take(at) + SongPart(scene, 1, bars = wanted[mine].second) + q.song.drop(at))
         }
         return q

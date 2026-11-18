@@ -143,10 +143,12 @@ fun TrackBar(
     val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
     androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
     // Lot 6, R19 (seats D b, F b, B b): the fade alone read as a chip cut at the edge. While the row goes on off screen,
-    // a chevron lies over the fade on that side; it takes no touch (the chip under it still answers).
-    Box(modifier) {
+    // an arrow says so on that side; it takes no touch. Tour 8, captures8: laid over the row, it covered the last chip's
+    // text (« + Pist→ » at 130 %, « + トラ→ »): it now has its own place beside the row, which scrolls between the two.
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.testTag("track_bar_less"))
     Row(
-        Modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
+        Modifier.weight(1f, fill = false).fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -241,8 +243,7 @@ fun TrackBar(
             }
         }
     }
-    if (scroll.canScrollBackward) RowMoreSign(forward = false, Modifier.align(Alignment.CenterStart).testTag("track_bar_less"))
-    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.align(Alignment.CenterEnd).testTag("track_bar_more"))
+    if (scroll.canScrollForward) RowMoreSign(forward = true, Modifier.testTag("track_bar_more"))
     }
     }
     if (choosing) {

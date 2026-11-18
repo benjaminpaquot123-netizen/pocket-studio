@@ -27,6 +27,18 @@ class Tour6Tuto4TechnoTest {
     /** [fr] in [lang], never the French shown in its place. */
     private fun tr(lang: Lang, fr: String): String = I18n.table(lang)[fr] ?: "(no ${lang.code} translation of « $fr »)"
 
+    /** What the user reads at [s] with its words [fr]: those words and the step's « why » (Tour 7 P6 moved glosses and figures there). */
+    private fun seen(fr: String, s: TutoStep): String = listOfNotNull(fr, s.why).joinToString("\n")
+
+    /** [seen] in [lang]: each part translated. */
+    private fun seen(lang: Lang, fr: String, s: TutoStep): String = listOfNotNull(fr, s.why).joinToString("\n") { tr(lang, it) }
+
+    /** The Facile words of step [id] and its « why ». */
+    private fun seen(id: String): String = step(id).let { seen(it.text, it) }
+
+    /** [seen] of step [id] in [lang]. */
+    private fun seen(lang: Lang, id: String): String = step(id).let { seen(lang, it.text, it) }
+
     /** [text] names [name] between quotes, in any language's quotes, as a pad or a button is named. */
     private fun quotes(text: String, name: String): Boolean =
         Regex("[$OPEN][\\s  ]?${Regex.escape(name.trim())}[\\s  ]?[$CLOSE]").containsMatchIn(text)
@@ -49,8 +61,8 @@ class Tour6Tuto4TechnoTest {
             }
             val name = pads.getValue(role)
             for (fr in texts(s)) {
-                if (!quotes(fr, name)) bad += "fr ${s.id}: no « $name »: $fr"
-                for (l in langs) tr(l, fr).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} ${s.id}: no « ${tr(l, name)} »: $t" }
+                if (!quotes(seen(fr, s), name)) bad += "fr ${s.id}: no « $name »: $fr"
+                for (l in langs) seen(l, fr, s).let { t -> if (!quotes(t, tr(l, name))) bad += "${l.code} ${s.id}: no « ${tr(l, name)} »: $t" }
             }
         }
         // « toc » may say how the « Rim » sounds (« un petit « toc » »), never stand for a pad (« le « toc » »).
@@ -66,14 +78,14 @@ class Tour6Tuto4TechnoTest {
     fun tradeWordsExplainedWhereTheyFirstShow() {
         val bad = mutableListOf<String>()
         fun need(where: String, text: String, vararg parts: String) = parts.filter { it !in text }.forEach { bad += "$where: no « $it »: $text" }
-        need("ref", step("ref").text, "kick (la grosse caisse)", "basse (les notes graves)", "Drop (le moment où tout joue)")
+        need("ref", seen("ref"), "kick (la grosse caisse)", "basse (les notes graves)", "Drop (le moment où tout joue)")
         need("kick chapter", chapter("kick").why, "font une mesure")
-        need("clap_2", step("clap_2").text, "« Force » (", "« Roulement » (", "« Triolet » (")
+        need("clap_2", seen("clap_2"), "« Force » (", "« Roulement » (", "« Triolet » (")
         need("pad_do", step("pad_do").text, "stabs (")
         need("groove_hear", step("groove_hear").text, "« Groove » (")
-        need("gap", step("gap").text, "transition (")
+        need("gap", seen("gap"), "transition (")
         need("map_break", step("map_break").text, "Break (la pause)")
-        need("levels", step("levels").text, "le mix, c'est")
+        need("levels", seen("levels").replace("Le mix, c'est", "le mix, c'est"), "le mix, c'est")
         need("tempo", step("tempo").text, "battements par minute")
         // In the Facile course, the first step that says the word (with its chapter's title) is the one that explains it.
         val firsts = mapOf("kick" to "ref", "basse" to "ref", "Drop" to "ref", "stab" to "pad_do", "Groove" to "groove_hear", "Break" to "map_break", "transition" to "gap", "mix" to "levels", "BPM" to "tempo")
@@ -84,17 +96,17 @@ class Tour6Tuto4TechnoTest {
         }
         // Japanese: ベース, the menu's words, スタブ, グルーヴ, トランジション explained there; German: the bar (Takt).
         val ja = Lang.JA
-        need("ja ref", tr(ja, step("ref").text), "ベース（")
-        need("ja clap_2", tr(ja, step("clap_2").text), *listOf("Force", "Roulement", "Triolet").map { tr(ja, it) + "」（" }.toTypedArray())
+        need("ja ref", seen(ja, "ref"), "ベース（")
+        need("ja clap_2", seen(ja, "clap_2"), *listOf("Force", "Roulement", "Triolet").map { tr(ja, it) + "」（" }.toTypedArray())
         need("ja pad_do", tr(ja, step("pad_do").text), "スタブ（")
         need("ja groove_hear", tr(ja, step("groove_hear").text), "グルーヴ」（")
-        need("ja gap", tr(ja, step("gap").text), "トランジション（")
+        need("ja gap", seen(ja, "gap"), "トランジション（")
         need("de kick chapter", tr(Lang.DE, chapter("kick").why), "Takt")
         // Every language keeps the explanations: as many brackets as the French.
         for (id in listOf("ref", "clap_do", "pad_do", "groove_hear", "gap")) {
-            val fr = step(id).text
+            val fr = seen(id)
             val n = fr.count { it == '(' }
-            for (l in langs) tr(l, fr).let { t -> if (t.count { it == '(' || it == '（' } < n) bad += "${l.code} $id: an explanation lost: $t" }
+            for (l in langs) seen(l, id).let { t -> if (t.count { it == '(' || it == '（' } < n) bad += "${l.code} $id: an explanation lost: $t" }
         }
         report("words of the trade not explained where they first show", bad)
     }
@@ -106,10 +118,12 @@ class Tour6Tuto4TechnoTest {
     @Test
     fun numbersTellTheTruth() {
         val bad = mutableListOf<String>()
-        for (fr in texts(step("song_order"))) {
+        for (fr in texts(step("song_order")).map { seen(it, step("song_order")) }) {
             if (!Regex("\\b8 mesures\\b").containsMatchIn(fr)) bad += "fr song_order: the 8 bars « Ajouter » gives not said: $fr"
             if (!Regex("Montée 4|4 pour la Montée").containsMatchIn(fr)) bad += "fr song_order: the Montée's 4 bars not said: $fr"
-            for (l in langs) tr(l, fr).let { t ->
+        }
+        for (fr in texts(step("song_order"))) {
+            for (l in langs) seen(l, fr, step("song_order")).let { t ->
                 listOf("8", "4").filter { n -> !t.contains(Regex("(?<!\\d)$n(?!\\d)")) }.forEach { bad += "${l.code} song_order: no $it: $t" }
             }
         }
@@ -152,11 +166,11 @@ class Tour6Tuto4TechnoTest {
         for (s in chapter("parts").steps.filter { it.check.startsWith("part:") }) {
             val label = s.check.removePrefix("part:").substringBefore(':')
             for (fr in texts(s)) {
-                if ("« Créer la partie « $label » »" !in fr) bad += "fr ${s.id}: not « Créer la partie « $label » »: $fr"
+                if ("« Créer la partie « $label » »" !in seen(fr, s)) bad += "fr ${s.id}: not « Créer la partie « $label » »: $fr"
                 for (l in langs) {
                     val button = tr(l, "Créer la partie « %s »")
                     val shown = Regex(Regex.escape(button.substringBefore("%s")) + ".+?" + Regex.escape(button.substringAfter("%s")))
-                    tr(l, fr).let { t -> if (!shown.containsMatchIn(t)) bad += "${l.code} ${s.id}: not its button « $button »: $t" }
+                    seen(l, fr, s).let { t -> if (!shown.containsMatchIn(t)) bad += "${l.code} ${s.id}: not its button « $button »: $t" }
                 }
             }
         }
@@ -170,8 +184,7 @@ class Tour6Tuto4TechnoTest {
     @Test
     fun marksAndExportWordsSaid() {
         val bad = mutableListOf<String>()
-        val levels = step("levels").text
-        for (t in listOf(levels) + langs.map { tr(it, levels) }) {
+        for (t in listOf(seen("levels")) + langs.map { seen(it, "levels") }) {
             listOf("+4", "−12", "−∞").filter { it !in t }.forEach { bad += "levels: no « $it »: $t" }
         }
         val share = step("share").text
@@ -359,8 +372,8 @@ class Tour6Tuto4TechnoTest {
         val firstRim = steps.first { s -> texts(s).any { "Rim" in it } }
         if (firstRim.id != "perc_do") bad += "« Rim » first shows in ${firstRim.id}"
         val rim = firstRim.text
-        if (!Regex("« Rim » \\([^)]*bord").containsMatchIn(rim)) bad += "fr perc_do: the « Rim » not explained (the rim of a drum): $rim"
-        for (l in langs) I18n.table(l)[rim].let { t -> if (t == null) bad += "${l.code}: no translation of « $rim »" else if (t.count { it == '(' || it == '（' } < 1) bad += "${l.code} perc_do: no explanation: $t" }
+        if (!Regex("« Rim » \\([^)]*bord").containsMatchIn(seen(rim, firstRim))) bad += "fr perc_do: the « Rim » not explained (the rim of a drum): $rim"
+        for (l in langs) I18n.table(l)[rim].let { t -> if (t == null) bad += "${l.code}: no translation of « $rim »" else if (seen(l, rim, firstRim).count { it == '(' || it == '（' } < 1) bad += "${l.code} perc_do: no explanation: $t" }
         val titles = mapOf("chords" to "accord court", "groove" to "boucle", "transitions" to "passage")
         val facile = course.chaptersFor(TutoLevel.Facile).associateBy { it.id }
         for ((id, plain) in titles) {

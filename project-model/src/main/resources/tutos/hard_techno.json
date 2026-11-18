@@ -43,9 +43,9 @@
         },
         {
           "id": "key",
-          "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
+          "text": "À toi : choisis la couleur du morceau, très sombre : Fa♯ phrygien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
           "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument. « Je le fais » ouvre la fiche Tonalité.",
-          "why": "Le kick est accordé sur la note du morceau : grave et notes ne se battent pas.",
+          "why": "Phrygien : une gamme sombre. Le kick est accordé sur la note du morceau : grave et notes ne se battent pas.",
           "check": "key",
           "spot": "tuto.key",
           "listen": "parts:pad",
@@ -100,7 +100,7 @@
       "steps": [
         {
           "id": "clap_do",
-          "text": "À toi : touche « Passer à 2 mesures » si on te le propose, puis sur le pad « Clap », touche les cases en pointillé des 2 mesures : les temps 2 et 4, et un petit roulement tout à la fin.",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : temps 2 et 4, et un roulement à la fin.",
           "textPro": "À toi : le clap sur 2 et 4, avec le roulement en fin de 2e mesure.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -128,9 +128,9 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : une case sur trois.",
           "textPro": "À toi : la percu tous les 3 pas, à la schranz.",
-          "why": "Trois contre quatre : la percussion tourne en rond, c'est le tournis de la schranz (la techno allemande très dure).",
+          "why": "Elle ne tombe jamais au même endroit par rapport au kick. Trois contre quatre : la percussion tourne en rond, c'est le tournis de la schranz (la techno allemande très dure).",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -169,7 +169,7 @@
         },
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Chaque coup, c'est la même note jouée grave et aiguë.",
+          "text": "À toi : touche la note du bas de chaque accord en pointillé des mesures 1 et 2 : tout l'accord se pose. Chaque coup, c'est la même note jouée grave et aiguë.",
           "textPro": "À toi : crée la piste Accords (son « Hoover ») : Fa♯ en octaves, frappé puis tenu, deux petites relances en fin de mesure 2 ; « Copier » suit la grille : Sol (le ♭II) à la mesure 3.",
           "why": "Le demi-ton de la mesure 3 fait monter la tension avant de retomber sur Fa♯.",
           "check": "notes:pad",
@@ -180,7 +180,7 @@
         },
         {
           "id": "pad_2",
-          "text": "À toi : touche « Copier sur les mesures suivantes » : il fait le reste, la mesure 3 monte d'un cran.",
+          "text": "À toi : recopie la mesure 1 sur les suivantes : la mesure 3 monte d'un cran.",
           "levels": "f",
           "check": "notes:pad",
           "spot": "notes.track",
@@ -196,7 +196,7 @@
       "steps": [
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1 : des notes longues.",
+          "text": "À toi : touche les 3 notes en pointillé de la mesure 1 : des notes longues.",
           "textPro": "À toi : crée la piste Mélodie (son « Supersaw ») : Fa♯ tenu, Fa♯ court, Fa♯ aigu ; puis Fa♯ tenu, Fa♯ court, Do♯. « Copier ».",
           "why": "Une note tenue sur la tonique, c'est le cri de la hard techno : les mains se lèvent.",
           "check": "notes:lead",
@@ -207,7 +207,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes ».",
+          "text": "À toi : écris les 3 notes de la mesure 2.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -334,7 +334,8 @@
         },
         {
           "id": "make_montee",
-          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, puis un temps de silence.",
+          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, et le dernier temps se tait.",
+          "textPro": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, puis un temps de silence.",
           "why": "Le clap qui s'emballe annonce le retour du kick.",
           "check": "part:Montée:nokick",
           "spot": "song.parts",
@@ -376,17 +377,18 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Les durées ne sont pas encore les bonnes : l'étape suivante les règle.",
+          "text": "À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
           "textPro": "À toi : dans « Structure », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:16,Intro 2:16,Drop:32,Break:8,Montée:4,Faux drop:4,Drop 2:32,Fin:16",
           "listen": "song",
-          "skip": "Dans un autre ordre, le faux drop n'arrivera pas juste avant le vrai."
+          "skip": "Dans un autre ordre, le faux drop n'arrivera pas juste avant le vrai.",
+          "why": "Chaque bouton finit par le nom de la partie (par exemple « + B · Intro »). La durée de chaque partie se règle à l'étape suivante."
         },
         {
           "id": "song_phrases",
-          "text": "À toi : touche « Donner les durées conseillées » : chaque partie prend sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16.",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16.",
           "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Break, Montée et Faux drop font 16 mesures : le vrai Drop 2 tombe au début d'une phrase. 3 minutes 25 à 150 BPM.",
           "check": "song:phrases",
@@ -412,7 +414,8 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Faux drop.",
+          "text": "À toi : à la fin de la Montée, efface les coups du dernier temps : un silence avant le Faux drop.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Faux drop.",
           "why": "Un temps de rien, et le kick qui revient frappe deux fois plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",
@@ -478,12 +481,13 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs des pistes « Accords » et « Mélodie ».",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",
-          "listen": "parts:kick,rumble,clap,pad,lead"
+          "listen": "parts:kick,rumble,clap,pad,lead",
+          "why": "Le mix, c'est régler le volume de chaque piste. Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort."
         },
         {
           "id": "meters",

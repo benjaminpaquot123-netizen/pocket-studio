@@ -29,4 +29,12 @@ class Tour8MixerNamesTest {
         assertTrue("the Mixer still shows the deleted first track", strips.none { it.ch == first })
         assertEquals("the other strips moved", mixerStrips(Project()).filter { it.ch != first }, strips)
     }
+
+    /** In a tutorial that hides the blank first track (the Sons page's « tutoHidesFirst »), the Mixer hides it too. */
+    @Test
+    fun aTutorialHidingTheFirstTrackHidesItsStripToo() {
+        val strips = mixerStrips(Project(), hideFirst = true)
+        assertTrue("the Mixer shows the first track the tutorial hides", strips.none { it.ch == first })
+        assertEquals("the other strips moved", mixerStrips(Project()).filter { it.ch != first }, strips)
+    }
 }

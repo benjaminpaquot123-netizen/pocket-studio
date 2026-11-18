@@ -9,11 +9,12 @@ chemin: Mixer, téléphone tourné pendant qu'un remix se crée (pistes du remix
 chemin: Mixer, un fader glissé pendant 60 images | test: Tour8MixerRotationTest#aFaderDragComposesTheConsoleOncePerFrame
 chemin: Mixer puis Sons, première piste vide supprimée : mêmes pistes | test: Tour8MixerNamesTest#theDeletedFirstTrackIsNotAStripEither
 chemin: Mixer d'un projet neuf : la première piste reste | test: Tour8MixerNamesTest#aNewProjectStillShowsItsFirstTrack
+chemin: Tuto en cours, 1re piste vide cachée : Mixer puis Sons, mêmes pistes | test: Tour8MixerNamesTest#aTutorialHidingTheFirstTrackHidesItsStripToo
 
 corrige: U27 | gravité: mineur | rejeu: aucun (mineur au tri du tour 6, `verdicts.tsv` l.68)
 
 ## Ce qui a changé
-- D7/U27 : `mixerStrips` suit la règle de la page Sons : la première piste vide cachée (supprimée, ou cachée par le tuto) n'a plus de tranche. Aucun ordre changé, aucun nom changé ; `HumanRemixJourneyTest` et `KeyActionsGestureTest` non touchés.
+- D7/U27 (avec l'accord du chef, une ligne hors liste : AppRoot.kt l.3330, `mixerStrips(project, hideFirst = tutoHidesFirst)`) : `mixerStrips` suit la règle de la page Sons : la première piste vide cachée (supprimée, ou cachée par le tuto) n'a plus de tranche. Aucun ordre changé, aucun nom changé ; `HumanRemixJourneyTest` et `KeyActionsGestureTest` non touchés.
 - Rotation : les deux volets du Mixer sont des contenus déplaçables (`movableContentWithReceiverOf`) ; en passant d'une colonne à deux, le tiroir d'une tranche, le défilement de la console et les Effets du master restent tels quels.
 - Coût : la sonde qui mesure la hauteur des faders lit les canaux au repos, sans vu-mètres ni actions ; un fader glissé ne recompose plus les sondes invisibles.
 

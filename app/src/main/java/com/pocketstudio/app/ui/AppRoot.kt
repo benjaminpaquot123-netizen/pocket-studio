@@ -3327,7 +3327,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 buses = project.mixer.buses,
                                 // Tour 6, U27 (seat B b #72: Sons showed « Acid 303 », the Mix did not, « Acid 303 renommée »): a strip
                                 // for every track Sons names, in a tutorial too (lot « tuto 4 » had left the silent one out there).
-                                strips = mixerStrips(project),
+                                strips = mixerStrips(project, hideFirst = tutoHidesFirst),
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
                                 songTracks = if (project.remix.setId == null) null else ({
                                     com.pocketstudio.app.remix.SongTracksCard(

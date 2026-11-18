@@ -324,7 +324,7 @@ internal fun PlusSpace(
                 val fullHeight = (if (leave != null) 48f else 0f) + rowCount * (PLUS_TILE_CHROME_DP + PLUS_TILE_TEXT_DP * fontScale) + 6f * (rowCount - 1)
                 val compact = tiles && perRow > 1 && fullHeight > (roomHeight - 24.dp).value
                 if (tiles) {
-                    Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
+                    Box(Modifier.fillMaxSize().testTag(if (compact) "plus_tiles_compact" else "plus_tiles_full").verticalScroll(rememberScrollState()).padding(12.dp)) {
                         FoldColumn(fold = roomHeight - 12.dp, minHeight = roomHeight - 24.dp, gap = 6.dp) {
                             if (leave != null) PlusLeaveRow(leave) else Spacer(Modifier.height(0.dp))
                             // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a

@@ -1,0 +1,152 @@
+{
+ "name": "Trois",
+ "drums": {
+  "steps": 16,
+  "lanes": [
+   {
+    "hits": {
+     "0": {
+      "velocity": 1.0
+     },
+     "8": {
+      "velocity": 1.0
+     }
+    }
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   }
+  ]
+ },
+ "acid": {
+  "length": 16,
+  "steps": [
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   }
+  ]
+ },
+ "synthEngine": 0,
+ "synthTrackName": "Synthé",
+ "synthNotes": {
+  "steps": 16,
+  "notes": [
+   {
+    "start": 0,
+    "length": 96,
+    "pitch": 48,
+    "velocity": 0.8
+   }
+  ]
+ },
+ "tracks": [
+  {
+   "id": 1,
+   "name": "Piano",
+   "engine": 0,
+   "notes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 0,
+      "length": 96,
+      "pitch": 61,
+      "velocity": 0.8
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [],
+ "song": [],
+ "audioTracks": [],
+ "style": null,
+ "guide": null
+}

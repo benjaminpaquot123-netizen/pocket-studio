@@ -1,0 +1,20 @@
+{
+ "projects": [
+  {
+   "id": "p1",
+   "name": "Vide",
+   "open": true,
+   "parts": 8,
+   "seconds": 0,
+   "tracks": 3
+  }
+ ],
+ "open": "p1",
+ "stem_sets": 0,
+ "shared": [
+  "Vide.wav"
+ ],
+ "prefs": {
+  "simpleMode": false
+ }
+}

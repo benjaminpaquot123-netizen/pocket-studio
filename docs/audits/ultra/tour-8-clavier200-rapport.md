@@ -13,14 +13,18 @@ Mesure sur la base (rouge) : phone 360 × 780, Mode Simple, Clavier d'un morceau
 Ce qui change (`SynthScreen.kt`, Clavier debout, seulement Mode simple + téléphone + police ≥ 115 %) :
 - la carte de prise vient en premier, les touches juste dessous, puis la carte « Clavier » (titre, octave, Accords, Pads, dispositions) et le choix Clavier / Notes ;
 - les touches prennent la place qui reste au-dessus du bas de la page, entre 110 et 150 dp (≈ 122 dp à 200 % sur 360 dp, 150 dp à 130 %) ;
-- 100 %, tablette, paysage et Mode Pro : inchangés. Aucun texte touché, `RecordBar.kt` non touché.
+- 100 %, tablette, paysage et Mode Pro : inchangés. Aucun texte touché, `RecordBar.kt` non touché ;
+- le nom d'une touche blanche (« Do ») rétrécit à la largeur de sa touche au lieu d'être coupé (LanguagesScanTest simple_keys_fr_2.0 le voyait coupé).
 
 Décision : docs/decisions/tour-8-clavier200.md (à côté des touches, elles tombaient à ~14 dp de large : écarté).
 
 Preuves :
 - rouge puis vert : Tour8KeyboardBigFontTest (phone 360 à 100 / 130 / 200 %, tablet8 à 200 %) : touches 62, 65 et « Enregistrer ma mélodie » entières, au-dessus de la barre du Guide, sans défiler ;
 - tests ciblés `*synth*`, `*Synth*`, `*RecordBar*` : verts ;
+- captures ré-enregistrées : `scale130/fr_synth.png` et `scale130/fr_record_bar.png` (le « Do » tient dans sa touche) ; `fr_record_bar` est hors des noms `synth*` / `*keyboard*`, signalé au chef ;
 - rejeu t4-26-prise-clavier : voir la dernière ligne.
+
+Laissé de côté (pas pris) : Tour6GuideCoquilleLookTest audioPagesFrench100 et audioPagesTurkish130 rougissent aussi sur la base (écart = trace de toucher seulement), hors de mes fichiers.
 
 tests: *Tour8KeyboardBigFontTest* *SynthLayoutTest* *RecordBar*
 

@@ -2,6 +2,7 @@ package com.pocketstudio.app.session
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.onNodeWithTag
 import com.pocketstudio.ui.PocketStudioTheme
 import com.pocketstudio.model.DrumPattern
@@ -40,5 +41,10 @@ class Tour8RepeatsGreyedWhyTest {
         val text = compose.onNodeWithTag("song_repeats_help", useUnmergedTree = true).fetchSemanticsNode()
             .config[SemanticsProperties.Text].joinToString("") { it.text }
         assertTrue("the help under greyed − / + must say why (a length given, « conseillée »): $text", "Gris" in text && "conseillée" in text)
+        // Under the parts' − / + (« juste sous les −/+ »), never above them: above, it pushed the first part off a
+        // phone's screen (SpacesTest, CI 380).
+        val help = compose.onNodeWithTag("song_repeats_help", useUnmergedTree = true).getUnclippedBoundsInRoot()
+        val last = compose.onNodeWithTag("part_1").getUnclippedBoundsInRoot()
+        assertTrue("the help must sit under the last part: help top ${help.top}, part bottom ${last.bottom}", help.top >= last.bottom)
     }
 }

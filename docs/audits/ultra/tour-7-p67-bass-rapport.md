@@ -47,3 +47,15 @@ Copies orphelines de mes anciens textes Bass :
 - À toi : écris les 2 notes de la fin de la mesure 2, puis touche « Copier sur les mesures suivantes ».
 - À toi : écris les 3 notes de la mesure 2, puis touche « Copier sur les mesures suivantes » : la réponse arrive, la même chose un peu plus bas, sur les accords suivants.
 - À toi : écris les notes en pointillé de la mesure 4, puis touche « Copier » encore.
+
+## Deuxième relecture (grave corrigé)
+- Grave : jungle hat_do, « Remplir 1/2 » posait une case de trop. Corrigé (formule dnb, 14 langues) ; ar : « صنج صنج » doublé retiré dans ma clé (l'autre occurrence, ligne 235, est antérieure au lot).
+- Laissé : la consigne Pro jungle porte encore l'ancienne astuce (Pro gelé).
+- Mineurs notés, non traités (budget de lecture ou textes partagés) :
+  - dnb snare_do : la glose « notes fantômes » s'est perdue (son pourquoi est antérieur au lot) ;
+  - riddim et jungle song_order : l'indice sur le nom des boutons a disparu ;
+  - liquid et riddim, niveaux : le nom du curseur n'est plus cité ;
+  - liquid lead_2 : « la mesure 2 arrive plus bas » perdu ;
+  - dnb et jump_up, pourquoi du fill : commence par la définition de la transition ;
+  - ja riddim song_order : 「マイソング」 absent (budget) ; ja song_phrases sans verbe ;
+  - en et hi : tournure de « sans pointillé » ; hi : mots « fill » et « trou » perdus.

@@ -10,3 +10,4 @@
 - Lignes partagées laissées au bloc 4 (partage, tonalité, niveaux, gloses communes) : 224 lignes Facile et 24 lignes de moments.
 - Relecture : un « pourquoi » d'étape cache celui du chapitre (TutoPanel). Donc chaque « pourquoi » d'étape ajouté = « pourquoi » du chapitre + la glose : rien du chapitre ne se perd. Il n'est gardé que là où l'ancienne consigne portait la glose (sinon retiré : riddim hat_do et snare_do, pad_do dubstep et jungle). Effet Pro : le « Pourquoi ? » gagne une phrase, la consigne Pro ne change pas. Retour arrière : retirer la glose du « pourquoi ».
 - Astuce liquid hat_do corrigée (« Remplir », sous la grille, les pose d'un geste) : le charley y joue sur chaque case, « 1/2 » était faux.
+- Astuce jungle hat_do : « Remplir 1/2 » posait une case de trop (26/58) ; elle reprend la formule dnb « efface ensuite les cases sans pointillé ». La consigne Pro jungle garde l'ancienne astuce (Pro gelé) : à reprendre par le bloc qui touchera Pro.

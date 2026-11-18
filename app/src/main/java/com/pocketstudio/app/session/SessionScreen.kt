@@ -402,7 +402,13 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         if (totalBars > 0) SongClock(ui, totalBars)
         // Phase 37: the song's chords, every part, a touch from changing them all.
         if (ui.song.isNotEmpty() && ui.chords.isNotEmpty()) SongChordsStrip(ui.chords, actions.openChords)
-        ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
+        // Tour 8, R (seat 3a #23): the part just added is brought into view whole too (on a small screen, the buttons
+        // below brought into view pushed it above the top edge).
+        val lastRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        ui.song.forEachIndexed { i, part ->
+            PartRow(i, part, ui, actions, insertAfter = { inserting = it },
+                modifier = if (i == ui.song.lastIndex) Modifier.bringIntoViewRequester(lastRow) else Modifier)
+        }
         // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
         // after an add they are brought back into view, never left under the bottom of the screen.
         val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -412,6 +418,8 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 added = false
                 kotlinx.coroutines.delay(50)
                 runCatching { addRow.bringIntoView() }
+                // A no-op when both fit; otherwise the new part wins, the buttons start right under it.
+                runCatching { lastRow.bringIntoView() }
             }
         }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
@@ -554,7 +562,7 @@ private fun ChoiceRow(label: String, first: String, second: String, secondOn: Bo
 
 /** One line of the song: a touch plays from it; repeats; a long press or ⋮ opens its sheet (intentions, move, copy, remove). */
 @Composable
-private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: SessionActions, insertAfter: (Int) -> Unit) {
+private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: SessionActions, insertAfter: (Int) -> Unit, modifier: Modifier = Modifier) {
     val active = i == ui.shownSongIndex
     val next = i == ui.upcoming
     val shape = RoundedCornerShape(10.dp)
@@ -565,7 +573,7 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     var renamePart by rememberSaveable { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().clip(shape)
+        modifier = modifier.fillMaxWidth().clip(shape)
             .background(if (active) Neon.Magenta.copy(alpha = 0.16f) else Color.Transparent)
             // How far the part playing has got: filled from the left, read only when drawn.
             .then(

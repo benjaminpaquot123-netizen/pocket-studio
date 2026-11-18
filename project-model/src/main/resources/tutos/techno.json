@@ -572,7 +572,7 @@
           "text": "À toi : automatise la « Coupure » de la piste « Mélodie » sur le Drop : « Automatiser un réglage », « Mélodie », « Filtre (balayage) », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.",
           "why": "Les notes ne changent pas : c'est le filtre qui raconte l'histoire pendant 32 mesures.",
           "levels": "p",
-          "check": "automation:wave",
+          "check": "automation:loop",
           "spot": "song.automation",
           "target": "lead",
           "part": "Drop",

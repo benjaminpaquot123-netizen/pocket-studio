@@ -108,6 +108,8 @@ data class TutoUi(
     val bravo: Boolean = false,
     /** What the step needs first (its main button), null: nothing. */
     val need: TutoNeed? = null,
+    /** [need] asks for a part that is there, empty (tour 8, seat d, V2): the panel does not say it is missing. */
+    val partEmpty: Boolean = false,
     /** « Montre-moi » under way (null: none). */
     val demo: TutoDemoPhase? = null,
     /** While it fades: the cells it had lit on a pad (pad, steps) and how much they still show (1 → 0). */
@@ -570,8 +572,15 @@ class TutoController(
      */
     fun doIt() {
         val u = _ui.value ?: return
-        goFor(u.current, project.value, spot = true)?.let { _goes.tryEmit(it) }
+        val go = goFor(u.current, project.value, spot = true)
+        go?.let { _goes.tryEmit(it) }
         _ui.value = u.copy(bravo = false, open = false)
+        // Tour 8, seat e (ch.13): on an effect step it also makes the gesture there (the send, the insert of that
+        // strip, the curve), in one undo step, so the sheet it opens shows it made and the step ticks.
+        val t = target ?: return
+        if (TutoPlay.doHere(u.current, project.value, t, go?.effects, u.progress.level) == null) return
+        edit { TutoPlay.doHere(u.current, this, t, go?.effects, u.progress.level) ?: this }
+        look()
     }
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */
@@ -834,10 +843,11 @@ class TutoController(
         }
         val kept = _ui.value
         val same = kept != null && !moved
+        val need = target?.let { TutoPlay.button(step, project.value, it, base(), saved.level) }
         _ui.value = TutoUi(
             saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same && !atEnd) kept!!.open else true, bravo = bravo || (same && kept!!.bravo),
             preparing = same && kept!!.preparing, playing = same && kept!!.playing, failed = same && kept!!.failed,
-            need = target?.let { TutoPlay.button(step, project.value, it, base(), saved.level) },
+            need = need, partEmpty = TutoPlay.emptyPart(project.value, need),
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
             // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
@@ -925,7 +935,9 @@ class TutoController(
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
-        else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        else if (_ui.value?.current?.id == u.current.id && (_ui.value?.need != need || _ui.value?.partEmpty != TutoPlay.emptyPart(p, need))) {
+            _ui.value = _ui.value?.copy(need = need, partEmpty = TutoPlay.emptyPart(p, need))
+        }
         // Tour 6, seat Da-3: the cells all hit, only their softness missing, the panel folded: it opens once on its words
         // (« appui long dessus, puis « Doux » »), which say what is left to do.
         if (found.isEmpty() && _ui.value?.current?.id == u.current.id && softSaid != u.current.id && TutoChecks.onlySoftnessMissing(u.current, p, t)) {

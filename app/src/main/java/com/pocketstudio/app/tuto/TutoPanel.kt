@@ -1100,7 +1100,8 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             }
             // Tour 7 (seat d): a step that works in a part the song has no more (« Montée » renamed): the button alone
             // said nothing of why; the step that makes the part needs no such word.
-            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") }
+            // Tour 8 (seat d, V2): a part that is there, empty, is not said missing; its button fills it.
+            val part = (ui.need as? TutoNeed.Part)?.takeUnless { step.check.startsWith("part:") || ui.partEmpty }
             if (part != null) {
                 Text(tr("Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.", Scene.shownLabel(part.label)),
                     style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_need_why"))
@@ -1530,9 +1531,12 @@ fun TutoEraseCell() {
     }
 }
 
-/** A cell of the step's target still empty, dotted. */
+/**
+ * A cell of the step's target still empty, dotted. [ring]: the one to touch next, ringed with the pulsing amber of
+ * « Touche ici » ([TutoSpotRing]; tour 8, seat a, ch.3: no cell said where to start).
+ */
 @Composable
-fun TutoHintCell(color: Color) {
+fun TutoHintCell(color: Color, ring: Boolean = false) {
     Canvas(Modifier.fillMaxSize().padding(3.dp).testTag("tuto_hint")) {
         val r = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx())
         drawRoundRect(color.copy(alpha = 0.28f), cornerRadius = r)
@@ -1540,6 +1544,22 @@ fun TutoHintCell(color: Color) {
             Color.White.copy(alpha = 0.9f), cornerRadius = r,
             style = Stroke(width = 2.5.dp.toPx(), pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))),
         )
+    }
+    if (ring) {
+        val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "tuto_cell_ring")
+        val pulse = transition.animateFloat(
+            0f, 1f, androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(900), androidx.compose.animation.core.RepeatMode.Reverse), label = "tuto_cell_ring_pulse",
+        )
+        val amber = Neon.Amber
+        Canvas(Modifier.fillMaxSize().testTag("tuto_hint_ring")) {
+            val w = 3.dp.toPx()
+            val r = androidx.compose.ui.geometry.CornerRadius(7.dp.toPx())
+            drawRoundRect(amber.copy(alpha = 0.22f * (1f - pulse.value)), cornerRadius = r)
+            drawRoundRect(
+                amber.copy(alpha = 0.95f - 0.4f * pulse.value), Offset(w / 2, w / 2),
+                androidx.compose.ui.geometry.Size(size.width - w, size.height - w), r, style = Stroke(w),
+            )
+        }
     }
 }
 

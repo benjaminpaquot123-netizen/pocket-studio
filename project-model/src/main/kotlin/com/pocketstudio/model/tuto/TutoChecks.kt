@@ -916,7 +916,13 @@ object TutoChecks {
 
     /** A curve's shapes: "rise" (the Montée's), "fall", "wave" (up then down again in the part: the techno filter's cycle). */
     const val RISE_SHAPE = "rise"
-    val CURVE_SHAPES = setOf(RISE_SHAPE, "fall", "wave")
+    val CURVE_SHAPES = setOf(RISE_SHAPE, "fall", "wave", LOOP_SHAPE)
+
+    /**
+     * The wave drawn « Par partie » on the part's own loop, once a bar (control seat e of T0b, e-ch13: the
+     * techno filter step asks for that mode and that loop; a song-wide curve is not what it asks).
+     */
+    const val LOOP_SHAPE = "loop"
 
     /**
      * The parts [step] works in ([TutoStep.part], comma separated): by default the Montée for the
@@ -1114,7 +1120,9 @@ object TutoChecks {
             cutoffOf(p, l.target, role) && when (l.mode) {
                 AutomationLane.PER_SCENE -> part >= 0 && ok(l.sceneValues[part].orEmpty())
                 // The part's own bars (its rest after it, reached by a jump, is not its curve), or up to the next bar line.
-                AutomationLane.SONG -> spans.any { (at, bars) -> ok(l.songValues.drop(at).take(bars)) || ok(l.songValues.drop(at).take(bars + 1)) }
+                // The loop step asks for the part's own loop: a curve over the song is another gesture.
+                AutomationLane.SONG -> shape != LOOP_SHAPE &&
+                    spans.any { (at, bars) -> ok(l.songValues.drop(at).take(bars)) || ok(l.songValues.drop(at).take(bars + 1)) }
                 else -> false
             }
         }
@@ -1125,7 +1133,7 @@ object TutoChecks {
         if (v.size < 2) return false
         return when (shape) {
             "fall" -> v.last() <= v.first() - RISE
-            "wave" -> v.size >= 3 && (1 until v.size - 1).any { i -> v[i] >= v.first() + RISE && v[i] >= v.last() + RISE }
+            "wave", LOOP_SHAPE -> v.size >= 3 && (1 until v.size - 1).any { i -> v[i] >= v.first() + RISE && v[i] >= v.last() + RISE }
             else -> v.last() >= v.first() + RISE
         }
     }
@@ -1494,6 +1502,29 @@ object TutoChecks {
                 ?: return null
             withFilter.first to AutoTarget(AutoTarget.INSERT_PARAM, ch, withFilter.second, 0)
         }
+        if (shape == LOOP_SHAPE) {
+            // « Par partie », on the part's loop: up to the middle of each bar and back down (the filter's cycle).
+            val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
+            val bar = q.stepsPerBar.coerceAtLeast(2)
+            val steps = q.allScenes[scene].stepsFor(bar).coerceIn(bar, AutomationLane.STEPS)
+            val line = List(AutomationLane.STEPS) { i ->
+                when {
+                    i >= steps -> null
+                    // Every step set: the engine holds a « Par partie » value until the next one (fresh review, no glide).
+                    i % bar <= bar / 2 -> 0.15f + 0.85f * (i % bar) / (bar / 2)
+                    else -> 0.15f + 0.85f * (bar - 1 - i % bar) / (bar - 1 - bar / 2)
+                }
+            }
+            return withPartCurve(q, t, scene, line)
+        }
+        // The lane already « Par partie » (the Drop's loop of ch.13): the curve goes into this part's loop, the other
+        // parts' curves kept (fresh review of the ch.13 fix: a song-wide lane in its place lost the Drop's loop).
+        if (q.automation.any { it.target == t && it.mode == AutomationLane.PER_SCENE } && shape in setOf(RISE_SHAPE, "fall")) {
+            val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
+            val steps = q.allScenes[scene].stepsFor(q.stepsPerBar.coerceAtLeast(2)).coerceIn(2, AutomationLane.STEPS)
+            val (from, to) = if (shape == "fall") 1f to 0.15f else 0.15f to 1f
+            return withPartCurve(q, t, scene, List(AutomationLane.STEPS) { i -> if (i < steps) from + (to - from) * i / (steps - 1) else null })
+        }
         var lane = AutomationLane(t, mode = AutomationLane.SONG)
         val spans = spansOf(q, label).ifEmpty { listOf(0 to 8) }
         // Review (2026-10-29, MOYEN 5): the filter open (its rest) outside the part, reached by a jump. A song curve
@@ -1512,6 +1543,13 @@ object TutoChecks {
         for ((at, bars) in spans) if (spans.none { it.first == at + bars }) lane = lane.withSongPoint(at + bars, rest).withSongJump(at + bars, true)
         val kept = q.automation.filterNot { it.target == lane.target }
         return q.copy(automation = (kept + lane).take(AutomationLane.MAX_LANES))
+    }
+
+    /** [q] with [line] as the « Par partie » curve of [scene] on [t]'s lane, the lane's other parts kept. */
+    private fun withPartCurve(q: Project, t: AutoTarget, scene: Int, line: List<Float?>): Project {
+        val was = q.automation.firstOrNull { it.target == t && it.mode == AutomationLane.PER_SCENE }
+        val lane = (was ?: AutomationLane(t, mode = AutomationLane.PER_SCENE)).let { it.copy(sceneValues = it.sceneValues + (scene to line)) }
+        return q.copy(automation = (q.automation.filterNot { it.target == t } + lane).take(AutomationLane.MAX_LANES))
     }
 
     /** [edit] made in the scene named [label] (shown, then back on the scene shown before). */
@@ -2238,8 +2276,9 @@ object TutoChecks {
 
     /**
      * [p] with its part [label] in the song, wherever the course's order names it and the song lacks it, with the bars
-     * given there: after the part of the song that comes just before it in that order, else before the one that
-     * follows. Unchanged while the song is empty, plays that part already, plays none of the course's parts, or is full.
+     * given there: just before the part of the song that follows it in that order, else after the one that comes
+     * before it (tour 8, seat d: a part of another name between them, the old « Montée » renamed, put the new one
+     * after the Break instead of just before the Drop 2). Unchanged while the song is empty, plays that part already, plays none of the course's parts, or is full.
      */
     internal fun placed(p: Project, label: String, target: TutoTarget): Project {
         val scene = sceneLabelled(p, label).takeIf { it >= 0 } ?: return p
@@ -2260,7 +2299,7 @@ object TutoChecks {
             val mine = wanted.indices.firstOrNull { it !in places && standsFor(q, label, wanted[it].first) } ?: break
             val before = rs.indices.filter { places[it] in 0 until mine }.maxByOrNull { places[it] }
             val after = rs.indices.filter { places[it] > mine }.minByOrNull { places[it] }
-            val at = before?.let { rs[it].last + 1 } ?: after?.let { rs[it].first } ?: break
+            val at = after?.let { rs[it].first } ?: before?.let { rs[it].last + 1 } ?: break
             q = q.copy(song = q.song.take(at) + SongPart(scene, 1, bars = wanted[mine].second) + q.song.drop(at))
         }
         return q
@@ -2401,6 +2440,17 @@ object TutoRollHint {
     /** Where [aside] is from the rows in sight: [TutoWay.Higher] or [TutoWay.Lower]; null: no such note. */
     fun also(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? =
         aside(left, v, barSteps)?.let { if (y(it, v) < v.top) TutoWay.Higher else TutoWay.Lower }
+
+    /**
+     * How many dotted notes the line over the roll counts: those in sight ([inTime], and [inRows] once the rows are
+     * measured) while some are, even with one more out of the rows ([also], its arrow says so: tour 8, T0b, seat b in
+     * ja read « あと 8 個 » over 7); all of them when none is in sight ([way] says where they are).
+     */
+    fun counted(left: List<Note>, v: TutoRollView, barSteps: Int = 0): Int {
+        if (left.isEmpty()) return 0
+        if (way(left, v, barSteps) != null) return left.size
+        return left.count { inTime(it, v) && (v.rowPx <= 0f || inRows(it, v)) }.coerceAtLeast(1)
+    }
 
     /** The way to [next] (null: a dotted note is whole in sight, or nothing is measured: « à toucher »). */
     fun way(left: List<Note>, v: TutoRollView, barSteps: Int = 0): TutoWay? {

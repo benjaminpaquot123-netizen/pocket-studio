@@ -820,9 +820,13 @@ private fun Grid(
         // The roll's new height is laid out a frame or two after its rows: the scroll can reach the frame then.
         repeat(3) { if (vScroll.maxValue < to) androidx.compose.runtime.withFrameNanos { } }
         lit = gone
-        vScroll.animateScrollTo(to.coerceIn(0, vScroll.maxValue))
-        // Cleared last: it is a key of this effect, cleared first it cancelled the scroll above.
-        folding = null
+        // Cleared last: it is a key of this effect, cleared first it cancelled the scroll above. Cleared also when a drag
+        // cuts the scroll short, or the fold would stay pending and frame the notes again at the next zoom.
+        try {
+            vScroll.animateScrollTo(to.coerceIn(0, vScroll.maxValue))
+        } finally {
+            if (folding === gone) folding = null
+        }
     }
     // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
     val latestZoom = rememberUpdatedState(zoomBy)
@@ -1472,9 +1476,11 @@ private fun TutoNotesLeft(
                 stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
             )
             val way = com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps)
-            // Tour 8 T0a (seat b, ja): « あと N 個 » to touch counts the dotted notes in sight, not the ones out of it.
-            val count = if (way == null) left.count { com.pocketstudio.model.tuto.TutoRollHint.inTime(it, shown) && (!rows || com.pocketstudio.model.tuto.TutoRollHint.inRows(it, shown)) }.coerceAtLeast(1) else left.size
-            Triple(way, com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps), count)
+            val also = com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
+            // Tour 8 T0a (seat b, ja): with no arrow on the line, « あと N 個 » counts the dotted notes in sight, not the
+            // ones out of it; with an arrow, the line says the others are elsewhere and the count stays the whole.
+            val count = if (way == null && also == null) left.count { com.pocketstudio.model.tuto.TutoRollHint.inTime(it, shown) && (!rows || com.pocketstudio.model.tuto.TutoRollHint.inRows(it, shown)) }.coerceAtLeast(1) else left.size
+            Triple(way, also, count)
         }
     }
     val way = ways.first

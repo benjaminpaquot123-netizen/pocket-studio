@@ -140,9 +140,9 @@ class BenchShortSeatTest {
         val dot = SeatOptions.Box(10f, 10f, 40f, 40f)
         assertNotNull(SeatOptions.drawnAim(dot, dot, 1080, 2340, 3f))
         // Off the window: the window clips the drawn part.
-        val low = SeatOptions.drawnAim(node, SeatOptions.Box(100f, 2300f, 400f, 2500f), 1080, 2340, 3f)
+        val low = SeatOptions.drawnAim(node, SeatOptions.Box(100f, 2200f, 400f, 2500f), 1080, 2340, 3f)
         assertNotNull(low)
-        assertEquals(2320f, low!!.second, 0.5f)
+        assertEquals(2270f, low!!.second, 0.5f)
     }
 
     @Test

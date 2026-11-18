@@ -491,12 +491,22 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         }.getOrDefault(emptyList()).filter { BenchWindows.windowOf(it)?.view === win.view && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
         val hit = here.filter { actionable(it) && seen(it) }.minByOrNull { val r = drawn(it); r.width * r.height } ?: return null
         val chain = generateSequence(hit) { it.parent }.map { it.id }.toSet()
+        // A layer drawn on (almost) the whole window is a screen's body or a backdrop, not a card over the target: a
+        // Scaffold lays its body out under its bars. Full-screen layers are the overlay rule's (shownWindows / mark).
+        val area = win.drawn(screen).let { it.width().toFloat() * it.height() }
         val cover = here.firstOrNull { c ->
-            c.config.getOrNull(SemanticsProperties.IsTraversalGroup) == true && c.id !in chain &&
+            layer(c) && c.id !in chain &&
+                drawn(c).let { it.width * it.height } < 0.9f * area &&
                 generateSequence(c.parent) { it.parent }.none { it.id == hit.id } && !passThrough(c) && drawnAfter(c, hit)
         } ?: return null
         return "« ${nameOf(cover)} » couvre « ${nameOf(hit)} »"
     }
+
+    /** A layer that takes the touch over what is under it: a traversal group, or a container (M3's Surface and Card still
+     *  set the older « IsContainer » key, not « IsTraversalGroup »). */
+    @Suppress("DEPRECATION")
+    private fun layer(c: SemanticsNode): Boolean =
+        c.config.getOrNull(SemanticsProperties.IsTraversalGroup) == true || c.config.getOrNull(SemanticsProperties.IsContainer) == true
 
     /** What the bench's finger writes for gesture [n] at ([x], [y]); [refused] when the touch must not be played. */
     class Finger(val under: String, val lines: List<String>, val refused: Boolean)
@@ -504,7 +514,8 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     /** Tour 8, banc9 (point i, review #1): the finger fails on a covered target, and its lines say who covers whom. */
     fun finger(n: Int, x: Float, y: Float): Finger {
         val under = under(x, y)
-        return Finger(under, listOf("#$n DOIGT $under"), false)
+        val cover = coverAt(x, y) ?: return Finger(under, listOf("#$n DOIGT $under"), false)
+        return Finger(under, listOf("#$n COUVERT $cover", "#$n REFUS doigt couvert : $cover"), true)
     }
 
     /** [a] is drawn after [b]: at their lowest common parent, [a]'s branch comes later (children are in drawing order). */

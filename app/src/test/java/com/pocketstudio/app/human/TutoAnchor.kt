@@ -19,11 +19,11 @@ internal object TutoAnchor {
         var now = p
         for (s in course.chaptersFor(level).take(chapter - 1).flatMap { it.steps }) {
             if (TutoChecks.done(s, now, target)) continue
-            now = TutoChecks.show(s, now, target)
-                ?: TutoChecks.need(s, now, target)?.let { TutoChecks.fulfil(it, s, now, target)?.first }
-                ?: now
-            // Tour 8, banc9 (point h): a step the anchor could not do is said, not lost.
-            if (!TutoChecks.done(s, now, target)) skipped(s.id)
+            TutoChecks.show(s, now, target)?.let { now = it; continue }
+            val need = TutoChecks.need(s, now, target) ?: continue
+            // Tour 8, banc9 (point h): a step the anchor could not do is said, not lost. « Could not » is a need it could
+            // not fulfil: a step with nothing to build in the project (listen, read: « kick_hear », « ready ») is no miss.
+            TutoChecks.fulfil(need, s, now, target)?.first?.let { now = it } ?: skipped(s.id)
         }
         return now
     }

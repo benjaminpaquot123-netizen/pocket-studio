@@ -452,13 +452,11 @@ abstract class HumanTester(private val seat: String) {
             val finger = points.firstOrNull()
             if (finger != null) {
                 val (x, y) = finger
-                val under = screenText().under(x, y)
-                journal.appendText("#$n DOIGT $under\n")
-                // Tour 8, banc9 (point i): an element drawn over the target takes the touch; the journal says who covers whom.
-                screenText().coverAt(x, y)?.let { journal.appendText("#$n COUVERT $it\n") }
-                if (replaying) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
+                val touch = screenText().finger(n, x, y)
+                val under = touch.under
                 // Tour 8, banc9 (point f): an untagged button the origin touched is no longer under the replayed finger: the
-                // seat gets its hand back here (the copied gesture goes), instead of touching whatever is there now.
+                // seat gets its hand back here (the copied gesture goes), instead of touching whatever is there now. Read
+                // before the finger's lines, so the journal has no DOIGT for a gesture that is not played.
                 val gone = if (replaying && o.replayHandBack && kind in TAG_GESTURES) SeatOptions.goneWords(originFinger[n], under) else null
                 if (gone != null) {
                     journal.appendText("#$n REJEU bouton « $gone » plus sous le doigt\n")
@@ -467,6 +465,15 @@ abstract class HumanTester(private val seat: String) {
                     handBack(SeatOptions.handBackWhy(n, o.replayN, false, true, gone = gone)!!)
                     continue
                 }
+                // Tour 8, banc9 (point i, review #1): an element drawn over the target takes the touch: the finger fails,
+                // and the journal says who covers whom.
+                touch.lines.forEach { journal.appendText("$it\n") }
+                if (touch.refused) {
+                    say("Banc : un autre élément est dessiné par-dessus ce point et prend le toucher : rien ne s'est passé.")
+                    n++
+                    continue
+                }
+                if (replaying) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
                 Regex("(?:^|dans:|désactivé )(help_[A-Za-z0-9_]*)").find(under)?.let { journal.appendText("#$n AIDE ${it.groupValues[1]}\n") }
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")

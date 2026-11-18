@@ -85,6 +85,23 @@ class BenchAmeneesTest : HumanTester("amenees") {
         )
     }
 
+    @Test
+    fun tutoAnchorAtChapterNineSwipesForNothing() {
+        // Tour 8, banc9 (point e, the plan's seat T-b): ko, both hands, phone360 at 130 %, Mode Simple. The amenée lands on
+        // chapter 9 with no needless swipe in the journal: nothing scrolls around the chapter's row, the bench aims at its
+        // drawn part (it swiped 8 times toward the middle before, ~12 s for nothing).
+        val o = SeatOptions.parse(mapOf("lang" to "ko", "device" to "phone360", "font" to "130", "mode" to "simple", "main" to "deux")).first
+        val j = bring("tuto:techno:9", o)
+        assertTrue(j.joinToString("\n"), j.last().startsWith("#0 AMENEE prête"))
+        assertTrue("no needless swipe\n" + j.joinToString("\n"), j.none { Regex("VISEE.*glisse").containsMatchIn(it) })
+        assertTrue("no unreadable shape\n" + j.joinToString("\n"), j.none { it.contains("BANC forme") })
+        assertTrue("no step the amenée could not do\n" + j.joinToString("\n"), j.none { it.contains("AMENEE pas non fait") })
+        val v = rhythm()!!
+        val progress = com.pocketstudio.app.tuto.PrefsTutoStore(androidx.test.core.app.ApplicationProvider.getApplicationContext()).load(v.projectId)
+        val chapter = com.pocketstudio.model.tuto.TutoCourse.of("techno")!!.chaptersFor(com.pocketstudio.model.tuto.TutoLevel.Facile)[8]
+        assertTrue("chapter 9, the tuto at « ${progress?.current} »", progress != null && progress.current in chapter.steps.map { it.id })
+    }
+
     /** From the welcome's « Défis » card to the challenge's panel; challenge 1 as the app makes it on the page shown. */
     private fun openChallenge(): com.pocketstudio.model.PadChallenge.Challenge {
         begin(SeatOptions(simple = true))

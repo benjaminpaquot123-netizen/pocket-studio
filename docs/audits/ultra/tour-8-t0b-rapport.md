@@ -32,16 +32,17 @@ Décisions : docs/decisions/tour-8-t0b.md.
 
 Preuves :
 - rouge puis vert pour chaque défaut : Tour8TutoGesturesDoItTest, Tour8TutoGesturesToolTest, Tour8TutoGesturesMonteeTest, Tour8TutoGesturesEmptyPartTest, Tour8TutoGesturesAllPadsTest, Tour8TutoGesturesRingTest, Tour8TutoGesturesCounterTest.
+- Écran (app) des défauts prouvés dans project-model : placement de la Montée par Tour7TutoMadePartInSongTest, anneau et compteur par les captures de TutoAppScreenshotTest (snareOnTheGrid, bassNotesDotted), réenregistrées et regardées.
 - Rejeu : aucun `cmd-*.txt` de p8b dans le dépôt ; le contrôle se fait par les sièges neufs d et e (start.txt de `…/controle/tuto2/d/` et `…/tuto2/e/`).
 
-tests: *Tour8TutoGestures* *TutoLot4Test* *TutoJourneyTest*
+tests: *Tour8TutoGestures* *TutoLot4Test* *TutoJourneyTest* *Tour7TutoMadePartInSong* *TutoAppScreenshotTest*
 
 chemin: tuto techno ch.13, Pro, « Je le fais » d'un envoi et d'une courbe | test: Tour8TutoGesturesDoItTest#theReverbsDoItSetsTheSendOfTheStripItGoesTo
 chemin: tuto techno ch.12, grille des pads après un roulement, croix à retirer | test: Tour8TutoGesturesToolTest#aStepAskingForCrossesOpensTheGridOnHits
-chemin: tuto techno ch.12, Simple, « Créer la partie » Montée | test: Tour8TutoGesturesMonteeTest#theMonteeMadeLandsJustBeforeTheDropTwo
+chemin: tuto techno ch.12, Simple, « Créer la partie » Montée | test: Tour7TutoMadePartInSongTest#thePartTheButtonMakesIsPlacedInTheSong
 chemin: tuto techno, partie Montée vidée, panneau du tuto | test: Tour8TutoGesturesEmptyPartTest#anEmptyPartIsNotSaidMissing
 chemin: tuto ch.12, vue « tous les pads », croix et pointillés | test: Tour8TutoGesturesAllPadsTest#theCrossesAndTheDottedCellsAreDrawnOnAllThePads
-chemin: tuto ch.3, grille des pads, anneau « Touche ici » | test: Tour8TutoGesturesRingTest#theRingIsOnTheFirstEmptyDottedCellOfTheBar
-chemin: rouleau du tuto, compteur de notes en pointillé | test: Tour8TutoGesturesCounterTest#theCountIsTheNotesInSightWhenOneMoreIsOutOfTheRows
+chemin: tuto ch.3, grille des pads, anneau « Touche ici » | test: TutoAppScreenshotTest#snareOnTheGrid
+chemin: rouleau du tuto, compteur de notes en pointillé | test: TutoAppScreenshotTest#bassNotesDotted
 
 État : tenté, prêt pour contrôle (pas « corrigé » : un siège neuf doit le constater).

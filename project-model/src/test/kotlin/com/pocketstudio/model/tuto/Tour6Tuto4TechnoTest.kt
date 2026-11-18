@@ -405,6 +405,14 @@ class Tour6Tuto4TechnoTest {
         for (fr in listOf(gap.textFor(TutoLevel.Pro))) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
             if (!Regex("(?<![\\d−-])$crosses(?!\\d)").containsMatchIn(t)) bad += "gap: the $crosses crosses not counted: $t"
         }
+        // Tour 8 (T0c): the Facile words count theirs too (Tour7TutoGapWordsMatchCrossesTest holds the French count);
+        // every translation says the same number.
+        val facile = gap.textFor(TutoLevel.Facile)
+        val counted = Regex("(?<![\\d−-])(\\d+)(?!\\d)").findAll(facile).map { it.value }.toList()
+        if (counted.isEmpty()) bad += "fr Facile gap: no count: $facile"
+        for (l in langs) tr(l, facile).let { t ->
+            for (n in counted) if (!Regex("(?<![\\d−-])$n(?!\\d)").containsMatchIn(t)) bad += "${l.code} Facile gap: no « $n »: $t"
+        }
         val share = step("share").text
         if (!Regex("« −14 ».*streaming").containsMatchIn(share)) bad += "fr share: « −14 » not explained: $share"
         for (l in langs) tr(l, share).let { t -> if ("−14" !in t) bad += "${l.code} share: no « −14 »: $t" }

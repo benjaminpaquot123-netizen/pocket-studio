@@ -2,16 +2,16 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
 
-- **Mise à jour** : 2026-11-18, 15 h 30 UTC.
+- **Mise à jour** : 2026-11-18, 16 h 30 UTC.
 - **Clôture du tour 8 (Benjamin, 2026-11-18)** : tout ce qui est prévu se fait (lots K, T0b, R, T0c, garde-fous A, S, N, leurs relectures et sièges, le contrôle T-a à T-d), mais aucun nouvel audit ne part après. Tout défaut neuf (siège, relecture, CI hors lot) est noté « pas pris » dans `corrections.tsv` et mis de côté ; aucune équipe ne l'ajoute à son lot. Les relectures se font toujours.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : tour 8, réparations (fiches : `docs/audits/ultra/tour-8-fiches/`). Tour 7 fusionné dans `main` (PR 59).
   - Paquet 1 = M (mixer8 `5a7ed21cf`, CI 365) + T0a (`8eabd655`, CI 366 ; débutant neuf t0a/a et t0a/b : 0 chapitre bloqué, 0 grave) + B (banc9 `bd4c42be`, CI 367) : fusionné à `0aa3639a`, CI 368 verte (0 capture changée).
   - captures8 : `b7b7dae1`, CI 370 verte (0 capture changée), fusionné dans l'intégration (seul écart : commits de docs).
-  - T0b : `eq/tour-8-t0b` tête `92469864`, 8 défauts tentés + grave « Je le fais remplace tout le projet » corrigé (rouge `a50897e9`, vert `509081a0`) ; fusionne l'intégration puis CI finale ; puis sièges de contrôle tuto2/d et tuto2/e.
+  - Paquet 2 = T0b (`a0d928cd`, CI 375 ; sièges de contrôle d2 et e2 : cibles vues, 0 chapitre bloqué) + R (restes8 `de52cff8`, CI 373) : fusionné, CI du paquet à lire. Constatés : e-ch13, e-ch12, c-croix, a-V1-anneau, d-V2. Défauts neufs des sièges d2/e2 notés « pas pris » (mis de côté).
   - Tentés, repris par T0b : a-V1 (pas de rond « Touche ici » au ch.3, fr écran 6, ja écran 5) ; compteur ja (« あと 8 個 » pour 7 pointillés, écran 58 ; piste : sous MIN_ROW, pas de repli, la ligne annonce le total).
   - t4-26 est déjà « tenu » sans banc9 : la preuve rouge du lot K est à chercher autrement.
-  - Ensuite : K (ouvert) ; puis T0b + R ; puis T0c ; puis garde-fous A ; puis S + N ; puis le contrôle T-a à T-d (après T0c).
+  - Ensuite : K (ouvert) ; puis T0c ; puis garde-fous A ; puis S + N ; puis le contrôle T-a à T-d (après T0c).
   - Leçon (CT0A) : un commit docs sur la branche pendant un siège change le « code testé » écrit par le banc.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.

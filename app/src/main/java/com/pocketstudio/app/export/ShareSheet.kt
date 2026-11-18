@@ -442,7 +442,9 @@ fun ShareSheetContent(
                 color = Neon.TextSecondary, modifier = Modifier.testTag("share_keeps_name"))
         }
         // How long it lasts, and one last listen (the saturation is checked while it plays).
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tour 8, R (seat 3a #64): one line whole or not at all; the edge cut it under the clock (hi, 130 %) and
+        // « ▶ सुनो » showed as an empty outline.
+        Row(Modifier.layoutId(WHOLE_LINE), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(shareClock(ui.seconds), style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan,
@@ -812,7 +814,7 @@ fun ShareSheetRoute(
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
     val ui = (
         ShareSheetUi(
-            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
+            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.map { it.scene }.distinct().size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb, exportLufs = shareExportLufs(project),
             // Tour 6, seat A c (E1): the target is offered in the Mode simple too (plain words, SimpleTargetPicker), so

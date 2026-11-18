@@ -1,5 +1,12 @@
 # Avancement
 
+## Où on en est (2026-11-18, fin d'après-midi)
+- Paquet 2 entré dans l'intégration : T0b (CI 375 verte, sièges de contrôle d2/e2 : cibles vues, 0 chapitre bloqué) + R (restes8, CI 373 verte). CI du paquet lancée.
+- Clôture du tour 8 : défauts neufs notés « pas pris », aucun nouvel audit après le contrôle.
+
+## Prochaine étape exacte
+- CI du paquet 2 ; K ; puis T0c, garde-fous A, S + N, tour de contrôle T-a à T-d.
+
 ## Où on en est (2026-11-18, midi)
 - **Tour 7 fusionné dans `main`** (PR #59). **Tour 8 en réparation**, état détaillé : `docs/audits/ultra/EN-COURS.md`.
 - Paquet 1 entré dans l'intégration (`0aa3639a`) : lots M (CI 365), T0a (CI 366), banc9 (CI 367), tous verts, 0 capture changée. CI 368 de l'intégration verte (0 capture changée).

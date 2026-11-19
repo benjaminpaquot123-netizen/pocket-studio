@@ -363,6 +363,20 @@ fun RhythmScreen(
     }
 }
 
+/**
+ * The pad the tutorial's step still has something to do on: its dotted cells not touched yet, else the first pad with
+ * a hit it asks to take away (tour 9, F054). Null when none.
+ */
+private fun askedPad(project: Project): Int? {
+    val steps = project.drums.steps
+    com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) ->
+        val hits = project.drums.lanes.getOrNull(l)?.hits ?: return@let
+        if (cells.any { it < steps && it !in hits }) return l
+    }
+    return com.pocketstudio.app.tuto.TutoHints.erase?.entries?.sortedBy { it.key }
+        ?.firstOrNull { (l, s) -> project.drums.lanes.getOrNull(l)?.hits?.let { h -> s.any { it in h } } == true }?.key
+}
+
 /** What a reveal of the cells keeps in sight above them: the bar pages, the tuto's line. */
 private val STEP_CELLS_HEAD = listOf("step_pages", com.pocketstudio.app.tuto.TUTO_GRID_LINE_SPOT)
 
@@ -691,6 +705,7 @@ private fun StepGrid(
                 elsewhere = tutoLeft.firstOrNull { it / per != bar }?.let { it / per to tutoLeft.count { s -> s / per == it / per } },
                 go = { b -> chosenBar = b; follow = false },
                 copy = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { com.pocketstudio.app.tuto.TutoHints.copyOnGrid },
+                toPad = askedPad(project)?.takeIf { it != lane }?.let { asked -> padName(project, asked) to { actions.selectPad(asked) } },
             )
         }
         if (allPads) {

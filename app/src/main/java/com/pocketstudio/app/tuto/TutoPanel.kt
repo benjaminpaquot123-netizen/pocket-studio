@@ -251,11 +251,15 @@ fun TutoBanner(modifier: Modifier = Modifier) {
  * runs: « Mesure 1/2 », then, on the line nearest the cells, « Caisse · encore 2 cases » on this page,
  * or « Mesure 2 · 3 cases → » when they are on another page (a touch goes there: the page never turns
  * by itself), what the screen just changed (« Caisse · → Charley »), and « Copier » when it is the next
- * thing to do. Its words wrap rather than being cut (tour 9, F048 and F050).
+ * thing to do. Its words wrap rather than being cut (tour 9, F048 and F050). [toPad]: the step's cells are on
+ * another pad than the one shown: its name and « → », one touch shows it (tour 9, F054).
  * Nothing of it over the cells.
  */
 @Composable
-fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false) {
+fun TutoGridLine(
+    bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false,
+    toPad: Pair<String, () -> Unit>? = null,
+) {
     val said = TutoHints.banner
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
     val status = when {
@@ -284,6 +288,10 @@ fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<In
         },
         button = {
             when {
+                // F054 (tour 9, seat t9-57): the pad the step asks for, a touch away (it was to be found among the 16).
+                toPad != null -> TextButton(onClick = toPad.second, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_pad_go")) {
+                    Text(toPad.first + " →", color = Neon.Amber, fontWeight = FontWeight.Bold)
+                }
                 copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
                 elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
                     Text(

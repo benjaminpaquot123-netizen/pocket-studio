@@ -53,13 +53,13 @@ class Tour9L15CapturesTest {
         compose.onRoot().captureRoboImage("build/outputs/roborazzi/tour9-L15/$name.png")
     }
 
-    private fun line(name: String, fontScale: Float, here: Int, elsewhere: Pair<Int, Int>?) {
+    private fun line(name: String, fontScale: Float, here: Int, elsewhere: Pair<Int, Int>?, toPad: Pair<String, () -> Unit>? = null) {
         RuntimeEnvironment.setFontScale(fontScale)
         compose.setContent {
             PocketStudioTheme {
                 Box(Modifier.background(Neon.Background).padding(16.dp)) {
                     androidx.compose.foundation.layout.Column(Modifier.width(328.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
-                        com.pocketstudio.app.tuto.TutoGridLine(bar = 6, bars = 8, pad = "Claquement de mains", here = here, elsewhere = elsewhere, go = {}, copy = null)
+                        com.pocketstudio.app.tuto.TutoGridLine(bar = 6, bars = 8, pad = "Claquement de mains", here = here, elsewhere = elsewhere, go = {}, copy = null, toPad = toPad)
                         com.pocketstudio.app.tuto.TutoGridLine(bar = 0, bars = 1, pad = "Kick", here = 0, elsewhere = null, go = {}, copy = {})
                     }
                 }
@@ -71,6 +71,7 @@ class Tour9L15CapturesTest {
 
     @Test fun lineAt100() = line("ligne_tuto_100", 1f, here = 0, elsewhere = 3 to 5)
     @Test fun lineAt200() = line("ligne_tuto_200", 2f, here = 0, elsewhere = 3 to 5)
+    @Test fun lineAt200OtherPad() = line("ligne_tuto_200_autre_pad", 2f, here = 0, elsewhere = null, toPad = "Caisse claire" to {})
     @Test fun lineAt200Here() = line("ligne_tuto_200_ici", 2f, here = 3, elsewhere = null)
 
     @Test fun at100() = shot("rythme_360_100")

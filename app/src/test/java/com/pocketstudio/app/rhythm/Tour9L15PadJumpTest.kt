@@ -48,8 +48,8 @@ class Tour9L15PadJumpTest {
     }
 
     private fun jumpsTo(project: Project, lane: Int) {
-        compose.onNodeWithTag("tuto_pad_go", useUnmergedTree = true).performScrollTo().assertTextContains(padName(project, lane), substring = true)
-        compose.onNodeWithTag("tuto_pad_go", useUnmergedTree = true).performClick()
+        compose.onNodeWithTag("tuto_pad_go").performScrollTo().assertTextContains(padName(project, lane), substring = true)
+        compose.onNodeWithTag("tuto_pad_go").performClick()
         compose.waitForIdle()
         assertEquals("one touch on the line's pad button shows the asked pad", lane, selected)
         assertEquals("on the asked pad, the line no longer points elsewhere", 0, compose.onAllNodesWithTag("tuto_pad_go", useUnmergedTree = true).fetchSemanticsNodes().size)

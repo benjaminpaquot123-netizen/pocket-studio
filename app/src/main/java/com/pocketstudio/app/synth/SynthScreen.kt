@@ -580,7 +580,7 @@ private fun SimpleSoundCard(tracks: TracksUi) {
     NeonCard(modifier = Modifier.testTag("simple_sound")) {
         SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
         // Audit ultra round 1, n° 36 (seat F a): the sound's own name (« Orgue »), not its kind (« Synthé ») once it is changed.
-        Text(com.pocketstudio.model.guide.GuideSheets.soundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        Text(trackSoundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             modifier = Modifier.testTag("simple_sound_name"))
         tracks.changeSound?.let { change ->
             androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {

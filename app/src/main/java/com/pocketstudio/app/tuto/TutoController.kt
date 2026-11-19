@@ -608,6 +608,9 @@ class TutoController(
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */
     fun fulfilNeed() {
+        // Tour 9, F036: touched while « Montre-moi » ends (its result still shown), it first puts the project back as it
+        // was, so the part it makes is on the real song and stays (it was read on the demonstration's and did nothing).
+        endDemoNow()
         val u = _ui.value ?: return
         val t = target ?: return
         val step = u.current
@@ -697,11 +700,20 @@ class TutoController(
                 // all it showed): « Créer la piste … » in sight rather than another track's notes without a word.
                 val back = step.manual || step.spot.isEmpty() || _ui.value?.need != null
                 if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null, open = it.open || (back && it.current.id == step.id)) }
-                demoJob = null
+                if (demoJob === coroutineContext[Job]) demoJob = null
                 look()
             }
         }
         return true
+    }
+
+    /** Stops « Montre-moi » at once, the project put back as it was before this returns. */
+    private fun endDemoNow() {
+        val job = demoJob ?: return
+        demoJob = null
+        job.cancel()
+        demoShow(null)
+        _ui.value = _ui.value?.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null)
     }
 
     /** Stops « Montre-moi » where it is (the project as it was). */

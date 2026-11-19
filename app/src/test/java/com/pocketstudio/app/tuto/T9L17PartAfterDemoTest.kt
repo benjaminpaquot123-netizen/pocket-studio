@@ -6,6 +6,8 @@ import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.tuto.TutoChecks
+import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoNeed
 import com.pocketstudio.model.tuto.TutoProgress
@@ -58,11 +60,28 @@ class T9L17PartAfterDemoTest {
         }
     }
 
+    /** The trance course made by its own buttons, every step before [id] (as a learner who followed it). */
+    private fun upTo(id: String): Project {
+        val target = TutoTarget.of("trance")!!
+        var p = target.blank()
+        for (s in TutoCourse.of("trance")!!.chaptersFor(TutoLevel.Pro).flatMap { ch -> ch.steps }) {
+            if (s.id == id) break
+            if (s.listening) continue
+            var tries = 0
+            while (!TutoChecks.done(s, p, target, null) && tries++ < 8) {
+                val q = TutoChecks.need(s, p, target, null)?.let { n -> TutoChecks.fulfil(n, s, p, target)?.first } ?: TutoChecks.show(s, p, target) ?: break
+                if (q == p) break
+                p = q
+            }
+        }
+        return p
+    }
+
     private fun montee(p: Project) = p.allScenes.any { s -> s.label == "Montée" }
 
     @Test
     fun theNeedTouchedWhileTheDemoHoldsMakesThePartAndKeepsIt() {
-        val flow = MutableStateFlow(TutoTarget.of("trance")!!.blank())
+        val flow = MutableStateFlow(upTo("make_montee"))
         var before: Project? = null
         val c = TutoController(
             scope, "p1", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
@@ -84,6 +103,28 @@ class T9L17PartAfterDemoTest {
         await("the demonstration over") { c.ui.value!!.demo == null }
         idle(200)
         assertTrue("part « Montée » made and kept", montee(flow.value))
-        assertTrue("the step done", "make_montee" in c.ui.value!!.progress.done)
+        // The same part as the button makes with no demonstration (Pro: the clap's roll is then the learner's to write).
+        assertEquals(1, flow.value.allScenes.count { s -> s.label == "Montée" })
+        assertEquals(TutoChecks.bricks(alone().allScenes.first { s -> s.label == "Montée" }), TutoChecks.bricks(flow.value.allScenes.first { s -> s.label == "Montée" }))
+    }
+
+    /** « Créer la partie « Montée » » touched with no demonstration: what it makes (the reference). */
+    private fun alone(): Project {
+        val flow = MutableStateFlow(upTo("make_montee"))
+        val c = TutoController(
+            scope, "p2", flow, edit = { f -> flow.value = flow.value.f() }, store = MemoryStore(),
+            render = { FloatArray(OfflineExport.SAMPLE_RATE) { 0.1f } }, player = Quiet, debounceMs = 10,
+        )
+        idle()
+        c.start("trance", TutoLevel.Pro)
+        val ch = c.ui.value!!.chapters.indexOfFirst { it.steps.any { s -> s.id == "make_montee" } }
+        c.goTo(ch, c.ui.value!!.chapters[ch].steps.indexOfFirst { it.id == "make_montee" })
+        idle(100)
+        await("the need") { c.ui.value!!.need != null }
+        c.fulfilNeed()
+        idle(100)
+        assertTrue("made with no demonstration", montee(flow.value))
+        c.quit()
+        return flow.value
     }
 }

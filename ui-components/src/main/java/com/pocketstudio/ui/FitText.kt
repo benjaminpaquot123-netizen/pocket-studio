@@ -103,28 +103,19 @@ fun FitText(
 }
 
 /**
- * Audit stage 1: content taller (tour 9: or wider) than the room it is given (a small tile with three lines, a big
+ * Audit stage 1: content taller than the room it is given (a small tile with three lines, a big
  * font size) is drawn whole and smaller, centred, instead of losing its last line under the edge.
  * Content that fits is untouched.
  */
 fun Modifier.shrinkToFit(): Modifier = this.then(
     Modifier.layout { measurable, constraints ->
-        // Tour 9, L10 N2: content wider than the box (a word longer than the tile) spilled over its sides: it is laid out
-        // at the width it needs and drawn smaller, its whole width in the box. A content that cannot tell its width
-        // (a lazy list) is laid out as before.
-        val need = if (constraints.hasBoundedWidth) runCatching { measurable.minIntrinsicWidth(Constraints.Infinity) }.getOrDefault(0) else 0
-        val across = if (need > constraints.maxWidth) need else constraints.maxWidth
-        val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity, maxWidth = across))
+        val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
         val room = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
-        val byHeight = if (placeable.height > room && placeable.height > 0) room.toFloat() / placeable.height else 1f
-        val byWidth = if (constraints.hasBoundedWidth && placeable.width > constraints.maxWidth) constraints.maxWidth.toFloat() / placeable.width else 1f
-        val scale = minOf(byHeight, byWidth)
-        val width = minOf(placeable.width, constraints.maxWidth).coerceAtLeast(constraints.minWidth)
+        val scale = if (placeable.height > room && placeable.height > 0) room.toFloat() / placeable.height else 1f
         val height = minOf(placeable.height, room).coerceAtLeast(constraints.minHeight)
-        layout(width, height) {
-            val x = (width - placeable.width) / 2
-            if (scale == 1f) placeable.place(x, (height - placeable.height) / 2)
-            else placeable.placeWithLayer(x, (height - placeable.height) / 2) { scaleX = scale; scaleY = scale }
+        layout(placeable.width, height) {
+            if (scale == 1f) placeable.place(0, (height - placeable.height) / 2)
+            else placeable.placeWithLayer(0, (height - placeable.height) / 2) { scaleX = scale; scaleY = scale }
         }
     },
 )

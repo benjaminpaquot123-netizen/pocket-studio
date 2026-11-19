@@ -69,6 +69,7 @@ class FitTextBoxTest {
     @Test fun twoFittedLinesInASmallBoxStayInside() = inside("two lines, fr", fitted("Synthétiseur modulaire analogique", 60.dp, 30.dp, 2, false))
     @Test fun twoFittedArabicLinesInASmallBoxStayInside() = inside("two lines, ar", fitted("المُركِّب الصوتي الكبير جداً", 60.dp, 30.dp, 2, true))
 
+    /** Guard (review L10): a word longer than its box is clipped at the box's sides; never drawn past them. */
     @Test fun aShrunkContentWiderThanItsBoxStaysInside() {
         compose.setContent {
             PocketStudioTheme {

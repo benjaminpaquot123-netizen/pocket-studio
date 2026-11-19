@@ -1,0 +1,40 @@
+Écran 3 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 495,114
+icône « Parte: A » ▾ @ 76,180
+bouton « Grancassa da studio FX » [coupé] @ 78,258
+bouton « Grancassa 2 » [coupé] @ 206,258
+bouton « Rullante FX » [coupé] @ 334,258
+bouton « Rullante 2 » [coupé] @ 462,258
+texte « La velocità e il colore del brano Capitolo 1/15 · Passo 1/3 · Facile » @ 192,330
+icône (liste) « Capitoli » @ 405,330
+icône ⌄ @ 483,330
+image (rond coché) @ 36,408
+texte « Ascolta un estratto di drum & bass finita: il Build-up (la tensione sale), poi il Drop (tutto cade di colpo, con un basso enorme che ruggisce). È quello che costruirai, blocco dopo blocco. » [coupé] @ 289,447
+texte « Download del kit… 0 % » @ 135,535
+texte « Più tardi » @ 458,600
+texte « ▸ Perché? » @ 270,666
+icône « Continua a leggere » ⌄ @ 270,714
+bouton « Passo successivo   » → @ 270,786
+icône ← [désactivé] @ 57,870
+bouton ■ «  Ferma l'ascolto » @ 239,870
+icône « Avanti  » → @ 452,870
+icône ↶ « Annulla » [désactivé] @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 120 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

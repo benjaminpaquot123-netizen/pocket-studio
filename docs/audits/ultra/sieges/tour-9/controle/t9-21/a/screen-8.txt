@@ -1,0 +1,27 @@
+Écran 8 (540x1170)
+dessin @ 270,393
+texte « Tonalità del brano » @ 218,465
+texte « Chiudi » @ 464,465
+texte « Tonalità del brano: nessuna » @ 160,531
+texte « Scala » @ 52,576
+bouton « Maggiore » @ 96,642
+bouton « Minore » @ 236,642
+bouton « Dorica » @ 360,642
+bouton « Penta minore » @ 116,723
+bouton « Penta maggiore » @ 325,723
+bouton « Blues » @ 73,804
+bouton « Frigia » @ 181,804
+bouton « Minore armonica » @ 353,804
+texte « Tonica » @ 58,870
+bouton « Do » @ 63,936
+bouton « Do♯ » @ 151,936
+bouton « Re » @ 239,936
+bouton « Mi♭ » @ 326,936
+bouton « Mi » @ 413,936
+bouton « Fa » @ 63,1017
+bouton « Fa♯ » @ 150,1017
+bouton « Sol » @ 237,1017
+bouton « La♭ » @ 324,1017
+bouton « La » @ 411,1017
+bouton « Si♭ » @ 63,1098
+bouton « Si » @ 150,1098

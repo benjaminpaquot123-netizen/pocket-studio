@@ -120,7 +120,8 @@ internal fun Console(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+            // Tour 9: the card's title in the same colour as « Courbes et effets » below (readable under the help labels' veil).
+            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             HelpDot(Glossary.MUTE_SOLO)
             // Tour 9 (D12): the pads' own effects and sends, one touch away from the Mix.
             TextButton(
@@ -129,7 +130,7 @@ internal fun Console(
                 colors = androidx.compose.material3.ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
             ) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
-                Text(" " + tr("  Effets du pad").trim(), maxLines = 2, textAlign = TextAlign.End)
+                Text(" " + tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2, textAlign = TextAlign.End)
             }
         }
         if (hint) Text(

@@ -26,11 +26,16 @@ Tests du modèle (project-model/src/test, hors des lignes « chemin ») :
 - F042 (tenté) : le conseil d'effet nomme les vraies tranches (clap, pas caisse claire).
 - F044 (tenté) : un chapitre « Fini » ne laisse plus de note en pointillé.
 - F046 (tenté) : la ligne du compteur dit dès le départ les cases des autres mesures.
+- F032, test existant : `TripletsTest#theTutorialDetectsAndShowsATriplet` est passé rouge avec F032 (il validait un triolet hors des cases du style) ; il dit maintenant la règle du style (trap : ses cases ; house : n'importe lequel).
 
 ## Ce qui n'est pas vert
 - F032 synthwave (tom posé sur la ligne « Rim ») : pas corrigé, texte en 15 langues hors de mes fichiers.
 - F034 t9-08, t9-38, t9-65 (démo qui pointe une zone vide pour créer une partie) : pas pris ici.
 - F046 : une mesure pas encore créée (grille à 1 mesure avant « Passer à 2 mesures ») n'est pas comptée.
+- Acid (F040) : choisir une case vide coûte maintenant 2 touches, et 2 touches sur une note la rendent muette ; à faire jouer par un testeur.
+- `TutoPadEar.heard` (F039) : lien global vidé seulement à « Quitter » ; il peut passer d'un projet à l'autre.
+- F046 : « Mesure 2 · N cases → » à côté de « Encore N cases… » peut être coupé sur un écran étroit.
+- F036 : `Crash.shown` rend null quand rien ne change (sans effet visible, à relire).
 
 ## Demandes (hors de mes fichiers)
 Demande : F032, synthwave, consigne du Perc sur la ligne « Rim » avec un son de tom : changer le texte dans synthwave.json et les 14 tuto_autres.json en même temps.

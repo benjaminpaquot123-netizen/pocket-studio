@@ -3413,7 +3413,12 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     StructureSwitch(showParts, timelineEnabled = hasSong) { partsView = it; navPrefs.partsView = it }
                                 }
                                 if (showParts) {
-                                    sessionView(false, switch)
+                                    // Tour 9 L11 (N1): the switch stays put over the parts' column, which scrolls under it
+                                    // (riding in the column, it went under the BPM bar as the column moved).
+                                    Column(Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 8.dp)) { switch() }
+                                        Box(Modifier.fillMaxWidth().weight(1f)) { sessionView(false, null) }
+                                    }
                                 } else {
                                     TimelineRoute(
                                         rhythmVm, lifecycleOwner, close = { partsView = true; navPrefs.partsView = true },

@@ -1071,6 +1071,9 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
                 Text(percent(shown), style = MonoStyle, color = Neon.Cyan)
                 TextButton(onClick = { to(shown + 1) }, enabled = shown < 100, modifier = Modifier.testTag("swing_plus")) { Text("+") }
             }
+            // F057 (tour 9): a tutorial's swing step says the value to reach, over the slider.
+            val aim = com.pocketstudio.app.tuto.TutoHints.swing.takeIf { com.pocketstudio.app.tuto.TutoHints.active }
+            if (aim != null) Text(tr("Cible : %s", percent(aim)), style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("swing_aim"))
             ProSlider(
                 value = (project.swing / Project.MAX_SWING).toFloat(),
                 onValueChange = { actions.setSwing(it * Project.MAX_SWING) },

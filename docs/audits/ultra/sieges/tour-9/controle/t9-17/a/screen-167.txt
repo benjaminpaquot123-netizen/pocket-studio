@@ -1,0 +1,27 @@
+Écran 167 (540x1170)
+texte « Sua primeira parte: o Groove Capítulo 6/14 · Etapa 1/2 · Pro » @ 176,120
+icône (liste) « Capítulos » @ 389,120
+icône ⌄ @ 483,120
+texte « Ouça seu loop por alguns segundos, depois o exemplo. Cordas que cantam sobre uma bateria eletrônica que dança: isso é Detroit. » [coupé] @ 270,286
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,384
+texte « Mais tarde » @ 429,384
+texte « ▸ Por quê? » @ 270,472
+icône « Continuar lendo » ⌄ @ 270,535
+bouton ■ «   Parar » @ 270,664
+bouton ▶ «  Ouvir o exemplo » @ 270,750
+icône ← «  Anterior » @ 136,836
+icône « Próximo  » → @ 404,836
+icône ■ « a música » @ 199,940
+texte « 126 Andamento » @ 376,939
+icône ↶ « Desfazer » @ 34,940
+icône ↷ « Refazer » [désactivé] @ 92,940
+icône (trois points reliés) « Compartilhar » @ 505,940
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

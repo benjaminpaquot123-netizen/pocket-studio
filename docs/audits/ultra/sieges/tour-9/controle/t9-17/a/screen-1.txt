@@ -1,0 +1,28 @@
+Écran 1 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,38
+bouton « Pro » @ 489,38
+texte « O tempo e a tonalidade Capítulo 1/14 · Etapa 1/4 · Pro » @ 176,202
+icône (liste) « Capítulos » @ 389,202
+icône ⌄ @ 483,202
+texte « Ouça um trecho de techno de Detroit, o primeiríssimo techno (1985-1990): cordas melancólicas, um baixo funky, uma bateria eletrônica que rola. É isso que você vai construir. » [coupé] @ 270,368
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,466
+texte « Mais tarde » @ 429,466
+texte « ▸ Por quê? » @ 270,554
+icône « Continuar lendo » ⌄ @ 270,617
+bouton ▶ «  Ouvir o exemplo » @ 270,746
+icône ← «  Anterior » [désactivé] @ 136,835
+icône « Próximo  » → @ 404,835
+icône ▶ « a música » @ 199,939
+texte « 120 Andamento » @ 376,938
+icône ↶ « Desfazer » [désactivé] @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

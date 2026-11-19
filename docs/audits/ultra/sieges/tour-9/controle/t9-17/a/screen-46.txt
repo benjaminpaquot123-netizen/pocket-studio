@@ -1,0 +1,49 @@
+Écran 46 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,38
+bouton « Pro » @ 489,38
+bouton (dossier ouvert) @ 76,118
+icône ↶ @ 264,118
+bouton ● @ 336,118
+bouton ▶ « esta parte » @ 415,118
+icône (trois points reliés) @ 495,118
+bouton « A » ▾ @ 186,118
+bouton « 126  BPM » @ 114,220
+bouton « ? » @ 495,220
+onglet « Bateria 16 pads » [sélectionné] @ 114,338
+onglet « Acid 303 Linha de baixo » [coupé] @ 372,338
+image → @ 529,339
+texte « Parte: A » @ 95,430
+bouton « 1 » [état « vazia, pontilhada: toque »] @ 67,495
+bouton [état « batida, intensidade 100% »] @ 124,495
+bouton [état « vazio »] @ 182,496
+bouton [état « batida, intensidade 100% »] @ 240,496
+bouton « 2 » [état « batida, intensidade 100% »] @ 298,496
+bouton [état « batida, intensidade 100% »] @ 356,496
+bouton [état « vazio »] @ 414,496
+bouton [état « batida, intensidade 100% »] @ 472,496
+bouton « 3 » [coupé, état « vazia, pontilhada: toque »] @ 67,543
+bouton [coupé, état « vazia, pontilhada: toque »] @ 124,543
+bouton [coupé, état « vazio »] @ 182,543
+bouton [coupé, état « vazia, pontilhada: toque »] @ 240,543
+bouton « 4 » [coupé, état « vazia, pontilhada: toque »] @ 298,543
+bouton [coupé, état « vazia, pontilhada: toque »] @ 356,543
+bouton [coupé, état « vazio »] @ 414,543
+bouton [coupé, état « vazia, pontilhada: toque »] @ 472,543
+texte « A bateria Capítulo 2/14 · Etapa 4/8 · Pro » @ 176,644
+icône (liste) « Capítulos » @ 389,644
+icône ⌃ @ 483,644
+icône « Sua vez: os hi-hats juntinhos, com duas intensidades (um a cada dois mais suave). Ler » ⌃ @ 270,813
+icône ▶ « a música » @ 199,939
+texte « 126 Andamento » @ 376,938
+icône ↶ « Desfazer » @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

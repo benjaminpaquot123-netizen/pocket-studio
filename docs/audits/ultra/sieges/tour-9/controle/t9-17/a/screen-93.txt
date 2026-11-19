@@ -1,0 +1,36 @@
+Écran 93 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,38
+bouton « Pro » @ 489,38
+bouton (dossier ouvert) @ 76,118
+icône ↶ @ 264,118
+bouton ● @ 336,118
+bouton ▶ « esta parte » @ 415,118
+icône (trois points reliés) @ 495,118
+bouton « A » ▾ @ 186,118
+texte « Os acordes Capítulo 3/14 · Etapa 1/2 · Pro » @ 176,230
+icône (liste) « Capítulos » @ 389,230
+icône ⌄ @ 483,230
+image (rond coché) @ 36,352
+texte « Ouça as cordas sozinhas: dois acordes que se alternam. » [coupé] @ 289,368
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,466
+texte « Mais tarde » @ 429,466
+texte « ▸ Por quê? » @ 270,554
+icône « Continuar lendo » ⌄ @ 270,617
+bouton « Próxima etapa   » → @ 270,726
+bouton ▶ «  Ouvir o exemplo » @ 191,825
+icône « Próximo  » → @ 404,825
+icône ← @ 57,825
+icône ▶ « a música » @ 199,939
+texte « 126 Andamento » @ 376,938
+icône ↶ « Desfazer » @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

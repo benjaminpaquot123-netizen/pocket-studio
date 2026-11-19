@@ -1,0 +1,29 @@
+Écran 5 (1035x1243)
+dessin @ 518,362
+texte « Tempo » @ 148,438
+texte « Schließen » @ 860,438
+bouton « ? » @ 256,438
+texte « 120 » @ 466,541
+icône − @ 98,542
+texte «  BPM » @ 590,543
+icône + @ 938,542
+bouton « ½ » @ 740,641
+bouton « ×2 » @ 843,641
+bouton « 70 » @ 113,641
+bouton « 90 » @ 224,641
+bouton « 120 » [sélectionné] @ 348,641
+bouton « 140 » @ 486,641
+bouton « 174 » @ 624,641
+bouton « 1 » @ 211,734
+bouton « 2 » @ 518,734
+bouton « 3 » @ 825,734
+bouton « 4 » @ 211,821
+bouton « 5 » @ 518,821
+bouton « 6 » @ 825,821
+bouton « 7 » @ 211,908
+bouton « 8 » @ 518,908
+bouton « 9 » @ 825,908
+bouton ⌫ [désactivé] @ 211,995
+bouton « 0 » @ 518,995
+bouton « OK » [désactivé] @ 825,995
+bouton (doigt qui touche) « Im Takt tippen Tippe hier auf jeden Schlag: Das Tempo folgt. » @ 518,1135

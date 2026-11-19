@@ -1,0 +1,33 @@
+Écran 4 (1035x1243)
+icône (dossier ouvert) « Mein Projekt 1 » @ 350,42
+bouton « Einfach » @ 744,42
+bouton ● @ 832,42
+bouton ▶ « dieser Teil » @ 911,42
+icône ⋮ @ 990,42
+bouton « 120  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Tempo und Farbe des Tracks Kapitel 1/15 · Schritt 2/3 · Einfach » @ 431,246
+icône (liste) « Kapitel » @ 892,246
+icône ⌄ @ 978,246
+texte « Du bist dran: Stell das Tempo (die Geschwindigkeit des Tracks) auf 174 BPM, 174 Schläge pro Minute. „Ich mach's“ öffnet das Tempo-Blatt. » [coupé] @ 517,421
+texte « ▸ Warum? » @ 517,553
+icône « Weiterlesen » ⌄ @ 517,616
+bouton (doigt qui touche) «   Ich mach's » @ 517,736
+bouton ▶ «  Beispiel anhören » @ 266,822
+bouton (œil) «  Zeig's mir » @ 768,822
+icône ← «  Zurück » @ 125,908
+icône « Weiter  » → @ 914,908
+icône ▶ « der Song » @ 613,1012
+texte « 120 Tempo » @ 793,1011
+icône ↶ « Rückgängig » @ 144,1011
+image ↷ @ 388,991
+icône ⋮ « Mehr » @ 942,1011
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastatur » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

@@ -1,0 +1,37 @@
+Écran 48 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 350,42
+bouton « Einfach » @ 744,42
+bouton ● @ 832,42
+bouton ■ « dieser Teil » @ 911,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « A Takt 1/2 » [désactivé] @ 359,144
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône « Teil: A » ▾ @ 94,240
+texte « Takt » [coupé] @ 589,286
+bouton « 1 » [coupé] @ 674,286
+bouton « 2 » [coupé, sélectionné] @ 755,286
+bouton « Folgen » [coupé] @ 890,286
+texte « Die Hi-Hats Kapitel 4/15 · Schritt 3/3 · Einfach » @ 431,354
+icône (liste) « Kapitel » @ 892,354
+icône ⌄ @ 978,354
+texte « Hör dir dein ganzes Schlagzeug ein paar Sekunden an, dann das vom Beispiel. » @ 517,498
+texte « ▸ Warum? » @ 517,598
+bouton ■ «   Stoppen » @ 517,736
+bouton ▶ «  Beispiel anhören » @ 517,822
+icône ← «  Zurück » @ 125,908
+icône « Weiter  » → @ 914,908
+icône ■ « der Song » @ 613,1012
+texte « 174 Tempo » @ 793,1011
+icône ↶ « Rückgängig » @ 144,1011
+image ↷ @ 388,991
+icône ⋮ « Mehr » @ 942,1011
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastatur » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

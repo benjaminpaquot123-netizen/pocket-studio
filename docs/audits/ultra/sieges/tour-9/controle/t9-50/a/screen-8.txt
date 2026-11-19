@@ -1,0 +1,27 @@
+Écran 8 (1035x1243)
+dessin @ 518,461
+texte « Schließen » @ 860,537
+texte « Tonart des Tracks » @ 404,537
+texte « Tonart des Tracks: keine » @ 288,620
+texte « Tonleiter » @ 145,691
+bouton « Dur » @ 115,770
+bouton « Moll » @ 237,770
+bouton « Dorisch » @ 400,770
+bouton « Moll-Penta » @ 630,770
+bouton « Dur-Penta » @ 181,851
+bouton « Blues » @ 382,851
+bouton « Phrygisch » @ 585,851
+bouton « Harmonisch Moll » @ 247,932
+texte « Grundton » @ 151,1011
+bouton « C » @ 101,1090
+bouton « C♯ » @ 194,1090
+bouton « D » @ 287,1090
+bouton « E♭ » @ 374,1090
+bouton « E » @ 461,1090
+bouton « F » @ 548,1090
+bouton « F♯ » @ 638,1090
+bouton « G » @ 728,1090
+bouton « A♭ » @ 816,1090
+bouton « A » @ 904,1090
+bouton « B » @ 101,1171
+bouton « H » @ 188,1171

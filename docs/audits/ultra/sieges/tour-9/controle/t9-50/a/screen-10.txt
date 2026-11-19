@@ -1,0 +1,30 @@
+Écran 10 (1035x1243)
+dessin @ 518,201
+texte « Tonart des Tracks » @ 404,277
+texte « Schließen » @ 860,277
+texte « Tonart des Tracks: F♯ · Phrygisch » @ 370,360
+texte « Tonleiter » @ 145,431
+bouton « Dur » @ 115,510
+bouton « Moll » @ 237,510
+bouton « Dorisch » @ 400,510
+bouton « Moll-Penta » @ 630,510
+bouton « Dur-Penta » @ 181,591
+bouton « Blues » @ 382,591
+bouton « Phrygisch » @ 585,591
+bouton « Harmonisch Moll » @ 247,672
+texte « Grundton » @ 151,751
+bouton « C » @ 101,830
+bouton « C♯ » @ 194,830
+bouton « D » @ 287,830
+bouton « E♭ » @ 374,830
+bouton « E » @ 461,830
+bouton « F » @ 548,830
+bouton « F♯ » @ 638,830
+bouton « G » @ 728,830
+bouton « A♭ » @ 816,830
+bouton « A » @ 904,830
+bouton « B » @ 101,911
+bouton « H » @ 188,911
+image (rond coché) @ 96,1037
+texte « Geschafft! Die Farbe des Songs ist gewählt. » @ 540,1037
+bouton « Zurück zum Tutorial » @ 518,1167

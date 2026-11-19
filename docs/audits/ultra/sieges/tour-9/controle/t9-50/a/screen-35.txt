@@ -1,0 +1,44 @@
+Écran 35 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 350,42
+bouton « Einfach » @ 744,42
+bouton ● @ 832,42
+bouton ■ « dieser Teil » @ 911,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « A Takt 1/2 » [désactivé] @ 359,144
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône « Teil: A » ▾ @ 94,240
+bouton « Große Trommel Studio FX » @ 75,342
+bouton « Große Trommel 2 » @ 200,342
+bouton « Neurofunk · Snare FX » @ 325,342
+bouton « Snare 2 » @ 450,342
+texte « Takt » @ 589,312
+bouton « 1 » @ 674,312
+bouton « 2 » [sélectionné] @ 755,312
+bouton « Folgen » @ 890,312
+texte « Takt 2/2 · Neurofunk · Snare » [coupé] @ 776,381
+texte « Die Snare Kapitel 3/15 · Erledigt · Einfach » @ 431,459
+icône (liste) « Kapitel » @ 892,459
+icône ⌄ @ 978,459
+image (coupe) @ 57,632
+texte « Bravo, Kapitel geschafft! » @ 326,580
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Die Hi-Hats“. » @ 543,660
+icône « Weiterlesen » ⌄ @ 517,750
+bouton « Nächstes Kapitel   » → @ 517,825
+icône ← @ 57,911
+bouton ■ «  Stoppen » @ 327,911
+bouton ▶ «  Beispiel anhören » @ 788,911
+icône ■ « der Song » @ 613,1012
+texte « 174 Tempo » @ 793,1011
+icône ↶ « Rückgängig » @ 144,1011
+image ↷ @ 388,991
+icône ⋮ « Mehr » @ 942,1011
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastatur » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

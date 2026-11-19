@@ -1,0 +1,70 @@
+Écran 42 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 350,42
+bouton « Einfach » @ 744,42
+bouton ● @ 832,42
+bouton ■ « dieser Teil » @ 911,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « A Takt 1/2 » [désactivé] @ 359,144
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône « Teil: A » ▾ @ 94,240
+bouton « Große Trommel Studio FX » @ 75,342
+bouton « Große Trommel 2 » @ 200,342
+bouton « Neurofunk · Snare FX » @ 325,342
+bouton « Snare 2 » @ 450,342
+bouton « Händeklatschen » @ 75,448
+bouton « Neurofunk · Hi-Hat L 30 » @ 200,448
+bouton « Offene Hi-Hat R 30 » @ 325,448
+bouton « Tiefes Tom » @ 450,448
+bouton « Mittleres Tom R 45 » @ 75,554
+bouton « Hohes Tom » @ 200,554
+bouton « Neurofunk · Trommelrand FX R 50 » @ 325,554
+bouton « Glocke » @ 450,554
+bouton « Becken FX R 40 » [coupé] @ 75,644
+bouton « Maracas L 50 » [coupé] @ 200,644
+bouton « Conga » [coupé] @ 325,644
+bouton « Laser » [coupé] @ 450,644
+texte « Takt » @ 589,312
+bouton « 1 » [sélectionné] @ 674,312
+bouton « 2 » @ 755,312
+bouton « Folgen » @ 890,312
+texte « Takt 1/2 · Neurofunk · Trommelrand » @ 776,386
+texte « Noch 1 gestricheltes Kästchen hier » @ 776,440
+bouton « 1 » [état « leer »] @ 575,512
+bouton [état « leer »] @ 632,511
+bouton [état « leer »] @ 688,511
+bouton [état « Schlag, Stärke 100 % »] @ 744,511
+bouton « 2 » [état « leer »] @ 800,511
+bouton [état « leer »] @ 856,511
+bouton [état « leer »] @ 912,511
+bouton [état « leer »] @ 968,511
+bouton « 3 » [état « leer »] @ 575,582
+bouton [état « leer, gestrichelt: antippen »] @ 632,581
+bouton [état « leer »] @ 688,581
+bouton [état « leer »] @ 744,581
+bouton « 4 » [état « leer »] @ 800,581
+bouton [état « leer »] @ 856,581
+bouton [état « leer »] @ 912,581
+bouton [état « leer »] @ 968,581
+texte « Füllen » [coupé] @ 604,656
+texte « alles » [coupé] @ 717,654
+texte « 1/2 » [coupé] @ 817,654
+texte « 1/4 » [coupé] @ 902,654
+texte « Die Hi-Hats Kapitel 4/15 · Schritt 2/3 · Einfach » @ 431,743
+icône (liste) « Kapitel » @ 892,743
+icône ⌃ @ 978,743
+icône « Du bist dran: Tippe beim Percussion-Pad auf die gestrichelten Kästchen der 2 Takte: kleine versetzte Geräusche. Lesen » ⌃ @ 517,886
+icône ■ « der Song » @ 613,1012
+texte « 174 Tempo » @ 793,1011
+icône ↶ « Rückgängig » @ 144,1011
+image ↷ @ 388,991
+icône ⋮ « Mehr » @ 942,1011
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastatur » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

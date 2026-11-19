@@ -1,0 +1,36 @@
+Écran 97 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 350,42
+bouton « Einfach » @ 744,42
+bouton ● @ 832,42
+bouton ▶ « dieser Teil » @ 911,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Hinzufügen: » [coupé] @ 154,222
+bouton « + A · Groove » @ 196,292
+titre « MEINE SPUREN » [état « Aufgeklappt »] @ 726,270
+texte « Tippe auf den Namen einer Spur, um ihren Klang zu ändern; ▶, um sie allein zu hören. » [coupé] @ 771,321
+texte « Dein erster Teil: der Groove Kapitel 8/15 · Erledigt · Einfach » @ 431,403
+icône (liste) « Kapitel » @ 892,403
+icône ⌄ @ 978,403
+image (coupe) @ 57,602
+texte « Bravo, Kapitel geschafft! » @ 326,524
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Die Teile verstehen“. » @ 543,630
+bouton « Nächstes Kapitel   » → @ 517,769
+bouton ▶ «  Meinen Song anhören » @ 327,883
+icône ← @ 57,883
+bouton ▶ «  Beispiel anhören » @ 788,883
+icône ▶ « der Song » @ 613,1012
+texte « 174 Tempo » @ 793,1011
+icône ↶ « Rückgängig » @ 144,1011
+image ↷ @ 388,991
+icône ⋮ « Mehr » @ 942,1011
+onglet (lignes et note) « Mein Song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythmus » @ 309,1123
+onglet (touches de piano) « Tastatur » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

@@ -1,0 +1,39 @@
+Écran 63 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 265,42
+bouton « Einfach » @ 573,42
+icône ↶ @ 661,42
+bouton ● @ 733,42
+bouton ▶ « dieser Teil » @ 812,42
+bouton ▶ « der Song » @ 910,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+onglet « Acid 303 Bassline » @ 124,262
+bouton « Bass Sprechender Bass » ⋮ @ 425,262
+icône ♪ « Sound » @ 706,262
+bouton + «  Spur » @ 907,262
+icône « Teil: A » ▾ @ 94,356
+texte « Im Takt 50 % » [coupé] @ 671,394
+texte « 100 % » [coupé] @ 896,394
+texte « Löschen » @ 142,439
+bouton « Bass · Takt 2/8 ↑ Noch 1 gestrichelte Note zu tippen Hier tippen » @ 517,540
+texte « Takt » @ 84,625
+bouton « 2 » @ 486,625
+bouton « 3 » [coupé] @ 920,625
+texte « G » @ 84,678
+texte « F♯ » @ 84,719
+texte « F » @ 84,760
+dessin [coupé] @ 559,719
+texte « Der Bass Kapitel 5/15 · Schritt 3/3 · Einfach » @ 431,846
+icône (liste) « Kapitel » @ 892,846
+icône ⌃ @ 978,846
+icône « Du bist dran: Tippe auf die 5 Noten in Takt 2. Lesen » ⌃ @ 517,989
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » @ 309,1123
+onglet (touches de piano) « Tastatur » [sélectionné] @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

@@ -1,0 +1,537 @@
+#0 SIEGE lang=de device=foldable font=200 mode=simple theme=- fresh=non gestes.max=160 lit=oui main=both amenee=tuto:neurofunk:1
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:neurofunk:1
+#0 AMENEE > touche 518 850 (welcome_learn)
+#0 AMENEE > touche 263 951 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_neurofunk)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d44ef0b08d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Teil: A » drawn past its parent's edge (down, 31 dp shown of 37)
+#1 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 819
+#1 DOIGT tuto_listen «  Beispiel anhören »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f1ea2746b3 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 460 593
+#2 DOIGT tuto_kit_download « Kit Neurofunk laden (3 MB) »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE aec2ba63ba | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=ref done=1 chapters=- playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 517 819
+#3 DOIGT tuto_next_big « Nächster Schritt   »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 76864897ce | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 736
+#4 DOIGT tuto_do «   Ich mach's »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 9b688aa651 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « ? » lines cut (taller than its box)
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (114 x 45 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (13 x 18 dp)
+#5 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (126 x 37 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (96 x 61 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (70 x 42 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (54 x 34 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (25 x 42 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (36 x 42 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (23 x 43 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (51 x 43 dp)
+#5 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (193 x 42 dp)
+#5 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (475 x 69 dp)
+#5 > touche 624 641
+#5 DOIGT tempo_preset_174 « 174 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c3c636e1fa | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=tempo done=2 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Händeklatschen » a word split over two lines
+#6 LAYOUT CUT « R 50 » lines dropped (more lines than room)
+#6 LAYOUT CUT « R 40 » lines dropped (more lines than room)
+#6 LAYOUT OVERLAP « Neurofunk · Snare » over « FX » (26 x 5 dp)
+#6 LAYOUT OVERLAP « Neurofunk · Hi-Hat » over « L 30 » (42 x 5 dp)
+#6 LAYOUT OVERLAP « Offene Hi-Hat » over « R 30 » (41 x 10 dp)
+#6 LAYOUT OVERLAP « Mittleres Tom » over « R 45 » (44 x 11 dp)
+#6 > touche 517 886
+#6 DOIGT tuto_next_folded « Geschafft »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b859b5ab0b | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=2 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 736
+#7 DOIGT tuto_do «   Ich mach's »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 56131e90bc | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (297 x 45 dp)
+#8 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (302 x 37 dp)
+#8 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (110 x 37 dp)
+#8 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (47 x 42 dp)
+#8 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (55 x 42 dp)
+#8 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (102 x 42 dp)
+#8 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (144 x 42 dp)
+#8 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (135 x 42 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (72 x 42 dp)
+#8 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (139 x 42 dp)
+#8 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (223 x 42 dp)
+#8 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (119 x 37 dp)
+#8 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (21 x 42 dp)
+#8 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (36 x 42 dp)
+#8 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (20 x 42 dp)
+#8 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (27 x 42 dp)
+#8 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (17 x 42 dp)
+#8 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (17 x 42 dp)
+#8 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (32 x 42 dp)
+#8 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (21 x 42 dp)
+#8 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (29 x 42 dp)
+#8 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (19 x 42 dp)
+#8 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (18 x 42 dp)
+#8 LAYOUT OVERLAP « H » over the touchable « Tabelle schließen » (21 x 42 dp)
+#8 > touche 585 851
+#8 DOIGT tuto_scale_Phrygian « Phrygisch »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE ff42c064e3 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tonart des Tracks: C · Phrygisch » over the touchable « Tabelle schließen » (399 x 37 dp)
+#9 > touche 638 1090
+#9 DOIGT tuto_root_6 « F♯ »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3da820905d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=3 chapters=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Tonart des Tracks: F♯ · Phrygisch » over the touchable « Tabelle schließen » (411 x 37 dp)
+#10 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (470 x 84 dp)
+#10 LAYOUT OVERLAP « Zurück zum Tutorial » over the touchable « Tabelle schließen » (258 x 37 dp)
+#10 > touche 518 1167
+#10 DOIGT tuto_key_continue « Zurück zum Tutorial »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 779682d762 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=3 chapters=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 517 886
+#11 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE eded246203 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=key done=3 chapters=1 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 825
+#12 DOIGT tuto_next_big « Nächstes Kapitel   »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2ce128e97f | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=ready done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 819
+#13 DOIGT tuto_mark «   Verstanden »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 56f020f8c4 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_hear done=4 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 819
+#14 DOIGT tuto_listen «  Beispiel anhören »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4cf754fbf2 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_hear done=4 chapters=1 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 4
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE adbc5ef84a | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_hear done=5 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 819
+#16 DOIGT tuto_next_big « Nächster Schritt   »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8557151c21 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT « Noch 2 gestrichelte Kästchen hier » ellipsized (« … »)
+#17 LAYOUT CONTRAST « Große Trommel Studio » 3.80:1 (needs 4.5:1, 13 sp)
+#17 > touche 517 736
+#17 DOIGT tuto_need «   Auf 2 Takte umstellen »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7f861fbcda | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Takt 1/2 · Große Trommel Studio » ellipsized (« … »)
+#18 LAYOUT CUT « Du bist dran: Tippe beim Kick-Pad auf die gestrichelten Kästchen der 2 Takte. Ein Schlag kommt früher: Das ist Absicht. » ellipsized (« … »)
+#18 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#18 > touche 575 512
+#18 DOIGT step_0 « Step 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b73ffa53d0 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Noch 1 gestricheltes Kästchen hier » ellipsized (« … »)
+#19 > touche 688 581
+#19 DOIGT step_10 « Step 11 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dbeda1380c | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « Takt 2 · 3 Kästchen → » lines dropped (more lines than room)
+#20 > touche 755 312
+#20 DOIGT drum_page_1 « 2 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 48c4da1c80 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Takt 2/2 · Große Trommel Studio » ellipsized (« … »)
+#21 LAYOUT CUT « Noch 3 gestrichelte Kästchen hier » ellipsized (« … »)
+#21 > touche 575 512
+#21 DOIGT step_16 « Step 1 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 68d240451d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 968 511
+#22 DOIGT step_23 « Step 8 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e0c26cd55 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 688 581
+#23 DOIGT step_26 « Step 11 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 11e7fd4b69 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 886
+#24 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a5e39d85d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 517 769
+#25 DOIGT tuto_next_big « Nächstes Kapitel   »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 98199a7732 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « Takt 1/2 · Neurofunk · Snare » ellipsized (« … »)
+#26 LAYOUT CONTRAST « Neurofunk · Snare » 2.01:1 (needs 4.5:1, 14 sp)
+#26 > touche 517 736
+#26 DOIGT tuto_do «   Ich mach's »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc3369f2ac | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « Du bist dran: Tippe beim Pad „Neurofunk · Snare“ auf die gestrichelten Kästchen der 2 Takte. » ellipsized (« … »)
+#27 LAYOUT CONTRAST « Neurofunk · Snare » 4.28:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 2 » 2.42:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 4 » 3.51:1 (needs 4.5:1, 12 sp)
+#27 > touche 800 511
+#27 DOIGT step_4 « Step 5 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 29201ccbb2 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 4 » 2.42:1 (needs 4.5:1, 12 sp)
+#28 > touche 800 581
+#28 DOIGT step_12 « Step 13 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fcd97a7235 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 755 312
+#29 DOIGT drum_page_1 « 2 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8b2eb7ee59 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « Takt 2/2 · Neurofunk · Snare » ellipsized (« … »)
+#30 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#30 > touche 800 511
+#30 DOIGT step_20 « Step 5 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0a5aaba3c6 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#31 > touche 800 581
+#31 DOIGT step_28 « Step 13 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d03c8fd2de | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 968 581
+#32 DOIGT step_31 « Step 16 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a36a6a5e56 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=7 chapters=1,2,3 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 517 886
+#33 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 361f0641e5 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=7 chapters=1,2,3 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 330 883
+#34 DOIGT tuto_play_mine «  Meinen Song anhören »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4da381ac41 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=snare_do done=7 chapters=1,2,3 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 517 825
+#35 DOIGT tuto_next_big « Nächstes Kapitel   »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0e152843da | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=hat_do done=7 chapters=1,2,3 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT CUT « Takt 1/2 · Neurofunk · Hi-Hat » ellipsized (« … »)
+#36 LAYOUT CUT « Noch 8 gestrichelte Kästchen hier » ellipsized (« … »)
+#36 LAYOUT CONTRAST « Neurofunk · Snare » 3.04:1 (needs 4.5:1, 14 sp)
+#36 > touche 517 736
+#36 DOIGT tuto_do «   Ich mach's »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 69595335dd | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=hat_do done=7 chapters=1,2,3 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT CUT « Du bist dran: Tippe beim Pad „Neurofunk · Hi-Hat“ auf alle gestrichelten Kästchen der 2 Takte. » ellipsized (« … »)
+#37 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 3 » 3.72:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 4 » 3.72:1 (needs 4.5:1, 12 sp)
+#37 > touche 817 650
+#37 DOIGT fill_2 « 1/2 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fe11db9e33 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CONTRAST « 1/2 » 3.95:1 (needs 4.5:1, 14 sp)
+#38 > touche 755 312
+#38 DOIGT drum_page_1 « 2 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8dc1c1dff5 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CUT « Takt 2/2 · Neurofunk · Hi-Hat » ellipsized (« … »)
+#39 > touche 517 886
+#39 DOIGT tuto_next_folded « Geschafft »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3b1c9b7d64 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 517 736
+#40 DOIGT tuto_do «   Ich mach's »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 62f0f89f94 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT CUT « Takt 1/2 · Neurofunk · Trommelrand » ellipsized (« … »)
+#41 LAYOUT CUT « Du bist dran: Tippe beim Percussion-Pad auf die gestrichelten Kästchen der 2 Takte: kleine versetzte Geräusche. » ellipsized (« … »)
+#41 > touche 744 511
+#41 DOIGT step_3 « Step 4 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0e5561cbd1 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 632 581
+#42 DOIGT step_9 « Step 10 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4feff5ed46 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 755 312
+#43 DOIGT drum_page_1 « 2 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bcbf49631f | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CUT « Takt 2/2 · Neurofunk · Trommelrand » ellipsized (« … »)
+#44 > touche 744 511
+#44 DOIGT step_19 « Step 4 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5dd04bcc30 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 632 581
+#45 DOIGT step_25 « Step 10 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ad2408409c | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=8 chapters=1,2,3 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 856 581
+#46 DOIGT step_29 « Step 14 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 744b52adca | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 517 886
+#47 DOIGT tuto_next_folded « Geschafft »
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 259d538ec7 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=drums_hear done=9 chapters=1,2,3 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CONTRAST « 1 » 1.60:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 2 » 1.35:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Folgen » 1.60:1 (needs 4.5:1, 14 sp)
+#48 > touche 517 822
+#48 DOIGT tuto_listen «  Beispiel anhören »
+#49 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 664d82cfba | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=drums_hear done=9 chapters=1,2,3 playing=false
+#49 SON Son : l'exemple du tuto joue (encore 3 s).
+#49 > attends 4
+#50 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c69ff79f0a | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=drums_hear done=10 chapters=1,2,3,4 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 517 769
+#50 DOIGT tuto_next_big « Nächstes Kapitel   »
+#51 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4e3fe6475b | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_hear done=10 chapters=1,2,3,4 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 517 819
+#51 DOIGT tuto_listen «  Beispiel anhören »
+#52 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e6b813a624 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_hear done=10 chapters=1,2,3,4 playing=false
+#52 SON Son : l'exemple du tuto joue (encore 3 s).
+#52 > attends 8
+#53 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 54271e0a9b | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_hear done=11 chapters=1,2,3,4 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 517 819
+#53 DOIGT tuto_next_big « Nächster Schritt   »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2a4e9a0a4 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 517 736
+#54 DOIGT tuto_need «   Bass-Spur erstellen »
+#55 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3e7071d330 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « Sprechender Bass » ellipsized (« … »)
+#55 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#55 LAYOUT CUT « 2 » drawn past its parent's edge (down, 32 dp shown of 37)
+#55 LAYOUT CUT « G » drawn past its parent's edge (down, 27 dp shown of 32)
+#55 LAYOUT CUT « F♯ » drawn past its parent's edge (down, 28 dp shown of 33)
+#55 > touche 172 719
+#55 DOIGT rien
+#56 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5224972acf | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#56 SON Son : 1 note du synthé.
+#56 > touche 328 719
+#56 DOIGT rien
+#57 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b5c21f7b20 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#57 SON Son : 1 note du synthé.
+#57 > touche 486 719
+#57 DOIGT rien
+#58 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ea3afdf8c6 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#58 SON Son : 1 note du synthé.
+#58 > touche 517 989
+#58 DOIGT tuto_next_folded « Geschafft »
+#59 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE ac79876b7d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 517 839
+#59 DOIGT tuto_do «   Ich mach's »
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5268d941d4 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « ↑ Noch 4 gestrichelte Noten zu tippen » ellipsized (« … »)
+#60 LAYOUT CUT « 3 » drawn past its parent's edge (down, 32 dp shown of 37)
+#60 > touche 172 719
+#60 DOIGT rien
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8e32a6f3ae | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#61 SON Son : 1 note du synthé.
+#61 LAYOUT CUT « ↑ Noch 3 gestrichelte Noten zu tippen » ellipsized (« … »)
+#61 > touche 328 719
+#61 DOIGT rien
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3bc72853dd | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#62 SON Son : 1 note du synthé.
+#62 LAYOUT CUT « ↑ Noch 2 gestrichelte Noten zu tippen » ellipsized (« … »)
+#62 > touche 486 719
+#62 DOIGT rien
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b5a7e046d8 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#63 SON Son : 1 note du synthé.
+#63 LAYOUT CUT « ↑ Noch 1 gestrichelte Note zu tippen » ellipsized (« … »)
+#63 > touche 711 719
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3d112f508a | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#64 SON Son : 1 note du synthé.
+#64 LAYOUT CUT « Noch 1 gestrichelte Note, weiter oben ↑ » ellipsized (« … »)
+#64 > touche 862 540
+#64 DOIGT tuto_notes_left « Bass · Takt 2/8 »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ce74582926 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 800 719
+#65 DOIGT rien
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6f926f2fbb | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#66 SON Son : 1 note du synthé.
+#66 LAYOUT CUT « Pattern gesetzt! Der Rest wird kopiert: » ellipsized (« … »)
+#66 > touche 517 989
+#66 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dd69f0e47b | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=13 chapters=1,2,3,4,5 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 989
+#67 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2a348a9497 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=bass_2 done=13 chapters=1,2,3,4,5 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 517 872
+#68 DOIGT tuto_next_big « Nächstes Kapitel   »
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fde2a3e41f | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 517 839
+#69 DOIGT tuto_need «   Akkorde-Spur erstellen »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c3bd8bf4fd | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CUT « A♯ » drawn past its parent's edge (down, 27 dp shown of 33)
+#70 LAYOUT CUT « A » drawn past its parent's edge (down, 28 dp shown of 32)
+#70 LAYOUT CUT « Du bist dran: Tippe auf „Akkorde-Spur erstellen“, dann auf die gestrichelte untere Note jedes Akkords in Takt 1: Der ganze Akkord wird gesetzt. » ellipsized (« … »)
+#70 > touche 862 540
+#70 DOIGT tuto_notes_left « Akkorde · Takt 1/8 »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6f9df35fa2 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT TARGET « C♯4 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « C4 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « H3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « A♯3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « A3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « G♯3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « G3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 LAYOUT TARGET « F♯3 Spielen » 56 x 9 dp (touch 56 x 48)
+#71 > touche 480 764
+#71 DOIGT rien
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c787f9206b | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_do done=14 chapters=1,2,3,4,5 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 517 989
+#72 DOIGT tuto_next_folded « Geschafft »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5cd4118323 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 517 839
+#73 DOIGT tuto_need «   Auf die nächsten Takte kopieren »
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5cd4118323 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 978 518
+#74 DOIGT tuto_fold
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0729609122 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT TARGET « F3 Spielen » 56 x 9 dp (touch 56 x 48)
+#75 > touche 874 540
+#75 DOIGT tuto_roll_copy « Kopieren »
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc01e06f2d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5,6 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 517 989
+#76 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#77 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 661e309e94 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5,6 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 872
+#77 DOIGT tuto_next_big « Nächstes Kapitel   »
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d4750d1b6d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_hear done=15 chapters=1,2,3,4,5,6 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 517 922
+#78 DOIGT tuto_listen «  Beispiel anhören »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eca5096a0f | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_hear done=15 chapters=1,2,3,4,5,6 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 4
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8fb27af305 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_hear done=16 chapters=1,2,3,4,5,6 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 517 922
+#80 DOIGT tuto_next_big « Nächster Schritt   »
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 990f85c790 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 839
+#81 DOIGT tuto_need «   Melodie-Spur erstellen »
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3cc6b78913 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « Metallischer Stab » ellipsized (« … »)
+#82 LAYOUT CUT « Du bist dran: Tippe auf die 2 gestrichelten Noten in Takt 1: Sie fallen in die Lücken des Basses. » ellipsized (« … »)
+#82 LAYOUT TARGET « A♯4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « A4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « G♯4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « G4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « F♯4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « F4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « E4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « D♯4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 LAYOUT TARGET « D4 Spielen » 56 x 9 dp (touch 56 x 48)
+#82 > touche 620 718
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c12b063538 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#83 SON Son : 1 note du synthé.
+#83 LAYOUT CUT « Noch 2 gestrichelte Noten, weiter oben ↑ » ellipsized (« … »)
+#83 > touche 862 540
+#83 DOIGT tuto_notes_left « Melodie · Takt 1/8 »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b36d9ba053 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT TARGET « F5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « E5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « D♯5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « D5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « C♯5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « C5 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 LAYOUT TARGET « H4 Spielen » 56 x 9 dp (touch 56 x 48)
+#84 > touche 733 718
+#84 DOIGT rien
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 779d1c8103 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_do done=17 chapters=1,2,3,4,5,6 playing=false
+#85 SON Son : 1 note du synthé.
+#85 LAYOUT CUT « Noch 1 gestrichelte Note, weiter hinten → » ellipsized (« … »)
+#85 > touche 517 989
+#85 DOIGT tuto_next_folded « Geschafft »
+#86 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE dd844b95d5 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 517 839
+#86 DOIGT tuto_do «   Ich mach's »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 71640cea3d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 600 718
+#87 DOIGT rien
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e13b027b7d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 874 540
+#88 DOIGT tuto_roll_copy « Kopieren »
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 452b96fd0e | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_2 done=18 chapters=1,2,3,4,5,6,7 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 517 989
+#89 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#90 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE ec16567d32 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=lead_2 done=18 chapters=1,2,3,4,5,6,7 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 517 872
+#90 DOIGT tuto_next_big « Nächstes Kapitel   »
+#91 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 0bd7dba194 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « Schwarm » lines cut (taller than its box)
+#91 LAYOUT CONTRAST « Sprechender Bass » 3.10:1 (needs 4.5:1, 12 sp)
+#91 LAYOUT CONTRAST « Schwarm » 3.10:1 (needs 4.5:1, 12 sp)
+#91 > touche 517 839
+#91 DOIGT tuto_play_mine «   Dein Ergebnis anhören »
+#92 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE c93789506d | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=true
+#92 SON Son : la musique du projet joue en boucle.
+#92 > attends 5
+#93 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE d1726e5e30 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=true
+#93 SON Son : la musique du projet joue en boucle.
+#93 > touche 517 925
+#93 DOIGT tuto_listen «  Beispiel anhören »
+#94 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2cf49ecdc8 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=false
+#94 SON Son : l'exemple du tuto joue (encore 3 s).
+#94 > attends 6
+#95 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 592b3f0ce2 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 517 872
+#95 DOIGT tuto_next_big « Nächster Schritt   »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7fd599ecde | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_name done=19 chapters=1,2,3,4,5,6,7 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 517 839
+#96 DOIGT tuto_need «   Teil „Groove“ benennen »
+#97 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE de86207329 | project=p-dbcf8961 tuto=neurofunk/Facile active=true step=groove_name done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#97 SON Son : rien ne joue.
+#97 > fin
+#97 BENCH-VERDICT ok where=seat.fin
+#97 FIN : fin

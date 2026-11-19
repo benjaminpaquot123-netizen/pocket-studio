@@ -1,0 +1,47 @@
+Écran 71 (1035x1243)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 265,42
+bouton « Einfach » @ 573,42
+icône ↶ @ 661,42
+bouton ● @ 733,42
+bouton ▶ « dieser Teil » @ 812,42
+bouton ▶ « der Song » @ 910,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 136,144
+bouton « ? » @ 990,144
+onglet « Acid 303 Bassline » @ 124,262
+bouton « Bass Sprechender Bass » @ 425,262
+bouton « Akkorde Schwarm » ⋮ @ 746,262
+icône ♪ « Sound » [coupé] @ 950,262
+image → @ 1024,263
+icône « Teil: A » ▾ @ 94,356
+texte « Im Takt 50 % » [coupé] @ 671,394
+texte « 100 % » [coupé] @ 896,394
+texte « Löschen » [désactivé] @ 142,439
+bouton « Akkorde · Takt 1/8 Gestrichelte Akkorde zu tippen: 1 » @ 517,540
+texte « Takt » @ 84,625
+bouton « 1 » @ 486,625
+bouton « 2 » [coupé] @ 920,625
+dessin [coupé] @ 84,662
+dessin @ 84,673
+dessin @ 84,686
+dessin @ 84,699
+dessin @ 84,712
+dessin @ 84,725
+dessin @ 84,738
+dessin @ 84,751
+dessin @ 84,764
+dessin [coupé] @ 84,775
+dessin [coupé] @ 559,719
+texte « Das Pad Kapitel 6/15 · Schritt 1/2 · Einfach » @ 431,846
+icône (liste) « Kapitel » @ 892,846
+icône ⌃ @ 978,846
+icône « Du bist dran: Tippe auf „Akkorde-Spur erstellen“, dann auf die gestrichelte untere Note jedes Akkords in Takt 1: Der ganze Akkord wird gesetzt. Lesen » ⌃ @ 517,989
+onglet (lignes et note) « Mein Song » @ 99,1123
+onglet (quatre carrés) « Rhythmus » @ 309,1123
+onglet (touches de piano) « Tastatur » [sélectionné] @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Teilen » @ 936,1123
+texte « ●  REC » @ 719,1213
+texte « ✎  Notieren » @ 863,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback-Modus » @ 338,1213

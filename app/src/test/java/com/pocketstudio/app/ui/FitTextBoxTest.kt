@@ -73,13 +73,13 @@ class FitTextBoxTest {
         compose.setContent {
             PocketStudioTheme {
                 Box(Modifier.size(40.dp).testTag("box")) {
-                    Box(Modifier.shrinkToFit()) { Box(Modifier.requiredWidth(80.dp).height(20.dp).testTag("wide")) }
+                    Box(Modifier.shrinkToFit()) { androidx.compose.material3.Text("Schlagzeugmaschine", Modifier.testTag("wide"), maxLines = 1) }
                 }
             }
         }
         compose.waitForIdle()
         val box = compose.onNodeWithTag("box").fetchSemanticsNode().boundsInRoot
         val wide = compose.onNodeWithTag("wide", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
-        assertTrue("80 dp of content in a 40 dp box: drawn at $wide, the box at $box", wide.left >= box.left - 0.5f && wide.right <= box.right + 0.5f)
+        assertTrue("a word longer than a 40 dp box: drawn at $wide, the box at $box", wide.left >= box.left - 0.5f && wide.right <= box.right + 0.5f)
     }
 }

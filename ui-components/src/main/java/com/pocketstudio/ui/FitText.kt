@@ -30,13 +30,24 @@ class WholeWordsAutoSize(private val min: TextUnit, private val max: TextUnit, p
         val bottom = if (min.isSp) (min.value / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)).coerceAtMost(top) else top
         // Tour 5, moyens2: the same steps, searched by halves ([largestFitting]).
         val by = if (step.isSp) step.value.coerceAtLeast(0.25f) else 0.5f
-        return largestFitting(top, bottom, by) { size -> fits(performLayout(constraints, text, size.sp), text.text) }?.sp ?: bottom.sp
+        return largestFitting(top, bottom, by) { size -> fits(performLayout(constraints, text, size.sp), text.text) }?.sp
+            ?: lowEnough(bottom, by) { size -> performLayout(constraints, text, size.sp).let { it.multiParagraph.height <= it.size.height + 0.5f } }.sp
     }
+
+    /**
+     * Tour 9, L10 N2: nothing fits whole, [bottom] is the floor and the text is cut with « … » at its side; but a box lower
+     * than one line at the floor showed the line over its top and bottom edges. Then the text gets lower still, till
+     * its lines stand in the box (1 sp at the least).
+     */
+    private fun lowEnough(bottom: Float, by: Float, inside: (Float) -> Boolean): Float =
+        if (inside(bottom)) bottom else largestFitting(bottom, FLOOR_SP, by, inside) ?: FLOOR_SP
 
     override fun equals(other: Any?): Boolean = other is WholeWordsAutoSize && other.min == min && other.max == max && other.step == step
     override fun hashCode(): Int = (min.hashCode() * 31 + max.hashCode()) * 31 + step.hashCode()
 
     companion object {
+        private const val FLOOR_SP = 1f
+
         /** [r] shows [text] whole: no line past the last, nothing wider than its box, no word split over two lines. */
         fun fits(r: TextLayoutResult, text: String): Boolean {
             if (r.didOverflowHeight || r.isLineEllipsized(r.lineCount - 1)) return false
@@ -92,19 +103,28 @@ fun FitText(
 }
 
 /**
- * Audit stage 1: content taller than the room it is given (a small tile with three lines, a big
+ * Audit stage 1: content taller (tour 9: or wider) than the room it is given (a small tile with three lines, a big
  * font size) is drawn whole and smaller, centred, instead of losing its last line under the edge.
  * Content that fits is untouched.
  */
 fun Modifier.shrinkToFit(): Modifier = this.then(
     Modifier.layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+        // Tour 9, L10 N2: content wider than the box (a word longer than the tile) spilled over its sides: it is laid out
+        // at the width it needs and drawn smaller, its whole width in the box. A content that cannot tell its width
+        // (a lazy list) is laid out as before.
+        val need = if (constraints.hasBoundedWidth) runCatching { measurable.minIntrinsicWidth(Constraints.Infinity) }.getOrDefault(0) else 0
+        val across = if (need > constraints.maxWidth) need else constraints.maxWidth
+        val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity, maxWidth = across))
         val room = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
-        val scale = if (placeable.height > room && placeable.height > 0) room.toFloat() / placeable.height else 1f
+        val byHeight = if (placeable.height > room && placeable.height > 0) room.toFloat() / placeable.height else 1f
+        val byWidth = if (constraints.hasBoundedWidth && placeable.width > constraints.maxWidth) constraints.maxWidth.toFloat() / placeable.width else 1f
+        val scale = minOf(byHeight, byWidth)
+        val width = minOf(placeable.width, constraints.maxWidth).coerceAtLeast(constraints.minWidth)
         val height = minOf(placeable.height, room).coerceAtLeast(constraints.minHeight)
-        layout(placeable.width, height) {
-            if (scale == 1f) placeable.place(0, (height - placeable.height) / 2)
-            else placeable.placeWithLayer(0, (height - placeable.height) / 2) { scaleX = scale; scaleY = scale }
+        layout(width, height) {
+            val x = (width - placeable.width) / 2
+            if (scale == 1f) placeable.place(x, (height - placeable.height) / 2)
+            else placeable.placeWithLayer(x, (height - placeable.height) / 2) { scaleX = scale; scaleY = scale }
         }
     },
 )

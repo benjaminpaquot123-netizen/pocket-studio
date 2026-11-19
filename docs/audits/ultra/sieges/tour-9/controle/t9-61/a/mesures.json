@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "2",
+  "options": {
+    "lang": "hi",
+    "device": "phone360",
+    "font": "130",
+    "mode": "simple",
+    "amenee": "tuto:riddim:9",
+    "gestes.max": "150",
+    "mission": "tuto-facile",
+    "profil": "moyen",
+    "niveau": "2",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 59,
+    "images": 3,
+    "gestes_premier_son": 46,
+    "gestes_premier_partage": 57,
+    "touchers_a_vide": 1,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 65,
+    "ecrans_revisites": 11,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 38,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.8,
+      "simule": 2.4,
+      "jvm": 9.8,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "reussie",
+  "pourquoi": "« riddim » en Facile : 41 étape(s), 14 chapitre(s) entier(s) sur 14"
+}

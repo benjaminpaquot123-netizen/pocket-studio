@@ -1,0 +1,7 @@
+Écran 63 (540x1170)
+texte « मेरा गाना शेयर करो · मेरा-गाना-20261119-115742.m4a » @ 270,406
+bouton « WhatsApp » @ 270,497
+bouton « Messages » @ 270,569
+bouton « Gmail » @ 270,641
+bouton « Drive » @ 270,713
+bouton « Files » @ 270,785

@@ -1,0 +1,19 @@
+Écran 35 (540x1170)
+icône ✕ @ 486,316
+texte « हिट 12 » @ 234,316
+texte « वेलोसिटी » @ 67,381
+bouton « ज़ोरदार » [sélectionné] @ 82,447
+bouton « मीडियम » @ 221,447
+bouton « सॉफ़्ट » @ 351,447
+texte « रोल » @ 39,512
+bouton « ×1 » [sélectionné] @ 58,578
+bouton « ×2 » @ 148,578
+bouton « ×3 » @ 240,578
+bouton « ×4 » @ 334,578
+bouton « ×6 » @ 427,578
+bouton « ×8 » @ 61,650
+texte « ट्रिपलेट » @ 56,715
+bouton « 2 खानों में 3 » @ 109,781
+bouton « ↗ ऊपर जाता » [désactivé] @ 115,862
+bouton « बराबर » [désactivé, sélectionné] @ 275,862
+bouton « ↘ नीचे जाता » [désactivé] @ 111,934

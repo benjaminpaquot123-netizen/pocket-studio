@@ -1,0 +1,37 @@
+Écran 32 (540x1170)
+icône (dossier ouvert) ✓ « मेरा प्रोजेक्ट 1 सेव हो गया » @ 113,42
+bouton « सिंपल » @ 266,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 76,139
+icône « इंट्रो बार 1/96 » ▾ @ 230,138
+bouton « ? » @ 495,139
+bouton « गाने के कॉर्ड्स B · इंट्रो E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m C · बिल्ड-अप E♭m  E♭m  E♭m  E♭m D · फ़ेक ड्रॉप E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m E · ड्रॉप E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m F · ब्रेक E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m G · ड्रॉप 2 E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m  E♭m … और 1 पार्ट पूरे गाने के कॉर्ड्स बदलने के लिए टैप करो। » [coupé] @ 270,211
+icône ▶ « B · इंट्रो 16 बार » [coupé] @ 162,256
+icône − [désactivé, coupé] @ 318,262
+icône + [désactivé, coupé] @ 390,262
+icône ⋮ [coupé] @ 462,262
+texte « अपने पार्ट्स क्रम में रखो अध्याय 10/14 · हो गया · आसान » @ 198,322
+icône (liste) « अध्याय » @ 411,323
+icône ⌄ @ 483,323
+image (coupe) @ 57,457
+texte « शाबाश, अध्याय पूरा! » @ 202,420
+texte « अपना गाना अभी जैसा है वैसा सुनो, फिर अगले अध्याय पर जाओ: “ट्रांज़िशन”। » @ 295,477
+bouton « अगला अध्याय   » → @ 270,780
+icône ← @ 57,864
+bouton ▶ «  मेरा गाना सुनो » @ 310,864
+icône ↶ « पूर्ववत करो » @ 68,951
+image ↷ @ 172,936
+bouton ▶ « गाना » @ 270,951
+texte « 140 टेम्पो » @ 374,951
+icône ⋮ « और » @ 478,951
+onglet (lignes et note) « मेरा गाना » [sélectionné] @ 49,1050
+onglet (quatre carrés) « रिदम » @ 160,1050
+onglet (touches de piano) « कीबोर्ड » @ 271,1050
+onglet (curseurs) « मिक्स » @ 381,1050
+onglet (trois points reliés) « शेयर करो » @ 491,1050
+texte « ●  REC » @ 310,1140
+texte « ✎  नोट करो » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

@@ -1,0 +1,36 @@
+Écran 1 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ [désactivé] @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 120  BPM » @ 83,195
+bouton « ? » @ 495,195
+texte « Tempo en toonsoort Hoofdstuk 1/14 · Stap 1/3 · Pro » @ 176,292
+icône (liste) « Hoofdstukken » @ 389,293
+icône ⌄ @ 483,293
+texte « Luister naar een stukje afgewerkte boom bap: een jazzpianoloop, alsof hij uit een oude plaat is geknipt, een ronde kick en een knallende snare. Het is een instrumental voor een rapper: je gaat hem blok voor blok bouwen. » [coupé] @ 270,422
+bouton « Kit Boom bap downloaden (7 MB) » @ 222,536
+texte « Later » @ 465,536
+texte « ▸ Waarom? » @ 270,618
+icône « Verder lezen » ⌄ @ 270,672
+bouton ▶ «  Luister naar het voorbeeld » @ 270,784
+icône ← «  Vorige » [désactivé] @ 101,868
+icône « Volgende  » → @ 418,868
+icône ↶ « Ongedaan maken » [désactivé] @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 120 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

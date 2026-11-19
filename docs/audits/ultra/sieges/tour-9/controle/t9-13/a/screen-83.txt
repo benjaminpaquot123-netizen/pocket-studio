@@ -1,0 +1,26 @@
+Écran 83 (540x1170)
+texte « Slag 13 » @ 234,214
+icône ✕ @ 486,214
+texte « Kracht » @ 64,279
+bouton « Sterk » [sélectionné] @ 79,345
+bouton « Middel » @ 216,345
+bouton « Zacht » @ 356,345
+texte « Roll » @ 43,410
+bouton « ×1 » [sélectionné] @ 58,476
+bouton « ×2 » @ 148,476
+bouton « ×3 » @ 240,476
+bouton « ×4 » @ 334,476
+bouton « ×6 » @ 427,476
+bouton « ×8 » @ 61,548
+texte « Triool » @ 57,613
+bouton « 3 over 2 vakjes » @ 145,679
+bouton « 6 over de tel » @ 388,679
+bouton « ↗ Stijgend » [désactivé] @ 113,760
+bouton « Gelijk » [désactivé, sélectionné] @ 277,760
+bouton « ↘ Dalend » [désactivé] @ 433,760
+texte « Hele tel op ×2 (1/32-salvo) » @ 217,841
+texte « Kans om te spelen » @ 144,906
+bouton « 100% » [sélectionné] @ 81,972
+bouton « 75% » @ 205,972
+bouton « 50% » @ 323,972
+bouton « 25% » @ 442,972

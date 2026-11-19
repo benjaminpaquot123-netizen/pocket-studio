@@ -1,0 +1,50 @@
+Écran 105 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+onglet « Drums 16 pads » [sélectionné] @ 87,276
+onglet « Acid 303 Baslijn » @ 260,276
+onglet « Zang Microfoon » [coupé] @ 438,276
+image → @ 529,277
+texte « Deel: A » @ 69,345
+bouton « 3 » [coupé, état « leeg »] @ 67,391
+bouton [coupé, état « leeg »] @ 124,391
+bouton [coupé, état « slag, kracht 100 % »] @ 182,391
+bouton [coupé, état « leeg »] @ 240,391
+bouton « 4 » [coupé, état « leeg »] @ 298,391
+bouton [coupé, état « leeg »] @ 356,391
+bouton [coupé, état « slag, kracht 100 % »] @ 414,391
+bouton [coupé, état « leeg »] @ 472,391
+bouton « Slagen » [coupé, sélectionné] @ 113,438
+bouton « Rolls » [coupé] @ 248,438
+bouton « Pan » [coupé] @ 361,438
+bouton « Toonhoogte » [coupé] @ 458,438
+texte « De bas Hoofdstuk 3/14 · Stap 1/3 · Pro » @ 176,510
+icône (liste) « Hoofdstukken » @ 389,511
+icône ⌄ @ 483,511
+texte « Luister naar de bas van het voorbeeld met de drums. » @ 270,640
+texte « ▸ Waarom? » @ 270,715
+bouton ▶ «  Luister naar het voorbeeld » @ 270,784
+icône ← «  Vorige » @ 101,868
+icône « Volgende  » → @ 418,868
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

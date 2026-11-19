@@ -1,0 +1,50 @@
+Écran 75 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 495,114
+icône « Parte: A » ▾ @ 76,180
+texte « Battuta 2/2 · Piatto » [coupé] @ 147,223
+bouton « 1 » [état « vuoto »] @ 67,296
+bouton [état « vuoto »] @ 124,296
+bouton [état « colpo, forza 100 % »] @ 182,296
+bouton [état « vuoto »] @ 240,296
+bouton « 2 » [état « vuoto »] @ 298,296
+bouton [état « vuoto »] @ 356,296
+bouton [état « colpo, forza 100 % »] @ 414,296
+bouton [état « vuoto »] @ 472,296
+bouton « 3 » [coupé, état « vuoto »] @ 67,353
+bouton [coupé, état « vuoto »] @ 124,353
+bouton [coupé, état « colpo, forza 100 % »] @ 182,353
+bouton [coupé, état « vuoto »] @ 240,353
+bouton « 4 » [coupé, état « vuoto »] @ 298,353
+bouton [coupé, état « vuoto »] @ 356,353
+bouton [coupé, état « colpo, forza 100 % »] @ 414,353
+bouton [coupé, état « vuoto »] @ 472,353
+texte « Gli hi-hat Capitolo 4/15 · Fatto · Facile » @ 192,420
+icône (liste) « Capitoli » @ 405,420
+icône ⌄ @ 483,420
+image (rond coché) @ 36,498
+texte « Ascolta tutta la tua batteria per qualche secondo, poi quella dell'esempio. » @ 289,519
+texte « ▸ Perché? » @ 270,579
+bouton « Capitolo successivo   » → @ 270,699
+bouton ▶ «  Ascolta il mio brano » @ 142,786
+bouton ▶ «  Ascolta l'esempio » @ 397,786
+icône ← «  Indietro » @ 95,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

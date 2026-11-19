@@ -1,0 +1,50 @@
+Écran 106 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 495,114
+onglet « Acid 303 Linea di basso » [coupé] @ 51,186
+bouton « Basso Synth » @ 145,186
+bouton « Accordi Pad » @ 270,186
+bouton « Melodia Supersaw » ⋮ @ 430,186
+image ← @ 10,187
+image → @ 529,187
+icône « Parte: A » ▾ @ 76,264
+texte « A tempo 50% » [coupé] @ 444,351
+bouton « Accordi » @ 106,351
+bouton « Basso fantasma » [sélectionné] @ 281,351
+bouton « Melodia · battuta 1/8 Ancora 2 note tratteggiate da toccare » @ 270,432
+texte « batt. » @ 69,489
+bouton « 1 » @ 297,501
+dessin [coupé] @ 69,539
+texte « Do4 » @ 69,554
+dessin @ 69,575
+dessin @ 69,596
+dessin @ 69,617
+dessin @ 69,638
+dessin @ 69,659
+dessin @ 69,680
+dessin @ 69,701
+dessin [coupé] @ 69,717
+dessin [coupé] @ 297,628
+icône (liste) « Capitoli » @ 405,771
+texte « Il riff Capitolo 7/15 · Passo 2/3 · Facile » @ 192,771
+icône ⌃ @ 483,771
+icône « Tocca a te: tocca “Crea la traccia Melodia”, poi le 5 note tratteggiate della battuta 1. Leggi » ⌃ @ 270,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

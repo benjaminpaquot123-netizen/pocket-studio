@@ -61,6 +61,13 @@ class TutoReadabilityBudgetTest {
         assertTrue("${known.size} exceptions: the list only shrinks (frozen at $FACILE_FROZEN)", known.size <= FACILE_FROZEN)
     }
 
+    /** Tour 8, garde-fous: an exception whose consigne now fits (shortened, or gone) makes this red with its name. */
+    @Test fun everyFacileExceptionStillMisses() {
+        val now = all(TutoLevel.Facile).map(::case).toSet()
+        val stale = frozen().filter { it !in now }.sorted()
+        assertTrue("${stale.size} entries of $FACILE now fit, delete them (style/step lang state scale width):\n" + stale.joinToString("\n"), stale.isEmpty())
+    }
+
     @Test fun proOutOfBudgetOnlyGoesDown() {
         val n = all(TutoLevel.Pro).size
         File("build/tuto-readability-pro-count.txt").writeText("$n\n")

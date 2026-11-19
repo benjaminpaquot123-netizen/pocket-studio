@@ -27,6 +27,17 @@ class TutoOneMomentTest {
         assertTrue("${bad.size} Facile consignes break « one moment » (docs/tuto/AUTHORING.md):\n" + bad.joinToString("\n"), bad.isEmpty())
     }
 
+    /**
+     * Tour 8, garde-fous: an entry of [TutoMoments.EXCEPTIONS_FILE] the step no longer needs (rewritten, or gone) makes
+     * this red with its name, and the list only shrinks ([CEILING], lowered to the count after each cleanup).
+     */
+    @Test fun everyExceptionStillBreaksTheRuleItExcuses() {
+        val now = facile().flatMap { (where, text) -> TutoMoments.problems(text).map { "$where ${it.first}" } }.toSet()
+        val stale = TutoMoments.EXCEPTIONS.filter { it !in now }.sorted()
+        assertTrue("${stale.size} entries of ${TutoMoments.EXCEPTIONS_FILE} excuse nothing any more, delete them:\n" + stale.joinToString("\n"), stale.isEmpty())
+        assertTrue("${TutoMoments.EXCEPTIONS.size} exceptions: the list only shrinks (ceiling $CEILING)", TutoMoments.EXCEPTIONS.size <= CEILING)
+    }
+
     @Test fun theExceptionsStillAskForTwoSeriesAtMost() {
         val heavy = facile().map { (where, text) -> Triple(where, text, TutoMoments.series(text)) }.filter { it.third.size > 2 }
         assertTrue(heavy.joinToString("\n") { "${it.first}: ${it.third} | ${it.second}" }, heavy.isEmpty())
@@ -34,5 +45,10 @@ class TutoOneMomentTest {
 
     private fun facile(): List<Pair<String, String>> = TutoCourse.STYLES.flatMap { style ->
         TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }.map { "$style/${it.id}" to it.textFor(TutoLevel.Facile) }
+    }
+
+    companion object {
+        /** The entries of [TutoMoments.EXCEPTIONS_FILE]: lower it to the count when a lot deletes some. */
+        const val CEILING = 52
     }
 }

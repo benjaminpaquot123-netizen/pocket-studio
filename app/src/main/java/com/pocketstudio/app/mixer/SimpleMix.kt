@@ -234,8 +234,9 @@ fun SimpleMixScreen(
             LocalAloneResumes provides (ui.listening?.resume == true), LocalHeadLook provides rememberHeadLook(heads),
         ) {
         val strips = rememberScrollState()
-        Box {
-        Row(Modifier.fillMaxWidth().fadingEdges(strips).horizontalScroll(strips), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        // The tab sits beside the strips, never over them: it covers no control and the row's own end stays faded.
+        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.weight(1f).fadingEdges(strips).horizontalScroll(strips), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->
                 val trackAlone = alone != null && alone == AloneTarget.ofSongKey(t.key)
                 if (t.pads.isNotEmpty()) {
@@ -247,7 +248,7 @@ fun SimpleMixScreen(
             OutputStrip(ui.masterDb, meters, shownWords, actions.setMasterDb)
         }
         // Tour 9 (S34): more strips (the output's) wait on the right: said, a touch brings them in.
-        MoreTracksTab(strips, "mix_more_right", Modifier.align(Alignment.CenterEnd))
+        MoreTracksTab(strips, "mix_more_right")
         }
         }
         TipCard(ui.tip, actions.applyTip)

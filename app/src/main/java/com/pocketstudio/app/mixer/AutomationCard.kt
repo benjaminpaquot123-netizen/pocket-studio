@@ -578,8 +578,7 @@ internal fun LaneBlock(
             val bars = if (ui.stepsPerBar > 0 && ui.steps % ui.stepsPerBar == 0) ui.steps / ui.stepsPerBar else 0
             val drumLoop = when {
                 drums || bars == 0 -> tr("Sur la batterie · %s", length(ui.steps))
-                bars == 1 -> tr("Sur 1 mesure.")
-                else -> tr("Sur %d mesures.", bars)
+                else -> com.pocketstudio.model.i18n.trCount(bars, "Sur 1 mesure.", "Sur %d mesures.")
             }
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),

@@ -146,9 +146,10 @@ internal fun Console(
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
         val scroll = rememberScrollState()
-        Box {
+        // The tab sits beside the strips, never over them: it covers no control and the row's own end stays faded.
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Row(
-                Modifier.fillMaxWidth().fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
+                Modifier.weight(1f).fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 strips.forEachIndexed { i, st ->
@@ -158,7 +159,7 @@ internal fun Console(
                     )
                 }
             }
-            MoreTracksTab(scroll, "console_more_right", Modifier.align(Alignment.CenterEnd))
+            MoreTracksTab(scroll, "console_more_right")
         }
     }
     if (padsOpen) PadSheet(channels, actions, padNames) { padsOpen = false }

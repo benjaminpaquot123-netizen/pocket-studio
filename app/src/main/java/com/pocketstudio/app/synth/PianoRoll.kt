@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.positionInWindow
 import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.ui.draw.drawBehind
@@ -153,6 +154,8 @@ private const val MIN_STEP = 1.2f
 /** A row (a semitone) at its tallest and at its smallest (« Tout voir »: a whole bass and lead fit; still seen, still touched). */
 private const val MAX_ROW = 40f
 private const val MIN_ROW = 5f
+/** Tour 9, D06: fewer rows than this in sight above the tutorial's panel, the page brings the grid up. */
+private const val FEW_ROWS = 4
 /** Below this row height the keys are not named (their text would not fit): the C's lines stay. */
 private const val NAMED_ROW = 12f
 /** Grid for placing and moving notes, in ticks: 1/8, 1/16, 1/16 triplet, 1/32. */
@@ -421,7 +424,29 @@ fun PianoRoll(
             // Tour 6 lot 1 (T4, N4): the rows really in sight, from the roll's top (pixels): what is not scrolled away by
             // the page and not under the tutorial's panel (a 360 dp phone at 130 % kept about 130 px of rows above it).
             val rollSight = remember { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
-            Column(gridModifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // Tour 9, D06 (seats 62, 29: big letters, Mode simple): the page's head and the tutorial's panel left the grid
+            // a few pixels in sight (or none), the page never brought it up above the panel: no dotted note to touch, a
+            // touch on the line did nothing (it waits for rows in sight). Each step, and each touch on the line while
+            // fewer than [FEW_ROWS] rows are in sight, the line, the bar numbers and the grid come up above the panel.
+            val spotsHere = com.pocketstudio.app.learn.LocalSpots.current
+            val rollBring = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+            var rollBoxTall by remember { mutableIntStateOf(0) }
+            val rowPxNow = with(LocalDensity.current) { rowHeight.toPx() }
+            val lineAsks = com.pocketstudio.app.tuto.TutoHints.focus
+            LaunchedEffect(tutoStep, tutoOn, hints.isNotEmpty(), lineAsks) {
+                if (!tutoOn || hints.isEmpty() || tutoStep == null) return@LaunchedEffect
+                // After the page's own bringing (« Créer la piste » sends to the notes: 120 ms).
+                kotlinx.coroutines.delay(200)
+                val rows = rollSight.value
+                if (rows != null && rows.endInclusive - rows.start >= FEW_ROWS * rowPxNow) return@LaunchedEffect
+                val below = spotsHere?.roomBelow(0f) ?: 0f
+                rollBring.bringIntoView(androidx.compose.ui.geometry.Rect(0f, 0f, 1f, rollBoxTall + below))
+            }
+            Column(
+                gridModifier.bringIntoViewRequester(rollBring)
+                    .onSizeChanged { rollBoxTall = it.height },
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 if (hints.isNotEmpty()) {
                     TutoNotesLeft(
                         hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth, barSteps,

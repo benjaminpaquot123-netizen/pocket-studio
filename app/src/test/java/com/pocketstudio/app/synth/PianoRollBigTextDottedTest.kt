@@ -95,7 +95,7 @@ abstract class PianoRollBigTextDotted {
     }
 
     /** Every dotted note of [stepId] touched where it is drawn, until the step's notes are all written. */
-    protected fun touchEveryDottedNote(style: String, stepId: String, simple: Boolean) {
+    protected fun touchEveryDottedNote(style: String, stepId: String, simple: Boolean, askAgain: Boolean = false) {
         val target = TutoTarget.of(style)!!
         h.start(simple = simple, build = {
             session.edit { target.blank() }
@@ -119,10 +119,17 @@ abstract class PianoRollBigTextDotted {
             val before = leftNotes()
             val n = before.first { place(it) != null }
             val at = place(n)!!
-            val origin = node("piano_roll").positionInRoot
+            // A touch's place is read from the part of the node in sight (its bounds in the root), not its whole canvas.
+            val origin = node("piano_roll").boundsInRoot.topLeft
             compose.onNodeWithTag("piano_roll", useUnmergedTree = true).performTouchInput { click(at - origin) }
             touches++
             settle()
+            // Seat 62 (« bass_2 »): the panel's button touched again between notes (it asks the roll for the next dotted
+            // note): one dotted note was left in sight, then none.
+            if (askAgain && has("tuto_need") && leftNotes().isNotEmpty()) {
+                compose.onNodeWithTag("tuto_need", useUnmergedTree = true).performClick()
+                settle()
+            }
             val after = leftNotes()
             assertTrue("touch $touches on ${n.pitch}@${n.start} wrote nothing (${before.size} then ${after.size} left): ${state()}",
                 after.size < before.size || TutoHints.step != stepId)
@@ -141,9 +148,22 @@ abstract class PianoRollBigTextDotted {
     fun grimeChordsSimple() = touchEveryDottedNote("grime", "pad_do", simple = true)
 
     @Test
+    fun speedGarageBassAskedAgainSimple() = touchEveryDottedNote("speed_garage", "bass_do", simple = true, askAgain = true)
+
+    @Test
     fun speedGarageBassPro() = touchEveryDottedNote("speed_garage", "bass_do", simple = false)
 }
 
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp-port-hdpi", fontScale = 2.0f)
 class PianoRollBigTextDottedTest : PianoRollBigTextDotted()
+
+/** Seat 62: a foldable held open (1035 × 1243 px), big letters. */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w690dp-h829dp-port-hdpi", fontScale = 2.0f)
+class PianoRollBigTextDottedFoldableTest : PianoRollBigTextDotted()
+
+/** The letters most testers use (130 %), on the same 360 dp phone. */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w360dp-h780dp-port-hdpi", fontScale = 1.3f)
+class PianoRollMidTextDottedTest : PianoRollBigTextDotted()

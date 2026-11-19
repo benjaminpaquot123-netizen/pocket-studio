@@ -671,10 +671,15 @@ private fun StepGrid(
                 modifier = Modifier.spot("step_pages").testTag("drum_pages"),
             ) {
                 Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                // Tour 9, F053: ◀ ▶ here turn the page only (the ▶ touched to reach bar 2 was the pad's rotate).
+                TextButton(onClick = { chosenBar = bar - 1; follow = false }, enabled = bar > 0, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = tr("Mesure précédente") }.testTag("drum_page_prev")) { Text("◀") }
                 (0 until bars).forEach { b ->
                     FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
                         colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
                 }
+                TextButton(onClick = { chosenBar = bar + 1; follow = false }, enabled = bar < bars - 1, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = tr("Mesure suivante") }.testTag("drum_page_next")) { Text("▶") }
                 FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
             }
         }
@@ -948,8 +953,12 @@ private fun StepGrid(
             listOf(1 to tr("tout"), 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
                 TextButton(onClick = { actions.fill(every) }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
             }
-            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_left")) { Text("◀") }
-            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_right")) { Text("▶") }
+            // Tour 9, F053: the pad's rotate says what it does and is not drawn like the bar arrows (◀ ▶ turn the page).
+            Text(tr("Décaler les coups"), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 6.dp))
+            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
+                modifier = small.semantics { contentDescription = tr("Décaler les coups d'une case vers la gauche") }.testTag("rotate_left")) { Text("⇠") }
+            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
+                modifier = small.semantics { contentDescription = tr("Décaler les coups d'une case vers la droite") }.testTag("rotate_right")) { Text("⇢") }
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }

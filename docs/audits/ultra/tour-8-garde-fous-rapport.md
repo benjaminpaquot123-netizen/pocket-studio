@@ -18,8 +18,8 @@ tests: com.pocketstudio.app.tuto.TutoReadabilityBudgetTest com.pocketstudio.app.
 
 chemin: panneau du tuto Facile, toutes leçons, langues, tailles et largeurs | test: TutoReadabilityBudgetTest#everyFacileExceptionStillMisses
 chemin: panneau du tuto, texte replié « Lire la suite » | test: Tour7TutoPanelFoldTest#theBlocksFoldInOrderTheKitStaysAndWhyIsTouchable
-chemin: validation des consignes (un moment par consigne) | test: TutoValidationMomentTest#everyExceptionStillBreaksTheRuleAndTheListOnlyShrinks
-chemin: étapes de volume du tuto Facile, 14 langues | test: Tour6TutoMixWordsTest#everyVolumeStepNamesItsTracksInEveryLanguage
+
+Hors appli (module `project-model`, que le portail ne lit pas) : validation des consignes, `TutoValidationMomentTest#everyExceptionStillBreaksTheRuleAndTheListOnlyShrinks` ; étapes de volume, 14 langues, `Tour6TutoMixWordsTest#everyVolumeStepNamesItsTracksInEveryLanguage`.
 
 ## Entrées retirées
 

@@ -82,4 +82,23 @@ class Tour9RollFinishTest {
         // Without the chords' mode each note is touched: they all stay asked for.
         assertEquals(chords, aimedNotes(chords, chordMode = false))
     }
+    /**
+     * F118 (seat t9-27, id): the tutorial's motif copied over bars 1 to 5, the roll on bar 2, the button read « Tempel
+     * birama 6 » (bar 6, out of sight). A paste goes on the bar chosen or after a copy while it is in sight, else on
+     * the bar the eye is on (the middle of the roll), and on the bar playing while it plays.
+     */
+    @Test
+    fun thePasteGoesOnABarInSight() {
+        val bar = 300f
+        // Bar 2 in sight (from 300 to 600 px), the target after the copy is bar 6 (index 5): the paste goes on bar 2.
+        assertEquals(1, pasteBarFor(playBar = -1, targetBar = 5, left = 300f, right = 600f, barPx = bar, lastBar = 7))
+        // The target in sight is kept (copy bar 1, paste on bar 2 next to it).
+        assertEquals(1, pasteBarFor(playBar = -1, targetBar = 1, left = 0f, right = 700f, barPx = bar, lastBar = 7))
+        // Playing: the bar playing, whatever is in sight.
+        assertEquals(4, pasteBarFor(playBar = 4, targetBar = 1, left = 0f, right = 700f, barPx = bar, lastBar = 7))
+        // Nothing laid out yet (no width): the target as before.
+        assertEquals(5, pasteBarFor(playBar = -1, targetBar = 5, left = 0f, right = 0f, barPx = bar, lastBar = 7))
+        // Never past the last bar a clip can hold.
+        assertEquals(7, pasteBarFor(playBar = -1, targetBar = 9, left = 2100f, right = 2400f, barPx = bar, lastBar = 7))
+    }
 }

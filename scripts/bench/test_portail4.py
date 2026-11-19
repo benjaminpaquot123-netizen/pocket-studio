@@ -587,6 +587,9 @@ class RealLots(unittest.TestCase):
         if not real(merge) or not real(merge + "^2"):
             self.skipTest(f"the merge {merge} is not in this history")
         base = subprocess.run(["git", "-C", ROOT, "merge-base", merge + "^1", merge + "^2"], capture_output=True, text=True).stdout.strip()
+        if not base:
+            # A clone cut short (« --depth »): the merge is there, not where its two sides part.
+            self.skipTest(f"historique coupé : la base de la fusion {merge} manque, approfondis avec git fetch --deepen")
         r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), "--tuto", merge + "^2",
                             f"docs/audits/ultra/tour-6-{zone}-rapport.md", f"base:{base}", f"tete:{real(merge + '^1')}", "tour:tour-6"],
                            cwd=ROOT, capture_output=True, text=True)
@@ -604,6 +607,39 @@ class RealLots(unittest.TestCase):
         for merge, zone in (("42f608f6", "portail3"), ("c40b834e", "banc7"), ("d4958947", "guidecoquille"), ("9b106bd5", "cablage")):
             code, out = self.rule(merge, zone)
             self.assertEqual((code, out), (0, ""), zone)
+
+
+class CutHistory(unittest.TestCase):
+    """Tour 9, L9: a clone cut short (« --depth ») can hold a merge of tour 6 and both its parents but not where they
+    part: merge-base answered nothing, rapport-zone.py refused its empty « base: » (exit 2) and the pre-flight was red on
+    a history, not on a rule. There, the test says so and how to get the history back."""
+
+    def test_a_merge_whose_base_was_cut_says_to_deepen(self):
+        global ROOT
+        tmp = tempfile.mkdtemp(prefix="portail4-cut-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        full, cut = os.path.join(tmp, "full"), os.path.join(tmp, "cut")
+        os.makedirs(full)
+        git(full, "init", "-q", "-b", "int")
+        write(os.path.join(full, "a.txt"), "base\n")
+        git(full, "add", "a.txt")
+        git(full, "commit", "-q", "-m", "base")
+        git(full, "checkout", "-q", "-b", "lot")
+        write(os.path.join(full, "b.txt"), "lot\n")
+        git(full, "add", "b.txt")
+        git(full, "commit", "-q", "-m", "lot")
+        git(full, "checkout", "-q", "int")
+        write(os.path.join(full, "c.txt"), "int\n")
+        git(full, "add", "c.txt")
+        git(full, "commit", "-q", "-m", "int")
+        git(full, "merge", "-q", "--no-ff", "-m", "merge", "lot")
+        git(tmp, "clone", "-q", "--depth", "2", "--no-local", "file://" + full, cut)
+        self.assertEqual(git(cut, "rev-parse", "--is-shallow-repository"), "true")
+        saved, ROOT = ROOT, cut
+        self.addCleanup(lambda: globals().__setitem__("ROOT", saved))
+        with self.assertRaises(unittest.SkipTest) as said:
+            RealLots().rule(git(cut, "rev-parse", "HEAD"), "z")
+        self.assertIn("git fetch --deepen", str(said.exception))
 
 
 class Hooks(unittest.TestCase):

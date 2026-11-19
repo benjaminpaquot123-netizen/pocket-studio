@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "1",
+  "options": {
+    "lang": "tr",
+    "device": "phone360",
+    "font": "100",
+    "mode": "simple",
+    "amenee": "tuto:reggaeton:8",
+    "gestes.max": "167",
+    "mission": "tuto-facile",
+    "profil": "débutant motivé",
+    "niveau": "1",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 0,
+    "images": 0,
+    "gestes_premier_son": null,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 0,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 0,
+    "ecrans_revisites": 0,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 0,
+    "plantage": false,
+    "fin": null,
+    "premier_ecran_s": {
+      "reel": 4.6,
+      "simule": 2.4,
+      "jvm": 10.6,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "partielle",
+  "pourquoi": "« reggaeton » en Facile : 12 étape(s), 0 chapitre(s) entier(s) sur 15"
+}

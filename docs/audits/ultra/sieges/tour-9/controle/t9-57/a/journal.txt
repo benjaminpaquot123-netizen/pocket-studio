@@ -1,0 +1,10 @@
+#0 SIEGE lang=tr device=phone360 font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:reggaeton:8
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:reggaeton:8
+#0 AMENEE > touche 270 621 (welcome_learn)
+#0 AMENEE > touche 270 771 (mode_card_simple)
+#0 AMENEE > touche 270 1105 (tuto_style_reggaeton)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 398 492 (tuto_chapters)
+#0 BENCH-FLAG where=amenee.wait want="les chapitres" saw="après touche tuto_chapters@398,336" waited=123445 screen=tuto_panel/tab_simple_Rythme
+#0 BENCH-VERDICT fail where=amenee.wait why="amenée tuto:reggaeton:8 : les chapitres n'est jamais venu"

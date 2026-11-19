@@ -1555,3 +1555,4 @@
 - 2026-11-19 · Portail en mode boost : un lot du tour 9 peut ajouter ses propres lignes « tenté » / « pas pris » au registre des réparations (le trieur du tour 9 n'en a écrit aucune) ; un état réservé (corrigé, rejoué, constaté) reste refusé. Retour arrière : enlever PS_JUGE_BOOST.
 - 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
 - 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`
+- 2026-11-19 · lot « L17 » (tour-9) : 11 décision(s) dans `docs/decisions/tour-9-L17.md`

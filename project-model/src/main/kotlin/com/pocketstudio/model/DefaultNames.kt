@@ -149,12 +149,26 @@ object DefaultNames {
     }
 
     /**
+     * A pad's sound [name] as the pad itself shows it (Tour 9, F132, seat t9-39: « Drum & bass · Caisse » next to
+     * « Claquement de mains »): one of a kit's own sounds (« <kit> · Caisse », [kitPad]) drops the kit's name, as the
+     * kit's other pads say theirs, the « Kit : … » chip saying the kit; any other name is [shownSample].
+     */
+    fun shownOnPad(name: String): String {
+        val cut = name.indexOf(JOIN)
+        if (cut > 0 && !isDefault(name)) {
+            val rest = name.substring(cut + JOIN.length)
+            if (rest in KIT_PADS) return tr(rest)
+        }
+        return shownSample(name)
+    }
+
+    /**
      * The name pad [lane] shows (as the pad screen does): the [sample] put on it ([shownSample]: a file of the user's
      * stays as it is), else its studio voice [voice] (a [PadVoice] kind: « 808 », « Rumble »), else its kit voice
      * ([KIT_VOICES]), in the interface's language and with the Mode simple's words.
      */
     fun shownPad(lane: Int, sample: String?, voice: Int?): String =
-        sample?.takeIf { it.isNotBlank() }?.let { shownSample(it) }
+        sample?.takeIf { it.isNotBlank() }?.let { shownOnPad(it) }
             ?: voice?.let { kind -> if (kind == PadVoice.BASS_808) "808" else PadVoice.NAMES.getOrNull(kind)?.takeIf { it.isNotBlank() }?.let { tr(it) } }
             ?: KIT_VOICES.getOrNull(lane)?.let { tr(it) } ?: "Pad ${lane + 1}"
 

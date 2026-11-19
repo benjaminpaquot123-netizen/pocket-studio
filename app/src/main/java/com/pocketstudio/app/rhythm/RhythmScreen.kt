@@ -450,7 +450,7 @@ private val TABLET_COLUMN_PAD_HEIGHT = 80.dp
 
 /** The pad's name: the sound placed on it (a sample, a library sound), else its studio voice's (the 808), else the kit voice's name. */
 internal fun padName(project: Project, lane: Int): String =
-    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownSample(it) }
+    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownOnPad(it) }
         ?: project.padVoices[lane]?.let { padVoiceName(it.kind) } ?: DrumKitInfo.names[lane]
 
 /** A studio voice's name on its pad ([com.pocketstudio.model.PadVoice.NAMES], translated). */

@@ -109,4 +109,17 @@ class Tour9L5bTutoWordsTest {
     fun f085GermanLastBeatReadsRight() {
         assertNoneLeft("« des letzten Schlags »", mapOf(Lang.DE to offenders(Lang.DE, Regex("des letzten Schlags"))))
     }
+
+    /** F088: Arabic names the clap « تصفيق » (as its pad), not « كلاب » (dogs), and rave « رايف », not « ريف » (countryside). */
+    @Test
+    fun f088ArabicSoundNamesAreMusicWords() {
+        val dogs = Regex("""(?<![\p{L}\p{M}])(وال|ال|لل|و|ب)?كلاب(?![\p{L}\p{M}])""")
+        val countryside = Regex("""(?<![\p{L}\p{M}])(ال)?رّ?يف(?![\p{L}\p{M}])""")
+        val rave = Regex("""(?i)\braves?\b""")
+        assertTrue("the clap pad reads تصفيق", I18n.table(Lang.AR)["Clap"] == "تصفيق")
+        assertNoneLeft("كلاب / ريف", mapOf(
+            Lang.AR to offenders(Lang.AR, dogs) +
+                offenders(Lang.AR, countryside) { rave.containsMatchIn(it) && !it.contains("riff", ignoreCase = true) },
+        ))
+    }
 }

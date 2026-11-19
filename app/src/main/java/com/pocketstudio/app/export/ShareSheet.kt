@@ -608,7 +608,8 @@ internal fun shareLevelWords(lufs: Double, choice: com.pocketstudio.model.Target
  * read « 14− » (the bidi algorithm put a bare minus on the right). Unchanged left to right.
  */
 internal fun shareSigned(text: String): String =
-    text
+    if (!com.pocketstudio.model.i18n.I18n.lang.rtl) text
+    else SIGNED.replace(text) { com.pocketstudio.model.i18n.ltrNumber(it.value) }
 
 private val SIGNED = Regex("""[−\-+][0-9٠-٩۰-۹](?:[0-9٠-٩۰-۹.,٫٬]*[0-9٠-٩۰-۹])?""")
 

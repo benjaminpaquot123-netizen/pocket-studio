@@ -1,0 +1,45 @@
+Écran 86 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 203,42
+bouton « プロ » @ 438,42
+bouton « A » ▾ @ 522,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « このパート » @ 826,42
+bouton ▶ « 曲 » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « ドラム 16パッド » [coupé] @ 28,265
+onglet « Acid 303 ベースライン » @ 185,266
+onglet « ボーカル マイク » @ 441,265
+onglet « リミックス 分離 » @ 681,265
+bouton « ベース Plaits » ⋮ @ 915,265
+image ← @ 10,266
+image → @ 1024,266
+texte « パート：A » @ 112,361
+curseur [coupé, état « 30 », à 30 %] @ 517,406
+dessin @ 517,481
+texte « カットオフ » @ 492,481
+texte « 62 » @ 959,481
+curseur [état « 62 », à 62 %] @ 517,546
+dessin @ 517,631
+texte « モーフ » @ 492,631
+texte « 20 » @ 968,631
+curseur [état « 20 », à 20 %] @ 517,708
+dessin [coupé] @ 517,765
+texte « ディケイ » [coupé] @ 492,765
+texte « 35 » [coupé] @ 968,767
+texte « ベース チャプター 5/16 · 完了 · プロ » @ 426,842
+icône (liste) « チャプター » @ 886,843
+icône ⌃ @ 978,843
+icône (coupe) « よくできました、章クリア！ » ⌃ @ 517,988
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213
